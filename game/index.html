@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="《疆域争锋》是一款原创的轻量即时领地策略浏览器游戏。占领据点、升级城堡、调兵遣将，夺取整片疆域。"
+    />
+    <title>疆域争锋 · Frontier Claim</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand" aria-label="疆域争锋">
+          <span class="brand-mark" aria-hidden="true">♜</span>
+          <span>
+            <strong>疆域争锋</strong>
+            <small>FRONTIER CLAIM</small>
+          </span>
+        </div>
+
+        <div class="battle-status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="statusText">战役准备中</span>
+        </div>
+
+        <div class="top-actions">
+          <button id="levelButton" class="icon-button wide" type="button" title="选择关卡">
+            <span aria-hidden="true">⌘</span><b id="levelShort">01</b>
+          </button>
+          <button id="pauseButton" class="icon-button" type="button" title="暂停 (空格)" aria-label="暂停">
+            <span id="pauseIcon" aria-hidden="true">Ⅱ</span>
+          </button>
+          <button id="speedButton" class="icon-button wide" type="button" title="切换速度" aria-label="切换速度">
+            <span aria-hidden="true">»</span><b id="speedText">1×</b>
+          </button>
+          <button id="soundButton" class="icon-button" type="button" title="声音" aria-label="开关声音">
+            <span id="soundIcon" aria-hidden="true">♪</span>
+          </button>
+          <button id="restartButton" class="icon-button" type="button" title="重新开始 (R)" aria-label="重新开始">
+            <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="game-stage">
+        <section class="objective-card" aria-label="本关目标">
+          <span class="eyebrow">当前战役</span>
+          <h1 id="levelName">苍翠边境</h1>
+          <p id="levelObjective">夺取地图上的全部据点</p>
+          <div class="progress-track"><span id="territoryProgress"></span></div>
+          <div class="objective-meta">
+            <span><i class="legend-dot player"></i><b id="playerCount">1</b> 据点</span>
+            <span><i class="legend-dot enemy"></i><b id="enemyCount">2</b> 敌军</span>
+          </div>
+        </section>
+
+        <section class="timer-card" aria-label="战斗计时">
+          <span>战斗用时</span>
+          <strong id="timerText">00:00</strong>
+          <small id="parText">三星目标 01:30</small>
+        </section>
+
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas
+            id="gameCanvas"
+            width="1280"
+            height="720"
+            aria-label="疆域争锋游戏地图。按住友方据点拖向目标，松开后派兵；从空地拖动可框选。"
+          ></canvas>
+          <div id="toast" class="toast" role="status" aria-live="polite"></div>
+          <div id="pauseVeil" class="pause-veil hidden">
+            <span>战局暂停</span>
+            <small>按空格或右上角按钮继续</small>
+          </div>
+        </div>
+
+        <aside class="intel-card" aria-label="战术提示">
+          <span class="eyebrow">战术情报</span>
+          <div id="intelIcon" class="intel-icon">⌂</div>
+          <h2 id="intelTitle">选择己方据点</h2>
+          <p id="intelText">按住友方据点拖向目标，松开后出兵；从空地拖动可框选多个据点。</p>
+          <div id="intelStats" class="intel-stats hidden"></div>
+        </aside>
+
+        <section class="command-bar" aria-label="指挥面板">
+          <div class="selection-readout">
+            <span class="eyebrow">已选部队</span>
+            <strong id="selectionCount">0 个据点</strong>
+            <small id="selectionUnits">等待命令</small>
+          </div>
+
+          <div class="send-control">
+            <span>派兵比例</span>
+            <div class="segmented" role="group" aria-label="派兵比例">
+              <button class="ratio-button active" type="button" data-ratio="0.5">一半</button>
+              <button class="ratio-button" type="button" data-ratio="1">全部</button>
+            </div>
+          </div>
+
+          <button id="selectAllButton" class="command-button secondary" type="button">
+            <span aria-hidden="true">◇</span>
+            选择全部
+          </button>
+          <button id="upgradeButton" class="command-button primary" type="button" disabled>
+            <span aria-hidden="true">⬆</span>
+            <span><b>升级据点</b><small id="upgradeCost">选择单个据点</small></span>
+          </button>
+
+          <div class="convert-control">
+            <select id="convertType" aria-label="选择改建类型" disabled>
+              <option value="village">村落</option>
+              <option value="fort">要塞</option>
+              <option value="tower">箭塔</option>
+              <option value="stable">驿站</option>
+              <option value="armory">军械所</option>
+            </select>
+            <button id="convertButton" class="command-button convert-button" type="button" disabled>
+              <span aria-hidden="true">⇄</span>
+              <span><b>改建</b><small id="convertCost">牺牲全部驻军</small></span>
+            </button>
+          </div>
+
+          <div class="shortcut-hint">
+            <kbd>据点拖拽</kbd><span>出兵</span>
+            <kbd>空地拖拽</kbd><span>框选</span>
+            <kbd>Shift</kbd><span>多选</span>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="menuOverlay" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
+      <div class="world-panel">
+        <header class="world-header">
+          <div class="world-brand">
+            <span class="world-crest" aria-hidden="true">♜</span>
+            <span><small>FRONTIER CLAIM</small><h2 id="menuTitle">疆域争锋</h2></span>
+          </div>
+          <div class="world-header-actions">
+            <button id="accountButton" class="profile-chip" type="button" aria-label="个人账号">
+              <span id="accountAvatar">游</span><b id="accountName">游客指挥官</b><i>档案</i>
+            </button>
+            <button id="settingsButton" class="world-icon-button" type="button" aria-label="游戏设置" title="设置">⚙</button>
+          </div>
+        </header>
+
+        <div class="world-layout">
+          <section class="world-map-section" aria-label="战役世界地图">
+            <div class="map-heading">
+              <span><small class="eyebrow">疆域战役</small><b>大陆行军图</b></span>
+              <span id="worldProgress">已征服 0 / 8</span>
+            </div>
+            <div class="campaign-map" id="campaignMap">
+              <div class="map-biome forest">苍翠边境</div>
+              <div class="map-biome desert">流沙荒原</div>
+              <div class="map-biome frost">北境霜原</div>
+              <div class="map-biome crown">天穹王庭</div>
+              <svg id="campaignRoutes" viewBox="0 0 1000 520" aria-hidden="true"></svg>
+              <div class="campaign-list" id="campaignList"></div>
+            </div>
+          </section>
+
+          <aside class="mission-brief" aria-label="所选关卡">
+            <span id="selectedLevelNumber" class="mission-number">01</span>
+            <small id="selectedLevelSubtitle" class="eyebrow">FOREST VERGE</small>
+            <h3 id="selectedLevelName">苍翠边境</h3>
+            <p id="selectedLevelObjective">穿过旧哨塔，攻占赤焰要塞</p>
+            <div class="mission-record">
+              <div><span>最佳评级</span><b id="selectedLevelStars">☆☆☆</b></div>
+              <div><span>最佳用时</span><b id="selectedLevelBest">--:--</b></div>
+            </div>
+
+            <div class="difficulty-row vertical">
+              <span>敌军强度</span>
+              <div class="segmented large" role="group" aria-label="敌军强度">
+                <button class="difficulty-button" type="button" data-difficulty="relaxed">新兵</button>
+                <button class="difficulty-button active" type="button" data-difficulty="normal">将领</button>
+                <button class="difficulty-button" type="button" data-difficulty="hard">统帅</button>
+              </div>
+            </div>
+
+            <button id="startButton" class="start-button" type="button">
+              <span>部署并出征</span><i aria-hidden="true">→</i>
+            </button>
+            <button id="howToButton" class="text-button" type="button">查看指挥官手册</button>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsOverlay" class="overlay sub-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="settings-panel">
+        <button class="close-button" id="settingsClose" type="button" aria-label="关闭设置">×</button>
+        <span class="eyebrow">SYSTEM</span>
+        <h2 id="settingsTitle">游戏设置</h2>
+        <div class="settings-list">
+          <div class="setting-row"><span><b>声音与提示音</b><small>行军、占领和箭塔反馈</small></span><button id="settingSound" class="toggle-button" type="button">开启</button></div>
+          <div class="setting-row"><span><b>战斗特效</b><small>粒子、光束、减速与招降效果</small></span><button id="settingEffects" class="toggle-button" type="button">完整</button></div>
+          <div class="setting-row stacked"><span><b>默认游戏速度</b><small>每个账号独立保存</small></span><div class="segmented large" id="settingSpeed"><button type="button" data-speed="1">1×</button><button type="button" data-speed="1.5">1.5×</button><button type="button" data-speed="2">2×</button></div></div>
+          <button id="buildingDataButton" class="setting-row setting-link" type="button"><span><b>建筑等级数据</b><small>查看防御、软上限、产兵、攻击与各级技能</small></span><strong>查看 →</strong></button>
+        </div>
+        <button id="resetProgressButton" class="danger-button" type="button">重置当前账号的战役进度</button>
+        <p class="local-note">设置和进度保存在当前浏览器，不会上传到网络。</p>
+      </div>
+    </div>
+
+    <div id="buildingDataOverlay" class="overlay sub-overlay" role="dialog" aria-modal="true" aria-labelledby="buildingDataTitle">
+      <div class="building-data-panel">
+        <button class="close-button" id="buildingDataClose" type="button" aria-label="关闭建筑数据">×</button>
+        <span class="eyebrow">FIELD ARCHIVE</span>
+        <h2 id="buildingDataTitle">建筑等级数据</h2>
+        <p class="building-data-intro">自产到软上限即停止；增援可以突破软上限，但超限后每个游戏秒损失 1 名驻军。</p>
+        <div id="buildingDataGrid" class="building-data-grid"></div>
+      </div>
+    </div>
+
+    <div id="accountOverlay" class="overlay sub-overlay" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+      <div class="account-panel">
+        <button class="close-button" id="accountClose" type="button" aria-label="关闭账号">×</button>
+        <span class="eyebrow">COMMANDER ARCHIVE</span>
+        <h2 id="accountTitle">指挥官档案</h2>
+        <p class="account-intro">每个本机账号拥有独立的关卡、星级、设置与战绩。</p>
+        <div class="account-layout">
+          <section>
+            <h3>选择档案</h3>
+            <div id="profileList" class="profile-list"></div>
+            <div id="loginPinArea" class="login-pin hidden">
+              <label for="loginPin">输入 4 位口令</label>
+              <div><input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"><button id="loginAccountButton" type="button">登录</button></div>
+            </div>
+          </section>
+          <form id="createAccountForm" class="create-account-form">
+            <h3>新建个人账号</h3>
+            <label for="newAccountName">指挥官名称</label>
+            <input id="newAccountName" type="text" maxlength="12" autocomplete="off" placeholder="2–12 个字符" required>
+            <label for="newAccountPin">4 位本机口令</label>
+            <input id="newAccountPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" placeholder="仅用于本机切换" required>
+            <button class="start-button compact" type="submit">创建并登录</button>
+            <small id="accountMessage" class="form-message"></small>
+          </form>
+        </div>
+        <button id="deleteAccountButton" class="danger-button hidden" type="button">删除当前个人账号</button>
+        <p class="local-note">这是本机账号系统：数据保存在此浏览器的 localStorage 中，清除浏览器数据会删除档案，不提供云同步。</p>
+      </div>
+    </div>
+
+    <div id="howToOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="howToTitle">
+      <div class="howto-panel">
+        <button class="close-button" id="howToClose" type="button" aria-label="关闭">×</button>
+        <span class="eyebrow">指挥官手册</span>
+        <h2 id="howToTitle">三步掌握战局</h2>
+        <div class="howto-grid">
+          <article><b>01</b><i>框选</i><h3>选择据点</h3><p>从空地按住并拉出选框，可一次选中区域内全部友方据点。</p></article>
+          <article><b>02</b><i>拖动</i><h3>攻占目标</h3><p>从任一所选据点拖出箭头，指向目标并松开，所选据点集体出兵。</p></article>
+          <article><b>03</b><i>经营</i><h3>升级与改建</h3><p>升级强化当前建筑；改建可自由更换类型，但会牺牲全部驻军并重置为 1 级。</p></article>
+        </div>
+        <div class="building-guide">
+          <div><span>⌂</span><b>村落</b><small>稳定产兵</small></div>
+          <div><span>♜</span><b>要塞</b><small>坚固高产</small></div>
+          <div><span>⌖</span><b>箭塔</b><small>不产兵 · 3级减速 · 4级俘虏</small></div>
+          <div><span>♞</span><b>驿站</b><small>行军更快</small></div>
+          <div><span>⚒</span><b>军械所</b><small>出征战力更强</small></div>
+        </div>
+        <button id="howToDone" class="start-button compact" type="button">明白了</button>
+      </div>
+    </div>
+
+    <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <div class="result-panel">
+        <span id="resultKicker" class="eyebrow">战役完成</span>
+        <h2 id="resultTitle">疆域已统一</h2>
+        <div id="resultStars" class="result-stars" aria-label="关卡评级">☆☆☆</div>
+        <p id="resultSummary">用时 00:00</p>
+        <div class="result-actions">
+          <button id="resultRestart" class="command-button secondary" type="button">再战一次</button>
+          <button id="resultNext" class="start-button compact" type="button">下一战役</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
