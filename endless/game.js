@@ -74,7 +74,7 @@
     elapsed: 0, score: 0, kills: 0, chain: 0, chainTimer: 0, coreHp: 100, coreMax: 100, shield: 0,
     protocol: null, cards: new Map(), tagCounts: {}, turrets: [], enemies: [], projectiles: [], particles: [], floaters: [], lightning: [], shockwaves: [],
     focus: null, focusCooldown: 0, overdrive: 0, overdriveTime: 0, staticTimer: 0, arcCount: 0, phoenixKills: 0,
-    nextEnemyId: 1, nextProjectileId: 1, lastTime: 0, speed: 1, sound: true, currentOffers: [], rerolled: false,
+    nextEnemyId: 1, nextProjectileId: 1, lastTime: 0, speed: 1, music: true, sound: true, currentOffers: [], rerolled: false,
     bannerTimer: 0, shake: 0, flash: 0, best: { wave: 0, score: 0 },
     accountStore: loadAccountStore(), authenticated: false, pendingAccountId: null, accountWasPaused: false, saveAccumulator: 0
   };
@@ -661,62 +661,20 @@
   function showToast(text){const toast=$("#toast");toast.textContent=text;toast.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove("show"),2100);}
   function formatTime(seconds){const m=Math.floor(seconds/60),s=Math.floor(seconds%60);return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;}
   function togglePause(){if(!state.started||state.gameOver||state.drafting)return;state.paused=!state.paused;syncPauseUI();showToast(state.paused?"推演已暂停":"星潮继续推进");}
-  function syncPauseUI(){$("#pauseIcon").textContent=state.paused?"▶":"Ⅱ";$("#pauseButton").classList.toggle("active",state.paused);$("#pauseVeil").classList.toggle("hidden",!state.paused||state.drafting||!state.started);}
+  function syncPauseUI(){$("#pauseIcon").textContent=state.paused?"▶":"Ⅱ";$("#pauseButton").classList.toggle("active",state.paused);$("#pauseVeil").classList.toggle("hidden",!state.paused||state.drafting||!state.started);syncBackgroundVolume();}
   function endGame(){if(state.gameOver)return;state.gameOver=true;state.paused=true;saveBest();const account=activeAccount();if(account){account.run=null;account.lastPlayedAt=Date.now();persistAccountStore();}updateAccountUI();$("#resultWave").textContent=state.wave;$("#resultKills").textContent=state.kills.toLocaleString();$("#resultScore").textContent=state.score.toLocaleString();const combos=COMBOS.filter((combo)=>hasCard(combo.id));$("#resultCombos").textContent=combos.length;$("#resultSummary").textContent=combos.length>=3?"这套构筑已经形成完整循环；下一次可以尝试更少见的跨系组合。":state.wave<6?"先让一种元素成型，再寻找第二种元素完成跨系组合。":"已经找到节奏；进一步集中牌池，会比平均升级走得更远。";$("#resultBuild").innerHTML=Object.entries(state.tagCounts).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>`<span class="build-tag" data-tag="${tag}">${tag}<b>×${count}</b></span>`).join("");setTimeout(()=>$("#resultOverlay").classList.add("show"),650);playSound("end");syncPauseUI();}
 
   let audioContext=null;
-  const music={started:false,timer:null,nextTime:0,step:0,master:null,filter:null};
-  const MUSIC_TEMPO=84;
-  const MUSIC_BARS=[
-    {bass:[73.42,55,73.42,82.41],chord:[146.83,174.61,220]},
-    {bass:[58.27,87.31,58.27,65.41],chord:[116.54,146.83,174.61]},
-    {bass:[65.41,98,65.41,73.42],chord:[130.81,164.81,196]},
-    {bass:[55,82.41,55,65.41],chord:[110,130.81,164.81]}
-  ];
-  function ensureAudio(){
-    audioContext||=new(window.AudioContext||window.webkitAudioContext)();
-    if(!music.master){
-      music.master=audioContext.createGain();music.filter=audioContext.createBiquadFilter();music.filter.type="lowpass";music.filter.frequency.value=1180;music.filter.Q.value=.55;music.master.gain.value=.0001;music.master.connect(music.filter);music.filter.connect(audioContext.destination);
-    }
-    if(audioContext.state==="suspended")audioContext.resume();
-  }
-  function syncMusicGain(immediate=false){
-    if(!music.master||!audioContext)return;const now=audioContext.currentTime,target=state.sound?.13:.0001;music.master.gain.cancelScheduledValues(now);music.master.gain.setValueAtTime(Math.max(.0001,music.master.gain.value),now);music.master.gain.exponentialRampToValueAtTime(target,now+(immediate?.01:.35));
-  }
-  function musicTone(frequency,time,duration,level,type="sine",attack=.025){
-    const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type=type;osc.frequency.setValueAtTime(frequency,time);gain.gain.setValueAtTime(.0001,time);gain.gain.linearRampToValueAtTime(level,time+attack);gain.gain.exponentialRampToValueAtTime(.0001,time+duration);osc.connect(gain);gain.connect(music.master);osc.start(time);osc.stop(time+duration+.04);
-  }
-  function musicKick(time,level){
-    const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type="sine";osc.frequency.setValueAtTime(82,time);osc.frequency.exponentialRampToValueAtTime(38,time+.13);gain.gain.setValueAtTime(level,time);gain.gain.exponentialRampToValueAtTime(.0001,time+.14);osc.connect(gain);gain.connect(music.master);osc.start(time);osc.stop(time+.16);
-  }
-  function scheduleMusicStep(step,time){
-    const active=state.started&&!state.paused&&!state.drafting&&!state.gameOver;
-    const intensity=active?Math.min(1,.34+state.wave*.025+(state.overdriveTime>0?.42:0)):.14;
-    const bar=MUSIC_BARS[Math.floor(step/16)%MUSIC_BARS.length],within=step%16;
-    music.filter.frequency.setTargetAtTime(940+intensity*720,time,.12);
-    if(within===0){bar.chord.forEach((note,index)=>musicTone(note,time,2.55,.018-index*.002,"sine",.32));musicKick(time,.055+intensity*.018);}
-    if(within%4===0)musicTone(bar.bass[within/4],time,.48,.072+intensity*.018,"triangle",.018);
-    if(within===8)musicKick(time,.038+intensity*.014);
-    if(within===2||within===10){const pulse=bar.chord[step%32<16?0:2]*2;musicTone(pulse,time,.19,.024+intensity*.012,"sine",.012);}
-    if(active&&intensity>.48&&(within===6||within===14))musicTone(bar.chord[1]*2,time,.11,.015+intensity*.012,"triangle",.008);
-    if(state.overdriveTime>0&&within%4===2)musicTone(bar.chord[2]*2,time,.1,.025,"square",.006);
-  }
-  function scheduleMusic(){
-    if(!audioContext||!music.started)return;
-    if(!state.sound){music.nextTime=audioContext.currentTime+.08;return;}
-    if(music.nextTime<audioContext.currentTime-.3)music.nextTime=audioContext.currentTime+.05;
-    const stepLength=60/MUSIC_TEMPO/4;
-    while(music.nextTime<audioContext.currentTime+.2){scheduleMusicStep(music.step,music.nextTime);music.nextTime+=stepLength;music.step=(music.step+1)%64;}
-  }
-  function startMusic(){
-    try{ensureAudio();if(!music.started){music.started=true;music.nextTime=audioContext.currentTime+.05;music.timer=setInterval(scheduleMusic,80);}syncMusicGain();}catch{/* music is optional */}
-  }
-  function playSound(kind){if(!state.sound)return;try{ensureAudio();startMusic();const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.connect(gain);gain.connect(audioContext.destination);const c={shot:[520,.025,"square"],focus:[280,.17,"sine"],card:[620,.22,"triangle"],combo:[330,.45,"sine"],wave:[440,.3,"triangle"],start:[220,.45,"sine"],boss:[95,.4,"sawtooth"],damage:[120,.18,"sawtooth"],end:[110,.65,"triangle"]}[kind]||[380,.08,"sine"];osc.type=c[2];osc.frequency.setValueAtTime(c[0],now);osc.frequency.exponentialRampToValueAtTime(kind==="combo"?880:Math.max(60,c[0]*(kind==="end"?.55:1.35)),now+c[1]);gain.gain.setValueAtTime(.04,now);gain.gain.exponentialRampToValueAtTime(.0001,now+c[1]);osc.start(now);osc.stop(now+c[1]);}catch{/* optional */}}
+  const backgroundMusic=$("#backgroundMusic");
+  function syncBackgroundVolume(){backgroundMusic.volume=state.music?(state.paused||state.drafting||!state.started?.2:.34):0;}
+  function startBackgroundMusic(){if(!state.music)return;syncBackgroundVolume();const promise=backgroundMusic.play();if(promise?.catch)promise.catch(()=>{/* waits for the next user gesture */});}
+  function stopBackgroundMusic(){backgroundMusic.pause();}
+  function playSound(kind){if(!state.sound)return;try{audioContext||=new(window.AudioContext||window.webkitAudioContext)();if(audioContext.state==="suspended")audioContext.resume();const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.connect(gain);gain.connect(audioContext.destination);const c={shot:[520,.025,"square"],focus:[280,.17,"sine"],card:[620,.22,"triangle"],combo:[330,.45,"sine"],wave:[440,.3,"triangle"],start:[220,.45,"sine"],boss:[95,.4,"sawtooth"],damage:[120,.18,"sawtooth"],end:[110,.65,"triangle"]}[kind]||[380,.08,"sine"];osc.type=c[2];osc.frequency.setValueAtTime(c[0],now);osc.frequency.exponentialRampToValueAtTime(kind==="combo"?880:Math.max(60,c[0]*(kind==="end"?.55:1.35)),now+c[1]);gain.gain.setValueAtTime(.04,now);gain.gain.exponentialRampToValueAtTime(.0001,now+c[1]);osc.start(now);osc.stop(now+c[1]);}catch{/* optional */}}
   function canvasPoint(event){const r=canvas.getBoundingClientRect();return{x:(event.clientX-r.left)*W/r.width,y:(event.clientY-r.top)*H/r.height};}
   function showStart(){if(state.started&&!state.gameOver)saveRun(false);saveBest();showStartScreen();}
   function bindEvents(){
-    $$(".protocol-card").forEach((b)=>b.addEventListener("click",()=>resetGame(b.dataset.protocol)));$("#pauseButton").addEventListener("click",togglePause);$("#speedButton").addEventListener("click",()=>{state.speed=state.speed===1?1.5:state.speed===1.5?2:1;$("#speedText").textContent=`${state.speed}×`;showToast(`推演速度 ${state.speed}×`);});$("#soundButton").addEventListener("click",()=>{state.sound=!state.sound;$("#soundIcon").textContent=state.sound?"♪":"×";$("#soundButton").classList.toggle("muted",!state.sound);if(state.sound){startMusic();playSound("card");}else syncMusicGain();});
-    $("#saveButton").addEventListener("click",()=>saveRun(true));$("#accountButton").addEventListener("click",()=>openAccountPanel(false));$("#startAccountButton").addEventListener("click",()=>openAccountPanel(false));$("#accountClose").addEventListener("click",closeAccountPanel);$("#loginAccountButton").addEventListener("click",loginSelectedAccount);$("#loginPin").addEventListener("keydown",(event)=>{if(event.key==="Enter")loginSelectedAccount();});$("#createAccountForm").addEventListener("submit",createAccount);$("#logoutButton").addEventListener("click",logoutAccount);$("#continueRunButton").addEventListener("click",loadRun);$("#discardRunButton").addEventListener("click",discardRun);
+    $$(".protocol-card").forEach((b)=>b.addEventListener("click",()=>{startBackgroundMusic();resetGame(b.dataset.protocol);}));$("#pauseButton").addEventListener("click",togglePause);$("#speedButton").addEventListener("click",()=>{state.speed=state.speed===1?1.5:state.speed===1.5?2:1;$("#speedText").textContent=`${state.speed}×`;showToast(`推演速度 ${state.speed}×`);});$("#musicButton").addEventListener("click",()=>{state.music=!state.music;$("#musicIcon").textContent=state.music?"♫":"×";$("#musicButton").classList.toggle("muted",!state.music);if(state.music){startBackgroundMusic();showToast("背景音乐 · 终线脉冲");}else{stopBackgroundMusic();showToast("背景音乐已关闭");}});$("#soundButton").addEventListener("click",()=>{state.sound=!state.sound;$("#soundIcon").textContent=state.sound?"✦":"×";$("#soundButton").classList.toggle("muted",!state.sound);if(state.sound)playSound("card");showToast(state.sound?"战斗音效已开启":"战斗音效已关闭");});
+    $("#saveButton").addEventListener("click",()=>saveRun(true));$("#accountButton").addEventListener("click",()=>openAccountPanel(false));$("#startAccountButton").addEventListener("click",()=>openAccountPanel(false));$("#accountClose").addEventListener("click",closeAccountPanel);$("#loginAccountButton").addEventListener("click",()=>{startBackgroundMusic();loginSelectedAccount();});$("#loginPin").addEventListener("keydown",(event)=>{if(event.key==="Enter"){startBackgroundMusic();loginSelectedAccount();}});$("#createAccountForm").addEventListener("submit",(event)=>{startBackgroundMusic();createAccount(event);});$("#logoutButton").addEventListener("click",logoutAccount);$("#continueRunButton").addEventListener("click",()=>{startBackgroundMusic();loadRun();});$("#discardRunButton").addEventListener("click",discardRun);
     $("#helpButton").addEventListener("click",()=>{if(state.started&&!state.gameOver)state.paused=true;$("#helpOverlay").classList.add("show");syncPauseUI();});const closeHelp=()=>{$("#helpOverlay").classList.remove("show");if(state.started&&!state.gameOver&&!state.drafting)state.paused=false;syncPauseUI();};$("#helpClose").addEventListener("click",closeHelp);$("#helpDone").addEventListener("click",closeHelp);
     $("#restartButton").addEventListener("click",showStart);$("#resultRestart").addEventListener("click",showStart);$("#overdriveButton").addEventListener("click",activateOverdrive);$("#rerollButton").addEventListener("click",()=>{if(state.rerolled)return;state.rerolled=true;$("#rerollButton").disabled=true;generateOffers();playSound("card");});
     canvas.addEventListener("pointerdown",(event)=>{const p=canvasPoint(event);activateFocus(p.x,p.y);});canvas.addEventListener("contextmenu",(e)=>e.preventDefault());window.addEventListener("keydown",(event)=>{if(event.code==="Space"){event.preventDefault();togglePause();}if(event.key.toLowerCase()==="r")showStart();});document.addEventListener("visibilitychange",()=>{if(document.hidden&&state.started&&!state.gameOver){saveRun(false);state.paused=true;syncPauseUI();}});window.addEventListener("beforeunload",()=>saveRun(false));window.addEventListener("resize",resizeCanvas);
