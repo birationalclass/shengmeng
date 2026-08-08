@@ -6,11 +6,12 @@
 - 已在主页 AI4Games 区增加《无尽》项目卡片，并把首页试玩按钮指向 `/endless/`；
 - 已保留旧 `/game/` 项目；
 - 已创建本地提交 `3c1e92e Add Endless card-combo defense game`；
-- 本机分支当前比 `origin/main` 超前 1 个提交；
-- 账号与可恢复存档功能已完成浏览器验收，并已同步到 `sheng-meng-homepage/endless/`；
-- GitHub 网页端已经登录，命令行推送凭据仍需完成连接。
+- 已创建账号/存档提交 `e9bbde7 Add local accounts and resumable saves`；
+- 两个提交均已推送到远端 `main`；
+- GitHub Actions 的 Pages 工作流 #4 已成功完成；
+- 线上 `/endless/` 已在真实浏览器验证，账号创建界面可正常加载。
 
-登录 GitHub 后只需在 `sheng-meng-homepage` 目录运行 `git push origin main`，随后现有 GitHub Actions 会自动部署。
+本次发布已完成。以后在 `sheng-meng-homepage` 目录推送 `main`，现有 GitHub Actions 会继续自动部署。
 
 现有个人主页仓库：
 
