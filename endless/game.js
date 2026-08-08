@@ -66,6 +66,7 @@
     { id: "absolute", name: "绝对零度", glyph: "✳", text: "霜 + 暴击 · 冻结碎裂" },
     { id: "phoenix", name: "余烬重生", glyph: "♨", text: "火 + 生存 · 击杀修复" }
   ];
+  const ACCOUNT_KEY = "endless-defense-accounts-v1";
 
   const state = {
     started: false, paused: false, drafting: false, gameOver: false,
@@ -74,26 +75,245 @@
     protocol: null, cards: new Map(), tagCounts: {}, turrets: [], enemies: [], projectiles: [], particles: [], floaters: [], lightning: [], shockwaves: [],
     focus: null, focusCooldown: 0, overdrive: 0, overdriveTime: 0, staticTimer: 0, arcCount: 0, phoenixKills: 0,
     nextEnemyId: 1, nextProjectileId: 1, lastTime: 0, speed: 1, sound: true, currentOffers: [], rerolled: false,
-    bannerTimer: 0, shake: 0, flash: 0, best: loadBest()
+    bannerTimer: 0, shake: 0, flash: 0, best: { wave: 0, score: 0 },
+    accountStore: loadAccountStore(), authenticated: false, pendingAccountId: null, accountWasPaused: false, saveAccumulator: 0
   };
 
-  function loadBest() { try { return JSON.parse(localStorage.getItem("endless-defense-best-v1")) || { wave: 0, score: 0 }; } catch { return { wave: 0, score: 0 }; } }
+  function loadAccountStore() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(ACCOUNT_KEY));
+      if (saved && Array.isArray(saved.accounts)) return { currentId: saved.currentId || null, accounts: saved.accounts };
+    } catch { /* start with a clean local archive */ }
+    return { currentId: null, accounts: [] };
+  }
+  function persistAccountStore() {
+    try { localStorage.setItem(ACCOUNT_KEY, JSON.stringify(state.accountStore)); } catch { showToast("本机存储空间不足，记录未能保存"); }
+  }
+  function activeAccount() {
+    if (!state.authenticated) return null;
+    return state.accountStore.accounts.find((account) => account.id === state.accountStore.currentId) || null;
+  }
+  function escapeHtml(text) { return String(text).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]); }
+  async function hashPin(pin, salt) {
+    try {
+      const bytes = new TextEncoder().encode(`${salt}:${pin}:endless-local`);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+    } catch {
+      let hash = 2166136261;
+      for (const char of `${salt}:${pin}:endless-local`) { hash ^= char.charCodeAt(0); hash = Math.imul(hash, 16777619); }
+      return `fallback-${(hash >>> 0).toString(16)}`;
+    }
+  }
   function saveBest() {
     if (state.wave > state.best.wave || state.score > state.best.score) {
       state.best = { wave: Math.max(state.best.wave, state.wave), score: Math.max(state.best.score, state.score) };
-      try { localStorage.setItem("endless-defense-best-v1", JSON.stringify(state.best)); } catch { /* optional */ }
+      const account = activeAccount();
+      if (account) { account.best = { ...state.best }; account.lastPlayedAt = Date.now(); persistAccountStore(); }
     }
     $("#bestRecord").textContent = `第 ${state.best.wave} 波 · ${state.best.score.toLocaleString()} 分`;
   }
   function cardRank(id) { return state.cards.get(id) || 0; }
   function hasCard(id) { return cardRank(id) > 0; }
 
+  function renderProfiles() {
+    const accounts = state.accountStore.accounts;
+    $("#profileList").innerHTML = accounts.length ? accounts.map((account) => {
+      const selected = account.id === state.pendingAccountId;
+      const isLast = account.id === state.accountStore.currentId;
+      const runText = account.run ? `存档：第 ${account.run.wave || 1} 波 · ${formatTime(account.run.elapsed || 0)}` : "暂无进行中的存档";
+      return `<button class="profile-option ${selected ? "active" : ""}" type="button" data-account="${account.id}"><i>${escapeHtml(account.name.slice(0, 1).toUpperCase())}</i><span><b>${escapeHtml(account.name)}</b><small>${runText}</small></span><em>${isLast ? "上次登录" : "选择"}</em></button>`;
+    }).join("") : '<div class="profile-empty">这台设备还没有账号，请在右侧创建。</div>';
+    $$(".profile-option").forEach((button) => button.addEventListener("click", () => selectAccount(button.dataset.account)));
+    $("#loginArea").classList.toggle("hidden", !state.pendingAccountId);
+  }
+
+  function selectAccount(id) {
+    const account = state.accountStore.accounts.find((item) => item.id === id);
+    if (!account) return;
+    state.pendingAccountId = id;
+    $("#loginPin").value = "";
+    $("#loginMessage").textContent = "";
+    renderProfiles();
+    setTimeout(() => $("#loginPin").focus(), 0);
+  }
+
+  function updateAccountUI() {
+    const account = activeAccount();
+    $("#accountName").textContent = account?.name || "未登录";
+    $("#accountAvatar").textContent = account ? account.name.slice(0, 1).toUpperCase() : "?";
+    $("#startAccountName").textContent = account?.name || "未登录";
+    $("#startAccountAvatar").textContent = account ? account.name.slice(0, 1).toUpperCase() : "?";
+    $("#accountClose").classList.toggle("hidden", !account);
+    $("#logoutButton").classList.toggle("hidden", !account);
+    $("#saveButton").disabled = !account || !state.started || state.gameOver;
+  }
+
+  function openAccountPanel(requireLogin = false) {
+    if (state.started && !state.gameOver) {
+      saveRun(false);
+      state.accountWasPaused = state.paused;
+      state.paused = true;
+      syncPauseUI();
+    }
+    const remembered = state.accountStore.currentId;
+    state.pendingAccountId = state.accountStore.accounts.some((account) => account.id === remembered) ? remembered : state.accountStore.accounts[0]?.id || null;
+    renderProfiles(); updateAccountUI();
+    $("#loginPin").value = ""; $("#loginMessage").textContent = ""; $("#createAccountMessage").textContent = "";
+    $("#accountClose").classList.toggle("hidden", requireLogin || !state.authenticated);
+    $("#accountOverlay").classList.add("show");
+  }
+
+  function closeAccountPanel() {
+    if (!state.authenticated) return;
+    $("#accountOverlay").classList.remove("show");
+    if (state.started && !state.gameOver && !state.drafting) state.paused = state.accountWasPaused;
+    syncPauseUI();
+  }
+
+  async function loginSelectedAccount() {
+    const account = state.accountStore.accounts.find((item) => item.id === state.pendingAccountId);
+    const pin = $("#loginPin").value.trim();
+    if (!account || !/^\d{4}$/.test(pin)) { $("#loginMessage").textContent = "请输入 4 位数字口令。"; return; }
+    const digest = await hashPin(pin, account.id);
+    if (digest !== account.pinHash) { $("#loginMessage").textContent = "口令不正确，请重试。"; playSound("damage"); return; }
+    state.authenticated = true;
+    state.accountStore.currentId = account.id;
+    account.lastLoginAt = Date.now();
+    account.best ||= { wave: 0, score: 0 };
+    state.best = { ...account.best };
+    persistAccountStore();
+    $("#accountOverlay").classList.remove("show");
+    updateAccountUI(); saveBest(); showStartScreen(); playSound("card");
+  }
+
+  async function createAccount(event) {
+    event.preventDefault();
+    const name = $("#newAccountName").value.trim();
+    const pin = $("#newAccountPin").value.trim();
+    if (name.length < 2 || name.length > 12) { $("#createAccountMessage").textContent = "名称需要 2–12 个字符。"; return; }
+    if (!/^\d{4}$/.test(pin)) { $("#createAccountMessage").textContent = "口令必须是 4 位数字。"; return; }
+    if (state.accountStore.accounts.some((account) => account.name.toLowerCase() === name.toLowerCase())) { $("#createAccountMessage").textContent = "这个名称已存在。"; return; }
+    const id = `acct-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const account = { id, name, pinHash: await hashPin(pin, id), createdAt: Date.now(), lastLoginAt: Date.now(), lastPlayedAt: null, best: { wave: 0, score: 0 }, run: null };
+    state.accountStore.accounts.push(account);
+    state.accountStore.currentId = id;
+    state.pendingAccountId = id;
+    state.authenticated = true;
+    state.best = { wave: 0, score: 0 };
+    persistAccountStore();
+    $("#createAccountForm").reset();
+    $("#accountOverlay").classList.remove("show");
+    updateAccountUI(); saveBest(); showStartScreen(); playSound("start");
+  }
+
+  function logoutAccount() {
+    if (state.started && !state.gameOver) saveRun(false);
+    state.authenticated = false;
+    state.started = false;
+    state.paused = true;
+    state.drafting = false;
+    $("#startOverlay").classList.remove("show");
+    $("#cardOverlay").classList.remove("show");
+    $("#resultOverlay").classList.remove("show");
+    updateAccountUI(); syncPauseUI(); openAccountPanel(true);
+  }
+
+  function serializeEnemy(enemy) {
+    const { type, dead, hitFlash, ...saved } = enemy;
+    return saved;
+  }
+
+  function serializeRun() {
+    return {
+      version: 1, savedAt: Date.now(), wave: state.wave, waveTarget: state.waveTarget, waveSpawned: state.waveSpawned, waveResolved: state.waveResolved,
+      spawnTimer: state.spawnTimer, waveEnding: state.waveEnding, waveEndTimer: state.waveEndTimer, startDelay: state.startDelay,
+      drafting: state.drafting, elapsed: state.elapsed, score: state.score, kills: state.kills, chain: state.chain, chainTimer: state.chainTimer,
+      coreHp: state.coreHp, shield: state.shield, protocol: state.protocol, cards: [...state.cards.entries()],
+      enemies: state.enemies.filter((enemy) => !enemy.dead).map(serializeEnemy),
+      turrets: state.turrets.map(({ id, cooldown, shotCount, recoil, pulse }) => ({ id, cooldown, shotCount, recoil, pulse })),
+      focus: state.focus ? { ...state.focus } : null, focusCooldown: state.focusCooldown, overdrive: state.overdrive, overdriveTime: state.overdriveTime,
+      staticTimer: state.staticTimer, arcCount: state.arcCount, phoenixKills: state.phoenixKills, nextEnemyId: state.nextEnemyId, nextProjectileId: state.nextProjectileId
+    };
+  }
+
+  function saveRun(manual = false) {
+    const account = activeAccount();
+    if (!account || !state.started || state.gameOver) return false;
+    account.run = serializeRun();
+    account.lastPlayedAt = Date.now();
+    if (state.wave > (account.best?.wave || 0) || state.score > (account.best?.score || 0)) account.best = { wave: Math.max(account.best?.wave || 0, state.wave), score: Math.max(account.best?.score || 0, state.score) };
+    persistAccountStore();
+    if (manual) { showToast(`已保存 · 第 ${state.wave} 波 · ${formatTime(state.elapsed)}`); playSound("card"); }
+    renderResumePanel(); updateAccountUI();
+    return true;
+  }
+
+  function loadRun() {
+    const account = activeAccount(), run = account?.run;
+    if (!run || run.version !== 1 || !CARD_MAP[run.protocol]) { showToast("没有可加载的有效存档"); return; }
+    Object.assign(state, {
+      started: true, paused: false, drafting: false, gameOver: false, wave: run.wave, waveTarget: run.waveTarget, waveSpawned: run.waveSpawned, waveResolved: run.waveResolved,
+      spawnTimer: run.spawnTimer, waveEnding: !!run.waveEnding, waveEndTimer: run.waveEndTimer || 0, startDelay: run.startDelay || 0,
+      elapsed: run.elapsed || 0, score: run.score || 0, kills: run.kills || 0, chain: run.chain || 0, chainTimer: run.chainTimer || 0,
+      coreHp: run.coreHp ?? 100, shield: run.shield || 0, protocol: run.protocol, cards: new Map(run.cards || []),
+      enemies: (run.enemies || []).map((enemy) => ({ ...enemy, type: ENEMY_TYPES[enemy.typeId], dead: false, hitFlash: 0 })),
+      projectiles: [], particles: [], floaters: [], lightning: [], shockwaves: [], focus: run.focus ? { ...run.focus } : null,
+      focusCooldown: run.focusCooldown || 0, overdrive: run.overdrive || 0, overdriveTime: run.overdriveTime || 0, staticTimer: run.staticTimer || 0,
+      arcCount: run.arcCount || 0, phoenixKills: run.phoenixKills || 0, nextEnemyId: run.nextEnemyId || 1, nextProjectileId: run.nextProjectileId || 1,
+      saveAccumulator: 0, shake: 0, flash: 0
+    });
+    state.turrets = TURRET_DATA.map((turret, index) => ({ ...turret, id: index, cooldown: run.turrets?.[index]?.cooldown ?? .1 + index * .09, shotCount: run.turrets?.[index]?.shotCount || 0, recoil: 0, pulse: run.turrets?.[index]?.pulse || Math.random() * TAU }));
+    rebuildTags();
+    $("#startOverlay").classList.remove("show"); $("#resultOverlay").classList.remove("show"); $("#cardOverlay").classList.remove("show");
+    updateBuildUI(); updateUI(true); updateAccountUI(); syncPauseUI();
+    if (run.drafting) showDraft();
+    else { $("#phaseText").textContent = state.waveEnding ? "本波已肃清" : "存档已恢复"; $("#phaseDetail").textContent = `第 ${state.wave} 波 · 继续上次记录`; showToast(`已加载第 ${state.wave} 波存档`); }
+    playSound("start");
+  }
+
+  function discardRun() {
+    const account = activeAccount();
+    if (account) { account.run = null; persistAccountStore(); }
+    renderStartChoice(); showToast("上次记录已放弃，可以选择新武装");
+  }
+
+  function renderResumePanel() {
+    const account = activeAccount(), run = account?.run;
+    if (!account || !run) return;
+    $("#resumeAccountName").textContent = account.name;
+    $("#resumeWave").textContent = String(run.wave || 1).padStart(2, "0");
+    $("#resumeTime").textContent = formatTime(run.elapsed || 0);
+    $("#resumeScore").textContent = (run.score || 0).toLocaleString();
+    $("#resumeCards").textContent = (run.cards || []).reduce((sum, card) => sum + Number(card[1] || 0), 0);
+    const counts = {};
+    (run.cards || []).forEach(([id, rank]) => CARD_MAP[id]?.tags.forEach((tag) => { counts[tag] = (counts[tag] || 0) + rank; }));
+    $("#resumeBuild").innerHTML = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([tag, count]) => `<span class="build-tag" data-tag="${tag}">${tag}<b>×${count}</b></span>`).join("");
+    $("#resumeSavedAt").textContent = `最后保存：${new Date(run.savedAt).toLocaleString("zh-CN", { hour12: false })}`;
+  }
+
+  function renderStartChoice() {
+    const hasRun = !!activeAccount()?.run;
+    $("#resumePanel").classList.toggle("hidden", !hasRun);
+    $("#protocolSelect").classList.toggle("hidden", hasRun);
+    if (hasRun) renderResumePanel();
+  }
+
+  function showStartScreen() {
+    if (!state.authenticated) { openAccountPanel(true); return; }
+    state.started = false; state.paused = true; state.drafting = false;
+    $("#cardOverlay").classList.remove("show"); $("#resultOverlay").classList.remove("show");
+    renderStartChoice(); $("#startOverlay").classList.add("show"); updateAccountUI(); syncPauseUI();
+  }
+
   function resetGame(protocol) {
+    if (!state.authenticated) { openAccountPanel(true); return; }
+    const account = activeAccount(); if (account) account.run = null;
     Object.assign(state, { started: true, paused: false, drafting: false, gameOver: false, wave: 0, waveTarget: 0, waveSpawned: 0, waveResolved: 0, waveEnding: false, elapsed: 0, score: 0, kills: 0, chain: 0, chainTimer: 0, coreHp: 100, shield: 0, protocol, cards: new Map(), tagCounts: {}, enemies: [], projectiles: [], particles: [], floaters: [], lightning: [], shockwaves: [], focus: null, focusCooldown: 0, overdrive: 0, overdriveTime: 0, staticTimer: 0, arcCount: 0, phoenixKills: 0, nextEnemyId: 1, nextProjectileId: 1, rerolled: false, shake: 0, flash: 0 });
     state.turrets = TURRET_DATA.map((turret, index) => ({ ...turret, id: index, cooldown: .1 + index * .09, shotCount: 0, recoil: 0, pulse: Math.random() * TAU }));
     addCard(protocol, true);
     $("#startOverlay").classList.remove("show"); $("#resultOverlay").classList.remove("show");
-    startNextWave(); updateBuildUI(); updateUI(true); syncPauseUI(); playSound("start");
+    startNextWave(); updateBuildUI(); updateUI(true); updateAccountUI(); syncPauseUI(); saveRun(false); playSound("start");
   }
 
   function addCard(id, silent = false) {
@@ -154,7 +374,7 @@
     $("#clearedWave").textContent = state.wave;
     const tags = Object.entries(state.tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([tag]) => tag);
     $("#draftReason").textContent = tags.length ? `牌池正在追踪：${tags.join(" × ")} · 相关组件已提高权重` : "牌池已根据初始武装完成校准";
-    $("#rerollButton").disabled = false; generateOffers(); $("#cardOverlay").classList.add("show"); syncPauseUI(); playSound("wave");
+    $("#rerollButton").disabled = false; generateOffers(); $("#cardOverlay").classList.add("show"); syncPauseUI(); saveRun(false); playSound("wave");
   }
 
   function startNextWave() {
@@ -163,7 +383,7 @@
     if (state.wave % 10 === 0) state.waveTarget += 1; else if (state.wave % 5 === 0) state.waveTarget += 2;
     Object.assign(state, { waveSpawned: 0, waveResolved: 0, spawnTimer: .45, startDelay: 1.1, waveEnding: false, waveEndTimer: 0 });
     $("#phaseText").textContent = state.wave % 10 === 0 ? "首领信号锁定" : state.wave % 5 === 0 ? "精英星潮逼近" : "星潮正在聚集";
-    $("#phaseDetail").textContent = `第 ${state.wave} 波 · 防线全炮位就绪`; updateUI(true);
+    $("#phaseDetail").textContent = `第 ${state.wave} 波 · 防线全炮位就绪`; updateUI(true); saveRun(false);
   }
   function waveBaseHp() { return 43 * Math.pow(1.145, state.wave - 1) * (1 + Math.max(0, state.wave - 18) * .018); }
   function pickEnemyType(index) {
@@ -196,6 +416,8 @@
   function update(dt) {
     if (!state.started || state.paused || state.gameOver) return;
     const scaled = Math.min(dt, .05) * state.speed; state.elapsed += scaled;
+    state.saveAccumulator += scaled;
+    if (state.saveAccumulator >= 8) { state.saveAccumulator = 0; saveRun(false); }
     state.chainTimer = Math.max(0, state.chainTimer - scaled); if (!state.chainTimer) state.chain = 0;
     state.focusCooldown = Math.max(0, state.focusCooldown - scaled); state.overdriveTime = Math.max(0, state.overdriveTime - scaled);
     state.shake = Math.max(0, state.shake - scaled * 16); state.flash = Math.max(0, state.flash - scaled * 3); state.bannerTimer = Math.max(0, state.bannerTimer - scaled);
@@ -428,7 +650,7 @@
     const chain=$("#killChain");chain.classList.toggle("active",state.chain>=5);chain.querySelector("b").textContent=`×${state.chain}`;
     const focusReady=state.focusCooldown<=0;$("#focusRing").classList.toggle("cooldown",!focusReady);$("#focusText").textContent=focusReady?"标记就绪":`恢复中 ${state.focusCooldown.toFixed(1)}s`;
     const od=$("#overdriveButton"), odPct=state.overdriveTime>0?100:state.overdrive;$("#overdriveFill").style.width=`${odPct}%`;$("#overdriveText").textContent=state.overdriveTime>0?`极限火力 ${state.overdriveTime.toFixed(1)}s`:`极限火力 ${Math.floor(state.overdrive)}%`;od.disabled=state.overdrive<100||state.overdriveTime>0;od.classList.toggle("ready",state.overdrive>=100&&state.overdriveTime<=0);od.classList.toggle("active",state.overdriveTime>0);
-    const stats=getStats();$("#weaponDamage").textContent=`${Math.round(stats.damage)} 基础伤害`;$("#weaponRate").textContent=`${stats.rate.toFixed(1)} / 秒`;
+    const stats=getStats();$("#weaponDamage").textContent=`${Math.round(stats.damage)} 基础伤害`;$("#weaponRate").textContent=`${stats.rate.toFixed(1)} / 秒`;$("#saveButton").disabled=!state.authenticated||!state.started||state.gameOver;
     if(force){const chips=$$("#enemyPreview .enemy-chip");chips[0]?.classList.add("active");chips[1]?.classList.toggle("active",state.wave>=2);chips[2]?.classList.toggle("active",state.wave>=4);}
   }
   function updateBuildUI() {
@@ -440,21 +662,22 @@
   function formatTime(seconds){const m=Math.floor(seconds/60),s=Math.floor(seconds%60);return `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;}
   function togglePause(){if(!state.started||state.gameOver||state.drafting)return;state.paused=!state.paused;syncPauseUI();showToast(state.paused?"推演已暂停":"星潮继续推进");}
   function syncPauseUI(){$("#pauseIcon").textContent=state.paused?"▶":"Ⅱ";$("#pauseButton").classList.toggle("active",state.paused);$("#pauseVeil").classList.toggle("hidden",!state.paused||state.drafting||!state.started);}
-  function endGame(){if(state.gameOver)return;state.gameOver=true;state.paused=true;saveBest();$("#resultWave").textContent=state.wave;$("#resultKills").textContent=state.kills.toLocaleString();$("#resultScore").textContent=state.score.toLocaleString();const combos=COMBOS.filter((combo)=>hasCard(combo.id));$("#resultCombos").textContent=combos.length;$("#resultSummary").textContent=combos.length>=3?"这套构筑已经形成完整循环；下一次可以尝试更少见的跨系组合。":state.wave<6?"先让一种元素成型，再寻找第二种元素完成跨系组合。":"已经找到节奏；进一步集中牌池，会比平均升级走得更远。";$("#resultBuild").innerHTML=Object.entries(state.tagCounts).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>`<span class="build-tag" data-tag="${tag}">${tag}<b>×${count}</b></span>`).join("");setTimeout(()=>$("#resultOverlay").classList.add("show"),650);playSound("end");syncPauseUI();}
+  function endGame(){if(state.gameOver)return;state.gameOver=true;state.paused=true;saveBest();const account=activeAccount();if(account){account.run=null;account.lastPlayedAt=Date.now();persistAccountStore();}updateAccountUI();$("#resultWave").textContent=state.wave;$("#resultKills").textContent=state.kills.toLocaleString();$("#resultScore").textContent=state.score.toLocaleString();const combos=COMBOS.filter((combo)=>hasCard(combo.id));$("#resultCombos").textContent=combos.length;$("#resultSummary").textContent=combos.length>=3?"这套构筑已经形成完整循环；下一次可以尝试更少见的跨系组合。":state.wave<6?"先让一种元素成型，再寻找第二种元素完成跨系组合。":"已经找到节奏；进一步集中牌池，会比平均升级走得更远。";$("#resultBuild").innerHTML=Object.entries(state.tagCounts).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>`<span class="build-tag" data-tag="${tag}">${tag}<b>×${count}</b></span>`).join("");setTimeout(()=>$("#resultOverlay").classList.add("show"),650);playSound("end");syncPauseUI();}
 
   let audioContext=null;
   function playSound(kind){if(!state.sound)return;try{audioContext||=new(window.AudioContext||window.webkitAudioContext)();if(audioContext.state==="suspended")audioContext.resume();const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.connect(gain);gain.connect(audioContext.destination);const c={shot:[520,.025,"square"],focus:[280,.17,"sine"],card:[620,.22,"triangle"],combo:[330,.45,"sine"],wave:[440,.3,"triangle"],start:[220,.45,"sine"],boss:[95,.4,"sawtooth"],damage:[120,.18,"sawtooth"],end:[110,.65,"triangle"]}[kind]||[380,.08,"sine"];osc.type=c[2];osc.frequency.setValueAtTime(c[0],now);osc.frequency.exponentialRampToValueAtTime(kind==="combo"?880:Math.max(60,c[0]*(kind==="end"?.55:1.35)),now+c[1]);gain.gain.setValueAtTime(.04,now);gain.gain.exponentialRampToValueAtTime(.0001,now+c[1]);osc.start(now);osc.stop(now+c[1]);}catch{/* optional */}}
   function canvasPoint(event){const r=canvas.getBoundingClientRect();return{x:(event.clientX-r.left)*W/r.width,y:(event.clientY-r.top)*H/r.height};}
-  function showStart(){state.paused=true;state.started=false;state.drafting=false;$("#cardOverlay").classList.remove("show");$("#resultOverlay").classList.remove("show");$("#startOverlay").classList.add("show");syncPauseUI();saveBest();}
+  function showStart(){if(state.started&&!state.gameOver)saveRun(false);saveBest();showStartScreen();}
   function bindEvents(){
     $$(".protocol-card").forEach((b)=>b.addEventListener("click",()=>resetGame(b.dataset.protocol)));$("#pauseButton").addEventListener("click",togglePause);$("#speedButton").addEventListener("click",()=>{state.speed=state.speed===1?1.5:state.speed===1.5?2:1;$("#speedText").textContent=`${state.speed}×`;showToast(`推演速度 ${state.speed}×`);});$("#soundButton").addEventListener("click",()=>{state.sound=!state.sound;$("#soundIcon").textContent=state.sound?"♪":"×";$("#soundButton").classList.toggle("muted",!state.sound);if(state.sound)playSound("card");});
+    $("#saveButton").addEventListener("click",()=>saveRun(true));$("#accountButton").addEventListener("click",()=>openAccountPanel(false));$("#startAccountButton").addEventListener("click",()=>openAccountPanel(false));$("#accountClose").addEventListener("click",closeAccountPanel);$("#loginAccountButton").addEventListener("click",loginSelectedAccount);$("#loginPin").addEventListener("keydown",(event)=>{if(event.key==="Enter")loginSelectedAccount();});$("#createAccountForm").addEventListener("submit",createAccount);$("#logoutButton").addEventListener("click",logoutAccount);$("#continueRunButton").addEventListener("click",loadRun);$("#discardRunButton").addEventListener("click",discardRun);
     $("#helpButton").addEventListener("click",()=>{if(state.started&&!state.gameOver)state.paused=true;$("#helpOverlay").classList.add("show");syncPauseUI();});const closeHelp=()=>{$("#helpOverlay").classList.remove("show");if(state.started&&!state.gameOver&&!state.drafting)state.paused=false;syncPauseUI();};$("#helpClose").addEventListener("click",closeHelp);$("#helpDone").addEventListener("click",closeHelp);
     $("#restartButton").addEventListener("click",showStart);$("#resultRestart").addEventListener("click",showStart);$("#overdriveButton").addEventListener("click",activateOverdrive);$("#rerollButton").addEventListener("click",()=>{if(state.rerolled)return;state.rerolled=true;$("#rerollButton").disabled=true;generateOffers();playSound("card");});
-    canvas.addEventListener("pointerdown",(event)=>{const p=canvasPoint(event);activateFocus(p.x,p.y);});canvas.addEventListener("contextmenu",(e)=>e.preventDefault());window.addEventListener("keydown",(event)=>{if(event.code==="Space"){event.preventDefault();togglePause();}if(event.key.toLowerCase()==="r")showStart();});document.addEventListener("visibilitychange",()=>{if(document.hidden&&state.started&&!state.gameOver&&!state.drafting){state.paused=true;syncPauseUI();}});window.addEventListener("resize",resizeCanvas);
+    canvas.addEventListener("pointerdown",(event)=>{const p=canvasPoint(event);activateFocus(p.x,p.y);});canvas.addEventListener("contextmenu",(e)=>e.preventDefault());window.addEventListener("keydown",(event)=>{if(event.code==="Space"){event.preventDefault();togglePause();}if(event.key.toLowerCase()==="r")showStart();});document.addEventListener("visibilitychange",()=>{if(document.hidden&&state.started&&!state.gameOver){saveRun(false);state.paused=true;syncPauseUI();}});window.addEventListener("beforeunload",()=>saveRun(false));window.addEventListener("resize",resizeCanvas);
   }
   function resizeCanvas(){const dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
   let uiAccumulator=0;
   function loop(time){const dt=state.lastTime?(time-state.lastTime)/1000:0;state.lastTime=time;update(dt);draw(time);uiAccumulator+=dt;if(uiAccumulator>.1){uiAccumulator=0;updateUI();}requestAnimationFrame(loop);}
-  function init(){state.turrets=TURRET_DATA.map((t,index)=>({...t,id:index,cooldown:.1+index*.09,shotCount:0,recoil:0,pulse:Math.random()*TAU}));resizeCanvas();bindEvents();updateBuildUI();updateUI(true);saveBest();draw(0);requestAnimationFrame(loop);}
+  function init(){state.turrets=TURRET_DATA.map((t,index)=>({...t,id:index,cooldown:.1+index*.09,shotCount:0,recoil:0,pulse:Math.random()*TAU}));resizeCanvas();bindEvents();updateBuildUI();updateUI(true);renderProfiles();updateAccountUI();$("#startOverlay").classList.remove("show");openAccountPanel(true);draw(0);requestAnimationFrame(loop);}
   init();
 })();
