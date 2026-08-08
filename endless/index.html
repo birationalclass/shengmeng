@@ -21,9 +21,11 @@
         </div>
         <div class="hud-actions">
           <button id="saveButton" type="button" aria-label="保存当前记录" title="保存" disabled>▣</button>
+          <button id="loadButton" type="button" aria-label="载入最近存档" title="载入存档" disabled>↥</button>
           <button id="pauseButton" type="button" aria-label="暂停" title="暂停"><span id="pauseIcon">Ⅱ</span></button>
-          <button id="musicButton" type="button" aria-label="背景音乐" title="背景音乐：《终线脉冲·战区版》"><span id="musicIcon">♫</span></button>
+          <button id="musicButton" type="button" aria-label="背景音乐" title="背景音乐"><span id="musicIcon">♫</span></button>
           <button id="soundButton" type="button" aria-label="战斗音效" title="战斗音效"><span id="soundIcon">✦</span></button>
+          <button id="settingsButton" type="button" aria-label="游戏设置" title="游戏设置"><span>⚙</span></button>
           <button id="accountButton" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span></button>
         </div>
       </header>
@@ -92,6 +94,15 @@
         </section>
       </div>
 
+      <div id="loadConfirmOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="loadConfirmTitle">
+        <section class="modal confirm-modal">
+          <span class="eyebrow">RESTORE ARCHIVE</span><h2 id="loadConfirmTitle">载入存档？</h2>
+          <p>当前未保存的战斗进度将被存档内容替换。</p>
+          <div class="confirm-save-info"><span>存档波次 <b id="confirmLoadWave">01</b></span><span>存档时间 <b id="confirmLoadTime">00:00</b></span></div>
+          <div class="confirm-actions"><button id="cancelLoadButton" class="secondary-button" type="button">取消</button><button id="confirmLoadButton" class="primary-button" type="button">确认加载</button></div>
+        </section>
+      </div>
+
       <div id="libraryOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
         <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><div id="libraryCards" class="library-cards"></div></section>
       </div>
@@ -101,7 +112,19 @@
       </div>
 
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜和电弧炮必须通过卡牌加入。</p></article><article><b>02</b><h3>限时目标</h3><p>带倒计时光环的敌人若及时击杀，下次选牌额外增加一个候选。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见会永久增加选牌数量，但立即牺牲当前生命值 50%。吸血和护盾是关键配套。</p></article><article><b>04</b><h3>远程反击</h3><p>第 8 波后，敌方炮手会停下攻击防线。输出不足将不再只是漏怪问题。</p></article></div></section>
+        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜和电弧炮必须通过卡牌加入。</p></article><article><b>02</b><h3>限时目标</h3><p>带倒计时光环的敌人若及时击杀，下次三选一额外获得一次刷新。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见会永久增加每次三选一的刷新次数，但立即牺牲当前生命值 50%。吸血和护盾是关键配套。</p></article><article><b>04</b><h3>远程反击</h3><p>第 8 波后，敌方炮手会停下攻击防线。输出不足将不再只是漏怪问题。</p></article></div></section>
+      </div>
+
+      <div id="settingsOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <section class="modal settings-modal">
+          <button class="modal-close" data-close="settingsOverlay" type="button">×</button>
+          <span class="eyebrow">DISPLAY & GAMEPLAY</span><h2 id="settingsTitle">游戏设置</h2>
+          <div class="setting-row"><div><h3>UI 字体大小</h3><p>同步调整控制台、卡牌、统计与说明文字。</p></div><output id="fontScaleValue" for="fontScaleInput">125%</output></div>
+          <input id="fontScaleInput" class="setting-range" type="range" min="100" max="160" step="5" value="125">
+          <label class="setting-toggle"><span><b>选卡时暂停游戏</b><small>关闭后，选卡界面出现时战斗计时与场上单位仍会继续。</small></span><input id="pauseOnDraftInput" type="checkbox" checked><i></i></label>
+          <label class="setting-select"><span><b>背景音乐播放模式</b><small id="currentTrackName">当前：Sun Mother</small></span><select id="musicModeInput"><option value="sequential">顺序循环</option><option value="random">随机播放</option></select></label>
+          <button id="resetSettingsButton" class="secondary-button settings-reset" type="button">恢复默认设置</button>
+        </section>
       </div>
 
       <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
@@ -109,7 +132,7 @@
       </div>
     </div>
 
-    <audio id="backgroundMusic" src="assets/endless-theme.wav" preload="metadata" loop></audio>
+    <audio id="backgroundMusic" preload="metadata"></audio>
     <script src="game.js"></script>
   </body>
 </html>
