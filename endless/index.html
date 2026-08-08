@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="《无尽》是一款零付费、纯构筑的无尽防线游戏。塑造牌池、点亮组合，在不断升级的星潮中守住最后屏障。" />
+    <title>无尽 · ENDLESS</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-sigil" aria-hidden="true"><i></i></span><span><strong>无尽</strong><small>ENDLESS</small></span></div>
+        <div class="run-readout" aria-live="polite">
+          <span><small>当前波次</small><b id="waveText">01</b></span><i></i>
+          <span><small>生存时间</small><b id="timeText">00:00</b></span><i></i>
+          <span><small>歼灭评分</small><b id="scoreText">0</b></span>
+        </div>
+        <div class="top-actions">
+          <button id="pauseButton" class="icon-button" type="button" aria-label="暂停" title="暂停 / 空格"><span id="pauseIcon">Ⅱ</span></button>
+          <button id="speedButton" class="icon-button wide" type="button" aria-label="切换速度"><span>››</span><b id="speedText">1×</b></button>
+          <button id="soundButton" class="icon-button" type="button" aria-label="声音"><span id="soundIcon">♪</span></button>
+          <button id="helpButton" class="icon-button" type="button" aria-label="玩法说明"><span>?</span></button>
+        </div>
+      </header>
+
+      <main class="battle-layout">
+        <aside class="left-rail">
+          <section class="panel core-panel">
+            <div class="panel-title"><span>最终屏障</span><b id="coreState">稳定</b></div>
+            <div class="core-orbit"><i></i><span id="corePercent">100<small>%</small></span></div>
+            <div class="bar"><i id="coreBar"></i></div>
+            <p id="coreHint">敌人突破画面底部的防线时会直接损伤屏障。</p>
+          </section>
+          <section class="panel threat-panel">
+            <div class="panel-title"><span>星潮威胁</span><b id="threatLabel">侦测中</b></div>
+            <div class="threat-track"><i id="threatBar"></i><span></span></div>
+            <div class="enemy-preview" id="enemyPreview">
+              <span class="enemy-chip active"><i></i>游群</span><span class="enemy-chip"><i></i>疾行</span><span class="enemy-chip"><i></i>重甲</span>
+            </div>
+          </section>
+          <section class="panel focus-panel">
+            <span class="eyebrow">主动战术</span><h2>点击 · 集火标记</h2>
+            <p>点击战场任意位置，全部炮台会优先攻击标记附近的敌人，持续 5 秒。</p>
+            <div class="focus-ready"><i id="focusRing"></i><span><b id="focusText">标记就绪</b><small>冷却 12 秒</small></span></div>
+          </section>
+        </aside>
+
+        <section class="battlefield-shell">
+          <div class="battlefield-head">
+            <div><span class="live-dot"></span><b id="phaseText">防线部署中</b><small id="phaseDetail">选择初始武装，启动星潮</small></div>
+            <div class="kill-chain" id="killChain"><span>连斩</span><b>×0</b></div>
+          </div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="gameCanvas" width="1280" height="720" aria-label="无尽战场。敌军从画面上方逼近下方最终防线；点击战场可下达集火标记。"></canvas>
+            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+            <div id="comboBanner" class="combo-banner" aria-live="polite"><small>组合已点亮</small><strong id="comboBannerName">超导风暴</strong><span id="comboBannerText">冻结目标会传导雷击</span></div>
+            <div id="pauseVeil" class="pause-veil hidden"><span>时间凝滞</span><small>按空格或右上角按钮继续</small></div>
+          </div>
+        </section>
+
+        <aside class="right-rail">
+          <section class="panel build-panel"><div class="panel-title"><span>本局构筑</span><b id="cardCount">0 张</b></div><div id="buildTags" class="build-tags"><span class="empty-build">尚未选择武装</span></div></section>
+          <section class="panel combo-panel"><div class="panel-title"><span>组合回路</span><b id="comboCount">0 / 6</b></div><div id="comboList" class="combo-list"></div></section>
+        </aside>
+
+        <footer class="battle-footer">
+          <div class="wave-progress"><span><b id="waveProgressLabel">等待启动</b><small id="waveEnemyText">0 敌军</small></span><div class="bar major"><i id="waveBar"></i></div></div>
+          <div class="weapon-readout"><span><i class="pulse"></i><b>主炮</b><small id="weaponDamage">18 伤害</small></span><span><i class="arc"></i><b>协同炮台</b><small id="weaponRate">1.4 / 秒</small></span></div>
+          <button id="overdriveButton" class="overdrive-button" type="button" disabled><span class="overdrive-fill" id="overdriveFill"></span><i>∞</i><span><b id="overdriveText">极限火力 0%</b><small>充满后点击释放</small></span></button>
+          <button id="restartButton" class="footer-button" type="button">重新推演 <kbd>R</kbd></button>
+        </footer>
+      </main>
+    </div>
+
+    <div id="startOverlay" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+      <div class="start-panel">
+        <div class="start-copy">
+          <span class="edition-mark">零充值 · 零广告 · 零局外战力</span>
+          <span class="start-kicker">FINAL DEFENSE / RUN 01</span><h1 id="startTitle">无<span>尽</span></h1>
+          <p class="start-subtitle">没有终点的星潮，只有越来越精密的组合。</p>
+          <div class="start-rules"><span><b>01</b><i>自动火力</i><small>让反馈保持紧凑</small></span><span><b>02</b><i>塑造牌池</i><small>相关卡牌优先出现</small></span><span><b>03</b><i>主动集火</i><small>处理真正的威胁</small></span></div>
+          <div class="best-record"><span>本机最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
+        </div>
+        <div class="protocol-select">
+          <span class="eyebrow">选择初始武装</span><h2>决定这次构筑的第一块拼图</h2>
+          <div class="protocol-cards">
+            <button class="protocol-card arc" data-protocol="arc" type="button"><span class="protocol-index">A-01</span><i class="protocol-icon">ϟ</i><strong>雷网主炮</strong><p>电弧在敌群中跳跃。更容易遇到传导、过载与连锁卡牌。</p><small><b>起始能力</b> 22% 概率触发 2 次连锁</small></button>
+            <button class="protocol-card frost" data-protocol="frost" type="button"><span class="protocol-index">F-02</span><i class="protocol-icon">✣</i><strong>霜爆主炮</strong><p>寒霜压低星潮速度。叠加脆弱与碎裂，越拥挤越危险。</p><small><b>起始能力</b> 命中减速 24%，持续 1.8 秒</small></button>
+            <button class="protocol-card burn" data-protocol="burn" type="button"><span class="protocol-index">B-03</span><i class="protocol-icon">◈</i><strong>熔核主炮</strong><p>灼烧持续吞噬敌军。通过扩散、处决与收割滚起雪球。</p><small><b>起始能力</b> 命中附加 3 秒灼烧</small></button>
+          </div>
+          <p class="protocol-note">所有武装都能在局内交叉组合；没有需要解锁或购买的卡牌。</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="cardOverlay" class="overlay card-overlay" role="dialog" aria-modal="true" aria-labelledby="cardTitle">
+      <div class="draft-panel">
+        <header class="draft-header"><div><span class="eyebrow">WAVE CLEARED / EVOLUTION</span><h2 id="cardTitle">让防线继续进化</h2></div><div class="draft-wave"><small>已越过</small><b>第 <span id="clearedWave">1</span> 波</b></div></header>
+        <div class="draft-context"><span id="draftReason">牌池已根据当前构筑校准</span><b id="draftComboHint">选择高亮卡牌可推进组合</b></div>
+        <div id="cardChoices" class="card-choices"></div>
+        <div class="draft-footer"><button id="rerollButton" class="reroll-button" type="button"><span>↻</span><b>重新推演</b><small>每波免费 1 次</small></button><p>选择即生效 · 游戏已暂停 · 不存在付费刷新</p></div>
+      </div>
+    </div>
+
+    <div id="helpOverlay" class="overlay sub-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="help-panel"><button id="helpClose" class="close-button" type="button" aria-label="关闭">×</button><span class="eyebrow">TACTICAL ARCHIVE</span><h2 id="helpTitle">撑得久，靠的不是单卡数值</h2>
+        <div class="help-grid"><article><b>01</b><h3>自动防守</h3><p>五座炮台自动锁定最接近底线的敌人。敌人越过最终屏障会造成伤害。</p></article><article><b>02</b><h3>点击集火</h3><p>点击战场下达 5 秒集火标记。用它处理重甲、精英或即将漏过底线的敌人。</p></article><article><b>03</b><h3>组合构筑</h3><p>每波结束三选一。系统至少给出一张能强化当前构筑或推进组合的卡牌。</p></article><article><b>04</b><h3>无限压力</h3><p>精英每 5 波出现，首领每 10 波来袭。生命、数量、速度与抗性持续成长。</p></article></div>
+        <div class="combo-guide"><span><i class="arc"></i><b>雷 + 霜</b><small>超导：传导冻结</small></span><span><i class="burn"></i><b>火 + 雷</b><small>等离子：灼烧爆链</small></span><span><i class="frost"></i><b>霜 + 火</b><small>热震：百分比爆发</small></span></div>
+        <button id="helpDone" class="primary-button" type="button">明白，回到战场</button>
+      </div>
+    </div>
+
+    <div id="resultOverlay" class="overlay result-overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+      <div class="result-panel"><div class="result-sigil">∞</div><span class="eyebrow">THE LINE HAS FALLEN</span><h2 id="resultTitle">防线终有尽头，构筑没有</h2>
+        <div class="result-stats"><span><small>抵达波次</small><b id="resultWave">0</b></span><span><small>歼灭敌军</small><b id="resultKills">0</b></span><span><small>最终评分</small><b id="resultScore">0</b></span><span><small>点亮组合</small><b id="resultCombos">0</b></span></div>
+        <p id="resultSummary">再换一种组合，也许能走得更远。</p><div id="resultBuild" class="result-build"></div><button id="resultRestart" class="primary-button" type="button">重新开始一次推演</button>
+      </div>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
