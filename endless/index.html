@@ -36,6 +36,18 @@
       <nav class="side-tools" aria-label="战术面板">
         <button id="libraryButton" type="button"><i>◇</i><span>卡牌</span><b id="cardCount">0</b></button>
         <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
+        <section class="card-preference" aria-labelledby="preferenceTitle">
+          <header><h3 id="preferenceTitle">卡牌偏好</h3><small id="preferenceStatus">未选择</small></header>
+          <p>三选一必含一张该炮塔的合法未满级卡牌</p>
+          <div class="preference-options" role="radiogroup" aria-label="卡牌炮塔偏好">
+            <label style="--pref-color:#ffd16f"><input type="radio" name="cardPreference" value="bullet"><span>● 子弹</span></label>
+            <label style="--pref-color:#ff5f7c"><input type="radio" name="cardPreference" value="laser"><span>╱ 激光</span></label>
+            <label style="--pref-color:#ff934f"><input type="radio" name="cardPreference" value="missile"><span>▲ 导弹</span></label>
+            <label style="--pref-color:#61ddff"><input type="radio" name="cardPreference" value="frost"><span>✣ 冰霜</span></label>
+            <label style="--pref-color:#ad8cff"><input type="radio" name="cardPreference" value="arc"><span>ϟ 电弧</span></label>
+            <label style="--pref-color:#64efb5"><input type="radio" name="cardPreference" value="support"><span>✚ 支援</span></label>
+          </div>
+        </section>
       </nav>
 
       <section class="live-meter" aria-labelledby="statsTitle">
@@ -74,7 +86,15 @@
           <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>属性也由随机卡牌获得</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
           <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
-          <div id="fastStartPanel" class="fast-start-panel hidden"><small>账号快速部署</small><h3>可从第 <span id="fastStartWave">01</span> 波开始</h3><p><span id="fastStartDrafts">3</span> 轮随机三选一</p><button id="fastStartButton" class="secondary-button" type="button">快速部署</button></div>
+          <div id="fastStartPanel" class="fast-start-panel hidden">
+            <small>账号快速部署</small>
+            <h3>可从第 <span id="fastStartWave">01</span> 波开始</h3>
+            <p><span id="fastStartDrafts">3</span> 轮手动三选一；随机部署额外获得 5 张卡牌</p>
+            <div class="fast-start-actions">
+              <button id="fastStartButton" class="secondary-button" type="button">手动快速部署</button>
+              <button id="randomFastStartButton" class="primary-button" type="button">随机快速部署（<span id="randomFastStartCards">8</span> 张）</button>
+            </div>
+          </div>
           <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
           <p class="zero-pay">零充值 · 零广告 · 所有炮塔与卡牌均在局内获得</p>
@@ -104,7 +124,7 @@
       </div>
 
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜、电弧和支援炮塔必须通过卡牌加入。</p></article><article><b>02</b><h3>即时奖励</h3><p>带倒计时光环的敌人若及时击杀，会立即弹出一次随机三选一，不必等到波次结束。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见让每个普通波次额外选择一张卡牌；选择额外卡牌时牺牲当前生命值 50%。吸血、治疗与护盾是关键配套。</p></article><article><b>04</b><h3>完全随机</h3><p>所有当前合法且未满级的卡牌等概率进入三选一；基础攻击、暴击和攻速也只能从牌池获得。</p></article><article><b>05</b><h3>颜色属性</h3><p>红色装甲抗子弹、怕导弹；蓝色相位抗激光、怕电弧；金色日冕抗燃烧、怕冰霜；绿色生体抗电弧、怕燃烧；橙色高速体抗导弹、怕激光。</p></article><article><b>06</b><h3>屏障即生命</h3><p>黄色护盾优先吸收伤害，随后才扣除蓝色屏障。全域屏障就是唯一生命线，归零后本局立即失败。</p></article></div></section>
+        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜、电弧和支援炮塔必须通过卡牌加入。</p></article><article><b>02</b><h3>即时奖励</h3><p>带倒计时光环的敌人若及时击杀，会立即弹出一次随机三选一，不必等到波次结束。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见让每个普通波次额外选择一张卡牌；选择额外卡牌时牺牲当前生命值 50%。吸血、治疗与护盾是关键配套。</p></article><article><b>04</b><h3>偏好保底</h3><p>右侧可指定一种炮塔偏好；每次三选一必含一张该炮塔的合法未满级卡牌，其余位置继续随机。</p></article><article><b>05</b><h3>颜色属性</h3><p>红色装甲抗子弹、怕导弹；蓝色相位抗激光、怕电弧；金色日冕抗燃烧、怕冰霜；绿色生体抗电弧、怕燃烧；橙色高速体抗导弹、怕激光。</p></article><article><b>06</b><h3>屏障即生命</h3><p>黄色护盾优先吸收伤害，随后才扣除蓝色屏障。全域屏障就是唯一生命线，归零后本局立即失败；每波至少有一颗大型天体 Boss。</p></article></div></section>
       </div>
 
       <div id="settingsOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -126,6 +146,7 @@
     </div>
 
     <audio id="backgroundMusic" preload="metadata"></audio>
+    <script src="enemy-visuals.js"></script>
     <script src="game.js"></script>
   </body>
 </html>
