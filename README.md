@@ -2,6 +2,8 @@
 
 Static, bilingual academic homepage for GitHub Pages. The academic section is paper-only and includes recent arXiv records, while AI4Math, AI4Games, the academic journey, and the playable browser game *Frontier Claim* remain independent modules. The design intentionally uses no personal portrait.
 
+Live site: <https://birationalclass.github.io/shengmeng/>
+
 ## GitHub Pages
 
 1. Create a GitHub repository. For a root personal homepage, name it `<your-github-username>.github.io`.
