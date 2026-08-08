@@ -1,165 +1,115 @@
 <!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="《无尽》是一款零付费、纯构筑的无尽防线游戏。塑造牌池、点亮组合，在不断升级的星潮中守住最后屏障。" />
-    <title>无尽 · ENDLESS</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#050b12">
+    <title>无尽 · 竖屏防线</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div class="brand"><span class="brand-sigil" aria-hidden="true"><i></i></span><span><strong>无尽</strong><small>ENDLESS</small></span></div>
-        <div class="run-readout" aria-live="polite">
-          <span><small>当前波次</small><b id="waveText">01</b></span><i></i>
-          <span><small>生存时间</small><b id="timeText">00:00</b></span><i></i>
-          <span><small>歼灭评分</small><b id="scoreText">0</b></span>
+    <div class="portrait-app">
+      <canvas id="gameCanvas" width="720" height="1280" aria-label="竖屏无尽防线战场"></canvas>
+
+      <header class="top-hud">
+        <div class="brand"><i>∞</i><span><b>无尽</b><small>ENDLESS DEFENSE</small></span></div>
+        <div class="run-stats">
+          <span><small>波次</small><b id="waveText">01</b></span>
+          <span><small>时间</small><b id="timeText">00:00</b></span>
+          <span class="coin-stat"><small>金币</small><b id="coinText">0</b></span>
+          <span><small>DPS</small><b id="dpsText">0</b></span>
         </div>
-        <div class="top-actions">
-          <button id="saveButton" class="icon-button" type="button" aria-label="保存当前记录" title="保存当前记录" disabled><span>▣</span></button>
-          <button id="pauseButton" class="icon-button" type="button" aria-label="暂停" title="暂停 / 空格"><span id="pauseIcon">Ⅱ</span></button>
-          <button id="speedButton" class="icon-button wide" type="button" aria-label="切换速度"><span>››</span><b id="speedText">1×</b></button>
-          <button id="musicButton" class="icon-button" type="button" aria-label="背景音乐" title="背景音乐：《终线脉冲·战区版》"><span id="musicIcon">♫</span></button>
-          <button id="soundButton" class="icon-button" type="button" aria-label="战斗音效" title="战斗音效"><span id="soundIcon">✦</span></button>
-          <button id="helpButton" class="icon-button" type="button" aria-label="玩法说明"><span>?</span></button>
-          <button id="accountButton" class="account-button" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span><b id="accountName">未登录</b></button>
+        <div class="hud-actions">
+          <button id="saveButton" type="button" aria-label="保存当前记录" title="保存" disabled>▣</button>
+          <button id="pauseButton" type="button" aria-label="暂停" title="暂停"><span id="pauseIcon">Ⅱ</span></button>
+          <button id="musicButton" type="button" aria-label="背景音乐" title="背景音乐：《终线脉冲·战区版》"><span id="musicIcon">♫</span></button>
+          <button id="soundButton" type="button" aria-label="战斗音效" title="战斗音效"><span id="soundIcon">✦</span></button>
+          <button id="accountButton" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span></button>
         </div>
       </header>
 
-      <main class="battle-layout">
-        <aside class="left-rail">
-          <section class="panel core-panel">
-            <div class="panel-title"><span>最终屏障</span><b id="coreState">稳定</b></div>
-            <div class="core-orbit"><i></i><span id="corePercent">100<small>%</small></span></div>
-            <div class="bar"><i id="coreBar"></i></div>
-            <p id="coreHint">敌人突破画面底部的防线时会直接损伤屏障。</p>
-          </section>
-          <section class="panel threat-panel">
-            <div class="panel-title"><span>星潮威胁</span><b id="threatLabel">侦测中</b></div>
-            <div class="threat-track"><i id="threatBar"></i><span></span></div>
-            <div class="enemy-preview" id="enemyPreview">
-              <span class="enemy-chip active"><i></i>游群</span><span class="enemy-chip"><i></i>疾行</span><span class="enemy-chip"><i></i>重甲</span>
-            </div>
-          </section>
-          <section class="panel focus-panel">
-            <span class="eyebrow">主动战术</span><h2>点击 · 集火标记</h2>
-            <p>点击战场任意位置，全部炮台会优先攻击标记附近的敌人，持续 5 秒。</p>
-            <div class="focus-ready"><i id="focusRing"></i><span><b id="focusText">标记就绪</b><small>冷却 12 秒</small></span></div>
-          </section>
-        </aside>
+      <section class="core-hud">
+        <div class="core-line"><span>最终防线 <b id="coreText">100 / 100</b></span><span>护盾 <b id="shieldText">0 / 0</b></span></div>
+        <div class="dual-bar"><i id="coreBar"></i><em id="shieldBar"></em></div>
+        <div class="wave-line"><span id="phaseText">等待部署</span><small id="enemyText">0 敌军</small></div>
+        <div class="wave-bar"><i id="waveBar"></i></div>
+      </section>
 
-        <section class="battlefield-shell">
-          <div class="battlefield-head">
-            <div><span class="live-dot"></span><b id="phaseText">防线部署中</b><small id="phaseDetail">选择初始武装，启动星潮</small></div>
-            <div class="kill-chain" id="killChain"><span>连斩</span><b>×0</b></div>
+      <nav class="side-tools" aria-label="战术面板">
+        <button id="libraryButton" type="button"><i>◇</i><span>卡牌</span><b id="cardCount">0</b></button>
+        <button id="shopButton" type="button"><i>¤</i><span>军械</span><b id="shopLevel">0</b></button>
+        <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
+      </nav>
+
+      <section class="live-meter" aria-labelledby="statsTitle">
+        <header><div><span class="eyebrow">LIVE COMBAT METER</span><h2 id="statsTitle">DPS / HPS</h2></div><b id="combatDpsMini">0</b></header>
+        <div class="meter-head"><span><small>总伤害</small><b id="totalDamage">0</b></span><span><small>当前 DPS</small><b id="currentDps">0</b></span><span><small>总治疗</small><b id="totalHealing">0</b></span><span><small>当前 HPS</small><b id="currentHps">0</b></span></div>
+        <h3>伤害来源</h3><div id="damageMeters" class="meter-list"></div>
+        <h3>治疗来源</h3><div id="healingMeters" class="meter-list"></div>
+      </section>
+
+      <section class="turret-rack" id="turretRack" aria-label="炮塔阵列"></section>
+      <div id="statusToast" class="status-toast" role="status"></div>
+      <div id="comboBanner" class="combo-banner"><small>组合回路点亮</small><b id="comboBannerName">鲜血引擎</b></div>
+      <div id="pauseVeil" class="pause-veil hidden"><b>推演暂停</b><small>从左侧控制台继续</small></div>
+
+      <button id="leftRailToggle" class="rail-toggle rail-toggle-left" type="button" aria-label="打开战局状态与控制">‹</button>
+      <button id="rightRailToggle" class="rail-toggle rail-toggle-right" type="button" aria-label="打开卡牌、统计与军械菜单">›</button>
+
+      <div id="accountOverlay" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+        <section class="modal account-modal">
+          <button id="accountClose" class="modal-close hidden" type="button" aria-label="关闭账号面板">×</button>
+          <span class="eyebrow">LOCAL COMMANDER ARCHIVE</span>
+          <h2 id="accountTitle">账号与存档</h2>
+          <p class="modal-intro">账号和进度仅保存在当前浏览器；口令只保存摘要。</p>
+          <div class="account-columns">
+            <div><label>选择本机账号</label><div id="profileList" class="profile-list"></div><div id="loginArea" class="login-area hidden"><label for="loginPin">4 位本地口令</label><div><input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"><button id="loginAccountButton" type="button">登录</button></div><small id="loginMessage" class="form-message"></small></div></div>
+            <form id="createAccountForm"><label for="newAccountName">创建指挥官</label><input id="newAccountName" type="text" minlength="2" maxlength="12" autocomplete="off" placeholder="名称 2–12 字符" required><input id="newAccountPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" placeholder="设置 4 位口令" required><button class="primary-button" type="submit">创建并登录</button><small id="createAccountMessage" class="form-message"></small></form>
           </div>
-          <div class="canvas-wrap" id="canvasWrap">
-            <canvas id="gameCanvas" width="1280" height="720" aria-label="无尽战场。敌军从画面上方逼近下方最终防线；点击战场可下达集火标记。"></canvas>
-            <div id="toast" class="toast" role="status" aria-live="polite"></div>
-            <div id="comboBanner" class="combo-banner" aria-live="polite"><small>组合已点亮</small><strong id="comboBannerName">超导风暴</strong><span id="comboBannerText">冻结目标会传导雷击</span></div>
-            <div id="pauseVeil" class="pause-veil hidden"><span>时间凝滞</span><small>按空格或右上角按钮继续</small></div>
-          </div>
+          <footer><span>不同账号的存档完全隔离</span><button id="logoutButton" class="text-button hidden" type="button">退出账号</button></footer>
         </section>
-
-        <aside class="right-rail">
-          <section class="panel build-panel"><div class="panel-title"><span>本局构筑</span><b id="cardCount">0 张</b></div><div id="buildTags" class="build-tags"><span class="empty-build">尚未选择武装</span></div></section>
-          <section class="panel combo-panel"><div class="panel-title"><span>组合回路</span><b id="comboCount">0 / 6</b></div><div id="comboList" class="combo-list"></div></section>
-        </aside>
-
-        <footer class="battle-footer">
-          <div class="wave-progress"><span><b id="waveProgressLabel">等待启动</b><small id="waveEnemyText">0 敌军</small></span><div class="bar major"><i id="waveBar"></i></div></div>
-          <div class="weapon-readout"><span><i class="pulse"></i><b>主炮</b><small id="weaponDamage">18 伤害</small></span><span><i class="arc"></i><b>协同炮台</b><small id="weaponRate">1.4 / 秒</small></span></div>
-          <button id="overdriveButton" class="overdrive-button" type="button" disabled><span class="overdrive-fill" id="overdriveFill"></span><i>∞</i><span><b id="overdriveText">极限火力 0%</b><small>充满后点击释放</small></span></button>
-          <button id="restartButton" class="footer-button" type="button">重新推演 <kbd>R</kbd></button>
-        </footer>
-      </main>
-    </div>
-
-    <div id="accountOverlay" class="overlay account-overlay" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
-      <div class="account-panel">
-        <button id="accountClose" class="close-button hidden" type="button" aria-label="关闭账号面板">×</button>
-        <header class="account-header"><span class="eyebrow">LOCAL COMMANDER ARCHIVE</span><h2 id="accountTitle">账号与存档</h2><p>账号、口令与战绩只保存在当前浏览器，不会上传到服务器。</p></header>
-        <div class="account-layout">
-          <section class="login-section">
-            <span class="section-label">选择本机账号</span>
-            <div id="profileList" class="profile-list"></div>
-            <div id="loginArea" class="login-area hidden">
-              <label for="loginPin">输入 4 位本地口令</label>
-              <div><input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"><button id="loginAccountButton" type="button">登录并定位存档</button></div>
-              <small id="loginMessage" class="form-message"></small>
-            </div>
-          </section>
-          <form id="createAccountForm" class="create-account-form">
-            <span class="section-label">创建新账号</span>
-            <label for="newAccountName">指挥官名称</label>
-            <input id="newAccountName" type="text" minlength="2" maxlength="12" autocomplete="off" placeholder="2–12 个字符" required>
-            <label for="newAccountPin">4 位本地口令</label>
-            <input id="newAccountPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" placeholder="仅用于本机登录" required>
-            <button class="primary-button account-create" type="submit">创建账号并开始</button>
-            <small id="createAccountMessage" class="form-message"></small>
-          </form>
-        </div>
-        <footer class="account-footer"><span>口令只保存摘要，无法找回；不同账号的存档完全隔离。</span><button id="logoutButton" class="text-action hidden" type="button">退出当前账号</button></footer>
       </div>
-    </div>
 
-    <div id="startOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
-      <div class="start-panel">
-        <div class="start-copy">
-          <span class="edition-mark">零充值 · 零广告 · 零局外战力</span>
-          <span class="start-kicker">FINAL DEFENSE / RUN 01</span><h1 id="startTitle">无<span>尽</span></h1>
-          <p class="start-subtitle">没有终点的星潮，只有越来越精密的组合。</p>
-          <div class="start-rules"><span><b>01</b><i>自动火力</i><small>让反馈保持紧凑</small></span><span><b>02</b><i>塑造牌池</i><small>相关卡牌优先出现</small></span><span><b>03</b><i>主动集火</i><small>处理真正的威胁</small></span></div>
+      <div id="startOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+        <section class="modal start-modal">
+          <span class="eyebrow">PORTRAIT ENDLESS DEFENSE</span>
+          <div class="start-title"><i>∞</i><div><h1 id="startTitle">无尽</h1><p>一门子弹炮起步，用卡牌建成整条防线。</p></div></div>
+          <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>金币强化基础属性</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
-          <button id="startAccountButton" class="start-account-button" type="button"><i id="startAccountAvatar">?</i><span>当前账号</span><b id="startAccountName">未登录</b><em>切换 ›</em></button>
-        </div>
-        <section id="resumePanel" class="resume-panel hidden">
-          <span class="eyebrow">LAST RUN DETECTED</span><h2>欢迎回来，<span id="resumeAccountName">指挥官</span></h2>
-          <p>已经定位到这个账号的上次游玩记录。</p>
-          <div class="resume-record">
-            <span><small>保存波次</small><b id="resumeWave">01</b></span><span><small>生存时间</small><b id="resumeTime">00:00</b></span><span><small>当前评分</small><b id="resumeScore">0</b></span><span><small>卡牌数量</small><b id="resumeCards">0</b></span>
-          </div>
-          <div id="resumeBuild" class="resume-build"></div>
-          <div class="resume-actions"><button id="continueRunButton" class="primary-button" type="button">加载存档并继续</button><button id="discardRunButton" class="secondary-button" type="button">放弃记录，重新来过</button></div>
-          <small id="resumeSavedAt" class="resume-saved-at"></small>
+          <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌 · <span id="resumeCoins">0</span> 金币</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
+          <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
+          <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
+          <p class="zero-pay">零充值 · 零广告 · 所有炮塔与卡牌均在局内获得</p>
         </section>
-        <div id="protocolSelect" class="protocol-select">
-          <span class="eyebrow">选择初始武装</span><h2>决定这次构筑的第一块拼图</h2>
-          <div class="protocol-cards">
-            <button class="protocol-card arc" data-protocol="arc" type="button"><span class="protocol-index">A-01</span><i class="protocol-icon">ϟ</i><strong>雷网主炮</strong><p>电弧在敌群中跳跃。更容易遇到传导、过载与连锁卡牌。</p><small><b>起始能力</b> 22% 概率触发 2 次连锁</small></button>
-            <button class="protocol-card frost" data-protocol="frost" type="button"><span class="protocol-index">F-02</span><i class="protocol-icon">✣</i><strong>霜爆主炮</strong><p>寒霜压低星潮速度。叠加脆弱与碎裂，越拥挤越危险。</p><small><b>起始能力</b> 命中减速 24%，持续 1.8 秒</small></button>
-            <button class="protocol-card burn" data-protocol="burn" type="button"><span class="protocol-index">B-03</span><i class="protocol-icon">◈</i><strong>熔核主炮</strong><p>灼烧持续吞噬敌军。通过扩散、处决与收割滚起雪球。</p><small><b>起始能力</b> 命中附加 3 秒灼烧</small></button>
-          </div>
-          <p class="protocol-note">所有武装都能在局内交叉组合；没有需要解锁或购买的卡牌。</p>
-        </div>
+      </div>
+
+      <div id="draftOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="draftTitle">
+        <section class="modal draft-modal">
+          <header><div><span class="eyebrow">WAVE CLEARED / EVOLUTION</span><h2 id="draftTitle">选择防线进化</h2></div><b>第 <span id="clearedWave">1</span> 波</b></header>
+          <div class="draft-context"><span id="draftReason">牌池正在分析当前构筑</span><b id="offerCountText">三选一</b></div>
+          <div id="cardChoices" class="card-choices"></div>
+          <footer><button id="rerollButton" class="secondary-button" type="button">↻ 免费重抽一次</button><span id="bountyRewardText"></span></footer>
+        </section>
+      </div>
+
+      <div id="libraryOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
+        <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><div id="libraryCards" class="library-cards"></div></section>
+      </div>
+
+      <div id="shopOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+        <section class="modal shop-modal"><button class="modal-close" data-close="shopOverlay" type="button">×</button><span class="eyebrow">FIELD ARMORY</span><h2 id="shopTitle">战地军械升级</h2><p>金币只在本局有效，用于强化所有炮塔的基础属性。</p><div class="shop-balance">可用金币 <b id="shopCoins">0</b></div><div id="shopItems" class="shop-items"></div></section>
+      </div>
+
+      <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜和电弧炮必须通过卡牌加入。</p></article><article><b>02</b><h3>限时目标</h3><p>带倒计时光环的敌人若及时击杀，下次选牌额外增加一个候选。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见会永久增加选牌数量，但立即牺牲当前生命值 50%。吸血和护盾是关键配套。</p></article><article><b>04</b><h3>远程反击</h3><p>第 8 波后，敌方炮手会停下攻击防线。输出不足将不再只是漏怪问题。</p></article></div></section>
+      </div>
+
+      <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <section class="modal result-modal"><span class="result-sigil">∞</span><span class="eyebrow">THE LINE HAS FALLEN</span><h2 id="resultTitle">防线失守</h2><div class="result-grid"><span><small>波次</small><b id="resultWave">0</b></span><span><small>击杀</small><b id="resultKills">0</b></span><span><small>评分</small><b id="resultScore">0</b></span><span><small>峰值 DPS</small><b id="resultDps">0</b></span></div><button id="resultRestart" class="primary-button" type="button">重新部署</button></section>
       </div>
     </div>
 
-    <div id="cardOverlay" class="overlay card-overlay" role="dialog" aria-modal="true" aria-labelledby="cardTitle">
-      <div class="draft-panel">
-        <header class="draft-header"><div><span class="eyebrow">WAVE CLEARED / EVOLUTION</span><h2 id="cardTitle">让防线继续进化</h2></div><div class="draft-wave"><small>已越过</small><b>第 <span id="clearedWave">1</span> 波</b></div></header>
-        <div class="draft-context"><span id="draftReason">牌池已根据当前构筑校准</span><b id="draftComboHint">选择高亮卡牌可推进组合</b></div>
-        <div id="cardChoices" class="card-choices"></div>
-        <div class="draft-footer"><button id="rerollButton" class="reroll-button" type="button"><span>↻</span><b>重新推演</b><small>每波免费 1 次</small></button><p>选择即生效 · 游戏已暂停 · 不存在付费刷新</p></div>
-      </div>
-    </div>
-
-    <div id="helpOverlay" class="overlay sub-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-      <div class="help-panel"><button id="helpClose" class="close-button" type="button" aria-label="关闭">×</button><span class="eyebrow">TACTICAL ARCHIVE</span><h2 id="helpTitle">撑得久，靠的不是单卡数值</h2>
-        <div class="help-grid"><article><b>01</b><h3>自动防守</h3><p>五座炮台自动锁定最接近底线的敌人。敌人越过最终屏障会造成伤害。</p></article><article><b>02</b><h3>点击集火</h3><p>点击战场下达 5 秒集火标记。用它处理重甲、精英或即将漏过底线的敌人。</p></article><article><b>03</b><h3>组合构筑</h3><p>每波结束三选一。系统至少给出一张能强化当前构筑或推进组合的卡牌。</p></article><article><b>04</b><h3>无限压力</h3><p>精英每 5 波出现，首领每 10 波来袭。生命、数量、速度与抗性持续成长。</p></article></div>
-        <div class="combo-guide"><span><i class="arc"></i><b>雷 + 霜</b><small>超导：传导冻结</small></span><span><i class="burn"></i><b>火 + 雷</b><small>等离子：灼烧爆链</small></span><span><i class="frost"></i><b>霜 + 火</b><small>热震：百分比爆发</small></span></div>
-        <button id="helpDone" class="primary-button" type="button">明白，回到战场</button>
-      </div>
-    </div>
-
-    <div id="resultOverlay" class="overlay result-overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
-      <div class="result-panel"><div class="result-sigil">∞</div><span class="eyebrow">THE LINE HAS FALLEN</span><h2 id="resultTitle">防线终有尽头，构筑没有</h2>
-        <div class="result-stats"><span><small>抵达波次</small><b id="resultWave">0</b></span><span><small>歼灭敌军</small><b id="resultKills">0</b></span><span><small>最终评分</small><b id="resultScore">0</b></span><span><small>点亮组合</small><b id="resultCombos">0</b></span></div>
-        <p id="resultSummary">再换一种组合，也许能走得更远。</p><div id="resultBuild" class="result-build"></div><button id="resultRestart" class="primary-button" type="button">重新开始一次推演</button>
-      </div>
-    </div>
-    <audio id="backgroundMusic" src="assets/endless-theme.wav" preload="auto" loop></audio>
+    <audio id="backgroundMusic" src="assets/endless-theme.wav" preload="metadata" loop></audio>
     <script src="game.js"></script>
   </body>
 </html>
