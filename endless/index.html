@@ -16,7 +16,6 @@
         <div class="run-stats">
           <span><small>波次</small><b id="waveText">01</b></span>
           <span><small>时间</small><b id="timeText">00:00</b></span>
-          <span class="coin-stat"><small>金币</small><b id="coinText">0</b></span>
           <span><small>DPS</small><b id="dpsText">0</b></span>
         </div>
         <div class="hud-actions">
@@ -39,7 +38,6 @@
 
       <nav class="side-tools" aria-label="战术面板">
         <button id="libraryButton" type="button"><i>◇</i><span>卡牌</span><b id="cardCount">0</b></button>
-        <button id="shopButton" type="button"><i>¤</i><span>军械</span><b id="shopLevel">0</b></button>
         <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
       </nav>
 
@@ -56,7 +54,7 @@
       <div id="pauseVeil" class="pause-veil hidden"><b>推演暂停</b><small>从左侧控制台继续</small></div>
 
       <button id="leftRailToggle" class="rail-toggle rail-toggle-left" type="button" aria-label="打开战局状态与控制">‹</button>
-      <button id="rightRailToggle" class="rail-toggle rail-toggle-right" type="button" aria-label="打开卡牌、统计与军械菜单">›</button>
+      <button id="rightRailToggle" class="rail-toggle rail-toggle-right" type="button" aria-label="打开卡牌、统计与说明菜单">›</button>
 
       <div id="accountOverlay" class="overlay show" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
         <section class="modal account-modal">
@@ -76,10 +74,10 @@
         <section class="modal start-modal">
           <span class="eyebrow">PORTRAIT ENDLESS DEFENSE</span>
           <div class="start-title"><i>∞</i><div><h1 id="startTitle">无尽</h1><p>一门子弹炮起步，用卡牌建成整条防线。</p></div></div>
-          <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>金币强化基础属性</span></div>
+          <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>属性也由随机卡牌获得</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
-          <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌 · <span id="resumeCoins">0</span> 金币</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
-          <div id="fastStartPanel" class="fast-start-panel hidden"><small>账号快速部署</small><h3>可从第 <span id="fastStartWave">01</span> 波开始</h3><p><span id="fastStartDrafts">3</span> 轮三选一 · <span id="fastStartCoins">0</span> 初始金币</p><button id="fastStartButton" class="secondary-button" type="button">快速部署</button></div>
+          <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
+          <div id="fastStartPanel" class="fast-start-panel hidden"><small>账号快速部署</small><h3>可从第 <span id="fastStartWave">01</span> 波开始</h3><p><span id="fastStartDrafts">3</span> 轮随机三选一</p><button id="fastStartButton" class="secondary-button" type="button">快速部署</button></div>
           <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
           <p class="zero-pay">零充值 · 零广告 · 所有炮塔与卡牌均在局内获得</p>
@@ -88,7 +86,7 @@
 
       <div id="draftOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="draftTitle">
         <section class="modal draft-modal">
-          <header><div><span class="eyebrow">WAVE CLEARED / EVOLUTION</span><h2 id="draftTitle">选择防线进化</h2></div><b>第 <span id="clearedWave">1</span> 波</b></header>
+          <header><div><span class="eyebrow">TACTICAL CARD DRAFT</span><h2 id="draftTitle">选择防线进化</h2></div><b>第 <span id="clearedWave">1</span> 波</b></header>
           <div class="draft-context"><span id="draftReason">牌池正在分析当前构筑</span><b id="offerCountText">三选一</b></div>
           <div id="cardChoices" class="card-choices"></div>
           <footer><button id="rerollButton" class="secondary-button" type="button" aria-label="刷新，剩余 1 次">↻ 1</button><span id="bountyRewardText"></span></footer>
@@ -108,12 +106,8 @@
         <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><div id="libraryCards" class="library-cards"></div></section>
       </div>
 
-      <div id="shopOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
-        <section class="modal shop-modal"><button class="modal-close" data-close="shopOverlay" type="button">×</button><span class="eyebrow">FIELD ARMORY</span><h2 id="shopTitle">战地军械升级</h2><p>金币只在本局有效，用于强化所有炮塔的基础属性。</p><div class="shop-balance">可用金币 <b id="shopCoins">0</b></div><div id="shopItems" class="shop-items"></div></section>
-      </div>
-
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜、电弧和支援炮塔必须通过卡牌加入。</p></article><article><b>02</b><h3>限时目标</h3><p>带倒计时光环的敌人若及时击杀，下次三选一额外获得一次刷新。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见让每个普通波次额外选择一张卡牌；选择额外卡牌时牺牲当前生命值 50%。吸血、治疗与护盾是关键配套。</p></article><article><b>04</b><h3>远程反击</h3><p>第 8 波后，敌方炮手会停下攻击防线。输出不足将不再只是漏怪问题。</p></article></div></section>
+        <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜、电弧和支援炮塔必须通过卡牌加入。</p></article><article><b>02</b><h3>即时奖励</h3><p>带倒计时光环的敌人若及时击杀，会立即弹出一次随机三选一，不必等到波次结束。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见让每个普通波次额外选择一张卡牌；选择额外卡牌时牺牲当前生命值 50%。吸血、治疗与护盾是关键配套。</p></article><article><b>04</b><h3>完全随机</h3><p>所有当前合法且未满级的卡牌等概率进入三选一；基础攻击、暴击和攻速也只能从牌池获得。</p></article></div></section>
       </div>
 
       <div id="settingsOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -123,6 +117,7 @@
           <div class="setting-row"><div><h3>UI 字体大小</h3><p>同步调整控制台、卡牌、统计与说明文字。</p></div><output id="fontScaleValue" for="fontScaleInput">125%</output></div>
           <input id="fontScaleInput" class="setting-range" type="range" min="100" max="160" step="5" value="125">
           <label class="setting-toggle"><span><b>选卡时暂停游戏</b><small>关闭后，选卡界面出现时战斗计时与场上单位仍会继续。</small></span><input id="pauseOnDraftInput" type="checkbox" checked><i></i></label>
+          <label class="setting-select"><span><b>敌方单位外观</b><small>天体模式会按敌军类型显示小行星、彗星、卫星、恒星、黑洞和中子星。</small></span><select id="enemyStyleInput"><option value="celestial">天体单位</option><option value="tactical">战术单位</option></select></label>
           <label class="setting-select"><span><b>背景音乐播放模式</b><small id="currentTrackName">当前：Sun Mother</small></span><select id="musicModeInput"><option value="sequential">顺序循环</option><option value="random">随机播放</option></select></label>
           <button id="resetSettingsButton" class="secondary-button settings-reset" type="button">恢复默认设置</button>
         </section>
