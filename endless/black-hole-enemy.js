@@ -7,8 +7,10 @@
   const FRAME_COLUMNS = 8;
   const FRAME_COUNT = 48;
   const PLAYBACK_FPS = 24;
+  const DISPLAY_SAMPLE_FPS = 60;
+  const TEMPORAL_TAPS = 3;
   const SOURCE_LOOP_SECONDS = FRAME_COUNT / PLAYBACK_FPS;
-  const LOOP_SECONDS = 9.6;
+  const LOOP_SECONDS = 19.2;
   const MAX_GAME_BOSS_WIDTH = 360;
   const MAX_COLOSSAL_BOSS_WIDTH = 660;
   const HORIZON_RADIUS_X = .134;
@@ -161,7 +163,18 @@
     const normalized = ((elapsed * playbackRate / LOOP_SECONDS + seedOffset) % 1 + 1) % 1;
     const position = normalized * FRAME_COUNT;
     const index = Math.floor(position) % FRAME_COUNT;
-    return { index, next:(index + 1) % FRAME_COUNT, mix:position - Math.floor(position) };
+    // Three-tap quadratic B-spline temporal reconstruction. The weights remain
+    // positive and sum to one, so cloud brightness and velocity stay continuous
+    // across source-frame boundaries without allocating more flipbook textures.
+    const mix = position - Math.floor(position);
+    return {
+      prev:(index - 1 + FRAME_COUNT) % FRAME_COUNT,
+      index,
+      next:(index + 1) % FRAME_COUNT,
+      prevWeight:.5 * (1 - mix) * (1 - mix),
+      indexWeight:.75 - (mix - .5) * (mix - .5),
+      nextWeight:.5 * mix * mix
+    };
   }
 
   function draw(ctx, enemy, radius, elapsed) {
@@ -176,14 +189,17 @@
     // otherwise Canvas adds a second fluorescent outline around every frame.
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     applyPose(ctx, enemy);
     drawEventHorizon(ctx, width, height, palette);
 
     if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
       asset.sheetReady = true;
       const sample = frameSample(enemy, elapsed);
-      drawFrame(ctx, asset.sheet, sample.index, width, height, 1 - sample.mix);
-      drawFrame(ctx, asset.sheet, sample.next, width, height, sample.mix);
+      drawFrame(ctx, asset.sheet, sample.prev, width, height, sample.prevWeight);
+      drawFrame(ctx, asset.sheet, sample.index, width, height, sample.indexWeight);
+      drawFrame(ctx, asset.sheet, sample.next, width, height, sample.nextWeight);
     } else if (asset.posterReady || (asset.poster.complete && asset.poster.naturalWidth)) {
       asset.posterReady = true;
       drawPoster(ctx, asset.poster, width, height);
@@ -267,7 +283,7 @@
 
   function diagnostics() {
     return {
-      frameCount:FRAME_COUNT, sourcePlaybackFps:PLAYBACK_FPS, sourceLoopSeconds:SOURCE_LOOP_SECONDS, loopSeconds:LOOP_SECONDS,
+      frameCount:FRAME_COUNT, sourcePlaybackFps:PLAYBACK_FPS, displaySampleFps:DISPLAY_SAMPLE_FPS, temporalTaps:TEMPORAL_TAPS, sourceLoopSeconds:SOURCE_LOOP_SECONDS, loopSeconds:LOOP_SECONDS,
       dissolveSeconds:DISSOLVE_SECONDS,
       maxPoseDegrees:MAX_POSE_DEGREES,
       loaded:[...assets.values()].map((asset) => ({ name:asset.name, sheetReady:asset.sheetReady, posterReady:asset.posterReady }))

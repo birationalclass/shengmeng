@@ -38,8 +38,12 @@ assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四�
 assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮开局选卡");
 assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接获得三张随机卡牌");
 assert.equal(cards.find((card) => card.id === "global_damage").max, 4, "弹道火控总成最多四级");
-assert(/const LOOP_SECONDS = 9\.6;/.test(blackHoleSource), "黑洞默认旋转周期减半为 9.6 秒");
-assert(/sample\.index[\s\S]*sample\.next[\s\S]*sample\.mix/.test(blackHoleSource), "黑洞运行时混合相邻帧而非跳帧播放");
+assert(/const LOOP_SECONDS = 19\.2;/.test(blackHoleSource), "黑洞旋转速度再次减半，完整循环延长到 19.2 秒");
+assert(/const TEMPORAL_TAPS = 3;/.test(blackHoleSource), "黑洞使用三抽头时间超采样细化低速动画");
+assert(/sample\.prev[\s\S]*sample\.index[\s\S]*sample\.next/.test(blackHoleSource), "黑洞运行时融合前帧、当前帧与后帧而非跳帧播放");
+assert(/const DISPLAY_SAMPLE_FPS = 60;/.test(blackHoleSource), "黑洞以 60Hz 显示采样更新相邻帧混合");
+assert(/prevWeight:\.5 \* \(1 - mix\)[\s\S]*indexWeight:\.75[\s\S]*nextWeight:\.5 \* mix \* mix/.test(blackHoleSource), "黑洞使用亮度守恒的二次 B 样条权重，避免慢速播放逐帧停顿");
+assert(/imageSmoothingQuality = "high"/.test(blackHoleSource), "黑洞缩放与帧融合启用高质量图像采样");
 assert(!/drawSideLensRims\(ctx, width, height, palette\)/.test(blackHoleSource), "黑洞主体不再叠加额外透镜边框");
 assert(!/enemy\.hit[\s\S]{0,500}ctx\.ellipse/.test(blackHoleSource), "黑洞受击不再叠加整圈白色描边");
 assert(/if\(enemy\.type\.bossKind!=="blackhole"\)\{[\s\S]{0,900}ringRadius/.test(gameSource), "黑洞首领不绘制开场无敌虚线圈");
@@ -103,6 +107,9 @@ assert(bossAttackScale(9, true) > bossAttackScale(3, true) * 2, "巨型黑洞跨
 assert.equal(Math.min(3, 1 + (4 >= 3 ? 1 : 0) + (4 >= 6 ? 1 : 0) + 0), 2, "中期黑洞升级为双束伽马射线");
 assert.equal(Math.min(3, 1 + (7 >= 3 ? 1 : 0) + (7 >= 6 ? 1 : 0) + 0), 3, "后期黑洞最多三束伽马射线");
 assert(/resetGame\(\{startWave:9,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=9/.test(gameSource), "测试账号直接进入第九波巨型黑洞多束攻击验收");
+assert(/function blackHoleMoveScale\(enemy\)/.test(gameSource), "黑洞使用快速入场与慢速巡航的分段移动曲线");
+assert(/entryScale=enemy\.colossal\?9:4\.5,cruiseScale=enemy\.colossal\?\.5:\.68/.test(gameSource), "巨型与普通黑洞均快速入场并在战区显著减速");
+assert(/enemy\.y\+=enemy\.speed\*blackHoleMoveScale\(enemy\)\*dt/.test(gameSource), "黑洞推进实际接入平滑移动倍率");
 assert(/if\(!opening&&!state\.draftWaveStarted\)\{repairAfterWave\(\);startNextWave\(\);state\.draftWaveStarted=true;\}/.test(gameSource), "波次奖励弹窗出现前已立即启动下一波");
 assert(/state\.paused=!!opening/.test(gameSource), "仅开局配牌暂停，战斗中奖励弹窗保持运行");
 assert(/下一波已开始 · 战斗不会因选卡暂停/.test(gameSource), "选卡弹窗明确提示后台战斗仍在继续");
@@ -115,6 +122,21 @@ assert.equal(Balance.shouldSpawnBonusBounty(3, 10, () => .1), false, "额外奖�
 
 const families = ["弹道","激光","导弹","冰霜","电弧","支援","特殊"];
 const pool = families.flatMap((family) => Array.from({ length:10 }, (_, index) => ({ id:`${family}-${index}`, tags:[family] })));
+assert(/function blackHoleAsteroidCount\(enemy\)/.test(gameSource), "黑洞首领拥有随威胁阶位成长的小天体喷射数量");
+assert(/function updateBlackHoleAsteroids\(enemy,dt\)/.test(gameSource), "黑洞小天体喷射拥有独立冷却并避开入场与无敌阶段");
+assert(/bh_asteroid:\s*\{[^}]*name:"引力喷射小天体"/.test(gameSource), "喷射小天体是拥有独立血量、防御和分数的敌方单位");
+assert(/typeId:"bh_asteroid"[\s\S]{0,900}maxHp,hp:maxHp/.test(gameSource), "黑洞喷射会生成可被炮塔锁定和击毁的小天体实体");
+assert(/function updateEjectedAsteroid\(enemy,dt\)/.test(gameSource), "未被击毁的小天体会继续飞向屏障或小型炮塔");
+assert(/side:"blackhole"/.test(gameSource), "激光在事件视界处截断而不是穿透黑洞");
+assert(/if\(absorber\)[\s\S]{0,280}break;/.test(gameSource), "激光命中黑洞后停止后续反射路径");
+assert(/absorbed=current\.type\.bossKind==="blackhole"/.test(gameSource), "电弧把黑洞识别为吸收终点");
+assert(/spawnSparks\(beamEnd\.x,beamEnd\.y[\s\S]{0,80}if\(absorbed\)break/.test(gameSource), "电弧到达事件视界后终止链式跳跃");
+assert(/function launchRepairBots\(turret,totalRepair,totalShield=0\)/.test(gameSource), "支援炮塔通过维修机器人而非瞬时脉冲治疗屏障");
+assert(/targetX=BARRIER_ARC\.left\+34\+Math\.random\(\)/.test(gameSource), "维修机器人随机选择屏障弧面附着点");
+assert(/function updateRepairBots\(dt\)/.test(gameSource), "机器人附着后按作业进度持续结算修补与护盾涂层");
+assert(/function drawRepairBots\(\)/.test(gameSource), "战斗画面绘制飞行、附着和焊接状态的维修机器人");
+assert(cards.some((card) => card.id === "repair_drone_bay") && cards.some((card) => card.id === "repair_drone_anchor"), "卡组包含机器人数量与驻留加工两条成长分支");
+
 function offerRates(history, preferenceTag = "", iterations = 30000) {
   const random = rng(0x5eed1234);
   const hits = Object.fromEntries(families.map((family) => [family, 0]));
