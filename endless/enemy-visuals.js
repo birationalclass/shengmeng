@@ -80,6 +80,7 @@
   }
 
   function drawBlackHole(ctx, enemy, radius, elapsed) {
+    if (window.EndlessBlackHoleEnemy?.draw(ctx, enemy, radius, elapsed)) return;
     const spin = elapsed * 0.12 + enemy.phase;
     const tilt = -0.16 + Math.sin(enemy.phase) * 0.1;
 
@@ -156,7 +157,8 @@
     ctx.fillStyle = "#f4fbff";
     ctx.shadowColor = enemy.type.color;
     ctx.shadowBlur = 8;
-    ctx.fillText(`BOSS · ${enemy.type.name}`, 0, -radius - 22);
+    const level = enemy.bossLevel ? ` LV.${enemy.bossLevel}` : "";
+    ctx.fillText(`BOSS${level} · ${enemy.type.name}`, 0, -radius - 22);
     ctx.restore();
   }
 

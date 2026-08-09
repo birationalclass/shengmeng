@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>无尽 · 黑洞首领素材验收</title>
+  <style>
+    :root{color-scheme:dark;font-family:"Microsoft YaHei UI",system-ui,sans-serif;background:#020810;color:#e9fbff}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#0c1b2b 0,#020810 52%,#010307 100%)}
+    main{width:min(94vw,760px);padding:18px}.head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:12px}.head small{display:block;color:#5fe7ff;letter-spacing:.18em}.head h1{margin:4px 0 0;font-size:22px}.head p{margin:0;color:#83a2ad;font:12px Consolas}
+    canvas{display:block;width:100%;aspect-ratio:9/16;border:1px solid #1c5265;background:#020a13;box-shadow:0 24px 80px #000,0 0 32px #27c7ff18}
+    .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}button{border:1px solid #2b7890;background:#071724;color:#dffaff;padding:12px 8px;font-weight:800;cursor:pointer}button:hover{background:#0b2839;border-color:#5fe7ff}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="head"><div><small>FORMAL GAME ASSET QA</small><h1>黑洞首领素材验收</h1></div><p>同一渲染器 · 游戏实装参数</p></div>
+    <canvas id="scene" width="720" height="1280" aria-label="黑洞首领素材预览"></canvas>
+    <div class="actions"><button id="palette" type="button">切换色系</button><button id="angle" type="button">随机姿态</button><button id="explode" type="button">触发烟消云散</button></div>
+  </main>
+  <script src="black-hole-enemy.js"></script>
+  <script>
+    (()=>{
+      const canvas=document.querySelector("#scene"),ctx=canvas.getContext("2d"),TAU=Math.PI*2;
+      const names={gold:"金冕",blue:"蓝白",violet:"紫极",red:"暗红"},palettes=Object.keys(EndlessBlackHoleEnemy.PALETTES);
+      let paletteIndex=0,elapsed=0,last=performance.now(),particles=[],angleSeed=1,exploded=false;
+      const boss={id:9001,type:{boss:true,bossKind:"blackhole"},x:360,y:850,hit:0,blackHolePalette:palettes[0],visualYaw:18,visualPitch:17,visualRoll:-8,visualSeed:24};
+      function grid(){ctx.fillStyle="#020a13";ctx.fillRect(0,0,720,1280);ctx.strokeStyle="rgba(71,200,235,.07)";ctx.lineWidth=1;for(let x=0;x<=720;x+=72){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1280);ctx.stroke()}for(let y=0;y<=1280;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(720,y);ctx.stroke()}const glow=ctx.createRadialGradient(360,850,20,360,850,580);glow.addColorStop(0,"rgba(25,98,145,.15)");glow.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=glow;ctx.fillRect(0,260,720,1020)}
+      function label(text,x,y,color="#8ceeff",align="left"){ctx.fillStyle=color;ctx.font="800 18px 'Microsoft YaHei UI'";ctx.textAlign=align;ctx.fillText(text,x,y)}
+      function drawSamples(){
+        const samples=[{p:"gold",x:115,y:185,r:44,l:1},{p:"blue",x:290,y:185,r:50,l:2},{p:"violet",x:470,y:185,r:56,l:3},{p:"red",x:630,y:185,r:62,l:4}];
+        for(const item of samples){const enemy={...boss,id:100+item.l,blackHolePalette:item.p,visualYaw:-22+item.l*11,visualPitch:9+item.l*3,visualRoll:-9+item.l*4,visualSeed:item.l*31};ctx.save();ctx.translate(item.x,item.y);EndlessBlackHoleEnemy.draw(ctx,enemy,item.r,elapsed);ctx.restore();label(`${names[item.p]} LV.${item.l}`,item.x,278,EndlessBlackHoleEnemy.PALETTES[item.p].mid,"center")}
+      }
+      function updateParticles(dt){for(const p of particles)p.life-=dt;particles=particles.filter(p=>p.life>0)}
+      function drawParticles(){for(const p of particles){if(p.type==="blackHoleDissolve"||p.type==="blackHoleExplosion")EndlessBlackHoleEnemy.drawExplosion(ctx,p)}}
+      function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;elapsed+=dt;updateParticles(dt);grid();label("四种首领色系 / 等级体积递增",28,48);if(!exploded)drawSamples();ctx.strokeStyle="rgba(95,231,255,.18)";ctx.beginPath();ctx.moveTo(34,330);ctx.lineTo(686,330);ctx.stroke();label(`第 5N 波 · ${names[boss.blackHolePalette]}引力深渊 · LV.5`,360,382,EndlessBlackHoleEnemy.PALETTES[boss.blackHolePalette].mid,"center");if(!exploded){ctx.save();ctx.translate(boss.x,boss.y);EndlessBlackHoleEnemy.draw(ctx,boss,124,elapsed);ctx.restore();label("BOSS 不随血量缩小 · 缓慢直线推进 · 免疫诱引",360,1172,"#d8f8ff","center");label("水平 / 俯仰 / 滚转均在安全区间随机",360,1204,"#7297a4","center")}drawParticles();requestAnimationFrame(frame)}
+      document.querySelector("#palette").onclick=()=>{paletteIndex=(paletteIndex+1)%palettes.length;boss.blackHolePalette=palettes[paletteIndex];exploded=false;particles=[]};
+      document.querySelector("#angle").onclick=()=>{angleSeed+=1;boss.visualYaw=-28+Math.random()*56;boss.visualPitch=8+Math.random()*17;boss.visualRoll=-16+Math.random()*32;boss.visualSeed=angleSeed*37;exploded=false;particles=[]};
+      document.querySelector("#explode").onclick=()=>{particles=[];EndlessBlackHoleEnemy.spawnExplosion(particles,boss,124);exploded=true};
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
