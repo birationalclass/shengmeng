@@ -10,6 +10,7 @@
   const SOURCE_LOOP_SECONDS = FRAME_COUNT / PLAYBACK_FPS;
   const LOOP_SECONDS = 9.6;
   const MAX_GAME_BOSS_WIDTH = 360;
+  const MAX_COLOSSAL_BOSS_WIDTH = 660;
   const HORIZON_RADIUS_X = .134;
   const HORIZON_RADIUS_Y = .225;
   const IS_PREVIEW = location.pathname.endsWith("black-hole-boss-preview.html");
@@ -31,7 +32,8 @@
   }
 
   function visualSize(radius) {
-    const width = Math.min(MAX_GAME_BOSS_WIDTH, Math.max(128, radius * 5.55));
+    const widthLimit = radius >= 100 ? MAX_COLOSSAL_BOSS_WIDTH : MAX_GAME_BOSS_WIDTH;
+    const width = Math.min(widthLimit, Math.max(128, radius * 5.55));
     return { width, height:width * FRAME_HEIGHT / FRAME_WIDTH };
   }
 

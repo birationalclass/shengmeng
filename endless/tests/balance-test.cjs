@@ -62,7 +62,7 @@ assert(/function drawFrameSlice\(/.test(blackHoleSource), "黑洞消散使用低
 assert(!/ctx\.filter/.test(blackHoleSource), "黑洞消散不再执行高成本实时模糊");
 assert(!/index < 24/.test(blackHoleSource), "黑洞消散不再绘制二十四条阴影片段");
 assert(/function resolveEmptyDraft\(/.test(gameSource), "空卡池选卡会自动结算而不是停留在零选一");
-assert(/if\(!generateOffers\(\)\)\{resolveEmptyDraft\(opening,bargain,reward\);return;\}/.test(gameSource), "选卡弹窗只在存在合法卡牌时打开");
+assert(/if\(!generateOffers\(\)\)\{resolveEmptyDraft\(opening,false,false\);return;\}/.test(gameSource), "正常选卡弹窗只在存在合法卡牌时打开");
 assert(/state\.rewardDraftsQueued=0/.test(gameSource), "奖励卡池耗尽时清空无法完成的后续奖励选卡");
 
 assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
@@ -70,10 +70,22 @@ assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%")
 assert.equal(Balance.forbiddenInsightChance(5), .5, "禁忌洞见满级为 50%");
 assert.equal(Balance.rollForbiddenInsight(5, () => .49), true, "满级在 50% 内只返回一次布尔触发");
 assert.equal(Balance.rollForbiddenInsight(5, () => .5), false, "满级不超过 50% 概率");
-const bargainBranch = gameSource.indexOf("if(wasBargainPick)");
 const forbiddenRollBranch = gameSource.indexOf("BalanceCore.rollForbiddenInsight");
-assert(bargainBranch >= 0 && bargainBranch < forbiddenRollBranch, "追加选择先返回原流程，不会再次触发禁忌洞见");
-assert(/state\.bargainDraftsQueued=1/.test(gameSource), "禁忌洞见每次最多只追加一次选择");
+assert(forbiddenRollBranch >= 0 && /grantRandomCards\("禁忌洞见",1\)/.test(gameSource), "禁忌洞见直接随机赠送一张合法卡牌");
+assert(/禁忌代价 -50%/.test(gameSource), "禁忌洞见仍然支付一半当前屏障生命");
+assert(!/showDraft\(false,true\)/.test(gameSource), "禁忌洞见不再弹出额外选卡面板");
+assert(/grantRandomCards\("限时击杀成功",rewards\)/.test(gameSource), "限时猎物被击杀后直接随机发放卡牌");
+assert(!/rewardDraftsQueued\+=rewards/.test(gameSource), "新奖励敌人不再排队弹出选卡面板");
+
+assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "每一波守关首领都从黑洞序列选择");
+assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
+assert(/midBossIndex[\s\S]{0,180}bossIndex/.test(gameSource), "每波同时安排中途恒星和最终黑洞");
+assert(/colossal=isBlackHole&&state\.wave%3===0/.test(gameSource), "每三波生成巨型黑洞");
+assert(/type\.radius\*\(colossal\?2\.1:1\)/.test(gameSource), "巨型黑洞碰撞与画面尺寸至少扩大两倍");
+assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑洞素材允许扩展到压迫性宽度");
+assert(/if\(enemy\.type\.bossKind==="star"\)[\s\S]{0,700}continue;/.test(gameSource), "恒星小首领绕过控制与诱引逻辑并缓慢直行");
+assert(/function buildStarfield\(/.test(gameSource), "战斗背景使用预渲染星空与星云");
+assert(!/for\(let x=40;x<W;x\+=80\)/.test(gameSource), "星空背景不再绘制横纵战术网格");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
 assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
@@ -101,9 +113,16 @@ assert(afterBullet["激光"] > baseline["激光"], "未选择类别获得归一�
 const preferredAfterBullet = offerRates([{ id:"弹道-0", families:["弹道"] }], "弹道", 5000);
 assert.equal(preferredAfterBullet["弹道"], 1, "卡牌偏好仍然保底一张，不被疲劳覆盖");
 
+assert(/laser:\s*\{[^\n]+cooldown:10/.test(gameSource), "激光炮基础启动间隔提高到十秒");
+assert(/const LASER_TICK_INTERVAL=\.1;/.test(gameSource), "持续激光以稳定的十分之一秒脉冲结算");
+assert(/function laserDuration\(\)\{return 3\+cardRank\("laser_duration"\)\*\.75;\}/.test(gameSource), "激光基础持续三秒并支持持续时间卡牌");
+assert(/beginLaserChannel\(turret,target\)/.test(gameSource), "激光攻击会进入持续照射状态");
+assert(/function updateLaserChannel\(/.test(gameSource), "激光持续期间追踪目标并连续结算");
+for(const id of ["laser_duration","laser_cycle","laser_sustain"])assert(gameSource.includes(`id:"${id}"`), `激光持续机制卡牌 ${id} 已加入卡池`);
+
 const baseDps = {
   bullet:15 / .48,
-  laser:6 / .3,
+  laser:6 * (3 / .1) / 10,
   missile:58 / 2.65,
   frost:5 / 1.05,
   arc:(4.4 / .92) * (1 + .8 + .64)
