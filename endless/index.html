@@ -24,6 +24,7 @@
           <button id="musicButton" type="button" aria-label="背景音乐" title="背景音乐"><span id="musicIcon">♫</span></button>
           <button id="soundButton" type="button" aria-label="战斗音效" title="战斗音效"><span id="soundIcon">✦</span></button>
           <button id="settingsButton" type="button" aria-label="游戏设置" title="游戏设置"><span>⚙</span></button>
+          <button id="restartButton" type="button" aria-label="重新开始当前战局" title="重新开始" disabled><span>↺</span></button>
           <button id="accountButton" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span></button>
         </div>
       </header>
@@ -89,10 +90,10 @@
           <div id="fastStartPanel" class="fast-start-panel hidden">
             <small>账号快速部署</small>
             <h3>可从第 <span id="fastStartWave">01</span> 波开始</h3>
-            <p><span id="fastStartDrafts">3</span> 轮手动三选一；随机部署额外获得 5 张卡牌</p>
+            <p><span id="fastStartDrafts">5</span> 轮手动三选一；随机部署额外获得 8 张卡牌</p>
             <div class="fast-start-actions">
               <button id="fastStartButton" class="secondary-button" type="button">手动快速部署</button>
-              <button id="randomFastStartButton" class="primary-button" type="button">随机快速部署（<span id="randomFastStartCards">8</span> 张）</button>
+              <button id="randomFastStartButton" class="primary-button" type="button">随机快速部署（<span id="randomFastStartCards">13</span> 张）</button>
             </div>
           </div>
           <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
@@ -116,6 +117,15 @@
           <p>当前未保存的战斗进度将被存档内容替换。</p>
           <div class="confirm-save-info"><span>存档波次 <b id="confirmLoadWave">01</b></span><span>存档时间 <b id="confirmLoadTime">00:00</b></span></div>
           <div class="confirm-actions"><button id="cancelLoadButton" class="secondary-button" type="button">取消</button><button id="confirmLoadButton" class="primary-button" type="button">确认加载</button></div>
+        </section>
+      </div>
+
+      <div id="restartConfirmOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="restartConfirmTitle">
+        <section class="modal confirm-modal restart-confirm-modal">
+          <span class="eyebrow">REDEPLOY DEFENSE</span><h2 id="restartConfirmTitle">重新开始？</h2>
+          <p>当前战局和存档将被清除，并立即从第 1 波重新部署。账号最高纪录与已解锁的快速部署进度会保留。</p>
+          <div class="confirm-save-info"><span>当前波次 <b id="restartConfirmWave">01</b></span><span>战斗时间 <b id="restartConfirmTime">00:00</b></span></div>
+          <div class="confirm-actions"><button id="cancelRestartButton" class="secondary-button" type="button">取消</button><button id="confirmRestartButton" class="danger-button" type="button">确认重新开始</button></div>
         </section>
       </div>
 
