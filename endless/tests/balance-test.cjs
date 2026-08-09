@@ -47,7 +47,7 @@ assert(/const MAX_POSE_DEGREES = 10;/.test(blackHoleSource), "黑洞三轴姿态
 assert(/visualYaw:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞水平倾角在正负十度内随机");
 assert(/visualPitch:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞俯仰角在正负十度内随机");
 assert(/visualRoll:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞滚转角在正负十度内随机");
-assert(/const DISSOLVE_SECONDS = 1\.6;/.test(blackHoleSource), "黑洞首领在两秒内完成烟消云散");
+assert(/const DISSOLVE_SECONDS = 1\.25;/.test(blackHoleSource), "黑洞首领在两秒内快速完成烟消云散");
 assert(/realTime:true, realStartedAt:performance\.now\(\)/.test(blackHoleSource), "黑洞死亡动画使用真实时间计时");
 assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间不会重复扣减黑洞死亡动画");
 assert(/updateRealtimeEffects\(time\);update\(dt\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新");
@@ -58,6 +58,12 @@ assert(/libraryOverlay[\s\S]{0,100}classList\.contains\("show"\)/.test(gameSourc
 assert(/projectile\.type!=="missile"&&projectile\.type!=="frost"/.test(gameSource), "冰弹目标死亡后不会立即消失");
 assert(/impactOrphanedFrost\(projectile,destinationX,destinationY\)/.test(gameSource), "失去目标的冰弹抵达记忆落点后生成控制区");
 assert(/function impactOrphanedFrost[\s\S]{0,500}state\.slowFields\.push/.test(gameSource), "冰弹记忆落点会产生小范围减速场");
+assert(/function drawFrameSlice\(/.test(blackHoleSource), "黑洞消散使用低成本切片漂散");
+assert(!/ctx\.filter/.test(blackHoleSource), "黑洞消散不再执行高成本实时模糊");
+assert(!/index < 24/.test(blackHoleSource), "黑洞消散不再绘制二十四条阴影片段");
+assert(/function resolveEmptyDraft\(/.test(gameSource), "空卡池选卡会自动结算而不是停留在零选一");
+assert(/if\(!generateOffers\(\)\)\{resolveEmptyDraft\(opening,bargain,reward\);return;\}/.test(gameSource), "选卡弹窗只在存在合法卡牌时打开");
+assert(/state\.rewardDraftsQueued=0/.test(gameSource), "奖励卡池耗尽时清空无法完成的后续奖励选卡");
 
 assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
 assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%");

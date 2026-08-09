@@ -16,7 +16,7 @@
   const MAX_LOADED_ASSETS = IS_PREVIEW ? 4 : 2;
   const MAX_POSE_DEGREES = 10;
   const DEG_TO_RAD = Math.PI / 180;
-  const DISSOLVE_SECONDS = 1.6;
+  const DISSOLVE_SECONDS = 1.25;
 
   const PALETTES = {
     gold: { name:"电影暖金", hot:"#fff7d2", mid:"#ffc66f", cool:"#9c4cff" },
@@ -122,6 +122,22 @@
     ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(image,sourceX,sourceY,FRAME_WIDTH,FRAME_HEIGHT,-width/2,-height/2,width,height);ctx.restore();
   }
 
+  function drawFrameSlice(ctx, image, frameIndex, width, height, sliceIndex, sliceCount, offsetX, offsetY, alpha) {
+    const sourceX = (frameIndex % FRAME_COLUMNS) * FRAME_WIDTH;
+    const sourceY = Math.floor(frameIndex / FRAME_COLUMNS) * FRAME_HEIGHT;
+    const sourceSliceHeight = FRAME_HEIGHT / sliceCount;
+    const destinationSliceHeight = height / sliceCount;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(
+      image,
+      sourceX, sourceY + sliceIndex * sourceSliceHeight, FRAME_WIDTH, sourceSliceHeight,
+      -width / 2 + offsetX, -height / 2 + sliceIndex * destinationSliceHeight + offsetY,
+      width, destinationSliceHeight + .5
+    );
+    ctx.restore();
+  }
+
   function drawPoster(ctx, image, width, height, alpha = 1) {
     ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(image,-width/2,-height/2,width,height);ctx.restore();
   }
@@ -196,7 +212,7 @@
     const asset = loadAsset(paletteName);
     const progress = 1 - particle.life / particle.maxLife;
     const ease = 1 - Math.pow(1 - progress, 3);
-    const fade = Math.pow(1 - progress, 2.1);
+    const fade = Math.pow(1 - progress, 1.65);
     const { width, height } = visualSize(particle.radius);
     const frameIndex = Math.floor((((particle.seed || 0) / TAU) % 1 + 1) % 1 * FRAME_COUNT) % FRAME_COUNT;
 
@@ -206,45 +222,38 @@
     drawEventHorizon(ctx, width * (1 + ease * .04), height * (1 + ease * .04), palette, fade);
 
     if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
-      ctx.filter = `blur(${(progress * 4.8).toFixed(2)}px)`;
-      drawFrame(ctx, asset.sheet, frameIndex, width * (1 + ease * .08), height * (1 + ease * .08), fade);
-      ctx.globalCompositeOperation = "lighter";
-      for (let layer = 0; layer < 6; layer += 1) {
-        const side = layer % 2 ? -1 : 1;
-        const phase = particle.seed * .23 + layer * 2.17;
-        ctx.save();
-        ctx.translate(side * ease * particle.radius * (.2 + layer * .115), -ease * particle.radius * (.08 + layer * .05) + Math.sin(phase) * 5);
-        ctx.filter = `blur(${(4 + progress * 10 + layer).toFixed(1)}px)`;
-        drawFrame(ctx, asset.sheet, frameIndex, width * (1 + ease * (.04 + layer * .016)), height * (1 + ease * (.04 + layer * .016)), fade * (.06 + (6 - layer) * .012));
-        ctx.restore();
+      const expandedWidth = width * (1 + ease * .045), expandedHeight = height * (1 + ease * .045);
+      drawFrame(ctx, asset.sheet, frameIndex, expandedWidth, expandedHeight, fade * .74);
+      for (let slice = 0; slice < 6; slice += 1) {
+        const side = slice % 2 ? -1 : 1;
+        const phase = particle.seed * .19 + slice * 1.73;
+        const driftX = side * ease * particle.radius * (.16 + slice * .045);
+        const driftY = -ease * particle.radius * (.04 + slice * .018) + Math.sin(phase) * 2.5;
+        drawFrameSlice(ctx, asset.sheet, frameIndex, expandedWidth, expandedHeight, slice, 6, driftX, driftY, fade * .24);
       }
     } else if (asset.posterReady || (asset.poster.complete && asset.poster.naturalWidth)) {
-      drawPoster(ctx, asset.poster, width * (1 + ease * .08), height * (1 + ease * .08), fade);
+      drawPoster(ctx, asset.poster, width * (1 + ease * .045), height * (1 + ease * .045), fade);
     }
 
-    ctx.filter = "none";
     ctx.globalCompositeOperation = "lighter";
-    ctx.lineCap = "round";
-    for (let index = 0; index < 24; index += 1) {
+    ctx.shadowBlur = 0;
+    for (let index = 0; index < 7; index += 1) {
       const phase = particle.seed * .31 + index * 2.399;
       const side = index % 2 ? -1 : 1;
-      const spread = particle.radius * (.38 + ((index * 13) % 17) / 17 * 1.45) * ease;
-      const x = side * spread + Math.sin(phase + progress * 4) * particle.radius * .16;
-      const y = (index / 23 - .5) * particle.radius * 1.35 - progress * particle.radius * (.18 + .4 * ((index * 7) % 9) / 9);
-      const w = particle.radius * (.16 + .34 * ((index * 11) % 13) / 13) * (1 + .55 * ease);
-      ctx.globalAlpha = fade * (.08 + .18 * ((index * 17) % 19) / 19);
-      ctx.strokeStyle = index % 3 === 0 ? palette.hot : index % 3 === 1 ? palette.mid : palette.cool;
-      ctx.shadowColor = ctx.strokeStyle;
-      ctx.shadowBlur = particle.radius * .11;
-      ctx.lineWidth = Math.max(1.1, particle.radius * .025);
+      const spread = particle.radius * (.3 + index * .13) * ease;
+      const x = side * spread + Math.sin(phase) * particle.radius * .08;
+      const y = (index / 6 - .5) * particle.radius * .92 - ease * particle.radius * (.08 + index * .025);
+      const puff = particle.radius * (.055 + index * .008) * (1 + ease * .55);
+      ctx.globalAlpha = fade * (.08 + (index % 3) * .035);
+      ctx.fillStyle = index % 3 === 0 ? palette.hot : index % 3 === 1 ? palette.mid : palette.cool;
       ctx.beginPath();
-      ctx.ellipse(x, y, w, particle.radius * .035, Math.sin(phase) * .2, Math.PI * .08, Math.PI * .92);
-      ctx.stroke();
+      ctx.ellipse(x, y, puff * 1.8, puff, Math.sin(phase) * .3, 0, TAU);
+      ctx.fill();
     }
 
     const afterglow = ctx.createRadialGradient(0, 0, 0, 0, 0, particle.radius * (1 + ease * 1.25));
-    afterglow.addColorStop(0, rgba(palette.hot, .16 * fade));
-    afterglow.addColorStop(.45, rgba(palette.mid, .11 * fade));
+    afterglow.addColorStop(0, rgba(palette.hot, .1 * fade));
+    afterglow.addColorStop(.45, rgba(palette.mid, .07 * fade));
     afterglow.addColorStop(1, rgba(palette.cool, 0));
     ctx.globalAlpha = 1;
     ctx.fillStyle = afterglow;
