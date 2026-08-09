@@ -8,8 +8,10 @@
   const FRAME_COUNT = 48;
   const PLAYBACK_FPS = 24;
   const SOURCE_LOOP_SECONDS = FRAME_COUNT / PLAYBACK_FPS;
-  const LOOP_SECONDS = 4.8;
+  const LOOP_SECONDS = 9.6;
   const MAX_GAME_BOSS_WIDTH = 360;
+  const HORIZON_RADIUS_X = .134;
+  const HORIZON_RADIUS_Y = .225;
   const IS_PREVIEW = location.pathname.endsWith("black-hole-boss-preview.html");
   const MAX_LOADED_ASSETS = IS_PREVIEW ? 4 : 2;
 
@@ -69,8 +71,8 @@
     sheet.decoding = poster.decoding = "async";
     sheet.onload = () => { asset.sheetReady = true; };
     poster.onload = () => { asset.posterReady = true; };
-    sheet.src = new URL(`assets/black-hole-flipbook/black-hole-${paletteName}-clean.webp?v=20260809-v42`, document.baseURI).href;
-    poster.src = new URL(`assets/black-hole-flipbook/poster-${paletteName}-clean.webp?v=20260809-v42`, document.baseURI).href;
+    sheet.src = new URL(`assets/black-hole-flipbook/black-hole-${paletteName}-clean.webp?v=20260810-v43-wide`, document.baseURI).href;
+    poster.src = new URL(`assets/black-hole-flipbook/poster-${paletteName}-clean.webp?v=20260810-v43-wide`, document.baseURI).href;
     if (sheet.decode) sheet.decode().then(() => { asset.sheetReady = true; }).catch(() => {});
     if (poster.decode) poster.decode().then(() => { asset.posterReady = true; }).catch(() => {});
     assets.set(paletteName, asset);
@@ -83,8 +85,8 @@
   }
 
   function drawEventHorizon(ctx, width, height, palette, alpha = 1) {
-    const radiusX = width * .166;
-    const radiusY = height * .278;
+    const radiusX = width * HORIZON_RADIUS_X;
+    const radiusY = height * HORIZON_RADIUS_Y;
 
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -99,8 +101,8 @@
   }
 
   function drawSideLensRims(ctx, width, height, palette, alpha = 1) {
-    const radiusX = width * .166;
-    const radiusY = height * .278;
+    const radiusX = width * HORIZON_RADIUS_X;
+    const radiusY = height * HORIZON_RADIUS_Y;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.lineCap = "round";
@@ -117,17 +119,11 @@
   function drawFrame(ctx, image, frameIndex, width, height, alpha = 1) {
     const sourceX = (frameIndex % FRAME_COLUMNS) * FRAME_WIDTH;
     const sourceY = Math.floor(frameIndex / FRAME_COLUMNS) * FRAME_HEIGHT;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(image, sourceX, sourceY, FRAME_WIDTH, FRAME_HEIGHT, -width / 2, -height / 2, width, height);
-    ctx.restore();
+    ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(image,sourceX,sourceY,FRAME_WIDTH,FRAME_HEIGHT,-width/2,-height/2,width,height);ctx.restore();
   }
 
   function drawPoster(ctx, image, width, height, alpha = 1) {
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(image, -width / 2, -height / 2, width, height);
-    ctx.restore();
+    ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(image,-width/2,-height/2,width,height);ctx.restore();
   }
 
   function drawFallbackRing(ctx, width, height, palette, elapsed) {
@@ -136,16 +132,18 @@
     ctx.strokeStyle = rgba(palette.mid, .42 * pulse);
     ctx.lineWidth = Math.max(1.25, width * .0045);
     ctx.beginPath();
-    ctx.ellipse(0, 0, width * .173, height * .292, 0, 0, TAU);
+    ctx.ellipse(0, 0, width * (HORIZON_RADIUS_X + .007), height * (HORIZON_RADIUS_Y + .014), 0, 0, TAU);
     ctx.stroke();
     ctx.restore();
   }
 
-  function frameFor(enemy, elapsed) {
+  function frameSample(enemy, elapsed) {
     const seedOffset = ((enemy.visualSeed || enemy.phase || 0) / TAU) % 1;
     const playbackRate = Math.max(.05, Math.min(2, enemy.blackHolePlaybackRate || 1));
     const normalized = ((elapsed * playbackRate / LOOP_SECONDS + seedOffset) % 1 + 1) % 1;
-    return Math.floor(normalized * FRAME_COUNT) % FRAME_COUNT;
+    const position = normalized * FRAME_COUNT;
+    const index = Math.floor(position) % FRAME_COUNT;
+    return { index, next:(index + 1) % FRAME_COUNT, mix:position - Math.floor(position) };
   }
 
   function draw(ctx, enemy, radius, elapsed) {
@@ -160,7 +158,9 @@
 
     if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
       asset.sheetReady = true;
-      drawFrame(ctx, asset.sheet, frameFor(enemy, elapsed), width, height);
+      const sample = frameSample(enemy, elapsed);
+      drawFrame(ctx, asset.sheet, sample.index, width, height, 1 - sample.mix);
+      drawFrame(ctx, asset.sheet, sample.next, width, height, sample.mix);
     } else if (asset.posterReady || (asset.poster.complete && asset.poster.naturalWidth)) {
       asset.posterReady = true;
       drawPoster(ctx, asset.poster, width, height);
@@ -177,7 +177,7 @@
       ctx.shadowBlur = 10;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.ellipse(0, 0, width * .175, height * .296, 0, 0, TAU);
+      ctx.ellipse(0, 0, width * (HORIZON_RADIUS_X + .009), height * (HORIZON_RADIUS_Y + .016), 0, 0, TAU);
       ctx.stroke();
     }
     ctx.restore();

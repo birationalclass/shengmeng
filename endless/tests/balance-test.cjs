@@ -15,6 +15,7 @@ function rng(seed) {
 }
 
 const gameSource = fs.readFileSync(path.join(__dirname, "..", "game.js"), "utf8");
+const blackHoleSource = fs.readFileSync(path.join(__dirname, "..", "black-hole-enemy.js"), "utf8");
 const cardStart = gameSource.indexOf("const CARDS = [");
 const cardEnd = gameSource.indexOf("\n  ];", cardStart);
 assert(cardStart >= 0 && cardEnd > cardStart, "可以读取完整卡牌定义");
@@ -35,7 +36,25 @@ for (const card of cards) {
 
 assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四选一");
 assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮开局选卡");
+assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接获得三张随机卡牌");
 assert.equal(cards.find((card) => card.id === "global_damage").max, 4, "弹道火控总成最多四级");
+assert(/const LOOP_SECONDS = 9\.6;/.test(blackHoleSource), "黑洞默认旋转周期减半为 9.6 秒");
+assert(/sample\.index[\s\S]*sample\.next[\s\S]*sample\.mix/.test(blackHoleSource), "黑洞运行时混合相邻帧而非跳帧播放");
+
+assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
+assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%");
+assert.equal(Balance.forbiddenInsightChance(5), .5, "禁忌洞见满级为 50%");
+assert.equal(Balance.rollForbiddenInsight(5, () => .49), true, "满级在 50% 内只返回一次布尔触发");
+assert.equal(Balance.rollForbiddenInsight(5, () => .5), false, "满级不超过 50% 概率");
+const bargainBranch = gameSource.indexOf("if(wasBargainPick)");
+const forbiddenRollBranch = gameSource.indexOf("BalanceCore.rollForbiddenInsight");
+assert(bargainBranch >= 0 && bargainBranch < forbiddenRollBranch, "追加选择先返回原流程，不会再次触发禁忌洞见");
+assert(/state\.bargainDraftsQueued=1/.test(gameSource), "禁忌洞见每次最多只追加一次选择");
+
+assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
+assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
+assert.equal(Balance.shouldSpawnBonusBounty(1, 19, () => .01), false, "非判定节点不会生成额外奖励敌人");
+assert.equal(Balance.shouldSpawnBonusBounty(3, 10, () => .1), false, "额外奖励敌人概率严格保持为 10%");
 
 const families = ["弹道","激光","导弹","冰霜","电弧","支援","特殊"];
 const pool = families.flatMap((family) => Array.from({ length:10 }, (_, index) => ({ id:`${family}-${index}`, tags:[family] })));
@@ -72,7 +91,10 @@ assert(baseDps.frost < baseDps.bullet * .2, "冰霜保持低伤害控制定位")
 console.log(JSON.stringify({
   cardsAudited:cards.length,
   openingDrafts:5,
+  initialRandomCards:3,
   offerCount:4,
+  forbiddenInsight:[Balance.forbiddenInsightChance(1), Balance.forbiddenInsightChance(5)],
+  bonusBountyIntervals:[Balance.bonusBountyInterval(1), Balance.bonusBountyInterval(3)],
   bulletOfferBaseline:+baseline["弹道"].toFixed(3),
   bulletOfferAfterPick:+afterBullet["弹道"].toFixed(3),
   otherFamilyLift:+(afterBullet["激光"] / baseline["激光"] - 1).toFixed(3),

@@ -8,6 +8,8 @@
   const DRAFT_FAMILIES = new Set(["弹道","激光","导弹","冰霜","电弧","支援","特殊","生存","全局","功能"]);
   const DEFAULT_FATIGUE = [0.38, 0.62, 0.82];
   const SAME_CARD_FATIGUE = [0.45, 0.68, 0.84];
+  const FORBIDDEN_INSIGHT_CHANCES = [0, 0.20, 0.28, 0.35, 0.43, 0.50];
+  const BONUS_BOUNTY_INTERVALS = [0, 20, 15, 10];
 
   function families(card) {
     const tags = [...new Set((card?.tags || []).filter((tag) => DRAFT_FAMILIES.has(tag)))];
@@ -70,5 +72,30 @@
     return [{ id:card.id, families:families(card) }, ...(history || [])].slice(0, limit);
   }
 
-  return { DRAFT_FAMILIES, DEFAULT_FATIGUE, SAME_CARD_FATIGUE, families, offerWeight, generateOffers, remember };
+  function forbiddenInsightChance(rank) {
+    const tier = Math.max(0, Math.min(FORBIDDEN_INSIGHT_CHANCES.length - 1, Math.floor(Number(rank) || 0)));
+    return FORBIDDEN_INSIGHT_CHANCES[tier];
+  }
+
+  function rollForbiddenInsight(rank, rng = Math.random) {
+    const chance = forbiddenInsightChance(rank);
+    return chance > 0 && rng() < chance;
+  }
+
+  function bonusBountyInterval(rank) {
+    const tier = Math.max(0, Math.min(BONUS_BOUNTY_INTERVALS.length - 1, Math.floor(Number(rank) || 0)));
+    return BONUS_BOUNTY_INTERVALS[tier];
+  }
+
+  function shouldSpawnBonusBounty(rank, enemyIndex, rng = Math.random) {
+    const interval = bonusBountyInterval(rank);
+    return interval > 0 && enemyIndex > 0 && enemyIndex % interval === 0 && rng() < 0.10;
+  }
+
+  return {
+    DRAFT_FAMILIES, DEFAULT_FATIGUE, SAME_CARD_FATIGUE,
+    FORBIDDEN_INSIGHT_CHANCES, BONUS_BOUNTY_INTERVALS,
+    families, offerWeight, generateOffers, remember,
+    forbiddenInsightChance, rollForbiddenInsight, bonusBountyInterval, shouldSpawnBonusBounty
+  };
 });
