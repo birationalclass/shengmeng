@@ -791,7 +791,7 @@
   }
   function resizeCanvas(){const dpr=Math.min(1.35,window.devicePixelRatio||1);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
   let uiAccumulator=0,statsAccumulator=0,lastDraw=0;
-  function loop(time){const dt=state.lastTime?(time-state.lastTime)/1000:0;state.lastTime=time;update(dt);uiAccumulator+=dt;statsAccumulator+=dt;if(uiAccumulator>.18){uiAccumulator=0;updateUI();}if(statsAccumulator>.2){statsAccumulator=0;updateStatsUI();}const active=state.started&&!state.paused&&!state.gameOver,blackHoleActive=active&&state.enemies.some((enemy)=>enemy.type.bossKind==="blackhole"),interval=active?1000/(blackHoleActive?48:60):1000/18;if(time-lastDraw>=interval){lastDraw=time;draw(time);}requestAnimationFrame(loop);}
+  function loop(time){const dt=state.lastTime?(time-state.lastTime)/1000:0;state.lastTime=time;update(dt);uiAccumulator+=dt;statsAccumulator+=dt;if(uiAccumulator>.18){uiAccumulator=0;updateUI();}if(statsAccumulator>.2){statsAccumulator=0;updateStatsUI();}const active=state.started&&!state.paused&&!state.gameOver,interval=active?1000/60:1000/18;if(time-lastDraw>=interval){lastDraw=time;draw(time);}requestAnimationFrame(loop);}
   async function init(){await ensureTestAccount();state.turrets=makeTurrets();resizeCanvas();bindEvents();applySettings();loadMusicTrack(0,false);renderProfiles();updateAllUI();$("#startOverlay").classList.remove("show");openAccountPanel(true);draw(0);requestAnimationFrame(loop);}
   init();
 })();
