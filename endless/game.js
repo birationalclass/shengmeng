@@ -719,8 +719,10 @@
       if(enemy.type.bossKind==="blackhole"||state.settings.enemyStyle!=="tactical")drawEnemyFleet(enemy,radius,color);else drawEnemyTactical(enemy,radius,color);
       ctx.restore();drawEnemyStatus(enemy,radius,scale);
       if(enemy.type.boss&&enemy.invulnerable>0){
+        if(enemy.type.bossKind!=="blackhole"){
         const pulse=.72+Math.sin(state.elapsed*8)*.12,ringRadius=radius+13;
         ctx.save();ctx.translate(enemy.x,enemy.y);ctx.globalCompositeOperation="lighter";ctx.strokeStyle="#fff1a8";ctx.fillStyle="rgba(255,222,111,.08)";ctx.shadowColor="#ffd76a";ctx.shadowBlur=22;ctx.lineWidth=4;ctx.setLineDash([12,7]);ctx.lineDashOffset=-state.elapsed*34;ctx.beginPath();ctx.arc(0,0,ringRadius,0,TAU);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=pulse;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(0,0,ringRadius+8,0,TAU);ctx.stroke();ctx.restore();
+        }
         ctx.save();ctx.font="900 13px 'Microsoft YaHei UI'";ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillStyle="#fff5bd";ctx.shadowColor="#ffd76a";ctx.shadowBlur=10;ctx.fillText(`无敌 ${enemy.invulnerable.toFixed(1)}s`,enemy.x,enemy.y-radius-21);ctx.restore();
       }
       if(enemy.gammaCharging){const targetX=enemy.gammaTargetX||enemy.x,targetY=barrierSurfaceY(targetX),progress=1-clamp(enemy.gammaCharge/Math.max(.01,enemy.gammaChargeMax||1.25),0,1);ctx.save();ctx.globalAlpha=.35+progress*.55;ctx.strokeStyle="#e78cff";ctx.shadowColor="#d75cff";ctx.shadowBlur=14;ctx.lineWidth=1.5+progress*2.5;ctx.setLineDash([8,9]);ctx.lineDashOffset=-state.elapsed*38;ctx.beginPath();ctx.moveTo(enemy.x,enemy.y);ctx.lineTo(targetX,targetY);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(enemy.x,enemy.y,radius+8+progress*8,0,TAU);ctx.stroke();ctx.restore();}
