@@ -94,25 +94,6 @@
     ctx.beginPath();
     ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, TAU);
     ctx.fill();
-    ctx.strokeStyle = rgba(palette.mid, .3);
-    ctx.lineWidth = Math.max(1, width * .0035);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawSideLensRims(ctx, width, height, palette, alpha = 1) {
-    const radiusX = width * HORIZON_RADIUS_X;
-    const radiusY = height * HORIZON_RADIUS_Y;
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.lineCap = "round";
-    ctx.lineWidth = Math.max(1.15, width * .0042);
-    ctx.strokeStyle = rgba(palette.hot, .58);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, radiusX, radiusY, 0, -Math.PI * .43, Math.PI * .43);
-    ctx.moveTo(-radiusX * .22, radiusY * .976);
-    ctx.ellipse(0, 0, radiusX, radiusY, 0, Math.PI * .57, Math.PI * 1.43);
-    ctx.stroke();
     ctx.restore();
   }
 
@@ -153,6 +134,11 @@
     const { width, height } = visualSize(radius);
 
     ctx.save();
+    // The flipbook already contains the complete lens rim and bloom. The game
+    // scene normally leaves a boss shadow active, so explicitly clear it here;
+    // otherwise Canvas adds a second fluorescent outline around every frame.
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
     ctx.rotate((enemy.visualRoll || 0) * Math.PI / 1440);
     drawEventHorizon(ctx, width, height, palette);
 
@@ -168,18 +154,8 @@
       drawFallbackRing(ctx, width, height, palette, elapsed);
     }
 
-    drawSideLensRims(ctx, width, height, palette);
-    if (enemy.hit > 0) {
-      ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = Math.min(.48, enemy.hit * 3.1);
-      ctx.strokeStyle = "#fff";
-      ctx.shadowColor = "#fff";
-      ctx.shadowBlur = 10;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, width * (HORIZON_RADIUS_X + .009), height * (HORIZON_RADIUS_Y + .016), 0, 0, TAU);
-      ctx.stroke();
-    }
+    // Damage text already provides hit feedback. Do not draw another ellipse:
+    // sustained fire made that temporary hit ring look like part of the asset.
     ctx.restore();
     return true;
   }

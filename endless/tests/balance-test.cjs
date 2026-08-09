@@ -40,6 +40,8 @@ assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接�
 assert.equal(cards.find((card) => card.id === "global_damage").max, 4, "弹道火控总成最多四级");
 assert(/const LOOP_SECONDS = 9\.6;/.test(blackHoleSource), "黑洞默认旋转周期减半为 9.6 秒");
 assert(/sample\.index[\s\S]*sample\.next[\s\S]*sample\.mix/.test(blackHoleSource), "黑洞运行时混合相邻帧而非跳帧播放");
+assert(!/drawSideLensRims\(ctx, width, height, palette\)/.test(blackHoleSource), "黑洞主体不再叠加额外透镜边框");
+assert(!/enemy\.hit[\s\S]{0,500}ctx\.ellipse/.test(blackHoleSource), "黑洞受击不再叠加整圈白色描边");
 
 assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
 assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%");
