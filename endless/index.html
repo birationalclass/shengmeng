@@ -39,14 +39,15 @@
         <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
         <section class="card-preference" aria-labelledby="preferenceTitle">
           <header><h3 id="preferenceTitle">卡牌偏好</h3><small id="preferenceStatus">未选择</small></header>
-          <p>四选一必含一张该炮塔的合法未满级卡牌</p>
+          <p>四选一必含一张对应合法卡牌；数字为本局累计卡牌等级</p>
           <div class="preference-options" role="radiogroup" aria-label="卡牌炮塔偏好">
-            <label style="--pref-color:#ffd16f"><input type="radio" name="cardPreference" value="bullet"><span>● 子弹</span></label>
-            <label style="--pref-color:#ff5f7c"><input type="radio" name="cardPreference" value="laser"><span>╱ 激光</span></label>
-            <label style="--pref-color:#ff934f"><input type="radio" name="cardPreference" value="missile"><span>▲ 导弹</span></label>
-            <label style="--pref-color:#61ddff"><input type="radio" name="cardPreference" value="frost"><span>✣ 冰霜</span></label>
-            <label style="--pref-color:#ad8cff"><input type="radio" name="cardPreference" value="arc"><span>ϟ 电弧</span></label>
-            <label style="--pref-color:#64efb5"><input type="radio" name="cardPreference" value="support"><span>✚ 支援</span></label>
+            <label style="--pref-color:#ffd16f"><input type="radio" name="cardPreference" value="bullet"><span>● 子弹 <b data-preference-count="弹道">0</b></span></label>
+            <label style="--pref-color:#ff5f7c"><input type="radio" name="cardPreference" value="laser"><span>╱ 激光 <b data-preference-count="激光">0</b></span></label>
+            <label style="--pref-color:#ff934f"><input type="radio" name="cardPreference" value="missile"><span>▲ 导弹 <b data-preference-count="导弹">0</b></span></label>
+            <label style="--pref-color:#61ddff"><input type="radio" name="cardPreference" value="frost"><span>✣ 冰霜 <b data-preference-count="冰霜">0</b></span></label>
+            <label style="--pref-color:#ad8cff"><input type="radio" name="cardPreference" value="arc"><span>ϟ 电弧 <b data-preference-count="电弧">0</b></span></label>
+            <label style="--pref-color:#64efb5"><input type="radio" name="cardPreference" value="support"><span>✚ 支援 <b data-preference-count="支援">0</b></span></label>
+            <label class="special-preference" style="--pref-color:#c792ff"><input type="radio" name="cardPreference" value="special"><span>◐ 特殊 <b data-preference-count="特殊">0</b></span></label>
           </div>
         </section>
       </nav>
@@ -97,6 +98,7 @@
             </div>
           </div>
           <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
+          <button id="blackHoleTestButton" class="secondary-button test-run hidden" type="button">直接测试黑洞首领</button>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
           <p class="zero-pay">零充值 · 零广告 · 所有炮塔与卡牌均在局内获得</p>
         </section>
