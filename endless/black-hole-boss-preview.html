@@ -28,7 +28,7 @@
       function grid(){ctx.fillStyle="#020a13";ctx.fillRect(0,0,720,1280);ctx.strokeStyle="rgba(71,200,235,.07)";ctx.lineWidth=1;for(let x=0;x<=720;x+=72){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1280);ctx.stroke()}for(let y=0;y<=1280;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(720,y);ctx.stroke()}const glow=ctx.createRadialGradient(360,850,20,360,850,580);glow.addColorStop(0,"rgba(25,98,145,.15)");glow.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=glow;ctx.fillRect(0,260,720,1020)}
       function label(text,x,y,color="#8ceeff",align="left"){ctx.fillStyle=color;ctx.font="800 18px 'Microsoft YaHei UI'";ctx.textAlign=align;ctx.fillText(text,x,y)}
       function drawSamples(){
-        const samples=[{p:"gold",x:115,y:185,r:44,l:1},{p:"blue",x:290,y:185,r:50,l:2},{p:"violet",x:470,y:185,r:56,l:3},{p:"red",x:630,y:185,r:62,l:4}];
+        const samples=[{p:"gold",x:90,y:185,r:26,l:1},{p:"blue",x:265,y:185,r:29,l:2},{p:"violet",x:455,y:185,r:32,l:3},{p:"red",x:640,y:185,r:35,l:4}];
         for(const item of samples){const enemy={...boss,id:100+item.l,blackHolePalette:item.p,visualYaw:-22+item.l*11,visualPitch:9+item.l*3,visualRoll:-9+item.l*4,visualSeed:item.l*31};ctx.save();ctx.translate(item.x,item.y);EndlessBlackHoleEnemy.draw(ctx,enemy,item.r,elapsed);ctx.restore();label(`${names[item.p]} LV.${item.l}`,item.x,278,EndlessBlackHoleEnemy.PALETTES[item.p].mid,"center")}
       }
       function updateParticles(dt){for(const p of particles)p.life-=dt;particles=particles.filter(p=>p.life>0)}

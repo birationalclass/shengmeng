@@ -42,11 +42,11 @@
     boss_solar: { name:"赤金超巨星", hp:5.6, speed:.46, radius:62, damage:18, score:160, color:"#ffb14d", attribute:"solar", defense:{burn:.58,frost:1.38}, boss:true, bossKind:"star", starColors:["#fffbd8","#ffd15b","#ff6d35"] },
     boss_blue: { name:"蓝焰巨星", hp:6.4, speed:.44, radius:66, damage:20, score:190, color:"#68dfff", attribute:"phase", defense:{laser:.72,arc:1.28}, boss:true, bossKind:"star", starColors:["#ffffff","#82e9ff","#3984ff"] },
     boss_violet: { name:"紫极超巨星", hp:7.1, speed:.42, radius:70, damage:22, score:220, color:"#b584ff", attribute:"void", defense:{bullet:.84,laser:1.08,missile:1.14}, boss:true, bossKind:"star", starColors:["#fff5ff","#d79aff","#7745dc"] },
-    boss_bh_gold: { name:"金冕引力深渊", hp:8.8, speed:.32, radius:96, damage:30, score:310, color:"#ffc66f", attribute:"solar", defense:{burn:.62,frost:1.34}, boss:true, bossKind:"blackhole", blackHolePalette:"gold" },
-    boss_bh_blue: { name:"蓝白引力深渊", hp:9.4, speed:.31, radius:96, damage:32, score:340, color:"#9aeaff", attribute:"phase", defense:{laser:.7,arc:1.3}, boss:true, bossKind:"blackhole", blackHolePalette:"blue" },
-    boss_bh_violet: { name:"紫极引力深渊", hp:10.1, speed:.3, radius:96, damage:34, score:370, color:"#d49aff", attribute:"void", defense:{bullet:.84,laser:.86,missile:1.16}, boss:true, bossKind:"blackhole", blackHolePalette:"violet" },
-    boss_bh_red: { name:"暗红引力深渊", hp:10.8, speed:.29, radius:96, damage:36, score:410, color:"#ff7658", attribute:"armor", defense:{bullet:.72,missile:1.32}, boss:true, bossKind:"blackhole", blackHolePalette:"red" },
-    boss: { name:"引力深渊", hp:10.1, speed:.3, radius:96, damage:34, score:370, color:"#d49aff", attribute:"void", defense:{bullet:.84,laser:.86,missile:1.16}, boss:true, bossKind:"blackhole", blackHolePalette:"violet" }
+    boss_bh_gold: { name:"金冕引力深渊", hp:8.8, speed:.32, radius:58, damage:30, score:310, color:"#ffc66f", attribute:"solar", defense:{burn:.62,frost:1.34}, boss:true, bossKind:"blackhole", blackHolePalette:"gold" },
+    boss_bh_blue: { name:"蓝白引力深渊", hp:9.4, speed:.31, radius:58, damage:32, score:340, color:"#9aeaff", attribute:"phase", defense:{laser:.7,arc:1.3}, boss:true, bossKind:"blackhole", blackHolePalette:"blue" },
+    boss_bh_violet: { name:"紫极引力深渊", hp:10.1, speed:.3, radius:58, damage:34, score:370, color:"#d49aff", attribute:"void", defense:{bullet:.84,laser:.86,missile:1.16}, boss:true, bossKind:"blackhole", blackHolePalette:"violet" },
+    boss_bh_red: { name:"暗红引力深渊", hp:10.8, speed:.29, radius:58, damage:36, score:410, color:"#ff7658", attribute:"armor", defense:{bullet:.72,missile:1.32}, boss:true, bossKind:"blackhole", blackHolePalette:"red" },
+    boss: { name:"引力深渊", hp:10.1, speed:.3, radius:58, damage:34, score:370, color:"#d49aff", attribute:"void", defense:{bullet:.84,laser:.86,missile:1.16}, boss:true, bossKind:"blackhole", blackHolePalette:"violet" }
   };
   const ENEMY_ATTRIBUTES = {
     armor:{name:"赤钢",glyph:"甲",color:"#ff5e78"}, phase:{name:"蓝相",glyph:"相",color:"#61ddff"},
@@ -274,7 +274,7 @@
   function spawnEnemy(typeId=null){
     const id=typeId||pickEnemyType(state.waveSpawned),type=ENEMY_TYPES[id],isBlackHole=type.bossKind==="blackhole";
     const bossLevel=isBlackHole?Math.max(1,Math.floor(state.wave/5)):0;
-    const radius=isBlackHole?Math.min(150,type.radius+(bossLevel-1)*10):type.radius;
+    const radius=isBlackHole?Math.min(66,type.radius+(bossLevel-1)*1.5):type.radius;
     const bossHpScale=isBlackHole?1+(bossLevel-1)*.24:1;
     const maxHp=waveBaseHp()*type.hp*(type.boss?1+state.wave*.04:1)*bossHpScale;
     const rawMargin=type.boss?radius*(isBlackHole?2.68:1.78)+8:Math.max(58,radius+18);
@@ -695,7 +695,7 @@
     $("#accountButton").addEventListener("click",()=>openAccountPanel(false));$("#startAccountButton").addEventListener("click",()=>openAccountPanel(false));$("#accountClose").addEventListener("click",closeAccountPanel);$("#loginAccountButton").addEventListener("click",loginSelectedAccount);$("#loginPin").addEventListener("keydown",(event)=>{if(event.key==="Enter")loginSelectedAccount();});$("#createAccountForm").addEventListener("submit",createAccount);$("#logoutButton").addEventListener("click",logoutAccount);
     $("#libraryButton").addEventListener("click",()=>openPanel("libraryOverlay",renderLibrary));$("#helpButton").addEventListener("click",()=>openPanel("helpOverlay"));$("#settingsButton").addEventListener("click",()=>openPanel("settingsOverlay",applySettings));$$('[data-close]').forEach((button)=>button.addEventListener("click",()=>closePanel(button.dataset.close)));
     $("#fontScaleInput").addEventListener("input",(event)=>updateFontScale(event.target.value));$("#pauseOnDraftInput").addEventListener("change",(event)=>updateDraftPause(event.target.checked));$("#enemyStyleInput").addEventListener("change",(event)=>updateEnemyStyle(event.target.value));$("#musicModeInput").addEventListener("change",(event)=>updateMusicMode(event.target.value));$$('input[name="cardPreference"]').forEach((radio)=>radio.addEventListener("change",()=>{if(radio.checked)updateCardPreference(radio.value);}));$("#resetSettingsButton").addEventListener("click",resetSettings);backgroundMusic.addEventListener("ended",nextMusicTrack);
-    $("#rerollButton").addEventListener("click",()=>{if(state.rerollsLeft<=0)return;state.rerollsLeft-=1;$("#rerollButton").disabled=state.rerollsLeft<=0;$("#rerollButton").textContent=`↻ ${state.rerollsLeft}`;$("#rerollButton").setAttribute("aria-label",`刷新，剩余 ${state.rerollsLeft} 次`);generateOffers();});window.addEventListener("keydown",(event)=>{if(event.code==="Space"){event.preventDefault();togglePause();}});document.addEventListener("visibilitychange",()=>{if(document.hidden&&state.started&&!state.gameOver){saveRun(false);state.paused=true;syncPauseUI();}});window.addEventListener("beforeunload",()=>saveRun(false));window.addEventListener("resize",resizeCanvas);
+    $("#rerollButton").addEventListener("click",()=>{if(state.rerollsLeft<=0)return;state.rerollsLeft-=1;$("#rerollButton").disabled=state.rerollsLeft<=0;$("#rerollButton").textContent=`↻ ${state.rerollsLeft}`;$("#rerollButton").setAttribute("aria-label",`刷新，剩余 ${state.rerollsLeft} 次`);generateOffers();});window.addEventListener("keydown",(event)=>{if(event.code==="Space"){event.preventDefault();togglePause();}});document.addEventListener("visibilitychange",()=>{if(document.hidden&&state.started&&!state.gameOver)saveRun(false);});window.addEventListener("blur",()=>{if(state.started&&!state.gameOver)saveRun(false);});window.addEventListener("beforeunload",()=>saveRun(false));window.addEventListener("resize",resizeCanvas);
   }
   function resizeCanvas(){const dpr=Math.min(1.35,window.devicePixelRatio||1);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
   let uiAccumulator=0,statsAccumulator=0,lastDraw=0;
