@@ -103,6 +103,10 @@ assert(bossAttackScale(9, true) > bossAttackScale(3, true) * 2, "巨型黑洞跨
 assert.equal(Math.min(3, 1 + (4 >= 3 ? 1 : 0) + (4 >= 6 ? 1 : 0) + 0), 2, "中期黑洞升级为双束伽马射线");
 assert.equal(Math.min(3, 1 + (7 >= 3 ? 1 : 0) + (7 >= 6 ? 1 : 0) + 0), 3, "后期黑洞最多三束伽马射线");
 assert(/resetGame\(\{startWave:9,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=9/.test(gameSource), "测试账号直接进入第九波巨型黑洞多束攻击验收");
+assert(/if\(!opening&&!state\.draftWaveStarted\)\{repairAfterWave\(\);startNextWave\(\);state\.draftWaveStarted=true;\}/.test(gameSource), "波次奖励弹窗出现前已立即启动下一波");
+assert(/state\.paused=!!opening/.test(gameSource), "仅开局配牌暂停，战斗中奖励弹窗保持运行");
+assert(/下一波已开始 · 战斗不会因选卡暂停/.test(gameSource), "选卡弹窗明确提示后台战斗仍在继续");
+assert(!/pauseOnDraftInput/.test(gameSource), "代码中已移除选卡暂停开关");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
 assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
