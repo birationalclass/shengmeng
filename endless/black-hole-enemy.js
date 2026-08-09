@@ -16,6 +16,7 @@
   const MAX_LOADED_ASSETS = IS_PREVIEW ? 4 : 2;
   const MAX_POSE_DEGREES = 10;
   const DEG_TO_RAD = Math.PI / 180;
+  const DISSOLVE_SECONDS = 1.6;
 
   const PALETTES = {
     gold: { name:"电影暖金", hot:"#fff7d2", mid:"#ffc66f", cool:"#9c4cff" },
@@ -184,7 +185,8 @@
       blackHolePalette:enemy.blackHolePalette || "violet",
       visualYaw:poseAngle(enemy.visualYaw), visualPitch:poseAngle(enemy.visualPitch), visualRoll:poseAngle(enemy.visualRoll),
       seed:enemy.visualSeed || enemy.phase || 1,
-      life:1.9, maxLife:1.9
+      realTime:true, realStartedAt:performance.now(), realDuration:DISSOLVE_SECONDS,
+      life:DISSOLVE_SECONDS, maxLife:DISSOLVE_SECONDS
     });
   }
 
@@ -255,6 +257,7 @@
   function diagnostics() {
     return {
       frameCount:FRAME_COUNT, sourcePlaybackFps:PLAYBACK_FPS, sourceLoopSeconds:SOURCE_LOOP_SECONDS, loopSeconds:LOOP_SECONDS,
+      dissolveSeconds:DISSOLVE_SECONDS,
       maxPoseDegrees:MAX_POSE_DEGREES,
       loaded:[...assets.values()].map((asset) => ({ name:asset.name, sheetReady:asset.sheetReady, posterReady:asset.posterReady }))
     };

@@ -47,6 +47,10 @@ assert(/const MAX_POSE_DEGREES = 10;/.test(blackHoleSource), "黑洞三轴姿态
 assert(/visualYaw:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞水平倾角在正负十度内随机");
 assert(/visualPitch:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞俯仰角在正负十度内随机");
 assert(/visualRoll:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "黑洞滚转角在正负十度内随机");
+assert(/const DISSOLVE_SECONDS = 1\.6;/.test(blackHoleSource), "黑洞首领在两秒内完成烟消云散");
+assert(/realTime:true, realStartedAt:performance\.now\(\)/.test(blackHoleSource), "黑洞死亡动画使用真实时间计时");
+assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间不会重复扣减黑洞死亡动画");
+assert(/updateRealtimeEffects\(time\);update\(dt\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新");
 
 assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
 assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%");
