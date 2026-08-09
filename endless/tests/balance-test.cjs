@@ -51,6 +51,10 @@ assert(/const DISSOLVE_SECONDS = 1\.6;/.test(blackHoleSource), "黑洞首领在�
 assert(/realTime:true, realStartedAt:performance\.now\(\)/.test(blackHoleSource), "黑洞死亡动画使用真实时间计时");
 assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间不会重复扣减黑洞死亡动画");
 assert(/updateRealtimeEffects\(time\);update\(dt\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新");
+assert(/function hasActiveBlackHoleDissolve\(\)/.test(gameSource), "波次结算能够检测尚未完成的黑洞消散动画");
+assert(/state\.waveEndTimer<=0&&!hasActiveBlackHoleDissolve\(\)/.test(gameSource), "黑洞完全消失后才弹出波次结算选卡");
+assert(/addCard\(id,\{deferUI:true\}\);rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面");
+assert(/libraryOverlay[\s\S]{0,100}classList\.contains\("show"\)/.test(gameSource), "卡牌图鉴关闭时不重建全部卡牌节点");
 
 assert.deepEqual(Balance.FORBIDDEN_INSIGHT_CHANCES, [0, .2, .28, .35, .43, .5], "禁忌洞见由 20% 成长至 50%");
 assert.equal(Balance.forbiddenInsightChance(1), .2, "禁忌洞见一级为 20%");
