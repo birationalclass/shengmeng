@@ -90,6 +90,19 @@ assert(/function blackHoleAttackPalette\(enemy\)/.test(gameSource), "黑洞攻�
 assert(/hot:palette\.hot,mid:palette\.mid,cool:palette\.cool/.test(gameSource), "伽马射线携带黑洞高光、主色和暗部三层色值");
 assert(/palette=blackHoleAttackPalette\(enemy\)[\s\S]{0,500}ctx\.strokeStyle=palette\.mid/.test(gameSource), "伽马射线蓄力提示使用对应黑洞主色");
 assert(!/style:"gamma"[^\n]+color:"#dc78ff"/.test(gameSource), "伽马攻击不再固定使用紫色");
+assert(/function enemyThreatTier\(enemy,wave=state\.wave\)/.test(gameSource), "敌方攻击按波次划分威胁阶位");
+assert(/function enemyAttackScale\(enemy,wave=state\.wave\)/.test(gameSource), "Boss 与小怪具有独立的指数攻击成长曲线");
+assert(/function enemyVolleyCount\(enemy\)/.test(gameSource), "普通敌军随阶位从单发成长为双发和三发");
+assert(/function blackHoleGammaCount\(enemy\)/.test(gameSource), "黑洞伽马射线束数随威胁阶位成长");
+assert(/gammaTargets=blackHoleGammaTargets\(enemy\)/.test(gameSource), "黑洞蓄力会预告本轮全部伽马射线落点");
+assert(/enemy\.type\.damage\*enemyAttackScale\(enemy\)/.test(gameSource), "敌军突破伤害也接入攻击成长曲线");
+const minionAttackScale = (wave) => Math.pow(1.07, wave - 1) * (1 + Math.floor((wave - 1) / 5) * .07);
+const bossAttackScale = (wave, colossal = false) => Math.pow(1.105, wave - 1) * (1 + Math.floor((wave - 1) / 3) * .11) * (colossal ? 1.22 : 1);
+assert(minionAttackScale(16) > minionAttackScale(1) * 3, "第 16 波小怪攻击强度相对开局有明确成长");
+assert(bossAttackScale(9, true) > bossAttackScale(3, true) * 2, "巨型黑洞跨阶后攻击强度显著提升");
+assert.equal(Math.min(3, 1 + (4 >= 3 ? 1 : 0) + (4 >= 6 ? 1 : 0) + 0), 2, "中期黑洞升级为双束伽马射线");
+assert.equal(Math.min(3, 1 + (7 >= 3 ? 1 : 0) + (7 >= 6 ? 1 : 0) + 0), 3, "后期黑洞最多三束伽马射线");
+assert(/resetGame\(\{startWave:9,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=9/.test(gameSource), "测试账号直接进入第九波巨型黑洞多束攻击验收");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
 assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
