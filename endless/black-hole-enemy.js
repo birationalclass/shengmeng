@@ -2,12 +2,16 @@
   "use strict";
 
   const TAU = Math.PI * 2;
-  const FRAME_WIDTH = 512;
-  const FRAME_HEIGHT = 288;
-  const FRAME_COLUMNS = 5;
-  const FRAME_COUNT = 10;
-  const LOOP_SECONDS = 3.6;
+  const FRAME_WIDTH = 384;
+  const FRAME_HEIGHT = 216;
+  const FRAME_COLUMNS = 8;
+  const FRAME_COUNT = 48;
+  const PLAYBACK_FPS = 24;
+  const SOURCE_LOOP_SECONDS = FRAME_COUNT / PLAYBACK_FPS;
+  const LOOP_SECONDS = 4.8;
   const MAX_GAME_BOSS_WIDTH = 360;
+  const IS_PREVIEW = location.pathname.endsWith("black-hole-boss-preview.html");
+  const MAX_LOADED_ASSETS = IS_PREVIEW ? 4 : 2;
 
   const PALETTES = {
     gold: { name:"电影暖金", hot:"#fff7d2", mid:"#ffc66f", cool:"#9c4cff" },
@@ -21,91 +25,161 @@
     return `rgba(${(value >> 16) & 255},${(value >> 8) & 255},${value & 255},${alpha})`;
   }
 
-  const sheets = Object.fromEntries(Object.keys(PALETTES).map((name) => {
-    const image = new Image();
-    const entry = { image, ready:false, failed:false };
-    image.decoding = "async";
-    image.onload = () => { entry.ready = true; };
-    image.onerror = () => { entry.failed = true; };
-    image.src = new URL(`assets/black-hole/black-hole-${name}.webp?v=20260809-loop37`, document.baseURI).href;
-    if (image.decode) image.decode().then(() => { entry.ready = true; }).catch(() => {});
-    return [name, entry];
-  }));
-
-  function sheetFor(paletteName) {
-    const entry = sheets[paletteName] || sheets.violet;
-    if (!entry.ready && entry.image.complete && entry.image.naturalWidth) entry.ready = true;
-    return entry;
-  }
-
   function visualSize(radius) {
     const width = Math.min(MAX_GAME_BOSS_WIDTH, Math.max(128, radius * 5.55));
     return { width, height:width * FRAME_HEIGHT / FRAME_WIDTH };
   }
 
-  function drawFrame(ctx, image, index, width, height, alpha = 1) {
-    const sourceX = (index % FRAME_COLUMNS) * FRAME_WIDTH;
-    const sourceY = Math.floor(index / FRAME_COLUMNS) * FRAME_HEIGHT;
-    ctx.globalAlpha = alpha;
-    ctx.drawImage(image, sourceX, sourceY, FRAME_WIDTH, FRAME_HEIGHT, -width / 2, -height / 2, width, height);
+  const assets = new Map();
+
+  function disposeAsset(asset) {
+    asset.sheet.onload = null;
+    asset.poster.onload = null;
+    asset.sheet.src = "";
+    asset.poster.src = "";
   }
 
-  function drawFallback(ctx, enemy, radius, elapsed) {
-    const palette = PALETTES[enemy.blackHolePalette] || PALETTES.violet;
-    const { width, height } = visualSize(radius);
-    const core = Math.min(width, height) * .24;
+  function trimAssets(currentName) {
+    while (assets.size > MAX_LOADED_ASSETS) {
+      const oldestName = assets.keys().next().value;
+      if (oldestName === currentName) {
+        const current = assets.get(oldestName);
+        assets.delete(oldestName);
+        assets.set(oldestName, current);
+        continue;
+      }
+      const oldest = assets.get(oldestName);
+      assets.delete(oldestName);
+      disposeAsset(oldest);
+    }
+  }
+
+  function loadAsset(name = "violet") {
+    const paletteName = PALETTES[name] ? name : "violet";
+    let asset = assets.get(paletteName);
+    if (asset) {
+      assets.delete(paletteName);
+      assets.set(paletteName, asset);
+      return asset;
+    }
+
+    const sheet = new Image();
+    const poster = new Image();
+    asset = { name:paletteName, sheet, poster, sheetReady:false, posterReady:false };
+    sheet.decoding = poster.decoding = "async";
+    sheet.onload = () => { asset.sheetReady = true; };
+    poster.onload = () => { asset.posterReady = true; };
+    sheet.src = new URL(`assets/black-hole-flipbook/black-hole-${paletteName}-clean.webp?v=20260809-v42`, document.baseURI).href;
+    poster.src = new URL(`assets/black-hole-flipbook/poster-${paletteName}-clean.webp?v=20260809-v42`, document.baseURI).href;
+    if (sheet.decode) sheet.decode().then(() => { asset.sheetReady = true; }).catch(() => {});
+    if (poster.decode) poster.decode().then(() => { asset.posterReady = true; }).catch(() => {});
+    assets.set(paletteName, asset);
+    trimAssets(paletteName);
+    return asset;
+  }
+
+  function preload(name) {
+    loadAsset(name);
+  }
+
+  function drawEventHorizon(ctx, width, height, palette, alpha = 1) {
+    const radiusX = width * .166;
+    const radiusY = height * .278;
+
     ctx.save();
-    ctx.rotate((enemy.visualRoll || 0) * Math.PI / 720);
-    const glow = ctx.createRadialGradient(0, 0, core * .65, 0, 0, width * .48);
-    glow.addColorStop(0, "rgba(0,0,0,0)");
-    glow.addColorStop(.42, rgba(palette.mid, .16));
-    glow.addColorStop(.72, rgba(palette.cool, .08));
-    glow.addColorStop(1, rgba(palette.cool, 0));
-    ctx.fillStyle = glow;
-    ctx.fillRect(-width / 2, -height / 2, width, height);
-    ctx.rotate(elapsed * .22);
-    ctx.shadowColor = palette.mid;
-    ctx.shadowBlur = 20;
-    ctx.strokeStyle = rgba(palette.mid, .88);
-    ctx.lineWidth = Math.max(8, radius * .17);
-    ctx.beginPath();
-    ctx.ellipse(0, 0, width * .39, height * .19, 0, 0, TAU);
-    ctx.stroke();
-    ctx.rotate(-elapsed * .22);
+    ctx.globalAlpha = alpha;
     ctx.fillStyle = "#000";
     ctx.beginPath();
-    ctx.arc(0, 0, core, 0, TAU);
+    ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, TAU);
     ctx.fill();
-    ctx.strokeStyle = rgba(palette.hot, .82);
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = rgba(palette.mid, .3);
+    ctx.lineWidth = Math.max(1, width * .0035);
     ctx.stroke();
     ctx.restore();
   }
 
-  function draw(ctx, enemy, radius, elapsed) {
-    const entry = sheetFor(enemy.blackHolePalette || "violet");
-    if (!entry.ready) {
-      drawFallback(ctx, enemy, radius, elapsed);
-      return true;
-    }
+  function drawSideLensRims(ctx, width, height, palette, alpha = 1) {
+    const radiusX = width * .166;
+    const radiusY = height * .278;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineCap = "round";
+    ctx.lineWidth = Math.max(1.15, width * .0042);
+    ctx.strokeStyle = rgba(palette.hot, .58);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, radiusX, radiusY, 0, -Math.PI * .43, Math.PI * .43);
+    ctx.moveTo(-radiusX * .22, radiusY * .976);
+    ctx.ellipse(0, 0, radiusX, radiusY, 0, Math.PI * .57, Math.PI * 1.43);
+    ctx.stroke();
+    ctx.restore();
+  }
 
-    const { width, height } = visualSize(radius);
+  function drawFrame(ctx, image, frameIndex, width, height, alpha = 1) {
+    const sourceX = (frameIndex % FRAME_COLUMNS) * FRAME_WIDTH;
+    const sourceY = Math.floor(frameIndex / FRAME_COLUMNS) * FRAME_HEIGHT;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(image, sourceX, sourceY, FRAME_WIDTH, FRAME_HEIGHT, -width / 2, -height / 2, width, height);
+    ctx.restore();
+  }
+
+  function drawPoster(ctx, image, width, height, alpha = 1) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.drawImage(image, -width / 2, -height / 2, width, height);
+    ctx.restore();
+  }
+
+  function drawFallbackRing(ctx, width, height, palette, elapsed) {
+    const pulse = .72 + Math.sin(elapsed * 1.4) * .06;
+    ctx.save();
+    ctx.strokeStyle = rgba(palette.mid, .42 * pulse);
+    ctx.lineWidth = Math.max(1.25, width * .0045);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, width * .173, height * .292, 0, 0, TAU);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function frameFor(enemy, elapsed) {
     const seedOffset = ((enemy.visualSeed || enemy.phase || 0) / TAU) % 1;
-    const normalized = ((elapsed / LOOP_SECONDS + seedOffset) % 1 + 1) % 1;
-    const framePosition = normalized * FRAME_COUNT;
-    const frameIndex = Math.floor(framePosition) % FRAME_COUNT;
-    const nextIndex = (frameIndex + 1) % FRAME_COUNT;
-    const blend = framePosition - Math.floor(framePosition);
+    const playbackRate = Math.max(.05, Math.min(2, enemy.blackHolePlaybackRate || 1));
+    const normalized = ((elapsed * playbackRate / LOOP_SECONDS + seedOffset) % 1 + 1) % 1;
+    return Math.floor(normalized * FRAME_COUNT) % FRAME_COUNT;
+  }
+
+  function draw(ctx, enemy, radius, elapsed) {
+    const paletteName = enemy.blackHolePalette || "violet";
+    const palette = PALETTES[paletteName] || PALETTES.violet;
+    const asset = loadAsset(paletteName);
+    const { width, height } = visualSize(radius);
 
     ctx.save();
     ctx.rotate((enemy.visualRoll || 0) * Math.PI / 1440);
-    if (enemy.hit > 0) {
-      ctx.filter = `brightness(${1 + Math.min(.48, enemy.hit * 3.1)}) saturate(1.08)`;
-      ctx.shadowColor = "#fff";
-      ctx.shadowBlur = 9;
+    drawEventHorizon(ctx, width, height, palette);
+
+    if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
+      asset.sheetReady = true;
+      drawFrame(ctx, asset.sheet, frameFor(enemy, elapsed), width, height);
+    } else if (asset.posterReady || (asset.poster.complete && asset.poster.naturalWidth)) {
+      asset.posterReady = true;
+      drawPoster(ctx, asset.poster, width, height);
+    } else {
+      drawFallbackRing(ctx, width, height, palette, elapsed);
     }
-    drawFrame(ctx, entry.image, frameIndex, width, height, 1);
-    if (blend > .002) drawFrame(ctx, entry.image, nextIndex, width, height, blend);
+
+    drawSideLensRims(ctx, width, height, palette);
+    if (enemy.hit > 0) {
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = Math.min(.48, enemy.hit * 3.1);
+      ctx.strokeStyle = "#fff";
+      ctx.shadowColor = "#fff";
+      ctx.shadowBlur = 10;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, width * .175, height * .296, 0, 0, TAU);
+      ctx.stroke();
+    }
     ctx.restore();
     return true;
   }
@@ -120,8 +194,9 @@
   }
 
   function drawExplosion(ctx, particle) {
-    const palette = PALETTES[particle.blackHolePalette] || PALETTES.violet;
-    const entry = sheetFor(particle.blackHolePalette || "violet");
+    const paletteName = particle.blackHolePalette || "violet";
+    const palette = PALETTES[paletteName] || PALETTES.violet;
+    const asset = loadAsset(paletteName);
     const progress = 1 - particle.life / particle.maxLife;
     const ease = 1 - Math.pow(1 - progress, 3);
     const fade = Math.pow(1 - progress, 2.1);
@@ -131,20 +206,23 @@
     ctx.save();
     ctx.translate(particle.x, particle.y);
     ctx.rotate((particle.visualRoll || 0) * Math.PI / 1440);
+    drawEventHorizon(ctx, width * (1 + ease * .04), height * (1 + ease * .04), palette, fade);
 
-    if (entry.ready) {
-      ctx.filter = `blur(${(progress * 5.2).toFixed(2)}px)`;
-      drawFrame(ctx, entry.image, frameIndex, width * (1 + ease * .07), height * (1 + ease * .07), fade);
+    if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
+      ctx.filter = `blur(${(progress * 4.8).toFixed(2)}px)`;
+      drawFrame(ctx, asset.sheet, frameIndex, width * (1 + ease * .08), height * (1 + ease * .08), fade);
       ctx.globalCompositeOperation = "lighter";
       for (let layer = 0; layer < 6; layer += 1) {
         const side = layer % 2 ? -1 : 1;
         const phase = particle.seed * .23 + layer * 2.17;
         ctx.save();
-        ctx.translate(side * ease * particle.radius * (.22 + layer * .12), -ease * particle.radius * (.08 + layer * .055) + Math.sin(phase) * 5);
-        ctx.filter = `blur(${(4 + progress * 11 + layer).toFixed(1)}px)`;
-        drawFrame(ctx, entry.image, frameIndex, width * (1 + ease * (.05 + layer * .018)), height * (1 + ease * (.05 + layer * .018)), fade * (.07 + (6 - layer) * .012));
+        ctx.translate(side * ease * particle.radius * (.2 + layer * .115), -ease * particle.radius * (.08 + layer * .05) + Math.sin(phase) * 5);
+        ctx.filter = `blur(${(4 + progress * 10 + layer).toFixed(1)}px)`;
+        drawFrame(ctx, asset.sheet, frameIndex, width * (1 + ease * (.04 + layer * .016)), height * (1 + ease * (.04 + layer * .016)), fade * (.06 + (6 - layer) * .012));
         ctx.restore();
       }
+    } else if (asset.posterReady || (asset.poster.complete && asset.poster.naturalWidth)) {
+      drawPoster(ctx, asset.poster, width * (1 + ease * .08), height * (1 + ease * .08), fade);
     }
 
     ctx.filter = "none";
@@ -179,5 +257,12 @@
     ctx.restore();
   }
 
-  window.EndlessBlackHoleEnemy = { PALETTES, draw, spawnExplosion, drawExplosion };
+  function diagnostics() {
+    return {
+      frameCount:FRAME_COUNT, sourcePlaybackFps:PLAYBACK_FPS, sourceLoopSeconds:SOURCE_LOOP_SECONDS, loopSeconds:LOOP_SECONDS,
+      loaded:[...assets.values()].map((asset) => ({ name:asset.name, sheetReady:asset.sheetReady, posterReady:asset.posterReady }))
+    };
+  }
+
+  window.EndlessBlackHoleEnemy = { PALETTES, preload, draw, spawnExplosion, drawExplosion, diagnostics };
 })();
