@@ -14,6 +14,8 @@
   const HORIZON_RADIUS_Y = .225;
   const IS_PREVIEW = location.pathname.endsWith("black-hole-boss-preview.html");
   const MAX_LOADED_ASSETS = IS_PREVIEW ? 4 : 2;
+  const MAX_POSE_DEGREES = 10;
+  const DEG_TO_RAD = Math.PI / 180;
 
   const PALETTES = {
     gold: { name:"电影暖金", hot:"#fff7d2", mid:"#ffc66f", cool:"#9c4cff" },
@@ -30,6 +32,22 @@
   function visualSize(radius) {
     const width = Math.min(MAX_GAME_BOSS_WIDTH, Math.max(128, radius * 5.55));
     return { width, height:width * FRAME_HEIGHT / FRAME_WIDTH };
+  }
+
+  function poseAngle(value) {
+    return Math.max(-MAX_POSE_DEGREES, Math.min(MAX_POSE_DEGREES, Number(value) || 0));
+  }
+
+  function applyPose(ctx, subject) {
+    const yaw = poseAngle(subject.visualYaw);
+    const pitch = poseAngle(subject.visualPitch);
+    const roll = poseAngle(subject.visualRoll);
+    const yawShear = Math.tan(yaw * DEG_TO_RAD) * .24;
+    const pitchShear = Math.tan(pitch * DEG_TO_RAD) * .18;
+    const scaleX = 1 - Math.abs(yaw) / MAX_POSE_DEGREES * .035;
+    const scaleY = 1 - Math.abs(pitch) / MAX_POSE_DEGREES * .03;
+    ctx.rotate(roll * DEG_TO_RAD);
+    ctx.transform(scaleX, pitchShear, yawShear, scaleY, 0, 0);
   }
 
   const assets = new Map();
@@ -139,7 +157,7 @@
     // otherwise Canvas adds a second fluorescent outline around every frame.
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
-    ctx.rotate((enemy.visualRoll || 0) * Math.PI / 1440);
+    applyPose(ctx, enemy);
     drawEventHorizon(ctx, width, height, palette);
 
     if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
@@ -164,7 +182,8 @@
     particles.push({
       type:"blackHoleDissolve", x:enemy.x, y:enemy.y, radius,
       blackHolePalette:enemy.blackHolePalette || "violet",
-      visualRoll:enemy.visualRoll || 0, seed:enemy.visualSeed || enemy.phase || 1,
+      visualYaw:poseAngle(enemy.visualYaw), visualPitch:poseAngle(enemy.visualPitch), visualRoll:poseAngle(enemy.visualRoll),
+      seed:enemy.visualSeed || enemy.phase || 1,
       life:1.9, maxLife:1.9
     });
   }
@@ -181,7 +200,7 @@
 
     ctx.save();
     ctx.translate(particle.x, particle.y);
-    ctx.rotate((particle.visualRoll || 0) * Math.PI / 1440);
+    applyPose(ctx, particle);
     drawEventHorizon(ctx, width * (1 + ease * .04), height * (1 + ease * .04), palette, fade);
 
     if (asset.sheetReady || (asset.sheet.complete && asset.sheet.naturalWidth)) {
@@ -236,6 +255,7 @@
   function diagnostics() {
     return {
       frameCount:FRAME_COUNT, sourcePlaybackFps:PLAYBACK_FPS, sourceLoopSeconds:SOURCE_LOOP_SECONDS, loopSeconds:LOOP_SECONDS,
+      maxPoseDegrees:MAX_POSE_DEGREES,
       loaded:[...assets.values()].map((asset) => ({ name:asset.name, sheetReady:asset.sheetReady, posterReady:asset.posterReady }))
     };
   }

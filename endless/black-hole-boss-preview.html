@@ -20,24 +20,24 @@
     <div class="actions"><button id="palette" type="button">切换色系</button><button id="angle" type="button">随机姿态</button><button id="background" type="button">透明棋盘格</button><button id="explode" type="button">触发烟消云散</button></div>
     <label class="speed" for="speed"><span>旋转速度</span><input id="speed" type="range" min="0.2" max="1.6" step="0.05" value="1"><output id="speedValue">1.00×</output></label>
   </main>
-  <script src="black-hole-enemy.js?v=20260810-v44-native-outline"></script>
+  <script src="black-hole-enemy.js?v=20260810-v45-pose"></script>
   <script>
     (()=>{
       const canvas=document.querySelector("#scene"),ctx=canvas.getContext("2d"),TAU=Math.PI*2;
       const names={gold:"金冕",blue:"蓝白",violet:"紫极",red:"暗红"},palettes=Object.keys(EndlessBlackHoleEnemy.PALETTES);
       let paletteIndex=0,elapsed=0,last=performance.now(),particles=[],angleSeed=1,exploded=false,checkerboard=false,playbackRate=1;
-      const boss={id:9001,type:{boss:true,bossKind:"blackhole"},x:360,y:850,hit:0,blackHolePalette:palettes[0],visualYaw:18,visualPitch:17,visualRoll:-8,visualSeed:24,blackHolePlaybackRate:playbackRate};
+      const boss={id:9001,type:{boss:true,bossKind:"blackhole"},x:360,y:850,hit:0,blackHolePalette:palettes[0],visualYaw:7,visualPitch:-6,visualRoll:-8,visualSeed:24,blackHolePlaybackRate:playbackRate};
       function grid(){if(checkerboard){for(let y=0;y<1280;y+=32)for(let x=0;x<720;x+=32){ctx.fillStyle=(x/32+y/32)%2?"#d9e2e7":"#53636c";ctx.fillRect(x,y,32,32)}return;}ctx.fillStyle="#020a13";ctx.fillRect(0,0,720,1280);ctx.strokeStyle="rgba(71,200,235,.07)";ctx.lineWidth=1;for(let x=0;x<=720;x+=72){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,1280);ctx.stroke()}for(let y=0;y<=1280;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(720,y);ctx.stroke()}const glow=ctx.createRadialGradient(360,850,20,360,850,580);glow.addColorStop(0,"rgba(25,98,145,.15)");glow.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=glow;ctx.fillRect(0,260,720,1020)}
       function label(text,x,y,color="#8ceeff",align="left"){ctx.fillStyle=color;ctx.font="800 18px 'Microsoft YaHei UI'";ctx.textAlign=align;ctx.fillText(text,x,y)}
       function drawSamples(){
         const samples=[{p:"gold",x:90,y:185,r:26,l:1},{p:"blue",x:265,y:185,r:29,l:2},{p:"violet",x:455,y:185,r:32,l:3},{p:"red",x:640,y:185,r:35,l:4}];
-        for(const item of samples){const enemy={...boss,id:100+item.l,blackHolePalette:item.p,visualYaw:-22+item.l*11,visualPitch:9+item.l*3,visualRoll:-9+item.l*4,visualSeed:item.l*31,blackHolePlaybackRate:playbackRate};ctx.save();ctx.translate(item.x,item.y);EndlessBlackHoleEnemy.draw(ctx,enemy,item.r,elapsed);ctx.restore();label(`${names[item.p]} LV.${item.l}`,item.x,278,EndlessBlackHoleEnemy.PALETTES[item.p].mid,"center")}
+        for(const item of samples){const enemy={...boss,id:100+item.l,blackHolePalette:item.p,visualYaw:-8+item.l*4,visualPitch:-7+item.l*3,visualRoll:-9+item.l*5,visualSeed:item.l*31,blackHolePlaybackRate:playbackRate};ctx.save();ctx.translate(item.x,item.y);EndlessBlackHoleEnemy.draw(ctx,enemy,item.r,elapsed);ctx.restore();label(`${names[item.p]} LV.${item.l}`,item.x,278,EndlessBlackHoleEnemy.PALETTES[item.p].mid,"center")}
       }
       function updateParticles(dt){for(const p of particles)p.life-=dt;particles=particles.filter(p=>p.life>0)}
       function drawParticles(){for(const p of particles){if(p.type==="blackHoleDissolve"||p.type==="blackHoleExplosion")EndlessBlackHoleEnemy.drawExplosion(ctx,p)}}
       function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;elapsed+=dt;updateParticles(dt);grid();label("四种首领色系 / 等级体积递增",28,48);if(!exploded)drawSamples();ctx.strokeStyle="rgba(95,231,255,.18)";ctx.beginPath();ctx.moveTo(34,330);ctx.lineTo(686,330);ctx.stroke();label(`第 5N 波 · ${names[boss.blackHolePalette]}引力深渊 · LV.5`,360,382,EndlessBlackHoleEnemy.PALETTES[boss.blackHolePalette].mid,"center");if(!exploded){ctx.save();ctx.translate(boss.x,boss.y);EndlessBlackHoleEnemy.draw(ctx,boss,124,elapsed);ctx.restore();label("BOSS 不随血量缩小 · 缓慢直线推进 · 免疫诱引",360,1172,"#d8f8ff","center");label("水平 / 俯仰 / 滚转均在安全区间随机",360,1204,"#7297a4","center")}drawParticles();requestAnimationFrame(frame)}
       document.querySelector("#palette").onclick=()=>{paletteIndex=(paletteIndex+1)%palettes.length;boss.blackHolePalette=palettes[paletteIndex];exploded=false;particles=[]};
-      document.querySelector("#angle").onclick=()=>{angleSeed+=1;boss.visualYaw=-28+Math.random()*56;boss.visualPitch=8+Math.random()*17;boss.visualRoll=-16+Math.random()*32;boss.visualSeed=angleSeed*37;exploded=false;particles=[]};
+      document.querySelector("#angle").onclick=()=>{angleSeed+=1;boss.visualYaw=-10+Math.random()*20;boss.visualPitch=-10+Math.random()*20;boss.visualRoll=-10+Math.random()*20;boss.visualSeed=angleSeed*37;exploded=false;particles=[]};
       document.querySelector("#background").onclick=(event)=>{checkerboard=!checkerboard;event.currentTarget.textContent=checkerboard?"恢复战场背景":"透明棋盘格"};
       document.querySelector("#explode").onclick=()=>{particles=[];EndlessBlackHoleEnemy.spawnExplosion(particles,boss,124);exploded=true};
       document.querySelector("#speed").oninput=(event)=>{playbackRate=Number(event.currentTarget.value);boss.blackHolePlaybackRate=playbackRate;document.querySelector("#speedValue").value=`${playbackRate.toFixed(2)}×`};
