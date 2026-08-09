@@ -86,6 +86,10 @@ assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑�
 assert(/if\(enemy\.type\.bossKind==="star"\)[\s\S]{0,700}continue;/.test(gameSource), "恒星小首领绕过控制与诱引逻辑并缓慢直行");
 assert(/function buildStarfield\(/.test(gameSource), "战斗背景使用预渲染星空与星云");
 assert(!/for\(let x=40;x<W;x\+=80\)/.test(gameSource), "星空背景不再绘制横纵战术网格");
+assert(/function blackHoleAttackPalette\(enemy\)/.test(gameSource), "黑洞攻击从当前黑洞色板读取颜色");
+assert(/hot:palette\.hot,mid:palette\.mid,cool:palette\.cool/.test(gameSource), "伽马射线携带黑洞高光、主色和暗部三层色值");
+assert(/palette=blackHoleAttackPalette\(enemy\)[\s\S]{0,500}ctx\.strokeStyle=palette\.mid/.test(gameSource), "伽马射线蓄力提示使用对应黑洞主色");
+assert(!/style:"gamma"[^\n]+color:"#dc78ff"/.test(gameSource), "伽马攻击不再固定使用紫色");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
 assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
