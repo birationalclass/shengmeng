@@ -19,6 +19,8 @@
   const NEW_RUN_RANDOM_CARDS = 3;
   const RANDOM_FAST_EXTRA_CARDS = 8;
   const DRAFT_OFFER_COUNT = 4;
+  const DISTANCE_DAMAGE_MIN = .5;
+  const DISTANCE_BALANCE_HP_SCALE = .88;
   const COLORS = { cyan:"#5ce6ff", gold:"#ffd16f", danger:"#ff5e78", green:"#64efb5", violet:"#a98aff", bullet:"#ffd16f", laser:"#ff5f7c", missile:"#ff934f", frost:"#61ddff", arc:"#ad8cff", support:"#64efb5" };
 
   const TURRET_DEFS = {
@@ -134,10 +136,13 @@
     { id:"mini_lure", name:"引力诱捕器", glyph:"◎", rarity:"稀有", tags:["功能"], max:3, reqAny:["bullet_sentry","laser_sentry","missile_sentry","frost_sentry","arc_sentry"], minWave:6, desc:(r)=>`小型子炮塔会吸引 ${135+r*45} 范围内的敌军改变路线。`, note:"未选择本卡时，敌军只攻击恰好进入自身攻击范围的子炮塔。" },
 
     { id:"lifesteal", name:"生命虹吸", glyph:"♥", rarity:"生存", tags:["生存"], max:4, minWave:2, desc:(r)=>`获得吸血：造成伤害的 ${0.6+r*.35}% 转化为屏障生命。`, note:"高频、多目标和持续伤害都会提高治疗量。" },
-    { id:"barrier", name:"相位护盾", glyph:"⬡", rarity:"生存", tags:["生存"], max:4, desc:(r)=>`护盾上限提高 ${20+r*10}，选取时立即补充护盾。`, note:"护盾优先吸收漏怪和敌方炮火。" },
-    { id:"shield_regen", name:"护盾再生", glyph:"+", rarity:"生存", tags:["生存"], max:3, req:["barrier"], minWave:3, desc:(r)=>`脱离受击 4 秒后，每秒恢复 ${2+r*1.5} 护盾。`, note:"对抗第 8 波后敌方远程攻击。" },
+    { id:"barrier", name:"相位护盾", glyph:"⬡", rarity:"生存", tags:["生存"], max:4, desc:(r)=>`护盾上限变为屏障生命上限的 ${[30,45,60,80][r]}%，选取时立即恢复 ${[40,45,50,55][r]}% 护盾上限。`, note:"随屏障成长持续放大，不再是固定 20 点；护盾优先吸收所有防线伤害与禁忌代价。" },
+    { id:"shield_regen", name:"相位回充", glyph:"+", rarity:"生存", tags:["生存"], max:3, req:["barrier"], minWave:3, desc:(r)=>`脱离受击 3.5 秒后，每秒恢复护盾上限的 ${[2.2,3.4,4.8][r]}%。`, note:"百分比回充会与相位护盾、支援机器人和护盾容量同步成长。" },
+    { id:"shield_overdrive", name:"护盾势能耦合", glyph:"⚡", rarity:"进阶", tags:["生存","全局"], max:3, req:["barrier"], minWave:2, desc:(r)=>`当前护盾比例会连续提供最多 ${[13,18,23][r]}% 全局伤害。`, note:"护盾越完整火力越高；承伤后加成平滑下降，而非只在满盾时生效。" },
+    { id:"barrier_arsenal", name:"壁垒质量投射", glyph:"⬢", rarity:"稀有", tags:["生存","全局","功能"], max:3, minWave:3, desc:(r)=>`每 100 点屏障生命上限提供 ${[2.5,3.2,4][r]}% 全局伤害，最多 36%。`, note:"残骸增殖、色谱回收与连杀锻炉会把生命上限长期转化为攻击力。" },
+    { id:"aegis_retaliation", name:"相位崩解反冲", glyph:"✹", rarity:"组合", tags:["生存","全局"], max:3, req:["barrier","shield_overdrive"], minWave:4, combo:true, desc:(r)=>`护盾被击穿时对最多 14 个敌人释放反冲，造成屏障上限 ${[16,24,32][r]}% 的伤害，冷却 6 秒。`, note:"高护盾承压后把储能转化为一次全域反击；支援回盾可再次启动循环。" },
     { id:"emergency_repair", name:"应急维修", glyph:"✚", rarity:"生存", tags:["生存"], max:3, desc:(r)=>`立即恢复 ${18+r*9} 屏障生命，并使每波结束恢复少量屏障。`, note:"即时保命功能卡。", instant:"repair" },
-    { id:"blood_bargain", name:"禁忌洞见", glyph:"◐", rarity:"特殊", tags:["特殊","功能","生存"], max:5, minWave:3, desc:(r)=>`每次完成正常选牌后有 ${[20,28,35,43,50][r]}% 概率直接随机获得 1 张合法卡牌，并牺牲当前屏障生命 50%。`, note:"最高 50% 且每次只触发一次；随机奖励不会再次触发禁忌洞见。" },
+    { id:"blood_bargain", name:"禁忌洞见", glyph:"◐", rarity:"特殊", tags:["特殊","功能","生存"], max:5, minWave:3, desc:(r)=>`每次完成正常选牌后有 ${[20,28,35,43,50][r]}% 概率直接随机获得 1 张合法卡牌，并支付当前屏障生命 50% 的代价。`, note:"代价优先消耗黄色相位护盾，不足部分才扣蓝色屏障；随机奖励不会再次触发自身。" },
     { id:"bounty_frequency", name:"悬赏信号增幅", glyph:"✦", rarity:"特殊", tags:["特殊","功能"], max:3, minWave:2, desc:(r)=>`每出现 ${[20,15,10][r]} 个敌人，额外进行一次 10% 概率的奖励敌人生成判定。`, note:"不替换原本的限时猎物；满级时每 10 个敌人获得一次额外判定。" },
     { id:"bounty_intel", name:"延时猎杀令", glyph:"⌖", rarity:"特殊", tags:["特殊","功能"], max:4, minWave:4, desc:(r)=>`所有奖励敌人的限时累计延长 ${(r+1)*4} 秒。`, note:"后期基础时限持续缩短，本卡负责重新争取输出窗口。" },
     { id:"bounty_sunder", name:"悬赏防御破译", glyph:"◇", rarity:"特殊", tags:["特殊","功能"], max:4, minWave:6, desc:(r)=>`奖励敌人的后期伤害减免降低 ${(r+1)*8} 个百分点。`, note:"只针对限时奖励目标，不会改变普通敌军防御。" },
@@ -165,7 +170,7 @@
     { id:"prism_missile_bridge", name:"折光制导桥", glyph:"◇▲", rarity:"组合组件", tags:["激光","导弹"], max:1, req:["laser_reflect","missile_split"], minWave:8, combo:true, desc:()=>"微型分裂导弹命中易伤目标时伤害提高 18%。", note:"只强化分裂弹的条件伤害；它是六相坍缩的第二枚桥接密钥。" },
     { id:"ballistic_repair_bridge", name:"弹巢维修桥", glyph:"●✚", rarity:"组合组件", tags:["弹道","支援"], max:1, req:["bullet_sentry","field_mechanic"], minWave:8, combo:true, desc:()=>"小型弹道炮伤害提高 20%，支援修复时额外延长 0.5 秒驻场。", note:"单独只改善脆弱弹巢；它是六相坍缩的第三枚桥接密钥。" },
     { id:"sixfold_convergence", name:"六相坍缩协议", glyph:"✺", rarity:"质变", tags:["弹道","激光","导弹","冰霜","电弧","支援"], max:1, req:["cryo_arc_bridge","prism_missile_bridge","ballistic_repair_bridge"], minWave:12, combo:true, apex:true, desc:()=>"每累计 24 次主炮塔行动，六种系统制造一次全域坍缩：轰击最多 12 个目标并同时施加燃烧、减速与电离，伤害随在线炮塔种类及当前波次成长。", note:"三张桥接组合牌各自很弱，全部集齐后才发生真正质变。" },
-    { id:"fortress", name:"不落壁垒", glyph:"⬢", rarity:"组合", tags:["生存"], max:1, req:["barrier","shield_regen"], minWave:5, combo:true, desc:()=>"护盾上限提高 50%，满护盾时所有炮塔伤害提高 20%。", note:"把防御资源转化为输出。" }
+    { id:"fortress", name:"不落壁垒", glyph:"⬢", rarity:"组合", tags:["生存","全局"], max:1, req:["barrier","shield_regen","barrier_arsenal"], minWave:5, combo:true, desc:()=>"护盾上限提高 35%；护盾高于 70% 时额外获得 20% 全局伤害，并使相位回充提速 30%。", note:"护盾容量、屏障上限和百分比回充共同形成稳定的防御转火力核心。" }
   ];
   const CARD_MAP = Object.fromEntries(CARDS.map((card)=>[card.id,card]));
   const TURRET_CARD_TAGS = new Set(["弹道","激光","导弹","冰霜","电弧","支援"]);
@@ -175,7 +180,7 @@
   const STAT_INFO = {
     "子弹炮":COLORS.bullet, "激光炮":COLORS.laser, "导弹炮":COLORS.missile, "燃烧":COLORS.missile,
     "冰霜炮":COLORS.frost, "电弧炮":COLORS.arc, "风暴阵列":"#d8c9ff", "范围碎裂":"#baf4ff", "冷热战斗部":"#ffb26f",
-    "导电弹链":COLORS.arc, "冰晶折射":COLORS.frost, "冷热破碎爆炸":COLORS.gold, "交叉火力网":COLORS.gold, "裂群清算":COLORS.missile,
+    "导电弹链":COLORS.arc, "冰晶折射":COLORS.frost, "冷热破碎爆炸":COLORS.gold, "交叉火力网":COLORS.gold, "裂群清算":COLORS.missile, "相位反冲":COLORS.gold,
     "小型子弹主炮":COLORS.bullet, "小型激光炮":COLORS.laser, "小型导弹炮":COLORS.missile, "小型冰霜炮":COLORS.frost, "小型电弧炮":COLORS.arc,
     "吸血":COLORS.green, "鲜血引擎":"#ff7f94", "护盾再生":COLORS.cyan, "应急维修":COLORS.green, "波次维修":"#8ee9c3", "全域屏障":"#8ff4ff", "支援治疗":COLORS.support, "支援屏障":COLORS.cyan
   };
@@ -215,7 +220,7 @@
     elapsed:0, score:0, kills:0, coreHp:100, coreMax:100, shield:0, shieldMax:0, lastDamageTime:-99, globalBarrierHp:90, globalBarrierMax:90, globalBarrierCooldown:0, globalBarrierActive:true,
     cards:new Map(), tagCounts:{}, cardChoiceHistory:[],
     turrets:{}, enemies:[], miniTurrets:[], projectiles:[], enemyShots:[], repairBots:[], particles:[], beams:[], slowFields:[], nextEnemyId:1, nextMiniTurretId:1, nextProjectileId:1, nextEnemyShotId:1,
-    currentOffers:[], rerolled:false, rerollsLeft:0, openingDraft:false, openingDraftsRemaining:0, openingDraftTotal:0, draftWaveStarted:false, bargainPick:false, bargainDraftsQueued:0, bargainReturn:"wave", rewardDraft:false, rewardDraftsQueued:0, best:{wave:0,score:0}, music:true, sound:true, musicIndex:0, lastTime:0, saveAccumulator:0, hoverTurretId:null, supportOverdrive:0, networkShots:0, convergenceCharge:0, bountyKills:0, barrierBonusMax:0, salvageKills:0, attributeSalvage:0, killStreak:0, lastKillAt:-99,
+    currentOffers:[], rerolled:false, rerollsLeft:0, openingDraft:false, openingDraftsRemaining:0, openingDraftTotal:0, draftWaveStarted:false, bargainPick:false, bargainDraftsQueued:0, bargainReturn:"wave", rewardDraft:false, rewardDraftsQueued:0, best:{wave:0,score:0}, music:true, sound:true, gameSpeed:1, musicIndex:0, lastTime:0, saveAccumulator:0, hoverTurretId:null, supportOverdrive:0, networkShots:0, convergenceCharge:0, bountyKills:0, barrierBonusMax:0, salvageKills:0, attributeSalvage:0, killStreak:0, lastKillAt:-99,
     stats:{damage:{},healing:{},events:[],peakDps:0,lastRates:{damage:{},healing:{}},lastDps:0,lastHps:0}, settings:loadSettings(), accountStore:loadAccountStore(), authenticated:false, pendingAccountId:null, panelWasPaused:false
   };
 
@@ -280,10 +285,10 @@
   function resetGame(options={}){const account=activeAccount(),startWave=Math.max(1,Math.floor(Number(options.startWave)||1)),autoCards=Math.max(0,Math.floor(Number(options.autoCards)||0)),specifiedDrafts=Number(options.openingDrafts),openingDrafts=Number.isFinite(specifiedDrafts)?Math.max(0,Math.floor(specifiedDrafts)):autoCards>0?0:NEW_RUN_OPENING_DRAFTS;if(account)account.run=null;Object.assign(state,{started:true,paused:false,drafting:false,gameOver:false,selectingCard:false,wave:startWave-1,waveTarget:0,waveSpawned:0,waveResolved:0,waveEnding:false,waveEndTimer:0,startDelay:0,elapsed:0,score:0,kills:0,coreHp:100,coreMax:100,shield:0,shieldMax:0,lastDamageTime:-99,globalBarrierHp:90,globalBarrierMax:90,globalBarrierCooldown:0,globalBarrierActive:true,cards:new Map(),tagCounts:{},cardChoiceHistory:[],enemies:[],miniTurrets:[],projectiles:[],enemyShots:[],particles:[],beams:[],slowFields:[],hoverTurretId:null,supportOverdrive:0,networkShots:0,convergenceCharge:0,bountyKills:0,barrierBonusMax:0,salvageKills:0,attributeSalvage:0,killStreak:0,lastKillAt:-99,nextEnemyId:1,nextMiniTurretId:1,nextProjectileId:1,nextEnemyShotId:1,currentOffers:[],rerolled:false,bargainPick:false,bargainDraftsQueued:0,bargainReturn:"wave",rewardDraft:false,rewardDraftsQueued:0,openingDraft:false,openingDraftsRemaining:openingDrafts,openingDraftTotal:openingDrafts,saveAccumulator:0,stats:{damage:{},healing:{},events:[],peakDps:0,lastRates:{damage:{},healing:{}},lastDps:0,lastHps:0}});state.turrets=makeTurrets();$("#startOverlay").classList.remove("show");$("#resultOverlay").classList.remove("show");startNextWave();const initialPool=shuffleCards(CARDS.filter((card)=>cardRank(card.id)<card.max&&!card.combo&&!card.apex&&!card.req&&!card.reqAny&&card.rarity!=="质变")),initialCards=initialPool.slice(0,NEW_RUN_RANDOM_CARDS);for(const card of initialCards)addCard(card.id);let granted=0;for(let i=0;i<autoCards;i++){const offer=BalanceCore.generateOffers(eligibleCards(),{count:1,history:state.cardChoiceHistory})[0];if(!offer)break;addCard(offer.id);state.cardChoiceHistory=BalanceCore.remember(state.cardChoiceHistory,offer);granted+=1;}updateAllUI();syncPauseUI();saveRun(false);startBackgroundMusic();playSound("start");if(autoCards>0)showToast(`随机快速部署完成 · 初始 ${initialCards.length} 张 + 部署 ${granted} 张`);else if(openingDrafts>0){showToast(`初始补给 · 随机获得 ${initialCards.length} 张卡牌`);requestAnimationFrame(()=>showDraft(true));}}
 
   function rebuildTags(){state.tagCounts={};for(const [id,rank] of state.cards)(CARD_MAP[id]?.tags||[]).forEach((tag)=>state.tagCounts[tag]=(state.tagCounts[tag]||0)+rank);updateDerivedDefense();updatePreferenceCounts();}
-  function updateDerivedDefense(){const barrier=cardRank("barrier");state.shieldMax=barrier?barrier*20+barrier*Math.max(0,barrier-1)*10:0;if(hasCard("fortress"))state.shieldMax=Math.round(state.shieldMax*1.5);state.shield=Math.min(state.shield,state.shieldMax);}
-  function addCard(id,options={}){const card=CARD_MAP[id];if(!card)return;const previous=cardRank(id),rank=Math.min(card.max,previous+1);state.cards.set(id,rank);if(card.unlock&&state.turrets[card.unlock])state.turrets[card.unlock].active=true;if(card.instant==="repair")healCore(18+rank*9,"应急维修");rebuildTags();if(card.id==="barrier")state.shield=Math.min(state.shieldMax,state.shield+20+rank*8);if(card.combo)showCombo(card);playSound(card.combo?"combo":"card");if(!options.deferUI)updateAllUI();}
+  function updateDerivedDefense(){const barrier=cardRank("barrier"),ratios=[0,.3,.45,.6,.8];state.shieldMax=barrier?Math.round(state.globalBarrierMax*ratios[barrier]):0;if(hasCard("fortress"))state.shieldMax=Math.round(state.shieldMax*1.35);state.shield=Math.min(state.shield,state.shieldMax);}
+  function addCard(id,options={}){const card=CARD_MAP[id];if(!card)return;const previous=cardRank(id),rank=Math.min(card.max,previous+1);state.cards.set(id,rank);if(card.unlock&&state.turrets[card.unlock])state.turrets[card.unlock].active=true;if(card.instant==="repair")healCore(18+rank*9,"应急维修");rebuildTags();if(card.id==="barrier")gainShield(state.shieldMax*(.35+rank*.05),"相位护盾部署");if(card.combo)showCombo(card);playSound(card.combo?"combo":"card");if(!options.deferUI)updateAllUI();}
   function showCombo(card){$("#comboBannerName").textContent=card.name;$("#comboBanner").classList.add("show");clearTimeout(showCombo.timer);showCombo.timer=setTimeout(()=>$("#comboBanner").classList.remove("show"),2600);}
-  function eligibleCards(){return CARDS.filter((card)=>cardRank(card.id)<card.max&&(card.minWave||1)<=state.wave&&(!card.req||card.req.every(hasCard))&&(!card.reqAny||card.reqAny.some(hasCard)));}
+  function eligibleCards(){const effectiveWave=state.openingDraft?Math.max(8,state.wave):state.wave;return CARDS.filter((card)=>cardRank(card.id)<card.max&&(card.minWave||1)<=effectiveWave&&(!card.req||card.req.every(hasCard))&&(!card.reqAny||card.reqAny.some(hasCard)));}
   function shuffleCards(cards){for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}return cards;}
   function cardPalette(card){if(card.tags.includes("特殊"))return SPECIAL_CARD_PALETTE;const turretColors=[...new Set(card.tags.filter((tag)=>TURRET_CARD_TAGS.has(tag)).map((tag)=>CARD_COLORS[tag]))],fallback=[...new Set(card.tags.map((tag)=>CARD_COLORS[tag]).filter(Boolean))];return turretColors.length?turretColors:fallback.length?fallback:[COLORS.cyan];}
   function cardVisualStyle(card){const colors=cardPalette(card),stops=colors.map((color,index)=>`${color} ${colors.length===1?0:Math.round(index/(colors.length-1)*100)}%`).join(",");return `--card-color:${colors[0]};--card-accent:${colors[colors.length-1]};--card-gradient:linear-gradient(135deg,${stops})`;}
@@ -291,6 +296,7 @@
   function activeCardPreference(){return CARD_PREFERENCES.find((item)=>item.id===state.settings.cardPreference)||null;}
   function generateOffers(){const preference=activeCardPreference();state.currentOffers=BalanceCore.generateOffers(eligibleCards(),{count:DRAFT_OFFER_COUNT,preferenceTag:preference?.tag,history:state.cardChoiceHistory});renderDraft();return state.currentOffers.length;}
   function grantRandomCards(source,count=1){const granted=[];for(let index=0;index<count;index++){const card=BalanceCore.generateOffers(eligibleCards(),{count:1,history:state.cardChoiceHistory})[0];if(!card)break;addCard(card.id,{deferUI:true});rememberCardChoice(card.id);granted.push(card.name);}updateAllUI();saveRun(false);if(granted.length){showToast(`${source} · 随机获得 ${granted.join("、")}`);playSound("combo");}else showToast(`${source} · 卡池已满`);return granted.length;}
+  function payForbiddenInsightCost(){const cost=Math.max(0,state.globalBarrierHp*.5),shieldBefore=state.shield,shieldSpent=Math.min(state.shield,cost),remaining=cost-shieldSpent,barrierSpent=Math.min(Math.max(0,state.globalBarrierHp-1),remaining);state.shield-=shieldSpent;state.globalBarrierHp-=barrierSpent;if(shieldBefore>0&&state.shield<=.01)triggerAegisRetaliation();addParticleText(360,1040,`禁忌代价 -${formatCompactNumber(shieldSpent+barrierSpent)}`,shieldSpent>=cost?COLORS.gold:COLORS.danger);showToast(shieldSpent>=cost?"相位护盾完全承担禁忌代价":`护盾承担 ${formatCompactNumber(shieldSpent)} · 屏障承担 ${formatCompactNumber(barrierSpent)}`);return shieldSpent+barrierSpent;}
   function rememberCardChoice(id){const card=CARD_MAP[id];if(card)state.cardChoiceHistory=BalanceCore.remember(state.cardChoiceHistory,card);}
   function renderDraft(){$("#cardChoices").innerHTML=state.currentOffers.map((card)=>{const current=cardRank(card.id);return `<button class="draft-card ${card.combo?"combo":""} ${card.apex?"apex":""} ${card.tags.includes("特殊")?"special":""}" data-card="${card.id}" style="${cardVisualStyle(card)}" type="button"><span class="card-top"><b>${card.rarity.toUpperCase()}</b><em>${current?`LV.${current} → ${current+1}`:"NEW"}${card.max>1?` / ${card.max}`:""}</em></span><i class="glyph">${card.glyph}</i><h3>${card.name}</h3><span class="tags">${card.tags.join(" · ")}</span><p>${card.desc(current)}</p><small>${card.note}</small></button>`;}).join("");$$('.draft-card').forEach((button)=>button.addEventListener("click",()=>chooseCard(button.dataset.card)));$("#offerCountText").textContent=`${state.currentOffers.length} 选 1`;}
   function completeWaveDraft(){state.drafting=false;state.draftWaveStarted=false;state.bargainPick=false;state.bargainDraftsQueued=0;state.bargainReturn="wave";state.paused=false;state.selectingCard=false;updateAllUI();syncPauseUI();saveRun(false);}
@@ -306,7 +312,7 @@
       if(wasOpeningDraft)state.openingDraftsRemaining=Math.max(0,state.openingDraftsRemaining-1);
       if(wasBargainPick){const returnContext=state.bargainReturn;state.globalBarrierHp=Math.max(1,state.globalBarrierHp*.5);state.bargainPick=false;state.bargainDraftsQueued=0;addParticleText(360,1040,"屏障生命代价 -50%",COLORS.danger);finishDraftContext(returnContext);return;}
       const context=wasOpeningDraft?"opening":wasRewardDraft?"reward":"wave";
-      if(BalanceCore.rollForbiddenInsight(cardRank("blood_bargain"))){state.globalBarrierHp=Math.max(1,state.globalBarrierHp*.5);addParticleText(360,1040,"禁忌代价 -50%",COLORS.danger);grantRandomCards("禁忌洞见",1);}
+      if(BalanceCore.rollForbiddenInsight(cardRank("blood_bargain"))){payForbiddenInsightCost();grantRandomCards("禁忌洞见",1);}
       finishDraftContext(context);
     });
   }
@@ -321,6 +327,7 @@
   function barrierCapacity(){return naturalBarrierCapacity()+state.barrierBonusMax;}
   const BARRIER_ARC={cx:W/2,cy:1840,radius:840,left:-24,right:W+24};
   function barrierSurfaceY(x){const px=clamp(x,BARRIER_ARC.left,BARRIER_ARC.right),dx=px-BARRIER_ARC.cx;return BARRIER_ARC.cy-Math.sqrt(Math.max(0,BARRIER_ARC.radius**2-dx**2));}
+  function distanceDamageMultiplier(enemy){const nearY=barrierSurfaceY(W/2),progress=clamp((enemy.y-0)/nearY,0,1);return DISTANCE_DAMAGE_MIN+(1-DISTANCE_DAMAGE_MIN)*progress;}
   function waveBossType(){const blackHoles=["boss_bh_gold","boss_bh_blue","boss_bh_violet","boss_bh_red"];return blackHoles[(state.wave-1)%blackHoles.length];}
   function waveMidBossType(){return ["boss_solar","boss_blue","boss_violet"][(state.wave-1)%3];}
   function bountyCountForWave(wave=state.wave){return wave<3?0:Math.min(5,1+Math.floor((wave-3)/5));}
@@ -335,7 +342,7 @@
     const bossLevel=isBlackHole?Math.max(1,state.wave):0,colossal=isBlackHole&&state.wave%3===0;
     const radius=isBlackHole?type.radius*(colossal?2.1:1):type.radius;
     const bossHpScale=isBlackHole?(1+Math.floor((state.wave-1)/3)*.24)*(colossal?1.35:1):1;
-    const maxHp=waveBaseHp()*type.hp*(type.boss?1+state.wave*.04:1)*bossHpScale*(type.bounty?bountyHealthMultiplier():1);
+    const maxHp=waveBaseHp()*DISTANCE_BALANCE_HP_SCALE*type.hp*(type.boss?1+state.wave*.04:1)*bossHpScale*(type.bounty?bountyHealthMultiplier():1);
     const rawMargin=type.boss?radius*(isBlackHole?2.68:1.78)+8:Math.max(58,radius+18);
     const margin=Math.min(W/2,rawMargin);
     const x=margin+Math.random()*Math.max(0,W-margin*2);
@@ -349,11 +356,11 @@
       slow:0,slowPower:0,stun:0,burn:0,burnDps:0,burnDisplay:0,burnDisplayTimer:0,vulnerable:0,vulnerableTime:0,vulnerabilitySources:{},
       iceFracture:0,fireFracture:0,fractureLock:0,bountyTime:bountyWindow,bountyMaxTime:bountyWindow,wanderX:x,wanderY:170+Math.random()*300,wanderTimer:0,
       stopY:type.ranged?600+Math.random()*150:null,attackTimer:type.ranged?2.2+Math.random():0,
-      gunTimer:1.6+Math.random()*2.8,gammaTimer:isBlackHole?4.8+Math.random()*2.2:0,gammaCharge:0,gammaCharging:false,gammaTargetX:x,gammaTargets:[],asteroidTimer:isBlackHole?6.8+Math.random()*2.4:0,
+      gunTimer:1.6+Math.random()*2.8,gammaTimer:isBlackHole?4.8+Math.random()*2.2:0,gammaCharge:0,gammaCharging:false,gammaTargetX:x,gammaTargets:[],asteroidTimer:isBlackHole?6.8+Math.random()*2.4:0,summonTimer:isBlackHole?8.2+Math.random()*3:0,summonCycle:0,
       radiationTimer:type.bossKind==="star"?4.5+Math.random()*2.5:id==="nova"?6+Math.random()*3:0,
       invulnerable:type.boss?5:0,invulnerableTextAt:0,dead:false,hit:0
     });
-    if(type.boss){$("#phaseText").textContent=isBlackHole?(colossal?`巨型守关黑洞 · ${type.name}`:`守关黑洞 · ${type.name}`):`中途恒星 · ${type.name}`;showToast(isBlackHole?`${colossal?"巨型":""}${type.name} LV.${bossLevel} 正在缓慢推进`:`中途小首领 ${type.name} 正在缓慢推进`);}
+    if(type.boss){$("#phaseText").textContent=isBlackHole?(colossal?`巨型守关黑洞 · ${type.name}`:`守关黑洞 · ${type.name}`):`中途恒星 · ${type.name}`;showToast(isBlackHole?`${colossal?"巨型":""}${type.name} LV.${bossLevel} 快速入场后缓慢推进`:`中途小首领 ${type.name} 快速入场`);}
   }
   function updateSpawns(dt){if(state.waveEnding||state.waveSpawned>=state.waveTarget)return;state.spawnTimer-=dt;if(state.spawnTimer<=0){spawnEnemy();state.waveSpawned+=1;state.spawnTimer=Math.max(.18,.78-state.wave*.012)*(state.wave%3===0?1.2:1);}}
   function turretRange(turret){return rangeAtRank(turret,cardRank(RANGE_CARD_BY_TURRET[turret.id]));}
@@ -361,11 +368,12 @@
   function selectTarget(turret,range=turretRange(turret)){const candidates=state.enemies.filter((enemy)=>!enemy.dead&&Math.hypot(enemy.x-turret.x,enemy.y-turret.y)<=range),mode=turret.targetMode||DEFAULT_TARGET_MODE[turret.id];if(!candidates.length)return null;const distance=(enemy)=>Math.hypot(enemy.x-turret.x,enemy.y-turret.y),health=(enemy)=>enemy.hp+enemy.shield;candidates.sort((a,b)=>{let delta=0;if(mode==="nearest")delta=distance(a)-distance(b);else if(mode==="farthest")delta=distance(b)-distance(a);else if(mode==="highestHp")delta=health(b)-health(a);else delta=health(a)-health(b);return delta||b.y-a.y;});return candidates[0];}
   function setTurretTargetMode(id,mode){const turret=state.turrets[id];if(!turret||!TARGET_MODES.some((item)=>item.id===mode))return;turret.targetMode=mode;showToast(`${turret.name}：优先攻击${TARGET_MODES.find((item)=>item.id===mode).name}`);saveRun(false);}
   function frontLoaded(rank,first,step){return rank?first+(rank-1)*step:0;}
-  function globalDamage(){return 1+frontLoaded(cardRank("global_damage"),.18,.06)+(state.supportOverdrive>0?.25:0);}
+  function defensiveFirepowerMultiplier(){let bonus=0;const shieldRatio=state.shieldMax?clamp(state.shield/state.shieldMax,0,1):0,shieldRank=cardRank("shield_overdrive"),arsenalRank=cardRank("barrier_arsenal");if(shieldRank)bonus+=shieldRatio*[0,.13,.18,.23][shieldRank];if(arsenalRank)bonus+=Math.min(.36,state.globalBarrierMax/100*[0,.025,.032,.04][arsenalRank]);if(hasCard("fortress")&&shieldRatio>=.7)bonus+=.2;return 1+bonus;}
+  function globalDamage(){return (1+frontLoaded(cardRank("global_damage"),.18,.06)+(state.supportOverdrive>0?.25:0))*defensiveFirepowerMultiplier();}
   function globalRate(){return 1+frontLoaded(cardRank("global_damage"),.12,.04)+(state.supportOverdrive>0?.2:0);}
   function critChance(){return .05+frontLoaded(cardRank("crit_training"),.1,.03);}
   function critMultiplier(){return 1.8+cardRank("critical_payload")*.15;}
-  function rollDamage(base){const critical=Math.random()<critChance();return {amount:base*globalDamage()*(hasCard("fortress")&&state.shieldMax&&state.shield>=state.shieldMax*.98?1.2:1)*(critical?critMultiplier():1),critical};}
+  function rollDamage(base){const critical=Math.random()<critChance();return {amount:base*globalDamage()*(critical?critMultiplier():1),critical};}
   function rayToBattleEdge(x,y,ux,uy,includeBarrier=false){const candidates=[];if(ux>1e-6)candidates.push({t:(W-4-x)/ux,side:"right"});else if(ux<-1e-6)candidates.push({t:(4-x)/ux,side:"left"});if(uy>1e-6)candidates.push({t:(CORE_Y-8-y)/uy,side:"bottom"});else if(uy<-1e-6)candidates.push({t:(4-y)/uy,side:"top"});if(includeBarrier&&state.globalBarrierActive){const ox=x-BARRIER_ARC.cx,oy=y-BARRIER_ARC.cy,b=2*(ox*ux+oy*uy),c=ox*ox+oy*oy-BARRIER_ARC.radius*BARRIER_ARC.radius,disc=b*b-4*c;if(disc>=0){for(const t of [(-b-Math.sqrt(disc))/2,(-b+Math.sqrt(disc))/2]){if(t<=2)continue;const hitX=x+ux*t,hitY=y+uy*t;if(hitX>=BARRIER_ARC.left&&hitX<=BARRIER_ARC.right&&hitY<CORE_Y&&Math.abs(hitY-barrierSurfaceY(hitX))<3)candidates.push({t,side:"barrier"});}}}const hit=candidates.filter((item)=>item.t>1).sort((a,b)=>a.t-b.t)[0]||{t:1,side:"top"};return {x:x+ux*hit.t,y:y+uy*hit.t,side:hit.side};}
   function segmentEnemyHits(x1,y1,x2,y2){const dx=x2-x1,dy=y2-y1,length=Math.hypot(dx,dy)||1,ux=dx/length,uy=dy/length;return state.enemies.map((enemy)=>{const rx=enemy.x-x1,ry=enemy.y-y1,projection=rx*ux+ry*uy,perpendicular=Math.abs(rx*uy-ry*ux);return {enemy,projection,perpendicular};}).filter((item)=>!item.enemy.dead&&item.projection>=0&&item.projection<=length&&item.perpendicular<=enemyRadius(item.enemy)+7).sort((a,b)=>a.projection-b.projection);}
   function blackHoleAbsorptionPoint(x,y,enemy){const dx=enemy.x-x,dy=enemy.y-y,distance=Math.hypot(dx,dy)||1,stop=Math.max(0,distance-enemyRadius(enemy)*.48-4);return {x:x+dx/distance*stop,y:y+dy/distance*stop};}
@@ -527,7 +535,7 @@
       return 0;
     }
     const splitSources=Array.isArray(options.statSplit)&&options.statSplit.length?options.statSplit:[source];
-    const defense=splitSources.reduce((sum,item)=>sum+enemyDefenseMultiplier(enemy,item),0)/splitSources.length,vulnerabilityMultiplier=1+enemy.vulnerable*.12;let multiplier=defense;
+    const defense=splitSources.reduce((sum,item)=>sum+enemyDefenseMultiplier(enemy,item),0)/splitSources.length,vulnerabilityMultiplier=1+enemy.vulnerable*.12,distanceMultiplier=distanceDamageMultiplier(enemy);let multiplier=defense*distanceMultiplier;
     if(enemy.type.bounty)multiplier*=bountyDamageTakenMultiplier();
     if(enemy.slow>0&&cardRank("brittle"))multiplier*=1+cardRank("brittle")*.14;
     if(source==="激光炮"&&hasCard("laser_lock"))multiplier*=1+Math.min(.8,enemy.vulnerable*.16);
@@ -543,12 +551,14 @@
   }
   function healCore(amount,source,overflowShield=false){if(amount<=0)return 0;const healed=Math.min(amount,state.globalBarrierMax-state.globalBarrierHp);state.globalBarrierHp+=healed;if(healed>0)recordStat("healing",source,healed);const overflow=amount-healed;if(overflowShield&&overflow>0&&state.shieldMax>state.shield){const gained=Math.min(overflow,state.shieldMax-state.shield);state.shield+=gained;recordStat("healing",source,gained);return healed+gained;}return healed;}
   function gainShield(amount,source){const gained=Math.min(amount,state.shieldMax-state.shield);if(gained>0){state.shield+=gained;recordStat("healing",source,gained);}return gained;}
+  function triggerAegisRetaliation(){const rank=cardRank("aegis_retaliation");if(!rank||(state.shieldBreakCooldown||0)>0)return;state.shieldBreakCooldown=6;const damage=state.globalBarrierMax*[0,.16,.24,.32][rank],targets=state.enemies.filter((enemy)=>!enemy.dead).sort((a,b)=>b.y-a.y).slice(0,14);for(const enemy of targets)damageEnemy(enemy,damage,"相位反冲",{noLifesteal:true});state.particles.push({type:"burst",x:W/2,y:barrierSurfaceY(W/2),r:24,maxR:Math.hypot(W,H),life:.72,maxLife:.72,color:COLORS.gold});showToast(`相位护盾崩解 · 反冲 ${targets.length} 个目标`);}
   function damageCore(amount,source="突破伤害",impactX=W/2){
-    if(amount<=0||state.gameOver)return 0;state.lastDamageTime=state.elapsed;let remaining=amount;
+    if(amount<=0||state.gameOver)return 0;state.lastDamageTime=state.elapsed;let remaining=amount;const shieldBefore=state.shield;
     const shieldAbsorbed=Math.min(state.shield,remaining);state.shield-=shieldAbsorbed;remaining-=shieldAbsorbed;
     const barrierAbsorbed=Math.min(state.globalBarrierHp,remaining);state.globalBarrierHp-=barrierAbsorbed;remaining-=barrierAbsorbed;
     const barrierX=clamp(impactX,BARRIER_ARC.left,BARRIER_ARC.right),impactY=barrierSurfaceY(barrierX),impactColor=shieldAbsorbed>0?COLORS.gold:COLORS.cyan;
     state.particles.push({type:"burst",x:barrierX,y:impactY,r:7,maxR:62,life:.34,maxLife:.34,color:impactColor});spawnSparks(barrierX,impactY,impactColor,8,105);addParticleText(barrierX,impactY-14,`-${formatCompactNumber(Math.max(1,shieldAbsorbed+barrierAbsorbed))}`,impactColor);playSound("damage");
+    if(shieldBefore>0&&state.shield<=.01)triggerAegisRetaliation();
     if(source==="敌方炮火")showToast(shieldAbsorbed?`敌方炮火命中屏障护盾 -${Math.round(shieldAbsorbed)}`:`敌方炮火削减屏障生命 -${Math.round(barrierAbsorbed)}`);
     if(state.globalBarrierHp<=.01){state.globalBarrierHp=0;state.globalBarrierActive=false;showToast("全域屏障崩解 · 防线失守");endGame();}return shieldAbsorbed+barrierAbsorbed;
   }
@@ -588,7 +598,21 @@
   function blackHoleGammaCount(enemy){const tier=enemyThreatTier(enemy);return Math.min(3,1+(tier>=3?1:0)+(tier>=6?1:0)+(enemy.colossal?1:0));}
   function blackHoleGammaTargets(enemy){const count=blackHoleGammaCount(enemy),center=clamp(enemy.x+(Math.random()-.5)*190,82,W-82),spacing=count===3?104:128;return Array.from({length:count},(_,index)=>clamp(center+(index-(count-1)/2)*spacing,BARRIER_ARC.left+20,BARRIER_ARC.right-20));}
   function blackHoleMoveScale(enemy){const entryEnd=enemy.colossal?210:105,transition=90,progress=clamp((enemy.y-(entryEnd-transition))/transition,0,1),eased=progress*progress*(3-2*progress),entryScale=enemy.colossal?9:4.5,cruiseScale=enemy.colossal?.5:.68;return entryScale+(cruiseScale-entryScale)*eased;}
+  function starBossMoveScale(enemy){const transitionStart=35,transitionEnd=205,progress=clamp((enemy.y-transitionStart)/(transitionEnd-transitionStart),0,1),eased=progress*progress*(3-2*progress);return 3.35+(1-3.35)*eased;}
+  function blackHoleHorizonOrigin(enemy,targetX,targetY){const dx=targetX-enemy.x,dy=targetY-enemy.y,length=Math.hypot(dx,dy)||1,radius=enemyRadius(enemy)*.48+4;return {x:enemy.x+dx/length*radius,y:enemy.y+dy/length*radius};}
   function blackHoleAsteroidCount(enemy){const tier=enemyThreatTier(enemy);return Math.min(6,2+(tier>=2?1:0)+(tier>=4?1:0)+(tier>=6?1:0)+(enemy.colossal?1:0));}
+  function blackHoleSummonPool(wave=state.wave){const pool=["swarm","runner"];if(wave>=3)pool.push("splitter");if(wave>=4)pool.push("tank","frigate");if(wave>=6)pool.push("shield","prism");if(wave>=8)pool.push("shooter","carrier");if(wave>=10)pool.push("nova");return pool;}
+  function blackHoleSummonCount(enemy){const tier=enemyThreatTier(enemy);return Math.min(5,1+(tier>=2?1:0)+(tier>=4?1:0)+(tier>=6?1:0)+(enemy.colossal?1:0));}
+  function ejectBlackHoleUnits(enemy){
+    const active=state.enemies.filter((item)=>!item.dead&&item.summonedByBlackHole===enemy.id).length,capacity=(enemy.colossal?18:12)-active,count=Math.min(blackHoleSummonCount(enemy),Math.max(0,capacity));if(!count)return false;
+    const pool=blackHoleSummonPool(),palette=blackHoleAttackPalette(enemy),launched=[];
+    for(let index=0;index<count;index++){
+      const typeId=pool[(enemy.summonCycle*2+index*3)%pool.length];spawnEnemy(typeId);const unit=state.enemies[state.enemies.length-1],angle=Math.PI*(.18+(index+.5)/count*.64)+(Math.random()-.5)*.12,launchRadius=enemyRadius(enemy)*(.28+Math.random()*.12);
+      unit.summonedByBlackHole=enemy.id;unit.x=clamp(enemy.x+Math.cos(angle)*launchRadius,36,W-36);unit.y=enemy.y+Math.sin(angle)*launchRadius*.58;unit.speed*=1.06;unit.drift+=(Math.random()-.5)*18;unit.invulnerable=0;unit.hit=.1;launched.push(unit);
+      state.particles.push({type:"burst",x:unit.x,y:unit.y,r:3,maxR:18+unit.type.radius,life:.34,maxLife:.34,color:[palette.cool,palette.mid,palette.hot][index%3]});
+    }
+    enemy.summonCycle=(enemy.summonCycle||0)+1;state.waveTarget+=launched.length;state.waveSpawned+=launched.length;state.particles.push({type:"burst",x:enemy.x,y:enemy.y,r:enemyRadius(enemy)*.28,maxR:enemyRadius(enemy)*.72,life:.48,maxLife:.48,color:palette.hot});showToast(`${enemy.type.name} · 喷吐 ${launched.map((unit)=>unit.type.name).join("、")}`);return true;
+  }
   function ejectBlackHoleAsteroids(enemy){
     const active=state.enemies.filter((item)=>!item.dead&&item.typeId==="bh_asteroid"&&item.sourceBossId===enemy.id).length,capacity=(enemy.colossal?12:8)-active,count=Math.min(blackHoleAsteroidCount(enemy),Math.max(0,capacity));if(!count)return false;
     const palette=blackHoleAttackPalette(enemy),tier=enemyThreatTier(enemy),minX=BARRIER_ARC.left+26,maxX=BARRIER_ARC.right-26,spread=Math.min(300,96+count*34),center=clamp(enemy.x+(Math.random()-.5)*170,minX+spread*.35,maxX-spread*.35),minis=state.miniTurrets.filter((mini)=>!mini.dead),baseType=ENEMY_TYPES.bh_asteroid;
@@ -601,13 +625,14 @@
     return true;
   }
   function updateBlackHoleAsteroids(enemy,dt){if(enemy.invulnerable>0||enemy.y<(enemy.colossal?150:80))return;enemy.asteroidTimer=(enemy.asteroidTimer||0)-dt;if(enemy.asteroidTimer>0)return;const launched=ejectBlackHoleAsteroids(enemy),tier=enemyThreatTier(enemy);enemy.asteroidTimer=launched?Math.max(5.8,10.8-(tier-1)*.38-(enemy.colossal?.7:0))*(.88+Math.random()*.24):1.5;}
+  function updateBlackHoleSummons(enemy,dt){if(enemy.invulnerable>0||enemy.y<(enemy.colossal?155:85))return;enemy.summonTimer=(enemy.summonTimer||0)-dt;if(enemy.summonTimer>0)return;const launched=ejectBlackHoleUnits(enemy),tier=enemyThreatTier(enemy);enemy.summonTimer=launched?Math.max(7.2,12.6-(tier-1)*.42-(enemy.colossal?.8:0))*(.9+Math.random()*.22):1.8;}
   function updateEjectedAsteroid(enemy,dt){
     if(enemy.stun>0)return;const mini=enemy.targetKind==="mini"?state.miniTurrets.find((item)=>item.id===enemy.targetId&&!item.dead):null;if(enemy.targetKind==="mini"&&!mini){enemy.targetKind="barrier";enemy.targetId=0;enemy.targetX=clamp(enemy.x,BARRIER_ARC.left+18,BARRIER_ARC.right-18);enemy.targetY=barrierSurfaceY(enemy.targetX);}else if(mini){enemy.targetX=mini.x;enemy.targetY=mini.y;}
     const slowed=enemy.slow>0?1-enemy.slowPower:1,dx=enemy.targetX-enemy.x,dy=enemy.targetY-enemy.y,distance=Math.hypot(dx,dy)||1,step=enemy.speed*slowed*dt;if(distance<=step+enemyRadius(enemy)){const damage=Math.max(2,enemy.type.damage*enemyAttackScale(enemy));if(enemy.targetKind==="mini"&&mini)damageMiniTurret(mini,damage);else damageCore(damage,"引力喷射小天体",enemy.targetX);enemy.dead=true;state.waveResolved+=1;state.particles.push({type:"burst",x:enemy.targetX,y:enemy.targetY,r:7,maxR:46,life:.36,maxLife:.36,color:enemy.type.color});spawnSparks(enemy.targetX,enemy.targetY,enemy.hot||enemy.type.color,8,125);return;}enemy.x+=dx/distance*step;enemy.y+=dy/distance*step;enemy.travelAngle=Math.atan2(dy,dx);
   }
   function fireBlackHoleGamma(enemy){
     const targets=enemy.gammaTargets?.length?enemy.gammaTargets:[clamp(enemy.gammaTargetX||enemy.x,BARRIER_ARC.left,BARRIER_ARC.right)],damage=Math.max(8,enemy.type.damage*.38*enemyAttackScale(enemy)),palette=blackHoleAttackPalette(enemy);let totalDamage=0;
-    for(const targetX of targets){const targetY=barrierSurfaceY(targetX);totalDamage+=damage;damageCore(damage,"伽马射线",targetX);for(const mini of state.miniTurrets){if(mini.dead)continue;const t=clamp((mini.y-enemy.y)/Math.max(1,targetY-enemy.y),0,1),lineX=enemy.x+(targetX-enemy.x)*t;if(Math.abs(mini.x-lineX)<52)damageMiniTurret(mini,damage*.72);}state.beams.push({x1:enemy.x,y1:enemy.y,x2:targetX,y2:targetY,color:palette.mid,hot:palette.hot,mid:palette.mid,cool:palette.cool,life:.72,maxLife:.72,style:"gamma"});state.particles.push({type:"burst",x:targetX,y:targetY,r:10,maxR:88,life:.5,maxLife:.5,color:palette.mid},{type:"burst",x:targetX,y:targetY,r:4,maxR:48,life:.34,maxLife:.34,color:palette.cool});spawnSparks(targetX,targetY,palette.hot,8,150);spawnSparks(targetX,targetY,palette.cool,4,110);}
+    for(const targetX of targets){const targetY=barrierSurfaceY(targetX),origin=blackHoleHorizonOrigin(enemy,targetX,targetY);totalDamage+=damage;damageCore(damage,"伽马射线",targetX);for(const mini of state.miniTurrets){if(mini.dead)continue;const t=clamp((mini.y-origin.y)/Math.max(1,targetY-origin.y),0,1),lineX=origin.x+(targetX-origin.x)*t;if(Math.abs(mini.x-lineX)<52)damageMiniTurret(mini,damage*.72);}state.beams.push({x1:origin.x,y1:origin.y,x2:targetX,y2:targetY,color:palette.mid,hot:palette.hot,mid:palette.mid,cool:palette.cool,life:.72,maxLife:.72,style:"gamma"});state.particles.push({type:"burst",x:origin.x,y:origin.y,r:4,maxR:enemyRadius(enemy)*.24,life:.24,maxLife:.24,color:palette.hot},{type:"burst",x:targetX,y:targetY,r:10,maxR:88,life:.5,maxLife:.5,color:palette.mid},{type:"burst",x:targetX,y:targetY,r:4,maxR:48,life:.34,maxLife:.34,color:palette.cool});spawnSparks(targetX,targetY,palette.hot,8,150);spawnSparks(targetX,targetY,palette.cool,4,110);}
     enemy.gammaTargets=[];showToast(`${targets.length} 束伽马射线命中屏障 -${formatCompactNumber(totalDamage)}`);
   }
   function updateBlackHoleGamma(enemy,dt){if(enemy.gammaCharging){enemy.gammaCharge=Math.max(0,enemy.gammaCharge-dt);if(enemy.gammaCharge<=0){enemy.gammaCharging=false;fireBlackHoleGamma(enemy);const tier=enemyThreatTier(enemy);enemy.gammaTimer=Math.max(4.2,9.4-(tier-1)*.35-(enemy.colossal?.65:0));}return;}enemy.gammaTimer=(enemy.gammaTimer||0)-dt;if(enemy.gammaTimer<=0){const tier=enemyThreatTier(enemy),chargeTime=Math.max(.85,1.3-(tier-1)*.035);enemy.gammaCharging=true;enemy.gammaCharge=chargeTime;enemy.gammaChargeMax=chargeTime;enemy.gammaTargets=blackHoleGammaTargets(enemy);enemy.gammaTargetX=enemy.gammaTargets[Math.floor(enemy.gammaTargets.length/2)]||enemy.x;showToast(`威胁 ${tier} · ${enemy.gammaTargets.length} 束伽马射线正在聚焦`);}}
@@ -630,6 +655,7 @@
       if(enemy.type.bossKind==="blackhole"){
         updateBlackHoleGamma(enemy,dt);
         updateBlackHoleAsteroids(enemy,dt);
+        updateBlackHoleSummons(enemy,dt);
         const radius=enemyRadius(enemy),minX=Math.min(radius,W/2),maxX=Math.max(W-radius,W/2);
         enemy.y+=enemy.speed*blackHoleMoveScale(enemy)*dt;
         enemy.x+=Math.sin(state.elapsed*.22+enemy.phase)*enemy.drift*dt;
@@ -642,7 +668,7 @@
       if(enemy.type.bossKind==="star"){
         updateStellarRadiation(enemy,dt);
         const radius=enemyRadius(enemy),minX=Math.min(radius,W/2),maxX=Math.max(W-radius,W/2);
-        enemy.y+=enemy.speed*dt;
+        enemy.y+=enemy.speed*starBossMoveScale(enemy)*dt;
         enemy.x+=Math.sin(state.elapsed*.34+enemy.phase)*enemy.drift*.35*dt;
         enemy.x=clamp(enemy.x,minX,maxX);
         if(enemy.y>=CORE_Y){enemy.dead=true;state.waveResolved+=1;damageCore(enemy.type.damage*enemyAttackScale(enemy),"恒星突破",enemy.x);}
@@ -663,7 +689,7 @@
     }
     state.enemies=state.enemies.filter((enemy)=>!enemy.dead);
   }
-  function updateDefense(dt){updateRepairBots(dt);const regen=cardRank("shield_regen");if(regen&&state.shield<state.shieldMax&&state.elapsed-state.lastDamageTime>4)gainShield((.5+regen*1.5)*dt,"护盾再生");}
+  function updateDefense(dt){updateRepairBots(dt);updateDerivedDefense();state.shieldBreakCooldown=Math.max(0,(state.shieldBreakCooldown||0)-dt);const regen=cardRank("shield_regen"),rates=[0,.022,.034,.048];if(regen&&state.shield<state.shieldMax&&state.elapsed-state.lastDamageTime>3.5)gainShield(state.shieldMax*rates[regen]*(hasCard("fortress")?1.3:1)*dt,"相位回充");}
   function spawnSparks(x,y,color,count=6,force=80){for(let i=0;i<count;i++){const angle=Math.random()*TAU,speed=force*(.35+Math.random()*.8);state.particles.push({type:"spark",x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,size:1+Math.random()*2.4,color,life:.22+Math.random()*.28,maxLife:.5});}}
   function updateEffects(dt){for(const beam of state.beams)beam.life-=dt;state.beams=state.beams.filter((beam)=>beam.life>0);for(const field of state.slowFields){field.life-=dt;for(const enemy of state.enemies)if(!enemy.dead&&Math.hypot(enemy.x-field.x,enemy.y-field.y)<=field.radius)applySlow(enemy,field.power,.22);}state.slowFields=state.slowFields.filter((field)=>field.life>0).slice(-12);for(const particle of state.particles){if(particle.realTime)continue;particle.life-=dt;if(particle.type==="text")particle.y-=34*dt;else if(particle.type==="spark"){particle.x+=particle.vx*dt;particle.y+=particle.vy*dt;particle.vx*=Math.pow(.06,dt);particle.vy=particle.vy*Math.pow(.09,dt)+70*dt;}}state.particles=state.particles.filter((particle)=>particle.life>0).slice(-360);}
   function updateRealtimeEffects(now){let hasExpired=false;for(const particle of state.particles){if(!particle.realTime)continue;const duration=Math.max(.01,particle.realDuration||particle.maxLife||1.6),elapsed=Math.max(0,(now-(particle.realStartedAt||now))/1000);particle.life=Math.max(0,duration-elapsed);particle.maxLife=duration;if(particle.life<=0)hasExpired=true;}if(hasExpired)state.particles=state.particles.filter((particle)=>particle.life>0);}
@@ -690,7 +716,7 @@
     $$('[data-target-radio]').forEach((radio)=>radio.addEventListener("change",()=>{if(radio.checked)setTurretTargetMode(radio.dataset.targetRadio,radio.value);}));
   }
   function updateUI(force=false){$("#waveText").textContent=String(Math.max(1,state.wave)).padStart(2,"0");$("#timeText").textContent=formatTime(state.elapsed);const progress=state.waveTarget?state.waveResolved/state.waveTarget*100:0;$("#waveBar").style.width=`${clamp(progress,0,100)}%`;$("#enemyText").textContent=`${Math.max(0,state.waveTarget-state.waveResolved)} 敌军`;$("#cardCount").textContent=[...state.cards.values()].reduce((a,b)=>a+b,0);$("#saveButton").disabled=!state.authenticated||!state.started||state.gameOver;$("#loadButton").disabled=!validRun(activeAccount()?.run);$("#restartButton").disabled=!state.authenticated||!state.started||state.gameOver;if(force){updateTurretRack();if($("#libraryOverlay").classList.contains("show"))renderLibrary();}}
-  function updateAllUI(){updateUI(true);updateStatsUI();updateAccountUI();}
+  function updateAllUI(){updateUI(true);updateStatsUI();updateAccountUI();syncGameSpeedUI();}
 
   let starfieldCache=null;
   function starNoise(index,salt=0){const value=Math.sin(index*12.9898+salt*78.233)*43758.5453;return value-Math.floor(value);}
@@ -797,7 +823,7 @@
         }
         ctx.save();ctx.font="900 13px 'Microsoft YaHei UI'";ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillStyle="#fff5bd";ctx.shadowColor="#ffd76a";ctx.shadowBlur=10;ctx.fillText(`无敌 ${enemy.invulnerable.toFixed(1)}s`,enemy.x,enemy.y-radius-21);ctx.restore();
       }
-      if(enemy.gammaCharging){const targets=enemy.gammaTargets?.length?enemy.gammaTargets:[enemy.gammaTargetX||enemy.x],progress=1-clamp(enemy.gammaCharge/Math.max(.01,enemy.gammaChargeMax||1.25),0,1),palette=blackHoleAttackPalette(enemy);ctx.save();ctx.globalAlpha=.35+progress*.55;ctx.strokeStyle=palette.mid;ctx.shadowColor=palette.cool;ctx.shadowBlur=14;ctx.lineWidth=1.5+progress*2.5;ctx.setLineDash([8,9]);ctx.lineDashOffset=-state.elapsed*38;for(const targetX of targets){const targetY=barrierSurfaceY(targetX);ctx.beginPath();ctx.moveTo(enemy.x,enemy.y);ctx.lineTo(targetX,targetY);ctx.stroke();ctx.save();ctx.setLineDash([]);ctx.globalAlpha=.18+progress*.42;ctx.strokeStyle=palette.cool;ctx.lineWidth=2+progress*3;ctx.beginPath();ctx.arc(targetX,targetY,10+progress*19,0,TAU);ctx.stroke();ctx.restore();}ctx.setLineDash([]);ctx.strokeStyle=palette.hot;ctx.beginPath();ctx.arc(enemy.x,enemy.y,radius+8+progress*8,0,TAU);ctx.stroke();ctx.restore();}
+      if(enemy.gammaCharging){const targets=enemy.gammaTargets?.length?enemy.gammaTargets:[enemy.gammaTargetX||enemy.x],progress=1-clamp(enemy.gammaCharge/Math.max(.01,enemy.gammaChargeMax||1.25),0,1),palette=blackHoleAttackPalette(enemy);ctx.save();ctx.globalAlpha=.35+progress*.55;ctx.strokeStyle=palette.mid;ctx.shadowColor=palette.cool;ctx.shadowBlur=14;ctx.lineWidth=1.5+progress*2.5;ctx.setLineDash([8,9]);ctx.lineDashOffset=-state.elapsed*38;for(const targetX of targets){const targetY=barrierSurfaceY(targetX),origin=blackHoleHorizonOrigin(enemy,targetX,targetY);ctx.beginPath();ctx.moveTo(origin.x,origin.y);ctx.lineTo(targetX,targetY);ctx.stroke();ctx.save();ctx.setLineDash([]);ctx.globalAlpha=.18+progress*.42;ctx.strokeStyle=palette.cool;ctx.lineWidth=2+progress*3;ctx.beginPath();ctx.arc(targetX,targetY,10+progress*19,0,TAU);ctx.stroke();ctx.fillStyle=palette.hot;ctx.beginPath();ctx.arc(origin.x,origin.y,2+progress*3,0,TAU);ctx.fill();ctx.restore();}ctx.setLineDash([]);ctx.strokeStyle=palette.hot;ctx.beginPath();ctx.arc(enemy.x,enemy.y,radius+8+progress*8,0,TAU);ctx.stroke();ctx.restore();}
       if(enemy.type.boss){const hpWidth=Math.max(120,radius*2);ctx.fillStyle="rgba(0,0,0,.76)";ctx.fillRect(enemy.x-hpWidth/2,enemy.y-radius-10,hpWidth,6);ctx.fillStyle=enemy.type.color;ctx.fillRect(enemy.x-hpWidth/2,enemy.y-radius-10,hpWidth*hpRatio,6);ctx.strokeStyle="rgba(255,255,255,.42)";ctx.strokeRect(enemy.x-hpWidth/2,enemy.y-radius-10,hpWidth,6);}
     }
   }
@@ -852,6 +878,8 @@
   function stopBackgroundMusic(){backgroundMusic.pause();}
   function playSound(kind){if(!state.sound)return;try{audioContext||=new(window.AudioContext||window.webkitAudioContext)();if(audioContext.state==="suspended")audioContext.resume();const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain(),preset={shot:[520,.025,"square"],card:[620,.18,"triangle"],combo:[330,.35,"sine"],wave:[440,.24,"triangle"],start:[220,.35,"sine"],damage:[120,.15,"sawtooth"],end:[110,.5,"triangle"]}[kind]||[380,.06,"sine"];osc.type=preset[2];osc.frequency.setValueAtTime(preset[0],now);osc.frequency.exponentialRampToValueAtTime(Math.max(60,preset[0]*1.3),now+preset[1]);gain.gain.setValueAtTime(kind === "shot" ? .018 : .035, now);gain.gain.exponentialRampToValueAtTime(.0001,now+preset[1]);osc.connect(gain);gain.connect(audioContext.destination);osc.start(now);osc.stop(now+preset[1]);}catch{/* optional */}}
   function syncPauseUI(){$("#pauseIcon").textContent=state.paused?"▶":"Ⅱ";$("#pauseButton").classList.toggle("active",state.paused);$("#pauseVeil").classList.toggle("hidden",!state.paused||state.drafting||!state.started);syncBackgroundVolume();}
+  function syncGameSpeedUI(){const speed=state.gameSpeed===2?2:1;$("#speedText").textContent=`×${speed}`;$("#speedButton").classList.toggle("active",speed===2);$("#speedButton").setAttribute("aria-label",`游戏速度：${speed} 倍`);}
+  function toggleGameSpeed(){state.gameSpeed=state.gameSpeed===2?1:2;syncGameSpeedUI();saveRun(false);showToast(`推演速度 ×${state.gameSpeed}`);}
   function togglePause(){if(!state.started||state.gameOver||state.drafting)return;state.paused=!state.paused;syncPauseUI();showToast(state.paused?"推演暂停":"战斗继续");}
   function closeRails(){const app=$(".portrait-app");app.classList.remove("left-open","right-open");$("#leftRailToggle").setAttribute("aria-expanded","false");$("#rightRailToggle").setAttribute("aria-expanded","false");}
   function toggleRail(side){const app=$(".portrait-app"),className=`${side}-open`,next=!app.classList.contains(className);closeRails();if(next){app.classList.add(className);$(`#${side}RailToggle`).setAttribute("aria-expanded","true");}}
@@ -862,6 +890,7 @@
   function updateTurretHover(event){const rect=canvas.getBoundingClientRect(),x=(event.clientX-rect.left)*W/rect.width,y=(event.clientY-rect.top)*H/rect.height,hovered=Object.values(state.turrets).filter((turret)=>turret.active).sort((a,b)=>Math.hypot(x-a.x,y-a.y)-Math.hypot(x-b.x,y-b.y))[0];state.hoverTurretId=hovered&&Math.hypot(x-hovered.x,y-hovered.y)<=52?hovered.id:null;}
 
   function bindEvents(){
+    $("#speedButton").addEventListener("click",toggleGameSpeed);
     $("#newRunButton").addEventListener("click",resetGame);$("#fastStartButton").addEventListener("click",startFastRun);$("#randomFastStartButton").addEventListener("click",startRandomFastRun);$("#blackHoleTestButton").addEventListener("click",startBlackHoleTest);$("#continueRunButton").addEventListener("click",loadRun);$("#discardRunButton").addEventListener("click",discardRun);$("#resultRestart").addEventListener("click",showStartScreen);
     $("#saveButton").addEventListener("click",()=>saveRun(true));$("#loadButton").addEventListener("click",requestLoadRun);$("#cancelLoadButton").addEventListener("click",cancelLoadRun);$("#confirmLoadButton").addEventListener("click",loadRun);$("#restartButton").addEventListener("click",requestRestart);$("#cancelRestartButton").addEventListener("click",cancelRestart);$("#confirmRestartButton").addEventListener("click",confirmRestart);$("#pauseButton").addEventListener("click",togglePause);$("#leftRailToggle").addEventListener("click",()=>toggleRail("left"));$("#rightRailToggle").addEventListener("click",()=>toggleRail("right"));$("#gameCanvas").addEventListener("click",closeRails);$("#gameCanvas").addEventListener("mousemove",updateTurretHover);$("#gameCanvas").addEventListener("mouseleave",()=>{state.hoverTurretId=null;});
     $("#confirmLoadButton").addEventListener("click",()=>{state.repairBots=[];});$("#continueRunButton").addEventListener("click",()=>{state.repairBots=[];});
@@ -874,7 +903,7 @@
   }
   function resizeCanvas(){const dpr=Math.min(1.35,window.devicePixelRatio||1);canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
   let uiAccumulator=0,statsAccumulator=0,lastDraw=0;
-  function loop(time){const dt=state.lastTime?(time-state.lastTime)/1000:0;state.lastTime=time;updateRealtimeEffects(time);update(dt);uiAccumulator+=dt;statsAccumulator+=dt;if(uiAccumulator>.18){uiAccumulator=0;updateUI();}if(statsAccumulator>.2){statsAccumulator=0;updateStatsUI();}const active=state.started&&!state.paused&&!state.gameOver,interval=active?1000/60:1000/18;if(time-lastDraw>=interval){lastDraw=time;draw(time);}requestAnimationFrame(loop);}
+  function loop(time){const dt=state.lastTime?(time-state.lastTime)/1000:0;state.lastTime=time;updateRealtimeEffects(time);update(dt*(state.gameSpeed===2?2:1));uiAccumulator+=dt;statsAccumulator+=dt;if(uiAccumulator>.18){uiAccumulator=0;updateUI();}if(statsAccumulator>.2){statsAccumulator=0;updateStatsUI();}const active=state.started&&!state.paused&&!state.gameOver,interval=active?1000/60:1000/18;if(time-lastDraw>=interval){lastDraw=time;draw(time);}requestAnimationFrame(loop);}
   async function init(){await ensureTestAccount();state.turrets=makeTurrets();resizeCanvas();bindEvents();applySettings();loadMusicTrack(0,false);renderProfiles();updateAllUI();$("#startOverlay").classList.remove("show");openAccountPanel(true);draw(0);requestAnimationFrame(loop);}
   init();
 })();

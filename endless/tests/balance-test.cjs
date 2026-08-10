@@ -16,6 +16,7 @@ function rng(seed) {
 
 const gameSource = fs.readFileSync(path.join(__dirname, "..", "game.js"), "utf8");
 const blackHoleSource = fs.readFileSync(path.join(__dirname, "..", "black-hole-enemy.js"), "utf8");
+const indexSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 const cardStart = gameSource.indexOf("const CARDS = [");
 const cardEnd = gameSource.indexOf("\n  ];", cardStart);
 assert(cardStart >= 0 && cardEnd > cardStart, "可以读取完整卡牌定义");
@@ -54,7 +55,7 @@ assert(/visualRoll:isBlackHole\?-10\+Math\.random\(\)\*20:0/.test(gameSource), "
 assert(/const DISSOLVE_SECONDS = 1\.25;/.test(blackHoleSource), "黑洞首领在两秒内快速完成烟消云散");
 assert(/realTime:true, realStartedAt:performance\.now\(\)/.test(blackHoleSource), "黑洞死亡动画使用真实时间计时");
 assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间不会重复扣减黑洞死亡动画");
-assert(/updateRealtimeEffects\(time\);update\(dt\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新");
+assert(/updateRealtimeEffects\(time\);update\(dt\*\(state\.gameSpeed===2\?2:1\)\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新，战斗时间支持倍速");
 assert(/function hasActiveBlackHoleDissolve\(\)/.test(gameSource), "波次结算能够检测尚未完成的黑洞消散动画");
 assert(/state\.waveEndTimer<=0&&!hasActiveBlackHoleDissolve\(\)/.test(gameSource), "黑洞完全消失后才弹出波次结算选卡");
 assert(/addCard\(id,\{deferUI:true\}\);rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面");
@@ -110,6 +111,13 @@ assert(/resetGame\(\{startWave:9,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=9/
 assert(/function blackHoleMoveScale\(enemy\)/.test(gameSource), "黑洞使用快速入场与慢速巡航的分段移动曲线");
 assert(/entryScale=enemy\.colossal\?9:4\.5,cruiseScale=enemy\.colossal\?\.5:\.68/.test(gameSource), "巨型与普通黑洞均快速入场并在战区显著减速");
 assert(/enemy\.y\+=enemy\.speed\*blackHoleMoveScale\(enemy\)\*dt/.test(gameSource), "黑洞推进实际接入平滑移动倍率");
+assert(/function starBossMoveScale\(enemy\)/.test(gameSource), "恒星小首领拥有快速入场到正常巡航的平滑曲线");
+assert(/enemy\.y\+=enemy\.speed\*starBossMoveScale\(enemy\)\*dt/.test(gameSource), "恒星小首领移动实际接入入场倍率");
+assert(/id="speedButton"/.test(indexSource) && /function toggleGameSpeed\(\)/.test(gameSource), "左侧控制区提供一倍与二倍游戏速度切换");
+assert(/const DISTANCE_DAMAGE_MIN = \.5;/.test(gameSource), "战区最远端获得百分之五十伤害减免");
+assert(/function distanceDamageMultiplier\(enemy\)[\s\S]{0,260}DISTANCE_DAMAGE_MIN\+\(1-DISTANCE_DAMAGE_MIN\)\*progress/.test(gameSource), "远距减伤向屏障前线性衰减至零");
+assert(/let multiplier=defense\*distanceMultiplier/.test(gameSource), "所有敌方单位受击结算接入纵深减伤");
+assert(/const DISTANCE_BALANCE_HP_SCALE = \.88;/.test(gameSource), "敌方基础生命下调以补偿新增纵深减伤");
 assert(/if\(!opening&&!state\.draftWaveStarted\)\{repairAfterWave\(\);startNextWave\(\);state\.draftWaveStarted=true;\}/.test(gameSource), "波次奖励弹窗出现前已立即启动下一波");
 assert(/state\.paused=!!opening/.test(gameSource), "仅开局配牌暂停，战斗中奖励弹窗保持运行");
 assert(/下一波已开始 · 战斗不会因选卡暂停/.test(gameSource), "选卡弹窗明确提示后台战斗仍在继续");
@@ -127,6 +135,13 @@ assert(/function updateBlackHoleAsteroids\(enemy,dt\)/.test(gameSource), "黑洞
 assert(/bh_asteroid:\s*\{[^}]*name:"引力喷射小天体"/.test(gameSource), "喷射小天体是拥有独立血量、防御和分数的敌方单位");
 assert(/typeId:"bh_asteroid"[\s\S]{0,900}maxHp,hp:maxHp/.test(gameSource), "黑洞喷射会生成可被炮塔锁定和击毁的小天体实体");
 assert(/function updateEjectedAsteroid\(enemy,dt\)/.test(gameSource), "未被击毁的小天体会继续飞向屏障或小型炮塔");
+assert(/function blackHoleSummonPool\(wave=state\.wave\)/.test(gameSource), "黑洞喷吐单位池会依据当前波次逐步解锁");
+const summonPoolSource=gameSource.slice(gameSource.indexOf("function blackHoleSummonPool"),gameSource.indexOf("function blackHoleSummonCount"));
+for(const unit of ["swarm","runner","splitter","tank","frigate","shield","prism","shooter","carrier","nova"])assert(summonPoolSource.includes(`\"${unit}\"`), `黑洞召唤池包含 ${unit}`);
+assert(/function ejectBlackHoleUnits\(enemy\)/.test(gameSource) && /summonedByBlackHole=enemy\.id/.test(gameSource), "黑洞会喷吐可攻击的多类型敌方实体");
+assert(/function updateBlackHoleSummons\(enemy,dt\)/.test(gameSource), "黑洞多类型喷吐拥有独立冷却与场上容量限制");
+assert(/function blackHoleHorizonOrigin\(enemy,targetX,targetY\)/.test(gameSource), "伽马射线依据目标方向计算事件视界出射点");
+assert(/style:"gamma"[\s\S]{0,120}x1:origin\.x,y1:origin\.y|x1:origin\.x,y1:origin\.y[\s\S]{0,220}style:"gamma"/.test(gameSource), "伽马射线从事件视界而不是黑洞中心出射");
 assert(/side:"blackhole"/.test(gameSource), "激光在事件视界处截断而不是穿透黑洞");
 assert(/if\(absorber\)[\s\S]{0,280}break;/.test(gameSource), "激光命中黑洞后停止后续反射路径");
 assert(/absorbed=current\.type\.bossKind==="blackhole"/.test(gameSource), "电弧把黑洞识别为吸收终点");
@@ -136,6 +151,11 @@ assert(/targetX=BARRIER_ARC\.left\+34\+Math\.random\(\)/.test(gameSource), "维�
 assert(/function updateRepairBots\(dt\)/.test(gameSource), "机器人附着后按作业进度持续结算修补与护盾涂层");
 assert(/function drawRepairBots\(\)/.test(gameSource), "战斗画面绘制飞行、附着和焊接状态的维修机器人");
 assert(cards.some((card) => card.id === "repair_drone_bay") && cards.some((card) => card.id === "repair_drone_anchor"), "卡组包含机器人数量与驻留加工两条成长分支");
+assert(/const effectiveWave=state\.openingDraft\?Math\.max\(8,state\.wave\):state\.wave/.test(gameSource), "开局五轮选卡允许出现满足前置的稀有与后期构筑卡");
+assert(/ratios=\[0,\.3,\.45,\.6,\.8\]/.test(gameSource), "相位护盾按屏障上限百分比成长而非固定二十点");
+for(const id of ["shield_overdrive","barrier_arsenal","aegis_retaliation"])assert(ids.has(id), `护盾联动卡 ${id} 已加入卡池`);
+assert(/function payForbiddenInsightCost\(\)[\s\S]{0,420}shieldSpent=Math\.min\(state\.shield,cost\)/.test(gameSource), "禁忌洞见代价优先扣除黄色相位护盾");
+assert(/function defensiveFirepowerMultiplier\(\)/.test(gameSource), "护盾数值与屏障生命上限能够转化为全局伤害");
 
 function offerRates(history, preferenceTag = "", iterations = 30000) {
   const random = rng(0x5eed1234);
