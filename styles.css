@@ -64,3 +64,13 @@
 @media(max-width:900px){.hero-layout{grid-template-columns:1fr;gap:20px;padding-top:65px}.hero::after{background:linear-gradient(180deg,rgba(7,21,19,.94) 0%,rgba(7,21,19,.67) 50%,rgba(7,21,19,.24) 100%)}.hero-math{min-height:410px}.parameter-plane{width:min(350px,88vw)}}
 @media(max-width:560px){.hero{min-height:auto}.hero-layout{min-height:auto;padding:58px 0 54px}.hero-math{min-height:370px}.parameter-plane{width:min(320px,92vw)}.parameter-live{right:23px;bottom:21px}}
 @media(prefers-reduced-motion:reduce){.parameter-live i{animation:none}}
+
+/* Wuxia-inspired calligraphic hero title */
+@font-face{font-family:"Ma Shan Zheng Title";src:url("assets/MaShanZheng-Title.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+.hero h1.hero-quote{max-width:8.6em;margin:0;display:flex;flex-direction:column;align-items:flex-start;color:var(--paper);font:400 clamp(66px,6.3vw,96px)/.94 "Ma Shan Zheng Title","STKaiti","KaiTi",serif;letter-spacing:.045em;text-shadow:0 5px 28px rgba(0,0,0,.5),0 0 42px rgba(130,240,207,.035)}
+.hero-quote .quote-line{display:block;position:relative;isolation:isolate}
+.hero-quote .quote-opening{margin-left:.08em;color:rgba(235,245,240,.95);font-size:.78em;letter-spacing:.13em;transform:rotate(-.8deg)}
+.hero-quote .quote-answer{margin-top:.02em;white-space:nowrap;color:var(--mint);transform:rotate(.25deg)}
+.hero-quote .quote-answer::before{content:"";height:.13em;position:absolute;left:-.04em;right:.05em;bottom:.08em;z-index:-1;background:linear-gradient(90deg,transparent,rgba(130,240,207,.09) 12%,rgba(130,240,207,.045) 82%,transparent);filter:blur(5px);transform:skewX(-14deg)}
+.hero-quote .quote-answer::after{content:"道";width:1.34em;height:1.34em;margin-left:.28em;display:inline-grid;place-items:center;vertical-align:.28em;color:rgba(207,91,72,.84);border:1px solid rgba(207,91,72,.66);box-shadow:inset 0 0 0 2px rgba(207,91,72,.1);font:400 .18em/1 "STKaiti","KaiTi",serif;letter-spacing:0;transform:rotate(-7deg)}
+@media(max-width:560px){.hero h1.hero-quote{max-width:none;font-size:clamp(34px,10.8vw,52px);letter-spacing:.025em}.hero-quote .quote-opening{letter-spacing:.1em}.hero-quote .quote-answer::after{margin-left:.18em}}
