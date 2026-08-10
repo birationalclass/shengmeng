@@ -12,8 +12,11 @@ window.createDmlHeroSimulation = () => {
   const fullTurn = Math.PI * 2;
   const cycleDuration = 60;
   const secondsPerIteration = 0.75;
-  const targetRadius = 0.58;
-  const intersectionAngle = Math.PI / 3;
+  const targetAxisX = 0.62;
+  const targetAxisY = 0.48;
+  const targetRadialAmplitude = 0.22;
+  const targetRotation = -0.14;
+  const intersectionAngle = Math.PI / 4;
   const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
   const positiveModulo = (value, modulus) => ((value % modulus) + modulus) % modulus;
 
@@ -21,38 +24,42 @@ window.createDmlHeroSimulation = () => {
     x: point.x * Math.cos(angle) - point.y * Math.sin(angle),
     y: point.x * Math.sin(angle) + point.y * Math.cos(angle)
   });
-  const circleCurve = (parameter) => ({
-    x: targetRadius * Math.cos(parameter),
-    y: targetRadius * Math.sin(parameter)
-  });
+  const targetCurve = (parameter) => {
+    const cosine = Math.cos(parameter);
+    const sine = Math.sin(parameter);
+    const sineTriple = 3 * sine - 4 * Math.pow(sine, 3);
+    const cosineQuintuple = 16 * Math.pow(cosine, 5) - 20 * Math.pow(cosine, 3) + 5 * cosine;
+    const asymmetricWeight = 1 + 0.28 * cosine - 0.18 * sineTriple + 0.10 * cosineQuintuple;
+    const radialScale = 1
+      + targetRadialAmplitude * (cosine * cosine - sine * sine) * asymmetricWeight;
+    return rotatePoint({
+      x: targetAxisX * radialScale * cosine,
+      y: targetAxisY * radialScale * sine
+    }, targetRotation);
+  };
 
   const ellipseSpecs = [
-    [0.86, -0.32, 12, 0, "ELLIPSE I"],
-    [0.76, 0.18, 18, 2, "ELLIPSE II"],
-    [0.90, -0.05, 24, 3, "ELLIPSE III"],
-    [0.80, 0.42, 30, 1, "ELLIPSE IV"],
-    [0.92, -0.48, 12, 4, "ELLIPSE V"],
-    [0.78, 0.08, 18, 5, "ELLIPSE VI"],
-    [0.88, 0.52, 24, 7, "ELLIPSE VII"],
-    [0.82, -0.16, 30, 8, "ELLIPSE VIII"],
-    [0.74, 0.34, 12, 1, "ELLIPSE IX"],
-    [0.85, -0.56, 18, 4, "ELLIPSE X"]
+    [16, 0, "DYNAMICS I"],
+    [24, 2, "DYNAMICS II"],
+    [32, 3, "DYNAMICS III"],
+    [40, 1, "DYNAMICS IV"],
+    [16, 4, "DYNAMICS V"],
+    [24, 5, "DYNAMICS VI"],
+    [32, 7, "DYNAMICS VII"],
+    [40, 8, "DYNAMICS VIII"],
+    [16, 1, "DYNAMICS IX"],
+    [24, 4, "DYNAMICS X"]
   ];
 
-  const orbitSets = ellipseSpecs.map(([majorAxis, rotation, modulus, offsetSteps, label]) => {
-    const cosine = Math.cos(intersectionAngle);
-    const sine = Math.sin(intersectionAngle);
-    const minorAxis = Math.sqrt(
-      (targetRadius * targetRadius - majorAxis * majorAxis * cosine * cosine) / (sine * sine)
-    );
+  const orbitSets = ellipseSpecs.map(([modulus, offsetSteps, label]) => {
     const stepAngle = fullTurn / modulus;
     const offsetAngle = offsetSteps * stepAngle;
-    const hitParameterIndices = [modulus / 6, modulus / 3, (2 * modulus) / 3, (5 * modulus) / 6];
+    const hitParameterIndices = [modulus / 8, (3 * modulus) / 8, (5 * modulus) / 8, (7 * modulus) / 8];
     const hitParameters = [
       intersectionAngle,
-      Math.PI - intersectionAngle,
-      Math.PI + intersectionAngle,
-      fullTurn - intersectionAngle
+      3 * intersectionAngle,
+      5 * intersectionAngle,
+      7 * intersectionAngle
     ];
     const hits = hitParameterIndices
       .map((index, hitIndex) => ({
@@ -62,13 +69,13 @@ window.createDmlHeroSimulation = () => {
       .sort((first, second) => first.residue - second.residue);
     const residues = hits.map((hit) => hit.residue);
     const movingCurve = (parameter) => rotatePoint({
-      x: majorAxis * Math.cos(parameter),
-      y: minorAxis * Math.sin(parameter)
-    }, rotation);
+      x: targetAxisX * Math.cos(parameter),
+      y: targetAxisY * Math.sin(parameter)
+    }, targetRotation);
     return {
-      majorAxis,
-      minorAxis,
-      rotation,
+      majorAxis: targetAxisX,
+      minorAxis: targetAxisY,
+      rotation: targetRotation,
       modulus,
       offsetAngle,
       stepAngle,
@@ -93,7 +100,7 @@ window.createDmlHeroSimulation = () => {
 
   [backgroundCanvas, returnCanvas].forEach((target) => {
     target.dataset.orbitSets = String(orbitSets.length);
-    target.dataset.target = "V: x^2 + y^2 = R^2";
+    target.dataset.target = "V: asymmetric polynomial image of the unit circle";
   });
 
   function fitCanvas(target, targetContext) {
@@ -308,7 +315,6 @@ window.createDmlHeroSimulation = () => {
     const resetIn = cycleDuration - Math.floor(cycleTime);
     const currentIteration = cycleTime / secondsPerIteration;
     const ellipseParameter = set.offsetAngle + currentIteration * set.stepAngle;
-    const circleParameter = cycleTime * 0.48;
     const lanes = returnRecords(set, currentIteration);
     const hitCount = lanes.reduce((total, lane) => total + lane.records.length, 0);
     const nLimit = Math.max(set.modulus + 2, Math.min(cycleDuration / secondsPerIteration, currentIteration + 3));
@@ -340,10 +346,9 @@ window.createDmlHeroSimulation = () => {
       top: plotCentreY - plotSize / 2,
       size: plotSize
     };
-    drawCompleteCurve(circleCurve, plotFrame, "rgba(83, 207, 219, 0.22)", 1.05);
+    drawCompleteCurve(targetCurve, plotFrame, "rgba(83, 207, 219, 0.24)", 1.05);
     drawCompleteCurve(set.movingCurve, plotFrame, "rgba(231, 185, 92, 0.18)", 0.9);
     drawHitLocus(plotFrame, set, currentIteration);
-    drawTrail(circleCurve, (trailTime) => trailTime * 0.48, cycleTime, plotFrame, "rgba(83, 207, 219, ALPHA)");
     drawTrail(
       set.movingCurve,
       (trailTime) => set.offsetAngle + (trailTime / secondsPerIteration) * set.stepAngle,
@@ -351,12 +356,11 @@ window.createDmlHeroSimulation = () => {
       plotFrame,
       "rgba(231, 185, 92, ALPHA)"
     );
-    drawParticle(pointInFrame(circleCurve(circleParameter), plotFrame), "rgba(83, 207, 219, ALPHA)", "rgba(226, 255, 249, 0.98)");
     drawParticle(pointInFrame(set.movingCurve(ellipseParameter), plotFrame), "rgba(231, 185, 92, ALPHA)", "rgba(255, 244, 215, 0.98)", hitEmphasis);
 
     if (!narrow) {
-      drawLabel("V · FIXED CIRCLE", clamp(plotFrame.left + 34, 28, width - 220), height - 42, "rgba(83, 207, 219, 0.4)", 7);
-      drawLabel(`b_n · ${set.label}`, clamp(plotFrame.left + 210, 190, width - 240), height - 42, "rgba(231, 185, 92, 0.38)", 7);
+      drawLabel("V · FIXED ASYMMETRIC POLYNOMIAL LOOP", clamp(plotFrame.left + 34, 28, width - 340), height - 42, "rgba(83, 207, 219, 0.4)", 7);
+      drawLabel(`b_n · ${set.label}`, clamp(plotFrame.left + 300, 290, width - 240), height - 42, "rgba(231, 185, 92, 0.38)", 7);
     }
 
     context = returnContext;
