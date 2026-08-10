@@ -57,21 +57,86 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const fullTurn = Math.PI * 2;
-  const lemniscateRotation = 0.45;
-  const rotationCosine = Math.cos(lemniscateRotation);
-  const rotationSine = Math.sin(lemniscateRotation);
-  const curveA = (parameter) => ({
-    x: 0.28 * (2 * Math.cos(parameter) + Math.cos(2 * parameter)),
-    y: 0.28 * (2 * Math.sin(parameter) - Math.sin(2 * parameter))
+  const curveCycleDuration = 60;
+  const rotatePoint = (point, angle) => ({
+    x: point.x * Math.cos(angle) - point.y * Math.sin(angle),
+    y: point.x * Math.sin(angle) + point.y * Math.cos(angle)
   });
-  const curveB = (parameter) => {
-    const localX = 0.78 * Math.cos(parameter);
-    const localY = 1.05 * Math.sin(parameter) * Math.cos(parameter);
-    return {
-      x: localX * rotationCosine - localY * rotationSine,
-      y: localX * rotationSine + localY * rotationCosine
-    };
+  const radialCurve = (baseRadius, waves) => (parameter) => {
+    const radius = waves.reduce(
+      (value, [amplitude, frequency, phase]) => value + amplitude * Math.cos(frequency * parameter + phase),
+      baseRadius
+    );
+    return { x: radius * Math.cos(parameter), y: radius * Math.sin(parameter) };
   };
+  const curveDefinitions = [
+    {
+      labelA: "DELTOID",
+      labelB: "GERONO LEMNISCATE",
+      curveA: (parameter) => ({
+        x: 0.28 * (2 * Math.cos(parameter) + Math.cos(2 * parameter)),
+        y: 0.28 * (2 * Math.sin(parameter) - Math.sin(2 * parameter))
+      }),
+      curveB: (parameter) => rotatePoint({
+        x: 0.78 * Math.cos(parameter),
+        y: 1.05 * Math.sin(parameter) * Math.cos(parameter)
+      }, 0.45)
+    },
+    {
+      labelA: "BI-HARMONIC OVAL",
+      labelB: "TRI-HARMONIC ROSETTE",
+      curveA: radialCurve(0.58, [[0.19, 2, 0.2], [0.035, 7, 0.8]]),
+      curveB: radialCurve(0.60, [[0.18, 3, 1.1], [0.03, 5, 0.4]])
+    },
+    {
+      labelA: "BI-HARMONIC RIBBON",
+      labelB: "QUADRI-HARMONIC LOOP",
+      curveA: radialCurve(0.58, [[0.18, 2, 0.5], [0.035, 5, 0.2]]),
+      curveB: radialCurve(0.60, [[0.17, 4, 0.2], [0.03, 3, 1.3]])
+    },
+    {
+      labelA: "BI-HARMONIC ROSETTE",
+      labelB: "PENTA-HARMONIC OVAL",
+      curveA: radialCurve(0.58, [[0.17, 2, 0.7], [0.035, 6, 0.2]]),
+      curveB: radialCurve(0.60, [[0.18, 5, 1.1], [0.03, 3, 0.5]])
+    },
+    {
+      labelA: "TRI-HARMONIC LOOP",
+      labelB: "QUADRI-HARMONIC ROSETTE",
+      curveA: radialCurve(0.58, [[0.19, 3, 0.2], [0.035, 7, 0.9]]),
+      curveB: radialCurve(0.60, [[0.17, 4, 1.4], [0.03, 2, 0.2]])
+    },
+    {
+      labelA: "TRI-HARMONIC RIBBON",
+      labelB: "PENTA-HARMONIC LOOP",
+      curveA: radialCurve(0.58, [[0.18, 3, 0.5], [0.035, 7, 1.1]]),
+      curveB: radialCurve(0.60, [[0.19, 5, 0.9], [0.03, 2, 0.3]])
+    },
+    {
+      labelA: "QUADRI-HARMONIC OVAL",
+      labelB: "PENTA-HARMONIC ROSETTE",
+      curveA: radialCurve(0.58, [[0.16, 4, 0.8], [0.035, 3, 0.1]]),
+      curveB: radialCurve(0.60, [[0.18, 5, 0.4], [0.03, 7, 1.2]])
+    },
+    {
+      labelA: "BI-HARMONIC LOOP",
+      labelB: "PENTA-HARMONIC RIBBON",
+      curveA: radialCurve(0.58, [[0.20, 2, 1.2], [0.035, 8, 0.3]]),
+      curveB: radialCurve(0.60, [[0.16, 5, 0.6], [0.03, 4, 1.1]])
+    },
+    {
+      labelA: "TRI-HARMONIC OVAL",
+      labelB: "QUADRI-HARMONIC RIBBON",
+      curveA: radialCurve(0.58, [[0.18, 3, 1.1], [0.035, 9, 0.2]]),
+      curveB: radialCurve(0.60, [[0.18, 4, 0.3], [0.03, 5, 1.4]])
+    },
+    {
+      labelA: "QUADRI-HARMONIC ROSETTE",
+      labelB: "PENTA-HARMONIC RIBBON",
+      curveA: radialCurve(0.58, [[0.18, 4, 0.3], [0.035, 11, 0.7]]),
+      curveB: radialCurve(0.60, [[0.17, 5, 1.0], [0.03, 3, 0.4]])
+    }
+  ];
   const cross = (first, second) => first.x * second.y - first.y * second.x;
   const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
   const circularDistance = (first, second) => {
@@ -92,7 +157,7 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     return { firstFraction, secondFraction };
   }
 
-  function findIntersections(sampleCount = 360) {
+  function findIntersections(curveA, curveB, sampleCount = 360) {
     const firstSamples = [];
     const secondSamples = [];
     for (let index = 0; index <= sampleCount; index += 1) {
@@ -127,9 +192,22 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     return records.sort((first, second) => first.s - second.s || first.t - second.t);
   }
 
-  const intersections = findIntersections();
+  const curveSets = curveDefinitions.map((definition) => ({
+    ...definition,
+    intersections: findIntersections(definition.curveA, definition.curveB)
+  }));
+  let activeCurveSetIndex = 0;
+  let activeCurveSet = curveSets[0];
+  let curveA = activeCurveSet.curveA;
+  let curveB = activeCurveSet.curveB;
+  let intersections = activeCurveSet.intersections;
   [backgroundCanvas, parameterCanvas].forEach((target) => {
+    target.dataset.curveSets = String(curveSets.length);
+    target.dataset.intersectionCounts = curveSets.map((set) => set.intersections.length).join(",");
     target.dataset.baseIntersections = String(intersections.length);
+    target.dataset.curveSet = "1";
+    target.dataset.curveA = activeCurveSet.labelA;
+    target.dataset.curveB = activeCurveSet.labelB;
   });
 
   let width = 1;
@@ -180,23 +258,40 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
   }
 
   const parameterPointKey = (s, t) => `${Math.round(s * 1000)}:${Math.round(t * 1000)}`;
-  let latticeCache = { bucket: -1, points: [], chains: [] };
+  let latticeCache = { bucket: "", points: [], chains: [] };
+
+  function activateCurveSet(nextIndex) {
+    if (nextIndex === activeCurveSetIndex) return;
+    activeCurveSetIndex = nextIndex;
+    activeCurveSet = curveSets[activeCurveSetIndex];
+    curveA = activeCurveSet.curveA;
+    curveB = activeCurveSet.curveB;
+    intersections = activeCurveSet.intersections;
+    latticeCache = { bucket: "", points: [], chains: [] };
+    [backgroundCanvas, parameterCanvas].forEach((target) => {
+      target.dataset.baseIntersections = String(intersections.length);
+      target.dataset.curveSet = String(activeCurveSetIndex + 1);
+      target.dataset.curveA = activeCurveSet.labelA;
+      target.dataset.curveB = activeCurveSet.labelB;
+    });
+  }
 
   function currentParameterLimits(time) {
-    const safeTime = Math.max(0, time);
+    const progress = clamp(time / curveCycleDuration, 0, 1);
     return {
-      s: fullTurn * (3 + 0.76 * Math.log1p(safeTime / 12)),
-      t: fullTurn * (3 + 0.68 * Math.log1p(safeTime / 14))
+      s: fullTurn * (2 + 2 * progress),
+      t: fullTurn * (2 + 2 * progress)
     };
   }
 
   function buildPeriodicLattice(sLimit, tLimit) {
     const points = [];
     intersections.forEach((intersection, baseIndex) => {
-      for (let s = intersection.s, sTurn = 0; s <= sLimit + 1e-7; s += fullTurn, sTurn += 1) {
-        for (let t = intersection.t, tTurn = 0; t <= tLimit + 1e-7; t += fullTurn, tTurn += 1) {
-          points.push({ s, t, baseIndex, sTurn, tTurn });
-        }
+      for (let cycle = 0; ; cycle += 1) {
+        const s = intersection.s + cycle * fullTurn;
+        const t = intersection.t + cycle * fullTurn;
+        if (s > sLimit + 1e-7 || t > tLimit + 1e-7) break;
+        points.push({ s, t, baseIndex, cycle });
       }
     });
     return points.sort((first, second) => first.s - second.s || first.t - second.t);
@@ -248,7 +343,7 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
   }
 
   function latticeAt(time, limits) {
-    const bucket = Math.floor(time * 2);
+    const bucket = `${activeCurveSetIndex}:${Math.floor(time * 2)}`;
     if (bucket !== latticeCache.bucket) {
       const points = buildPeriodicLattice(limits.s, limits.t);
       latticeCache = {
@@ -403,18 +498,25 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
   }
 
   function render(time) {
-    const sNow = (time * 0.56) % fullTurn;
-    const tNow = (time * 0.43 + 1.35) % fullTurn;
-    const parameterLimits = currentParameterLimits(time);
-    const lattice = latticeAt(time, parameterLimits);
+    const cycleNumber = Math.floor(time / curveCycleDuration);
+    const cycleTime = time % curveCycleDuration;
+    const nextCurveSetIndex = cycleNumber % curveSets.length;
+    activateCurveSet(nextCurveSetIndex);
+    const resetIn = curveCycleDuration - Math.floor(cycleTime);
+    const sNow = (cycleTime * 0.56) % fullTurn;
+    const tNow = (cycleTime * 0.43 + 1.35) % fullTurn;
+    const parameterLimits = currentParameterLimits(cycleTime);
+    const lattice = latticeAt(cycleTime, parameterLimits);
     const visibleCount = reducedMotion.matches
       ? intersections.length
-      : Math.min(intersections.length, Math.max(0, Math.floor(time / 1.05) + 1));
+      : Math.min(intersections.length, Math.max(0, Math.floor(cycleTime / 1.05) + 1));
     parameterCanvas.dataset.points = String(lattice.points.length);
     parameterCanvas.dataset.arithmeticChains = String(lattice.chains.length);
     parameterCanvas.dataset.maxChainLength = String(lattice.chains[0]?.points.length || 0);
     parameterCanvas.dataset.sScale = parameterLimits.s.toFixed(3);
     parameterCanvas.dataset.tScale = parameterLimits.t.toFixed(3);
+    parameterCanvas.dataset.cycleElapsed = cycleTime.toFixed(2);
+    parameterCanvas.dataset.resetIn = String(resetIn);
 
     context = backgroundContext;
     width = backgroundWidth;
@@ -434,15 +536,15 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     };
     drawCompleteCurve(curveA, plotFrame, "rgba(83, 207, 219, 0.17)");
     drawCompleteCurve(curveB, plotFrame, "rgba(231, 185, 92, 0.15)");
-    drawIntersectionLocus(plotFrame, visibleCount, time);
-    drawTrail(curveA, (trailTime) => trailTime * 0.56, time, plotFrame, "rgba(83, 207, 219, ALPHA)");
-    drawTrail(curveB, (trailTime) => trailTime * 0.43 + 1.35, time, plotFrame, "rgba(231, 185, 92, ALPHA)");
+    drawIntersectionLocus(plotFrame, visibleCount, cycleTime);
+    drawTrail(curveA, (trailTime) => trailTime * 0.56, cycleTime, plotFrame, "rgba(83, 207, 219, ALPHA)");
+    drawTrail(curveB, (trailTime) => trailTime * 0.43 + 1.35, cycleTime, plotFrame, "rgba(231, 185, 92, ALPHA)");
     drawParticle(pointInFrame(curveA(sNow), plotFrame), "rgba(83, 207, 219, ALPHA)", "rgba(226, 255, 249, 0.98)");
     drawParticle(pointInFrame(curveB(tNow), plotFrame), "rgba(231, 185, 92, ALPHA)", "rgba(255, 244, 215, 0.98)");
 
     if (!narrow) {
-      drawLabel("a(s) · DELTOID", clamp(plotFrame.left + 34, 28, width - 190), height - 42, "rgba(83, 207, 219, 0.36)", 7);
-      drawLabel("b(t) · GERONO LEMNISCATE", clamp(plotFrame.left + 154, 148, width - 210), height - 42, "rgba(231, 185, 92, 0.34)", 7);
+      drawLabel(`a(s) · ${activeCurveSet.labelA}`, clamp(plotFrame.left + 34, 28, width - 260), height - 42, "rgba(83, 207, 219, 0.36)", 7);
+      drawLabel(`b(t) · ${activeCurveSet.labelB}`, clamp(plotFrame.left + 244, 210, width - 280), height - 42, "rgba(231, 185, 92, 0.34)", 7);
     }
 
     context = parameterContext;
@@ -455,13 +557,13 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
       top: 80 + Math.max(0, (height - 132 - parameterSize) / 2),
       size: parameterSize
     };
-    drawLabel("EXPANDING PARAMETER LATTICE", 30, 27, "rgba(231, 185, 92, 0.76)", 7);
+    drawLabel(`SYNCHRONIZED LATTICE · SET ${String(activeCurveSetIndex + 1).padStart(2, "0")}/${curveSets.length}`, 30, 27, "rgba(231, 185, 92, 0.76)", 7);
     drawLabel("p < q ⇔ s(p) < s(q) AND t(p) < t(q)", 30, 43, "rgba(202, 222, 214, 0.58)", 6.4);
     drawLabel(`a(s) = b(t) · ${lattice.points.length} POINTS · ${lattice.chains.length} CHAINS`, 30, 58, "rgba(130, 240, 207, 0.62)", 6.2);
     drawParameterPlane(parameterFrame, lattice, parameterLimits);
     drawLabel("s", parameterFrame.left + parameterFrame.size + 4, parameterFrame.top + parameterFrame.size / 2 + 3, undefined, 7);
     drawLabel("t", parameterFrame.left + parameterFrame.size / 2 + 4, parameterFrame.top - 4, undefined, 7);
-    drawLabel(`S ≤ ${formatPiScale(parameterLimits.s)} · T ≤ ${formatPiScale(parameterLimits.t)}`, parameterFrame.left, height - 25, "rgba(231, 185, 92, 0.52)", 6.2);
+    drawLabel(`S ≤ ${formatPiScale(parameterLimits.s)} · T ≤ ${formatPiScale(parameterLimits.t)} · RESET ${resetIn}s`, parameterFrame.left, height - 25, "rgba(231, 185, 92, 0.52)", 6.2);
   }
 
   function animate(timestamp) {
