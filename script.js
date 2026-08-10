@@ -46,6 +46,10 @@ sections.forEach((section)=>sectionObserver.observe(section));
 document.querySelector("#currentYear").textContent = new Date().getFullYear();
 
 (() => {
+  if (typeof window.createDmlHeroSimulation === "function") {
+    window.createDmlHeroSimulation();
+    return;
+  }
   const backgroundCanvas = document.querySelector("#algebraicDynamics");
   const parameterCanvas = document.querySelector("#parameterDynamics");
   if (!backgroundCanvas || !parameterCanvas) return;
