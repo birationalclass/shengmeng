@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-    <link rel="stylesheet" href="styles.css?v=20260810-v71-control-skills">
+    <link rel="stylesheet" href="styles.css?v=20260811-v80-segment-bound-repair">
   </head>
   <body>
     <div class="portrait-app">
@@ -27,6 +27,10 @@
           <button id="settingsButton" type="button" aria-label="游戏设置" title="游戏设置"><span>⚙</span></button>
           <button id="restartButton" type="button" aria-label="重新开始当前战局" title="重新开始" disabled><span>↺</span></button>
           <button id="accountButton" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span></button>
+        </div>
+        <div id="qaSkillControls" class="qa-skill-controls hidden" aria-label="测试账号主动技能直测">
+          <small>主动技直测</small>
+          <div><button type="button" data-qa-skill="laser">1</button><button type="button" data-qa-skill="frost">2</button><button type="button" data-qa-skill="bullet">3</button><button type="button" data-qa-skill="arc">4</button><button type="button" data-qa-skill="missile">5</button><button type="button" data-qa-skill="support">6</button></div>
         </div>
       </header>
 
@@ -55,8 +59,9 @@
 
       <section class="live-meter" aria-labelledby="statsTitle">
         <header><div><span class="eyebrow">LIVE COMBAT METER</span><h2 id="statsTitle">DPS / HPS</h2></div><div class="combat-mini-values"><b><small>DPS</small><span id="combatDpsMini">0</span></b><b><small>HPS</small><span id="combatHpsMini">0</span></b></div></header>
+        <div class="meter-wave-review"><label for="meterWaveSelect"><span>波次复查</span><select id="meterWaveSelect" aria-label="选择要复查的波次"></select></label><small id="meterWaveMeta">本波战斗 00:00</small></div>
         <div class="meter-mode" role="group" aria-label="统计显示方式"><button type="button" data-meter-mode="simple">简易</button><button type="button" data-meter-mode="detail">详细</button></div>
-        <div class="meter-head"><span><small>总伤害</small><b id="totalDamage">0</b></span><span><small>当前 DPS</small><b id="currentDps">0</b></span><span><small>总治疗</small><b id="totalHealing">0</b></span><span><small>当前 HPS</small><b id="currentHps">0</b></span></div>
+        <div class="meter-head"><span><small>本波伤害</small><b id="totalDamage">0</b></span><span><small>本波 DPS</small><b id="currentDps">0</b></span><span><small>本波治疗</small><b id="totalHealing">0</b></span><span><small>本波 HPS</small><b id="currentHps">0</b></span></div>
         <h3>伤害来源</h3><div id="damageMeters" class="meter-list"></div>
         <h3>治疗来源</h3><div id="healingMeters" class="meter-list"></div>
       </section>
@@ -113,6 +118,7 @@
               <button type="button" data-test-preset="mid">中期低谷 · 第 20 波</button>
               <button type="button" data-test-preset="late">六星质变 · 第 40 波</button>
               <button type="button" data-test-preset="full">全塔终局 · 第 40 波</button>
+              <button type="button" data-test-preset="pressure">三首领压力 · 第 40 波</button>
             </div>
           </section>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
@@ -125,7 +131,7 @@
           <header><div><span class="eyebrow">TACTICAL CARD DRAFT</span><h2 id="draftTitle">选择防线进化</h2></div><b>第 <span id="clearedWave">1</span> 波</b></header>
           <div class="draft-context"><span id="draftReason">牌池正在分析当前构筑</span><b id="offerCountText">四选一</b></div>
           <div id="cardChoices" class="card-choices"></div>
-          <footer><button id="rerollButton" class="secondary-button" type="button" aria-label="刷新，剩余 1 次">↻ 1</button><span id="bountyRewardText"></span></footer>
+          <footer><button id="rerollButton" class="secondary-button" type="button" aria-label="刷新，剩余 1 次"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 1-2.05-4.95L20 10"/></svg></i><b>1</b></button><span id="bountyRewardText"></span></footer>
         </section>
       </div>
 
@@ -185,6 +191,7 @@
     <script src="black-hole-enemy.js?v=20260810-v61-horizon-origin"></script>
     <script src="balance-core.js?v=20260810-v62-star-balance"></script>
     <script src="enemy-visuals.js?v=20260809-v39"></script>
-    <script src="game.js?v=20260810-v71-control-skills"></script>
+    <output id="qaPerf" hidden aria-hidden="true"></output>
+    <script src="game.js?v=20260811-v81-opening-draft-final"></script>
   </body>
 </html>

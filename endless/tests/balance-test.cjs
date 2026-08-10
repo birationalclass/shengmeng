@@ -40,7 +40,7 @@ for (const card of cards) {
 }
 
 assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四选一");
-assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮开局选卡");
+assert(/const NEW_RUN_OPENING_DRAFTS = 7;/.test(gameSource), "新局提供七轮连续开局选卡");
 assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接获得三张随机卡牌");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
@@ -66,7 +66,7 @@ assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间
 assert(/updateRealtimeEffects\(time\);update\(dt\*\(state\.gameSpeed===2\?2:1\)\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新，战斗时间支持倍速");
 assert(/function hasActiveBlackHoleDissolve\(\)/.test(gameSource), "波次结算能够检测尚未完成的黑洞消散动画");
 assert(/state\.waveEndTimer<=0&&!hasActiveBlackHoleDissolve\(\)/.test(gameSource), "黑洞完全消失后才弹出波次结算选卡");
-assert(/addCard\(id,\{deferUI:true,deferDerived:true\}\);rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面");
+assert(/addCard\(id,wasOpeningDraft\?\{deferUI:true,skipDerived:true\}:\{deferUI:true,deferDerived:true\}\);if\(!wasOpeningDraft\)rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面，连续初始选卡仅在结束时提交派生状态");
 assert(/function showDraft\(opening=false,bargain=false,reward=false\)\{if\(!state\.started\|\|state\.gameOver\|\|state\.drafting\)return;/.test(gameSource), "未开始战局时任何残留回调都不能越过部署页弹出选卡");
 assert(/function showStartScreen\(\)[\s\S]{0,350}cancelOpeningDraftFrame\(\)/.test(gameSource), "进入部署页会取消旧战局尚未执行的开局选卡回调");
 assert(/libraryOverlay[\s\S]{0,100}classList\.contains\("show"\)/.test(gameSource), "卡牌图鉴关闭时不重建全部卡牌节点");
@@ -97,12 +97,13 @@ assert(/if\(enemy\.frostFlower\)grantRandomCards\("霜之花绽放",1,\{fixedSta
 
 assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "守关首领从黑洞序列选择");
 assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
-assert(/function ensureBossSchedule\(\)[\s\S]{0,300}if\(state\.wave>=5\)/.test(gameSource), "前四波不生成黑洞首领");
-assert(/double=state\.wave>=10/.test(gameSource), "中后期存在双黑洞守关日程");
-assert(/colossal:state\.wave%3===0/.test(gameSource), "每三波的守关日程生成巨型黑洞");
+assert(/function finalBossEntries\(wave=state\.wave\)\{if\(wave<10\)return \[\]/.test(gameSource), "前九波不生成终局黑洞首领");
+assert(/double=wave%9===0\|\|wave%13===0/.test(gameSource), "中后期存在双黑洞守关日程");
+assert(/colossal:wave%3===0/.test(gameSource), "每三波的守关日程生成巨型黑洞");
+assert(/function isRedGiantFinalWave\(wave=state\.wave\)\{return wave>=15&&wave%10===5/.test(gameSource), "十五波起部分特色关以红巨星作为终局首领");
 assert(/type\.radius\*\(colossal\?2\.1:1\)/.test(gameSource), "巨型黑洞碰撞与画面尺寸至少扩大两倍");
 assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑洞素材允许扩展到压迫性宽度");
-assert(/if\(enemy\.type\.bossKind==="star"\)[\s\S]{0,700}continue;/.test(gameSource), "恒星小首领绕过控制与诱引逻辑并缓慢直行");
+assert(/if\(enemy\.type\.bossKind==="star"\|\|enemy\.type\.bossKind==="redgiant"\)[\s\S]{0,850}continue;/.test(gameSource), "恒星与红巨星绕过控制与诱引逻辑并沿固定航线推进");
 assert(/function buildStarfield\(/.test(gameSource), "战斗背景使用预渲染星空与星云");
 assert(!/for\(let x=40;x<W;x\+=80\)/.test(gameSource), "星空背景不再绘制横纵战术网格");
 assert(/function blackHoleAttackPalette\(enemy\)/.test(gameSource), "黑洞攻击从当前黑洞色板读取颜色");
@@ -121,12 +122,13 @@ assert(minionAttackScale(16) > minionAttackScale(1) * 3, "第 16 波小怪攻击
 assert(bossAttackScale(9, true) > bossAttackScale(3, true) * 2, "巨型黑洞跨阶后攻击强度显著提升");
 assert.equal(Math.min(3, 1 + (4 >= 3 ? 1 : 0) + (4 >= 6 ? 1 : 0) + 0), 2, "中期黑洞升级为双束伽马射线");
 assert.equal(Math.min(3, 1 + (7 >= 3 ? 1 : 0) + (7 >= 6 ? 1 : 0) + 0), 3, "后期黑洞最多三束伽马射线");
-assert(/resetGame\(\{startWave:9,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=9/.test(gameSource), "测试账号直接进入第九波巨型黑洞多束攻击验收");
-assert(/function blackHoleMoveScale\(enemy\)/.test(gameSource), "黑洞使用快速入场与慢速巡航的分段移动曲线");
-assert(/entryScale=enemy\.colossal\?9:4\.5,cruiseScale=enemy\.colossal\?\.5:\.68/.test(gameSource), "巨型与普通黑洞均快速入场并在战区显著减速");
-assert(/enemy\.y\+=enemy\.speed\*blackHoleMoveScale\(enemy\)\*dt/.test(gameSource), "黑洞推进实际接入平滑移动倍率");
+assert(/resetGame\(\{startWave:10,openingDrafts:0\}\)[\s\S]{0,1200}state\.wave=10/.test(gameSource), "测试账号直接进入第十波黑洞多束攻击验收");
+assert(/function blackHoleArrivalSpeed\(enemy\)/.test(gameSource), "黑洞使用受控的缓慢入场速度");
+assert(/enemy\.y=Math\.min\(enemy\.bossStationY,enemy\.y\+blackHoleArrivalSpeed\(enemy\)\*dt\)/.test(gameSource), "黑洞仅移动到完整露出的驻留位置");
+assert(/enemy\.bossStage="casting"[\s\S]{0,500}updateBlackHoleGamma/.test(gameSource), "黑洞完整露出并停止后才开始释放技能");
+assert(/function startFinalBossWarning\(schedule\)/.test(gameSource)&&/WARNING · \$\{names\.join/.test(gameSource), "清场后终局首领具有独立红色预警阶段");
 assert(/function starBossMoveScale\(enemy\)/.test(gameSource), "恒星小首领拥有快速入场到正常巡航的平滑曲线");
-assert(/enemy\.y\+=enemy\.speed\*starBossMoveScale\(enemy\)\*dt/.test(gameSource), "恒星小首领移动实际接入入场倍率");
+assert(/enemy\.y\+=enemy\.speed\*\(redGiant\?1\.65:starBossMoveScale\(enemy\)\)\*dt/.test(gameSource), "恒星小首领与红巨星分别接入推进倍率");
 assert(/id="speedButton"/.test(indexSource) && /function toggleGameSpeed\(\)/.test(gameSource), "左侧控制区提供一倍与二倍游戏速度切换");
 assert(/const DISTANCE_DAMAGE_MIN = \.5;/.test(gameSource), "战区最远端获得百分之五十伤害减免");
 assert(/function distanceDamageMultiplier\(enemy\)[\s\S]{0,260}DISTANCE_DAMAGE_MIN\+\(1-DISTANCE_DAMAGE_MIN\)\*progress/.test(gameSource), "远距减伤向屏障前线性衰减至零");
@@ -174,7 +176,7 @@ assert(/lowestBarrier[\s\S]{0,180}highestBarrier[\s\S]{0,180}farFriendly[\s\S]{0
 assert(/difficultyFactors\(\)\.hp/.test(gameSource) && /difficultyFactors\(\)\.attack/.test(gameSource), "层级难度同时调整生命、攻击与数量");
 assert(/function allCardsMaxed\(\)/.test(gameSource) && /collectionCompleteWave\+5/.test(gameSource), "卡牌全收集后再守五波触发通关");
 for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
-assert(/const effectiveWave=state\.openingDraft\?Math\.max\(8,state\.wave\):state\.wave/.test(gameSource), "开局五轮选卡允许出现满足前置的稀有与后期构筑卡");
+assert(/const effectiveWave=state\.openingDraft\?Math\.max\(12,state\.wave\):state\.wave/.test(gameSource), "开局七轮选卡允许出现满足前置的中高阶构筑卡");
 for(const id of ["ballistic_heal_block","arc_heal_block","bullet_armor_pierce","missile_armor_pierce"])assert(ids.has(id), `反治疗与穿甲低星卡 ${id} 已加入卡池`);
 assert(gameSource.includes('healer: { name:"翠辉修复舰"')&&gameSource.includes('supportRole:"single"')&&gameSource.includes('if(wave>=10)pool.push("nova","frigate","prism","healer")'), "第十波起逐步加入单体治疗舰");
 assert(gameSource.includes('chorus: { name:"紫晶圣咏舰"')&&gameSource.includes('supportRole:"group"')&&gameSource.includes('if(wave>=15)pool.push("chorus")'), "第十五波起加入群疗增伤增防圣咏舰");
@@ -221,6 +223,16 @@ assert(/beginLaserChannel\(turret,target\)/.test(gameSource), "激光攻击会�
 assert(/function updateLaserChannel\(/.test(gameSource), "激光持续期间追踪目标并连续结算");
 for(const id of ["laser_duration","laser_cycle","laser_sustain"])assert(gameSource.includes(`id:"${id}"`), `激光持续机制卡牌 ${id} 已加入卡池`);
 
+assert(/function openingStarProbabilities\(\)[\s\S]{0,260}full\.slice\(0,4\),0,0/.test(gameSource), "opening draft zeros out five-star and six-star weights before normalization");
+assert(/state\.openingDraft\?generateWeightedCards\(DRAFT_OFFER_COUNT,\{[^}]*maxStar:4[^}]*starProbabilities:openingStarProbabilities\(\)/.test(gameSource), "opening draft hard-limits the eligible pool to four stars");
+
+assert(/function healBarrierSegment\(amount,source,preferredIndex=null,strictPreferred=false\)/.test(gameSource), "barrier healing supports segment-locked repair");
+assert(/function gainShield\(amount,source,preferredIndex=null,strictPreferred=false\)/.test(gameSource), "barrier shielding supports segment-locked coating");
+assert(/healBarrierSegment\(payload,[^;]+bot\.segmentIndex,true\);gainShield\(bot\.shield\*delta\*skillBonus,[^;]+bot\.segmentIndex,true\)/.test(gameSource), "repair bots apply health and shield only to their attached segment");
+assert(/function renderDraft\(\)\{state\.selectingCard=false;/.test(gameSource), "every newly rendered draft explicitly releases the previous selection lock");
+assert(/function finishOpeningDraft\(\)[\s\S]{0,420}classList\.remove\("show","opening-draft"\)/.test(gameSource), "the seventh opening pick closes the draft overlay instead of leaving disabled cards on screen");
+assert(/if\(state\.openingDraftsRemaining>0\)\{scheduleOpeningDraft\(\);return;\}/.test(gameSource), "intermediate opening picks schedule a fresh draft frame without reusing disabled buttons");
+
 const baseDps = {
   bullet:7 / 2.4,
   laser:1.8 * (3 / .1) / 12,
@@ -241,7 +253,7 @@ for(const id of ["cryo_missile_echo","laser_arc_echo","bullet_support_echo"])ass
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,
-  openingDrafts:5,
+  openingDrafts:7,
   initialRandomCards:3,
   offerCount:4,
   forbiddenInsight:[Balance.forbiddenInsightChance(1), Balance.forbiddenInsightChance(5)],

@@ -12,6 +12,7 @@
   const BONUS_BOUNTY_INTERVALS = [0, 20, 15, 10];
   const BASE_STAR_PROBABILITIES = [0.64, 0.22, 0.085, 0.035, 0.015, 0.005];
   const STAR_BOOST_PER_LEVEL = [0.016, 0.010, 0.005, 0.0025, 0.001];
+  const COMBAT_FAMILIES = new Set(["弹道","激光","导弹","冰霜","电弧","支援"]);
 
   function families(card) {
     const tags = [...new Set((card?.tags || []).filter((tag) => DRAFT_FAMILIES.has(tag)))];
@@ -155,6 +156,55 @@
     return { countScale:1, hpScale:1, attackScale:1 };
   }
 
+  function smoothstep(value) {
+    const t = Math.max(0, Math.min(1, Number(value) || 0));
+    return t * t * (3 - 2 * t);
+  }
+
+  function lateWaveProfile(wave) {
+    const value = Math.max(1, Number(wave) || 1);
+    const phaseA = smoothstep((value - 10) / 10);
+    const phaseB = smoothstep((value - 20) / 10);
+    const phaseC = smoothstep((value - 30) / 10);
+    return {
+      hpScale:1 + phaseA * .55 + phaseB * 1.75 + phaseC * 5.7,
+      attackScale:1 + phaseA * .25 + phaseB * .55 + phaseC * 1.1,
+      barrierScale:1 + phaseA * .18 + phaseB * .42 + phaseC * .8,
+      rewardPressure:1 + phaseA * .12 + phaseB * .2 + phaseC * .28
+    };
+  }
+
+  function rankOf(ranks, id) {
+    if (ranks instanceof Map) return Number(ranks.get(id)) || 0;
+    return Number(ranks?.[id]) || 0;
+  }
+
+  function terminalSynergyProfile(cards, ranks, family) {
+    let highStarScore = 0;
+    let linkScore = 0;
+    let apexScore = 0;
+    let completed = 0;
+    for (const card of cards || []) {
+      if (!(card?.tags || []).includes(family) || (card.star || 1) < 4) continue;
+      const progress = Math.max(0, Math.min(1, rankOf(ranks, card.id) / Math.max(1, card.max || 1)));
+      if (!progress) continue;
+      const starWeight = [0,0,0,1,1.75,3][Math.max(0, Math.min(5, (card.star || 1) - 1))];
+      highStarScore += starWeight * progress;
+      const linkedFamilies = (card.tags || []).filter((tag) => COMBAT_FAMILIES.has(tag));
+      if (card.combo && linkedFamilies.length >= 2) linkScore += starWeight * progress;
+      if (card.apex) apexScore += progress;
+      if (progress >= 1) completed += 1;
+    }
+    const foundation = 1 + highStarScore * .18;
+    const linkage = 1 + linkScore * .07;
+    const apex = 1 + apexScore * .08;
+    const completion = 1 + Math.max(0, completed - 4) * .008;
+    return {
+      multiplier:foundation * linkage * apex * completion,
+      highStarScore, linkScore, apexScore, completed
+    };
+  }
+
   function remember(history, card, limit = 3) {
     return [{ id:card.id, families:families(card) }, ...(history || [])].slice(0, limit);
   }
@@ -184,7 +234,7 @@
     FORBIDDEN_INSIGHT_CHANCES, BONUS_BOUNTY_INTERVALS,
     BASE_STAR_PROBABILITIES, STAR_BOOST_PER_LEVEL,
     families, offerWeight, generateOffers, generateStarOffers, remember,
-    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile,
+    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile, lateWaveProfile, terminalSynergyProfile,
     forbiddenInsightChance, rollForbiddenInsight, bonusBountyInterval, shouldSpawnBonusBounty
   };
 });
