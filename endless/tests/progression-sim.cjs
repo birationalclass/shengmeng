@@ -6,11 +6,11 @@ const Balance=require("../balance-core.js");
 function waveModel(wave){
   const early=Balance.earlyWaveProfile(wave),late=Balance.lateWaveProfile(wave);
   const count=Math.max(20+wave*2,Math.floor((20+wave*3.4+Math.pow(wave,1.1)*1.25)*early.countScale));
-  const hp=36*Math.pow(1.15,wave-1)*(1+Math.max(0,wave-20)*.018)*early.hpScale*(wave<=5?.7:1)*late.hpScale;
+  const baseHp=36*Math.pow(1.15,wave-1)*(1+Math.max(0,wave-20)*.018)*early.hpScale*(wave<=5?.7:1)*late.hpScale,hp=baseHp*(wave<=10?.8:1);
   const midBosses=wave<6?0:Math.min(3,1+Math.floor(Math.max(0,wave-6)/8)+(wave>=10&&wave%4===0?1:0));
   const hasFinalBoss=wave>=10,doubleBoss=wave>=10&&(wave%9===0||wave%13===0);
   const colossal=wave%3===0;
-  const effectiveHp=count*hp*.98+midBosses*hp*6.35+(hasFinalBoss?hp*8.8*(1+wave*.04)*(colossal?1.35:1)*(doubleBoss?2:1):0);
+  const effectiveHp=count*hp*.98+midBosses*baseHp*6.35+(hasFinalBoss?baseHp*8.8*(1+wave*.04)*(colossal?1.35:1)*(doubleBoss?2:1):0);
   const attack=Math.pow(1.07,wave-1)*(1+Math.floor((wave-1)/5)*.07)*early.attackScale*late.attackScale;
   return {wave,count,hp:Math.round(hp),midBosses,doubleBoss,colossal,effectiveHp:Math.round(effectiveHp),attack:+attack.toFixed(2)};
 }

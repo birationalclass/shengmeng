@@ -145,9 +145,16 @@ assert(/state\.paused=state\.settings\.draftPause/.test(gameSource), "禁忌抄�
 
 assert(/function subwaveCountForWave\(wave\)\{return Math\.min\(8,3\+/.test(gameSource), "第一波固定从三个小波起步并随波次增加");
 assert(/function isInterwaveFillerSlot\(/.test(gameSource)&&/function spawnCadenceForWave\(/.test(gameSource), "小波之间使用低密度零星敌人填充并设置独立间隔");
+assert(/function subwaveRestDuration\(wave,scenario=state\.waveScenario\|\|waveScenario\(wave\)\)\{return Math\.max\(3\.2,\(3\.8\+Math\.min\(1\.2,wave\*\.04\)\)\*Math\.max\(\.86,scenario\.spawnScale\)\);\}/.test(gameSource), "小波衔接休整时间显著拉长且高速特色波也保留至少三点二秒间隔");
 assert(/waveBaseTarget:state\.waveTarget/.test(gameSource), "小波节奏使用基础刷怪数，不受分裂与召唤临时扩容干扰");
 assert(/base=\(20\+wave\*3\.4\+Math\.pow\(wave,1\.1\)\*1\.25\)/.test(gameSource), "每波普通敌人总量采用扩容后的成长曲线");
 assert(/function openingEnemyHpMultiplier\(wave=state\.wave\)\{return wave<=5\?\.7:1;\}/.test(gameSource), "前五波敌方生命统一降低百分之三十");
+assert(/function earlySmallEnemyHpMultiplier\(type,wave=state\.wave\)\{return wave<=10&&!type\.boss&&!type\.bounty&&!type\.summoned\?\.8:1;\}/.test(gameSource), "前十波普通小怪额外降低百分之二十生命且不影响奖励、召唤与首领单位");
+assert(/waveBaseHp\(\)\*earlySmallEnemyHpMultiplier\(type\)\*DISTANCE_BALANCE_HP_SCALE/.test(gameSource), "普通小怪生命倍率接入实际生成数值");
+assert(/function normalEnemySpeedMultiplier\(type\)\{return !type\.boss&&!type\.bounty&&!type\.summoned\?\.8:1;\}/.test(gameSource), "所有普通小怪移动速度统一降低百分之二十");
+assert(/type\.speed\*normalEnemySpeedMultiplier\(type\)\*\(type\.boss\?\.6:1\)/.test(gameSource), "普通小怪速度倍率接入实际生成速度且不改变首领与奖励单位");
+assert(/function turretFormationY\(x\)\{return Math\.round\(1138\+\(barrierSurfaceY\(x\)-barrierSurfaceY\(W\/2\)\)\*\.36\);\}/.test(gameSource), "六座炮塔按屏障圆弧曲率排布并让两侧炮塔适当下沉");
+assert(/\.\.\.def,y:turretFormationY\(def\.x\),id,active:/.test(gameSource), "所有炮塔实例统一使用圆弧阵列纵坐标");
 assert(/const BOUNTY_WANDER_TOP = H \* \.25;/.test(gameSource)&&/const BOUNTY_WANDER_BOTTOM = H \* \.75;/.test(gameSource), "奖励敌人只在战区纵向四分之一至四分之三区域游荡");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
