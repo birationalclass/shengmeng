@@ -31,38 +31,31 @@
   </header>
 
   <main>
-    <section class="hero section-shell" aria-labelledby="heroTitle">
-      <div class="hero-copy reveal">
-        <p class="kicker"><span></span><span data-i18n="heroKicker">Professor of Mathematics · East China Normal University</span></p>
-        <h1 id="heroTitle"><span data-i18n="heroLine1">Structure, dynamics,</span><br><em data-i18n="heroLine2">and intelligent discovery.</em></h1>
-        <p class="hero-intro" data-i18n="heroIntro">I study algebraic geometry and dynamical systems, with a growing interest in how artificial intelligence can support mathematical reasoning and create richer strategic worlds.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="#research"><span data-i18n="exploreResearch">Explore research</span><i>↘</i></a>
-          <a class="button ghost" href="endless/" data-i18n="playGame">Play Endless</a>
-        </div>
-        <div class="hero-fields" aria-label="Research fields">
-          <span>Algebraic Geometry</span><span>Birational Geometry</span><span>Dynamical Systems</span>
-        </div>
-      </div>
-
-      <div class="hero-math reveal delay-1" aria-label="Abstract algebraic dynamics diagram">
-        <div class="math-plane">
-          <div class="plane-grid" aria-hidden="true"></div>
-          <p class="plane-kicker">ALGEBRAIC DYNAMICS / 代数动力系统</p>
-          <div class="map-expression"><i>f</i> : <b>X</b> ⟶ <b>X</b></div>
-          <div class="orbit-sequence" aria-hidden="true">
-            <span>x</span><i>⟶</i><span>f(x)</span><i>⟶</i><span>f²(x)</span><i>⟶</i><span>···</span>
+    <section class="hero" aria-labelledby="heroTitle">
+      <canvas id="algebraicDynamics" class="algebraic-background" aria-hidden="true"></canvas>
+      <p class="sr-only">The cyan particle follows a three-cusped deltoid and the gold particle follows a rotated Gerono lemniscate across the full hero background.</p>
+      <div class="hero-layout section-shell">
+        <div class="hero-copy reveal">
+          <p class="kicker"><span></span><span data-i18n="heroKicker">Professor of Mathematics · East China Normal University</span></p>
+          <h1 id="heroTitle"><span data-i18n="heroLine1">Structure, dynamics,</span><br><em data-i18n="heroLine2">and intelligent discovery.</em></h1>
+          <p class="hero-intro" data-i18n="heroIntro">I study algebraic geometry and dynamical systems, with a growing interest in how artificial intelligence can support mathematical reasoning and create richer strategic worlds.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#research"><span data-i18n="exploreResearch">Explore research</span><i>↘</i></a>
+            <a class="button ghost" href="endless/" data-i18n="playGame">Play Endless</a>
           </div>
-          <div class="geometry-orbit orbit-alpha"><span></span><span></span><span></span><span></span></div>
-          <div class="geometry-orbit orbit-beta"><span></span><span></span><span></span></div>
-          <div class="math-axis axis-x"></div><div class="math-axis axis-y"></div>
-          <div class="invariant-label">λ₁(f)</div>
-          <div class="canonical-label">K<sub>X</sub> ≡ 0</div>
-          <div class="plane-footer"><span>GEOMETRY</span><b>↔</b><span>DYNAMICS</span></div>
+          <div class="hero-fields" aria-label="Research fields">
+            <span>Algebraic Geometry</span><span>Birational Geometry</span><span>Dynamical Systems</span>
+          </div>
         </div>
-        <div class="formula formula-a">f<sup>n</sup>(x)</div>
-        <div class="formula formula-b">N<sup>1</sup>(X)<sub>ℝ</sub></div>
-        <div class="formula formula-c">δ<sub>f</sub> = α<sub>f</sub>(x)</div>
+
+        <div class="hero-math reveal delay-1">
+          <div class="parameter-plane dynamics-plane">
+            <canvas id="parameterDynamics" class="parameter-canvas" aria-label="Eight parameter pairs satisfying a of s equals b of t, connected once per unordered pair.">
+              Eight intersection parameter pairs are plotted and connected once per unordered pair.
+            </canvas>
+            <div class="parameter-live" aria-hidden="true"><i></i>LIVE LOCUS</div>
+          </div>
+        </div>
       </div>
     </section>
 

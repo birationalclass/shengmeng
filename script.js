@@ -44,3 +44,385 @@ const navLinks = [...nav.querySelectorAll("a[href^='#']")];
 const sectionObserver = new IntersectionObserver((entries)=>entries.forEach((entry)=>{if(entry.isIntersecting){navLinks.forEach((link)=>link.classList.toggle("active",link.getAttribute("href") === `#${entry.target.id}`));}}),{rootMargin:"-35% 0px -58%",threshold:0});
 sections.forEach((section)=>sectionObserver.observe(section));
 document.querySelector("#currentYear").textContent = new Date().getFullYear();
+
+(() => {
+  const backgroundCanvas = document.querySelector("#algebraicDynamics");
+  const parameterCanvas = document.querySelector("#parameterDynamics");
+  if (!backgroundCanvas || !parameterCanvas) return;
+
+  const backgroundContext = backgroundCanvas.getContext("2d", { alpha: true });
+  const parameterContext = parameterCanvas.getContext("2d", { alpha: true });
+  if (!backgroundContext || !parameterContext) return;
+  let context = backgroundContext;
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const fullTurn = Math.PI * 2;
+  const lemniscateRotation = 0.45;
+  const rotationCosine = Math.cos(lemniscateRotation);
+  const rotationSine = Math.sin(lemniscateRotation);
+  const curveA = (parameter) => ({
+    x: 0.28 * (2 * Math.cos(parameter) + Math.cos(2 * parameter)),
+    y: 0.28 * (2 * Math.sin(parameter) - Math.sin(2 * parameter))
+  });
+  const curveB = (parameter) => {
+    const localX = 0.78 * Math.cos(parameter);
+    const localY = 1.05 * Math.sin(parameter) * Math.cos(parameter);
+    return {
+      x: localX * rotationCosine - localY * rotationSine,
+      y: localX * rotationSine + localY * rotationCosine
+    };
+  };
+  const cross = (first, second) => first.x * second.y - first.y * second.x;
+  const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, value));
+  const circularDistance = (first, second) => {
+    const distance = Math.abs(first - second);
+    return Math.min(distance, fullTurn - distance);
+  };
+
+  function segmentIntersection(firstStart, firstEnd, secondStart, secondEnd) {
+    const firstDirection = { x: firstEnd.x - firstStart.x, y: firstEnd.y - firstStart.y };
+    const secondDirection = { x: secondEnd.x - secondStart.x, y: secondEnd.y - secondStart.y };
+    const denominator = cross(firstDirection, secondDirection);
+    if (Math.abs(denominator) < 1e-9) return null;
+
+    const betweenStarts = { x: secondStart.x - firstStart.x, y: secondStart.y - firstStart.y };
+    const firstFraction = cross(betweenStarts, secondDirection) / denominator;
+    const secondFraction = cross(betweenStarts, firstDirection) / denominator;
+    if (firstFraction < 0 || firstFraction > 1 || secondFraction < 0 || secondFraction > 1) return null;
+    return { firstFraction, secondFraction };
+  }
+
+  function findIntersections(sampleCount = 360) {
+    const firstSamples = [];
+    const secondSamples = [];
+    for (let index = 0; index <= sampleCount; index += 1) {
+      const parameter = (fullTurn * index) / sampleCount;
+      firstSamples.push({ parameter, point: curveA(parameter) });
+      secondSamples.push({ parameter, point: curveB(parameter) });
+    }
+
+    const records = [];
+    for (let firstIndex = 0; firstIndex < sampleCount; firstIndex += 1) {
+      const firstStart = firstSamples[firstIndex];
+      const firstEnd = firstSamples[firstIndex + 1];
+      for (let secondIndex = 0; secondIndex < sampleCount; secondIndex += 1) {
+        const secondStart = secondSamples[secondIndex];
+        const secondEnd = secondSamples[secondIndex + 1];
+        const hit = segmentIntersection(firstStart.point, firstEnd.point, secondStart.point, secondEnd.point);
+        if (!hit) continue;
+
+        const s = firstStart.parameter + (firstEnd.parameter - firstStart.parameter) * hit.firstFraction;
+        const t = secondStart.parameter + (secondEnd.parameter - secondStart.parameter) * hit.secondFraction;
+        if (records.some((record) => circularDistance(record.s, s) < 0.02 && circularDistance(record.t, t) < 0.02)) continue;
+        const firstPoint = curveA(s);
+        const secondPoint = curveB(t);
+        records.push({
+          s,
+          t,
+          x: (firstPoint.x + secondPoint.x) / 2,
+          y: (firstPoint.y + secondPoint.y) / 2
+        });
+      }
+    }
+    return records.sort((first, second) => first.s - second.s || first.t - second.t);
+  }
+
+  const intersections = findIntersections();
+  const edgeKeys = new Set();
+  const uniqueEdges = [];
+  for (let first = 0; first < intersections.length; first += 1) {
+    for (let second = first + 1; second < intersections.length; second += 1) {
+      const key = `${Math.min(first, second)}:${Math.max(first, second)}`;
+      if (edgeKeys.has(key)) continue;
+      edgeKeys.add(key);
+      uniqueEdges.push({ first, second });
+    }
+  }
+  [backgroundCanvas, parameterCanvas].forEach((target) => {
+    target.dataset.intersections = String(intersections.length);
+    target.dataset.uniqueEdges = String(uniqueEdges.length);
+  });
+
+  let width = 1;
+  let height = 1;
+  let backgroundWidth = 1;
+  let backgroundHeight = 1;
+  let parameterWidth = 1;
+  let parameterHeight = 1;
+  let active = true;
+  let inViewport = true;
+  let animationFrame = 0;
+  let previousFrame = 0;
+  let elapsed = 0;
+
+  function fitCanvas(target, targetContext) {
+    const bounds = target.getBoundingClientRect();
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const fittedWidth = Math.max(1, bounds.width);
+    const fittedHeight = Math.max(1, bounds.height);
+    target.width = Math.round(fittedWidth * pixelRatio);
+    target.height = Math.round(fittedHeight * pixelRatio);
+    targetContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    return { width: fittedWidth, height: fittedHeight };
+  }
+
+  function resizeCanvases() {
+    const backgroundSize = fitCanvas(backgroundCanvas, backgroundContext);
+    const parameterSize = fitCanvas(parameterCanvas, parameterContext);
+    backgroundWidth = backgroundSize.width;
+    backgroundHeight = backgroundSize.height;
+    parameterWidth = parameterSize.width;
+    parameterHeight = parameterSize.height;
+    render(elapsed);
+  }
+
+  function drawGrid(frame, divisions = 4) {
+    context.save();
+    context.strokeStyle = "rgba(130, 240, 207, 0.075)";
+    context.lineWidth = 1;
+    for (let index = 0; index <= divisions; index += 1) {
+      const offset = (frame.size * index) / divisions;
+      context.beginPath();
+      context.moveTo(frame.left + offset, frame.top);
+      context.lineTo(frame.left + offset, frame.top + frame.size);
+      context.moveTo(frame.left, frame.top + offset);
+      context.lineTo(frame.left + frame.size, frame.top + offset);
+      context.stroke();
+    }
+    context.strokeStyle = "rgba(130, 240, 207, 0.19)";
+    context.beginPath();
+    context.moveTo(frame.left, frame.top + frame.size / 2);
+    context.lineTo(frame.left + frame.size, frame.top + frame.size / 2);
+    context.moveTo(frame.left + frame.size / 2, frame.top);
+    context.lineTo(frame.left + frame.size / 2, frame.top + frame.size);
+    context.stroke();
+    context.restore();
+  }
+
+  function pointInFrame(point, frame) {
+    return {
+      x: frame.left + ((point.x + 1) / 2) * frame.size,
+      y: frame.top + (1 - (point.y + 1) / 2) * frame.size
+    };
+  }
+
+  function parameterInFrame(s, t, frame) {
+    return {
+      x: frame.left + (s / fullTurn) * frame.size,
+      y: frame.top + (1 - t / fullTurn) * frame.size
+    };
+  }
+
+  function drawCompleteCurve(curve, frame, colour) {
+    context.save();
+    context.strokeStyle = colour;
+    context.lineWidth = 0.8;
+    context.beginPath();
+    for (let index = 0; index <= 240; index += 1) {
+      const point = pointInFrame(curve((fullTurn * index) / 240), frame);
+      if (index === 0) context.moveTo(point.x, point.y);
+      else context.lineTo(point.x, point.y);
+    }
+    context.stroke();
+    context.restore();
+  }
+
+  function drawTrail(curve, parameterAtTime, time, frame, colour) {
+    const segments = width < 400 ? 54 : 72;
+    const step = 0.035;
+    context.save();
+    context.globalCompositeOperation = "lighter";
+    for (let index = 1; index <= segments; index += 1) {
+      const older = pointInFrame(curve(parameterAtTime(time - index * step)), frame);
+      const newer = pointInFrame(curve(parameterAtTime(time - (index - 1) * step)), frame);
+      const life = 1 - index / segments;
+      context.strokeStyle = colour.replace("ALPHA", String(0.035 + 0.58 * life * life));
+      context.lineWidth = 0.55 + life * 1.15;
+      context.beginPath();
+      context.moveTo(older.x, older.y);
+      context.lineTo(newer.x, newer.y);
+      context.stroke();
+    }
+    context.restore();
+  }
+
+  function drawParticle(point, colour, coreColour) {
+    context.save();
+    context.globalCompositeOperation = "lighter";
+    const halo = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 15);
+    halo.addColorStop(0, colour.replace("ALPHA", "0.46"));
+    halo.addColorStop(0.24, colour.replace("ALPHA", "0.17"));
+    halo.addColorStop(1, colour.replace("ALPHA", "0"));
+    context.fillStyle = halo;
+    context.beginPath();
+    context.arc(point.x, point.y, 15, 0, Math.PI * 2);
+    context.fill();
+    context.fillStyle = coreColour;
+    context.beginPath();
+    context.arc(point.x, point.y, 2.25, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+  }
+
+  function drawIntersectionLocus(frame, visibleCount, time) {
+    context.save();
+    intersections.forEach((record, index) => {
+      const point = pointInFrame(record, frame);
+      const visible = index < visibleCount;
+      const age = time - index * 1.05;
+      const pulse = visible && age < 1 ? 4.5 * (1 - Math.max(age, 0)) : 0;
+      context.strokeStyle = visible ? "rgba(232, 242, 237, 0.32)" : "rgba(130, 240, 207, 0.055)";
+      context.lineWidth = visible ? 1 : 0.7;
+      context.beginPath();
+      context.arc(point.x, point.y, (visible ? 2.6 : 1.4) + pulse, 0, Math.PI * 2);
+      context.stroke();
+    });
+    context.restore();
+  }
+
+  function drawParameterPlane(frame, visibleCount, sNow, tNow, time) {
+    drawGrid(frame, 4);
+    const scan = parameterInFrame(sNow, tNow, frame);
+    context.save();
+    context.strokeStyle = "rgba(231, 185, 92, 0.12)";
+    context.setLineDash([3, 5]);
+    context.beginPath();
+    context.moveTo(frame.left, scan.y);
+    context.lineTo(frame.left + frame.size, scan.y);
+    context.moveTo(scan.x, frame.top);
+    context.lineTo(scan.x, frame.top + frame.size);
+    context.stroke();
+    context.setLineDash([]);
+
+    uniqueEdges.forEach((edge) => {
+      if (edge.first >= visibleCount || edge.second >= visibleCount) return;
+      const start = parameterInFrame(intersections[edge.first].s, intersections[edge.first].t, frame);
+      const end = parameterInFrame(intersections[edge.second].s, intersections[edge.second].t, frame);
+      const edgeAge = time - Math.max(edge.first, edge.second) * 1.05;
+      context.strokeStyle = `rgba(130, 240, 207, ${0.07 + 0.15 * clamp(edgeAge, 0, 1)})`;
+      context.lineWidth = 0.75;
+      context.beginPath();
+      context.moveTo(start.x, start.y);
+      context.lineTo(end.x, end.y);
+      context.stroke();
+    });
+
+    intersections.forEach((record, index) => {
+      const point = parameterInFrame(record.s, record.t, frame);
+      const visible = index < visibleCount;
+      context.fillStyle = visible ? "rgba(232, 242, 237, 0.9)" : "rgba(130, 240, 207, 0.09)";
+      context.beginPath();
+      context.arc(point.x, point.y, visible ? 2.2 : 1.2, 0, Math.PI * 2);
+      context.fill();
+      if (visible && time - index * 1.05 < 0.9) {
+        context.strokeStyle = "rgba(231, 185, 92, 0.42)";
+        context.beginPath();
+        context.arc(point.x, point.y, 7 - 4 * clamp(time - index * 1.05, 0, 1), 0, Math.PI * 2);
+        context.stroke();
+      }
+    });
+
+    context.fillStyle = "rgba(231, 185, 92, 0.82)";
+    context.beginPath();
+    context.arc(scan.x, scan.y, 1.6, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+  }
+
+  function drawLabel(text, x, y, colour = "rgba(202, 222, 214, 0.62)", size = 8) {
+    context.save();
+    context.fillStyle = colour;
+    context.font = `${size}px ui-monospace, SFMono-Regular, Consolas, monospace`;
+    context.fillText(text, x, y);
+    context.restore();
+  }
+
+  function render(time) {
+    const sNow = (time * 0.56) % fullTurn;
+    const tNow = (time * 0.43 + 1.35) % fullTurn;
+    const visibleCount = reducedMotion.matches
+      ? intersections.length
+      : Math.min(intersections.length, Math.max(0, Math.floor(time / 1.05) + 1));
+
+    context = backgroundContext;
+    width = backgroundWidth;
+    height = backgroundHeight;
+    context.clearRect(0, 0, width, height);
+    const narrow = width < 700;
+    const plotSize = Math.max(
+      340,
+      Math.min(width * (narrow ? 1.55 : 1.03), height * (narrow ? 0.76 : 1.22))
+    );
+    const plotCentreX = width * (narrow ? 0.56 : 0.62);
+    const plotCentreY = height * (narrow ? 0.54 : 0.52);
+    const plotFrame = {
+      left: plotCentreX - plotSize / 2,
+      top: plotCentreY - plotSize / 2,
+      size: plotSize
+    };
+    drawCompleteCurve(curveA, plotFrame, "rgba(83, 207, 219, 0.17)");
+    drawCompleteCurve(curveB, plotFrame, "rgba(231, 185, 92, 0.15)");
+    drawIntersectionLocus(plotFrame, visibleCount, time);
+    drawTrail(curveA, (trailTime) => trailTime * 0.56, time, plotFrame, "rgba(83, 207, 219, ALPHA)");
+    drawTrail(curveB, (trailTime) => trailTime * 0.43 + 1.35, time, plotFrame, "rgba(231, 185, 92, ALPHA)");
+    drawParticle(pointInFrame(curveA(sNow), plotFrame), "rgba(83, 207, 219, ALPHA)", "rgba(226, 255, 249, 0.98)");
+    drawParticle(pointInFrame(curveB(tNow), plotFrame), "rgba(231, 185, 92, ALPHA)", "rgba(255, 244, 215, 0.98)");
+
+    if (!narrow) {
+      drawLabel("a(s) · DELTOID", clamp(plotFrame.left + 34, 28, width - 190), height - 42, "rgba(83, 207, 219, 0.36)", 7);
+      drawLabel("b(t) · GERONO LEMNISCATE", clamp(plotFrame.left + 154, 148, width - 210), height - 42, "rgba(231, 185, 92, 0.34)", 7);
+    }
+
+    context = parameterContext;
+    width = parameterWidth;
+    height = parameterHeight;
+    context.clearRect(0, 0, width, height);
+    const parameterSize = Math.max(150, Math.min(width - 64, height - 126));
+    const parameterFrame = {
+      left: (width - parameterSize) / 2,
+      top: 72 + Math.max(0, (height - 126 - parameterSize) / 2),
+      size: parameterSize
+    };
+    drawLabel("INTERSECTION PARAMETER SPACE", 30, 34, "rgba(231, 185, 92, 0.76)", 7);
+    drawLabel("a(s) = b(t)", parameterFrame.left, parameterFrame.top - 25, "rgba(232, 242, 237, 0.78)", 8);
+    drawLabel(`RECORDED ${String(visibleCount).padStart(2, "0")}/${String(intersections.length).padStart(2, "0")}`, parameterFrame.left, parameterFrame.top - 11, "rgba(231, 185, 92, 0.65)", 6.5);
+    drawParameterPlane(parameterFrame, visibleCount, sNow, tNow, time);
+    drawLabel("s", parameterFrame.left + parameterFrame.size + 4, parameterFrame.top + parameterFrame.size / 2 + 3, undefined, 7);
+    drawLabel("t", parameterFrame.left + parameterFrame.size / 2 + 4, parameterFrame.top - 4, undefined, 7);
+    drawLabel("0", parameterFrame.left - 5, parameterFrame.top + parameterFrame.size + 11, "rgba(202, 222, 214, 0.34)", 6);
+    drawLabel("2π", parameterFrame.left + parameterFrame.size - 7, parameterFrame.top + parameterFrame.size + 11, "rgba(202, 222, 214, 0.34)", 6);
+    drawLabel(`${uniqueEdges.length} UNIQUE EDGES`, parameterFrame.left, height - 25, "rgba(130, 240, 207, 0.46)", 6.5);
+  }
+
+  function animate(timestamp) {
+    if (!previousFrame) previousFrame = timestamp;
+    elapsed += Math.min((timestamp - previousFrame) / 1000, 0.05);
+    previousFrame = timestamp;
+    render(elapsed);
+    if (active && !reducedMotion.matches) animationFrame = requestAnimationFrame(animate);
+  }
+
+  function setActive(nextActive) {
+    active = nextActive && !document.hidden;
+    cancelAnimationFrame(animationFrame);
+    if (active && !reducedMotion.matches) {
+      previousFrame = 0;
+      animationFrame = requestAnimationFrame(animate);
+    } else {
+      render(reducedMotion.matches ? 20 : elapsed);
+    }
+  }
+
+  const resizeObserver = new ResizeObserver(resizeCanvases);
+  resizeObserver.observe(backgroundCanvas);
+  resizeObserver.observe(parameterCanvas);
+  const visibilityObserver = new IntersectionObserver(([entry]) => {
+    inViewport = entry.isIntersecting;
+    setActive(inViewport);
+  }, { threshold: 0.02 });
+  visibilityObserver.observe(backgroundCanvas);
+  document.addEventListener("visibilitychange", () => setActive(inViewport));
+  reducedMotion.addEventListener("change", () => setActive(inViewport));
+  resizeCanvases();
+  setActive(true);
+})();

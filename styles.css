@@ -36,3 +36,31 @@
 @media(max-width:560px){.hero-math{min-height:430px}.math-plane{width:100%;max-width:390px}.plane-kicker{left:27px}.orbit-sequence{gap:5px;font-size:10px}.orbit-sequence span{padding:6px}.plane-footer{left:27px;right:27px}.recent-paper-list li{grid-template-columns:48px 1fr;padding-block:20px}.recent-paper-list i{display:none}.recent-paper-list small em{display:block;width:max-content;margin:6px 0 0}}
 
 .brand-word{color:var(--paper);font:600 15px/1 var(--sans);letter-spacing:.08em;text-transform:lowercase}.brand-word::after{content:".";color:var(--mint)}
+
+/* Algebraic particle simulation */
+.sr-only{width:1px;height:1px;padding:0;margin:-1px;position:absolute;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.dynamics-plane{isolation:isolate;background:radial-gradient(circle at 27% 42%,rgba(83,207,219,.13),transparent 38%),radial-gradient(circle at 77% 54%,rgba(231,185,92,.1),transparent 28%),linear-gradient(145deg,rgba(10,37,32,.96),rgba(4,16,14,.98));box-shadow:0 30px 90px rgba(0,0,0,.34),0 0 70px rgba(83,207,219,.055)}
+.dynamics-plane::before{z-index:3}
+.dynamics-canvas{width:100%;height:100%;display:block;position:absolute;inset:0;z-index:1}
+.dynamics-key{position:absolute;left:39px;right:39px;bottom:30px;z-index:4;display:flex;align-items:center;gap:14px;color:#779188;font:7px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;pointer-events:none}
+.dynamics-key span{display:flex;align-items:center;gap:6px}.dynamics-key i{width:18px;height:1px;display:block;background:var(--cyan);box-shadow:0 0 7px rgba(83,207,219,.6)}.dynamics-key span:nth-child(2) i{background:var(--gold);box-shadow:0 0 7px rgba(231,185,92,.55)}
+.dynamics-key b{margin-left:auto;color:var(--mint);font-size:6px;letter-spacing:.18em}.dynamics-key b::before{content:"";width:5px;height:5px;display:inline-block;margin-right:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 9px var(--mint);animation:dynamics-pulse 1.8s ease-in-out infinite}
+.hero-math .formula-a{top:7%;left:-4%}.hero-math .formula-c{bottom:7%;left:-3%;max-width:220px}
+@keyframes dynamics-pulse{50%{opacity:.3;transform:scale(.72)}}
+@media(max-width:560px){.dynamics-key{left:27px;right:27px;bottom:24px}.hero-math .formula-a{left:1%}.hero-math .formula-c{left:1%;bottom:5%}}
+@media(prefers-reduced-motion:reduce){.dynamics-key b::before{animation:none}}
+
+/* Full-viewport curve field with a dedicated parameter recorder */
+.hero{width:100%;max-width:none;min-height:calc(100vh - 76px);padding:0;display:block;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,21,19,.97) 0%,rgba(7,21,19,.86) 31%,rgba(7,21,19,.28) 60%,rgba(7,21,19,.08) 100%)}
+.hero-layout{min-height:calc(100vh - 76px);padding:82px 0 70px;display:grid;grid-template-columns:minmax(0,1.28fr) minmax(290px,.62fr);align-items:center;gap:70px;position:relative;z-index:2}
+.hero-copy{position:relative;z-index:3;text-shadow:0 2px 24px rgba(2,12,10,.72)}
+.algebraic-background{width:100%;height:100%;display:block;position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-math{min-height:520px;position:relative;z-index:3;display:grid;place-items:center}
+.parameter-plane{width:min(350px,100%);aspect-ratio:1;position:relative;overflow:hidden;border:1px solid rgba(130,240,207,.24);background:linear-gradient(145deg,rgba(7,29,25,.86),rgba(4,16,14,.94));box-shadow:0 26px 90px rgba(0,0,0,.4),0 0 65px rgba(83,207,219,.06);backdrop-filter:blur(10px)}
+.parameter-plane::before{content:"";position:absolute;inset:13px;z-index:3;border:1px solid rgba(231,185,92,.2);pointer-events:none}
+.parameter-canvas{width:100%;height:100%;display:block;position:absolute;inset:0;z-index:1}
+.parameter-live{position:absolute;right:28px;bottom:24px;z-index:4;color:var(--mint);font:6px/1 var(--sans);letter-spacing:.17em;pointer-events:none}.parameter-live i{width:5px;height:5px;display:inline-block;margin-right:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 9px var(--mint);animation:dynamics-pulse 1.8s ease-in-out infinite}
+@media(max-width:900px){.hero-layout{grid-template-columns:1fr;gap:20px;padding-top:65px}.hero::after{background:linear-gradient(180deg,rgba(7,21,19,.94) 0%,rgba(7,21,19,.67) 50%,rgba(7,21,19,.24) 100%)}.hero-math{min-height:410px}.parameter-plane{width:min(350px,88vw)}}
+@media(max-width:560px){.hero{min-height:auto}.hero-layout{min-height:auto;padding:58px 0 54px}.hero-math{min-height:370px}.parameter-plane{width:min(320px,92vw)}.parameter-live{right:23px;bottom:21px}}
+@media(prefers-reduced-motion:reduce){.parameter-live i{animation:none}}
