@@ -48,16 +48,17 @@ assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
 const strengthenedOneStarStats = {
-  damage: [.12,.24,.36,.48,.90],
+  damage: [.24,.48,.72,.96,1.80],
   rate: [.105,.21,.315,.42,.84],
   crit: [.036,.072,.108,.144,.30],
-  critPower: [.18,.36,.54,.72,1.50]
+  critPower: [.37,.74,1.11,1.48,3.05]
 };
 for (const turretId of ["bullet","laser","missile","frost","arc"]) {
   for (const [stat,values] of Object.entries(strengthenedOneStarStats)) {
     const card = cards.find((item) => item.id === `${turretId}_base_${stat === "critPower" ? "crit_power" : stat}`);
     assert(card, `${turretId} 具有一星 ${stat} 卡牌`);
-    assert.deepEqual(Array.from(card.passive.values), values, `${turretId} 一星 ${stat} 成长为原数值三倍`);
+    assert.deepEqual(Array.from(card.passive.values), values, `${turretId} 一星 ${stat} 使用当前强化曲线`);
+    if (stat === "damage") assert.deepEqual(Array.from(card.passive.flatValues), [1,2,3,4,5], `${turretId} 一星攻击每级增加一星固定攻击`);
   }
 }
 assert(/const ACTIVE_SKILL_DEFS = \{/.test(gameSource), "六座炮塔具有主动技能定义");
@@ -268,7 +269,20 @@ assert(/renderTime-meterRowsLastRender>=STATS_METER_RENDER_INTERVAL_MS/.test(gam
 assert(/function scheduleAutoSave\(\)[\s\S]{0,260}requestIdleCallback/.test(gameSource), "自动存档在浏览器空闲阶段提交");
 assert(/state\.saveAccumulator>=10\)\{state\.saveAccumulator=0;scheduleAutoSave\(\);\}/.test(gameSource), "战斗循环不再同步执行完整自动存档");
 assert(/function drawRunnerEnemy\([\s\S]{0,700}RUNNER_TRAIL_LAYERS/.test(gameSource), "高速彗星使用固定层数尾迹而非逐单位渐变分配");
-assert(/if\(id==="runner"\)\{drawRunnerEnemy\(radius,color\);return;\}/.test(gameSource), "高速单位走低分配专用绘制路径");
+assert(/const CROWD_LOD_SOFT_LIMIT = 32;[\s\S]{0,80}const CROWD_LOD_HARD_LIMIT = 48;/.test(gameSource), "密集潮在 32/48 个敌军处逐级降低纯视觉开销");
+assert(/function drawRunnerEnemy\(radius,color,crowdLod=0\)[\s\S]{0,500}crowdLod>=2\?1:crowdLod===1\?2:RUNNER_TRAIL_LAYERS/.test(gameSource), "高速彗星尾迹按密集程度从三层降至一层");
+assert(/ctx\.shadowBlur=enemy\.type\.boss\?22:crowdLod===0\?12:crowdLod===1\?3:0/.test(gameSource), "普通敌军外发光在密集潮中同步降载");
+assert(/if\(id==="runner"\)\{drawRunnerEnemy\(radius,color,crowdLod\);return;\}/.test(gameSource), "高速单位走支持密集度的低分配专用绘制路径");
+assert(/function selectTarget\(turret,range=turretRange\(turret\)\)\{[\s\S]{0,900}for\(const enemy of state\.enemies\)/.test(gameSource), "主炮目标选择使用单次扫描而非为每次射击分配并排序候选数组");
+assert(!/function drawTurrets\(\)[\s\S]{0,900}selectTarget\(turret\)/.test(gameSource), "炮塔绘制复用上次攻击方向，不在每个渲染帧重新排序敌军");
+assert(/passive:\{turretId:"bullet",stat:"damage",values:\[\.24,\.48,\.72,\.96,1\.80\],flatValues:\[1,2,3,4,5\]\}/.test(gameSource), "子弹基础攻击卡翻倍并逐级加入一星固定攻击");
+assert(/values:\[\.37,\.74,1\.11,1\.48,3\.05\]/.test(gameSource), "所有炮塔一星暴击伤害翻倍并加入逐级星级增幅");
+assert(/boostedAttackStat=turretId!=="support"&&\(stat==="damage"\|\|stat==="critPower"\)/.test(gameSource), "二至六星攻击与暴伤卡统一使用双倍成长规则");
+assert(/flatValues=stat==="damage"&&turretId!=="support"\?Array\.from\(\{length:max\},\(_,index\)=>star\*\(index\+1\)\):null/.test(gameSource), "每级攻击卡额外加入等于星级的固定攻击");
+assert(/turret\.damage=TURRET_DEFS\[turretId\]\.damage\+turretFlatDamage\(turretId\)/.test(gameSource), "炮塔先汇总初始攻击与固定攻击，再交给攻击提升系数结算");
+assert(/node\.dataset\.updateAverage=updateTiming\.average\.toFixed\(3\)/.test(gameSource), "测试档案分别记录战斗更新耗时");
+assert(/node\.dataset\.drawAverage=drawTiming\.average\.toFixed\(3\)/.test(gameSource), "测试档案分别记录画布绘制耗时");
+assert(/node\.dataset\.crowdLod=String\(living\.length>CROWD_LOD_HARD_LIMIT\?2:living\.length>CROWD_LOD_SOFT_LIMIT\?1:0\)/.test(gameSource), "测试遥测会标记当前密集潮视觉等级");
 
 const baseDps = {
   bullet:7 / 2.4,
