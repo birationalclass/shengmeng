@@ -128,19 +128,8 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
   }
 
   const intersections = findIntersections();
-  const edgeKeys = new Set();
-  const uniqueEdges = [];
-  for (let first = 0; first < intersections.length; first += 1) {
-    for (let second = first + 1; second < intersections.length; second += 1) {
-      const key = `${Math.min(first, second)}:${Math.max(first, second)}`;
-      if (edgeKeys.has(key)) continue;
-      edgeKeys.add(key);
-      uniqueEdges.push({ first, second });
-    }
-  }
   [backgroundCanvas, parameterCanvas].forEach((target) => {
-    target.dataset.intersections = String(intersections.length);
-    target.dataset.uniqueEdges = String(uniqueEdges.length);
+    target.dataset.baseIntersections = String(intersections.length);
   });
 
   let width = 1;
@@ -176,29 +165,6 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     render(elapsed);
   }
 
-  function drawGrid(frame, divisions = 4) {
-    context.save();
-    context.strokeStyle = "rgba(130, 240, 207, 0.075)";
-    context.lineWidth = 1;
-    for (let index = 0; index <= divisions; index += 1) {
-      const offset = (frame.size * index) / divisions;
-      context.beginPath();
-      context.moveTo(frame.left + offset, frame.top);
-      context.lineTo(frame.left + offset, frame.top + frame.size);
-      context.moveTo(frame.left, frame.top + offset);
-      context.lineTo(frame.left + frame.size, frame.top + offset);
-      context.stroke();
-    }
-    context.strokeStyle = "rgba(130, 240, 207, 0.19)";
-    context.beginPath();
-    context.moveTo(frame.left, frame.top + frame.size / 2);
-    context.lineTo(frame.left + frame.size, frame.top + frame.size / 2);
-    context.moveTo(frame.left + frame.size / 2, frame.top);
-    context.lineTo(frame.left + frame.size / 2, frame.top + frame.size);
-    context.stroke();
-    context.restore();
-  }
-
   function pointInFrame(point, frame) {
     return {
       x: frame.left + ((point.x + 1) / 2) * frame.size,
@@ -206,11 +172,97 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     };
   }
 
-  function parameterInFrame(s, t, frame) {
+  function parameterInFrame(s, t, frame, sLimit, tLimit) {
     return {
-      x: frame.left + (s / fullTurn) * frame.size,
-      y: frame.top + (1 - t / fullTurn) * frame.size
+      x: frame.left + (s / sLimit) * frame.size,
+      y: frame.top + (1 - t / tLimit) * frame.size
     };
+  }
+
+  const parameterPointKey = (s, t) => `${Math.round(s * 1000)}:${Math.round(t * 1000)}`;
+  let latticeCache = { bucket: -1, points: [], chains: [] };
+
+  function currentParameterLimits(time) {
+    const safeTime = Math.max(0, time);
+    return {
+      s: fullTurn * (3 + 0.76 * Math.log1p(safeTime / 12)),
+      t: fullTurn * (3 + 0.68 * Math.log1p(safeTime / 14))
+    };
+  }
+
+  function buildPeriodicLattice(sLimit, tLimit) {
+    const points = [];
+    intersections.forEach((intersection, baseIndex) => {
+      for (let s = intersection.s, sTurn = 0; s <= sLimit + 1e-7; s += fullTurn, sTurn += 1) {
+        for (let t = intersection.t, tTurn = 0; t <= tLimit + 1e-7; t += fullTurn, tTurn += 1) {
+          points.push({ s, t, baseIndex, sTurn, tTurn });
+        }
+      }
+    });
+    return points.sort((first, second) => first.s - second.s || first.t - second.t);
+  }
+
+  function buildArithmeticChains(points, sLimit, tLimit) {
+    const lookup = new Map(points.map((point) => [parameterPointKey(point.s, point.t), point]));
+    const lines = new Map();
+    const epsilon = 1e-6;
+
+    for (let firstIndex = 0; firstIndex < points.length; firstIndex += 1) {
+      const first = points[firstIndex];
+      for (let secondIndex = firstIndex + 1; secondIndex < points.length; secondIndex += 1) {
+        const second = points[secondIndex];
+        if (second.s <= first.s + epsilon || second.t <= first.t + epsilon) continue;
+        const deltaS = second.s - first.s;
+        const deltaT = second.t - first.t;
+        if (lookup.has(parameterPointKey(first.s - deltaS, first.t - deltaT))) continue;
+
+        const sequence = [first];
+        let current = first;
+        let exitsCurrentScale = false;
+        while (sequence.length <= 128) {
+          const nextS = current.s + deltaS;
+          const nextT = current.t + deltaT;
+          if (nextS > sLimit + epsilon || nextT > tLimit + epsilon) {
+            exitsCurrentScale = true;
+            break;
+          }
+          const next = lookup.get(parameterPointKey(nextS, nextT));
+          if (!next) break;
+          sequence.push(next);
+          current = next;
+        }
+        if (!exitsCurrentScale || sequence.length < 3) continue;
+
+        const stepLength = Math.hypot(deltaS, deltaT);
+        const unitS = deltaS / stepLength;
+        const unitT = deltaT / stepLength;
+        const intercept = -unitT * first.s + unitS * first.t;
+        const lineKey = `${Math.round(unitS * 1000)}:${Math.round(unitT * 1000)}:${Math.round(intercept * 1000)}`;
+        const existing = lines.get(lineKey);
+        if (!existing || sequence.length > existing.points.length || (sequence.length === existing.points.length && stepLength < existing.stepLength)) {
+          lines.set(lineKey, { points: sequence, deltaS, deltaT, stepLength });
+        }
+      }
+    }
+    return [...lines.values()].sort((first, second) => second.points.length - first.points.length || first.stepLength - second.stepLength);
+  }
+
+  function latticeAt(time, limits) {
+    const bucket = Math.floor(time * 2);
+    if (bucket !== latticeCache.bucket) {
+      const points = buildPeriodicLattice(limits.s, limits.t);
+      latticeCache = {
+        bucket,
+        points,
+        chains: buildArithmeticChains(points, limits.s, limits.t)
+      };
+    }
+    return latticeCache;
+  }
+
+  function formatPiScale(value) {
+    const multiple = value / Math.PI;
+    return `${multiple >= 10 ? multiple.toFixed(0) : multiple.toFixed(1)}π`;
   }
 
   function drawCompleteCurve(curve, frame, colour) {
@@ -280,52 +332,65 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     context.restore();
   }
 
-  function drawParameterPlane(frame, visibleCount, sNow, tNow, time) {
-    drawGrid(frame, 4);
-    const scan = parameterInFrame(sNow, tNow, frame);
+  function drawParameterPlane(frame, lattice, limits) {
+    const divisions = 4;
     context.save();
-    context.strokeStyle = "rgba(231, 185, 92, 0.12)";
-    context.setLineDash([3, 5]);
-    context.beginPath();
-    context.moveTo(frame.left, scan.y);
-    context.lineTo(frame.left + frame.size, scan.y);
-    context.moveTo(scan.x, frame.top);
-    context.lineTo(scan.x, frame.top + frame.size);
-    context.stroke();
-    context.setLineDash([]);
+    context.lineWidth = 0.7;
+    context.font = "5.5px ui-monospace, SFMono-Regular, Consolas, monospace";
+    context.textAlign = "center";
+    for (let index = 0; index <= divisions; index += 1) {
+      const offset = (frame.size * index) / divisions;
+      context.strokeStyle = index === 0 || index === divisions
+        ? "rgba(130, 240, 207, 0.14)"
+        : "rgba(130, 240, 207, 0.065)";
+      context.beginPath();
+      context.moveTo(frame.left + offset, frame.top);
+      context.lineTo(frame.left + offset, frame.top + frame.size);
+      context.moveTo(frame.left, frame.top + offset);
+      context.lineTo(frame.left + frame.size, frame.top + offset);
+      context.stroke();
+      context.fillStyle = "rgba(180, 207, 197, 0.4)";
+      context.fillText(formatPiScale((limits.s * index) / divisions), frame.left + offset, frame.top + frame.size + 10);
+      if (index > 0) {
+        context.textAlign = "right";
+        context.fillText(formatPiScale((limits.t * (divisions - index)) / divisions), frame.left - 5, frame.top + offset + 2);
+        context.textAlign = "center";
+      }
+    }
 
-    uniqueEdges.forEach((edge) => {
-      if (edge.first >= visibleCount || edge.second >= visibleCount) return;
-      const start = parameterInFrame(intersections[edge.first].s, intersections[edge.first].t, frame);
-      const end = parameterInFrame(intersections[edge.second].s, intersections[edge.second].t, frame);
-      const edgeAge = time - Math.max(edge.first, edge.second) * 1.05;
-      context.strokeStyle = `rgba(130, 240, 207, ${0.07 + 0.15 * clamp(edgeAge, 0, 1)})`;
-      context.lineWidth = 0.75;
+    lattice.chains.forEach((chain) => {
+      const startRecord = chain.points[0];
+      const endRecord = chain.points[chain.points.length - 1];
+      const start = parameterInFrame(startRecord.s, startRecord.t, frame, limits.s, limits.t);
+      const end = parameterInFrame(endRecord.s, endRecord.t, frame, limits.s, limits.t);
+      const strength = Math.min(0.26, 0.08 + chain.points.length * 0.025);
+      context.strokeStyle = `rgba(130, 240, 207, ${strength})`;
+      context.lineWidth = chain.points.length >= 5 ? 1 : 0.7;
       context.beginPath();
       context.moveTo(start.x, start.y);
       context.lineTo(end.x, end.y);
       context.stroke();
     });
 
-    intersections.forEach((record, index) => {
-      const point = parameterInFrame(record.s, record.t, frame);
-      const visible = index < visibleCount;
-      context.fillStyle = visible ? "rgba(232, 242, 237, 0.9)" : "rgba(130, 240, 207, 0.09)";
+    const pointRadius = lattice.points.length > 220 ? 0.75 : lattice.points.length > 120 ? 0.95 : 1.25;
+    lattice.points.forEach((record) => {
+      const point = parameterInFrame(record.s, record.t, frame, limits.s, limits.t);
+      context.fillStyle = record.baseIndex % 2 === 0
+        ? "rgba(232, 242, 237, 0.82)"
+        : "rgba(130, 240, 207, 0.72)";
       context.beginPath();
-      context.arc(point.x, point.y, visible ? 2.2 : 1.2, 0, Math.PI * 2);
+      context.arc(point.x, point.y, pointRadius, 0, Math.PI * 2);
       context.fill();
-      if (visible && time - index * 1.05 < 0.9) {
-        context.strokeStyle = "rgba(231, 185, 92, 0.42)";
-        context.beginPath();
-        context.arc(point.x, point.y, 7 - 4 * clamp(time - index * 1.05, 0, 1), 0, Math.PI * 2);
-        context.stroke();
-      }
     });
 
-    context.fillStyle = "rgba(231, 185, 92, 0.82)";
+    context.strokeStyle = "rgba(231, 185, 92, 0.34)";
+    context.lineWidth = 1;
     context.beginPath();
-    context.arc(scan.x, scan.y, 1.6, 0, Math.PI * 2);
-    context.fill();
+    context.moveTo(frame.left + frame.size, frame.top);
+    context.lineTo(frame.left + frame.size, frame.top + frame.size);
+    context.moveTo(frame.left, frame.top);
+    context.lineTo(frame.left + frame.size, frame.top);
+    context.stroke();
     context.restore();
   }
 
@@ -340,9 +405,16 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
   function render(time) {
     const sNow = (time * 0.56) % fullTurn;
     const tNow = (time * 0.43 + 1.35) % fullTurn;
+    const parameterLimits = currentParameterLimits(time);
+    const lattice = latticeAt(time, parameterLimits);
     const visibleCount = reducedMotion.matches
       ? intersections.length
       : Math.min(intersections.length, Math.max(0, Math.floor(time / 1.05) + 1));
+    parameterCanvas.dataset.points = String(lattice.points.length);
+    parameterCanvas.dataset.arithmeticChains = String(lattice.chains.length);
+    parameterCanvas.dataset.maxChainLength = String(lattice.chains[0]?.points.length || 0);
+    parameterCanvas.dataset.sScale = parameterLimits.s.toFixed(3);
+    parameterCanvas.dataset.tScale = parameterLimits.t.toFixed(3);
 
     context = backgroundContext;
     width = backgroundWidth;
@@ -377,21 +449,19 @@ document.querySelector("#currentYear").textContent = new Date().getFullYear();
     width = parameterWidth;
     height = parameterHeight;
     context.clearRect(0, 0, width, height);
-    const parameterSize = Math.max(150, Math.min(width - 64, height - 126));
+    const parameterSize = Math.max(150, Math.min(width - 68, height - 132));
     const parameterFrame = {
       left: (width - parameterSize) / 2,
-      top: 72 + Math.max(0, (height - 126 - parameterSize) / 2),
+      top: 80 + Math.max(0, (height - 132 - parameterSize) / 2),
       size: parameterSize
     };
-    drawLabel("INTERSECTION PARAMETER SPACE", 30, 34, "rgba(231, 185, 92, 0.76)", 7);
-    drawLabel("a(s) = b(t)", parameterFrame.left, parameterFrame.top - 25, "rgba(232, 242, 237, 0.78)", 8);
-    drawLabel(`RECORDED ${String(visibleCount).padStart(2, "0")}/${String(intersections.length).padStart(2, "0")}`, parameterFrame.left, parameterFrame.top - 11, "rgba(231, 185, 92, 0.65)", 6.5);
-    drawParameterPlane(parameterFrame, visibleCount, sNow, tNow, time);
+    drawLabel("EXPANDING PARAMETER LATTICE", 30, 27, "rgba(231, 185, 92, 0.76)", 7);
+    drawLabel("p < q ⇔ s(p) < s(q) AND t(p) < t(q)", 30, 43, "rgba(202, 222, 214, 0.58)", 6.4);
+    drawLabel(`a(s) = b(t) · ${lattice.points.length} POINTS · ${lattice.chains.length} CHAINS`, 30, 58, "rgba(130, 240, 207, 0.62)", 6.2);
+    drawParameterPlane(parameterFrame, lattice, parameterLimits);
     drawLabel("s", parameterFrame.left + parameterFrame.size + 4, parameterFrame.top + parameterFrame.size / 2 + 3, undefined, 7);
     drawLabel("t", parameterFrame.left + parameterFrame.size / 2 + 4, parameterFrame.top - 4, undefined, 7);
-    drawLabel("0", parameterFrame.left - 5, parameterFrame.top + parameterFrame.size + 11, "rgba(202, 222, 214, 0.34)", 6);
-    drawLabel("2π", parameterFrame.left + parameterFrame.size - 7, parameterFrame.top + parameterFrame.size + 11, "rgba(202, 222, 214, 0.34)", 6);
-    drawLabel(`${uniqueEdges.length} UNIQUE EDGES`, parameterFrame.left, height - 25, "rgba(130, 240, 207, 0.46)", 6.5);
+    drawLabel(`S ≤ ${formatPiScale(parameterLimits.s)} · T ≤ ${formatPiScale(parameterLimits.t)}`, parameterFrame.left, height - 25, "rgba(231, 185, 92, 0.52)", 6.2);
   }
 
   function animate(timestamp) {
