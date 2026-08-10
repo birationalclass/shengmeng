@@ -183,6 +183,11 @@ assert(/armorPen:\[0,\.3,\.5,\.7\]/.test(gameSource)&&/armorPen:\[0,\.1,\.18,\.2
 assert(/function beginLaserChannel[\s\S]{0,350}turret\.laserUx=dx\/length/.test(gameSource), "激光开火瞬间保存固定射线方向");
 assert(!/function laserChannelTarget\(/.test(gameSource), "移除持续激光的重新捕获目标逻辑");
 assert(/function updateLaserChannel[\s\S]{0,700}const ux=turret\.laserUx,uy=turret\.laserUy[\s\S]{0,700}fireLaser\(turret,\{x:turret\.x\+ux\*100/.test(gameSource), "持续激光始终复用开火瞬间的单位向量");
+const frostSkillBranch=gameSource.match(/else if\(turretId==="frost"\)\{(?<body>[\s\S]*?)\}\s*else if\(turretId==="arc"\)/)?.groups?.body||"";
+const arcSkillBranch=gameSource.match(/else if\(turretId==="arc"\)\{(?<body>[\s\S]*?)\}\s*else if\(turretId==="support"\)/)?.groups?.body||"";
+assert(/function freezeNonBossEnemies\(targets,duration=3\)/.test(gameSource)&&/enemy\.type\.boss/.test(gameSource), "绝对零度只冻结非首领敌军");
+assert(frostSkillBranch.includes("freezeNonBossEnemies(targets,3)")&&!frostSkillBranch.includes("damageEnemy(")&&!frostSkillBranch.includes("applyFracture("), "绝对零度不会直接伤害、破碎或清除敌军");
+assert(arcSkillBranch.includes("enemy.vulnerable=Math.min")&&!arcSkillBranch.includes("damageEnemy("), "数字键 4 的磁暴脉冲只强化易伤，不会清屏");
 assert(/function enemyDebuffCount\(/.test(gameSource)&&/debuffs<6/.test(gameSource), "六相坍缩按六种不同异常触发");
 assert(/enemy\.hp\*\[0,\.006,\.01,\.015\]\[rank\]\*dt/.test(gameSource)&&/trueDamage:true/.test(gameSource), "六相坍缩每秒按当前生命百分比真实扣血");
 assert(/ratios=\[0,\.3,\.45,\.6,\.8\]/.test(gameSource), "相位护盾按屏障上限百分比成长而非固定二十点");
