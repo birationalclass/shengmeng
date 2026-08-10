@@ -18,6 +18,8 @@ const translations = {
     contactTitle:"一起探索一个困难问题。",contactLead:"欢迎就数学研究、学生培养以及数学、AI 与游戏的跨学科想法交流。",office:"办公室",institution:"单位",address:"地址",footerText:"数学 · 人工智能 · 游戏"
   }
 };
+translations.zh.heroKicker = "华东师范大学 · 研究员";
+translations.zh.brandName = "孟 晟";
 const defaultText = new Map();
 document.querySelectorAll("[data-i18n]").forEach((node)=>defaultText.set(node.dataset.i18n,node.textContent));
 let language = "en";
