@@ -152,14 +152,23 @@ assert(/if\(absorber\)[\s\S]{0,280}break;/.test(gameSource), "激光命中黑洞
 assert(/absorbed=current\.type\.bossKind==="blackhole"/.test(gameSource), "电弧把黑洞识别为吸收终点");
 assert(/spawnSparks\(beamEnd\.x,beamEnd\.y[\s\S]{0,80}if\(absorbed\)break/.test(gameSource), "电弧到达事件视界后终止链式跳跃");
 assert(/function launchRepairBots\(turret,totalRepair,totalShield=0\)/.test(gameSource), "支援炮塔通过维修机器人而非瞬时脉冲治疗屏障");
-assert(/targetX=BARRIER_ARC\.left\+34\+Math\.random\(\)/.test(gameSource), "维修机器人随机选择屏障弧面附着点");
+assert(/selectSupportBarrierSegment\(mode\)/.test(gameSource) && /barrierSegmentTargetX\(segment/.test(gameSource), "维修机器人依据支援优先级选择五段屏障附着点");
 assert(/function updateRepairBots\(dt\)/.test(gameSource), "机器人附着后按作业进度持续结算修补与护盾涂层");
 assert(/function drawRepairBots\(\)/.test(gameSource), "战斗画面绘制飞行、附着和焊接状态的维修机器人");
 assert(cards.some((card) => card.id === "repair_drone_bay") && cards.some((card) => card.id === "repair_drone_anchor"), "卡组包含机器人数量与驻留加工两条成长分支");
+assert(/id:"support_base_duration"[\s\S]{0,260}stat:"botDuration"/.test(gameSource), "支援基础卡包含真实影响作业时长的机器人持续时间");
+assert(/const BARRIER_SEGMENT_COUNT\s*=\s*5/.test(gameSource) && /function drawSegmentedBarrier\(\)/.test(gameSource), "全局屏障拆分为五段独立血量并绘制");
+assert(/lostBarrierSegmentCount\(\)\*\.2/.test(gameSource), "每失去一段，其余屏障受到额外 20% 伤害");
+assert(/敌军下缘穿越第/.test(gameSource) && /endGame\(\)/.test(gameSource), "敌军下缘穿越零血量屏障区会立即失败");
+assert(gameSource.includes("shield:segmentShield,maxShield:segmentShieldMax") && gameSource.includes("rawCapacity=segment.shield+segment.hp/vulnerability"), "五段屏障分别维护生命与相位护盾，并独立结算碰撞承伤");
+assert(/lowestBarrier[\s\S]{0,180}highestBarrier[\s\S]{0,180}farFriendly[\s\S]{0,180}balancedRandom/.test(gameSource), "支援炮塔提供四种独立治疗优先级");
+assert(/difficultyFactors\(\)\.hp/.test(gameSource) && /difficultyFactors\(\)\.attack/.test(gameSource), "层级难度同时调整生命、攻击与数量");
+assert(/function allCardsMaxed\(\)/.test(gameSource) && /collectionCompleteWave\+5/.test(gameSource), "卡牌全收集后再守五波触发通关");
+for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
 assert(/const effectiveWave=state\.openingDraft\?Math\.max\(8,state\.wave\):state\.wave/.test(gameSource), "开局五轮选卡允许出现满足前置的稀有与后期构筑卡");
 assert(/ratios=\[0,\.3,\.45,\.6,\.8\]/.test(gameSource), "相位护盾按屏障上限百分比成长而非固定二十点");
 for(const id of ["shield_overdrive","barrier_arsenal","aegis_retaliation"])assert(ids.has(id), `护盾联动卡 ${id} 已加入卡池`);
-assert(/function payForbiddenInsightCost\(\)[\s\S]{0,420}shieldSpent=Math\.min\(state\.shield,cost\)/.test(gameSource), "禁忌洞见代价优先扣除黄色相位护盾");
+assert(/function payForbiddenInsightCost\(\)[\s\S]{0,520}spendBarrierShields\(cost\)/.test(gameSource), "禁忌洞见代价优先扣除各段黄色相位护盾");
 assert(/function defensiveFirepowerMultiplier\(\)/.test(gameSource), "护盾数值与屏障生命上限能够转化为全局伤害");
 
 function offerRates(history, preferenceTag = "", iterations = 30000) {

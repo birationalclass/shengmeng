@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260810-v66-star-groups">
   </head>
   <body>
     <div class="portrait-app">
@@ -33,10 +33,11 @@
       <section class="core-hud">
         <div class="wave-line"><span id="phaseText">等待部署</span><small id="enemyText">0 敌军</small></div>
         <div class="wave-bar"><i id="waveBar"></i></div>
+        <div class="relic-panel"><header><span>遗物</span><button id="achievementButton" type="button">成就</button></header><div id="relicList" class="relic-list"><small>尚未解锁遗物</small></div></div>
       </section>
 
       <nav class="side-tools" aria-label="战术面板">
-        <button id="libraryButton" type="button"><i>◇</i><span>卡牌</span><b id="cardCount">0</b></button>
+        <button id="libraryButton" type="button"><i>◇</i><span>卡牌总览</span><b id="cardCount">0</b></button>
         <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
         <section class="card-preference" aria-labelledby="preferenceTitle">
           <header><h3 id="preferenceTitle">卡牌偏好</h3><small id="preferenceStatus">未选择</small></header>
@@ -54,7 +55,8 @@
       </nav>
 
       <section class="live-meter" aria-labelledby="statsTitle">
-        <header><div><span class="eyebrow">LIVE COMBAT METER</span><h2 id="statsTitle">DPS / HPS</h2></div><b id="combatDpsMini">0</b></header>
+        <header><div><span class="eyebrow">LIVE COMBAT METER</span><h2 id="statsTitle">DPS / HPS</h2></div><div class="combat-mini-values"><b><small>DPS</small><span id="combatDpsMini">0</span></b><b><small>HPS</small><span id="combatHpsMini">0</span></b></div></header>
+        <div class="meter-mode" role="group" aria-label="统计显示方式"><button type="button" data-meter-mode="simple">简易</button><button type="button" data-meter-mode="detail">详细</button></div>
         <div class="meter-head"><span><small>总伤害</small><b id="totalDamage">0</b></span><span><small>当前 DPS</small><b id="currentDps">0</b></span><span><small>总治疗</small><b id="totalHealing">0</b></span><span><small>当前 HPS</small><b id="currentHps">0</b></span></div>
         <h3>伤害来源</h3><div id="damageMeters" class="meter-list"></div>
         <h3>治疗来源</h3><div id="healingMeters" class="meter-list"></div>
@@ -88,6 +90,11 @@
           <div class="start-title"><i>∞</i><div><h1 id="startTitle">无尽</h1><p>一门子弹炮起步，用卡牌建成整条防线。</p></div></div>
           <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>属性也由随机卡牌获得</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
+          <div class="difficulty-picker">
+            <label><span>大难度</span><select id="difficultyMajorInput"><option value="cruise">巡航</option><option value="deep">深空</option><option value="singularity">奇点</option><option value="terminus">终焉</option></select></label>
+            <label><span>威胁阶</span><select id="difficultyMinorInput"><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option><option value="5">V</option></select></label>
+            <small id="difficultySummary">巡航 I · 敌军维持标准强度</small>
+          </div>
           <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
           <div id="fastStartPanel" class="fast-start-panel hidden">
             <small>账号快速部署</small>
@@ -100,6 +107,15 @@
           </div>
           <button id="newRunButton" class="primary-button start-run" type="button">部署纯子弹炮防线</button>
           <button id="blackHoleTestButton" class="secondary-button test-run hidden" type="button">直接测试黑洞首领</button>
+          <section id="testTools" class="test-tools hidden" aria-label="测试账号平衡实验室">
+            <small>测试账号 · 强度与构筑实验室</small>
+            <div>
+              <button type="button" data-test-preset="early">前期弹道 · 第 5 波</button>
+              <button type="button" data-test-preset="mid">中期低谷 · 第 20 波</button>
+              <button type="button" data-test-preset="late">六星质变 · 第 40 波</button>
+              <button type="button" data-test-preset="full">全塔终局 · 第 40 波</button>
+            </div>
+          </section>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
           <p class="zero-pay">零充值 · 零广告 · 所有炮塔与卡牌均在局内获得</p>
         </section>
@@ -136,6 +152,10 @@
         <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><nav id="libraryCategories" class="library-categories" aria-label="七大卡牌类别"></nav><div class="library-section-title"><b id="libraryCategoryTitle">子弹炮卡牌</b><span id="libraryCategoryProgress">0 / 0</span></div><div id="libraryCards" class="library-cards"></div></section>
       </div>
 
+      <div id="achievementOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="achievementTitle">
+        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER LEGACY</span><h2 id="achievementTitle">成就与遗物</h2><p class="modal-intro">成就永久保存在当前账号；已解锁遗物会自动装备并影响下一局部署。</p><div id="achievementList" class="achievement-list"></div></section>
+      </div>
+
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
         <section class="modal help-modal"><button class="modal-close" data-close="helpOverlay" type="button">×</button><span class="eyebrow">TACTICAL MANUAL</span><h2 id="helpTitle">竖屏防线规则</h2><div class="help-grid"><article><b>01</b><h3>一炮起步</h3><p>初始只有中央子弹炮。激光、导弹、冰霜、电弧和支援炮塔必须通过卡牌加入。</p></article><article><b>02</b><h3>即时奖励</h3><p>带倒计时光环的敌人若及时击杀，会立即随机获得一张合法卡牌，不会中断当前战斗。</p></article><article><b>03</b><h3>生命代价</h3><p>禁忌洞见会在正常选牌后概率随机赠送一张合法卡牌，同时牺牲当前屏障生命 50%，且不会再次触发自身。</p></article><article><b>04</b><h3>偏好保底</h3><p>右侧可指定一种炮塔偏好；每次四选一必含一张该炮塔的合法未满级卡牌，其余位置继续随机。</p></article><article><b>05</b><h3>颜色属性</h3><p>红色装甲抗子弹、怕导弹；蓝色相位抗激光、怕电弧；金色日冕抗燃烧、怕冰霜；绿色生体抗电弧、怕燃烧；橙色高速体抗导弹、怕激光。</p></article><article><b>06</b><h3>屏障即生命</h3><p>黄色护盾优先吸收伤害，随后才扣除蓝色屏障。每波由黑洞守关，恒星会作为中途小首领；每三波出现一颗巨型黑洞。</p></article><article><b>07</b><h3>火力进化</h3><p>小怪每五波提升火力阶位，后期会从单发升级为双发、三发；Boss 每三波提升威胁阶位，伽马射线会增加束数并缩短蓄力与冷却。</p></article></div></section>
       </div>
@@ -162,6 +182,6 @@
     <script src="black-hole-enemy.js?v=20260810-v61-horizon-origin"></script>
     <script src="balance-core.js?v=20260810-v62-star-balance"></script>
     <script src="enemy-visuals.js?v=20260809-v39"></script>
-    <script src="game.js?v=20260810-v62-active-skills"></script>
+    <script src="game.js?v=20260810-v66-star-groups"></script>
   </body>
 </html>
