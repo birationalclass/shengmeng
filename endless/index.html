@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-    <link rel="stylesheet" href="styles.css?v=20260810-v66-star-groups">
+    <link rel="stylesheet" href="styles.css?v=20260810-v70-fixed-laser-synergies">
   </head>
   <body>
     <div class="portrait-app">
@@ -33,15 +33,14 @@
       <section class="core-hud">
         <div class="wave-line"><span id="phaseText">等待部署</span><small id="enemyText">0 敌军</small></div>
         <div class="wave-bar"><i id="waveBar"></i></div>
-        <div class="relic-panel"><header><span>遗物</span><button id="achievementButton" type="button">成就</button></header><div id="relicList" class="relic-list"><small>尚未解锁遗物</small></div></div>
+        <div class="relic-panel"><header><span>传承系统</span><div><button id="achievementButton" type="button">成就</button><button id="relicButton" type="button">遗物</button></div></header><div id="relicList" class="relic-list"><small>尚未解锁遗物</small></div></div>
       </section>
 
       <nav class="side-tools" aria-label="战术面板">
         <button id="libraryButton" type="button"><i>◇</i><span>卡牌总览</span><b id="cardCount">0</b></button>
         <button id="helpButton" type="button"><i>?</i><span>说明</span></button>
         <section class="card-preference" aria-labelledby="preferenceTitle">
-          <header><h3 id="preferenceTitle">卡牌偏好</h3><small id="preferenceStatus">未选择</small></header>
-          <p>四选一必含一张对应合法卡牌；数字为本局累计卡牌等级</p>
+          <header><h3 id="preferenceTitle">卡牌偏好 <i class="preference-help" tabindex="0" aria-label="卡牌偏好说明" data-tooltip="四选一必含一张所选类别的合法卡牌；按钮数字为本局累计卡牌等级。快速部署与随机奖励不受偏好锁定影响。">?</i></h3><div id="starProbabilityStrip" class="star-probability-strip" aria-label="各星级卡牌获取概率"></div><small id="preferenceStatus">未选择</small></header>
           <div class="preference-options" role="radiogroup" aria-label="卡牌炮塔偏好">
             <label style="--pref-color:#ffd16f"><input type="radio" name="cardPreference" value="bullet"><span>● 子弹 <b data-preference-count="弹道">0</b></span></label>
             <label style="--pref-color:#ff5f7c"><input type="radio" name="cardPreference" value="laser"><span>╱ 激光 <b data-preference-count="激光">0</b></span></label>
@@ -91,7 +90,7 @@
           <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>属性也由随机卡牌获得</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
           <div class="difficulty-picker">
-            <label><span>大难度</span><select id="difficultyMajorInput"><option value="cruise">巡航</option><option value="deep">深空</option><option value="singularity">奇点</option><option value="terminus">终焉</option></select></label>
+            <label><span>难度</span><select id="difficultyMajorInput"><option value="cruise">行星</option><option value="deep">恒星</option><option value="singularity">中子星</option><option value="terminus">黑洞</option></select></label>
             <label><span>威胁阶</span><select id="difficultyMinorInput"><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option><option value="5">V</option></select></label>
             <small id="difficultySummary">巡航 I · 敌军维持标准强度</small>
           </div>
@@ -149,11 +148,15 @@
       </div>
 
       <div id="libraryOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
-        <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><nav id="libraryCategories" class="library-categories" aria-label="七大卡牌类别"></nav><div class="library-section-title"><b id="libraryCategoryTitle">子弹炮卡牌</b><span id="libraryCategoryProgress">0 / 0</span></div><div id="libraryCards" class="library-cards"></div></section>
+        <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><nav id="libraryCategories" class="library-categories" aria-label="七大卡牌类别"></nav><div class="library-section-title"><b id="libraryCategoryTitle">子弹炮卡牌</b><span id="libraryCategoryProgress">0 / 0</span></div><nav id="libraryStarNav" class="library-star-nav" aria-label="按星级跳转"></nav><div id="libraryCards" class="library-cards"></div></section>
       </div>
 
       <div id="achievementOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="achievementTitle">
-        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER LEGACY</span><h2 id="achievementTitle">成就与遗物</h2><p class="modal-intro">成就永久保存在当前账号；已解锁遗物会自动装备并影响下一局部署。</p><div id="achievementList" class="achievement-list"></div></section>
+        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER ACHIEVEMENTS</span><h2 id="achievementTitle">成就档案</h2><p class="modal-intro">成就独立记录战术里程碑；每个天体难度 V 通关都会解锁专属成就与遗物强化。</p><div id="achievementList" class="achievement-list"></div></section>
+      </div>
+
+      <div id="relicOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="relicTitle">
+        <section class="modal achievement-modal"><button class="modal-close" data-close="relicOverlay" type="button">×</button><span class="eyebrow">RELIC VAULT</span><h2 id="relicTitle">遗物库</h2><p class="modal-intro">遗物是独立的常驻增益；成就负责解锁或强化，已获得的遗物会自动装备。</p><div id="relicArchive" class="relic-archive"></div></section>
       </div>
 
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
@@ -182,6 +185,6 @@
     <script src="black-hole-enemy.js?v=20260810-v61-horizon-origin"></script>
     <script src="balance-core.js?v=20260810-v62-star-balance"></script>
     <script src="enemy-visuals.js?v=20260809-v39"></script>
-    <script src="game.js?v=20260810-v66-star-groups"></script>
+    <script src="game.js?v=20260810-v70-fixed-laser-synergies"></script>
   </body>
 </html>
