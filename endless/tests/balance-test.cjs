@@ -38,7 +38,11 @@ for (const card of cards) {
 assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四选一");
 assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮开局选卡");
 assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接获得三张随机卡牌");
-assert.equal(cards.find((card) => card.id === "global_damage").max, 4, "弹道火控总成最多四级");
+assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
+assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
+assert(/const ACTIVE_SKILL_DEFS = \{/.test(gameSource), "六座炮塔具有主动技能定义");
+for (const key of ["bullet","laser","missile","frost","arc","support"]) assert(new RegExp(`${key}:\\{card:\"${key}_active_skill\"`).test(gameSource), `${key} 主动技能存在`);
+assert(/generateStarOffers/.test(gameSource), "四选一使用星级概率系统");
 assert(/const LOOP_SECONDS = 19\.2;/.test(blackHoleSource), "黑洞旋转速度再次减半，完整循环延长到 19.2 秒");
 assert(/const TEMPORAL_TAPS = 3;/.test(blackHoleSource), "黑洞使用三抽头时间超采样细化低速动画");
 assert(/sample\.prev[\s\S]*sample\.index[\s\S]*sample\.next/.test(blackHoleSource), "黑洞运行时融合前帧、当前帧与后帧而非跳帧播放");
@@ -84,8 +88,9 @@ assert(!/rewardDraftsQueued\+=rewards/.test(gameSource), "新奖励敌人不再�
 
 assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "每一波守关首领都从黑洞序列选择");
 assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
-assert(/midBossIndex[\s\S]{0,180}bossIndex/.test(gameSource), "每波同时安排中途恒星和最终黑洞");
-assert(/colossal=isBlackHole&&state\.wave%3===0/.test(gameSource), "每三波生成巨型黑洞");
+assert(/function ensureBossSchedule\(\)/.test(gameSource), "每波使用随机小首领与黑洞日程");
+assert(/double=state\.wave>=5/.test(gameSource), "中后期存在双黑洞守关概率");
+assert(/colossal:state\.wave%3===0/.test(gameSource), "每三波的守关日程生成巨型黑洞");
 assert(/type\.radius\*\(colossal\?2\.1:1\)/.test(gameSource), "巨型黑洞碰撞与画面尺寸至少扩大两倍");
 assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑洞素材允许扩展到压迫性宽度");
 assert(/if\(enemy\.type\.bossKind==="star"\)[\s\S]{0,700}continue;/.test(gameSource), "恒星小首领绕过控制与诱引逻辑并缓慢直行");
@@ -176,7 +181,7 @@ assert(afterBullet["激光"] > baseline["激光"], "未选择类别获得归一�
 const preferredAfterBullet = offerRates([{ id:"弹道-0", families:["弹道"] }], "弹道", 5000);
 assert.equal(preferredAfterBullet["弹道"], 1, "卡牌偏好仍然保底一张，不被疲劳覆盖");
 
-assert(/laser:\s*\{[^\n]+cooldown:10/.test(gameSource), "激光炮基础启动间隔提高到十秒");
+assert(/laser:\s*\{[^\n]+cooldown:12/.test(gameSource), "激光炮低基础攻速使用十二秒启动间隔");
 assert(/const LASER_TICK_INTERVAL=\.1;/.test(gameSource), "持续激光以稳定的十分之一秒脉冲结算");
 assert(/function laserDuration\(\)\{return 3\+cardRank\("laser_duration"\)\*\.75;\}/.test(gameSource), "激光基础持续三秒并支持持续时间卡牌");
 assert(/beginLaserChannel\(turret,target\)/.test(gameSource), "激光攻击会进入持续照射状态");
@@ -184,15 +189,22 @@ assert(/function updateLaserChannel\(/.test(gameSource), "激光持续期间追�
 for(const id of ["laser_duration","laser_cycle","laser_sustain"])assert(gameSource.includes(`id:"${id}"`), `激光持续机制卡牌 ${id} 已加入卡池`);
 
 const baseDps = {
-  bullet:15 / .48,
-  laser:6 * (3 / .1) / 10,
-  missile:58 / 2.65,
-  frost:5 / 1.05,
-  arc:(4.4 / .92) * (1 + .8 + .64)
+  bullet:7 / 2.4,
+  laser:1.8 * (3 / .1) / 12,
+  missile:30 / 6,
+  frost:1.8 / 3.4,
+  arc:(1.2 / 3.1) * (1 + .8 + .64)
 };
 assert(baseDps.arc < baseDps.bullet * .45, "电弧基础直接伤害保持辅助定位");
 assert(baseDps.missile * 3 > baseDps.bullet * 1.8, "导弹命中三个密集目标时确立 AOE 优势");
 assert(baseDps.frost < baseDps.bullet * .2, "冰霜保持低伤害控制定位");
+const baseStars=Balance.starProbabilities([0,0,0,0,0]),boostedStars=Balance.starProbabilities([5,5,5,5,5]);
+assert(Math.abs(baseStars.reduce((sum,value)=>sum+value,0)-1)<1e-9,"基础星级概率归一化");
+assert(Math.abs(boostedStars.reduce((sum,value)=>sum+value,0)-1)<1e-9,"增幅后星级概率仍归一化");
+assert(boostedStars[4]>baseStars[4]&&boostedStars[5]>baseStars[5],"特殊星图卡提高五星与六星爆率");
+assert.deepEqual(Balance.earlyWaveProfile(1),{countScale:.62,hpScale:.54,attackScale:.42},"第一波按低基础炮塔强度下调");
+assert.equal(Balance.earlyWaveProfile(6).hpScale,1,"第六波进入标准成长曲线");
+for(const id of ["cryo_missile_echo","laser_arc_echo","bullet_support_echo"])assert(gameSource.includes(`id:"${id}"`),`六星主动联动 ${id} 已加入`);
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,

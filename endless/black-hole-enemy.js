@@ -55,6 +55,34 @@
     ctx.transform(scaleX, pitchShear, yawShear, scaleY, 0, 0);
   }
 
+  function horizonPoint(subject, radius, targetX, targetY, padding = 6) {
+    const { width, height } = visualSize(radius);
+    const radiusX = width * HORIZON_RADIUS_X;
+    const radiusY = height * HORIZON_RADIUS_Y;
+    const dx = targetX - subject.x;
+    const dy = targetY - subject.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const ux = dx / length;
+    const uy = dy / length;
+    const yaw = poseAngle(subject.visualYaw);
+    const pitch = poseAngle(subject.visualPitch);
+    const roll = poseAngle(subject.visualRoll) * DEG_TO_RAD;
+    const cos = Math.cos(roll);
+    const sin = Math.sin(roll);
+    const rotatedX = cos * ux + sin * uy;
+    const rotatedY = -sin * ux + cos * uy;
+    const scaleX = 1 - Math.abs(yaw) / MAX_POSE_DEGREES * .035;
+    const scaleY = 1 - Math.abs(pitch) / MAX_POSE_DEGREES * .03;
+    const yawShear = Math.tan(yaw * DEG_TO_RAD) * .24;
+    const pitchShear = Math.tan(pitch * DEG_TO_RAD) * .18;
+    const determinant = scaleX * scaleY - yawShear * pitchShear || 1;
+    const localX = (scaleY * rotatedX - yawShear * rotatedY) / determinant;
+    const localY = (-pitchShear * rotatedX + scaleX * rotatedY) / determinant;
+    const boundaryDistance = 1 / Math.sqrt((localX * localX) / (radiusX * radiusX) + (localY * localY) / (radiusY * radiusY));
+    const distance = boundaryDistance + Math.max(0, padding);
+    return { x:subject.x + ux * distance, y:subject.y + uy * distance };
+  }
+
   const assets = new Map();
 
   function disposeAsset(asset) {
@@ -290,5 +318,5 @@
     };
   }
 
-  window.EndlessBlackHoleEnemy = { PALETTES, preload, draw, spawnExplosion, drawExplosion, diagnostics };
+  window.EndlessBlackHoleEnemy = { PALETTES, preload, draw, horizonPoint, spawnExplosion, drawExplosion, diagnostics };
 })();
