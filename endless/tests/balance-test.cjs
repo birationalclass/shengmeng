@@ -40,8 +40,11 @@ for (const card of cards) {
 }
 
 assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四选一");
-assert(/const NEW_RUN_OPENING_DRAFTS = 7;/.test(gameSource), "新局提供七轮连续开局选卡");
-assert(/const NEW_RUN_RANDOM_CARDS = 3;/.test(gameSource), "新局额外直接获得三张随机卡牌");
+assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮连续开局选卡");
+assert(/const NEW_RUN_RANDOM_CARDS = 5;/.test(gameSource), "新局额外直接获得五张一至四星随机卡牌");
+assert(/card\.star<=4\),initialCards=BalanceCore\.generateStarOffers/.test(gameSource), "开局随机奖励严格限定一至四星并复用星级权重算法");
+assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "开局随机奖励与逐次手选卡牌持续展示在初始构筑区");
+assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
 assert(/const ACTIVE_SKILL_DEFS = \{/.test(gameSource), "六座炮塔具有主动技能定义");
@@ -135,9 +138,17 @@ assert(/function distanceDamageMultiplier\(enemy\)[\s\S]{0,260}DISTANCE_DAMAGE_M
 assert(/multiplier=options\.trueDamage\?1:defense\*distanceMultiplier/.test(gameSource), "普通伤害接入纵深减伤，六相百分比真实伤害可绕过");
 assert(/const DISTANCE_BALANCE_HP_SCALE = \.88;/.test(gameSource), "敌方基础生命下调以补偿新增纵深减伤");
 assert(/if\(!opening&&!state\.draftWaveStarted\)\{repairAfterWave\(\);startNextWave\(\);state\.draftWaveStarted=true;\}/.test(gameSource), "波次奖励弹窗出现前已立即启动下一波");
-assert(/state\.paused=!!opening/.test(gameSource), "仅开局配牌暂停，战斗中奖励弹窗保持运行");
-assert(/下一波已开始 · 战斗不会因选卡暂停/.test(gameSource), "选卡弹窗明确提示后台战斗仍在继续");
-assert(!/pauseOnDraftInput/.test(gameSource), "代码中已移除选卡暂停开关");
+assert(/draftPause:true/.test(gameSource)&&/id="draftPauseInput"/.test(indexSource), "设置提供独立的后续选卡暂停开关且默认开启");
+assert(/state\.paused=!!opening\|\|state\.settings\.draftPause/.test(gameSource), "初始选卡始终暂停，后续选卡服从独立设置");
+assert(/下一波已开始 · \$\{state\.settings\.draftPause\?"战斗已暂停":"战斗继续"\}/.test(gameSource), "后续选卡明确显示当前暂停状态");
+assert(/state\.paused=state\.settings\.draftPause/.test(gameSource), "禁忌抄本选卡同样服从后续选卡暂停设置");
+
+assert(/function subwaveCountForWave\(wave\)\{return Math\.min\(8,3\+/.test(gameSource), "第一波固定从三个小波起步并随波次增加");
+assert(/function isInterwaveFillerSlot\(/.test(gameSource)&&/function spawnCadenceForWave\(/.test(gameSource), "小波之间使用低密度零星敌人填充并设置独立间隔");
+assert(/waveBaseTarget:state\.waveTarget/.test(gameSource), "小波节奏使用基础刷怪数，不受分裂与召唤临时扩容干扰");
+assert(/base=\(20\+wave\*3\.4\+Math\.pow\(wave,1\.1\)\*1\.25\)/.test(gameSource), "每波普通敌人总量采用扩容后的成长曲线");
+assert(/function openingEnemyHpMultiplier\(wave=state\.wave\)\{return wave<=5\?\.7:1;\}/.test(gameSource), "前五波敌方生命统一降低百分之三十");
+assert(/const BOUNTY_WANDER_TOP = H \* \.25;/.test(gameSource)&&/const BOUNTY_WANDER_BOTTOM = H \* \.75;/.test(gameSource), "奖励敌人只在战区纵向四分之一至四分之三区域游荡");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
 assert.equal(Balance.shouldSpawnBonusBounty(1, 20, () => .09), true, "一级每 20 个敌人进行 10% 判定");
@@ -230,7 +241,7 @@ assert(/function healBarrierSegment\(amount,source,preferredIndex=null,strictPre
 assert(/function gainShield\(amount,source,preferredIndex=null,strictPreferred=false\)/.test(gameSource), "barrier shielding supports segment-locked coating");
 assert(/healBarrierSegment\(payload,[^;]+bot\.segmentIndex,true\);gainShield\(bot\.shield\*delta\*skillBonus,[^;]+bot\.segmentIndex,true\)/.test(gameSource), "repair bots apply health and shield only to their attached segment");
 assert(/function renderDraft\(\)\{state\.selectingCard=false;/.test(gameSource), "every newly rendered draft explicitly releases the previous selection lock");
-assert(/function finishOpeningDraft\(\)[\s\S]{0,420}classList\.remove\("show","opening-draft"\)/.test(gameSource), "the seventh opening pick closes the draft overlay instead of leaving disabled cards on screen");
+assert(/function finishOpeningDraft\(\)[\s\S]{0,420}classList\.remove\("show","opening-draft"\)/.test(gameSource), "the fifth opening pick closes the draft overlay instead of leaving disabled cards on screen");
 assert(/if\(state\.openingDraftsRemaining>0\)\{scheduleOpeningDraft\(\);return;\}/.test(gameSource), "intermediate opening picks schedule a fresh draft frame without reusing disabled buttons");
 
 const baseDps = {
@@ -253,8 +264,8 @@ for(const id of ["cryo_missile_echo","laser_arc_echo","bullet_support_echo"])ass
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,
-  openingDrafts:7,
-  initialRandomCards:3,
+  openingDrafts:5,
+  initialRandomCards:5,
   offerCount:4,
   forbiddenInsight:[Balance.forbiddenInsightChance(1), Balance.forbiddenInsightChance(5)],
   bonusBountyIntervals:[Balance.bonusBountyInterval(1), Balance.bonusBountyInterval(3)],
