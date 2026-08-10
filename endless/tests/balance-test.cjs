@@ -47,6 +47,19 @@ assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/随机 \$\{rewa
 assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
+const strengthenedOneStarStats = {
+  damage: [.12,.24,.36,.48,.90],
+  rate: [.105,.21,.315,.42,.84],
+  crit: [.036,.072,.108,.144,.30],
+  critPower: [.18,.36,.54,.72,1.50]
+};
+for (const turretId of ["bullet","laser","missile","frost","arc"]) {
+  for (const [stat,values] of Object.entries(strengthenedOneStarStats)) {
+    const card = cards.find((item) => item.id === `${turretId}_base_${stat === "critPower" ? "crit_power" : stat}`);
+    assert(card, `${turretId} 具有一星 ${stat} 卡牌`);
+    assert.deepEqual(Array.from(card.passive.values), values, `${turretId} 一星 ${stat} 成长为原数值三倍`);
+  }
+}
 assert(/const ACTIVE_SKILL_DEFS = \{/.test(gameSource), "六座炮塔具有主动技能定义");
 for (const key of ["bullet","laser","missile","frost","arc","support"]) assert(new RegExp(`${key}:\\{card:\"${key}_active_skill\"`).test(gameSource), `${key} 主动技能存在`);
 assert(/generateStarOffers/.test(gameSource), "四选一使用星级概率系统");
@@ -250,6 +263,12 @@ assert(/healBarrierSegment\(payload,[^;]+bot\.segmentIndex,true\);gainShield\(bo
 assert(/function renderDraft\(\)\{state\.selectingCard=false;/.test(gameSource), "every newly rendered draft explicitly releases the previous selection lock");
 assert(/function finishOpeningDraft\(\)[\s\S]{0,420}classList\.remove\("show","opening-draft"\)/.test(gameSource), "the fifth opening pick closes the draft overlay instead of leaving disabled cards on screen");
 assert(/if\(state\.openingDraftsRemaining>0\)\{scheduleOpeningDraft\(\);return;\}/.test(gameSource), "intermediate opening picks schedule a fresh draft frame without reusing disabled buttons");
+assert(/const STATS_METER_RENDER_INTERVAL_MS = 600;/.test(gameSource), "DPS/HPS 列表限制为低频重建以避免周期性布局抖动");
+assert(/renderTime-meterRowsLastRender>=STATS_METER_RENDER_INTERVAL_MS/.test(gameSource), "统计摘要保持连续更新而来源列表按性能预算刷新");
+assert(/function scheduleAutoSave\(\)[\s\S]{0,260}requestIdleCallback/.test(gameSource), "自动存档在浏览器空闲阶段提交");
+assert(/state\.saveAccumulator>=10\)\{state\.saveAccumulator=0;scheduleAutoSave\(\);\}/.test(gameSource), "战斗循环不再同步执行完整自动存档");
+assert(/function drawRunnerEnemy\([\s\S]{0,700}RUNNER_TRAIL_LAYERS/.test(gameSource), "高速彗星使用固定层数尾迹而非逐单位渐变分配");
+assert(/if\(id==="runner"\)\{drawRunnerEnemy\(radius,color\);return;\}/.test(gameSource), "高速单位走低分配专用绘制路径");
 
 const baseDps = {
   bullet:7 / 2.4,
