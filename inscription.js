@@ -28,15 +28,6 @@
       focusable:"false"
     });
     const defs=svgElement("defs");
-    const textureId=`glyph-stone-${glyphIndex}`;
-    const texture=svgElement("filter",{id:textureId,x:"-16%",y:"-16%",width:"132%",height:"132%"});
-    texture.append(
-      svgElement("feTurbulence",{type:"fractalNoise",baseFrequency:".034",numOctaves:"3",seed:String(31+glyphIndex),result:"grain"}),
-      svgElement("feColorMatrix",{in:"grain",type:"matrix",values:".42 0 0 0 .08  0 .42 0 0 .08  0 0 .42 0 .08  0 0 0 .55 0",result:"stoneGrain"}),
-      svgElement("feComposite",{in:"stoneGrain",in2:"SourceGraphic",operator:"in",result:"cutGrain"}),
-      svgElement("feBlend",{in:"SourceGraphic",in2:"cutGrain",mode:"multiply"})
-    );
-    defs.append(texture);
     svg.append(defs);
 
     const drawing=svgElement("g",{transform:"translate(0 900) scale(1 -1)"});
@@ -58,11 +49,7 @@
       defs.append(mask);
 
       const carvedStroke=svgElement("g",{mask:`url(#${maskId})`});
-      carvedStroke.append(
-        svgElement("path",{class:"stroke-depth",d:stroke,transform:"translate(-8 9)"}),
-        svgElement("path",{class:"stroke-carved",d:stroke,filter:`url(#${textureId})`}),
-        svgElement("path",{class:"stroke-rim",d:stroke,transform:"translate(5 -5)"})
-      );
+      carvedStroke.append(svgElement("path",{class:"stroke-ink",d:stroke}));
       drawing.append(carvedStroke);
       strokeEntries.push({reveal,median:reveal});
     });
@@ -114,7 +101,7 @@
   const run=async()=>{
     try{
       const data=await Promise.all(glyphNodes.map(async(node)=>{
-        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-cliff-inscription`);
+        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-stroke-writing`);
         if(!response.ok)throw new Error(`Unable to load stroke data for ${node.dataset.char}`);
         return response.json();
       }));
@@ -136,7 +123,7 @@
       await sleep(360);
       finishIntro();
     }catch(error){
-      console.warn("Stone inscription fallback:",error);
+      console.warn("Calligraphy intro fallback:",error);
       root.classList.add("inscription-fallback");
       await sleep(1200);
       finishIntro();
