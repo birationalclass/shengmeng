@@ -115,7 +115,7 @@
   const run=async()=>{
     try{
       const data=await Promise.all(glyphNodes.map(async(node)=>{
-        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-expressive-running-script`);
+        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-uniform-running-script`);
         if(!response.ok)throw new Error(`Unable to load stroke data for ${node.dataset.char}`);
         return response.json();
       }));
