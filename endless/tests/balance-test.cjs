@@ -284,6 +284,8 @@ assert(/node\.dataset\.updateAverage=updateTiming\.average\.toFixed\(3\)/.test(g
 assert(/node\.dataset\.drawAverage=drawTiming\.average\.toFixed\(3\)/.test(gameSource), "测试档案分别记录画布绘制耗时");
 assert(/node\.dataset\.crowdLod=String\(living\.length>CROWD_LOD_HARD_LIMIT\?2:living\.length>CROWD_LOD_SOFT_LIMIT\?1:0\)/.test(gameSource), "测试遥测会标记当前密集潮视觉等级");
 assert(/data-test-preset="stress">满卡无敌压力 · 第 5 波/.test(indexSource), "测试账号提供第 5 波满卡无敌压力入口");
+assert(/data-test-preset="stress40">满卡无敌压力 · 第 40 波/.test(indexSource), "测试账号提供第 40 波满卡无敌压力入口");
+assert(/stress40:\{wave:40,cards:null,invincible:true\}/.test(gameSource), "第 40 波压力档启用满卡与双方无敌规则");
 assert(/stress:\{wave:5,cards:null,invincible:true\}/.test(gameSource), "满卡压力预设从第 5 波启动并启用双方无敌");
 assert(/if\(state\.qaInvincible\)\{enemy\.hit=\.08;return 0;\}/.test(gameSource), "无敌压力模式保留命中特效但不削减敌军生命");
 assert(/function damageCore\([\s\S]{0,180}state\.qaInvincible/.test(gameSource), "无敌压力模式不削减五段屏障");
@@ -291,8 +293,11 @@ assert(/function damageMiniTurret\([^\n]+state\.qaInvincible/.test(gameSource), 
 assert(/state\.qaInvincible&&enemy\.y\+enemyRadius\(enemy\)>=barrierSurfaceY\(enemy\.x\)[\s\S]{0,240}state\.waveResolved\+=1/.test(gameSource), "敌军仅在实际触及屏障后从压力场景移除");
 assert(/const active=state\.started&&!state\.paused&&!state\.gameOver,shouldDraw=active\|\|time-lastDraw>=1000\/18/.test(gameSource), "战斗中逐 RAF 绘制，暂停时才降至低刷新率");
 assert(/node\.dataset\.drawGapAverage=drawGapTiming\.average\.toFixed\(2\)/.test(gameSource), "测试遥测记录真实绘制间隔以识别帧节奏问题");
-assert(/function basicCardStatPreview\([\s\S]{0,900}formatCompactNumber\(Math\.round\(value\)\)/.test(gameSource), "基础数值卡使用整数紧凑格式展示当前值与升级后数值");
-assert(/\$\{basicCardStatPreview\(card,current\)\}/.test(gameSource), "选卡卡面嵌入基础属性升级预览");
+assert(/function basicCardStatSentence\([\s\S]{0,900}formatCompactNumber\(Math\.round\(value\)\)/.test(gameSource), "基础数值卡使用整数紧凑格式展示当前值与升级后数值");
+assert(/renderCard=\(card\)=>[\s\S]{0,1600}<p>\$\{card\.desc[\s\S]{0,300}basicCardStatSentence\(card,rank\)/.test(gameSource), "卡牌总览在原说明末尾追加基础数值升级信息");
+assert(/renderDraft\(\)[\s\S]{0,1300}<p>\$\{draftCardDescription[\s\S]{0,180}basicCardStatSentence\(card,current\)/.test(gameSource), "所有选牌弹窗在原说明末尾追加基础数值升级信息");
+assert(/current>=card\.max[\s\S]{0,180}已满级/.test(gameSource), "满级基础数值卡不再显示无意义的相同升级数值");
+assert(/\$\{basicCardStatSentence\(card,current\)\}/.test(gameSource), "选卡说明末尾嵌入基础属性升级预览");
 
 const baseDps = {
   bullet:7 / 2.4,
