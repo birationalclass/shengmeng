@@ -89,6 +89,7 @@
 
 /* Wuxia-inspired vertical calligraphic hero */
 @font-face{font-family:"Ma Shan Zheng Title";src:url("assets/MaShanZheng-Title.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:"Zhi Mang Xing Title";src:url("assets/ZhiMangXing-Title.ttf") format("truetype");font-style:normal;font-weight:400;font-display:block}
 .hero-layout{padding-block:44px;grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);gap:50px}
 .hero-copy{min-height:610px;display:grid;grid-template-columns:minmax(320px,1fr) 196px;grid-template-rows:auto 1fr;grid-template-areas:"kicker kicker" "support quote";column-gap:32px;align-items:center}
 .hero-copy .kicker{grid-area:kicker;margin:0 0 18px}
@@ -96,18 +97,30 @@
 .hero-support .hero-intro{max-width:460px;margin:0 0 28px;font-size:15px;line-height:1.85}
 .hero-support .hero-fields{margin-top:30px}
 .hero-inscription{grid-area:quote;justify-self:end;align-self:center;width:196px;min-height:590px;position:relative;display:grid;place-items:center;isolation:isolate}
-.hero h1.hero-quote{justify-self:center;align-self:center;max-width:none;margin:0;position:relative;z-index:4;display:flex;flex-direction:row-reverse;align-items:flex-start;gap:.15em;color:var(--paper);font:400 clamp(66px,5.75vw,80px)/1 "Ma Shan Zheng Title","STKaiti","KaiTi",serif;letter-spacing:.05em}
+.hero h1.hero-quote{justify-self:center;align-self:center;max-width:none;margin:0;position:relative;z-index:4;display:flex;flex-direction:row-reverse;align-items:flex-start;gap:.14em;color:var(--paper);font:400 clamp(66px,5.75vw,80px)/1 "Zhi Mang Xing Title","STXingkai","STKaiti","KaiTi",serif;letter-spacing:.02em}
 .hero-quote .quote-line{display:block;position:relative;isolation:isolate;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap}
-.hero-quote .quote-opening{--ink-color:rgba(235,245,240,.96);margin-top:-.28em;color:rgba(235,245,240,.96);font-size:1em;letter-spacing:.05em;transform:translateY(-.12em)}
-.hero-quote .quote-answer{--ink-color:var(--mint);margin:0;color:var(--mint);font-size:1em;letter-spacing:.055em;transform:translateY(.03em)}
+.hero-quote .quote-opening{--ink-color:rgba(235,245,240,.96);margin-top:-.28em;color:rgba(235,245,240,.96);font-size:1em;letter-spacing:.02em;transform:translateY(-.12em)}
+.hero-quote .quote-answer{--ink-color:var(--mint);margin:0;color:var(--mint);font-size:1em;letter-spacing:.02em;transform:translateY(.03em)}
 .hero-quote .quote-answer::before{content:"";width:.14em;position:absolute;top:-.02em;bottom:.03em;left:.37em;z-index:-1;background:linear-gradient(180deg,transparent,rgba(122,150,137,.15) 12%,rgba(29,60,50,.16) 86%,transparent);filter:blur(5px);transform:skewY(-12deg)}
-/* Cursive brush silhouettes revealed by stable, real stroke-order medians */
+/* Expressive running-script silhouettes revealed by stable, real stroke-order medians */
 .hero-quote .carved-glyph{width:1em;height:1em;display:inline-block;position:relative;isolation:isolate;line-height:1;color:inherit}
 .hero-quote .glyph-ink{width:1em;height:1em;display:block;position:relative;color:var(--ink-color);text-shadow:0 .025em .08em rgba(0,0,0,.42)}
 html.inscription-intro:not(.inscription-fallback) .glyph-ink:not(.is-vectorized){opacity:0}
 .hero-quote .glyph-ink.is-vectorized{color:transparent;text-shadow:none}
-.stroke-glyph{width:1em;height:1em;display:block;overflow:visible;transform:skewX(-4deg) scale(1.04);transform-origin:center}
-.stroke-ink{font-family:"Ma Shan Zheng Title","STKaiti","KaiTi",serif;fill:var(--ink-color);stroke:var(--ink-color);stroke-width:24;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill;opacity:.98}
+.stroke-glyph{width:1em;height:1em;display:block;overflow:visible;transform:skewX(-5deg) scale(1.05);transform-origin:center}
+.stroke-ink{font-family:"Zhi Mang Xing Title","STXingkai","STKaiti","KaiTi",serif;fill:var(--ink-color);stroke:var(--ink-color);stroke-width:18;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill;opacity:.98}
+.stroke-final{opacity:0}
+.glyph-ink.is-carved .stroke-final{opacity:.98;transition:opacity .12s ease-out}
+.glyph-ink[data-char="天"] .stroke-glyph{transform:translateX(-.055em) rotate(-5deg) skewX(-10deg) scale(1.42,1.22)}
+.glyph-ink[data-char="之"] .stroke-glyph{transform:translateX(.075em) rotate(5deg) skewX(-5deg) scale(.7,.74)}
+.glyph-ink[data-char="道"] .stroke-glyph{transform:translateX(-.045em) rotate(-4deg) skewX(-10deg) scale(1.4,1.28)}
+.glyph-ink[data-char="损"] .stroke-glyph{transform:translateX(-.035em) rotate(-3deg) skewX(-7deg) scale(1.18,1.1)}
+.glyph-ink[data-char="有"] .stroke-glyph{transform:translateX(.04em) rotate(3deg) skewX(-4deg) scale(.9,.94)}
+.glyph-ink[data-char="余"] .stroke-glyph{transform:translateX(-.04em) rotate(-3deg) skewX(-8deg) scale(1.22,1.1)}
+.glyph-ink[data-char="而"] .stroke-glyph{transform:translateX(.055em) rotate(4deg) skewX(-4deg) scale(.78,.86)}
+.glyph-ink[data-char="补"] .stroke-glyph{transform:translateX(-.025em) rotate(-4deg) skewX(-8deg) scale(1.1,1.04)}
+.glyph-ink[data-char="不"] .stroke-glyph{transform:translateX(.045em) rotate(3deg) skewX(-4deg) scale(.82,.88)}
+.glyph-ink[data-char="足"] .stroke-glyph{transform:translateX(-.045em) rotate(-5deg) skewX(-10deg) scale(1.28,1.15)}
 .stroke-spark{fill:rgba(230,193,112,.24);stroke:rgba(246,236,202,.54);stroke-width:5;opacity:0;filter:drop-shadow(0 0 13px rgba(231,185,92,.78));transition:opacity .06s linear}
 .stroke-spark-core{fill:#fff7dc;opacity:0;filter:drop-shadow(0 0 9px rgba(255,247,220,.95));transition:opacity .04s linear}
 
@@ -124,7 +137,7 @@ html.inscription-intro.inscription-complete .signal-strip{animation:intro-inform
 @keyframes intro-information-in{0%{opacity:0;filter:blur(6px);transform:translateY(14px)}100%{opacity:1;filter:none;transform:none}}
 @media(prefers-reduced-motion:reduce){html.inscription-intro.inscription-complete .site-header,html.inscription-intro.inscription-complete .hero-copy .kicker,html.inscription-intro.inscription-complete .algebraic-background,html.inscription-intro.inscription-complete .hero-support,html.inscription-intro.inscription-complete .hero-math,html.inscription-intro.inscription-complete .signal-strip{opacity:1;filter:none;transform:none;animation:none}}
 @media(max-width:900px){.hero-layout{grid-template-columns:1fr;padding-block:56px;gap:24px}.hero-copy{min-height:600px;grid-template-columns:minmax(280px,1fr) 188px}.hero-inscription{width:188px;min-height:575px}.hero h1.hero-quote{font-size:74px}.hero-support{max-width:500px}}
-@media(max-width:560px){.hero-layout{padding-block:46px}.hero-copy{min-height:0;grid-template-columns:1fr;grid-template-rows:auto auto auto;grid-template-areas:"kicker" "quote" "support";row-gap:20px}.hero-copy .kicker{margin-bottom:2px}.hero-inscription{width:126px;min-height:380px;justify-self:center}.hero h1.hero-quote{justify-self:center;font-size:50px;gap:.17em;letter-spacing:.04em}.hero-quote .quote-opening,.hero-quote .quote-answer{letter-spacing:.04em}.hero-support{width:100%;max-width:none}.hero-support .hero-intro{margin-bottom:24px;font-size:14px}.hero-support .hero-fields{margin-top:26px}}
+@media(max-width:560px){.hero-layout{padding-block:46px}.hero-copy{min-height:0;grid-template-columns:1fr;grid-template-rows:auto auto auto;grid-template-areas:"kicker" "quote" "support";row-gap:20px}.hero-copy .kicker{margin-bottom:2px}.hero-inscription{width:138px;min-height:380px;justify-self:center}.hero h1.hero-quote{justify-self:center;font-size:50px;gap:.14em;letter-spacing:.015em}.hero-quote .quote-opening,.hero-quote .quote-answer{letter-spacing:.015em}.hero-support{width:100%;max-width:none}.hero-support .hero-intro{margin-bottom:24px;font-size:14px}.hero-support .hero-fields{margin-top:26px}}
 
 /* Readability pass for small interface and editorial text */
 .site-header nav a{font-size:11px}

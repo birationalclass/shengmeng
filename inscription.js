@@ -31,6 +31,20 @@
     svg.append(defs);
 
     const drawing=svgElement("g");
+    const inkAttributes={
+      x:"512",
+      y:"520",
+      "text-anchor":"middle",
+      "font-family":"Zhi Mang Xing Title",
+      "font-size":"820",
+      "font-weight":"400"
+    };
+    const makeInk=(className)=>{
+      const ink=svgElement("text",{class:className,...inkAttributes});
+      ink.textContent=target.dataset.char;
+      return ink;
+    };
+    drawing.append(makeInk("stroke-ink stroke-final"));
     const strokeEntries=[];
 
     data.strokes.forEach((_,index)=>{
@@ -49,17 +63,7 @@
       defs.append(mask);
 
       const carvedStroke=svgElement("g",{mask:`url(#${maskId})`});
-      const ink=svgElement("text",{
-        class:"stroke-ink",
-        x:"512",
-        y:"520",
-        "text-anchor":"middle",
-        "font-family":"Ma Shan Zheng Title",
-        "font-size":"820",
-        "font-weight":"400"
-      });
-      ink.textContent=target.dataset.char;
-      carvedStroke.append(ink);
+      carvedStroke.append(makeInk("stroke-ink stroke-fragment"));
       drawing.append(carvedStroke);
       strokeEntries.push({reveal,median:reveal});
     });
@@ -111,11 +115,11 @@
   const run=async()=>{
     try{
       const data=await Promise.all(glyphNodes.map(async(node)=>{
-        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-cursive-writing`);
+        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-expressive-running-script`);
         if(!response.ok)throw new Error(`Unable to load stroke data for ${node.dataset.char}`);
         return response.json();
       }));
-      await document.fonts.load('400 820px "Ma Shan Zheng Title"');
+      await document.fonts.load('400 820px "Zhi Mang Xing Title"');
       const glyphs=glyphNodes.map((node,index)=>buildGlyph(node,data[index],index));
       if(reducedMotion){
         glyphs.forEach((glyph)=>glyph.strokeEntries.forEach((entry)=>{entry.reveal.style.strokeDasharray="none";entry.reveal.style.strokeDashoffset="0";}));
