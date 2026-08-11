@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-    <link rel="stylesheet" href="styles.css?v=20260811-v97-frost-multishot">
+  <link rel="stylesheet" href="styles.css?v=20260811-v106-barrier-status">
   </head>
   <body>
     <div class="portrait-app">
@@ -133,11 +133,11 @@
           <header><div><span class="eyebrow">TACTICAL CARD DRAFT</span><h2 id="draftTitle">选择防线进化</h2></div><b>第 <span id="clearedWave">1</span> 波</b></header>
           <div class="draft-context"><span id="draftReason">牌池正在分析当前构筑</span><b id="offerCountText">四选一</b></div>
           <div id="cardChoices" class="card-choices"></div>
+          <footer><button id="rerollButton" class="secondary-button" type="button" aria-label="刷新，剩余 1 次"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 1-2.05-4.95L20 10"/></svg></i><b>1</b></button><span id="bountyRewardText"></span></footer>
           <section id="openingPickedShelf" class="opening-picked-shelf hidden" aria-label="本局初始构筑">
             <header><span>初始构筑</span><b id="openingPickedCount">随机 0 · 已选 0 / 5</b></header>
             <div id="openingPickedCards" class="opening-picked-cards"></div>
           </section>
-          <footer><button id="rerollButton" class="secondary-button" type="button" aria-label="刷新，剩余 1 次"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 1-2.05-4.95L20 10"/></svg></i><b>1</b></button><span id="bountyRewardText"></span></footer>
         </section>
       </div>
 
@@ -189,16 +189,33 @@
         </section>
       </div>
 
+      <div id="gpuOverlay" class="overlay hardware-overlay" role="dialog" aria-modal="true" aria-labelledby="gpuTitle">
+        <section class="modal hardware-modal">
+          <span class="eyebrow">GRAPHICS DIAGNOSTIC</span>
+          <div class="hardware-heading">
+            <i id="gpuStatusIcon" aria-hidden="true">GPU</i>
+            <div><h2 id="gpuTitle">图形加速检测</h2><p id="gpuSummary">正在检查当前浏览器的图形渲染能力……</p></div>
+          </div>
+          <div class="hardware-report">
+            <span><small>检测结果</small><b id="gpuStatusText">检测中</b></span>
+            <span><small>图形接口</small><b id="gpuApiText">—</b></span>
+            <span class="hardware-renderer"><small>当前渲染器</small><code id="gpuRendererText">正在读取……</code></span>
+          </div>
+          <p id="gpuGuide" class="hardware-guide">检测完成后将显示当前浏览器的设置建议。</p>
+          <button id="gpuContinueButton" class="primary-button" type="button">进入游戏</button>
+        </section>
+      </div>
+
       <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
         <section class="modal result-modal"><span class="result-sigil">∞</span><span class="eyebrow">THE LINE HAS FALLEN</span><h2 id="resultTitle">防线失守</h2><div class="result-grid"><span><small>波次</small><b id="resultWave">0</b></span><span><small>击杀</small><b id="resultKills">0</b></span><span><small>评分</small><b id="resultScore">0</b></span><span><small>峰值 DPS</small><b id="resultDps">0</b></span></div><button id="resultRestart" class="primary-button" type="button">重新部署</button></section>
       </div>
     </div>
 
     <audio id="backgroundMusic" preload="metadata"></audio>
-    <script src="black-hole-enemy.js?v=20260811-v97-frost-multishot"></script>
-    <script src="balance-core.js?v=20260811-v97-frost-multishot"></script>
-    <script src="enemy-visuals.js?v=20260811-v97-frost-multishot"></script>
+    <script src="black-hole-enemy.js?v=20260811-v105-opening-hand-tuning"></script>
+    <script src="balance-core.js?v=20260811-v105-opening-hand-tuning"></script>
+    <script src="enemy-visuals.js?v=20260811-v105-opening-hand-tuning"></script>
     <output id="qaPerf" hidden aria-hidden="true"></output>
-    <script src="game.js?v=20260811-v97-frost-multishot"></script>
+  <script src="game.js?v=20260811-v106-barrier-status"></script>
   </body>
 </html>
