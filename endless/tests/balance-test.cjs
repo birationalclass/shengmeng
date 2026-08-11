@@ -46,21 +46,32 @@ assert(/card\.star<=4\),initialCards=BalanceCore\.generateStarOffers/.test(gameS
 assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "开局随机奖励与逐次手选卡牌持续展示在初始构筑区");
 assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
-assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡改为五级弱成长");
-const strengthenedOneStarStats = {
-  damage: [.24,.48,.72,.96,1.80],
-  rate: [.105,.21,.315,.42,.84],
-  crit: [.036,.072,.108,.144,.30],
-  critPower: [.37,.74,1.11,1.48,3.05]
+assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡使用五级质变成长");
+const baseAttackProfiles = {
+  bullet:{values:[1,1.5,2,2.5,10],flatValues:[100,150,200,250,1000]},
+  laser:{values:[.4,1,3,8,20],flatValues:[200,500,1500,4000,10000]},
+  missile:{values:[.4,1,3,8,20],flatValues:[200,500,1500,4000,10000]},
+  frost:{values:[.5,.75,1,1.25,5],flatValues:[10,15,20,25,100]},
+  arc:{values:[.5,.75,1,1.25,5],flatValues:[50,75,100,125,500]}
+};
+const baseCritPowerProfiles = {
+  bullet:[1,1.5,2,2.5,10],laser:[.4,1,3,8,20],missile:[.4,1,3,8,20],frost:[.5,.75,1,1.25,5],arc:[.5,.75,1,1.25,5]
+};
+const baseCritProfiles = {
+  bullet:[.048,.072,.096,.12,.48],laser:[.0096,.024,.072,.192,.48],missile:[.0096,.024,.072,.192,.48],frost:[.048,.072,.096,.12,.48],arc:[.048,.072,.096,.12,.48]
 };
 for (const turretId of ["bullet","laser","missile","frost","arc"]) {
-  for (const [stat,values] of Object.entries(strengthenedOneStarStats)) {
-    const card = cards.find((item) => item.id === `${turretId}_base_${stat === "critPower" ? "crit_power" : stat}`);
-    assert(card, `${turretId} 具有一星 ${stat} 卡牌`);
-    assert.deepEqual(Array.from(card.passive.values), values, `${turretId} 一星 ${stat} 使用当前强化曲线`);
-    if (stat === "damage") assert.deepEqual(Array.from(card.passive.flatValues), [1,2,3,4,5], `${turretId} 一星攻击每级增加一星固定攻击`);
-  }
+  const damageCard=cards.find((item)=>item.id===`${turretId}_base_damage`);
+  const rateCard=cards.find((item)=>item.id===`${turretId}_base_rate`);
+  const critCard=cards.find((item)=>item.id===`${turretId}_base_crit`);
+  const critPowerCard=cards.find((item)=>item.id===`${turretId}_base_crit_power`);
+  assert.deepEqual(Array.from(damageCard.passive.values),baseAttackProfiles[turretId].values,`${turretId} 基础攻击百分比使用炮塔专属质变曲线`);
+  assert.deepEqual(Array.from(damageCard.passive.flatValues),baseAttackProfiles[turretId].flatValues,`${turretId} 固定攻击使用炮塔专属质变曲线`);
+  assert.deepEqual(Array.from(rateCard.passive.values),turretId==="bullet"?[.38,.57,.76,.95,3.8]:[.105,.21,.315,.42,.84],`${turretId} 一星攻速曲线正确`);
+  assert.deepEqual(Array.from(critCard.passive.values),baseCritProfiles[turretId],`${turretId} 一星暴击率沿用各自攻击力曲线并在满级达到 50% 总暴击率`);
+  assert.deepEqual(Array.from(critPowerCard.passive.values),baseCritPowerProfiles[turretId],`${turretId} 暴击伤害沿用基础攻击曲线`);
 }
+assert.equal((1+cards.find((card)=>card.id==="bullet_base_rate").passive.values[4])/2.4,2,"子弹攻速满级精确为每秒两发");
 assert(/const ACTIVE_SKILL_DEFS = \{/.test(gameSource), "六座炮塔具有主动技能定义");
 for (const key of ["bullet","laser","missile","frost","arc","support"]) assert(new RegExp(`${key}:\\{card:\"${key}_active_skill\"`).test(gameSource), `${key} 主动技能存在`);
 assert(/generateStarOffers/.test(gameSource), "四选一使用星级概率系统");
@@ -203,17 +214,18 @@ assert(/id:"support_base_duration"[\s\S]{0,260}stat:"botDuration"/.test(gameSour
 assert(/const BARRIER_SEGMENT_COUNT\s*=\s*5/.test(gameSource) && /function drawSegmentedBarrier\(\)/.test(gameSource), "全局屏障拆分为五段独立血量并绘制");
 assert(/lostBarrierSegmentCount\(\)\*\.2/.test(gameSource), "每失去一段，其余屏障受到额外 20% 伤害");
 assert(/敌军下缘穿越第/.test(gameSource) && /endGame\(\)/.test(gameSource), "敌军下缘穿越零血量屏障区会立即失败");
-assert(gameSource.includes("shield:segmentShield,maxShield:segmentShieldMax") && gameSource.includes("rawCapacity=segment.shield+segment.hp/vulnerability"), "五段屏障分别维护生命与相位护盾，并独立结算碰撞承伤");
+assert(gameSource.includes("shield:segmentShield,maxShield:segmentShieldMax") && /result=damageBarrierSegment\(segment,integrity/.test(gameSource), "五段屏障分别维护生命与相位护盾，并通过统一分段承伤管线独立结算碰撞");
 assert(/lowestBarrier[\s\S]{0,180}highestBarrier[\s\S]{0,180}farFriendly[\s\S]{0,180}balancedRandom/.test(gameSource), "支援炮塔提供四种独立治疗优先级");
 assert(/difficultyFactors\(\)\.hp/.test(gameSource) && /difficultyFactors\(\)\.attack/.test(gameSource), "层级难度同时调整生命、攻击与数量");
 assert(/function allCardsMaxed\(\)/.test(gameSource) && /collectionCompleteWave\+5/.test(gameSource), "卡牌全收集后再守五波触发通关");
 for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
 assert(/const effectiveWave=state\.openingDraft\?Math\.max\(12,state\.wave\):state\.wave/.test(gameSource), "开局七轮选卡允许出现满足前置的中高阶构筑卡");
-for(const id of ["ballistic_heal_block","arc_heal_block","bullet_armor_pierce","missile_armor_pierce"])assert(ids.has(id), `反治疗与穿甲低星卡 ${id} 已加入卡池`);
+for(const id of ["ballistic_heal_block","arc_heal_block","missile_armor_pierce"])assert(ids.has(id), `反治疗与穿甲低星卡 ${id} 已加入卡池`);
+assert(!ids.has("bullet_armor_pierce"),"旧钨芯单点穿甲卡已从卡池移除");
 assert(gameSource.includes('healer: { name:"翠辉修复舰"')&&gameSource.includes('supportRole:"single"')&&gameSource.includes('if(wave>=10)pool.push("nova","frigate","prism","healer")'), "第十波起逐步加入单体治疗舰");
 assert(gameSource.includes('chorus: { name:"紫晶圣咏舰"')&&gameSource.includes('supportRole:"group"')&&gameSource.includes('if(wave>=15)pool.push("chorus")'), "第十五波起加入群疗增伤增防圣咏舰");
 assert(/function updateEnemySupportUnit\(/.test(gameSource)&&/damageBuff/.test(gameSource)&&/defenseBuff/.test(gameSource), "敌方支援单位实际执行治疗、增伤和增防");
-assert(/armorPen:\[0,\.3,\.5,\.7\]/.test(gameSource)&&/armorPen:\[0,\.1,\.18,\.26\]/.test(gameSource), "子弹高单体穿甲与导弹低群体穿甲均进入伤害结算");
+assert(/armorPen:\[0,\.1,\.18,\.26\]/.test(gameSource), "导弹低比例群体穿甲进入伤害结算");
 assert(/function beginLaserChannel[\s\S]{0,350}turret\.laserUx=dx\/length/.test(gameSource), "激光开火瞬间保存固定射线方向");
 assert(!/function laserChannelTarget\(/.test(gameSource), "移除持续激光的重新捕获目标逻辑");
 assert(/function updateLaserChannel[\s\S]{0,700}const ux=turret\.laserUx,uy=turret\.laserUy[\s\S]{0,700}fireLaser\(turret,\{x:turret\.x\+ux\*100/.test(gameSource), "持续激光始终复用开火瞬间的单位向量");
@@ -224,7 +236,7 @@ assert(frostSkillBranch.includes("freezeNonBossEnemies(targets,3)")&&!frostSkill
 assert(arcSkillBranch.includes("enemy.vulnerable=Math.min")&&!arcSkillBranch.includes("damageEnemy("), "数字键 4 的磁暴脉冲只强化易伤，不会清屏");
 assert(/function enemyDebuffCount\(/.test(gameSource)&&/debuffs<6/.test(gameSource), "六相坍缩按六种不同异常触发");
 assert(/enemy\.hp\*\[0,\.006,\.01,\.015\]\[rank\]\*dt/.test(gameSource)&&/trueDamage:true/.test(gameSource), "六相坍缩每秒按当前生命百分比真实扣血");
-assert(/ratios=\[0,\.3,\.45,\.6,\.8\]/.test(gameSource), "相位护盾按屏障上限百分比成长而非固定二十点");
+assert(/ratios=\[0,\.3,\.45,\.6,\.8,2\]/.test(gameSource), "相位护盾按屏障上限百分比成长，并在五级质变为 200%");
 for(const id of ["shield_overdrive","barrier_arsenal","aegis_retaliation"])assert(ids.has(id), `护盾联动卡 ${id} 已加入卡池`);
 assert(/function payForbiddenInsightCost\(\)[\s\S]{0,520}spendBarrierShields\(cost\)/.test(gameSource), "禁忌洞见代价优先扣除各段黄色相位护盾");
 assert(/function defensiveFirepowerMultiplier\(\)/.test(gameSource), "护盾数值与屏障生命上限能够转化为全局伤害");
@@ -248,9 +260,9 @@ assert(afterBullet["激光"] > baseline["激光"], "未选择类别获得归一�
 const preferredAfterBullet = offerRates([{ id:"弹道-0", families:["弹道"] }], "弹道", 5000);
 assert.equal(preferredAfterBullet["弹道"], 1, "卡牌偏好仍然保底一张，不被疲劳覆盖");
 
-assert(/laser:\s*\{[^\n]+cooldown:12/.test(gameSource), "激光炮低基础攻速使用十二秒启动间隔");
+assert(/laser:\s*\{[^\n]+cooldown:10/.test(gameSource), "激光炮使用十秒基础启动间隔");
 assert(/const LASER_TICK_INTERVAL=\.1;/.test(gameSource), "持续激光以稳定的十分之一秒脉冲结算");
-assert(/function laserDuration\(\)\{return 3\+cardRank\("laser_duration"\)\*\.75;\}/.test(gameSource), "激光基础持续三秒并支持持续时间卡牌");
+assert(/function laserDuration\(\)\{return \[1\.2,1\.8,2\.4,3\]\[cardRank\("laser_duration"\)\];\}/.test(gameSource), "激光持续时间逐级成长且硬上限三秒");
 assert(/beginLaserChannel\(turret,target\)/.test(gameSource), "激光攻击会进入持续照射状态");
 assert(/function updateLaserChannel\(/.test(gameSource), "激光持续期间追踪目标并连续结算");
 for(const id of ["laser_duration","laser_cycle","laser_sustain"])assert(gameSource.includes(`id:"${id}"`), `激光持续机制卡牌 ${id} 已加入卡池`);
@@ -275,8 +287,14 @@ assert(/ctx\.shadowBlur=enemy\.type\.boss\?22:crowdLod===0\?12:crowdLod===1\?3:0
 assert(/if\(id==="runner"\)\{drawRunnerEnemy\(radius,color,crowdLod\);return;\}/.test(gameSource), "高速单位走支持密集度的低分配专用绘制路径");
 assert(/function selectTarget\(turret,range=turretRange\(turret\)\)\{[\s\S]{0,900}for\(const enemy of state\.enemies\)/.test(gameSource), "主炮目标选择使用单次扫描而非为每次射击分配并排序候选数组");
 assert(!/function drawTurrets\(\)[\s\S]{0,900}selectTarget\(turret\)/.test(gameSource), "炮塔绘制复用上次攻击方向，不在每个渲染帧重新排序敌军");
-assert(/passive:\{turretId:"bullet",stat:"damage",values:\[\.24,\.48,\.72,\.96,1\.80\],flatValues:\[1,2,3,4,5\]\}/.test(gameSource), "子弹基础攻击卡翻倍并逐级加入一星固定攻击");
-assert(/values:\[\.37,\.74,1\.11,1\.48,3\.05\]/.test(gameSource), "所有炮塔一星暴击伤害翻倍并加入逐级星级增幅");
+assert(/const BASE_STAT_PROGRESS=\{standard:\[\.10,\.15,\.20,\.25,1\],burst:\[\.02,\.05,\.15,\.40,1\]\}/.test(gameSource), "基础攻击区分标准与重炮两条满级质变曲线");
+assert(/bullet:\{flatMax:1000,multiplierMax:10,curve:"standard"\}/.test(gameSource), "子弹满级获得一千固定攻击与一千百分比提升");
+assert(/missile:\{flatMax:10000,multiplierMax:20,curve:"burst"\}/.test(gameSource)&&/laser:\{flatMax:10000,multiplierMax:20,curve:"burst"\}/.test(gameSource), "导弹与激光满级获得一万固定攻击和两千百分比提升");
+assert(/arc:\{flatMax:500,multiplierMax:5,curve:"standard"\}/.test(gameSource)&&/frost:\{flatMax:100,multiplierMax:5,curve:"standard"\}/.test(gameSource), "电弧与冰霜使用五百百分比的控制炮曲线");
+assert(/const BULLET_BASE_RATE_VALUES=scaledBaseValues\(3\.8,"standard"\)/.test(gameSource), "子弹攻速以百分之十、十五、二十、二十五到满级的曲线达到每秒两发");
+assert(/function baseRateCooldownFactor\(turretId,rank\)/.test(gameSource), "基础攻速面板与实战共享满级后摇规则");
+assert(/function turretDamageMultiplier\(turretId\)\{return \(1\+turretPassive\(turretId,"damage"\)\)\*terminalSynergy/.test(gameSource), "基础攻击不再重复叠加隐藏的满级增伤");
+assert(/fullScreen:rank>=5/.test(gameSource)&&/stat\.fullScreen\?"满屏"/.test(gameSource), "满级射程直接显示满屏而不是数值");
 assert(/boostedAttackStat=turretId!=="support"&&\(stat==="damage"\|\|stat==="critPower"\)/.test(gameSource), "二至六星攻击与暴伤卡统一使用双倍成长规则");
 assert(/flatValues=stat==="damage"&&turretId!=="support"\?Array\.from\(\{length:max\},\(_,index\)=>star\*\(index\+1\)\):null/.test(gameSource), "每级攻击卡额外加入等于星级的固定攻击");
 assert(/turret\.damage=TURRET_DEFS\[turretId\]\.damage\+turretFlatDamage\(turretId\)/.test(gameSource), "炮塔先汇总初始攻击与固定攻击，再交给攻击提升系数结算");
@@ -293,11 +311,12 @@ assert(/function damageMiniTurret\([^\n]+state\.qaInvincible/.test(gameSource), 
 assert(/state\.qaInvincible&&enemy\.y\+enemyRadius\(enemy\)>=barrierSurfaceY\(enemy\.x\)[\s\S]{0,240}state\.waveResolved\+=1/.test(gameSource), "敌军仅在实际触及屏障后从压力场景移除");
 assert(/const active=state\.started&&!state\.paused&&!state\.gameOver,shouldDraw=active\|\|time-lastDraw>=1000\/18/.test(gameSource), "战斗中逐 RAF 绘制，暂停时才降至低刷新率");
 assert(/node\.dataset\.drawGapAverage=drawGapTiming\.average\.toFixed\(2\)/.test(gameSource), "测试遥测记录真实绘制间隔以识别帧节奏问题");
-assert(/function basicCardStatSentence\([\s\S]{0,900}formatCompactNumber\(Math\.round\(value\)\)/.test(gameSource), "基础数值卡使用整数紧凑格式展示当前值与升级后数值");
-assert(/renderCard=\(card\)=>[\s\S]{0,1600}<p>\$\{card\.desc[\s\S]{0,300}basicCardStatSentence\(card,rank\)/.test(gameSource), "卡牌总览在原说明末尾追加基础数值升级信息");
-assert(/renderDraft\(\)[\s\S]{0,1300}<p>\$\{draftCardDescription[\s\S]{0,180}basicCardStatSentence\(card,current\)/.test(gameSource), "所有选牌弹窗在原说明末尾追加基础数值升级信息");
+assert(/function basicCardStatSentence\([\s\S]{0,900}formatCompactNumber\(Math\.round\(stat\.value\)\)/.test(gameSource), "基础数值卡使用整数紧凑格式展示当前值与升级后数值");
+assert(/renderCard=\(card\)=>[\s\S]{0,1200}description=basicCardStatSentence\(card,rank\)\|\|card\.desc/.test(gameSource), "卡牌总览的基础数值卡只显示精简升级数值");
+assert(/renderDraft\(\)[\s\S]{0,700}description=basicCardStatSentence\(card,current\)\|\|draftCardDescription/.test(gameSource), "所有选牌弹窗的基础数值卡只显示精简升级数值");
+assert(/function basicCardTurretId\(card\)[\s\S]{0,220}RANGE_CARD_BY_TURRET/.test(gameSource), "六类炮塔攻击或治疗范围卡同样纳入基础数值精简说明");
 assert(/current>=card\.max[\s\S]{0,180}已满级/.test(gameSource), "满级基础数值卡不再显示无意义的相同升级数值");
-assert(/\$\{basicCardStatSentence\(card,current\)\}/.test(gameSource), "选卡说明末尾嵌入基础属性升级预览");
+assert(!/\$\{basicCardStatSentence\(card,current\)\}/.test(gameSource), "基础属性预览直接替代冗长说明而不是额外增加一行");
 
 const baseDps = {
   bullet:7 / 2.4,
@@ -316,6 +335,17 @@ assert(boostedStars[4]>baseStars[4]&&boostedStars[5]>baseStars[5],"特殊星图�
 assert.deepEqual(Balance.earlyWaveProfile(1),{countScale:.62,hpScale:.54,attackScale:.42},"第一波按低基础炮塔强度下调");
 assert.equal(Balance.earlyWaveProfile(6).hpScale,1,"第六波进入标准成长曲线");
 for(const id of ["cryo_missile_echo","laser_arc_echo","bullet_support_echo"])assert(gameSource.includes(`id:"${id}"`),`六星主动联动 ${id} 已加入`);
+const frostMultishot=cards.find((card)=>card.id==="frost_field"),overhealFortification=cards.find((card)=>card.id==="support_overheal_fortification");
+assert.equal(frostMultishot.star,3,"多重减速归入三星冰霜构筑");
+assert.deepEqual([0,1,2,3,4].map((rank)=>frostMultishot.desc(rank)),["每次发射 1 枚冰弹，并有 50% 概率额外发射第 2 枚。","每次稳定发射 2 枚冰弹。","每次稳定发射 3 枚冰弹，并有 50% 概率追加第 4 枚。","每次稳定发射 4 枚冰弹。","质变：每次稳定发射 5 枚冰弹。"],"多重减速按概率曲线成长并在五级稳定五发");
+assert(/function rollFrostShotCount/.test(gameSource)&&/targets=\[target,\.\.\.alternatives\][\s\S]{0,180}while\(targets\.length<shotCount\)targets\.push\(target\)/.test(gameSource),"冰弹优先分配给不同目标，不足时才重复锁定");
+assert(!/const station=cardRank\("frost_field"\)/.test(gameSource),"多重减速不再沿用寒冰基站的范围场逻辑");
+assert(overhealFortification?.star===1&&overhealFortification.max===5,"溢疗筑垒是一星五级支援卡");
+assert(/function fortifySegmentFromOverheal/.test(gameSource)&&/segment\.overhealBonus/.test(gameSource)&&/strictPreferred&&preferred/.test(gameSource),"机器人过量治疗只强化其附着分段并保留永久上限成长");
+assert(/ratios=\[0,\.3,\.45,\.6,\.8,2\]/.test(gameSource),"相位护盾五级质变上限为屏障生命的 200%");
+assert(/thresholds=\[0,7,7,6,6,5\],gains=\[0,1,2,3,4,10\]/.test(gameSource),"连杀锻炉使用一星质变成长曲线");
+assert(/function bountyMasteryTier/.test(gameSource)&&/bountyMasteryTier\(\)\*\.8/.test(gameSource)&&/bountyMasteryTier\(\)>=6/.test(gameSource),"悬赏统御协议按已拥有卡牌等级总数成长");
+assert(/turretId==="support"[\s\S]{0,220}label:"单次治疗"/.test(gameSource),"基础治疗量在图鉴与选牌中显示单次治疗数值变化");
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,
