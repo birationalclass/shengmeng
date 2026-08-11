@@ -128,7 +128,7 @@ assert(/projectile\.frostCarrier=true/.test(gameSource), "低温弹药把命中�
 assert(/spreadLimit=\[0,2,4,6\]/.test(gameSource)&&/decay=\[0,\.68,\.78,\.88\]/.test(gameSource), "电离寒潮按数量和逐跳衰减传染减速");
 assert(/chilledPierces\+=1/.test(gameSource)&&/frost_laser_resonance/.test(gameSource), "激光穿透减速目标会逐段增伤");
 assert(/coldDuration=Math\.min\(1,slowedEnemies/.test(gameSource), "减速目标数量最多使维修机器人持续时间翻倍");
-assert(/if\(enemy\.frostFlower\)grantRandomCards\("霜之花绽放",1,\{fixedStar:star,specialOnly:true,noFallback:true\}\)/.test(gameSource), "霜之花击杀奖励同星特殊卡牌");
+assert(/if\(enemy\.frostFlower\)grantRandomCards\("霜之花绽放",1,\{fixedStar:star,specialOnly:true,noFallback:true,bountyOverflow:true\}\)/.test(gameSource), "霜之花优先奖励同星特殊卡牌，本星图鉴全亮后启用越级补偿");
 
 assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "守关首领从黑洞序列选择");
 assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
@@ -382,6 +382,25 @@ assert(gameSource.includes("VULNERABILITY_PROPAGATION_INTERVAL")&&gameSource.inc
 assert(gameSource.includes('!state.particles.some((particle)=>particle.type==="barrierSweep"&&particle.life>0)'),"barrier full-repair feedback is a single arc sweep instead of stacked center rings");
 assert(gameSource.includes("QA_BLACK_HOLE_UNIT_BUDGET-(enemy.qaSummonedUnits||0)")&&gameSource.includes("QA_BLACK_HOLE_ASTEROID_BUDGET-(enemy.qaAsteroidsLaunched||0)"),"invincible black-hole stress tests have cumulative summon budgets");
 assert(gameSource.includes("node.dataset.maxTimedVulnerabilityStacks")&&gameSource.includes("node.dataset.propagatedTimedVulnerabilityStacks"),"QA telemetry exposes bounded one-hop vulnerability stack counts");
+assert(/id:"event-horizon"[\s\S]{0,180}hpScale:95[\s\S]{0,120}star:5/.test(gameSource),"第 20 波五星视界悬赏具有四星悬赏约十倍生命");
+assert(/id:"singularity"[\s\S]{0,180}hpScale:950[\s\S]{0,120}star:6/.test(gameSource),"第 25 波六星奇点悬赏具有四星悬赏约百倍生命");
+assert(/function bountyTiersForWave[\s\S]{0,220}wave>=20\?4:2[\s\S]{0,120}wave>=25\?5:3/.test(gameSource),"固定悬赏队列从第 20 波加入五星、从第 25 波加入六星目标");
+assert(/grantRandomCards\(`\$\{"★"\.repeat\(star\)\}[\s\S]{0,160}fixedStar:star,noFallback:true/.test(gameSource),"奖励敌人死亡后严格发放同星级卡牌且不向低星回退");
+assert(!gameSource.includes("highStarPityTarget")&&/function normalStarProbabilities\(\)\{return BalanceCore\.starProbabilities\(starBoostRanks\(\)\);\}/.test(gameSource),"普通选牌不采用强制高星保底");
+assert(/function renderMeters\(kind,target,record\)/.test(gameSource)&&gameSource.includes('class="meter-total"')&&gameSource.includes('class="meter-direct"'),"DPS 面板以淡色总伤害和实色直接伤害叠层显示");
+assert(gameSource.includes("effectiveHealing")&&gameSource.includes("overhealing")&&gameSource.includes("shieldAbsorb"),"治疗统计区分有效治疗、过量治疗与护盾吸收");
+assert(/function shouldAutoReleaseSkill/.test(gameSource)&&/addEventListener\("contextmenu",handleCanvasContextMenu\)/.test(gameSource)&&/document\.addEventListener\("contextmenu"/.test(gameSource),"右键炮塔可切换智能主技能且网页默认右键菜单被禁用");
+assert(indexSource.includes('id="downloadLogsButton"')&&gameSource.includes('$("#downloadLogsButton").addEventListener("click",downloadCombatLogs)'),"左侧控制台提供战斗日志下载按钮");
+assert(/function makeWaveStats[\s\S]{0,900}bosses:Array\.isArray\(seed\.bosses\)/.test(gameSource),"逐波统计会持久化并克隆 Boss 生命周期记录");
+assert(/function beginBossLog/.test(gameSource)&&/beginBossLog\(state\.enemies\[state\.enemies\.length-1\]\)/.test(gameSource)&&/finishBossLog\(enemy,"defeated"\)/.test(gameSource),"Boss 出场和死亡均写入当前波次日志");
+assert(/function buildCombatLogExport/.test(gameSource)&&gameSource.includes("directBySource")&&gameSource.includes("indirectBySource")&&gameSource.includes("effectiveBySource")&&gameSource.includes("overhealingBySource")&&gameSource.includes("shieldAbsorbBySource"),"下载日志包含逐波直接/间接伤害及三类治疗数据");
+assert(/schemaVersion:1,release:RELEASE_ID,game:"无尽"/.test(gameSource)&&!/[,{]password:/.test(gameSource),"日志具备版本标识且不导出账号口令字段");
+
+assert(/function cardProgressionUnlocked[\s\S]{0,180}card\.star===5&&effectiveWave>=10[\s\S]{0,80}card\.star===6&&effectiveWave>=15/.test(gameSource),"wave 10 force-unlocks all five-star cards and wave 15 force-unlocks all six-star cards");
+assert(/state\.openingDraft\?generateWeightedCards\(DRAFT_OFFER_COUNT,\{ignorePreference:true,history:\[\],maxStar:4/.test(gameSource),"opening draft remains capped at four stars");
+assert(/function allCardsDiscoveredAtStar[\s\S]{0,180}every\(\(card\)=>cardRank\(card\.id\)>0\)/.test(gameSource),"reward overflow starts only after every card type at that star has been discovered");
+assert(/function generateBountyRewardCards[\s\S]{0,360}Math\.min\(6,target\+1\)[\s\S]{0,180}card\.star<=ceiling/.test(gameSource),"completed reward tiers may roll any available card no higher than the next star");
+assert(/fixedStar:star,noFallback:true,bountyOverflow:true/.test(gameSource),"bounty kills use completed-tier overflow without ordinary downward fallback");
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,
