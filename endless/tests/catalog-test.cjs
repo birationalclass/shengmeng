@@ -59,7 +59,7 @@ assert(forbiddenTome?.max===5&&forbiddenTome.desc(4).includes("★4 卡牌 4 选
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="frost_trace_spread_2").passive.values),[.5,.75,1],"霜痕扩散从 50% 起步并成长至行动速度翻倍");
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="laser_base_rate").passive.values),[.1667,.3333,.5,.6667,1],"激光基础攻速由初始 6/分成长为 7/8/9/10/12 每分");
 assert(source.includes('分别修复每段最大生命的 20%')&&source.includes('repairBySegment=state.barrierSegments.map'),"净界维修蜂群采用五段分别按最大生命百分比修复");
-assert(source.includes('function drawBarrierSegmentStatuses')&&source.includes('glyph:"易"')&&source.includes('glyph:"禁"'),"五段屏障分别绘制左侧增益与右侧减益层数徽标");
+assert(source.includes('function drawBarrierSegmentStatuses')&&source.includes('kind:"brokenHeart"')&&source.includes('kind:"minus"')&&source.includes('function barrierTangentAngle'),"五段屏障沿弧线分别绘制左侧增益与右侧减益层数图标");
 for(const id of ["turret_laser","turret_missile","turret_frost","turret_arc","turret_support"]){
   assert(!ids.has(id),`${id} 部署牌已从卡池移除`);
 }

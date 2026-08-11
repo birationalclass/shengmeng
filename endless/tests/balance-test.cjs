@@ -99,7 +99,7 @@ assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间
 assert(/updateRealtimeEffects\(time\);update\(dt\*\(state\.gameSpeed===2\?2:1\)\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新，战斗时间支持倍速");
 assert(/function hasActiveBlackHoleDissolve\(\)/.test(gameSource), "波次结算能够检测尚未完成的黑洞消散动画");
 assert(/state\.waveEndTimer<=0&&!hasActiveBlackHoleDissolve\(\)/.test(gameSource), "黑洞完全消失后才弹出波次结算选卡");
-assert(/addCard\(id,wasOpeningDraft\?\{deferUI:true,skipDerived:true,manualPick:true\}:\{deferUI:true,deferDerived:true,manualPick:true\}\);if\(!wasOpeningDraft\)rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面，连续初始选卡仅在结束时提交派生状态");
+assert(/addCard\(id,wasOpeningDraft\?\{deferUI:true,skipDerived:true,manualPick:true\}:\{deferUI:true,deferDerived:true,manualPick:true\}\);if\(state\.gameOver\)\{state\.selectingCard=false;return;\}if\(!wasOpeningDraft\)rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面，连续初始选卡仅在结束时提交派生状态");
 assert(/function showDraft\(opening=false,bargain=false,reward=false\)\{if\(!state\.started\|\|state\.gameOver\|\|state\.drafting\)return;/.test(gameSource), "未开始战局时任何残留回调都不能越过部署页弹出选卡");
 assert(/function showStartScreen\(\)[\s\S]{0,350}cancelOpeningDraftFrame\(\)/.test(gameSource), "进入部署页会取消旧战局尚未执行的开局选卡回调");
 assert(/libraryOverlay[\s\S]{0,100}classList\.contains\("show"\)/.test(gameSource), "卡牌图鉴关闭时不重建全部卡牌节点");
@@ -119,7 +119,7 @@ assert(/spendBarrierHealth\(cost,1\)/.test(gameSource)&&/profile\.costRate/.test
 assert(!/showDraft\(false,true\)/.test(gameSource), "旧禁忌洞见额外选卡入口已停用");
 assert(/fixedStar:star/.test(gameSource), "限时猎物按自身星级直接随机发放同星卡牌");
 assert(!/rewardDraftsQueued\+=rewards/.test(gameSource), "新奖励敌人不再排队弹出选卡面板");
-assert(/function rollProbabilityRefraction\(/.test(gameSource), "概率折射在选取同星卡后判定附赠卡");
+assert(/function rollProbabilityRefraction\(/.test(gameSource)&&/function queueProbabilityRefraction\(/.test(gameSource), "概率折射在每次正常获得同星卡后统一判定附赠卡");
 assert(!cards.some((card)=>card.id.startsWith("fate_reroll_"))&&!/FATE_REROLL_BONUSES|fateRerollBonus/.test(gameSource), "命运重排卡牌及刷新加成逻辑已彻底移除");
 assert(/function starlightRoadProfiles\(/.test(gameSource)&&/function rollStarlightRoadBounties\(enemy\)/.test(gameSource), "一至四星星光大道分别累计普通敌人击杀并独立生成奖励敌人");
 assert(/STARLIGHT_ROAD_INTERVALS=Array\.from\(\{length:4\},\(\)=>\[30,25,20,15,10\]\)/.test(gameSource), "星光大道五级所需击杀数由 30 递减至 10");
@@ -190,7 +190,7 @@ assert(/waveBaseHp\(\)\*earlySmallEnemyHpMultiplier\(type\)\*DISTANCE_BALANCE_HP
 assert(/function normalEnemySpeedMultiplier\(type\)\{return !type\.boss&&!type\.bounty&&!type\.summoned\?\.8:1;\}/.test(gameSource), "所有普通小怪移动速度统一降低百分之二十");
 assert(/type\.speed\*normalEnemySpeedMultiplier\(type\)\*\(type\.boss\?\.6:1\)/.test(gameSource), "普通小怪速度倍率接入实际生成速度且不改变首领与奖励单位");
 assert(/function turretFormationY\(x\)\{return Math\.round\(1138\+\(barrierSurfaceY\(x\)-barrierSurfaceY\(W\/2\)\)\*\.36\);\}/.test(gameSource), "六座炮塔按屏障圆弧曲率排布并让两侧炮塔适当下沉");
-assert(/\.\.\.def,y:turretFormationY\(def\.x\),id,active:/.test(gameSource), "所有炮塔实例统一使用圆弧阵列纵坐标");
+assert(/function turretFormationOffset\(id\)\{return id==="laser"\|\|id==="support"\?12:0;\}/.test(gameSource)&&/\.\.\.def,y:turretFormationY\(def\.x\)\+turretFormationOffset\(id\),id,active:/.test(gameSource), "所有炮塔使用圆弧阵列纵坐标，激光与支援额外下移十二像素");
 assert(/const BOUNTY_WANDER_TOP = H \* \.25;/.test(gameSource)&&/const BOUNTY_WANDER_BOTTOM = H \* \.75;/.test(gameSource), "奖励敌人只在战区纵向四分之一至四分之三区域游荡");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
@@ -228,7 +228,7 @@ assert(/敌军下缘穿越第/.test(gameSource) && /endGame\(\)/.test(gameSource
 assert(gameSource.includes("shield:segmentShield,maxShield:segmentShieldMax") && /result=damageBarrierSegment\(segment,integrity/.test(gameSource), "五段屏障分别维护生命与相位护盾，并通过统一分段承伤管线独立结算碰撞");
 assert(/lowestBarrier[\s\S]{0,180}highestBarrier[\s\S]{0,180}farFriendly[\s\S]{0,180}balancedRandom/.test(gameSource), "支援炮塔提供四种独立治疗优先级");
 assert(/difficultyFactors\(\)\.hp/.test(gameSource) && /difficultyFactors\(\)\.attack/.test(gameSource), "层级难度同时调整生命、攻击与数量");
-assert(/function allCardsMaxed\(\)/.test(gameSource) && /collectionCompleteWave\+5/.test(gameSource), "卡牌全收集后再守五波触发通关");
+assert(/function allCardsMaxed\(\)/.test(gameSource) && /function completeCardCollection\(\)[\s\S]{0,180}endGame\(true\)/.test(gameSource) && !/collectionCompleteWave\+5/.test(gameSource), "卡牌全收集后立即通关并进入难度解锁结算");
 for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
 assert(/const effectiveWave=state\.openingDraft\?Math\.max\(12,state\.wave\):state\.wave/.test(gameSource), "开局七轮选卡允许出现满足前置的中高阶构筑卡");
 for(const id of ["ballistic_heal_block","arc_heal_block","missile_armor_pierce"])assert(ids.has(id), `反治疗与穿甲低星卡 ${id} 已加入卡池`);
@@ -355,22 +355,33 @@ assert(/function rollFrostShotCount/.test(gameSource)&&/targets=\[target,\.\.\.a
 assert(!/const station=cardRank\("frost_field"\)/.test(gameSource),"多重减速不再沿用寒冰基站的范围场逻辑");
 assert(overhealFortification?.star===1&&overhealFortification.max===5,"溢疗筑垒是一星五级支援卡");
 assert(/function fortifySegmentFromOverheal/.test(gameSource)&&/segment\.overhealBonus/.test(gameSource)&&/strictPreferred&&preferred/.test(gameSource),"机器人过量治疗只强化其附着分段并保留永久上限成长");
-assert(/SUPPORT_OVERHEAL_CHANCES = \[\.10,\.20,\.25,\.30,\.35,\.50\]/.test(gameSource)&&/SUPPORT_OVERHEAL_RATES = \[\.01,\.012,\.014,\.016,\.018,\.02\]/.test(gameSource)&&/Math\.ceil\(overflow\*SUPPORT_OVERHEAL_RATES\[rank\]\)/.test(gameSource),"溢疗筑垒以 10% 基础概率成长至 50%，转化率由 1% 成长至 2%");
-assert(/SUPPORT_OVERHEAL_PICK_BONUSES = \[0,100,200,300,400,500\]/.test(gameSource)&&/options\.manualPick[\s\S]{0,120}SUPPORT_OVERHEAL_PICK_BONUSES\[rank\]/.test(gameSource),"手动选取溢疗筑垒按等级立即提供 100 至 500 点五段总生命上限");
+assert(/SUPPORT_OVERHEAL_CHANCES = \[0,\.30,\.45,\.60,\.75,1\]/.test(gameSource)&&/SUPPORT_OVERHEAL_RATES = \[\.01,\.012,\.014,\.016,\.018,\.02\]/.test(gameSource)&&/Math\.ceil\(overflow\*SUPPORT_OVERHEAL_RATES\[rank\]\)/.test(gameSource),"溢疗筑垒以 30% 基础概率成长至必定触发，转化率由 1% 成长至 2%");
+assert(/SUPPORT_OVERHEAL_PICK_BONUSES = \[0,100,200,300,400,500\]/.test(gameSource)&&/SUPPORT_OVERHEAL_PICK_BONUSES\[rank\]\*BARRIER_SEGMENT_COUNT/.test(gameSource),"手动选取溢疗筑垒按等级让每个小屏障立即获得 100 至 500 点生命上限");
 assert(/id:"support_overheal_shield"[\s\S]{0,260}SUPPORT_OVERHEAL_SHIELD_RATES/.test(gameSource)&&/function convertOverhealToShield/.test(gameSource),"二星溢疗护盾卡把附着段过量治疗转为可叠加护盾");
 assert(/segment\.overhealShieldBonus=\(segment\.overhealShieldBonus\|\|0\)\+gain/.test(gameSource)&&/segment\.maxShield=desiredTotal\*share\+overhealShieldBonus/.test(gameSource),"机器人溢疗护盾永久记录在附着段，派生属性重算不会吞掉已转化护盾上限");
-assert(/SUPPORT_OPERATION_RATES = \[3,5,6,7,8,10\]/.test(gameSource)&&/SUPPORT_HEAL_FREQUENCIES = \[1,1\.2,1\.4,1\.6,1\.8,2\.5\]/.test(gameSource),"机器人发射批次与单机器人治疗频率独立成长");
+assert(/SUPPORT_OPERATION_RATES = \[6,7,8,9,10,12\]/.test(gameSource)&&/SUPPORT_RATE_CARD_VALUES = \[1\/6,1\/3,\.5,2\/3,1\]/.test(gameSource)&&/support: \{ name:"支援炮塔"[\s\S]{0,160}cooldown:10/.test(gameSource)&&/SUPPORT_HEAL_FREQUENCIES = \[1,1\.2,1\.4,1\.6,1\.8,2\.5\]/.test(gameSource),"机器人基础发射频率为每分钟 6 批，卡牌成长至 7/8/9/10/12 批，并与单机器人治疗频率独立计算");
 assert(/SUPPORT_HEAL_FIXED_VALUES = \[5,10,25,45,70,100\]/.test(gameSource)&&/SUPPORT_HEAL_MULTIPLIERS = \[1,1,1\.5,2,3,5\]/.test(gameSource)&&/SUPPORT_DURATION_VALUES = \[1,2,3,4,5,8\]/.test(gameSource),"基础治疗未选卡为 5、首级为 10，并按额外系数 1.0 至 5.0 与指定持续时间曲线成长");
 assert(gameSource.includes('function supportBaseHealing(rank=cardRank("support_base_heal"))')&&gameSource.includes('(SUPPORT_HEAL_FIXED_VALUES[level]+(state.supportHealGrowth||0))*SUPPORT_HEAL_MULTIPLIERS[level]')&&/healing=supportBaseHealing\(\)/.test(gameSource),"支援单次治疗统一使用固定值、额外系数与击杀成长公式");
 assert(/id:"support_kill_healing"[\s\S]{0,220}star:3,max:5/.test(gameSource)&&/SUPPORT_KILL_HEAL_GAINS = \[0,1,2,3,4,5\]/.test(gameSource)&&/growSupportHealingFromKill\(enemy\)/.test(gameSource),"三星生命回收协议按击杀永久提供 1 至 5 点基础治疗量");
 assert(/supportHealGrowth:state\.supportHealGrowth\|\|0/.test(gameSource)&&/supportHealGrowth:Math\.max\(0,Number\(run\.supportHealGrowth\)\|\|0\)/.test(gameSource),"击杀获得的基础治疗量成长随存档保存与恢复");
 assert(/REFRACTION_CHANCES=\[\.40,\.60,\.80,1,1\]/.test(gameSource)&&/count:rank>=5\?2:1/.test(gameSource),"所有星级概率折射统一从 40% 起步，四级必得 1 张、五级质变为 2 张");
-assert(/grantRandomCards\("概率折射",refractionReward\.count,\{fixedStar:refractionReward\.star\}\)/.test(gameSource),"概率折射按质变后的奖励张数发放对应星级卡牌");
+assert(/if\(rank>previous\)queueProbabilityRefraction\(card,options\)/.test(gameSource)&&/grantRandomCards\("概率折射",reward\.count,\{fixedStar:reward\.star,skipRefraction:true\}\)/.test(gameSource),"每张正常获得卡牌统一触发一次概率折射，折射奖励自身禁止递归");
+assert(/LIFESTEAL_RATES = \[\.01,\.015,\.02,\.03,\.05\]/.test(gameSource)&&/id:"lifesteal"[\s\S]{0,180}max:5/.test(gameSource)&&/function healDamagedBarrierSegmentsEvenly/.test(gameSource)&&/healDamagedBarrierSegmentsEvenly\(healing/.test(gameSource),"生命虹吸从 1% 成长至 5%，并把治疗均摊给所有已损血小屏障");
+assert(/function drawBarrierSegmentValue/.test(gameSource)&&/hpText=`\$\{formatCompactNumber\(Math\.ceil\(segment\.hp\)\)\}\/\$\{formatCompactNumber\(Math\.ceil\(segment\.maxHp\)\)\}\//.test(gameSource)&&/shieldText=formatCompactNumber\(Math\.ceil\(segment\.shield\|\|0\)\)/.test(gameSource),"每段屏障以生命/上限/黄色护盾单行显示且初始护盾为零");
 assert(/SUPPORT_CRIT_MULTIPLIERS = \[2,2\.5,3,4,5,10\]/.test(gameSource),"治疗暴击量从基础 200% 成长至质变 1000%");
 assert(/ratios=\[0,\.3,\.45,\.6,\.8,2\]/.test(gameSource),"相位护盾五级质变上限为屏障生命的 200%");
 assert(/thresholds=\[0,7,7,6,6,5\],gains=\[0,1,2,3,4,10\]/.test(gameSource),"连杀锻炉使用一星质变成长曲线");
 assert(/function bountyMasteryTier/.test(gameSource)&&/bountyMasteryTier\(\)\*\.8/.test(gameSource)&&/bountyMasteryTier\(\)>=6/.test(gameSource),"悬赏统御协议按已拥有卡牌等级总数成长");
 assert(gameSource.includes('if(stat==="baseHeal")return {label:"单次治疗",value:supportBaseHealing(rank),unit:""}'),"基础治疗量在图鉴与选牌中显示单次治疗数值变化");
+
+assert(gameSource.includes("const TIMED_VULNERABILITY_STACK_CAP = 24;")&&gameSource.includes("const QA_TIMED_VULNERABILITY_STACK_CAP = 8;"),"timed vulnerability stacks have bounded normal and QA caps");
+assert(gameSource.includes('origin:stack.origin==="propagated"?"propagated":"original"')&&/function applyTimedVulnerability\([^\n]+origin="original"\)/.test(gameSource),"timed vulnerability stacks persist original or propagated provenance");
+assert(gameSource.includes('if(origin==="propagated")return false;'),"propagated vulnerability cannot displace original stacks at the cap");
+assert(gameSource.includes("source.originalVulnerable||0")&&gameSource.includes('stack.origin!=="propagated"')&&gameSource.includes('stack.source,"propagated"'),"only original vulnerability layers can propagate once");
+assert(gameSource.includes("VULNERABILITY_PROPAGATION_INTERVAL")&&gameSource.includes("target.vulnerabilityPropagationAt=state.elapsed+VULNERABILITY_PROPAGATION_INTERVAL"),"vulnerability propagation is cadence limited");
+assert(gameSource.includes('!state.particles.some((particle)=>particle.type==="barrierSweep"&&particle.life>0)'),"barrier full-repair feedback is a single arc sweep instead of stacked center rings");
+assert(gameSource.includes("QA_BLACK_HOLE_UNIT_BUDGET-(enemy.qaSummonedUnits||0)")&&gameSource.includes("QA_BLACK_HOLE_ASTEROID_BUDGET-(enemy.qaAsteroidsLaunched||0)"),"invincible black-hole stress tests have cumulative summon budgets");
+assert(gameSource.includes("node.dataset.maxTimedVulnerabilityStacks")&&gameSource.includes("node.dataset.propagatedTimedVulnerabilityStacks"),"QA telemetry exposes bounded one-hop vulnerability stack counts");
 
 console.log(JSON.stringify({
   cardsAudited:cards.length,

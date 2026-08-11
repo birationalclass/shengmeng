@@ -122,8 +122,8 @@
     sheet.decoding = poster.decoding = "async";
     sheet.onload = () => { asset.sheetReady = true; };
     poster.onload = () => { asset.posterReady = true; };
-    sheet.src = new URL(`assets/black-hole-flipbook/black-hole-${paletteName}-clean.webp?v=20260811-v82-source-sync`, document.baseURI).href;
-    poster.src = new URL(`assets/black-hole-flipbook/poster-${paletteName}-clean.webp?v=20260811-v82-source-sync`, document.baseURI).href;
+    sheet.src = new URL(`assets/black-hole-flipbook/black-hole-${paletteName}-clean.webp?v=20260812-v112-ring-cleanup`, document.baseURI).href;
+    poster.src = new URL(`assets/black-hole-flipbook/poster-${paletteName}-clean.webp?v=20260812-v112-ring-cleanup`, document.baseURI).href;
     if (sheet.decode) sheet.decode().then(() => { asset.sheetReady = true; }).catch(() => {});
     if (poster.decode) poster.decode().then(() => { asset.posterReady = true; }).catch(() => {});
     assets.set(paletteName, asset);
