@@ -18,7 +18,7 @@
   };
   const failSafe=window.setTimeout(finishIntro,12000);
 
-  const medianPath=(points)=>points.map((point,index)=>`${index?"L":"M"}${point[0]} ${point[1]}`).join(" ");
+  const medianPath=(points)=>points.map((point,index)=>`${index?"L":"M"}${point[0]} ${900-point[1]}`).join(" ");
 
   const buildGlyph=(target,data,glyphIndex)=>{
     const svg=svgElement("svg",{
@@ -30,10 +30,10 @@
     const defs=svgElement("defs");
     svg.append(defs);
 
-    const drawing=svgElement("g",{transform:"translate(0 900) scale(1 -1)"});
+    const drawing=svgElement("g");
     const strokeEntries=[];
 
-    data.strokes.forEach((stroke,index)=>{
+    data.strokes.forEach((_,index)=>{
       const maskId=`glyph-mask-${glyphIndex}-${index}`;
       const mask=svgElement("mask",{id:maskId,maskUnits:"userSpaceOnUse",x:"-140",y:"-180",width:"1300",height:"1260"});
       const reveal=svgElement("path",{
@@ -41,7 +41,7 @@
         d:medianPath(data.medians[index]),
         fill:"none",
         stroke:"white",
-        "stroke-width":"190",
+        "stroke-width":"270",
         "stroke-linecap":"round",
         "stroke-linejoin":"round"
       });
@@ -49,7 +49,17 @@
       defs.append(mask);
 
       const carvedStroke=svgElement("g",{mask:`url(#${maskId})`});
-      carvedStroke.append(svgElement("path",{class:"stroke-ink",d:stroke}));
+      const ink=svgElement("text",{
+        class:"stroke-ink",
+        x:"512",
+        y:"520",
+        "text-anchor":"middle",
+        "font-family":"Ma Shan Zheng Title",
+        "font-size":"820",
+        "font-weight":"400"
+      });
+      ink.textContent=target.dataset.char;
+      carvedStroke.append(ink);
       drawing.append(carvedStroke);
       strokeEntries.push({reveal,median:reveal});
     });
@@ -71,7 +81,7 @@
 
   const animateStroke=async(entry,spark,sparkCore)=>{
     const length=entry.length;
-    const duration=Math.max(46,Math.min(108,length*.11));
+    const duration=Math.max(72,Math.min(142,length*.15));
     const drawing=entry.reveal.animate(
       [{strokeDashoffset:String(length)},{strokeDashoffset:"0"}],
       {duration,easing:"cubic-bezier(.32,.02,.22,1)",fill:"forwards"}
@@ -101,10 +111,11 @@
   const run=async()=>{
     try{
       const data=await Promise.all(glyphNodes.map(async(node)=>{
-        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-stroke-writing`);
+        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-cursive-writing`);
         if(!response.ok)throw new Error(`Unable to load stroke data for ${node.dataset.char}`);
         return response.json();
       }));
+      await document.fonts.load('400 820px "Ma Shan Zheng Title"');
       const glyphs=glyphNodes.map((node,index)=>buildGlyph(node,data[index],index));
       if(reducedMotion){
         glyphs.forEach((glyph)=>glyph.strokeEntries.forEach((entry)=>{entry.reveal.style.strokeDasharray="none";entry.reveal.style.strokeDashoffset="0";}));
