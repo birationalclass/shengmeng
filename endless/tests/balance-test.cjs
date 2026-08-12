@@ -43,7 +43,10 @@ assert(/const DRAFT_OFFER_COUNT = 4;/.test(gameSource), "所有选卡均为四�
 assert(/const NEW_RUN_OPENING_DRAFTS = 5;/.test(gameSource), "新局提供五轮连续开局选卡");
 assert(/const NEW_RUN_RANDOM_CARDS = 5;/.test(gameSource), "新局额外直接获得五张一至四星随机卡牌");
 assert(/card\.star<=4\),initialCards=BalanceCore\.generateStarOffers/.test(gameSource), "开局随机奖励严格限定一至四星并复用星级权重算法");
-assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "开局随机奖励与逐次手选卡牌持续展示在初始构筑区");
+assert(/const OPENING_GROWTH_CARD_IDS=\[\.\.\.Object\.values\(KILL_GROWTH_CARD_BY_TURRET\),"support_kill_healing"\]/.test(gameSource), "开局成长路线固定提供五类攻击成长与治疗成长共六张卡牌");
+assert(/function showOpeningGrowthDraft\(resume=false\)/.test(gameSource)&&/成长路线选择 1 \/ 1/.test(gameSource)&&/finishOpeningGrowthDraft/.test(gameSource), "成长路线六选一在普通初始选卡前独立完成");
+assert(/grantOpeningRandomCards\(NEW_RUN_RANDOM_CARDS\+relicLevel\("supply_capsule"\)\)/.test(gameSource)&&/if\(state\.openingDraftsRemaining>0\)scheduleOpeningDraft\(\)/.test(gameSource), "成长路线确认后才发放随机五张并进入五轮初始选卡");
+assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/成长 \$\{growth\.length\} · 随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "成长路线、随机奖励与逐次手选卡牌持续展示在初始构筑区");
 assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡使用五级质变成长");
@@ -52,15 +55,27 @@ assert.equal(cards.find((card) => card.id === "bullet_base_damage").glyph, "⚔"
 for(const turretId of ["bullet","laser","missile","frost","arc"])assert.equal(cards.find((card)=>card.id===`${turretId}_range`).glyph,"◎",`${turretId} 射程卡使用统一扩张范围图标`);
 const stylesSource=fs.readFileSync(path.join(__dirname,"..","styles.css"),"utf8");
 assert(/--recent-left:\$\{left\.toFixed\(2\)\}%/.test(gameSource), "最近卡牌使用扑克牌式重叠位置而非横向滚动");
-assert(/\.live-meter \{[^}]*overflow-y:auto/.test(stylesSource), "DPS/HPS 使用整个右侧面板的单一纵向滚动区域");
+assert(/\.recent-cards > \.recent-card \{[^}]*inset:0 auto auto var\(--recent-left,0\)[^}]*transform:translate3d\(0,0,0\)/.test(stylesSource)&&!gameSource.includes("--recent-tilt"), "左侧最近卡牌保持同一基线并仅按横向位置覆盖");
+assert(indexSource.includes('class="meter-scroll-body"')&&/\.meter-scroll-body \{[^}]*overflow:hidden/.test(stylesSource)&&/\.live-meter \.meter-list \{[^}]*overflow-y:auto/.test(stylesSource), "伤害来源与治疗来源各自拥有独立滚动区域");
+assert(/grid-template-rows:minmax\(0,3fr\) minmax\(0,2fr\)/.test(stylesSource), "伤害与治疗区域按可用高度自适应分配且不会挤掉治疗面板");
+assert(/\.live-meter \{[^}]*grid-row:2 \/ 4;[^}]*align-self:stretch/.test(stylesSource), "桌面战斗统计面板跨越下方网格并延伸到底部");
+assert(gameSource.includes('renderCard=(card)=>')&&gameSource.includes('<span class="card-top"><b>${stars}</b>')&&/\.library-card \.glyph \{/.test(stylesSource), "卡牌图鉴使用四选一卡牌的星带、主图标和玻璃卡体结构");
+assert(!gameSource.includes('${turret.active?"在线":"待卡牌解锁"}'), "炮塔阵列不再显示在线或待解锁文字");
+assert(/function updateSupportAutoDispatch\(turret,dt\)/.test(gameSource)&&/repairBotReserve=Math\.max\(0,reserve-launched\)/.test(gameSource), "自动治疗派遣与制造解耦且待命机器人库存真实扣减");
+assert(/const fullLeft=.*glass=ctx\.createLinearGradient/.test(gameSource)&&/ctx\.globalCompositeOperation="screen"/.test(gameSource), "五段屏障由连续玻璃弧面和单层折射边缘绘制");
 assert(/handY=normalized\*normalized\*12,handRotate=normalized\*2\.6/.test(gameSource), "开局已选卡牌使用同一平滑弧线计算高度与切线倾角");
 assert(/function waveTimelineProgress\(\)/.test(gameSource)&&!/waveResolved\/state\.waveTarget\*100/.test(gameSource), "波次进度按预定出怪时间轴计算且不受分裂敌人影响");
+assert(/function turretAdditiveBaseAttack\(turretId,flat=turretFlatDamage\(turretId\)\).*TURRET_DEFS\[turretId\].*turretPermanentAttackGrowth\(turretId\).*Number\(flat\)/.test(gameSource), "固定基础攻击以初始值、击杀永久成长与卡牌固定值相加");
+assert(/function turretCardAdjustedBaseAttack\(turretId,flat=turretFlatDamage\(turretId\),multiplier=turretPassive\(turretId,"damage"\)\).*turretAdditiveBaseAttack\(turretId,flat\)\*\(1\+/.test(gameSource), "基础攻击百分比在全部固定基础数值相加后统一相乘");
+assert(/value:turretCardAdjustedBaseAttack\(turretId,flat,multiplier\).*growth:turretPermanentAttackGrowth\(turretId\)/.test(gameSource), "卡牌预览纳入本局击杀成长并与实战公式一致");
+assert(/function growLeadingTurretAttackFromKill\(\)/.test(gameSource)&&/growLeadingTurretAttackFromKill\(\);rollStarlightRoadBounties/.test(gameSource), "任意敌人死亡会按本波伤害第一炮塔结算杀戮成长");
+assert(/killGrowth:\{\.\.\.\(state\.killGrowth\|\|\{\}\)\}/.test(gameSource)&&/killGrowth:Object\.fromEntries/.test(gameSource), "杀戮成长会随存档保存并安全恢复");
 const baseAttackProfiles = {
-  bullet:{values:[.9,1.8,2.6,3.4,5],flatValues:[90,180,260,340,500]},
-  laser:{values:[.05,.1,1,3,10],flatValues:[25,50,500,1500,5000]},
-  missile:{values:[.05,.1,1,3,10],flatValues:[25,50,500,1500,5000]},
-  frost:{values:[.25,.55,.95,1.5,2.5],flatValues:[5,11,19,30,50]},
-  arc:{values:[.45,.9,1.3,1.7,2.5],flatValues:[45,90,130,170,250]}
+  bullet:{values:[.45,.9,1.3,1.7,2.5],flatValues:[45,90,130,170,250]},
+  laser:{values:[.025,.05,.5,1.5,5],flatValues:[10,20,200,600,2000]},
+  missile:{values:[.025,.05,.5,1.5,5],flatValues:[10,20,200,600,2000]},
+  frost:{values:[.125,.275,.475,.75,1.25],flatValues:[2.5,5.5,9.5,15,25]},
+  arc:{values:[.225,.45,.65,.85,1.25],flatValues:[22.5,45,65,85,125]}
 };
 const baseCritPowerProfiles = {
   bullet:[1,1.5,2,2.5,10],laser:[.4,1,3,8,20],missile:[.4,1,3,8,20],frost:[.5,.75,1,1.25,5],arc:[.5,.75,1,1.25,5]
@@ -107,7 +122,7 @@ assert(/if\(particle\.realTime\)continue;/.test(gameSource), "常规战斗时间
 assert(/updateRealtimeEffects\(time\);update\(dt\*\(state\.gameSpeed===2\?2:1\)\)/.test(gameSource), "真实时间死亡动画在暂停判定前继续更新，战斗时间支持倍速");
 assert(/function hasActiveBlackHoleDissolve\(\)/.test(gameSource), "波次结算能够检测尚未完成的黑洞消散动画");
 assert(/state\.waveEndTimer<=0&&!hasActiveBlackHoleDissolve\(\)/.test(gameSource), "黑洞完全消失后才弹出波次结算选卡");
-assert(/addCard\(id,wasOpeningDraft\?\{deferUI:true,skipDerived:true,manualPick:true\}:\{deferUI:true,deferDerived:true,manualPick:true\}\);if\(state\.gameOver\)\{state\.selectingCard=false;return;\}if\(!wasOpeningDraft\)rememberCardChoice/.test(gameSource), "选卡点击不在当前帧重建全部界面，连续初始选卡仅在结束时提交派生状态");
+assert(/addCard\(id,wasOpeningDraft\|\|wasOpeningGrowthDraft\?\{deferUI:true,skipDerived:true,skipRefraction:true,manualPick:true\}:\{deferUI:true,deferDerived:true,manualPick:true\}\);if\(state\.gameOver\)\{state\.selectingCard=false;return;\}if\(!wasOpeningDraft&&!wasOpeningGrowthDraft\)rememberCardChoice/.test(gameSource), "成长路线与连续初始选卡均不在当前帧重建全部界面，并跳过常规折射与历史降权");
 assert(/function showDraft\(opening=false,bargain=false,reward=false\)\{if\(!state\.started\|\|state\.gameOver\|\|state\.drafting\)return;/.test(gameSource), "未开始战局时任何残留回调都不能越过部署页弹出选卡");
 assert(/function showStartScreen\(\)[\s\S]{0,350}cancelOpeningDraftFrame\(\)/.test(gameSource), "进入部署页会取消旧战局尚未执行的开局选卡回调");
 assert(/libraryOverlay[\s\S]{0,100}classList\.contains\("show"\)/.test(gameSource), "卡牌图鉴关闭时不重建全部卡牌节点");
@@ -138,18 +153,27 @@ assert(/chilledPierces\+=1/.test(gameSource)&&/frost_laser_resonance/.test(gameS
 assert(/coldDuration=Math\.min\(1,slowedEnemies/.test(gameSource), "减速目标数量最多使维修机器人持续时间翻倍");
 assert(/if\(enemy\.frostFlower\)grantRandomCards\("霜之花绽放",1,\{fixedStar:star,specialOnly:true,noFallback:true,bountyOverflow:true\}\)/.test(gameSource), "霜之花优先奖励同星特殊卡牌，本星图鉴全亮后启用越级补偿");
 
-assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "守关首领从黑洞序列选择");
+assert(/function waveBossType\(wave=state\.wave\)\{const blackHoles=/.test(gameSource), "守关首领从黑洞序列选择");
 assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
-assert(/function finalBossEntries\(wave=state\.wave\)\{if\(wave<10\)return \[\]/.test(gameSource), "前九波不生成终局黑洞首领");
-assert(/double=wave%9===0\|\|wave%13===0/.test(gameSource), "中后期存在双黑洞守关日程");
-assert(/const COLOSSAL_BOSS_GAPS=\[3,4,2,4\]/.test(gameSource), "超大首领从第十波起按 3/4/2/4 波的不规则间隔循环");
-assert(/function colossalBossSequenceIndex\(wave=state\.wave\)[\s\S]{0,380}scheduledWave=10/.test(gameSource), "第十波是首个超大首领关卡");
+assert(/function finalBossEntries\(wave=state\.wave\)\{\s*if\(wave<10\)return \[\]/.test(gameSource), "前九波不生成终局黑洞首领");
+assert(/if\(colossalIndex>=0&&blackHoleIndex>=0\)return \[\{type:waveBossType\(wave\),kind:"final",colossal:true,combined:true\}\]/.test(gameSource), "超大首领与黑洞同波时合并为一个目标而不重叠刷出");
+assert(/const COLOSSAL_BOSS_GAPS=\[2,1,2,2,1\]/.test(gameSource), "超大首领从第十波起按最多两波的非固定间隔循环");
+assert(/const BLACK_HOLE_BOSS_GAPS=\[3,2,3,2\]/.test(gameSource), "黑洞首领从第十一波起按最多三波的非固定间隔循环");
+assert(/function colossalBossSequenceIndex\(wave=state\.wave\)\{return scheduledBossSequenceIndex\(wave,10,COLOSSAL_BOSS_GAPS\);\}/.test(gameSource), "第十波是首个超大首领关卡");
 const colossalGaps = gameSource.match(/const COLOSSAL_BOSS_GAPS=\[([^\]]+)\]/)[1].split(",").map(Number);
 const colossalWaves = [10];
 for (let index = 0; index < 9; index += 1) colossalWaves.push(colossalWaves.at(-1) + colossalGaps[index % colossalGaps.length]);
-assert.deepEqual(colossalWaves, [10,13,17,19,23,26,30,32,36,39], "前十次超大首领排期不固定但任意空档不超过四波");
+assert.deepEqual(colossalWaves, [10,12,13,15,17,18,20,21,23,25], "前十次超大首领排期不固定且任意空档不超过两波");
+assert(Math.max(...colossalGaps)<=2, "超大首领相邻排期最多间隔两波");
+const blackHoleGaps = gameSource.match(/const BLACK_HOLE_BOSS_GAPS=\[([^\]]+)\]/)[1].split(",").map(Number);
+const blackHoleWaves = [11];
+for (let index = 0; index < 9; index += 1) blackHoleWaves.push(blackHoleWaves.at(-1) + blackHoleGaps[index % blackHoleGaps.length]);
+assert.deepEqual(blackHoleWaves, [11,14,16,19,21,24,26,29,31,34], "前十次黑洞首领排期不固定且任意空档不超过三波");
+assert(Math.max(...blackHoleGaps)<=3, "黑洞首领相邻排期最多间隔三波");
 assert(/function isRedGiantFinalWave\(wave=state\.wave\)\{return colossalBossSequenceIndex\(wave\)>=0/.test(gameSource), "超巨星关卡使用统一的不规则排期判断");
-assert(/const entries=\[\{type:waveBossType\(\),kind:"final",colossal:false\}\]/.test(gameSource), "非超巨星关卡的守关黑洞保持正常尺寸");
+assert(/if\(blackHoleIndex>=0\)return \[\{type:waveBossType\(wave\),kind:"final",colossal:false\}\]/.test(gameSource), "普通黑洞排期保持正常尺寸");
+assert(/function bossPhaseCountForWave\(enemy,wave=state\.wave\)/.test(gameSource)&&/function updateBossPhase\(enemy\)/.test(gameSource), "大小首领按波次与生命比例进入最多四个阶段");
+assert(/record\.phaseTransitions\.push\(\{phase,at:stats\.combatTime,hpRatio:Number\(ratio\.toFixed\(3\)\),label:bossPhaseLabel\(enemy,phase\)\}\)/.test(gameSource), "战斗日志记录首领阶段切换时间与生命比例");
 assert(/type\.radius\*\(colossal\?2\.1:1\)/.test(gameSource), "巨型黑洞碰撞与画面尺寸至少扩大两倍");
 assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑洞素材允许扩展到压迫性宽度");
 assert(/if\(enemy\.type\.bossKind==="star"\|\|enemy\.type\.bossKind==="redgiant"\)[\s\S]{0,850}continue;/.test(gameSource), "恒星与红巨星绕过控制与诱引逻辑并沿固定航线推进");
@@ -168,6 +192,8 @@ assert(/function enemyAttackScale\(enemy,wave=state\.wave\)/.test(gameSource), "
 assert(/function enemyVolleyCount\(enemy\)/.test(gameSource), "普通敌军随阶位从单发成长为双发和三发");
 assert(/function blackHoleGammaCount\(enemy\)/.test(gameSource), "黑洞伽马射线束数随威胁阶位成长");
 assert(/gammaTargets=blackHoleGammaTargets\(enemy\)/.test(gameSource), "黑洞蓄力会预告本轮全部伽马射线落点");
+assert(/function blackHoleGammaDamageProfile\(enemy,wave=state\.wave\)/.test(gameSource)&&/barrierRatio=clamp\(\.5\+postTen\*\.01\+colossal\*\.05,\.5,\.85\)/.test(gameSource), "黑洞伽马射线从第十波起至少造成单段屏障上限百分之五十伤害并随波次成长");
+assert(/percentDamage=\(segment\?\.maxHp\|\|Math\.max\(1,state\.globalBarrierMax\/BARRIER_SEGMENT_COUNT\)\)\*profile\.barrierRatio/.test(gameSource)&&/damage=profile\.fixedDamage\+percentDamage/.test(gameSource), "伽马射线把波次成长固定伤害与单段屏障百分比伤害共同结算");
 assert(/enemy\.type\.damage\*enemyAttackScale\(enemy\)/.test(gameSource), "敌军突破伤害也接入攻击成长曲线");
 const minionAttackScale = (wave) => Math.pow(1.07, wave - 1) * (1 + Math.floor((wave - 1) / 5) * .07);
 const bossAttackScale = (wave, colossal = false) => Math.pow(1.105, wave - 1) * (1 + Math.floor((wave - 1) / 3) * .11) * (colossal ? 1.22 : 1);
@@ -212,7 +238,7 @@ assert(/waveBaseHp\(\)\*earlySmallEnemyHpMultiplier\(type\)\*DISTANCE_BALANCE_HP
 assert(/function normalEnemySpeedMultiplier\(type\)\{return !type\.boss&&!type\.bounty&&!type\.summoned\?\.8:1;\}/.test(gameSource), "所有普通小怪移动速度统一降低百分之二十");
 assert(/type\.speed\*normalEnemySpeedMultiplier\(type\)\*\(type\.boss\?\.6:1\)/.test(gameSource), "普通小怪速度倍率接入实际生成速度且不改变首领与奖励单位");
 assert(/function turretFormationY\(x\)\{return Math\.round\(1138\+\(barrierSurfaceY\(x\)-barrierSurfaceY\(W\/2\)\)\*\.36\);\}/.test(gameSource), "六座炮塔按屏障圆弧曲率排布并让两侧炮塔适当下沉");
-assert(/function turretFormationOffset\(id\)\{return id==="laser"\|\|id==="support"\?12:0;\}/.test(gameSource)&&/\.\.\.def,y:turretFormationY\(def\.x\)\+turretFormationOffset\(id\),id,active:/.test(gameSource), "所有炮塔使用圆弧阵列纵坐标，激光与支援额外下移十二像素");
+assert(/function turretFormationOffset\(id\)\{return id==="laser"\|\|id==="arc"\?12:0;\}/.test(gameSource)&&/\.\.\.def,y:turretFormationY\(def\.x\)\+turretFormationOffset\(id\),id,active:/.test(gameSource), "所有炮塔使用圆弧阵列纵坐标，治疗与电弧交换槽位后高度偏移同步交换");
 assert(/const BOUNTY_WANDER_TOP = H \* \.25;/.test(gameSource)&&/const BOUNTY_WANDER_BOTTOM = H \* \.75;/.test(gameSource), "奖励敌人只在战区纵向四分之一至四分之三区域游荡");
 
 assert.deepEqual(Balance.BONUS_BOUNTY_INTERVALS, [0, 20, 15, 10], "奖励敌人判定节点由每 20 个缩短至每 10 个");
@@ -239,6 +265,12 @@ assert(/if\(absorber\)[\s\S]{0,280}break;/.test(gameSource), "激光命中黑洞
 assert(/absorbed=current\.type\.bossKind==="blackhole"/.test(gameSource), "电弧把黑洞识别为吸收终点");
 assert(/spawnSparks\(beamEnd\.x,beamEnd\.y[\s\S]{0,80}if\(absorbed\)break/.test(gameSource), "电弧到达事件视界后终止链式跳跃");
 assert(/function launchRepairBots\(turret,totalRepair,totalShield=0,options=\{\}\)/.test(gameSource), "支援炮塔通过维修机器人而非瞬时脉冲治疗屏障");
+assert(/const SUPPORT_INITIAL_RESERVE\s*=\s*3/.test(gameSource)&&/const SUPPORT_RESERVE_CAPACITY\s*=\s*4/.test(gameSource)&&/repairBotReserve:id==="support"\?Math\.min\(SUPPORT_RESERVE_CAPACITY,Math\.max\(0,stored\?\.repairBotReserve\?\?SUPPORT_INITIAL_RESERVE\)\):0/.test(gameSource), "支援炮塔初始三台、硬上限四台，旧存档库存会安全截断");
+assert(/function manufactureSupportBots\(turret,count=1\)/.test(gameSource)&&/manufactureSupportBots\(turret,1\+\(bayRank/.test(gameSource), "支援炮塔按自身作业周期持续制造库存机器人，并允许机库概率并联生产");
+assert(/function supportReserveCapacity\(\)\{return SUPPORT_RESERVE_CAPACITY;\}/.test(gameSource)&&/visible=Math\.min\(SUPPORT_RESERVE_CAPACITY,reserve\)/.test(gameSource), "制造与待命环绕显示统一遵守四台库存上限");
+assert(/function tryManualRepairDispatch\(x,y,all=false\)[\s\S]{0,420}turret\.targetMode!=="manual"[\s\S]{0,420}all\?available:1/.test(gameSource), "手动支援模式左键派遣一台、右键派遣该塔全部库存机器人");
+assert(/handleCanvasClick[\s\S]{0,200}tryManualRepairDispatch\(x,y,false\)/.test(gameSource)&&/handleCanvasContextMenu[\s\S]{0,220}tryManualRepairDispatch\(x,y,true\)/.test(gameSource), "小屏障左右键分别接入单台与全量派遣交互");
+assert(/const skillIndex="qwerty"\.indexOf\(event\.key\.toLowerCase\(\)\)/.test(gameSource), "主动技能快捷键使用 QWERTY");
 assert(/selectSupportBarrierSegment\(mode\)/.test(gameSource) && /barrierSegmentTargetX\(segment/.test(gameSource), "维修机器人依据支援优先级选择五段屏障附着点");
 assert(/function updateRepairBots\(dt\)/.test(gameSource), "机器人附着后按作业进度持续结算修补与护盾涂层");
 assert(/function drawRepairBots\(\)/.test(gameSource), "战斗画面绘制飞行、附着和焊接状态的维修机器人");
@@ -322,15 +354,15 @@ assert(/function selectTarget\(turret,range=turretRange\(turret\)\)\{[\s\S]{0,90
 assert(!/function drawTurrets\(\)[\s\S]{0,900}selectTarget\(turret\)/.test(gameSource), "炮塔绘制复用上次攻击方向，不在每个渲染帧重新排序敌军");
 assert(/const BASE_STAT_PROGRESS=\{standard:\[\.10,\.15,\.20,\.25,1\],burst:\[\.02,\.05,\.15,\.40,1\]\}/.test(gameSource), "基础攻击区分标准与重炮两条满级质变曲线");
 assert(/const BASE_ATTACK_PROGRESS=\{front:\[\.18,\.36,\.52,\.68,1\],steady:\[\.10,\.22,\.38,\.60,1\],compressed:\[\.005,\.01,\.10,\.30,1\]\}/.test(gameSource), "基础攻击采用前置、平稳与重炮压缩三条专属曲线");
-assert(/bullet:\{flatMax:500,multiplierMax:5,critPowerMax:10,curve:"standard",attackCurve:"front"\}/.test(gameSource), "子弹基础攻击前两级快速成长");
-assert(/missile:\{flatMax:5000,multiplierMax:10,critPowerMax:20,curve:"burst",attackCurve:"compressed"\}/.test(gameSource)&&/laser:\{flatMax:5000,multiplierMax:10,critPowerMax:20,curve:"burst",attackCurve:"compressed"\}/.test(gameSource), "导弹与激光前两级严格为满级的百分之零点五与百分之一");
-assert(/arc:\{flatMax:250,multiplierMax:2\.5,critPowerMax:5,curve:"standard",attackCurve:"front"\}/.test(gameSource)&&/frost:\{flatMax:50,multiplierMax:2\.5,critPowerMax:5,curve:"standard",attackCurve:"steady"\}/.test(gameSource), "电弧前置成长且冰霜保持平稳成长");
+assert(/bullet:\{flatMax:250,multiplierMax:2\.5,critPowerMax:10,curve:"standard",attackCurve:"front"\}/.test(gameSource), "子弹基础攻击减半后仍保持前两级快速成长");
+assert(/missile:\{flatMax:2000,multiplierMax:5,critPowerMax:20,curve:"burst",attackCurve:"compressed"\}/.test(gameSource)&&/laser:\{flatMax:2000,multiplierMax:5,critPowerMax:20,curve:"burst",attackCurve:"compressed"\}/.test(gameSource), "导弹与激光基础攻击满级固定值为 2000 且前两级保持高度压缩");
+assert(/arc:\{flatMax:125,multiplierMax:1\.25,critPowerMax:5,curve:"standard",attackCurve:"front"\}/.test(gameSource)&&/frost:\{flatMax:25,multiplierMax:1\.25,critPowerMax:5,curve:"standard",attackCurve:"steady"\}/.test(gameSource), "电弧与冰霜基础攻击减半并保留各自成长节奏");
 assert(/const BASE_RATE_TARGETS=\{/.test(gameSource)&&!/baseRateCooldownFactor/.test(gameSource), "基础攻速直接以各炮塔实际射速为目标且不再叠加隐藏后摇");
 assert(/function turretDamageMultiplier\(turretId\)\{return \(1\+turretPassive\(turretId,"damage"\)\)\*terminalSynergy/.test(gameSource), "基础攻击不再重复叠加隐藏的满级增伤");
 assert(/fullScreen:rank>=5/.test(gameSource)&&/stat\.fullScreen\?"满屏"/.test(gameSource), "满级射程直接显示满屏而不是数值");
 assert(/boostedAttackStat=turretId!=="support"&&\(stat==="damage"\|\|stat==="critPower"\)/.test(gameSource), "二至六星攻击与暴伤卡统一使用双倍成长规则");
 assert(/flatValues=stat==="damage"&&turretId!=="support"\?Array\.from\(\{length:max\},\(_,index\)=>star\*\(index\+1\)\):null/.test(gameSource), "每级攻击卡额外加入等于星级的固定攻击");
-assert(/turret\.damage=TURRET_DEFS\[turretId\]\.damage\+turretFlatDamage\(turretId\)/.test(gameSource), "炮塔先汇总初始攻击与固定攻击，再交给攻击提升系数结算");
+assert(/turret\.damage=turretAdditiveBaseAttack\(turretId\)/.test(gameSource), "炮塔先汇总初始攻击、击杀成长与卡牌固定攻击，再交给攻击提升系数结算");
 assert(/node\.dataset\.updateAverage=updateTiming\.average\.toFixed\(3\)/.test(gameSource), "测试档案分别记录战斗更新耗时");
 assert(/node\.dataset\.drawAverage=drawTiming\.average\.toFixed\(3\)/.test(gameSource), "测试档案分别记录画布绘制耗时");
 assert(/node\.dataset\.crowdLod=String\(living\.length>CROWD_LOD_HARD_LIMIT\?2:living\.length>CROWD_LOD_SOFT_LIMIT\?1:0\)/.test(gameSource), "测试遥测会标记当前密集潮视觉等级");
@@ -370,6 +402,12 @@ assert(Math.abs(boostedStars.reduce((sum,value)=>sum+value,0)-1)<1e-9,"增幅后
 assert(boostedStars[4]>baseStars[4]&&boostedStars[5]>baseStars[5],"特殊星图卡提高五星与六星爆率");
 assert.deepEqual(Balance.earlyWaveProfile(1),{countScale:.62,hpScale:.54,attackScale:.42},"第一波按低基础炮塔强度下调");
 assert.equal(Balance.earlyWaveProfile(6).hpScale,1,"第六波进入标准成长曲线");
+assert.deepEqual(Balance.waveEnemyPressureMultiplier(19),{hp:1,attack:1},"第十九波保持原始敌军压力");
+assert.deepEqual(Balance.waveEnemyPressureMultiplier(20),{hp:20,attack:10},"第二十波生命乘波数、伤害乘半波数");
+assert.deepEqual(Balance.waveEnemyPressureMultiplier(40),{hp:40,attack:20},"第四十波应用终段敌军压力倍率");
+assert.deepEqual(Balance.waveEnemyPressureMultiplier(41),{hp:40,attack:20},"第四十一波以后保留第四十波压力，避免数值骤降");
+assert(/pressure=BalanceCore\.waveEnemyPressureMultiplier\(state\.wave\)[\s\S]{0,300}pressure\.hp/.test(gameSource),"敌方生命倍率只在统一基础生命入口套用");
+assert(/pressure=BalanceCore\.waveEnemyPressureMultiplier\(wave\)[\s\S]{0,300}pressure\.attack/.test(gameSource),"敌方伤害倍率只在统一攻击入口套用");
 for(const id of ["cryo_missile_echo","laser_arc_echo","bullet_support_echo"])assert(gameSource.includes(`id:"${id}"`),`六星主动联动 ${id} 已加入`);
 const frostMultishot=cards.find((card)=>card.id==="frost_field"),overhealFortification=cards.find((card)=>card.id==="support_overheal_fortification");
 assert.equal(frostMultishot.star,3,"多重减速归入三星冰霜构筑");
@@ -382,7 +420,8 @@ assert(/SUPPORT_OVERHEAL_CHANCES = \[0,\.30,\.45,\.60,\.75,1\]/.test(gameSource)
 assert(/SUPPORT_OVERHEAL_PICK_BONUSES = \[0,100,200,300,400,500\]/.test(gameSource)&&/SUPPORT_OVERHEAL_PICK_BONUSES\[rank\]\*BARRIER_SEGMENT_COUNT/.test(gameSource),"手动选取溢疗筑垒按等级让每个小屏障立即获得 100 至 500 点生命上限");
 assert(/id:"support_overheal_shield"[\s\S]{0,260}SUPPORT_OVERHEAL_SHIELD_RATES/.test(gameSource)&&/function convertOverhealToShield/.test(gameSource),"二星溢疗护盾卡把附着段过量治疗转为可叠加护盾");
 assert(/segment\.overhealShieldBonus=\(segment\.overhealShieldBonus\|\|0\)\+gain/.test(gameSource)&&/segment\.maxShield=desiredTotal\*share\+overhealShieldBonus/.test(gameSource),"机器人溢疗护盾永久记录在附着段，派生属性重算不会吞掉已转化护盾上限");
-assert(/SUPPORT_OPERATION_RATES = \[6,7,8,9,10,12\]/.test(gameSource)&&/SUPPORT_RATE_CARD_VALUES = \[1\/6,1\/3,\.5,2\/3,1\]/.test(gameSource)&&/support: \{ name:"支援炮塔"[\s\S]{0,160}cooldown:10/.test(gameSource)&&/SUPPORT_HEAL_FREQUENCIES = \[1,1\.2,1\.4,1\.6,1\.8,2\.5\]/.test(gameSource),"机器人基础发射频率为每分钟 6 批，卡牌成长至 7/8/9/10/12 批，并与单机器人治疗频率独立计算");
+assert(/SUPPORT_MANUFACTURE_INTERVALS = \[5,4\.5,4,3\.5,3,2\]/.test(gameSource)&&/SUPPORT_RATE_CARD_VALUES = SUPPORT_MANUFACTURE_INTERVALS\.slice\(1\)/.test(gameSource)&&/support: \{ name:"支援炮塔"[\s\S]{0,160}cooldown:5/.test(gameSource)&&/SUPPORT_HEAL_FREQUENCIES = \[1,1\.2,1\.4,1\.6,1\.8,2\.5\]/.test(gameSource),"维修机器人核心被动初始每 5 秒制造一台，卡牌成长至 2 秒，并与单机器人治疗频率独立计算");
+assert(/color:COLORS\.arc,life:1,maxLife:1,style:"lightning"/.test(gameSource)&&/const beamLife=mini\.type==="arc"\?1:\.1/.test(gameSource),"主电离炮与电离子炮的闪电攻击特效均持续 1 秒");
 assert(/SUPPORT_HEAL_FIXED_VALUES = \[5,10,25,45,70,100\]/.test(gameSource)&&/SUPPORT_HEAL_MULTIPLIERS = \[1,1,1\.5,2,3,5\]/.test(gameSource)&&/SUPPORT_DURATION_VALUES = \[1,2,3,4,5,8\]/.test(gameSource),"基础治疗未选卡为 5、首级为 10，并按额外系数 1.0 至 5.0 与指定持续时间曲线成长");
 assert(gameSource.includes('function supportBaseHealing(rank=cardRank("support_base_heal"))')&&gameSource.includes('SUPPORT_HEAL_FIXED_VALUES[level]*SUPPORT_HEAL_MULTIPLIERS[level]+(state.supportHealGrowth||0)')&&/healing=supportBaseHealing\(\)/.test(gameSource),"支援单次治疗统一使用基础治疗倍率，并防止击杀成长被乘区指数放大");
 assert(/SUPPORT_OVERHEAL_FORTIFY_WAVE_CAP = \[0,\.02,\.03,\.045,\.065,\.10\]/.test(gameSource)&&/SUPPORT_OVERHEAL_SHIELD_WAVE_CAP = \[0,\.08,\.12,\.18,\.28,\.45\]/.test(gameSource),"过量治疗转化生命与护盾均具有逐段逐波预算");
@@ -391,8 +430,16 @@ assert(/if\(!supergiant\)\{const hpWidth=Math\.max\(120,radius\*2\)/.test(gameSo
 assert(/function drawBossHealthBar\(/.test(gameSource)&&/const width=Math\.min\(W-96,552\),height=30,x=W\/2,y=H\/2/.test(gameSource),"超巨星血条固定在战斗画面正中央");
 assert(/drawSuperBossStatusLane\(enemy,left,left\+width,top\+height\+17\)/.test(gameSource)&&/function superBossDebuffEntries/.test(gameSource)&&/function superBossBuffEntries/.test(gameSource),"超巨星减益居血条下方左侧、增益居右侧");
 assert(/ARC_MINI_FIELD_FILL_ALPHA=\.018/.test(gameSource)&&/ARC_MINI_FIELD_STROKE_ALPHA=\.11/.test(gameSource),"电离子炮范围场仅保留低强度提示");
-assert(/id:"support_kill_healing"[\s\S]{0,220}star:3,max:5/.test(gameSource)&&/SUPPORT_KILL_HEAL_GAINS = \[0,1,2,3,4,5\]/.test(gameSource)&&/growSupportHealingFromKill\(enemy\)/.test(gameSource),"三星生命回收协议按击杀永久提供 1 至 5 点基础治疗量");
+assert(/id:"support_kill_healing",name:"治疗成长"[\s\S]{0,260}star:3,max:5/.test(gameSource)&&/SUPPORT_KILL_HEAL_GAINS = \[0,1,2,3,4,5\]/.test(gameSource)&&/growSupportHealingFromKill\(enemy\)/.test(gameSource),"三星治疗成长按击杀永久提供 1 至 5 点基础治疗量");
 assert(/supportHealGrowth:state\.supportHealGrowth\|\|0/.test(gameSource)&&/supportHealGrowth:Math\.max\(0,Number\(run\.supportHealGrowth\)\|\|0\)/.test(gameSource),"击杀获得的基础治疗量成长随存档保存与恢复");
+assert(/SUPPORT_KILL_HEAL_CHANCES = \[0,\.025,\.035,\.05,\.075,\.11\]/.test(gameSource)&&!/SUPPORT_KILL_HEAL_WAVE_CAPS/.test(gameSource),"治疗成长保留逐级触发概率且不再设置单波上限");
+assert(/state\.supportHealGrowth=Math\.max\(0,state\.supportHealGrowth\|\|0\)\+gain/.test(gameSource)&&!gameSource.includes("current>=softCap?.25:1"),"每次治疗成长触发均完整永久累加基础治疗");
+assert(/\.growth-draft \.card-choices \{[^}]*repeat\(6,minmax\(0,1fr\)\)/.test(stylesSource),"成长路线在宽屏固定以六张卡牌同屏展示");
+assert(/function repairBotMitigation\(segment\)/.test(gameSource)&&/REPAIR_BOT_MITIGATION_PER_UNIT\s*=\s*\.04/.test(gameSource)&&/REPAIR_BOT_MITIGATION_CAP\s*=\s*\.16/.test(gameSource),"每台附着维修机器人提供 4% 减伤，四台叠满 16%");
+assert(/mitigation=repairBotMitigation\(segment\)/.test(gameSource)&&/waveStats\.barrier\.robotMitigated\+=Math\.max\(0,rawScaled-scaled\)/.test(gameSource),"屏障受击结算和战斗日志均记录维修机器人减伤");
+assert(/function vulnerabilityProfile\(enemy\)/.test(gameSource)&&/function vulnerabilitySpawnRamp\(enemy\)/.test(gameSource),"易伤按普通怪、奖励怪、首领与超大首领设置独立层数上限并平滑生效");
+assert(/enemy\?\.colossal\)return \{baseStacks:3,timedStacks:4,maxBonus:\.22,laserLayers:3\}/.test(gameSource)&&/enemy\?\.type\?\.boss\)return \{baseStacks:4,timedStacks:6,maxBonus:\.32,laserLayers:4\}/.test(gameSource),"首领易伤上限显著低于普通怪，防止刚入场被易伤乘区秒杀");
+assert(/fastKills\+=1/.test(gameSource)&&/vulnerabilityApplications/.test(gameSource)&&/maxVulnerabilityLayers/.test(gameSource),"战斗日志记录出场 2.5 秒内击杀与易伤层数，便于继续平衡");
 assert(/REFRACTION_CHANCES=\[\.40,\.60,\.80,1,1\]/.test(gameSource)&&/count:rank>=5\?2:1/.test(gameSource),"所有星级概率折射统一从 40% 起步，四级必得 1 张、五级质变为 2 张");
 assert(/if\(rank>previous\)queueProbabilityRefraction\(card,options\)/.test(gameSource)&&/grantRandomCards\("概率折射",reward\.count,\{fixedStar:reward\.star,skipRefraction:true\}\)/.test(gameSource),"每张正常获得卡牌统一触发一次概率折射，折射奖励自身禁止递归");
 assert(/LIFESTEAL_RATES = \[\.01,\.015,\.02,\.03,\.05\]/.test(gameSource)&&/id:"lifesteal"[\s\S]{0,180}max:5/.test(gameSource)&&/function healDamagedBarrierSegmentsEvenly/.test(gameSource)&&/healDamagedBarrierSegmentsEvenly\(healing/.test(gameSource),"生命虹吸从 1% 成长至 5%，并把治疗均摊给所有已损血小屏障");
@@ -428,7 +475,9 @@ assert(gameSource.includes("enemyPressure")&&gameSource.includes("barrier:{...wa
 
 assert(/function cardProgressionUnlocked[\s\S]{0,180}card\.star===5&&effectiveWave>=10[\s\S]{0,80}card\.star===6&&effectiveWave>=15/.test(gameSource),"wave 10 force-unlocks all five-star cards and wave 15 force-unlocks all six-star cards");
 assert(/state\.openingDraft\?generateWeightedCards\(DRAFT_OFFER_COUNT,\{ignorePreference:true,history:\[\],maxStar:4/.test(gameSource),"opening draft remains capped at four stars");
-assert(/function allCardsDiscoveredAtStar[\s\S]{0,180}every\(\(card\)=>cardRank\(card\.id\)>0\)/.test(gameSource),"reward overflow starts only after every card type at that star has been discovered");
+assert(/function allBountyCardsMaxedAtStar[\s\S]{0,300}every\(\(card\)=>cardRank\(card\.id\)>=card\.max\)/.test(gameSource),"reward overflow starts only after every applicable card at that star is fully maxed");
+assert(/function bountyCardsAtStar[\s\S]{0,260}!card\.designRemoved[\s\S]{0,120}card\.star===target[\s\S]{0,120}cardRank\(card\.id\)<card\.max/.test(gameSource),"reward enemies use an exact-star collectible pool that ignores ordinary wave and prerequisite locks");
+assert(/generateFixedStarCards\(target,count,\{specialOnly:!!options\.specialOnly,noFallback:true,bountyReward:true\}\)/.test(gameSource),"undiscovered bounty tiers award their exact star even during early waves");
 assert(/function generateBountyRewardCards[\s\S]{0,360}Math\.min\(6,target\+1\)[\s\S]{0,180}card\.star<=ceiling/.test(gameSource),"completed reward tiers may roll any available card no higher than the next star");
 assert(/fixedStar:star,noFallback:true,bountyOverflow:true/.test(gameSource),"bounty kills use completed-tier overflow without ordinary downward fallback");
 

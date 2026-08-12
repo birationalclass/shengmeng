@@ -163,15 +163,22 @@
 
   function lateWaveProfile(wave) {
     const value = Math.max(1, Number(wave) || 1);
-    const phaseA = smoothstep((value - 10) / 10);
+    const phaseA = smoothstep((value - 9) / 11);
     const phaseB = smoothstep((value - 20) / 10);
     const phaseC = smoothstep((value - 30) / 10);
     return {
-      hpScale:1 + phaseA * .55 + phaseB * 1.75 + phaseC * 5.7,
-      attackScale:1 + phaseA * .25 + phaseB * .55 + phaseC * 1.1,
+      hpScale:1 + phaseA * .95 + phaseB * 2.85 + phaseC * 8.2,
+      attackScale:1 + phaseA * .42 + phaseB * .92 + phaseC * 1.78,
       barrierScale:1 + phaseA * .18 + phaseB * .42 + phaseC * .8,
       rewardPressure:1 + phaseA * .12 + phaseB * .2 + phaseC * .28
     };
+  }
+
+  function waveEnemyPressureMultiplier(wave) {
+    const value = Math.max(1, Math.floor(Number(wave) || 1));
+    if (value < 20) return { hp:1, attack:1 };
+    const pressureWave = Math.min(40, value);
+    return { hp:pressureWave, attack:pressureWave / 2 };
   }
 
   function rankOf(ranks, id) {
@@ -234,7 +241,7 @@
     FORBIDDEN_INSIGHT_CHANCES, BONUS_BOUNTY_INTERVALS,
     BASE_STAR_PROBABILITIES, STAR_BOOST_PER_LEVEL,
     families, offerWeight, generateOffers, generateStarOffers, remember,
-    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile, lateWaveProfile, terminalSynergyProfile,
+    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile, lateWaveProfile, waveEnemyPressureMultiplier, terminalSynergyProfile,
     forbiddenInsightChance, rollForbiddenInsight, bonusBountyInterval, shouldSpawnBonusBounty
   };
 });

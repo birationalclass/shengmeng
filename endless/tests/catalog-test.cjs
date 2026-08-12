@@ -17,7 +17,7 @@ const sandbox = {console,document,window:{EndlessBalanceCore:{}},globalThis:null
 sandbox.globalThis=sandbox;
 vm.runInNewContext(prefix,sandbox,{filename:"game-card-prefix.js"});
 const cards=sandbox.__cards;
-assert.deepEqual(Array.from(sandbox.__activeSkillOrder),["laser","frost","bullet","arc","missile","support"],"1—6 必须按画面从左到右对应激光、冰霜、子弹、电弧、导弹、支援");
+assert.deepEqual(Array.from(sandbox.__activeSkillOrder),["laser","frost","bullet","support","missile","arc"],"QWERTY 必须按画面从左到右对应激光、冰霜、子弹、支援、导弹、电弧");
 const ids=new Set(cards.map((card)=>card.id));
 const duplicateIds=cards.map((card)=>card.id).filter((id,index,all)=>all.indexOf(id)!==index);
 assert.equal(ids.size,cards.length,`动态卡池 ID 不重复：${duplicateIds.join(",")}`);
