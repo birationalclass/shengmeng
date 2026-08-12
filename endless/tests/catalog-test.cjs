@@ -55,7 +55,7 @@ const minimumSpecialCards=[4,5,5,5,4,2];
 for(let star=1;star<=6;star++)assert(cards.filter((card)=>card.star===star&&card.tags.includes("特殊")).length>=minimumSpecialCards[star-1],`特殊卡 ★${star} 满足当前规则族数量`);
 assert(!ids.has("blood_bargain")&&![3,4,5,6].some((star)=>ids.has(`forbidden_tome_${star}`)),"禁忌抄本只保留二星版本");
 const forbiddenTome=cards.find((card)=>card.id==="forbidden_tome_2");
-assert(forbiddenTome?.max===5&&forbiddenTome.desc(4).includes("★4 卡牌 4 选 2"),"二星禁忌抄本第五级质变为四星卡牌四选二");
+assert(forbiddenTome?.max===5&&forbiddenTome.desc(4).includes("★6 卡牌 4 选 1"),"禁忌抄本第五级追加六星卡牌四选一");
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="frost_trace_spread_2").passive.values),[.5,.75,1],"霜痕扩散从 50% 起步并成长至行动速度翻倍");
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="laser_base_rate").passive.values),[.1667,.3333,.5,.6667,1],"激光基础攻速由初始 6/分成长为 7/8/9/10/12 每分");
 assert(source.includes('分别修复每段最大生命的 20%')&&source.includes('repairBySegment=state.barrierSegments.map'),"净界维修蜂群采用五段分别按最大生命百分比修复");

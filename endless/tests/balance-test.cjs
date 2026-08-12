@@ -47,6 +47,14 @@ assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/随机 \$\{rewa
 assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡使用五级质变成长");
+assert.equal(cards.find((card) => card.id === "bullet_base_damage").designRemoved, undefined, "子弹基础攻击卡不会被设计移除名单误伤");
+assert.equal(cards.find((card) => card.id === "bullet_base_damage").glyph, "⚔", "所有基础攻击卡使用统一武器图标");
+for(const turretId of ["bullet","laser","missile","frost","arc"])assert.equal(cards.find((card)=>card.id===`${turretId}_range`).glyph,"◎",`${turretId} 射程卡使用统一扩张范围图标`);
+const stylesSource=fs.readFileSync(path.join(__dirname,"..","styles.css"),"utf8");
+assert(/--recent-left:\$\{left\.toFixed\(2\)\}%/.test(gameSource), "最近卡牌使用扑克牌式重叠位置而非横向滚动");
+assert(/\.live-meter \{[^}]*overflow-y:auto/.test(stylesSource), "DPS/HPS 使用整个右侧面板的单一纵向滚动区域");
+assert(/handY=normalized\*normalized\*12,handRotate=normalized\*2\.6/.test(gameSource), "开局已选卡牌使用同一平滑弧线计算高度与切线倾角");
+assert(/function waveTimelineProgress\(\)/.test(gameSource)&&!/waveResolved\/state\.waveTarget\*100/.test(gameSource), "波次进度按预定出怪时间轴计算且不受分裂敌人影响");
 const baseAttackProfiles = {
   bullet:{values:[.9,1.8,2.6,3.4,5],flatValues:[90,180,260,340,500]},
   laser:{values:[.05,.1,1,3,10],flatValues:[25,50,500,1500,5000]},
@@ -115,7 +123,7 @@ assert(/state\.rewardDraftsQueued=0/.test(gameSource), "奖励卡池耗尽时清
 
 assert(/function forbiddenTomeProfile\(/.test(gameSource), "禁忌抄本按等级与波次计算高星奖励和生命代价");
 assert(/function scheduleForbiddenTomeDraft\(/.test(gameSource), "禁忌抄本在过关后安排额外高星选卡");
-assert(/spendBarrierHealth\(cost,1\)/.test(gameSource)&&/profile\.costRate/.test(gameSource), "禁忌抄本从分段屏障生命支付百分比代价");
+assert(/function payForbiddenTomeCost\(profile\)/.test(gameSource)&&/segment\.maxHp=Math\.max\(1,segment\.maxHp\*\(1-profile\.maxLossRate\)\)/.test(gameSource)&&/segment\.hp=Math\.min\(segment\.maxHp,segment\.hp\*\(1-profile\.healthLossRate\)\)/.test(gameSource), "禁忌抄本按比例永久削减五段屏障上限并支付当前生命");
 assert(!/showDraft\(false,true\)/.test(gameSource), "旧禁忌洞见额外选卡入口已停用");
 assert(/fixedStar:star/.test(gameSource), "限时猎物按自身星级直接随机发放同星卡牌");
 assert(!/rewardDraftsQueued\+=rewards/.test(gameSource), "新奖励敌人不再排队弹出选卡面板");
@@ -134,8 +142,14 @@ assert(/function waveBossType\(\)\{const blackHoles=/.test(gameSource), "守关�
 assert(/function waveMidBossType\(\)/.test(gameSource), "恒星作为波次中途小首领出现");
 assert(/function finalBossEntries\(wave=state\.wave\)\{if\(wave<10\)return \[\]/.test(gameSource), "前九波不生成终局黑洞首领");
 assert(/double=wave%9===0\|\|wave%13===0/.test(gameSource), "中后期存在双黑洞守关日程");
-assert(/colossal:wave%3===0/.test(gameSource), "每三波的守关日程生成巨型黑洞");
-assert(/function isRedGiantFinalWave\(wave=state\.wave\)\{return wave>=15&&wave%10===5/.test(gameSource), "十五波起部分特色关以红巨星作为终局首领");
+assert(/const COLOSSAL_BOSS_GAPS=\[3,4,2,4\]/.test(gameSource), "超大首领从第十波起按 3/4/2/4 波的不规则间隔循环");
+assert(/function colossalBossSequenceIndex\(wave=state\.wave\)[\s\S]{0,380}scheduledWave=10/.test(gameSource), "第十波是首个超大首领关卡");
+const colossalGaps = gameSource.match(/const COLOSSAL_BOSS_GAPS=\[([^\]]+)\]/)[1].split(",").map(Number);
+const colossalWaves = [10];
+for (let index = 0; index < 9; index += 1) colossalWaves.push(colossalWaves.at(-1) + colossalGaps[index % colossalGaps.length]);
+assert.deepEqual(colossalWaves, [10,13,17,19,23,26,30,32,36,39], "前十次超大首领排期不固定但任意空档不超过四波");
+assert(/function isRedGiantFinalWave\(wave=state\.wave\)\{return colossalBossSequenceIndex\(wave\)>=0/.test(gameSource), "超巨星关卡使用统一的不规则排期判断");
+assert(/const entries=\[\{type:waveBossType\(\),kind:"final",colossal:false\}\]/.test(gameSource), "非超巨星关卡的守关黑洞保持正常尺寸");
 assert(/type\.radius\*\(colossal\?2\.1:1\)/.test(gameSource), "巨型黑洞碰撞与画面尺寸至少扩大两倍");
 assert(/const MAX_COLOSSAL_BOSS_WIDTH = 660;/.test(blackHoleSource), "巨型黑洞素材允许扩展到压迫性宽度");
 assert(/if\(enemy\.type\.bossKind==="star"\|\|enemy\.type\.bossKind==="redgiant"\)[\s\S]{0,850}continue;/.test(gameSource), "恒星与红巨星绕过控制与诱引逻辑并沿固定航线推进");
@@ -166,11 +180,16 @@ assert(/function blackHoleArrivalSpeed\(enemy\)/.test(gameSource), "黑洞使用
 assert(/enemy\.y=Math\.min\(enemy\.bossStationY,enemy\.y\+blackHoleArrivalSpeed\(enemy\)\*dt\)/.test(gameSource), "黑洞仅移动到完整露出的驻留位置");
 assert(/enemy\.bossStage="casting"[\s\S]{0,500}updateBlackHoleGamma/.test(gameSource), "黑洞完整露出并停止后才开始释放技能");
 assert(/function startFinalBossWarning\(schedule\)/.test(gameSource)&&/WARNING · \$\{names\.join/.test(gameSource), "清场后终局首领具有独立红色预警阶段");
-assert(/function starBossMoveScale\(enemy\)/.test(gameSource), "恒星小首领拥有快速入场到正常巡航的平滑曲线");
-assert(/enemy\.y\+=enemy\.speed\*\(redGiant\?1\.65:starBossMoveScale\(enemy\)\)\*dt/.test(gameSource), "恒星小首领与红巨星分别接入推进倍率");
+assert(/function starBossMoveScale\(\)\{return 1;\}/.test(gameSource), "恒星与超巨星取消快速入场并使用恒定慢速推进");
+assert(!gameSource.includes("快速入场"), "大小首领的提示与逻辑不应再保留快速入场设定");
+assert(/function blackHoleArrivalSpeed\(enemy\)\{return Math\.max\(enemy\.colossal\?14:12,enemy\.speed\);\}/.test(gameSource), "黑洞首领取消入场冲刺，只保留稳定低速进入");
+assert(/function bossVisualHalfHeight\(type,radius\)/.test(gameSource)&&/spawnY=type\.boss\?-\(bossVisualHalfHeight\(type,radius\)\+24\)/.test(gameSource), "所有首领按真实视觉外接高度从战斗区域外完整入场");
+assert(/function updateBlackHoleWander\(enemy,dt\)/.test(gameSource)&&/updateBlackHoleWander\(enemy,dt\);[\s\S]{0,120}updateBlackHoleGamma/.test(gameSource), "黑洞完成入场后在驻留区缓慢随机游走并继续释放技能");
+assert(/enemy\.y\+=enemy\.speed\*starBossMoveScale\(enemy\)\*dt/.test(gameSource), "恒星与超巨星使用统一慢速入场倍率");
 assert(/id="speedButton"/.test(indexSource) && /function toggleGameSpeed\(\)/.test(gameSource), "左侧控制区提供一倍与二倍游戏速度切换");
-assert(/const DISTANCE_DAMAGE_MIN = \.5;/.test(gameSource), "战区最远端获得百分之五十伤害减免");
+assert(/const DISTANCE_DAMAGE_MIN = \.1;/.test(gameSource), "战区最远端最终伤害降低百分之九十");
 assert(/function distanceDamageMultiplier\(enemy\)[\s\S]{0,260}DISTANCE_DAMAGE_MIN\+\(1-DISTANCE_DAMAGE_MIN\)\*progress/.test(gameSource), "远距减伤向屏障前线性衰减至零");
+assert(/barrierSurfaceY\(clamp\(enemy\?\.x\?\?W\/2,BARRIER_ARC\.left,BARRIER_ARC\.right\)\)/.test(gameSource), "远近伤害按敌人所在横坐标对应的屏障弧面计算");
 assert(/multiplier=options\.trueDamage\?1:defense\*distanceMultiplier/.test(gameSource), "普通伤害接入纵深减伤，六相百分比真实伤害可绕过");
 assert(/const DISTANCE_BALANCE_HP_SCALE = \.88;/.test(gameSource), "敌方基础生命下调以补偿新增纵深减伤");
 assert(/if\(!opening&&!state\.draftWaveStarted\)\{repairAfterWave\(\);startNextWave\(\);state\.draftWaveStarted=true;\}/.test(gameSource), "波次奖励弹窗出现前已立即启动下一波");
@@ -181,7 +200,10 @@ assert(/state\.paused=state\.settings\.draftPause/.test(gameSource), "禁忌抄�
 
 assert(/function subwaveCountForWave\(wave\)\{return Math\.min\(8,3\+/.test(gameSource), "第一波固定从三个小波起步并随波次增加");
 assert(/function isInterwaveFillerSlot\(/.test(gameSource)&&/function spawnCadenceForWave\(/.test(gameSource), "小波之间使用低密度零星敌人填充并设置独立间隔");
-assert(/function subwaveRestDuration\(wave,scenario=state\.waveScenario\|\|waveScenario\(wave\)\)\{return Math\.max\(3\.2,\(3\.8\+Math\.min\(1\.2,wave\*\.04\)\)\*Math\.max\(\.86,scenario\.spawnScale\)\);\}/.test(gameSource), "小波衔接休整时间显著拉长且高速特色波也保留至少三点二秒间隔");
+assert(/function waveBossArrivalLimit\(wave\)\{return isRedGiantFinalWave\(wave\)\?60:45;\}/.test(gameSource), "普通关终局首领最迟 45 秒出现，超巨星关放宽到 60 秒");
+assert(/function buildSpawnCadencePlan\(/.test(gameSource)&&/budget=Math\.max\(8,waveBossArrivalLimit\(wave\)-warning-initial-clearBuffer\)/.test(gameSource), "小波、填充怪与休整共同服从首领到场硬预算");
+assert(/hardGateAt=waveBossArrivalLimit\(state\.wave\)-3\.8/.test(gameSource)&&/record\.combatTime>=hardGateAt/.test(gameSource), "即使残余小怪未清也会在截止时间进入终局警报");
+assert(/function subwaveRestDuration\(wave,scenario=state\.waveScenario\|\|waveScenario\(wave\)\)\{return clamp\(/.test(gameSource), "小波仍保留可识别的休整段且会随总预算压缩");
 assert(/waveBaseTarget:state\.waveTarget/.test(gameSource), "小波节奏使用基础刷怪数，不受分裂与召唤临时扩容干扰");
 assert(/base=\(20\+wave\*3\.4\+Math\.pow\(wave,1\.1\)\*1\.25\)/.test(gameSource), "每波普通敌人总量采用扩容后的成长曲线");
 assert(/function openingEnemyHpMultiplier\(wave=state\.wave\)\{return wave<=5\?\.7:1;\}/.test(gameSource), "前五波敌方生命统一降低百分之三十");
@@ -314,6 +336,7 @@ assert(/node\.dataset\.drawAverage=drawTiming\.average\.toFixed\(3\)/.test(gameS
 assert(/node\.dataset\.crowdLod=String\(living\.length>CROWD_LOD_HARD_LIMIT\?2:living\.length>CROWD_LOD_SOFT_LIMIT\?1:0\)/.test(gameSource), "测试遥测会标记当前密集潮视觉等级");
 assert(/data-test-preset="stress">满卡无敌压力 · 第 5 波/.test(indexSource), "测试账号提供第 5 波满卡无敌压力入口");
 assert(/data-test-preset="stress40">满卡无敌压力 · 第 40 波/.test(indexSource), "测试账号提供第 40 波满卡无敌压力入口");
+assert(/data-test-preset="colossal">超巨星终局 · 第 10 波/.test(indexSource), "测试账号提供第 10 波超巨星终局验收入口");
 assert(/stress40:\{wave:40,cards:null,invincible:true\}/.test(gameSource), "第 40 波压力档启用满卡与双方无敌规则");
 assert(/stress:\{wave:5,cards:null,invincible:true\}/.test(gameSource), "满卡压力预设从第 5 波启动并启用双方无敌");
 assert(/if\(state\.qaInvincible\)\{enemy\.hit=\.08;return 0;\}/.test(gameSource), "无敌压力模式保留命中特效但不削减敌军生命");
@@ -361,7 +384,13 @@ assert(/id:"support_overheal_shield"[\s\S]{0,260}SUPPORT_OVERHEAL_SHIELD_RATES/.
 assert(/segment\.overhealShieldBonus=\(segment\.overhealShieldBonus\|\|0\)\+gain/.test(gameSource)&&/segment\.maxShield=desiredTotal\*share\+overhealShieldBonus/.test(gameSource),"机器人溢疗护盾永久记录在附着段，派生属性重算不会吞掉已转化护盾上限");
 assert(/SUPPORT_OPERATION_RATES = \[6,7,8,9,10,12\]/.test(gameSource)&&/SUPPORT_RATE_CARD_VALUES = \[1\/6,1\/3,\.5,2\/3,1\]/.test(gameSource)&&/support: \{ name:"支援炮塔"[\s\S]{0,160}cooldown:10/.test(gameSource)&&/SUPPORT_HEAL_FREQUENCIES = \[1,1\.2,1\.4,1\.6,1\.8,2\.5\]/.test(gameSource),"机器人基础发射频率为每分钟 6 批，卡牌成长至 7/8/9/10/12 批，并与单机器人治疗频率独立计算");
 assert(/SUPPORT_HEAL_FIXED_VALUES = \[5,10,25,45,70,100\]/.test(gameSource)&&/SUPPORT_HEAL_MULTIPLIERS = \[1,1,1\.5,2,3,5\]/.test(gameSource)&&/SUPPORT_DURATION_VALUES = \[1,2,3,4,5,8\]/.test(gameSource),"基础治疗未选卡为 5、首级为 10，并按额外系数 1.0 至 5.0 与指定持续时间曲线成长");
-assert(gameSource.includes('function supportBaseHealing(rank=cardRank("support_base_heal"))')&&gameSource.includes('(SUPPORT_HEAL_FIXED_VALUES[level]+(state.supportHealGrowth||0))*SUPPORT_HEAL_MULTIPLIERS[level]')&&/healing=supportBaseHealing\(\)/.test(gameSource),"支援单次治疗统一使用固定值、额外系数与击杀成长公式");
+assert(gameSource.includes('function supportBaseHealing(rank=cardRank("support_base_heal"))')&&gameSource.includes('SUPPORT_HEAL_FIXED_VALUES[level]*SUPPORT_HEAL_MULTIPLIERS[level]+(state.supportHealGrowth||0)')&&/healing=supportBaseHealing\(\)/.test(gameSource),"支援单次治疗统一使用基础治疗倍率，并防止击杀成长被乘区指数放大");
+assert(/SUPPORT_OVERHEAL_FORTIFY_WAVE_CAP = \[0,\.02,\.03,\.045,\.065,\.10\]/.test(gameSource)&&/SUPPORT_OVERHEAL_SHIELD_WAVE_CAP = \[0,\.08,\.12,\.18,\.28,\.45\]/.test(gameSource),"过量治疗转化生命与护盾均具有逐段逐波预算");
+assert(/function bossHpBudget\(/.test(gameSource)&&/recentCompletedWaveDps\(\)/.test(gameSource),"首领生命根据最近三波实际 DPS 预算存活时长");
+assert(/if\(!supergiant\)\{const hpWidth=Math\.max\(120,radius\*2\)/.test(gameSource),"普通小首领继续使用原有紧凑血条");
+assert(/function drawBossHealthBar\(/.test(gameSource)&&/const width=Math\.min\(W-96,552\),height=30,x=W\/2,y=H\/2/.test(gameSource),"超巨星血条固定在战斗画面正中央");
+assert(/drawSuperBossStatusLane\(enemy,left,left\+width,top\+height\+17\)/.test(gameSource)&&/function superBossDebuffEntries/.test(gameSource)&&/function superBossBuffEntries/.test(gameSource),"超巨星减益居血条下方左侧、增益居右侧");
+assert(/ARC_MINI_FIELD_FILL_ALPHA=\.018/.test(gameSource)&&/ARC_MINI_FIELD_STROKE_ALPHA=\.11/.test(gameSource),"电离子炮范围场仅保留低强度提示");
 assert(/id:"support_kill_healing"[\s\S]{0,220}star:3,max:5/.test(gameSource)&&/SUPPORT_KILL_HEAL_GAINS = \[0,1,2,3,4,5\]/.test(gameSource)&&/growSupportHealingFromKill\(enemy\)/.test(gameSource),"三星生命回收协议按击杀永久提供 1 至 5 点基础治疗量");
 assert(/supportHealGrowth:state\.supportHealGrowth\|\|0/.test(gameSource)&&/supportHealGrowth:Math\.max\(0,Number\(run\.supportHealGrowth\)\|\|0\)/.test(gameSource),"击杀获得的基础治疗量成长随存档保存与恢复");
 assert(/REFRACTION_CHANCES=\[\.40,\.60,\.80,1,1\]/.test(gameSource)&&/count:rank>=5\?2:1/.test(gameSource),"所有星级概率折射统一从 40% 起步，四级必得 1 张、五级质变为 2 张");
@@ -394,7 +423,8 @@ assert(indexSource.includes('id="downloadLogsButton"')&&gameSource.includes('$("
 assert(/function makeWaveStats[\s\S]{0,900}bosses:Array\.isArray\(seed\.bosses\)/.test(gameSource),"逐波统计会持久化并克隆 Boss 生命周期记录");
 assert(/function beginBossLog/.test(gameSource)&&/beginBossLog\(state\.enemies\[state\.enemies\.length-1\]\)/.test(gameSource)&&/finishBossLog\(enemy,"defeated"\)/.test(gameSource),"Boss 出场和死亡均写入当前波次日志");
 assert(/function buildCombatLogExport/.test(gameSource)&&gameSource.includes("directBySource")&&gameSource.includes("indirectBySource")&&gameSource.includes("effectiveBySource")&&gameSource.includes("overhealingBySource")&&gameSource.includes("shieldAbsorbBySource"),"下载日志包含逐波直接/间接伤害及三类治疗数据");
-assert(/schemaVersion:1,release:RELEASE_ID,game:"无尽"/.test(gameSource)&&!/[,{]password:/.test(gameSource),"日志具备版本标识且不导出账号口令字段");
+assert(/schemaVersion:2,release:RELEASE_ID,game:"无尽"/.test(gameSource)&&!/[,{]password:/.test(gameSource),"日志具备第二版平衡字段且不导出账号口令字段");
+assert(gameSource.includes("enemyPressure")&&gameSource.includes("barrier:{...waveStats.barrier}")&&gameSource.includes("timing:waveStats.timing"),"逐波日志补充敌人生命压力、屏障状态和首领到场时间");
 
 assert(/function cardProgressionUnlocked[\s\S]{0,180}card\.star===5&&effectiveWave>=10[\s\S]{0,80}card\.star===6&&effectiveWave>=15/.test(gameSource),"wave 10 force-unlocks all five-star cards and wave 15 force-unlocks all six-star cards");
 assert(/state\.openingDraft\?generateWeightedCards\(DRAFT_OFFER_COUNT,\{ignorePreference:true,history:\[\],maxStar:4/.test(gameSource),"opening draft remains capped at four stars");

@@ -151,6 +151,10 @@
     if (enemy.type.bossKind === "blackhole") drawBlackHole(ctx, enemy, radius, elapsed);
     else drawStar(ctx, enemy, radius, elapsed, enemy.type.starColors);
 
+    // 超巨星横跨画布时，名称与血量由 game.js 的固定视口血条承载，
+    // 避免跟随世界坐标的标题落在屏幕外或压在星体上。
+    if (enemy.type.bossKind === "redgiant") return;
+
     ctx.save();
     ctx.textAlign = "center";
     ctx.font = "900 11px 'Microsoft YaHei UI'";
