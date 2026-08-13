@@ -176,9 +176,10 @@
 
   function waveEnemyPressureMultiplier(wave) {
     const value = Math.max(1, Math.floor(Number(wave) || 1));
-    if (value < 20) return { hp:1, attack:1 };
-    const pressureWave = Math.min(40, value);
-    return { hp:pressureWave, attack:pressureWave / 2 };
+    const coefficient = value <= 10
+      ? 0.5 + (value - 1) * (0.5 / 9)
+      : Math.pow(1.6, value - 10);
+    return { hp:coefficient, attack:coefficient };
   }
 
   function rankOf(ranks, id) {
