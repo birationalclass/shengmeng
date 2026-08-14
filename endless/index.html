@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-  <link rel="stylesheet" href="styles.css?v=20260813-v142-boss-palette-physics">
+  <link rel="stylesheet" href="styles.css?v=20260815-v150-relic-arsenal-wave50">
   </head>
   <body>
     <div class="portrait-app">
@@ -39,6 +39,7 @@
         <div class="wave-line"><span id="phaseText">等待部署</span><small id="enemyText">0 敌军</small></div>
         <div class="wave-bar"><i id="waveBar"></i></div>
         <div class="relic-panel"><header><span>传承系统</span><div><button id="achievementButton" type="button">成就</button><button id="relicButton" type="button">遗物</button></div></header><div id="relicList" class="relic-list"><small>尚未解锁遗物</small></div></div>
+        <div id="qaBossControls" class="qa-boss-controls hidden" aria-label="测试账号终局首领直战"><small>测试账号 · 首领直战</small><button id="wave50BossTestButton" type="button"><i>★</i><span>直接挑战第 50 关 Boss</span></button></div>
       </section>
       <section class="recent-cards-panel" aria-labelledby="recentCardsTitle"><header><span id="recentCardsTitle">最近获取卡牌</span><div class="recent-cards-heading"><b id="recentCardCount">0 / 5</b><button id="recentCardsToggle" class="recent-cards-toggle" type="button" aria-expanded="true" aria-controls="recentCards">折叠</button></div></header><div id="recentCards" class="recent-cards"><div class="recent-cards-empty">战斗中获取的卡牌会收纳在这里</div></div></section>
 
@@ -101,7 +102,7 @@
           <div class="difficulty-picker">
             <label><span>难度</span><select id="difficultyMajorInput"><option value="cruise">行星</option><option value="deep">恒星</option><option value="singularity">中子星</option><option value="terminus">黑洞</option></select></label>
             <label><span>威胁阶</span><select id="difficultyMinorInput"><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option><option value="5">V</option></select></label>
-            <small id="difficultySummary">巡航 I · 敌军维持标准强度</small>
+            <small id="difficultySummary">行星 I · 敌方战斗数值 ×1.00 · 每升 1 阶 ×1.5</small>
           </div>
           <div id="resumePanel" class="resume-panel hidden"><small>检测到上次记录</small><h3>第 <span id="resumeWave">01</span> 波 · <span id="resumeTime">00:00</span></h3><p><span id="resumeCards">0</span> 张卡牌</p><div><button id="continueRunButton" class="primary-button" type="button">加载存档</button><button id="discardRunButton" class="secondary-button" type="button">放弃并重开</button></div></div>
           <div id="fastStartPanel" class="fast-start-panel hidden">
@@ -126,7 +127,7 @@
               <button type="button" data-test-preset="full">全塔终局 · 第 40 波</button>
               <button type="button" data-test-preset="pressure">三首领压力 · 第 40 波</button>
               <button type="button" data-test-preset="colossal">超巨星终局 · 第 10 波</button>
-              <button type="button" data-test-preset="victory">全卡通关 · 难度解锁验收</button>
+              <button type="button" data-test-preset="victory">第 50 波通关 · 难度解锁验收</button>
             </div>
           </section>
           <button id="startAccountButton" class="account-switch" type="button"><span id="startAccountAvatar">?</span><b id="startAccountName">未登录</b><em>切换账号 ›</em></button>
@@ -170,11 +171,11 @@
       </div>
 
       <div id="achievementOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="achievementTitle">
-        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER ACHIEVEMENTS</span><h2 id="achievementTitle">成就档案</h2><p class="modal-intro">成就独立记录战术里程碑；每个天体难度 V 通关都会解锁专属成就与遗物强化。</p><div id="achievementList" class="achievement-list"></div></section>
+        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER ACHIEVEMENTS</span><h2 id="achievementTitle">成就档案</h2><p class="modal-intro">成就独立记录战术里程碑；成就解锁或强化的遗物只会从下一局开始生效。每个天体难度 V 通关可强化对应遗物。</p><div id="achievementList" class="achievement-list"></div></section>
       </div>
 
       <div id="relicOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="relicTitle">
-        <section class="modal achievement-modal"><button class="modal-close" data-close="relicOverlay" type="button">×</button><span class="eyebrow">RELIC VAULT</span><h2 id="relicTitle">遗物库</h2><p class="modal-intro">遗物是独立的常驻增益；成就负责解锁或强化，已获得的遗物会自动装备。</p><div id="relicArchive" class="relic-archive"></div></section>
+        <section class="modal achievement-modal"><button class="modal-close" data-close="relicOverlay" type="button">×</button><span class="eyebrow">RELIC VAULT</span><h2 id="relicTitle">遗物库</h2><p class="modal-intro">遗物是账号常驻增益；新解锁或升级的遗物会在下一局开始时装备，本局不会追溯生效。</p><div id="relicArchive" class="relic-archive"></div></section>
       </div>
 
       <div id="helpOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
@@ -218,10 +219,10 @@
     </div>
 
     <audio id="backgroundMusic" preload="metadata"></audio>
-    <script src="black-hole-enemy.js?v=20260813-v142-boss-palette-physics"></script>
-  <script src="balance-core.js?v=20260813-v142-boss-palette-physics"></script>
-    <script src="enemy-visuals.js?v=20260813-v142-boss-palette-physics"></script>
+    <script src="black-hole-enemy.js?v=20260815-v150-relic-arsenal-wave50"></script>
+  <script src="balance-core.js?v=20260815-v150-relic-arsenal-wave50"></script>
+    <script src="enemy-visuals.js?v=20260815-v150-relic-arsenal-wave50"></script>
     <output id="qaPerf" hidden aria-hidden="true"></output>
-  <script src="game.js?v=20260813-v142-boss-palette-physics"></script>
+  <script src="game.js?v=20260815-v150-relic-arsenal-wave50"></script>
   </body>
 </html>

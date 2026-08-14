@@ -22,6 +22,10 @@ const ids=new Set(cards.map((card)=>card.id));
 const duplicateIds=cards.map((card)=>card.id).filter((id,index,all)=>all.indexOf(id)!==index);
 assert.equal(ids.size,cards.length,`动态卡池 ID 不重复：${duplicateIds.join(",")}`);
 assert(!ids.has("global_damage"),"旧弹道火控总成不再进入卡池");
+const bulletCards=cards.filter((card)=>card.tags.includes("弹道"));
+assert.equal(bulletCards.reduce((sum,card)=>sum+card.max,0),99,"弹道历史目录仍可识别 99 级原始总量");
+assert.equal(bulletCards.filter((card)=>!card.designRemoved).reduce((sum,card)=>sum+card.max,0),93,"子弹炮真实可获取等级上限严格为 93");
+assert.equal(bulletCards.filter((card)=>card.designRemoved).map((card)=>card.id).join(","),"evo_bullet_3_4,evo_bullet_4_4,evo_bullet_6_4","奇点弹仓废卡的 6 个等级不进入可获取统计");
 for(const card of cards){assert(card.star>=1&&card.star<=6,`${card.id} 星级合法`);assert(card.max>=1&&card.max<=6,`${card.id} 等级上限合法`);}
 
 const families={bullet:"弹道",laser:"激光",missile:"导弹",frost:"冰霜",arc:"电弧",support:"支援"};
@@ -70,6 +74,25 @@ assert.equal(cards.find((card)=>card.id==="cryo_arc_bridge").star,4,"电离寒�
 assert(cards.find((card)=>card.id==="frost_laser_resonance").tags.includes("激光"),"冷光共振同时属于激光卡牌");
 assert(cards.find((card)=>card.id==="thermal_rupture").tags.includes("导弹"),"冷热破碎同时属于导弹卡牌");
 assert(cards.find((card)=>card.id==="frost_support_preservation").tags.includes("支援"),"寒气续航同时属于支援卡牌");
+
+const replacementLaserControls=[
+  {id:"evo_laser_2_4",name:"迟滞棱镜·Ⅱ",star:2,max:3,minWave:2,req:[],first:["0.15 秒","Boss 持续时间减半"],last:["0.35 秒"]},
+  {id:"evo_laser_3_4",name:"光压回卷·Ⅲ",star:3,max:3,minWave:4,req:[],first:["每第 3 轮","20","0.35 秒"],last:["50","0.75 秒"]},
+  {id:"evo_laser_4_4",name:"分光囚笼·Ⅳ",star:4,max:2,minWave:6,req:["laser_reflect"],first:["首脉冲","反射命中","0.55 秒","每轮 1 次"],last:["0.9 秒"]}
+];
+for(const expected of replacementLaserControls){
+  const card=cards.find((item)=>item.id===expected.id);
+  assert(card,`${expected.id} 替代短控卡保留稳定存档 ID`);
+  assert.equal(card.name,expected.name,`${expected.id} 使用新的特色名称`);
+  assert.equal(card.star,expected.star,`${expected.name} 星级正确`);
+  assert.equal(card.max,expected.max,`${expected.name} 等级上限正确`);
+  assert.equal(card.minWave,expected.minWave,`${expected.name} 最早波次正确`);
+  assert.deepEqual(Array.from(card.req||[]),expected.req,`${expected.name} 前置依赖正确`);
+  assert(card.tags.includes("激光")&&card.tags.includes("功能"),`${expected.name} 归入激光功能卡`);
+  for(const text of expected.first)assert(card.desc(0).includes(text),`${expected.name} 首级文案包含 ${text}`);
+  for(const text of expected.last)assert(card.desc(card.max-1).includes(text),`${expected.name} 满级文案包含 ${text}`);
+}
+assert(!cards.some((card)=>card.name.startsWith("无限折光·")),"旧无限折光占位系列已完全退出运行时卡池");
 
 const counts=Object.fromEntries(Object.entries(families).map(([key,tag])=>[key,cards.filter((card)=>card.tags.includes(tag)).length]));
 const starCounts=Array.from({length:6},(_,index)=>cards.filter((card)=>card.star===index+1).length);

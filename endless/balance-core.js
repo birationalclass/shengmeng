@@ -12,7 +12,18 @@
   const BONUS_BOUNTY_INTERVALS = [0, 20, 15, 10];
   const BASE_STAR_PROBABILITIES = [0.64, 0.22, 0.085, 0.035, 0.015, 0.005];
   const STAR_BOOST_PER_LEVEL = [0.016, 0.010, 0.005, 0.0025, 0.001];
+  const DIFFICULTY_STEP_MULTIPLIER = 1.5;
+  const BARRIER_RELIC_UNLOCK_THRESHOLD = 10_000_000;
   const COMBAT_FAMILIES = new Set(["弹道","激光","导弹","冰霜","电弧","支援"]);
+
+  function difficultyStatMultiplier(rating) {
+    const steps = Math.max(0, Math.floor(Number(rating) || 0));
+    return Math.pow(DIFFICULTY_STEP_MULTIPLIER, steps);
+  }
+
+  function hasReachedBarrierRelicThreshold(value) {
+    return Number(value) >= BARRIER_RELIC_UNLOCK_THRESHOLD;
+  }
 
   function families(card) {
     const tags = [...new Set((card?.tags || []).filter((tag) => DRAFT_FAMILIES.has(tag)))];
@@ -182,6 +193,12 @@
     return { hp:coefficient, attack:coefficient };
   }
 
+  function bossHealthBudget(wave, finalBoss = false) {
+    const value = Math.max(1, Math.floor(Number(wave) || 1));
+    const waveTenHealth = finalBoss ? 100000 : 10000;
+    return Math.max(1, Math.round(waveTenHealth * Math.pow(1.6, value - 10)));
+  }
+
   function rankOf(ranks, id) {
     if (ranks instanceof Map) return Number(ranks.get(id)) || 0;
     return Number(ranks?.[id]) || 0;
@@ -240,9 +257,9 @@
   return {
     DRAFT_FAMILIES, DEFAULT_FATIGUE, SAME_CARD_FATIGUE,
     FORBIDDEN_INSIGHT_CHANCES, BONUS_BOUNTY_INTERVALS,
-    BASE_STAR_PROBABILITIES, STAR_BOOST_PER_LEVEL,
+    BASE_STAR_PROBABILITIES, STAR_BOOST_PER_LEVEL, DIFFICULTY_STEP_MULTIPLIER, BARRIER_RELIC_UNLOCK_THRESHOLD,
     families, offerWeight, generateOffers, generateStarOffers, remember,
-    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile, lateWaveProfile, waveEnemyPressureMultiplier, terminalSynergyProfile,
-    forbiddenInsightChance, rollForbiddenInsight, bonusBountyInterval, shouldSpawnBonusBounty
+    normalizeProbabilities, starProbabilities, rollStar, earlyWaveProfile, lateWaveProfile, waveEnemyPressureMultiplier, bossHealthBudget, terminalSynergyProfile,
+    difficultyStatMultiplier, hasReachedBarrierRelicThreshold, forbiddenInsightChance, rollForbiddenInsight, bonusBountyInterval, shouldSpawnBonusBounty
   };
 });
