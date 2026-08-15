@@ -19,7 +19,7 @@ const blackHoleSource = fs.readFileSync(path.join(__dirname, "..", "black-hole-e
 const indexSource = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 const cardEnd = gameSource.indexOf("  const CARD_MAP =");
 assert(cardEnd > 0, "可以读取包含动态重构在内的完整卡牌定义");
-const cardPrefix = `${gameSource.slice(0,cardEnd)}\n  globalThis.__cards=CARDS;\n  globalThis.__laserExposureChance=LASER_EXPOSURE_CHANCE;\n  globalThis.__laserExposureCap=LASER_EXPOSURE_CAP;\n  globalThis.__laserExposureProfiles=LASER_EXPOSURE_PROFILES;\n  globalThis.__laserExposureBossMultiplier=LASER_EXPOSURE_BOSS_MULTIPLIER;\n  globalThis.__rangeRelicChances=RANGE_RELIC_CHANCES;\n  globalThis.__relicBaseAttackValues=RELIC_BASE_ATTACK_VALUES;\n  globalThis.__relicBaseRateValues=RELIC_BASE_RATE_VALUES;\n})();`;
+const cardPrefix = `${gameSource.slice(0,cardEnd)}\n  globalThis.__cards=CARDS;\n  globalThis.__laserExposureChance=LASER_EXPOSURE_CHANCE;\n  globalThis.__laserExposureCap=LASER_EXPOSURE_CAP;\n  globalThis.__laserExposureProfiles=LASER_EXPOSURE_PROFILES;\n  globalThis.__laserExposureBossMultiplier=LASER_EXPOSURE_BOSS_MULTIPLIER;\n  globalThis.__rangeRelicChances=RANGE_RELIC_CHANCES;\n  globalThis.__relicBaseAttackValues=RELIC_BASE_ATTACK_VALUES;\n  globalThis.__relicBaseRateValues=RELIC_BASE_RATE_VALUES;\n  globalThis.__smallKillThresholds=SMALL_KILL_RELIC_THRESHOLDS;\n  globalThis.__bountyKillThresholds=BOUNTY_KILL_RELIC_THRESHOLDS;\n  globalThis.__bountyEchoChances=BOUNTY_ECHO_CHANCES;\n  globalThis.__waveChoiceEchoChances=WAVE_CHOICE_ECHO_CHANCES;\n})();`;
 const cardCanvas = {getContext:()=>({})};
 const cardDocument = {querySelector:(selector)=>selector==="#gameCanvas"?cardCanvas:{},querySelectorAll:()=>[]};
 const cardSandbox = {console,document:cardDocument,window:{EndlessBalanceCore:{}},globalThis:null,Math,setTimeout,clearTimeout};
@@ -28,10 +28,12 @@ vm.runInNewContext(cardPrefix,cardSandbox,{filename:"game-card-prefix.js"});
 const cards = cardSandbox.__cards;
 const releaseId = gameSource.match(/const RELEASE_ID = "([^"]+)";/)?.[1];
 assert(releaseId, "可以读取当前发布版本号");
-assert.match(releaseId, /-v150-relic-arsenal-wave50$/, "当前发布版本为 v150 遗物军械与第50关首领直战版本");
+assert.match(releaseId, /-v151-ten-difficulties-relics-damage-targets-r5$/, "当前发布版本为 v151 十大难度、十级遗物、独立卡级与逐敌伤害版本");
 const cacheVersions = [...indexSource.matchAll(/(?:styles\.css|black-hole-enemy\.js|balance-core\.js|enemy-visuals\.js|game\.js)\?v=([^"']+)/g)].map((match)=>match[1]);
 assert.equal(cacheVersions.length, 5, "首页五个本地 CSS/JS 入口均带缓存版本");
 assert.deepEqual([...new Set(cacheVersions)], [releaseId], "首页全部本地资源缓存版本与 RELEASE_ID 完全一致");
+assert(indexSource.includes('id="difficultyText"')&&/function updateUI\(force=false\)\{const difficulty=difficultyName\(\);[^\n]+\$\("#difficultyText"\)\.textContent=difficulty;\$\("#difficultyText"\)\.title=difficulty;/.test(gameSource),"左上战斗信息区实时显示冻结后的当前大难度与威胁阶");
+assert(/\.run-stats \{[^}]*grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/.test(fs.readFileSync(path.join(__dirname,"..","styles.css"),"utf8")),"波次、时间与难度在左上信息区保持三格同排");
 
 const ids = new Set(cards.map((card) => card.id));
 assert.equal(ids.size, cards.length, "所有卡牌 ID 唯一");
@@ -52,7 +54,7 @@ assert(/card\.star<=4\),initialCards=BalanceCore\.generateStarOffers/.test(gameS
 assert(/const OPENING_GROWTH_CARD_IDS=\[\.\.\.Object\.values\(KILL_GROWTH_CARD_BY_TURRET\),"support_kill_healing"\]/.test(gameSource), "开局成长路线固定提供五类攻击成长与治疗成长共六张卡牌");
 assert(/function showOpeningGrowthDraft\(resume=false\)/.test(gameSource)&&/成长路线选择 1 \/ 1/.test(gameSource)&&/finishOpeningGrowthDraft/.test(gameSource), "成长路线六选一在普通初始选卡前独立完成");
 assert(/grantOpeningRandomCards\(NEW_RUN_RANDOM_CARDS\+relicLevel\("supply_capsule"\)\)/.test(gameSource)&&/if\(state\.openingDraftsRemaining>0\)scheduleOpeningDraft\(\)/.test(gameSource), "成长路线确认后才发放随机五张并进入五轮初始选卡");
-assert(/openingRewardCards=initialCards\.map/.test(gameSource)&&/成长 \$\{growth\.length\} · 随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "成长路线、随机奖励与逐次手选卡牌持续展示在初始构筑区");
+assert(/openingRewardCards\.push\(\{id:card\.id,rank:cardRank\(card\.id\)\}\)/.test(gameSource)&&/成长 \$\{growth\.length\} · 随机 \$\{rewards\.length\} · 已选 \$\{picks\.length\}/.test(gameSource), "成长路线、随机奖励与逐次手选卡牌按获得时等级快照展示在初始构筑区");
 assert(/const INITIAL_BARRIER_SEGMENT_HP = 100;/.test(gameSource), "五段小屏障各自以一百生命开始");
 assert(!cards.some((card) => card.id === "global_damage"), "已删除弹道火控总成");
 assert.equal(cards.find((card) => card.id === "bullet_base_damage").max, 5, "子弹基础攻击卡使用五级质变成长");
@@ -67,7 +69,7 @@ assert(/\.recent-cards > \.recent-card \{[^}]*inset:0 auto auto var\(--recent-le
 assert(indexSource.includes('class="meter-scroll-body"')&&/\.meter-scroll-body \{[^}]*overflow:hidden/.test(stylesSource)&&/\.live-meter \.meter-list \{[^}]*overflow-y:auto/.test(stylesSource), "伤害来源与治疗来源各自拥有独立滚动区域");
 assert(/grid-template-rows:minmax\(0,3fr\) minmax\(0,2fr\)/.test(stylesSource), "伤害与治疗区域按可用高度自适应分配且不会挤掉治疗面板");
 assert(/\.live-meter \{[^}]*grid-row:2 \/ 4;[^}]*align-self:stretch/.test(stylesSource), "桌面战斗统计面板跨越下方网格并延伸到底部");
-assert(gameSource.includes('renderCard=(card)=>')&&gameSource.includes('<span class="card-top"><b>${stars}</b>')&&/\.library-card \.glyph \{/.test(stylesSource), "卡牌图鉴使用四选一卡牌的星带、主图标和玻璃卡体结构");
+assert(gameSource.includes('renderCard=(card,level)=>')&&gameSource.includes('<span class="card-top"><b>${stars}</b>')&&/\.library-card \.glyph \{/.test(stylesSource), "卡牌图鉴按每个等级独立展示星带、主图标和玻璃卡体结构");
 assert(!gameSource.includes('${turret.active?"在线":"待卡牌解锁"}'), "炮塔阵列不再显示在线或待解锁文字");
 assert(/function updateSupportAutoDispatch\(turret,dt\)/.test(gameSource)&&/repairBotReserve=Math\.max\(0,reserve-launched\)/.test(gameSource), "自动治疗派遣与制造解耦且待命机器人库存真实扣减");
 assert(/const fullLeft=.*glass=ctx\.createLinearGradient/.test(gameSource)&&/ctx\.globalCompositeOperation="screen"/.test(gameSource), "五段屏障由连续玻璃弧面和单层折射边缘绘制");
@@ -76,7 +78,7 @@ assert(/function waveTimelineProgress\(\)/.test(gameSource)&&!/waveResolved\/sta
 assert(/function turretAdditiveBaseAttack\(turretId,flat=turretFlatDamage\(turretId\)\).*TURRET_DEFS\[turretId\].*turretPermanentAttackGrowth\(turretId\).*Number\(flat\)/.test(gameSource), "固定基础攻击以初始值、击杀永久成长与卡牌固定值相加");
 assert(/function turretCardAdjustedBaseAttack\(turretId,flat=turretFlatDamage\(turretId\),multiplier=turretPassive\(turretId,"damage"\)\).*turretAdditiveBaseAttack\(turretId,flat\)\*\(1\+/.test(gameSource), "基础攻击百分比在全部固定基础数值相加后统一相乘");
 assert(/value:turretCardAdjustedBaseAttack\(turretId,flat,multiplier\).*growth:turretPermanentAttackGrowth\(turretId\)/.test(gameSource), "卡牌预览纳入本局击杀成长并与实战公式一致");
-assert(/function growLeadingTurretAttackFromKill\(\)/.test(gameSource)&&/growLeadingTurretAttackFromKill\(\);growTurretRangeFromKill\(enemy,source\);rollStarlightRoadBounties\(enemy\)/.test(gameSource), "任意敌人死亡会先结算杀戮攻击成长，再按击杀来源结算射程成长与星光奖励");
+assert(/function growLeadingTurretAttackFromKill\(\)/.test(gameSource)&&/recordRelicKillProgress\(enemy\);applySmallKillDamageRelic\(enemy\);[\s\S]{0,260}growLeadingTurretAttackFromKill\(\);growTurretRangeFromKill\(enemy,source\);rollStarlightRoadBounties\(enemy\)/.test(gameSource), "任意敌人死亡会先结算两类击杀遗物，再结算杀戮攻击、射程成长与星光奖励");
 assert(/killGrowth:\{\.\.\.\(state\.killGrowth\|\|\{\}\)\}/.test(gameSource)&&/killGrowth:Object\.fromEntries/.test(gameSource), "杀戮成长会随存档保存并安全恢复");
 const baseAttackProfiles = {
   bullet:{values:[.45,.9,1.3,1.7,2.5],flatValues:[45,90,130,170,250]},
@@ -280,7 +282,7 @@ assert(/敌军下缘穿越第/.test(gameSource) && /endGame\(\)/.test(gameSource
 assert(gameSource.includes("shield:segmentShield,maxShield:segmentShieldMax") && /result=damageBarrierSegment\(segment,integrity/.test(gameSource), "五段屏障分别维护生命与相位护盾，并通过统一分段承伤管线独立结算碰撞");
 assert(/lowestBarrier[\s\S]{0,180}highestBarrier[\s\S]{0,180}farFriendly[\s\S]{0,180}balancedRandom/.test(gameSource), "支援炮塔提供四种独立治疗优先级");
 assert.equal(Balance.DIFFICULTY_STEP_MULTIPLIER,1.5,"每个连续小难度阶统一提升 1.5 倍敌方战斗数值");
-for(let rating=0;rating<19;rating+=1)assert.equal(Balance.difficultyStatMultiplier(rating+1)/Balance.difficultyStatMultiplier(rating),1.5,`难度 ${rating} → ${rating+1} 严格连续提升 1.5 倍`);
+for(let rating=0;rating<49;rating+=1)assert(Math.abs(Balance.difficultyStatMultiplier(rating+1)/Balance.difficultyStatMultiplier(rating)-1.5)<1e-12,`难度 ${rating} → ${rating+1} 严格连续提升 1.5 倍`);
 assert.equal(Balance.difficultyStatMultiplier(4),Math.pow(1.5,4),"行星 V 使用连续第 4 次指数提升");
 assert.equal(Balance.difficultyStatMultiplier(5),Math.pow(1.5,5),"恒星 I 紧接行星 V 再提升 1.5 倍");
 assert(/difficultyFactors\(\)\.hp/.test(gameSource) && /difficultyFactors\(\)\.attack/.test(gameSource), "统一难度倍率同时进入敌军生命与攻击入口");
@@ -289,11 +291,15 @@ assert(/runDifficulty:normalizeRunDifficulty\(state\.runDifficulty\)/.test(gameS
 assert(/const CAMPAIGN_CLEAR_WAVE = 50;/.test(gameSource), "航线固定在完成第 50 波后通关");
 assert(/function completeCardCollection\(\)[\s\S]{0,420}坚守至第 \$\{CAMPAIGN_CLEAR_WAVE\} 波/.test(gameSource) && !/function completeCardCollection\(\)[\s\S]{0,420}endGame\(true\)/.test(gameSource), "全卡收集只记录里程碑，不再提前通关");
 assert(/function recordClearedWave\(\)[\s\S]{0,420}state\.wave>=CAMPAIGN_CLEAR_WAVE[\s\S]{0,100}endGame\(true\)/.test(gameSource), "仅在完整清除第 50 波后进入难度解锁结算");
-for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism","healing_bastion_core","rangefinder_array","arsenal_core","tempo_core"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
-assert.deepEqual(Array.from(cardSandbox.__relicBaseAttackValues,Number),[0,20,40,60,80,100],"军械基座五级依次提供 +20/+40/+60/+80/+100 基础攻击");
-assert.deepEqual(Array.from(cardSandbox.__relicBaseRateValues,Number),[0,.05,.10,.15,.20,.25],"脉冲节拍器五级依次提供 +5%/+10%/+15%/+20%/+25% 基础攻速");
-assert(/id:"arsenal_core"[^\n]+maxLevel:5/.test(gameSource)&&/RELIC_ATTACK_WAVE_THRESHOLDS\.map\(\(wave,index\)=>\(\{id:`arsenal_core_\$\{index\+1\}`/.test(gameSource),"军械基座通过五档最高通关波次成就逐级强化");
-assert(/id:"tempo_core"[^\n]+maxLevel:5/.test(gameSource)&&/RELIC_RATE_BOSS_THRESHOLDS\.map\(\(kills,index\)=>\(\{id:`tempo_core_\$\{index\+1\}`/.test(gameSource),"脉冲节拍器通过五档终局首领击破成就逐级强化");
+for(const relic of ["vanguard_chart","supply_capsule","barrier_seed","time_prism","healing_bastion_core","rangefinder_array","arsenal_core","tempo_core","swarm_war_archive","bounty_echo_beacon"])assert(gameSource.includes(`id:"${relic}"`), `遗物 ${relic} 已实现`);
+assert.deepEqual(Array.from(cardSandbox.__relicBaseAttackValues,Number),[0,20,40,60,80,100,120,140,160,180,200],"军械基座十级每级提供 +20 基础攻击，最高 +200");
+assert.deepEqual(Array.from(cardSandbox.__relicBaseRateValues,Number),[0,.05,.10,.15,.20,.25,.30,.35,.40,.45,.50],"脉冲节拍器十级每级提供 +5% 基础攻速，最高 +50%");
+for(const relic of ["rangefinder_array","supply_capsule","arsenal_core","barrier_seed","tempo_core"])assert(new RegExp(`id:"${relic}"[^\\n]+maxLevel:GENERAL_RELIC_LEVEL_CAP`).test(gameSource),`${relic} 使用十级大难度成长`);
+assert(/const DIFFICULTY_RELIC_TRACKS=\[[\s\S]{0,260}minor:1,relic:"rangefinder_array"[\s\S]{0,80}minor:2,relic:"supply_capsule"[\s\S]{0,80}minor:3,relic:"arsenal_core"[\s\S]{0,80}minor:4,relic:"barrier_seed"[\s\S]{0,80}minor:5,relic:"tempo_core"/.test(gameSource),"每个大难度的 I/II/III/IV/V 分别升级射程、补给、攻击、屏障和攻速遗物");
+assert.deepEqual(Array.from(cardSandbox.__smallKillThresholds,Number),[1000,2000,4000,8000,16000,32000,64000,128000,256000,512000],"小怪击杀遗物从 1000 起每级需求翻倍至十级");
+assert.deepEqual(Array.from(cardSandbox.__bountyKillThresholds,Number),[100,200,400,800,1600,3200,6400,12800,25600,51200],"奖励怪击杀遗物从 100 起每级需求翻倍至十级");
+assert.deepEqual(Array.from(cardSandbox.__bountyEchoChances,Number),[0,.10,.13,.17,.20,.23,.27,.30,.33,.37,.40],"悬赏回声信标十级概率由 10% 成长至 40%");
+assert.deepEqual(Array.from(cardSandbox.__waveChoiceEchoChances,Number),[0,.10,.13,.16,.20,.25],"余辉演化五级概率为 10%/13%/16%/20%/25%");
 assert(/function turretAdditiveBaseAttack\(turretId[^\n]+runRelicBaseAttackBonus\(\)/.test(gameSource),"军械基座在基础攻击固定值汇总入口生效");
 assert(/function turretCooldown\(turret\)[^\n]+runRelicAttackSpeedBonus\(\)[^\n]+turretPassive\(turret\.id,"rate"\)\+relicRate/.test(gameSource),"脉冲节拍器在所有攻击炮塔实际冷却入口生效");
 assert(/ensureProgress\(account\);evaluateAchievements\(false\);state\.best/.test(gameSource),"旧账号登录时会按既有进度补发新增遗物成就");
@@ -307,9 +313,9 @@ assert(/runRelicLevel\("healing_bastion_core"\)>0\)addCard\("support_overheal_fo
 assert(/checkBarrierRelicAchievement\(\)/.test(gameSource)&&/hasReachedBarrierRelicThreshold\(state\.globalBarrierMax\)/.test(gameSource),"屏障总上限统一重算时检查千万壁垒成就");
 assert(indexSource.includes("新解锁或升级的遗物会在下一局开始时装备")&&indexSource.includes("每升 1 阶 ×1.5"),"遗物延迟生效与难度阶梯规则在界面中明确说明");
 const rangeRelicChances = Array.from(cardSandbox.__rangeRelicChances, Number);
-assert.deepEqual(rangeRelicChances,[0,.10,.13,.16,.20],"远域测距阵列四级触发率依次为 10%/13%/16%/20%");
+assert.deepEqual(rangeRelicChances,[0,.10,.12,.14,.16,.18,.20,.22,.24,.27,.30],"远域测距阵列十级触发率由 10% 成长至 30%");
 assert(rangeRelicChances.slice(1).every((chance,index,values)=>chance>0&&chance<1&&(index===0||chance>values[index-1])),"测距阵列触发率逐级严格提高且保持为合法概率");
-assert(/\.\.\.DIFFICULTY_MAJORS\.map\(\(difficulty,index\)=>\(\{id:`range_\$\{difficulty\.id\}`[\s\S]{0,320}relic:"rangefinder_array",relicLevel:index\+1/.test(gameSource),"四个大难度首次通关分别把测距阵列提升至 LV.1–LV.4");
+assert(/\.\.\.DIFFICULTY_MAJORS\.flatMap\(\(difficulty,majorIndex\)=>DIFFICULTY_RELIC_TRACKS\.map/.test(gameSource)&&/relic:track\.relic,relicLevel:majorIndex\+1/.test(gameSource),"十大难度的五个固定小阶分别把对应遗物提升至 LV.1–LV.10");
 assert(/const account=activeAccount\(\),progress=ensureProgress\(account\),runRelicLevels=snapshotRelicLevels\(progress\)/.test(gameSource)&&/state\.runRelicLevels=runRelicLevels/.test(gameSource),"新解锁或升级的测距阵列只在下一局快照时装备");
 assert(/function growTurretRangeFromKill\(enemy,source\)[^\n]+enemy\.type\.boss\|\|enemy\.type\.bounty\|\|enemy\.type\.summoned\|\|enemy\.type\.splitChild\|\|enemy\.summonedByBlackHole\|\|enemy\.sourceBossId/.test(gameSource),"首领、悬赏、裂殖子体与其他召唤物不会刷取射程成长");
 assert(/function attributedRangeTurret\(source\)[^\n]+direct=meterTurretGroup\(String\(source\|\|""\)\)[^\n]+if\(attackIds\.includes\(direct\)\)return direct/.test(gameSource),"直接击杀来源优先把射程成长归属到实际攻击炮塔");
@@ -544,8 +550,8 @@ assert(/node\.dataset\.drawGapAverage=drawGapTiming\.average\.toFixed\(2\)/.test
 assert(/function basicCardStatSentence\([\s\S]{0,900}formatCompactNumber\(Math\.round\(stat\.value\)\)/.test(gameSource), "基础数值卡使用整数紧凑格式展示当前值与升级后数值");
 assert(/function formatDisplayNumber\([\s\S]{0,260}toFixed[\s\S]{0,180}function normalizeDisplayNumbers/.test(gameSource), "卡牌说明统一裁剪浮点尾数并移除无意义零位");
 assert(/formatShotRate\(rate\)\{return Number\(rate\.toFixed\(3\)\)\.toString\(\)/.test(gameSource)&&/formatShotRate\(stat\.perSecond\)/.test(gameSource), "每秒攻击频率最多显示三位有效小数");
-assert(/renderCard=\(card\)=>[\s\S]{0,1200}description=basicCardStatSentence\(card,rank\)\|\|normalizeDisplayNumbers\(card\.desc/.test(gameSource), "卡牌总览统一清理非整数显示");
-assert(/renderDraft\(\)[\s\S]{0,700}description=basicCardStatSentence\(card,current\)\|\|draftCardDescription/.test(gameSource), "所有选牌弹窗的基础数值卡只显示精简升级数值");
+assert(/function cardLevelDefinition\(card,level\)[^\n]+description:draftCardDescription\(card,rank-1\)/.test(gameSource), "卡牌总览的每个独立等级统一清理非整数显示");
+assert(/function renderDraft\(\)[^\n]+view=cardLevelDefinition\(card,current\+1\)/.test(gameSource), "所有选牌弹窗显示即将获得的独立卡牌等级定义");
 assert(/function draftCardDescription\(card,current\)\{return normalizeDisplayNumbers\(card\.desc/.test(gameSource), "所有选牌弹窗统一清理非整数显示");
 assert(/function basicCardTurretId\(card\)[\s\S]{0,220}RANGE_CARD_BY_TURRET/.test(gameSource), "六类炮塔攻击或治疗范围卡同样纳入基础数值精简说明");
 assert(/current>=card\.max[\s\S]{0,180}已满级/.test(gameSource), "满级基础数值卡不再显示无意义的相同升级数值");
@@ -643,11 +649,39 @@ assert(/function renderMeters\(kind,target,record\)/.test(gameSource)&&gameSourc
 assert(gameSource.includes("effectiveHealing")&&gameSource.includes("overhealing")&&gameSource.includes("shieldAbsorb"),"治疗统计区分有效治疗、过量治疗与护盾吸收");
 assert(/function shouldAutoReleaseSkill/.test(gameSource)&&/addEventListener\("contextmenu",handleCanvasContextMenu\)/.test(gameSource)&&/document\.addEventListener\("contextmenu"/.test(gameSource),"右键炮塔可切换智能主技能且网页默认右键菜单被禁用");
 assert(indexSource.includes('id="downloadLogsButton"')&&gameSource.includes('$("#downloadLogsButton").addEventListener("click",downloadCombatLogs)'),"左侧控制台提供战斗日志下载按钮");
+assert(indexSource.includes('data-meter-target="boss"')&&indexSource.includes('data-meter-target="minion"')&&indexSource.includes('id="meterBossSelect"'),"简易/详细模式下方提供全部、BOSS、小怪与具体 Boss 选择器");
+assert(/function scopedDamageStats\(record\)[^\n]+target==="boss"[^\n]+log\.isBoss&&Number\(log\.enemyId\)===Number\(state\.meterBossEnemyId\)[^\n]+!log\.isBoss/.test(gameSource),"伤害面板可按具体 Boss 或全部小怪聚合逐敌记录");
+assert(/function damageMeterTitle\(record\)[^\n]+meterTargetLabel[^\n]+卡牌伤害（同卡合并）/.test(gameSource),"BOSS 伤害标题显示具体首领名称且详细模式注明同卡合并");
 assert(/function makeWaveStats[\s\S]{0,900}bosses:Array\.isArray\(seed\.bosses\)/.test(gameSource),"逐波统计会持久化并克隆 Boss 生命周期记录");
 assert(/function beginBossLog/.test(gameSource)&&/beginBossLog\(state\.enemies\[state\.enemies\.length-1\]\)/.test(gameSource)&&/finishBossLog\(enemy,"defeated"\)/.test(gameSource),"Boss 出场和死亡均写入当前波次日志");
 assert(/function buildCombatLogExport/.test(gameSource)&&gameSource.includes("directBySource")&&gameSource.includes("indirectBySource")&&gameSource.includes("effectiveBySource")&&gameSource.includes("overhealingBySource")&&gameSource.includes("shieldAbsorbBySource"),"下载日志包含逐波直接/间接伤害及三类治疗数据");
-assert(/schemaVersion:2,release:RELEASE_ID,game:"无尽"/.test(gameSource)&&!/[,{]password:/.test(gameSource),"日志具备第二版平衡字段且不导出账号口令字段");
+assert(/payload\.schemaVersion=3/.test(gameSource)&&gameSource.includes("damageByCategory")&&gameSource.includes("damageByCardSeries")&&!/[,{]password:/.test(gameSource),"日志升级为第三版逐敌伤害结构且不导出账号口令字段");
+assert(/function ensureEnemyDamageLog\(enemy\)[^\n]+name:enemy\.type\?\.name[^\n]+isBoss:[^\n]+damage:\{\},directDamage:\{\},indirectDamage:\{\},cardDamage:\{\}/.test(gameSource),"每个敌人按真实名称保存来源、直接/间接与卡牌伤害明细");
+assert(/function resolveBarrierCollision\(enemy\)[^\n]+recordStat\("damage","分段屏障",integrity\);recordEnemyDamageStat\(enemy,"分段屏障",integrity,"direct"\);enemy\.hp=0;enemy\.shield=0;killEnemy\(enemy,"分段屏障"\)/.test(gameSource),"分段屏障消灭小怪时同步写入该敌人的详细伤害日志");
+assert(/function serializeAccountStoreForStorage\(store=state\.accountStore\)\{return JSON\.stringify\(store,\(key,value\)=>key==="enemyDamage"\?undefined:value\);\}/.test(gameSource),"本机存档剔除无界逐敌明细但不改动当前会话日志");
+const storageSerializerSource=gameSource.match(/function serializeAccountStoreForStorage\(store=state\.accountStore\)\{[^\n]+\}/)?.[0];
+assert(storageSerializerSource,"可提取本机账号存档序列化器");
+const storageSerializerSandbox={state:{accountStore:null}};
+vm.runInNewContext(`${storageSerializerSource};globalThis.__serializeAccountStoreForStorage=serializeAccountStoreForStorage;`,storageSerializerSandbox);
+const storageEnemyDamage=Object.fromEntries(Array.from({length:20000},(_,index)=>[String(index),{enemyId:index,damage:{"子弹炮":index+1},cardDamage:{bullet_base_damage:index+1}}]));
+const storageProbe={accounts:[{id:"a",run:{stats:{waves:{1:{damage:{"子弹炮":9},cardDamage:{bullet_base_damage:9},enemyDamage:storageEnemyDamage}}}}},{id:"b",run:{stats:{waves:{2:{enemyDamage:{legacy:{enemyId:1,damage:{"激光炮":2}}}}}}}}]};
+const storedProbe=storageSerializerSandbox.__serializeAccountStoreForStorage(storageProbe);
+assert(!storedProbe.includes('"enemyDamage"')&&storedProbe.includes('"cardDamage"'),"两万条逐敌明细不会进入任一账号的 localStorage，聚合卡牌伤害仍保留");
+assert.equal(Object.keys(storageProbe.accounts[0].run.stats.waves[1].enemyDamage).length,20000,"存档过滤不会清理当前会话内存中的完整逐敌日志");
+assert(/function persistAccountStore\(\)[^\n]+serializeAccountStoreForStorage\(\)[^\n]+return true;[^\n]+本次存档未写入[^\n]+return false;/.test(gameSource)&&/function saveRun\(manual=false\)[^\n]+const saved=persistAccountStore\(\);if\(!saved\)[^\n]+return false;[^\n]+if\(manual\)\{showToast\(`已保存/.test(gameSource),"只有本机存储真实写入成功时才提示已保存");
+assert(/payload\.detailedLogRetention="session"/.test(gameSource)&&/const \{damage=\{\},directDamage=\{\},indirectDamage=\{\},cardDamage=\{\},\.\.\.identity\}=enemy/.test(gameSource)&&/new Blob\(\[JSON\.stringify\(payload\)\]/.test(gameSource),"逐敌日志导出标明会话范围且移除重复字段与缩进膨胀");
+assert(/function recordCardDamage\(cardId,amount,enemy=null\)[^\n]+card\.id[^\n]+enemyLog\.cardDamage\[card\.id\]/.test(gameSource),"详细伤害始终按基础卡 ID 合并全部等级并同步写入逐敌日志");
 assert(gameSource.includes("enemyPressure")&&gameSource.includes("barrier:{...waveStats.barrier}")&&gameSource.includes("timing:waveStats.timing"),"逐波日志补充敌人生命压力、屏障状态和首领到场时间");
+
+assert(/function cardLevelDefinition\(card,level\)[^\n]+id:`\$\{card\.id\}@\$\{rank\}`[^\n]+name:card\.max>1\?`\$\{card\.name\}·\$\{suffix\}`/.test(gameSource),"每个卡牌等级具有稳定的 baseId@level 身份和独立罗马数字名称");
+assert(/cards\.flatMap\(\(card\)=>Array\.from\(\{length:card\.max\},\(_,level\)=>renderCard\(card,level\+1\)\)\)/.test(gameSource),"图鉴把同一卡牌的每个等级渲染为独立卡面");
+assert(/function rollWaveChoiceEcho\(id\)[^\n]+WAVE_CHOICE_ECHO_CHANCES[^\n]+addCard\(id,\{deferUI:true,deferDerived:true,skipRefraction:true,silent:true\}\)/.test(gameSource)&&/!wasOpeningDraft&&!wasOpeningGrowthDraft&&!wasTomeDraft&&!wasRewardDraft&&!wasBargainPick\)rollWaveChoiceEcho\(id\)/.test(gameSource),"余辉演化只复制正常波末选择且不会递归触发概率折射");
+assert(gameSource.includes('id:"shield_regen"')&&gameSource.includes("战斗中持续生效")&&!/updateDefense\(dt\)[^\n]+lastDamageTime/.test(gameSource),"相位回充取消脱离战斗限制并持续恢复护盾");
+assert(indexSource.includes('id="deleteAccountButton"')&&indexSource.includes('id="deleteAccountOverlay"')&&/function confirmDeleteAccount\(\)[^\n]+accounts=state\.accountStore\.accounts\.filter/.test(gameSource),"普通本机账号具备二次确认删除入口");
+assert(/function updateDeleteAccountButton\(\)[^\n]+button\.classList\.toggle\("hidden",!account\)[^\n]+protectedAccount[^\n]+系统账号不可删除/.test(gameSource),"删除入口始终跟随所选账号显示，测试与设计账号明确显示不可删除");
+assert(/async function requestDeleteAccount\(\)[^\n]+accountSelectedForDeletion\(\)[^\n]+hashPin\(pin,account\.id\)!==account\.pinHash/.test(gameSource),"未登录普通账号也可在验证所选账号四位口令后发起删除");
+assert(/#accountOverlay \{ z-index:140; \}/.test(stylesSource)&&/#deleteAccountOverlay \{ z-index:150; \}/.test(stylesSource),"账号与删除确认窗口始终显示在开局窗口之上");
+assert(indexSource.includes('data-test-preset="wave50boss"')&&/preset==="wave50boss"\)\{startWave50BossTest\(\);return;\}/.test(gameSource),"左侧第 50 关 Boss 按钮复用已验证的测试预设事件管线");
 
 assert(/function cardProgressionUnlocked[\s\S]{0,180}card\.star===5&&effectiveWave>=10[\s\S]{0,80}card\.star===6&&effectiveWave>=15/.test(gameSource),"wave 10 force-unlocks all five-star cards and wave 15 force-unlocks all six-star cards");
 assert(/state\.openingDraft\?generateWeightedCards\(DRAFT_OFFER_COUNT,\{ignorePreference:true,history:\[\],maxStar:4/.test(gameSource),"opening draft remains capped at four stars");

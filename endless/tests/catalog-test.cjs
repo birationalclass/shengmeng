@@ -50,6 +50,9 @@ assert.equal(cards.find((card)=>card.id==="support_base_rate")?.star,2,"发射�
 for(const removedId of ["support_medic","support_nanite_covenant","emergency_repair"]){assert(!ids.has(removedId),`${removedId} 已从卡池移除`);}
 assert(!ids.has("support_range")&&ids.has("support_overheal_fortification"),"支援全屏治疗不再占用射程卡槽，并新增一星溢疗筑垒");
 assert.equal(cards.find((card)=>card.id==="streak_forge")?.star,1,"连杀锻炉已归入一星成长卡");
+const waveChoiceEcho=cards.find((card)=>card.id==="wave_choice_echo");
+assert(waveChoiceEcho?.star===1&&waveChoiceEcho.max===5,"余辉演化是一星五级特殊卡");
+assert(waveChoiceEcho.desc(0).includes("10%")&&waveChoiceEcho.desc(4).includes("25%"),"余辉演化由 10% 成长至 25% 波末额外升级概率");
 assert.equal(cards.find((card)=>card.id==="frost_field")?.star,3,"多重减速已归入冰霜三星卡");
 const foundationApexCards=new Set(["bullet_base_crit","laser_base_crit","missile_base_crit","frost_base_crit","arc_base_crit","support_base_crit","bullet_base_crit_power","arc_base_crit_power","frost_base_crit_power"]);
 for(const card of cards.filter((item)=>item.star===1&&item.max===5&&item.passive?.values?.length===5)){if(/_base_(damage|rate)$/.test(card.id)||card.id==="support_base_duration"||card.id==="support_base_heal")continue;const values=card.passive.values,previous=values[3],lastGain=values[4]-values[3],ratio=lastGain/Math.max(.0001,previous);if(foundationApexCards.has(card.id))assert(ratio>=1.49&&ratio<=4,`${card.id} 第五级执行指定的基础数值大幅质变`);else assert(ratio>=.8&&ratio<=2,`${card.id} 第五级边际成长处于前四级累计的 80%–200%`);}

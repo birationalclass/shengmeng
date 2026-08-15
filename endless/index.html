@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-  <link rel="stylesheet" href="styles.css?v=20260815-v150-relic-arsenal-wave50">
+  <link rel="stylesheet" href="styles.css?v=20260815-v151-ten-difficulties-relics-damage-targets-r5">
   </head>
   <body>
     <div class="portrait-app">
@@ -16,6 +16,7 @@
         <div class="run-stats">
           <span><small>波次</small><b id="waveText">01</b></span>
           <span><small>时间</small><b id="timeText">00:00</b></span>
+          <span class="difficulty-stat"><small>难度</small><b id="difficultyText" title="行星 I">行星 I</b></span>
         </div>
         <div class="hud-actions">
           <button id="saveButton" type="button" aria-label="保存当前记录" title="保存" disabled>▣</button>
@@ -39,7 +40,7 @@
         <div class="wave-line"><span id="phaseText">等待部署</span><small id="enemyText">0 敌军</small></div>
         <div class="wave-bar"><i id="waveBar"></i></div>
         <div class="relic-panel"><header><span>传承系统</span><div><button id="achievementButton" type="button">成就</button><button id="relicButton" type="button">遗物</button></div></header><div id="relicList" class="relic-list"><small>尚未解锁遗物</small></div></div>
-        <div id="qaBossControls" class="qa-boss-controls hidden" aria-label="测试账号终局首领直战"><small>测试账号 · 首领直战</small><button id="wave50BossTestButton" type="button"><i>★</i><span>直接挑战第 50 关 Boss</span></button></div>
+        <div id="qaBossControls" class="qa-boss-controls hidden" aria-label="测试账号终局首领直战"><small>测试账号 · 首领直战</small><button id="wave50BossTestButton" data-test-preset="wave50boss" type="button"><i>★</i><span>直接挑战第 50 关 Boss</span></button></div>
       </section>
       <section class="recent-cards-panel" aria-labelledby="recentCardsTitle"><header><span id="recentCardsTitle">最近获取卡牌</span><div class="recent-cards-heading"><b id="recentCardCount">0 / 5</b><button id="recentCardsToggle" class="recent-cards-toggle" type="button" aria-expanded="true" aria-controls="recentCards">折叠</button></div></header><div id="recentCards" class="recent-cards"><div class="recent-cards-empty">战斗中获取的卡牌会收纳在这里</div></div></section>
 
@@ -64,9 +65,11 @@
         <header><div><span class="eyebrow">LIVE COMBAT METER</span><h2 id="statsTitle">DPS / HPS</h2></div><div class="combat-mini-values"><b><small>DPS</small><span id="combatDpsMini">0</span></b><b><small>HPS</small><span id="combatHpsMini">0</span></b></div></header>
         <div class="meter-wave-review"><label for="meterWaveSelect"><span>波次复查</span><select id="meterWaveSelect" aria-label="选择要复查的波次"></select></label><small id="meterWaveMeta">本波战斗 00:00</small></div>
         <div class="meter-mode" role="group" aria-label="统计显示方式"><button type="button" data-meter-mode="simple">简易</button><button type="button" data-meter-mode="detail">详细</button></div>
+        <div class="meter-target" role="group" aria-label="伤害统计目标"><button type="button" data-meter-target="all">全部</button><button type="button" data-meter-target="boss">BOSS</button><button type="button" data-meter-target="minion">小怪</button></div>
+        <select id="meterBossSelect" class="meter-boss-select hidden" aria-label="选择本波 Boss"></select>
         <div class="meter-head"><span><small>本波伤害</small><b id="totalDamage">0</b></span><span><small>本波 DPS</small><b id="currentDps">0</b></span><span><small>本波治疗</small><b id="totalHealing">0</b></span><span><small>本波 HPS</small><b id="currentHps">0</b></span></div>
         <div class="meter-scroll-body" aria-label="DPS 与 HPS 来源明细">
-          <section class="meter-section meter-section-damage"><h3>伤害来源</h3><div id="damageMeters" class="meter-list"></div></section>
+          <section class="meter-section meter-section-damage"><h3 id="damageMeterTitle">伤害来源</h3><div id="damageMeters" class="meter-list"></div></section>
           <section class="meter-section meter-section-healing"><h3>治疗来源</h3><div id="healingMeters" class="meter-list"></div></section>
         </div>
       </section>
@@ -89,7 +92,15 @@
             <div><label>选择本机账号</label><div id="profileList" class="profile-list"></div><div id="loginArea" class="login-area hidden"><label for="loginPin">4 位本地口令</label><div><input id="loginPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"><button id="loginAccountButton" type="button">登录</button></div><small id="loginMessage" class="form-message"></small></div></div>
             <form id="createAccountForm"><label for="newAccountName">创建指挥官</label><input id="newAccountName" type="text" minlength="2" maxlength="12" autocomplete="off" placeholder="名称 2–12 字符" required><input id="newAccountPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password" placeholder="设置 4 位口令" required><button class="primary-button" type="submit">创建并登录</button><small id="createAccountMessage" class="form-message"></small></form>
           </div>
-          <footer><span>不同账号的存档完全隔离</span><button id="logoutButton" class="text-button hidden" type="button">退出账号</button></footer>
+          <footer><span>不同账号的存档完全隔离</span><div><button id="deleteAccountButton" class="text-button hidden" type="button">删除账号</button><button id="logoutButton" class="text-button hidden" type="button">退出账号</button></div></footer>
+        </section>
+      </div>
+
+      <div id="deleteAccountOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="deleteAccountTitle">
+        <section class="modal confirm-modal">
+          <span class="eyebrow">DELETE LOCAL COMMANDER</span><h2 id="deleteAccountTitle">永久删除账号？</h2>
+          <p>账号“<b id="deleteAccountName"></b>”的进度、遗物、成就与本局存档都会从当前浏览器永久删除。测试账号与设计账号不可删除。</p>
+          <div class="confirm-actions"><button id="cancelDeleteAccountButton" class="secondary-button" type="button">取消</button><button id="confirmDeleteAccountButton" class="danger-button" type="button">确认删除</button></div>
         </section>
       </div>
 
@@ -100,7 +111,7 @@
           <div class="start-rules"><span><b>01</b>炮塔由卡牌解锁</span><span><b>02</b>组合决定续航</span><span><b>03</b>属性也由随机卡牌获得</span></div>
           <div class="best-record"><span>账号最佳</span><b id="bestRecord">第 0 波 · 0 分</b></div>
           <div class="difficulty-picker">
-            <label><span>难度</span><select id="difficultyMajorInput"><option value="cruise">行星</option><option value="deep">恒星</option><option value="singularity">中子星</option><option value="terminus">黑洞</option></select></label>
+            <label><span>难度</span><select id="difficultyMajorInput"><option value="cruise">行星</option><option value="deep">恒星</option><option value="singularity">中子星</option><option value="terminus">黑洞</option><option value="nebula">星云</option><option value="cluster">星团</option><option value="galaxy">星系</option><option value="quasar">类星体</option><option value="cosmic_web">宇宙网</option><option value="finality">终焉奇点</option></select></label>
             <label><span>威胁阶</span><select id="difficultyMinorInput"><option value="1">I</option><option value="2">II</option><option value="3">III</option><option value="4">IV</option><option value="5">V</option></select></label>
             <small id="difficultySummary">行星 I · 敌方战斗数值 ×1.00 · 每升 1 阶 ×1.5</small>
           </div>
@@ -219,10 +230,10 @@
     </div>
 
     <audio id="backgroundMusic" preload="metadata"></audio>
-    <script src="black-hole-enemy.js?v=20260815-v150-relic-arsenal-wave50"></script>
-  <script src="balance-core.js?v=20260815-v150-relic-arsenal-wave50"></script>
-    <script src="enemy-visuals.js?v=20260815-v150-relic-arsenal-wave50"></script>
+    <script src="black-hole-enemy.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
+  <script src="balance-core.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
+    <script src="enemy-visuals.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
     <output id="qaPerf" hidden aria-hidden="true"></output>
-  <script src="game.js?v=20260815-v150-relic-arsenal-wave50"></script>
+  <script src="game.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
   </body>
 </html>
