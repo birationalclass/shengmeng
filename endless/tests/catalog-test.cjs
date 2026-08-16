@@ -16,17 +16,18 @@ const document = {querySelector:(selector)=>selector==="#gameCanvas"?canvas:{},q
 const sandbox = {console,document,window:{EndlessBalanceCore:{}},globalThis:null,Math,setTimeout,clearTimeout};
 sandbox.globalThis=sandbox;
 vm.runInNewContext(prefix,sandbox,{filename:"game-card-prefix.js"});
-const cards=sandbox.__cards;
+const allCards=sandbox.__cards;
+const cards=allCards.filter((card)=>!card.designRemoved);
 assert.deepEqual(Array.from(sandbox.__activeSkillOrder),["laser","frost","bullet","support","missile","arc"],"QWERTY 必须按画面从左到右对应激光、冰霜、子弹、支援、导弹、电弧");
 const ids=new Set(cards.map((card)=>card.id));
-const duplicateIds=cards.map((card)=>card.id).filter((id,index,all)=>all.indexOf(id)!==index);
-assert.equal(ids.size,cards.length,`动态卡池 ID 不重复：${duplicateIds.join(",")}`);
+const duplicateIds=allCards.map((card)=>card.id).filter((id,index,all)=>all.indexOf(id)!==index);
+assert.equal(new Set(allCards.map((card)=>card.id)).size,allCards.length,`动态卡池 ID 不重复：${duplicateIds.join(",")}`);
 assert(!ids.has("global_damage"),"旧弹道火控总成不再进入卡池");
-const bulletCards=cards.filter((card)=>card.tags.includes("弹道"));
-assert.equal(bulletCards.reduce((sum,card)=>sum+card.max,0),99,"弹道历史目录仍可识别 99 级原始总量");
-assert.equal(bulletCards.filter((card)=>!card.designRemoved).reduce((sum,card)=>sum+card.max,0),93,"子弹炮真实可获取等级上限严格为 93");
-assert.equal(bulletCards.filter((card)=>card.designRemoved).map((card)=>card.id).join(","),"evo_bullet_3_4,evo_bullet_4_4,evo_bullet_6_4","奇点弹仓废卡的 6 个等级不进入可获取统计");
-for(const card of cards){assert(card.star>=1&&card.star<=6,`${card.id} 星级合法`);assert(card.max>=1&&card.max<=6,`${card.id} 等级上限合法`);}
+const historicalBulletCards=allCards.filter((card)=>card.tags.includes("弹道")),bulletCards=cards.filter((card)=>card.tags.includes("弹道"));
+assert.equal(historicalBulletCards.reduce((sum,card)=>sum+card.max,0),99,"弹道历史目录仍可识别 99 级原始总量");
+assert.equal(bulletCards.reduce((sum,card)=>sum+card.max,0),93,"子弹炮真实可获取等级上限严格为 93");
+assert.equal(historicalBulletCards.filter((card)=>card.designRemoved).map((card)=>card.id).join(","),"evo_bullet_3_4,evo_bullet_4_4,evo_bullet_6_4","奇点弹仓废卡的 6 个等级不进入可获取统计");
+for(const card of allCards){assert(card.star>=1&&card.star<=6,`${card.id} 星级合法`);assert(card.max>=1&&card.max<=6,`${card.id} 等级上限合法`);}
 
 const families={bullet:"弹道",laser:"激光",missile:"导弹",frost:"冰霜",arc:"电弧",support:"支援"};
 for(const [turret,family] of Object.entries(families)){
@@ -49,7 +50,7 @@ assert(ids.has("support_base_duration")&&ids.has("support_base_crit_power"),"支
 assert.equal(cards.find((card)=>card.id==="support_base_rate")?.star,2,"发射机器人速率已归入二星支援卡");
 for(const removedId of ["support_medic","support_nanite_covenant","emergency_repair"]){assert(!ids.has(removedId),`${removedId} 已从卡池移除`);}
 assert(!ids.has("support_range")&&ids.has("support_overheal_fortification"),"支援全屏治疗不再占用射程卡槽，并新增一星溢疗筑垒");
-assert.equal(cards.find((card)=>card.id==="streak_forge")?.star,1,"连杀锻炉已归入一星成长卡");
+assert(allCards.find((card)=>card.id==="streak_forge")?.designRemoved&&!ids.has("streak_forge"),"连杀锻炉仅保留历史目录标记，不再进入实际可获取卡池");
 const waveChoiceEcho=cards.find((card)=>card.id==="wave_choice_echo");
 assert(waveChoiceEcho?.star===1&&waveChoiceEcho.max===5,"余辉演化是一星五级特殊卡");
 assert(waveChoiceEcho.desc(0).includes("10%")&&waveChoiceEcho.desc(4).includes("25%"),"余辉演化由 10% 成长至 25% 波末额外升级概率");
@@ -58,8 +59,8 @@ const foundationApexCards=new Set(["bullet_base_crit","laser_base_crit","missile
 for(const card of cards.filter((item)=>item.star===1&&item.max===5&&item.passive?.values?.length===5)){if(/_base_(damage|rate)$/.test(card.id)||card.id==="support_base_duration"||card.id==="support_base_heal")continue;const values=card.passive.values,previous=values[3],lastGain=values[4]-values[3],ratio=lastGain/Math.max(.0001,previous);if(foundationApexCards.has(card.id))assert(ratio>=1.49&&ratio<=4,`${card.id} 第五级执行指定的基础数值大幅质变`);else assert(ratio>=.8&&ratio<=2,`${card.id} 第五级边际成长处于前四级累计的 80%–200%`);}
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="support_base_heal").passive.values),[1,1.5,2,3,5],"基础治疗额外系数按 1.0/1.5/2.0/3.0/5.0 成长");
 assert.deepEqual(Array.from(cards.find((card)=>card.id==="support_base_duration").passive.values),[1,2,3,4,7],"机器人持续时间从基础 1 秒成长为 2/3/4/5/8 秒");
-const minimumSpecialCards=[4,5,5,5,4,2];
-for(let star=1;star<=6;star++)assert(cards.filter((card)=>card.star===star&&card.tags.includes("特殊")).length>=minimumSpecialCards[star-1],`特殊卡 ★${star} 满足当前规则族数量`);
+assert.equal(cards.filter((card)=>card.tags.includes("特殊")).reduce((sum,card)=>sum+card.max,0),129,"特殊卡真实可获取等级上限严格为 129");
+for(let star=1;star<=6;star++)assert(cards.some((card)=>card.star===star&&card.tags.includes("特殊")),`实际可获取目录仍覆盖 ★${star} 特殊卡`);
 assert(!ids.has("blood_bargain")&&![3,4,5,6].some((star)=>ids.has(`forbidden_tome_${star}`)),"禁忌抄本只保留二星版本");
 const forbiddenTome=cards.find((card)=>card.id==="forbidden_tome_2");
 assert(forbiddenTome?.max===5&&forbiddenTome.desc(4).includes("★6 卡牌 4 选 1"),"禁忌抄本第五级追加六星卡牌四选一");

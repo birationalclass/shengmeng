@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="theme-color" content="#050b12">
     <title>无尽 · 竖屏防线</title>
-  <link rel="stylesheet" href="styles.css?v=20260815-v151-ten-difficulties-relics-damage-targets-r5">
+  <link rel="stylesheet" href="styles.css?v=20260817-v152-tiered-achievements-replay-library-r3">
   </head>
   <body>
     <div class="portrait-app">
@@ -28,6 +28,9 @@
           <button id="settingsButton" type="button" aria-label="游戏设置" title="游戏设置"><span>⚙</span></button>
           <button id="restartButton" type="button" aria-label="重新开始当前战局" title="重新开始" disabled><span>↺</span></button>
           <button id="downloadLogsButton" type="button" aria-label="下载当前战斗日志" title="下载战斗日志"><span>⇩</span></button>
+          <button id="menuButton" type="button" aria-label="保存并返回初始菜单" title="返回初始菜单" disabled><span>⌂</span></button>
+          <button id="achievementHudButton" type="button" aria-label="打开成就档案" title="成就档案"><span>★</span></button>
+          <button id="relicHudButton" type="button" aria-label="打开遗物库" title="遗物库"><span>◆</span></button>
           <button id="accountButton" type="button" aria-label="账号与存档"><span id="accountAvatar">?</span></button>
         </div>
         <div id="qaSkillControls" class="qa-skill-controls hidden" aria-label="测试账号主动技能直测">
@@ -177,12 +180,21 @@
         </section>
       </div>
 
+      <div id="menuConfirmOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="menuConfirmTitle">
+        <section class="modal confirm-modal">
+          <span class="eyebrow">RETURN TO DEPLOYMENT</span><h2 id="menuConfirmTitle">保存并返回初始菜单？</h2>
+          <p>当前战局会先保存，再返回部署页面；之后可从“加载存档”恢复，不会清除本局。</p>
+          <div class="confirm-save-info"><span>当前波次 <b id="menuConfirmWave">01</b></span><span>战斗时间 <b id="menuConfirmTime">00:00</b></span></div>
+          <div class="confirm-actions"><button id="cancelMenuButton" class="secondary-button" type="button">取消</button><button id="confirmMenuButton" class="primary-button" type="button">保存并返回</button></div>
+        </section>
+      </div>
+
       <div id="libraryOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="libraryTitle">
         <section class="modal collection-modal"><button class="modal-close" data-close="libraryOverlay" type="button">×</button><span class="eyebrow">CARD ARCHIVE</span><h2 id="libraryTitle">卡牌图鉴与当前构筑</h2><div class="collection-summary"><span>已拥有 <b id="ownedCardKinds">0</b></span><span>总等级 <b id="ownedCardRanks">0</b></span><span>组合 <b id="ownedCombos">0</b></span></div><div class="library-workspace"><div class="library-main"><nav id="libraryCategories" class="library-categories" aria-label="七大卡牌类别"></nav><div class="library-section-title"><b id="libraryCategoryTitle">子弹炮卡牌</b><span id="libraryCategoryProgress">0 / 0</span></div><nav id="libraryStarNav" class="library-star-nav" aria-label="按星级跳转"></nav><div id="libraryCards" class="library-cards"></div></div><aside id="designSuggestionPanel" class="design-suggestion-panel hidden" aria-labelledby="designSuggestionTitle"><span class="eyebrow">DESIGN REVIEW</span><h3 id="designSuggestionTitle">选择一张卡牌</h3><p id="designSuggestionMeta">从左侧图鉴选中卡牌，登记本次平衡建议。</p><div id="designSuggestionControls" class="design-suggestion-controls hidden"><label class="design-toggle"><input id="designDeleteInput" type="checkbox"><span>建议删除此卡</span></label><label>目标星级<select id="designStarInput"><option value="">保持当前</option><option value="1">★ 1</option><option value="2">★ 2</option><option value="3">★ 3</option><option value="4">★ 4</option><option value="5">★ 5</option><option value="6">★ 6</option></select></label><label>数值建议<input id="designValueInput" type="text" maxlength="80" placeholder="例如：伤害 +12% / 冷却 0.8 秒"></label><label>设计备注<textarea id="designNoteInput" rows="5" maxlength="500" placeholder="记录删除理由、联动影响或待验证项"></textarea></label><small id="designSuggestionStatus">尚未登记修改。</small></div><footer><span id="designLogCount">0 条建议</span><button id="downloadDesignLogButton" class="primary-button" type="button">下载建议 Log</button></footer></aside></div></section>
       </div>
 
       <div id="achievementOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="achievementTitle">
-        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER ACHIEVEMENTS</span><h2 id="achievementTitle">成就档案</h2><p class="modal-intro">成就独立记录战术里程碑；成就解锁或强化的遗物只会从下一局开始生效。每个天体难度 V 通关可强化对应遗物。</p><div id="achievementList" class="achievement-list"></div></section>
+        <section class="modal achievement-modal"><button class="modal-close" data-close="achievementOverlay" type="button">×</button><span class="eyebrow">COMMANDER ACHIEVEMENTS</span><h2 id="achievementTitle">成就档案</h2><p class="modal-intro">同类别成就合并为单一等级轨道；通关、击杀与屏障里程碑会直接提升等级。所有新解锁或强化遗物均从下一局开始生效。</p><div id="achievementList" class="achievement-list"></div></section>
       </div>
 
       <div id="relicOverlay" class="overlay panel-overlay" role="dialog" aria-modal="true" aria-labelledby="relicTitle">
@@ -230,10 +242,10 @@
     </div>
 
     <audio id="backgroundMusic" preload="metadata"></audio>
-    <script src="black-hole-enemy.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
-  <script src="balance-core.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
-    <script src="enemy-visuals.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
+    <script src="black-hole-enemy.js?v=20260817-v152-tiered-achievements-replay-library-r3"></script>
+  <script src="balance-core.js?v=20260817-v152-tiered-achievements-replay-library-r3"></script>
+    <script src="enemy-visuals.js?v=20260817-v152-tiered-achievements-replay-library-r3"></script>
     <output id="qaPerf" hidden aria-hidden="true"></output>
-  <script src="game.js?v=20260815-v151-ten-difficulties-relics-damage-targets-r5"></script>
+  <script src="game.js?v=20260817-v152-tiered-achievements-replay-library-r3"></script>
   </body>
 </html>
