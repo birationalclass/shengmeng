@@ -52,6 +52,8 @@
   let active = false;
   let blocked = false;
   let startPending = false;
+  let playAttemptId = 0;
+  let autoStartWanted = true;
   let resumeAfterVisibility = false;
   let firstGestureInstalled = false;
   let destroyed = false;
@@ -118,21 +120,26 @@
 
   async function start(options) {
     const settings = options || {};
+    autoStartWanted = true;
     if (destroyed || !AudioClass) {
       updateControl("unsupported");
       announce(copy.statusError);
       return false;
     }
-    if (startPending) return false;
+    if (startPending && !settings.force) return false;
+    const attemptId = ++playAttemptId;
     startPending = true;
     updateControl("loading");
 
     try {
       const player = createAudio();
       player.muted = false;
+      // Keep play() in the same call stack when start() was invoked by the
+      // first pointer/key gesture. Browsers only grant audible playback while
+      // that transient user activation is still available.
       const playAttempt = player.play();
       if (playAttempt && typeof playAttempt.then === "function") await playAttempt;
-      if (destroyed) return false;
+      if (destroyed || attemptId !== playAttemptId) return !player.paused;
       active = !player.paused;
       blocked = false;
       resumeAfterVisibility = false;
@@ -141,6 +148,7 @@
       if (active && !settings.silent) announce(copy.statusOn);
       return active;
     } catch (error) {
+      if (destroyed || attemptId !== playAttemptId) return false;
       active = false;
       if (isAutoplayBlock(error)) {
         blocked = true;
@@ -154,15 +162,19 @@
       }
       return false;
     } finally {
-      startPending = false;
+      if (attemptId === playAttemptId) startPending = false;
     }
   }
 
   function stop(options) {
     const settings = options || {};
+    autoStartWanted = false;
+    playAttemptId += 1;
+    startPending = false;
     active = false;
     blocked = false;
     resumeAfterVisibility = false;
+    removeFirstGestureRecovery();
     if (audio) {
       audio.pause();
       if (settings.reset !== false) {
@@ -175,13 +187,19 @@
 
   function toggle() {
     if (active || (audio && !audio.paused)) stop();
-    else start();
+    else {
+      autoStartWanted = true;
+      installFirstGestureRecovery();
+      start({ force: true });
+    }
   }
 
   function removeFirstGestureRecovery() {
     if (!firstGestureInstalled) return;
     firstGestureInstalled = false;
     document.removeEventListener("pointerdown", handleFirstGesture, true);
+    document.removeEventListener("click", handleFirstGesture, true);
+    document.removeEventListener("touchend", handleFirstGesture, true);
     document.removeEventListener("keydown", handleFirstGesture, true);
   }
 
@@ -189,17 +207,20 @@
     if (firstGestureInstalled || destroyed) return;
     firstGestureInstalled = true;
     document.addEventListener("pointerdown", handleFirstGesture, true);
+    document.addEventListener("click", handleFirstGesture, true);
+    document.addEventListener("touchend", handleFirstGesture, true);
     document.addEventListener("keydown", handleFirstGesture, true);
   }
 
   function handleFirstGesture(event) {
-    if (!blocked || active || destroyed) {
+    if (!autoStartWanted || active || destroyed) {
       removeFirstGestureRecovery();
       return;
     }
     if (button && (event.target === button || button.contains(event.target))) return;
-    if (event.type === "keydown" && ["Tab", "Shift", "Control", "Alt", "Meta", "Escape"].includes(event.key)) return;
-    start({ silent: true });
+    if (event.type === "keydown" && ["tab", "shift", "control", "alt", "meta", "escape", "m"].includes(event.key.toLowerCase())) return;
+    removeFirstGestureRecovery();
+    start({ silent: true, force: true });
   }
 
   function handleAudioError() {
@@ -275,6 +296,10 @@
       announce(copy.statusError);
     } else {
       createAudio();
+      // Install recovery before the speculative autoplay attempt. Otherwise a
+      // very fast first click can occur while play() is still pending and be
+      // lost before its NotAllowedError installs the listeners.
+      installFirstGestureRecovery();
       start({ silent: true });
     }
     return root;
