@@ -5,9 +5,11 @@
   const RX = 1.5;
   const RY = 0.84;
   const POINT_LABELS = ["A", "B", "C", "D", "E", "F"];
-  const INTERSECTION_LABELS = ["X", "Y", "Z"];
-  const BASE_ANGLES = [-1.829, -0.886, -0.042, 0.261, 1.198, 2.922];
-  const PAIR_COLORS = ["#ddb35b", "#52cad4", "#a899e9"];
+  const INTERSECTION_LABELS = ["G", "K", "H"];
+  // Physical order A, E, C, F, B, D reproduces the classical self-crossing
+  // Pascal configuration while the logical hexagon remains A-B-C-D-E-F.
+  const BASE_ANGLES = [2.62, -1.55, 0.42, -2.55, 1.55, -0.82];
+  const PAIR_COLORS = ["#e0665c", "#52cad4", "#ddb35b"];
   const SIDE_PAIRS = [[0, 3], [1, 4], [2, 5]];
   const PARALLEL_EPSILON = 0.018;
   const DEGENERATE_EPSILON = 1e-8;
@@ -553,8 +555,8 @@
     context.clearRect(0, 0, state.width, state.height);
     drawStars();
     drawConic();
-    if (state.geometry && !state.geometry.degenerate) drawPascalLine(state.geometry);
     if (state.geometry) drawSideConstruction(state.geometry);
+    if (state.geometry && !state.geometry.degenerate) drawPascalLine(state.geometry);
     if (state.geometry) drawIntersections(state.geometry);
     if (state.geometry) drawConicPoints(state.geometry);
 
