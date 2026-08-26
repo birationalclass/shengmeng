@@ -24,6 +24,7 @@
   const angleReadout = document.querySelector("#angleReadout");
   const phaseReadout = document.querySelector("#phaseReadout");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const BASE_TURNS_PER_SECOND = 0.16;
 
   const palette = {
     paper: "#e8f2ed",
@@ -41,7 +42,7 @@
     degree: 1,
     manualPosition: 0.16,
     isPlaying: !reducedMotion.matches,
-    speed: 0.16,
+    speed: 1,
     showSections: true,
     anchorPosition: 0.16,
     anchorTime: performance.now(),
@@ -56,7 +57,7 @@
 
   function currentPosition(now = performance.now()) {
     if (!state.isPlaying) return state.manualPosition;
-    return wrapUnit(state.anchorPosition + ((now - state.anchorTime) / 1000) * state.speed);
+    return wrapUnit(state.anchorPosition + ((now - state.anchorTime) / 1000) * BASE_TURNS_PER_SECOND * state.speed);
   }
 
   function setPaused(paused) {
