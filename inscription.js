@@ -76,10 +76,17 @@
       mask.append(reveal);
       defs.append(mask);
 
-      const carvedStroke=svgElement("g",{class:"stroke-fragment-layer",mask:`url(#${maskId})`});
+      // A fully offset dash with a round linecap can still expose a small cap
+      // through the mask. Keep every future stroke out of the paint tree until
+      // its own animation begins, otherwise those caps appear as stray ink.
+      const carvedStroke=svgElement("g",{
+        class:"stroke-fragment-layer",
+        mask:`url(#${maskId})`,
+        visibility:"hidden"
+      });
       carvedStroke.append(makeInk("stroke-ink stroke-fragment"));
       drawing.append(carvedStroke);
-      strokeEntries.push({reveal,median:reveal});
+      strokeEntries.push({reveal,median:reveal,layer:carvedStroke});
     });
 
     const spark=svgElement("circle",{class:"stroke-spark",r:"22",cx:"0",cy:"0"});
@@ -99,6 +106,7 @@
   const animateStroke=async(entry,spark,sparkCore)=>{
     const length=entry.length;
     const duration=Math.max(44,Math.min(96,length*.10));
+    entry.layer.setAttribute("visibility","visible");
     const drawing=entry.reveal.animate(
       [{strokeDashoffset:String(length)},{strokeDashoffset:"0"}],
       {duration,easing:"cubic-bezier(.32,.02,.22,1)",fill:"forwards"}
