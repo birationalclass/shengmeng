@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="一个可缩放、平移和暂停的实时 Julia 集浏览器，改编自 Sheng Meng 的桌面版 Julia Set Animation。">
+  <meta name="theme-color" content="#071513">
+  <title>Julia Set · Visual Lab</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260826-julia-browser">
+</head>
+<body>
+  <a class="skip-link" href="#about">跳过互动画布</a>
+
+  <header class="viewer-header">
+    <a class="brand" href="../" aria-label="返回 Visual Lab">
+      <span class="brand-mark">J</span>
+      <span><b>VISUAL LAB</b><small>01 / JULIA SET</small></span>
+    </a>
+    <div class="render-badge" aria-live="polite"><i id="rendererLight"></i><span id="rendererName">检测渲染器…</span></div>
+    <a class="back-link" href="../">全部实验 <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="fractal-stage" id="fractalStage" aria-labelledby="experimentTitle">
+      <canvas id="glCanvas" class="fractal-canvas" tabindex="0" aria-label="动态 Julia 集。鼠标滚轮缩放，拖动平移；触屏可使用单指拖动与双指缩放。">
+        你的浏览器不支持 Canvas。
+      </canvas>
+      <canvas id="fallbackCanvas" class="fractal-canvas" tabindex="0" aria-label="动态 Julia 集的 Canvas 备用渲染。" hidden></canvas>
+      <div class="stage-vignette" aria-hidden="true"></div>
+
+      <div class="title-panel">
+        <p>COMPLEX DYNAMICS / 01</p>
+        <h1 id="experimentTitle">Julia Set</h1>
+        <span>z<sub>n+1</sub> = z<sub>n</sub><sup>2</sup> + c(t)</span>
+      </div>
+
+      <aside class="parameter-panel" aria-label="当前 Julia 集参数">
+        <div class="panel-head"><span>LIVE PARAMETERS</span><b id="motionState">RUNNING</b></div>
+        <dl>
+          <div><dt>Re(c)</dt><dd id="cReal">+0.275000</dd></div>
+          <div><dt>Im(c)</dt><dd id="cImaginary">+0.000000</dd></div>
+          <div><dt>Zoom</dt><dd id="zoomValue">1.00×</dd></div>
+          <div><dt>Iterations</dt><dd id="iterationValue">64</dd></div>
+          <div><dt>Time</dt><dd id="timeValue">0.0 s</dd></div>
+          <div><dt>Palette</dt><dd id="paletteValue">WARM</dd></div>
+        </dl>
+      </aside>
+
+      <aside class="trace-panel" aria-label="复参数 c 的轨迹">
+        <div class="panel-head"><span>c-PARAMETER LOCUS</span><b>−1 … 1</b></div>
+        <canvas id="traceCanvas" width="360" height="220" aria-hidden="true"></canvas>
+      </aside>
+
+      <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↕</span> 滚轮缩放 · 拖动平移 · 双指缩放</p>
+
+      <div class="control-dock" aria-label="Julia 集控制器">
+        <button class="control-primary" id="pauseButton" type="button" aria-pressed="false"><span id="pauseIcon" aria-hidden="true">Ⅱ</span><b id="pauseLabel">暂停</b></button>
+        <button id="resetButton" type="button"><span aria-hidden="true">↺</span><b>重置</b></button>
+        <div class="zoom-controls" role="group" aria-label="缩放">
+          <button id="zoomOutButton" type="button" aria-label="缩小">−</button>
+          <span>ZOOM</span>
+          <button id="zoomInButton" type="button" aria-label="放大">+</button>
+        </div>
+        <label class="iteration-control" for="iterationSlider"><span>ITER</span><input id="iterationSlider" type="range" min="16" max="128" step="1" value="64"><output id="iterationOutput" for="iterationSlider">64</output></label>
+        <button id="fullscreenButton" type="button"><span aria-hidden="true">⛶</span><b>全屏</b></button>
+      </div>
+    </section>
+
+    <section class="about-section" id="about" aria-labelledby="aboutTitle">
+      <div class="section-shell about-layout">
+        <div>
+          <p class="section-index">ABOUT / THE MODEL</p>
+          <h2 id="aboutTitle">一条参数轨迹，<br><em>连续改写分形边界。</em></h2>
+        </div>
+        <div class="model-copy">
+          <p>每一个像素都从复数 <i>z₀</i> 出发，重复计算 <i>z<sub>n+1</sub> = z<sub>n</sub>² + c(t)</i>。参数 <i>c</i> 沿一条由两个不同频率叠加而成的闭合曲线运动，因此 Julia 集会在连通、拉伸与碎裂之间缓慢过渡。</p>
+          <pre aria-label="参数 c 的公式"><code>c(t) = 1.1 · (
+  0.5 cos(0.01t) − 0.25 cos(0.02t),
+  0.5 sin(0.01t) − 0.25 sin(0.02t)
+)</code></pre>
+        </div>
+      </div>
+      <div class="section-shell fact-grid">
+        <article><span>ORIGIN</span><b>Desktop OpenGL study</b><p>保留原始 Python / GLSL 版的复数迭代、参数路径与双阶段调色。</p></article>
+        <article><span>RENDERING</span><b>WebGL2 + Canvas fallback</b><p>优先使用 GPU 实时计算；无 WebGL2 时自动切换到低分辨率 CPU 备用画面。</p></article>
+        <article><span>CONTROLS</span><b>Mouse, keyboard, touch</b><p>按 P 或空格暂停，R 重置，方向键平移，+ / − 缩放，[ / ] 调整迭代次数。</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="viewer-footer">
+    <span>© <span id="currentYear"></span> Sheng Meng</span>
+    <a href="https://github.com/birationalclass/shengmeng/tree/main/visuals/julia" target="_blank" rel="noreferrer">查看源代码 ↗</a>
+    <a href="../">返回 Visual Lab ↑</a>
+  </footer>
+
+  <script src="app.js?v=20260826-julia-browser"></script>
+</body>
+</html>
