@@ -2,20 +2,28 @@
   "use strict";
 
   const TAU = Math.PI * 2;
-  const STATIC_TIME = 24;
-  const BASE_ANGLES = [
-    0.71168558,
-    1.34876811,
-    3.18530885,
-    5.03071926,
-    5.71081589,
-    6.35150299
-  ];
-  const PHASES = [0, 1.1, 2.4, 3.2, 4.7, 5.5];
-  const RATES = [0.17, 0.13, 0.11, 0.19, 0.15, 0.12];
-  const AMPLITUDES = [0.065, 0.055, 0.06, 0.05, 0.06, 0.055];
+  const RX = 1.5;
+  const RY = 0.84;
+  const RELAY_STEP_ANGLE = 0.12;
+  const RELAY_MOVE_SECONDS = 9;
+  const RELAY_HANDOFF_SECONDS = 1;
+  const RELAY_PHASE_STEPS = [0, 1, 2, 1, 0, -1, -2, -1];
+  const RELAY_DIRECTIONS = [1, 1, -1, -1, -1, -1, 1, 1];
+  const STATIC_TIME = 14;
+  // Pascal order 0,4,1,3,5,2 around the physical conic points. This produces
+  // a six-edge self-crossing star whose three opposite-side intersections are
+  // inside the ellipse throughout the relay motion.
+  const BASE_ANGLES = [-1.829, 1.198, -0.886, 0.261, 2.922, -0.042];
   const POINT_LABELS = ["A", "B", "C", "D", "E", "F"];
-  const ELLIPSE_ROTATION = -0.18;
+  const INTERSECTION_LABELS = ["X", "Y", "Z"];
+  const SIDE_PAIRS = [[0, 3], [1, 4], [2, 5]];
+  const PAIR_COLOURS = [
+    "rgba(231, 185, 92, 0.86)",
+    "rgba(83, 207, 219, 0.86)",
+    "rgba(168, 153, 233, 0.82)"
+  ];
+  const PAIR_HEAD_RGB = [[231, 185, 92], [83, 207, 219], [168, 153, 233]];
+  const EPSILON = 1e-10;
 
   function cross(first, second) {
     return [
@@ -29,24 +37,21 @@
     return cross([first.x, first.y, 1], [second.x, second.y, 1]);
   }
 
-  function intersection(firstLine, secondLine) {
+  function affineIntersection(firstLine, secondLine) {
     const homogeneous = cross(firstLine, secondLine);
-    if (Math.abs(homogeneous[2]) < 1e-8) return null;
-    return {
-      x: homogeneous[0] / homogeneous[2],
-      y: homogeneous[1] / homogeneous[2]
-    };
+    if (!Number.isFinite(homogeneous[2]) || Math.abs(homogeneous[2]) < EPSILON) return null;
+    const x = homogeneous[0] / homogeneous[2];
+    const y = homogeneous[1] / homogeneous[2];
+    return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
   }
 
   function pointOnEllipse(angle) {
-    const horizontal = Math.cos(angle);
-    const vertical = 0.68 * Math.sin(angle);
-    const cosine = Math.cos(ELLIPSE_ROTATION);
-    const sine = Math.sin(ELLIPSE_ROTATION);
-    return {
-      x: horizontal * cosine - vertical * sine,
-      y: horizontal * sine + vertical * cosine
-    };
+    return { x: RX * Math.cos(angle), y: RY * Math.sin(angle) };
+  }
+
+  function smootherstep(value) {
+    const progress = Math.min(1, Math.max(0, value));
+    return progress ** 3 * (progress * (progress * 6 - 15) + 10);
   }
 
   function createPascalHeroSimulation(options) {
@@ -68,65 +73,194 @@
     let inViewport = true;
     let destroyed = false;
 
-    function fitCanvas() {
-      const bounds = canvas.getBoundingClientRect();
-      width = Math.max(1, bounds.width);
-      height = Math.max(1, bounds.height);
-      pixelRatio = Math.min(window.devicePixelRatio || 1, 2.5);
-      const nextWidth = Math.round(width * pixelRatio);
-      const nextHeight = Math.round(height * pixelRatio);
-      if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
-        canvas.width = nextWidth;
-        canvas.height = nextHeight;
-      }
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      render(reducedMotion.matches ? STATIC_TIME : elapsed);
+    function geometryAt(time) {
+      const segmentDuration = RELAY_MOVE_SECONDS + RELAY_HANDOFF_SECONDS;
+      const step = Math.floor(Math.max(0, time) / segmentDuration);
+      const activeIndex = step % POINT_LABELS.length;
+      const round = Math.floor(step / POINT_LABELS.length);
+      const cycleRound = round % RELAY_PHASE_STEPS.length;
+      const direction = RELAY_DIRECTIONS[cycleRound];
+      const phase = RELAY_PHASE_STEPS[cycleRound] * RELAY_STEP_ANGLE;
+      const segmentTime = Math.max(0, time) - step * segmentDuration;
+      const rawProgress = Math.min(1, segmentTime / RELAY_MOVE_SECONDS);
+      const progress = smootherstep(rawProgress);
+
+      // Exactly one vertex changes angle during each relay leg. The other five
+      // retain their completed offsets. Every intermediate point remains on the
+      // ellipse, so Pascal's theorem applies at every rendered frame. Reversing
+      // after two completed rounds keeps the full configuration tightly framed.
+      const points = BASE_ANGLES.map((baseAngle, index) => {
+        let offset = phase;
+        if (index < activeIndex) offset += direction * RELAY_STEP_ANGLE;
+        else if (index === activeIndex) offset += direction * RELAY_STEP_ANGLE * progress;
+        return pointOnEllipse(baseAngle + offset);
+      });
+      const sides = points.map((point, index) => lineThrough(point, points[(index + 1) % points.length]));
+      const intersections = SIDE_PAIRS.map(([first, second]) => affineIntersection(sides[first], sides[second]));
+      if (intersections.some((point) => !point)) return null;
+
+      const pascalLine = lineThrough(intersections[0], intersections[1]);
+      const lineNorm = Math.hypot(pascalLine[0], pascalLine[1]);
+      if (!Number.isFinite(lineNorm) || lineNorm < EPSILON) return null;
+      const collinearityError = Math.max(...intersections.map((point) => Math.abs(
+        pascalLine[0] * point.x + pascalLine[1] * point.y + pascalLine[2]
+      ) / lineNorm));
+      const conicError = Math.max(...points.map((point) => Math.abs(
+        point.x * point.x / (RX * RX) + point.y * point.y / (RY * RY) - 1
+      )));
+
+      return {
+        phase,
+        points,
+        sides,
+        intersections,
+        pascalLine,
+        collinearityError,
+        conicError,
+        relay: {
+          activeIndex,
+          direction,
+          moving: segmentTime < RELAY_MOVE_SECONDS,
+          progress,
+          rawProgress,
+          round,
+          step
+        }
+      };
     }
 
-    function geometryAt(time) {
-      const points = BASE_ANGLES.map((baseAngle, index) => pointOnEllipse(
-        baseAngle + AMPLITUDES[index] * Math.sin(time * RATES[index] + PHASES[index])
-      ));
-      const sides = points.map((point, index) => lineThrough(point, points[(index + 1) % points.length]));
-      const x = intersection(sides[0], sides[3]);
-      const y = intersection(sides[1], sides[4]);
-      const z = intersection(sides[2], sides[5]);
-      if (!x || !y || !z) return null;
-      const pascalLine = lineThrough(x, y);
-      const divisor = Math.hypot(pascalLine[0], pascalLine[1]) || 1;
-      const collinearityError = Math.abs(
-        pascalLine[0] * z.x + pascalLine[1] * z.y + pascalLine[2]
-      ) / divisor;
-      return { points, sides, intersections: [x, y, z], pascalLine, collinearityError };
+    function visualViewport() {
+      const side = Math.max(18, width * 0.024);
+      if (width < 620) {
+        return {
+          left: side,
+          right: width - side,
+          top: Math.max(52, height * 0.12),
+          bottom: height - Math.max(28, height * 0.07)
+        };
+      }
+      if (width < 980) {
+        return {
+          left: width * 0.34,
+          right: width - side,
+          top: Math.max(62, height * 0.1),
+          bottom: height - Math.max(34, height * 0.08)
+        };
+      }
+      return {
+        left: width * 0.49,
+        right: width - side,
+        top: Math.max(70, height * 0.095),
+        bottom: height - Math.max(42, height * 0.075)
+      };
     }
 
     function createProjector() {
-      const scale = Math.min(width * 0.54 / 3.25, height * 0.78 / 3.6);
-      const centreX = width * 0.97 - 2.15 * scale;
-      const centreY = height * 0.45;
+      const viewport = visualViewport();
+      const viewportWidth = Math.max(1, viewport.right - viewport.left);
+      const viewportHeight = Math.max(1, viewport.bottom - viewport.top);
+      const scale = Math.min(viewportWidth / (RX * 2 + 0.36), viewportHeight / (RY * 2 + 0.38));
+      const originX = (viewport.left + viewport.right) / 2;
+      const originY = (viewport.top + viewport.bottom) / 2;
       return {
+        viewport,
         scale,
         point: (worldPoint) => ({
-          x: centreX + worldPoint.x * scale,
-          y: centreY - worldPoint.y * scale
+          x: originX + worldPoint.x * scale,
+          y: originY - worldPoint.y * scale
         })
       };
     }
 
-    function drawWorldLine(line, projector, colour, lineWidth, dash) {
+    function conicLineSegment(line) {
       const [a, b, c] = line;
       const magnitudeSquared = a * a + b * b;
-      if (magnitudeSquared < 1e-12) return;
+      if (magnitudeSquared < EPSILON) return null;
       const origin = { x: -a * c / magnitudeSquared, y: -b * c / magnitudeSquared };
       const inverseMagnitude = 1 / Math.sqrt(magnitudeSquared);
       const direction = { x: b * inverseMagnitude, y: -a * inverseMagnitude };
-      const extent = 12;
-      const start = projector.point({ x: origin.x - direction.x * extent, y: origin.y - direction.y * extent });
-      const end = projector.point({ x: origin.x + direction.x * extent, y: origin.y + direction.y * extent });
+      const quadraticA = direction.x * direction.x / (RX * RX) + direction.y * direction.y / (RY * RY);
+      const quadraticB = 2 * (
+        origin.x * direction.x / (RX * RX) + origin.y * direction.y / (RY * RY)
+      );
+      const quadraticC = origin.x * origin.x / (RX * RX) + origin.y * origin.y / (RY * RY) - 1;
+      const discriminant = quadraticB * quadraticB - 4 * quadraticA * quadraticC;
+      if (!Number.isFinite(discriminant) || discriminant <= EPSILON) return null;
+      const root = Math.sqrt(discriminant);
+      const firstTime = (-quadraticB - root) / (2 * quadraticA);
+      const secondTime = (-quadraticB + root) / (2 * quadraticA);
+      return [
+        { x: origin.x + direction.x * firstTime, y: origin.y + direction.y * firstTime },
+        { x: origin.x + direction.x * secondTime, y: origin.y + direction.y * secondTime }
+      ];
+    }
+
+    function drawEllipse(projector) {
+      const traceEllipse = () => {
+        context.beginPath();
+        for (let index = 0; index <= 240; index += 1) {
+          const point = projector.point(pointOnEllipse(TAU * index / 240));
+          if (index === 0) context.moveTo(point.x, point.y);
+          else context.lineTo(point.x, point.y);
+        }
+        context.closePath();
+      };
+
       context.save();
-      context.strokeStyle = colour;
-      context.lineWidth = lineWidth;
-      context.setLineDash(dash || []);
+      context.lineCap = "round";
+      context.strokeStyle = "rgba(83, 207, 219, 0.18)";
+      context.shadowColor = "rgba(83, 207, 219, 0.58)";
+      context.shadowBlur = 24;
+      context.lineWidth = 7;
+      traceEllipse();
+      context.stroke();
+      context.shadowBlur = 0;
+      context.strokeStyle = "rgba(120, 231, 219, 0.74)";
+      context.lineWidth = 1.45;
+      traceEllipse();
+      context.stroke();
+      context.restore();
+    }
+
+    function drawStarChords(points, projector, activeIndex) {
+      context.save();
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      points.forEach((worldPoint, index) => {
+        const nextWorldPoint = points[(index + 1) % points.length];
+        const point = projector.point(worldPoint);
+        const nextPoint = projector.point(nextWorldPoint);
+        const followsActivePoint = index === activeIndex || (index + 1) % points.length === activeIndex;
+        context.strokeStyle = PAIR_COLOURS[index % 3];
+        context.globalAlpha = followsActivePoint ? 0.94 : 0.62;
+        context.lineWidth = followsActivePoint ? 1.65 : 1.15;
+        context.shadowColor = followsActivePoint ? PAIR_COLOURS[index % 3] : "transparent";
+        context.shadowBlur = followsActivePoint ? 8 : 0;
+        context.beginPath();
+        context.moveTo(point.x, point.y);
+        context.lineTo(nextPoint.x, nextPoint.y);
+        context.stroke();
+      });
+      context.restore();
+    }
+
+    function drawPascalSegment(line, projector) {
+      const worldSegment = conicLineSegment(line);
+      if (!worldSegment) return;
+      const start = projector.point(worldSegment[0]);
+      const end = projector.point(worldSegment[1]);
+      context.save();
+      context.lineCap = "round";
+      context.strokeStyle = "rgba(231, 185, 92, 0.2)";
+      context.lineWidth = 10;
+      context.beginPath();
+      context.moveTo(start.x, start.y);
+      context.lineTo(end.x, end.y);
+      context.stroke();
+      context.strokeStyle = "rgba(246, 207, 129, 0.96)";
+      context.shadowColor = "rgba(231, 185, 92, 0.72)";
+      context.shadowBlur = 18;
+      context.lineWidth = 1.65;
       context.beginPath();
       context.moveTo(start.x, start.y);
       context.lineTo(end.x, end.y);
@@ -134,89 +268,114 @@
       context.restore();
     }
 
-    function drawEllipse(projector) {
+    function drawDiamond(point, radius, stroke, fill, glow) {
       context.save();
-      context.strokeStyle = "rgba(83, 207, 219, 0.23)";
-      context.lineWidth = 1;
-      context.setLineDash([3, 9]);
-      context.beginPath();
-      for (let index = 0; index <= 240; index += 1) {
-        const point = projector.point(pointOnEllipse(TAU * index / 240));
-        if (index === 0) context.moveTo(point.x, point.y);
-        else context.lineTo(point.x, point.y);
-      }
-      context.closePath();
-      context.stroke();
-      context.restore();
-    }
-
-    function drawHexagon(points, projector) {
-      context.save();
-      context.strokeStyle = "rgba(130, 240, 207, 0.24)";
-      context.lineWidth = 0.9;
-      context.beginPath();
-      points.forEach((worldPoint, index) => {
-        const point = projector.point(worldPoint);
-        if (index === 0) context.moveTo(point.x, point.y);
-        else context.lineTo(point.x, point.y);
-      });
-      context.closePath();
-      context.stroke();
-      context.restore();
-    }
-
-    function drawConicPoint(worldPoint, label, projector) {
-      const point = projector.point(worldPoint);
-      context.save();
-      context.fillStyle = "rgba(227, 248, 240, 0.92)";
-      context.shadowColor = "rgba(130, 240, 207, 0.7)";
-      context.shadowBlur = 11;
-      context.beginPath();
-      context.arc(point.x, point.y, 2.6, 0, TAU);
-      context.fill();
-      context.shadowBlur = 0;
-      context.fillStyle = "rgba(184, 221, 208, 0.66)";
-      context.font = "8px ui-monospace, SFMono-Regular, Consolas, monospace";
-      context.textAlign = worldPoint.x < 0 ? "right" : "left";
-      context.fillText(label, point.x + (worldPoint.x < 0 ? -8 : 8), point.y - 7);
-      context.restore();
-    }
-
-    function drawIntersection(worldPoint, label, projector) {
-      const point = projector.point(worldPoint);
-      context.save();
-      context.strokeStyle = "rgba(231, 185, 92, 0.78)";
-      context.fillStyle = "rgba(255, 238, 198, 0.9)";
-      context.shadowColor = "rgba(231, 185, 92, 0.62)";
+      context.translate(point.x, point.y);
+      context.rotate(Math.PI / 4);
+      context.fillStyle = fill;
+      context.strokeStyle = stroke;
+      context.lineWidth = 1.25;
+      context.shadowColor = glow;
       context.shadowBlur = 13;
-      context.lineWidth = 1;
-      context.beginPath();
-      context.arc(point.x, point.y, 4.2, 0, TAU);
-      context.stroke();
-      context.beginPath();
-      context.arc(point.x, point.y, 1.45, 0, TAU);
-      context.fill();
-      context.shadowBlur = 0;
-      context.fillStyle = "rgba(244, 213, 145, 0.76)";
-      context.font = "700 8px ui-monospace, SFMono-Regular, Consolas, monospace";
-      context.textAlign = "left";
-      context.fillText(label, point.x + 8, point.y - 7);
+      context.fillRect(-radius, -radius, radius * 2, radius * 2);
+      context.strokeRect(-radius, -radius, radius * 2, radius * 2);
       context.restore();
     }
 
-    function drawCaption(geometry) {
-      const right = Math.max(22, width * 0.035);
-      const top = Math.max(28, height * 0.075);
+    function drawConicPoint(worldPoint, label, projector, active) {
+      const point = projector.point(worldPoint);
+      if (active) {
+        context.save();
+        const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 14);
+        glow.addColorStop(0, "rgba(246, 207, 129, 0.28)");
+        glow.addColorStop(0.45, "rgba(130, 240, 207, 0.13)");
+        glow.addColorStop(1, "rgba(130, 240, 207, 0)");
+        context.fillStyle = glow;
+        context.beginPath();
+        context.arc(point.x, point.y, 14, 0, TAU);
+        context.fill();
+        context.strokeStyle = "rgba(246, 207, 129, 0.6)";
+        context.lineWidth = 0.8;
+        context.beginPath();
+        context.arc(point.x, point.y, 8, 0, TAU);
+        context.stroke();
+        context.restore();
+      }
+      drawDiamond(
+        point,
+        active ? 4.2 : 3.2,
+        active ? "rgba(246, 207, 129, 0.98)" : "rgba(130, 240, 207, 0.96)",
+        "rgba(231, 246, 240, 0.94)",
+        active ? "rgba(246, 207, 129, 0.95)" : "rgba(130, 240, 207, 0.85)"
+      );
+      context.save();
+      context.fillStyle = active ? "rgba(255, 236, 190, 0.98)" : "rgba(220, 239, 232, 0.9)";
+      context.font = `${active ? "700" : "500"} ${active ? 10 : 9}px ui-monospace, SFMono-Regular, Consolas, monospace`;
+      context.textAlign = worldPoint.x < 0 ? "right" : "left";
+      context.fillText(label, point.x + (worldPoint.x < 0 ? -10 : 10), point.y - 9);
+      context.restore();
+    }
+
+    function drawIntersection(worldPoint, label, colour, rgb, projector) {
+      const point = projector.point(worldPoint);
+
+      // Match the exact Chaos renderer's particle heads: a broad coloured
+      // Gaussian-like halo pass followed by a compact, solid white core pass.
+      context.save();
+      context.globalCompositeOperation = "lighter";
+      const halo = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 16);
+      halo.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.56)`);
+      halo.addColorStop(0.24, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.32)`);
+      halo.addColorStop(0.58, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.1)`);
+      halo.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
+      context.fillStyle = halo;
+      context.beginPath();
+      context.arc(point.x, point.y, 16, 0, TAU);
+      context.fill();
+      context.restore();
+
+      context.save();
+      context.fillStyle = colour;
+      context.beginPath();
+      context.arc(point.x, point.y, 5.4, 0, TAU);
+      context.fill();
+      context.fillStyle = "rgba(249, 255, 252, 0.98)";
+      context.beginPath();
+      context.arc(point.x, point.y, 2.55, 0, TAU);
+      context.fill();
+      context.restore();
+
+      context.save();
+      context.fillStyle = "rgba(255, 236, 190, 0.98)";
+      context.shadowColor = "rgba(231, 185, 92, 0.6)";
+      context.shadowBlur = 7;
+      context.font = "700 11px ui-monospace, SFMono-Regular, Consolas, monospace";
+      const placeOnLeft = point.x > (projector.viewport.left + projector.viewport.right) / 2;
+      context.textAlign = placeOnLeft ? "right" : "left";
+      context.fillText(label, point.x + (placeOnLeft ? -12 : 12), point.y - 10);
+      context.restore();
+    }
+
+    function drawCaption(geometry, projector) {
+      const right = projector.viewport.right;
+      const top = projector.viewport.top;
       context.save();
       context.textAlign = "right";
-      context.fillStyle = "rgba(231, 185, 92, 0.54)";
-      context.font = "7px ui-monospace, SFMono-Regular, Consolas, monospace";
-      context.fillText("PASCAL · SIX POINTS / ONE LINE", width - right, top);
-      context.fillStyle = "rgba(174, 207, 195, 0.43)";
-      context.font = "6px ui-monospace, SFMono-Regular, Consolas, monospace";
-      context.fillText("X = AB ∩ DE   ·   Y = BC ∩ EF   ·   Z = CD ∩ FA", width - right, top + 16);
-      context.fillStyle = "rgba(130, 240, 207, 0.39)";
-      context.fillText(`COLLINEARITY RESIDUAL · ${Math.max(geometry.collinearityError, Number.EPSILON).toExponential(1)}`, width - right, top + 31);
+      context.fillStyle = "rgba(246, 207, 129, 0.82)";
+      context.font = "700 9px ui-monospace, SFMono-Regular, Consolas, monospace";
+      const activeLabel = POINT_LABELS[geometry.relay.activeIndex];
+      context.fillText(
+        width < 620
+          ? `PASCAL · ${activeLabel} MOVES · X,Y,Z ∈ ℓP`
+          : `PASCAL · ${activeLabel} MOVES / FIVE FIXED · X, Y, Z ONE LINE`,
+        right,
+        top + 2
+      );
+      context.fillStyle = "rgba(198, 226, 216, 0.72)";
+      context.font = "8px ui-monospace, SFMono-Regular, Consolas, monospace";
+      context.fillText(width < 620 ? "AB∩DE · BC∩EF · CD∩FA" : "X = AB ∩ DE   ·   Y = BC ∩ EF   ·   Z = CD ∩ FA", right, top + 18);
+      context.fillStyle = "rgba(130, 240, 207, 0.66)";
+      context.fillText(`X, Y, Z ∈ ℓP   ·   RESIDUAL ${Math.max(geometry.collinearityError, Number.EPSILON).toExponential(1)}`, right, top + 34);
       context.restore();
     }
 
@@ -232,29 +391,55 @@
       canvas.dataset.geometry = "pascal";
       canvas.dataset.points = "A,B,C,D,E,F";
       canvas.dataset.intersections = "X,Y,Z";
+      canvas.dataset.phase = geometry.phase.toFixed(4);
+      canvas.dataset.activePoint = POINT_LABELS[geometry.relay.activeIndex];
+      canvas.dataset.step = String(geometry.relay.step);
+      canvas.dataset.stepProgress = geometry.relay.progress.toFixed(4);
+      canvas.dataset.moving = String(geometry.relay.moving);
       canvas.dataset.collinearityError = geometry.collinearityError.toExponential(3);
+      canvas.dataset.conicError = geometry.conicError.toExponential(3);
 
       context.save();
-      context.globalAlpha = width < 600 ? 0.58 : 0.72;
+      const clip = projector.viewport;
+      context.beginPath();
+      context.rect(clip.left - 12, clip.top - 46, clip.right - clip.left + 24, clip.bottom - clip.top + 58);
+      context.clip();
+      context.globalAlpha = width < 620 ? 0.86 : 0.96;
+
       drawEllipse(projector);
-      drawWorldLine(geometry.sides[0], projector, "rgba(83, 207, 219, 0.075)", 0.7, [5, 12]);
-      drawWorldLine(geometry.sides[3], projector, "rgba(83, 207, 219, 0.075)", 0.7, [5, 12]);
-      drawWorldLine(geometry.sides[1], projector, "rgba(231, 185, 92, 0.07)", 0.7, [3, 13]);
-      drawWorldLine(geometry.sides[4], projector, "rgba(231, 185, 92, 0.07)", 0.7, [3, 13]);
-      drawWorldLine(geometry.sides[2], projector, "rgba(168, 137, 224, 0.065)", 0.7, [2, 11]);
-      drawWorldLine(geometry.sides[5], projector, "rgba(168, 137, 224, 0.065)", 0.7, [2, 11]);
-      drawHexagon(geometry.points, projector);
+      drawStarChords(geometry.points, projector, geometry.relay.activeIndex);
+      drawPascalSegment(geometry.pascalLine, projector);
 
-      context.save();
-      context.shadowColor = "rgba(231, 185, 92, 0.38)";
-      context.shadowBlur = 9;
-      drawWorldLine(geometry.pascalLine, projector, "rgba(231, 185, 92, 0.47)", 1.15);
+      geometry.points.forEach((point, index) => drawConicPoint(
+        point,
+        POINT_LABELS[index],
+        projector,
+        index === geometry.relay.activeIndex
+      ));
+      geometry.intersections.forEach((point, index) => drawIntersection(
+        point,
+        INTERSECTION_LABELS[index],
+        PAIR_COLOURS[index],
+        PAIR_HEAD_RGB[index],
+        projector
+      ));
       context.restore();
+      drawCaption(geometry, projector);
+    }
 
-      geometry.points.forEach((point, index) => drawConicPoint(point, POINT_LABELS[index], projector));
-      geometry.intersections.forEach((point, index) => drawIntersection(point, ["X", "Y", "Z"][index], projector));
-      drawCaption(geometry);
-      context.restore();
+    function fitCanvas() {
+      const bounds = canvas.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2.5);
+      const nextWidth = Math.round(width * pixelRatio);
+      const nextHeight = Math.round(height * pixelRatio);
+      if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+        canvas.width = nextWidth;
+        canvas.height = nextHeight;
+      }
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      render(reducedMotion.matches ? STATIC_TIME : elapsed);
     }
 
     function shouldRun() {
@@ -282,14 +467,6 @@
       }
     }
 
-    function handleVisibility() {
-      updatePlayback();
-    }
-
-    function handleMotionPreference() {
-      updatePlayback();
-    }
-
     const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(fitCanvas) : null;
     if (resizeObserver) resizeObserver.observe(canvas);
     else window.addEventListener("resize", fitCanvas);
@@ -302,9 +479,9 @@
       : null;
     if (intersectionObserver) intersectionObserver.observe(canvas);
 
-    document.addEventListener("visibilitychange", handleVisibility);
-    if (typeof reducedMotion.addEventListener === "function") reducedMotion.addEventListener("change", handleMotionPreference);
-    else reducedMotion.addListener(handleMotionPreference);
+    document.addEventListener("visibilitychange", updatePlayback);
+    if (typeof reducedMotion.addEventListener === "function") reducedMotion.addEventListener("change", updatePlayback);
+    else reducedMotion.addListener(updatePlayback);
 
     const api = {
       render,
@@ -313,15 +490,21 @@
         reducedMotion: reducedMotion.matches,
         inViewport,
         elapsed,
-        collinearityError: canvas.dataset.collinearityError || null
+        phase: canvas.dataset.phase || null,
+        activePoint: canvas.dataset.activePoint || null,
+        step: canvas.dataset.step || null,
+        stepProgress: canvas.dataset.stepProgress || null,
+        moving: canvas.dataset.moving === "true",
+        collinearityError: canvas.dataset.collinearityError || null,
+        conicError: canvas.dataset.conicError || null
       }),
       destroy: () => {
         if (destroyed) return;
         destroyed = true;
         window.cancelAnimationFrame(animationFrame);
-        document.removeEventListener("visibilitychange", handleVisibility);
-        if (typeof reducedMotion.removeEventListener === "function") reducedMotion.removeEventListener("change", handleMotionPreference);
-        else reducedMotion.removeListener(handleMotionPreference);
+        document.removeEventListener("visibilitychange", updatePlayback);
+        if (typeof reducedMotion.removeEventListener === "function") reducedMotion.removeEventListener("change", updatePlayback);
+        else reducedMotion.removeListener(updatePlayback);
         if (resizeObserver) resizeObserver.disconnect();
         else window.removeEventListener("resize", fitCanvas);
         if (intersectionObserver) intersectionObserver.disconnect();
