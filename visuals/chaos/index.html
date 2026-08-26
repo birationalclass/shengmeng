@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="An interactive gallery of six three-dimensional chaotic attractors, integrated with a shared fourth-order Runge–Kutta solver.">
+  <meta name="theme-color" content="#061513">
+  <title>Chaos Atlas · Sheng Meng Visual Lab</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-grid" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="lab-brand" href="../" aria-label="Back to Visual Lab">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><b>VISUAL LAB</b><small>SHENG MENG</small></span>
+    </a>
+    <div class="header-index" aria-hidden="true">CHAOS / 01</div>
+    <nav aria-label="Project navigation">
+      <a href="../">All visuals</a>
+      <a href="../../">Home</a>
+      <a class="source-link" href="https://github.com/ClassECNU/pde-chaotic-attractors" target="_blank" rel="noreferrer">Source <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+
+  <main class="stage" id="stage">
+    <canvas id="attractorCanvas" aria-label="Animated three-dimensional chaotic attractor. Drag to rotate, pinch or scroll to zoom, and use the controls to change the model.">
+      This interactive visualization requires Canvas support.
+    </canvas>
+
+    <section class="intro-panel" aria-labelledby="systemTitle">
+      <p class="eyebrow"><span id="systemCounter">01 / 06</span> · AUTONOMOUS ODE</p>
+      <h1 id="systemTitle">Chen–Lee<br>Attractor</h1>
+      <p class="intro-copy">Six equations. One RK4 solver. A changing view into deterministic disorder.</p>
+      <div class="integrator-badge"><i aria-hidden="true"></i><span id="integratorStatus">RK4 · Δt 0.003 · 36,000 points</span></div>
+    </section>
+
+    <aside class="equation-panel" aria-labelledby="equationHeading">
+      <div class="panel-heading">
+        <span id="equationHeading">FIELD EQUATIONS</span>
+        <span id="modelSlug">CHEN–LEE</span>
+      </div>
+      <div class="equations" id="equations" aria-live="polite">
+        <div>dx⁄dt = ax − yz</div>
+        <div>dy⁄dt = by + xz</div>
+        <div>dz⁄dt = cz + xy⁄3</div>
+      </div>
+      <p class="parameters" id="parameters">a = 5.0, &nbsp; b = −10.0, &nbsp; c = −0.38</p>
+      <div class="equation-footer">
+        <span>STATE <b id="stateReadout">x 0.00 · y 0.00 · z 0.00</b></span>
+        <span class="live-mark"><i aria-hidden="true"></i><b id="playState">LIVE</b></span>
+      </div>
+    </aside>
+
+    <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> Drag to orbit · Scroll / pinch to zoom</p>
+
+    <section class="control-panel" aria-label="Playback and camera controls">
+      <div class="transport-controls">
+        <button id="previousButton" type="button" aria-label="Previous attractor" title="Previous attractor (↑)">↑</button>
+        <button class="pause-button" id="pauseButton" type="button" aria-pressed="false" title="Pause or continue (P / Space)">
+          <span class="pause-icon" aria-hidden="true">Ⅱ</span><span id="pauseLabel">Pause</span>
+        </button>
+        <button id="nextButton" type="button" aria-label="Next attractor" title="Next attractor (↓)">↓</button>
+        <button id="resetButton" type="button" title="Reset model and camera (R)">Reset</button>
+        <button id="autoRotateButton" type="button" aria-pressed="true" title="Toggle automatic camera orbit (A)">Auto orbit</button>
+      </div>
+      <label class="range-control" for="speedControl">
+        <span>SPEED <output id="speedOutput" for="speedControl">1×</output></span>
+        <input id="speedControl" type="range" min="1" max="9" step="1" value="1">
+      </label>
+      <label class="range-control" for="trailControl">
+        <span>TRAIL <output id="trailOutput" for="trailControl">4,200</output></span>
+        <input id="trailControl" type="range" min="900" max="9000" step="300" value="4200">
+      </label>
+      <button class="keys-button" id="keysButton" type="button" aria-expanded="false" aria-controls="keyGuide">Keys <span aria-hidden="true">?</span></button>
+    </section>
+
+    <nav class="system-dock" aria-label="Chaotic systems">
+      <button class="system-option is-active" type="button" data-system="0" aria-current="true"><span>01</span><b>Chen–Lee</b></button>
+      <button class="system-option" type="button" data-system="1"><span>02</span><b>Lorenz</b></button>
+      <button class="system-option" type="button" data-system="2"><span>03</span><b>Rössler</b></button>
+      <button class="system-option" type="button" data-system="3"><span>04</span><b>Aizawa</b></button>
+      <button class="system-option" type="button" data-system="4"><span>05</span><b>Thomas</b></button>
+      <button class="system-option" type="button" data-system="5"><span>06</span><b>Halvorsen</b></button>
+    </nav>
+  </main>
+
+  <dialog class="key-guide" id="keyGuide" aria-labelledby="keyGuideTitle">
+    <form method="dialog">
+      <div class="guide-heading">
+        <div><p>INTERACTION MAP</p><h2 id="keyGuideTitle">Keyboard controls</h2></div>
+        <button value="close" aria-label="Close keyboard guide">×</button>
+      </div>
+      <dl>
+        <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Previous / next system</dd></div>
+        <div><dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Set playback speed</dd></div>
+        <div><dt><kbd>P</kbd> / <kbd>Space</kbd></dt><dd>Pause / continue</dd></div>
+        <div><dt><kbd>R</kbd></dt><dd>Reset system and camera</dd></div>
+        <div><dt><kbd>A</kbd> / <kbd>C</kbd></dt><dd>Toggle automatic orbit</dd></div>
+        <div><dt><kbd>+</kbd> <kbd>−</kbd></dt><dd>Zoom in / out</dd></div>
+      </dl>
+      <p>Pointer: drag to rotate · wheel to zoom<br>Touch: drag to rotate · pinch to zoom</p>
+    </form>
+  </dialog>
+
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+  <noscript><div class="noscript">JavaScript is required to integrate and draw the attractors.</div></noscript>
+  <script src="app.js"></script>
+</body>
+</html>
