@@ -169,10 +169,101 @@
     context.fillText("U₀  ∩  U∞", width * .5, height * .88);
   }
 
+  function drawPascalPreview() {
+    const canvas = document.querySelector("#pascalPreview");
+    if (!canvas) return;
+    const context = fitCanvas(canvas);
+    const width = canvas.width;
+    const height = canvas.height;
+    context.fillStyle = palette.ink;
+    context.fillRect(0, 0, width, height);
+
+    const cross = (first, second) => [
+      first[1] * second[2] - first[2] * second[1],
+      first[2] * second[0] - first[0] * second[2],
+      first[0] * second[1] - first[1] * second[0]
+    ];
+    const angles = [-1.829, -.886, -.042, .261, 1.198, 2.922];
+    const points = angles.map((angle) => [1.5 * Math.cos(angle), .84 * Math.sin(angle), 1]);
+    const sides = points.map((point, index) => cross(point, points[(index + 1) % points.length]));
+    const intersections = [[0, 3], [1, 4], [2, 5]].map(([first, second]) => {
+      const point = cross(sides[first], sides[second]);
+      return [point[0] / point[2], point[1] / point[2]];
+    });
+    const pascal = cross([...intersections[0], 1], [...intersections[1], 1]);
+    const bounds = { minX: -1.75, maxX: 3.08, minY: -3.35, maxY: 1.72 };
+    const scale = Math.min(width * .82 / (bounds.maxX - bounds.minX), height * .78 / (bounds.maxY - bounds.minY));
+    const centerX = (bounds.minX + bounds.maxX) / 2;
+    const centerY = (bounds.minY + bounds.maxY) / 2;
+    const project = ([x, y]) => [width * .5 + (x - centerX) * scale, height * .5 - (y - centerY) * scale];
+
+    context.save();
+    context.strokeStyle = "rgba(130,240,207,.32)";
+    context.lineWidth = 1.4;
+    context.beginPath();
+    for (let index = 0; index <= 180; index += 1) {
+      const angle = Math.PI * 2 * index / 180;
+      const screen = project([1.5 * Math.cos(angle), .84 * Math.sin(angle)]);
+      if (index === 0) context.moveTo(screen[0], screen[1]);
+      else context.lineTo(screen[0], screen[1]);
+    }
+    context.closePath();
+    context.stroke();
+
+    const pairColours = [palette.gold, palette.cyan, "#a899e9"];
+    points.forEach((point, index) => {
+      const first = project(point);
+      const second = project(points[(index + 1) % points.length]);
+      context.strokeStyle = pairColours[index % 3];
+      context.globalAlpha = .58;
+      context.beginPath();
+      context.moveTo(first[0], first[1]);
+      context.lineTo(second[0], second[1]);
+      context.stroke();
+    });
+
+    const lineY = (x) => -(pascal[0] * x + pascal[2]) / pascal[1];
+    const lineStart = project([bounds.minX, lineY(bounds.minX)]);
+    const lineEnd = project([bounds.maxX, lineY(bounds.maxX)]);
+    context.globalAlpha = 1;
+    context.strokeStyle = palette.mint;
+    context.lineWidth = 1.8;
+    context.shadowColor = palette.mint;
+    context.shadowBlur = 14;
+    context.beginPath();
+    context.moveTo(lineStart[0], lineStart[1]);
+    context.lineTo(lineEnd[0], lineEnd[1]);
+    context.stroke();
+    context.shadowBlur = 0;
+
+    points.forEach((point, index) => {
+      const screen = project(point);
+      context.fillStyle = palette.paper;
+      context.beginPath();
+      context.arc(screen[0], screen[1], 3, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = "rgba(232,242,237,.72)";
+      context.font = `${Math.max(9, width * .012)}px Georgia, serif`;
+      context.fillText("ABCDEF"[index], screen[0] + 7, screen[1] - 6);
+    });
+    intersections.forEach((point, index) => {
+      const screen = project(point);
+      context.fillStyle = pairColours[index];
+      context.beginPath();
+      context.arc(screen[0], screen[1], 3.6, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = pairColours[index];
+      context.font = `${Math.max(9, width * .012)}px ui-monospace, monospace`;
+      context.fillText("XYZ"[index], screen[0] + 7, screen[1] - 6);
+    });
+    context.restore();
+  }
+
   function drawAll() {
     drawJuliaPreview();
     drawChaosPreview();
     drawBundlePreview();
+    drawPascalPreview();
   }
 
   let resizeTimer = 0;
