@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#061513">
   <title>Chaos Atlas · Sheng Meng Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260826-camera">
   <link rel="stylesheet" href="../ambient.css?v=20260826-audio">
   <script src="../ambient.js?v=20260826-audio" defer></script>
 </head>
@@ -56,7 +56,7 @@
       </div>
     </aside>
 
-    <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> Drag to orbit · Scroll / pinch to zoom</p>
+    <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> Drag orbit · Shift-drag pan · Scroll / pinch dolly</p>
 
     <section class="control-panel" aria-label="Playback and camera controls">
       <div class="transport-controls">
@@ -66,7 +66,8 @@
         </button>
         <button id="nextButton" type="button" aria-label="Next attractor" title="Next attractor (↓)">↓</button>
         <button id="resetButton" type="button" title="Reset model and camera (R)">Reset</button>
-        <button id="autoRotateButton" type="button" aria-pressed="true" title="Toggle automatic camera orbit (A)">Auto orbit</button>
+        <button id="cameraModeButton" type="button" title="Cycle camera: FREE, CINEMATIC, MANUAL (C)" aria-label="Camera mode: Free">Camera · FREE</button>
+        <button id="fullscreenButton" type="button" aria-pressed="false" title="Enter full screen (F / F11)"><span id="fullscreenLabel">Full screen</span></button>
       </div>
       <label class="range-control" for="speedControl">
         <span>SPEED <output id="speedOutput" for="speedControl">1×</output></span>
@@ -100,15 +101,16 @@
         <div><dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Set playback speed</dd></div>
         <div><dt><kbd>P</kbd> / <kbd>Space</kbd></dt><dd>Pause / continue</dd></div>
         <div><dt><kbd>R</kbd></dt><dd>Reset system and camera</dd></div>
-        <div><dt><kbd>A</kbd> / <kbd>C</kbd></dt><dd>Toggle automatic orbit</dd></div>
+        <div><dt><kbd>C</kbd></dt><dd>Cycle FREE / CINEMATIC / MANUAL camera</dd></div>
+        <div><dt><kbd>F</kbd> / <kbd>F11</kbd></dt><dd>Enter / exit full screen</dd></div>
         <div><dt><kbd>+</kbd> <kbd>−</kbd></dt><dd>Zoom in / out</dd></div>
       </dl>
-      <p>Pointer: drag to rotate · wheel to zoom<br>Touch: drag to rotate · pinch to zoom</p>
+      <p>Pointer: drag to orbit · Shift-drag to pan · wheel to dolly<br>Touch: drag to orbit · pinch to dolly. Manual adjustments layer over every camera mode.</p>
     </form>
   </dialog>
 
   <div class="sr-only" id="announcer" aria-live="polite"></div>
   <noscript><div class="noscript">JavaScript is required to integrate and draw the attractors.</div></noscript>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260826-camera"></script>
 </body>
 </html>

@@ -172,6 +172,14 @@ button { color: inherit; }
   overflow: hidden;
 }
 
+.stage:fullscreen,
+.stage:-webkit-full-screen {
+  width: 100vw;
+  height: 100dvh;
+  min-height: 0;
+  background: var(--ink-deep);
+}
+
 .stage::before,
 .stage::after {
   position: absolute;
@@ -609,11 +617,13 @@ input:focus-visible {
   .equation-footer { padding-top: 8px; }
   .equation-footer > span:first-child { display: none; }
   .equation-footer { justify-content: flex-end; }
-  .control-panel { right: 12px; bottom: 82px; left: 12px; justify-content: space-between; gap: 8px; overflow: hidden; }
+  .control-panel { right: 12px; bottom: 82px; left: 12px; justify-content: flex-start; gap: 8px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
+  .control-panel::-webkit-scrollbar { display: none; }
   .transport-controls button { padding-inline: 8px; }
-  .transport-controls #resetButton,
-  .transport-controls #autoRotateButton { display: none; }
+  .transport-controls #resetButton { display: none; }
+  .transport-controls { flex: 0 0 auto; }
   .range-control { grid-template-columns: minmax(70px, 98px); }
+  .range-control { flex: 0 0 auto; }
   .range-control input { width: 100%; }
   .keys-button { display: none; }
   .system-dock { height: 68px; grid-template-columns: repeat(6, minmax(100px, 1fr)); padding: 0; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
