@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sheng Meng 的数学可视化实验室：Julia 集、混沌动力系统与向量丛。">
+  <meta name="theme-color" content="#071513">
+  <title>Visual Lab · Sheng Meng</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260826-visual-lab">
+</head>
+<body>
+  <a class="skip-link" href="#projects">跳到实验列表</a>
+  <div class="page-grid" aria-hidden="true"></div>
+
+  <header class="lab-header">
+    <a class="brand" href="../" aria-label="返回 Sheng Meng 主页">
+      <span class="brand-mark">V</span>
+      <span><b>SHENG MENG</b><small>VISUAL LAB</small></span>
+    </a>
+    <nav aria-label="可视化实验导航">
+      <a href="./julia/">Julia Set</a>
+      <a href="./chaos/">Chaos</a>
+      <a href="./vector-bundle/">Vector Bundle</a>
+    </nav>
+    <a class="home-link" href="../">主页 <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="lab-hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">00 / BROWSER EXPERIMENTS</p>
+        <h1 id="hero-title">让数学结构<br><em>在屏幕上运动。</em></h1>
+        <p class="hero-lead">这里收录从桌面程序重构的互动实验。不需安装软件：打开浏览器，拖动、缩放，直接观察迭代、混沌与粘合。</p>
+        <a class="primary-link" href="#projects">选择一个实验 <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <div class="hero-system" aria-hidden="true">
+        <div class="orbit orbit-outer"><i></i><i></i><i></i></div>
+        <div class="orbit orbit-inner"><i></i><i></i></div>
+        <div class="system-core"><b>z²+c</b><span>ITERATE</span></div>
+        <p>STRUCTURE<br>→ MOTION<br>→ INTUITION</p>
+      </div>
+
+      <div class="lab-stats" aria-label="实验室摘要">
+        <div><b>03</b><span>可交互实验</span></div>
+        <div><b>0</b><span>第三方依赖</span></div>
+        <div><b>GPU</b><span>优先实时渲染</span></div>
+      </div>
+    </section>
+
+    <section class="projects-section" id="projects" aria-labelledby="projects-title">
+      <div class="section-shell">
+        <div class="section-heading">
+          <p class="section-index">01 / EXPERIMENTS</p>
+          <div>
+            <h2 id="projects-title">选择一个动力系统。</h2>
+            <p>每个项目都保留原作的数学模型，并为鼠标、键盘与触屏重新设计操作。</p>
+          </div>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card project-julia">
+            <a class="preview-link" href="./julia/" aria-label="打开 Julia Set 实验">
+              <div class="project-preview"><canvas id="juliaPreview" aria-hidden="true"></canvas></div>
+            </a>
+            <div class="project-copy">
+              <div class="project-meta"><span>01 / COMPLEX DYNAMICS</span><b>LIVE</b></div>
+              <h3><a href="./julia/">Julia Set</a></h3>
+              <p>跟随参数 <i>c(t)</i> 的轨迹，观察 <i>z ↦ z²+c</i> 的边界如何收缩、分岔与重组。</p>
+              <div class="project-actions">
+                <a class="launch-link" href="./julia/">进入实验 <span aria-hidden="true">↗</span></a>
+                <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/julia" target="_blank" rel="noreferrer">源代码</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card project-chaos">
+            <a class="preview-link" href="./chaos/" aria-label="打开 Chaotic ODE Gallery 实验">
+              <div class="project-preview"><canvas id="chaosPreview" aria-hidden="true"></canvas></div>
+            </a>
+            <div class="project-copy">
+              <div class="project-meta"><span>02 / CHAOTIC FLOWS</span><b>6 MODELS</b></div>
+              <h3><a href="./chaos/">Chaotic ODE Gallery</a></h3>
+              <p>在同一座标系中穿行于 Chen–Lee、Lorenz、Rössler 等六组三维混沌吸引子。</p>
+              <div class="project-actions">
+                <a class="launch-link" href="./chaos/">进入实验 <span aria-hidden="true">↗</span></a>
+                <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/chaos" target="_blank" rel="noreferrer">源代码</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card project-bundle">
+            <a class="preview-link" href="./vector-bundle/" aria-label="打开 Vector Bundle Gluing 实验">
+              <div class="project-preview"><canvas id="bundlePreview" aria-hidden="true"></canvas></div>
+            </a>
+            <div class="project-copy">
+              <div class="project-meta"><span>03 / ALGEBRAIC GEOMETRY</span><b>F<sub>n</sub></b></div>
+              <h3><a href="./vector-bundle/">Vector Bundle Gluing</a></h3>
+              <p>沿 <i>ℙ¹</i> 的两张坐标图观察 <i>O ⊕ O(n)</i> 的过渡函数、标架相位与粘合。</p>
+              <div class="project-actions">
+                <a class="launch-link" href="./vector-bundle/">进入实验 <span aria-hidden="true">↗</span></a>
+                <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/vector-bundle" target="_blank" rel="noreferrer">源代码</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="method-section section-shell" aria-labelledby="method-title">
+      <p class="section-index">02 / PRINCIPLE</p>
+      <h2 id="method-title">不是视频。<br><em>是正在计算的数学。</em></h2>
+      <div class="method-grid">
+        <article><span>MODEL</span><b>原始方程</b><p>数学参数和迭代规则来自本地原作。</p></article>
+        <article><span>RENDER</span><b>实时生成</b><p>画面在你的设备上计算，不是预录制素材。</p></article>
+        <article><span>INTERACT</span><b>可操作直觉</b><p>缩放、旋转、改变参数，比较结构的变化。</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lab-footer">
+    <span>© <span id="currentYear"></span> Sheng Meng</span>
+    <span>MATHEMATICS · DYNAMICS · INTERACTION</span>
+    <a href="../">返回主页 ↑</a>
+  </footer>
+
+  <script src="hub.js?v=20260826-visual-lab"></script>
+</body>
+</html>
