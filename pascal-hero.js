@@ -4,10 +4,10 @@
   const TAU = Math.PI * 2;
   const RX = 1.5;
   const RY = 0.84;
-  // Three times the original relay range, still eased across the same 9-second
-  // motion leg so the active point travels visibly without approaching another
-  // vertex or sending a Pascal intersection outside the conic.
-  const RELAY_STEP_ANGLE = 0.36;
+  // More than twice the previous relay range, still eased across the same
+  // 9-second motion leg. The companion base layout keeps every full-cycle
+  // Pascal intersection inside the conic throughout the wider travel.
+  const RELAY_STEP_ANGLE = 0.8;
   const RELAY_MOVE_SECONDS = 9;
   const RELAY_HANDOFF_SECONDS = 1;
   const RELAY_PHASE_STEPS = [0, 1, 2, 1, 0, -1, -2, -1];
@@ -17,7 +17,7 @@
   // labelled hexagon A-B-C-D-E-F therefore produces the familiar Pascal
   // configuration: AB/DE meet on the left, BC/EF on the right, and CD/FA near
   // the centre. All three intersections stay inside the fixed ellipse.
-  const BASE_ANGLES = [2.62, -1.55, 0.42, -2.55, 1.55, -0.82];
+  const BASE_ANGLES = [2.52, -1.78048, 0.177963, -2.762482, 1.39834, -0.858647];
   const POINT_LABELS = ["A", "B", "C", "D", "E", "F"];
   // SIDE_PAIRS order is G = AB∩DE, K = BC∩EF, H = CD∩FA.
   const INTERSECTION_LABELS = ["G", "K", "H"];
