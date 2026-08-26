@@ -54,7 +54,6 @@
   let startPending = false;
   let playAttemptId = 0;
   let autoStartWanted = true;
-  let resumeAfterVisibility = false;
   let firstGestureInstalled = false;
   let destroyed = false;
 
@@ -142,7 +141,6 @@
       if (destroyed || attemptId !== playAttemptId) return !player.paused;
       active = !player.paused;
       blocked = false;
-      resumeAfterVisibility = false;
       removeFirstGestureRecovery();
       updateControl(active ? "on" : "blocked");
       if (active && !settings.silent) announce(copy.statusOn);
@@ -173,7 +171,6 @@
     startPending = false;
     active = false;
     blocked = false;
-    resumeAfterVisibility = false;
     removeFirstGestureRecovery();
     if (audio) {
       audio.pause();
@@ -230,29 +227,6 @@
     announce(copy.statusError);
   }
 
-  function handleVisibility() {
-    if (!audio) return;
-    if (document.hidden) {
-      resumeAfterVisibility = active && !audio.paused;
-      if (resumeAfterVisibility) {
-        audio.pause();
-        active = false;
-        root.dataset.state = "hidden";
-        root.dataset.reason = "hidden";
-        button.setAttribute("aria-pressed", "false");
-        button.setAttribute("aria-label", copy.off);
-        button.title = copy.off;
-        label.textContent = copy.off;
-        announce(copy.statusHidden);
-      }
-      return;
-    }
-    if (resumeAfterVisibility) {
-      resumeAfterVisibility = false;
-      start({ silent: true });
-    }
-  }
-
   function handleKeyboard(event) {
     if (event.repeat || event.defaultPrevented || event.key.toLowerCase() !== "m") return;
     const target = event.target;
@@ -288,7 +262,6 @@
     label = root.querySelector(".ambient-audio__label");
     status = root.querySelector(".ambient-audio__status");
     button.addEventListener("click", toggle);
-    document.addEventListener("visibilitychange", handleVisibility);
     document.addEventListener("keydown", handleKeyboard);
 
     if (!AudioClass) {
@@ -310,7 +283,6 @@
     destroyed = true;
     active = false;
     blocked = false;
-    document.removeEventListener("visibilitychange", handleVisibility);
     document.removeEventListener("keydown", handleKeyboard);
     removeFirstGestureRecovery();
     if (button) button.removeEventListener("click", toggle);
