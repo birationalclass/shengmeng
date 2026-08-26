@@ -466,6 +466,12 @@
   }
 
   function toggleFullscreen() {
+    const ambientState = window.VisualLabAmbient && window.VisualLabAmbient.getState
+      ? window.VisualLabAmbient.getState()
+      : null;
+    if (ambientState && ambientState.blocked && window.VisualLabAmbient.start) {
+      window.VisualLabAmbient.start({ silent: true });
+    }
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(() => {});
     } else {
