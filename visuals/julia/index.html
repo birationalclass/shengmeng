@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="一个可缩放、平移和暂停的实时 Julia 集浏览器，改编自 Sheng Meng 的桌面版 Julia Set Animation。">
+  <meta name="description" content="一个可缩放、平移、变速和暂停的实时 Julia 集浏览器，改编自 Sheng Meng 的桌面版 Julia Set Animation。">
   <meta name="theme-color" content="#071513">
   <title>Julia Set · Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260826-julia-browser">
+  <link rel="stylesheet" href="styles.css?v=20260826-julia-speed">
+  <link rel="stylesheet" href="../ambient.css?v=20260826-audio">
+  <script src="../ambient.js?v=20260826-audio" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#about">跳过互动画布</a>
@@ -41,6 +43,7 @@
           <div><dt>Re(c)</dt><dd id="cReal">+0.275000</dd></div>
           <div><dt>Im(c)</dt><dd id="cImaginary">+0.000000</dd></div>
           <div><dt>Zoom</dt><dd id="zoomValue">1.00×</dd></div>
+          <div><dt>Speed</dt><dd id="speedValue">1.00×</dd></div>
           <div><dt>Iterations</dt><dd id="iterationValue">64</dd></div>
           <div><dt>Time</dt><dd id="timeValue">0.0 s</dd></div>
           <div><dt>Palette</dt><dd id="paletteValue">WARM</dd></div>
@@ -63,6 +66,7 @@
           <button id="zoomInButton" type="button" aria-label="放大">+</button>
         </div>
         <label class="iteration-control" for="iterationSlider"><span>ITER</span><input id="iterationSlider" type="range" min="16" max="128" step="1" value="64"><output id="iterationOutput" for="iterationSlider">64</output></label>
+        <label class="speed-control" for="speedSlider"><span>SPEED</span><input id="speedSlider" type="range" min="0.25" max="4" step="0.25" value="1" aria-describedby="speedHint"><output id="speedOutput" for="speedSlider" aria-live="polite">1.00×</output><small id="speedHint">0.25–4×</small></label>
         <button id="fullscreenButton" type="button"><span aria-hidden="true">⛶</span><b>全屏</b></button>
       </div>
     </section>
@@ -84,7 +88,7 @@
       <div class="section-shell fact-grid">
         <article><span>ORIGIN</span><b>Desktop OpenGL study</b><p>保留原始 Python / GLSL 版的复数迭代、参数路径与双阶段调色。</p></article>
         <article><span>RENDERING</span><b>WebGL2 + Canvas fallback</b><p>优先使用 GPU 实时计算；无 WebGL2 时自动切换到低分辨率 CPU 备用画面。</p></article>
-        <article><span>CONTROLS</span><b>Mouse, keyboard, touch</b><p>按 P 或空格暂停，R 重置，方向键平移，+ / − 缩放，[ / ] 调整迭代次数。</p></article>
+        <article><span>CONTROLS</span><b>Mouse, keyboard, touch</b><p>按 P 或空格暂停，R 重置，方向键平移，+ / − 缩放，[ / ] 调整迭代次数，&lt; / &gt; 调整动画速度。</p></article>
       </div>
     </section>
   </main>
@@ -95,6 +99,6 @@
     <a href="../">返回 Visual Lab ↑</a>
   </footer>
 
-  <script src="app.js?v=20260826-julia-browser"></script>
+  <script src="app.js?v=20260826-julia-speed"></script>
 </body>
 </html>

@@ -14,12 +14,15 @@
   const fullscreenButton = document.querySelector("#fullscreenButton");
   const iterationSlider = document.querySelector("#iterationSlider");
   const iterationOutput = document.querySelector("#iterationOutput");
+  const speedSlider = document.querySelector("#speedSlider");
+  const speedOutput = document.querySelector("#speedOutput");
   const rendererName = document.querySelector("#rendererName");
   const rendererLight = document.querySelector("#rendererLight");
   const motionState = document.querySelector("#motionState");
   const cRealOutput = document.querySelector("#cReal");
   const cImaginaryOutput = document.querySelector("#cImaginary");
   const zoomOutput = document.querySelector("#zoomValue");
+  const speedValue = document.querySelector("#speedValue");
   const iterationValue = document.querySelector("#iterationValue");
   const timeOutput = document.querySelector("#timeValue");
   const paletteOutput = document.querySelector("#paletteValue");
@@ -32,6 +35,7 @@
     targetZoom: 1,
     panX: 0,
     panY: 0,
+    speed: 1,
     iterations: 64,
     dirty: true
   };
@@ -393,6 +397,9 @@
     cRealOutput.textContent = `${parameter.real >= 0 ? "+" : ""}${parameter.real.toFixed(6)}`;
     cImaginaryOutput.textContent = `${parameter.imaginary >= 0 ? "+" : ""}${parameter.imaginary.toFixed(6)}`;
     zoomOutput.textContent = `${state.zoom < 10 ? state.zoom.toFixed(2) : state.zoom.toFixed(1)}×`;
+    const formattedSpeed = `${state.speed.toFixed(2)}×`;
+    speedValue.textContent = formattedSpeed;
+    speedOutput.value = formattedSpeed;
     iterationValue.textContent = String(state.iterations);
     iterationOutput.value = String(state.iterations);
     timeOutput.textContent = `${state.elapsed.toFixed(1)} s`;
@@ -406,6 +413,13 @@
 
   function markDirty() {
     state.dirty = true;
+  }
+
+  function setSpeed(nextSpeed) {
+    state.speed = clamp(Math.round(nextSpeed * 4) / 4, .25, 4);
+    speedSlider.value = String(state.speed);
+    markDirty();
+    updateInterface();
   }
 
   function setZoom(nextZoom, clientX, clientY, canvas = glCanvas.hidden ? fallbackCanvas : glCanvas) {
@@ -469,6 +483,7 @@
     iterationOutput.value = String(state.iterations);
     markDirty();
   });
+  speedSlider.addEventListener("input", () => setSpeed(Number(speedSlider.value)));
 
   [glCanvas, fallbackCanvas].forEach((canvas) => {
     canvas.addEventListener("wheel", (event) => {
@@ -582,6 +597,10 @@
         iterationSlider.value = String(state.iterations);
         markDirty();
         break;
+      case ",":
+      case "<": setSpeed(state.speed - .25); break;
+      case ".":
+      case ">": setSpeed(state.speed + .25); break;
       default: handled = false;
     }
     if (handled) event.preventDefault();
@@ -607,7 +626,7 @@
   function frame(now) {
     const delta = Math.min(.05, Math.max(0, (now - previousFrame) / 1000));
     previousFrame = now;
-    if (!state.paused && !document.hidden) state.elapsed += delta;
+    if (!state.paused && !document.hidden) state.elapsed += delta * state.speed;
 
     const zoomDifference = state.targetZoom - state.zoom;
     if (Math.abs(zoomDifference) > .00001) {
