@@ -4,7 +4,10 @@
   const TAU = Math.PI * 2;
   const RX = 1.5;
   const RY = 0.84;
-  const RELAY_STEP_ANGLE = 0.12;
+  // Three times the original relay range, still eased across the same 9-second
+  // motion leg so the active point travels visibly without approaching another
+  // vertex or sending a Pascal intersection outside the conic.
+  const RELAY_STEP_ANGLE = 0.36;
   const RELAY_MOVE_SECONDS = 9;
   const RELAY_HANDOFF_SECONDS = 1;
   const RELAY_PHASE_STEPS = [0, 1, 2, 1, 0, -1, -2, -1];
@@ -143,17 +146,17 @@
       }
       if (width < 980) {
         return {
-          left: width * 0.34,
+          left: width * 0.24,
           right: width - side,
-          top: Math.max(62, height * 0.1),
-          bottom: height - Math.max(34, height * 0.08)
+          top: Math.max(56, height * 0.075),
+          bottom: height - Math.max(28, height * 0.06)
         };
       }
       return {
-        left: width * 0.49,
+        left: width * 0.36,
         right: width - side,
-        top: Math.max(70, height * 0.095),
-        bottom: height - Math.max(42, height * 0.075)
+        top: Math.max(58, height * 0.07),
+        bottom: height - Math.max(30, height * 0.055)
       };
     }
 
@@ -161,7 +164,7 @@
       const viewport = visualViewport();
       const viewportWidth = Math.max(1, viewport.right - viewport.left);
       const viewportHeight = Math.max(1, viewport.bottom - viewport.top);
-      const scale = Math.min(viewportWidth / (RX * 2 + 0.36), viewportHeight / (RY * 2 + 0.38));
+      const scale = Math.min(viewportWidth / (RX * 2 + 0.18), viewportHeight / (RY * 2 + 0.22));
       const originX = (viewport.left + viewport.right) / 2;
       const originY = (viewport.top + viewport.bottom) / 2;
       return {
@@ -409,6 +412,7 @@
       canvas.dataset.phase = geometry.phase.toFixed(4);
       canvas.dataset.activePoint = POINT_LABELS[geometry.relay.activeIndex];
       canvas.dataset.step = String(geometry.relay.step);
+      canvas.dataset.stepAngle = RELAY_STEP_ANGLE.toFixed(2);
       canvas.dataset.stepProgress = geometry.relay.progress.toFixed(4);
       canvas.dataset.moving = String(geometry.relay.moving);
       canvas.dataset.collinearityError = geometry.collinearityError.toExponential(3);
