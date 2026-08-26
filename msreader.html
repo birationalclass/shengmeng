@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="msreader — a native macOS workspace for turning TeX and arXiv papers into interactive theorem cards and navigable proof graphs.">
+  <meta name="theme-color" content="#071513">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="msreader — mathematical papers, made navigable">
+  <meta property="og:description" content="A native macOS reader for TeX, arXiv, theorem cards, proof links, and mathematical knowledge graphs.">
+  <meta property="og:url" content="https://birationalclass.github.io/shengmeng/msreader.html">
+  <meta property="og:image" content="https://birationalclass.github.io/shengmeng/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>msreader — Sheng Meng</title>
+  <link rel="canonical" href="https://birationalclass.github.io/shengmeng/msreader.html">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260827-msreader">
+  <link rel="stylesheet" href="msreader.css?v=20260827-release-1">
+</head>
+<body class="msreader-page">
+  <div class="page-grid" aria-hidden="true"></div>
+  <header class="site-header" id="top">
+    <a class="brand brand-word" href="index.html" aria-label="Sheng Meng home" data-i18n="brandName">Sheng Meng</a>
+    <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation" aria-expanded="false">Menu</button>
+    <nav id="mainNav" aria-label="Primary navigation">
+      <a href="#overview" data-i18n="msreaderNavOverview">Overview</a>
+      <a href="#workflow" data-i18n="msreaderNavWorkflow">Workflow</a>
+      <a href="#requirements" data-i18n="msreaderNavRequirements">Requirements</a>
+      <a href="index.html" data-i18n="msreaderNavHome">Main site</a>
+    </nav>
+    <button class="language-button" id="languageButton" type="button" aria-label="Switch language">中文</button>
+  </header>
+
+  <main>
+    <section class="msr-hero" id="overview" aria-labelledby="msreaderTitle">
+      <div class="section-shell msr-hero-grid">
+        <div class="msr-hero-copy reveal">
+          <p class="kicker"><span></span><span data-i18n="msreaderKicker">Native macOS mathematical workspace</span></p>
+          <h1 id="msreaderTitle">msreader<span>.</span></h1>
+          <p class="msr-lead" data-i18n="msreaderLead">Turn TeX and arXiv papers into interactive theorem cards, proof links, and a knowledge graph you can actually navigate.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="msreader-0.2-arm64.zip" download><span data-i18n="msreaderDownload">Download prototype 0.2</span><i>↓</i></a>
+            <a class="button ghost" href="#workflow"><span data-i18n="msreaderSeeWorkflow">See the workflow</span><i>↘</i></a>
+          </div>
+          <div class="msr-meta" aria-label="Release details">
+            <span>APPLE SILICON</span><span>macOS 13+</span><span>SWIFTUI · METAL · MATHJAX</span>
+          </div>
+        </div>
+
+        <div class="msr-window reveal delay-1" aria-label="A stylized preview of the msreader interface">
+          <div class="msr-window-bar">
+            <i></i><i></i><i></i>
+            <span>arXiv:2506.16057 · msreader</span>
+            <b>⌘K</b>
+          </div>
+          <div class="msr-browser-bar">
+            <button type="button" tabindex="-1" aria-hidden="true">‹</button>
+            <button type="button" tabindex="-1" aria-hidden="true">›</button>
+            <div>arxiv.org / paper / theorem graph</div>
+            <em>IMPORT</em>
+          </div>
+          <div class="msr-workspace">
+            <aside aria-hidden="true">
+              <small>PAPER STRUCTURE</small>
+              <strong>01 · Main results</strong>
+              <span class="active">Theorem 1.2</span>
+              <span>Lemma 3.4</span>
+              <span>Proposition 4.1</span>
+              <span>Corollary 4.8</span>
+              <small>REFERENCES</small>
+              <span>Definitions</span>
+              <span>Dependencies</span>
+            </aside>
+            <div class="msr-graph" aria-hidden="true">
+              <svg viewBox="0 0 700 470" preserveAspectRatio="none">
+                <path d="M135 115 C250 100 270 210 350 229"></path>
+                <path d="M350 229 C435 240 455 118 570 128"></path>
+                <path d="M350 229 C410 290 415 355 540 367"></path>
+                <circle cx="135" cy="115" r="5"></circle>
+                <circle cx="350" cy="229" r="6"></circle>
+                <circle cx="570" cy="128" r="5"></circle>
+                <circle cx="540" cy="367" r="5"></circle>
+              </svg>
+              <article class="msr-card msr-card-main">
+                <small>THEOREM 1.2</small>
+                <b>Main theorem</b>
+                <p>Let X be a normal projective variety and f a surjective endomorphism…</p>
+                <span>3 dependencies</span>
+              </article>
+              <article class="msr-card msr-card-proof">
+                <small>PROOF</small>
+                <b>Argument graph</b>
+                <p>Reduction → invariant fibration → equivariant MMP</p>
+                <span class="mint">selected</span>
+              </article>
+              <article class="msr-card msr-card-lemma">
+                <small>LEMMA 3.4</small>
+                <b>Descent step</b>
+                <p>Referenced by the main argument.</p>
+              </article>
+              <article class="msr-card msr-card-corollary">
+                <small>COROLLARY 4.8</small>
+                <b>Orbit consequence</b>
+                <p>Follows from Theorem 1.2.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="msr-section" id="workflow" aria-labelledby="workflowTitle">
+      <div class="section-shell">
+        <div class="section-heading reveal">
+          <p class="section-index">01 / WORKFLOW</p>
+          <h2 id="workflowTitle" data-i18n="msreaderWorkflowTitle">From paper to navigable structure.</h2>
+          <p data-i18n="msreaderWorkflowLead">The reader keeps the original mathematics intact while making its logical architecture visible and explorable.</p>
+        </div>
+        <div class="msr-feature-grid">
+          <article class="reveal">
+            <b>01</b>
+            <h3 data-i18n="msreaderFeatureImport">Import the source</h3>
+            <p data-i18n="msreaderFeatureImportText">Open an arXiv page or a local TeX file. msreader finds the main document and expands its included sources.</p>
+            <span>arXiv · TeX</span>
+          </article>
+          <article class="reveal delay-1">
+            <b>02</b>
+            <h3 data-i18n="msreaderFeatureParse">Recover the logic</h3>
+            <p data-i18n="msreaderFeatureParseText">Theorem environments, numbering, references, and proof relationships become structured data without replacing the source TeX.</p>
+            <span>MathJax · references</span>
+          </article>
+          <article class="reveal delay-2">
+            <b>03</b>
+            <h3 data-i18n="msreaderFeatureExplore">Explore the graph</h3>
+            <p data-i18n="msreaderFeatureExploreText">Move through glass theorem cards while Metal renders the active dependency paths as a responsive knowledge graph.</p>
+            <span>SwiftUI · Metal</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="msr-release-section" id="requirements" aria-labelledby="releaseTitle">
+      <div class="section-shell msr-release-grid">
+        <div class="reveal">
+          <p class="section-index">02 / PROTOTYPE RELEASE</p>
+          <h2 id="releaseTitle" data-i18n="msreaderReleaseTitle">A native reader, ready to try.</h2>
+          <p data-i18n="msreaderReleaseLead">Version 0.2 is an Apple Silicon prototype for macOS 13 or later. It includes the arXiv browser, local TeX import, theorem cards, MathJax rendering, and Metal relationship lines.</p>
+          <a class="button primary" href="msreader-0.2-arm64.zip" download><span data-i18n="msreaderDownloadZip">Download msreader 0.2</span><i>↓</i></a>
+        </div>
+        <dl class="msr-requirements reveal delay-1">
+          <div><dt data-i18n="msreaderPlatform">Platform</dt><dd>macOS 13+ · Apple Silicon</dd></div>
+          <div><dt data-i18n="msreaderVersion">Version</dt><dd>0.2 · build 2</dd></div>
+          <div><dt data-i18n="msreaderArchive">Archive</dt><dd>944 KiB · ZIP</dd></div>
+          <div><dt>SHA-256</dt><dd><code>fa3813bbfe6e…07f9f22ed3f89</code></dd></div>
+          <p data-i18n="msreaderSigningNote">Prototype notice: this build is ad-hoc signed, not Apple-notarized. On first launch, macOS may require Control-click → Open.</p>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="currentYear"></span> Sheng Meng</span>
+    <span data-i18n="msreaderFooter">msreader · mathematical papers, made navigable</span>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+  <script src="script.js?v=20260827-msreader"></script>
+</body>
+</html>
