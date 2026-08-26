@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive gluing diagram for Hirzebruch surfaces, showing how a moving local frame acquires the transition factor zⁿ.">
+  <meta name="theme-color" content="#071513">
+  <meta name="color-scheme" content="dark">
+  <title>Ruled Surface Gluing · Visual Lab · Sheng Meng</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#laboratory">Skip to the laboratory</a>
+
+  <header class="site-bar">
+    <nav class="site-nav" aria-label="Project navigation">
+      <a class="wordmark" href="../../" aria-label="Sheng Meng homepage">Sheng Meng<span>.</span></a>
+      <div class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="../">Visual Lab</a>
+        <span aria-hidden="true">/</span>
+        <span>Vector bundles</span>
+      </div>
+      <div class="nav-actions">
+        <a href="../">All visuals</a>
+        <a class="home-link" href="../../">Homepage <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="laboratory" class="lab-shell">
+    <aside class="control-deck" aria-labelledby="controlsTitle">
+      <div class="intro-block">
+        <p class="eyebrow"><span>Visual 01</span> · Algebraic geometry</p>
+        <h1 id="controlsTitle">Gluing<br>laboratory</h1>
+        <p>A moving local frame explains how a ruled surface is assembled from two trivial pieces.</p>
+      </div>
+
+      <section class="control-group degree-control" aria-labelledby="degreeLabel">
+        <div class="control-heading">
+          <div>
+            <span class="control-index">01</span>
+            <h2 id="degreeLabel">Hirzebruch index</h2>
+          </div>
+          <output id="degreeOutput" for="degreeButtons" aria-live="polite">n = 1</output>
+        </div>
+        <div class="degree-buttons" id="degreeButtons" aria-label="Choose Hirzebruch index">
+          <button type="button" data-degree="0" aria-pressed="false">0</button>
+          <button type="button" data-degree="1" aria-pressed="true">1</button>
+          <button type="button" data-degree="2" aria-pressed="false">2</button>
+          <button type="button" data-degree="3" aria-pressed="false">3</button>
+          <button type="button" data-degree="4" aria-pressed="false">4</button>
+        </div>
+        <p id="degreeDescription" class="control-note">F₁ = P(O ⊕ O(1)). The frame winds once around the overlap.</p>
+      </section>
+
+      <section class="control-group motion-control" aria-labelledby="motionLabel">
+        <div class="control-heading">
+          <div>
+            <span class="control-index">02</span>
+            <h2 id="motionLabel">Motion</h2>
+          </div>
+          <button class="play-button" id="playToggle" type="button" aria-pressed="true">
+            <span class="play-icon" aria-hidden="true"></span>
+            <span id="playLabel">Pause</span>
+          </button>
+        </div>
+
+        <label class="range-row" id="positionControl" for="positionRange" hidden>
+          <span>Point on overlap <output id="positionOutput" for="positionRange">58°</output></span>
+          <input id="positionRange" type="range" min="0" max="1" value="0.16" step="0.001">
+        </label>
+
+        <label class="range-row" for="speedRange">
+          <span>Speed <output id="speedOutput" for="speedRange">0.16×</output></span>
+          <input id="speedRange" type="range" min="0.04" max="0.42" value="0.16" step="0.01">
+        </label>
+
+        <label class="switch-row" for="sectionsToggle">
+          <span>
+            <b>Distinguished sections</b>
+            <small>Trace two canonical directions</small>
+          </span>
+          <input id="sectionsToggle" type="checkbox" checked>
+          <i aria-hidden="true"></i>
+        </label>
+      </section>
+
+      <section class="control-group legend" aria-labelledby="legendTitle">
+        <div class="control-heading">
+          <div>
+            <span class="control-index">03</span>
+            <h2 id="legendTitle">How to read it</h2>
+          </div>
+        </div>
+        <ul>
+          <li><i class="swatch chart-zero" aria-hidden="true"></i><span><b>U₀ chart</b><small>local coordinate z</small></span></li>
+          <li><i class="swatch chart-infinity" aria-hidden="true"></i><span><b>U∞ chart</b><small>w = 1/z</small></span></li>
+          <li><i class="swatch chart-overlap" aria-hidden="true"></i><span><b>Overlap</b><small>transition data lives here</small></span></li>
+          <li><i class="swatch moving-frame" aria-hidden="true"></i><span><b>Moving frame</b><small>a projective fiber coordinate</small></span></li>
+        </ul>
+      </section>
+
+      <p class="clutching-note"><span>Clutching picture</span>The essential datum is not a literal surface in R³: it is the factor zⁿ acquired by a fiber coordinate as the base point circles CP¹.</p>
+    </aside>
+
+    <section class="visual-stage" aria-labelledby="stageTitle">
+      <header class="stage-header">
+        <div>
+          <p class="stage-kicker">Projective bundles over the sphere</p>
+          <h2 id="stageTitle">A ruled surface as a gluing problem</h2>
+          <p class="bundle-formula"><span id="surfaceName">𝔽₁</span> = P(O ⊕ O(<span id="formulaDegree">1</span>)) <i aria-hidden="true">⟶</i> CP¹</p>
+        </div>
+        <div class="twist-status" id="twistStatus"><i aria-hidden="true"></i><span>one twist</span></div>
+      </header>
+
+      <div class="canvas-card">
+        <div class="canvas-topline" aria-hidden="true">
+          <span>LOCAL TRIVIALIZATIONS</span>
+          <span>FRAME TRACKER · <b id="trackerDegree">n=1</b></span>
+        </div>
+        <canvas id="gluingCanvas" role="img" aria-label="Animated gluing diagram for the Hirzebruch surface F 1">
+          Animated diagram of two coordinate charts on CP¹ glued by the transition factor zⁿ.
+        </canvas>
+        <div class="canvas-readout" aria-live="off">
+          <span><i aria-hidden="true"></i>BASE POINT <b id="angleReadout">θ = 58°</b></span>
+          <span>PHASE <b id="phaseReadout">nθ = 58°</b></span>
+        </div>
+      </div>
+
+      <section class="formula-panel" aria-labelledby="transitionTitle">
+        <div class="formula-heading">
+          <p class="control-index">Transition on U₀ ∩ U∞</p>
+          <h3 id="transitionTitle">The same point, in two frames.</h3>
+        </div>
+        <div class="formula-grid">
+          <p><span>Base</span><b>w = z⁻¹</b></p>
+          <p><span>Fiber</span><b>(z, [s:t])₀ ∼ (w, [z<sup id="transitionPower">1</sup>s:t])∞</b></p>
+          <p><span>Rotation</span><b>phase = <span id="phaseFormula">1</span> · arg(z)</b></p>
+        </div>
+        <p id="formulaExplanation">The gold band is the overlap. The moving mint frame is described first in U₀, then re-expressed in U∞. For n = 1 it makes one full turn.</p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <span>Sheng Meng · Visual Lab</span>
+    <p>Geometry is encoded by how local pictures agree.</p>
+    <a href="../">Continue exploring <span aria-hidden="true">→</span></a>
+  </footer>
+</body>
+</html>
