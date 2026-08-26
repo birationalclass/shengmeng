@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#061513">
   <title>Chaos Atlas · Sheng Meng Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260826-camera">
-  <link rel="stylesheet" href="../ambient.css?v=20260826-audio">
-  <script src="../ambient.js?v=20260826-audio" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260826-release-3">
+  <link rel="stylesheet" href="../ambient.css?v=20260826-release-3">
+  <script src="../ambient.js?v=20260826-release-3" data-track="curve1.mp3" data-volume="0.45" data-parent="#stage" defer></script>
 </head>
 <body>
   <div class="page-grid" aria-hidden="true"></div>
@@ -35,7 +35,7 @@
     <section class="intro-panel" aria-labelledby="systemTitle">
       <p class="eyebrow"><span id="systemCounter">01 / 06</span> · AUTONOMOUS ODE</p>
       <h1 id="systemTitle">Chen–Lee<br>Attractor</h1>
-      <p class="intro-copy">Six equations. One RK4 solver. A changing view into deterministic disorder.</p>
+      <p class="intro-copy">Six autonomous systems. One RK4 solver. A changing view into deterministic disorder.</p>
       <div class="integrator-badge"><i aria-hidden="true"></i><span id="integratorStatus">RK4 · Δt 0.003 · 36,000 points</span></div>
     </section>
 
@@ -58,25 +58,24 @@
 
     <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> Drag orbit · Shift-drag pan · Scroll / pinch dolly</p>
 
+    <p class="chaos-signature" id="signature" aria-label="Sheng Meng">Sheng Meng</p>
+
     <section class="control-panel" aria-label="Playback and camera controls">
       <div class="transport-controls">
         <button id="previousButton" type="button" aria-label="Previous attractor" title="Previous attractor (↑)">↑</button>
-        <button class="pause-button" id="pauseButton" type="button" aria-pressed="false" title="Pause or continue (P / Space)">
+        <button class="pause-button" id="pauseButton" type="button" aria-pressed="false" title="Pause or continue (P)">
           <span class="pause-icon" aria-hidden="true">Ⅱ</span><span id="pauseLabel">Pause</span>
         </button>
         <button id="nextButton" type="button" aria-label="Next attractor" title="Next attractor (↓)">↓</button>
         <button id="resetButton" type="button" title="Reset model and camera (R)">Reset</button>
         <button id="cameraModeButton" type="button" title="Cycle camera: FREE, CINEMATIC, MANUAL (C)" aria-label="Camera mode: Free">Camera · FREE</button>
-        <button id="fullscreenButton" type="button" aria-pressed="false" title="Enter full screen (F / F11)"><span id="fullscreenLabel">Full screen</span></button>
+        <button id="fullscreenButton" type="button" aria-pressed="false" title="Enter full screen (Space / F / F11)"><span id="fullscreenLabel">Full screen</span></button>
       </div>
       <label class="range-control" for="speedControl">
         <span>SPEED <output id="speedOutput" for="speedControl">1×</output></span>
         <input id="speedControl" type="range" min="1" max="9" step="1" value="1">
       </label>
-      <label class="range-control" for="trailControl">
-        <span>TRAIL <output id="trailOutput" for="trailControl">4,200</output></span>
-        <input id="trailControl" type="range" min="900" max="9000" step="300" value="4200">
-      </label>
+      <div class="stream-readout" aria-label="Original renderer density"><span>STREAMS</span><b>300 × ≤360</b></div>
       <button class="keys-button" id="keysButton" type="button" aria-expanded="false" aria-controls="keyGuide">Keys <span aria-hidden="true">?</span></button>
     </section>
 
@@ -99,18 +98,20 @@
       <dl>
         <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Previous / next system</dd></div>
         <div><dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Set playback speed</dd></div>
-        <div><dt><kbd>P</kbd> / <kbd>Space</kbd></dt><dd>Pause / continue</dd></div>
+        <div><dt><kbd>P</kbd></dt><dd>Pause / continue</dd></div>
         <div><dt><kbd>R</kbd></dt><dd>Reset system and camera</dd></div>
         <div><dt><kbd>C</kbd></dt><dd>Cycle FREE / CINEMATIC / MANUAL camera</dd></div>
-        <div><dt><kbd>F</kbd> / <kbd>F11</kbd></dt><dd>Enter / exit full screen</dd></div>
-        <div><dt><kbd>+</kbd> <kbd>−</kbd></dt><dd>Zoom in / out</dd></div>
+        <div><dt><kbd>Space</kbd> / <kbd>F</kbd> / <kbd>F11</kbd></dt><dd>Enter / exit full screen</dd></div>
+        <div><dt><kbd>M</kbd></dt><dd>Music on / off</dd></div>
       </dl>
-      <p>Pointer: drag to orbit · Shift-drag to pan · wheel to dolly<br>Touch: drag to orbit · pinch to dolly. Manual adjustments layer over every camera mode.</p>
+      <p>Pointer: drag to orbit · Shift-drag to pan · wheel to dolly · click to hide/show the formula and signature.<br>Touch: drag to orbit · pinch to dolly. Manual adjustments layer over every camera mode.</p>
     </form>
   </dialog>
 
   <div class="sr-only" id="announcer" aria-live="polite"></div>
   <noscript><div class="noscript">JavaScript is required to integrate and draw the attractors.</div></noscript>
-  <script src="app.js?v=20260826-camera"></script>
+  <script src="exact-camera.js?v=20260826-release-3"></script>
+  <script src="exact-renderer.js?v=20260826-release-3"></script>
+  <script src="app.js?v=20260826-release-3"></script>
 </body>
 </html>

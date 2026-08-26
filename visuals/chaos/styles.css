@@ -1,7 +1,25 @@
+@font-face {
+  font-family: "Chaos Math";
+  src: url("fonts/STIXTwoMath.otf") format("opentype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Chaos Script";
+  src: local("Snell Roundhand"), local("SnellRoundhand");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Chaos Brace";
+  src: url("fonts/STIXSizThreeSymReg.otf") format("opentype");
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   --ink: #061513;
-  --ink-deep: #030d0c;
+  --ink-deep: #010206;
   --panel: rgba(8, 29, 25, 0.78);
   --panel-solid: #0a211d;
   --paper: #e7f2ed;
@@ -173,10 +191,31 @@ button { color: inherit; }
 }
 
 .stage:fullscreen,
-.stage:-webkit-full-screen {
+.stage:-webkit-full-screen,
+.stage.is-immersive {
   width: 100vw;
   height: 100dvh;
   min-height: 0;
+  background: #010206;
+}
+
+.stage.is-immersive {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+}
+
+body.chaos-immersive {
+  overflow: hidden;
+  background: #010206;
+}
+
+body.chaos-immersive .site-header {
+  visibility: hidden;
+}
+
+.stage:fullscreen,
+.stage:-webkit-full-screen {
   background: var(--ink-deep);
 }
 
@@ -187,6 +226,11 @@ button { color: inherit; }
   content: "";
   pointer-events: none;
 }
+
+/* The original OpenGL program has no decorative grid, rings, or vignette over
+   the mathematical scene. The site chrome remains outside the canvas only. */
+.stage::before,
+.stage::after { display: none; }
 
 .stage::before {
   width: min(64vw, 930px);
@@ -223,6 +267,7 @@ button { color: inherit; }
 
 .intro-panel,
 .equation-panel,
+.chaos-signature,
 .gesture-hint,
 .control-panel,
 .system-dock {
@@ -231,19 +276,14 @@ button { color: inherit; }
 }
 
 .intro-panel {
-  top: clamp(42px, 7.5vh, 92px);
-  left: max(24px, calc((100vw - 1450px) / 2));
-  width: min(330px, 25vw);
+  top: 58px;
+  left: 64px;
+  width: min(620px, calc(100vw - 128px));
   pointer-events: none;
   animation: panel-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.eyebrow {
-  margin: 0 0 20px;
-  color: var(--gold);
-  font: 9px var(--mono);
-  letter-spacing: 0.13em;
-}
+.eyebrow { display: none; }
 
 .eyebrow::before {
   display: inline-block;
@@ -256,21 +296,18 @@ button { color: inherit; }
 
 .intro-panel h1 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(43px, 4.6vw, 76px);
+  color: rgba(236, 228, 210, .804);
+  font-family: "Chaos Script", Snell Roundhand, cursive;
+  font-size: 41px;
   font-weight: 400;
-  line-height: 0.9;
-  letter-spacing: -0.055em;
-  text-wrap: balance;
+  line-height: 1.08;
+  letter-spacing: 0;
+  text-shadow: 1px 1px rgba(72, 104, 126, .36);
+  white-space: nowrap;
 }
 
-.intro-copy {
-  max-width: 265px;
-  margin: 24px 0 0;
-  color: #8fa59d;
-  font-size: 11px;
-  line-height: 1.72;
-}
+.intro-copy,
+.integrator-badge { display: none; }
 
 .integrator-badge {
   display: inline-flex;
@@ -285,6 +322,9 @@ button { color: inherit; }
   letter-spacing: 0.07em;
 }
 
+.intro-copy,
+.integrator-badge { display: none !important; }
+
 .integrator-badge i,
 .live-mark i {
   width: 5px;
@@ -297,17 +337,17 @@ button { color: inherit; }
 .stage.is-loading .integrator-badge i { animation: status-pulse 650ms ease-in-out infinite alternate; }
 
 .equation-panel {
-  top: clamp(44px, 8vh, 96px);
-  right: max(24px, calc((100vw - 1450px) / 2));
-  width: clamp(294px, 24vw, 375px);
-  padding: 18px 18px 14px;
-  border: 1px solid rgba(125, 235, 201, 0.22);
-  background:
-    linear-gradient(135deg, rgba(125, 235, 201, 0.035), transparent 45%),
-    var(--panel);
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(14px);
+  top: 118px;
+  right: auto;
+  left: 64px;
+  width: min(640px, calc(100vw - 128px));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
   animation: panel-enter 700ms 90ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  pointer-events: none;
 }
 
 .equation-panel::before,
@@ -319,8 +359,8 @@ button { color: inherit; }
   pointer-events: none;
 }
 
-.equation-panel::before { top: -1px; left: -1px; border-top: 1px solid var(--mint); border-left: 1px solid var(--mint); }
-.equation-panel::after { right: -1px; bottom: -1px; border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold); }
+.equation-panel::before,
+.equation-panel::after { display: none; }
 
 .panel-heading,
 .equation-footer {
@@ -333,23 +373,83 @@ button { color: inherit; }
   letter-spacing: 0.11em;
 }
 
-.panel-heading span:last-child { color: var(--gold); }
+.panel-heading,
+.equation-footer { display: none; }
 
 .equations {
-  min-height: 92px;
-  margin: 20px 0 12px;
-  color: #d7eee6;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(15px, 1.27vw, 19px);
-  line-height: 1.55;
+  position: relative;
+  min-height: 118px;
+  margin: 0;
+  padding-left: 45px;
+  color: rgba(224, 216, 199, .66);
+  font-family: "Chaos Math", STIX Two Math, serif;
+  font-size: 30px;
+  line-height: 1.24;
+  text-shadow: 1px 1px rgba(72, 104, 126, .36);
+}
+
+.equations::before {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  content: "{";
+  color: rgba(224, 216, 199, .66);
+  font-family: "Chaos Brace", serif;
+  font-size: 116px;
+  line-height: 1;
+  transform: scale(.45, .40);
+  transform-origin: top left;
+}
+
+.stage.controls-hidden .control-panel,
+.stage.controls-hidden .system-dock,
+.stage.controls-hidden .gesture-hint,
+.stage.controls-hidden .ambient-audio {
+  opacity: 0 !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.stage.controls-hidden #attractorCanvas { cursor: none; }
+
+.stage:fullscreen .control-panel,
+.stage:fullscreen .system-dock,
+.stage:fullscreen .ambient-audio,
+.stage:-webkit-full-screen .control-panel,
+.stage:-webkit-full-screen .system-dock,
+.stage:-webkit-full-screen .ambient-audio,
+.stage.is-immersive .control-panel,
+.stage.is-immersive .system-dock,
+.stage.is-immersive .ambient-audio {
+  transition: opacity .24s ease, visibility .24s ease;
 }
 
 .parameters {
-  min-height: 16px;
-  margin: 0 0 18px;
-  color: var(--mint);
-  font: 8px/1.6 var(--mono);
-  letter-spacing: 0.025em;
+  min-height: 0;
+  margin: 7px 0 0 45px;
+  color: rgba(211, 203, 187, .56);
+  font: 24px/1.2 "Chaos Math", STIX Two Math, serif;
+  letter-spacing: 0;
+  text-shadow: 1px 1px rgba(72, 104, 126, .3);
+}
+
+.chaos-signature {
+  right: 64px;
+  bottom: 112px;
+  margin: 0;
+  color: rgba(236, 228, 210, .7);
+  font: 46px/1 "Chaos Script", Snell Roundhand, cursive;
+  text-shadow: 1px 1px rgba(72, 104, 126, .32);
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.overlay-hidden .intro-panel,
+.overlay-hidden .equation-panel,
+.overlay-hidden .chaos-signature {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .equation-footer {
@@ -424,6 +524,19 @@ button { color: inherit; }
   color: var(--mint);
 }
 
+#fullscreenButton {
+  order: -1;
+  border-color: rgba(125, 235, 201, .42);
+  color: var(--mint);
+  background: rgba(125, 235, 201, .06);
+}
+
+#fullscreenButton[aria-pressed="true"] {
+  color: #061513;
+  border-color: var(--mint);
+  background: var(--mint);
+}
+
 .pause-icon { font: 10px var(--sans); letter-spacing: -0.12em; }
 
 .range-control {
@@ -437,6 +550,21 @@ button { color: inherit; }
 
 .range-control > span { display: flex; justify-content: space-between; }
 .range-control output { color: var(--mint); }
+
+.stream-readout {
+  min-width: 82px;
+  display: grid;
+  gap: 5px;
+  color: #68837a;
+  font: 7px var(--mono);
+  letter-spacing: .1em;
+}
+
+.stream-readout b {
+  color: var(--mint);
+  font-weight: 400;
+  letter-spacing: .02em;
+}
 
 input[type="range"] {
   width: 106px;
@@ -589,9 +717,8 @@ input:focus-visible {
 @keyframes status-pulse { to { opacity: 0.25; transform: scale(0.75); } }
 
 @media (max-width: 1120px) {
-  .intro-panel { width: 230px; }
-  .intro-panel h1 { font-size: 49px; }
-  .intro-copy { max-width: 220px; }
+  .intro-panel { width: min(620px, calc(100vw - 128px)); }
+  .intro-panel h1 { font-size: 41px; }
   .control-panel { left: 22px; right: auto; }
   .gesture-hint { display: none; }
 }
@@ -604,19 +731,13 @@ input:focus-visible {
   .site-header nav { gap: 16px; }
   .site-header nav a:first-child { display: none; }
   .stage { height: calc(100dvh - 62px); min-height: 540px; }
-  .stage::before { width: 125vw; }
-  .intro-panel { top: 23px; left: 18px; width: calc(100% - 36px); }
-  .eyebrow { margin-bottom: 9px; }
-  .eyebrow::before { width: 23px; }
-  .intro-panel h1 { font-size: clamp(35px, 10vw, 48px); line-height: 0.92; }
-  .intro-copy { display: none; }
-  .integrator-badge { margin-top: 11px; }
-  .equation-panel { top: 164px; right: 18px; left: 18px; width: auto; padding: 12px 14px 10px; }
-  .equations { min-height: 0; margin: 11px 0 8px; font-size: 13px; line-height: 1.45; }
-  .parameters { min-height: 0; margin-bottom: 10px; font-size: 7px; }
-  .equation-footer { padding-top: 8px; }
-  .equation-footer > span:first-child { display: none; }
-  .equation-footer { justify-content: flex-end; }
+  .intro-panel { top: 24px; left: 24px; width: calc(100% - 48px); }
+  .intro-panel h1 { font-size: 32px; line-height: 1.08; }
+  .equation-panel { top: 70px; right: auto; left: 24px; width: calc(100% - 48px); padding: 0; }
+  .equations { min-height: 82px; margin: 0; padding-left: 34px; font-size: 21px; line-height: 1.2; }
+  .equations::before { top: 34px; font-size: 86px; }
+  .parameters { min-height: 0; margin: 5px 0 0 34px; font-size: 16px; }
+  .chaos-signature { right: 24px; bottom: 96px; font-size: 36px; }
   .control-panel { right: 12px; bottom: 82px; left: 12px; justify-content: flex-start; gap: 8px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: none; }
   .control-panel::-webkit-scrollbar { display: none; }
   .transport-controls button { padding-inline: 8px; }
@@ -634,7 +755,7 @@ input:focus-visible {
 @media (max-width: 460px) {
   .site-header nav a { font-size: 7px; }
   .source-link span { display: none; }
-  .equation-panel { top: 150px; }
+  .equation-panel { top: 68px; }
   .panel-heading span:first-child { display: none; }
   .panel-heading { justify-content: flex-end; }
   .control-panel { padding-inline: 6px; }
@@ -644,10 +765,12 @@ input:focus-visible {
 }
 
 @media (max-height: 690px) and (min-width: 781px) {
-  .intro-panel, .equation-panel { top: 28px; }
-  .intro-panel h1 { font-size: 46px; }
-  .intro-copy { display: none; }
-  .integrator-badge { margin-top: 14px; }
+  .intro-panel { top: 24px; }
+  .equation-panel { top: 72px; }
+  .intro-panel h1 { font-size: 34px; }
+  .equations { min-height: 90px; font-size: 22px; }
+  .equations::before { top: 36px; font-size: 90px; }
+  .parameters { font-size: 18px; }
   .control-panel { bottom: 83px; }
   .system-dock { height: 66px; }
 }
