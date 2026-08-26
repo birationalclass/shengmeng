@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="An interactive projective-geometry visualization of Pascal's theorem for six points on a conic.">
+  <meta name="theme-color" content="#061513">
+  <title>Pascal Hexagram · Sheng Meng Visual Lab</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260826-release-3">
+  <link rel="stylesheet" href="../ambient.css?v=20260826-release-3">
+  <script src="../ambient.js?v=20260826-release-3" data-track="../chaos/curve1.mp3" data-volume="0.45" defer></script>
+</head>
+<body>
+  <div class="page-grid" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="lab-brand" href="../" aria-label="Back to Visual Lab">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><b>VISUAL LAB</b><small>SHENG MENG</small></span>
+    </a>
+    <div class="header-index" aria-hidden="true">ALGEBRAIC GEOMETRY / 04</div>
+    <nav aria-label="Project navigation">
+      <a href="../">All visuals</a>
+      <a href="../../">Home</a>
+    </nav>
+  </header>
+
+  <main class="stage" id="stage">
+    <canvas id="pascalCanvas" aria-label="Animated Pascal theorem construction. Six draggable points A through F lie on an ellipse. The three intersections of opposite sides lie on the highlighted Pascal line." aria-describedby="theoremCopy gestureHint">
+      This interactive visualization requires Canvas support.
+    </canvas>
+
+    <section class="intro-panel" aria-labelledby="pageTitle">
+      <p class="eyebrow">HEXAGRAMMUM MYSTICUM · 1639</p>
+      <h1 id="pageTitle">Pascal<br>Hexagram</h1>
+      <p class="intro-copy" id="theoremCopy">Six points on one conic determine three opposite-side intersections—and those three points are collinear.</p>
+      <div class="theorem-badge"><i aria-hidden="true"></i><span>PROJECTIVE INCIDENCE · P²</span></div>
+    </section>
+
+    <aside class="theorem-panel" aria-labelledby="theoremHeading">
+      <div class="panel-heading">
+        <span id="theoremHeading">PASCAL CONFIGURATION</span>
+        <span>CONIC · HEXAGON · LINE</span>
+      </div>
+      <div class="incidences" aria-hidden="true">
+        <div><b>X</b> = AB ∩ DE</div>
+        <div><b>Y</b> = BC ∩ EF</div>
+        <div><b>Z</b> = CD ∩ FA</div>
+      </div>
+      <p class="identity"><span>X, Y, Z</span> ∈ ℓ<sub>P</sub></p>
+      <div class="theorem-footer">
+        <span>RESIDUAL <b id="residualReadout">0.00e+0</b></span>
+        <span class="live-mark"><i aria-hidden="true"></i><b id="theoremStatus">COLLINEAR</b></span>
+      </div>
+      <p class="projective-note" id="projectiveNote">All three intersections are finite in this affine chart.</p>
+    </aside>
+
+    <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> Drag A–F along the conic · Drag empty space to pan · Scroll / pinch to zoom</p>
+
+    <section class="control-panel" aria-label="Playback and camera controls">
+      <div class="transport-controls">
+        <button class="pause-button" id="pauseButton" type="button" aria-pressed="false" title="Pause or continue (P / Space)">
+          <span class="pause-icon" aria-hidden="true">Ⅱ</span><span id="pauseLabel">Pause</span>
+        </button>
+        <button id="resetButton" type="button" title="Reset points and camera (R)">Reset</button>
+        <button id="autoCameraButton" type="button" aria-pressed="true" title="Toggle cinematic camera (A / C)">Auto camera</button>
+        <button id="fullscreenButton" type="button" aria-pressed="false" title="Enter full screen (F / F11)">Full screen</button>
+      </div>
+      <label class="range-control" for="speedControl">
+        <span>SPEED <output id="speedOutput" for="speedControl">1×</output></span>
+        <input id="speedControl" type="range" min="0.25" max="4" step="0.25" value="1">
+      </label>
+      <button class="keys-button" id="keysButton" type="button" aria-expanded="false" aria-controls="keyGuide">Keys <span aria-hidden="true">?</span></button>
+    </section>
+
+    <nav class="point-dock" aria-label="Conic points">
+      <button class="point-option is-active" type="button" data-point="0" aria-current="true"><span>01</span><b>A</b><small>SELECTED</small></button>
+      <button class="point-option" type="button" data-point="1"><span>02</span><b>B</b><small>ON CONIC</small></button>
+      <button class="point-option" type="button" data-point="2"><span>03</span><b>C</b><small>ON CONIC</small></button>
+      <button class="point-option" type="button" data-point="3"><span>04</span><b>D</b><small>ON CONIC</small></button>
+      <button class="point-option" type="button" data-point="4"><span>05</span><b>E</b><small>ON CONIC</small></button>
+      <button class="point-option" type="button" data-point="5"><span>06</span><b>F</b><small>ON CONIC</small></button>
+    </nav>
+  </main>
+
+  <dialog class="key-guide" id="keyGuide" aria-labelledby="keyGuideTitle">
+    <form method="dialog">
+      <div class="guide-heading">
+        <div><p>INTERACTION MAP</p><h2 id="keyGuideTitle">Keyboard controls</h2></div>
+        <button value="close" aria-label="Close keyboard guide">×</button>
+      </div>
+      <dl>
+        <div><dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Select point A–F</dd></div>
+        <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Move selected point along the conic</dd></div>
+        <div><dt><kbd>P</kbd> / <kbd>Space</kbd></dt><dd>Pause / continue</dd></div>
+        <div><dt><kbd>R</kbd></dt><dd>Reset points and camera</dd></div>
+        <div><dt><kbd>A</kbd> / <kbd>C</kbd></dt><dd>Toggle cinematic camera</dd></div>
+        <div><dt><kbd>F</kbd> / <kbd>F11</kbd></dt><dd>Enter / leave full screen</dd></div>
+        <div><dt><kbd>+</kbd> <kbd>−</kbd></dt><dd>Zoom in / out</dd></div>
+      </dl>
+      <p>Pointer: drag a labeled point along the ellipse · drag empty space to pan · wheel to zoom<br>Touch: drag a point · one-finger pan · two-finger pinch</p>
+    </form>
+  </dialog>
+
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+  <noscript><div class="noscript">JavaScript is required to construct the Pascal line.</div></noscript>
+  <script src="app.js?v=20260826-particle-heads"></script>
+</body>
+</html>
