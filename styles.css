@@ -211,3 +211,31 @@ html[lang="zh-CN"] .site-footer{font-size:10px;letter-spacing:.06em}
 @media(max-width:900px){.visual-lab-section .explore-badge{grid-column:1}.visual-project-grid{grid-template-columns:1fr}.visual-project-card{min-height:0}}
 @media(max-width:560px){.visual-lab-section{padding:85px 0}.visual-card-art{height:200px}}
 @media(prefers-reduced-motion:reduce){.julia-card .visual-card-art span,.chaos-card .visual-card-art span,.chaos-card .visual-card-art i,.chaos-card .visual-card-art b,.bundle-card .visual-card-art i{animation:none}}
+
+/* Pascal theorem as the full hero field */
+.hero-layout{display:flex;align-items:center;justify-content:flex-start}
+.hero-copy{width:min(800px,100%)}
+.pascal-hero-background{filter:saturate(.88);transform:translateZ(0)}
+.hero::after{background:linear-gradient(90deg,rgba(7,21,19,.985) 0%,rgba(7,21,19,.93) 30%,rgba(7,21,19,.55) 51%,rgba(7,21,19,.14) 76%,rgba(7,21,19,.05) 100%)}
+.pascal-hero-link{border-color:rgba(231,185,92,.3);color:#ead8ad}
+.pascal-hero-link:hover,.pascal-hero-link:focus-visible{border-color:rgba(231,185,92,.62)}
+
+/* Four-project Visual Lab grid and CSS-only Pascal thumbnail */
+.visual-project-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.visual-project-card{min-width:0}
+.visual-project-card.delay-3{transition-delay:.36s}
+.pascal-card .visual-card-art{isolation:isolate;background:radial-gradient(circle at 67% 48%,rgba(83,207,219,.1),transparent 38%),radial-gradient(circle at 82% 52%,rgba(231,185,92,.08),transparent 28%),#061411}
+.pascal-card-conic{width:174px;height:108px;position:absolute;left:48%;top:51%;z-index:2;border:1px solid rgba(83,207,219,.48);border-radius:50%;transform:translate(-50%,-50%) rotate(-11deg);box-shadow:0 0 30px rgba(83,207,219,.08);animation:pascal-conic-breathe 9s ease-in-out infinite alternate}
+.pascal-card-conic::before{content:"";width:5px;height:5px;position:absolute;left:12px;top:51px;border-radius:50%;background:#e8f5ef;box-shadow:34px -42px 0 #82f0cf,113px -43px 0 #e8f5ef,153px -3px 0 #82f0cf,117px 43px 0 #e8f5ef,39px 46px 0 #82f0cf;filter:drop-shadow(0 0 5px rgba(130,240,207,.68))}
+.pascal-card-chords{width:168px;height:102px;position:absolute;left:48%;top:51%;z-index:3;transform:translate(-50%,-50%) rotate(-11deg);clip-path:ellipse(50% 50% at 50% 50%);background:linear-gradient(24deg,transparent 49.5%,rgba(130,240,207,.25) 49.8% 50.2%,transparent 50.5%),linear-gradient(76deg,transparent 49.5%,rgba(231,185,92,.21) 49.8% 50.2%,transparent 50.5%),linear-gradient(145deg,transparent 49.5%,rgba(130,240,207,.18) 49.8% 50.2%,transparent 50.5%)}
+.pascal-card-line{width:182px;height:1px;position:absolute;right:-19px;top:49%;z-index:4;background:rgba(231,185,92,.72);box-shadow:0 0 9px rgba(231,185,92,.38);transform:rotate(79deg);animation:pascal-line-pulse 4.8s ease-in-out infinite alternate}
+.pascal-card-line::before{content:"";width:5px;height:5px;position:absolute;left:26px;top:-2px;border-radius:50%;background:#f1cd82;box-shadow:62px 0 0 #f1cd82,124px 0 0 #f1cd82;filter:drop-shadow(0 0 5px rgba(231,185,92,.7))}
+.pascal-card-label{position:absolute;left:17px;top:16px;z-index:5;color:rgba(182,211,200,.5);font:7px/1 monospace;font-style:normal;letter-spacing:.12em}
+@keyframes pascal-conic-breathe{to{transform:translate(-50%,-50%) rotate(-8deg) scale(1.025)}}
+@keyframes pascal-line-pulse{to{opacity:.52}}
+
+@media(max-width:1040px){.visual-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.hero-layout{display:flex;padding-block:56px}.hero-copy{width:min(710px,100%)}.hero::after{background:linear-gradient(90deg,rgba(7,21,19,.96),rgba(7,21,19,.72) 62%,rgba(7,21,19,.2))}}
+@media(max-width:650px){.visual-project-grid{grid-template-columns:1fr}.visual-project-card{min-height:0}}
+@media(max-width:560px){.hero-layout{padding-block:46px}.hero::after{background:linear-gradient(90deg,rgba(7,21,19,.91),rgba(7,21,19,.62) 72%,rgba(7,21,19,.28))}.pascal-hero-background{opacity:.76}.hero-actions .button{flex:1 1 calc(50% - 6px)}.pascal-card-line{right:-8px}}
+@media(prefers-reduced-motion:reduce){.pascal-card-conic,.pascal-card-line{animation:none}}
