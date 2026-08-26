@@ -1,14 +1,15 @@
 const translations = {
   zh: {
-    navResearch:"学术研究",navPubs:"论文",navContact:"联系",
+    navResearch:"学术研究",navPubs:"论文",navVisuals:"可视化",navContact:"联系",
     heroKicker:"华东师范大学 · 数学科学学院教授",heroLine1:"结构、动力，",heroLine2:"与智能发现。",
-    heroIntro:"我研究代数几何与动力系统，并探索人工智能如何辅助数学推理、拓展战略世界与交互体验。",exploreResearch:"探索研究",playGame:"试玩《无尽》",
+    heroIntro:"我研究代数几何与动力系统，并探索人工智能如何辅助数学推理、拓展战略世界与交互体验。",exploreResearch:"探索研究",playGame:"试玩《无尽》",openVisualLab:"可视化实验室",
     coreFields:"2023 年以来的近期论文",phdYear:"新加坡国立大学数学博士",openQuestions:"开放问题，严谨方法",newFrontiers:"数学与游戏的新边界",
     researchTitle:"近期论文与预印本。",researchLead:"学术研究区只呈现论文本身，并将最新 arXiv 记录置于最前。",viewArxiv:"在 arXiv 查看作者检索结果",
     agTitle:"代数几何",agText:"射影簇、典范除子、环面结构与几何分类。",bgTitle:"双有理几何",bgText:"极小模型纲领、有理连通簇与结构分解。",dsTitle:"动力系统",dsText:"满射自同态、算术度、稠密轨道与动力刚性。",
     currentProgram:"当前研究计划",programText:"满射自同态的分类及其在算术动力系统中的应用，包括 Kawaguchi–Silverman 猜想与 Zariski 稠密轨道猜想。",
     exploratory:"探索方向",aiMathTitle:"让 AI 成为数学探索的伙伴。",aiMathLead:"研究机器智能如何辅助而非替代形式推理、猜想生成、文献导航与数学交流。",
     formalReasoning:"形式推理",formalText:"证明辅助、验证闭环与可解释的数学论证链。",conjectureDiscovery:"猜想发现",conjectureText:"通过计算实验发现值得证明的模式与值得理解的反例。",knowledgeSystems:"数学知识系统",knowledgeText:"结构化连接定义、定理、例子与依赖图谱。",
+    visualBadge:"交互项目",visualTitle:"让数学结构在屏幕上运动。",visualLead:"从本地可视化项目转化而来的浏览器版实验：复动力系统、混沌流以及直纹曲面背后的粘合数据。",visualJuliaTitle:"Julia 集探索器",visualJuliaText:"缩放、平移，并跟随 WebGL 实时生成的复动力系统边界。",visualChaosTitle:"混沌吸引子画廊",visualChaosText:"把六个动力系统的轨道画成可旋转的发光流线。",visualBundleTitle:"直纹曲面的粘合",visualBundleText:"调节 Hirzebruch 指数，观察局部标架如何获得扭转。",openVisual:"打开实验",enterVisualLab:"进入可视化实验室",
     creativeLab:"创意实验室",aiGamesTitle:"把游戏变成策略与智能的实验室。",aiGamesLead:"可玩系统让抽象规则变得可见。AI4Games 探索战略智能体、程序化世界，以及把数学结构转化为交互的游戏机制。",
     gameTitle:"疆域争锋",gameText:"从零构建的即时领地策略游戏：连通路径、多建筑指挥、进化式箭塔能力、自适应电脑军团与八张战役地图。",gameFeature1:"拖拽指挥与框选",gameFeature2:"五类建筑自由改建",gameFeature3:"本地账号与持久化战役进度",launchGame:"进入游戏",
     endlessTitle:"无尽",endlessText:"一款完全零付费的无尽防线游戏：塑造可靠牌池、发现跨元素循环，并用主动集火抵御持续增强的外星潮。",endlessFeature1:"六种决定流派的卡牌组合",endlessFeature2:"加权选牌与每波一次免费刷新",endlessFeature3:"主动集火与极限火力时机",launchEndless:"进入《无尽》",

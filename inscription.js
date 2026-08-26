@@ -4,6 +4,9 @@
   const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const svgNS="http://www.w3.org/2000/svg";
   let completed=false;
+  let aborted=false;
+
+  root.classList.remove("inscription-complete","inscription-fallback");
 
   const sleep=(ms)=>new Promise((resolve)=>window.setTimeout(resolve,ms));
   const svgElement=(name,attributes={})=>{
@@ -11,12 +14,23 @@
     Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,String(value)));
     return node;
   };
+  const restoreStaticGlyphs=()=>glyphNodes.forEach((node)=>{
+    node.classList.remove("is-vectorized","is-writing","is-carved");
+    node.replaceChildren(document.createTextNode(node.dataset.char));
+  });
   const finishIntro=()=>{
     if(completed)return;
     completed=true;
     root.classList.add("inscription-complete");
   };
-  const failSafe=window.setTimeout(finishIntro,12000);
+  const abortIntro=()=>{
+    if(completed)return;
+    aborted=true;
+    restoreStaticGlyphs();
+    root.classList.add("inscription-fallback");
+    finishIntro();
+  };
+  const failSafe=window.setTimeout(abortIntro,16000);
 
   const medianPath=(points)=>points.map((point,index)=>`${index?"L":"M"}${point[0]} ${900-point[1]}`).join(" ");
 
@@ -62,7 +76,7 @@
       mask.append(reveal);
       defs.append(mask);
 
-      const carvedStroke=svgElement("g",{mask:`url(#${maskId})`});
+      const carvedStroke=svgElement("g",{class:"stroke-fragment-layer",mask:`url(#${maskId})`});
       carvedStroke.append(makeInk("stroke-ink stroke-fragment"));
       drawing.append(carvedStroke);
       strokeEntries.push({reveal,median:reveal});
@@ -72,8 +86,7 @@
     const sparkCore=svgElement("circle",{class:"stroke-spark-core",r:"7",cx:"0",cy:"0"});
     drawing.append(spark,sparkCore);
     svg.append(drawing);
-    target.textContent="";
-    target.append(svg);
+    target.replaceChildren(svg);
     strokeEntries.forEach((entry)=>{
       entry.length=Math.max(1,entry.reveal.getTotalLength());
       entry.reveal.style.strokeDasharray=String(entry.length);
@@ -85,7 +98,7 @@
 
   const animateStroke=async(entry,spark,sparkCore)=>{
     const length=entry.length;
-    const duration=Math.max(72,Math.min(142,length*.15));
+    const duration=Math.max(44,Math.min(96,length*.10));
     const drawing=entry.reveal.animate(
       [{strokeDashoffset:String(length)},{strokeDashoffset:"0"}],
       {duration,easing:"cubic-bezier(.32,.02,.22,1)",fill:"forwards"}
@@ -107,9 +120,10 @@
     });
     await drawing.finished.catch(()=>{});
     entry.reveal.style.strokeDashoffset="0";
+    drawing.cancel();
     spark.style.opacity="0";
     sparkCore.style.opacity="0";
-    await sleep(12);
+    await sleep(6);
   };
 
   const run=async()=>{
@@ -120,27 +134,40 @@
         return response.json();
       }));
       await document.fonts.load('400 820px "Zhi Mang Xing Title"');
+      if(aborted)return;
       const glyphs=glyphNodes.map((node,index)=>buildGlyph(node,data[index],index));
       if(reducedMotion){
-        glyphs.forEach((glyph)=>glyph.strokeEntries.forEach((entry)=>{entry.reveal.style.strokeDasharray="none";entry.reveal.style.strokeDashoffset="0";}));
+        glyphs.forEach((glyph)=>{
+          glyph.target.classList.add("is-carved");
+          glyph.svg.querySelectorAll(".stroke-fragment-layer").forEach((layer)=>layer.remove());
+        });
         await sleep(120);
         finishIntro();
         return;
       }
-      await sleep(620);
+      await sleep(420);
       for(const glyph of glyphs){
+        if(aborted)return;
         glyph.target.classList.add("is-writing");
-        for(const stroke of glyph.strokeEntries)await animateStroke(stroke,glyph.spark,glyph.sparkCore);
+        for(const stroke of glyph.strokeEntries){
+          if(aborted)return;
+          await animateStroke(stroke,glyph.spark,glyph.sparkCore);
+        }
         glyph.target.classList.remove("is-writing");
         glyph.target.classList.add("is-carved");
-        await sleep(42);
+        await sleep(110);
+        glyph.svg.querySelectorAll(".stroke-fragment-layer").forEach((layer)=>layer.remove());
+        await sleep(14);
       }
-      await sleep(360);
+      await sleep(260);
       finishIntro();
     }catch(error){
+      if(aborted)return;
       console.warn("Calligraphy intro fallback:",error);
+      aborted=true;
+      restoreStaticGlyphs();
       root.classList.add("inscription-fallback");
-      await sleep(1200);
+      await sleep(320);
       finishIntro();
     }finally{
       window.clearTimeout(failSafe);
