@@ -10,19 +10,21 @@
   const RELAY_PHASE_STEPS = [0, 1, 2, 1, 0, -1, -2, -1];
   const RELAY_DIRECTIONS = [1, 1, -1, -1, -1, -1, 1, 1];
   const STATIC_TIME = 14;
-  // Pascal order 0,4,1,3,5,2 around the physical conic points. This produces
-  // a six-edge self-crossing star whose three opposite-side intersections are
-  // inside the ellipse throughout the relay motion.
-  const BASE_ANGLES = [-1.829, 1.198, -0.886, 0.261, 2.922, -0.042];
+  // The physical order around the conic is A, E, C, F, B, D. Connecting the
+  // labelled hexagon A-B-C-D-E-F therefore produces the familiar Pascal
+  // configuration: AB/DE meet on the left, BC/EF on the right, and CD/FA near
+  // the centre. All three intersections stay inside the fixed ellipse.
+  const BASE_ANGLES = [2.62, -1.55, 0.42, -2.55, 1.55, -0.82];
   const POINT_LABELS = ["A", "B", "C", "D", "E", "F"];
-  const INTERSECTION_LABELS = ["X", "Y", "Z"];
+  // SIDE_PAIRS order is G = AB∩DE, K = BC∩EF, H = CD∩FA.
+  const INTERSECTION_LABELS = ["G", "K", "H"];
   const SIDE_PAIRS = [[0, 3], [1, 4], [2, 5]];
   const PAIR_COLOURS = [
-    "rgba(231, 185, 92, 0.86)",
+    "rgba(224, 102, 92, 0.88)",
     "rgba(83, 207, 219, 0.86)",
-    "rgba(168, 153, 233, 0.82)"
+    "rgba(231, 185, 92, 0.88)"
   ];
-  const PAIR_HEAD_RGB = [[231, 185, 92], [83, 207, 219], [168, 153, 233]];
+  const PAIR_HEAD_RGB = [[224, 102, 92], [83, 207, 219], [231, 185, 92]];
   const EPSILON = 1e-10;
 
   function cross(first, second) {
@@ -222,7 +224,7 @@
       context.restore();
     }
 
-    function drawStarChords(points, projector, activeIndex) {
+    function drawStarChords(points, projector) {
       context.save();
       context.lineJoin = "round";
       context.lineCap = "round";
@@ -230,12 +232,11 @@
         const nextWorldPoint = points[(index + 1) % points.length];
         const point = projector.point(worldPoint);
         const nextPoint = projector.point(nextWorldPoint);
-        const followsActivePoint = index === activeIndex || (index + 1) % points.length === activeIndex;
         context.strokeStyle = PAIR_COLOURS[index % 3];
-        context.globalAlpha = followsActivePoint ? 0.94 : 0.62;
-        context.lineWidth = followsActivePoint ? 1.65 : 1.15;
-        context.shadowColor = followsActivePoint ? PAIR_COLOURS[index % 3] : "transparent";
-        context.shadowBlur = followsActivePoint ? 8 : 0;
+        context.globalAlpha = 0.82;
+        context.lineWidth = 1.4;
+        context.shadowColor = PAIR_COLOURS[index % 3];
+        context.shadowBlur = 5;
         context.beginPath();
         context.moveTo(point.x, point.y);
         context.lineTo(nextPoint.x, nextPoint.y);
@@ -247,18 +248,23 @@
     function drawPascalSegment(line, projector) {
       const worldSegment = conicLineSegment(line);
       if (!worldSegment) return;
-      const start = projector.point(worldSegment[0]);
-      const end = projector.point(worldSegment[1]);
+      const first = projector.point(worldSegment[0]);
+      const second = projector.point(worldSegment[1]);
+      const extension = 0.07;
+      const dx = second.x - first.x;
+      const dy = second.y - first.y;
+      const start = { x: first.x - dx * extension, y: first.y - dy * extension };
+      const end = { x: second.x + dx * extension, y: second.y + dy * extension };
       context.save();
       context.lineCap = "round";
-      context.strokeStyle = "rgba(231, 185, 92, 0.2)";
+      context.strokeStyle = "rgba(232, 249, 243, 0.2)";
       context.lineWidth = 10;
       context.beginPath();
       context.moveTo(start.x, start.y);
       context.lineTo(end.x, end.y);
       context.stroke();
-      context.strokeStyle = "rgba(246, 207, 129, 0.96)";
-      context.shadowColor = "rgba(231, 185, 92, 0.72)";
+      context.strokeStyle = "rgba(244, 255, 251, 0.96)";
+      context.shadowColor = "rgba(130, 240, 207, 0.72)";
       context.shadowBlur = 18;
       context.lineWidth = 1.65;
       context.beginPath();
@@ -310,9 +316,12 @@
       );
       context.save();
       context.fillStyle = active ? "rgba(255, 236, 190, 0.98)" : "rgba(220, 239, 232, 0.9)";
-      context.font = `${active ? "700" : "500"} ${active ? 10 : 9}px ui-monospace, SFMono-Regular, Consolas, monospace`;
-      context.textAlign = worldPoint.x < 0 ? "right" : "left";
-      context.fillText(label, point.x + (worldPoint.x < 0 ? -10 : 10), point.y - 9);
+      context.font = `italic ${active ? "700" : "600"} ${active ? 13 : 12}px Georgia, "Times New Roman", serif`;
+      const normalX = worldPoint.x / RX;
+      const normalY = worldPoint.y / RY;
+      context.textAlign = normalX < -0.24 ? "right" : normalX > 0.24 ? "left" : "center";
+      context.textBaseline = normalY > 0.3 ? "bottom" : normalY < -0.3 ? "top" : "middle";
+      context.fillText(label, point.x + normalX * 13, point.y - normalY * 13);
       context.restore();
     }
 
@@ -349,10 +358,16 @@
       context.fillStyle = "rgba(255, 236, 190, 0.98)";
       context.shadowColor = "rgba(231, 185, 92, 0.6)";
       context.shadowBlur = 7;
-      context.font = "700 11px ui-monospace, SFMono-Regular, Consolas, monospace";
-      const placeOnLeft = point.x > (projector.viewport.left + projector.viewport.right) / 2;
-      context.textAlign = placeOnLeft ? "right" : "left";
-      context.fillText(label, point.x + (placeOnLeft ? -12 : 12), point.y - 10);
+      context.font = "italic 700 13px Georgia, \"Times New Roman\", serif";
+      const labelOffsets = {
+        G: { x: -12, y: -11, align: "right" },
+        H: { x: 0, y: -14, align: "center" },
+        K: { x: 12, y: 11, align: "left" }
+      };
+      const offset = labelOffsets[label] || { x: 11, y: -11, align: "left" };
+      context.textAlign = offset.align;
+      context.textBaseline = "middle";
+      context.fillText(label, point.x + offset.x, point.y + offset.y);
       context.restore();
     }
 
@@ -366,16 +381,16 @@
       const activeLabel = POINT_LABELS[geometry.relay.activeIndex];
       context.fillText(
         width < 620
-          ? `PASCAL · ${activeLabel} MOVES · X,Y,Z ∈ ℓP`
-          : `PASCAL · ${activeLabel} MOVES / FIVE FIXED · X, Y, Z ONE LINE`,
+          ? `PASCAL · ${activeLabel} MOVES · G,H,K ∈ ℓP`
+          : `PASCAL · ${activeLabel} MOVES / FIVE FIXED · G, H, K ONE LINE`,
         right,
         top + 2
       );
       context.fillStyle = "rgba(198, 226, 216, 0.72)";
       context.font = "8px ui-monospace, SFMono-Regular, Consolas, monospace";
-      context.fillText(width < 620 ? "AB∩DE · BC∩EF · CD∩FA" : "X = AB ∩ DE   ·   Y = BC ∩ EF   ·   Z = CD ∩ FA", right, top + 18);
+      context.fillText(width < 620 ? "G=AB∩DE · K=BC∩EF · H=CD∩FA" : "G = AB ∩ DE   ·   K = BC ∩ EF   ·   H = CD ∩ FA", right, top + 18);
       context.fillStyle = "rgba(130, 240, 207, 0.66)";
-      context.fillText(`X, Y, Z ∈ ℓP   ·   RESIDUAL ${Math.max(geometry.collinearityError, Number.EPSILON).toExponential(1)}`, right, top + 34);
+      context.fillText(`G, H, K ∈ ℓP   ·   RESIDUAL ${Math.max(geometry.collinearityError, Number.EPSILON).toExponential(1)}`, right, top + 34);
       context.restore();
     }
 
@@ -390,7 +405,7 @@
       const projector = createProjector();
       canvas.dataset.geometry = "pascal";
       canvas.dataset.points = "A,B,C,D,E,F";
-      canvas.dataset.intersections = "X,Y,Z";
+      canvas.dataset.intersections = "G,K,H";
       canvas.dataset.phase = geometry.phase.toFixed(4);
       canvas.dataset.activePoint = POINT_LABELS[geometry.relay.activeIndex];
       canvas.dataset.step = String(geometry.relay.step);
@@ -407,7 +422,7 @@
       context.globalAlpha = width < 620 ? 0.86 : 0.96;
 
       drawEllipse(projector);
-      drawStarChords(geometry.points, projector, geometry.relay.activeIndex);
+      drawStarChords(geometry.points, projector);
       drawPascalSegment(geometry.pascalLine, projector);
 
       geometry.points.forEach((point, index) => drawConicPoint(
