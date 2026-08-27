@@ -12,6 +12,12 @@ The browser does not morph between hand-authored shapes. It reads saved nodal
 states on one fixed triangulation and only interpolates between consecutive
 computed time levels for smooth display.
 
+The bottom of the page contains a complete case-specific algorithm panel. It
+switches with the active case and records the actual initial mesh, parameters,
+finite-element operators, sparse block system, update, diagnostics, saved-state
+policy, and exact 1-to-4 display subdivision used by that case. Each panel also
+links to its executable trajectory generator.
+
 ## BGN surface diffusion
 
 On the old surface `S^m`, `tools/generate_bgn_trajectory.py` solves

@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#061513">
   <title>几何流 · Parametric FEM · Sheng Meng Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260827-flow-8">
+  <link rel="stylesheet" href="styles.css?v=20260827-flow-9">
 </head>
 <body>
   <div class="page-grid" aria-hidden="true"></div>
@@ -19,7 +19,7 @@
     </a>
     <div class="header-index" aria-hidden="true">GEOMETRIC FLOWS / 01</div>
     <nav aria-label="项目导航">
-      <a href="#method">算法</a>
+      <a href="#completeAlgorithm">算法</a>
       <a href="../">全部可视化</a>
       <a href="../../">主页</a>
       <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/surface-diffusion" target="_blank" rel="noreferrer">Source <span aria-hidden="true">↗</span></a>
@@ -135,6 +135,125 @@
           <article><span>HONEST SCOPE</span><b id="checkVolume">BGN 不精确保体积</b><p id="volumeCheckNote">页面显示实际体积漂移；精确保体积需要 Bao–Zhao 2021 的半隐式法向。</p></article>
         </div>
 
+        <section class="algorithm-library" id="completeAlgorithm" aria-labelledby="algorithmTitle">
+          <header class="algorithm-heading">
+            <p>COMPLETE ALGORITHM / ACTIVE CASE</p>
+            <div>
+              <h3 id="algorithmTitle">立方体：BGN 曲面扩散完整算法</h3>
+              <p>下面不是动画补间说明，而是生成当前页面全部数值状态的实际离散算法。切换上方案例后，这一节同步切换。</p>
+            </div>
+          </header>
+
+          <article class="algorithm-detail" data-algorithm="cube">
+            <div class="algorithm-parameter-row" aria-label="立方体算法参数">
+              <span>Γ⁰：2×2×2 立方体边界</span><span>K=602</span><span>J=1,200</span><span>τ=5×10<sup>−5</sup></span><span>M=320</span><span>T=0.016</span>
+            </div>
+            <ol class="algorithm-steps">
+              <li>
+                <b>建立曲面有限元空间。</b>
+                <p>令 Γ<sup>m</sup>=⋃<sub>σ∈𝒯</sub>σ，S<sub>h</sub><sup>m</sup>=span{φ<sub>i</sub>}。对每个三角形 σ=(q<sub>i</sub>,q<sub>j</sub>,q<sub>k</sub>) 计算面积 |σ|、外法向 ν<sub>σ</sub> 和常值基函数梯度 ∇<sub>s</sub>φ<sub>i</sub>。装配</p>
+                <div class="algorithm-equation"><i>A</i><sub>ij</sub>=∑<sub>σ</sub>|σ|∇<sub>s</sub>φ<sub>i</sub>·∇<sub>s</sub>φ<sub>j</sub>,　<b>N</b><sub>i</sub>=∑<sub>σ∋i</sub>(|σ|/3)ν<sub>σ</sub>,　<i>B</i>=[diag(<i>N</i><sub>x</sub>) diag(<i>N</i><sub>y</sub>) diag(<i>N</i><sub>z</sub>)]。</div>
+              </li>
+              <li>
+                <b>解一个线性 BGN 时间步。</b>
+                <p>记 A<sub>3</sub>=diag(A,A,A)，未知量是新顶点坐标 X<sup>m+1</sup>∈ℝ<sup>3K</sup> 与离散标量平均曲率 H<sup>m+1</sup>∈ℝ<sup>K</sup>。稀疏直接求解</p>
+                <div class="algorithm-equation matrix-equation">[ B/τ　−A ; A<sub>3</sub>　B<sup>T</sup> ] [ X<sup>m+1</sup> ; H<sup>m+1</sup> ] = [ BX<sup>m</sup>/τ ; 0 ]。</div>
+                <p>这正是质量集中弱式 ⟨(X<sup>m+1</sup>−X<sup>m</sup>)/τ·ν<sup>m</sup>,φ⟩<sub>h</sub>−⟨∇H<sup>m+1</sup>,∇φ⟩=0 与 ⟨H<sup>m+1</sup>ν<sup>m</sup>,η⟩<sub>h</sub>+⟨∇X<sup>m+1</sup>,∇η⟩=0。</p>
+              </li>
+              <li>
+                <b>更新并逐步验算。</b>
+                <p>保持三角形索引 𝒯 不变，置 Γ<sup>m+1</sup>=X<sup>m+1</sup>(Γ⁰)，重复至 m=M−1。每步计算面积 W<sup>m</sup>、有向体积 V<sup>m</sup>、q<sub>min</sub> 与能量缺陷 W<sup>m+1</sup>−W<sup>m</sup>+τ(H<sup>m+1</sup>)<sup>T</sup>AH<sup>m+1</sup>。</p>
+              </li>
+              <li>
+                <b>输出与显示。</b>
+                <p>保存 321 个真实时间层。选择“三角形 1→4”时，对每条原共享边只生成一个中点，并以 (a,ab,ca)、(ab,b,bc)、(ca,bc,c)、(ab,bc,ca) 替换原三角形；顶点位置逐时间层取端点平均，不改变离散曲面或算法指标。</p>
+              </li>
+            </ol>
+            <a class="algorithm-source" href="https://github.com/birationalclass/shengmeng/blob/main/visuals/surface-diffusion/tools/generate_bgn_trajectory.py" target="_blank" rel="noreferrer">查看完整可执行生成器 · generate_bgn_trajectory.py ↗</a>
+          </article>
+
+          <article class="algorithm-detail" data-algorithm="genus-two" hidden>
+            <div class="algorithm-parameter-row" aria-label="双孔框 Willmore 算法参数">
+              <span>Γ⁰：7×4×1 双方孔框</span><span>K=310</span><span>J=624</span><span>α=10</span><span>τ=10<sup>−3</sup></span><span>M=5,000</span><span>T=5</span>
+            </div>
+            <ol class="algorithm-steps">
+              <li>
+                <b>构造亏格 2 初值并初始化曲率向量。</b>
+                <p>从 7×4×1 实心长方体中沿厚度方向挖去两个 2×2×1 方孔，取其定向边界 Γ⁰；Euler 示性数 χ=−2，故 g=2。用连续分片线性元和质量集中矩阵 M<sub>3</sub>，求</p>
+                <div class="algorithm-equation"><i>k</i>⁰=−M<sub>3</sub><sup>−1</sup>A<sub>3</sub>X⁰，　E<sub>h</sub>⁰=½(<i>k</i>⁰)<sup>T</sup>M<sub>3</sub><i>k</i>⁰。</div>
+              </li>
+              <li>
+                <b>在旧曲面上装配 relaxed-MDR 算子。</b>
+                <p>逐三角形装配刚度 A<sub>3</sub>、质量 M<sub>3</sub>、法向质量 M<sub>ν</sub>、法向耦合 D，以及 C=M<sub>P</sub>+αA<sub>3</sub>，其中 P=I−ν⊗ν。零自发曲率时，弯曲能低阶项按</p>
+                <div class="algorithm-equation">R<sub>h</sub><sup>m</sup>(<i>k</i>;χ)=∫<sub>Γᵐ</sub>[(∇<sub>s</sub>·<i>k</i>)(∇<sub>s</sub>·χ)−(∇<sub>s</sub><i>k</i>)<sup>T</sup>:((∇<sub>s</sub>χ+(∇<sub>s</sub>χ)<sup>T</sup>)P)+½I<sub>h</sub>(|<i>k</i>|²)∇<sub>s</sub>·χ]。</div>
+              </li>
+              <li>
+                <b>解四块对称混合系统。</b>
+                <p>未知量依次为速度 w<sup>m+1</sup>、曲率向量 k<sup>m+1</sup>、标量乘子 λ<sup>m+1</sup> 和 MDR 乘子 p<sup>m+1</sup>。每一步求解 Zhao (4.8)/(5.1) 的闭曲面、κ̄=0 特例：</p>
+                <div class="algorithm-equation matrix-equation">K<sub>W</sub>[w;k;λ;p]=[f<sub>w</sub>;f<sub>k</sub>;0;0]，　K<sub>W</sub>=[ M<sub>ν</sub>　−A<sub>3</sub>　0　C ; −A<sub>3</sub>　−M<sub>3</sub>/τ　0　0 ; 0　0　0　D ; C　0　D<sup>T</sup>　0 ]，<br>f<sub>w</sub>=R<sub>h</sub><sup>m</sup>(k<sup>m</sup>;·)，　f<sub>k</sub>=A<sub>3</sub>X<sup>m</sup>/τ。</div>
+              </li>
+              <li>
+                <b>更新、校验并编码。</b>
+                <p>X<sup>m+1</sup>=X<sup>m</sup>+τw<sup>m+1</sup>，随后减去顶点均值以固定无关紧要的整体平移。保持 𝒯 不变，检查 E<sub>h</sub>、有向体积、q<sub>min</sub>、三角形定向与 χ。完整档案每 5 步保存一次（1,001 层）；网页无损保留每 10 步的 501 层并连续插值。1→4 仅作共享中点显示剖分。</p>
+              </li>
+            </ol>
+            <a class="algorithm-source" href="https://github.com/birationalclass/shengmeng/blob/main/visuals/surface-diffusion/tools/generate_willmore_trajectory.py" target="_blank" rel="noreferrer">查看完整可执行生成器 · generate_willmore_trajectory.py ↗</a>
+          </article>
+
+          <article class="algorithm-detail" data-algorithm="torus" hidden>
+            <div class="algorithm-parameter-row" aria-label="环面算法参数">
+              <span>Γ⁰：亏格 1 环面</span><span>K=480</span><span>J=960</span><span>τ=2×10<sup>−5</sup></span><span>M=260</span><span>T=0.0052</span>
+            </div>
+            <ol class="algorithm-steps">
+              <li>
+                <b>生成定向周期网格。</b>
+                <p>用两个周期参数方向三角剖分环面，合并周期边界顶点并统一外向定向。验证 V−E+F=0，因此 χ=0、g=1；此后不改变顶点邻接关系。</p>
+              </li>
+              <li>
+                <b>装配 BGN 曲面有限元矩阵。</b>
+                <p>在 Γ<sup>m</sup> 上逐三角形计算 |σ|、ν<sub>σ</sub>、∇<sub>s</sub>φ<sub>i</sub>，形成 A<sub>ij</sub>=∑|σ|∇φ<sub>i</sub>·∇φ<sub>j</sub>、结点面积法向 N<sub>i</sub>=∑(|σ|/3)ν<sub>σ</sub>、B=[diag(N<sub>x</sub>) diag(N<sub>y</sub>) diag(N<sub>z</sub>)] 与 A<sub>3</sub>=diag(A,A,A)。</p>
+              </li>
+              <li>
+                <b>推进 260 个隐式时间步。</b>
+                <div class="algorithm-equation matrix-equation">[ B/τ　−A ; A<sub>3</sub>　B<sup>T</sup> ] [ X<sup>m+1</sup> ; H<sup>m+1</sup> ] = [ BX<sup>m</sup>/τ ; 0 ]，　Γ<sup>m+1</sup>=X<sup>m+1</sup>(Γ⁰)。</div>
+                <p>该系统同时给出表面扩散的法向速度和由弱曲率式诱导的切向网格运动；环孔不会被填掉，因为 𝒯 的拓扑固定。</p>
+              </li>
+              <li>
+                <b>验算与显示。</b>
+                <p>保存全部 261 层，逐层检查面积单调性、离散耗散不等式、有向体积漂移、q<sub>min</sub> 和面定向。细网格把每个原三角形按共享边中点精确拆成四个共面的子三角形，所有时间和几何指标沿用原 PFEM 解。</p>
+              </li>
+            </ol>
+            <a class="algorithm-source" href="https://github.com/birationalclass/shengmeng/blob/main/visuals/surface-diffusion/tools/generate_bgn_trajectory.py" target="_blank" rel="noreferrer">查看完整可执行生成器 · generate_bgn_trajectory.py ↗</a>
+          </article>
+
+          <article class="algorithm-detail" data-algorithm="oblate" hidden>
+            <div class="algorithm-parameter-row" aria-label="红细胞 Helfrich 算法参数">
+              <span>Γ⁰：4×4×1 扁椭球</span><span>K=572</span><span>J=1,140</span><span>κ̄=0</span><span>α=10</span><span>τ=10<sup>−3</sup></span><span>M=200</span><span>T=0.2</span>
+            </div>
+            <ol class="algorithm-steps">
+              <li>
+                <b>初始化离散 Helfrich 能。</b>
+                <p>对 4×4×1 扁椭球作经纬三角剖分并统一外向定向。装配 M<sub>3</sub>、A<sub>3</sub>，置 k⁰=−M<sub>3</sub><sup>−1</sup>A<sub>3</sub>X⁰。因 κ̄=0，E<sub>h</sub>⁰=½(k⁰)<sup>T</sup>M<sub>3</sub>k⁰。</p>
+              </li>
+              <li>
+                <b>形成 Willmore–MDR 基础系统。</b>
+                <p>与双孔框相同，逐步在 Γ<sup>m</sup> 上装配 M<sub>ν</sub>、A<sub>3</sub>、M<sub>3</sub>、D、C=M<sub>P</sub>+αA<sub>3</sub> 和 R<sub>h</sub><sup>m</sup>，得到四变量矩阵 K<sub>W</sub> 与右端 f=[R<sub>h</sub><sup>m</sup>;A<sub>3</sub>X<sup>m</sup>/τ;0;0]。</p>
+              </li>
+              <li>
+                <b>加入面积和体积两个全局约束。</b>
+                <p>质量集中的结点法向为 ν<sub>h,p,i</sub>=N<sub>i</sub>/m<sub>i</sub>，令 θ<sub>A,i</sub><sup>m</sup>=k<sub>i</sub><sup>m</sup>·ν<sub>h,p,i</sub>。在速度分量上装配 q<sub>A,i</sub>=θ<sub>A,i</sub><sup>m</sup>N<sub>i</sub>、q<sub>V,i</sub>=N<sub>i</sub>，Q=[q<sub>A</sub>,q<sub>V</sub>]，求增广系统</p>
+                <div class="algorithm-equation matrix-equation">[ K<sub>W</sub>　Q ; Q<sup>T</sup>　0 ] [ x ; (λ<sub>A</sub>,λ<sub>V</sub>) ] = [ f ; 0 ]。</div>
+                <p>末两行就是 ⟨θ<sub>A</sub>ν,w⟩<sub>h</sub>=0 和 ⟨ν,w⟩<sub>h</sub>=0，即离散面积与体积的一阶变化为零。</p>
+              </li>
+              <li>
+                <b>推进到双凹平衡并报告误差。</b>
+                <p>X<sup>m+1</sup>=X<sup>m</sup>+τw<sup>m+1</sup>，共 200 步，固定 𝒯 并保存 201 层。逐层记录 E<sub>h</sub>、A/A⁰−1、V/V⁰−1、q<sub>min</sub> 和定向；当前网页轨迹中能量 76.777→49.185，最大面积/体积变化分别为 0.538%/0.166%。1→4 模式只细分同一数值曲面。</p>
+              </li>
+            </ol>
+            <a class="algorithm-source" href="https://github.com/birationalclass/shengmeng/blob/main/visuals/surface-diffusion/tools/generate_helfrich_trajectory.py" target="_blank" rel="noreferrer">查看完整可执行生成器 · generate_helfrich_trajectory.py ↗</a>
+          </article>
+        </section>
+
         <div class="references">
           <p>PRIMARY SOURCES</p>
           <ol>
@@ -163,6 +282,6 @@
 
   <div class="sr-only" id="announcer" aria-live="polite"></div>
   <noscript><div class="noscript">需要启用 JavaScript 才能载入有限元轨迹。</div></noscript>
-  <script src="app.js?v=20260827-flow-8"></script>
+  <script src="app.js?v=20260827-flow-9"></script>
 </body>
 </html>

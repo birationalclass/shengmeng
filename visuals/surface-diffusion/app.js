@@ -12,6 +12,8 @@
   const caseCaption = document.querySelector("#caseCaption");
   const caseSourceNote = document.querySelector("#caseSourceNote");
   const activeCaseTitle = document.querySelector("#activeCaseTitle");
+  const algorithmTitle = document.querySelector("#algorithmTitle");
+  const algorithmDetails = Array.from(document.querySelectorAll(".algorithm-detail"));
   const topologyNote = document.querySelector("#topologyNote");
   const flowEyebrow = document.querySelector("#flowEyebrow");
   const equationTag = document.querySelector("#equationTag");
@@ -865,6 +867,8 @@
   function updateCaseUI() {
     const item = state.activeCase;
     activeCaseTitle.textContent = item.name;
+    algorithmTitle.textContent = `${item.name} · 完整算法`;
+    for (const detail of algorithmDetails) detail.hidden = detail.dataset.algorithm !== item.slug;
     caseCaption.textContent = item.caption;
     caseSourceNote.textContent = `${item.sourceNote}${state.density === "fine" ? " · 原三角形共享边中点 1→4 剖分" : " · 原网格"}`;
     densitySelect.value = state.density;
