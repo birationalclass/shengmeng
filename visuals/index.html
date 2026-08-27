@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sheng Meng 的数学可视化实验室：Julia 集、混沌动力系统、Pascal 六点共线与向量丛。">
+  <meta name="description" content="Sheng Meng 的数学可视化实验室：曲面扩散、Julia 集、混沌动力系统、Pascal 六点共线与向量丛。">
   <meta name="theme-color" content="#071513">
   <title>Visual Lab · Sheng Meng</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
@@ -19,10 +19,10 @@
       <span><b>SHENG MENG</b><small>VISUAL LAB</small></span>
     </a>
     <nav aria-label="可视化实验导航">
+      <a href="./surface-diffusion/">Surface Flow</a>
       <a href="./julia/">Julia Set</a>
       <a href="./chaos/">Chaos</a>
       <a href="./pascal/">Pascal</a>
-      <a href="./vector-bundle/">Vector Bundle</a>
     </nav>
     <a class="home-link" href="../">主页 <span aria-hidden="true">↗</span></a>
   </header>
@@ -44,7 +44,7 @@
       </div>
 
       <div class="lab-stats" aria-label="实验室摘要">
-        <div><b>04</b><span>可交互实验</span></div>
+        <div><b>05</b><span>可交互实验</span></div>
         <div><b>0</b><span>第三方依赖</span></div>
         <div><b>GPU</b><span>优先实时渲染</span></div>
       </div>
@@ -61,12 +61,27 @@
         </div>
 
         <div class="project-grid">
+          <article class="project-card project-surface">
+            <a class="preview-link" href="./surface-diffusion/" aria-label="打开 BGN 曲面扩散实验">
+              <div class="project-preview"><canvas id="surfacePreview" aria-hidden="true"></canvas></div>
+            </a>
+            <div class="project-copy">
+              <div class="project-meta"><span>01 / GEOMETRIC FLOW</span><b>BGN PFEM</b></div>
+              <h3><a href="./surface-diffusion/">Surface Diffusion</a></h3>
+              <p>让立方体三角网格沿曲面扩散流圆化；旋转、缩放、拖动时间轴，并实时核验表面积耗散、体积漂移与网格质量。</p>
+              <div class="project-actions">
+                <a class="launch-link" href="./surface-diffusion/">进入实验 <span aria-hidden="true">↗</span></a>
+                <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/surface-diffusion" target="_blank" rel="noreferrer">源代码</a>
+              </div>
+            </div>
+          </article>
+
           <article class="project-card project-julia">
             <a class="preview-link" href="./julia/" aria-label="打开 Julia Set 实验">
               <div class="project-preview"><canvas id="juliaPreview" aria-hidden="true"></canvas></div>
             </a>
             <div class="project-copy">
-              <div class="project-meta"><span>01 / COMPLEX DYNAMICS</span><b>LIVE</b></div>
+              <div class="project-meta"><span>02 / COMPLEX DYNAMICS</span><b>LIVE</b></div>
               <h3><a href="./julia/">Julia Set</a></h3>
               <p>跟随参数 <i>c(t)</i> 的轨迹，观察 <i>z ↦ z²+c</i> 的边界如何收缩、分岔与重组。</p>
               <div class="project-actions">
@@ -81,7 +96,7 @@
               <div class="project-preview"><canvas id="chaosPreview" aria-hidden="true"></canvas></div>
             </a>
             <div class="project-copy">
-              <div class="project-meta"><span>02 / CHAOTIC FLOWS</span><b>6 MODELS</b></div>
+              <div class="project-meta"><span>03 / CHAOTIC FLOWS</span><b>6 MODELS</b></div>
               <h3><a href="./chaos/">Chaotic ODE Gallery</a></h3>
               <p>在同一座标系中穿行于 Chen–Lee、Lorenz、Rössler 等六组三维混沌吸引子。</p>
               <div class="project-actions">
@@ -96,7 +111,7 @@
               <div class="project-preview"><canvas id="bundlePreview" aria-hidden="true"></canvas></div>
             </a>
             <div class="project-copy">
-              <div class="project-meta"><span>03 / ALGEBRAIC GEOMETRY</span><b>F<sub>n</sub></b></div>
+              <div class="project-meta"><span>04 / ALGEBRAIC GEOMETRY</span><b>F<sub>n</sub></b></div>
               <h3><a href="./vector-bundle/">Vector Bundle Gluing</a></h3>
               <p>沿 <i>ℙ¹</i> 的两张坐标图观察 <i>O ⊕ O(n)</i> 的过渡函数、标架相位与粘合。</p>
               <div class="project-actions">
@@ -111,7 +126,7 @@
               <div class="project-preview"><canvas id="pascalPreview" aria-hidden="true"></canvas></div>
             </a>
             <div class="project-copy">
-              <div class="project-meta"><span>04 / PROJECTIVE GEOMETRY</span><b>ℓ<sub>P</sub></b></div>
+              <div class="project-meta"><span>05 / PROJECTIVE GEOMETRY</span><b>ℓ<sub>P</sub></b></div>
               <h3><a href="./pascal/">Pascal Hexagram</a></h3>
               <p>拖动圆锥曲线上的六个点，观察三组对边交点如何始终落在同一条 Pascal 直线上。</p>
               <div class="project-actions">
@@ -141,6 +156,6 @@
     <a href="../">返回主页 ↑</a>
   </footer>
 
-  <script src="hub.js?v=20260826-release-3"></script>
+  <script src="hub.js?v=20260827-surface-flow"></script>
 </body>
 </html>

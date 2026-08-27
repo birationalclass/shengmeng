@@ -17,6 +17,91 @@
     return canvas.getContext("2d");
   }
 
+  function drawSurfacePreview(timestamp = 0) {
+    const canvas = document.querySelector("#surfacePreview");
+    if (!canvas) return;
+    const bounds = canvas.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.6);
+    const nextWidth = Math.max(1, Math.round(bounds.width * ratio));
+    const nextHeight = Math.max(1, Math.round(bounds.height * ratio));
+    if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+      canvas.width = nextWidth;
+      canvas.height = nextHeight;
+    }
+    const context = canvas.getContext("2d");
+    const width = canvas.width;
+    const height = canvas.height;
+    context.clearRect(0, 0, width, height);
+    context.fillStyle = palette.ink;
+    context.fillRect(0, 0, width, height);
+
+    const cycle = (timestamp % 9000) / 9000;
+    const morph = .5 - .5 * Math.cos(cycle * Math.PI * 2);
+    const power = 10 - 8 * morph;
+    const yaw = -.62 + timestamp * .000045;
+    const pitch = -.36;
+    const scale = Math.min(width, height) * .28;
+    const centerX = width * .48;
+    const centerY = height * .51;
+
+    function signedPower(value, exponent) {
+      return Math.sign(value) * Math.pow(Math.abs(value), exponent);
+    }
+
+    function project(longitude, latitude) {
+      const exponent = 2 / power;
+      const latitudeCosine = signedPower(Math.cos(latitude), exponent);
+      let x = latitudeCosine * signedPower(Math.cos(longitude), exponent);
+      let y = signedPower(Math.sin(latitude), exponent);
+      let z = latitudeCosine * signedPower(Math.sin(longitude), exponent);
+      const rotatedX = x * Math.cos(yaw) + z * Math.sin(yaw);
+      const rotatedZ = -x * Math.sin(yaw) + z * Math.cos(yaw);
+      const rotatedY = y * Math.cos(pitch) - rotatedZ * Math.sin(pitch);
+      const depth = y * Math.sin(pitch) + rotatedZ * Math.cos(pitch);
+      const perspective = 1 / (1.18 - depth * .16);
+      return [centerX + rotatedX * scale * perspective, centerY - rotatedY * scale * perspective, depth];
+    }
+
+    const curves = [];
+    for (let latitudeIndex = -5; latitudeIndex <= 5; latitudeIndex += 1) {
+      const latitude = latitudeIndex * Math.PI / 12;
+      curves.push(Array.from({ length: 97 }, (_, index) => project(index / 96 * Math.PI * 2, latitude)));
+    }
+    for (let longitudeIndex = 0; longitudeIndex < 16; longitudeIndex += 1) {
+      const longitude = longitudeIndex / 16 * Math.PI * 2;
+      curves.push(Array.from({ length: 65 }, (_, index) => project(longitude, -Math.PI / 2 + index / 64 * Math.PI)));
+    }
+    curves.sort((first, second) => {
+      const mean = (curve) => curve.reduce((sum, point) => sum + point[2], 0) / curve.length;
+      return mean(first) - mean(second);
+    });
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    curves.forEach((curve) => {
+      const depth = curve.reduce((sum, point) => sum + point[2], 0) / curve.length;
+      const alpha = .18 + .55 * ((depth + 1.4) / 2.8);
+      context.beginPath();
+      curve.forEach((point, index) => {
+        if (index === 0) context.moveTo(point[0], point[1]); else context.lineTo(point[0], point[1]);
+      });
+      context.strokeStyle = `rgba(125,235,201,${Math.max(.12, Math.min(.74, alpha))})`;
+      context.lineWidth = ratio * (depth > 0 ? 1.05 : .68);
+      context.stroke();
+    });
+
+    const glow = context.createRadialGradient(centerX, centerY, 0, centerX, centerY, scale * 1.6);
+    glow.addColorStop(0, "rgba(82,202,212,.1)");
+    glow.addColorStop(.68, "rgba(82,202,212,.025)");
+    glow.addColorStop(1, "rgba(7,21,19,0)");
+    context.globalCompositeOperation = "screen";
+    context.fillStyle = glow;
+    context.fillRect(0, 0, width, height);
+    context.globalCompositeOperation = "source-over";
+    context.fillStyle = "rgba(221,179,91,.7)";
+    context.font = `${Math.max(9, width * .011)}px ui-monospace, monospace`;
+    context.fillText(`BGN · m ≈ ${String(Math.round(morph * 320)).padStart(3, "0")}`, width * .055, height * .1);
+  }
+
   function drawJuliaPreview() {
     const canvas = document.querySelector("#juliaPreview");
     if (!canvas) return;
@@ -260,6 +345,7 @@
   }
 
   function drawAll() {
+    drawSurfacePreview(performance.now());
     drawJuliaPreview();
     drawChaosPreview();
     drawBundlePreview();
@@ -275,4 +361,12 @@
   const year = document.querySelector("#currentYear");
   if (year) year.textContent = String(new Date().getFullYear());
   drawAll();
+
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const animateSurface = (timestamp) => {
+      drawSurfacePreview(timestamp);
+      window.requestAnimationFrame(animateSurface);
+    };
+    window.requestAnimationFrame(animateSurface);
+  }
 })();

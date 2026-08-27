@@ -67,16 +67,16 @@ canvas{display:block}
 .project-grid{margin-top:58px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .project-card{min-width:0;border:1px solid rgba(18,35,31,.15);background:rgba(255,255,255,.35);transition:transform .25s,box-shadow .25s,background .25s}
 .project-card:hover{transform:translateY(-5px);background:#fff;box-shadow:0 24px 60px rgba(7,21,19,.13)}
-.project-julia{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.26fr) minmax(330px,.74fr)}
+.project-surface,.project-julia{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.26fr) minmax(330px,.74fr)}
 .project-pascal{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.26fr) minmax(330px,.74fr)}
 .preview-link{min-width:0;display:block;overflow:hidden;background:#071513}
 .project-preview{height:310px;position:relative;overflow:hidden;background:#071513}
-.project-julia .project-preview{height:440px}
+.project-surface .project-preview,.project-julia .project-preview{height:440px}
 .project-pascal .project-preview{height:400px}
 .project-preview::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,transparent 45%,rgba(7,21,19,.35));box-shadow:inset 0 0 0 1px rgba(130,240,207,.08)}
 .project-preview canvas{width:100%;height:100%}
 .project-copy{padding:30px;display:flex;flex-direction:column;align-items:flex-start}
-.project-julia .project-copy{padding:42px 38px}
+.project-surface .project-copy,.project-julia .project-copy{padding:42px 38px}
 .project-pascal .project-copy{padding:42px 38px}
 .project-meta{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;color:#84703f;font:9px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em}
 .project-meta b{color:#537168;font-weight:500}.project-meta sub{font-size:.72em}
@@ -101,14 +101,14 @@ canvas{display:block}
 
 @media(max-width:900px){
   .lab-header nav{display:none}.lab-hero{grid-template-columns:1fr;grid-template-rows:auto auto auto;padding-top:60px}.hero-system{min-height:420px}.lab-stats{grid-column:1}
-  .project-julia,.project-pascal{display:block}.project-julia .project-preview,.project-pascal .project-preview{height:360px}.project-julia .project-copy,.project-pascal .project-copy{padding:30px}.project-grid{grid-template-columns:1fr}.project-julia,.project-pascal{grid-column:auto}
+  .project-surface,.project-julia,.project-pascal{display:block}.project-surface .project-preview,.project-julia .project-preview,.project-pascal .project-preview{height:360px}.project-surface .project-copy,.project-julia .project-copy,.project-pascal .project-copy{padding:30px}.project-grid{grid-template-columns:1fr}.project-surface,.project-julia,.project-pascal{grid-column:auto}
   .method-grid{grid-template-columns:1fr}.method-grid article{min-height:150px;border-right:0;border-bottom:1px solid var(--line)}.method-grid article:last-child{border-bottom:0}.method-grid b{margin-top:35px}
 }
 
 @media(max-width:620px){
   .section-shell{width:min(100% - 28px,1180px)}.lab-header{height:66px;padding:0 14px}.brand small{display:none}.home-link{font-size:9px}
   .lab-hero{min-height:auto;padding:58px 0 38px}.hero-copy h1{font-size:46px}.hero-lead{font-size:14px}.hero-system{min-height:340px}.orbit-outer{width:310px}.orbit-inner{width:210px}.system-core{width:120px;height:120px}.hero-system p{bottom:0}.lab-stats div{min-height:69px;padding:11px;align-items:flex-start;flex-direction:column;gap:5px}.lab-stats b{font-size:21px}.lab-stats span{font-size:8px}
-  .projects-section,.method-section{padding:82px 0}.section-heading{grid-template-columns:1fr;gap:15px}.section-heading h2{font-size:40px}.project-grid{margin-top:40px}.project-preview,.project-julia .project-preview,.project-pascal .project-preview{height:265px}.project-copy,.project-julia .project-copy,.project-pascal .project-copy{padding:23px}.project-copy h3{margin-top:29px;font-size:34px}.project-actions{padding-top:27px}
+  .projects-section,.method-section{padding:82px 0}.section-heading{grid-template-columns:1fr;gap:15px}.section-heading h2{font-size:40px}.project-grid{margin-top:40px}.project-preview,.project-surface .project-preview,.project-julia .project-preview,.project-pascal .project-preview{height:265px}.project-copy,.project-surface .project-copy,.project-julia .project-copy,.project-pascal .project-copy{padding:23px}.project-copy h3{margin-top:29px;font-size:34px}.project-actions{padding-top:27px}
   .method-section h2{font-size:42px}.lab-footer{padding:22px 14px;align-items:flex-start;flex-direction:column}.lab-footer a{display:none}
 }
 
