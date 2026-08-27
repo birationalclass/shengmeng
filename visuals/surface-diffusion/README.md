@@ -65,6 +65,13 @@ PFEM trajectory. `tools/refine_trajectory.py` inserts one shared midpoint on
 every original edge and replaces every triangle by four triangles at every
 saved state. The refined mesh covers the identical piecewise-linear surface;
 it does not invent a new trajectory or change energy, area, volume, or time.
+The browser performs this same operation after loading the original states, so
+switching to 1→4 no longer downloads a second multi-megabyte position array.
+
+For delivery, `tools/encode_web_trajectory.py` applies a lossless bitwise XOR
+between consecutive float32 states and then gzip compression. The browser
+reverses both layers before rendering. This changes neither coordinates nor
+diagnostics; it reduces each active case payload to roughly 0.3–1.25 MB.
 
 ## Regeneration
 
@@ -75,13 +82,15 @@ python3 tools/generate_bgn_trajectory.py --case all
 python3 tools/generate_willmore_trajectory.py --steps 5000 --save-every 5
 python3 tools/generate_helfrich_trajectory.py --steps 200 --save-every 1
 python3 tools/refine_trajectory.py trajectories/genus-two.bin trajectories/genus-two-fine.bin --frame-stride 2
+python3 tools/encode_web_trajectory.py trajectories/genus-two.bin trajectories/genus-two-web.bin.gz --frame-stride 2 --diagnostics-output trajectories/genus-two-web.json
 ```
 
 Run the refinement command analogously for `cube`, `torus`, and `oblate`.
 `trajectories/manifest.json` maps each case to its original and 1→4 variants.
-The genus-two original keeps all 1,001 saved states; its 1→4 download keeps
+The full genus-two archive keeps all 1,001 saved states. Its web encoding keeps
 every second saved state (501 states) and relies on the same continuous display
-interpolation, keeping the browser payload below the static-host upload limit.
+interpolation, keeping the active browser payload small. Both original and
+1→4 display modes use those same web states.
 
 ## Honest scope
 

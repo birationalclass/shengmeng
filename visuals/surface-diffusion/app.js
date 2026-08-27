@@ -105,6 +105,7 @@
     const triangleCount = view.getUint32(16, true);
     const frameCount = view.getUint32(20, true);
     const metricCount = view.getUint32(24, true);
+    const positionEncoding = view.getUint32(28, true);
     const dt = view.getFloat32(32, true);
     const totalTime = view.getFloat32(36, true);
     if (version !== 1 || metricCount !== 6) throw new Error(`不支持的轨迹版本：${version}`);
@@ -118,7 +119,85 @@
     const positions = new Float32Array(buffer, offset, frameCount * vertexCount * 3);
     offset += positions.byteLength;
     if (offset !== buffer.byteLength) throw new Error("轨迹文件长度与头信息不一致");
-    return { version, vertexCount, triangleCount, frameCount, metricCount, dt, totalTime, indices, times, metrics, positions };
+    if (positionEncoding === 2) {
+      const positionBits = new Uint32Array(buffer, positions.byteOffset, positions.length);
+      const valuesPerFrame = vertexCount * 3;
+      for (let frame = 1; frame < frameCount; frame += 1) {
+        const current = frame * valuesPerFrame;
+        const previous = current - valuesPerFrame;
+        for (let index = 0; index < valuesPerFrame; index += 1) positionBits[current + index] ^= positionBits[previous + index];
+      }
+    } else if (positionEncoding !== 0) {
+      throw new Error(`不支持的顶点编码：${positionEncoding}`);
+    }
+    return { version, vertexCount, triangleCount, frameCount, metricCount, dt, totalTime, indices, times, metrics, positions, positionEncoding };
+  }
+
+  function refineTrajectoryForDisplay(data) {
+    const edgeMap = new Map();
+    const edgePairs = [];
+    const refinedIndices = [];
+    const midpoint = (first, second) => {
+      const a = Math.min(first, second);
+      const b = Math.max(first, second);
+      const key = `${a}:${b}`;
+      if (!edgeMap.has(key)) {
+        edgeMap.set(key, data.vertexCount + edgePairs.length);
+        edgePairs.push([a, b]);
+      }
+      return edgeMap.get(key);
+    };
+    for (let index = 0; index < data.indices.length; index += 3) {
+      const a = data.indices[index];
+      const b = data.indices[index + 1];
+      const c = data.indices[index + 2];
+      const ab = midpoint(a, b);
+      const bc = midpoint(b, c);
+      const ca = midpoint(c, a);
+      refinedIndices.push(a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca);
+    }
+    const refinedVertexCount = data.vertexCount + edgePairs.length;
+    const refinedPositions = new Float32Array(data.frameCount * refinedVertexCount * 3);
+    const sourceFrameSize = data.vertexCount * 3;
+    const refinedFrameSize = refinedVertexCount * 3;
+    for (let frame = 0; frame < data.frameCount; frame += 1) {
+      const sourceOffset = frame * sourceFrameSize;
+      const refinedOffset = frame * refinedFrameSize;
+      refinedPositions.set(data.positions.subarray(sourceOffset, sourceOffset + sourceFrameSize), refinedOffset);
+      for (let edge = 0; edge < edgePairs.length; edge += 1) {
+        const [first, second] = edgePairs[edge];
+        const destination = refinedOffset + (data.vertexCount + edge) * 3;
+        const firstOffset = sourceOffset + first * 3;
+        const secondOffset = sourceOffset + second * 3;
+        for (let axis = 0; axis < 3; axis += 1) refinedPositions[destination + axis] = 0.5 * (data.positions[firstOffset + axis] + data.positions[secondOffset + axis]);
+      }
+    }
+    return {
+      ...data,
+      vertexCount: refinedVertexCount,
+      triangleCount: refinedIndices.length / 3,
+      indices: new Uint32Array(refinedIndices),
+      positions: refinedPositions,
+      displayRefinement: "one-to-four shared-edge midpoint subdivision"
+    };
+  }
+
+  async function fetchTrajectoryBuffer(variant) {
+    const response = await fetch(variant.trajectory);
+    if (!response.ok) throw new Error(`轨迹载入失败（HTTP ${response.status}）`);
+    const payload = await response.arrayBuffer();
+    const payloadMagic = Array.from(new Uint8Array(payload, 0, Math.min(8, payload.byteLength)), (value) => String.fromCharCode(value)).join("");
+    if (payloadMagic === "BGNPFEM1") return payload;
+    if (variant.compression === "gzip" && typeof DecompressionStream === "function") {
+      const stream = new Blob([payload]).stream().pipeThrough(new DecompressionStream("gzip"));
+      return new Response(stream).arrayBuffer();
+    }
+    if (variant.fallbackTrajectory) {
+      const fallback = await fetch(variant.fallbackTrajectory);
+      if (!fallback.ok) throw new Error(`备用轨迹载入失败（HTTP ${fallback.status}）`);
+      return fallback.arrayBuffer();
+    }
+    throw new Error("当前浏览器无法解压 gzip 轨迹");
   }
 
   function createShader(gl, type, source) {
@@ -845,13 +924,13 @@
     errorPanel.hidden = true;
     loadingText.textContent = `载入「${item.shortName}」${state.density === "fine" ? "三角形 1→4" : "原"}网格与 ${Math.max(1, Math.round(variant.bytes / 1048576))} MB 轨迹…`;
     try {
-      const [trajectoryResponse, diagnosticsResponse] = await Promise.all([fetch(variant.trajectory), fetch(variant.diagnostics)]);
-      if (!trajectoryResponse.ok) throw new Error(`轨迹载入失败（HTTP ${trajectoryResponse.status}）`);
+      const [buffer, diagnosticsResponse] = await Promise.all([fetchTrajectoryBuffer(variant), fetch(variant.diagnostics)]);
       if (!diagnosticsResponse.ok) throw new Error(`诊断数据载入失败（HTTP ${diagnosticsResponse.status}）`);
-      const [buffer, diagnostics] = await Promise.all([trajectoryResponse.arrayBuffer(), diagnosticsResponse.json()]);
+      const diagnostics = await diagnosticsResponse.json();
       if (serial !== state.loadSerial) return;
       disposeRenderer();
-      state.trajectory = parseTrajectory(buffer);
+      const parsedTrajectory = parseTrajectory(buffer);
+      state.trajectory = variant.refine ? refineTrajectoryForDisplay(parsedTrajectory) : parsedTrajectory;
       state.diagnostics = diagnostics;
       state.activeCase = item;
       state.activeVariant = variant;
