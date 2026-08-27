@@ -532,17 +532,26 @@ def main() -> None:
             "caption": case.caption, "source_note": case.source_note, **diagnostics,
         }
         diagnostic_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        standard_variant = {"trajectory": f"trajectories/{case.slug}.bin", "diagnostics": f"trajectories/{case.slug}.json", "bytes": binary_path.stat().st_size}
+        web_binary = args.output_dir / f"{case.slug}-web.bin.gz"
+        standard_variant = (
+            {"trajectory": f"trajectories/{case.slug}-web.bin.gz", "fallbackTrajectory": f"trajectories/{case.slug}.bin", "diagnostics": f"trajectories/{case.slug}.json", "bytes": web_binary.stat().st_size, "compression": "gzip"}
+            if web_binary.exists()
+            else {"trajectory": f"trajectories/{case.slug}.bin", "diagnostics": f"trajectories/{case.slug}.json", "bytes": binary_path.stat().st_size}
+        )
         variants = {"standard": standard_variant}
         refined_binary = args.output_dir / f"{case.slug}-fine.bin"
         refined_diagnostics = args.output_dir / f"{case.slug}-fine.json"
         if args.density == "standard" and refined_binary.exists() and refined_diagnostics.exists():
-            variants["fine"] = {"trajectory": f"trajectories/{case.slug}-fine.bin", "diagnostics": f"trajectories/{case.slug}-fine.json", "bytes": refined_binary.stat().st_size, "kind": "one-to-four display subdivision"}
+            variants["fine"] = (
+                {"trajectory": f"trajectories/{case.slug}-web.bin.gz", "fallbackTrajectory": f"trajectories/{case.slug}.bin", "diagnostics": f"trajectories/{case.slug}-fine.json", "bytes": web_binary.stat().st_size, "compression": "gzip", "refine": True, "kind": "one-to-four display subdivision"}
+                if web_binary.exists()
+                else {"trajectory": f"trajectories/{case.slug}-fine.bin", "diagnostics": f"trajectories/{case.slug}-fine.json", "bytes": refined_binary.stat().st_size, "kind": "one-to-four display subdivision"}
+            )
         manifest_cases.append({
             "slug": case.slug, "name": case.name, "shortName": case.short_name, "caption": case.caption, "sourceNote": case.source_note,
-            "trajectory": f"trajectories/{case.slug}.bin", "diagnostics": f"trajectories/{case.slug}.json",
+            "trajectory": standard_variant["trajectory"], "diagnostics": standard_variant["diagnostics"],
             "camera": {"distance": case.camera_distance, "yaw": case.camera_yaw, "pitch": case.camera_pitch},
-            "bytes": binary_path.stat().st_size, "genus": diagnostics["genus"], "flow": "surface-diffusion", "holdSeconds": 0.55, "playDuration": 12, "variants": variants,
+            "bytes": standard_variant["bytes"], "genus": diagnostics["genus"], "flow": "surface-diffusion", "holdSeconds": 0.55, "playDuration": 12, "variants": variants,
         })
         print(json.dumps(payload, indent=2, ensure_ascii=False), flush=True)
         print(f"wrote {binary_path} ({binary_path.stat().st_size:,} bytes)", flush=True)
@@ -551,32 +560,53 @@ def main() -> None:
         willmore_diagnostics = args.output_dir / "genus-two.json"
         if willmore_binary.exists() and willmore_diagnostics.exists():
             genus_two = json.loads(willmore_diagnostics.read_text(encoding="utf-8"))
-            willmore_variants = {"standard": {"trajectory": "trajectories/genus-two.bin", "diagnostics": "trajectories/genus-two.json", "bytes": willmore_binary.stat().st_size}}
+            willmore_web = args.output_dir / "genus-two-web.bin.gz"
+            willmore_web_diagnostics = args.output_dir / "genus-two-web.json"
+            willmore_standard = (
+                {"trajectory": "trajectories/genus-two-web.bin.gz", "fallbackTrajectory": "trajectories/genus-two.bin", "diagnostics": "trajectories/genus-two-web.json", "bytes": willmore_web.stat().st_size, "compression": "gzip"}
+                if willmore_web.exists() and willmore_web_diagnostics.exists()
+                else {"trajectory": "trajectories/genus-two.bin", "diagnostics": "trajectories/genus-two.json", "bytes": willmore_binary.stat().st_size}
+            )
+            willmore_variants = {"standard": willmore_standard}
             willmore_refined = args.output_dir / "genus-two-fine.bin"
             willmore_refined_diagnostics = args.output_dir / "genus-two-fine.json"
             if willmore_refined.exists() and willmore_refined_diagnostics.exists():
-                willmore_variants["fine"] = {"trajectory": "trajectories/genus-two-fine.bin", "diagnostics": "trajectories/genus-two-fine.json", "bytes": willmore_refined.stat().st_size, "kind": "one-to-four display subdivision"}
+                willmore_variants["fine"] = (
+                    {"trajectory": "trajectories/genus-two-web.bin.gz", "fallbackTrajectory": "trajectories/genus-two.bin", "diagnostics": "trajectories/genus-two-fine.json", "bytes": willmore_web.stat().st_size, "compression": "gzip", "refine": True, "kind": "one-to-four display subdivision"}
+                    if willmore_web.exists()
+                    else {"trajectory": "trajectories/genus-two-fine.bin", "diagnostics": "trajectories/genus-two-fine.json", "bytes": willmore_refined.stat().st_size, "kind": "one-to-four display subdivision"}
+                )
             manifest_cases.insert(1, {
                 "slug": "genus-two", "name": genus_two["name"], "shortName": genus_two["short_name"],
                 "caption": genus_two["caption"], "sourceNote": genus_two["source_note"],
-                "trajectory": "trajectories/genus-two.bin", "diagnostics": "trajectories/genus-two.json",
-                "camera": {"distance": 15.5, "yaw": -0.58, "pitch": 0.36}, "bytes": willmore_binary.stat().st_size,
+                "trajectory": willmore_standard["trajectory"], "diagnostics": willmore_standard["diagnostics"],
+                "camera": {"distance": 15.5, "yaw": -0.58, "pitch": 0.36}, "bytes": willmore_standard["bytes"],
                 "genus": 2, "flow": "willmore", "holdSeconds": 1.8, "playDuration": 13, "variants": willmore_variants,
             })
         helfrich_binary = args.output_dir / "oblate.bin"
         helfrich_diagnostics = args.output_dir / "oblate.json"
         if helfrich_binary.exists() and helfrich_diagnostics.exists():
             oblate = json.loads(helfrich_diagnostics.read_text(encoding="utf-8"))
-            helfrich_variants = {"standard": {"trajectory": "trajectories/oblate.bin", "diagnostics": "trajectories/oblate.json", "bytes": helfrich_binary.stat().st_size}}
+            helfrich_web = args.output_dir / "oblate-web.bin.gz"
+            helfrich_standard = (
+                {"trajectory": "trajectories/oblate-web.bin.gz", "fallbackTrajectory": "trajectories/oblate.bin", "diagnostics": "trajectories/oblate.json", "bytes": helfrich_web.stat().st_size, "compression": "gzip"}
+                if helfrich_web.exists()
+                else {"trajectory": "trajectories/oblate.bin", "diagnostics": "trajectories/oblate.json", "bytes": helfrich_binary.stat().st_size}
+            )
+            helfrich_variants = {"standard": helfrich_standard}
             helfrich_refined = args.output_dir / "oblate-fine.bin"
             helfrich_refined_diagnostics = args.output_dir / "oblate-fine.json"
             if helfrich_refined.exists() and helfrich_refined_diagnostics.exists():
-                helfrich_variants["fine"] = {"trajectory": "trajectories/oblate-fine.bin", "diagnostics": "trajectories/oblate-fine.json", "bytes": helfrich_refined.stat().st_size, "kind": "one-to-four display subdivision"}
+                helfrich_variants["fine"] = (
+                    {"trajectory": "trajectories/oblate-web.bin.gz", "fallbackTrajectory": "trajectories/oblate.bin", "diagnostics": "trajectories/oblate-fine.json", "bytes": helfrich_web.stat().st_size, "compression": "gzip", "refine": True, "kind": "one-to-four display subdivision"}
+                    if helfrich_web.exists()
+                    else {"trajectory": "trajectories/oblate-fine.bin", "diagnostics": "trajectories/oblate-fine.json", "bytes": helfrich_refined.stat().st_size, "kind": "one-to-four display subdivision"}
+                )
             manifest_cases.append({
                 "slug": "oblate", "name": oblate["name"], "shortName": oblate["short_name"],
                 "caption": oblate["caption"], "sourceNote": oblate["source_note"],
-                "trajectory": "trajectories/oblate.bin", "diagnostics": "trajectories/oblate.json",
-                "camera": {"distance": 10.2, "yaw": -0.62, "pitch": 0.38}, "bytes": helfrich_binary.stat().st_size,
+                "trajectory": helfrich_standard["trajectory"], "diagnostics": helfrich_standard["diagnostics"],
+                "camera": {"distance": 10.2, "yaw": -0.62, "pitch": 0.38}, "bytes": helfrich_standard["bytes"],
                 "genus": 0, "flow": "helfrich", "holdSeconds": 1.2, "playDuration": 13, "variants": helfrich_variants,
             })
         manifest = {"version": 1, "default": "cube", "cases": manifest_cases}
