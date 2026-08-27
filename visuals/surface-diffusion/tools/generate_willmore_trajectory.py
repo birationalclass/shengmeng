@@ -29,7 +29,10 @@ from generate_bgn_trajectory import (
 )
 
 
-def cuboid_with_two_square_holes(step: float = 0.5) -> tuple[np.ndarray, np.ndarray]:
+def cuboid_with_two_square_holes(
+    step: float = 0.5,
+    face_phases: tuple[int, int, int, int, int, int] = (0, 0, 0, 0, 0, 0),
+) -> tuple[np.ndarray, np.ndarray]:
     """Boundary of a 7x4x1 cuboid minus two 2x2x1 square through-holes."""
     xs = np.arange(-3.5, 3.5 + step * 0.25, step)
     ys = np.arange(-2.0, 2.0 + step * 0.25, step)
@@ -53,33 +56,38 @@ def cuboid_with_two_square_holes(step: float = 0.5) -> tuple[np.ndarray, np.ndar
             vertices.append((float(xs[node[0]]), float(ys[node[1]]), float(zs[node[2]])))
         return vertex_index[node]
 
-    # For each outward coordinate direction: neighbour offset and an ordered
-    # face corner cycle whose right-hand normal points out of the solid cell.
+    # For each outward coordinate direction: neighbour offset, an ordered
+    # face-corner cycle whose right-hand normal points out of the solid cell,
+    # and a checkerboard phase.  The phase is configurable so triangulation
+    # sensitivity of the non-smooth polyhedral initial surface can be audited
+    # without changing its geometry, vertex count, or triangle count.
     faces = (
-        ((-1, 0, 0), ((0, 0, 0), (0, 0, 1), (0, 1, 1), (0, 1, 0))),
-        ((1, 0, 0), ((1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 0, 1))),
-        ((0, -1, 0), ((0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1))),
-        ((0, 1, 0), ((0, 1, 0), (0, 1, 1), (1, 1, 1), (1, 1, 0))),
-        ((0, 0, -1), ((0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0))),
-        ((0, 0, 1), ((0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1))),
+        ((-1, 0, 0), ((0, 0, 0), (0, 0, 1), (0, 1, 1), (0, 1, 0)), face_phases[0]),
+        ((1, 0, 0), ((1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 0, 1)), face_phases[1]),
+        ((0, -1, 0), ((0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1)), face_phases[2]),
+        ((0, 1, 0), ((0, 1, 0), (0, 1, 1), (1, 1, 1), (1, 1, 0)), face_phases[3]),
+        ((0, 0, -1), ((0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0)), face_phases[4]),
+        ((0, 0, 1), ((0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)), face_phases[5]),
     )
     for i in range(nx):
         for j in range(ny):
             for k in range(nz):
                 if not solid[i, j, k]:
                     continue
-                for (di, dj, dk), corners in faces:
+                for (di, dj, dk), corners, phase in faces:
                     ni, nj, nk = i + di, j + dj, k + dk
                     neighbour_solid = 0 <= ni < nx and 0 <= nj < ny and 0 <= nk < nz and solid[ni, nj, nk]
                     if neighbour_solid:
                         continue
                     quad = [index_of((i + ci, j + cj, k + ck)) for ci, cj, ck in corners]
                     # Checkerboard diagonal prevents a global directional bias.
-                    if (i + j + k) % 2:
+                    if (i + j + k + phase) % 2:
                         triangles.extend(((quad[0], quad[1], quad[3]), (quad[1], quad[2], quad[3])))
                     else:
                         triangles.extend(((quad[0], quad[1], quad[2]), (quad[0], quad[2], quad[3])))
-    return orient_outward(np.asarray(vertices), np.asarray(triangles))
+    points = np.asarray(vertices)
+    cells = np.asarray(triangles)
+    return orient_outward(points, cells)
 
 
 def finite_element_geometry(points: np.ndarray, cells: np.ndarray):
@@ -115,28 +123,23 @@ def assemble_operators(points: np.ndarray, cells: np.ndarray, alpha: float):
     stiffness_3 = block_diag((stiffness, stiffness, stiffness), format="csc")
     mass_3 = block_diag((diags(mass), diags(mass), diags(mass)), format="csc")
 
-    normal_rows: list[int] = []
-    normal_cols: list[int] = []
-    normal_data: list[float] = []
-    tangent_rows: list[int] = []
-    tangent_cols: list[int] = []
-    tangent_data: list[float] = []
     lumped_normal = np.zeros((vertex_count, 3), dtype=np.float64)
+    normal_blocks = np.zeros((vertex_count, 3, 3), dtype=np.float64)
+    tangent_blocks = np.zeros((vertex_count, 3, 3), dtype=np.float64)
     eye = np.eye(3)
-    for face, cell in enumerate(cells):
-        weight = areas[face] / 3
-        outer = np.outer(normals[face], normals[face])
-        tangent = eye - outer
-        for vertex in cell:
-            lumped_normal[vertex] += weight * normals[face]
-            indices = (int(vertex), vertex_count + int(vertex), 2 * vertex_count + int(vertex))
-            for row_axis in range(3):
-                for col_axis in range(3):
-                    normal_rows.append(indices[row_axis]); normal_cols.append(indices[col_axis]); normal_data.append(weight * outer[row_axis, col_axis])
-                    tangent_rows.append(indices[row_axis]); tangent_cols.append(indices[col_axis]); tangent_data.append(weight * tangent[row_axis, col_axis])
+    weights = areas / 3
+    outer = np.einsum("fi,fj->fij", normals, normals)
+    tangent = eye[None, :, :] - outer
+    for local in range(3):
+        np.add.at(lumped_normal, cells[:, local], weights[:, None] * normals)
+        np.add.at(normal_blocks, cells[:, local], weights[:, None, None] * outer)
+        np.add.at(tangent_blocks, cells[:, local], weights[:, None, None] * tangent)
     size = 3 * vertex_count
-    normal_mass = csc_matrix((normal_data, (normal_rows, normal_cols)), shape=(size, size))
-    tangent_mass = csc_matrix((tangent_data, (tangent_rows, tangent_cols)), shape=(size, size))
+    vertices = np.arange(vertex_count)[:, None, None]
+    row_indices = np.broadcast_to(vertices + vertex_count * np.arange(3)[None, :, None], normal_blocks.shape).ravel()
+    col_indices = np.broadcast_to(vertices + vertex_count * np.arange(3)[None, None, :], normal_blocks.shape).ravel()
+    normal_mass = csc_matrix((normal_blocks.ravel(), (row_indices, col_indices)), shape=(size, size))
+    tangent_mass = csc_matrix((tangent_blocks.ravel(), (row_indices, col_indices)), shape=(size, size))
     normal_coupling = bmat([[diags(lumped_normal[:, 0]), diags(lumped_normal[:, 1]), diags(lumped_normal[:, 2])]], format="csc")
     relaxed_mdr = tangent_mass + alpha * stiffness_3
     return mass, mass_3, stiffness_3, normal_mass, normal_coupling, relaxed_mdr, areas, normals, gradients
@@ -155,21 +158,24 @@ def lower_order_rhs(points: np.ndarray, cells: np.ndarray, curvature: np.ndarray
     vertex_count = len(points)
     result = np.zeros((vertex_count, 3), dtype=np.float64)
     identity = np.eye(3)
-    for face, cell in enumerate(cells):
-        k_values = curvature[cell]
-        gradient_k = sum(np.outer(k_values[local], gradients[face, local]) for local in range(3))
-        divergence_k = float(np.trace(gradient_k))
-        projection = identity - np.outer(normals[face], normals[face])
-        mean_squared_k = float(np.mean(np.sum(k_values * k_values, axis=1)))
-        for local, vertex in enumerate(cell):
-            gradient = gradients[face, local]
-            for axis in range(3):
-                gradient_test = np.outer(identity[axis], gradient)
-                deformation = gradient_test + gradient_test.T
-                value = divergence_k * gradient[axis]
-                value -= float(np.sum(gradient_k.T * (deformation @ projection)))
-                value += 0.5 * mean_squared_k * gradient[axis]
-                result[vertex, axis] += areas[face] * value
+    k_values = curvature[cells]
+    gradient_k = np.einsum("fla,flb->fab", k_values, gradients)
+    divergence_k = np.trace(gradient_k, axis1=1, axis2=2)
+    projection = identity[None, :, :] - np.einsum("fi,fj->fij", normals, normals)
+    mean_squared_k = np.mean(np.sum(k_values * k_values, axis=2), axis=1)
+    deformation = (
+        np.einsum("ia,flj->flaij", identity, gradients)
+        + np.einsum("fli,ja->flaij", gradients, identity)
+    )
+    deformed_projection = np.einsum("flaik,fkj->flaij", deformation, projection)
+    contraction = np.einsum("fji,flaij->fla", gradient_k, deformed_projection)
+    values = (
+        divergence_k[:, None, None] * gradients
+        - contraction
+        + 0.5 * mean_squared_k[:, None, None] * gradients
+    )
+    for local in range(3):
+        np.add.at(result, cells[:, local], areas[:, None] * values[:, local])
     return flatten(result)
 
 
@@ -229,10 +235,24 @@ def main() -> None:
     parser.add_argument("--alpha", type=float, default=10.0)
     parser.add_argument("--save-every", type=int, default=2)
     parser.add_argument("--mesh-step", type=float, default=0.5)
+    parser.add_argument("--face-phases", default="000000")
+    parser.add_argument(
+        "--startup-steps", type=int, default=20,
+        help="number of initial nominal intervals split into smaller substeps",
+    )
+    parser.add_argument(
+        "--startup-factor", type=int, default=4,
+        help="substeps per startup interval (the substep is dt/startup-factor)",
+    )
     parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "trajectories" / "genus-two.bin")
     args = parser.parse_args()
 
-    points, cells = cuboid_with_two_square_holes(args.mesh_step)
+    if len(args.face_phases) != 6 or any(bit not in "01" for bit in args.face_phases):
+        raise SystemExit("face-phases must contain exactly six binary digits")
+    if args.startup_steps < 0 or args.startup_steps > args.steps or args.startup_factor < 1:
+        raise SystemExit("startup-steps must lie in [0, steps] and startup-factor must be positive")
+    face_phases = tuple(int(bit) for bit in args.face_phases)
+    points, cells = cuboid_with_two_square_holes(args.mesh_step, face_phases)
     euler, genus = topology(cells, len(points))
     mass, _, stiffness_3, *_ = assemble_operators(points, cells, args.alpha)
     curvature = initial_curvature(points, mass, stiffness_3)
@@ -241,8 +261,13 @@ def main() -> None:
     times = [0.0]
     previous_energy = metric_rows[-1][0]
     print(f"genus-two: {len(points)} vertices, {len(cells)} triangles, chi={euler}, genus={genus}", flush=True)
+    linear_solve_count = 0
     for step in range(1, args.steps + 1):
-        points, curvature = willmore_step(points, cells, curvature, args.dt, args.alpha)
+        substep_count = args.startup_factor if step <= args.startup_steps else 1
+        substep_dt = args.dt / substep_count
+        for _ in range(substep_count):
+            points, curvature = willmore_step(points, cells, curvature, substep_dt, args.alpha)
+            linear_solve_count += 1
         mass, *_ = assemble_operators(points, cells, args.alpha)
         current = frame_metrics(points, cells, curvature, mass, 0.0)
         current[5] = current[0] - previous_energy
@@ -256,22 +281,57 @@ def main() -> None:
     metrics_array = np.asarray(metric_rows)
     energy_increases = np.diff(metrics_array[:, 0])
     minimum_double_area = min(float(np.min(triangle_geometry(frame, cells)[1])) for frame in frames_array)
+    edges = np.unique(
+        np.sort(np.vstack((cells[:, [0, 1]], cells[:, [1, 2]], cells[:, [2, 0]])), axis=1),
+        axis=0,
+    )
+    edge_to_median_ratios = np.asarray([
+        float(np.max(lengths) / np.median(lengths))
+        for lengths in (
+            np.linalg.norm(frame[edges[:, 0]] - frame[edges[:, 1]], axis=1)
+            for frame in frames_array
+        )
+    ])
+    maximum_edge_to_median_ratio = float(np.max(edge_to_median_ratios))
+    startup_end_time = args.startup_steps * args.dt
+    startup_frame_mask = np.asarray(times) <= startup_end_time + 1e-12
+    maximum_startup_edge_to_median_ratio = float(np.max(edge_to_median_ratios[startup_frame_mask]))
     diagnostics = {
         "scheme": "linearly implicit relaxed-MDR PFEM for Willmore flow",
         "source_equations": ["arXiv:2608.07244, equations (4.8) and (5.1)"],
         "slug": "genus-two", "name": "方正双孔框 → 8 字 Willmore 曲面", "short_name": "双孔框 → 8 字",
         "caption": "论文中的 7×4×1 方正双孔框在 relaxed-MDR Willmore 流下先快速圆角，再形成亏格 2 的 8 字曲面。",
-        "source_note": "PDF 第 28 页 · relaxed-MDR Willmore flow · α=10",
-        "vertex_count": len(points), "triangle_count": len(cells), "frame_count": len(frames), "computed_step_count": args.steps,
+        "source_note": "PDF 第 28 页 · relaxed-MDR Willmore flow · α=10 · 前 0.02 四分启动步",
+        "vertex_count": len(points), "triangle_count": len(cells), "frame_count": len(frames), "computed_step_count": linear_solve_count,
+        "nominal_step_count": args.steps,
         "time_step": args.dt, "saved_step_stride": args.save_every, "final_time": args.steps * args.dt, "alpha": args.alpha,
+        "startup_steps": args.startup_steps, "startup_factor": args.startup_factor,
+        "startup_time_step": args.dt / args.startup_factor, "startup_end_time": startup_end_time,
         "mesh_step": args.mesh_step,
+        "triangulation": "direction-phased checkerboard",
+        "face_phases": args.face_phases,
         "euler_characteristic": euler, "genus": genus, "initial_energy": float(metrics_array[0, 0]), "final_energy": float(metrics_array[-1, 0]),
         "max_energy_increase_saved_frames": float(np.max(energy_increases)), "energy_monotone_saved_frames": bool(np.max(energy_increases) <= 1e-7),
         "initial_volume": float(metrics_array[0, 1]), "final_volume": float(metrics_array[-1, 1]),
         "maximum_relative_volume_change": float(np.max(np.abs(metrics_array[:, 1] / metrics_array[0, 1] - 1))),
         "minimum_triangle_quality": float(np.min(metrics_array[:, 2])), "minimum_double_triangle_area": minimum_double_area,
+        "maximum_edge_to_median_ratio": maximum_edge_to_median_ratio,
+        "maximum_startup_edge_to_median_ratio": maximum_startup_edge_to_median_ratio,
         "orientation_preserved": bool(np.all(metrics_array[:, 1] > 0) and minimum_double_area > 1e-10),
     }
+    if not np.all(np.isfinite(frames_array)) or not np.all(np.isfinite(metrics_array)):
+        raise RuntimeError("non-finite Willmore trajectory state")
+    if euler != -2 or genus != 2:
+        raise RuntimeError(f"unexpected topology: chi={euler}, genus={genus}")
+    if not diagnostics["energy_monotone_saved_frames"]:
+        raise RuntimeError("saved-state Willmore energy is not monotone")
+    if not diagnostics["orientation_preserved"] or minimum_double_area <= 1e-6:
+        raise RuntimeError("triangle orientation or nondegeneracy check failed")
+    if maximum_edge_to_median_ratio >= 2.5:
+        raise RuntimeError(
+            "mesh-spike guard failed: maximum edge / median edge "
+            f"is {maximum_edge_to_median_ratio:.6f}"
+        )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     write_binary(args.output, cells, np.asarray(times), metrics_array, frames_array, args.dt * args.save_every)
     args.output.with_suffix(".json").write_text(json.dumps(diagnostics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
