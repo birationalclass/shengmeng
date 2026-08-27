@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#061513">
   <title>几何流 · Parametric FEM · Sheng Meng Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260827-flow-9">
+  <link rel="stylesheet" href="styles.css?v=20260828-flow-10">
 </head>
 <body>
   <div class="page-grid" aria-hidden="true"></div>
@@ -116,7 +116,7 @@
             <div>⟨ <i>w</i>·<b>ν</b>, χ·<b>ν</b> ⟩<sub>h</sub> − ℬ<sub>h</sub><sup>m</sup>(<i>k</i><sup>m+1</sup>;χ) + ⟨ <i>P</i>χ,<i>p</i> ⟩<sub>h</sub> + α⟨∇χ,∇<i>p</i>⟩ = 0</div>
             <div>⟨ <i>k</i><sup>m+1</sup>,η ⟩<sub>h</sub> + ⟨∇(id+τ<i>w</i><sup>m+1</sup>),∇η⟩ = 0</div>
           </div>
-          <p class="scheme-note">这里 α=10，τ=10<sup>−3</sup>；relaxed-MDR 只选择切向网格速度，Willmore 法向速度仍决定几何演化。</p>
+          <p class="scheme-note">这里 α=10、名义步长 τ=10<sup>−3</sup>；为稳定非光滑的方正初值，前 0.02 时间采用四分启动子步 δt=2.5×10<sup>−4</sup>，随后恢复 τ。relaxed-MDR 只选择切向网格速度，Willmore 法向速度仍决定几何演化。</p>
         </div>
 
         <div class="scheme-card secondary-scheme">
@@ -174,7 +174,7 @@
 
           <article class="algorithm-detail" data-algorithm="genus-two" hidden>
             <div class="algorithm-parameter-row" aria-label="双孔框 Willmore 算法参数">
-              <span>Γ⁰：7×4×1 双方孔框</span><span>K=310</span><span>J=624</span><span>α=10</span><span>τ=10<sup>−3</sup></span><span>M=5,000</span><span>T=5</span>
+              <span>Γ⁰：7×4×1 双方孔框</span><span>K=310</span><span>J=624</span><span>α=10</span><span>名义 τ=10<sup>−3</sup></span><span>0&lt;t≤0.02：δt=τ/4</span><span>名义 M=5,000</span><span>线性求解=5,060</span><span>T=5</span>
             </div>
             <ol class="algorithm-steps">
               <li>
@@ -189,12 +189,12 @@
               </li>
               <li>
                 <b>解四块对称混合系统。</b>
-                <p>未知量依次为速度 w<sup>m+1</sup>、曲率向量 k<sup>m+1</sup>、标量乘子 λ<sup>m+1</sup> 和 MDR 乘子 p<sup>m+1</sup>。每一步求解 Zhao (4.8)/(5.1) 的闭曲面、κ̄=0 特例：</p>
-                <div class="algorithm-equation matrix-equation">K<sub>W</sub>[w;k;λ;p]=[f<sub>w</sub>;f<sub>k</sub>;0;0]，　K<sub>W</sub>=[ M<sub>ν</sub>　−A<sub>3</sub>　0　C ; −A<sub>3</sub>　−M<sub>3</sub>/τ　0　0 ; 0　0　0　D ; C　0　D<sup>T</sup>　0 ]，<br>f<sub>w</sub>=R<sub>h</sub><sup>m</sup>(k<sup>m</sup>;·)，　f<sub>k</sub>=A<sub>3</sub>X<sup>m</sup>/τ。</div>
+                <p>未知量依次为速度 w<sup>m+1</sup>、曲率向量 k<sup>m+1</sup>、标量乘子 λ<sup>m+1</sup> 和 MDR 乘子 p<sup>m+1</sup>。记当前实际子步为 δt：前 20 个名义区间各解 4 次 δt=τ/4，之后每个区间解 1 次 δt=τ。每个子步求解 Zhao (4.8)/(5.1) 的闭曲面、κ̄=0 特例：</p>
+                <div class="algorithm-equation matrix-equation">K<sub>W</sub>[w;k;λ;p]=[f<sub>w</sub>;f<sub>k</sub>;0;0]，　K<sub>W</sub>=[ M<sub>ν</sub>　−A<sub>3</sub>　0　C ; −A<sub>3</sub>　−M<sub>3</sub>/δt　0　0 ; 0　0　0　D ; C　0　D<sup>T</sup>　0 ]，<br>f<sub>w</sub>=R<sub>h</sub><sup>m</sup>(k<sup>m</sup>;·)，　f<sub>k</sub>=A<sub>3</sub>X<sup>m</sup>/δt。</div>
               </li>
               <li>
                 <b>更新、校验并编码。</b>
-                <p>X<sup>m+1</sup>=X<sup>m</sup>+τw<sup>m+1</sup>，随后减去顶点均值以固定无关紧要的整体平移。保持 𝒯 不变，检查 E<sub>h</sub>、有向体积、q<sub>min</sub>、三角形定向与 χ。完整档案每 5 步保存一次（1,001 层）；网页无损保留每 10 步的 501 层并连续插值。1→4 仅作共享中点显示剖分。</p>
+                <p>每个实际子步更新 X←X+δt·w，并减去顶点均值以固定无关紧要的整体平移；共完成 5,000 个名义步、5,060 次稀疏线性求解。保持 𝒯 不变，检查 E<sub>h</sub>、有向体积、q<sub>min</sub>、三角形定向、χ 以及“最长边/中位边&lt;2.5”的尖刺保护。完整档案每 5 个名义步保存一次（1,001 层）；网页无损保留每 10 步的 501 层并连续插值。1→4 仅作共享中点显示剖分。</p>
               </li>
             </ol>
             <a class="algorithm-source" href="https://github.com/birationalclass/shengmeng/blob/main/visuals/surface-diffusion/tools/generate_willmore_trajectory.py" target="_blank" rel="noreferrer">查看完整可执行生成器 · generate_willmore_trajectory.py ↗</a>
@@ -282,6 +282,6 @@
 
   <div class="sr-only" id="announcer" aria-live="polite"></div>
   <noscript><div class="noscript">需要启用 JavaScript 才能载入有限元轨迹。</div></noscript>
-  <script src="app.js?v=20260827-flow-9"></script>
+  <script src="app.js?v=20260828-flow-10"></script>
 </body>
 </html>

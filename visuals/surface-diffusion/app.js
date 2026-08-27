@@ -1,6 +1,14 @@
 (() => {
   "use strict";
 
+  const ASSET_VERSION = "20260828-flow-10";
+
+  function versionedAsset(path) {
+    const url = new URL(path, window.location.href);
+    url.searchParams.set("v", ASSET_VERSION);
+    return url.toString();
+  }
+
   const canvas = document.querySelector("#surfaceCanvas");
   const chart = document.querySelector("#metricChart");
   const stage = document.querySelector("#stage");
@@ -185,7 +193,7 @@
   }
 
   async function fetchTrajectoryBuffer(variant) {
-    const response = await fetch(variant.trajectory);
+    const response = await fetch(versionedAsset(variant.trajectory));
     if (!response.ok) throw new Error(`轨迹载入失败（HTTP ${response.status}）`);
     const payload = await response.arrayBuffer();
     const payloadMagic = Array.from(new Uint8Array(payload, 0, Math.min(8, payload.byteLength)), (value) => String.fromCharCode(value)).join("");
@@ -195,7 +203,7 @@
       return new Response(stream).arrayBuffer();
     }
     if (variant.fallbackTrajectory) {
-      const fallback = await fetch(variant.fallbackTrajectory);
+      const fallback = await fetch(versionedAsset(variant.fallbackTrajectory));
       if (!fallback.ok) throw new Error(`备用轨迹载入失败（HTTP ${fallback.status}）`);
       return fallback.arrayBuffer();
     }
@@ -811,9 +819,16 @@
     const isHelfrich = state.activeCase.flow === "helfrich";
     const isBendingFlow = isWillmore || isHelfrich;
     const computedSteps = diagnostics.computed_step_count || (data.frameCount - 1);
-    solverStatus.textContent = `${data.vertexCount} 顶点 · ${data.triangleCount.toLocaleString()} 三角形 · τ=${diagnostics.time_step.toExponential(0)}`;
+    const nominalTimeStep = Number(diagnostics.time_step);
+    const startupFactor = Number(diagnostics.startup_factor || 1);
+    const startupEnd = Number(diagnostics.startup_end_time || 0);
+    const startupTimeStep = Number(diagnostics.startup_time_step || nominalTimeStep / startupFactor);
+    const startupStatus = isWillmore && startupFactor > 1
+      ? ` · 启动 δt=${startupTimeStep.toExponential(1)} 至 t=${startupEnd.toFixed(2)}`
+      : "";
+    solverStatus.textContent = `${data.vertexCount} 顶点 · ${data.triangleCount.toLocaleString()} 三角形 · 名义 τ=${nominalTimeStep.toExponential(0)}${startupStatus}`;
     verification.area.textContent = isBendingFlow
-      ? (diagnostics.energy_monotone_saved_frames ? `${computedSteps} 步弯曲能下降` : "弯曲能检查失败")
+      ? (diagnostics.energy_monotone_saved_frames ? `${data.frameCount} 个保存状态弯曲能下降` : "弯曲能检查失败")
       : (diagnostics.surface_area_monotone ? `${computedSteps} 步表面积全部下降` : "表面积检查失败");
     verification.orientation.textContent = diagnostics.orientation_preserved ? `亏格 g=${diagnostics.genus} · 无退化` : "检测到网格退化";
     const volumeChange = isBendingFlow ? diagnostics.maximum_relative_volume_change : diagnostics.max_relative_volume_drift;
@@ -838,7 +853,11 @@
     canvas.dataset.vertexCount = String(data.vertexCount);
     canvas.dataset.triangleCount = String(data.triangleCount);
     canvas.dataset.frameCount = String(data.frameCount);
-    canvas.dataset.timeStep = String(data.dt);
+    canvas.dataset.timeStep = String(nominalTimeStep);
+    canvas.dataset.computedStepCount = String(computedSteps);
+    canvas.dataset.startupFactor = String(startupFactor);
+    canvas.dataset.startupTimeStep = String(startupTimeStep);
+    canvas.dataset.startupEndTime = String(startupEnd);
     canvas.dataset.surfaceAreaMonotone = String(Boolean(diagnostics.surface_area_monotone));
     canvas.dataset.energyMonotone = String(isBendingFlow ? diagnostics.energy_monotone_saved_frames : diagnostics.surface_area_monotone);
     canvas.dataset.energyInequalitySatisfied = String(isBendingFlow
@@ -928,7 +947,7 @@
     errorPanel.hidden = true;
     loadingText.textContent = `载入「${item.shortName}」${state.density === "fine" ? "三角形 1→4" : "原"}网格与 ${Math.max(1, Math.round(variant.bytes / 1048576))} MB 轨迹…`;
     try {
-      const [buffer, diagnosticsResponse] = await Promise.all([fetchTrajectoryBuffer(variant), fetch(variant.diagnostics)]);
+      const [buffer, diagnosticsResponse] = await Promise.all([fetchTrajectoryBuffer(variant), fetch(versionedAsset(variant.diagnostics))]);
       if (!diagnosticsResponse.ok) throw new Error(`诊断数据载入失败（HTTP ${diagnosticsResponse.status}）`);
       const diagnostics = await diagnosticsResponse.json();
       if (serial !== state.loadSerial) return;
@@ -975,7 +994,7 @@
   async function initialise() {
     try {
       loadingText.textContent = "读取曲面扩散案例清单…";
-      const manifestResponse = await fetch("trajectories/manifest.json");
+      const manifestResponse = await fetch(versionedAsset("trajectories/manifest.json"));
       if (!manifestResponse.ok) throw new Error(`案例清单载入失败（HTTP ${manifestResponse.status}）`);
       state.manifest = await manifestResponse.json();
       renderCaseButtons();

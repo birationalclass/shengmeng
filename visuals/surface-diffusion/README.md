@@ -41,12 +41,18 @@ triangle nondegeneracy.
 zero-spontaneous-curvature specialization of the paper's symmetric mixed
 system. The initial surface is exactly the boundary of a `7 x 4 x 1` cuboid
 after removing two `2 x 2 x 1` square through-holes. Parameters match the
-lecture example: `alpha = 10`, `tau = 1e-3`, and `T = 5`. Connectivity remains
-fixed, so the two holes and genus two are preserved.
+lecture example: `alpha = 10`, nominal `tau = 1e-3`, and `T = 5`. To stabilize
+the nonsmooth, low-resolution polyhedral start, the first 20 nominal intervals
+(`0 < t <= 0.02`) are each resolved by four genuine substeps with
+`delta t = 2.5e-4`; the paper step `tau = 1e-3` is restored afterwards. This
+removes the isolated low-valence-corner spike without deleting or filtering
+any computed state. The run therefore has 5,000 nominal intervals and 5,060
+sparse linear solves. Connectivity remains fixed, so the two holes and genus
+two are preserved.
 
 The UI holds the square initial state for 1.8 seconds before advancing, then
 plays the full evolution over 16 seconds. The generated trajectory saves every
-five solver steps (1001 numerical states over `T = 5`), and the renderer
+five nominal intervals (1001 numerical states over `T = 5`), and the renderer
 interpolates continuously between adjacent states. The timeline remains
 directly scrubbable.
 
@@ -85,7 +91,7 @@ With NumPy and SciPy installed:
 
 ```bash
 python3 tools/generate_bgn_trajectory.py --case all
-python3 tools/generate_willmore_trajectory.py --steps 5000 --save-every 5
+python3 tools/generate_willmore_trajectory.py --steps 5000 --save-every 5 --startup-steps 20 --startup-factor 4
 python3 tools/generate_helfrich_trajectory.py --steps 200 --save-every 1
 python3 tools/refine_trajectory.py trajectories/genus-two.bin trajectories/genus-two-fine.bin --frame-stride 2
 python3 tools/encode_web_trajectory.py trajectories/genus-two.bin trajectories/genus-two-web.bin.gz --frame-stride 2 --diagnostics-output trajectories/genus-two-web.json
@@ -106,6 +112,9 @@ not preserve volume, so its relative volume change is shown rather than
 treated as an error. The fully discrete Willmore scheme has a proved unique
 linear solve, while the paper does not claim an unconditional fully discrete
 energy theorem; the checked trajectory reports the observed monotone decay.
+The generator also rejects a genus-two run if any saved edge exceeds 2.5 times
+the frame's median edge length, so the former one-corner startup spike cannot
+silently re-enter the published data.
 The Helfrich constraints make the discrete area and volume derivatives zero,
 but a finite time step still leaves the small measured drift reported by the
 page.
