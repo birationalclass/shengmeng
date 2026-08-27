@@ -141,35 +141,42 @@
           left: side,
           right: width - side,
           top: Math.max(52, height * 0.12),
-          bottom: height - Math.max(28, height * 0.07)
+          bottom: height - Math.max(28, height * 0.07),
+          fitWidth: width - side * 2
         };
       }
       if (width < 980) {
         return {
-          left: width * 0.24,
+          left: side,
           right: width - side,
           top: Math.max(56, height * 0.075),
-          bottom: height - Math.max(28, height * 0.06)
+          bottom: height - Math.max(28, height * 0.06),
+          fitWidth: width - side - width * 0.24
         };
       }
       return {
-        left: width * 0.36,
+        left: side,
         right: width - side,
         top: Math.max(58, height * 0.07),
-        bottom: height - Math.max(30, height * 0.055)
+        bottom: height - Math.max(30, height * 0.055),
+        fitWidth: width - side - width * 0.36
       };
     }
 
     function createProjector() {
       const viewport = visualViewport();
-      const viewportWidth = Math.max(1, viewport.right - viewport.left);
+      // Keep the established conic size while centring the complete Pascal
+      // configuration on the canvas rather than in the right-hand copy-safe area.
+      const viewportWidth = Math.max(1, viewport.fitWidth || viewport.right - viewport.left);
       const viewportHeight = Math.max(1, viewport.bottom - viewport.top);
       const scale = Math.min(viewportWidth / (RX * 2 + 0.18), viewportHeight / (RY * 2 + 0.22));
-      const originX = (viewport.left + viewport.right) / 2;
-      const originY = (viewport.top + viewport.bottom) / 2;
+      const originX = width / 2;
+      const originY = height / 2;
       return {
         viewport,
         scale,
+        originX,
+        originY,
         point: (worldPoint) => ({
           x: originX + worldPoint.x * scale,
           y: originY - worldPoint.y * scale
@@ -417,6 +424,10 @@
       canvas.dataset.moving = String(geometry.relay.moving);
       canvas.dataset.collinearityError = geometry.collinearityError.toExponential(3);
       canvas.dataset.conicError = geometry.conicError.toExponential(3);
+      canvas.dataset.centerX = projector.originX.toFixed(2);
+      canvas.dataset.centerY = projector.originY.toFixed(2);
+      canvas.dataset.ellipseWidth = (RX * 2 * projector.scale).toFixed(2);
+      canvas.dataset.ellipseHeight = (RY * 2 * projector.scale).toFixed(2);
 
       context.save();
       const clip = projector.viewport;
@@ -515,7 +526,11 @@
         stepProgress: canvas.dataset.stepProgress || null,
         moving: canvas.dataset.moving === "true",
         collinearityError: canvas.dataset.collinearityError || null,
-        conicError: canvas.dataset.conicError || null
+        conicError: canvas.dataset.conicError || null,
+        centerX: canvas.dataset.centerX || null,
+        centerY: canvas.dataset.centerY || null,
+        ellipseWidth: canvas.dataset.ellipseWidth || null,
+        ellipseHeight: canvas.dataset.ellipseHeight || null
       }),
       destroy: () => {
         if (destroyed) return;
