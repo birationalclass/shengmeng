@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="可交互的 BGN 参数有限元曲面扩散：观察三角网格从立方体演化到球面，并核验表面积耗散、体积漂移与网格质量。">
+  <meta name="description" content="可交互的参数有限元几何流案例库：BGN 曲面扩散，以及 PDF 第 28 页方正双孔框到亏格 2 八字曲面的 relaxed-MDR Willmore 流。">
   <meta name="theme-color" content="#061513">
-  <title>曲面扩散 · BGN PFEM · Sheng Meng Visual Lab</title>
+  <title>几何流 · Parametric FEM · Sheng Meng Visual Lab</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260827-bgn-1">
+  <link rel="stylesheet" href="styles.css?v=20260827-flow-7">
 </head>
 <body>
   <div class="page-grid" aria-hidden="true"></div>
@@ -17,7 +17,7 @@
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
       <span><b>VISUAL LAB</b><small>SHENG MENG</small></span>
     </a>
-    <div class="header-index" aria-hidden="true">SURFACE DIFFUSION / 01</div>
+    <div class="header-index" aria-hidden="true">GEOMETRIC FLOWS / 01</div>
     <nav aria-label="项目导航">
       <a href="#method">算法</a>
       <a href="../">全部可视化</a>
@@ -28,36 +28,42 @@
 
   <main>
     <section class="stage" id="stage" aria-labelledby="pageTitle">
-      <canvas id="surfaceCanvas" aria-label="三维曲面扩散有限元网格。拖动旋转，滚轮或双指缩放，时间轴控制演化。">
+      <canvas id="surfaceCanvas" aria-label="三维参数有限元几何流网格。拖动旋转，滚轮或双指缩放，时间轴控制演化。">
         此交互需要支持 WebGL 2 的浏览器。
       </canvas>
 
       <section class="intro-panel">
-        <p class="eyebrow">BGN · PARAMETRIC FEM · SURFACE DIFFUSION</p>
+        <p class="eyebrow" id="flowEyebrow">PARAMETRIC FEM · GEOMETRIC FLOW</p>
         <h1 id="pageTitle">网格<br><em>衍化。</em></h1>
-        <p>立方体在曲面扩散流下趋向等体积球面。每个数值关键帧都是同一张三角剖分上的有限元解；没有重网格，也不是形状补间。</p>
+        <p id="caseCaption">选择一种初始曲面，查看同一张三角剖分上的 BGN 有限元时间步；没有重网格，也不是形状补间。</p>
         <div class="solver-badge"><i aria-hidden="true"></i><span id="solverStatus">正在载入有限元轨迹…</span></div>
       </section>
 
+      <aside class="case-switcher" aria-labelledby="caseSwitcherTitle">
+        <div class="case-heading"><span id="caseSwitcherTitle">INITIAL GEOMETRY</span><b id="activeCaseTitle">案例库</b></div>
+        <div class="case-buttons" id="caseButtons" role="group" aria-label="选择几何流与初始曲面"></div>
+        <div class="case-meta"><p id="caseSourceNote">正在读取案例清单…</p><label for="densitySelect"><span>MESH</span><select id="densitySelect" aria-label="网格精细度"><option value="standard">原网格</option><option value="fine">三角形 1→4</option></select></label></div>
+      </aside>
+
       <aside class="equation-panel" aria-labelledby="equationTitle">
-        <div class="panel-heading"><span id="equationTitle">GEOMETRIC FLOW</span><b>H⁻¹ GRADIENT</b></div>
-        <div class="equations" aria-label="曲面扩散方程">
-          <div><i>V</i> = −Δ<sub>S</sub><i>H</i></div>
-          <div><i>H</i><b>n</b> = Δ<sub>S</sub> id</div>
+        <div class="panel-heading"><span id="equationTitle">GEOMETRIC FLOW</span><b id="equationTag">H⁻¹ GRADIENT</b></div>
+        <div class="equations" id="equationBody" aria-label="当前几何流方程">
+          <div id="equationFirst"><i>V</i> = −Δ<sub>S</sub><i>H</i></div>
+          <div id="equationSecond"><i>H</i><b>n</b> = Δ<sub>S</sub> id</div>
         </div>
-        <p>法向速度决定几何演化；弱形式自动产生切向网格运动。</p>
+        <p id="equationNote">法向速度决定几何演化；弱形式自动产生切向网格运动。</p>
       </aside>
 
       <aside class="metrics-panel" aria-labelledby="metricsTitle">
         <div class="panel-heading"><span id="metricsTitle">STRUCTURE CHECK</span><b id="frameReadout">m = 0</b></div>
         <div class="metric-grid">
           <div><span>时间 <i>t</i></span><b id="timeReadout">0.00000</b></div>
-          <div><span>表面积 <i>W/W₀</i></span><b id="areaReadout">1.000000</b></div>
-          <div><span>体积误差</span><b id="volumeReadout">+0.000%</b></div>
+          <div><span id="energyMetricLabel">表面积 <i>W/W₀</i></span><b id="areaReadout">1.000000</b></div>
+          <div><span id="volumeMetricLabel">体积误差</span><b id="volumeReadout">+0.000%</b></div>
           <div><span>最小三角形质量</span><b id="qualityReadout">0.8660</b></div>
         </div>
         <canvas id="metricChart" aria-label="归一化表面积与体积误差随时间变化的曲线"></canvas>
-        <div class="legend"><span><i class="area-key"></i>面积</span><span><i class="volume-key"></i>体积误差</span></div>
+        <div class="legend"><span><i class="area-key"></i><b id="energyLegend">面积</b></span><span><i class="volume-key"></i><b id="volumeLegend">体积误差</b></span></div>
       </aside>
 
       <p class="gesture-hint" id="gestureHint"><span aria-hidden="true">↔</span> 拖动旋转 · Shift 拖动平移 · 滚轮/双指缩放</p>
@@ -89,12 +95,12 @@
       <div class="method-shell">
         <div class="method-heading">
           <p>METHOD / VERIFICATION</p>
-          <h2 id="methodTitle">严格对应讲稿中的<br><em>BGN 离散弱式。</em></h2>
-          <p class="method-lead">轨迹由 Python 生成器直接组装分片线性曲面有限元系统。浏览器只读取顶点状态并做时间步之间的线性显示插值；所有几何指标从离散三角面重新计算。</p>
+          <h2 id="methodTitle">不同几何流，按讲稿<br><em>分别离散计算。</em></h2>
+          <p class="method-lead">立方体和环面使用 BGN 曲面扩散；“方正双孔框 → 8 字曲面”使用讲稿第 28 页的 relaxed-MDR Willmore 流；“扁椭球 → 红细胞”使用第 41 页保面积、保体积的 Helfrich 流。所有案例都保持固定三角连通关系，浏览器仅在相邻数值状态间显示插值。</p>
         </div>
 
         <div class="scheme-card">
-          <div class="scheme-index">01 / DISCRETE SYSTEM</div>
+          <div class="scheme-index">01 / BGN SURFACE DIFFUSION</div>
           <p>在旧曲面 <i>S</i><sup>m</sup> 上求 <i>X</i><sup>m+1</sup> 与 <i>H</i><sup>m+1</sup>：</p>
           <div class="scheme-equations">
             <div>⟨ ((<i>X</i><sup>m+1</sup>−<i>X</i><sup>m</sup>)/τ)·<b>n</b><sup>m</sup>, φ ⟩<sub>h</sub> − ⟨ ∇<sub>S</sub><i>H</i><sup>m+1</sup>, ∇<sub>S</sub>φ ⟩ = 0</div>
@@ -103,10 +109,30 @@
           <p class="scheme-note">第一式给出表面扩散的法向速度；第二式把平均曲率向量与新位置耦合。质量集中的面法向耦合产生隐式切向运动。</p>
         </div>
 
+        <div class="scheme-card secondary-scheme">
+          <div class="scheme-index">02 / RELAXED-MDR WILLMORE FLOW</div>
+          <p>双孔框案例按 Zhao 2026 的全离散混合系统求速度 <i>w</i><sup>m+1</sup>、曲率向量 <i>k</i><sup>m+1</sup> 与两个乘子：</p>
+          <div class="scheme-equations compact-equations">
+            <div>⟨ <i>w</i>·<b>ν</b>, χ·<b>ν</b> ⟩<sub>h</sub> − ℬ<sub>h</sub><sup>m</sup>(<i>k</i><sup>m+1</sup>;χ) + ⟨ <i>P</i>χ,<i>p</i> ⟩<sub>h</sub> + α⟨∇χ,∇<i>p</i>⟩ = 0</div>
+            <div>⟨ <i>k</i><sup>m+1</sup>,η ⟩<sub>h</sub> + ⟨∇(id+τ<i>w</i><sup>m+1</sup>),∇η⟩ = 0</div>
+          </div>
+          <p class="scheme-note">这里 α=10，τ=10<sup>−3</sup>；relaxed-MDR 只选择切向网格速度，Willmore 法向速度仍决定几何演化。</p>
+        </div>
+
+        <div class="scheme-card secondary-scheme">
+          <div class="scheme-index">03 / CONSTRAINED HELFRICH FLOW</div>
+          <p>红细胞案例在同一 mixed system 中加入面积、体积两个全局乘子：</p>
+          <div class="scheme-equations compact-equations">
+            <div>⟨ <i>w</i>,<b>ν</b> ⟩<sub>h</sub> = 0</div>
+            <div>⟨ θ<sub>A</sub><b>ν</b>,<i>w</i> ⟩<sub>h</sub> = 0</div>
+          </div>
+          <p class="scheme-note">这里 κ̄=0、α=10、τ=10<sup>−3</sup>、T=0.2；两个约束阻止扁椭球简单收缩成球，弯曲能下降后得到双凹平衡形。</p>
+        </div>
+
         <div class="verification-grid">
-          <article><span>ENERGY</span><b id="checkArea">表面积单调下降</b><p>每一步验证 <i>W</i><sup>m+1</sup> + τ‖∇<sub>S</sub><i>H</i><sup>m+1</sup>‖² ≤ <i>W</i><sup>m</sup>。</p></article>
-          <article><span>TOPOLOGY</span><b id="checkOrientation">定向始终保持</b><p>1,200 个三角形在 321 个状态中均未翻转，也未执行重网格。</p></article>
-          <article><span>HONEST SCOPE</span><b id="checkVolume">BGN 不精确保体积</b><p>页面显示实际体积漂移；精确保体积需要 Bao–Zhao 2021 的半隐式法向。</p></article>
+          <article><span>ENERGY</span><b id="checkArea">表面积单调下降</b><p id="energyCheckNote">每一步验证 <i>W</i><sup>m+1</sup> + τ‖∇<sub>S</sub><i>H</i><sup>m+1</sup>‖² ≤ <i>W</i><sup>m</sup>。</p></article>
+          <article><span>TOPOLOGY</span><b id="checkOrientation">定向始终保持</b><p id="topologyNote">每条轨迹都保持固定连通关系和曲面亏格，也未执行重网格。</p></article>
+          <article><span>HONEST SCOPE</span><b id="checkVolume">BGN 不精确保体积</b><p id="volumeCheckNote">页面显示实际体积漂移；精确保体积需要 Bao–Zhao 2021 的半隐式法向。</p></article>
         </div>
 
         <div class="references">
@@ -114,6 +140,7 @@
           <ol>
             <li><a href="https://arxiv.org/abs/2104.01432" target="_blank" rel="noreferrer">W. Bao &amp; Q. Zhao, A structure-preserving parametric finite element method for surface diffusion (2021).</a></li>
             <li><a href="https://arxiv.org/abs/1903.09462" target="_blank" rel="noreferrer">J. W. Barrett, H. Garcke &amp; R. Nürnberg, Parametric finite element approximations of curvature-driven interface evolutions.</a></li>
+            <li><a href="https://arxiv.org/abs/2608.07244" target="_blank" rel="noreferrer">Q. Zhao, A constrained Onsager variational framework for parametric approximations of Willmore and Helfrich flows (2026).</a></li>
           </ol>
         </div>
       </div>
@@ -136,6 +163,6 @@
 
   <div class="sr-only" id="announcer" aria-live="polite"></div>
   <noscript><div class="noscript">需要启用 JavaScript 才能载入有限元轨迹。</div></noscript>
-  <script src="app.js?v=20260827-bgn-1"></script>
+  <script src="app.js?v=20260827-flow-7"></script>
 </body>
 </html>

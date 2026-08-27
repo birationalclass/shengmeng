@@ -8,6 +8,24 @@
   const loadingText = document.querySelector("#loadingText");
   const errorPanel = document.querySelector("#errorPanel");
   const solverStatus = document.querySelector("#solverStatus");
+  const caseButtons = document.querySelector("#caseButtons");
+  const caseCaption = document.querySelector("#caseCaption");
+  const caseSourceNote = document.querySelector("#caseSourceNote");
+  const activeCaseTitle = document.querySelector("#activeCaseTitle");
+  const topologyNote = document.querySelector("#topologyNote");
+  const flowEyebrow = document.querySelector("#flowEyebrow");
+  const equationTag = document.querySelector("#equationTag");
+  const equationFirst = document.querySelector("#equationFirst");
+  const equationSecond = document.querySelector("#equationSecond");
+  const equationBody = document.querySelector("#equationBody");
+  const equationNote = document.querySelector("#equationNote");
+  const energyMetricLabel = document.querySelector("#energyMetricLabel");
+  const volumeMetricLabel = document.querySelector("#volumeMetricLabel");
+  const energyLegend = document.querySelector("#energyLegend");
+  const volumeLegend = document.querySelector("#volumeLegend");
+  const energyCheckNote = document.querySelector("#energyCheckNote");
+  const volumeCheckNote = document.querySelector("#volumeCheckNote");
+  const densitySelect = document.querySelector("#densitySelect");
   const timeline = document.querySelector("#timeline");
   const timelineOutput = document.querySelector("#timelineOutput");
   const playButton = document.querySelector("#playButton");
@@ -38,6 +56,11 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const chartContext = chart.getContext("2d");
   const state = {
+    manifest: null,
+    activeCase: null,
+    activeVariant: null,
+    density: "standard",
+    loadSerial: 0,
     trajectory: null,
     diagnostics: null,
     gl: null,
@@ -48,6 +71,7 @@
     showMesh: true,
     lastTimestamp: 0,
     playDuration: 12,
+    initialHoldRemaining: 0,
     dirty: true,
     raf: 0,
     width: 0,
@@ -162,6 +186,7 @@
       in vec3 v_normal;
       in vec3 v_view;
       in vec3 v_position;
+      uniform float u_helfrich;
       out vec4 outColor;
       void main() {
         vec3 n = normalize(v_normal);
@@ -176,6 +201,12 @@
         vec3 mint = vec3(0.30, 0.84, 0.68);
         vec3 cyan = vec3(0.18, 0.63, 0.68);
         vec3 gold = vec3(0.86, 0.66, 0.30);
+        if (u_helfrich > 0.5) {
+          deep = vec3(0.20, 0.018, 0.026);
+          mint = vec3(0.96, 0.24, 0.25);
+          cyan = vec3(0.68, 0.055, 0.085);
+          gold = vec3(1.00, 0.58, 0.28);
+        }
         vec3 color = mix(deep, mix(cyan, mint, heightTone), 0.20 + 0.72 * diffuse);
         color += fill * vec3(0.018, 0.07, 0.06);
         color += rim * mix(mint, gold, 0.18) * 0.42;
@@ -189,8 +220,9 @@
       void main() { gl_Position = u_viewProjection * vec4(a_position, 1.0); }
     `, `#version 300 es
       precision highp float;
+      uniform vec4 u_lineColor;
       out vec4 outColor;
-      void main() { outColor = vec4(0.34, 0.92, 0.80, 0.67); }
+      void main() { outColor = u_lineColor; }
     `);
 
     const vao = gl.createVertexArray();
@@ -228,13 +260,31 @@
       lineVao,
       positionBuffer,
       normalBuffer,
+      triangleBuffer,
+      edgeBuffer,
       edgeIndices,
       surfaceVP: gl.getUniformLocation(surfaceProgram, "u_viewProjection"),
       surfaceEye: gl.getUniformLocation(surfaceProgram, "u_eye"),
+      surfaceHelfrich: gl.getUniformLocation(surfaceProgram, "u_helfrich"),
       lineVP: gl.getUniformLocation(lineProgram, "u_viewProjection"),
+      lineColor: gl.getUniformLocation(lineProgram, "u_lineColor"),
       interpolated: new Float32Array(trajectory.vertexCount * 3),
       normals: new Float32Array(trajectory.vertexCount * 3)
     };
+  }
+
+  function disposeRenderer() {
+    if (!state.renderer || !state.gl) return;
+    const gl = state.gl;
+    gl.deleteProgram(state.renderer.surfaceProgram);
+    gl.deleteProgram(state.renderer.lineProgram);
+    gl.deleteVertexArray(state.renderer.vao);
+    gl.deleteVertexArray(state.renderer.lineVao);
+    gl.deleteBuffer(state.renderer.positionBuffer);
+    gl.deleteBuffer(state.renderer.normalBuffer);
+    gl.deleteBuffer(state.renderer.triangleBuffer);
+    gl.deleteBuffer(state.renderer.edgeBuffer);
+    state.renderer = null;
   }
 
   function perspective(fieldOfView, aspect, near, far) {
@@ -352,16 +402,23 @@
   function updateReadouts(frameState) {
     const data = state.trajectory;
     const time = data.totalTime * state.progress;
-    const area = interpolatedMetric(frameState, 0);
+    const primary = interpolatedMetric(frameState, 0);
     const volume = interpolatedMetric(frameState, 1);
     const quality = interpolatedMetric(frameState, 2);
-    const initialArea = metricAt(0, 0);
+    const geometricArea = interpolatedMetric(frameState, 3);
+    const initialPrimary = metricAt(0, 0);
     const initialVolume = metricAt(0, 1);
+    const initialGeometricArea = metricAt(0, 3);
     const volumeError = volume / initialVolume - 1;
+    const areaError = geometricArea / initialGeometricArea - 1;
+    const isHelfrich = state.activeCase && state.activeCase.flow === "helfrich";
     readouts.frame.textContent = `m = ${Math.round(frameState.framePosition)}`;
     readouts.time.textContent = time.toFixed(5);
-    readouts.area.textContent = (area / initialArea).toFixed(6);
-    readouts.volume.textContent = `${volumeError >= 0 ? "+" : "−"}${Math.abs(volumeError * 100).toFixed(3)}%`;
+    readouts.area.textContent = (primary / initialPrimary).toFixed(6);
+    const signedPercent = (value) => `${value >= 0 ? "+" : "−"}${Math.abs(value * 100).toFixed(3)}%`;
+    readouts.volume.textContent = isHelfrich
+      ? `A ${signedPercent(areaError)} · V ${signedPercent(volumeError)}`
+      : signedPercent(volumeError);
     readouts.quality.textContent = quality.toFixed(4);
     timeline.value = state.progress.toFixed(4);
     const percent = Math.round(state.progress * 100);
@@ -369,7 +426,8 @@
     timeline.style.setProperty("--range-progress", `${percent}%`);
     canvas.dataset.frame = String(Math.round(frameState.framePosition));
     canvas.dataset.time = time.toFixed(8);
-    canvas.dataset.areaRatio = (area / initialArea).toFixed(9);
+    canvas.dataset.areaRatio = (geometricArea / initialGeometricArea).toFixed(9);
+    canvas.dataset.energyRatio = (primary / initialPrimary).toFixed(9);
     canvas.dataset.volumeError = volumeError.toExponential(6);
     canvas.dataset.minimumQuality = quality.toFixed(8);
     canvas.dataset.cameraYaw = state.camera.yaw.toFixed(6);
@@ -394,11 +452,17 @@
     const padding = 5;
     const plotWidth = rect.width - padding * 2;
     const plotHeight = rect.height - padding * 2;
-    const initialArea = metricAt(0, 0);
-    const finalArea = metricAt(data.frameCount - 1, 0) / initialArea;
+    const initialPrimary = metricAt(0, 0);
+    const finalPrimary = metricAt(data.frameCount - 1, 0) / initialPrimary;
     let maximumVolumeError = 0;
+    let maximumAreaError = 0;
     const initialVolume = metricAt(0, 1);
-    for (let frame = 0; frame < data.frameCount; frame += 1) maximumVolumeError = Math.max(maximumVolumeError, Math.abs(metricAt(frame, 1) / initialVolume - 1));
+    const initialGeometricArea = metricAt(0, 3);
+    const isHelfrich = state.activeCase && state.activeCase.flow === "helfrich";
+    for (let frame = 0; frame < data.frameCount; frame += 1) {
+      maximumVolumeError = Math.max(maximumVolumeError, Math.abs(metricAt(frame, 1) / initialVolume - 1));
+      maximumAreaError = Math.max(maximumAreaError, Math.abs(metricAt(frame, 3) / initialGeometricArea - 1));
+    }
     const drawSeries = (color, valueAt) => {
       context.beginPath();
       for (let frame = 0; frame < data.frameCount; frame += 1) {
@@ -410,8 +474,11 @@
       context.lineWidth = 1.15;
       context.stroke();
     };
-    drawSeries("rgba(125,235,201,.88)", (frame) => (1 - metricAt(frame, 0) / initialArea) / Math.max(1e-9, 1 - finalArea));
+    drawSeries("rgba(125,235,201,.88)", (frame) => (1 - metricAt(frame, 0) / initialPrimary) / Math.max(1e-9, 1 - finalPrimary));
     drawSeries("rgba(221,179,91,.8)", (frame) => Math.abs(metricAt(frame, 1) / initialVolume - 1) / Math.max(1e-9, maximumVolumeError));
+    if (isHelfrich) {
+      drawSeries("rgba(238,140,105,.78)", (frame) => Math.abs(metricAt(frame, 3) / initialGeometricArea - 1) / Math.max(1e-9, maximumAreaError));
+    }
     const markerX = padding + state.progress * plotWidth;
     context.beginPath();
     context.moveTo(markerX, 2);
@@ -442,6 +509,7 @@
     gl.useProgram(renderer.surfaceProgram);
     gl.uniformMatrix4fv(renderer.surfaceVP, false, matrices.viewProjection);
     gl.uniform3fv(renderer.surfaceEye, matrices.eye);
+    gl.uniform1f(renderer.surfaceHelfrich, state.activeCase && state.activeCase.flow === "helfrich" ? 1 : 0);
     gl.bindVertexArray(renderer.vao);
     gl.enable(gl.POLYGON_OFFSET_FILL);
     gl.polygonOffset(1, 1);
@@ -451,6 +519,9 @@
     if (state.showMesh) {
       gl.useProgram(renderer.lineProgram);
       gl.uniformMatrix4fv(renderer.lineVP, false, matrices.viewProjection);
+      gl.uniform4fv(renderer.lineColor, state.activeCase && state.activeCase.flow === "helfrich"
+        ? [1.0, 0.43, 0.42, 0.72]
+        : [0.34, 0.92, 0.80, 0.67]);
       gl.bindVertexArray(renderer.lineVao);
       gl.drawElements(gl.LINES, renderer.edgeIndices.length, gl.UNSIGNED_INT, 0);
     }
@@ -464,9 +535,16 @@
     const elapsed = state.lastTimestamp ? Math.min(.1, (timestamp - state.lastTimestamp) / 1000) : 0;
     state.lastTimestamp = timestamp;
     if (state.playing && state.trajectory) {
-      state.progress += elapsed * state.speed / state.playDuration;
-      if (state.progress > 1) state.progress %= 1;
-      state.dirty = true;
+      if (state.initialHoldRemaining > 0) {
+        state.initialHoldRemaining = Math.max(0, state.initialHoldRemaining - elapsed);
+      } else {
+        state.progress += elapsed * state.speed / state.playDuration;
+        if (state.progress > 1) {
+          state.progress %= 1;
+          state.initialHoldRemaining = state.activeCase ? (state.activeCase.holdSeconds || 0) : 0;
+        }
+        state.dirty = true;
+      }
     }
     if (state.dirty) render();
     state.raf = window.requestAnimationFrame(tick);
@@ -480,6 +558,9 @@
 
   function setPlaying(playing, shouldAnnounce = true) {
     state.playing = Boolean(playing);
+    if (state.playing && state.progress === 0 && state.initialHoldRemaining <= 0) {
+      state.initialHoldRemaining = state.activeCase ? (state.activeCase.holdSeconds || 0) : 0;
+    }
     state.lastTimestamp = 0;
     updatePlaybackUI();
     if (shouldAnnounce) announce(state.playing ? "动画继续" : "动画暂停");
@@ -487,6 +568,7 @@
 
   function setProgress(progress, pause = false) {
     state.progress = clamp(progress, 0, 1);
+    state.initialHoldRemaining = 0;
     if (pause) setPlaying(false, false);
     state.dirty = true;
   }
@@ -499,9 +581,10 @@
   }
 
   function resetCamera() {
-    state.camera.yaw = -0.72;
-    state.camera.pitch = 0.34;
-    state.camera.distance = 5.5;
+    const preset = state.activeCase && state.activeCase.camera ? state.activeCase.camera : { yaw: -0.72, pitch: 0.34, distance: 5.5 };
+    state.camera.yaw = preset.yaw;
+    state.camera.pitch = preset.pitch;
+    state.camera.distance = preset.distance;
     state.camera.target = [0, 0, 0];
     state.dirty = true;
   }
@@ -614,6 +697,10 @@
   resetButton.addEventListener("click", resetAll);
   fullscreenButton.addEventListener("click", toggleFullscreen);
   speedSelect.addEventListener("change", () => { state.speed = Number(speedSelect.value) || 1; announce(`播放速度 ${state.speed} 倍`); });
+  densitySelect.addEventListener("change", () => {
+    state.density = densitySelect.value;
+    if (state.activeCase) loadCase(state.activeCase, false, true);
+  });
   timeline.addEventListener("input", () => setProgress(Number(timeline.value), true));
   keysButton.addEventListener("click", () => {
     if (typeof keyGuide.showModal === "function") keyGuide.showModal();
@@ -639,44 +726,185 @@
   function installDiagnostics() {
     const data = state.trajectory;
     const diagnostics = state.diagnostics;
-    solverStatus.textContent = `${data.vertexCount} 顶点 · ${data.triangleCount.toLocaleString()} 三角形 · τ=${data.dt.toExponential(0)}`;
-    verification.area.textContent = diagnostics.surface_area_monotone ? `${data.frameCount - 1} 步表面积全部下降` : "表面积检查失败";
-    verification.orientation.textContent = diagnostics.orientation_preserved ? "所有三角形定向保持" : "检测到三角形翻转";
-    verification.volume.textContent = `最大体积漂移 ${(diagnostics.max_relative_volume_drift * 100).toFixed(3)}%`;
+    const isWillmore = state.activeCase.flow === "willmore";
+    const isHelfrich = state.activeCase.flow === "helfrich";
+    const isBendingFlow = isWillmore || isHelfrich;
+    const computedSteps = diagnostics.computed_step_count || (data.frameCount - 1);
+    solverStatus.textContent = `${data.vertexCount} 顶点 · ${data.triangleCount.toLocaleString()} 三角形 · τ=${diagnostics.time_step.toExponential(0)}`;
+    verification.area.textContent = isBendingFlow
+      ? (diagnostics.energy_monotone_saved_frames ? `${computedSteps} 步弯曲能下降` : "弯曲能检查失败")
+      : (diagnostics.surface_area_monotone ? `${computedSteps} 步表面积全部下降` : "表面积检查失败");
+    verification.orientation.textContent = diagnostics.orientation_preserved ? `亏格 g=${diagnostics.genus} · 无退化` : "检测到网格退化";
+    const volumeChange = isBendingFlow ? diagnostics.maximum_relative_volume_change : diagnostics.max_relative_volume_drift;
+    const areaChange = diagnostics.maximum_relative_area_change || 0;
+    verification.volume.textContent = isHelfrich
+      ? `面积 / 体积最大变化 ${(areaChange * 100).toFixed(3)}% / ${(volumeChange * 100).toFixed(3)}%`
+      : `${isWillmore ? "最大体积变化" : "最大体积漂移"} ${(volumeChange * 100).toFixed(3)}%`;
+    energyCheckNote.innerHTML = isBendingFlow
+      ? `保存的 ${data.frameCount} 个数值状态中，离散 Willmore 能从 ${diagnostics.initial_energy.toFixed(3)} 降至 ${diagnostics.final_energy.toFixed(3)}。`
+      : "每一步验证 <i>W</i><sup>m+1</sup> + τ‖∇<sub>S</sub><i>H</i><sup>m+1</sup>‖² ≤ <i>W</i><sup>m</sup>。";
+    volumeCheckNote.textContent = isHelfrich
+      ? "每一步用两个全局乘子约束面积与体积的一阶变化；页面显示全离散时间步留下的实际误差。"
+      : (isWillmore
+        ? "无约束 Willmore 能具有尺度不变性，并不保持体积；这里如实显示相对体积变化。"
+        : "页面显示实际体积漂移；精确保体积需要 Bao–Zhao 2021 的半隐式法向。");
+    topologyNote.textContent = `${data.triangleCount.toLocaleString()} 个三角形在 ${data.frameCount} 个状态中保持同一连通关系；Euler 示性数 χ=${diagnostics.euler_characteristic}，未执行重网格。`;
     canvas.dataset.renderer = "webgl2";
-    canvas.dataset.scheme = "bgn-pfem-surface-diffusion";
+    canvas.dataset.scheme = isHelfrich ? "constrained-relaxed-mdr-pfem-helfrich" : (isWillmore ? "relaxed-mdr-pfem-willmore" : "bgn-pfem-surface-diffusion");
+    canvas.dataset.case = state.activeCase.slug;
+    canvas.dataset.meshDensity = state.density;
+    canvas.dataset.genus = String(diagnostics.genus);
     canvas.dataset.vertexCount = String(data.vertexCount);
     canvas.dataset.triangleCount = String(data.triangleCount);
     canvas.dataset.frameCount = String(data.frameCount);
     canvas.dataset.timeStep = String(data.dt);
-    canvas.dataset.surfaceAreaMonotone = String(diagnostics.surface_area_monotone);
-    canvas.dataset.energyInequalitySatisfied = String(diagnostics.energy_inequality_satisfied);
+    canvas.dataset.surfaceAreaMonotone = String(Boolean(diagnostics.surface_area_monotone));
+    canvas.dataset.energyMonotone = String(isBendingFlow ? diagnostics.energy_monotone_saved_frames : diagnostics.surface_area_monotone);
+    canvas.dataset.energyInequalitySatisfied = String(isBendingFlow
+      ? Boolean(diagnostics.energy_monotone_saved_frames)
+      : Boolean(diagnostics.energy_inequality_satisfied));
     canvas.dataset.orientationPreserved = String(diagnostics.orientation_preserved);
-    canvas.dataset.maximumAreaIncrease = String(diagnostics.max_area_increase);
-    canvas.dataset.maximumVolumeDrift = String(diagnostics.max_relative_volume_drift);
+    canvas.dataset.maximumAreaIncrease = String(diagnostics.max_area_increase || 0);
+    canvas.dataset.maximumVolumeDrift = String(volumeChange);
+    canvas.dataset.maximumAreaDrift = String(areaChange);
     canvas.dataset.minimumTriangleQuality = String(diagnostics.minimum_triangle_quality);
   }
 
-  async function initialise() {
+  function renderCaseButtons() {
+    caseButtons.replaceChildren();
+    for (const item of state.manifest.cases) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.case = item.slug;
+      button.textContent = item.shortName;
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => loadCase(item));
+      caseButtons.append(button);
+    }
+  }
+
+  function updateCaseUI() {
+    const item = state.activeCase;
+    activeCaseTitle.textContent = item.name;
+    caseCaption.textContent = item.caption;
+    caseSourceNote.textContent = `${item.sourceNote}${state.density === "fine" ? " · 原三角形共享边中点 1→4 剖分" : " · 原网格"}`;
+    densitySelect.value = state.density;
+    const availableVariants = item.variants || { standard: true };
+    for (const option of densitySelect.options) option.disabled = !availableVariants[option.value];
+    densitySelect.disabled = false;
+    if (item.flow === "helfrich") {
+      equationBody.classList.add("is-willmore");
+      flowEyebrow.textContent = "CONSTRAINED RELAXED-MDR · HELFRICH FLOW";
+      equationTag.textContent = "AREA + VOLUME";
+      equationFirst.innerHTML = "<i>E</i> = ½∫<sub>Γ</sub> (<i>H</i> − κ̄)²";
+      equationSecond.innerHTML = "d<i>A</i>/d<i>t</i> = 0 · d<i>V</i>/d<i>t</i> = 0";
+      equationNote.textContent = "两个全局乘子约束面积和体积；弯曲能下降把扁椭球推向双凹红细胞形。";
+      energyMetricLabel.innerHTML = "Helfrich 能 <i>E/E₀</i>";
+      volumeMetricLabel.textContent = "面积 / 体积误差";
+      energyLegend.textContent = "弯曲能";
+      volumeLegend.textContent = "体积（金）· 面积（红）";
+    } else if (item.flow === "willmore") {
+      equationBody.classList.add("is-willmore");
+      flowEyebrow.textContent = "RELAXED-MDR · PARAMETRIC FEM · WILLMORE FLOW";
+      equationTag.textContent = "L² GRADIENT";
+      equationFirst.innerHTML = "<i>V</i> = −Δ<sub>S</sub><i>H</i> − <i>H</i>|∇<sub>S</sub><b>ν</b>|² + ½<i>H</i>³";
+      equationSecond.innerHTML = "<i>E</i> = ½∫<sub>Γ</sub> <i>H</i>²";
+      equationNote.textContent = "Willmore 法向速度降低弯曲能；relaxed-MDR 独立选择切向网格速度。";
+      energyMetricLabel.innerHTML = "Willmore 能 <i>E/E₀</i>";
+      volumeMetricLabel.textContent = "体积变化";
+      energyLegend.textContent = "弯曲能";
+      volumeLegend.textContent = "体积变化";
+    } else {
+      equationBody.classList.remove("is-willmore");
+      flowEyebrow.textContent = "BGN · PARAMETRIC FEM · SURFACE DIFFUSION";
+      equationTag.textContent = "H⁻¹ GRADIENT";
+      equationFirst.innerHTML = "<i>V</i> = −Δ<sub>S</sub><i>H</i>";
+      equationSecond.innerHTML = "<i>H</i><b>n</b> = Δ<sub>S</sub> id";
+      equationNote.textContent = "法向速度决定几何演化；弱形式自动产生切向网格运动。";
+      energyMetricLabel.innerHTML = "表面积 <i>W/W₀</i>";
+      volumeMetricLabel.textContent = "体积误差";
+      energyLegend.textContent = "面积";
+      volumeLegend.textContent = "体积误差";
+    }
+    for (const button of caseButtons.querySelectorAll("button")) {
+      button.disabled = false;
+      button.setAttribute("aria-pressed", String(button.dataset.case === item.slug));
+    }
+  }
+
+  async function loadCase(item, initial = false, force = false) {
+    if (!item || (!initial && !force && state.activeCase && state.activeCase.slug === item.slug)) return;
+    const variants = item.variants || { standard: { trajectory: item.trajectory, diagnostics: item.diagnostics, bytes: item.bytes } };
+    if (!variants[state.density]) state.density = variants.standard ? "standard" : Object.keys(variants)[0];
+    const variant = variants[state.density];
+    const serial = ++state.loadSerial;
+    for (const button of caseButtons.querySelectorAll("button")) button.disabled = true;
+    densitySelect.disabled = true;
+    loadingPanel.hidden = false;
+    loadingPanel.classList.remove("is-hidden");
+    errorPanel.hidden = true;
+    loadingText.textContent = `载入「${item.shortName}」${state.density === "fine" ? "三角形 1→4" : "原"}网格与 ${Math.max(1, Math.round(variant.bytes / 1048576))} MB 轨迹…`;
     try {
-      loadingText.textContent = "载入 1,200 个三角形与 321 个有限元状态…";
-      const [trajectoryResponse, diagnosticsResponse] = await Promise.all([fetch("trajectory.bin"), fetch("trajectory-diagnostics.json")]);
+      const [trajectoryResponse, diagnosticsResponse] = await Promise.all([fetch(variant.trajectory), fetch(variant.diagnostics)]);
       if (!trajectoryResponse.ok) throw new Error(`轨迹载入失败（HTTP ${trajectoryResponse.status}）`);
       if (!diagnosticsResponse.ok) throw new Error(`诊断数据载入失败（HTTP ${diagnosticsResponse.status}）`);
       const [buffer, diagnostics] = await Promise.all([trajectoryResponse.arrayBuffer(), diagnosticsResponse.json()]);
+      if (serial !== state.loadSerial) return;
+      disposeRenderer();
       state.trajectory = parseTrajectory(buffer);
       state.diagnostics = diagnostics;
-      const gl = canvas.getContext("webgl2", { antialias: true, alpha: true, depth: true, powerPreference: "high-performance" });
-      if (!gl) throw new Error("当前浏览器或设备没有可用的 WebGL 2 上下文");
-      state.gl = gl;
-      state.renderer = createRenderer(gl, state.trajectory);
+      state.activeCase = item;
+      state.activeVariant = variant;
+      state.renderer = createRenderer(state.gl, state.trajectory);
+      const loadUrl = new URL(window.location.href);
+      const hasRequestedProgress = initial && loadUrl.searchParams.has("t");
+      const requestedProgress = hasRequestedProgress ? Number(loadUrl.searchParams.get("t")) : 0;
+      state.progress = Number.isFinite(requestedProgress) ? clamp(requestedProgress, 0, 1) : 0;
+      state.playDuration = item.playDuration || 12;
+      state.initialHoldRemaining = state.progress === 0 ? (item.holdSeconds || 0) : 0;
+      if (hasRequestedProgress) state.playing = false;
+      resetCamera();
+      updateCaseUI();
       installDiagnostics();
       resize();
       updatePlaybackUI();
       render();
       loadingPanel.classList.add("is-hidden");
       window.setTimeout(() => { loadingPanel.hidden = true; }, 450);
-      announce("BGN 有限元轨迹已载入");
+      const url = new URL(window.location.href);
+      url.searchParams.set("case", item.slug);
+      if (state.density === "fine") url.searchParams.set("mesh", "fine"); else url.searchParams.delete("mesh");
+      if (!initial) url.searchParams.delete("t");
+      window.history.replaceState({}, "", url);
+      announce(`${item.shortName}的参数有限元轨迹已载入`);
+    } catch (error) {
+      if (serial !== state.loadSerial) return;
+      loadingPanel.hidden = true;
+      errorPanel.hidden = false;
+      errorPanel.textContent = `无法启动可视化：${error.message}`;
+      solverStatus.textContent = "载入失败";
+      for (const button of caseButtons.querySelectorAll("button")) button.disabled = false;
+      densitySelect.disabled = false;
+      console.error(error);
+    }
+  }
+
+  async function initialise() {
+    try {
+      loadingText.textContent = "读取曲面扩散案例清单…";
+      const manifestResponse = await fetch("trajectories/manifest.json");
+      if (!manifestResponse.ok) throw new Error(`案例清单载入失败（HTTP ${manifestResponse.status}）`);
+      state.manifest = await manifestResponse.json();
+      renderCaseButtons();
+      const gl = canvas.getContext("webgl2", { antialias: true, alpha: true, depth: true, powerPreference: "high-performance" });
+      if (!gl) throw new Error("当前浏览器或设备没有可用的 WebGL 2 上下文");
+      state.gl = gl;
+      const requested = new URL(window.location.href).searchParams.get("case");
+      state.density = new URL(window.location.href).searchParams.get("mesh") === "fine" ? "fine" : "standard";
+      const item = state.manifest.cases.find((candidate) => candidate.slug === requested)
+        || state.manifest.cases.find((candidate) => candidate.slug === state.manifest.default)
+        || state.manifest.cases[0];
+      await loadCase(item, true);
     } catch (error) {
       loadingPanel.hidden = true;
       errorPanel.hidden = false;
