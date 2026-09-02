@@ -15,7 +15,7 @@ const translations = {
     gameTitle: "疆域争锋", gameText: "从零构建的即时领地策略游戏：连通路径、多建筑指挥、进化式箭塔能力、自适应电脑军团与八张战役地图。", gameFeature1: "拖拽指挥与框选", gameFeature2: "五类建筑自由改建", gameFeature3: "本地账号与持久化战役进度", launchGame: "进入游戏",
     endlessTitle: "无尽", endlessText: "一款完全零付费的无尽防线游戏：塑造可靠牌池、发现跨元素循环，并用主动集火抵御持续增强的外星潮。", endlessFeature1: "六种决定流派的卡牌组合", endlessFeature2: "加权选牌与每波一次免费刷新", endlessFeature3: "主动集火与极限火力时机", launchEndless: "进入《无尽》",
     agentText: "在局部控制、资源压力与网络变化中的决策。", proceduralText: "生成有意义差异的规则，而非装饰性的随机。", learningText: "通过交互理解网络、动力系统与优化。",
-    toolsTitle: "实用软件，即下即用。", toolsLead: "这里将持续收录专注、轻量的桌面工具与实验项目。", dlsgraphText: "最多五人使用的轻量级加密通信房间。WebRTC 会优先直连，穿透失败时自动使用房主电脑创建的可选 TURN 主机。", dlsgraphFeature1: "直连 / TURN 路径状态与实时 RTT", dlsgraphFeature2: "AES-256-GCM 应用层加密", dlsgraphFeature3: "内置适用于复杂 NAT 的 Windows TURN 主机", downloadWindows: "下载 Windows 版",
+    toolsTitle: "实用软件，即下即用。", toolsLead: "这里将持续收录专注、轻量的桌面工具与实验项目。", dlsgraphText: "最多五人使用的轻量级加密通信房间。创建者复制邀请，其他电脑粘贴即可加入；服务器与中继参数会随邀请自动导入。", dlsgraphFeature1: "创建 / 加入双入口与完整邀请", dlsgraphFeature2: "AES-256-GCM 应用层加密", dlsgraphFeature3: "直连 / TURN 路径状态与实时 RTT", downloadWindows: "下载 Windows 版",
     publicationsTitle: "代表论文。", publicationsLead: "涵盖极化自同态、算术动力系统、双有理几何与紧复空间。", downloadCV: "下载简历", allPublications: "查看完整论文列表",
     journeyTitle: "学术经历。", ecnuRole: "数学科学学院教授 / 青年研究员", kiasRole: "研究员", mpiRole: "博士后研究员", nusRole: "数学博士 · 导师：张德祺",
     contactTitle: "一起探索一个困难问题。", contactLead: "欢迎就数学研究、学生培养以及数学、AI 与游戏的跨学科想法交流。", office: "办公室", institution: "单位", address: "地址", footerText: "数学 · 人工智能 · 游戏",
