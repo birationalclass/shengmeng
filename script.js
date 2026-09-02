@@ -1,6 +1,6 @@
 const translations = {
   zh: {
-    navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navContact: "联系",
+    navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
     heroKicker: "华东师范大学 · 研究员", heroLine1: "结构、动力，", heroLine2: "与智能发现。",
     heroIntro: "我研究代数几何与动力系统，并探索人工智能如何辅助数学推理、拓展战略世界与交互体验。", exploreResearch: "探索研究", playGame: "试玩《无尽》", openVisualLab: "可视化实验室", openPascal: "探索帕斯卡定理",
     coreFields: "2023 年以来的近期论文", phdYear: "新加坡国立大学数学博士", openQuestions: "开放问题，严谨方法", newFrontiers: "数学与游戏的新边界",
@@ -15,6 +15,7 @@ const translations = {
     gameTitle: "疆域争锋", gameText: "从零构建的即时领地策略游戏：连通路径、多建筑指挥、进化式箭塔能力、自适应电脑军团与八张战役地图。", gameFeature1: "拖拽指挥与框选", gameFeature2: "五类建筑自由改建", gameFeature3: "本地账号与持久化战役进度", launchGame: "进入游戏",
     endlessTitle: "无尽", endlessText: "一款完全零付费的无尽防线游戏：塑造可靠牌池、发现跨元素循环，并用主动集火抵御持续增强的外星潮。", endlessFeature1: "六种决定流派的卡牌组合", endlessFeature2: "加权选牌与每波一次免费刷新", endlessFeature3: "主动集火与极限火力时机", launchEndless: "进入《无尽》",
     agentText: "在局部控制、资源压力与网络变化中的决策。", proceduralText: "生成有意义差异的规则，而非装饰性的随机。", learningText: "通过交互理解网络、动力系统与优化。",
+    toolsTitle: "实用软件，即下即用。", toolsLead: "这里将持续收录专注、轻量的桌面工具与实验项目。", dlsgraphText: "最多五人使用的轻量级加密通信房间。聊天消息仅通过 WebRTC 数据通道直连传输，服务器只负责让成员建立联系。", dlsgraphFeature1: "逐成员 P2P 状态与实时 RTT", dlsgraphFeature2: "AES-256-GCM 应用层加密", dlsgraphFeature3: "不使用高延时消息中继", downloadWindows: "下载 Windows 版",
     publicationsTitle: "代表论文。", publicationsLead: "涵盖极化自同态、算术动力系统、双有理几何与紧复空间。", downloadCV: "下载简历", allPublications: "查看完整论文列表",
     journeyTitle: "学术经历。", ecnuRole: "数学科学学院教授 / 青年研究员", kiasRole: "研究员", mpiRole: "博士后研究员", nusRole: "数学博士 · 导师：张德祺",
     contactTitle: "一起探索一个困难问题。", contactLead: "欢迎就数学研究、学生培养以及数学、AI 与游戏的跨学科想法交流。", office: "办公室", institution: "单位", address: "地址", footerText: "数学 · 人工智能 · 游戏",
