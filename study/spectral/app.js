@@ -3,7 +3,7 @@ import {lessons,convergence,initial,totalCohomology} from './content.js';
 import {translatePage,language,toggleLanguage} from './language.js';
 const $=s=>document.querySelector(s),raw=String.raw;
 const state={module:'initial',cover:true,buildStep:0,annotationStep:0,pinned:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,playing:false};
-let timer=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
+let diagramResizeObserver=null;let timer=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
@@ -14,7 +14,7 @@ const stepCount=()=>({initial:initial.length,learn:lessons.length-1,lab:scene().
 let layout={dx:125,dy:79};
 const xy=(p,q)=>[105+p*layout.dx,435-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
-function label(x,y,tex,w=116,h=38,small=false){return `<foreignObject x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml" class="math-label ${small?'small-label':''}">${math(tex)}</div></foreignObject>`;}
+function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:52*len/Math.abs(dx),dy===0?Infinity:21*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} ${state.playing?'animating':''}" d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex)out+=label((x1+x2)/2+(dx===0?26:0),(y1+y2)/2+(dy===0?-17:0),tex,68,24,true);return out;}
 function svgStart(maxP=5,maxQ=5){layout={dx:625/maxP,dy:370/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae']])out+=`<marker id="arrow-${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="8" refY="5" orient="auto"><path d="M2,1.75 L8,5 L2,8.25" fill="none" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></marker>`;out+='</defs>';for(let p=0;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=0;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-52}" y="${y-21}" width="104" height="42" rx="8"/>${label(x,y,tex,103,38,tex.length>28)}</g>`;}
@@ -244,10 +244,10 @@ function fixedDiagram(){
 }
 function renderPersistentDiagram(){
  const host=$('#diagram'),holder=document.createElement('div');holder.innerHTML=fixedDiagram();const desired=holder.firstElementChild;
- if(!host.firstElementChild){host.append(desired);return;}
+ if(!host.firstElementChild){host.append(desired);syncDiagramLabels();observeDiagramSize();return;}
  const current=host.firstElementChild;
  for(const id of ['diagram-overlays','diagram-edges','diagram-terms'])syncGraphChildren(current.querySelector('#'+id),desired.querySelector('#'+id));
- current.querySelector('#graphTitle').textContent=desired.querySelector('#graphTitle').textContent;
+ current.querySelector('#graphTitle').textContent=desired.querySelector('#graphTitle').textContent;syncDiagramLabels();
 }
 function syncGraphChildren(target,source){
  if(target.innerHTML===source.innerHTML)return;
@@ -257,8 +257,8 @@ function syncGraphChildren(target,source){
    if(!old){target.append(next);continue;}
    for(const attr of [...old.attributes])if(!next.hasAttribute(attr.name))old.removeAttribute(attr.name);
    for(const attr of [...next.attributes])old.setAttribute(attr.name,attr.value);
-   if(old.querySelector('annotation')?.textContent!==next.querySelector('annotation')?.textContent){
-    const label=next.querySelector('foreignObject');old.querySelector('foreignObject').replaceWith(label);fadeGraphAddition(label);
+   if(old.querySelector('.math-anchor')?.dataset.tex!==next.querySelector('.math-anchor')?.dataset.tex){
+    const label=next.querySelector('.math-anchor');old.querySelector('.math-anchor').replaceWith(label);fadeGraphAddition(label);
    }
   }
  }else{
@@ -287,6 +287,27 @@ function setAnnotation(i){state.annotationStep=Math.max(0,Math.min(annotationCou
 function revealAnnotation(el){if(state.cover||isBuilding())return;const formula=el.closest('.formal-statement > .math-block');if(formula){const i=Number(formula.dataset.annotation);if(i>state.annotationStep)setAnnotation(i);}}
 
 function updateDiagramScope(){
- let el=$('.diagram-scope');if(!el){el=document.createElement('p');el.className='diagram-scope';$('#diagram').after(el);}
+ let el=$('.diagram-scope');if(!el){el=document.createElement('p');el.className='diagram-scope';$('#stage .legend').before(el);}
  el.textContent=['lab','trace','converge'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'固定坐标窗口：仅展示 0 至 5；窗口外的项不自动为零。';
+}
+
+// Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
+function syncDiagramLabels(){
+ const host=$('#diagram');let plane=host.querySelector('.diagram-label-plane');
+ if(!plane){plane=document.createElement('div');plane.className='diagram-label-plane';plane.setAttribute('aria-hidden','true');host.append(plane);}
+ const old=new Map([...plane.children].map(el=>[el.dataset.key,el]));
+ for(const anchor of host.querySelectorAll('svg .math-anchor')){
+  const d=anchor.dataset,key=[d.x,d.y,d.width,d.height].join(':'),el=old.get(key)||document.createElement('div');old.delete(key);
+  el.className='diagram-label'+(d.small==='true'?' small-label':'')+(anchor.closest('.diagram-caption')?' caption-label':'');el.dataset.key=key;
+  el.style.left=d.x+'px';el.style.top=d.y+'px';el.style.width=d.width+'px';el.style.height=d.height+'px';
+  el.style.opacity=(anchor.closest('.muted') ? .22 : 1)*(anchor.closest('.zero') ? .38 : 1)*(anchor.closest('.context-edge') ? .2 : 1);
+  const changed=el.dataset.tex!==d.tex;if(changed){el.innerHTML=math(d.tex);el.dataset.tex=d.tex;}
+  if(!el.isConnected)plane.append(el);if(changed)fadeGraphAddition(el);
+ }
+ for(const el of old.values())el.remove();
+}
+function observeDiagramSize(){
+ const viewport=$('.diagram-viewport'),host=$('#diagram');
+ const fit=()=>{const rect=viewport.getBoundingClientRect(),width=Math.max(0,Math.min(rect.width,rect.height*840/525));host.style.width=width+'px';host.style.height=width*525/840+'px';host.style.setProperty('--diagram-scale',String(width/840));};
+ diagramResizeObserver=new ResizeObserver(fit);diagramResizeObserver.observe(viewport);fit();
 }

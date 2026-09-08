@@ -35,3 +35,6 @@ J. McCleary, *A User's Guide to Spectral Sequences*, 2nd ed., CUP, 2001: Definit
 
 
 The lecture keeps a single 0–5 coordinate window mounted across all sections. Axes and node groups retain their identity and position; definitions add overlays and update notation on that grid. Hover/focus/click on formulas or the next-step button advances annotations; there is no automatic playback or separate “show diagram” step. Taking cohomology updates E₀ to E₁ and then E₂ in place and removes the previous page's differential. The general window does not assume terms outside it vanish; the finite examples remain explicit computations. Arrow tips have fixed SVG user-space dimensions, with fine strokes and no pulsing glow.
+
+
+Responsive rendering uses the measured diagram viewport with a shared 840×525 coordinate plane. SVG shapes and a separate HTML/KaTeX label layer scale together; labels are not embedded in SVG foreignObject. A ResizeObserver fits the diagram to the pane without subtracting a fixed constant from browser height. Compact and narrow layouts preserve a readable minimum size; very short windows can scroll. Chromium and WebKit checks cover continuous resizing, nine viewport sizes, label registration, language switching and fullscreen.
