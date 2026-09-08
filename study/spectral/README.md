@@ -1,6 +1,8 @@
 # Spectral Sequences — Study Atlas AT·002
 
-Four connected modules: construction and column filtration; exact computation; a representative and its corrections; bounded convergence and naturality.
+Three main sections: initial data (K, δ₁, δ₂, D); induced structures (total cohomology, filtration and pages, exact examples, representative corrections); meaning of convergence (boundedness, comparison map, kernel proof and naturality).
+
+Chinese/English switching preserves the mathematical notation and current interaction state. The selected language persists locally. The initial data diagrams use symbolic indices and ellipses, with no differential drawn across an omitted sequence of columns or rows; finite examples expand every nonzero space.
 
 ## Conventions
 
@@ -15,11 +17,11 @@ Four connected modules: construction and column filtration; exact computation; a
 `algebra.js`: BigInt rational arithmetic, exact row reduction, filtered cycles/boundaries, quotient representatives and induced differential matrices. The three finite examples explicitly specify all nonzero generators and arrows. Other terms really are zero. In the conceptual view, the grid is only a window and is labelled accordingly.
 
 `app.js`: accessible SVG + KaTeX labels; module navigation, animation, parameter controls, exact matrix inspector.
-`content.js`: mathematical exposition. `vendor/`: local KaTeX 0.16.22, its fonts and MIT license. No CDN or API is required. `spectral.pdf`: accompanying lecture note.
+`content.js`: mathematical exposition. `language.js`: English translations, interface strings and persistent language selection. `vendor/`: local KaTeX 0.16.22, its fonts and MIT license. No CDN or API is required. `spectral.pdf`: accompanying lecture note.
 
 ## Validation
 
-Run `node test.mjs` (Node with BigInt support). It checks the double complex identities, each dᵣ², dim Eᵣ₊₁=dim ker−dim im, stable graded filtration dimensions, total cohomology, expected nonzero d₂/d₃, and negative indices. Browser QA covers all steps, all finite examples, direction highlights, play/pause, λ, the empty filtration boundary, keyboard-accessible nodes, the study entry, and mobile overflow.
+Run `node test.mjs` (Node with BigInt support). It checks the double complex identities, each dᵣ², dim Eᵣ₊₁=dim ker−dim im, stable graded filtration dimensions, total cohomology, expected nonzero d₂/d₃, and negative indices. Browser QA covers all steps, all finite examples, direction highlights, play/pause, λ, the empty filtration boundary, keyboard-accessible nodes, the study entry, and mobile overflow. Bilingual QA traverses every step in both languages, checks for untranslated Chinese text in English mode, and verifies that switching languages leaves the formula sources unchanged.
 
 ## Sources
 

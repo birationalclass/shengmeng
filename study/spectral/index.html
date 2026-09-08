@@ -5,18 +5,20 @@
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
 <meta name="theme-color" content="#091b22"><title>Spectral Sequences · Sheng Meng Study Atlas</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="style.css?v=1">
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=1"></script>
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="style.css?v=2">
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=2"></script>
 </head>
 <body>
-<header class="header"><a class="brand" href="../"><span class="brand-symbol">S</span><span>SHENG MENG<small>STUDY ATLAS / AT·002</small></span></a><nav><a href="../">学习目录</a><a href="../../visuals/chaos/">Chaos Lab ↗</a><a href="spectral.pdf">讲义 PDF ↗</a><button id="referenceButton">记号与文献</button></nav></header>
+<header class="header"><a class="brand" href="../"><span class="brand-symbol">S</span><span>SHENG MENG<small>STUDY ATLAS / AT·002</small></span></a><nav><a href="../">学习目录</a><a href="../../visuals/chaos/">Chaos Lab ↗</a><a href="spectral.pdf">讲义 PDF ↗</a><button id="languageButton" aria-label="Switch to English">English</button><button id="referenceButton">记号与文献</button></nav></header>
 <main>
 <section class="intro"><div><p class="eyebrow">ALGEBRAIC TOPOLOGY · INTERACTIVE CHAPTER</p><h1>Spectral Sequences<span>从双复形到收敛</span></h1><p>沿一条对角线理解滤过，跟随一个代表元理解微分，最后抵达上同调。</p></div><div class="hypothesis"><span class="status-dot"></span> 第一象限 · 上同调型<div data-tex="K^{p,q}=0\quad(p<0\ \text{or}\ q<0)"></div><small>固定记号：δ₁ 向右，δ₂ 向上，D = δ₁ + δ₂</small></div></section>
-<nav class="module-dock" aria-label="学习子模块">
-<button data-module="learn" aria-pressed="true"><span>01</span><div>构造与滤过<small>DEFINITIONS → PAGES</small></div></button>
-<button data-module="lab" aria-pressed="false"><span>02</span><div>计算实验室<small>EXACT COHOMOLOGY</small></div></button>
-<button data-module="trace" aria-pressed="false"><span>03</span><div>追踪一个类<small>REPRESENTATIVES</small></div></button>
-<button data-module="converge" aria-pressed="false"><span>04</span><div>收敛与证明<small>THE ASSOCIATED GRADED</small></div></button>
+<nav class="module-dock" aria-label="学习主界面">
+<button data-section="initial" aria-pressed="true"><span>01</span><div>初始信息<small>K · δ₁ · δ₂ · D</small></div></button>
+<button data-section="induced" aria-pressed="false"><span>02</span><div>诱导信息<small>COHOMOLOGY · Eᵣ</small></div></button>
+<button data-section="converge" aria-pressed="false"><span>03</span><div>收敛的意义<small>E∞ · Gr H</small></div></button>
+</nav>
+<nav id="submodules" class="submodule-dock" aria-label="诱导信息子模块" hidden>
+<button data-module="learn">滤过与各页</button><button data-module="lab">精确例子</button><button data-module="trace">代表元追踪</button>
 </nav>
 <section class="workspace" aria-label="谱序列交互工作区">
 <div class="visual-column">

@@ -15,3 +15,11 @@ export const convergence=[
  {title:'核的计算：为什么是同构',tag:'THE CONVERGENCE THEOREM',f:[t`[a]_H\in F^{p+1}H^n\iff a=b+Dc`,t`b\in F^{p+1}C^n,\quad Db=0,\quad c\in C^{n-1}`,t`\ker\big(Z_\infty^{p,q}\to\operatorname{Gr}_F^pH^n\big)`,t`=Z_\infty^{p+1,q-1}+B_\infty^{p,q}`,t`E_\infty^{p,q}\xrightarrow[\theta^{p,q}]{\sim}\operatorname{Gr}_F^pH^{p+q}`],text:'核恰好就是定义 E∞ 时除去的子空间。第一同构定理完成证明，而不只是比较两边维数。',note:'这一步才把“页的稳定”与“总上同调”联系起来。表中的维数核对是例子的验证，不替代一般证明。',proof:'若 a 的类位于 Fᵖ⁺¹Hⁿ，则可取更高滤过中的闭链 b 表示同一个类，于是 a−b=Dc。反过来这样的分解显然映到零。'},
  {title:'读出商空间，不擅自拆开 H',tag:'WHAT CONVERGENCE MEANS',f:[t`E_r^{p,q}\Longrightarrow H^{p+q}(C,D)`,t`0\to F^{p+1}H^n\to F^pH^n\to E_\infty^{p,n-p}\to0`],text:'⇒ 表示稳定页识别为滤过商，并不是一条从 Eᵣ 到 H 的线性映射。向量空间的短正合列可以分裂，但这里没有指定典范分裂。',note:'区分：固定位置稳定；从某页起所有微分为零（退化）；稳定项识别为目标滤过商（收敛）。',proof:'自然性：若 TD=DT 且 T 保持 F，则 Tᵣ[a]ᵣ=[Ta]ᵣ。θ 两侧的作用都由同一个 Ta 给出，故 θ 与诱导作用交换。一般的 H 上的线性映射并不自动给出各页的作用。'}
 ];
+
+export const initial=[
+ {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K^{p,q}\quad(p,q\ge0)`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。省略号不代表零，也不跨越省略号画单个微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
+ {...lessons[0],title:'结构映射：δ₁ 与 δ₂',tag:'02 / TWO DIFFERENTIALS',note:'横向与纵向按钮分别高亮 δ₁ 和 δ₂。在一个相邻小方格中，两条复合路径相加为零。'},
+ {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'图用省略号压缩一般对角线（n≥3），并显示 δ₁、δ₂ 对 K¹ⁿ⁻¹ 的作用；具体有限例子会展开全部空间。'}
+];
+
+export const totalCohomology={title:'先取总复形的上同调',tag:'COHOMOLOGY / THE TARGET',f:[t`H^n(C,D):=\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}`,t`Da=0,\quad [a]_H=[a+Db]_H`],text:'D²=0 保证每个边界都是闭链，所以这个商空间有定义。Hⁿ 是最终要理解的对象；接下来借助滤过构造 Eᵣ，逐步读出 Hⁿ 的关联分次。',note:'嵌套区域只表示子空间包含关系，不表示维数或选定的补空间。这里的 Hⁿ 是总上同调；逐列上同调将在 E₁ 中出现。',proof:'如果 a=Db，那么 Da=D²b=0，故 im D ⊆ ker D。两个闭链给出同一个上同调类，当且仅当它们相差一个边界。'};
