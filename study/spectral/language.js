@@ -91,3 +91,7 @@ add('⛶ 退出全屏','⛶ Exit fullscreen');add('退出全屏（Esc）','Exit 
 ].forEach(([a,b])=>add(a,b));
 
 add('虚线：中间项省略','Dashed: intermediate terms omitted');add('延续箭头：省略中间项，不表示一次微分','Continuation: intermediate terms omitted, not a single differential');
+[
+['横向微分 δ₁','Horizontal differential δ₁'],['纵向微分 δ₂','Vertical differential δ₂'],['各方向的平方为零','Each differential squares to zero'],['两个方向反交换','The two directions anticommute'],
+['第一指标增加 1，第二指标保持不变。固定 q，沿同一行向右。','Increase the first index by 1 and keep the second fixed: move right in the row with fixed q.'],['第二指标增加 1，第一指标保持不变。固定 p，沿同一列向上。','Increase the second index by 1 and keep the first fixed: move up in the column with fixed p.'],['沿同一方向连续作用两次，复合映射为零。因此每行、每列分别是上链复形。','Composing twice in either direction gives zero. Each row and each column is therefore a cochain complex.'],['右上方小方格的两条复合路径有相同的终点，但对应映射互为相反数。','The two composite paths around the upper-right square have the same target, and their maps are negatives of one another.'],['从双分次向量空间出发，依次加入两种微分及其相容关系。','Start with the bigraded vector space; add the two differentials and their compatibility relations in turn.'],['悬停或点击左侧的下一项，逐步添加图中的元素。也可使用下方按钮。','Hover over or click the next item on the left to build the diagram. You can also use the buttons below.'],['空间','Spaces'],['平方为零','Square zero'],['反交换','Anticommutation'],['添加 δ₁ →','Add δ₁ →'],['添加 δ₂ →','Add δ₂ →'],['加入平方为零 →','Add square-zero identities →'],['加入反交换关系 →','Add anticommutation →']
+].forEach(([a,b])=>add(a,b));
