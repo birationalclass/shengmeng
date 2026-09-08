@@ -99,7 +99,7 @@ add('设 Kᵖᑫ 为 ℚ-向量空间，且当 p<0 或 q<0 时为零。依次加
 
 [
  ['坐标图','Coordinate grid'],['图上标注 →','Add annotation →'],
- ['固定坐标窗口：仅展示 0 至 5；窗口外的项不自动为零。','Fixed coordinate window: indices 0 to 5; terms outside are not assumed zero.'],
+ ['固定坐标窗口：仅展示 0 至 4；窗口外的项不自动为零。','Fixed coordinate window: indices 0 to 4; terms outside are not assumed zero.'],
  ['有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。','Finite example: nodes are vector spaces on the selected page; unlisted generators are zero.'],
  ['在固定坐标图上选择 n，显示整条总次数对角线；引入 D 后同时标出下一条对角线。','Choose n on the fixed grid to show the full total-degree diagonal; introducing D also marks the next diagonal.'],
  ['在原坐标图上沿对角线观察总微分。这里的 Hⁿ 是总上同调，不能把它放进某一个 Kᵖᑫ 节点。','Follow the total differential along diagonals on the same grid. Total cohomology Hⁿ does not occupy a single Kᵖᑫ node.'],

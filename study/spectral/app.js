@@ -2,7 +2,8 @@ import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra
 import {lessons,convergence,initial,totalCohomology} from './content.js';
 import {translatePage,language,toggleLanguage} from './language.js';
 const $=s=>document.querySelector(s),raw=String.raw;
-const state={module:'initial',cover:true,buildStep:0,annotationStep:0,pinned:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,playing:false};
+const GRID_MAX=4;
+const state={module:'initial',cover:true,buildStep:0,annotationStep:0,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,playing:false};
 let diagramResizeObserver=null;let timer=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -16,9 +17,17 @@ const xy=(p,q)=>[105+p*layout.dx,435-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
 function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:52*len/Math.abs(dx),dy===0?Infinity:21*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} ${state.playing?'animating':''}" d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex)out+=label((x1+x2)/2+(dx===0?26:0),(y1+y2)/2+(dy===0?-17:0),tex,68,24,true);return out;}
-function svgStart(maxP=5,maxQ=5){layout={dx:625/maxP,dy:370/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae']])out+=`<marker id="arrow-${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="8" refY="5" orient="auto"><path d="M2,1.75 L8,5 L2,8.25" fill="none" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></marker>`;out+='</defs>';for(let p=0;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=0;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
+function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){layout={dx:625/maxP,dy:370/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae']])out+=`<marker id="arrow-${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="8" refY="5" orient="auto"><path d="M2,1.75 L8,5 L2,8.25" fill="none" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></marker>`;out+='</defs>';for(let p=0;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=0;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-52}" y="${y-21}" width="104" height="42" rx="8"/>${label(x,y,tex,103,38,tex.length>28)}</g>`;}
-function diagonal(n,p,box=true,showLabel=true){if(p>n)return '';let [x1,y1]=xy(p,n-p),[x2,y2]=xy(n,0);let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy);if(!len){dx=125;dy=79;len=Math.hypot(dx,dy);}const ux=dx/len,uy=dy/len,vx=-uy,vy=ux;let points=[[-55,-32],[len===Math.hypot(125,79)&&p===n?55:len+55,-32],[len===Math.hypot(125,79)&&p===n?55:len+55,32],[-55,32]].map(([a,b])=>`${x1+ux*a+vx*b},${y1+uy*a+vy*b}`).join(' ');let out=box?`<polygon data-concept="filtration" class="diag-box" points="${points}"/>`:'';out+=`<path class="diag" d="M${xy(0,n).join(',')} L${xy(n,0).join(',')}"/>`;if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;}
+function diagonal(n,p,box=true,showLabel=true){
+ const first=Math.max(0,p,n-GRID_MAX),last=Math.min(n,GRID_MAX);if(first>last)return '';
+ const [x1,y1]=xy(first,n-first),[x2,y2]=xy(last,n-last),length=Math.hypot(x2-x1,y2-y1),angleLength=length||Math.hypot(layout.dx,layout.dy);
+ const ux=(length?x2-x1:layout.dx)/angleLength,uy=(length?y2-y1:layout.dy)/angleLength;
+ const points=[[-55,-32],[length+55,-32],[length+55,32],[-55,32]].map(([a,b])=>`${x1+ux*a-uy*b},${y1+uy*a+ux*b}`).join(' ');
+ let out=box?`<polygon data-concept="filtration" class="diag-box" points="${points}"/>`:'';
+ const lineStart=Math.max(0,n-GRID_MAX);out+=`<path class="diag" d="M${xy(lineStart,n-lineStart).join(',')} L${xy(last,n-last).join(',')}"/>`;
+ if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
+}
 const formulas=(fs,concepts=[])=>fs.map((t,i)=>block(t,concepts[i]||'')).join('');
 function companion(item){if(isBuilding()){buildCompanion(item);return;}const meta=statementMeta();$('#sceneKicker').textContent=sectionName();$('#sceneTitle').textContent=state.module==='initial'?'Initial data':state.module==='converge'?'Convergence':state.module==='lab'?'Examples':state.module==='trace'?'Representatives':'Induced structures';$('#explanation').innerHTML=`<article class="formal-statement"><div class="statement-heading"><span>${meta.kind}</span><span class="statement-number">${meta.number}</span></div><h3>${meta.name||item.title}</h3>${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts)}</article><div class="slide-supplement"><p>${item.text}</p><details><summary>展开数学理由</summary><p>${item.proof}</p></details></div>`;$('#sceneNote').textContent=item.note;}
 function labCompanion(){let c=scene(),r=state.r;let stable=r>=c.maxP+1;companion({title:stable?`E${r}：已经稳定`:`第 ${r} 页 · ${examples[state.example].name}`,tag:'EXACT RATIONAL COMPUTATION',f:[r===0?raw`E_0^{p,q}=\operatorname{Gr}_F^pC^{p+q}\cong K^{p,q}`:raw`E_${r}^{p,q}=\frac{Z_${r}^{p,q}}{Z_{${r-1}}^{p+1,q-1}+B_{${r-1}}^{p,q}}`,raw`d_${r}:E_${r}^{p,q}\to E_${r}^{${shifted('p',r)},${shifted('q',1-r)}}`],text:examples[state.example].description+' 点击任意节点查看代表元、微分矩阵以及本位置的核和像。',note:'每个“下一页”从同一总复形的 Zᵣ、Bᵣ 商空间计算。上同调类使用 [a]ᵣ；所列基是计算选择，不是典范分裂。',proof:'计算全部在 ℚ 上进行，分数约分后精确运算。每页检验 dᵣ²=0，下一页维数等于本页核维数减去入射像维数，并独立计算总上同调。'});let summary='<table class="data-table"><tr><th>n</th><th>dim Hⁿ(C)</th><th>Σ dim E∞ᵖⁿ⁻ᵖ</th></tr>';for(let n=0;n<=c.maxN;n++){let H=c.cohomology(n).dim,sum=0;for(let p=0;p<=n;p++)sum+=c.page(c.maxP+2,p,n-p).dim;summary+=`<tr><td>${n}</td><td>${H}</td><td>${sum}</td></tr>`;}$('#explanation').insertAdjacentHTML('beforeend',summary+'</table><p class="badge">由总微分独立核对</p>');let data=c.ex.gens.map(g=>block(raw`${g.id}\in K^{${g.p},${g.q}}`)).join(''); for(let kind of ['h','v'])data+=c.ex[kind].map(([a,b,k])=>block(raw`\delta_${kind==='h'?1:2}${a}=${k===1?'':k===-1?'-':k}${b}`)).join(''); $('#explanation').insertAdjacentHTML('beforeend',`<details><summary>例子的全部生成元与微分</summary>${data}<p>每个列出的生成元为一个基向量；所有未列出的空间及微分值为零。</p></details>`);}
@@ -38,16 +47,16 @@ if(state.module==='lab'){html+=`<p>微分矩阵：列对应上面的源基，行
 function controls(){let html='';if(state.module==='initial'&&state.step===1||state.module==='learn'&&state.step===0)html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label>`;if(state.module==='converge'||(state.module==='learn'&&state.step>=1&&state.step<=2)){html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label><label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;}if(state.module==='initial'&&state.step>0){html+=`<div role="group" aria-label="突出箭头方向"><button data-direction="h" class="${state.direction==='h'?'active':''}" aria-pressed="${state.direction==='h'}">横向 δ₁</button> <button data-direction="v" class="${state.direction==='v'?'active':''}" aria-pressed="${state.direction==='v'}">纵向 δ₂</button> <button data-direction="both" class="${state.direction==='both'?'active':''}" aria-pressed="${state.direction==='both'}">两者</button></div>`;}if(state.module==='lab'||state.module==='converge'){html+=`<label>例子 <select id="exampleSelect">${Object.entries(examples).map(([k,e])=>`<option value="${k}" ${k===state.example?'selected':''}>${e.name}</option>`).join('')}</select></label>`;}if(state.module==='lab')html+=`<label>页数 r <input id="rRange" type="range" min="0" max="${scene().maxP+2}" value="${state.r}"><output>${state.r}</output></label>`;if(state.module==='trace')html+=`<label>代表元参数 λ <input id="lambdaRange" type="range" min="-2" max="2" value="${state.lambda}"><output>${state.lambda}</output></label><span>${math(raw`a_0=b+\lambda y`)}</span>`;let old=$('#speed')?.value;$('#controls').innerHTML=html;if(old&&$('#speed'))$('#speed').value=old;}
 function render(updateControls=true){if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge'){companion(convergence[state.step]);convergenceTable();}$('.inspector .mini-label').textContent=state.module==='initial'?'图示与记号':state.module==='learn'&&state.step===0?'闭链与边界':'点击图中的项，查看其含义';$('.legend').innerHTML=state.module==='initial'?'<span><i class="h"></i>横向 δ₁</span><span><i class="v"></i>纵向 δ₂</span>'+ (state.step===1?'<span><i class="degree"></i>选中的总次数</span>':''):state.module==='learn'&&state.step===0?'<span><i class="degree"></i>总微分 D</span>':'<span><i class="h"></i>横向 δ₁ / d₁</span><span><i class="v"></i>纵向 δ₂ / d₀</span><span><i class="degree"></i>选中的总次数</span>';$('#panelIndex').textContent=String(state.step+1).padStart(2,'0');renderPersistentDiagram();if(updateControls)controls();inspect();$('#stepReadout').textContent=`${state.step+1} / ${stepCount()}`;$('#prev').disabled=state.step===0;$('#next').disabled=state.step===stepCount()-1;$('#stepTrack').innerHTML=Array.from({length:stepCount()},(_,i)=>`<button data-step="${i}" class="${i===state.step?'active':''}" aria-label="转到第 ${i+1} 步" ${i===state.step?'aria-current="step"':''}></button>`).join('');$('#play').textContent=state.playing?'Ⅱ 暂停':'▶ 播放步骤';$('#play').setAttribute('aria-pressed',state.playing);document.querySelectorAll('[data-module]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.module===state.module));const section=state.module==='initial'?'initial':state.module==='converge'?'converge':'induced';document.querySelectorAll('[data-section]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.section===section));$('#submodules').hidden=section!=='induced';renderSlideState();translatePage();window.spectralState={...state,language:language()};}
 function stop(){state.playing=false;clearTimeout(timer);timer=null;}
-function move(i){state.cover=false;state.buildStep=0;state.annotationStep=0;state.pinned=null;state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.selected=null;render();}
+function move(i){state.cover=false;state.buildStep=0;state.annotationStep=0;state.pinned=null;state.pinnedKey=null;state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.selected=null;render();}
 function schedule(){timer=setTimeout(()=>{if(state.step>=stepCount()-1){stop();render();return;}move(state.step+1);schedule();},Number($('#speed').value));}
-function moduleChange(m){stop();state.cover=false;state.buildStep=0;state.annotationStep=0;state.pinned=null;state.module=m;state.step=0;state.r=0;state.selected=null;if(m==='converge'){state.example='survive';state.n=1;state.p=1;}location.hash=m;render();}
+function moduleChange(m){stop();state.cover=false;state.buildStep=0;state.annotationStep=0;state.pinned=null;state.pinnedKey=null;state.module=m;state.step=0;state.r=0;state.selected=null;if(m==='converge'){state.example='survive';state.n=1;state.p=1;}location.hash=m;render();}
 $('#prev').onclick=()=>{stop();retreatSlide();};$('#next').onclick=()=>{stop();advanceSlide();};$('#play').onclick=()=>{};
-$('#beginSlides').onclick=()=>{state.cover=false;state.buildStep=0;state.annotationStep=0;render();};$('#coverButton').onclick=()=>{stop();state.module='initial';state.step=0;state.cover=true;state.buildStep=0;state.annotationStep=0;state.pinned=null;location.hash='title';render();};
+$('#beginSlides').onclick=()=>{state.cover=false;state.buildStep=0;state.annotationStep=0;render();};$('#coverButton').onclick=()=>{stop();state.module='initial';state.step=0;state.cover=true;state.buildStep=0;state.annotationStep=0;state.pinned=null;state.pinnedKey=null;location.hash='title';render();};
 document.querySelector('.module-dock').onclick=e=>{let b=e.target.closest('[data-section]');if(b)moduleChange(b.dataset.section==='induced'?'learn':b.dataset.section);};$('#submodules').onclick=e=>{let b=e.target.closest('[data-module]');if(b)moduleChange(b.dataset.module);};$('#stepTrack').onclick=e=>{let b=e.target.closest('[data-step]');if(e.target.closest('[data-cover]')){$('#coverButton').click();return;}if(b){stop();move(Number(b.dataset.step));}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;stop();const val=Number(e.target.value);if(id==='nRange'){state.n=val;state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(false);});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){stop();state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
 $('#controls').onclick=e=>{let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
-function selectNode(e){let b=e.target.closest('[data-p]');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const el=e.target.closest('[data-concept]');if(el)pinConcept(el.dataset.concept);selectNode(e);}};
+function selectNode(e){let b=e.target.closest('[data-p]');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const el=e.target.closest('[data-concept]');if(el)pinConcept(el.dataset.concept,interactiveConcept(el));selectNode(e);}};
 let fullscreenScroll=0;
 function syncFullscreenButton(){const active=document.body.classList.contains('study-fullscreen');$('#fullscreen').textContent=active?'⛶ 退出全屏':'⛶ 全屏';$('#fullscreen').title=active?'退出全屏（Esc）':'全屏显示工作区';$('#fullscreen').setAttribute('aria-pressed',String(active));translatePage();}
 function leaveFocusMode(){document.body.classList.remove('study-fullscreen');syncFullscreenButton();window.scrollTo(0,fullscreenScroll);$('#fullscreen').focus({preventScroll:true});}
@@ -68,7 +77,7 @@ render();
 
 function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}
 document.addEventListener('click',openFormula);
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept);}else openFormula(e);}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}else openFormula(e);}});
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
 
 function sectionName(){return state.module==='initial'?'01 / INITIAL DATA':state.module==='converge'?'03 / CONVERGENCE':'02 / INDUCED STRUCTURES';}
@@ -125,23 +134,49 @@ function retreatSlide(){
  if(state.module==='initial')$('#coverButton').click();else{moduleChange(state.module==='converge'?'learn':'initial');state.step=stepCount()-1;render();}
 }
 $('#fragmentTrack').onclick=e=>{const annotation=e.target.closest('[data-annotation]');if(annotation){setAnnotation(Number(annotation.dataset.annotation));return;}const build=e.target.closest('[data-build-to]');if(build){setBuildStep(Number(build.dataset.buildTo));return;}};
-function relatedConcept(a,b){if(a===b)return true;const groups=[['space','page','quotient'],['delta1','differential'],['delta2','differential'],['comparison','page'],['total','filtration']];return groups.some(g=>g.includes(a)&&g.includes(b));}
-function applyConcept(concept,hover=false){
- const graph=$('#diagram');graph.querySelectorAll('.concept-active').forEach(el=>el.classList.remove('concept-active'));
+function interactiveConcept(target){
+ if(!(target instanceof Element))return null;
+ if(target.closest('[data-zoom]'))return null;
+ return target.closest('.build-card')||target.closest('.formal-statement > .math-block[data-concept]')||target.closest('#diagram [data-concept]');
+}
+function interactionKey(el){
+ if(!el)return null;
+ if(el.matches('.build-card'))return `build:${el.dataset.build}`;
+ if(el.matches('.formal-statement > .math-block'))return `formula:${[...el.parentElement.querySelectorAll(':scope > .math-block')].indexOf(el)}`;
+ if(el.matches('.node'))return `node:${el.dataset.p}:${el.dataset.q}`;
+ return `diagram:${el.dataset.concept}`;
+}
+function applyConcept(concept,hover=false,source=null){
+ const graph=$('#diagram'),key=source?interactionKey(source):state.pinnedKey;
+ graph.querySelectorAll('.concept-active').forEach(el=>el.classList.remove('concept-active'));
  graph.classList.toggle('concept-focus',!!concept);graph.classList.toggle('hover-effect',!!concept&&hover);
- const targets={delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node-bg',page:'.node-bg,.comparison-node,.page-quotient',quotient:'.node:not(.muted) .node-bg',total:'.diag,.node:not(.muted) .node-bg,.continuation[data-concept=total]',filtration:'.diag-box,.node:not(.muted) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.cohomology-region,.node-bg',comparison:'.comparison-node,.comparison-arrow,.node:not(.zero) .node-bg,.diag-box'};
- if(concept)graph.querySelectorAll(targets[concept]||'[data-concept]').forEach(el=>el.classList.add('concept-active'));
- document.querySelectorAll('.formal-statement [data-concept]').forEach(el=>{el.classList.toggle('concept-linked',!!concept&&relatedConcept(concept,el.dataset.concept));el.setAttribute('aria-pressed',String(state.pinned===el.dataset.concept));});
+ const targets={delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node-bg',page:'.node-bg',quotient:'.node:not(.muted) .node-bg',total:'.diag,.node:not(.muted) .node-bg,.continuation[data-concept=total]',filtration:'.diag-box,.node:not(.muted) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.node:not(.muted) .node-bg',comparison:'.node:not(.zero) .node-bg,.diag-box'};
+ if(concept){
+  const nodeKey=key?.startsWith('node:')?key.split(':'):null;
+  const selector=nodeKey?`.node[data-p="${nodeKey[1]}"][data-q="${nodeKey[2]}"] .node-bg`:targets[concept];
+  if(selector)graph.querySelectorAll(selector).forEach(el=>el.classList.add('concept-active'));
+ }
+ // Left-hand emphasis belongs to one source item, never to a concept family.
+ document.querySelectorAll('.formal-statement .concept-linked').forEach(el=>el.classList.remove('concept-linked'));
+ document.querySelectorAll('.formal-statement [aria-pressed]').forEach(el=>el.setAttribute('aria-pressed','false'));
+ document.querySelectorAll('.formal-statement .build-card,.formal-statement > .math-block').forEach(el=>{
+  const ownKey=interactionKey(el);el.classList.toggle('concept-linked',!!concept&&ownKey===key);
+  el.setAttribute('aria-pressed',String(!!state.pinned&&ownKey===state.pinnedKey));
+ });
  $('#clearConcept').hidden=!state.pinned;
 }
-function pinConcept(concept){state.pinned=state.pinned===concept?null:concept;applyConcept(state.pinned,false);translatePage();window.spectralState={...state,language:language()};}
-function interactiveConcept(target){return target.closest('.formal-statement [data-concept],#diagram [data-concept]');}
-document.addEventListener('pointerover',e=>{const el=interactiveConcept(e.target);if(el&&!el.contains(e.relatedTarget)){revealBuildFor(el);revealAnnotation(el);applyConcept(el.dataset.concept,true);}});
-document.addEventListener('pointerout',e=>{const el=interactiveConcept(e.target);if(el&&!el.contains(e.relatedTarget))applyConcept(state.pinned,false);});
-document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if(el){revealBuildFor(el);revealAnnotation(el);applyConcept(el.dataset.concept,true);}});
-document.addEventListener('focusout',e=>{const el=interactiveConcept(e.target);if(el&&!el.contains(e.relatedTarget))applyConcept(state.pinned,false);});
-document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el&&!e.target.closest('[data-zoom]')){revealBuildFor(el);revealAnnotation(el);pinConcept(el.dataset.concept);}});
-$('#clearConcept').onclick=()=>{state.pinned=null;applyConcept(null);};
+function pinConcept(concept,source=null){
+ const key=interactionKey(source);const same=state.pinned===concept&&state.pinnedKey===key;
+ state.pinned=same?null:concept;state.pinnedKey=same?null:key;
+ applyConcept(state.pinned,false);translatePage();window.spectralState={...state,language:language()};
+}
+function enterConcept(el){revealBuildFor(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);}
+document.addEventListener('pointerover',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)enterConcept(el);});
+document.addEventListener('pointerout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)applyConcept(state.pinned,false);});
+document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if(el)enterConcept(el);});
+document.addEventListener('focusout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)applyConcept(state.pinned,false);});
+document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealBuildFor(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
+$('#clearConcept').onclick=()=>{state.pinned=null;state.pinnedKey=null;applyConcept(null);};
 
 function renderQuickCheck(){
  const checks={initial:['如果先作用 δ₂，再作用 δ₁，终点在哪里？','终点是 Kᵖ⁺¹ᑫ⁺¹。交换作用顺序仍到同一位置，但两条复合映射之和为零。'],learn:['dᵣ 的靶在哪里？总次数改变多少？','靶是 Eᵣᵖ⁺ʳ,ᑫ⁻ʳ⁺¹，因此总次数从 p+q 变成 p+q+1。'],converge:['稳定页是否给出了 Hⁿ 的典范直和分解？','没有。它典范地给出滤过商 GrᵖHⁿ。向量空间层面的分裂可以选择，但收敛本身不指定典范分裂。']};
@@ -178,21 +213,21 @@ function updateBuildDOM(){
  $('#prev').disabled=false;$('#clearConcept').hidden=!state.pinned;
  window.spectralState={...state,language:language()};
 }
-function setBuildStep(level){state.buildStep=Math.max(0,Math.min(4,level));state.pinned=null;renderPersistentDiagram();updateBuildDOM();applyConcept(null,false);translatePage();}
+function setBuildStep(level){state.buildStep=Math.max(0,Math.min(4,level));state.pinned=null;state.pinnedKey=null;renderPersistentDiagram();updateBuildDOM();applyConcept(null,false);translatePage();}
 function revealBuildFor(el){if(!isBuilding())return;const card=el.closest('.build-card');if(card){const level=Number(card.dataset.build);if(level===state.buildStep+1)setBuildStep(level);}}
 
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.build-card')){e.preventDefault();revealBuildFor(e.target);pinConcept(e.target.dataset.concept);}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.build-card')){e.preventDefault();revealBuildFor(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}});
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
 function fixedDiagram(){
  const n=state.n,p=state.p,a=state.annotationStep||0,m=state.module,s=state.step;
- let base=svgStart(5,5),end=base.indexOf('</defs>')+7;
+ let base=svgStart(GRID_MAX,GRID_MAX),end=base.indexOf('</defs>')+7;
  let frame=base.slice(end),edges='',terms='',overlay='',caption='',kind='K',h=false,v=false,filter=false,total=false,selected=false;
  const finite=['lab','trace','converge'].includes(m);
  if(m==='initial'){
   h=s>0||state.buildStep>=1;v=s>0||state.buildStep>=2;total=s===1&&a>=1;
   if(s===0&&state.buildStep>=3)caption=raw`\delta_1^2=\delta_2^2=0`;
-  if(s===0&&state.buildStep>=4){caption+=raw`,\qquad\delta_1\delta_2+\delta_2\delta_1=0`;const [x,y]=xy(2,2);overlay+=`<rect class="relation-square" x="${x-57}" y="${y-101}" width="239" height="126" rx="8"/>`;}
+  if(s===0&&state.buildStep>=4){caption+=raw`,\qquad\delta_1\delta_2+\delta_2\delta_1=0`;const [x,y]=xy(2,2);overlay+=`<rect class="relation-square" x="${x-57}" y="${y-layout.dy-25}" width="${layout.dx+114}" height="${layout.dy+50}" rx="8"/>`;}
   if(total)caption=raw`C^{${n}}=\bigoplus_{i=0}^{${n}}K^{i,${n}-i}`;
  }else if(m==='learn'){
   if(s<=2){h=true;v=true;total=a>0;filter=s>=1;selected=s===2&&a>=2;if(s===2&&a>=3){kind='E_0';h=false;v=false;}}
@@ -207,15 +242,15 @@ function fixedDiagram(){
  const showNext=(m==='initial'&&s===1&&a>=2)||(m==='learn'&&s===0&&a>=2)||(m==='learn'&&s===1&&a>=3);
  if(showNext)overlay+=`<g class="next-total">${diagonal(n+1,filter?p:0,false,false)}</g>`;
  if(!finite){
-  for(let i=0;i<=5;i++)for(let j=0;j<=5;j++){
+  for(let i=0;i<=GRID_MAX;i++)for(let j=0;j<=GRID_MAX;j++){
    let activeSource=!total||i+j===n&&(!filter||i>=p);
-   if(h&&i<5)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i+1,j),'h',true,j===2&&i===1?(kind==='E_1'?'d_1':'\\delta_1'):'')}</g>`;
-   if(v&&j<5)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i,j+1),'v',true,i===1&&j===2?(kind==='E_0'?'d_0':'\\delta_2'):'')}</g>`;
+   if(h&&i<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i+1,j),'h',true,j===2&&i===1?(kind==='E_1'?'d_1':'\\delta_1'):'')}</g>`;
+   if(v&&j<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i,j+1),'v',true,i===1&&j===2?(kind==='E_0'?'d_0':'\\delta_2'):'')}</g>`;
    let muted=selected?!(i===p&&i+j===n):total&&(i+j!==n||(filter&&i<p));
    terms+=node(i,j,`${kind}^{${i},${j}}`,{muted});
   }
   // Edge-of-window continuations have the same reveal and color rules as their direction.
-  for(let k=0;k<=5;k++){
+  for(let k=0;k<=GRID_MAX;k++){
    if(h)edges+=continuation(787,xy(0,k)[1],813,xy(0,k)[1],'delta1');
    if(v)edges+=continuation(xy(k,0)[0],43,xy(k,0)[0],17,'delta2');
   }
@@ -228,11 +263,11 @@ function fixedDiagram(){
   if(trace){
    for(let type of ['h','v'])for(let [src,tar,k]of c.ex[type]){let x=c.ex.gens.find(g=>g.id===src),y=c.ex.gens.find(g=>g.id===tar);edges+=line(...xy(x.p,x.q),...xy(y.p,y.q),type,true,`\\delta_${type==='h'?1:2}${k<0?'=-1':''}`);}
    if(s>=4)edges+=line(...xy(0,1),...xy(2,0),'r',true,'d_2');
-  }else if(m==='lab')for(let i=0;i<=5;i++)for(let j=0;j<=5;j++){
+  }else if(m==='lab')for(let i=0;i<=GRID_MAX;i++)for(let j=0;j<=GRID_MAX;j++){
    const src=c.page(r,i,j),tar=c.page(r,i+r,j-r+1);
    if(src.dim&&tar.dim&&rank(c.differential(r,i,j),tar.dim))edges+=line(...xy(i,j),...xy(i+r,j-r+1),r===0?'v':r===1?'h':'r',true,`d_${r}`);
   }
-  for(let i=0;i<=5;i++)for(let j=0;j<=5;j++){
+  for(let i=0;i<=GRID_MAX;i++)for(let j=0;j<=GRID_MAX;j++){
    let E=c.page(r,i,j),tex=E.dim===0?'0':`\\mathbb Q${E.dim===1?'':`^{${E.dim}}`}`,dim=E.dim;
    if(trace){let gs=c.ex.gens.filter(g=>g.p===i&&g.q===j);dim=gs.length;tex=dim?`\\langle ${gs.map(g=>g.id).join(',')}\\rangle`:'0';if(s===5){tex='0';dim=0;}}
    terms+=node(i,j,tex,{dim,muted:m==='converge'&&a>0&&(i+j!==n||i<p),active:m==='converge'&&s>=2&&a>0&&i===p&&j===n-p});
@@ -288,7 +323,7 @@ function revealAnnotation(el){if(state.cover||isBuilding())return;const formula=
 
 function updateDiagramScope(){
  let el=$('.diagram-scope');if(!el){el=document.createElement('p');el.className='diagram-scope';$('#stage .legend').before(el);}
- el.textContent=['lab','trace','converge'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'固定坐标窗口：仅展示 0 至 5；窗口外的项不自动为零。';
+ el.textContent=['lab','trace','converge'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'固定坐标窗口：仅展示 0 至 4；窗口外的项不自动为零。';
 }
 
 // Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
