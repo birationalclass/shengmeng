@@ -1,6 +1,6 @@
 const t=String.raw;
 export const lessons=[
- {title:'一个双复形，两种微分',tag:'STARTING DATA',f:[t`\delta_1:K^{p,q}\to K^{p+1,q}`,t`\delta_2:K^{p,q}\to K^{p,q+1}`,t`\delta_1^2=\delta_2^2=0`,t`\delta_1\delta_2+\delta_2\delta_1=0`],text:'每个节点是一个向量空间，不是一个向量。横箭头增加第一指标，纵箭头增加第二指标。两条复合路径互为相反数。',note:'使用方向按钮突出横箭头或纵箭头；播放时高亮箭头出现流动效果。图是示意窗口，窗口以外不自动取零。',proof:'对任意 a，两条路径给出 δ₂δ₁a 与 δ₁δ₂a。只有它们相加为零，总微分的平方才为零。'},
+ {title:'一个双复形，两种微分',tag:'STARTING DATA',f:[t`\delta_1:K^{p,q}\to K^{p+1,q}`,t`\delta_2:K^{p,q}\to K^{p,q+1}`,t`\delta_1^2=\delta_2^2=0`,t`\delta_1\delta_2+\delta_2\delta_1=0`],text:'每个节点是一个向量空间，不是一个向量。横箭头增加第一指标，纵箭头增加第二指标。两条复合路径互为相反数。',note:'使用方向按钮突出横箭头或纵箭头；悬停时对应的实线箭头会高亮。图是示意窗口，窗口以外不自动取零。',proof:'对任意 a，两条路径给出 δ₂δ₁a 与 δ₁δ₂a。只有它们相加为零，总微分的平方才为零。'},
  {title:'总次数：沿对角线直和',tag:'THE TOTAL COMPLEX',f:[t`C^n=\operatorname{Tot}^nK=\bigoplus_{i=0}^{n}K^{i,n-i}`,t`D=\delta_1+\delta_2`,t`D:C^n\longrightarrow C^{n+1}`],text:'第一象限条件使每条总次数对角线只有有限项。选择 n，查看 Cⁿ 的所有直和因子；两种微分都把总次数提高一。',note:'金色对角线表示总次数 i+j=n。箭头的像落在下一条对角线上。',proof:'D²=δ₁²+(δ₁δ₂+δ₂δ₁)+δ₂²=0，因此 (C,D) 是一个上链复形。'},
  {title:'滤过：对角线上的一段',tag:'THE COLUMN FILTRATION',f:[t`F^pC^n=\bigoplus_{i=p}^{n}K^{i,n-i}`,t`F^{p+1}C^n\subseteq F^pC^n`,t`D(F^pC^n)\subseteq F^pC^{n+1}`],text:'斜虚线框只圈住总次数 n 中第一指标不小于 p 的部分，终点是位置 (n,0) 的项。增加 p 就移去最左边的一项。',note:'p=n+1 时框内没有项，Fⁿ⁺¹Cⁿ=0；p=0 时得到整个 Cⁿ。右端 (n,0) 的项始终显示。',proof:'δ₁ 将 i 变成 i+1；δ₂ 保持 i。因此从 i≥p 出发，两者的像仍有第一指标 ≥p。注意 D 的像在总次数 n+1，未必留在原来的斜框内。'},
  {title:'E₀：先定义商，再识别',tag:'ASSOCIATED GRADED',f:[t`E_0^{p,q}:=\frac{F^pC^{p+q}}{F^{p+1}C^{p+q}}`,t`F^pC^{p+q}=K^{p,q}\oplus F^{p+1}C^{p+q}`,t`E_0^{p,q}\cong K^{p,q}`],text:'取商消去第一指标大于 p 的分量。这里的自然同构由取第 p 列分量给出，不需要选择补空间。',note:'亮起的单项表示自然识别后的 Kᵖᑫ；淡出的各项仍属于原双复形，并非被删除。这里 q=n−p。',proof:'投影 FᵖCⁿ→Kᵖⁿ⁻ᵖ 是满射，其核恰为 Fᵖ⁺¹Cⁿ。第一同构定理给出所示自然同构。'},
@@ -17,7 +17,7 @@ export const convergence=[
 ];
 
 export const initial=[
- {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K^{p,q}\quad(p,q\ge0)`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。省略号不代表零，也不跨越省略号画单个微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
+ {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。省略号不代表零，也不跨越省略号画单个微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
  {...lessons[0],title:'结构映射：δ₁ 与 δ₂',tag:'02 / TWO DIFFERENTIALS',note:'横向与纵向按钮分别高亮 δ₁ 和 δ₂。在一个相邻小方格中，两条复合路径相加为零。'},
  {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'图用省略号压缩一般对角线（n≥3），并显示 δ₁、δ₂ 对 K¹ⁿ⁻¹ 的作用；具体有限例子会展开全部空间。'}
 ];

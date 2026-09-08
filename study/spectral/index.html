@@ -3,15 +3,14 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
-<meta name="theme-color" content="#091b22"><title>Spectral Sequences · Sheng Meng Study Atlas</title>
+<meta name="theme-color" content="#091b22"><title>Spectral Sequence · Sheng Meng Study Atlas</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="style.css?v=3">
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=3"></script>
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="style.css?v=4"><link rel="stylesheet" href="slides.css?v=4">
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=4"></script>
 </head>
 <body>
 <header class="header"><a class="brand" href="../"><span class="brand-symbol">S</span><span>SHENG MENG<small>STUDY ATLAS / AT·002</small></span></a><nav><a href="../">学习目录</a><a href="../../visuals/chaos/">Chaos Lab ↗</a><a href="spectral.pdf">讲义 PDF ↗</a><button id="languageButton" aria-label="Switch to English">English</button><button id="referenceButton">记号与文献</button></nav></header>
 <main>
-<section class="intro"><div><p class="eyebrow">ALGEBRAIC TOPOLOGY · INTERACTIVE CHAPTER</p><h1>Spectral Sequences<span>从双复形到收敛</span></h1><p>沿一条对角线理解滤过，跟随一个代表元理解微分，最后抵达上同调。</p></div><div class="hypothesis"><span class="status-dot"></span> 第一象限 · 上同调型<div data-tex="K^{p,q}=0\quad(p<0\ \text{or}\ q<0)"></div><small>固定记号：δ₁ 向右，δ₂ 向上，D = δ₁ + δ₂</small></div></section>
 <nav class="module-dock" aria-label="学习主界面">
 <button data-section="initial" aria-pressed="true"><span>01</span><div>初始信息<small>K · δ₁ · δ₂ · D</small></div></button>
 <button data-section="induced" aria-pressed="false"><span>02</span><div>诱导信息<small>COHOMOLOGY · Eᵣ</small></div></button>
@@ -20,16 +19,21 @@
 <nav id="submodules" class="submodule-dock" aria-label="诱导信息子模块" hidden>
 <button data-module="learn">滤过与各页</button><button data-module="lab">精确例子</button><button data-module="trace">代表元追踪</button>
 </nav>
-<section class="workspace" aria-label="谱序列交互工作区">
-<div class="visual-column">
-<div class="stage-heading"><div><p id="sceneKicker"></p><h2 id="sceneTitle"></h2></div><button id="fullscreen" aria-pressed="false" title="全屏显示工作区">⛶ 全屏</button></div>
-<div class="stage" id="stage"><div id="diagram" aria-label="双复形与谱序列二维图"></div><div class="legend"><span><i class="h"></i>横向 δ₁ / d₁</span><span><i class="v"></i>纵向 δ₂ / d₀</span><span><i class="degree"></i>选中的总次数</span></div></div>
+<section class="workspace slide-deck" aria-label="谱序列交互工作区">
+<div class="stage-heading"><div><p id="sceneKicker"></p><h2 id="sceneTitle"></h2></div><div class="stage-actions"><button id="coverButton" title="返回标题页">标题页</button><button id="fullscreen" aria-pressed="false" title="全屏显示工作区">⛶ 全屏</button></div></div>
+<section id="slideCover" class="slide-cover" aria-label="标题页"><p class="cover-overline">ALGEBRAIC TOPOLOGY</p><h1>Spectral<br><em>Sequence</em></h1><div class="cover-rule"></div><p class="cover-credit">SHENG MENG</p><button id="beginSlides">开始阅读 <span>→</span></button></section>
+<div class="slide-body">
+<aside class="explanation"><div class="panel-label"><span>MATHEMATICAL STATEMENT</span><span id="panelIndex"></span></div><div id="explanation"></div></aside>
+<div class="visual-column" id="visualPanel">
+<div class="figure-heading"><span>DIAGRAM</span><button id="clearConcept" hidden>清除固定高亮 ×</button></div>
+<div class="stage" id="stage"><div id="diagram" aria-label="双复形与谱序列二维图"></div><div class="legend"></div></div>
+<p class="hover-hint">悬停符号，对照图示；点击可固定高亮。</p>
 <div class="controls" id="controls"></div>
-<div class="transport"><button id="prev" aria-label="上一步">← 上一步</button><button id="play" aria-pressed="false">▶ 播放步骤</button><button id="next" aria-label="下一步">下一步 →</button><span id="stepReadout" aria-live="polite"></span></div>
-<div class="step-track" id="stepTrack" aria-label="当前模块步骤"></div>
-<p class="scene-note" id="sceneNote"></p>
+<details id="quickCheck" class="quick-check" hidden></details>
+<details class="inspector"><summary class="mini-label">点击图中的项，查看其含义</summary><div id="inspector" aria-live="polite"></div></details>
 </div>
-<aside class="explanation"><div class="panel-label">MATHEMATICAL COMPANION <span id="panelIndex"></span></div><div id="explanation"></div><div class="inspector"><p class="mini-label">点击图中的项，查看其含义</p><div id="inspector" aria-live="polite"></div></div></aside>
+</div>
+<div class="slide-bottom"><p class="scene-note" id="sceneNote"></p><div class="transport"><button id="prev" aria-label="上一步">← 上一步</button><button id="play" hidden>▶ 播放步骤</button><div class="fragment-track" id="fragmentTrack" aria-label="本页展开状态"></div><button id="next" aria-label="下一步">下一步 →</button><span id="stepReadout" aria-live="polite"></span></div><div class="step-track" id="stepTrack" aria-label="当前模块步骤"></div></div>
 </section>
 <section class="reading"><div><p class="eyebrow">A MAP IS MORE THAN AN ARROW</p><h2>始终分清：对象、代表元、商空间。</h2><p>动画只用于突出当前运算。每一页的微分、核与像都有明确的来源；计算模块从同一个双复形逐页计算，不将“节点淡出”当作取商的定义。</p></div><div class="reading-links"><button id="proofJump">查看收敛证明 →</button><a href="spectral.pdf">阅读完整讲义 ↗</a><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=47" target="_blank" rel="noreferrer">McCleary · Theorem 2.6 ↗</a></div></section>
 </main>

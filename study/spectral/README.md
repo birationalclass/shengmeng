@@ -1,8 +1,14 @@
-# Spectral Sequences — Study Atlas AT·002
+# Spectral Sequence — Study Atlas AT·002
 
 Three main sections: initial data (K, δ₁, δ₂, D); induced structures (total cohomology, filtration and pages, exact examples, representative corrections); meaning of convergence (boundedness, comparison map, kernel proof and naturality).
 
 Chinese/English switching preserves the mathematical notation and current interaction state. The selected language persists locally. The initial data diagrams use symbolic indices and ellipses, with no differential drawn across an omitted sequence of columns or rows; finite examples expand every nonzero space.
+
+## Presentation and interaction
+
+The title slide leads into numbered Definition, Proposition, Lemma and Theorem blocks. Each content slide has three manual stages: statement, diagram, explanation. Arrow keys and Space advance stages. Hover or keyboard focus links a formula to its geometric object; clicking pins that highlight. All differential arrows remain solid. No automatic playback is exposed. Zoom controls are separate from pinning. Three closing questions offer optional self-checks. Fullscreen supports an embedded-browser fallback.
+
+`slides.css` controls the slide proportions, typography, reveal transitions, and user-triggered emphasis, including reduced-motion behavior. The cycles/boundaries diagram shows actual subspaces and restricted representatives; it does not label page quotients as cycles or boundaries.
 
 ## Conventions
 
@@ -21,7 +27,7 @@ Chinese/English switching preserves the mathematical notation and current intera
 
 ## Validation
 
-Run `node test.mjs` (Node with BigInt support). It checks the double complex identities, each dᵣ², dim Eᵣ₊₁=dim ker−dim im, stable graded filtration dimensions, total cohomology, expected nonzero d₂/d₃, and negative indices. Browser QA covers all steps, all finite examples, direction highlights, play/pause, λ, the empty filtration boundary, keyboard-accessible nodes, the study entry, and mobile overflow. Bilingual QA traverses every step in both languages, checks for untranslated Chinese text in English mode, and verifies that switching languages leaves the formula sources unchanged.
+Run `node test.mjs` (Node with BigInt support). It checks the double complex identities, each dᵣ², dim Eᵣ₊₁=dim ker−dim im, stable graded filtration dimensions, total cohomology, expected nonzero d₂/d₃, and negative indices. Browser QA covers all steps, all finite examples, direction highlights, manual reveal stages, hover/focus/pinning, solid arrow strokes, λ, the empty filtration boundary, keyboard-accessible nodes, the study entry, and mobile overflow. Bilingual QA traverses every step in both languages, checks for untranslated Chinese text in English mode, and verifies that switching languages leaves the formula sources unchanged.
 
 ## Sources
 
