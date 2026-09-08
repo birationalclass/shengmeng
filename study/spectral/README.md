@@ -11,10 +11,9 @@ A bilingual interactive course using a first-quadrant cochain double complex. Th
 | Anticommutation | Compare the two paths around one adjacent square. | The two composites sum to zero; they need not vanish separately. |
 | Cⁿ | A slanted dashed boundary groups the full degree-n diagonal. | The enclosed factors form a direct sum, denoted Cⁿ, not a new K-node. |
 | D | Domain and target diagonals have different colors. | D:Cⁿ→Cⁿ⁺¹ adds the two contributions to each component. |
-| Hⁿ | Locate degree n and the relevant incoming/outgoing degrees. | Bⁿ⊆Zⁿ⊆Cⁿ, followed by the quotient map **Zⁿ→Hⁿ**, not a map from all of Cⁿ. |
 | FᵖCⁿ | Select a segment of one diagonal; p>n gives the empty segment. | Inclusion and D:FᵖCⁿ→FᵖCⁿ⁺¹. |
 | E₀ | Identify the selected column; a second boundary locates the projection kernel. | Projection FᵖCⁿ→Kᵖⁿ⁻ᵖ has kernel Fᵖ⁺¹Cⁿ. |
-| E₁, E₂ | Nodes update in place; old differentials disappear after cohomology. | Identify incoming image and outgoing kernel, then quotient. d₁ acts on E₁, not on K. |
+| E₁, E₂ | Nodes update in place; old differentials disappear after cohomology. | Cohomology is treated as known. d₁ acts on E₁, not on K. |
 | Zᵣ, Bᵣ, Eᵣ, dᵣ | Distinguish total-complex conditions from page nodes. Adjustable r preserves displacement (r,1−r). | Preserve McCleary's precise denominator; use D on representatives before passing to the quotient. |
 | Convergence | Locate filtered cocycles, show the vanishing target condition, then highlight the relevant E∞ position. | Construct FᵖHⁿ by an image, send the same cocycle through the comparison, compute the kernel, and identify E∞ with Gr H. No canonical splitting is asserted. |
 
@@ -46,8 +45,22 @@ Eᵣᵖᑫ = Zᵣᵖᑫ / (Zᵣ₋₁ᵖ⁺¹,ᑫ⁻¹ + Bᵣ₋₁ᵖᑫ).
 
 J. McCleary, *A User's Guide to Spectral Sequences*, 2nd ed., CUP, 2001: Definitions 2.2–2.5, Theorem 2.6 and its proof, and Theorem 2.15. The accompanying `spectral.pdf` uses the same double-complex notation. This site is an independent exposition and implementation.
 
-Initial data presents the double complex and its total complex in one definition panel. Six local items contain names and mathematical expressions only; prose descriptions and the separate Total complex tab are removed. Hovering or pinning C or D updates the same diagonal groups and operation panel, without changing the main slide.
+Initial data presents the double complex and its total complex in one definition panel. Eight local items contain names and mathematical expressions only; prose descriptions and the separate Total complex tab are removed. Hovering or pinning C or D updates the same diagonal groups and operation panel, without changing the main slide.
 
-The initial assumptions use rendered K^{p,q} notation and omit a base-field symbol. The initial panel has no explanatory prose. Double complex, δ₁, δ₂, the square-zero identities, anticommutation, C^bullet and D are introduced in order, with corresponding graph layers synchronized to each reveal.
+The initial assumptions use rendered K^{p,q} notation and omit a base-field symbol. The initial panel has no explanatory prose. Double complex, δ₁, δ₂, the square-zero identities, anticommutation, C^bullet D, F and E₀ are introduced in order, with corresponding graph layers synchronized to each reveal.
 
 The coordinate axes intersect at the centre of the (0,0) node. Tick labels follow those axes, with negative indices to the left/below. An SVG mask suppresses axis strokes behind term labels, including dimmed zero terms.
+
+## Multi-page view and first-paint loading (v16)
+
+Initial data ends with the column filtration and E₀ = Gr F C ≅ K. Induced structures starts at E₁; no elementary cohomology tutorial intervenes. E₁ and E₂ are expressed directly as cohomology. The three modules remain on the same four-slide main path.
+
+`page-stack.js` projects (p,q,r) onto an oblique stack of four simultaneous pages. The page-index window advances in groups of four without an artificial final page. Each differential stays in its r-plane and has displacement (r,1-r,0). A selected bidegree is aligned across all layers. Dots represent spaces at bidegrees, not basis vectors or dimensions. A target outside the p,q window is not assumed zero; a negative q target is zero by the first-quadrant hypothesis. The third axis indexes pages; it is not a third cochain grading. No arrows join whole successive pages. Their relationship is E_(r+1) ≅ H(E_r,d_r). E∞ remains the stable object defined in the convergence proof, not a finite layer named infinity.
+
+Layer tabs, the page selector, and individual points support inspection. The 2D definition view remains available. Mobile layouts crop unused lateral space and use the page selector. Switching layers does not consume main slides or autoplay.
+
+Node surfaces are 68 by 38 diagram units (previously 88 by 42), with thin translucent borders and a quiet gradient inspired by msmath's GlassCardSurface. Differential endpoints and coordinate-axis masks use the same dimensions.
+
+`boot.js` controls a minimal first-paint loading overlay. Its progress marks resource initialization, math rendering, and font readiness. The page becomes visible only after all bundled KaTeX fonts load and two paint frames pass. A failed module or font load retains the overlay and exposes Reload. There is no arbitrary minimum loading duration; reduced-motion preferences disable fades.
+
+Chromium and WebKit checks exercise the eight initial reveals, the direct E₀→E₁ transition, 3D bidegrees, layer selection and page windows, 2D switching, bilingual controls, mobile rendering, true axis origin, compact label clipping, delayed font loads, and failed-resource recovery.
