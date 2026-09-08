@@ -96,3 +96,13 @@ add('虚线：中间项省略','Dashed: intermediate terms omitted');add('延续
 ].forEach(([a,b])=>add(a,b));
 
 add('设 Kᵖᑫ 为 ℚ-向量空间，且当 p<0 或 q<0 时为零。依次加入以下微分与关系。','Let Kᵖᑫ be ℚ-vector spaces, zero when p<0 or q<0. Add the following differentials and relations in turn.');
+
+[
+ ['坐标图','Coordinate grid'],['图上标注 →','Add annotation →'],
+ ['固定坐标窗口：仅展示 0 至 5；窗口外的项不自动为零。','Fixed coordinate window: indices 0 to 5; terms outside are not assumed zero.'],
+ ['有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。','Finite example: nodes are vector spaces on the selected page; unlisted generators are zero.'],
+ ['在固定坐标图上选择 n，显示整条总次数对角线；引入 D 后同时标出下一条对角线。','Choose n on the fixed grid to show the full total-degree diagonal; introducing D also marks the next diagonal.'],
+ ['在原坐标图上沿对角线观察总微分。这里的 Hⁿ 是总上同调，不能把它放进某一个 Kᵖᑫ 节点。','Follow the total differential along diagonals on the same grid. Total cohomology Hⁿ does not occupy a single Kᵖᑫ node.'],
+ ['先显示 E₀ 上的 d₀；求逐列上同调后，在原坐标位置更新为 E₁，d₀ 箭头随之收起。','First show d₀ on E₀; taking column cohomology updates the same positions to E₁ and removes the d₀ arrows.'],
+ ['先显示 E₁ 上的 d₁；求上同调后，在原坐标位置更新为 E₂。此时不再把 d₁ 画在 E₂ 节点之间。','First show d₁ on E₁; taking cohomology updates the same positions to E₂. The d₁ arrows no longer connect these E₂ nodes.']
+].forEach(([a,b])=>add(a,b));
