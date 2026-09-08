@@ -78,3 +78,5 @@ add('两次修正后出现第三微分；d₁、d₂ 均为零仍不代表退化
 items([totalCohomology],[['First take the cohomology of the total complex','D²=0 ensures that every boundary is a cocycle, so the quotient is defined. Hⁿ is the object we ultimately want to understand. We next construct Eᵣ using the filtration to recover the associated graded of Hⁿ.','Nested regions indicate subspace inclusions, not dimensions or chosen complements. Here Hⁿ is total cohomology; columnwise cohomology will appear in E₁.','If a=Db, then Da=D²b=0, so im D ⊆ ker D. Two cocycles determine the same cohomology class exactly when they differ by a boundary.']]);
 
 add('图示与记号','Schematic notation');add('闭链与边界','Cocycles and boundaries');add('总微分 D','Total differential D');
+
+add('⛶ 退出全屏','⛶ Exit fullscreen');add('退出全屏（Esc）','Exit fullscreen (Esc)');
