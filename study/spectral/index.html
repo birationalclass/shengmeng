@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
+<meta name="theme-color" content="#091b22"><title>Spectral Sequences · Sheng Meng Study Atlas</title>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="style.css?v=1">
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=1"></script>
+</head>
+<body>
+<header class="header"><a class="brand" href="../"><span class="brand-symbol">S</span><span>SHENG MENG<small>STUDY ATLAS / AT·002</small></span></a><nav><a href="../">学习目录</a><a href="../../visuals/chaos/">Chaos Lab ↗</a><a href="spectral.pdf">讲义 PDF ↗</a><button id="referenceButton">记号与文献</button></nav></header>
+<main>
+<section class="intro"><div><p class="eyebrow">ALGEBRAIC TOPOLOGY · INTERACTIVE CHAPTER</p><h1>Spectral Sequences<span>从双复形到收敛</span></h1><p>沿一条对角线理解滤过，跟随一个代表元理解微分，最后抵达上同调。</p></div><div class="hypothesis"><span class="status-dot"></span> 第一象限 · 上同调型<div data-tex="K^{p,q}=0\quad(p<0\ \text{or}\ q<0)"></div><small>固定记号：δ₁ 向右，δ₂ 向上，D = δ₁ + δ₂</small></div></section>
+<nav class="module-dock" aria-label="学习子模块">
+<button data-module="learn" aria-pressed="true"><span>01</span><div>构造与滤过<small>DEFINITIONS → PAGES</small></div></button>
+<button data-module="lab" aria-pressed="false"><span>02</span><div>计算实验室<small>EXACT COHOMOLOGY</small></div></button>
+<button data-module="trace" aria-pressed="false"><span>03</span><div>追踪一个类<small>REPRESENTATIVES</small></div></button>
+<button data-module="converge" aria-pressed="false"><span>04</span><div>收敛与证明<small>THE ASSOCIATED GRADED</small></div></button>
+</nav>
+<section class="workspace" aria-label="谱序列交互工作区">
+<div class="visual-column">
+<div class="stage-heading"><div><p id="sceneKicker"></p><h2 id="sceneTitle"></h2></div><button id="fullscreen" title="全屏显示工作区">⛶ 全屏</button></div>
+<div class="stage" id="stage"><div id="diagram" aria-label="双复形与谱序列二维图"></div><div class="legend"><span><i class="h"></i>横向 δ₁ / d₁</span><span><i class="v"></i>纵向 δ₂ / d₀</span><span><i class="degree"></i>选中的总次数</span></div></div>
+<div class="controls" id="controls"></div>
+<div class="transport"><button id="prev" aria-label="上一步">← 上一步</button><button id="play" aria-pressed="false">▶ 播放步骤</button><button id="next" aria-label="下一步">下一步 →</button><span id="stepReadout" aria-live="polite"></span></div>
+<div class="step-track" id="stepTrack" aria-label="当前模块步骤"></div>
+<p class="scene-note" id="sceneNote"></p>
+</div>
+<aside class="explanation"><div class="panel-label">MATHEMATICAL COMPANION <span id="panelIndex"></span></div><div id="explanation"></div><div class="inspector"><p class="mini-label">点击图中的项，查看其含义</p><div id="inspector" aria-live="polite"></div></div></aside>
+</section>
+<section class="reading"><div><p class="eyebrow">A MAP IS MORE THAN AN ARROW</p><h2>始终分清：对象、代表元、商空间。</h2><p>动画只用于突出当前运算。每一页的微分、核与像都有明确的来源；计算模块从同一个双复形逐页计算，不将“节点淡出”当作取商的定义。</p></div><div class="reading-links"><button id="proofJump">查看收敛证明 →</button><a href="spectral.pdf">阅读完整讲义 ↗</a><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=47" target="_blank" rel="noreferrer">McCleary · Theorem 2.6 ↗</a></div></section>
+</main>
+<footer>SHENG MENG · STUDY ATLAS <span>数学图示以第一象限为前提；有限例子使用 ℚ 上精确计算。</span></footer>
+<dialog id="references"><div class="dialog-head"><h2>记号与数学依据</h2><button id="closeReferences" aria-label="关闭">×</button></div><div id="referenceContent"></div></dialog>
+<dialog id="formulaDialog"><div class="dialog-head"><h2>公式</h2><button id="closeFormula" aria-label="关闭公式">×</button></div><div id="formulaContent"></div></dialog>
+<noscript>请启用 JavaScript 使用交互模块；完整内容也可阅读 <a href="spectral.pdf">PDF 讲义</a>。</noscript>
+</body></html>
