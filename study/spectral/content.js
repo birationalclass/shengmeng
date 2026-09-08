@@ -17,7 +17,6 @@ export const convergence=[
 ];
 
 export const initial=[
- {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。虚线延续箭头表示省略中间项，不表示零空间或一次微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
  {...lessons[0],title:'结构映射：δ₁ 与 δ₂',tag:'02 / TWO DIFFERENTIALS',note:'横向与纵向按钮分别高亮 δ₁ 和 δ₂。在一个相邻小方格中，两条复合路径相加为零。'},
  {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'图用虚线延续箭头压缩一般对角线（n≥3），并显示 δ₁、δ₂ 对 K¹ⁿ⁻¹ 的作用；具体有限例子会展开全部空间。'}
 ];

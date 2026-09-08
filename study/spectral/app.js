@@ -44,13 +44,13 @@ let r=pageR(),E=c.page(r,p,qv),tar=c.page(r,p+r,qv-r+1),M=c.differential(r,p,qv)
 let html=block(raw`E_{${name}}^{${p},${qv}}\cong\mathbb Q^{${E.dim}}`);if(E.dim)html+=`<p>选定的商空间基（总上链代表元）：</p>`+E.reps.map(v=>block(raw`[${texVector(v,c.basis(E.n))}]_{${name}}`)).join('');html+=`<p>分子维数 ${E.Z.length}；分母维数 ${E.den.length}。商空间维数 ${E.dim}。</p>`;
 if(state.module==='lab'){html+=`<p>微分矩阵：列对应上面的源基，行对应靶的商空间基。</p>`+block(raw`[d_${r}]=${matrixTex(M,tar.dim)}`);html+=`<p>靶位置 (${p+r},${qv-r+1})。靶基：</p>`+block(tar.reps.length?tar.reps.map(v=>raw`[${texVector(v,c.basis(tar.n))}]_${r}`).join(',\;'):raw`\varnothing`);html+=`<p>dim ker d${r} = ${E.dim-outRank}<br>dim im（入射 d${r}）= ${inRank}<br>下一页本位置维数 = ${E.dim-outRank-inRank}</p>`;}else if(E.dim){html+=block(raw`\theta([a]_\infty)=[a]_H+F^{${p+1}}H^{${E.n}}`);}$('#inspector').innerHTML=html;}
 function controls(){let html='';if(state.module==='converge'||(state.module==='learn'&&state.step>=1&&state.step<=2)){html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label><label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;}if(state.module==='initial'&&state.step>0){html+=`<div role="group" aria-label="突出箭头方向"><button data-direction="h" class="${state.direction==='h'?'active':''}" aria-pressed="${state.direction==='h'}">横向 δ₁</button> <button data-direction="v" class="${state.direction==='v'?'active':''}" aria-pressed="${state.direction==='v'}">纵向 δ₂</button> <button data-direction="both" class="${state.direction==='both'?'active':''}" aria-pressed="${state.direction==='both'}">两者</button></div>`;}if(state.module==='lab'||state.module==='converge'){html+=`<label>例子 <select id="exampleSelect">${Object.entries(examples).map(([k,e])=>`<option value="${k}" ${k===state.example?'selected':''}>${e.name}</option>`).join('')}</select></label>`;}if(state.module==='lab')html+=`<label>页数 r <input id="rRange" type="range" min="0" max="${scene().maxP+2}" value="${state.r}"><output>${state.r}</output></label>`;if(state.module==='trace')html+=`<label>代表元参数 λ <input id="lambdaRange" type="range" min="-2" max="2" value="${state.lambda}"><output>${state.lambda}</output></label><span>${math(raw`a_0=b+\lambda y`)}</span>`;let old=$('#speed')?.value;$('#controls').innerHTML=html;if(old&&$('#speed'))$('#speed').value=old;}
-function render(updateControls=true){if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge'){companion(convergence[state.step]);convergenceTable();}$('.inspector .mini-label').textContent=state.module==='initial'?'图示与记号':state.module==='learn'&&state.step===0?'闭链与边界':'点击图中的项，查看其含义';$('.legend').innerHTML=state.module==='initial'?'<span><i class="h"></i>横向 δ₁</span><span><i class="v"></i>纵向 δ₂</span>'+ (state.step===2?'<span><i class="degree"></i>选中的总次数</span>':''):state.module==='learn'&&state.step===0?'<span><i class="degree"></i>总微分 D</span>':'<span><i class="h"></i>横向 δ₁ / d₁</span><span><i class="v"></i>纵向 δ₂ / d₀</span><span><i class="degree"></i>选中的总次数</span>';$('#panelIndex').textContent=String(state.step+1).padStart(2,'0');$('#diagram').innerHTML=state.module==='initial'?initialDiagram():state.module==='learn'?(state.step===0?cohomologyDiagram():state.step===5?filteredPageDiagram():conceptual()):state.module==='converge'&&state.step>=2?comparisonDiagram():actualDiagram();if(updateControls)controls();inspect();$('#stepReadout').textContent=`${state.step+1} / ${stepCount()}`;$('#prev').disabled=state.step===0;$('#next').disabled=state.step===stepCount()-1;$('#stepTrack').innerHTML=Array.from({length:stepCount()},(_,i)=>`<button data-step="${i}" class="${i===state.step?'active':''}" aria-label="转到第 ${i+1} 步" ${i===state.step?'aria-current="step"':''}></button>`).join('');$('#play').textContent=state.playing?'Ⅱ 暂停':'▶ 播放步骤';$('#play').setAttribute('aria-pressed',state.playing);document.querySelectorAll('[data-module]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.module===state.module));const section=state.module==='initial'?'initial':state.module==='converge'?'converge':'induced';document.querySelectorAll('[data-section]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.section===section));$('#submodules').hidden=section!=='induced';renderSlideState();translatePage();window.spectralState={...state,language:language()};}
+function render(updateControls=true){if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge'){companion(convergence[state.step]);convergenceTable();}$('.inspector .mini-label').textContent=state.module==='initial'?'图示与记号':state.module==='learn'&&state.step===0?'闭链与边界':'点击图中的项，查看其含义';$('.legend').innerHTML=state.module==='initial'?'<span><i class="h"></i>横向 δ₁</span><span><i class="v"></i>纵向 δ₂</span>'+ (state.step===1?'<span><i class="degree"></i>选中的总次数</span>':''):state.module==='learn'&&state.step===0?'<span><i class="degree"></i>总微分 D</span>':'<span><i class="h"></i>横向 δ₁ / d₁</span><span><i class="v"></i>纵向 δ₂ / d₀</span><span><i class="degree"></i>选中的总次数</span>';$('#panelIndex').textContent=String(state.step+1).padStart(2,'0');$('#diagram').innerHTML=state.module==='initial'?initialDiagram():state.module==='learn'?(state.step===0?cohomologyDiagram():state.step===5?filteredPageDiagram():conceptual()):state.module==='converge'&&state.step>=2?comparisonDiagram():actualDiagram();if(updateControls)controls();inspect();$('#stepReadout').textContent=`${state.step+1} / ${stepCount()}`;$('#prev').disabled=state.step===0;$('#next').disabled=state.step===stepCount()-1;$('#stepTrack').innerHTML=Array.from({length:stepCount()},(_,i)=>`<button data-step="${i}" class="${i===state.step?'active':''}" aria-label="转到第 ${i+1} 步" ${i===state.step?'aria-current="step"':''}></button>`).join('');$('#play').textContent=state.playing?'Ⅱ 暂停':'▶ 播放步骤';$('#play').setAttribute('aria-pressed',state.playing);document.querySelectorAll('[data-module]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.module===state.module));const section=state.module==='initial'?'initial':state.module==='converge'?'converge':'induced';document.querySelectorAll('[data-section]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.section===section));$('#submodules').hidden=section!=='induced';renderSlideState();translatePage();window.spectralState={...state,language:language()};}
 function stop(){state.playing=false;clearTimeout(timer);timer=null;}
 function move(i){state.cover=false;state.reveal=0;state.buildStep=0;state.pinned=null;state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.selected=null;render();}
 function schedule(){timer=setTimeout(()=>{if(state.step>=stepCount()-1){stop();render();return;}move(state.step+1);schedule();},Number($('#speed').value));}
 function moduleChange(m){stop();state.cover=false;state.reveal=0;state.buildStep=0;state.pinned=null;state.module=m;state.step=0;state.r=0;state.selected=null;if(m==='converge'){state.example='survive';state.n=1;state.p=1;}location.hash=m;render();}
 $('#prev').onclick=()=>{stop();retreatSlide();};$('#next').onclick=()=>{stop();advanceSlide();};$('#play').onclick=()=>{};
-$('#beginSlides').onclick=()=>{state.cover=false;state.reveal=0;render();};$('#coverButton').onclick=()=>{stop();state.module='initial';state.step=0;state.cover=true;state.reveal=0;state.pinned=null;location.hash='title';render();};
+$('#beginSlides').onclick=()=>{state.cover=false;state.reveal=0;state.buildStep=0;render();};$('#coverButton').onclick=()=>{stop();state.module='initial';state.step=0;state.cover=true;state.reveal=0;state.buildStep=0;state.pinned=null;location.hash='title';render();};
 document.querySelector('.module-dock').onclick=e=>{let b=e.target.closest('[data-section]');if(b)moduleChange(b.dataset.section==='induced'?'learn':b.dataset.section);};$('#submodules').onclick=e=>{let b=e.target.closest('[data-module]');if(b)moduleChange(b.dataset.module);};$('#stepTrack').onclick=e=>{let b=e.target.closest('[data-step]');if(e.target.closest('[data-cover]')){$('#coverButton').click();return;}if(b){stop();move(Number(b.dataset.step));}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;stop();const val=Number(e.target.value);if(id==='nRange'){state.n=val;state.p=Math.min(state.p,val+1);$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(false);});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){stop();state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
@@ -83,25 +83,25 @@ function initialDiagram(){
  let out=svgStart(5,5);out=out.slice(0,out.indexOf('</defs>')+7);
  const edge=(x1,y1,x2,y2,...args)=>{const dx=x2-x1,dy=y2-y1,l=Math.hypot(dx,dy),pad=14;return line(x1+pad*dx/l,y1+pad*dy/l,x2-pad*dx/l,y2-pad*dy/l,...args);};
  const box=(x,y,t)=>`<g data-concept="space" tabindex="0" role="button" aria-label="${esc(t)}"><rect class="node-bg schematic-node" x="${x-65}" y="${y-24}" width="130" height="48" rx="8"/>`+label(x,y,t,128,42)+'</g>';
- if(state.step<2){
+ if(state.step===0){
  const xs=[100,290,480,690],ys=[430,310,190,70],ps=['0','1','p','p+1'],qs=['0','1','q','q+1'];
- if(state.step>0)for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+ for(let i=0;i<4;i++)for(let j=0;j<4;j++){
   if(i!==1&&i<3)out+=buildLayer(1,edge(xs[i],ys[j],xs[i+1],ys[j],'h',state.direction!=='v',j===2?'\\delta_1':''));
   if(j!==1&&j<3)out+=buildLayer(2,edge(xs[i],ys[j],xs[i],ys[j+1],'v',state.direction!=='h',i===2?'\\delta_2':''));
  }
  if(isBuilding())out+=buildLayer(4,'<rect class="relation-square" x="457" y="47" width="256" height="166" rx="9"/>');
  for(let i=0;i<4;i++)for(let j=0;j<4;j++)out+=box(xs[i],ys[j],`K^{${ps[i]},${qs[j]}}`);
- for(let y of ys)out+=continuation(363,y,407,y);
- for(let x of xs)out+=continuation(x,278,x,222);
+ for(let y of ys)out+=buildLayer(1,continuation(363,y,407,y,'delta1'));
+ for(let x of xs)out+=buildLayer(2,continuation(x,278,x,222,'delta2'));
 
- for(let y of ys)out+=continuation(767,y,818,y);for(let x of xs)out+=continuation(x,36,x,7);
+ for(let y of ys)out+=buildLayer(1,continuation(767,y,818,y,'delta1'));for(let x of xs)out+=buildLayer(2,continuation(x,36,x,7,'delta2'));
  if(isBuilding())out+=buildLayer(3,label(265,491,'\\delta_1^2=\\delta_2^2=0',300,34))+buildLayer(4,label(630,491,'\\delta_1\\delta_2+\\delta_2\\delta_1=0',365,34));
  out+=`<text class="callout" x="100" y="503">${state.step===0?'每个 Kᵖᑫ 是向量空间；虚线延续箭头表示未展开的行列。':'只在相邻指标之间画 δ 箭头；两条复合路径之和为零。'}</text>`;
  }else{
  const pts=[[95,120,'0,n'],[280,220,'1,n-1'],[550,366,'n-1,1'],[735,466,'n,0']];
  out+='<path class="diag" d="M95,120 L280,220 M550,366 L735,466"/>';
  for(let [x,y,t] of pts)out+=box(x,y,`K^{${t}}`);
- out+=continuation(347,256,483,330);
+ out+=continuation(347,256,483,330,'total');
  out+=label(650,30,'i+j=n',150,34);
  out+=label(595,80,'C^n=\\bigoplus_{i=0}^{n}K^{i,n-i}',360,46);
  out+=edge(280,220,490,220,'h',state.direction!=='v','\\delta_1');
@@ -115,7 +115,7 @@ function initialDiagram(){
 
 function cohomologyDiagram(){
  let out=svgStart();out=out.slice(0,out.indexOf('</defs>')+7);
- out+=continuation(40,105,135,105)+label(205,105,'C^{n-1}',100,40)+label(420,105,'C^n',100,40)+label(635,105,'C^{n+1}',100,40)+continuation(705,105,803,105);
+ out+=continuation(40,105,135,105,'differential')+label(205,105,'C^{n-1}',100,40)+label(420,105,'C^n',100,40)+label(635,105,'C^{n+1}',100,40)+continuation(705,105,803,105,'differential');
  out+=line(205,105,420,105,'r',true,'D')+line(420,105,635,105,'r',true,'D');
  out+='<rect x="175" y="180" width="490" height="265" rx="20" fill="#102630" stroke="#42616b"/><rect data-concept="cycles" class="cohomology-region" x="210" y="240" width="420" height="175" rx="18" fill="#14362f" stroke="#71e2d0"/><rect data-concept="boundaries" class="cohomology-region" x="245" y="315" width="350" height="70" rx="15" fill="#263747" stroke="#8fbeff"/>';
  out+=label(420,209,'C^n',190,40)+label(420,271,'Z^n=\\ker(D:C^n\\to C^{n+1})',380,40)+label(420,350,'B^n=\\operatorname{im}(D:C^{n-1}\\to C^n)',340,40);
@@ -126,9 +126,8 @@ function sectionName(){return state.module==='initial'?'01 / INITIAL DATA':state
 function statementMeta(){
  const collections={
  initial:[
- {kind:'定义',number:'1.1',name:'双分次向量空间',intro:'一个双分次向量空间是由整数对索引的 ℚ-向量空间族。本讲固定在第一象限。',concepts:['space','space']},
- {kind:'定义',number:'1.2',name:'双复形',intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
- {kind:'定义',number:'1.3',name:'总复形',intro:'对每个总次数 n，将同一条对角线上的空间取直和，并定义总微分。',concepts:['total','differential','differential']}
+ {kind:'定义',number:'1.1',name:'双复形',intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
+ {kind:'定义',number:'1.2',name:'总复形',intro:'对每个总次数 n，将同一条对角线上的空间取直和，并定义总微分。',concepts:['total','differential','differential']}
  ],
  learn:[
  {kind:'定义',number:'2.1',name:'上同调',concepts:['cohomology','boundaries']},
@@ -159,7 +158,7 @@ function renderSlideState(){
  $('#next').textContent=cover?'开始阅读 →':state.reveal===0?'显示图示 →':state.reveal===1?'展开解释 →':'下一页 →';
  $('#fragmentTrack').innerHTML=cover?'<span>DEFINITIONS → CONVERGENCE</span>':['陈述','图示','解释'].map((t,i)=>`<button data-fragment="${i}" aria-pressed="${state.reveal===i}" class="${i<=state.reveal?'seen':''}">${t}</button>`).join('<i></i>');
  $('#stepTrack').innerHTML=(state.module==='initial'?`<button data-cover title="标题页" class="${cover?'active':''}" aria-label="标题页"></button>`:'')+Array.from({length:stepCount()},(_,i)=>`<button data-step="${i}" class="${!cover&&i===state.step?'active':''}" aria-label="转到第 ${i+1} 步" title="${esc((state.module==='initial'?initial:state.module==='converge'?convergence:[])[i]?.title||String(i+1))}"></button>`).join('');
- if(state.module==='initial'&&state.step===0)$('.legend').innerHTML='';if($('#diagram .continuation'))$('.legend').insertAdjacentHTML('beforeend','<span><i class="continuation-key"></i>虚线：中间项省略</span>');
+ if($('#diagram .continuation'))$('.legend').insertAdjacentHTML('beforeend','<span><i class="continuation-key"></i>虚线：中间项省略</span>');
  $('#sceneNote').hidden=cover||state.reveal<2;
  renderQuickCheck();if(isBuilding())setupBuild();applyConcept(state.pinned,false);
 }
@@ -181,7 +180,7 @@ function relatedConcept(a,b){if(a===b)return true;const groups=[['space','page',
 function applyConcept(concept,hover=false){
  const graph=$('#diagram');graph.querySelectorAll('.concept-active').forEach(el=>el.classList.remove('concept-active'));
  graph.classList.toggle('concept-focus',!!concept);graph.classList.toggle('hover-effect',!!concept&&hover);
- const targets={delta1:'.arrow.h',delta2:'.arrow.v',differential:'.arrow',space:'.node-bg',page:'.node-bg,.comparison-node,.page-quotient',quotient:'.node:not(.muted) .node-bg',total:'.diag,.node:not(.muted) .node-bg',filtration:'.diag-box,.node:not(.muted) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.cohomology-region,.node-bg',comparison:'.comparison-node,.comparison-arrow,.node:not(.zero) .node-bg,.diag-box'};
+ const targets={delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node-bg',page:'.node-bg,.comparison-node,.page-quotient',quotient:'.node:not(.muted) .node-bg',total:'.diag,.node:not(.muted) .node-bg,.continuation[data-concept=total]',filtration:'.diag-box,.node:not(.muted) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.cohomology-region,.node-bg',comparison:'.comparison-node,.comparison-arrow,.node:not(.zero) .node-bg,.diag-box'};
  if(concept)graph.querySelectorAll(targets[concept]||'[data-concept]').forEach(el=>el.classList.add('concept-active'));
  document.querySelectorAll('.formal-statement [data-concept]').forEach(el=>{el.classList.toggle('concept-linked',!!concept&&relatedConcept(concept,el.dataset.concept));el.setAttribute('aria-pressed',String(state.pinned===el.dataset.concept));});
  $('#clearConcept').hidden=!state.pinned;
@@ -223,9 +222,9 @@ function renderQuickCheck(){
  el.innerHTML=entry?`<summary><span>自检</span> · <span>${entry[0]}</span></summary><p>${entry[1]}</p>`:'';
 }
 
-function continuation(x1,y1,x2,y2){return `<path class="continuation" d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-continuation)" role="img" aria-label="延续箭头：省略中间项，不表示一次微分"><title>延续箭头：省略中间项，不表示一次微分</title></path>`;}
+function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h':concept==='delta2'?'v':concept==='total'||concept==='differential'?'r':'continuation';return `<path class="continuation" ${concept?`data-concept="${concept}" tabindex="0"`:''} d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${marker})" role="${concept?'button':'img'}" aria-label="延续箭头：省略中间项，不表示一次微分"><title>延续箭头：省略中间项，不表示一次微分</title></path>`;}
 
-function isBuilding(){return !state.cover&&state.module==='initial'&&state.step===1;}
+function isBuilding(){return !state.cover&&state.module==='initial'&&state.step===0;}
 function buildLayer(level,html){return isBuilding()?`<g class="build-layer" data-build-level="${level}">${html}</g>`:html;}
 function buildCompanion(item){
  $('#sceneKicker').textContent=sectionName();$('#sceneTitle').textContent='Initial data';
@@ -235,7 +234,7 @@ function buildCompanion(item){
  {title:'各方向的平方为零',concept:'differential',text:'沿同一方向连续作用两次，复合映射为零。因此每行、每列分别是上链复形。'},
  {title:'两个方向反交换',concept:'differential',text:'右上方小方格的两条复合路径有相同的终点，但对应映射互为相反数。'}
  ];
- $('#explanation').innerHTML=`<article class="formal-statement build-statement"><div class="statement-heading"><span>定义</span><span class="statement-number">1.2</span></div><h3>双复形</h3><p class="formal-intro">从双分次向量空间出发，依次加入两种微分及其相容关系。</p>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" tabindex="0" role="button"><h4><span class="build-number">${String(i+1).padStart(2,'0')}</span><span>${c.title}</span></h4>${block(item.f[i],c.concept)}<p>${c.text}</p></section>`).join('')}</article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement"><div class="statement-heading"><span>定义</span><span class="statement-number">1.1</span></div><h3>双复形</h3><p class="formal-intro">设 Kᵖᑫ 为 ℚ-向量空间，且当 p<0 或 q<0 时为零。依次加入以下微分与关系。</p>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" tabindex="0" role="button"><h4><span class="build-number">${String(i+1).padStart(2,'0')}</span><span>${c.title}</span></h4>${block(item.f[i],c.concept)}<p>${c.text}</p></section>`).join('')}</article>`;
  $('#sceneNote').textContent='悬停或点击左侧的下一项，逐步添加图中的元素。也可使用下方按钮。';
 }
 function setupBuild(){
