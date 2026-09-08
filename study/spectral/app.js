@@ -1,7 +1,7 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=14';
-import {translatePage,language,toggleLanguage} from './language.js?v=14';
-import {operationMarkup,viewNames,actionNames} from './workbench.js?v=14';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=15';
+import {translatePage,language,toggleLanguage} from './language.js?v=15';
+import {operationMarkup,viewNames,actionNames} from './workbench.js?v=15';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4;
 const state={module:'initial',cover:true,initialReveal:0,annotationStep:1,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
@@ -18,7 +18,31 @@ const xy=(p,q)=>[225+p*layout.dx,370-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
 function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:44*len/Math.abs(dx),dy===0?Infinity:21*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} " d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex)out+=label((x1+x2)/2+(dx===0?26:0),(y1+y2)/2+(dy===0?-17:0),tex,68,24,true);return out;}
-function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){layout={dx:500/maxP,dy:300/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae']])out+=`<marker id="arrow-${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="8" refY="5" orient="auto"><path d="M2,1.75 L8,5 L2,8.25" fill="none" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></marker>`;out+='</defs>';for(let p=-1;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=-1;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
+function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
+ layout={dx:500/maxP,dy:300/maxQ};
+ const [originX,originY]=xy(0,0);
+ let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;
+ for(const [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae'],['axis','#78939d']])out+=`<marker id="arrow-${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" viewBox="0 0 10 10" refX="8" refY="5" orient="auto"><path d="M2,1.75 L8,5 L2,8.25" fill="none" stroke="${color}" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></marker>`;
+ // The axes cross at the centre of the (0,0) term. Mask their portions behind
+ // terms so even dimmed/zero nodes retain unobstructed mathematical labels.
+ out+='<mask id="coordinate-axis-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="840" height="525"><rect width="840" height="525" fill="white"/>';
+ const maskTerm=(p,q)=>{const [x,y]=xy(p,q);return `<rect x="${x-49}" y="${y-25}" width="98" height="50" rx="8" fill="black"/>`;};
+ for(let p=-1;p<=maxP;p++)out+=maskTerm(p,0);
+ for(let q=-1;q<=maxQ;q++)if(q!==0)out+=maskTerm(0,q);
+ out+='</mask></defs>';
+ for(let p=-1;p<=maxP;p++){
+  const [x]=xy(p,0);
+  if(p!==0)out+=`<path class="grid" d="M${x},38 V465"/>`;
+  out+=`<text class="axis-text axis-tick" data-axis="p" data-value="${p}" x="${x}" y="${originY+38}" text-anchor="middle">${p}</text>`;
+ }
+ for(let q=-1;q<=maxQ;q++){
+  const [,y]=xy(0,q);
+  if(q!==0)out+=`<path class="grid" d="M50,${y} H795"/>`;
+  if(q!==0)out+=`<text class="axis-text axis-tick" data-axis="q" data-value="${q}" x="${originX-56}" y="${y+5}" text-anchor="end">${q}</text>`;
+ }
+ out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M50,${originY} H825" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},485 V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" x="827" y="${originY-11}">p</text><text class="axis-text axis-name" x="${originX-17}" y="17">q</text>`;
+ return out;
+}
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-44}" y="${y-21}" width="88" height="42" rx="8"/>${label(x,y,tex,87,38,tex.length>28)}</g>`;}
 function boundaryNode(p,q){return node(p,q,'0',{dim:0}).replace('data-concept="space"','data-boundary="true"').replace('class="node ','class="node outside-quadrant ').replace('role="button" tabindex="0"','');}
 function diagonal(n,p,box=true,showLabel=true){

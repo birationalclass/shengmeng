@@ -49,3 +49,5 @@ J. McCleary, *A User's Guide to Spectral Sequences*, 2nd ed., CUP, 2001: Definit
 Initial data presents the double complex and its total complex in one definition panel. Six local items contain names and mathematical expressions only; prose descriptions and the separate Total complex tab are removed. Hovering or pinning C or D updates the same diagonal groups and operation panel, without changing the main slide.
 
 The initial assumptions use rendered K^{p,q} notation and omit a base-field symbol. The initial panel has no explanatory prose. Double complex, δ₁, δ₂, the square-zero identities, anticommutation, C^bullet and D are introduced in order, with corresponding graph layers synchronized to each reveal.
+
+The coordinate axes intersect at the centre of the (0,0) node. Tick labels follow those axes, with negative indices to the left/below. An SVG mask suppresses axis strokes behind term labels, including dimmed zero terms.
