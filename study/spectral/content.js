@@ -17,8 +17,7 @@ export const convergence=[
 ];
 
 export const initial=[
- {...lessons[0],title:'结构映射：δ₁ 与 δ₂',tag:'02 / TWO DIFFERENTIALS',note:'横向与纵向按钮分别高亮 δ₁ 和 δ₂。在一个相邻小方格中，两条复合路径相加为零。'},
- {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'在固定坐标图上选择 n，显示整条总次数对角线；引入 D 后同时标出下一条对角线。'}
+ {...lessons[0],title:'双复形与总复形',tag:'INITIAL DATA',note:''}
 ];
 
 export const totalCohomology={title:'先取总复形的上同调',tag:'COHOMOLOGY / THE TARGET',f:[t`Z^n:=\ker(D:C^n\to C^{n+1})`,t`B^n:=\operatorname{im}(D:C^{n-1}\to C^n)\subseteq Z^n`,t`H^n(C,D):=Z^n/B^n`,t`[a]_H=[a+Db]_H\quad(a\in Z^n,\ b\in C^{n-1})`],text:'D²=0 保证每个边界都是闭链，所以这个商空间有定义。Hⁿ 是最终要理解的对象；接下来借助滤过构造 Eᵣ，逐步读出 Hⁿ 的关联分次。',note:'在原坐标图上沿对角线观察总微分。这里的 Hⁿ 是总上同调，不能把它放进某一个 Kᵖᑫ 节点。',proof:'如果 a=Db，那么 Da=D²b=0，故 im D ⊆ ker D。两个闭链给出同一个上同调类，当且仅当它们相差一个边界。'};

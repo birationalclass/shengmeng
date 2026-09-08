@@ -1,12 +1,12 @@
 # Spectral Sequence — Study Atlas AT·002
 
-A bilingual interactive course using a first-quadrant cochain double complex. The main presentation has exactly **four slides**: title, Initial data, Induced structures, and Convergence. Footer buttons and arrow/Space keys move only between those slides. Topic tabs, operation buttons, formula hover/focus, sliders and exact examples operate within the current slide. Nothing plays automatically.
+A bilingual interactive course using a first-quadrant cochain double complex. The main presentation has exactly **four slides**: title, Initial data, Induced structures, and Convergence. Initial data reveals its six definition items in place before advancing to Induced structures. Enter, the right arrow and the forward button advance this sequence; the left arrow and previous button reverse it. Space also advances when no interactive item has focus. Topic tabs, operation buttons, formula hover/focus, sliders and exact examples operate within the current slide. Nothing plays automatically.
 
 ## Mathematical interaction design
 
 | Definition | Coordinate diagram | Operation panel and interpretation |
 | --- | --- | --- |
-| δ₁, δ₂ | Add horizontal or vertical maps independently. | Domain, codomain and bidegree. Nodes are vector spaces. |
+| δ₁, δ₂ | Reveal horizontal and then vertical maps with their definitions; hover re-emphasizes an already introduced map. | Domain, codomain and bidegree. Nodes are vector spaces. |
 | δ₁²=0 or δ₂²=0 | Emphasize two consecutive solid arrows and mark the zero vector at the endpoint. | The composite is zero; neither individual map nor its target space is required to vanish. |
 | Anticommutation | Compare the two paths around one adjacent square. | The two composites sum to zero; they need not vanish separately. |
 | Cⁿ | A slanted dashed boundary groups the full degree-n diagonal. | The enclosed factors form a direct sum, denoted Cⁿ, not a new K-node. |
@@ -20,7 +20,7 @@ A bilingual interactive course using a first-quadrant cochain double complex. Th
 
 Nested regions encode subspace inclusions only, not dimensions or chosen complements. Quotient maps explicitly start from the indicated inner subspace. The general convergence view is separate from the finite examples; a dimension equality is not used as its proof.
 
-Hover/focus previews one source item. Click pins it; leaving a preview restores the pin or the selected local operation. Relationships never count as additional presentation slides. Square-zero effects are finite opacity transitions, with no coordinate movement, timer-driven playback or looping animation. Reduced-motion preferences disable these transitions.
+Hover/focus previews one source item. Click pins it; leaving a preview restores the pin or the selected local operation. Revealing a definition updates the existing main slide; hover effects do not consume a presentation step. Square-zero effects are finite opacity transitions, with no coordinate movement, timer-driven playback or looping animation. Reduced-motion preferences disable these transitions.
 
 ## Implementation and conventions
 
@@ -30,7 +30,7 @@ Hover/focus previews one source item. Click pins it; leaving a preview restores 
 - `algebra.js`: exact BigInt rational arithmetic, filtered cycles/boundaries, representatives and induced differential matrices.
 - `slides.css`: responsive layout and operation diagrams. KaTeX math occupies an HTML plane scaled together with SVG; no SVG foreignObject is used.
 
-The same 25 coordinate nodes, indexed 0–4, remain mounted. General terms outside this window are not assumed zero. Dashed arrows continue the displayed rows/columns and are not individual differentials. Actual differential arrows are solid. For n=4, the next total-degree diagonal extends outside the displayed window; the formula for C⁵ still includes all its factors.
+The same 36 coordinate nodes, indexed −1 through 4, remain mounted. The additional row and column are 11 structural zero terms, gray and noninteractive. The remaining 25 nodes cover indices 0–4. General terms outside this window are not assumed zero. Dashed arrows continue the displayed rows/columns and are not individual differentials. Actual differential arrows are solid. For n=4, the next total-degree diagonal extends outside the displayed window; the formula for C⁵ still includes all its factors.
 
 The convention is δ₁:(p,q)→(p+1,q), δ₂:(p,q)→(p,q+1), δ₁δ₂+δ₂δ₁=0 and D=δ₁+δ₂. The column filtration is decreasing. For r≥1:
 
@@ -40,8 +40,12 @@ Eᵣᵖᑫ = Zᵣᵖᑫ / (Zᵣ₋₁ᵖ⁺¹,ᑫ⁻¹ + Bᵣ₋₁ᵖᑫ).
 
 ## Validation
 
-`node test.mjs` checks the exact algebra engine. Browser checks cover four-slide navigation, independent directions, square-zero and anticommuting paths, pin restoration, local quotient operations, removal of previous-page differentials, every formal view in English, 25 persistent nodes, nine viewport sizes, SVG/HTML label registration, fullscreen, and access to exact-example matrices. Chromium and WebKit are both exercised. Source/build checks are separate from the mathematical explanations above.
+`node test.mjs` checks the exact algebra engine. Browser checks cover four-slide navigation, independent directions, square-zero and anticommuting paths, pin restoration, local quotient operations, removal of previous-page differentials, every formal view in English, 36 persistent nodes, desktop and narrow viewports, SVG/HTML label registration, fullscreen, and access to exact-example matrices. Chromium and WebKit are both exercised. Source/build checks are separate from the mathematical explanations above.
 
 ## Reading
 
 J. McCleary, *A User's Guide to Spectral Sequences*, 2nd ed., CUP, 2001: Definitions 2.2–2.5, Theorem 2.6 and its proof, and Theorem 2.15. The accompanying `spectral.pdf` uses the same double-complex notation. This site is an independent exposition and implementation.
+
+Initial data presents the double complex and its total complex in one definition panel. Six local items contain names and mathematical expressions only; prose descriptions and the separate Total complex tab are removed. Hovering or pinning C or D updates the same diagonal groups and operation panel, without changing the main slide.
+
+The initial assumptions use rendered K^{p,q} notation and omit a base-field symbol. The initial panel has no explanatory prose. Double complex, δ₁, δ₂, the square-zero identities, anticommutation, C^bullet and D are introduced in order, with corresponding graph layers synchronized to each reveal.
