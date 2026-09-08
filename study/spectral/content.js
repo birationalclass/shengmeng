@@ -17,9 +17,9 @@ export const convergence=[
 ];
 
 export const initial=[
- {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。省略号不代表零，也不跨越省略号画单个微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
+ {title:'初始对象：第一象限双分次空间',tag:'01 / INITIAL DATA',f:[t`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,t`K^{p,q}=0\quad(p<0\text{ or }q<0)`],text:'在每个整数位置 (p,q) 放一个 ℚ 向量空间 Kᵖᑫ。此处尚未取上同调，也尚未定义任何一页 Eᵣ。',note:'先看对象：示意图压缩了中间的行列（图中取 p,q≥3）。虚线延续箭头表示省略中间项，不表示零空间或一次微分。',proof:'这是本主题固定的第一象限假设，并非所有谱序列的定义要求。图示的行、列可继续向上、向右延伸。'},
  {...lessons[0],title:'结构映射：δ₁ 与 δ₂',tag:'02 / TWO DIFFERENTIALS',note:'横向与纵向按钮分别高亮 δ₁ 和 δ₂。在一个相邻小方格中，两条复合路径相加为零。'},
- {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'图用省略号压缩一般对角线（n≥3），并显示 δ₁、δ₂ 对 K¹ⁿ⁻¹ 的作用；具体有限例子会展开全部空间。'}
+ {...lessons[1],tag:'03 / THE TOTAL DIFFERENTIAL',text:'沿总次数 i+j=n 的对角线取直和，得到 Cⁿ。两种微分都从总次数 n 映到 n+1，因此其和给出 D。',note:'图用虚线延续箭头压缩一般对角线（n≥3），并显示 δ₁、δ₂ 对 K¹ⁿ⁻¹ 的作用；具体有限例子会展开全部空间。'}
 ];
 
 export const totalCohomology={title:'先取总复形的上同调',tag:'COHOMOLOGY / THE TARGET',f:[t`H^n(C,D):=\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}`,t`Da=0,\quad [a]_H=[a+Db]_H`],text:'D²=0 保证每个边界都是闭链，所以这个商空间有定义。Hⁿ 是最终要理解的对象；接下来借助滤过构造 Eᵣ，逐步读出 Hⁿ 的关联分次。',note:'嵌套区域只表示子空间包含关系，不表示维数或选定的补空间。这里的 Hⁿ 是总上同调；逐列上同调将在 E₁ 中出现。',proof:'如果 a=Db，那么 Da=D²b=0，故 im D ⊆ ker D。两个闭链给出同一个上同调类，当且仅当它们相差一个边界。'};

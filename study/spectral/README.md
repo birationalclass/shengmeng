@@ -2,7 +2,7 @@
 
 Three main sections: initial data (K, δ₁, δ₂, D); induced structures (total cohomology, filtration and pages, exact examples, representative corrections); meaning of convergence (boundedness, comparison map, kernel proof and naturality).
 
-Chinese/English switching preserves the mathematical notation and current interaction state. The selected language persists locally. The initial data diagrams use symbolic indices and ellipses, with no differential drawn across an omitted sequence of columns or rows; finite examples expand every nonzero space.
+Chinese/English switching preserves the mathematical notation and current interaction state. The selected language persists locally. The initial data diagrams use symbolic indices and dashed continuation arrows for omitted terms; these continuation arrows are not individual differentials; finite examples expand every nonzero space.
 
 ## Presentation and interaction
 

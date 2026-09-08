@@ -16,7 +16,7 @@ const xy=(p,q)=>[105+p*layout.dx,435-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
 function label(x,y,tex,w=116,h=38,small=false){return `<foreignObject x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}"><div xmlns="http://www.w3.org/1999/xhtml" class="math-label ${small?'small-label':''}">${math(tex)}</div></foreignObject>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:52*len/Math.abs(dx),dy===0?Infinity:21*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} ${state.playing?'animating':''}" d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex)out+=label((x1+x2)/2+(dx===0?26:0),(y1+y2)/2+(dy===0?-17:0),tex,68,24,true);return out;}
-function svgStart(maxP=5,maxQ=5){layout={dx:625/maxP,dy:370/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876']])out+=`<marker id="arrow-${id}" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="${color}"/></marker>`;out+='</defs>';for(let p=0;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=0;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
+function svgStart(maxP=5,maxQ=5){layout={dx:625/maxP,dy:370/maxQ};let out=`<svg viewBox="0 0 840 525" role="img" aria-labelledby="graphTitle"><title id="graphTitle">${esc($('#sceneTitle').textContent)}；横轴第一指标，纵轴第二指标</title><defs>`;for(let [id,color] of [['h','#71e2d0'],['v','#8fbeff'],['r','#f4c876'],['continuation','#8da7ae']])out+=`<marker id="arrow-${id}" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="${color}"/></marker>`;out+='</defs>';for(let p=0;p<=maxP;p++){let [x]=xy(p,0);out+=`<path class="grid" d="M${x},38 V455"/><text class="axis-text" x="${x}" y="495" text-anchor="middle">${p}</text>`;}for(let qv=0;qv<=maxQ;qv++){let [,y]=xy(0,qv);out+=`<path class="grid" d="M30,${y} H${Math.min(785,xy(maxP,0)[0]+40)}"/><text class="axis-text" x="13" y="${y+5}">${qv}</text>`;}out+='<path d="M30,25 V473 H797" fill="none" stroke="#587985"/><text class="axis-text" x="806" y="480">p</text><text class="axis-text" x="13" y="25">q</text>';return out;}
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-52}" y="${y-21}" width="104" height="42" rx="8"/>${label(x,y,tex,103,38,tex.length>28)}</g>`;}
 function diagonal(n,p,box=true){if(p>n)return '';let [x1,y1]=xy(p,n-p),[x2,y2]=xy(n,0);let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy);if(!len){dx=125;dy=79;len=Math.hypot(dx,dy);}const ux=dx/len,uy=dy/len,vx=-uy,vy=ux;let points=[[-55,-32],[len===Math.hypot(125,79)&&p===n?55:len+55,-32],[len===Math.hypot(125,79)&&p===n?55:len+55,32],[-55,32]].map(([a,b])=>`${x1+ux*a+vx*b},${y1+uy*a+vy*b}`).join(' ');let out=box?`<polygon data-concept="filtration" class="diag-box" points="${points}"/>`:'';out+=`<path class="diag" d="M${xy(0,n).join(',')} L${xy(n,0).join(',')}"/>`;out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;}
 function conceptual(){let s=state.step+1,n=state.n,p=state.p,max=5,out=svgStart(max,max);if([1,2,3].includes(s))out+=diagonal(n,s===1?0:p,s!==1);let horizontal=s===0||s===1||s===2||s===5,vertical=s<=2||s===4;
@@ -38,7 +38,7 @@ function traceCompanion(){const L=state.lambda,rep=L===0?'b':`b${L>0?'+':''}${L}
 {title:'得到非零的 d₂',f:[raw`d_2:E_2^{0,1}\to E_2^{2,0}`,raw`d_2[a_0+c]_2=[z]_2\ne0`],text:'源和靶都是一维空间，d₂ 是同构。这里 [a₀+c]₂ 是总上链代表元在第二页商空间中的类。'},
 {title:'第三页：两个类都不再贡献',f:[raw`E_3^{0,1}=E_3^{2,0}=0`,raw`H^*(C,D)=0`],text:'源上的类不是 d₂-闭的；靶上的类是 d₂-边界。它们以不同原因在下一页为零，不能笼统理解为两个点被动画删除。'}];let item=items[state.step];companion({...item,tag:'FOLLOW A REPRESENTATIVE',note:'本模块使用 d₂ 例子，另加 x→y 的垂直可缩复形。改变 λ 只改变代表元，不改变各页或最终答案。',proof:'新增生成元 x∈K⁰⁰、y∈K⁰¹ 满足 δ₂x=y，其余涉及 x、y 的微分为零。因此它们组成一个垂直可缩直和因子，既不改变 E₁ 及后续各页，也不改变总上同调。'});}
 function convergenceTable(){let c=scene(),n=state.n,p=state.p,r=c.maxP+2,fp=c.filtration(n,p),fp1=c.filtration(n,p+1),dim=c.page(r,p,n-p).dim;$('#explanation').insertAdjacentHTML('beforeend',`<table class="data-table"><tr><th>对象</th><th>维数</th></tr><tr><td>${math(raw`F^{${p}}H^{${n}}`)}</td><td>${fp}</td></tr><tr><td>${math(raw`F^{${p+1}}H^{${n}}`)}</td><td>${fp1}</td></tr><tr><td>${math(raw`\operatorname{Gr}_F^{${p}}H^{${n}}`)}</td><td>${fp-fp1}</td></tr><tr><td>${math(raw`E_\infty^{${p},${n-p}}`)}</td><td>${dim}</td></tr></table>`);}
-function inspect(){if(state.module==='learn'&&state.step===0){$('#inspector').innerHTML=block(raw`\operatorname{im}(D:C^{n-1}\to C^n)\subseteq\ker(D:C^n\to C^{n+1})`)+block(raw`[a]_H=[a+Db]_H`);return;}if(state.module==='initial'){$('#inspector').innerHTML=block(raw`K^{p,q}\xrightarrow{\delta_1}K^{p+1,q}`)+block(raw`K^{p,q}\xrightarrow{\delta_2}K^{p,q+1}`)+'<p>图中 p、q 是一般指标；省略号表示还有未展开的行列，不表示零空间。</p>';return;}const {p,q:qv}=state.selected||{p:['learn','converge'].includes(state.module)?state.p:0,q:['learn','converge'].includes(state.module)?state.n-state.p:1};if(state.module==='learn'){let s=state.step+1,tex=raw`K^{${p},${qv}}`;let text=`第一指标为 ${p}，第二指标为 ${qv}，总次数为 ${p+qv}。`;if(s===3){tex=raw`E_0^{${p},${qv}}\cong K^{${p},${qv}}`;text+=' 同构由取该列分量给出。';}if(s===5){tex=raw`E_1^{${p},${qv}}=H^{${qv}}(K^{${p},\bullet},\delta_2)`;text+=' 这里已经对垂直方向求过上同调。';}if(s===6){tex=raw`E_r^{${p},${qv}}`;text+=' 微分靶为 (p+r,q−r+1)。';}$('#inspector').innerHTML=block(tex)+`<p>${text}</p>`;return;}
+function inspect(){if(state.module==='learn'&&state.step===0){$('#inspector').innerHTML=block(raw`\operatorname{im}(D:C^{n-1}\to C^n)\subseteq\ker(D:C^n\to C^{n+1})`)+block(raw`[a]_H=[a+Db]_H`);return;}if(state.module==='initial'){$('#inspector').innerHTML=block(raw`K^{p,q}\xrightarrow{\delta_1}K^{p+1,q}`)+block(raw`K^{p,q}\xrightarrow{\delta_2}K^{p,q+1}`)+'<p>图中 p、q 是一般指标；虚线延续箭头表示还有未展开的行列，不表示零空间。</p>';return;}const {p,q:qv}=state.selected||{p:['learn','converge'].includes(state.module)?state.p:0,q:['learn','converge'].includes(state.module)?state.n-state.p:1};if(state.module==='learn'){let s=state.step+1,tex=raw`K^{${p},${qv}}`;let text=`第一指标为 ${p}，第二指标为 ${qv}，总次数为 ${p+qv}。`;if(s===3){tex=raw`E_0^{${p},${qv}}\cong K^{${p},${qv}}`;text+=' 同构由取该列分量给出。';}if(s===5){tex=raw`E_1^{${p},${qv}}=H^{${qv}}(K^{${p},\bullet},\delta_2)`;text+=' 这里已经对垂直方向求过上同调。';}if(s===6){tex=raw`E_r^{${p},${qv}}`;text+=' 微分靶为 (p+r,q−r+1)。';}$('#inspector').innerHTML=block(tex)+`<p>${text}</p>`;return;}
 const c=scene();if(state.module==='trace'){let gs=c.ex.gens.filter(g=>g.p===p&&g.q===qv);$('#inspector').innerHTML=block(raw`K^{${p},${qv}}=\langle ${gs.map(g=>g.id).join(',')||'0'}\rangle`)+`<p>图中节点是该位置的整个空间；方程中的 b、c、x、y、u、z 是选定基向量。</p>`;return;}
 let r=pageR(),E=c.page(r,p,qv),tar=c.page(r,p+r,qv-r+1),M=c.differential(r,p,qv),incoming=c.differential(r,p-r,qv+r-1),outRank=rank(M,tar.dim),inRank=rank(incoming,E.dim),name=state.module==='converge'?'\\infty':r;
 let html=block(raw`E_{${name}}^{${p},${qv}}\cong\mathbb Q^{${E.dim}}`);if(E.dim)html+=`<p>选定的商空间基（总上链代表元）：</p>`+E.reps.map(v=>block(raw`[${texVector(v,c.basis(E.n))}]_{${name}}`)).join('');html+=`<p>分子维数 ${E.Z.length}；分母维数 ${E.den.length}。商空间维数 ${E.dim}。</p>`;
@@ -90,16 +90,16 @@ function initialDiagram(){
   if(j!==1&&j<3)out+=edge(xs[i],ys[j],xs[i],ys[j+1],'v',state.direction!=='h',i===2?'\\delta_2':'');
  }
  for(let i=0;i<4;i++)for(let j=0;j<4;j++)out+=box(xs[i],ys[j],`K^{${ps[i]},${qs[j]}}`);
- for(let y of ys)out+=label(390,y,'\\cdots',60,30);
- for(let x of xs)out+=label(x,250,'\\vdots',50,38);
- out+=label(390,250,'\\ddots',50,38);
- out+=label(795,430,'\\cdots',40,30)+label(100,18,'\\vdots',40,30);
- out+=`<text class="callout" x="100" y="503">${state.step===0?'每个 Kᵖᑫ 是向量空间；省略号表示未展开的行列。':'只在相邻指标之间画 δ 箭头；两条复合路径之和为零。'}</text>`;
+ for(let y of ys)out+=continuation(363,y,407,y);
+ for(let x of xs)out+=continuation(x,278,x,222);
+ 
+ for(let y of ys)out+=continuation(767,y,818,y);for(let x of xs)out+=continuation(x,36,x,7);
+ out+=`<text class="callout" x="100" y="503">${state.step===0?'每个 Kᵖᑫ 是向量空间；虚线延续箭头表示未展开的行列。':'只在相邻指标之间画 δ 箭头；两条复合路径之和为零。'}</text>`;
  }else{
  const pts=[[95,120,'0,n'],[280,220,'1,n-1'],[550,366,'n-1,1'],[735,466,'n,0']];
- out+='<path class="diag" d="M95,120 L735,466"/>';
+ out+='<path class="diag" d="M95,120 L280,220 M550,366 L735,466"/>';
  for(let [x,y,t] of pts)out+=box(x,y,`K^{${t}}`);
- out+=label(414,292,'\\ddots',60,38);
+ out+=continuation(347,256,483,330);
  out+=label(650,30,'i+j=n',150,34);
  out+=label(595,80,'C^n=\\bigoplus_{i=0}^{n}K^{i,n-i}',360,46);
  out+=edge(280,220,490,220,'h',state.direction!=='v','\\delta_1');
@@ -113,7 +113,7 @@ function initialDiagram(){
 
 function cohomologyDiagram(){
  let out=svgStart();out=out.slice(0,out.indexOf('</defs>')+7);
- out+=label(90,105,'\\cdots',60,40)+label(205,105,'C^{n-1}',100,40)+label(420,105,'C^n',100,40)+label(635,105,'C^{n+1}',100,40)+label(775,105,'\\cdots',60,40);
+ out+=continuation(40,105,135,105)+label(205,105,'C^{n-1}',100,40)+label(420,105,'C^n',100,40)+label(635,105,'C^{n+1}',100,40)+continuation(705,105,803,105);
  out+=line(205,105,420,105,'r',true,'D')+line(420,105,635,105,'r',true,'D');
  out+='<rect x="175" y="180" width="490" height="265" rx="20" fill="#102630" stroke="#42616b"/><rect data-concept="cycles" class="cohomology-region" x="210" y="240" width="420" height="175" rx="18" fill="#14362f" stroke="#71e2d0"/><rect data-concept="boundaries" class="cohomology-region" x="245" y="315" width="350" height="70" rx="15" fill="#263747" stroke="#8fbeff"/>';
  out+=label(420,209,'C^n',190,40)+label(420,271,'Z^n=\\ker(D:C^n\\to C^{n+1})',380,40)+label(420,350,'B^n=\\operatorname{im}(D:C^{n-1}\\to C^n)',340,40);
@@ -157,7 +157,7 @@ function renderSlideState(){
  $('#next').textContent=cover?'开始阅读 →':state.reveal===0?'显示图示 →':state.reveal===1?'展开解释 →':'下一页 →';
  $('#fragmentTrack').innerHTML=cover?'<span>DEFINITIONS → CONVERGENCE</span>':['陈述','图示','解释'].map((t,i)=>`<button data-fragment="${i}" aria-pressed="${state.reveal===i}" class="${i<=state.reveal?'seen':''}">${t}</button>`).join('<i></i>');
  $('#stepTrack').innerHTML=(state.module==='initial'?`<button data-cover title="标题页" class="${cover?'active':''}" aria-label="标题页"></button>`:'')+Array.from({length:stepCount()},(_,i)=>`<button data-step="${i}" class="${!cover&&i===state.step?'active':''}" aria-label="转到第 ${i+1} 步" title="${esc((state.module==='initial'?initial:state.module==='converge'?convergence:[])[i]?.title||String(i+1))}"></button>`).join('');
- if(state.module==='initial'&&state.step===0)$('.legend').innerHTML='';
+ if(state.module==='initial'&&state.step===0)$('.legend').innerHTML='';if($('#diagram .continuation'))$('.legend').insertAdjacentHTML('beforeend','<span><i class="continuation-key"></i>虚线：中间项省略</span>');
  $('#sceneNote').hidden=cover||state.reveal<2;
  renderQuickCheck();applyConcept(state.pinned,false);
 }
@@ -218,3 +218,5 @@ function renderQuickCheck(){
  const entry=checks[state.module],el=$('#quickCheck');el.hidden=!entry||state.cover||state.reveal<2||state.step!==stepCount()-1;
  el.innerHTML=entry?`<summary><span>自检</span> · <span>${entry[0]}</span></summary><p>${entry[1]}</p>`:'';
 }
+
+function continuation(x1,y1,x2,y2){return `<path class="continuation" d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-continuation)" role="img" aria-label="延续箭头：省略中间项，不表示一次微分"><title>延续箭头：省略中间项，不表示一次微分</title></path>`;}
