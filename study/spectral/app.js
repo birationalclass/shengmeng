@@ -1,9 +1,9 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=25';
-import {translatePage,language,toggleLanguage} from './language.js?v=25';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=25';
-import {createPageEvolution} from './page-evolution.js?v=25';
-import {createSquareTrace} from './element-trace.js?v=25';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=26';
+import {translatePage,language,toggleLanguage} from './language.js?v=26';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=26';
+import {createPageEvolution} from './page-evolution.js?v=26';
+import {createSquareTrace} from './element-trace.js?v=26';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const squareTrace=createSquareTrace($('#diagram'));

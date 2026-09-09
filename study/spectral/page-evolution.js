@@ -9,12 +9,30 @@ export function createPageEvolution({viewport,diagram,controls,board,math,langua
  const geometry=()=>compact()?{x:110,y:360,dp:55,dq:64,yp:24,dr:400,count:2}:{x:55,y:345,dp:35,dq:54,yp:26,dr:210,count:4};
  const pos=(p,q,r)=>{const g=geometry();return [g.x+g.dp*p+g.dr*(r-start),g.y+g.yp*p-g.dq*q];};
  const color=r=>['#8fbeff','#71e2d0','#f4c876','#d9b7ec'][r%4];
+ // Hand off the whole source layer only when its projection has reached the
+ // destination. Crossfading earlier would draw E0 in two different positions.
+ function settleProjection(){
+  const ready=engaged&&tilted;
+  diagram.classList.toggle('evolution-settled',ready);
+  overlay.classList.toggle('is-tilted',ready);
+  diagram.inert=ready;
+ }
  function fit(animate=false){
   const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';
   const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*225,f=g.y-b*225-d*370;
   const target=tilted?`matrix(${a},${b},0,${d},${e*scale},${f*scale})`:'matrix(1,0,0,1,0,0)';
-  if(transformTarget!==target){transformTarget=target;const previous=getComputedStyle(diagram).transform;transformAnimation?.cancel();diagram.style.transform=target;if(animate&&!reduced.matches)transformAnimation=diagram.animate([{transform:previous},{transform:target}],{duration:900,easing:'cubic-bezier(.22,.68,.18,1)'});}
-  diagram.classList.toggle('evolution-tilted',tilted);overlay.classList.toggle('is-tilted',tilted);overlay.dataset.tilted=String(tilted);
+  if(transformTarget!==target){
+   const previous=getComputedStyle(diagram).transform,wasSettled=diagram.classList.contains('evolution-settled');
+   transformAnimation?.cancel();transformAnimation=null;transformTarget=target;
+   diagram.classList.remove('evolution-settled');overlay.classList.remove('is-tilted');diagram.inert=false;
+   diagram.style.transform=target;
+   if(animate&&!reduced.matches){
+    const motion=diagram.animate([{transform:previous},{transform:target}],{duration:900,delay:!tilted&&wasSettled?160:0,fill:'backwards',easing:'cubic-bezier(.22,.68,.18,1)'});
+    transformAnimation=motion;
+    motion.finished.then(()=>{if(transformAnimation===motion)settleProjection();},()=>{});
+   }else settleProjection();
+  }else if(!transformAnimation||transformAnimation.playState==='finished')settleProjection();
+  diagram.classList.toggle('evolution-tilted',tilted);overlay.dataset.tilted=String(tilted);
  }
  function pageMarkup(r){
   const g=geometry(),c=color(r),corners=[[0,0],[4,0],[4,4],[0,4]].map(([p,q])=>pos(p,q,r).join(',')).join(' '),origin=pos(0,0,r);
@@ -38,7 +56,7 @@ export function createPageEvolution({viewport,diagram,controls,board,math,langua
    if(start>0)out+=`<text class="evolution-axis-label" x="10" y="${g.y-9}">⋯</text>`;
    for(let r=start;r<=Math.min(generated,start+g.count-1);r++)out+=pageMarkup(r);
    const pAxis=pos(4.6,0,start),qAxis=pos(0,4.5,start),o=pos(0,0,start);
-   if(start>0)out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/>`;
+   out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/>`;
    out+=`<text class="evolution-axis-label" x="${pAxis[0]+8}" y="${pAxis[1]}">p</text><text class="evolution-axis-label" x="${qAxis[0]-18}" y="${qAxis[1]}">q</text></svg>`;
    overlay.innerHTML=out;projectionKey=key;
    if(newPage!==null&&!reduced.matches){const page=overlay.querySelector(`[data-r="${newPage}"]`);if(page){const animation=page.animate([{opacity:0,transform:`translateX(${-g.dr}px)`},{opacity:1,transform:'translateX(0)'}],{duration:850,easing:'cubic-bezier(.22,.68,.18,1)'});layerAnimations.push(animation);}}
@@ -59,10 +77,16 @@ export function createPageEvolution({viewport,diagram,controls,board,math,langua
  }
  const subscript=n=>String(n).replace(/\d/g,x=>'₀₁₂₃₄₅₆₇₈₉'[+x]);
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
- function cancel(){token++;transformAnimation?.cancel();layerAnimations.forEach(a=>a.cancel());layerAnimations=[];busy=false;}
+ function cancel(){
+  token++;
+  if(transformAnimation&&transformAnimation.playState!=='finished'){
+   const frame=getComputedStyle(diagram).transform;transformAnimation.cancel();diagram.style.transform=frame;transformTarget='';
+  }
+  transformAnimation=null;layerAnimations.forEach(a=>a.cancel());layerAnimations=[];busy=false;
+ }
  async function unfold(goal){
   const run=++token;busy=true;manualBoard=context.module!=='converge'||manualBoard;
-  if(!tilted){tilted=true;current=0;start=0;fit(true);drawPages();paintControls();if(context.module!=='converge'||manualBoard)exposition();await wait(950);if(run!==token)return;}
+  if(!tilted){tilted=true;current=0;start=0;fit(true);drawPages();paintControls();if(context.module!=='converge'||manualBoard)exposition();await wait(1100);if(run!==token)return;}
   while(generated<goal){generated++;current=generated;start=Math.max(0,generated-geometry().count+1);projectionKey='';drawPages(generated);paintControls();if(context.module!=='converge'||manualBoard)exposition();await wait(880);if(run!==token)return;}
   busy=false;current=goal;start=Math.max(0,current-geometry().count+1);drawPages();paintControls();if(context?.module!=='converge'||manualBoard)exposition();
  }
