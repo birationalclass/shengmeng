@@ -31,7 +31,7 @@ export function pageStackMarkup({start=0,current=0,p=1,q=2,lang='zh',compact=fal
   out+=`<path class="stack-tick" d="M${origin[0]},${baseY-4} v8"/><text class="stack-axis-tick" x="${origin[0]-8}" y="${baseY+21}" text-anchor="end">${r}</text></g>`;
  }
  const origin=point(0,0,0);
- out+=`<path class="stack-axis" d="${path(origin,point(4.6,0,0))}"/><path class="stack-axis" d="${path(origin,point(0,4.6,0))}"/><text class="stack-axis-name" x="${point(4.6,0,0)[0]+9}" y="${point(4.6,0,0)[1]+3}">p</text><text class="stack-axis-name" x="${point(0,4.6,0)[0]}" y="${point(0,4.6,0)[1]-8}">q</text>`;
+ out+=`<path class="stack-axis" d="${path(origin,point(4.6,0,0))}"/><path class="stack-axis" d="${path(origin,point(0,4.6,0))}"/><text class="stack-axis-name" x="${point(4.6,0,0)[0]+9}" y="${point(4.6,0,0)[1]+3}">p</text><text class="stack-axis-name" x="${point(0,4.6,0)[0]-24}" y="${point(0,4.6,0)[1]-8}">q</text>`;
  for(let i=1;i<=4;i++){let a=point(i,0,0),b=point(0,i,0);out+=`<text class="stack-axis-tick" x="${a[0]}" y="${a[1]+20}" text-anchor="middle">${i}</text>`;if(i)out+=`<text class="stack-axis-tick" x="${b[0]-12}" y="${b[1]-4}">${i}</text>`;}
  out+='</svg>';
  const targetP=p+current,targetQ=q-current+1;

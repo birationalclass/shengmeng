@@ -1,8 +1,8 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=17';
-import {translatePage,language,toggleLanguage} from './language.js?v=17';
-import {operationMarkup,viewNames,actionNames} from './workbench.js?v=17';
-import {pageStackMarkup} from './page-stack.js?v=17';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=18';
+import {translatePage,language,toggleLanguage} from './language.js?v=18';
+import {operationMarkup,viewNames,actionNames} from './workbench.js?v=18';
+import {pageStackMarkup} from './page-stack.js?v=18';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const NODE_HALF_W=34,NODE_HALF_H=19;
