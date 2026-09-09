@@ -140,3 +140,7 @@ Term nodes no longer participate in the diagram-wide concept selector. Hover and
 ## Typeset page diagrams (v29)
 
 Page titles, selected terms, differentials and coordinate labels now use KaTeX with proper mathematical fonts and scripts, as do mathematical symbols in the controls. Native page selectors use localized page numbers. Each projected page places its SVG geometry and HTML mathematics inside one moving layer, keeping labels aligned during page formation and resizing in Chromium and WebKit. Checks include narrow screens, bilingual controls and multi-digit page indices.
+
+## Reveal only reached statements (v31)
+
+The coordinate introduction starts with no statement headers. Definition 1.1, its components, and subsequent propositions appear only when reached. Previously read statements remain available as collapsible cards; unseen cards are hidden and inert. A small Next control accompanies the existing keyboard navigation, including access to the optional examples. Language changes preserve progress; returning to the cover resets the reading sequence.
