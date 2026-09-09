@@ -1,4 +1,4 @@
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=32';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=33';
 let lang=localStorage.getItem('spectral-language')==='en'?'en':'zh';
 export const language=()=>lang;
 export function toggleLanguage(){lang=lang==='zh'?'en':'zh';localStorage.setItem('spectral-language',lang);}

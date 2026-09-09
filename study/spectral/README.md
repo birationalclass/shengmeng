@@ -150,3 +150,11 @@ The coordinate introduction starts with no statement headers. Definition 1.1, it
 A settings button in the workspace header controls the left-hand accordion cards. The default is a 900 ms height-and-opacity transition; slide-only and no-animation options are available, with duration from 300 to 1800 ms. The panel includes a manual preview, saved browser preferences and a reset action. System reduced motion takes precedence.
 
 Statement bodies and definition components use a shared, cancellable height animation. Reversing a fold starts at its current height. Hidden content becomes inert immediately, and is removed from layout when closing finishes. Changing motion preferences or resizing settles running folds; diagram timelines remain independent. Chromium and WebKit checks cover manual and automatic folds, reversals, preview, keyboard isolation, persistence, language changes, narrow screens and reduced motion.
+
+## Integrated figure controls and visible cohomology (v33)
+
+The figure and its controls now share one bordered module. Controls wrap at their natural height, and the mathematical exposition follows below. Page controls are shown only for page-related content; convergence statements recover the corresponding filtered-complex or stable-page diagram instead of retaining unrelated E0/E1/E2 planes. Small screens scroll the complete workspace rather than clipping controls or the notebook.
+
+Taking cohomology is now an explicit four-stage interaction: the local incoming/outgoing complex, the outgoing kernel, the incoming image inside that kernel, and the quotient. The original source plane remains visible. Two representatives z and z+b travel to the same class; only the outgoing kernel is the domain of the quotient projection. Confirming the quotient assembles the next page point by point. No new page is created just by hovering or advancing a statement.
+
+The formulas use page kernels and images directly, avoiding confusion with the filtered-complex Z_r and B_r. Negative-index terms are zero, while positive indices outside the display window remain actual terms. Checks cover E0 to E1, general-page bidegrees, zero incoming/outgoing spaces, representative motion, projection handoff, responsive controls and synchronized exposition in Chromium and WebKit.

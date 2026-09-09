@@ -1,10 +1,10 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=32';
-import {translatePage,language,toggleLanguage} from './language.js?v=32';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=32';
-import {createPageEvolution} from './page-evolution.js?v=32';
-import {createNotebookMotion} from './notebook-motion.js?v=32';
-import {createSquareTrace} from './element-trace.js?v=32';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=33';
+import {translatePage,language,toggleLanguage} from './language.js?v=33';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=33';
+import {createPageEvolution} from './page-evolution.js?v=33';
+import {createNotebookMotion} from './notebook-motion.js?v=33';
+import {createSquareTrace} from './element-trace.js?v=33';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const GRID_ORIGIN={x:170,y:370};
@@ -200,7 +200,7 @@ $('#explanation').addEventListener('click',e=>{
 function initialConcept(){return ['space','delta1','delta2','square1','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
 function keepReadingVisible(card){
  cancelAnimationFrame(definitionScrollFrame);
- const pane=$('.explanation'),until=performance.now()+notebookMotion.duration()+50;
+ const pane=matchMedia('(max-width:780px)').matches?$('.slide-body'):$('.explanation'),until=performance.now()+notebookMotion.duration()+50;
  if(!card){pane.scrollTop=0;return;}
  const follow=()=>{if(!card.isConnected||card.hidden)return;const r=card.getBoundingClientRect(),b=pane.getBoundingClientRect();if(r.height>b.height-24){pane.scrollTop+=r.top-b.top-8;}else if(r.bottom>b.bottom)pane.scrollTop+=r.bottom-b.bottom+12;else if(r.top<b.top)pane.scrollTop+=r.top-b.top-12;if(performance.now()<until)definitionScrollFrame=requestAnimationFrame(follow);};follow();
 }
@@ -332,9 +332,13 @@ function fixedDiagram(){
   if(s>=2)caption=raw`E_\infty^{${p},${n-p}}\cong F^{${p}}H^{${n}}/F^{${p+1}}H^{${n}}`;
   if(s===1)caption=raw`p+r>${n+1}\;\Longrightarrow\;F^{p+r}C^{${n+1}}=0`;
  }
- if(['learn','converge'].includes(m)){kind='E_0';h=false;v=true;total=false;filter=false;selected=false;edges='';overlay='';}
+ if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=true;total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&state.effect==='totalmap')||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
  if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(showNext&&!filter?420:500,16,filter?raw`F^{${p}}C^{${n}}`:totalDegreeTex(n),filter?130:230,26,true)}</g>`;}
+ if(m==='converge'&&s===1){
+  const cutoff=p+Math.max(1,state.r),zero=cutoff>n+1;
+  overlay+=`<g class="next-total convergence-target" data-zero="${zero}">${diagonal(n+1,cutoff,true,false)}${label(620,20,`F^{${cutoff}}C^{${n+1}}${zero?'=0':''}`,240,30,true)}</g>`;
+ }
  if(m==='learn'&&s===2&&a>=2)overlay+=`<g class="denominator-region">${diagonal(n,p+1,true,false)}</g>`;
  if(showNext)overlay+=`<g class="next-total">${diagonal(n+1,filter?p:0,true,false)}</g>`;
  if(m==='learn'&&s===0&&a===2&&n>0)overlay+=`<g class="next-total">${diagonal(n-1,0,true,false)}</g>`;
