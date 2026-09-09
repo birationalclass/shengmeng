@@ -144,3 +144,9 @@ Page titles, selected terms, differentials and coordinate labels now use KaTeX w
 ## Reveal only reached statements (v31)
 
 The coordinate introduction starts with no statement headers. Definition 1.1, its components, and subsequent propositions appear only when reached. Previously read statements remain available as collapsible cards; unseen cards are hidden and inert. A small Next control accompanies the existing keyboard navigation, including access to the optional examples. Language changes preserve progress; returning to the cover resets the reading sequence.
+
+## Notebook animation settings (v32)
+
+A settings button in the workspace header controls the left-hand accordion cards. The default is a 900 ms height-and-opacity transition; slide-only and no-animation options are available, with duration from 300 to 1800 ms. The panel includes a manual preview, saved browser preferences and a reset action. System reduced motion takes precedence.
+
+Statement bodies and definition components use a shared, cancellable height animation. Reversing a fold starts at its current height. Hidden content becomes inert immediately, and is removed from layout when closing finishes. Changing motion preferences or resizing settles running folds; diagram timelines remain independent. Chromium and WebKit checks cover manual and automatic folds, reversals, preview, keyboard isolation, persistence, language changes, narrow screens and reduced motion.

@@ -188,15 +188,15 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .is-building .initial-definition:not(.definition-current) .initial-assumptions{font-size:12px}
 .build-statement{transform-origin:top left}
 .is-coordinate-prelude{visibility:hidden;opacity:0;pointer-events:none}
-.slide-deck:not(.is-building) .formal-statement>.math-block{font-size:15px}
-.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:21px}
+.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block{font-size:15px}
+.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block.definition-current{font-size:21px}
 /* A bare coordinate frame precedes K. Indexed symbols then replace positive ticks. */
 #diagram.frame-only #diagram-terms,#diagram.frame-only .term-label{visibility:hidden;opacity:0!important;pointer-events:none}
 #diagram.frame-only .coordinate-axes{mask:none}
 #diagram .axis-tick{transition:opacity .12s ease-out}
 #diagram .axis-tick.redundant-coordinate{opacity:0;pointer-events:none}
 #diagram .term-label{transition:opacity .2s ease}
-@media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}.is-building .build-card.build-current h4{font-size:17px}.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:18px}}
+@media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}.is-building .build-card.build-current h4{font-size:17px}.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block.definition-current{font-size:18px}}
 @media(max-width:780px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:19px}.is-building .initial-definition.definition-current h3{font-size:26px}.is-building .initial-definition.definition-current .initial-assumptions{font-size:17px}.stack-layer-tab{display:block}}
 @media(prefers-reduced-motion:reduce){#diagram .axis-tick,#diagram .term-label{transition:none}}
 
@@ -250,22 +250,22 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .notebook-workspace .statement-title{margin:12px 0 8px!important;font-size:21px!important}
 .notebook-workspace .statement-title button,.notebook-workspace .build-heading h4 button{all:unset;display:block;cursor:pointer;color:inherit;font:inherit;text-align:left;width:100%}
 .notebook-workspace .notebook-card:not(.is-active){border-left-color:#3b5861}
-.notebook-workspace .notebook-card[data-open=false]>:not(.statement-heading):not(.statement-title){display:none!important}
+
 .notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:17px!important;color:#a7c2c9}
 .notebook-workspace .notebook-card.is-active .statement-title{color:#e0f3ee}
 .notebook-workspace .build-heading{display:flex;align-items:center;gap:10px;min-height:32px}
 .notebook-workspace .build-heading h4{flex:1;margin:0!important}
 .notebook-workspace .build-card{padding:8px 0;cursor:default}
-.notebook-workspace .build-card[data-open=false] .build-content{display:none}
-.notebook-workspace .build-content{animation:notebook-content-in .22s ease}
-.notebook-workspace .notebook-card[data-open=true]>.initial-definition{animation:notebook-content-in .22s ease}
+
+
+
 .notebook-workspace .quick-check{position:static;margin-top:12px}
-.notebook-workspace .formal-statement>.math-block{font-size:15px}
-.notebook-workspace .formal-statement>.math-block.definition-current{font-size:21px}
+.notebook-workspace .formal-statement>.statement-body>.math-block{font-size:15px}
+.notebook-workspace .formal-statement>.statement-body>.math-block.definition-current{font-size:21px}
 .notebook-workspace .build-card[data-open=false] h4{font-size:14px}
 .notebook-workspace .build-card.build-current[data-open=false] h4{color:var(--teal)}
 @keyframes notebook-content-in{from{opacity:0}to{opacity:1}}
-@media(max-width:780px){.notebook-workspace .statement-title{font-size:19px!important}.notebook-workspace .formal-statement>.math-block.definition-current{font-size:18px}.notebook-workspace .statement-heading{font-size:14px}.notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:15px!important}}
+@media(max-width:780px){.notebook-workspace .statement-title{font-size:19px!important}.notebook-workspace .formal-statement>.statement-body>.math-block.definition-current{font-size:18px}.notebook-workspace .statement-heading{font-size:14px}.notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:15px!important}}
 @media(prefers-reduced-motion:reduce){.statement-toggle svg,.build-toggle svg{transition:none}.notebook-workspace .build-content,.notebook-workspace .notebook-card[data-open=true]>.initial-definition{animation:none}}
 
 /* A single continuous mathematical notebook; no section tabs or page switching. */
@@ -319,3 +319,20 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .notebook-workspace .notebook-card[hidden],.notebook-workspace .build-card[hidden],#noteNext[hidden]{display:none!important}
 .note-next{margin:18px 0 6px;padding:9px 0;min-width:92px;background:transparent;border:0;border-bottom:1px solid #678f8877;border-radius:0;color:#b9e1d6;font:12px system-ui,sans-serif;letter-spacing:.6px;cursor:pointer}
 .note-next:hover{color:#e8f7f2;border-bottom-color:#a6d8ca}.note-next:focus-visible{outline:1px solid #a6d8ca;outline-offset:4px}
+
+/* One controller animates body height, including interrupted and reversed folds. */
+.statement-body,.build-content,.accordion-body{display:flow-root}
+.statement-body[hidden],.build-content[hidden],.accordion-body[hidden]{display:none!important}
+.accordion-moving{overflow:hidden;will-change:height,opacity}
+.notebook-workspace .statement-toggle svg,.notebook-workspace .build-toggle svg{transition-duration:var(--notebook-motion-time,900ms)}
+html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .explanation *::before,html[data-notebook-motion=none] .explanation *::after{transition:none!important;animation:none!important}
+.settings-button{display:grid;place-items:center;min-width:32px}.settings-button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.4}.settings-button circle{fill:#102630}
+#motionSettings{width:min(440px,calc(100% - 32px));padding:24px;max-height:calc(100dvh - 40px);border-color:#42636b;background:linear-gradient(140deg,#1a343ded,#10252bf5);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 24px 90px #0006}
+#motionSettings::backdrop{background:#031015a6;backdrop-filter:blur(4px)}
+#motionSettings .dialog-head h2{font:22px Georgia,'Songti SC',serif;margin:0}#closeMotionSettings{border:0;background:transparent;font-size:23px;padding:0 5px;color:#9db9c2}
+#motionSettings .motion-scope{font-size:12px;margin:12px 0 24px;color:#9fbac1}
+.motion-setting{display:grid;grid-template-columns:1fr auto;align-items:center;gap:13px;margin:22px 0;font-size:13px}.motion-setting select{padding:7px 10px;font-size:12px;max-width:185px}.motion-speed input{grid-column:1/-1;width:100%;accent-color:#83cbbd}.motion-speed output{font:12px ui-monospace,monospace;color:#a8d5ca}
+#motionReduced{font-size:11px;color:#aec9ce}.motion-preview{border:1px solid #42616c88;border-radius:7px;padding:13px 15px;background:#a6ddd507}.motion-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#a5c7c8}.motion-preview-heading button{padding:5px 9px;font-size:11px;background:transparent}
+#motionPreviewText{font-size:12px;line-height:1.8;margin:16px 0;color:#c5dbdc}.motion-preview-lines{display:grid;gap:8px;padding:0 0 16px}.motion-preview-lines i{height:4px;border-radius:3px;background:#80b3ad33}.motion-preview-lines i:last-child{width:68%}
+.motion-settings-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}.motion-settings-footer span{font-size:10px;color:#8faeb4}.motion-settings-footer button{padding:5px 0;font-size:11px;background:transparent;border:0;color:#a4d2c7}
+@media(prefers-reduced-motion:reduce){.accordion-moving{will-change:auto}}
