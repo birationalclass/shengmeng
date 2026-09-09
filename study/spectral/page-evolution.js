@@ -1,11 +1,11 @@
-import {cohomologyView,cohomologyExposition} from './cohomology-view.js?v=33';
+import {cohomologyExposition} from './cohomology-view.js?v=35';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh,reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const overlay=document.createElement('div');overlay.id='pageEvolution';overlay.hidden=true;viewport.append(overlay);
  const toolbar=document.createElement('nav');toolbar.id='evolutionControls';toolbar.hidden=true;controls.prepend(toolbar);
- let context=null,engaged=false,tilted=false,generated=0,current=0,start=0,semanticKey='',token=0,busy=false,construction=null,lastConstructionPaint='',point={p:1,q:2},transformAnimation=null,scale=1,projectionKey='',transformTarget='',layerAnimations=[];
+ let context=null,engaged=false,tilted=false,generated=0,current=0,start=0,semanticKey='',token=0,busy=false,construction=null,point={p:1,q:2},transformAnimation=null,scale=1,projectionKey='',transformTarget='',layerAnimations=[];
  const compact=()=>matchMedia('(max-width:780px)').matches;
  const geometry=()=>compact()?{x:110,y:360,dp:55,dq:64,yp:24,dr:400,count:2}:{x:55,y:345,dp:35,dq:54,yp:26,dr:210,count:4};
  const pos=(p,q,r)=>{const g=geometry();return [g.x+g.dp*p+g.dr*(r-start),g.y+g.yp*p-g.dq*q];};
@@ -72,7 +72,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  function drawPages(newPage=null){
   const g=geometry();start=Math.max(0,Math.min(start,Math.max(0,generated-g.count+1)));
   if(current<start)start=current;else if(current>=start+g.count)start=current-g.count+1;
-  const key=[start,Math.min(generated,start+g.count-1),current,point.p,point.q,language(),compact(),construction?.r,construction?.phase].join(':');
+  const key=[start,Math.min(generated,start+g.count-1),current,point.p,point.q,language(),compact(),construction?.r].join(':');
   if(key!==projectionKey){
    let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;
@@ -83,20 +83,28 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
    const pAxis=pos(4.6,0,start),qAxis=pos(0,4.5,start),o=pos(0,0,start);
    out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/></svg>`;
    labels+=mathLabel(pAxis[0]+8,pAxis[1]-5,'p','evolution-axis-label',{width:24,height:24})+mathLabel(qAxis[0]-18,qAxis[1]-5,'q','evolution-axis-label',{width:24,height:24});
-   const focus=construction?cohomologyView({...construction,point,mathLabel,t}):null;
-   overlay.classList.toggle('cohomology-active',!!construction);
-   overlay.innerHTML=`<div class="evolution-scene">${out}${pages}${focus?`<div class="cohomology-layer"><svg viewBox="0 0 840 525">${focus.svg}</svg>${focus.labels}</div>`:''}<div class="evolution-axis-labels" aria-hidden="true">${labels}</div></div>`;projectionKey=key;
+   overlay.innerHTML=`<div class="evolution-scene">${out}${pages}<div class="evolution-axis-labels" aria-hidden="true">${labels}</div></div>`;projectionKey=key;
    if(newPage!==null&&!reduced.matches){
-    const timing={duration:850,easing:'cubic-bezier(.22,.68,.18,1)'},frames=[{opacity:0,transform:`translateX(${-g.dr}px)`},{opacity:1,transform:'translateX(0)'}],begin=document.timeline.currentTime;
-    for(const el of overlay.querySelectorAll(`[data-layer-r="${newPage}"]`)){const animation=el.animate(frames,timing);animation.startTime=begin;layerAnimations.push(animation);}
-    for(const node of overlay.querySelectorAll(`[data-r="${newPage}"] .evolution-point`)){layerAnimations.push(node.animate([{opacity:0},{opacity:1}],{duration:450,delay:35*Number(node.dataset.p)+20*Number(node.dataset.q),fill:'backwards'}));}
-   }
-  }
-  const focusKey=construction?`${construction.r}:${construction.phase}:${point.p}:${point.q}`:'';
-  if(focusKey!==lastConstructionPaint){lastConstructionPaint=focusKey;
-   if(construction&&!reduced.matches){
-    for(const el of overlay.querySelectorAll('.co-kernel,.co-image,.co-quotient'))layerAnimations.push(el.animate([{opacity:0},{opacity:1}],{duration:400,easing:'ease-out'}));
-    for(const el of overlay.querySelectorAll('.co-traveller'))layerAnimations.push(el.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${el.dataset.dx}px,${el.dataset.dy}px)`,opacity:1,offset:.85},{transform:`translate(${el.dataset.dx}px,${el.dataset.dy}px)`,opacity:0}],{duration:1000,easing:'cubic-bezier(.33,0,.2,1)',fill:'forwards'}));
+    // The new page remains a distinct object. Columns pulse on the source;
+    // cohomology terms appear at the same (p,q) on the new r-plane.
+    // No arrow or vector trajectory from all of E_r to E_{r+1} is implied.
+    const layer=overlay.querySelector(`[data-layer-r="${newPage}"]`),sourcePage=newPage-1;
+    if(layer){
+     layerAnimations.push(layer.animate([{opacity:0,transform:`translateX(${-g.dr*.32}px)`},{opacity:1,transform:'translateX(0)'}],{duration:1000,easing:'cubic-bezier(.22,.68,.18,1)'}));
+     for(const node of layer.querySelectorAll('.evolution-point')){
+      const p=Number(node.dataset.p),q=Number(node.dataset.q),delay=380+150*(sourcePage===1?q:p)+55*(sourcePage===1?p:q);
+      layerAnimations.push(node.animate([{opacity:0},{opacity:1}],{duration:520,delay,fill:'backwards'}));
+      const circle=node.querySelector('.evolution-dot'),cx=circle.getAttribute('cx'),cy=circle.getAttribute('cy');
+      circle.style.transformOrigin=`${cx}px ${cy}px`;
+      layerAnimations.push(circle.animate([{transform:'scale(.3)'},{transform:'scale(1.6)',offset:.65},{transform:'scale(1)'}],{duration:620,delay,fill:'backwards',easing:'ease-out'}));
+     }
+     for(const el of layer.querySelectorAll('.evolution-differential,.evolution-d-label'))layerAnimations.push(el.animate([{opacity:0},{opacity:1}],{duration:450,delay:1300,fill:'backwards'}));
+     for(const el of layer.querySelectorAll('.evolution-point-label'))layerAnimations.push(el.animate([{opacity:0},{opacity:1}],{duration:450,delay:650,fill:'backwards'}));
+    }
+    for(const el of overlay.querySelectorAll(`[data-r="${sourcePage}"] .evolution-dot`)){
+     const term=el.parentElement,group=sourcePage===1?Number(term.dataset.q):Number(term.dataset.p);
+     layerAnimations.push(el.animate([{opacity:.55},{opacity:1,fill:'#f4c876',offset:.45},{opacity:.68}],{duration:700,delay:150*group,easing:'ease-in-out'}));
+    }
    }
   }
   fit();window.spectralEvolution={engaged,tilted,generated,current,start,busy,point:{...point},construction:construction?{...construction}:null};
@@ -112,10 +120,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  }
  function paintControls(){
   toolbar.hidden=!engaged;
-  if(construction){
-   const names=[t('复形','Complex'),t('取核','Kernel'),t('像 ⊆ 核','Image ⊆ kernel'),t('取商','Quotient')];
-   toolbar.innerHTML=`<div class="co-step-controls" aria-label="${t('上同调构造','Cohomology construction')}">${names.map((name,i)=>`<button data-co-phase="${i}" aria-pressed="${construction.phase===i}"><small>${i+1}</small> ${name}</button>`).join('')}</div><div class="co-navigation"><button data-evolve="cancel">${t('返回各页','Back to pages')}</button><button class="evolution-generate" data-evolve="advance" ${busy?'disabled':''}>${construction.phase===3?t('逐项组成 ','Assemble ')+math(`E_{${construction.r+1}}`):names[construction.phase+1]+' →'}</button></div>`;
-  }else toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}">${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button>`;
+  toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}" ${busy?'disabled':''}>${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><div class="evolution-view-controls">${construction?`<button data-evolve="replay" ${busy?'disabled':''}>${t('重播生成','Replay')} ${math(`E_{${construction.r+1}}`)}</button>`:''}<button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button></div>`;
  }
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
  function cancel(){
@@ -123,18 +128,14 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(transformAnimation&&transformAnimation.playState!=='finished'){
    const frame=getComputedStyle(diagram).transform;transformAnimation.cancel();diagram.style.transform=frame;transformTarget='';
   }
-  transformAnimation=null;layerAnimations.forEach(a=>a.cancel());layerAnimations=[];busy=false;construction=null;lastConstructionPaint='';
+  transformAnimation=null;layerAnimations.forEach(a=>a.cancel());layerAnimations=[];busy=false;construction=null;
  }
  async function beginCohomology(r=current){
-  cancel();const run=token;current=r;start=r;const needTilt=!tilted;tilted=true;busy=needTilt;projectionKey='';fit(needTilt);drawPages();paintControls();exposition();
+  cancel();const run=token,needTilt=!tilted;current=r;start=Math.max(0,r-geometry().count+2);tilted=true;busy=true;projectionKey='';fit(needTilt);drawPages();paintControls();exposition();
   if(needTilt){await wait(1100);if(run!==token)return;}
-  busy=false;construction={r,phase:0};projectionKey='';drawPages();paintControls();exposition();
- }
- async function advanceCohomology(){
-  if(!construction||busy)return;
-  if(construction.phase<3){construction.phase++;drawPages();paintControls();exposition();return;}
-  const goal=construction.r+1,run=++token;busy=true;construction=null;generated=Math.max(generated,goal);current=goal;start=Math.max(0,goal-geometry().count+1);projectionKey='';drawPages(goal);paintControls();exposition();
-  await wait(880);if(run!==token)return;busy=false;drawPages();paintControls();
+  const goal=r+1;generated=Math.max(generated,goal);current=goal;start=Math.max(0,goal-geometry().count+1);construction={r,phase:3};projectionKey='';
+  drawPages(goal);paintControls();exposition();
+  await wait(1850);if(run!==token)return;busy=false;drawPages();paintControls();
  }
  function sync(s){
   context=s;
@@ -146,18 +147,18 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(key!==semanticKey){semanticKey=key;cancel();
    if(s.module==='initial'||s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}
    else if(generated===0){beginCohomology(0);}
-   else{current=Math.min(generated,s.step===4?1:Math.max(1,s.r));start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
+   else{current=Math.min(generated,s.step===4?1:Math.max(1,s.r));construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
   }
   drawPages();paintControls();exposition();
  }
  toolbar.addEventListener('click',e=>{
-  const phase=e.target.closest('[data-co-phase]');if(phase&&construction&&!busy){construction.phase=Number(phase.dataset.coPhase);drawPages();paintControls();exposition();return;}
   const button=e.target.closest('[data-evolve]');if(!button)return;const action=button.dataset.evolve;
-  if(action==='next'&&!busy){beginCohomology();return;}if(action==='advance'){advanceCohomology();return;}
-  if(['flat','tilt','cancel'].includes(action)){cancel();tilted=action!=='flat';if(action!=='cancel'){current=0;start=0;}projectionKey='';fit(true);drawPages();paintControls();exposition();}
+  if(action==='next'&&!busy){beginCohomology();return;}if(action==='replay'&&construction&&!busy){beginCohomology(construction.r);return;}
+  if(['flat','tilt'].includes(action)){cancel();tilted=action!=='flat';current=0;start=0;projectionKey='';fit(true);drawPages();paintControls();exposition();}
  });
- toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});
- const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;current=Number(target.dataset.page);if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
+ toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});
+ const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;const selectedPage=Number(target.dataset.page);if(!construction||![construction.r,construction.r+1].includes(selectedPage)){current=selectedPage;construction=current>0?{r:current-1,phase:3}:null;}if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
+ board.addEventListener('click',e=>{const phase=e.target.closest('[data-co-phase]');if(!phase||!construction)return;e.stopPropagation();construction.phase=Number(phase.dataset.coPhase);drawPages();exposition();});
  overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);
  reduced.addEventListener('change',e=>{if(e.matches){transformAnimation?.finish();layerAnimations.forEach(a=>a.finish());}});

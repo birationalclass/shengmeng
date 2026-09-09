@@ -2,7 +2,7 @@ import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=33';
 import {translatePage,language,toggleLanguage} from './language.js?v=33';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=33';
-import {createPageEvolution} from './page-evolution.js?v=33';
+import {createPageEvolution} from './page-evolution.js?v=35';
 import {createNotebookMotion} from './notebook-motion.js?v=33';
 import {createSquareTrace} from './element-trace.js?v=33';
 const $=s=>document.querySelector(s),raw=String.raw;

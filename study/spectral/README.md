@@ -158,3 +158,9 @@ The figure and its controls now share one bordered module. Controls wrap at thei
 Taking cohomology is now an explicit four-stage interaction: the local incoming/outgoing complex, the outgoing kernel, the incoming image inside that kernel, and the quotient. The original source plane remains visible. Two representatives z and z+b travel to the same class; only the outgoing kernel is the domain of the quotient projection. Confirming the quotient assembles the next page point by point. No new page is created just by hovering or advancing a statement.
 
 The formulas use page kernels and images directly, avoiding confusion with the filtered-complex Z_r and B_r. Negative-index terms are zero, while positive indices outside the display window remain actual terms. Checks cover E0 to E1, general-page bidegrees, zero incoming/outgoing spaces, representative motion, projection handoff, responsive controls and synchronized exposition in Chromium and WebKit.
+
+## Visible page generation and lower mathematical exposition (v35)
+
+The unframed figure has responsive top spacing. Entering the E1 proposition, or choosing to take cohomology, now runs one finite animation that forms the next page. Source terms pulse, the next plane unfolds, its cohomology terms appear in sequence, and its differential appears afterward. E0 uses columns, E1 uses rows; these are page objects rather than a claimed linear map between whole pages. Replay is explicit and reduced motion skips the animation.
+
+The local complex, kernel, image inclusion, and quotient are optional tabs inside the mathematical exposition below the figure. Changing a principle does not hide the generated page or restart its animation. The quotient projection has domain ker(d_r), and the displayed E1 identification retains H^q(K^{p,bullet},delta_2). Generated pages remain visible while inspecting the principles.
