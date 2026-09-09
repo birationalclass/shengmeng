@@ -132,3 +132,7 @@ The moving source reaches the projected E0 position before the page view crossfa
 ## Centered source grid (v27)
 
 The two-dimensional 0–4 grid is centered in its viewport with origin x=170 instead of x=225. Axis extents and continuation arrows derive from that origin. The projection renderer receives the same origin, preserving the source-to-E0 correspondence. Element traces retain their actual source coordinates when reduced motion is enabled mid-animation.
+
+## Local term hover (v28)
+
+Term nodes no longer participate in the diagram-wide concept selector. Hover and keyboard focus add only a local border highlight, preserving the active differential, total-degree/filtration region, exposition and element trace. Click/Space inspection remains available; Enter retains the notebook's next-item behavior. Chromium and WebKit checks verify six mathematical views and an uninterrupted square-zero trace.
