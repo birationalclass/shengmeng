@@ -206,3 +206,27 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 @media(max-width:780px){.diagram-views{min-height:27px;gap:3px}.diagram-views button{padding:3px 6px;font-size:9px}.page-window{font-size:9px}.page-window button{font-size:12px;min-width:23px}#pageRelation{font-size:10px;min-height:19px}#pageRelation small{display:none}.has-page-stack .diagram-scope{font-size:10px;height:21px;min-height:21px}.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:376px;grid-template-rows:minmax(224px,1fr) 26px 92px 25px}}
 .stack-page-select{display:flex;align-items:center;gap:3px}.stack-page-select select{font:11px ui-monospace,monospace;padding:2px 4px;min-width:34px;background:#10262f;border:1px solid #56727a;color:#d0e4e5;border-radius:3px}
 @media(max-width:780px){.stack-layer-tab{display:none}.stack-window-label{display:none}.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:400px;grid-template-rows:minmax(248px,1fr) 26px 92px 25px}}
+
+/* Reading hierarchy changes only on a stage advance, never on hover. */
+.is-building .build-card h4{font-size:12px;color:#a9c0c7}
+.is-building .build-card .math-block,.is-building .build-card .relation-choice{font-size:14px}
+.is-building .build-card.build-current h4{font-size:19px;color:#d8f0eb}
+.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:23px}
+.is-building .initial-definition h3{font-size:20px;margin:14px 0 8px}
+.is-building .initial-definition.definition-current h3{font-size:29px;color:#e2f3ef}
+.is-building .initial-definition.definition-current .initial-assumptions{font-size:20px}
+.is-building .initial-definition:not(.definition-current) .initial-assumptions{font-size:12px}
+.coordinate-prelude-title{display:none;font:25px Georgia,'Songti SC',serif;color:#d3e6e5;margin:24px 0}
+.is-coordinate-prelude .coordinate-prelude-title{display:block}
+.is-coordinate-prelude .statement-heading{visibility:hidden}
+.slide-deck:not(.is-building) .formal-statement>.math-block{font-size:15px}
+.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:21px}
+/* A bare coordinate frame precedes K. Indexed symbols then replace positive ticks. */
+#diagram.frame-only #diagram-terms,#diagram.frame-only .term-label{visibility:hidden;opacity:0!important;pointer-events:none}
+#diagram.frame-only .coordinate-axes{mask:none}
+#diagram .axis-tick{transition:opacity .2s ease}
+#diagram .axis-tick.redundant-coordinate{opacity:0;pointer-events:none}
+#diagram .term-label{transition:opacity .2s ease}
+@media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}.is-building .build-card.build-current h4{font-size:17px}.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:18px}}
+@media(max-width:780px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:19px}.is-building .initial-definition.definition-current h3{font-size:26px}.is-building .initial-definition.definition-current .initial-assumptions{font-size:17px}.stack-layer-tab{display:block}}
+@media(prefers-reduced-motion:reduce){#diagram .axis-tick,#diagram .term-label{transition:none}}

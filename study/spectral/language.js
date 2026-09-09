@@ -1,4 +1,4 @@
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=16';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=17';
 let lang=localStorage.getItem('spectral-language')==='en'?'en':'zh';
 export const language=()=>lang;
 export function toggleLanguage(){lang=lang==='zh'?'en':'zh';localStorage.setItem('spectral-language',lang);}
@@ -113,3 +113,5 @@ add('平方零关系','Square-zero identities');add('反交换关系','Anticommu
 
 add('键盘：→、回车和空格前进，← 后退。初始页逐项展开定义，然后切换主线页面。Tab 聚焦，空格固定符号；按钮、选择框和滑块保留自身的键盘行为。','Keyboard: →, Enter and Space advance; ← goes back. Reveal the definitions on Initial data, then change main slides. Tab focuses and Space pins symbols. Buttons, selects and sliders retain their native behavior.');
 add('坐标窗口：−1 至 4；负指标项为零，右端和上端仍可延伸。','Window: −1 to 4. Negative-index terms vanish; the right and top edges can extend further.');
+
+add('坐标图','Coordinate grid');
