@@ -1,10 +1,10 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=23';
-import {translatePage,language,toggleLanguage} from './language.js?v=23';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=23';
-import {createKToELab} from './k-to-e.js?v=23';
-import {createSquareTrace} from './element-trace.js?v=23';
-import {pageStackMarkup} from './page-stack.js?v=23';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=24';
+import {translatePage,language,toggleLanguage} from './language.js?v=24';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=24';
+import {createKToELab} from './k-to-e.js?v=24';
+import {createSquareTrace} from './element-trace.js?v=24';
+import {pageStackMarkup} from './page-stack.js?v=24';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const squareTrace=createSquareTrace($('#diagram'));
@@ -401,10 +401,10 @@ function updateDiagramScope(){
  let el=$('.diagram-scope');if(!el){el=document.createElement('p');el.className='diagram-scope';$('#stage .legend').before(el);}
  if(state.module==='initial'){
   const outside=state.n===4&&state.effect==='totalmap';
-  el.innerHTML=outside?math(raw`K^{0,5},\ K^{5,0}`)+' · '+ui('蓝色区域延伸至窗口外','Blue region continues beyond the window'):math(raw`0\le p,q\le4`);
+  el.innerHTML=outside?math(raw`K^{0,5},\ K^{5,0}`)+' · '+ui('蓝色区域延伸至窗口外','Blue region continues beyond the window'):'';
   el.title=ui('坐标窗口；窗口以外不自动为零。','Coordinate window; terms outside are not assumed zero.');return;
  }el.removeAttribute('title');
- el.textContent=['lab','trace'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'坐标窗口：0 至 4；右端和上端仍可延伸。';if(state.n===4&&((state.module==='initial'&&state.step===1)||(state.module==='learn'&&state.step<=1)))el.textContent=ui('窗口为 0–4；C⁵ 的 (0,5)、(5,0) 分量在窗口外，仍须计入直和。','Window: 0–4. The (0,5) and (5,0) factors of C⁵ lie outside it and still belong to the direct sum.');
+ el.textContent=['lab','trace'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'';if(state.n===4&&((state.module==='initial'&&state.step===1)||(state.module==='learn'&&state.step<=1)))el.textContent=ui('窗口为 0–4；C⁵ 的 (0,5)、(5,0) 分量在窗口外，仍须计入直和。','Window: 0–4. The (0,5) and (5,0) factors of C⁵ lie outside it and still belong to the direct sum.');
 }
 
 // Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
@@ -452,7 +452,7 @@ function syncPageStack(){
  const enabled=['learn','converge'].includes(state.module)&&!state.cover;
  let toolbar=$('#diagramViews'),stack=$('#pageStack');
  if(!toolbar){
-  toolbar=document.createElement('nav');toolbar.id='diagramViews';toolbar.className='diagram-views';$('#diagramControls').prepend(toolbar);
+  toolbar=document.createElement('nav');toolbar.id='diagramViews';toolbar.className='diagram-views';$('#keControls').after(toolbar);
   stack=document.createElement('div');stack.id='pageStack';$('.diagram-viewport').append(stack);
   toolbar.addEventListener('change',e=>{if(e.target.id==='stackPageSelect'){state.stackR=Number(e.target.value);syncPageStack();}});
   toolbar.addEventListener('click',e=>{

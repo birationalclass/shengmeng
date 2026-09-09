@@ -112,3 +112,7 @@ Total-degree labels retain the standard totalization notation: Cⁿ := Totⁿ K.
 The three topic entries share one fixed workbench. The slide footer and page count are removed. Definition, proposition and theorem cards fold independently using top-right chevrons; numbers immediately follow the statement kind. Initial definitions can be selected directly, while Enter/Right follows the reading order. Folding a statement preserves the current graph. The induced and convergence sections show all their statement headers together.
 
 `k-to-e.js` offers three selectable visualizations: filtration/projection, parallel object layers, and a local column. Each uses the same position (p,q)=(1,2), n=3 and four manual stages K, E0, d0, E1. Stage selection updates the mathematical exposition. The projection kernel is F²C³, identifying E0¹² with K¹²; d0 is induced by D and corresponds to δ₂. E1 is the kernel/image quotient, never the result of mapping an arbitrary vector of K into cohomology. The layers describe objects, not a third cochain grading. Smooth opacity changes preserve geometry; reduced motion is respected.
+
+## Direct comparison access (v24)
+
+The three K-to-E designs are always visible as individual buttons under the diagram once K has been introduced. Each opens its design immediately, with the four construction steps and a return control below. No gateway button hides these choices. The redundant generic coordinate-window caption is removed; the C5 out-of-window endpoint explanation remains.

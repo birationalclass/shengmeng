@@ -76,7 +76,7 @@ export function createKToELab({viewport,controls,board,math,language}){
   const eligible=!context.cover&&(context.module==='initial'&&context.initialReveal>=0||context.module==='learn');
   toolbar.hidden=!eligible;if(!eligible)active=false;
   host.hidden=!active;controls.classList.toggle('ke-controls-active',active);viewport.closest('.visual-column').classList.toggle('ke-active',active);
-  toolbar.innerHTML=`<button data-ke-toggle aria-pressed="${active}">${active?choose('返回定义图','Back to definition'):choose('K → E · 三套方案','K → E · Three designs')}</button>${active?`<div class="ke-designs" role="group" aria-label="${choose('可视化方案','Visualization design')}">${[['quotient','① 滤过与投影','① Filtration'],['layers','② 分层对照','② Layers'],['local','③ 局部放大','③ Local view']].map(([id,zh,en])=>`<button data-ke-design="${id}" aria-pressed="${design===id}">${choose(zh,en)}</button>`).join('')}</div><div class="ke-steps" role="group" aria-label="${choose('构造步骤','Construction step')}">${['K','E_0','d_0','E_1'].map((tex,i)=>`<button data-ke-step="${i}" aria-pressed="${step===i}">${math(tex)}</button>`).join('')}</div>`:''}`;
+  toolbar.innerHTML=`<span class="ke-control-label">${math(R`K\to E`)}</span><div class="ke-designs" role="group" aria-label="${choose('可视化方案','Visualization design')}">${[['quotient','① 滤过与投影','① Filtration & projection'],['layers','② 分层对照','② Layer comparison'],['local','③ 局部放大','③ Local column']].map(([id,zh,en])=>`<button data-ke-design="${id}" aria-pressed="${active&&design===id}">${choose(zh,en)}</button>`).join('')}</div>${active?`<div class="ke-stage-controls"><div class="ke-steps" role="group" aria-label="${choose('构造步骤','Construction step')}">${['K','E_0','d_0','E_1'].map((tex,i)=>`<button data-ke-step="${i}" aria-pressed="${step===i}">${math(tex)}</button>`).join('')}</div><button data-ke-toggle>${choose('返回定义图','Back to definition')}</button></div>`:''}`;
   window.spectralTransition={active,design,step};
   if(!active)return;
   const key=design+language();
@@ -91,6 +91,6 @@ export function createKToELab({viewport,controls,board,math,language}){
  }
  function fit(){const canvas=host.firstElementChild;if(!canvas)return;const r=viewport.getBoundingClientRect(),scale=Math.min(r.width/840,r.height/525);canvas.style.transform=`translate(-50%,-50%) scale(${scale})`;}
  new ResizeObserver(fit).observe(viewport);
- toolbar.addEventListener('click',e=>{const toggle=e.target.closest('[data-ke-toggle]'),d=e.target.closest('[data-ke-design]'),s=e.target.closest('[data-ke-step]');if(toggle)active=!active;if(d)design=d.dataset.keDesign;if(s)step=Number(s.dataset.keStep);paint();if(!active)controls.dispatchEvent(new CustomEvent('ke-close',{bubbles:true}));});
+ toolbar.addEventListener('click',e=>{const toggle=e.target.closest('[data-ke-toggle]'),d=e.target.closest('[data-ke-design]'),s=e.target.closest('[data-ke-step]');if(toggle)active=!active;if(d){design=d.dataset.keDesign;active=true;}if(s)step=Number(s.dataset.keStep);paint();if(!active)controls.dispatchEvent(new CustomEvent('ke-close',{bubbles:true}));});
  return {sync(s){context=s;paint();},open(){active=true;step=0;paint();},close(){const wasActive=active;active=false;paint();if(wasActive)controls.dispatchEvent(new CustomEvent('ke-close',{bubbles:true}));},isActive:()=>active};
 }
