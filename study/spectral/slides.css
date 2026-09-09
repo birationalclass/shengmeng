@@ -177,32 +177,6 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .formal-statement,.operation-board{background:linear-gradient(135deg,#7ca4ac17,#23404a38)!important;backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 5px 14px #00000017,inset 0 1px #c1e5e511}
 .diagram-views{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:30px;flex:none;margin-bottom:3px}
 .diagram-modes,.page-window{display:flex;align-items:center;gap:4px;white-space:nowrap}
-.diagram-views button{font-size:10px;padding:4px 8px;background:#adc9cf07;border:1px solid #86acb42e;border-radius:5px}
-.diagram-views button[aria-pressed=true]{border-color:#71e2d08c;color:var(--teal);background:#71e2d00c}
-.page-window{font:10px ui-monospace,monospace;color:#a5c1c9}.page-window button{min-width:27px;font-size:13px;padding:2px 7px}
-#pageStack{width:100%;height:100%;position:absolute;inset:0;min-height:0}
-#pageStack svg{display:block;width:100%;height:100%;overflow:visible}
-.stack-sheet{fill:url(#stack-glass);stroke:#739ba35c;stroke-width:1;pointer-events:none}
-.stack-grid{stroke:#7999a035;stroke-width:.65;fill:none;pointer-events:none}
-.page-layer.is-current .stack-sheet{stroke:var(--page-color);fill:#42767518}
-.stack-hit{fill:transparent;stroke:none}.stack-point{cursor:pointer;outline:none}.stack-dot{fill:#718e998c;stroke:#afd1d17a;stroke-width:.65;pointer-events:none}
-.stack-point.is-picked .stack-dot{fill:var(--page-color);stroke:#c8eeee;stroke-width:1}
-.stack-point:hover .stack-dot,.stack-point:focus-visible .stack-dot{r:5;fill:#e6faf4;stroke:var(--page-color);stroke-width:2}
-.stack-differential{fill:none;stroke-width:1.4;stroke-dasharray:none;opacity:.7;pointer-events:none}
-.page-layer.is-current .stack-differential{stroke-width:2;opacity:1}
-.stack-math,.stack-d-label{font-family:KaTeX_Main,Georgia,serif;font-style:italic;fill:#d9e9e9;font-size:25px;pointer-events:none}
-.stack-d-label{font-size:17px;fill:var(--page-color)}.stack-math.point-label{font-size:20px;fill:#bad2d6;paint-order:stroke;stroke:#0d2028;stroke-width:3;stroke-linejoin:round}
-.page-layer.is-current .point-label{fill:#eefafa}
-.stack-layer-tab{cursor:pointer;outline:none}.stack-layer-tab rect{fill:#779aa80c;stroke:#7da8b140;stroke-width:.8}
-.stack-layer-tab:hover rect,.stack-layer-tab:focus-visible rect,.is-current .stack-layer-tab rect{fill:#84b1b018;stroke:var(--page-color)}
-.stack-tab-hint{font:12px system-ui;fill:#a2bdc6;pointer-events:none}.stack-axis,.stack-tick{stroke:#8eabb290;stroke-width:1;fill:none;pointer-events:none}
-.stack-axis-name{font:italic 20px Georgia,serif;fill:#d1e4e4}.stack-axis-tick{font:14px Georgia,serif;fill:#8eafb9;pointer-events:none}
-#pageRelation{display:flex;align-items:center;justify-content:center;gap:9px;flex:none;font-size:12px;color:#c1d9dc;min-height:24px}#pageRelation small{font-size:9px;color:#91afb7}
-.has-page-stack .diagram-scope{height:25px;min-height:25px;text-align:center;font-size:13px;overflow:auto}
-@media(max-width:780px){.diagram-views{min-height:27px;gap:3px}.diagram-views button{padding:3px 6px;font-size:9px}.page-window{font-size:9px}.page-window button{font-size:12px;min-width:23px}#pageRelation{font-size:10px;min-height:19px}#pageRelation small{display:none}.has-page-stack .diagram-scope{font-size:10px;height:21px;min-height:21px}.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:376px;grid-template-rows:minmax(224px,1fr) 26px 92px 25px}}
-.stack-page-select{display:flex;align-items:center;gap:3px}.stack-page-select select{font:11px ui-monospace,monospace;padding:2px 4px;min-width:34px;background:#10262f;border:1px solid #56727a;color:#d0e4e5;border-radius:3px}
-@media(max-width:780px){.stack-layer-tab{display:none}.stack-window-label{display:none}.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:400px;grid-template-rows:minmax(248px,1fr) 26px 92px 25px}}
-
 /* Reading hierarchy changes only on a stage advance, never on hover. */
 .is-building .build-card h4{font-size:12px;color:#a9c0c7}
 .is-building .build-card .math-block,.is-building .build-card .relation-choice{font-size:14px}
@@ -247,7 +221,7 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .square-route .relation-route{animation:none!important}
 
 /* Diagram, its controls, then the mathematical exposition: fixed row allocation. */
-.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){grid-template-rows:18px minmax(145px,1fr) 76px 142px}
+.slide-deck:not(.is-cover) .visual-column{grid-template-rows:18px minmax(145px,1fr) 76px 142px}
 .slide-deck .diagram-controls{grid-row:3;display:flex;align-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;min-width:0;min-height:0;overflow:auto;border-top:1px solid #36545a66;padding:4px 2px}
 .slide-deck .diagram-controls>.diagram-views{flex-basis:100%;min-width:0;min-height:27px;margin:0}
 .slide-deck .diagram-controls .action-tabs{flex:1 1 auto;min-height:25px;height:auto;grid-row:auto}
@@ -257,8 +231,8 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .math-exposition h3{font:10px system-ui,sans-serif;font-weight:500;letter-spacing:1.8px;color:#a2bec6;margin:0 2px;line-height:15px}
 .slide-deck .math-exposition .operation-board{flex:1;grid-row:auto;height:auto;min-height:0}
 .is-coordinate-intro .diagram-controls,.is-coordinate-intro .math-exposition{visibility:hidden;pointer-events:none}
-@media(min-width:781px) and (max-height:800px){.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){grid-template-rows:0 minmax(125px,1fr) 68px 126px}}
-@media(max-width:780px){.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:408px;grid-template-rows:minmax(180px,1fr) 82px 132px}.slide-deck .figure-heading{display:none}.slide-deck .diagram-controls{grid-row:2;gap:3px 8px}.slide-deck .math-exposition{grid-row:3;gap:4px}.math-exposition h3{font-size:9px;letter-spacing:1px}}
+@media(min-width:781px) and (max-height:800px){.slide-deck:not(.is-cover) .visual-column{grid-template-rows:0 minmax(125px,1fr) 68px 126px}}
+@media(max-width:780px){.slide-deck:not(.is-cover) .visual-column{min-height:408px;grid-template-rows:minmax(180px,1fr) 82px 132px}.slide-deck .figure-heading{display:none}.slide-deck .diagram-controls{grid-row:2;gap:3px 8px}.slide-deck .math-exposition{grid-row:3;gap:4px}.math-exposition h3{font-size:9px;letter-spacing:1px}}
 
 #diagram .term-label[data-element-focus=true]{opacity:.1!important}
 
@@ -294,43 +268,36 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 @media(max-width:780px){.notebook-workspace .statement-title{font-size:19px!important}.notebook-workspace .formal-statement>.math-block.definition-current{font-size:18px}.notebook-workspace .statement-heading{font-size:14px}.notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:15px!important}}
 @media(prefers-reduced-motion:reduce){.statement-toggle svg,.build-toggle svg{transition:none}.notebook-workspace .build-content,.notebook-workspace .notebook-card[data-open=true]>.initial-definition{animation:none}}
 
-/* K to E: three selectable constructions with fixed geometry and finite fades. */
-#keControls{display:flex;align-items:center;gap:5px 10px;flex-wrap:wrap;min-width:0;width:100%}
-#keControls[hidden]{display:none}
-#keControls button{font-size:10px;padding:4px 8px;white-space:nowrap;background:transparent;border:1px solid #34535d;color:#aac6cc;border-radius:4px;cursor:pointer}
-#keControls button[aria-pressed=true]{color:#d0f0e5;border-color:#77bbab;background:#71e2d00a}
-.ke-designs,.ke-steps{display:flex;gap:5px;align-items:center}
-.ke-controls-active>#controls,.ke-controls-active>#actionTabs,.ke-controls-active>#diagramViews{display:none!important}
-#kePanel{position:absolute;inset:0;overflow:hidden;z-index:6}
-#kePanel[hidden]{display:none}
-.ke-active .diagram-viewport>#diagram,.ke-active .diagram-viewport>#pageStack{visibility:hidden!important;pointer-events:none}
-.ke-active #pageRelation{visibility:hidden}
-.ke-canvas{position:absolute;left:50%;top:50%;width:840px;height:525px;transform-origin:center}
-.ke-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.ke-math,.ke-text{position:absolute;transform:translate(-50%,-50%);text-align:center;line-height:1.5;color:#d2e5e8;font-size:19px}
-.ke-text{font:14px/1.5 system-ui,sans-serif}.ke-text.quiet{color:#8eafb7}
-.ke-node{background:#18323cd9;border:1px solid #47717a;border-radius:10px;padding:11px 4px;box-sizing:border-box}
-.ke-node.context-node{opacity:.25}.ke-node.projection-term{color:#f4ce86;border-color:#bba575;background:#464a3533}
-.ke-band{fill:#edc77609;stroke:#e4c886;stroke-width:1.5;stroke-dasharray:5 5}
-.ke-arrow{fill:none;stroke:#8fbeff;stroke-width:1.7;stroke-linecap:round}
-.projection-map{stroke:#e7c576;color:#e7c576}.ke-sheet{fill:#25434b66;stroke:#517680;stroke-width:1.3}.sheet-1{stroke:#c4a966;fill:#67583014}.sheet-2{stroke:#83afdc;fill:#365a8822}
-.ke-math.sheet-title{font-size:26px;color:#d4eae5}.ke-math.layer-term{font-size:16px}.layer-picked{background:#578d8855;border:1px solid #76adac;border-radius:8px;padding:4px 0;color:#f2dd9e}.layer-map-label{font-size:14px}
-.ke-subquotient{position:absolute;box-sizing:border-box;border:1px solid #7fa7ba;background:#142e38;border-radius:12px;padding:14px 10px;text-align:center;font-size:17px;display:flex;flex-direction:column;gap:9px}
-.ke-boundary{background:#45627444;border:1px solid #6e899b;border-radius:7px;padding:7px;font-size:15px}
-.phase-one,.phase-two,.phase-three{opacity:0;transition:opacity .42s cubic-bezier(.22,.68,.18,1);pointer-events:none}
-.ke-visible{opacity:1}.ke-replaced{opacity:0!important}.differential-note{color:#a5ccfa}
-.ke-active .operation-note{line-height:1.45}.ke-exposition .operation-equation{padding:3px 0}
-@media(max-width:780px){#keControls{gap:5px}#keControls button{font-size:9px;padding:3px 5px}.ke-designs,.ke-steps{gap:3px}.ke-active .operation-note{font-size:9px}.ke-exposition .operation-equation{font-size:10px}}
-@media(prefers-reduced-motion:reduce){.phase-one,.phase-two,.phase-three{transition:none}}
+/* A single continuous mathematical notebook; no section tabs or page switching. */
+.notebook-workspace{margin-top:12px}
+.notebook-workspace .statement-heading{scroll-margin-top:8px}
+.notebook-workspace #explanation{padding-bottom:12px}
+.notebook-workspace .diagram-controls .view-tabs{position:static;flex-basis:100%;padding:0;margin:0;background:transparent}
+#evolutionControls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-basis:100%;min-width:0;flex-shrink:0}
+#evolutionControls[hidden]{display:none}
+#evolutionControls button,#evolutionControls select{font-size:11px;padding:5px 9px;min-height:29px;background:#17313966;border:1px solid #42616c;color:#c5dcdf;border-radius:5px}
+#evolutionControls button[aria-pressed=true]{color:#b5e9dc;border-color:#75b6a8}
+#evolutionControls .evolution-generate{color:#f1d498;border-color:#9a8456}
+.evolution-pages{display:flex;align-items:center;gap:4px;font-size:10px;color:#9db9c2}
+#pageEvolution{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4;opacity:0;transition:opacity .65s .2s ease}
+#pageEvolution[hidden]{display:none}#pageEvolution.is-tilted{opacity:1;pointer-events:auto}
+#pageEvolution>svg{display:block;width:100%;height:100%;overflow:visible}
+.slide-deck #diagram{transform-origin:0 0;will-change:transform}
+#diagram.evolution-tilted .node-bg,#diagram.evolution-tilted .term-label,#diagram.evolution-tilted #diagram-edges,#diagram.evolution-tilted #diagram-overlays,#diagram.evolution-tilted .axis-name{opacity:0!important;transition:opacity .65s .15s ease}
+#diagram.evolution-tilted .coordinate-axes{mask:none!important}
+.evolution-sheet{fill:#42646a18;stroke:var(--evolution-color);stroke-width:1;stroke-opacity:.45}
+.evolution-grid{fill:none;stroke:#63808b;stroke-width:.55;opacity:.35}
+.evolution-dot{fill:var(--evolution-color);opacity:.68}.evolution-point.is-selected .evolution-dot{opacity:1;stroke:#e2f2ec;stroke-width:1}
+.evolution-hit{fill:transparent;cursor:pointer}.evolution-point:focus-visible{outline:none}.evolution-point:focus-visible .evolution-dot{stroke:#f2da94;stroke-width:3}
+.evolution-r-axis{fill:none;stroke:#7694a0;stroke-width:1;opacity:.7}
+.evolution-axis-label,.evolution-r-tick{fill:#adc2c9;font:15px Georgia,serif}
+.evolution-point-label{fill:#cfdee1;font:19px Georgia,serif;pointer-events:none}.evolution-page.is-current .evolution-point-label{fill:#f2dfac}
+.evolution-differential{fill:none;stroke:var(--evolution-color);stroke-width:1.7;stroke-dasharray:none}
+.evolution-d-label{fill:var(--evolution-color);font:17px Georgia,serif}
+.evolution-page-title{cursor:pointer}.evolution-page-title rect{fill:#38515d29;stroke:var(--evolution-color);stroke-opacity:.4}
+.evolution-page-title text{fill:var(--evolution-color);font:24px Georgia,serif}
+.evolution-exposition .katex-display{margin:.05em 0}.evolution-exposition .operation-equation{padding:3px 0;font-size:14px}
+@media(max-width:780px){.notebook-workspace{margin-top:5px}#evolutionControls{gap:4px}#evolutionControls button,#evolutionControls select{font-size:10px;padding:4px 6px;min-height:26px}.evolution-exposition .operation-equation{font-size:11px}.evolution-pages{font-size:9px}}
+@media(prefers-reduced-motion:reduce){#pageEvolution,#diagram.evolution-tilted .node-bg,#diagram.evolution-tilted .term-label,#diagram.evolution-tilted #diagram-edges,#diagram.evolution-tilted #diagram-overlays,#diagram.evolution-tilted .axis-name{transition:none}}
 
-#submodules{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;align-items:center}#submodules button{flex:0 0 auto;white-space:nowrap}
-.ke-exposition .katex-display{margin:.05em 0}
-
-/* All three designs are direct entry points, visible before entering the comparison. */
-.ke-control-label{font-size:11px;color:#89bcb4;flex:0 0 auto}
-#keControls .ke-designs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:1;min-width:0}
-#keControls .ke-designs button{white-space:normal;min-height:29px;line-height:1.35;text-align:center}
-.ke-stage-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}
-@media(max-width:780px){#keControls .ke-designs button{min-height:32px;padding:3px 4px}.ke-control-label{font-size:10px}}
-.slide-deck .diagram-controls{align-content:flex-start}
-#keControls{flex-shrink:0}
+#diagram.evolution-tilted .grid{opacity:0;transition:opacity .65s .15s ease}

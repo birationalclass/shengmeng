@@ -116,3 +116,11 @@ The three topic entries share one fixed workbench. The slide footer and page cou
 ## Direct comparison access (v24)
 
 The three K-to-E designs are always visible as individual buttons under the diagram once K has been introduced. Each opens its design immediately, with the four construction steps and a return control below. No gateway button hides these choices. The redundant generic coordinate-window caption is removed; the C5 out-of-window endpoint explanation remains.
+
+## Continuous notebook and page evolution (v25)
+
+All definitions, propositions and convergence statements are mounted in one uninterrupted reading list. The former Initial / Induced / Convergence tabs are removed. Opening a new statement folds the previous statement without replacing the notebook or resetting the diagram. The two existing calculation examples remain as optional cards at the end.
+
+`page-evolution.js` replaces both the three comparison prototypes and the detached page-stack renderer. The original K grid becomes E0 in place through the canonical associated-graded identification; the same SVG nodes and HTML mathematics remain mounted. Its coordinate frame is then transformed affinely into the r=0 plane. Later pages unfold sequentially, each labeled as cohomology of the preceding page. The r-axis runs left to right. Every differential stays within its own page with displacement (r,1-r,0); there are no whole-page arrows or assumed canonical maps from arbitrary cochains to cohomology. The right-hand exposition distinguishes quotient identification, induced differential, and camera/plane deformation.
+
+Controls allow a return to flat E0, a tilt, adding the next page and inspecting previously generated pages. Hover alone does not generate pages. Finite transformations are cancellable; reduced motion completes them immediately. A display window shows four pages on desktop and two on narrow screens, without a mathematical final page.
