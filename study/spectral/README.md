@@ -29,7 +29,7 @@ Hover/focus previews one source item. Click pins it; leaving a preview restores 
 - `algebra.js`: exact BigInt rational arithmetic, filtered cycles/boundaries, representatives and induced differential matrices.
 - `slides.css`: responsive layout and operation diagrams. KaTeX math occupies an HTML plane scaled together with SVG; no SVG foreignObject is used.
 
-The same 36 coordinate nodes, indexed −1 through 4, remain mounted. The additional row and column are 11 structural zero terms, gray and noninteractive. The remaining 25 nodes cover indices 0–4. General terms outside this window are not assumed zero. Dashed arrows continue the displayed rows/columns and are not individual differentials. Actual differential arrows are solid. For n=4, the next total-degree diagonal extends outside the displayed window; the formula for C⁵ still includes all its factors.
+The same 25 coordinate nodes, indexed 0 through 4, remain mounted. Negative-index rows, columns, and tick labels are omitted from the display. General terms outside this window are not assumed zero. Dashed arrows continue the displayed rows/columns and are not individual differentials. Actual differential arrows are solid. For n=4, the next total-degree diagonal extends outside the displayed window; the formula for C⁵ still includes all its factors.
 
 The convention is δ₁:(p,q)→(p+1,q), δ₂:(p,q)→(p,q+1), δ₁δ₂+δ₂δ₁=0 and D=δ₁+δ₂. The column filtration is decreasing. For r≥1:
 
@@ -39,7 +39,7 @@ Eᵣᵖᑫ = Zᵣᵖᑫ / (Zᵣ₋₁ᵖ⁺¹,ᑫ⁻¹ + Bᵣ₋₁ᵖᑫ).
 
 ## Validation
 
-`node test.mjs` checks the exact algebra engine. Browser checks cover four-slide navigation, independent directions, square-zero and anticommuting paths, pin restoration, local quotient operations, removal of previous-page differentials, every formal view in English, 36 persistent nodes, desktop and narrow viewports, SVG/HTML label registration, fullscreen, and access to exact-example matrices. Chromium and WebKit are both exercised. Source/build checks are separate from the mathematical explanations above.
+`node test.mjs` checks the exact algebra engine. Browser checks cover four-slide navigation, independent directions, square-zero and anticommuting paths, pin restoration, local quotient operations, removal of previous-page differentials, every formal view in English, 25 persistent nodes, desktop and narrow viewports, SVG/HTML label registration, fullscreen, and access to exact-example matrices. Chromium and WebKit are both exercised. Source/build checks are separate from the mathematical explanations above.
 
 ## Reading
 
@@ -49,7 +49,7 @@ Initial data presents the double complex and its total complex in one definition
 
 The initial assumptions use rendered K^{p,q} notation and omit a base-field symbol. The initial panel has no explanatory prose. Double complex, δ₁, δ₂, the square-zero identities, anticommutation, C^bullet D, F and E₀ are introduced in order, with corresponding graph layers synchronized to each reveal.
 
-The coordinate axes intersect at the centre of the (0,0) node. Tick labels follow those axes, with negative indices to the left/below. An SVG mask suppresses axis strokes behind term labels, including dimmed zero terms.
+The coordinate axes intersect at the centre of the (0,0) node. Nonnegative tick labels follow those axes. An SVG mask suppresses axis strokes behind term labels, including dimmed terms.
 
 ## Multi-page view and first-paint loading (v16)
 
@@ -67,6 +67,12 @@ Chromium and WebKit checks exercise the eight initial reveals, the direct E₀�
 
 ## Definition emphasis and coordinate introduction (v17)
 
-Initial data starts with a bare coordinate frame, before revealing K. Positive tick labels sit close to the axes. Enter or Next reveals the K family and hides the redundant nonnegative tick labels; negative labels remain for the structural zero row and column. Moving backward before K restores the labels. The SVG frame remains mounted, and axis strokes are masked behind terms only after they appear. Finite examples retain numeric coordinates because their node labels do not carry bidegrees.
+Initial data starts with a bare coordinate frame, before revealing K. Positive tick labels sit close to the axes. Enter or Next reveals the K family and hides the redundant nonnegative tick labels. Moving backward before K restores the labels. The SVG frame remains mounted, and axis strokes are masked behind terms only after they appear. Finite examples retain numeric coordinates because their node labels do not carry bidegrees.
 
 The current initial definition has a larger heading and formulas; previous definitions return to compact type only on the next stage. Later modules emphasize the selected local definition, without changing type sizes on hover. Each newly displayed definition triggers one finite opacity emphasis in the corresponding diagram, with no geometry movement, looping or timer-driven advance. Reduced motion disables the emphasis. Browser checks verify stage sizes, exactly one emphasis per reveal, unchanged graph bounds, reversible tick visibility, horizontal page order, and the bidegree (r,1-r,0) of every displayed differential.
+
+The v19 coordinate window is 0≤p,q≤4. The negative-index vanishing assumption remains in the mathematical definition; its zero row and column are no longer drawn. Negative axis tails are shortened while preserving the (0,0) intersection and all positive-node positions.
+
+Definition typography now uses a 380ms eased font-size transition on persistent DOM nodes, so previously enlarged text shrinks continuously as the next definition grows. The left pane follows the growing definition during this finite transition; the right diagram's coordinates and layout stay fixed. The two square-zero controls are centered as a group. Reduced motion makes these changes immediate.
+
+Every displayed horizontal and vertical differential in Initial data carries its own δ₁ or δ₂ label, respectively. Labels use small colored anchors placed in the gaps between nodes, share the direction's reveal and one-shot emphasis, and dim with the other direction on hover. Dashed window continuations remain continuation marks, not additional single differentials.

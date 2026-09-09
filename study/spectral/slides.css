@@ -162,10 +162,6 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .is-building .build-card .math-block{margin:2px 0;padding-top:7px;padding-bottom:7px}
 .is-building .relation-choices{padding:6px 0}
 @media(max-width:780px){.initial-assumptions{font-size:11px}.is-building .build-card{padding:9px 3px}.is-building .build-card .math-block{font-size:14px}}
-/* Negative-index terms are structural zeros, never interactive targets. */
-#diagram .outside-quadrant{pointer-events:none}
-#diagram .outside-quadrant .node-bg{fill:#13212a;stroke:#354149;stroke-width:1}
-#diagram .outside-quadrant .node-bg.concept-active{fill:#13212a;stroke:#354149;stroke-width:1}
 /* Coordinate axes belong to p=0 and q=0, not the outer edge of the window. */
 .coordinate-axis{fill:none;stroke:#78939d;stroke-width:1.2;opacity:.8;pointer-events:none}
 .axis-tick{fill:#b0c3ca;pointer-events:none}
@@ -230,3 +226,12 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 @media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}.is-building .build-card.build-current h4{font-size:17px}.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:18px}}
 @media(max-width:780px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:19px}.is-building .initial-definition.definition-current h3{font-size:26px}.is-building .initial-definition.definition-current .initial-assumptions{font-size:17px}.stack-layer-tab{display:block}}
 @media(prefers-reduced-motion:reduce){#diagram .axis-tick,#diagram .term-label{transition:none}}
+
+/* Keep the DOM mounted so changing the current definition interpolates both ways. */
+.is-building .build-card h4,.is-building .build-card .math-block,.is-building .build-card .relation-choice,.is-building .initial-definition h3,.is-building .initial-assumptions{transition:font-size .38s cubic-bezier(.22,.68,.18,1),color .2s ease,background .2s ease,box-shadow .2s ease}
+.is-building .relation-choices{justify-content:center;align-items:center;gap:18px;width:100%;box-sizing:border-box}
+.is-building .explanation{overflow-anchor:none}
+@media(prefers-reduced-motion:reduce){.is-building .build-card h4,.is-building .build-card .math-block,.is-building .build-card .relation-choice,.is-building .initial-definition h3,.is-building .initial-assumptions{transition:none}}
+
+#diagram .map-label.map-h{color:var(--teal)}#diagram .map-label.map-v{color:var(--blue)}#diagram .map-label.map-r{color:var(--gold)}
+#diagram.concept-focus .map-label:not(.map-active){opacity:.22!important}

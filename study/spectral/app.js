@@ -1,13 +1,13 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=18';
-import {translatePage,language,toggleLanguage} from './language.js?v=18';
-import {operationMarkup,viewNames,actionNames} from './workbench.js?v=18';
-import {pageStackMarkup} from './page-stack.js?v=18';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=19';
+import {translatePage,language,toggleLanguage} from './language.js?v=19';
+import {operationMarkup,viewNames,actionNames} from './workbench.js?v=19';
+import {pageStackMarkup} from './page-stack.js?v=19';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const NODE_HALF_W=34,NODE_HALF_H=19;
 const state={module:'initial',cover:true,initialReveal:-1,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
-let diagramResizeObserver=null,definitionAnimations=[];const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
+let diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
@@ -19,7 +19,7 @@ let layout={dx:125,dy:75};
 const xy=(p,q)=>[225+p*layout.dx,370-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
 function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
-function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:NODE_HALF_W*len/Math.abs(dx),dy===0?Infinity:NODE_HALF_H*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} " d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex)out+=label((x1+x2)/2+(dx===0?26:0),(y1+y2)/2+(dy===0?-17:0),tex,68,24,true);return out;}
+function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:NODE_HALF_W*len/Math.abs(dx),dy===0?Infinity:NODE_HALF_H*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} " d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex){const compact=['\\delta_1','\\delta_2','d_0','d_1'].includes(tex);out+=label((x1+x2)/2+(dx===0?(compact?23:26):0),(y1+y2)/2+(dy===0?(compact?-14:-17):0),tex,compact?36:68,compact?20:24,true);}return out;}
 function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
  layout={dx:500/maxP,dy:300/maxQ};
  const [originX,originY]=xy(0,0);
@@ -29,24 +29,23 @@ function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
  // terms so even dimmed/zero nodes retain unobstructed mathematical labels.
  out+='<mask id="coordinate-axis-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="840" height="525"><rect width="840" height="525" fill="white"/>';
  const maskTerm=(p,q)=>{const [x,y]=xy(p,q);return `<rect x="${x-NODE_HALF_W-4}" y="${y-NODE_HALF_H-4}" width="${2*NODE_HALF_W+8}" height="${2*NODE_HALF_H+8}" rx="8" fill="black"/>`;};
- for(let p=-1;p<=maxP;p++)out+=maskTerm(p,0);
- for(let q=-1;q<=maxQ;q++)if(q!==0)out+=maskTerm(0,q);
+ for(let p=0;p<=maxP;p++)out+=maskTerm(p,0);
+ for(let q=0;q<=maxQ;q++)if(q!==0)out+=maskTerm(0,q);
  out+='</mask><linearGradient id="node-glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#80b7bd" stop-opacity=".19"/><stop offset=".45" stop-color="#47747e" stop-opacity=".14"/><stop offset="1" stop-color="#213c47" stop-opacity=".32"/></linearGradient></defs>';
- for(let p=-1;p<=maxP;p++){
+ for(let p=0;p<=maxP;p++){
   const [x]=xy(p,0);
-  if(p!==0)out+=`<path class="grid" d="M${x},38 V465"/>`;
+  if(p!==0)out+=`<path class="grid" d="M${x},38 V${originY+20}"/>`;
   out+=`<text class="axis-text axis-tick" data-axis="p" data-value="${p}" x="${x}" y="${originY+38}" text-anchor="middle">${p}</text>`;
  }
- for(let q=-1;q<=maxQ;q++){
+ for(let q=0;q<=maxQ;q++){
   const [,y]=xy(0,q);
-  if(q!==0)out+=`<path class="grid" d="M50,${y} H795"/>`;
+  if(q!==0)out+=`<path class="grid" d="M${originX-40},${y} H795"/>`;
   if(q!==0)out+=`<text class="axis-text axis-tick" data-axis="q" data-value="${q}" x="${originX-56}" y="${y+5}" text-anchor="end">${q}</text>`;
  }
- out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M50,${originY} H825" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},485 V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" x="827" y="${originY-11}">p</text><text class="axis-text axis-name" x="${originX-17}" y="17">q</text>`;
+ out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M${originX-45},${originY} H825" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},${originY+32} V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" x="827" y="${originY-11}">p</text><text class="axis-text axis-name" x="${originX-17}" y="17">q</text>`;
  return out;
 }
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9"/>${label(x,y,tex,67,36,tex.length>28)}</g>`;}
-function boundaryNode(p,q){return node(p,q,'0',{dim:0}).replace('data-concept="space"','data-boundary="true"').replace('class="node ','class="node outside-quadrant ').replace('role="button" tabindex="0"','');}
 function diagonal(n,p,box=true,showLabel=true){
  const first=Math.max(0,p,n-GRID_MAX),last=Math.min(n,GRID_MAX);if(first>last)return '';
  const [x1,y1]=xy(first,n-first),[x2,y2]=xy(last,n-last),length=Math.hypot(x2-x1,y2-y1),angleLength=length||Math.hypot(layout.dx,layout.dy);
@@ -154,7 +153,17 @@ function goSlide(i){if(i===0){$('#coverButton').click();return;}moduleChange([''
 function advanceSlide(){if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){advanceInitial(1);return;}if(mainSlide()<3)goSlide(mainSlide()+1);}
 function retreatSlide(){if(isDoubleComplexView()&&state.initialReveal>=0){advanceInitial(-1);return;}if(mainSlide()>0)goSlide(mainSlide()-1);}
 function initialConcept(){return ['space','delta1','delta2','square1','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
-function advanceInitial(direction){state.initialReveal=Math.max(-1,Math.min(INITIAL_STEPS,state.initialReveal+direction));state.seenH=state.initialReveal>=1;state.seenV=state.initialReveal>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();const pane=$('.explanation'),card=$(`[data-build="${state.initialReveal}"]`);if(!card){pane.scrollTop=0;return;}const r=card.getBoundingClientRect(),b=pane.getBoundingClientRect();if(r.bottom>b.bottom)pane.scrollTop+=r.bottom-b.bottom+12;else if(r.top<b.top)pane.scrollTop-=b.top-r.top+12;}
+function advanceInitial(direction){
+ state.initialReveal=Math.max(-1,Math.min(INITIAL_STEPS,state.initialReveal+direction));state.seenH=state.initialReveal>=1;state.seenV=state.initialReveal>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
+ keepDefinitionVisible();
+}
+function keepDefinitionVisible(){
+ cancelAnimationFrame(definitionScrollFrame);
+ const pane=$('.explanation'),card=$(`[data-build="${state.initialReveal}"]`),until=performance.now()+(matchMedia('(prefers-reduced-motion:reduce)').matches?0:450);
+ if(!card){pane.scrollTop=0;return;}
+ const follow=()=>{if(!card.isConnected||!isDoubleComplexView())return;const r=card.getBoundingClientRect(),b=pane.getBoundingClientRect();if(r.bottom>b.bottom)pane.scrollTop+=r.bottom-b.bottom+12;else if(r.top<b.top)pane.scrollTop-=b.top-r.top+12;if(performance.now()<until)definitionScrollFrame=requestAnimationFrame(follow);};follow();
+}
+
 function interactiveConcept(target){
  if(!(target instanceof Element))return null;
  if(target.closest('[data-zoom]'))return null;
@@ -181,6 +190,7 @@ function applyConcept(concept,hover=false,source=null){
   const selector=nodeKey?`.node[data-p="${nodeKey[1]}"][data-q="${nodeKey[2]}"] .node-bg`:targets[concept];
   if(selector)graph.querySelectorAll(selector).forEach(el=>el.classList.add('concept-active'));
  }
+ graph.querySelectorAll('.map-label').forEach(el=>el.classList.toggle('map-active',!concept||el.dataset.mapConcept===concept||['totalmap','differential'].includes(concept)));
  // Left-hand emphasis belongs to one source item, never to a concept family.
  document.querySelectorAll('.formal-statement .concept-linked').forEach(el=>el.classList.remove('concept-linked'));
  document.querySelectorAll('.formal-statement [aria-pressed]').forEach(el=>el.setAttribute('aria-pressed','false'));
@@ -215,6 +225,7 @@ function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h
 function isDoubleComplexView(){return !state.cover&&state.module==='initial'&&state.step===0;}
 function doubleComplexCompanion(item){
  $('#sceneKicker').textContent=sectionName();$('#sceneTitle').textContent='Initial data';
+ if($('.build-statement')?.dataset.contentLanguage===language())return;
  const cards=[
  {title:'横向微分 δ₁',concept:'delta1',f:[item.f[0]]},
  {title:'纵向微分 δ₂',concept:'delta2',f:[item.f[1]]},
@@ -226,12 +237,12 @@ function doubleComplexCompanion(item){
  {title:'关联分次与第零页',concept:'zeropage',f:[raw`E_0^{p,q}:=\frac{F^pC^{p+q}}{F^{p+1}C^{p+q}}\cong K^{p,q}`]}
  ];
  const assumptions=[raw`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,raw`K^{p,q}=0\qquad(p<0\ \text{or}\ q<0)`];
- $('#explanation').innerHTML=`<article class="formal-statement build-statement"><div class="statement-heading"><span>定义</span><span class="statement-number">1.1</span></div><div class="initial-definition" data-build="0"><h3>双复形</h3><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div><p class="coordinate-prelude-title">坐标图</p>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" tabindex="0" role="button"><h4><span class="build-number">${String(i+1).padStart(2,'0')}</span><span>${c.title}</span></h4>${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:''}</section>`).join('')}</article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement" data-content-language="${language()}"><div class="statement-heading"><span>定义</span><span class="statement-number">1.1</span></div><div class="initial-definition" data-build="0"><h3>双复形</h3><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div><p class="coordinate-prelude-title">坐标图</p>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" tabindex="0" role="button"><h4><span class="build-number">${String(i+1).padStart(2,'0')}</span><span>${c.title}</span></h4>${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:''}</section>`).join('')}</article>`;
  $('#sceneNote').textContent='';
 }
 function setupDoubleComplex(){
- document.querySelectorAll('.build-card').forEach(el=>{const visible=Number(el.dataset.build)<=state.initialReveal;el.hidden=!visible;el.classList.toggle('is-available',visible);el.inert=!visible;el.classList.toggle('build-current',visible&&Number(el.dataset.build)===state.initialReveal);el.classList.toggle('build-complete',visible&&Number(el.dataset.build)<state.initialReveal);});
- $('.build-statement').classList.toggle('is-coordinate-prelude',state.initialReveal<0);$('.initial-definition').hidden=state.initialReveal<0;$('.initial-definition').classList.toggle('definition-current',state.initialReveal===0);
+ document.querySelectorAll('.build-card').forEach(el=>{const visible=Number(el.dataset.build)<=state.initialReveal,appearing=el.hidden&&visible;el.hidden=!visible;el.classList.toggle('is-available',visible);el.inert=!visible;if(appearing)void el.offsetWidth;el.classList.toggle('build-current',visible&&Number(el.dataset.build)===state.initialReveal);el.classList.toggle('build-complete',visible&&Number(el.dataset.build)<state.initialReveal);});
+ $('.build-statement').classList.toggle('is-coordinate-prelude',state.initialReveal<0);$('.initial-definition').hidden=state.initialReveal<0;if(state.initialReveal===0)void $('.initial-definition').offsetWidth;$('.initial-definition').classList.toggle('definition-current',state.initialReveal===0);
  $('#actionTabs').innerHTML='';$('#sceneNote').textContent='';$('#sceneNote').hidden=true;
  $('#next').textContent=state.initialReveal<INITIAL_STEPS?ui('下一步 →','Next step →'):ui('下一页 →','Next slide →');$('#prev').textContent=state.initialReveal>=0?ui('← 上一步','← Previous step'):ui('← 上一页','← Previous slide');
  $('#fragmentTrack').innerHTML=math(state.initialReveal<0?raw`(p,q)`:[raw`K^{p,q}`,raw`\delta_1`,raw`\delta_2`,raw`\delta_1^2=\delta_2^2=0`,raw`\delta_1\delta_2+\delta_2\delta_1=0`,raw`C^\bullet`,raw`D`,raw`F^pC^n`,raw`E_0^{p,q}`][state.initialReveal]);
@@ -287,8 +298,8 @@ function fixedDiagram(){
  if(!finite){
   for(let i=0;i<=GRID_MAX;i++)for(let j=0;j<=GRID_MAX;j++){
    let activeSource=!total||i+j===(m==='learn'&&s===0&&a===2?n-1:n)&&(!filter||i>=p);
-   if(h&&i<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i+1,j),'h',true,j===2&&i===1?(kind==='E_1'?'d_1':'\\delta_1'):'')}</g>`;
-   if(v&&j<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i,j+1),'v',true,i===1&&j===2?(kind==='E_0'?'d_0':'\\delta_2'):'')}</g>`;
+   if(h&&i<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i+1,j),'h',true,m==='initial'||j===2&&i===1?(kind==='E_1'?'d_1':'\\delta_1'):'')}</g>`;
+   if(v&&j<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i,j+1),'v',true,m==='initial'||i===1&&j===2?(kind==='E_0'?'d_0':'\\delta_2'):'')}</g>`;
    let muted=selected?!(i===p&&i+j===n):total&&(!((i+j===n||showNext&&i+j===n+1)&&(!filter||i>=p)));
    if(m==='learn'&&s===0&&a===2&&i+j===n-1)muted=false;
    if(m==='converge'&&s>=2)muted=!(i===p&&i+j===n);
@@ -315,7 +326,6 @@ function fixedDiagram(){
   }
   if(m==='lab')caption=raw`E_${r}^{i,j},\quad d_${r}:(i,j)\longmapsto(i+${r},j${1-r<0?'':'+'}${1-r})`;
  }
- for(let j=-1;j<=GRID_MAX;j++)terms+=boundaryNode(-1,j);for(let i=0;i<=GRID_MAX;i++)terms+=boundaryNode(i,-1);
  // Full formulas belong to the readable operations panel, not a tiny SVG caption.
  return base.slice(0,end)+`<g id="coordinate-frame">${frame}</g><g id="diagram-overlays">${overlay}</g><g id="diagram-edges">${edges}</g><g id="diagram-terms">${terms}</g></svg>`;
 }
@@ -364,8 +374,8 @@ function revealAnnotation(el){if(state.cover||isDoubleComplexView())return;const
 
 function updateDiagramScope(){
  let el=$('.diagram-scope');if(!el){el=document.createElement('p');el.className='diagram-scope';$('#stage .legend').before(el);}
- if(state.module==='initial'){el.innerHTML=math(raw`-1\le p,q\le4`);el.title=ui('坐标窗口；窗口以外不自动为零。','Coordinate window; terms outside are not assumed zero.');return;}el.removeAttribute('title');
- el.textContent=['lab','trace'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'坐标窗口：−1 至 4；负指标项为零，右端和上端仍可延伸。';if(state.n===4&&((state.module==='initial'&&state.step===1)||(state.module==='learn'&&state.step<=1)))el.textContent=ui('窗口为 0–4；C⁵ 的 (0,5)、(5,0) 分量在窗口外，仍须计入直和。','Window: 0–4. The (0,5) and (5,0) factors of C⁵ lie outside it and still belong to the direct sum.');
+ if(state.module==='initial'){el.innerHTML=math(raw`0\le p,q\le4`);el.title=ui('坐标窗口；窗口以外不自动为零。','Coordinate window; terms outside are not assumed zero.');return;}el.removeAttribute('title');
+ el.textContent=['lab','trace'].includes(state.module)?'有限例子：图中节点显示所选页的向量空间；未列出的生成元为零。':'坐标窗口：0 至 4；右端和上端仍可延伸。';if(state.n===4&&((state.module==='initial'&&state.step===1)||(state.module==='learn'&&state.step<=1)))el.textContent=ui('窗口为 0–4；C⁵ 的 (0,5)、(5,0) 分量在窗口外，仍须计入直和。','Window: 0–4. The (0,5) and (5,0) factors of C⁵ lie outside it and still belong to the direct sum.');
 }
 
 // Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
@@ -376,6 +386,7 @@ function syncDiagramLabels(){
  for(const anchor of host.querySelectorAll('svg .math-anchor')){
   const d=anchor.dataset,key=[d.x,d.y,d.width,d.height].join(':'),el=old.get(key)||document.createElement('div');old.delete(key);
   el.className='diagram-label'+(anchor.closest('.node')?' term-label':'')+(d.small==='true'?' small-label':'')+(anchor.closest('.diagram-caption')?' caption-label':'')+(anchor.closest('.source-label')?' source-label':'')+(anchor.closest('.target-label')?' target-label':'');el.dataset.key=key;
+  const map=anchor.previousElementSibling?.matches('.arrow')?anchor.previousElementSibling:null;if(map){el.classList.add('map-label',map.classList.contains('h')?'map-h':map.classList.contains('v')?'map-v':'map-r');el.dataset.mapConcept=map.dataset.concept;}else delete el.dataset.mapConcept;
   el.style.left=d.x+'px';el.style.top=d.y+'px';el.style.width=d.width+'px';el.style.height=d.height+'px';
   el.style.opacity=(anchor.closest('.muted') ? .22 : 1)*(anchor.closest('.zero') ? .38 : 1)*(anchor.closest('.context-edge') ? .2 : 1);
   const changed=el.dataset.tex!==d.tex;if(changed){el.innerHTML=math(d.tex);el.dataset.tex=d.tex;}
@@ -489,6 +500,7 @@ function emphasizeCurrentDefinition(){
   targets=[...document.querySelectorAll(map?'.page-layer.is-current .stack-differential':'.page-layer.is-current .stack-sheet,.page-layer.is-current .stack-point.is-picked .stack-dot')];
  }else{
   targets=[...document.querySelectorAll('#diagram .concept-active')];
+  if(initialView&&['delta1','delta2'].includes(initialConcept()))targets.push(...document.querySelectorAll(`#diagram .map-label[data-map-concept="${initialConcept()}"]`));
   if(!targets.length)targets=[...document.querySelectorAll('#diagram .arrow:not(.context-edge),#diagram .diag-box')];
  }
  targets.forEach(el=>{
