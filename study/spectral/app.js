@@ -1,8 +1,8 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=20';
-import {translatePage,language,toggleLanguage} from './language.js?v=20';
-import {operationMarkup,viewNames,actionNames} from './workbench.js?v=20';
-import {pageStackMarkup} from './page-stack.js?v=20';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=21';
+import {translatePage,language,toggleLanguage} from './language.js?v=21';
+import {operationMarkup,viewNames,actionNames} from './workbench.js?v=21';
+import {pageStackMarkup} from './page-stack.js?v=21';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const NODE_HALF_W=34,NODE_HALF_H=19;
@@ -77,7 +77,7 @@ function render(updateControls=true){if(state.module==='initial')companion(initi
 function move(i){state.cover=false;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.step=Math.max(state.module==='learn'?3:0,Math.min(stepCount()-1,i));if(state.module==='learn'&&state.step===5){state.n=3;state.p=1;state.r=Math.max(1,Math.min(3,state.r));}if(state.module==='lab')state.r=state.step;state.selected=null;render();$('.explanation').scrollTop=0;}
 function moduleChange(m){state.cover=false;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;state.module=m;state.step=m==='learn'?3:0;state.stackR=null;state.stackStart=0;state.r=0;state.selected=null;if(m==='converge'){state.example='survive';state.n=1;state.p=1;}state.r=m==='lab'?0:m==='converge'?1:2;if(m==='converge'){state.n=3;state.p=1;}location.hash=m;render();$('.explanation').scrollTop=0;}
 $('#prev').onclick=()=>{retreatSlide();};$('#next').onclick=()=>{advanceSlide();};
-$('#beginSlides').onclick=()=>goSlide(1);$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;location.hash='title';render();};
+$('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter())goSlide(1);};$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;location.hash='title';render();};
 document.querySelector('.module-dock').onclick=e=>{let b=e.target.closest('[data-section]');if(b)moduleChange(b.dataset.section==='induced'?'learn':b.dataset.section);};$('#submodules').onclick=e=>{let b=e.target.closest('[data-module]');if(b)moduleChange(b.dataset.module);};$('#stepTrack').onclick=e=>{const b=e.target.closest('[data-slide]');if(b)goSlide(Number(b.dataset.slide));};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;state.chosenAction=Number(b.dataset.action);setAnnotation(state.chosenAction);applyConcept(null);}};
@@ -95,11 +95,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.class
 $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollIntoView({behavior:'smooth'});};
 const refHTML=`<p>本主题采用 McCleary《A User’s Guide to Spectral Sequences》第二版的上同调型记号，保留讲义的 K、δ₁、δ₂。滤过固定为按列的下降滤过。</p>${formulas([raw`D=\delta_1+\delta_2,\quad \delta_1\delta_2+\delta_2\delta_1=0`,raw`E_0^{p,q}=\operatorname{Gr}_F^pC^{p+q}\cong K^{p,q}`,raw`E_r^{p,q}=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`,raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`,raw`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`])}<p><b>记号界限：</b>δ₁、δ₂ 是双复形微分；d₀、d₁、… 是页上的微分。Zᵣ、Bᵣ 是总复形中的子空间；[a]ᵣ 是 Eᵣ 的类，[a]H 是总上同调类。动画中示意空间的大小不代表维数。</p><p><b>有限例子：</b>给定全部生成元和箭头，其余项确实为零。基、矩阵与代表元来自精确有理数消元；选择这些基不赋予 H 的滤过一个典范分裂。</p><p><b>阅读依据：</b>Definition 2.2（谱序列）、Definitions 2.3–2.5（滤过与收敛）、Theorem 2.6 及证明（pp. 33–37）、Theorem 2.15（双复形，pp. 48–49）。</p><p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf" target="_blank" rel="noreferrer">打开 McCleary 原书 ↗</a> · <a href="spectral.pdf">打开本主题讲义 ↗</a></p><p>键盘：→、回车和空格前进，← 后退。初始页逐项展开定义，然后切换主线页面。Tab 聚焦，空格固定符号；按钮、选择框和滑块保留自身的键盘行为。</p>`;
 $('#referenceContent').innerHTML=refHTML;$('#referenceButton').onclick=()=>{translatePage();$('#references').showModal();};$('#closeReferences').onclick=()=>$('#references').close();
-document.addEventListener('keydown',e=>{if(!['Enter','ArrowRight','ArrowLeft'].includes(e.key)||$('#references').open||$('#formulaDialog').open||e.target.closest('input,select,textarea,[contenteditable=true],#pageStack')||e.key==='Enter'&&e.target.closest('button,a'))return;e.preventDefault();e.stopImmediatePropagation();if(e.key==='ArrowLeft')retreatSlide();else advanceSlide();},true);
-document.addEventListener('keydown',e=>{if($('#references').open||$('#formulaDialog').open||e.target.closest('[data-formula],.build-card')||e.target.closest('#pageStack')||['INPUT','SELECT','BUTTON','A'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')$('#next').click();if(e.key==='ArrowLeft')$('#prev').click();if(e.code==='Space'){e.preventDefault();$('#next').click();}});
-window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
+document.addEventListener('keydown',e=>{if(state.cover||!['Enter','ArrowRight','ArrowLeft'].includes(e.key)||$('#references').open||$('#formulaDialog').open||e.target.closest('input,select,textarea,[contenteditable=true],#pageStack')||e.key==='Enter'&&e.target.closest('button,a'))return;e.preventDefault();e.stopImmediatePropagation();if(e.key==='ArrowLeft')retreatSlide();else advanceSlide();},true);
+document.addEventListener('keydown',e=>{if(state.cover||$('#references').open||$('#formulaDialog').open||e.target.closest('[data-formula],.build-card')||e.target.closest('#pageStack')||['INPUT','SELECT','BUTTON','A'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')$('#next').click();if(e.key==='ArrowLeft')$('#prev').click();if(e.code==='Space'){e.preventDefault();$('#next').click();}});
+window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
-if(['initial','learn','lab','trace','converge'].includes(location.hash.slice(1))){state.module=location.hash.slice(1);state.cover=false;if(state.module==='learn')state.step=3;}
+// Every fresh visit waits on the title slide, including saved lesson URLs.
+history.replaceState(null,'',location.pathname+location.search+'#title');
 $('#languageButton').onclick=()=>{toggleLanguage();render();};
 render();
 
@@ -135,8 +136,9 @@ function statementMeta(){
 function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'differential';}
 function renderSlideState(){
  const deck=$('.slide-deck'),cover=state.cover;deck.dataset.module=state.module;
+ document.body.classList.toggle('at-cover',cover);$('.module-dock').inert=cover;$('#submodules').inert=cover;$('#stepTrack').inert=cover;
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
- $('#slideCover').hidden=!cover;$('.slide-body').inert=cover;$('#visualPanel').inert=cover;
+ if(cover)window.spectralBoot?.showCover();$('.slide-body').inert=cover;$('#visualPanel').inert=cover;
  if(cover){$('#sceneKicker').textContent='STUDY ATLAS / AT·002';$('#sceneTitle').textContent='';}
  const page=mainSlide();
  $('#stepReadout').textContent=`${String(page+1).padStart(2,'0')} / 04`;

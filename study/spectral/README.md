@@ -83,3 +83,8 @@ Every displayed horizontal and vertical differential in Initial data carries its
 The coordinate prelude contains only the right-hand coordinate frame. Its former left placeholder, scope caption, and operation card are hidden while their layout slots remain reserved. The axes expand from (0,0), followed by a quiet fade of ticks and guides. Enter/Next reveals the Double complex definition card with a 460ms fade and small upward movement, together with the K terms. These are finite navigation-triggered entrances, not automatic slide advances. Changing language, hovering, or resizing does not replay them; navigation away cancels pending effects. The opening waits for mathematical typesetting, and reduced motion shows the final state immediately.
 
 Total-degree connecting lines are masked around every term box, including transparent glass backgrounds. Their segments remain visible only in the gaps; the enclosing dashed direct-sum region is unchanged.
+
+
+## Single loading cover (v21)
+
+The loading screen is the sole cover and names Sheng Meng. The former static title slide is removed. Once mathematics is ready, the same screen exposes Start reading and waits for its activation; no second cover appears. Fresh visits and reloads stop here even when the saved URL ends in a lesson hash. Native keyboard activation of Start is retained, while global slide keys and lesson navigation remain inactive on the cover. Entry begins the coordinate animation; returning to the cover reopens this ready screen without loading resources again.
