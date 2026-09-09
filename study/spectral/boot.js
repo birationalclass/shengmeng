@@ -37,7 +37,7 @@
  const showCover=()=>{
   overlay.hidden=false;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
   overlay.querySelector('.loader-eyebrow').textContent=en()?'Study Notes':'学习笔记';syncFullscreen();
-  if(done){start.disabled=false;start.hidden=false;start.innerHTML=en()?'Start reading <span>→</span>':'开始阅读 <span>→</span>';status.textContent=en()?'READY':'准备就绪';}
+  if(done){start.disabled=false;start.hidden=false;start.innerHTML=en()?'Start reading <span>→</span>':'开始阅读 <span>→</span>';status.textContent='';status.setAttribute('aria-hidden','true');}
  };
  const ready=()=>{if(failed)return;done=true;document.body.setAttribute('aria-busy','false');overlay.classList.add('awaiting-entry');bar.setAttribute('aria-hidden','true');showCover();};
  const enter=()=>{
