@@ -88,3 +88,8 @@ Total-degree connecting lines are masked around every term box, including transp
 ## Single loading cover (v21)
 
 The loading screen is the sole cover and names Sheng Meng. The former static title slide is removed. Once mathematics is ready, the same screen exposes Start reading and waits for its activation; no second cover appears. Fresh visits and reloads stop here even when the saved URL ends in a lesson hash. Native keyboard activation of Start is retained, while global slide keys and lesson navigation remain inactive on the cover. Entry begins the coordinate animation; returning to the cover reopens this ready screen without loading resources again.
+
+
+## Cover fullscreen (v22)
+
+The cover is headed 学习笔记 / Study Notes and has a top-right fullscreen control available before mathematics loads. A single bootstrap controller keeps cover and lesson buttons in sync; entry and return preserve fullscreen, and Escape exits. Where native fullscreen is unavailable, the existing viewport-filling study layout remains the fallback. The control does not activate Start or change the loading state.
