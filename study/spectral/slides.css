@@ -281,7 +281,7 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .evolution-pages{display:flex;align-items:center;gap:4px;font-size:10px;color:#9db9c2}
 #pageEvolution{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4;opacity:0;transition:opacity .14s ease}
 #pageEvolution[hidden]{display:none}#pageEvolution.is-tilted{opacity:1;pointer-events:auto}
-#pageEvolution>svg{display:block;width:100%;height:100%;overflow:visible}
+.evolution-scene svg{position:absolute;inset:0;display:block;width:840px;height:525px;overflow:visible;pointer-events:none}
 .slide-deck #diagram{transform-origin:0 0;will-change:transform;opacity:1;visibility:visible;transition:opacity .14s ease,visibility 0s}
 /* Hide the complete old SVG and HTML formula plane, including map labels.
    Visibility removes the faded SVG filters and labels from painting and hit-testing. */
@@ -293,15 +293,24 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 .evolution-dot{fill:var(--evolution-color);opacity:.68}.evolution-point.is-selected .evolution-dot{opacity:1;stroke:#e2f2ec;stroke-width:1}
 .evolution-hit{fill:transparent;cursor:pointer}.evolution-point:focus-visible{outline:none}.evolution-point:focus-visible .evolution-dot{stroke:#f2da94;stroke-width:3}
 .evolution-r-axis{fill:none;stroke:#7694a0;stroke-width:1;opacity:.7}
-.evolution-axis-label,.evolution-r-tick{fill:#adc2c9;font:15px Georgia,serif}
-.evolution-point-label{fill:#cfdee1;font:19px Georgia,serif;pointer-events:none}.evolution-page.is-current .evolution-point-label{fill:#f2dfac}
+.evolution-axis-label,.evolution-r-tick{color:#adc2c9;font-size:15px}
+.evolution-point-label{color:#cfdee1;font-size:19px}.evolution-label-page.is-current .evolution-point-label{color:#f2dfac}
 .evolution-differential{fill:none;stroke:var(--evolution-color);stroke-width:1.7;stroke-dasharray:none}
-.evolution-d-label{fill:var(--evolution-color);font:17px Georgia,serif}
+.evolution-d-label{color:var(--evolution-color);font-size:17px}
 .evolution-page-title{cursor:pointer}.evolution-page-title rect{fill:#38515d29;stroke:var(--evolution-color);stroke-opacity:.4}
-.evolution-page-title text{fill:var(--evolution-color);font:24px Georgia,serif}
+.evolution-page-title-label{color:var(--evolution-color);font-size:24px}
 .evolution-exposition .katex-display{margin:.05em 0}.evolution-exposition .operation-equation{padding:3px 0;font-size:14px}
 @media(max-width:780px){.notebook-workspace{margin-top:5px}#evolutionControls{gap:4px}#evolutionControls button,#evolutionControls select{font-size:10px;padding:4px 6px;min-height:26px}.evolution-exposition .operation-equation{font-size:11px}.evolution-pages{font-size:9px}}
 @media(prefers-reduced-motion:reduce){#pageEvolution,.slide-deck #diagram,#diagram.evolution-settled{transition:none}}
 
 /* Term hover is additive and local. It never replaces the active mathematical operation. */
 #diagram .node:hover .node-bg,#diagram .node:focus-visible .node-bg{stroke:#f4d296;stroke-width:1.5}
+
+/* Mathematical labels use KaTeX in the same scaled coordinate space as the SVG. */
+.evolution-scene{position:absolute;left:0;top:0;width:840px;height:525px;transform-origin:0 0;transform:scale(var(--evolution-scale,1));pointer-events:none}
+.evolution-page-layer{position:absolute;inset:0;pointer-events:none}
+.evolution-point,.evolution-page-title{pointer-events:all}
+.evolution-label-page{position:absolute;inset:0;pointer-events:none}
+.evolution-math-label{position:absolute;display:flex;align-items:center;white-space:nowrap;pointer-events:none;line-height:1}
+.evolution-math-label>.katex{font-size:1em;flex:none}
+#evolutionControls button .katex{font-size:1.08em;pointer-events:none}

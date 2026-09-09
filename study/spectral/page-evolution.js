@@ -18,7 +18,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   diagram.inert=ready;
  }
  function fit(animate=false){
-  const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';
+  const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';overlay.style.setProperty('--evolution-scale',String(scale));
   const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*origin.x,f=g.y-b*origin.x-d*origin.y;
   const target=tilted?`matrix(${a},${b},0,${d},${e*scale},${f*scale})`:'matrix(1,0,0,1,0,0)';
   if(transformTarget!==target){
@@ -34,32 +34,49 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   }else if(!transformAnimation||transformAnimation.playState==='finished')settleProjection();
   diagram.classList.toggle('evolution-tilted',tilted);overlay.dataset.tilted=String(tilted);
  }
+ // Formula labels share the SVG's 840-by-525 coordinate space. Keeping them
+ // in a scaled HTML layer uses the same KaTeX typography as the source grid.
+ function mathLabel(x,y,tex,kind,{width=80,height=32,align='center'}={}){
+  const left=align==='right'?x-width:align==='left'?x:x-width/2;
+  return `<span class="evolution-math-label ${kind}" data-tex="${tex}" style="left:${left}px;top:${y-height/2}px;width:${width}px;height:${height}px;justify-content:${align==='right'?'flex-end':align==='left'?'flex-start':'center'}">${math(tex)}</span>`;
+ }
  function pageMarkup(r){
   const g=geometry(),c=color(r),corners=[[0,0],[4,0],[4,4],[0,4]].map(([p,q])=>pos(p,q,r).join(',')).join(' '),origin=pos(0,0,r);
-  let out=`<g class="evolution-page ${r===current?'is-current':''}" data-r="${r}" style="--evolution-color:${c}"><polygon class="evolution-sheet" points="${corners}"/>`;
-  for(let i=0;i<=4;i++){const a=pos(i,0,r),b=pos(i,4,r),c=pos(0,i,r),d=pos(4,i,r);out+=`<path class="evolution-grid" d="M${a} L${b} M${c} L${d}"/>`;}
-  for(let p=0;p<=4;p++)for(let q=0;q<=4;q++){const [x,y]=pos(p,q,r),selected=p===point.p&&q===point.q;out+=`<g class="evolution-point ${selected?'is-selected':''}" role="button" tabindex="${selected?'0':'-1'}" data-page="${r}" data-p="${p}" data-q="${q}" aria-label="E_${r}^{${p},${q}}"><circle class="evolution-hit" cx="${x}" cy="${y}" r="10"/><circle class="evolution-dot" cx="${x}" cy="${y}" r="${selected?5:2.8}"/></g>`;}
+  let svg=`<g class="evolution-page ${r===current?'is-current':''}" data-r="${r}" style="--evolution-color:${c}"><polygon class="evolution-sheet" points="${corners}"/>`;
+  let labels=`<div class="evolution-label-page ${r===current?'is-current':''}" data-label-r="${r}" aria-hidden="true" style="--evolution-color:${c}">`;
+  for(let i=0;i<=4;i++){const a=pos(i,0,r),b=pos(i,4,r),c=pos(0,i,r),d=pos(4,i,r);svg+=`<path class="evolution-grid" d="M${a} L${b} M${c} L${d}"/>`;}
+  for(let p=0;p<=4;p++)for(let q=0;q<=4;q++){const [x,y]=pos(p,q,r),selected=p===point.p&&q===point.q;svg+=`<g class="evolution-point ${selected?'is-selected':''}" role="button" tabindex="${selected?'0':'-1'}" data-page="${r}" data-p="${p}" data-q="${q}" aria-label="E_${r}^{${p},${q}}"><circle class="evolution-hit" cx="${x}" cy="${y}" r="10"/><circle class="evolution-dot" cx="${x}" cy="${y}" r="${selected?5:2.8}"/></g>`;}
   const [p,q]=[point.p,point.q],tp=p+r,tq=q-r+1,source=pos(p,q,r);
-  if(tp<=4&&tq>=0&&tq<=4){const target=pos(tp,tq,r),dx=target[0]-source[0],dy=target[1]-source[1],len=Math.hypot(dx,dy);out+=`<path class="evolution-differential" data-source="${p},${q},${r}" data-target="${tp},${tq},${r}" d="M${source[0]+dx*9/len},${source[1]+dy*9/len} L${target[0]-dx*9/len},${target[1]-dy*9/len}" marker-end="url(#evolution-tip-${r%4})"/><text class="evolution-d-label" x="${(source[0]+target[0])/2+8}" y="${(source[1]+target[1])/2-8}">d<tspan baseline-shift="sub" font-size="12">${r}</tspan></text>`;}
-  out+=`<text class="evolution-point-label" x="${source[0]-51}" y="${source[1]+5}">E<tspan baseline-shift="sub" font-size="13">${r}</tspan><tspan baseline-shift="super" font-size="12">${p},${q}</tspan></text>`;
-  out+=`<g role="button" tabindex="0" data-page="${r}" class="evolution-page-title" aria-label="E_${r}"><rect x="${origin[0]-12}" y="37" width="${g.dp*4+24}" height="39" rx="8"/><text x="${origin[0]+g.dp*2}" y="65" text-anchor="middle">E<tspan baseline-shift="sub" font-size="15">${r}</tspan></text></g><text class="evolution-r-tick" x="${origin[0]}" y="${g.y+24}" text-anchor="middle">${r}</text></g>`;
-  return out;
+  if(tp<=4&&tq>=0&&tq<=4){
+   const target=pos(tp,tq,r),dx=target[0]-source[0],dy=target[1]-source[1],len=Math.hypot(dx,dy);
+   svg+=`<path class="evolution-differential" data-source="${p},${q},${r}" data-target="${tp},${tq},${r}" d="M${source[0]+dx*9/len},${source[1]+dy*9/len} L${target[0]-dx*9/len},${target[1]-dy*9/len}" marker-end="url(#evolution-tip-${r%4})"/>`;
+   labels+=mathLabel((source[0]+target[0])/2+8,(source[1]+target[1])/2-12,`d_{${r}}`,'evolution-d-label',{width:40,height:28,align:'left'});
+  }
+  labels+=mathLabel(source[0]-12,source[1]-2,`E_{${r}}^{${p},${q}}`,'evolution-point-label',{width:86,height:36,align:'right'});
+  svg+=`<g role="button" tabindex="0" data-page="${r}" class="evolution-page-title" aria-label="E_${r}"><rect x="${origin[0]-12}" y="37" width="${g.dp*4+24}" height="39" rx="8"/></g></g>`;
+  labels+=mathLabel(origin[0]+g.dp*2,56.5,`E_{${r}}`,'evolution-page-title-label',{width:g.dp*4+24,height:39});
+  labels+=mathLabel(origin[0],g.y+22,String(r),'evolution-r-tick',{width:40,height:24});
+  return {svg,labels:labels+'</div>'};
  }
  function drawPages(newPage=null){
   const g=geometry();start=Math.max(0,Math.min(start,Math.max(0,generated-g.count+1)));
   if(current<start)start=current;else if(current>=start+g.count)start=current-g.count+1;
   const key=[start,Math.min(generated,start+g.count-1),current,point.p,point.q,language(),compact()].join(':');
   if(key!==projectionKey){
-   let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>';
+   let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;
-   out+=`</defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/><text class="evolution-axis-label" x="815" y="${g.y-12}">r</text>`;
-   if(start>0)out+=`<text class="evolution-axis-label" x="10" y="${g.y-9}">⋯</text>`;
-   for(let r=start;r<=Math.min(generated,start+g.count-1);r++)out+=pageMarkup(r);
+   out+=`</defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
+   labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
+   if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
+   for(let r=start;r<=Math.min(generated,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
    const pAxis=pos(4.6,0,start),qAxis=pos(0,4.5,start),o=pos(0,0,start);
-   out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/>`;
-   out+=`<text class="evolution-axis-label" x="${pAxis[0]+8}" y="${pAxis[1]}">p</text><text class="evolution-axis-label" x="${qAxis[0]-18}" y="${qAxis[1]}">q</text></svg>`;
-   overlay.innerHTML=out;projectionKey=key;
-   if(newPage!==null&&!reduced.matches){const page=overlay.querySelector(`[data-r="${newPage}"]`);if(page){const animation=page.animate([{opacity:0,transform:`translateX(${-g.dr}px)`},{opacity:1,transform:'translateX(0)'}],{duration:850,easing:'cubic-bezier(.22,.68,.18,1)'});layerAnimations.push(animation);}}
+   out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/></svg>`;
+   labels+=mathLabel(pAxis[0]+8,pAxis[1]-5,'p','evolution-axis-label',{width:24,height:24})+mathLabel(qAxis[0]-18,qAxis[1]-5,'q','evolution-axis-label',{width:24,height:24});
+   overlay.innerHTML=`<div class="evolution-scene">${out}${pages}<div class="evolution-axis-labels" aria-hidden="true">${labels}</div></div>`;projectionKey=key;
+   if(newPage!==null&&!reduced.matches){
+    const timing={duration:850,easing:'cubic-bezier(.22,.68,.18,1)'},frames=[{opacity:0,transform:`translateX(${-g.dr}px)`},{opacity:1,transform:'translateX(0)'}],begin=document.timeline.currentTime;
+    for(const el of overlay.querySelectorAll(`[data-layer-r="${newPage}"]`)){const animation=el.animate(frames,timing);animation.startTime=begin;layerAnimations.push(animation);}
+   }
   }
   fit();window.spectralEvolution={engaged,tilted,generated,current,start,busy,point:{...point}};
  }
@@ -73,9 +90,8 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  }
  function paintControls(){
   toolbar.hidden=!engaged;
-  toolbar.innerHTML=`<button data-evolve="flat" aria-pressed="${!tilted}">${t('二维 E₀','2D E₀')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('倾斜 E₀','Tilt E₀')}</button><button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${busy?t('生成中…','Forming…'):t('生成 ','Form ')+`E${subscript(generated+1)}`}</button><span class="evolution-pages">${t('查看','Inspect')} <button data-window="-1" ${start===0?'disabled':''}>‹</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}">${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>E${subscript(r)}</option>`).join('')}</select><button data-window="1" ${start+geometry().count>generated?'disabled':''}>›</button></span>`;
+  toolbar.innerHTML=`<button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('倾斜','Tilt')} ${math('E_0')}</button><button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${busy?t('生成中…','Forming…'):t('生成 ','Form ')+math(`E_{${generated+1}}`)}</button><span class="evolution-pages">${t('查看','Inspect')} <button data-window="-1" ${start===0?'disabled':''}>‹</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}">${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select><button data-window="1" ${start+geometry().count>generated?'disabled':''}>›</button></span>`;
  }
- const subscript=n=>String(n).replace(/\d/g,x=>'₀₁₂₃₄₅₆₇₈₉'[+x]);
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
  function cancel(){
   token++;

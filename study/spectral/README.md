@@ -136,3 +136,7 @@ The two-dimensional 0–4 grid is centered in its viewport with origin x=170 ins
 ## Local term hover (v28)
 
 Term nodes no longer participate in the diagram-wide concept selector. Hover and keyboard focus add only a local border highlight, preserving the active differential, total-degree/filtration region, exposition and element trace. Click/Space inspection remains available; Enter retains the notebook's next-item behavior. Chromium and WebKit checks verify six mathematical views and an uninterrupted square-zero trace.
+
+## Typeset page diagrams (v29)
+
+Page titles, selected terms, differentials and coordinate labels now use KaTeX with proper mathematical fonts and scripts, as do mathematical symbols in the controls. Native page selectors use localized page numbers. Each projected page places its SVG geometry and HTML mathematics inside one moving layer, keeping labels aligned during page formation and resizing in Chromium and WebKit. Checks include narrow screens, bilingual controls and multi-digit page indices.

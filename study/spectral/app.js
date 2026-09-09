@@ -1,9 +1,9 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=28';
-import {translatePage,language,toggleLanguage} from './language.js?v=28';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=28';
-import {createPageEvolution} from './page-evolution.js?v=28';
-import {createSquareTrace} from './element-trace.js?v=28';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=29';
+import {translatePage,language,toggleLanguage} from './language.js?v=29';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=29';
+import {createPageEvolution} from './page-evolution.js?v=29';
+import {createSquareTrace} from './element-trace.js?v=29';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const GRID_ORIGIN={x:170,y:370};
@@ -15,6 +15,8 @@ let diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0,e
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
+// Control labels use the same mathematical typesetting as the diagram.
+const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆₇₈₉ᵣ₊]+|\d+)/g,(_,symbol,index)=>math(`${symbol}_{${[...index].map(c=>({'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ᵣ':'r','₊':'+'}[c]||c)).join('')}}`));
 const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
 const block=(t,concept='')=>`<div class="math-block" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?'悬停对照，点击固定高亮':'放大查看公式'}">${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
@@ -165,7 +167,7 @@ function renderWorkspaceState(){
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
  if(cover)window.spectralBoot?.showCover();$('.slide-body').inert=cover;$('#visualPanel').inert=cover;
  $('#sceneTitle').textContent='Spectral Sequence';
- $('#viewTabs').innerHTML=['lab','trace'].includes(state.module)?viewNames(state,language()).map((t,i)=>`<button data-view="${i}" aria-pressed="${state.step===i}">${t}</button>`).join(''):'';
+ $('#viewTabs').innerHTML=['lab','trace'].includes(state.module)?viewNames(state,language()).map((t,i)=>`<button data-view="${i}" aria-pressed="${state.step===i}">${mathControlLabel(t)}</button>`).join(''):'';
  $('#sceneNote').hidden=true;updateDiagramScope();renderQuickCheck();
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
 }
@@ -399,7 +401,7 @@ function annotationCount(){return statementFormulas().length;}
 function updateAnnotations(){
  if(state.cover||isDoubleComplexView())return;
  const a=state.annotationStep||1;
- $('#actionTabs').innerHTML=actionNames(state,language()).map((name,i)=>`<button data-action="${i+1}" aria-pressed="${a===i+1}">${name}</button>`).join('');
+ $('#actionTabs').innerHTML=actionNames(state,language()).map((name,i)=>`<button data-action="${i+1}" aria-pressed="${a===i+1}">${mathControlLabel(name)}</button>`).join('');
  statementFormulas().forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.toggle('definition-current',i+1===(state.chosenAction||1));});
  renderQuickCheck();window.spectralState={...state,language:language()};renderOperation();
 }
