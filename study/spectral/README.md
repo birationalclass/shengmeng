@@ -76,3 +76,10 @@ The v19 coordinate window is 0≤p,q≤4. The negative-index vanishing assumptio
 Definition typography now uses a 380ms eased font-size transition on persistent DOM nodes, so previously enlarged text shrinks continuously as the next definition grows. The left pane follows the growing definition during this finite transition; the right diagram's coordinates and layout stay fixed. The two square-zero controls are centered as a group. Reduced motion makes these changes immediate.
 
 Every displayed horizontal and vertical differential in Initial data carries its own δ₁ or δ₂ label, respectively. Labels use small colored anchors placed in the gaps between nodes, share the direction's reveal and one-shot emphasis, and dim with the other direction on hover. Dashed window continuations remain continuation marks, not additional single differentials.
+
+
+## Opening sequence (v20)
+
+The coordinate prelude contains only the right-hand coordinate frame. Its former left placeholder, scope caption, and operation card are hidden while their layout slots remain reserved. The axes expand from (0,0), followed by a quiet fade of ticks and guides. Enter/Next reveals the Double complex definition card with a 460ms fade and small upward movement, together with the K terms. These are finite navigation-triggered entrances, not automatic slide advances. Changing language, hovering, or resizing does not replay them; navigation away cancels pending effects. The opening waits for mathematical typesetting, and reduced motion shows the final state immediately.
+
+Total-degree connecting lines are masked around every term box, including transparent glass backgrounds. Their segments remain visible only in the gaps; the enclosing dashed direct-sum region is unchanged.
