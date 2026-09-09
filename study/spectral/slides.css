@@ -279,13 +279,13 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 #evolutionControls button[aria-pressed=true]{color:#b5e9dc;border-color:#75b6a8}
 #evolutionControls .evolution-generate{color:#f1d498;border-color:#9a8456}
 .evolution-pages{display:flex;align-items:center;gap:4px;font-size:10px;color:#9db9c2}
-#pageEvolution{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4;opacity:0;transition:opacity .14s ease}
+#pageEvolution{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4;opacity:0;transition:opacity .4s ease}
 #pageEvolution[hidden]{display:none}#pageEvolution.is-tilted{opacity:1;pointer-events:auto}
 .evolution-scene svg{position:absolute;inset:0;display:block;width:840px;height:525px;overflow:visible;pointer-events:none}
-.slide-deck #diagram{transform-origin:0 0;will-change:transform;opacity:1;visibility:visible;transition:opacity .14s ease,visibility 0s}
+.slide-deck #diagram{transform-origin:0 0;will-change:transform;opacity:1;visibility:visible;transition:opacity .4s ease,visibility 0s}
 /* Hide the complete old SVG and HTML formula plane, including map labels.
    Visibility removes the faded SVG filters and labels from painting and hit-testing. */
-#diagram.evolution-settled{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .14s ease,visibility 0s .14s}
+#diagram.evolution-settled{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility 0s .4s}
 #diagram.evolution-tilted .node-bg{filter:none!important}
 #diagram.evolution-tilted .coordinate-axes{mask:none!important}
 .evolution-sheet{fill:#42646a18;stroke:var(--evolution-color);stroke-width:1;stroke-opacity:.45}
@@ -366,3 +366,13 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 
 
 @media(max-width:780px){.slide-deck:not(.is-cover) .slide-body{overflow-y:auto}.slide-deck:not(.is-cover) .explanation{flex:none;min-height:200px;max-height:none;overflow:visible}}
+
+/* Independent proof navigation; the figure never moves when a proof changes. */
+.proof-topics,.proof-steps{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px;align-items:center}
+.proof-topics{padding-bottom:10px;border-bottom:1px solid #36545a66}
+.proof-topics button,.proof-steps button{font-size:11px;padding:5px 9px;background:transparent;border-color:transparent;color:#a8c4ca}
+.proof-topics button[aria-pressed=true]{background:#71e2d00d;border-color:#6cb9aa66;color:#b7e9da}
+.proof-steps button{font-size:10px;color:#89a8b3;border-radius:3px;border-bottom:1px solid transparent}
+.proof-steps button[aria-pressed=true]{border-bottom-color:#e4bd79;color:#e6cca1}
+.proof-body{min-height:210px;padding-top:4px}.proof-body .operation-equation{font-size:13px;padding:7px 0}
+@media(max-width:780px){.proof-topics button{font-size:10px;padding:4px 6px}.proof-steps button{font-size:9px;padding:4px}.proof-body{min-height:210px}.proof-body .operation-equation{font-size:11px}}

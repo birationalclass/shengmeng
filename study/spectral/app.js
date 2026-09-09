@@ -1,10 +1,10 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=33';
-import {translatePage,language,toggleLanguage} from './language.js?v=33';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=36';
+import {translatePage,language,toggleLanguage} from './language.js?v=36';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=33';
-import {createPageEvolution} from './page-evolution.js?v=35';
-import {createNotebookMotion} from './notebook-motion.js?v=33';
-import {createSquareTrace} from './element-trace.js?v=33';
+import {createPageEvolution} from './page-evolution.js?v=36';
+import {createNotebookMotion} from './notebook-motion.js?v=36';
+import {createSquareTrace} from './element-trace.js?v=36';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
 const GRID_ORIGIN={x:170,y:370};
@@ -154,7 +154,7 @@ function statementMeta(module=state.module,step=state.step){
  {kind:'定义',number:'2.1',name:'上同调',concepts:['cycles','boundaries','cohomology','cohomology']},
  {kind:'定义',number:'2.2',name:'列滤过',concepts:['filtration','filtration','differential']},
  {kind:'定义',number:'2.3',name:'关联分次与第零页',concepts:['quotient','quotient','space']},
- {kind:'命题',number:'2.1',name:'第零微分与第一页',concepts:['delta2','cohomology']},
+ {kind:'命题',number:'2.1',name:'第零微分与第一页',concepts:['delta2','delta2','filtration','cohomology']},
  {kind:'命题',number:'2.2',name:'第一微分与第二页',concepts:['delta1','delta1','quotient']},
  {kind:'定义',number:'2.3',name:'滤过闭链、边界与一般页',concepts:['cycles','boundaries','page','differential','cohomology']}
  ],
@@ -408,7 +408,16 @@ function syncGraphChildren(target,source){
   for(const el of existing.values())el.remove();
  }
 }
-function fadeGraphAddition(el){if(!matchMedia('(prefers-reduced-motion: reduce)').matches)el.animate([{opacity:0},{opacity:1}],{duration:280});}
+function restingOpacity(el){
+ const style=getComputedStyle(el),transition=el.getAnimations().find(a=>a.transitionProperty==='opacity');
+ return transition?.effect.getKeyframes().at(-1)?.opacity??style.opacity;
+}
+function fadeGraphAddition(el){
+ queueMicrotask(()=>{
+  if(!el.isConnected||matchMedia('(prefers-reduced-motion: reduce)').matches||el.getAnimations().some(a=>!a.transitionProperty))return;
+  el.animate([{opacity:0},{opacity:restingOpacity(el)}],{duration:360,easing:'ease-out'});
+ });
+}
 function statementFormulas(){return document.querySelectorAll('.formal-statement.is-active > .statement-body > .math-block');}
 function annotationCount(){return statementFormulas().length;}
 function updateAnnotations(){
@@ -495,12 +504,19 @@ function syncCoordinatePresentation(){
  graph.querySelectorAll('.node:not(.outside-quadrant)').forEach(node=>node.setAttribute('tabindex',frameOnly?'-1':'0'));
 }
 
+function releaseEmphasis(animation){
+ const el=animation.effect?.target;
+ if(!el?.isConnected||animation.playState==='finished'||matchMedia('(prefers-reduced-motion:reduce)').matches){animation.cancel();return;}
+ const from=getComputedStyle(el).opacity;animation.cancel();const to=getComputedStyle(el).opacity;
+ if(from!==to)el.animate([{opacity:from},{opacity:to}],{duration:220,easing:'ease-out'});
+}
+
 // One finite emphasis per definition stage. Geometry and the right pane stay fixed.
 function emphasizeCurrentDefinition(){
  const stage=$('#stage'),initialView=isDoubleComplexView();
  const key=state.cover?'cover':initialView?`initial:${state.initialReveal}`:`${state.module}:${state.step}:${state.annotationStep}`;
  if(stage.dataset.definitionKey===key)return;
- stage.dataset.definitionKey=key;definitionAnimations.forEach(a=>a.cancel());definitionAnimations=[];
+ stage.dataset.definitionKey=key;definitionAnimations.forEach(releaseEmphasis);definitionAnimations=[];
  if(state.cover||evolution.isTilted()||initialView&&(state.initialReveal<=0||state.initialReveal===3)||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  let targets=[];
  targets=[...document.querySelectorAll('#diagram .concept-active')];
@@ -508,9 +524,9 @@ function emphasizeCurrentDefinition(){
  if(!targets.length)targets=[...document.querySelectorAll('#diagram .arrow:not(.context-edge),#diagram .diag-box')];
  targets.forEach(el=>{
   if(el.closest('.outside-quadrant'))return;
-  const opacity=getComputedStyle(el).opacity,delay=el.closest('.route-2')?150:0;
-  el.getAnimations().forEach(a=>a.cancel());
-  const animation=el.animate([{opacity:.25},{opacity:1,offset:.45},{opacity}],{duration:650,delay,easing:'ease-out',iterations:1});
+  const from=getComputedStyle(el).opacity,delay=el.closest('.route-2')?150:0;
+  el.getAnimations().forEach(a=>a.cancel());const opacity=restingOpacity(el);
+  const animation=el.animate([{opacity:from},{opacity:1,offset:.45},{opacity}],{duration:650,delay,easing:'ease-out',iterations:1});
   definitionAnimations.push(animation);
  });
  stage.dataset.emphasisCount=String(Number(stage.dataset.emphasisCount||0)+1);
@@ -527,7 +543,8 @@ function syncInitialEntrance(){
   ? [...document.querySelectorAll('#diagram .axis-tick')].map(el=>[el,getComputedStyle(el).opacity]):[];
  // A quick Next must not snap an unfinished axis expansion to its endpoint.
  entranceAnimations=entranceAnimations.filter(animation=>{
-  if(initialView&&state.initialReveal>=0&&animation.id.startsWith('axis-expand-')&&animation.playState==='running')return true;
+  if(initialView&&state.initialReveal>=0&&animation.playState==='running'&&!animation.id.startsWith('coordinate-label-'))return true;
+  if(initialView&&animation.playState==='running'&&animation.id.startsWith('coordinate-label-')&&!animation.effect.target.classList.contains('axis-tick'))return true;
   animation.cancel();return false;
  });
  if(matchMedia('(prefers-reduced-motion:reduce)').matches||!initialView)return;

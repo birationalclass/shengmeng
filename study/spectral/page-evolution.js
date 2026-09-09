@@ -1,8 +1,9 @@
-import {cohomologyExposition} from './cohomology-view.js?v=35';
+import {createDifferentialProof} from './differential-proof.js?v=36';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh,reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const proof=createDifferentialProof({board,math,language});
  const overlay=document.createElement('div');overlay.id='pageEvolution';overlay.hidden=true;viewport.append(overlay);
  const toolbar=document.createElement('nav');toolbar.id='evolutionControls';toolbar.hidden=true;controls.prepend(toolbar);
  let context=null,engaged=false,tilted=false,generated=0,current=0,start=0,semanticKey='',token=0,busy=false,construction=null,point={p:1,q:2},transformAnimation=null,scale=1,projectionKey='',transformTarget='',layerAnimations=[];
@@ -103,21 +104,14 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
     }
     for(const el of overlay.querySelectorAll(`[data-r="${sourcePage}"] .evolution-dot`)){
      const term=el.parentElement,group=sourcePage===1?Number(term.dataset.q):Number(term.dataset.p);
-     layerAnimations.push(el.animate([{opacity:.55},{opacity:1,fill:'#f4c876',offset:.45},{opacity:.68}],{duration:700,delay:150*group,easing:'ease-in-out'}));
+     const rest=getComputedStyle(el);layerAnimations.push(el.animate([{opacity:rest.opacity,fill:rest.fill},{opacity:1,fill:'#f4c876',offset:.45},{opacity:rest.opacity,fill:rest.fill}],{duration:700,delay:150*group,easing:'ease-in-out'}));
     }
    }
   }
   fit();window.spectralEvolution={engaged,tilted,generated,current,start,busy,point:{...point},construction:construction?{...construction}:null};
  }
- function exposition(){
-  if(construction){board.innerHTML=cohomologyExposition({...construction,point,math,t});return;}
-  const line=f=>`<div class="operation-equation">${math(f,true)}</div>`;let equations,note;
-  if(!tilted&&context.module==='learn'){equations=[R`E_0^{p,q}\cong K^{p,q},\qquad d_0[a]=[Da]\leftrightarrow\delta_2a`,R`E_1^{p,q}=H^q(E_0^{p,\bullet},d_0)=H^q(K^{p,\bullet},\delta_2)`];note=t('δ₁ 的像落入下一列，在关联分次中为零；δ₂ 保持列，诱导 d₀。','The image of δ₁ lies in the next column and vanishes in the associated graded; δ₂ preserves the column and induces d₀.');}
-  else if(!tilted){equations=[R`E_0^{p,q}:=\operatorname{Gr}_F^pC^{p+q}=F^pC^{p+q}/F^{p+1}C^{p+q}`,R`F^pC^{p+q}=K^{p,q}\oplus F^{p+1}C^{p+q}\quad\Longrightarrow\quad E_0^{p,q}\cong K^{p,q}`];note=t('取第 p 列分量给出自然同构；同一坐标处的 K 与 E₀ 对应。','Projection to column p gives the natural isomorphism: K and E₀ correspond at the same coordinates.');}
-  else if(current===0){equations=[R`E_0^{p,q}\cong K^{p,q},\qquad d_0^{p,q}\leftrightarrow\delta_2^{p,q}`,R`E_1^{p,q}=H^q(E_0^{p,\bullet},d_0)`];note=t('倾斜只改变视角，E₀ 及 d₀ 不变。生成下一页时，才对 (E₀,d₀) 取上同调。','Tilting changes only the viewpoint; E₀ and d₀ are unchanged. The next page is obtained by taking cohomology of (E₀,d₀).');}
-  else{const r=current-1,shift=(name,n)=>n===0?name:`${name}${n>0?'+':''}${n}`;equations=[R`E_{${current}}^{p,q}\cong\frac{\ker(d_{${r}}:E_{${r}}^{p,q}\to E_{${r}}^{${shift('p',r)},${shift('q',1-r)}})}{\operatorname{im}(d_{${r}}:E_{${r}}^{${shift('p',-r)},${shift('q',r-1)}}\to E_{${r}}^{p,q})}`,R`d_{${current}}:E_{${current}}^{p,q}\longrightarrow E_{${current}}^{${shift('p',current)},${shift('q',1-current)}}`];note=t('新平面表示上一页的上同调；新页上的 dᵣ 仍由滤过总微分 D 诱导。层间没有整页的线性映射。','The new plane represents the preceding page’s cohomology. Its dᵣ is still induced by the filtered total differential D; no whole-page linear map is implied.');}
-  board.innerHTML=`<div class="operation-content evolution-exposition">${equations.map(line).join('')}</div><p class="operation-note">${note}</p>`;
- }
+ function exposition(){proof.render({state:context,current,construction,point});}
+
  function paintControls(){
   toolbar.hidden=!engaged;
   toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}" ${busy?'disabled':''}>${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><div class="evolution-view-controls">${construction?`<button data-evolve="replay" ${busy?'disabled':''}>${t('重播生成','Replay')} ${math(`E_{${construction.r+1}}`)}</button>`:''}<button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button></div>`;
@@ -132,7 +126,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  }
  async function beginCohomology(r=current){
   cancel();const run=token,needTilt=!tilted;current=r;start=Math.max(0,r-geometry().count+2);tilted=true;busy=true;projectionKey='';fit(needTilt);drawPages();paintControls();exposition();
-  if(needTilt){await wait(1100);if(run!==token)return;}
+  if(needTilt){await wait(1400);if(run!==token)return;}
   const goal=r+1;generated=Math.max(generated,goal);current=goal;start=Math.max(0,goal-geometry().count+1);construction={r,phase:3};projectionKey='';
   drawPages(goal);paintControls();exposition();
   await wait(1850);if(run!==token)return;busy=false;drawPages();paintControls();
@@ -142,7 +136,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   const choice=s.annotationStep||1,wasEngaged=engaged;
   const eligible=!s.cover&&(s.module==='initial'&&s.initialReveal===8||s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3));
   engaged=eligible;toolbar.hidden=!eligible;overlay.hidden=!eligible;viewport.classList.toggle('has-evolution',eligible);controls.closest('.visualization-module').classList.toggle('page-evolution-mode',eligible);
-  if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;}window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
+  if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
   const key=`${s.module}:${s.step}`;if(s.selected)point={...s.selected};
   if(key!==semanticKey){semanticKey=key;cancel();
    if(s.module==='initial'||s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}
@@ -158,7 +152,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  });
  toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});
  const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;const selectedPage=Number(target.dataset.page);if(!construction||![construction.r,construction.r+1].includes(selectedPage)){current=selectedPage;construction=current>0?{r:current-1,phase:3}:null;}if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
- board.addEventListener('click',e=>{const phase=e.target.closest('[data-co-phase]');if(!phase||!construction)return;e.stopPropagation();construction.phase=Number(phase.dataset.coPhase);drawPages();exposition();});
+
  overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);
  reduced.addEventListener('change',e=>{if(e.matches){transformAnimation?.finish();layerAnimations.forEach(a=>a.finish());}});
