@@ -128,3 +128,7 @@ Controls allow a return to flat E0, a tilt, adding the next page and inspecting 
 ## Clean projection handoff (v26)
 
 The moving source reaches the projected E0 position before the page view crossfades in. The complete SVG and HTML label layer then becomes hidden and inert, including the differential labels previously omitted by the term-only fade. Glass-node filters are disabled during the projection; the page renderer owns all three axes after handoff. Reversing or interrupting the motion restores the source from the current transform. Chromium and WebKit checks cover forward, reverse, interrupted, narrow-screen and reduced-motion transitions.
+
+## Centered source grid (v27)
+
+The two-dimensional 0–4 grid is centered in its viewport with origin x=170 instead of x=225. Axis extents and continuation arrows derive from that origin. The projection renderer receives the same origin, preserving the source-to-E0 correspondence. Element traces retain their actual source coordinates when reduced motion is enabled mid-animation.

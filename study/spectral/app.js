@@ -1,11 +1,12 @@
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=26';
-import {translatePage,language,toggleLanguage} from './language.js?v=26';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=26';
-import {createPageEvolution} from './page-evolution.js?v=26';
-import {createSquareTrace} from './element-trace.js?v=26';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=27';
+import {translatePage,language,toggleLanguage} from './language.js?v=27';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=27';
+import {createPageEvolution} from './page-evolution.js?v=27';
+import {createSquareTrace} from './element-trace.js?v=27';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=8;
+const GRID_ORIGIN={x:170,y:370};
 const squareTrace=createSquareTrace($('#diagram'));
 const openStatements=new Set(),openBuilds=new Set([0]);
 const NODE_HALF_W=34,NODE_HALF_H=19;
@@ -14,13 +15,13 @@ let diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0,e
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
-const evolution=createPageEvolution({viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
+const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
 const block=(t,concept='')=>`<div class="math-block" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?'悬停对照，点击固定高亮':'放大查看公式'}">${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
 const stepCount=()=>({initial:initial.length,learn:lessons.length-1,lab:scene().maxP+3,trace:6,converge:convergence.length})[state.module];
 let layout={dx:125,dy:75};
-const xy=(p,q)=>[225+p*layout.dx,370-q*layout.dy];
+const xy=(p,q)=>[GRID_ORIGIN.x+p*layout.dx,GRID_ORIGIN.y-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
 function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:NODE_HALF_W*len/Math.abs(dx),dy===0?Infinity:NODE_HALF_H*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} " d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex){const compact=['\\delta_1','\\delta_2','d_0','d_1'].includes(tex);out+=label((x1+x2)/2+(dx===0?(compact?23:26):0),(y1+y2)/2+(dy===0?(compact?-14:-17):0),tex,compact?36:68,compact?20:24,true);}return out;}
@@ -45,10 +46,10 @@ function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
  }
  for(let q=0;q<=maxQ;q++){
   const [,y]=xy(0,q);
-  if(q!==0)out+=`<path class="grid" d="M${originX-40},${y} H795"/>`;
+  if(q!==0)out+=`<path class="grid" d="M${originX-40},${y} H${originX+570}"/>`;
   if(q!==0)out+=`<text class="axis-text axis-tick" data-axis="q" data-value="${q}" x="${originX-56}" y="${y+5}" text-anchor="end">${q}</text>`;
  }
- out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M${originX-45},${originY} H825" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},${originY+32} V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" x="827" y="${originY-11}">p</text><text class="axis-text axis-name" x="${originX-17}" y="17">q</text>`;
+ out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M${originX-45},${originY} H${originX+600}" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},${originY+32} V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" x="${originX+602}" y="${originY-11}">p</text><text class="axis-text axis-name" x="${originX-17}" y="17">q</text>`;
  return out;
 }
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g data-concept="space" class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9"/>${label(x,y,tex,67,36,tex.length>28)}</g>`;}
@@ -339,7 +340,7 @@ function fixedDiagram(){
   }
   // Edge-of-window continuations have the same reveal and color rules as their direction.
   for(let k=0;k<=GRID_MAX;k++){
-   if(h)edges+=`<g class="${total&&GRID_MAX+k!==n?'context-edge':''}">${continuation(787,xy(0,k)[1],813,xy(0,k)[1],'delta1')}</g>`;
+   if(h)edges+=`<g class="${total&&GRID_MAX+k!==n?'context-edge':''}">${continuation(xy(GRID_MAX,k)[0]+62,xy(0,k)[1],xy(GRID_MAX,k)[0]+88,xy(0,k)[1],'delta1')}</g>`;
    if(v)edges+=`<g class="${total&&GRID_MAX+k!==n?'context-edge':''}">${continuation(xy(k,0)[0],43,xy(k,0)[0],17,'delta2')}</g>`;
   }
  }else{

@@ -1,6 +1,6 @@
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
-export function createPageEvolution({viewport,diagram,controls,board,math,language}){
+export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh,reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const overlay=document.createElement('div');overlay.id='pageEvolution';overlay.hidden=true;viewport.append(overlay);
  const toolbar=document.createElement('nav');toolbar.id='evolutionControls';toolbar.hidden=true;controls.prepend(toolbar);
@@ -19,7 +19,7 @@ export function createPageEvolution({viewport,diagram,controls,board,math,langua
  }
  function fit(animate=false){
   const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';
-  const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*225,f=g.y-b*225-d*370;
+  const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*origin.x,f=g.y-b*origin.x-d*origin.y;
   const target=tilted?`matrix(${a},${b},0,${d},${e*scale},${f*scale})`:'matrix(1,0,0,1,0,0)';
   if(transformTarget!==target){
    const previous=getComputedStyle(diagram).transform,wasSettled=diagram.classList.contains('evolution-settled');

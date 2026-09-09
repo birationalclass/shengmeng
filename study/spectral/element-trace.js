@@ -1,12 +1,12 @@
 // A finite, user-triggered trace of an element under two consecutive differentials.
 export function createSquareTrace(host){
- const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,current=null,running=false;
+ const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,current=null,running=false,currentCentres=null;
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const clear=()=>{host.querySelectorAll('[data-element-focus]').forEach(el=>el.removeAttribute('data-element-focus'));cancelAnimationFrame(frame);layer?.remove();layer=null;current=null;running=false;};
  const sync=(effect,enabled)=>{if(!enabled||!['square1','square2'].includes(effect)||effect!==current)clear();};
  const play=(effect,centres)=>{
   if(running&&current===effect)return;
-  clear();current=effect;running=true;
+  clear();current=effect;currentCentres=centres;running=true;
   const horizontal=effect==='square1',color=horizontal?'#f4ce86':'#c9b5ff',delta=horizontal?'δ₁':'δ₂';
   const [[x0,y0],[x1,y1],[x2,y2]]=centres,ux=horizontal?1:0,uy=horizontal?0:-1,pad=horizontal?39:24;
   layer=document.createElementNS(ns,'svg');layer.id='elementTrace';layer.classList.add('element-trace-layer');layer.setAttribute('viewBox','0 0 840 525');layer.setAttribute('role','img');layer.setAttribute('aria-label',`a → ${delta}(a) → 0`);layer.dataset.concept=effect;
@@ -30,7 +30,6 @@ export function createSquareTrace(host){
   const start=performance.now();draw(0);
   const tick=now=>{const elapsed=now-start;draw(elapsed);if(elapsed<2230)frame=requestAnimationFrame(tick);else running=false;};frame=requestAnimationFrame(tick);
  };
- reduced.addEventListener('change',e=>{if(e.matches&&running){const effect=current,horizontal=effect==='square1';playAtRest(effect,horizontal);}});
- const playAtRest=(effect,horizontal)=>{clear();play(effect,horizontal?[[350,295],[475,295],[600,295]]:[[350,295],[350,220],[350,145]]);};
+ reduced.addEventListener('change',e=>{if(e.matches&&running){const effect=current,centres=currentCentres;clear();play(effect,centres);}});
  return {clear,sync,play};
 }
