@@ -219,7 +219,7 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 /* A bare coordinate frame precedes K. Indexed symbols then replace positive ticks. */
 #diagram.frame-only #diagram-terms,#diagram.frame-only .term-label{visibility:hidden;opacity:0!important;pointer-events:none}
 #diagram.frame-only .coordinate-axes{mask:none}
-#diagram .axis-tick{transition:opacity .2s ease}
+#diagram .axis-tick{transition:opacity .12s ease-out}
 #diagram .axis-tick.redundant-coordinate{opacity:0;pointer-events:none}
 #diagram .term-label{transition:opacity .2s ease}
 @media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}.is-building .build-card.build-current h4{font-size:17px}.slide-deck:not(.is-building) .formal-statement>.math-block.definition-current{font-size:18px}}
@@ -240,3 +240,88 @@ footer{display:none}.header{height:48px;min-height:48px;padding:6px 3vw}
 
 /* The loading cover remains the entry screen; only Start activates the lesson. */
 .at-cover .module-dock,.at-cover #submodules,.is-cover .slide-bottom{visibility:hidden;pointer-events:none}
+
+/* The element and its zero stay above term labels; the solid arrow has a moving color wash. */
+#diagram>.element-trace-layer{z-index:5;pointer-events:none;overflow:hidden}
+.element-trace-layer .element-zero{pointer-events:none}
+.square-route .relation-route{animation:none!important}
+
+/* Diagram, its controls, then the mathematical exposition: fixed row allocation. */
+.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){grid-template-rows:18px minmax(145px,1fr) 76px 142px}
+.slide-deck .diagram-controls{grid-row:3;display:flex;align-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;min-width:0;min-height:0;overflow:auto;border-top:1px solid #36545a66;padding:4px 2px}
+.slide-deck .diagram-controls>.diagram-views{flex-basis:100%;min-width:0;min-height:27px;margin:0}
+.slide-deck .diagram-controls .action-tabs{flex:1 1 auto;min-height:25px;height:auto;grid-row:auto}
+.slide-deck .diagram-controls .action-tabs:empty{display:none}
+.slide-deck .diagram-controls .controls{flex:1 1 auto;min-height:26px;height:auto;grid-row:auto;overflow:visible;flex-wrap:wrap;gap:6px 14px;padding:0;margin:0}
+.slide-deck .math-exposition{grid-row:4;display:flex;flex-direction:column;gap:7px;min-width:0;min-height:0}
+.math-exposition h3{font:10px system-ui,sans-serif;font-weight:500;letter-spacing:1.8px;color:#a2bec6;margin:0 2px;line-height:15px}
+.slide-deck .math-exposition .operation-board{flex:1;grid-row:auto;height:auto;min-height:0}
+.is-coordinate-intro .diagram-controls,.is-coordinate-intro .math-exposition{visibility:hidden;pointer-events:none}
+@media(min-width:781px) and (max-height:800px){.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){grid-template-rows:0 minmax(125px,1fr) 68px 126px}}
+@media(max-width:780px){.slide-deck:not(.is-cover) .visual-column,.slide-deck:not(.is-cover) .visual-column:has(.has-page-stack){min-height:408px;grid-template-rows:minmax(180px,1fr) 82px 132px}.slide-deck .figure-heading{display:none}.slide-deck .diagram-controls{grid-row:2;gap:3px 8px}.slide-deck .math-exposition{grid-row:3;gap:4px}.math-exposition h3{font-size:9px;letter-spacing:1px}}
+
+#diagram .term-label[data-element-focus=true]{opacity:.1!important}
+
+/* One fixed workbench; the left column is a notebook of independent accordions. */
+.notebook-workspace .slide-body{transition:none}
+.notebook-workspace #viewTabs:empty{display:none}
+.notebook-workspace #explanation{display:flex;flex-direction:column;gap:12px}
+.notebook-workspace .notebook-card{margin:0;padding-bottom:12px}
+.notebook-workspace .statement-heading{gap:7px;min-height:36px;padding:6px 0;border-bottom:1px solid #3c566060}
+.notebook-workspace .statement-number{margin-left:0;color:inherit;font:inherit}
+.statement-toggle,.build-toggle{margin-left:auto;padding:5px!important;width:28px;height:28px;min-width:28px;display:grid;place-items:center;background:transparent;border:1px solid transparent;color:#a9c7cb;border-radius:5px;cursor:pointer;flex-shrink:0}
+.statement-toggle:hover,.build-toggle:hover{background:#71e2d010;border-color:#71e2d03b;color:#d3f4e9}
+.statement-toggle svg,.build-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;transition:transform .22s ease}
+.statement-toggle[aria-expanded=true] svg,.build-toggle[aria-expanded=true] svg{transform:rotate(180deg)}
+.notebook-workspace .statement-title{margin:12px 0 8px!important;font-size:21px!important}
+.notebook-workspace .statement-title button,.notebook-workspace .build-heading h4 button{all:unset;display:block;cursor:pointer;color:inherit;font:inherit;text-align:left;width:100%}
+.notebook-workspace .notebook-card:not(.is-active){border-left-color:#3b5861}
+.notebook-workspace .notebook-card[data-open=false]>:not(.statement-heading):not(.statement-title){display:none!important}
+.notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:17px!important;color:#a7c2c9}
+.notebook-workspace .notebook-card.is-active .statement-title{color:#e0f3ee}
+.notebook-workspace .build-heading{display:flex;align-items:center;gap:10px;min-height:32px}
+.notebook-workspace .build-heading h4{flex:1;margin:0!important}
+.notebook-workspace .build-card{padding:8px 0;cursor:default}
+.notebook-workspace .build-card[data-open=false] .build-content{display:none}
+.notebook-workspace .build-content{animation:notebook-content-in .22s ease}
+.notebook-workspace .notebook-card[data-open=true]>.initial-definition{animation:notebook-content-in .22s ease}
+.notebook-workspace .quick-check{position:static;margin-top:12px}
+.notebook-workspace .formal-statement>.math-block{font-size:15px}
+.notebook-workspace .formal-statement>.math-block.definition-current{font-size:21px}
+.notebook-workspace .build-card[data-open=false] h4{font-size:14px}
+.notebook-workspace .build-card.build-current[data-open=false] h4{color:var(--teal)}
+@keyframes notebook-content-in{from{opacity:0}to{opacity:1}}
+@media(max-width:780px){.notebook-workspace .statement-title{font-size:19px!important}.notebook-workspace .formal-statement>.math-block.definition-current{font-size:18px}.notebook-workspace .statement-heading{font-size:14px}.notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:15px!important}}
+@media(prefers-reduced-motion:reduce){.statement-toggle svg,.build-toggle svg{transition:none}.notebook-workspace .build-content,.notebook-workspace .notebook-card[data-open=true]>.initial-definition{animation:none}}
+
+/* K to E: three selectable constructions with fixed geometry and finite fades. */
+#keControls{display:flex;align-items:center;gap:5px 10px;flex-wrap:wrap;min-width:0;width:100%}
+#keControls[hidden]{display:none}
+#keControls button{font-size:10px;padding:4px 8px;white-space:nowrap;background:transparent;border:1px solid #34535d;color:#aac6cc;border-radius:4px;cursor:pointer}
+#keControls button[aria-pressed=true]{color:#d0f0e5;border-color:#77bbab;background:#71e2d00a}
+.ke-designs,.ke-steps{display:flex;gap:5px;align-items:center}
+.ke-controls-active>#controls,.ke-controls-active>#actionTabs,.ke-controls-active>#diagramViews{display:none!important}
+#kePanel{position:absolute;inset:0;overflow:hidden;z-index:6}
+#kePanel[hidden]{display:none}
+.ke-active .diagram-viewport>#diagram,.ke-active .diagram-viewport>#pageStack{visibility:hidden!important;pointer-events:none}
+.ke-active #pageRelation{visibility:hidden}
+.ke-canvas{position:absolute;left:50%;top:50%;width:840px;height:525px;transform-origin:center}
+.ke-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ke-math,.ke-text{position:absolute;transform:translate(-50%,-50%);text-align:center;line-height:1.5;color:#d2e5e8;font-size:19px}
+.ke-text{font:14px/1.5 system-ui,sans-serif}.ke-text.quiet{color:#8eafb7}
+.ke-node{background:#18323cd9;border:1px solid #47717a;border-radius:10px;padding:11px 4px;box-sizing:border-box}
+.ke-node.context-node{opacity:.25}.ke-node.projection-term{color:#f4ce86;border-color:#bba575;background:#464a3533}
+.ke-band{fill:#edc77609;stroke:#e4c886;stroke-width:1.5;stroke-dasharray:5 5}
+.ke-arrow{fill:none;stroke:#8fbeff;stroke-width:1.7;stroke-linecap:round}
+.projection-map{stroke:#e7c576;color:#e7c576}.ke-sheet{fill:#25434b66;stroke:#517680;stroke-width:1.3}.sheet-1{stroke:#c4a966;fill:#67583014}.sheet-2{stroke:#83afdc;fill:#365a8822}
+.ke-math.sheet-title{font-size:26px;color:#d4eae5}.ke-math.layer-term{font-size:16px}.layer-picked{background:#578d8855;border:1px solid #76adac;border-radius:8px;padding:4px 0;color:#f2dd9e}.layer-map-label{font-size:14px}
+.ke-subquotient{position:absolute;box-sizing:border-box;border:1px solid #7fa7ba;background:#142e38;border-radius:12px;padding:14px 10px;text-align:center;font-size:17px;display:flex;flex-direction:column;gap:9px}
+.ke-boundary{background:#45627444;border:1px solid #6e899b;border-radius:7px;padding:7px;font-size:15px}
+.phase-one,.phase-two,.phase-three{opacity:0;transition:opacity .42s cubic-bezier(.22,.68,.18,1);pointer-events:none}
+.ke-visible{opacity:1}.ke-replaced{opacity:0!important}.differential-note{color:#a5ccfa}
+.ke-active .operation-note{line-height:1.45}.ke-exposition .operation-equation{padding:3px 0}
+@media(max-width:780px){#keControls{gap:5px}#keControls button{font-size:9px;padding:3px 5px}.ke-designs,.ke-steps{gap:3px}.ke-active .operation-note{font-size:9px}.ke-exposition .operation-equation{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.phase-one,.phase-two,.phase-three{transition:none}}
+
+#submodules{display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;align-items:center}#submodules button{flex:0 0 auto;white-space:nowrap}
+.ke-exposition .katex-display{margin:.05em 0}

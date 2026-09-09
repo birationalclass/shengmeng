@@ -93,3 +93,22 @@ The loading screen is the sole cover and names Sheng Meng. The former static tit
 ## Cover fullscreen (v22)
 
 The cover is headed 学习笔记 / Study Notes and has a top-right fullscreen control available before mathematics loads. A single bootstrap controller keeps cover and lesson buttons in sync; entry and return preserve fullscreen, and Escape exits. Where native fullscreen is unavailable, the existing viewport-filling study layout remains the fallback. The control does not activate Start or change the loading state.
+
+
+## Stable coordinate-to-complex reveal (v23)
+
+The 0–4 tick positions are identical before and after K appears. They fade out in 120ms without translation. Terms and the matching axis cutouts fade in after an 80ms lead, while the definition card fades at its final size; the first entry does not combine scaling, translation, and font-size growth. Unfinished axis opening animations continue smoothly if Next is pressed early. Subsequent definition typography retains its smooth enlargement/shrinking behavior.
+
+The former rotated rectangles are replaced by compact rounded contours, formed from the endpoint term boxes with a four-unit margin. A one-factor sum gets the same rounded outline. Region geometry uses the full index range rather than clipping it to displayed nodes: for C⁵ the blue outline continues beyond the top/right window boundaries toward K⁰⁵ and K⁵⁰, instead of closing at K¹⁴ and K⁴¹. A short caption identifies those unseen endpoint terms.
+
+Square-zero interactions now trace a foreground element through two consecutive horizontal or vertical arrows, with a moving color gradient along the solid arrow shafts. The element pauses in the middle term, shrinks at the third term, then expands into 0. This finite trace starts on hover, focus, or click, not on slide advance. Leaving the relation clears the overlay; reduced motion displays the final zero immediately.
+
+All diagram controls (examples, degree, filtration, page and view controls) are grouped immediately below the diagram. The separate lower panel is headed 数学阐述 / Mathematical exposition. Fixed row sizes prevent control visibility changes from moving the graph.
+
+Total-degree labels retain the standard totalization notation: Cⁿ := Totⁿ K. The diagram, source/target cards and direct-sum expansion update together with n; Cⁿ⁺¹ receives the same identification. The left definition states Cⁿ := Totⁿ K = ⊕(p+q=n) Kᵖᑫ.
+
+## Single-page notebook and K-to-E comparison (v23)
+
+The three topic entries share one fixed workbench. The slide footer and page count are removed. Definition, proposition and theorem cards fold independently using top-right chevrons; numbers immediately follow the statement kind. Initial definitions can be selected directly, while Enter/Right follows the reading order. Folding a statement preserves the current graph. The induced and convergence sections show all their statement headers together.
+
+`k-to-e.js` offers three selectable visualizations: filtration/projection, parallel object layers, and a local column. Each uses the same position (p,q)=(1,2), n=3 and four manual stages K, E0, d0, E1. Stage selection updates the mathematical exposition. The projection kernel is F²C³, identifying E0¹² with K¹²; d0 is induced by D and corresponds to δ₂. E1 is the kernel/image quotient, never the result of mapping an arbitrary vector of K into cohomology. The layers describe objects, not a third cochain grading. Smooth opacity changes preserve geometry; reduced motion is respected.

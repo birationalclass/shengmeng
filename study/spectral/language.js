@@ -1,4 +1,4 @@
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=22';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=23';
 let lang=localStorage.getItem('spectral-language')==='en'?'en':'zh';
 export const language=()=>lang;
 export function toggleLanguage(){lang=lang==='zh'?'en':'zh';localStorage.setItem('spectral-language',lang);}
@@ -115,3 +115,11 @@ add('键盘：→、回车和空格前进，← 后退。初始页逐项展开�
 add('坐标窗口：0 至 4；右端和上端仍可延伸。','Window: 0 to 4. The right and top edges can extend further.');
 
 add('坐标图','Coordinate grid');
+
+add('图示控制','Diagram controls');add('数学阐述','Mathematical exposition');
+
+add('展开','Expand');add('收起','Collapse');add('键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。按钮、选择框和滑块保留自身的键盘行为。','Keyboard: Right or Enter selects the next item; Left selects the previous one. Definitions and theorems fold independently and update the same diagram. Buttons, selects and sliders retain native keyboard behavior.');
+
+add('K → E · 三套方案','K → E · Three designs');
+
+add('封面','Cover');add('返回封面','Return to cover');

@@ -1,5 +1,6 @@
 // A symbolic operations panel: boxes indicate spaces and inclusions, never dimensions.
 const R=String.raw;
+export const totalDegreeTex=n=>R`C^{${n}}:=\operatorname{Tot}^{${n}}K`;
 const pick=(lang,zh,en)=>lang==='en'?en:zh;
 export function viewNames(s,lang){const choose=(a,b)=>lang==='en'?b:a;return s.module==='initial'?[]:s.module==='learn'?choose(['E₁','E₂','Eᵣ'],['E₁','E₂','Eᵣ']):s.module==='converge'?choose(['目标滤过','稳定','比较映射','核与同构','⇒ 的含义'],['Target filtration','Stabilization','Comparison','Kernel & isomorphism','Meaning of ⇒']):s.module==='trace'?choose(['代表元','横向像','修正','总微分','d₂','E₃'],['Representative','Horizontal image','Correction','Total differential','d₂','E₃']):Array.from({length:s.example==='d3'?6:5},(_,r)=>`E${r}`);}
 export function actionNames(s,lang){const all={initial:[[]],learn:[[['闭链：核','边界：像','取商','同一个类'],['Cocycles: kernel','Boundaries: image','Quotient','Same class']],[['滤过项','下一层','D 保持滤过'],['Filtered piece','Next layer','D preserves F']],[['商空间','投影的核','典范识别'],['Quotient','Projection kernel','Canonical identification']],[['诱导 d₀','E₁'],['Induce d₀','E₁']],[['诱导 d₁','代表元检验','E₂'],['Induce d₁','Representatives','Row cohomology']],[['Zᵣ','Bᵣ','Eᵣ','dᵣ','Eᵣ₊₁'],['Zᵣ','Bᵣ','Eᵣ','dᵣ','Eᵣ₊₁']]],converge:[[['总上同调','诱导滤过','滤过商'],['Total cohomology','Induced filtration','Graded quotient']],[['右端消失','真正闭链','所有总边界'],['Right end vanishes','Actual cocycles','All total boundaries']],[['稳定页','比较映射','同一闭代表元'],['Stable page','Comparison map','Same cocycle']],[['映到零','分解代表元','计算核','商掉核','得到同构'],['Maps to zero','Decompose','Compute kernel','Quotient','Isomorphism']],[['收敛记号','扩张信息'],['Convergence notation','Extension data']]]};const row=all[s.module]?.[s.step];if(!row?.length)return [];return row?.[lang==='en'?1:0]||[];}
@@ -25,9 +26,9 @@ export function operationMarkup(s,lang,math){
   }else{body=row(box(R`K=\{K^{p,q}\}_{p,q\in\mathbb Z}`)+box(R`K^{p,q}=0\quad(p<0\ \text{or}\ q<0)`));note=t('选择左侧定义。在固定坐标图上加入微分，再单独检验复合关系。','Select a definition to add its maps to the fixed grid and inspect the composite relations.');}
  }else if(s.module==='initial'){
   const factors=Array.from({length:n+1},(_,i)=>`K^{${i},${n-i}}`);
-  if(a===1)body=row(`<div class="direct-sum-group">${factors.map(x=>`<span>${M(x)}</span>`).join(`<span class="sum-sign">${M('\\oplus')}</span>`)}</div><span>${M('=')}</span>${box(`C^{${n}}`,'chosen')}`);
+  if(a===1)body=`<div class="operation-equation">${M(totalDegreeTex(n))}</div>`+row(`<span>${M('=')}</span><div class="direct-sum-group">${factors.map(x=>`<span>${M(x)}</span>`).join(`<span class="sum-sign">${M('\\oplus')}</span>`)}</div>`);
   else if(a===2)body=row(box(`a_{i,j}\\in K^{i,j}`)+arrow('D')+box(R`\delta_1a_{i,j}+\delta_2a_{i,j}\in C^{i+j+1}`,'chosen'));
-  else body=row(box(`C^{${n}}`,'source-space')+arrow('D')+box(`C^{${n+1}}`,'target-space'))+`<div class="operation-equation">${M(R`(Da)_{i,j}=\delta_1a_{i-1,j}+\delta_2a_{i,j-1}`)}</div>`;
+  else body=row(box(totalDegreeTex(n),'source-space')+arrow('D')+box(totalDegreeTex(n+1),'target-space'))+`<div class="operation-equation">${M(R`(Da)_{i,j}=\delta_1a_{i-1,j}+\delta_2a_{i,j-1}`)}</div>`;
   note=a===1?t('斜虚框圈出全部直和因子，整体记作 Cⁿ；它不是新加的一个 K 节点。','The slanted dashed box groups all direct-sum factors as Cⁿ. It is not an extra K-node.'):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
  }else if(s.module==='learn'){
   if(s.step===0){
