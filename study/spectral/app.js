@@ -1,3 +1,4 @@
+import {createReadingRail} from './reading-rail.js?v=69';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {numberedPages} from './reading-pages.js?v=64';
 import {createReadingFocus} from './reading-focus.js?v=64';
@@ -36,6 +37,7 @@ let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],exposit
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
+const readingRail=createReadingRail({workspace:$('.notebook-workspace'),column:$('.explanation'),mobilePane:$('.slide-body'),content:$('#explanation'),language,cancelFollow:readingFocus.cancel});
 // Control labels use the same mathematical typesetting as the diagram.
 const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆₇₈₉ᵣ₊]+|\d+)/g,(_,symbol,index)=>math(`${symbol}_{${[...index].map(c=>({'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ᵣ':'r','₊':'+'}[c]||c)).join('')}}`));
 const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
@@ -144,7 +146,7 @@ function render(updateControls=true){
  if(!state.cover&&state.module==='initial')revealedBuild=Math.max(revealedBuild,state.initialReveal);
  if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge')companion(convergence[state.step]);
  $('.inspector .mini-label').textContent='点击图中的项，查看其含义';$('.legend').innerHTML='';$('#panelIndex').textContent='';
- renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();window.spectralFullscreen?.sync();
+ renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();window.spectralFullscreen?.sync();
 }
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
