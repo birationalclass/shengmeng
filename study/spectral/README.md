@@ -172,3 +172,10 @@ The local complex, kernel, image inclusion, and quotient are optional tabs insid
 Left-hand statements specify domains, targets and representatives for d0, d1 and dr. The mathematical exposition owns separate topic and proof-step controls. It proves descent to the associated graded, the projection isomorphism Phi0, the identity Phi0 d0 = delta2 Phi0, representative independence for d1, and numerator/denominator compatibility and square zero for dr. Definitions and proof conventions were checked against McCleary, Theorem 2.6 and its proof, and Theorem 2.15. The total differential remains D = delta1 + delta2.
 
 Source-dot pulses return to their actual resting opacity and color. Newly inserted graph elements use their eventual style rather than a hard-coded opacity. Interrupted emphasis fades back; coordinate and term entrances can finish independently. Accordion targets track the changing natural content height during formula scaling. The 2D/3D handoff crossfades only at aligned geometry, and retired element traces fade away. The proof controls leave page-animation DOM untouched. Chromium and WebKit tests cover the definitions, all 11 proof steps, bilingual/mobile display and page generation; 66 graph-opacity endpoints and a natural-height accordion endpoint were checked, including projection cleanup.
+
+
+## Definition notation and filtered subspaces (v38)
+
+Defining formulas use `:=`; computations retain `=` and canonical identifications retain `\cong`. Statement and inner-definition fold controls use plus when closed and minus when open.
+
+Selecting Z_r or B_r in Definition 2.3 now opens its own total-space diagram: a preimage condition for Z_r, and the intersection of D(F^{p-r}C^{n-1}) with F^pC^n for B_r. The image arrow targets the full image, not the intersection. Region sizes encode no dimensions. The independent exposition supplies four proof steps for each, including column cancellation conditions and monotonicity. Controls vary n, p, and r, including zero-degree and vanishing-filtration cases. Page controls remain reachable when the E_r view is active; the existing page-evolution state is retained.

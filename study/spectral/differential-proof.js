@@ -1,4 +1,4 @@
-import {cohomologyExposition} from './cohomology-view.js?v=35';
+import {cohomologyExposition} from './cohomology-view.js?v=38';
 // This panel owns its proof steps. Navigating a proof never advances a notebook
 // statement, changes a page, or cancels a diagram animation.
 export function createDifferentialProof({board,math,language}){
@@ -7,9 +7,9 @@ export function createDifferentialProof({board,math,language}){
  const explanations={
   d0:[
    {name:['诱导到商','Descend to the quotient'],f:[R`D(F^pC^n)\subseteq F^pC^{n+1}`,R`a'-a\in F^{p+1}C^n\ \Longrightarrow\ Da'-Da\in F^{p+1}C^{n+1}`,R`d_0^{p,q}[a]_0:=[Da]_0,\qquad n=p+q`],note:['代表元改变一个下一层滤过中的元素，其像也只改变一个下一层元素，所以 d₀ 良定义。','Changing a representative by the next filtration changes its image by the next filtration. Thus d₀ is well-defined.']},
-   {name:['自然同构','Natural identification'],f:[R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`\Phi_0^{p,q}:E_0^{p,q}\xrightarrow{\sim}K^{p,q},\qquad[a]_0\longmapsto a_p`,R`\ker(F^pC^n\longrightarrow K^{p,q})=F^{p+1}C^n`],note:['取第 p 列分量给出满射；其核恰是分母。这是给定双分次产生的自然同构。','Projection to column p is surjective, with kernel equal to the denominator. The bigrading gives this natural isomorphism.']},
-   {name:['计算第 p 列','Compute column p'],f:[R`D=\delta_1+\delta_2`,R`\delta_1a_i\in K^{i+1,n-i},\qquad\delta_2a_i\in K^{i,n-i+1}`,R`(Da)_p=\delta_2a_p\qquad(a_i=0\text{ for }i<p)`,R`\delta_1(F^pC^n)\subseteq F^{p+1}C^{n+1}`],note:['横向微分的像在下一列；取关联分次时消失。保持第 p 列的分量是 δ₂aₚ。','The horizontal image lies in the next column and vanishes in the associated graded. The column-p component is δ₂aₚ.']},
-   {name:['交换恒等式','Commuting identity'],f:[R`\Phi_0^{p,q+1}\circ d_0^{p,q}=\delta_2^{p,q}\circ\Phi_0^{p,q}`,R`d_0^{p,q}=(\Phi_0^{p,q+1})^{-1}\delta_2^{p,q}\Phi_0^{p,q}`,R`E_1^{p,q}=H^q(E_0^{p,\bullet},d_0)\cong H^q(K^{p,\bullet},\delta_2)`],note:['d₀ 与 δ₂ 经 Φ₀ 对应。D 作用于总复形，仍为 δ₁+δ₂；这里并没有将 D 改成 δ₂。','Φ₀ identifies d₀ with δ₂. On the total complex D remains δ₁+δ₂; the quotient does not replace D by δ₂.']}
+   {name:['自然同构','Natural identification'],f:[R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`\Phi_0^{p,q}:E_0^{p,q}\xrightarrow{\sim}K^{p,q},\qquad\Phi_0^{p,q}([a]_0):=a_p`,R`\ker(F^pC^n\longrightarrow K^{p,q})=F^{p+1}C^n`],note:['取第 p 列分量给出满射；其核恰是分母。这是给定双分次产生的自然同构。','Projection to column p is surjective, with kernel equal to the denominator. The bigrading gives this natural isomorphism.']},
+   {name:['计算第 p 列','Compute column p'],f:[R`D:=\delta_1+\delta_2`,R`\delta_1a_i\in K^{i+1,n-i},\qquad\delta_2a_i\in K^{i,n-i+1}`,R`(Da)_p=\delta_2a_p\qquad(a_i=0\text{ for }i<p)`,R`\delta_1(F^pC^n)\subseteq F^{p+1}C^{n+1}`],note:['横向微分的像在下一列；取关联分次时消失。保持第 p 列的分量是 δ₂aₚ。','The horizontal image lies in the next column and vanishes in the associated graded. The column-p component is δ₂aₚ.']},
+   {name:['交换恒等式','Commuting identity'],f:[R`\Phi_0^{p,q+1}\circ d_0^{p,q}=\delta_2^{p,q}\circ\Phi_0^{p,q}`,R`d_0^{p,q}=(\Phi_0^{p,q+1})^{-1}\delta_2^{p,q}\Phi_0^{p,q}`,R`E_1^{p,q}:=H^q(E_0^{p,\bullet},d_0)\cong H^q(K^{p,\bullet},\delta_2)`],note:['d₀ 与 δ₂ 经 Φ₀ 对应。D 作用于总复形，仍为 δ₁+δ₂；这里并没有将 D 改成 δ₂。','Φ₀ identifies d₀ with δ₂. On the total complex D remains δ₁+δ₂; the quotient does not replace D by δ₂.']}
   ],
   d1:[
    {name:['闭代表元','Closed representatives'],f:[R`a\in K^{p,q},\quad\delta_2a=0`,R`\delta_2\delta_1a=-\delta_1\delta_2a=0`],note:['反交换关系保证 δ₁a 仍为纵向闭元，因此它确定 E₁ 中的类。','Anticommutation makes δ₁a a vertical cocycle, so it determines a class in E₁.']},

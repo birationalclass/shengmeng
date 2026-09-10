@@ -389,3 +389,33 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 .notebook-workspace .statement-heading .statement-toggle{margin-left:0}
 @media(max-width:1000px){.notebook-workspace .statement-label{font-size:14px}.notebook-workspace .statement-heading{gap:7px}.notebook-workspace .statement-heading .statement-title,.notebook-workspace .notebook-card[data-open=false] .statement-heading .statement-title{font-size:16px!important}}
 @media(max-width:420px){.notebook-workspace .statement-label{font-size:13px}.notebook-workspace .statement-heading{gap:6px}.notebook-workspace .statement-heading .statement-title,.notebook-workspace .notebook-card[data-open=false] .statement-heading .statement-title{font-size:15px!important}}
+
+/* Stable plus/minus glyphs: only the vertical stroke fades. */
+.fold-glyph{position:relative;display:block;width:16px;height:16px}
+.fold-glyph::before,.fold-glyph::after{content:'';position:absolute;left:50%;top:50%;background:currentColor;border-radius:1px;transform:translate(-50%,-50%)}
+.fold-glyph::before{width:11px;height:1.5px}
+.fold-glyph::after{width:1.5px;height:11px;opacity:1;transition:opacity min(220ms,var(--notebook-motion-time,900ms)) ease}
+[aria-expanded=true]>.fold-glyph::after{opacity:0}
+@media(prefers-reduced-motion:reduce){.fold-glyph::after{transition:none}}
+
+/* Filtered total-space diagrams; no frame around the visualization module. */
+#filteredView{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility 0s .35s}
+#filteredView.is-active{opacity:1;visibility:visible;transition:opacity .35s ease,visibility 0s}
+.has-filtered-view #diagram{opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:opacity .35s ease,visibility 0s .35s!important}
+.filtered-scene{position:absolute;inset:0;width:840px;height:525px;transform-origin:0 0;transform:scale(var(--filtered-scale,1))}
+.filtered-scene svg{position:absolute;inset:0;width:840px;height:525px}
+.filtered-ambient{fill:#82b2bb04;stroke:#718f9866;stroke-width:1.25}
+.filtered-region{fill:#99c0c00c;stroke:#96babe;stroke-width:1.5;stroke-dasharray:5 5}
+.filtered-region.gold{fill:#edc87513;stroke:#e9c477}
+.filtered-region.blue{fill:#8cbaff11;stroke:#8cbaff}
+.filtered-intersection{fill:#edc87540;stroke:#e9c477;stroke-width:1.5}
+.filtered-map{fill:none;stroke:#88afa7;stroke-width:1.2}
+.filtered-map.strong{stroke:#b3e3d7;stroke-width:1.7;stroke-dasharray:none}
+.filtered-label{position:absolute;display:flex;height:44px;align-items:center;justify-content:center;white-space:nowrap;color:#d9e9e8;font-size:24px;line-height:1}
+.filtered-label .katex{font-size:1em}.filtered-label.small{font-size:19px}.filtered-label.gold{color:#f4d08c}.filtered-label.blue{color:#a2c8ff}.filtered-label.muted{color:#8daaad;font-size:19px}
+.filtered-caption{position:absolute;top:455px;left:0;width:100%;margin:0;text-align:center;font:14px system-ui,sans-serif;color:#8eacb3}
+.filtered-example{margin:12px 0 0;color:#a4bebf;font-size:12px}
+.slide-deck[data-module=learn] .visualization-module.general-page-mode #actionTabs{display:flex!important}
+@media(prefers-reduced-motion:reduce){#filteredView,.has-filtered-view #diagram{transition:none!important}}
+
+.filtered-zero{fill:#c8ded9;stroke:none}.filtered-zero.gold{fill:#f4d08c}.filtered-zero.blue{fill:#a2c8ff}

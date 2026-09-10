@@ -1,4 +1,4 @@
-import {createDifferentialProof} from './differential-proof.js?v=36';
+import {createDifferentialProof} from './differential-proof.js?v=38';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -136,7 +136,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   const choice=s.annotationStep||1,wasEngaged=engaged;
   const eligible=!s.cover&&(s.module==='initial'&&s.initialReveal===8||s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3));
   engaged=eligible;toolbar.hidden=!eligible;overlay.hidden=!eligible;viewport.classList.toggle('has-evolution',eligible);controls.closest('.visualization-module').classList.toggle('page-evolution-mode',eligible);
-  if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
+  if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5&&choice>=3)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
   const key=`${s.module}:${s.step}`;if(s.selected)point={...s.selected};
   if(key!==semanticKey){semanticKey=key;cancel();
    if(s.module==='initial'||s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}

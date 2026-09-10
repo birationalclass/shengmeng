@@ -12,7 +12,7 @@ export function cohomologyExposition({r,phase,point,math,t}) {
   [`${E(ip,iq)}\\xrightarrow{d_{${r}}}${E(p,q)}\\xrightarrow{d_{${r}}}${E(op,oq)}`,`d_{${r}}^2=0`],
   [`\\ker ${map}=\\{z\\in ${E(p,q)}:${map}z=0\\}`],
   [`\\operatorname{im}(${input})\\subseteq\\ker(${map})`,`d_{${r}}(d_{${r}}y)=0`],
-  [r===0?'E_1^{p,q}=H^q(E_0^{p,\\bullet},d_0)\\cong H^q(K^{p,\\bullet},\\delta_2)':`E_{${r+1}}^{p,q}\\cong\\frac{\\ker(d_{${r}}:E_{${r}}^{p,q}\\to E_{${r}}^{${shift('p',r)},${shift('q',1-r)}})}{\\operatorname{im}(d_{${r}}:E_{${r}}^{${shift('p',-r)},${shift('q',r-1)}}\\to E_{${r}}^{p,q})}`,
+  [r===0?'E_1^{p,q}:=H^q(E_0^{p,\\bullet},d_0)\\cong H^q(K^{p,\\bullet},\\delta_2)':`E_{${r+1}}^{p,q}\\cong\\frac{\\ker(d_{${r}}:E_{${r}}^{p,q}\\to E_{${r}}^{${shift('p',r)},${shift('q',1-r)}})}{\\operatorname{im}(d_{${r}}:E_{${r}}^{${shift('p',-r)},${shift('q',r-1)}}\\to E_{${r}}^{p,q})}`,
    `E_{${r+1}}^{${p},${q}}\\cong\\frac{\\ker(${map})}{\\operatorname{im}(${input})}`]
  ][phase];
  let diagram='';
