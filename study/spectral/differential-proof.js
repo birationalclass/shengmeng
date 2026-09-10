@@ -4,7 +4,7 @@ import {cohomologyExposition} from './cohomology-view.js?v=38';
 // statement, changes a page, or cancels a diagram animation.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- let context=null,key='',topic='d0',steps={e0:0,d0:0,d1:0,dr:0},phase=3;
+ let context=null,key='',topic='d0',steps={e0:0,e1:0,d0:0,d1:0,dr:0},phase=3;
  const explanations={
   e0:[
    {name:['元素与记号','Elements and notation'],f:[R`[a]_0:=a+F^{p+1}C^{p+q}\in E_0^{p,q},\quad a\in F^pC^{p+q}`,R`\begin{array}{rcl}\Phi_0^{p,q}:K^{p,q}&\xrightarrow{\sim}&E_0^{p,q}\\a&\longmapsto&[a]_0\end{array}`],note:['当 a∈K^{p,q} 时，先通过直和因子的自然嵌入将 a 视为 F^pC^{p+q} 中的元素，再取陪集。此处 [a]₀ 是滤过商中的类，无须 a 满足闭性条件。','For a∈K^{p,q}, first regard a as an element of F^pC^{p+q} via the natural inclusion of the direct summand, then take its coset. Here [a]₀ is a class in a filtration quotient; no cocycle condition on a is required.']},
@@ -16,6 +16,10 @@ export function createDifferentialProof({board,math,language}){
    {name:['只保留纵向分量','The vertical component survives'],f:[R`a\in K^{p,q},\qquad Da=\delta_1^{p,q}a+\delta_2^{p,q}a`,R`\delta_1^{p,q}a\in K^{p+1,q}\subseteq F^{p+1}C^{p+q+1}`,R`[Da]_0=[\delta_2^{p,q}a]_0`],note:['横向分量在商中为零；这并不是总复形上 D=δ₂。','The horizontal component vanishes in the quotient; this does not mean D=δ₂ on the total complex.']},
    {name:['与同构相容','Compatibility with the isomorphism'],f:[R`d_0^{p,q}\circ\Phi_0^{p,q}=\Phi_0^{p,q+1}\circ\delta_2^{p,q}`,R`d_0^{p,q}=\Phi_0^{p,q+1}\circ\delta_2^{p,q}\circ(\Phi_0^{p,q})^{-1}`,R`(K^{\bullet,\bullet},\delta_2)\cong(E_0^{\bullet,\bullet},d_0)`],note:['d₀ 对应 δ₂，而非总微分 D。一般只需滤过复形 (C,F,D) 即可构造 (E₀,d₀)，无须预先将 D 分解。','d₀ corresponds to δ₂, not the total differential D. In general the filtered complex (C,F,D) defines (E₀,d₀) without a prior decomposition of D.']},
    {name:['平方为零','Square zero'],f:[R`d_0^{p,q+1}d_0^{p,q}[a]_0=[D^2a]_0=0`],note:['D²=0 下降为商上的 d₀²=0。','D²=0 descends to d₀²=0 on the quotient.']}
+  ],
+  e1:[
+   {name:['上同调：核模像','Cohomology: kernel modulo image'],f:[R`E_1^{p,q}:=H^q(E_0^{p,\bullet},d_0)=\frac{\ker(d_0^{p,q})}{\operatorname{im}(d_0^{p,q-1})}`,R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2)=\frac{\ker(\delta_2^{p,q})}{\operatorname{im}(\delta_2^{p,q-1})}`,R`[a]_1:=[a]_0+\operatorname{im}(d_0^{p,q-1}),\quad a\in\ker(\delta_2^{p,q})`],note:['第一行定义 E₁；第二行通过 Φ₀ 诱导的自然同构计算。分子与分母分别是纵向出射映射的核、纵向入射映射的像。','The first line defines E₁; the second computes it via the natural isomorphism induced by Φ₀. The numerator is the kernel of the outgoing vertical map; the denominator is the image of the incoming vertical map.']},
+   {name:['元素与代表元','Elements and representatives'],f:[R`a,a'\in K^{p,q},\quad\delta_2^{p,q}a=\delta_2^{p,q}a'=0`,R`[a]_1:=[a]_0+\operatorname{im}(d_0^{p,q-1})\in E_1^{p,q}`,R`[a]_1\ \longleftrightarrow\ a+\operatorname{im}(\delta_2^{p,q-1})`,R`[a]_1=[a']_1\iff a'-a\in\operatorname{im}(\delta_2^{p,q-1})`],note:['这里通过自然同构采用 K 中的纵向闭元作代表；相差一个纵向边界表示同一个 E₁ 类。','Using the natural isomorphism, we represent E₁ classes by vertical cocycles in K; two such cocycles give the same class exactly when their difference is a vertical boundary.']}
   ],
   d1:[
    {name:['闭代表元','Closed representatives'],f:[R`a\in K^{p,q},\quad\delta_2a=0`,R`\delta_2\delta_1a=-\delta_1\delta_2a=0`],note:['反交换关系保证 δ₁a 仍为纵向闭元。','Anticommutation makes δ₁a a vertical cocycle.']},
@@ -32,7 +36,7 @@ export function createDifferentialProof({board,math,language}){
  function noteMath(text){return text.replace(/K\^\{p,q\}|F\^pC\^\{p\+q\}|a∈K\^\{p,q\}|\[a\]₀/g,token=>math({'a∈K^{p,q}':R`a\in K^{p,q}`,'[a]₀':R`[a]_0`}[token]||token));}
  function properties(){
   const section=context.state.step,zero=context.state.module==='learn'&&section===3;
-  if(zero)return '';
+  if(zero||context.state.module==='learn'&&section===4&&context.state.notePage===0)return '';
   const formulas=section===4?[
    R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2),\qquad d_1^2=0`,
    R`E_2^{p,q}\cong H^p(E_1^{\bullet,q},d_1)`
@@ -45,22 +49,22 @@ export function createDifferentialProof({board,math,language}){
  function paint(){
   const allTopics=[['d0',t('d₀ 的来源','Origin of d₀')],['d1',t('d₁ 的良定义','Well-defined d₁')],['dr',t('dᵣ 的良定义','Well-defined dᵣ')],['cohom',t('取上同调','Cohomology')]];
   const zero=context?.state.module==='learn'&&context.state.step===3;
-  const zeroTerm=zero&&context.state.notePage===0;
+  const zeroTerm=zero&&context.state.notePage===0,firstTerm=context?.state.module==='learn'&&context.state.step===4&&context.state.notePage===0;
   const topics=zero?[[zeroTerm?'e0':'d0',zeroTerm?t('元素与典范同构','Elements and canonical identification'):t('d₀ 的来源','Origin of d₀')]]:allTopics;
-  if(zero)topic=zeroTerm?'e0':'d0';
+  if(zero)topic=zeroTerm?'e0':'d0';else if(firstTerm)topic='e1';
   let html=properties()+`<nav class="proof-topics" aria-label="${t('数学阐述主题','Mathematical exposition topics')}">${topics.map(([id,name])=>`<button data-proof-topic="${id}" aria-pressed="${topic===id}">${name.replace(/d([₀₁ᵣ])/g,(_,r)=>math('d_{'+({'₀':0,'₁':1,'ᵣ':'r'}[r])+'}'))}</button>`).join('')}</nav>`;
-  if(zero)html='';
+  if(zero||firstTerm)html='';
   if(topic==='cohom')html+=cohomologyExposition({r:context.construction?.r??Math.max(0,context.current-1),phase,point:context.point,math,t});
   else{
    const entries=explanations[topic],entry=entries[steps[topic]];
    html+=`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${entries.map((e,i)=>`<button data-proof-step="${i}" aria-pressed="${steps[topic]===i}">${i+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="proof-body"><div class="operation-content evolution-exposition">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${noteMath(t(...entry.note))}</p></div>`;
   }
-  if(zero)html+=`<p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=62" target="_blank" rel="noopener">McCleary, Theorem 2.15, pp. 48–49</a></p>`;
+  if(zero||firstTerm)html+=`<p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=62" target="_blank" rel="noopener">McCleary, Theorem 2.15, pp. 48–49</a></p>`;
   replaceMathContent(board,html);board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=topic==='cohom'?phase:steps[topic];
  }
  board.addEventListener('click',e=>{
   const button=e.target.closest('[data-proof-topic],[data-proof-step],[data-co-phase]');if(!button||!context)return;
   e.stopPropagation();if(button.dataset.proofTopic){topic=button.dataset.proofTopic;}else if(button.dataset.proofStep!==undefined)steps[topic]=Number(button.dataset.proofStep);else phase=Number(button.dataset.coPhase);paint();
  });
- return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?'dr':c.construction?'cohom':c.state.module==='learn'&&c.state.step===4?'d1':'d0';}paint();},reset(){key='';context=null;steps={e0:0,d0:0,d1:0,dr:0};phase=3;}};
+ return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?'dr':c.state.module==='learn'&&c.state.step===4?(c.state.notePage===0?'e1':'d1'):c.construction?'cohom':'d0';}paint();},reset(){key='';context=null;steps={e0:0,e1:0,d0:0,d1:0,dr:0};phase=3;}};
 }

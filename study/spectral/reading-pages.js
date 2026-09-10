@@ -18,7 +18,7 @@ export function numberedPages(module,step,count){
 // Short headings remain readable while their formula bodies are folded.
 const titles={
  'learn:3':['E_0','d_0'],
- 'learn:4':['E_1','d_1'],
+ 'learn:4':['(E_1,d_1)','d_1'],
  'learn:5':['Z_r','B_r','E_r','d_r'],
  'converge:0':['H^n','F^pH^n',String.raw`\operatorname{Gr}_F^pH^n`],
  'converge:1':['F^{p+r}C^{n+1}',String.raw`Z_\infty`,String.raw`B_\infty`],

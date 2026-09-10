@@ -1,4 +1,4 @@
-import {numberedPages} from './reading-pages.js?v=59';
+import {numberedPages} from './reading-pages.js?v=64';
 import {createReadingFocus} from './reading-focus.js?v=64';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -111,11 +111,11 @@ const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module
 }).join('');
 function statementHeading(meta,key){
  const subject=(meta.showName&&meta.symbol?esc(meta.name)+' ':'')+(meta.symbol?math(meta.symbol):esc(meta.name||''));
- return `<div class="statement-heading"><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
+ return `<div class="statement-heading" ${meta.continued?'hidden':''}><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
 }
-function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
+function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card${meta.continued?' section-continuation':''}" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
 
-function syncStatementCards(){syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
+function syncStatementCards(){syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=(openStatements.has(key)||el.classList.contains('section-continuation'))&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
  doubleComplexCompanion(initial[0]);
@@ -205,8 +205,8 @@ function statementMeta(module=state.module,step=state.step){
  const meta=collections[module]?.[step]||{kind:module==='lab'?'例':'计算',concepts:module==='lab'?['page','differential']:['differential','space','differential']};
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
- if(module==='learn'&&step>=3&&step<=5)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true};
- if(module==='converge')return {...meta,kind:'§',number:'3'};
+ if(module==='learn'&&step>=3&&step<=5)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step>3};
+ if(module==='converge')return {...meta,kind:'§',number:'3',continued:step>0};
  if(module==='lab'||module==='trace')return {...meta,kind:'§',number:module==='lab'?'4':'5'};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }
