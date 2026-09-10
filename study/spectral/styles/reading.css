@@ -1,8 +1,6 @@
 /* Current-reading emphasis is shared by all sections, independent of diagrams. */
 .notebook-workspace {
  --reading-current:#f5f7fa;
- --reading-current-wash:#f5f7fa07;
- --reading-current-edge:#f5f7fa60;
  --reading-text-depth:0 1px 0 #030c11d9,0 2px 4px #00000038;
  --reading-heading-size:19px;
  --reading-formula-size:23px;
@@ -12,8 +10,8 @@
  transition:background-color .36s ease,box-shadow .36s ease;
 }
 .notebook-workspace :is(.build-card,.numbered-entry).build-current {
- background-color:var(--reading-current-wash);
- box-shadow:inset 2px 0 var(--reading-current-edge);
+ background:transparent;
+ box-shadow:none;
 }
 .notebook-workspace :is(.build-card,.numbered-entry) .build-heading h4 {
  font-size:14px;color:#a9c0c7;
@@ -43,7 +41,6 @@
 }
 .notebook-workspace .initial-assumptions {font-size:12px;text-shadow:0 1px 0 #030c1100,0 2px 4px #00000000;transition:font-size .38s var(--motion-easing),color .3s ease,text-shadow .38s var(--motion-easing)}
 .notebook-workspace .definition-current .initial-assumptions {font-size:20px;color:var(--reading-current);text-shadow:var(--reading-text-depth)}
-.notebook-workspace .initial-definition.definition-current {background:var(--reading-current-wash)}
 /* Retain the same spacing when moving from the double complex to later pages. */
 .notebook-workspace .build-card {min-height:0;padding:12px 3px}
 .notebook-workspace .build-card .math-block {margin:2px 0;padding-top:7px;padding-bottom:7px}

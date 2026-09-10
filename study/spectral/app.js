@@ -1,3 +1,4 @@
+import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {numberedPages} from './reading-pages.js?v=64';
 import {createReadingFocus} from './reading-focus.js?v=64';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
@@ -9,10 +10,10 @@ import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=64';
-import {translatePage,language,toggleLanguage} from './language.js?v=65';
+import {translatePage,language,toggleLanguage} from './language.js?v=66';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=64';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=64';
+import {createPageEvolution} from './page-evolution.js?v=67';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -370,7 +371,7 @@ function doubleComplexCompanion(item){
  ];
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
- $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><div class="initial-definition" data-build="0"><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+1}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,i===6&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,i===6&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1].map(step=>statementMarkup(convergence[step],'converge',step)).join(''));
  $('#sceneNote').textContent='';
 }
@@ -390,8 +391,6 @@ function syncInitialEntries(){
   const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),isDoubleComplexView()&&i===state.initialReveal);
   el.classList.toggle('build-complete',i<state.initialReveal);
  });
- const intro=$('.initial-definition');if(!intro)return;intro.classList.toggle('definition-current',state.module==='initial'&&state.initialReveal===0);
- notebookMotion.setExpanded(intro,revealedBuild>=0&&openBuilds.has(0),{immediate:revealedBuild<0});
 }
 function syncReadingEntries(key){
  const last=revealedReadings.get(key)??-1;
@@ -537,7 +536,7 @@ function syncDiagramLabels(){
 }
 function observeDiagramSize(){
  const viewport=$('.diagram-viewport'),host=$('#diagram');
- const fit=()=>{const rect=viewport.getBoundingClientRect(),contentHeight=Number(getComputedStyle(viewport).getPropertyValue('--diagram-content-height'))||525,width=Math.max(0,Math.min(rect.width,rect.height*840/contentHeight));host.style.width=width+'px';host.style.height=width*525/840+'px';host.style.setProperty('--diagram-scale',String(width/840));};
+ const fit=()=>fitDiagramSurface(viewport,host,'--diagram-scale');
  fitDiagram=fit;diagramResizeObserver=new ResizeObserver(fit);diagramResizeObserver.observe(viewport);fit();
 }
 

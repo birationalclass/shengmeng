@@ -14,3 +14,25 @@
 .proof-emphasis { margin:0 0 16px;padding:10px 14px;border-left:2px solid var(--gold);color:var(--ink);background:rgba(239,201,122,.045);font-size:clamp(13px,.98vw,16px);line-height:1.8 }
 .proof-emphasis strong { display:block;color:var(--gold);font-weight:600;margin-bottom:4px }
 .proof-emphasis .katex { font-size:1em }
+
+/* Exposition typography has one scale across every property and proof step. */
+.slide-deck .math-exposition h3 {
+ font-size:var(--exposition-heading-size);line-height:1.5;
+ letter-spacing:.08em;font-weight:500;color:var(--muted);
+}
+.slide-deck .math-exposition :is(.operation-board,.operation-note,.operation-description,.proof-emphasis,.filtered-example) {
+ font-size:var(--exposition-body-size);line-height:1.8;
+}
+.slide-deck .math-exposition :is(.operation-equation,.operation-row,.co-subspace-diagram,.co-quotient-diagram) {
+ font-size:var(--exposition-formula-size);
+}
+.slide-deck .math-exposition :is(.proof-topics,.proof-steps,.co-exposition-tabs) button {
+ font-size:var(--exposition-control-size);line-height:1.5;padding:6px 10px;
+}
+.slide-deck .math-exposition .key-properties h4 {
+ font-size:var(--exposition-heading-size);line-height:1.5;
+}
+@media(max-width:780px) {
+ :root {--exposition-body-size:15px;--exposition-formula-size:17px;--exposition-control-size:13px}
+ .slide-deck:not(.is-cover) .visual-column {grid-template-rows:auto clamp(260px,36dvh,340px)}
+}

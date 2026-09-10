@@ -88,7 +88,7 @@
   if(face.textContent!==titleText){stopTitleEntrance();face.textContent=titleText;title.querySelector(':scope > .loader-title-depth').textContent=titleText;}
   title.lang=author.lang=english?'en':'zh-CN';author.textContent=english?'Sheng Meng':'孟晟';
   overlay.querySelector('.loader-eyebrow').textContent=english?'Study Notes':'学习笔记';
-  button.textContent=english?'中文':'English';button.lang=english?'zh-CN':'en';
+  button.textContent=english?'中文':'Eng';button.lang=english?'zh-CN':'en';
   button.setAttribute('aria-label',english?'切换为中文':'Switch to English');
   const settingsButton=document.getElementById('coverSettings');settingsButton.querySelector('span').textContent=english?'Settings':'设置';settingsButton.setAttribute('aria-label',english?'Display settings':'显示设置');
   start.textContent=english?'Start reading':'开始阅读';

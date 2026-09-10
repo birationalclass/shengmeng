@@ -62,7 +62,7 @@ export function translatePage(){
    item.output=lang==='en'?translate(item.source):item.source;el.setAttribute(key,item.output);saved[key]=item;
   }attrs.set(el,saved);
  });
- const button=document.querySelector('#languageButton');button.textContent=lang==='zh'?'English':'中文';button.setAttribute('aria-label',lang==='zh'?'Switch to English':'切换为中文');
+ const button=document.querySelector('#languageButton');button.textContent=lang==='zh'?'Eng':'中文';button.setAttribute('aria-label',lang==='zh'?'Switch to English':'切换为中文');
 }
 add('非零 d₂','Nonzero d₂');add('有存活类的例子','An example with surviving classes');add('非零 d₃','Nonzero d₃');
 add('四个一维空间；d₁ = 0，但 d₂ 是同构。','Four one-dimensional spaces: d₁ = 0, but d₂ is an isomorphism.');

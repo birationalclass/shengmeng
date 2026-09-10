@@ -1,5 +1,5 @@
 /* A single persistent row of reading controls, including in fullscreen. */
-:root { --notebook-toolbar-height:64px;--notebook-full-button-width:92px;--notebook-cover-button-width:72px }
+:root { --notebook-toolbar-height:64px;--notebook-full-button-width:92px;--notebook-cover-button-width:72px;--notebook-language-button-width:60px }
 body>.notebook-toolbar {
   display:flex;justify-content:space-between;align-items:center;gap:16px;flex:none;
   width:100%;height:var(--notebook-toolbar-height);min-height:var(--notebook-toolbar-height);
@@ -50,7 +50,7 @@ html:lang(zh-CN) .notebook-toolbar #sceneTitle { font-family:var(--notebook-titl
 html:lang(zh-CN):has(#mathLoader[data-cover-font="c"]) .notebook-toolbar #sceneTitle { font-family:var(--notebook-title-font-zh-calligraphy) }
 
 /* Action labels may change language or state; their boxes never resize. */
-.notebook-toolbar :is(#fullscreen,#coverButton) {
+.notebook-toolbar :is(#fullscreen,#coverButton,#languageButton) {
  box-sizing:border-box;height:32px;min-height:32px;max-height:32px;
 }
 .notebook-toolbar #fullscreen,.cover-actions #coverFullscreen {
@@ -59,4 +59,10 @@ html:lang(zh-CN):has(#mathLoader[data-cover-font="c"]) .notebook-toolbar #sceneT
 .notebook-toolbar #coverButton {
  width:var(--notebook-cover-button-width);min-width:var(--notebook-cover-button-width);max-width:var(--notebook-cover-button-width);
 }
-.cover-actions #coverFullscreen { height:44px;min-height:44px;max-height:44px;flex:none }
+.cover-actions :is(#coverFullscreen,#coverLanguage,#coverSettings) { height:44px;min-height:44px;max-height:44px;flex:none }
+
+.notebook-toolbar #languageButton,.cover-actions #coverLanguage {
+ box-sizing:border-box;width:var(--notebook-language-button-width);min-width:var(--notebook-language-button-width);max-width:var(--notebook-language-button-width);flex:none;
+}
+/* Keep the cover language button in place when the adjacent settings label changes. */
+.cover-actions #coverSettings { box-sizing:border-box;width:86px;min-width:86px;max-width:86px }

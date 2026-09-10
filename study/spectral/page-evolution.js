@@ -1,3 +1,4 @@
+import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {createStabilityProof} from './stability-proof.js?v=64';
 import {createDifferentialProof} from './differential-proof.js?v=64';
 // The existing two-dimensional diagram is the physical E0 plane.
@@ -24,7 +25,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   diagram.inert=ready;
  }
  function fit(animate=false){
-  const bounds=viewport.getBoundingClientRect(),contentHeight=Number(getComputedStyle(viewport).getPropertyValue('--diagram-content-height'))||525,width=Math.min(bounds.width,bounds.height*840/contentHeight);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';overlay.style.setProperty('--evolution-scale',String(scale));
+  scale=fitDiagramSurface(viewport,overlay,'--evolution-scale');
   const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*origin.x,f=g.y-b*origin.x-d*origin.y;
   const target=tilted?`matrix(${a},${b},0,${d},${e*scale},${f*scale})`:'matrix(1,0,0,1,0,0)';
   if(transformTarget!==target){
