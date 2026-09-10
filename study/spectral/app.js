@@ -156,18 +156,16 @@ $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.ta
 $('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
 function selectNode(e){let b=e.target.closest('[data-p]:not([data-boundary])');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
 $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollIntoView({behavior:'smooth'});};
-// Enter belongs exclusively to the reading sequence, regardless of control focus.
+// These keys belong only to the left reading sequence, even over right-side controls.
+const readingKeys=new Set(['Enter','ArrowRight','ArrowLeft']);
 document.addEventListener('keydown',e=>{
- const dialogOpen=!!document.querySelector('dialog[open]');
- if(e.key==='Enter'){
-  e.preventDefault();e.stopImmediatePropagation();
-  if(e.repeat||e.isComposing||dialogOpen)return;
-  if(state.cover){if(!$('#beginSlides').hidden)$('#beginSlides').click();}else advanceNote();
-  return;
- }
- if(state.cover||!['ArrowRight','ArrowLeft'].includes(e.key)||dialogOpen||e.target.closest('input,select,textarea,[contenteditable=true],#pageEvolution'))return;
- e.preventDefault();e.stopImmediatePropagation();if(e.key==='ArrowLeft')retreatNote();else advanceNote();
+ if(!readingKeys.has(e.key))return;
+ e.preventDefault();e.stopImmediatePropagation();
+ if(e.repeat||e.isComposing||document.querySelector('dialog[open]'))return;
+ if(state.cover){if(e.key==='Enter'&&!$('#beginSlides').hidden)$('#beginSlides').click();return;}
+ if(e.key==='ArrowLeft')retreatNote();else advanceNote();
 },true);
+document.addEventListener('keyup',e=>{if(readingKeys.has(e.key)){e.preventDefault();e.stopImmediatePropagation();}},true);
 window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
