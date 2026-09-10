@@ -1,6 +1,6 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createStabilityProof} from './stability-proof.js?v=64';
-import {createDifferentialProof} from './differential-proof.js?v=64';
+import {createStabilityProof} from './stability-proof.js?v=73';
+import {createDifferentialProof} from './differential-proof.js?v=73';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){

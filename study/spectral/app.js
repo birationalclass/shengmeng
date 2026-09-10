@@ -1,6 +1,6 @@
 import {createReadingRail} from './reading-rail.js?v=69';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {numberedPages} from './reading-pages.js?v=64';
+import {numberedPages} from './reading-pages.js?v=73';
 import {createReadingFocus} from './reading-focus.js?v=64';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -10,11 +10,11 @@ import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=64';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=73';
 import {translatePage,language,toggleLanguage} from './language.js?v=66';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=64';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=67';
+import {createPageEvolution} from './page-evolution.js?v=73';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -179,7 +179,7 @@ function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
 $('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
-$('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.indices.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
+$('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.actions.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
 $('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
@@ -552,13 +552,14 @@ function renderPersistentDiagram(){
  current.querySelector('#graphTitle').textContent=desired.querySelector('#graphTitle').textContent;syncDiagramLabels();syncCoordinatePresentation();
 }
 function statementFormulas(){return document.querySelectorAll('.formal-statement.is-active .reading-formula');}
-function annotationCount(){return document.querySelectorAll(`[data-statement="${activeStatementKey()}"] .reading-formula`).length;}
+// Diagram action IDs stay stable even when auxiliary formulas move to the exposition.
+function annotationCount(){return Math.max(0,...[...document.querySelectorAll(`[data-statement="${activeStatementKey()}"] .reading-formula`)].map(el=>Number(el.dataset.annotation)));}
 function updateAnnotations(){
  if(state.cover||isDoubleComplexView())return;
  const a=state.annotationStep||1;
  $('#actionTabs').innerHTML=actionNames(state,language()).map((name,i)=>`<button data-action="${i+1}" aria-pressed="${a===i+1}">${mathControlLabel(name)}</button>`).join('');
  const elements=[...statementFormulas()];
- elements.forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.add('definition-current');});
+ elements.forEach(el=>{el.classList.toggle('annotation-seen',Number(el.dataset.annotation)===a);el.classList.add('definition-current');});
  const key=activeStatementKey(),last=Math.max(revealedReadings.get(key)??-1,state.notePage);revealedReadings.set(key,last);
  syncReadingEntries(key);
  renderQuickCheck();window.spectralState={...state,language:language()};renderOperation();
