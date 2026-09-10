@@ -244,3 +244,7 @@ Validation: Chromium and WebKit verify blank entry, first-Enter frame and axis a
 ## Title in the reading toolbar (v43)
 
 “Spectral Sequence” is now on the left of the top toolbar, with the four reading controls on the right. The duplicate heading inside the workspace is removed. On narrow screens, the title and controls occupy two compact rows in the same toolbar; the fullscreen workspace offset follows that toolbar height.
+
+## v44 · Frame before content
+
+All left-hand card entrances and accordion openings share one sequence in `notebook-motion.js`: finish the frame geometry, then fade in text and formulas. The fade is started by the geometry animation’s completion, including new cards, nested definitions, and the settings preview. Right-hand diagram animations have separate ownership. Disabled/reduced motion still shows the final state immediately.

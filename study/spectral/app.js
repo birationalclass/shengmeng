@@ -1,4 +1,4 @@
-import {createInitialAnimations} from './initial-animations.js?v=42';
+import {createInitialAnimations} from './initial-animations.js?v=44';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=40';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
@@ -9,13 +9,13 @@ import {translatePage,language,toggleLanguage} from './language.js?v=39';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=41';
 import {createFilteredView} from './filtered-view.js?v=40';
 import {createPageEvolution} from './page-evolution.js?v=40';
-import {createNotebookMotion} from './notebook-motion.js?v=36';
+import {createNotebookMotion} from './notebook-motion.js?v=44';
 import {createSquareTrace} from './element-trace.js?v=40';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=7;
 const GRID_ORIGIN={x:170,y:370};
 const squareTrace=createSquareTrace($('#diagram'));
-const initialAnimations=createInitialAnimations({diagram:$('#diagram'),definition:()=>$('.build-statement'),definitionMotion:()=>notebookMotion.duration()>0});
+const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1;
@@ -102,7 +102,7 @@ function statementHeading(meta,key){
 }
 function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
 
-function syncStatementCards(){document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
+function syncStatementCards(){document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
  doubleComplexCompanion(initial[0]);
