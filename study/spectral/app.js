@@ -9,7 +9,7 @@ import {translatePage,language,toggleLanguage} from './language.js?v=39';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=41';
 import {createFilteredView} from './filtered-view.js?v=40';
 import {createPageEvolution} from './page-evolution.js?v=40';
-import {createNotebookMotion} from './notebook-motion.js?v=44';
+import {createNotebookMotion} from './notebook-motion.js?v=56';
 import {createSquareTrace} from './element-trace.js?v=40';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=7;
@@ -159,7 +159,8 @@ window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
 history.replaceState(null,'',location.pathname+location.search+'#title');
-$('#languageButton').onclick=()=>{toggleLanguage();render();};
+$('#languageButton').onclick=$('#coverLanguage').onclick=()=>{toggleLanguage();render();};
+$('#coverLanguage').disabled=false;
 render();
 
 function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}
@@ -203,7 +204,7 @@ function renderWorkspaceState(){
  document.body.classList.toggle('at-cover',cover);
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
  if(cover)window.spectralBoot?.showCover();$('.slide-body').inert=cover;$('#visualPanel').inert=cover;
- $('#sceneTitle').textContent='Spectral Sequence';
+ $('#sceneTitle').textContent=ui('谱序列','Spectral Sequence');
  $('#viewTabs').innerHTML=['lab','trace'].includes(state.module)?viewNames(state,language()).map((t,i)=>`<button data-view="${i}" aria-pressed="${state.step===i}">${mathControlLabel(t)}</button>`).join(''):'';
  $('#sceneNote').hidden=true;updateDiagramScope();renderQuickCheck();
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
@@ -308,7 +309,7 @@ function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h
 
 function isDoubleComplexView(){return !state.cover&&state.module==='initial'&&state.step===0;}
 function doubleComplexCompanion(item){
- $('#sceneTitle').textContent='Spectral Sequence';
+ $('#sceneTitle').textContent=ui('谱序列','Spectral Sequence');
  if($('.build-statement')?.dataset.contentLanguage===language())return;
  const cards=[
  {title:'横向微分 δ₁',concept:'delta1',f:[item.f[0]]},

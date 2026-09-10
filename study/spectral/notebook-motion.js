@@ -2,7 +2,7 @@
 export function createNotebookMotion({language}) {
  const storageKey='spectral-notebook-motion',defaults={effect:'soft',duration:900};
  const reduced=matchMedia('(prefers-reduced-motion:reduce)'),records=new WeakMap(),running=new Map();
- let settings={...defaults},previewOpen=true;
+ let settings={...defaults},previewOpen=true,opener=null;
  try {const saved=JSON.parse(localStorage.getItem(storageKey));if(['soft','slide','none'].includes(saved?.effect))settings.effect=saved.effect;if(Number.isFinite(saved?.duration))settings.duration=Math.min(1800,Math.max(300,saved.duration));} catch {}
  const $=s=>document.querySelector(s),dialog=$('#motionSettings'),button=$('#settingsButton'),effect=$('#motionEffect'),duration=$('#motionDuration'),preview=$('#motionPreviewBody');
  // Measure content independently of the animated outer height. In particular,
@@ -84,8 +84,12 @@ export function createNotebookMotion({language}) {
  }
  function sync() {
   const off=!milliseconds();document.documentElement.dataset.notebookMotion=off?'none':settings.effect;document.documentElement.style.setProperty('--notebook-motion-time',(off?0:settings.duration)+'ms');
-  button.setAttribute('aria-label',t('动画设置','Animation settings'));button.title=t('动画设置','Animation settings');
-  $('#motionTitle').textContent=t('动画设置','Animation settings');$('#closeMotionSettings').setAttribute('aria-label',t('关闭设置','Close settings'));
+  button.setAttribute('aria-label',t('显示设置','Display settings'));button.title=t('显示设置','Display settings');
+  $('#motionTitle').textContent=t('显示设置','Display settings');$('#closeMotionSettings').setAttribute('aria-label',t('关闭设置','Close settings'));
+  $('#coverFontLabel').textContent=t('中文封面风格','Chinese cover style');
+  $('#coverStyleA').textContent=t('A · 清雅宋体','A · Editorial serif');$('#coverStyleC').textContent=t('C · 书法风格','C · Calligraphy');
+  $('#coverFontHint').textContent=t('仅调整中文封面，英文设计保持不变。','Changes the Chinese cover only. The English design stays the same.');
+  for(const radio of document.querySelectorAll('[name="coverFont"]'))radio.checked=radio.value===(window.spectralCover?.style()||'c');
   $('#motionScope').textContent=t('左侧定义、命题与定理卡片','Definition, proposition and theorem cards');
   $('#motionEffectLabel').textContent=t('收起效果','Collapse effect');
   for(const [value,zh,en] of [['soft','柔和收起','Slide and fade'],['slide','简洁收起','Slide only'],['none','关闭动画','No animation']])effect.querySelector(`[value="${value}"]`).textContent=t(zh,en);
@@ -98,10 +102,11 @@ export function createNotebookMotion({language}) {
  }
  function update(){settleAll();settings={effect:effect.value,duration:Number(duration.value)};try{localStorage.setItem(storageKey,JSON.stringify(settings));}catch{}sync();}
  effect.addEventListener('change',update);duration.addEventListener('input',update);
- $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;update();};
+ $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;window.spectralCover?.setStyle('c');update();};
+ for(const radio of document.querySelectorAll('[name="coverFont"]'))radio.addEventListener('change',()=>{if(radio.checked){window.spectralCover?.setStyle(radio.value);sync();}});
  $('#motionPreviewToggle').onclick=()=>{previewOpen=!previewOpen;setExpanded(preview,previewOpen);sync();};
- button.onclick=()=>{sync();dialog.showModal();};$('#closeMotionSettings').onclick=()=>dialog.close();
- dialog.addEventListener('close',()=>{settleAll();button.focus({preventScroll:true});});
+ button.onclick=$('#coverSettings').onclick=event=>{opener=event.currentTarget;sync();dialog.showModal();};$('#coverSettings').disabled=false;$('#closeMotionSettings').onclick=()=>dialog.close();
+ dialog.addEventListener('close',()=>{settleAll();(opener||button).focus({preventScroll:true});});
  reduced.addEventListener('change',()=>{settleAll();sync();});
  // Settle outside the observer delivery: cancellation changes card heights.
  let lastWidth=0,resizeFrame=0;new ResizeObserver(entries=>{
