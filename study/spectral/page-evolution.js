@@ -153,7 +153,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});
  const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;const selectedPage=Number(target.dataset.page);if(!construction||![construction.r,construction.r+1].includes(selectedPage)){current=selectedPage;construction=current>0?{r:current-1,phase:3}:null;}if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
 
- overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
+ overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);
  reduced.addEventListener('change',e=>{if(e.matches){transformAnimation?.finish();layerAnimations.forEach(a=>a.finish());}});
  return {sync,isTilted:()=>engaged&&tilted};

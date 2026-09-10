@@ -1,9 +1,10 @@
+import {createDegreeSweep,createTotalTrace} from './total-animations.js?v=39';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=38';
-import {translatePage,language,toggleLanguage} from './language.js?v=38';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=38';
+import {translatePage,language,toggleLanguage} from './language.js?v=39';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=39';
 import {createFilteredView} from './filtered-view.js?v=38';
-import {createPageEvolution} from './page-evolution.js?v=38';
+import {createPageEvolution} from './page-evolution.js?v=39';
 import {createNotebookMotion} from './notebook-motion.js?v=36';
 import {createSquareTrace} from './element-trace.js?v=36';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -24,6 +25,8 @@ const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,th
 const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆₇₈₉ᵣ₊]+|\d+)/g,(_,symbol,index)=>math(`${symbol}_{${[...index].map(c=>({'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ᵣ':'r','₊':'+'}[c]||c)).join('')}}`));
 const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
 const filteredView=createFilteredView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),math,language});
+const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
+const totalTrace=createTotalTrace({host:$('#diagram'),math,point:(p,q)=>xy(p,q),degree:()=>state.n});
 const block=(t,concept='')=>`<div class="math-block" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?'悬停对照，点击固定高亮':'放大查看公式'}">${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
@@ -114,7 +117,7 @@ const c=scene();if(state.module==='trace'&&state.step<4){let gs=c.ex.gens.filter
 let r=pageR(),E=c.page(r,p,qv),tar=c.page(r,p+r,qv-r+1),M=c.differential(r,p,qv),incoming=c.differential(r,p-r,qv+r-1),outRank=rank(M,tar.dim),inRank=rank(incoming,E.dim),name=state.module==='converge'?'\\infty':r;
 let html=block(raw`E_{${name}}^{${p},${qv}}\cong\mathbb Q^{${E.dim}}`);if(E.dim)html+=`<p>选定的商空间基（总上链代表元）：</p>`+E.reps.map(v=>block(raw`[${texVector(v,c.basis(E.n))}]_{${name}}`)).join('');html+=`<p>分子维数 ${E.Z.length}；分母维数 ${E.den.length}。商空间维数 ${E.dim}。</p>`;
 if(state.module==='lab'||state.module==='trace'){html+=`<p>微分矩阵：列对应上面的源基，行对应靶的商空间基。</p>`+block(raw`[d_${r}]=${matrixTex(M,tar.dim)}`);html+=`<p>靶位置 (${p+r},${qv-r+1})。靶基：</p>`+block(tar.reps.length?tar.reps.map(v=>raw`[${texVector(v,c.basis(tar.n))}]_${r}`).join(',\;'):raw`\varnothing`);html+=`<p>dim ker d${r} = ${E.dim-outRank}<br>dim im（入射 d${r}）= ${inRank}<br>下一页本位置维数 = ${E.dim-outRank-inRank}</p>`;}else if(E.dim){html+=block(raw`\theta([a]_\infty)=[a]_H+F^{${p+1}}H^{${E.n}}`);}$('#inspector').innerHTML=html;}
-function controls(){let html='';$('#controls').inert=false;$('#controls').style.visibility='';if(state.module==='initial'&&state.initialReveal>=5&&state.initialReveal<=7||state.module==='learn'&&state.step===0)html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label>`;if(state.module==='converge'||(state.module==='learn'&&(state.step>=1&&state.step<=2||state.step===5))){html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label><label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;}if(state.module==='initial'&&state.initialReveal===7)html+=`<label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;if(state.module==='lab'||state.module==='trace'){html+=`<label>例子 <select id="exampleSelect">${Object.entries(examples).map(([k,e])=>`<option value="${k}" ${k===state.example?'selected':''}>${e.name}</option>`).join('')}</select></label>`;}if(state.module==='lab')html+=`<label>页数 r <input id="rRange" type="range" min="0" max="${scene().maxP+2}" value="${state.r}"><output>${state.r}</output></label>`;if(state.module==='trace')html+=`<label>代表元参数 λ <input id="lambdaRange" type="range" min="-2" max="2" value="${state.lambda}"><output>${state.lambda}</output></label><span>${math(raw`a_0=b+\lambda y`)}</span>`;if(state.module==='learn'&&state.step===5||state.module==='converge'&&state.step===1)html+=`<label>r <input id="rRange" type="range" min="1" max="${state.module==='converge'?state.n+2:5}" value="${Math.max(1,state.r)}"><output>${Math.max(1,state.r)}</output></label>`;$('#controls').innerHTML=html;}
+function controls(){let html='';$('#controls').inert=false;$('#controls').style.visibility='';if(state.module==='initial'&&state.initialReveal>=5&&state.initialReveal<=7||state.module==='learn'&&state.step===0)html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label>`;if(state.module==='converge'||(state.module==='learn'&&(state.step>=1&&state.step<=2||state.step===5))){html+=`<label>示例总次数 n <input id="nRange" type="range" min="0" max="4" value="${state.n}"><output>${state.n}</output></label><label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;}if(state.module==='initial'&&state.initialReveal===7)html+=`<label>滤过 p <input id="pRange" type="range" min="0" max="${state.n+1}" value="${state.p}"><output>${state.p}</output></label>`;if(state.module==='lab'||state.module==='trace'){html+=`<label>例子 <select id="exampleSelect">${Object.entries(examples).map(([k,e])=>`<option value="${k}" ${k===state.example?'selected':''}>${e.name}</option>`).join('')}</select></label>`;}if(state.module==='lab')html+=`<label>页数 r <input id="rRange" type="range" min="0" max="${scene().maxP+2}" value="${state.r}"><output>${state.r}</output></label>`;if(state.module==='trace')html+=`<label>代表元参数 λ <input id="lambdaRange" type="range" min="-2" max="2" value="${state.lambda}"><output>${state.lambda}</output></label><span>${math(raw`a_0=b+\lambda y`)}</span>`;if(state.module==='learn'&&state.step===5||state.module==='converge'&&state.step===1)html+=`<label>r <input id="rRange" type="range" min="1" max="${state.module==='converge'?state.n+2:5}" value="${Math.max(1,state.r)}"><output>${Math.max(1,state.r)}</output></label>`;if(isDoubleComplexView()&&state.initialReveal===5)html+=`<button data-total-demo="total">${ui('演示','Play')} ${math('n=0\\to4')}</button>`;if(isDoubleComplexView()&&state.initialReveal===6)html+=`<button data-total-demo="totalmap">${ui('演示','Play')} ${math('D=\\delta_1+\\delta_2')}</button><button data-total-demo="totalsquare">${ui('演示','Play')} ${math('D^2=0')}</button>`;$('#controls').innerHTML=html;}
 function render(updateControls=true){
  if(!state.cover&&!(state.module==='initial'&&state.initialReveal<0))visitedStatements.add(activeStatementKey());
  if(!state.cover&&state.module==='initial')revealedBuild=Math.max(revealedBuild,state.initialReveal);
@@ -129,14 +132,25 @@ $('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=t
 $('#noteNext').onclick=()=>advanceNote();
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;state.chosenAction=Number(b.dataset.action);setAnnotation(state.chosenAction);applyConcept(null);}};
-$('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
+$('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
-$('#controls').onclick=e=>{let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
-function selectNode(e){let b=e.target.closest('[data-p]:not([data-boundary])');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
+$('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
+function selectNode(e){let b=e.target.closest('[data-p]:not([data-boundary])');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
 $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollIntoView({behavior:'smooth'});};
-const refHTML=`<p>本主题采用 McCleary《A User’s Guide to Spectral Sequences》第二版的上同调型记号，保留讲义的 K、δ₁、δ₂。滤过固定为按列的下降滤过。</p>${formulas([raw`D:=\delta_1+\delta_2,\quad \delta_1\delta_2+\delta_2\delta_1=0`,raw`E_0^{p,q}:=\operatorname{Gr}_F^pC^{p+q}\cong K^{p,q}`,raw`E_r^{p,q}:=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`,raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`,raw`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`])}<p><b>记号界限：</b>δ₁、δ₂ 是双复形微分；d₀、d₁、… 是页上的微分。Zᵣ、Bᵣ 是总复形中的子空间；[a]ᵣ 是 Eᵣ 的类，[a]H 是总上同调类。动画中示意空间的大小不代表维数。</p><p><b>有限例子：</b>给定全部生成元和箭头，其余项确实为零。基、矩阵与代表元来自精确有理数消元；选择这些基不赋予 H 的滤过一个典范分裂。</p><p><b>阅读依据：</b>Definition 2.2（谱序列）、Definitions 2.3–2.5（滤过与收敛）、Theorem 2.6 及证明（pp. 33–37）、Theorem 2.15（双复形，pp. 48–49）。</p><p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf" target="_blank" rel="noreferrer">打开 McCleary 原书 ↗</a> · <a href="spectral.pdf">打开本主题讲义 ↗</a></p><p>键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。按钮、选择框和滑块保留自身的键盘行为。</p>`;
+const refHTML=`<p>本主题采用 McCleary《A User’s Guide to Spectral Sequences》第二版的上同调型记号，保留讲义的 K、δ₁、δ₂。滤过固定为按列的下降滤过。</p>${formulas([raw`D:=\delta_1+\delta_2,\quad \delta_1\delta_2+\delta_2\delta_1=0`,raw`E_0^{p,q}:=\operatorname{Gr}_F^pC^{p+q}\cong K^{p,q}`,raw`E_r^{p,q}:=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`,raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`,raw`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`])}<p><b>记号界限：</b>δ₁、δ₂ 是双复形微分；d₀、d₁、… 是页上的微分。Zᵣ、Bᵣ 是总复形中的子空间；[a]ᵣ 是 Eᵣ 的类，[a]H 是总上同调类。动画中示意空间的大小不代表维数。</p><p><b>有限例子：</b>给定全部生成元和箭头，其余项确实为零。基、矩阵与代表元来自精确有理数消元；选择这些基不赋予 H 的滤过一个典范分裂。</p><p><b>阅读依据：</b>Definition 2.2（谱序列）、Definitions 2.3–2.5（滤过与收敛）、Theorem 2.6 及证明（pp. 33–37）、Theorem 2.15（双复形，pp. 48–49）。</p><p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf" target="_blank" rel="noreferrer">打开 McCleary 原书 ↗</a> · <a href="spectral.pdf">打开本主题讲义 ↗</a></p><p>键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。回车专用于下一项；其它控件仍可用鼠标或空格操作。</p>`;
 $('#referenceContent').innerHTML=refHTML;$('#referenceButton').onclick=()=>{translatePage();$('#references').showModal();};$('#closeReferences').onclick=()=>$('#references').close();
-document.addEventListener('keydown',e=>{if(state.cover||!['Enter','ArrowRight','ArrowLeft'].includes(e.key)||$('#references').open||$('#formulaDialog').open||$('#motionSettings').open||e.target.closest('input,select,textarea,[contenteditable=true],#pageEvolution')||e.key==='Enter'&&e.target.closest('button,a'))return;e.preventDefault();e.stopImmediatePropagation();if(e.key==='ArrowLeft')retreatNote();else advanceNote();},true);
+// Enter belongs exclusively to the reading sequence, regardless of control focus.
+document.addEventListener('keydown',e=>{
+ const dialogOpen=$('#references').open||$('#formulaDialog').open||$('#motionSettings').open;
+ if(e.key==='Enter'){
+  e.preventDefault();e.stopImmediatePropagation();
+  if(e.repeat||e.isComposing||dialogOpen)return;
+  if(state.cover){if(!$('#beginSlides').hidden)$('#beginSlides').click();}else advanceNote();
+  return;
+ }
+ if(state.cover||!['ArrowRight','ArrowLeft'].includes(e.key)||dialogOpen||e.target.closest('input,select,textarea,[contenteditable=true],#pageEvolution'))return;
+ e.preventDefault();e.stopImmediatePropagation();if(e.key==='ArrowLeft')retreatNote();else advanceNote();
+},true);
 window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
@@ -146,7 +160,7 @@ render();
 
 function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}
 document.addEventListener('click',openFormula);
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}else openFormula(e);}});
+document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}else openFormula(e);}});
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
 
 function sectionName(){return ui('学习笔记','STUDY NOTES');}
@@ -185,7 +199,7 @@ function renderWorkspaceState(){
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();$('#noteNext').hidden=cover||activeStatementKey()===readingOrder.at(-1);$('#noteNext').textContent=ui('下一项 →','Next →');applyConcept(state.pinned,false);
 }
 function ui(zh,en){return language()==='en'?en:zh;}
-function selectInitialBuild(index){state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();}
+function selectInitialBuild(index){state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===5||index===6)playTotalDemo(index===5?'total':'totalmap');}
 function activateStatement(key){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
  state.cover=false;state.module=module;state.step=step;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
@@ -203,7 +217,7 @@ $('#explanation').addEventListener('click',e=>{
  if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);setupDoubleComplex();}else selectInitialBuild(i);return;}
  if(buildSelect)selectInitialBuild(Number(buildSelect.dataset.selectBuild));
 });
-function initialConcept(){return ['space','delta1','delta2','square1','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
+function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
 function keepReadingVisible(card){
  cancelAnimationFrame(definitionScrollFrame);
  const pane=matchMedia('(max-width:780px)').matches?$('.slide-body'):$('.explanation'),until=performance.now()+notebookMotion.duration()+50;
@@ -218,12 +232,15 @@ function interactiveConcept(target){
  // A term has local hover/focus feedback; it never selects a diagram-wide concept.
  if(target.closest('#diagram .node'))return null;
  if(target.closest('[data-zoom],.statement-heading,.statement-title,.build-heading'))return null;
- return target.closest('.relation-choice')||target.closest('.build-statement.is-active .build-card[data-open="true"]')||target.closest('.formal-statement > .statement-body > .math-block[data-concept]')||target.closest('#diagram [data-concept]');
+ const choice=target.closest('.relation-choice');if(choice)return choice;
+ const build=target.closest('.build-statement.is-active .build-card[data-open="true"]');
+ if(build)return build.querySelector('.relation-choices')?target.closest('.math-block[data-concept]'):build;
+ return target.closest('.formal-statement > .statement-body > .math-block[data-concept]')||target.closest('#diagram [data-concept]');
 }
 function interactionKey(el){
  if(!el)return null;
  if(el.matches('.relation-choice'))return `relation:${el.dataset.concept}`;
- if(el.matches('.build-card'))return `build:${el.dataset.build}`;
+ if(el.closest('.build-card'))return `build:${el.closest('.build-card').dataset.build}`;
  if(el.matches('.formal-statement > .statement-body > .math-block'))return `formula:${[...el.parentElement.querySelectorAll(':scope > .math-block')].indexOf(el)}`;
  return `diagram:${el.dataset.concept}`;
 }
@@ -234,7 +251,7 @@ function applyConcept(concept,hover=false,source=null){
  const graph=$('#diagram');
  graph.querySelectorAll('.concept-active').forEach(el=>el.classList.remove('concept-active'));
  graph.classList.toggle('concept-focus',!!concept);graph.classList.toggle('hover-effect',!!concept&&hover);
- const targets={square1:'.relation-route',square2:'.relation-route',anticommute:'.relation-route',delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node:not(.outside-quadrant) .node-bg',page:'.node:not(.outside-quadrant) .node-bg',quotient:'.node:not(.muted):not(.outside-quadrant) .node-bg',totalmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow,#diagram-edges>g:not(.context-edge) .continuation',total:'.diag-box,.diag,.node:not(.muted):not(.outside-quadrant) .node-bg,.continuation[data-concept=total]',zeropage:'.node:not(.muted):not(.outside-quadrant) .node-bg',filtration:'.diag-box,.node:not(.muted):not(.outside-quadrant) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.node:not(.muted):not(.outside-quadrant) .node-bg',comparison:'.node:not(.zero) .node-bg,.diag-box'};
+ const targets={square1:'.relation-route',square2:'.relation-route',anticommute:'.relation-route',delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node:not(.outside-quadrant) .node-bg',page:'.node:not(.outside-quadrant) .node-bg',quotient:'.node:not(.muted):not(.outside-quadrant) .node-bg',totalsquare:'.relation-route',totalmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow,#diagram-edges>g:not(.context-edge) .continuation',total:'.diag-box,.diag,.node:not(.muted):not(.outside-quadrant) .node-bg,.continuation[data-concept=total]',zeropage:'.node:not(.muted):not(.outside-quadrant) .node-bg',filtration:'.diag-box,.node:not(.muted):not(.outside-quadrant) .node-bg',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.node:not(.muted):not(.outside-quadrant) .node-bg',comparison:'.node:not(.zero) .node-bg,.diag-box'};
  if(concept){
   const selector=targets[concept];
   if(selector)graph.querySelectorAll(selector).forEach(el=>el.classList.add('concept-active'));
@@ -244,7 +261,7 @@ function applyConcept(concept,hover=false,source=null){
  document.querySelectorAll('.formal-statement .concept-linked').forEach(el=>el.classList.remove('concept-linked'));
  document.querySelectorAll('.formal-statement [aria-pressed]').forEach(el=>el.setAttribute('aria-pressed','false'));
  document.querySelectorAll('.formal-statement.is-active .build-card,.formal-statement.is-active > .statement-body > .math-block').forEach(el=>{
-  const ownKey=interactionKey(el);el.classList.toggle('concept-linked',!!concept&&(ownKey===key||el.dataset.build==='3'&&key?.startsWith('relation:')));
+  const ownKey=interactionKey(el);el.classList.toggle('concept-linked',!!concept&&(ownKey===key||['3','6'].includes(el.dataset.build)&&key?.startsWith('relation:')));
   el.setAttribute('aria-pressed',String(!!state.pinned&&ownKey===state.pinnedKey));
  });
  $('#clearConcept').hidden=!state.pinned;renderOperation();window.spectralState={...state,language:language()};
@@ -252,10 +269,15 @@ function applyConcept(concept,hover=false,source=null){
 function pinConcept(concept,source=null){
  const key=interactionKey(source);const same=state.pinned===concept&&state.pinnedKey===key;
  state.pinned=same?null:concept;state.pinnedKey=same?null:key;
- applyConcept(state.pinned,false);playSquareTrace(concept);translatePage();window.spectralState={...state,language:language()};
+ applyConcept(state.pinned,false);if(!same){playSquareTrace(concept,source);playTotalDemo(concept);}translatePage();window.spectralState={...state,language:language()};
 }
-function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept);}
-function playSquareTrace(concept){if(isDoubleComplexView()&&['square1','square2'].includes(concept))squareTrace.play(concept,concept==='square1'?[xy(1,1),xy(2,1),xy(3,1)]:[xy(1,1),xy(1,2),xy(1,3)]);}
+function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept,el);playTotalDemo(el.dataset.concept);}
+function playTotalDemo(concept,force=false){
+ if(!isDoubleComplexView())return;
+ if(concept==='total')degreeSweep.play(force);
+ else if(['totalmap','totalsquare'].includes(concept))totalTrace.play(concept,force);
+}
+function playSquareTrace(concept,source){if(source?.matches('.relation-choice')&&isDoubleComplexView()&&['square1','square2'].includes(concept))squareTrace.play(concept,concept==='square1'?[xy(1,1),xy(2,1),xy(3,1)]:[xy(1,1),xy(1,2),xy(1,3)]);}
 document.addEventListener('pointerover',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)enterConcept(el);});
 document.addEventListener('pointerout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
 document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if(el)enterConcept(el);});
@@ -279,16 +301,16 @@ function doubleComplexCompanion(item){
  const cards=[
  {title:'横向微分 δ₁',concept:'delta1',f:[item.f[0]]},
  {title:'纵向微分 δ₂',concept:'delta2',f:[item.f[1]]},
- {title:'平方零关系',concept:'square1',f:[]},
+ {title:'平方零关系',concept:'square',f:[]},
  {title:'反交换关系',concept:'anticommute',f:[item.f[3]]},
  {title:'总复形',concept:'total',f:[raw`C^\bullet:=\operatorname{Tot}^\bullet K`,raw`C^n:=\operatorname{Tot}^nK=\bigoplus_{p+q=n}K^{p,q}`]},
- {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2`,raw`D:C^n\longrightarrow C^{n+1},\qquad D^2=0`]},
+ {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2`,raw`D:C^n\longrightarrow C^{n+1}`]},
  {title:'列滤过',concept:'filtration',f:[raw`F^pC^n:=\bigoplus_{i\ge p}K^{i,n-i}`,raw`D(F^pC^n)\subseteq F^pC^{n+1}`]},
  {title:'关联分次与第零页',concept:'zeropage',f:[raw`E_0^{p,q}:=\frac{F^pC^{p+q}}{F^{p+1}C^{p+q}}\cong K^{p,q}`]}
  ];
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,raw`K^{p,q}=0\qquad(p<0\ \text{or}\ q<0)`];
  $('#explanation').dataset.notebook=language();
- $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><div class="initial-definition" data-build="0"><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><div class="initial-definition" data-build="0"><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1,2,3,4].map(step=>statementMarkup(convergence[step],'converge',step)).join('')+statementMarkup({title:'精确例子',f:[]},'lab',0)+statementMarkup({title:'代表元追踪',f:[]},'trace',0));
  $('#sceneNote').textContent='';
 }
@@ -305,12 +327,12 @@ function revealDirections(el){
  if(['delta2','square2','anticommute','totalmap'].includes(concept))state.seenV=true;
  renderPersistentDiagram();
 }
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.build-card')){e.preventDefault();revealDirections(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}});
+document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('.build-card')){e.preventDefault();revealDirections(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}});
 function renderOperation(){
  if(state.module==='initial')updateDiagramScope();
  const prelude=isDoubleComplexView()&&state.initialReveal<0;
  $('#operationBoard').innerHTML=prelude?'':operationMarkup(state,language(),math);$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
- squareTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);emphasizeCurrentDefinition();
+ squareTrace.sync(state.effect,isDoubleComplexView());degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);emphasizeCurrentDefinition();
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
@@ -469,10 +491,11 @@ function observeDiagramSize(){
 }
 
 function relationOverlay(effect){
- if(!['square1','square2','anticommute'].includes(effect))return '';
+ if(!['square1','square2','totalsquare','anticommute'].includes(effect))return '';
  const edge=(p,q,p1,q1,type,order)=>`<g class="relation-route route-${order}">${line(...xy(p,q),...xy(p1,q1),type,true)}</g>`;
  let out='';
- if(effect==='square1'||effect==='square2'){
+ if(effect==='totalsquare'){const p=Math.floor(state.n/2),q=state.n-p;out+=edge(p,q,p+1,q,'h',1)+edge(p,q,p,q+1,'v',1)+edge(p+1,q,p+2,q,'h',2)+edge(p+1,q,p+1,q+1,'v',2)+edge(p,q+1,p+1,q+1,'h',2)+edge(p,q+1,p,q+2,'v',2);}
+ else if(effect==='square1'||effect==='square2'){
   const horizontal=effect==='square1',end=horizontal?[3,1]:[1,3];
   out+=edge(1,1,horizontal?2:1,horizontal?1:2,horizontal?'h':'v',1);
   out+=edge(horizontal?2:1,horizontal?1:2,...end,horizontal?'h':'v',2);
@@ -480,7 +503,7 @@ function relationOverlay(effect){
  }else{
   out+=edge(1,1,2,1,'h',1)+edge(2,1,2,2,'v',2)+edge(1,1,1,2,'v',1)+edge(1,2,2,2,'h',2);
  }
- return `<g class="relation-overlay ${effect.startsWith('square')?'square-route':''}">${out}</g>`;
+ return `<g class="relation-overlay ${effect.includes('square')?'square-route':''}">${out}</g>`;
 }
 
 // Reveal the page only after first render and all bundled math fonts are ready.

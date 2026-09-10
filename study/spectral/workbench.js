@@ -13,6 +13,10 @@ export function operationMarkup(s,lang,math){
    body=row(box(`F^{${p}}C^{${n}}:=\\bigoplus_{i\\ge ${p}}K^{i,${n}-i}`,'chosen'))+`<div class="operation-equation">${M(R`F^{p+1}C^n\subseteq F^pC^n`)}</div>`;
   }else if(c==='zeropage'){
    body=row(box(`E_0^{${p},${q}}`)+box(R`\cong`)+box(p<=n?`K^{${p},${q}}`:'0','chosen'))+`<div class="operation-equation">${M(R`E_0^{p,q}:=\operatorname{Gr}_F^pC^{p+q}`)}</div>`;
+  }else if(c==='totalsquare'){
+   body=`<div class="operation-equation">${M(R`D^2a=\delta_1^2a+(\delta_2\delta_1a+\delta_1\delta_2a)+\delta_2^2a`)}</div><div class="operation-equation">${M(R`\delta_1^2a=0,\quad\delta_2^2a=0,\quad\delta_2\delta_1a=-\delta_1\delta_2a`)}</div>`;
+  }else if(c==='square'){
+   body=row(box(R`\delta_1^2=0`)+box(R`\delta_2^2=0`));
   }else if(c==='square1'||c==='square2'){
    const h=c==='square1',d=h?1:2,mid=h?'2,1':'1,2',end=h?'3,1':'1,3';
    body=row(box('a\\in K^{1,1}')+arrow(`\\delta_${d}`)+box(`\\delta_${d}a\\in K^{${mid}}`)+arrow(`\\delta_${d}`)+box(`0\\in K^{${end}}`,'chosen'));

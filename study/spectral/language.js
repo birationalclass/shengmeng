@@ -111,14 +111,14 @@ add('用本页的 r 滑块切换谱序列页，从同一总复形的 Zᵣ、Bᵣ
 
 add('平方零关系','Square-zero identities');add('反交换关系','Anticommutation');add('总微分','Total differential');
 
-add('键盘：→、回车和空格前进，← 后退。初始页逐项展开定义，然后切换主线页面。Tab 聚焦，空格固定符号；按钮、选择框和滑块保留自身的键盘行为。','Keyboard: →, Enter and Space advance; ← goes back. Reveal the definitions on Initial data, then change main slides. Tab focuses and Space pins symbols. Buttons, selects and sliders retain their native behavior.');
+add('键盘：→、回车和空格前进，← 后退。初始页逐项展开定义，然后切换主线页面。Tab 聚焦，空格固定符号；回车专用于下一项；其它控件仍可用鼠标或空格操作。','Keyboard: →, Enter and Space advance; ← goes back. Reveal the definitions on Initial data, then change main slides. Tab focuses and Space pins symbols. Buttons, selects and sliders retain their native behavior.');
 add('坐标窗口：0 至 4；右端和上端仍可延伸。','Window: 0 to 4. The right and top edges can extend further.');
 
 add('坐标图','Coordinate grid');
 
 add('图示控制','Diagram controls');add('数学阐述','Mathematical exposition');
 
-add('展开','Expand');add('收起','Collapse');add('键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。按钮、选择框和滑块保留自身的键盘行为。','Keyboard: Right or Enter selects the next item; Left selects the previous one. Definitions and theorems fold independently and update the same diagram. Buttons, selects and sliders retain native keyboard behavior.');
+add('展开','Expand');add('收起','Collapse');add('键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。回车专用于下一项；其它控件仍可用鼠标或空格操作。','Keyboard: Right or Enter selects the next item; Left selects the previous one. Definitions and theorems fold independently and update the same diagram. Enter is reserved for the next item; other controls remain available with the pointer or Space.');
 
 add('K → E · 三套方案','K → E · Three designs');
 
