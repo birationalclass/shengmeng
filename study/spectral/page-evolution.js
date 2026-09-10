@@ -50,7 +50,8 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   for(let i=0;i<=4;i++){const a=pos(i,0,r),b=pos(i,4,r),c=pos(0,i,r),d=pos(4,i,r);svg+=`<path class="evolution-grid" d="M${a} L${b} M${c} L${d}"/>`;}
   for(let p=0;p<=4;p++)for(let q=0;q<=4;q++){const [x,y]=pos(p,q,r),selected=p===point.p&&q===point.q;svg+=`<g class="evolution-point ${selected?'is-selected':''}" role="button" tabindex="${selected?'0':'-1'}" data-page="${r}" data-p="${p}" data-q="${q}" aria-label="E_${r}^{${p},${q}}"><circle class="evolution-hit" cx="${x}" cy="${y}" r="10"/><circle class="evolution-dot" cx="${x}" cy="${y}" r="${selected?5:2.8}"/></g>`;}
   const [p,q]=[point.p,point.q],tp=p+r,tq=q-r+1,source=pos(p,q,r);
-  if(tp<=4&&tq>=0&&tq<=4){
+  const awaitingDifferential=context?.module==='learn'&&context.notePage===0&&((context.step===3&&r===0)||(context.step===4&&r===1));
+  if(!awaitingDifferential&&tp<=4&&tq>=0&&tq<=4){
    const target=pos(tp,tq,r),dx=target[0]-source[0],dy=target[1]-source[1],len=Math.hypot(dx,dy);
    svg+=`<path class="evolution-differential" data-source="${p},${q},${r}" data-target="${tp},${tq},${r}" d="M${source[0]+dx*9/len},${source[1]+dy*9/len} L${target[0]-dx*9/len},${target[1]-dy*9/len}" marker-end="url(#evolution-tip-${r%4})"/>`;
    labels+=mathLabel((source[0]+target[0])/2+8,(source[1]+target[1])/2-12,`d_{${r}}`,'evolution-d-label',{width:40,height:28,align:'left'});
@@ -74,7 +75,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  function drawPages(newPage=null){
   const g=geometry(),visibleMax=zeroPageOnly()?0:generated;start=Math.max(0,Math.min(start,Math.max(0,visibleMax-g.count+1)));
   if(current<start)start=current;else if(current>=start+g.count)start=current-g.count+1;
-  const key=[start,Math.min(visibleMax,start+g.count-1),current,point.p,point.q,language(),compact(),construction?.r].join(':');
+  const key=[start,Math.min(visibleMax,start+g.count-1),current,point.p,point.q,context?.notePage,language(),compact(),construction?.r].join(':');
   if(key!==projectionKey){
    let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;

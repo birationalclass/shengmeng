@@ -270,3 +270,11 @@ The initial K diagram adds horizontal/vertical ellipses above and to the right a
 Integrated the separately published cover and saved font settings. Shared title tokens keep the reading title consistent with the selected cover typeface. §2 opens its exposition with the quotient origin of E₀ and d₀ = Gr(D): column projection identifies d₀ with δ₂, not with the total differential D. The construction requires only (C,F,D). See Stacks Project, Tag 012M, for the associated-graded construction.
 
 Validation: Chromium and WebKit checked the combined total-differential formula at 320–1440px, stationary target particles after completion, D² cancellation, bilingual formula rendering, and the 320–1920px/fullscreen layouts. The first square-zero pair and cancellation-on-navigation checks passed in both engines. The merged cover/font settings and all five E₀ proof steps were also exercised.
+
+## v58 · One numbered item per reading page
+
+Every numbered definition or statement now occupies one reading step. Enter advances within a section before opening the next section; Left reverses the same sequence. §2 uses 2.1–2.8 and §3 uses 3.1–3.13, avoiding the old duplicate numbers. A map and its representative formula, and the two sides of a split equality, stay on the same numbered page.
+
+`reading-pages.js` owns the semantic grouping and shared transition: fade out the old item, resize the frame while empty, then fade in the new item. Interrupted navigation settles to the newest requested page. Diagram hover and proof navigation remain separate from the reading position. The old rounded annotation border is removed; E₀ appears first, followed by d₀ on its own page. Initial definitions use the same single-item policy while keeping the accumulated diagram.
+
+Validation: all 28 numbered items were traversed forward and backward in Chromium and WebKit. Checks cover single-item visibility during transitions, rapid navigation, grouped map/equality formulas, independent proof controls, and bilingual 320–1440px layouts.

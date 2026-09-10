@@ -1,3 +1,4 @@
+import {numberedPages,createReadingPageMotion} from './reading-pages.js?v=58';
 import {visualMotion} from './visual-style.js?v=41';
 import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
@@ -9,7 +10,7 @@ import {lessons,convergence,initial,totalCohomology} from './content.js?v=40';
 import {translatePage,language,toggleLanguage} from './language.js?v=39';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=57';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=57';
+import {createPageEvolution} from './page-evolution.js?v=58';
 import {createNotebookMotion} from './notebook-motion.js?v=57';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -19,11 +20,12 @@ let squareSequenceSerial=0,squareSequenceActive=false;
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
+const readingMotion=createReadingPageMotion({duration:()=>notebookMotion.duration()});
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1;
 const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3','converge:4','lab:0','trace:0'];
 const NODE_HALF_W=34,NODE_HALF_H=19;
-const state={module:'initial',cover:true,initialReveal:-1,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
+const state={module:'initial',cover:true,initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0,expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -97,12 +99,12 @@ function diagonal(n,p,box=true,showLabel=true){
  out+=`<path class="diag" mask="url(#term-connection-mask)" d="M${start.join(',')} L${end.join(',')}"/>`;
  if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
 }
-const formulas=(fs,concepts=[],number='')=>fs.map((t,i)=>block(t,concepts[i]||'',number?`${number}.${i+1}`:'')).join('');
+const formulas=(fs,concepts=[],number='',module='',step=0)=>{const pages=numberedPages(module,step,fs.length);return fs.map((t,i)=>{const page=pages.find(p=>p.indices.includes(i+1));return block(t,concepts[i]||'',number&&page?.indices[0]===i+1?page.number:'');}).join('');};
 function statementHeading(meta,key){
  const subject=meta.symbol?math(meta.symbol):esc(meta.name||'');
  return `<div class="statement-heading"><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
 }
-function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
+function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
 
 function syncStatementCards(){document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
@@ -134,12 +136,12 @@ function render(updateControls=true){
  $('.inspector .mini-label').textContent='点击图中的项，查看其含义';$('.legend').innerHTML='';$('#panelIndex').textContent='';
  renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();window.spectralFullscreen?.sync();
 }
-function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
+function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;readingMotion.settle();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
-$('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;state.chosenAction=Number(b.dataset.action);setAnnotation(state.chosenAction);applyConcept(null);}};
+$('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.indices.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
 $('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
@@ -195,9 +197,10 @@ function statementMeta(module=state.module,step=state.step){
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
  if(module==='learn'&&step===3)return meta;
- if(module==='learn'&&step===4)return meta;
- if(module==='learn'&&step===5)return {...meta,number:'2.2'};
- if(module==='converge')return {...meta,kind:step===0?'§':meta.kind,number:step===0?'3':`3.${step}`};
+ if(module==='learn'&&step===4)return {...meta,kind:'§',number:'2'};
+ if(module==='learn'&&step===5)return {...meta,kind:'§',number:'2'};
+ if(module==='converge')return {...meta,kind:'§',number:'3'};
+ if(module==='lab'||module==='trace')return {...meta,kind:'§',number:module==='lab'?'4':'5'};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }
 function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'differential';}
@@ -212,20 +215,24 @@ function renderWorkspaceState(){
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
 }
 function ui(zh,en){return language()==='en'?en:zh;}
-function selectInitialBuild(index){cancelSquareSequence();state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
-function activateStatement(key){
+function selectInitialBuild(index){cancelSquareSequence();openBuilds.clear();state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
+function activateStatement(key,last=false){
+ readingMotion.settle();
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- state.cover=false;state.module=module;state.step=step;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
+ state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
  if(module==='initial'){state.initialReveal=Math.max(0,state.initialReveal);state.effect=initialConcept();}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
  openStatements.clear();openStatements.add(key);render();
+ if(last&&!isDoubleComplexView())selectReadingPage(currentReadingPages().length-1);
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
  keepReadingVisible($(`[data-statement="${key}"]`));
 }
-function advanceNote(){if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}const i=readingOrder.indexOf(activeStatementKey());if(i>=0&&i<readingOrder.length-1)activateStatement(readingOrder[i+1]);}
-function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);keepDefinitionVisible();}return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0)activateStatement(readingOrder[i-1]);}
+function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
+function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"]`));}
+function advanceNote(){if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){selectReadingPage(state.notePage+1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>=0&&i<readingOrder.length-1)activateStatement(readingOrder[i+1]);}
+function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);keepDefinitionVisible();}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);if(isDoubleComplexView())selectInitialBuild(INITIAL_STEPS);}}
 $('#explanation').addEventListener('click',e=>{
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]');
- if(toggle){const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
+ if(toggle){readingMotion.settle();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
  if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);setupDoubleComplex();}else selectInitialBuild(i);return;}
  if(buildSelect)selectInitialBuild(Number(buildSelect.dataset.selectBuild));
@@ -318,7 +325,7 @@ document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if
 document.addEventListener('focusout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
 document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealDirections(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
 $('#clearConcept').onclick=()=>{state.pinned=null;state.pinnedKey=null;restoreInteraction();};
-function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:state.chosenAction||1;setAnnotation(i);}applyConcept(state.pinned,false);}
+function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.indices[0]||1;setAnnotation(i);}applyConcept(state.pinned,false);}
 
 function renderQuickCheck(){
  const checks={initial:['如果先作用 δ₂，再作用 δ₁，终点在哪里？','终点是 Kᵖ⁺¹ᑫ⁺¹。交换作用顺序仍到同一位置，但两条复合映射之和为零。'],learn:['dᵣ 的靶在哪里？总次数改变多少？','靶是 Eᵣᵖ⁺ʳ,ᑫ⁻ʳ⁺¹，因此总次数从 p+q 变成 p+q+1。'],converge:['稳定页是否给出了 Hⁿ 的典范直和分解？','没有。它典范地给出滤过商 GrᵖHⁿ。向量空间层面的分裂可以选择，但收敛本身不指定典范分裂。']};
@@ -348,8 +355,9 @@ function doubleComplexCompanion(item){
  $('#sceneNote').textContent='';
 }
 function setupDoubleComplex(){
- document.querySelectorAll('.build-card').forEach(el=>{const i=Number(el.dataset.build),open=openBuilds.has(i),visible=i<=revealedBuild;el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);notebookMotion.setExpanded(el.querySelector(':scope > .build-content'),open,{immediate:!visible});el.classList.add('is-available');el.classList.toggle('build-current',i===state.initialReveal);el.classList.toggle('build-complete',i<state.initialReveal);const toggle=el.querySelector('.build-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});
- $('.build-statement').classList.remove('is-coordinate-prelude');$('.build-statement').inert=false;$('.build-statement').removeAttribute('aria-hidden');$('.initial-definition').hidden=state.initialReveal<0;$('.initial-definition').classList.toggle('definition-current',state.initialReveal<=0);
+ document.querySelectorAll('.build-card').forEach(el=>{const i=Number(el.dataset.build),open=openBuilds.has(i),visible=i===state.initialReveal;el.inert=!visible;el.dataset.open=String(open);if(visible||el.hidden)notebookMotion.setExpanded(el.querySelector(':scope > .build-content'),open,{immediate:true});el.classList.add('is-available');el.classList.toggle('build-current',i===state.initialReveal);el.classList.toggle('build-complete',i<state.initialReveal);const toggle=el.querySelector('.build-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});
+ $('.build-statement').classList.remove('is-coordinate-prelude');$('.build-statement').inert=false;$('.build-statement').removeAttribute('aria-hidden');$('.initial-definition').classList.toggle('definition-current',state.initialReveal<=0);
+ const body=$('.build-statement > .statement-body'),items=[...body.querySelectorAll(':scope > [data-build]')];readingMotion.sync(body,items,items.filter(el=>Number(el.dataset.build)===state.initialReveal));
  $('#actionTabs').innerHTML='';$('#sceneNote').textContent='';$('#sceneNote').hidden=true;
  $('#controls').inert=state.initialReveal<4;$('#controls').style.visibility=state.initialReveal<4?'hidden':'visible';syncStatementCards();
 }
@@ -395,7 +403,7 @@ function fixedDiagram(){
   if(s>=2)caption=raw`E_\infty^{${p},${n-p}}\cong F^{${p}}H^{${n}}/F^{${p+1}}H^{${n}}`;
   if(s===1)caption=raw`p+r>${n+1}\;\Longrightarrow\;F^{p+r}C^{${n+1}}=0`;
  }
- if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=true;total=false;filter=false;selected=false;edges='';overlay='';}
+ if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&['totalmap','filteredmap'].includes(state.effect))||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
  if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(showNext?420:500,22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true)}</g>`;}
  if(m==='converge'&&s===1){
@@ -453,7 +461,9 @@ function updateAnnotations(){
  if(state.cover||isDoubleComplexView())return;
  const a=state.annotationStep||1;
  $('#actionTabs').innerHTML=actionNames(state,language()).map((name,i)=>`<button data-action="${i+1}" aria-pressed="${a===i+1}">${mathControlLabel(name)}</button>`).join('');
- statementFormulas().forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.toggle('definition-current',i+1===(state.chosenAction||1));});
+ const elements=[...statementFormulas()],pages=currentReadingPages(),page=pages[Math.min(state.notePage,pages.length-1)];
+ elements.forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.add('definition-current');});
+ readingMotion.sync(elements[0]?.parentElement,elements,elements.filter((el,i)=>page.indices.includes(i+1)));
  renderQuickCheck();window.spectralState={...state,language:language()};renderOperation();
 }
 function setAnnotation(i){state.stackR=null;state.annotationStep=Math.max(1,Math.min(annotationCount(),i));renderPersistentDiagram();updateAnnotations();translatePage();}
