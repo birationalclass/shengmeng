@@ -1,0 +1,31 @@
+/* Scrollbars are part of the surface, not separate rails outside its border. */
+:where(.slide-deck,dialog) * {
+  scrollbar-width:thin;
+  scrollbar-color:var(--scrollbar-thumb) transparent;
+}
+dialog { scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb) transparent }
+:where(.slide-deck,dialog) ::-webkit-scrollbar,
+dialog::-webkit-scrollbar { width:var(--scrollbar-size);height:var(--scrollbar-size) }
+:where(.slide-deck,dialog) ::-webkit-scrollbar-track,
+dialog::-webkit-scrollbar-track { background:transparent;margin:8px }
+:where(.slide-deck,dialog) ::-webkit-scrollbar-thumb,
+dialog::-webkit-scrollbar-thumb {
+  border:2px solid transparent;border-radius:999px;
+  background:var(--scrollbar-thumb);background-clip:padding-box;
+}
+:where(.slide-deck,dialog) ::-webkit-scrollbar-thumb:hover,
+dialog::-webkit-scrollbar-thumb:hover { background-color:var(--scrollbar-thumb-hover) }
+:where(.slide-deck,dialog) ::-webkit-scrollbar-corner { background:transparent }
+/* These scrollports sit inside the workspace's rounded border. */
+@media(min-width:781px) {
+  .slide-deck:not(.is-cover) .explanation,
+  .slide-deck:not(.is-cover) .visual-column {
+    scrollbar-gutter:stable;
+    margin-inline-end:var(--scrollbar-inset);
+    border-radius:8px;
+  }
+}
+.math-block,.operation-equation,.initial-assumptions {
+  scrollbar-gutter:stable;
+  border-radius:5px;
+}

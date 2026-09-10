@@ -1,3 +1,5 @@
+import {replaceMathContent} from './math-transitions.js?v=40';
+import {visualMotion} from './visual-style.js?v=40';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
 export function createFilteredView({viewport,board,math,language}){
@@ -32,7 +34,7 @@ export function createFilteredView({viewport,board,math,language}){
    t('r 增大时允许更多来源，所以 Bᵣ 增大。注意 Eᵣ 的分母使用 Bᵣ₋₁。','As r grows, more source columns are allowed and Bᵣ increases. The denominator of Eᵣ uses Bᵣ₋₁.')
   ];
   board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  board.innerHTML=`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p>`;
+  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p>`);
  }
  function draw(){
   const {n,p}=state,r=Math.max(1,state.r),q=n-p,Z=`Z_{${r}}^{${p},${q}}`,B=`B_{${r}}^{${p},${q}}`;
@@ -72,10 +74,10 @@ export function createFilteredView({viewport,board,math,language}){
   scene.innerHTML=`<svg viewBox="0 0 840 525" aria-hidden="true"><defs><marker id="filtered-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="#a7d3ca" stroke-width="1.5"/></marker></defs>${shapes}</svg>${labels}<p class="filtered-caption">${t('子空间示意 · 区域大小不表示维数','Subspace diagram · region sizes do not encode dimensions')}</p>`;
   for(const old of [...host.children]){
    const opacity=getComputedStyle(old).opacity;old.getAnimations().forEach(a=>a.cancel());old.style.opacity=opacity;
-   if(reduced())old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:260,fill:'forwards',easing:'ease-out'});fade.finished.then(()=>old.remove(),()=>{});}
+   if(reduced())old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards',easing:visualMotion().easing});fade.finished.then(()=>old.remove(),()=>{});}
   }
   host.append(scene);
-  if(!reduced())scene.animate([{opacity:0},{opacity:1}],{duration:420,easing:'ease-out'});
+  if(!reduced())scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().emphasis,easing:visualMotion().easing});
  }
  function fit(){const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);host.style.width=width+'px';host.style.height=width*525/840+'px';host.style.setProperty('--filtered-scale',String(width/840));}
  board.addEventListener('click',e=>{const button=e.target.closest('[data-filter-step]');if(!active||!button)return;e.stopPropagation();steps[topic]=Number(button.dataset.filterStep);exposition();});

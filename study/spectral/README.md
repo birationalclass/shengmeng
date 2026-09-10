@@ -187,3 +187,30 @@ The square-zero card is neutral: only its two formula buttons start the correspo
 The total-complex reveal runs one finite sweep through n=0,1,2,3,4. Integer labels and direct-sum terms update together while the grouping outline interpolates in the fixed grid. The last degree remains visible. The total-differential reveal splits an element into its horizontal and vertical images and adds them in C^{n+1}, outside individual K-terms. The D² button follows all four paths: the two pure terms vanish separately and the two mixed terms cancel at their shared K^{p+1,q+1}. It never combines elements from different K-summands as though they lived in one K-term. Replay controls stay beneath the figure. Pointer exit does not replay a different demonstration.
 
 Chromium and WebKit checks cover both square-zero exits, focus on native buttons/sliders, exclusive Enter navigation, modal isolation, the five-degree sweep and stable viewport, final D/D² states, D² exit, Space replay, bilingual controls, and narrow layouts.
+
+
+## Shared presentation system and revised reading order (v40)
+
+The single notebook starts with §1 Double complex (seven inner entries through column filtration), then §2 (E₀,d₀), item 2.1 (E₁,d₁), item 2.2 (Eᵣ,dᵣ), and §3 convergence. Headings display numbers and names, with mathematical statement kinds kept as internal metadata. E₀'s card contains the quotient and an aligned two-line d₀ mapping definition; E₁ is introduced only in the next entry. Canonical identifications, square-zero identities and next-page cohomology live in the right-hand Key properties and proof-step area. Enter advances the reading sequence; the separate Next button is removed.
+
+The loading line interpolates real progress with a subtle glow. The cover waits for user entry. Formula changes crossfade individual changed tokens; MathML always describes the current formula. The total-degree caption is larger and has enough height for superscripts. Term brightness, borders and glass tint share the same timing as the grouping sweep; SVG elements retain their identity instead of being replaced.
+
+D² has two visible applications of D, with a pause and a second split inside both intermediate K blocks. Pure terms vanish separately; the mixed terms cancel in their common target. Filtration uses the same indexed-sweep renderer as Cⁿ, shrinking along one diagonal as p increases. Its component-particle demonstration maps into the next-degree filtration; every target has first index at least p. Particle counts do not encode dimensions or assert surjectivity.
+
+| Module | Responsibility |
+| --- | --- |
+| `styles/tokens.css` | Shared palette, glass, muted levels, typography, scrollbar and motion tokens. |
+| `styles/diagram.css` | Terms, maps, groupings, page points, common emphasis and reduced motion. |
+| `styles/math.css`, `math-transitions.js` | Token-level formula crossfades, larger degree captions and properties layout. |
+| `styles/cover.css` | Loading cover, progress, sheen and entry controls. |
+| `styles/scrollbars.css` | Inset rounded scrollbars shared by notebook surfaces and dialogs. |
+| `style.css`, `slides.css` | Base page layout and responsive notebook/accordion/control layout. |
+| `visual-style.js` | Read CSS motion tokens in JavaScript. |
+| `diagram-dom.js` | Patch SVG in place and preserve live transition state. |
+| `total-animations.js`, `filtration-animations.js`, `element-trace.js`, `page-evolution.js`, `filtered-view.js` | Mathematical timelines and state-specific geometry. |
+| `content.js`, `algebra.js`, `differential-proof.js`, `workbench.js` | Definitions, exact calculations, properties and proof exposition. |
+| `app.js` | Reading sequence and coordination of content, diagrams and controls. |
+
+Edit shared tokens/rules to change the style. Do not add per-definition copies of colors or fade durations. Mathematical timelines may retain distinct stages and pauses; generic emphasis and fades read the common tokens.
+
+Validation includes Chromium and WebKit, continuous opacity samples, persistent SVG identity, shared timing and palette changes, superscript-only transitions and rapid interruption cleanup, D²'s two-stage split, filtration particle targets, exclusive Enter navigation, 390/1024/1920px layouts, cover readiness/retry and reduced motion. The exact algebra suite checks 142 page/convergence cases.

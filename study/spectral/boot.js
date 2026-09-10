@@ -1,7 +1,7 @@
 // One cover for loading and entry. Typesetting never advances into the lesson.
 (()=>{
  const overlay=document.getElementById('mathLoader'),status=document.getElementById('loaderStatus'),bar=overlay.querySelector('[role=progressbar]'),start=document.getElementById('beginSlides');
- let done=false,failed=false;
+ let done=false,failed=false,progressValue=0;
  const en=()=>localStorage.getItem('spectral-language')==='en';
  const coverFullscreen=document.getElementById('coverFullscreen'),lessonFullscreen=document.getElementById('fullscreen');
  let fullscreenScroll=0,fullscreenPending=false;
@@ -32,8 +32,9 @@
  document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement){document.body.classList.add('study-fullscreen');syncFullscreen();}else if(fullscreenActive())leaveFullscreen();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullscreenActive()&&!document.querySelector('dialog[open]')){e.preventDefault();exitFullscreen();}});
  window.spectralFullscreen={sync:syncFullscreen};
- const progress=(value,zh,english)=>{if(done||failed)return;bar.setAttribute('aria-valuenow',value);bar.firstElementChild.style.width=value+'%';status.textContent=en()?english:zh;};
- const fail=()=>{if(done)return;failed=true;status.textContent=en()?'Unable to load mathematics':'数学资源加载失败';document.getElementById('loaderRetry').hidden=false;};
+ // Smooth only the visual interpolation; milestones still report real progress.
+ const progress=(value,zh,english)=>{if(done||failed)return;progressValue=Math.max(progressValue,Math.min(100,Math.max(0,value)));bar.setAttribute('aria-valuenow',progressValue);bar.firstElementChild.style.transform=`scaleX(${progressValue/100})`;status.textContent=en()?english:zh;};
+ const fail=()=>{if(done)return;failed=true;overlay.classList.add('loading-failed');status.textContent=en()?'Unable to load mathematics':'数学资源加载失败';document.getElementById('loaderRetry').hidden=false;};
  const showCover=()=>{
   overlay.hidden=false;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
   overlay.querySelector('.loader-eyebrow').textContent=en()?'Study Notes':'学习笔记';syncFullscreen();

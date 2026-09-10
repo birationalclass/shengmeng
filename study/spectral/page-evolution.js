@@ -1,4 +1,4 @@
-import {createDifferentialProof} from './differential-proof.js?v=38';
+import {createDifferentialProof} from './differential-proof.js?v=40';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -7,10 +7,11 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  const overlay=document.createElement('div');overlay.id='pageEvolution';overlay.hidden=true;viewport.append(overlay);
  const toolbar=document.createElement('nav');toolbar.id='evolutionControls';toolbar.hidden=true;controls.prepend(toolbar);
  let context=null,engaged=false,tilted=false,generated=0,current=0,start=0,semanticKey='',token=0,busy=false,construction=null,point={p:1,q:2},transformAnimation=null,scale=1,projectionKey='',transformTarget='',layerAnimations=[];
+ const zeroPageOnly=()=>context?.module==='learn'&&context.step===3;
  const compact=()=>matchMedia('(max-width:780px)').matches;
  const geometry=()=>compact()?{x:110,y:360,dp:55,dq:64,yp:24,dr:400,count:2}:{x:55,y:345,dp:35,dq:54,yp:26,dr:210,count:4};
  const pos=(p,q,r)=>{const g=geometry();return [g.x+g.dp*p+g.dr*(r-start),g.y+g.yp*p-g.dq*q];};
- const color=r=>['#8fbeff','#71e2d0','#f4c876','#d9b7ec'][r%4];
+ const color=r=>['var(--blue)','var(--teal)','var(--gold)','#d9b7ec'][r%4];
  // Hand off the whole source layer only when its projection has reached the
  // destination. Crossfading earlier would draw E0 in two different positions.
  function settleProjection(){
@@ -71,16 +72,16 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   return {svg,labels:labels+'</div>'};
  }
  function drawPages(newPage=null){
-  const g=geometry();start=Math.max(0,Math.min(start,Math.max(0,generated-g.count+1)));
+  const g=geometry(),visibleMax=zeroPageOnly()?0:generated;start=Math.max(0,Math.min(start,Math.max(0,visibleMax-g.count+1)));
   if(current<start)start=current;else if(current>=start+g.count)start=current-g.count+1;
-  const key=[start,Math.min(generated,start+g.count-1),current,point.p,point.q,language(),compact(),construction?.r].join(':');
+  const key=[start,Math.min(visibleMax,start+g.count-1),current,point.p,point.q,language(),compact(),construction?.r].join(':');
   if(key!==projectionKey){
    let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;
    out+=`</defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
    labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
    if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
-   for(let r=start;r<=Math.min(generated,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
+   for(let r=start;r<=Math.min(visibleMax,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
    const pAxis=pos(4.6,0,start),qAxis=pos(0,4.5,start),o=pos(0,0,start);
    out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/></svg>`;
    labels+=mathLabel(pAxis[0]+8,pAxis[1]-5,'p','evolution-axis-label',{width:24,height:24})+mathLabel(qAxis[0]-18,qAxis[1]-5,'q','evolution-axis-label',{width:24,height:24});
@@ -104,7 +105,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
     }
     for(const el of overlay.querySelectorAll(`[data-r="${sourcePage}"] .evolution-dot`)){
      const term=el.parentElement,group=sourcePage===1?Number(term.dataset.q):Number(term.dataset.p);
-     const rest=getComputedStyle(el);layerAnimations.push(el.animate([{opacity:rest.opacity,fill:rest.fill},{opacity:1,fill:'#f4c876',offset:.45},{opacity:rest.opacity,fill:rest.fill}],{duration:700,delay:150*group,easing:'ease-in-out'}));
+     const rest=getComputedStyle(el);layerAnimations.push(el.animate([{opacity:rest.opacity,fill:rest.fill},{opacity:1,fill:'var(--gold)',offset:.45},{opacity:rest.opacity,fill:rest.fill}],{duration:700,delay:150*group,easing:'ease-in-out'}));
     }
    }
   }
@@ -114,7 +115,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
 
  function paintControls(){
   toolbar.hidden=!engaged;
-  toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}" ${busy?'disabled':''}>${Array.from({length:generated+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><div class="evolution-view-controls">${construction?`<button data-evolve="replay" ${busy?'disabled':''}>${t('重播生成','Replay')} ${math(`E_{${construction.r+1}}`)}</button>`:''}<button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button></div>`;
+  toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}" ${busy?'disabled':''}>${Array.from({length:(zeroPageOnly()?0:generated)+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><div class="evolution-view-controls" ${zeroPageOnly()?'hidden':''}>${construction?`<button data-evolve="replay" ${busy?'disabled':''}>${t('重播生成','Replay')} ${math(`E_{${construction.r+1}}`)}</button>`:''}<button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button></div>`;
  }
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
  function cancel(){
@@ -147,7 +148,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  }
  toolbar.addEventListener('click',e=>{
   const button=e.target.closest('[data-evolve]');if(!button)return;const action=button.dataset.evolve;
-  if(action==='next'&&!busy){beginCohomology();return;}if(action==='replay'&&construction&&!busy){beginCohomology(construction.r);return;}
+  if(action==='next'&&!busy&&!zeroPageOnly()){beginCohomology();return;}if(action==='replay'&&construction&&!busy){beginCohomology(construction.r);return;}
   if(['flat','tilt'].includes(action)){cancel();tilted=action!=='flat';current=0;start=0;projectionKey='';fit(true);drawPages();paintControls();exposition();}
  });
  toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});

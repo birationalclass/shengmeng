@@ -1,0 +1,89 @@
+/* Shared appearance for K, E_r, total-degree and filtration diagrams.
+   Coordinates and mathematical state are supplied by the diagram renderers. */
+
+/* Compact glass terms. The fill stays invariant; emphasis is a separate tint. */
+svg .node { cursor:pointer }
+svg .muted { opacity:var(--graph-muted-opacity) }
+svg .zero { opacity:var(--graph-zero-opacity) }
+#diagram .node-bg {
+  fill:url(#node-glass);stroke:var(--graph-border);stroke-width:.8;
+  filter:var(--graph-shadow);
+}
+#diagram .node-bg.concept-active { stroke:var(--graph-border-active);stroke-width:1.3 }
+#diagram .node-tint {
+  fill:var(--graph-tint);fill-opacity:.095;stroke:none;opacity:0;pointer-events:none;
+}
+#diagram .node-bg.concept-active+.node-tint { opacity:1 }
+#diagram .node:hover .node-bg, #diagram .node:focus-visible .node-bg,
+#diagram .node.selected .node-bg { stroke:var(--graph-focus);stroke-width:1.5 }
+#diagram.evolution-tilted .node-bg { filter:none!important }
+
+/* Solid maps; only continuations beyond the display window are dashed. */
+svg .arrow, svg .arrow.hot, svg .arrow.hot.animating {
+  fill:none;stroke-width:1.4;opacity:.78;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:none!important;animation:none;
+}
+svg .arrow.h, svg .continuation[data-concept=delta1] { stroke:var(--teal) }
+svg .arrow.v, svg .continuation[data-concept=delta2] { stroke:var(--blue) }
+svg .arrow.r, svg .continuation[data-concept=total],
+svg .continuation[data-concept=differential] { stroke:var(--gold) }
+svg .continuation {
+  fill:none;stroke-width:1.25;stroke-dasharray:3 5;stroke-linecap:round;
+  opacity:.72;animation:none;
+}
+.arrow[data-concept], .continuation[data-concept] { cursor:pointer;pointer-events:stroke }
+.slide-deck #diagram.concept-focus .arrow,
+.slide-deck #diagram.concept-focus .continuation { opacity:.14 }
+.slide-deck #diagram.concept-focus .arrow.concept-active { opacity:1;stroke-width:1.8 }
+.slide-deck #diagram.concept-focus .continuation.concept-active { opacity:1;stroke-width:1.55 }
+.arrow:focus-visible { outline:none;opacity:1;stroke-width:1.8 }
+.slide-deck svg .context-edge { opacity:var(--graph-context-opacity) }
+.slide-deck #diagram .relation-route .arrow,
+.slide-deck #diagram.concept-focus .relation-route .arrow { stroke-width:2.7;opacity:1 }
+
+/* Total-degree/filtration outlines are groupings, never differential arrows. */
+svg .diag { stroke:var(--gold);stroke-width:1;opacity:.6 }
+svg .diag.concept-active { opacity:1;stroke-width:2.5 }
+.slide-deck #diagram .diag-box {
+  fill:var(--graph-region-fill);stroke:var(--gold);stroke-width:1.5;stroke-dasharray:6 5;
+}
+.slide-deck #diagram .next-total .diag-box,
+.slide-deck #diagram .denominator-region .diag-box { stroke:var(--blue);fill:var(--graph-region-next-fill) }
+.slide-deck #diagram .next-total .diag { stroke:var(--blue);opacity:.6 }
+.cohomology-region.concept-active, .comparison-node.concept-active,
+.subspace-region.concept-active, .page-quotient.concept-active {
+  stroke:var(--teal);stroke-width:3;fill:var(--graph-subspace-fill);
+}
+
+/* Formula labels and the corresponding SVG terms share the same emphasis. */
+#diagram.frame-only .term-label { visibility:hidden;opacity:0!important;pointer-events:none }
+#diagram .map-label.map-h { color:var(--teal) }
+#diagram .map-label.map-v { color:var(--blue) }
+#diagram .map-label.map-r { color:var(--gold) }
+#diagram.concept-focus .map-label:not(.map-active) { opacity:var(--graph-muted-opacity)!important }
+#diagram .term-label[data-element-focus=true],
+#diagram .term-label[data-total-focus] { opacity:var(--graph-covered-label-opacity)!important }
+.filtered-label.muted { color:var(--muted);font-size:19px }
+
+/* Page-layer terms use the same color and emphasis contract. */
+.evolution-dot { fill:var(--evolution-color);opacity:.68 }
+.evolution-point.is-selected .evolution-dot { opacity:1;stroke:var(--ink);stroke-width:1 }
+.evolution-point:focus-visible .evolution-dot { stroke:var(--graph-focus);stroke-width:3 }
+
+/* One rule for emphasis timing, read by JS through visual-style.js as well. */
+#diagram .node, #diagram #diagram-edges>g, #diagram .term-label,
+#diagram .map-label, #diagram .node-bg, #diagram .node-tint,
+#diagram .arrow, #diagram .arrow.hot, #diagram .continuation,
+#diagram .diag, #diagram .diag-box, #pageEvolution .evolution-dot {
+  transition:opacity var(--motion-emphasis) var(--motion-easing),
+    color var(--motion-emphasis) var(--motion-easing),
+    stroke var(--motion-emphasis) var(--motion-easing),
+    stroke-width var(--motion-emphasis) var(--motion-easing),
+    fill var(--motion-emphasis) var(--motion-easing);
+}
+@media(prefers-reduced-motion:reduce) {
+  #diagram .node, #diagram #diagram-edges>g, #diagram .term-label,
+  #diagram .map-label, #diagram .node-bg, #diagram .node-tint,
+  #diagram .arrow, #diagram .continuation, #diagram .diag, #diagram .diag-box,
+  #pageEvolution .evolution-dot { transition:none!important }
+}

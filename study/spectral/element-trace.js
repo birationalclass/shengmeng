@@ -1,8 +1,9 @@
+import {visualMotion} from './visual-style.js?v=40';
 // A finite, user-triggered trace of an element under two consecutive differentials.
 export function createSquareTrace(host){
  const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,current=null,running=false,currentCentres=null,serial=0;
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
- const clear=()=>{host.querySelectorAll('[data-element-focus]').forEach(el=>el.removeAttribute('data-element-focus'));cancelAnimationFrame(frame);if(layer){const retiring=layer;retiring.removeAttribute('id');if(reduced.matches)retiring.remove();else{const fade=retiring.animate([{opacity:getComputedStyle(retiring).opacity},{opacity:0}],{duration:220,easing:'ease-out',fill:'forwards'});fade.finished.then(()=>retiring.remove(),()=>retiring.remove());}}layer=null;current=null;running=false;};
+ const clear=()=>{host.querySelectorAll('[data-element-focus]').forEach(el=>el.removeAttribute('data-element-focus'));cancelAnimationFrame(frame);if(layer){const retiring=layer;retiring.removeAttribute('id');if(reduced.matches)retiring.remove();else{const fade=retiring.animate([{opacity:getComputedStyle(retiring).opacity},{opacity:0}],{duration:visualMotion().exit,easing:visualMotion().easing,fill:'forwards'});fade.finished.then(()=>retiring.remove(),()=>retiring.remove());}}layer=null;current=null;running=false;};
  const sync=(effect,enabled)=>{if(!enabled||!['square1','square2'].includes(effect)||effect!==current)clear();};
  const play=(effect,centres)=>{
   if(running&&current===effect)return;
