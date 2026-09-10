@@ -18,18 +18,22 @@ export function operationMarkup(s,lang,math){
   }else if(c==='totalsquare'){
    body=`<div class="operation-equation">${M(R`D^2a=\delta_1^2a+(\delta_2\delta_1a+\delta_1\delta_2a)+\delta_2^2a`)}</div><div class="operation-equation">${M(R`\delta_1^2a=0,\quad\delta_2^2a=0,\quad\delta_2\delta_1a=-\delta_1\delta_2a`)}</div>`;
   }else if(c==='square'){
-   body=row(box(R`\delta_1^2=0`)+box(R`\delta_2^2=0`));
+   body=`<div class="operation-equation">${M(R`(K^{\bullet,q},\delta_1),\qquad(K^{p,\bullet},\delta_2)`)}</div>`;
+   note=t('平方零关系使每一行、每一列成为通常的上链复形，因而可以分别取上同调。', 'The square-zero relations make every row and every column an ordinary cochain complex, so their cohomology is defined.');
   }else if(c==='square1'||c==='square2'){
    const h=c==='square1',d=h?1:2,mid=h?'2,1':'1,2',end=h?'3,1':'1,3';
    body=row(box('a\\in K^{1,1}')+arrow(`\\delta_${d}`)+box(`\\delta_${d}a\\in K^{${mid}}`)+arrow(`\\delta_${d}`)+box(`0\\in K^{${end}}`,'chosen'));
-   note=t('复合映射为零。终点是零向量；末端空间与两条单独的微分不必为零。','The composite is zero. The endpoint is the zero vector; neither the target space nor either individual map must vanish.');
+   note=t(`${h?'固定第二指标，每一行':'固定第一指标，每一列'}成为通常的上链复形，因而可取上同调。图中终点是零元素；末端空间不必为零。`, `${h?'With the second index fixed, each row':'With the first index fixed, each column'} is an ordinary cochain complex, so its cohomology is defined. The endpoint is the zero element; the target need not be zero.`);
   }else if(c==='anticommute'){
    body=`<div class="path-comparison"><div>${M(R`K^{1,1}\ni a\xrightarrow{\delta_1}\delta_1a\xrightarrow{\delta_2}\delta_2\delta_1a`)}</div><div>${M(R`K^{1,1}\ni a\xrightarrow{\delta_2}\delta_2a\xrightarrow{\delta_1}\delta_1\delta_2a`)}</div><div class="relation-sum">${M(R`\delta_2\delta_1a+\delta_1\delta_2a=0\in K^{2,2}`)}</div></div>`;
-   note=t('取 a∈K¹¹。两条路径的终点空间相同，复合映射互为相反数；不要求各自为零。','Take a∈K¹¹. The two paths reach the same space and their composites are negatives; neither composite is required to vanish.');
+   body+=`<div class="operation-equation">${M(R`D^2=\delta_1^2+(\delta_1\delta_2+\delta_2\delta_1)+\delta_2^2=0`)}</div>`;
+   note=t(`两条复合路径在同一目标中给出互为相反数的元素，相加为零。结合平方零关系，后面定义的总微分 ${M(R`D:=\delta_1+\delta_2`)} 满足 ${M(R`D^2=0`)}，因此总复形可以取上同调。`, `The two composites give opposite elements in the same target, so their sum is zero. Together with the square-zero relations, this makes the total differential ${M(R`D:=\delta_1+\delta_2`)} satisfy ${M(R`D^2=0`)}, allowing the total complex to have cohomology.`);
   }else if(c==='delta1'||c==='delta2'){
    const d=c==='delta1'?1:2;body=row(box('K^{p,q}')+arrow(`\\delta_${d}`)+box(d===1?'K^{p+1,q}':'K^{p,q+1}','chosen'));
-   note=t('箭头表示线性映射；节点表示整个向量空间。','Arrows denote linear maps; nodes denote entire vector spaces.');
-  }else{body=row(box(R`K:=\{K^{p,q}\}_{p,q\in\mathbb Z}`)+box(R`K^{p,q}=0\quad(p<0\ \text{or}\ q<0)`));note=t('选择左侧定义。在固定坐标图上加入微分，再单独检验复合关系。','Select a definition to add its maps to the fixed grid and inspect the composite relations.');}
+   note=t(`${M(`\\delta_${d}`)} 是线性映射；更一般地，是同一环上的模同态。`, `${M(`\\delta_${d}`)} is a linear map, or more generally a module homomorphism over the same ring.`);
+  }else{
+   body=`<p class="operation-description">${t(`每个 ${M(R`K^{p,q}`)} 是同一域上的线性空间；更一般地，可以取同一环上的左模。`, `Each ${M(R`K^{p,q}`)} is a vector space over the same field, or more generally a left module over the same ring.`)}</p><p class="operation-description">${t('本笔记采用第一象限约定：','In this notebook we use the first-quadrant convention:')}</p><div class="operation-equation">${M(R`K^{p,q}=0\qquad(p<0\ \text{or}\ q<0)`)}</div>`;
+  }
  }else if(s.module==='initial'){
   const factors=Array.from({length:n+1},(_,i)=>`K^{${i},${n-i}}`);
   if(a===1)body=`<div class="operation-equation">${M(totalDegreeTex(n))}</div>`+row(`<span>${M('=')}</span><div class="direct-sum-group">${factors.map(x=>`<span>${M(x)}</span>`).join(`<span class="sum-sign">${M('\\oplus')}</span>`)}</div>`);
@@ -67,5 +71,5 @@ export function operationMarkup(s,lang,math){
   if(s.step===3){body=row(box(R`a=b+Dc`)+arrow(R`a\mapsto[a]_H+F^{p+1}H^n`)+box('0','chosen'))+`<div class="operation-equation">${M(R`b\in Z_\infty^{p+1,q-1},\quad Dc\in B_\infty^{p,q}`)}</div>`;if(a===1)body=row(box(R`[a]_H\in F^{p+1}H^n`)+arrow(R`\text{in Gr}`)+box('0','chosen'));if(a===3)body=row(box(R`Z_\infty^{p,q}`)+arrow(R`a\mapsto[a]_H+F^{p+1}H^n`)+box(R`\operatorname{Gr}_F^pH^n`))+`<div class="operation-equation">${M(R`\ker=Z_\infty^{p+1,q-1}+B_\infty^{p,q}`)}</div>`;if(a===4)body=nested(R`F^pC^n`,R`Z_\infty^{p,q}`,R`Z_\infty^{p+1,q-1}+B_\infty^{p,q}`,R`E_\infty^{p,q}`,'quotient');if(a===5)body=row(box(R`E_\infty^{p,q}`)+arrow(R`\theta^{p,q}\;\sim`)+box(R`\operatorname{Gr}_F^pH^n`,'chosen'));note=t('映到零恰好等价于这个分解。核是 Z∞ 的下一层加上总边界，正好等于 E∞ 的分母；满射取商即为同构。','Mapping to zero is equivalent to this decomposition. The kernel is the next layer of Z∞ plus total boundaries, exactly the denominator of E∞; the surjection therefore induces an isomorphism.');}
   if(s.step===4){body=nested(R`H^n`,R`F^pH^n`,R`F^{p+1}H^n`,R`E_\infty^{p,n-p}`,'quotient');if(a===1)body=row(box(R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`,'chosen'))+`<div class="operation-equation">${M(R`E_r^{p,q}\Longrightarrow H^{p+q}(C,D)`)}</div>`;note=t('⇒ 表示稳定页识别为目标的滤过商；它不是 Eᵣ→H 的线性映射，也不给 Hⁿ 指定典范直和分解。','⇒ denotes identification of the stable page with the target’s filtration quotients. It is neither a map Eᵣ→H nor a specified canonical direct-sum splitting of Hⁿ.');}
  }else{body=s.module==='trace'&&s.step===4?row(box(R`[a_0+c]_2\in E_2^{0,1}`)+arrow('d_2')+box(R`[z]_2\in E_2^{2,0}`)):s.module==='trace'&&s.step===5?row(box(R`E_3^{p,q}=0`)+box(R`H^n(C,D)=0`)):row(box(s.module==='trace'?R`a_0:=b+\lambda y`:R`E_r^{p,q}:=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`));note=t('例子只在本页切换。点击节点查看精确矩阵与代表元；底部翻页不播放计算过程。','Explore the example locally. Select a node for exact matrices and representatives; the footer does not play the computation.');}
- return `<div class="operation-content">${body}</div>${s.module==='initial'?'':`<p class="operation-note">${note}</p>`}`;
+ return `<div class="operation-content">${body}</div>${note&&(s.module!=='initial'||['delta1','delta2','square','square1','square2','anticommute'].includes(c))?`<p class="operation-note">${note}</p>`:''}`;
 }

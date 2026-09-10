@@ -1,6 +1,6 @@
 // Reconcile mathematical diagrams without replacing live visual elements.
 // State changes preserve DOM identity so CSS transitions can be interrupted smoothly.
-import {visualMotion} from './visual-style.js?v=40';
+import {visualMotion} from './visual-style.js?v=41';
 export function syncGraphChildren(target,source){
  if(target.innerHTML===source.innerHTML)return;
  if(target.id==='diagram-terms'){
@@ -44,7 +44,7 @@ export function restingOpacity(el){
 }
 export function fadeGraphAddition(el){
  queueMicrotask(()=>{
-  if(!el.isConnected||matchMedia('(prefers-reduced-motion: reduce)').matches||el.getAnimations().some(a=>!a.transitionProperty))return;
+  if(!el.isConnected||matchMedia('(prefers-reduced-motion: reduce)').matches||el.getAnimations({subtree:true}).some(a=>!a.transitionProperty))return;
   el.animate([{opacity:0},{opacity:restingOpacity(el)}],{duration:visualMotion().enter,easing:visualMotion().easing});
  });
 }

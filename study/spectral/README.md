@@ -214,3 +214,17 @@ D² has two visible applications of D, with a pause and a second split inside bo
 Edit shared tokens/rules to change the style. Do not add per-definition copies of colors or fade durations. Mathematical timelines may retain distinct stages and pauses; generic emphasis and fades read the common tokens.
 
 Validation includes Chromium and WebKit, continuous opacity samples, persistent SVG identity, shared timing and palette changes, superscript-only transitions and rapid interruption cleanup, D²'s two-stage split, filtration particle targets, exclusive Enter navigation, 390/1024/1920px layouts, cover readiness/retry and reduced motion. The exact algebra suite checks 142 page/convergence cases.
+
+
+## Double-complex entrance (v41)
+
+Entering from the cover opens §1 Double complex immediately. Its first reveal expands both axes about the actual (0,0) lattice point, then pops the 25 terms in a short diagonal stagger. SVG tiles and their HTML KaTeX labels use matching transforms; the axis mask appears with each tile. Tick labels only fade, without displacement. Introducing δ₁ first fades the p-axis and its label, then grows every horizontal map from its source. δ₂ does the same for the q-axis and vertical maps. Differential arrows stay solid; continuation arrows retain their dashed style.
+
+`initial-animations.js` owns the entrance timeline. All durations come from `styles/tokens.css` through `visual-style.js`; `styles/diagram.css` owns axis visibility and SVG transform conventions. Generic insertion fades defer to an existing child animation. Hover, language changes and resize do not restart the entrance. Rapid forward input preserves the current entrance, while leaving it settles interrupted effects. Returning to the space entry does not hide and recreate existing terms. A new cover entry replays the opening; reduced motion goes directly to the same final state.
+
+Validation covers the axis-before-tile and axis-fade-before-map order, paired tile/formula scaling, solid arrows, stationary fading ticks, rapid forward/reverse input, cover restart, reduced motion, local hover, bilingual rendering and 390–1920px layouts in Chromium and WebKit. The E₀ projection, E₁/E₂ generation and later page/filtration controls remain in the existing reading sequence.
+
+
+The exposition has a fixed heading beneath its divider and an independent scrollport. The figure controls use a reserved row within the visualization, so changing the controls or proof length cannot move that heading. New topics return the exposition to its top. On narrow screens the same two regions keep separate content scrolling.
+
+The first-quadrant condition now appears in the exposition rather than the left K-family declaration. It specifies vector spaces over one field, or left modules over one ring; δ₁ and δ₂ are respectively linear maps or module homomorphisms. Square-zero relations explain the ordinary row and column cochain complexes. Item 1.4 traces one element along the two mixed routes, retains the opposite results in their common K^{2,2}, then combines them into zero. The explanation connects this cancellation and both square-zero identities to D²=0 and the cohomology of the total complex. The existing total-differential timeline supplies the shared particle rendering, cancellation and smooth retirement.

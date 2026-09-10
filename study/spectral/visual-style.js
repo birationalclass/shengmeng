@@ -5,7 +5,11 @@ export function visualMotion() {
   const value=css.getPropertyValue(`--motion-${name}`).trim();
   return Number.parseFloat(value)*(value.endsWith('ms')?1:1000);
  };
- return {emphasis:milliseconds('emphasis'),enter:milliseconds('enter'),
+ return {initial:{
+  axis:milliseconds('initial-axis'),pop:milliseconds('initial-pop'),
+  stagger:milliseconds('initial-stagger'),axisExit:milliseconds('initial-axis-exit'),
+  arrow:milliseconds('initial-arrow')},
+  emphasis:milliseconds('emphasis'),enter:milliseconds('enter'),
   exit:milliseconds('exit'),hold:milliseconds('hold'),
   easing:css.getPropertyValue('--motion-easing').trim(),
   reduced:matchMedia('(prefers-reduced-motion:reduce)').matches};

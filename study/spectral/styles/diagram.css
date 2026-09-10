@@ -87,3 +87,16 @@ svg .diag.concept-active { opacity:1;stroke-width:2.5 }
   #diagram .arrow, #diagram .continuation, #diagram .diag, #diagram .diag-box,
   #pageEvolution .evolution-dot { transition:none!important }
 }
+
+/* Intro transforms use SVG view-box coordinates, shared with the math plane.
+   Axis replacement is a fade; the lattice itself never moves. */
+#diagram .node, #diagram .coordinate-axis, #diagram .arrow,
+#diagram .continuation { transform-box:view-box }
+#diagram .coordinate-axis, #diagram .axis-name {
+  transition:opacity var(--motion-initial-axis-exit) ease-out;
+}
+#diagram.initial-hide-p #p-axis, #diagram.initial-hide-p [data-axis-name=p],
+#diagram.initial-hide-q #q-axis, #diagram.initial-hide-q [data-axis-name=q] { opacity:0 }
+@media(prefers-reduced-motion:reduce) {
+  #diagram .coordinate-axis, #diagram .axis-name { transition:none }
+}

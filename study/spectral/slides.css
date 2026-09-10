@@ -578,16 +578,16 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 .motion-settings-footer button{padding:5px 0;font-size:11px;background:transparent;border:0;color:#a4d2c7}
 @media(prefers-reduced-motion:reduce){.accordion-moving{will-change:auto}
 }
-.slide-deck:not(.is-cover) .visual-column{display:flex;flex-direction:column;align-self:stretch;gap:14px;height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;padding:clamp(28px,4.5dvh,52px) 16px 16px 4px;grid-template-rows:none}
-.visualization-module{position:relative;display:flex;flex-direction:column;flex:none;min-width:0;border:0;border-radius:0;background:transparent;overflow:hidden}
+.slide-deck:not(.is-cover) .visual-column{display:grid;align-self:stretch;gap:0;height:100%;min-height:0;overflow:hidden;padding:clamp(28px,4.5dvh,52px) 16px 16px 4px;grid-template-rows:minmax(0,1fr) var(--notebook-exposition-height)}
+.visualization-module{position:relative;display:grid;grid-template-rows:minmax(0,1fr) var(--notebook-controls-height);min-width:0;min-height:0;border:0;border-radius:0;background:transparent;overflow:hidden}
 .slide-deck .visualization-module .figure-heading{position:absolute;right:10px;top:8px;z-index:6;display:flex;height:auto;min-height:0;visibility:visible}
 .visualization-module .figure-heading>span{display:none}
-.slide-deck .visualization-module .stage{display:block;flex:none;grid-row:auto;overflow:visible;min-height:0}
-.visualization-module .diagram-viewport{flex:none;width:100%;height:auto;aspect-ratio:840/525;min-height:230px;max-height:min(53dvh,540px)}
+.slide-deck .visualization-module .stage{display:flex;flex-direction:column;grid-row:auto;overflow:hidden;min-height:0}
+.visualization-module .diagram-viewport{flex:1;width:100%;height:100%;aspect-ratio:auto;min-height:0;max-height:none}
 .visualization-module .legend:empty,.visualization-module .diagram-scope:empty,.visualization-module .hover-hint{display:none!important}
 .visualization-module .diagram-scope{margin:0;padding:5px 12px;font-size:10px}
 .visualization-module .legend{min-height:0;padding:0}
-.slide-deck .visualization-module .diagram-controls{display:flex;flex-direction:column;align-items:stretch;justify-content:center;flex:none;gap:8px;grid-row:auto;height:auto;min-height:68px;overflow:visible;padding:10px 12px;border-top:1px solid #36545a66;background:transparent}
+.slide-deck .visualization-module .diagram-controls{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;flex:none;gap:8px;grid-row:auto;height:100%;min-height:0;overflow:auto;padding:10px 12px;border:0;background:transparent}
 .visualization-module .diagram-controls .action-tabs,.visualization-module .diagram-controls .controls,.visualization-module .diagram-controls .view-tabs{position:static;display:flex;flex-wrap:wrap;flex:none;height:auto;min-height:0;overflow:visible;margin:0;padding:0;gap:6px;grid-row:auto}
 .visualization-module .diagram-controls :is(.action-tabs,.controls,.view-tabs):empty{display:none}
 .visualization-module .diagram-controls .controls{gap:8px 18px}
@@ -598,11 +598,12 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 #evolutionControls button{min-height:32px;padding:6px 9px;font-size:11px}
 #evolutionControls button .katex{font-size:1.1em}
 .evolution-view-controls{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.slide-deck .math-exposition{flex:none;grid-row:auto;gap:7px;min-height:0}
-.slide-deck .math-exposition .operation-board{flex:none;display:block;height:auto;min-height:136px;overflow:visible;justify-content:flex-start;padding:14px}
+.slide-deck .math-exposition{display:grid;grid-template-rows:auto minmax(0,1fr);grid-row:auto;gap:8px;min-height:0;border-top:1px solid var(--line);padding-top:14px;overflow:hidden}
+.slide-deck .math-exposition .operation-board{display:block;height:100%;min-height:0;overflow:auto;scrollbar-gutter:stable;justify-content:flex-start;padding:14px}
 .math-exposition .operation-content{flex:none;overflow:visible;min-height:0}
 .math-exposition .operation-equation{max-width:100%;overflow-x:auto;padding:5px 0}
-.math-exposition .operation-note{margin:10px 0 0;font-size:11px;line-height:1.6}
+.math-exposition .operation-note{margin:10px 0 0;font-size:13px;line-height:1.7}
+.math-exposition .operation-description{margin:0 0 12px;font-size:13px;line-height:1.7;color:var(--muted)}
 .math-exposition .operation-row{flex-wrap:wrap}
 .co-context-map{opacity:.4}
 .co-incoming{opacity:.9;stroke:var(--blue)}
@@ -618,11 +619,12 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 .co-representatives{color:var(--gold)}
 .co-class-symbol{color:#a7ecd1}
 .co-projection{color:#8ed1c4}
-@media(max-width:780px){.slide-deck:not(.is-cover) .visual-column{flex:none;height:auto;min-height:0;padding:16px 8px 14px;overflow:visible;gap:12px}
-.visualization-module .diagram-viewport{max-height:none;min-height:225px}
-.slide-deck .visualization-module .diagram-controls{padding:9px;min-height:70px}
+@media(max-width:780px){.slide-deck:not(.is-cover) .visual-column{flex:none;height:auto;min-height:0;padding:16px 8px 14px;overflow:hidden;gap:0;grid-template-rows:auto clamp(210px,32dvh,280px)}
+.visualization-module{grid-template-rows:clamp(225px,62.5vw,420px) 104px}
+.visualization-module .diagram-viewport{max-height:none;min-height:0}
+.slide-deck .visualization-module .diagram-controls{padding:9px;min-height:0}
 #evolutionControls button{font-size:10px;padding:5px 7px}
-.slide-deck .math-exposition .operation-board{padding:10px;min-height:120px}
+.slide-deck .math-exposition .operation-board{padding:10px;min-height:0}
 .co-exposition-tabs{margin-bottom:9px;gap:3px}
 .co-exposition-tabs button{font-size:10px;padding:4px 6px}
 .co-subspace-diagram,.co-quotient-diagram{font-size:11px;gap:10px}
