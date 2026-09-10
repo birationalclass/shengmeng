@@ -12,7 +12,7 @@ export function cohomologyExposition({r,phase,point,math,t}) {
   [`${E(ip,iq)}\\xrightarrow{d_{${r}}}${E(p,q)}\\xrightarrow{d_{${r}}}${E(op,oq)}`,`d_{${r}}^2=0`],
   [`\\ker ${map}=\\{z\\in ${E(p,q)}:${map}z=0\\}`],
   [`\\operatorname{im}(${input})\\subseteq\\ker(${map})`,`d_{${r}}(d_{${r}}y)=0`],
-  [r===0?'E_1^{p,q}:=H^q(E_0^{p,\\bullet},d_0)\\cong H^q(K^{p,\\bullet},\\delta_2)':`E_{${r+1}}^{p,q}\\cong\\frac{\\ker(d_{${r}}:E_{${r}}^{p,q}\\to E_{${r}}^{${shift('p',r)},${shift('q',1-r)}})}{\\operatorname{im}(d_{${r}}:E_{${r}}^{${shift('p',-r)},${shift('q',r-1)}}\\to E_{${r}}^{p,q})}`,
+  [r===0?'E_1^{p,q}\\cong H^q(E_0^{p,\\bullet},d_0)\\cong H^q(K^{p,\\bullet},\\delta_2)':`E_{${r+1}}^{p,q}\\cong\\frac{\\ker(d_{${r}}:E_{${r}}^{p,q}\\to E_{${r}}^{${shift('p',r)},${shift('q',1-r)}})}{\\operatorname{im}(d_{${r}}:E_{${r}}^{${shift('p',-r)},${shift('q',r-1)}}\\to E_{${r}}^{p,q})}`,
    `E_{${r+1}}^{${p},${q}}\\cong\\frac{\\ker(${map})}{\\operatorname{im}(${input})}`]
  ][phase];
  let diagram='';
@@ -21,9 +21,9 @@ export function cohomologyExposition({r,phase,point,math,t}) {
  }
  if(phase===3){
   const reps=incomingZero?math('z'):math('z,\\ z+b');
-  diagram=`<div class="co-quotient-diagram"><div class="co-domain"><span>${math(`\\ker(${map})`)}</span><span class="co-representatives">${reps}</span></div><span class="co-projection">${math('\\xrightarrow{\\quad\\pi\\quad}')}</span><div class="co-codomain"><span>${math(`E_{${r+1}}^{${p},${q}}`)}</span><span class="co-class-symbol">${math('[z]')}</span></div></div>`;
-  formulas.push(incomingZero?'\\pi(z+0)=\\pi(z)=[z]':`\\pi(z+b)=\\pi(z)=[z],\\qquad b\\in\\operatorname{im}(${input})`);
+  diagram=`<div class="co-quotient-diagram"><div class="co-domain"><span>${math(`\\ker(${map})`)}</span><span class="co-representatives">${reps}</span></div><span class="co-projection">${math('\\xrightarrow{\\Psi^{-1}\\pi}')}</span><div class="co-codomain"><span>${math(`E_{${r+1}}^{${p},${q}}`)}</span><span class="co-class-symbol">${math('\\Psi^{-1}([z]_H)')}</span></div></div>`;
+  formulas.push(incomingZero?'\\pi(z+0)=\\pi(z)=[z]_H':`\\pi(z+b)=\\pi(z)=[z]_H,\\qquad b\\in\\operatorname{im}(${input})`);
  }
- const notes=[r===0?t('固定一列，对每个位置取上同调，组成右上方的下一页。','Take cohomology in each column to form the next page above.'):t('微分的双次数为 (r,1−r)。','The differential has bidegree (r,1−r).'),t('区域只表示子空间的包含关系，不表示维数。','Regions indicate subspace inclusion, not dimension.'),t('因为微分的平方为零，所有边界都是闭元。','Every boundary is a cocycle because the differential squares to zero.'),t('在每个 (p,q) 取这个商，组成新页。π 的定义域是核；新页的微分由 D 诱导。','This quotient at each (p,q) forms the new page. The domain of π is the kernel; the new differential is induced by D.')];
+ const notes=[r===0?t('固定一列，对每个位置取上同调，组成右上方的下一页。','Take cohomology in each column to form the next page above.'):t('微分的双次数为 (r,1−r)。','The differential has bidegree (r,1−r).'),t('区域只表示子空间的包含关系，不表示维数。','Regions indicate subspace inclusion, not dimension.'),t('因为微分的平方为零，所有边界都是闭元。','Every boundary is a cocycle because the differential squares to zero.'),t('此商是上同调空间，与下一页自然同构。π 映到该上同调空间，Ψ⁻¹ 将上同调类送到下一页；新微分由 D 诱导。','This cohomology quotient is naturally isomorphic to the next page. The map π takes a cocycle to its cohomology class; Ψ⁻¹ then identifies it with the next page. The new differential is induced by D.')];
  return `${tabs}<div class="operation-content evolution-exposition">${formulas.slice(0,phase===3?2:formulas.length).map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}${diagram}${phase===3?`<div class="operation-equation">${math(formulas[2],true)}</div>`:''}</div><p class="operation-note">${notes[phase]}</p>`;
 }

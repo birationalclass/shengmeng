@@ -57,7 +57,7 @@ export function operationMarkup(s,lang,math){
   }else if(s.step===3||s.step===4){
    const vertical=s.step===3,d=vertical?'d_0':'d_1',E=vertical?'E_0':'E_1',next=vertical?'E_1':'E_2',incoming=vertical?'p,q-1':'p-1,q',outgoing=vertical?'p,q+1':'p+1,q';
    if(a===1||!vertical&&a===2)body=row(box(`${E}^{${incoming}}`)+arrow(d)+box(`${E}^{p,q}`,'chosen')+arrow(d)+box(`${E}^{${outgoing}}`));
-   else body=row(box(vertical?R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2)`:R`E_2^{p,q}:=H^p(E_1^{\bullet,q},d_1)`,'chosen'));
+   else body=row(box(vertical?R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2)`:R`E_2^{p,q}\cong H^p(E_1^{\bullet,q},d_1)`,'chosen'));
    note=vertical?t('E₀ 上的 d₀ 识别为 δ₂；逐列上同调给出 E₁。','On E₀, d₀ identifies with δ₂; column cohomology gives E₁.'):t('对 d₁ 取上同调得到 E₂，其微分为 d₂。','Cohomology of d₁ gives E₂, whose differential is d₂.');
   }else{
    if(a===1)body=row(box(R`a\in F^pC^n`)+arrow('D')+box(R`Da\in F^{p+r}C^{n+1}`,'chosen'))+`<div class="operation-equation">${M(R`Z_r^{p,q}:=\{a\in F^pC^n:Da\in F^{p+r}C^{n+1}\}`)}</div>`;

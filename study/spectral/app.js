@@ -1,4 +1,4 @@
-import {createStabilityView} from './stability-view.js?v=75';
+import {createStabilityView} from './stability-view.js?v=76';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=74';
 import {createReadingRail} from './reading-rail.js?v=69';
@@ -13,11 +13,11 @@ import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=75';
-import {translatePage,language,toggleLanguage} from './language.js?v=75';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=74';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=76';
+import {translatePage,language,toggleLanguage} from './language.js?v=76';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=76';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=75';
+import {createPageEvolution} from './page-evolution.js?v=76';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -513,7 +513,7 @@ function fixedDiagram(){
   if(s===1&&a>0)caption=raw`F^{${p}}C^{${n}}=\bigoplus_{i=${p}}^{${n}}K^{i,${n}-i}`;
   if(s===2&&a>0)caption=raw`E_0^{${p},${n-p}}\cong K^{${p},${n-p}}`;
   if(s===3){kind=a>=2?'E_1':'E_0';v=a===1;caption=a>=2?raw`E_1^{i,j}\cong H^j(K^{i,\bullet},\delta_2)`:raw`d_0[a]=[Da]=[\delta_2a]`;}
-  if(s===4){kind=a>=3?'E_2':'E_1';h=a>=1&&a<3;caption=a>=3?raw`E_2^{i,j}:=H^i(E_1^{\bullet,j},d_1)`:raw`d_1[a]=[\delta_1a]`;}
+  if(s===4){kind=a>=3?'E_2':'E_1';h=a>=1&&a<3;caption=a>=3?raw`E_2^{i,j}\cong H^i(E_1^{\bullet,j},d_1)`:raw`d_1[a]=[\delta_1a]`;}
   if(s===5){const r=Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a===4)edges+=line(...xy(1,2),...xy(1+r,3-r),'r',true,`d_${r}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
  }
  if(m==='converge'){kind='E_0';h=false;v=false;total=false;filter=false;selected=false;}
