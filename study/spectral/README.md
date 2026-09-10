@@ -239,3 +239,8 @@ After the cover is entered, the reading surface is initially empty. The first En
 On that first Enter, the left definition frame expands from a small point at its upper-left corner. Its layout rectangle is reserved throughout; the heading and formulas fade in near the end of the expansion. This uses the shared initial timeline and honors the notebook's disabled-animation option and system reduced motion.
 
 Validation: Chromium and WebKit verify blank entry, first-Enter frame and axis animations, the four-control toolbar, language/settings/cover actions, native or embedded fullscreen layout, and 320/390/1024px widths with no overflow or page errors.
+
+
+## Title in the reading toolbar (v43)
+
+“Spectral Sequence” is now on the left of the top toolbar, with the four reading controls on the right. The duplicate heading inside the workspace is removed. On narrow screens, the title and controls occupy two compact rows in the same toolbar; the fullscreen workspace offset follows that toolbar height.

@@ -1,7 +1,7 @@
 /* A single persistent row of reading controls, including in fullscreen. */
 :root { --notebook-toolbar-height:48px }
 body>.notebook-toolbar {
-  display:flex;justify-content:flex-end;align-items:center;flex:none;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex:none;
   width:100%;height:var(--notebook-toolbar-height);min-height:var(--notebook-toolbar-height);
   max-width:1700px;margin:0 auto;padding:6px 3vw;border-bottom:1px solid var(--line);
   background:var(--bg);
@@ -17,10 +17,9 @@ body>.notebook-toolbar {
 }
 .notebook-toolbar .toolbar-actions .settings-button { width:32px;min-width:32px;padding:6px }
 .notebook-toolbar .settings-button svg { flex:none;width:17px;height:17px }
-.notebook-workspace .stage-heading {
-  height:54px;min-height:54px;justify-content:flex-start;padding:10px 22px;
+.notebook-toolbar #sceneTitle {
+  margin:0;min-width:0;font:22px/1.2 Georgia,serif;color:var(--ink);white-space:nowrap;
 }
-.notebook-workspace .stage-heading h2 { margin:0 }
 .study-fullscreen .notebook-toolbar {
   position:fixed;inset:0 0 auto;z-index:101;max-width:none;
 }
@@ -30,7 +29,11 @@ body>.notebook-toolbar {
 }
 @media(max-width:780px) {
   body>.notebook-toolbar { padding:6px 12px }
-  .notebook-workspace .stage-heading { height:48px;min-height:48px;padding:9px 12px }
+}
+@media(max-width:680px) {
+  :root { --notebook-toolbar-height:88px }
+  body>.notebook-toolbar { flex-direction:column;align-items:stretch;justify-content:center;gap:8px }
+  .notebook-toolbar #sceneTitle { font-size:20px }
 }
 @media(max-width:420px) {
   body>.notebook-toolbar { padding-inline:8px }
