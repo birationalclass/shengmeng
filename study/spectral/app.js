@@ -21,6 +21,8 @@ const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=7;
 const GRID_ORIGIN={x:170,y:370};
 let squareSequenceSerial=0,squareSequenceActive=false;
+let readingHoverPaused=false,readingPointer=null;
+const pauseReadingHover=()=>{readingHoverPaused=true;};
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
@@ -162,6 +164,7 @@ $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollInto
 // These keys belong only to the left reading sequence, even over right-side controls.
 const readingKeys=new Set(['Enter','ArrowRight','ArrowLeft']);
 document.addEventListener('keydown',e=>{
+ if(e.key==='Tab')readingHoverPaused=false;
  if(!readingKeys.has(e.key))return;
  e.preventDefault();e.stopImmediatePropagation();
  if(e.repeat||e.isComposing||document.querySelector('dialog[open]'))return;
@@ -220,13 +223,13 @@ function renderWorkspaceState(){
 }
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index){
- cancelSquareSequence();state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
+ pauseReadingHover();cancelSquareSequence();state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
  keepDefinitionVisible();
  if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- cancelSquareSequence();
+ pauseReadingHover();cancelSquareSequence();
  state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
@@ -238,7 +241,7 @@ function activateStatement(key,last=false){
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+function selectReadingPage(index){pauseReadingHover();const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 // Auto-folding is a reading-navigation preference, never a hover or proof effect.
 // Changing the setting leaves the current layout untouched until the next advance.
 function foldBeforeAdvance(nextStatement){
@@ -315,7 +318,7 @@ function pinConcept(concept,source=null){
  state.pinned=same?null:concept;state.pinnedKey=same?null:key;
  applyConcept(state.pinned,false);if(!same){playSquareTrace(concept,source);playTotalDemo(concept);}translatePage();window.spectralState={...state,language:language()};
 }
-function enterConcept(el){cancelSquareSequence();const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept,el);playTotalDemo(el.dataset.concept);}
+function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))return;cancelSquareSequence();revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept,el);playTotalDemo(el.dataset.concept);}
 function playTotalDemo(concept,force=false){
  if(!isDoubleComplexView())return;
  if(concept==='total')degreeSweep.play(force);
@@ -342,10 +345,18 @@ async function playSquareSequence(){
  }finally{if(run===squareSequenceSerial)squareSequenceActive=false;}
 }
 function playSquareTrace(concept,source){if(source?.matches('.relation-choice')&&isDoubleComplexView()&&['square1','square2'].includes(concept))squareTrace.play(concept,squareCentres(concept));}
-document.addEventListener('pointerover',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)enterConcept(el);});
-document.addEventListener('pointerout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
-document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if(el)enterConcept(el);});
-document.addEventListener('focusout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
+// Reading transitions move content underneath a stationary pointer. Those synthetic
+// boundary events must not reselect a page or override the new diagram state.
+// Resume previews on actual pointer movement; Tab is an intentional focus change.
+document.addEventListener('pointermove',e=>{
+ const moved=!readingPointer||e.clientX!==readingPointer.x||e.clientY!==readingPointer.y;
+ readingPointer={x:e.clientX,y:e.clientY};
+ if(readingHoverPaused&&moved){readingHoverPaused=false;const el=interactiveConcept(e.target);if(el)enterConcept(el);}
+});
+document.addEventListener('pointerover',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)enterConcept(el);});
+document.addEventListener('pointerout',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
+document.addEventListener('focusin',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el)enterConcept(el);});
+document.addEventListener('focusout',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
 document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealDirections(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
 $('#clearConcept').onclick=()=>{state.pinned=null;state.pinnedKey=null;restoreInteraction();};
 function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.focus||1;setAnnotation(i);}applyConcept(state.pinned,false);}
