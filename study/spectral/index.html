@@ -5,13 +5,13 @@
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
 <meta name="theme-color" content="#091b22"><title>Spectral Sequence · Sheng Meng</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=47"><link rel="stylesheet" href="style.css?v=42"><link rel="stylesheet" href="slides.css?v=47"><link rel="stylesheet" href="styles/diagram.css?v=41"><link rel="stylesheet" href="styles/math.css?v=40"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=47"><link rel="stylesheet" href="styles/toolbar.css?v=47"><link rel="stylesheet" href="styles/layout.css?v=47">
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=57"><link rel="stylesheet" href="style.css?v=42"><link rel="stylesheet" href="slides.css?v=57"><link rel="stylesheet" href="styles/diagram.css?v=41"><link rel="stylesheet" href="styles/math.css?v=40"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=57"><link rel="stylesheet" href="styles/toolbar.css?v=57"><link rel="stylesheet" href="styles/layout.css?v=57">
 
-<script src="boot.js?v=40" defer></script>
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=47"></script>
+<script src="boot.js?v=56" defer></script>
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=57"></script>
 </head>
 <body aria-busy="true">
-<div id="mathLoader" role="status" aria-live="polite"><button id="coverFullscreen" type="button" aria-pressed="false" aria-label="全屏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg><span>全屏</span></button><div class="loader-inner"><p class="loader-eyebrow">学习笔记</p><h1 class="loader-title">Spectral Sequence</h1><p class="loader-author">Sheng Meng</p><div class="loader-line" role="progressbar" aria-label="Loading mathematics" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><p id="loaderStatus" class="loader-status">准备数学界面</p><div class="loader-entry"><button id="beginSlides" hidden>开始阅读 <span>→</span></button></div><button id="loaderRetry" hidden>重新加载 / Reload</button></div></div>
+<div id="mathLoader" role="status" aria-live="polite"><div class="cover-actions"><button id="coverLanguage" type="button" lang="en" aria-label="Switch to English" disabled>English</button><button id="coverSettings" type="button" aria-label="显示设置" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg><span>设置</span></button><button id="coverFullscreen" type="button" aria-pressed="false" aria-label="全屏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg><span>全屏</span></button></div><div class="loader-inner"><p class="loader-eyebrow">学习笔记</p><h1 class="loader-title"><span class="loader-title-depth" aria-hidden="true">Spectral Sequence</span><span class="loader-title-face">Spectral Sequence</span></h1><p class="loader-author">Sheng Meng</p><div class="loader-entry"><div class="loader-line" role="progressbar" aria-label="Loading mathematics" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><p id="loaderStatus" class="loader-status">准备数学界面</p><button id="beginSlides" hidden>开始阅读</button></div><button id="loaderRetry" hidden>重新加载 / Reload</button></div></div>
 <header class="header notebook-toolbar"><h1 id="sceneTitle">谱序列</h1><nav class="toolbar-actions" aria-label="Spectral Sequence"><button id="languageButton" aria-label="Switch to English">English</button><button id="settingsButton" class="settings-button" aria-label="动画设置" title="动画设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg></button><button id="coverButton" title="返回封面">封面</button><button id="fullscreen" aria-pressed="false" title="全屏显示工作区">⛶ 全屏</button></nav></header>
 <main>
 <section class="workspace slide-deck notebook-workspace" aria-label="谱序列交互工作区">
@@ -35,6 +35,10 @@
 <footer>SHENG MENG · STUDY ATLAS <span>数学图示以第一象限为前提；有限例子使用 ℚ 上精确计算。</span></footer>
 <dialog id="motionSettings" aria-labelledby="motionTitle">
 <div class="dialog-head"><h2 id="motionTitle">动画设置</h2><button id="closeMotionSettings" aria-label="关闭设置">×</button></div>
+<fieldset class="cover-font-setting"><legend id="coverFontLabel">中文封面风格</legend><div class="cover-font-grid">
+<label><input type="radio" name="coverFont" value="a"><span class="cover-font-option style-a"><span id="coverStyleA">A · 清雅宋体</span><strong>谱序列</strong><small>孟晟</small></span></label>
+<label><input type="radio" name="coverFont" value="c" checked><span class="cover-font-option style-c"><span id="coverStyleC">C · 书法风格</span><strong>谱序列</strong><small>孟晟</small></span></label>
+</div><p id="coverFontHint">仅调整中文封面，英文设计保持不变。</p></fieldset>
 <p id="motionScope" class="motion-scope"></p>
 <div class="motion-setting"><label id="motionEffectLabel" for="motionEffect">收放效果</label><select id="motionEffect"><option value="soft">柔和收放</option><option value="slide">简洁收放</option><option value="none">关闭动画</option></select></div>
 <div class="motion-setting motion-speed"><label id="motionDurationLabel" for="motionDuration">收放时长</label><output id="motionDurationValue" for="motionDuration">0.9 秒</output><input id="motionDuration" type="range" min="300" max="1800" step="100" value="900"></div>

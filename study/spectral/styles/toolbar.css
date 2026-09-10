@@ -44,3 +44,7 @@ body>.notebook-toolbar {
 
 /* Reserve the diagram geometry, but wait for the first reading step. */
 .is-coordinate-intro #diagram { opacity:0;visibility:hidden;pointer-events:none }
+
+/* Reading title follows the selected Chinese cover face. */
+html:lang(zh-CN) .notebook-toolbar #sceneTitle { font-family:var(--notebook-title-font-zh) }
+html:lang(zh-CN):has(#mathLoader[data-cover-font="c"]) .notebook-toolbar #sceneTitle { font-family:var(--notebook-title-font-zh-calligraphy) }

@@ -1,17 +1,17 @@
 import {visualMotion} from './visual-style.js?v=41';
-import {createInitialAnimations} from './initial-animations.js?v=47';
+import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=40';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
-import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=47';
+import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=40';
 import {translatePage,language,toggleLanguage} from './language.js?v=39';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=47';
-import {createFilteredView} from './filtered-view.js?v=47';
-import {createPageEvolution} from './page-evolution.js?v=47';
-import {createNotebookMotion} from './notebook-motion.js?v=44';
-import {createSquareTrace} from './element-trace.js?v=47';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=57';
+import {createFilteredView} from './filtered-view.js?v=57';
+import {createPageEvolution} from './page-evolution.js?v=57';
+import {createNotebookMotion} from './notebook-motion.js?v=57';
+import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=7;
 const GRID_ORIGIN={x:170,y:370};
@@ -161,7 +161,8 @@ window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
 history.replaceState(null,'',location.pathname+location.search+'#title');
-$('#languageButton').onclick=()=>{toggleLanguage();render();};
+$('#languageButton').onclick=$('#coverLanguage').onclick=()=>{toggleLanguage();render();};
+$('#coverLanguage').disabled=false;
 render();
 
 function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}

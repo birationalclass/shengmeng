@@ -7,6 +7,7 @@ export function createDifferentialProof({board,math,language}){
  let context=null,key='',topic='d0',steps={d0:0,d1:0,dr:0},phase=3;
  const explanations={
   d0:[
+   {name:['为何记作 E₀','Why E₀'],f:[R`E_0^{p,q}:=F^pC^{p+q}/F^{p+1}C^{p+q}`,R`d_0:=\operatorname{Gr}_F D`,R`(E_0^{\bullet,\bullet},d_0)\cong(K^{\bullet,\bullet},\delta_2)`],note:['E₀ 是商空间；取第 p 列分量给出与 K 的自然同构，d₀ 对应 δ₂，而非总微分 D。一般只需滤过复形 (C,F,D) 即可构造 E₀、d₀，无须将 D 分解。','E₀ is a quotient. Projection to column p identifies it with K, with d₀ corresponding to δ₂ rather than D. In general, the filtered complex (C,F,D) defines E₀ and d₀ without any decomposition of D.']},
    {name:['诱导到商','Descend to the quotient'],f:[R`D(F^pC^n)\subseteq F^pC^{n+1}`,R`a'-a\in F^{p+1}C^n\ \Longrightarrow\ Da'-Da\in F^{p+1}C^{n+1}`,R`d_0^{p,q}[a]_0:=[Da]_0,\qquad n=p+q`],note:['D 保持下一层滤过，故 d₀ 良定义。','D preserves the next filtration layer, so d₀ is well-defined.']},
    {name:['自然同构','Natural identification'],f:[R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`\Phi_0^{p,q}:E_0^{p,q}\xrightarrow{\sim}K^{p,q},\qquad\Phi_0^{p,q}([a]_0):=a_p`,R`\ker(F^pC^n\longrightarrow K^{p,q})=F^{p+1}C^n`],note:['取第 p 列分量的满射，其核恰为分母。','Projection to column p is surjective, with kernel equal to the denominator.']},
    {name:['计算第 p 列','Compute column p'],f:[R`D:=\delta_1+\delta_2`,R`\delta_1a_i\in K^{i+1,n-i},\qquad\delta_2a_i\in K^{i,n-i+1}`,R`(Da)_p=\delta_2a_p\qquad(a_i=0\text{ for }i<p)`,R`\delta_1(F^pC^n)\subseteq F^{p+1}C^{n+1}`],note:['δ₁ 的像在下一层滤过中，故在商中为零。','The image of δ₁ lies in the next filtration layer, so vanishes in the quotient.']},

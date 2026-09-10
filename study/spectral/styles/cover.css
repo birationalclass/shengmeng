@@ -1,17 +1,123 @@
 /* Cover and real resource-loading progress. */
 html{background:var(--cover-background)}html.math-loading body>header,html.math-loading body>main,html.math-loading body>footer{visibility:hidden}
-#mathLoader{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:var(--cover-background);color:#dceae8;transition:opacity .28s ease}
-#mathLoader.is-ready{opacity:0;pointer-events:none}.loader-inner{width:min(360px,72vw);text-align:center}.loader-eyebrow{font:10px system-ui,sans-serif;letter-spacing:4px;color:#7a9da3;margin:0 0 30px}.loader-title{font:clamp(29px,5vw,43px)/1.2 var(--notebook-title-font);font-weight:400;letter-spacing:-.8px;margin:0 0 34px}.loader-line{position:relative;height:1px;background:#40596055;overflow:visible;transition:opacity .42s ease}
-.loader-line>i{position:absolute;inset:0;display:block;width:100%;height:100%;border-radius:1px;transform:scaleX(0);transform-origin:left center;background:linear-gradient(90deg,#80bcaf,#a5ddcd);box-shadow:0 0 5px #8dd8bf38,0 0 12px #8dd8bf14;transition:transform var(--cover-progress-duration) var(--motion-easing);will-change:transform}
+#mathLoader{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 43%,#aebdbb0c 0%,transparent 66%),var(--cover-background);color:#dceae8;transition:opacity .28s ease}
+#mathLoader.is-ready{opacity:0;pointer-events:none}.loader-inner{width:min(1200px,calc(100% - 48px));text-align:center;margin:auto}.loader-eyebrow{font:10px system-ui,sans-serif;letter-spacing:4px;color:#7a9da3;margin:0 0 30px}.loader-title{font:clamp(30px,min(6.8vw,12vh),116px)/1.16 var(--notebook-title-font);font-weight:400;font-kerning:normal;letter-spacing:.012em;word-spacing:.08em;margin:0 0 34px;white-space:nowrap}.loader-line{position:absolute;left:50%;top:calc(100% - 1px);transform:translateX(-50%);height:1px;background:#40596055;overflow:visible;pointer-events:none;transition:background-color .8s ease}
+.loader-line>i{position:absolute;inset:0;display:block;width:100%;height:100%;border-radius:1px;transform:scaleX(0);transform-origin:left center;background:linear-gradient(90deg,#9daea7,#d7dfd4);box-shadow:0 0 8px #d7dfd420;transition:transform var(--cover-progress-duration) var(--motion-easing),opacity .8s ease,box-shadow .8s ease;will-change:transform}
 .loader-line>i::before{content:'';position:absolute;right:-2px;top:-2px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#d9fff19c 0, #94ddc138 35%,transparent 72%)}
 .loader-line>i::after{content:'';position:absolute;inset:-1px 0;background:linear-gradient(100deg,transparent 39%,#d9ffef00 44%,#d9ffef80 50%,#d9ffef00 56%,transparent 61%);background-size:260% 100%;filter:blur(.5px);animation:loader-sheen var(--cover-sheen-duration) ease-in-out infinite;pointer-events:none}
 @keyframes loader-sheen{0%{background-position:140% 0;opacity:0}18%{opacity:.38}78%{opacity:.38}100%{background-position:-40% 0;opacity:0}}.loader-status{font:10px system-ui,sans-serif;letter-spacing:1.8px;color:#92afb4;margin-top:18px;min-height:15px}#loaderRetry{margin:15px 0 0;padding:8px 18px;border:1px solid #6f969b;background:transparent;color:#dceae8;border-radius:3px;cursor:pointer}#mathLoader[hidden],#loaderRetry[hidden]{display:none!important}@media(prefers-reduced-motion:reduce){#mathLoader,.loader-line>i{transition:none}}
 
 .loader-title{margin-bottom:17px}.loader-author{font:13px system-ui,sans-serif;letter-spacing:2.4px;color:#a7c4c4;margin:0 0 35px}
-.loader-entry{height:64px}
-#beginSlides{font:12px system-ui,sans-serif;letter-spacing:1.4px;color:#b9e1d6;background:transparent;border:0;border-bottom:1px solid #678f8877;border-radius:0;padding:12px 0;margin:14px auto 0;min-width:160px;cursor:pointer}#beginSlides span{margin-left:24px}#beginSlides:hover{color:#e8f7f2;border-bottom-color:#a6d8ca}#beginSlides:focus-visible{outline:1px solid #a6d8ca;outline-offset:8px}#beginSlides[hidden]{display:none!important}
-#mathLoader.awaiting-entry .loader-line{opacity:0;transition-delay:.6s}
+.loader-entry{position:relative;height:120px}
+#beginSlides{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:48px;width:180px;padding:12px 6px;margin:0;border:0;border-radius:0;background:transparent;color:#cad4ce;font:11px/1.5 system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:color .35s ease}
+#beginSlides:hover{color:#f0f2e9}
+#beginSlides:focus-visible{outline:1px solid #b5c4b9;outline-offset:8px}
+#beginSlides[hidden]{display:none!important}
+#mathLoader.awaiting-entry .loader-line{top:calc(100% - 1px);width:180px;background-color:transparent;transition-delay:var(--cover-progress-duration)}
+#mathLoader.awaiting-entry .loader-line>i{opacity:.55;box-shadow:none;transition-delay:0s,var(--cover-progress-duration),var(--cover-progress-duration)}
+#mathLoader.awaiting-entry .loader-line>i::before,#mathLoader.awaiting-entry .loader-line>i::after{opacity:0;transition:opacity .6s ease var(--cover-progress-duration)}
+#mathLoader.awaiting-entry:not(.cover-intro) #beginSlides{animation:cover-reading-reveal .75s ease calc(var(--cover-progress-duration) + .45s) both}
+@keyframes cover-reading-reveal{from{opacity:0}to{opacity:1}}
 #mathLoader.awaiting-entry .loader-line>i::after,#mathLoader.loading-failed .loader-line>i::after{animation-play-state:paused}#mathLoader.awaiting-entry .loader-status{visibility:hidden}
 
 #coverFullscreen{position:absolute;top:max(22px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:9px 13px;border:1px solid #64899066;border-radius:5px;background:transparent;color:#afcccc;font:12px system-ui,sans-serif;letter-spacing:.6px;cursor:pointer}#coverFullscreen svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}#coverFullscreen:hover,#coverFullscreen[aria-pressed=true]{color:#d3f1e8;border-color:#a0cbb788}#coverFullscreen:focus-visible{outline:1px solid #a6d8ca;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){.loader-line,.loader-line>i{transition:none!important}.loader-line>i::after{animation:none;opacity:.12}#mathLoader.awaiting-entry .loader-line{transition-delay:0s}}
+
+/* Fine silver lettering: open spacing and a shallow, restrained edge.
+   Viewport width AND height govern type size, including native fullscreen. */
+#mathLoader{box-sizing:border-box;overflow-y:auto;padding:80px 0 40px}
+.loader-eyebrow{display:flex;align-items:center;justify-content:center;gap:18px;font-size:10px;line-height:1.5;letter-spacing:.32em;text-transform:uppercase;color:#9dadaa;margin-bottom:clamp(24px,4vh,44px)}
+.loader-eyebrow::before,.loader-eyebrow::after{content:'';width:clamp(24px,3vw,42px);height:1px;background:linear-gradient(90deg,transparent,#9caeaa55)}
+.loader-eyebrow::after{transform:scaleX(-1)}
+.loader-title{display:inline-grid;isolation:isolate;padding:.08em .1em .14em;margin-bottom:clamp(20px,3vh,34px);color:#d9e5e4}
+.loader-author{font:italic clamp(16px,1.35vw,19px)/1.4 Baskerville,"Iowan Old Style",Georgia,serif;letter-spacing:.055em;color:#a7b6b2;margin-bottom:clamp(22px,3.6vh,40px)}
+.loader-line{width:180px;max-width:100%}
+.loader-status{position:absolute;top:16px;left:0;right:0;margin:0}
+.loader-entry{height:clamp(106px,13vh,140px)}
+.loader-title-depth,.loader-title-face{grid-area:1/1;display:block}
+.loader-title-depth{color:#a9bab9;pointer-events:none;user-select:none;
+ text-shadow:
+  -.003em -.005em 0 #f8faf033,
+  .004em .010em 0 #4b6268,
+  .008em .019em .009em #10262d,
+  .012em .040em .045em #00000045;
+}
+.loader-title-face{position:relative;color:#d9e5e4}
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .loader-title-face{
+  background-image:
+   linear-gradient(112deg,transparent 43%,#e9f9ff0a 46%,#f7fff830 48%,#fffef5b8 49.5%,#fffef5cc 50%,#ecfaff50 51%,transparent 54%),
+   linear-gradient(173deg,#fbf8ed 6%,#dce2df 37%,#a8b8b9 54%,#e2e8e1 76%,#b3c2c0 100%);
+  background-size:260% 100%,100% 100%;background-position:120% 0,0 0;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+  -webkit-text-stroke:0;
+  animation:cover-metal-sweep 12s cubic-bezier(.32,0,.22,1) infinite;
+ }
+}
+@keyframes cover-metal-sweep{
+ 0%{background-position:120% 0,0 0}
+ 82%,100%{background-position:-25% 0,0 0}
+}
+#mathLoader.is-ready .loader-title-face{animation-play-state:paused}
+@media(max-height:500px){
+ #mathLoader{padding:64px 0 20px}
+ .loader-eyebrow{margin-bottom:14px}
+ .loader-title{margin-bottom:12px}
+ .loader-author{margin-bottom:18px}
+ .loader-entry{height:76px}
+ .loader-status{top:10px;min-height:12px}
+ #beginSlides{padding:9px 0;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){.loader-title-face{animation:none}}
+@media(forced-colors:active){.loader-title-depth{display:none}.loader-title-face{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText;-webkit-text-stroke:0;animation:none}}
+
+/* A quiet utility row; the two controls remain separate touch targets. */
+.cover-actions{position:absolute;top:max(clamp(16px,2.5vw,32px),env(safe-area-inset-top));right:max(clamp(16px,2.5vw,40px),env(safe-area-inset-right));display:flex;align-items:center;gap:18px}
+.cover-actions #coverFullscreen,.cover-actions #coverLanguage,.cover-actions #coverSettings{position:relative;inset:auto;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:9px 8px;box-sizing:border-box;border:0;border-radius:2px;background:transparent;color:#9cadaa;font:11px/1.5 system-ui,sans-serif;letter-spacing:.06em;cursor:pointer;transition:color .3s ease,background .3s ease}
+#coverLanguage{min-width:66px}
+#coverLanguage::after{content:'';position:absolute;right:-9px;top:50%;height:12px;width:1px;transform:translateY(-50%);background:#9cadaa33}
+.cover-actions #coverFullscreen svg,.cover-actions #coverSettings svg{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;width:14px;height:14px;stroke-width:1.25}
+.cover-actions #coverSettings:hover,.cover-actions #coverLanguage:hover,.cover-actions #coverFullscreen:hover,.cover-actions #coverFullscreen[aria-pressed=true]{color:#e4e9df;background:#b8c5bd06}
+.cover-actions #coverSettings:focus-visible,.cover-actions #coverLanguage:focus-visible,.cover-actions #coverFullscreen:focus-visible{outline:1px solid #b5c4b9;outline-offset:3px}
+#coverLanguage:disabled{opacity:.5;cursor:wait}
+@media(max-width:480px){.cover-actions{gap:14px}.loader-eyebrow{gap:13px;font-size:9px}#coverLanguage::after{right:-7px}}
+@media(prefers-reduced-motion:reduce){#beginSlides,.cover-actions button{transition:none}#mathLoader.awaiting-entry:not(.cover-intro) #beginSlides{animation:none}}
+
+/* The entrance uses exact glyph positions, then yields to the original text. */
+.loader-title{position:relative}
+.loader-title-letter{position:absolute;display:inline-grid;white-space:pre;pointer-events:none}
+.loader-title-letter>.loader-title-face{animation:none}
+.loader-title.is-assembling>.loader-title-face,.loader-title.is-assembling>.loader-title-depth{opacity:0;animation-play-state:paused}
+
+/* Chinese uses its own Song-style proportions, rather than Latin tracking. */
+.loader-title[lang="zh-CN"]{font-family:var(--notebook-title-font-zh);font-size:clamp(44px,min(9.6vw,13vh),140px);font-weight:300;line-height:1.25;letter-spacing:.07em;word-spacing:0;text-indent:.07em}
+.loader-title[lang="zh-CN"] .loader-title-letter{text-indent:0}
+.loader-author[lang="zh-CN"]{font-family:"Songti SC","Noto Serif SC",serif;font-style:normal;font-size:clamp(18px,1.6vw,22px);font-weight:400;letter-spacing:.14em;text-indent:.14em}
+
+/* Supporting copy appears only after the title has settled. */
+.loader-eyebrow,.loader-author,.loader-entry{opacity:1;transform:translateY(0);transition:opacity .65s ease,transform .8s cubic-bezier(.22,1,.36,1)}
+.loader-eyebrow{transition-delay:.08s}.loader-author{transition-delay:.20s}.loader-entry{transition-delay:.36s}
+#mathLoader.cover-intro .loader-eyebrow,#mathLoader.cover-intro .loader-author,#mathLoader.cover-intro .loader-entry{opacity:0;transform:translateY(7px);pointer-events:none;transition:none}
+@media(prefers-reduced-motion:reduce){.loader-eyebrow,.loader-author,.loader-entry{transition:none}}
+
+#mathLoader.cover-intro .loader-line{transition:none}
+#mathLoader.cover-intro #beginSlides{opacity:0;animation:none}
+
+@font-face{font-family:"Cover Ma Shan Zheng";src:url('../fonts/MaShanZheng-Cover.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+#mathLoader[data-cover-font="c"] .loader-title[lang="zh-CN"]{font-family:var(--notebook-title-font-zh-calligraphy);font-weight:400;letter-spacing:.03em;text-indent:.03em}
+#mathLoader[data-cover-font="c"] .loader-author[lang="zh-CN"]{font-family:"STHeiti","PingFang SC",sans-serif;font-weight:300;font-size:clamp(16px,1.4vw,20px);letter-spacing:.25em;text-indent:.25em}
+.cover-font-setting{border:0;padding:0 0 20px;margin:22px 0;border-bottom:1px solid #9bad9e25;min-width:0}
+.cover-font-setting legend{font-size:12px;color:#c6d5ce;padding:0;margin-bottom:14px}
+.cover-font-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cover-font-grid label{position:relative;cursor:pointer;min-width:0}
+.cover-font-grid input{position:absolute;width:1px;height:1px;opacity:0}
+.cover-font-option{display:flex;flex-direction:column;align-items:center;gap:18px;padding:17px 8px 20px;border:1px solid #718d8133;border-radius:4px;background:#0c1d2277;transition:border-color .2s,background .2s}
+.cover-font-option>span{font-size:10px;letter-spacing:.03em;color:#a9beb4}
+.cover-font-option strong{font:300 clamp(29px,5vw,38px)/1.4 "Songti SC",serif;letter-spacing:.06em;color:#e1e7dc}
+.cover-font-option small{font:16px/1.4 "Songti SC",serif;letter-spacing:.14em;color:#b6c9bb}
+.style-c strong{font-family:var(--notebook-title-font-zh-calligraphy);font-weight:400;letter-spacing:.03em}
+.style-c small{font:14px/1.4 "STHeiti","PingFang SC",sans-serif;letter-spacing:.25em}
+.cover-font-grid input:checked+.cover-font-option{border-color:#b5c9a9;background:#a8c39d10}
+.cover-font-grid input:focus-visible+.cover-font-option{outline:2px solid #cfdfbf;outline-offset:3px}
+#motionSettings #coverFontHint{font-size:11px;line-height:1.6;color:#94aaa0;margin:14px 0 0}
+@media(max-width:400px){.cover-actions{gap:7px}.cover-actions #coverLanguage,.cover-actions #coverSettings,.cover-actions #coverFullscreen{font-size:10px;padding-inline:5px;gap:5px}#coverLanguage{min-width:55px}#coverLanguage::after{right:-4px}}
