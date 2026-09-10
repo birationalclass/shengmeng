@@ -10,7 +10,9 @@ export const lessons=[
 ];
 export const convergence=[
  {title:'稳定项 E∞',f:[t`R_{p,q}:=\max\{p+1,q+2\}`,t`E_\infty^{p,q}:=E_{R_{p,q}}^{p,q}\qquad(p,q\ge0)`],text:'在第一象限下，各双次数位置最终稳定。',note:'',proof:'从 Rₚ,ᑫ 起，该位置的入射与出射微分均为零；选取更大的稳定页得到自然同构的空间。'},
- {title:'逐位置稳定',f:[t`\forall p,q\ge0\ \exists R_{p,q}\ \forall r\ge R_{p,q}:`,t`d_r^{p,q}=0,\qquad d_r^{p-r,q+r-1}=0`,t`E_r^{p,q}\xrightarrow{\sim}E_\infty^{p,q}\quad\text{canonically}`],text:'逐位置稳定不要求整个双分次空间在统一的一页稳定。',note:'',proof:'当 r>q+1 时出射靶的第二指标为负；当 r>p 时入射源的第一指标为负。两者均为零，故取上同调不再改变该位置。'}
+ {title:'逐位置稳定',f:[t`\forall p,q\ge0\ \exists R_{p,q}\ \forall r\ge R_{p,q}:`,t`d_r^{p,q}=0,\qquad d_r^{p-r,q+r-1}=0`,t`E_r^{p,q}\xrightarrow{\sim}E_\infty^{p,q}\quad\text{canonically}`],text:'逐位置稳定不要求整个双分次空间在统一的一页稳定。',note:'',proof:'当 r>q+1 时出射靶的第二指标为负；当 r>p 时入射源的第一指标为负。两者均为零，故取上同调不再改变该位置。'},
+ {title:'总上同调的诱导滤过',f:[t`H^n:=H^n(C^\bullet,D)`,t`\begin{gathered}F^pH^n:=\\\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\longrightarrow H^n\right)\end{gathered}`],text:'由各滤过子复形的包含映射，在总上同调上取像。',note:'',proof:'F^pH^n 由具有 F^pC^n 中闭代表元的总上同调类组成。'},
+ {title:'收敛到总上同调',f:[t`E_1^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)`],text:'第一象限下，稳定项典范同构于总上同调的对应滤过商。',note:'',proof:'自然满射将 a 送到 [a]_H 模 F^{p+1}H^n，其核是更高滤过中的闭元与当前滤过中的总边界之和。'}
 ];
 
 export const initial=[

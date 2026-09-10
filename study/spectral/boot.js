@@ -90,7 +90,7 @@
   overlay.querySelector('.loader-eyebrow').textContent=english?'Study Notes':'学习笔记';
   button.textContent=english?'中文':'Eng';button.lang=english?'zh-CN':'en';
   button.setAttribute('aria-label',english?'切换为中文':'Switch to English');
-  const settingsButton=document.getElementById('coverSettings');settingsButton.querySelector('span').textContent=english?'Settings':'设置';settingsButton.setAttribute('aria-label',english?'Display settings':'显示设置');
+  const settingsButton=document.getElementById('coverSettings');settingsButton.setAttribute('aria-label',english?'Display settings':'显示设置');
   start.textContent=english?'Start reading':'开始阅读';
   document.getElementById('loaderRetry').textContent=english?'Reload':'重新加载';
   bar.setAttribute('aria-label',english?'Loading mathematics':'加载数学资源');

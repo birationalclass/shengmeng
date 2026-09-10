@@ -9,7 +9,11 @@ export function operationMarkup(s,lang,math){
  const nested=(outer,inner,small,quotient,focus)=>row(`<div class="space-container">${M(outer)}<div class="subspace ${focus==='kernel'?'chosen':''}">${M(inner)}<div class="boundary-space ${focus==='image'?'chosen':''}">${M(small)}</div></div></div><div class="quotient-operation ${focus==='quotient'?'chosen':''}"><small>${t('中间子空间的商映射','Quotient map on the inner subspace')}</small><div>${M(R`${inner.split(/:?=/)[0]}\xrightarrow{\pi}${quotient.split(/:?=/)[0]}`)}</div><div>${M(R`\ker\pi=${small.split(/:?=/)[0]}`)}</div></div>`);
  const n=s.n,p=s.p,q=n-p,r=Math.max(1,s.r),a=s.module==='initial'?(s.effect==='totalmap'?3:1):s.annotationStep,c=s.effect;let body='',note='';
  if(s.module==='initial'&&!['total','totalmap'].includes(c)){
-  if(c==='filteredmap'){
+  if(c==='totalcohom'){
+   body=row(box(n===0?'0':`C^{${n-1}}`)+arrow('D')+box(`C^{${n}}`,'chosen')+arrow('D')+box(`C^{${n+1}}`))+`<div class="operation-equation">${M(R`\operatorname{im}(D:C^{n-1}\to C^n)\subseteq\ker(D:C^n\to C^{n+1})`)}</div>`;
+   body+=`<div class="operation-equation">${M(R`[a]_H:=a+\operatorname{im}(D:C^{n-1}\to C^n),\quad Da=0`)}</div>`;
+   note=t(`由 ${M('D^2=0')}，这个商空间有定义。${M(R`H^n(C^\bullet,D)`)} 是最终要计算的总上同调，涉及整条总次数对角线，不属于单个 ${M(R`K^{p,q}`)}。`,`${M('D^2=0')} makes this quotient well-defined. The target ${M(R`H^n(C^\bullet,D)`)} is total cohomology: it involves the whole total-degree diagonal, not a single ${M(R`K^{p,q}`)} term.`);
+  }else if(c==='filteredmap'){
    body=row(box(`F^{${p}}C^{${n}}`,'source-space')+arrow('D')+box(`F^{${p}}C^{${n+1}}`,'target-space'))+`<div class="operation-equation">${M(R`a=\sum_{i\ge ${p}}a_i,\quad a_i\in K^{i,${n}-i}`)}</div><div class="operation-equation">${M(R`(Da)_j=\delta_1a_{j-1}+\delta_2a_j=0\quad(j<${p})`)}</div><div class="operation-equation">${M(R`D(F^{${p}}C^{${n}})\subseteq F^{${p}}C^{${n+1}}`)}</div>`;
   }else if(c==='filtration'){
    body=row(box(`F^{${p}}C^{${n}}:=\\bigoplus_{i\\ge ${p}}K^{i,${n}-i}`,'chosen'))+`<div class="operation-equation">${M(R`F^{p+1}C^n\subseteq F^pC^n`)}</div>`;
@@ -71,5 +75,5 @@ export function operationMarkup(s,lang,math){
    `<div class="operation-equation">${M(R`Da=\delta_1a+\delta_2a\in C^{${n+1}}`)}</div>`;
  }
  if(n===4&&s.module==='initial'&&['totalmap','filteredmap'].includes(c))body+=`<p class="operation-note">${t(`蓝色区域还包括窗口外的 ${M(R`K^{0,5},\ K^{5,0}`)}。`,`The blue region also includes ${M(R`K^{0,5},\ K^{5,0}`)} beyond the displayed window.`)}</p>`;
- return `<div class="operation-content">${body}</div>${note&&(s.module!=='initial'||['delta1','delta2','square','square1','square2','anticommute','totalsquare'].includes(c))?`<p class="operation-note">${note}</p>`:''}`;
+ return `<div class="operation-content">${body}</div>${note&&(s.module!=='initial'||['delta1','delta2','square','square1','square2','anticommute','totalsquare','totalcohom'].includes(c))?`<p class="operation-note">${note}</p>`:''}`;
 }
