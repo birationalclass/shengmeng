@@ -9,7 +9,7 @@ import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=64';
-import {translatePage,language,toggleLanguage} from './language.js?v=64';
+import {translatePage,language,toggleLanguage} from './language.js?v=65';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=64';
 import {createFilteredView} from './filtered-view.js?v=57';
 import {createPageEvolution} from './page-evolution.js?v=64';
