@@ -11,7 +11,7 @@ import {translatePage,language,toggleLanguage} from './language.js?v=39';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=57';
 import {createFilteredView} from './filtered-view.js?v=57';
 import {createPageEvolution} from './page-evolution.js?v=58';
-import {createNotebookMotion} from './notebook-motion.js?v=57';
+import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=7;
@@ -231,8 +231,21 @@ function activateStatement(key,last=false){
  keepReadingVisible($(`[data-statement="${key}"]`));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
-function advanceNote(){if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){selectReadingPage(state.notePage+1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>=0&&i<readingOrder.length-1)activateStatement(readingOrder[i+1]);}
+function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+// Auto-folding is a reading-navigation preference, never a hover or proof effect.
+// Changing the setting leaves the current layout untouched until the next advance.
+function foldBeforeAdvance(nextStatement){
+ if(!notebookMotion.autoCollapse())return;
+ for(const key of openStatements)if(key!==nextStatement)openStatements.delete(key);
+ openBuilds.clear();
+ for(const [key,last] of revealedReadings)for(let i=0;i<=last;i++)foldedReadings.add(`${key}:${i}`);
+}
+function advanceNote(){
+ if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){foldBeforeAdvance('initial:0');selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}
+ if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){foldBeforeAdvance(activeStatementKey());selectReadingPage(state.notePage+1);return;}
+ const i=readingOrder.indexOf(activeStatementKey());
+ if(i>=0&&i<readingOrder.length-1){const next=readingOrder[i+1];foldBeforeAdvance(next);activateStatement(next);}
+}
 function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);keepDefinitionVisible();}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);if(isDoubleComplexView())selectInitialBuild(INITIAL_STEPS);}}
 $('#explanation').addEventListener('click',e=>{
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
@@ -364,8 +377,8 @@ function doubleComplexCompanion(item){
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1,2,3,4].map(step=>statementMarkup(convergence[step],'converge',step)).join('')+statementMarkup({title:'精确例子',f:[]},'lab',0)+statementMarkup({title:'代表元追踪',f:[]},'trace',0));
  $('#sceneNote').textContent='';
 }
-// Revealing or focusing an entry never closes another entry. Body folding
-// is controlled solely by the explicit minus buttons (or a cover reset).
+// Folding stays manual unless the reader explicitly enables auto-collapse.
+// Navigation records that choice before these shared accordion views synchronize.
 function syncNumberedEntry(el,visible,open,current){
  const wasVisible=!el.hidden,body=el.querySelector(':scope > .build-content');
  el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);
@@ -381,7 +394,7 @@ function syncInitialEntries(){
   el.classList.toggle('build-complete',i<state.initialReveal);
  });
  const intro=$('.initial-definition');if(!intro)return;intro.classList.toggle('definition-current',state.module==='initial'&&state.initialReveal===0);
- notebookMotion.setExpanded(intro,revealedBuild>=0,{immediate:revealedBuild<0});
+ notebookMotion.setExpanded(intro,revealedBuild>=0&&openBuilds.has(0),{immediate:revealedBuild<0});
 }
 function syncReadingEntries(key){
  const last=revealedReadings.get(key)??-1;
@@ -421,7 +434,7 @@ function fixedDiagram(){
   total=['total','totalmap','filtration','filteredmap'].includes(state.effect);filter=['filtration','filteredmap'].includes(state.effect);h=total?['totalmap','filteredmap'].includes(state.effect):state.seenH;v=total?['totalmap','filteredmap'].includes(state.effect):state.seenV;
   if(state.effect==='zeropage'||state.initialReveal===8&&state.effect==='space'){kind='E_0';h=false;v=false;selected=false;}
   if(s===0)overlay+=relationOverlay(state.effect);
-  if(state.initialReveal>=0&&state.initialReveal<=4)overlay+=`<g class="extent-ellipsis" aria-label="Displayed window continues">${label(482.5,24,raw`\cdots`,36,20,true)}${label(790,220,raw`\vdots`,24,36,true)}</g>`;
+  if(state.initialReveal>=0&&state.initialReveal<=4)overlay+=`<g class="extent-ellipsis" aria-label="Displayed window continues">${label(xy(2,GRID_MAX)[0],xy(2,GRID_MAX)[1]-46,raw`\cdots`,36,20,true)}${label(790,220,raw`\vdots`,24,36,true)}</g>`;
   if(total)caption=raw`${totalDegreeTex(n)}=\bigoplus_{i=0}^{${n}}K^{i,${n}-i}`;
  }else if(m==='learn'){
   if(s<=2){h=s===0||s===1&&a===3;v=h;total=a>0;filter=s>=1;selected=s===2&&a>=2;if(s===2&&a>=3){h=false;v=false;}}

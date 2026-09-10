@@ -1,10 +1,10 @@
 // Motion belongs to the notebook accordions; diagram timelines stay independent.
 export function createNotebookMotion({language}) {
- const storageKey='spectral-notebook-motion',defaults={effect:'soft',duration:900};
+ const storageKey='spectral-notebook-motion',defaults={effect:'soft',duration:900,autoCollapse:false};
  const reduced=matchMedia('(prefers-reduced-motion:reduce)'),records=new WeakMap(),running=new Map();
  let settings={...defaults},previewOpen=true,opener=null;
- try {const saved=JSON.parse(localStorage.getItem(storageKey));if(['soft','slide','none'].includes(saved?.effect))settings.effect=saved.effect;if(Number.isFinite(saved?.duration))settings.duration=Math.min(1800,Math.max(300,saved.duration));} catch {}
- const $=s=>document.querySelector(s),dialog=$('#motionSettings'),button=$('#settingsButton'),effect=$('#motionEffect'),duration=$('#motionDuration'),preview=$('#motionPreviewBody');
+ try {const saved=JSON.parse(localStorage.getItem(storageKey));if(typeof saved?.autoCollapse==='boolean')settings.autoCollapse=saved.autoCollapse;if(['soft','slide','none'].includes(saved?.effect))settings.effect=saved.effect;if(Number.isFinite(saved?.duration))settings.duration=Math.min(1800,Math.max(300,saved.duration));} catch {}
+ const $=s=>document.querySelector(s),dialog=$('#motionSettings'),button=$('#settingsButton'),effect=$('#motionEffect'),autoCollapse=$('#motionAutoCollapse'),duration=$('#motionDuration'),preview=$('#motionPreviewBody');
  // Measure content independently of the animated outer height. In particular,
  // math/font transitions can keep changing its natural height during a fold.
  function naturalHeight(body){
@@ -91,6 +91,8 @@ export function createNotebookMotion({language}) {
   $('#coverFontHint').textContent=t('调整中文标题字体，英文设计保持不变。','Changes Chinese title typography. The English design stays the same.');
   for(const radio of document.querySelectorAll('[name="coverFont"]'))radio.checked=radio.value===(window.spectralCover?.style()||'c');
   $('#motionScope').textContent=t('左侧定义、命题与定理卡片','Definition, proposition and theorem cards');
+  $('#motionAutoCollapseLabel').textContent=t('自动折叠','Auto-collapse');autoCollapse.checked=settings.autoCollapse;
+  $('#motionAutoCollapseHint').textContent=t('显示下一条时收起此前内容；默认关闭。','Fold earlier content when advancing to the next entry. Off by default.');
   $('#motionEffectLabel').textContent=t('收起效果','Collapse effect');
   for(const [value,zh,en] of [['soft','柔和收起','Slide and fade'],['slide','简洁收起','Slide only'],['none','关闭动画','No animation']])effect.querySelector(`[value="${value}"]`).textContent=t(zh,en);
   effect.value=settings.effect;duration.value=settings.duration;duration.disabled=settings.effect==='none'||reduced.matches;
@@ -100,9 +102,9 @@ export function createNotebookMotion({language}) {
   $('#motionPreviewToggle').textContent=previewOpen?t('收起预览','Collapse preview'):t('展开预览','Expand preview');$('#motionPreviewToggle').setAttribute('aria-expanded',String(previewOpen));
   $('#motionReset').textContent=t('恢复默认','Restore defaults');$('#motionSaved').textContent=t('自动保存到此浏览器','Saved in this browser');
  }
- function update(){settleAll();settings={effect:effect.value,duration:Number(duration.value)};try{localStorage.setItem(storageKey,JSON.stringify(settings));}catch{}sync();}
- effect.addEventListener('change',update);duration.addEventListener('input',update);
- $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;window.spectralCover?.setStyle('c');update();};
+ function update(){settleAll();settings={effect:effect.value,duration:Number(duration.value),autoCollapse:autoCollapse.checked};try{localStorage.setItem(storageKey,JSON.stringify(settings));}catch{}sync();}
+ autoCollapse.addEventListener('change',update);effect.addEventListener('change',update);duration.addEventListener('input',update);
+ $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;autoCollapse.checked=defaults.autoCollapse;window.spectralCover?.setStyle('c');update();};
  for(const radio of document.querySelectorAll('[name="coverFont"]'))radio.addEventListener('change',()=>{if(radio.checked){window.spectralCover?.setStyle(radio.value);sync();}});
  $('#motionPreviewToggle').onclick=()=>{previewOpen=!previewOpen;setExpanded(preview,previewOpen);sync();};
  button.onclick=$('#coverSettings').onclick=event=>{opener=event.currentTarget;sync();dialog.showModal();};$('#coverSettings').disabled=false;$('#closeMotionSettings').onclick=()=>dialog.close();
@@ -115,5 +117,5 @@ export function createNotebookMotion({language}) {
   lastWidth=width;
  }).observe($('.explanation'));
  setExpanded(preview,true,{immediate:true});sync();
- return {setExpanded,revealCard,sync,settleAll,duration:milliseconds};
+ return {setExpanded,revealCard,sync,settleAll,duration:milliseconds,autoCollapse:()=>settings.autoCollapse};
 }
