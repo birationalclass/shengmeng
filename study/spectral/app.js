@@ -25,6 +25,8 @@ const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set
 let revealedBuild=-1;
 const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3','converge:4','lab:0','trace:0'];
 const NODE_HALF_W=34,NODE_HALF_H=19;
+// Both continuation marks share the same visible edge gap and dot geometry.
+const EXTENT={gap:24,radius:1.15,step:6};
 const state={module:'initial',cover:true,initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0,expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
@@ -105,7 +107,7 @@ const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module
  return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
 }).join('');
 function statementHeading(meta,key){
- const subject=meta.symbol?math(meta.symbol):esc(meta.name||'');
+ const subject=(meta.showName&&meta.symbol?esc(meta.name)+' ':'')+(meta.symbol?math(meta.symbol):esc(meta.name||''));
  return `<div class="statement-heading"><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
 }
 function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
@@ -200,9 +202,7 @@ function statementMeta(module=state.module,step=state.step){
  const meta=collections[module]?.[step]||{kind:module==='lab'?'例':'计算',concepts:module==='lab'?['page','differential']:['differential','space','differential']};
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
- if(module==='learn'&&step===3)return meta;
- if(module==='learn'&&step===4)return {...meta,kind:'§',number:'2'};
- if(module==='learn'&&step===5)return {...meta,kind:'§',number:'2'};
+ if(module==='learn'&&step>=3&&step<=5)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true};
  if(module==='converge')return {...meta,kind:'§',number:'3'};
  if(module==='lab'||module==='trace')return {...meta,kind:'§',number:module==='lab'?'4':'5'};
  return {...meta,number:order<0?meta.number:String(order+1)};
@@ -434,7 +434,11 @@ function fixedDiagram(){
   total=['total','totalmap','filtration','filteredmap'].includes(state.effect);filter=['filtration','filteredmap'].includes(state.effect);h=total?['totalmap','filteredmap'].includes(state.effect):state.seenH;v=total?['totalmap','filteredmap'].includes(state.effect):state.seenV;
   if(state.effect==='zeropage'||state.initialReveal===8&&state.effect==='space'){kind='E_0';h=false;v=false;selected=false;}
   if(s===0)overlay+=relationOverlay(state.effect);
-  if(state.initialReveal>=0&&state.initialReveal<=4)overlay+=`<g class="extent-ellipsis" aria-label="Displayed window continues">${label(xy(2,GRID_MAX)[0],xy(2,GRID_MAX)[1]-46,raw`\cdots`,36,20,true)}${label(790,220,raw`\vdots`,24,36,true)}</g>`;
+  if(state.initialReveal>=0&&state.initialReveal<=4){
+   const {gap,radius,step}=EXTENT,short=2*radius,long=2*step+short;
+   const [topX,topY]=xy(2,GRID_MAX),[rightX,rightY]=xy(GRID_MAX,2);
+   overlay+=`<g class="extent-ellipsis" aria-label="Displayed window continues">${label(topX,topY-NODE_HALF_H-gap-radius,raw`\cdots`,long,short,true)}${label(rightX+NODE_HALF_W+gap+radius,rightY,raw`\vdots`,short,long,true)}</g>`;
+  }
   if(total)caption=raw`${totalDegreeTex(n)}=\bigoplus_{i=0}^{${n}}K^{i,${n}-i}`;
  }else if(m==='learn'){
   if(s<=2){h=s===0||s===1&&a===3;v=h;total=a>0;filter=s>=1;selected=s===2&&a>=2;if(s===2&&a>=3){h=false;v=false;}}
@@ -518,6 +522,13 @@ function setAnnotation(i){state.stackR=null;state.annotationStep=Math.max(1,Math
 function revealAnnotation(el){if(state.cover||isDoubleComplexView())return;const formula=el.closest('.formal-statement .reading-formula');if(formula){const card=formula.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);setAnnotation(Number(formula.dataset.annotation));}}
 
 
+// Explicit dot bounds avoid font-dependent whitespace in the two orientations.
+// The existing label plane still owns their scaling and delayed entrance.
+function extentDots(tex){
+ const {radius,step}=EXTENT,horizontal=tex===raw`\cdots`,short=2*radius,long=2*step+short;
+ const width=horizontal?long:short,height=horizontal?short:long;
+ return `<svg viewBox="0 0 ${width} ${height}" width="100%" height="100%" aria-hidden="true">${[0,1,2].map(i=>`<circle cx="${radius+(horizontal?i*step:0)}" cy="${radius+(horizontal?0:i*step)}" r="${radius}" fill="currentColor"/>`).join('')}</svg>`;
+}
 // Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
 function syncDiagramLabels(){
  const host=$('#diagram');let plane=host.querySelector('.diagram-label-plane');
@@ -529,7 +540,7 @@ function syncDiagramLabels(){
   const map=anchor.previousElementSibling?.matches('.arrow')?anchor.previousElementSibling:null;if(map){el.classList.add('map-label',map.classList.contains('h')?'map-h':map.classList.contains('v')?'map-v':'map-r');el.dataset.mapConcept=map.dataset.concept;}else delete el.dataset.mapConcept;
   el.style.left=d.x+'px';el.style.top=d.y+'px';el.style.width=d.width+'px';el.style.height=d.height+'px';
   el.style.opacity=`calc(${anchor.closest('.muted')?'var(--graph-muted-opacity)':1} * ${anchor.closest('.zero')?'var(--graph-zero-opacity)':1} * ${anchor.closest('.context-edge')?'var(--graph-context-opacity)':1})`;
-  const changed=el.dataset.tex!==d.tex;if(changed){replaceMathContent(el,math(d.tex));el.dataset.tex=d.tex;}
+  const changed=el.dataset.tex!==d.tex;if(changed){replaceMathContent(el,anchor.closest('.extent-ellipsis')?extentDots(d.tex):math(d.tex));el.dataset.tex=d.tex;}
   if(!el.isConnected){plane.append(el);fadeGraphAddition(el);}
  }
  for(const el of old.values())el.remove();
