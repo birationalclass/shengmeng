@@ -228,3 +228,14 @@ Validation covers the axis-before-tile and axis-fade-before-map order, paired ti
 The exposition has a fixed heading beneath its divider and an independent scrollport. The figure controls use a reserved row within the visualization, so changing the controls or proof length cannot move that heading. New topics return the exposition to its top. On narrow screens the same two regions keep separate content scrolling.
 
 The first-quadrant condition now appears in the exposition rather than the left K-family declaration. It specifies vector spaces over one field, or left modules over one ring; δ₁ and δ₂ are respectively linear maps or module homomorphisms. Square-zero relations explain the ordinary row and column cochain complexes. Item 1.4 traces one element along the two mixed routes, retains the opposite results in their common K^{2,2}, then combines them into zero. The explanation connects this cancellation and both square-zero identities to D²=0 and the cohomology of the total complex. The existing total-differential timeline supplies the shared particle rendering, cancellation and smooth retirement.
+
+
+## Compact reading toolbar (v42)
+
+The top bar contains only language, animation settings, cover and fullscreen controls. The former site-navigation links, brand block and notation/reference dialog are removed from this notebook header. The lesson heading displays only “Spectral Sequence”, without the Study Notes eyebrow. `styles/toolbar.css` owns the shared toolbar sizing, title spacing and fullscreen offset; the same controls remain available above the notebook in fullscreen and on narrow screens. Cover loading and entry are unchanged.
+
+After the cover is entered, the reading surface is initially empty. The first Enter reveals Double complex and starts the axes-then-terms entrance. The diagram and exposition retain their layout slots while hidden, so this first reveal does not shift the coordinate system or page layout.
+
+On that first Enter, the left definition frame expands from a small point at its upper-left corner. Its layout rectangle is reserved throughout; the heading and formulas fade in near the end of the expansion. This uses the shared initial timeline and honors the notebook's disabled-animation option and system reduced motion.
+
+Validation: Chromium and WebKit verify blank entry, first-Enter frame and axis animations, the four-control toolbar, language/settings/cover actions, native or embedded fullscreen layout, and 320/390/1024px widths with no overflow or page errors.

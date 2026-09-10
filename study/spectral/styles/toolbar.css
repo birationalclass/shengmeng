@@ -1,0 +1,43 @@
+/* A single persistent row of reading controls, including in fullscreen. */
+:root { --notebook-toolbar-height:48px }
+body>.notebook-toolbar {
+  display:flex;justify-content:flex-end;align-items:center;flex:none;
+  width:100%;height:var(--notebook-toolbar-height);min-height:var(--notebook-toolbar-height);
+  max-width:1700px;margin:0 auto;padding:6px 3vw;border-bottom:1px solid var(--line);
+  background:var(--bg);
+}
+.notebook-toolbar .toolbar-actions {
+  display:flex;align-items:center;justify-content:flex-end;flex-wrap:nowrap;gap:8px;
+}
+.notebook-toolbar .toolbar-actions button,
+.notebook-toolbar #languageButton,.notebook-toolbar #fullscreen {
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  min-height:32px;margin:0;padding:6px 10px;font:12px/1.2 system-ui,sans-serif;
+  white-space:nowrap;border-radius:6px;
+}
+.notebook-toolbar .toolbar-actions .settings-button { width:32px;min-width:32px;padding:6px }
+.notebook-toolbar .settings-button svg { flex:none;width:17px;height:17px }
+.notebook-workspace .stage-heading {
+  height:54px;min-height:54px;justify-content:flex-start;padding:10px 22px;
+}
+.notebook-workspace .stage-heading h2 { margin:0 }
+.study-fullscreen .notebook-toolbar {
+  position:fixed;inset:0 0 auto;z-index:101;max-width:none;
+}
+.study-fullscreen .notebook-workspace.workspace {
+  position:fixed;flex:none;inset:var(--notebook-toolbar-height) 0 0;margin:0;
+  height:calc(100dvh - var(--notebook-toolbar-height));min-height:0;
+}
+@media(max-width:780px) {
+  body>.notebook-toolbar { padding:6px 12px }
+  .notebook-workspace .stage-heading { height:48px;min-height:48px;padding:9px 12px }
+}
+@media(max-width:420px) {
+  body>.notebook-toolbar { padding-inline:8px }
+  .notebook-toolbar .toolbar-actions { gap:6px }
+  .notebook-toolbar .toolbar-actions button,
+  .notebook-toolbar #languageButton,.notebook-toolbar #fullscreen { font-size:11px;padding:6px 8px }
+}
+
+/* Reserve the diagram geometry, but wait for the first reading step. */
+.is-coordinate-intro #diagram { opacity:0;visibility:hidden;pointer-events:none }

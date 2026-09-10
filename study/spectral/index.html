@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
-<meta name="theme-color" content="#091b22"><title>Spectral Sequence · Sheng Meng Study Notes</title>
+<meta name="theme-color" content="#091b22"><title>Spectral Sequence · Sheng Meng</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=41"><link rel="stylesheet" href="style.css?v=40"><link rel="stylesheet" href="slides.css?v=41"><link rel="stylesheet" href="styles/diagram.css?v=41"><link rel="stylesheet" href="styles/math.css?v=40"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=40">
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=41"><link rel="stylesheet" href="style.css?v=42"><link rel="stylesheet" href="slides.css?v=41"><link rel="stylesheet" href="styles/diagram.css?v=41"><link rel="stylesheet" href="styles/math.css?v=40"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=40"><link rel="stylesheet" href="styles/toolbar.css?v=42">
 
 <script src="boot.js?v=40" defer></script>
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=41"></script>
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=42"></script>
 </head>
 <body aria-busy="true">
 <div id="mathLoader" role="status" aria-live="polite"><button id="coverFullscreen" type="button" aria-pressed="false" aria-label="全屏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg><span>全屏</span></button><div class="loader-inner"><p class="loader-eyebrow">学习笔记</p><h1 class="loader-title">Spectral Sequence</h1><p class="loader-author">Sheng Meng</p><div class="loader-line" role="progressbar" aria-label="Loading mathematics" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><p id="loaderStatus" class="loader-status">准备数学界面</p><div class="loader-entry"><button id="beginSlides" hidden>开始阅读 <span>→</span></button></div><button id="loaderRetry" hidden>重新加载 / Reload</button></div></div>
-<header class="header"><a class="brand" href="../"><span class="brand-symbol">S</span><span>SHENG MENG<small>STUDY ATLAS / AT·002</small></span></a><nav><a href="../">学习目录</a><a href="../../visuals/chaos/">Chaos Lab ↗</a><a href="spectral.pdf">讲义 PDF ↗</a><button id="languageButton" aria-label="Switch to English">English</button><button id="referenceButton">记号与文献</button></nav></header>
+<header class="header notebook-toolbar"><nav class="toolbar-actions" aria-label="Spectral Sequence"><button id="languageButton" aria-label="Switch to English">English</button><button id="settingsButton" class="settings-button" aria-label="动画设置" title="动画设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg></button><button id="coverButton" title="返回封面">封面</button><button id="fullscreen" aria-pressed="false" title="全屏显示工作区">⛶ 全屏</button></nav></header>
 <main>
 <section class="workspace slide-deck notebook-workspace" aria-label="谱序列交互工作区">
-<div class="stage-heading"><div><p id="sceneKicker"></p><h2 id="sceneTitle"></h2></div><div class="stage-actions"><button id="settingsButton" class="settings-button" aria-label="动画设置" title="动画设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg></button><button id="coverButton" title="返回封面">封面</button><button id="fullscreen" aria-pressed="false" title="全屏显示工作区">⛶ 全屏</button></div></div>
+<div class="stage-heading"><h2 id="sceneTitle"></h2></div>
 <div class="slide-body">
 <aside class="explanation"><div class="panel-label"><span>MATHEMATICAL STATEMENT</span><span id="panelIndex"></span></div><div id="explanation"></div><details id="quickCheck" class="quick-check" hidden></details></aside>
 <div class="visual-column" id="visualPanel">
@@ -43,7 +43,7 @@
 <section class="motion-preview"><div class="motion-preview-heading"><span id="motionPreviewTitle">预览</span><button id="motionPreviewToggle" aria-expanded="true" aria-controls="motionPreviewBody">收起预览</button></div><div id="motionPreviewBody" class="accordion-body"><p id="motionPreviewText"></p><div class="motion-preview-lines" aria-hidden="true"><i></i><i></i></div></div></section>
 <div class="motion-settings-footer"><span id="motionSaved"></span><button id="motionReset">恢复默认</button></div>
 </dialog>
-<dialog id="references"><div class="dialog-head"><h2>记号与数学依据</h2><button id="closeReferences" aria-label="关闭">×</button></div><div id="referenceContent"></div></dialog>
+
 <dialog id="formulaDialog"><div class="dialog-head"><h2>公式</h2><button id="closeFormula" aria-label="关闭公式">×</button></div><div id="formulaContent"></div></dialog>
 <noscript><style>#mathLoader{display:none!important}html.math-loading body>header,html.math-loading body>main,html.math-loading body>footer{visibility:visible}</style>请启用 JavaScript 使用交互模块；完整内容也可阅读 <a href="spectral.pdf">PDF 讲义</a>。</noscript>
 </body></html>

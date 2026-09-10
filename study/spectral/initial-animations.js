@@ -33,7 +33,15 @@ export function createInitialAnimations({diagram,definition,definitionMotion}) {
   const transformOrigin=`${origin.originX}px ${origin.originY}px`;
   openingEnd=performance.now()+axis+8*stagger+pop;
   directionEnd=openingEnd;
-  if(definitionMotion())play(definition(),[{opacity:0},{opacity:1}],{duration:motion.enter},'definition');
+  if(definitionMotion()){
+   const card=definition();
+   // Grow the actual frame from its upper-left corner without changing layout.
+   // Reveal its content near the end, so formulas are not visibly stretched.
+   play(card,[{opacity:.3,transform:`scale(${2/card.offsetWidth},${2/card.offsetHeight})`,transformOrigin:'0 0'},
+    {opacity:1,transform:'scale(1)',transformOrigin:'0 0'}],{duration:axis},'definition-frame');
+   card?.querySelectorAll(':scope > .statement-heading,:scope > .statement-body').forEach((el,i)=>
+    play(el,[{opacity:0},{opacity:1}],{duration:motion.enter,delay:axis*.72},`definition-content-${i}`));
+  }
   for(const [name,scale] of [['p','scaleX'],['q','scaleY']]){
    play(diagram.querySelector(`#${name}-axis`),[
     {transform:`${scale}(0)`,transformOrigin},{transform:`${scale}(1)`,transformOrigin}

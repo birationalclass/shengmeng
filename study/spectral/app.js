@@ -1,4 +1,4 @@
-import {createInitialAnimations} from './initial-animations.js?v=41';
+import {createInitialAnimations} from './initial-animations.js?v=42';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=40';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
@@ -134,7 +134,7 @@ function render(updateControls=true){
 }
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
-$('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;selectInitialBuild(0);}};
+$('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
 $('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.annotationStep=1;state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;state.chosenAction=Number(b.dataset.action);setAnnotation(state.chosenAction);applyConcept(null);}};
@@ -143,11 +143,9 @@ $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.ta
 $('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
 function selectNode(e){let b=e.target.closest('[data-p]:not([data-boundary])');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
 $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollIntoView({behavior:'smooth'});};
-const refHTML=`<p>本主题采用 McCleary《A User’s Guide to Spectral Sequences》第二版的上同调型记号，保留讲义的 K、δ₁、δ₂。滤过固定为按列的下降滤过。</p>${formulas([raw`D:=\delta_1+\delta_2,\quad \delta_1\delta_2+\delta_2\delta_1=0`,raw`E_0^{p,q}:=\operatorname{Gr}_F^pC^{p+q}\cong K^{p,q}`,raw`E_r^{p,q}:=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`,raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`,raw`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`])}<p><b>记号界限：</b>δ₁、δ₂ 是双复形微分；d₀、d₁、… 是页上的微分。Zᵣ、Bᵣ 是总复形中的子空间；[a]ᵣ 是 Eᵣ 的类，[a]H 是总上同调类。动画中示意空间的大小不代表维数。</p><p><b>有限例子：</b>给定全部生成元和箭头，其余项确实为零。基、矩阵与代表元来自精确有理数消元；选择这些基不赋予 H 的滤过一个典范分裂。</p><p><b>阅读依据：</b>Definition 2.2（谱序列）、Definitions 2.3–2.5（滤过与收敛）、Theorem 2.6 及证明（pp. 33–37）、Theorem 2.15（双复形，pp. 48–49）。</p><p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf" target="_blank" rel="noreferrer">打开 McCleary 原书 ↗</a> · <a href="spectral.pdf">打开本主题讲义 ↗</a></p><p>键盘：→ 或回车选择下一项，← 选择上一项。定义与定理可分别折叠；选择内容时更新同一张图。回车专用于下一项；其它控件仍可用鼠标或空格操作。</p>`;
-$('#referenceContent').innerHTML=refHTML;$('#referenceButton').onclick=()=>{translatePage();$('#references').showModal();};$('#closeReferences').onclick=()=>$('#references').close();
 // Enter belongs exclusively to the reading sequence, regardless of control focus.
 document.addEventListener('keydown',e=>{
- const dialogOpen=$('#references').open||$('#formulaDialog').open||$('#motionSettings').open;
+ const dialogOpen=!!document.querySelector('dialog[open]');
  if(e.key==='Enter'){
   e.preventDefault();e.stopImmediatePropagation();
   if(e.repeat||e.isComposing||dialogOpen)return;
@@ -169,7 +167,6 @@ document.addEventListener('click',openFormula);
 document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}else openFormula(e);}});
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
 
-function sectionName(){return ui('学习笔记','STUDY NOTES');}
 function statementMeta(module=state.module,step=state.step){
  const collections={
  initial:[
@@ -311,7 +308,7 @@ function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h
 
 function isDoubleComplexView(){return !state.cover&&state.module==='initial'&&state.step===0;}
 function doubleComplexCompanion(item){
- $('#sceneKicker').textContent=sectionName();$('#sceneTitle').textContent='Spectral Sequence';
+ $('#sceneTitle').textContent='Spectral Sequence';
  if($('.build-statement')?.dataset.contentLanguage===language())return;
  const cards=[
  {title:'横向微分 δ₁',concept:'delta1',f:[item.f[0]]},
@@ -546,5 +543,5 @@ function emphasizeCurrentDefinition(){
 // Called after diagram reconciliation, so SVG and HTML math start together.
 function syncInitialEntrance(){
  if(document.body.getAttribute('aria-busy')!=='false')return;
- initialAnimations.sync({active:isDoubleComplexView(),step:state.initialReveal,seenH:state.seenH,seenV:state.seenV});
+ initialAnimations.sync({active:isDoubleComplexView()&&state.initialReveal>=0,step:state.initialReveal,seenH:state.seenH,seenV:state.seenV});
 }
