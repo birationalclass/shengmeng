@@ -252,3 +252,7 @@ All left-hand card entrances and accordion openings share one sequence in `noteb
 ## v45 · Anticommutation cancellation
 
 Mixed-composite particles brake on their original horizontal/vertical paths before meeting. A plus sign briefly marks their midpoint inside the common target term; the particles accelerate into it, shrink into zero, and the plus fades with the particles. There is no terminal sideways offset. Total differential and total-square timelines remain independent.
+
+## v46 · Addition at the target centre
+
+The anticommutation plus sign, particle merge, and final zero share the exact centre of the target K tile. Particles retain the existing slowdown and approach along their original incoming arrows.
