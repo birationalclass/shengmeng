@@ -248,3 +248,7 @@ Validation: Chromium and WebKit verify blank entry, first-Enter frame and axis a
 ## v44 · Frame before content
 
 All left-hand card entrances and accordion openings share one sequence in `notebook-motion.js`: finish the frame geometry, then fade in text and formulas. The fade is started by the geometry animation’s completion, including new cards, nested definitions, and the settings preview. Right-hand diagram animations have separate ownership. Disabled/reduced motion still shows the final state immediately.
+
+## v45 · Anticommutation cancellation
+
+Mixed-composite particles brake on their original horizontal/vertical paths before meeting. A plus sign briefly marks their midpoint inside the common target term; the particles accelerate into it, shrink into zero, and the plus fades with the particles. There is no terminal sideways offset. Total differential and total-square timelines remain independent.

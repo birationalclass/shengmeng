@@ -2,7 +2,7 @@ import {createInitialAnimations} from './initial-animations.js?v=44';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=40';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
-import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=41';
+import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=45';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=40';
 import {translatePage,language,toggleLanguage} from './language.js?v=39';
