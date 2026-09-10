@@ -1,0 +1,19 @@
+import {replaceMathContent} from './math-transitions.js?v=64';
+export function createStabilityProof({board,math,language}){
+ const R=String.raw,t=(zh,en)=>language()==='en'?en:zh,steps=[0,0];let context=null;
+ const noteMath=text=>text.replace(/Rₚ,ᑫ|φᵣ|E∞|\(p,q\)/g,key=>math({'Rₚ,ᑫ':'R_{p,q}','φᵣ':'\\phi_r','E∞':'E_\\infty','(p,q)':'(p,q)'}[key]));
+ const entries=[[
+  {name:['定义','Definition'],f:[R`R_{p,q}:=\max\{p+1,q+2\}`,R`E_\infty^{p,q}:=E_{R_{p,q}}^{p,q}\qquad(p,q\ge0)`],note:['这是本笔记第一象限下的稳定项定义。Rₚ,ᑫ 是一个充分界限，不一定是最早稳定的页数。','This defines the stable term under the first-quadrant assumption. Rₚ,ᑫ is a sufficient bound, not necessarily the earliest stable page.']},
+  {name:['换一个稳定页','Choosing a later stable page'],f:[R`r\ge R_{p,q}\ \Longrightarrow\ d_r^{p,q}=0,\quad d_r^{p-r,q+r-1}=0`,R`\phi_r^{p,q}:E_r^{p,q}\xrightarrow{\sim}E_{r+1}^{p,q}`,R`R'\ge R_{p,q}\ \Longrightarrow\ E_{R_{p,q}}^{p,q}\xrightarrow{\sim}E_{R'}^{p,q}`],note:['φᵣ 是“下一页为本页上同调”的自然同构在入射与出射微分均为零时给出的。复合这些同构即可比较任意两个稳定页；不是任意选择的向量空间同构。','The natural identification of the next page with cohomology gives φᵣ when both adjacent differentials vanish. Composing these maps compares any two stable pages; the isomorphisms are not arbitrary choices.']}
+ ],[
+  {name:['准确条件','The precise condition'],f:[R`\forall p,q\ge0\ \exists R_{p,q}\ \forall r\ge R_{p,q}:`,R`d_r^{p,q}=0,\qquad d_r^{p-r,q+r-1}=0`,R`E_{r+1}^{p,q}\cong\frac{\ker d_r^{p,q}}{\operatorname{im}d_r^{p-r,q+r-1}}=E_r^{p,q}`],note:['这里所谓“收敛到 E∞”准确地说是逐位置稳定：每个固定 (p,q) 从某页起不再改变。这里没有采用拓扑意义下的极限。','Here “convergence to E∞” means pointwise stabilization: each fixed (p,q) stops changing after some page. No topological limit is involved.']},
+  {name:['第一象限保证稳定','Why the first quadrant suffices'],f:[R`d_r^{p,q}:E_r^{p,q}\longrightarrow E_r^{p+r,q-r+1}`,R`r>q+1\ \Longrightarrow\ E_r^{p+r,q-r+1}=0`,R`d_r^{p-r,q+r-1}:E_r^{p-r,q+r-1}\longrightarrow E_r^{p,q}`,R`r>p\ \Longrightarrow\ E_r^{p-r,q+r-1}=0`,R`r\ge\max\{p+1,q+2\}\ \Longrightarrow\text{both maps are zero}`],note:['第一象限以外的项为零，所以先后排除了出射与入射微分。仅看到某一页的出射微分为零，还不足以推出稳定。','Terms outside the first quadrant vanish, excluding both outgoing and incoming differentials. Seeing a zero outgoing differential on one page alone does not prove stabilization.']},
+  {name:['相容性与量词','Compatibility and quantifiers'],f:[R`\iota_r^{p,q}:E_r^{p,q}\xrightarrow{\sim}E_\infty^{p,q}\qquad(r\ge R_{p,q})`,R`\iota_{R_{p,q}}^{p,q}:=\operatorname{id},\qquad\iota_{r+1}^{p,q}\circ\phi_r^{p,q}=\iota_r^{p,q}`,R`\forall(p,q)\ \exists R_{p,q}\qquad\not\equiv\qquad\exists R\ \forall(p,q)`],note:['R 可以依赖于位置。第一象限假设本身并不保证存在一个统一页数，使整个谱序列同时稳定。图中的同构线只连接所选位置，不表示两张完整页面同构。','The bound may depend on the position. The first-quadrant assumption alone does not guarantee one page at which the entire spectral sequence stabilizes. The isomorphism lines connect only the selected terms, not whole pages.']}
+ ]];
+ function paint(){const {state,point}=context,section=state.step,i=steps[section],entry=entries[section][i],bound=Math.max(point.p+1,point.q+2);
+ const html=`<nav class="proof-steps" aria-label="${t('数学阐述步骤','Exposition steps')}">${entries[section].map((e,j)=>`<button data-stability-proof="${j}" aria-pressed="${i===j}">${j+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="operation-content evolution-exposition">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${noteMath(t(...entry.note))}</p><p class="operation-note">${math(R`(p,q)=(${point.p},${point.q}),\quad R_{p,q}=${bound}`)}</p>`;
+ replaceMathContent(board,html);board.dataset.currentProofTopic=section===0?'einfty':'stabilization';board.dataset.currentProofStep=String(i);
+ }
+ board.addEventListener('click',e=>{const button=e.target.closest('[data-stability-proof]');if(!button||context?.state.module!=='converge')return;e.stopPropagation();steps[context.state.step]=Number(button.dataset.stabilityProof);paint();});
+ return {render(c){context=c;paint();}};
+}
