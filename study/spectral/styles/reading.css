@@ -1,12 +1,14 @@
 /* Current-reading emphasis is shared by all sections, independent of diagrams. */
 .notebook-workspace {
  --reading-current:#f5f7fa;
- --reading-text-depth:0 1px 0 #030c11d9,0 2px 4px #00000038;
+ --reading-text-depth:0 -1px 0 #ffffff26,0 1px 0 #8da7ad,0 2px 0 #435f69,0 3px 0 #223d49,0 5px 7px #00000073;
+ --reading-formula-depth:0 1px 0 #718e96,0 2px 0 #2e4b58,0 4px 6px #00000070;
  --reading-heading-size:19px;
  --reading-formula-size:23px;
 }
 .notebook-workspace .explanation,.notebook-workspace .slide-body {overflow-anchor:none;scroll-behavior:auto}
 .notebook-workspace :is(.build-card,.numbered-entry) {
+ cursor:pointer;
  transition:background-color .36s ease,box-shadow .36s ease;
 }
 .notebook-workspace :is(.build-card,.numbered-entry).build-current {
@@ -37,7 +39,7 @@
 }
 .notebook-workspace .formal-statement :is(.build-card,.numbered-entry).build-current :is(.math-block,.relation-choice) {
  font-size:var(--reading-formula-size);color:var(--reading-current);
- text-shadow:var(--reading-text-depth);
+ text-shadow:var(--reading-formula-depth);
 }
 .notebook-workspace .initial-assumptions {font-size:12px;text-shadow:0 1px 0 #030c1100,0 2px 4px #00000000;transition:font-size .38s var(--motion-easing),color .3s ease,text-shadow .38s var(--motion-easing)}
 .notebook-workspace .definition-current .initial-assumptions {font-size:20px;color:var(--reading-current);text-shadow:var(--reading-text-depth)}
@@ -60,3 +62,13 @@
 /* Section headings occur once; later cards continue the same numbered section. */
 .notebook-workspace .statement-heading[hidden] {display:none!important}
 .notebook-workspace .section-continuation .numbered-entry:first-child {border-top:0}
+
+/* Section 2 is one persistent surface; page families are semantic groups only. */
+.notebook-workspace .notebook-section .reading-group {
+ margin:0;padding:0;border:0;border-radius:0;
+ background:transparent!important;box-shadow:none;
+ backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+.notebook-workspace .notebook-section .reading-group>.statement-body {margin:0;padding:0}
+.notebook-workspace .notebook-section .numbered-entry {border-top:1px solid #3c566060}
+.notebook-workspace .notebook-section[data-current=true] {border-left-color:var(--teal)}

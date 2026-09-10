@@ -27,7 +27,7 @@ const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
 const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanation'),mobilePane:$('.slide-body')});
-const revealedReadings=new Map(),foldedReadings=new Set();
+const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1;
 const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1'];
@@ -118,9 +118,33 @@ function statementHeading(meta,key){
  const subject=(meta.showName&&meta.symbol?esc(meta.name)+' ':'')+(meta.symbol?math(meta.symbol):esc(meta.name||''));
  return `<div class="statement-heading" ${meta.continued?'hidden':''}><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
 }
-function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card${meta.continued?' section-continuation':''}" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
-
-function syncStatementCards(){syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=(openStatements.has(key)||el.classList.contains('section-continuation'))&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
+function statementMarkup(item,module,step,grouped=false){
+ const meta=statementMeta(module,step),key=`${module}:${step}`,entries=formulas(item.f,meta.concepts,meta.number,module,step);
+ if(grouped)return `<section class="formal-statement reading-group" data-statement="${key}" data-step="${step}" hidden><div class="statement-body">${entries}</div></section>`;
+ return `<article class="formal-statement notebook-card${meta.continued?' section-continuation':''}" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${entries}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;
+}
+function sectionTwoMarkup(){
+ const heading=statementHeading(statementMeta('learn',3),'2').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
+ const groups=[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+[0,1].map(step=>statementMarkup(convergence[step],'converge',step,true)).join('');
+ return `<article class="formal-statement notebook-card notebook-section" data-section="2" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
+}
+function syncStatementCards(){
+ syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);
+ document.querySelectorAll('[data-statement]').forEach(el=>{
+  const key=el.dataset.statement,grouped=el.classList.contains('reading-group'),visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden;
+  const open=(grouped||openStatements.has(key)||el.classList.contains('section-continuation'))&&!(key==='initial:0'&&state.initialReveal<0);
+  el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());
+  notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:grouped||!visible||!wasVisible});
+  if(!grouped&&visible&&!wasVisible&&open)notebookMotion.revealCard(el);
+  const toggle=el.querySelector('.statement-toggle');if(toggle){toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));}
+ });
+ const section=$('[data-section="2"]');if(!section)return;
+ const visible=!state.cover&&[...section.querySelectorAll('[data-statement]')].some(el=>!el.hidden),wasVisible=!section.hidden,open=!foldedSections.has('2');
+ section.hidden=!visible;section.inert=!visible;section.dataset.open=String(open);section.dataset.current=String(state.module!=='initial');
+ notebookMotion.setExpanded(section.querySelector(':scope > .section-body'),open,{immediate:!visible||!wasVisible});
+ if(visible&&!wasVisible&&open)notebookMotion.revealCard(section);
+ const toggle=section.querySelector('[data-toggle-section]');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起第二节':'展开第二节',open?'Collapse section 2':'Expand section 2'));
+}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
  doubleComplexCompanion(initial[0]);
@@ -153,7 +177,7 @@ function render(updateControls=true){
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.indices.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
@@ -229,7 +253,7 @@ function selectInitialBuild(index){
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- pauseReadingHover();cancelSquareSequence();
+ pauseReadingHover();cancelSquareSequence();if(module!=='initial')foldedSections.delete('2');
  state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
@@ -241,7 +265,7 @@ function activateStatement(key,last=false){
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){pauseReadingHover();const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+function selectReadingPage(index){pauseReadingHover();foldedSections.delete('2');const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 // Auto-folding is a reading-navigation preference, never a hover or proof effect.
 // Changing the setting leaves the current layout untouched until the next advance.
 function foldBeforeAdvance(nextStatement){
@@ -258,6 +282,13 @@ function advanceNote(){
 }
 function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
 $('#explanation').addEventListener('click',e=>{
+ const sectionToggle=e.target.closest('[data-toggle-section]'),sectionSelect=e.target.closest('[data-select-section]');
+ if(sectionToggle){
+  notebookMotion.settleAll();const key=sectionToggle.dataset.toggleSection;
+  if(foldedSections.has(key))foldedSections.delete(key);else foldedSections.add(key);
+  syncStatementCards();return;
+ }
+ if(sectionSelect){foldedSections.delete(sectionSelect.dataset.selectSection);if(state.module==='initial')activateStatement('learn:3');else syncStatementCards();return;}
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
@@ -267,8 +298,21 @@ $('#explanation').addEventListener('click',e=>{
   const button=readingToggle||readingSelect,index=Number(button.dataset.toggleReading??button.dataset.selectReading),parent=button.closest('[data-statement]').dataset.statement;
   if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);syncReadingEntries(parent);}
   else{if(parent!==activeStatementKey())activateStatement(parent);selectReadingPage(index);}
+  return;
  }
-
+ // The whole numbered entry selects its reading position. Explicit controls
+ // retain their own action, and formula clicks can still preview the concept.
+ const entry=e.target.closest('.build-card,.numbered-entry');
+ if(!entry||e.target.closest('button,a,input,select,textarea,summary,[data-zoom]'))return;
+ if(entry.matches('.build-card')){
+  const index=Number(entry.dataset.build);
+  if(!entry.classList.contains('build-current')||!openBuilds.has(index))selectInitialBuild(index);
+ }else{
+  const parent=entry.closest('[data-statement]').dataset.statement,index=Number(entry.dataset.readingPage);
+  if(parent!==activeStatementKey())activateStatement(parent);
+  if(!entry.classList.contains('build-current')||foldedReadings.has(`${parent}:${index}`))selectReadingPage(index);
+ }
+ if(!e.target.closest('.math-block,.relation-choice'))e.stopPropagation();
 });
 function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
 function keepReadingVisible(card){readingFocus.follow(card);}
@@ -310,7 +354,7 @@ function applyConcept(concept,hover=false,source=null){
   const ownKey=interactionKey(el);el.classList.toggle('concept-linked',!!concept&&(ownKey===key||['3','6'].includes(el.dataset.build)&&key?.startsWith('relation:')));
   el.setAttribute('aria-pressed',String(!!state.pinned&&ownKey===state.pinnedKey));
  });
- $('#clearConcept').hidden=!state.pinned;renderOperation();window.spectralState={...state,language:language()};
+ renderOperation();window.spectralState={...state,language:language()};
 }
 function pinConcept(concept,source=null){
  cancelSquareSequence();
@@ -358,7 +402,6 @@ document.addEventListener('pointerout',e=>{if(readingHoverPaused)return;const el
 document.addEventListener('focusin',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el)enterConcept(el);});
 document.addEventListener('focusout',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
 document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealDirections(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
-$('#clearConcept').onclick=()=>{state.pinned=null;state.pinnedKey=null;restoreInteraction();};
 function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.focus||1;setAnnotation(i);}applyConcept(state.pinned,false);}
 
 function renderQuickCheck(){
@@ -385,7 +428,7 @@ function doubleComplexCompanion(item){
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
  $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,i===6&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
- $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1].map(step=>statementMarkup(convergence[step],'converge',step)).join(''));
+ $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup());
  $('#sceneNote').textContent='';
 }
 // Folding stays manual unless the reader explicitly enables auto-collapse.
