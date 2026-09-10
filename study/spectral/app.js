@@ -456,7 +456,7 @@ function fixedDiagram(){
  }
  if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&['totalmap','filteredmap'].includes(state.effect))||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
- if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(showNext?420:500,22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true)}</g>`;}
+ if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(filter?xy(2,GRID_MAX)[0]:(showNext?420:500),22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true)}</g>`;}
  if(m==='converge'&&s===1){
   const cutoff=p+Math.max(1,state.r),zero=cutoff>n+1;
   overlay+=`<g class="next-total convergence-target" data-zero="${zero}">${diagonal(n+1,cutoff,true,false)}${label(620,20,`F^{${cutoff}}C^{${n+1}}${zero?'=0':''}`,240,30,true)}</g>`;
