@@ -1,4 +1,4 @@
-import {createDifferentialProof} from './differential-proof.js?v=57';
+import {createDifferentialProof} from './differential-proof.js?v=64';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -21,7 +21,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   diagram.inert=ready;
  }
  function fit(animate=false){
-  const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';overlay.style.setProperty('--evolution-scale',String(scale));
+  const bounds=viewport.getBoundingClientRect(),contentHeight=Number(getComputedStyle(viewport).getPropertyValue('--diagram-content-height'))||525,width=Math.min(bounds.width,bounds.height*840/contentHeight);scale=width/840;overlay.style.width=width+'px';overlay.style.height=width*525/840+'px';overlay.style.setProperty('--evolution-scale',String(scale));
   const g=geometry(),a=g.dp/125,b=g.yp/125,d=g.dq/75,e=g.x-start*g.dr-a*origin.x,f=g.y-b*origin.x-d*origin.y;
   const target=tilted?`matrix(${a},${b},0,${d},${e*scale},${f*scale})`:'matrix(1,0,0,1,0,0)';
   if(transformTarget!==target){
@@ -83,9 +83,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
    labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
    if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
    for(let r=start;r<=Math.min(visibleMax,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
-   const pAxis=pos(4.6,0,start),qAxis=pos(0,4.5,start),o=pos(0,0,start);
-   out+=`<path class="evolution-r-axis" d="M${o} L${pAxis} M${o} L${qAxis}"/></svg>`;
-   labels+=mathLabel(pAxis[0]+8,pAxis[1]-5,'p','evolution-axis-label',{width:24,height:24})+mathLabel(qAxis[0]-18,qAxis[1]-5,'q','evolution-axis-label',{width:24,height:24});
+   out+='</svg>';
    overlay.innerHTML=`<div class="evolution-scene">${out}${pages}<div class="evolution-axis-labels" aria-hidden="true">${labels}</div></div>`;projectionKey=key;
    if(newPage!==null&&!reduced.matches){
     // The new page remains a distinct object. Columns pulse on the source;

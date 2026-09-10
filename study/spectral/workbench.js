@@ -18,16 +18,15 @@ export function operationMarkup(s,lang,math){
   }else if(c==='totalsquare'){
    body=`<div class="operation-equation">${M(R`\begin{aligned}D^2&=(\delta_1+\delta_2)^2\\&=\delta_1^2+(\delta_1\delta_2+\delta_2\delta_1)+\delta_2^2=0.\end{aligned}`)}</div>`;
    note=t(`这保证 ${M(R`(C^\bullet,D)`)} 构成上链复形，从而可以定义其上同调 ${M(R`H^n(C^\bullet,D)`)}。`,`Thus ${M(R`(C^\bullet,D)`)} is a cochain complex, and its cohomology ${M(R`H^n(C^\bullet,D)`)} is defined.`);
-  }else if(c==='square'){
-   body=`<div class="operation-equation">${M(R`(K^{\bullet,q},\delta_1),\qquad(K^{p,\bullet},\delta_2)`)}</div>`;
-   note=t('每行、每列均为上链复形，可分别取上同调。', 'Each row and column is a cochain complex, with its own cohomology.');
-  }else if(c==='square1'||c==='square2'){
-   const h=c==='square1',d=h?1:2,mid=h?'2,1':'1,2',end=h?'3,1':'1,3';
-   body=row(box('a\\in K^{1,1}')+arrow(`\\delta_${d}`)+box(`\\delta_${d}a\\in K^{${mid}}`)+arrow(`\\delta_${d}`)+box(`0\\in K^{${end}}`,'chosen'));
-   note=t(`${h?'每一行':'每一列'}是上链复形。终点的零是零元素。`, `${h?'Each row':'Each column'} is a cochain complex. The endpoint is the zero element.`);
+  }else if(['square','square1','square2'].includes(c)){
+   body=`<p class="operation-description">${t(`${M(R`\delta_1^2=0`)} 省略了双次数指标。两个 ${M(R`\delta_1`)} 分别是 ${M(R`\delta_1^{p,q}`)} 与 ${M(R`\delta_1^{p+1,q}`)}，是定义域不同的分量映射。准确地写，横向与纵向的平方零关系为：`,`${M(R`\delta_1^2=0`)} suppresses the bidegrees. Its two occurrences of ${M(R`\delta_1`)} are ${M(R`\delta_1^{p,q}`)} and ${M(R`\delta_1^{p+1,q}`)}, component maps with different domains. The horizontal and vertical square-zero relations are:`)}</p>`+
+    `<div class="operation-equation">${M(R`\begin{aligned}\delta_1^{p+1,q}\circ\delta_1^{p,q}&=0,\\\delta_2^{p,q+1}\circ\delta_2^{p,q}&=0.\end{aligned}`)}</div>`;
+   note=t(`这里分别是 ${M(R`K^{p,q}\to K^{p+2,q}`)} 与 ${M(R`K^{p,q}\to K^{p,q+2}`)} 的零映射。因此每行、每列都是上链复形，可分别取上同调。`,`These are the zero maps ${M(R`K^{p,q}\to K^{p+2,q}`)} and ${M(R`K^{p,q}\to K^{p,q+2}`)}, respectively. Thus each row and column is a cochain complex, with its own cohomology.`);
   }else if(c==='anticommute'){
-   body=`<div class="path-comparison"><div>${M(R`K^{1,1}\ni a\xrightarrow{\delta_1}\delta_1a\xrightarrow{\delta_2}\delta_2\delta_1a`)}</div><div>${M(R`K^{1,1}\ni a\xrightarrow{\delta_2}\delta_2a\xrightarrow{\delta_1}\delta_1\delta_2a`)}</div><div class="relation-sum">${M(R`\delta_2\delta_1a+\delta_1\delta_2a=0\in K^{2,2}`)}</div></div>`;
-   note=t('两条混合复合互为相反数；此关系将使总微分满足平方零。','The mixed composites are negatives of each other; this will make the total differential square to zero.');
+   body=`<p class="operation-description">${t(`${M(R`\delta_1,\delta_2`)} 是一族分量映射的简写；上标记录定义域的双次数：`,`${M(R`\delta_1,\delta_2`)} abbreviate families of component maps; the superscripts record the bidegree of the domain:`)}</p>`+
+    `<div class="operation-equation">${M(R`\begin{aligned}\delta_1^{p,q}&:K^{p,q}\longrightarrow K^{p+1,q}\\\delta_2^{p,q}&:K^{p,q}\longrightarrow K^{p,q+1}\end{aligned}`)}</div>`+
+    `<div class="operation-equation">${M(R`\delta_1^{p,q+1}\circ\delta_2^{p,q}+\delta_2^{p+1,q}\circ\delta_1^{p,q}=0`)}</div>`;
+   note=t(`两个 ${M(R`\delta_1`)} 分别是 ${M(R`\delta_1^{p,q+1}`)} 与 ${M(R`\delta_1^{p,q}`)}，并非同一个分量映射。两项复合均为 ${M(R`K^{p,q}\to K^{p+1,q+1}`)}，相加为零映射。图中取 ${M(R`p=q=1`)}。`,`The two occurrences of ${M(R`\delta_1`)} mean ${M(R`\delta_1^{p,q+1}`)} and ${M(R`\delta_1^{p,q}`)}, different component maps. Both composites are maps ${M(R`K^{p,q}\to K^{p+1,q+1}`)} and sum to the zero map. The diagram uses ${M(R`p=q=1`)}.`);
   }else if(c==='delta1'||c==='delta2'){
    const d=c==='delta1'?1:2;body=row(box('K^{p,q}')+arrow(`\\delta_${d}`)+box(d===1?'K^{p+1,q}':'K^{p,q+1}','chosen'));
    note=t(`${M(`\\delta_${d}`)} 是线性映射。`, `${M(`\\delta_${d}`)} is a linear map.`);

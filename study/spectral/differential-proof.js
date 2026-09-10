@@ -1,17 +1,21 @@
-import {replaceMathContent} from './math-transitions.js?v=40';
+import {replaceMathContent} from './math-transitions.js?v=64';
 import {cohomologyExposition} from './cohomology-view.js?v=38';
 // This panel owns its proof steps. Navigating a proof never advances a notebook
 // statement, changes a page, or cancels a diagram animation.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- let context=null,key='',topic='d0',steps={d0:0,d1:0,dr:0},phase=3;
+ let context=null,key='',topic='d0',steps={e0:0,d0:0,d1:0,dr:0},phase=3;
  const explanations={
+  e0:[
+   {name:['元素与记号','Elements and notation'],f:[R`[a]_0:=a+F^{p+1}C^{p+q}\in E_0^{p,q},\quad a\in F^pC^{p+q}`,R`\begin{array}{rcl}\Phi_0^{p,q}:K^{p,q}&\xrightarrow{\sim}&E_0^{p,q}\\a&\longmapsto&[a]_0\end{array}`],note:['当 a∈K^{p,q} 时，先通过直和因子的自然嵌入将 a 视为 F^pC^{p+q} 中的元素，再取陪集。此处 [a]₀ 是滤过商中的类，无须 a 满足闭性条件。','For a∈K^{p,q}, first regard a as an element of F^pC^{p+q} via the natural inclusion of the direct summand, then take its coset. Here [a]₀ is a class in a filtration quotient; no cocycle condition on a is required.']},
+   {name:['同构与逆映射','The isomorphism and its inverse'],f:[R`n=p+q,\qquad F^pC^n=K^{p,q}\oplus F^{p+1}C^n`,R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`(\Phi_0^{p,q})^{-1}([a]_0):=a_p`],note:['每个陪集都有唯一一个属于 K^{p,q} 的代表元，因此该映射是典范同构。E₀ 的定义仍然是商空间；动画采用此同构在同一位置标示两者。','Every coset has exactly one representative in K^{p,q}, so the map is a canonical isomorphism. E₀ remains defined as a quotient; the animation uses this identification to label both at the same position.']},
+   {name:['代表元无关','Independence of representative'],f:[R`a,a'\in F^pC^{p+q}`,R`[a']_0=[a]_0\iff a'-a\in F^{p+1}C^{p+q}`,R`a'-a\in F^{p+1}C^{p+q}\iff a'_p=a_p`],note:['更高列的分量不会改变第 p 列分量，故逆映射不依赖代表元。','Higher-column components do not change the column-p component, so the inverse is independent of the representative.']}
+  ],
   d0:[
-   {name:['为何记作 E₀','Why E₀'],f:[R`E_0^{p,q}:=F^pC^{p+q}/F^{p+1}C^{p+q}`,R`d_0:=\operatorname{Gr}_F D`,R`(E_0^{\bullet,\bullet},d_0)\cong(K^{\bullet,\bullet},\delta_2)`],note:['E₀ 是商空间；取第 p 列分量给出与 K 的自然同构，d₀ 对应 δ₂，而非总微分 D。一般只需滤过复形 (C,F,D) 即可构造 E₀、d₀，无须将 D 分解。','E₀ is a quotient. Projection to column p identifies it with K, with d₀ corresponding to δ₂ rather than D. In general, the filtered complex (C,F,D) defines E₀ and d₀ without any decomposition of D.']},
-   {name:['诱导到商','Descend to the quotient'],f:[R`D(F^pC^n)\subseteq F^pC^{n+1}`,R`a'-a\in F^{p+1}C^n\ \Longrightarrow\ Da'-Da\in F^{p+1}C^{n+1}`,R`d_0^{p,q}[a]_0:=[Da]_0,\qquad n=p+q`],note:['D 保持下一层滤过，故 d₀ 良定义。','D preserves the next filtration layer, so d₀ is well-defined.']},
-   {name:['自然同构','Natural identification'],f:[R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`\Phi_0^{p,q}:E_0^{p,q}\xrightarrow{\sim}K^{p,q},\qquad\Phi_0^{p,q}([a]_0):=a_p`,R`\ker(F^pC^n\longrightarrow K^{p,q})=F^{p+1}C^n`],note:['取第 p 列分量的满射，其核恰为分母。','Projection to column p is surjective, with kernel equal to the denominator.']},
-   {name:['计算第 p 列','Compute column p'],f:[R`D:=\delta_1+\delta_2`,R`\delta_1a_i\in K^{i+1,n-i},\qquad\delta_2a_i\in K^{i,n-i+1}`,R`(Da)_p=\delta_2a_p\qquad(a_i=0\text{ for }i<p)`,R`\delta_1(F^pC^n)\subseteq F^{p+1}C^{n+1}`],note:['δ₁ 的像在下一层滤过中，故在商中为零。','The image of δ₁ lies in the next filtration layer, so vanishes in the quotient.']},
-   {name:['交换恒等式','Commuting identity'],f:[R`\Phi_0^{p,q+1}\circ d_0^{p,q}=\delta_2^{p,q}\circ\Phi_0^{p,q}`,R`d_0^{p,q}=(\Phi_0^{p,q+1})^{-1}\delta_2^{p,q}\Phi_0^{p,q}`],note:['经 Φ₀，d₀ 对应 δ₂；总复形上仍有 D=δ₁+δ₂。','Φ₀ identifies d₀ with δ₂; on the total complex D=δ₁+δ₂.']}
+   {name:['诱导到商','Descend to the quotient'],f:[R`d_0:=\operatorname{Gr}_F D,\qquad a,a'\in F^pC^n`,R`D(F^{p+1}C^n)\subseteq F^{p+1}C^{n+1}`,R`a'-a\in F^{p+1}C^n\ \Longrightarrow\ Da'-Da\in F^{p+1}C^{n+1}`,R`d_0^{p,q}[a]_0:=[Da]_0,\qquad n=p+q`],note:['D 保持下一层滤过，故 d₀ 不依赖代表元。','D preserves the next filtration layer, so d₀ is independent of the representative.']},
+   {name:['只保留纵向分量','The vertical component survives'],f:[R`a\in K^{p,q},\qquad Da=\delta_1^{p,q}a+\delta_2^{p,q}a`,R`\delta_1^{p,q}a\in K^{p+1,q}\subseteq F^{p+1}C^{p+q+1}`,R`[Da]_0=[\delta_2^{p,q}a]_0`],note:['横向分量在商中为零；这并不是总复形上 D=δ₂。','The horizontal component vanishes in the quotient; this does not mean D=δ₂ on the total complex.']},
+   {name:['与同构相容','Compatibility with the isomorphism'],f:[R`d_0^{p,q}\circ\Phi_0^{p,q}=\Phi_0^{p,q+1}\circ\delta_2^{p,q}`,R`d_0^{p,q}=\Phi_0^{p,q+1}\circ\delta_2^{p,q}\circ(\Phi_0^{p,q})^{-1}`,R`(K^{\bullet,\bullet},\delta_2)\cong(E_0^{\bullet,\bullet},d_0)`],note:['d₀ 对应 δ₂，而非总微分 D。一般只需滤过复形 (C,F,D) 即可构造 (E₀,d₀)，无须预先将 D 分解。','d₀ corresponds to δ₂, not the total differential D. In general the filtered complex (C,F,D) defines (E₀,d₀) without a prior decomposition of D.']},
+   {name:['平方为零','Square zero'],f:[R`d_0^{p,q+1}d_0^{p,q}[a]_0=[D^2a]_0=0`],note:['D²=0 下降为商上的 d₀²=0。','D²=0 descends to d₀²=0 on the quotient.']}
   ],
   d1:[
    {name:['闭代表元','Closed representatives'],f:[R`a\in K^{p,q},\quad\delta_2a=0`,R`\delta_2\delta_1a=-\delta_1\delta_2a=0`],note:['反交换关系保证 δ₁a 仍为纵向闭元。','Anticommutation makes δ₁a a vertical cocycle.']},
@@ -25,12 +29,11 @@ export function createDifferentialProof({board,math,language}){
    {name:['平方为零','Square zero'],f:[R`d_r^{p+r,q-r+1}d_r^{p,q}[a]_r=[D^2a]_r=0`,R`E_{r+1}^{p,q}\cong\frac{\ker(d_r^{p,q})}{\operatorname{im}(d_r^{p-r,q+r-1})}`],note:['平方为零来自同一个 D²=0。下一页是这个微分的上同调；该同构由滤过商空间的构造得到。','Square zero follows from the same identity D²=0. The filtered-quotient construction identifies the next page with this cohomology.']}
   ]
  };
+ function noteMath(text){return text.replace(/K\^\{p,q\}|F\^pC\^\{p\+q\}|a∈K\^\{p,q\}|\[a\]₀/g,token=>math({'a∈K^{p,q}':R`a\in K^{p,q}`,'[a]₀':R`[a]_0`}[token]||token));}
  function properties(){
   const section=context.state.step,zero=context.state.module==='learn'&&section===3;
-  const formulas=zero?[
-   R`\Phi_0^{p,q}:E_0^{p,q}\xrightarrow{\sim}K^{p,q},\qquad\Phi_0^{p,q}([a]_0):=a_p`,
-   R`\Phi_0^{p,q+1}d_0^{p,q}=\delta_2^{p,q}\Phi_0^{p,q},\qquad d_0^2=0`
-  ]:section===4?[
+  if(zero)return '';
+  const formulas=section===4?[
    R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2),\qquad d_1^2=0`,
    R`E_2^{p,q}\cong H^p(E_1^{\bullet,q},d_1)`
   ]:[
@@ -42,19 +45,22 @@ export function createDifferentialProof({board,math,language}){
  function paint(){
   const allTopics=[['d0',t('d₀ 的来源','Origin of d₀')],['d1',t('d₁ 的良定义','Well-defined d₁')],['dr',t('dᵣ 的良定义','Well-defined dᵣ')],['cohom',t('取上同调','Cohomology')]];
   const zero=context?.state.module==='learn'&&context.state.step===3;
-  const topics=zero?allTopics.filter(([id])=>id==='d0'):allTopics;
-  if(zero)topic='d0';
+  const zeroTerm=zero&&context.state.notePage===0;
+  const topics=zero?[[zeroTerm?'e0':'d0',zeroTerm?t('元素与典范同构','Elements and canonical identification'):t('d₀ 的来源','Origin of d₀')]]:allTopics;
+  if(zero)topic=zeroTerm?'e0':'d0';
   let html=properties()+`<nav class="proof-topics" aria-label="${t('数学阐述主题','Mathematical exposition topics')}">${topics.map(([id,name])=>`<button data-proof-topic="${id}" aria-pressed="${topic===id}">${name.replace(/d([₀₁ᵣ])/g,(_,r)=>math('d_{'+({'₀':0,'₁':1,'ᵣ':'r'}[r])+'}'))}</button>`).join('')}</nav>`;
+  if(zero)html='';
   if(topic==='cohom')html+=cohomologyExposition({r:context.construction?.r??Math.max(0,context.current-1),phase,point:context.point,math,t});
   else{
    const entries=explanations[topic],entry=entries[steps[topic]];
-   html+=`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${entries.map((e,i)=>`<button data-proof-step="${i}" aria-pressed="${steps[topic]===i}">${i+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="proof-body"><div class="operation-content evolution-exposition">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${t(...entry.note)}</p></div>`;
+   html+=`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${entries.map((e,i)=>`<button data-proof-step="${i}" aria-pressed="${steps[topic]===i}">${i+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="proof-body"><div class="operation-content evolution-exposition">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${noteMath(t(...entry.note))}</p></div>`;
   }
+  if(zero)html+=`<p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=62" target="_blank" rel="noopener">McCleary, Theorem 2.15, pp. 48–49</a></p>`;
   replaceMathContent(board,html);board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=topic==='cohom'?phase:steps[topic];
  }
  board.addEventListener('click',e=>{
   const button=e.target.closest('[data-proof-topic],[data-proof-step],[data-co-phase]');if(!button||!context)return;
   e.stopPropagation();if(button.dataset.proofTopic){topic=button.dataset.proofTopic;}else if(button.dataset.proofStep!==undefined)steps[topic]=Number(button.dataset.proofStep);else phase=Number(button.dataset.coPhase);paint();
  });
- return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?'dr':c.construction?'cohom':c.state.module==='learn'&&c.state.step===4?'d1':'d0';}paint();},reset(){key='';context=null;steps={d0:0,d1:0,dr:0};phase=3;}};
+ return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?'dr':c.construction?'cohom':c.state.module==='learn'&&c.state.step===4?'d1':'d0';}paint();},reset(){key='';context=null;steps={e0:0,d0:0,d1:0,dr:0};phase=3;}};
 }

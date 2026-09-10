@@ -25,7 +25,7 @@ function blend(el,oldHTML,newHTML,motion,text=null){
   fadeIn.cancel();fadeOut.cancel();
  },()=>{});
 }
-export function replaceMathContent(host,markup){
+export function replaceMathContent(host,markup,{animate=true}={}){
  if(previousMarkup.get(host)===markup)return;
  previousMarkup.set(host,markup);
  const motion=visualMotion();
@@ -34,7 +34,7 @@ export function replaceMathContent(host,markup){
   tokens:leaves(root).map(el=>({text:el.dataset.mathText??el.textContent,classes:el.className.replace(/\s*math-swap/g,''),html:snapshot(el)}))
  }));
  host.innerHTML=markup;
- if(motion.reduced||!old.length)return;
+ if(!animate||motion.reduced||!old.length)return;
  visualRoots(host).forEach((root,i)=>{
   const before=old[i];if(!before)return;
   const tex=root.parentElement.querySelector('annotation')?.textContent;

@@ -1,16 +1,18 @@
 import {numberedPages} from './reading-pages.js?v=59';
+import {createReadingFocus} from './reading-focus.js?v=64';
+import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
 import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
-import {replaceMathContent} from './math-transitions.js?v=40';
+import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=40';
 import {translatePage,language,toggleLanguage} from './language.js?v=39';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=57';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=64';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=58';
+import {createPageEvolution} from './page-evolution.js?v=64';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -20,6 +22,7 @@ let squareSequenceSerial=0,squareSequenceActive=false;
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
+const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanation'),mobilePane:$('.slide-body')});
 const revealedReadings=new Map(),foldedReadings=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1;
@@ -28,7 +31,7 @@ const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
 const state={module:'initial',cover:true,initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
-let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],definitionScrollFrame=0,expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
+let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
@@ -219,16 +222,23 @@ function renderWorkspaceState(){
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
 }
 function ui(zh,en){return language()==='en'?en:zh;}
-function selectInitialBuild(index){cancelSquareSequence();state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
+function selectInitialBuild(index){
+ cancelSquareSequence();state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
+ keepDefinitionVisible();
+ if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);
+}
 function activateStatement(key,last=false){
- notebookMotion.settleAll();
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- state.cover=false;state.module=module;state.step=step;state.notePage=0;foldedReadings.delete(`${key}:0`);state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
- if(module==='initial'){state.initialReveal=Math.max(0,state.initialReveal);state.effect=initialConcept();}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
- openStatements.add(key);render();
- if(last&&!isDoubleComplexView())selectReadingPage(currentReadingPages().length-1);
+ cancelSquareSequence();
+ state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
+ openStatements.add(key);
+ if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
+ else{
+  if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
+  const pages=currentReadingPages();state.notePage=last?pages.length-1:0;foldedReadings.delete(`${key}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage]?.indices[0]||1;
+  render();keepReadingVisible($(`[data-statement="${key}"] [data-reading-page="${state.notePage}"]`));
+ }
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
- keepReadingVisible($(`[data-statement="${key}"]`));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
 function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
@@ -241,12 +251,12 @@ function foldBeforeAdvance(nextStatement){
  for(const [key,last] of revealedReadings)for(let i=0;i<=last;i++)foldedReadings.add(`${key}:${i}`);
 }
 function advanceNote(){
- if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){foldBeforeAdvance('initial:0');selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}
+ if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){foldBeforeAdvance('initial:0');selectInitialBuild(state.initialReveal+1);return;}
  if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){foldBeforeAdvance(activeStatementKey());selectReadingPage(state.notePage+1);return;}
  const i=readingOrder.indexOf(activeStatementKey());
  if(i>=0&&i<readingOrder.length-1){const next=readingOrder[i+1];foldBeforeAdvance(next);activateStatement(next);}
 }
-function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);keepDefinitionVisible();}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);if(isDoubleComplexView())selectInitialBuild(INITIAL_STEPS);}}
+function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
 $('#explanation').addEventListener('click',e=>{
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
@@ -261,15 +271,8 @@ $('#explanation').addEventListener('click',e=>{
 
 });
 function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
-function keepReadingVisible(card){
- cancelAnimationFrame(definitionScrollFrame);
- const pane=matchMedia('(max-width:780px)').matches?$('.slide-body'):$('.explanation'),until=performance.now()+notebookMotion.duration()+50;
- if(!card){pane.scrollTop=0;return;}
- const follow=()=>{if(!card.isConnected||card.hidden)return;const r=card.getBoundingClientRect(),b=pane.getBoundingClientRect();if(r.height>b.height-24){pane.scrollTop+=r.top-b.top-8;}else if(r.bottom>b.bottom)pane.scrollTop+=r.bottom-b.bottom+12;else if(r.top<b.top)pane.scrollTop+=r.top-b.top-12;if(performance.now()<until)definitionScrollFrame=requestAnimationFrame(follow);};follow();
-}
+function keepReadingVisible(card){readingFocus.follow(card);}
 function keepDefinitionVisible(){keepReadingVisible($(`[data-build="${state.initialReveal}"]`));}
-$('.explanation').addEventListener('wheel',()=>cancelAnimationFrame(definitionScrollFrame),{passive:true});
-$('.explanation').addEventListener('touchstart',()=>cancelAnimationFrame(definitionScrollFrame),{passive:true});
 function interactiveConcept(target){
  if(!(target instanceof Element))return null;
  // A term has local hover/focus feedback; it never selects a diagram-wide concept.
@@ -390,7 +393,7 @@ function syncNumberedEntry(el,visible,open,current){
 }
 function syncInitialEntries(){
  document.querySelectorAll('.build-statement .build-card').forEach(el=>{
-  const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),i===state.initialReveal);
+  const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),isDoubleComplexView()&&i===state.initialReveal);
   el.classList.toggle('build-complete',i<state.initialReveal);
  });
  const intro=$('.initial-definition');if(!intro)return;intro.classList.toggle('definition-current',state.module==='initial'&&state.initialReveal===0);
@@ -417,10 +420,11 @@ function revealDirections(el){
 }
 document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('.build-card')){e.preventDefault();revealDirections(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}});
 function renderOperation(){
- const context=[state.module,state.step,state.effect,state.annotationStep].join(':');
+ const staticSquare=isDoubleComplexView()&&['square','square1','square2'].includes(state.effect);
+ const context=[state.module,state.step,staticSquare?'square':state.effect,state.annotationStep].join(':');
  if(context!==expositionContext){$('#operationBoard').scrollTop=0;expositionContext=context;}
  const prelude=isDoubleComplexView()&&state.initialReveal<0;
- replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math));$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
+ replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math),{animate:!staticSquare});$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
  squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);emphasizeCurrentDefinition();
 }
 
@@ -507,7 +511,7 @@ function renderPersistentDiagram(){
  current.querySelector('#graphTitle').textContent=desired.querySelector('#graphTitle').textContent;syncDiagramLabels();syncCoordinatePresentation();
 }
 function statementFormulas(){return document.querySelectorAll('.formal-statement.is-active .reading-formula');}
-function annotationCount(){return statementFormulas().length;}
+function annotationCount(){return document.querySelectorAll(`[data-statement="${activeStatementKey()}"] .reading-formula`).length;}
 function updateAnnotations(){
  if(state.cover||isDoubleComplexView())return;
  const a=state.annotationStep||1;
@@ -540,7 +544,7 @@ function syncDiagramLabels(){
   const map=anchor.previousElementSibling?.matches('.arrow')?anchor.previousElementSibling:null;if(map){el.classList.add('map-label',map.classList.contains('h')?'map-h':map.classList.contains('v')?'map-v':'map-r');el.dataset.mapConcept=map.dataset.concept;}else delete el.dataset.mapConcept;
   el.style.left=d.x+'px';el.style.top=d.y+'px';el.style.width=d.width+'px';el.style.height=d.height+'px';
   el.style.opacity=`calc(${anchor.closest('.muted')?'var(--graph-muted-opacity)':1} * ${anchor.closest('.zero')?'var(--graph-zero-opacity)':1} * ${anchor.closest('.context-edge')?'var(--graph-context-opacity)':1})`;
-  const changed=el.dataset.tex!==d.tex;if(changed){replaceMathContent(el,anchor.closest('.extent-ellipsis')?extentDots(d.tex):math(d.tex));el.dataset.tex=d.tex;}
+  const changed=el.dataset.tex!==d.tex;if(changed){if(anchor.closest('.node'))replaceBigradedLabel(el,d.tex,math);else replaceMathContent(el,anchor.closest('.extent-ellipsis')?extentDots(d.tex):math(d.tex));el.dataset.tex=d.tex;}
   if(!el.isConnected){plane.append(el);fadeGraphAddition(el);}
  }
  for(const el of old.values())el.remove();
@@ -583,6 +587,7 @@ function relationOverlay(effect){
 function syncCoordinatePresentation(){
  const graph=$('#diagram'),frameOnly=state.module==='initial'&&state.initialReveal<0;
  const symbolic=['initial','learn','converge'].includes(state.module)&&!frameOnly;
+ graph.classList.toggle('is-page-grid',state.module!=='initial'||state.initialReveal===8);
  graph.classList.toggle('frame-only',frameOnly);graph.classList.toggle('symbolic-coordinates',symbolic);
  graph.querySelectorAll('.axis-tick').forEach(tick=>{
   const v=Number(tick.dataset.value),horizontal=tick.dataset.axis==='p',close=(frameOnly||symbolic)&&v>=0;

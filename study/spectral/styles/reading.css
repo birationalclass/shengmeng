@@ -1,0 +1,51 @@
+/* Current-reading emphasis is shared by all sections, independent of diagrams. */
+.notebook-workspace {
+ --reading-current:#eed6a0;
+ --reading-current-wash:#eed6a00c;
+ --reading-heading-size:19px;
+ --reading-formula-size:23px;
+}
+.notebook-workspace .explanation,.notebook-workspace .slide-body {overflow-anchor:none;scroll-behavior:auto}
+.notebook-workspace :is(.build-card,.numbered-entry) {
+ transition:background-color .36s ease,box-shadow .36s ease;
+}
+.notebook-workspace :is(.build-card,.numbered-entry).build-current {
+ background-color:var(--reading-current-wash);
+ box-shadow:inset 2px 0 #eed6a080;
+}
+.notebook-workspace :is(.build-card,.numbered-entry) .build-heading h4 {
+ font-size:14px;color:#a9c0c7;
+ transition:font-size .38s var(--motion-easing),color .3s ease;
+}
+.notebook-workspace :is(.build-card,.numbered-entry).build-current .build-heading h4,
+.notebook-workspace :is(.build-card,.numbered-entry).build-current .statement-subnumber {
+ color:var(--reading-current);
+}
+.notebook-workspace :is(.build-card,.numbered-entry).build-current[data-open=true] .build-heading h4 {
+ font-size:var(--reading-heading-size);
+}
+.notebook-workspace .formal-statement :is(.build-card,.numbered-entry) :is(.math-block,.relation-choice) {
+ font-size:14px;
+ transition:font-size .38s var(--motion-easing),color .3s ease,background-color .3s ease;
+}
+.notebook-workspace .formal-statement :is(.build-card,.numbered-entry).build-current :is(.math-block,.relation-choice) {
+ font-size:var(--reading-formula-size);
+}
+.notebook-workspace .initial-assumptions {font-size:12px;transition:font-size .38s var(--motion-easing),color .3s ease}
+.notebook-workspace .definition-current .initial-assumptions {font-size:20px;color:var(--reading-current)}
+.notebook-workspace .initial-definition.definition-current {background:var(--reading-current-wash)}
+/* Retain the same spacing when moving from the double complex to later pages. */
+.notebook-workspace .build-card {min-height:0;padding:12px 3px}
+.notebook-workspace .build-card .math-block {margin:2px 0;padding-top:7px;padding-bottom:7px}
+.notebook-workspace .relation-choices {justify-content:center;align-items:center;gap:18px;width:100%;box-sizing:border-box;padding:6px 0}
+@media(max-width:1000px){.notebook-workspace {--reading-heading-size:17px;--reading-formula-size:20px}}
+@media(max-width:780px){.notebook-workspace {--reading-formula-size:19px}
+ .notebook-workspace .definition-current .initial-assumptions {font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){
+ .notebook-workspace :is(.build-card,.numbered-entry),
+ .notebook-workspace :is(.build-card,.numbered-entry) :is(h4,.math-block,.relation-choice),
+ .notebook-workspace .initial-assumptions {transition:none}
+}
+
+.notebook-workspace #explanation::after {content:'';display:block;flex:none;height:var(--reading-tail-space,0px);pointer-events:none}

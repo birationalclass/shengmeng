@@ -20,16 +20,15 @@
 
 /* Keep controls adjacent to the canvas, not at the bottom of spare plot space. */
 .visualization-module {
-  --diagram-content-height:525;
+  --diagram-content-height:460;
   display:flex;flex-direction:column;justify-content:flex-start;gap:8px;
 }
-.is-building .visualization-module { --diagram-content-height:460 }
 .slide-deck .visualization-module .stage {
   flex:0 1 auto;width:100%;aspect-ratio:840 / var(--diagram-content-height);
   max-height:calc(100% - var(--notebook-controls-height) - 8px);min-height:0;
 }
 .visualization-module .diagram-viewport { align-items:flex-start }
-.is-building.slide-deck #diagram { max-height:none;align-self:flex-start }
+.slide-deck #diagram { max-height:none;align-self:flex-start }
 .slide-deck .visualization-module .diagram-controls {
   flex:0 0 var(--notebook-controls-height);height:var(--notebook-controls-height);
   padding-top:4px;
