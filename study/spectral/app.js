@@ -110,7 +110,7 @@ function statementHeading(meta,key){
 }
 function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts,meta.number,module,step)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
 
-function syncStatementCards(){document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
+function syncStatementCards(){syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
  doubleComplexCompanion(initial[0]);
@@ -219,13 +219,13 @@ function renderWorkspaceState(){
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
 }
 function ui(zh,en){return language()==='en'?en:zh;}
-function selectInitialBuild(index){cancelSquareSequence();openBuilds.clear();state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
+function selectInitialBuild(index){cancelSquareSequence();state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
 function activateStatement(key,last=false){
  notebookMotion.settleAll();
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
  state.cover=false;state.module=module;state.step=step;state.notePage=0;foldedReadings.delete(`${key}:0`);state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
  if(module==='initial'){state.initialReveal=Math.max(0,state.initialReveal);state.effect=initialConcept();}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
- openStatements.clear();openStatements.add(key);render();
+ openStatements.add(key);render();
  if(last&&!isDoubleComplexView())selectReadingPage(currentReadingPages().length-1);
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
  keepReadingVisible($(`[data-statement="${key}"]`));
@@ -238,13 +238,12 @@ $('#explanation').addEventListener('click',e=>{
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
- if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);setupDoubleComplex();}else selectInitialBuild(i);return;}
+ if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);syncInitialEntries();}else selectInitialBuild(i);return;}
  if(buildSelect){selectInitialBuild(Number(buildSelect.dataset.selectBuild));return;}
  if(readingToggle||readingSelect){
   const button=readingToggle||readingSelect,index=Number(button.dataset.toggleReading??button.dataset.selectReading),parent=button.closest('[data-statement]').dataset.statement;
-  if(parent!==activeStatementKey())activateStatement(parent);
-  if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);updateAnnotations();}
-  else selectReadingPage(index);
+  if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);syncReadingEntries(parent);}
+  else{if(parent!==activeStatementKey())activateStatement(parent);selectReadingPage(index);}
  }
 
 });
@@ -365,8 +364,8 @@ function doubleComplexCompanion(item){
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1,2,3,4].map(step=>statementMarkup(convergence[step],'converge',step)).join('')+statementMarkup({title:'精确例子',f:[]},'lab',0)+statementMarkup({title:'代表元追踪',f:[]},'trace',0));
  $('#sceneNote').textContent='';
 }
-// Headers stay in document order. Only the body folds; later entries never
-// reuse or replace an earlier entry's DOM node.
+// Revealing or focusing an entry never closes another entry. Body folding
+// is controlled solely by the explicit minus buttons (or a cover reset).
 function syncNumberedEntry(el,visible,open,current){
  const wasVisible=!el.hidden,body=el.querySelector(':scope > .build-content');
  el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);
@@ -376,14 +375,23 @@ function syncNumberedEntry(el,visible,open,current){
  const toggle=el.querySelector('.build-toggle');
  toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));
 }
-function setupDoubleComplex(){
+function syncInitialEntries(){
  document.querySelectorAll('.build-statement .build-card').forEach(el=>{
   const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),i===state.initialReveal);
   el.classList.toggle('build-complete',i<state.initialReveal);
  });
+ const intro=$('.initial-definition');if(!intro)return;intro.classList.toggle('definition-current',state.module==='initial'&&state.initialReveal===0);
+ notebookMotion.setExpanded(intro,revealedBuild>=0,{immediate:revealedBuild<0});
+}
+function syncReadingEntries(key){
+ const last=revealedReadings.get(key)??-1;
+ document.querySelectorAll(`[data-statement="${key}"] [data-reading-page]`).forEach(el=>{
+  const i=Number(el.dataset.readingPage),visible=i<=last,current=key===activeStatementKey()&&i===state.notePage;
+  syncNumberedEntry(el,visible,visible&&!foldedReadings.has(`${key}:${i}`),current);
+ });
+}
+function setupDoubleComplex(){
  $('.build-statement').classList.remove('is-coordinate-prelude');$('.build-statement').inert=false;$('.build-statement').removeAttribute('aria-hidden');
- const intro=$('.initial-definition');intro.classList.toggle('definition-current',state.initialReveal===0);
- notebookMotion.setExpanded(intro,state.initialReveal===0,{immediate:state.initialReveal<0});
  $('#actionTabs').innerHTML='';$('#sceneNote').textContent='';$('#sceneNote').hidden=true;
  $('#controls').inert=state.initialReveal<4;$('#controls').style.visibility=state.initialReveal<4?'hidden':'visible';syncStatementCards();
 }
@@ -490,10 +498,7 @@ function updateAnnotations(){
  const elements=[...statementFormulas()];
  elements.forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.add('definition-current');});
  const key=activeStatementKey(),last=Math.max(revealedReadings.get(key)??-1,state.notePage);revealedReadings.set(key,last);
- document.querySelectorAll(`[data-statement="${key}"] [data-reading-page]`).forEach(el=>{
-  const i=Number(el.dataset.readingPage),current=i===state.notePage;
-  syncNumberedEntry(el,i<=last,current&&!foldedReadings.has(`${key}:${i}`),current);
- });
+ syncReadingEntries(key);
  renderQuickCheck();window.spectralState={...state,language:language()};renderOperation();
 }
 function setAnnotation(i){state.stackR=null;state.annotationStep=Math.max(1,Math.min(annotationCount(),i));renderPersistentDiagram();updateAnnotations();translatePage();}
