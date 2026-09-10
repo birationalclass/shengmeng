@@ -423,15 +423,15 @@ footer{display:none}
 .is-building .initial-definition:not(.definition-current) .initial-assumptions{font-size:12px}
 .build-statement{transform-origin:top left}
 .is-coordinate-prelude{visibility:hidden;opacity:0;pointer-events:none}
-.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block{font-size:15px}
-.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block.definition-current{font-size:21px}
+.slide-deck:not(.is-building) .formal-statement .reading-formula{font-size:15px}
+.slide-deck:not(.is-building) .formal-statement .reading-formula.definition-current{font-size:21px}
 #diagram.frame-only #diagram-terms{visibility:hidden;opacity:0!important;pointer-events:none}
 #diagram.frame-only .coordinate-axes{mask:none}
 #diagram .axis-tick{transition:opacity .12s ease-out}
 #diagram .axis-tick.redundant-coordinate{opacity:0;pointer-events:none}
 @media(max-width:1000px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:20px}
 .is-building .build-card.build-current h4{font-size:17px}
-.slide-deck:not(.is-building) .formal-statement>.statement-body>.math-block.definition-current{font-size:18px}
+.slide-deck:not(.is-building) .formal-statement .reading-formula.definition-current{font-size:18px}
 }
 @media(max-width:780px){.is-building .build-card.build-current .math-block,.is-building .build-card.build-current .relation-choice{font-size:19px}
 .is-building .initial-definition.definition-current h3{font-size:26px}
@@ -487,13 +487,13 @@ footer{display:none}
 .notebook-workspace .build-heading h4{flex:1;margin:0!important}
 .notebook-workspace .build-card{padding:8px 0;cursor:default}
 .notebook-workspace .quick-check{position:static;margin-top:12px}
-.notebook-workspace .formal-statement>.statement-body>.math-block{font-size:15px}
-.notebook-workspace .formal-statement>.statement-body>.math-block.definition-current{font-size:21px}
+.notebook-workspace .formal-statement .reading-formula{font-size:15px}
+.notebook-workspace .formal-statement .reading-formula.definition-current{font-size:21px}
 .notebook-workspace .build-card[data-open=false] h4{font-size:14px}
 .notebook-workspace .build-card.build-current[data-open=false] h4{color:var(--teal)}
 @keyframes notebook-content-in{from{opacity:0}to{opacity:1}}
 @media(max-width:780px){.notebook-workspace .statement-title{font-size:19px!important}
-.notebook-workspace .formal-statement>.statement-body>.math-block.definition-current{font-size:18px}
+.notebook-workspace .formal-statement .reading-formula.definition-current{font-size:18px}
 .notebook-workspace .statement-heading{font-size:14px}
 .notebook-workspace .notebook-card[data-open=false] .statement-title{font-size:15px!important}
 }
@@ -698,3 +698,11 @@ html[data-notebook-motion=none] .explanation *,html[data-notebook-motion=none] .
 .statement-subnumber{flex:none;color:#8cbab5;font:11px ui-monospace,monospace;letter-spacing:0}
 .notebook-workspace .math-block.has-subnumber{padding-top:22px}
 .formula-subnumber{position:absolute;left:5px;top:5px;color:#829fa6;font:10px/1 ui-monospace,monospace;letter-spacing:0;pointer-events:none}
+
+/* Persistent numbered entries share the existing notebook accordion motion. */
+.numbered-entry{padding:8px 0;border-top:1px solid #36515a}
+.numbered-entry[hidden]{display:none!important}
+.numbered-entry .build-heading h4{display:flex;align-items:center;gap:10px;font-size:14px;line-height:1.45;font-weight:500;color:#a9c0c7}
+.numbered-entry.build-current .build-heading h4{color:#d8f0eb}
+.numbered-entry .build-heading .katex{font-size:1.15em}
+.numbered-entry .reading-formula{margin:3px 0}

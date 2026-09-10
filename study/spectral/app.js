@@ -1,4 +1,4 @@
-import {numberedPages,createReadingPageMotion} from './reading-pages.js?v=58';
+import {numberedPages} from './reading-pages.js?v=59';
 import {visualMotion} from './visual-style.js?v=41';
 import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
@@ -20,7 +20,7 @@ let squareSequenceSerial=0,squareSequenceActive=false;
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const notebookMotion=createNotebookMotion({language});
-const readingMotion=createReadingPageMotion({duration:()=>notebookMotion.duration()});
+const revealedReadings=new Map(),foldedReadings=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1;
 const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3','converge:4','lab:0','trace:0'];
@@ -99,7 +99,11 @@ function diagonal(n,p,box=true,showLabel=true){
  out+=`<path class="diag" mask="url(#term-connection-mask)" d="M${start.join(',')} L${end.join(',')}"/>`;
  if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
 }
-const formulas=(fs,concepts=[],number='',module='',step=0)=>{const pages=numberedPages(module,step,fs.length);return fs.map((t,i)=>{const page=pages.find(p=>p.indices.includes(i+1));return block(t,concepts[i]||'',number&&page?.indices[0]===i+1?page.number:'');}).join('');};
+const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module,step,fs.length).map((page,index)=>{
+ const title=Array.isArray(page.title)?ui(...page.title):page.title?math(page.title):'';
+ const content=page.indices.map(i=>block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`)).join('');
+ return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
+}).join('');
 function statementHeading(meta,key){
  const subject=meta.symbol?math(meta.symbol):esc(meta.name||'');
  return `<div class="statement-heading"><span class="statement-label">${meta.kind==='§'?'§ ':''}<span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div>`;
@@ -139,7 +143,7 @@ function render(updateControls=true){
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;readingMotion.settle();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.indices.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
@@ -217,9 +221,9 @@ function renderWorkspaceState(){
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index){cancelSquareSequence();openBuilds.clear();state.module='initial';state.step=0;state.initialReveal=index;openStatements.clear();openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(index>=5&&index<=7)playTotalDemo(['total','totalmap','filtration'][index-5]);}
 function activateStatement(key,last=false){
- readingMotion.settle();
+ notebookMotion.settleAll();
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
+ state.cover=false;state.module=module;state.step=step;state.notePage=0;foldedReadings.delete(`${key}:0`);state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
  if(module==='initial'){state.initialReveal=Math.max(0,state.initialReveal);state.effect=initialConcept();}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
  openStatements.clear();openStatements.add(key);render();
  if(last&&!isDoubleComplexView())selectReadingPage(currentReadingPages().length-1);
@@ -227,15 +231,22 @@ function activateStatement(key,last=false){
  keepReadingVisible($(`[data-statement="${key}"]`));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"]`));}
+function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 function advanceNote(){if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){selectInitialBuild(state.initialReveal+1);keepDefinitionVisible();return;}if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){selectReadingPage(state.notePage+1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>=0&&i<readingOrder.length-1)activateStatement(readingOrder[i+1]);}
 function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);keepDefinitionVisible();}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);if(isDoubleComplexView())selectInitialBuild(INITIAL_STEPS);}}
 $('#explanation').addEventListener('click',e=>{
- const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]');
- if(toggle){readingMotion.settle();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
+ const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
+ if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
  if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);setupDoubleComplex();}else selectInitialBuild(i);return;}
- if(buildSelect)selectInitialBuild(Number(buildSelect.dataset.selectBuild));
+ if(buildSelect){selectInitialBuild(Number(buildSelect.dataset.selectBuild));return;}
+ if(readingToggle||readingSelect){
+  const button=readingToggle||readingSelect,index=Number(button.dataset.toggleReading??button.dataset.selectReading),parent=button.closest('[data-statement]').dataset.statement;
+  if(parent!==activeStatementKey())activateStatement(parent);
+  if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);updateAnnotations();}
+  else selectReadingPage(index);
+ }
+
 });
 function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','filtration','zeropage'][state.initialReveal];}
 function keepReadingVisible(card){
@@ -255,13 +266,13 @@ function interactiveConcept(target){
  const choice=target.closest('.relation-choice');if(choice)return choice;
  const build=target.closest('.build-statement.is-active .build-card[data-open="true"]');
  if(build)return (build.querySelector('.relation-choices')||build.dataset.build==='7')?target.closest('.math-block[data-concept]'):build;
- return target.closest('.formal-statement > .statement-body > .math-block[data-concept]')||target.closest('#diagram [data-concept]');
+ return target.closest('.formal-statement .reading-formula[data-concept]')||target.closest('#diagram [data-concept]');
 }
 function interactionKey(el){
  if(!el)return null;
  if(el.matches('.relation-choice'))return `relation:${el.dataset.concept}`;
  if(el.closest('.build-card'))return `build:${el.closest('.build-card').dataset.build}`;
- if(el.matches('.formal-statement > .statement-body > .math-block'))return `formula:${[...el.parentElement.querySelectorAll(':scope > .math-block')].indexOf(el)}`;
+ if(el.matches('.formal-statement .reading-formula'))return `formula:${Number(el.dataset.annotation)-1}`;
  return `diagram:${el.dataset.concept}`;
 }
 function applyConcept(concept,hover=false,source=null){
@@ -280,7 +291,7 @@ function applyConcept(concept,hover=false,source=null){
  // Left-hand emphasis belongs to one source item, never to a concept family.
  document.querySelectorAll('.formal-statement .concept-linked').forEach(el=>el.classList.remove('concept-linked'));
  document.querySelectorAll('.formal-statement [aria-pressed]').forEach(el=>el.setAttribute('aria-pressed','false'));
- document.querySelectorAll('.formal-statement.is-active .build-card,.formal-statement.is-active > .statement-body > .math-block').forEach(el=>{
+ document.querySelectorAll('.formal-statement.is-active .build-card,.formal-statement.is-active .reading-formula').forEach(el=>{
   const ownKey=interactionKey(el);el.classList.toggle('concept-linked',!!concept&&(ownKey===key||['3','6'].includes(el.dataset.build)&&key?.startsWith('relation:')));
   el.setAttribute('aria-pressed',String(!!state.pinned&&ownKey===state.pinnedKey));
  });
@@ -354,10 +365,25 @@ function doubleComplexCompanion(item){
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1,2,3,4].map(step=>statementMarkup(convergence[step],'converge',step)).join('')+statementMarkup({title:'精确例子',f:[]},'lab',0)+statementMarkup({title:'代表元追踪',f:[]},'trace',0));
  $('#sceneNote').textContent='';
 }
+// Headers stay in document order. Only the body folds; later entries never
+// reuse or replace an earlier entry's DOM node.
+function syncNumberedEntry(el,visible,open,current){
+ const wasVisible=!el.hidden,body=el.querySelector(':scope > .build-content');
+ el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);
+ el.classList.toggle('build-current',current);el.classList.add('is-available');
+ notebookMotion.setExpanded(body,open,{immediate:!visible||!wasVisible});
+ if(visible&&!wasVisible&&open)notebookMotion.revealCard(el);
+ const toggle=el.querySelector('.build-toggle');
+ toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));
+}
 function setupDoubleComplex(){
- document.querySelectorAll('.build-card').forEach(el=>{const i=Number(el.dataset.build),open=openBuilds.has(i),visible=i===state.initialReveal;el.inert=!visible;el.dataset.open=String(open);if(visible||el.hidden)notebookMotion.setExpanded(el.querySelector(':scope > .build-content'),open,{immediate:true});el.classList.add('is-available');el.classList.toggle('build-current',i===state.initialReveal);el.classList.toggle('build-complete',i<state.initialReveal);const toggle=el.querySelector('.build-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});
- $('.build-statement').classList.remove('is-coordinate-prelude');$('.build-statement').inert=false;$('.build-statement').removeAttribute('aria-hidden');$('.initial-definition').classList.toggle('definition-current',state.initialReveal<=0);
- const body=$('.build-statement > .statement-body'),items=[...body.querySelectorAll(':scope > [data-build]')];readingMotion.sync(body,items,items.filter(el=>Number(el.dataset.build)===state.initialReveal));
+ document.querySelectorAll('.build-statement .build-card').forEach(el=>{
+  const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),i===state.initialReveal);
+  el.classList.toggle('build-complete',i<state.initialReveal);
+ });
+ $('.build-statement').classList.remove('is-coordinate-prelude');$('.build-statement').inert=false;$('.build-statement').removeAttribute('aria-hidden');
+ const intro=$('.initial-definition');intro.classList.toggle('definition-current',state.initialReveal===0);
+ notebookMotion.setExpanded(intro,state.initialReveal===0,{immediate:state.initialReveal<0});
  $('#actionTabs').innerHTML='';$('#sceneNote').textContent='';$('#sceneNote').hidden=true;
  $('#controls').inert=state.initialReveal<4;$('#controls').style.visibility=state.initialReveal<4?'hidden':'visible';syncStatementCards();
 }
@@ -455,19 +481,23 @@ function renderPersistentDiagram(){
  for(const id of ['diagram-overlays','diagram-edges','diagram-terms'])syncGraphChildren(current.querySelector('#'+id),desired.querySelector('#'+id));
  current.querySelector('#graphTitle').textContent=desired.querySelector('#graphTitle').textContent;syncDiagramLabels();syncCoordinatePresentation();
 }
-function statementFormulas(){return document.querySelectorAll('.formal-statement.is-active > .statement-body > .math-block');}
+function statementFormulas(){return document.querySelectorAll('.formal-statement.is-active .reading-formula');}
 function annotationCount(){return statementFormulas().length;}
 function updateAnnotations(){
  if(state.cover||isDoubleComplexView())return;
  const a=state.annotationStep||1;
  $('#actionTabs').innerHTML=actionNames(state,language()).map((name,i)=>`<button data-action="${i+1}" aria-pressed="${a===i+1}">${mathControlLabel(name)}</button>`).join('');
- const elements=[...statementFormulas()],pages=currentReadingPages(),page=pages[Math.min(state.notePage,pages.length-1)];
+ const elements=[...statementFormulas()];
  elements.forEach((el,i)=>{el.dataset.annotation=String(i+1);el.classList.toggle('annotation-seen',i+1===a);el.classList.add('definition-current');});
- readingMotion.sync(elements[0]?.parentElement,elements,elements.filter((el,i)=>page.indices.includes(i+1)));
+ const key=activeStatementKey(),last=Math.max(revealedReadings.get(key)??-1,state.notePage);revealedReadings.set(key,last);
+ document.querySelectorAll(`[data-statement="${key}"] [data-reading-page]`).forEach(el=>{
+  const i=Number(el.dataset.readingPage),current=i===state.notePage;
+  syncNumberedEntry(el,i<=last,current&&!foldedReadings.has(`${key}:${i}`),current);
+ });
  renderQuickCheck();window.spectralState={...state,language:language()};renderOperation();
 }
 function setAnnotation(i){state.stackR=null;state.annotationStep=Math.max(1,Math.min(annotationCount(),i));renderPersistentDiagram();updateAnnotations();translatePage();}
-function revealAnnotation(el){if(state.cover||isDoubleComplexView())return;const formula=el.closest('.formal-statement > .statement-body > .math-block');if(formula){const card=formula.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);setAnnotation([...formula.parentElement.querySelectorAll(':scope > .math-block')].indexOf(formula)+1);}}
+function revealAnnotation(el){if(state.cover||isDoubleComplexView())return;const formula=el.closest('.formal-statement .reading-formula');if(formula){const card=formula.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))activateStatement(card.dataset.statement);setAnnotation(Number(formula.dataset.annotation));}}
 
 
 // Keep HTML math out of SVG foreignObject: WebKit must scale the whole label plane once.
