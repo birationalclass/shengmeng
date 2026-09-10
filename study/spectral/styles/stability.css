@@ -1,0 +1,37 @@
+/* One flat page; the SVG, labels and particle share the same scale and origin. */
+#stabilityView{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:5;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .36s ease,visibility 0s .36s}
+#stabilityView.is-active{opacity:1;visibility:visible;transition:opacity .36s ease,visibility 0s}
+.has-stability-view #diagram{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.stability-scene{position:absolute;inset:0;width:840px;height:525px;transform:scale(var(--stability-scale,1));transform-origin:0 0}
+.stability-scene svg{position:absolute;inset:0;width:840px;height:525px;overflow:visible}
+.stability-axis{fill:none;stroke:#739396;stroke-width:1;opacity:.48}
+.stability-node{fill:#10272c;stroke:#33565c;stroke-width:.8;opacity:.4;transition:stroke var(--motion-emphasis) ease,opacity var(--motion-emphasis) ease}
+.stability-node.central{fill:#18353a;stroke:var(--gold);stroke-width:1.4;opacity:1}
+.stability-zero-space{fill:#112429;stroke:#668086;stroke-width:1;opacity:.8}
+.stability-map{fill:none;stroke:currentColor;color:#638f98;stroke-width:1.5;opacity:.35;transition:opacity var(--motion-emphasis) ease,color var(--motion-emphasis) ease}
+.stability-map.is-emphasized{color:var(--gold);opacity:1}
+.stability-label{position:absolute;display:flex;height:40px;align-items:center;justify-content:center;white-space:nowrap;font-size:22px;line-height:1;color:#e0ebed;pointer-events:none}
+.stability-label .katex{font-size:1em}
+.stability-label.context{font-size:19px;opacity:.28}
+.stability-label.central{color:#f3ead2}
+.stability-label.zero{font-size:28px;color:#b9cbd0}
+.stability-label.zero-name{font-size:19px;color:#afc0c7}
+.stability-label.map{font-size:20px;color:var(--gold)}
+.stability-label.page-title{font-size:31px;color:var(--teal)}
+.stability-label.parameters{font-size:23px;color:#cbdcde}
+.stability-label.axis{font-size:16px;color:#8ca5aa}
+.stability-flow{fill:none;stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 3px #f8d58a66)}
+.stability-particle{fill:#ffe4a2;stroke:#fff5dc;stroke-width:1;filter:drop-shadow(0 0 4px #ffd27399)}
+.stability-moving-zero{fill:#fff0be;paint-order:stroke;stroke:#102228;stroke-width:5px;font-family:KaTeX_Main,serif;font-weight:400}
+.stability-result{position:absolute;text-align:center;color:var(--gold);font-size:23px;opacity:0;transition:opacity var(--motion-emphasis) ease}
+.stability-scene[data-mode=stable] .stability-result{opacity:1}
+#stabilityControls{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 16px;margin-top:4px}
+#stabilityControls[hidden]{display:none}
+.stability-buttons{display:flex;align-items:center;gap:7px}
+#stabilityControls button{font-size:13px;padding:6px 10px;min-height:32px}
+#stabilityControls button[aria-pressed=true]{color:var(--gold);border-color:#f0c76a99;background:#e8c8730c}
+.stability-example-picker{display:flex;align-items:center;gap:8px;color:#a8bfc5;font-size:13px}
+#stabilityExample{font-size:12px;min-height:32px;padding:4px 8px}
+.stability-example{color:var(--gold);margin-top:14px}
+@media(max-width:780px){#stabilityControls{gap:5px}#stabilityControls button{padding:5px 8px}.stability-example-picker{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#stabilityView,.stability-node,.stability-map,.stability-result{transition:none!important}}

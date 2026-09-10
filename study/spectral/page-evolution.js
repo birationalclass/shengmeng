@@ -1,16 +1,13 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createStabilityProof} from './stability-proof.js?v=73';
 import {createDifferentialProof} from './differential-proof.js?v=73';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh,reduced=matchMedia('(prefers-reduced-motion:reduce)');
- const proof=createDifferentialProof({board,math,language}),stabilityProof=createStabilityProof({board,math,language});
+ const proof=createDifferentialProof({board,math,language});
  const overlay=document.createElement('div');overlay.id='pageEvolution';overlay.hidden=true;viewport.append(overlay);
  const toolbar=document.createElement('nav');toolbar.id='evolutionControls';toolbar.hidden=true;controls.prepend(toolbar);
  let context=null,engaged=false,tilted=false,generated=0,current=0,start=0,semanticKey='',token=0,busy=false,construction=null,point={p:1,q:2},transformAnimation=null,scale=1,projectionKey='',transformTarget='',layerAnimations=[];
- const isStability=()=>context?.module==='converge';
- const stableFrom=()=>Math.max(point.p+1,point.q+2);
  const zeroPageOnly=()=>context?.module==='learn'&&context.step===3;
  const compact=()=>matchMedia('(max-width:780px)').matches;
  const geometry=()=>compact()?{x:110,y:360,dp:55,dq:64,yp:24,dr:400,count:2}:{x:55,y:345,dp:35,dq:54,yp:26,dr:210,count:4};
@@ -70,14 +67,14 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
    if(r===0){for(let j=0;j<4;j++)if(j!==q)map(p,j,p,j+1,j===q-1?'co-incoming':'');}
    else map(p-r,q+r-1,p,q,'co-incoming');
   }
-  labels+=mathLabel(isStability()?source[0]:source[0]+(source[0]<70?12:-12),source[1]+(isStability()?24:-2),`E_{${r}}^{${p},${q}}`,'evolution-point-label',{width:86,height:36,align:isStability()?'center':source[0]<70?'left':'right'});
+  labels+=mathLabel(source[0]+(source[0]<70?12:-12),source[1]-2,`E_{${r}}^{${p},${q}}`,'evolution-point-label',{width:86,height:36,align:source[0]<70?'left':'right'});
   svg+=`<g role="button" tabindex="0" data-page="${r}" class="evolution-page-title" aria-label="E_${r}"><rect x="${origin[0]-12}" y="37" width="${g.dp*4+24}" height="39" rx="8"/></g></g>`;
   labels+=mathLabel(origin[0]+g.dp*2,56.5,`E_{${r}}`,'evolution-page-title-label',{width:g.dp*4+24,height:39});
   labels+=mathLabel(origin[0],g.y+22,String(r),'evolution-r-tick',{width:40,height:24});
   return {svg,labels:labels+'</div>'};
  }
  function drawPages(newPage=null){
-  const g=geometry(),visibleMax=isStability()?Math.max(stableFrom()+1,current):zeroPageOnly()?0:generated;start=Math.max(0,Math.min(start,Math.max(0,visibleMax-g.count+1)));
+  const g=geometry(),visibleMax=zeroPageOnly()?0:generated;start=Math.max(0,Math.min(start,Math.max(0,visibleMax-g.count+1)));
   if(current<start)start=current;else if(current>=start+g.count)start=current-g.count+1;
   const key=[start,Math.min(visibleMax,start+g.count-1),current,point.p,point.q,context?.module,context?.notePage,language(),compact(),construction?.r].join(':');
   if(key!==projectionKey){
@@ -87,11 +84,6 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
    labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
    if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
    for(let r=start;r<=Math.min(visibleMax,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
-   if(isStability())for(let r=Math.max(start,stableFrom());r<Math.min(visibleMax,start+g.count-1);r++){
-    const a=pos(point.p,point.q,r),b=pos(point.p,point.q,r+1);
-    out+=`<path class="evolution-differential stability-isomorphism" data-stable-r="${r}" d="M${a[0]+12},${a[1]} H${b[0]-12}" stroke="var(--gold)" marker-end="url(#evolution-tip-2)"/>`;
-    labels+=mathLabel((a[0]+b[0])/2,a[1]-14,R`\sim`,'evolution-axis-label',{width:34,height:24});
-   }
    out+='</svg>';
    overlay.innerHTML=`<div class="evolution-scene">${out}${pages}<div class="evolution-axis-labels" aria-hidden="true">${labels}</div></div>`;projectionKey=key;
    if(newPage!==null&&!reduced.matches){
@@ -119,13 +111,10 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   }
   fit();window.spectralEvolution={engaged,tilted,generated,current,start,busy,point:{...point},construction:construction?{...construction}:null};
  }
- function exposition(){(isStability()?stabilityProof:proof).render({state:context,current,construction,point});}
+ function exposition(){proof.render({state:context,current,construction,point});}
 
  function paintControls(){
   toolbar.hidden=!engaged;
-  if(isStability()){
-   toolbar.innerHTML=`<label>${math('p')} <input id="stabilityP" type="range" min="0" max="4" value="${point.p}"><output>${point.p}</output></label><label>${math('q')} <input id="stabilityQ" type="range" min="0" max="4" value="${point.q}"><output>${point.q}</output></label><label>${math('r')} <input id="stabilityPage" type="range" min="0" max="${stableFrom()+3}" value="${current}"><output>${current}</output></label>`;return;
-  }
   toolbar.innerHTML=`<div class="evolution-view-controls"><button data-evolve="flat" aria-pressed="${!tilted}">${t('二维','2D')} ${math('E_0')}</button><button data-evolve="tilt" aria-pressed="${tilted}">${t('各页','Pages')}</button><select id="evolutionPage" aria-label="${t('查看已生成的页','Inspect a generated page')}" ${busy?'disabled':''}>${Array.from({length:(zeroPageOnly()?0:generated)+1},(_,r)=>`<option value="${r}" ${r===current?'selected':''}>${t(`第 ${r} 页`,`Page ${r}`)}</option>`).join('')}</select></div><div class="evolution-view-controls" ${zeroPageOnly()?'hidden':''}>${construction?`<button data-evolve="replay" ${busy?'disabled':''}>${t('重播生成','Replay')} ${math(`E_{${construction.r+1}}`)}</button>`:''}<button class="evolution-generate" data-evolve="next" ${busy?'disabled':''}>${t('取上同调 → ','Cohomology → ')+math(`E_{${current+1}}`)}</button></div>`;
  }
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
@@ -146,13 +135,12 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  function sync(s){
   context=s;
   const choice=s.annotationStep||1,wasEngaged=engaged;
-  const eligible=!s.cover&&(s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3)||s.module==='converge'&&s.step<=1);
+  const eligible=!s.cover&&s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3);
   engaged=eligible;toolbar.hidden=!eligible;overlay.hidden=!eligible;viewport.classList.toggle('has-evolution',eligible);controls.closest('.visualization-module').classList.toggle('page-evolution-mode',eligible);
   if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5&&choice>=3)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
   const key=`${s.module}:${s.step}`;if(s.selected)point={...s.selected};
   if(key!==semanticKey){semanticKey=key;cancel();
-   if(isStability()){current=stableFrom();start=Math.max(0,current-geometry().count+2);tilted=true;fit();}
-   else if(s.module==='initial'||s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}
+   if(s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}
    else if(generated===0){beginCohomology(0);}
    else{current=Math.min(generated,s.step===4?1:Math.max(1,s.r));construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
   }
@@ -163,13 +151,8 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(action==='next'&&!busy&&!zeroPageOnly()){beginCohomology();return;}if(action==='replay'&&construction&&!busy){beginCohomology(construction.r);return;}
   if(['flat','tilt'].includes(action)){cancel();tilted=action!=='flat';current=0;start=0;projectionKey='';fit(true);drawPages();paintControls();exposition();}
  });
- toolbar.addEventListener('input',e=>{if(!isStability()||!['stabilityP','stabilityQ','stabilityPage'].includes(e.target.id))return;
-  if(e.target.id==='stabilityP')point.p=Number(e.target.value);else if(e.target.id==='stabilityQ')point.q=Number(e.target.value);
-  current=e.target.id==='stabilityPage'?Number(e.target.value):stableFrom();start=Math.max(0,current-geometry().count+2);drawPages();
-  for(const [id,value] of [['stabilityP',point.p],['stabilityQ',point.q],['stabilityPage',current]]){const input=toolbar.querySelector('#'+id);if(id==='stabilityPage')input.max=stableFrom()+3;input.value=value;input.nextElementSibling.textContent=value;}exposition();
- });
  toolbar.addEventListener('change',e=>{if(e.target.id==='evolutionPage'){cancel();current=Number(e.target.value);construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);drawPages();exposition();paintControls();}});
- const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;const selectedPage=Number(target.dataset.page);if(isStability()){current=selectedPage;if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();return;}if(!construction||![construction.r,construction.r+1].includes(selectedPage)){current=selectedPage;construction=current>0?{r:current-1,phase:3}:null;}if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
+ const select=e=>{const target=e.target.closest('[data-page]');if(!target||busy)return;const selectedPage=Number(target.dataset.page);if(!construction||![construction.r,construction.r+1].includes(selectedPage)){current=selectedPage;construction=current>0?{r:current-1,phase:3}:null;}if(target.dataset.p!==undefined)point={p:Number(target.dataset.p),q:Number(target.dataset.q)};drawPages();paintControls();exposition();};
 
  overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);

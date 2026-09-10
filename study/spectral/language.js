@@ -1,4 +1,4 @@
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=74';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=75';
 let lang=localStorage.getItem('spectral-language')==='en'?'en':'zh';
 export const language=()=>lang;
 export function toggleLanguage(){lang=lang==='zh'?'en':'zh';localStorage.setItem('spectral-language',lang);}
@@ -15,8 +15,8 @@ items(lessons,[
 ['General pages: D induces dᵣ on successive quotients','Every page differential comes from the same D. The numerator requires the differential to land at least r columns to the right; the denominator specifies equivalent representatives on this page.','Adjust r: the gold arrow always has displacement (r,1−r). General pages are defined from the filtered complex, not guessed from E₁ dimensions.','D sends the numerator into the target numerator and the denominator into the target denominator, inducing dᵣ. From D²=0 and the kernel/image quotient one obtains Eᵣ₊₁≅H(Eᵣ,dᵣ). See §3 of the notes for the full quotient-space argument.']
 ]);
 items(convergence,[
- ['Stable term E∞','Each bidegree eventually stabilizes in the first quadrant.','','From Rₚ,ᑫ onward both incoming and outgoing differentials vanish. Choosing a later stable page gives a canonically isomorphic space.'],
- ['Pointwise stabilization','Pointwise stabilization does not require the entire bigraded space to stabilize at one common page.','','For r>q+1 the outgoing target has negative second degree; for r>p the incoming source has negative first degree. Both terms vanish, so cohomology leaves this position unchanged.']
+ ['Proposition: pointwise stabilization','The first quadrant forces both incident differentials to vanish, and all subsequent terms are naturally isomorphic.','','The outgoing target has negative second degree; the incoming source has negative first degree. The same holds for every later page s, so cohomology gives the natural identification with the previous term.'],
+ ['Stable term E∞','By the preceding proposition, these naturally identified terms form the common stable term.','','Choose any qualifying r₀ and use the natural identifications from successive cohomology. A different stable page gives a canonically isomorphic model.']
 ]);
 add('查看稳定定义 →','View stabilization →');
 items(initial,[['Double complex and total complex']]);

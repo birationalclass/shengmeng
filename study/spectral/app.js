@@ -1,8 +1,9 @@
+import {createStabilityView} from './stability-view.js?v=75';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=74';
 import {createReadingRail} from './reading-rail.js?v=69';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {numberedPages} from './reading-pages.js?v=74';
+import {numberedPages} from './reading-pages.js?v=75';
 import {createReadingFocus} from './reading-focus.js?v=64';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -12,11 +13,11 @@ import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=74';
-import {translatePage,language,toggleLanguage} from './language.js?v=74';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=75';
+import {translatePage,language,toggleLanguage} from './language.js?v=75';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=74';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=74';
+import {createPageEvolution} from './page-evolution.js?v=75';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -45,6 +46,7 @@ const readingRail=createReadingRail({workspace:$('.notebook-workspace'),column:$
 // Control labels use the same mathematical typesetting as the diagram.
 const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆₇₈₉ᵣ₊]+|\d+)/g,(_,symbol,index)=>math(`${symbol}_{${[...index].map(c=>({'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ᵣ':'r','₊':'+'}[c]||c)).join('')}}`));
 const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
+const stabilityView=createStabilityView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const abutmentView=createAbutmentView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const filteredView=createFilteredView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),math,language});
 const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
@@ -485,8 +487,8 @@ function renderOperation(){
  const context=[state.module,state.step,staticSquare?'square':state.effect,state.annotationStep].join(':');
  if(context!==expositionContext){$('#operationBoard').scrollTop=0;expositionContext=context;}
  const prelude=isDoubleComplexView()&&state.initialReveal<0;
- if(!(state.module==='converge'&&state.step>=2))replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math),{animate:!staticSquare});$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
- squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);abutmentView.sync(state);emphasizeCurrentDefinition();
+ if(state.module!=='converge')replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math),{animate:!staticSquare});$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
+ squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);stabilityView.sync(state);abutmentView.sync(state);emphasizeCurrentDefinition();
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.

@@ -9,8 +9,8 @@ export const lessons=[
  {title:'一般页：前一页的上同调',tag:'COHOMOLOGY OF THE PRECEDING PAGE',f:[t`Z_r^{p,q}:=F^pC^{p+q}\cap D^{-1}(F^{p+r}C^{p+q+1})`,t`B_r^{p,q}:=F^pC^{p+q}\cap D(F^{p-r}C^{p+q-1})`,t`\begin{gathered}E_r^{p,q}:=H^{p,q}(E_{r-1},d_{r-1})\\(r\ge1)\end{gathered}`,t`\begin{gathered}d_r^{p,q}:E_r^{p,q}\longrightarrow E_r^{p+r,q-r+1}\\ d_r^{p,q}[a]_r:=[Da]_r,\quad a\in Z_r^{p,q}\end{gathered}`],text:'Eᵣ 定义为前一页的上同调；新的微分 dᵣ 仍由原滤过复形中的 D 给出。',note:'给定 (Eᵣ₋₁,dᵣ₋₁) 后，通过核模像定义 Eᵣ；这并未确定新的微分 dᵣ。',proof:'滤过商与递归定义的 Eᵣ 典范同构。经此同构，D 诱导 dᵣ；D²=0 保证 dᵣ²=0，因此可定义下一页的上同调。'}
 ];
 export const convergence=[
- {title:'稳定项 E∞',f:[t`R_{p,q}:=\max\{p+1,q+2\}`,t`E_\infty^{p,q}:=E_{R_{p,q}}^{p,q}\qquad(p,q\ge0)`],text:'在第一象限下，各双次数位置最终稳定。',note:'',proof:'从 Rₚ,ᑫ 起，该位置的入射与出射微分均为零；选取更大的稳定页得到自然同构的空间。'},
- {title:'逐位置稳定',f:[t`\forall p,q\ge0\ \exists R_{p,q}\ \forall r\ge R_{p,q}:`,t`d_r^{p,q}=0,\qquad d_r^{p-r,q+r-1}=0`,t`E_r^{p,q}\xrightarrow{\sim}E_\infty^{p,q}\quad\text{canonically}`],text:'逐位置稳定不要求整个双分次空间在统一的一页稳定。',note:'',proof:'当 r>q+1 时出射靶的第二指标为负；当 r>p 时入射源的第一指标为负。两者均为零，故取上同调不再改变该位置。'},
+ {title:'Proposition：逐位置稳定',f:[t`r>\max\{p,q+1\}`,t`\begin{gathered}d_r^{p,q}=0,\\ d_r^{p-r,q+r-1}=0,\end{gathered}`,t`E_r^{p,q}\xrightarrow{\sim}E_{r+1}^{p,q}\xrightarrow{\sim}\cdots`],text:'第一象限保证此位置的入射与出射微分同时为零，后续各页自然同构。',note:'',proof:'出射靶的第二指标 q-r+1 为负；入射源的第一指标 p-r 为负。对每个 s≥r，两个微分都为零，故 E_{s+1}^{p,q}=E_s^{p,q}/0，自然同构于 E_s^{p,q}。'},
+ {title:'稳定项 E∞',f:[t`\begin{gathered}E_\infty^{p,q}:=E_{r_0}^{p,q},\\r_0>\max\{p,q+1\}.\end{gathered}`],text:'由前一命题，把这些自然同构的空间共同记作稳定项。',note:'',proof:'选择任意满足界限的 r₀，并使用逐页上同调给出的自然同构进行识别。换一个稳定页只改变所选模型，不改变典范同构意义下的稳定项。'},
  {title:'总上同调的诱导滤过',f:[t`H^n:=H^n(C^\bullet,D)`,t`\begin{gathered}F^pH^n:=\\\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\longrightarrow H^n\right)\end{gathered}`],text:'由各滤过子复形的包含映射，在总上同调上取像。',note:'',proof:'F^pH^n 由具有 F^pC^n 中闭代表元的总上同调类组成。'},
  {title:'收敛到总上同调',f:[t`E_1^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)`],text:'第一象限下，稳定项典范同构于总上同调的对应滤过商。',note:'',proof:'自然满射将 a 送到 [a]_H 模 F^{p+1}H^n，其核是更高滤过中的闭元与当前滤过中的总边界之和。'}
 ];
