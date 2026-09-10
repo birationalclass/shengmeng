@@ -4,7 +4,7 @@ import {cohomologyExposition} from './cohomology-view.js?v=38';
 // statement, changes a page, or cancels a diagram animation.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- let context=null,key='',topic='d0',steps={e0:0,e1:0,d0:0,d1:0,dr:0},phase=3;
+ let context=null,key='',topic='d0',steps={e0:0,e1:0,er:0,d0:0,d1:0,dr:0},phase=3;
  const explanations={
   e0:[
    {name:['元素与记号','Elements and notation'],f:[R`[a]_0:=a+F^{p+1}C^{p+q}\in E_0^{p,q},\quad a\in F^pC^{p+q}`,R`\begin{array}{rcl}\Phi_0^{p,q}:K^{p,q}&\xrightarrow{\sim}&E_0^{p,q}\\a&\longmapsto&[a]_0\end{array}`],note:['当 a∈K^{p,q} 时，先通过直和因子的自然嵌入将 a 视为 F^pC^{p+q} 中的元素，再取陪集。此处 [a]₀ 是滤过商中的类，无须 a 满足闭性条件。','For a∈K^{p,q}, first regard a as an element of F^pC^{p+q} via the natural inclusion of the direct summand, then take its coset. Here [a]₀ is a class in a filtration quotient; no cocycle condition on a is required.']},
@@ -26,6 +26,11 @@ export function createDifferentialProof({board,math,language}){
    {name:['代表元无关','Independence of representative'],f:[R`a'=a+\delta_2b,\qquad b\in K^{p,q-1}`,R`\delta_1a'-\delta_1a=-\delta_2\delta_1b`,R`[\delta_1a']_1=[\delta_1a]_1`],note:['差值是一个纵向边界，所以 d₁ 不依赖闭代表元的选择。','The difference is a vertical boundary, so d₁ is independent of the closed representative.']},
    {name:['由 D 给出','Induced by D'],f:[R`Da=\delta_1a\in F^{p+1}C^{p+q+1}`,R`d_1^{p,q}[a]_1=[Da]_1=[\delta_1a]_1`,R`d_1^{p+1,q}d_1^{p,q}[a]_1=[\delta_1^2a]_1=0`],note:['这与 D 诱导的定义一致。','This agrees with the definition induced by D.']}
   ],
+  er:[
+   {name:['前一页的上同调','Cohomology of the preceding page'],f:[R`E_r^{p,q}\cong H^{p,q}(E_{r-1},d_{r-1})\qquad(r\ge1)`,R`H^{p,q}(E_{r-1},d_{r-1}):=\frac{\ker(d_{r-1}^{p,q})}{\operatorname{im}(d_{r-1}^{p-r+1,q+r-2})}`],note:['本笔记以滤过商空间定义 Eᵣ，故这里写自然同构。也可以采用逐页取上同调的定义；但前一页并不能单独确定新的微分 dᵣ，后者仍需原滤过复形。','This notebook defines Eᵣ by a filtered quotient, so the relation is a natural isomorphism. One may instead define the pages by successive cohomology; however, the preceding page alone does not determine the new differential dᵣ, which still requires the original filtered complex.']},
+   {name:['滤过商的构造','The filtered-quotient construction'],f:[R`Z_s^{p,q}:=F^pC^{p+q}\cap D^{-1}(F^{p+s}C^{p+q+1})`,R`B_s^{p,q}:=F^pC^{p+q}\cap D(F^{p-s}C^{p+q-1})\qquad(s\ge0)`,R`E_r^{p,q}:=\frac{Z_r^{p,q}}{Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}}\qquad(r\ge1)`],note:['Zᵣ 要求 Da 至少落入第 p+r 层滤过；分母规定本页的等价关系。Z、B 均是总上链空间中的子空间。','Zᵣ requires Da to lie in filtration p+r; the denominator specifies equality of classes on this page. Both Z and B are subspaces of the total cochain space.']},
+   {name:['元素与代表元','Elements and representatives'],f:[R`N_r^{p,q}:=Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}`,R`[a]_r:=a+N_r^{p,q}\in E_r^{p,q},\qquad a\in Z_r^{p,q}`,R`[a]_r=[a']_r\iff a'-a\in N_r^{p,q}\qquad(a,a'\in Z_r^{p,q})`],note:['a 一般是总上链，可以含有多个 K 分量；不必属于单个 K 小块，也不必满足 Da=0。','In general a is a total cochain with several K-components; it need not lie in one K-term or satisfy Da=0.']}
+  ],
   dr:[
    {name:['分子映到分子','Map the numerator'],f:[R`n=p+q,\quad r\ge1,\quad a\in Z_r^{p,q}`,R`Da\in F^{p+r}C^{n+1},\qquad D(Da)=0`,R`Da\in Z_r^{p+r,q-r+1}`],note:['D²=0 保证像满足目标分子的条件。','D²=0 gives the target numerator condition.']},
    {name:['分母映到分母','Map the denominator'],f:[R`z\in Z_{r-1}^{p+1,q-1}\ \Longrightarrow\ z\in F^{p+1}C^n,\ Dz\in F^{p+r}C^{n+1}`,R`Dz\in F^{p+r}C^{n+1}\cap D(F^{p+1}C^n)=B_{r-1}^{p+r,q-r+1}`,R`b\in B_{r-1}^{p,q}\ \Longrightarrow\ Db=0`],note:['源分母的第一部分映入目标边界项，第二部分映为零。因此 D 诱导商上的映射。','The first part of the source denominator maps into the target boundary term; the second maps to zero. D therefore induces a quotient map.']},
@@ -34,26 +39,12 @@ export function createDifferentialProof({board,math,language}){
   ]
  };
  function noteMath(text){return text.replace(/K\^\{p,q\}|F\^pC\^\{p\+q\}|a∈K\^\{p,q\}|\[a\]₀/g,token=>math({'a∈K^{p,q}':R`a\in K^{p,q}`,'[a]₀':R`[a]_0`}[token]||token));}
- function properties(){
-  const section=context.state.step,zero=context.state.module==='learn'&&section===3;
-  if(zero||context.state.module==='learn'&&section===4&&context.state.notePage===0)return '';
-  const formulas=section===4?[
-   R`E_1^{p,q}\cong H^q(K^{p,\bullet},\delta_2),\qquad d_1^2=0`,
-   R`E_2^{p,q}\cong H^p(E_1^{\bullet,q},d_1)`
-  ]:[
-   R`d_r^{p+r,q-r+1}d_r^{p,q}=0`,
-   R`E_{r+1}^{p,q}\cong\frac{\ker d_r^{p,q}}{\operatorname{im}d_r^{p-r,q+r-1}}`
-  ];
-  return `<section class="key-properties"><h4>${t('关键性质','Key properties')}</h4>${formulas.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</section>`;
- }
  function paint(){
-  const allTopics=[['d0',t('d₀ 的来源','Origin of d₀')],['d1',t('d₁ 的良定义','Well-defined d₁')],['dr',t('dᵣ 的良定义','Well-defined dᵣ')],['cohom',t('取上同调','Cohomology')]];
   const zero=context?.state.module==='learn'&&context.state.step===3;
-  const zeroTerm=zero&&context.state.notePage===0,firstTerm=context?.state.module==='learn'&&context.state.step===4&&context.state.notePage===0;
-  const topics=zero?[[zeroTerm?'e0':'d0',zeroTerm?t('元素与典范同构','Elements and canonical identification'):t('d₀ 的来源','Origin of d₀')]]:allTopics;
-  if(zero)topic=zeroTerm?'e0':'d0';else if(firstTerm)topic='e1';
-  let html=properties()+`<nav class="proof-topics" aria-label="${t('数学阐述主题','Mathematical exposition topics')}">${topics.map(([id,name])=>`<button data-proof-topic="${id}" aria-pressed="${topic===id}">${name.replace(/d([₀₁ᵣ])/g,(_,r)=>math('d_{'+({'₀':0,'₁':1,'ᵣ':'r'}[r])+'}'))}</button>`).join('')}</nav>`;
-  if(zero||firstTerm)html='';
+  const firstTerm=context?.state.module==='learn'&&context.state.step===4&&context.state.notePage===0;
+  const pageTopic=context?.state.module==='learn'?({3:['e0','d0'],4:['e1','d1'],5:['er','dr']}[context.state.step]?.[context.state.notePage]):null;
+  if(pageTopic)topic=pageTopic;
+  let html='';
   if(topic==='cohom')html+=cohomologyExposition({r:context.construction?.r??Math.max(0,context.current-1),phase,point:context.point,math,t});
   else{
    const entries=explanations[topic],entry=entries[steps[topic]];
@@ -66,5 +57,5 @@ export function createDifferentialProof({board,math,language}){
   const button=e.target.closest('[data-proof-topic],[data-proof-step],[data-co-phase]');if(!button||!context)return;
   e.stopPropagation();if(button.dataset.proofTopic){topic=button.dataset.proofTopic;}else if(button.dataset.proofStep!==undefined)steps[topic]=Number(button.dataset.proofStep);else phase=Number(button.dataset.coPhase);paint();
  });
- return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?'dr':c.state.module==='learn'&&c.state.step===4?(c.state.notePage===0?'e1':'d1'):c.construction?'cohom':'d0';}paint();},reset(){key='';context=null;steps={e0:0,e1:0,d0:0,d1:0,dr:0};phase=3;}};
+ return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?(c.state.notePage===0?'er':'dr'):c.state.module==='learn'&&c.state.step===4?(c.state.notePage===0?'e1':'d1'):c.construction?'cohom':'d0';}paint();},reset(){key='';context=null;steps={e0:0,e1:0,er:0,d0:0,d1:0,dr:0};phase=3;}};
 }

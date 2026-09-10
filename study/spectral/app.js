@@ -172,7 +172,7 @@ window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
 history.replaceState(null,'',location.pathname+location.search+'#title');
-$('#languageButton').onclick=$('#coverLanguage').onclick=()=>{toggleLanguage();render();};
+$('#languageButton').onclick=$('#coverLanguage').onclick=()=>{toggleLanguage();render();if(!state.cover)keepReadingVisible($('.build-current')||$('[data-build="0"]'));};
 $('#coverLanguage').disabled=false;
 render();
 
@@ -206,8 +206,7 @@ function statementMeta(module=state.module,step=state.step){
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
  if(module==='learn'&&step>=3&&step<=5)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step>3};
- if(module==='converge')return {...meta,kind:'§',number:'3',continued:step>0};
- if(module==='lab'||module==='trace')return {...meta,kind:'§',number:module==='lab'?'4':'5'};
+ if(['converge','lab','trace'].includes(module))return {...meta,kind:'§',number:'2',continued:true};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }
 function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'differential';}
@@ -235,13 +234,13 @@ function activateStatement(key,last=false){
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
  else{
   if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
-  const pages=currentReadingPages();state.notePage=last?pages.length-1:0;foldedReadings.delete(`${key}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage]?.indices[0]||1;
+  const pages=currentReadingPages();state.notePage=last?pages.length-1:0;foldedReadings.delete(`${key}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage]?.focus||1;
   render();keepReadingVisible($(`[data-statement="${key}"] [data-reading-page="${state.notePage}"]`));
  }
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].indices[0];state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+function selectReadingPage(index){const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 // Auto-folding is a reading-navigation preference, never a hover or proof effect.
 // Changing the setting leaves the current layout untouched until the next advance.
 function foldBeforeAdvance(nextStatement){
@@ -351,7 +350,7 @@ document.addEventListener('focusin',e=>{const el=interactiveConcept(e.target);if
 document.addEventListener('focusout',e=>{const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
 document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealDirections(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
 $('#clearConcept').onclick=()=>{state.pinned=null;state.pinnedKey=null;restoreInteraction();};
-function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.indices[0]||1;setAnnotation(i);}applyConcept(state.pinned,false);}
+function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.focus||1;setAnnotation(i);}applyConcept(state.pinned,false);}
 
 function renderQuickCheck(){
  const checks={initial:['如果先作用 δ₂，再作用 δ₁，终点在哪里？','终点是 Kᵖ⁺¹ᑫ⁺¹。交换作用顺序仍到同一位置，但两条复合映射之和为零。'],learn:['dᵣ 的靶在哪里？总次数改变多少？','靶是 Eᵣᵖ⁺ʳ,ᑫ⁻ʳ⁺¹，因此总次数从 p+q 变成 p+q+1。'],converge:['稳定页是否给出了 Hⁿ 的典范直和分解？','没有。它典范地给出滤过商 GrᵖHⁿ。向量空间层面的分裂可以选择，但收敛本身不指定典范分裂。']};
