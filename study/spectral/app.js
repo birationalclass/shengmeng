@@ -84,8 +84,12 @@ function diagonal(n,p,box=true,showLabel=true){
  if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
 }
 const formulas=(fs,concepts=[])=>fs.map((t,i)=>block(t,concepts[i]||'')).join('');
-function statementHeading(meta,key){return `<div class="statement-heading"><span>${meta.kind}</span><span class="statement-number">${meta.number}</span><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button></div>`;}
-function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading(meta,key)}<h3 class="statement-title"><button data-select-statement="${key}">${meta.name||item.title}</button></h3><div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
+function statementHeading(meta,key){
+ const subject=meta.symbol?math(meta.symbol):esc(meta.name||'');
+ return `<div class="statement-heading"><span class="statement-label"><span>${meta.kind}</span> <span class="statement-number">${meta.number}</span></span><span class="statement-separator" aria-hidden="true">·</span><h3 class="statement-title"><button data-select-statement="${key}" title="${esc(meta.name||'')}">${subject}</button></h3><button class="statement-toggle" data-toggle-statement="${key}" aria-expanded="false" aria-label="展开"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button></div>`;
+}
+function statementMarkup(item,module,step){const meta=statementMeta(module,step),key=`${module}:${step}`;return `<article class="formal-statement notebook-card" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${formulas(item.f,meta.concepts)}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;}
+
 function syncStatementCards(){document.querySelectorAll('[data-statement]').forEach(el=>{const key=el.dataset.statement,visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden,open=openStatements.has(key)&&!(key==='initial:0'&&state.initialReveal<0);el.hidden=!visible;el.inert=!visible;el.dataset.open=String(open);el.classList.toggle('is-active',key===activeStatementKey());notebookMotion.setExpanded(el.querySelector(':scope > .statement-body'),open,{immediate:!visible||!wasVisible});const toggle=el.querySelector('.statement-toggle');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));});}
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
@@ -147,19 +151,19 @@ function sectionName(){return ui('学习笔记','STUDY NOTES');}
 function statementMeta(module=state.module,step=state.step){
  const collections={
  initial:[
- {kind:'定义',number:'1.1',name:'双复形',intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
- {kind:'定义',number:'1.2',name:'总复形',intro:'对每个总次数 n，将同一条对角线上的空间取直和，并定义总微分。',concepts:['total','differential','differential']}
+ {kind:'定义',number:'1.1',name:'双复形',symbol:raw`(K,\delta_1,\delta_2)`,intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
+ {kind:'定义',number:'1.2',name:'总复形',symbol:raw`(C^\bullet,D)`,intro:'对每个总次数 n，将同一条对角线上的空间取直和，并定义总微分。',concepts:['total','differential','differential']}
  ],
  learn:[
- {kind:'定义',number:'2.1',name:'上同调',concepts:['cycles','boundaries','cohomology','cohomology']},
- {kind:'定义',number:'2.2',name:'列滤过',concepts:['filtration','filtration','differential']},
- {kind:'定义',number:'2.3',name:'关联分次与第零页',concepts:['quotient','quotient','space']},
- {kind:'命题',number:'2.1',name:'第零微分与第一页',concepts:['delta2','delta2','filtration','cohomology']},
- {kind:'命题',number:'2.2',name:'第一微分与第二页',concepts:['delta1','delta1','quotient']},
- {kind:'定义',number:'2.3',name:'滤过闭链、边界与一般页',concepts:['cycles','boundaries','page','differential','cohomology']}
+ {kind:'定义',number:'2.1',name:'上同调',symbol:raw`H^n(C^\bullet,D)`,concepts:['cycles','boundaries','cohomology','cohomology']},
+ {kind:'定义',number:'2.2',name:'列滤过',symbol:raw`F^\bullet C^\bullet`,concepts:['filtration','filtration','differential']},
+ {kind:'定义',number:'2.3',name:'关联分次与第零页',symbol:raw`(E_0,d_0)`,concepts:['quotient','quotient','space']},
+ {kind:'命题',number:'2.1',name:'第零微分与第一页',symbol:raw`(E_0,d_0)`,concepts:['delta2','delta2','filtration','cohomology']},
+ {kind:'命题',number:'2.2',name:'第一微分与第二页',symbol:raw`(E_1,d_1)`,concepts:['delta1','delta1','quotient']},
+ {kind:'定义',number:'2.3',name:'滤过闭链、边界与一般页',symbol:raw`(E_r,d_r)`,concepts:['cycles','boundaries','page','differential','cohomology']}
  ],
  converge:[
- {kind:'定义',number:'3.1',name:'上同调上的诱导滤过',concepts:['cohomology','filtration','quotient']},
+ {kind:'定义',number:'3.1',name:'上同调上的诱导滤过',symbol:raw`F^pH^n`,concepts:['cohomology','filtration','quotient']},
  {kind:'引理',number:'3.2',name:'有界性与稳定',intro:'令 n=p+q，并保留第一象限假设。',concepts:['filtration','cycles','boundaries']},
  {kind:'命题',number:'3.3',name:'典范比较映射',concepts:['page','comparison','comparison']},
  {kind:'定理',number:'3.4',name:'有界滤过的收敛',concepts:['filtration','cycles','comparison','boundaries','comparison']},
@@ -282,7 +286,7 @@ function doubleComplexCompanion(item){
  ];
  const assumptions=[raw`K=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`,raw`K^{p,q}=0\qquad(p<0\ \text{or}\ q<0)`];
  $('#explanation').dataset.notebook=language();
- $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading({kind:'定义',number:'1.1'},'initial:0')}<h3 class="statement-title"><button data-select-statement="initial:0">双复形</button></h3><div class="statement-body"><div class="initial-definition" data-build="0"><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button></div><div class="build-content">${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><div class="initial-definition" data-build="0"><div class="initial-assumptions">${assumptions.map(f=>`<div>${math(f,true)}</div>`).join('')}</div></div>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button></div><div class="build-content">${c.f.map(f=>block(f,c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step)).join('')+[0,1,2,3,4].map(step=>statementMarkup(convergence[step],'converge',step)).join('')+statementMarkup({title:'精确例子',f:[]},'lab',0)+statementMarkup({title:'代表元追踪',f:[]},'trace',0));
  $('#sceneNote').textContent='';
 }

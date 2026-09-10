@@ -1,6 +1,8 @@
 # Spectral Sequence — Study Atlas AT·002
 
-A bilingual interactive course using a first-quadrant cochain double complex. The main presentation has exactly **four slides**: title, Initial data, Induced structures, and Convergence. Initial data reveals its six definition items in place before advancing to Induced structures. Enter, the right arrow and the forward button advance this sequence; the left arrow and previous button reverse it. Space also advances when no interactive item has focus. Topic tabs, operation buttons, formula hover/focus, sliders and exact examples operate within the current slide. Nothing plays automatically.
+A bilingual interactive notebook using a first-quadrant cochain double complex. The loading cover leads into one continuous reading surface. Definitions, propositions and theorems appear progressively and fold independently. Enter and the right arrow advance the reading sequence; the left arrow goes back. Local diagram controls and mathematical proof steps remain independent of that sequence.
+
+Statement headers use a compact type–number–object layout, for example **Definition 2.3 · (E_r, d_r)**. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
 ## Mathematical interaction design
 
