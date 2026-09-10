@@ -1,0 +1,40 @@
+/* The notebook sits directly on the page; only its individual cards are framed. */
+.notebook-workspace.workspace {
+  border:0;border-radius:0;background:transparent;box-shadow:none;
+}
+/* Short windows scroll the reading surface instead of crushing the diagram. */
+@media(max-height:540px) {
+  html,body { height:100%;min-height:0 }
+  body { height:100dvh;overflow:hidden }
+  main,.slide-deck.workspace { min-height:0 }
+  .slide-deck:not(.is-cover) .slide-body { overflow-y:auto }
+}
+@media(min-width:781px) and (max-height:540px) {
+  :root {
+    --notebook-toolbar-height:56px;
+    --notebook-exposition-height:160px;
+    --notebook-controls-height:76px;
+  }
+  .slide-deck:not(.is-cover) .visual-column { min-height:420px;padding-block:12px }
+}
+
+/* Keep controls adjacent to the canvas, not at the bottom of spare plot space. */
+.visualization-module {
+  --diagram-content-height:525;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:8px;
+}
+.is-building .visualization-module { --diagram-content-height:460 }
+.slide-deck .visualization-module .stage {
+  flex:0 1 auto;width:100%;aspect-ratio:840 / var(--diagram-content-height);
+  max-height:calc(100% - var(--notebook-controls-height) - 8px);min-height:0;
+}
+.visualization-module .diagram-viewport { align-items:flex-start }
+.is-building.slide-deck #diagram { max-height:none;align-self:flex-start }
+.slide-deck .visualization-module .diagram-controls {
+  flex:0 0 var(--notebook-controls-height);height:var(--notebook-controls-height);
+  padding-top:4px;
+}
+@media(max-width:780px) {
+  .visualization-module { --notebook-controls-height:104px }
+  .slide-deck .visualization-module .stage { flex:none;min-height:225px;max-height:none }
+}

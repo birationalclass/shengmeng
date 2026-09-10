@@ -60,6 +60,8 @@ export function createInitialAnimations({diagram}) {
     ],{duration:pop,delay},`term-${p}-${q}`);
    }
   });
+  // Boundary ellipses appear only after the last K tile has finished popping.
+  all('.extent-label').forEach((el,i)=>play(el,[{opacity:0},{opacity:1}],{duration:motion.enter,delay:axis+8*stagger+pop},`extent-${i}`));
   // Cut an axis behind a tile only as that tile appears, never in the empty frame.
   all('#coordinate-axis-mask rect[fill="black"]').forEach((el,i)=>{
    const x=Number(el.getAttribute('x'))+Number(el.getAttribute('width'))/2;

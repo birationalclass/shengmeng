@@ -34,7 +34,7 @@ export function createFilteredView({viewport,board,math,language}){
    t('r 增大时允许更多来源，所以 Bᵣ 增大。注意 Eᵣ 的分母使用 Bᵣ₋₁。','As r grows, more source columns are allowed and Bᵣ increases. The denominator of Eᵣ uses Bᵣ₋₁.')
   ];
   board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p>`);
+  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('区域只表示包含关系。','Regions indicate inclusions only.')}</p>`);
  }
  function draw(){
   const {n,p}=state,r=Math.max(1,state.r),q=n-p,Z=`Z_{${r}}^{${p},${q}}`,B=`B_{${r}}^{${p},${q}}`;
@@ -71,7 +71,7 @@ export function createFilteredView({viewport,board,math,language}){
    }
   }
   const scene=document.createElement('div');scene.className='filtered-scene';scene.dataset.filterTopic=topic;
-  scene.innerHTML=`<svg viewBox="0 0 840 525" aria-hidden="true"><defs><marker id="filtered-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="#a7d3ca" stroke-width="1.5"/></marker></defs>${shapes}</svg>${labels}<p class="filtered-caption">${t('子空间示意 · 区域大小不表示维数','Subspace diagram · region sizes do not encode dimensions')}</p>`;
+  scene.innerHTML=`<svg viewBox="0 0 840 525" aria-hidden="true"><defs><marker id="filtered-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="#a7d3ca" stroke-width="1.5"/></marker></defs>${shapes}</svg>${labels}`;
   for(const old of [...host.children]){
    const opacity=getComputedStyle(old).opacity;old.getAnimations().forEach(a=>a.cancel());old.style.opacity=opacity;
    if(reduced())old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards',easing:visualMotion().easing});fade.finished.then(()=>old.remove(),()=>{});}

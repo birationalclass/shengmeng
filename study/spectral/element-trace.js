@@ -1,13 +1,15 @@
 import {visualMotion} from './visual-style.js?v=40';
 // A finite, user-triggered trace of an element under two consecutive differentials.
 export function createSquareTrace(host){
- const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,current=null,running=false,currentCentres=null,serial=0;
+ const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,current=null,running=false,currentCentres=null,serial=0,finished=null,resolveFinished=null;
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
- const clear=()=>{host.querySelectorAll('[data-element-focus]').forEach(el=>el.removeAttribute('data-element-focus'));cancelAnimationFrame(frame);if(layer){const retiring=layer;retiring.removeAttribute('id');if(reduced.matches)retiring.remove();else{const fade=retiring.animate([{opacity:getComputedStyle(retiring).opacity},{opacity:0}],{duration:visualMotion().exit,easing:visualMotion().easing,fill:'forwards'});fade.finished.then(()=>retiring.remove(),()=>retiring.remove());}}layer=null;current=null;running=false;};
+ const clear=()=>{resolveFinished?.(false);resolveFinished=null;host.querySelectorAll('[data-element-focus]').forEach(el=>el.removeAttribute('data-element-focus'));cancelAnimationFrame(frame);if(layer){const retiring=layer;retiring.removeAttribute('id');if(reduced.matches)retiring.remove();else{const fade=retiring.animate([{opacity:getComputedStyle(retiring).opacity},{opacity:0}],{duration:visualMotion().exit,easing:visualMotion().easing,fill:'forwards'});fade.finished.then(()=>retiring.remove(),()=>retiring.remove());}}layer=null;current=null;running=false;};
  const sync=(effect,enabled)=>{if(!enabled||!['square1','square2'].includes(effect)||effect!==current)clear();};
  const play=(effect,centres)=>{
-  if(running&&current===effect)return;
+  if(running&&current===effect)return finished;
   clear();current=effect;currentCentres=centres;running=true;
+  finished=new Promise(resolve=>{resolveFinished=resolve;});
+  const complete=()=>{running=false;resolveFinished?.(true);resolveFinished=null;};
   const horizontal=effect==='square1',color=horizontal?'#f4ce86':'#c9b5ff',delta=horizontal?'δ₁':'δ₂';
   const [[x0,y0],[x1,y1],[x2,y2]]=centres,ux=horizontal?1:0,uy=horizontal?0:-1,pad=horizontal?39:24;
   layer=document.createElementNS(ns,'svg');layer.id='elementTrace';layer.classList.add('element-trace-layer');layer.setAttribute('viewBox','0 0 840 525');layer.setAttribute('role','img');layer.setAttribute('aria-label',`a → ${delta}(a) → 0`);layer.dataset.concept=effect;
@@ -28,9 +30,9 @@ export function createSquareTrace(host){
    zero.setAttribute('opacity',String(morph));zero.setAttribute('transform',`scale(${.06+.94*morph} ${.06+.94*morph})`);
    gradient.setAttribute('x1',x-38*ux);gradient.setAttribute('y1',y-38*uy);gradient.setAttribute('x2',x+18*ux);gradient.setAttribute('y2',y+18*uy);flow.setAttribute('opacity',String(t<1680?1:1-shrink));layer.dataset.phase=phase;
   };
-  if(reduced.matches){draw(2230);running=false;return;}
+  if(reduced.matches){draw(2230);complete();return finished;}
   const start=performance.now();draw(0);
-  const tick=now=>{const elapsed=now-start;draw(elapsed);if(elapsed<2230)frame=requestAnimationFrame(tick);else running=false;};frame=requestAnimationFrame(tick);
+  const tick=now=>{const elapsed=now-start;draw(elapsed);if(elapsed<2230)frame=requestAnimationFrame(tick);else complete();};frame=requestAnimationFrame(tick);return finished;
  };
  reduced.addEventListener('change',e=>{if(e.matches&&running){const effect=current,centres=currentCentres;clear();play(effect,centres);}});
  return {clear,sync,play};

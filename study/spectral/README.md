@@ -256,3 +256,13 @@ Mixed-composite particles brake on their original horizontal/vertical paths befo
 ## v46 · Addition at the target centre
 
 The anticommutation plus sign, particle merge, and final zero share the exact centre of the target K tile. Particles retain the existing slowdown and approach along their original incoming arrows.
+
+## v47 · Open notebook layout
+
+Removed the enclosing workspace border, shadow, and contrasting surface. The toolbar divider has more breathing room, and its Chinese title uses the same shared serif font stack as the cover. Toolbar heights still drive fullscreen offsets; short windows scroll the reading surface while preserving a usable diagram height.
+
+The K introduction now simply says that each term is a vector space, in both languages. On entering 1.3, the horizontal square-zero trace completes before the vertical trace starts; the pair runs once, and direct interaction or leaving 1.3 cancels the remaining sequence.
+
+Diagram controls now follow the canvas directly. Removed the freestanding total-trace captions and scope notes from the plot-to-controls gap; their mathematical content is in the exposition panel. Initial diagrams crop only the unused lower caption strip, while all SVG and formula layers retain the same scale.
+
+The initial K diagram adds horizontal/vertical ellipses above and to the right after the last tile appears. The total differential is one declaration, `D := δ₁ + δ₂ : Cⁿ → Cⁿ⁺¹`; its particles stop at the horizontal and vertical target summands. Repeated diagram descriptions were removed from the bilingual exposition, while the filtered-quotient proofs and convergence conditions remain. The D² panel now starts with the expansion and its cochain-complex consequence.

@@ -1,5 +1,5 @@
 /* A single persistent row of reading controls, including in fullscreen. */
-:root { --notebook-toolbar-height:48px }
+:root { --notebook-toolbar-height:64px }
 body>.notebook-toolbar {
   display:flex;justify-content:space-between;align-items:center;gap:16px;flex:none;
   width:100%;height:var(--notebook-toolbar-height);min-height:var(--notebook-toolbar-height);
@@ -18,7 +18,7 @@ body>.notebook-toolbar {
 .notebook-toolbar .toolbar-actions .settings-button { width:32px;min-width:32px;padding:6px }
 .notebook-toolbar .settings-button svg { flex:none;width:17px;height:17px }
 .notebook-toolbar #sceneTitle {
-  margin:0;min-width:0;font:22px/1.2 Georgia,serif;color:var(--ink);white-space:nowrap;
+  margin:0;min-width:0;font:22px/1.2 var(--notebook-title-font);color:var(--ink);white-space:nowrap;
 }
 .study-fullscreen .notebook-toolbar {
   position:fixed;inset:0 0 auto;z-index:101;max-width:none;
@@ -31,7 +31,7 @@ body>.notebook-toolbar {
   body>.notebook-toolbar { padding:6px 12px }
 }
 @media(max-width:680px) {
-  :root { --notebook-toolbar-height:88px }
+  :root { --notebook-toolbar-height:104px }
   body>.notebook-toolbar { flex-direction:column;align-items:stretch;justify-content:center;gap:8px }
   .notebook-toolbar #sceneTitle { font-size:20px }
 }

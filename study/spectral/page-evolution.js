@@ -1,4 +1,4 @@
-import {createDifferentialProof} from './differential-proof.js?v=40';
+import {createDifferentialProof} from './differential-proof.js?v=47';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
