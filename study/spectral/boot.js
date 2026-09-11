@@ -11,7 +11,8 @@
   coverFont=value;overlay.dataset.coverFont=value;try{localStorage.setItem('spectral-cover-font',value);}catch{}
   if(!en()&&!overlay.hidden&&!overlay.classList.contains('is-ready'))animateTitle();
  }};
- // Animate measured glyph positions on entry and language changes; keep the accessible title intact.
+ // Move clipped bands of the fully shaped title. Never re-typeset isolated letters.
+ // The last animation frame and the accessible static title share identical glyph geometry.
  const animateTitle=async()=>{
   const request=++entranceRequest;stopTitleEntrance();
   const title=overlay.querySelector('.loader-title'),face=title.querySelector(':scope > .loader-title-face');
@@ -21,26 +22,32 @@
    try{await document.fonts.load('96px "Cover Ma Shan Zheng"','谱序列');}catch{}
    if(request!==entranceRequest)return;
   }
-  const bounds=title.getBoundingClientRect(),faceBounds=face.getBoundingClientRect(),text=face.firstChild;
-  const letters=[];let offset=0;
+  const bounds=title.getBoundingClientRect(),text=face.firstChild;
+  const starts=[];let offset=0;
   for(const glyph of Array.from(text.textContent)){
    const range=document.createRange();range.setStart(text,offset);offset+=glyph.length;range.setEnd(text,offset);
-   const rect=range.getBoundingClientRect();if(!glyph.trim())continue;
-   const letter=document.createElement('span');letter.className='loader-title-letter';letter.setAttribute('aria-hidden','true');
-   letter.style.left=`${rect.left-bounds.left}px`;letter.style.top=`${faceBounds.top-bounds.top}px`;
-   for(const name of ['loader-title-depth','loader-title-face']){const layer=document.createElement('span');layer.className=name;layer.textContent=glyph;letter.append(layer);}
-   letters.push(letter);
+   if(glyph.trim())starts.push(range.getBoundingClientRect().left-bounds.left);
   }
+  const letters=starts.map((start,index)=>{
+   const letter=document.createElement('span');letter.className='loader-title-letter';letter.setAttribute('aria-hidden','true');
+   // These bands partition one full text layout, including tracking, kerning and shadows.
+   const left=index===0?-.12*parseFloat(getComputedStyle(title).fontSize):start;
+   const right=index===starts.length-1?bounds.width+.12*parseFloat(getComputedStyle(title).fontSize):starts[index+1];
+   letter.style.clipPath=`inset(-.12em ${bounds.width-right}px -.12em ${left}px)`;
+   for(const name of ['loader-title-depth','loader-title-face'])letter.append(title.querySelector(`:scope > .${name}`).cloneNode(true));
+   return letter;
+  });
   overlay.classList.add('cover-intro');title.classList.add('is-assembling');title.append(...letters);
-  let settled=false;
-  const finish=()=>{if(settled)return;settled=true;stopTitleEntrance=()=>{};letters.forEach(letter=>letter.remove());title.classList.remove('is-assembling');overlay.classList.remove('cover-intro');window.removeEventListener('resize',cancel);};
+  let settled=false,disposed=false;
+  // Keep the settled bands: no last-frame switch between composited and static text.
+  const finish=()=>{if(settled||disposed)return;settled=true;title.classList.replace('is-assembling','is-assembled');overlay.classList.remove('cover-intro');};
   const animations=letters.map(letter=>{
    const distance=(Math.random()<.5?-1:1)*(55+Math.random()*Math.min(170,innerHeight*.2));
-   return letter.animate([{transform:`translateY(${distance}px)`,opacity:0},{transform:'translateY(0)',opacity:1}],
+   return letter.animate([{transform:`translateY(${distance}px)`,opacity:0},{transform:'none',opacity:1}],
     {duration:1300+Math.random()*500,delay:Math.random()*320,easing:'cubic-bezier(.16,1,.3,1)',fill:'both'});
   });
   // A resize/fullscreen transition must immediately restore the responsive title.
-  const cancel=()=>{animations.forEach(animation=>animation.cancel());finish();};
+  const cancel=()=>{if(disposed)return;disposed=true;animations.forEach(animation=>animation.cancel());letters.forEach(letter=>letter.remove());title.classList.remove('is-assembling','is-assembled');overlay.classList.remove('cover-intro');window.removeEventListener('resize',cancel);stopTitleEntrance=()=>{};};
   stopTitleEntrance=cancel;
   window.addEventListener('resize',cancel,{once:true});
   Promise.all(animations.map(animation=>animation.finished)).then(finish,finish);

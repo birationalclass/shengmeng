@@ -83,15 +83,17 @@ html{background:var(--cover-background)}html.math-loading body>header,html.math-
 @media(max-width:480px){.cover-actions{gap:14px}.loader-eyebrow{gap:13px;font-size:9px}#coverLanguage::after{right:-7px}}
 @media(prefers-reduced-motion:reduce){#beginSlides,.cover-actions button{transition:none}#mathLoader.awaiting-entry:not(.cover-intro) #beginSlides{animation:none}}
 
-/* The entrance uses exact glyph positions, then yields to the original text. */
+/* Full-title slices share the original grid, padding, shaping and metal gradient. */
 .loader-title{position:relative}
-.loader-title-letter{position:absolute;display:inline-grid;white-space:pre;pointer-events:none}
+.loader-title-letter{position:absolute;inset:0;display:grid;box-sizing:border-box;padding:inherit;white-space:inherit;text-indent:inherit;pointer-events:none}
 .loader-title-letter>.loader-title-face{animation:none}
-.loader-title.is-assembling>.loader-title-face,.loader-title.is-assembling>.loader-title-depth{opacity:0;animation-play-state:paused}
+.loader-title:is(.is-assembling,.is-assembled)>.loader-title-face,.loader-title:is(.is-assembling,.is-assembled)>.loader-title-depth{opacity:0;animation:none}
+.loader-title.is-assembled .loader-title-letter>.loader-title-face{animation:cover-metal-sweep 12s cubic-bezier(.32,0,.22,1) infinite}
+#mathLoader.is-ready .loader-title.is-assembled .loader-title-letter>.loader-title-face{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.loader-title.is-assembled .loader-title-letter>.loader-title-face{animation:none}}
 
 /* Chinese uses its own Song-style proportions, rather than Latin tracking. */
 .loader-title[lang="zh-CN"]{font-family:var(--notebook-title-font-zh);font-size:clamp(44px,min(9.6vw,13vh),140px);font-weight:300;line-height:1.25;letter-spacing:.07em;word-spacing:0;text-indent:.07em}
-.loader-title[lang="zh-CN"] .loader-title-letter{text-indent:0}
 .loader-author[lang="zh-CN"]{font-family:"Songti SC","Noto Serif SC",serif;font-style:normal;font-size:clamp(18px,1.6vw,22px);font-weight:400;letter-spacing:.14em;text-indent:.14em}
 
 /* Supporting copy appears only after the title has settled. */

@@ -83,6 +83,7 @@ export function createNotebookMotion({language}) {
   };record.frame=requestAnimationFrame(follow);
  }
  function sync() {
+  window.spectralPanelStyle?.sync();
   const off=!milliseconds();document.documentElement.dataset.notebookMotion=off?'none':settings.effect;document.documentElement.style.setProperty('--notebook-motion-time',(off?0:settings.duration)+'ms');
   button.setAttribute('aria-label',t('显示设置','Display settings'));button.title=t('显示设置','Display settings');
   $('#motionTitle').textContent=t('显示设置','Display settings');$('#closeMotionSettings').setAttribute('aria-label',t('关闭设置','Close settings'));
@@ -104,7 +105,7 @@ export function createNotebookMotion({language}) {
  }
  function update(){settleAll();settings={effect:effect.value,duration:Number(duration.value),autoCollapse:autoCollapse.checked};try{localStorage.setItem(storageKey,JSON.stringify(settings));}catch{}sync();}
  autoCollapse.addEventListener('change',update);effect.addEventListener('change',update);duration.addEventListener('input',update);
- $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;autoCollapse.checked=defaults.autoCollapse;window.spectralCover?.setStyle('c');update();};
+ $('#motionReset').onclick=()=>{effect.value=defaults.effect;duration.value=defaults.duration;autoCollapse.checked=defaults.autoCollapse;window.spectralCover?.setStyle('c');window.spectralPanelStyle?.reset();update();};
  for(const radio of document.querySelectorAll('[name="coverFont"]'))radio.addEventListener('change',()=>{if(radio.checked){window.spectralCover?.setStyle(radio.value);sync();}});
  $('#motionPreviewToggle').onclick=()=>{previewOpen=!previewOpen;setExpanded(preview,previewOpen);sync();};
  button.onclick=$('#coverSettings').onclick=event=>{opener=event.currentTarget;sync();dialog.showModal();};$('#coverSettings').disabled=false;$('#closeMotionSettings').onclick=()=>dialog.close();

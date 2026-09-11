@@ -2,7 +2,17 @@
 
 A bilingual interactive notebook using a first-quadrant cochain double complex. The loading cover leads into one continuous reading surface. Definitions, propositions and theorems appear progressively and fold independently. Enter and the right arrow advance the reading sequence; the left arrow goes back. Local diagram controls and mathematical proof steps remain independent of that sequence.
 
-Statement headers use a compact type–number–object layout, for example **Definition 2.3 · (E_r, d_r)**. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
+The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
+
+## v78 · Panel styles, associated graded, and stable cover lettering
+
+Settings now provide three persistent presentation styles: **Editorial notebook** (default), **Ordered workbench**, and **Quiet glass**. `panel-style.js` owns selection and bilingual labels; `styles/panel-style.css` owns shared presentation tokens and the three complete variants. Switching style leaves reading position, proof selection and live diagram nodes intact. The right diagram remains unframed. Existing glass backgrounds no longer override the selected presentation.
+
+After 1.9, **1.10 Associated graded complex** defines both `Gr_F^p C^n := F^p C^n / F^{p+1} C^n` and `Gr_F^p D^n`, sending the coset of `a` to the coset of `Da`. `associated-graded.js` provides four independent exposition steps: the quotient and its elements, well-definedness of the induced differential, its square-zero identity, and the column isomorphism. The graph offers quotient and induced-map views, with controls for degree and filtration. An off-window target is not declared zero. Section 2 then names these constructions `E_0^{p,q}` and `d_0^{p,q}`. Reference: [Stacks Project, Section 12.24](https://stacks.math.columbia.edu/tag/012K).
+
+The cover entrance moves clipped bands of the same fully shaped title, retaining those bands when they settle. This preserves kerning, text indentation, the full-width metal gradient and compositing at the end of the motion; there is no switch from individually typeset letters to a different static line. Resizing clears the bands and restores responsive full text. Language and font changes build a fresh entrance, and reduced motion displays the title directly.
+
+Validation for this revision: Chromium checked all three styles and persistence/reset, 1.9 → 1.10 → 2.1 and reverse navigation, independent proof controls, keyboard separation, fullscreen label registration, 320–1920px widths, both languages and reduced motion. New formulas were parsed in strict KaTeX mode; the 142 exact algebra checks pass. For English, both Chinese cover fonts, and narrow Chinese layout, the settled glyph rectangles agree exactly; before/after title images are pixel-identical with the decorative shimmer frozen for comparison.
 
 ## Mathematical interaction design
 
@@ -25,7 +35,7 @@ Hover/focus previews one source item. Click pins it; leaving a preview restores 
 
 ## Implementation and conventions
 
-- `app.js`: four-slide navigation, local state, persistent keyed SVG layers, formula interaction and exact-example inspector.
+- `app.js`: continuous numbered reading navigation, local state, persistent keyed SVG layers, formula interaction and exact-example inspector.
 - `workbench.js`: bilingual local topic/action labels and semantic diagrams of direct sums, inclusions, quotients and representative maps.
 - `content.js`, `language.js`: formal statements, proofs, translations and persistent language selection.
 - `algebra.js`: exact BigInt rational arithmetic, filtered cycles/boundaries, representatives and induced differential matrices.
