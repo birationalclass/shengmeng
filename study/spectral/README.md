@@ -4,6 +4,10 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v80 · Midpoint reading focus
+
+`reading-focus.js` places the current numbered entry's top at the visible screen midpoint. If its bottom would exceed the reading viewport, it moves up only enough to fit; an oversized entry starts near the viewport top. Clamping to the available scroll range leaves early entries naturally higher. Trailing space supports the final entry without adding a leading spacer. One fractional scroll follower handles section transitions, folding, style/viewport changes and fullscreen; manual wheel or touch scrolling suspends it until another entry is selected. Validation covers both boundary cases, 320–1440px widths, reduced viewport height, style and language changes, reverse navigation, and a settled transition without a final jump. The 2.10 title is now simply “收敛 / Convergence”.
+
 ## v78 · Panel styles, associated graded, and stable cover lettering
 
 Settings now provide three persistent presentation styles: **Editorial notebook** (default), **Ordered workbench**, and **Quiet glass**. `panel-style.js` owns selection and bilingual labels; `styles/panel-style.css` owns shared presentation tokens and the three complete variants. Switching style leaves reading position, proof selection and live diagram nodes intact. The right diagram remains unframed. Existing glass backgrounds no longer override the selected presentation.

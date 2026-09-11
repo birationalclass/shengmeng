@@ -22,6 +22,6 @@ const titles={
  'converge:0':[['命题：逐位置稳定','Proposition: Pointwise stabilization']],
  'converge:1':[{name:['稳定页','Stable page'],symbol:String.raw`E_\infty`}],
  'converge:2':[['上同调的诱导滤过','Induced filtration on cohomology']],
- 'converge:3':[['收敛到总上同调','Convergence to total cohomology']],
+ 'converge:3':[['收敛','Convergence']],
  'lab:0':[{name:['页','Page'],symbol:'E_r'},{name:['微分','Differential'],symbol:'d_r'}]
 };
