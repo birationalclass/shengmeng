@@ -3,11 +3,11 @@ import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
 import {createStabilityView} from './stability-view.js?v=76';
 import {installReadingTouch} from './reading-touch.js?v=74';
-import {createAbutmentView} from './abutment-view.js?v=74';
+import {createAbutmentView} from './abutment-view.js?v=86';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=80';
+import {numberedPages} from './reading-pages.js?v=86';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -17,11 +17,11 @@ import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=83';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=77';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=86';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=84';
-import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=77';
+import {createFilteredView} from './filtered-view.js?v=86';
+import {createPageEvolution} from './page-evolution.js?v=86';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -38,7 +38,7 @@ const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanat
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1,revealedTotalStep=0;
-const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3'];
+const readingOrder=['initial:0','learn:3','learn:6','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3'];
 const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
@@ -136,7 +136,7 @@ function statementMarkup(item,module,step,grouped=false){
 }
 function sectionTwoMarkup(){
  const heading=statementHeading(statementMeta('learn',3),'2').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
- const groups=[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
+ const groups=[3,6,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
  return `<article class="formal-statement notebook-card notebook-section" data-section="2" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
 }
 function syncStatementCards(){
@@ -240,6 +240,7 @@ document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('[dat
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
 
 function statementMeta(module=state.module,step=state.step){
+ if(module==='learn'&&step===6)return {kind:'§',number:'2',continued:true,concepts:['cycles','boundaries']};
  const collections={
  initial:[
  {kind:'定义',number:'1.1',name:'双复形',symbol:raw`(K,\delta_1,\delta_2)`,intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
@@ -260,7 +261,7 @@ function statementMeta(module=state.module,step=state.step){
  const meta=collections[module]?.[step]||{kind:module==='lab'?'例':'计算',concepts:module==='lab'?['page','differential']:['differential','space','differential']};
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
- if(module==='learn'&&step>=3&&step<=5)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step>3};
+ if(module==='learn'&&step>=3&&step<=6)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step>3};
  if(['converge','lab','trace'].includes(module))return {...meta,kind:'§',number:'2',continued:true};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }
@@ -292,7 +293,7 @@ function activateStatement(key,last=false){
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
  else{
-  if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
+  if(module==='learn'&&step===6){state.n=3;state.p=1;state.r=1;}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
   const pages=currentReadingPages();state.notePage=last?pages.length-1:0;foldedReadings.delete(`${key}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage]?.focus||1;
   render();keepReadingVisible($(`[data-statement="${key}"] [data-reading-page="${state.notePage}"]`));
  }

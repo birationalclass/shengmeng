@@ -6,38 +6,39 @@ export function createFilteredView({viewport,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
  const host=document.createElement('div');host.id='filteredView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  let state=null,active=false,key='',topic='Z';const steps={Z:0,B:0};
+ const pageIndex=()=>state.step===6?(topic==='Z'?1:0):Math.max(1,state.r);
  const reduced=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
  const label=(x,y,tex,width=200,kind='')=>`<span class="filtered-label ${kind}" style="left:${x-width/2}px;top:${y-22}px;width:${width}px">${math(tex)}</span>`;
  const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies']]};
  function exposition(){
-  const r=Math.max(1,state.r),n=state.n,p=state.p,q=n-p,i=steps[topic];
+  const r=pageIndex(),n=state.n,p=state.p,q=n-p,i=steps[topic];
   const proof=topic==='Z'?[
    [R`Z_r^{p,q}:=\{a\in F^pC^n:Da\in F^{p+r}C^{n+1}\},\qquad n=p+q`,R`Z_r^{p,q}=\ker\big(F^pC^n\xrightarrow{D}C^{n+1}\xrightarrow{\pi}C^{n+1}/F^{p+r}C^{n+1}\big)`],
    [R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`(Da)_i=\delta_1a_{i-1}+\delta_2a_i`,R`a\in Z_r^{p,q}\iff\delta_1a_{i-1}+\delta_2a_i=0\quad(p\le i<p+r)`,R`a_i=0\quad(i<p)`],
-   [R`a\in Z_1^{p,q}\iff\delta_2a_p=0`,R`a\in Z_2^{p,q}\iff\begin{cases}\delta_2a_p=0,\\\delta_1a_p+\delta_2a_{p+1}=0.\end{cases}`],
+   [R`Z_0^{p,q}=F^pC^n`,R`a\in Z_1^{p,q}\iff\delta_2a_p=0`,R`a\in Z_2^{p,q}\iff\begin{cases}\delta_2a_p=0,\\\delta_1a_p+\delta_2a_{p+1}=0.\end{cases}`],
    [R`F^{p+r+1}C^{n+1}\subseteq F^{p+r}C^{n+1}`,R`Z_{r+1}^{p,q}\subseteq Z_r^{p,q}`,R`p+r>n+1\ \Longrightarrow\ Z_r^{p,q}=F^pC^n\cap\ker D`]
   ]:[
    [R`B_r^{p,q}:=F^pC^n\cap D(F^{p-r}C^{n-1}),\qquad n=p+q`,R`x\in B_r^{p,q}\iff\exists b\in F^{p-r}C^{n-1}:x=Db\in F^pC^n`],
    [R`b=\sum_{i\ge p-r}b_i,\qquad b_i\in K^{i,n-1-i}`,R`(Db)_i=\delta_1b_{i-1}+\delta_2b_i`,R`Db\in F^pC^n\iff\delta_1b_{i-1}+\delta_2b_i=0\quad(i<p)`],
-   [R`x=Db\ \Longrightarrow\ Dx=D^2b=0`,R`B_r^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_s^{p,q}\quad(s\ge0)`],
+   [R`B_0^{p,q}=D(F^pC^{n-1})`,R`x=Db\ \Longrightarrow\ Dx=D^2b=0`,R`B_r^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_s^{p,q}\quad(s\ge0)`],
    [R`F^{p-r}C^{n-1}\subseteq F^{p-r-1}C^{n-1}`,R`B_r^{p,q}\subseteq B_{r+1}^{p,q}`,R`r\ge p\ \Longrightarrow\ B_r^{p,q}=F^pC^n\cap D(C^{n-1})`]
   ];
   const note=topic==='Z'?[
-   t('蓝色是像必须落入的滤过层；金色 Zᵣ 是满足此条件的全部原像，不是整个 FᵖCⁿ。','The blue region is the required filtration of the image. The gold Zᵣ consists of all preimages satisfying it, not all of FᵖCⁿ.'),
+   t(`${math('D^{-1}')} 表示子空间的逆像，不要求 ${math('D')} 可逆。${math('Z_r^{p,q}')} 中的元素是总上链；通常不要求 ${math('Da=0')}，也不能把它当成 ${math('E_r')} 页上的核。`,`${math('D^{-1}')} denotes a preimage, not an inverse map. Elements of ${math('Z_r^{p,q}')} are total cochains; ${math('Da')} need not vanish. This is not a kernel on the ${math('E_r')} page.`),
    t('需要检查各列分量之和的抵消。Zᵣ 通常不能表示为若干 K 小块的直和。','The sums of components must cancel in the excluded columns. In general Zᵣ is not a direct sum of selected K-terms.'),
    t('r=1 只检查首列；r=2 还要检查下一列。总次数 n 之外的分量为零。','For r=1 only the first column is tested; r=2 also tests the next. Components outside total degree n are zero.'),
    t('r 增大时像的条件更强，Zᵣ 缩小；目标滤过为零时，就要求 Da=0。','As r grows, the image condition becomes stronger and Zᵣ decreases. When the target filtration is zero, Da must be zero.')
   ]:[
-   t('D 的像是蓝色区域；还需落入 FᵖCⁿ，交集才是 Bᵣ。没有从全部 Fᵖ⁻ʳCⁿ⁻¹ 到 Bᵣ 的无条件映射。','The blue region is the image of D. Its intersection with FᵖCⁿ is Bᵣ. The whole source does not map into Bᵣ without the filtration condition.'),
+   r===0?t(`本图取 ${math('r=0')}。${math('D')} 保持滤过，所以 ${math('D(F^pC^{n-1})')} 已包含在 ${math('F^pC^n')} 中，恰好等于 ${math('B_0^{p,q}')}。一般 ${math('r')} 的定义仍需取交集。`,`Here ${math('r=0')}. Since ${math('D')} preserves the filtration, ${math('D(F^pC^{n-1})')} already lies in ${math('F^pC^n')} and equals ${math('B_0^{p,q}')}. For general ${math('r')} the intersection is still required.`):t('D 的像还需落入 FᵖCⁿ，交集才是 Bᵣ。整个 Fᵖ⁻ʳCⁿ⁻¹ 并不一定映入 Bᵣ。','Intersect the image of D with FᵖCⁿ to obtain Bᵣ. The whole source need not map into Bᵣ.'),
    t('b 可以从 p−r 列开始，但 Db 的所有 p 列之前的分量必须抵消。','The representative b may start in column p−r, but all components of Db before column p must cancel.'),
    t('这是总复形中的边界，因此由 D²=0 自动得到闭性。','These are boundaries in the total complex; D²=0 makes them cocycles.'),
    t('r 增大时允许更多来源，所以 Bᵣ 增大。注意 Eᵣ 的分母使用 Bᵣ₋₁。','As r grows, more source columns are allowed and Bᵣ increases. The denominator of Eᵣ uses Bᵣ₋₁.')
   ];
   board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('区域只表示包含关系。','Regions indicate inclusions only.')}</p>`);
+  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('区域只表示包含关系。','Regions indicate inclusions only.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
  }
  function draw(){
-  const {n,p}=state,r=Math.max(1,state.r),q=n-p,Z=`Z_{${r}}^{${p},${q}}`,B=`B_{${r}}^{${p},${q}}`;
+  const {n,p}=state,r=pageIndex(),q=n-p,Z=`Z_{${r}}^{${p},${q}}`,B=`B_{${r}}^{${p},${q}}`;
   const F=`F^{${p}}C^{${n}}`,target=`F^{${p+r}}C^{${n+1}}`,source=`F^{${p-r}}C^{${n-1}}`,image=R`D(${source})`;
   let shapes='',labels='';
   if(topic==='Z'){
@@ -58,6 +59,10 @@ export function createFilteredView({viewport,board,math,language}){
    if(p===0&&!zeroResult){
     shapes='<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/><ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/><ellipse class="filtered-region gold" data-filter-region="B" cx="580" cy="282" rx="144" ry="113"/><path class="filtered-map strong" d="M264,270 H422" marker-end="url(#filtered-tip)"/>';
     labels=label(142,258,source,235)+label(603,119,F+`=C^{${n}}`,300)+label(580,282,B+'='+image,285,'gold small')+label(329,240,'D',70);
+   }else if(r===0&&!zeroResult){
+    // D preserves F: B_0 is the whole image, nested inside F^p C^n.
+    shapes='<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/><ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/><ellipse class="filtered-region" data-filter-region="filtration" cx="610" cy="270" rx="175" ry="140"/><ellipse class="filtered-region gold" data-filter-region="B" cx="600" cy="300" rx="115" ry="77"/><path class="filtered-map strong" data-filter-map="image" d="M264,270 H477" marker-end="url(#filtered-tip)"/>';
+    labels=label(142,258,source,235)+label(603,119,`C^{${n}}`,160)+label(640,188,F,220)+label(600,276,B,180,'gold')+label(600,323,'='+image,240,'gold small')+label(349,240,'D',70);
    }else if(zeroResult){
     shapes=(zeroSource?'<circle class="filtered-zero" cx="142" cy="270" r="4"/>':'<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/>')+'<ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/>';
     if(zeroSource){
@@ -83,10 +88,10 @@ export function createFilteredView({viewport,board,math,language}){
  board.addEventListener('click',e=>{const button=e.target.closest('[data-filter-step]');if(!active||!button)return;e.stopPropagation();steps[topic]=Number(button.dataset.filterStep);exposition();});
  new ResizeObserver(fit).observe(viewport);
  return {sync(s){
-  state=s;active=!s.cover&&s.module==='learn'&&s.step===5&&(s.annotationStep===1||s.annotationStep===2);
+  state=s;active=!s.cover&&s.module==='learn'&&[5,6].includes(s.step)&&(s.annotationStep===1||s.annotationStep===2);
   viewport.classList.toggle('has-filtered-view',active);host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));
   if(!active){key='';return;}
-  topic=s.annotationStep===1?'Z':'B';const next=[topic,s.n,s.p,s.r,language()].join(':');
+  topic=s.annotationStep===1?'Z':'B';const next=[s.step,topic,s.n,s.p,pageIndex(),language()].join(':');
   if(next!==key){key=next;draw();}fit();exposition();
  }};
 }

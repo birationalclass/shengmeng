@@ -4,6 +4,14 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v86 · Filtered cocycles and boundaries before the first page
+
+Following McCleary, Theorem 2.6, proof on printed p. 34, the original filtered-complex subspaces Z_r and B_r are now introduced separately as 2.3 and 2.4, before E_1. The first-page entry moves to 2.5 and the remaining entries continue through 2.12. Shared definitions in `content.js` keep the first-page prerequisites and the general-page construction consistent.
+
+The diagrams show Z_1 as a preimage condition and B_0 as D(F^p C^{n-1}) inside F^p C^n. The latter uses nested regions because D preserves the filtration. Independent exposition steps explain the representative conditions, Z_0, B_0, and monotonicity; they distinguish filtered total cochains from kernels/images on a page. The source link opens the actual textbook definition.
+
+Validation: Chromium checked the complete forward/reverse sequence, all eight independent proof steps, bilingual headings and formulas, a single section-2 frame, narrow-window overflow, and the visible E_1 layer after the new prerequisites. Phone landscape emulation also checked both new entries, bilingual typeset notes, and overflow. No KaTeX or browser errors were reported.
+
 ## v84 · Equality anchors and staged total differential
 
 Diagram total-degree labels align the actual equality glyph in `:=` with their grid column: the source uses the centre of K^{2,4}, and the paired target uses K^{4,4}. The shared label-plane helper recomputes the anchor after formula changes and viewport scaling. Validation covers every animation frame for n = 0…4, four viewport sizes, language switching, fullscreen, and the rotated phone reader; observed errors were below 0.01 CSS pixels.
