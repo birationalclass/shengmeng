@@ -4,6 +4,14 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v88 · Preserve revealed square-zero notation on reverse navigation
+
+In 1.7, reversing from D² = 0 retains the formula at the shared resting size while the entry heading stays current. Only the next reverse step leaves 1.7 and reduces its heading. Revealed content and the current substep now have separate state; returning to the cover still resets the reveal. All panel variants share their existing resting-size token, so leaving the entry does not resize the formula again.
+
+Item 1.6 is named Total object / 总对象, including its abbreviation in the exposition. Item 1.8 has only the bilingual sentence explaining that D² = 0 from 1.7 makes (C^bullet,D) a complex.
+
+Validation: Chromium sampled the reverse animation frame by frame, confirming continuous visibility, intermediate font sizes and an unchanged heading. Further checks cover a second reverse, replay, bilingual text, the single-sentence exposition, cover reset and reduced motion, without browser or KaTeX errors.
+
 ## v87 · Filtered subspaces belong to section 1
 
 The filtered cocycle and boundary definitions now follow Filtration and Graded functor as 1.11 and 1.12, in the same section-1 frame. Section 2 returns to E_0, d_0, E_1, d_1, E_r, d_r and the convergence material as 2.1–2.10. The underlying definitions, diagrams and independent proof steps are unchanged.

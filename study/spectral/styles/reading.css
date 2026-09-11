@@ -7,6 +7,7 @@
  --reading-formula-depth:none;
  --reading-heading-size:19px;
  --reading-formula-size:23px;
+ --reading-formula-rest-size:14px;
 }
 .notebook-workspace .explanation,.notebook-workspace .slide-body {overflow-anchor:none;scroll-behavior:auto}
 .notebook-workspace :is(.build-card,.numbered-entry) {
@@ -37,13 +38,17 @@
  font-size:var(--reading-heading-size);
 }
 .notebook-workspace .formal-statement :is(.build-card,.numbered-entry) :is(.math-block,.relation-choice) {
- font-size:14px;
+ font-size:var(--reading-formula-rest-size);
  text-shadow:none;
  transition:font-size .38s var(--motion-easing),color .3s ease,background-color .3s ease;
 }
 .notebook-workspace .formal-statement :is(.build-card,.numbered-entry).build-current :is(.math-block,.relation-choice) {
  font-size:var(--reading-formula-size);color:var(--reading-current);
  text-shadow:var(--reading-formula-depth);
+}
+/* Reversing a substep shrinks its revealed formula, not the current entry heading. */
+.notebook-workspace .formal-statement .build-card.build-current [data-total-fragment][data-current=false] .formula-action {
+ font-size:var(--reading-formula-rest-size);
 }
 .notebook-workspace .initial-assumptions {font-size:12px;text-shadow:none;transition:font-size .38s var(--motion-easing),color .3s ease}
 .notebook-workspace .definition-current .initial-assumptions {font-size:20px;color:var(--reading-current);text-shadow:var(--reading-text-depth)}

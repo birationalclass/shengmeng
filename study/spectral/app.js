@@ -19,7 +19,7 @@ import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-ani
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=86';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=84';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=88';
 import {createFilteredView} from './filtered-view.js?v=86';
 import {createPageEvolution} from './page-evolution.js?v=87';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
@@ -465,7 +465,7 @@ function doubleComplexCompanion(item){
  {title:'纵向微分 δ₂',concept:'delta2',f:[item.f[1]]},
  {title:'平方零关系',concept:'square',f:[]},
  {title:'反交换关系',concept:'anticommute',f:[item.f[3]]},
- {title:'总复形',concept:'total',f:[raw`C^n:=\operatorname{Tot}^nK=\bigoplus_{p+q=n}K^{p,q}`]},
+ {title:ui('总对象','Total object'),concept:'total',f:[raw`C^n:=\operatorname{Tot}^nK=\bigoplus_{p+q=n}K^{p,q}`]},
  {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2:C^n\longrightarrow C^{n+1}`]},
  {title:ui('总上同调','Total cohomology'),concept:'totalcohom',f:[raw`\begin{gathered}H^n(C^\bullet,D):=\\\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}\end{gathered}`]},
  {title:'列滤过',concept:'filtration',f:[raw`F^pC^n:=\bigoplus_{i\ge p}K^{i,n-i}`,raw`D(F^pC^n)\subseteq F^pC^{n+1}`]},
@@ -495,7 +495,9 @@ function syncInitialEntries(){
   el.classList.toggle('build-complete',i<state.initialReveal);
   if(i===6){
    const fragment=el.querySelector('[data-total-fragment]');
-   const shown=isDoubleComplexView()&&state.initialReveal===6?state.totalStep===1:revealedTotalStep===1;
+   // A revealed formula stays in the notebook; only its reading emphasis changes.
+   const shown=revealedTotalStep===1;
+   fragment.dataset.current=String(isDoubleComplexView()&&state.initialReveal===6&&state.totalStep===1);
    notebookMotion.setExpanded(fragment,shown,{immediate:state.cover||el.hidden});
   }
  });

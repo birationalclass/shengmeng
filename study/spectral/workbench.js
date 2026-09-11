@@ -10,9 +10,7 @@ export function operationMarkup(s,lang,math){
  const n=s.n,p=s.p,q=n-p,r=Math.max(1,s.r),a=s.module==='initial'?(s.effect==='totalmap'?3:1):s.annotationStep,c=s.effect;let body='',note='';
  if(s.module==='initial'&&!['total','totalmap'].includes(c)){
   if(c==='totalcohom'){
-   body=row(box(n===0?'0':`C^{${n-1}}`)+arrow('D')+box(`C^{${n}}`,'chosen')+arrow('D')+box(`C^{${n+1}}`))+`<div class="operation-equation">${M(R`\operatorname{im}(D:C^{n-1}\to C^n)\subseteq\ker(D:C^n\to C^{n+1})`)}</div>`;
-   body+=`<div class="operation-equation">${M(R`[a]_H:=a+\operatorname{im}(D:C^{n-1}\to C^n),\quad Da=0`)}</div>`;
-   note=t(`由 ${M('D^2=0')}，这个商空间有定义。${M(R`H^n(C^\bullet,D)`)} 是最终要计算的总上同调，涉及整条总次数对角线，不属于单个 ${M(R`K^{p,q}`)}。`,`${M('D^2=0')} makes this quotient well-defined. The target ${M(R`H^n(C^\bullet,D)`)} is total cohomology: it involves the whole total-degree diagonal, not a single ${M(R`K^{p,q}`)} term.`);
+   body=`<p class="operation-description">${t(`1.7 中的 ${M('D^2=0')} 保证了 ${M(R`(C^\bullet,D)`)} 是一个复形。`,`${M('D^2=0')} in 1.7 ensures that ${M(R`(C^\bullet,D)`)} is a complex.`)}</p>`;
   }else if(c==='filteredmap'){
    body=row(box(`F^{${p}}C^{${n}}`,'source-space')+arrow('D')+box(`F^{${p}}C^{${n+1}}`,'target-space'))+`<div class="operation-equation">${M(R`a=\sum_{i\ge ${p}}a_i,\quad a_i\in K^{i,${n}-i}`)}</div><div class="operation-equation">${M(R`(Da)_j=\delta_1a_{j-1}+\delta_2a_j=0\quad(j<${p})`)}</div><div class="operation-equation">${M(R`D(F^{${p}}C^{${n}})\subseteq F^{${p}}C^{${n+1}}`)}</div>`;
   }else if(c==='filtration'){
@@ -51,7 +49,7 @@ export function operationMarkup(s,lang,math){
   }
   else if(a===2)body=row(box(`a_{i,j}\\in K^{i,j}`)+arrow('D')+box(R`\delta_1a_{i,j}+\delta_2a_{i,j}\in C^{i+j+1}`,'chosen'));
   else body=row(box(totalDegreeTex(n),'source-space')+arrow('D')+box(totalDegreeTex(n+1),'target-space'))+`<div class="operation-equation">${M(R`(Da)_{i,j}=\delta_1a_{i-1,j}+\delta_2a_{i,j-1}`)}</div>`;
-  note=a===1?t(`我们用 ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} 简记总复形。`,`We write ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} for the total complex.`):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
+  note=a===1?t(`我们用 ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} 简记总对象。`,`We write ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} for the total object.`):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
  }else if(s.module==='learn'){
   if(s.step===0){
    body=nested(`C^{${n}}`,`Z^{${n}}:=\\ker D`,`B^{${n}}:=\\operatorname{im}D`,`H^{${n}}:=Z^{${n}}/B^{${n}}`,a===1?'kernel':a===2?'image':'quotient');
