@@ -39,7 +39,16 @@ export function operationMarkup(s,lang,math){
   }
  }else if(s.module==='initial'){
   const factors=Array.from({length:n+1},(_,i)=>`K^{${i},${n-i}}`);
-  if(a===1)body=`<div class="operation-equation">${M(totalDegreeTex(n))}</div>`+row(`<span>${M('=')}</span><div class="direct-sum-group">${factors.map(x=>`<span>${M(x)}</span>`).join(`<span class="sum-sign">${M('\\oplus')}</span>`)}</div>`);
+  if(a===1){
+   // Five fixed slots reserve the final n=4 width. Only actual summands are
+   // exposed; adding a factor never re-centres the equals sign or earlier K's.
+   const slots=Array.from({length:5},(_,i)=>{
+    const shown=i<=n,fresh=i===n?' is-new':'';
+    return (i?`<span class="sum-sign total-sum-sign${shown?fresh:''}"${shown?'':' aria-hidden="true"'}>${shown?M(R`\oplus`):''}</span>`:'')+
+     `<span class="total-summand${shown?fresh:''}"${shown?'':' aria-hidden="true"'}>${shown?M(factors[i]):''}</span>`;
+   }).join('');
+   body=`<div class="operation-equation total-expansion"><div class="total-equation-layout"><div class="total-declaration">${M(totalDegreeTex(n))}</div><span class="total-equals">${M('=')}</span><div class="direct-sum-group total-sum-slots">${slots}</div></div></div>`;
+  }
   else if(a===2)body=row(box(`a_{i,j}\\in K^{i,j}`)+arrow('D')+box(R`\delta_1a_{i,j}+\delta_2a_{i,j}\in C^{i+j+1}`,'chosen'));
   else body=row(box(totalDegreeTex(n),'source-space')+arrow('D')+box(totalDegreeTex(n+1),'target-space'))+`<div class="operation-equation">${M(R`(Da)_{i,j}=\delta_1a_{i-1,j}+\delta_2a_{i,j-1}`)}</div>`;
   note=a===1?t('斜虚框圈出全部直和因子，整体记作 Cⁿ；它不是新加的一个 K 节点。','The slanted dashed box groups all direct-sum factors as Cⁿ. It is not an extra K-node.'):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
@@ -70,7 +79,7 @@ export function operationMarkup(s,lang,math){
  }else if(s.module==='converge'){body='';
  }else{body=s.module==='trace'&&s.step===4?row(box(R`[a_0+c]_2\in E_2^{0,1}`)+arrow('d_2')+box(R`[z]_2\in E_2^{2,0}`)):s.module==='trace'&&s.step===5?row(box(R`E_3^{p,q}=0`)+box(R`H^n(C,D)=0`)):row(box(s.module==='trace'?R`a_0:=b+\lambda y`:R`E_r^{p,q}:=Z_r^{p,q}/(Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q})`));note=t('','');}
  if(s.module==='initial'&&c==='totalmap'){
-  const i=Math.floor(n/2),j=n-i;
+  const {p:i,q:j}=s.initialReveal===6&&s.totalOrigin?s.totalOrigin:{p:1,q:1};
   body=`<div class="operation-equation">${M(R`a\in K^{${i},${j}}\subseteq C^{${n}}`)}</div>`+body+
    `<div class="operation-equation">${M(R`Da=\delta_1a+\delta_2a\in C^{${n+1}}`)}</div>`;
  }

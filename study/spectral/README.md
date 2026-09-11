@@ -4,6 +4,18 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v83 · Reading interactions, stable formulas and loading progress
+
+Both formulas in 1.6 are separate interaction targets for the same degree sweep, `n = 0,1,2,3,4`. Moving between them can replay a completed sweep; formula clicks also replay it without requiring a mouse hover. An in-progress sweep remains a single shared animation. Validation covers both formulas in both languages, mouse hover/click, mobile taps, persistent diagram nodes and cancellation on reading advance.
+
+The visible “Mathematical exposition” heading is removed. Its single-row layout gives the recovered height to formulas and proof steps while preserving the divider and an accessible bilingual section label.
+
+Current numbered entries retain full brightness; other entries fade to 55%, with 82% hover/keyboard preview. The total-degree exposition reserves five fixed summand slots, keeping the equals sign and earlier K terms stationary while new factors fade in. Empty future slots contain no mathematical terms.
+
+The final 35% of total loading progress now advances on each completed math/active font face, font-set readiness and the two layout frames. It no longer waits at 65% for the entire font batch. Resource failures cannot reach 100% or enable reading; the existing shared CSS interpolation smooths each genuine milestone.
+
+The separate figure controller is removed. While 1.7 is current, clicking K^{p,q} with 0 ≤ p,q ≤ 2 replays D or D² from that term and updates the total degree and representative formula. Other terms and other reading entries cannot choose an origin. The default origin is K^{1,1}, restored when changing entries. Item 1.10 is titled “Graded functor / 关联分次函子”.
+
 ## v82 · Separate reading-rail gutter
 
 The outline and card padding share `--reading-rail-width`, `--reading-rail-inset`, and `--reading-rail-clearance`. Panel-style and responsive padding now consume that gutter instead of overriding it with smaller values. Rail marks remain inside its width even when highlighted; the entire rail has at least 12 CSS pixels of horizontal clearance from each card frame. Validation covers all three styles at 320–1440px, hover, navigation across sections, fullscreen, bilingual switching and the phone landscape viewport.

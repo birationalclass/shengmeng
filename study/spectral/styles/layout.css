@@ -18,14 +18,15 @@
   .slide-deck:not(.is-cover) .visual-column { min-height:420px;padding-block:12px }
 }
 
-/* Keep controls adjacent to the canvas, not at the bottom of spare plot space. */
+/* Figure interactions live on the figure; no separate controller surface. */
 .visualization-module {
   --diagram-content-height:460;
-  display:flex;flex-direction:column;justify-content:flex-start;gap:8px;
+  --notebook-controls-height:0px;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:0;
 }
 .slide-deck .visualization-module .stage {
   flex:0 1 auto;width:100%;aspect-ratio:840 / var(--diagram-content-height);
-  max-height:calc(100% - var(--notebook-controls-height) - 8px);min-height:0;
+  max-height:100%;min-height:0;
 }
 .visualization-module .diagram-viewport { align-items:flex-start }
 .slide-deck #diagram { align-self:flex-start }
@@ -34,10 +35,14 @@
   padding-top:4px;
 }
 @media(max-width:780px) {
-  .visualization-module { --notebook-controls-height:104px }
+
   .slide-deck .visualization-module .stage { flex:none;min-height:225px;max-height:none }
 }
 
 /* Numbered entries retain their headings; decorative brackets are not notation. */
 .explanation .math-block[hidden],.explanation [data-build][hidden] { display:none!important }
 .explanation .math-block[data-concept]:hover,.explanation .math-block.concept-linked { box-shadow:none;border-left:0 }
+
+#diagramControls {display:none!important}
+#diagram.origin-selection .node {cursor:default}
+#diagram.origin-selection .node:is([data-p="0"],[data-p="1"],[data-p="2"]):is([data-q="0"],[data-q="1"],[data-q="2"]) {cursor:pointer}

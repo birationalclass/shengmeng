@@ -32,7 +32,7 @@ export const createDegreeSweep=options=>createIndexedSweep(options);
 
 // Total differential: its two components stop in their target K-summands.
 // D²: the mixed terms cancel in the same K; the pure terms vanish separately.
-export function createTotalTrace({host,point,degree}){
+export function createTotalTrace({host,point,origin=()=>({p:1,q:1})}){
  const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,kind=null,running=false,token=0;
  const reduced=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
  const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t),clamp=x=>Math.max(0,Math.min(1,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x);};
@@ -43,13 +43,13 @@ export function createTotalTrace({host,point,degree}){
  }
  function play(effect,force=false){
   if(running&&kind===effect&&!force)return;
-  clear();kind=effect;running=true;const isMixed=effect==='anticommute',run=token,n=isMixed?2:degree(),p=isMixed?1:Math.floor(n/2),q=isMixed?1:n-p;
+  clear();kind=effect;running=true;const isMixed=effect==='anticommute',run=token,{p,q}=isMixed?{p:1,q:1}:origin();
   const a=point(p,q),h=point(p+1,q),v=point(p,q+1),hh=point(p+2,q),m=point(p+1,q+1),vv=point(p,q+2);
   // Pause on the incoming paths before their common endpoint. Addition and
   // zero use the target K tile centre, shared with the diagram geometry.
   const mixedStops=[[m[0],m[1]+14],[m[0]-14,m[1]]],additionCenter=m;
   const isSquare=effect==='totalsquare',colors=['var(--teal)','var(--blue)','var(--teal)','var(--blue)'];
-  layer=document.createElementNS(ns,'svg');layer.id='totalTrace';layer.classList.add('element-trace-layer','total-trace-layer');layer.setAttribute('viewBox','0 0 840 525');layer.dataset.kind=effect;layer.setAttribute('role','img');layer.setAttribute('aria-label',isMixed?'The two mixed composites are opposite elements in the same target; their sum is zero':isSquare?'D squared: pure terms vanish and mixed terms cancel':'D: horizontal and vertical components in their target terms');
+  layer=document.createElementNS(ns,'svg');layer.id='totalTrace';layer.classList.add('element-trace-layer','total-trace-layer');layer.setAttribute('viewBox','0 0 840 525');layer.dataset.kind=effect;layer.dataset.startP=p;layer.dataset.startQ=q;layer.setAttribute('role','img');layer.setAttribute('aria-label',isMixed?'The two mixed composites are opposite elements in the same target; their sum is zero':isSquare?'D squared: pure terms vanish and mixed terms cancel':'D: horizontal and vertical components in their target terms');
   layer.innerHTML=`<g class="total-flow" fill="none" stroke-width="2.7" stroke-linecap="round">${[ [a,h],[a,v],...(isMixed?[[h,m],[v,m]]:isSquare?[[h,hh],[h,m],[v,m],[v,vv]]:[]) ].map(([s,t],i)=>{const d=Math.hypot(t[0]-s[0],t[1]-s[1]),pad=s[0]===t[0]?24:39;return `<path d="M${s[0]+(t[0]-s[0])*pad/d},${s[1]+(t[1]-s[1])*pad/d} L${t[0]-(t[0]-s[0])*pad/d},${t[1]-(t[1]-s[1])*pad/d}" stroke="${s[0]===t[0]?colors[1]:colors[0]}" opacity="0"/>`;}).join('')}</g>${isSquare||isMixed?`<circle class="total-seed" cx="${a[0]}" cy="${a[1]}" r="7" fill="var(--gold)"/>`:""}${Array.from({length:isSquare?4:2},(_,i)=>`<circle class="total-dot" r="7" fill="${colors[i]}" stroke="#effaf799" stroke-width=".7"/>`).join('')}${isMixed?`<text class="total-plus" x="${additionCenter[0]}" y="${additionCenter[1]}" text-anchor="middle" dominant-baseline="central" fill="var(--gold)" font-family="KaTeX_Main,Georgia,serif" font-size="12" opacity="0">+</text>`:''}${(isMixed?[additionCenter]:isSquare?[hh,m,vv]:[]).map(([x,y])=>`<text class="total-zero" x="${x}" y="${y+(isMixed?0:1)}" text-anchor="middle" dominant-baseline="central" fill="var(--gold)" stroke="#10252e" stroke-width="4" paint-order="stroke" font-family="KaTeX_Main,Georgia,serif" font-size="28" opacity="0">0</text>`).join('')}`;
   host.append(layer);
   const plus=layer.querySelector('.total-plus');

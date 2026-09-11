@@ -16,10 +16,6 @@
 .proof-emphasis .katex { font-size:1em }
 
 /* Exposition typography has one scale across every property and proof step. */
-.slide-deck .math-exposition h3 {
- font-size:var(--exposition-heading-size);line-height:1.5;
- letter-spacing:.08em;font-weight:500;color:var(--muted);
-}
 .slide-deck .math-exposition :is(.operation-board,.operation-note,.operation-description,.proof-emphasis,.filtered-example) {
  font-size:var(--exposition-body-size);line-height:1.8;
 }
@@ -39,3 +35,14 @@
 
 /* Read membership from the representative above to its space below. */
 .katex-html .representative-membership {display:inline-block;transform:rotate(90deg);transform-origin:center;line-height:1}
+
+/* The completed total-degree expansion fixes every horizontal anchor. */
+.math-exposition .operation-equation.total-expansion {min-width:0;text-align:left}
+.total-equation-layout {display:grid;grid-template-columns:max-content max-content;align-items:center;gap:12px 8px;width:max-content;margin-inline:auto;padding:3px}
+.total-declaration {grid-column:1 / -1;justify-self:center}
+.total-equals {justify-self:center}
+.direct-sum-group.total-sum-slots {display:grid;grid-template-columns:repeat(4,3.05em 1.1em) 3.05em;gap:.25em;align-items:center}
+.total-sum-slots>span {display:flex;align-items:center;justify-content:center;min-height:1.65em}
+.total-sum-slots>.is-new {animation:total-factor-enter var(--motion-emphasis) var(--motion-easing) both}
+@keyframes total-factor-enter {from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.total-sum-slots>.is-new {animation:none}}

@@ -14,11 +14,11 @@ import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
-import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
+import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=83';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=77';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=76';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=83';
 import {createFilteredView} from './filtered-view.js?v=57';
 import {createPageEvolution} from './page-evolution.js?v=77';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
@@ -41,7 +41,7 @@ const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','conv
 const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
-const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null};
+const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,totalOrigin:null};
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -55,7 +55,7 @@ const stabilityView=createStabilityView({viewport:$('.diagram-viewport'),board:$
 const abutmentView=createAbutmentView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const filteredView=createFilteredView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),math,language});
 const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
-const totalTrace=createTotalTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),degree:()=>state.n});
+const totalTrace=createTotalTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),origin:differentialOrigin});
 const filtrationSweep=createIndexedSweep({diagram:$('#diagram'),read:()=>state.p,write:p=>{state.p=p;render(false);const input=$('#pRange');if(input){input.value=p;input.nextElementSibling.textContent=p;}},outline:p=>diagonalRegion(xy(p,state.n-p),xy(state.n,0)),line:p=>`M${xy(p,state.n-p)} L${xy(state.n,0)}`,values:()=>Array.from({length:state.n+1},(_,p)=>p),publishName:'spectralFiltrationSweep'});
 const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>({n:state.n,p:state.p})});
 const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?'悬停对照，点击固定高亮':'放大查看公式'}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
@@ -187,13 +187,23 @@ function render(updateControls=true){
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.actions.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
 $('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
-function selectNode(e){let b=e.target.closest('[data-p]:not([data-boundary])');if(b){state.selected={p:Number(b.dataset.p),q:Number(b.dataset.q)};render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;}}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
+function selectNode(e){
+ const b=e.target.closest('[data-p]:not([data-boundary])');if(!b)return;
+ const origin={p:Number(b.dataset.p),q:Number(b.dataset.q)};
+ if(isDoubleComplexView()){
+  if(state.initialReveal!==6||![origin.p,origin.q].every(i=>Number.isInteger(i)&&i>=0&&i<=2))return;
+  state.totalOrigin=origin;state.selected=origin;state.n=origin.p+origin.q;
+  const effect=state.effect==='totalsquare'?'totalsquare':'totalmap';state.pinned=effect;state.pinnedKey=null;
+  render(false);playTotalDemo(effect,true);return;
+ }
+ state.selected=origin;render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;
+}$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
 $('#proofJump').onclick=()=>{moduleChange('converge');$('.workspace').scrollIntoView({behavior:'smooth'});};
 // These keys belong only to the left reading sequence, even over right-side controls.
 const readingKeys=new Set(['Enter','ArrowRight','ArrowLeft']);
@@ -255,6 +265,7 @@ function statementMeta(module=state.module,step=state.step){
 }
 function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'differential';}
 function renderWorkspaceState(){
+ $('#diagram').classList.toggle('origin-selection',isDoubleComplexView()&&state.initialReveal===6);
  const deck=$('.slide-deck'),cover=state.cover;deck.dataset.module=state.module;$('.visualization-module').classList.toggle('general-page-mode',state.module==='learn'&&state.step===5);
  document.body.classList.toggle('at-cover',cover);
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
@@ -266,14 +277,14 @@ function renderWorkspaceState(){
 }
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index){
- pauseReadingHover();cancelSquareSequence();state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
+ pauseReadingHover();cancelSquareSequence();state.totalOrigin=null;if(index===6)state.n=2;state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
  keepDefinitionVisible();
  if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','filtration'].includes(initialConcept()))playTotalDemo(initialConcept());
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
  pauseReadingHover();cancelSquareSequence();if(module!=='initial')foldedSections.delete('2');
- state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;
+ state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;state.totalOrigin=null;
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
  else{
@@ -333,6 +344,7 @@ $('#explanation').addEventListener('click',e=>{
  }
  if(!e.target.closest('.math-block,.relation-choice'))e.stopPropagation();
 });
+function differentialOrigin(){return isDoubleComplexView()&&state.initialReveal===6&&state.totalOrigin?state.totalOrigin:{p:1,q:1};}
 function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','totalcohom','filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
 function keepReadingVisible(card){readingFocus.follow(card);}
 function keepDefinitionVisible(){keepReadingVisible($(`[data-build="${state.initialReveal}"]`));}
@@ -343,7 +355,9 @@ function interactiveConcept(target){
  if(target.closest('[data-zoom],.statement-heading,.statement-title,.build-heading'))return null;
  const choice=target.closest('.relation-choice');if(choice)return choice;
  const build=target.closest('.build-statement.is-active .build-card[data-open="true"]');
- if(build)return (build.querySelector('.relation-choices')||['filtration','graded'].includes(build.dataset.concept))?target.closest('.math-block[data-concept]'):build;
+ // Each total-complex formula is its own trigger for the same degree sweep.
+ // Crossing from C^bullet to C^n must count as entering a new formula.
+ if(build)return (build.querySelector('.relation-choices')||['total','filtration','graded'].includes(build.dataset.concept))?target.closest('.math-block[data-concept]'):build;
  return target.closest('.formal-statement .reading-formula[data-concept]')||target.closest('#diagram [data-concept]');
 }
 function interactionKey(el){
@@ -355,6 +369,7 @@ function interactionKey(el){
 }
 function applyConcept(concept,hover=false,source=null){
  if(isDoubleComplexView()&&!concept)concept=initialConcept();
+ if(isDoubleComplexView()&&['totalmap','totalsquare'].includes(concept)){const {p,q}=differentialOrigin();state.n=p+q;}
  const key=source?interactionKey(source):state.pinnedKey||(isDoubleComplexView()&&state.initialReveal?`build:${state.initialReveal}`:null);
  if(isDoubleComplexView()&&state.effect!==concept){state.effect=concept;renderPersistentDiagram();}
  const graph=$('#diagram');
@@ -379,7 +394,7 @@ function pinConcept(concept,source=null){
  cancelSquareSequence();
  const key=interactionKey(source);const same=state.pinned===concept&&state.pinnedKey===key;
  state.pinned=same?null:concept;state.pinnedKey=same?null:key;
- applyConcept(state.pinned,false);if(!same){playSquareTrace(concept,source);playTotalDemo(concept);}translatePage();window.spectralState={...state,language:language()};
+ applyConcept(state.pinned,false);if(!same||concept==='total'&&source?.matches('.math-block')){playSquareTrace(concept,source);playTotalDemo(concept);}translatePage();window.spectralState={...state,language:language()};
 }
 function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))return;cancelSquareSequence();revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept,el);playTotalDemo(el.dataset.concept);}
 function playTotalDemo(concept,force=false){
@@ -445,7 +460,7 @@ function doubleComplexCompanion(item){
  {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2:C^n\longrightarrow C^{n+1}`]},
  {title:ui('总上同调','Total cohomology'),concept:'totalcohom',f:[raw`\begin{gathered}H^n(C^\bullet,D):=\\\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}\end{gathered}`]},
  {title:'列滤过',concept:'filtration',f:[raw`F^pC^n:=\bigoplus_{i\ge p}K^{i,n-i}`,raw`D(F^pC^n)\subseteq F^pC^{n+1}`]},
- {title:ui('关联分次复形','Associated graded complex'),concept:'graded',f:gradedFormulas},
+ {title:ui('关联分次函子','Graded functor'),concept:'graded',f:gradedFormulas},
  ];
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
@@ -632,7 +647,7 @@ function relationOverlay(effect){
  if(!['square1','square2','totalsquare','anticommute'].includes(effect))return '';
  const edge=(p,q,p1,q1,type,order)=>`<g class="relation-route route-${order}">${line(...xy(p,q),...xy(p1,q1),type,true)}</g>`;
  let out='';
- if(effect==='totalsquare'){const p=Math.floor(state.n/2),q=state.n-p;out+=edge(p,q,p+1,q,'h',1)+edge(p,q,p,q+1,'v',1)+edge(p+1,q,p+2,q,'h',2)+edge(p+1,q,p+1,q+1,'v',2)+edge(p,q+1,p+1,q+1,'h',2)+edge(p,q+1,p,q+2,'v',2);}
+ if(effect==='totalsquare'){const {p,q}=differentialOrigin();out+=edge(p,q,p+1,q,'h',1)+edge(p,q,p,q+1,'v',1)+edge(p+1,q,p+2,q,'h',2)+edge(p+1,q,p+1,q+1,'v',2)+edge(p,q+1,p+1,q+1,'h',2)+edge(p,q+1,p,q+2,'v',2);}
  else if(effect==='square1'||effect==='square2'){
   const horizontal=effect==='square1',end=horizontal?[3,1]:[1,3];
   out+=edge(1,1,horizontal?2:1,horizontal?1:2,horizontal?'h':'v',1);
@@ -644,15 +659,18 @@ function relationOverlay(effect){
  return `<g class="relation-overlay ${effect.includes('square')?'square-route':''}">${out}</g>`;
 }
 
-// Reveal the page only after first render and all bundled math fonts are ready.
+// Typesetting is part of total progress: count completed font faces, font-set
+// layout readiness, and the two painted frames before allowing entry.
 (async()=>{
- window.spectralBoot?.progress(65,'排版数学公式','Typesetting mathematics');
- const fonts=[...document.fonts].filter(f=>f.family.includes('KaTeX'));
- const loaded=await Promise.allSettled(fonts.map(f=>f.load()));
+ const fonts=[...document.fonts].filter(f=>f.family.includes('KaTeX')||f.status==='loading');
+ let completed=0;const total=fonts.length+3;
+ const report=()=>window.spectralBoot?.progress(65+35*completed/total,'排版数学公式','Typesetting mathematics');
+ report();
+ const loaded=await Promise.allSettled(fonts.map(async font=>{await font.load();completed++;report();}));
  if(loaded.some(f=>f.status==='rejected')){window.spectralBoot?.fail();return;}
- await document.fonts.ready;
- window.spectralBoot?.progress(100,'准备就绪','Ready');
- requestAnimationFrame(()=>requestAnimationFrame(()=>{window.spectralBoot?.ready();syncInitialEntrance();}));
+ await document.fonts.ready;completed++;report();
+ for(let i=0;i<2;i++){await new Promise(requestAnimationFrame);completed++;report();}
+ window.spectralBoot?.ready();syncInitialEntrance();
 })().catch(()=>window.spectralBoot?.fail());
 
 

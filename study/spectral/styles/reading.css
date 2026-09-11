@@ -1,6 +1,8 @@
 /* Current-reading emphasis is shared by all sections, independent of diagrams. */
 .notebook-workspace {
  --reading-current:#f5f7fa;
+ --reading-rest-opacity:.55;
+ --reading-preview-opacity:.82;
  --reading-text-depth:none;
  --reading-formula-depth:none;
  --reading-heading-size:19px;
@@ -9,9 +11,11 @@
 .notebook-workspace .explanation,.notebook-workspace .slide-body {overflow-anchor:none;scroll-behavior:auto}
 .notebook-workspace :is(.build-card,.numbered-entry) {
  cursor:pointer;
- transition:background-color .36s ease,box-shadow .36s ease;
+ opacity:var(--reading-rest-opacity);
+ transition:opacity var(--motion-emphasis) var(--motion-easing),background-color .36s ease,box-shadow .36s ease;
 }
 .notebook-workspace :is(.build-card,.numbered-entry).build-current {
+ opacity:1;
  background:transparent;
  box-shadow:none;
 }
@@ -43,6 +47,11 @@
 }
 .notebook-workspace .initial-assumptions {font-size:12px;text-shadow:none;transition:font-size .38s var(--motion-easing),color .3s ease}
 .notebook-workspace .definition-current .initial-assumptions {font-size:20px;color:var(--reading-current);text-shadow:var(--reading-text-depth)}
+@media(hover:hover) {
+ .notebook-workspace :is(.build-card,.numbered-entry):not(.build-current):hover {opacity:var(--reading-preview-opacity)}
+}
+.notebook-workspace :is(.build-card,.numbered-entry):not(.build-current):has(:focus-visible) {opacity:var(--reading-preview-opacity)}
+
 /* Retain the same spacing when moving from the double complex to later pages. */
 .notebook-workspace .build-card {min-height:0;padding:12px 3px}
 .notebook-workspace .build-card .math-block {margin:2px 0;padding-top:7px;padding-bottom:7px}
