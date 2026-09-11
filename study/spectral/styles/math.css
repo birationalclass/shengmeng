@@ -6,6 +6,10 @@
 #diagram .diagram-label.source-label,
 #diagram .diagram-label.target-label { font-size:var(--graph-degree-font-size) }
 
+/* Keep the equality sign at its diagram coordinate, independent of formula width. */
+#diagram .diagram-label.relation-aligned {overflow:visible}
+#diagram .relation-aligned > .katex {transform:translateX(var(--relation-offset,0px))}
+
 /* Properties and their proofs belong to the exposition, without another frame. */
 .key-properties { margin:0 0 15px;padding:0 0 10px;border-bottom:1px solid var(--line) }
 .key-properties h4 { margin:0 0 9px;color:var(--muted);font:12px system-ui,sans-serif;letter-spacing:1px }

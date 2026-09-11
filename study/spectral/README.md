@@ -4,6 +4,14 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v84 · Equality anchors and staged total differential
+
+Diagram total-degree labels align the actual equality glyph in `:=` with their grid column: the source uses the centre of K^{2,4}, and the paired target uses K^{4,4}. The shared label-plane helper recomputes the anchor after formula changes and viewport scaling. Validation covers every animation frame for n = 0…4, four viewport sizes, language switching, fullscreen, and the rotated phone reader; observed errors were below 0.01 CSS pixels.
+
+Item 1.7 has two reading stages within the same numbered entry. First D and its animation appear; no timer advances it. The next Enter/right-arrow/tap reveals D² = 0 with the shared accordion motion and plays its own trace. Left-arrow reverses these stages, and returning from 1.8 enters the second stage. A selected tile origin persists between the two stages and resets on leaving the entry.
+
+Item 1.6 retains only the degree-n definition on the left. The C^bullet := Tot^bullet K abbreviation is explained in the bilingual exposition below the diagram. The degree sweep and fixed summand anchors remain unchanged.
+
 ## v83 · Reading interactions, stable formulas and loading progress
 
 Both formulas in 1.6 are separate interaction targets for the same degree sweep, `n = 0,1,2,3,4`. Moving between them can replay a completed sweep; formula clicks also replay it without requiring a mouse hover. An in-progress sweep remains a single shared animation. Validation covers both formulas in both languages, mouse hover/click, mobile taps, persistent diagram nodes and cancellation on reading advance.

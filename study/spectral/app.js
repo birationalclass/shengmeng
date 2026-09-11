@@ -6,6 +6,7 @@ import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=74';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
+import {alignDiagramRelation} from './diagram-labels.js?v=84';
 import {numberedPages} from './reading-pages.js?v=80';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
@@ -18,7 +19,7 @@ import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-ani
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=77';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=83';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=84';
 import {createFilteredView} from './filtered-view.js?v=57';
 import {createPageEvolution} from './page-evolution.js?v=77';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
@@ -36,12 +37,12 @@ const notebookMotion=createNotebookMotion({language});
 const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanation'),mobilePane:$('.slide-body')});
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
-let revealedBuild=-1;
+let revealedBuild=-1,revealedTotalStep=0;
 const readingOrder=['initial:0','learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3'];
 const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
-const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,totalOrigin:null};
+const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,totalStep:0,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,totalOrigin:null};
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -65,7 +66,7 @@ const stepCount=()=>({initial:initial.length,learn:lessons.length-1,lab:scene().
 let layout={dx:125,dy:75};
 const xy=(p,q)=>[GRID_ORIGIN.x+p*layout.dx,GRID_ORIGIN.y-q*layout.dy];
 const shifted=(s,k)=>k===0?s:`${s}${k>0?'+':''}${k}`;
-function label(x,y,tex,w=116,h=38,small=false){return `<g class="math-anchor" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
+function label(x,y,tex,w=116,h=38,small=false,align=''){return `<g class="math-anchor" data-align="${align}" data-x="${x-w/2}" data-y="${y-h/2}" data-width="${w}" data-height="${h}" data-small="${small}" data-tex="${esc(tex)}"><title>${esc(tex)}</title></g>`;}
 function line(x1,y1,x2,y2,type,hot,tex=''){let dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),pad=Math.min(dx===0?Infinity:NODE_HALF_W*len/Math.abs(dx),dy===0?Infinity:NODE_HALF_H*len/Math.abs(dy))+5;const f=pad/len;x1+=dx*f;y1+=dy*f;x2-=dx*f;y2-=dy*f;let out=`<path data-concept="${arrowConcept(type)}" tabindex="0" role="button" aria-label="${arrowConcept(type)}" class="arrow ${type} ${hot?'hot':''} " d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${type})"/>`;if(tex){const compact=['\\delta_1','\\delta_2','d_0','d_1'].includes(tex);out+=label((x1+x2)/2+(dx===0?(compact?23:26):0),(y1+y2)/2+(dy===0?(compact?-14:-17):0),tex,compact?36:68,compact?20:24,true);}return out;}
 function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
  layout={dx:500/maxP,dy:300/maxQ};
@@ -187,7 +188,7 @@ function render(updateControls=true){
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.totalStep=0;revealedTotalStep=0;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.actions.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
@@ -276,10 +277,13 @@ function renderWorkspaceState(){
  if(isDoubleComplexView())setupDoubleComplex();else updateAnnotations();syncStatementCards();applyConcept(state.pinned,false);
 }
 function ui(zh,en){return language()==='en'?en:zh;}
-function selectInitialBuild(index){
- pauseReadingHover();cancelSquareSequence();state.totalOrigin=null;if(index===6)state.n=2;state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
+function selectInitialBuild(index,totalStep=0){
+ pauseReadingHover();cancelSquareSequence();
+ if(!(isDoubleComplexView()&&state.initialReveal===6&&index===6)){state.totalOrigin=null;if(index===6)state.n=2;}
+ state.totalStep=index===6?totalStep:0;if(index===6)revealedTotalStep=Math.max(revealedTotalStep,totalStep);
+ state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
  keepDefinitionVisible();
- if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','filtration'].includes(initialConcept()))playTotalDemo(initialConcept());
+ if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','totalsquare','filtration'].includes(initialConcept()))playTotalDemo(initialConcept());
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
@@ -305,12 +309,13 @@ function foldBeforeAdvance(nextStatement){
  for(const [key,last] of revealedReadings)for(let i=0;i<=last;i++)foldedReadings.add(`${key}:${i}`);
 }
 function advanceNote(){
+ if(isDoubleComplexView()&&state.initialReveal===6&&state.totalStep===0){selectInitialBuild(6,1);return;}
  if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){foldBeforeAdvance('initial:0');selectInitialBuild(state.initialReveal+1);return;}
  if(!isDoubleComplexView()&&state.notePage<currentReadingPages().length-1){foldBeforeAdvance(activeStatementKey());selectReadingPage(state.notePage+1);return;}
  const i=readingOrder.indexOf(activeStatementKey());
  if(i>=0&&i<readingOrder.length-1){const next=readingOrder[i+1];foldBeforeAdvance(next);activateStatement(next);}
 }
-function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
+function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal===6&&state.totalStep===1){selectInitialBuild(6,0);return;}if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1,state.initialReveal===7?1:0);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
 $('#explanation').addEventListener('click',e=>{
  const sectionToggle=e.target.closest('[data-toggle-section]'),sectionSelect=e.target.closest('[data-select-section]');
  if(sectionToggle){
@@ -345,7 +350,7 @@ $('#explanation').addEventListener('click',e=>{
  if(!e.target.closest('.math-block,.relation-choice'))e.stopPropagation();
 });
 function differentialOrigin(){return isDoubleComplexView()&&state.initialReveal===6&&state.totalOrigin?state.totalOrigin:{p:1,q:1};}
-function initialConcept(){return ['space','delta1','delta2','square','anticommute','total','totalmap','totalcohom','filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
+function initialConcept(){return ['space','delta1','delta2','square','anticommute','total',state.totalStep===1?'totalsquare':'totalmap','totalcohom','filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
 function keepReadingVisible(card){readingFocus.follow(card);}
 function keepDefinitionVisible(){keepReadingVisible($(`[data-build="${state.initialReveal}"]`));}
 function interactiveConcept(target){
@@ -456,7 +461,7 @@ function doubleComplexCompanion(item){
  {title:'纵向微分 δ₂',concept:'delta2',f:[item.f[1]]},
  {title:'平方零关系',concept:'square',f:[]},
  {title:'反交换关系',concept:'anticommute',f:[item.f[3]]},
- {title:'总复形',concept:'total',f:[raw`C^\bullet:=\operatorname{Tot}^\bullet K`,raw`C^n:=\operatorname{Tot}^nK=\bigoplus_{p+q=n}K^{p,q}`]},
+ {title:'总复形',concept:'total',f:[raw`C^n:=\operatorname{Tot}^nK=\bigoplus_{p+q=n}K^{p,q}`]},
  {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2:C^n\longrightarrow C^{n+1}`]},
  {title:ui('总上同调','Total cohomology'),concept:'totalcohom',f:[raw`\begin{gathered}H^n(C^\bullet,D):=\\\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}\end{gathered}`]},
  {title:'列滤过',concept:'filtration',f:[raw`F^pC^n:=\bigoplus_{i\ge p}K^{i,n-i}`,raw`D(F^pC^n)\subseteq F^pC^{n+1}`]},
@@ -464,7 +469,7 @@ function doubleComplexCompanion(item){
  ];
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
- $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept==='graded'&&j===1?'gradedmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div>`:''}</div></section>`).join('')}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept==='graded'&&j===1?'gradedmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div data-total-fragment hidden><div class="relation-choices"><button class="relation-choice" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div></div>`:''}</div></section>`).join('')}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup());
  $('#sceneNote').textContent='';
 }
@@ -483,6 +488,11 @@ function syncInitialEntries(){
  document.querySelectorAll('.build-statement .build-card').forEach(el=>{
   const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),isDoubleComplexView()&&i===state.initialReveal);
   el.classList.toggle('build-complete',i<state.initialReveal);
+  if(i===6){
+   const fragment=el.querySelector('[data-total-fragment]');
+   const shown=isDoubleComplexView()&&state.initialReveal===6?state.totalStep===1:revealedTotalStep===1;
+   notebookMotion.setExpanded(fragment,shown,{immediate:state.cover||el.hidden});
+  }
  });
 }
 function syncReadingEntries(key){
@@ -544,7 +554,7 @@ function fixedDiagram(){
  if(m==='converge'){kind='E_0';h=false;v=false;total=false;filter=false;selected=false;}
  if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&['totalmap','filteredmap'].includes(state.effect))||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
- if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(filter?xy(2,GRID_MAX)[0]:(showNext?420:500),22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true)}</g>`;}
+ if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(xy(2,GRID_MAX)[0],22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true,filter?'':'equals')}</g>`;}
  if(m==='initial'&&state.effect==='graded'||m==='learn'&&s===2&&a>=2)overlay+=`<g class="denominator-region">${diagonal(n,p+1,true,false)}</g>`;
  if(showNext)overlay+=`<g class="next-total">${diagonal(n+1,filter?p:0,true,false)}</g>`;
  if(m==='initial'&&state.effect==='gradedmap'){
@@ -554,7 +564,7 @@ function fixedDiagram(){
  }
  if(m==='learn'&&s===0&&a===2&&n>0)overlay+=`<g class="next-total">${diagonal(n-1,0,true,false)}</g>`;
  if(m==='initial'&&state.effect==='graded')overlay+=`<g class="target-label">${label(650,22,raw`F^{${p+1}}C^{${n}}`,150,42,true)}</g>`;
- if(showNext)overlay+=`<g class="target-label">${label(filter?650:675,22,filter?raw`F^{${p}}C^{${n+1}}`:totalDegreeTex(n+1),filter?150:250,42,true)}</g>`;
+ if(showNext)overlay+=`<g class="target-label">${label(filter?650:xy(GRID_MAX,GRID_MAX)[0],22,filter?raw`F^{${p}}C^{${n+1}}`:totalDegreeTex(n+1),filter?150:250,42,true,filter?'':'equals')}</g>`;
  if(!finite){
   for(let i=0;i<=GRID_MAX;i++)for(let j=0;j<=GRID_MAX;j++){
    let activeSource=!total||i+j===(m==='learn'&&s===0&&a===2?n-1:n)&&(!filter||i>=p);
@@ -628,18 +638,19 @@ function syncDiagramLabels(){
  const old=new Map([...plane.children].map(el=>[el.dataset.key,el]));
  for(const anchor of host.querySelectorAll('svg .math-anchor')){
   const d=anchor.dataset,key=[d.x,d.y,d.width,d.height].join(':'),el=old.get(key)||document.createElement('div');old.delete(key);
-  el.className='diagram-label'+(anchor.closest('.node')?' term-label':'')+(d.small==='true'?' small-label':'')+(anchor.closest('.diagram-caption')?' caption-label':'')+(anchor.closest('.source-label')?' source-label':'')+(anchor.closest('.target-label')?' target-label':'')+(anchor.closest('.extent-ellipsis')?' extent-label':'');el.dataset.key=key;
+  el.className='diagram-label'+(anchor.closest('.node')?' term-label':'')+(d.small==='true'?' small-label':'')+(anchor.closest('.diagram-caption')?' caption-label':'')+(anchor.closest('.source-label')?' source-label':'')+(anchor.closest('.target-label')?' target-label':'')+(anchor.closest('.extent-ellipsis')?' extent-label':'');el.dataset.key=key;el.classList.toggle('relation-aligned',d.align==='equals');
   const map=anchor.previousElementSibling?.matches('.arrow')?anchor.previousElementSibling:null;if(map){el.classList.add('map-label',map.classList.contains('h')?'map-h':map.classList.contains('v')?'map-v':'map-r');el.dataset.mapConcept=map.dataset.concept;}else delete el.dataset.mapConcept;
   el.style.left=d.x+'px';el.style.top=d.y+'px';el.style.width=d.width+'px';el.style.height=d.height+'px';
   el.style.opacity=`calc(${anchor.closest('.muted')?'var(--graph-muted-opacity)':1} * ${anchor.closest('.zero')?'var(--graph-zero-opacity)':1} * ${anchor.closest('.context-edge')?'var(--graph-context-opacity)':1})`;
   const changed=el.dataset.tex!==d.tex;if(changed){if(anchor.closest('.node'))replaceBigradedLabel(el,d.tex,math);else replaceMathContent(el,anchor.closest('.extent-ellipsis')?extentDots(d.tex):math(d.tex));el.dataset.tex=d.tex;}
   if(!el.isConnected){plane.append(el);fadeGraphAddition(el);}
+  alignDiagramRelation(el);
  }
  for(const el of old.values())el.remove();
 }
 function observeDiagramSize(){
  const viewport=$('.diagram-viewport'),host=$('#diagram');
- const fit=()=>fitDiagramSurface(viewport,host,'--diagram-scale');
+ const fit=()=>{fitDiagramSurface(viewport,host,'--diagram-scale');host.querySelectorAll('.relation-aligned').forEach(alignDiagramRelation);};
  fitDiagram=fit;diagramResizeObserver=new ResizeObserver(fit);diagramResizeObserver.observe(viewport);fit();
 }
 

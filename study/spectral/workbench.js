@@ -51,7 +51,7 @@ export function operationMarkup(s,lang,math){
   }
   else if(a===2)body=row(box(`a_{i,j}\\in K^{i,j}`)+arrow('D')+box(R`\delta_1a_{i,j}+\delta_2a_{i,j}\in C^{i+j+1}`,'chosen'));
   else body=row(box(totalDegreeTex(n),'source-space')+arrow('D')+box(totalDegreeTex(n+1),'target-space'))+`<div class="operation-equation">${M(R`(Da)_{i,j}=\delta_1a_{i-1,j}+\delta_2a_{i,j-1}`)}</div>`;
-  note=a===1?t('斜虚框圈出全部直和因子，整体记作 Cⁿ；它不是新加的一个 K 节点。','The slanted dashed box groups all direct-sum factors as Cⁿ. It is not an extra K-node.'):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
+  note=a===1?t(`我们用 ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} 简记总复形。`,`We write ${M(R`C^\bullet:=\operatorname{Tot}^\bullet K`)} for the total complex.`):t('金色框是定义域，蓝色框是下一总次数。D 将每个分量的横向像与纵向像相加；指标为负的分量取零。','The gold box is the domain; the blue box is the next total degree. D adds the horizontal and vertical images of each component; negative-index components are zero.');
  }else if(s.module==='learn'){
   if(s.step===0){
    body=nested(`C^{${n}}`,`Z^{${n}}:=\\ker D`,`B^{${n}}:=\\operatorname{im}D`,`H^{${n}}:=Z^{${n}}/B^{${n}}`,a===1?'kernel':a===2?'image':'quotient');
@@ -84,5 +84,5 @@ export function operationMarkup(s,lang,math){
    `<div class="operation-equation">${M(R`Da=\delta_1a+\delta_2a\in C^{${n+1}}`)}</div>`;
  }
  if(n===4&&s.module==='initial'&&['totalmap','filteredmap'].includes(c))body+=`<p class="operation-note">${t(`蓝色区域还包括窗口外的 ${M(R`K^{0,5},\ K^{5,0}`)}。`,`The blue region also includes ${M(R`K^{0,5},\ K^{5,0}`)} beyond the displayed window.`)}</p>`;
- return `<div class="operation-content">${body}</div>${note&&(s.module!=='initial'||['delta1','delta2','square','square1','square2','anticommute','totalsquare','totalcohom'].includes(c))?`<p class="operation-note">${note}</p>`:''}`;
+ return `<div class="operation-content">${body}</div>${note&&(s.module!=='initial'||['delta1','delta2','square','square1','square2','anticommute','total','totalsquare','totalcohom'].includes(c))?`<p class="operation-note">${note}</p>`:''}`;
 }
