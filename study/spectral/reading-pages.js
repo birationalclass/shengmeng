@@ -16,12 +16,12 @@ export function numberedPages(module,step,count){
 
 // Short headings remain readable while their formula bodies are folded.
 const titles={
- 'learn:3':['E_0','d_0'],
- 'learn:4':['E_1','d_1'],
- 'learn:5':['E_r','d_r'],
- 'converge:0':[['Proposition','Proposition']],
- 'converge:1':[String.raw`\displaystyle E_\infty`],
+ 'learn:3':[{name:['第零页','Zeroth page'],symbol:'E_0'},{name:['微分','Differential'],symbol:'d_0'}],
+ 'learn:4':[{name:['第一页','First page'],symbol:'E_1'},{name:['微分','Differential'],symbol:'d_1'}],
+ 'learn:5':[{name:['一般页','General page'],symbol:'E_r'},{name:['微分','Differential'],symbol:'d_r'}],
+ 'converge:0':[['命题：逐位置稳定','Proposition: Pointwise stabilization']],
+ 'converge:1':[{name:['稳定页','Stable page'],symbol:String.raw`E_\infty`}],
  'converge:2':[['上同调的诱导滤过','Induced filtration on cohomology']],
  'converge:3':[['收敛到总上同调','Convergence to total cohomology']],
- 'lab:0':['E_r','d_r']
+ 'lab:0':[{name:['页','Page'],symbol:'E_r'},{name:['微分','Differential'],symbol:'d_r'}]
 };

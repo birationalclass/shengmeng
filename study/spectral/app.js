@@ -6,7 +6,7 @@ import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=74';
 import {createReadingRail} from './reading-rail.js?v=69';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {numberedPages} from './reading-pages.js?v=75';
+import {numberedPages} from './reading-pages.js?v=79';
 import {createReadingFocus} from './reading-focus.js?v=64';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -120,7 +120,7 @@ function diagonal(n,p,box=true,showLabel=true){
  if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
 }
 const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module,step,fs.length).map((page,index)=>{
- const title=Array.isArray(page.title)?ui(...page.title):page.title?math(page.title):'';
+ const title=Array.isArray(page.title)?esc(ui(...page.title)):page.title?.name?`${esc(ui(...page.title.name))} ${math(page.title.symbol)}`:page.title?math(page.title):'';
  const content=page.indices.map(i=>block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`)).join('');
  return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
 }).join('');
