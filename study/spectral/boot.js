@@ -61,10 +61,11 @@
   document.querySelector('.toolbar-actions').setAttribute('aria-label',en()?'Spectral Sequence':'谱序列');
   const active=fullscreenActive(),label=en()?(active?'Exit Full':'Full'):(active?'退出全屏':'全屏'),actionLabel=en()?(active?'Exit fullscreen':'Enter fullscreen'):(active?'退出全屏':'进入全屏');
   coverFullscreen.querySelector('span').textContent=label;lessonFullscreen.textContent='⛶ '+label;
+  window.spectralMobileReading?.syncFullscreen(active);
   for(const button of [coverFullscreen,lessonFullscreen]){button.setAttribute('aria-pressed',String(active));button.setAttribute('aria-label',actionLabel);button.title=active?actionLabel+' (Esc)':actionLabel;button.disabled=fullscreenPending;}
  };
  const leaveFullscreen=()=>{
-  document.body.classList.remove('study-fullscreen');syncFullscreen();window.scrollTo(0,fullscreenScroll);
+  window.spectralMobileReading?.unlock();document.body.classList.remove('study-fullscreen');syncFullscreen();window.scrollTo(0,fullscreenScroll);
   const button=!overlay.hidden&&!overlay.classList.contains('is-ready')?coverFullscreen:lessonFullscreen;
   button.focus({preventScroll:true});
  };
@@ -73,20 +74,22 @@
   if(!document.fullscreenElement)leaveFullscreen();
  };
  const toggleFullscreen=async()=>{
+  if(window.spectralMobileReading?.isFrame){await window.spectralMobileReading.toggleFullscreen();return;}
   if(fullscreenPending)return;fullscreenPending=true;
   try{
    if(fullscreenActive()){syncFullscreen();await exitFullscreen();return;}
    fullscreenScroll=window.scrollY;document.body.classList.add('study-fullscreen');syncFullscreen();
    try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}catch{/* Embedded browsers keep the viewport-filling study layout. */}
+   await window.spectralMobileReading?.lockLandscape();
   }finally{fullscreenPending=false;syncFullscreen();}
  };
  coverFullscreen.onclick=toggleFullscreen;lessonFullscreen.onclick=toggleFullscreen;
  document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement){document.body.classList.add('study-fullscreen');syncFullscreen();}else if(fullscreenActive())leaveFullscreen();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullscreenActive()&&!document.querySelector('dialog[open]')){e.preventDefault();exitFullscreen();}});
- window.spectralFullscreen={sync:syncFullscreen};
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullscreenActive()&&!document.querySelector('dialog[open]')){e.preventDefault();if(window.spectralMobileReading?.isFrame)window.spectralMobileReading.toggleFullscreen();else exitFullscreen();}});
+ window.spectralFullscreen={sync:syncFullscreen,toggle:toggleFullscreen};
  // Smooth only the visual interpolation; milestones still report real progress.
  const progress=(value,zh,english)=>{if(done||failed)return;progressLabels=[zh,english];progressValue=Math.max(progressValue,Math.min(100,Math.max(0,value)));bar.setAttribute('aria-valuenow',progressValue);bar.firstElementChild.style.transform=`scaleX(${progressValue/100})`;status.textContent=en()?english:zh;};
- const fail=()=>{if(done)return;failed=true;overlay.classList.add('loading-failed');status.textContent=en()?'Unable to load mathematics':'数学资源加载失败';document.getElementById('loaderRetry').hidden=false;};
+ const fail=()=>{if(done)return;window.spectralMobileReading?.onFailure();failed=true;overlay.classList.add('loading-failed');status.textContent=en()?'Unable to load mathematics':'数学资源加载失败';document.getElementById('loaderRetry').hidden=false;};
  const syncCoverLanguage=()=>{
   const english=en(),button=document.getElementById('coverLanguage');
   const replay=coverLanguage!==null&&coverLanguage!==english;coverLanguage=english;
@@ -103,17 +106,19 @@
   bar.setAttribute('aria-label',english?'Loading mathematics':'加载数学资源');
   if(failed)status.textContent=english?'Unable to load mathematics':'数学资源加载失败';
   else if(!done)status.textContent=progressLabels[english?1:0];
-  syncFullscreen();
+  syncFullscreen();window.spectralMobileReading?.sync();
   if(replay&&!overlay.hidden&&!overlay.classList.contains('is-ready'))animateTitle();
  };
  const showCover=()=>{
+  if(window.spectralMobileReading?.returnToCover())return;
   overlay.hidden=false;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
   syncCoverLanguage();
-  if(done){start.disabled=false;start.hidden=false;status.textContent='';status.setAttribute('aria-hidden','true');}
+  if(done){start.disabled=false;start.hidden=false;status.textContent='';status.setAttribute('aria-hidden','true');}window.spectralMobileReading?.sync();
  };
- const ready=()=>{if(failed)return;done=true;document.body.setAttribute('aria-busy','false');overlay.classList.add('awaiting-entry');bar.setAttribute('aria-hidden','true');showCover();};
+ const ready=()=>{if(failed)return;done=true;document.body.setAttribute('aria-busy','false');overlay.classList.add('awaiting-entry');bar.setAttribute('aria-hidden','true');showCover();window.spectralMobileReading?.onReady();};
  const enter=()=>{
   if(!done||failed)return false;
+  if(window.spectralMobileReading?.requestEntry())return false;
   start.disabled=true;document.documentElement.classList.remove('math-loading');overlay.classList.add('is-ready');
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)overlay.hidden=true;
   return true;

@@ -1,0 +1,31 @@
+/* A quiet cover hint. The reading orientation changes only after entry. */
+#mobileReadingHint {margin:-12px auto 22px;max-width:290px;font:12px/1.7 system-ui,sans-serif;color:#a4b9b5}
+#mobileReadingHint strong {display:block;font-weight:400;letter-spacing:.07em;color:#c3cfca}
+#mobileReadingHint span {display:block;font-size:11px;color:#91a9a5;margin-top:3px}
+#mobileReadingHint[hidden] {display:none!important}
+#beginSlides[aria-busy=true] {opacity:.65}
+#mobileReadingHost {position:fixed;inset:0;z-index:9900;overflow:hidden;background:var(--cover-background);opacity:0;pointer-events:none;transition:opacity .32s ease;isolation:isolate}
+#mobileReadingHost.is-ready {opacity:1;pointer-events:auto}
+#mobileReadingFrame {position:absolute;left:50%;top:50%;display:block;border:0;max-width:none;transform-origin:center;background:var(--cover-background)}
+body.mobile-reading-active > :is(header,main,footer) {visibility:hidden;pointer-events:none}
+/* Fullscreen is owned by the outer page; settings and formulas stay in the reader. */
+html[data-mobile-reading] #mathLoader {visibility:hidden;pointer-events:none}
+@media(max-height:500px){#mobileReadingHint{margin:-8px auto 10px;font-size:11px}#mobileReadingHint span{font-size:10px}}
+@media(prefers-reduced-motion:reduce){#mobileReadingHost{transition:none}}
+
+/* A phone has a wide but short viewport. Keep the diagram's natural scale;
+   scroll the right column instead of squeezing it above a fixed exposition. */
+html[data-mobile-reading] .slide-deck:not(.is-cover) .slide-body {overflow:hidden}
+html[data-mobile-reading] .slide-deck:not(.is-cover) .visual-column {
+ display:flex;flex-direction:column;gap:0;height:100%;min-height:0;
+ padding:12px 12px 12px 4px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+}
+html[data-mobile-reading] .visualization-module {flex:none;overflow:visible}
+html[data-mobile-reading] .slide-deck .visualization-module .stage {
+ flex:none;height:auto;max-height:none;min-height:0;aspect-ratio:840 / var(--diagram-content-height);
+}
+html[data-mobile-reading] .slide-deck .visualization-module .diagram-controls {
+ flex:none;height:auto;max-height:none;min-height:0;
+}
+html[data-mobile-reading] .diagram-controls:not(:has(button,input,select)) {display:none!important}
+html[data-mobile-reading] .slide-deck .math-exposition {flex:0 0 260px;margin-top:12px;padding-top:12px}

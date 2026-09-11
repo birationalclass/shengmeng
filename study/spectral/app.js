@@ -208,10 +208,12 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('keyup',e=>{if(readingKeys.has(e.key)){e.preventDefault();e.stopImmediatePropagation();}},true);
 // Touch and keyboard share the exact same left-reading navigation boundary.
 function navigateReading(direction){
+ if(window.spectralMobileReading?.active()){window.spectralMobileReading.navigate(direction);return;}
  if(document.querySelector('dialog[open]'))return;
  if(state.cover){if(direction>0&&!$('#beginSlides').hidden)$('#beginSlides').click();return;}
  if(direction<0)retreatNote();else advanceNote();
 }
+window.spectralNavigateReading=navigateReading;
 installReadingTouch({navigate:navigateReading});
 window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));

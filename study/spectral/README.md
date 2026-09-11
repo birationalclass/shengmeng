@@ -4,6 +4,14 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v81 · Landscape reading after the phone cover
+
+The phone cover retains its current orientation and shows a bilingual landscape-reading hint. Start reading opens a same-origin landscape viewport; in portrait it rotates the whole reader, including SVG, HTML math, controls and pointer coordinates. A physical device rotation resizes that viewport without recreating it or changing the current entry. Cover restores the normal outer cover. Fullscreen remains owned by the outer page; native landscape locking is optional and only attempted from the active reader, with the same layout working when that API is unavailable.
+
+`mobile-reading.js` owns entry, readiness, cleanup, sizing and fullscreen coordination. `styles/mobile-reading.css` keeps the short landscape viewport in two columns, preserves the diagram's natural scale and gives the right column scrolling space for its controls and exposition. Desktop and fine-pointer windows retain the existing layout.
+
+Validation: Chromium phone emulation at 320×568 and 390×844 checks portrait entry, horizontal entry, physical viewport rotation with reading state preserved, taps, both swipe directions, keyboard separation, language/settings/cover controls, fullscreen and the unsupported-native-API fallback. SVG and math-label centres agree within 0.01 CSS pixel. Desktop entry remains frame-free. This is emulation coverage, not physical Safari testing.
+
 ## v80 · Midpoint reading focus
 
 `reading-focus.js` places the current numbered entry's top at the visible screen midpoint. If its bottom would exceed the reading viewport, it moves up only enough to fit; an oversized entry starts near the viewport top. Clamping to the available scroll range leaves early entries naturally higher. Trailing space supports the final entry without adding a leading spacer. One fractional scroll follower handles section transitions, folding, style/viewport changes and fullscreen; manual wheel or touch scrolling suspends it until another entry is selected. Validation covers both boundary cases, 320–1440px widths, reduced viewport height, style and language changes, reverse navigation, and a settled transition without a final jump. The 2.10 title is now simply “收敛 / Convergence”.
