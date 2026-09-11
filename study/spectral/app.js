@@ -1,4 +1,4 @@
-import {createGradedTrace} from './graded-animation.js?v=89';
+import {createGradedTrace} from './graded-animation.js?v=90';
 import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=89';
 import {createPanelStyle} from './panel-style.js?v=78';
@@ -21,7 +21,7 @@ import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-ani
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=89';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=89';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=89';
 import {createPageEvolution} from './page-evolution.js?v=89';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
