@@ -8,7 +8,7 @@ const groups={
  'converge:0':{section:2,first:7,items:[[1,2,3]]},
  'converge:1':{section:2,first:8,items:[[1]]},
  'converge:2':{section:2,first:9,items:[[1,2]]},
- 'converge:3':{section:2,first:10,items:[[1]]}
+ 'converge:3':{section:2,first:10,items:[[1],[2],[3],[4]]}
 };
 export function numberedPages(module,step,count){
  const group=groups[`${module}:${step}`]||{section:2,first:module==='lab'?20:22,items:Array.from({length:count},(_,i)=>[i+1])};
@@ -24,6 +24,6 @@ const titles={
  'converge:0':[['命题：逐位置稳定','Proposition: Pointwise stabilization']],
  'converge:1':[{name:['稳定页','Stable page'],symbol:String.raw`E_\infty`}],
  'converge:2':[['上同调的诱导滤过','Induced filtration on cohomology']],
- 'converge:3':[['收敛','Convergence']],
+ 'converge:3':[['收敛','Convergence'],['命题：总复形的收敛','Proposition: Convergence of the total complex'],['起始页记号','Starting-page notation'],['退化','Degeneration']],
  'lab:0':[{name:['页','Page'],symbol:'E_r'},{name:['微分','Differential'],symbol:'d_r'}]
 };

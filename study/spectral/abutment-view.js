@@ -8,7 +8,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
  const host=document.createElement('div');host.id='abutmentView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  const toolbar=document.createElement('nav');toolbar.id='abutmentControls';toolbar.hidden=true;controls.append(toolbar);
- let active=false,context=null,n=3,p=1,key='',steps=[0,0];
+ let active=false,context=null,n=3,p=1,key='',steps={hfiltration:0,convergence:0,notation:0,degeneration:0};
  const label=(x,y,tex,width=240,kind='')=>`<span class="abutment-label ${kind}" style="left:${x-width/2}px;top:${y-22}px;width:${width}px">${math(tex)}</span>`;
  const formula=f=>`<div class="operation-equation">${math(f,true)}</div>`;
  const filtrationProof=[
@@ -16,13 +16,16 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   {name:['闭代表元','Closed representatives'],f:[R`Z^n:=\ker(D:C^n\to C^{n+1}),\quad B^n:=\operatorname{im}(D:C^{n-1}\to C^n)`,R`F^pH^n=\frac{(F^pC^n\cap Z^n)+B^n}{B^n}\subseteq H^n`,R`[a]_H\in F^pH^n\iff\exists z\in F^pC^n\cap Z^n:\ [a]_H=[z]_H`],note:()=>t('条件是存在该滤过中的闭代表元；原先选定的代表元本身未必在该滤过中。','The condition is the existence of a cocycle representative in the filtration; a previously chosen representative need not itself lie there.')},
   {name:['有限滤过','Finite filtration'],f:[R`H^n=F^0H^n\supseteq F^1H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`,R`\operatorname{Gr}_F^pH^n:=F^pH^n/F^{p+1}H^n`],note:()=>t('第一象限给出 F⁰C•=C• 以及 Fⁿ⁺¹Cⁿ=0。图中的箭头是包含映射，各框大小不表示维数；相邻滤过项可以相等。','The first quadrant gives F⁰C•=C• and Fⁿ⁺¹Cⁿ=0. Arrows in the diagram are inclusions; box sizes do not encode dimensions, and adjacent filtration terms may coincide.')}
  ];
- const convergenceProof=[
-  {name:['收敛的含义','Meaning of convergence'],f:[R`\{(E_r^{\bullet,\bullet},d_r)\}_{r\ge0}\Longrightarrow H^\bullet(C^\bullet,D)`,R`H^n=F^0H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}=\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}`],note:()=>t(`左侧的 ${math(R`E_r^{p,q}\Longrightarrow H^{p+q}`)} 表示整条谱序列收敛。这里采用第一象限下的有限滤过；收敛给出稳定页与目标的关联分次之间的同构，不是某个 ${math(R`E_r^{p,q}`)} 与整个 ${math(R`H^{p+q}`)} 的同构，也不是通常数列的极限。`,`The shorthand ${math(R`E_r^{p,q}\Longrightarrow H^{p+q}`)} refers to the whole spectral sequence. Under the first-quadrant hypothesis, the target has a finite filtration whose graded pieces are the stable terms. It is not an isomorphism from a single term to the whole target, nor an ordinary numerical limit.`),refs:'definition'},
-  {name:['起始页记号','Starting-page notation'],f:[R`E_{r_0}^{p,q}\Longrightarrow H^{p+q}`,R`\{(E_s^{\bullet,\bullet},d_s)\}_{s\ge r_0}\Longrightarrow H^\bullet`,R`E_2^{p,q}=H^p(Y,R^qf_*\mathcal F)\Longrightarrow H^{p+q}(X,\mathcal F)`],note:()=>t(`第一行用选定的起始页标示整条谱序列。Leray 谱序列在第二页有所示描述，之后仍须考虑 ${math('d_2,d_3,\\ldots')}；写 ${math('E_2')} 不表示第二页已经稳定。这里 ${math(R`\mathcal F`)} 是层，与滤过 ${math('F^p')} 不同。`,`The chosen starting page labels the spectral sequence. For the Leray spectral sequence, the displayed description is at page two; later differentials ${math('d_2,d_3,\\ldots')} still matter. Writing ${math('E_2')} does not assert stabilization there. The sheaf ${math(R`\mathcal F`)} is distinct from the filtration ${math('F^p')}.`),refs:'notation'},
-  {name:['收敛与退化','Convergence and degeneration'],f:[R`d_s=0\quad(\forall s\ge r_0)`,R`\Longrightarrow\quad E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`],note:()=>t(`第一行是从第 ${math('r_0')} 页退化的额外条件。收敛本身不保证它成立；即使在 ${math('E_2')} 退化，也首先得到 ${math(R`E_2^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`)}，而不是 ${math(R`E_2^{p,q}\cong H^{p+q}`)}。`,`The first line is the additional condition for degeneration at page ${math('r_0')}. Convergence alone does not imply it. Even degeneration at ${math('E_2')} identifies its terms with the graded pieces of the target, not with the whole target.`),refs:'degeneration'},
+ const convergencePropertyProof=[
   {name:['稳定商','The stable quotient'],f:[R`n=p+q,\quad Z^n:=\ker D|_{C^n},\quad B^n:=D(C^{n-1})`,R`E_\infty^{p,q}\cong\frac{F^pC^n\cap Z^n}{(F^{p+1}C^n\cap Z^n)+(F^pC^n\cap B^n)}`],note:()=>t('当页数足够大时，滤过闭链条件成为 Da=0，而边界的来源包含全部 Cⁿ⁻¹。将这两点代入 2.1 的滤过商表示，得到该式。','For sufficiently large page number, the filtered cocycle condition becomes Da=0 and the allowed sources of boundaries include all of Cⁿ⁻¹. Substituting into the filtered-quotient model of 2.1 gives this expression.')},
   {name:['典范映射','The canonical map'],f:[R`\begin{aligned}\theta:F^pC^n\cap Z^n&\longrightarrow F^pH^n/F^{p+1}H^n\\a&\longmapsto[a]_H+F^{p+1}H^n\end{aligned}`,R`\ker\theta=(F^{p+1}C^n\cap Z^n)+(F^pC^n\cap B^n)`],note:()=>t('由诱导滤过的定义，θ 满射。θ(a)=0 当且仅当 a 与某个更高滤过中的闭元相差一个总边界；该边界也在 FᵖCⁿ 中。这给出所列核，再由第一同构定理得到收敛同构。','The definition of the induced filtration makes θ surjective. Its value is zero precisely when a differs from a cocycle in the next filtration by a total boundary, which then also lies in FᵖCⁿ. This identifies the kernel; the first isomorphism theorem gives the convergence isomorphism.')},
   {name:['逐层恢复','Reconstructing by filtration'],f:[R`0\longrightarrow F^{p+1}H^n\longrightarrow F^pH^n\longrightarrow E_\infty^{p,n-p}\longrightarrow0`],note:()=>t('沿总次数 n 的对角线，各稳定项给出 Hⁿ 的逐层滤过商。向量空间情形可以选择分裂，但收敛本身没有给出典范的直和分解。','Along total degree n, the stable terms give the successive filtration quotients of Hⁿ. Vector-space splittings can be chosen, but convergence itself supplies no canonical direct-sum decomposition.')}
+ ];
+ const notationProof=[
+  {name:['起始页记号','Starting-page notation'],f:[R`E_{r_0}^{p,q}\Longrightarrow H^{p+q}`,R`\{(E_s^{\bullet,\bullet},d_s)\}_{s\ge r_0}\Longrightarrow H^\bullet`,R`E_2^{p,q}=H^p(Y,R^qf_*\mathcal F)\Longrightarrow H^{p+q}(X,\mathcal F)`],note:()=>t(`第一行用选定的起始页标示整条谱序列。Leray 谱序列在第二页有所示描述，之后仍须考虑 ${math('d_2,d_3,\\ldots')}；写 ${math('E_2')} 不表示第二页已经稳定。这里 ${math(R`\mathcal F`)} 是层，与滤过 ${math('F^p')} 不同。`,`The chosen starting page labels the spectral sequence. For the Leray spectral sequence, the displayed description is at page two; later differentials ${math('d_2,d_3,\\ldots')} still matter. Writing ${math('E_2')} does not assert stabilization there. The sheaf ${math(R`\mathcal F`)} is distinct from the filtration ${math('F^p')}.`),refs:'notation'}
+ ];
+ const degenerationProof=[
+  {name:['收敛与退化','Convergence and degeneration'],f:[R`d_s=0\quad(\forall s\ge r_0)`,R`\Longrightarrow\quad E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`],note:()=>t(`第一行是从第 ${math('r_0')} 页退化的额外条件。收敛本身不保证它成立；即使在 ${math('E_2')} 退化，也首先得到 ${math(R`E_2^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`)}，而不是 ${math(R`E_2^{p,q}\cong H^{p+q}`)}。`,`The first line is the additional condition for degeneration at page ${math('r_0')}. Convergence alone does not imply it. Even degeneration at ${math('E_2')} identifies its terms with the graded pieces of the target, not with the whole target.`),refs:'degeneration'}
  ];
  const referenceLink=(url,label)=>`<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
  const mc='https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf',weibel='https://math.mit.edu/~hrm/palestine/weibel/05-spectral_sequences.pdf';
@@ -32,14 +35,23 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   if(entry.refs==='degeneration')return referenceLink(mc+'#page=21','McCleary, Definition 1.3');
   return referenceLink(mc+'#page=47','McCleary, Theorem 2.6')+' · '+referenceLink(mc+'#page=62','Theorem 2.15');
  }
+ function definitionExposition(){
+  board.dataset.currentProofTopic='convergence-definition';board.dataset.currentProofStep='0';
+  const family=math(R`\{(E_r^{\bullet,\bullet},d_r)\}_{r\ge0}`);
+  replaceMathContent(board,`<div class="proof-body convergence-definition"><p class="operation-note">${t(`我们称第一象限上同调型谱序列 ${family} <strong>收敛到</strong>非负分次向量空间 ${math(R`H^\bullet`)}，<strong>如果</strong>对每个 ${math(R`n\ge0`)}，${math('H^n')} 配备有限递减滤过`,`We say that a first-quadrant cohomological spectral sequence ${family} <strong>converges to</strong> a nonnegatively graded vector space ${math(R`H^\bullet`)} <strong>if</strong>, for every ${math(R`n\ge0`)}, ${math('H^n')} is equipped with a finite decreasing filtration`)}</p>${formula(R`H^n=F^0H^n\supseteq F^1H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`)}<p class="operation-note">${t(`并对所有 ${math(R`p,q\ge0`)} 给定同构`,`together with isomorphisms, for all ${math(R`p,q\ge0`)},`)}</p>${formula(R`E_\infty^{p,q}\cong\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}=\operatorname{Gr}_F^pH^{p+q}`)}</div><p class="operation-note proof-reference">${references({refs:'definition'})}</p>`);
+ }
+ function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','notation','degeneration'][context.notePage||0];}
  function exposition(){
-  const chapter=context.step-2,entries=chapter===0?filtrationProof:convergenceProof,i=steps[chapter],entry=entries[i];
-  board.dataset.currentProofTopic=chapter===0?'hfiltration':'abutment';board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('数学阐述步骤','Exposition steps')}">${entries.map((e,j)=>`<button data-abutment-proof="${j}" aria-pressed="${i===j}">${j+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="operation-content evolution-exposition">${entry.f.map(formula).join('')}</div><p class="operation-note">${entry.note()}</p><p class="operation-note">${math(R`H^n=H^n(C^\bullet,D),\quad n=${n},\quad p=${p},\quad q=${n-p}`)}</p><p class="operation-note proof-reference">${references(entry)}</p>`);
+  const topic=expositionTopic();if(topic==='definition'){definitionExposition();return;}
+  const entries={hfiltration:filtrationProof,convergence:convergencePropertyProof,notation:notationProof,degeneration:degenerationProof}[topic],i=steps[topic],entry=entries[i];
+  board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
+  const navigation=entries.length>1?`<nav class="proof-steps" aria-label="${t('数学阐述步骤','Exposition steps')}">${entries.map((e,j)=>`<button data-abutment-proof="${j}" aria-pressed="${i===j}">${j+1}. ${t(...e.name)}</button>`).join('')}</nav>`:'';
+  const instance=['hfiltration','convergence'].includes(topic)?`<p class="operation-note">${math(R`H^n=H^n(C^\bullet,D),\quad n=${n},\quad p=${p},\quad q=${n-p}`)}</p>`:'';
+  replaceMathContent(board,`${navigation}<div class="operation-content evolution-exposition">${entry.f.map(formula).join('')}</div><p class="operation-note">${entry.note()}</p>${instance}<p class="operation-note proof-reference">${references(entry)}</p>`);
  }
  function draw(){
-  const y=i=>105+54*i,final=context.step===3;
-  let svg='<defs><marker id="abutment-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>',labels=label(420,42,R`H^{${n}}:=H^{${n}}(C^\bullet,D)`,420,'title');
+  const y=i=>105+54*i,final=context.step===3,applied=context.step===2||context.notePage===1;
+  let svg='<defs><marker id="abutment-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>',labels=label(420,42,applied?R`H^{${n}}:=H^{${n}}(C^\bullet,D)`:R`H^{${n}}`,420,'title');
   for(let i=0;i<=n+1;i++){
    const chosen=i===p||i===p+1,tex=i===0?`F^0H^{${n}}=H^{${n}}`:i===n+1?`F^{${i}}H^{${n}}=0`:`F^{${i}}H^{${n}}`;
    svg+=`<rect class="abutment-term ${chosen?'chosen':''}" data-filtration="${i}" x="125" y="${y(i)-19}" width="220" height="38" rx="9"/>`;
@@ -68,12 +80,12 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   if(e.target.matches('[data-abutment-n]')){n=Number(e.target.value);p=Math.min(p,n);const input=toolbar.querySelector('[data-abutment-p]');input.max=n;input.value=p;input.nextElementSibling.textContent=p;}else p=Number(e.target.value);
   e.target.nextElementSibling.textContent=e.target.value;draw();exposition();
  });
- board.addEventListener('click',e=>{const button=e.target.closest('[data-abutment-proof]');if(!active||!button)return;e.stopPropagation();steps[context.step-2]=Number(button.dataset.abutmentProof);exposition();});
+ board.addEventListener('click',e=>{const button=e.target.closest('[data-abutment-proof]');if(!active||!button)return;e.stopPropagation();steps[expositionTopic()]=Number(button.dataset.abutmentProof);exposition();});
  return {sync(s){
   const wasActive=active;active=!s.cover&&s.module==='converge'&&s.step>=2;context=s;
   host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active;viewport.classList.toggle('has-abutment-view',active);
   if(!active){key='';window.spectralAbutment={active:false};return;}
   if(!wasActive){n=s.n;p=Math.max(0,Math.min(s.p,n));}
-  const next=[s.step,n,p,language()].join(':');if(next!==key){key=next;draw();paintControls();}fit();exposition();
+  const next=[s.step,s.notePage,n,p,language()].join(':');if(next!==key){key=next;draw();paintControls();}fit();exposition();
  }};
 }
