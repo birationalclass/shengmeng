@@ -62,7 +62,9 @@ svg .diag.concept-active { opacity:1;stroke-width:2.5 }
 #diagram .map-label.map-r { color:var(--gold) }
 #diagram.concept-focus .map-label:not(.map-active) { opacity:var(--graph-muted-opacity)!important }
 #diagram .term-label[data-element-focus=true],
-#diagram .term-label[data-total-focus] { opacity:var(--graph-covered-label-opacity)!important }
+#diagram .term-label[data-total-focus],
+#diagram .term-label[data-graded-focus],
+#diagram .term-label[data-filtered-focus] { opacity:var(--graph-covered-label-opacity)!important }
 .filtered-label.muted { color:var(--muted);font-size:19px }
 
 /* Page-layer terms use the same color and emphasis contract. */
@@ -110,3 +112,21 @@ svg .diag.concept-active { opacity:1;stroke-width:2.5 }
 #evolutionControls:has(#stabilityPage) label { display:flex;align-items:center;gap:7px;font-size:13px;white-space:nowrap }
 #evolutionControls:has(#stabilityPage) input { width:clamp(64px,6vw,92px);margin:0 }
 #evolutionControls:has(#stabilityPage) output { min-width:1ch }
+
+/* Filtered subspaces reuse the K grid and its grouping geometry. */
+.filtered-trace-labels {z-index:6}
+.filtered-sample-label {position:absolute;width:50px;height:24px;text-align:center;font-size:17px;line-height:1;color:var(--ink);transition:color var(--motion-emphasis) var(--motion-easing)}
+.filtered-sample-label .katex {font-size:1em}
+#diagram .filtered-target-total .diag {stroke:var(--blue);opacity:.32}
+
+.filtered-sample-label>span {position:absolute;inset:0}
+
+/* A quiet page-index axis: the light leaves the clip before each 5s restart. */
+#pageEvolution.has-r-glow .evolution-r-axis {opacity:.25}
+.evolution-r-glint {display:none;pointer-events:none}
+#pageEvolution.has-r-glow .evolution-r-glint {display:block;animation:spectral-r-glint 5s linear infinite;filter:drop-shadow(0 0 2px #a4e7d359)}
+@keyframes spectral-r-glint {from{transform:translateX(0)}to{transform:translateX(900px)}}
+@media(prefers-reduced-motion:reduce){#pageEvolution.has-r-glow .evolution-r-glint{display:none;animation:none}}
+
+/* Page names are mathematical labels; the invisible rect only preserves the hit area. */
+#pageEvolution .evolution-page-title rect {fill:transparent;stroke:none;filter:none}

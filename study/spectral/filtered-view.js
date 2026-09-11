@@ -1,15 +1,13 @@
+import {createFilteredDemo} from './filtered-demo.js?v=89';
 import {replaceMathContent} from './math-transitions.js?v=40';
-import {visualMotion} from './visual-style.js?v=40';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
-export function createFilteredView({viewport,board,math,language}){
+export function createFilteredView({viewport,diagram,point,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- const host=document.createElement('div');host.id='filteredView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
+ const demo=createFilteredDemo({host:diagram,point,math});
  let state=null,active=false,key='',topic='Z';const steps={Z:0,B:0};
- const pageIndex=()=>state.step===6?(topic==='Z'?1:0):Math.max(1,state.r);
- const reduced=()=>matchMedia('(prefers-reduced-motion:reduce)').matches;
- const label=(x,y,tex,width=200,kind='')=>`<span class="filtered-label ${kind}" style="left:${x-width/2}px;top:${y-22}px;width:${width}px">${math(tex)}</span>`;
- const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies']]};
+ const pageIndex=()=>Math.max(1,state.r);
+ const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies'],['具体例子','Example'],['辅助指标 −1','Auxiliary index −1']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies'],['具体例子','Example'],['辅助指标 −1','Auxiliary index −1']]};
  function exposition(){
   const r=pageIndex(),n=state.n,p=state.p,q=n-p,i=steps[topic];
   const proof=topic==='Z'?[
@@ -34,64 +32,38 @@ export function createFilteredView({viewport,board,math,language}){
    t('这是总复形中的边界，因此由 D²=0 自动得到闭性。','These are boundaries in the total complex; D²=0 makes them cocycles.'),
    t('r 增大时允许更多来源，所以 Bᵣ 增大。注意 Eᵣ 的分母使用 Bᵣ₋₁。','As r grows, more source columns are allowed and Bᵣ increases. The denominator of Eᵣ uses Bᵣ₋₁.')
   ];
+  proof.push(topic==='Z'?[
+   R`u,s\in K^{1,1},\quad v\in K^{2,0}`,
+   R`\delta_1u=t,\quad\delta_2s=w,\quad\delta_1v=z,\quad\delta_2v=-t`,
+   R`t\in K^{2,1},\ w\in K^{1,2},\ z\in K^{3,0}`,
+   R`a_1=u+v,\quad a_2=u,\quad a_3=s,\quad a_4=2(u+v)`,
+   R`Da_1=z,\quad Da_2=t,\quad Da_3=w,\quad Da_4=2z`,
+   R`a_1,a_4\in Z_2^{1,1},\qquad a_2,a_3\notin Z_2^{1,1}`
+  ]:[
+   R`\alpha\in K^{0,1},\quad\beta\in K^{1,0},\quad c\in K^{0,2},\quad b\in K^{1,1}`,
+   R`\delta_2\alpha=c,\quad\delta_2\beta=b,\quad\delta_1\alpha=\delta_1\beta=0`,
+   R`b_1=\beta,\quad b_2=\alpha,\quad b_3=\alpha+\beta,\quad b_4=2\beta`,
+   R`Db_1=b,\quad Db_2=c,\quad Db_3=c+b,\quad Db_4=2b`,
+   R`Db_1,Db_4\in B_2^{1,1},\qquad Db_2,Db_3\notin B_2^{1,1}`
+  ]);
+  note.push(t((topic==='Z'?'u,s,v,t,w,z':'α,β,c,b')+' 为基向量；未列出的微分均为零。圆点代表整条总上链，位置只示意归属，不是某个 K 分量。',(topic==='Z'?'u,s,v,t,w,z':'α,β,c,b')+' are basis vectors, with all unlisted differentials zero. Each dot represents an entire total cochain; its position indicates membership, not a K-component.'));
+  proof.push(topic==='Z'?[
+   R`Z_{-1}^{p,q}:=F^pC^{p+q}\cap D^{-1}(F^{p-1}C^{p+q+1})`,
+   R`D(F^pC^n)\subseteq F^pC^{n+1}\subseteq F^{p-1}C^{n+1}`,R`Z_{-1}^{p,q}=Z_0^{p,q}=F^pC^{p+q}`
+  ]:[
+   R`B_{-1}^{p,q}:=F^pC^{p+q}\cap D(F^{p+1}C^{p+q-1})`,
+   R`B_{-1}^{p,q}=D(F^{p+1}C^{p+q-1})\subseteq F^{p+1}C^{p+q}`
+  ]);
+  note.push(t('为统一第零页与高页的商公式，将相同定义延伸至 r=−1。这里只增加辅助子空间，不定义 E₋₁ 页。','To use one quotient formula for the zeroth and higher pages, extend the same definitions to r=−1. These are auxiliary subspaces; no E₋₁ page is defined.'));
   board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('区域只表示包含关系。','Regions indicate inclusions only.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
+  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('圆点代表总上链；蓝色像满足滤过条件，黄色像不满足。轨迹表示总微分 D。','Dots represent total cochains: blue images meet the filtration condition; gold images do not. Tracks represent the total differential D.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
  }
- function draw(){
-  const {n,p}=state,r=pageIndex(),q=n-p,Z=`Z_{${r}}^{${p},${q}}`,B=`B_{${r}}^{${p},${q}}`;
-  const F=`F^{${p}}C^{${n}}`,target=`F^{${p+r}}C^{${n+1}}`,source=`F^{${p-r}}C^{${n-1}}`,image=R`D(${source})`;
-  let shapes='',labels='';
-  if(topic==='Z'){
-   shapes=`<ellipse class="filtered-ambient" cx="207" cy="255" rx="150" ry="155"/><ellipse class="filtered-ambient" cx="637" cy="255" rx="150" ry="155"/><ellipse class="filtered-region gold" data-filter-region="Z" cx="235" cy="290" rx="92" ry="87"/><ellipse class="filtered-region blue" data-filter-region="target" cx="610" cy="290" rx="92" ry="87"/><path class="filtered-map" d="M360,180 C410,150 430,150 479,180" marker-end="url(#filtered-tip)"/><path class="filtered-map strong" data-filter-map="restriction" d="M331,290 H506" marker-end="url(#filtered-tip)"/>`;
-   labels=label(202,148,F+(p>n?'=0':''),230)+label(639,148,`C^{${n+1}}`,180)+label(235,290,Z+(p>n?'=0':''),180,'gold')+label(610,290,target+(p+r>n+1?'=0':''),200,'blue')+label(420,145,'D',70)+label(420,258,R`D|_{${Z}}`,140)+label(235,337,R`a`,50,'muted')+label(610,337,R`Da`,80,'muted');
-   if(p+r>n+1){
-    shapes=shapes.replace(/<ellipse class="filtered-region blue"[^>]+\/>/,'<circle class="filtered-zero blue" cx="610" cy="290" r="4"/>').replace('M331,290 H506','M331,290 H596');
-    labels=label(202,148,F+(p>n?'=0':''),230)+label(639,148,`C^{${n+1}}`,180)+label(235,290,Z+(p>n?'=0':''),180,'gold')+label(610,244,target+'=0',220,'blue')+label(420,145,'D',70)+label(420,258,R`D|_{${Z}}`,140)+label(235,337,'a',50,'muted')+label(610,337,'Da=0',110,'muted');
-   }
-   if(p>n){
-    shapes='<ellipse class="filtered-ambient" cx="637" cy="255" rx="150" ry="155"/><circle class="filtered-zero gold" cx="235" cy="290" r="4"/><circle class="filtered-zero blue" cx="610" cy="290" r="4"/><path class="filtered-map strong" d="M247,290 H596" marker-end="url(#filtered-tip)"/>';
-    labels=label(235,244,F+'=0',220)+label(235,337,Z+'=0',220,'gold')+label(639,148,`C^{${n+1}}`,180)+label(610,244,target+'=0',220,'blue')+label(420,258,'D',70);
-   }
-  }else{
-   const zeroSource=n===0||p-r>n-1,zeroResult=zeroSource||p>n;
-   shapes=`<defs><clipPath id="filtered-intersection"><ellipse cx="535" cy="277" rx="125" ry="117"/></clipPath></defs><ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/><ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/><ellipse class="filtered-region blue" data-filter-region="image" cx="535" cy="277" rx="125" ry="117"/><ellipse class="filtered-region" data-filter-region="filtration" cx="666" cy="277" rx="125" ry="117"/><ellipse class="filtered-intersection gold" data-filter-region="B" cx="666" cy="277" rx="125" ry="117" clip-path="url(#filtered-intersection)"/><path class="filtered-map strong" data-filter-map="image" d="M264,270 H400" marker-end="url(#filtered-tip)"/>`;
-   labels=label(142,258,source+(zeroSource?'=0':''),235)+label(603,119,`C^{${n}}`,160)+label(503,198,image+(zeroSource?'=0':''),235,'blue small')+label(699,230,F+(p>n?'=0':''),185,'small')+label(600,310,B+(zeroResult?'=0':''),130,'gold')+label(329,240,'D',70);
-   if(p===0&&!zeroResult){
-    shapes='<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/><ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/><ellipse class="filtered-region gold" data-filter-region="B" cx="580" cy="282" rx="144" ry="113"/><path class="filtered-map strong" d="M264,270 H422" marker-end="url(#filtered-tip)"/>';
-    labels=label(142,258,source,235)+label(603,119,F+`=C^{${n}}`,300)+label(580,282,B+'='+image,285,'gold small')+label(329,240,'D',70);
-   }else if(r===0&&!zeroResult){
-    // D preserves F: B_0 is the whole image, nested inside F^p C^n.
-    shapes='<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/><ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/><ellipse class="filtered-region" data-filter-region="filtration" cx="610" cy="270" rx="175" ry="140"/><ellipse class="filtered-region gold" data-filter-region="B" cx="600" cy="300" rx="115" ry="77"/><path class="filtered-map strong" data-filter-map="image" d="M264,270 H477" marker-end="url(#filtered-tip)"/>';
-    labels=label(142,258,source,235)+label(603,119,`C^{${n}}`,160)+label(640,188,F,220)+label(600,276,B,180,'gold')+label(600,323,'='+image,240,'gold small')+label(349,240,'D',70);
-   }else if(zeroResult){
-    shapes=(zeroSource?'<circle class="filtered-zero" cx="142" cy="270" r="4"/>':'<ellipse class="filtered-ambient" cx="142" cy="270" rx="116" ry="133"/>')+'<ellipse class="filtered-ambient" cx="601" cy="255" rx="219" ry="175"/>';
-    if(zeroSource){
-     shapes+=(p>n?'':'<ellipse class="filtered-region" cx="666" cy="277" rx="125" ry="117"/>')+'<circle class="filtered-zero gold" data-filter-region="B" cx="615" cy="277" r="4"/><path class="filtered-map strong" d="M155,270 H600" marker-end="url(#filtered-tip)"/>';
-     labels=label(142,220,source+'=0',235)+label(603,119,`C^{${n}}`,160)+label(665,220,F+(p>n?'=0':''),210)+label(610,335,B+'=0',180,'gold')+label(415,190,image+'=0',220,'blue small')+label(340,242,'D',70);
-     if(p===0){shapes=shapes.replace(/<ellipse class="filtered-region"[^>]+\/>/,'');labels=label(142,220,source+'=0',235)+label(603,119,F+`=C^{${n}}`,300)+label(610,335,B+'=0',180,'gold')+label(610,226,image+'=0',240,'blue small')+label(340,242,'D',70);}
-    }else{
-     shapes+='<ellipse class="filtered-region blue" cx="535" cy="277" rx="125" ry="117"/><circle class="filtered-zero gold" data-filter-region="B" cx="560" cy="305" r="4"/><path class="filtered-map strong" d="M264,270 H400" marker-end="url(#filtered-tip)"/>';
-     labels=label(142,258,source,235)+label(603,119,`C^{${n}}`,160)+label(535,212,image,235,'blue small')+label(560,348,B+'='+F+'=0',330,'gold small')+label(329,240,'D',70);
-    }
-   }
-  }
-  const scene=document.createElement('div');scene.className='filtered-scene';scene.dataset.filterTopic=topic;
-  scene.innerHTML=`<svg viewBox="0 0 840 525" aria-hidden="true"><defs><marker id="filtered-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="#a7d3ca" stroke-width="1.5"/></marker></defs>${shapes}</svg>${labels}`;
-  for(const old of [...host.children]){
-   const opacity=getComputedStyle(old).opacity;old.getAnimations().forEach(a=>a.cancel());old.style.opacity=opacity;
-   if(reduced())old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards',easing:visualMotion().easing});fade.finished.then(()=>old.remove(),()=>{});}
-  }
-  host.append(scene);
-  if(!reduced())scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().emphasis,easing:visualMotion().easing});
- }
- function fit(){const bounds=viewport.getBoundingClientRect(),width=Math.min(bounds.width,bounds.height*840/525);host.style.width=width+'px';host.style.height=width*525/840+'px';host.style.setProperty('--filtered-scale',String(width/840));}
  board.addEventListener('click',e=>{const button=e.target.closest('[data-filter-step]');if(!active||!button)return;e.stopPropagation();steps[topic]=Number(button.dataset.filterStep);exposition();});
- new ResizeObserver(fit).observe(viewport);
  return {sync(s){
-  state=s;active=!s.cover&&s.module==='learn'&&[5,6].includes(s.step)&&(s.annotationStep===1||s.annotationStep===2);
-  viewport.classList.toggle('has-filtered-view',active);host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));
-  if(!active){key='';return;}
+  state=s;active=!s.cover&&s.module==='learn'&&s.step===6&&(s.annotationStep===1||s.annotationStep===2);
+  viewport.classList.toggle('has-filtered-grid',active);
+  if(!active){key='';demo.clear();return;}
   topic=s.annotationStep===1?'Z':'B';const next=[s.step,topic,s.n,s.p,pageIndex(),language()].join(':');
-  if(next!==key){key=next;draw();}fit();exposition();
+  if(next!==key){const changed=key.split(':').slice(0,5).join(':')!==next.split(':').slice(0,5).join(':');key=next;if(changed)demo.play(topic,true);}exposition();
  }};
 }

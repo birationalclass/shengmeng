@@ -4,6 +4,22 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v89 · Element traces, quotient classes and persistent filtered diagrams
+
+The initial definitions share one origin-selection policy. In 1.2, 1.3 and 1.5, clicking a K tile with both indices at most 3 replays the corresponding horizontal, vertical or anticommutation trace. One-step images stop in their target terms; the two mixed paths cancel at their common target centre. The selected origin is local to the current entry and resets on changing entries. Item 1.7 retains its stricter index bound of 2. Its two formula lines exchange enlarged/resting sizes smoothly without shrinking the current heading or hiding a revealed D² = 0.
+
+Item 1.10 now writes [a] ↦ [Da] on the left and defines both cosets in the exposition. Its finite quotient animation starts at K^{1,1}: framed class tokens follow both component maps, then the horizontal token contracts to [0] because its representative belongs to F^{p+1}. The vertical token stays put. This does not identify the entire horizontal K-space with zero. The same geometry and motion tokens drive the overlay, reduced-motion endpoint and cleanup.
+
+Items 1.11 and 1.12 retain the existing 25 K tiles and the shared rounded diagonal filtration outlines. Both examples use p = q = 1 and r = 2. Z tests images from F^1 C^2 against F^3 C^3; B takes images from F^{-1} C^1 = C^1 and retains those in F^1 C^2. D always raises total degree by one. Particles represent whole total cochains, not individual K components; their labels crossfade from a_i to Da_i (or b_i to Db_i). Blue images meet the condition, gold images do not. Independent exposition steps give the concrete basis and component maps behind the animation. `filtered-demo.js` records this finite double complex, including a nonclosed element in Z_2 whose excluded-column components cancel.
+
+E_0, E_1 and E_r now use the same quotient definition, generated centrally by `filtered-notation.js`. The unchanged total-cochain formulas for Z and B are explicitly extended to the auxiliary index −1; this does not define a negative page. The E_0 exposition proves Z_0 = F^p, Z_{−1}^{p+1,q−1} = F^{p+1}, and B_{−1} ⊆ F^{p+1}, so the quotient equals Gr. Both subspace entries have an independent auxiliary-index explanation. The preceding-page cohomology property remains restricted to r≥1.
+
+In 2.3 the page-index axis is dimmed and has a clipped, left-to-right glint with a five-second period. The glint never moves the axis or page layers and is disabled under reduced motion. Page names E_0, E_1 and all later E_r retain their math typography and colors without visible title frames.
+
+Toolbar controls retain fixed bilingual widths, have hit areas of at least 44 × 44 pixels and sit away from the top edge in fullscreen. Diagram overlays remain below the toolbar and never receive its pointer events.
+
+Validation: Chromium checked all 48 allowed origins of the three extended traces, intermediate/end states, rapid replay, 1.7 emphasis swaps, quotient-token morphing, independent proof tabs and cleanup. The filtered example was checked exactly for bidegrees, both square-zero identities, anticommutation, all eight images and filtration membership. Browser checks also cover native fullscreen button centres and edges, three viewport sizes, touch and reduced-motion phone-landscape emulation, bilingual typesetting and the E_0 bridge.
+
 ## v88 · Preserve revealed square-zero notation on reverse navigation
 
 In 1.7, reversing from D² = 0 retains the formula at the shared resting size while the entry heading stays current. Only the next reverse step leaves 1.7 and reduces its heading. Revealed content and the current substep now have separate state; returning to the cover still resets the reveal. All panel variants share their existing resting-size token, so leaving the entry does not resize the formula again.

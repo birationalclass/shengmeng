@@ -1,4 +1,6 @@
-import {gradedFormulas,createGradedProof} from './associated-graded.js?v=78';
+import {createGradedTrace} from './graded-animation.js?v=89';
+import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
+import {gradedFormulas,createGradedProof} from './associated-graded.js?v=89';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
 import {createStabilityView} from './stability-view.js?v=76';
@@ -15,13 +17,13 @@ import {createInitialAnimations} from './initial-animations.js?v=57';
 import {createFiltrationTrace} from './filtration-animations.js?v=40';
 import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
-import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=83';
+import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=89';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=86';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=89';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
-import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=88';
-import {createFilteredView} from './filtered-view.js?v=86';
-import {createPageEvolution} from './page-evolution.js?v=87';
+import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=89';
+import {createFilteredView} from './filtered-view.js?v=89';
+import {createPageEvolution} from './page-evolution.js?v=89';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -56,8 +58,9 @@ const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆�
 const evolution=createPageEvolution({origin:GRID_ORIGIN,viewport:$('.diagram-viewport'),diagram:$('#diagram'),controls:$('#diagramControls'),board:$('#operationBoard'),math,language});
 const stabilityView=createStabilityView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const abutmentView=createAbutmentView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
-const filteredView=createFilteredView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),math,language});
+const filteredView=createFilteredView({viewport:$('.diagram-viewport'),diagram:$('#diagram'),point:(p,q)=>xy(p,q),board:$('#operationBoard'),math,language});
 const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
+const gradedTrace=createGradedTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>state});
 const totalTrace=createTotalTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),origin:differentialOrigin});
 const filtrationSweep=createIndexedSweep({diagram:$('#diagram'),read:()=>state.p,write:p=>{state.p=p;render(false);const input=$('#pRange');if(input){input.value=p;input.nextElementSibling.textContent=p;}},outline:p=>diagonalRegion(xy(p,state.n-p),xy(state.n,0)),line:p=>`M${xy(p,state.n-p)} L${xy(state.n,0)}`,values:()=>Array.from({length:state.n+1},(_,p)=>p),publishName:'spectralFiltrationSweep'});
 const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>({n:state.n,p:state.p})});
@@ -97,7 +100,7 @@ function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
  out+=`<g class="coordinate-axes" data-origin-x="${originX}" data-origin-y="${originY}" mask="url(#coordinate-axis-mask)"><path id="p-axis" class="coordinate-axis" d="M${originX-45},${originY} H${originX+600}" marker-end="url(#arrow-axis)"/><path id="q-axis" class="coordinate-axis" d="M${originX},${originY+32} V8" marker-end="url(#arrow-axis)"/></g><text class="axis-text axis-name" data-axis-name="p" x="${originX+602}" y="${originY-11}">p</text><text class="axis-text axis-name" data-axis-name="q" x="${originX-17}" y="17">q</text>`;
  return out;
 }
-function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}" aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9"/><rect class="node-tint" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9" aria-hidden="true"/>${label(x,y,tex,67,36,tex.length>28)}</g>`;}
+function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}"${selectableTraceOrigin(state,p,qv)?' data-origin-selectable':''} aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9"/><rect class="node-tint" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9" aria-hidden="true"/>${label(x,y,tex,67,36,tex.length>28)}</g>`;}
 // Rounded convex hull of the endpoint term boxes, with a four-unit margin.
 // This is the smallest convex grouping region with these rounded corner offsets.
 function diagonalRegion(start,end){
@@ -201,9 +204,10 @@ function selectNode(e){
  const b=e.target.closest('[data-p]:not([data-boundary])');if(!b)return;
  const origin={p:Number(b.dataset.p),q:Number(b.dataset.q)};
  if(isDoubleComplexView()){
-  if(state.initialReveal!==6||![origin.p,origin.q].every(i=>Number.isInteger(i)&&i>=0&&i<=2))return;
-  state.totalOrigin=origin;state.selected=origin;state.n=origin.p+origin.q;
-  const effect=state.effect==='totalsquare'?'totalsquare':'totalmap';state.pinned=effect;state.pinnedKey=null;
+  if(!selectableTraceOrigin(state,origin.p,origin.q))return;
+  const context=initialTraceContext(state),effect=state.initialReveal===6?(state.effect==='totalsquare'?'totalsquare':'totalmap'):context.effect;
+  state.totalOrigin=origin;state.selected=origin;if(state.initialReveal===6)state.n=origin.p+origin.q;
+  state.effect=effect;state.pinned=effect;state.pinnedKey=null;
   render(false);playTotalDemo(effect,true);return;
  }
  state.selected=origin;render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;
@@ -270,7 +274,8 @@ function statementMeta(module=state.module,step=state.step){
 }
 function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'differential';}
 function renderWorkspaceState(){
- $('#diagram').classList.toggle('origin-selection',isDoubleComplexView()&&state.initialReveal===6);
+ const diagram=$('#diagram'),canSelect=!!initialTraceContext(state);
+ diagram.classList.toggle('origin-selection',canSelect);
  const deck=$('.slide-deck'),cover=state.cover;deck.dataset.module=state.module;$('.visualization-module').classList.toggle('general-page-mode',state.module==='learn'&&state.step===5);
  document.body.classList.toggle('at-cover',cover);
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
@@ -283,11 +288,11 @@ function renderWorkspaceState(){
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index,totalStep=0){
  foldedSections.delete('1');pauseReadingHover();cancelSquareSequence();
- if(!(isDoubleComplexView()&&state.initialReveal===6&&index===6)){state.totalOrigin=null;if(index===6)state.n=2;}
+ if(!(isDoubleComplexView()&&state.initialReveal===index)){state.totalOrigin=null;state.selected=null;if(index===6)state.n=2;if(index===9){state.n=2;state.p=1;state.gradedMode='differential';}}
  state.totalStep=index===6?totalStep:0;if(index===6)revealedTotalStep=Math.max(revealedTotalStep,totalStep);
  state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
  keepDefinitionVisible();
- if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','totalsquare','filtration'].includes(initialConcept()))playTotalDemo(initialConcept());
+ if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','totalsquare','filtration','gradedmap'].includes(initialConcept()))playTotalDemo(initialConcept());
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
@@ -296,7 +301,7 @@ function activateStatement(key,last=false){
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
  else{
-  if(module==='learn'&&step===6){state.n=3;state.p=1;state.r=1;}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
+  if(module==='learn'&&step===6){state.n=2;state.p=1;state.r=2;}else if(module==='learn'&&step===5)state.r=Math.max(1,state.r);else if(module==='lab')state.r=0;
   const pages=currentReadingPages();state.notePage=last?pages.length-1:0;foldedReadings.delete(`${key}:${state.notePage}`);state.annotationStep=state.chosenAction=pages[state.notePage]?.focus||1;
   render();keepReadingVisible($(`[data-statement="${key}"] [data-reading-page="${state.notePage}"]`));
  }
@@ -353,7 +358,7 @@ $('#explanation').addEventListener('click',e=>{
  }
  if(!e.target.closest('.math-block,.relation-choice'))e.stopPropagation();
 });
-function differentialOrigin(){return isDoubleComplexView()&&state.initialReveal===6&&state.totalOrigin?state.totalOrigin:{p:1,q:1};}
+function differentialOrigin(effect=state.effect){const context=initialTraceContext(state);return context&&(context.effect===effect||state.initialReveal===6&&['totalmap','totalsquare'].includes(effect))?context.origin:{p:1,q:1};}
 function initialConcept(){return ['space','delta1','delta2','square','anticommute','total',state.totalStep===1?'totalsquare':'totalmap','totalcohom','filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
 function keepReadingVisible(card){readingFocus.follow(card);}
 function keepDefinitionVisible(){keepReadingVisible($(`[data-build="${state.initialReveal}"]`));}
@@ -384,12 +389,12 @@ function applyConcept(concept,hover=false,source=null){
  const graph=$('#diagram');
  graph.querySelectorAll('.concept-active').forEach(el=>el.classList.remove('concept-active'));
  graph.classList.toggle('concept-focus',!!concept);graph.classList.toggle('hover-effect',!!concept&&hover);
- const targets={square1:'.relation-route',square2:'.relation-route',anticommute:'.relation-route',delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node:not(.outside-quadrant) .node-bg',page:'.node:not(.outside-quadrant) .node-bg',quotient:'.node:not(.muted):not(.outside-quadrant) .node-bg',totalsquare:'.relation-route',totalmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow,#diagram-edges>g:not(.context-edge) .continuation',total:'.diag-box,.diag,.node:not(.muted):not(.outside-quadrant) .node-bg,.continuation[data-concept=total]',graded:'.node:not(.muted) .node-bg,.denominator-region',gradedmap:'.node:not(.muted) .node-bg,.arrow.v',zeropage:'.node:not(.muted):not(.outside-quadrant) .node-bg',filtration:'.diag-box,.node:not(.muted):not(.outside-quadrant) .node-bg',filteredmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.node:not(.muted):not(.outside-quadrant) .node-bg',comparison:'.node:not(.zero) .node-bg,.diag-box'};
+ const targets={square1:'.relation-route',square2:'.relation-route',anticommute:'.relation-route',delta1:'.arrow.h,.continuation[data-concept=delta1]',delta2:'.arrow.v,.continuation[data-concept=delta2]',differential:'.arrow,.continuation[data-concept=delta1],.continuation[data-concept=delta2],.continuation[data-concept=differential]',space:'.node:not(.outside-quadrant) .node-bg',page:'.node:not(.outside-quadrant) .node-bg',quotient:'.node:not(.muted):not(.outside-quadrant) .node-bg',totalsquare:'.relation-route',totalmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow,#diagram-edges>g:not(.context-edge) .continuation',total:'.diag-box,.diag,.node:not(.muted):not(.outside-quadrant) .node-bg,.continuation[data-concept=total]',graded:'.node:not(.muted) .node-bg,.denominator-region',gradedmap:'.node:not(.muted) .node-bg,.arrow.v,.arrow.h',zeropage:'.node:not(.muted):not(.outside-quadrant) .node-bg',filtration:'.diag-box,.node:not(.muted):not(.outside-quadrant) .node-bg',filteredmap:'.diag-box,.diag,#diagram-edges>g:not(.context-edge) .arrow',cycles:'[data-concept=cycles]',boundaries:'[data-concept=boundaries]',cohomology:'.node:not(.muted):not(.outside-quadrant) .node-bg',comparison:'.node:not(.zero) .node-bg,.diag-box'};
  if(concept){
   const selector=targets[concept];
   if(selector)graph.querySelectorAll(selector).forEach(el=>el.classList.add('concept-active'));
  }
- graph.querySelectorAll('.map-label').forEach(el=>el.classList.toggle('map-active',!concept||el.dataset.mapConcept===concept||['totalmap','differential'].includes(concept)||concept==='gradedmap'&&el.dataset.mapConcept==='delta2'));
+ graph.querySelectorAll('.map-label').forEach(el=>el.classList.toggle('map-active',!concept||el.dataset.mapConcept===concept||['totalmap','differential'].includes(concept)||concept==='gradedmap'&&['delta1','delta2'].includes(el.dataset.mapConcept)));
  // Left-hand emphasis belongs to one source item, never to a concept family.
  document.querySelectorAll('.formal-statement .concept-linked').forEach(el=>el.classList.remove('concept-linked'));
  document.querySelectorAll('.formal-statement [aria-pressed]').forEach(el=>el.setAttribute('aria-pressed','false'));
@@ -409,9 +414,10 @@ function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!ca
 function playTotalDemo(concept,force=false){
  if(!isDoubleComplexView())return;
  if(concept==='total')degreeSweep.play(force);
- else if(['anticommute','totalmap','totalsquare'].includes(concept))totalTrace.play(concept,force);
+ else if(['delta1','delta2','anticommute','totalmap','totalsquare'].includes(concept))totalTrace.play(concept,force);
  else if(concept==='filtration')filtrationSweep.play(force);
  else if(concept==='filteredmap')filtrationTrace.play(force);
+ else if(concept==='gradedmap'&&state.initialReveal===9)gradedTrace.play(force);
 }
 const squareCentres=concept=>concept==='square1'?[xy(1,1),xy(2,1),xy(3,1)]:[xy(1,1),xy(1,2),xy(1,3)];
 function cancelSquareSequence(){squareSequenceSerial++;squareSequenceActive=false;}
@@ -494,6 +500,7 @@ function syncInitialEntries(){
   const i=Number(el.dataset.build);syncNumberedEntry(el,i<=revealedBuild,openBuilds.has(i),isDoubleComplexView()&&i===state.initialReveal);
   el.classList.toggle('build-complete',i<state.initialReveal);
   if(i===6){
+   el.dataset.totalStep=String(state.totalStep);
    const fragment=el.querySelector('[data-total-fragment]');
    // A revealed formula stays in the notebook; only its reading emphasis changes.
    const shown=revealedTotalStep===1;
@@ -528,7 +535,7 @@ function renderOperation(){
  if(context!==expositionContext){$('#operationBoard').scrollTop=0;expositionContext=context;}
  const prelude=isDoubleComplexView()&&state.initialReveal<0;
  if(isDoubleComplexView()&&['graded','gradedmap'].includes(state.effect))gradedProof.render(state);else if(state.module!=='converge')replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math),{animate:!staticSquare});$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
- squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());evolution.sync(state);filteredView.sync(state);stabilityView.sync(state);abutmentView.sync(state);emphasizeCurrentDefinition();
+ squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());gradedTrace.sync(isDoubleComplexView()&&state.initialReveal===9&&state.effect==='gradedmap');evolution.sync(state);filteredView.sync(state);stabilityView.sync(state);abutmentView.sync(state);emphasizeCurrentDefinition();
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
@@ -558,6 +565,12 @@ function fixedDiagram(){
   if(s===4){kind=a>=3?'E_2':'E_1';h=a>=1&&a<3;caption=a>=3?raw`E_2^{i,j}\cong H^i(E_1^{\bullet,j},d_1)`:raw`d_1[a]=[\delta_1a]`;}
   if(s===5){const r=Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a===4)edges+=line(...xy(1,2),...xy(1+r,3-r),'r',true,`d_${r}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
  }
+ if(m==='learn'&&s===6){
+  kind='K';h=v=total=filter=selected=false;edges='';
+  const Z=a===1,r=Math.max(1,state.r),fromDegree=Z?n:n-1,fromIndex=Z?p:p-r,toDegree=Z?n+1:n,toIndex=Z?p+r:p;
+  overlay=`<g class="filtered-source">${diagonal(fromDegree,fromIndex,true,false)}</g><g class="filtered-target-total">${diagonal(toDegree,0,false,false)}</g><g class="next-total filtered-target">${diagonal(toDegree,toIndex,true,false)}</g>`;
+  overlay+=label(420,22,raw`F^{${fromIndex}}C^{${fromDegree}}\xrightarrow{D}C^{${toDegree}}\qquad F^{${toIndex}}C^{${toDegree}}`,500,40,true);
+ }
  if(m==='converge'){kind='E_0';h=false;v=false;total=false;filter=false;selected=false;}
  if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&['totalmap','filteredmap'].includes(state.effect))||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
@@ -565,7 +578,8 @@ function fixedDiagram(){
  if(m==='initial'&&state.effect==='graded'||m==='learn'&&s===2&&a>=2)overlay+=`<g class="denominator-region">${diagonal(n,p+1,true,false)}</g>`;
  if(showNext)overlay+=`<g class="next-total">${diagonal(n+1,filter?p:0,true,false)}</g>`;
  if(m==='initial'&&state.effect==='gradedmap'){
-  if(p<=n&&n-p<GRID_MAX)edges+=line(...xy(p,n-p),...xy(p,n-p+1),'v',true,raw`\delta_2^{${p},${n-p}}`);
+  if(p<=n&&p<GRID_MAX)edges+=line(...xy(p,n-p),...xy(p+1,n-p),'h',true,raw`\delta_1`);
+  if(p<=n&&n-p<GRID_MAX)edges+=line(...xy(p,n-p),...xy(p,n-p+1),'v',true,raw`\delta_2`);
   else if(p<=n)edges+=continuation(xy(p,n-p)[0],xy(p,n-p)[1]-NODE_HALF_H-5,xy(p,n-p)[0],12,'delta2');
   overlay+=`<g class="source-label">${label(xy(2,GRID_MAX)[0],18,(p>n?raw`\operatorname{Gr}_F^{${p}}D^{${n}}=0`:raw`\operatorname{Gr}_F^{${p}}D^{${n}}\;\longleftrightarrow\;\delta_2^{${p},${n-p}}`),420,38,true)}</g>`;
  }
@@ -579,8 +593,9 @@ function fixedDiagram(){
    if(v&&j<GRID_MAX)edges+=`<g class="${activeSource?'':'context-edge'}">${line(...xy(i,j),...xy(i,j+1),'v',true,kind==='E_0'?'d_0':m==='initial'||i===1&&j===2?'\\delta_2':'')}</g>`;
    let muted=selected?!(i===p&&i+j===n):total&&(!((i+j===n||showNext&&i+j===n+1)&&(!filter||i>=p)));
    if(m==='learn'&&s===0&&a===2&&i+j===n-1)muted=false;
-   if(m==='initial'&&state.effect==='gradedmap')muted=!(i===p&&(i+j===n||i+j===n+1)&&p<=n);
+   if(m==='initial'&&state.effect==='gradedmap')muted=!(p<=n&&(i===p&&(i+j===n||i+j===n+1)||i===p+1&&i+j===n+1));
 
+   if(m==='learn'&&s===6){const from=a===1?n:n-1,to=a===1?n+1:n,first=a===1?p:Math.max(0,p-state.r);muted=!((i+j===from&&i>=first)||i+j===to);}
    terms+=node(i,j,`${kind}^{${i},${j}}`,{muted});
   }
   // Edge-of-window continuations have the same reveal and color rules as their direction.
@@ -672,7 +687,8 @@ function relationOverlay(effect){
   out+=edge(horizontal?2:1,horizontal?1:2,...end,horizontal?'h':'v',2);
 
  }else{
-  out+=edge(1,1,2,1,'h',1)+edge(2,1,2,2,'v',2)+edge(1,1,1,2,'v',1)+edge(1,2,2,2,'h',2);
+  const {p,q}=differentialOrigin(effect);
+  out+=edge(p,q,p+1,q,'h',1)+edge(p+1,q,p+1,q+1,'v',2)+edge(p,q,p,q+1,'v',1)+edge(p,q+1,p+1,q+1,'h',2);
  }
  return `<g class="relation-overlay ${effect.includes('square')?'square-route':''}">${out}</g>`;
 }
@@ -743,4 +759,4 @@ function syncInitialEntrance(){
 }
 
 // Local graded controls never advance the reading sequence or proof steps.
-document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();state.gradedMode=button.dataset.gradedView;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();});
+document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();state.gradedMode=button.dataset.gradedView;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();if(state.effect==='gradedmap')playTotalDemo('gradedmap',true);});

@@ -1,5 +1,5 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createDifferentialProof} from './differential-proof.js?v=87';
+import {createDifferentialProof} from './differential-proof.js?v=89';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -80,7 +80,8 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(key!==projectionKey){
    let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;
-   out+=`</defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
+   out+=`<linearGradient id="r-axis-glint" gradientUnits="userSpaceOnUse" x1="-72" x2="0"><stop offset="0" stop-color="#9cdad3" stop-opacity="0"/><stop offset=".55" stop-color="#c3f3e9" stop-opacity=".7"/><stop offset="1" stop-color="#9cdad3" stop-opacity="0"/></linearGradient><clipPath id="r-axis-glint-clip"><rect x="28" y="${g.y-5}" width="789" height="10"/></clipPath></defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
+   out+=`<g clip-path="url(#r-axis-glint-clip)" aria-hidden="true"><path class="evolution-r-glint" d="M-72,${g.y} H0" fill="none" stroke="url(#r-axis-glint)" stroke-width="1.8"/></g>`;
    labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
    if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
    for(let r=start;r<=Math.min(visibleMax,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
@@ -133,7 +134,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   await wait(1850);if(run!==token)return;busy=false;drawPages();paintControls();
  }
  function sync(s){
-  context=s;
+  context=s;overlay.classList.toggle('has-r-glow',s.module==='learn'&&s.step===4&&s.notePage===0);
   const choice=s.annotationStep||1,wasEngaged=engaged;
   const eligible=!s.cover&&s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3);
   engaged=eligible;toolbar.hidden=!eligible;overlay.hidden=!eligible;viewport.classList.toggle('has-evolution',eligible);controls.closest('.visualization-module').classList.toggle('page-evolution-mode',eligible);

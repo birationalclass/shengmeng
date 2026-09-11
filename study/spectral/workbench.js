@@ -1,3 +1,4 @@
+import {initialTraceContext} from './initial-traces.js?v=89';
 // A symbolic operations panel: boxes indicate spaces and inclusions, never dimensions.
 const R=String.raw;
 export const totalDegreeTex=n=>R`C^{${n}}:=\operatorname{Tot}^{${n}}K`;
@@ -25,10 +26,11 @@ export function operationMarkup(s,lang,math){
     `<div class="operation-equation">${M(R`\begin{aligned}\delta_1^{p+1,q}\circ\delta_1^{p,q}&=0,\\\delta_2^{p,q+1}\circ\delta_2^{p,q}&=0.\end{aligned}`)}</div>`;
    note=t(`这里分别是 ${M(R`K^{p,q}\to K^{p+2,q}`)} 与 ${M(R`K^{p,q}\to K^{p,q+2}`)} 的零映射。因此每行、每列都是上链复形，可分别取上同调。`,`These are the zero maps ${M(R`K^{p,q}\to K^{p+2,q}`)} and ${M(R`K^{p,q}\to K^{p,q+2}`)}, respectively. Thus each row and column is a cochain complex, with its own cohomology.`);
   }else if(c==='anticommute'){
+   const {p:exampleP,q:exampleQ}=s.initialReveal===4?initialTraceContext(s).origin:{p:1,q:1};
    body=`<p class="operation-description">${t(`${M(R`\delta_1,\delta_2`)} 是一族分量映射的简写；上标记录定义域的双次数：`,`${M(R`\delta_1,\delta_2`)} abbreviate families of component maps; the superscripts record the bidegree of the domain:`)}</p>`+
     `<div class="operation-equation">${M(R`\begin{aligned}\delta_1^{p,q}&:K^{p,q}\longrightarrow K^{p+1,q}\\\delta_2^{p,q}&:K^{p,q}\longrightarrow K^{p,q+1}\end{aligned}`)}</div>`+
     `<div class="operation-equation">${M(R`\delta_1^{p,q+1}\circ\delta_2^{p,q}+\delta_2^{p+1,q}\circ\delta_1^{p,q}=0`)}</div>`;
-   note=t(`两个 ${M(R`\delta_1`)} 分别是 ${M(R`\delta_1^{p,q+1}`)} 与 ${M(R`\delta_1^{p,q}`)}，并非同一个分量映射。两项复合均为 ${M(R`K^{p,q}\to K^{p+1,q+1}`)}，相加为零映射。图中取 ${M(R`p=q=1`)}。`,`The two occurrences of ${M(R`\delta_1`)} mean ${M(R`\delta_1^{p,q+1}`)} and ${M(R`\delta_1^{p,q}`)}, different component maps. Both composites are maps ${M(R`K^{p,q}\to K^{p+1,q+1}`)} and sum to the zero map. The diagram uses ${M(R`p=q=1`)}.`);
+   note=t(`两个 ${M(R`\delta_1`)} 分别是 ${M(R`\delta_1^{p,q+1}`)} 与 ${M(R`\delta_1^{p,q}`)}，并非同一个分量映射。两项复合均为 ${M(R`K^{p,q}\to K^{p+1,q+1}`)}，相加为零映射。图中取 ${M(R`p=${exampleP},\ q=${exampleQ}`)}。`,`The two occurrences of ${M(R`\delta_1`)} mean ${M(R`\delta_1^{p,q+1}`)} and ${M(R`\delta_1^{p,q}`)}, different component maps. Both composites are maps ${M(R`K^{p,q}\to K^{p+1,q+1}`)} and sum to the zero map. The diagram uses ${M(R`p=${exampleP},\ q=${exampleQ}`)}.`);
   }else if(c==='delta1'||c==='delta2'){
    const d=c==='delta1'?1:2;body=row(box('K^{p,q}')+arrow(`\\delta_${d}`)+box(d===1?'K^{p+1,q}':'K^{p,q+1}','chosen'));
    note=t(`${M(`\\delta_${d}`)} 是线性映射。`, `${M(`\\delta_${d}`)} is a linear map.`);
