@@ -4,6 +4,14 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v87 · Filtered subspaces belong to section 1
+
+The filtered cocycle and boundary definitions now follow Filtration and Graded functor as 1.11 and 1.12, in the same section-1 frame. Section 2 returns to E_0, d_0, E_1, d_1, E_r, d_r and the convergence material as 2.1–2.10. The underlying definitions, diagrams and independent proof steps are unchanged.
+
+Both sections now use one shared frame/folding owner. The reading order, outline rail, section selection and reopening all use the same section membership. Previous entries remain available without automatic folding; backwards navigation from 2.1 returns to 1.12.
+
+Validation: Chromium checked the full forward and reverse sequence, manual entry and section folding, rail reopening, bilingual headings, the E_1 layer and narrow-window layout.
+
 ## v86 · Filtered cocycles and boundaries before the first page
 
 Following McCleary, Theorem 2.6, proof on printed p. 34, the original filtered-complex subspaces Z_r and B_r are now introduced separately as 2.3 and 2.4, before E_1. The first-page entry moves to 2.5 and the remaining entries continue through 2.12. Shared definitions in `content.js` keep the first-page prerequisites and the general-page construction consistent.

@@ -3,11 +3,11 @@ import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
 import {createStabilityView} from './stability-view.js?v=76';
 import {installReadingTouch} from './reading-touch.js?v=74';
-import {createAbutmentView} from './abutment-view.js?v=86';
+import {createAbutmentView} from './abutment-view.js?v=87';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=86';
+import {numberedPages} from './reading-pages.js?v=87';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -21,7 +21,7 @@ import {lessons,convergence,initial,totalCohomology} from './content.js?v=86';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=84';
 import {createFilteredView} from './filtered-view.js?v=86';
-import {createPageEvolution} from './page-evolution.js?v=86';
+import {createPageEvolution} from './page-evolution.js?v=87';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -38,7 +38,9 @@ const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanat
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1,revealedTotalStep=0;
-const readingOrder=['initial:0','learn:3','learn:6','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3'];
+const readingSections=[['initial:0','learn:6'],['learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3']];
+const readingOrder=readingSections.flat();
+const readingSection=key=>String(readingSections.findIndex(section=>section.includes(key))+1||2);
 const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
@@ -136,7 +138,7 @@ function statementMarkup(item,module,step,grouped=false){
 }
 function sectionTwoMarkup(){
  const heading=statementHeading(statementMeta('learn',3),'2').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
- const groups=[3,6,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
+ const groups=[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
  return `<article class="formal-statement notebook-card notebook-section" data-section="2" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
 }
 function syncStatementCards(){
@@ -149,12 +151,13 @@ function syncStatementCards(){
   if(!grouped&&visible&&!wasVisible&&open)notebookMotion.revealCard(el);
   const toggle=el.querySelector('.statement-toggle');if(toggle){toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起':'展开',open?'Collapse':'Expand'));}
  });
- const section=$('[data-section="2"]');if(!section)return;
- const visible=!state.cover&&[...section.querySelectorAll('[data-statement]')].some(el=>!el.hidden),wasVisible=!section.hidden,open=!foldedSections.has('2');
- section.hidden=!visible;section.inert=!visible;section.dataset.open=String(open);section.dataset.current=String(state.module!=='initial');
- notebookMotion.setExpanded(section.querySelector(':scope > .section-body'),open,{immediate:!visible||!wasVisible});
- if(visible&&!wasVisible&&open)notebookMotion.revealCard(section);
- const toggle=section.querySelector('[data-toggle-section]');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(open?'收起第二节':'展开第二节',open?'Collapse section 2':'Expand section 2'));
+ document.querySelectorAll('.notebook-section[data-section]').forEach(section=>{
+  const key=section.dataset.section,visible=!state.cover&&[...section.querySelectorAll('[data-statement]')].some(el=>!el.hidden),wasVisible=!section.hidden,open=!foldedSections.has(key);
+  section.hidden=!visible;section.inert=!visible;section.dataset.open=String(open);section.dataset.current=String(readingSection(activeStatementKey())===key);
+  notebookMotion.setExpanded(section.querySelector(':scope > .section-body'),open,{immediate:!visible||!wasVisible});
+  if(visible&&!wasVisible&&open)notebookMotion.revealCard(section);
+  const toggle=section.querySelector('[data-toggle-section]');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',ui(`${open?'收起':'展开'}第${key}节`,`${open?'Collapse':'Expand'} section ${key}`));
+ });
 }
 function activeStatementKey(){return `${state.module}:${['lab','trace'].includes(state.module)?0:state.step}`;}
 function companion(item){
@@ -240,7 +243,7 @@ document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('[dat
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
 
 function statementMeta(module=state.module,step=state.step){
- if(module==='learn'&&step===6)return {kind:'§',number:'2',continued:true,concepts:['cycles','boundaries']};
+ if(module==='learn'&&step===6)return {kind:'§',number:'1',continued:true,concepts:['cycles','boundaries']};
  const collections={
  initial:[
  {kind:'定义',number:'1.1',name:'双复形',symbol:raw`(K,\delta_1,\delta_2)`,intro:'在上述双分次向量空间上给定以下线性映射，并要求它们满足所列恒等式。',concepts:['delta1','delta2','differential','differential']},
@@ -279,7 +282,7 @@ function renderWorkspaceState(){
 }
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index,totalStep=0){
- pauseReadingHover();cancelSquareSequence();
+ foldedSections.delete('1');pauseReadingHover();cancelSquareSequence();
  if(!(isDoubleComplexView()&&state.initialReveal===6&&index===6)){state.totalOrigin=null;if(index===6)state.n=2;}
  state.totalStep=index===6?totalStep:0;if(index===6)revealedTotalStep=Math.max(revealedTotalStep,totalStep);
  state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
@@ -288,7 +291,7 @@ function selectInitialBuild(index,totalStep=0){
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- pauseReadingHover();cancelSquareSequence();if(module!=='initial')foldedSections.delete('2');
+ pauseReadingHover();cancelSquareSequence();foldedSections.delete(readingSection(key));
  state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;state.totalOrigin=null;
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal));
@@ -300,7 +303,7 @@ function activateStatement(key,last=false){
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){pauseReadingHover();foldedSections.delete('2');const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+function selectReadingPage(index){pauseReadingHover();foldedSections.delete(readingSection(activeStatementKey()));const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 // Auto-folding is a reading-navigation preference, never a hover or proof effect.
 // Changing the setting leaves the current layout untouched until the next advance.
 function foldBeforeAdvance(nextStatement){
@@ -324,7 +327,7 @@ $('#explanation').addEventListener('click',e=>{
   if(foldedSections.has(key))foldedSections.delete(key);else foldedSections.add(key);
   syncStatementCards();return;
  }
- if(sectionSelect){foldedSections.delete(sectionSelect.dataset.selectSection);if(state.module==='initial')activateStatement('learn:3');else syncStatementCards();return;}
+ if(sectionSelect){const section=sectionSelect.dataset.selectSection;foldedSections.delete(section);activateStatement(readingSections[Number(section)-1][0]);syncStatementCards();return;}
  const toggle=e.target.closest('[data-toggle-statement]'),select=e.target.closest('[data-select-statement]'),buildToggle=e.target.closest('[data-toggle-build]'),buildSelect=e.target.closest('[data-select-build]'),readingToggle=e.target.closest('[data-toggle-reading]'),readingSelect=e.target.closest('[data-select-reading]');
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
@@ -470,7 +473,8 @@ function doubleComplexCompanion(item){
  ];
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
- $('#explanation').innerHTML=`<article class="formal-statement build-statement notebook-card is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}">${statementHeading(statementMeta('initial',0),'initial:0')}<div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept==='graded'&&j===1?'gradedmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div data-total-fragment hidden><div class="relation-choices"><button class="relation-choice formula-action" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div></div>`:''}</div></section>`).join('')}</div></article>`;
+ const heading=statementHeading(statementMeta('initial',0),'1').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
+ $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept==='graded'&&j===1?'gradedmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div data-total-fragment hidden><div class="relation-choices"><button class="relation-choice formula-action" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div></div>`:''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup());
  $('#sceneNote').textContent='';
 }
