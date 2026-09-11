@@ -17,7 +17,7 @@ export function createStabilityView({viewport,board,controls,math,language}){
  const host=document.createElement('div');host.id='stabilityView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  const toolbar=document.createElement('nav');toolbar.id='stabilityControls';toolbar.hidden=true;controls.append(toolbar);
  let active=false,context=null,exampleIndex=0,key='',scene=null,mode='outgoing',frame=0,run=0,sceneSerial=0;
- const proof=createStabilityProof({board,math,language,onSelect:mode=>selectMode(mode,true)});
+ const proof=createStabilityProof({board,math,language,onSelect:mode=>selectMode(mode,false)});
  const label=(x,y,tex,width=120,cls='')=>`<span class="stability-label ${cls}" style="left:${x-width/2}px;top:${y-20}px;width:${width}px">${math(tex)}</span>`;
  const current=()=>stabilityExamples[exampleIndex];
  function diagnostic(phase='idle'){
@@ -86,9 +86,9 @@ export function createStabilityView({viewport,board,controls,math,language}){
  toolbar.addEventListener('click',e=>{if(!active)return;const b=e.target.closest('[data-stability-mode],[data-stability-replay]');if(!b)return;selectMode(b.dataset.stabilityMode||mode,true);});
  toolbar.addEventListener('change',e=>{if(!active||e.target.id!=='stabilityExample')return;exampleIndex=Number(e.target.value);draw();paintControls();proof.render({state:context,example:current()});animate(mode);});
  const fit=()=>fitDiagramSurface(viewport,host,'--stability-scale');new ResizeObserver(fit).observe(viewport);
- return {sync(s){
+ return {play:()=>animate(mode),clear:cancel,isPlaying:()=>frame!==0,sync(s){
   const was=active;active=!s.cover&&s.module==='converge'&&s.step<=1;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active;viewport.classList.toggle('has-stability-view',active);
   if(!active){if(was)cancel();key='';proof.render(null);diagnostic();return;}
-  const next=[s.step,language()].join(':');if(next!==key){key=next;proof.render({state:s,example:current()});mode=proof.mode();draw();paintControls();if(s.step===0)animate(mode);}else proof.render({state:s,example:current()});fit();
+  const next=[s.step,language()].join(':');if(next!==key){key=next;proof.render({state:s,example:current()});mode=proof.mode();draw();paintControls();}else proof.render({state:s,example:current()});fit();
  }};
 }

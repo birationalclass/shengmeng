@@ -52,5 +52,5 @@ export function createGradedTrace({host,point,read}) {
   const tick=now=>{if(run!==serial)return;const t=visualMotion().reduced?duration:now-start;draw(t);if(t<duration)frame=requestAnimationFrame(tick);else running=false;};
   frame=requestAnimationFrame(tick);
  }
- return {play,clear,sync(enabled){const {p,n}=read();if(layer&&(!enabled||context!==`${p}:${n}`))clear();}};
+ return {play,clear,isPlaying:()=>running,sync(enabled){const {p,n}=read();if(layer&&(!enabled||context!==`${p}:${n}`))clear();}};
 }

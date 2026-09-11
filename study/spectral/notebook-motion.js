@@ -118,5 +118,5 @@ export function createNotebookMotion({language}) {
   lastWidth=width;
  }).observe($('.explanation'));
  setExpanded(preview,true,{immediate:true});sync();
- return {setExpanded,revealCard,sync,settleAll,duration:milliseconds,autoCollapse:()=>settings.autoCollapse};
+ return {setExpanded,revealCard,sync,settleAll,isAnimating:()=>running.size>0,duration:milliseconds,autoCollapse:()=>settings.autoCollapse};
 }

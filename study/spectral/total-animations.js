@@ -115,5 +115,5 @@ export function createTotalTrace({host,point,origin=()=>({p:1,q:1})}){
   if(reduced()){draw(duration);running=false;return;}
   const start=performance.now();draw(0);const tick=now=>{if(run!==token)return;const elapsed=reduced()?duration:now-start;draw(elapsed);if(elapsed<duration)frame=requestAnimationFrame(tick);else running=false;};frame=requestAnimationFrame(tick);
  }
- return {play,clear,sync(effect,enabled){if(layer&&(!enabled||effect!==kind))clear();}};
+ return {play,clear,isPlaying:()=>running,sync(effect,enabled){if(layer&&(!enabled||effect!==kind))clear();}};
 }

@@ -1,4 +1,4 @@
-import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=89';
+import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;
 export {filteredSubspaces};
@@ -10,7 +10,7 @@ export const lessons=[
  {title:'E₀',tag:'THE ZEROTH PAGE',f:[pageQuotientTex(0),t`\begin{array}{rcl}d_0^{p,q}:E_0^{p,q}&\longrightarrow&E_0^{p,q+1}\\[.4em]${representativeIn("a",t`K^{p,q}`)}+F^{p+1}C^{p+q}&\longmapsto&Da+F^{p+1}C^{p+q+1}\end{array}`],text:'E₀ 使用各页统一的滤过商定义；它等于关联分次是由 D 保持滤过得到的性质。d₀ 是 D 在商上的诱导微分。',note:'这一条目只讨论 E₀ 与 d₀。',proof:'D 保持 F，因此 d₀([a])=[Da] 良定义。取第 p 列分量的同构将 d₀ 识别为 δ₂。'},
  {title:'E₁',tag:'THE FIRST PAGE',f:[pageQuotientTex(1),t`\begin{array}{rcl}d_1^{p,q}:E_1^{p,q}&\longrightarrow&E_1^{p+1,q}\\[.4em][${representativeIn("a",t`K^{p,q}`)}]_1&\longmapsto&[\delta_1a]_1\end{array}`,t`\delta_2^{p,q}a=0`],text:'E₁ 由滤过商定义，自然同构于逐列 d₀ 上同调；δ₁ 诱导 d₁。',note:'d₁ 的定义域与目标都在 E₁ 层。',proof:'反交换关系保证 δ₁ 将纵向闭元映为闭元，并将纵向边界映为边界。因此 d₁ 良定义。'},
  {title:'一般页：滤过商',tag:'THE FILTERED QUOTIENT',f:[...filteredSubspaces,generalPageDefinition,t`\begin{array}{rcl}d_r^{p,q}:E_r^{p,q}&\longrightarrow&E_r^{p+r,q-r+1}\\[.4em][${representativeIn("a",t`Z_r^{p,q}`)}]_r&\longmapsto&[Da]_r\end{array}`],text:'Eᵣ 定义为原滤过复形中的商空间；D 诱导 dᵣ。',note:'Eᵣ 与前一页上同调自然同构是构造的性质；新的微分 dᵣ 仍需原滤过复形。',proof:'D 将分子与分母分别映入目标分子与分母，从而诱导 dᵣ。构造定理证明 Eᵣ 自然同构于前一页的上同调。'},
- {title:'滤过闭元与边界',tag:'FILTERED SUBSPACES',f:filteredSubspaces,text:'先定义原滤过复形中的 Z、B，再构造各页。',note:'',proof:''}
+ {title:'滤过闭元与边界',tag:'FILTERED SUBSPACES',f:[...filteredSubspaces,t`\begin{gathered}B_s^{p,q}\subseteq F^pC^{p+q}\cap\ker D\subseteq Z_r^{p,q}\\[.7em]Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}\subseteq Z_r^{p,q}\end{gathered}`],text:'先定义原滤过复形中的 Z、B，再构造各页。',note:'',proof:''}
 ];
 export const convergence=[
  {title:'Proposition：逐位置稳定',f:[t`r>\max\{p,q+1\}`,t`\begin{gathered}d_r^{p,q}=0,\\ d_r^{p-r,q+r-1}=0,\end{gathered}`,t`E_r^{p,q}\xrightarrow{\sim}E_{r+1}^{p,q}\xrightarrow{\sim}\cdots`],text:'第一象限保证此位置的入射与出射微分同时为零，后续各页自然同构。',note:'',proof:'出射靶的第二指标 q-r+1 为负；入射源的第一指标 p-r 为负。对每个 s≥r，两个微分都为零，故 E_{s+1}^{p,q}≅E_s^{p,q}/0，自然同构于 E_s^{p,q}。'},

@@ -32,5 +32,5 @@ export function createFiltrationTrace({host,point,read}){
   if(m.reduced){draw(end);active=false;return;}
   const start=performance.now();draw(0);const tick=now=>{if(token!==run)return;draw(now-start);if(now-start<end)frame=requestAnimationFrame(tick);else active=false;};frame=requestAnimationFrame(tick);
  }
- return {play,clear,sync(enabled){if(layer&&(!enabled||Number(layer.dataset.degree)!==read().n||Number(layer.dataset.filtration)!==read().p))clear();}};
+ return {play,clear,isPlaying:()=>active,sync(enabled){if(layer&&(!enabled||Number(layer.dataset.degree)!==read().n||Number(layer.dataset.filtration)!==read().p))clear();}};
 }

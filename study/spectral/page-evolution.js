@@ -1,5 +1,5 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createDifferentialProof} from './differential-proof.js?v=91';
+import {createDifferentialProof} from './differential-proof.js?v=92';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -120,6 +120,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  }
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduced.matches?0:ms));
  function cancel(){
+  overlay.classList.remove('has-r-glow');
   token++;
   if(transformAnimation&&transformAnimation.playState!=='finished'){
    const frame=getComputedStyle(diagram).transform;transformAnimation.cancel();diagram.style.transform=frame;transformTarget='';
@@ -134,17 +135,18 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   await wait(1850);if(run!==token)return;busy=false;drawPages();paintControls();
  }
  function sync(s){
-  context=s;overlay.classList.toggle('has-r-glow',s.module==='learn'&&s.step===4&&s.notePage===0);
+  context=s;
   const choice=s.annotationStep||1,wasEngaged=engaged;
-  const eligible=!s.cover&&s.module==='learn'&&(s.step===3||s.step===4||s.step===5&&choice>=3);
+  const eligible=!s.cover&&s.module==='learn'&&(s.step===3||s.step===4);
   engaged=eligible;toolbar.hidden=!eligible;overlay.hidden=!eligible;viewport.classList.toggle('has-evolution',eligible);controls.closest('.visualization-module').classList.toggle('page-evolution-mode',eligible);
   if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5&&choice>=3)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
   const key=`${s.module}:${s.step}`;if(s.selected)point={...s.selected};
   if(key!==semanticKey){semanticKey=key;cancel();
-   if(s.step===3){generated=0;tilted=false;current=0;start=0;fit(true);}
-   else if(s.step===5){generated=current=Math.max(1,s.r);construction=null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
-   else{generated=0;current=0;start=0;beginCohomology(0);}
+   if(s.step===3){generated=0;tilted=false;current=0;start=0;fit(false);}
+   else if(s.step===5){generated=current=Math.max(1,s.r);construction=null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(false);}
+   else{generated=0;current=0;start=0;tilted=false;fit(false);}
   }
+  if(s.step===4&&s.notePage===1&&generated<1)showResult();
   drawPages();paintControls();exposition();
  }
  toolbar.addEventListener('click',e=>{
@@ -158,5 +160,20 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  overlay.addEventListener('click',select);overlay.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();e.stopPropagation();select(e);}});
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);
  reduced.addEventListener('change',e=>{if(e.matches){transformAnimation?.finish();layerAnimations.forEach(a=>a.finish());}});
- return {sync,isTilted:()=>engaged&&tilted};
+ async function playCurrent(){
+  if(!engaged)return;
+  if(context.step===4&&context.notePage===0){
+   cancel();const run=token;
+   if(tilted&&!reduced.matches){const scene=overlay.querySelector('.evolution-scene');const fade=scene?.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});if(fade){layerAnimations.push(fade);await fade.finished.catch(()=>{});}if(run!==token)return;}
+   generated=0;current=0;start=0;tilted=false;projectionKey='';fit(false);drawPages();
+   await beginCohomology(0);if(!engaged||context.step!==4||context.notePage!==0||token!==run+1)return;
+   if(!reduced.matches){overlay.classList.add('has-r-glow');const glint=overlay.querySelector('.evolution-r-glint');const glow=glint?.getAnimations()[0];if(glow){layerAnimations.push(glow);await glow.finished.catch(()=>{});}overlay.classList.remove('has-r-glow');}
+  }
+ }
+ function showResult(){
+  // Reading E1 or d1 does not require having watched the construction first.
+  if(!engaged||context?.step!==4)return;
+  cancel();generated=1;current=1;start=0;tilted=true;projectionKey='';fit(false);drawPages();paintControls();exposition();
+ }
+ return {sync,play:playCurrent,showResult,clear(){cancel();fit(false);},isTilted:()=>engaged&&tilted};
 }

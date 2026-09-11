@@ -5,16 +5,17 @@
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
 <meta name="theme-color" content="#091b22"><title>Spectral Sequence · Sheng Meng</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=67"><link rel="stylesheet" href="style.css?v=42"><link rel="stylesheet" href="slides.css?v=83"><link rel="stylesheet" href="styles/diagram.css?v=91"><link rel="stylesheet" href="styles/math.css?v=84"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=78"><link rel="stylesheet" href="styles/toolbar.css?v=89"><link rel="stylesheet" href="styles/layout.css?v=89">
+<link rel="stylesheet" href="vendor/katex.min.css"><link rel="stylesheet" href="styles/tokens.css?v=67"><link rel="stylesheet" href="style.css?v=42"><link rel="stylesheet" href="slides.css?v=83"><link rel="stylesheet" href="styles/diagram.css?v=92"><link rel="stylesheet" href="styles/math.css?v=84"><link rel="stylesheet" href="styles/scrollbars.css?v=40"><link rel="stylesheet" href="styles/cover.css?v=78"><link rel="stylesheet" href="styles/toolbar.css?v=89"><link rel="stylesheet" href="styles/layout.css?v=89">
 
 <link rel="stylesheet" href="styles/reading.css?v=91"><link rel="stylesheet" href="styles/reading-rail.css?v=82">
 <script src="mobile-reading.js?v=81" defer></script>
 <script src="boot.js?v=81" defer></script>
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=91"></script>
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=92"></script>
 <link rel="stylesheet" href="styles/abutment.css?v=74">
 <link rel="stylesheet" href="styles/stability.css?v=75">
 <link rel="stylesheet" href="styles/panel-style.css?v=89">
 <link rel="stylesheet" href="styles/mobile-reading.css?v=81">
+<link rel="stylesheet" href="styles/playback.css?v=92">
 </head>
 <body aria-busy="true">
 <div id="mathLoader" role="status" aria-live="polite"><div class="cover-actions"><button id="coverLanguage" type="button" lang="en" aria-label="Switch to English" disabled>Eng</button><button id="coverSettings" type="button" aria-label="显示设置" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></svg></button><button id="coverFullscreen" type="button" aria-pressed="false" aria-label="全屏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M8 21H3v-5"/></svg><span>全屏</span></button></div><div class="loader-inner"><p class="loader-eyebrow">学习笔记</p><h1 class="loader-title"><span class="loader-title-depth" aria-hidden="true">Spectral Sequence</span><span class="loader-title-face">Spectral Sequence</span></h1><p class="loader-author">Sheng Meng</p><p id="mobileReadingHint" hidden><strong>手机仅支持横屏阅读</strong><span>点击开始阅读后，自动切换为横向布局。</span></p><div class="loader-entry"><div class="loader-line" role="progressbar" aria-label="Loading mathematics" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><p id="loaderStatus" class="loader-status">准备数学界面</p><button id="beginSlides" hidden>开始阅读</button></div><button id="loaderRetry" hidden>重新加载 / Reload</button></div></div>
@@ -26,7 +27,7 @@
 <div class="visual-column" id="visualPanel">
 <section class="visualization-module" aria-label="可视化图与控制器">
 <div class="stage" id="stage"><div class="diagram-viewport"><div id="diagram" aria-label="双复形与谱序列二维图"></div></div><div class="legend"></div></div>
-<p class="hover-hint">悬停符号，对照图示；点击可固定高亮。</p>
+<button id="hideDiagramAnimation" type="button" hidden aria-label="隐藏当前动画">×</button>
 <section id="diagramControls" hidden inert aria-hidden="true" class="diagram-controls" aria-label="图示控制"><nav id="viewTabs" class="view-tabs" aria-label="本页主题"></nav><nav id="actionTabs" class="action-tabs" aria-label="本页图内操作"></nav><div class="controls" id="controls"></div></section>
 </section>
 <section class="math-exposition" aria-label="数学阐述"><section id="operationBoard" class="operation-board" aria-label="当前数学运算"></section></section>
@@ -44,6 +45,11 @@
 <label><input type="radio" name="coverFont" value="a"><span class="cover-font-option style-a"><span id="coverStyleA">A · 清雅宋体</span><strong>谱序列</strong><small>孟晟</small></span></label>
 <label><input type="radio" name="coverFont" value="c" checked><span class="cover-font-option style-c"><span id="coverStyleC">C · 书法风格</span><strong>谱序列</strong><small>孟晟</small></span></label>
 </div><p id="coverFontHint">仅调整中文封面，英文设计保持不变。</p></fieldset>
+<fieldset class="playback-settings"><legend id="playbackTitle">右图动画</legend>
+<div class="motion-setting"><label id="playbackAutoLabel" for="playback-autoplay">自动播放</label><input id="playback-autoplay" type="checkbox" role="switch" checked></div>
+<div class="motion-setting"><label id="playbackLoopLabel" for="playback-loop">循环播放</label><input id="playback-loop" type="checkbox" role="switch" checked></div>
+<div class="motion-setting motion-speed"><label id="playbackDelayLabel" for="playback-delay">显示完成后等待</label><output id="playback-delay-value" for="playback-delay">2 秒</output><input id="playback-delay" type="range" min="0" max="5" step="0.5" value="2"></div>
+<div class="motion-setting motion-speed"><label id="playbackIntervalLabel" for="playback-interval">播放结束后间隔</label><output id="playback-interval-value" for="playback-interval">5 秒</output><input id="playback-interval" type="range" min="0" max="10" step="0.5" value="5"></div><p id="playbackHint"></p></fieldset>
 <p id="motionScope" class="motion-scope"></p>
 <div class="motion-setting motion-auto-fold"><label id="motionAutoCollapseLabel" for="motionAutoCollapse">自动折叠</label><input id="motionAutoCollapse" type="checkbox" role="switch" aria-describedby="motionAutoCollapseHint"><p id="motionAutoCollapseHint">显示下一条时收起此前内容；默认关闭。</p></div>
 <div class="motion-setting"><label id="motionEffectLabel" for="motionEffect">收放效果</label><select id="motionEffect"><option value="soft">柔和收放</option><option value="slide">简洁收放</option><option value="none">关闭动画</option></select></div>

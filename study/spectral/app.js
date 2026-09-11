@@ -1,37 +1,36 @@
-import {createGradedTrace} from './graded-animation.js?v=90';
+import {createPageFormation} from './page-formation.js?v=92';
+import {createAnimationPlayback} from './animation-playback.js?v=92';
+import {createGradedTrace} from './graded-animation.js?v=92';
 import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=76';
+import {createStabilityView} from './stability-view.js?v=92';
 import {installReadingTouch} from './reading-touch.js?v=74';
-import {createAbutmentView} from './abutment-view.js?v=87';
+import {createAbutmentView} from './abutment-view.js?v=92';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=91';
+import {numberedPages} from './reading-pages.js?v=92';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
-import {createInitialAnimations} from './initial-animations.js?v=57';
-import {createFiltrationTrace} from './filtration-animations.js?v=40';
+import {createInitialAnimations} from './initial-animations.js?v=92';
+import {createFiltrationTrace} from './filtration-animations.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
-import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=89';
+import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=89';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=92';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=91';
-import {createPageEvolution} from './page-evolution.js?v=91';
-import {createNotebookMotion} from './notebook-motion.js?v=78';
+import {createFilteredView} from './filtered-view.js?v=92';
+import {createPageEvolution} from './page-evolution.js?v=92';
+import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=9;
 const GRID_ORIGIN={x:170,y:370};
-let squareSequenceSerial=0,squareSequenceActive=false;
-let readingHoverPaused=false,readingPointer=null;
-const pauseReadingHover=()=>{readingHoverPaused=true;};
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const panelStyle=createPanelStyle({language});
@@ -60,11 +59,16 @@ const stabilityView=createStabilityView({viewport:$('.diagram-viewport'),board:$
 const abutmentView=createAbutmentView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const filteredView=createFilteredView({viewport:$('.diagram-viewport'),diagram:$('#diagram'),point:(p,q)=>xy(p,q),board:$('#operationBoard'),math,language});
 const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
+const pageFormation=createPageFormation({host:$('#diagram'),point:(p,q)=>xy(p,q),math});
 const gradedTrace=createGradedTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>state});
 const totalTrace=createTotalTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),origin:differentialOrigin});
 const filtrationSweep=createIndexedSweep({diagram:$('#diagram'),read:()=>state.p,write:p=>{state.p=p;render(false);const input=$('#pRange');if(input){input.value=p;input.nextElementSibling.textContent=p;}},outline:p=>diagonalRegion(xy(p,state.n-p),xy(state.n,0)),line:p=>`M${xy(p,state.n-p)} L${xy(state.n,0)}`,values:()=>Array.from({length:state.n+1},(_,p)=>p),publishName:'spectralFiltrationSweep'});
 const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>({n:state.n,p:state.p})});
-const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?'悬停对照，点击固定高亮':'放大查看公式'}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
+const playback=createAnimationPlayback({language,ready:()=>{
+ if(notebookMotion.isAnimating())return false;
+ return !$('#explanation').getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity);
+},play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
+const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?ui('点击播放对应动画','Click to play this animation'):ui('放大查看公式','Enlarge formula')}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
 const stepCount=()=>({initial:initial.length,learn:lessons.length-1,lab:scene().maxP+3,trace:6,converge:convergence.length})[state.module];
@@ -189,7 +193,7 @@ function render(updateControls=true){
  if(!state.cover&&state.module==='initial')revealedBuild=Math.max(revealedBuild,state.initialReveal);
  if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge')companion(convergence[state.step]);
  $('.inspector .mini-label').textContent='点击图中的项，查看其含义';$('.legend').innerHTML='';$('#panelIndex').textContent='';
- renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();window.spectralFullscreen?.sync();
+ renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();syncPlayback();window.spectralFullscreen?.sync();
 }
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?5:0}`);}
@@ -199,7 +203,7 @@ $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Num
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.actions.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
 $('#controls').onchange=e=>{if(e.target.id==='exampleSelect'){state.example=e.target.value;state.r=0;state.step=0;state.selected=null;render();}};
-$('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playTotalDemo(demo.dataset.totalDemo,true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
+$('#controls').onclick=e=>{const demo=e.target.closest('[data-total-demo]');if(demo){state.pinned=null;state.pinnedKey=null;applyConcept(demo.dataset.totalDemo);playback.restart(true);return;}let b=e.target.closest('[data-direction]');if(b){state.direction=b.dataset.direction;render();}};
 function selectNode(e){
  const b=e.target.closest('[data-p]:not([data-boundary])');if(!b)return;
  const origin={p:Number(b.dataset.p),q:Number(b.dataset.q)};
@@ -208,7 +212,7 @@ function selectNode(e){
   const context=initialTraceContext(state),effect=state.initialReveal===6?(state.effect==='totalsquare'?'totalsquare':'totalmap'):context.effect;
   state.totalOrigin=origin;state.selected=origin;if(state.initialReveal===6)state.n=origin.p+origin.q;
   state.effect=effect;state.pinned=effect;state.pinnedKey=null;
-  render(false);playTotalDemo(effect,true);return;
+  render(false);playback.restart(true);return;
  }
  state.selected=origin;render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;
 }$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
@@ -287,17 +291,17 @@ function renderWorkspaceState(){
 }
 function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index,substep=0){
- foldedSections.delete('1');pauseReadingHover();cancelSquareSequence();
+ foldedSections.delete('1');
  if(!(isDoubleComplexView()&&state.initialReveal===index)){state.totalOrigin=null;state.selected=null;if(index===6)state.n=2;if(index===9){state.n=2;state.p=1;}}
  state.totalStep=index===6?substep:0;if(index===6)revealedTotalStep=Math.max(revealedTotalStep,substep);
  if(index===9){state.gradedMode=substep===1?'differential':'space';revealedGradedStep=Math.max(revealedGradedStep,substep);}
  state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
  keepDefinitionVisible();
- if(index===3)playSquareSequence();if(index===4)playTotalDemo('anticommute');if(['total','totalmap','totalsquare','filtration','gradedmap'].includes(initialConcept()))playTotalDemo(initialConcept());
+
 }
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
- pauseReadingHover();cancelSquareSequence();foldedSections.delete(readingSection(key));
+ foldedSections.delete(readingSection(key));
  state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;state.totalOrigin=null;
  openStatements.add(key);
  if(module==='initial')selectInitialBuild(last?INITIAL_STEPS:Math.max(0,state.initialReveal),last?1:0);
@@ -309,7 +313,7 @@ function activateStatement(key,last=false){
  history.replaceState(null,'',location.pathname+location.search+'#'+key.replace(':','-'));
 }
 function currentReadingPages(){return numberedPages(state.module,state.step,annotationCount());}
-function selectReadingPage(index){pauseReadingHover();foldedSections.delete(readingSection(activeStatementKey()));const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
+function selectReadingPage(index){foldedSections.delete(readingSection(activeStatementKey()));const pages=currentReadingPages();state.notePage=Math.max(0,Math.min(index,pages.length-1));foldedReadings.delete(`${activeStatementKey()}:${state.notePage}`);openStatements.add(activeStatementKey());state.annotationStep=state.chosenAction=pages[state.notePage].focus;state.pinned=null;state.pinnedKey=null;state.stackR=null;render();keepReadingVisible($(`[data-statement="${activeStatementKey()}"] [data-reading-page="${state.notePage}"]`));}
 // Auto-folding is a reading-navigation preference, never a hover or proof effect.
 // Changing the setting leaves the current layout untouched until the next advance.
 function foldBeforeAdvance(nextStatement){
@@ -339,7 +343,7 @@ $('#explanation').addEventListener('click',e=>{
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
  if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);syncInitialEntries();}else selectInitialBuild(i);return;}
- if(buildSelect){selectInitialBuild(Number(buildSelect.dataset.selectBuild));return;}
+ if(buildSelect){const i=Number(buildSelect.dataset.selectBuild),current=isDoubleComplexView()&&state.initialReveal===i;selectInitialBuild(i,current?(i===6?state.totalStep:i===9&&state.gradedMode==='differential'?1:0):0);return;}
  if(readingToggle||readingSelect){
   const button=readingToggle||readingSelect,index=Number(button.dataset.toggleReading??button.dataset.selectReading),parent=button.closest('[data-statement]').dataset.statement;
   if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);syncReadingEntries(parent);}
@@ -372,7 +376,7 @@ function interactiveConcept(target){
  const choice=target.closest('.relation-choice');if(choice)return choice;
  const build=target.closest('.build-statement.is-active .build-card[data-open="true"]');
  // Each total-complex formula is its own trigger for the same degree sweep.
- // Crossing from C^bullet to C^n must count as entering a new formula.
+ // Clicking C^bullet or C^n selects that formula without a hover side effect.
  if(build)return (build.querySelector('.relation-choices')||['total','filtration','graded'].includes(build.dataset.concept))?target.closest('.math-block[data-concept]'):build;
  return target.closest('.formal-statement .reading-formula[data-concept]')||target.closest('#diagram [data-concept]');
 }
@@ -407,54 +411,14 @@ function applyConcept(concept,hover=false,source=null){
  renderOperation();window.spectralState={...state,language:language()};
 }
 function pinConcept(concept,source=null){
- cancelSquareSequence();
+
  const key=interactionKey(source);const same=state.pinned===concept&&state.pinnedKey===key;
  state.pinned=same?null:concept;state.pinnedKey=same?null:key;
- applyConcept(state.pinned,false);if(!same||concept==='total'&&source?.matches('.math-block')){playSquareTrace(concept,source);playTotalDemo(concept);}translatePage();window.spectralState={...state,language:language()};
-}
-function enterConcept(el){const card=el.closest('[data-statement]');if(card&&!card.classList.contains('is-active'))return;cancelSquareSequence();revealDirections(el);revealAnnotation(el);applyConcept(el.dataset.concept,true,el);playSquareTrace(el.dataset.concept,el);playTotalDemo(el.dataset.concept);}
-function playTotalDemo(concept,force=false){
- if(!isDoubleComplexView())return;
- if(concept==='total')degreeSweep.play(force);
- else if(['delta1','delta2','anticommute','totalmap','totalsquare'].includes(concept))totalTrace.play(concept,force);
- else if(concept==='filtration')filtrationSweep.play(force);
- else if(concept==='filteredmap')filtrationTrace.play(force);
- else if(concept==='gradedmap'&&state.initialReveal===9)gradedTrace.play(force);
+ applyConcept(state.pinned,false);playback.restart(true);translatePage();window.spectralState={...state,language:language()};
 }
 const squareCentres=concept=>concept==='square1'?[xy(1,1),xy(2,1),xy(3,1)]:[xy(1,1),xy(1,2),xy(1,3)];
-function cancelSquareSequence(){squareSequenceSerial++;squareSequenceActive=false;}
-async function playSquareSequence(){
- const run=++squareSequenceSerial;squareSequenceActive=true;
- const valid=()=>run===squareSequenceSerial&&isDoubleComplexView()&&state.initialReveal===3&&openBuilds.has(3)&&openStatements.has('initial:0');
- const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
- try{
-  // Let the left frame finish and its formulas appear before tracing them.
-  await pause(notebookMotion.duration());
-  for(const concept of ['square1','square2']){
-   if(!valid())return;
-   const choice=document.querySelector(`.relation-choice[data-concept="${concept}"]`);
-   applyConcept(concept,false,choice);
-   if(!await squareTrace.play(concept,squareCentres(concept))||!valid())return;
-   if(concept==='square1')await pause(visualMotion().reduced?0:visualMotion().hold);
-  }
- }finally{if(run===squareSequenceSerial)squareSequenceActive=false;}
-}
-function playSquareTrace(concept,source){if(source?.matches('.relation-choice')&&isDoubleComplexView()&&['square1','square2'].includes(concept))squareTrace.play(concept,squareCentres(concept));}
-// Reading transitions move content underneath a stationary pointer. Those synthetic
-// boundary events must not reselect a page or override the new diagram state.
-// Resume previews on actual pointer movement; Tab is an intentional focus change.
-document.addEventListener('pointermove',e=>{
- if(e.pointerType==='touch')return;
- const moved=!readingPointer||e.clientX!==readingPointer.x||e.clientY!==readingPointer.y;
- readingPointer={x:e.clientX,y:e.clientY};
- if(readingHoverPaused&&moved){readingHoverPaused=false;const el=interactiveConcept(e.target);if(el)enterConcept(el);}
-});
-document.addEventListener('pointerover',e=>{if(e.pointerType==='touch'||readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)enterConcept(el);});
-document.addEventListener('pointerout',e=>{if(e.pointerType==='touch'||readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
-document.addEventListener('focusin',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el)enterConcept(el);});
-document.addEventListener('focusout',e=>{if(readingHoverPaused)return;const el=interactiveConcept(e.target);if(el&&interactiveConcept(e.relatedTarget)!==el)restoreInteraction();});
+// Only a click selects an interactive formula; hover/focus are passive.
 document.addEventListener('click',e=>{const el=interactiveConcept(e.target);if(el){revealDirections(el);revealAnnotation(el);pinConcept(el.dataset.concept,el);}});
-function restoreInteraction(){if(squareSequenceActive)return;if(!isDoubleComplexView()){const i=state.pinnedKey?.startsWith('formula:')?Number(state.pinnedKey.split(':')[1])+1:currentReadingPages()[state.notePage]?.focus||1;setAnnotation(i);}applyConcept(state.pinned,false);}
 
 function renderQuickCheck(){
  const checks={initial:['如果先作用 δ₂，再作用 δ₁，终点在哪里？','终点是 Kᵖ⁺¹ᑫ⁺¹。交换作用顺序仍到同一位置，但两条复合映射之和为零。'],learn:['dᵣ 的靶在哪里？总次数改变多少？','靶是 Eᵣᵖ⁺ʳ,ᑫ⁻ʳ⁺¹，因此总次数从 p+q 变成 p+q+1。'],converge:['稳定页是否给出了 Hⁿ 的典范直和分解？','没有。它典范地给出滤过商 GrᵖHⁿ。向量空间层面的分裂可以选择，但收敛本身不指定典范分裂。']};
@@ -543,7 +507,7 @@ function renderOperation(){
  if(context!==expositionContext){$('#operationBoard').scrollTop=0;expositionContext=context;}
  const prelude=isDoubleComplexView()&&state.initialReveal<0;
  if(isDoubleComplexView()&&['graded','gradedmap'].includes(state.effect))gradedProof.render(state);else if(state.module!=='converge')replaceMathContent($('#operationBoard'),prelude?'':operationMarkup(state,language(),math),{animate:!staticSquare});$('#operationBoard').inert=prelude;$('#operationBoard').setAttribute('aria-hidden',String(prelude));
- squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());gradedTrace.sync(isDoubleComplexView()&&state.initialReveal===9&&state.effect==='gradedmap');evolution.sync(state);filteredView.sync(state);stabilityView.sync(state);abutmentView.sync(state);emphasizeCurrentDefinition();
+ squareTrace.sync(state.effect,isDoubleComplexView());filtrationSweep.sync(isDoubleComplexView()&&state.effect==='filtration');filtrationTrace.sync(isDoubleComplexView()&&state.effect==='filteredmap');degreeSweep.sync(isDoubleComplexView()&&state.effect==='total');totalTrace.sync(state.effect,isDoubleComplexView());gradedTrace.sync(isDoubleComplexView()&&state.initialReveal===9&&state.effect==='gradedmap');evolution.sync(state);filteredView.sync(state);stabilityView.sync(state);abutmentView.sync(state);
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
@@ -571,16 +535,16 @@ function fixedDiagram(){
   if(s===2&&a>0)caption=raw`E_0^{${p},${n-p}}\cong K^{${p},${n-p}}`;
   if(s===3){kind=a>=2?'E_1':'E_0';v=a===1;caption=a>=2?raw`E_1^{i,j}\cong H^j(K^{i,\bullet},\delta_2)`:raw`d_0[a]=[Da]=[\delta_2a]`;}
   if(s===4){kind=a>=3?'E_2':'E_1';h=a>=1&&a<3;caption=a>=3?raw`E_2^{i,j}\cong H^i(E_1^{\bullet,j},d_1)`:raw`d_1[a]=[\delta_1a]`;}
-  if(s===5){const r=Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a===4)edges+=line(...xy(1,2),...xy(1+r,3-r),'r',true,`d_${r}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
+  if(s===5){const r=Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a>=3)overlay+=label(420,22,raw`r=${r}`,160,32);if(a===4&&1+r<=GRID_MAX&&3-r>=0)edges+=line(...xy(1,2),...xy(1+r,3-r),'r',true,`d_${r}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
  }
  if(m==='learn'&&s===6){
   kind='K';h=v=total=filter=selected=false;edges='';
   const Z=a===1,r=Math.max(1,state.r),fromDegree=Z?n:n-1,fromIndex=Z?p:p-r,toDegree=Z?n+1:n,toIndex=Z?p+r:p;
   overlay=`<g class="filtered-source">${diagonal(fromDegree,fromIndex,true,false)}</g><g class="filtered-target-total">${diagonal(toDegree,0,false,false)}</g><g class="next-total filtered-target">${diagonal(toDegree,toIndex,true,false)}</g>`;
-  overlay+=label(420,22,raw`F^{${fromIndex}}C^{${fromDegree}}\xrightarrow{D}C^{${toDegree}}\qquad F^{${toIndex}}C^{${toDegree}}`,500,40,true);
+  overlay+=label(420,22,a===3?raw`B_{${r}}^{${p},${n-p}}\subseteq Z_s^{${p},${n-p}}\quad(s\ge0)`:raw`F^{${fromIndex}}C^{${fromDegree}}\xrightarrow{D}C^{${toDegree}}\qquad F^{${toIndex}}C^{${toDegree}}`,500,40,true);
  }
  if(m==='converge'){kind='E_0';h=false;v=false;total=false;filter=false;selected=false;}
- if(m==='learn'&&(s===3||s===4||s===5&&a>=3)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
+ if(m==='learn'&&(s===3||s===4)){kind='E_0';h=false;v=!(m==='learn'&&s===3&&state.notePage===0);total=false;filter=false;selected=false;edges='';overlay='';}
  const showNext=(m==='initial'&&['totalmap','filteredmap'].includes(state.effect))||(m==='learn'&&s===0&&a===1)||(m==='learn'&&s===1&&a>=3);
  if(total){overlay+=diagonal(n,filter?p:0,true,false);overlay+=`<g class="source-label">${label(xy(2,GRID_MAX)[0],22,filter?raw`F^{${p}}C^{${n}}${p>n?'=0':''}`:totalDegreeTex(n),filter?150:250,42,true,filter?'':'equals')}</g>`;}
  if(m==='initial'&&state.effect==='graded'||m==='learn'&&s===2&&a>=2)overlay+=`<g class="denominator-region">${diagonal(n,p+1,true,false)}</g>`;
@@ -743,13 +707,14 @@ function releaseEmphasis(animation){
 function emphasizeCurrentDefinition(){
  const stage=$('#stage'),initialView=isDoubleComplexView();
  const key=state.cover?'cover':initialView?`initial:${state.initialReveal}`:`${state.module}:${state.step}:${state.annotationStep}`;
- if(stage.dataset.definitionKey===key)return;
+
  stage.dataset.definitionKey=key;definitionAnimations.forEach(releaseEmphasis);definitionAnimations=[];
- if(state.cover||evolution.isTilted()||initialView&&(state.initialReveal<=3)||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ if(state.cover||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  let targets=[];
- targets=[...document.querySelectorAll('#diagram .concept-active')];
+ targets=[...document.querySelectorAll('.has-evolution #pageEvolution .evolution-page.is-current .evolution-dot,.has-evolution #pageEvolution .evolution-page.is-current .evolution-differential,.has-stability-view .stability-node.central,.has-abutment-view .abutment-term.chosen,#diagram .concept-active')].filter(el=>el.getClientRects().length);
  if(initialView&&['delta1','delta2'].includes(initialConcept()))targets.push(...document.querySelectorAll(`#diagram .map-label[data-map-concept="${initialConcept()}"]`));
  if(!targets.length)targets=[...document.querySelectorAll('#diagram .arrow:not(.context-edge),#diagram .diag-box')];
+ if(!targets.length)targets=[...document.querySelectorAll('#diagram .node:not(.muted) .node-bg')];
  targets.forEach(el=>{
   if(el.closest('.outside-quadrant'))return;
   const from=getComputedStyle(el).opacity,delay=el.closest('.route-2')?150:0;
@@ -768,3 +733,40 @@ function syncInitialEntrance(){
 
 // Legacy graded controls select the same two stages as the left-hand entry.
 document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();selectInitialBuild(9,button.dataset.gradedView==='differential'?1:0);});
+
+function playbackKey(){return state.cover?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.initialReveal===9?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
+function syncPlayback(){playback.sync({key:playbackKey()});}
+function stopDiagramAnimation(){
+ pageFormation.clear();squareTrace.clear();totalTrace.clear();gradedTrace.clear();filtrationTrace.clear();degreeSweep.stop();filtrationSweep.stop();initialAnimations.clear();filteredView.clear();stabilityView.clear();evolution.clear();
+ definitionAnimations.forEach(releaseEmphasis);definitionAnimations=[];
+}
+async function playCurrentAnimation({signal,waitUntil,wait}){
+ const live=()=>!signal.aborted;
+ const run=async(action,isPlaying)=>{if(!live())return false;action();return waitUntil(()=>!isPlaying());};
+ if(isDoubleComplexView()){
+  const concept=state.pinned||initialConcept(),index=state.initialReveal;
+  if(index<=2){await run(()=>initialAnimations.play(index),initialAnimations.isPlaying);if(!live())return;if(index>0)await run(()=>totalTrace.play(concept,true),totalTrace.isPlaying);}
+  else if(index===3){
+   for(const c of concept==='square1'||concept==='square2'?[concept]:['square1','square2']){
+    if(!live())return;applyConcept(c);await squareTrace.play(c,squareCentres(c));if(!live())return;if(c==='square1'&&!await wait(visualMotion().hold))return;
+   }
+  }else if(['anticommute','totalmap','totalsquare','delta1','delta2'].includes(concept))await run(()=>totalTrace.play(concept,true),totalTrace.isPlaying);
+  else if(concept==='total')await degreeSweep.play(true);
+  else if(concept==='filtration'){
+   await filtrationSweep.play(true);if(!live())return;state.p=1;applyConcept('filteredmap');await run(()=>filtrationTrace.play(true),filtrationTrace.isPlaying);
+  }else if(concept==='filteredmap')await run(()=>filtrationTrace.play(true),filtrationTrace.isPlaying);
+  else if(concept==='gradedmap')await run(()=>gradedTrace.play(true),gradedTrace.isPlaying);
+  else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
+ }else if(state.module==='learn'&&state.step===5&&state.notePage===0)await pageFormation.play(Math.max(1,state.r));
+ else if(state.module==='learn'&&state.step===6)await run(()=>filteredView.play(),filteredView.isPlaying);
+ else if(state.module==='learn'&&state.step===4&&state.notePage===0)await evolution.play();
+ else if(state.module==='converge'&&state.step===0)await run(()=>stabilityView.play(),stabilityView.isPlaying);
+ else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
+}
+// Selecting an entry rearms automatically through its reading key. Clicking the
+// current entry explicitly rearms even after dismissal or with autoplay off.
+$('#explanation').addEventListener('click',event=>{
+ if(event.target.closest('[data-toggle-build],[data-toggle-reading],[data-toggle-statement],[data-toggle-section],[data-zoom]'))return;
+ const entry=event.target.closest('.build-card,.numbered-entry');if(!entry)return;
+ queueMicrotask(()=>{if(entry.classList.contains('build-current'))playback.restart(true);});
+});

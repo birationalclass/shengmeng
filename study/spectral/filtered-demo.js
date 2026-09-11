@@ -13,16 +13,16 @@ export const filteredExample={
 // D acts on total cochains. Points along a grouping line represent whole
 // cochains, not individual K components, and the tracks are not delta arrows.
 export function createFilteredDemo({host,point}){
- const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,serial=0,key='';
+ const ns='http://www.w3.org/2000/svg';let layer=null,frame=0,serial=0,key='',running=false;
  const clamp=t=>Math.max(0,Math.min(1,t)),ease=t=>{t=clamp(t);return t*t*(3-2*t);};
  const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
  function clear(){
-  serial++;cancelAnimationFrame(frame);key='';host.querySelectorAll('[data-filtered-focus]').forEach(el=>el.removeAttribute('data-filtered-focus'));
+  serial++;cancelAnimationFrame(frame);key='';running=false;host.querySelectorAll('[data-filtered-focus]').forEach(el=>el.removeAttribute('data-filtered-focus'));
   for(const old of[layer].filter(Boolean)){old.removeAttribute('id');const m=visualMotion();if(m.reduced)old.remove();else{const fade=old.animate([{opacity:getComputedStyle(old).opacity},{opacity:0}],{duration:m.exit,easing:m.easing,fill:'forwards'});fade.finished.then(()=>old.remove(),()=>old.remove());}}
   layer=null;
  }
  function play(topic,force=false){
-  if(key===topic&&!force)return;clear();key=topic;const run=serial;
+  if(key===topic&&!force)return;clear();key=topic;running=true;const run=serial;
   const Z=topic==='Z',source=Z?[point(1,1),point(2,0)]:[point(0,1),point(1,0)];
   const inside=Z?point(3,0):point(1,1),out1=Z?point(2,1):point(0,2),out2=Z?point(1,2):mix(point(0,2),point(1,1),.5);
   const destinations=[[inside[0]-7,inside[1]-3],out1,out2,[inside[0]+7,inside[1]+3]];
@@ -48,8 +48,8 @@ export function createFilteredDemo({host,point}){
    }
    layer.dataset.phase=t<850?'representatives':t<3120?'images':t<3700?'membership':'complete';
   };
-  const duration=3900;if(visualMotion().reduced){draw(duration);return;}
-  const start=performance.now();draw(0);const tick=now=>{if(run!==serial)return;const t=visualMotion().reduced?duration:now-start;draw(t);if(t<duration)frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);
+  const duration=3900;if(visualMotion().reduced){draw(duration);running=false;return;}
+  const start=performance.now();draw(0);const tick=now=>{if(run!==serial)return;const t=visualMotion().reduced?duration:now-start;draw(t);if(t<duration)frame=requestAnimationFrame(tick);else running=false;};frame=requestAnimationFrame(tick);
  }
- return {play,clear};
+ return {play,clear,isPlaying:()=>running};
 }
