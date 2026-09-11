@@ -117,11 +117,11 @@ svg .diag.concept-active { opacity:1;stroke-width:2.5 }
 #diagram .filtered-target-total .diag {stroke:var(--blue);opacity:.32}
 
 
-/* A quiet page-index axis: the light leaves the clip before each 5s restart. */
+/* A quiet page-index axis: the wider light fades out before each 10s restart. */
 #pageEvolution.has-r-glow .evolution-r-axis {opacity:.25}
 .evolution-r-glint {display:none;pointer-events:none}
-#pageEvolution.has-r-glow .evolution-r-glint {display:block;animation:spectral-r-glint 5s linear infinite;filter:drop-shadow(0 0 2px #a4e7d359)}
-@keyframes spectral-r-glint {from{transform:translateX(0)}to{transform:translateX(900px)}}
+#pageEvolution.has-r-glow .evolution-r-glint {display:block;animation:spectral-r-glint 10s linear infinite;filter:drop-shadow(0 0 2px #a4e7d318)}
+@keyframes spectral-r-glint {from{transform:translateX(0);opacity:0}8%,90%{opacity:1}to{transform:translateX(900px);opacity:0}}
 @media(prefers-reduced-motion:reduce){#pageEvolution.has-r-glow .evolution-r-glint{display:none;animation:none}}
 
 /* Page names are mathematical labels; the invisible rect only preserves the hit area. */

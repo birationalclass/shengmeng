@@ -9,7 +9,7 @@ import {createAbutmentView} from './abutment-view.js?v=87';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=87';
+import {numberedPages} from './reading-pages.js?v=91';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -23,7 +23,7 @@ import {lessons,convergence,initial,totalCohomology} from './content.js?v=89';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=91';
-import {createPageEvolution} from './page-evolution.js?v=89';
+import {createPageEvolution} from './page-evolution.js?v=91';
 import {createNotebookMotion} from './notebook-motion.js?v=78';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -40,7 +40,7 @@ const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanat
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1,revealedTotalStep=0,revealedGradedStep=0;
-const readingSections=[['initial:0','learn:6'],['learn:3','learn:4','learn:5','converge:0','converge:1','converge:2','converge:3']];
+const readingSections=[['initial:0','learn:6'],['learn:5','learn:3','learn:4','converge:0','converge:1','converge:2','converge:3']];
 const readingOrder=readingSections.flat();
 const readingSection=key=>String(readingSections.findIndex(section=>section.includes(key))+1||2);
 const NODE_HALF_W=34,NODE_HALF_H=19;
@@ -140,8 +140,8 @@ function statementMarkup(item,module,step,grouped=false){
  return `<article class="formal-statement notebook-card${meta.continued?' section-continuation':''}" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${entries}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;
 }
 function sectionTwoMarkup(){
- const heading=statementHeading(statementMeta('learn',3),'2').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
- const groups=[3,4,5].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
+ const heading=statementHeading(statementMeta('learn',5),'2').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
+ const groups=[5,3,4].map(step=>statementMarkup(lessons[step+1],'learn',step,true)).join('')+convergence.map((item,step)=>statementMarkup(item,'converge',step,true)).join('');
  return `<article class="formal-statement notebook-card notebook-section" data-section="2" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
 }
 function syncStatementCards(){
@@ -192,7 +192,7 @@ function render(updateControls=true){
  renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();window.spectralFullscreen?.sync();
 }
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
-function moduleChange(m){activateStatement(`${m}:${m==='learn'?3:0}`);}
+function moduleChange(m){activateStatement(`${m}:${m==='learn'?5:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
 $('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.totalStep=0;revealedTotalStep=0;state.gradedMode='space';revealedGradedStep=0;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
@@ -268,7 +268,7 @@ function statementMeta(module=state.module,step=state.step){
  const meta=collections[module]?.[step]||{kind:module==='lab'?'例':'计算',concepts:module==='lab'?['page','differential']:['differential','space','differential']};
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('双复形','Double complex'),symbol:null};
- if(module==='learn'&&step>=3&&step<=6)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step>3};
+ if(module==='learn'&&step>=3&&step<=6)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step!==5};
  if(['converge','lab','trace'].includes(module))return {...meta,kind:'§',number:'2',continued:true};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }

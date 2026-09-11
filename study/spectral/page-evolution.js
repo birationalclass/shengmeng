@@ -1,5 +1,5 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createDifferentialProof} from './differential-proof.js?v=89';
+import {createDifferentialProof} from './differential-proof.js?v=91';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -51,7 +51,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   for(let i=0;i<=4;i++){const a=pos(i,0,r),b=pos(i,4,r),c=pos(0,i,r),d=pos(4,i,r);svg+=`<path class="evolution-grid" d="M${a} L${b} M${c} L${d}"/>`;}
   for(let p=0;p<=4;p++)for(let q=0;q<=4;q++){const [x,y]=pos(p,q,r),selected=p===point.p&&q===point.q;svg+=`<g class="evolution-point ${selected?'is-selected':''}" role="button" tabindex="${selected?'0':'-1'}" data-page="${r}" data-p="${p}" data-q="${q}" aria-label="E_${r}^{${p},${q}}"><circle class="evolution-hit" cx="${x}" cy="${y}" r="10"/><circle class="evolution-dot" cx="${x}" cy="${y}" r="${selected?5:2.8}"/></g>`;}
   const [p,q]=[point.p,point.q],tp=p+r,tq=q-r+1,source=pos(p,q,r);
-  const awaitingDifferential=context?.module==='learn'&&context.notePage===0&&((context.step===3&&r===0)||(context.step===4&&r===1));
+  const awaitingDifferential=context?.module==='learn'&&context.notePage===0&&((context.step===3&&r===0)||(context.step===4&&r===1)||(context.step===5&&r===current));
   if(!awaitingDifferential&&tp<=4&&tq>=0&&tq<=4){
    const target=pos(tp,tq,r),dx=target[0]-source[0],dy=target[1]-source[1],len=Math.hypot(dx,dy);
    svg+=`<path class="evolution-differential" data-source="${p},${q},${r}" data-target="${tp},${tq},${r}" d="M${source[0]+dx*9/len},${source[1]+dy*9/len} L${target[0]-dx*9/len},${target[1]-dy*9/len}" marker-end="url(#evolution-tip-${r%4})"/>`;
@@ -80,8 +80,8 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(key!==projectionKey){
    let out='<svg viewBox="0 0 840 525" role="group" aria-label="'+t('由二维 E0 连续展开的谱序列各页','Spectral-sequence pages unfolding from the original two-dimensional E0')+'"><defs>',labels='',pages='';
    for(let i=0;i<4;i++)out+=`<marker id="evolution-tip-${i}" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="${color(i)}" stroke-width="1.3"/></marker>`;
-   out+=`<linearGradient id="r-axis-glint" gradientUnits="userSpaceOnUse" x1="-72" x2="0"><stop offset="0" stop-color="#9cdad3" stop-opacity="0"/><stop offset=".55" stop-color="#c3f3e9" stop-opacity=".7"/><stop offset="1" stop-color="#9cdad3" stop-opacity="0"/></linearGradient><clipPath id="r-axis-glint-clip"><rect x="28" y="${g.y-5}" width="789" height="10"/></clipPath></defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
-   out+=`<g clip-path="url(#r-axis-glint-clip)" aria-hidden="true"><path class="evolution-r-glint" d="M-72,${g.y} H0" fill="none" stroke="url(#r-axis-glint)" stroke-width="1.8"/></g>`;
+   out+=`<linearGradient id="r-axis-glint" gradientUnits="userSpaceOnUse" x1="-144" x2="0"><stop offset="0" stop-color="#9cdad3" stop-opacity="0"/><stop offset=".55" stop-color="#a9d2cd" stop-opacity=".24"/><stop offset="1" stop-color="#9cdad3" stop-opacity="0"/></linearGradient><clipPath id="r-axis-glint-clip"><rect x="28" y="${g.y-5}" width="789" height="10"/></clipPath></defs><path class="evolution-r-axis" d="M28,${g.y} H817" marker-end="url(#evolution-tip-0)"/>`;
+   out+=`<g clip-path="url(#r-axis-glint-clip)" aria-hidden="true"><path class="evolution-r-glint" d="M-144,${g.y} H0" fill="none" stroke="url(#r-axis-glint)" stroke-width="1.8"/></g>`;
    labels+=mathLabel(815,g.y-17,'r','evolution-axis-label',{width:24,height:24});
    if(start>0)labels+=mathLabel(10,g.y-13,R`\cdots`,'evolution-axis-label',{width:22,height:24});
    for(let r=start;r<=Math.min(visibleMax,start+g.count-1);r++){const page=pageMarkup(r);pages+=`<div class="evolution-page-layer ${construction?.r===r?'is-source':''}" data-layer-r="${r}"><svg viewBox="0 0 840 525">${page.svg}</svg>${page.labels}</div>`;}
@@ -141,9 +141,9 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   if(!eligible){if(wasEngaged){cancel();tilted=false;semanticKey='';fit();}if(s.cover){generated=0;current=0;start=0;proof.reset();}else if(s.module==='learn'&&s.step===5&&choice>=3)proof.render({state:s,current:Math.max(1,s.r),construction:null,point});window.spectralEvolution={engaged:false,tilted:false,generated,current,start,busy:false,construction:null};return;}
   const key=`${s.module}:${s.step}`;if(s.selected)point={...s.selected};
   if(key!==semanticKey){semanticKey=key;cancel();
-   if(s.module==='learn'&&s.step===3){tilted=false;current=0;start=0;fit(true);}
-   else if(generated===0){beginCohomology(0);}
-   else{current=Math.min(generated,s.step===4?1:Math.max(1,s.r));construction=current>0?{r:current-1,phase:3}:null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
+   if(s.step===3){generated=0;tilted=false;current=0;start=0;fit(true);}
+   else if(s.step===5){generated=current=Math.max(1,s.r);construction=null;start=Math.max(0,current-geometry().count+1);tilted=true;fit(true);}
+   else{generated=0;current=0;start=0;beginCohomology(0);}
   }
   drawPages();paintControls();exposition();
  }
