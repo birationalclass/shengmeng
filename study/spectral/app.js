@@ -1,3 +1,4 @@
+import {renderMathematics} from './math-notation.js?v=77';
 import {createStabilityView} from './stability-view.js?v=76';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=74';
@@ -13,11 +14,11 @@ import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=57';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=76';
-import {translatePage,language,toggleLanguage} from './language.js?v=76';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=77';
+import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=76';
 import {createFilteredView} from './filtered-view.js?v=57';
-import {createPageEvolution} from './page-evolution.js?v=76';
+import {createPageEvolution} from './page-evolution.js?v=77';
 import {createNotebookMotion} from './notebook-motion.js?v=61';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -41,7 +42,7 @@ const state={module:'initial',cover:true,initialReveal:-1,notePage:0,annotationS
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const math=(tex,display=false)=>katex.renderToString(tex,{displayMode:display,throwOnError:true,strict:'error',trust:false});
+const math=(tex,display=false)=>renderMathematics(katex,tex,display);
 const readingRail=createReadingRail({workspace:$('.notebook-workspace'),column:$('.explanation'),mobilePane:$('.slide-body'),content:$('#explanation'),language,cancelFollow:readingFocus.cancel});
 // Control labels use the same mathematical typesetting as the diagram.
 const mathControlLabel=name=>esc(name).replace(/([EZBd])([₀₁₂₃₄₅₆₇₈₉ᵣ₊]+|\d+)/g,(_,symbol,index)=>math(`${symbol}_{${[...index].map(c=>({'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ᵣ':'r','₊':'+'}[c]||c)).join('')}}`));
