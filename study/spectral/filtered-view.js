@@ -1,10 +1,10 @@
-import {createFilteredDemo} from './filtered-demo.js?v=89';
+import {createFilteredDemo} from './filtered-demo.js?v=91';
 import {replaceMathContent} from './math-transitions.js?v=40';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
 export function createFilteredView({viewport,diagram,point,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- const demo=createFilteredDemo({host:diagram,point,math});
+ const demo=createFilteredDemo({host:diagram,point});
  let state=null,active=false,key='',topic='Z';const steps={Z:0,B:0};
  const pageIndex=()=>Math.max(1,state.r);
  const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies'],['具体例子','Example'],['辅助指标 −1','Auxiliary index −1']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies'],['具体例子','Example'],['辅助指标 −1','Auxiliary index −1']]};
