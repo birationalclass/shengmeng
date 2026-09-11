@@ -4,6 +4,10 @@ A bilingual interactive notebook using a first-quadrant cochain double complex. 
 
 The two sections use compact number-and-object headings; the current item is enlarged, while previously introduced entries stay available. Mathematical objects use KaTeX in both languages; the descriptive title remains available as a tooltip. The fold button stays at the right edge.
 
+## v82 · Separate reading-rail gutter
+
+The outline and card padding share `--reading-rail-width`, `--reading-rail-inset`, and `--reading-rail-clearance`. Panel-style and responsive padding now consume that gutter instead of overriding it with smaller values. Rail marks remain inside its width even when highlighted; the entire rail has at least 12 CSS pixels of horizontal clearance from each card frame. Validation covers all three styles at 320–1440px, hover, navigation across sections, fullscreen, bilingual switching and the phone landscape viewport.
+
 ## v81 · Landscape reading after the phone cover
 
 The phone cover retains its current orientation and shows a bilingual landscape-reading hint. Start reading opens a same-origin landscape viewport; in portrait it rotates the whole reader, including SVG, HTML math, controls and pointer coordinates. A physical device rotation resizes that viewport without recreating it or changing the current entry. Cover restores the normal outer cover. Fullscreen remains owned by the outer page; native landscape locking is optional and only attempted from the active reader, with the same layout working when that API is unavailable.

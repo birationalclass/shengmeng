@@ -13,7 +13,8 @@ export function createReadingRail({workspace,column,mobilePane,content,language,
   const top=Math.max(viewport.top,document.querySelector('.notebook-toolbar').getBoundingClientRect().bottom)+12;
   const bottom=Math.min(innerHeight,viewport.bottom)-12;
   const height=Math.min(400,Math.max(160,bottom-top));
-  rail.style.left=`${Math.max(2,(narrow.matches?mobilePane.getBoundingClientRect().left:columnBox.left)+4)}px`;
+  const inset=parseFloat(getComputedStyle(rail).getPropertyValue('--reading-rail-inset'))||0;
+  rail.style.left=`${Math.max(0,(narrow.matches?mobilePane.getBoundingClientRect().left:columnBox.left)+inset)}px`;
   rail.style.top=`${top+Math.max(0,(bottom-top-height)/2)}px`;rail.style.height=`${height}px`;
   const readingLine=Math.max(viewport.top,top)+viewport.height*.22;
   let nearest=-1,distance=Infinity;
