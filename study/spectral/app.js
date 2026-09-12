@@ -1,4 +1,4 @@
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=99';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=100';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
