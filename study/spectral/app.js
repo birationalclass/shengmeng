@@ -1,4 +1,4 @@
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=100';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=109';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
@@ -6,9 +6,9 @@ import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=8
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=108';
+import {createStabilityView} from './stability-view.js?v=109';
 import {installReadingTouch} from './reading-touch.js?v=74';
-import {createAbutmentView} from './abutment-view.js?v=99';
+import {createAbutmentView} from './abutment-view.js?v=109';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
@@ -25,8 +25,8 @@ import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=107';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=99';
-import {createPageEvolution} from './page-evolution.js?v=106';
+import {createFilteredView} from './filtered-view.js?v=109';
+import {createPageEvolution} from './page-evolution.js?v=109';
 import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;

@@ -1,4 +1,4 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=99';
+import {proofPanel,proofSections} from './proof-panel.js?v=109';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {visualMotion} from './visual-style.js?v=41';

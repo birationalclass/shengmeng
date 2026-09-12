@@ -16,14 +16,14 @@ document.addEventListener('click',e=>{
  const trigger=e.target.closest('[data-proof-detail]');if(!trigger)return;
  const proof=proofs.get(trigger.dataset.proofDetail);if(!proof)return;
  e.preventDefault();e.stopImmediatePropagation();const panel=ensureDialog();
- panel.querySelector('h2').textContent=proof.title;
+ panel.querySelector('h2').innerHTML=proof.titleMarkup;
  const close=panel.querySelector('[data-close-proof]');close.setAttribute('aria-label',proof.english?'Close proof':'关闭证明');
  const body=panel.querySelector('.proof-detail-content');body.innerHTML=proof.details;body.scrollTop=0;
  if(!panel.open)panel.showModal();
  if(!matchMedia('(prefers-reduced-motion:reduce)').matches)panel.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'});
 },true);
-export function proofPanel({key,title,formulas,note='',details,math,language}){
- const english=language()==='en';proofs.set(key,{title,details,english});
+export function proofPanel({key,title,titleMath='',formulas,note='',details,math,language}){
+ const english=language()==='en';proofs.set(key,{titleMarkup:esc(title)+(titleMath?' '+math(titleMath):''),details,english});
  const hint=english?'Click a formula for the proof':'点击公式查看证明';
  return `<div class="exposition-summary">${formulas.map(f=>`<button type="button" class="proof-formula operation-equation" data-proof-detail="${esc(key)}" aria-haspopup="dialog" title="${hint}">${math(f,true)}</button>`).join('')}${note?`<p class="operation-note">${note}</p>`:''}<button type="button" class="proof-detail-link" data-proof-detail="${esc(key)}" aria-haspopup="dialog">${english?'Proof and derivation':'证明与推导'} <span aria-hidden="true">↗</span></button></div>`;
 }

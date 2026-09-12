@@ -1,4 +1,4 @@
-import {proofPanel} from './proof-panel.js?v=99';
+import {proofPanel} from './proof-panel.js?v=109';
 // Page cohomology belongs to the mathematical exposition, below the page diagram.
 // These kernels and images are subspaces on E_r; they are not the filtered-total
 // spaces Z_r and B_r introduced later in the notebook.

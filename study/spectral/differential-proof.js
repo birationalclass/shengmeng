@@ -1,7 +1,7 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=99';
+import {proofPanel,proofSections} from './proof-panel.js?v=109';
 import {cycleDefinition,boundaryDefinition,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=97';
-import {cohomologyExposition} from './cohomology-view.js?v=99';
+import {cohomologyExposition} from './cohomology-view.js?v=109';
 // The current entry selects a concise exposition; details never change the diagram.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
