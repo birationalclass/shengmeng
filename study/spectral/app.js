@@ -6,7 +6,7 @@ import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=8
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=101';
+import {createStabilityView} from './stability-view.js?v=102';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=99';
 import {createReadingRail} from './reading-rail.js?v=82';
@@ -286,7 +286,7 @@ function arrowConcept(type){return type==='h'?'delta1':type==='v'?'delta2':'diff
 function renderWorkspaceState(){
  const diagram=$('#diagram'),canSelect=!!initialTraceContext(state);
  diagram.classList.toggle('origin-selection',canSelect);
- const deck=$('.slide-deck'),cover=state.cover;deck.dataset.module=state.module;$('.visualization-module').classList.toggle('general-page-mode',state.module==='learn'&&state.step===5);
+ const deck=$('.slide-deck'),cover=state.cover;deck.dataset.module=state.module;$('.visualization-module').classList.toggle('general-page-mode',state.module==='learn'&&state.step===5||isTransitionReading());
  document.body.classList.toggle('at-cover',cover);
  deck.classList.toggle('is-building',isDoubleComplexView());deck.classList.toggle('is-coordinate-intro',isDoubleComplexView()&&state.initialReveal<0);deck.classList.toggle('is-cover',cover);deck.classList.toggle('has-diagram',!cover);deck.classList.toggle('has-explanation',!cover);
  if(cover)window.spectralBoot?.showCover();$('.slide-body').inert=cover;$('#visualPanel').inert=cover;
@@ -531,7 +531,10 @@ function renderOperation(){
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
-function fixedDiagram(){
+function isTransitionReading(){return !state.cover&&state.module==='converge'&&state.step===0&&state.notePage===0;}
+// This explanatory entry keeps the preceding differential page as its visual.
+function diagramState(){return isTransitionReading()?{...state,module:'learn',step:5,notePage:1,annotationStep:4,r:Math.max(1,state.r)}:state;}
+function fixedDiagram(state=diagramState()){
  const n=state.n,p=state.p,a=state.annotationStep||0,m=state.module,s=state.step;
  let base=svgStart(GRID_MAX,GRID_MAX),end=base.indexOf('</defs>')+7;
  let frame=base.slice(end),edges='',terms='',overlay='',caption='',kind='K',h=false,v=false,filter=false,total=false,selected=false;
@@ -755,7 +758,7 @@ function syncInitialEntrance(){
 // Legacy graded controls select the same two stages as the left-hand entry.
 document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();selectInitialBuild(11,button.dataset.gradedView==='differential'?1:0);});
 
-function playbackKey(){return state.cover?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.filtrationStep}:${state.initialReveal===11?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
+function playbackKey(){return state.cover||isTransitionReading()?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.filtrationStep}:${state.initialReveal===11?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
 function playbackKind(){
  if(isDoubleComplexView())return [0,1,2,7,9,10].includes(state.initialReveal)||state.initialReveal===11&&state.gradedMode==='space'?'entrance':'demonstration';
  return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0&&state.notePage===1?'demonstration':'entrance';

@@ -31,7 +31,6 @@ export function createStabilityView({viewport,board,controls,math,language}){
   }
  }
  function draw(){
-  if(context.step===0&&context.notePage===0){drawTransition();return;}
   cancel();const e=current(),{p,q,r}=e,source=point(p-r,q+r-1),center=point(p,q),target=point(p+r,q-r+1);
   const previous=scene,fid=`stability-flow-${++sceneSerial}`;scene=document.createElement('div');scene.className='stability-scene';scene.dataset.flowId=fid;
   let svg=`<defs><marker id="stability-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker><linearGradient id="${fid}" gradientUnits="userSpaceOnUse"><stop stop-color="#f4d89b" stop-opacity="0"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#fff0bd"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#f4d89b" stop-opacity="0"/></linearGradient></defs><path class="stability-axis" d="M24,322 H792 M260,432 V18"/>`,labels=label(75,25,`E_${r}`,100,'page-title')+label(560,15,R`p=${p},\quad q=${q},\quad r=${r}`,360,'parameters')+label(805,322,'i',25,'axis')+label(244,17,'j',25,'axis');
@@ -56,20 +55,6 @@ export function createStabilityView({viewport,board,controls,math,language}){
   updateMode();diagnostic();
  }
 
- function drawTransition(){
-  cancel();const previous=scene;scene=document.createElement('div');scene.className='stability-scene transition-scene';
-  const svg=`<defs><marker id="transition-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>
-  <rect x="85" y="80" width="405" height="355" rx="26" fill="#11272d" stroke="#53777d" stroke-width="1"/>
-  <ellipse cx="290" cy="270" rx="158" ry="117" fill="#78bdce0a" stroke="#8ec9d4" stroke-width="1.4"/>
-  <ellipse cx="256" cy="314" rx="88" ry="42" fill="#efce8510" stroke="#debe77" stroke-width="1.2"/>
-  <path d="M450,250 H627" fill="none" stroke="#80dacf" stroke-width="1.5" color="#80dacf" marker-end="url(#transition-tip)"/>
-  <rect x="633" y="213" width="133" height="74" rx="14" fill="#7bdbc810" stroke="#80dacf" stroke-width="1.2"/>`;
-  const labels=label(285,118,R`E_r^{p,q}`,210,'page-title')+label(290,211,R`\ker d_r^{p,q}`,240,'central')+label(256,311,R`\operatorname{im}d_r^{p-r,q+r-1}`,200,'map')+label(540,222,R`\pi_r^{p,q}`,130,'map')+label(700,250,R`E_{r+1}^{p,q}`,125,'page-title')+label(420,477,R`\ker\pi_r^{p,q}=\operatorname{im}d_r^{p-r,q+r-1}`,650,'central');
-  scene.innerHTML=`<svg viewBox="0 0 840 525" role="img" aria-label="${t('微分的像包含于核，核取商得到下一页；空间大小不表示维数','The image lies in the kernel; quotienting the kernel gives the next page. Shapes do not encode dimensions')}">${svg}</svg>${labels}`;
-  host.append(scene);if(previous){previous.setAttribute('aria-hidden','true');if(visualMotion().reduced)previous.remove();else previous.animate([{opacity:getComputedStyle(previous).opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards'}).finished.then(()=>previous.remove(),()=>previous.remove());}
-  if(!visualMotion().reduced)scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().enter,easing:visualMotion().easing});
-  diagnostic();
- }
  function updateMode(){
   if(!scene)return;scene.dataset.mode=mode;
   for(const path of scene.querySelectorAll('[data-map]'))path.classList.toggle('is-emphasized',mode==='stable'||path.dataset.map===mode);
@@ -103,8 +88,8 @@ export function createStabilityView({viewport,board,controls,math,language}){
  toolbar.addEventListener('change',e=>{if(!active||e.target.id!=='stabilityExample')return;exampleIndex=Number(e.target.value);draw();paintControls();proof.render({state:context,example:current()});animate(mode);});
  const fit=()=>fitDiagramSurface(viewport,host,'--stability-scale');new ResizeObserver(fit).observe(viewport);
  return {play:()=>animate(mode),clear:cancel,isPlaying:()=>frame!==0,sync(s){
-  const was=active;active=!s.cover&&s.module==='converge'&&s.step<=1;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===0&&s.notePage===0;viewport.classList.toggle('has-stability-view',active);
-  if(!active){if(was)cancel();key='';proof.render(null);diagnostic();return;}
+  const was=active,expositionOnly=!s.cover&&s.module==='converge'&&s.step===0&&s.notePage===0;active=!s.cover&&s.module==='converge'&&s.step<=1&&!expositionOnly;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===0&&s.notePage===0;viewport.classList.toggle('has-stability-view',active);
+  if(!active){if(was)cancel();key='';proof.render(expositionOnly?{state:s,example:current()}:null);diagnostic();return;}
   const next=[s.step,s.notePage,language()].join(':');if(next!==key){key=next;proof.render({state:s,example:current()});mode=proof.mode();draw();paintControls();}else proof.render({state:s,example:current()});fit();
  }};
 }
