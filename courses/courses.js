@@ -6,7 +6,9 @@
   const count = document.querySelector('#resultCount');
   let chapter = 'all';
   document.querySelector('.filterbar').hidden = false;
+  const plannedHours = Number(document.querySelector('[data-planned-hours]')?.dataset.plannedHours || 0);
   const describe = (items) => {
+    if (items.length === rows.length && plannedHours > 0) return `${items.length} 项安排 · 全学期 ${plannedHours} 学时`;
     const lessons = items.filter(row => row.dataset.calendar !== 'true').length;
     if (lessons === items.length) return `${lessons} 次课 · ${lessons * 2} 学时`;
     if (!lessons) return `${items.length} 项安排 · 具体时段待定`;
