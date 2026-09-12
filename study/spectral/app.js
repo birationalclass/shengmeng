@@ -1,4 +1,4 @@
-import {createDifferentialSweep} from './differential-sweep.js?v=119';
+import {createDifferentialSweep} from './differential-sweep.js?v=120';
 import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=109';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
