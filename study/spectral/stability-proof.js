@@ -1,4 +1,4 @@
-import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=111';
+import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=112';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {proofPanel,proofSections} from './proof-panel.js?v=109';
 
