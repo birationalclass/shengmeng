@@ -6,9 +6,6 @@
   const count = document.querySelector('#resultCount');
   let chapter = 'all';
   document.querySelector('.filterbar').hidden = false;
-  const print = document.querySelector('#printSchedule');
-  print.hidden = false;
-  print.addEventListener('click', () => window.print());
   const describe = (items) => {
     const lessons = items.filter(row => row.dataset.calendar !== 'true').length;
     if (lessons === items.length) return `${lessons} 次课 · ${lessons * 2} 学时`;
