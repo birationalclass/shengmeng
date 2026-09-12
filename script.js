@@ -1,6 +1,6 @@
 const translations = {
   zh: {
-    navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
+    navCourses: "课程", navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
     heroKicker: "华东师范大学 · 研究员", heroLine1: "结构、动力，", heroLine2: "与智能发现。",
     heroIntro: "我研究代数几何与动力系统，并探索人工智能如何辅助数学推理、拓展战略世界与交互体验。", exploreResearch: "探索研究", playGame: "试玩《无尽》", openVisualLab: "可视化实验室", openPascal: "探索帕斯卡定理",
     coreFields: "2023 年以来的近期论文", phdYear: "新加坡国立大学数学博士", openQuestions: "开放问题，严谨方法", newFrontiers: "数学与游戏的新边界",
