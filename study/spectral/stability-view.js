@@ -1,6 +1,6 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {visualMotion} from './visual-style.js?v=41';
-import {createStabilityProof} from './stability-proof.js?v=110';
+import {createStabilityProof} from './stability-proof.js?v=111';
 
 export const stabilityExamples=Object.freeze([{p:1,q:1,r:3},{p:0,q:0,r:2},{p:1,q:0,r:2}]);
 // All positions share one coordinate map. Negative indices, not a display edge,
