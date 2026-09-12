@@ -9,6 +9,12 @@
   const print = document.querySelector('#printSchedule');
   print.hidden = false;
   print.addEventListener('click', () => window.print());
+  const describe = (items) => {
+    const lessons = items.filter(row => row.dataset.calendar !== 'true').length;
+    if (lessons === items.length) return `${lessons} 次课 · ${lessons * 2} 学时`;
+    if (!lessons) return `${items.length} 项安排 · 具体时段待定`;
+    return `${items.length} 项安排 · ${lessons} 次课 / ${lessons * 2} 学时`;
+  };
   const apply = () => {
     const query = search.value.trim().toLocaleLowerCase();
     let visible = 0;
@@ -16,7 +22,7 @@
       row.hidden = !((chapter === 'all' || row.dataset.chapter === chapter) && row.textContent.toLocaleLowerCase().includes(query));
       if (!row.hidden) visible++;
     });
-    count.textContent = `${visible} 次课 · ${visible * 2} 学时`;
+    count.textContent = describe(rows.filter(row => !row.hidden));
     document.querySelector('.no-results').hidden = visible !== 0;
   };
   filters.forEach(button => button.addEventListener('click', () => {
@@ -38,6 +44,6 @@
       apply();
     });
   }
-  window.addEventListener('beforeprint', () => { count.textContent = '24 次课 · 48 学时'; });
+  window.addEventListener('beforeprint', () => { count.textContent = describe(rows); });
   window.addEventListener('afterprint', apply);
 })();
