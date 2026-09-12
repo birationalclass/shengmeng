@@ -76,7 +76,7 @@
     }catch(error){root.dataset.unavailable='true';leaveOpening();initialization=null;}
   }
   dialog.addEventListener('keydown',event=>{
-    if(event.key===' '&&!event.repeat&&!panel.contains(event.target)&&event.target!==toggle){event.preventDefault();leaveOpening();}
+    if(event.key===' '&&!event.repeat&&!panel.contains(event.target)){event.preventDefault();leaveOpening();}
   });
   dialog.addEventListener('cancel',event=>{event.preventDefault();if(!panel.hidden)closeSettings(true);else leaveOpening();});
   panel.querySelector('[data-enter-course]').addEventListener('click',leaveOpening);
