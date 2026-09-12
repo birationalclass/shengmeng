@@ -1,3 +1,4 @@
+import {createDifferentialSweep} from './differential-sweep.js?v=118';
 import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=109';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
@@ -60,6 +61,7 @@ const stabilityView=createStabilityView({viewport:$('.diagram-viewport'),board:$
 const abutmentView=createAbutmentView({viewport:$('.diagram-viewport'),board:$('#operationBoard'),controls:$('#diagramControls'),math,language});
 const filteredView=createFilteredView({viewport:$('.diagram-viewport'),diagram:$('#diagram'),point:(p,q)=>xy(p,q),board:$('#operationBoard'),math,language});
 const degreeSweep=createDegreeSweep({diagram:$('#diagram'),read:()=>state.n,write:n=>{state.n=n;render(false);if($('#nRange')){$('#nRange').value=n;$('#nRange').nextElementSibling.textContent=n;}},outline:n=>diagonalRegion(xy(0,n),xy(n,0)),line:n=>`M${xy(0,n)} L${xy(n,0)}`});
+const differentialSweep=createDifferentialSweep({host:$('#diagram'),point:(p,q)=>xy(p,q),math});
 const pageFormation=createPageFormation({host:$('#diagram'),point:(p,q)=>xy(p,q),math});
 const gradedTrace=createGradedTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),read:()=>state});
 const totalTrace=createTotalTrace({host:$('#diagram'),point:(p,q)=>xy(p,q),origin:differentialOrigin});
@@ -558,7 +560,7 @@ function fixedDiagram(state=diagramState()){
   if(s===2&&a>0)caption=raw`E_0^{${p},${n-p}}\cong K^{${p},${n-p}}`;
   if(s===3){kind=a>=2?'E_1':'E_0';v=a===1;caption=a>=2?raw`E_1^{i,j}\cong H^j(K^{i,\bullet},\delta_2)`:raw`d_0[a]=[Da]=[\delta_2a]`;}
   if(s===4){kind=a>=3?'E_2':'E_1';h=a>=1&&a<3;caption=a>=3?raw`E_2^{i,j}\cong H^i(E_1^{\bullet,j},d_1)`:raw`d_1[a]=[\delta_1a]`;}
-  if(s===5){const r=Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a>=3)overlay+=label(420,22,raw`r=${r}`,160,32);if(a===4&&1+r<=GRID_MAX&&3-r>=0)edges+=line(...xy(1,2),...xy(1+r,3-r),'r',true,`d_${r}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
+  if(s===5){const r=a===4?0:Math.max(1,state.r);kind=a===5?`E_${r+1}`:a>=3?`E_${r}`:'K';if(a>=3)overlay+=label(420,22,raw`r=${r}`,160,32);if(a===4)edges+=line(...xy(0,3),...xy(0,4),'r',true,`d_0^{0,3}`);if(a<=2){total=true;filter=true;}caption=a<=2?raw`Z_r^{p,q},B_r^{p,q}\subseteq C^{p+q}`:raw`d_r:E_r^{p,q}\to E_r^{p+r,q-r+1}`;}
  }
  if(m==='learn'&&s===6){
   kind='K';h=v=total=filter=selected=false;edges='';
@@ -761,7 +763,7 @@ document.addEventListener('click',event=>{const button=event.target.closest('[da
 function playbackKey(){return state.cover||isTransitionReading()?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.filtrationStep}:${state.initialReveal===11?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
 function playbackKind(){
  if(isDoubleComplexView())return [0,1,2,7,9,10].includes(state.initialReveal)||state.initialReveal===11&&state.gradedMode==='space'?'entrance':'demonstration';
- return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0&&state.notePage===2?'demonstration':'entrance';
+ return state.module==='learn'&&(state.step===6||state.step===5||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0&&state.notePage===2?'demonstration':'entrance';
 }
 function syncPlayback(){playback.sync({key:playbackKey(),kind:playbackKind(),hasEntrance:state.module==='learn'&&state.step===6&&state.notePage===0});}
 async function playCurrentEntrance({waitUntil}){
@@ -772,6 +774,7 @@ async function playCurrentEntrance({waitUntil}){
 }
 
 function stopDiagramAnimation(){
+ differentialSweep.clear({keep:isTransitionReading()});
  pageFormation.clear();squareTrace.clear();totalTrace.clear();gradedTrace.clear();filtrationTrace.clear();degreeSweep.stop();filtrationSweep.stop();initialAnimations.clear();filteredView.stop();stabilityView.clear();evolution.clear();
  definitionAnimations.forEach(releaseEmphasis);definitionAnimations=[];
 }
@@ -793,6 +796,7 @@ async function playCurrentAnimation({signal,waitUntil,wait}){
   else if(concept==='gradedmap')await run(()=>gradedTrace.play(true),gradedTrace.isPlaying);
   else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
  }else if(state.module==='learn'&&state.step===5&&state.notePage===0)await pageFormation.play(Math.max(1,state.r));
+ else if(state.module==='learn'&&state.step===5&&state.notePage===1)await differentialSweep.play({signal,wait});
  else if(state.module==='learn'&&state.step===6)await run(()=>filteredView.play(),filteredView.isPlaying);
  else if(state.module==='learn'&&state.step===4&&state.notePage===0)await evolution.play();
  else if(state.module==='converge'&&state.step===0&&state.notePage===2)await run(()=>stabilityView.play(),stabilityView.isPlaying);
