@@ -1,0 +1,24 @@
+/* A single reading surface, with details available on demand. */
+.exposition-summary {display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0}
+.slide-deck .proof-formula {display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;appearance:none;border:0;border-radius:4px;background:transparent;color:inherit;padding:5px 3px;margin:0;text-align:center;cursor:pointer;overflow-x:auto;overflow-y:hidden;touch-action:manipulation}
+.proof-formula:hover {background:#9fc4c507}
+.proof-formula:focus-visible,.proof-detail-link:focus-visible {outline:1px solid var(--teal);outline-offset:2px}
+.proof-formula .katex-display {margin:.4em 0}
+.proof-detail-link {align-self:flex-end;appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;padding:7px 3px;cursor:pointer;touch-action:manipulation}
+.proof-detail-link:hover {color:var(--ink)}
+#proofDetailDialog {width:min(940px,calc(100vw - 40px));max-width:none;max-height:calc(100dvh - 48px);box-sizing:border-box;padding:0;border:1px solid #a9c7cb38;border-radius:14px;background:#10262e;color:var(--ink,#edf5f3);box-shadow:0 20px 70px #0008;overflow:hidden}
+#proofDetailDialog[open] {display:flex;flex-direction:column}
+#proofDetailDialog::backdrop {background:#031015bd;backdrop-filter:blur(5px)}
+.proof-detail-header {display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 20px;border-bottom:1px solid #abc5c529;flex:none}
+.proof-detail-header h2 {margin:0;font-size:21px;font-weight:500;line-height:1.5}
+.proof-detail-header button {flex:none;width:44px;height:44px;padding:0;appearance:none;border:0;border-radius:7px;background:transparent;color:var(--muted);font:28px/1 system-ui;cursor:pointer}
+.proof-detail-header button:hover {color:var(--ink);background:#bbd3d309}
+.proof-detail-content {min-height:0;overflow:auto;overscroll-behavior:contain;padding:6px 28px 25px;font-size:17px;line-height:1.9;scrollbar-width:thin;scrollbar-color:#506b73 transparent}
+.proof-detail-section {padding:17px 0;border-bottom:1px solid #abc5c51a}
+.proof-detail-section:last-child {border-bottom:0}
+.proof-detail-section h3 {margin:0 0 12px;font-size:17px;font-weight:500;color:var(--teal)}
+.proof-detail-content .operation-equation {max-width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 0;font-size:19px}
+.proof-detail-content p {margin:12px 0}
+.proof-detail-content a {color:var(--teal)}
+@media(max-height:540px){#proofDetailDialog{max-height:calc(100dvh - 16px)}.proof-detail-header{padding:5px 15px}.proof-detail-content{padding:0 20px 18px}}
+@media(max-width:600px){#proofDetailDialog{width:calc(100vw - 20px)}.proof-detail-content{font-size:16px;padding-inline:16px}.proof-detail-content .operation-equation{font-size:17px}}

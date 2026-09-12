@@ -1,13 +1,13 @@
+import {proofPanel} from './proof-panel.js?v=99';
 // Page cohomology belongs to the mathematical exposition, below the page diagram.
 // These kernels and images are subspaces on E_r; they are not the filtered-total
 // spaces Z_r and B_r introduced later in the notebook.
-export function cohomologyExposition({r,phase,point,math,t}) {
+function cohomologyDetail({r,phase,point,math,t}) {
  const {p,q}=point,ip=p-r,iq=q+r-1,op=p+r,oq=q-r+1;
  const incomingZero=ip<0||iq<0,outgoingZero=op<0||oq<0;
  const E=(a,b)=>a<0||b<0?'0':`E_{${r}}^{${a},${b}}`,map=`d_{${r}}^{${p},${q}}`,input=`d_{${r}}^{${ip},${iq}}`;
  const shift=(x,n)=>n===0?x:`${x}${n>0?'+':''}${n}`;
  const names=[t('复形','Complex'),t('取核','Kernel'),t('像包含于核','Image in kernel'),t('取商','Quotient')];
- const tabs=`<nav class="co-exposition-tabs" aria-label="${t('上同调构造的原理','How page cohomology is formed')}">${names.map((name,i)=>`<button data-co-phase="${i}" aria-pressed="${phase===i}">${name}</button>`).join('')}</nav>`;
  const formulas=[
   [`${E(ip,iq)}\\xrightarrow{d_{${r}}}${E(p,q)}\\xrightarrow{d_{${r}}}${E(op,oq)}`,`d_{${r}}^2=0`],
   [`\\ker ${map}=\\{z\\in ${E(p,q)}:${map}z=0\\}`],
@@ -25,5 +25,11 @@ export function cohomologyExposition({r,phase,point,math,t}) {
   formulas.push(incomingZero?'\\pi(z+0)=\\pi(z)=[z]_H':`\\pi(z+b)=\\pi(z)=[z]_H,\\qquad b\\in\\operatorname{im}(${input})`);
  }
  const notes=[r===0?t('固定一列，对每个位置取上同调，组成右上方的下一页。','Take cohomology in each column to form the next page above.'):t('微分的双次数为 (r,1−r)。','The differential has bidegree (r,1−r).'),t('区域只表示子空间的包含关系，不表示维数。','Regions indicate subspace inclusion, not dimension.'),t('因为微分的平方为零，所有边界都是闭元。','Every boundary is a cocycle because the differential squares to zero.'),t('此商是上同调空间，与下一页自然同构。π 映到该上同调空间，Ψ⁻¹ 将上同调类送到下一页；新微分由 D 诱导。','This cohomology quotient is naturally isomorphic to the next page. The map π takes a cocycle to its cohomology class; Ψ⁻¹ then identifies it with the next page. The new differential is induced by D.')];
- return `${tabs}<div class="operation-content evolution-exposition">${formulas.slice(0,phase===3?2:formulas.length).map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}${diagram}${phase===3?`<div class="operation-equation">${math(formulas[2],true)}</div>`:''}</div><p class="operation-note">${notes[phase]}</p>`;
+ return `<div class="operation-content evolution-exposition">${formulas.slice(0,phase===3?2:formulas.length).map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}${diagram}${phase===3?`<div class="operation-equation">${math(formulas[2],true)}</div>`:''}</div><p class="operation-note">${notes[phase]}</p>`;
+}
+
+export function cohomologyExposition({r,point,math,t,language}){
+ const names=[t('复形','Complex'),t('核','Kernel'),t('像包含于核','Image lies in the kernel'),t('上同调商','Cohomology quotient')];
+ const details=names.map((name,phase)=>`<section class="proof-detail-section"><h3>${name}</h3>${cohomologyDetail({r,phase,point,math,t})}</section>`).join('');
+ return proofPanel({key:'page-cohomology',title:t('从本页到下一页','From one page to the next'),formulas:[String.raw`E_{r+1}^{p,q}\cong\frac{\ker d_r^{p,q}}{\operatorname{im}d_r^{p-r,q+r-1}}`],note:t(`此处 ${math('r='+r)}。由 ${math('d_r^2=0')}，像包含于核；取商得到上同调，与下一页自然同构。`,`Here ${math('r='+r)}. Since ${math('d_r^2=0')}, the image lies in the kernel; the quotient is cohomology, naturally isomorphic to the next page.`),details,math,language});
 }

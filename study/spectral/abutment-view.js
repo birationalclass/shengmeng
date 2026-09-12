@@ -1,5 +1,6 @@
+import {proofPanel,proofSections} from './proof-panel.js?v=99';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {replaceMathContent} from './math-transitions.js?v=64';
+import {replaceMathContent} from './math-transitions.js?v=97';
 import {visualMotion} from './visual-style.js?v=41';
 
 // A filtration of total cohomology, not a decomposition or a choice of basis.
@@ -8,11 +9,11 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
  const host=document.createElement('div');host.id='abutmentView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  const toolbar=document.createElement('nav');toolbar.id='abutmentControls';toolbar.hidden=true;controls.append(toolbar);
- let active=false,context=null,n=3,p=1,key='',steps={hfiltration:0,convergence:0,notation:0,degeneration:0};
+ let active=false,context=null,n=3,p=1,key='';
  const label=(x,y,tex,width=240,kind='')=>`<span class="abutment-label ${kind}" style="left:${x-width/2}px;top:${y-22}px;width:${width}px">${math(tex)}</span>`;
  const formula=f=>`<div class="operation-equation">${math(f,true)}</div>`;
  const filtrationProof=[
-  {name:['诱导滤过','Induced filtration'],f:[R`H^n:=H^n(C^\bullet,D)`,R`F^pH^n:=\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\longrightarrow H^n\right)`],note:()=>t('使用子复形的包含映射在上同调上的像。这个映射未必单射，因此不能把其定义域直接当作滤过子空间。','Use the image of the map on cohomology induced by inclusion of subcomplexes. This map need not be injective, so its domain is not itself the filtration subspace.')},
+  {name:['诱导滤过','Induced filtration'],f:[R`H^n:=H^n(C^\bullet,D)`,R`F^pH^n:=\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\xrightarrow{H^n(\iota_p)} H^n\right)`],note:()=>t('使用子复形的包含映射在上同调上的像。这个映射未必单射，因此不能把其定义域直接当作滤过子空间。','Use the image of the map on cohomology induced by inclusion of subcomplexes. This map need not be injective, so its domain is not itself the filtration subspace.')},
   {name:['闭代表元','Closed representatives'],f:[R`Z^n:=\ker(D:C^n\to C^{n+1}),\quad B^n:=\operatorname{im}(D:C^{n-1}\to C^n)`,R`F^pH^n=\frac{(F^pC^n\cap Z^n)+B^n}{B^n}\subseteq H^n`,R`[a]_H\in F^pH^n\iff\exists z\in F^pC^n\cap Z^n:\ [a]_H=[z]_H`],note:()=>t('条件是存在该滤过中的闭代表元；原先选定的代表元本身未必在该滤过中。','The condition is the existence of a cocycle representative in the filtration; a previously chosen representative need not itself lie there.')},
   {name:['有限滤过','Finite filtration'],f:[R`H^n=F^0H^n\supseteq F^1H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`,R`\operatorname{Gr}_F^pH^n:=F^pH^n/F^{p+1}H^n`],note:()=>t('第一象限给出 F⁰C•=C• 以及 Fⁿ⁺¹Cⁿ=0。图中的箭头是包含映射，各框大小不表示维数；相邻滤过项可以相等。','The first quadrant gives F⁰C•=C• and Fⁿ⁺¹Cⁿ=0. Arrows in the diagram are inclusions; box sizes do not encode dimensions, and adjacent filtration terms may coincide.')}
  ];
@@ -43,11 +44,15 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','notation','degeneration'][context.notePage||0];}
  function exposition(){
   const topic=expositionTopic();if(topic==='definition'){definitionExposition();return;}
-  const entries={hfiltration:filtrationProof,convergence:convergencePropertyProof,notation:notationProof,degeneration:degenerationProof}[topic],i=steps[topic],entry=entries[i];
-  board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  const navigation=entries.length>1?`<nav class="proof-steps" aria-label="${t('数学阐述步骤','Exposition steps')}">${entries.map((e,j)=>`<button data-abutment-proof="${j}" aria-pressed="${i===j}">${j+1}. ${t(...e.name)}</button>`).join('')}</nav>`:'';
-  const instance=['hfiltration','convergence'].includes(topic)?`<p class="operation-note">${math(R`H^n=H^n(C^\bullet,D),\quad n=${n},\quad p=${p},\quad q=${n-p}`)}</p>`:'';
-  replaceMathContent(board,`${navigation}<div class="operation-content evolution-exposition">${entry.f.map(formula).join('')}</div><p class="operation-note">${entry.note()}</p>${instance}<p class="operation-note proof-reference">${references(entry)}</p>`);
+  const entries={hfiltration:filtrationProof,convergence:convergencePropertyProof,notation:notationProof,degeneration:degenerationProof}[topic],entry=entries[0];
+  board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
+  const summaries={
+   hfiltration:{f:[R`[a]_H\in F^pH^n\iff\exists z\in F^pC^n:\ Dz=0,\ [a]_H=[z]_H`],note:t('要求存在该滤过中的闭代表元；原先选定的代表元未必在其中。','A cocycle representative in this filtration must exist; a previously chosen representative need not lie there.')},
+   convergence:{f:[R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}(C^\bullet,D)`],note:t('将滤过中的闭元送到其上同调类，再对下一层滤过取商。该映射满射，核恰为稳定商的分母。','Send a filtered cocycle to its cohomology class modulo the next filtration. This map is surjective, with kernel equal to the denominator of the stable quotient.')},
+   notation:{f:[notationProof[0].f[2]],note:t('E₂ 标示有明确描述的起始页，不表示第二页已经稳定。','E₂ labels the starting page with an explicit description; it does not assert stabilization on page two.')},
+   degeneration:{f:degenerationProof[0].f.slice(0,2),note:t('退化是所有后续微分为零的额外条件，收敛本身不保证它成立。','Degeneration imposes the additional condition that every later differential vanish; convergence alone does not imply it.')}
+  },summary=summaries[topic];
+  replaceMathContent(board,proofPanel({key:'abutment-'+topic,title:t(...entries[0].name),formulas:summary.f,note:summary.note,details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note()})+`<p>${references(entry)}</p>`,math,language}));
  }
  function draw(){
   const y=i=>105+54*i,final=context.step===3,applied=context.step===2||context.notePage===1;
@@ -80,7 +85,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   if(e.target.matches('[data-abutment-n]')){n=Number(e.target.value);p=Math.min(p,n);const input=toolbar.querySelector('[data-abutment-p]');input.max=n;input.value=p;input.nextElementSibling.textContent=p;}else p=Number(e.target.value);
   e.target.nextElementSibling.textContent=e.target.value;draw();exposition();
  });
- board.addEventListener('click',e=>{const button=e.target.closest('[data-abutment-proof]');if(!active||!button)return;e.stopPropagation();steps[expositionTopic()]=Number(button.dataset.abutmentProof);exposition();});
+
  return {sync(s){
   const wasActive=active;active=!s.cover&&s.module==='converge'&&s.step>=2;context=s;
   host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active;viewport.classList.toggle('has-abutment-view',active);

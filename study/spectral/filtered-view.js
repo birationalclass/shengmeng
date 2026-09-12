@@ -1,28 +1,28 @@
+import {proofPanel,proofSections} from './proof-panel.js?v=99';
 import {createFilteredCycles} from './filtered-cycles.js?v=95';
 import {createFilteredDemo} from './filtered-demo.js?v=92';
-import {replaceMathContent} from './math-transitions.js?v=40';
+import {replaceMathContent} from './math-transitions.js?v=97';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
 export function createFilteredView({viewport,diagram,point,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
  const demo=createFilteredDemo({host:diagram,point}),cycles=createFilteredCycles({host:diagram,point,math});
- let state=null,active=false,key='',topic='Z';const steps={Z:0,B:0};let inclusionStep=0;
+ let state=null,active=false,key='',topic='Z';
  const pageIndex=()=>Math.max(1,state.r);
  const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']]};
  function inclusionExposition(){
   const entries=[
-   {name:['边界项','Boundary term'],f:[R`n=p+q,\quad r,s\in\mathbb Z`,R`x\in B_s^{p,q}\Longrightarrow x=Db\in F^pC^n`,R`Dx=D^2b=0\in F^{p+r}C^{n+1}`,R`B_s^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_r^{p,q}`],note:t('任何这里的边界都是总复形的闭元，所以满足每一个 Zᵣ 的像条件。图中沿用 1.12 的例子，蓝色像属于 B₂¹¹，因此也属于 Zᵣ¹¹。','Every such boundary is a total cocycle, so it satisfies the image condition for every Zᵣ. In the example from 1.12, the blue images lie in B₂¹¹ and hence in Zᵣ¹¹.')},
+   {name:['边界项','Boundary term'],f:[R`n=p+q,\quad r,s\in\mathbb Z`,R`x\in B_s^{p,q}\Longrightarrow x=Db\in F^pC^n`,R`Dx=D^2b=0\in F^{p+r}C^{n+1}`,R`B_s^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_r^{p,q}`],note:t('任何这里的边界都是总复形的闭元，所以满足每一个 Zᵣ 的像条件。图中沿用 1.14 的例子，蓝色像属于 B₂¹¹，因此也属于 Zᵣ¹¹。','Every such boundary is a total cocycle, so it satisfies the image condition for every Zᵣ. In the example from 1.14, the blue images lie in B₂¹¹ and hence in Zᵣ¹¹.')},
    {name:['高滤过项','Higher-filtration term'],f:[R`z\in Z_{r-1}^{p+1,q-1}\Longleftrightarrow\begin{cases}z\in F^{p+1}C^n,\\Dz\in F^{(p+1)+(r-1)}C^{n+1}=F^{p+r}C^{n+1},\end{cases}`,R`F^{p+1}C^n\subseteq F^pC^n`,R`Z_{r-1}^{p+1,q-1}=Z_r^{p,q}\cap F^{p+1}C^n\subseteq Z_r^{p,q}`],note:t('总次数仍为 (p+1)+(q−1)=p+q；两个子空间要求相同的像条件。','The total degree remains (p+1)+(q−1)=p+q; both subspaces impose the same condition on the image.')},
    {name:['用于定义各页','Use in defining the pages'],f:[R`Z_{r-1}^{p+1,q-1}\subseteq Z_r^{p,q},\qquad B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`E_r^{p,q}:=\frac{Z_r^{p,q}}{Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}}\quad(r\ge0)`],note:t('分母是分子的子空间，因此 2.1 的商有定义。只证明 Bᵣ 包含于 Zᵣ 还没有检查完整的分母。','The denominator is a subspace of the numerator, so the quotient in 2.1 is defined. Bᵣ ⊆ Zᵣ alone does not check the entire denominator.')},
    {name:['图中的投影','Projection in the diagram'],f:[R`\pi_p:F^pC^{p+q}\longrightarrow K^{p,q},\qquad a\longmapsto a_p`,R`\ker(\pi_p|_{Z_r^{p,q}})=Z_{r-1}^{p+1,q-1}`,R`\varphi_r:\pi_p(Z_r^{p,q})\longrightarrow E_r^{p,q},\quad\pi_p(a)\longmapsto[a]_r`,R`\ker\varphi_r=\pi_p(B_{r-1}^{p,q})`,R`E_r^{p,q}\cong\frac{\pi_p(Z_r^{p,q})}{\pi_p(B_{r-1}^{p,q})}`],note:t('前两步保证这个映射不依赖提升 a；它满射，且核正是所示边界的投影。动画中从 K 小块分出的子空间是 πₚ(Zᵣ)，不是 Zᵣ 本身。','The preceding inclusions make the map independent of the lift a. It is surjective with the displayed kernel. The subspace split off from a K tile is πₚ(Zᵣ), not Zᵣ itself.')}
-  ],entry=entries[inclusionStep];
-  const note=entry.note.replace(/πₚ\(Zᵣ\)|B₂¹¹|Zᵣ¹¹|Bᵣ|Zᵣ/g,k=>math({'πₚ(Zᵣ)':R`\pi_p(Z_r^{p,q})`,'B₂¹¹':R`B_2^{1,1}`,'Zᵣ¹¹':R`Z_r^{1,1}`,'Bᵣ':'B_r','Zᵣ':'Z_r'}[k]));
-  board.dataset.currentProofTopic='inclusions';board.dataset.currentProofStep=String(inclusionStep);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${entries.map((e,i)=>`<button data-inclusion-proof="${i}" aria-pressed="${i===inclusionStep}">${i+1}. ${t(...e.name)}</button>`).join('')}</nav><div class="operation-content">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, pp. 34–35</a></p>`);
+  ];
+  board.dataset.currentProofTopic='inclusions';delete board.dataset.currentProofStep;
+  replaceMathContent(board,proofPanel({key:'inclusions',title:t('商空间分母的包含关系','The denominator is a subspace'),formulas:[entries[2].f[1]],note:t('D²=0 保证边界是闭元；高滤过项满足相同的像条件，因此整个分母都包含在分子中。','D²=0 makes boundaries cocycles; the higher-filtration term satisfies the same image condition, so the whole denominator lies in the numerator.'),details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note}),math,language}));
  }
  function exposition(){
   if(state.annotationStep===3){inclusionExposition();return;}
-  const r=pageIndex(),n=state.n,p=state.p,q=n-p,i=steps[topic];
+  const r=pageIndex(),n=state.n,p=state.p,q=n-p;
   const proof=topic==='Z'?[
    [R`r\in\mathbb Z,\quad n=p+q`,R`Z_r^{p,q}:=\{a\in F^pC^n:Da\in F^{p+r}C^{n+1}\}`,R`Z_r^{p,q}=\ker\big(F^pC^n\xrightarrow{D}C^{n+1}\xrightarrow{\pi}C^{n+1}/F^{p+r}C^{n+1}\big)`],
    [R`a=\sum_{i\ge p}a_i,\qquad a_i\in K^{i,n-i}`,R`(Da)_i=\delta_1a_{i-1}+\delta_2a_i`,R`a\in Z_r^{p,q}\iff\delta_1a_{i-1}+\delta_2a_i=0\quad(p\le i<p+r)`,R`a_i=0\quad(i<p)`],
@@ -72,10 +72,11 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
    R`B_{-1}^{p,q}=D(F^{p+1}C^{n-1})\subseteq F^{p+1}C^n`
   ]);
   note.push(t('Z、B 的公式对每个整数 r 都有意义。r≤0 时像条件自动满足；上面说明了相应化简。负滤过层也不应误认为零：第一象限下，j≤0 时 FʲCⁿ=Cⁿ。','The formulas for Z and B make sense for every integer r. For r≤0 the relevant image containment is automatic, giving the displayed simplifications. A negative filtration level is not zero: in the first quadrant, FʲCⁿ=Cⁿ for j≤0.'));
-  board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${topic==='Z'?t(`虚框内蓝点是 ${math('Z_2^{1,1}')} 中的示例。它们的像落入 ${math('F^3C^3')}；黄点的像在 ${math('C^3')} 中但不在 ${math('F^3C^3')} 中。`,`The outlined blue dots are samples in ${math('Z_2^{1,1}')}. Their images lie in ${math('F^3C^3')}; gold images lie in ${math('C^3')} outside ${math('F^3C^3')}.`):t('圆点代表总上链；蓝色像满足滤过条件，黄色像不满足。轨迹表示总微分 D。','Dots represent total cochains: blue images meet the filtration condition; gold images do not. Tracks represent the total differential D.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
+  board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
+  const entries=proof.map((f,j)=>({name:t(...names[topic][j]),f,note:note[j]}));
+  const summary=topic==='Z'?[R`a\in Z_r^{p,q}\iff a\in F^pC^n,\ Da\in F^{p+r}C^{n+1}`]:[proof[0][2],R`x\in B_r^{p,q}\Longrightarrow Dx=0`];
+  replaceMathContent(board,proofPanel({key:'filtered-'+topic,title:t(topic==='Z'?'滤过闭元的条件':'滤过边界的条件',topic==='Z'?'Filtered cocycle conditions':'Filtered boundary conditions'),formulas:summary,note:math(R`n=p+q`)+' · '+note[0],details:proofSections(entries,{math}),math,language}));
  }
- board.addEventListener('click',e=>{const proof=e.target.closest('[data-inclusion-proof]');if(proof&&active&&state.annotationStep===3){e.stopPropagation();inclusionStep=Number(proof.dataset.inclusionProof);inclusionExposition();return;}const button=e.target.closest('[data-filter-step]');if(!active||!button)return;e.stopPropagation();steps[topic]=Number(button.dataset.filterStep);exposition();});
  return {enter:()=>{if(topic==='Z')cycles.enter();},play:()=>topic==='Z'?cycles.play():demo.play(topic,true),stop:()=>{demo.clear();cycles.stop();},clear:()=>{demo.clear();cycles.clear();},isPlaying:()=>demo.isPlaying()||cycles.isPlaying(),sync(s){
   state=s;active=!s.cover&&s.module==='learn'&&s.step===6&&s.annotationStep>=1&&s.annotationStep<=3;
   viewport.classList.toggle('has-filtered-grid',active);

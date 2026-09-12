@@ -1,11 +1,11 @@
+import {proofPanel,proofSections} from './proof-panel.js?v=99';
 import {cycleDefinition,boundaryDefinition,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
-import {replaceMathContent} from './math-transitions.js?v=64';
-import {cohomologyExposition} from './cohomology-view.js?v=76';
-// This panel owns its proof steps. Navigating a proof never advances a notebook
-// statement, changes a page, or cancels a diagram animation.
+import {replaceMathContent} from './math-transitions.js?v=97';
+import {cohomologyExposition} from './cohomology-view.js?v=99';
+// The current entry selects a concise exposition; details never change the diagram.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- let context=null,key='',topic='d0',steps={e0:0,e1:0,er:0,d0:0,d1:0,dr:0},phase=3;
+ let context=null,key='',topic='d0';
  const explanations={
   e0:[
    {name:['页数与负指标','Pages and negative indices'],f:[R`n=p+q,\qquad r\le0`,R`Z_r^{p,q}=F^pC^n,\qquad Z_{r-1}^{p+1,q-1}=F^{p+1}C^n`,R`B_{r-1}^{p,q}=D(F^{p-r+1}C^{n-1})\subseteq F^{p+1}C^n`,R`\frac{Z_r^{p,q}}{Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}}=\frac{F^pC^n}{F^{p+1}C^n}=\operatorname{Gr}_F^pC^n`],note:['本笔记的谱序列页按 $r\\ge0$ 编号。$r=0$ 的分母使用辅助子空间 $Z_{-1},B_{-1}$。若形式地把商公式代入 $r<0$，得到的仍是关联分次，并不自动为零；本笔记不另设负页。注意 $p-(r-1)=p-r+1$、$(p+1)+(r-1)=p+r$。','Pages in this notebook are indexed by $r\\ge0$. The denominator at $r=0$ uses the auxiliary subspaces $Z_{-1},B_{-1}$. Substituting $r<0$ formally into the quotient still gives the associated graded, not necessarily zero; no negative pages are introduced here. Note $p-(r-1)=p-r+1$ and $(p+1)+(r-1)=p+r$.']},
@@ -48,23 +48,23 @@ export function createDifferentialProof({board,math,language}){
  };
  function noteMath(text){if(/\$[^$]+\$/.test(text))return text.split(/(\$[^$]+\$)/g).map(part=>part.startsWith('$')?math(part.slice(1,-1)):noteMath(part)).join('');return text.replace(/K\^\{p,q\}|F\^pC\^\{p\+q\}|a∈K\^\{p,q\}|\[a\]₀/g,token=>math({'a∈K^{p,q}':R`a\in K^{p,q}`,'[a]₀':R`[a]_0`}[token]||token));}
  function paint(){
-  const zero=context?.state.module==='learn'&&context.state.step===3;
-  const firstTerm=context?.state.module==='learn'&&context.state.step===4&&context.state.notePage===0;
   const pageTopic=context?.state.module==='learn'?({3:['e0','d0'],4:['e1','d1'],5:['er','dr']}[context.state.step]?.[context.state.notePage]):null;
   if(pageTopic)topic=pageTopic;
-  let html=topic==='dr'?`<p class="proof-emphasis"><strong>${t('关键区别','Key distinction')}</strong>${t(`对 ${math(R`r\ge1`)}，前一页 ${math(R`(E_{r-1},d_{r-1})`)} 通过取上同调确定 ${math(R`E_r`)} 的自然同构类，但不确定新的 ${math(R`d_r`)}。新微分需要原滤过复形 ${math(R`(C^\bullet,F,D)`)} 的信息。`,`For ${math(R`r\ge1`)}, the preceding page ${math(R`(E_{r-1},d_{r-1})`)} determines ${math(R`E_r`)} up to natural isomorphism by taking cohomology, but not the new ${math(R`d_r`)}. The new differential needs information from the original filtered complex ${math(R`(C^\bullet,F,D)`)}.`)}</p>`:'';
-  if(topic==='cohom')html+=cohomologyExposition({r:context.construction?.r??Math.max(0,context.current-1),phase,point:context.point,math,t});
-  else{
-   const entries=explanations[topic],entry=entries[steps[topic]];
-   html+=`${entries.length>1?`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${entries.map((e,i)=>`<button data-proof-step="${i}" aria-pressed="${steps[topic]===i}">${i+1}. ${t(...e.name)}</button>`).join('')}</nav>`:''}<div class="proof-body"><div class="operation-content evolution-exposition">${entry.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${noteMath(t(...entry.note))}</p></div>`;
+  if(topic==='cohom'){
+   replaceMathContent(board,cohomologyExposition({r:context.construction?.r??Math.max(0,context.current-1),point:context.point,math,t,language}));
+  }else{
+   const summaries={
+    e0:{f:explanations.e0[2].f,note:t('先将 K 中的元素自然嵌入滤过项，再取陪集；这里无需闭性条件。','Include the K-summand in the filtration term, then take its coset; no cocycle condition is required.')},
+    d0:{f:[R`[Da]_0=[\delta_2^{p,q}a]_0\quad(a\in K^{p,q})`,explanations.d0[2].f[0]],note:t('横向分量落入下一层滤过，在商中为零。因此 d₀ 对应纵向微分，而 D 本身仍有两个分量。','The horizontal component lies in the next filtration and vanishes in the quotient. Thus d₀ corresponds to the vertical differential, while D itself retains both components.')},
+    e1:{f:[explanations.e1[1].f[0],explanations.e1[2].f[0]],note:t('E₁ 自然同构于逐列上同调；陪集的代表元属于 Z₁。','E₁ is naturally isomorphic to column cohomology; a coset representative lies in Z₁.')},
+    d1:{f:[explanations.d1[2].f[1],R`\delta_2a=0,\quad a\in K^{p,q}`],note:t('反交换关系使 δ₁ 保持纵向闭元和边界，因此这个映射不依赖代表元。','Anticommutation makes δ₁ preserve vertical cocycles and boundaries, so this map is independent of the representative.')},
+    er:{f:[explanations.er[0].f[1],R`a\in Z_r^{p,q}\subseteq F^pC^{p+q}`],note:t('此处是模掉分母后的陪集。代表元是总上链，可以包含多个 K 分量。','This is a coset modulo the denominator. Its representative is a total cochain and may have several K-components.')},
+    dr:{f:[R`D(Z_r^{p,q})\subseteq Z_r^{p+r,q-r+1}`,R`d_r^{p,q}[a]_r=[Da]_r`],note:t(`双次数为 ${math('(r,1-r)')}。前一页上同调确定 ${math('E_r')} 的自然同构类，但新的 ${math('d_r')} 仍需要原滤过复形中的 ${math('D')}。`,`The bidegree is ${math('(r,1-r)')}. Preceding-page cohomology identifies ${math('E_r')}, but the new ${math('d_r')} still needs ${math('D')} in the original filtered complex.`)}
+   },summary=summaries[topic];
+   const details=proofSections(explanations[topic],{math,title:e=>t(...e.name),note:e=>noteMath(t(...e.note))});
+   replaceMathContent(board,proofPanel({key:topic,title:t('页、代表元与诱导微分','Pages, representatives and induced differentials'),formulas:summary.f,note:summary.note,details:details+'<p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=49" target="_blank" rel="noopener">McCleary, Theorem 2.6</a></p>',math,language}));
   }
-  if(['er','dr'].includes(topic))html+=`<p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=43" target="_blank" rel="noopener">McCleary, Definition 2.2, p. 29</a> · <a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=49" target="_blank" rel="noopener">Theorem 2.6, pp. 35–36</a></p>`;
-  if(zero||firstTerm)html+=`<p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=49" target="_blank" rel="noopener">McCleary, Theorem 2.6, pp. 35–36</a> · <a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=62" target="_blank" rel="noopener">McCleary, Theorem 2.15, pp. 48–49</a></p>`;
-  replaceMathContent(board,html);board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=topic==='cohom'?phase:steps[topic];
+  board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
  }
- board.addEventListener('click',e=>{
-  const button=e.target.closest('[data-proof-topic],[data-proof-step],[data-co-phase]');if(!button||!context)return;
-  e.stopPropagation();if(button.dataset.proofTopic){topic=button.dataset.proofTopic;}else if(button.dataset.proofStep!==undefined)steps[topic]=Number(button.dataset.proofStep);else phase=Number(button.dataset.coPhase);paint();
- });
- return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?(c.state.notePage===0?'er':'dr'):c.state.module==='learn'&&c.state.step===4?(c.state.notePage===0?'e1':'d1'):c.construction?'cohom':'d0';}paint();},reset(){key='';context=null;steps={e0:0,e1:0,er:0,d0:0,d1:0,dr:0};phase=3;}};
+ return {render(c){context=c;const nextKey=`${c.state.module}:${c.state.step}:${c.state.notePage}`;if(nextKey!==key){key=nextKey;topic=c.state.module==='learn'&&c.state.step===5?(c.state.notePage===0?'er':'dr'):c.state.module==='learn'&&c.state.step===4?(c.state.notePage===0?'e1':'d1'):c.construction?'cohom':'d0';}paint();},reset(){key='';context=null;}};
 }

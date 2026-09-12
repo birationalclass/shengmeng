@@ -2,7 +2,7 @@
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
  'learn:3':{section:2,first:3,items:[[1],[2]]},
- 'learn:6':{section:1,first:11,items:[[1],[2],[3]]},
+ 'learn:6':{section:1,first:13,items:[[1],[2],[3]]},
  'learn:4':{section:2,first:5,items:[[1],[2,3]]},
  'learn:5':{section:2,first:1,items:[[3],[4]],actions:[[1,2,3],[4]],focus:[3,4]},
  'converge:0':{section:2,first:7,items:[[1,2,3]]},
