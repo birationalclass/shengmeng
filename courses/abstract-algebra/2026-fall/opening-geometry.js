@@ -20,14 +20,18 @@
     { title: '八角星', zh: '八重旋转与镜面对称，共同勾勒星形。', en: 'Eightfold rotation and reflection shape the star.' },
     { title: '十二重花窗', zh: '十二重对称，环绕同一个中心。', en: 'Twelvefold symmetry around a single centre.' },
     { title: 'E₈ 根系', zh: '240 个根，从八维空间投向平面。', en: '240 roots in eight dimensions, projected onto a plane.' },
-    { title: 'Julia 分形', zh: '一条规则反复迭代，边界生出无尽细节。', en: 'One rule, iterated. An endlessly intricate boundary.' }
+    { title: 'Julia 分形', zh: '一条规则反复迭代，边界生出无尽细节。', en: 'One rule, iterated. An endlessly intricate boundary.' },
+    { title: 'THE LORD OF THE RING', zh: '万环之环 ℤ', en: 'A unique unital homomorphism from ℤ to every unital ring.' }
   ].map(Object.freeze));
-  const cache = new Array(5);
+  const cache = new Array(captions.length);
+  const spatialCache = new Array(captions.length);
+  const normalCache = new Array(captions.length);
   const diagnostics = {
     count: N,
     patterns: names.map(item => ({ title: item[0], symmetry: 'D' + item[2] })),
     e8: { roots: 240, projected2d: 240, edges: 6720, rings: 8, rootsPerRing: 30, edgeParticles: 60480, rootParticles: 11520 },
-    julia: { parameter: [-0.8, 0.156], map: 'z^2 + c', candidates: 600000, centralSymmetry: true }
+    julia: { parameter: [-0.8, 0.156], map: 'z^2 + c', candidates: 600000, centralSymmetry: true },
+    torus: { majorRadius: .67, minorRadius: .20, outerRadius: .87, innerRadius: .47, genus: 1, coordinateStride: 3, tiltDegrees: [55, -8, -18] }
   };
 
   let seed = 1;
@@ -327,14 +331,113 @@
     return sortedPositions(points);
   }
 
+  function makeTorus() {
+    const major = .67, minor = .20;
+    const ax = 55 * Math.PI / 180, ay = -8 * Math.PI / 180, az = -18 * Math.PI / 180;
+    const cx = Math.cos(ax), sx = Math.sin(ax), cy = Math.cos(ay), sy = Math.sin(ay), cz = Math.cos(az), sz = Math.sin(az);
+    function rotate(x, y, z) {
+      const x1 = x, y1 = cx * y - sx * z, z1 = sx * y + cx * z;
+      const x2 = cy * x1 + sy * z1, y2 = y1, z2 = -sy * x1 + cy * z1;
+      return [cz * x2 - sz * y2, sz * x2 + cz * y2, z2];
+    }
+    const ex = rotate(1, 0, 0), ey = rotate(0, 1, 0), ez = rotate(0, 0, 1);
+    // Rows of R, where p = R q. Its transpose returns to the un-tilted torus.
+    const rotation = [ex[0], ey[0], ez[0], ex[1], ey[1], ez[1], ex[2], ey[2], ez[2]];
+    const points = [];
+    let meanTubeCosine = 0;
+    function radicalInverse(value) {
+      let result = 0, place = .5;
+      while (value > 0) { result += (value & 1) * place; value = Math.floor(value / 2); place *= .5; }
+      return result;
+    }
+    for (let i = 0; i < N; i++) {
+      // Hammersley samples over the area measure. The torus area element is
+      // r(R + r cos(v)) du dv, so invert v + (r/R) sin(v) = 2 pi t.
+      // This avoids the overcrowded inner wall of uniform angle sampling.
+      const u = TAU * (i + .5) / N;
+      const t = TAU * ((radicalInverse(i) + .3819660112501051) % 1);
+      let v = t;
+      for (let k = 0; k < 7; k++) v -= (v + minor / major * Math.sin(v) - t) / (1 + minor / major * Math.cos(v));
+      const cu = Math.cos(u), su = Math.sin(u), cv = Math.cos(v), sv = Math.sin(v);
+      const p = rotate((major + minor * cv) * cu, (major + minor * cv) * su, minor * sv);
+      const normal = rotate(cv * cu, cv * su, sv);
+      const angle = Math.atan2(p[1], p[0]);
+      points.push([p[0], p[1], p[2], normal[0], normal[1], normal[2], angle < 0 ? angle + TAU : angle, p[0] * p[0] + p[1] * p[1]]);
+      meanTubeCosine += cv;
+    }
+    points.sort((a, b) => a[6] - b[6] || a[7] - b[7]);
+    const spatial = new Float32Array(N * 3), normals = new Float32Array(N * 3), flat = new Float32Array(N * 2);
+    let maximumSurfaceResidual = 0, maximumRadius = 0, minimumProjectedRadius = Infinity, maximumNormalResidual = 0;
+    for (let i = 0; i < N; i++) {
+      const p = points[i];
+      spatial[3 * i] = p[0]; spatial[3 * i + 1] = p[1]; spatial[3 * i + 2] = p[2];
+      normals[3 * i] = p[3]; normals[3 * i + 1] = p[4]; normals[3 * i + 2] = p[5];
+      flat[2 * i] = p[0]; flat[2 * i + 1] = p[1];
+      const x = spatial[3 * i], y = spatial[3 * i + 1], z = spatial[3 * i + 2];
+      const localX = rotation[0] * x + rotation[3] * y + rotation[6] * z;
+      const localY = rotation[1] * x + rotation[4] * y + rotation[7] * z;
+      const localZ = rotation[2] * x + rotation[5] * y + rotation[8] * z;
+      maximumSurfaceResidual = Math.max(maximumSurfaceResidual, Math.abs((Math.hypot(localX, localY) - major) ** 2 + localZ * localZ - minor * minor));
+      maximumRadius = Math.max(maximumRadius, Math.hypot(x, y, z));
+      minimumProjectedRadius = Math.min(minimumProjectedRadius, Math.hypot(x, y));
+      maximumNormalResidual = Math.max(maximumNormalResidual, Math.abs(Math.hypot(normals[3 * i], normals[3 * i + 1], normals[3 * i + 2]) - 1));
+      if (!Number.isFinite(x + y + z)) throw new Error('Non-finite torus particle');
+    }
+    Object.assign(diagnostics.torus, {
+      particles: points.length, rotationMatrix: rotation,
+      sampling: 'deterministic Hammersley surface-area measure; inverse area CDF',
+      surfaceEquation: '(sqrt(x*x + y*y) - R)^2 + z*z = r*r, before the fixed tilt',
+      maximumSurfaceResidual, maximumRadius, minimumProjectedRadius,
+      maximumNormalResidual, meanTubeCosine: meanTubeCosine / N, expectedMeanTubeCosine: minor / (2 * major),
+      integerRingCaption: 'Z is initial in the category of unital rings; the torus is a visual metaphor, not its underlying space'
+    });
+    if (points.length !== N || maximumRadius > .95 || maximumSurfaceResidual > 1e-6 || minimumProjectedRadius < .15) throw new Error('Torus geometry verification failed');
+    cache[5] = flat;
+    spatialCache[5] = spatial;
+    normalCache[5] = normals;
+  }
+
+  function validateIndex(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= captions.length) throw new RangeError('Unknown opening geometry');
+  }
+  function create(index) {
+    validateIndex(index);
+    if (!cache[index]) {
+      if (index === 5) makeTorus();
+      else cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJulia();
+    }
+    return cache[index];
+  }
+  function create3D(index) {
+    validateIndex(index);
+    if (!spatialCache[index]) {
+      const flat = create(index);
+      if (!spatialCache[index]) {
+        const output = new Float32Array(N * 3);
+        for (let i = 0; i < N; i++) { output[3 * i] = flat[2 * i]; output[3 * i + 1] = flat[2 * i + 1]; }
+        spatialCache[index] = output;
+      }
+    }
+    return spatialCache[index];
+  }
+  function createNormals(index) {
+    validateIndex(index);
+    if (!normalCache[index]) {
+      if (index === 5) makeTorus();
+      else {
+        const normals = new Float32Array(N * 3);
+        for (let i = 0; i < N; i++) normals[3 * i + 2] = 1;
+        normalCache[index] = normals;
+      }
+    }
+    return normalCache[index];
+  }
   root.CourseOpeningGeometry = Object.freeze({
     count: N,
     captions,
-    create(index) {
-      if (!Number.isInteger(index) || index < 0 || index > 4) throw new RangeError('Unknown opening geometry');
-      if (!cache[index]) cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJulia();
-      return cache[index];
-    },
+    create,
+    create3D,
+    createNormals,
     evidence() { return JSON.parse(JSON.stringify(diagnostics)); }
   });
 })(typeof window !== 'undefined' ? window : globalThis);

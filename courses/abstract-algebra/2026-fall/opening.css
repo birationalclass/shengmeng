@@ -98,3 +98,21 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
   #courseOpening .setting-switch input:checked+.switch-track::after{transform:translateX(13px)}
 }
 @media print{#courseOpening,button[data-replay-opening]{display:none!important}}
+
+#courseOpening .wheel-hint{color:#9f9685;letter-spacing:1px}
+@media(max-width:760px){#courseOpening .wheel-hint{display:none}}
+
+#courseOpening .loading-hint,#courseOpening .ready-hint{display:none}
+#courseOpening.opening-loading .opening-enter-hint>span,#courseOpening.opening-awaiting-start .opening-enter-hint>span{display:none}
+#courseOpening.opening-loading .opening-enter-hint>.loading-hint,#courseOpening.opening-awaiting-start .opening-enter-hint>.ready-hint{display:inline}
+#courseOpening.opening-loading .opening-settings-toggle,#courseOpening.opening-awaiting-start .opening-settings-toggle{opacity:0!important;pointer-events:none!important}
+#courseOpening .opening-loader.is-ready{pointer-events:auto}
+#courseOpening .loader-start{display:block;margin:29px auto 0;padding:11px 15px;border:1px solid #b7a06f35;border-radius:3px;background:#bda06a08;color:#c9ba9d;font:400 11px/1.7 Arial,'PingFang SC',sans-serif;letter-spacing:1.7px;cursor:pointer;transition:background .3s,border-color .3s,color .3s}
+#courseOpening .loader-start:hover{background:#bda06a14;border-color:#b7a06f77;color:#eee3cc}
+#courseOpening .loader-start[hidden]{display:none}
+#courseOpening .loader-start:disabled{opacity:.45;cursor:wait}
+#symmetry-particle-studies:fullscreen{width:100vw;height:100vh;background:#080807}
+
+#symmetry-particle-studies:fullscreen::backdrop{background:#080807}
+
+#courseOpening .loader-start{position:absolute;left:50%;top:calc(100% + 24px);transform:translateX(-50%);margin:0;white-space:nowrap}
