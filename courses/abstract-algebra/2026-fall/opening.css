@@ -1,0 +1,42 @@
+html.course-opening-pending::before{content:"";position:fixed;inset:0;z-index:9998;background:#080807}
+body.opening-active{overflow:hidden}
+#courseOpening{width:100vw;height:100vh;height:100svh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#080807;color:#e3d7bc;overflow:hidden}
+#courseOpening::backdrop{background:#080807}
+#courseOpening [hidden]{display:none!important}
+#courseOpening #symmetry-particle-studies,#courseOpening .sp-stage{width:100%;height:100%;position:relative}
+#courseOpening canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .65s ease}
+#courseOpening.opening-ready canvas{opacity:1}
+#courseOpening .opening-top{position:absolute;top:max(5vh,24px);left:5vw;right:5vw;display:flex;align-items:start;justify-content:space-between;gap:20px;z-index:2}
+#courseOpening .opening-title{margin:0;font:400 clamp(24px,3vw,36px)/1.35 'Songti SC','Noto Serif SC',serif;letter-spacing:3px}
+#courseOpening .opening-term{margin:9px 0 0;color:#a89d84;font:400 11px/1.7 Arial,sans-serif;letter-spacing:2px}
+#courseOpening button{font-family:inherit;cursor:pointer}
+#courseOpening [data-enter-course]{appearance:none;background:transparent;border:0;border-bottom:1px solid #71674f;padding:8px 0 10px;color:#e5dac0;font-size:14px;letter-spacing:2px;white-space:nowrap}
+#courseOpening [data-enter-course] span{display:inline-block;margin-left:25px;transition:transform .2s}
+#courseOpening [data-enter-course]:hover span{transform:translateX(5px)}
+#courseOpening button:focus-visible{outline:2px solid #d4bb80;outline-offset:6px}
+#courseOpening .opening-bottom{position:absolute;bottom:max(5vh,25px);left:5vw;right:5vw;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:25px;opacity:0;pointer-events:none;transition:opacity .45s}
+#courseOpening.opening-ready .opening-bottom{opacity:1;pointer-events:auto}
+#courseOpening .sp-name{display:flex;gap:17px;align-items:center}
+#courseOpening [data-index]{font:400 34px/1 Georgia,serif;color:#ad9461}
+#courseOpening [data-name]{font:400 20px/1.5 'Songti SC','Noto Serif SC',serif;letter-spacing:3px}
+#courseOpening [data-en]{font:400 10px/1.7 Arial,sans-serif;letter-spacing:1.8px;color:#a79b80}
+#courseOpening .opening-choices{display:flex;gap:23px;align-items:center}
+#courseOpening [data-pattern]{width:38px;min-height:44px;appearance:none;background:transparent;border:0;color:#897e67;font:400 12px/1.5 Arial,sans-serif;letter-spacing:1px;padding:14px 0;position:relative}
+#courseOpening [data-pattern]::after{content:"";height:1px;background:#7a6948;position:absolute;bottom:6px;left:6px;right:6px;transform:scaleX(.45);transition:transform .3s,background .3s}
+#courseOpening [data-pattern][aria-pressed=true]{color:#f2e4c3}
+#courseOpening [data-pattern][aria-pressed=true]::after{background:#d4b777;transform:scaleX(1)}
+#courseOpening .opening-right{text-align:right}
+#courseOpening [data-symmetry]{font:400 11px/1.6 Arial,sans-serif;letter-spacing:1px;color:#a99d83}
+#courseOpening [data-tour]{appearance:none;border:0;background:transparent;color:#c9b990;font:400 12px/1.6 Arial,sans-serif;padding:10px 0 0;letter-spacing:1px}
+#courseOpening .opening-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;gap:18px}
+#courseOpening .loading-word{font:400 13px/1.5 Arial,sans-serif;letter-spacing:5px;color:#bcb096}
+#courseOpening progress{appearance:none;-webkit-appearance:none;width:min(240px,58vw);height:1px;border:0;background:#332e23;color:#d5bd87}
+#courseOpening progress::-webkit-progress-bar{background:#332e23}
+#courseOpening progress::-webkit-progress-value{background:#d5bd87;box-shadow:0 0 8px #a98a4e}
+#courseOpening progress::-moz-progress-bar{background:#d5bd87}
+#courseOpening .loading-detail{display:flex;justify-content:space-between;gap:30px;width:min(240px,58vw);font:400 11px/1.5 Arial,sans-serif;color:#9f947b;letter-spacing:1px}
+#courseOpening [data-loading-percent]{font-variant-numeric:tabular-nums}
+button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit;color:inherit;padding:0}
+@media(max-width:600px){#courseOpening .opening-top{top:max(24px,env(safe-area-inset-top));left:7vw;right:7vw}#courseOpening .opening-title{font-size:26px;letter-spacing:2px}#courseOpening .opening-term{font-size:10px;letter-spacing:1px}#courseOpening [data-enter-course]{font-size:12px;letter-spacing:1px}#courseOpening [data-enter-course] span{margin-left:9px}#courseOpening .opening-bottom{bottom:max(24px,env(safe-area-inset-bottom));left:7vw;right:7vw;grid-template-columns:1fr auto;gap:20px}#courseOpening .opening-choices{grid-row:2;grid-column:1/-1;justify-content:center;gap:36px}#courseOpening .opening-right{grid-column:2;grid-row:1}#courseOpening .sp-name{gap:12px}#courseOpening [data-name]{font-size:18px;letter-spacing:2px}#courseOpening [data-en]{font-size:9px;letter-spacing:.7px}#courseOpening [data-index]{font-size:30px}#courseOpening [data-symmetry]{font-size:10px;letter-spacing:0}#courseOpening [data-tour]{font-size:11px}}
+@media(prefers-reduced-motion:reduce){#courseOpening canvas,#courseOpening .opening-bottom,#courseOpening [data-enter-course] span{transition:none}}
+@media print{#courseOpening,button[data-replay-opening]{display:none!important}}
