@@ -26,7 +26,7 @@ import {lessons,convergence,initial,totalCohomology} from './content.js?v=103';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=99';
-import {createPageEvolution} from './page-evolution.js?v=99';
+import {createPageEvolution} from './page-evolution.js?v=105';
 import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
