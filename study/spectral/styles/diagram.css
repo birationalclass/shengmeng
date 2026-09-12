@@ -126,3 +126,9 @@ svg .diag.concept-active { opacity:1;stroke-width:2.5 }
 
 /* Page names are mathematical labels; the invisible rect only preserves the hit area. */
 #pageEvolution .evolution-page-title rect {fill:transparent;stroke:none;filter:none}
+
+/* Entrance layers start absent, including during the left card's opening.
+   Visibility holds do not change geometry or cancel the delayed keyframes. */
+#diagram[data-initial-pending="0"] :is(.coordinate-axis,.axis-name,.axis-tick,.grid,.node,.term-label,.extent-label),
+#diagram[data-initial-pending="1"] :is(.arrow.h,.continuation[data-concept="delta1"],.map-label[data-map-concept="delta1"]),
+#diagram[data-initial-pending="2"] :is(.arrow.v,.continuation[data-concept="delta2"],.map-label[data-map-concept="delta2"]) {visibility:hidden!important}

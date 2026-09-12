@@ -1,7 +1,7 @@
 // A cancellable timeline separates one-shot entrances from demonstrations.
 // Only demonstrations use autoplay, delay, looping and the dismiss control.
 // Hover, proof tabs and resize never arm either kind.
-export function createAnimationPlayback({language,ready,play,stop,prepare=()=>{},settle=()=>{},enter=play}) {
+export function createAnimationPlayback({language,ready,play,stop,prepare=()=>{},settle=()=>{},enter=play,prepareEntrance=()=>{}}) {
  const defaults={autoplay:true,loop:true,delay:2,interval:5},storageKey='spectral-animation-playback';
  const $=s=>document.querySelector(s),reduced=matchMedia('(prefers-reduced-motion:reduce)');
  let settings={...defaults},context=null,controller=null,phase='idle',serial=0,plays=0,lastLanguage=null,runKind=null;
@@ -14,6 +14,7 @@ export function createAnimationPlayback({language,ready,play,stop,prepare=()=>{}
  async function arm(manual=false,kind=context?.kind||'demonstration',withEntrance=false){
   cancel();runKind=kind;serial++;const entrance=kind==='entrance'||withEntrance&&context?.hasEntrance;if(!context?.key||!entrance&&!settings.autoplay&&!manual){phase='idle';settle();publish();return;}
   const run=controller=new AbortController(),signal=run.signal;
+  if(entrance)prepareEntrance();
   if(kind==='demonstration')prepare();phase='waiting';publish();
   if(!await waitUntil(()=>ready()&&!document.hidden,signal))return;
   if(entrance){

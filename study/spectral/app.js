@@ -1,5 +1,5 @@
 import {createPageFormation} from './page-formation.js?v=92';
-import {createAnimationPlayback} from './animation-playback.js?v=95';
+import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
 import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
@@ -15,7 +15,7 @@ import {numberedPages} from './reading-pages.js?v=94';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
-import {createInitialAnimations} from './initial-animations.js?v=92';
+import {createInitialAnimations} from './initial-animations.js?v=96';
 import {createFiltrationTrace} from './filtration-animations.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=64';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
@@ -67,7 +67,7 @@ const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(
 const playback=createAnimationPlayback({language,ready:()=>{
  if(notebookMotion.isAnimating())return false;
  return !$('#explanation').getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity);
-},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
+},prepareEntrance:()=>{if(isDoubleComplexView()&&state.initialReveal<=2)initialAnimations.prepare(state.initialReveal);},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
 const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?ui('点击播放对应动画','Click to play this animation'):ui('放大查看公式','Enlarge formula')}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;

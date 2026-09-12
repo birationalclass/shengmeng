@@ -5,7 +5,7 @@ import {visualMotion} from './visual-style.js?v=41';
 export function createInitialAnimations({diagram}) {
  const reduced=matchMedia('(prefers-reduced-motion:reduce)');
  const running=new Set();
- let key=null,previous=-1,openingEnd=0,directionEnd=0,serial=0,generation=0;
+ let key=null,openingEnd=0,directionEnd=0,serial=0;
  const all=selector=>[...diagram.querySelectorAll(selector)];
  const play=(el,frames,options,id)=>{
   if(!el)return;
@@ -15,7 +15,7 @@ export function createInitialAnimations({diagram}) {
   return animation;
  };
  const settle=()=>{
-  generation++;
+  delete diagram.dataset.initialPending;
   // Sample all effects before cancelling any: labels and SVG tiles must settle
   // together, including a rapid exit during their delayed pop-in.
   const targets=[...new Set([...running].map(a=>a.effect?.target).filter(el=>el?.isConnected))];
@@ -85,24 +85,28 @@ export function createInitialAnimations({diagram}) {
   all(`.map-label[data-map-concept="${concept}"]`).forEach((el,i)=>play(el.firstElementChild||el,[{opacity:0},{opacity:1}],{duration:initial.arrow*.6,delay:delay+initial.arrow*.4},`label-${name}-${i}`));
  }
  function sync({active,step,seenH,seenV}) {
-  key=active?`initial:${step}`:'outside';previous=active?step:-1;
+  key=active?`initial:${step}`:'outside';
   diagram.classList.toggle('initial-hide-p',active&&seenH);
   diagram.classList.toggle('initial-hide-q',active&&seenV);publish();
  }
- async function replay(step){
-  settle();openingEnd=directionEnd=0;const run=generation;
-  if(reduced.matches)return;
-  // A replay returns to its start through a fade; no visible layer snaps away.
-  const targets=step===0?all('.coordinate-axis,.axis-name,.grid,.axis-tick,.node,.term-label,.extent-label'):
-   [...all(`.arrow.${step===1?'h':'v'},.continuation[data-concept="${step===1?'delta1':'delta2'}"]`),...all(`.map-label[data-map-concept="${step===1?'delta1':'delta2'}"]`).map(el=>el.firstElementChild||el)];
-  const reset=targets.map((el,i)=>play(el,[{opacity:getComputedStyle(el).opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards'},`reset-${i}`));
-  await Promise.all(reset.map(a=>a.finished.catch(()=>{})));
-  if(run!==generation)return;
-  reset.forEach(a=>a.cancel());
-  if(step===0){serial++;open();}else if(step===1)revealDirection('p');else if(step===2)revealDirection('q');
-  publish();
+ // Reserve the new layers before the browser can paint them. The existing K
+ // grid remains visible while a differential is waiting to enter.
+ function prepare(step){
+  if(reduced.matches||step<0||step>2)return;
+  diagram.dataset.initialPending=String(step);publish();
  }
- function publish(){window.spectralEntrance={key,openingSerial:serial,reduced:reduced.matches};}
- reduced.addEventListener('change',()=>{if(reduced.matches){[...running].forEach(a=>a.cancel());running.clear();openingEnd=directionEnd=0;}publish();});
- return {sync,play:replay,clear:settle,isPlaying:()=>running.size>0};
+ function enter(step){
+  openingEnd=directionEnd=0;
+  // Install the start keyframes (including delays) before removing the hold.
+  // There is no reset/fade-out: these layers have never been shown yet.
+  if(!reduced.matches){
+   if(step===0){serial++;open();}
+   else if(step===1)revealDirection('p');
+   else if(step===2)revealDirection('q');
+  }
+  delete diagram.dataset.initialPending;publish();
+ }
+ function publish(){window.spectralEntrance={key,openingSerial:serial,pending:diagram.dataset.initialPending??null,reduced:reduced.matches};}
+ reduced.addEventListener('change',()=>{if(reduced.matches){delete diagram.dataset.initialPending;[...running].forEach(a=>a.cancel());running.clear();openingEnd=directionEnd=0;}publish();});
+ return {sync,prepare,play:enter,clear:settle,isPlaying:()=>running.size>0};
 }
