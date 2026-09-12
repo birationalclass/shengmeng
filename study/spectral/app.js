@@ -6,13 +6,13 @@ import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=8
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=102';
+import {createStabilityView} from './stability-view.js?v=103';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {createAbutmentView} from './abutment-view.js?v=99';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=101';
+import {numberedPages} from './reading-pages.js?v=103';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -22,7 +22,7 @@ import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=101';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=103';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=99';
@@ -531,7 +531,7 @@ function renderOperation(){
 }
 
 // The coordinate frame is mounted once. Only keyed mathematical layers change.
-function isTransitionReading(){return !state.cover&&state.module==='converge'&&state.step===0&&state.notePage===0;}
+function isTransitionReading(){return !state.cover&&state.module==='converge'&&state.step===0&&state.notePage<2;}
 // This explanatory entry keeps the preceding differential page as its visual.
 function diagramState(){return isTransitionReading()?{...state,module:'learn',step:5,notePage:1,annotationStep:4,r:Math.max(1,state.r)}:state;}
 function fixedDiagram(state=diagramState()){
@@ -761,7 +761,7 @@ document.addEventListener('click',event=>{const button=event.target.closest('[da
 function playbackKey(){return state.cover||isTransitionReading()?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.filtrationStep}:${state.initialReveal===11?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
 function playbackKind(){
  if(isDoubleComplexView())return [0,1,2,7,9,10].includes(state.initialReveal)||state.initialReveal===11&&state.gradedMode==='space'?'entrance':'demonstration';
- return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0&&state.notePage===1?'demonstration':'entrance';
+ return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0&&state.notePage===2?'demonstration':'entrance';
 }
 function syncPlayback(){playback.sync({key:playbackKey(),kind:playbackKind(),hasEntrance:state.module==='learn'&&state.step===6&&state.notePage===0});}
 async function playCurrentEntrance({waitUntil}){
@@ -795,7 +795,7 @@ async function playCurrentAnimation({signal,waitUntil,wait}){
  }else if(state.module==='learn'&&state.step===5&&state.notePage===0)await pageFormation.play(Math.max(1,state.r));
  else if(state.module==='learn'&&state.step===6)await run(()=>filteredView.play(),filteredView.isPlaying);
  else if(state.module==='learn'&&state.step===4&&state.notePage===0)await evolution.play();
- else if(state.module==='converge'&&state.step===0&&state.notePage===1)await run(()=>stabilityView.play(),stabilityView.isPlaying);
+ else if(state.module==='converge'&&state.step===0&&state.notePage===2)await run(()=>stabilityView.play(),stabilityView.isPlaying);
  else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
 }
 // Selecting an entry rearms automatically through its reading key. Clicking the

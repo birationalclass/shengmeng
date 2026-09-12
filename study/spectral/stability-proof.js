@@ -1,4 +1,4 @@
-import {pageTransitionExposition} from './page-transition.js?v=101';
+import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=103';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {proofPanel,proofSections} from './proof-panel.js?v=99';
 
@@ -16,7 +16,7 @@ export function createStabilityProof({board,math,language}){
  ];
  function paint(){
   if(!context)return;
-  if(context.state.step===0&&context.state.notePage===0){replaceMathContent(board,pageTransitionExposition({math,language}));board.dataset.currentProofTopic='page-transition';delete board.dataset.currentProofStep;return;}
+  if(context.state.step===0&&context.state.notePage<2){const cohomology=context.state.notePage===0;replaceMathContent(board,(cohomology?pageCohomologyExposition:pageTransitionExposition)({math,language}));board.dataset.currentProofTopic=cohomology?'page-cohomology':'page-transition';delete board.dataset.currentProofStep;return;}
   const stable=context.state.step===1;
   const formulas=stable?[R`r_0:=\max\{p+1,q+2\},\qquad s\ge r_0`,R`\phi_s^{p,q}:E_s^{p,q}\xrightarrow{\sim}E_{s+1}^{p,q},\quad[a]_s\longmapsto[a]_{s+1}`]:[R`r>\max\{p,q+1\}\Longrightarrow d_r^{p,q}=d_r^{p-r,q+r-1}=0`,R`E_r^{p,q}\xrightarrow{\sim}E_{r+1}^{p,q}\xrightarrow{\sim}\cdots`];
   const note=stable?t(`对每个固定的 ${math('p,q')}，后续各页具有相同的分子与分母。稳定界可以依赖 ${math('p,q')}；沿上述自然同构识别后记作 ${math('E_\\infty^{p,q}')}。`,`For fixed ${math('p,q')}, all later pages have the same numerator and denominator. The bound may depend on ${math('p,q')}; their common term under these natural identifications is denoted ${math('E_\\infty^{p,q}')}.`):t('入射源与出射靶都落在第一象限外，因此像为零、核为整个当前项。','The incoming source and outgoing target lie outside the first quadrant, so the image is zero and the kernel is the entire current term.');

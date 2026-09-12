@@ -1,6 +1,6 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {visualMotion} from './visual-style.js?v=41';
-import {createStabilityProof} from './stability-proof.js?v=101';
+import {createStabilityProof} from './stability-proof.js?v=103';
 
 export const stabilityExamples=Object.freeze([{p:1,q:1,r:3},{p:0,q:0,r:2},{p:1,q:0,r:2}]);
 // All positions share one coordinate map. Negative indices, not a display edge,
@@ -61,7 +61,7 @@ export function createStabilityView({viewport,board,controls,math,language}){
   toolbar.querySelectorAll('[data-stability-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.stabilityMode===mode)));
  }
  function animate(which){
-  cancel();if(!active||!scene||context.step===0&&context.notePage===0||which==='stable'){diagnostic();return;}
+  cancel();if(!active||!scene||context.step===0&&context.notePage<2||which==='stable'){diagnostic();return;}
   if(visualMotion().reduced){diagnostic('zero');return;}
   const id=run,{p,q,r}=current(),a=which==='outgoing'?point(p,q):point(p-r,q+r-1),b=which==='outgoing'?point(p+r,q-r+1):point(p,q);
   const path=scene.querySelector(`[data-map="${which}"]`),svg=scene.querySelector('svg'),ns='http://www.w3.org/2000/svg',trace=document.createElementNS(ns,'g');trace.classList.add('stability-trace');trace.setAttribute('aria-hidden','true');
@@ -88,7 +88,7 @@ export function createStabilityView({viewport,board,controls,math,language}){
  toolbar.addEventListener('change',e=>{if(!active||e.target.id!=='stabilityExample')return;exampleIndex=Number(e.target.value);draw();paintControls();proof.render({state:context,example:current()});animate(mode);});
  const fit=()=>fitDiagramSurface(viewport,host,'--stability-scale');new ResizeObserver(fit).observe(viewport);
  return {play:()=>animate(mode),clear:cancel,isPlaying:()=>frame!==0,sync(s){
-  const was=active,expositionOnly=!s.cover&&s.module==='converge'&&s.step===0&&s.notePage===0;active=!s.cover&&s.module==='converge'&&s.step<=1&&!expositionOnly;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===0&&s.notePage===0;viewport.classList.toggle('has-stability-view',active);
+  const was=active,expositionOnly=!s.cover&&s.module==='converge'&&s.step===0&&s.notePage<2;active=!s.cover&&s.module==='converge'&&s.step<=1&&!expositionOnly;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===0&&s.notePage<2;viewport.classList.toggle('has-stability-view',active);
   if(!active){if(was)cancel();key='';proof.render(expositionOnly?{state:s,example:current()}:null);diagnostic();return;}
   const next=[s.step,s.notePage,language()].join(':');if(next!==key){key=next;proof.render({state:s,example:current()});mode=proof.mode();draw();paintControls();}else proof.render({state:s,example:current()});fit();
  }};
