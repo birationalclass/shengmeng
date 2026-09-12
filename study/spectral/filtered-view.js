@@ -1,10 +1,11 @@
+import {createFilteredCycles} from './filtered-cycles.js?v=95';
 import {createFilteredDemo} from './filtered-demo.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=40';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
 export function createFilteredView({viewport,diagram,point,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- const demo=createFilteredDemo({host:diagram,point});
+ const demo=createFilteredDemo({host:diagram,point}),cycles=createFilteredCycles({host:diagram,point,math});
  let state=null,active=false,key='',topic='Z';const steps={Z:0,B:0};let inclusionStep=0;
  const pageIndex=()=>Math.max(1,state.r);
  const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']]};
@@ -72,14 +73,14 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
   ]);
   note.push(t('Z、B 的公式对每个整数 r 都有意义。r≤0 时像条件自动满足；上面说明了相应化简。负滤过层也不应误认为零：第一象限下，j≤0 时 FʲCⁿ=Cⁿ。','The formulas for Z and B make sense for every integer r. For r≤0 the relevant image containment is automatic, giving the displayed simplifications. A negative filtration level is not zero: in the first quadrant, FʲCⁿ=Cⁿ for j≤0.'));
   board.dataset.currentProofTopic=topic;board.dataset.currentProofStep=String(i);
-  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${t('圆点代表总上链；蓝色像满足滤过条件，黄色像不满足。轨迹表示总微分 D。','Dots represent total cochains: blue images meet the filtration condition; gold images do not. Tracks represent the total differential D.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
+  replaceMathContent(board,`<nav class="proof-steps" aria-label="${t('证明关键步骤','Key proof steps')}">${names[topic].map((name,j)=>`<button data-filter-step="${j}" aria-pressed="${i===j}">${j+1}. ${t(...name)}</button>`).join('')}</nav><div class="operation-content">${proof[i].map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}</div><p class="operation-note">${note[i]}</p><p class="filtered-example">${math(R`n=${n},\quad p=${p},\quad q=${q},\quad r=${r}`)}</p><p class="operation-note">${topic==='Z'?t(`虚框内蓝点是 ${math('Z_2^{1,1}')} 中的示例。它们的像落入 ${math('F^3C^3')}；黄点的像在 ${math('C^3')} 中但不在 ${math('F^3C^3')} 中。`,`The outlined blue dots are samples in ${math('Z_2^{1,1}')}. Their images lie in ${math('F^3C^3')}; gold images lie in ${math('C^3')} outside ${math('F^3C^3')}.`):t('圆点代表总上链；蓝色像满足滤过条件，黄色像不满足。轨迹表示总微分 D。','Dots represent total cochains: blue images meet the filtration condition; gold images do not. Tracks represent the total differential D.')}</p><p class="operation-note proof-reference"><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=48" target="_blank" rel="noopener">McCleary, Theorem 2.6, p. 34</a></p>`);
  }
  board.addEventListener('click',e=>{const proof=e.target.closest('[data-inclusion-proof]');if(proof&&active&&state.annotationStep===3){e.stopPropagation();inclusionStep=Number(proof.dataset.inclusionProof);inclusionExposition();return;}const button=e.target.closest('[data-filter-step]');if(!active||!button)return;e.stopPropagation();steps[topic]=Number(button.dataset.filterStep);exposition();});
- return {play:()=>demo.play(topic,true),clear:()=>demo.clear(),isPlaying:()=>demo.isPlaying(),sync(s){
+ return {enter:()=>{if(topic==='Z')cycles.enter();},play:()=>topic==='Z'?cycles.play():demo.play(topic,true),stop:()=>{demo.clear();cycles.stop();},clear:()=>{demo.clear();cycles.clear();},isPlaying:()=>demo.isPlaying()||cycles.isPlaying(),sync(s){
   state=s;active=!s.cover&&s.module==='learn'&&s.step===6&&s.annotationStep>=1&&s.annotationStep<=3;
   viewport.classList.toggle('has-filtered-grid',active);
-  if(!active){key='';demo.clear();return;}
+  if(!active){key='';demo.clear();cycles.clear();return;}
   topic=s.annotationStep===1?'Z':'B';const next=[s.step,topic,s.n,s.p,pageIndex(),language()].join(':');
-  if(next!==key){const changed=key.split(':').slice(0,5).join(':')!==next.split(':').slice(0,5).join(':');key=next;if(changed)demo.clear();}exposition();
+  if(next!==key){const changed=key.split(':').slice(0,5).join(':')!==next.split(':').slice(0,5).join(':');key=next;if(changed){demo.clear();cycles.clear();}}exposition();
  }};
 }

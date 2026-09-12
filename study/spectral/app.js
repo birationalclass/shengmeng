@@ -1,5 +1,5 @@
 import {createPageFormation} from './page-formation.js?v=92';
-import {createAnimationPlayback} from './animation-playback.js?v=92';
+import {createAnimationPlayback} from './animation-playback.js?v=95';
 import {createGradedTrace} from './graded-animation.js?v=92';
 import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
@@ -24,7 +24,7 @@ import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=94';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=92';
+import {createFilteredView} from './filtered-view.js?v=95';
 import {createPageEvolution} from './page-evolution.js?v=92';
 import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
@@ -67,7 +67,7 @@ const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(
 const playback=createAnimationPlayback({language,ready:()=>{
  if(notebookMotion.isAnimating())return false;
  return !$('#explanation').getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity);
-},play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
+},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
 const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?ui('点击播放对应动画','Click to play this animation'):ui('放大查看公式','Enlarge formula')}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
@@ -212,7 +212,7 @@ function selectNode(e){
   const context=initialTraceContext(state),effect=state.initialReveal===6?(state.effect==='totalsquare'?'totalsquare':'totalmap'):context.effect;
   state.totalOrigin=origin;state.selected=origin;if(state.initialReveal===6)state.n=origin.p+origin.q;
   state.effect=effect;state.pinned=effect;state.pinnedKey=null;
-  render(false);playback.restart(true);return;
+  render(false);playback.restart(true,'demonstration');return;
  }
  state.selected=origin;render(false);if(['lab','trace'].includes(state.module))$('.inspector').open=true;
 }$('#diagram').onclick=selectNode;$('#diagram').onkeydown=e=>{if(e.key===' '){e.preventDefault();const el=interactiveConcept(e.target);if(el)pinConcept(el.dataset.concept,el);selectNode(e);}};
@@ -735,9 +735,20 @@ function syncInitialEntrance(){
 document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();selectInitialBuild(9,button.dataset.gradedView==='differential'?1:0);});
 
 function playbackKey(){return state.cover?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.initialReveal===9?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
-function syncPlayback(){playback.sync({key:playbackKey()});}
+function playbackKind(){
+ if(isDoubleComplexView())return [0,1,2,7].includes(state.initialReveal)||state.initialReveal===9&&state.gradedMode==='space'?'entrance':'demonstration';
+ return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0?'demonstration':'entrance';
+}
+function syncPlayback(){playback.sync({key:playbackKey(),kind:playbackKind(),hasEntrance:state.module==='learn'&&state.step===6&&state.notePage===0});}
+async function playCurrentEntrance({waitUntil}){
+ if(isDoubleComplexView()&&state.initialReveal<=2){
+  initialAnimations.play(state.initialReveal);await waitUntil(()=>!initialAnimations.isPlaying());
+ }else if(state.module==='learn'&&state.step===6&&state.notePage===0){filteredView.enter();await waitUntil(()=>!filteredView.isPlaying());}
+ else{emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
+}
+
 function stopDiagramAnimation(){
- pageFormation.clear();squareTrace.clear();totalTrace.clear();gradedTrace.clear();filtrationTrace.clear();degreeSweep.stop();filtrationSweep.stop();initialAnimations.clear();filteredView.clear();stabilityView.clear();evolution.clear();
+ pageFormation.clear();squareTrace.clear();totalTrace.clear();gradedTrace.clear();filtrationTrace.clear();degreeSweep.stop();filtrationSweep.stop();initialAnimations.clear();filteredView.stop();stabilityView.clear();evolution.clear();
  definitionAnimations.forEach(releaseEmphasis);definitionAnimations=[];
 }
 async function playCurrentAnimation({signal,waitUntil,wait}){
@@ -745,7 +756,7 @@ async function playCurrentAnimation({signal,waitUntil,wait}){
  const run=async(action,isPlaying)=>{if(!live())return false;action();return waitUntil(()=>!isPlaying());};
  if(isDoubleComplexView()){
   const concept=state.pinned||initialConcept(),index=state.initialReveal;
-  if(index<=2){await run(()=>initialAnimations.play(index),initialAnimations.isPlaying);if(!live())return;if(index>0)await run(()=>totalTrace.play(concept,true),totalTrace.isPlaying);}
+  if(index<=2){if(index>0)await run(()=>totalTrace.play(concept,true),totalTrace.isPlaying);}
   else if(index===3){
    for(const c of concept==='square1'||concept==='square2'?[concept]:['square1','square2']){
     if(!live())return;applyConcept(c);await squareTrace.play(c,squareCentres(c));if(!live())return;if(c==='square1'&&!await wait(visualMotion().hold))return;
@@ -764,7 +775,8 @@ async function playCurrentAnimation({signal,waitUntil,wait}){
  else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
 }
 // Selecting an entry rearms automatically through its reading key. Clicking the
-// current entry explicitly rearms even after dismissal or with autoplay off.
+// current demonstration explicitly rearms after dismissal or with autoplay off.
+// An entrance is tied to entry, so clicking its current card does not replay it.
 $('#explanation').addEventListener('click',event=>{
  if(event.target.closest('[data-toggle-build],[data-toggle-reading],[data-toggle-statement],[data-toggle-section],[data-zoom]'))return;
  const entry=event.target.closest('.build-card,.numbered-entry');if(!entry)return;

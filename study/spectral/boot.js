@@ -111,7 +111,7 @@
  };
  const showCover=()=>{
   if(window.spectralMobileReading?.returnToCover())return;
-  overlay.hidden=false;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
+  overlay.hidden=false;overlay.inert=false;document.querySelector('.notebook-toolbar').inert=true;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
   syncCoverLanguage();
   if(done){start.disabled=false;start.hidden=false;status.textContent='';status.setAttribute('aria-hidden','true');}window.spectralMobileReading?.sync();
  };
@@ -119,7 +119,7 @@
  const enter=()=>{
   if(!done||failed)return false;
   if(window.spectralMobileReading?.requestEntry())return false;
-  start.disabled=true;document.documentElement.classList.remove('math-loading');overlay.classList.add('is-ready');
+  start.disabled=true;overlay.inert=true;document.querySelector('.notebook-toolbar').inert=false;document.documentElement.classList.remove('math-loading');overlay.classList.add('is-ready');
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)overlay.hidden=true;
   return true;
  };
