@@ -17,11 +17,11 @@ import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
 import {createInitialAnimations} from './initial-animations.js?v=96';
 import {createFiltrationTrace} from './filtration-animations.js?v=92';
-import {replaceMathContent} from './math-transitions.js?v=64';
+import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=94';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=97';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=95';
@@ -38,14 +38,14 @@ const notebookMotion=createNotebookMotion({language});
 const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanation'),mobilePane:$('.slide-body')});
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
-let revealedBuild=-1,revealedTotalStep=0,revealedGradedStep=0;
+let revealedBuild=-1,revealedTotalStep=0,revealedFiltrationStep=0,revealedGradedStep=0;
 const readingSections=[['initial:0','learn:6'],['learn:5','learn:3','learn:4','converge:0','converge:1','converge:2','converge:3']];
 const readingOrder=readingSections.flat();
 const readingSection=key=>String(readingSections.findIndex(section=>section.includes(key))+1||2);
 const NODE_HALF_W=34,NODE_HALF_H=19;
 // Both continuation marks share the same visible edge gap and dot geometry.
 const EXTENT={gap:24,radius:1.15,step:6};
-const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,totalStep:0,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,totalOrigin:null};
+const state={module:'initial',cover:true,gradedMode:'space',initialReveal:-1,totalStep:0,filtrationStep:0,notePage:0,annotationStep:1,diagramMode:'3d',stackR:null,stackStart:0,seenH:false,seenV:false,effect:null,pinned:null,pinnedKey:null,step:0,n:3,p:1,r:0,direction:'both',example:'survive',lambda:0,selected:null,totalOrigin:null};
 let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],expositionContext=null;const complexes=Object.fromEntries(Object.entries(examples).map(([k,x])=>[k,new Complex(x)]));
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -131,7 +131,12 @@ function diagonal(n,p,box=true,showLabel=true){
 }
 const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module,step,fs.length).map((page,index)=>{
  const title=Array.isArray(page.title)?esc(ui(...page.title)):page.title?.name?`${esc(ui(...page.title.name))} ${math(page.title.symbol)}`:page.title?math(page.title):'';
- const content=page.indices.map(i=>block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`)).join('');
+ const content=page.indices.map(i=>{
+  const formula=block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`);
+  if(module==='learn'&&step===4&&i===3)return `<div class="reading-hypothesis"><span>${ui('其中','where')}</span>${formula}</div>`;
+  if(module==='converge'&&step===3&&i===4)return formula+consequence(raw`E_{r_0}^{p,q}\cong E_\infty^{p,q}`,'page');
+  return formula;
+ }).join('');
  return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
 }).join('');
 function statementHeading(meta,key){
@@ -198,7 +203,7 @@ function render(updateControls=true){
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?5:0}`);}
 $('#beginSlides').onclick=()=>{if(window.spectralBoot?.enter()){state.cover=false;render();}};
-$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.totalStep=0;revealedTotalStep=0;state.gradedMode='space';revealedGradedStep=0;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
+$('#coverButton').onclick=()=>{state.module='initial';state.step=0;state.cover=true;state.initialReveal=-1;state.totalStep=0;revealedTotalStep=0;state.filtrationStep=0;revealedFiltrationStep=0;state.gradedMode='space';revealedGradedStep=0;state.notePage=0;state.annotationStep=1;state.totalOrigin=null;notebookMotion.settleAll();state.effect=null;state.chosenAction=1;state.seenH=false;state.seenV=false;state.pinned=null;state.pinnedKey=null;openStatements.clear();visitedStatements.clear();revealedReadings.clear();foldedReadings.clear();foldedSections.clear();revealedBuild=-1;openBuilds.clear();openBuilds.add(0);location.hash='title';render();};
 $('#viewTabs').onclick=e=>{const b=e.target.closest('[data-view]');if(b)move(Number(b.dataset.view));};
 $('#actionTabs').onclick=e=>{const b=e.target.closest('[data-action]');if(b){state.pinned=null;state.pinnedKey=null;const annotation=Number(b.dataset.action),page=currentReadingPages().findIndex(p=>p.actions.includes(annotation));if(page>=0)selectReadingPage(page);setAnnotation(annotation);applyConcept(null);}};
 $('#controls').addEventListener('input',e=>{let id=e.target.id;if(!id.endsWith('Range'))return;if(id==='nRange'){degreeSweep.stop();totalTrace.clear();}if(id==='nRange'||id==='pRange'){filtrationSweep.stop();filtrationTrace.clear();}const val=Number(e.target.value);if(id==='nRange'){state.n=val;if(state.module==='converge')state.r=Math.min(state.r,val+2);state.p=Math.min(state.p,val+1);if($('#pRange')){$('#pRange').max=val+1;$('#pRange').value=state.p;$('#pRange').nextElementSibling.textContent=state.p;}}if(id==='pRange')state.p=val;if(id==='lambdaRange')state.lambda=val;if(id==='rRange'){state.r=val;if(state.module==='lab')state.step=val;}e.target.nextElementSibling.textContent=val;state.selected=null;render(id==='nRange'&&state.module==='converge');});
@@ -293,6 +298,8 @@ function ui(zh,en){return language()==='en'?en:zh;}
 function selectInitialBuild(index,substep=0){
  foldedSections.delete('1');
  if(!(isDoubleComplexView()&&state.initialReveal===index)){state.totalOrigin=null;state.selected=null;if(index===6)state.n=2;if(index===9){state.n=2;state.p=1;}}
+ if(index===8&&substep===1)state.p=Math.min(1,state.n);
+ state.filtrationStep=index===8?substep:0;if(index===8)revealedFiltrationStep=Math.max(revealedFiltrationStep,substep);
  state.totalStep=index===6?substep:0;if(index===6)revealedTotalStep=Math.max(revealedTotalStep,substep);
  if(index===9){state.gradedMode=substep===1?'differential':'space';revealedGradedStep=Math.max(revealedGradedStep,substep);}
  state.cover=false;state.module='initial';state.step=0;state.initialReveal=index;openStatements.add('initial:0');openBuilds.add(index);state.seenH=index>=1;state.seenV=index>=2;state.effect=initialConcept();state.pinned=null;state.pinnedKey=null;render();
@@ -323,6 +330,7 @@ function foldBeforeAdvance(nextStatement){
  for(const [key,last] of revealedReadings)for(let i=0;i<=last;i++)foldedReadings.add(`${key}:${i}`);
 }
 function advanceNote(){
+ if(isDoubleComplexView()&&state.initialReveal===8&&state.filtrationStep===0){selectInitialBuild(8,1);return;}
  if(isDoubleComplexView()&&state.initialReveal===9&&state.gradedMode==='space'){selectInitialBuild(9,1);return;}
  if(isDoubleComplexView()&&state.initialReveal===6&&state.totalStep===0){selectInitialBuild(6,1);return;}
  if(isDoubleComplexView()&&state.initialReveal<INITIAL_STEPS){foldBeforeAdvance('initial:0');selectInitialBuild(state.initialReveal+1);return;}
@@ -330,7 +338,7 @@ function advanceNote(){
  const i=readingOrder.indexOf(activeStatementKey());
  if(i>=0&&i<readingOrder.length-1){const next=readingOrder[i+1];foldBeforeAdvance(next);activateStatement(next);}
 }
-function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal===9&&state.gradedMode==='differential'){selectInitialBuild(9,0);return;}if(state.initialReveal===6&&state.totalStep===1){selectInitialBuild(6,0);return;}if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1,state.initialReveal===7?1:0);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
+function retreatNote(){if(isDoubleComplexView()){if(state.initialReveal===8&&state.filtrationStep===1){selectInitialBuild(8,0);return;}if(state.initialReveal===9&&state.gradedMode==='differential'){selectInitialBuild(9,0);return;}if(state.initialReveal===6&&state.totalStep===1){selectInitialBuild(6,0);return;}if(state.initialReveal>0){selectInitialBuild(state.initialReveal-1,[7,9].includes(state.initialReveal)?1:0);}return;}if(state.notePage>0){selectReadingPage(state.notePage-1);return;}const i=readingOrder.indexOf(activeStatementKey());if(i>0){activateStatement(readingOrder[i-1],true);}}
 $('#explanation').addEventListener('click',e=>{
  const sectionToggle=e.target.closest('[data-toggle-section]'),sectionSelect=e.target.closest('[data-select-section]');
  if(sectionToggle){
@@ -343,7 +351,7 @@ $('#explanation').addEventListener('click',e=>{
  if(toggle){notebookMotion.settleAll();const key=toggle.dataset.toggleStatement;if(toggle.getAttribute('aria-expanded')==='true'){openStatements.delete(key);syncStatementCards();}else activateStatement(key);return;}
  if(select){activateStatement(select.dataset.selectStatement);return;}
  if(buildToggle){const i=Number(buildToggle.dataset.toggleBuild);if(openBuilds.has(i)){openBuilds.delete(i);syncInitialEntries();}else selectInitialBuild(i);return;}
- if(buildSelect){const i=Number(buildSelect.dataset.selectBuild),current=isDoubleComplexView()&&state.initialReveal===i;selectInitialBuild(i,current?(i===6?state.totalStep:i===9&&state.gradedMode==='differential'?1:0):0);return;}
+ if(buildSelect){const i=Number(buildSelect.dataset.selectBuild),current=isDoubleComplexView()&&state.initialReveal===i;selectInitialBuild(i,current?(i===6?state.totalStep:i===8?state.filtrationStep:i===9&&state.gradedMode==='differential'?1:0):0);return;}
  if(readingToggle||readingSelect){
   const button=readingToggle||readingSelect,index=Number(button.dataset.toggleReading??button.dataset.selectReading),parent=button.closest('[data-statement]').dataset.statement;
   if(readingToggle&&readingToggle.getAttribute('aria-expanded')==='true'){foldedReadings.add(`${parent}:${index}`);syncReadingEntries(parent);}
@@ -365,7 +373,7 @@ $('#explanation').addEventListener('click',e=>{
  if(!e.target.closest('.math-block,.relation-choice'))e.stopPropagation();
 });
 function differentialOrigin(effect=state.effect){const context=initialTraceContext(state);return context&&(context.effect===effect||state.initialReveal===6&&['totalmap','totalsquare'].includes(effect))?context.origin:{p:1,q:1};}
-function initialConcept(){return ['space','delta1','delta2','square','anticommute','total',state.totalStep===1?'totalsquare':'totalmap','totalcohom','filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
+function initialConcept(){return ['space','delta1','delta2','square','anticommute','total',state.totalStep===1?'totalsquare':'totalmap','totalcohom',state.filtrationStep===1?'filteredmap':'filtration',state.gradedMode==='differential'?'gradedmap':'graded'][state.initialReveal];}
 function keepReadingVisible(card){readingFocus.follow(card);}
 function keepDefinitionVisible(){keepReadingVisible($(`[data-build="${state.initialReveal}"]`));}
 function interactiveConcept(target){
@@ -377,7 +385,7 @@ function interactiveConcept(target){
  const build=target.closest('.build-statement.is-active .build-card[data-open="true"]');
  // Each total-complex formula is its own trigger for the same degree sweep.
  // Clicking C^bullet or C^n selects that formula without a hover side effect.
- if(build)return (build.querySelector('.relation-choices')||['total','filtration','graded'].includes(build.dataset.concept))?target.closest('.math-block[data-concept]'):build;
+ if(build)return (build.querySelector('.relation-choices')||['total','totalmap','filtration','graded'].includes(build.dataset.concept))?target.closest('.math-block[data-concept]'):build;
  return target.closest('.formal-statement .reading-formula[data-concept]')||target.closest('#diagram [data-concept]');
 }
 function interactionKey(el){
@@ -429,6 +437,9 @@ function renderQuickCheck(){
 function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h':concept==='delta2'?'v':concept==='total'||concept==='differential'?'r':'continuation';return `<path class="continuation" ${concept?`data-concept="${concept}" tabindex="0"`:''} d="M${x1},${y1} L${x2},${y2}" marker-end="url(#arrow-${marker})" role="${concept?'button':'img'}" aria-label="延续箭头：省略中间项，不表示一次微分"><title>延续箭头：省略中间项，不表示一次微分</title></path>`;}
 
 function isDoubleComplexView(){return !state.cover&&state.module==='initial'&&state.step===0;}
+function consequence(formula,concept,attribute=''){
+ return `<div class="reading-consequence" ${attribute}><span class="consequence-cue">${ui('有','We have')}</span>${block(formula,concept)}</div>`;
+}
 function doubleComplexCompanion(item){
  $('#sceneTitle').textContent=ui('谱序列','Spectral Sequence');
  if($('.build-statement')?.dataset.contentLanguage===language())return;
@@ -446,7 +457,7 @@ function doubleComplexCompanion(item){
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
  const heading=statementHeading(statementMeta('initial',0),'1').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
- $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>c.concept==='graded'&&j===1?`<div data-graded-fragment hidden>${block(f,'gradedmap')}</div>`:block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?`<div data-total-fragment hidden><div class="relation-choices"><button class="relation-choice formula-action" data-concept="totalsquare">${math(raw`D^2=0`)}</button></div></div>`:''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>c.concept==='filtration'&&j===1?consequence(f,'filteredmap','data-filtration-fragment hidden'):c.concept==='graded'&&j===1?`<div data-graded-fragment hidden>${block(f,'gradedmap')}</div>`:block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?consequence(raw`D^2=0`,'totalsquare','data-total-fragment hidden'):''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup());
  $('#sceneNote').textContent='';
 }
@@ -470,6 +481,12 @@ function syncInitialEntries(){
    const fragment=el.querySelector('[data-graded-fragment]');
    fragment.dataset.current=String(isDoubleComplexView()&&state.initialReveal===9&&state.gradedMode==='differential');
    notebookMotion.setExpanded(fragment,revealedGradedStep===1,{immediate:state.cover||el.hidden});
+  }
+  if(i===8){
+   el.dataset.filtrationStep=String(state.filtrationStep);
+   const fragment=el.querySelector('[data-filtration-fragment]');
+   fragment.dataset.current=String(isDoubleComplexView()&&state.initialReveal===8&&state.filtrationStep===1);
+   notebookMotion.setExpanded(fragment,revealedFiltrationStep===1,{immediate:state.cover||el.hidden});
   }
   if(i===6){
    el.dataset.totalStep=String(state.totalStep);
@@ -734,7 +751,7 @@ function syncInitialEntrance(){
 // Legacy graded controls select the same two stages as the left-hand entry.
 document.addEventListener('click',event=>{const button=event.target.closest('[data-graded-view]');if(!button)return;event.stopPropagation();selectInitialBuild(9,button.dataset.gradedView==='differential'?1:0);});
 
-function playbackKey(){return state.cover?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.initialReveal===9?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
+function playbackKey(){return state.cover?null:isDoubleComplexView()?(state.initialReveal<0?null:`initial:${state.initialReveal}:${state.totalStep}:${state.filtrationStep}:${state.initialReveal===9?state.gradedMode:''}`):`${state.module}:${state.step}:${state.notePage}`;}
 function playbackKind(){
  if(isDoubleComplexView())return [0,1,2,7].includes(state.initialReveal)||state.initialReveal===9&&state.gradedMode==='space'?'entrance':'demonstration';
  return state.module==='learn'&&(state.step===6||state.step===5&&state.notePage===0||state.step===4&&state.notePage===0)||state.module==='converge'&&state.step===0?'demonstration':'entrance';
@@ -764,7 +781,7 @@ async function playCurrentAnimation({signal,waitUntil,wait}){
   }else if(['anticommute','totalmap','totalsquare','delta1','delta2'].includes(concept))await run(()=>totalTrace.play(concept,true),totalTrace.isPlaying);
   else if(concept==='total')await degreeSweep.play(true);
   else if(concept==='filtration'){
-   await filtrationSweep.play(true);if(!live())return;state.p=1;applyConcept('filteredmap');await run(()=>filtrationTrace.play(true),filtrationTrace.isPlaying);
+   await filtrationSweep.play(true);
   }else if(concept==='filteredmap')await run(()=>filtrationTrace.play(true),filtrationTrace.isPlaying);
   else if(concept==='gradedmap')await run(()=>gradedTrace.play(true),gradedTrace.isPlaying);
   else {emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}

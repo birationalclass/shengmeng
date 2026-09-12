@@ -48,7 +48,7 @@
 }
 /* Only the current substep formula is enlarged; its entry heading stays current. */
 .notebook-workspace .formal-statement .build-card.build-current[data-total-step="1"]>.build-content>.math-block,
-.notebook-workspace .formal-statement .build-card.build-current [data-total-fragment][data-current=false] .formula-action,
+.notebook-workspace .formal-statement .build-card.build-current [data-total-fragment][data-current=false] .math-block,
 .notebook-workspace .formal-statement .build-card.build-current[data-graded-mode="differential"]>.build-content>.math-block,
 .notebook-workspace .formal-statement .build-card.build-current [data-graded-fragment][data-current=false] .math-block {
  font-size:var(--reading-formula-rest-size);
@@ -91,3 +91,20 @@
 .notebook-workspace .notebook-section .reading-group>.statement-body {margin:0;padding:0}
 .notebook-workspace .notebook-section .numbered-entry {border-top:1px solid #3c566060}
 .notebook-workspace .notebook-section[data-current=true] {border-left-color:var(--teal)}
+
+/* Consequences never compete with definitions for sustained reading emphasis.
+   Their cue briefly lights up on selection; it is not another reading step. */
+.notebook-workspace .reading-consequence,
+.notebook-workspace .reading-hypothesis {display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted)}
+.notebook-workspace .formal-statement .build-current :is(.reading-consequence,.reading-hypothesis) .math-block {
+ font-size:var(--reading-formula-rest-size);color:inherit;
+}
+.notebook-workspace .formal-statement .reading-consequence .math-block {background:transparent;box-shadow:none}
+.notebook-workspace .reading-consequence .consequence-cue,
+.notebook-workspace .reading-hypothesis>span {font-size:14px;white-space:nowrap}
+.notebook-workspace .numbered-entry.build-current .reading-consequence,
+.notebook-workspace .reading-consequence[data-current=true] {animation:consequence-notice 1100ms var(--motion-easing) var(--notebook-motion-time,0ms) both}
+.notebook-workspace .reading-consequence[data-current=true] .math-block {color:inherit}
+.notebook-workspace .formal-statement .build-card.build-current[data-filtration-step="1"]>.build-content>.math-block {font-size:var(--reading-formula-rest-size)}
+@keyframes consequence-notice {0%,30%{color:var(--gold)}100%{color:var(--muted)}}
+@media(prefers-reduced-motion:reduce){.notebook-workspace .numbered-entry.build-current .reading-consequence,.notebook-workspace .reading-consequence[data-current=true]{animation:none}}

@@ -26,20 +26,30 @@ function blend(el,oldHTML,newHTML,motion,text=null){
  },()=>{});
 }
 export function replaceMathContent(host,markup,{animate=true}={}){
- if(previousMarkup.get(host)===markup)return;
- previousMarkup.set(host,markup);
+ const previous=previousMarkup.get(host);
+ if(previous?.markup===markup&&previous.firstChild===host.firstChild)return;
  const motion=visualMotion();
  const old=visualRoots(host).map(root=>({
-  html:snapshot(root),tex:root.parentElement.querySelector('annotation')?.textContent,
-  tokens:leaves(root).map(el=>({text:el.dataset.mathText??el.textContent,classes:el.className.replace(/\s*math-swap/g,''),html:snapshot(el)}))
+  root,html:snapshot(root),tex:root.parentElement.querySelector('annotation')?.textContent,
+  tokens:leaves(root).map(el=>({el,text:el.dataset.mathText??el.textContent,classes:el.className.replace(/\s*math-swap/g,''),html:snapshot(el)}))
  }));
  host.innerHTML=markup;
+ previousMarkup.set(host,{markup,firstChild:host.firstChild});
  if(!animate||motion.reduced||!old.length)return;
  visualRoots(host).forEach((root,i)=>{
   const before=old[i];if(!before)return;
   const tex=root.parentElement.querySelector('annotation')?.textContent;
-  if(before.tex===tex)return;
   const next=leaves(root);
+  // C^n and Tot^n share fixed single-digit KaTeX metrics. Keep the live
+  // typeset skeleton: only the two numerals crossfade. In particular, never
+  // replace C, :=, Tot, K or the superscript baseline at a degree boundary.
+  const totalDegree=source=>/^C\^\{[0-9]\}:=\\operatorname\{Tot\}\^\{[0-9]\}K$/.test(source||'');
+  if(totalDegree(before.tex)&&totalDegree(tex)&&next.length===before.tokens.length){
+   root.replaceWith(before.root);
+   next.forEach((el,j)=>{const token=before.tokens[j];if(el.textContent!==token.text)blend(token.el,token.html,el.innerHTML,motion,el.textContent);});
+   return;
+  }
+  if(before.tex===tex)return;
   if(next.length===before.tokens.length&&next.every((el,j)=>el.className===before.tokens[j].classes)){
    next.forEach((el,j)=>{const token=before.tokens[j];if(el.textContent!==token.text)blend(el,token.html,el.innerHTML,motion,el.textContent);});
   }else blend(root,before.html,root.innerHTML,motion);
