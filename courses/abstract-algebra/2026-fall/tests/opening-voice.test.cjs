@@ -20,7 +20,7 @@ class Audio extends Node{
   document.getElementById=id=>({courseOpening:dialog,openingSettings:panel,openingMusic:music,openingMusicToggle:toggle}[id]);
   const window=new Node();const store=new Map();let voiceAudio;
   const context=vm.createContext({window,document,URL,Audio:class extends Audio{constructor(src){super(src);voiceAudio=this;}},localStorage:{getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}});
-  for(const name of ['opening-audio.js','opening-voice.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',name),'utf8'),context);
+  for(const name of ['opening-galois-audio.js','opening-audio.js','opening-voice.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',name),'utf8'),context);
   const settle=async()=>{await Promise.resolve();await Promise.resolve();};
   window.CourseOpeningAudio.start();await window.CourseOpeningVoice.unlock();
   assert.equal(music.volume,.72);assert.equal(music.paused,false);

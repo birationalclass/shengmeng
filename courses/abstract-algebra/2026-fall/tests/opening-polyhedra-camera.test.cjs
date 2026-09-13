@@ -1,14 +1,16 @@
 const assert=require('node:assert/strict');global.window=global;
 for(const name of ['camera','timeline','polyhedra','topology'])require('../opening-'+name+'.js');
 const C=CourseOpeningCamera;
-// Timing must be one second at every supported morph speed and in either direction.
+// Timing must be three seconds at every supported morph speed and in either direction.
+assert.equal(C.groupReturnMs,3000);
 for(const scene of [6,7])for(const speed of [.25,.5,.75,1,1.5])for(const other of [3,4,5,8,9]){
  const duration=5000/speed;
- for(const elapsed of [0,100,250,500,750,999,1000,1500,duration]){
+ for(const elapsed of [0,100,250,500,750,999,1000,1500,2999,3000,duration]){
   const forward=C.groupWeight({from:other,to:scene,moving:true,progress:elapsed/duration},duration);
   const reverse=C.groupWeight({from:scene,to:other,moving:true,progress:1-elapsed/duration},duration);
   assert.ok(Math.abs(forward-reverse)<1e-12);
-  if(elapsed>=1000)assert.equal(forward,1);
+  if(elapsed>=3000)assert.equal(forward,1);
+  if(elapsed>0&&elapsed<3000)assert.ok(forward>0&&forward<1);
   if(elapsed===0)assert.equal(forward,0);
  }
 }
@@ -39,4 +41,4 @@ for(const [width,height] of [[1920,1080],[1280,900],[844,390],[390,844],[320,740
  assert.ok(projectedRadius*fit/aspect<.9,'all grouped objects fit horizontally at any angle');
  assert.ok(projectedRadius*fit+centre<.9,'all grouped objects fit vertically at any angle');
 }
-console.log('PASS: one-second full framing at every morph speed; reverse playback, single selection, loop continuity; unchanged rotation and perspective; all grouped objects fit desktop/mobile at any angle');
+console.log('PASS: three-second full framing at every morph speed; reverse playback, single selection, loop continuity; unchanged rotation and perspective; all grouped objects fit desktop/mobile at any angle');

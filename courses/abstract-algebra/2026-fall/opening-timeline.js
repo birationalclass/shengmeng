@@ -30,7 +30,7 @@
     let duration = 0;
     for (let i = 0; i < holdTimes.length; i++) {
       starts.push(duration);
-      if(holdTimes.length===1){
+      if(holdTimes.length===1&&!options.morphSingle){
         duration=holdTimes[0]+transitionTimes[0];
         segments.push({start:0,end:duration,from:0,to:0,moving:false});
         break;
@@ -71,7 +71,7 @@
         moving: segment.moving,
         scene: segment.to,
         holdElapsed: segment.moving ? 0 : elapsed,
-        holdDuration: holdTimes.length===1?duration:holdTimes[segment.to],
+        holdDuration: holdTimes.length===1&&!options.morphSingle?duration:holdTimes[segment.to],
         direction,
         position,
         cycles

@@ -7,9 +7,11 @@
   let enabled = true, active = false, blocked = false, failed = false, generation = 0;
   try { enabled = localStorage.getItem(key) !== 'off'; } catch (_) {}
   audio.volume = .72;
+  const score=window.CourseOpeningGaloisAudio.create({mainAudio:audio,trackUrl:new URL('./audio/the-great-eagle.mp3',document.baseURI).href,requestMain:()=>play()});
+  let lastFrame={active:false,t:0,dt:0,direction:1};
   function wanted() { return active && dialog.open && !document.hidden && enabled && !failed; }
   function sync() {
-    const playing = wanted() && !audio.paused;
+    const playing = wanted() && (!audio.paused||score.status().scorePlaying);
     button.textContent = failed ? '音乐暂不可用' : blocked && enabled ? '开启音乐' : playing ? '音乐 · 开' : '音乐 · 关';
     button.setAttribute('aria-label', failed ? '音乐暂不可用' : playing ? '关闭入场音乐' : '开启入场音乐');
     button.setAttribute('aria-pressed', String(playing));
@@ -18,7 +20,7 @@
     dialog.dataset.music = failed ? 'unavailable' : playing ? 'playing' : blocked && enabled ? 'awaiting-gesture' : 'paused';
   }
   function play() {
-    if (!wanted()) { sync(); return; }
+    if (!wanted()||score.status().suppressMain) { sync(); return; }
     const request = ++generation;
     // Keep this call synchronous with a replay click or activation gesture.
     audio.play().then(() => {
@@ -32,15 +34,16 @@
     });
   }
   function stop(reset = true) {
-    active = false; generation++; blocked = false; audio.pause();
+    active = false; generation++; blocked = false; score.stop({reset}); audio.pause();
     if (reset) { try { audio.currentTime = 0; } catch (_) {} }
     sync();
   }
   button.addEventListener('click', () => {
     if (failed) return;
-    if (audio.paused || !enabled) { enabled = true; blocked = false; }
+    if ((audio.paused&&!score.status().scorePlaying) || !enabled) { enabled = true; blocked = false; score.unlock(); }
     else { enabled = false; generation++; audio.pause(); }
     try { localStorage.setItem(key, enabled ? 'on' : 'off'); } catch (_) {}
+    score.update({...lastFrame,playing:active,enabled,dt:0});
     if (enabled) play(); else sync();
   });
   dialog.addEventListener('pointerdown', event => {
@@ -59,7 +62,9 @@
   });
   window.addEventListener('pagehide', () => stop());
   window.CourseOpeningAudio = {
-    start() { active = true; failed = Boolean(audio.error); play(); },
+    start() { active = true; failed = Boolean(audio.error); score.unlock(); play(); },
+    frame(frame){lastFrame={...frame};score.update({...frame,playing:active&&dialog.open&&!document.hidden,enabled,volume:.72});sync();},
+    scoreStatus:()=>score.status(),
     stop
   };
   sync();

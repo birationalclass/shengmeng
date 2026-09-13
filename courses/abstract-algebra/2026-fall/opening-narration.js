@@ -17,7 +17,7 @@
         else{phase='reading';elapsed=0;element.classList.remove('is-language-changing');}
       }
     }
-    function tick(dt,shown,{fadeMs=2400,holdEnglish=false}={}){
+    function tick(dt,shown,{fadeMs=2400,holdEnglish=false,englishMs=8000}={}){
       if(scene<0||!shown)return;
       if(holdEnglish&&language!=='en'&&(phase!=='fading'||target!=='en'))fadeTo('en');
       if(phase==='fading'){
@@ -26,7 +26,7 @@
         if(fadeElapsed>=fadeMs){language=target;phase='reading';elapsed=0;render();}
       }else if(language==='en'){
         elapsed+=dt;
-        if(elapsed>=8000&&!holdEnglish)fadeTo('zh');
+        if(elapsed>=englishMs&&!holdEnglish)fadeTo('zh');
       }
     }
     return{setScene,tick,reset(){scene=-1;phase='reading';element.classList.remove('is-language-changing');},get language(){return language;},get needsFrames(){return scene>=0&&(language==='en'||phase==='fading');}};

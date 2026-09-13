@@ -458,10 +458,11 @@
     normalCache[5] = normals;
   }
 
-  let galoisBase,galoisCompact=false;
+  let galoisBases=[],galoisNodes=[],galoisCompact=false;
   function makeGalois(){
-    const result=root.CourseOpeningGalois.sample(N);
-    cache[9]=result.flat;spatialCache[9]=result.positions;normalCache[9]=result.normals;galoisBase=result.positions.slice();
+    galoisNodes=Array.from({length:root.CourseOpeningGalois.nodeCount},(_,i)=>root.CourseOpeningGalois.sampleNode(N,i));
+    const result=galoisNodes[0];cache[9]=result.flat;spatialCache[9]=result.positions;normalCache[9]=result.normals;
+    galoisBases=galoisNodes.map(node=>node.positions.slice());
     diagnostics.galois={...root.CourseOpeningGalois.evidence(),componentCounts:result.componentCounts};
   }
   let polyhedra,topology;
@@ -579,13 +580,14 @@
     create3D,
     createNormals,
     closeupFocus,
+    galoisNode(index){create3D(9);return galoisNodes[index];},
     fitGalois(compact){
       create3D(9);if(galoisCompact===compact)return false;galoisCompact=compact;
-      const scale=compact?.66:1,offset=compact?-.34:0,positions=spatialCache[9],flat=cache[9];
-      for(let i=0;i<N;i++){
-        positions[i*3]=galoisBase[i*3]*scale;positions[i*3+1]=galoisBase[i*3+1]*scale+offset;positions[i*3+2]=galoisBase[i*3+2]*scale;
-        flat[i*2]=positions[i*3];flat[i*2+1]=positions[i*3+1];
-      }return true;
+      const scale=compact?.66:1,offset=compact?-.34:0;
+      galoisNodes.forEach((node,j)=>{const base=galoisBases[j];for(let i=0;i<N;i++){
+        node.positions[i*3]=base[i*3]*scale;node.positions[i*3+1]=base[i*3+1]*scale+offset;node.positions[i*3+2]=base[i*3+2]*scale;
+        node.flat[i*2]=node.positions[i*3];node.flat[i*2+1]=node.positions[i*3+1];
+      }});return true;
     },
     pickPolyhedron(ray){create3D(6);return polyhedra.pick(ray.origin,ray.direction);},
     rotatePolyhedron(index,axis,angle){create3D(6);polyhedra.rotateSolid(index,axis,angle);},

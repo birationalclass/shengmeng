@@ -209,8 +209,8 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .typography-setting output{flex-basis:42px;min-width:42px}
 /* Scale the text itself; widen the verse with it to retain all four lines. */
 #courseOpening .opening-caption{container-type:inline-size}
-#courseOpening [data-caption-title]{font-size:min(calc(12px * var(--title-scale,1.15)),6cqw);letter-spacing:min(3px,.45cqw)}
-#courseOpening [data-caption-zh]{font-size:calc(clamp(16px,1.55vw,21px) * var(--title-scale,1.15))}
+#courseOpening [data-caption-title]{font-size:min(calc(16.8px * var(--title-scale,1.15)),8.4cqw);letter-spacing:min(3px,.45cqw)}
+#courseOpening [data-caption-zh]{font-size:calc(clamp(19.2px,1.86vw,25.2px) * var(--title-scale,1.15))}
 #courseOpening .opening-narration{width:min(calc(clamp(275px,30vw,420px) * var(--quote-scale,1.15)),89vw)}
 #courseOpening .opening-quote{font-size:calc(clamp(18px,1.65vw,25px) * var(--quote-scale,1.15))}
 #courseOpening .opening-quote[data-kind="ring-verse"]{font-size:min(calc(clamp(24px,2.61vw,38px) * var(--quote-scale,1.15)),8.7cqw)}
@@ -239,3 +239,21 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .opening-quote[data-kind="ring-verse"][lang="zh-CN"]{font-size:min(calc(clamp(18px,1.55vw,23px) * var(--quote-scale,1.15)),6.8cqw);line-height:2.2;letter-spacing:.14em}
 #courseOpening .opening-quote[data-kind="theorem"][lang="en"]{font-size:calc(clamp(12px,1vw,15px) * var(--quote-scale,1.15));line-height:1.65}
 @media(max-width:700px){#courseOpening .opening-quote[data-kind="theorem"][lang="en"]{font-size:calc(11px * var(--quote-scale,1.15));line-height:1.65}}
+
+/* A quiet date above every bilingual title; the biography stays in the left column. */
+#courseOpening [data-caption-year]{margin:0 0 8px;color:#9c8967;font:400 12px/1.4 Georgia,serif;letter-spacing:.18em}
+#courseOpening [data-caption-year]:empty{display:none}
+#courseOpening .opening-narration:has([data-kind^="galois-"]){top:27%;left:5.5%;width:min(28vw,360px)}
+#courseOpening .opening-quote[data-kind^="galois-"]{white-space:pre-line;text-wrap:pretty;font:400 calc(clamp(14px,1.15vw,18px) * var(--quote-scale,1.15))/1.85 Georgia,'Songti SC',serif;letter-spacing:.2px}
+#courseOpening .opening-quote[data-kind="galois-theorem"]{color:#e1c89c;font-size:calc(clamp(16px,1.25vw,20px) * var(--quote-scale,1.15));line-height:1.8}
+@media(max-width:700px){
+ #courseOpening .opening-narration:has([data-kind^="galois-"]){top:8%;bottom:auto;left:7%;width:86%}
+ #courseOpening .opening-quote[data-kind^="galois-"]{font-size:calc(12px * var(--quote-scale,1.15));line-height:1.7}
+ #courseOpening .opening-quote[data-kind="galois-theorem"]{font-size:calc(14px * var(--quote-scale,1.15));line-height:1.6}
+ #courseOpening [data-caption-title]{white-space:normal;text-wrap:balance}
+ #courseOpening [data-caption-zh]{white-space:normal;text-wrap:balance}
+}
+
+#courseOpening .is-galois-story .opening-caption,#courseOpening .is-galois-story .opening-quote{transition-duration:min(1.1s,var(--text-fade,2.4s))}
+#courseOpening [data-galois-recognition="published"] [data-caption-year]{color:#ead2a1;text-shadow:0 0 22px #c99b5960}
+#courseOpening .scene-duration select:disabled{opacity:.4}

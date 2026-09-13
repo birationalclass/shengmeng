@@ -57,6 +57,9 @@
     uniform vec3 viewTarget;
     uniform float viewZoom;
     uniform float objectSpin;
+    uniform float galoisLossFrom;
+    uniform float galoisLossTo;
+    uniform vec2 galoisFit;
     uniform float radiation;
     uniform float radiationFineOnly;
     uniform float grainTypes[6];
@@ -76,6 +79,19 @@
     varying mediump vec3 crystalLight;
     ${cameraMath}
     ${window.CourseOpeningImpulse?.shader||'vec3 impulseOffset(vec3 p){return vec3(0.);}'}
+
+    // Only tagged grains belonging to the near figure yield to the cadence.
+    // Their separate engraving layer never consumes the landscape behind it.
+    vec4 storyLoss(vec3 point,float loss,float seed){
+      float amount=clamp(loss,0.,1.);
+      if(amount<=0.)return vec4(point,1.);
+      float scale=max(.00001,galoisFit.x);
+      float mask=step(.026,point.z/scale);
+      float age=smoothstep(.10*seed,.72+.28*seed,amount);
+      float travel=mask*age*(.32+.68*age);
+      vec2 drift=vec2(-.025-.045*seed,-.080-.120*seed)*travel*scale;
+      return vec4(point.xy+drift,point.z,1.-.97*mask*age);
+    }
 
     vec2 localWander(vec2 p) {
       float a = time * .33;
@@ -135,10 +151,13 @@
       kind=mineralKind(fract(grain.x*17.17+grain.w*31.31));
       float t=progress;
       float e=t*t*t*(t*(t*6.-15.)+10.);
-      vec2 delta=finish.xy-start.xy;
+      vec4 storyFrom=storyLoss(start,galoisLossFrom,grain.x);
+      vec4 storyTo=storyLoss(finish,galoisLossTo,grain.x);
+      vec2 delta=storyTo.xy-storyFrom.xy;
+      float storyOpacity=mix(storyFrom.w,storyTo.w,e);
       float arch=sin(3.14159265359*e);
-      vec3 p=mix(start,finish,e);
-      p.z=mix(start.z*mix(1.,depth,extrusionFrom),finish.z*mix(1.,depth,extrusionTo),e);
+      vec3 p=mix(storyFrom.xyz,storyTo.xyz,e);
+      p.z=mix(storyFrom.z*mix(1.,depth,extrusionFrom),storyTo.z*mix(1.,depth,extrusionTo),e);
       p.xy+=vec2(-delta.y,delta.x)*arch*.28;
       float dist=length(delta);
       p.xy+=vec2(sin(grain.x*19.+e*6.283),cos(grain.y*23.-e*6.283))*
@@ -209,11 +228,12 @@
       color+=vec3(.94,.78,.48)*sheen*.13;
       float beam=followLight(p.xy);
       color=color*(1.+beam*.62)+vec3(.12,.10,.065)*beam*(.3+.7*diffuse);
-      opacity=(.65+.30*grain.x)*(1.-complexity*step(.94,grain.z)*.10)*escaped.w;
+      opacity=(.65+.30*grain.x)*(1.-complexity*step(.94,grain.z)*.10)*escaped.w*storyOpacity;
       material=grain;
     }`;
 
   const fragment = `precision mediump float;
+    uniform mediump float narrativeLight;
     uniform mediump float depth;
     uniform mediump float complexity;
     varying mediump vec3 color;
@@ -264,7 +284,7 @@
         crystal+=vec3(.73,.83,.91)*bevel;
         float alpha=(1.-smoothstep(.91,1.,cutRadius))*opacity;
         if(alpha<.075)discard;
-        gl_FragColor=vec4(crystal,alpha);return;
+        gl_FragColor=vec4(crystal*clamp(narrativeLight,.65,1.15),alpha);return;
       }
       if(r>1.)discard;
       float flatAlpha=1.-smoothstep(.25,1.,r);
@@ -285,7 +305,7 @@
       float alpha=mix(flatAlpha,solidAlpha,depth)*opacity;
       // Transparent sprite corners must never occlude another side of the ring.
       if(alpha<.075)discard;
-      gl_FragColor=vec4(mix(flatColor,solidColor,depth),alpha);
+      gl_FragColor=vec4(mix(flatColor,solidColor,depth)*clamp(narrativeLight,.65,1.15),alpha);
     }`;
 
   const backgroundVertex = `attribute vec2 pos;varying vec2 uv;
@@ -313,13 +333,9 @@
       float glow=exp(-length((uv-vec2(-.5,.45))*vec2(.7,1.)))*.015;
       float vignette=1.-smoothstep(.25,1.5,length(uv));
       vec3 quiet=vec3(.018,.017,.014)+vec3(.6,.49,.28)*(glow+grain)*vignette;
-      // Intersect the inverse camera ray with a world-space slate plane beneath
-      // the particles. Its granular texture remains attached during every orbit.
-      vec2 image=vec2(uv.x*aspect,uv.y-cameraCentre())/cameraFit();
-      vec3 rayOrigin=viewTarget+fromCamera(vec3(image,0.));
-      vec3 ray=fromCamera(vec3(-image*camera/cameraDistance(),1.));
-      vec3 world=rayOrigin+ray*((-.68-rayOrigin.z)/max(.18,ray.z));
-      vec2 p=world.xy;
+      // Screen-anchored slate: foreground orbit, spin, zoom and pointer rotation
+      // can never rotate or translate the background image.
+      vec2 p=vec2(uv.x*aspect,uv.y-.20)/.68;
       float stone=strata(p);
       float ridge=sin(p.x*3.7+p.y*2.1+stone*5.4);
       float seams=smoothstep(.92,1.,abs(sin(p.x*7.3-p.y*3.1+stone*9.)));
@@ -360,10 +376,22 @@
     return{offset:n.map(v=>v*reach*age),alpha:life,chosen:1};
   }
 
+  // CPU mirror used for snapshots: deform source and destination separately,
+  // then run the existing morph and mix their alpha using its eased progress.
+  function storyLoss(point,loss,grainSeed,fit=[1,0]) {
+    const clamp=x=>Math.max(0,Math.min(1,x));
+    const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t);};
+    const amount=clamp(loss);
+    if(amount<=0)return {point:[point[0],point[1],point[2]],alpha:1};
+    const scale=Math.max(.00001,fit[0]),mask=point[2]/scale>=.026?1:0;
+    const age=smooth(.10*grainSeed,.72+.28*grainSeed,amount),travel=mask*age*(.32+.68*age);
+    return {point:[point[0]+(-.025-.045*grainSeed)*travel*scale,point[1]+(-.080-.120*grainSeed)*travel*scale,point[2]],alpha:1-.97*mask*age};
+  }
+
   function rotateObject(point,angle) {
     const c=Math.cos(angle),s=Math.sin(angle);
     return[c*point[0]-s*point[1],s*point[0]+c*point[1],point[2]];
   }
 
-  window.CourseOpeningMaterials=Object.freeze({gemFraction,mineralKind,vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,rotateObject});
+  window.CourseOpeningMaterials=Object.freeze({gemFraction,mineralKind,vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,storyLoss,rotateObject});
 })();

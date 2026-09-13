@@ -10,10 +10,17 @@
   const ease = value => {const t=clamp(value);return t*t*t*(t*(t*6-15)+10);};
   const neutral = Object.freeze({angles:Object.freeze([-.14,0,0]),zoom:1,target:Object.freeze([0,0,0])});
   const focuses = Array.from({length:COUNT},()=>[0,0,0]);
-  const defaultTransitions = [8400,8400,8400,10400,10800,10000,10000,10000,10000,10000];
-  const defaultHolds = defaultTransitions.map(duration=>30000-duration);
-  const defaultStarts = defaultHolds.map((_,i)=>i*30000);
-  const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:COUNT*30000};
+  // The old portrait return occupied 45% of a transition. A full transition
+  // scaled by 1.35 therefore gives precisely three times that return duration.
+  const portraitTransitionScale=1.35;
+  const defaultTransitions = [8400,8400,8400,10400,10800,10000,10000,10000,10000,10000]
+    .map((duration,scene)=>scene===8||scene===9?duration*portraitTransitionScale:duration);
+  // A figure's selected interval is its viewing time. Formation belongs to
+  // the following transition and no longer consumes that viewing time.
+  const defaultHolds = Array(COUNT).fill(30000);
+  let defaultDuration=0;
+  const defaultStarts = defaultHolds.map((hold,i)=>{const start=defaultDuration;defaultDuration+=hold+defaultTransitions[i];return start;});
+  const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:defaultDuration};
   const detailScene = 3, accelerationFraction = .20;
   const integratedEase = t => t*t*t*t*(t*t-3*t+2.5);
 
@@ -75,8 +82,8 @@
     if(macroDuration>0&&position>macroStart&&position<macroStart+macroDuration) {
       const phase=(position-macroStart)/macroDuration;
       const envelope=distanceAt(2*Math.min(phase,1-phase));
-      // Only this detail pass reaches 10x. At default 30-second intervals its
-      // log-zoom speed stays about .20 per second (previously .66). If an
+      // Only this detail pass reaches 10x. At default 30-second viewing times its
+      // log-zoom speed stays below .20 per second (previously .66). If an
       // interval is shortened, reduce the detail depth instead of racing.
       const startPhase=macroStart/duration+phaseOffset,endPhase=startPhase+macroDuration/duration;
       const centreBase=baseLogZoom((startPhase+endPhase)/2),endBase=baseLogZoom(endPhase);
@@ -96,17 +103,17 @@
     const focusWeight=1-Math.pow(zoom,-1.25);
     return {angles:orbitAt(u),zoom:Math.max(1,zoom),target:focus.map(coordinate=>coordinate*focusWeight)};
   }
-  // The portrait becomes front-facing before its sand has finished forming.
-  // Canonical morph progress makes this envelope identical in either direction.
+  // The portrait returns throughout its extended formation instead of snapping
+  // upright in its first 45%. Canonical time makes reverse playback identical.
   function portraitWeight(state){
     if(!state.moving)return state.scene===9?1:0;
     if(state.from===9&&state.to===9)return 1;
-    if(state.to===9)return clamp(ease(state.progress/.45));
-    if(state.from===9)return clamp(ease((1-state.progress)/.45));
+    if(state.to===9)return ease(state.progress);
+    if(state.from===9)return ease(1-state.progress);
     return 0;
   }
-  const groupReturnMs=1000;
-  // Restore grouped layouts within one second of entering their
+  const groupReturnMs=3000;
+  // Restore grouped layouts within three seconds of entering their
   // morph, including reverse playback. Keep that framing throughout the hold.
   function groupWeight(state,transitionDuration=10000){
     const grouped=id=>id===6||id===7;
@@ -129,12 +136,12 @@
     return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
-    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,groupWeight,frameGroup,groupReturnMs,
+    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,portraitTransitionScale,groupWeight,frameGroup,groupReturnMs,
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
       approach:'Periodic spatial oval; cycloidal launch; independent slow broad dolly; one velocity-ramped E8 macro pass; surface-locked framing',
-      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultCycleSeconds:COUNT*30,
+      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
       detailScene,accelerationFractionPerLeg:accelerationFraction,
       phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',
       endpointPose:{angles:[...neutral.angles],zoom:1,target:[0,0,0]},
