@@ -5,8 +5,8 @@
   // This adapter changes gains without changing the original track or its loop.
   function create({ mainAudio, trackUrl = './audio/the-great-eagle.mp3', requestMain } = {}) {
     if (!mainAudio) throw new TypeError('A mainAudio element is required.');
-    const score = new Audio(trackUrl);
-    score.preload = 'auto';
+    const score = new Audio();
+    score.preload = 'none';
     score.loop = false;
     score.volume = 0;
     let state = { active: false, prelude: false, departing: false, t: 0, dt: 0, direction: 1, playing: false, enabled: true, volume: .72 };
@@ -15,6 +15,7 @@
     let playEpoch = 0, scoreRequest = null, mainRequested = false, readySettled = false;
     let readyResolve;
     const ready = new Promise(resolve => { readyResolve = resolve; });
+    let preparation = null;
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     const finite = (v, fallback) => Number.isFinite(Number(v)) ? Number(v) : fallback;
     const visible = () => typeof document === 'undefined' || !document.hidden;
@@ -264,6 +265,11 @@
     if (typeof document !== 'undefined') document.addEventListener('visibilitychange', onHidden);
     return {
       start: unlock, unlock, update, stop, status, ready,
+      async prepare(report) {
+        if (!preparation) preparation = window.CourseOpeningAudioPreload.create(score, trackUrl);
+        await preparation.prepare(report);
+        failed = false; blocked = false; needSync = true;
+      },
       get currentTime() { return finite(score.currentTime, 0); },
       destroy() {
         stop();

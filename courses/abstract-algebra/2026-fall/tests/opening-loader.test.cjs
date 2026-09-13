@@ -12,12 +12,17 @@ const ctx={window:{},document,location:{hash:''},matchMedia:()=>({matches:false}
 vm.runInNewContext(script,ctx);
 const boot=ctx.window.CourseOpeningBoot,dialog=nodes.get('courseOpening'),loader=nodes.get('openingLoader'),start=loader.querySelector('[data-start-animation]');
 assert.equal(loader.hidden,false);assert.equal(start.hidden,true);assert.equal(dialog.open,true);assert.equal(timers.size,1);
-boot.advance(55,'加载');boot.ready();assert.equal(start.hidden,false);assert.equal(timers.size,0);
+boot.advance(100,'动画已完成');assert.equal(boot.progress,70,'graphics alone cannot fill the meter');assert.equal(start.hidden,true);
+boot.music(50,'加载音乐');assert.equal(boot.progress,85);assert.equal(start.hidden,true);
+boot.manage();assert.equal(timers.size,0,'slow music cannot trigger the old automatic dismissal');
+boot.music(100,'音乐已完成');boot.ready();assert.equal(start.hidden,false);assert.equal(timers.size,0);
 boot.finish();assert.equal(loader.hidden,true);assert.equal(start.hidden,true);
 boot.ready();boot.advance(70,'迟到的加载事件');assert.equal(loader.hidden,true);assert.equal(start.hidden,true);assert.equal(boot.progress,100);
 boot.stop();dialog.close();boot.ready();assert.equal(loader.hidden,true);
 boot.start();assert.equal(loader.hidden,false);assert.equal(start.hidden,true);assert.equal(boot.progress,0);assert.equal(dialog.classList.contains('opening-ready'),false);
 boot.start();assert.equal(timers.size,1,'a replay has only one loading watchdog');
+boot.retry();assert.equal(start.hidden,false);assert.match(start.textContent,/重新加载/);assert.equal(dialog.open,true);assert.equal(timers.size,0);
+boot.start();assert.equal(start.hidden,true);assert.match(start.textContent,/开始动画/);
 boot.ready();boot.finish();assert.equal(loader.hidden,true);
 boot.start();boot.dismiss();assert.equal(dialog.open,false);assert.equal(loader.hidden,true);assert.equal(timers.size,0);
 boot.ready();assert.equal(start.hidden,true);

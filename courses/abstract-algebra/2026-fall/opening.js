@@ -124,12 +124,16 @@
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
     if(dialog.open&&!alreadyLoading)return;
-    if(!dialog.open){dialog.classList.remove('opening-outro','opening-galois');boot.start();}
+    if(!dialog.open||stage==='load-error'){dialog.classList.remove('opening-outro','opening-galois');boot.start();}
     const entry=++entryVersion;stage='loading';root.dataset.stage=stage;toggle.disabled=true;
+    boot.manage();
     try {
-      if(!initialization)initialization=initialize();await initialization;
+      if(!initialization)initialization=initialize();
+      else if(film)boot.advance(100,'动画已就绪');
+      const music=window.CourseOpeningAudio.prepare((value,text)=>{if(entry===entryVersion&&stage==='loading')boot.music(value*100,text);}).catch(error=>{error.musicLoading=true;throw error;});
+      await Promise.all([initialization,music]);
       if(entry===entryVersion&&dialog.open){stage='ready';root.dataset.stage=stage;boot.ready();dialog.classList.remove('opening-loading');dialog.classList.add('opening-awaiting-start');}
-    }catch(error){if(entry===entryVersion){root.dataset.unavailable='true';leaveOpening();initialization=null;}}
+    }catch(error){if(entry===entryVersion){if(error.musicLoading){stage='load-error';root.dataset.stage=stage;boot.retry();}else{root.dataset.unavailable='true';leaveOpening();initialization=null;}}}
   }
   function startAnimation() {
     if(stage!=='ready'||!film)return;
@@ -155,10 +159,10 @@
     dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
     toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
   }
-  dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();});
+  dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
     if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
-      event.preventDefault();if(stage==='ready')startAnimation();else requestCourseEntry();
+      event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else requestCourseEntry();
     }
   });
   dialog.addEventListener('wheel',event=>{

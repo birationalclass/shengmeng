@@ -38,11 +38,11 @@ function setup(mode, preferences={}) {
     if (mode === 'reject') return Promise.reject(new Error('Permission denied'));
     return new Promise((yes, no) => { resolve = yes; reject = no; });
   };
-  const boot = { ready() {}, start() {dialog.open = true;}, stop() {}, finish() { counts.finish++; } };
+  const boot = { advance() {}, manage() {}, music() {}, retry() {}, ready() {}, start() {dialog.open = true;}, stop() {}, finish() { counts.finish++; } };
   const context = {
     document, matchMedia: () => ({matches: false}), localStorage: {getItem: key => preferences[key]??null},
     setTimeout: () => 0, clearTimeout() {}, Promise,
-    window: {CourseOpeningBoot: boot, CourseOpeningAudio: {start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
+    window: {CourseOpeningBoot: boot, CourseOpeningAudio: {prepare() {return Promise.resolve();}, start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
     renderer: {galois() {counts.galois++;},depart() {counts.depart++;},outro() {counts.outro++;},outroReady() {return outroReady;},refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
   };
   vm.runInNewContext(source.slice(0, boundary) + `

@@ -8,6 +8,7 @@
   try { enabled = localStorage.getItem(key) !== 'off'; } catch (_) {}
   audio.volume = .72;
   const score=window.CourseOpeningGaloisAudio.create({mainAudio:audio,trackUrl:new URL('./audio/the-great-eagle.mp3',document.baseURI).href,requestMain:()=>play()});
+  const mainPreparation=window.CourseOpeningAudioPreload.create(audio,audio.src);
   let lastFrame={active:false,prelude:false,departing:false,t:0,dt:0,direction:1};
   function wanted() { return active && dialog.open && !document.hidden && enabled && !failed; }
   function sync() {
@@ -62,6 +63,12 @@
   });
   window.addEventListener('pagehide', () => stop());
   window.CourseOpeningAudio = {
+    async prepare(report = () => {}) {
+      const progress=[0,0];
+      const update=(index,value)=>{progress[index]=value;report((progress[0]+progress[1])/2,progress[0]<1?'加载开场配乐':'加载伽罗瓦配乐');};
+      await Promise.all([mainPreparation.prepare(value=>update(0,value)),score.prepare(value=>update(1,value))]);
+      failed=false;sync();
+    },
     start() { active = true; failed = Boolean(audio.error); score.unlock(); play(); },
     frame(frame){lastFrame={...frame};score.update({...frame,playing:active&&dialog.open&&!document.hidden,enabled,volume:.72});sync();},
     scoreStatus:()=>score.status(),
