@@ -49,6 +49,13 @@ for(let i=0;i<17;i++){
  near([Math.hypot(...a)],[G.evidence().radius]);near([Math.hypot(...a.map((x,k)=>x-b[k]))],[G.side]);
  for(let j=0;j<i;j++)assert.ok(Math.hypot(...a.map((x,k)=>x-G.vertices[j][k]))>.25);
 }
+// Richmond's two circle intersections locate the exact third and fifth vertices.
+const c=G.construction,R=G.evidence().radius;
+near([c.N3/R],[Math.cos(6*Math.PI/17)]);near([c.N5/R],[Math.cos(10*Math.PI/17)]);
+for(const circle of c.circles)near([Math.hypot(...c.K.map((x,i)=>x-circle.centre[i]))],[circle.radius]);
+assert.equal(c.J[1],R/4);
+assert.ok(G.widths.circumcircle>G.widths.auxiliaryCircle*8&&G.widths.circumcircle>G.widths.auxiliaryLine*10);
+console.log('PASS: Richmond circle intersections agree with vertices 3 and 5; the main circle is substantially thicker than every auxiliary line');
 assert.equal(g.captions.length,10);assert.equal(CourseOpeningCamera.count,10);
 for(const id of [7,8]){
  assert.equal(g.create3D(id).length,72000*3);assert.equal(g.create(id).length,72000*2);assert.equal(g.createNormals(id).length,72000*3);
