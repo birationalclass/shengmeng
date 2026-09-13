@@ -167,7 +167,7 @@
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
     if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
-      event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else requestCourseEntry();
+      event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else if(stage==='galois')finishGalois();else requestCourseEntry();
     }
   });
   dialog.addEventListener('wheel',event=>{
@@ -205,8 +205,8 @@
     for(const [name,value] of Object.entries({school:.94,awakening:.98,exams:.87,symmetries:1.04,prison:.68,letter:.86,death:.70,silence:.9,recognition:1.03}))storyShades[story.index[name]]=value;
     const closingGeometry=window.CourseOpeningOutro.create(N);
     const inscriptions=window.CourseOpeningInscription.create(N),portraitGeometry=geometry.galoisNode(0);
-    inscriptions.mark(portraitGeometry.positions,portraitGeometry.letteringWeights);
-    inscriptions.mark(closingGeometry.positions);
+    inscriptions.mark(portraitGeometry.positions,portraitGeometry.letteringWeights,portraitGeometry.letteringWeights);
+    inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
     cameraRig.setFocuses(Array.from({length:geometry.captions.length},(_,index)=>preparedScenes.includes(index)?geometry.closeupFocus(index):[0,0,0]));
     boot.advance(82,'雕琢沙粒质感');await paint();
     function compile(type, source) {
@@ -245,7 +245,7 @@
     for(let i=0;i<grains.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;grains[i]=seed/4294967296;}
     const grainBuffer=buffer(grains,gl.STATIC_DRAW),inscriptionBuffer=buffer(inscriptions.attributes,gl.DYNAMIC_DRAW);
     const loc={source:gl.getAttribLocation(program,'start'),destination:gl.getAttribLocation(program,'finish'),normalSource:gl.getAttribLocation(program,'normalStart'),normalDestination:gl.getAttribLocation(program,'normalFinish'),grain:gl.getAttribLocation(program,'grain'),inscription:gl.getAttribLocation(program,'inscription'),quad:gl.getAttribLocation(background,'pos')};
-    for(const name of ['galoisLossFrom','galoisLossTo','galoisLeavesFrom','galoisLeavesTo','galoisLeafSpecs[0]','galoisFit','narrativeLight','progress','aspect','dpr','inscriptionScale','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
+    for(const name of ['galoisLossFrom','galoisLossTo','galoisLeavesFrom','galoisLeavesTo','galoisLeafSpecs[0]','galoisFit','narrativeLight','progress','aspect','dpr','inscriptionScale','signatureScale','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
     const bgLoc={};for(const name of ['time','aspect','camera','background','stageLight','spotlight','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
     const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=0;
@@ -517,11 +517,11 @@
       attribute(quad,loc.quad,2);gl.drawArrays(gl.TRIANGLES,0,6);
       gl.useProgram(letterProgram);attribute(quad,letterLoc.pos,2);lettering.bind();gl.uniform1i(letterLoc.texture,0);gl.uniform1f(letterLoc.visibility,terminalActive&&!outro?1:captionOpacity);gl.uniform1f(letterLoc.sweepTime,time%24);gl.uniform1f(letterLoc.sweepEnabled,!terminalActive&&!reduce&&settings.backgroundEnabled?1:0);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.drawArrays(gl.TRIANGLES,0,6);
       gl.depthMask(true);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
-      gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);attribute(inscriptionBuffer,loc.inscription,2);
+      gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);attribute(inscriptionBuffer,loc.inscription,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
       const impulseUniforms=impulses.uniforms();gl.uniform4fv(loc['impulses[0]'],impulseUniforms.values);gl.uniform1fv(loc['impulseRadii[0]'],impulseUniforms.radii);
       const treatment=storyTreatment();gl.uniform1f(loc.galoisLossFrom,treatment.from);gl.uniform1f(loc.galoisLossTo,treatment.to);gl.uniform1f(loc.galoisLeavesFrom,treatment.leavesFrom);gl.uniform1f(loc.galoisLeavesTo,treatment.leavesTo);gl.uniform4fv(loc['galoisLeafSpecs[0]'],window.CourseOpeningGalois.leaves.flatMap(leaf=>[...leaf.centre,leaf.radius,0]));gl.uniform2fv(loc.galoisFit,galoisFit());gl.uniform1f(loc.narrativeLight,treatment.light);
-      gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.inscriptionScale,window.CourseOpeningInscription.scale(rect.width,rect.height));gl.uniform1f(loc.time,time);
+      gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.inscriptionScale,window.CourseOpeningInscription.scale(rect.width,rect.height));gl.uniform1f(loc.signatureScale,window.CourseOpeningInscription.signatureScale(rect.width,rect.height));gl.uniform1f(loc.time,time);
       const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,renderedSpin());gl.uniform1f(loc.spotlight,visual.spotlight);gl.uniform1f(loc.twoSided,twoSidedWeight());gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
       gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=renderedSpin().toFixed(6);
     }
@@ -566,12 +566,14 @@
         const amount=reduce?1:ease(Math.min(1,outro.elapsed/2700));
         outro.view={...cameraRig.blend(outro.from,neutral,amount),perspective:outro.from.perspective*(1-amount)};
         if(amount===1){
-          outro.phase='form';outro.elapsed=0;outro.view=neutral;root.dataset.outro='form';
+          outro.phase='form';outro.elapsed=0;outro.from=outro.view=neutral;root.dataset.outro='form';
           destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;upload();
           canvas.setAttribute('aria-label','Algebra Ⅰ. Sheng Meng.');
         }
       }else if(outro.phase==='form'){
         progress=reduce?1:Math.min(1,outro.elapsed/3600);
+        const amount=ease(progress);
+        outro.view={...cameraRig.blend(outro.from,neutral,amount),perspective:outro.from.perspective*(1-amount)};
         if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='进入课程 ↗';root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
       }
     }

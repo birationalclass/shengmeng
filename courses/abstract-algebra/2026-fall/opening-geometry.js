@@ -21,7 +21,7 @@
     { title: 'TWELVEFOLD ROSETTE', zh: '十二重花窗', en: 'Twelvefold symmetry around a single centre.' },
     { title: 'Lie Group', zh: '李群', en: '240 roots in eight dimensions, projected onto a plane.' },
     { title: 'JULIA FRACTAL', zh: '朱利亚分形', en: 'One rule, iterated. An endlessly intricate boundary.' },
-    { title: 'THE LORD OF THE RING', zh: '万环之环', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
+    { title: 'THE LORD OF THE RINGS', zh: '万环之环', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
     { title: 'Platonic Solids', zh: '正多面体', en: 'Five Platonic solids. Three rotation groups.' },
     { title: 'Fundamental Group', zh: '基本群', en: 'The Möbius band retracts onto its core circle S¹.' },
     { title: 'Gauss · 17-Gon', zh: '高斯 · 尺规作图', en: 'A regular seventeen-sided polygon, constructible with compass and straightedge.' },

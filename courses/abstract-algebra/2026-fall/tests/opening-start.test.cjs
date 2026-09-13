@@ -78,9 +78,12 @@ function assertPlaying(env) {
     press(second);assert.equal(env.controller.stage,'galois');assert.equal(env.counts.galois,1);assert.equal(env.counts.outro,0);
     assert.equal(env.dialog.classList.contains('opening-galois'),true);
     assert.equal(env.controller.effective().camera,0);assert.equal(env.controller.effective().spin,0);
-    press(first);press(second);press(first,{repeat:true});
-    assert.equal(env.controller.stage,'galois','repeated keys cannot skip the Galois story');assert.equal(env.counts.galois,1);assert.equal(env.counts.depart,0);
-    env.completeGalois();assert.equal(env.controller.stage,'outro');assert.equal(env.counts.outro,1,'renderer completion starts the outro automatically');
+    press(first,{repeat:true});press(second,{target:env.document.getElementById('openingSettings')});
+    assert.equal(env.controller.stage,'galois','held keys and settings controls cannot skip Galois');
+    press(first);assert.equal(env.controller.stage,'outro','a new Space or Enter skips Galois into Algebra I');
+    assert.equal(env.counts.galois,1);assert.equal(env.counts.outro,1);assert.equal(env.counts.depart,0);
+    press(second);press(first,{repeat:true});assert.equal(env.controller.stage,'outro','skipping never bypasses the Algebra formation');
+    env.completeGalois();assert.equal(env.counts.outro,1,'a late completion after skip cannot restart the outro');
     assert.equal(env.dialog.classList.contains('opening-galois'),false);assert.equal(env.dialog.classList.contains('opening-outro'),true);
     env.completeGalois();assert.equal(env.counts.outro,1,'a repeated completion cannot restart the outro');
     press(first);assert.equal(env.controller.stage,'outro','confirmation waits for the outro to finish forming');assert.equal(env.counts.depart,0);
@@ -169,5 +172,5 @@ function assertPlaying(env) {
   replay.controller.startAnimation();
   assert.equal(replay.controller.stage, 'playing');
   assert.equal(replay.counts.play, 2, 'replay remains available');
-  console.log('PASS Galois entry, unskippable story, automatic completion, outro readiness, successful fullscreen, explicit exit, late completion, and replay');
+  console.log('PASS Galois entry, keyboard skip, held-key and settings guards, automatic completion, outro readiness, successful fullscreen, explicit exit, late completion, and replay');
 })().catch(error => { console.error(error); process.exitCode = 1; });
