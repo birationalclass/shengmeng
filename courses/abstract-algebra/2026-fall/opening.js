@@ -96,27 +96,29 @@
       if(entry===entryVersion&&dialog.open){stage='ready';root.dataset.stage=stage;boot.ready();dialog.classList.remove('opening-loading');dialog.classList.add('opening-awaiting-start');}
     }catch(error){if(entry===entryVersion){root.dataset.unavailable='true';leaveOpening();initialization=null;}}
   }
-  async function startAnimation() {
+  function startAnimation() {
     if(stage!=='ready'||!film)return;
-    const entry=++entryVersion;let enteredFullscreen=false;
+    const entry=++entryVersion;
     stage='starting';root.dataset.stage=stage;startButton.disabled=true;
     window.CourseOpeningAudio?.start();
-    try {
-      if(!document.fullscreenElement){
-        if(!root.requestFullscreen)throw new Error('Fullscreen unavailable');
-        await root.requestFullscreen({navigationUI:'hide'});enteredFullscreen=true;
-      }
-      if(entry!==entryVersion||stage!=='starting'||!dialog.open){if(enteredFullscreen&&document.fullscreenElement===root&&stage!=='playing')document.exitFullscreen().catch(()=>{});return;}
-      ownedFullscreen=enteredFullscreen||ownedFullscreen;
-      stage='playing';root.dataset.stage=stage;delete root.dataset.fullscreenBlocked;
-      dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
-      boot.finish();toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
-    }catch(error){
-      if(entry!==entryVersion)return;
-      window.CourseOpeningAudio?.stop();
-      stage='ready';root.dataset.stage=stage;root.dataset.fullscreenBlocked='true';startButton.disabled=false;
-      startButton.textContent='点击重试全屏';root.querySelector('[data-loading-status]').textContent='请允许浏览器全屏后开始';
+    // Fullscreen is an enhancement: playback must not wait for permission or a
+    // browser promise that may never settle (notably in mobile web views).
+    if(!document.fullscreenElement&&document.fullscreenEnabled!==false&&typeof root.requestFullscreen==='function'){
+      try {
+        Promise.resolve(root.requestFullscreen({navigationUI:'hide'})).then(()=>{
+          if(document.fullscreenElement!==root)return;
+          if(entry!==entryVersion||stage!=='playing'||!dialog.open){
+            if(stage!=='playing')document.exitFullscreen().catch(()=>{});
+            return;
+          }
+          ownedFullscreen=true;
+        }).catch(()=>{}); // Keep playing in the page if fullscreen is rejected.
+      }catch(_){ /* Older implementations can throw synchronously; keep playing. */ }
     }
+    ownedFullscreen=document.fullscreenElement===root||ownedFullscreen;
+    stage='playing';root.dataset.stage=stage;
+    dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
+    boot.finish();toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();});
   dialog.addEventListener('keydown',event=>{
@@ -128,7 +130,11 @@
     if(stage!=='playing'||panel.contains(event.target)||event.ctrlKey||Math.abs(event.deltaY)<.5)return;
     event.preventDefault();film.direction(event.deltaY>0?1:-1);showControls();
   },{passive:false});
-  document.addEventListener('fullscreenchange',()=>{if(stage==='playing'&&!document.fullscreenElement)leaveOpening();});
+  document.addEventListener('fullscreenchange',()=>{
+    if(stage!=='playing')return;
+    if(document.fullscreenElement===root)ownedFullscreen=true;
+    else if(ownedFullscreen&&!document.fullscreenElement){ownedFullscreen=false;leaveOpening();}
+  });
   dialog.addEventListener('cancel',event=>{event.preventDefault();if(!panel.hidden)closeSettings(true);else leaveOpening();});
   panel.querySelector('[data-enter-course]').addEventListener('click',leaveOpening);
   document.querySelector('[data-replay-opening]').addEventListener('click',openOpening);
