@@ -1,0 +1,6 @@
+# Sources for the additional opening scenes
+
+- Möbius band deformation retraction onto its core circle: [Stanford Math 215B, solutions to homework 1](https://stanford.edu/class/math215b/Sol1.pdf). The displayed S¹ tube is a drawing aid; no claim that the two spaces are homeomorphic is made.
+- Gauss and the constructible heptadecagon: [Ben Lynn, Stanford — The Heptadecagon](https://crypto.stanford.edu/pbc/notes/numbertheory/17gon.html). Coordinates use Gaussian periods and square roots. The small compass arcs show equal-chord transfer, rather than the complete construction of the first side.
+- Galois’s life and contributions: [MacTutor, University of St Andrews — Évariste Galois](https://mathshistory.st-andrews.ac.uk/Biographies/Galois/).
+- Portrait: Alfred Galois, first published in *Magasin pittoresque*, 1848. [Wikimedia Commons source](https://commons.wikimedia.org/wiki/File:Galois-1848.jpg), [original scan](https://upload.wikimedia.org/wikipedia/commons/b/b5/Galois-1848.jpg). Public domain. The portrait is converted to deterministic sand coordinates: paper and the handwritten footer are omitted, tonal luminance within the portrait silhouette controls sampling. No runtime request to Wikimedia is required.

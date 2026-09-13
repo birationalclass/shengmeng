@@ -101,6 +101,11 @@ function assertPlaying(env) {
   const retained=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.45,cameraEnabled:false,titleScale:140,sceneDurations:[90,30,30,30,30,30,30]})});
   const retainedSettings=JSON.parse(retained.root.dataset.settings);
   assert.equal(retainedSettings.radiationAmount,.45);assert.equal(retainedSettings.cameraEnabled,false);assert.equal(retainedSettings.titleScale,140);assert.equal(retainedSettings.sceneDurations[0],90);
+  for(const old of [[true,true,true,true,true,true,true],[true,true,true,false,false,false,false,false,false,false]]){
+    const migration=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({sceneEnabled:old})});
+    const selection=JSON.parse(migration.root.dataset.settings).sceneEnabled;
+    assert.deepEqual(selection.slice(0,3),[false,false,false]);assert.ok(selection.slice(3).some(Boolean));
+  }
   const custom=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.32})});assert.equal(JSON.parse(custom.root.dataset.settings).radiationAmount,.32);
 
   const closing=setup('missing');closing.controller.startAnimation();closing.controller.requestCourseEntry();

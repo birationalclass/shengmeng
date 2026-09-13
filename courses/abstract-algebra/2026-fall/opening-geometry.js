@@ -22,7 +22,10 @@
     { title: 'Lie Group', zh: '李群', en: '240 roots in eight dimensions, projected onto a plane.' },
     { title: 'JULIA FRACTAL', zh: '朱利亚分形', en: 'One rule, iterated. An endlessly intricate boundary.' },
     { title: 'THE LORD OF THE RING', zh: '万环之环', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
-    { title: 'Platonic Solids', zh: '正多面体', en: 'Five Platonic solids. Three rotation groups.' }
+    { title: 'Platonic Solids', zh: '正多面体', en: 'Five Platonic solids. Three rotation groups.' },
+    { title: 'Fundamental Group', zh: '基本群', en: 'The Möbius band retracts onto its core circle S¹.' },
+    { title: 'Gauss · 17-Gon', zh: '高斯 · 尺规作图', en: 'A regular seventeen-sided polygon, constructible with compass and straightedge.' },
+    { title: 'Galois', zh: '伽罗瓦', en: 'Évariste Galois, 1811–1832. Galois Group.' }
   ].map(Object.freeze));
   const cache = new Array(captions.length);
   const spatialCache = new Array(captions.length);
@@ -455,7 +458,23 @@
     normalCache[5] = normals;
   }
 
-  let polyhedra;
+  let galoisBase,galoisCompact=false;
+  function makeGalois(){
+    const result=root.CourseOpeningGalois.sample(N);
+    cache[9]=result.flat;spatialCache[9]=result.positions;normalCache[9]=result.normals;galoisBase=result.positions.slice();
+    diagnostics.galois={...root.CourseOpeningGalois.evidence(),componentCounts:result.componentCounts};
+  }
+  let polyhedra,topology;
+  function makeTopology(){
+    const result=topology=root.CourseOpeningTopology.sample(N);
+    cache[7]=result.flat;spatialCache[7]=result.positions;normalCache[7]=result.normals;
+    diagnostics.topology=root.CourseOpeningTopology.evidence();
+  }
+  function makeGauss(){
+    const result=root.CourseOpeningGauss.sample(N);
+    cache[8]=result.flat;spatialCache[8]=result.positions;normalCache[8]=result.normals;
+    diagnostics.gauss={...root.CourseOpeningGauss.evidence(),componentCounts:result.componentCounts};
+  }
   function makePolyhedra() {
     const result=polyhedra=root.CourseOpeningPolyhedra.sample(N);
     cache[6]=result.flat;spatialCache[6]=result.positions;normalCache[6]=result.normals;
@@ -468,7 +487,10 @@
   function create(index) {
     validateIndex(index);
     if (!cache[index]) {
-      if (index === 6) makePolyhedra();
+      if (index === 9) makeGalois();
+      else if (index === 8) makeGauss();
+      else if (index === 7) makeTopology();
+      else if (index === 6) makePolyhedra();
       else if (index === 5) makeTorus();
       else cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJuliaRopes();
     }
@@ -512,7 +534,7 @@
   }
   function closeupFocus(index) {
     validateIndex(index);
-    if(index===6)return [0,0,0];
+    if(index>=6)return [0,0,0];
     // Deterministic real surface coordinates, so a 10x shot lands on sand.
     const preferred = [[.66, .135], [.54, .40], [.76, .075], [.52, .12], [.28, .16], [.52, -.35]][index];
     const points = create3D(index);
@@ -527,7 +549,10 @@
   function create3D(index) {
     validateIndex(index);
     if (!spatialCache[index]) {
-      if (index === 6) makePolyhedra();
+      if (index === 9) makeGalois();
+      else if (index === 8) makeGauss();
+      else if (index === 7) makeTopology();
+      else if (index === 6) makePolyhedra();
       else if (index === 5) makeTorus();
       else if (index === 4) makeJuliaRopes();
       else create(index);
@@ -537,7 +562,10 @@
   function createNormals(index) {
     validateIndex(index);
     if (!normalCache[index]) {
-      if (index === 6) makePolyhedra();
+      if (index === 9) makeGalois();
+      else if (index === 8) makeGauss();
+      else if (index === 7) makeTopology();
+      else if (index === 6) makePolyhedra();
       else if (index === 5) makeTorus();
       else if (index === 4) makeJuliaRopes();
       else create(index);
@@ -551,9 +579,19 @@
     create3D,
     createNormals,
     closeupFocus,
+    fitGalois(compact){
+      create3D(9);if(galoisCompact===compact)return false;galoisCompact=compact;
+      const scale=compact?.66:1,offset=compact?-.34:0,positions=spatialCache[9],flat=cache[9];
+      for(let i=0;i<N;i++){
+        positions[i*3]=galoisBase[i*3]*scale;positions[i*3+1]=galoisBase[i*3+1]*scale+offset;positions[i*3+2]=galoisBase[i*3+2]*scale;
+        flat[i*2]=positions[i*3];flat[i*2+1]=positions[i*3+1];
+      }return true;
+    },
     pickPolyhedron(ray){create3D(6);return polyhedra.pick(ray.origin,ray.direction);},
     rotatePolyhedron(index,axis,angle){create3D(6);polyhedra.rotateSolid(index,axis,angle);},
-    resetPolyhedra(){if(polyhedra)polyhedra.reset();},
-    evidence() { return JSON.parse(JSON.stringify({...diagnostics,polyhedronRotations:polyhedra?polyhedra.orientations():[]})); }
+    resetPolyhedra(){if(polyhedra)polyhedra.reset();if(topology)topology.reset();},
+    pickTopology(ray){create3D(7);return topology.pick(ray.origin,ray.direction);},
+    rotateTopology(index,axis,angle){create3D(7);topology.rotateObject(index,axis,angle);},
+    evidence() { return JSON.parse(JSON.stringify({...diagnostics,polyhedronRotations:polyhedra?polyhedra.orientations():[],topologyRotations:topology?topology.orientations():[]})); }
   });
 })(typeof window !== 'undefined' ? window : globalThis);

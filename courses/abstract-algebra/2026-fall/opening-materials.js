@@ -54,6 +54,7 @@
     uniform float radiationFineOnly;
     uniform float grainTypes[6];
     uniform float extrusionFrom;
+    uniform float twoSided;
     uniform float extrusionTo;
     uniform float gemShare;
     uniform float outroFall;
@@ -184,6 +185,7 @@
 
       vec3 lamp=normalize(vec3(-.52,.64,.79));
       float diffuse=max(0.,dot(n,lamp));
+      diffuse=mix(diffuse,abs(dot(n,lamp)),twoSided);
       float macroLight=.32+.75*diffuse;
       float lampFalloff=.84+.16*clamp(1.-length(p.xy-vec2(-.35,.48))*.5,0.,1.);
       vec3 lightInView=toCamera(lamp);crystalLight=vec3(lightInView.x,-lightInView.y,lightInView.z);

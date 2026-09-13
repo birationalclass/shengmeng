@@ -13,7 +13,7 @@ class Audio extends Node{
 }
 (async()=>{
   const dialog=new Node(),panel=new Node(),music=new Audio(),toggle=new Node();dialog.open=true;
-  const controls=Object.fromEntries(['enabled','loop','file','status','play'].map(k=>['[data-voice-'+k+']',new Node()]));
+  const controls=Object.fromEntries(['loop'].map(k=>['[data-voice-'+k+']',new Node()]));
   controls['[data-settings-reset]']=new Node();
   panel.querySelector=s=>controls[s];dialog.querySelector=()=>null;
   const document=new Node();document.hidden=false;document.baseURI='https://example.test/course/';
@@ -47,9 +47,8 @@ class Audio extends Node{
   voice.scene(6,true,1,6);voice.scene(5,true,1,7);await settle();assert.equal(voiceAudio.plays,once+3,'turning loop off preserves the played marker');
   voice.stop();voice.scene(5,true,1,0);await settle();assert.equal(voiceAudio.plays,once+4,'reopening allows one new automatic playback');
   voiceAudio.dispatchEvent(new Event('ended'));
-  controls['[data-voice-play]'].dispatchEvent(new Event('click'));await settle();assert.equal(window.CourseOpeningVoice.holdsScene(),true);
-  controls['[data-voice-enabled]'].checked=false;controls['[data-voice-enabled]'].dispatchEvent(new Event('change'));
-  assert.equal(voiceAudio.paused,true);assert.equal(window.CourseOpeningVoice.holdsScene(),false);assert.equal(music.volume,.72);
+  voice.stop();voice.scene(5,true,1,0);await settle();assert.equal(window.CourseOpeningVoice.holdsScene(),true);
+  voice.scene(6,true,1);assert.equal(voiceAudio.paused,true);assert.equal(window.CourseOpeningVoice.holdsScene(),false);assert.equal(music.volume,.72);
   window.CourseOpeningVoice.scene(6,true,1);assert.equal(voiceAudio.paused,true);
   dialog.dispatchEvent(new Event('close'));assert.equal(voiceAudio.paused,true);assert.equal(music.paused,true);
   loop.checked=true;controls['[data-settings-reset]'].dispatchEvent(new Event('click'));assert.equal(loop.checked,false);assert.equal(store.get('courseOpeningVoiceLoop.v1'),'false');
@@ -59,5 +58,5 @@ class Audio extends Node{
   voiceAudio.dispatchEvent(new Event('ended'));loop.checked=true;loop.dispatchEvent(new Event('change'));
   voice.scene(5,true,1,9,false);await settle();assert.equal(voiceAudio.plays,waitingCount+1);
   voice.scene(5,true,1,9,true);await settle();assert.equal(voiceAudio.plays,waitingCount+2,'a looping single figure also waits for English');
-  console.log('PASS: original dialogue plays, holds its scene, releases on end/disable, and never ducks background music');
+  console.log('PASS: original dialogue plays, holds its scene, releases on end/scene exit with no Gandalf controls, and never ducks background music');
 })().catch(error=>{console.error(error);process.exitCode=1;});

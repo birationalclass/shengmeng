@@ -15,7 +15,7 @@
   const storageKey = 'courseOpeningAppearance.v3';
   const durationChoices = [30,45,60,90];
   const morphSpeedChoices=[.25,.5,.75,1,1.5];
-  const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([true,true,true,true,true,true,true])});
+  const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,false,false,true,true,true,true,true,true,true])});
   const appearanceRanges={backgroundBrightness:[20,240],gemPercent:[0,5],titleScale:[80,160],quoteScale:[80,160],textFade:[.6,5]};
   const freshDefaults=()=>({...defaults,grainTypes:[...defaults.grainTypes],sceneEnabled:[...defaults.sceneEnabled],sceneDurations:[...defaults.sceneDurations]});
   let settings = freshDefaults();
@@ -27,7 +27,7 @@
     }
     for(const [key,[min,max]] of Object.entries(appearanceRanges))settings[key]=Number.isFinite(saved[key])?Math.max(min,Math.min(max,saved[key])):defaults[key];
     if(Array.isArray(saved.grainTypes)&&saved.grainTypes.length===6&&saved.grainTypes.every(v=>typeof v==='boolean')&&saved.grainTypes.some(Boolean))settings.grainTypes=[...saved.grainTypes];
-    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
+    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>i<3?false:typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
     settings.morphSpeed=morphSpeedChoices.includes(saved.morphSpeed)?saved.morphSpeed:defaults.morphSpeed;
     settings.spinSpeed=Number.isFinite(saved.spinSpeed)?Math.max(0,Math.min(3,saved.spinSpeed)):defaults.spinSpeed;
     if(current&&Array.isArray(saved.sceneDurations))settings.sceneDurations=defaults.sceneDurations.map((value,i)=>durationChoices.includes(saved.sceneDurations[i])?saved.sceneDurations[i]:value);
@@ -66,7 +66,7 @@
   }
   panel.addEventListener('input',event=>{
     const input=event.target;
-    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||i<0||i>=settings.sceneEnabled.length)return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
+    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||i<3||i>=settings.sceneEnabled.length)return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
     else if(input.dataset.grainType!==undefined){const i=Number(input.dataset.grainType);if(!Number.isInteger(i)||i<0||i>5)return;const next=[...settings.grainTypes];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.grainTypes=next;}
     else if(input.dataset.appearanceRange&&appearanceRanges[input.dataset.appearanceRange]&&Number.isFinite(Number(input.value))){const key=input.dataset.appearanceRange,[min,max]=appearanceRanges[key];settings[key]=Math.max(min,Math.min(max,Number(input.value)));}
     else if(input.dataset.settingToggle)settings[input.dataset.settingToggle]=input.checked;
@@ -173,13 +173,14 @@
     const geometry=window.CourseOpeningGeometry, materials=window.CourseOpeningMaterials, cameraRig=window.CourseOpeningCamera;
     const gl=canvas.getContext('webgl',{alpha:false,antialias:false,preserveDrawingBuffer:true});
     if(!gl||!geometry||!materials||!cameraRig)throw new Error('Opening unavailable');
-    const N=geometry.count,targets=[],normals=[];
+    // IDs 0–2 are retired; keep saved IDs stable without preparing removed figures.
+    const N=geometry.count,targets=new Array(geometry.captions.length),normals=new Array(geometry.captions.length);
     boot.advance(22,'生成对称图形');await paint();
-    for(let i=0;i<geometry.captions.length;i++){
-      targets.push(geometry.create3D(i));normals.push(geometry.createNormals(i));root.dataset.prepared=String(i+1);boot.advance(22+(i+1)/geometry.captions.length*55,i===6?'构造五种正多面体':i===5?'铸造万环之环':i===4?'生成 Julia 分形':'生成对称图形');await paint();
+    for(let i=3;i<geometry.captions.length;i++){
+      targets[i]=geometry.create3D(i);normals[i]=geometry.createNormals(i);root.dataset.prepared=String(i-2);boot.advance(22+(i-2)/(geometry.captions.length-3)*55,i===9?'绘制伽罗瓦沙像':i===8?'绘制高斯正十七边形':i===7?'构造圆与 Möbius 带':i===6?'构造五种正多面体':i===5?'铸造万环之环':i===4?'生成 Julia 分形':'生成对称图形');await paint();
     }
     const closingGeometry=window.CourseOpeningOutro.create(N);
-    cameraRig.setFocuses(targets.map((_,index)=>geometry.closeupFocus(index)));
+    cameraRig.setFocuses(Array.from({length:geometry.captions.length},(_,index)=>index<3?[0,0,0]:geometry.closeupFocus(index)));
     boot.advance(82,'雕琢沙粒质感');await paint();
     function compile(type, source) {
       const shader = gl.createShader(type);
@@ -205,25 +206,26 @@
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
-    let source=targets[0],destination=targets[0],normalSource=normals[0],normalDestination=normals[0],extrusionFrom=1,extrusionTo=1;
+    const initialScene=settings.sceneEnabled.findIndex((on,i)=>i>=3&&on);
+    let source=targets[initialScene],destination=targets[initialScene],normalSource=normals[initialScene],normalDestination=normals[initialScene],extrusionFrom=initialScene<5?1:0,extrusionTo=extrusionFrom;
     const sourceBuffer=buffer(source,gl.DYNAMIC_DRAW),destinationBuffer=buffer(destination,gl.DYNAMIC_DRAW);
     const normalSourceBuffer=buffer(normalSource,gl.DYNAMIC_DRAW),normalDestinationBuffer=buffer(normalDestination,gl.DYNAMIC_DRAW);
     let seed=317129;const grains=new Float32Array(N*4);
     for(let i=0;i<grains.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;grains[i]=seed/4294967296;}
     const grainBuffer=buffer(grains,gl.STATIC_DRAW);
     const loc={source:gl.getAttribLocation(program,'start'),destination:gl.getAttribLocation(program,'finish'),normalSource:gl.getAttribLocation(program,'normalStart'),normalDestination:gl.getAttribLocation(program,'normalFinish'),grain:gl.getAttribLocation(program,'grain'),quad:gl.getAttribLocation(background,'pos')};
-    for(const name of ['progress','aspect','dpr','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','objectSpin','extrusionFrom','extrusionTo','radiationFineOnly','grainTypes[0]'])loc[name]=gl.getUniformLocation(program,name);
+    for(const name of ['progress','aspect','dpr','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]'])loc[name]=gl.getUniformLocation(program,name);
     const bgLoc={};for(const name of ['time','aspect','camera','background','stageLight','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
-    const baseTransitions=[4200,4200,4200,5200,5400,5000,5000],entranceHold=1500;
-    const selectedScenes=()=>settings.sceneEnabled.flatMap((on,i)=>on?[i]:[]);
+    const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=1500;
+    const selectedScenes=()=>settings.sceneEnabled.flatMap((on,i)=>i>=3&&on?[i]:[]);
     let order=selectedScenes();
     let transitions=order.map(id=>baseTransitions[id]/settings.morphSpeed);
     let holds=order.map((id,index)=>settings.sceneDurations[id]*1000-transitions[index]);
     let timeline=window.CourseOpeningTimeline.create({holds,transitions});
     const makeStarts=()=>holds.map((_,i)=>holds.slice(0,i).reduce((sum,x,j)=>sum+x+transitions[j],0));
     let starts=makeStarts();
-    let scene=0,progress=1,moving=false,active=false,sequence=false,entrance=false,elapsed=0,time=0,previous=0,raf=0,pair='0:0';
+    let scene=initialScene,progress=1,moving=false,active=false,sequence=false,entrance=false,elapsed=0,time=0,previous=0,raf=0,pair=initialScene+':'+initialScene;
     const visual={camera:0,background:0,radiation:0,spin:0};
     let outro=null;
     let spinAngle=0,routeOffset=0,cameraBridge=null,entrancePose=null,entranceDuration=transitions[0];
@@ -249,7 +251,7 @@
     }
     function snapshotNormals(){const e=ease(progress),out=new Float32Array(N*3),flat=1-effective().depth;for(let i=0;i<out.length;i++){const face=i%3===2?1:0,a=normalSource[i]+(face-normalSource[i])*extrusionFrom*flat,b=normalDestination[i]+(face-normalDestination[i])*extrusionTo*flat;out[i]=a+(b-a)*e;}return out;}
     function upload(){for(const [buf,data] of [[sourceBuffer,source],[destinationBuffer,destination],[normalSourceBuffer,normalSource],[normalDestinationBuffer,normalDestination]]){gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);}}
-    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];narration.setScene(scene,timeline.state().cycles);quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===6?'分别拖动五个多面体':'拖动旋转');}
+    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];narration.setScene(scene,timeline.state().cycles);quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===7?'分别拖动圆与 Möbius 带':scene===6?'分别拖动五个多面体':'拖动旋转');}
 
     function syncTimeline(state){
       const from=order[state.from],to=order[state.to],key=from+':'+to;
@@ -314,10 +316,10 @@
     function beginOrbit(event){
       if(stage!=='playing'||!settings.depthEnabled||event.button!==0||!event.isPrimary||panel.contains(event.target)||event.target.closest('button,a,input,select,summary'))return;
       orbit.solid=-1;
-      if(scene===6){
+      if(scene===6||scene===7){
         if(entrance||moving)return;
         const rect=canvas.getBoundingClientRect(),ray=window.CourseOpeningPolyhedra.screenRay(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,cameraPose(),spinAngle);
-        orbit.solid=geometry.pickPolyhedron(ray);if(orbit.solid<0)return;root.dataset.draggingSolid=String(orbit.solid);
+        orbit.solid=scene===7?geometry.pickTopology(ray):geometry.pickPolyhedron(ray);if(orbit.solid<0)return;root.dataset.draggingSolid=String(orbit.solid);
       }
       orbit.pointer=event.pointerId;orbit.x=event.clientX;orbit.y=event.clientY;
       root.setPointerCapture(event.pointerId);root.classList.add('is-orbiting');event.preventDefault();queue();
@@ -326,7 +328,7 @@
       if(event.pointerId!==orbit.pointer)return;
       if(orbit.solid>=0){
         const rotation=window.CourseOpeningPolyhedra.dragRotation(event.clientX-orbit.x,event.clientY-orbit.y,cameraPose(),spinAngle);
-        geometry.rotatePolyhedron(orbit.solid,rotation.axis,rotation.angle);upload();
+        if(scene===7)geometry.rotateTopology(orbit.solid,rotation.axis,rotation.angle);else geometry.rotatePolyhedron(orbit.solid,rotation.axis,rotation.angle);upload();
         orbit.x=event.clientX;orbit.y=event.clientY;event.preventDefault();draw();queue();return;
       }
       const control=cameraRig.manual;
@@ -339,6 +341,7 @@
     function draw(){
       if(!dialog.open)return;
       const rect=canvas.getBoundingClientRect(),ratio=Math.min(2,window.devicePixelRatio||1),width=Math.max(1,Math.round(rect.width*ratio)),height=Math.max(1,Math.round(rect.height*ratio));
+      if(geometry.fitGalois(rect.width<700&&rect.height<700))upload();
       if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
       const view=cameraPose();
       lettering.update(scene,rect.width,rect.height,ratio);
@@ -350,7 +353,7 @@
       gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.time,time);
-      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,spinAngle);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
+      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,spinAngle);gl.uniform1f(loc.twoSided,scene===7&&!outro?1:0);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
       gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=spinAngle.toFixed(6);
     }
     function beginOutro(){

@@ -18,7 +18,7 @@ for(let i=0;i<g.count;i++){assert.ok(Math.abs(Math.hypot(...normals.subarray(i*3
 const t=CourseOpeningTimeline.create({holds:[18000],transitions:[12000]});
 for(const direction of [1,-1]){t.setDirection(direction,true);for(const time of [-90000,-1,0,17999,18000,29999,30000,70000]){const s=t.seek(time);assert.equal(s.moving,false);assert.equal(s.progress,1);assert.equal(s.holdDuration,30000);}}
 const route={holds:[20000,20000],starts:[0,30000],transitions:[10000,10000],duration:60000,sceneIds:[5,6]};
-CourseOpeningCamera.setFocuses(Array.from({length:7},()=>[0,0,0]));
+CourseOpeningCamera.setFocuses(Array.from({length:CourseOpeningCamera.count},()=>[0,0,0]));
 for(let position=0;position<60000;position+=250){const p=CourseOpeningCamera.sampleTimeline({position,scene:6,from:6,to:6,moving:false},route);assert.ok(p.zoom<=2.3500001);assert.ok([...p.target,...p.angles,p.zoom].every(Number.isFinite));}
 console.log('PASS: five exact convex solids, equal edges, closed two-manifold faces, 72,000 finite surface samples, unit normals, stationary single selection, no accidental E8 macro in filtered route');
 const model=P.sample(72000),before=model.positions.slice(),normalsBefore=model.normals.slice();
