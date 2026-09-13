@@ -14,7 +14,7 @@
   // the new thirty-second complete switching interval once.
   const storageKey = 'courseOpeningAppearance.v3';
   const durationChoices = [30,45,60,90];
-  const morphSpeedChoices=[.25,.5,.75,1,1.5];
+  const morphSpeedChoices=[.25,.5,.75,1,1.5],spinSpeedScale=2;
   const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,false,false,true,true,true,true,true,true,true])});
   const appearanceRanges={backgroundBrightness:[20,240],gemPercent:[0,5],titleScale:[80,160],quoteScale:[80,160],textFade:[.6,5]};
   const freshDefaults=()=>({...defaults,grainTypes:[...defaults.grainTypes],sceneEnabled:[...defaults.sceneEnabled],sceneDurations:[...defaults.sceneDurations]});
@@ -35,7 +35,7 @@
   let film = null, initialization = null, visibilityTimer = 0, stage = 'loading', ownedFullscreen = false, entryVersion = 0;
   toggle.disabled=true;
   const startButton=root.querySelector('[data-start-animation]');
-  function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*Math.PI/180:0};}
+  function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*spinSpeedScale*Math.PI/180:0};}
   function syncSettings() {
     root.dataset.settings = JSON.stringify(settings);
     root.style.setProperty('--title-scale',settings.titleScale/100);root.style.setProperty('--quote-scale',settings.quoteScale/100);root.style.setProperty('--text-fade',settings.textFade+'s');
@@ -47,8 +47,8 @@
     root.classList.toggle('can-orbit',settings.depthEnabled&&!['outro','departing'].includes(stage));
     panel.querySelector('[data-morph-speed]').value=String(settings.morphSpeed);
     panel.querySelector('[data-playback-order]').value=settings.shuffleScenes?'random':'sequential';
-    const spinInput=panel.querySelector('[data-spin-speed]');spinInput.value=String(settings.spinSpeed);spinInput.disabled=!settings.spinEnabled;
-    spinInput.style.setProperty('--range-progress',(settings.spinSpeed/3*100)+'%');panel.querySelector('[data-spin-output]').textContent=settings.spinSpeed.toFixed(1)+'°/秒';
+    const spinInput=panel.querySelector('[data-spin-speed]');spinInput.value=String(settings.spinSpeed*spinSpeedScale);spinInput.disabled=!settings.spinEnabled;
+    spinInput.style.setProperty('--range-progress',(settings.spinSpeed/3*100)+'%');panel.querySelector('[data-spin-output]').textContent=(settings.spinSpeed*spinSpeedScale).toFixed(1)+'°/秒';
     panel.querySelectorAll('[data-scene-duration]').forEach(input=>input.value=String(settings.sceneDurations[Number(input.dataset.sceneDuration)]));
     panel.querySelectorAll('[data-scene-enabled]').forEach(input=>{const i=Number(input.dataset.sceneEnabled);input.checked=settings.sceneEnabled[i];input.disabled=input.checked&&settings.sceneEnabled.filter(Boolean).length===1;});
     panel.querySelectorAll('[data-grain-type]').forEach(input=>{const i=Number(input.dataset.grainType);input.checked=settings.grainTypes[i];input.disabled=input.checked&&settings.grainTypes.filter(Boolean).length===1;});
@@ -72,7 +72,7 @@
     else if(input.dataset.appearanceRange&&appearanceRanges[input.dataset.appearanceRange]&&Number.isFinite(Number(input.value))){const key=input.dataset.appearanceRange,[min,max]=appearanceRanges[key];settings[key]=Math.max(min,Math.min(max,Number(input.value)));}
     else if(input.dataset.settingToggle)settings[input.dataset.settingToggle]=input.checked;
     else if(input.dataset.settingRange)settings[input.dataset.settingRange]=Number(input.value)/100;
-    else if(input.hasAttribute('data-spin-speed')&&Number.isFinite(Number(input.value)))settings.spinSpeed=Math.max(0,Math.min(3,Number(input.value)));
+    else if(input.hasAttribute('data-spin-speed')&&Number.isFinite(Number(input.value)))settings.spinSpeed=Math.max(0,Math.min(3,Number(input.value)/spinSpeedScale));
     else if(input.hasAttribute('data-playback-order'))settings.shuffleScenes=input.value==='random';
     else if(input.hasAttribute('data-morph-speed')&&morphSpeedChoices.includes(Number(input.value)))settings.morphSpeed=Number(input.value);
     else if(input.dataset.sceneDuration!==undefined&&durationChoices.includes(Number(input.value)))settings.sceneDurations[Number(input.dataset.sceneDuration)]=Number(input.value);
@@ -148,7 +148,7 @@
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();});
   dialog.addEventListener('keydown',event=>{
-    if((event.key===' '||event.key==='Enter'&&stage==='outro')&&!event.repeat&&!panel.contains(event.target)){
+    if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
       event.preventDefault();if(stage==='ready')startAnimation();else requestCourseEntry();
     }
   });
@@ -223,7 +223,7 @@
     for(const name of ['progress','aspect','dpr','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
     const bgLoc={};for(const name of ['time','aspect','camera','background','stageLight','spotlight','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
-    const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=1500;
+    const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=0;
     let order=playlist.order(0);
     let transitions=order.map(id=>baseTransitions[id]/settings.morphSpeed);
     let holds=order.map((id,index)=>settings.sceneDurations[id]*1000-transitions[index]);
@@ -234,6 +234,7 @@
     const visual={camera:0,background:0,spotlight:0,radiation:0,spin:0};
     let outro=null;
     let spinAngle=0,routeOffset=0,cameraBridge=null,entrancePose=null,entranceDuration=transitions[0];
+    let entranceViewport=null;
     let entrancePortraitWeight=initialScene===9?1:0,manualPortraitWeight=0;
     let entranceGroupWeight=[6,7].includes(initialScene)?1:0,manualGroupWeight=0;
     const orbit={pitch:0,yaw:0,targetPitch:0,targetYaw:0,pointer:null,solid:-1,x:0,y:0};
@@ -353,7 +354,7 @@
       else{const targetSlot=order.includes(scene)?order.indexOf(scene):0;position=starts[targetSlot];needsFormation=true;}
       timeline.seek(position+old.cycles*timeline.duration);
       routeOffset=oldPhase-timeline.state().position/timeline.duration;routeOffset-=Math.floor(routeOffset);cameraBridge=null;
-      if(retainedEntrance){entranceDuration=transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
+      if(retainedEntrance){entranceDuration=pair==='intro'?Math.min(4200,transitions[order.indexOf(scene)]):transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
       else if(needsFormation&&!reduce){
         scene=order[timeline.state().scene];source=captured;normalSource=capturedNormals;destination=targets[scene];normalDestination=normals[scene];
         extrusionFrom=0;extrusionTo=scene<5?1:0;twoSidedFrom=capturedTwoSided;twoSidedTo=scene===7?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;entrancePortraitWeight=previousPortraitWeight;entranceGroupWeight=previousGroupWeight;
@@ -414,6 +415,7 @@
     function draw(){
       if(!dialog.open)return;
       const rect=canvas.getBoundingClientRect(),ratio=Math.min(2,window.devicePixelRatio||1),width=Math.max(1,Math.round(rect.width*ratio)),height=Math.max(1,Math.round(rect.height*ratio));
+      if(entrance&&pair==='intro'&&(!entranceViewport||entranceViewport[0]!==rect.width||entranceViewport[1]!==rect.height)){source=entrancePositions(rect);upload();}
       if(geometry.fitGalois(rect.width<700&&rect.height<700))upload();
       if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
       const view=cameraPose();
@@ -457,7 +459,7 @@
         }
       }else if(outro.phase==='form'){
         progress=reduce?1:Math.min(1,outro.elapsed/3600);
-        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;root.querySelector('[data-outro-hint]').textContent='按回车，落沙后进入课程';}
+        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
       }
     }
     function depart(){outro.phase='depart';outro.elapsed=0;root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
@@ -492,16 +494,13 @@
       }
       draw();queue();if(!raf)previous=0;
     }
-    function entrancePositions(){
-      // Area-uniform loose sand in a disk. Its same particle IDs flow into the
-      // first rope figure; the disk remains visible before the slow formation.
-      const disk=new Float32Array(N*3);
-      for(let i=0;i<N;i++){const g=i*4,radialSeed=(grains[g]*17.31+grains[g+2]*31.73)%1,angleSeed=(grains[g+1]*13.17+grains[g+3]*7.29)%1,r=.88*Math.sqrt(radialSeed),theta=angleSeed*Math.PI*2;disk[i*3]=r*Math.cos(theta);disk[i*3+1]=r*Math.sin(theta);disk[i*3+2]=(grains[g+2]-.5)*.006;}
-      return disk;
+    function entrancePositions(rect=canvas.getBoundingClientRect()){
+      entranceViewport=[rect.width,rect.height];
+      return window.CourseOpeningMotion.entrancePositions(grains,Math.max(1,rect.width),Math.max(1,rect.height));
     }
     const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();impulses.clear();cancelClick();narration.reset();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=transitions[0];timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
+      stop();impulses.clear();cancelClick();narration.reset();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=Math.min(4200,transitions[0]);timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();showCaption(reduce);queue();
     }
@@ -521,7 +520,7 @@
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},
       advance(value){entrance=false;syncTimeline(timeline.advance(value));draw();},
       direction(value,engage=false){syncTimeline(timeline.setDirection(value,engage));draw();},
-      evidence(){return{outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
+      evidence(){return{outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,entranceDuration,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
     };
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();

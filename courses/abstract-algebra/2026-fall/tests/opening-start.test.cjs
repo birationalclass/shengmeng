@@ -47,7 +47,7 @@ function setup(mode, preferences={}) {
   };
   vm.runInNewContext(source.slice(0, boundary) + `
     film=renderer;initialization=Promise.resolve();stage='ready';root.dataset.stage=stage;
-    globalThis.testController={startAnimation,leaveOpening,openOpening,requestCourseEntry,get stage(){return stage;}};
+    globalThis.testController={startAnimation,leaveOpening,openOpening,requestCourseEntry,effective,get stage(){return stage;}};
   })();`, context);
   return { ...context.testController, controller: context.testController, counts, document, root, dialog, change,
     settleSuccess() {document.fullscreenElement = root; change(); resolve();},
@@ -66,6 +66,21 @@ function assertPlaying(env) {
   assert.equal(env.dialog.classList.contains('opening-ready'), true);
 }
 (async () => {
+  for(const first of [' ','Enter'])for(const second of [' ','Enter']){
+    const env=setup('missing'),key=env.dialog.listeners.get('keydown');
+    const press=(value,extra={})=>key({key:value,target:env.dialog,repeat:false,preventDefault(){},...extra});
+    press(first);assertPlaying(env);
+    press(second,{repeat:true});assert.equal(env.controller.stage,'playing','held key cannot skip stages');
+    press(second,{target:env.document.getElementById('openingSettings')});assert.equal(env.controller.stage,'playing','settings key does not advance the film');
+    press(second);assert.equal(env.controller.stage,'outro');assert.equal(env.counts.outro,1);
+    press(first);assert.equal(env.controller.stage,'departing');assert.equal(env.counts.depart,1);
+    press(second);assert.equal(env.counts.depart,1);
+  }
+  for(const speed of [.1,.6,1.5,3]){
+    const env=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({spinSpeed:speed})});
+    assert.ok(Math.abs(env.controller.effective().spin-speed*2*Math.PI/180)<1e-12,'double the whole saved speed range');
+  }
+  const stopped=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({spinEnabled:false,spinSpeed:3})});assert.equal(stopped.controller.effective().spin,0);
   for (const mode of ['missing', 'disabled', 'throw', 'reject', 'pending']) {
     const env = setup(mode);
     env.controller.startAnimation();
