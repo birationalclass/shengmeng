@@ -96,6 +96,15 @@
     const focusWeight=1-Math.pow(zoom,-1.25);
     return {angles:orbitAt(u),zoom:Math.max(1,zoom),target:focus.map(coordinate=>coordinate*focusWeight)};
   }
+  // The portrait becomes front-facing before its sand has finished forming.
+  // Canonical morph progress makes this envelope identical in either direction.
+  function portraitWeight(state){
+    if(!state.moving)return state.scene===9?1:0;
+    if(state.from===9&&state.to===9)return 1;
+    if(state.to===9)return clamp(ease(state.progress/.45));
+    if(state.from===9)return clamp(ease((1-state.progress)/.45));
+    return 0;
+  }
   function sample(scene,phase,focus) {
     const index=indexOf(scene),holdElapsed=clamp(Number(phase))*defaultHolds[index];
     const state={from:index,to:index,scene:index,position:defaultStarts[index]+holdElapsed,moving:false};
@@ -104,7 +113,7 @@
     return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
-    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,
+    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',

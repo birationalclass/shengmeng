@@ -229,10 +229,21 @@
     const visual={camera:0,background:0,radiation:0,spin:0};
     let outro=null;
     let spinAngle=0,routeOffset=0,cameraBridge=null,entrancePose=null,entranceDuration=transitions[0];
+    let entrancePortraitWeight=initialScene===9?1:0,manualPortraitWeight=0;
     const orbit={pitch:0,yaw:0,targetPitch:0,targetYaw:0,pointer:null,solid:-1,x:0,y:0};
     const ease=t=>t*t*t*(t*(t*6-15)+10);
+    function portraitWeight(){
+      if(outro)return 0;
+      if(entrance||pair==='manual'){
+        const from=entrance?entrancePortraitWeight:manualPortraitWeight,to=scene===9?1:0;
+        return from+(to-from)*Math.max(0,Math.min(1,ease(Math.min(1,progress/.45))));
+      }
+      const state=timeline.state();
+      return cameraRig.portraitWeight({...state,from:order[state.from],to:order[state.to],scene:order[state.scene]});
+    }
+    function renderedSpin(){return spinAngle*(1-portraitWeight());}
     function snapshot(withEffects=false,atTime=time,world=true){
-      const e=ease(progress),arch=Math.sin(Math.PI*e),result=new Float32Array(N*3),appearance=effective(),cosine=Math.cos(spinAngle),sine=Math.sin(spinAngle);
+      const e=ease(progress),arch=Math.sin(Math.PI*e),result=new Float32Array(N*3),appearance=effective(),cosine=Math.cos(renderedSpin()),sine=Math.sin(renderedSpin());
       for(let i=0;i<N;i++){
         const k=i*3,g=i*4,dx=destination[k]-source[k],dy=destination[k+1]-source[k+1],drift=arch*Math.min(.022,Math.hypot(dx,dy)*.16);
         let x=source[k]+dx*e-dy*arch*.28+Math.sin(grains[g]*19+e*6.283)*drift;
@@ -251,7 +262,7 @@
     }
     function snapshotNormals(){const e=ease(progress),out=new Float32Array(N*3),flat=1-effective().depth;for(let i=0;i<out.length;i++){const face=i%3===2?1:0,a=normalSource[i]+(face-normalSource[i])*extrusionFrom*flat,b=normalDestination[i]+(face-normalDestination[i])*extrusionTo*flat;out[i]=a+(b-a)*e;}return out;}
     function upload(){for(const [buf,data] of [[sourceBuffer,source],[destinationBuffer,destination],[normalSourceBuffer,normalSource],[normalDestinationBuffer,normalDestination]]){gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);}}
-    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];narration.setScene(scene,timeline.state().cycles);quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===7?'分别拖动圆与 Möbius 带':scene===6?'分别拖动五个多面体':'拖动旋转');}
+    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];narration.setScene(scene,timeline.state().cycles);quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===9?'正面展示':scene===7?'分别拖动圆与 Möbius 带':scene===6?'分别拖动五个多面体':'拖动旋转');}
 
     function syncTimeline(state){
       const from=order[state.from],to=order[state.to],key=from+':'+to;
@@ -274,14 +285,16 @@
       const state=timeline.state(),pose=baseCameraPose();
       let target=pose.target.map(value=>value*visual.camera);
       if(!settings.depthEnabled&&!state.moving&&order[state.scene]<5)target[2]=0;
-      target=materials.rotateObject(target,spinAngle);
-      return {angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)};
+      target=materials.rotateObject(target,renderedSpin());
+      const view={angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)};
+      const weight=portraitWeight();
+      return {...cameraRig.blend(view,{angles:[0,0,0],target:[0,0,0],zoom:1},weight),perspective:view.perspective*(1-weight)};
     }
     function rebuildDurations(){
       const nextOrder=selectedScenes(),nextTransitions=nextOrder.map(id=>baseTransitions[id]/settings.morphSpeed);
       const next=nextOrder.map((id,i)=>settings.sceneDurations[id]*1000-nextTransitions[i]);
       if(nextOrder.join(':')===order.join(':')&&next.every((v,i)=>v===holds[i])&&nextTransitions.every((v,i)=>v===transitions[i]))return;
-      const previousPose=baseCameraPose(),old=timeline.state(),oldPhase=old.position/timeline.duration+routeOffset;
+      const previousPortraitWeight=portraitWeight(),previousPose=baseCameraPose(),old=timeline.state(),oldPhase=old.position/timeline.duration+routeOffset;
       const oldFrom=order[old.from],oldTo=order[old.to],oldScene=order[old.scene];
       const captured=snapshot(false,time,false),capturedNormals=snapshotNormals();
       const retainedEntrance=entrance&&nextOrder.includes(scene);
@@ -299,7 +312,7 @@
       if(retainedEntrance){entranceDuration=transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
       else if(needsFormation&&!reduce){
         scene=order[timeline.state().scene];source=captured;normalSource=capturedNormals;destination=targets[scene];normalDestination=normals[scene];
-        extrusionFrom=0;extrusionTo=scene<5?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;
+        extrusionFrom=0;extrusionTo=scene<5?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;entrancePortraitWeight=previousPortraitWeight;
         entranceDuration=transitions[timeline.state().scene];elapsed=entranceHold;sequence=true;upload();updateCaption();showCaption(false);
       }else{entrance=false;entrancePose=null;syncTimeline(timeline.state());}
       if(!entrance){
@@ -314,11 +327,11 @@
       orbit.pointer=null;orbit.solid=-1;delete root.dataset.draggingSolid;root.classList.remove('is-orbiting');previous=0;queue();
     }
     function beginOrbit(event){
-      if(stage!=='playing'||!settings.depthEnabled||event.button!==0||!event.isPrimary||panel.contains(event.target)||event.target.closest('button,a,input,select,summary'))return;
+      if(stage!=='playing'||portraitWeight()>=.999||!settings.depthEnabled||event.button!==0||!event.isPrimary||panel.contains(event.target)||event.target.closest('button,a,input,select,summary'))return;
       orbit.solid=-1;
       if(scene===6||scene===7){
         if(entrance||moving)return;
-        const rect=canvas.getBoundingClientRect(),ray=window.CourseOpeningPolyhedra.screenRay(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,cameraPose(),spinAngle);
+        const rect=canvas.getBoundingClientRect(),ray=window.CourseOpeningPolyhedra.screenRay(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,cameraPose(),renderedSpin());
         orbit.solid=scene===7?geometry.pickTopology(ray):geometry.pickPolyhedron(ray);if(orbit.solid<0)return;root.dataset.draggingSolid=String(orbit.solid);
       }
       orbit.pointer=event.pointerId;orbit.x=event.clientX;orbit.y=event.clientY;
@@ -327,7 +340,7 @@
     function moveOrbit(event){
       if(event.pointerId!==orbit.pointer)return;
       if(orbit.solid>=0){
-        const rotation=window.CourseOpeningPolyhedra.dragRotation(event.clientX-orbit.x,event.clientY-orbit.y,cameraPose(),spinAngle);
+        const rotation=window.CourseOpeningPolyhedra.dragRotation(event.clientX-orbit.x,event.clientY-orbit.y,cameraPose(),renderedSpin());
         if(scene===7)geometry.rotateTopology(orbit.solid,rotation.axis,rotation.angle);else geometry.rotatePolyhedron(orbit.solid,rotation.axis,rotation.angle);upload();
         orbit.x=event.clientX;orbit.y=event.clientY;event.preventDefault();draw();queue();return;
       }
@@ -353,12 +366,12 @@
       gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.time,time);
-      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,spinAngle);gl.uniform1f(loc.twoSided,scene===7&&!outro?1:0);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
-      gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=spinAngle.toFixed(6);
+      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,renderedSpin());gl.uniform1f(loc.twoSided,scene===7&&!outro?1:0);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
+      gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=renderedSpin().toFixed(6);
     }
     function beginOutro(){
       const view=cameraPose(),captured=snapshot(false,time,true),capturedNormals=snapshotNormals();
-      const cosine=Math.cos(spinAngle),sine=Math.sin(spinAngle);
+      const cosine=Math.cos(renderedSpin()),sine=Math.sin(renderedSpin());
       for(let i=0;i<capturedNormals.length;i+=3){const x=capturedNormals[i],y=capturedNormals[i+1];capturedNormals[i]=cosine*x-sine*y;capturedNormals[i+1]=sine*x+cosine*y;}
       endOrbit();sequence=false;entrance=false;moving=false;cameraBridge=null;spinAngle=0;
       orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;
@@ -396,7 +409,9 @@
       const damping=1-Math.exp(-cameraRig.manual.responsePerSecond*dt/1000);
       orbit.pitch+=(orbit.targetPitch-orbit.pitch)*damping;orbit.yaw+=(orbit.targetYaw-orbit.yaw)*damping;
       if(!outro&&orbit.pointer===null){
-        spinAngle+=dt/1000*visual.spin*timeline.state().direction;
+        const free=1-portraitWeight();
+        if(free===1)spinAngle=Math.atan2(Math.sin(spinAngle),Math.cos(spinAngle));
+        spinAngle+=dt/1000*visual.spin*timeline.state().direction*free;
         if(cameraBridge){cameraBridge.elapsed+=dt;if(cameraBridge.elapsed>=cameraBridge.duration)cameraBridge=null;}
       }
       if(outro){advanceOutro(dt);if(!active)return;}
@@ -421,7 +436,7 @@
     }
     const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();narration.reset();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();const first=order[0];spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=transitions[0];timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
+      stop();narration.reset();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();const first=order[0];entrancePortraitWeight=first===9?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=transitions[0];timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();showCaption(reduce);queue();
     }
@@ -435,13 +450,13 @@
     film={play,stop,refresh,direction,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
     root._openingPreview={
       show(index){const slot=order.indexOf(index);if(slot<0)throw new RangeError('Figure is not selected');stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(starts[slot]+holds[slot]/2));draw();queue();},
-      transition(index,value){stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();showCaption(false);draw();queue();},
+      transition(index,value){manualPortraitWeight=portraitWeight();stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();showCaption(false);draw();queue();},
       settings(value){Object.assign(settings,value);updateSettings();},
-      atTime(value){time=value;Object.assign(visual,{camera:effective().camera,background:effective().background,radiation:effective().radiation,spin:effective().spin});spinAngle=value*visual.spin;draw();},
+      atTime(value){time=value;Object.assign(visual,{camera:effective().camera,background:effective().background,radiation:effective().radiation,spin:effective().spin});spinAngle=Math.atan2(Math.sin(value*visual.spin),Math.cos(value*visual.spin));draw();},
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},
       advance(value){entrance=false;syncTimeline(timeline.advance(value));draw();},
       direction(value,engage=false){syncTimeline(timeline.setDirection(value,engage));draw();},
-      evidence(){return{outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle,spinVelocity:visual.spin,routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
+      evidence(){return{outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),spinVelocity:visual.spin*(1-portraitWeight()),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
     };
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();

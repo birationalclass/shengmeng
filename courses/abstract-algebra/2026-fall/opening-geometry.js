@@ -25,7 +25,7 @@
     { title: 'Platonic Solids', zh: '正多面体', en: 'Five Platonic solids. Three rotation groups.' },
     { title: 'Fundamental Group', zh: '基本群', en: 'The Möbius band retracts onto its core circle S¹.' },
     { title: 'Gauss · 17-Gon', zh: '高斯 · 尺规作图', en: 'A regular seventeen-sided polygon, constructible with compass and straightedge.' },
-    { title: 'Galois', zh: '伽罗瓦', en: 'Évariste Galois, 1811–1832. Galois Group.' }
+    { title: 'Galois Group', zh: '伽罗瓦群', en: 'Évariste Galois, 1811–1832. Galois Group.' }
   ].map(Object.freeze));
   const cache = new Array(captions.length);
   const spatialCache = new Array(captions.length);

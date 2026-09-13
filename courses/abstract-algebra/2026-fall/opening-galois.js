@@ -1,4 +1,4 @@
-/* A historical portrait, group name and life dates, all rendered as grains. */
+/* A historical portrait, full name and life dates, all rendered as grains. */
 (() => {
   'use strict';
   const countParts=[.68,.25,.07];
@@ -11,7 +11,7 @@
   }
   function sample(count){
     const binary=atob(window.CourseOpeningGaloisPortrait),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),view=new DataView(bytes.buffer),portraitCount=bytes.length/4;
-    const title=textPixels('Galois Group','400 190px Georgia, "Times New Roman", serif');
+    const title=textPixels('Évariste Galois','400 160px Georgia, "Times New Roman", serif');
     const dates=textPixels('1811–1832','400 100px Georgia, "Times New Roman", serif');
     let seed=18111832;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     const points=[],componentCounts=[0,0,0];
@@ -33,5 +33,5 @@
     points.forEach((p,i)=>{positions.set(p,i*3);normals[i*3+2]=1;flat.set(p.slice(0,2),i*2);});
     return {positions,normals,flat,componentCounts};
   }
-  window.CourseOpeningGalois=Object.freeze({sample,evidence:()=>({name:'Évariste Galois',born:1811,died:1832,inscription:'Galois Group',dates:'1811–1832',portraitArtist:'Alfred Galois',portraitPublished:1848})});
+  window.CourseOpeningGalois=Object.freeze({sample,evidence:()=>({name:'Évariste Galois',born:1811,died:1832,inscription:'Évariste Galois',dates:'1811–1832',portraitArtist:'Alfred Galois',portraitPublished:1848})});
 })();
