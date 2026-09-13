@@ -1,7 +1,8 @@
 /* One spatial camera route for the whole selected-figure cycle.
  * Orbit, framing and magnification share canonical time. Figure changes never
  * reset the camera or start another identical push-pull shot. The analytical
- * closed orbit and C3 detail envelope are reversible and join at the loop seam.
+ * closed orbit is reversible and joins at the loop seam. The Lie-group view
+ * stays centred at its original size with only a gentle Z-axis camera roll.
  */
 (() => {
   'use strict';
@@ -21,18 +22,7 @@
   let defaultDuration=0;
   const defaultStarts = defaultHolds.map((hold,i)=>{const start=defaultDuration;defaultDuration+=hold+defaultTransitions[i];return start;});
   const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:defaultDuration};
-  const detailScene = 3, accelerationFraction = .20;
-  const integratedEase = t => t*t*t*t*(t*t-3*t+2.5);
-
-  // Integral of a quintic acceleration ramp. Unlike easing several camera
-  // keys, this controls velocity itself: a gentle launch, a quiet cruise and
-  // a smooth arrival, with continuous position through third derivative.
-  function distanceAt(value) {
-    const u=clamp(value),r=accelerationFraction;
-    if(u<r)return r*integratedEase(u/r)/(1-r);
-    if(u>1-r)return 1-r*integratedEase((1-u)/r)/(1-r);
-    return (u-r/2)/(1-r);
-  }
+  const lieScene = 3, lieRoll = 8 * Math.PI / 180;
   function point(value) {
     return value&&value.length>=3&&[value[0],value[1],value[2]].every(Number.isFinite)
       ? [value[0],value[1],value[2]] : [0,0,0];
@@ -75,24 +65,7 @@
     const position=((Number(state.position)||0)%duration+duration)%duration;
     const phaseOffset=Number.isFinite(route.phaseOffset)?route.phaseOffset:0;
     const u=((position/duration+phaseOffset)%1+1)%1;
-    const holds=route.holds||defaultHolds,starts=route.starts||defaultStarts;
-    let logarithm=baseLogZoom(u);
-    const detailSlot=route.sceneIds?route.sceneIds.indexOf(detailScene):detailScene;
-    const macroStart=starts[detailSlot],macroDuration=holds[detailSlot];
-    if(macroDuration>0&&position>macroStart&&position<macroStart+macroDuration) {
-      const phase=(position-macroStart)/macroDuration;
-      const envelope=distanceAt(2*Math.min(phase,1-phase));
-      // Only this detail pass reaches 10x. At default 30-second viewing times its
-      // log-zoom speed stays below .20 per second (previously .66). If an
-      // interval is shortened, reduce the detail depth instead of racing.
-      const startPhase=macroStart/duration+phaseOffset,endPhase=startPhase+macroDuration/duration;
-      const centreBase=baseLogZoom((startPhase+endPhase)/2),endBase=baseLogZoom(endPhase);
-      const intervalBasePeak=Math.floor(startPhase-.5)!==Math.floor(endPhase-.5)
-        ?Math.log(2.35):Math.max(baseLogZoom(startPhase),endBase);
-      const safePeak=Math.max(intervalBasePeak,Math.min(Math.LN10,centreBase+.205*(macroDuration/2000)*(1-accelerationFraction)));
-      logarithm+=(safePeak-logarithm)*envelope;
-    }
-    const zoom=Math.exp(logarithm);
+    const zoom=Math.exp(baseLogZoom(u));
     const from=indexOf(state.from===undefined?state.scene:state.from);
     const to=indexOf(state.to===undefined?state.scene:state.to);
     const interpolation=state.moving?ease(Number(state.progress)):0;
@@ -101,7 +74,13 @@
     // dollying. Its projected displacement scales as zoom^(-1/4), rather
     // than zoom itself, so a close pass does not fling the motif sideways.
     const focusWeight=1-Math.pow(zoom,-1.25);
-    return {angles:orbitAt(u),zoom:Math.max(1,zoom),target:focus.map(coordinate=>coordinate*focusWeight)};
+    const view={angles:orbitAt(u),zoom:Math.max(1,zoom),target:focus.map(coordinate=>coordinate*focusWeight)};
+    // A global periodic phase prevents resets in a single-figure loop or when
+    // playing backwards. Quintic morph weights join both neighbouring views
+    // with continuous position, velocity and acceleration.
+    const fromLie=from===lieScene?1:0,toLie=to===lieScene?1:0;
+    const weight=state.moving?fromLie+(toLie-fromLie)*interpolation:indexOf(state.scene)===lieScene?1:0;
+    return blend(view,{angles:[neutral.angles[0],0,lieRoll*Math.sin(TAU*u)],zoom:1,target:[0,0,0]},weight);
   }
   // The portrait returns throughout its extended formation instead of snapping
   // upright in its first 45%. Canonical time makes reverse playback identical.
@@ -132,7 +111,7 @@
     const index=indexOf(scene),holdElapsed=clamp(Number(phase))*defaultHolds[index];
     const state={from:index,to:index,scene:index,position:defaultStarts[index]+holdElapsed,moving:false};
     const pose=sampleTimeline(state,defaultRoute);
-    if(focus!==undefined)pose.target=point(focus).map(coordinate=>coordinate*(1-Math.pow(pose.zoom,-1.25)));
+    if(focus!==undefined&&index!==lieScene)pose.target=point(focus).map(coordinate=>coordinate*(1-Math.pow(pose.zoom,-1.25)));
     return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
@@ -140,9 +119,9 @@
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
-      approach:'Periodic spatial oval; cycloidal launch; independent slow broad dolly; one velocity-ramped E8 macro pass; surface-locked framing',
-      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
-      detailScene,accelerationFractionPerLeg:accelerationFraction,
+      approach:'Periodic spatial oval; cycloidal launch; slow broad dolly; E8 stays at 1x with a gentle Z-axis roll',
+      scenes:COUNT,zoomRange:[1,2.35],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
+      lieScene,lieZoom:1,lieRollDegrees:8,
       phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',
       endpointPose:{angles:[...neutral.angles],zoom:1,target:[0,0,0]},
       focuses:focuses.map(focus=>[...focus])
