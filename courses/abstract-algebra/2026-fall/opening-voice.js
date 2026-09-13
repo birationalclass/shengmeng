@@ -1,49 +1,53 @@
-/* User-selected Bilibili source through its official external player.
- * A locally selected audio file can replace the embed for the current visit.
- * Player parameters: https://player.bilibili.com/
+/* Short original dialogue excerpt, trimmed from the user-selected source.
+ * The scene uses a same-origin audio file; no third-party player is loaded.
  */
 (() => {
   'use strict';
   const panel=document.getElementById('openingSettings'),dialog=document.getElementById('courseOpening');
   const enabled=panel.querySelector('[data-voice-enabled]'),file=panel.querySelector('[data-voice-file]'),status=panel.querySelector('[data-voice-status]'),button=panel.querySelector('[data-voice-play]');
-  const trigger=dialog.querySelector('[data-voice-open]'),clip=dialog.querySelector('.opening-clip'),mount=dialog.querySelector('[data-clip-mount]');
-  const audio=new Audio();audio.preload='metadata';audio.volume=.9;
-  let url='',visible=false,played=false,request=0,active=false;
-  const ready='已接入 B 站铭文片段。开启后随环场景显示播放器；关闭播放器继续动画。也可选择本地音频。';
+  const trigger=dialog.querySelector('[data-voice-open]');
+  const source=new URL('./audio/gandalf-ring-verse.mp3',document.baseURI).href;
+  const audio=new Audio(source);audio.preload='auto';audio.volume=.9;
+  const preference='courseOpeningVoice.v1';
+  enabled.checked=true;try{const saved=localStorage.getItem(preference);if(saved!==null)enabled.checked=saved==='true';}catch(_){}
+  let localUrl='',visible=false,played=false,request=0,active=false,unlocked=false;
+  const ready='环场景的台词出现时播放甘道夫的四句原声，结束后继续动画。可在此关闭或替换音频。';
   function duck(value){window.CourseOpeningAudio?.setDucked(value);}
-  function pause(){request++;if(active)status.textContent='原声已暂停';active=false;audio.pause();mount.replaceChildren();clip.hidden=true;duck(false);}
+  function controls(){button.textContent=active?'暂停原声':'播放原声';trigger.textContent=active?'Ⅱ 暂停原声':'▷ 甘道夫原声';dialog.dataset.voiceState=active?'playing':'idle';}
+  function pause(){request++;active=false;audio.pause();audio.muted=false;duck(false);controls();}
   function stop(){pause();visible=false;played=false;trigger.hidden=true;audio.currentTime=0;}
+  // Prime this same audio element during the user's start gesture. A muted
+  // first instant avoids audible dialogue before the ring has appeared.
+  async function unlock(){
+    if(unlocked||active)return;
+    const version=++request;audio.muted=true;
+    try{await audio.play();unlocked=true;}catch(_){}
+    if(version===request){audio.pause();audio.currentTime=0;audio.muted=false;}
+  }
   async function play(){
     if(!enabled.checked||!dialog.open||document.hidden)return;
-    pause();const version=++request;active=true;played=true;
-    if(!url){
-      const frame=document.createElement('iframe');
-      frame.title='One ring to rule them all — B 站原声';
-      frame.src='https://player.bilibili.com/player.html?bvid=BV1xL4y1u7xZ&p=1&autoplay=1&danmaku=0';
-      frame.allow='autoplay; fullscreen';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
-      mount.replaceChildren(frame);clip.hidden=false;duck(true);status.textContent='B 站播放器已打开；关闭后继续动画。';return;
-    }
-    try{audio.currentTime=0;await audio.play();if(version!==request){if(!active)audio.pause();return;}duck(true);status.textContent='正在播放本地原声';}
-    catch(error){if(version!==request)return;active=false;duck(false);status.textContent=error.name==='NotAllowedError'?'点击“播放原声”开启声音。':'该音频无法播放，请选择其他音频文件。';}
+    pause();const version=++request;active=true;played=true;audio.currentTime=0;controls();
+    try{await audio.play();if(version!==request){if(!active)audio.pause();return;}unlocked=true;duck(true);status.textContent='正在播放甘道夫原声';}
+    catch(error){if(version!==request)return;active=false;duck(false);controls();status.textContent=error.name==='NotAllowedError'?'点击“播放原声”开启声音。':'原声暂时无法加载，请重试或选择本地音频。';}
   }
-  function manualPlay(){enabled.checked=true;play();}
+  function save(){try{localStorage.setItem(preference,String(enabled.checked));}catch(_){}}
+  function manualPlay(){if(active){pause();status.textContent='原声已暂停';return;}enabled.checked=true;save();play();}
   file.addEventListener('change',()=>{
     const selected=file.files?.[0];if(!selected)return;
-    pause();if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(selected);audio.src=url;
-    enabled.checked=true;played=false;status.textContent='已选择：'+selected.name+'。环的说明出现时播放。';
+    pause();if(localUrl)URL.revokeObjectURL(localUrl);localUrl=URL.createObjectURL(selected);audio.src=localUrl;
+    enabled.checked=true;save();played=false;status.textContent='已选择：'+selected.name+'。环的台词出现时播放。';
     if(visible)play();
   });
-  enabled.addEventListener('change',()=>{if(!enabled.checked)pause();else if(visible)play();});
+  enabled.addEventListener('change',()=>{save();if(!enabled.checked){pause();status.textContent='原声已关闭';}else if(visible)play();else status.textContent=ready;});
   button.addEventListener('click',manualPlay);trigger.addEventListener('click',manualPlay);
-  dialog.querySelector('[data-clip-close]').addEventListener('click',()=>{pause();trigger.focus({preventScroll:true});});
-  panel.querySelector('[data-settings-reset]').addEventListener('click',()=>{stop();enabled.checked=false;status.textContent=url?'已保留本地音频，原声已关闭。':ready;});
-  audio.addEventListener('ended',()=>{active=false;duck(false);status.textContent='原声播放完毕';});
-  audio.addEventListener('error',()=>{pause();status.textContent='该音频无法播放，请选择其他音频文件。';});
+  panel.querySelector('[data-settings-reset]').addEventListener('click',()=>{stop();if(localUrl){URL.revokeObjectURL(localUrl);localUrl='';}audio.src=source;file.value='';enabled.checked=true;save();status.textContent=ready;});
+  audio.addEventListener('loadedmetadata',()=>{dialog.dataset.voiceDuration=audio.duration.toFixed(3);});
+  audio.addEventListener('ended',()=>{active=false;duck(false);controls();status.textContent='原声播放完毕';});
+  audio.addEventListener('error',()=>{pause();dialog.dataset.voiceState='error';status.textContent='原声暂时无法加载，请重试或选择本地音频。';});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   dialog.addEventListener('close',stop);window.addEventListener('pagehide',stop);
-  window.CourseOpeningVoice={stop,holdsScene:()=>active,scene(index,shown,direction){
-    const next=index===5&&shown&&direction>0;
-    trigger.hidden=!next;
+  window.CourseOpeningVoice={stop,unlock,holdsScene:()=>active,scene(index,shown,direction){
+    const next=index===5&&shown&&direction>0;trigger.hidden=!next;
     if(!next&&visible){pause();played=false;}
     const entered=next&&!visible;visible=next;
     if(entered&&!played&&enabled.checked)play();

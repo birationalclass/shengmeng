@@ -109,7 +109,7 @@
     if(stage!=='ready'||!film)return;
     const entry=++entryVersion;
     stage='starting';root.dataset.stage=stage;startButton.disabled=true;
-    window.CourseOpeningAudio?.start();
+    window.CourseOpeningAudio?.start();window.CourseOpeningVoice?.unlock();
     // Fullscreen is an enhancement: playback must not wait for permission or a
     // browser promise that may never settle (notably in mobile web views).
     if(!document.fullscreenElement&&document.fullscreenEnabled!==false&&typeof root.requestFullscreen==='function'){
@@ -293,7 +293,7 @@
       orbit.pointer=null;orbit.solid=-1;delete root.dataset.draggingSolid;root.classList.remove('is-orbiting');previous=0;queue();
     }
     function beginOrbit(event){
-      if(stage!=='playing'||!settings.depthEnabled||event.button!==0||!event.isPrimary||panel.contains(event.target)||event.target.closest('button,a,input,select,summary,.opening-clip'))return;
+      if(stage!=='playing'||!settings.depthEnabled||event.button!==0||!event.isPrimary||panel.contains(event.target)||event.target.closest('button,a,input,select,summary'))return;
       orbit.solid=-1;
       if(scene===6){
         if(entrance||moving)return;
