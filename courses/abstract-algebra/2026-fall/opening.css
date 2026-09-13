@@ -191,11 +191,11 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .scene-choices label{display:flex;align-items:center;gap:9px;min-height:34px;color:#c2b69f;cursor:pointer;font-size:12px}
 #courseOpening .scene-choices input{accent-color:#bfa574;margin:0;width:14px;height:14px}
 #courseOpening .scene-choices input:disabled{opacity:.55}
-#courseOpening .opening-narration:has([data-kind="theorem"]){top:25%;width:min(300px,25%)}
-#courseOpening .opening-quote[data-kind="theorem"]{white-space:pre-line;text-wrap:pretty;font:400 clamp(13px,1.05vw,16px)/1.85 'Songti SC','Noto Serif SC',Georgia,serif;letter-spacing:.2px}
-#courseOpening .opening-quote[data-kind="theorem"]::first-line{font-size:18px;line-height:2.3;letter-spacing:3px;color:#e1cda4}
-@media(max-width:700px){#courseOpening .opening-narration:has([data-kind="theorem"]){top:10%;bottom:auto;left:7%;width:86%}#courseOpening .opening-quote[data-kind="theorem"]{font-size:12px;line-height:1.75}#courseOpening .opening-quote[data-kind="theorem"]::first-line{font-size:16px}}
-@media(max-height:500px) and (min-width:701px){#courseOpening .opening-narration:has([data-kind="theorem"]){top:19%}#courseOpening .opening-quote[data-kind="theorem"]{font-size:11px;line-height:1.5}}
+#courseOpening .opening-narration:has(:is([data-kind="theorem"],[data-kind="explanation"])){top:25%;width:min(300px,25%)}
+#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"]){white-space:pre-line;text-wrap:pretty;font:400 clamp(13px,1.05vw,16px)/1.85 'Songti SC','Noto Serif SC',Georgia,serif;letter-spacing:.2px}
+#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"])::first-line{font-size:18px;line-height:2.3;letter-spacing:3px;color:#e1cda4}
+@media(max-width:700px){#courseOpening .opening-narration:has(:is([data-kind="theorem"],[data-kind="explanation"])){top:10%;bottom:auto;left:7%;width:86%}#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"]){font-size:12px;line-height:1.75}#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"])::first-line{font-size:16px}}
+@media(max-height:500px) and (min-width:701px){#courseOpening .opening-narration:has(:is([data-kind="theorem"],[data-kind="explanation"])){top:19%}#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"]){font-size:11px;line-height:1.5}}
 
 #courseOpening .voice-source{color:#c6b99c;text-decoration:none;font-size:10px;margin-left:14px}
 
@@ -214,14 +214,14 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .opening-narration{width:min(calc(clamp(275px,30vw,420px) * var(--quote-scale,1.15)),89vw)}
 #courseOpening .opening-quote{font-size:calc(clamp(18px,1.65vw,25px) * var(--quote-scale,1.15))}
 #courseOpening .opening-quote[data-kind="ring-verse"]{font-size:min(calc(clamp(24px,2.61vw,38px) * var(--quote-scale,1.15)),8.7cqw)}
-#courseOpening .opening-narration:has([data-kind="theorem"]){width:min(calc(300px * var(--quote-scale,1.15)),40vw)}
-#courseOpening .opening-quote[data-kind="theorem"]{font-size:calc(clamp(13px,1.05vw,16px) * var(--quote-scale,1.15))}
-#courseOpening .opening-quote[data-kind="theorem"]::first-line{font-size:1.2em}
+#courseOpening .opening-narration:has(:is([data-kind="theorem"],[data-kind="explanation"])){width:min(calc(300px * var(--quote-scale,1.15)),40vw)}
+#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"]){font-size:calc(clamp(13px,1.05vw,16px) * var(--quote-scale,1.15))}
+#courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"])::first-line{font-size:1.2em}
 @media(max-width:700px){
   #courseOpening .opening-narration{left:5.5%;width:min(calc(74% * var(--quote-scale,1.15)),89%);bottom:calc(9vh + 110px * var(--title-scale,1.15))}
   #courseOpening .opening-quote[data-kind="ring-verse"]{font-size:min(calc(24px * var(--quote-scale,1.15)),8.7cqw)}
-  #courseOpening .opening-narration:has([data-kind="theorem"]){left:5.5%;width:89%}
-  #courseOpening .opening-quote[data-kind="theorem"]{font-size:calc(12px * var(--quote-scale,1.15));line-height:1.75}
+  #courseOpening .opening-narration:has(:is([data-kind="theorem"],[data-kind="explanation"])){left:5.5%;width:89%}
+  #courseOpening .opening-quote:is([data-kind="theorem"],[data-kind="explanation"]){font-size:calc(12px * var(--quote-scale,1.15));line-height:1.75}
 }
 @media(max-height:600px){#courseOpening .opening-quote[data-kind="ring-verse"]{font-size:min(calc(24px * var(--quote-scale,1.15)),8.7cqw,6.5vh);line-height:1.65}}
 
@@ -232,3 +232,10 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .touch-enter:disabled{opacity:.35;cursor:default}
 
 #courseOpening .setting-range>.setting-title{order:0;flex:0 0 auto;font-size:11px}
+
+/* Only the left narration changes language; the two-line title stays in place. */
+#courseOpening .opening-quote.is-visible.is-language-changing{opacity:0;transform:translateY(5px)}
+#courseOpening .opening-quote[lang="zh-CN"]{font-family:'Songti SC','Noto Serif SC',Georgia,serif;font-style:normal}
+#courseOpening .opening-quote[data-kind="ring-verse"][lang="zh-CN"]{font-size:min(calc(clamp(18px,1.55vw,23px) * var(--quote-scale,1.15)),6.8cqw);line-height:2.2;letter-spacing:.14em}
+#courseOpening .opening-quote[data-kind="theorem"][lang="en"]{font-size:calc(clamp(12px,1vw,15px) * var(--quote-scale,1.15));line-height:1.65}
+@media(max-width:700px){#courseOpening .opening-quote[data-kind="theorem"][lang="en"]{font-size:calc(11px * var(--quote-scale,1.15));line-height:1.65}}

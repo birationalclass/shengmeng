@@ -46,13 +46,13 @@
   audio.addEventListener('error',()=>{pause();dialog.dataset.voiceState='error';status.textContent='原声暂时无法加载，请重试或选择本地音频。';});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   dialog.addEventListener('close',stop);window.addEventListener('pagehide',stop);
-  window.CourseOpeningVoice={stop,unlock,holdsScene:()=>active,scene(index,shown,direction,currentCycle=0){
+  window.CourseOpeningVoice={stop,unlock,holdsScene:()=>active,scene(index,shown,direction,currentCycle=0,englishVisible=true){
     cycle=currentCycle;
     const next=index===5&&shown&&direction>0;
     if(!next&&visible)pause();
     const entered=next&&!visible;visible=next;
     // A scene remains marked as played for this opening session. The cycle
     // token also permits repeats when the ring is the only selected figure.
-    if(next&&!active&&enabled.checked&&((entered&&!played)||(loop.checked&&(entered||cycle!==playedCycle))))play();
+    if(next&&!active&&enabled.checked&&englishVisible&&((!played)||(loop.checked&&(entered||cycle!==playedCycle))))play();
   }};
 })();

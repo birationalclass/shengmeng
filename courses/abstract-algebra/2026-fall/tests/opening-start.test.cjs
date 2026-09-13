@@ -7,7 +7,7 @@ const source = fs.readFileSync(path.join(__dirname, '../opening.js'), 'utf8');
 const boundary = source.indexOf('  const paint=');
 assert.ok(boundary > 0, 'controller boundary exists');
 
-function setup(mode) {
+function setup(mode, preferences={}) {
   class Element {
     constructor() {
       this.dataset = {}; this.style = {setProperty() {}}; this.hidden = true; this.open = true; this.children = new Map(); this.listeners = new Map();
@@ -40,7 +40,7 @@ function setup(mode) {
   };
   const boot = { ready() {}, start() {dialog.open = true;}, stop() {}, finish() { counts.finish++; } };
   const context = {
-    document, matchMedia: () => ({matches: false}), localStorage: {getItem: () => null},
+    document, matchMedia: () => ({matches: false}), localStorage: {getItem: key => preferences[key]??null},
     setTimeout: () => 0, clearTimeout() {}, Promise,
     window: {CourseOpeningBoot: boot, CourseOpeningAudio: {start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
     renderer: {depart() {counts.depart++;},outro() {counts.outro++;},outroReady() {return true;},refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
@@ -97,6 +97,11 @@ function assertPlaying(env) {
   assert.equal(late.dialog.open, false);
   assert.equal(late.counts.exit, 1, 'late fullscreen success is cleaned up after leaving');
   assert.equal(late.counts.play, 1);
+
+  const retained=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.45,cameraEnabled:false,titleScale:140,sceneDurations:[90,30,30,30,30,30,30]})});
+  const retainedSettings=JSON.parse(retained.root.dataset.settings);
+  assert.equal(retainedSettings.radiationAmount,.45);assert.equal(retainedSettings.cameraEnabled,false);assert.equal(retainedSettings.titleScale,140);assert.equal(retainedSettings.sceneDurations[0],90);
+  const custom=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.32})});assert.equal(JSON.parse(custom.root.dataset.settings).radiationAmount,.32);
 
   const closing=setup('missing');closing.controller.startAnimation();closing.controller.requestCourseEntry();
   assert.equal(closing.controller.stage,'outro');assert.equal(closing.dialog.open,true);assert.equal(closing.counts.outro,1);assert.equal(closing.counts.stop,0);

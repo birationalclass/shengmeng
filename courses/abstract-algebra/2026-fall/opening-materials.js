@@ -87,13 +87,14 @@
       return .0176 * wander * (.30 * eddy + .50 * drift + .20 * fine);
     }
 
+    // Emission density is twice its original value across the full slider range.
     // A fixed minority of grains is continuously emitted along its true surface
     // normal. Each seed travels in one straight line at constant speed, fades
     // out, and returns to its source only while completely invisible.
     float emissionSelection() {
       float selector=fract(grain.x*37.17+grain.z*17.71);
       float fine=(1.-step(.64,grain.z))*(1.-step(.16,grain.y));
-      return step(selector,radiation*.20)*step(.0001,radiation)*mix(1.,fine,radiationFineOnly);
+      return step(selector,radiation*.40)*step(.0001,radiation)*mix(1.,fine,radiationFineOnly);
     }
     vec4 escapeGrain(vec3 normal, float chosen) {
       float phase=fract(time/(2.8+grain.z*1.6)+grain.y*.754877666+grain.w*.569840296);
@@ -335,7 +336,7 @@
     const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
     const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x);
     const selector=fract(g0*37.17+g2*17.71);
-    const chosen=selector<=amount*.20?1:0;
+    const chosen=selector<=amount*.40?1:0;
     if(!chosen)return{offset:[0,0,0],alpha:1,chosen:0};
     const phase=fract(time/(2.8+g2*1.6)+g1*.754877666+g3*.569840296);
     const age=clamp(phase/.94),reach=.06+.19*amount;

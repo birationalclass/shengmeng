@@ -201,6 +201,7 @@
     }
     const program = link(materials.vertex, materials.fragment), background = link(materials.backgroundVertex, materials.backgroundFragment);
     const backdrop=window.CourseOpeningBackdrop,lettering=backdrop.create(gl),letterProgram=link(backdrop.vertex,backdrop.fragment);
+    const narration=window.CourseOpeningNarration.create(quote,backdrop.scenes);
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
@@ -248,7 +249,7 @@
     }
     function snapshotNormals(){const e=ease(progress),out=new Float32Array(N*3),flat=1-effective().depth;for(let i=0;i<out.length;i++){const face=i%3===2?1:0,a=normalSource[i]+(face-normalSource[i])*extrusionFrom*flat,b=normalDestination[i]+(face-normalDestination[i])*extrusionTo*flat;out[i]=a+(b-a)*e;}return out;}
     function upload(){for(const [buf,data] of [[sourceBuffer,source],[destinationBuffer,destination],[normalSourceBuffer,normalSource],[normalDestinationBuffer,normalDestination]]){gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);}}
-    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];quote.textContent=backdrop.scenes[scene].quote||'';quote.dataset.kind=backdrop.scenes[scene].kind||'quote';quote.lang=scene===6?'zh-CN':'en';quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===6?'分别拖动五个多面体':'拖动旋转');}
+    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];narration.setScene(scene,timeline.state().cycles);quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===6?'分别拖动五个多面体':'拖动旋转');}
 
     function syncTimeline(state){
       const from=order[state.from],to=order[state.to],key=from+':'+to;
@@ -382,7 +383,7 @@
     }
     function depart(){outro.phase='depart';outro.elapsed=0;root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
     function stop(){endOrbit();active=false;previous=0;cancelAnimationFrame(raf);raf=0;}
-    function needsFrames(){const target=effective();return (outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||target.wander>0||visual.camera>0||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
+    function needsFrames(){const target=effective();return (!outro&&narration.needsFrames)||(outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||target.wander>0||visual.camera>0||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
     function queue(){if(!raf&&active&&dialog.open&&!document.hidden&&needsFrames())raf=requestAnimationFrame(tick);}
     function tick(now){
       raf=0;if(!active||!dialog.open||document.hidden)return;
@@ -401,7 +402,11 @@
         else syncTimeline(timeline.advance(dt));
       }
       const captionTarget=caption.classList.contains('is-visible')?1:0;captionOpacity+=(captionTarget-captionOpacity)*(1-Math.exp(-dt/(settings.textFade*1000/3)));
-      if(!outro)window.CourseOpeningVoice?.scene(scene,captionTarget===1&&!entrance, timeline.state().direction,timeline.state().cycles);
+      if(!outro){
+        narration.setScene(scene,timeline.state().cycles);
+        window.CourseOpeningVoice?.scene(scene,captionTarget===1&&!entrance,timeline.state().direction,timeline.state().cycles,narration.language==='en');
+        narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:settings.textFade*1000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
+      }
       draw();queue();if(!raf)previous=0;
     }
     function entrancePositions(){
@@ -413,7 +418,7 @@
     }
     const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();const first=order[0];spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=transitions[0];timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
+      stop();narration.reset();outro=null;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();const first=order[0];spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=transitions[0];timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();showCaption(reduce);queue();
     }

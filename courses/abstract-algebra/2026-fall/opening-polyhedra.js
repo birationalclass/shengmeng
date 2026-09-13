@@ -95,7 +95,8 @@
       }
       for(let i=0;i<count/5;i++){
         let p,n;
-        if(i<count/5*.7){
+        // Keep fewer grains inside faces and emphasize the true polygon edges.
+        if(i<count/5*.45){
           const choice=random()*area,t=triangles.find(t=>choice<t.end),u=Math.sqrt(random()),v=random();
           p=add(mul(t.a,1-u),add(mul(t.b,u*(1-v)),mul(t.c,u*v)));n=t.normal;
         }else{

@@ -19,10 +19,10 @@
     { title: 'SIXFOLD ROSETTE', zh: '六瓣玫瑰', en: 'A turn of sixty degrees leaves the pattern unchanged.' },
     { title: 'EIGHT-POINTED STAR', zh: '八角星', en: 'Eightfold rotation and reflection shape the star.' },
     { title: 'TWELVEFOLD ROSETTE', zh: '十二重花窗', en: 'Twelvefold symmetry around a single centre.' },
-    { title: 'E₈ ROOT SYSTEM', zh: 'E₈ 根系', en: '240 roots in eight dimensions, projected onto a plane.' },
+    { title: 'Lie Group', zh: '李群', en: '240 roots in eight dimensions, projected onto a plane.' },
     { title: 'JULIA FRACTAL', zh: '朱利亚分形', en: 'One rule, iterated. An endlessly intricate boundary.' },
     { title: 'THE LORD OF THE RING', zh: '万环之环', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
-    { title: 'PLATONIC SOLID GROUPS', zh: '正多面体群', en: 'Five Platonic solids. Three rotation groups.' }
+    { title: 'Platonic Solids', zh: '正多面体', en: 'Five Platonic solids. Three rotation groups.' }
   ].map(Object.freeze));
   const cache = new Array(captions.length);
   const spatialCache = new Array(captions.length);

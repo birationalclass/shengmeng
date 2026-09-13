@@ -53,5 +53,11 @@ class Audio extends Node{
   window.CourseOpeningVoice.scene(6,true,1);assert.equal(voiceAudio.paused,true);
   dialog.dispatchEvent(new Event('close'));assert.equal(voiceAudio.paused,true);assert.equal(music.paused,true);
   loop.checked=true;controls['[data-settings-reset]'].dispatchEvent(new Event('click'));assert.equal(loop.checked,false);assert.equal(store.get('courseOpeningVoiceLoop.v1'),'false');
+  const waitingCount=voiceAudio.plays;
+  voice.scene(5,true,1,8,false);await settle();assert.equal(voiceAudio.plays,waitingCount,'wait for English narration before beginning the verse');
+  voice.scene(5,true,1,8,true);await settle();assert.equal(voiceAudio.plays,waitingCount+1,'deferred dialogue starts once English is visible, without reentering the scene');
+  voiceAudio.dispatchEvent(new Event('ended'));loop.checked=true;loop.dispatchEvent(new Event('change'));
+  voice.scene(5,true,1,9,false);await settle();assert.equal(voiceAudio.plays,waitingCount+1);
+  voice.scene(5,true,1,9,true);await settle();assert.equal(voiceAudio.plays,waitingCount+2,'a looping single figure also waits for English');
   console.log('PASS: original dialogue plays, holds its scene, releases on end/disable, and never ducks background music');
 })().catch(error=>{console.error(error);process.exitCode=1;});
