@@ -42,7 +42,7 @@ function setup(mode) {
     document, matchMedia: () => ({matches: false}), localStorage: {getItem: () => null},
     setTimeout: () => 0, clearTimeout() {}, Promise,
     window: {CourseOpeningBoot: boot, CourseOpeningAudio: {start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
-    renderer: {play() {counts.play++;}, stop() {counts.stop++;}},
+    renderer: {refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
   };
   vm.runInNewContext(source.slice(0, boundary) + `
     film=renderer;initialization=Promise.resolve();stage='ready';root.dataset.stage=stage;
@@ -82,7 +82,12 @@ function assertPlaying(env) {
   normal.controller.startAnimation(); normal.settleSuccess(); await flush();
   assertPlaying(normal);
   normal.document.fullscreenElement = null; normal.change();
-  assert.equal(normal.controller.stage, 'closed', 'exit from owned fullscreen still enters course');
+  assertPlaying(normal);
+  assert.equal(normal.counts.stop, 0, 'leaving fullscreen does not stop the film');
+  normal.dialog.listeners.get('cancel')({preventDefault(){}});
+  assertPlaying(normal);
+  normal.controller.leaveOpening();
+  assert.equal(normal.controller.stage, 'closed');
   assert.equal(normal.counts.stop, 1);
 
   const late = setup('pending');
