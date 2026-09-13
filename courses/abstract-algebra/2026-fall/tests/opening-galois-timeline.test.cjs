@@ -1,8 +1,8 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const window={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..','opening-galois-timeline.js'),'utf8'),{window});
 const sample=window.CourseOpeningGaloisTimeline.sample;
-for(const [elapsed,year] of [[0,1811],[7000,1811],[11000,1823],[16000,1823],[20000,1827],[26000,1827],[30000,1828],[32000,1828],[34000,1829],[36000,1829],[40000,1831],[92500,1832],[133500,1832],[143000,1832],[166000,1843],[168200,1843],[169000,1846],[177160.612,1846]])assert.equal(sample({elapsed}).displayYear,year);
-for(const [start,end,year] of [[11000,16000,1823],[20000,26000,1827],[30000,32000,1828],[34000,36000,1829]]){
+for(const [elapsed,year] of [[0,1811],[7000,1811],[11000,1823],[16000,1823],[20000,1827],[26000,1827],[30000,1828],[32000,1828],[33000,1829],[34000,1829],[35000,1830],[36000,1830],[40000,1831],[92500,1832],[133500,1832],[143000,1832],[166000,1843],[168200,1843],[169000,1846],[177160.612,1846]])assert.equal(sample({elapsed}).displayYear,year);
+for(const [start,end,year] of [[11000,16000,1823],[20000,26000,1827],[30000,32000,1828],[33000,34000,1829],[35000,36000,1830]]){
  for(let elapsed=start;elapsed<=end;elapsed+=250)assert.equal(sample({elapsed}).year,year,'school and examination years remain still long enough to read');
 }
 assert.equal(sample({elapsed:6999}).birth,true);assert.equal(sample({elapsed:7000}).birth,false);

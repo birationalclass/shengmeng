@@ -6,7 +6,9 @@
     {year:'1811–1832',title:'ÉVARISTE GALOIS',zhTitle:'短暂的生命，无尽的回响',en:'Twenty years of life.\nAn idea that changed algebra.',zh:'二十年的生命，\n改变代数的思想。'},
     {year:'1823',title:'LOUIS-LE-GRAND',zhTitle:'走进学堂',en:'He enters the Lycée Louis-le-Grand in Paris.\nA schoolboy’s journey begins.',zh:'进入巴黎路易大帝中学。\n少年的求学之路，由此展开。'},
     {year:'1827',title:'AWAKENING',zhTitle:'少年与数学',en:'His first mathematics class opens a new world.\nGeometry and algebra become his passion.',zh:'数学课打开了一个新的世界。\n他开始沉浸于几何与代数。'},
-    {year:'1828–1829',title:'BEYOND THE EXAMINATION',zhTitle:'求学与挫折',en:'Twice refused admission to the École Polytechnique.\nHis study of mathematics continues.',zh:'两次报考综合理工学院未果。\n钻研数学的脚步没有停下。'},
+    // ENS expulsion followed a public attack on its director, not examination failure: December 1830, confirmed 4 January 1831.
+    // Chronology: https://mathshistory.st-andrews.ac.uk/Extras/Neumann_Peter_papers/ ; cause: https://mathshistory.st-andrews.ac.uk/Biographies/Galois/
+    {year:'1828–1831',title:'BEYOND THE EXAMINATION',zhTitle:'求学与挫折',en:'Twice unsuccessful at the École Polytechnique, he enters the École Normale.\nLater expelled after publicly criticizing its director.\nHis mathematical work continues.',zh:'两度落榜巴黎综合理工，后入巴黎高师。\n又因公开批评校长被开除。\n数学探索未止。'},
     {year:'1831',title:'SYMMETRIES OF ROOTS',zhTitle:'根的对称',kind:'galois-theorem',en:'GALOIS’S SOLVABILITY CRITERION\n\nSolvable by radicals\n⇔ Gal(f) is solvable\n\nFor polynomials over ℚ.\nModern formulation.',zh:'伽罗瓦可解性判据\n\n根式可解\n⇔ Gal(f) 是可解群\n\n有理系数多项式 · 现代表述'},
     {year:'1831',title:'BEHIND BARS',zhTitle:'囚窗之内',en:'His memoir was returned without approval.\nPolitical turmoil brought imprisonment.\n\nBehind bars, his ideas endured.',zh:'论文未获认可，\n政治风暴又将他带入牢狱。\n\n窗栅之内，思想仍在追寻。'},
     {year:'29 MAY 1832',title:'A LETTER TO THE FUTURE',zhTitle:'留下思想',en:'Before the duel, he set down his research\nin a letter to his friend Auguste Chevalier.\n\nYears of thought, entrusted to the future.',zh:'决斗前，他将已有研究写进\n致友人奥古斯特·舍瓦利耶的信。\n\n积累的思想，被托付给未来。'},

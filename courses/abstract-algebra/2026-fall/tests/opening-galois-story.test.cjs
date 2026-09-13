@@ -16,7 +16,7 @@ for(const hold of [30000,45000,60000,90000])for(const speed of [.25,.5,.75,1,1.5
  assert.equal(T.seek(duration+6750).moving,true);assert.equal(T.state().progress,.5);
  T.setDirection(-1);T.advance(6750);assert.equal(T.state().progress,0);T.advance(1);assert.equal(T.state().moving,false);
 }
-assert.equal(S.nodes[S.index.school].year,'1823');assert.equal(S.nodes[S.index.awakening].year,'1827');assert.equal(S.nodes[S.index.exams].year,'1828–1829');
+assert.equal(S.nodes[S.index.school].year,'1823');assert.equal(S.nodes[S.index.awakening].year,'1827');assert.equal(S.nodes[S.index.exams].year,'1828–1831');
 assert.match(S.nodes[S.index.letter].year,/29 MAY/);assert.match(S.nodes[S.index.death].en,/May 30/);assert.match(S.nodes[S.index.death].en,/May 31/);assert.match(S.nodes[S.index.recognition].year,/1843.*1846/);
 assert.equal(S.recognition,S.nodes[S.index.recognition]);assert.match(S.recognition.zh,/刘维尔/);
 console.log('PASS: ten complete independent holds, additional morph time, reversible single-story loop and exact phase preservation during timing edits');
