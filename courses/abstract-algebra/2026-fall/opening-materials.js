@@ -45,6 +45,8 @@
     uniform float viewZoom;
     uniform float objectSpin;
     uniform float radiation;
+    uniform float radiationFineOnly;
+    uniform float grainTypes[6];
     uniform float extrusionFrom;
     uniform float extrusionTo;
     uniform float colorAmount;
@@ -54,6 +56,7 @@
     varying mediump vec3 color;
     varying mediump float opacity;
     varying mediump vec4 material;
+    varying mediump float kind;
     ${cameraMath}
 
     vec2 localWander(vec2 p) {
@@ -80,7 +83,8 @@
     // out, and returns to its source only while completely invisible.
     float emissionSelection() {
       float selector=fract(grain.x*37.17+grain.z*17.71);
-      return step(selector,radiation*.20)*step(.0001,radiation);
+      float fine=(1.-step(.64,grain.z))*(1.-step(.16,grain.y));
+      return step(selector,radiation*.20)*step(.0001,radiation)*mix(1.,fine,radiationFineOnly);
     }
     vec4 escapeGrain(vec3 normal, float chosen) {
       float phase=fract(time/(2.8+grain.z*1.6)+grain.y*.754877666+grain.w*.569840296);
@@ -90,11 +94,19 @@
       return vec4(normal*reach*age*chosen,mix(1.,life,chosen));
     }
 
-    vec3 mineral(float selector) {
-      if (selector < .26) return vec3(.20, .52, .38);
-      if (selector < .49) return vec3(.24, .40, .70);
-      if (selector < .73) return vec3(.83, .43, .25);
-      return vec3(.90, .86, .72);
+    float mineralKind(float seed) {
+      float total=0.;for(int i=0;i<6;i++)total+=grainTypes[i];
+      float choice=seed*max(1.,total),count=0.;
+      for(int i=0;i<6;i++){count+=grainTypes[i];if(choice<count)return float(i);}
+      return 0.;
+    }
+    vec3 mineral(float k) {
+      if(k<.5)return vec3(.83,.66,.39);
+      if(k<1.5)return vec3(.88,.95,1.);
+      if(k<2.5)return vec3(.16,.39,.96);
+      if(k<3.5)return vec3(.92,.16,.27);
+      if(k<4.5)return vec3(.12,.72,.43);
+      return vec3(.65,.32,.90);
     }
 
     void main() {
@@ -135,6 +147,7 @@
       if(grain.z>.64)variedSize=1.50+.96*grain.y;
       if(grain.z>.94)variedSize=2.78+1.18*grain.y;
       float size=mix(1.45+.16*grain.z,variedSize,complexity);
+      if(radiationFineOnly>.5&&emitted>.5)size=min(size,.80);
       // Optical macro zoom enlarges the actual grain sprites as well as their
       // positions, retaining granular surface coverage at ten times magnification.
       gl_PointSize=size*mix(1.,1.16,depth)*dpr*viewZoom*clamp(1./w,.68,1.65);
@@ -143,12 +156,10 @@
       float diffuse=max(0.,dot(n,lamp));
       float macroLight=.32+.75*diffuse;
       float lampFalloff=.84+.16*clamp(1.-length(p.xy-vec2(-.35,.48))*.5,0.,1.);
-      vec3 gold=mix(vec3(.46,.33,.16),vec3(.91,.77,.49),grain.w);
-      gold=mix(gold,vec3(.99,.91,.74),pow(grain.y,18.)*.55);
-      float selector=fract(grain.y*17.17+grain.z*31.31);
-      vec3 tint=mineral(selector)*(.73+.27*grain.w);
-      float coloured=(1.-smoothstep(colorAmount*.72-.012,colorAmount*.72,grain.x))*step(.001,colorAmount);
-      color=mix(gold,tint,coloured)*macroLight*lampFalloff;
+      kind=mineralKind(fract(grain.x*17.17+grain.w*31.31));
+      vec3 tint=mineral(kind)*(.73+.27*grain.w);
+      float luminance=dot(tint,vec3(.2126,.7152,.0722));
+      color=mix(vec3(luminance),tint,colorAmount)*macroLight*lampFalloff;
       vec3 eye=fromCamera(vec3(0.,0.,1.));
       float sheen=pow(max(0.,dot(n,normalize(lamp+eye))),24.);
       color+=vec3(.94,.78,.48)*sheen*.13;
@@ -162,6 +173,7 @@
     varying mediump vec3 color;
     varying mediump float opacity;
     varying mediump vec4 material;
+    varying mediump float kind;
     void main() {
       vec2 p=gl_PointCoord*2.-1.;
       float angle=material.x*6.28318530718;
@@ -174,6 +186,12 @@
       float character=max(depth,complexity*.7);
       vec2 q=mix(p*vec2(1.,.84+material.z*.22),shaped/outline,character);
       float r=length(q);
+      if(kind>.5){
+        // Diamond has a rhombus cut; coloured gems have bevelled hex/octagon cuts.
+        vec2 facet=abs(turned);
+        r=kind<1.5?(facet.x+facet.y)*.90:max(max(facet.x,facet.y), (facet.x+facet.y)*.72);
+        if(kind>3.5&&kind<4.5)r=max(facet.x/.72,facet.y);
+      }
       if(r>1.)discard;
       float flatAlpha=1.-smoothstep(.25,1.,r);
       float flatShade=.74+.26*clamp(.5-p.x*.5+p.y*.2,0.,1.);
@@ -189,6 +207,14 @@
       float rim=1.-.30*smoothstep(.64,1.,r);
       vec3 solidColor=color*(.25+.91*diffuse)*rim;
       solidColor+=vec3(1.,.94,.79)*specular*(.20+.18*material.y);
+      if(kind>.5){
+        float facets=floor((atan(turned.y,turned.x)+3.141593)*1.27324);
+        float sparkle=pow(max(0.,1.-length(turned-vec2(-.22,-.28))*2.8),10.);
+        vec3 cutColor=color*(.64+.36*cos(facets*1.71+material.w*3.));
+        cutColor+=vec3(.80,.90,1.)*(sparkle*.68+specular*.28);
+        solidColor=mix(cutColor,solidColor,.30);
+        flatColor=mix(cutColor,flatColor,.25);
+      }
       float solidAlpha=1.-smoothstep(.82,1.,r);
       float alpha=mix(flatAlpha,solidAlpha,depth)*opacity;
       // Transparent sprite corners must never occlude another side of the ring.
@@ -250,7 +276,8 @@
     const fineX=Math.sin(time*1.31+g2*tau),fineY=Math.cos(time*1.13+g3*tau);
     return [.0176*amount*(.30*eddyX+.50*driftX+.20*fineX),.0176*amount*(.30*eddyY+.50*driftY+.20*fineY)];
   }
-  function radiationOffset(x,y,z,g0,g1,g2,g3,time,amount,normal=[0,0,1]) {
+  function radiationOffset(x,y,z,g0,g1,g2,g3,time,amount,normal=[0,0,1],fineOnly=false) {
+    if(fineOnly&&(g2>=.64||g1>=.16))return{offset:[0,0,0],alpha:1,chosen:0};
     if(amount<.0001)return{offset:[0,0,0],alpha:1,chosen:0};
     const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
     const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x);
