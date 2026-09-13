@@ -23,7 +23,7 @@
         surface.width=Math.round(width*ratio);surface.height=Math.round(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
         const scene=scenes[index],small=width<700;
         const size=Math.min(height*.74,width*.57);
-        ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(175,153,112,.115)';ctx.font=`400 ${size}px OpeningMath, "STIX Two Math", Georgia, serif`;
+        ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(175,153,112,.052)';ctx.font=`400 ${size}px OpeningMath, "STIX Two Math", Georgia, serif`;
         ctx.fillText(scene.logo,width*(small?.57:.60),height*.52,width*.75);
         gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,surface);
       },
@@ -33,6 +33,18 @@
   }
   window.CourseOpeningBackdrop={scenes,create,
     vertex:'attribute vec2 pos;varying vec2 uv;void main(){uv=vec2((pos.x+1.)*.5,(1.-pos.y)*.5);gl_Position=vec4(pos,0.,1.);}',
-    fragment:'precision mediump float;varying vec2 uv;uniform sampler2D lettering;uniform float visibility;void main(){vec4 ink=texture2D(lettering,uv);gl_FragColor=vec4(ink.rgb,ink.a*visibility);}'
+    // The sweep is clipped by the glyph alpha; the surrounding background stays dark.
+    fragment:`precision mediump float;
+      varying vec2 uv;
+      uniform sampler2D lettering;
+      uniform float visibility,sweepTime,sweepEnabled;
+      void main(){
+        vec4 ink=texture2D(lettering,uv);
+        float centre=mix(-.2,1.2,sweepTime/24.);
+        float distance=(uv.x+.2*(uv.y-.5)-centre)/.065;
+        float light=exp(-distance*distance)*sweepEnabled;
+        vec3 gold=mix(ink.rgb,vec3(.82,.74,.55),light*.12);
+        gl_FragColor=vec4(gold,ink.a*visibility*(1.+.58*light));
+      }`
   };
 })();

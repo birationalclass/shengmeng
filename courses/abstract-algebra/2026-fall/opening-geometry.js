@@ -16,13 +16,13 @@
     ['十二重花窗', 'TWELVEFOLD ROSETTE', 12]
   ];
   const captions = Object.freeze([
-    { title: '六瓣玫瑰', zh: '旋转六十度，图案与自身重合。', en: 'A turn of sixty degrees leaves the pattern unchanged.' },
-    { title: '八角星', zh: '八重旋转与镜面对称，共同勾勒星形。', en: 'Eightfold rotation and reflection shape the star.' },
-    { title: '十二重花窗', zh: '十二重对称，环绕同一个中心。', en: 'Twelvefold symmetry around a single centre.' },
-    { title: 'E₈ 根系', zh: '240 个根，从八维空间投向平面。', en: '240 roots in eight dimensions, projected onto a plane.' },
-    { title: 'Julia 分形', zh: '一条规则反复迭代，边界生出无尽细节。', en: 'One rule, iterated. An endlessly intricate boundary.' },
-    { title: 'THE LORD OF THE RING', zh: '万环之环 ℤ', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
-    { title: '正多面体群', zh: '五种凸正多面体，三类旋转对称群。', en: 'Five Platonic solids. Three rotation groups.' }
+    { title: 'SIXFOLD ROSETTE', zh: '六瓣玫瑰', en: 'A turn of sixty degrees leaves the pattern unchanged.' },
+    { title: 'EIGHT-POINTED STAR', zh: '八角星', en: 'Eightfold rotation and reflection shape the star.' },
+    { title: 'TWELVEFOLD ROSETTE', zh: '十二重花窗', en: 'Twelvefold symmetry around a single centre.' },
+    { title: 'E₈ ROOT SYSTEM', zh: 'E₈ 根系', en: '240 roots in eight dimensions, projected onto a plane.' },
+    { title: 'JULIA FRACTAL', zh: '朱利亚分形', en: 'One rule, iterated. An endlessly intricate boundary.' },
+    { title: 'THE LORD OF THE RING', zh: '万环之环', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
+    { title: 'PLATONIC SOLID GROUPS', zh: '正多面体群', en: 'Five Platonic solids. Three rotation groups.' }
   ].map(Object.freeze));
   const cache = new Array(captions.length);
   const spatialCache = new Array(captions.length);

@@ -27,11 +27,12 @@ function setup(mode) {
   document.fullscreenElement = null; document.fullscreenEnabled = mode !== 'disabled';
   const root = document.getElementById('symmetry-particle-studies');
   const dialog = document.getElementById('courseOpening');
-  const counts = { play: 0, stop: 0, finish: 0, audioStart: 0, audioStop: 0, request: 0, exit: 0 };
+  const counts = { play: 0, stop: 0, finish: 0, audioStart: 0, audioStop: 0, request: 0, exit: 0, outro: 0, depart: 0 };
   let resolve, reject;
   const change = () => document.listeners.get('fullscreenchange')();
   document.exitFullscreen = () => { counts.exit++; document.fullscreenElement = null; change(); return Promise.resolve(); };
   if (mode !== 'missing') root.requestFullscreen = () => {
+    assert.equal(counts.finish,counts.play+1,'loader is removed before the fullscreen snapshot');
     counts.request++;
     if (mode === 'throw') throw new Error('Fullscreen unavailable');
     if (mode === 'reject') return Promise.reject(new Error('Permission denied'));
@@ -42,11 +43,11 @@ function setup(mode) {
     document, matchMedia: () => ({matches: false}), localStorage: {getItem: () => null},
     setTimeout: () => 0, clearTimeout() {}, Promise,
     window: {CourseOpeningBoot: boot, CourseOpeningAudio: {start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
-    renderer: {refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
+    renderer: {depart() {counts.depart++;},outro() {counts.outro++;},outroReady() {return true;},refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
   };
   vm.runInNewContext(source.slice(0, boundary) + `
     film=renderer;initialization=Promise.resolve();stage='ready';root.dataset.stage=stage;
-    globalThis.testController={startAnimation,leaveOpening,openOpening,get stage(){return stage;}};
+    globalThis.testController={startAnimation,leaveOpening,openOpening,requestCourseEntry,get stage(){return stage;}};
   })();`, context);
   return { ...context.testController, controller: context.testController, counts, document, root, dialog, change,
     settleSuccess() {document.fullscreenElement = root; change(); resolve();},
@@ -96,6 +97,11 @@ function assertPlaying(env) {
   assert.equal(late.dialog.open, false);
   assert.equal(late.counts.exit, 1, 'late fullscreen success is cleaned up after leaving');
   assert.equal(late.counts.play, 1);
+
+  const closing=setup('missing');closing.controller.startAnimation();closing.controller.requestCourseEntry();
+  assert.equal(closing.controller.stage,'outro');assert.equal(closing.dialog.open,true);assert.equal(closing.counts.outro,1);assert.equal(closing.counts.stop,0);
+  closing.controller.requestCourseEntry();assert.equal(closing.controller.stage,'departing');assert.equal(closing.counts.depart,1);assert.equal(closing.counts.stop,0,'the course waits until all sand has disappeared');
+  closing.controller.requestCourseEntry();assert.equal(closing.counts.depart,1,'repeated confirmation cannot restart the fall');closing.controller.leaveOpening();
 
   const replay = setup('pending');
   replay.controller.startAnimation(); replay.controller.leaveOpening(); await replay.controller.openOpening();

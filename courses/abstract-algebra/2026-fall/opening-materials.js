@@ -4,9 +4,10 @@
  */
 (() => {
   'use strict';
-  const gemFraction = .001; // Each enabled gemstone occupies one fixed, rare seed band.
-  function mineralKind(seed, enabled) {
-    for(let i=1;i<6;i++)if(seed>=(i-1)*gemFraction&&seed<i*gemFraction&&enabled[i])return i;
+  const gemFraction = .003; // Default 1.5% total; five fixed species bands.
+  function mineralKind(seed, enabled, share=gemFraction*5) {
+    const band=seed*5,kind=Math.floor(band)+1;
+    if(band-Math.floor(band)<share&&enabled[kind])return kind;
     return enabled[0]?0:-1;
   }
   const cameraMath = `
@@ -54,7 +55,9 @@
     uniform float grainTypes[6];
     uniform float extrusionFrom;
     uniform float extrusionTo;
-    uniform float colorAmount;
+    uniform float gemShare;
+    uniform float outroFall;
+    uniform float outroExit;
     uniform mediump float complexity;
     uniform mediump float depth;
     uniform float wander;
@@ -102,9 +105,9 @@
 
     float mineralKind(float seed) {
       // Toggling a species never redistributes its share to other gemstones.
+      float band=seed*5.;
       for(int i=1;i<6;i++){
-        float low=float(i-1)*${gemFraction.toFixed(3)},high=float(i)*${gemFraction.toFixed(3)};
-        if(seed>=low&&seed<high&&grainTypes[i]>.5)return float(i);
+        if(floor(band)==float(i-1)&&fract(band)<gemShare&&grainTypes[i]>.5)return float(i);
       }
       return grainTypes[0]>.5?0.:-1.;
     }
@@ -137,9 +140,23 @@
       n=normalize(n);
       float emitted=emissionSelection();
       vec4 escaped=escapeGrain(n,emitted);
+      // The closing inscription sheds only fine grains under gravity. Most of
+      // each letter stays in place; an invisible reset continuously renews the sand.
+      float falling=outroFall*(1.-step(.64,grain.z))*(1.-step(.20,grain.y));
+      float fallPhase=fract(time/3.6+grain.x*.754877666+grain.w*.569840296);
+      float fallAge=fallPhase*3.6;
+      p.y-=falling*(.045*fallAge+.18*fallAge*fallAge);
+      float fallLife=smoothstep(0.,.025,fallPhase)*(1.-smoothstep(.55,1.,fallPhase));
+      escaped.w*=mix(1.,fallLife,falling);
+      if(outroExit>=0.){
+        // Every particle, including the signature, is released on the final cue.
+        float releaseAge=max(0.,outroExit-grain.w*.65);
+        p.y-=.12*releaseAge+.45*releaseAge*releaseAge;
+        escaped.w*=1.-smoothstep(2.4,3.2,releaseAge);
+      }
       // Emitted grains have a fixed source: local wandering applies only to
       // grains that remain in the figure, never to the outward trajectories.
-      p.xy+=localWander(p.xy)*(1.-emitted);
+      p.xy+=localWander(p.xy)*(1.-emitted)*(1.-falling);
       p+=escaped.xyz;
       // Object-space self-spin is independent of camera movement. Rotate both
       // the emitted position and its surface normal so lighting and outward
@@ -153,15 +170,16 @@
       // records true surface depth, allowing the near side of the torus to occlude.
       gl_Position=vec4(q.x*fit/aspect,q.y*fit+cameraCentre()*w,-q.z*.20,w);
 
-      float variedSize=.64+1.02*grain.y;
-      if(grain.z>.64)variedSize=1.50+.96*grain.y;
-      if(grain.z>.94)variedSize=2.78+1.18*grain.y;
-      float size=mix(1.45+.16*grain.z,variedSize,complexity);
+      float variedSize=.58+.86*grain.y;
+      if(grain.z>.64)variedSize=1.20+.70*grain.y;
+      if(grain.z>.94)variedSize=1.95+.80*grain.y;
+      float size=mix(1.25+.14*grain.z,variedSize,complexity);
       if(kind>.5)size*=1.18;
+      if(falling>.5)size=min(size,.90);
       if(radiationFineOnly>.5&&emitted>.5)size=min(size,.80);
-      // Optical macro zoom enlarges the actual grain sprites as well as their
-      // positions, retaining granular surface coverage at ten times magnification.
-      gl_PointSize=size*mix(1.,1.16,depth)*dpr*viewZoom*clamp(1./w,.68,1.65);
+      // Grains grow more gently than the camera magnification, preserving a
+      // fine, loose sand texture in close-ups instead of oversized pebbles.
+      gl_PointSize=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65);
 
       vec3 lamp=normalize(vec3(-.52,.64,.79));
       float diffuse=max(0.,dot(n,lamp));
@@ -173,7 +191,7 @@
       // Warm, varied ordinary sand remains the body of every figure.
       vec3 sand=mix(vec3(.46,.33,.16),vec3(.91,.77,.49),grain.w);
       sand=mix(sand,vec3(.99,.91,.74),pow(grain.y,18.)*.55);
-      color=(kind<.5?sand:mix(vec3(luminance),tint,.65+.35*colorAmount))*macroLight*lampFalloff;
+      color=(kind<.5?sand:mix(vec3(luminance),tint,.79))*macroLight*lampFalloff;
       vec3 eye=fromCamera(vec3(0.,0.,1.));
       float sheen=pow(max(0.,dot(n,normalize(lamp+eye))),24.);
       color+=vec3(.94,.78,.48)*sheen*.13;
@@ -267,6 +285,7 @@
     uniform vec3 viewTarget;
     uniform float viewZoom;
     uniform float background;
+    uniform float stageLight;
     ${cameraMath}
     float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
     float noise(vec2 p){
@@ -298,7 +317,7 @@
       vec3 slate=vec3(.91,.85,.73)*shade;
       slate+=vec3(.035,.024,.012)*warmth;
       slate=mix(slate*.40,slate,(1.-smoothstep(.20,1.55,length(uv*vec2(.75,1.)))));
-      gl_FragColor=vec4(mix(quiet,slate,background),1.);
+      gl_FragColor=vec4(mix(quiet,slate*stageLight,background),1.);
     }`;
 
   function localOffset(x,y,g0,g1,g2,g3,time,amount) {
