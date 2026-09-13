@@ -260,6 +260,7 @@
     let entranceViewport=null;
     let entrancePortraitWeight=initialScene===9?1:0,manualPortraitWeight=0;
     let entranceGroupWeight=[6,7].includes(initialScene)?1:0,manualGroupWeight=0;
+    let entranceTopologyWeight=initialScene===7?1:0,manualTopologyWeight=0;
     const orbit={pitch:0,yaw:0,targetPitch:0,targetYaw:0,pointer:null,solid:-1,x:0,y:0};
     const ease=t=>t*t*t*(t*(t*6-15)+10);
     function mappedState(state=timeline.state()){
@@ -306,8 +307,18 @@
       const state=timeline.state();
       return cameraRig.groupWeight(mappedState(state),transitions[state.from]);
     }
+    function topologyWeight(){
+      if(outro)return 0;
+      if(entrance||pair==='manual'){
+        const from=entrance?entranceTopologyWeight:manualTopologyWeight,to=scene===7?1:0;
+        return from+(to-from)*ease(progress);
+      }
+      const state=mappedState(timeline.state());
+      const from=state.from===7?1:0,to=state.to===7?1:0;
+      return state.moving?from+(to-from)*ease(state.progress):state.scene===7?1:0;
+    }
     function twoSidedWeight(){return twoSidedFrom+(twoSidedTo-twoSidedFrom)*Math.max(0,Math.min(1,ease(progress)));}
-    function renderedSpin(){return spinAngle*(1-portraitWeight());}
+    function renderedSpin(){return spinAngle*(1-portraitWeight())*(1-topologyWeight());}
     function storyTreatment(){
       if(!storyScored||!galoisState||entrance||outro||pair==='manual')return {from:0,to:0,leavesFrom:-1,leavesTo:-1,light:1};
       const t=timeline.state().holdElapsed,state=galoisState,loss=ease(Math.max(0,Math.min(1,(t-126000)/7000)));
@@ -347,7 +358,7 @@
       const node=scene===9?story.nodes[galoisNode]:null,text=node?{title:node.title,zh:node.zhTitle,en:node.en}:geometry.captions[scene];
       for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];
       root.querySelector('[data-caption-year]').textContent=node?node.year:'';
-      root.classList.toggle('is-galois-story',scene===9);displayedGaloisNode=scene===9?galoisNode:-1;
+      root.classList.toggle('is-galois-story',scene===9);root.classList.toggle('is-topology-view',scene===7);displayedGaloisNode=scene===9?galoisNode:-1;
       narration.setScene(narrationIndex(),timeline.state().cycles);quote.classList.remove('is-visible');
       canvas.setAttribute('aria-label',text.title+'。'+text.zh+'。'+text.en);
       root.querySelectorAll('[data-drag-hint]').forEach(el=>el.textContent=scene===9?'正面展示':scene===7?'分别拖动圆与 Möbius 带':scene===6?'分别拖动五个多面体':'拖动旋转');
@@ -389,7 +400,13 @@
       let target=pose.target.map(value=>value*visual.camera);
       if(!settings.depthEnabled&&!state.moving&&order[state.scene]<5)target[2]=0;
       target=materials.rotateObject(target,renderedSpin());
-      const view=cameraRig.frameGroup({angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)},groupWeight());
+      let view=cameraRig.frameGroup({angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)},groupWeight());
+      const topology=topologyWeight();
+      if(topology>0){
+        const rect=canvas.getBoundingClientRect();
+        const framed=window.CourseOpeningTopology.frame(view,{width:rect.width,height:rect.height,spin:renderedSpin()});
+        view={...view,...cameraRig.blend(view,framed,topology)};
+      }
       const weight=portraitWeight();
       return {...cameraRig.blend(view,{angles:[0,0,0],target:[0,0,0],zoom:1},weight),perspective:view.perspective*(1-weight)};
     }
@@ -400,7 +417,7 @@
       const nextStoryHold=settings.sceneDurations[9]*1000,nextStoryMorph=baseTransitions[9]/settings.morphSpeed,nextStoryScored=settings.galoisScoreEnabled;
       const next=holdTimes(nextOrder,nextStoryHold,nextStoryMorph,nextStoryScored);
       if(nextPlaylist.randomized===playlist.randomized&&nextOrder.join(':')===order.join(':')&&next.every((v,i)=>v===holds[i])&&nextTransitions.every((v,i)=>v===transitions[i]))return;
-      const previousPortraitWeight=portraitWeight(),previousGroupWeight=groupWeight(),previousPose=baseCameraPose(),old=timeline.state(),oldPhase=old.position/timeline.duration+routeOffset;
+      const previousPortraitWeight=portraitWeight(),previousGroupWeight=groupWeight(),previousTopologyWeight=topologyWeight(),previousPose=baseCameraPose(),old=timeline.state(),oldPhase=old.position/timeline.duration+routeOffset;
       const oldMapped=mappedState(old),oldFrom=oldMapped.from,oldTo=oldMapped.to,oldScene=oldMapped.scene;
       const captured=snapshot(false,time,false),capturedNormals=snapshotNormals(),capturedTwoSided=twoSidedWeight();
       const retainedEntrance=entrance&&nextOrder.includes(scene);
@@ -419,7 +436,7 @@
       if(retainedEntrance){entranceDuration=pair==='intro'?initialEntranceDuration(transitions[order.indexOf(scene)]):transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
       else if(needsFormation&&!reduce){
         scene=order[timeline.state().scene];source=captured;normalSource=capturedNormals;destination=targets[scene];normalDestination=normals[scene];
-        extrusionFrom=0;extrusionTo=scene<5?1:0;twoSidedFrom=capturedTwoSided;twoSidedTo=scene===7?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;entrancePortraitWeight=previousPortraitWeight;entranceGroupWeight=previousGroupWeight;
+        extrusionFrom=0;extrusionTo=scene<5?1:0;twoSidedFrom=capturedTwoSided;twoSidedTo=scene===7?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;entrancePortraitWeight=previousPortraitWeight;entranceGroupWeight=previousGroupWeight;entranceTopologyWeight=previousTopologyWeight;
         entranceDuration=transitions[timeline.state().scene];elapsed=entranceHold;sequence=true;upload();updateCaption();showCaption(false);
       }else{entrance=false;entrancePose=null;syncTimeline(timeline.state());}
       if(!entrance){
@@ -558,8 +575,8 @@
       const damping=1-Math.exp(-cameraRig.manual.responsePerSecond*dt/1000);
       orbit.pitch+=(orbit.targetPitch-orbit.pitch)*damping;orbit.yaw+=(orbit.targetYaw-orbit.yaw)*damping;
       if(!outro&&orbit.pointer===null){
-        const free=1-portraitWeight();
-        if(free===1)spinAngle=Math.atan2(Math.sin(spinAngle),Math.cos(spinAngle));
+        const free=1-portraitWeight(),topology=topologyWeight();
+        if(free===1&&(topology===0||topology===1))spinAngle=Math.atan2(Math.sin(spinAngle),Math.cos(spinAngle));
         const angle=dt/1000*visual.spin*timeline.state().direction*free;
         spinAngle+=angle*spinDirection();
         if(angle)advanceObjectSpins(angle);
@@ -603,7 +620,7 @@
     }
     const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();terminalActive=false;impulses.clear();cancelClick();narration.reset();outro=null;galoisState=null;galoisNode=0;displayedGaloisNode=-1;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='伽罗瓦终章 →';rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=initialEntranceDuration(transitions[0]);timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
+      stop();terminalActive=false;impulses.clear();cancelClick();narration.reset();outro=null;galoisState=null;galoisNode=0;displayedGaloisNode=-1;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='伽罗瓦终章 →';rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;entranceTopologyWeight=first===7?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=initialEntranceDuration(transitions[0]);timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();showCaption(reduce);queue();
     }
@@ -618,13 +635,13 @@
     root._openingPreview={
       show(index){const slot=order.indexOf(index);if(slot<0)throw new RangeError('Figure is not selected');stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+holds[slot]/2));draw();queue();},
       storyNode(index){const slot=order.indexOf(9);if(slot<0)throw new RangeError('Galois is not selected');stop();entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+story.atNode(index,storyHoldMs,storyMorphMs,storyScored)));draw();queue();},
-      transition(index,value){twoSidedFrom=twoSidedWeight();twoSidedTo=index===7?1:0;manualPortraitWeight=portraitWeight();manualGroupWeight=groupWeight();stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();showCaption(false);draw();queue();},
+      transition(index,value){twoSidedFrom=twoSidedWeight();twoSidedTo=index===7?1:0;manualPortraitWeight=portraitWeight();manualGroupWeight=groupWeight();manualTopologyWeight=topologyWeight();stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();showCaption(false);draw();queue();},
       settings(value){Object.assign(settings,value);updateSettings();},
       atTime(value){time=value;Object.assign(visual,{camera:effective().camera,background:effective().background,spotlight:effective().spotlight,radiation:effective().radiation,spin:effective().spin});spinAngle=Math.atan2(Math.sin(value*visual.spin*spinDirection()),Math.cos(value*visual.spin*spinDirection()));draw();},
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},
       advance(value){entrance=false;syncTimeline(timeline.advance(value));draw();},
       direction(value,engage=false){syncTimeline(timeline.setDirection(value,engage));draw();},
-      evidence(){return{terminalActive,storyTreatment:storyTreatment(),galoisStory:{node:galoisNode,state:galoisState,hold:storyHoldMs,morph:storyMorphMs,nodes:story.nodes.length,scored:storyScored,music:window.CourseOpeningAudio?.scoreStatus()},outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,entranceDuration,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
+      evidence(){return{terminalActive,storyTreatment:storyTreatment(),galoisStory:{node:galoisNode,state:galoisState,hold:storyHoldMs,morph:storyMorphMs,nodes:story.nodes.length,scored:storyScored,music:window.CourseOpeningAudio?.scoreStatus()},outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,entranceDuration,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),topologyWeight:topologyWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight())*(1-topologyWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
     };
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();

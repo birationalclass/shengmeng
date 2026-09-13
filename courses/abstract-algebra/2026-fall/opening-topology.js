@@ -20,6 +20,65 @@
     return {du,dv,normal:unit(cross(du,dv)),area:Math.hypot(...cross(du,dv))};
   }
   function circle(u,v){return [(R+TUBE*Math.cos(v))*Math.cos(u),(R+TUBE*Math.cos(v))*Math.sin(u),TUBE*Math.sin(v)];}
+  // Fit the two objects, including every possible local drag rotation, into
+  // the space between the narration and title. The sphere envelopes do not
+  // depend on grain sampling or local orientation, so dragging never causes
+  // the camera to pulse. Geometry, normals and picking remain unchanged.
+  function frame(view,{width,height,spin=0}){
+    width=Math.max(1,Number(width)||1);height=Math.max(1,Number(height)||1);
+    const aspect=width/height,baseFit=Math.min(.68,aspect*.84);
+    const layout=Math.max(0,Math.min(1,(1.2-aspect)/.3)),portrait=layout*layout*(3-2*layout);
+    // Turn only the particle camera in portrait: S¹ sits above the band.
+    // The separate backdrop has no part in this transform.
+    const a=[view.angles[0],view.angles[1],view.angles[2]-Math.PI*.5*portrait];
+    const turn=(p,index,angle)=>axis(p,index===0?[1,0,0]:index===1?[0,1,0]:[0,0,1],angle);
+    const camera=p=>turn(turn(turn(p,1,a[1]),0,a[0]),2,a[2]);
+    const fromCamera=p=>turn(turn(turn(p,2,-a[2]),0,-a[0]),1,-a[1]);
+    const spheres=centres.map((p,i)=>({centre:camera(turn(p,2,Number(spin)||0)),radius:i?R+W+.008:R+TUBE}));
+    const perspective=Math.max(0,Math.min(1,Number(view.perspective)||0));
+    const eye=perspective>1e-8?3.9/perspective:Infinity;
+    const t=Math.max(0,Math.min(1,(aspect-.8)/.5)),screenCentre=.05+.15*t*t*(3-2*t);
+    const shortLandscape=aspect>1&&height<540;
+    const top=shortLandscape?Math.max(82,.24*height):Math.max(170,.27*height);
+    const bottom=shortLandscape?Math.min(height-48,.85*height):Math.min(height-110,.80*height);
+    const high=1-2*top/height,low=1-2*bottom/height,mid=(low+high)/2;
+    function bounds(index,offset){
+      let lower=Infinity,upper=-Infinity;
+      for(const sphere of spheres){
+        const c=sphere.centre[index]-offset,r=sphere.radius;
+        let lo=c-r,hi=c+r;
+        if(Number.isFinite(eye)){
+          // Tangent rays to a sphere give exact perspective extrema. Project
+          // c +/- r alone would underestimate a sphere near the image edge.
+          const z=eye-sphere.centre[2],denominator=z*z-r*r;
+          const spread=r*Math.sqrt(Math.max(0,z*z+c*c-r*r));
+          lo=eye*(c*z-spread)/denominator;hi=eye*(c*z+spread)/denominator;
+        }
+        lower=Math.min(lower,lo);upper=Math.max(upper,hi);
+      }
+      return [lower,upper];
+    }
+    function centreAxis(index,desired){
+      let lo=-8-2*Math.abs(desired),hi=8+2*Math.abs(desired);
+      for(let i=0;i<28;i++){
+        const offset=(lo+hi)/2,b=bounds(index,offset);
+        if((b[0]+b[1])/2>desired)lo=offset;else hi=offset;
+      }
+      return (lo+hi)/2;
+    }
+    const targetX=centreAxis(0,0),horizontal=bounds(0,targetX);
+    function candidate(zoom){
+      const fit=baseFit*zoom,targetY=centreAxis(1,(mid-screenCentre)/fit),vertical=bounds(1,targetY);
+      return {zoom,targetY,fits:horizontal[0]*fit/aspect>=-.90&&horizontal[1]*fit/aspect<=.90&&
+        vertical[0]*fit+screenCentre>=low&&vertical[1]*fit+screenCentre<=high};
+    }
+    let lo=1,hi=3.4,result=candidate(lo);
+    for(let i=0;i<24;i++){
+      const next=candidate((lo+hi)/2);
+      if(next.fits){lo=next.zoom;result=next;}else hi=next.zoom;
+    }
+    return {...view,angles:a,zoom:result.zoom,target:fromCamera([targetX,result.targetY,0])};
+  }
   function hit(o,d,a,b,c){
     const e=sub(b,a),f=sub(c,a),h=cross(d,f),det=dot(e,h);if(Math.abs(det)<1e-10)return Infinity;
     const s=sub(o,a),u=dot(s,h)/det;if(u<0||u>1)return Infinity;
@@ -89,6 +148,6 @@
     }
     return {positions,normals,flat,objectIds,centres:centres.map(p=>p.slice()),rotateObject,pick,orientations:()=>orientations.map(q=>q.slice()),reset(){for(let i=0;i<2;i++){orientations[i]=[0,0,0,1];apply(i);}}};
   }
-  host.CourseOpeningTopology=Object.freeze({sample,mobius,mobiusFrame,circle,pose,radius:R,halfWidth:W,
+  host.CourseOpeningTopology=Object.freeze({sample,mobius,mobiusFrame,circle,pose,frame,radius:R,halfWidth:W,
     evidence:()=>({objects:['S¹','Möbius band'],halfTwists:1,boundaryComponents:1,fundamentalGroups:['ℤ','ℤ'],retraction:'M(u,v) → M(u,(1−t)v)',circleTubeIsRenderingAid:true})});
 })(typeof window!=='undefined'?window:globalThis);
