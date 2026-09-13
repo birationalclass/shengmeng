@@ -140,8 +140,18 @@ function assertPlaying(env) {
   for(const old of [[true,true,true,true,true,true,true],[true,true,true,false,false,false,false,false,false,false]]){
     const migration=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({sceneEnabled:old})});
     const selection=JSON.parse(migration.root.dataset.settings).sceneEnabled;
-    assert.deepEqual(selection.slice(0,3),[false,false,false]);assert.ok(selection.slice(3).some(Boolean));
+    assert.deepEqual(selection.slice(0,3),[false,true,false]);assert.ok(selection.some(Boolean));
   }
+  const onlyLie=Array.from({length:10},(_,i)=>i===3);
+  const restored=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({sceneEnabled:onlyLie,sceneDurations:Array(10).fill(60),radiationAmount:.32})});
+  const restoredSettings=JSON.parse(restored.root.dataset.settings);
+  assert.deepEqual(restoredSettings.sceneEnabled,[false,true,false,true,false,false,false,false,false,false]);
+  assert.equal(restoredSettings.sceneCatalogVersion,1);assert.equal(restoredSettings.sceneDurations[1],60);assert.equal(restoredSettings.radiationAmount,.32);
+  const optedOut=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({sceneCatalogVersion:1,sceneEnabled:onlyLie})});
+  assert.deepEqual(JSON.parse(optedOut.root.dataset.settings).sceneEnabled,onlyLie,'star opt-out survives after catalogue migration');
+  const starOnly=Array.from({length:10},(_,i)=>i===1);
+  const solo=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({sceneCatalogVersion:1,sceneEnabled:starOnly})});
+  assert.deepEqual(JSON.parse(solo.root.dataset.settings).sceneEnabled,starOnly,'star is allowed as the sole selected figure');
   const custom=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.32})});assert.equal(JSON.parse(custom.root.dataset.settings).radiationAmount,.32);
 
   const closing=setup('missing');closing.controller.startAnimation();closing.completeGalois();assert.equal(closing.controller.stage,'playing','unrequested story completion is ignored');closing.controller.requestCourseEntry();

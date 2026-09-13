@@ -14,11 +14,13 @@
   // thirty-second dwell preference; morphs are additional time.
   const storageKey = 'courseOpeningAppearance.v3';
   const durationChoices = [30,45,60,90];
+  const playableScenes=Object.freeze([1,3,4,5,6,7,8]);
+  const playable=id=>playableScenes.includes(id);
   const morphSpeedChoices=[.25,.5,.75,1,1.5],spinSpeedScale=2;
-  const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,false,false,true,true,true,true,true,true,false])});
+  const defaults = Object.freeze({sceneCatalogVersion:1,backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,true,false,true,true,true,true,true,true,false])});
   const appearanceRanges={backgroundBrightness:[20,240],gemPercent:[0,5],titleScale:[80,160],quoteScale:[80,160],textFade:[.6,5]};
   const freshDefaults=()=>({...defaults,grainTypes:[...defaults.grainTypes],sceneEnabled:[...defaults.sceneEnabled],sceneDurations:[...defaults.sceneDurations]});
-  let settings = freshDefaults();
+  let settings = freshDefaults(),catalogChanged=false;
   try {
     const current=localStorage.getItem(storageKey),saved=JSON.parse(current||localStorage.getItem('courseOpeningAppearance.v2')||'{}');
     for (const key of Object.keys(defaults)) {
@@ -27,12 +29,15 @@
     }
     for(const [key,[min,max]] of Object.entries(appearanceRanges))settings[key]=Number.isFinite(saved[key])?Math.max(min,Math.min(max,saved[key])):defaults[key];
     if(Array.isArray(saved.grainTypes)&&saved.grainTypes.length===6&&saved.grainTypes.every(v=>typeof v==='boolean')&&saved.grainTypes.some(Boolean))settings.grainTypes=[...saved.grainTypes];
-    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>i<3||i===9?false:typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
+    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>!playable(i)?false:typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
+    catalogChanged=saved.sceneCatalogVersion!==1;
+    if(catalogChanged)settings.sceneEnabled[1]=true;
     settings.morphSpeed=morphSpeedChoices.includes(saved.morphSpeed)?saved.morphSpeed:defaults.morphSpeed;
     settings.spinSpeed=Number.isFinite(saved.spinSpeed)?Math.max(0,Math.min(3,saved.spinSpeed)):defaults.spinSpeed;
     if(current&&Array.isArray(saved.sceneDurations))settings.sceneDurations=defaults.sceneDurations.map((value,i)=>durationChoices.includes(saved.sceneDurations[i])?saved.sceneDurations[i]:value);
   } catch (_) {}
-  settings.galoisScoreEnabled=true;
+  settings.sceneCatalogVersion=1;settings.galoisScoreEnabled=true;
+  if(catalogChanged)try{localStorage.setItem(storageKey,JSON.stringify(settings));}catch(_){}
   let film = null, initialization = null, visibilityTimer = 0, stage = 'loading', ownedFullscreen = false, entryVersion = 0;
   toggle.disabled=true;
   const startButton=root.querySelector('[data-start-animation]');
@@ -63,7 +68,7 @@
     });
   }
   function updateSettings() {
-    settings.sceneEnabled=settings.sceneEnabled.map((on,i)=>i>=3&&i<9&&on);
+    settings.sceneEnabled=settings.sceneEnabled.map((on,i)=>playable(i)&&on);
     if(!settings.sceneEnabled.some(Boolean))settings.sceneEnabled=[...defaults.sceneEnabled];
     settings.galoisScoreEnabled=true;
     syncSettings();try {localStorage.setItem(storageKey,JSON.stringify(settings));} catch (_) {}
@@ -71,7 +76,7 @@
   }
   panel.addEventListener('input',event=>{
     const input=event.target;
-    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||i<3||i>=9)return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
+    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||!playable(i))return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
     else if(input.dataset.grainType!==undefined){const i=Number(input.dataset.grainType);if(!Number.isInteger(i)||i<0||i>5)return;const next=[...settings.grainTypes];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.grainTypes=next;}
     else if(input.dataset.appearanceRange&&appearanceRanges[input.dataset.appearanceRange]&&Number.isFinite(Number(input.value))){const key=input.dataset.appearanceRange,[min,max]=appearanceRanges[key];settings[key]=Math.max(min,Math.min(max,Number(input.value)));}
     else if(input.dataset.settingToggle)settings[input.dataset.settingToggle]=input.checked;
@@ -188,17 +193,18 @@
     const geometry=window.CourseOpeningGeometry, materials=window.CourseOpeningMaterials, cameraRig=window.CourseOpeningCamera;
     const gl=canvas.getContext('webgl',{alpha:false,antialias:false,preserveDrawingBuffer:true});
     if(!gl||!geometry||!materials||!cameraRig)throw new Error('Opening unavailable');
-    // IDs 0–2 are retired; keep saved IDs stable without preparing removed figures.
+    // Restore the original star as ID 1; IDs 0 and 2 remain retired.
     const N=geometry.count,targets=new Array(geometry.captions.length),normals=new Array(geometry.captions.length);
     boot.advance(22,'生成对称图形');await paint();
-    for(let i=3;i<geometry.captions.length;i++){
-      targets[i]=geometry.create3D(i);normals[i]=geometry.createNormals(i);root.dataset.prepared=String(i-2);boot.advance(22+(i-2)/(geometry.captions.length-3)*55,i===9?'绘制伽罗瓦沙像':i===8?'绘制高斯正十七边形':i===7?'构造圆与 Möbius 带':i===6?'构造五种正多面体':i===5?'铸造万环之环':i===4?'生成 Julia 分形':'生成对称图形');await paint();
+    const preparedScenes=[...playableScenes,9];
+    for(const [step,i] of preparedScenes.entries()){
+      targets[i]=geometry.create3D(i);normals[i]=geometry.createNormals(i);root.dataset.prepared=String(step+1);boot.advance(22+(step+1)/preparedScenes.length*55,i===9?'绘制伽罗瓦沙像':i===8?'绘制高斯正十七边形':i===7?'构造圆与 Möbius 带':i===6?'构造五种正多面体':i===5?'铸造万环之环':i===4?'生成 Julia 分形':i===1?'绘制八角星':'生成对称图形');await paint();
     }
     const story=window.CourseOpeningGaloisStory;
     const storyShades=Array(story.nodes.length).fill(1);
     for(const [name,value] of Object.entries({school:.94,awakening:.98,exams:.87,symmetries:1.04,prison:.68,letter:.86,death:.70,silence:.9,recognition:1.03}))storyShades[story.index[name]]=value;
     const closingGeometry=window.CourseOpeningOutro.create(N);
-    cameraRig.setFocuses(Array.from({length:geometry.captions.length},(_,index)=>index<3?[0,0,0]:geometry.closeupFocus(index)));
+    cameraRig.setFocuses(Array.from({length:geometry.captions.length},(_,index)=>preparedScenes.includes(index)?geometry.closeupFocus(index):[0,0,0]));
     boot.advance(82,'雕琢沙粒质感');await paint();
     function compile(type, source) {
       const shader = gl.createShader(type);
@@ -224,7 +230,7 @@
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;const impulses=window.CourseOpeningImpulse.create();let clickCandidate=null;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
-    const selectedScenes=()=>{const ids=settings.sceneEnabled.flatMap((on,i)=>i>=3&&i<9&&on?[i]:[]);return ids.length?ids:[3,4,5,6,7,8];};
+    const selectedScenes=()=>{const ids=settings.sceneEnabled.flatMap((on,i)=>playable(i)&&on?[i]:[]);return ids.length?ids:[...playableScenes];};
     const playlistSeed=(Math.random()*4294967296)>>>0,motion=window.CourseOpeningMotion.create();
     let playlist=window.CourseOpeningPlaylist.create({sceneIds:selectedScenes(),randomized:settings.shuffleScenes,seed:playlistSeed}),routeCycle=0;
     const initialScene=playlist.order(0)[0];
