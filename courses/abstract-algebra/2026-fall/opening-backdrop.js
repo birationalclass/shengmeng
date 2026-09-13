@@ -7,7 +7,7 @@
     {logo:'D₁₂',title:'十二重花窗',zh:'每转三十度，花窗便与自身重合。对称把局部的重复连成整体。',en:'A thirty-degree turn brings the window back to itself.'},
     {logo:'E₈',title:'E₈ 根系',zh:'八维空间中的 240 个根投向平面；交织的线条留下高维对称的影子。',en:'240 roots in eight dimensions. A planar glimpse of exceptional symmetry.'},
     {logo:'ℂ',title:'Julia 分形',zh:'在复平面反复施行同一个映射。迭代的边界，蕴藏无尽的细节。',en:'Iteration in the complex plane reveals an endlessly intricate boundary.'},
-    {logo:'ℤ',title:'THE LORD OF THE RING',zh:'整数环是含幺环的起点：到每个含幺环，都有唯一的保幺环同态。',en:'From ℤ to every unital ring, there is a unique unital homomorphism.',quote:'One ring to rule them all…'},
+    {logo:'ℤ',title:'THE LORD OF THE RING',zh:'整数环是含幺环的起点：到每个含幺环，都有唯一的保幺环同态。',en:'From ℤ to every unital ring, there is a unique unital homomorphism.',kind:'ring-verse',quote:'One Ring to rule them all,\nOne Ring to find them,\nOne Ring to bring them all,\nand in the darkness bind them.'},
     {logo:'Δ',title:'正多面体群',kind:'theorem',quote:'三角群\n定理　在三维欧氏空间中，凸正多面体按相似分类恰有五种：正四面体、正六面体、正八面体、正十二面体、正二十面体。\n\n保向球面三角群\nΔ⁺(2,3,3) ≅ A₄：四面体\nΔ⁺(2,3,4) ≅ S₄：六、八面体\nΔ⁺(2,3,5) ≅ A₅：十二、二十面体'}
   ];
   function create(gl) {

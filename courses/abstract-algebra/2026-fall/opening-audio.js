@@ -60,8 +60,7 @@
   window.addEventListener('pagehide', () => stop());
   window.CourseOpeningAudio = {
     start() { active = true; failed = Boolean(audio.error); play(); },
-    stop,
-    setDucked(value){audio.volume=value?.18:.72;}
+    stop
   };
   sync();
 })();
