@@ -1,31 +1,25 @@
-/* One continuous, reversible macro shot per mathematical figure.
- * There are no independently eased keyframe segments: the camera follows a
- * single smooth path from the complete figure to an actual surface point,
- * passes around that point at 10x scale, and returns to its opening framing.
+/* One spatial camera route for the whole six-figure cycle.
+ * Orbit, framing and magnification share canonical time. Figure changes never
+ * reset the camera or start another identical push-pull shot. The analytical
+ * closed orbit and C3 detail envelope are reversible and join at the loop seam.
  */
 (() => {
   'use strict';
+  const TAU = 2 * Math.PI, COUNT = 6;
   const clamp = value => Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
   const ease = value => {const t=clamp(value);return t*t*t*(t*(t*6-15)+10);};
-  const neutral = Object.freeze({angles:Object.freeze([-.08,0,0]),zoom:1,target:Object.freeze([0,0,0])});
-  // pitch, pitch travel, yaw centre, yaw travel, roll. A slow continuous arc
-  // remains visible during the close pass; it never pauses at intermediate keys.
-  const shots = Object.freeze([
-    Object.freeze([-.31, .035,-.06, .11, .008]),
-    Object.freeze([-.35,-.030, .07,-.12,-.008]),
-    Object.freeze([-.29, .040, .03, .14, .007]),
-    Object.freeze([-.23, .030,-.04,-.11,-.004]),
-    Object.freeze([-.28,-.040, .08, .11, .012]),
-    Object.freeze([-.16, .025, .10,-.12, .008])
-  ]);
-  const focuses = shots.map(()=>[0,0,0]);
-  // Integrate a quintic velocity ramp rather than repeatedly easing poses.
-  // At the default ten-second duration, each five-second leg accelerates for
-  // 1.5 seconds, cruises for two seconds, and decelerates for 1.5 seconds.
-  // Position, velocity, acceleration and jerk join continuously. The reversal
-  // at the close view is equally smooth and does not impose a frozen hold.
-  const accelerationFraction=.30;
-  const integratedEase=t=>t*t*t*t*(t*t-3*t+2.5);
+  const neutral = Object.freeze({angles:Object.freeze([-.14,0,0]),zoom:1,target:Object.freeze([0,0,0])});
+  const focuses = Array.from({length:COUNT},()=>[0,0,0]);
+  const defaultTransitions = [8400,8400,8400,10400,10800,10000];
+  const defaultHolds = defaultTransitions.map(duration=>30000-duration);
+  const defaultStarts = defaultHolds.map((_,i)=>i*30000);
+  const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:180000};
+  const detailScene = 3, accelerationFraction = .20;
+  const integratedEase = t => t*t*t*t*(t*t-3*t+2.5);
+
+  // Integral of a quintic acceleration ramp. Unlike easing several camera
+  // keys, this controls velocity itself: a gentle launch, a quiet cruise and
+  // a smooth arrival, with continuous position through third derivative.
   function distanceAt(value) {
     const u=clamp(value),r=accelerationFraction;
     if(u<r)return r*integratedEase(u/r)/(1-r);
@@ -37,53 +31,86 @@
       ? [value[0],value[1],value[2]] : [0,0,0];
   }
   function indexOf(scene) {
-    const number=Number(scene),integer=Number.isFinite(number)?Math.floor(number):0;
-    return ((integer%shots.length)+shots.length)%shots.length;
+    const integer=Number.isFinite(Number(scene))?Math.floor(Number(scene)):0;
+    return ((integer%COUNT)+COUNT)%COUNT;
   }
   function setFocuses(values) {
-    if(!values||values.length!==shots.length)throw new RangeError('One surface focus is required for each opening figure');
-    for(let scene=0;scene<shots.length;scene++)focuses[scene]=point(values[scene]);
+    if(!values||values.length!==COUNT)throw new RangeError('One surface focus is required for each opening figure');
+    for(let scene=0;scene<COUNT;scene++)focuses[scene]=point(values[scene]);
   }
   function blend(first,second,amount) {
-    const t=clamp(Number(amount));
-    const start=point(first.target),finish=point(second.target);
+    const t=clamp(Number(amount)),start=point(first.target),finish=point(second.target);
     return {
       angles:first.angles.map((angle,index)=>angle+(second.angles[index]-angle)*t),
       zoom:Math.max(1,first.zoom+(second.zoom-first.zoom)*t),
       target:start.map((coordinate,index)=>coordinate+(finish[index]-coordinate)*t)
     };
   }
+  function orbitAt(u) {
+    // A cycloidal phase has zero velocity and acceleration at the initial
+    // wide view. Its periodic first and second harmonics describe a gently
+    // banking spatial oval; no individual image owns or restarts that oval.
+    const angle=TAU*u-Math.sin(TAU*u);
+    return [
+      -.14 + .18*(Math.sin(angle+.9)-Math.sin(.9)) - .08*Math.sin(2*angle),
+      .38*Math.sin(angle)+.10*Math.sin(2*angle),
+      .025*(Math.sin(angle-.4)+Math.sin(.4))
+    ];
+  }
+  function baseLogZoom(u) {
+    // The broad camera drift spans three figures in each direction. During
+    // some figures it pushes, during others it continues an orbit at almost
+    // fixed magnification; it never pulls farther back than the first frame.
+    return Math.log(2.35)*.5*(1-Math.cos(TAU*u));
+  }
+  function sampleTimeline(state,route=defaultRoute) {
+    const duration=Number(route.duration)>0?Number(route.duration):defaultRoute.duration;
+    const position=((Number(state.position)||0)%duration+duration)%duration;
+    const phaseOffset=Number.isFinite(route.phaseOffset)?route.phaseOffset:0;
+    const u=((position/duration+phaseOffset)%1+1)%1;
+    const holds=route.holds||defaultHolds,starts=route.starts||defaultStarts;
+    let logarithm=baseLogZoom(u);
+    const macroStart=starts[detailScene],macroDuration=holds[detailScene];
+    if(macroDuration>0&&position>macroStart&&position<macroStart+macroDuration) {
+      const phase=(position-macroStart)/macroDuration;
+      const envelope=distanceAt(2*Math.min(phase,1-phase));
+      // Only this detail pass reaches 10x. At default 30-second intervals its
+      // log-zoom speed stays about .20 per second (previously .66). If an
+      // interval is shortened, reduce the detail depth instead of racing.
+      const startPhase=macroStart/duration+phaseOffset,endPhase=startPhase+macroDuration/duration;
+      const centreBase=baseLogZoom((startPhase+endPhase)/2),endBase=baseLogZoom(endPhase);
+      const intervalBasePeak=Math.floor(startPhase-.5)!==Math.floor(endPhase-.5)
+        ?Math.log(2.35):Math.max(baseLogZoom(startPhase),endBase);
+      const safePeak=Math.max(intervalBasePeak,Math.min(Math.LN10,centreBase+.205*(macroDuration/2000)*(1-accelerationFraction)));
+      logarithm+=(safePeak-logarithm)*envelope;
+    }
+    const zoom=Math.exp(logarithm);
+    const from=indexOf(state.from===undefined?state.scene:state.from);
+    const to=indexOf(state.to===undefined?state.scene:state.to);
+    const interpolation=state.moving?ease(Number(state.progress)):0;
+    const focus=focuses[from].map((coordinate,axis)=>coordinate+(focuses[to][axis]-coordinate)*interpolation);
+    // Keep the chosen real surface point nearly fixed in the image while
+    // dollying. Its projected displacement scales as zoom^(-1/4), rather
+    // than zoom itself, so a close pass does not fling the motif sideways.
+    const focusWeight=1-Math.pow(zoom,-1.25);
+    return {angles:orbitAt(u),zoom:Math.max(1,zoom),target:focus.map(coordinate=>coordinate*focusWeight)};
+  }
   function sample(scene,phase,focus) {
-    const index=indexOf(scene),shot=shots[index],t=clamp(Number(phase));
-    // Return the exact same endpoint poses, including at the loop seam.
-    if(t===0||t===1)return {angles:[...neutral.angles],zoom:1,target:[0,0,0]};
-    const s=ease(t),arc=distanceAt(2*Math.min(t,1-t)),travel=2*s-1;
-    // A logarithmic dolly with a bounded cruising speed. In a ten-second shot
-    // the largest zoom ratio per 60 Hz frame is about 1.011, under half the
-    // peak rate of the earlier concentrated push. Longer selected durations
-    // slow this same complete shot proportionally; 10 seconds still means
-    // ten seconds for both the approach and return together.
-    const zoom=Math.exp(Math.LN10*arc);
-    // In orthographic screen coordinates, the selected point's distance from
-    // the viewing centre becomes focus * (1-arc)^2. It approaches monotonically
-    // despite the 10x magnification, avoiding sideways acceleration or empty
-    // centre-hole closeups. The target is exactly on the surface at full zoom.
-    const focusWeight=1-(1-arc)*(1-arc)/zoom,at=focus===undefined?focuses[index]:point(focus);
-    return {
-      angles:[neutral.angles[0]+arc*(shot[0]+shot[1]*travel),arc*(shot[2]+shot[3]*travel),arc*shot[4]],
-      zoom:Math.max(1,Math.min(10,zoom)),
-      target:at.map(coordinate=>coordinate*focusWeight)
-    };
+    const index=indexOf(scene),holdElapsed=clamp(Number(phase))*defaultHolds[index];
+    const state={from:index,to:index,scene:index,position:defaultStarts[index]+holdElapsed,moving:false};
+    const pose=sampleTimeline(state,defaultRoute);
+    if(focus!==undefined)pose.target=point(focus).map(coordinate=>coordinate*(1-Math.pow(pose.zoom,-1.25)));
+    return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
-    count:shots.length,sample,blend,setFocuses,neutral,
-    // Manual orbit retains the homepage PDE camera's calibrated sensitivity.
+    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
-      source:'Original continuous macro shot; manual orbit calibration from visuals/chaos/exact-camera.js',
-      approach:'Continuous slow orbit; integrated C3 velocity ramps; logarithmic 1x-10x-1x dolly; projection-synchronised surface focus',
-      scenes:shots.length,zoomRange:[1,10],macroPhase:[.425,.575],
-      accelerationFractionPerLeg:accelerationFraction,maxLogZoomRateAtTenSeconds:Math.LN10/(5*(1-accelerationFraction)),
+      source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
+      approach:'Periodic spatial oval; cycloidal launch; independent slow broad dolly; one velocity-ramped E8 macro pass; surface-locked framing',
+      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultCycleSeconds:180,
+      detailScene,accelerationFractionPerLeg:accelerationFraction,
+      phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',
       endpointPose:{angles:[...neutral.angles],zoom:1,target:[0,0,0]},
       focuses:focuses.map(focus=>[...focus])
     })

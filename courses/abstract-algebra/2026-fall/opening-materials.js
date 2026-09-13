@@ -43,6 +43,7 @@
     uniform vec3 viewAngles;
     uniform vec3 viewTarget;
     uniform float viewZoom;
+    uniform float objectSpin;
     uniform float radiation;
     uniform float extrusionFrom;
     uniform float extrusionTo;
@@ -118,6 +119,11 @@
       // grains that remain in the figure, never to the outward trajectories.
       p.xy+=localWander(p.xy)*(1.-emitted);
       p+=escaped.xyz;
+      // Object-space self-spin is independent of camera movement. Rotate both
+      // the emitted position and its surface normal so lighting and outward
+      // emission remain attached to the same rope as the figure turns.
+      p=rotateZ(p,objectSpin);
+      n=rotateZ(n,objectSpin);
       vec3 q=toCamera(p-viewTarget);
       float w=1.-camera*q.z/cameraDistance();
       float fit=cameraFit();
@@ -259,5 +265,10 @@
     return{offset:n.map(v=>v*reach*age),alpha:life,chosen:1};
   }
 
-  window.CourseOpeningMaterials=Object.freeze({vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset});
+  function rotateObject(point,angle) {
+    const c=Math.cos(angle),s=Math.sin(angle);
+    return[c*point[0]-s*point[1],s*point[0]+c*point[1],point[2]];
+  }
+
+  window.CourseOpeningMaterials=Object.freeze({vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,rotateObject});
 })();
