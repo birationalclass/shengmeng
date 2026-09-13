@@ -49,4 +49,6 @@
       document.close();
     }
   });
+  button.disabled = false;
+  button.textContent = '阅读方案 →';
 })();
