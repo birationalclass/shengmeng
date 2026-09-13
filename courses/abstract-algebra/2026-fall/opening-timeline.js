@@ -30,6 +30,11 @@
     let duration = 0;
     for (let i = 0; i < holdTimes.length; i++) {
       starts.push(duration);
+      if(holdTimes.length===1){
+        duration=holdTimes[0]+transitionTimes[0];
+        segments.push({start:0,end:duration,from:0,to:0,moving:false});
+        break;
+      }
       if (holdTimes[i] > 0) {
         segments.push({ start: duration, end: duration + holdTimes[i], from: i, to: i, moving: false });
         duration += holdTimes[i];
@@ -66,7 +71,7 @@
         moving: segment.moving,
         scene: segment.to,
         holdElapsed: segment.moving ? 0 : elapsed,
-        holdDuration: holdTimes[segment.to],
+        holdDuration: holdTimes.length===1?duration:holdTimes[segment.to],
         direction,
         position,
         cycles
@@ -102,7 +107,7 @@
       if (value !== 1 && value !== -1) throw new RangeError('Direction must be +1 or -1.');
       direction = value;
       const segment = segmentAtPosition();
-      if (engage && !segment.moving) {
+      if (engage && !segment.moving && holdTimes.length>1) {
         // Skip only stationary time. We never exchange morph endpoints or
         // change progress during a morph, so reversing retraces the same path.
         position = direction > 0 ? segment.end : starts[segment.from];

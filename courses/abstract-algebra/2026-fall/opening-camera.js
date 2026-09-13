@@ -1,19 +1,19 @@
-/* One spatial camera route for the whole six-figure cycle.
+/* One spatial camera route for the whole selected-figure cycle.
  * Orbit, framing and magnification share canonical time. Figure changes never
  * reset the camera or start another identical push-pull shot. The analytical
  * closed orbit and C3 detail envelope are reversible and join at the loop seam.
  */
 (() => {
   'use strict';
-  const TAU = 2 * Math.PI, COUNT = 6;
+  const TAU = 2 * Math.PI, COUNT = 7;
   const clamp = value => Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
   const ease = value => {const t=clamp(value);return t*t*t*(t*(t*6-15)+10);};
   const neutral = Object.freeze({angles:Object.freeze([-.14,0,0]),zoom:1,target:Object.freeze([0,0,0])});
   const focuses = Array.from({length:COUNT},()=>[0,0,0]);
-  const defaultTransitions = [8400,8400,8400,10400,10800,10000];
+  const defaultTransitions = [8400,8400,8400,10400,10800,10000,10000];
   const defaultHolds = defaultTransitions.map(duration=>30000-duration);
   const defaultStarts = defaultHolds.map((_,i)=>i*30000);
-  const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:180000};
+  const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:210000};
   const detailScene = 3, accelerationFraction = .20;
   const integratedEase = t => t*t*t*t*(t*t-3*t+2.5);
 
@@ -70,7 +70,8 @@
     const u=((position/duration+phaseOffset)%1+1)%1;
     const holds=route.holds||defaultHolds,starts=route.starts||defaultStarts;
     let logarithm=baseLogZoom(u);
-    const macroStart=starts[detailScene],macroDuration=holds[detailScene];
+    const detailSlot=route.sceneIds?route.sceneIds.indexOf(detailScene):detailScene;
+    const macroStart=starts[detailSlot],macroDuration=holds[detailSlot];
     if(macroDuration>0&&position>macroStart&&position<macroStart+macroDuration) {
       const phase=(position-macroStart)/macroDuration;
       const envelope=distanceAt(2*Math.min(phase,1-phase));
@@ -108,7 +109,7 @@
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
       approach:'Periodic spatial oval; cycloidal launch; independent slow broad dolly; one velocity-ramped E8 macro pass; surface-locked framing',
-      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultCycleSeconds:180,
+      scenes:COUNT,zoomRange:[1,10],defaultSwitchInterval:30,defaultCycleSeconds:210,
       detailScene,accelerationFractionPerLeg:accelerationFraction,
       phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',
       endpointPose:{angles:[...neutral.angles],zoom:1,target:[0,0,0]},

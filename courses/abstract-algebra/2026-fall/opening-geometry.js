@@ -21,7 +21,8 @@
     { title: '十二重花窗', zh: '十二重对称，环绕同一个中心。', en: 'Twelvefold symmetry around a single centre.' },
     { title: 'E₈ 根系', zh: '240 个根，从八维空间投向平面。', en: '240 roots in eight dimensions, projected onto a plane.' },
     { title: 'Julia 分形', zh: '一条规则反复迭代，边界生出无尽细节。', en: 'One rule, iterated. An endlessly intricate boundary.' },
-    { title: 'THE LORD OF THE RING', zh: '万环之环 ℤ', en: 'A unique unital homomorphism from ℤ to every unital ring.' }
+    { title: 'THE LORD OF THE RING', zh: '万环之环 ℤ', en: 'A unique unital homomorphism from ℤ to every unital ring.' },
+    { title: '正多面体群', zh: '五种凸正多面体，三类旋转对称群。', en: 'Five Platonic solids. Three rotation groups.' }
   ].map(Object.freeze));
   const cache = new Array(captions.length);
   const spatialCache = new Array(captions.length);
@@ -454,13 +455,21 @@
     normalCache[5] = normals;
   }
 
+  let polyhedra;
+  function makePolyhedra() {
+    const result=polyhedra=root.CourseOpeningPolyhedra.sample(N);
+    cache[6]=result.flat;spatialCache[6]=result.positions;normalCache[6]=result.normals;
+    diagnostics.polyhedra=root.CourseOpeningPolyhedra.evidence();
+  }
+
   function validateIndex(index) {
     if (!Number.isInteger(index) || index < 0 || index >= captions.length) throw new RangeError('Unknown opening geometry');
   }
   function create(index) {
     validateIndex(index);
     if (!cache[index]) {
-      if (index === 5) makeTorus();
+      if (index === 6) makePolyhedra();
+      else if (index === 5) makeTorus();
       else cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJuliaRopes();
     }
     return cache[index];
@@ -503,6 +512,7 @@
   }
   function closeupFocus(index) {
     validateIndex(index);
+    if(index===6)return [0,0,0];
     // Deterministic real surface coordinates, so a 10x shot lands on sand.
     const preferred = [[.66, .135], [.54, .40], [.76, .075], [.52, .12], [.28, .16], [.52, -.35]][index];
     const points = create3D(index);
@@ -517,7 +527,8 @@
   function create3D(index) {
     validateIndex(index);
     if (!spatialCache[index]) {
-      if (index === 5) makeTorus();
+      if (index === 6) makePolyhedra();
+      else if (index === 5) makeTorus();
       else if (index === 4) makeJuliaRopes();
       else create(index);
     }
@@ -526,7 +537,8 @@
   function createNormals(index) {
     validateIndex(index);
     if (!normalCache[index]) {
-      if (index === 5) makeTorus();
+      if (index === 6) makePolyhedra();
+      else if (index === 5) makeTorus();
       else if (index === 4) makeJuliaRopes();
       else create(index);
     }
@@ -539,6 +551,9 @@
     create3D,
     createNormals,
     closeupFocus,
-    evidence() { return JSON.parse(JSON.stringify(diagnostics)); }
+    pickPolyhedron(ray){create3D(6);return polyhedra.pick(ray.origin,ray.direction);},
+    rotatePolyhedron(index,axis,angle){create3D(6);polyhedra.rotateSolid(index,axis,angle);},
+    resetPolyhedra(){if(polyhedra)polyhedra.reset();},
+    evidence() { return JSON.parse(JSON.stringify({...diagnostics,polyhedronRotations:polyhedra?polyhedra.orientations():[]})); }
   });
 })(typeof window !== 'undefined' ? window : globalThis);
