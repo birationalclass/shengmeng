@@ -4,6 +4,11 @@
  */
 (() => {
   'use strict';
+  const gemFraction = .001; // Each enabled gemstone occupies one fixed, rare seed band.
+  function mineralKind(seed, enabled) {
+    for(let i=1;i<6;i++)if(seed>=(i-1)*gemFraction&&seed<i*gemFraction&&enabled[i])return i;
+    return enabled[0]?0:-1;
+  }
   const cameraMath = `
     vec3 rotateX(vec3 p, float a) {
       float c=cos(a),s=sin(a);return vec3(p.x,c*p.y-s*p.z,s*p.y+c*p.z);
@@ -57,6 +62,7 @@
     varying mediump float opacity;
     varying mediump vec4 material;
     varying mediump float kind;
+    varying mediump vec3 crystalLight;
     ${cameraMath}
 
     vec2 localWander(vec2 p) {
@@ -95,11 +101,14 @@
     }
 
     float mineralKind(float seed) {
-      float total=0.;for(int i=0;i<6;i++)total+=grainTypes[i];
-      float choice=seed*max(1.,total),count=0.;
-      for(int i=0;i<6;i++){count+=grainTypes[i];if(choice<count)return float(i);}
-      return 0.;
+      // Toggling a species never redistributes its share to other gemstones.
+      for(int i=1;i<6;i++){
+        float low=float(i-1)*${gemFraction.toFixed(3)},high=float(i)*${gemFraction.toFixed(3)};
+        if(seed>=low&&seed<high&&grainTypes[i]>.5)return float(i);
+      }
+      return grainTypes[0]>.5?0.:-1.;
     }
+
     vec3 mineral(float k) {
       if(k<.5)return vec3(.83,.66,.39);
       if(k<1.5)return vec3(.88,.95,1.);
@@ -110,6 +119,7 @@
     }
 
     void main() {
+      kind=mineralKind(fract(grain.x*17.17+grain.w*31.31));
       float t=progress;
       float e=t*t*t*(t*(t*6.-15.)+10.);
       vec2 delta=finish.xy-start.xy;
@@ -147,6 +157,7 @@
       if(grain.z>.64)variedSize=1.50+.96*grain.y;
       if(grain.z>.94)variedSize=2.78+1.18*grain.y;
       float size=mix(1.45+.16*grain.z,variedSize,complexity);
+      if(kind>.5)size*=1.18;
       if(radiationFineOnly>.5&&emitted>.5)size=min(size,.80);
       // Optical macro zoom enlarges the actual grain sprites as well as their
       // positions, retaining granular surface coverage at ten times magnification.
@@ -156,10 +167,13 @@
       float diffuse=max(0.,dot(n,lamp));
       float macroLight=.32+.75*diffuse;
       float lampFalloff=.84+.16*clamp(1.-length(p.xy-vec2(-.35,.48))*.5,0.,1.);
-      kind=mineralKind(fract(grain.x*17.17+grain.w*31.31));
+      vec3 lightInView=toCamera(lamp);crystalLight=vec3(lightInView.x,-lightInView.y,lightInView.z);
       vec3 tint=mineral(kind)*(.73+.27*grain.w);
       float luminance=dot(tint,vec3(.2126,.7152,.0722));
-      color=mix(vec3(luminance),tint,colorAmount)*macroLight*lampFalloff;
+      // Warm, varied ordinary sand remains the body of every figure.
+      vec3 sand=mix(vec3(.46,.33,.16),vec3(.91,.77,.49),grain.w);
+      sand=mix(sand,vec3(.99,.91,.74),pow(grain.y,18.)*.55);
+      color=(kind<.5?sand:mix(vec3(luminance),tint,.65+.35*colorAmount))*macroLight*lampFalloff;
       vec3 eye=fromCamera(vec3(0.,0.,1.));
       float sheen=pow(max(0.,dot(n,normalize(lamp+eye))),24.);
       color+=vec3(.94,.78,.48)*sheen*.13;
@@ -174,7 +188,9 @@
     varying mediump float opacity;
     varying mediump vec4 material;
     varying mediump float kind;
+    varying mediump vec3 crystalLight;
     void main() {
+      if(kind<-.5)discard;
       vec2 p=gl_PointCoord*2.-1.;
       float angle=material.x*6.28318530718;
       float c=cos(angle),s=sin(angle);
@@ -187,10 +203,36 @@
       vec2 q=mix(p*vec2(1.,.84+material.z*.22),shaped/outline,character);
       float r=length(q);
       if(kind>.5){
-        // Diamond has a rhombus cut; coloured gems have bevelled hex/octagon cuts.
-        vec2 facet=abs(turned);
-        r=kind<1.5?(facet.x+facet.y)*.90:max(max(facet.x,facet.y), (facet.x+facet.y)*.72);
-        if(kind>3.5&&kind<4.5)r=max(facet.x/.72,facet.y);
+        // A planar table and eight flat crown facets: no spherical/plastic lobe.
+        vec2 cut=turned; if(kind>3.5&&kind<4.5)cut.x/=.73;
+        vec2 edge=abs(cut);
+        float cutRadius=kind<1.5?(edge.x+edge.y)*.86:max(max(edge.x,edge.y),(edge.x+edge.y)*.72);
+        if(cutRadius>1.)discard;
+        float sector=floor((atan(cut.y,cut.x)+3.14159265)/.78539816);
+        float faceAngle=(sector+.5)*.78539816-3.14159265;
+        float table=1.-step(.37,cutRadius);
+        float tilt=mix(.84,.035,table);
+        vec3 face=normalize(vec3(tilt*cos(faceAngle),tilt*sin(faceAngle),.72));
+        face.xy=vec2(c*face.x-s*face.y,s*face.x+c*face.y);
+        vec3 light=normalize(crystalLight),eye=vec3(0.,0.,1.);
+        float incidence=max(0.,dot(face,light));
+        float f0=kind<1.5?.17:.075;
+        float fresnel=f0+(1.-f0)*pow(1.-max(0.,face.z),5.);
+        float spec=pow(max(0.,dot(face,normalize(light+eye))),180.);
+        vec3 reflection=reflect(-eye,face);
+        // Sparse broad reflections of a studio window, separated by deep facets.
+        float windowLight=pow(max(0.,dot(reflection,normalize(vec3(-.7,-.65,-.1)))),24.);
+        float pavilion=floor((atan(cut.y,cut.x)+3.14159265)/.39269908);
+        float internal=.5+.5*cos(mix(sector,pavilion,table)*2.39+material.w*6.28);
+        vec3 transmitted=color*(.22+.55*incidence)*(.40+.60*internal);
+        vec3 crystal=transmitted+vec3(.91,.96,1.)*(windowLight*(.22+fresnel*3.2)+spec*.85);
+        // Colourless diamond reflects white light; coloured stones retain dark interiors.
+        if(kind<1.5)crystal=mix(crystal,vec3(.68,.76,.82)*(.12+.27*internal),.24);
+        float bevel=(1.-smoothstep(.018,.045,abs(cutRadius-.37)))*.05;
+        crystal+=vec3(.73,.83,.91)*bevel;
+        float alpha=(1.-smoothstep(.91,1.,cutRadius))*opacity;
+        if(alpha<.075)discard;
+        gl_FragColor=vec4(crystal,alpha);return;
       }
       if(r>1.)discard;
       float flatAlpha=1.-smoothstep(.25,1.,r);
@@ -207,14 +249,6 @@
       float rim=1.-.30*smoothstep(.64,1.,r);
       vec3 solidColor=color*(.25+.91*diffuse)*rim;
       solidColor+=vec3(1.,.94,.79)*specular*(.20+.18*material.y);
-      if(kind>.5){
-        float facets=floor((atan(turned.y,turned.x)+3.141593)*1.27324);
-        float sparkle=pow(max(0.,1.-length(turned-vec2(-.22,-.28))*2.8),10.);
-        vec3 cutColor=color*(.64+.36*cos(facets*1.71+material.w*3.));
-        cutColor+=vec3(.80,.90,1.)*(sparkle*.68+specular*.28);
-        solidColor=mix(cutColor,solidColor,.30);
-        flatColor=mix(cutColor,flatColor,.25);
-      }
       float solidAlpha=1.-smoothstep(.82,1.,r);
       float alpha=mix(flatAlpha,solidAlpha,depth)*opacity;
       // Transparent sprite corners must never occlude another side of the ring.
@@ -297,5 +331,5 @@
     return[c*point[0]-s*point[1],s*point[0]+c*point[1],point[2]];
   }
 
-  window.CourseOpeningMaterials=Object.freeze({vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,rotateObject});
+  window.CourseOpeningMaterials=Object.freeze({gemFraction,mineralKind,vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,rotateObject});
 })();

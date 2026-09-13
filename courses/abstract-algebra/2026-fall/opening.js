@@ -4,6 +4,8 @@
   const root = document.getElementById('symmetry-particle-studies');
   const canvas = root.querySelector('.opening-grains');
   const caption = root.querySelector('.opening-caption');
+  const quote = root.querySelector('.opening-quote');
+  function showCaption(visible){caption.classList.toggle('is-visible',visible);quote.classList.toggle('is-visible',visible&&Boolean(quote.textContent));}
   const panel = document.getElementById('openingSettings');
   const toggle = document.getElementById('openingSettingsToggle');
   const boot = window.CourseOpeningBoot;
@@ -224,7 +226,7 @@
     }
     function snapshotNormals(){const e=ease(progress),out=new Float32Array(N*3),flat=1-effective().depth;for(let i=0;i<out.length;i++){const face=i%3===2?1:0,a=normalSource[i]+(face-normalSource[i])*extrusionFrom*flat,b=normalDestination[i]+(face-normalDestination[i])*extrusionTo*flat;out[i]=a+(b-a)*e;}return out;}
     function upload(){for(const [buf,data] of [[sourceBuffer,source],[destinationBuffer,destination],[normalSourceBuffer,normalSource],[normalDestinationBuffer,normalDestination]]){gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);}}
-    function updateCaption(){const text=backdrop.scenes[scene];for(const field of ['title','zh','en','quote'])root.querySelector('[data-caption-'+field+']').textContent=text[field]||'';canvas.setAttribute('aria-label',text.title+'。'+text.zh);}
+    function updateCaption(){const text=geometry.captions[scene];for(const field of ['title','zh','en'])root.querySelector('[data-caption-'+field+']').textContent=text[field];quote.textContent=backdrop.scenes[scene].quote||'';quote.classList.remove('is-visible');canvas.setAttribute('aria-label',text.title+'。'+text.zh);}
 
     function syncTimeline(state){
       const key=state.from+':'+state.to;
@@ -234,7 +236,7 @@
       if(scene!==label){scene=label;updateCaption();}
       const spent=state.direction>0?state.holdElapsed:state.holdDuration-state.holdElapsed;
       const remaining=state.direction>0?state.holdDuration-state.holdElapsed:state.holdElapsed;
-      caption.classList.toggle('is-visible',!state.moving&&spent>420&&remaining>600);
+      showCaption(!state.moving&&spent>420&&remaining>600);
     }
     function baseCameraPose(){
       const pose=cameraRig.sampleTimeline(timeline.state(),{holds,transitions,starts,duration:timeline.duration,phaseOffset:routeOffset});
@@ -335,7 +337,7 @@
     function play(){
       stop();spinAngle=0;routeOffset=0;cameraBridge=null;timeline.seek(0);timeline.setDirection(1);destination=targets[0];source=reduce?targets[0]:entrancePositions();normalSource=reduce?normals[0]:diskNormals;normalDestination=normals[0];extrusionFrom=reduce?1:0;extrusionTo=1;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?'0:0':'intro';scene=0;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
-      upload();updateCaption();draw();caption.classList.toggle('is-visible',reduce);queue();
+      upload();updateCaption();draw();showCaption(reduce);queue();
     }
     function direction(value){
       if(entrance){timeline.setDirection(value,false);root.dataset.direction=String(value);return;}
@@ -347,7 +349,7 @@
     film={play,stop,refresh,direction,dispose(){stop();lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
     root._openingPreview={
       show(index){stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(starts[index]+holds[index]/2));draw();queue();},
-      transition(index,value){stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();caption.classList.remove('is-visible');draw();queue();},
+      transition(index,value){stop();normalSource=snapshotNormals();source=snapshot(false,time,false);extrusionFrom=0;extrusionTo=index<5?1:0;destination=targets[index];normalDestination=normals[index];scene=index;pair='manual';progress=value;moving=true;entrance=false;sequence=false;active=true;upload();updateCaption();showCaption(false);draw();queue();},
       settings(value){Object.assign(settings,value);updateSettings();},
       atTime(value){time=value;Object.assign(visual,{camera:effective().camera,background:effective().background,radiation:effective().radiation,spin:effective().spin});spinAngle=value*visual.spin;draw();},
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},

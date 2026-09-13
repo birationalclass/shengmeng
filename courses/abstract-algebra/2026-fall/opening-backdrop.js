@@ -1,4 +1,4 @@
-/* Typography is composited after the stone and before the particles. */
+/* Dark mathematical logos stay beneath the sand; captions are foreground DOM. */
 (() => {
   'use strict';
   const scenes = [
@@ -16,12 +16,6 @@
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
     let key='',fontVersion=0;
     if(document.fonts){document.fonts.load('100px OpeningMath').then(()=>{fontVersion++;});document.fonts.ready.then(()=>{fontVersion++;});}
-    function lines(text,x,y,width,lineHeight) {
-      // Word-aware English wrapping, and character-aware Chinese wrapping.
-      const tokens=text.match(/[A-Za-z0-9₀-₉ℤℂ]+(?:[’'-][A-Za-z]+)*|[^A-Za-z0-9₀-₉ℤℂ]/gu)||[];
-      let line='';for(const token of tokens){if(line&&ctx.measureText(line+token).width>width){ctx.fillText(line.trim(),x,y);y+=lineHeight;line=token.trimStart();}else line+=token;}
-      if(line.trim()){ctx.fillText(line.trim(),x,y);y+=lineHeight;}return y;
-    }
     return {
       update(index,width,height,ratio){
         const next=[index,width,height,ratio,fontVersion].join(':');if(next===key)return;key=next;
@@ -30,16 +24,6 @@
         const size=Math.min(height*.74,width*.57);
         ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(175,153,112,.115)';ctx.font=`400 ${size}px OpeningMath, "STIX Two Math", Georgia, serif`;
         ctx.fillText(scene.logo,width*(small?.57:.60),height*.52,width*.75);
-        const x=Math.max(22,width*.055),column=small?width*.60:Math.min(300,width*.24);
-        let y=small?height*.66:height*.38;
-        const scale=height<500?.78:small?.88:1;
-        ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='rgba(190,171,135,.62)';ctx.font=`400 ${12*scale}px Arial, "PingFang SC", sans-serif`;
-        y=lines(scene.title,x,y,column,20*scale)+12*scale;
-        ctx.fillStyle='rgba(184,177,160,.56)';ctx.font=`400 ${16*scale}px "Songti SC", "Noto Serif SC", "SimSun", serif`;
-        y=lines(scene.zh,x,y,column,29*scale)+10*scale;
-        ctx.fillStyle='rgba(164,155,137,.54)';ctx.font=`400 ${13*scale}px Georgia, "Times New Roman", serif`;
-        y=lines(scene.en,x,y,column,21*scale)+14*scale;
-        if(scene.quote){ctx.fillStyle='rgba(197,179,140,.66)';ctx.font=`italic 400 ${20*scale}px Georgia, "Times New Roman", serif`;lines(scene.quote,x,y,column,29*scale);}
         gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,surface);
       },
       bind(){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);},

@@ -6,7 +6,7 @@ body.opening-active{overflow:hidden}
 #courseOpening #symmetry-particle-studies{width:100%;height:100%;position:relative}
 #courseOpening .opening-grains{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .7s ease;pointer-events:none}
 #courseOpening.opening-ready .opening-grains{opacity:1}
-#courseOpening .opening-caption{position:absolute;z-index:1;bottom:max(7.2vh,env(safe-area-inset-bottom));left:7%;right:7%;max-width:780px;margin:0 auto;text-align:center;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .6s ease,transform .7s ease;text-shadow:0 2px 16px #000}
+#courseOpening .opening-caption{position:absolute;z-index:6;bottom:max(7.2vh,env(safe-area-inset-bottom));left:7%;right:7%;max-width:780px;margin:0 auto;text-align:center;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .6s ease,transform .7s ease;text-shadow:0 2px 16px #000}
 #courseOpening .opening-caption.is-visible{opacity:1;transform:translateY(0)}
 #courseOpening [data-caption-title]{margin:0 0 12px;color:#baa984;font:400 12px/1.6 Arial,'PingFang SC',sans-serif;letter-spacing:3px}
 #courseOpening [data-caption-zh]{margin:0;color:#eee8dc;font:400 clamp(16px,1.55vw,21px)/1.8 'Songti SC','Noto Serif SC',serif;letter-spacing:1.5px;text-wrap:balance}
@@ -160,8 +160,6 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .spin-range output{flex-basis:55px;min-width:55px}
 
 @font-face{font-family:OpeningMath;src:url('../../../visuals/chaos/fonts/STIXTwoMath.otf') format('opentype');font-display:swap}
-/* The visible caption and logo live inside the WebGL composition, beneath sand. */
-#courseOpening .opening-caption{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;pointer-events:none}
 #courseOpening .grain-kind-setting legend{float:left;width:100%;color:#dcd3c1;font-size:12px;letter-spacing:.5px;margin-bottom:5px}
 #courseOpening .grain-kind-setting .setting-note{clear:both}
 #courseOpening .grain-kinds{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:13px}
@@ -180,3 +178,9 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #courseOpening .voice-file{display:block;width:100%;margin-top:12px;color:#a89f8e;font-size:10px}
 #courseOpening [data-voice-play]{margin-top:9px;border:1px solid #c6ae7c35;background:#15130f;color:#c6b99c;padding:6px 10px;border-radius:3px;font:inherit;cursor:pointer}
 #courseOpening .touch-enter{display:inline-block}
+
+/* Names and bilingual explanations retain their original lower-centre framing. */
+#courseOpening .opening-quote{position:absolute;z-index:6;top:40%;left:5.5%;width:min(280px,25%);margin:0;color:#dcc99f;font:italic 400 clamp(18px,1.65vw,25px)/1.6 Georgia,'Times New Roman',serif;text-wrap:balance;text-shadow:0 2px 14px #000,0 1px 3px #000;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .6s ease,transform .7s ease}
+#courseOpening .opening-quote.is-visible{opacity:1;transform:translateY(0)}
+@media(max-width:700px){#courseOpening .opening-quote{top:auto;bottom:calc(9vh + 170px);left:7%;width:64%;font-size:18px}}
+@media(prefers-reduced-motion:reduce){#courseOpening .opening-quote{transition:none;transform:none}}
