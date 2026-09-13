@@ -31,7 +31,7 @@
     patterns: names.map(item => ({ title: item[0], symmetry: 'D' + item[2] })),
     e8: { roots: 240, projected2d: 240, edges: 6720, rings: 8, rootsPerRing: 30, edgeParticles: 60480, rootParticles: 11520 },
     julia: { parameter: [-0.8, 0.156], map: 'z^2 + c', candidates: 600000, centralSymmetry: true },
-    relief: { interpretation: 'Artistic grain-ridge extrusion of the unchanged XY diagrams; the added depth is not an E8 projection or a third Julia coordinate.', figures: [] },
+    ropes: { interpretation: 'Circular sand ropes following the mathematical planar centre lines; the small tube radius is an artistic rendering, not an E8 or Julia dimension.', figures: [] },
     torus: { majorRadius: .67, minorRadius: .20, outerRadius: .87, innerRadius: .47, genus: 1, coordinateStride: 3, tiltDegrees: [55, -8, -18] }
   };
 
@@ -65,63 +65,122 @@
     return output;
   }
 
-  function pointOnPolygon(n, step, t, r, phase) {
+  // Each point lies on a ROUND tube around a mathematical centre line.
+  // The strand modulation is a shallow three-start helix, not a vertical
+  // extrusion: every cross-section has the same scale in its two directions.
+  function ropeSample(x, y, tx, ty, radius, phase, twist) {
+    const length = Math.hypot(tx, ty) || 1;
+    tx /= length; ty /= length;
+    const ca = Math.cos(phase), sa = Math.sin(phase);
+    const nx = -ty * ca, ny = tx * ca, nz = sa;
+    const r = radius * (1 + .075 * Math.cos(3 * phase - twist));
+    return [x + r * nx, y + r * ny, r * nz, nx, ny, nz,
+      x, y, tx, ty, r];
+  }
+  function storeRopes(index, points, extra) {
+    if (points.length !== N) throw new Error('Incorrect rope particle count');
+    points.sort((a, b) => {
+      const aa = (Math.atan2(a[1], a[0]) + TAU) % TAU;
+      const ab = (Math.atan2(b[1], b[0]) + TAU) % TAU;
+      return aa - ab || a[0] * a[0] + a[1] * a[1] - b[0] * b[0] - b[1] * b[1];
+    });
+    const flat = new Float32Array(N * 2), spatial = new Float32Array(N * 3), normals = new Float32Array(N * 3);
+    let maximumNormalResidual = 0, maximumTangentDot = 0, maximumRadialResidual = 0;
+    let minZ = Infinity, maxZ = -Infinity, minRadius = Infinity, maxRadius = 0;
+    let crossSectionSideSquared = 0, crossSectionHeightSquared = 0;
+    for (let i = 0; i < N; i++) {
+      const p = points[i];
+      for (let k = 0; k < 3; k++) { spatial[3 * i + k] = p[k]; normals[3 * i + k] = p[k + 3]; }
+      flat[2 * i] = p[0]; flat[2 * i + 1] = p[1];
+      maximumNormalResidual = Math.max(maximumNormalResidual, Math.abs(Math.hypot(p[3], p[4], p[5]) - 1));
+      if (p.length > 6) {
+        const dx = p[0] - p[6], dy = p[1] - p[7];
+        const side = -p[9] * dx + p[8] * dy;
+        maximumTangentDot = Math.max(maximumTangentDot, Math.abs(p[3] * p[8] + p[4] * p[9]));
+        maximumRadialResidual = Math.max(maximumRadialResidual, Math.abs(Math.hypot(dx, dy, p[2]) - p[10]));
+        crossSectionSideSquared += side * side; crossSectionHeightSquared += p[2] * p[2];
+        minRadius = Math.min(minRadius, p[10]); maxRadius = Math.max(maxRadius, p[10]);
+      }
+      minZ = Math.min(minZ, p[2]); maxZ = Math.max(maxZ, p[2]);
+      if (!p.slice(0, 6).every(Number.isFinite)) throw new Error('Non-finite rope particle');
+    }
+    cache[index] = flat; spatialCache[index] = spatial; normalCache[index] = normals;
+    diagnostics.ropes.figures[index] = Object.assign({ title: captions[index].title, particles: N,
+      crossSection: 'circular, with shallow three-start helical strand ridges',
+      surfaceSampling: 'particles on the complete tube circumference; radial normals perpendicular to the local centre-line tangent',
+      minimumRadius: minRadius, maximumRadius: maxRadius, minimumZ: minZ, maximumZ: maxZ,
+      maximumNormalResidual, maximumTangentDot, maximumRadialResidual,
+      crossSectionAspectRatio: Math.sqrt(crossSectionHeightSquared / crossSectionSideSquared)
+    }, extra);
+    return flat;
+  }
+  function polygonCurve(n, step, t, radius, phase) {
     const edge = Math.floor(t * n), f = t * n - edge;
     const a = TAU * edge / n + phase, b = TAU * (edge + step) / n + phase;
-    return [r * ((1 - f) * Math.cos(a) + f * Math.cos(b)), r * ((1 - f) * Math.sin(a) + f * Math.sin(b))];
+    const dx = radius * (Math.cos(b) - Math.cos(a)), dy = radius * (Math.sin(b) - Math.sin(a));
+    return [radius * Math.cos(a) + f * dx, radius * Math.sin(a) + f * dy, dx, dy];
   }
-  function point(kind) {
-    const u = random(), t = random() * TAU;
-    let x, y, r;
+  function motifCurve(kind) {
+    const u = random() * .98, t = random() * TAU;
+    let x, y, dx, dy, r, dr, radius = .014;
     if (kind === 0) {
       if (u < .50) {
-        const k = Math.floor(random() * 6), a = k * TAU / 6;
+        const a = Math.floor(random() * 6) * TAU / 6;
         const lx = .385 + .388 * Math.cos(t), ly = .171 * Math.sin(t);
+        const ldx = -.388 * Math.sin(t), ldy = .171 * Math.cos(t);
         x = lx * Math.cos(a) - ly * Math.sin(a); y = lx * Math.sin(a) + ly * Math.cos(a);
-      } else if (u < .70) { r = .51 + .22 * Math.cos(6 * t); x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .81) { r = .23 + .055 * Math.cos(6 * t); x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .94) { r = random() < .6 ? .86 : .902; x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .98) {
-        const k = Math.floor(random() * 12), a = k * TAU / 12;
-        r = .035; x = .83 * Math.cos(a) + r * Math.cos(t); y = .83 * Math.sin(a) + r * Math.sin(t);
-      } else { r = Math.sqrt(random()) * .98; x = r * Math.cos(t); y = r * Math.sin(t); }
+        dx = ldx * Math.cos(a) - ldy * Math.sin(a); dy = ldx * Math.sin(a) + ldy * Math.cos(a);
+        radius = .016;
+      } else if (u < .70) { r = .51 + .22 * Math.cos(6 * t); dr = -1.32 * Math.sin(6 * t); radius = .014; }
+      else if (u < .81) { r = .23 + .055 * Math.cos(6 * t); dr = -.33 * Math.sin(6 * t); radius = .012; }
+      else if (u < .94) { r = random() < .6 ? .86 : .902; dr = 0; radius = .0115; }
+      else {
+        const a = Math.floor(random() * 12) * TAU / 12;
+        x = .83 * Math.cos(a) + .035 * Math.cos(t); y = .83 * Math.sin(a) + .035 * Math.sin(t);
+        dx = -.035 * Math.sin(t); dy = .035 * Math.cos(t); radius = .008;
+      }
     } else if (kind === 1) {
-      if (u < .54) [x, y] = pointOnPolygon(8, 3, random(), .89, Math.PI / 8);
-      else if (u < .74) [x, y] = pointOnPolygon(8, 3, random(), .51, 0);
-      else if (u < .85) { r = random() < .62 ? .942 : .973; x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .94) [x, y] = pointOnPolygon(8, 1, random(), .76, Math.PI / 8);
-      else if (u < .98) { r = .16; x = r * Math.cos(t); y = r * Math.sin(t); }
-      else { r = Math.sqrt(random()) * .99; x = r * Math.cos(t); y = r * Math.sin(t); }
+      if (u < .54) { [x, y, dx, dy] = polygonCurve(8, 3, t / TAU, .89, Math.PI / 8); radius = .0165; }
+      else if (u < .74) { [x, y, dx, dy] = polygonCurve(8, 3, t / TAU, .51, 0); radius = .013; }
+      else if (u < .85) { r = random() < .62 ? .942 : .973; dr = 0; radius = .010; }
+      else if (u < .94) { [x, y, dx, dy] = polygonCurve(8, 1, t / TAU, .76, Math.PI / 8); radius = .012; }
+      else { r = .16; dr = 0; radius = .012; }
     } else {
       if (u < .43) {
-        const k = Math.floor(random() * 12), a = k * TAU / 12;
+        const a = Math.floor(random() * 12) * TAU / 12;
         const lx = .49 + .326 * Math.cos(t), ly = .103 * Math.sin(t);
+        const ldx = -.326 * Math.sin(t), ldy = .103 * Math.cos(t);
         x = lx * Math.cos(a) - ly * Math.sin(a); y = lx * Math.sin(a) + ly * Math.cos(a);
+        dx = ldx * Math.cos(a) - ldy * Math.sin(a); dy = ldx * Math.sin(a) + ldy * Math.cos(a); radius = .0135;
       } else if (u < .68) {
-        const k = Math.floor(random() * 12), a = k * TAU / 12;
+        const a = Math.floor(random() * 12) * TAU / 12;
         x = .655 * Math.cos(a) + .23 * Math.cos(t); y = .655 * Math.sin(a) + .23 * Math.sin(t);
-      } else if (u < .79) { r = .306 + .079 * Math.cos(12 * t); x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .94) { r = random() < .62 ? .926 : .956; x = r * Math.cos(t); y = r * Math.sin(t); }
-      else if (u < .98) { r = .122; x = r * Math.cos(t); y = r * Math.sin(t); }
-      else { r = Math.sqrt(random()) * .98; x = r * Math.cos(t); y = r * Math.sin(t); }
+        dx = -.23 * Math.sin(t); dy = .23 * Math.cos(t); radius = .012;
+      } else if (u < .79) { r = .306 + .079 * Math.cos(12 * t); dr = -.948 * Math.sin(12 * t); radius = .012; }
+      else if (u < .94) { r = random() < .62 ? .926 : .956; dr = 0; radius = .009; }
+      else { r = .122; dr = 0; radius = .011; }
     }
-    const spread = u > .98 ? .012 : (random() < .92 ? .0034 : .011);
-    return [x + normal() * spread, y + normal() * spread];
+    if (r !== undefined) {
+      x = r * Math.cos(t); y = r * Math.sin(t);
+      dx = dr * Math.cos(t) - r * Math.sin(t); dy = dr * Math.sin(t) + r * Math.cos(t);
+    }
+    return { x, y, dx, dy, radius, twist: t * 18 };
   }
   function makePattern(kind) {
     resetRandom(0x6a09e667 + kind * 104729);
     const order = names[kind][2], baseCount = N / (2 * order), points = [];
     for (let i = 0; i < baseCount; i++) {
-      const p = point(kind), r = Math.hypot(p[0], p[1]);
-      const a = Math.acos(Math.max(-1, Math.min(1, Math.cos(order * Math.atan2(p[1], p[0]))))) / order;
-      // Replicating each sampled fundamental sector preserves exact D_n symmetry,
-      // including the fine grain scattered around the mathematical curves.
+      const c = motifCurve(kind), p = ropeSample(c.x, c.y, c.dx, c.dy, c.radius, random() * TAU, c.twist);
+      // Apply the full dihedral orbit to the tube AND its normals. Symmetry
+      // remains exact at the particle level, including the circular section.
       for (let j = 0; j < order; j++) for (const sign of [-1, 1]) {
-        const angle = j * TAU / order + sign * a;
-        points.push([r * Math.cos(angle), r * Math.sin(angle)]);
+        const a = j * TAU / order, co = Math.cos(a), si = Math.sin(a);
+        const rotate = (x, y) => [x * co - sign * y * si, x * si + sign * y * co];
+        const xy = rotate(p[0], p[1]), n = rotate(p[3], p[4]), centre = rotate(p[6], p[7]), tangent = rotate(p[8], p[9]);
+        points.push([xy[0], xy[1], p[2], n[0], n[1], p[5], centre[0], centre[1], tangent[0], tangent[1], p[10]]);
       }
     }
-    return sortedPositions(points);
+    return storeRopes(kind, points, { symmetry: 'D' + order, centreLines: 'analytic petals, polar rosettes, polygon edges and circles' });
   }
 
   function makeE8() {
@@ -176,20 +235,17 @@
       // particle skeleton retains the projection's exact 30-fold symmetry.
       for (let k = 0; k < 72; k++) {
         const t = (k + .5) / 72;
-        points.push([nodes[i][0] * (1 - t) + nodes[j][0] * t, nodes[i][1] * (1 - t) + nodes[j][1] * t]);
+        const x = nodes[i][0] * (1 - t) + nodes[j][0] * t, y = nodes[i][1] * (1 - t) + nodes[j][1] * t;
+        points.push(ropeSample(x, y, nodes[j][0] - nodes[i][0], nodes[j][1] - nodes[i][1], .0055, k * 2.399963229728653, t * 12 * TAU));
       }
     }
-    // Use one common local grain cloud, rotated with each root. The original
-    // root itself is always retained, and no grain extends beyond radius .95.
-    const cloud = [[0, 0]];
-    for (let k = 1; k < 48; k++) cloud.push([normal() * .00165, normal() * .00165]);
+    // Each projected root is a small round bead. The coordinates of all 240
+    // mathematical centres remain exact; no extra connections are introduced.
     for (const p of nodes) {
-      const angle = Math.atan2(p[1], p[0]), c = Math.cos(angle), s = Math.sin(angle);
-      for (const grain of cloud) {
-        let x = p[0] + c * grain[0] - s * grain[1], y = p[1] + s * grain[0] + c * grain[1];
-        const radius = Math.hypot(x, y);
-        if (radius > .95) { x *= .95 / radius; y *= .95 / radius; }
-        points.push([x, y]);
+      for (let k = 0; k < 48; k++) {
+        const z = 1 - 2 * (k + .5) / 48, ring = Math.sqrt(1 - z * z), a = k * 2.399963229728653;
+        const nx = ring * Math.cos(a), ny = ring * Math.sin(a), radius = .0085;
+        points.push([p[0] + radius * nx, p[1] + radius * ny, radius * z, nx, ny, z]);
       }
     }
     let rotationalError = 0;
@@ -220,12 +276,12 @@
       projectedLengthClasses: Object.values(lengthClasses), completeCoxeterOrbits: selectedEdges.length / 30,
       rootsCoveredBySkeleton: coveredRoots.size, unmatchedRotatedEdges,
       particlesPerRenderedEdge: 72, edgeParticles: selectedEdges.length * 72,
-      rootParticles: roots.length * cloud.length
+      rootParticles: roots.length * 48
     });
     if (roots.length !== 240 || edges !== 6720 || Object.keys(rings).length !== 8 || Object.values(rings).some(n => n !== 30) || selectedEdges.length !== 840 || coveredRoots.size !== 240 || unmatchedRotatedEdges !== 0) {
       throw new Error('E8 geometry verification failed');
     }
-    return sortedPositions(points);
+    return storeRopes(3, points, { centreLines: '840 true E8 edges from the shortest Coxeter-plane length class', rootBeads: 240, edgeRadius: .0055, beadRadius: .0085 });
   }
 
   function complexSqrt(x, y) {
@@ -405,123 +461,65 @@
     validateIndex(index);
     if (!cache[index]) {
       if (index === 5) makeTorus();
-      else cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJulia();
+      else cache[index] = index < 3 ? makePattern(index) : index === 3 ? makeE8() : makeJuliaRopes();
     }
     return cache[index];
   }
-  // A diagram becomes a raised sand relief, rather than a sheet of shaded dots.
-  // Its original XY samples are never displaced: the extra dimension is an
-  // artistic extrusion of the existing grain ridges. Most grains form the
-  // upper crest, while others expose continuous walls and the lower surface.
-  function reliefHash(value) {
-    value = Math.imul(value ^ (value >>> 16), 0x7feb352d);
-    value = Math.imul(value ^ (value >>> 15), 0x846ca68b);
-    return ((value ^ (value >>> 16)) >>> 0) / 4294967296;
-  }
-  function reliefHeight(index, x, y) {
-    const radius = Math.hypot(x, y), angle = Math.atan2(y, x);
-    const order = index < 3 ? names[index][2] : index === 3 ? 30 : 2;
-    const t = Math.max(0, Math.min(1, (radius - .12) / .26));
-    const fade = t * t * (3 - 2 * t);
-    return .105 + .016 * (1 - Math.min(1, radius * radius))
-      + .009 * fade * Math.cos(order * angle) + .006 * Math.cos(TAU * radius * 2);
-  }
-  function reliefDensity(flat) {
-    // The smallest Hessian direction estimates the cross-section of a local
-    // ridge. Its walls can then catch light from the side instead of sharing
-    // the top surface's normal, including at the E8 web and Julia branches.
-    const size = 256, extent = 1.08, scale = (size - 1) / (2 * extent);
-    let density = new Float32Array(size * size);
+  function makeJuliaRopes() {
+    const flat = makeJulia(), cellSize = .012, cells = new Map();
+    // PCA is local to the sampled inverse branches. It estimates their tangent
+    // but never joins different samples with artificial line segments.
+    const key = (x, y) => Math.floor(x / cellSize) + ',' + Math.floor(y / cellSize);
     for (let i = 0; i < N; i++) {
-      const gx = (flat[2 * i] + extent) * scale, gy = (flat[2 * i + 1] + extent) * scale;
-      const x = Math.floor(gx), y = Math.floor(gy), fx = gx - x, fy = gy - y;
-      if (x < 0 || x >= size - 1 || y < 0 || y >= size - 1) continue;
-      const cell = x + y * size;
-      density[cell] += (1 - fx) * (1 - fy); density[cell + 1] += fx * (1 - fy);
-      density[cell + size] += (1 - fx) * fy; density[cell + size + 1] += fx * fy;
+      const k = key(flat[2 * i], flat[2 * i + 1]);
+      if (!cells.has(k)) cells.set(k, []);
+      cells.get(k).push(i);
     }
-    for (let pass = 0; pass < 2; pass++) {
-      const horizontal = new Float32Array(size * size), blurred = new Float32Array(size * size);
-      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        for (let offset = -2; offset <= 2; offset++) {
-          horizontal[x + y * size] += density[Math.max(0, Math.min(size - 1, x + offset)) + y * size] / 5;
+    const points = [];
+    let minimumNeighbours = Infinity, maximumNeighbours = 0;
+    for (let i = 0; i < N / 2; i++) {
+      const x = flat[2 * i], y = flat[2 * i + 1];
+      const gx = Math.floor(x / cellSize), gy = Math.floor(y / cellSize);
+      let xx = 0, xy = 0, yy = 0, neighbours = 0;
+      for (let oy = -1; oy <= 1; oy++) for (let ox = -1; ox <= 1; ox++) {
+        const nearby = cells.get((gx + ox) + ',' + (gy + oy));
+        if (!nearby) continue;
+        for (const j of nearby) {
+          const dx = flat[2 * j] - x, dy = flat[2 * j + 1] - y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 > .000144 || d2 < 1e-14) continue;
+          const weight = Math.exp(-d2 / .00004);
+          xx += weight * dx * dx; xy += weight * dx * dy; yy += weight * dy * dy; neighbours++;
         }
       }
-      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-        for (let offset = -2; offset <= 2; offset++) {
-          blurred[x + y * size] += horizontal[x + Math.max(0, Math.min(size - 1, y + offset)) * size] / 5;
-        }
-      }
-      density = blurred;
+      const a = .5 * Math.atan2(2 * xy, xx - yy);
+      // A slim tube preserves the tiny branch gaps at normal viewing scale.
+      const phase = i * 2.399963229728653;
+      const p = ropeSample(x, y, Math.cos(a), Math.sin(a), .0052, phase, 86 * (x + .7 * y));
+      points.push(p, [-p[0], -p[1], p[2], -p[3], -p[4], p[5], -p[6], -p[7], -p[8], -p[9], p[10]]);
+      minimumNeighbours = Math.min(minimumNeighbours, neighbours); maximumNeighbours = Math.max(maximumNeighbours, neighbours);
     }
-    return function ridgeNormal(x, y, sign) {
-      const gx = Math.max(1, Math.min(size - 2, Math.round((x + extent) * scale)));
-      const gy = Math.max(1, Math.min(size - 2, Math.round((y + extent) * scale)));
-      const cell = gx + gy * size, centre = density[cell];
-      const xx = density[cell - 1] + density[cell + 1] - 2 * centre;
-      const yy = density[cell - size] + density[cell + size] - 2 * centre;
-      const xy = (density[cell + size + 1] - density[cell + size - 1]
-        - density[cell - size + 1] + density[cell - size - 1]) * .25;
-      const eigenvalue = (xx + yy - Math.hypot(xx - yy, 2 * xy)) * .5;
-      let nx = xy, ny = eigenvalue - xx;
-      if (Math.hypot(nx, ny) < 1e-8) {
-        if (Math.abs(xx) + Math.abs(yy) < 1e-7) { nx = x; ny = y; }
-        else { nx = xx < yy ? 1 : 0; ny = xx < yy ? 0 : 1; }
-      }
-      const length = Math.hypot(nx, ny) || 1;
-      return [sign * nx / length, sign * ny / length];
-    };
+    return storeRopes(4, points, { centreLines: 'genuine inverse-branch samples; weighted local PCA tangents; no connecting chords', tubeRadius: .0052, minimumNeighbours, maximumNeighbours });
   }
-  function makeRelief(index) {
-    const flat = create(index), output = new Float32Array(N * 3), normals = new Float32Array(N * 3);
-    const ridgeNormal = reliefDensity(flat), bottom = -.09;
-    let minimumZ = Infinity, maximumZ = -Infinity, topGrains = 0, wallGrains = 0, bottomGrains = 0;
-    let maximumNormalResidual = 0;
+  function closeupFocus(index) {
+    validateIndex(index);
+    // Deterministic real surface coordinates, so a 10x shot lands on sand.
+    const preferred = [[.66, .135], [.54, .40], [.76, .075], [.52, .12], [.28, .16], [.52, -.35]][index];
+    const points = create3D(index);
+    let nearest = 0, distance = Infinity;
     for (let i = 0; i < N; i++) {
-      const x = flat[2 * i], y = flat[2 * i + 1], height = reliefHeight(index, x, y);
-      const selector = reliefHash(i + 1 + index * 104729);
-      const layer = reliefHash(i + 0x51ed270b + index * 13007);
-      const grain = reliefHash(i + 0x68bc21eb + index * 19001);
-      let z, nx, ny, nz;
-      if (selector < .56) {
-        // A dense top crest preserves the original drawing even at a steep
-        // camera angle; its low relief still follows the figure's symmetry.
-        z = height + (grain - .5) * .003;
-        const epsilon = .001;
-        nx = -(reliefHeight(index, x + epsilon, y) - reliefHeight(index, x - epsilon, y)) / (2 * epsilon);
-        ny = -(reliefHeight(index, x, y + epsilon) - reliefHeight(index, x, y - epsilon)) / (2 * epsilon);
-        nz = 1; topGrains++;
-      } else if (selector < .92) {
-        // The intervening grains occupy actual depth, forming narrow walls
-        // along existing curves rather than filling the empty parts of a motif.
-        z = bottom + (height - bottom) * layer;
-        const side = ridgeNormal(x, y, grain < .5 ? -1 : 1);
-        nx = side[0]; ny = side[1]; nz = .10 + .12 * layer; wallGrains++;
-      } else {
-        z = bottom + (grain - .5) * .002;
-        nx = 0; ny = 0; nz = -1; bottomGrains++;
-      }
-      const length = Math.hypot(nx, ny, nz);
-      output[3 * i] = x; output[3 * i + 1] = y; output[3 * i + 2] = z;
-      normals[3 * i] = nx / length; normals[3 * i + 1] = ny / length; normals[3 * i + 2] = nz / length;
-      minimumZ = Math.min(minimumZ, output[3 * i + 2]); maximumZ = Math.max(maximumZ, output[3 * i + 2]);
-      maximumNormalResidual = Math.max(maximumNormalResidual,
-        Math.abs(Math.hypot(normals[3 * i], normals[3 * i + 1], normals[3 * i + 2]) - 1));
-      if (!Number.isFinite(x + y + z + nx + ny + nz)) throw new Error('Non-finite relief particle');
+      if (index < 5 && points[3 * i + 2] < (index < 3 ? .006 : .0025)) continue;
+      const d = (points[3 * i] - preferred[0]) ** 2 + (points[3 * i + 1] - preferred[1]) ** 2 + Math.max(0, -points[3 * i + 2]) ** 2;
+      if (d < distance) { distance = d; nearest = 3 * i; }
     }
-    diagnostics.relief.figures[index] = {
-      title: captions[index].title, particles: N, xyUnchanged: true,
-      minimumZ, maximumZ, thickness: maximumZ - minimumZ,
-      topGrains, wallGrains, bottomGrains, maximumNormalResidual,
-      construction: '56% raised crest; 36% continuous ridge walls; 8% lower surface; density-Hessian wall normals'
-    };
-    spatialCache[index] = output; normalCache[index] = normals;
+    return Array.from(points.slice(nearest, nearest + 3));
   }
   function create3D(index) {
     validateIndex(index);
     if (!spatialCache[index]) {
       if (index === 5) makeTorus();
-      else makeRelief(index);
+      else if (index === 4) makeJuliaRopes();
+      else create(index);
     }
     return spatialCache[index];
   }
@@ -529,7 +527,8 @@
     validateIndex(index);
     if (!normalCache[index]) {
       if (index === 5) makeTorus();
-      else makeRelief(index);
+      else if (index === 4) makeJuliaRopes();
+      else create(index);
     }
     return normalCache[index];
   }
@@ -539,6 +538,7 @@
     create,
     create3D,
     createNormals,
+    closeupFocus,
     evidence() { return JSON.parse(JSON.stringify(diagnostics)); }
   });
 })(typeof window !== 'undefined' ? window : globalThis);

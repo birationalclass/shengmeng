@@ -41,6 +41,7 @@
     uniform float time;
     uniform float camera;
     uniform vec3 viewAngles;
+    uniform vec3 viewTarget;
     uniform float viewZoom;
     uniform float radiation;
     uniform float extrusionFrom;
@@ -73,35 +74,19 @@
       return .0176 * wander * (.30 * eddy + .50 * drift + .20 * fine);
     }
 
-    // Reference: Plains of Yonder's published title GIFs 2, 4 and 6. Their
-    // ridges shed low, clustered surface grains; there is no continuous starfield.
-    // Nearby grains share a travelling excitation front, then make three short
-    // gravity-shaped hops. They roll to rest; recycling is fully invisible.
-    vec4 escapeGrain(vec3 p) {
+    // A fixed minority of grains is continuously emitted along its true surface
+    // normal. Each seed travels in one straight line at constant speed, fades
+    // out, and returns to its source only while completely invisible.
+    float emissionSelection() {
       float selector=fract(grain.x*37.17+grain.z*17.71);
-      float chosen=(1.-smoothstep(radiation*.24-.006,radiation*.24,selector))*step(.0001,radiation);
-      float theta=atan(p.y,p.x+.00001);
-      float radius=length(p.xy);
-      float phase=fract(time/(4.4+grain.z*.7)+radius*.63+.17*sin(theta*3.)+grain.y*.24);
-      float elapsed=clamp((phase-.10)/.66,0.,1.);
-      float slide=(1.-exp(-3.2*elapsed))/(1.-exp(-3.2));
-      float recycle=1.-smoothstep(.90,.975,phase);
-      float life=1.-smoothstep(.79,.88,phase)+smoothstep(.98,1.,phase);
-      float a=clamp((phase-.10)/.25,0.,1.);
-      float b=clamp((phase-.35)/.17,0.,1.);
-      float c=clamp((phase-.52)/.11,0.,1.);
-      float bounce=4.*a*(1.-a)+.38*4.*b*(1.-b)+.14*4.*c*(1.-c);
-      float wake=smoothstep(.035,.10,phase)*(1.-smoothstep(.60,.76,phase));
-      float bend=.24*sin(theta*3.+radius*5.)+.12*(grain.w-.5);
-      vec2 radial=vec2(cos(theta),sin(theta));
-      vec2 tangent=vec2(-radial.y,radial.x);
-      float reach=(.035+.165*radiation)*(.62+.38*grain.z);
-      float chatter=.0028*sin(time*(27.+grain.z*7.)+grain.x*6.28318530718)*wake;
-      vec2 drift=(radial+tangent*bend)*slide*reach;
-      drift+=tangent*(sin(3.14159265359*slide)*reach*.12+chatter);
-      float lift=(.012+.048*radiation)*(.60+.40*grain.w)*bounce;
-      lift+=.0015*abs(sin(time*39.+grain.y*6.28318530718))*wake;
-      return vec4(vec3(drift,lift)*chosen*recycle,mix(1.,life,chosen));
+      return step(selector,radiation*.20)*step(.0001,radiation);
+    }
+    vec4 escapeGrain(vec3 normal, float chosen) {
+      float phase=fract(time/(2.8+grain.z*1.6)+grain.y*.754877666+grain.w*.569840296);
+      float age=clamp(phase/.94,0.,1.);
+      float reach=.06+.19*radiation;
+      float life=smoothstep(0.,.04,phase)*(1.-smoothstep(.08,.94,phase));
+      return vec4(normal*reach*age*chosen,mix(1.,life,chosen));
     }
 
     vec3 mineral(float selector) {
@@ -122,10 +107,18 @@
       float dist=length(delta);
       p.xy+=vec2(sin(grain.x*19.+e*6.283),cos(grain.y*23.-e*6.283))*
         arch*min(.022,dist*.16);
-      p.xy+=localWander(p.xy);
-      vec4 escaped=escapeGrain(p);
+      vec3 fromNormal=mix(normalStart,vec3(0.,0.,1.),extrusionFrom*(1.-depth));
+      vec3 toNormal=mix(normalFinish,vec3(0.,0.,1.),extrusionTo*(1.-depth));
+      vec3 n=mix(fromNormal,toNormal,e);
+      if(length(n)<.001)n=vec3(0.,0.,1.);
+      n=normalize(n);
+      float emitted=emissionSelection();
+      vec4 escaped=escapeGrain(n,emitted);
+      // Emitted grains have a fixed source: local wandering applies only to
+      // grains that remain in the figure, never to the outward trajectories.
+      p.xy+=localWander(p.xy)*(1.-emitted);
       p+=escaped.xyz;
-      vec3 q=toCamera(p);
+      vec3 q=toCamera(p-viewTarget);
       float w=1.-camera*q.z/cameraDistance();
       float fit=cameraFit();
       // With camera=0 this is exactly the original flat XY framing. Z still
@@ -136,13 +129,10 @@
       if(grain.z>.64)variedSize=1.50+.96*grain.y;
       if(grain.z>.94)variedSize=2.78+1.18*grain.y;
       float size=mix(1.45+.16*grain.z,variedSize,complexity);
-      gl_PointSize=size*mix(1.,1.16,depth)*dpr*clamp(1./w,.68,1.65);
+      // Optical macro zoom enlarges the actual grain sprites as well as their
+      // positions, retaining granular surface coverage at ten times magnification.
+      gl_PointSize=size*mix(1.,1.16,depth)*dpr*viewZoom*clamp(1./w,.68,1.65);
 
-      vec3 fromNormal=mix(normalStart,vec3(0.,0.,1.),extrusionFrom*(1.-depth));
-      vec3 toNormal=mix(normalFinish,vec3(0.,0.,1.),extrusionTo*(1.-depth));
-      vec3 n=mix(fromNormal,toNormal,e);
-      if(length(n)<.001)n=vec3(0.,0.,1.);
-      n=normalize(n);
       vec3 lamp=normalize(vec3(-.52,.64,.79));
       float diffuse=max(0.,dot(n,lamp));
       float macroLight=.32+.75*diffuse;
@@ -208,6 +198,7 @@
     uniform float time;
     uniform float camera;
     uniform vec3 viewAngles;
+    uniform vec3 viewTarget;
     uniform float viewZoom;
     uniform float background;
     ${cameraMath}
@@ -226,7 +217,7 @@
       // Intersect the inverse camera ray with a world-space slate plane beneath
       // the particles. Its granular texture remains attached during every orbit.
       vec2 image=vec2(uv.x*aspect,uv.y-cameraCentre())/cameraFit();
-      vec3 rayOrigin=fromCamera(vec3(image,0.));
+      vec3 rayOrigin=viewTarget+fromCamera(vec3(image,0.));
       vec3 ray=fromCamera(vec3(-image*camera/cameraDistance(),1.));
       vec3 world=rayOrigin+ray*((-.68-rayOrigin.z)/max(.18,ray.z));
       vec2 p=world.xy;
@@ -253,30 +244,19 @@
     const fineX=Math.sin(time*1.31+g2*tau),fineY=Math.cos(time*1.13+g3*tau);
     return [.0176*amount*(.30*eddyX+.50*driftX+.20*fineX),.0176*amount*(.30*eddyY+.50*driftY+.20*fineY)];
   }
-  function radiationOffset(x,y,z,g0,g1,g2,g3,time,amount) {
-    if(amount<=0)return{offset:[0,0,0],alpha:1};
+  function radiationOffset(x,y,z,g0,g1,g2,g3,time,amount,normal=[0,0,1]) {
+    if(amount<.0001)return{offset:[0,0,0],alpha:1,chosen:0};
     const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
-    const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x),tau=6.28318530718;
+    const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x);
     const selector=fract(g0*37.17+g2*17.71);
-    const chosen=(1-smooth(amount*.24-.006,amount*.24,selector))*(amount>=.0001?1:0);
-    const theta=Math.atan2(y,x+.00001),radius=Math.hypot(x,y);
-    const phase=fract(time/(4.4+g2*.7)+radius*.63+.17*Math.sin(theta*3)+g1*.24);
-    const elapsed=clamp((phase-.10)/.66);
-    const slide=(1-Math.exp(-3.2*elapsed))/(1-Math.exp(-3.2));
-    const recycle=1-smooth(.90,.975,phase);
-    const life=1-smooth(.79,.88,phase)+smooth(.98,1,phase);
-    const a=clamp((phase-.10)/.25),b=clamp((phase-.35)/.17),c=clamp((phase-.52)/.11);
-    const bounce=4*a*(1-a)+.38*4*b*(1-b)+.14*4*c*(1-c);
-    const wake=smooth(.035,.10,phase)*(1-smooth(.60,.76,phase));
-    const bend=.24*Math.sin(theta*3+radius*5)+.12*(g3-.5);
-    const rx=Math.cos(theta),ry=Math.sin(theta),tx=-ry,ty=rx;
-    const reach=(.035+.165*amount)*(.62+.38*g2);
-    const chatter=.0028*Math.sin(time*(27+g2*7)+g0*tau)*wake;
-    const side=Math.sin(3.14159265359*slide)*reach*.12+chatter;
-    const driftX=(rx+tx*bend)*slide*reach+tx*side;
-    const driftY=(ry+ty*bend)*slide*reach+ty*side;
-    const lift=(.012+.048*amount)*(.60+.40*g3)*bounce+.0015*Math.abs(Math.sin(time*39+g1*tau))*wake;
-    return{offset:[driftX*chosen*recycle,driftY*chosen*recycle,lift*chosen*recycle],alpha:1+(life-1)*chosen};
+    const chosen=selector<=amount*.20?1:0;
+    if(!chosen)return{offset:[0,0,0],alpha:1,chosen:0};
+    const phase=fract(time/(2.8+g2*1.6)+g1*.754877666+g3*.569840296);
+    const age=clamp(phase/.94),reach=.06+.19*amount;
+    const life=smooth(0,.04,phase)*(1-smooth(.08,.94,phase));
+    const length=Math.hypot(...normal);
+    const n=length<.001?[0,0,1]:normal.map(v=>v/length);
+    return{offset:n.map(v=>v*reach*age),alpha:life,chosen:1};
   }
 
   window.CourseOpeningMaterials=Object.freeze({vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset});

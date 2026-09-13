@@ -139,3 +139,20 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
 #symmetry-particle-studies[data-stage=playing].can-orbit{cursor:grab}
 #symmetry-particle-studies.is-orbiting{cursor:grabbing!important}
 #courseOpening .opening-settings{touch-action:pan-y;cursor:auto}
+
+/* Fullscreen controls use an untransformed viewport hit plane. The full-screen
+   root wins over its dialog-relative size even while the native view resizes. */
+#courseOpening #symmetry-particle-studies:fullscreen{position:fixed;inset:0;width:100vw;height:100vh;width:100dvw;height:100dvh;margin:0;padding:0;max-width:none;max-height:none;transform:none}
+#courseOpening #symmetry-particle-studies:-webkit-full-screen{position:fixed;inset:0;width:100vw;height:100vh;margin:0;padding:0;max-width:none;max-height:none;transform:none}
+#courseOpening .opening-settings-toggle{position:fixed;width:44px;height:44px;padding:12px;transform:none!important;transition:opacity .25s ease,color .2s ease,background .2s ease,border-color .2s ease}
+#courseOpening .opening-settings-toggle svg{pointer-events:none}
+#courseOpening .opening-settings{position:fixed;transform:none;animation:opening-controls-fade .2s ease both}
+#courseOpening #symmetry-particle-studies:fullscreen .opening-settings{max-height:calc(100dvh - 98px - env(safe-area-inset-top) - env(safe-area-inset-bottom));backdrop-filter:none;-webkit-backdrop-filter:none}
+#courseOpening .morph-speed{margin:0}
+#courseOpening .morph-speed select{width:112px}
+@keyframes opening-controls-fade{from{opacity:0}to{opacity:1}}
+/* Keep the entire 44px square clickable; the circle is decoration only. */
+#courseOpening .opening-settings-toggle{border:0!important;border-radius:0!important;background:transparent!important}
+#courseOpening .opening-settings-toggle::before{content:"";position:absolute;inset:0;border:1px solid transparent;border-radius:50%;background:transparent;pointer-events:none;transition:background .2s ease,border-color .2s ease}
+#courseOpening.has-pointer-controls .opening-settings-toggle:hover::before,#courseOpening.settings-open .opening-settings-toggle::before{border-color:#c6ae7c29;background:#15130f99}
+#courseOpening .opening-settings-toggle svg{position:relative;z-index:1}

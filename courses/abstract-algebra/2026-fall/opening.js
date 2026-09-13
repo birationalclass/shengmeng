@@ -11,7 +11,8 @@
   // A new preference edition enables the newly added effects once for returning visitors.
   const storageKey = 'courseOpeningAppearance.v2';
   const durationChoices = [5,10,15,20,30];
-  const defaults = Object.freeze({colorEnabled:true,colorAmount:.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,sceneDurations:Object.freeze([10,10,10,10,10,10])});
+  const morphSpeedChoices=[.25,.5,.75,1,1.5];
+  const defaults = Object.freeze({colorEnabled:true,colorAmount:.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,morphSpeed:.5,sceneDurations:Object.freeze([10,10,10,10,10,10])});
   const freshDefaults=()=>({...defaults,sceneDurations:[...defaults.sceneDurations]});
   let settings = freshDefaults();
   try {
@@ -20,6 +21,7 @@
       if (typeof defaults[key] === 'boolean' && typeof saved[key] === 'boolean') settings[key] = saved[key];
       else if (typeof defaults[key] === 'number' && Number.isFinite(saved[key])) settings[key] = Math.max(0,Math.min(1,saved[key]));
     }
+    settings.morphSpeed=morphSpeedChoices.includes(saved.morphSpeed)?saved.morphSpeed:defaults.morphSpeed;
     if(Array.isArray(saved.sceneDurations))settings.sceneDurations=defaults.sceneDurations.map((value,i)=>durationChoices.includes(saved.sceneDurations[i])?saved.sceneDurations[i]:value);
   } catch (_) {}
   let film = null, initialization = null, visibilityTimer = 0, stage = 'loading', ownedFullscreen = false, entryVersion = 0;
@@ -29,6 +31,7 @@
   function syncSettings() {
     root.dataset.settings = JSON.stringify(settings);
     root.classList.toggle('can-orbit',settings.depthEnabled);
+    panel.querySelector('[data-morph-speed]').value=String(settings.morphSpeed);
     panel.querySelectorAll('[data-scene-duration]').forEach(input=>input.value=String(settings.sceneDurations[Number(input.dataset.sceneDuration)]));
     panel.querySelectorAll('[data-setting-toggle]').forEach(input=>input.checked=settings[input.dataset.settingToggle]);
     panel.querySelectorAll('[data-setting-range]').forEach(input=>{
@@ -46,6 +49,7 @@
     const input=event.target;
     if(input.dataset.settingToggle)settings[input.dataset.settingToggle]=input.checked;
     else if(input.dataset.settingRange)settings[input.dataset.settingRange]=Number(input.value)/100;
+    else if(input.hasAttribute('data-morph-speed')&&morphSpeedChoices.includes(Number(input.value)))settings.morphSpeed=Number(input.value);
     else if(input.dataset.sceneDuration!==undefined&&durationChoices.includes(Number(input.value)))settings.sceneDurations[Number(input.dataset.sceneDuration)]=Number(input.value);
     else return;
     updateSettings();
@@ -139,6 +143,7 @@
     for(let i=0;i<geometry.captions.length;i++){
       targets.push(geometry.create3D(i));normals.push(geometry.createNormals(i));root.dataset.prepared=String(i+1);boot.advance(22+(i+1)/geometry.captions.length*55,i===5?'铸造万环之环':i===4?'生成 Julia 分形':'生成对称图形');await paint();
     }
+    cameraRig.setFocuses(targets.map((_,index)=>geometry.closeupFocus(index)));
     boot.advance(82,'雕琢沙粒质感');await paint();
     function compile(type, source) {
       const shader = gl.createShader(type);
@@ -167,10 +172,11 @@
     for(let i=0;i<grains.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;grains[i]=seed/4294967296;}
     const grainBuffer=buffer(grains,gl.STATIC_DRAW);
     const loc={source:gl.getAttribLocation(program,'start'),destination:gl.getAttribLocation(program,'finish'),normalSource:gl.getAttribLocation(program,'normalStart'),normalDestination:gl.getAttribLocation(program,'normalFinish'),grain:gl.getAttribLocation(program,'grain'),quad:gl.getAttribLocation(background,'pos')};
-    for(const name of ['progress','aspect','dpr','time','colorAmount','complexity','depth','wander','camera','radiation','viewAngles','viewZoom','extrusionFrom','extrusionTo'])loc[name]=gl.getUniformLocation(program,name);
-    const bgLoc={};for(const name of ['time','aspect','camera','background','viewAngles','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
+    for(const name of ['progress','aspect','dpr','time','colorAmount','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','extrusionFrom','extrusionTo'])loc[name]=gl.getUniformLocation(program,name);
+    const bgLoc={};for(const name of ['time','aspect','camera','background','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
-    const transitions=[4200,4200,4200,5200,5400,5000];
+    const baseTransitions=[4200,4200,4200,5200,5400,5000],entranceHold=1500;
+    let transitions=baseTransitions.map(value=>value/settings.morphSpeed);
     let holds=settings.sceneDurations.map(value=>value*1000);
     let timeline=window.CourseOpeningTimeline.create({holds,transitions});
     const makeStarts=()=>holds.map((_,i)=>holds.slice(0,i).reduce((sum,x,j)=>sum+x+transitions[j],0));
@@ -188,8 +194,11 @@
         const fromZ=source[k+2]*(1-extrusionFrom+extrusionFrom*appearance.depth),toZ=destination[k+2]*(1-extrusionTo+extrusionTo*appearance.depth);
         let z=fromZ+(toZ-fromZ)*e;
         if(withEffects){
-          const d=materials.localOffset(x,y,grains[g],grains[g+1],grains[g+2],grains[g+3],atTime,appearance.wander);x+=d[0];y+=d[1];
-          const escaped=materials.radiationOffset(x,y,z,grains[g],grains[g+1],grains[g+2],grains[g+3],atTime,visual.radiation);x+=escaped.offset[0];y+=escaped.offset[1];z+=escaped.offset[2];
+          const normal=[0,0,0];
+          for(let axis=0;axis<3;axis++){const face=axis===2?1:0,a=normalSource[k+axis]+(face-normalSource[k+axis])*extrusionFrom*(1-appearance.depth),b=normalDestination[k+axis]+(face-normalDestination[k+axis])*extrusionTo*(1-appearance.depth);normal[axis]=a+(b-a)*e;}
+          const escaped=materials.radiationOffset(x,y,z,grains[g],grains[g+1],grains[g+2],grains[g+3],atTime,visual.radiation,normal);
+          const d=materials.localOffset(x,y,grains[g],grains[g+1],grains[g+2],grains[g+3],atTime,appearance.wander);
+          x+=d[0]*(1-escaped.chosen)+escaped.offset[0];y+=d[1]*(1-escaped.chosen)+escaped.offset[1];z+=escaped.offset[2];
         }
         result[k]=x;result[k+1]=y;result[k+2]=z;
       }return result;
@@ -213,12 +222,15 @@
       if(entrance)pose=cameraRig.blend({angles:[0,0,0],zoom:1},cameraRig.sample(0,0),ease(progress));
       else if(state.moving)pose=cameraRig.blend(cameraRig.sample(state.from,1),cameraRig.sample(state.to,0),ease(state.progress));
       else pose=cameraRig.sample(state.scene,state.holdElapsed/state.holdDuration);
-      return {angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],zoom:1+(pose.zoom-1)*visual.camera,perspective:Math.max(visual.camera,settings.depthEnabled?1:0)};
+      const target=pose.target.map(value=>value*visual.camera);
+      if(!settings.depthEnabled&&!state.moving&&state.scene<5)target[2]=0;
+      return {angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)};
     }
     function rebuildDurations(){
-      const next=settings.sceneDurations.map(value=>value*1000);
-      if(next.every((value,i)=>value===holds[i]))return;
-      const old=timeline.state();holds=next;starts=makeStarts();timeline=window.CourseOpeningTimeline.create({holds,transitions});
+      const next=settings.sceneDurations.map(value=>value*1000),nextTransitions=baseTransitions.map(value=>value/settings.morphSpeed);
+      if(next.every((value,i)=>value===holds[i])&&nextTransitions.every((value,i)=>value===transitions[i]))return;
+      const old=timeline.state();holds=next;transitions=nextTransitions;if(entrance&&elapsed>entranceHold)elapsed=entranceHold+progress*transitions[0];
+      starts=makeStarts();timeline=window.CourseOpeningTimeline.create({holds,transitions});
       const position=old.moving?starts[old.from]+holds[old.from]+old.progress*transitions[old.from]:starts[old.scene]+old.holdElapsed/old.holdDuration*holds[old.scene];
       timeline.seek(position+old.cycles*timeline.duration);timeline.setDirection(old.direction);
       if(!entrance)syncTimeline(timeline.state());
@@ -248,13 +260,13 @@
       if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
       const view=cameraPose();
       gl.viewport(0,0,width,height);gl.disable(gl.DEPTH_TEST);gl.depthMask(false);gl.disable(gl.BLEND);gl.useProgram(background);
-      gl.uniform1f(bgLoc.time,time);gl.uniform1f(bgLoc.aspect,width/height);gl.uniform1f(bgLoc.camera,view.perspective);gl.uniform3fv(bgLoc.viewAngles,view.angles);gl.uniform1f(bgLoc.viewZoom,view.zoom);gl.uniform1f(bgLoc.background,visual.background);
+      gl.uniform1f(bgLoc.time,time);gl.uniform1f(bgLoc.aspect,width/height);gl.uniform1f(bgLoc.camera,view.perspective);gl.uniform3fv(bgLoc.viewAngles,view.angles);gl.uniform3fv(bgLoc.viewTarget,view.target);gl.uniform1f(bgLoc.viewZoom,view.zoom);gl.uniform1f(bgLoc.background,visual.background);
       attribute(quad,loc.quad,2);gl.drawArrays(gl.TRIANGLES,0,6);
       gl.depthMask(true);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.time,time);
-      const appearance=effective();for(const name of ['colorAmount','complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);
+      const appearance=effective();for(const name of ['colorAmount','complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);
       gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);
     }
     function stop(){endOrbit();active=false;previous=0;cancelAnimationFrame(raf);raf=0;}
@@ -268,19 +280,21 @@
       const damping=1-Math.exp(-cameraRig.manual.responsePerSecond*dt/1000);
       orbit.pitch+=(orbit.targetPitch-orbit.pitch)*damping;orbit.yaw+=(orbit.targetYaw-orbit.yaw)*damping;
       if(sequence&&panel.hidden&&orbit.pointer===null){
-        if(entrance){elapsed+=dt;progress=Math.min(1,elapsed/2300);if(progress===1){entrance=false;pair='intro';syncTimeline(timeline.state());}}
+        if(entrance){elapsed+=dt;progress=Math.max(0,Math.min(1,(elapsed-entranceHold)/transitions[0]));if(progress===1){entrance=false;pair='intro';syncTimeline(timeline.state());}}
         else syncTimeline(timeline.advance(dt));
       }
       draw();queue();if(!raf)previous=0;
     }
     function entrancePositions(){
-      const rect=canvas.getBoundingClientRect(),aspect=rect.width/rect.height,fit=Math.min(.68,aspect*.84),t=Math.max(0,Math.min(1,(aspect-.8)/.5)),offset=.05+.15*t*t*(3-2*t);
-      const half=Math.min(320,rect.width*.7)*.88/(rect.height*fit),line=new Float32Array(N*3);
-      for(let i=0;i<N;i++){line[i*3]=(grains[i*4]*2-1)*half;line[i*3+1]=-offset/fit+(grains[i*4+1]-.5)*.009;}
-      return line;
+      // Area-uniform loose sand in a disk. Its same particle IDs flow into the
+      // first rope figure; the disk remains visible before the slow formation.
+      const disk=new Float32Array(N*3);
+      for(let i=0;i<N;i++){const g=i*4,radialSeed=(grains[g]*17.31+grains[g+2]*31.73)%1,angleSeed=(grains[g+1]*13.17+grains[g+3]*7.29)%1,r=.88*Math.sqrt(radialSeed),theta=angleSeed*Math.PI*2;disk[i*3]=r*Math.cos(theta);disk[i*3+1]=r*Math.sin(theta);disk[i*3+2]=(grains[g+2]-.5)*.006;}
+      return disk;
     }
+    const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();timeline.seek(0);timeline.setDirection(1);destination=targets[0];source=reduce?targets[0]:entrancePositions();normalSource=normals[0];normalDestination=normals[0];extrusionFrom=reduce?1:0;extrusionTo=1;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?'0:0':'intro';scene=0;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;
+      stop();timeline.seek(0);timeline.setDirection(1);destination=targets[0];source=reduce?targets[0]:entrancePositions();normalSource=reduce?normals[0]:diskNormals;normalDestination=normals[0];extrusionFrom=reduce?1:0;extrusionTo=1;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?'0:0':'intro';scene=0;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();caption.classList.toggle('is-visible',reduce);queue();
     }
@@ -300,7 +314,7 @@
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},
       advance(value){entrance=false;syncTimeline(timeline.advance(value));draw();},
       direction(value,engage=false){syncTimeline(timeline.setDirection(value,engage));draw();},
-      evidence(){return{count:N,stride:3,scene,progress,time,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},holds:[...holds],timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
+      evidence(){return{count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
     };
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();
