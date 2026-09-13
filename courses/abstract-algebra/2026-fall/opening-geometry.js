@@ -31,6 +31,7 @@
     patterns: names.map(item => ({ title: item[0], symmetry: 'D' + item[2] })),
     e8: { roots: 240, projected2d: 240, edges: 6720, rings: 8, rootsPerRing: 30, edgeParticles: 60480, rootParticles: 11520 },
     julia: { parameter: [-0.8, 0.156], map: 'z^2 + c', candidates: 600000, centralSymmetry: true },
+    relief: { interpretation: 'Artistic grain-ridge extrusion of the unchanged XY diagrams; the added depth is not an E8 projection or a third Julia coordinate.', figures: [] },
     torus: { majorRadius: .67, minorRadius: .20, outerRadius: .87, innerRadius: .47, genus: 1, coordinateStride: 3, tiltDegrees: [55, -8, -18] }
   };
 
@@ -408,15 +409,119 @@
     }
     return cache[index];
   }
+  // A diagram becomes a raised sand relief, rather than a sheet of shaded dots.
+  // Its original XY samples are never displaced: the extra dimension is an
+  // artistic extrusion of the existing grain ridges. Most grains form the
+  // upper crest, while others expose continuous walls and the lower surface.
+  function reliefHash(value) {
+    value = Math.imul(value ^ (value >>> 16), 0x7feb352d);
+    value = Math.imul(value ^ (value >>> 15), 0x846ca68b);
+    return ((value ^ (value >>> 16)) >>> 0) / 4294967296;
+  }
+  function reliefHeight(index, x, y) {
+    const radius = Math.hypot(x, y), angle = Math.atan2(y, x);
+    const order = index < 3 ? names[index][2] : index === 3 ? 30 : 2;
+    const t = Math.max(0, Math.min(1, (radius - .12) / .26));
+    const fade = t * t * (3 - 2 * t);
+    return .105 + .016 * (1 - Math.min(1, radius * radius))
+      + .009 * fade * Math.cos(order * angle) + .006 * Math.cos(TAU * radius * 2);
+  }
+  function reliefDensity(flat) {
+    // The smallest Hessian direction estimates the cross-section of a local
+    // ridge. Its walls can then catch light from the side instead of sharing
+    // the top surface's normal, including at the E8 web and Julia branches.
+    const size = 256, extent = 1.08, scale = (size - 1) / (2 * extent);
+    let density = new Float32Array(size * size);
+    for (let i = 0; i < N; i++) {
+      const gx = (flat[2 * i] + extent) * scale, gy = (flat[2 * i + 1] + extent) * scale;
+      const x = Math.floor(gx), y = Math.floor(gy), fx = gx - x, fy = gy - y;
+      if (x < 0 || x >= size - 1 || y < 0 || y >= size - 1) continue;
+      const cell = x + y * size;
+      density[cell] += (1 - fx) * (1 - fy); density[cell + 1] += fx * (1 - fy);
+      density[cell + size] += (1 - fx) * fy; density[cell + size + 1] += fx * fy;
+    }
+    for (let pass = 0; pass < 2; pass++) {
+      const horizontal = new Float32Array(size * size), blurred = new Float32Array(size * size);
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        for (let offset = -2; offset <= 2; offset++) {
+          horizontal[x + y * size] += density[Math.max(0, Math.min(size - 1, x + offset)) + y * size] / 5;
+        }
+      }
+      for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+        for (let offset = -2; offset <= 2; offset++) {
+          blurred[x + y * size] += horizontal[x + Math.max(0, Math.min(size - 1, y + offset)) * size] / 5;
+        }
+      }
+      density = blurred;
+    }
+    return function ridgeNormal(x, y, sign) {
+      const gx = Math.max(1, Math.min(size - 2, Math.round((x + extent) * scale)));
+      const gy = Math.max(1, Math.min(size - 2, Math.round((y + extent) * scale)));
+      const cell = gx + gy * size, centre = density[cell];
+      const xx = density[cell - 1] + density[cell + 1] - 2 * centre;
+      const yy = density[cell - size] + density[cell + size] - 2 * centre;
+      const xy = (density[cell + size + 1] - density[cell + size - 1]
+        - density[cell - size + 1] + density[cell - size - 1]) * .25;
+      const eigenvalue = (xx + yy - Math.hypot(xx - yy, 2 * xy)) * .5;
+      let nx = xy, ny = eigenvalue - xx;
+      if (Math.hypot(nx, ny) < 1e-8) {
+        if (Math.abs(xx) + Math.abs(yy) < 1e-7) { nx = x; ny = y; }
+        else { nx = xx < yy ? 1 : 0; ny = xx < yy ? 0 : 1; }
+      }
+      const length = Math.hypot(nx, ny) || 1;
+      return [sign * nx / length, sign * ny / length];
+    };
+  }
+  function makeRelief(index) {
+    const flat = create(index), output = new Float32Array(N * 3), normals = new Float32Array(N * 3);
+    const ridgeNormal = reliefDensity(flat), bottom = -.09;
+    let minimumZ = Infinity, maximumZ = -Infinity, topGrains = 0, wallGrains = 0, bottomGrains = 0;
+    let maximumNormalResidual = 0;
+    for (let i = 0; i < N; i++) {
+      const x = flat[2 * i], y = flat[2 * i + 1], height = reliefHeight(index, x, y);
+      const selector = reliefHash(i + 1 + index * 104729);
+      const layer = reliefHash(i + 0x51ed270b + index * 13007);
+      const grain = reliefHash(i + 0x68bc21eb + index * 19001);
+      let z, nx, ny, nz;
+      if (selector < .56) {
+        // A dense top crest preserves the original drawing even at a steep
+        // camera angle; its low relief still follows the figure's symmetry.
+        z = height + (grain - .5) * .003;
+        const epsilon = .001;
+        nx = -(reliefHeight(index, x + epsilon, y) - reliefHeight(index, x - epsilon, y)) / (2 * epsilon);
+        ny = -(reliefHeight(index, x, y + epsilon) - reliefHeight(index, x, y - epsilon)) / (2 * epsilon);
+        nz = 1; topGrains++;
+      } else if (selector < .92) {
+        // The intervening grains occupy actual depth, forming narrow walls
+        // along existing curves rather than filling the empty parts of a motif.
+        z = bottom + (height - bottom) * layer;
+        const side = ridgeNormal(x, y, grain < .5 ? -1 : 1);
+        nx = side[0]; ny = side[1]; nz = .10 + .12 * layer; wallGrains++;
+      } else {
+        z = bottom + (grain - .5) * .002;
+        nx = 0; ny = 0; nz = -1; bottomGrains++;
+      }
+      const length = Math.hypot(nx, ny, nz);
+      output[3 * i] = x; output[3 * i + 1] = y; output[3 * i + 2] = z;
+      normals[3 * i] = nx / length; normals[3 * i + 1] = ny / length; normals[3 * i + 2] = nz / length;
+      minimumZ = Math.min(minimumZ, output[3 * i + 2]); maximumZ = Math.max(maximumZ, output[3 * i + 2]);
+      maximumNormalResidual = Math.max(maximumNormalResidual,
+        Math.abs(Math.hypot(normals[3 * i], normals[3 * i + 1], normals[3 * i + 2]) - 1));
+      if (!Number.isFinite(x + y + z + nx + ny + nz)) throw new Error('Non-finite relief particle');
+    }
+    diagnostics.relief.figures[index] = {
+      title: captions[index].title, particles: N, xyUnchanged: true,
+      minimumZ, maximumZ, thickness: maximumZ - minimumZ,
+      topGrains, wallGrains, bottomGrains, maximumNormalResidual,
+      construction: '56% raised crest; 36% continuous ridge walls; 8% lower surface; density-Hessian wall normals'
+    };
+    spatialCache[index] = output; normalCache[index] = normals;
+  }
   function create3D(index) {
     validateIndex(index);
     if (!spatialCache[index]) {
-      const flat = create(index);
-      if (!spatialCache[index]) {
-        const output = new Float32Array(N * 3);
-        for (let i = 0; i < N; i++) { output[3 * i] = flat[2 * i]; output[3 * i + 1] = flat[2 * i + 1]; }
-        spatialCache[index] = output;
-      }
+      if (index === 5) makeTorus();
+      else makeRelief(index);
     }
     return spatialCache[index];
   }
@@ -424,11 +529,7 @@
     validateIndex(index);
     if (!normalCache[index]) {
       if (index === 5) makeTorus();
-      else {
-        const normals = new Float32Array(N * 3);
-        for (let i = 0; i < N; i++) normals[3 * i + 2] = 1;
-        normalCache[index] = normals;
-      }
+      else makeRelief(index);
     }
     return normalCache[index];
   }
