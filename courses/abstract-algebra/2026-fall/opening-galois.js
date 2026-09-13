@@ -6,10 +6,10 @@
     {id:'portrait',year:'1811–1832',motif:'portrait'},
     {id:'awakening',year:'1827',motif:'open book, compass and geometry'},
     {id:'symmetries',year:'1830–1831',motif:'five roots and their permutations'},
-    {id:'prison',year:'1831–1832',motif:'a barred window and a manuscript'},
+    {id:'prison',year:'1831–1832',motif:'the young Galois writing beneath a barred window'},
     {id:'letter',year:'29 May 1832',motif:'a letter, quill and candle'},
     {id:'last-dawn',year:'30–31 May 1832',motif:'two distant figures at dawn'},
-    {id:'echoes',year:'1843–1846',motif:'publication and the spread of an idea'}
+    {id:'echoes',year:'1832–1846',motif:'a silent parchment manuscript and falling autumn leaves'}
   ].map(Object.freeze));
   function rng(initial){let seed=initial>>>0;return()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
 
@@ -149,19 +149,42 @@
   }
   function prison(d){
     const{line,curve,ellipse}=d;
-    const arch=()=>{d.ctx.beginPath();d.ctx.moveTo(-.45,-.22);d.ctx.lineTo(-.45,.35);d.ctx.bezierCurveTo(-.45,.93,.45,.93,.45,.35);d.ctx.lineTo(.45,-.22);d.ctx.closePath();};
-    d.style(.008,.9);arch();d.ctx.stroke();d.style(.004,.045);arch();d.ctx.fill();
-    curve([-.51,-.24],[[-.51,.05,-.51,.2,-.51,.36],[-.51,1,.51,1,.51,.36],[.51,.22,.51,-.02,.51,-.24]],.003,.58);
-    for(const x of[-.30,-.15,0,.15,.30]){const top=.35+Math.sqrt(Math.max(0,.45*.45-x*x));line([[x,-.21],[x,top]],.008,.9);line([[x+.007,-.21],[x+.007,top-.012]],.0015,.44);}
-    for(const y of[0,.28,.49])line([[-.44,y],[.44,y]],.006,.88);
-    line([[-.53,-.23],[.53,-.23],[.59,-.28],[-.58,-.28],[-.53,-.23]],.004,.9);
-    // Light passes through the bars onto an unfinished manuscript.
-    for(let j=0;j<8;j++){const x=-.34+j*.095;line([[x,-.29],[x-.21,-.60]],.002,j%2?.22:.39);}
-    const paper=[[-.58,-.40],[.20,-.34],[.62,-.69],[-.23,-.81]];line(paper,.002,.06,true,true);line(paper,.005,.9,true);
-    for(let j=0;j<9;j++){const y=-.45-j*.028;curve([-.40+(j%3)*.016,y],[[.0,y+.025,.15,y+.005,.30+(j%2)*.10,y-.011]],.002,.61);}
-    line([[.2,-.35],[.31,-.4],[.33,-.35]],.0027,.6);
-    for(let j=0;j<10;j++){const y=-.16+j*.096;line([[-.73,y],[-.55,y+.006]],.002,.22);line([[.55,y+.01],[.76,y]],.002,.22);}
-    ellipse(.43,-.48,.032,.010,.002,.35);
+    // The cell surrounds a substantial young figure, instead of replacing him
+    // with a prison symbol. His face uses the same historical portrait grains.
+    const arch=()=>{d.ctx.beginPath();d.ctx.moveTo(.04,-.20);d.ctx.lineTo(.04,.37);d.ctx.ellipse(.39,.37,.35,.39,0,Math.PI,0,true);d.ctx.lineTo(.74,-.20);d.ctx.closePath();};
+    d.style(.0065,.74);arch();d.ctx.stroke();d.style(.003,.022);arch();d.ctx.fill();
+    curve([0,-.22],[[0,.04,0,.20,0,.38],[0,.94,.78,.94,.78,.38],[.78,.18,.78,0,.78,-.22]],.0025,.42);
+    for(const x of[.16,.28,.40,.52,.64]){const top=.37+.39*Math.sqrt(Math.max(0,1-((x-.39)/.35)**2));line([[x,-.19],[x,top]],.007,.79);line([[x+.006,-.19],[x+.006,top-.01]],.0014,.3);}
+    for(const y of[.02,.29,.51])line([[.05,y],[.73,y]],.0048,.65);
+    line([[0,-.21],[.77,-.21],[.81,-.255],[-.03,-.255],[0,-.21]],.0037,.71);
+    for(let j=0;j<6;j++){const x=.11+j*.103;line([[x,-.26],[x-.11,-.45]],.0016,.24);}
+    for(let j=0;j<7;j++){const y=-.14+j*.128;line([[-.82,y],[-.66,y+.004]],.0018,.18);line([[.80,y],[.88,y-.004]],.0018,.18);}
+    // Collar, coat, writing arm and the edge of a narrow desk.
+    const coat=[[-.47,.21],[-.61,.12],[-.69,-.06],[-.67,-.50],[-.46,-.62],[-.23,-.52],[-.12,-.30],[-.18,.04],[-.31,.17]];
+    line(coat,.002,.11,true,true);line(coat,.005,.9,true);
+    curve([-.60,.09],[[-.54,-.10,-.54,-.30,-.62,-.48]],.0025,.63);
+    curve([-.41,.12],[[-.29,-.06,-.32,-.31,-.26,-.51]],.0027,.68);
+    line([[-.43,.19],[-.31,-.02],[-.22,.16]],.0042,.92);
+    line([[-.40,.16],[-.35,-.10],[-.29,-.015]],.0023,.65);
+    for(let j=0;j<13;j++){const x=-.65+j*.025;curve([x,-.43],[[x+.065,-.25,x+.035,-.10,x+.072,.04-j*.007]],.0012,.31);}
+    // The known curls, forehead, nose and young face of Galois, cropped from
+    // Alfred Galois's portrait rather than invented as a generic silhouette.
+    const binary=atob(window.CourseOpeningGaloisPortrait),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),view=new DataView(bytes.buffer);
+    d.ctx.fillStyle='rgba(255,255,255,.88)';
+    for(let j=0;j<bytes.length;j+=4){const u=view.getUint16(j,true)/65535,v=view.getUint16(j+2,true)/65535;if(v>.55||u<.23||u>.84)continue;d.ctx.fillRect(-.45+(u-.50)*.84,.73-v*1.055,.0019,.0019);}
+    const sleeve=[[-.32,.035],[-.21,-.04],[-.18,-.20],[.035,-.285],[.008,-.335],[-.32,-.285],[-.44,-.105]];
+    line(sleeve,.002,.10,true,true);line(sleeve,.0045,.88,true);
+    curve([-.37,-.10],[[-.27,-.19,-.28,-.24,-.07,-.30]],.002,.56);
+    curve([.013,-.286],[[.063,-.26,.09,-.271,.119,-.293],[.14,-.319,.091,-.324,.044,-.324]],.0036,.89);
+    for(let j=0;j<3;j++)line([[.055+j*.018,-.279],[.075+j*.018,-.311]],.0016,.61);
+    line([[-.72,-.51],[.54,-.36],[.80,-.49],[-.43,-.70],[-.72,-.51]],.004,.79);
+    line([[-.44,-.71],[-.45,-.84]],.005,.7);line([[.70,-.51],[.70,-.81]],.005,.65);
+    const paper=[[-.03,-.35],[.43,-.305],[.63,-.472],[.15,-.55]];line(paper,.002,.049,true,true);line(paper,.0039,.9,true);
+    for(let j=0;j<7;j++){const y=-.374-j*.021;curve([.075+j*.008,y],[[.20,y+.013,.34,y+.004,.46-j*.003,y-.010]],.0017,.64);}
+    line([[.115,-.291],[.253,-.41]],.003,.95);
+    curve([.114,-.290],[[.058,-.19,.036,-.079,.035,-.02],[.12,-.072,.156,-.192,.114,-.290]],.0024,.66);
+    for(let j=0;j<7;j++){const y=-.26+j*.027;line([[.11,y],[.065,y+.041]],.0011,.5);}
+    ellipse(.57,-.316,.045,.014,.0025,.64);line([[.528,-.315],[.532,-.362],[.61,-.37],[.61,-.315]],.0026,.63);
   }
   function letter(d){
     const{line,curve,ellipse,dot}=d;
@@ -226,22 +249,69 @@
     for(let j=0;j<4;j++)ellipse(-.43,-.535-j*.018,.14+j*.029,.011+j*.005,.0012,.34-j*.065);
     for(let j=0;j<12;j++){const a=j*Math.PI/11;line([[.02+.35*Math.cos(a),.10+.35*Math.sin(a)],[.02+.39*Math.cos(a),.10+.39*Math.sin(a)]],.0014,.17);}
   }
+  const leafDesigns=Object.freeze([
+    {tag:2,x:-.68,y:.70,size:.153,angle:-.46},
+    {tag:3,x:-.15,y:.83,size:.130,angle:.60},
+    {tag:4,x:.49,y:.73,size:.157,angle:1.06},
+    {tag:5,x:.75,y:.14,size:.148,angle:-.40},
+    {tag:6,x:.57,y:-.57,size:.139,angle:.74},
+    {tag:7,x:-.65,y:-.64,size:.147,angle:-.79},
+    {tag:8,x:-.75,y:-.035,size:.123,angle:1.48}
+  ].map(Object.freeze));
+  const leaves=Object.freeze(leafDesigns.map(l=>Object.freeze({tag:l.tag,centre:Object.freeze([l.x,l.y-.035]),radius:l.size*1.3})));
+  function autumnLeaf(d,leaf){
+    const{line,curve}=d,c=Math.cos(leaf.angle),s=Math.sin(leaf.angle);
+    const t=p=>[leaf.x+leaf.size*(c*p[0]-s*p[1]),leaf.y+leaf.size*(s*p[0]+c*p[1])];
+    const map=p=>p.length===4?[...t(p.slice(0,2)),...t(p.slice(2,4))]:[...t(p.slice(0,2)),...t(p.slice(2,4)),...t(p.slice(4,6))];
+    if(leaf.tag%2===0){
+      // Rounded oak lobes read as leaves even at the wide establishing view.
+      const side=[[0,1],[.13,.80],[.28,.88],[.34,.75],[.20,.62],[.42,.69],[.49,.54],[.30,.42],[.53,.40],[.55,.25],[.29,.13],[.49,.035],[.46,-.12],[.23,-.16],[.34,-.34],[.22,-.49],[.095,-.50],[0,-.88]];
+      const outline=[...side,...side.slice(1,-1).reverse().map(p=>[-p[0],p[1]])].map(t);
+      const path=()=>{d.ctx.beginPath();const last=outline[outline.length-1],first=outline[0];d.ctx.moveTo((last[0]+first[0])/2,(last[1]+first[1])/2);outline.forEach((p,i)=>{const next=outline[(i+1)%outline.length];d.ctx.quadraticCurveTo(p[0],p[1],(p[0]+next[0])/2,(p[1]+next[1])/2);});d.ctx.closePath();};
+      d.style(.002,.083);path();d.ctx.fill();d.style(.0028,.89);path();d.ctx.stroke();
+      curve(t([0,-.88]),[map([.045,-.12,-.04,.55,0,1])],.0017,.84);
+      for(const side of[-1,1])for(const p of[[.27,.79],[.42,.59],[.46,.30],[.40,-.045],[.26,-.37]])curve(t([0,p[1]-.21]),[map([side*p[0]*.33,p[1]-.11,side*p[0]*.72,p[1]-.03,side*p[0],p[1]])],.00125,.64);
+    }else{
+      const outline=[];for(let j=0;j<=16;j++){const u=j/16,y=1-u*1.87,w=Math.sin(Math.PI*u)*.48;outline.push([w*(j%2?.88:1.05),y]);}for(let j=16;j>=0;j--){const u=j/16,y=1-u*1.87,w=Math.sin(Math.PI*u)*.48;outline.push([-w*(j%2?.88:1.05),y]);}
+      line(outline.map(t),.002,.076,true,true);line(outline.map(t),.0028,.87,true);
+      curve(t([0,-.88]),[map([.04,-.12,-.07,.40,0,1])],.0017,.82);
+      for(let j=1;j<8;j++){const y=-.70+j*.19,w=Math.sin(Math.PI*(1-y)/1.87)*.44;for(const side of[-1,1])curve(t([0,y-.13]),[map([side*w*.48,y-.05,side*w*.86,y+.02,side*w,y+.055])],.0012,.60);}
+    }
+    curve(t([0,-.86]),[map([.02,-1.03,.06,-1.10,.025,-1.24])],.0021,.76);
+  }
   function echoes(d){
-    const{line,curve,ellipse,dot}=d;openBook(d,-.075,.95);
-    // A single published page becomes a growing family of mathematical links.
-    const hubs=[[0,.27],[-.30,.48],[.32,.49],[-.57,.71],[-.13,.77],[.17,.81],[.58,.68]];
-    const links=[[0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[4,5],[1,2]];
-    for(const [i,j]of links){const a=hubs[i],b=hubs[j];curve(a,[[a[0],a[1]+.085,b[0],b[1]-.095,...b]],.0034,.78);}
-    hubs.forEach((p,i)=>{ellipse(...p,i===0?.049:.034,i===0?.049:.034,.0035,.92);dot(...p,.008,.82);});
-    for(const p of[[-.76,.82],[-.51,.90],[-.18,.94],[.19,.95],[.50,.90],[.78,.81]]){
-      const from=hubs[p[0]<-.4?3:p[0]<0?4:p[0]<.4?5:6];line([from,p],.0016,.35);dot(...p,.005,.47);
+    const{line,curve,ellipse,dot}=d;
+    // One ageing manuscript. Its uneven edges and rolled corners carry time;
+    // the ink remains while individually tagged autumn leaves pass over it.
+    const parchment=[[-.53,.54],[-.33,.552],[-.14,.525],[.06,.542],[.23,.526],[.43,.50],[.47,.345],[.46,.12],[.49,-.08],[.47,-.30],[.48,-.535],[.59,-.668],[.36,-.681],[.14,-.702],[-.07,-.694],[-.28,-.733],[-.475,-.700],[-.53,-.543],[-.505,-.32],[-.526,-.12],[-.51,.10],[-.535,.31]];
+    line(parchment,.002,.030,true,true);line(parchment,.0043,.83,true);
+    curve([.429,.502],[[.54,.55,.652,.487,.646,.412],[.651,.359,.555,.327,.472,.345]],.004,.85);
+    curve([.484,.492],[[.615,.49,.615,.397,.515,.373]],.0025,.61);
+    curve([.480,-.536],[[.507,-.612,.537,-.631,.59,-.668]],.002,.46);
+    curve([-.475,-.700],[[-.615,-.719,-.659,-.616,-.576,-.57],[-.548,-.56,-.509,-.592,-.501,-.643]],.0033,.77);
+    curve([-.584,-.66],[[-.61,-.607,-.55,-.592,-.523,-.625]],.002,.50);
+    // Handwritten clauses and mathematical working, not a typographic label.
+    const random=rng(18431846);
+    for(let row=0;row<18;row++){
+      const y=.412-row*.050,x0=-.413+random()*.014,words=3+(row%3);
+      let x=x0;
+      for(let word=0;word<words;word++){
+        const length=.087+random()*.055;
+        const end=Math.min(.37,x+length);
+        curve([x,y],[[x+.02,y+.014,x+.030,y-.018,x+.043,y+.004],[x+.061,y+.022,end-.018,y-.018,end,y+.003]],.0016,row<3?.76:.58);
+        if(row%4===1)line([[x+.01,y+.016],[x+.043,y+.009]],.0011,.43);
+        x=end+.025+random()*.012;
+      }
     }
-    // Two rising sheets form quiet echoes of the central volume.
-    for(let j=0;j<2;j++){
-      const x=-.75+j*1.15,y=.28+j*.02;
-      line([[x,y],[x+.30,y+.06],[x+.35,y-.11],[x+.055,y-.17]],.0025,.58,true);
-      for(let k=0;k<4;k++)line([[x+.06,y-.027-k*.023],[x+.255,y+.012-k*.023]],.0013,.33);
-    }
+    // A small root-permutation sketch breaks the texture of the writing.
+    const ring=[[-.11,-.50],[-.015,-.445],[.080,-.50],[.047,-.602],[-.076,-.602]];
+    for(let i=0;i<5;i++){line([ring[i],ring[(i+2)%5]],.0016,.55);ellipse(...ring[i],.009,.009,.0018,.66);}
+    for(let j=0;j<5;j++){const y=.32-j*.178;line([[-.49,y],[-.477,y-.038]],.0011,.29);line([[.438,y-.072],[.445,y-.12]],.0011,.26);}
+    // A sparse branch frames the falling leaves without closing the scene.
+    curve([-.91,.67],[[-.70,.78,-.45,.81,-.18,.915],[.08,.955,.31,.88,.65,.91]],.0026,.37);
+    curve([-.63,.807],[[-.61,.9,-.51,.925,-.47,.978]],.0015,.29);
+    curve([.34,.91],[[.41,.82,.56,.836,.66,.76]],.0015,.30);
+    for(let j=0;j<14;j++){const x=-.46+j*.067;dot(x,-.81+Math.sin(j*.74)*.014,.002,.23);}
   }
   const renderers=[null,awakening,symmetries,prison,letter,lastDawn,echoes];
   const motifCache=new Map();
@@ -255,6 +325,9 @@
       lastDawn(d,false);
       const near=drawing();person(near,-.43,-.21,1.03,1);
       layers.push({drawing:near,tag:1});
+    }else if(index===6){
+      echoes(d);
+      for(const leaf of leafDesigns){const layer=drawing();autumnLeaf(layer,leaf);layers.push({drawing:layer,tag:leaf.tag});}
     }else renderers[index](d);
     const pixels=[],weights=[];let total=0;
     for(const layer of layers){
@@ -279,5 +352,5 @@
     }
     return pack(points,count,[count,0,0]);
   }
-  window.CourseOpeningGalois=Object.freeze({sample,sampleNode,nodeCount:nodes.length,nodes,evidence:()=>({name:'Évariste Galois',born:1811,died:1832,inscription:'Évariste Galois',dates:'1811–1832',portraitArtist:'Alfred Galois',portraitPublished:1848,letterStrokeScale:1/3,portraitVerticalShift:-.09,nodeCount:nodes.length,nodes})});
+  window.CourseOpeningGalois=Object.freeze({sample,sampleNode,nodeCount:nodes.length,nodes,leaves,evidence:()=>({name:'Évariste Galois',born:1811,died:1832,inscription:'Évariste Galois',dates:'1811–1832',portraitArtist:'Alfred Galois',portraitPublished:1848,letterStrokeScale:1/3,portraitVerticalShift:-.09,nodeCount:nodes.length,nodes,leaves})});
 })();

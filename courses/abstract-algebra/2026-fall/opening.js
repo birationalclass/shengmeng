@@ -15,7 +15,7 @@
   const storageKey = 'courseOpeningAppearance.v3';
   const durationChoices = [30,45,60,90];
   const morphSpeedChoices=[.25,.5,.75,1,1.5],spinSpeedScale=2;
-  const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,false,false,true,true,true,true,true,true,true])});
+  const defaults = Object.freeze({backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,false,false,true,true,true,true,true,true,false])});
   const appearanceRanges={backgroundBrightness:[20,240],gemPercent:[0,5],titleScale:[80,160],quoteScale:[80,160],textFade:[.6,5]};
   const freshDefaults=()=>({...defaults,grainTypes:[...defaults.grainTypes],sceneEnabled:[...defaults.sceneEnabled],sceneDurations:[...defaults.sceneDurations]});
   let settings = freshDefaults();
@@ -27,15 +27,16 @@
     }
     for(const [key,[min,max]] of Object.entries(appearanceRanges))settings[key]=Number.isFinite(saved[key])?Math.max(min,Math.min(max,saved[key])):defaults[key];
     if(Array.isArray(saved.grainTypes)&&saved.grainTypes.length===6&&saved.grainTypes.every(v=>typeof v==='boolean')&&saved.grainTypes.some(Boolean))settings.grainTypes=[...saved.grainTypes];
-    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>i<3?false:typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
+    if(Array.isArray(saved.sceneEnabled)){const selection=defaults.sceneEnabled.map((v,i)=>i<3||i===9?false:typeof saved.sceneEnabled[i]==='boolean'?saved.sceneEnabled[i]:v);if(selection.some(Boolean))settings.sceneEnabled=selection;}
     settings.morphSpeed=morphSpeedChoices.includes(saved.morphSpeed)?saved.morphSpeed:defaults.morphSpeed;
     settings.spinSpeed=Number.isFinite(saved.spinSpeed)?Math.max(0,Math.min(3,saved.spinSpeed)):defaults.spinSpeed;
     if(current&&Array.isArray(saved.sceneDurations))settings.sceneDurations=defaults.sceneDurations.map((value,i)=>durationChoices.includes(saved.sceneDurations[i])?saved.sceneDurations[i]:value);
   } catch (_) {}
+  settings.galoisScoreEnabled=true;
   let film = null, initialization = null, visibilityTimer = 0, stage = 'loading', ownedFullscreen = false, entryVersion = 0;
   toggle.disabled=true;
   const startButton=root.querySelector('[data-start-animation]');
-  function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*spinSpeedScale*Math.PI/180:0};}
+  function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['galois','outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['galois','outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*spinSpeedScale*Math.PI/180:0};}
   function syncSettings() {
     root.dataset.settings = JSON.stringify(settings);
     root.style.setProperty('--title-scale',settings.titleScale/100);root.style.setProperty('--quote-scale',settings.quoteScale/100);root.style.setProperty('--text-fade',settings.textFade+'s');
@@ -44,7 +45,7 @@
       panel.querySelector('[data-appearance-output="'+key+'"]').textContent=key==='textFade'?settings[key].toFixed(1)+' 秒':settings[key]+'%';
       input.style.setProperty('--range-progress',(settings[key]-min)/(max-min)*100+'%');
     });
-    root.classList.toggle('can-orbit',settings.depthEnabled&&!['outro','departing'].includes(stage));
+    root.classList.toggle('can-orbit',settings.depthEnabled&&!['galois','outro','departing'].includes(stage));
     panel.querySelector('[data-morph-speed]').value=String(settings.morphSpeed);
     panel.querySelector('[data-playback-order]').value=settings.shuffleScenes?'random':'sequential';
     const spinInput=panel.querySelector('[data-spin-speed]');spinInput.value=String(settings.spinSpeed*spinSpeedScale);spinInput.disabled=!settings.spinEnabled;
@@ -62,12 +63,15 @@
     });
   }
   function updateSettings() {
+    settings.sceneEnabled=settings.sceneEnabled.map((on,i)=>i>=3&&i<9&&on);
+    if(!settings.sceneEnabled.some(Boolean))settings.sceneEnabled=[...defaults.sceneEnabled];
+    settings.galoisScoreEnabled=true;
     syncSettings();try {localStorage.setItem(storageKey,JSON.stringify(settings));} catch (_) {}
     if(film)film.refresh();
   }
   panel.addEventListener('input',event=>{
     const input=event.target;
-    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||i<3||i>=settings.sceneEnabled.length)return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
+    if(input.dataset.sceneEnabled!==undefined){const i=Number(input.dataset.sceneEnabled);if(!Number.isInteger(i)||i<3||i>=9)return;const next=[...settings.sceneEnabled];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.sceneEnabled=next;}
     else if(input.dataset.grainType!==undefined){const i=Number(input.dataset.grainType);if(!Number.isInteger(i)||i<0||i>5)return;const next=[...settings.grainTypes];next[i]=input.checked;if(!next.some(Boolean)){syncSettings();return;}settings.grainTypes=next;}
     else if(input.dataset.appearanceRange&&appearanceRanges[input.dataset.appearanceRange]&&Number.isFinite(Number(input.value))){const key=input.dataset.appearanceRange,[min,max]=appearanceRanges[key];settings[key]=Math.max(min,Math.min(max,Number(input.value)));}
     else if(input.dataset.settingToggle)settings[input.dataset.settingToggle]=input.checked;
@@ -99,9 +103,14 @@
   dialog.addEventListener('focusin',event=>{if(event.target===toggle||panel.contains(event.target))showControls();});
   function requestCourseEntry(){
     if(stage==='playing'){
-      stage='outro';root.dataset.stage=stage;dialog.classList.add('opening-outro');closeSettings();dialog.focus({preventScroll:true});
-      window.CourseOpeningVoice?.stop();film.outro();syncSettings();showControls();
+      stage='galois';root.dataset.stage=stage;dialog.classList.add('opening-galois');closeSettings();dialog.focus({preventScroll:true});
+      window.CourseOpeningVoice?.stop();film.galois();syncSettings();showControls();
     }else if(stage==='outro'&&film.outroReady()){stage='departing';root.dataset.stage=stage;closeSettings();dialog.focus({preventScroll:true});film.depart();}
+  }
+  function finishGalois(){
+    if(stage!=='galois')return;
+    stage='outro';root.dataset.stage=stage;dialog.classList.remove('opening-galois');dialog.classList.add('opening-outro');
+    closeSettings();window.CourseOpeningVoice?.stop();film.outro();syncSettings();showControls();
   }
   function leaveOpening() {
     entryVersion++;stage='closed';root.dataset.stage=stage;toggle.disabled=true;
@@ -115,7 +124,7 @@
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
     if(dialog.open&&!alreadyLoading)return;
-    if(!dialog.open){dialog.classList.remove('opening-outro');boot.start();}
+    if(!dialog.open){dialog.classList.remove('opening-outro','opening-galois');boot.start();}
     const entry=++entryVersion;stage='loading';root.dataset.stage=stage;toggle.disabled=true;
     try {
       if(!initialization)initialization=initialize();await initialization;
@@ -133,8 +142,8 @@
       try {
         Promise.resolve(root.requestFullscreen({navigationUI:'hide'})).then(()=>{
           if(document.fullscreenElement!==root)return;
-          if(entry!==entryVersion||stage!=='playing'||!dialog.open){
-            if(stage!=='playing')document.exitFullscreen().catch(()=>{});
+          if(entry!==entryVersion||!['playing','galois','outro','departing'].includes(stage)||!dialog.open){
+            if(!['playing','galois','outro','departing'].includes(stage))document.exitFullscreen().catch(()=>{});
             return;
           }
           ownedFullscreen=true;
@@ -153,11 +162,11 @@
     }
   });
   dialog.addEventListener('wheel',event=>{
-    if(stage!=='playing'||panel.contains(event.target)||event.ctrlKey||Math.abs(event.deltaY)<.5)return;
+    if(!['playing','galois'].includes(stage)||panel.contains(event.target)||event.ctrlKey||Math.abs(event.deltaY)<.5)return;
     event.preventDefault();film.direction(event.deltaY>0?1:-1);showControls();
   },{passive:false});
   document.addEventListener('fullscreenchange',()=>{
-    if(stage!=='playing')return;
+    if(!['playing','galois'].includes(stage))return;
     if(document.fullscreenElement===root)ownedFullscreen=true;
     else if(!document.fullscreenElement){ownedFullscreen=false;dialog.focus({preventScroll:true});film?.refresh();showControls();}
   });
@@ -205,11 +214,11 @@
     }
     const program = link(materials.vertex, materials.fragment), background = link(materials.backgroundVertex, materials.backgroundFragment);
     const backdrop=window.CourseOpeningBackdrop,lettering=backdrop.create(gl),letterProgram=link(backdrop.vertex,backdrop.fragment);
-    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes,story.recognition]);
+    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes.map(item=>({...item,language:'zh'})),{...story.recognition,language:'zh'}]);
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;const impulses=window.CourseOpeningImpulse.create();let clickCandidate=null;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
-    const selectedScenes=()=>settings.sceneEnabled.flatMap((on,i)=>i>=3&&on?[i]:[]);
+    const selectedScenes=()=>{const ids=settings.sceneEnabled.flatMap((on,i)=>i>=3&&i<9&&on?[i]:[]);return ids.length?ids:[3,4,5,6,7,8];};
     const playlistSeed=(Math.random()*4294967296)>>>0,motion=window.CourseOpeningMotion.create();
     let playlist=window.CourseOpeningPlaylist.create({sceneIds:selectedScenes(),randomized:settings.shuffleScenes,seed:playlistSeed}),routeCycle=0;
     const initialScene=playlist.order(0)[0];
@@ -221,10 +230,11 @@
     for(let i=0;i<grains.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;grains[i]=seed/4294967296;}
     const grainBuffer=buffer(grains,gl.STATIC_DRAW);
     const loc={source:gl.getAttribLocation(program,'start'),destination:gl.getAttribLocation(program,'finish'),normalSource:gl.getAttribLocation(program,'normalStart'),normalDestination:gl.getAttribLocation(program,'normalFinish'),grain:gl.getAttribLocation(program,'grain'),quad:gl.getAttribLocation(background,'pos')};
-    for(const name of ['galoisLossFrom','galoisLossTo','galoisFit','narrativeLight','progress','aspect','dpr','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
+    for(const name of ['galoisLossFrom','galoisLossTo','galoisLeavesFrom','galoisLeavesTo','galoisLeafSpecs[0]','galoisFit','narrativeLight','progress','aspect','dpr','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
     const bgLoc={};for(const name of ['time','aspect','camera','background','stageLight','spotlight','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
     const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=0;
+    const initialEntranceDuration=transition=>3*Math.min(4200,transition);
     let order=playlist.order(0);
     let storyHoldMs=settings.sceneDurations[9]*1000,storyMorphMs=baseTransitions[9]/settings.morphSpeed,storyScored=settings.galoisScoreEnabled;
     const transitionTimes=(ids,deck=playlist,cycle=routeCycle)=>ids.map((id,i)=>{
@@ -239,19 +249,19 @@
     let starts=makeStarts();
     let scene=initialScene,progress=1,moving=false,active=false,sequence=false,entrance=false,elapsed=0,time=0,previous=0,raf=0,pair=initialScene+':'+initialScene;
     const visual={camera:0,background:0,spotlight:0,radiation:0,spin:0};
-    let outro=null,galoisState=null,galoisNode=0,displayedGaloisNode=-1;
-    let spinAngle=0,routeOffset=0,cameraBridge=null,entrancePose=null,entranceDuration=transitions[0];
+    let outro=null,terminalActive=false,galoisState=null,galoisNode=0,displayedGaloisNode=-1;
+    let spinAngle=0,routeOffset=0,cameraBridge=null,entrancePose=null,entranceDuration=initialEntranceDuration(transitions[0]);
     let entranceViewport=null;
     let entrancePortraitWeight=initialScene===9?1:0,manualPortraitWeight=0;
     let entranceGroupWeight=[6,7].includes(initialScene)?1:0,manualGroupWeight=0;
     const orbit={pitch:0,yaw:0,targetPitch:0,targetYaw:0,pointer:null,solid:-1,x:0,y:0};
     const ease=t=>t*t*t*(t*(t*6-15)+10);
     function mappedState(state=timeline.state()){
-      const from=order[state.from],to=state.moving&&state.from===order.length-1&&state.to===0?playlist.order(state.cycles+1)[0]:order[state.to];
+      const from=order[state.from],to=terminalActive?9:state.moving&&state.from===order.length-1&&state.to===0?playlist.order(state.cycles+1)[0]:order[state.to];
       return {...state,from,to,scene:state.moving?to:order[state.scene]};
     }
     function syncCycle(state){
-      if(state.cycles===routeCycle)return state;
+      if(terminalActive||state.cycles===routeCycle)return state;
       const oldDuration=timeline.duration,previousCycle=routeCycle;
       routeCycle=state.cycles;order=playlist.order(routeCycle);
       transitions=transitionTimes(order);holds=holdTimes(order);starts=makeStarts();
@@ -293,18 +303,20 @@
     function twoSidedWeight(){return twoSidedFrom+(twoSidedTo-twoSidedFrom)*Math.max(0,Math.min(1,ease(progress)));}
     function renderedSpin(){return spinAngle*(1-portraitWeight());}
     function storyTreatment(){
-      if(!storyScored||!galoisState||entrance||outro||pair==='manual')return {from:0,to:0,light:1};
-      const t=timeline.state().holdElapsed,state=galoisState,loss=ease(Math.max(0,Math.min(1,(t-124550)/2450)));
+      if(!storyScored||!galoisState||entrance||outro||pair==='manual')return {from:0,to:0,leavesFrom:-1,leavesTo:-1,light:1};
+      const t=timeline.state().holdElapsed,state=galoisState,loss=ease(Math.max(0,Math.min(1,(t-126000)/7000)));
       const shades=[1,.94,1.04,.68,.86,.70,1.03],q=state.moving?ease(state.progress):0;
       let light=shades[state.from]+(shades[state.to]-shades[state.from])*q;
       if(state.node===6&&!state.moving)light+=.12*Math.exp(-Math.pow((t-166150)/3200,2));
-      return {from:state.from===5?loss:0,to:state.to===5?loss:0,light};
+      const leaves=Math.max(0,t-story.score.starts[6])/1000;
+      return {from:state.from===5?loss:0,to:state.to===5?loss:0,leavesFrom:state.from===6?leaves:-1,leavesTo:state.to===6?leaves:-1,light};
     }
     function galoisFit(){const rect=canvas.getBoundingClientRect();return rect.width<700&&rect.height<700?[.66,-.34]:[1,0];}
     function snapshot(withEffects=false,atTime=time,world=true){
       const treatment=storyTreatment(),fit=galoisFit(),e=ease(progress),arch=Math.sin(Math.PI*e),result=new Float32Array(N*3),appearance=effective(),cosine=Math.cos(renderedSpin()),sine=Math.sin(renderedSpin());
       for(let i=0;i<N;i++){
-        const k=i*3,g=i*4,a=treatment.from?materials.storyLoss(source.subarray(k,k+3),treatment.from,grains[g],fit).point:source.subarray(k,k+3),b=treatment.to?materials.storyLoss(destination.subarray(k,k+3),treatment.to,grains[g],fit).point:destination.subarray(k,k+3);
+        const k=i*3,g=i*4,leafA=materials.storyLeaves(source.subarray(k,k+3),treatment.leavesFrom,fit).point,leafB=materials.storyLeaves(destination.subarray(k,k+3),treatment.leavesTo,fit).point;
+        const a=treatment.from?materials.storyLoss(leafA,treatment.from,grains[g],fit).point:leafA,b=treatment.to?materials.storyLoss(leafB,treatment.to,grains[g],fit).point:leafB;
         const dx=b[0]-a[0],dy=b[1]-a[1],drift=arch*Math.min(.022,Math.hypot(dx,dy)*.16);
         let x=a[0]+dx*e-dy*arch*.28+Math.sin(grains[g]*19+e*6.283)*drift;
         let y=a[1]+dy*e+dx*arch*.28+Math.cos(grains[g+1]*23-e*6.283)*drift;
@@ -361,6 +373,12 @@
     }
     function cameraPose(){
       if(outro)return outro.view;
+      if(terminalActive){
+        const neutral={angles:[0,0,0],target:[0,0,0],zoom:1,perspective:0};
+        if(!entrance)return neutral;
+        const amount=ease(Math.min(1,progress)),from=entrancePose||neutral;
+        return {...cameraRig.blend(from,neutral,amount),perspective:from.perspective*(1-amount)};
+      }
       const state=timeline.state(),pose=baseCameraPose();
       let target=pose.target.map(value=>value*visual.camera);
       if(!settings.depthEnabled&&!state.moving&&order[state.scene]<5)target[2]=0;
@@ -370,6 +388,7 @@
       return {...cameraRig.blend(view,{angles:[0,0,0],target:[0,0,0],zoom:1},weight),perspective:view.perspective*(1-weight)};
     }
     function rebuildDurations(){
+      if(terminalActive)return;
       const nextPlaylist=window.CourseOpeningPlaylist.create({sceneIds:selectedScenes(),randomized:settings.shuffleScenes,seed:playlistSeed});
       const nextOrder=nextPlaylist.order(timeline.state().cycles),nextTransitions=transitionTimes(nextOrder,nextPlaylist,timeline.state().cycles);
       const nextStoryHold=settings.sceneDurations[9]*1000,nextStoryMorph=baseTransitions[9]/settings.morphSpeed,nextStoryScored=settings.galoisScoreEnabled;
@@ -391,7 +410,7 @@
       else{const targetSlot=order.includes(scene)?order.indexOf(scene):0;position=starts[targetSlot];needsFormation=true;}
       timeline.seek(position+old.cycles*timeline.duration);
       routeOffset=oldPhase-timeline.state().position/timeline.duration;routeOffset-=Math.floor(routeOffset);cameraBridge=null;
-      if(retainedEntrance){entranceDuration=pair==='intro'?Math.min(4200,transitions[order.indexOf(scene)]):transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
+      if(retainedEntrance){entranceDuration=pair==='intro'?initialEntranceDuration(transitions[order.indexOf(scene)]):transitions[order.indexOf(scene)];if(elapsed>entranceHold)elapsed=entranceHold+progress*entranceDuration;}
       else if(needsFormation&&!reduce){
         scene=order[timeline.state().scene];source=captured;normalSource=capturedNormals;destination=targets[scene];normalDestination=normals[scene];
         extrusionFrom=0;extrusionTo=scene<5?1:0;twoSidedFrom=capturedTwoSided;twoSidedTo=scene===7?1:0;pair='selection';progress=0;moving=true;entrance=true;entrancePose=previousPose;entrancePortraitWeight=previousPortraitWeight;entranceGroupWeight=previousGroupWeight;
@@ -451,6 +470,7 @@
     root.addEventListener('pointerup',endOrbit);root.addEventListener('pointercancel',endOrbit);root.addEventListener('lostpointercapture',endOrbit);
     function draw(){
       if(!dialog.open)return;
+      window.CourseOpeningGaloisTimeline?.update(root.querySelector('.opening-galois-timeline'),{active:stage==='galois',entering:entrance,elapsed:terminalActive?timeline.state().holdElapsed:0});
       const rect=canvas.getBoundingClientRect(),ratio=Math.min(2,window.devicePixelRatio||1),width=Math.max(1,Math.round(rect.width*ratio)),height=Math.max(1,Math.round(rect.height*ratio));
       if(entrance&&pair==='intro'&&(!entranceViewport||entranceViewport[0]!==rect.width||entranceViewport[1]!==rect.height)){source=entrancePositions(rect);upload();}
       if(geometry.fitGalois(rect.width<700&&rect.height<700))upload();
@@ -465,10 +485,28 @@
       gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
       const impulseUniforms=impulses.uniforms();gl.uniform4fv(loc['impulses[0]'],impulseUniforms.values);gl.uniform1fv(loc['impulseRadii[0]'],impulseUniforms.radii);
-      const treatment=storyTreatment();gl.uniform1f(loc.galoisLossFrom,treatment.from);gl.uniform1f(loc.galoisLossTo,treatment.to);gl.uniform2fv(loc.galoisFit,galoisFit());gl.uniform1f(loc.narrativeLight,treatment.light);
+      const treatment=storyTreatment();gl.uniform1f(loc.galoisLossFrom,treatment.from);gl.uniform1f(loc.galoisLossTo,treatment.to);gl.uniform1f(loc.galoisLeavesFrom,treatment.leavesFrom);gl.uniform1f(loc.galoisLeavesTo,treatment.leavesTo);gl.uniform4fv(loc['galoisLeafSpecs[0]'],window.CourseOpeningGalois.leaves.flatMap(leaf=>[...leaf.centre,leaf.radius,0]));gl.uniform2fv(loc.galoisFit,galoisFit());gl.uniform1f(loc.narrativeLight,treatment.light);
       gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.time,time);
       const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,renderedSpin());gl.uniform1f(loc.spotlight,visual.spotlight);gl.uniform1f(loc.twoSided,twoSidedWeight());gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
       gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=renderedSpin().toFixed(6);
+    }
+    function beginGalois(){
+      const view=cameraPose(),captured=snapshot(true,time,true),capturedNormals=snapshotNormals(),capturedTwoSided=twoSidedWeight(),angle=renderedSpin();
+      const cosine=Math.cos(angle),sine=Math.sin(angle);
+      for(let i=0;i<capturedNormals.length;i+=3){const x=capturedNormals[i],y=capturedNormals[i+1];capturedNormals[i]=cosine*x-sine*y;capturedNormals[i+1]=sine*x+cosine*y;}
+      impulses.clear();cancelClick();endOrbit();narration.reset();
+      terminalActive=true;routeCycle=0;routeOffset=0;cameraBridge=null;outro=null;
+      storyHoldMs=settings.sceneDurations[9]*1000;storyMorphMs=baseTransitions[9]/settings.morphSpeed;storyScored=true;
+      order=[9];holds=[story.duration(storyHoldMs,storyMorphMs,true)];transitions=[storyMorphMs*cameraRig.portraitTransitionScale];starts=[0];
+      timeline=window.CourseOpeningTimeline.create({holds,transitions,morphSingle:true});
+      galoisState=null;galoisNode=0;displayedGaloisNode=-1;scene=9;pair='galois-entry';spinAngle=0;
+      source=captured;normalSource=capturedNormals;destination=geometry.galoisNode(0).positions;normalDestination=geometry.galoisNode(0).normals;
+      twoSidedFrom=capturedTwoSided;twoSidedTo=0;extrusionFrom=extrusionTo=0;
+      entrancePose=view;entrancePortraitWeight=0;entranceGroupWeight=0;entranceDuration=reduce?800:transitions[0];
+      entrance=true;elapsed=0;progress=0;moving=true;sequence=true;active=true;previous=0;
+      orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;
+      panel.querySelector('[data-enter-course]').disabled=true;panel.querySelector('[data-enter-course]').textContent='伽罗瓦终章播放中';
+      upload();updateCaption();showCaption(false);draw();queue();
     }
     function beginOutro(){
       const view=cameraPose(),captured=snapshot(false,time,true),capturedNormals=snapshotNormals(),capturedTwoSided=twoSidedWeight();
@@ -479,8 +517,9 @@
       endOrbit();sequence=false;entrance=false;moving=false;cameraBridge=null;spinAngle=0;
       orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;
       source=destination=captured;normalSource=normalDestination=capturedNormals;twoSidedFrom=twoSidedTo=capturedTwoSided;extrusionFrom=extrusionTo=0;progress=1;
-      outro={phase:'return',elapsed:0,from:view,view};root.dataset.outro='return';
-      root.querySelector('[data-outro-hint]').textContent='镜头归位 · 沙粒落字';
+      outro={phase:terminalActive?'form':'return',elapsed:0,from:view,view};root.dataset.outro=outro.phase;
+      if(terminalActive){destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;canvas.setAttribute('aria-label','Algebra Ⅰ. Sheng Meng.');}
+      root.querySelector('[data-outro-hint]').textContent=terminalActive?'沙粒落字':'镜头归位 · 沙粒落字';
       panel.querySelector('[data-enter-course]').disabled=true;showCaption(false);upload();active=true;previous=0;queue();
     }
     function advanceOutro(dt){
@@ -497,7 +536,7 @@
         }
       }else if(outro.phase==='form'){
         progress=reduce?1:Math.min(1,outro.elapsed/3600);
-        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
+        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='进入课程 ↗';root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
       }
     }
     function depart(){outro.phase='depart';outro.elapsed=0;root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
@@ -524,10 +563,16 @@
         if(entrance){elapsed+=dt;progress=Math.max(0,Math.min(1,(elapsed-entranceHold)/entranceDuration));if(progress===1){entrance=false;entrancePose=null;pair='intro';syncTimeline(timeline.state());}}
         else {
           const music=window.CourseOpeningAudio?.scoreStatus();
+          let nextTime=null;
           if(storyScored&&galoisState&&timeline.state().direction>0&&music?.active&&music.scorePlaying&&music.ready&&!music.seeking&&!music.needsSync&&Math.abs(music.currentTime*1000-timeline.state().holdElapsed)<600){
             const position=starts[order.indexOf(9)]+Math.min(story.score.duration,music.currentTime*1000);
-            syncTimeline(timeline.seek(routeCycle*timeline.duration+position));
-          }else syncTimeline(timeline.advance(dt));
+            if(terminalActive)nextTime=position;else syncTimeline(timeline.seek(routeCycle*timeline.duration+position));
+          }else if(terminalActive)nextTime=timeline.state().position+dt*timeline.state().direction;
+          else syncTimeline(timeline.advance(dt));
+          if(terminalActive&&nextTime!==null){
+            if(nextTime>=holds[0]-.05){syncTimeline(timeline.seek(holds[0]-.1));finishGalois();}
+            else syncTimeline(timeline.seek(Math.max(0,nextTime)));
+          }
         }
       }
       const captionTarget=caption.classList.contains('is-visible')?1:0;captionOpacity+=(captionTarget-captionOpacity)*(1-Math.exp(-dt/(textFadeMs()/3)));
@@ -539,8 +584,10 @@
       const scoredHere=!outro&&!entrance&&storyScored&&Boolean(galoisState);
       window.CourseOpeningAudio?.frame({active:scoredHere,t:scoredHere?timeline.state().holdElapsed/1000:0,dt,direction:timeline.state().direction});
       if(scoredHere&&galoisNode===6){
-        const t=timeline.state().holdElapsed,year=t<166000?Math.min(1842,Math.floor(1832+11*Math.max(0,t-143000)/23000)):t<169000?1843:1846;
+        const t=timeline.state().holdElapsed,year=window.CourseOpeningGaloisTimeline.sample({elapsed:t}).displayYear;
         root.querySelector('[data-caption-year]').textContent=String(year);root.dataset.galoisRecognition=t>=169000?'published':t>=166000?'recognized':'time';
+        root.querySelector('[data-caption-title]').textContent=t>=166000?'THE ECHO':'MANUSCRIPTS IN SILENCE';
+        root.querySelector('[data-caption-zh]').textContent=t>=166000?'回响':'手稿沉寂';
       }else delete root.dataset.galoisRecognition;
       draw();queue();if(!raf)previous=0;
     }
@@ -550,7 +597,7 @@
     }
     const diskNormals=new Float32Array(N*3);for(let i=0;i<N;i++)diskNormals[i*3+2]=1;
     function play(){
-      stop();impulses.clear();cancelClick();narration.reset();outro=null;galoisState=null;galoisNode=0;displayedGaloisNode=-1;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=Math.min(4200,transitions[0]);timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
+      stop();terminalActive=false;impulses.clear();cancelClick();narration.reset();outro=null;galoisState=null;galoisNode=0;displayedGaloisNode=-1;delete root.dataset.outro;panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='伽罗瓦终章 →';rebuildDurations();syncCycle(timeline.seek(0));const first=order[0];entrancePortraitWeight=first===9?1:0;entranceGroupWeight=[6,7].includes(first)?1:0;spinAngle=0;routeOffset=0;cameraBridge=null;entrancePose=null;entranceDuration=initialEntranceDuration(transitions[0]);timeline.seek(0);timeline.setDirection(1);destination=targets[first];source=reduce?targets[first]:entrancePositions();normalSource=reduce?normals[first]:diskNormals;normalDestination=normals[first];extrusionFrom=reduce&&first<5?1:0;extrusionTo=first<5?1:0;twoSidedFrom=reduce&&first===7?1:0;twoSidedTo=first===7?1:0;orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;pair=reduce?first+':'+first:'intro';scene=first;progress=reduce?1:0;moving=!reduce;entrance=!reduce;elapsed=0;time=0;sequence=!reduce;active=true;captionOpacity=reduce?1:0;
       for(const key of Object.keys(visual))visual[key]=0;
       upload();updateCaption();draw();showCaption(reduce);queue();
     }
@@ -561,7 +608,7 @@
     function refresh(){if(!outro)rebuildDurations();if(!settings.depthEnabled){endOrbit();orbit.targetPitch=orbit.targetYaw=0;}draw();queue();}
     let observer;
     function onVisibility(){previous=0;if(document.hidden){cancelAnimationFrame(raf);raf=0;}else queue();}
-    film={play,stop,refresh,direction,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
+    film={play,stop,refresh,direction,galois:beginGalois,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
     root._openingPreview={
       show(index){const slot=order.indexOf(index);if(slot<0)throw new RangeError('Figure is not selected');stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+holds[slot]/2));draw();queue();},
       storyNode(index){const slot=order.indexOf(9);if(slot<0)throw new RangeError('Galois is not selected');stop();entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+story.atNode(index,storyHoldMs,storyMorphMs,storyScored)));draw();queue();},
@@ -571,7 +618,7 @@
       seek(value){entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(value));draw();},
       advance(value){entrance=false;syncTimeline(timeline.advance(value));draw();},
       direction(value,engage=false){syncTimeline(timeline.setDirection(value,engage));draw();},
-      evidence(){return{storyTreatment:storyTreatment(),galoisStory:{node:galoisNode,state:galoisState,hold:storyHoldMs,morph:storyMorphMs,nodes:story.nodes.length,scored:storyScored,music:window.CourseOpeningAudio?.scoreStatus()},outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,entranceDuration,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
+      evidence(){return{terminalActive,storyTreatment:storyTreatment(),galoisStory:{node:galoisNode,state:galoisState,hold:storyHoldMs,morph:storyMorphMs,nodes:story.nodes.length,scored:storyScored,music:window.CourseOpeningAudio?.scoreStatus()},outro:outro?{phase:outro.phase,elapsed:outro.elapsed,view:outro.view}:null,count:N,stride:3,scene,progress,time,entrance,entranceElapsed:elapsed,entranceDuration,positions:snapshot(),visiblePositions:snapshot(true),targets,settings:{...settings},effective:effective(),rendered:{...visual},camera:cameraPose(),orbit:{...orbit},spinAngle:renderedSpin(),spinPhase:spinAngle,portraitWeight:portraitWeight(),groupWeight:groupWeight(),twoSidedWeight:twoSidedWeight(),impulses:impulses.evidence(),spinVelocity:visual.spin*spinDirection()*(1-portraitWeight()),motion:motion.evidence(),routeOffset,cameraBridge:cameraBridge?{elapsed:cameraBridge.elapsed,duration:cameraBridge.duration}:null,order:[...order],nextOrder:playlist.order(routeCycle+1),routeCycle,holds:[...holds],transitions:[...transitions],cameraRig:cameraRig.evidence(),timeline:timeline.state(),duration:timeline.duration,starts,geometry:geometry.evidence(),glError:gl.getError()};}
     };
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();

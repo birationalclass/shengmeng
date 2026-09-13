@@ -27,8 +27,8 @@ function setup(mode, preferences={}) {
   document.fullscreenElement = null; document.fullscreenEnabled = mode !== 'disabled';
   const root = document.getElementById('symmetry-particle-studies');
   const dialog = document.getElementById('courseOpening');
-  const counts = { play: 0, stop: 0, finish: 0, audioStart: 0, audioStop: 0, request: 0, exit: 0, outro: 0, depart: 0 };
-  let resolve, reject;
+  const counts = { play: 0, stop: 0, finish: 0, audioStart: 0, audioStop: 0, request: 0, exit: 0, galois: 0, outro: 0, depart: 0 };
+  let resolve, reject, outroReady=false;
   const change = () => document.listeners.get('fullscreenchange')();
   document.exitFullscreen = () => { counts.exit++; document.fullscreenElement = null; change(); return Promise.resolve(); };
   if (mode !== 'missing') root.requestFullscreen = () => {
@@ -43,15 +43,18 @@ function setup(mode, preferences={}) {
     document, matchMedia: () => ({matches: false}), localStorage: {getItem: key => preferences[key]??null},
     setTimeout: () => 0, clearTimeout() {}, Promise,
     window: {CourseOpeningBoot: boot, CourseOpeningAudio: {start() {counts.audioStart++;}, stop() {counts.audioStop++;}}},
-    renderer: {depart() {counts.depart++;},outro() {counts.outro++;},outroReady() {return true;},refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
+    renderer: {galois() {counts.galois++;},depart() {counts.depart++;},outro() {counts.outro++;},outroReady() {return outroReady;},refresh() {},play() {counts.play++;}, stop() {counts.stop++;}},
   };
   vm.runInNewContext(source.slice(0, boundary) + `
     film=renderer;initialization=Promise.resolve();stage='ready';root.dataset.stage=stage;
     globalThis.testController={startAnimation,leaveOpening,openOpening,requestCourseEntry,effective,get stage(){return stage;}};
+    renderer.completeGalois=finishGalois;
   })();`, context);
   return { ...context.testController, controller: context.testController, counts, document, root, dialog, change,
     settleSuccess() {document.fullscreenElement = root; change(); resolve();},
     settleFailure() {reject(new Error('Late rejection'));},
+    completeGalois() {context.renderer.completeGalois();},
+    readyOutro() {outroReady=true;},
     toggle: document.getElementById('openingSettingsToggle') };
 }
 const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
@@ -72,7 +75,16 @@ function assertPlaying(env) {
     press(first);assertPlaying(env);
     press(second,{repeat:true});assert.equal(env.controller.stage,'playing','held key cannot skip stages');
     press(second,{target:env.document.getElementById('openingSettings')});assert.equal(env.controller.stage,'playing','settings key does not advance the film');
-    press(second);assert.equal(env.controller.stage,'outro');assert.equal(env.counts.outro,1);
+    press(second);assert.equal(env.controller.stage,'galois');assert.equal(env.counts.galois,1);assert.equal(env.counts.outro,0);
+    assert.equal(env.dialog.classList.contains('opening-galois'),true);
+    assert.equal(env.controller.effective().camera,0);assert.equal(env.controller.effective().spin,0);
+    press(first);press(second);press(first,{repeat:true});
+    assert.equal(env.controller.stage,'galois','repeated keys cannot skip the Galois story');assert.equal(env.counts.galois,1);assert.equal(env.counts.depart,0);
+    env.completeGalois();assert.equal(env.controller.stage,'outro');assert.equal(env.counts.outro,1,'renderer completion starts the outro automatically');
+    assert.equal(env.dialog.classList.contains('opening-galois'),false);assert.equal(env.dialog.classList.contains('opening-outro'),true);
+    env.completeGalois();assert.equal(env.counts.outro,1,'a repeated completion cannot restart the outro');
+    press(first);assert.equal(env.controller.stage,'outro','confirmation waits for the outro to finish forming');assert.equal(env.counts.depart,0);
+    env.readyOutro();
     press(first);assert.equal(env.controller.stage,'departing');assert.equal(env.counts.depart,1);
     press(second);assert.equal(env.counts.depart,1);
   }
@@ -106,6 +118,15 @@ function assertPlaying(env) {
   assert.equal(normal.controller.stage, 'closed');
   assert.equal(normal.counts.stop, 1);
 
+  const lateStoryFullscreen=setup('pending');
+  lateStoryFullscreen.controller.startAnimation();
+  lateStoryFullscreen.dialog.listeners.get('keydown')({key:' ',target:lateStoryFullscreen.dialog,repeat:false,preventDefault(){}});
+  assert.equal(lateStoryFullscreen.controller.stage,'galois');
+  lateStoryFullscreen.settleSuccess();await flush();
+  assert.equal(lateStoryFullscreen.document.fullscreenElement,lateStoryFullscreen.root,'a pending fullscreen grant remains valid after Space starts Galois');
+  assert.equal(lateStoryFullscreen.counts.exit,0);assert.equal(lateStoryFullscreen.controller.stage,'galois');assert.equal(lateStoryFullscreen.counts.galois,1);
+  lateStoryFullscreen.controller.leaveOpening();assert.equal(lateStoryFullscreen.counts.exit,1,'the retained fullscreen still closes on explicit exit');
+
   const late = setup('pending');
   late.controller.startAnimation(); late.controller.leaveOpening(); late.settleSuccess(); await flush();
   assert.equal(late.controller.stage, 'closed');
@@ -123,10 +144,13 @@ function assertPlaying(env) {
   }
   const custom=setup('missing',{'courseOpeningAppearance.v3':JSON.stringify({radiationAmount:.32})});assert.equal(JSON.parse(custom.root.dataset.settings).radiationAmount,.32);
 
-  const closing=setup('missing');closing.controller.startAnimation();closing.controller.requestCourseEntry();
-  assert.equal(closing.controller.stage,'outro');assert.equal(closing.dialog.open,true);assert.equal(closing.counts.outro,1);assert.equal(closing.counts.stop,0);
+  const closing=setup('missing');closing.controller.startAnimation();closing.completeGalois();assert.equal(closing.controller.stage,'playing','unrequested story completion is ignored');closing.controller.requestCourseEntry();
+  assert.equal(closing.controller.stage,'galois');assert.equal(closing.dialog.open,true);assert.equal(closing.counts.galois,1);assert.equal(closing.counts.outro,0);assert.equal(closing.counts.stop,0);
+  closing.controller.requestCourseEntry();assert.equal(closing.controller.stage,'galois','settings entry button cannot skip Galois either');assert.equal(closing.counts.galois,1);
+  closing.completeGalois();assert.equal(closing.controller.stage,'outro');assert.equal(closing.counts.outro,1);
+  closing.controller.requestCourseEntry();assert.equal(closing.controller.stage,'outro');assert.equal(closing.counts.depart,0);closing.readyOutro();
   closing.controller.requestCourseEntry();assert.equal(closing.controller.stage,'departing');assert.equal(closing.counts.depart,1);assert.equal(closing.counts.stop,0,'the course waits until all sand has disappeared');
-  closing.controller.requestCourseEntry();assert.equal(closing.counts.depart,1,'repeated confirmation cannot restart the fall');closing.controller.leaveOpening();
+  closing.controller.requestCourseEntry();assert.equal(closing.counts.depart,1,'repeated confirmation cannot restart the fall');closing.controller.leaveOpening();closing.completeGalois();assert.equal(closing.controller.stage,'closed','late story completion cannot reopen a closed film');
 
   const replay = setup('pending');
   replay.controller.startAnimation(); replay.controller.leaveOpening(); await replay.controller.openOpening();
@@ -135,5 +159,5 @@ function assertPlaying(env) {
   replay.controller.startAnimation();
   assert.equal(replay.controller.stage, 'playing');
   assert.equal(replay.counts.play, 2, 'replay remains available');
-  console.log('PASS successful fullscreen, explicit exit, late completion, and replay');
+  console.log('PASS Galois entry, unskippable story, automatic completion, outro readiness, successful fullscreen, explicit exit, late completion, and replay');
 })().catch(error => { console.error(error); process.exitCode = 1; });

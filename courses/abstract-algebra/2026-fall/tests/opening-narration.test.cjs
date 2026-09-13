@@ -18,4 +18,18 @@ n.tick(2400,true);assert.equal(element.lang,'en');
 n.tick(8000,false);assert.equal(classes.has('is-language-changing'),false,'hidden narration does not consume reading time');
 n.tick(8000,true);n.tick(900,true,{fadeMs:900});assert.equal(element.lang,'zh-CN','the setting controls the language fade duration');
 n.reset();n.setScene(5,2);assert.equal(element.lang,'en','replay starts with English again');
-console.log('PASS: all scenes show English then Chinese, complete the configured fade, and retain English during Gandalf dialogue');
+const chineseScenes=[
+ {language:'zh',kind:'history',en:'A young mathematician',zh:'少年走进数学。'},
+ {language:'zh',verse:{en:'A letter to the future',zh:'将已有研究写进致朋友的信。'}},
+ scenes[0]
+];
+const chinese=window.CourseOpeningNarration.create(element,chineseScenes);
+for(let i=0;i<2;i++){
+ chinese.setScene(i,0);assert.equal(element.lang,'zh-CN','Chinese-only scenes start without an English frame');assert.equal(chinese.language,'zh');
+ const text=element.textContent;assert.equal(text,chineseScenes[i].verse?.zh||chineseScenes[i].zh);assert.equal(chinese.needsFrames,false);
+ chinese.tick(60000,true,{holdEnglish:true,englishMs:0,fadeMs:0});assert.equal(element.textContent,text,'the voice hold cannot override a Chinese-only scene');assert.equal(classes.has('is-language-changing'),false);
+ for(const cycle of [1,-1,2]){chinese.setScene(i,cycle);chinese.tick(80000,true);assert.equal(element.lang,'zh-CN');assert.equal(element.textContent,text);assert.equal(classes.has('is-language-changing'),false,'cycles do not fade Chinese-only narration back to English');}
+ chinese.reset();chinese.setScene(i,0);assert.equal(element.lang,'zh-CN','replay retains the scene language');assert.equal(element.textContent,text);
+}
+chinese.setScene(2,0);assert.equal(element.lang,'en','ordinary scenes keep the bilingual sequence');chinese.tick(8000,true);chinese.tick(2400,true);assert.equal(element.lang,'zh-CN');
+console.log('PASS: ordinary scenes retain English/Chinese fading and voice holds; Chinese-only narration stays Chinese on entry, cycles, voice holds and replay');

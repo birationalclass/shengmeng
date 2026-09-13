@@ -59,6 +59,9 @@
     uniform float objectSpin;
     uniform float galoisLossFrom;
     uniform float galoisLossTo;
+    uniform float galoisLeavesFrom;
+    uniform float galoisLeavesTo;
+    uniform vec4 galoisLeafSpecs[7];
     uniform vec2 galoisFit;
     uniform float radiation;
     uniform float radiationFineOnly;
@@ -80,17 +83,51 @@
     ${cameraMath}
     ${window.CourseOpeningImpulse?.shader||'vec3 impulseOffset(vec3 p){return vec3(0.);}'}
 
-    // Only tagged grains belonging to the near figure yield to the cadence.
-    // Their separate engraving layer never consumes the landscape behind it.
+    // The near figure breaks into outward-moving grains. Seeded straight rays,
+    // staggered release and a later opacity envelope allow the dispersal to be
+    // seen before it disappears; the other figure and landscape stay intact.
     vec4 storyLoss(vec3 point,float loss,float seed){
       float amount=clamp(loss,0.,1.);
       if(amount<=0.)return vec4(point,1.);
       float scale=max(.00001,galoisFit.x);
-      float mask=step(.026,point.z/scale);
-      float age=smoothstep(.10*seed,.72+.28*seed,amount);
-      float travel=mask*age*(.32+.68*age);
-      vec2 drift=vec2(-.025-.045*seed,-.080-.120*seed)*travel*scale;
-      return vec4(point.xy+drift,point.z,1.-.97*mask*age);
+      float tag=floor((point.z/scale+.006)/.03);
+      if(abs(tag-1.)>.1)return vec4(point,1.);
+      vec2 local=vec2(point.x/scale,(point.y-galoisFit.y)/scale);
+      vec2 radial=local-vec2(-.43,-.245);
+      float seed2=fract(seed*73.91+.317),seed3=fract(seed*43.17+.619);
+      if(length(radial)<.0001)radial=vec2(cos(seed*6.28318530718),sin(seed*6.28318530718));
+      radial=normalize(radial);
+      float turn=(seed2-.5)*.9,c=cos(turn),s=sin(turn);
+      vec2 direction=vec2(c*radial.x-s*radial.y,s*radial.x+c*radial.y);
+      float age=smoothstep(.10*seed,.88+.12*seed,amount);
+      float travel=age*(.38+.62*age)*(.78+.60*seed3)*scale;
+      vec3 displacement=vec3(direction,.16*(seed2-.5))*travel;
+      return vec4(point+displacement,1.-smoothstep(.32,.96,age));
+    }
+
+    // One transform per engraved leaf, not independent grain noise. Metadata
+    // is encoded in z only while forming the source layers and is removed here
+    // before rendering. All particles of a leaf share its slow fall and flutter.
+    vec4 storyLeaves(vec3 point,float elapsed){
+      if(elapsed<0.)return vec4(point,1.);
+      float scale=max(.00001,galoisFit.x);
+      float tag=floor((point.z/scale+.006)/.03);
+      if(tag<2.||tag>8.)return vec4(point,1.);
+      float index=tag-2.;vec4 spec=vec4(0.);
+      for(int i=0;i<7;i++){if(abs(index-float(i))<.1)spec=galoisLeafSpecs[i];}
+      vec3 local=vec3(point.x/scale,(point.y-galoisFit.y)/scale,point.z/scale-.03*tag);
+      float clock=elapsed-(.4+.8*index),period=14.+.7*index;
+      float age=fract(max(0.,clock)/period),theta=6.28318530718*age;
+      float seed=index*1.73+.37;
+      float angle=.24*(sin(theta*1.1+seed)-sin(seed))+(.35+.12*sin(index*2.))*age;
+      float tilt=.48*sin(theta*1.4+seed),c=cos(angle),s=sin(angle);
+      vec2 delta=local.xy-spec.xy;
+      delta=vec2(c*delta.x-s*delta.y,s*delta.x+c*delta.y);
+      float falling=.20*age+.80*age*age;
+      vec2 wind=vec2(.10*(sin(theta+seed)-sin(seed))+.16*age*sin(index*1.9+.4),.80-1.50*falling);
+      vec3 moved=vec3(spec.xy+vec2(delta.x,delta.y*cos(tilt))+wind,local.z+delta.y*sin(tilt)+.018*sin(theta+seed));
+      float alpha=step(0.,clock)*smoothstep(0.,.07,age)*(1.-smoothstep(.80,1.,age));
+      return vec4(moved.x*scale,moved.y*scale+galoisFit.y,moved.z*scale,alpha);
     }
 
     vec2 localWander(vec2 p) {
@@ -151,8 +188,11 @@
       kind=mineralKind(fract(grain.x*17.17+grain.w*31.31));
       float t=progress;
       float e=t*t*t*(t*(t*6.-15.)+10.);
-      vec4 storyFrom=storyLoss(start,galoisLossFrom,grain.x);
-      vec4 storyTo=storyLoss(finish,galoisLossTo,grain.x);
+      vec4 leavesFrom=storyLeaves(start,galoisLeavesFrom);
+      vec4 leavesTo=storyLeaves(finish,galoisLeavesTo);
+      vec4 storyFrom=storyLoss(leavesFrom.xyz,galoisLossFrom,grain.x);
+      vec4 storyTo=storyLoss(leavesTo.xyz,galoisLossTo,grain.x);
+      storyFrom.w*=leavesFrom.w;storyTo.w*=leavesTo.w;
       vec2 delta=storyTo.xy-storyFrom.xy;
       float storyOpacity=mix(storyFrom.w,storyTo.w,e);
       float arch=sin(3.14159265359*e);
@@ -383,9 +423,32 @@
     const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t);};
     const amount=clamp(loss);
     if(amount<=0)return {point:[point[0],point[1],point[2]],alpha:1};
-    const scale=Math.max(.00001,fit[0]),mask=point[2]/scale>=.026?1:0;
-    const age=smooth(.10*grainSeed,.72+.28*grainSeed,amount),travel=mask*age*(.32+.68*age);
-    return {point:[point[0]+(-.025-.045*grainSeed)*travel*scale,point[1]+(-.080-.120*grainSeed)*travel*scale,point[2]],alpha:1-.97*mask*age};
+    const scale=Math.max(.00001,fit[0]),tag=Math.floor((point[2]/scale+.006)/.03);
+    if(tag!==1)return {point:[point[0],point[1],point[2]],alpha:1};
+    const fract=x=>x-Math.floor(x),seed2=fract(grainSeed*73.91+.317),seed3=fract(grainSeed*43.17+.619);
+    let x=point[0]/scale+.43,y=(point[1]-fit[1])/scale+.245;
+    if(Math.hypot(x,y)<.0001){x=Math.cos(grainSeed*6.28318530718);y=Math.sin(grainSeed*6.28318530718);}
+    const length=Math.hypot(x,y);x/=length;y/=length;
+    const turn=(seed2-.5)*.9,c=Math.cos(turn),s=Math.sin(turn);
+    const age=smooth(.10*grainSeed,.88+.12*grainSeed,amount),travel=age*(.38+.62*age)*(.78+.60*seed3)*scale;
+    return {point:[point[0]+(c*x-s*y)*travel,point[1]+(s*x+c*y)*travel,point[2]+.16*(seed2-.5)*travel],alpha:1-smooth(.32,.96,age)};
+  }
+
+  function storyLeaves(point,elapsed,fit=[1,0]) {
+    const original={point:[point[0],point[1],point[2]],alpha:1};
+    if(elapsed<0)return original;
+    const scale=Math.max(.00001,fit[0]),tag=Math.floor((point[2]/scale+.006)/.03);
+    if(tag<2||tag>8)return original;
+    const index=tag-2,spec=window.CourseOpeningGalois?.leaves?.[index];
+    if(!spec)return original;
+    const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x);
+    const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t);};
+    const clock=elapsed-(.4+.8*index),period=14+.7*index,age=fract(Math.max(0,clock)/period),theta=6.28318530718*age;
+    const seed=index*1.73+.37,angle=.24*(Math.sin(theta*1.1+seed)-Math.sin(seed))+(.35+.12*Math.sin(index*2))*age;
+    const tilt=.48*Math.sin(theta*1.4+seed),c=Math.cos(angle),s=Math.sin(angle);
+    const x=point[0]/scale-spec.centre[0],y=(point[1]-fit[1])/scale-spec.centre[1],dx=c*x-s*y,dy=s*x+c*y;
+    const falling=.20*age+.80*age*age,windX=.10*(Math.sin(theta+seed)-Math.sin(seed))+.16*age*Math.sin(index*1.9+.4),windY=.80-1.50*falling;
+    return {point:[(spec.centre[0]+dx+windX)*scale,(spec.centre[1]+dy*Math.cos(tilt)+windY)*scale+fit[1],(point[2]/scale-.03*tag+dy*Math.sin(tilt)+.018*Math.sin(theta+seed))*scale],alpha:(clock>=0?1:0)*smooth(0,.07,age)*(1-smooth(.80,1,age))};
   }
 
   function rotateObject(point,angle) {
@@ -393,5 +456,5 @@
     return[c*point[0]-s*point[1],s*point[0]+c*point[1],point[2]];
   }
 
-  window.CourseOpeningMaterials=Object.freeze({gemFraction,mineralKind,vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,storyLoss,rotateObject});
+  window.CourseOpeningMaterials=Object.freeze({gemFraction,mineralKind,vertex,fragment,backgroundVertex,backgroundFragment,localOffset,radiationOffset,storyLoss,storyLeaves,rotateObject});
 })();
