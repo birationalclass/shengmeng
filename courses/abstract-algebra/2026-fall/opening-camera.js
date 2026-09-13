@@ -2,7 +2,7 @@
  * Orbit, framing and magnification share canonical time. Figure changes never
  * reset the camera or start another identical push-pull shot. The analytical
  * closed orbit is reversible and joins at the loop seam. The Lie-group view
- * stays centred with a gentle Z-axis roll and a slow, bounded 40% zoom.
+ * stays centred with a gentle Z-axis roll and a slow zoom up to 300%.
  */
 (() => {
   'use strict';
@@ -84,7 +84,7 @@
     const start=(route.starts||defaultStarts)[slot],hold=(route.holds||defaultHolds)[slot];
     const phase=hold>0?clamp((position-start)/hold):0;
     // Zero velocity and acceleration at both ends; formation time is separate.
-    const lieZoom=1+.4*Math.pow(Math.sin(Math.PI*phase),4);
+    const lieZoom=1+2*Math.pow(Math.sin(Math.PI*phase),4);
     return blend(view,{angles:[neutral.angles[0],0,lieRoll*Math.sin(TAU*u)],zoom:lieZoom,target:[0,0,0]},weight);
   }
   // The portrait returns throughout its extended formation instead of snapping
@@ -124,9 +124,9 @@
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
-      approach:'Periodic spatial oval; cycloidal launch; slow broad dolly; E8 combines a gentle Z-axis roll with a 1x–1.4x zoom',
-      scenes:COUNT,zoomRange:[1,2.35],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
-      lieScene,lieZoomRange:[1,1.4],lieRollDegrees:8,
+      approach:'Periodic spatial oval; cycloidal launch; slow broad dolly; E8 combines a gentle Z-axis roll with a 1x–3x zoom',
+      scenes:COUNT,zoomRange:[1,3],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
+      lieScene,lieZoomRange:[1,3],lieRollDegrees:8,
       phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',
       endpointPose:{angles:[...neutral.angles],zoom:1,target:[0,0,0]},
       focuses:focuses.map(focus=>[...focus])
