@@ -1,10 +1,15 @@
-# Elven Common Speak
+# Pinyon Script
 
-Unmodified `elvencommonspeak.ttf`, by Nancy Lorenz (2002).
+`PinyonScript-Regular.ttf`, by Nicole Fally and Eben Sorkin.
 
-Elvish-style Latin calligraphy: the English verse remains English, with no
-claim that its letters are a Tengwar transcription.
+English round hand lettering selected to follow the user’s Copperplate capitals
+reference: high stroke contrast, a consistent slope, looped capitals and connected
+lowercase. The font is not a tracing or identification of the reference page.
 
-- [Author’s font listing and usage terms](https://www.fontspace.com/elven-common-speak-font-f2251): Freeware, Non-Commercial.
-- [Original archive mirror](https://www.thehutt.de/tolkien/fonts/elven.zip).
-- Used on this free, non-commercial mathematics teaching page. No commercial license is implied.
+- [Typeface project](https://github.com/SorkinType/Pinyon).
+- [Distributed font](https://github.com/google/fonts/tree/main/ofl/pinyonscript).
+- Unmodified font, distributed under the SIL Open Font License 1.1;
+  see `OFL-PinyonScript.txt`.
+
+The ring verse keeps four explicit lines. Normal letter spacing preserves script
+joins; its responsive size fits the complete lines inside the left caption area.
