@@ -29,6 +29,12 @@
     vec3 fromCamera(vec3 p) {
       vec3 a=cameraAngles();return rotateY(rotateX(rotateZ(p,-a.z),-a.x),-a.y);
     }
+    vec2 followLightCentre(){return vec2(.72*sin(time*.13),.40*cos(time*.11+.7));}
+    float followLight(vec2 p){
+      vec2 d=p-followLightCentre();float a=.32*sin(time*.07),c=cos(a),s=sin(a);
+      d=vec2(c*d.x-s*d.y,s*d.x+c*d.y)*vec2(1.65,3.1);
+      return spotlight*exp(-dot(d,d));
+    }
     float cameraDistance() {return 3.9;}
     float cameraFit() {
       return min(.68,aspect*.84)*viewZoom;
@@ -45,6 +51,7 @@
     uniform float aspect;
     uniform float dpr;
     uniform float time;
+    uniform float spotlight;
     uniform float camera;
     uniform vec3 viewAngles;
     uniform vec3 viewTarget;
@@ -68,6 +75,7 @@
     varying mediump float kind;
     varying mediump vec3 crystalLight;
     ${cameraMath}
+    ${window.CourseOpeningImpulse?.shader||'vec3 impulseOffset(vec3 p){return vec3(0.);}'}
 
     vec2 localWander(vec2 p) {
       float a = time * .33;
@@ -160,6 +168,7 @@
       // grains that remain in the figure, never to the outward trajectories.
       p.xy+=localWander(p.xy)*(1.-emitted)*(1.-falling);
       p+=escaped.xyz;
+      p+=impulseOffset(p);
       // Object-space self-spin is independent of camera movement. Rotate both
       // the emitted position and its surface normal so lighting and outward
       // emission remain attached to the same rope as the figure turns.
@@ -183,7 +192,7 @@
       // fine, loose sand texture in close-ups instead of oversized pebbles.
       gl_PointSize=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65);
 
-      vec3 lamp=normalize(vec3(-.52,.64,.79));
+      vec3 lamp=normalize(mix(vec3(-.52,.64,.79),vec3(followLightCentre()-p.xy,1.25),spotlight*.65));
       float diffuse=max(0.,dot(n,lamp));
       diffuse=mix(diffuse,abs(dot(n,lamp)),twoSided);
       float macroLight=.32+.75*diffuse;
@@ -198,6 +207,8 @@
       vec3 eye=fromCamera(vec3(0.,0.,1.));
       float sheen=pow(max(0.,dot(n,normalize(lamp+eye))),24.);
       color+=vec3(.94,.78,.48)*sheen*.13;
+      float beam=followLight(p.xy);
+      color=color*(1.+beam*.62)+vec3(.12,.10,.065)*beam*(.3+.7*diffuse);
       opacity=(.65+.30*grain.x)*(1.-complexity*step(.94,grain.z)*.10)*escaped.w;
       material=grain;
     }`;
@@ -283,6 +294,7 @@
     varying vec2 uv;
     uniform float aspect;
     uniform float time;
+    uniform float spotlight;
     uniform float camera;
     uniform vec3 viewAngles;
     uniform vec3 viewTarget;
@@ -301,7 +313,6 @@
       float glow=exp(-length((uv-vec2(-.5,.45))*vec2(.7,1.)))*.015;
       float vignette=1.-smoothstep(.25,1.5,length(uv));
       vec3 quiet=vec3(.018,.017,.014)+vec3(.6,.49,.28)*(glow+grain)*vignette;
-      if(background<.0001){gl_FragColor=vec4(quiet,1.);return;}
       // Intersect the inverse camera ray with a world-space slate plane beneath
       // the particles. Its granular texture remains attached during every orbit.
       vec2 image=vec2(uv.x*aspect,uv.y-cameraCentre())/cameraFit();
@@ -320,7 +331,8 @@
       vec3 slate=vec3(.91,.85,.73)*shade;
       slate+=vec3(.035,.024,.012)*warmth;
       slate=mix(slate*.40,slate,(1.-smoothstep(.20,1.55,length(uv*vec2(.75,1.)))));
-      gl_FragColor=vec4(mix(quiet,slate*stageLight,background),1.);
+      vec3 beam=vec3(.045,.037,.023)*followLight(p);
+      gl_FragColor=vec4(mix(quiet+beam*.3,slate*stageLight+beam,background),1.);
     }`;
 
   function localOffset(x,y,g0,g1,g2,g3,time,amount) {

@@ -105,6 +105,22 @@
     if(state.from===9)return clamp(ease((1-state.progress)/.45));
     return 0;
   }
+  const groupReturnMs=1000;
+  // Restore grouped layouts within one second of entering their
+  // morph, including reverse playback. Keep that framing throughout the hold.
+  function groupWeight(state,transitionDuration=10000){
+    const grouped=id=>id===6||id===7;
+    if(!state.moving)return grouped(state.scene)?1:0;
+    if(grouped(state.from)&&grouped(state.to))return 1;
+    const duration=Math.max(1,Number(transitionDuration)||10000);
+    const fraction=Math.min(1,groupReturnMs/duration);
+    if(grouped(state.to))return clamp(ease(state.progress/fraction));
+    if(grouped(state.from))return clamp(ease((1-state.progress)/fraction));
+    return 0;
+  }
+  function frameGroup(view,weight){
+    return {...view,...blend(view,{angles:view.angles,zoom:1,target:[0,0,0]},weight)};
+  }
   function sample(scene,phase,focus) {
     const index=indexOf(scene),holdElapsed=clamp(Number(phase))*defaultHolds[index];
     const state={from:index,to:index,scene:index,position:defaultStarts[index]+holdElapsed,moving:false};
@@ -113,7 +129,7 @@
     return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
-    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,
+    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,groupWeight,frameGroup,groupReturnMs,
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
