@@ -3,8 +3,10 @@
   'use strict';
   const firstYear=1811,lastYear=1846,duration=177160.612;
   const cues=Object.freeze([
-    [0,1811],[7000,1811],[11000,1827],[18000,1827],
-    [24000,1831],[86500,1831],[92500,1832],[143000,1832],
+    [0,1811],[7000,1811],[11000,1823],[16000,1823],
+    [20000,1827],[26000,1827],[30000,1828],[32000,1828],
+    [34000,1829],[36000,1829],[40000,1831],[86500,1831],
+    [92500,1832],[143000,1832],
     [166000,1843],[168200,1843],[169000,1846],[duration,1846]
   ].map(Object.freeze));
   const states=new WeakMap();
@@ -20,7 +22,7 @@
   function initialize(element){
     element.innerHTML='<div class="galois-years-track" aria-hidden="true">'+
       '<div class="galois-years-line"></div><div class="galois-years-trace"></div>'+
-      '<i class="galois-years-tick" style="--at:45.714286%"></i><i class="galois-years-tick" style="--at:57.142857%"></i><i class="galois-years-tick" style="--at:91.428571%"></i>'+
+      '<i class="galois-years-tick" style="--at:34.285714%"></i><i class="galois-years-tick" style="--at:45.714286%"></i><i class="galois-years-tick" style="--at:57.142857%"></i><i class="galois-years-tick" style="--at:91.428571%"></i>'+
       '<span class="galois-years-anchor is-birth" style="--at:0%"><i></i><span><b>1811</b><small>诞生</small></span></span>'+
       '<span class="galois-years-anchor is-death" style="--at:60%"><i></i><span><b>1832</b><small>离世</small></span></span>'+
       '<span class="galois-years-anchor is-publication" style="--at:100%"><i></i><span><b>1846</b><small>刊行</small></span></span>'+

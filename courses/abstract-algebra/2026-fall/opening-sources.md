@@ -8,11 +8,13 @@
 
 ## Galois biography tableaux
 
-The seven tableaux are original symbolic sand drawings, not documentary reconstructions of rooms or the duel. The first uses the historical portrait credited above.
+The ten tableaux are original symbolic sand drawings, not documentary reconstructions of rooms, school examinations or the duel. The first uses the historical portrait credited above. The final scholar-and-manuscript drawing represents Liouville's role; it is not presented as an authenticated portrait. The fixed background word is **Group**; Gal(f) remains the mathematical notation in the theorem.
 
-- 1827: entry into formal mathematics study; 1831: theory of equations and political imprisonment; 30 May 1832: wounded in a duel; 31 May: death aged twenty. [University of St Andrews, MacTutor](https://mathshistory.st-andrews.ac.uk/Biographies/Galois/).
+- 6 October 1823: entered the Lycée Louis-le-Grand, shortly before his twelfth birthday on 25 October. The school tableau gives the year, without describing him as already twelve. February 1827: first mathematics class. His later school studies included Legendre and Lagrange. [University of St Andrews, MacTutor](https://mathshistory.st-andrews.ac.uk/Biographies/Galois/).
+- 1828 and 1829: unsuccessful attempts to enter the École Polytechnique; he subsequently entered the École Normale, then called the École Préparatoire. The examination drawing conveys academic setbacks and continuing study, without the legendary chalk-throwing incident. These entrance examinations are distinct from the Academy's later review of his memoir. [MacTutor: Galois](https://mathshistory.st-andrews.ac.uk/Biographies/Galois/).
+- 1831: theory of equations and political imprisonment. The Academy submission was not approved; the review asked for a fuller development. The captions do not claim that all mathematicians rejected his ideas or that his mathematics caused his imprisonment. 30 May 1832: wounded in a duel; 31 May: death aged twenty. The duel's disputed motive is left unstated. [MacTutor: Galois](https://mathshistory.st-andrews.ac.uk/Biographies/Galois/).
 - The mathematical letter to Auguste Chevalier is dated 29 May 1832. It records previous research; it does not support the myth that the theory was created in one night. [Original collected works, published 1846, pages 408–417](https://www.numdam.org/item/JMPA_1846_1_11__381_0.pdf).
-- Liouville announced recognition of the work in 1843 and published the manuscripts in 1846. [MacTutor: Liouville](https://mathshistory.st-andrews.ac.uk/Biographies/Liouville/).
+- Liouville began reading the manuscripts in 1842, announced their importance in September 1843, and published Galois's writings in 1846. The final tableau has its own scholar-and-publication drawing; it does not imply immediate universal acceptance. [MacTutor: Liouville](https://mathshistory.st-andrews.ac.uk/Biographies/Liouville/), [1846 publication](https://www.numdam.org/item/JMPA_1846_1_11__381_0.pdf).
 - The criterion is explicitly a modern statement for polynomials over the rational numbers: solvability by radicals is equivalent to solvability of the Galois group of the splitting field. Gal(f) is used as the customary polynomial shorthand.
 
 ## Galois music

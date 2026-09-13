@@ -191,6 +191,8 @@
       targets[i]=geometry.create3D(i);normals[i]=geometry.createNormals(i);root.dataset.prepared=String(i-2);boot.advance(22+(i-2)/(geometry.captions.length-3)*55,i===9?'绘制伽罗瓦沙像':i===8?'绘制高斯正十七边形':i===7?'构造圆与 Möbius 带':i===6?'构造五种正多面体':i===5?'铸造万环之环':i===4?'生成 Julia 分形':'生成对称图形');await paint();
     }
     const story=window.CourseOpeningGaloisStory;
+    const storyShades=Array(story.nodes.length).fill(1);
+    for(const [name,value] of Object.entries({school:.94,awakening:.98,exams:.87,symmetries:1.04,prison:.68,letter:.86,death:.70,silence:.9,recognition:1.03}))storyShades[story.index[name]]=value;
     const closingGeometry=window.CourseOpeningOutro.create(N);
     cameraRig.setFocuses(Array.from({length:geometry.captions.length},(_,index)=>index<3?[0,0,0]:geometry.closeupFocus(index)));
     boot.advance(82,'雕琢沙粒质感');await paint();
@@ -214,7 +216,7 @@
     }
     const program = link(materials.vertex, materials.fragment), background = link(materials.backgroundVertex, materials.backgroundFragment);
     const backdrop=window.CourseOpeningBackdrop,lettering=backdrop.create(gl),letterProgram=link(backdrop.vertex,backdrop.fragment);
-    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes.map(item=>({...item,language:'zh'})),{...story.recognition,language:'zh'}]);
+    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes.map(item=>({...item,language:'zh'}))]);
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;const impulses=window.CourseOpeningImpulse.create();let clickCandidate=null;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
@@ -305,11 +307,11 @@
     function storyTreatment(){
       if(!storyScored||!galoisState||entrance||outro||pair==='manual')return {from:0,to:0,leavesFrom:-1,leavesTo:-1,light:1};
       const t=timeline.state().holdElapsed,state=galoisState,loss=ease(Math.max(0,Math.min(1,(t-126000)/7000)));
-      const shades=[1,.94,1.04,.68,.86,.70,1.03],q=state.moving?ease(state.progress):0;
+      const shades=storyShades,q=state.moving?ease(state.progress):0;
       let light=shades[state.from]+(shades[state.to]-shades[state.from])*q;
-      if(state.node===6&&!state.moving)light+=.12*Math.exp(-Math.pow((t-166150)/3200,2));
-      const leaves=Math.max(0,t-story.score.starts[6])/1000;
-      return {from:state.from===5?loss:0,to:state.to===5?loss:0,leavesFrom:state.from===6?leaves:-1,leavesTo:state.to===6?leaves:-1,light};
+      if(state.node===story.index.recognition&&!state.moving)light+=.12*Math.exp(-Math.pow((t-166150)/3200,2));
+      const leaves=Math.max(0,t-story.score.starts[story.index.silence])/1000;
+      return {from:state.from===story.index.death?loss:0,to:state.to===story.index.death?loss:0,leavesFrom:state.from===story.index.silence?leaves:-1,leavesTo:state.to===story.index.silence?leaves:-1,light};
     }
     function galoisFit(){const rect=canvas.getBoundingClientRect();return rect.width<700&&rect.height<700?[.66,-.34]:[1,0];}
     function snapshot(withEffects=false,atTime=time,world=true){
@@ -336,7 +338,7 @@
     function snapshotNormals(){const e=ease(progress),out=new Float32Array(N*3),flat=1-effective().depth;for(let i=0;i<out.length;i++){const face=i%3===2?1:0,a=normalSource[i]+(face-normalSource[i])*extrusionFrom*flat,b=normalDestination[i]+(face-normalDestination[i])*extrusionTo*flat;out[i]=a+(b-a)*e;}return out;}
     function upload(){for(const [buf,data] of [[sourceBuffer,source],[destinationBuffer,destination],[normalSourceBuffer,normalSource],[normalDestinationBuffer,normalDestination]]){gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferSubData(gl.ARRAY_BUFFER,0,data);}}
     function textFadeMs(){return (scene===9&&storyScored?Math.min(1.1,settings.textFade):settings.textFade)*1000;}
-    function narrationIndex(){return scene===9?backdrop.scenes.length+(galoisNode===6&&(!storyScored||timeline.state().holdElapsed>=166000)?story.nodes.length:galoisNode):scene;}
+    function narrationIndex(){return scene===9?backdrop.scenes.length+galoisNode:scene;}
     function updateCaption(){
       const node=scene===9?story.nodes[galoisNode]:null,text=node?{title:node.title,zh:node.zhTitle,en:node.en}:geometry.captions[scene];
       for(const field of ['title','zh'])root.querySelector('[data-caption-'+field+']').textContent=text[field];
@@ -480,7 +482,7 @@
       gl.viewport(0,0,width,height);gl.disable(gl.DEPTH_TEST);gl.depthMask(false);gl.disable(gl.BLEND);gl.useProgram(background);
       gl.uniform1f(bgLoc.time,time);gl.uniform1f(bgLoc.aspect,width/height);gl.uniform1f(bgLoc.camera,0);gl.uniform3fv(bgLoc.viewAngles,[0,0,0]);gl.uniform3fv(bgLoc.viewTarget,[0,0,0]);gl.uniform1f(bgLoc.viewZoom,1);gl.uniform1f(bgLoc.background,visual.background);gl.uniform1f(bgLoc.stageLight,settings.backgroundBrightness/100);gl.uniform1f(bgLoc.spotlight,visual.spotlight);
       attribute(quad,loc.quad,2);gl.drawArrays(gl.TRIANGLES,0,6);
-      gl.useProgram(letterProgram);attribute(quad,letterLoc.pos,2);lettering.bind();gl.uniform1i(letterLoc.texture,0);gl.uniform1f(letterLoc.visibility,captionOpacity);gl.uniform1f(letterLoc.sweepTime,time%24);gl.uniform1f(letterLoc.sweepEnabled,!reduce&&settings.backgroundEnabled?1:0);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.drawArrays(gl.TRIANGLES,0,6);
+      gl.useProgram(letterProgram);attribute(quad,letterLoc.pos,2);lettering.bind();gl.uniform1i(letterLoc.texture,0);gl.uniform1f(letterLoc.visibility,terminalActive&&!outro?1:captionOpacity);gl.uniform1f(letterLoc.sweepTime,time%24);gl.uniform1f(letterLoc.sweepEnabled,!terminalActive&&!reduce&&settings.backgroundEnabled?1:0);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.drawArrays(gl.TRIANGLES,0,6);
       gl.depthMask(true);gl.clearDepth(1);gl.clear(gl.DEPTH_BUFFER_BIT);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
       gl.useProgram(program);attribute(sourceBuffer,loc.source,3);attribute(destinationBuffer,loc.destination,3);attribute(normalSourceBuffer,loc.normalSource,3);attribute(normalDestinationBuffer,loc.normalDestination,3);attribute(grainBuffer,loc.grain,4);
       gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
@@ -580,15 +582,14 @@
       if(!outro){
         narration.setScene(narrationIndex(),timeline.state().cycles);
         window.CourseOpeningVoice?.scene(scene,captionTarget===1&&!entrance,timeline.state().direction,timeline.state().cycles,narration.language==='en');
-        narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:textFadeMs(),englishMs:scene===9&&storyScored&&galoisState?(galoisNode===6&&timeline.state().holdElapsed>=166000?3500:Math.min(8000,Math.max(1800,(galoisState.holdDuration-2*textFadeMs())/2))):8000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
+        narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:textFadeMs(),englishMs:8000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
       }
       const scoredHere=!outro&&!entrance&&storyScored&&Boolean(galoisState);
       window.CourseOpeningAudio?.frame({active:scoredHere,prelude:terminalActive&&entrance&&!outro,departing:outro?.phase==='depart',t:scoredHere?timeline.state().holdElapsed/1000:0,dt,direction:timeline.state().direction});
-      if(scoredHere&&galoisNode===6){
+      if(scoredHere&&galoisNode>=story.index.silence){
         const t=timeline.state().holdElapsed,year=window.CourseOpeningGaloisTimeline.sample({elapsed:t}).displayYear;
         root.querySelector('[data-caption-year]').textContent=String(year);root.dataset.galoisRecognition=t>=169000?'published':t>=166000?'recognized':'time';
-        root.querySelector('[data-caption-title]').textContent=t>=166000?'THE ECHO':'MANUSCRIPTS IN SILENCE';
-        root.querySelector('[data-caption-zh]').textContent=t>=166000?'回响':'手稿沉寂';
+        const node=story.nodes[galoisNode];root.querySelector('[data-caption-title]').textContent=node.title;root.querySelector('[data-caption-zh]').textContent=node.zhTitle;
       }else delete root.dataset.galoisRecognition;
       draw();queue();if(!raf)previous=0;
     }

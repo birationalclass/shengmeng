@@ -4,13 +4,19 @@
   const countParts=[.68,.25,.07];
   const nodes=Object.freeze([
     {id:'portrait',year:'1811–1832',motif:'portrait'},
+    {id:'school',year:'1823',motif:'a young student entering the school courtyard'},
     {id:'awakening',year:'1827',motif:'open book, compass and geometry'},
+    {id:'school-setbacks',year:'1828–1829',motif:'a closed examination door and continued study'},
     {id:'symmetries',year:'1830–1831',motif:'five roots and their permutations'},
     {id:'prison',year:'1831–1832',motif:'the young Galois writing beneath a barred window'},
     {id:'letter',year:'29 May 1832',motif:'a letter, quill and candle'},
     {id:'last-dawn',year:'30–31 May 1832',motif:'two distant figures at dawn'},
-    {id:'echoes',year:'1832–1846',motif:'a silent parchment manuscript and falling autumn leaves'}
+    {id:'echoes',year:'1832–1846',motif:'a silent parchment manuscript and falling autumn leaves'},
+    {id:'publication',year:'1843–1846',motif:'Liouville reading the manuscript and its publication',figure:'original interpretive engraving, not a reconstructed likeness'}
   ].map(Object.freeze));
+  // Retained tableaux keep their original particle correspondence when scenes
+  // are inserted into the biography; only the three new scenes get new seeds.
+  const seedIds=Object.freeze([0,10,1,11,2,3,4,5,6,12]);
   function rng(initial){let seed=initial>>>0;return()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
 
   // Thin the actual serif letterforms, rather than draw hollow outlines. The
@@ -115,6 +121,82 @@
       curve(t([-.68,y]),[[-.49*s,(y+.028)*s+cy,-.3*s,(y-.038)*s+cy,-.105*s,(y-.074)*s+cy]],.0017,j%4===0?.75:.43);
       curve(t([.11,y-.075]),[[.29*s,(y-.027)*s+cy,.53*s,(y+.024)*s+cy,.66*s,(y-.012)*s+cy]],.0017,j%4===0?.75:.43);
     }
+  }
+  function school(d){
+    const{line,curve,ellipse}=d;
+    // A classical school entrance, interpreted as an architectural memory rather
+    // than a measured reconstruction of the Lycée Louis-le-Grand facade.
+    line([[-.83,.79],[.83,.79]],.005,.72);line([[-.83,.74],[.83,.74]],.0025,.48);
+    line([[-.83,-.40],[.83,-.40]],.005,.64);
+    const arch=()=>{d.ctx.beginPath();d.ctx.moveTo(-.14,-.39);d.ctx.lineTo(-.14,.28);d.ctx.ellipse(.255,.28,.395,.375,0,Math.PI,0,true);d.ctx.lineTo(.65,-.39);d.ctx.closePath();};
+    d.style(.007,.84);arch();d.ctx.stroke();d.style(.002,.025);arch();d.ctx.fill();
+    curve([-.19,-.39],[[-.19,-.15,-.19,.09,-.19,.28],[-.19,.83,.70,.83,.70,.28],[.70,.09,.70,-.15,.70,-.39]],.0035,.59);
+    for(let j=0;j<11;j++){const a=j*Math.PI/10;line([[.255+.399*Math.cos(a),.28+.38*Math.sin(a)],[.255+.447*Math.cos(a),.28+.427*Math.sin(a)]],.0022,.54);}
+    for(const x of[-.15,.65])for(let j=0;j<6;j++)line([[x-.047,-.32+j*.101],[x+.027,-.32+j*.101]],.0022,.50);
+    // Open doors lead to a quiet, lit passage, not to a theatrical palace.
+    line([[-.11,-.36],[-.11,.28],[.035,.40],[.035,-.25],[-.11,-.36]],.0045,.86);
+    line([[.62,-.36],[.62,.28],[.478,.40],[.478,-.25],[.62,-.36]],.0045,.86);
+    for(const x of[-.074,.508]){line([[x,-.15],[x,.23],[x+.033,.256],[x+.033,-.131],[x,-.15]],.0018,.48);ellipse(x+.017,-.01,.007,.012,.0015,.65,true);}
+    line([[.037,-.25],[.477,-.25]],.0025,.52);line([[.07,-.28],[.45,-.28]],.0016,.40);
+    for(const y of[.17,.56]){
+      line([[-.74,y],[-.30,y],[-.30,y+.01],[-.74,y+.01]],.0038,.60);
+    }
+    line([[-.72,.18],[-.72,.56],[-.32,.56],[-.32,.18]],.004,.67);
+    line([[-.525,.19],[-.525,.55]],.003,.52);line([[-.71,.37],[-.33,.37]],.0025,.49);
+    for(let j=0;j<5;j++)line([[-.81,-.33+j*.091],[-.25,-.33+j*.091]],.0015,.18);
+    // Broad shallow steps establish the scale of the child entering school.
+    for(let j=0;j<4;j++){
+      const y=-.40-j*.085,x=.72+j*.044;
+      line([[-x,y],[x,y],[x+.035,y-.026],[-x-.035,y-.026]],.0027,j===0?.75:.53);
+    }
+    const student=[[-.49,-.09],[-.555,-.15],[-.576,-.38],[-.525,-.46],[-.39,-.45],[-.35,-.365],[-.40,-.135],[-.448,-.092]];
+    line(student,.002,.17,true,true);line(student,.0045,.94,true);
+    ellipse(-.469,-.033,.043,.060,.0027,.24,true);ellipse(-.469,-.033,.043,.060,.003,.86);
+    for(let j=0;j<6;j++)curve([-.51+j*.013,.007],[[ -.51+j*.011,.04,-.48+j*.008,.034,-.444+j*.004,.014]],.0016,.56);
+    line([[-.522,-.449],[-.517,-.626],[-.542,-.649],[-.485,-.654],[-.458,-.456]],.0038,.88);
+    line([[-.426,-.453],[-.398,-.594],[-.365,-.616],[-.425,-.623],[-.464,-.455]],.0038,.85);
+    line([[-.401,-.207],[-.327,-.201],[-.302,-.339],[-.38,-.352],[-.401,-.207]],.0034,.90);
+    line([[-.386,-.222],[-.335,-.218],[-.315,-.328]],.0015,.59);
+    curve([-.547,-.17],[[-.538,-.28,-.519,-.29,-.526,-.354]],.0026,.77);
+    for(let j=0;j<7;j++)line([[-.539+j*.021,-.420],[-.513+j*.010,-.157]],.0011,.33);
+  }
+  function schoolSetbacks(d){
+    const{line,curve,ellipse}=d;
+    // The closed examination door and a continuing course of study coexist.
+    // No chalk-throwing or other disputed story is portrayed.
+    line([[-.77,-.40],[-.77,.66],[-.16,.66],[-.16,-.40]],.005,.81);
+    line([[-.81,-.40],[-.81,.705],[-.12,.705],[-.12,-.40]],.0025,.55);
+    line([[-.47,-.38],[-.47,.645]],.004,.76);
+    for(const x of[-.722,-.420])for(const y of[-.26,.22])line([[x,y],[x,y+.35],[x+.203,y+.35],[x+.203,y],[x,y]],.0024,.57);
+    ellipse(-.485,.085,.009,.027,.0022,.80);ellipse(-.449,.085,.009,.027,.0022,.80);
+    line([[-.83,-.43],[-.10,-.43],[-.055,-.48],[-.875,-.48]],.0036,.69);
+    // An unaccepted examination sheet rests by the closed door.
+    const sheet=[[-.756,-.518],[-.332,-.476],[-.256,-.72],[-.688,-.78]];
+    line(sheet,.002,.044,true,true);line(sheet,.0036,.84,true);
+    for(let j=0;j<5;j++)line([[-.702+j*.006,-.55-j*.034],[-.382+j*.009,-.52-j*.034]],.0014,.49);
+    line([[-.632,-.558],[-.476,-.707]],.0039,.75);line([[-.459,-.568],[-.638,-.694]],.0039,.75);
+    // A second, open window and a working desk point toward continued study.
+    line([[.19,.76],[.75,.76],[.75,.24],[.19,.24],[.19,.76]],.0039,.58);
+    line([[.17,.78],[.77,.78]],.002,.35);line([[.47,.25],[.47,.75]],.0025,.36);
+    curve([.47,.75],[[.34,.58,.51,.38,.57,.25]],.0024,.31);
+    const body=[[.19,.15],[.07,.047],[.10,-.23],[.21,-.335],[.51,-.317],[.55,-.105],[.48,.079],[.36,.166]];
+    line(body,.002,.14,true,true);line(body,.004,.84,true);
+    ellipse(.302,.302,.090,.126,.0033,.88);ellipse(.302,.302,.090,.126,.002,.07,true);
+    curve([.217,.34],[[.19,.445,.32,.48,.367,.391]],.004,.87);
+    for(let j=0;j<9;j++)curve([.219+j*.012,.375],[[.217+j*.009,.426,.249+j*.009,.446,.263+j*.012,.411]],.0015,.62);
+    line([[.376,.322],[.401,.293],[.375,.286],[.366,.259]],.0025,.82);
+    line([[.344,.322],[.367,.325]],.002,.78);ellipse(.357,.322,.003,.003,.001,.9,true);
+    curve([.236,.179],[[.273,.133,.287,.131,.332,.169]],.0024,.67);
+    line([[.195,.143],[.301,-.025],[.383,.150]],.0032,.75);
+    curve([.161,.033],[[.173,-.069,.189,-.160,.303,-.234]],.003,.66);
+    curve([.479,.044],[[.451,-.086,.433,-.146,.379,-.229]],.003,.66);
+    for(let j=0;j<8;j++)line([[.15+j*.041,-.268],[.189+j*.032,-.004]],.0011,.30);
+    d.ctx.save();d.ctx.translate(.355,.007);openBook(d,-.205,.49);d.ctx.restore();
+    line([[.019,-.455],[.79,-.407],[.852,-.472],[.041,-.558],[.019,-.455]],.0039,.75);
+    line([[.093,-.553],[.080,-.804]],.004,.63);line([[.737,-.483],[.771,-.769]],.004,.61);
+    ellipse(.747,-.348,.040,.013,.0025,.61);line([[.709,-.35],[.716,-.4],[.783,-.395],[.784,-.35]],.0025,.62);
+    line([[.727,-.36],[.682,-.118]],.0028,.76);
+    curve([.692,-.152],[[.605,-.08,.624,.035,.649,.083],[.735,-.034,.751,-.101,.692,-.152]],.0023,.62);
   }
   function awakening(d){
     const{line,curve,ellipse,dot}=d;openBook(d,-.05,.93);
@@ -313,19 +395,81 @@
     curve([.34,.91],[[.41,.82,.56,.836,.66,.76]],.0015,.30);
     for(let j=0;j<14;j++){const x=-.46+j*.067;dot(x,-.81+Math.sin(j*.74)*.014,.002,.23);}
   }
-  const renderers=[null,awakening,symmetries,prison,letter,lastDawn,echoes];
+  function liouvillePublication(d){
+    const{line,curve,ellipse,dot}=d;
+    // Interpretive engraving of a mature scholar. This is not presented as an
+    // authenticated portrait: the lifted manuscript and printed journal tell
+    // the historical action, while the open window carries the final light.
+    line([[.36,.82],[.82,.82],[.82,.23]],.0036,.48);
+    line([[.36,.82],[.31,.34],[.36,.24]],.0031,.49);
+    line([[.79,.25],[.88,.23]],.002,.31);
+    for(let j=0;j<8;j++){const x=.38+j*.06;line([[x,.78],[x-.27,.035]],.0013,.19);}
+    // A reader's chair, shoulders and quiet frock coat.
+    curve([-.71,-.47],[[-.77,-.21,-.77,.17,-.65,.248],[-.60,.284,-.34,.280,-.271,.189]],.003,.53);
+    const coat=[[-.504,.139],[-.669,.045],[-.692,-.385],[-.578,-.535],[-.254,-.475],[-.111,-.335],[-.167,.060],[-.349,.174]];
+    line(coat,.002,.13,true,true);line(coat,.0045,.86,true);
+    for(let j=0;j<12;j++)curve([-.645+j*.031,-.417],[[ -.60+j*.026,-.24,-.56+j*.017,-.038,-.55+j*.025,.069]],.0011,.34);
+    line([[-.51,.146],[-.391,-.060],[-.313,.17]],.0033,.85);
+    line([[-.447,.118],[-.403,.007],[-.370,.103]],.0031,.80);
+    // Receding hair, a broad forehead, face in three-quarter profile and ear.
+    const face=[[-.529,.442],[-.498,.520],[-.395,.540],[-.321,.484],[-.298,.383],[-.277,.341],[-.249,.301],[-.281,.284],[-.284,.230],[-.311,.174],[-.402,.147],[-.484,.193],[-.533,.308]];
+    line(face,.002,.083,true,true);line(face,.0036,.89,true);
+    curve([-.529,.352],[[-.583,.455,-.517,.561,-.418,.551]],.0041,.89);
+    for(let j=0;j<11;j++)curve([-.535+j*.004,.337+j*.013],[[ -.566+j*.006,.403+j*.01,-.548+j*.01,.47+j*.006,-.505+j*.015,.498+j*.003]],.0015,.49);
+    ellipse(-.492,.310,.029,.041,.0024,.7);curve([-.507,.306],[[-.504,.343,-.479,.337,-.478,.308]],.0015,.50);
+    line([[-.383,.361],[-.320,.370]],.003,.76);ellipse(-.333,.357,.008,.004,.0015,.91,true);
+    curve([-.317,.34],[[-.304,.32,-.295,.312,-.275,.306]],.0018,.58);
+    curve([-.340,.246],[[-.318,.251,-.299,.247,-.282,.251]],.0019,.74);
+    curve([-.379,.188],[[-.339,.18,-.310,.199,-.301,.225]],.0016,.41);
+    // The original manuscript is raised into the window light.
+    const lifted=[[-.088,.397],[.190,.605],[.401,.239],[.111,.045]];
+    line(lifted,.002,.036,true,true);line(lifted,.004,.92,true);
+    for(let j=0;j<8;j++)line([[-.033+j*.021,.388-j*.025],[.167+j*.016,.528-j*.034]],.0015,.55);
+    const arm=[[-.31,.086],[-.431,-.086],[-.319,-.256],[-.169,-.232],[.019,.089],[.031,.137],[-.025,.167],[-.189,-.045],[-.204,.035]];
+    line(arm,.002,.12,true,true);line(arm,.0042,.89,true);
+    curve([-.384,-.070],[[-.336,-.189,-.243,-.199,-.207,-.157]],.0017,.55);
+    line([[-.025,.167],[.031,.137]],.0025,.76);
+    curve([.031,.137],[[.048,.166,.078,.174,.091,.148],[.102,.128,.064,.111,.033,.112]],.0031,.89);
+    for(let j=0;j<3;j++)line([[.052+j*.012,.154],[.061+j*.011,.127]],.0011,.65);
+    line([[-.775,-.478],[.643,-.362],[.865,-.535],[-.556,-.752],[-.775,-.478]],.0045,.81);
+    line([[-.553,-.755],[-.559,-.861]],.0038,.59);line([[.774,-.554],[.788,-.821]],.0038,.58);
+    // The journal is a distinct printed volume, not another silent manuscript.
+    d.ctx.save();d.ctx.translate(.377,-.375);d.ctx.rotate(.12);
+    const cover=[[-.244,.269],[.269,.269],[.269,-.329],[-.244,-.329]];
+    d.ctx.save();d.ctx.globalCompositeOperation='destination-out';line(cover,.001,1,true,true);d.ctx.restore();
+    line(cover,.002,.076,true,true);line(cover,.0048,.94,true);
+    line([[-.266,.266],[-.266,-.347],[.269,-.347],[.287,-.329]],.0027,.75);
+    line([[-.224,.246],[.249,.246],[.249,-.307],[-.224,-.307],[-.224,.246]],.0014,.46);
+    for(let j=0;j<3;j++)line([[-.255,-.337-j*.004],[.257,-.337-j*.004]],.0011,.48);
+    d.ctx.save();d.ctx.scale(1,-1);d.ctx.fillStyle='rgba(255,255,255,.90)';d.ctx.textAlign='center';d.ctx.textBaseline='middle';
+    d.ctx.font='400 .059px Georgia, serif';d.ctx.fillText('JOURNAL',.012,-.153,.436);
+    d.ctx.font='400 .036px Georgia, serif';d.ctx.fillText('DE MATHÉMATIQUES',.012,-.064,.419);
+    d.ctx.font='400 .079px Georgia, serif';d.ctx.fillText('1846',.012,.133,.326);
+    d.ctx.restore();line([[-.142,.020],[.164,.020]],.0015,.68);d.ctx.restore();
+    // The printed pages multiply into a restrained fan around the journal.
+    for(let j=0;j<3;j++){
+      const x=.431+j*.104,y=.305+j*.105,angle=.15+j*.26;
+      d.ctx.save();d.ctx.translate(x,y);d.ctx.rotate(-angle);
+      line([[-.096,.12],[.128,.12],[.128,-.116],[-.096,-.116]],.0028,.67,true);
+      for(let k=0;k<5;k++)line([[-.06,.075-k*.029],[.091,.075-k*.029]],.0012,.43);
+      d.ctx.restore();
+      curve([.372,-.067],[[.52,.012,x-.082,y-.177,x,y-.14]],.0015,.29);
+    }
+    for(let j=0;j<15;j++){const a=.36+j*.121,r=.33+(j%3)*.075;dot(.36+r*Math.cos(a),.11+r*Math.sin(a),.0023,.30);}
+  }
+  const renderers=[null,school,awakening,schoolSetbacks,symmetries,prison,letter,lastDawn,echoes,liouvillePublication];
   const motifCache=new Map();
   function motifPixels(index){
     if(motifCache.has(index))return motifCache.get(index);
     const d=drawing(),layers=[{drawing:d,tag:0}];
-    if(index===5){
+    if(index===7){
       // Separate layers retain the landscape even behind the figure. A tiny
       // depth marker identifies this figure's own grains for the musical fade;
       // no bounding box can accidentally erase the horizon or the other man.
       lastDawn(d,false);
       const near=drawing();person(near,-.43,-.21,1.03,1);
       layers.push({drawing:near,tag:1});
-    }else if(index===6){
+    }else if(index===8){
       echoes(d);
       for(const leaf of leafDesigns){const layer=drawing();autumnLeaf(layer,leaf);layers.push({drawing:layer,tag:leaf.tag});}
     }else renderers[index](d);
@@ -343,7 +487,7 @@
   }
   function sampleNode(count,index=0){
     index=Math.max(0,Math.min(nodes.length-1,Math.floor(index)));if(index===0)return sample(count);
-    const data=motifPixels(index),random=rng(18110000+index*7919),points=[];
+    const data=motifPixels(index),random=rng(18110000+seedIds[index]*7919),points=[];
     for(let i=0;i<count;i++){
       const pick=random()*data.total;let lo=0,hi=data.weights.length-1;
       while(lo<hi){const mid=(lo+hi)>>>1;if(data.weights[mid]<pick)lo=mid+1;else hi=mid;}

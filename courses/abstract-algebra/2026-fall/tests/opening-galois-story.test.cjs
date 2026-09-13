@@ -1,11 +1,14 @@
 const assert=require('node:assert/strict');global.window=global;
 require('../opening-galois-story.js');require('../opening-timeline.js');
 const S=CourseOpeningGaloisStory;
+assert.equal(S.nodes.length,10);
+assert.deepEqual(S.index,{portrait:0,school:1,awakening:2,exams:3,symmetries:4,prison:5,letter:6,death:7,silence:8,recognition:9});
+assert(S.nodes.every(node=>node.language==='zh'),'every biography narration is Chinese, including the new tableaux');
 for(const hold of [30000,45000,60000,90000])for(const speed of [.25,.5,.75,1,1.5]){
- const morph=5000/speed,duration=S.duration(hold,morph);assert.equal(duration,7*hold+6*morph);
- for(let i=0;i<7;i++){
+ const morph=5000/speed,duration=S.duration(hold,morph);assert.equal(duration,S.nodes.length*hold+(S.nodes.length-1)*morph);
+ for(let i=0;i<S.nodes.length;i++){
   const start=i*(hold+morph);assert.equal(S.state(start+hold/2,hold,morph).node,i);
-  if(i<6){const time=start+hold+morph*.37,state=S.state(time,hold,morph);assert(state.moving);assert.equal(state.from,i);assert.equal(state.to,i+1);assert(Math.abs(state.progress-.37)<1e-12);
+  if(i<S.nodes.length-1){const time=start+hold+morph*.37,state=S.state(time,hold,morph);assert(state.moving);assert.equal(state.from,i);assert.equal(state.to,i+1);assert(Math.abs(state.progress-.37)<1e-12);
    const next=S.state(S.remap(time,hold,morph,hold*1.5,morph/2),hold*1.5,morph/2);assert.equal(next.from,i);assert(Math.abs(next.progress-.37)<1e-12);
   }
  }
@@ -13,15 +16,21 @@ for(const hold of [30000,45000,60000,90000])for(const speed of [.25,.5,.75,1,1.5
  assert.equal(T.seek(duration+6750).moving,true);assert.equal(T.state().progress,.5);
  T.setDirection(-1);T.advance(6750);assert.equal(T.state().progress,0);T.advance(1);assert.equal(T.state().moving,false);
 }
-assert.match(S.nodes[4].year,/29 MAY/);assert.match(S.nodes[5].en,/May 30/);assert.match(S.nodes[5].en,/May 31/);assert.match(S.nodes[6].year,/1843.*1846/);
-console.log('PASS: seven complete independent holds, additional morph time, reversible single-story loop and exact phase preservation during timing edits');
+assert.equal(S.nodes[S.index.school].year,'1823');assert.equal(S.nodes[S.index.awakening].year,'1827');assert.equal(S.nodes[S.index.exams].year,'1828–1829');
+assert.match(S.nodes[S.index.letter].year,/29 MAY/);assert.match(S.nodes[S.index.death].en,/May 30/);assert.match(S.nodes[S.index.death].en,/May 31/);assert.match(S.nodes[S.index.recognition].year,/1843.*1846/);
+assert.equal(S.recognition,S.nodes[S.index.recognition]);assert.match(S.recognition.zh,/刘维尔/);
+console.log('PASS: ten complete independent holds, additional morph time, reversible single-story loop and exact phase preservation during timing edits');
 
-for(const [t,node] of [[25000,2],[74000,3],[100000,4],[128000,5],[167000,6]]){
+for(const [t,node] of [[4000,S.index.portrait],[13000,S.index.school],[23000,S.index.awakening],[34000,S.index.exams],[45000,S.index.symmetries],[74000,S.index.prison],[100000,S.index.letter],[128000,S.index.death],[150000,S.index.silence],[167000,S.index.recognition]]){
  const a=S.state(t,30000,10000,true);assert.equal(a.node,node);assert.equal(a.moving,false);
 }
 assert.equal(S.duration(30000,10000,true),177160.612);
-for(const t of [4000,20000,80000,121000,137000,167000]){
+assert.equal(S.score.holdEnds[S.index.symmetries]-S.score.starts[S.index.symmetries],24000,'the theorem has a full 24-second reading window');
+for(const t of [4000,18000,20000,28000,33000,38000,80000,121000,137000,163000,167000]){
  const a=S.state(t,30000,10000,true),b=S.state(S.remap(t,30000,10000,45000,7000,true,false),45000,7000,false);
  assert.equal(a.from,b.from);assert.equal(a.to,b.to);assert(Math.abs(a.progress-b.progress)<1e-10);
 }
+const publicationMorph=S.state(163000,30000,10000,true);assert.equal(publicationMorph.from,S.index.silence);assert.equal(publicationMorph.to,S.index.recognition);assert.equal(publicationMorph.progress,.5);
+assert.equal(S.state(S.score.finalPeak,30000,10000,true).node,S.index.recognition,'the final musical peak belongs to Liouville’s new drawing');
+const end=S.state(S.score.duration+1000,30000,10000,true);assert.equal(end.node,S.index.recognition);assert.equal(end.moving,false);assert.equal(end.position,S.score.duration);
 console.log('PASS: music landmarks land on the intended tableaux; scored/manual timing changes preserve the current formation');
