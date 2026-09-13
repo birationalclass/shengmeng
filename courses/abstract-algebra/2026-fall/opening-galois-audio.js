@@ -9,9 +9,9 @@
     score.preload = 'auto';
     score.loop = false;
     score.volume = 0;
-    let state = { active: false, t: 0, dt: 0, direction: 1, playing: false, enabled: true, volume: .72 };
+    let state = { active: false, prelude: false, departing: false, t: 0, dt: 0, direction: 1, playing: false, enabled: true, volume: .72 };
     let authorized = false, blocked = false, failed = false, destroyed = false;
-    let mix = 0, fade = null, clock = 0, lastSeekAt = -Infinity, needSync = true;
+    let mix = 0, fade = null, mainGain = 1, mainFade = null, entryFading = false, clock = 0, lastSeekAt = -Infinity, needSync = true;
     let playEpoch = 0, scoreRequest = null, mainRequested = false, readySettled = false;
     let readyResolve;
     const ready = new Promise(resolve => { readyResolve = resolve; });
@@ -19,7 +19,7 @@
     const finite = (v, fallback) => Number.isFinite(Number(v)) ? Number(v) : fallback;
     const visible = () => typeof document === 'undefined' || !document.hidden;
     const allowed = () => authorized && !destroyed && state.playing && state.enabled && visible();
-    const wantsScore = () => allowed() && state.active && state.direction >= 0 && !failed && !blocked;
+    const wantsScore = () => allowed() && !state.prelude && !state.departing && state.active && state.direction >= 0 && !failed && !blocked;
     const reverse = () => state.active && state.direction < 0;
     const duration = () => Number.isFinite(score.duration) && score.duration > 0 ? score.duration : null;
     const atEnd = () => duration() !== null && state.t >= duration() - .025;
@@ -57,7 +57,7 @@
     }
 
     function ensureMain() {
-      if (!allowed() || reverse() || mainRequested || !mainAudio.paused) return;
+      if (!allowed() || reverse() || status().suppressMain || mainRequested || !mainAudio.paused) return;
       mainRequested = true;
       try {
         const result = requestMain ? requestMain() : mainAudio.play();
@@ -96,7 +96,10 @@
         }
         scoreRequest = null;
         blocked = false;
-        if (!wantsScore() || atEnd()) score.pause();
+        if (!wantsScore() || atEnd()) {
+          score.pause();
+          if (unlocking && !state.active) { try { score.currentTime = 0; } catch (_) {} }
+        }
         return !score.paused;
       }).catch(error => {
         if (epoch !== playEpoch) return false;
@@ -118,7 +121,7 @@
         return;
       }
       const angle = mix * Math.PI / 2;
-      mainAudio.volume = state.volume * Math.cos(angle);
+      mainAudio.volume = state.volume * Math.cos(angle) * mainGain;
       score.volume = state.volume * Math.sin(angle);
     }
 
@@ -133,11 +136,22 @@
       if (fade.elapsed === 3000) mix = target;
     }
 
+    function advanceMainGain(dt) {
+      const target = state.departing || state.prelude || entryFading && state.active && !failed && !blocked ? 0 : 1;
+      if (!mainFade || mainFade.target !== target) mainFade = { from: mainGain, target, elapsed: 0 };
+      mainFade.elapsed = Math.min(3000, mainFade.elapsed + dt);
+      const u = mainFade.elapsed / 3000, ease = u * u * u * (10 + u * (-15 + 6 * u));
+      mainGain = mainFade.from + (target - mainFade.from) * ease;
+      if (mainFade.elapsed === 3000) mainGain = target;
+    }
+
     function update(next = {}) {
       if (destroyed) return status();
       const previous = state;
       state = {
         active: next.active === undefined ? previous.active : Boolean(next.active),
+        prelude: next.prelude === undefined ? previous.prelude : Boolean(next.prelude),
+        departing: next.departing === undefined ? previous.departing : Boolean(next.departing),
         t: Math.max(0, finite(next.t, previous.t)),
         dt: clamp(finite(next.dt, 0), 0, 250),
         direction: finite(next.direction, previous.direction),
@@ -146,6 +160,11 @@
         volume: clamp(finite(next.volume, previous.volume), 0, 1)
       };
       clock += state.dt;
+      if (state.prelude) entryFading = true;
+      if (!state.prelude && !state.active) entryFading = false;
+      // Start the original track's fade with the visual entry. Its silent hold
+      // remains in place while the portrait forms and the new score prepares.
+      if (state.playing && visible()) advanceMainGain(state.dt);
       const resumed = !previous.playing && state.playing || !previous.enabled && state.enabled;
       const changedDirection = previous.direction < 0 && state.direction >= 0;
       if (previous.active !== state.active || resumed || changedDirection) {
@@ -173,13 +192,14 @@
       } else if (state.active && (!score.paused || scoreRequest)) {
         pauseScore();
       }
-      // Keep the original music audible while the score is still buffering.
+      // Ordinary crossfades retain the main track during buffering; an explicit
+      // entry fade keeps it silent while the portrait and score prepare.
       const scoreAudible = wantsScore() && !score.paused && score.readyState >= 2 && !atEnd();
       const target = scoreAudible ? 1 : 0;
       if (!target) ensureMain();
       advanceFade(target, state.dt);
       applyVolumes();
-      if (mix >= 1 - 1e-7 && target) {
+      if (mix >= 1 - 1e-7 && target || mainGain <= 1e-7) {
         mainAudio.pause();
         mainRequested = false;
       }
@@ -189,6 +209,7 @@
 
     function unlock() {
       if (destroyed) return Promise.resolve(false);
+      if (authorized && !blocked && !failed) return scoreRequest || Promise.resolve(true);
       authorized = true;
       blocked = false;
       // This silent play must be called synchronously from the entry gesture.
@@ -200,7 +221,7 @@
     function stop(options = {}) {
       const reset = typeof options === 'boolean' ? options : options.reset !== false;
       authorized = false;
-      state = { ...state, active: false, playing: false };
+      state = { ...state, active: false, prelude: false, departing: false, playing: false };
       blocked = false;
       pauseScore();
       mainAudio.pause();
@@ -208,6 +229,7 @@
       score.volume = 0;
       mix = 0;
       fade = null;
+      mainGain = 1;mainFade = null;entryFading = false;
       needSync = true;
       mainRequested = false;
       if (reset) { try { score.currentTime = 0; } catch (_) {} }
@@ -215,12 +237,12 @@
 
     function status() {
       return {
-        authorized, active: state.active, blocked, failed,
+        authorized, active: state.active, prelude: state.prelude, departing: state.departing, mainGain, blocked, failed,
         currentTime: finite(score.currentTime, 0), duration: duration(),
         scorePlaying: allowed() && !score.paused && score.volume > .001,
-        scoreOwnsMusic: state.active && !failed && !blocked || mix > .001,
-        // The master may keep/resume its track until the handoff is complete.
-        suppressMain: wantsScore() && !score.paused && score.readyState >= 2 && !atEnd() && mix >= 1 - 1e-7,
+        scoreOwnsMusic: state.departing || state.prelude || state.active && !failed && !blocked || mix > .001,
+        // A requested entry fade owns the music even during its quiet interval.
+        suppressMain: state.departing || state.prelude || entryFading && state.active && !failed && !blocked || wantsScore() && !score.paused && score.readyState >= 2 && !atEnd() && mix >= 1 - 1e-7,
         mix, mainVolume: mainAudio.volume, scoreVolume: score.volume,
         paused: score.paused, seeking: score.seeking, needsSync: needSync, ready: score.readyState >= 2,
         direction: state.direction, ended: atEnd()

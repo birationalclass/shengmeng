@@ -496,6 +496,7 @@
       for(let i=0;i<capturedNormals.length;i+=3){const x=capturedNormals[i],y=capturedNormals[i+1];capturedNormals[i]=cosine*x-sine*y;capturedNormals[i+1]=sine*x+cosine*y;}
       impulses.clear();cancelClick();endOrbit();narration.reset();
       terminalActive=true;routeCycle=0;routeOffset=0;cameraBridge=null;outro=null;
+      window.CourseOpeningAudio?.frame({active:false,prelude:true,departing:false,t:0,dt:0,direction:1});
       storyHoldMs=settings.sceneDurations[9]*1000;storyMorphMs=baseTransitions[9]/settings.morphSpeed;storyScored=true;
       order=[9];holds=[story.duration(storyHoldMs,storyMorphMs,true)];transitions=[storyMorphMs*cameraRig.portraitTransitionScale];starts=[0];
       timeline=window.CourseOpeningTimeline.create({holds,transitions,morphSingle:true});
@@ -524,7 +525,7 @@
     }
     function advanceOutro(dt){
       outro.elapsed+=dt;
-      if(outro.phase==='depart'){if(outro.elapsed>=(reduce?800:4200))leaveOpening();return;}
+      if(outro.phase==='depart'){if(outro.elapsed>=(reduce?3000:4200))leaveOpening();return;}
       const neutral={angles:[0,0,0],target:[0,0,0],zoom:1,perspective:0};
       if(outro.phase==='return'){
         const amount=reduce?1:ease(Math.min(1,outro.elapsed/2700));
@@ -539,7 +540,7 @@
         if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='进入课程 ↗';root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
       }
     }
-    function depart(){outro.phase='depart';outro.elapsed=0;root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
+    function depart(){outro.phase='depart';outro.elapsed=0;window.CourseOpeningAudio?.frame({active:false,prelude:false,departing:true,t:0,dt:0,direction:1});root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
     function stop(){endOrbit();active=false;previous=0;cancelAnimationFrame(raf);raf=0;}
     function needsFrames(){const target=effective();return impulses.active(time)||(!outro&&narration.needsFrames)||(outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||target.wander>0||visual.camera>0||(!reduce&&visual.spotlight>0)||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
     function queue(){if(!raf&&active&&dialog.open&&!document.hidden&&needsFrames())raf=requestAnimationFrame(tick);}
@@ -582,7 +583,7 @@
         narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:textFadeMs(),englishMs:scene===9&&storyScored&&galoisState?(galoisNode===6&&timeline.state().holdElapsed>=166000?3500:Math.min(8000,Math.max(1800,(galoisState.holdDuration-2*textFadeMs())/2))):8000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
       }
       const scoredHere=!outro&&!entrance&&storyScored&&Boolean(galoisState);
-      window.CourseOpeningAudio?.frame({active:scoredHere,t:scoredHere?timeline.state().holdElapsed/1000:0,dt,direction:timeline.state().direction});
+      window.CourseOpeningAudio?.frame({active:scoredHere,prelude:terminalActive&&entrance&&!outro,departing:outro?.phase==='depart',t:scoredHere?timeline.state().holdElapsed/1000:0,dt,direction:timeline.state().direction});
       if(scoredHere&&galoisNode===6){
         const t=timeline.state().holdElapsed,year=window.CourseOpeningGaloisTimeline.sample({elapsed:t}).displayYear;
         root.querySelector('[data-caption-year]').textContent=String(year);root.dataset.galoisRecognition=t>=169000?'published':t>=166000?'recognized':'time';
