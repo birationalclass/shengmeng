@@ -64,6 +64,13 @@ body.opening-active{overflow:hidden}
 @keyframes opening-panel-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit;color:inherit;padding:0}
 
+#courseOpening .opening-music-toggle{position:absolute;z-index:8;left:max(22px,calc(env(safe-area-inset-left) + 12px));top:max(26px,calc(env(safe-area-inset-top) + 16px));padding:7px 11px;border:1px solid #c6ae7c29;border-radius:20px;background:#15130f99;color:#c6b99c;font:400 11px/1.5 Arial,'PingFang SC',sans-serif;letter-spacing:.7px;cursor:pointer;opacity:.22;transition:opacity .3s ease,border-color .3s ease}
+#courseOpening.has-pointer-controls .opening-music-toggle,#courseOpening .opening-music-toggle.needs-gesture,#courseOpening .opening-music-toggle:hover,#courseOpening .opening-music-toggle:focus-visible{opacity:1;border-color:#c6ae7c66}
+#courseOpening .opening-music-toggle:disabled{cursor:default;opacity:.4}
+#courseOpening.opening-loading .opening-music-toggle,#courseOpening.opening-awaiting-start .opening-music-toggle{display:none}
+@media(max-width:600px){#courseOpening .opening-music-toggle{top:auto;bottom:max(22px,calc(env(safe-area-inset-bottom) + 12px));left:max(16px,calc(env(safe-area-inset-left) + 10px))}}
+@media(pointer:coarse){#courseOpening .opening-music-toggle{opacity:.8;min-height:40px}}
+
 @media(max-width:600px){
   #courseOpening .opening-caption{left:7%;right:7%;bottom:max(9vh,env(safe-area-inset-bottom))}
   #courseOpening [data-caption-title]{font-size:11px;letter-spacing:2px;margin-bottom:11px}

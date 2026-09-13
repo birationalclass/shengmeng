@@ -65,6 +65,7 @@
   function leaveOpening() {
     stage='closed';root.dataset.stage=stage;toggle.disabled=true;
     if(ownedFullscreen&&document.fullscreenElement){ownedFullscreen=false;document.exitFullscreen().catch(()=>{});}
+    window.CourseOpeningAudio?.stop();
     if(film)film.stop();boot.stop();panel.hidden=true;dialog.classList.remove('settings-open','has-pointer-controls');toggle.setAttribute('aria-expanded','false');clearTimeout(visibilityTimer);
     if(dialog.open)dialog.close();document.body.classList.remove('opening-active');document.documentElement.classList.remove('course-opening-pending');
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
@@ -83,6 +84,7 @@
   async function startAnimation() {
     if(stage!=='ready'||!film)return;
     stage='starting';root.dataset.stage=stage;startButton.disabled=true;
+    window.CourseOpeningAudio?.start();
     try {
       if(!document.fullscreenElement){
         if(!root.requestFullscreen)throw new Error('Fullscreen unavailable');
@@ -93,6 +95,7 @@
       dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
       boot.finish();toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
     }catch(error){
+      window.CourseOpeningAudio?.stop();
       stage='ready';root.dataset.stage=stage;root.dataset.fullscreenBlocked='true';startButton.disabled=false;
       startButton.textContent='点击重试全屏';root.querySelector('[data-loading-status]').textContent='请允许浏览器全屏后开始';
     }
