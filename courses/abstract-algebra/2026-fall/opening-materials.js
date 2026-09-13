@@ -47,9 +47,11 @@
     attribute vec3 normalStart;
     attribute vec3 normalFinish;
     attribute vec4 grain;
+    attribute vec2 inscription;
     uniform float progress;
     uniform float aspect;
     uniform float dpr;
+    uniform float inscriptionScale;
     uniform float time;
     uniform float spotlight;
     uniform float camera;
@@ -249,7 +251,8 @@
       if(radiationFineOnly>.5&&emitted>.5)size=min(size,.80);
       // Grains grow more gently than the camera magnification, preserving a
       // fine, loose sand texture in close-ups instead of oversized pebbles.
-      gl_PointSize=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65);
+      float letteringSize=mix(1.,inscriptionScale,mix(inscription.x,inscription.y,e));
+      gl_PointSize=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65)*letteringSize;
 
       vec3 lamp=normalize(mix(vec3(-.52,.64,.79),vec3(followLightCentre()-p.xy,1.25),spotlight*.65));
       float diffuse=max(0.,dot(n,lamp));

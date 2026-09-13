@@ -66,9 +66,9 @@
   function pack(points,count,componentCounts){
     for(const p of points){p[3]=Math.atan2(p[1],p[0]);p[4]=p[0]*p[0]+p[1]*p[1];}
     points.sort((a,b)=>a[3]-b[3]||a[4]-b[4]);
-    const positions=new Float32Array(count*3),normals=new Float32Array(count*3),flat=new Float32Array(count*2);
-    points.forEach((p,i)=>{positions[i*3]=p[0];positions[i*3+1]=p[1];positions[i*3+2]=p[2];normals[i*3+2]=1;flat[i*2]=p[0];flat[i*2+1]=p[1];});
-    return {positions,normals,flat,componentCounts};
+    const positions=new Float32Array(count*3),normals=new Float32Array(count*3),flat=new Float32Array(count*2),letteringWeights=componentCounts[1]?new Float32Array(count):null;
+    points.forEach((p,i)=>{positions[i*3]=p[0];positions[i*3+1]=p[1];positions[i*3+2]=p[2];normals[i*3+2]=1;flat[i*2]=p[0];flat[i*2+1]=p[1];if(letteringWeights)letteringWeights[i]=p[5];});
+    return {positions,normals,flat,componentCounts,letteringWeights};
   }
   function sample(count){
     const binary=atob(window.CourseOpeningGaloisPortrait),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),view=new DataView(bytes.buffer),portraitCount=bytes.length/4;
@@ -86,7 +86,7 @@
         const ink=id===1?title:dates,p=ink[Math.floor(random()*ink.length)],scale=id===1?740:930;
         x=(p[0]+random()-800)/scale;y=(130-p[1]-random())/scale+(id===1?-.525:-.735);
       }
-      points.push([x,y,(random()-.5)*.003]);componentCounts[id]++;
+      points.push([x,y,(random()-.5)*.003,0,0,id===0?0:1]);componentCounts[id]++;
     }
     return pack(points,count,componentCounts);
   }
