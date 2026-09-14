@@ -138,7 +138,7 @@
       const music=window.CourseOpeningAudio.prepare((value,text)=>{if(entry===entryVersion&&stage==='loading')boot.music(value*100,text);}).catch(error=>{error.musicLoading=true;throw error;});
       await Promise.all([initialization,music]);
       if(entry===entryVersion&&dialog.open){stage='ready';root.dataset.stage=stage;boot.ready();dialog.classList.remove('opening-loading');dialog.classList.add('opening-awaiting-start');}
-    }catch(error){if(entry===entryVersion){if(error.musicLoading){stage='load-error';root.dataset.stage=stage;boot.retry();}else{root.dataset.unavailable='true';leaveOpening();initialization=null;}}}
+    }catch(error){if(entry===entryVersion){if(error.musicLoading||error.fontLoading){if(error.fontLoading)initialization=null;stage='load-error';root.dataset.stage=stage;boot.retry(error.fontLoading?'字体加载未完成，请重试':undefined);}else{root.dataset.unavailable='true';leaveOpening();initialization=null;}}}
   }
   function startAnimation() {
     if(stage!=='ready'||!film)return;
@@ -190,6 +190,9 @@
   window.courseOpeningControllerReady=true;syncSettings();
   const paint=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   async function initialize() {
+    boot.advance(20,'准备中英文字体');
+    if(!window.CourseOpeningFonts){const error=new Error('Opening fonts are unavailable');error.fontLoading=true;throw error;}
+    await window.CourseOpeningFonts.prepare(value=>boot.advance(20+value*2,'准备中英文字体'));
     const geometry=window.CourseOpeningGeometry, materials=window.CourseOpeningMaterials, cameraRig=window.CourseOpeningCamera;
     const gl=canvas.getContext('webgl',{alpha:false,antialias:false,preserveDrawingBuffer:true});
     if(!gl||!geometry||!materials||!cameraRig)throw new Error('Opening unavailable');

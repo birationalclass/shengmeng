@@ -19,50 +19,6 @@
   const seedIds=Object.freeze([0,10,1,11,2,3,4,5,6,12]);
   function rng(initial){let seed=initial>>>0;return()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}
 
-  // Thin the actual serif letterforms, rather than draw hollow outlines. The
-  // medial line retains each glyph; its local radius is one third of the ink.
-  function thinLettering(alpha,width,height){
-    const n=width*height,mask=new Uint8Array(n),distance=new Float32Array(n);
-    for(let i=0;i<n;i++){mask[i]=alpha[i*4+3]>150?1:0;distance[i]=mask[i]?1e4:0;}
-    const d=Math.SQRT2;
-    for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){const i=y*width+x;if(mask[i])distance[i]=Math.min(distance[i],distance[i-1]+1,distance[i-width]+1,distance[i-width-1]+d,distance[i-width+1]+d);}
-    for(let y=height-2;y>0;y--)for(let x=width-2;x>0;x--){const i=y*width+x;if(mask[i])distance[i]=Math.min(distance[i],distance[i+1]+1,distance[i+width]+1,distance[i+width+1]+d,distance[i+width-1]+d);}
-    const removals=[];
-    for(let pass=0;pass<80;pass++){
-      let changed=0;
-      for(let step=0;step<2;step++){
-        removals.length=0;
-        for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){
-          const i=y*width+x;if(!mask[i])continue;
-          const p=[mask[i-width],mask[i-width+1],mask[i+1],mask[i+width+1],mask[i+width],mask[i+width-1],mask[i-1],mask[i-width-1]];
-          const sum=p.reduce((a,b)=>a+b,0);if(sum<2||sum>6)continue;
-          let edges=0;for(let j=0;j<8;j++)if(!p[j]&&p[(j+1)%8])edges++;
-          if(edges!==1)continue;
-          if(step===0?(p[0]*p[2]*p[4]||p[2]*p[4]*p[6]):(p[0]*p[2]*p[6]||p[0]*p[4]*p[6]))continue;
-          removals.push(i);
-        }
-        for(const i of removals)mask[i]=0;changed+=removals.length;
-      }
-      if(!changed)break;
-    }
-    const fine=new Uint8Array(n);
-    for(let i=0;i<n;i++)if(mask[i]){
-      const x=i%width,y=(i/width)|0,r=Math.max(.58,(distance[i]-.5)/3),edge=Math.ceil(r);
-      for(let dy=-edge;dy<=edge;dy++)for(let dx=-edge;dx<=edge;dx++)if(dx*dx+dy*dy<=r*r){const j=(y+dy)*width+x+dx;if(j>=0&&j<n)fine[j]=1;}
-      fine[i]=1;
-    }
-    const ink=[];for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(fine[y*width+x])ink.push([x,y]);return ink;
-  }
-  const letteringCache=new Map();
-  function textPixels(text,font,tracking){
-    const key=text+font+tracking;if(letteringCache.has(key))return letteringCache.get(key);
-    const c=document.createElement('canvas');c.width=1600;c.height=260;
-    const ctx=c.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.textAlign='left';ctx.textBaseline='middle';ctx.font=font;
-    const widths=[...text].map(ch=>ctx.measureText(ch).width),total=widths.reduce((a,b)=>a+b,0)+tracking*(widths.length-1);
-    let x=800-total/2;[...text].forEach((ch,i)=>{ctx.fillText(ch,x,130);x+=widths[i]+tracking;});
-    const ink=thinLettering(ctx.getImageData(0,0,1600,260).data,1600,260);
-    if(!ink.length)throw new Error('Galois lettering could not be prepared');letteringCache.set(key,ink);return ink;
-  }
   function pack(points,count,componentCounts){
     for(const p of points){p[3]=Math.atan2(p[1],p[0]);p[4]=p[0]*p[0]+p[1]*p[1];}
     points.sort((a,b)=>a[3]-b[3]||a[4]-b[4]);
@@ -72,8 +28,9 @@
   }
   function sample(count){
     const binary=atob(window.CourseOpeningGaloisPortrait),bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),view=new DataView(bytes.buffer),portraitCount=bytes.length/4;
-    const title=textPixels('Évariste Galois','400 160px Georgia, "Times New Roman", serif',-3.2);
-    const dates=textPixels('1811–1832','400 100px Georgia, "Times New Roman", serif',-2.2);
+    const lettering=window.CourseOpeningLetteringData;
+    if(!lettering)throw new Error('The fixed Galois lettering has not loaded');
+    const title=lettering.pixels('galoisTitle'),dates=lettering.pixels('galoisDates');
     const random=rng(18111832),points=[],componentCounts=[0,0,0];
     for(let i=0;i<count;i++){
       let x,y,id;
@@ -84,7 +41,7 @@
       }else{
         id=i<count*(countParts[0]+countParts[1])?1:2;
         const ink=id===1?title:dates,p=ink[Math.floor(random()*ink.length)],scale=id===1?740:930;
-        x=(p[0]+random()-800)/scale;y=(130-p[1]-random())/scale+(id===1?-.525:-.735);
+        x=(p%1600+random()-800)/scale;y=(130-Math.floor(p/1600)-random())/scale+(id===1?-.525:-.735);
       }
       points.push([x,y,(random()-.5)*.003,0,0,id===0?0:1]);componentCounts[id]++;
     }
@@ -395,73 +352,16 @@
     curve([.34,.91],[[.41,.82,.56,.836,.66,.76]],.0015,.30);
     for(let j=0;j<14;j++){const x=-.46+j*.067;dot(x,-.81+Math.sin(j*.74)*.014,.002,.23);}
   }
-  function liouvillePublication(d){
-    const{line,curve,ellipse,dot}=d;
-    // Interpretive engraving of a mature scholar. This is not presented as an
-    // authenticated portrait: the lifted manuscript and printed journal tell
-    // the historical action, while the open window carries the final light.
-    line([[.36,.82],[.82,.82],[.82,.23]],.0036,.48);
-    line([[.36,.82],[.31,.34],[.36,.24]],.0031,.49);
-    line([[.79,.25],[.88,.23]],.002,.31);
-    for(let j=0;j<8;j++){const x=.38+j*.06;line([[x,.78],[x-.27,.035]],.0013,.19);}
-    // A reader's chair, shoulders and quiet frock coat.
-    curve([-.71,-.47],[[-.77,-.21,-.77,.17,-.65,.248],[-.60,.284,-.34,.280,-.271,.189]],.003,.53);
-    const coat=[[-.504,.139],[-.669,.045],[-.692,-.385],[-.578,-.535],[-.254,-.475],[-.111,-.335],[-.167,.060],[-.349,.174]];
-    line(coat,.002,.13,true,true);line(coat,.0045,.86,true);
-    for(let j=0;j<12;j++)curve([-.645+j*.031,-.417],[[ -.60+j*.026,-.24,-.56+j*.017,-.038,-.55+j*.025,.069]],.0011,.34);
-    line([[-.51,.146],[-.391,-.060],[-.313,.17]],.0033,.85);
-    line([[-.447,.118],[-.403,.007],[-.370,.103]],.0031,.80);
-    // Receding hair, a broad forehead, face in three-quarter profile and ear.
-    const face=[[-.529,.442],[-.498,.520],[-.395,.540],[-.321,.484],[-.298,.383],[-.277,.341],[-.249,.301],[-.281,.284],[-.284,.230],[-.311,.174],[-.402,.147],[-.484,.193],[-.533,.308]];
-    line(face,.002,.083,true,true);line(face,.0036,.89,true);
-    curve([-.529,.352],[[-.583,.455,-.517,.561,-.418,.551]],.0041,.89);
-    for(let j=0;j<11;j++)curve([-.535+j*.004,.337+j*.013],[[ -.566+j*.006,.403+j*.01,-.548+j*.01,.47+j*.006,-.505+j*.015,.498+j*.003]],.0015,.49);
-    ellipse(-.492,.310,.029,.041,.0024,.7);curve([-.507,.306],[[-.504,.343,-.479,.337,-.478,.308]],.0015,.50);
-    line([[-.383,.361],[-.320,.370]],.003,.76);ellipse(-.333,.357,.008,.004,.0015,.91,true);
-    curve([-.317,.34],[[-.304,.32,-.295,.312,-.275,.306]],.0018,.58);
-    curve([-.340,.246],[[-.318,.251,-.299,.247,-.282,.251]],.0019,.74);
-    curve([-.379,.188],[[-.339,.18,-.310,.199,-.301,.225]],.0016,.41);
-    // The original manuscript is raised into the window light.
-    const lifted=[[-.088,.397],[.190,.605],[.401,.239],[.111,.045]];
-    line(lifted,.002,.036,true,true);line(lifted,.004,.92,true);
-    for(let j=0;j<8;j++)line([[-.033+j*.021,.388-j*.025],[.167+j*.016,.528-j*.034]],.0015,.55);
-    const arm=[[-.31,.086],[-.431,-.086],[-.319,-.256],[-.169,-.232],[.019,.089],[.031,.137],[-.025,.167],[-.189,-.045],[-.204,.035]];
-    line(arm,.002,.12,true,true);line(arm,.0042,.89,true);
-    curve([-.384,-.070],[[-.336,-.189,-.243,-.199,-.207,-.157]],.0017,.55);
-    line([[-.025,.167],[.031,.137]],.0025,.76);
-    curve([.031,.137],[[.048,.166,.078,.174,.091,.148],[.102,.128,.064,.111,.033,.112]],.0031,.89);
-    for(let j=0;j<3;j++)line([[.052+j*.012,.154],[.061+j*.011,.127]],.0011,.65);
-    line([[-.775,-.478],[.643,-.362],[.865,-.535],[-.556,-.752],[-.775,-.478]],.0045,.81);
-    line([[-.553,-.755],[-.559,-.861]],.0038,.59);line([[.774,-.554],[.788,-.821]],.0038,.58);
-    // The journal is a distinct printed volume, not another silent manuscript.
-    d.ctx.save();d.ctx.translate(.377,-.375);d.ctx.rotate(.12);
-    const cover=[[-.244,.269],[.269,.269],[.269,-.329],[-.244,-.329]];
-    d.ctx.save();d.ctx.globalCompositeOperation='destination-out';line(cover,.001,1,true,true);d.ctx.restore();
-    line(cover,.002,.076,true,true);line(cover,.0048,.94,true);
-    line([[-.266,.266],[-.266,-.347],[.269,-.347],[.287,-.329]],.0027,.75);
-    line([[-.224,.246],[.249,.246],[.249,-.307],[-.224,-.307],[-.224,.246]],.0014,.46);
-    for(let j=0;j<3;j++)line([[-.255,-.337-j*.004],[.257,-.337-j*.004]],.0011,.48);
-    d.ctx.save();d.ctx.scale(1,-1);d.ctx.fillStyle='rgba(255,255,255,.90)';d.ctx.textAlign='center';d.ctx.textBaseline='middle';
-    d.ctx.font='400 .059px Georgia, serif';d.ctx.fillText('JOURNAL',.012,-.153,.436);
-    d.ctx.font='400 .036px Georgia, serif';d.ctx.fillText('DE MATHÉMATIQUES',.012,-.064,.419);
-    d.ctx.font='400 .079px Georgia, serif';d.ctx.fillText('1846',.012,.133,.326);
-    d.ctx.restore();line([[-.142,.020],[.164,.020]],.0015,.68);d.ctx.restore();
-    // The printed pages multiply into a restrained fan around the journal.
-    for(let j=0;j<3;j++){
-      const x=.431+j*.104,y=.305+j*.105,angle=.15+j*.26;
-      d.ctx.save();d.ctx.translate(x,y);d.ctx.rotate(-angle);
-      line([[-.096,.12],[.128,.12],[.128,-.116],[-.096,-.116]],.0028,.67,true);
-      for(let k=0;k<5;k++)line([[-.06,.075-k*.029],[.091,.075-k*.029]],.0012,.43);
-      d.ctx.restore();
-      curve([.372,-.067],[[.52,.012,x-.082,y-.177,x,y-.14]],.0015,.29);
-    }
-    for(let j=0;j<15;j++){const a=.36+j*.121,r=.33+(j%3)*.075;dot(.36+r*Math.cos(a),.11+r*Math.sin(a),.0023,.30);}
-  }
-  const renderers=[null,school,awakening,schoolSetbacks,symmetries,prison,letter,lastDawn,echoes,liouvillePublication];
+  // The publication engraving includes its printed JOURNAL / 1846 title. Its
+  // approved alpha mask is fixed together with the sand inscriptions, so an OS
+  // font substitution cannot change the painting or its grain correspondence.
+  const renderers=[null,school,awakening,schoolSetbacks,symmetries,prison,letter,lastDawn,echoes,null];
   const motifCache=new Map();
   function motifPixels(index){
     if(motifCache.has(index))return motifCache.get(index);
     const d=drawing(),layers=[{drawing:d,tag:0}];
+    const publication=index===9?window.CourseOpeningLetteringData?.publicationAlpha():null;
+    if(index===9&&!publication)throw new Error('The fixed publication artwork has not loaded');
     if(index===7){
       // Separate layers retain the landscape even behind the figure. A tiny
       // depth marker identifies this figure's own grains for the musical fade;
@@ -472,12 +372,12 @@
     }else if(index===8){
       echoes(d);
       for(const leaf of leafDesigns){const layer=drawing();autumnLeaf(layer,leaf);layers.push({drawing:layer,tag:leaf.tag});}
-    }else renderers[index](d);
+    }else if(!publication)renderers[index](d);
     const pixels=[],weights=[];let total=0;
     for(const layer of layers){
-      const image=layer.drawing.ctx.getImageData(0,0,d.size,d.size).data;
+      const image=publication?null:layer.drawing.ctx.getImageData(0,0,d.size,d.size).data;
       for(let y=0;y<d.size;y++)for(let x=0;x<d.size;x++){
-        const alpha=image[(y*d.size+x)*4+3];if(alpha<8)continue;
+        const alpha=publication?publication[y*d.size+x]:image[(y*d.size+x)*4+3];if(alpha<8)continue;
         // Lower-opacity engraving fills remain soft, never solid gold blocks.
         total+=Math.pow(alpha/255,1.30);pixels.push(x,y,alpha/255,layer.tag);weights.push(total);
       }

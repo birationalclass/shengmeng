@@ -2,16 +2,9 @@
 (() => {
   'use strict';
   window.CourseOpeningOutro={create(count){
-    const canvas=document.createElement('canvas');canvas.width=1600;canvas.height=800;
-    const ctx=canvas.getContext('2d',{willReadFrequently:true});
-    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='alphabetic';
-    ctx.font='400 280px Georgia, "Times New Roman", serif';
-    ctx.fillText('Algebra Ⅰ',800,390,1420);
-    ctx.font='100 82px "Helvetica Neue", "Segoe UI", Arial, sans-serif';
-    ctx.fillText('Sheng Meng',800,565,900);
-    const pixels=ctx.getImageData(0,0,1600,800).data,ink=[];
-    for(let y=0;y<800;y++)for(let x=0;x<1600;x++)if(pixels[(y*1600+x)*4+3]>150)ink.push(y*1600+x);
-    if(!ink.length)throw new Error('The closing inscription could not be prepared');
+    const lettering=window.CourseOpeningLetteringData;
+    if(!lettering)throw new Error('The fixed closing inscription has not loaded');
+    const ink=lettering.pixels('outro');
     let seed=137;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     const points=[];
     for(let i=0;i<count;i++){
