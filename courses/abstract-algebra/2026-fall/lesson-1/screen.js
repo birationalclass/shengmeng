@@ -27,7 +27,7 @@
     return state;
   }
   const a=pane(notes,copy,'概念'),b=pane(document.querySelector('.experiment'),scene,'互动'),panes=[a,b];
-  let scheduled=false,sceneId='',pendingTarget=null;
+  let scheduled=false,sceneId='',pendingTarget=null,activePane=a;
   const tabState=new WeakMap();
   function update(state){
     if(!state.window.clientWidth||!state.window.clientHeight)return;
@@ -47,10 +47,10 @@
     });
   }
   function turn(state,delta){state.index=Math.max(0,Math.min(state.total-1,state.index+delta));update(state);}
-  function mode(value){body.dataset.screenMode=value;modes.querySelectorAll('[data-screen-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.screenMode===value)));queue();}
+  function mode(value){activePane=value==='notes'?a:b;body.dataset.screenMode=value;modes.querySelectorAll('[data-screen-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.screenMode===value)));queue();}
   function refresh(){
     scheduled=false;
-    if(sceneId!==scene.dataset.lessonScene){sceneId=scene.dataset.lessonScene;panes.forEach(p=>p.index=0);pendingTarget=null;}
+    if(sceneId!==scene.dataset.lessonScene){sceneId=scene.dataset.lessonScene;panes.forEach(p=>p.index=0);pendingTarget=null;mode('notes');}
     scene.querySelectorAll('details').forEach(details=>{details.open=true;const summary=details.querySelector('summary');if(summary&&!summary.dataset.screenStatic){summary.dataset.screenStatic='true';summary.tabIndex=-1;summary.addEventListener('click',event=>event.preventDefault());}});
     panes.forEach(update);
     if(pendingTarget){
@@ -77,6 +77,30 @@
   new ResizeObserver(queue).observe($('workspace'));
   window.addEventListener('resize',queue);window.visualViewport?.addEventListener('resize',queue);
   mobile.addEventListener('change',queue);document.fonts?.ready.then(queue);
-  window.LessonScreen={step(delta){turn(mobile.matches&&body.dataset.screenMode==='notes'?a:b,delta);},refresh:queue};
+  // Remember the pane used by the lecturer, independently of button focus.
+  panes.forEach(p=>p.window.parentElement.addEventListener('pointerdown',()=>{activePane=p;}));
+  function onPage(el){
+    if(!el)return false;
+    const box=b.window.getBoundingClientRect();
+    return [...el.getClientRects()].some(r=>r.width>0&&r.height>0&&r.right>box.left+1&&r.left<box.right-1&&r.bottom>box.top&&r.top<box.bottom);
+  }
+  function advance(){
+    refresh();
+    const current=mobile.matches?(body.dataset.screenMode==='notes'?a:b):activePane;
+    if(current===a){
+      if(a.index<a.total-1){turn(a,1);return;}
+      mode('experiment');if(mobile.matches)return;
+    }
+    // Only explicit continuation controls are eligible; answers, resets,
+    // theorem tabs, language and settings never become keyboard clicks.
+    const proof=scene.querySelector('#criteria-next,#proof-next,#exercise-proof-next');
+    const board=scene.querySelector('#criteria-proof,#proof-board,.exercise-proof');
+    if(proof&&!proof.disabled&&proof.dataset.proofComplete!=='true'&&(onPage(board)||onPage(proof))){proof.click();return;}
+    if(b.index<b.total-1){turn(b,1);return;}
+    const quiz=scene.querySelector('#quiz-next');
+    if(quiz){if(!quiz.disabled)quiz.click();return;}
+    const next=$('next');if(next&&!next.disabled)next.click();
+  }
+  window.LessonScreen={advance,step(delta){turn(mobile.matches&&body.dataset.screenMode==='notes'?a:b,delta);},refresh:queue};
   queue();
 })();
