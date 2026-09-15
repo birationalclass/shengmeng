@@ -4,29 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#173e37">
-  <meta name="description" content="抽象代数第一讲交互讲义：从等价关系与商集，到群的公理、对称变换、基本性质与元素的阶。配套《近世代数》第三版 §1.1—§1.2。">
-  <title>第一讲 · 从分类到群 | 抽象代数 I · 孟晟</title>
+  <meta name="description" content="按《近世代数》第三版编排：§1.1 等价关系与集合的分类；§1.2 群的概念。交互图示、逐步证明与分节自测。">
+  <title>第一讲 · §1.1—§1.2 | 抽象代数 I · 孟晟</title>
   <link rel="icon" href="../../../../assets/favicon.svg" type="image/svg+xml">
+  <script>try{if(localStorage.getItem('shengmeng-lesson-sand-default')!=='20260915'){localStorage.setItem('shengmeng-course-page-style-v1','sand');localStorage.setItem('shengmeng-lesson-sand-default','20260915');}}catch{}</script>
   <script src="../../../page-style.js?v=20260913-sand-page-v1"></script><link rel="stylesheet" href="lesson.css?v=20260913-lesson1">
   <script src="math.js?v=20260913-lesson1" defer></script>
-  <script src="lesson.js?v=20260915-lesson-reading-v1" defer></script>
+  <script src="lesson.js?v=20260915-textbook-v1" defer></script>
 <link rel="stylesheet" href="../../../page-style.css?v=20260913-sand-page-v1">
   <link rel="stylesheet" href="reading.css?v=20260915-lesson-reading-v1">
+  <link rel="stylesheet" href="presentation.css?v=20260915-textbook-v1">
+  <link rel="stylesheet" href="textbook.css?v=20260915-textbook-v1">
 </head>
 <body>
   <a class="skip" href="#workspace">跳转到交互内容</a>
   <header class="sitebar"><a class="brand" href="../#lesson-1">Sheng Meng <span>/ 抽象代数 I</span></a><div class="header-right"><span class="term">2026 秋季</span><button type="button" class="page-style-button" data-page-style-open aria-label="页面设置" aria-controls="pageStyleSettings" aria-haspopup="dialog" aria-expanded="false" title="页面设置" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m9 3-1 3-3 1-2 3 2 2-1 4 3 2 3-1 3 3 3-2v-3l3-2-1-4-3-1-1-4z"/><circle cx="11.5" cy="11.5" r="3"/></svg><span>设置</span></button><button id="fullscreen" class="quiet" type="button">全屏讲授 ↗</button><a href="../#lesson-1" class="back">课程安排 ↗</a></div></header>
   <main>
-    <div class="intro"><div><p class="eyebrow">第一讲 <span> / </span> §1.1—§1.2</p><h1>从<span class="accent">分类</span>到<span class="accent">群</span></h1><p class="intro-line">等价关系与商集 · 群的公理与性质 · 元素的阶</p></div><div class="intro-note"><span>本讲主线</span><p>等价关系 <i>→</i> 商集 <i>→</i> 群 <i>→</i> 元素的阶</p><small>《近世代数》第三版 · 第一章</small></div></div>
+    <nav class="textbook-nav" aria-label="教材小节"><a href="?section=1.1#relation" data-textbook-section="1.1"><b>1.1</b><span>等价关系与集合的分类</span></a><a href="?section=1.2#operation" data-textbook-section="1.2"><b>1.2</b><span>群的概念</span></a></nav>
+    <div class="intro"><div><p id="intro-kicker" class="eyebrow">第一讲 / §1.1</p><h1 id="intro-title">等价关系与集合的分类</h1><p id="intro-line" class="intro-line">关系与等价关系 · 等价类 · 集合的分类</p></div><div class="intro-note"><span>本节主线</span><p id="intro-path">关系 → 等价类 → 分类</p><small>《近世代数》第三版 · 第一章</small></div></div>
     <nav id="chapter-nav" class="chapter-nav" aria-label="第一讲学习路径"></nav>
     <div id="workspace" class="workspace" tabindex="-1">
       <aside class="lesson-copy"><p id="section-kicker" class="eyebrow"></p><h2 id="section-title"></h2><p id="section-lead" class="lead"></p><div id="definition" class="definition"></div><div id="prompt" class="prompt"></div><div id="source-note" class="source-note"></div></aside>
       <section class="experiment" aria-labelledby="section-title"><div class="experiment-head"><span id="experiment-label"></span><span class="live-dot">可交互</span></div><div id="scene"></div></section>
     </div>
     <div class="lesson-bottom"><button id="previous" class="quiet" type="button">← 上一节</button><div><span id="page-count"></span><span class="keyboard-hint">← → 切换章节</span></div><button id="next" class="primary" type="button">下一节 →</button></div>
-    <details class="reference"><summary>教材范围与记号</summary><div class="reference-grid"><div><h3>阅读范围</h3><p>《近世代数》第三版：§1.1，第 1—6 页；§1.2，第 7—18 页。元素的阶结合 §1.2 的方幂理解，后续在 §1.5 循环群中继续学习。</p></div><div><h3>记号约定</h3><p>[a] 表示剩余类，教材也使用上横线记号。D₃ 表示正三角形的对称群，共有 6 个元素。运算复合按先右后左读取。</p></div></div></details>
+    <details class="reference"><summary>教材范围与记号</summary><div class="reference-grid"><div><h3>阅读范围</h3><p id="reference-reading">《近世代数》第三版：§1.1，第 1—6 页；§1.2，第 7—18 页。</p></div><div><h3>记号约定</h3><p>[a] 表示等价类，剩余类也使用这一记号；教材另用上横线表示剩余类。D₃ 表示正三角形的对称群，共有 6 个元素。运算复合按先右后左读取。</p></div></div></details>
   </main>
   <footer><span>抽象代数 I · 第一讲</span><a href="../#lesson-1">返回课程安排 ↗</a></footer>
-  <noscript><p class="noscript">此讲义的交互需要 JavaScript。学习主线：等价关系满足反身、对称、传递；等价类组成商集；群是具有结合运算、单位元和逆元的非空集合；元素的阶是其正整数幂首次回到单位元所需的次数。</p></noscript>
+  <noscript><p class="noscript">此讲义的交互需要 JavaScript。§1.1 学习等价关系、等价类与分类；§1.2 学习代数运算、群的定义、基本性质、方幂与判别。</p></noscript>
 </body>
 </html>

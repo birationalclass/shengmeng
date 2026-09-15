@@ -8,16 +8,37 @@
   const soft=['var(--diagram-soft-1,#e3efe5)','var(--diagram-soft-2,#f7eadb)','var(--diagram-soft-3,#e6edf5)','var(--diagram-soft-4,#eee7f4)','var(--diagram-soft-5,#f3e6e9)','var(--diagram-soft-6,#eaf0de)'];
   let current=0,animationToken=0,onResize=()=>{};
   const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const sections=[
+  const allSections=[
     {id:'relation',nav:'等价关系',kicker:'第 1 节',title:'何时可以说<br>“它们一样”？',lead:'等价不是完全相同，而是在约定的标准下，忽略我们不关心的差别。三条性质保证分类不会自相矛盾。',formula:'反身 · 对称 · 传递',definition:'关系是有序对的集合 R ⊆ S × S。<br>等价关系同时满足这三条性质。',prompt:'删掉一个关系，再看哪条性质失效。为什么每个元素都必须和自己等价？',source:'教材 §1.1 · 定义 1.1.1—1.1.4<br>定理 1.1.1 · 例 9',label:'关系图与矩阵 · S = {a, b, c}',render:renderRelation},
     {id:'quotient',nav:'等价类',kicker:'第 2 节',title:'把一整类<br>看成一个点。',lead:'改变观察的尺度：先看整数，再按余数分类，最后让每个等价类成为新集合中的一个元素。',formula:'[a] = {a + km : k ∈ ℤ}',definition:'a ∼ b ⇔ m 整除 a − b。<br>ℤ / ∼ = {[0], …, [m − 1]}，记作 ℤₘ。',prompt:'将视角推到“商集”，再更换代表元：数字变了，所在的类会改变吗？',source:'教材 §1.1 · 定义 1.1.3 · 例 5、7<br>图中仅展示有限窗口，整数集与各类均无限。',label:'整数、等价类与商集',render:renderQuotient},
-    {id:'operation',nav:'定义运算',kicker:'第 3 节',title:'换一个代表，<br>结果还一样吗？',lead:'要在商集上做运算，结果必须由“类”决定。选谁来代表这个类，不应影响最后得到的类。',formula:'[a] + [b] = [a + b]',definition:'良定义：若 [a] = [a′]、[b] = [b′]，则 [a + b] = [a′ + b′]。',prompt:'独立改变两个代表元。计算结果的整数可能不同，但落入的剩余类保持不变。',source:'教材 §1.2 · 定义 1.2.1 · 例 2<br>商集只是集合；指定合适运算后才继续讨论群。',label:'ℤ₅ 上的剩余类运算',render:renderOperation},
-    {id:'symmetry',nav:'对称与群',kicker:'第 4 节',title:'让“做一件事”<br>成为一个元素。',lead:'群的元素也可以是变换。把两次操作接起来，就得到它们的乘积。交换操作的先后次序，结果未必相同。',formula:'B ∘ A：先 A，后 B',definition:'r：逆时针旋转 120°。<br>s：沿经过顶点 1 的竖直轴反射。<br>六个变换：e, r, r², s, rs, r²s。',prompt:'选 A = r、B = s，播放两种顺序。跟踪顶点的编号，而不只是三角形的轮廓。',source:'编号仅用于追踪；对称指未着色三角形的对称。',label:'三角形的对称 / 群 D₃，|D₃| = 6',render:renderSymmetry},
+    {id:'operation',nav:'代数运算',kicker:'第 3 节',title:'换一个代表，<br>结果还一样吗？',lead:'要在商集上做运算，结果必须由“类”决定。选谁来代表这个类，不应影响最后得到的类。',formula:'[a] + [b] = [a + b]',definition:'代数运算是映射 S × S → S：每一对元素必须有唯一且仍在 S 内的结果。剩余类加法还须验证结果与代表元选择无关。',prompt:'独立改变两个代表元。计算结果的整数可能不同，但落入的剩余类保持不变。',source:'教材 §1.2 · 定义 1.2.1 · 例 2<br>商集只是集合；指定合适运算后才继续讨论群。',label:'ℤ₅ 上的剩余类运算',render:renderOperation},
+    {id:'symmetry',nav:'对称与群',kicker:'第 4 节',title:'让“做一件事”<br>成为一个元素。',lead:'群的元素也可以是变换。把两次操作接起来，就得到它们的乘积。交换操作的先后次序，结果未必相同。',formula:'B ∘ A：先 A，后 B',definition:'r：逆时针旋转 120°。<br>s：沿经过顶点 1 的竖直轴反射。<br>六个变换：e, r, r², s, rs, r²s。',prompt:'选 A = r、B = s，播放两种顺序。跟踪顶点的编号，而不只是三角形的轮廓。',source:'§1.2 群的例子 · 几何演示<br>编号用于追踪；对称指未着色三角形的对称。',label:'三角形的对称 / 群 D₃，|D₃| = 6',render:renderSymmetry},
     {id:'axioms',nav:'群的公理',kicker:'第 5 节',title:'同一个集合，<br>换运算就不同。',lead:'先检查运算是否处处有唯一结果且留在集合内，再检查结合律、单位元和每个元素的逆元。交换律是额外条件。',formula:'(ab)c = a(bc)<br>ea = ae = a<br>aa⁻¹ = a⁻¹a = e',definition:'G 必须非空。“封闭”属于代数运算的要求；其余三条是教材的 G1—G3。',prompt:'比较 ℤ₆ 的加法与乘法。再试试“删掉 [0]”：这次连哪一关都过不了？',source:'教材 §1.2 · 定义 1.2.2 · 例 3—10<br>表格按“行元素 ∘ 列元素”读取。',label:'运算表 · 点击方格查看乘积',render:renderAxioms},
     {id:'properties',nav:'基本性质',kicker:'第 6 节',title:'每一步等式，<br>都要有理由。',lead:'单位元和逆元为什么唯一？逆运算为什么要倒着做？消去律又从哪里来？从公理出发，一步一步推出来。',formula:'(ab)⁻¹ = b⁻¹a⁻¹',definition:'逆元把操作撤销。若先做 b 再做 a，就要先撤销 a，再撤销 b。',prompt:'点“下一步”，尝试先说出所用公理，再查看理由。注意全过程没有擅自交换因子。',source:'教材 §1.2 · 定理 1.2.1—1.2.2<br>先理解这些基本性质，再练习独立证明。',label:'群的基本性质 · 逐步证明',render:renderProperties},
-    {id:'order',nav:'元素的阶',kicker:'第 7 节',title:'重复多少次，<br>才第一次回到原点？',lead:'固定一个群元素，反复进行同一种运算。第一次回到单位元所需的正整数次数，就是这个元素的阶。',formula:'ord(a) = min{k ≥ 1 : aᵏ = e}',definition:'不存在这样的正整数时，称 a 为无限阶。<br>加群中应写 ka = 0，而不是普通数的乘方。',prompt:'在 (ℤ₆, +) 中比较 [1]、[2]、[3]。群一直有 6 个元素，但它们各自多久回来？',source:'教材 §1.2：方幂。<br>§1.5：循环群与元素的阶。',label:'重复运算 / 从单位元出发',render:renderOrder},
     {id:'check',nav:'课末自测',kicker:'第 8 节',title:'会操作之后，<br>能解释了吗？',lead:'用六个短问题检查本讲的关键概念。每题都有理由，答错也可以直接看到误区在哪里。',formula:'例子 → 定义 → 理由',definition:'学习目标：能辨认等价关系、解释商集、验证群公理、使用基本性质、计算元素的阶。',prompt:'先自己判断，再选择答案。把不熟悉的概念带回前面的实验重新验证。',source:'课后练习：习题 1-1 的 1、2、4；<br>习题 1-2 的 5、6(1)、10。',label:'第一讲 / 六道概念检查',render:renderQuiz}
   ];
+  const textbookSections={
+    '1.1':{title:'等价关系与集合的分类',pages:'1—6',items:['relation','quotient','partition','check'],line:'关系与等价关系 · 等价类 · 集合的分类',path:'关系 → 等价类 → 分类',homework:'习题 1-1：1、2、4'},
+    '1.2':{title:'群的概念',pages:'7—18',items:['operation','axioms','symmetry','properties','powers','criteria','check'],line:'代数运算 · 群的定义与例子 · 基本性质 · 方幂 · 判别',path:'运算 → 群 → 性质 → 方幂',homework:'习题 1-2：5、6(1)、10'}
+  };
+  allSections.push(
+    {id:'partition',nav:'集合的分类',title:'分类与等价关系，<br>是同一件事的两面。',lead:'分类把集合分成非空、不重、不漏的若干类。规定同一类中的元素等价，就能从分类反过来得到等价关系。',formula:'S = ⋃ Sᵢ<br>Sᵢ ∩ Sⱼ = ∅（i ≠ j）',definition:'每个 Sᵢ 都非空。每个元素恰好属于一类。全部等价类构成的集合记为 S / ∼。',prompt:'在五种分类中切换，观察类的数量与关系矩阵如何对应。然后展开证明，解释为什么不同等价类不可能交叠。',source:'教材 §1.1 · 定义 1.1.4 · 定理 1.1.1<br>第 4—5 页',label:'分类 ⇄ 等价关系',render:renderPartition},
+    {id:'powers',nav:'方幂与指数',title:'先定义重复，<br>再理解指数法则。',lead:'正整数幂表示重复相乘；零次幂规定为单位元；负整数幂通过逆元定义。加群中相应地使用倍数记号。',formula:'a⁰ = e，a⁻ⁿ = (a⁻¹)ⁿ<br>aᵐaⁿ = aᵐ⁺ⁿ',definition:'对任意整数 m、n，还成立 (aᵐ)ⁿ = aᵐⁿ。对不同元素，(ab)ⁿ = aⁿbⁿ 不能随意使用；ab = ba 时才可保证。',prompt:'把 m 或 n 调成负数，观察逆元如何抵消。比较两边结果，并区分乘法记号和加法记号。',source:'教材 §1.2 · 方幂与指数法则<br>第 14—15 页',label:'整数指数 · 在具体群中计算',render:renderPowers},
+    {id:'criteria',nav:'群的判别',title:'换一种条件，<br>仍能认出群。',lead:'在非空集合上给定代数运算后，除了直接验证群公理，还可以用同侧单位元与逆元，或群方程的可解性来判别。',formula:'结合律 + 方程总有解<br>⇔ 群',definition:'这里的方程是：对所有 a、b，ax = b 与 ya = b 都有解。有限集合上，结合律与两侧消去律也足以判别。',prompt:'依次查看三种判别方式。特别检查“有限”条件：正整数加法满足结合律与消去律，为什么仍不是群？',source:'教材 §1.2 · 定理 1.2.3—1.2.4 · 例 11<br>第 15—17 页',label:'从判别条件到群公理',render:renderCriteria}
+  );
+  const requestedBook=new URLSearchParams(location.search).get('section');
+  const legacyAnchor=location.hash.slice(1)==='order'?'powers':location.hash.slice(1);
+  const bookId=Object.hasOwn(textbookSections,requestedBook)?requestedBook:(textbookSections['1.2'].items.filter(id=>id!=='check').includes(legacyAnchor)?'1.2':'1.1');
+  const book=textbookSections[bookId];
+  const sections=book.items.map(id=>({...allSections.find(s=>s.id===id),kicker:`§ ${bookId} · ${book.title}`}));
+  Object.assign(sections.find(s=>s.id==='check'),{nav:'本节自测',title:'这一节的概念，<br>能说清楚了吗？',lead:'围绕本节的定义与结论作答。每题都给出理由，并可返回相应实验复习。',definition:bookId==='1.1'?'能辨认等价关系、说明等价类，并解释等价关系与分类的对应。':'能验证群公理、使用基本性质、计算整数幂，并说明判别定理的条件。',source:`教材 §${bookId} · ${book.homework}`,label:`§${bookId} · 概念检查`});
+  $('intro-kicker').textContent=`第一讲 / § ${bookId}`;
+  $('intro-title').textContent=book.title;
+  $('intro-line').textContent=book.line;
+  $('intro-path').textContent=book.path;
+  $('reference-reading').textContent=`《近世代数》第三版 · §${bookId} ${book.title}，第 ${book.pages} 页。${book.homework}。`;
+  document.title=`§${bookId} ${book.title} · 第一讲 | 抽象代数 I`;
+  document.querySelectorAll('[data-textbook-section]').forEach(a=>a.setAttribute('aria-current',a.dataset.textbookSection===bookId?'page':'false'));
   function svg(content,viewBox='0 0 760 330',label='交互数学图示'){return `<svg viewBox="${viewBox}" role="img" aria-label="${label}">${content}</svg>`;}
   function animate(duration,update){
     const token=++animationToken;
@@ -37,8 +58,9 @@
     $('prompt').innerHTML=`<b>试着发现</b>${s.prompt}`;$('source-note').innerHTML=s.source;$('experiment-label').textContent=s.label;
     $('chapter-nav').querySelectorAll('button').forEach((b,k)=>b.setAttribute('aria-current',k===current?'step':'false'));
     $('previous').disabled=current===0;$('next').disabled=current===sections.length-1;$('next').textContent=current===sections.length-2?'进入自测 →':'下一节 →';
-    $('page-count').textContent=`${String(current+1).padStart(2,'0')} / 08`;
-    history.replaceState(null,'','#'+s.id);scene.innerHTML='';s.render();
+    $('page-count').textContent=`${current+1} / ${sections.length}`;
+    const url=new URL(location.href);url.searchParams.set('section',bookId);url.hash=s.id;
+    history.replaceState(null,'',url);scene.dataset.lessonScene=s.id;scene.innerHTML='';s.render();
     if(focus)$('workspace').focus({preventScroll:true});
   }
   $('chapter-nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(Number(b.dataset.section));});
@@ -46,8 +68,49 @@
   document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||e.target.closest('input,select,textarea,button,summary,[contenteditable]'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();show(current+(e.key==='ArrowRight'?1:-1),{focus:true});}});
   window.addEventListener('hashchange',()=>{const n=sections.findIndex(s=>s.id===location.hash.slice(1));if(n>=0&&n!==current)show(n);});
   window.addEventListener('resize',()=>onResize());
-  $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{document.body.classList.toggle('present');$('fullscreen').textContent=document.body.classList.contains('present')?'退出讲授 ↙':'全屏讲授 ↗';}};
-  document.addEventListener('fullscreenchange',()=>{document.body.classList.toggle('present',!!document.fullscreenElement);$('fullscreen').textContent=document.fullscreenElement?'退出全屏 ↙':'全屏讲授 ↗';});
+  // Teaching layout is useful even where native fullscreen is unavailable.
+  let ownsNativeFullscreen=false;
+  const mobileReading=matchMedia('(max-width: 767px), (pointer: coarse) and (max-width: 1024px)');
+  function setPresentation(active){
+    document.body.classList.toggle('present',active);
+    $('fullscreen').setAttribute('aria-pressed',String(active));
+    $('fullscreen').textContent=active?'退出授课 ↙':'全屏讲授 ↗';
+    requestAnimationFrame(()=>onResize());
+  }
+  function exitNativeFullscreen(){
+    try{document.exitFullscreen?.()?.catch?.(()=>{});}catch{}
+  }
+  $('fullscreen').setAttribute('aria-pressed','false');
+  function syncPresentationAvailability(){
+    $('fullscreen').hidden=mobileReading.matches;
+    $('fullscreen').disabled=mobileReading.matches;
+    if(mobileReading.matches){
+      setPresentation(false);
+      if(ownsNativeFullscreen&&document.fullscreenElement===document.documentElement)exitNativeFullscreen();
+      ownsNativeFullscreen=false;
+    }
+  }
+  mobileReading.addEventListener('change',syncPresentationAvailability);
+  syncPresentationAvailability();
+  $('fullscreen').onclick=()=>{
+    if(mobileReading.matches)return;
+    const active=!document.body.classList.contains('present');
+    setPresentation(active);
+    if(!active){ownsNativeFullscreen=false;if(document.fullscreenElement===document.documentElement)exitNativeFullscreen();return;}
+    if(document.fullscreenEnabled===false)return;
+    try{document.documentElement.requestFullscreen?.()?.catch?.(()=>{});}catch{}
+  };
+  document.addEventListener('fullscreenchange',()=>{
+    if(document.fullscreenElement===document.documentElement){
+      if(!mobileReading.matches&&document.body.classList.contains('present'))ownsNativeFullscreen=true;
+      else exitNativeFullscreen();
+    }else if(ownsNativeFullscreen){ownsNativeFullscreen=false;setPresentation(false);}
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!document.fullscreenElement&&document.body.classList.contains('present')&&!document.querySelector('dialog[open]')){
+      event.preventDefault();setPresentation(false);
+    }
+  });
 
   function renderRelation(){
     let R=M.fromBlocks([[0,1],[2]]);const letters=['a','b','c'];
@@ -73,6 +136,52 @@
     $('relation-preset').onchange=e=>{R=e.target.value==='reflexive'?[[true,true,false],[true,true,false],[false,false,false]]:e.target.value==='symmetric'?[[true,true,true],[false,true,true],[false,false,true]]:e.target.value==='transitive'?[[true,true,false],[true,true,true],[false,true,true]]:M.fromBlocks([[0,1],[2]]);update();};
     $('repair').onclick=()=>{let before=R.flat().filter(Boolean).length;for(let a=0;a<3;a++){R[a][a]=true;for(let b=0;b<3;b++)R[a][b]=R[b][a]=R[a][b]||R[b][a];}for(let k=0;k<3;k++)for(let a=0;a<3;a++)for(let b=0;b<3;b++)R[a][b]=R[a][b]||(R[a][k]&&R[k][b]);update(`补入 ${R.flat().filter(Boolean).length-before} 个有序对，得到包含原关系的最小等价关系。`);};
     update();
+  }
+
+  function renderPartition(){
+    let chosen=1;
+    const letters=['a','b','c'];
+    scene.innerHTML=`<p class="hint">集合 S = {a, b, c} 的全部五种分类</p><div id="partition-tabs" class="controls"></div><div id="partition-blocks" class="partition-blocks"></div><p class="partition-arrow">同一类 ⇄ 彼此等价</p><div id="partition-relation" class="insight" aria-live="polite"></div><details class="mini-proof"><summary>定理 1.1.1：两个方向的证明</summary><p><b>等价关系 → 分类：</b>由反身性，a ∈ [a]，因此每个等价类非空，所有类覆盖 S。若 [a] 与 [b] 相交，取公共元素 c，由对称性与传递性得 a ∼ b，进而 [a] = [b]。所以不同等价类互不相交。</p><p><b>分类 → 等价关系：</b>规定 a ∼ b 当且仅当 a、b 在同一类。每个元素与自己同类；同类关系对称；若 a、b 同类且 b、c 同类，因为 b 只属于一类，a、c 也同类。因此三条性质都成立。</p></details>`;
+    function draw(){
+      const blocks=M.partitions3[chosen];
+      $('partition-tabs').innerHTML=M.partitions3.map((p,i)=>`<button type="button" data-part="${i}" aria-pressed="${i===chosen}">${p.map(b=>`{${b.map(a=>letters[a]).join(',')}}`).join(' | ')}</button>`).join('');
+      $('partition-blocks').innerHTML=blocks.map((b,i)=>`<div class="partition-block" style="--block-color:${colors[i]};--block-soft:${soft[i]}"><div>${b.map(a=>`<span>${letters[a]}</span>`).join('')}</div><p>{${b.map(a=>letters[a]).join(', ')}}</p></div>`).join('');
+      const pairs=M.fromBlocks(blocks).flatMap((row,a)=>row.flatMap((yes,b)=>yes?[`(${letters[a]}, ${letters[b]})`]:[]));
+      $('partition-relation').innerHTML=`<p>对应的关系，由这些有序对组成：</p><div class="pair-list">${pairs.map(pair=>`<span>${pair}</span>`).join('')}</div><p>商集 S / ∼ 有 <b>${blocks.length}</b> 个元素，每个元素就是上方的一整个类。</p>`;
+    }
+    $('partition-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.part;draw();}};
+    draw();
+  }
+
+  function renderPowers(){
+    let key='unit5',a=2,m=2,n=-1;
+    scene.innerHTML=`<div class="order-controls"><label>选择群<select id="powers-group"><option value="unit5">U(5) · 乘法</option><option value="add6">ℤ₆ · 加法</option><option value="d3">D₃ · 变换复合</option></select></label><label>固定元素 a<select id="powers-element"></select></label></div><div class="control-pair"><label>整数 m <output id="powers-m-value"></output><input id="powers-m" type="range" min="-4" max="4" value="2"></label><label>整数 n <output id="powers-n-value"></output><input id="powers-n" type="range" min="-4" max="4" value="-1"></label></div><div id="power-rules" class="power-rules" aria-live="polite"></div><div id="power-track" class="power-track"></div><div id="status" class="status-strip" role="status" aria-live="polite"></div><details class="mini-proof"><summary>为什么不能随意拆开 (ab)ⁿ？</summary><p>(ab)² = abab，而 a²b² = aabb。要把中间的 b、a 换位，需要 ab = ba。结合律只允许移动括号。</p><p>在 D₃ 中取 a = r、b = s，则 (rs)² = e，但 r²s² = r²，二者不同。</p></details>`;
+    function elements(){const model=M.model(key);if(!model.elements.includes(a))a=model.elements[1];$('powers-element').innerHTML=model.elements.map(x=>`<option value="${x}" ${x===a?'selected':''}>${model.label(x)}</option>`).join('');}
+    function draw(){
+      const model=M.model(key),e=model.identity,inv=model.elements.find(b=>model.op(a,b)===e&&model.op(b,a)===e),add=key==='add6';
+      const power=(x,k)=>{const factor=k<0?model.elements.find(b=>model.op(x,b)===e&&model.op(b,x)===e):x;let v=e;for(let j=0;j<Math.abs(k);j++)v=model.op(v,factor);return v;};
+      const fmt=model.label,expression=k=>add?`${k} · ${fmt(a)}`:`(${fmt(a)})<sup>${k}</sup>`;
+      const left=model.op(power(a,m),power(a,n)),right=power(a,m+n),nested=power(power(a,m),n);
+      $('powers-m-value').textContent=m;$('powers-n-value').textContent=n;
+      $('power-rules').innerHTML=`<article><p>${add?'倍数相加':'同底数幂相乘'}</p><div class="formula">${expression(m)} ${model.opSymbol} ${expression(n)} = ${expression(m+n)}</div><strong>${fmt(left)} = ${fmt(right)}</strong></article><article><p>${add?'倍数的倍数':'幂的幂'}</p><div class="formula">${add?`${n} · (${expression(m)})`:`(${expression(m)})<sup>${n}</sup>`} = ${expression(m*n)}</div><strong>${fmt(nested)} = ${fmt(power(a,m*n))}</strong></article>`;
+      const factor=m<0?inv:a,steps=[e];for(let j=0;j<Math.abs(m);j++)steps.push(model.op(steps[steps.length-1],factor));
+      $('power-track').innerHTML=`<p>计算 ${expression(m)}：${m===0?'从单位元开始，运算 0 次':`每次${add?'加':'乘'} ${fmt(factor)}${m<0?'（a 的逆元）':''}`}</p><div class="power-steps">${steps.map((v,i)=>`${i?'<i aria-hidden="true">→</i>':''}<span>${fmt(v)}</span>`).join('')}</div>`;
+      setStatus(add?`加法记号下：0 · ${fmt(a)} = [0]，负倍数通过负元 ${fmt(inv)} 计算。`:`零次幂等于单位元 ${fmt(e)}；${fmt(a)} 的逆元是 ${fmt(inv)}，所以负指数表示重复乘这个逆元。`);
+    }
+    $('powers-group').onchange=e=>{key=e.target.value;a=key==='d3'?1:2;elements();draw();};$('powers-element').onchange=e=>{a=+e.target.value;draw();};
+    $('powers-m').oninput=e=>{m=+e.target.value;draw();};$('powers-n').oninput=e=>{n=+e.target.value;draw();};elements();draw();
+  }
+
+  function renderCriteria(){
+    const criteria=[
+      {name:'同侧单位元与逆元',ref:'定理 1.2.3',condition:'非空集合 + 代数运算 + 结合律 + 左单位元 + 每个元素的左逆元',steps:['设 ea = a，且每个 a 都有 a′，使 a′a = e。','a′ 也有左逆元 a″，所以 a″a′ = e。','aa′ = e(aa′) = (a″a′)(aa′) = a″(a′a)a′ = a″(ea′) = a″a′ = e。','ae = a(a′a) = (aa′)a = ea = a。因此左单位元与左逆元也是右侧的。'],note:'“每个元素都有左逆元”必须对 a′ 也成立；这正是证明中引入 a″ 的依据。'},
+      {name:'群方程总有解',ref:'定理 1.2.4',condition:'非空集合 + 代数运算 + 结合律 + 对所有 a、b，ax = b 与 ya = b 都有解',steps:['固定 b。由 yb = b 有解，取 e 使 eb = b。','对任意 a，由 bx = a 有解，可写 a = bc。','ea = e(bc) = (eb)c = bc = a，因此 e 是全体元素的左单位元。','由 ya = e 有解，每个 a 都有左逆元。应用定理 1.2.3，得到群。'],note:'已知“对每一对 a、b 都可解”，才能固定 b 后覆盖所有 a；只解一个方程不够。'},
+      {name:'有限集合的消去律',ref:'例 11',condition:'非空有限集合 + 代数运算 + 结合律 + 左、右消去律',steps:['设 G = {a₁, …, aₙ}。固定 a，考察 aa₁, …, aaₙ。','由左消去律，这 n 个结果两两不同。','它们都属于只有 n 个元素的 G，所以遍历 G；于是 ax = b 对每个 b 都可解。','右消去律同样保证 ya = b 可解。再用定理 1.2.4，得到群。'],note:'有限条件不可删去：(ℕ₊, +) 满足结合律与两侧消去律，却没有单位元 0，因此不是群。'}
+    ];
+    let chosen=0,step=0;
+    scene.innerHTML=`<div id="criteria-tabs" class="controls proof-options"></div><p id="criteria-condition" class="insight"></p><div id="criteria-proof" class="proof-board stage" aria-live="polite"></div><div class="controls"><button id="criteria-back" type="button">← 上一步</button><button id="criteria-next" class="primary" type="button">下一步 →</button><span id="criteria-count" class="hint"></span></div><p id="criteria-note" class="status-strip"></p>`;
+    function draw(){const c=criteria[chosen];$('criteria-tabs').innerHTML=criteria.map((x,i)=>`<button type="button" data-criterion="${i}" aria-pressed="${chosen===i}">${x.name}</button>`).join('');$('criteria-condition').textContent=c.condition;$('criteria-proof').innerHTML=`<p class="label">${c.ref}</p><p class="criteria-step">${c.steps[step]}</p>`;$('criteria-back').disabled=step===0;$('criteria-next').disabled=step===c.steps.length-1;$('criteria-count').textContent=`${step+1} / ${c.steps.length}`;$('criteria-note').textContent=c.note;}
+    $('criteria-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.criterion;step=0;draw();}};$('criteria-back').onclick=()=>{step--;draw();};$('criteria-next').onclick=()=>{step++;draw();};draw();
   }
 
   function renderQuotient(){
@@ -186,62 +295,27 @@
     $('proof-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.proof;step=0;update();}};$('proof-back').onclick=()=>{step--;update();};$('proof-next').onclick=()=>{step++;update();};update();
   }
 
-  function renderOrder(){
-    let key='add6',a=2,k=0,running=false;
-    scene.innerHTML=`<div class="order-controls"><label>选择群<select id="order-group"><option value="add6">ℤ₆ · 加法</option><option value="unit5">U(5) · 乘法</option><option value="unit8">U(8) · 乘法</option><option value="d3">D₃ · 变换复合</option><option value="integer">ℤ · 加法（无限群）</option></select></label><label>固定元素 a<select id="order-element"></select></label></div><div id="order-graph" class="stage"></div><p id="order-caption" class="hint"></p><div id="cycle-sequence" class="cycle-sequence"></div><div id="order-metrics" class="order-metrics"></div><div class="controls"><button type="button" id="order-step" class="primary">再运算一次 →</button><button type="button" id="order-play">走到第一次返回</button><button type="button" id="order-reset" class="quiet">回到单位元</button></div><div id="status" class="status-strip" role="status" aria-live="polite"></div>`;
-    function elements(){const E=key==='integer'?[-2,-1,0,1,2]:M.model(key).elements;if(!E.includes(a))a=E[Math.min(1,E.length-1)];$('order-element').innerHTML=E.map(x=>`<option value="${x}" ${x===a?'selected':''}>${key==='integer'?x:M.model(key).label(x)}</option>`).join('');}
-    function draw(progress=0){
-      const compact=scene.clientWidth<620;
-      const infinite=key==='integer'&&a!==0,model=key==='integer'?null:M.model(key),seq=model?M.cycle(model,a):[0,0],ord=model?seq.length-1:infinite?Infinity:1,fmt=model?model.label:String;
-      let s='';
-      if(key==='integer'){
-        const unit=32,center=380,limit=compact?4:9;for(let j=-limit;j<=limit;j++)s+=`<path d="M${center+j*unit} 139v12" stroke="var(--diagram-ghost,#a2b4a5)"/><text x="${center+j*unit}" y="174" text-anchor="middle" font-size="20" fill="var(--diagram-muted,#64766c)">${j}</text>`;
-        s=`<path d="M50 145H710" stroke="var(--diagram-ghost,#a2b4a5)"/>`+s;
-        const val=(k+progress)*a,at=center+val*unit,clamped=Math.max(compact?235:55,Math.min(compact?525:705,at)),outside=Math.abs(val)>limit;
-        s+=`<path d="M${center} 145H${clamped}" stroke="${colors[0]}" stroke-width="3"/><circle cx="${clamped}" cy="145" r="${outside?8:18}" fill="${colors[0]}"/><text x="${outside?380:clamped}" y="110" text-anchor="middle" font-size="22" class="math-label" fill="${colors[0]}">${outside?(val<0?'← ':'')+Math.round(val)+'（窗外）'+(val>0?' →':''):Math.round(val)}</text>`;
-      }else{
-        const E=model.elements,n=E.length,P=E.map((_,i)=>[380+112*Math.sin(2*Math.PI*i/n),139-112*Math.cos(2*Math.PI*i/n)]),idx=x=>E.indexOf(x);const pos=x=>P[idx(x)];
-        s+=`<circle cx="380" cy="139" r="112" fill="none" stroke="var(--diagram-line,#e0e6dc)"/>`;
-        for(let j=1;j<seq.length;j++){const [x,y]=pos(seq[j-1]),[u,v]=pos(seq[j]);const active=j<=k;s+=`<path d="M${x} ${y}L${u} ${v}" fill="none" stroke="${active?colors[0]:'var(--diagram-line,#c6d4c7)'}" stroke-width="${active?3:1}" ${active?'':'stroke-dasharray="4 5"'}/>`;}
-        E.forEach((x,i)=>{const [cx,cy]=P[i],visited=seq.slice(0,k+1).includes(x),isCurrent=x===seq[k];s+=`<circle cx="${cx}" cy="${cy}" r="20" fill="${isCurrent?colors[0]:visited?soft[0]:'var(--diagram-surface,#fffefa)'}" stroke="${visited?colors[0]:'var(--diagram-line,#c3d0c2)'}" stroke-width="${isCurrent?2:1}"/><text x="${cx}" y="${cy+5}" font-size="21" text-anchor="middle" fill="${isCurrent?'var(--diagram-solid-text,#fff)':colors[0]}">${fmt(x)}</text>`;});
-        s+=`<text x="380" y="132" text-anchor="middle" class="math-label" font-size="27" fill="var(--diagram-ink,#234e40)">${key==='add6'?`${k}[${a}]`:`a${['⁰','¹','²','³','⁴','⁵','⁶'][k]||'^'+k}`}</text>`;
-        if(progress>0&&k<ord){const [x,y]=pos(seq[k]),[u,v]=pos(seq[k+1]);s+=`<circle cx="${x+(u-x)*progress}" cy="${y+(v-y)*progress}" r="7" fill="${colors[1]}" stroke="var(--diagram-surface,#fffefa)" stroke-width="2"/>`;}
-      }
-      $('order-graph').innerHTML=svg(s,key==='integer'?(compact?'205 0 350 283':'0 0 760 283'):'200 0 360 283',`${key==='integer'?'整数加群':model.name} 中元素 ${fmt(a)} 的重复运算，第 ${k} 步。`);
-      $('order-caption').textContent=key==='integer'?(infinite?'整数轴向两端无限延伸；每次加同一个非零整数，永远不会返回 0。':'0 + 0 = 0；单位元的阶是 1。'):(k===ord?'第一次返回单位元':k===0?'从单位元出发':'重复同一个元素');
-      $('cycle-sequence').innerHTML=key==='integer'?`0 ${k?`→ ${M.range(k).map(i=>(i+1)*a).join(' → ')}`:''}${infinite?' → …':''}`:seq.map((x,i)=>`${i?'<span aria-hidden="true">→</span>':''}<span class="${i===k?'current':i<k?'visited':'future'}">${fmt(x)}</span>`).join('');
-      $('order-metrics').innerHTML=`<div><span>群的阶 |G|</span><b>${key==='integer'?'∞':model.elements.length}</b></div><div><span>元素的阶 ord(a)</span><b>${ord===Infinity?'∞':ord}</b></div>`;
-      $('order-step').disabled=running||k>=Math.min(ord,8);$('order-play').disabled=running||ord===Infinity||k>=ord;$('order-reset').disabled=running;
-      if(infinite)setStatus(`<strong>非零整数在加群中都是无限阶。</strong> 对正整数 j，总有 j × (${a}) ≠ 0。这是一般证明；图上只演示有限步。`);
-      else if(k===ord)setStatus(`<strong>第 ${ord} 次首次返回。</strong> ${key==='add6'?`${ord}[${a}] = [0]`:key==='integer'?'1 × 0 = 0':`${fmt(a)} 的 ${ord} 次幂等于 ${fmt(seq[0])}`}，且此前没有正整数次数能返回。`);
-      else setStatus(`从单位元算作第 0 步。${ord===1?'单位元再运算一次就返回。':`固定 a = ${fmt(a)}，只沿这一次重复运算到达的点观察。`}<strong>阶取最小正整数。</strong>`);
-    }
-    const busy=v=>{running=v;$('order-group').disabled=v;$('order-element').disabled=v;draw();};
-    async function one(){busy(true);if(!await animate(450,p=>draw(p)))return false;k++;busy(false);return true;}
-    $('order-group').onchange=e=>{key=e.target.value;a=key==='add6'?2:key==='integer'?1:M.model(key).elements[1];k=0;elements();draw();};$('order-element').onchange=e=>{a=+e.target.value;k=0;draw();};
-    $('order-step').onclick=one;$('order-reset').onclick=()=>{k=0;draw();};
-    $('order-play').onclick=async()=>{const ord=key==='integer'?1:M.cycle(M.model(key),a).length-1;while(k<ord){if(!await one())return;}};
-    onResize=()=>draw();elements();draw();
-  }
-
   function renderQuiz(){
-    const questions=[
+    const bank=[
       ['若两个等价类有一个公共元素，它们一定……',['完全相同','只在这个元素处相交','至少一个是空集'],0,'若两个类相交，利用对称性与传递性可证明它们互相包含；所以相同。等价类非空。','relation'],
       ['模 3 分类中，[−1] 与 [2] 是……',['两个不同整数，所以是不同类','同一个类的两种写法','两个相交但不同的类'],1,'−1 − 2 = −3 能被 3 整除。因此 [−1] = [2]；商集的元素是整个类。','quotient'],
       ['在 ℤ₆ 中删去 [0]，剩余元素在乘法下构成群吗？',['构成，非零元素都有逆','构成，乘法满足结合律','不构成，例如 [2][3] = [0] 不在集合内'],2,'首先就不封闭。要得到乘法群，应取与 6 互素的剩余类 U(6) = {[1], [5]}。','axioms'],
       ['r 与 s 不交换，会不会使 D₃ 失去群结构？',['不会；交换律不是群公理','会；所有群都必须交换','只要交换顺序就能修复'],0,'群要求结合律，不要求交换律。(AB)C = A(BC) 只改变括号，不交换 A、B、C 的位置。','symmetry'],
       ['一般的群中，(ab)⁻¹ 等于……',['a⁻¹b⁻¹','b⁻¹a⁻¹','ab'],1,'撤销时要倒序：把 b⁻¹a⁻¹ 分别乘在 ab 的左右两边，都可化为 e。','properties'],
-      ['(ℤ₆, +) 中 [2] 的阶是多少？',['6，因为群有 6 个元素','2，因为这个元素叫 [2]','3，因为 [0] → [2] → [4] → [0]'],2,'第 3 次加 [2] 才首次回到 [0]。群的阶是 6；这个元素的阶是 3。','order']
+      ['在 U(5) 的乘法中，[2]⁻¹ 等于……',['[−2] = [3]，因为要取相反数','[3]，因为 [2][3] = [1]','[0]，因为相乘应得 0'],1,'负一次幂表示乘法逆元：[2][3] = [6] = [1]。这里恰巧也有 [−2] = [3]，但求逆的依据是乘积为单位元。','powers'],
+      ['分类中的每个类必须……',['非空、两两不交，且并为整个集合','大小相等','只能含一个元素'],0,'分类要求每个元素恰好属于一个非空类；各类的大小可以不同。','partition'],
+      ['正整数集关于加法，满足结合律与消去律，是否必为群？',['是，能消去就足够','不是，缺少加法单位元 0','是，1 就是单位元'],1,'有限集合上的判别不能直接搬到无限集合。正整数加法没有单位元，也不保证方程总可解。','criteria']
     ];
+    const questions=bank.filter(q=>sections.some(s=>s.id===q[4]));
     let q=0,answers=Array(questions.length).fill(null);
     function draw(){
-      if(q===questions.length){const correct=answers.filter((a,i)=>a===questions[i][2]).length;scene.innerHTML=`<div class="quiz-end"><p class="eyebrow">本讲自测完成</p><h3>六个问题，串起这一讲。</h3><p>首次作答正确 ${correct} / 6。${correct===6?'接下来试着不用图形，独立写出证明。':'下面列出了适合再看一次的概念。'}</p><ol>${questions.map((x,i)=>`<li>${answers[i]===x[2]?'✓':'↺'} ${sections.find(s=>s.id===x[4]).nav} <a href="#${x[4]}">回到实验 ↗</a></li>`).join('')}</ol><div class="insight">课后建议：教材习题 1-1 的 1、2、4；习题 1-2 的 5、6(1)、10。先独立尝试，再用本页验证直觉。</div><button id="quiz-retry" type="button" class="primary">重新自测</button></div>`;$('quiz-retry').onclick=()=>{q=0;answers=Array(questions.length).fill(null);draw();};return;}
+      if(q===questions.length){const correct=answers.filter((a,i)=>a===questions[i][2]).length;scene.innerHTML=`<div class="quiz-end"><p class="eyebrow">本节自测完成</p><h3>回顾 §${bookId} 的关键概念。</h3><p>首次作答正确 ${correct} / ${questions.length}。${correct===questions.length?'接下来试着不用图形，独立写出证明。':'下面列出了适合再看一次的概念。'}</p><ol>${questions.map((x,i)=>`<li>${answers[i]===x[2]?'✓':'↺'} ${sections.find(s=>s.id===x[4]).nav} <a href="#${x[4]}">回到实验 ↗</a></li>`).join('')}</ol><div class="insight">课后练习：${book.homework}。先独立尝试，再用本页验证直觉。</div><button id="quiz-retry" type="button" class="primary">重新自测</button></div>`;$('quiz-retry').onclick=()=>{q=0;answers=Array(questions.length).fill(null);draw();};return;}
       const [question,options,correct,explanation,anchor]=questions[q],answered=answers[q]!==null;
       scene.innerHTML=`<div class="quiz-progress">问题 ${q+1} / ${questions.length}</div><h3 class="quiz-question">${question}</h3><div class="quiz-options">${options.map((x,i)=>`<button type="button" data-answer="${i}" ${answered?'disabled':''} class="${answered?(i===correct?'correct':i===answers[q]?'incorrect':''):''}"><span style="color:var(--muted);margin-right:12px">${'ABC'[i]}</span>${x}</button>`).join('')}</div><div class="quiz-feedback" role="status" aria-live="polite">${answered?`<b>${answers[q]===correct?'判断正确。':'再看一下关键理由。'}</b>${explanation} <a href="#${anchor}">回到实验 ↗</a>`:'选择后查看理由。'}</div><div class="controls"><button type="button" id="quiz-prev" ${q===0?'disabled':''}>← 上一题</button><button type="button" id="quiz-next" class="primary" ${answered?'':'disabled'}>${q===questions.length-1?'查看学习回顾':'下一题 →'}</button></div>`;
       scene.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{answers[q]=+b.dataset.answer;draw();});$('quiz-prev').onclick=()=>{q--;draw();};$('quiz-next').onclick=()=>{q++;draw();};
     }
     draw();
   }
-  const initial=sections.findIndex(s=>s.id===location.hash.slice(1));
+  const initial=sections.findIndex(s=>s.id===legacyAnchor);
   show(initial>=0?initial:0);
 })();

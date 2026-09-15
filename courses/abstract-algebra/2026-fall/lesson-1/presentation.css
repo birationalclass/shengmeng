@@ -1,0 +1,60 @@
+@charset "UTF-8";
+/* Teaching mode uses the window; normal reading keeps its comfortable measure. */
+.present {
+  --teaching-gutter: clamp(14px, 1.6vw, 48px);
+  --teaching-text: clamp(18px, 1.2vw, 28px);
+  --teaching-small: clamp(16px, 1vw, 24px);
+  font-size: var(--teaching-text);
+}
+.present main { width: 100%; max-width: none; margin: 0; padding-inline: var(--teaching-gutter); }
+.present .sitebar { width: 100%; height: auto; min-height: 60px; padding: 10px var(--teaching-gutter); }
+.present .intro { padding: 12px 0 16px; }
+.present h1 { font-size: clamp(28px, 2vw, 44px); margin-block: 5px; }
+.present .eyebrow { font-size: clamp(14px, .9vw, 20px); }
+.present .chapter-nav { gap: 8px; margin-bottom: clamp(18px, 1.2vw, 32px); }
+.present .chapter-nav button { padding: 12px 6px; font-size: var(--teaching-small); }
+.present .chapter-nav button span { font-size: max(14px, .8em); }
+.present .workspace { grid-template-columns: clamp(280px, 22vw, 560px) minmax(0, 1fr); gap: clamp(24px, 2vw, 56px); }
+.present .lesson-copy { display: block; min-width: 0; }
+.present .lesson-copy h2 { font-size: clamp(30px, 2.05vw, 46px); margin: 10px 0 20px; }
+.present :is(.lead, .definition p, .prompt, .status-strip, .insight, .quiz-feedback, .quiz-options button, .quiz-end ol) { font-size: var(--teaching-text); }
+.present :is(.source-note, .definition .label, .prompt b, .experiment-head, .hint, .mini-proof, .section-small, .property span, .property b, .axiom-check b, .axiom-check span, .axiom-check small, .proof-conditions, .proof-board .label, .proof-board .reason, .rep-result p, .rep-box>small, .symmetry-legend, .action-readout small, .quiz-progress) { font-size: var(--teaching-small); }
+.present :is(.controls button, .controls label, .controls select, .control-pair label, .order-controls label, .order-controls select, .two-selects label, .two-selects select, .partition-options button, .pills button, .proof-options button, .cayley th, .cayley button, .matrix th, .matrix caption, .order-metrics span, .lesson-bottom button) { font-size: var(--teaching-small); }
+.present :is(.formula, .definition .formula, .insight .formula, .status-strip .formula, .action-readout) { font-size: clamp(25px, 1.7vw, 40px); }
+.present .rep-result .formula, .present .proof-board .expression { font-size: clamp(28px, 2vw, 48px); }
+.present .experiment { min-height: 0; }
+.present .experiment-head { padding: 16px clamp(18px, 1.5vw, 40px); }
+.present #scene { padding: clamp(18px, 1.5vw, 40px); min-height: 0; }
+.present .stage svg { height: auto; max-height: clamp(280px, 42svh, 720px); }
+.present .relation-layout { grid-template-columns: minmax(0, 1fr) clamp(220px, 20vw, 440px); gap: clamp(20px, 2vw, 50px); }
+.present .relation-layout .stage { max-width: none; }
+.present #relation-matrix { width: 100%; max-width: none; }
+.present .matrix { border-spacing: clamp(5px, .5vw, 12px); }
+.present .matrix button { width: min(100%, 84px); height: clamp(46px, 3vw, 78px); font-size: var(--teaching-text); }
+.present .axiom-layout { grid-template-columns: minmax(0, 1fr) clamp(240px, 22vw, 520px); gap: clamp(24px, 2vw, 56px); }
+.present .axiom-checks { display: block; }
+.present .cayley button { min-height: clamp(44px, 3vw, 78px); }
+.present .proof-board { min-height: clamp(260px, 35svh, 560px); }
+.present .quiz-question { font-size: clamp(27px, 1.8vw, 42px); }
+.present .lesson-bottom { padding: 18px 0; }
+@media(max-width:1350px) and (min-width:1101px) {
+  .present .relation-layout, .present .axiom-layout { grid-template-columns: 1fr; gap: 20px; }
+  .present #relation-matrix { width: min(100%, 290px); margin-inline: auto; }
+  .present .axiom-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+}
+@media(max-width:1100px) {
+  .present .workspace { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .present .lesson-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 28px; }
+  .present .lesson-copy>.eyebrow, .present .lesson-copy>h2, .present .lesson-copy>.lead { grid-column: 1; }
+  .present .definition { grid-column: 2; grid-row: 1/4; border: 0; border-left: 1px solid var(--line); margin: 0; padding: 8px 0 0 24px; }
+  .present .prompt, .present .source-note { grid-column: 1/-1; }
+  .present .chapter-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 10px; }
+  .present .relation-layout { grid-template-columns: minmax(0, 1fr) 220px; }
+  .present .axiom-layout { grid-template-columns: 1fr; }
+  .present .axiom-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+}
+@media print {
+  .present main { padding: 0; }
+  .present .workspace, .present .lesson-copy { display: block; }
+  .present :is(.lead, .definition p, .prompt, .status-strip, .insight) { font-size: 12pt; }
+}
