@@ -1,4 +1,4 @@
-window.CourseLanguage.add({'魔方与群论 · 交互专题 ↗':'Rubik’s cube and group theory · interactive topic ↗'});
+window.CourseLanguage.add({'开场动画':'Opening animation','测试模块 ↗':'Test module ↗','魔方与群论 · 交互专题 ↗':'Rubik’s cube and group theory · interactive topic ↗'});
 window.CourseLanguage.add({'韩士安、林磊、杜荣 编著':'Han Shi’an, Lin Lei and Du Rong','域的基本性质':'Basic properties of fields','搜索内容 / 日期':'Search topics / dates'});
 window.CourseLanguage.add({'代数学':'Algebra','代数学 Ⅰ':'Algebra Ⅰ','即将到来':'Upcoming','教材小节导航':'Textbook section navigation','第一讲学习路径':'Lesson topics','2026 年秋季代数学 Ⅰ 课程安排，日期为北京时间':'Algebra Ⅰ schedule, Autumn 2026; Beijing time'});
 window.CourseLanguage.add({'2026 秋季':'Autumn 2026','查看课程安排':'View the schedule','2026 年秋季抽象代数 I 课程安排，日期为北京时间':'Abstract Algebra Ⅰ schedule, Autumn 2026; Beijing time','关闭页面设置':'Close appearance settings','选择页面风格':'Choose an appearance'});
