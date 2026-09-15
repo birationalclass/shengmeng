@@ -1,0 +1,133 @@
+@charset "UTF-8";
+/* The browser fragments flowing text into viewport-height pages. */
+html:has(.screen-deck) { height: 100%; overflow: clip; }
+body.screen-deck.embedded-lesson { grid-template-rows: minmax(0,1fr); }
+.embedded-lesson>.sitebar { display:none; }
+body.screen-deck { --screen-gap: 28px; --screen-text: clamp(17px,1.15vw,24px); height: 100dvh; overflow: clip; display: grid; grid-template-rows: 54px minmax(0,1fr); font-size: var(--screen-text); }
+.screen-deck .sitebar { height: 54px; min-height: 0; padding: 5px clamp(12px,1.5vw,40px); }
+.screen-deck .sitebar .term { display: none; }
+.screen-deck main { width: 100%; max-width: none; min-width: 0; min-height: 0; margin: 0; padding: 0 clamp(12px,1.5vw,40px) 10px; display: grid; grid-template-rows: 50px minmax(0,1fr); gap: 6px; }
+.screen-deck .intro, .screen-deck #chapter-nav, .screen-deck>.skip, .screen-deck main>.lesson-bottom, .screen-deck>footer { display: none; }
+.screen-deck .textbook-nav { padding: 0; gap: 10px; align-items: stretch; }
+.screen-deck .textbook-nav a { padding: 5px 14px; gap: 10px; font-size: 16px; border-radius: 8px; align-items: center; }
+.screen-deck .textbook-nav b { font-size: 22px; }
+.screen-toolbar { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.screen-toolbar label { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.screen-toolbar select { font-size: 16px; min-height: 40px; padding: 5px 12px; min-width: 0; }
+.screen-toolbar label>span { white-space: nowrap; font-size: 15px; color: var(--muted); }
+.screen-modes { display: none; }
+.screen-topic-step { padding: 5px 12px; min-height: 40px; }
+.screen-deck .workspace { height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(280px,.34fr) minmax(0,1fr); gap: clamp(16px,2vw,42px); align-items: stretch; }
+.screen-pane, .screen-deck .experiment { display: grid; grid-template-rows: 42px minmax(0,1fr) 48px; height: 100%; min-height: 0; min-width: 0; overflow: clip; }
+.screen-pane { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.screen-pane-title, .screen-deck .experiment-head { margin: 0; padding: 9px 16px; font-size: 16px; line-height: 24px; border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.screen-deck .live-dot { display: none; }
+.screen-window { position: relative; min-width: 0; min-height: 0; margin: 14px 18px; overflow: clip; }
+.screen-deck .screen-flow { height: 100%; min-height: 0; width: 100%; min-width: 0; padding: 0; margin: 0; display: block; column-count: 1; column-width: auto; column-gap: var(--screen-gap); column-fill: auto; overflow: visible; transition: none; }
+.screen-deck #scene { height: 100%; min-height: 0; padding: 0; margin: 0; }
+.screen-deck .screen-flow>* { margin-top: 0; margin-bottom: 16px; }
+.screen-deck .screen-flow :is(h2,h3,summary) { break-after: avoid; }
+.screen-deck #section-kicker { display:none; }
+.screen-deck .screen-flow :is(p,li) { orphans: 2; widows: 2; }
+.screen-deck .screen-flow :is(.controls,.stage,.rep-area,.control-pair,.order-controls,.two-selects,.matrix,.cayley,.property,.axiom-check,.partition-block,.power-rules article,.quiz-options button) { break-inside: avoid; }
+.screen-deck .lesson-copy h2 { font-size: clamp(25px,1.7vw,38px); line-height: 1.45; margin: 0 0 14px; }
+.screen-deck :is(.lead,.definition p,.prompt,.status-strip,.insight,.quiz-feedback,.quiz-options button,.quiz-end ol,.proof-conditions) { font-size: var(--screen-text); line-height: 1.7; }
+.screen-deck :is(.eyebrow,.hint,.source-note,.mini-proof,.definition .label,.prompt b,.section-small,.property span,.axiom-check small,.proof-board .reason,.proof-board .label,.reference) { font-size: max(16px,calc(var(--screen-text) - 2px)); line-height: 1.65; }
+.screen-deck :is(.controls button,.controls label,.controls select,.control-pair label,.order-controls label,.order-controls select,.two-selects label,.two-selects select,.proof-options button,.partition-options button,.cayley button,.cayley th,.matrix th) { font-size: max(16px,calc(var(--screen-text) - 2px)); }
+.screen-deck .definition { border-left: 0; border-top: 1px solid var(--line); padding: 14px 0 0; margin: 14px 0; }
+.screen-deck .formula { font-size: clamp(23px,1.6vw,34px); line-height: 1.6; }
+.screen-deck .prompt { padding-left: 12px; }
+.screen-deck .source-note { margin-top: 12px; }
+.screen-deck .controls { gap: 8px; }
+.screen-deck button { min-height: 40px; }
+.screen-deck .stage { margin: 12px 0; background-size: 18px 18px; }
+.screen-deck .stage svg { width: 100%; height: auto; max-height: min(34dvh,340px); }
+.screen-deck .relation-layout { display: grid; grid-template-columns: minmax(0,1fr) 220px; gap: 18px; break-inside: avoid; }
+.screen-deck .relation-layout .stage { width: 100%; max-width: none; margin: 0; }
+.screen-deck .matrix { border-spacing: 4px; }
+.screen-deck #relation-matrix { width: 220px; max-width: 100%; margin: 0 auto; }
+.screen-deck .matrix button { width: 44px; height: 44px; font-size: 18px; }
+.screen-deck .property-row { gap: 12px; }
+.screen-deck .property b,.screen-deck .axiom-check b { font-size: var(--screen-text); }
+.screen-deck .partition-options { gap: 8px; }
+.screen-deck .insight,.screen-deck .rep-box { padding: 12px 16px; }
+.screen-deck .status-strip { min-height: 0; padding-top: 12px; }
+.screen-deck .axiom-layout { display: block; }
+.screen-deck #cayley { overflow: visible; padding: 0; }
+.screen-deck .cayley { min-width: 0; width: 100%; table-layout: fixed; }
+.screen-deck .cayley button { min-height: 36px; padding: 4px 1px; }
+.screen-deck .axiom-checks { display: block; }
+.screen-deck .axiom-check { padding: 8px 0; }
+.screen-deck .proof-board { min-height: 0; padding: 20px 10px; }
+.screen-deck #scene .proof-board { break-inside:auto; overflow:visible; }
+.screen-deck .theorem-statement { font-size:var(--screen-text); line-height:1.85; text-align:left; max-width:80ch; margin:12px auto; }
+.screen-deck .proof-board .expression { font-size: clamp(25px,1.8vw,40px); line-height: 1.6; }
+.screen-deck .criteria-step { font-size: clamp(22px,1.6vw,32px); line-height: 1.7; }
+.screen-deck .quiz-options { display: block; }
+.screen-deck .quiz-options button { width: 100%; margin-bottom: 10px; padding: 10px 14px; }
+.screen-deck .quiz-question { font-size: clamp(24px,1.6vw,34px); line-height: 1.6; margin: 12px 0; }
+.screen-deck .quiz-feedback { min-height: 0; }
+.screen-deck .reference-grid { display: block; }
+.screen-deck .reference-grid>div { margin-bottom: 16px; }
+.screen-deck .reference { padding: 0; border: 0; }
+.screen-pager { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 12px; border-top: 1px solid var(--line); font-size: 15px; }
+.screen-pager button { padding: 4px 10px; font-size: 16px; }
+.screen-pager span { white-space: nowrap; }
+.screen-deck .mini-proof { display: block; }
+.screen-deck .mini-proof summary { font-size: var(--screen-text); font-weight: 600; cursor: default; list-style: none; padding: 0; margin-bottom: 10px; }
+.screen-deck .mini-proof summary::-webkit-details-marker { display: none; }
+.screen-deck .mini-proof p { padding: 0; margin-bottom: 16px; }
+.screen-deck .partition-blocks { margin: 18px 0; }
+.screen-deck .power-rules { display: block; }
+.screen-deck .power-rules article { margin-bottom: 16px; }
+.screen-deck .screen-flow[data-pages="1"] { transform: none !important; }
+@media(min-width:1800px) {
+  .screen-deck .relation-layout { grid-template-columns: minmax(0,1fr) 280px; }
+  .screen-deck #relation-matrix { width: 280px; }
+  .screen-deck .matrix button { width: 56px; height: 56px; }
+}
+@media(max-width:1000px) {
+  .screen-deck .workspace { grid-template-columns: minmax(0,1fr); }
+  .screen-modes { display: flex; gap: 6px; margin-left: auto; }
+  .screen-modes button { padding: 5px 10px; font-size: 16px; }
+  .screen-deck[data-screen-mode="notes"] .experiment,.screen-deck[data-screen-mode="experiment"] .screen-pane { display: none; }
+  .screen-topic-step { display: none; }
+  .screen-toolbar label>span { display: none; }
+  .screen-deck .screen-window { margin: 12px 16px; }
+  .screen-deck .lesson-copy h2 { font-size: 29px; }
+}
+@media(max-width:650px) {
+  body.screen-deck { --screen-text: 17px; grid-template-rows: 48px minmax(0,1fr); }
+  .screen-deck main { padding: 0 10px max(8px,env(safe-area-inset-bottom)); grid-template-rows: 46px minmax(0,1fr); gap: 4px; }
+  .screen-deck .sitebar { height: 48px; padding: 4px 12px; }
+  .screen-deck .textbook-nav a { flex: 1; flex-direction: row; gap: 7px; padding: 4px 8px; font-size: 14px; line-height: 1.45; }
+  .screen-deck .textbook-nav b { font-size: 20px; }
+  .screen-toolbar { gap: 6px; }
+  .screen-toolbar select { width: 100%; padding: 5px 6px; }
+  .screen-toolbar label { flex: 1; }
+  .screen-deck .relation-layout { display: block; }
+  .screen-deck .relation-layout .stage { margin-bottom: 14px; }
+  .screen-deck .relation-layout { break-inside: auto; }
+  .screen-deck .stage svg { max-height: min(34dvh,270px); }
+  .screen-deck .property-row { display: block; }
+  .screen-deck .control-pair,.screen-deck .order-controls,.screen-deck .two-selects { gap: 12px; }
+  .screen-deck .symmetry-stage svg text { font-size: 24px; }
+  .screen-deck .screen-window { margin: 10px 12px; }
+  .screen-deck .partition-block span { width: 44px; height: 44px; font-size: 26px; }
+  .screen-deck .power-rules article { padding: 12px; }
+  .screen-deck .controls { break-inside: auto; }
+  .screen-deck .controls>* { break-inside: avoid; }
+}
+@media(max-height:650px) {
+  .screen-deck .screen-flow h2 { break-after:auto; }
+  .screen-deck .sitebar { min-height: 0; }
+  .screen-deck .screen-window { margin-block: 8px; }
+  .screen-deck .screen-flow>* { margin-bottom: 12px; }
+  .screen-deck .stage svg { max-height: 220px; }
+  .screen-deck .proof-board { padding: 10px 4px; }
+}
+@media print {
+  html:has(.screen-deck),body.screen-deck { height: auto; overflow: visible; display: block; }
+  .screen-deck main,.screen-deck .workspace,.screen-pane,.screen-deck .experiment,.screen-deck .screen-window,.screen-deck .screen-flow { display: block !important; height: auto; overflow: visible; columns: auto; transform: none !important; }
+  .screen-pager,.screen-toolbar { display: none; }
+}

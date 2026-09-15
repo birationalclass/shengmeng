@@ -125,6 +125,7 @@
     if(dialog.open)dialog.close();document.body.classList.remove('opening-active');document.documentElement.classList.remove('course-opening-pending');
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
   }
+  window.CourseOpeningExit=leaveOpening;
   async function openOpening() {
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
@@ -166,6 +167,7 @@
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
+    if(event.target.closest?.('[data-skip-opening]'))return;
     if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
       event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else if(stage==='galois')finishGalois();else requestCourseEntry();
     }
@@ -663,6 +665,6 @@
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();
   }
-  if(!location.hash&&!window.courseOpeningDismissed)openOpening();
+  if(!location.hash&&new URLSearchParams(location.search).get("view")!=="lesson"&&!window.courseOpeningDismissed)openOpening();
   else document.documentElement.classList.remove('course-opening-pending');
 })();

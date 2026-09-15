@@ -9,17 +9,17 @@
   let current=0,animationToken=0,onResize=()=>{};
   const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
   const allSections=[
-    {id:'relation',nav:'等价关系',kicker:'第 1 节',title:'何时可以说<br>“它们一样”？',lead:'等价不是完全相同，而是在约定的标准下，忽略我们不关心的差别。三条性质保证分类不会自相矛盾。',formula:'反身 · 对称 · 传递',definition:'关系是有序对的集合 R ⊆ S × S。<br>等价关系同时满足这三条性质。',prompt:'删掉一个关系，再看哪条性质失效。为什么每个元素都必须和自己等价？',source:'教材 §1.1 · 定义 1.1.1—1.1.4<br>定理 1.1.1 · 例 9',label:'关系图与矩阵 · S = {a, b, c}',render:renderRelation},
-    {id:'quotient',nav:'等价类',kicker:'第 2 节',title:'把一整类<br>看成一个点。',lead:'改变观察的尺度：先看整数，再按余数分类，最后让每个等价类成为新集合中的一个元素。',formula:'[a] = {a + km : k ∈ ℤ}',definition:'a ∼ b ⇔ m 整除 a − b。<br>ℤ / ∼ = {[0], …, [m − 1]}，记作 ℤₘ。',prompt:'将视角推到“商集”，再更换代表元：数字变了，所在的类会改变吗？',source:'教材 §1.1 · 定义 1.1.3 · 例 5、7<br>图中仅展示有限窗口，整数集与各类均无限。',label:'整数、等价类与商集',render:renderQuotient},
+    {id:'relation',nav:'等价关系',kicker:'第 1 节',title:'何时可以说<br>“它们一样”？',lead:'等价不是完全相同，而是在约定的标准下，忽略我们不关心的差别。三条性质保证分类不会自相矛盾。',formula:'a ∼ a<br>a ∼ b ⇒ b ∼ a<br>a ∼ b，b ∼ c ⇒ a ∼ c',definition:'设 S 非空，关系是有序对的集合 R ⊆ S × S。上述三条分别为反身性、对称性和传递性，须对所有 a、b、c ∈ S 成立；满足三条的关系称为等价关系。',prompt:'删掉一个关系，再看哪条性质失效。为什么每个元素都必须和自己等价？',source:'教材 §1.1 · 定义 1.1.1—1.1.4<br>定理 1.1.1 · 例 9',label:'关系图与矩阵 · S = {a, b, c}',render:renderRelation},
+    {id:'quotient',nav:'等价类',kicker:'第 2 节',title:'把一整类<br>看成一个点。',lead:'改变观察的尺度：先看整数，再按余数分类，最后让每个等价类成为新集合中的一个元素。',formula:'[a] = {a + km : k ∈ ℤ}',definition:'一般地，[a] = {x ∈ S : x ∼ a}，商集 S / ∼ 是全部等价类组成的集合。这里取整数 m ≥ 2，以 m 整除 a − b 定义整数上的等价关系；商集记作 ℤₘ = {[0], …, [m − 1]}。',prompt:'将视角推到“商集”，再更换代表元：数字变了，所在的类会改变吗？',source:'教材 §1.1 · 定义 1.1.3 · 例 5、7<br>图中仅展示有限窗口，整数集与各类均无限。',label:'整数、等价类与商集',render:renderQuotient},
     {id:'operation',nav:'代数运算',kicker:'第 3 节',title:'换一个代表，<br>结果还一样吗？',lead:'要在商集上做运算，结果必须由“类”决定。选谁来代表这个类，不应影响最后得到的类。',formula:'[a] + [b] = [a + b]',definition:'代数运算是映射 S × S → S：每一对元素必须有唯一且仍在 S 内的结果。剩余类加法还须验证结果与代表元选择无关。',prompt:'独立改变两个代表元。计算结果的整数可能不同，但落入的剩余类保持不变。',source:'教材 §1.2 · 定义 1.2.1 · 例 2<br>商集只是集合；指定合适运算后才继续讨论群。',label:'ℤ₅ 上的剩余类运算',render:renderOperation},
     {id:'symmetry',nav:'对称与群',kicker:'第 4 节',title:'让“做一件事”<br>成为一个元素。',lead:'群的元素也可以是变换。把两次操作接起来，就得到它们的乘积。交换操作的先后次序，结果未必相同。',formula:'B ∘ A：先 A，后 B',definition:'r：逆时针旋转 120°。<br>s：沿经过顶点 1 的竖直轴反射。<br>六个变换：e, r, r², s, rs, r²s。',prompt:'选 A = r、B = s，播放两种顺序。跟踪顶点的编号，而不只是三角形的轮廓。',source:'§1.2 群的例子 · 几何演示<br>编号用于追踪；对称指未着色三角形的对称。',label:'三角形的对称 / 群 D₃，|D₃| = 6',render:renderSymmetry},
-    {id:'axioms',nav:'群的公理',kicker:'第 5 节',title:'同一个集合，<br>换运算就不同。',lead:'先检查运算是否处处有唯一结果且留在集合内，再检查结合律、单位元和每个元素的逆元。交换律是额外条件。',formula:'(ab)c = a(bc)<br>ea = ae = a<br>aa⁻¹ = a⁻¹a = e',definition:'G 必须非空。“封闭”属于代数运算的要求；其余三条是教材的 G1—G3。',prompt:'比较 ℤ₆ 的加法与乘法。再试试“删掉 [0]”：这次连哪一关都过不了？',source:'教材 §1.2 · 定义 1.2.2 · 例 3—10<br>表格按“行元素 ∘ 列元素”读取。',label:'运算表 · 点击方格查看乘积',render:renderAxioms},
+    {id:'axioms',nav:'群的公理',kicker:'第 5 节',title:'同一个集合，<br>换运算就不同。',lead:'先检查运算是否处处有唯一结果且留在集合内，再检查结合律、单位元和每个元素的逆元。交换律是额外条件。',formula:'(ab)c = a(bc)<br>ea = ae = a<br>aa⁻¹ = a⁻¹a = e',definition:'设 G 为非空集合，已给定代数运算 G × G → G。结合律须对所有 a、b、c ∈ G 成立；须存在同一个 e ∈ G，使每个 a 满足 ea = ae = a；每个 a ∈ G 都须有 a⁻¹ ∈ G，使 aa⁻¹ = a⁻¹a = e。满足这些条件，(G, ·) 才称为群。',prompt:'比较 ℤ₆ 的加法与乘法。再试试“删掉 [0]”：这次连哪一关都过不了？',source:'教材 §1.2 · 定义 1.2.2 · 例 3—10<br>表格按“行元素 ∘ 列元素”读取。',label:'运算表 · 点击方格查看乘积',render:renderAxioms},
     {id:'properties',nav:'基本性质',kicker:'第 6 节',title:'每一步等式，<br>都要有理由。',lead:'单位元和逆元为什么唯一？逆运算为什么要倒着做？消去律又从哪里来？从公理出发，一步一步推出来。',formula:'(ab)⁻¹ = b⁻¹a⁻¹',definition:'逆元把操作撤销。若先做 b 再做 a，就要先撤销 a，再撤销 b。',prompt:'点“下一步”，尝试先说出所用公理，再查看理由。注意全过程没有擅自交换因子。',source:'教材 §1.2 · 定理 1.2.1—1.2.2<br>先理解这些基本性质，再练习独立证明。',label:'群的基本性质 · 逐步证明',render:renderProperties},
     {id:'check',nav:'课末自测',kicker:'第 8 节',title:'会操作之后，<br>能解释了吗？',lead:'用六个短问题检查本讲的关键概念。每题都有理由，答错也可以直接看到误区在哪里。',formula:'例子 → 定义 → 理由',definition:'学习目标：能辨认等价关系、解释商集、验证群公理、使用基本性质、计算元素的阶。',prompt:'先自己判断，再选择答案。把不熟悉的概念带回前面的实验重新验证。',source:'课后练习：习题 1-1 的 1、2、4；<br>习题 1-2 的 5、6(1)、10。',label:'第一讲 / 六道概念检查',render:renderQuiz}
   ];
   const textbookSections={
-    '1.1':{title:'等价关系与集合的分类',pages:'1—6',items:['relation','quotient','partition','check'],line:'关系与等价关系 · 等价类 · 集合的分类',path:'关系 → 等价类 → 分类',homework:'习题 1-1：1、2、4'},
-    '1.2':{title:'群的概念',pages:'7—18',items:['operation','axioms','symmetry','properties','powers','criteria','check'],line:'代数运算 · 群的定义与例子 · 基本性质 · 方幂 · 判别',path:'运算 → 群 → 性质 → 方幂',homework:'习题 1-2：5、6(1)、10'}
+    '1.1':{title:'等价关系与集合的分类',pages:'1—6',items:['relation','quotient','partition','check'],line:'关系与等价关系 · 等价类 · 集合的分类',path:'关系 → 等价类 → 分类',homework:'习题 1-1：1(1)、2、4、5、6'},
+    '1.2':{title:'群的概念',pages:'7—18',items:['operation','axioms','symmetry','properties','powers','criteria','check'],line:'代数运算 · 群的定义与例子 · 基本性质 · 方幂 · 判别',path:'运算 → 群 → 性质 → 方幂',homework:'习题 1-2：5、6(2)、10、11、12、13、15'}
   };
   allSections.push(
     {id:'partition',nav:'集合的分类',title:'分类与等价关系，<br>是同一件事的两面。',lead:'分类把集合分成非空、不重、不漏的若干类。规定同一类中的元素等价，就能从分类反过来得到等价关系。',formula:'S = ⋃ Sᵢ<br>Sᵢ ∩ Sⱼ = ∅（i ≠ j）',definition:'每个 Sᵢ 都非空。每个元素恰好属于一类。全部等价类构成的集合记为 S / ∼。',prompt:'在五种分类中切换，观察类的数量与关系矩阵如何对应。然后展开证明，解释为什么不同等价类不可能交叠。',source:'教材 §1.1 · 定义 1.1.4 · 定理 1.1.1<br>第 4—5 页',label:'分类 ⇄ 等价关系',render:renderPartition},
@@ -31,7 +31,7 @@
   const bookId=Object.hasOwn(textbookSections,requestedBook)?requestedBook:(textbookSections['1.2'].items.filter(id=>id!=='check').includes(legacyAnchor)?'1.2':'1.1');
   const book=textbookSections[bookId];
   const sections=book.items.map(id=>({...allSections.find(s=>s.id===id),kicker:`§ ${bookId} · ${book.title}`}));
-  Object.assign(sections.find(s=>s.id==='check'),{nav:'本节自测',title:'这一节的概念，<br>能说清楚了吗？',lead:'围绕本节的定义与结论作答。每题都给出理由，并可返回相应实验复习。',definition:bookId==='1.1'?'能辨认等价关系、说明等价类，并解释等价关系与分类的对应。':'能验证群公理、使用基本性质、计算整数幂，并说明判别定理的条件。',source:`教材 §${bookId} · ${book.homework}`,label:`§${bookId} · 概念检查`});
+  Object.assign(sections.find(s=>s.id==='check'),{nav:'教材习题',title:'这一节的概念，<br>能说清楚了吗？',lead:'从本节课后习题出发，通过具体变式检查概念，再逐步展开证明，最后回到教材原题。',definition:bookId==='1.1'?'能辨认等价关系、说明等价类，并解释等价关系与分类的对应。':'能验证群公理、使用基本性质、计算整数幂，并说明判别定理的条件。',source:`教材 §${bookId} · ${book.homework}`,label:`§${bookId} · 概念检查`});
   $('intro-kicker').textContent=`第一讲 / § ${bookId}`;
   $('intro-title').textContent=book.title;
   $('intro-line').textContent=book.line;
@@ -60,12 +60,12 @@
     $('previous').disabled=current===0;$('next').disabled=current===sections.length-1;$('next').textContent=current===sections.length-2?'进入自测 →':'下一节 →';
     $('page-count').textContent=`${current+1} / ${sections.length}`;
     const url=new URL(location.href);url.searchParams.set('section',bookId);url.hash=s.id;
-    history.replaceState(null,'',url);scene.dataset.lessonScene=s.id;scene.innerHTML='';s.render();
+    history.replaceState(null,'',url);scene.dataset.lessonScene=s.id;window.dispatchEvent(new Event('lesson-topic'));scene.innerHTML='';s.render();window.dispatchEvent(new Event('lesson-rendered'));
     if(focus)$('workspace').focus({preventScroll:true});
   }
   $('chapter-nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(Number(b.dataset.section));});
   $('previous').onclick=()=>show(current-1);$('next').onclick=()=>show(current+1);
-  document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||e.target.closest('input,select,textarea,button,summary,[contenteditable]'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();show(current+(e.key==='ArrowRight'?1:-1),{focus:true});}});
+  document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey||e.target.closest('input,select,textarea,button,summary,[contenteditable]'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const delta=e.key==='ArrowRight'?1:-1;if(window.LessonScreen)window.LessonScreen.step(delta);else show(current+delta,{focus:true});}});
   window.addEventListener('hashchange',()=>{const n=sections.findIndex(s=>s.id===location.hash.slice(1));if(n>=0&&n!==current)show(n);});
   window.addEventListener('resize',()=>onResize());
   // Teaching layout is useful even where native fullscreen is unavailable.
@@ -114,7 +114,7 @@
 
   function renderRelation(){
     let R=M.fromBlocks([[0,1],[2]]);const letters=['a','b','c'];
-    scene.innerHTML=`<div class="controls"><label>观察例子 <select id="relation-preset"><option value="equivalence">一个等价关系</option><option value="reflexive">只缺反身性</option><option value="symmetric">只缺对称性</option><option value="transitive">只缺传递性</option><option value="custom" disabled>自定义关系</option></select></label><span class="spacer"></span><button type="button" id="repair">补成等价关系</button></div><div class="relation-layout"><div id="relation-graph" class="stage"></div><div id="relation-matrix"></div></div><p class="hint">点击矩阵方格：● 表示行元素与列元素有关系，· 表示没有。箭头有方向，自环表示与自己相关。</p><div id="relation-properties" class="property-row"></div><p class="section-small">三个元素的全部五种分类 / 点击查看对应关系</p><div id="partition-options" class="partition-options"></div><div id="status" class="status-strip" role="status" aria-live="polite"></div><details class="mini-proof"><summary>把图形翻译成定义与证明</summary><p>对任意 a, b, c ∈ S：<br>反身性：a ∼ a。<br>对称性：a ∼ b ⇒ b ∼ a。<br>传递性：a ∼ b 且 b ∼ c ⇒ a ∼ c。</p><p><b>从等价关系到分类：</b>若 c ∈ [a] ∩ [b]，对任意 x ∈ [a]，有 x ∼ a、a ∼ c、c ∼ b，由传递性得 x ∼ b，所以 [a] ⊆ [b]。反向同理。因此 [a] = [b]。反身性保证每个元素都在自己的类中；不同的类于是非空、不重、不漏。</p><p><b>从分类到等价关系：</b>规定“两元素在同一类”就是等价。每个元素在自己的类中；同一类的归属是对称的；如果 a、b 同类，b、c 同类，因为 b 只属于一个类，a、c 也同类。三条性质因此都成立。</p></details>`;
+    scene.innerHTML=`<div class="controls"><label>观察例子 <select id="relation-preset"><option value="equivalence">一个等价关系</option><option value="reflexive">只缺反身性</option><option value="symmetric">只缺对称性</option><option value="transitive">只缺传递性</option><option value="custom" disabled>自定义关系</option></select></label><span class="spacer"></span><button type="button" id="repair">补成等价关系</button></div><div class="relation-layout"><div id="relation-graph" class="stage"></div><div id="relation-matrix"></div></div><p class="hint">点击矩阵方格：● 表示行元素与列元素有关系，· 表示没有。箭头有方向，自环表示与自己相关。</p><div id="relation-properties" class="property-row"></div><p class="section-small">三个元素的全部五种分类 / 点击查看对应关系</p><div id="partition-options" class="partition-options"></div><div id="status" class="status-strip" role="status" aria-live="polite"></div><details class="mini-proof"><summary>把图形翻译成定义与证明</summary><p class="theorem-statement">等价类的基本结论：设 ∼ 是非空集合 S 上的等价关系，则每个 [a] 非空，所有类覆盖 S，且任意两类要么相等、要么不相交。因此全部不同的等价类构成 S 的一个分类。</p><p>对任意 a, b, c ∈ S：<br>反身性：a ∼ a。<br>对称性：a ∼ b ⇒ b ∼ a。<br>传递性：a ∼ b 且 b ∼ c ⇒ a ∼ c。</p><p><b>从等价关系到分类：</b>若 c ∈ [a] ∩ [b]，对任意 x ∈ [a]，有 x ∼ a、a ∼ c、c ∼ b，由传递性得 x ∼ b，所以 [a] ⊆ [b]。反向同理。因此 [a] = [b]。反身性保证每个元素都在自己的类中；不同的类于是非空、不重、不漏。</p><p><b>从分类到等价关系：</b>规定“两元素在同一类”就是等价。每个元素在自己的类中；同一类的归属是对称的；如果 a、b 同类，b、c 同类，因为 b 只属于一个类，a、c 也同类。三条性质因此都成立。</p></details>`;
     function update(message){
       const result=M.inspectRelation(R);const f=result.failures;
       const P=[[85,172],[210,65],[335,172]];let content=`<defs><marker id="arrow-r" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto-start-reverse"><path d="M0 0L6 3L0 6" fill="none" stroke="var(--diagram-edge,#668d7e)"/></marker></defs>`;
@@ -141,7 +141,7 @@
   function renderPartition(){
     let chosen=1;
     const letters=['a','b','c'];
-    scene.innerHTML=`<p class="hint">集合 S = {a, b, c} 的全部五种分类</p><div id="partition-tabs" class="controls"></div><div id="partition-blocks" class="partition-blocks"></div><p class="partition-arrow">同一类 ⇄ 彼此等价</p><div id="partition-relation" class="insight" aria-live="polite"></div><details class="mini-proof"><summary>定理 1.1.1：两个方向的证明</summary><p><b>等价关系 → 分类：</b>由反身性，a ∈ [a]，因此每个等价类非空，所有类覆盖 S。若 [a] 与 [b] 相交，取公共元素 c，由对称性与传递性得 a ∼ b，进而 [a] = [b]。所以不同等价类互不相交。</p><p><b>分类 → 等价关系：</b>规定 a ∼ b 当且仅当 a、b 在同一类。每个元素与自己同类；同类关系对称；若 a、b 同类且 b、c 同类，因为 b 只属于一类，a、c 也同类。因此三条性质都成立。</p></details>`;
+    scene.innerHTML=`<p class="hint">集合 S = {a, b, c} 的全部五种分类</p><div id="partition-tabs" class="controls"></div><div id="partition-blocks" class="partition-blocks"></div><p class="partition-arrow">同一类 ⇄ 彼此等价</p><div id="partition-relation" class="insight" aria-live="polite"></div><details class="mini-proof"><summary>定理 1.1.1：等价关系与分类的对应</summary><p class="theorem-statement">设 S 为非空集合。S 上的每个等价关系都给出一个由全部等价类组成的分类；反之，每个分类都确定一个等价关系：两元素等价当且仅当它们属于同一类。这两个构造互为逆过程。</p><h3>证明</h3><p><b>等价关系 → 分类：</b>由反身性，a ∈ [a]，因此每个等价类非空，所有类覆盖 S。若 [a] 与 [b] 相交，取公共元素 c，由对称性与传递性得 a ∼ b，进而 [a] = [b]。所以不同等价类互不相交。</p><p><b>分类 → 等价关系：</b>规定 a ∼ b 当且仅当 a、b 在同一类。每个元素与自己同类；同类关系对称；若 a、b 同类且 b、c 同类，因为 b 只属于一类，a、c 也同类。因此三条性质都成立。</p></details>`;
     function draw(){
       const blocks=M.partitions3[chosen];
       $('partition-tabs').innerHTML=M.partitions3.map((p,i)=>`<button type="button" data-part="${i}" aria-pressed="${i===chosen}">${p.map(b=>`{${b.map(a=>letters[a]).join(',')}}`).join(' | ')}</button>`).join('');
@@ -178,10 +178,17 @@
       {name:'群方程总有解',ref:'定理 1.2.4',condition:'非空集合 + 代数运算 + 结合律 + 对所有 a、b，ax = b 与 ya = b 都有解',steps:['固定 b。由 yb = b 有解，取 e 使 eb = b。','对任意 a，由 bx = a 有解，可写 a = bc。','ea = e(bc) = (eb)c = bc = a，因此 e 是全体元素的左单位元。','由 ya = e 有解，每个 a 都有左逆元。应用定理 1.2.3，得到群。'],note:'已知“对每一对 a、b 都可解”，才能固定 b 后覆盖所有 a；只解一个方程不够。'},
       {name:'有限集合的消去律',ref:'例 11',condition:'非空有限集合 + 代数运算 + 结合律 + 左、右消去律',steps:['设 G = {a₁, …, aₙ}。固定 a，考察 aa₁, …, aaₙ。','由左消去律，这 n 个结果两两不同。','它们都属于只有 n 个元素的 G，所以遍历 G；于是 ax = b 对每个 b 都可解。','右消去律同样保证 ya = b 可解。再用定理 1.2.4，得到群。'],note:'有限条件不可删去：(ℕ₊, +) 满足结合律与两侧消去律，却没有单位元 0，因此不是群。'}
     ];
-    let chosen=0,step=0;
+    const statements=[
+      '设 G 是具有代数运算的非空集合。G 构成群，当且仅当：(1) 运算满足结合律；(2) 存在同一个 e ∈ G，对所有 a ∈ G 有 ea = a；(3) 对每个 a ∈ G，存在 a′ ∈ G 使 a′a = e。这里 e 是左单位元，a′ 是相对于这个 e 的左逆元。',
+      '设 G 是具有代数运算、且运算满足结合律的非空集合。G 构成群，当且仅当对任意 a、b ∈ G，方程 ax = b 和 ya = b 在 G 中都有解。这里 x、y 是待求元素；判别条件只要求有解，不预先要求唯一。',
+      '设 G 为具有代数运算的非空有限集合。若运算满足结合律，且对任意 a、b、c ∈ G 都有 ab = ac ⇒ b = c 和 ba = ca ⇒ b = c，则 G 构成群。有限、非空、结合律及左右消去律都是这里的假设。'
+    ];
+    criteria[0].steps.unshift('必要性：若 G 已是群，结合律、左单位元和左逆元都由群的定义成立。充分性：下面证明给定的 e、a′ 同时也满足右侧条件。');
+    criteria[1].steps.unshift('必要性：若 G 是群，x = a⁻¹b、y = ba⁻¹ 给出所需解。充分性：下面只用结合律和两类方程的可解性来构造单位元与逆元。');
+    let chosen=0,step=-1;
     scene.innerHTML=`<div id="criteria-tabs" class="controls proof-options"></div><p id="criteria-condition" class="insight"></p><div id="criteria-proof" class="proof-board stage" aria-live="polite"></div><div class="controls"><button id="criteria-back" type="button">← 上一步</button><button id="criteria-next" class="primary" type="button">下一步 →</button><span id="criteria-count" class="hint"></span></div><p id="criteria-note" class="status-strip"></p>`;
-    function draw(){const c=criteria[chosen];$('criteria-tabs').innerHTML=criteria.map((x,i)=>`<button type="button" data-criterion="${i}" aria-pressed="${chosen===i}">${x.name}</button>`).join('');$('criteria-condition').textContent=c.condition;$('criteria-proof').innerHTML=`<p class="label">${c.ref}</p><p class="criteria-step">${c.steps[step]}</p>`;$('criteria-back').disabled=step===0;$('criteria-next').disabled=step===c.steps.length-1;$('criteria-count').textContent=`${step+1} / ${c.steps.length}`;$('criteria-note').textContent=c.note;}
-    $('criteria-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.criterion;step=0;draw();}};$('criteria-back').onclick=()=>{step--;draw();};$('criteria-next').onclick=()=>{step++;draw();};draw();
+    function draw(){const c=criteria[chosen];$('criteria-tabs').innerHTML=criteria.map((x,i)=>`<button type="button" data-criterion="${i}" aria-pressed="${chosen===i}">${x.name}</button>`).join('');$('criteria-condition').textContent=step<0?'':c.condition;$('criteria-condition').hidden=step<0;$('criteria-proof').innerHTML=`<p class="label">${c.ref} · <span>${step<0?'定理阐述':'证明'}</span></p><p class="${step<0?'theorem-statement':'criteria-step'}">${step<0?statements[chosen]:c.steps[step]}</p>`;$('criteria-back').disabled=step<0;$('criteria-back').textContent=step===0?'← 返回定理':'← 上一步';$('criteria-next').textContent=step<0?'开始证明 →':'下一步 →';$('criteria-next').disabled=step===c.steps.length-1;$('criteria-count').textContent=step<0?'先读清条件与结论':`${step+1} / ${c.steps.length}`;$('criteria-note').textContent=c.note;$('criteria-note').hidden=step<0;}
+    $('criteria-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.criterion;step=-1;draw();}};$('criteria-back').onclick=()=>{step--;draw();};$('criteria-next').onclick=()=>{step++;draw();};draw();
   }
 
   function renderQuotient(){
@@ -226,7 +233,7 @@
   function renderSymmetry(){
     let A=1,B=3,busy=false,displayedLeft,displayedRight;
     const names=['e · 不动','r · 旋转 120°','r² · 旋转 240°','s · 竖轴反射','rs · 先 s 后 r','r²s · 先 s 后 r²'];
-    scene.innerHTML=`<div class="two-selects"><label>操作 A<select id="sym-a">${names.map((n,i)=>`<option value="${i}" ${i===A?'selected':''}>${n}</option>`).join('')}</select></label><label>操作 B<select id="sym-b">${names.map((n,i)=>`<option value="${i}" ${i===B?'selected':''}>${n}</option>`).join('')}</select></label></div><div id="symmetry-graph" class="stage symmetry-stage"></div><div id="sym-readout" class="action-readout"></div><div class="controls"><button type="button" id="sym-play" class="primary">同时播放两种顺序</button><span id="sym-step" class="hint" role="status" aria-live="polite"></span></div><div class="symmetry-legend"><span>虚线：初始位置</span><span>1 / 2 / 3：跟踪顶点</span><span>复合记号统一先右后左</span></div><div id="status" class="status-strip" role="status" aria-live="polite"></div><details class="mini-proof"><summary>为什么这六个变换构成群？</summary><p>任意两个三角形的对称复合后，仍是三角形的对称；函数复合满足结合律；e 什么也不改变；旋转和反射都可以撤销，所以每个变换都有逆元。这里用动作解释公理，正式的群定义见下一节。过渡帧用于展示运动，只有每一步的端点表示列出的六个群元素。</p></details>`;
+    scene.innerHTML=`<div class="two-selects"><label>操作 A<select id="sym-a">${names.map((n,i)=>`<option value="${i}" ${i===A?'selected':''}>${n}</option>`).join('')}</select></label><label>操作 B<select id="sym-b">${names.map((n,i)=>`<option value="${i}" ${i===B?'selected':''}>${n}</option>`).join('')}</select></label></div><div id="symmetry-graph" class="stage symmetry-stage"></div><div id="sym-readout" class="action-readout"></div><div class="controls"><button type="button" id="sym-play" class="primary">同时播放两种顺序</button><span id="sym-step" class="hint" role="status" aria-live="polite"></span></div><div class="symmetry-legend"><span>虚线：初始位置</span><span>1 / 2 / 3：跟踪顶点</span><span>复合记号统一先右后左</span></div><div id="status" class="status-strip" role="status" aria-live="polite"></div><details class="mini-proof"><summary>为什么这六个变换构成群？</summary><p>任意两个三角形的对称复合后，仍是三角形的对称；函数复合满足结合律；e 什么也不改变；旋转和反射都可以撤销，所以每个变换都有逆元。这些正是前一主题中群定义的各项要求。过渡帧用于展示运动，只有每一步的端点表示列出的六个群元素。</p></details>`;
     const base=M.range(3).map(i=>[-92*Math.sin(i*2*Math.PI/3),-92*Math.cos(i*2*Math.PI/3)]);
     const positions=g=>M.range(3).map(i=>base[M.d3apply(g,i)]);
     function triangle(points,cx){const cy=133;let s=`<path d="${base.map(([x,y],i)=>`${i?'L':'M'}${x+cx},${y+cy}`).join('')}Z" fill="none" stroke="var(--diagram-line,#b9c9bd)" stroke-dasharray="5 6" stroke-width="1.3"/><path d="${points.map(([x,y],i)=>`${i?'L':'M'}${x+cx},${y+cy}`).join('')}Z" fill="var(--diagram-wash,#dcebe255)" stroke="var(--diagram-edge,#547f6d)" stroke-width="1.6"/>`;
@@ -236,6 +243,11 @@
       const stacked=scene.clientWidth<580;
       const second=stacked?`<g transform="translate(0 290)">${triangle(right,160)}<text x="160" y="261" text-anchor="middle" font-size="24" fill="var(--diagram-muted,#61736c)">先 B，后 A</text></g>`:`${triangle(right,480)}<text x="480" y="261" text-anchor="middle" font-size="24" fill="var(--diagram-muted,#61736c)">先 B，后 A</text>`;
       $('symmetry-graph').innerHTML=svg(`${stacked?'':'<path d="M320 35V240" stroke="var(--diagram-line,#e1e6dc)"/>'}${triangle(left,160)}<text x="160" y="261" text-anchor="middle" font-size="24" fill="var(--diagram-muted,#61736c)">先 A，后 B</text>${second}`,stacked?'0 0 320 575':'0 0 640 285','两组三角形按不同顺序应用变换，编号与颜色共同追踪三个顶点');
+      if(document.body.classList.contains('screen-deck')&&stacked){
+        let secondStage=$('symmetry-second');if(!secondStage){secondStage=document.createElement('div');secondStage.id='symmetry-second';secondStage.className='stage symmetry-stage';$('symmetry-graph').after(secondStage);}
+        $('symmetry-graph').innerHTML=svg(`${triangle(left,160)}<text x="160" y="261" text-anchor="middle" font-size="24" fill="var(--diagram-muted,#61736c)">先 A，后 B</text>`,'0 0 320 285','先 A 后 B');
+        secondStage.innerHTML=svg(`${triangle(right,160)}<text x="160" y="261" text-anchor="middle" font-size="24" fill="var(--diagram-muted,#61736c)">先 B，后 A</text>`,'0 0 320 285','先 B 后 A');
+      }else $('symmetry-second')?.remove();
     }
     function update(){const ba=M.d3mul(B,A),ab=M.d3mul(A,B);$('sym-readout').innerHTML=`<div>${M.d3labels[B]} ∘ ${M.d3labels[A]} = ${M.d3labels[ba]}<small>先 A，后 B 的总变换</small></div><div>${M.d3labels[A]} ∘ ${M.d3labels[B]} = ${M.d3labels[ab]}<small>先 B，后 A 的总变换</small></div>`;
       setStatus(ba===ab?'<strong>这两个操作可交换。</strong> 这只说明当前这一对相等；要证明群交换，需对所有元素对成立。':'<strong>两种顺序得到不同结果。</strong> 因而 D₃ 不是交换群；但它仍然满足结合律。',false);draw();}
@@ -268,7 +280,7 @@
       const checks=[['封闭性',data.closed,data.closed?'每个有序对都有唯一的集合内结果':`${fmt(data.closureWitness[0])} ${model.opSymbol} ${fmt(data.closureWitness[1])} = ${fmt(data.closureWitness[2])} 不在集合内`],['结合律',data.associative,associativityText],['单位元',data.identity!==undefined,data.identity!==undefined?`双侧单位元是 ${fmt(data.identity)}`:'找不到对所有元素均有效的双侧单位元'],['每元有逆',data.allInverses,data.allInverses===null?'尚无单位元，不能据此定义逆元':data.allInverses?'每个元素都能从两侧还原单位元':`${missing} 无逆元`]];
       $('axiom-checks').innerHTML=checks.map(([name,pass,note])=>`<div class="axiom-check"><b>${name}</b><span class="${pass===false?'no':''}">${pass===null?'— 待定义':pass?'✓ 成立':'✕ 不成立'}</span><small>${note}</small></div>`).join('');
       const [a,b]=selected,c=op(a,b);let detail=E.includes(c)?'结果仍在所选集合内。':'结果不在所选集合内，因此不封闭。';if(c===data.identity)detail+=` ${fmt(a)} 与 ${fmt(b)} ${op(b,a)===data.identity?'互为双侧逆元。':'只满足当前方向的等式。'}`;
-      $('table-readout').innerHTML=`<div class="formula">${model.format(a,b,c)}</div>${detail}`;$('example-note').textContent=model.note;
+      $('table-readout').innerHTML=`<div class="formula">${model.format(a,b,c)}</div>${detail}`;$('example-note').textContent=key==='unit8'?'每个元素平方均为单位元，因此四个元素都等于自己的逆元。':model.note;
       let status=data.isGroup?`<strong>是群。</strong> ${data.commutative?'也是交换群：表关于主对角线对称。':'不是交换群：例如 r ∘ s ≠ s ∘ r。'}`:'<strong>不是群。</strong> 必须同时满足定义的全部要求。';
       if(data.associativeWitness){const [x,y,z,left,right]=data.associativeWitness;status+=`<br>反例：(${fmt(x)} − ${fmt(y)}) − ${fmt(z)} = ${fmt(left)}；${fmt(x)} − (${fmt(y)} − ${fmt(z)}) = ${fmt(right)}。`;}
       setStatus(status,!data.isGroup);
@@ -278,7 +290,7 @@
   }
 
   function renderProperties(){
-    let chosen=0,step=0;
+    let chosen=0,step=-1;
     const proofs=[
       {name:'单位元唯一',assumption:'设 e 和 f 都是 G 的双侧单位元。',goal:'结论：e = f',steps:[['e','从 e 开始。'],['e = ef','f 是右单位元，所以 ef = e。'],['e = ef = f','e 是左单位元，所以 ef = f。单位元只能有一个。']]},
       {name:'逆元唯一',assumption:'设 b 和 c 都是 a 的逆元，即 ab = ba = ac = ca = e。',goal:'结论：b = c',steps:[['b','从 b 开始。'],['b = be','右侧乘单位元。'],['b = b(ac)','因为 ac = e。'],['b = (ba)c','只移动括号：结合律。'],['b = ec','因为 ba = e。'],['b = c','左侧单位元不改变 c。逆元唯一。']]},
@@ -286,36 +298,23 @@
       {name:'消去律',assumption:'设 ab = ac。在等式两侧同时左乘 a⁻¹。',goal:'结论：b = c；右消去同理',steps:[['ab = ac','已知条件。'],['a⁻¹(ab) = a⁻¹(ac)','两边同一侧乘同一个元素。'],['(a⁻¹a)b = (a⁻¹a)c','结合律。'],['eb = ec','使用 a⁻¹a = e。'],['b = c','使用单位元性质，得到左消去律。']]},
       {name:'解群方程',assumption:'对给定 a, b ∈ G，分别求解 ax = b 和 ya = b。',goal:'x = a⁻¹b；y = ba⁻¹',steps:[['ax = b','先解未知元在右侧的方程。'],['a⁻¹(ax) = a⁻¹b','左乘 a⁻¹，抵消位于左侧的 a。'],['x = a⁻¹b','结合律和单位元性质；代回检验成立。'],['ya = b','再解未知元在左侧的方程。'],['(ya)a⁻¹ = ba⁻¹','这次要右乘 a⁻¹。'],['y = ba⁻¹','代回检验成立；消去律保证两个解各自唯一。']]}
     ];
+    const statements=[
+      '定理 1.2.1(1)：设 G 为群，则 G 的单位元唯一。也就是说，若 e、f 都满足对每个 a ∈ G 有 ea = ae = a、fa = af = a，那么 e = f。',
+      '定理 1.2.1(2)：设 G 为群，e 为单位元。对每个 a ∈ G，它的逆元唯一。也就是说，若 ab = ba = e 且 ac = ca = e，则 b = c。',
+      '定理 1.2.1(4)：设 G 为群。对任意 a、b ∈ G，乘积 ab 的逆元为 b⁻¹a⁻¹，即 (ab)⁻¹ = b⁻¹a⁻¹。逆元的因子次序必须反转。',
+      '定理 1.2.1(5)：设 G 为群。对任意 a、b、c ∈ G，若 ab = ac 或 ba = ca，则 b = c。这分别是左消去律和右消去律。',
+      '定理 1.2.2：设 G 为群。对任意 a、b ∈ G，方程 ax = b 和 ya = b 在 G 中各有唯一解，分别为 x = a⁻¹b、y = ba⁻¹。'
+    ];
     scene.innerHTML=`<div id="proof-tabs" class="controls proof-options"></div><p id="proof-assumption" class="proof-conditions"></p><div id="proof-board" class="proof-board stage" aria-live="polite"></div><div class="controls"><button type="button" id="proof-back">← 上一步</button><button type="button" id="proof-next" class="primary">下一步 →</button><span id="proof-count" class="hint"></span></div><div id="status" class="status-strip"></div><details class="mini-proof"><summary>另外两条需要记住的运算规则</summary><p>逆元的逆还是自己：(a⁻¹)⁻¹ = a，因为 a 和 a⁻¹ 互为逆元。<br>同一个元素的幂满足 aᵐaⁿ = aᵐ⁺ⁿ、(aᵐ)ⁿ = aᵐⁿ。但对于不同元素，(ab)ⁿ = aⁿbⁿ 一般需要 ab = ba；不能仅凭结合律这样拆开。</p></details>`;
-    function update(){const p=proofs[chosen];$('proof-tabs').innerHTML=proofs.map((x,i)=>`<button type="button" data-proof="${i}" aria-pressed="${i===chosen}">${x.name}</button>`).join('');$('proof-assumption').textContent=p.assumption;
-      $('proof-board').innerHTML=`<div class="label">${p.goal}</div><div class="expression">${p.steps[step][0]}</div><div class="reason">${p.steps[step][1]}</div><div class="proof-track" aria-hidden="true">${p.steps.map((_,i)=>`<span class="${i<=step?'done':''}"></span>`).join('')}</div>`;
-      $('proof-back').disabled=step===0;$('proof-next').disabled=step===p.steps.length-1;$('proof-count').textContent=`${step+1} / ${p.steps.length}`;
-      setStatus(step===p.steps.length-1?'<strong>证明完成。</strong> 回顾刚才哪些地方用了结合律、单位元或逆元。':'<strong>先预测，再翻一步。</strong> 当前的等式能用哪条公理继续化简？');
+    function update(){const p=proofs[chosen];$('proof-tabs').innerHTML=proofs.map((x,i)=>`<button type="button" data-proof="${i}" aria-pressed="${i===chosen}">${x.name}</button>`).join('');$('proof-assumption').textContent=step<0?'':p.assumption;$('proof-assumption').hidden=step<0;
+      $('proof-board').innerHTML=step<0?`<div class="label">定理阐述</div><p class="theorem-statement">${statements[chosen]}</p>`:`<div class="label">${p.goal}</div><div class="expression">${p.steps[step][0]}</div><div class="reason">${p.steps[step][1]}</div><div class="proof-track" aria-hidden="true">${p.steps.map((_,i)=>`<span class="${i<=step?'done':''}"></span>`).join('')}</div>`;
+      $('proof-back').disabled=step<0;$('proof-back').textContent=step===0?'← 返回定理':'← 上一步';$('proof-next').textContent=step<0?'开始证明 →':'下一步 →';$('proof-next').disabled=step===p.steps.length-1;$('proof-count').textContent=step<0?'先读清条件与结论':`${step+1} / ${p.steps.length}`;
+      setStatus(step<0?'先确认群的假设和要证明的结论，再开始证明。':step===p.steps.length-1?'<strong>证明完成。</strong> 回顾刚才哪些地方用了结合律、单位元或逆元。':'<strong>先预测，再翻一步。</strong> 当前的等式能用哪条公理继续化简？');
     }
-    $('proof-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.proof;step=0;update();}};$('proof-back').onclick=()=>{step--;update();};$('proof-next').onclick=()=>{step++;update();};update();
+    $('proof-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.proof;step=-1;update();}};$('proof-back').onclick=()=>{step--;update();};$('proof-next').onclick=()=>{step++;update();};update();
   }
 
-  function renderQuiz(){
-    const bank=[
-      ['若两个等价类有一个公共元素，它们一定……',['完全相同','只在这个元素处相交','至少一个是空集'],0,'若两个类相交，利用对称性与传递性可证明它们互相包含；所以相同。等价类非空。','relation'],
-      ['模 3 分类中，[−1] 与 [2] 是……',['两个不同整数，所以是不同类','同一个类的两种写法','两个相交但不同的类'],1,'−1 − 2 = −3 能被 3 整除。因此 [−1] = [2]；商集的元素是整个类。','quotient'],
-      ['在 ℤ₆ 中删去 [0]，剩余元素在乘法下构成群吗？',['构成，非零元素都有逆','构成，乘法满足结合律','不构成，例如 [2][3] = [0] 不在集合内'],2,'首先就不封闭。要得到乘法群，应取与 6 互素的剩余类 U(6) = {[1], [5]}。','axioms'],
-      ['r 与 s 不交换，会不会使 D₃ 失去群结构？',['不会；交换律不是群公理','会；所有群都必须交换','只要交换顺序就能修复'],0,'群要求结合律，不要求交换律。(AB)C = A(BC) 只改变括号，不交换 A、B、C 的位置。','symmetry'],
-      ['一般的群中，(ab)⁻¹ 等于……',['a⁻¹b⁻¹','b⁻¹a⁻¹','ab'],1,'撤销时要倒序：把 b⁻¹a⁻¹ 分别乘在 ab 的左右两边，都可化为 e。','properties'],
-      ['在 U(5) 的乘法中，[2]⁻¹ 等于……',['[−2] = [3]，因为要取相反数','[3]，因为 [2][3] = [1]','[0]，因为相乘应得 0'],1,'负一次幂表示乘法逆元：[2][3] = [6] = [1]。这里恰巧也有 [−2] = [3]，但求逆的依据是乘积为单位元。','powers'],
-      ['分类中的每个类必须……',['非空、两两不交，且并为整个集合','大小相等','只能含一个元素'],0,'分类要求每个元素恰好属于一个非空类；各类的大小可以不同。','partition'],
-      ['正整数集关于加法，满足结合律与消去律，是否必为群？',['是，能消去就足够','不是，缺少加法单位元 0','是，1 就是单位元'],1,'有限集合上的判别不能直接搬到无限集合。正整数加法没有单位元，也不保证方程总可解。','criteria']
-    ];
-    const questions=bank.filter(q=>sections.some(s=>s.id===q[4]));
-    let q=0,answers=Array(questions.length).fill(null);
-    function draw(){
-      if(q===questions.length){const correct=answers.filter((a,i)=>a===questions[i][2]).length;scene.innerHTML=`<div class="quiz-end"><p class="eyebrow">本节自测完成</p><h3>回顾 §${bookId} 的关键概念。</h3><p>首次作答正确 ${correct} / ${questions.length}。${correct===questions.length?'接下来试着不用图形，独立写出证明。':'下面列出了适合再看一次的概念。'}</p><ol>${questions.map((x,i)=>`<li>${answers[i]===x[2]?'✓':'↺'} ${sections.find(s=>s.id===x[4]).nav} <a href="#${x[4]}">回到实验 ↗</a></li>`).join('')}</ol><div class="insight">课后练习：${book.homework}。先独立尝试，再用本页验证直觉。</div><button id="quiz-retry" type="button" class="primary">重新自测</button></div>`;$('quiz-retry').onclick=()=>{q=0;answers=Array(questions.length).fill(null);draw();};return;}
-      const [question,options,correct,explanation,anchor]=questions[q],answered=answers[q]!==null;
-      scene.innerHTML=`<div class="quiz-progress">问题 ${q+1} / ${questions.length}</div><h3 class="quiz-question">${question}</h3><div class="quiz-options">${options.map((x,i)=>`<button type="button" data-answer="${i}" ${answered?'disabled':''} class="${answered?(i===correct?'correct':i===answers[q]?'incorrect':''):''}"><span style="color:var(--muted);margin-right:12px">${'ABC'[i]}</span>${x}</button>`).join('')}</div><div class="quiz-feedback" role="status" aria-live="polite">${answered?`<b>${answers[q]===correct?'判断正确。':'再看一下关键理由。'}</b>${explanation} <a href="#${anchor}">回到实验 ↗</a>`:'选择后查看理由。'}</div><div class="controls"><button type="button" id="quiz-prev" ${q===0?'disabled':''}>← 上一题</button><button type="button" id="quiz-next" class="primary" ${answered?'':'disabled'}>${q===questions.length-1?'查看学习回顾':'下一题 →'}</button></div>`;
-      scene.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{answers[q]=+b.dataset.answer;draw();});$('quiz-prev').onclick=()=>{q--;draw();};$('quiz-next').onclick=()=>{q++;draw();};
-    }
-    draw();
-  }
+  function renderQuiz(){window.TextbookExercises.render(scene,bookId);}
   const initial=sections.findIndex(s=>s.id===legacyAnchor);
   show(initial>=0?initial:0);
 })();
