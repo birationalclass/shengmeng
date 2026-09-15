@@ -2,6 +2,7 @@
 (()=>{
   const title=document.querySelector('.hero h1');if(!title)return;
   const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  const animated=()=>!reduced.matches&&document.documentElement.dataset.sandMotion!=='off';
   const canvas=document.createElement('canvas');canvas.className='course-hero-sand';canvas.setAttribute('aria-hidden','true');
   const ctx=canvas.getContext('2d');if(!ctx)return;
   let points=[],frame=0,last=0,queued=0,inView=true,width=0,height=0,tail=0,bridging=false;
@@ -14,27 +15,28 @@
   function stop(){cancelAnimationFrame(frame);frame=0;}
   function paint(now){
     frame=0;if(!allowed()||!points.length)return;
-    if(now-last>=32||reduced.matches){
+    const moving=animated();
+    if(now-last>=32||!moving){
       last=now;ctx.clearRect(0,0,width,height);
       for(const p of points){
         let x=p.x,y=p.y,alpha=p.alpha,size=p.size;
-        if(p.falling&&!reduced.matches){
+        if(p.falling&&moving){
           const phase=fallPhase(now,p.seed);
           y+=fallDistance(phase,tail);
           x+=Math.sin(phase*4.2+p.seed*8)*phase*2.6;
           alpha*=fallOpacity(phase);size=Math.min(size,.88);
         }else{
           const phase=now*.00035+p.seed*6.28;
-          const drift=reduced.matches?0:.18;
+          const drift=moving?.18:0;
           x+=Math.sin(phase)*drift;y+=Math.cos(phase*.8)*drift;
         }
         ctx.globalAlpha=alpha;ctx.fillStyle=p.bright?'#f5e9cf':'#d9bd85';ctx.fillRect(x,y,size,size);
       }
       ctx.globalAlpha=1;
     }
-    if(!reduced.matches)frame=requestAnimationFrame(paint);
+    if(moving)frame=requestAnimationFrame(paint);
   }
-  function start(){stop();if(allowed()&&points.length)frame=requestAnimationFrame(paint);}
+  function start(){stop();last=0;title.dataset.sandTitle=animated()?'falling':'static';if(allowed()&&points.length)frame=requestAnimationFrame(paint);}
   function refresh(){
     queued=0;stop();const box=title.getBoundingClientRect();if(!box.width||!box.height)return;
     const ink=window.CourseTitleDock.ink(title);if(!ink.length){title.classList.remove('sand-title-ready');return;}
@@ -52,6 +54,7 @@
   new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)schedule();else stop();}).observe(canvas);
   new MutationObserver(records=>{if(records.some(r=>r.type==='characterData'))schedule();}).observe(title,{subtree:true,characterData:true});
   new MutationObserver(start).observe(document.body,{attributes:true,attributeFilter:['class']});
+  window.addEventListener('course-sand-motion',start);
   window.addEventListener('course-language',schedule);document.addEventListener('visibilitychange',start);reduced.addEventListener('change',start);
   document.fonts.addEventListener('loadingdone',schedule);document.fonts.ready.then(schedule);
   window.CourseHeroSand={refresh:schedule,start,stop,prepareDock,finishDock,fallPhase,fallDistance,fallOpacity};schedule();

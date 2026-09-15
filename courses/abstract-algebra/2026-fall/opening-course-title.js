@@ -63,7 +63,7 @@
       for(const p of particles){
         const u=reduced?1:smooth(Math.max(0,(t-p.delay)/(1-p.delay))),curve=Math.sin(Math.PI*u)*p.curve;
         let y=p.y+(p.ty-p.y)*u-curve*.35,alpha=t>.88?1-smooth((t-.88)/.12):1,size=p.size;
-        if(p.falling&&!reduced&&window.CourseHeroSand){const phase=window.CourseHeroSand.fallPhase(now,p.seed);y+=window.CourseHeroSand.fallDistance(phase,fromSize.height*.65*(1-u)+heroTail*u);alpha*=window.CourseHeroSand.fallOpacity(phase);size=Math.min(size,.9);}
+        if(p.falling&&!reduced&&document.documentElement.dataset.sandMotion!=='off'&&window.CourseHeroSand){const phase=window.CourseHeroSand.fallPhase(now,p.seed);y+=window.CourseHeroSand.fallDistance(phase,fromSize.height*.65*(1-u)+heroTail*u);alpha*=window.CourseHeroSand.fallOpacity(phase);size=Math.min(size,.9);}
         ctx.globalAlpha=alpha;ctx.fillRect(p.x+(p.tx-p.x)*u+curve,y,size,size);
       }
       ctx.globalAlpha=1;if(t>.88){title.style.opacity=String(smooth((t-.88)/.12));}

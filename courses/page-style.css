@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/* Appearance is opt-in per page. The paper choice uses the original stylesheet. */
+/* Shared sandstone palette and falling-sand preference. */
 html[data-course-page] {
   --style-surface: #fffefa;
   --style-hover: #e8eee5;
@@ -35,32 +35,20 @@ html[data-course-page="semester"] .hero-actions { flex-wrap: wrap; }
   border-radius: 50%; background: transparent; color: var(--style-muted); font: 24px/1 var(--sans); cursor: pointer;
 }
 .page-style-dialog .page-style-close:hover { color: var(--style-text); background: var(--style-hover); }
-.page-style-dialog #pageStyleDescription { color: var(--style-muted); font-size: 12px; margin: 17px 0 22px; }
-.page-style-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; padding: 0; margin: 0; border: 0; min-width: 0; }
-.page-style-choice { display: block; position: relative; cursor: pointer; min-width: 0; }
-.page-style-choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.page-style-card { display: block; padding: 8px 8px 15px; border: 1px solid var(--style-line); border-radius: 10px; }
-.page-style-choice:hover .page-style-card { background: var(--style-hover); }
-.page-style-choice input:checked + .page-style-card { border-color: var(--style-accent); box-shadow: 0 0 0 1px var(--style-accent); }
-.page-style-choice input:focus-visible + .page-style-card { outline: 3px solid var(--style-accent); outline-offset: 4px; }
-.page-style-name { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 13px 5px 5px; }
-.page-style-name small { font-size: 9px; font-weight: 400; color: var(--style-muted); border: 1px solid var(--style-line); border-radius: 3px; padding: 0 4px; }
-.page-style-check { margin-left: auto; color: var(--style-accent); visibility: hidden; }
-.page-style-choice input:checked + .page-style-card .page-style-check { visibility: visible; }
-.page-style-detail { display: block; padding: 0 5px; font-size: 10px; line-height: 1.9; color: var(--style-muted); }
-.page-style-swatch { display: block; height: 108px; border-radius: 5px; position: relative; overflow: hidden; }
-.swatch-sand {
-  color: #ddc38f; background-color: #15130e;
-  background-image: radial-gradient(ellipse at 90% 30%, #9b743331, transparent 75%), radial-gradient(#c8af7838 .65px, transparent .9px);
-  background-size: auto, 5px 7px;
-}
-.swatch-sand i { position: absolute; width: 152px; height: 125px; right: -32px; top: 5px; background: url("page-sand-ring.svg?v=20260913-sand-page-v1") center / contain no-repeat; transform: rotateZ(-25deg); }
-.swatch-paper { background: #f3f2e9; color: #1b6152; }
-.swatch-paper i { position: absolute; left: 0; top: 0; width: 100%; height: 13px; background: #1b4035; }
-.page-style-swatch b { position: absolute; left: 18px; top: 26px; font: 32px/1.3 Georgia, serif; font-weight: 400; }
-.page-style-swatch em { position: absolute; left: 19px; top: 80px; height: 1px; width: 50px; background: currentColor; opacity: .45; }
-.page-style-dialog .page-style-memory { margin: 22px 0 0; color: var(--style-muted); font-size: 11px; }
-.page-style-dialog .page-style-status { margin: 9px 0 0; padding-top: 12px; border-top: 1px solid var(--style-line); color: var(--style-accent); font-size: 10px; }
+.page-style-dialog { font-size:16px; }
+.page-motion-control { position:relative; display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:52px; margin-top:28px; cursor:pointer; }
+.page-motion-name { color:var(--style-text); font-size:20px; font-weight:500; }
+.page-motion-control input { position:absolute; right:0; width:52px; height:44px; margin:0; opacity:0; cursor:pointer; }
+.page-motion-switch { flex:0 0 52px; width:52px; height:30px; border:1px solid var(--style-muted); border-radius:18px; background:var(--style-hover); pointer-events:none; }
+.page-motion-switch::after { content:""; display:block; width:22px; height:22px; margin:3px; border-radius:50%; background:var(--style-muted); transition:transform .18s ease; }
+.page-motion-control input:checked + .page-motion-switch { background:var(--style-accent); border-color:var(--style-accent); }
+.page-motion-control input:checked + .page-motion-switch::after { transform:translateX(22px); background:#211b10; }
+.page-motion-control input:focus-visible + .page-motion-switch { outline:2px solid var(--style-accent); outline-offset:5px; }
+.page-style-dialog #pageMotionDescription { margin:8px 0 28px; color:var(--style-muted); font-size:16px; line-height:1.7; }
+.page-style-dialog .page-motion-memory { margin:0; color:var(--style-muted); font-size:14px; }
+.page-style-dialog .page-motion-status { border-top:1px solid var(--style-line); margin:14px 0 0; padding-top:14px; color:var(--style-accent); font-size:14px; }
+@media(prefers-reduced-motion:reduce) { .page-motion-switch::after { transition:none; } }
+
 @media screen {
   html[data-page-style="sand"] {
     color-scheme: dark;
@@ -162,10 +150,6 @@ html[data-course-page="semester"] .hero-actions { flex-wrap: wrap; }
   .sitebar .page-style-button { padding: 7px; min-width: 31px; }
   .sitebar .page-style-button span { display: none; }
   .page-style-dialog { padding: 22px 18px; }
-  .page-style-choices { gap: 10px; }
-  .page-style-name { gap: 4px; padding-inline: 1px; font-size: 12px; }
-  .page-style-detail { padding-inline: 1px; font-size: 10px; }
-  .page-style-name small { font-size: 8px; padding-inline: 2px; }
 }
 @media (max-width: 360px) {
   html[data-course-page="semester"] .sitebar .brand span { display: none; }
