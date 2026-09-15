@@ -3,7 +3,7 @@ body.course-portal.portal-lesson { height:100dvh; overflow:clip; display:grid; g
 .course-portal>.sitebar,.portal-lesson>#main,.portal-lesson>.footer,.portal-lesson>.skip { display:none; }
 body.course-portal:not(.portal-lesson) { height:auto; overflow:visible; display:block; }
 #portal-content[hidden],.portal-header button[hidden] { display:none; }
-.portal-header { position:sticky; top:0; z-index:20; background:var(--paper); display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 20px; min-height:58px; border-bottom:1px solid var(--line); }
+.portal-header { position:sticky; top:0; z-index:20; background:transparent; display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:8px 20px; min-height:58px; border-bottom:0; }
 .portal-brand { font:22px Georgia,serif; color:var(--ink,var(--text)); margin-right:auto; white-space:nowrap; }
 .portal-header button { font:16px/1.4 var(--sans); color:var(--ink,var(--text)); background:transparent; border:1px solid var(--line); border-radius:7px; min-height:40px; padding:7px 12px; cursor:pointer; }
 .portal-header button:hover { background:var(--white); }
@@ -98,3 +98,9 @@ html[lang="en"] .upcoming-watermark { letter-spacing:.04em; }
 .course-portal:not(.portal-lesson) #portal-course-open { margin-right:auto; }
 
 .course-portal:not(.portal-lesson) #portal-directory-open { display:none; }
+
+/* Extend the hero behind the transparent toolbar without moving its content. */
+@media screen {
+  .course-portal:not(.portal-lesson) #main { margin-top:-58px; }
+  .course-portal:not(.portal-lesson) #main .hero { padding-top:58px; }
+}
