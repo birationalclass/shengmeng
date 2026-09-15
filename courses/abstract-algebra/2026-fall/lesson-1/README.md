@@ -1,7 +1,9 @@
-# Password-protected lesson and teaching plan
+# First abstract algebra lesson
 
-`index.html` is the public password form. `access.js` derives an AES-256-GCM key with PBKDF2-SHA256 and decrypts `lesson.enc.json` only after a correct password. The lesson HTML and its teaching JavaScript are encrypted together. The `teaching-plan/` directory uses the same format with a separate password. Passwords and decrypted pages are not saved in browser storage; reloading requires unlocking again.
+The student lesson at `index.html` is public and opens directly, without a password or account. `math.js` contains the mathematical model; `lesson.js` renders the eight interactive sections. `reading.css` sets a readable type scale and responsive diagram layouts for both page appearances.
 
-Payload format: version 1; 310000 PBKDF2 iterations; base64 salt (16 bytes), IV (12 bytes), and ciphertext followed by the 16-byte GCM authentication tag. Plaintext is a complete UTF-8 HTML document. The original lesson math and interaction scripts run in order at the end of its decrypted body; relative stylesheet and navigation URLs are resolved against the unchanged page URL.
+The separate `teaching-plan/` retains its own encrypted content and password entry. Do not replace or expose that material when maintaining the student lesson.
 
-When editing these pages, decrypt a working copy outside the published repository, update it, and encrypt it again with a fresh random salt and IV. Preserve both password gates. Do not publish a plaintext HTML or JavaScript backup, password, or derived key. Update the asset version when replacing files. Historical public commits are not removed by this change.
+Release: `20260915-lesson-reading-v1`. Student-facing prose contains course concepts, interaction instructions, exercise guidance and textbook references; implementation notes and design credits belong outside the lesson.
+
+The former student `access.js` and `lesson.enc.json` are retired. There must be no password form, decryption script, login redirect or account dependency in the student lesson's entry point.
