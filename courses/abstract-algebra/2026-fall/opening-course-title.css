@@ -1,0 +1,20 @@
+@font-face { font-family:CourseCalligraphy; src:url('fonts/MaShanZheng-Algebra.woff2?v=20260915-course-title-v5') format('woff2'); font-style:normal; font-weight:400; font-display:swap; }
+html:has(#courseOpening[open]),body.course-portal.opening-active { overflow:hidden!important; }
+.course-portal #main .hero h1[lang="zh-CN"] { font-family:CourseCalligraphy,"Songti SC",serif; font-weight:400; letter-spacing:.03em; }
+.course-portal #main .hero h1 em { font-family:OpeningSerif,Georgia,serif; }
+.opening-language { position:fixed; z-index:15; top:max(20px,env(safe-area-inset-top)); right:max(20px,env(safe-area-inset-right)); min-width:48px; min-height:44px; padding:8px 12px; border:1px solid #bba16f70; border-radius:7px; background:#1b1812cc; color:#ead6b0; font:16px/1.4 var(--sans); cursor:pointer; pointer-events:auto; }
+.opening-language:focus-visible { outline:2px solid #d8bd86; outline-offset:4px; }
+.course-title-flight { position:fixed; inset:0; width:100vw; height:100dvh; pointer-events:none; z-index:100000; }
+.course-title-docking .hero h1 { opacity:0; }
+.course-portal #main .hero h1 { position:relative; }
+.course-portal #main .hero h1.sand-title-ready,.course-portal #main .hero h1.sand-title-ready em { color:transparent; text-shadow:none; }
+.course-hero-sand { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+#courseOpening:is(.opening-loading,.opening-awaiting-start) :is(.opening-caption,.opening-narration) { visibility:hidden; }
+#symmetry-particle-studies:is([data-stage="outro"],[data-stage="galois"]) .opening-enter-hint>span { display:none!important; }
+#symmetry-particle-studies[data-stage="outro"] .opening-enter-hint>.outro-hint,#symmetry-particle-studies[data-stage="galois"] .opening-enter-hint>.galois-hint { display:inline!important; }
+#symmetry-particle-studies[data-stage="outro"] .opening-enter-hint { top:auto; bottom:max(24px,env(safe-area-inset-bottom)); font-size:14px; letter-spacing:.08em; opacity:.65; animation:none; }
+
+#courseOpening .opening-language { position:fixed; top:max(20px,calc(env(safe-area-inset-top) + 10px)); right:calc(max(28px,calc(env(safe-area-inset-right) + 18px)) + 56px); margin:0; }
+#courseOpening .opening-direct-entry { position:fixed; z-index:15; left:50%; bottom:max(24px,calc(env(safe-area-inset-bottom) + 12px)); top:auto; margin:0; transform:translateX(-50%); max-width:calc(100vw - 32px); width:max-content; font-size:16px; text-align:center; }
+#courseOpening:not(.opening-loading):not(.opening-awaiting-start) .opening-direct-entry { display:none; }
+@media(max-width:700px) { #courseOpening .opening-language { right:calc(max(16px,calc(env(safe-area-inset-right) + 10px)) + 54px); top:max(15px,calc(env(safe-area-inset-top) + 8px)); } }

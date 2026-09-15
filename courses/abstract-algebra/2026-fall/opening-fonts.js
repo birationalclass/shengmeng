@@ -3,6 +3,7 @@
   'use strict';
   const base=new URL('.',document.currentScript.src);
   const definitions=Object.freeze([
+    ['CourseCalligraphy','fonts/MaShanZheng-Algebra.woff2?v=20260915-course-title-v5','normal','400'],
     ['OpeningSerif','fonts/OpeningSerif-Regular.woff2','normal','400'],
     ['OpeningSerif','fonts/OpeningSerif-Italic.woff2','italic','400'],
     ['OpeningSans','fonts/OpeningSans.woff2','normal','100 900'],
@@ -34,7 +35,7 @@
       });
       try{
         await Promise.race([
-          Promise.all(jobs),
+          Promise.all(jobs).then(()=>document.fonts.load('180px CourseCalligraphy','代数学孟晟')),
           new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Font loading timed out')),25000);})
         ]);
       }finally{clearTimeout(timer);}

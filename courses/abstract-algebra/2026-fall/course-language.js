@@ -21,7 +21,7 @@
   function apply(){scheduled=false;document.documentElement.lang=language==='en'?'en':'zh-CN';
     const root=document.body;if(!root)return;
     observer?.disconnect();
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;return p&&!p.closest('script,style')&&(!p.closest('#symmetry-particle-studies')||p.closest('#openingLoader'))?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;return p&&!p.closest('script,style')&&(!p.closest('#symmetry-particle-studies')||p.closest('#openingLoader,[data-skip-opening],[data-opening-language]'))?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
     let changed=false;
     let node;while(node=walker.nextNode()){
       const saved=originals.get(node);let source=node.data;

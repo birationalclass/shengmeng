@@ -119,13 +119,15 @@
   }
   function leaveOpening() {
     entryVersion++;stage='closed';root.dataset.stage=stage;toggle.disabled=true;
-    if(ownedFullscreen&&document.fullscreenElement){ownedFullscreen=false;document.exitFullscreen().catch(()=>{});}
+    // Fullscreen belongs to the whole course and survives closing the animation.
+    ownedFullscreen=false;
     window.CourseOpeningAudio?.stop();window.CourseOpeningVoice?.stop();
     if(film)film.stop();boot.stop();panel.hidden=true;dialog.classList.remove('settings-open','has-pointer-controls');toggle.setAttribute('aria-expanded','false');clearTimeout(visibilityTimer);
     if(dialog.open)dialog.close();document.body.classList.remove('opening-active');document.documentElement.classList.remove('course-opening-pending');
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
   }
   window.CourseOpeningExit=leaveOpening;
+  window.addEventListener('course-language',()=>{if(stage==='outro')film?.outro();});
   async function openOpening() {
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
@@ -139,7 +141,7 @@
       const music=window.CourseOpeningAudio.prepare((value,text)=>{if(entry===entryVersion&&stage==='loading')boot.music(value*100,text);}).catch(error=>{error.musicLoading=true;throw error;});
       await Promise.all([initialization,music]);
       if(entry===entryVersion&&dialog.open){stage='ready';root.dataset.stage=stage;boot.ready();dialog.classList.remove('opening-loading');dialog.classList.add('opening-awaiting-start');}
-    }catch(error){if(entry===entryVersion){if(error.musicLoading||error.fontLoading){if(error.fontLoading)initialization=null;stage='load-error';root.dataset.stage=stage;boot.retry(error.fontLoading?'字体加载未完成，请重试':undefined);}else{root.dataset.unavailable='true';leaveOpening();initialization=null;}}}
+    }catch(error){console.error('Course opening failed:',error?.stack||error);if(entry===entryVersion){if(error.musicLoading||error.fontLoading){if(error.fontLoading)initialization=null;stage='load-error';root.dataset.stage=stage;boot.retry(error.fontLoading?'字体加载未完成，请重试':undefined);}else{root.dataset.unavailable='true';leaveOpening();initialization=null;}}}
   }
   function startAnimation() {
     if(stage!=='ready'||!film)return;
@@ -148,26 +150,28 @@
     window.CourseOpeningAudio?.start();window.CourseOpeningVoice?.unlock();
     // Fullscreen is an enhancement: playback must not wait for permission or a
     // browser promise that may never settle (notably in mobile web views).
-    if(!document.fullscreenElement&&document.fullscreenEnabled!==false&&typeof root.requestFullscreen==='function'){
+    if(!document.fullscreenElement&&document.fullscreenEnabled!==false&&typeof document.documentElement.requestFullscreen==='function'){
       try {
-        Promise.resolve(root.requestFullscreen({navigationUI:'hide'})).then(()=>{
-          if(document.fullscreenElement!==root)return;
+        Promise.resolve(document.documentElement.requestFullscreen({navigationUI:'hide'})).then(()=>{
+          if(document.fullscreenElement!==document.documentElement)return;
           if(entry!==entryVersion||!['playing','galois','outro','departing'].includes(stage)||!dialog.open){
-            if(!['playing','galois','outro','departing'].includes(stage))document.exitFullscreen().catch(()=>{});
             return;
           }
           ownedFullscreen=true;
+          // requestFullscreen places the document above an already open dialog.
+          // Reopen the dialog in the top layer; fullscreen remains on the document.
+          if(dialog.open){dialog.close();dialog.showModal();dialog.focus({preventScroll:true});}
         }).catch(()=>{}); // Keep playing in the page if fullscreen is rejected.
       }catch(_){ /* Older implementations can throw synchronously; keep playing. */ }
     }
-    ownedFullscreen=document.fullscreenElement===root||ownedFullscreen;
+    ownedFullscreen=document.fullscreenElement===document.documentElement||ownedFullscreen;
     stage='playing';root.dataset.stage=stage;
     dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
     toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
-    if(event.target.closest?.('[data-skip-opening]'))return;
+    if(event.target.closest?.('[data-skip-opening],[data-opening-language]'))return;
     if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
       event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else if(stage==='galois')finishGalois();else requestCourseEntry();
     }
@@ -178,7 +182,7 @@
   },{passive:false});
   document.addEventListener('fullscreenchange',()=>{
     if(!['playing','galois'].includes(stage))return;
-    if(document.fullscreenElement===root)ownedFullscreen=true;
+    if(document.fullscreenElement===document.documentElement)ownedFullscreen=true;
     else if(!document.fullscreenElement){ownedFullscreen=false;dialog.focus({preventScroll:true});film?.refresh();showControls();}
   });
   dialog.addEventListener('cancel',event=>{event.preventDefault();if(!panel.hidden)closeSettings(true);});
@@ -208,7 +212,7 @@
     const story=window.CourseOpeningGaloisStory;
     const storyShades=Array(story.nodes.length).fill(1);
     for(const [name,value] of Object.entries({school:.94,awakening:.98,exams:.87,symmetries:1.04,prison:.68,letter:.86,death:.70,silence:.9,recognition:1.03}))storyShades[story.index[name]]=value;
-    const closingGeometry=window.CourseOpeningOutro.create(N);
+    let closingGeometry=window.CourseOpeningOutro.create(N);
     const inscriptions=window.CourseOpeningInscription.create(N),portraitGeometry=geometry.galoisNode(0);
     inscriptions.mark(portraitGeometry.positions,portraitGeometry.letteringWeights,portraitGeometry.letteringWeights);
     inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
@@ -550,6 +554,7 @@
       upload();updateCaption();showCaption(false);draw();queue();
     }
     function beginOutro(){
+      closingGeometry=window.CourseOpeningOutro.create(N);inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
       const view=cameraPose(),captured=snapshot(false,time,true),capturedNormals=snapshotNormals(),capturedTwoSided=twoSidedWeight();
       if(impulses.active(time)){for(let i=0;i<N;i++){const k=i*3,local=materials.rotateObject(captured.subarray(k,k+3),-renderedSpin()),offset=materials.rotateObject(impulses.offset(local,time,grains[i*4]),renderedSpin());for(let a=0;a<3;a++)captured[k+a]+=offset[a];}}
       impulses.clear();cancelClick();
@@ -559,8 +564,8 @@
       orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;
       source=destination=captured;normalSource=normalDestination=capturedNormals;twoSidedFrom=twoSidedTo=capturedTwoSided;extrusionFrom=extrusionTo=0;progress=1;
       outro={phase:terminalActive?'form':'return',elapsed:0,from:view,view};root.dataset.outro=outro.phase;
-      if(terminalActive){destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;canvas.setAttribute('aria-label','Algebra Ⅰ. Sheng Meng.');}
-      root.querySelector('[data-outro-hint]').textContent=terminalActive?'沙粒落字':'镜头归位 · 沙粒落字';
+      if(terminalActive){destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;canvas.setAttribute('aria-label',window.CourseTitleDock.label());}
+      root.querySelector('[data-outro-hint]').textContent=window.CourseTitleDock.text('沙粒落字','Letters taking shape');
       panel.querySelector('[data-enter-course]').disabled=true;showCaption(false);upload();active=true;previous=0;queue();
     }
     function advanceOutro(dt){
@@ -573,16 +578,22 @@
         if(amount===1){
           outro.phase='form';outro.elapsed=0;outro.from=outro.view=neutral;root.dataset.outro='form';
           destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;upload();
-          canvas.setAttribute('aria-label','Algebra Ⅰ. Sheng Meng.');
+          canvas.setAttribute('aria-label',window.CourseTitleDock.label());
         }
       }else if(outro.phase==='form'){
         progress=reduce?1:Math.min(1,outro.elapsed/3600);
         const amount=ease(progress);
         outro.view={...cameraRig.blend(outro.from,neutral,amount),perspective:outro.from.perspective*(1-amount)};
-        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='进入课程 ↗';root.querySelector('[data-outro-hint]').textContent='按空格或回车，落沙后进入课程';}
+        if(progress===1){outro.phase='hold';root.dataset.outro='hold';panel.querySelector('[data-enter-course]').disabled=false;panel.querySelector('[data-enter-course]').textContent='进入课程 ↗';root.querySelector('[data-outro-hint]').textContent=window.CourseTitleDock.text('按空格或回车，标题沙粒移入课程','Space or Enter · move the title into the course');}
       }
     }
-    function depart(){outro.phase='depart';outro.elapsed=0;window.CourseOpeningAudio?.frame({active:false,prelude:false,departing:true,t:0,dt:0,direction:1});root.dataset.outro='depart';panel.querySelector('[data-enter-course]').disabled=true;root.querySelector('[data-outro-hint]').textContent='沙粒落尽 · 即将进入课程';queue();}
+    function depart(){
+      if(outro?.phase!=='hold')return;
+      outro.phase='depart';outro.elapsed=0;root.dataset.outro='depart';
+      window.CourseOpeningAudio?.frame({active:false,prelude:false,departing:true,t:0,dt:0,direction:1});
+      panel.querySelector('[data-enter-course]').disabled=true;
+      window.CourseTitleDock.start(closingGeometry,leaveOpening);
+    }
     function stop(){endOrbit();active=false;previous=0;cancelAnimationFrame(raf);raf=0;}
     function needsFrames(){const target=effective();return impulses.active(time)||(!outro&&narration.needsFrames)||(outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||target.wander>0||visual.camera>0||(!reduce&&visual.spotlight>0)||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
     function queue(){if(!raf&&active&&dialog.open&&!document.hidden&&needsFrames())raf=requestAnimationFrame(tick);}

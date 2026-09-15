@@ -63,3 +63,23 @@ body.course-portal:not(.portal-lesson) { height:auto; overflow:visible; display:
 .portal-icon svg { display:block; width:21px; height:21px; }
 .portal-brand { text-decoration:none; }
 @media(max-width:650px) { .portal-header .portal-icon { flex-basis:36px; width:36px; } }
+
+/* A quiet reminder sits beneath the next class's learning focus. */
+.course-portal #schedule tr.upcoming .focus { position:relative; padding-bottom:54px; }
+.upcoming-watermark { position:absolute; right:14px; bottom:4px; color:var(--ink); opacity:.23; font:400 clamp(26px,3vw,42px)/1.1 var(--serif); letter-spacing:.12em; white-space:nowrap; pointer-events:none; user-select:none; }
+html[lang="en"] .upcoming-watermark { letter-spacing:.04em; }
+@media(max-width:700px) { .course-portal #schedule tr.upcoming .focus { padding-bottom:40px; } .upcoming-watermark { right:10px; bottom:0; font-size:30px; } }
+@media print { .upcoming-watermark { display:none; } .course-portal #schedule tr.upcoming .focus { padding-bottom:9px; } }
+
+.page-style-dialog .page-style-eyebrow { display:none; }
+
+.portal-lesson .portal-brand { min-width:0; white-space:normal; line-height:1.3; font-size:clamp(16px,1.3vw,22px); }
+@media(max-width:767px) { .portal-lesson .portal-brand { flex:1 1 150px; font-size:16px; } }
+@media(max-width:767px) {
+  .portal-lesson .portal-header { display:grid; grid-template-columns:36px minmax(0,1fr)36px 36px 36px; gap:5px; padding:6px 8px; }
+  .portal-lesson .portal-brand { margin:0; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; font-size:15px; }
+  .portal-lesson .portal-header>button { padding:5px; min-width:0; width:36px; height:38px; }
+  .portal-lesson .portal-section-nav { grid-column:1/-1; grid-row:2; width:100%; }
+  .portal-lesson #portal-directory-open { font-size:0; }
+  .portal-lesson #portal-directory-open::before { content:'☷'; font-size:24px; }
+}
