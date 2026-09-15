@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14130f">
+  <meta name="description" content="一个可以亲手转动、逐步推演的魔方群论实验室。学习置换、群的阶、交换子、共轭、轨道与稳定子，以及魔方可达状态定理的完整证明。">
+  <title>Rubik’s Cube & Group Theory · 魔方与群论 · 孟晟</title>
+  <link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../study/spectral/vendor/katex.min.css">
+  <link rel="stylesheet" href="rubik.css?v=20260915d">
+  <script src="../../../study/spectral/vendor/katex.min.js" defer></script>
+  <script type="module" src="app.mjs?v=20260915d"></script>
+</head>
+<body>
+<a class="skip" href="#lesson">跳到讲解</a>
+<header class="site-header">
+  <a class="brand" href="../../../">Sheng Meng <span>孟晟</span></a>
+  <nav aria-label="页面导航"><a href="../2026-fall/">抽象代数 Ⅰ <span>↗</span></a><button id="settingsOpen" aria-haspopup="dialog">设置 <span>☷</span></button></nav>
+</header>
+<main>
+  <section class="page-heading" aria-labelledby="pageTitle">
+    <div><p class="eyebrow">AN INTERACTIVE MATHEMATICAL NOTEBOOK <span>· 01</span></p><h1 id="pageTitle">Rubik’s Cube <em>&</em> Group Theory<span lang="zh-CN">魔方与群论</span></h1></div>
+    <p class="heading-note">从指尖的一次转动，<br>到四千三百二十五京种对称。<small>观察 · 操作 · 严格证明</small></p>
+  </section>
+  <nav id="chapters" class="chapter-nav" aria-label="学习章节"></nav>
+  <a class="mobile-reading-link" href="#lesson">阅读本章讲解与证明 ↓</a>
+  <div class="workspace">
+    <article id="lesson" class="lesson" aria-labelledby="lessonTitle" tabindex="-1"></article>
+    <section class="laboratory" aria-labelledby="labTitle">
+      <div class="lab-heading"><div><span class="eyebrow">LIVE OBJECT</span><h2 id="labTitle">把定义转在手中</h2></div><span id="stateBadge" class="state-badge">已复原</span></div>
+      <div class="cube-stage">
+        <div class="stage-symbol" aria-hidden="true">G</div>
+        <div class="stage-caption"><span>3 × 3 × 3</span><span>FIXED CENTRES</span></div>
+        <canvas id="cube" tabindex="0" role="img" aria-label="可交互三阶魔方。拖动色块转动该面，拖动空白或按住 Shift 拖动观察。也可用下方六个面按钮操作。"></canvas>
+        <button id="homeView" class="view-reset" title="恢复观察角度" aria-label="恢复观察角度">↗ <span>初始视角</span></button>
+        <div class="stage-hint">拖动色块转面 <i>·</i> 拖动空白观察 <i>·</i> R U F D L B 键转动</div>
+      </div>
+      <div class="cube-controls">
+        <div class="turn-row"><div id="faceButtons" class="face-buttons" aria-label="转动一个面"></div><div class="turn-modifiers" role="group" aria-label="转动方式"><button data-turns="1" aria-pressed="true">90°</button><button data-turns="-1" aria-pressed="false">逆转 ′</button><button data-turns="2" aria-pressed="false">180°</button></div></div>
+        <div class="utility-row"><button id="undo">↶ 撤销</button><button id="redo">↷ 重做</button><span class="spacer"></span><button id="scramble">打乱</button><button id="reset">复原</button></div>
+        <form id="algorithmForm" class="algorithm-form"><label for="algorithm">ALGORITHM <span>按从左到右的顺序执行</span></label><div class="input-row"><input id="algorithm" autocomplete="off" spellcheck="false" value="R R R R" aria-describedby="algorithmHelp" maxlength="2000"><button type="submit" class="gold-button">载入 ↗</button></div><p id="algorithmHelp">支持 R、U′、F2、(R U)3、[R,U] 与 [F:R]。载入从复原态开始。</p></form>
+        <div class="playback"><button id="previousStep" aria-label="上一步">|‹</button><button id="play" class="play-button">▶ 播放</button><button id="nextStep" aria-label="下一步">›|</button><input id="timeline" type="range" min="0" max="4" value="0" step="1" aria-label="算法步骤"><output id="stepCount">0 / 4</output></div>
+        <div id="sequence" class="sequence" aria-label="当前算法"></div>
+        <p id="status" class="status" role="status" aria-live="polite">准备就绪。试着转动 R 面。</p>
+      </div>
+      <details class="state-ledger" open><summary><span>STATE LEDGER <b>状态与不变量</b></span><span>＋</span></summary><div class="ledger-inner">
+        <div class="invariant-row"><div><span>角扭转和 / mod 3</span><b id="twistValue">0</b></div><div><span>棱翻转和 / mod 2</span><b id="flipValue">0</b></div><div><span>角 / 棱置换奇偶</span><b id="parityValue">偶 / 偶</b></div></div>
+        <div id="cycleDisplay" class="cycle-display"></div><p class="ledger-note">轮换记号描述“块从哪里到哪里”；阶按完整的 48 个活动贴纸计算，包含朝向。</p>
+        <details class="facelet-details"><summary>查看全部贴纸与朝向坐标</summary><div id="cubeNet" class="cube-net" aria-label="魔方六面展开图"></div><div id="orientationDisplay"></div></details>
+      </div></details>
+    </section>
+  </div>
+  <section class="reading-notes" aria-labelledby="referencesTitle"><div><p class="eyebrow">FURTHER READING</p><h2 id="referencesTitle">继续阅读与复核</h2><p>讲解中的复合始终从左到右。中心块固定，整块的观察旋转只改变视角。这里讨论普通三阶魔方，不包含中心贴纸朝向的“超级魔方”。</p></div><ol>
+    <li><a href="https://people.math.harvard.edu/~jjchen/docs/Group%20Theory%20and%20the%20Rubik%27s%20Cube.pdf" target="_blank" rel="noopener">Janet Chen · Group Theory and the Rubik’s Cube <span>↗</span></a><small>群、生成元、置换与魔方的经典讲义；本文采用相同的从左到右复合约定。</small></li>
+    <li><a href="https://people.math.harvard.edu/computing/gap/index.html" target="_blank" rel="noopener">Harvard Mathematics · The cube in GAP <span>↗</span></a><small>用 48 个活动贴纸上的置换群独立计算群的阶。</small></li>
+    <li><a href="https://js.cubing.net/cubing/twisty/" target="_blank" rel="noopener">cubing.js / Twisty Player <span>↗</span></a><small>研究算法播放与交互魔方的开源参考；本页的几何、运算与绘制独立实现。</small></li>
+    <li><a href="https://www.vitsoe.com/us/about/good-design" target="_blank" rel="noopener">Dieter Rams · Good design <span>↗</span></a><small>设计参考：让操作易于理解，让装饰服务内容。沿用本网站谱序列笔记与金沙主题。</small></li>
+  </ol></section>
+  <footer><span>Sheng Meng <i>·</i> 孟晟</span><span>MATHEMATICS, MADE TANGIBLE.</span><a href="../2026-fall/">返回抽象代数课程 ↗</a></footer>
+</main>
+<dialog id="settings" aria-labelledby="settingsTitle"><div class="dialog-heading"><div><p class="eyebrow">PREFERENCES</p><h2 id="settingsTitle">阅读与操作</h2></div><button id="settingsClose" aria-label="关闭设置">×</button></div><label class="setting"><span>转动速度 <small>逐步看清每一次置换</small></span><select id="speed"><option value="650">慢 · 650 ms</option><option value="350" selected>适中 · 350 ms</option><option value="160">快 · 160 ms</option></select></label><label class="setting"><span>贴纸编号 <small>用字母与位置辅助辨认颜色</small></span><input id="labels" type="checkbox"></label><label class="setting"><span>突出改变的贴纸 <small>与复原态相比，固定贴纸变暗</small></span><input id="highlight" type="checkbox"></label><label class="setting"><span>减少动态效果 <small>立即完成转动，保留每一步状态</small></span><input id="reducedMotion" type="checkbox"></label><label class="setting"><span>阅读字号</span><select id="textSize"><option value="normal">标准</option><option value="large">较大</option></select></label><p class="settings-note">Shift + 字母键：逆转；空格：播放 / 暂停。设置保存在此浏览器。本页无声音。</p></dialog>
+<noscript><p class="noscript">请启用 JavaScript 以操作魔方并阅读交互讲义。也可直接阅读上方参考讲义。</p></noscript>
+</body></html>
