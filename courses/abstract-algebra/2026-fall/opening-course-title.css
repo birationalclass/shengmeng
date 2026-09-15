@@ -8,7 +8,10 @@ html:has(#courseOpening[open]),body.course-portal.opening-active { overflow:hidd
 .course-title-docking .hero h1 { opacity:0; }
 .course-portal #main .hero h1 { position:relative; }
 .course-portal #main .hero h1.sand-title-ready,.course-portal #main .hero h1.sand-title-ready em { color:transparent; text-shadow:none; }
-.course-hero-sand { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.course-hero-sand { position:absolute; top:0; left:0; width:100%; height:calc(100% + var(--sand-tail)); pointer-events:none; }
+.course-portal #main .hero h1 { --sand-tail:170px; margin-bottom:calc(var(--sand-tail) + 24px); }
+@media(max-width:767px) { .course-portal #main .hero h1 { --sand-tail:110px; } }
+@media print { .course-hero-sand { display:none; } .course-portal #main .hero h1.sand-title-ready,.course-portal #main .hero h1.sand-title-ready em { color:inherit; margin-bottom:24px; } }
 #courseOpening:is(.opening-loading,.opening-awaiting-start) :is(.opening-caption,.opening-narration) { visibility:hidden; }
 #symmetry-particle-studies:is([data-stage="outro"],[data-stage="galois"]) .opening-enter-hint>span { display:none!important; }
 #symmetry-particle-studies[data-stage="outro"] .opening-enter-hint>.outro-hint,#symmetry-particle-studies[data-stage="galois"] .opening-enter-hint>.galois-hint { display:inline!important; }
