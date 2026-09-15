@@ -5,8 +5,9 @@
   const svgNS="http://www.w3.org/2000/svg";
   let completed=false;
   let aborted=false;
+  const loading=new AbortController();
 
-  root.classList.remove("inscription-complete","inscription-fallback");
+  root.classList.remove("inscription-complete","inscription-fallback","inscription-skipped");
 
   const sleep=(ms)=>new Promise((resolve)=>window.setTimeout(resolve,ms));
   const svgElement=(name,attributes={})=>{
@@ -21,15 +22,33 @@
   const finishIntro=()=>{
     if(completed)return;
     completed=true;
+    window.clearTimeout(failSafe);
+    document.removeEventListener("click",skipIntro,true);
+    document.removeEventListener("keydown",skipIntro,true);
     root.classList.add("inscription-complete");
   };
   const abortIntro=()=>{
     if(completed)return;
     aborted=true;
+    loading.abort();
+    glyphNodes.forEach((node)=>node.getAnimations({subtree:true}).forEach((animation)=>animation.cancel()));
     restoreStaticGlyphs();
     root.classList.add("inscription-fallback");
     finishIntro();
   };
+  // Consume the skip gesture before it can activate an invisible homepage link.
+  // These listeners exist only while the inscription is opening.
+  const skipIntro=(event)=>{
+    if(completed)return;
+    if(event.type==="keydown"&&(event.key!=="Enter"||event.isComposing||event.altKey||event.ctrlKey||event.metaKey))return;
+    if(event.type==="click"&&event.button!==0)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    root.classList.add("inscription-skipped");
+    abortIntro();
+  };
+  document.addEventListener("click",skipIntro,true);
+  document.addEventListener("keydown",skipIntro,true);
   const failSafe=window.setTimeout(abortIntro,16000);
 
   const medianPath=(points)=>points.map((point,index)=>`${index?"L":"M"}${point[0]} ${900-point[1]}`).join(" ");
@@ -111,11 +130,13 @@
       [{strokeDashoffset:String(length)},{strokeDashoffset:"0"}],
       {duration,easing:"cubic-bezier(.32,.02,.22,1)",fill:"forwards"}
     );
+    const finished=drawing.finished.catch(()=>{});
     const start=performance.now();
     spark.style.opacity="1";
     sparkCore.style.opacity="1";
     await new Promise((resolve)=>{
       const advance=(now)=>{
+        if(aborted){resolve();return;}
         const progress=Math.min(1,(now-start)/duration);
         const point=entry.median.getPointAtLength(length*progress);
         spark.setAttribute("cx",point.x);
@@ -126,7 +147,8 @@
       };
       requestAnimationFrame(advance);
     });
-    await drawing.finished.catch(()=>{});
+    await finished;
+    if(aborted)return;
     entry.reveal.style.strokeDashoffset="0";
     drawing.cancel();
     spark.style.opacity="0";
@@ -137,10 +159,11 @@
   const run=async()=>{
     try{
       const data=await Promise.all(glyphNodes.map(async(node)=>{
-        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-uniform-running-script`);
+        const response=await fetch(`assets/hanzi-strokes/${encodeURIComponent(node.dataset.char)}.json?v=20260812-uniform-running-script`,{signal:loading.signal});
         if(!response.ok)throw new Error(`Unable to load stroke data for ${node.dataset.char}`);
         return response.json();
       }));
+      if(aborted)return;
       await document.fonts.load('400 820px "Zhi Mang Xing Title"');
       if(aborted)return;
       const glyphs=glyphNodes.map((node,index)=>buildGlyph(node,data[index],index));

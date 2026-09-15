@@ -126,6 +126,8 @@ html.inscription-intro.inscription-complete .algebraic-background{animation:intr
 html.inscription-intro.inscription-complete .hero-support{animation:intro-information-in .78s cubic-bezier(.2,.72,.25,1) .3s both}
 html.inscription-intro.inscription-complete .hero-math{animation:intro-information-in .82s cubic-bezier(.2,.72,.25,1) .46s both}
 html.inscription-intro.inscription-complete .signal-strip{animation:intro-information-in .72s ease .62s both}
+/* A deliberate skip reveals the homepage immediately, without the arrival fade. */
+html.inscription-intro.inscription-skipped :is(.site-header,.hero-copy .kicker,.algebraic-background,.hero-support,.hero-math,.signal-strip){opacity:1;filter:none;transform:none;animation:none}
 @keyframes intro-information-in{0%{opacity:0;filter:blur(6px);transform:translateY(14px)}100%{opacity:1;filter:none;transform:none}}
 @media(prefers-reduced-motion:reduce){html.inscription-intro.inscription-complete .site-header,html.inscription-intro.inscription-complete .hero-copy .kicker,html.inscription-intro.inscription-complete .algebraic-background,html.inscription-intro.inscription-complete .hero-support,html.inscription-intro.inscription-complete .hero-math,html.inscription-intro.inscription-complete .signal-strip{opacity:1;filter:none;transform:none;animation:none}}
 @media(max-width:900px){.hero-layout{grid-template-columns:1fr;padding-block:56px;gap:24px}.hero-copy{min-height:600px;grid-template-columns:minmax(280px,1fr) 188px}.hero-inscription{width:188px;min-height:575px}.hero h1.hero-quote{font-size:74px}.hero-support{max-width:500px}}
