@@ -43,8 +43,9 @@
     document.body.classList.add('course-title-docking');leave();
     window.scrollTo({top:0,left:0,behavior:'instant'});
     window.CourseHeroSand?.prepareDock();
-    const targets=[ink(title)],heroTail=parseFloat(getComputedStyle(title).getPropertyValue('--sand-tail'))||150;
-    if(targets.some(points=>!points.length)){document.body.classList.remove('course-title-docking');return;}
+    let targets;try{targets=[ink(title)];}catch(_){targets=[[]];}
+    const heroTail=parseFloat(getComputedStyle(title).getPropertyValue('--sand-tail'))||150;
+    if(targets.some(points=>!points.length)){window.CourseHeroSand?.finishDock();document.body.classList.remove('course-title-docking');document.body.dataset.titleFlight='complete';return;}
     const overlay=document.createElement('canvas');overlay.className='course-title-flight';overlay.setAttribute('aria-hidden','true');document.body.append(overlay);
     const ratio=Math.min(devicePixelRatio||1,2),width=innerWidth,height=innerHeight;overlay.width=width*ratio;overlay.height=height*ratio;
     const ctx=overlay.getContext('2d');ctx.scale(ratio,ratio);
@@ -53,7 +54,14 @@
     for(let i=0;i<n;i+=stride){if(geometry.signatureWeights[i]>.5)continue;const point=targets[0][Math.floor(random()*targets[0].length)],start=project(geometry.positions[i*3],geometry.positions[i*3+1],fromSize.width,fromSize.height);particles.push({x:start[0],y:start[1],tx:point[0],ty:point[1],curve:(random()-.5)*100,delay:random()*.14,size:.65+random()*.75,falling:random()<.23,seed:random()});}
     let frame=0,start=0,done=false;const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches,duration=reduced?220:2200;
     document.body.dataset.titleFlight='moving';
-    function finish(){if(done)return;done=true;cancelAnimationFrame(frame);overlay.remove();title.style.removeProperty('opacity');document.body.classList.remove('course-title-docking');document.body.dataset.titleFlight='complete';window.CourseHeroSand?.finishDock();window.removeEventListener('resize',finish);window.removeEventListener('pointerdown',finish);window.removeEventListener('wheel',finish);window.removeEventListener('keydown',onKey);}
+    function finish(){
+      if(done)return;done=true;cancelAnimationFrame(frame);
+      // Commit a painted destination before removing the moving particles.
+      // If drawing fails, the readable title remains as a fallback.
+      try{window.CourseHeroSand?.finishDock();}catch(_){title.classList.remove('sand-title-ready');}
+      overlay.remove();title.style.removeProperty('opacity');document.body.classList.remove('course-title-docking');document.body.dataset.titleFlight='complete';
+      window.removeEventListener('resize',finish);window.removeEventListener('pointerdown',finish);window.removeEventListener('wheel',finish);window.removeEventListener('keydown',onKey);
+    }
     function onKey(event){if(event.key==='Escape')finish();}
     cancel=finish;window.addEventListener('resize',finish,{once:true});window.addEventListener('pointerdown',finish,{once:true});window.addEventListener('wheel',finish,{once:true});window.addEventListener('keydown',onKey);
     function paint(now){

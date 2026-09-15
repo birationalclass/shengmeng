@@ -13,11 +13,9 @@
   const fallOpacity=phase=>smooth(0,.025,phase)*(1-smooth(.55,1,phase));
   const allowed=()=>inView&&!document.hidden&&!document.body.classList.contains('opening-active')&&!document.body.classList.contains('portal-lesson')&&(bridging||!document.body.classList.contains('course-title-docking'));
   function stop(){cancelAnimationFrame(frame);frame=0;}
-  function paint(now){
-    frame=0;if(!allowed()||!points.length)return;
+  function draw(now){
     const moving=animated();
-    if(now-last>=32||!moving){
-      last=now;ctx.clearRect(0,0,width,height);
+    last=now;ctx.clearRect(0,0,width,height);
       for(const p of points){
         let x=p.x,y=p.y,alpha=p.alpha,size=p.size;
         if(p.falling&&moving){
@@ -33,25 +31,41 @@
         ctx.globalAlpha=alpha;ctx.fillStyle=p.bright?'#f5e9cf':'#d9bd85';ctx.fillRect(x,y,size,size);
       }
       ctx.globalAlpha=1;
-    }
-    if(moving)frame=requestAnimationFrame(paint);
   }
-  function start(){stop();last=0;title.dataset.sandTitle=animated()?'falling':'static';if(allowed()&&points.length)frame=requestAnimationFrame(paint);}
+  function paint(now){
+    frame=0;if(!allowed()||!points.length)return;
+    if(now-last>=32||!animated())try{draw(now);}catch(_){fallback();return;}
+    if(animated())frame=requestAnimationFrame(paint);
+  }
+  function fallback(){stop();title.classList.remove('sand-title-ready');title.dataset.sandTitle='fallback';}
+  function start(){
+    stop();if(!points.length){fallback();return false;}
+    // The bitmap must exist before CSS hides the accessible text or the flight
+    // overlay disappears. A queued frame may be delayed behind a modal/resize.
+    try{draw(performance.now());}catch(_){fallback();return false;}
+    title.classList.add('sand-title-ready');title.dataset.sandTitle=animated()?'falling':'static';
+    // Recheck the stable title, not a canvas whose observer may still report the
+    // opening dialog's previous layout as offscreen.
+    const box=title.getBoundingClientRect();inView=box.width>0&&box.height>0&&box.bottom+tail>0&&box.top<innerHeight;
+    if(allowed()&&animated())frame=requestAnimationFrame(paint);
+    return true;
+  }
   function refresh(){
     queued=0;stop();const box=title.getBoundingClientRect();if(!box.width||!box.height)return;
-    const ink=window.CourseTitleDock.ink(title);if(!ink.length){title.classList.remove('sand-title-ready');return;}
+    let ink;try{ink=window.CourseTitleDock.ink(title);}catch(_){fallback();return;}
+    if(!ink.length){fallback();return;}
     width=box.width;tail=parseFloat(getComputedStyle(title).getPropertyValue('--sand-tail'))||150;height=box.height+tail;
     const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.ceil(width*ratio);canvas.height=Math.ceil(height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);
     let seed=9281;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     const count=Math.min(innerWidth<600?8200:15000,ink.length*2);points=[];
     for(let i=0;i<count;i++){const p=ink[Math.floor(random()*ink.length)];points.push({x:p[0]-box.left,y:p[1]-box.top,size:.7+random()*.8,alpha:.62+random()*.38,bright:random()>.33,seed:random(),falling:random()<.23});}
-    if(!canvas.isConnected)title.append(canvas);title.classList.add('sand-title-ready');title.dataset.sandTitle='falling';last=0;start();
+    if(!canvas.isConnected)title.append(canvas);return start();
   }
   function schedule(){if(!queued)queued=requestAnimationFrame(refresh);}
   function prepareDock(){bridging=true;cancelAnimationFrame(queued);queued=0;refresh();}
-  function finishDock(){bridging=false;start();}
+  function finishDock(){bridging=false;return start();}
   new ResizeObserver(schedule).observe(title);
-  new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)schedule();else stop();}).observe(canvas);
+  new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;if(inView)schedule();else stop();}).observe(title);
   new MutationObserver(records=>{if(records.some(r=>r.type==='characterData'))schedule();}).observe(title,{subtree:true,characterData:true});
   new MutationObserver(start).observe(document.body,{attributes:true,attributeFilter:['class']});
   window.addEventListener('course-sand-motion',start);
