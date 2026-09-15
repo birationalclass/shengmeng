@@ -51,6 +51,7 @@
     uniform float progress;
     uniform float aspect;
     uniform float dpr;
+    uniform vec2 viewportSize;
     uniform float inscriptionScale;
     uniform float signatureScale;
     uniform float time;
@@ -78,6 +79,7 @@
     uniform mediump float complexity;
     uniform mediump float depth;
     uniform float wander;
+    varying highp vec4 letterFootprint;
     varying mediump vec3 color;
     varying mediump float opacity;
     varying mediump vec4 material;
@@ -254,7 +256,12 @@
       // fine, loose sand texture in close-ups instead of oversized pebbles.
       float letteringSize=mix(1.,inscriptionScale,mix(inscription.x,inscription.y,e));
       letteringSize*=mix(1.,signatureScale,mix(inscription.z,inscription.w,e));
-      gl_PointSize=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65)*letteringSize;
+      float diameter=size*mix(1.,1.10,depth)*dpr*pow(viewZoom,.84)*clamp(1./w,.68,1.65)*letteringSize;
+      float letterWeight=mix(inscription.x,inscription.y,e);
+      // Rasterize a padded integer square, then evaluate the lettering grain at
+      // its exact pixel centre. Do not let driver point-size rounding thicken it.
+      letterFootprint=vec4((gl_Position.xy/gl_Position.w*.5+.5)*viewportSize,diameter,letterWeight);
+      gl_PointSize=letterWeight>0.?ceil(max(1.,diameter))+2.:diameter;
 
       vec3 lamp=normalize(mix(vec3(-.52,.64,.79),vec3(followLightCentre()-p.xy,1.25),spotlight*.65));
       float diffuse=max(0.,dot(n,lamp));
@@ -281,6 +288,7 @@
     uniform mediump float narrativeLight;
     uniform mediump float depth;
     uniform mediump float complexity;
+    varying highp vec4 letterFootprint;
     varying mediump vec3 color;
     varying mediump float opacity;
     varying mediump vec4 material;
@@ -289,6 +297,14 @@
     void main() {
       if(kind<-.5)discard;
       vec2 p=gl_PointCoord*2.-1.;
+      float coverage=1.;
+      if(letterFootprint.w>0.){
+        float diameter=letterFootprint.z;
+        // A subpixel grain covers only diameter squared of one pixel. Keep its
+        // energy instead of promoting a fine signature grain to a solid pixel.
+        p=(gl_FragCoord.xy-letterFootprint.xy)*vec2(2.,-2.)/max(1.,diameter);
+        coverage=min(1.,diameter*diameter);
+      }
       float angle=material.x*6.28318530718;
       float c=cos(angle),s=sin(angle);
       vec2 turned=vec2(c*p.x+s*p.y,-s*p.x+c*p.y);
@@ -329,7 +345,7 @@
         crystal+=vec3(.73,.83,.91)*bevel;
         float alpha=(1.-smoothstep(.91,1.,cutRadius))*opacity;
         if(alpha<.075)discard;
-        gl_FragColor=vec4(crystal*clamp(narrativeLight,.65,1.15),alpha);return;
+        gl_FragColor=vec4(crystal*clamp(narrativeLight,.65,1.15),alpha*coverage);return;
       }
       if(r>1.)discard;
       float flatAlpha=1.-smoothstep(.25,1.,r);
@@ -350,7 +366,7 @@
       float alpha=mix(flatAlpha,solidAlpha,depth)*opacity;
       // Transparent sprite corners must never occlude another side of the ring.
       if(alpha<.075)discard;
-      gl_FragColor=vec4(mix(flatColor,solidColor,depth)*clamp(narrativeLight,.65,1.15),alpha);
+      gl_FragColor=vec4(mix(flatColor,solidColor,depth)*clamp(narrativeLight,.65,1.15),alpha*coverage);
     }`;
 
   const backgroundVertex = `attribute vec2 pos;varying vec2 uv;
