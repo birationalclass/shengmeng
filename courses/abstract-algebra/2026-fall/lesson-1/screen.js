@@ -65,7 +65,7 @@
     if(e.target.closest('#criteria-next,#criteria-back')){pendingTarget='#criteria-proof';queue();}
     if(e.target.closest('#proof-next,#proof-back')){pendingTarget='#proof-board';queue();}
     if(e.target.closest('[data-answer]')){pendingTarget='.quiz-feedback';queue();}
-    if(e.target.closest('#quiz-next,#quiz-retry')){b.index=0;queue();}
+    if(e.target.closest('#quiz-next,#quiz-prev,#quiz-retry')){b.index=0;queue();}
     if(e.target.closest('#exercise-proof-next')){pendingTarget='.exercise-proof';queue();}
   });
   const observer=new MutationObserver(records=>{

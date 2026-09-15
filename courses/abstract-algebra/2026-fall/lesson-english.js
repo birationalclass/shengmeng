@@ -1,4 +1,18 @@
 window.CourseLanguage.add({
+  "设 G 为非空集合，已给定代数运算。以下条件成立，当且仅当 G 是群：": "Let G be a nonempty set with a binary operation. G is a group if and only if all the following hold:",
+  "运算满足结合律。": "The operation is associative.",
+  "存在 e ∈ G，对每个 a ∈ G，都有 ea = a。": "There is an e ∈ G such that ea = a for every a ∈ G.",
+  "对每个 a ∈ G，存在 a′ ∈ G，使 a′a = e。": "For every a ∈ G, there is an a′ ∈ G such that a′a = e.",
+  "其中 e 是同一个左单位元，a′ 是相对于 e 的左逆元。": "Here e is the same left identity throughout; a′ is a left inverse relative to e.",
+  "设 G 为非空集合，已给定满足结合律的代数运算。": "Let G be a nonempty set with an associative binary operation.",
+  "G 是群，当且仅当对任意 a、b ∈ G，以下两个方程在 G 中都有解：": "G is a group if and only if, for every a,b ∈ G, both equations have solutions in G:",
+  "x、y 是待求元素。这里只要求解存在，不预先要求唯一。": "The unknowns are x and y. Only existence is assumed, not uniqueness.",
+  "设 G 为非空有限集合，已给定代数运算。若以下条件成立，则 G 是群：": "Let G be a nonempty finite set with a binary operation. If all the following hold, then G is a group:",
+  "左消去律：对任意 a、b、c ∈ G，ab = ac ⇒ b = c。": "Left cancellation: for all a,b,c ∈ G, ab = ac ⇒ b = c.",
+  "右消去律：对任意 a、b、c ∈ G，ba = ca ⇒ b = c。": "Right cancellation: for all a,b,c ∈ G, ba = ca ⇒ b = c.",
+  "这里的有限性、非空性、结合律及左右消去律都是假设。": "Finiteness, nonemptiness, associativity and both cancellation laws are assumptions."
+});
+window.CourseLanguage.add({
  '定理阐述':'Theorem statement','开始证明 →':'Begin proof →','← 返回定理':'← Theorem statement','先读清条件与结论':'Read the assumptions and conclusion first','先确认群的假设和要证明的结论，再开始证明。':'Identify the group assumption and the conclusion before beginning the proof.','证明':'Proof',
  '设 S 非空，关系是有序对的集合 R ⊆ S × S。上述三条分别为反身性、对称性和传递性，须对所有 a、b、c ∈ S 成立；满足三条的关系称为等价关系。':'Let S be nonempty. A relation is a set R ⊆ S × S of ordered pairs. These three conditions are reflexivity, symmetry and transitivity; each must hold for all a,b,c ∈ S. A relation satisfying all three is an equivalence relation.',
  '一般地，[a] = {x ∈ S : x ∼ a}，商集 S / ∼ 是全部等价类组成的集合。这里取整数 m ≥ 2，以 m 整除 a − b 定义整数上的等价关系；商集记作 ℤₘ = {[0], …, [m − 1]}。':'In general, [a] = {x ∈ S : x ∼ a}, and the quotient S / ∼ is the set of all equivalence classes. Here m ≥ 2 is an integer, and a ∼ b means m divides a − b. The quotient is denoted by ℤₘ = {[0], …, [m − 1]}.',

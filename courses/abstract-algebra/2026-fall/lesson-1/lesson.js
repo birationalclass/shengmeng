@@ -179,15 +179,15 @@
       {name:'有限集合的消去律',ref:'例 11',condition:'非空有限集合 + 代数运算 + 结合律 + 左、右消去律',steps:['设 G = {a₁, …, aₙ}。固定 a，考察 aa₁, …, aaₙ。','由左消去律，这 n 个结果两两不同。','它们都属于只有 n 个元素的 G，所以遍历 G；于是 ax = b 对每个 b 都可解。','右消去律同样保证 ya = b 可解。再用定理 1.2.4，得到群。'],note:'有限条件不可删去：(ℕ₊, +) 满足结合律与两侧消去律，却没有单位元 0，因此不是群。'}
     ];
     const statements=[
-      '设 G 是具有代数运算的非空集合。G 构成群，当且仅当：(1) 运算满足结合律；(2) 存在同一个 e ∈ G，对所有 a ∈ G 有 ea = a；(3) 对每个 a ∈ G，存在 a′ ∈ G 使 a′a = e。这里 e 是左单位元，a′ 是相对于这个 e 的左逆元。',
-      '设 G 是具有代数运算、且运算满足结合律的非空集合。G 构成群，当且仅当对任意 a、b ∈ G，方程 ax = b 和 ya = b 在 G 中都有解。这里 x、y 是待求元素；判别条件只要求有解，不预先要求唯一。',
-      '设 G 为具有代数运算的非空有限集合。若运算满足结合律，且对任意 a、b、c ∈ G 都有 ab = ac ⇒ b = c 和 ba = ca ⇒ b = c，则 G 构成群。有限、非空、结合律及左右消去律都是这里的假设。'
+      '<p>设 G 为非空集合，已给定代数运算。以下条件成立，当且仅当 G 是群：</p><ol><li>运算满足结合律。</li><li>存在 e ∈ G，对每个 a ∈ G，都有 ea = a。</li><li>对每个 a ∈ G，存在 a′ ∈ G，使 a′a = e。</li></ol><p class="theorem-note">其中 e 是同一个左单位元，a′ 是相对于 e 的左逆元。</p>',
+      '<p>设 G 为非空集合，已给定满足结合律的代数运算。</p><p>G 是群，当且仅当对任意 a、b ∈ G，以下两个方程在 G 中都有解：</p><ol><li>ax = b</li><li>ya = b</li></ol><p class="theorem-note">x、y 是待求元素。这里只要求解存在，不预先要求唯一。</p>',
+      '<p>设 G 为非空有限集合，已给定代数运算。若以下条件成立，则 G 是群：</p><ol><li>运算满足结合律。</li><li>左消去律：对任意 a、b、c ∈ G，ab = ac ⇒ b = c。</li><li>右消去律：对任意 a、b、c ∈ G，ba = ca ⇒ b = c。</li></ol><p class="theorem-note">这里的有限性、非空性、结合律及左右消去律都是假设。</p>'
     ];
     criteria[0].steps.unshift('必要性：若 G 已是群，结合律、左单位元和左逆元都由群的定义成立。充分性：下面证明给定的 e、a′ 同时也满足右侧条件。');
     criteria[1].steps.unshift('必要性：若 G 是群，x = a⁻¹b、y = ba⁻¹ 给出所需解。充分性：下面只用结合律和两类方程的可解性来构造单位元与逆元。');
     let chosen=0,step=-1;
     scene.innerHTML=`<div id="criteria-tabs" class="controls proof-options"></div><p id="criteria-condition" class="insight"></p><div id="criteria-proof" class="proof-board stage" aria-live="polite"></div><div class="controls"><button id="criteria-back" type="button">← 上一步</button><button id="criteria-next" class="primary" type="button">下一步 →</button><span id="criteria-count" class="hint"></span></div><p id="criteria-note" class="status-strip"></p>`;
-    function draw(){const c=criteria[chosen];$('criteria-tabs').innerHTML=criteria.map((x,i)=>`<button type="button" data-criterion="${i}" aria-pressed="${chosen===i}">${x.name}</button>`).join('');$('criteria-condition').textContent=step<0?'':c.condition;$('criteria-condition').hidden=step<0;$('criteria-proof').innerHTML=`<p class="label">${c.ref} · <span>${step<0?'定理阐述':'证明'}</span></p><p class="${step<0?'theorem-statement':'criteria-step'}">${step<0?statements[chosen]:c.steps[step]}</p>`;$('criteria-back').disabled=step<0;$('criteria-back').textContent=step===0?'← 返回定理':'← 上一步';$('criteria-next').textContent=step<0?'开始证明 →':'下一步 →';$('criteria-next').disabled=step===c.steps.length-1;$('criteria-count').textContent=step<0?'先读清条件与结论':`${step+1} / ${c.steps.length}`;$('criteria-note').textContent=c.note;$('criteria-note').hidden=step<0;}
+    function draw(){const c=criteria[chosen];$('criteria-tabs').innerHTML=criteria.map((x,i)=>`<button type="button" data-criterion="${i}" aria-pressed="${chosen===i}">${x.name}</button>`).join('');$('criteria-condition').textContent=step<0?'':c.condition;$('criteria-condition').hidden=step<0;$('criteria-proof').innerHTML=`<p class="label">${c.ref} · <span>${step<0?'定理阐述':'证明'}</span></p>${step<0?`<div class="theorem-statement">${statements[chosen]}</div>`:`<p class="criteria-step">${c.steps[step]}</p>`}`;$('criteria-back').disabled=step<0;$('criteria-back').textContent=step===0?'← 返回定理':'← 上一步';$('criteria-next').textContent=step<0?'开始证明 →':'下一步 →';$('criteria-next').disabled=step===c.steps.length-1;$('criteria-count').textContent=step<0?'先读清条件与结论':`${step+1} / ${c.steps.length}`;$('criteria-note').textContent=c.note;$('criteria-note').hidden=step<0;}
     $('criteria-tabs').onclick=e=>{const b=e.target.closest('button');if(b){chosen=+b.dataset.criterion;step=-1;draw();}};$('criteria-back').onclick=()=>{step--;draw();};$('criteria-next').onclick=()=>{step++;draw();};draw();
   }
 

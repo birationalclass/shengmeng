@@ -43,7 +43,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(loadedSection!==section){loadedSection=section;frame.src=`lesson-1/?embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
+      else if(loadedSection!==section){loadedSection=section;frame.src=`lesson-1/?v=20260916-lesson-spacing-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
       else frame.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)document.getElementById(next.courseHash)?.scrollIntoView();else window.scrollTo(0,courseScroll);});labels();
   }
