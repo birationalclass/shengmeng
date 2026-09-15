@@ -171,7 +171,7 @@
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
-    if(event.target.closest?.('[data-skip-opening],[data-opening-language]'))return;
+    if(event.target.closest?.('button,a,input,select,textarea,summary,[contenteditable="true"]'))return;
     if((event.key===' '||event.key==='Enter')&&!event.repeat&&!panel.contains(event.target)){
       event.preventDefault();if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();else if(stage==='galois')finishGalois();else requestCourseEntry();
     }

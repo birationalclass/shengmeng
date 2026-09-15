@@ -56,7 +56,9 @@
   audio.addEventListener('playing', sync);
   audio.addEventListener('pause', sync);
   audio.addEventListener('error', () => { failed = true; sync(); });
-  dialog.addEventListener('close', () => stop());
+  // Fullscreen briefly closes/reopens the dialog to restore its top layer.
+  // The queued close event must not stop music in that still-open animation.
+  dialog.addEventListener('close', () => { if (!dialog.open) stop(); });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { generation++; audio.pause(); sync(); }
     else if (active) play();
