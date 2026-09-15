@@ -6,18 +6,20 @@ body.screen-deck.embedded-lesson { grid-template-rows: minmax(0,1fr); }
 body.screen-deck { --screen-gap: 28px; --screen-text: clamp(17px,1.15vw,24px); height: 100dvh; overflow: clip; display: grid; grid-template-rows: 54px minmax(0,1fr); font-size: var(--screen-text); }
 .screen-deck .sitebar { height: 54px; min-height: 0; padding: 5px clamp(12px,1.5vw,40px); }
 .screen-deck .sitebar .term { display: none; }
-.screen-deck main { width: 100%; max-width: none; min-width: 0; min-height: 0; margin: 0; padding: 0 clamp(12px,1.5vw,40px) 10px; display: grid; grid-template-rows: 50px minmax(0,1fr); gap: 6px; }
-.screen-deck .intro, .screen-deck #chapter-nav, .screen-deck>.skip, .screen-deck main>.lesson-bottom, .screen-deck>footer { display: none; }
+.screen-deck main { width: 100%; max-width: none; min-width: 0; min-height: 0; margin: 0; padding: 0 clamp(12px,1.5vw,40px) 10px; display: grid; grid-template-rows: auto minmax(0,1fr); gap: 6px; }
+.screen-deck .intro, .screen-deck>.skip, .screen-deck main>.lesson-bottom, .screen-deck>footer { display: none; }
 .screen-deck .textbook-nav { padding: 0; gap: 10px; align-items: stretch; }
 .screen-deck .textbook-nav a { padding: 5px 14px; gap: 10px; font-size: 16px; border-radius: 8px; align-items: center; }
 .screen-deck .textbook-nav b { font-size: 22px; }
-.screen-toolbar { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.screen-toolbar label { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.screen-toolbar select { font-size: 16px; min-height: 40px; padding: 5px 12px; min-width: 0; }
-.screen-toolbar label>span { white-space: nowrap; font-size: 15px; color: var(--muted); }
-.screen-modes { display: none; }
-.screen-topic-step { padding: 5px 12px; min-height: 40px; }
-.screen-deck .workspace { height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(280px,.34fr) minmax(0,1fr); gap: clamp(16px,2vw,42px); align-items: stretch; }
+/* All topics remain visible; the current one is highlighted. */
+.screen-toolbar { min-width:0; padding-block:6px; }
+.screen-deck #chapter-nav { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; border:0; }
+.screen-deck #chapter-nav button { flex:0 1 auto; white-space:normal; min-width:0; padding:7px 14px; font-size:16px; line-height:1.4; border:1px solid var(--line); border-radius:7px; color:var(--ink); }
+.screen-deck #chapter-nav button span { display:none; }
+.screen-deck #chapter-nav button[aria-current="step"] { background:var(--pine); border-color:var(--pine); color:var(--paper); }
+.screen-deck #chapter-nav button:after { display:none; }
+.screen-modes { display:none; }
+.screen-deck .workspace { position:relative; height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(280px,.34fr) minmax(0,1fr); gap: clamp(16px,2vw,42px); align-items: stretch; }
 .screen-pane, .screen-deck .experiment { display: grid; grid-template-rows: 42px minmax(0,1fr) 48px; height: 100%; min-height: 0; min-width: 0; overflow: clip; }
 .screen-pane { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
 .screen-pane-title, .screen-deck .experiment-head { margin: 0; padding: 9px 16px; font-size: 16px; line-height: 24px; border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -88,23 +90,22 @@ body.screen-deck { --screen-gap: 28px; --screen-text: clamp(17px,1.15vw,24px); h
 }
 @media(max-width:1000px) {
   .screen-deck .workspace { grid-template-columns: minmax(0,1fr); }
-  .screen-modes { display: flex; gap: 6px; margin-left: auto; }
-  .screen-modes button { padding: 5px 10px; font-size: 16px; }
+  .screen-modes { position:absolute; z-index:2; top:0; left:0; right:0; height:42px; display:flex; justify-content:center; align-items:center; gap:6px; }
+  .screen-pane-title,.screen-deck .experiment-head { visibility:hidden; }
+  .screen-modes button { padding:4px 18px; min-height:34px; font-size:16px; }
   .screen-deck[data-screen-mode="notes"] .experiment,.screen-deck[data-screen-mode="experiment"] .screen-pane { display: none; }
-  .screen-topic-step { display: none; }
-  .screen-toolbar label>span { display: none; }
   .screen-deck .screen-window { margin: 12px 16px; }
   .screen-deck .lesson-copy h2 { font-size: 29px; }
 }
 @media(max-width:650px) {
   body.screen-deck { --screen-text: 17px; grid-template-rows: 48px minmax(0,1fr); }
-  .screen-deck main { padding: 0 10px max(8px,env(safe-area-inset-bottom)); grid-template-rows: 46px minmax(0,1fr); gap: 4px; }
+  .screen-deck main { padding: 0 10px max(8px,env(safe-area-inset-bottom)); grid-template-rows: auto minmax(0,1fr); gap: 4px; }
   .screen-deck .sitebar { height: 48px; padding: 4px 12px; }
   .screen-deck .textbook-nav a { flex: 1; flex-direction: row; gap: 7px; padding: 4px 8px; font-size: 14px; line-height: 1.45; }
   .screen-deck .textbook-nav b { font-size: 20px; }
-  .screen-toolbar { gap: 6px; }
-  .screen-toolbar select { width: 100%; padding: 5px 6px; }
-  .screen-toolbar label { flex: 1; }
+  .screen-toolbar { padding-block:4px; }
+  .screen-deck #chapter-nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
+  .screen-deck #chapter-nav button { padding:5px 4px; font-size:15px; min-height:40px; }
   .screen-deck .relation-layout { display: block; }
   .screen-deck .relation-layout .stage { margin-bottom: 14px; }
   .screen-deck .relation-layout { break-inside: auto; }

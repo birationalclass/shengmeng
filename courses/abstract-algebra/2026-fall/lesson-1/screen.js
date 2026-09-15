@@ -5,8 +5,12 @@
   const mobile=matchMedia('(max-width:1000px)');
   body.classList.add('screen-deck');body.dataset.screenMode='notes';
   const toolbar=document.createElement('div');toolbar.className='screen-toolbar';
-  toolbar.innerHTML='<button class="screen-topic-step" id="screen-topic-prev" type="button">← 上一主题</button><label><span>当前主题</span><select id="screen-topic" aria-label="选择讲解主题"></select></label><button class="screen-topic-step" id="screen-topic-next" type="button">下一主题 →</button><div class="screen-modes" role="group" aria-label="课件内容"><button type="button" data-screen-mode="notes" aria-pressed="true">概念</button><button type="button" data-screen-mode="experiment" aria-pressed="false">互动</button></div>';
-  $('chapter-nav').after(toolbar);
+  const topics=$('chapter-nav');
+  topics.after(toolbar);toolbar.append(topics);
+  const modes=document.createElement('div');modes.className='screen-modes';
+  modes.setAttribute('role','group');modes.setAttribute('aria-label','课件内容');
+  modes.innerHTML='<button type="button" data-screen-mode="notes" aria-pressed="true">概念</button><button type="button" data-screen-mode="experiment" aria-pressed="false">互动</button>';
+  $('workspace').append(modes);
   const copy=document.querySelector('.lesson-copy'),notes=document.createElement('section');
   notes.className='screen-pane';notes.setAttribute('aria-label','概念与讲解');
   copy.before(notes);notes.innerHTML='<h3 class="screen-pane-title">概念与讲解</h3>';
@@ -43,13 +47,10 @@
     });
   }
   function turn(state,delta){state.index=Math.max(0,Math.min(state.total-1,state.index+delta));update(state);}
-  function mode(value){body.dataset.screenMode=value;toolbar.querySelectorAll('[data-screen-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.screenMode===value)));queue();}
+  function mode(value){body.dataset.screenMode=value;modes.querySelectorAll('[data-screen-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.screenMode===value)));queue();}
   function refresh(){
     scheduled=false;
     if(sceneId!==scene.dataset.lessonScene){sceneId=scene.dataset.lessonScene;panes.forEach(p=>p.index=0);pendingTarget=null;}
-    const nav=[...$('chapter-nav').querySelectorAll('button')],chosen=nav.findIndex(button=>button.getAttribute('aria-current')==='step');
-    if($('screen-topic').options.length!==nav.length)$('screen-topic').innerHTML=nav.map((button,i)=>`<option value="${i}">${button.textContent.replace(/^\d+/,'')}</option>`).join('');
-    $('screen-topic').value=chosen;$('screen-topic-prev').disabled=$('previous').disabled;$('screen-topic-next').disabled=$('next').disabled;
     scene.querySelectorAll('details').forEach(details=>{details.open=true;const summary=details.querySelector('summary');if(summary&&!summary.dataset.screenStatic){summary.dataset.screenStatic='true';summary.tabIndex=-1;summary.addEventListener('click',event=>event.preventDefault());}});
     panes.forEach(update);
     if(pendingTarget){
@@ -58,9 +59,7 @@
     }
   }
   function queue(){if(!scheduled){scheduled=true;requestAnimationFrame(refresh);}}
-  toolbar.querySelectorAll('[data-screen-mode]').forEach(button=>button.onclick=()=>mode(button.dataset.screenMode));
-  $('screen-topic').onchange=e=>$('chapter-nav').querySelectorAll('button')[+e.target.value].click();
-  $('screen-topic-prev').onclick=()=>$('previous').click();$('screen-topic-next').onclick=()=>$('next').click();
+  modes.querySelectorAll('[data-screen-mode]').forEach(button=>button.onclick=()=>mode(button.dataset.screenMode));
   scene.addEventListener('click',e=>{
     if(e.target.closest('[data-criterion],[data-proof]')){b.index=0;queue();}
     if(e.target.closest('#criteria-next,#criteria-back')){pendingTarget='#criteria-proof';queue();}

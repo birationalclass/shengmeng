@@ -42,7 +42,7 @@ body.course-portal:not(.portal-lesson) { height:auto; overflow:visible; display:
 .opening-direct-entry:hover { background:#342b1c; }
 @media(max-width:650px) {
   .portal-header { gap:6px; padding:6px 10px; }
-  .portal-brand { display:none; }
+  .portal-brand { display:block; font-size:19px; }
   .portal-section-nav { order:2; flex:1 0 100%; width:100%; max-width:none; }
   .portal-section-nav button { flex:1; width:0; max-width:none; }
   .portal-header button { font-size:14px; padding:6px 8px; min-height:40px; }
@@ -57,3 +57,9 @@ body.course-portal:not(.portal-lesson) { height:auto; overflow:visible; display:
   .page-style-dialog .page-style-memory { margin-top:12px; }
   .page-style-dialog #pageStyleDescription { margin:12px 0; }
 }
+
+/* Compact, labelled icons keep the course home next to its title. */
+.portal-header .portal-icon { display:grid; place-items:center; flex:0 0 40px; width:40px; height:40px; padding:0; }
+.portal-icon svg { display:block; width:21px; height:21px; }
+.portal-brand { text-decoration:none; }
+@media(max-width:650px) { .portal-header .portal-icon { flex-basis:36px; width:36px; } }
