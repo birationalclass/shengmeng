@@ -84,3 +84,12 @@ html[lang="en"] .upcoming-watermark { letter-spacing:.04em; }
   .portal-lesson #portal-directory-open { font-size:0; }
   .portal-lesson #portal-directory-open::before { content:'☷'; font-size:24px; }
 }
+
+/* Fixed-size fullscreen states and a quiet shared toolbar. */
+.portal-fullscreen-restore { display:none; }
+#portal-fullscreen[aria-pressed="true"] .portal-fullscreen-expand { display:none; }
+#portal-fullscreen[aria-pressed="true"] .portal-fullscreen-restore { display:inline; }
+.portal-header { transition:opacity .65s ease; }
+.portal-header.is-idle { opacity:.24; }
+.portal-header:has(:focus-visible) { opacity:1; }
+@media(prefers-reduced-motion:reduce) { .portal-header { transition:none; } }
