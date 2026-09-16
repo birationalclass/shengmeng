@@ -159,6 +159,8 @@ function sectionTwoMarkup(section=2){
  return `<article class="formal-statement notebook-card notebook-section" data-section="${section}" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
 }
 function syncStatementCards(){
+ $('#explanation').querySelectorAll('[data-zoom]').forEach(button=>button.remove());
+ $('#explanation').querySelectorAll('[data-formula]').forEach(el=>el.setAttribute('aria-label',ui('选择此内容','Select this entry')));
  syncInitialEntries();for(const key of revealedReadings.keys())syncReadingEntries(key);
  document.querySelectorAll('[data-statement]').forEach(el=>{
   const key=el.dataset.statement,grouped=el.classList.contains('reading-group'),visible=!state.cover&&visitedStatements.has(key),wasVisible=!el.hidden;
@@ -255,7 +257,7 @@ $('#languageButton').onclick=$('#coverLanguage').onclick=()=>{toggleLanguage();r
 $('#coverLanguage').disabled=false;
 render();
 
-function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}
+function openFormula(e){const el=e.target.closest('[data-formula]');if(!el||el.closest('#explanation')||el.closest('#formulaDialog')||(el.dataset.concept&&!e.target.closest('[data-zoom]')))return;$('#formulaContent').innerHTML=math(el.dataset.formula,true);$('#formulaDialog').showModal();}
 document.addEventListener('click',openFormula);
 document.addEventListener('keydown',e=>{if((e.key===' ')&&e.target.matches('[data-formula]')){e.preventDefault();if(e.target.dataset.concept){revealAnnotation(e.target);pinConcept(e.target.dataset.concept,interactiveConcept(e.target));}else openFormula(e);}});
 $('#closeFormula').onclick=()=>$('#formulaDialog').close();
