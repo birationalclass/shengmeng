@@ -1,4 +1,4 @@
-import {lerayContent} from './leray.js?v=127';
+import {lerayContent} from './leray.js?v=129';
 import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;
