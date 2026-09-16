@@ -1,4 +1,4 @@
-import {lerayExposition,lerayDiagram} from './leray.js?v=131';
+import {lerayExposition,lerayDiagram} from './leray.js?v=132';
 import {proofPanel,proofSections} from './proof-panel.js?v=109';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';

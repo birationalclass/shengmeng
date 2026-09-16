@@ -1,4 +1,4 @@
-import {leraySetup} from './leray.js?v=131';
+import {leraySetup} from './leray.js?v=132';
 import {createDifferentialSweep} from './differential-sweep.js?v=120';
 import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=109';
 import {createPageFormation} from './page-formation.js?v=92';
@@ -10,11 +10,11 @@ import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
 import {createStabilityView} from './stability-view.js?v=117';
 import {installReadingTouch} from './reading-touch.js?v=74';
-import {createAbutmentView} from './abutment-view.js?v=131';
+import {createAbutmentView} from './abutment-view.js?v=132';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=131';
+import {numberedPages} from './reading-pages.js?v=132';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -24,7 +24,7 @@ import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=131';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=132';
 import {translatePage,language,toggleLanguage} from './language.js?v=77';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
 import {createFilteredView} from './filtered-view.js?v=109';
@@ -137,7 +137,7 @@ const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module
  const title=Array.isArray(page.title)?esc(ui(...page.title)):page.title?.name?`${esc(ui(...page.title.name))} ${math(page.title.symbol)}`:page.title?math(page.title):'';
  const content=page.indices.map(i=>{
   const formula=block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`);
-  if(module==='converge'&&step===4&&i<=7)return leraySetup({math,t:ui,page:i-1})+formula;
+  if(module==='converge'&&step===4&&(i<=7||i===13))return leraySetup({math,t:ui,page:i-1})+formula;
   if(module==='learn'&&step===4&&i===3)return `<div class="reading-hypothesis"><span>${ui('其中','where')}</span>${formula}</div>`;
   if(module==='converge'&&step===3&&i===4)return formula+consequence(raw`E_{r_0}^{p,q}\cong E_\infty^{p,q}`,'page');
   return formula;

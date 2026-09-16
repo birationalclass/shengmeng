@@ -1,4 +1,4 @@
-import {lerayTitles} from './leray.js?v=131';
+import {lerayTitles} from './leray.js?v=132';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
