@@ -1,4 +1,5 @@
-import {singleLineContent} from './single-line-convergence.js?v=138';
+import {kmVanishingProof} from './km-vanishing.js?v=139';
+import {singleLineContent} from './single-line-convergence.js?v=139';
 // Full hypotheses and conclusions live with the shared proof presentation.
 // The compact formula shown in the notebook is not a theorem statement.
 export function proofStatement({key,formulas,math,english}){
@@ -35,10 +36,7 @@ export function proofStatement({key,formulas,math,english}){
    conclusionBody=`<p>${t(`若对所有 ${M(R`p>0,q\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零列可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`p>0,q\ge0`)} (only column zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`H^n\xrightarrow{\sim}E_{r_0}^{0,n}`)}<p>${t(`若对所有 ${M(R`q>0,p\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零行可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`q>0,p\ge0`)} (only row zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}H^n`)}`;
   }
   if(page===14){
-   assumptions=t(`设 ${M('f:X\\to Y')} 是光滑复射影簇之间的双有理态射，${M('\\mathcal{L}')} 是 ${M('Y')} 上 nef 且 big 的线丛，${M('H')} 是很充足除子。设 ${M(R`f^*\mathcal{L}\equiv A+E`)}，其中 ${M('A')} 是 ample 有理除子，${M('E')} 是有效 SNC 有理除子且系数均小于 ${M('1')}。记 ${M(R`\mathcal{L}(mH)=\mathcal{L}\otimes\mathcal O_Y(mH)`)}。另假设已知消失定理给出以下消失：`,`Let ${M('f:X\\to Y')} be a birational morphism of smooth complex projective varieties, ${M('\\mathcal{L}')} a nef and big line bundle on ${M('Y')}, and ${M('H')} a very ample divisor. Assume ${M(R`f^*\mathcal{L}\equiv A+E`)}, where ${M('A')} is an ample rational divisor and ${M('E')} an effective SNC rational divisor with coefficients less than ${M('1')}. Write ${M(R`\mathcal{L}(mH)=\mathcal{L}\otimes\mathcal O_Y(mH)`)}. Assume also the following vanishing, supplied by the preceding vanishing theorem:`);
-   hypothesisFormulas=[R`H^q(X,\omega_X\otimes f^*\mathcal{L}(mH))=0\quad(q>0,\ m\gg0)`];
-   conclusionLead=t('则所有高阶直像消失：','Then all higher direct images vanish:');
-   conclusions=[R`R^qf_*\omega_X=0\quad(q>0)`];
+   ({assumptions,hypothesisFormulas,conclusionLead,conclusions}=kmVanishingProof({math,t}));
   }
   if(page===15){conclusionLead=t(`则对每个 ${M('n\\ge0')}，自然映射为同构：`,`Then, for every ${M('n\\ge0')}, the natural map is an isomorphism:`);assumptions=t(`设 ${M('X')} 是正规复代数簇，${M(R`\pi:\widetilde X\to X`)} 是解消，满足 ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} 及 ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)}（${M('q>0')}）。`,`Let ${M('X')} be a normal complex variety and ${M(R`\pi:\widetilde X\to X`)} a resolution satisfying ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} and ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)} for ${M('q>0')}.`);conclusions=[R`H^n(X,\mathcal O_X)\xrightarrow{\sim}H^n(\widetilde X,\mathcal O_{\widetilde X})`];}
  }else{

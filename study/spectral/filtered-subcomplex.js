@@ -1,4 +1,4 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=138';
+import {proofPanel,proofSections} from './proof-panel.js?v=139';
 const R=String.raw;
 export function filteredSubcomplexExposition({concept,math,language}){
  const t=(z,e)=>language()==='en'?e:z,M=f=>math(f),sub=concept==='subcomplex';

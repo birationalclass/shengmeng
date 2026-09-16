@@ -1,4 +1,4 @@
-import {proofStatement} from './proof-statements.js?v=138';
+import {proofStatement} from './proof-statements.js?v=139';
 // Concise exposition on the page; complete derivations in one accessible dialog.
 // Opening a proof never navigates the notebook or changes the diagram state.
 const proofs=new Map();let dialog=null;
