@@ -7,6 +7,13 @@
         '在非空集合 S 中，对任意两个元素 a、b，都能确定条件 R 是否成立，就得到 S 上的一个关系。也可用有序对的集合 R ⊆ S × S 表示。',
         'A relation on a nonempty set S specifies, for every pair a, b, whether a R b holds. Equivalently, it is a subset R of S × S.'
       ]),
+      item('relation',['定义 1.1.1','Definition 1.1.1'],['关系的函数表示','Relations as functions'],'R : S × S → {0, 1}<br>或 R : S × S → {F, T}',[
+        '把关系看成一个判断函数：R(a,b) = 1（或 T）表示 a 与 b 有关系，R(a,b) = 0（或 F）表示没有关系。其中 F = False，T = True。这与用有序对的集合定义关系完全等价。',
+        'A relation can be viewed as a truth-valued function: R(a,b) = 1 (or T) means that a is related to b; R(a,b) = 0 (or F) means it is not. Here F = False and T = True. This is equivalent to describing a relation as a set of ordered pairs.'
+      ],{extension:true,formulaEn:'R : S × S → {0, 1}<br>or R : S × S → {F, T}',detail:[
+        '函数形式便于扩展：把值域换成 [0,1]，得到 R : S × S → [0,1]，就能表达关系的程度，而不只回答“有”或“无”。在明确的随机模型中，也可以令 R(a,b) 表示事件“a 与 b 有关系”的概率，从而与概率论联系起来。一般的关系程度或隶属度不自动等于概率，概率解释需要相应的随机模型。',
+        'The function viewpoint is easy to extend: R : S × S → [0,1] can express a degree of relatedness instead of only yes or no. In a specified random model, R(a,b) may instead be the probability of the event that a is related to b, connecting the idea to probability theory. A general degree or membership value is not automatically a probability; that interpretation requires a random model.'
+      ]}),
       item('relation',['定义 1.1.2','Definition 1.1.2'],['等价关系','Equivalence relations'],'a ∼ a<br>a ∼ b ⇒ b ∼ a<br>a ∼ b, b ∼ c ⇒ a ∼ c',[
         'S 上的关系同时具有反身性、对称性和传递性，称为等价关系。三个条件都须对集合中的所有相应元素成立。',
         'An equivalence relation is reflexive, symmetric and transitive. Each condition must hold for every relevant choice of elements in S.'
@@ -23,7 +30,7 @@
         '每个等价关系的全部等价类构成一个分类。反过来，每个分类都确定一个等价关系：两元素等价当且仅当它们属于同一类。这两个构造互为逆过程。',
         'The distinct equivalence classes form a partition. Conversely, a partition defines an equivalence relation by membership in the same block. The two constructions are inverse to each other.'
       ],{exposition:true}),
-      item('check',['习题 1-1','Exercises 1-1'],['教材习题演化','Exercise variations'],'',[
+      item('check',['§1.1','§1.1'],['自测','Self-check'],'',[
         '先独立判断，再选择答案。每题标明教材来源与难度；选择后查看理由并逐步展开证明。',
         'Make your own judgment before choosing an answer. Each question identifies its textbook source and difficulty; then review the explanation and proof steps.'
       ])
@@ -81,7 +88,7 @@
         '非空有限集合 G 配备满足结合律的代数运算。如果左右消去律都成立，则 G 是群。有限性不可删去。',
         'A nonempty finite set with an associative operation and both cancellation laws is a group. Finiteness is essential.'
       ],{criterion:2,formulaEn:'|G| < ∞  +  left and right cancellation'}),
-      item('check',['习题 1-2','Exercises 1-2'],['教材习题演化','Exercise variations'],'',[
+      item('check',['§1.2','§1.2'],['自测','Self-check'],'',[
         '用例子检验群的定义、基本性质与判别。先独立选择答案，再读理由与逐步证明。',
         'Test the definition, properties and criteria through examples. Choose an answer independently, then review the reasoning and proof steps.'
       ])

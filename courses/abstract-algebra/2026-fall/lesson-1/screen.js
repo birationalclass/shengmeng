@@ -21,9 +21,58 @@
   document.querySelector('main').append(footer);
   let selected=Math.max(0,entries.findIndex(x=>x.topic===scene.dataset.lessonScene)),selecting=false,scheduled=false;
   const formula=e=>en()&&e.formulaEn?e.formulaEn:e.formula;
+  const bookIcon='<svg class="notebook-book-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5C9 3.6 5.5 3.5 2.5 4.5v14c3-1 6.5-.9 9.5 1 3-1.9 6.5-2 9.5-1v-14c-3-1-6.5-.9-9.5 1Z"/><path d="M12 5.5v14"/></svg>';
+  const extensionIcon='<svg class="notebook-book-icon notebook-extension-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5V4a3 3 0 0 1 6 0v1h4a1 1 0 0 1 1 1v4h-1a3 3 0 0 0 0 6h1v4a1 1 0 0 1-1 1h-4v-1a3 3 0 0 0-6 0v1H5a1 1 0 0 1-1-1v-4H3a3 3 0 0 1 0-6h1V6a1 1 0 0 1 1-1Z"/></svg>';
+  const quizIcon='<svg class="notebook-book-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 9 2 2 5-5M8 16h8"/></svg>';
+  const rail=document.createElement('nav');rail.className='notebook-reading-rail';
+  const railTrack=document.createElement('div');railTrack.className='notebook-rail-track';rail.append(railTrack);workspace.append(rail);
+  let railHover=-1,railFrame=0;
+  function syncRail(){
+    rail.setAttribute('aria-label',en()?'Reading outline':'阅读导航');
+    railTrack.innerHTML=entries.map((e,i)=>`<button type="button" class="notebook-rail-mark" data-rail-entry="${i}" aria-label="${en()?'Reading outline':'阅读导航'} · ${text(e.ref)} ${text(e.title)}"><span class="notebook-rail-tick" aria-hidden="true"></span><span class="notebook-rail-caption" aria-hidden="true">${text(e.ref)} · ${text(e.title)}</span></button>`).join('');
+    queueRail();
+  }
+  function paintRail(){
+    railFrame=0;
+    const mobile=matchMedia('(max-width:760px)').matches,pane=mobile?workspace:notebook,box=pane.getBoundingClientRect();
+    const top=Math.max(0,box.top)+12,bottom=Math.min(innerHeight,box.bottom)-12,height=Math.min(400,Math.max(0,bottom-top));
+    rail.style.left=Math.max(4,box.left-40)+'px';rail.style.top=(top+Math.max(0,(bottom-top-height)/2))+'px';rail.style.height=height+'px';
+    rail.hidden=height<48;
+    let current=selected;
+    if(!mobile){
+      const line=box.top+box.height*.22;let distance=Infinity;
+      notebook.querySelectorAll('.notebook-entry').forEach((entry,i)=>{const r=entry.getBoundingClientRect(),d=line<r.top?r.top-line:line>r.bottom?line-r.bottom:0;if(d<distance){current=i;distance=d;}});
+    }
+    railTrack.querySelectorAll('button').forEach((button,i)=>{
+      const d=Math.abs(i-(railHover>=0?railHover:current));button.style.setProperty('--rail-tick-width',(d===0?27:d===1?20:d===2?14:8)+'px');
+      if(i===current)button.setAttribute('aria-current','location');else button.removeAttribute('aria-current');
+      button.classList.toggle('is-selected',i===selected);
+    });
+  }
+  function queueRail(){if(!railFrame)railFrame=requestAnimationFrame(paintRail);}
+  railTrack.addEventListener('click',event=>{const button=event.target.closest('[data-rail-entry]');if(button)select(+button.dataset.railEntry);});
+  railTrack.addEventListener('pointermove',event=>{const button=event.target.closest('[data-rail-entry]'),i=button?+button.dataset.railEntry:-1;if(i!==railHover){railHover=i;queueRail();}});
+  rail.addEventListener('pointerleave',()=>{railHover=-1;queueRail();});
+  rail.addEventListener('wheel',event=>{
+    if(event.ctrlKey||!event.deltaY)return;event.preventDefault();
+    const pane=matchMedia('(max-width:760px)').matches?workspace:notebook,unit=event.deltaMode===1?16:event.deltaMode===2?pane.clientHeight:1;
+    pane.scrollTop+=event.deltaY*unit;
+  },{passive:false});
+  notebook.addEventListener('scroll',queueRail,{passive:true});workspace.addEventListener('scroll',queueRail,{passive:true});
+  window.addEventListener('resize',queueRail);document.addEventListener('fullscreenchange',queueRail);
   function cards(){
     const current=entries[selected];
-    notebook.innerHTML=`<div class="notebook-heading"><span>§ ${book.id}</span><h2>${en()?book.titleEn:book.title}</h2></div><div class="notebook-entries">${entries.map((e,i)=>`<article class="notebook-entry ${i===selected?'is-current':''}" data-entry="${i}"><button class="notebook-entry-heading" type="button" data-notebook-entry="${i}" aria-expanded="${i===selected}" aria-current="${i===selected?'step':'false'}" aria-controls="notebook-entry-${i}"><span><small>${text(e.ref)}</small><strong>${text(e.title)}</strong></span><span class="notebook-fold" aria-hidden="true">${i===selected?'−':'+'}</span></button>${i!==selected&&e.formula?`<div class="notebook-preview" aria-hidden="true">${formula(e).split('<br>')[0]}</div>`:''}<div class="notebook-entry-body" id="notebook-entry-${i}" ${i===selected?'':'hidden'}>${e.formula?`<div class="notebook-formula">${formula(e)}</div>`:''}<p>${text(e.text)}</p></div></article>`).join('')}</div>`;
+    notebook.innerHTML=`<div class="notebook-heading"></div><div class="notebook-entries">${entries.map((e,i)=>`
+      <article class="notebook-entry ${i===selected?'is-current':''}" data-entry="${i}" data-extension="${!!e.extension}">
+        <button class="notebook-entry-heading" type="button" data-notebook-entry="${i}" aria-expanded="${i===selected}" aria-current="${i===selected?'step':'false'}" aria-controls="notebook-entry-${i}">
+          <span class="notebook-entry-label"><span class="notebook-reference">${e.topic==='check'?quizIcon:e.extension?extensionIcon:bookIcon}<span>${text(e.ref)}</span></span><strong>${text(e.title)}</strong></span><span class="notebook-fold" aria-hidden="true">${i===selected?'−':'+'}</span>
+        </button>
+        ${i!==selected&&e.formula?`<div class="notebook-preview" aria-hidden="true">${formula(e).split('<br>')[0]}</div>`:''}
+        <div class="notebook-entry-body" id="notebook-entry-${i}" ${i===selected?'':'hidden'}>
+          ${e.extension?`<div class="notebook-extension-label">${en()?'Extension · beyond the textbook':'扩展 · 非教材条目'}</div>`:''}
+          ${e.formula?`<div class="notebook-formula">${formula(e)}</div>`:''}<p>${text(e.text)}</p>${e.detail?`<p>${text(e.detail)}</p>`:''}
+        </div>
+      </article>`).join('')}</div>`;
     notebook.setAttribute('aria-label',en()?'Textbook notebook':'教材讲义');
     notebook.dataset.topic=current.topic;
     const picker=document.createElement('select');picker.className='notebook-mobile-index';picker.setAttribute('aria-label',en()?'Lesson entry':'本节条目');
@@ -34,6 +83,7 @@
     if(current.topic!=='check')document.querySelector('.quiz-status')?.remove();
     const top=notebook.querySelector('.is-current');
     if(top){const r=top.getBoundingClientRect(),p=notebook.getBoundingClientRect();if(r.bottom>p.bottom||r.top<p.top)notebook.scrollTop+=r.top-p.top-16;}
+    syncRail();
   }
   function splitScene(){
     if(!scene.firstElementChild||scene.firstElementChild.classList.contains('notebook-visual'))return;
@@ -70,9 +120,17 @@
   }
   function refresh(){
     scheduled=false;splitScene();
+    queueRail();
     footer.setAttribute('aria-label',en()?'Lesson progress':'讲义进度');
     scene.querySelector('.notebook-exposition')?.setAttribute('aria-label',en()?'Mathematical explanation':'数学阐述');
     const e=entries[selected];
+    scene.classList.toggle('relation-as-function',!!e.extension);
+    let functionNote=scene.querySelector('.notebook-function-note');
+    if(e.extension){
+      if(!functionNote){functionNote=document.createElement('div');functionNote.className='notebook-function-note';scene.querySelector('.relation-layout')?.before(functionNote);}
+      const hint=en()?'Click 0 or 1 to change the value of R for the row and column pair. F = False, T = True.':'点击矩阵中的 0 或 1，改变 R 对这一对元素的取值。F = False，T = True。';
+      if(functionNote.textContent!==hint)functionNote.textContent=hint;
+    }else functionNote?.remove();
     // The statement is kept on the left throughout the proof. The right panel
     // starts with its central equation and then becomes the step-by-step proof.
     let focus=scene.querySelector('.notebook-focus-formula');
@@ -134,6 +192,7 @@
     const i=+button.dataset.notebookEntry;
     if(i!==selected){select(i);return;}
     const content=$('notebook-entry-'+i),open=content.hidden;content.hidden=!open;button.setAttribute('aria-expanded',String(open));button.querySelector('.notebook-fold').textContent=open?'−':'+';
+    queueRail();
   });
   notebook.addEventListener('change',event=>{if(event.target.matches('.notebook-mobile-index'))select(+event.target.value);});
   $('notebook-next').onclick=advance;$('notebook-back').onclick=back;

@@ -5,7 +5,7 @@
   const animated=()=>!reduced.matches&&document.documentElement.dataset.sandMotion!=='off';
   const canvas=document.createElement('canvas');canvas.className='course-hero-sand';canvas.setAttribute('aria-hidden','true');
   const ctx=canvas.getContext('2d');if(!ctx)return;
-  let points=[],frame=0,last=0,queued=0,inView=true,width=0,height=0,tail=0,bridging=false;
+  let points=[],frame=0,last=0,queued=0,inView=true,width=0,height=0,tail=0,bridging=false,geometryKey='',fontReady=false;
   const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
   // Same 3.6-second gravity/fade cycle as the opening material shader.
   const fallPhase=(time,seed)=>(time/3600+seed)%1;
@@ -17,6 +17,7 @@
     const moving=animated();
     last=now;ctx.clearRect(0,0,width,height);
       for(const p of points){
+        if(p.falling&&!moving)continue;
         let x=p.x,y=p.y,alpha=p.alpha,size=p.size;
         if(p.falling&&moving){
           const phase=fallPhase(now,p.seed);
@@ -51,7 +52,10 @@
     return true;
   }
   function refresh(){
-    queued=0;stop();const box=title.getBoundingClientRect();if(!box.width||!box.height)return;
+    queued=0;const box=title.getBoundingClientRect();if(!box.width||!box.height||!fontReady)return;
+    const style=getComputedStyle(title),key=[box.width,box.height,title.lang,title.textContent,style.fontFamily,style.fontSize,style.letterSpacing,devicePixelRatio].join('|');
+    if(key===geometryKey&&points.length)return start();
+    stop();
     let ink;try{ink=window.CourseTitleDock.ink(title);}catch(_){fallback();return;}
     if(!ink.length){fallback();return;}
     width=box.width;tail=parseFloat(getComputedStyle(title).getPropertyValue('--sand-tail'))||150;height=box.height+tail;
@@ -59,7 +63,7 @@
     let seed=9281;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     const count=Math.min(innerWidth<600?8200:15000,ink.length*2);points=[];
     for(let i=0;i<count;i++){const p=ink[Math.floor(random()*ink.length)];points.push({x:p[0]-box.left,y:p[1]-box.top,size:.7+random()*.8,alpha:.62+random()*.38,bright:random()>.33,seed:random(),falling:random()<.23});}
-    if(!canvas.isConnected)title.append(canvas);return start();
+    geometryKey=key;if(!canvas.isConnected)title.append(canvas);return start();
   }
   function schedule(){if(!queued)queued=requestAnimationFrame(refresh);}
   function prepareDock(){bridging=true;cancelAnimationFrame(queued);queued=0;refresh();}
@@ -70,6 +74,8 @@
   new MutationObserver(start).observe(document.body,{attributes:true,attributeFilter:['class']});
   window.addEventListener('course-sand-motion',start);
   window.addEventListener('course-language',schedule);document.addEventListener('visibilitychange',start);reduced.addEventListener('change',start);
-  document.fonts.addEventListener('loadingdone',schedule);document.fonts.ready.then(schedule);
+  // Explicitly load the two title faces before sampling. Keep the painted glyph
+  // shape when settings, focus or observers only change presentation state.
+  Promise.all([document.fonts.load('400 88px CourseCalligraphy','代数学'),document.fonts.load('400 88px OpeningSerif','Algebra Ⅰ')]).then(()=>{fontReady=true;schedule();}).catch(()=>{fontReady=true;schedule();});
   window.CourseHeroSand={refresh:schedule,start,stop,prepareDock,finishDock,fallPhase,fallDistance,fallOpacity};schedule();
 })();

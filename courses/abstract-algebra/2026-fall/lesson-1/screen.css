@@ -1,24 +1,31 @@
 @charset "UTF-8";
 /* Textbook notebook, live demonstration, and one shared reading sequence. */
 html:has(.notebook-deck) { height:100%; overflow:clip; }
-body.notebook-deck { --lesson-text:clamp(18px,1.12vw,24px); height:100dvh; overflow:clip; display:grid; grid-template-rows:54px minmax(0,1fr); font-size:var(--lesson-text); }
+body.notebook-deck { --lesson-text:clamp(18px,1.12vw,32px); height:100dvh; overflow:clip; display:grid; grid-template-rows:54px minmax(0,1fr); font-size:var(--lesson-text); }
 body.notebook-deck.embedded-lesson { grid-template-rows:minmax(0,1fr); }
 .notebook-deck.embedded-lesson>.sitebar { display:none; }
-.notebook-deck main { width:100%; max-width:1900px; min-width:0; min-height:0; margin:0 auto; padding:18px clamp(18px,3vw,64px) 0; display:grid; grid-template-rows:minmax(0,1fr) auto; gap:0; }
+.notebook-deck main { width:100%; max-width:none; min-width:0; min-height:0; margin:0; padding:18px clamp(18px,3vw,64px) 0 clamp(46px,3.8vw,72px); display:grid; grid-template-rows:minmax(0,1fr) auto; gap:0; }
 .notebook-deck .intro,.notebook-deck>.skip,.notebook-deck main>.lesson-bottom,.notebook-deck>footer,.notebook-deck .live-dot,.notebook-deck #chapter-nav,.notebook-deck .lesson-copy { display:none!important; }
 .notebook-deck .workspace { min-height:0; height:100%; display:grid; grid-template-columns:minmax(300px,.82fr) minmax(0,1.7fr); gap:clamp(28px,3.5vw,72px); align-items:stretch; padding:0; }
-.notebook-deck .lesson-notebook { min-height:0; overflow:auto; overscroll-behavior:contain; padding:0 16px 32px 0; scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
-.notebook-heading { padding:8px 18px 24px; border-bottom:1px solid var(--line); }
-.notebook-heading>span { color:var(--pine); font-size:16px; letter-spacing:.06em; }
-.notebook-heading h2 { font-size:clamp(22px,1.55vw,30px); line-height:1.45; font-weight:400; margin:8px 0 0; }
+.notebook-deck .lesson-notebook { min-height:0; overflow:auto; overscroll-behavior:contain; padding:0 8px 32px 0; scrollbar-width:none; }
+.notebook-deck .lesson-notebook::-webkit-scrollbar { display:none; width:0; height:0; }
+.notebook-heading { display:none; }
 .notebook-mobile-index { display:none; }
 .notebook-entry { position:relative; padding:8px 0; border-bottom:1px solid var(--line); border-left:2px solid transparent; transition:background .2s,border-color .2s; }
 .notebook-entry.is-current { border-left-color:var(--pine); background:linear-gradient(90deg,#c3a36b0b,transparent); }
-.notebook-deck .notebook-entry-heading { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; padding:13px 16px; min-height:60px; background:transparent; border:0; border-radius:0; color:var(--muted); }
-.notebook-entry-heading small { display:block; font-size:14px; line-height:1.5; font-weight:400; margin-bottom:5px; }
-.notebook-entry-heading strong { display:block; font:400 clamp(19px,1.25vw,25px)/1.4 var(--serif,Georgia,serif); }
+.notebook-deck .notebook-entry-heading { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; text-align:left; padding:13px 12px; min-height:60px; background:transparent; border:0; border-radius:0; color:var(--muted); }
+.notebook-entry-label { display:flex; flex-wrap:wrap; align-items:baseline; gap:3px 10px; min-width:0; font:400 clamp(21px,1.35vw,34px)/1.5 var(--serif,Georgia,serif); }
+.notebook-reference { display:inline-flex; align-items:center; gap:8px; white-space:nowrap; }
+.notebook-entry-heading strong { display:inline; font:inherit; }
+.notebook-book-icon { flex:0 0 21px; width:21px; height:21px; align-self:center; }
+.notebook-extension-label { font:14px/1.6 var(--sans); color:var(--pine); margin-bottom:12px; }
+.notebook-function-note { font-size:var(--lesson-text); line-height:1.8; color:var(--muted); padding:0 0 16px; }
+.relation-as-function .relation-layout+.hint { display:none; }
+.notebook-deck .relation-as-function .matrix button { font-size:0; }
+.relation-as-function .matrix button::after { content:'0'; font:20px/1 var(--sans); }
+.relation-as-function .matrix button[aria-pressed="true"]::after { content:'1'; }
 .notebook-entry.is-current .notebook-entry-heading { color:var(--ink); }
-.notebook-entry.is-current .notebook-entry-heading small { color:var(--pine); }
+.notebook-entry.is-current .notebook-reference { color:var(--pine); }
 .notebook-fold { font-size:22px; color:var(--muted); font-weight:400; }
 .notebook-entry-body { padding:0 18px 14px; }
 .notebook-entry-body p { font-size:var(--lesson-text); line-height:1.8; margin:18px 0 6px; color:var(--ink); }
@@ -51,7 +58,7 @@ html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .experime
 .notebook-deck .formula { font-size:clamp(24px,1.6vw,34px); line-height:1.65; }
 .notebook-deck .stage { margin:12px 0 22px; border:0; border-radius:0; }
 html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .stage { background:transparent; }
-.notebook-deck .stage svg { display:block; width:100%; height:auto; max-height:min(42dvh,430px); }
+.notebook-deck .stage svg { display:block; width:100%; height:auto; max-height:min(48dvh,680px); }
 .notebook-deck .relation-layout { display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:24px; align-items:center; margin:18px 0; }
 .notebook-deck .relation-layout .stage { width:100%; max-width:none; margin:0; }
 .notebook-deck #relation-matrix { width:210px; max-width:100%; }
@@ -101,6 +108,24 @@ html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .stage { 
 .notebook-location { flex:1; min-width:0; text-align:center; font-size:15px; color:var(--muted); }
 .notebook-location small { display:block; font-size:12px; margin-top:3px; opacity:.7; }
 .notebook-deck :focus-visible { outline:2px solid var(--pine); outline-offset:3px; }
+/* The reference module's quiet tick rail, in the existing sandstone palette. */
+.notebook-reading-rail { position:fixed; z-index:20; width:34px; display:flex; align-items:center; padding:0; margin:0; border:0; background:none; opacity:.3; transition:opacity .24s ease; }
+.notebook-reading-rail[hidden] { display:none; }
+.notebook-reading-rail:hover,.notebook-reading-rail:has(:focus-visible) { opacity:1; }
+.notebook-rail-track { display:flex; flex-direction:column; justify-content:center; width:100%; height:100%; }
+.notebook-deck .notebook-rail-mark { position:relative; display:flex; align-items:center; flex:1 1 0; max-height:26px; min-height:0; width:100%; padding:0 3px; border:0; border-radius:0; background:none!important; box-shadow:none; color:var(--pine); }
+.notebook-rail-tick { display:block; width:var(--rail-tick-width,8px); height:2px; border-radius:1px; background:currentColor; opacity:.45; pointer-events:none; transition:width .22s ease,opacity .22s ease; }
+.notebook-rail-mark[aria-current] .notebook-rail-tick,.notebook-rail-mark:hover .notebook-rail-tick { opacity:1; background:var(--ink); }
+.notebook-rail-mark.is-selected .notebook-rail-tick { opacity:1; }
+.notebook-deck .notebook-rail-mark:focus-visible { outline:none; }
+.notebook-rail-mark:focus-visible .notebook-rail-tick { height:3px; opacity:1; }
+.notebook-rail-caption { position:absolute; left:calc(100% + 8px); top:50%; transform:translateY(-50%); width:max-content; max-width:min(300px,calc(100vw - 68px)); padding:8px 12px; border:1px solid var(--line); border-radius:6px; background:#262117f5; color:var(--ink); font:15px/1.6 var(--sans); opacity:0; visibility:hidden; pointer-events:none; }
+.notebook-rail-mark:hover .notebook-rail-caption,.notebook-rail-mark:focus-visible .notebook-rail-caption { opacity:1; visibility:visible; }
+/* The verdict sits behind the text, without adding any layout height. */
+.notebook-deck :is(.property,.axiom-check) { position:relative; isolation:isolate; overflow:hidden; }
+.notebook-deck .property em,.notebook-deck .axiom-check .property-mark { position:absolute; z-index:-1; inset:0; display:grid; place-items:center; width:100%; height:100%; margin:0; color:var(--pine); opacity:.12; font:400 86px/1 var(--sans); text-align:center; pointer-events:none; user-select:none; }
+.notebook-deck .property.fail em,.notebook-deck .axiom-check[data-verdict="fail"] .property-mark { color:#df9179; }
+.notebook-deck .axiom-check[data-verdict="pending"] .property-mark { color:var(--muted); }
 @media(min-width:1700px) {
   .notebook-deck main { padding-top:30px; }
   .notebook-deck .relation-layout { grid-template-columns:minmax(0,1fr) 260px; }
@@ -116,12 +141,14 @@ html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .stage { 
 }
 @media(max-width:760px) {
   body.notebook-deck { --lesson-text:18px; }
-  .notebook-deck main { padding:8px 16px 0; }
-  .notebook-deck .workspace { display:block; overflow:auto; overscroll-behavior:contain; }
+  .notebook-deck main { padding:8px 16px 0 46px; }
+  .notebook-deck .workspace { display:block; overflow:auto; overscroll-behavior:contain; scrollbar-width:none; }
+  .notebook-deck .workspace::-webkit-scrollbar { display:none; width:0; height:0; }
   .notebook-deck .lesson-notebook { padding:0; overflow:visible; }
-  .notebook-heading { padding:10px 4px 14px; }
-  .notebook-heading h2 { font-size:23px; }
-  .notebook-deck .notebook-mobile-index { display:block; width:100%; min-width:0; max-width:100%; margin-top:14px; font-size:15px; text-overflow:ellipsis; }
+  .notebook-heading { display:block; padding:0 0 12px; }
+  .notebook-deck .notebook-mobile-index { display:block; width:100%; min-width:0; max-width:100%; margin:0; font-size:15px; text-overflow:ellipsis; }
+  .notebook-entry-label { font-size:20px; gap:3px 8px; }
+  .notebook-deck .notebook-entry-heading { padding-inline:10px; gap:6px; }
   .notebook-entry:not(.is-current) { display:none; }
   .lesson-notebook[data-topic="check"] .notebook-entries { display:none; }
   .notebook-entry-body { padding:0 14px 12px; }
@@ -136,13 +163,12 @@ html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .stage { 
   .notebook-navigation>button { min-width:0; max-width:40%; padding:8px 10px; font-size:14px; }
   .notebook-location { font-size:12px; }
   .notebook-location small { display:none; }
-  .notebook-entry-heading small { font-size:14px; }
 }
-@media(prefers-reduced-motion:reduce) { .notebook-entry { transition:none; } }
+@media(prefers-reduced-motion:reduce) { .notebook-entry,.notebook-reading-rail,.notebook-rail-tick { transition:none; } }
 @media print {
   html:has(.notebook-deck),body.notebook-deck { height:auto; overflow:visible; display:block; }
   .notebook-deck main,.notebook-deck .workspace,.notebook-deck .lesson-notebook,.notebook-deck .experiment { display:block; height:auto; overflow:visible; }
   .notebook-entry { display:block!important; }
   .notebook-entry-body[hidden] { display:block!important; }
-  .notebook-navigation { display:none; }
+  .notebook-navigation,.notebook-reading-rail { display:none; }
 }

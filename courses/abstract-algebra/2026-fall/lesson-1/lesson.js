@@ -127,7 +127,7 @@
       $('relation-graph').innerHTML=svg(content,'0 0 420 245',result.valid?'有向关系图：同色节点属于同一等价类':'有向关系图：当前关系不满足全部等价关系性质');
       $('relation-matrix').innerHTML=`<table class="matrix"><caption>行 → 列</caption><thead><tr><th></th>${letters.map(x=>`<th scope="col">${x}</th>`).join('')}</tr></thead><tbody>${R.map((row,a)=>`<tr><th scope="row">${letters[a]}</th>${row.map((v,b)=>`<td><button type="button" data-a="${a}" data-b="${b}" class="${v?'on':''}" aria-pressed="${v}" aria-label="${letters[a]} 与 ${letters[b]} ${v?'有':'没有'}关系，点击切换">${v?'●':'·'}</button></td>`).join('')}</tr>`).join('')}</tbody></table>`;
       const explanations=[f.reflexive?`${letters[f.reflexive[0]]} 与自身无关系`:'每个元素都有自环',f.symmetric?`${letters[f.symmetric[0]]} → ${letters[f.symmetric[1]]} 缺少反向`:'每条箭头都有反向',f.transitive?`${f.transitive.map(a=>letters[a]).join(' → ')} 缺少捷径`:'两步可达也能直接到达'];
-      $('relation-properties').innerHTML=['反身性','对称性','传递性'].map((x,i)=>`<div class="property ${Object.values(f)[i]?'fail':''}"><b>${x}</b><em>${Object.values(f)[i]?'✕':'✓'}</em><span>${explanations[i]}</span></div>`).join('');
+      $('relation-properties').innerHTML=['反身性','对称性','传递性'].map((x,i)=>`<div class="property ${Object.values(f)[i]?'fail':''}"><b>${x}</b><em class="property-mark" aria-hidden="true">${Object.values(f)[i]?'✕':'✓'}</em><span>${explanations[i]}</span><span class="sr-only">${Object.values(f)[i]?'不成立':'成立'}</span></div>`).join('');
       $('partition-options').innerHTML=M.partitions3.map((p,i)=>`<button type="button" data-partition="${i}" aria-pressed="${JSON.stringify(M.fromBlocks(p))===JSON.stringify(R)}">${p.map(b=>`{${b.map(a=>letters[a]).join(',')}}`).join(' | ')}</button>`).join('');
       setStatus((message?message+'<br>':'')+(result.valid?`<strong>形成分类。</strong> S / ∼ = { ${result.blocks.map(b=>`{${b.map(a=>letters[a]).join(', ')}}`).join(', ')} }`:'<strong>还不能作为等价关系。</strong> 找到一个反例，就足以否定对应性质。'),!result.valid);
     }
@@ -278,7 +278,7 @@
       const missing=E.filter((a,i)=>data.inverses[i]===undefined).map(fmt).join('、');
       let associativityText=data.associative===null?'不是内部运算，先解决封闭性':data.associative?'全部 '+E.length**3+' 个三元组均满足':'存在不满足结合律的三元组';
       const checks=[['封闭性',data.closed,data.closed?'每个有序对都有唯一的集合内结果':`${fmt(data.closureWitness[0])} ${model.opSymbol} ${fmt(data.closureWitness[1])} = ${fmt(data.closureWitness[2])} 不在集合内`],['结合律',data.associative,associativityText],['单位元',data.identity!==undefined,data.identity!==undefined?`双侧单位元是 ${fmt(data.identity)}`:'找不到对所有元素均有效的双侧单位元'],['每元有逆',data.allInverses,data.allInverses===null?'尚无单位元，不能据此定义逆元':data.allInverses?'每个元素都能从两侧还原单位元':`${missing} 无逆元`]];
-      $('axiom-checks').innerHTML=checks.map(([name,pass,note])=>`<div class="axiom-check"><b>${name}</b><span class="${pass===false?'no':''}">${pass===null?'— 待定义':pass?'✓ 成立':'✕ 不成立'}</span><small>${note}</small></div>`).join('');
+      $('axiom-checks').innerHTML=checks.map(([name,pass,note])=>`<div class="axiom-check" data-verdict="${pass===null?'pending':pass?'pass':'fail'}"><b>${name}</b><span class="sr-only">${pass===null?'待定义':pass?'成立':'不成立'}</span><em class="property-mark" aria-hidden="true">${pass===null?'—':pass?'✓':'✕'}</em><small>${note}</small></div>`).join('');
       const [a,b]=selected,c=op(a,b);let detail=E.includes(c)?'结果仍在所选集合内。':'结果不在所选集合内，因此不封闭。';if(c===data.identity)detail+=` ${fmt(a)} 与 ${fmt(b)} ${op(b,a)===data.identity?'互为双侧逆元。':'只满足当前方向的等式。'}`;
       $('table-readout').innerHTML=`<div class="formula">${model.format(a,b,c)}</div>${detail}`;$('example-note').textContent=key==='unit8'?'每个元素平方均为单位元，因此四个元素都等于自己的逆元。':model.note;
       let status=data.isGroup?`<strong>是群。</strong> ${data.commutative?'也是交换群：表关于主对角线对称。':'不是交换群：例如 r ∘ s ≠ s ∘ r。'}`:'<strong>不是群。</strong> 必须同时满足定义的全部要求。';
@@ -317,6 +317,7 @@
   }
 
   function renderQuiz(){window.TextbookExercises.render(scene,bookId);}
+  window.CourseLanguage?.add({'成立':'Satisfied','不成立':'Not satisfied','待定义':'Not yet defined'});
   window.LessonBook={id:bookId,title:book.title,titleEn:bookId==='1.1'?'Equivalence relations and partitions':'The concept of a group',navigate(id){const index=sections.findIndex(s=>s.id===id);if(index>=0)show(index);}};
   window.CourseLanguage?.add({'逆元的逆元':'The inverse of an inverse','设 G 为群，a ∈ G。':'Let G be a group and a ∈ G.','a 满足作为 a⁻¹ 的逆元的两侧等式。':'The element a satisfies both inverse equations for a⁻¹.','由逆元唯一性，a⁻¹ 的逆元就是 a。':'By uniqueness, a is the inverse of a⁻¹.','定理 1.2.1(3)：设 G 为群。对任意 a ∈ G，(a⁻¹)⁻¹ = a。':'Theorem 1.2.1(3): for every a in a group G, (a⁻¹)⁻¹ = a.'});
   const initial=sections.findIndex(s=>s.id===legacyAnchor);
