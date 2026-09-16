@@ -1,4 +1,4 @@
-import {lerayTitles} from './leray.js?v=135';
+import {lerayTitles} from './leray.js?v=136';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
@@ -10,7 +10,7 @@ const groups={
  'converge:1':{section:2,first:10,items:[[1]]},
  'converge:2':{section:2,first:11,items:[[1,2]]},
  'converge:3':{section:2,first:12,items:[[1],[2],[4]]},
- 'converge:4':{section:3,first:1,items:Array.from({length:15},(_,i)=>[i+1])}
+ 'converge:4':{section:3,first:1,items:Array.from({length:lerayTitles.length},(_,i)=>[i+1])}
 };
 export function numberedPages(module,step,count){
  const group=groups[`${module}:${step}`]||{section:2,first:module==='lab'?20:22,items:Array.from({length:count},(_,i)=>[i+1])};
