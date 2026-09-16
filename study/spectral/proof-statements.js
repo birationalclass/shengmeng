@@ -1,5 +1,5 @@
-import {kmVanishingProof} from './km-vanishing.js?v=139';
-import {singleLineContent} from './single-line-convergence.js?v=139';
+import {kmVanishingProof} from './km-vanishing.js?v=140';
+import {singleLineContent} from './single-line-convergence.js?v=140';
 // Full hypotheses and conclusions live with the shared proof presentation.
 // The compact formula shown in the notebook is not a theorem statement.
 export function proofStatement({key,formulas,math,english}){
