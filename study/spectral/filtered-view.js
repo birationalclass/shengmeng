@@ -1,4 +1,4 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=137';
+import {proofPanel,proofSections} from './proof-panel.js?v=138';
 import {createFilteredCycles} from './filtered-cycles.js?v=95';
 import {createFilteredDemo} from './filtered-demo.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=97';

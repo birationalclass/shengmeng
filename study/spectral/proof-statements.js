@@ -1,4 +1,4 @@
-import {singleLineContent} from './single-line-convergence.js?v=137';
+import {singleLineContent} from './single-line-convergence.js?v=138';
 // Full hypotheses and conclusions live with the shared proof presentation.
 // The compact formula shown in the notebook is not a theorem statement.
 export function proofStatement({key,formulas,math,english}){
