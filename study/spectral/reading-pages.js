@@ -1,3 +1,4 @@
+import {lerayTitles} from './leray.js?v=121';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
@@ -8,7 +9,8 @@ const groups={
  'converge:0':{section:2,first:3,items:[[1],[2],[3,4,5]]},
  'converge:1':{section:2,first:10,items:[[1]]},
  'converge:2':{section:2,first:11,items:[[1,2]]},
- 'converge:3':{section:2,first:12,items:[[1],[2],[3],[4]]}
+ 'converge:3':{section:2,first:12,items:[[1],[2],[4]]},
+ 'converge:4':{section:3,first:1,items:Array.from({length:8},(_,i)=>[i+1])}
 };
 export function numberedPages(module,step,count){
  const group=groups[`${module}:${step}`]||{section:2,first:module==='lab'?20:22,items:Array.from({length:count},(_,i)=>[i+1])};
@@ -24,6 +26,7 @@ const titles={
  'converge:0':[['性质：逐页上同调','Property: Page cohomology'],['自然过渡映射','Natural transition map'],['命题：逐位置稳定','Proposition: Pointwise stabilization']],
  'converge:1':[{name:['稳定页','Stable page'],symbol:String.raw`E_\infty`}],
  'converge:2':[['上同调的诱导滤过','Induced filtration on cohomology']],
- 'converge:3':[['收敛','Convergence'],['命题：总复形的收敛','Proposition: Convergence of the total complex'],['起始页记号','Starting-page notation'],['退化','Degeneration']],
+ 'converge:3':[['收敛','Convergence'],['命题：总复形的收敛','Proposition: Convergence of the total complex'],['退化','Degeneration']],
+ 'converge:4':lerayTitles,
  'lab:0':[{name:['页','Page'],symbol:'E_r'},{name:['微分','Differential'],symbol:'d_r'}]
 };

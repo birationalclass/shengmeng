@@ -1,3 +1,4 @@
+import {lerayExposition,lerayDiagram} from './leray.js?v=121';
 import {proofPanel,proofSections} from './proof-panel.js?v=109';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';
@@ -41,8 +42,9 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   const family=math(R`\{(E_r^{\bullet,\bullet},d_r)\}_{r\ge0}`);
   replaceMathContent(board,`<div class="proof-body convergence-definition"><p class="operation-note">${t(`我们称第一象限上同调型谱序列 ${family} <strong>收敛到</strong>非负分次向量空间 ${math(R`H^\bullet`)}，<strong>如果</strong>对每个 ${math(R`n\ge0`)}，${math('H^n')} 配备有限递减滤过`,`We say that a first-quadrant cohomological spectral sequence ${family} <strong>converges to</strong> a nonnegatively graded vector space ${math(R`H^\bullet`)} <strong>if</strong>, for every ${math(R`n\ge0`)}, ${math('H^n')} is equipped with a finite decreasing filtration`)}</p>${formula(R`H^n=F^0H^n\supseteq F^1H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`)}<p class="operation-note">${t(`并对所有 ${math(R`p,q\ge0`)} 给定同构`,`together with isomorphisms, for all ${math(R`p,q\ge0`)},`)}</p>${formula(R`E_\infty^{p,q}\cong\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}=\operatorname{Gr}_F^pH^{p+q}`)}</div><p class="operation-note proof-reference">${references({refs:'definition'})}</p>`);
  }
- function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','notation','degeneration'][context.notePage||0];}
+ function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','degeneration'][context.notePage||0];}
  function exposition(){
+  if(context.step===4){replaceMathContent(board,lerayExposition({page:context.notePage||0,math,language}));return;}
   const topic=expositionTopic();if(topic==='definition'){definitionExposition();return;}
   const entries={hfiltration:filtrationProof,convergence:convergencePropertyProof,notation:notationProof,degeneration:degenerationProof}[topic],entry=entries[0];
   board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
@@ -54,7 +56,15 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   },summary=summaries[topic];
   replaceMathContent(board,proofPanel({key:'abutment-'+topic,title:t(...entries[0].name),formulas:summary.f,note:summary.note,details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note()})+`<p>${references(entry)}</p>`,math,language}));
  }
+ function replaceScene(scene){
+  for(const old of [...host.children]){
+   old.setAttribute('aria-hidden','true');const opacity=getComputedStyle(old).opacity;old.getAnimations().forEach(a=>a.cancel());
+   if(visualMotion().reduced)old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards',easing:visualMotion().easing});fade.finished.then(()=>old.remove(),()=>old.remove());}
+  }
+  host.append(scene);if(!visualMotion().reduced)scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().enter,easing:visualMotion().easing});
+ }
  function draw(){
+  if(context.step===4){const scene=document.createElement("div");scene.className="abutment-scene";scene.innerHTML=lerayDiagram({page:context.notePage||0,label,t});replaceScene(scene);return;}
   const y=i=>105+54*i,final=context.step===3,applied=context.step===2||context.notePage===1;
   let svg='<defs><marker id="abutment-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>',labels=label(420,42,applied?R`H^{${n}}:=H^{${n}}(C^\bullet,D)`:R`H^{${n}}`,420,'title');
   for(let i=0;i<=n+1;i++){
@@ -71,11 +81,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
    labels+=label(663,selectedY+54,R`\sim`,36,'gold')+label(640,selectedY+104,R`E_\infty^{${p},${n-p}}`,182,'blue');
   }
   const scene=document.createElement('div');scene.className='abutment-scene';scene.innerHTML=`<svg viewBox="0 0 840 525" role="img" aria-label="${t('总上同调的滤过与关联分次','Filtration and associated graded of total cohomology')}">${svg}</svg>${labels}`;
-  for(const old of [...host.children]){
-   old.setAttribute('aria-hidden','true');const opacity=getComputedStyle(old).opacity;old.getAnimations().forEach(a=>a.cancel());
-   if(visualMotion().reduced)old.remove();else{const fade=old.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards',easing:visualMotion().easing});fade.finished.then(()=>old.remove(),()=>old.remove());}
-  }
-  host.append(scene);if(!visualMotion().reduced)scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().enter,easing:visualMotion().easing});
+  replaceScene(scene);
   window.spectralAbutment={active,n,p,q:n-p,showsStableTerm:final};
  }
  function paintControls(){toolbar.innerHTML=`<label>${math('n')} <input data-abutment-n type="range" min="0" max="4" value="${n}" aria-label="${t('总次数','Total degree')}"><output>${n}</output></label><label>${math('p')} <input data-abutment-p type="range" min="0" max="${n}" value="${p}" aria-label="${t('滤过指标','Filtration index')}"><output>${p}</output></label>`;}
@@ -88,7 +94,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
 
  return {sync(s){
   const wasActive=active;active=!s.cover&&s.module==='converge'&&s.step>=2;context=s;
-  host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active;viewport.classList.toggle('has-abutment-view',active);
+  host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===4;viewport.classList.toggle('has-abutment-view',active);
   if(!active){key='';window.spectralAbutment={active:false};return;}
   if(!wasActive){n=s.n;p=Math.max(0,Math.min(s.p,n));}
   const next=[s.step,s.notePage,n,p,language()].join(':');if(next!==key){key=next;draw();paintControls();}fit();exposition();

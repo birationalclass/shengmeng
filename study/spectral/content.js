@@ -1,3 +1,4 @@
+import {lerayContent} from './leray.js?v=121';
 import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;
@@ -18,6 +19,8 @@ export const convergence=[
  {title:'总上同调的诱导滤过',f:[t`H^n:=H^n(C^\bullet,D)`,t`\begin{gathered}F^pH^n:=\\\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\xrightarrow{H^n(\iota_p)} H^n\right)\end{gathered}`],text:'由各滤过子复形的包含映射，在总上同调上取像。',note:'',proof:'F^pH^n 由具有 F^pC^n 中闭代表元的总上同调类组成。'},
  {title:'收敛',f:[t`E_r^{p,q}\Longrightarrow H^{p+q}`,t`\begin{gathered}E_r^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)\\[.65em]E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}(C^\bullet,D)\end{gathered}`,t`E_{r_0}^{p,q}\Longrightarrow H^{p+q}`,t`d_s=0\quad(\forall s\ge r_0)`],text:'收敛的定义、总复形的收敛性质、起始页记号与退化。',note:'',proof:''}
 ];
+
+convergence.push(lerayContent);
 
 export const initial=[
  {...lessons[0],title:'双复形与总复形',tag:'INITIAL DATA',note:''}
