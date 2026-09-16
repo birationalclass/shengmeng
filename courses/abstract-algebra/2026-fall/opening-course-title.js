@@ -42,6 +42,7 @@
     const fromSize={width:innerWidth,height:innerHeight};
     document.body.classList.add('course-title-docking');leave();
     window.scrollTo({top:0,left:0,behavior:'instant'});
+    document.getElementById('course-scroll-region')?.scrollTo({top:0,left:0,behavior:'instant'});
     window.CourseHeroSand?.prepareDock();
     let targets;try{targets=[ink(title)];}catch(_){targets=[[]];}
     const heroTail=parseFloat(getComputedStyle(title).getPropertyValue('--sand-tail'))||150;

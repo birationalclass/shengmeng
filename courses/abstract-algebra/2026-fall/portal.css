@@ -156,3 +156,26 @@ html[lang="en"] .upcoming-watermark { letter-spacing:.04em; }
 
 #portal-language { white-space:nowrap; }
 @media(max-width:767px) { .portal-lesson #portal-language { padding-inline:2px; font-size:13px; } }
+
+/* Keep the live sand title outside the course information's scrolling pane. */
+@media screen {
+  html:has(body.course-portal) { height:100%; overflow:clip; }
+  body.course-portal { position:fixed; inset:0; width:100%; }
+  body.course-portal:not(.portal-lesson) { height:100dvh; overflow:clip; display:grid; grid-template-rows:auto minmax(0,1fr); }
+  .course-portal:not(.portal-lesson) #main { min-height:0; min-width:0; margin:0; display:grid; grid-template-rows:auto minmax(0,1fr); overflow:hidden; }
+  .course-portal:not(.portal-lesson) #main .hero { padding-top:0; }
+  .course-portal #main .hero.course-title-panel { z-index:1; border:0; }
+  .course-portal #main .hero.course-title-panel>.wrap { padding-top:clamp(18px,3vh,36px); padding-bottom:0; }
+  .course-portal #main .hero.course-title-panel h1 { margin-bottom:calc(var(--sand-tail) + 16px); }
+  .course-scroll-region { min-height:0; overflow:auto; overscroll-behavior-y:contain; scrollbar-gutter:stable; scroll-behavior:smooth; scroll-padding-top:20px; }
+  .course-scroll-region:focus-visible { outline:1px solid var(--line); outline-offset:-2px; }
+  .course-portal #main .course-scroll-region>.hero>.wrap { padding-top:0; }
+  html[data-course-page="semester"][data-page-style="sand"] .course-scroll-region>.hero::before { display:none; }
+  .course-portal #main .course-scroll-region :is(#overview,#schedule,tr) { scroll-margin-top:20px; }
+  .course-scroll-region>.footer { font-size:1rem; padding-block:30px; }
+}
+@media screen and (max-height:600px) {
+  .course-portal #main .hero.course-title-panel>.wrap { padding-top:8px; }
+  .course-portal #main .hero.course-title-panel h1 { font-size:40px; --sand-tail:28px; margin-bottom:40px; }
+}
+@media(prefers-reduced-motion:reduce) { .course-scroll-region { scroll-behavior:auto; } }

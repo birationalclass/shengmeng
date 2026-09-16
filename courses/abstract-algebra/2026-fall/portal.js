@@ -17,9 +17,12 @@
   const directory=document.createElement('dialog');directory.className='portal-directory';directory.setAttribute('aria-labelledby','portal-directory-title');directory.innerHTML='<div class="portal-directory-header"><h2 id="portal-directory-title"></h2><button class="portal-close" type="button" aria-label="关闭目录">×</button></div><div class="portal-directory-layout"><section class="directory-map-section"><label class="portal-directory-select"><select id="portal-directory-chapter" aria-label="选择教材章节"></select></label><div class="directory-map" role="group"><svg class="directory-routes directory-routes-wide" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true"></svg><svg class="directory-routes directory-routes-narrow" preserveAspectRatio="none" aria-hidden="true"></svg><div class="directory-nodes"></div></div><p class="directory-map-caption"></p></section><aside class="directory-detail" aria-live="polite"></aside></div>';body.append(directory);
   let view='course',section='1.1',anchor='relation',loadedSection='',courseScroll=0,directoryChapter=1,directorySelected='1.1';
   const phone=matchMedia('(max-width:767px), (pointer:coarse) and (max-width:1024px)');
-  const frame=$('lecture-frame');
+  const frame=$('lecture-frame'),courseScroller=$('course-scroll-region');
+  document.querySelector('.course-title-panel').addEventListener('wheel',event=>{if(view!=='course'||event.ctrlKey||document.querySelector('dialog[open]'))return;const unit=event.deltaMode===1?20:event.deltaMode===2?courseScroller.clientHeight:1;courseScroller.scrollBy({top:event.deltaY*unit,behavior:'instant'});event.preventDefault();},{passive:false});
+  function scrollCourse(hash,behavior='smooth'){const target=document.getElementById(hash);if(!target)return;const top=courseScroller.contains(target)?courseScroller.scrollTop+target.getBoundingClientRect().top-courseScroller.getBoundingClientRect().top-20:0;courseScroller.scrollTo({top,behavior});window.scrollTo(0,0);}
   const link=(book,topic)=>`?view=lesson&section=${book}#${topic}`;
   function labels(){
+    courseScroller.setAttribute('aria-label',t('课程介绍与安排','Course introduction and schedule'));
     document.title=t('代数学 Ⅰ · 2026 秋季 · 孟晟','Algebra Ⅰ · Autumn 2026 · Sheng Meng');
     $('portal-directory-open').textContent=t('目录','Contents');const current=sections.findIndex(s=>s.id===section),previous=view==='lesson'?sections[current-1]:null,next=sections[view==='lesson'?current+1:0];$('portal-prev').hidden=!previous;$('portal-next').hidden=!next;const name=s=>`§${s.id} ${s.title[en()?1:0]}`;$('portal-prev').textContent=previous?'← '+name(previous):'';$('portal-next').textContent=next?name(next)+' →':'';const brand=header.querySelector('.portal-brand');brand.textContent=view==='lesson'?name(sections[current]):t('代数学 Ⅰ','Algebra Ⅰ');brand.title=brand.textContent;$('portal-course-open').setAttribute('aria-label',t('课程安排','Course'));$('portal-course-open').title=t('课程安排','Course');$('portal-language').textContent=en()?'中文':'EN';$('portal-language').setAttribute('aria-label',t('切换到英文','Switch to Chinese'));$('portal-settings').setAttribute('aria-label',t('设置','Settings'));$('portal-settings').title=t('设置','Settings');$('portal-directory-title').textContent=t('教材目录','Textbook contents');
     directory.querySelector('.portal-close').setAttribute('aria-label',t('关闭目录','Close contents'));
@@ -48,7 +51,7 @@
   }
   function placeholder(){const entry=sections.find(s=>s.id===section),panel=$('lecture-placeholder');panel.querySelector('.placeholder-number').textContent=`§${entry.id}`;panel.querySelector('h1').textContent=entry.title[en()?1:0];panel.querySelector('.placeholder-state').textContent=t('空白测试页','Blank test page');}
   function navigate(next,replace=false){
-    if(view==='course')courseScroll=window.scrollY;
+    if(view==='course')courseScroll=courseScroller.scrollTop;
     view=next.view==='lesson'?'lesson':'course';section=sections.some(c=>c.id===next.section)?next.section:'1.1';const chapter=sections.find(c=>c.id===section);anchor=chapter.topics.some(topic=>topic[0]===next.anchor)?next.anchor:chapter.topics[0][0];
     const url=new URL(location.href);url.searchParams.delete('v');url.searchParams.set('view',view);view==='lesson'?url.searchParams.set('section',section):url.searchParams.delete('section');url.hash=view==='lesson'?anchor:(next.courseHash||'');
     history[replace?'replaceState':'pushState'](null,'',url);
@@ -58,14 +61,14 @@
       if(!chapter.ready){placeholder();}
       else if(loadedSection!==section){loadedSection=section;frame.src=`lesson-1/?v=20260916-lesson-entries-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
       else frame.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
-    }else requestAnimationFrame(()=>{if(next.courseHash)document.getElementById(next.courseHash)?.scrollIntoView();else window.scrollTo(0,courseScroll);});labels();
+    }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }
   function fromURL(){const url=new URL(location.href);navigate({view:url.searchParams.get('view'),section:url.searchParams.get('section'),anchor:url.hash==='#order'?'powers':url.hash.slice(1),courseHash:url.searchParams.get('view')==='lesson'?'':url.hash.slice(1)},true);}
   $('portal-directory-open').onclick=()=>{directoryChapter=Number(section.split('.')[0]);directorySelected=section;labels();directory.showModal();};
   $('portal-directory-chapter').onchange=e=>{directoryChapter=+e.target.value;directoryItems();};
   directory.querySelector('.directory-nodes').onclick=e=>{const node=e.target.closest('[data-directory-section]');if(node){directorySelected=node.dataset.directorySection;directoryDetail();}};
   directory.querySelector('.portal-close').onclick=()=>directory.close();
-  document.addEventListener('click',event=>{const a=event.target.closest('a');if(!a)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;if(url.searchParams.get('view')==='lesson'||url.pathname.endsWith('/lesson-1/')){event.preventDefault();directory.close();navigate({view:'lesson',section:url.searchParams.get('section'),anchor:url.hash.slice(1)});}});
+  document.addEventListener('click',event=>{const a=event.target.closest('a');if(!a)return;const url=new URL(a.href,location.href);if(url.origin!==location.origin)return;if(view==='course'&&url.pathname===location.pathname&&url.hash&&url.searchParams.get('view')!=='lesson'){const target=document.getElementById(url.hash.slice(1));if(target&&(target.id==='main'||courseScroller.contains(target))){event.preventDefault();history.pushState(null,'',url);scrollCourse(target.id);return;}}if(url.searchParams.get('view')==='lesson'||url.pathname.endsWith('/lesson-1/')){event.preventDefault();directory.close();navigate({view:'lesson',section:url.searchParams.get('section'),anchor:url.hash.slice(1)});}});
   function adjacent(delta){const index=view==='course'?-1:sections.findIndex(s=>s.id===section),target=sections[index+delta];if(target)navigate({view:'lesson',section:target.id,anchor:target.topics[0][0]});}$('portal-prev').onclick=()=>adjacent(-1);$('portal-next').onclick=()=>adjacent(1);$('portal-course-open').onclick=()=>navigate({view:'course'});
   $('portal-settings').onclick=()=>document.querySelector('[data-page-style-open]').click();$('portal-language').onclick=()=>window.CourseLanguage?.set(en()?'zh':'en');
   $('portal-fullscreen').onclick=async()=>{if(phone.matches)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen?.();}catch{}labels();};
