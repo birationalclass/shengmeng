@@ -1,5 +1,6 @@
-import {kmVanishingProof} from './km-vanishing.js?v=141';
-import {singleLineContent} from './single-line-convergence.js?v=141';
+import {firstQuadrantContent} from './first-quadrant-convergence.js?v=145';
+import {kmVanishingProof} from './km-vanishing.js?v=145';
+import {singleLineContent} from './single-line-convergence.js?v=145';
 // Full hypotheses and conclusions live with the shared proof presentation.
 // The compact formula shown in the notebook is not a theorem statement.
 export function proofStatement({key,formulas,math,english}){
@@ -29,16 +30,9 @@ export function proofStatement({key,formulas,math,english}){
    if(page===12)conclusions=[R`E_2^{p,q}\cong H^p(Y,R^qf_*\mathcal F)\Longrightarrow H^{p+q}(X,\mathcal F)`];
   }
   if(page===13){
-   const single=singleLineContent({math,t});
-   assumptions=single.assumptions;
-   hypothesisFormulas=single.filtration;
-   conclusionLead=t(`则对每个 ${M(R`n\ge0`)}，分别有以下结论。`,`Then, for every ${M(R`n\ge0`)}, the following two assertions hold.`);
-   conclusionBody=`<p>${t(`若对所有 ${M(R`p>0,q\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零列可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`p>0,q\ge0`)} (only column zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`H^n\xrightarrow{\sim}E_{r_0}^{0,n}`)}<p>${t(`若对所有 ${M(R`q>0,p\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零行可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`q>0,p\ge0`)} (only row zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}H^n`)}`;
-  }
-  if(page===14){
    ({assumptions,hypothesisFormulas,conclusionLead,conclusions}=kmVanishingProof({math,t}));
   }
-  if(page===15){conclusionLead=t(`则对每个 ${M('n\\ge0')}，自然映射为同构：`,`Then, for every ${M('n\\ge0')}, the natural map is an isomorphism:`);assumptions=t(`设 ${M('X')} 是正规复代数簇，${M(R`\pi:\widetilde X\to X`)} 是解消，满足 ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} 及 ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)}（${M('q>0')}）。`,`Let ${M('X')} be a normal complex variety and ${M(R`\pi:\widetilde X\to X`)} a resolution satisfying ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} and ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)} for ${M('q>0')}.`);conclusions=[R`H^n(X,\mathcal O_X)\xrightarrow{\sim}H^n(\widetilde X,\mathcal O_{\widetilde X})`];}
+  if(page===14){conclusionLead=t(`则对每个 ${M('n\\ge0')}，自然映射为同构：`,`Then, for every ${M('n\\ge0')}, the natural map is an isomorphism:`);assumptions=t(`设 ${M('X')} 是正规复代数簇，${M(R`\pi:\widetilde X\to X`)} 是解消，满足 ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} 及 ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)}（${M('q>0')}）。`,`Let ${M('X')} be a normal complex variety and ${M(R`\pi:\widetilde X\to X`)} a resolution satisfying ${M(R`\pi_*\mathcal O_{\widetilde X}=\mathcal O_X`)} and ${M(R`R^q\pi_*\mathcal O_{\widetilde X}=0`)} for ${M('q>0')}.`);conclusions=[R`H^n(X,\mathcal O_X)\xrightarrow{\sim}H^n(\widetilde X,\mathcal O_{\widetilde X})`];}
  }else{
   assumptions=filtered;
   if(['er','e1','d0','d1','dr','filtered-Z','filtered-B'].includes(key)){kind=t('设定与陈述。','Setup and statement.');conclusionLead='';}
@@ -56,8 +50,22 @@ export function proofStatement({key,formulas,math,english}){
    conclusions=[R`0\to\operatorname{im}d_r^{p-r,q+r-1}\to\ker d_r^{p,q}\xrightarrow{\pi_r^{p,q}}E_{r+1}^{p,q}\to0`];
   }
   if(key.startsWith('abutment-'))assumptions+=first;
-  if(key==='abutment-degeneration')assumptions+=t(`并假设该谱序列收敛到带诱导滤过的 ${M(R`H^n=H^n(C^\bullet,D)`)}，且 ${M(R`d_s=0\ (s\ge r_0)`)}。`,`Assume it converges to ${M(R`H^n=H^n(C^\bullet,D)`)} with the induced filtration and ${M(R`d_s=0\ (s\ge r_0)`)}.`);
-  if(key==='abutment-convergence')assumptions+=t(`目标滤过定义为 ${M(R`F^pH^n=\operatorname{im}(H^n(F^pC)\to H^n(C))`)}。`,`The target filtration is ${M(R`F^pH^n=\operatorname{im}(H^n(F^pC)\to H^n(C))`)}.`);
+  if(key==='abutment-degeneration'){
+   assumptions=t(`设 ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} 是收敛到 ${M(R`H^\bullet`)} 的第一象限上同调型谱序列，目标带收敛所指定的有限滤过 ${M('F')}。假设 ${M(R`d_s=0\ (s\ge r_0)`)}。`,`Let ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} be a first-quadrant cohomological spectral sequence converging to ${M(R`H^\bullet`)} with its specified finite filtration ${M('F')}. Assume ${M(R`d_s=0\ (s\ge r_0)`)}.`);
+   conclusions=[R`E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}\cong F^pH^{p+q}/F^{p+1}H^{p+q}`];
+  }
+ }
+  if(key==='abutment-single-line'){
+   kind=t('推论。','Corollary.');
+   const single=singleLineContent({math,t});
+   assumptions=single.assumptions;
+   hypothesisFormulas=single.filtration;
+   conclusionLead=t(`则对每个 ${M(R`n\ge0`)}，分别有以下结论。`,`Then, for every ${M(R`n\ge0`)}, the following two assertions hold.`);
+   conclusionBody=`<p>${t(`若对所有 ${M(R`p>0,q\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零列可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`p>0,q\ge0`)} (only column zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`H^n\xrightarrow{\sim}E_{r_0}^{0,n}`)}<p>${t(`若对所有 ${M(R`q>0,p\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零行可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`q>0,p\ge0`)} (only row zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}H^n`)}`;
+  }
+ if(key==='abutment-convergence'){
+  kind=t('定理。','Theorem.');
+  ({assumptions,hypothesisFormulas,conclusions,conclusionLead}=firstQuadrantContent({math,t}));
  }
  return `<section class="proof-statement"><div class="proof-hypotheses"><p><strong>${kind}</strong> ${assumptions}</p>${hypothesisFormulas.map(eq).join('')}</div>${conclusionLead?`<p class="proof-conclusion-lead">${conclusionLead}</p>`:''}<div class="proof-conclusions">${conclusionBody||conclusions.map(eq).join('')}</div></section>`;
 }

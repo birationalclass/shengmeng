@@ -1,6 +1,7 @@
 /* The notebook sits directly on the page; only its individual cards are framed. */
 .notebook-workspace.workspace {
   border:0;border-radius:0;background:transparent;box-shadow:none;
+  overflow:hidden;overflow:clip;
 }
 /* Short windows scroll the reading surface instead of crushing the diagram. */
 @media(max-height:540px) {
@@ -46,3 +47,13 @@
 #diagramControls {display:none!important}
 #diagram.origin-selection .node {cursor:default}
 #diagram.origin-selection .node[data-origin-selectable] {cursor:pointer}
+
+/* The notebook shell is never a scrollport. In particular, legacy fullscreen
+   overflow:auto must not let the figure scroll both columns off the screen.
+   clip also prevents focus/scrollIntoView from scrolling this ancestor. */
+.study-fullscreen .notebook-workspace.workspace {
+  overflow:hidden;overflow:clip;
+}
+.notebook-workspace :is(.explanation,.slide-body,.operation-board) {
+  overscroll-behavior:contain;
+}

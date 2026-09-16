@@ -15,9 +15,9 @@ export function kmVanishingProof({math,t}){
  eq(R`H^i(X,L(mH)\otimes R^jf_*\omega_Y)\Longrightarrow H^{i+j}(Y,\omega_Y\otimes f^*L(mH))`)+
  p(t(`先取 ${math(R`m\gg1`)}。Serre 消失给出`,`For ${math(R`m\gg1`)}, Serre vanishing gives`))+
  eq(R`H^i(X,L(mH)\otimes R^jf_*\omega_Y)=0\qquad(i>0)`)+
- p(t(`只剩 ${math('i=0')} 一列。由 3.14，`,`Only column ${math('i=0')} remains. By 3.14,`))+
+ p(t(`只剩 ${math('i=0')} 一列。由 2.15，`,`Only column ${math('i=0')} remains. By 2.15,`))+
  eq(R`H^0(X,L(mH)\otimes R^jf_*\omega_Y)\cong H^j(Y,\omega_Y\otimes f^*L(mH))=0\qquad(j>0)`)+
- p(t(`充分大的扭曲 ${math(R`L(mH)\otimes R^jf_*\omega_Y`)} 由全局截面生成，故该层为零，从而 ${math(R`R^jf_*\omega_Y=0`)}（${math('j>0')}）。最后取 ${math('m=0')}，由 3.14 的单行情形得到`,`The sufficiently large twist ${math(R`L(mH)\otimes R^jf_*\omega_Y`)} is globally generated, hence zero. Thus ${math(R`R^jf_*\omega_Y=0`)} for ${math('j>0')}. Now set ${math('m=0')}; the single-row case of 3.14 yields`))+
+ p(t(`充分大的扭曲 ${math(R`L(mH)\otimes R^jf_*\omega_Y`)} 由全局截面生成，故该层为零，从而 ${math(R`R^jf_*\omega_Y=0`)}（${math('j>0')}）。最后取 ${math('m=0')}，由 2.15 的单行情形得到`,`The sufficiently large twist ${math(R`L(mH)\otimes R^jf_*\omega_Y`)} is globally generated, hence zero. Thus ${math(R`R^jf_*\omega_Y=0`)} for ${math('j>0')}. Now set ${math('m=0')}; the single-row case of 2.15 yields`))+
  eq(R`H^i(X,L\otimes f_*\omega_Y)\cong H^i(Y,f^*L\otimes\omega_Y)=0\qquad(i>0)`)+
  p(t(`光滑簇之间的适当双有理态射满足 ${math(R`f_*\omega_Y\cong\omega_X`)}，故这正是所需结论。`,`Since ${math(R`f_*\omega_Y\cong\omega_X`)} for a proper birational morphism between smooth varieties, this is the required conclusion.`));
  return {assumptions,hypothesisFormulas,conclusionLead,conclusions,detail};
