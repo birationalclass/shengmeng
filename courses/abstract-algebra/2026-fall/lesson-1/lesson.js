@@ -298,6 +298,7 @@
       {name:'消去律',assumption:'设 ab = ac。在等式两侧同时左乘 a⁻¹。',goal:'结论：b = c；右消去同理',steps:[['ab = ac','已知条件。'],['a⁻¹(ab) = a⁻¹(ac)','两边同一侧乘同一个元素。'],['(a⁻¹a)b = (a⁻¹a)c','结合律。'],['eb = ec','使用 a⁻¹a = e。'],['b = c','使用单位元性质，得到左消去律。']]},
       {name:'解群方程',assumption:'对给定 a, b ∈ G，分别求解 ax = b 和 ya = b。',goal:'x = a⁻¹b；y = ba⁻¹',steps:[['ax = b','先解未知元在右侧的方程。'],['a⁻¹(ax) = a⁻¹b','左乘 a⁻¹，抵消位于左侧的 a。'],['x = a⁻¹b','结合律和单位元性质；代回检验成立。'],['ya = b','再解未知元在左侧的方程。'],['(ya)a⁻¹ = ba⁻¹','这次要右乘 a⁻¹。'],['y = ba⁻¹','代回检验成立；消去律保证两个解各自唯一。']]}
     ];
+    proofs.splice(2,0,{name:'逆元的逆元',assumption:'设 G 为群，a ∈ G。',goal:'结论：(a⁻¹)⁻¹ = a',steps:[['a⁻¹a = aa⁻¹ = e','a 满足作为 a⁻¹ 的逆元的两侧等式。'],['(a⁻¹)⁻¹ = a','由逆元唯一性，a⁻¹ 的逆元就是 a。']]});
     const statements=[
       '定理 1.2.1(1)：设 G 为群，则 G 的单位元唯一。也就是说，若 e、f 都满足对每个 a ∈ G 有 ea = ae = a、fa = af = a，那么 e = f。',
       '定理 1.2.1(2)：设 G 为群，e 为单位元。对每个 a ∈ G，它的逆元唯一。也就是说，若 ab = ba = e 且 ac = ca = e，则 b = c。',
@@ -305,6 +306,7 @@
       '定理 1.2.1(5)：设 G 为群。对任意 a、b、c ∈ G，若 ab = ac 或 ba = ca，则 b = c。这分别是左消去律和右消去律。',
       '定理 1.2.2：设 G 为群。对任意 a、b ∈ G，方程 ax = b 和 ya = b 在 G 中各有唯一解，分别为 x = a⁻¹b、y = ba⁻¹。'
     ];
+    statements.splice(2,0,'定理 1.2.1(3)：设 G 为群。对任意 a ∈ G，(a⁻¹)⁻¹ = a。');
     scene.innerHTML=`<div id="proof-tabs" class="controls proof-options"></div><p id="proof-assumption" class="proof-conditions"></p><div id="proof-board" class="proof-board stage" aria-live="polite"></div><div class="controls"><button type="button" id="proof-back">← 上一步</button><button type="button" id="proof-next" class="primary">下一步 →</button><span id="proof-count" class="hint"></span></div><div id="status" class="status-strip"></div><details class="mini-proof"><summary>另外两条需要记住的运算规则</summary><p>逆元的逆还是自己：(a⁻¹)⁻¹ = a，因为 a 和 a⁻¹ 互为逆元。<br>同一个元素的幂满足 aᵐaⁿ = aᵐ⁺ⁿ、(aᵐ)ⁿ = aᵐⁿ。但对于不同元素，(ab)ⁿ = aⁿbⁿ 一般需要 ab = ba；不能仅凭结合律这样拆开。</p></details>`;
     function update(){const p=proofs[chosen];$('proof-tabs').innerHTML=proofs.map((x,i)=>`<button type="button" data-proof="${i}" aria-pressed="${i===chosen}">${x.name}</button>`).join('');$('proof-assumption').textContent=step<0?'':p.assumption;$('proof-assumption').hidden=step<0;
       $('proof-board').innerHTML=step<0?`<div class="label">定理阐述</div><p class="theorem-statement">${statements[chosen]}</p>`:`<div class="label">${p.goal}</div><div class="expression">${p.steps[step][0]}</div><div class="reason">${p.steps[step][1]}</div><div class="proof-track" aria-hidden="true">${p.steps.map((_,i)=>`<span class="${i<=step?'done':''}"></span>`).join('')}</div>`;
@@ -315,6 +317,8 @@
   }
 
   function renderQuiz(){window.TextbookExercises.render(scene,bookId);}
+  window.LessonBook={id:bookId,title:book.title,titleEn:bookId==='1.1'?'Equivalence relations and partitions':'The concept of a group',navigate(id){const index=sections.findIndex(s=>s.id===id);if(index>=0)show(index);}};
+  window.CourseLanguage?.add({'逆元的逆元':'The inverse of an inverse','设 G 为群，a ∈ G。':'Let G be a group and a ∈ G.','a 满足作为 a⁻¹ 的逆元的两侧等式。':'The element a satisfies both inverse equations for a⁻¹.','由逆元唯一性，a⁻¹ 的逆元就是 a。':'By uniqueness, a is the inverse of a⁻¹.','定理 1.2.1(3)：设 G 为群。对任意 a ∈ G，(a⁻¹)⁻¹ = a。':'Theorem 1.2.1(3): for every a in a group G, (a⁻¹)⁻¹ = a.'});
   const initial=sections.findIndex(s=>s.id===legacyAnchor);
   show(initial>=0?initial:0);
 })();

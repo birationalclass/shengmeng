@@ -1,157 +1,148 @@
 @charset "UTF-8";
-/* The browser fragments flowing text into viewport-height pages. */
-html:has(.screen-deck) { height: 100%; overflow: clip; }
-body.screen-deck.embedded-lesson { grid-template-rows: minmax(0,1fr); }
-.embedded-lesson>.sitebar { display:none; }
-body.screen-deck { --screen-gap: 28px; --screen-text: clamp(20px,1.3vw,26px); height: 100dvh; overflow: clip; display: grid; grid-template-rows: 54px minmax(0,1fr); font-size: var(--screen-text); }
-.screen-deck .sitebar { height: 54px; min-height: 0; padding: 5px clamp(12px,1.5vw,40px); }
-.screen-deck .sitebar .term { display: none; }
-.screen-deck main { width: 100%; max-width: none; min-width: 0; min-height: 0; margin: 0; padding: 0 clamp(12px,1.5vw,40px) 10px; display: grid; grid-template-rows: auto minmax(0,1fr); gap: 6px; }
-.screen-deck .intro, .screen-deck>.skip, .screen-deck main>.lesson-bottom, .screen-deck>footer { display: none; }
-.screen-deck .textbook-nav { padding: 0; gap: 10px; align-items: stretch; }
-.screen-deck .textbook-nav a { padding: 5px 14px; gap: 10px; font-size: 16px; border-radius: 8px; align-items: center; }
-.screen-deck .textbook-nav b { font-size: 22px; }
-/* All topics remain visible; the current one is highlighted. */
-.screen-toolbar { min-width:0; padding-block:6px; }
-.screen-deck #chapter-nav { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; border:0; }
-.screen-deck #chapter-nav button { flex:0 1 auto; white-space:normal; min-width:0; padding:7px 14px; font-size:16px; line-height:1.4; border:1px solid var(--line); border-radius:7px; color:var(--ink); }
-.screen-deck #chapter-nav button span { display:none; }
-.screen-deck #chapter-nav button[aria-current="step"] { background:var(--pine); border-color:var(--pine); color:var(--paper); }
-.screen-deck #chapter-nav button:after { display:none; }
-.screen-modes { display:none; }
-.screen-deck .workspace { position:relative; height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(340px,.48fr) minmax(0,1fr); gap: clamp(16px,2vw,42px); align-items: stretch; }
-.screen-pane, .screen-deck .experiment { display: grid; grid-template-rows: 42px minmax(0,1fr) 48px; height: 100%; min-height: 0; min-width: 0; overflow: clip; }
-.screen-pane { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
-.screen-pane-title, .screen-deck .experiment-head { margin: 0; padding: 9px 16px; font-size: 16px; line-height: 24px; border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.screen-deck .live-dot { display: none; }
-.screen-window { position: relative; min-width: 0; min-height: 0; margin: 20px 24px; overflow: clip; }
-.screen-deck .screen-flow { height: 100%; min-height: 0; width: 100%; min-width: 0; padding: 0; margin: 0; display: block; column-count: 1; column-width: auto; column-gap: var(--screen-gap); column-fill: auto; overflow: visible; transition: none; }
-.screen-deck #scene { height: 100%; min-height: 0; padding: 0; margin: 0; }
-.screen-deck .screen-flow>* { margin-top: 0; margin-bottom: 22px; }
-.screen-deck .screen-flow :is(h2,h3,summary) { break-after: avoid; }
-.screen-deck #section-kicker { display:none; }
-.screen-deck .screen-flow :is(p,li) { orphans: 2; widows: 2; }
-.screen-deck .screen-flow :is(.controls,.stage,.rep-area,.control-pair,.order-controls,.two-selects,.matrix,.cayley,.property,.axiom-check,.partition-block,.power-rules article,.quiz-options button) { break-inside: avoid; }
-.screen-deck .lesson-copy h2 { font-size: clamp(25px,1.7vw,38px); line-height: 1.45; margin: 0 0 14px; }
-.screen-deck :is(.lead,.definition p,.prompt,.status-strip,.insight,.quiz-feedback,.quiz-options button,.quiz-end ol,.proof-conditions) { font-size: var(--screen-text); line-height: 1.8; }
-.screen-deck :is(.eyebrow,.hint,.source-note,.mini-proof,.definition .label,.prompt b,.section-small,.property span,.axiom-check small,.proof-board .reason,.proof-board .label,.reference) { font-size: max(16px,calc(var(--screen-text) - 2px)); line-height: 1.65; }
-.screen-deck :is(.controls button,.controls label,.controls select,.control-pair label,.order-controls label,.order-controls select,.two-selects label,.two-selects select,.proof-options button,.partition-options button,.cayley button,.cayley th,.matrix th) { font-size: max(16px,calc(var(--screen-text) - 2px)); }
-.screen-deck .definition { border-left: 0; border-top: 1px solid var(--line); padding: 14px 0 0; margin: 14px 0; }
-.screen-deck .formula { font-size: clamp(23px,1.6vw,34px); line-height: 1.6; }
-.screen-deck .prompt { padding-left: 12px; }
-.screen-deck .source-note { margin-top: 12px; }
-.screen-deck .controls { gap: 8px; }
-.screen-deck button { min-height: 40px; }
-.screen-deck .stage { margin: 12px 0; background-size: 18px 18px; }
-.screen-deck .stage svg { width: 100%; height: auto; max-height: min(34dvh,340px); }
-.screen-deck .relation-layout { display: grid; grid-template-columns: minmax(0,1fr) 220px; gap: 18px; break-inside: avoid; }
-.screen-deck .relation-layout .stage { width: 100%; max-width: none; margin: 0; }
-.screen-deck .matrix { border-spacing: 4px; }
-.screen-deck #relation-matrix { width: 220px; max-width: 100%; margin: 0 auto; }
-.screen-deck .matrix button { width: 44px; height: 44px; font-size: 18px; }
-.screen-deck .property-row { gap: 12px; }
-.screen-deck .property b,.screen-deck .axiom-check b { font-size: var(--screen-text); }
-.screen-deck .partition-options { gap: 8px; }
-.screen-deck .insight,.screen-deck .rep-box { padding: 12px 16px; }
-.screen-deck .status-strip { min-height: 0; padding-top: 12px; }
-.screen-deck .axiom-layout { display: block; }
-.screen-deck #cayley { overflow: visible; padding: 0; }
-.screen-deck .cayley { min-width: 0; width: 100%; table-layout: fixed; }
-.screen-deck .cayley button { min-height: 36px; padding: 4px 1px; }
-.screen-deck .axiom-checks { display: block; }
-.screen-deck .axiom-check { padding: 8px 0; }
-.screen-deck .proof-board { min-height: 0; padding: 20px 10px; }
-.screen-deck #scene .proof-board { break-inside:auto; overflow:visible; }
-.screen-deck .theorem-statement { font-size:var(--screen-text); line-height:1.85; text-align:left; max-width:36em; margin:12px auto; }
-.screen-deck .proof-board .expression { font-size: clamp(25px,1.8vw,40px); line-height: 1.6; }
-.screen-deck .criteria-step { font-size: clamp(22px,1.6vw,32px); line-height: 1.8; }
-.screen-deck .quiz-options { display: block; }
-.screen-deck .quiz-options button { width: 100%; margin-bottom: 10px; padding: 10px 14px; }
-.screen-deck .quiz-question { font-size: clamp(24px,1.6vw,34px); line-height: 1.6; margin: 12px 0; }
-.screen-deck .quiz-feedback { min-height: 0; }
-.screen-deck .reference-grid { display: block; }
-.screen-deck .reference-grid>div { margin-bottom: 22px; }
-.screen-deck .reference { padding: 0; border: 0; }
-.screen-pager { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 4px 12px; border-top: 1px solid var(--line); font-size: 15px; }
-.screen-pager button { padding: 4px 10px; font-size: 16px; }
-.screen-pager span { white-space: nowrap; }
-.screen-deck .mini-proof { display: block; }
-.screen-deck .mini-proof summary { font-size: var(--screen-text); font-weight: 600; cursor: default; list-style: none; padding: 0; margin-bottom: 10px; }
-.screen-deck .mini-proof summary::-webkit-details-marker { display: none; }
-.screen-deck .mini-proof p { padding: 0; margin-bottom: 22px; }
-.screen-deck .partition-blocks { margin: 18px 0; }
-.screen-deck .power-rules { display: block; }
-.screen-deck .power-rules article { margin-bottom: 22px; }
-.screen-deck .screen-flow[data-pages="1"] { transform: none !important; }
-/* Keep each reading page on one idea; overflow still uses the existing pager. */
-.screen-deck #definition,.screen-deck #prompt,.screen-deck .reference { break-before: column; }
-.screen-deck #definition { border-top: 0; padding-top: 0; margin-top: 0; }
-.screen-deck #prompt b { display: block; break-after: avoid; margin-bottom: 10px; }
-.screen-deck .mini-proof { break-before: column; border-top: 0; padding-top: 0; }
-.screen-deck .mini-proof>h3,.screen-deck .mini-proof>p+p { break-before: column; }
-.screen-deck .mini-proof p { font-size: var(--screen-text); line-height: 1.85; max-width: 36em; }
-.screen-deck .proof-board { background: none; text-align: left; padding: 12px 0; }
-.screen-deck .theorem-statement { line-height: 1.7; }
-.screen-deck .theorem-statement p { margin: 0 0 12px; }
-.screen-deck .theorem-statement ol { margin: 12px 0; padding-left: 1.6em; }
-.screen-deck .theorem-statement li { padding-left: .3em; margin: 0 0 10px; break-inside: avoid; }
-.screen-deck .theorem-statement .theorem-note { font-size: max(18px,calc(var(--screen-text) - 1px)); }
-.screen-deck :is(.exercise-question,.exercise-proof) { font-size: var(--screen-text); line-height: 1.8; }
-.screen-deck .exercise-question { max-width: 36em; margin-bottom: 24px; }
-.screen-deck .quiz-feedback { break-before: column; }
-.screen-deck .exercise-proof { margin-top: 24px; }
-.screen-deck .quiz-summary { grid-template-columns: 1fr; }
-.screen-deck .criteria-step { overflow-wrap: anywhere; }
-@media(min-width:1001px) {
-  .screen-deck .quiz-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
-  .screen-deck .quiz-options button { margin: 0; text-align: left; }
+/* Textbook notebook, live demonstration, and one shared reading sequence. */
+html:has(.notebook-deck) { height:100%; overflow:clip; }
+body.notebook-deck { --lesson-text:clamp(18px,1.12vw,24px); height:100dvh; overflow:clip; display:grid; grid-template-rows:54px minmax(0,1fr); font-size:var(--lesson-text); }
+body.notebook-deck.embedded-lesson { grid-template-rows:minmax(0,1fr); }
+.notebook-deck.embedded-lesson>.sitebar { display:none; }
+.notebook-deck main { width:100%; max-width:1900px; min-width:0; min-height:0; margin:0 auto; padding:18px clamp(18px,3vw,64px) 0; display:grid; grid-template-rows:minmax(0,1fr) auto; gap:0; }
+.notebook-deck .intro,.notebook-deck>.skip,.notebook-deck main>.lesson-bottom,.notebook-deck>footer,.notebook-deck .live-dot,.notebook-deck #chapter-nav,.notebook-deck .lesson-copy { display:none!important; }
+.notebook-deck .workspace { min-height:0; height:100%; display:grid; grid-template-columns:minmax(300px,.82fr) minmax(0,1.7fr); gap:clamp(28px,3.5vw,72px); align-items:stretch; padding:0; }
+.notebook-deck .lesson-notebook { min-height:0; overflow:auto; overscroll-behavior:contain; padding:0 16px 32px 0; scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
+.notebook-heading { padding:8px 18px 24px; border-bottom:1px solid var(--line); }
+.notebook-heading>span { color:var(--pine); font-size:16px; letter-spacing:.06em; }
+.notebook-heading h2 { font-size:clamp(22px,1.55vw,30px); line-height:1.45; font-weight:400; margin:8px 0 0; }
+.notebook-mobile-index { display:none; }
+.notebook-entry { position:relative; padding:8px 0; border-bottom:1px solid var(--line); border-left:2px solid transparent; transition:background .2s,border-color .2s; }
+.notebook-entry.is-current { border-left-color:var(--pine); background:linear-gradient(90deg,#c3a36b0b,transparent); }
+.notebook-deck .notebook-entry-heading { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; padding:13px 16px; min-height:60px; background:transparent; border:0; border-radius:0; color:var(--muted); }
+.notebook-entry-heading small { display:block; font-size:14px; line-height:1.5; font-weight:400; margin-bottom:5px; }
+.notebook-entry-heading strong { display:block; font:400 clamp(19px,1.25vw,25px)/1.4 var(--serif,Georgia,serif); }
+.notebook-entry.is-current .notebook-entry-heading { color:var(--ink); }
+.notebook-entry.is-current .notebook-entry-heading small { color:var(--pine); }
+.notebook-fold { font-size:22px; color:var(--muted); font-weight:400; }
+.notebook-entry-body { padding:0 18px 14px; }
+.notebook-entry-body p { font-size:var(--lesson-text); line-height:1.8; margin:18px 0 6px; color:var(--ink); }
+.notebook-formula { font:400 clamp(20px,1.45vw,29px)/1.85 Georgia,'Times New Roman',serif; color:var(--pine); overflow-wrap:anywhere; margin:8px 0; }
+.notebook-preview { color:var(--muted); opacity:.7; font:400 clamp(16px,1vw,21px)/1.6 Georgia,'Times New Roman',serif; padding:0 18px 9px; overflow-wrap:anywhere; }
+html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .experiment { background:transparent; border:0; box-shadow:none; border-radius:0; }
+.notebook-deck .experiment { min-width:0; min-height:0; height:100%; overflow:auto; overscroll-behavior:contain; padding:0 12px 32px 0; scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
+html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .experiment-head { background:transparent; }
+.notebook-deck .experiment-head { padding:10px 0 16px; border-bottom:1px solid var(--line); font-size:16px; color:var(--muted); line-height:1.6; }
+.notebook-deck .experiment[data-notebook-topic="check"] .experiment-head { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+.notebook-deck .experiment[data-notebook-topic="check"] #experiment-label { font:400 clamp(26px,1.7vw,36px)/1.4 var(--serif,Georgia,serif); color:var(--ink); }
+.quiz-status { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:15px; }
+.quiz-status-dots { display:flex; gap:4px; }
+.notebook-deck .quiz-status button { padding:6px; width:24px; height:32px; min-height:32px; border:0; background:none; border-radius:0; display:grid; place-items:center; }
+.quiz-status button:before { content:''; width:10px; height:10px; border:1px solid var(--muted); border-radius:50%; }
+.quiz-status button[data-state="correct"]:before { background:var(--pine); border-color:var(--pine); }
+.quiz-status button[data-state="incorrect"]:before { background:#df9179; border-color:#df9179; }
+.quiz-status button[aria-current="step"]:before { outline:1px solid var(--ink); outline-offset:3px; }
+.quiz-status-count { color:var(--muted); white-space:nowrap; }
+.notebook-deck .quiz-number { display:inline-block; font:400 clamp(23px,1.6vw,32px)/1.4 var(--serif,Georgia,serif); color:var(--pine); border-left:3px solid var(--pine); padding:4px 0 4px 14px; margin:0 0 12px; }
+.notebook-deck #scene { min-height:0; padding:24px 0 0; }
+.notebook-visual { min-height:0; }
+.notebook-exposition { margin-top:28px; padding-top:26px; border-top:1px solid var(--line); }
+.notebook-deck :is(.controls,.order-controls,.two-selects,.control-pair) { display:flex; flex-wrap:wrap; gap:12px 20px; margin:0 0 24px; }
+.notebook-deck :is(button,select,input) { font-size:max(16px,calc(var(--lesson-text) - 2px)); }
+.notebook-deck button { min-height:38px; }
+.notebook-deck :is(.controls label,.order-controls label,.control-pair label,.two-selects label) { font-size:max(16px,calc(var(--lesson-text) - 2px)); }
+.notebook-deck :is(.hint,.section-small,.property span,.axiom-check small,.symmetry-legend,.quiz-progress,.action-readout small,.rep-box>small) { font-size:max(15px,calc(var(--lesson-text) - 2px)); line-height:1.65; }
+.notebook-deck :is(.insight,.status-strip,.quiz-feedback,.mini-proof,.rep-result p,.proof-conditions,.axiom-check b,.axiom-check span,.exercise-question,.exercise-proof,.quiz-end ol) { font-size:var(--lesson-text); line-height:1.85; }
+.notebook-deck .formula { font-size:clamp(24px,1.6vw,34px); line-height:1.65; }
+.notebook-deck .stage { margin:12px 0 22px; border:0; border-radius:0; }
+html[data-course-page="lesson"][data-page-style="sand"] .notebook-deck .stage { background:transparent; }
+.notebook-deck .stage svg { display:block; width:100%; height:auto; max-height:min(42dvh,430px); }
+.notebook-deck .relation-layout { display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:24px; align-items:center; margin:18px 0; }
+.notebook-deck .relation-layout .stage { width:100%; max-width:none; margin:0; }
+.notebook-deck #relation-matrix { width:210px; max-width:100%; }
+.notebook-deck .matrix { border-spacing:5px; }
+.notebook-deck .matrix button { width:42px; height:42px; min-height:0; }
+.notebook-deck .matrix th,.notebook-deck .matrix caption { font-size:17px; }
+.notebook-deck .property-row { gap:16px; }
+.notebook-deck .property { padding:14px 0; background:transparent; border:0; border-top:1px solid var(--line); border-radius:0; }
+.notebook-deck .property b { font-size:var(--lesson-text); }
+.notebook-deck .partition-options { gap:8px; }
+.notebook-deck .partition-options button { font-size:max(16px,calc(var(--lesson-text) - 2px)); }
+.notebook-deck .status-strip { min-height:0; padding:0; border:0; margin:20px 0 0; }
+.notebook-deck .mini-proof { margin:0; padding:0; border:0; }
+.notebook-deck .mini-proof summary { font-size:var(--lesson-text); color:var(--pine); padding:0 0 14px; }
+.notebook-deck .mini-proof p { padding:0; max-width:46em; margin:0 0 22px; }
+.notebook-deck .axiom-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(170px,.5fr); gap:26px; align-items:start; }
+.notebook-deck .axiom-checks { display:block; }
+.notebook-deck .axiom-check { padding:8px 0; }
+.notebook-deck .cayley { min-width:0; width:100%; table-layout:fixed; }
+.notebook-deck .cayley button { font-size:17px; min-height:40px; padding:5px 1px; }
+.notebook-deck .cayley th { font-size:17px; }
+.notebook-deck .proof-board { min-height:0; padding:30px 0; text-align:center; }
+.notebook-deck .proof-board .expression { font-size:clamp(32px,2.4vw,54px); line-height:1.5; }
+.notebook-deck .proof-board .reason { font-size:var(--lesson-text); line-height:1.85; margin-top:25px; }
+.notebook-deck .proof-board .label { font-size:18px; line-height:1.7; }
+.notebook-deck .proof-conditions { margin:12px 0 0; }
+.notebook-deck #proof-tabs,.notebook-deck #criteria-tabs { display:none; }
+.notebook-deck :is(#proof-board,#criteria-proof):has(.theorem-statement) { display:none; }
+.notebook-focus-formula { text-align:center; padding:clamp(35px,7dvh,95px) 12px; }
+.notebook-focus-formula>div { color:var(--pine); font:400 clamp(30px,2.3vw,48px)/1.8 Georgia,'Times New Roman',serif; overflow-wrap:anywhere; }
+.notebook-focus-formula p { font-size:16px; color:var(--muted); margin:28px 0 0; }
+.notebook-deck .criteria-step { font-size:clamp(23px,1.6vw,34px); line-height:1.9; overflow-wrap:anywhere; }
+.notebook-deck .notebook-exposition .insight { padding:0; background:none; border:0; margin:0 0 20px; }
+.notebook-deck .power-rules { display:grid; grid-template-columns:1fr; gap:22px; }
+.notebook-deck .power-rules article { padding:24px; }
+.notebook-deck .quiz-question { font-size:clamp(26px,1.8vw,38px); margin:14px 0; line-height:1.5; }
+.notebook-deck .quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:24px 0; }
+.notebook-deck .quiz-options button { font-size:var(--lesson-text); padding:16px 20px; line-height:1.65; text-align:left; }
+.notebook-deck .quiz-options[data-columns="4"] { display:flex; flex-wrap:nowrap; }
+.notebook-deck .quiz-options[data-columns="4"] button { flex:1 1 auto; white-space:nowrap; }
+.notebook-deck .quiz-options[data-columns="1"] { grid-template-columns:1fr; }
+.notebook-deck .quiz-feedback { min-height:0; padding:0; }
+.notebook-deck .exercise-proof { margin:22px 0; }
+.notebook-navigation { display:flex; align-items:center; gap:20px; padding:12px 0 max(12px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); }
+.notebook-navigation>button { flex:0 0 auto; min-width:110px; padding:9px 18px; border:1px solid var(--line); border-radius:6px; background:transparent; font-size:16px; }
+.notebook-navigation>button:last-child { color:var(--pine); border-color:var(--pine); }
+.notebook-location { flex:1; min-width:0; text-align:center; font-size:15px; color:var(--muted); }
+.notebook-location small { display:block; font-size:12px; margin-top:3px; opacity:.7; }
+.notebook-deck :focus-visible { outline:2px solid var(--pine); outline-offset:3px; }
+@media(min-width:1700px) {
+  .notebook-deck main { padding-top:30px; }
+  .notebook-deck .relation-layout { grid-template-columns:minmax(0,1fr) 260px; }
+  .notebook-deck #relation-matrix { width:260px; }
+  .notebook-deck .matrix button { width:54px; height:54px; }
+  .notebook-deck .cayley button { font-size:22px; min-height:48px; }
 }
-@media(min-width:1800px) {
-  .screen-deck .relation-layout { grid-template-columns: minmax(0,1fr) 280px; }
-  .screen-deck #relation-matrix { width: 280px; }
-  .screen-deck .matrix button { width: 56px; height: 56px; }
+@media(max-width:1100px) and (min-width:761px) {
+  .notebook-deck .workspace { grid-template-columns:minmax(280px,.8fr) minmax(0,1.4fr); gap:24px; }
+  .notebook-deck .relation-layout,.notebook-deck .axiom-layout { grid-template-columns:1fr; }
+  .notebook-deck #relation-matrix { margin:auto; }
+  .notebook-deck .axiom-checks { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 }
-@media(max-width:1000px) {
-  .screen-deck .workspace { grid-template-columns: minmax(0,1fr); }
-  .screen-modes { position:absolute; z-index:2; top:0; left:0; right:0; height:42px; display:flex; justify-content:center; align-items:center; gap:6px; }
-  .screen-pane-title,.screen-deck .experiment-head { visibility:hidden; }
-  .screen-modes button { padding:4px 18px; min-height:34px; font-size:16px; }
-  .screen-deck[data-screen-mode="notes"] .experiment,.screen-deck[data-screen-mode="experiment"] .screen-pane { display: none; }
-  .screen-deck .screen-window { margin: 12px 16px; }
-  .screen-deck .lesson-copy h2 { font-size: 29px; }
+@media(max-width:760px) {
+  body.notebook-deck { --lesson-text:18px; }
+  .notebook-deck main { padding:8px 16px 0; }
+  .notebook-deck .workspace { display:block; overflow:auto; overscroll-behavior:contain; }
+  .notebook-deck .lesson-notebook { padding:0; overflow:visible; }
+  .notebook-heading { padding:10px 4px 14px; }
+  .notebook-heading h2 { font-size:23px; }
+  .notebook-deck .notebook-mobile-index { display:block; width:100%; min-width:0; max-width:100%; margin-top:14px; font-size:15px; text-overflow:ellipsis; }
+  .notebook-entry:not(.is-current) { display:none; }
+  .lesson-notebook[data-topic="check"] .notebook-entries { display:none; }
+  .notebook-entry-body { padding:0 14px 12px; }
+  .notebook-formula { font-size:22px; }
+  .notebook-deck .experiment { height:auto; overflow:visible; margin-top:26px; padding:0 0 24px; }
+  .notebook-deck .relation-layout,.notebook-deck .axiom-layout { grid-template-columns:1fr; }
+  .notebook-deck #relation-matrix { margin:auto; }
+  .notebook-deck .property-row { display:block; }
+  .notebook-deck .stage svg { max-height:none; }
+  .notebook-deck .quiz-options button { padding:12px; }
+  .notebook-navigation { gap:8px; padding-top:9px; }
+  .notebook-navigation>button { min-width:0; max-width:40%; padding:8px 10px; font-size:14px; }
+  .notebook-location { font-size:12px; }
+  .notebook-location small { display:none; }
+  .notebook-entry-heading small { font-size:14px; }
 }
-@media(max-width:650px) {
-  body.screen-deck { --screen-text: 18px; grid-template-rows: 48px minmax(0,1fr); }
-  .screen-deck main { padding: 0 10px max(8px,env(safe-area-inset-bottom)); grid-template-rows: auto minmax(0,1fr); gap: 4px; }
-  .screen-deck .sitebar { height: 48px; padding: 4px 12px; }
-  .screen-deck .textbook-nav a { flex: 1; flex-direction: row; gap: 7px; padding: 4px 8px; font-size: 14px; line-height: 1.45; }
-  .screen-deck .textbook-nav b { font-size: 20px; }
-  .screen-toolbar { padding-block:4px; }
-  .screen-deck #chapter-nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; }
-  .screen-deck #chapter-nav button { padding:5px 4px; font-size:15px; min-height:40px; }
-  .screen-deck .relation-layout { display: block; }
-  .screen-deck .relation-layout .stage { margin-bottom: 14px; }
-  .screen-deck .relation-layout { break-inside: auto; }
-  .screen-deck .stage svg { max-height: min(34dvh,270px); }
-  .screen-deck .property-row { display: block; }
-  .screen-deck .control-pair,.screen-deck .order-controls,.screen-deck .two-selects { gap: 12px; }
-  .screen-deck .symmetry-stage svg text { font-size: 24px; }
-  .screen-deck .screen-window { margin: 10px 12px; }
-  .screen-deck .partition-block span { width: 44px; height: 44px; font-size: 26px; }
-  .screen-deck .power-rules article { padding: 12px; }
-  .screen-deck .controls { break-inside: auto; }
-  .screen-deck .controls>* { break-inside: avoid; }
-}
-@media(max-height:650px) {
-  .screen-deck .screen-flow h2 { break-after:auto; }
-  .screen-deck .sitebar { min-height: 0; }
-  .screen-deck .screen-window { margin-block: 8px; }
-  .screen-deck .screen-flow>* { margin-bottom: 12px; }
-  .screen-deck .stage svg { max-height: 220px; }
-  .screen-deck .proof-board { padding: 10px 4px; }
-}
+@media(prefers-reduced-motion:reduce) { .notebook-entry { transition:none; } }
 @media print {
-  html:has(.screen-deck),body.screen-deck { height: auto; overflow: visible; display: block; }
-  .screen-deck main,.screen-deck .workspace,.screen-pane,.screen-deck .experiment,.screen-deck .screen-window,.screen-deck .screen-flow { display: block !important; height: auto; overflow: visible; columns: auto; transform: none !important; }
-  .screen-pager,.screen-toolbar { display: none; }
+  html:has(.notebook-deck),body.notebook-deck { height:auto; overflow:visible; display:block; }
+  .notebook-deck main,.notebook-deck .workspace,.notebook-deck .lesson-notebook,.notebook-deck .experiment { display:block; height:auto; overflow:visible; }
+  .notebook-entry { display:block!important; }
+  .notebook-entry-body[hidden] { display:block!important; }
+  .notebook-navigation { display:none; }
 }
