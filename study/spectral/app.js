@@ -312,8 +312,26 @@ function selectInitialBuild(index,substep=0){
  keepDefinitionVisible();
 
 }
+// Direct outline jumps reveal the same preceding notebook content as sequential reading.
+// Preserve manual folds; populate only missing history, without playing skipped diagrams.
+function revealBeforeStatement(target){
+ for(const key of readingOrder.slice(0,readingOrder.indexOf(target))){
+  const firstVisit=!visitedStatements.has(key);visitedStatements.add(key);
+  if(firstVisit&&!notebookMotion.autoCollapse())openStatements.add(key);
+  if(key==='initial:0'){
+   for(let i=revealedBuild+1;i<=INITIAL_STEPS;i++)if(!notebookMotion.autoCollapse())openBuilds.add(i);
+   revealedBuild=INITIAL_STEPS;state.initialReveal=INITIAL_STEPS;
+   revealedTotalStep=revealedFiltrationStep=revealedGradedStep=1;
+  }else{
+   const [module,step]=key.split(':'),last=numberedPages(module,Number(step),0).length-1;
+   if(notebookMotion.autoCollapse())for(let i=(revealedReadings.get(key)??-1)+1;i<=last;i++)foldedReadings.add(`${key}:${i}`);
+   revealedReadings.set(key,Math.max(revealedReadings.get(key)??-1,last));
+  }
+ }
+}
 function activateStatement(key,last=false){
  const [module,number]=key.split(':'),step=Number(number);if(key===activeStatementKey()&&openStatements.has(key))return;
+ revealBeforeStatement(key);
  foldedSections.delete(readingSection(key));
  state.cover=false;state.module=module;state.step=step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.stackR=null;state.effect=null;state.selected=null;state.totalOrigin=null;
  openStatements.add(key);
