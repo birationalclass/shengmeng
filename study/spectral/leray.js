@@ -2,7 +2,7 @@ import {proofPanel} from './proof-panel.js?v=109';
 const R=String.raw;
 export const lerayTitles=[['几何设定','Geometric setup'],['内射分解','Injective resolution'],['直像复形','The pushforward complex'],['Cartan–Eilenberg 分解','Cartan–Eilenberg resolution'],['全局截面对象','The object of global sections'],['微分与符号约定','Differentials and signs'],['总复形与列滤过','Total complex and column filtration'],['Leray 谱序列的第二页','The second page of Leray'],['Leray 收敛','Leray convergence'],['应用：由总上同调消失推出直像消失','Application: vanishing of higher direct images'],['应用：有理奇点与解消','Application: rational singularities']];
 export function leraySetup({math,t,page}){
- const notes=[t('设 f 是域 k 上概形之间的态射，𝓕 是 X 上的拟凝聚层。','Let f be a morphism of schemes over a field k, and let 𝓕 be a quasi-coherent sheaf on X.'),t('在所有 𝒪_X-模层的范畴中，取 𝓕 的内射分解。','Choose an injective resolution of 𝓕 in the category of all 𝒪_X-module sheaves.'),t('逐项取直像，得到 Y 上的层复形。','Apply the direct image term by term to obtain a complex of sheaves on Y.'),t('取 A• 的 Cartan–Eilenberg 内射分解 J。','Choose a Cartan–Eilenberg injective resolution J of A•.')];
+ const notes=[t('设 f 是域 k 上概形之间的态射，𝓕 是 X 上的拟凝聚层。','Let f be a morphism of schemes over a field k, and let 𝓕 be a quasi-coherent sheaf on X.'),t(`在所有 ${math(R`\mathcal O_X`)}-模层的范畴中，取 ${math(R`\mathcal F`)} 的内射分解。`,`Choose an injective resolution of ${math(R`\mathcal F`)} in the category of all ${math(R`\mathcal O_X`)}-module sheaves.`),t('逐项取直像，得到 Y 上的层复形。','Apply the direct image term by term to obtain a complex of sheaves on Y.'),t('取 A• 的 Cartan–Eilenberg 内射分解 J。','Choose a Cartan–Eilenberg injective resolution J of A•.')];
  return `<div class="leray-setup"><p>${notes[page]||''}</p></div>`;
 }
 export const lerayContent={title:'Leray spectral sequence',f:[
