@@ -1,5 +1,5 @@
-import {lerayExposition,lerayDiagram} from './leray.js?v=133';
-import {proofPanel,proofSections} from './proof-panel.js?v=133';
+import {lerayExposition,lerayDiagram} from './leray.js?v=135';
+import {proofPanel,proofSections} from './proof-panel.js?v=135';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {visualMotion} from './visual-style.js?v=41';
