@@ -1,6 +1,6 @@
-import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=117';
+import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=133';
 import {replaceMathContent} from './math-transitions.js?v=97';
-import {proofPanel,proofSections} from './proof-panel.js?v=109';
+import {proofPanel,proofSections} from './proof-panel.js?v=133';
 
 export function createStabilityProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;let context=null,selectedMode='outgoing';
