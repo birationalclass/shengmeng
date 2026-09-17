@@ -1,7 +1,7 @@
 import {singleLineTitle} from './single-line-convergence.js?v=153';
-import {firstQuadrantTitle} from './first-quadrant-convergence.js?v=156';
-import {hodgeTitles} from './hodge.js?v=156';
-import {lerayTitles} from './leray.js?v=156';
+import {firstQuadrantTitle} from './first-quadrant-convergence.js?v=157';
+import {hodgeTitles} from './hodge.js?v=157';
+import {lerayTitles} from './leray.js?v=157';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
@@ -19,7 +19,7 @@ const groups={
 const kinds={
  'learn:3':['E'],'learn:6':['D','D','P'],'learn:4':['D'],'learn:5':['D','D'],
  'converge:0':['P','D','P'],'converge:1':['D'],'converge:2':['D'],'converge:3':['D','T','D','C'],
- 'converge:5':['D','D','P','D','T','T'],
+ 'converge:5':['D','D','P','D','T','P','T'],
  'converge:4':['','D','D','D','D','L','D','D','D','D','P','P','T','E','E']
 };
 export function numberedPages(module,step,count){

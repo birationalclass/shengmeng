@@ -1,5 +1,5 @@
 import {statementMark} from './statement-marks.js?v=153';
-import {firstQuadrantContent} from './first-quadrant-convergence.js?v=156';
+import {firstQuadrantContent} from './first-quadrant-convergence.js?v=157';
 import {kmVanishingProof} from './km-vanishing.js?v=153';
 import {singleLineContent} from './single-line-convergence.js?v=153';
 // Full hypotheses and conclusions live with the shared proof presentation.

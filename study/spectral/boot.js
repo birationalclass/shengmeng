@@ -55,6 +55,12 @@
 
  const coverFullscreen=document.getElementById('coverFullscreen'),lessonFullscreen=document.getElementById('fullscreen');
  let fullscreenScroll=0,fullscreenPending=false;
+ const nativeFullscreenAvailable=()=>document.fullscreenEnabled===true&&typeof document.documentElement.requestFullscreen==='function';
+ const enterFullscreenLayout=()=>{
+  document.body.classList.add('study-fullscreen');
+  document.documentElement.dataset.fullscreenMode=document.fullscreenElement?'native':'viewport';
+  syncFullscreen();
+ };
  const fullscreenActive=()=>document.body.classList.contains('study-fullscreen');
  const syncFullscreen=()=>{
   document.title=en()?'Spectral Sequence · Sheng Meng':'谱序列 · 孟晟';
@@ -66,7 +72,7 @@
   for(const button of [coverFullscreen,lessonFullscreen]){button.setAttribute('aria-pressed',String(active));button.setAttribute('aria-label',actionLabel);button.title=active?actionLabel+' (Esc)':actionLabel;button.disabled=fullscreenPending;}
  };
  const leaveFullscreen=()=>{
-  window.spectralMobileReading?.unlock();document.body.classList.remove('study-fullscreen');syncFullscreen();window.scrollTo(0,fullscreenScroll);
+  window.spectralMobileReading?.unlock();document.body.classList.remove('study-fullscreen');delete document.documentElement.dataset.fullscreenMode;syncFullscreen();window.scrollTo(0,fullscreenScroll);
   const button=!overlay.hidden&&!overlay.classList.contains('is-ready')?coverFullscreen:lessonFullscreen;
   button.focus({preventScroll:true});
  };
@@ -79,13 +85,17 @@
   if(fullscreenPending)return;fullscreenPending=true;
   try{
    if(fullscreenActive()){syncFullscreen();await exitFullscreen();return;}
-   fullscreenScroll=window.scrollY;document.body.classList.add('study-fullscreen');syncFullscreen();
-   try{if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();}catch{/* Embedded browsers keep the viewport-filling study layout. */}
+   fullscreenScroll=window.scrollY;syncFullscreen();
+   // Do not mutate the layout while the native browser surface is moving.
+   if(nativeFullscreenAvailable()){
+    try{await document.documentElement.requestFullscreen();}catch{/* Use the same viewport layout if native entry is unavailable. */}
+   }
+   enterFullscreenLayout();
    await window.spectralMobileReading?.lockLandscape();
   }finally{fullscreenPending=false;syncFullscreen();}
  };
  coverFullscreen.onclick=toggleFullscreen;lessonFullscreen.onclick=toggleFullscreen;
- document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement){document.body.classList.add('study-fullscreen');syncFullscreen();}else if(fullscreenActive())leaveFullscreen();});
+ document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement){if(!fullscreenPending)enterFullscreenLayout();}else if(fullscreenActive())leaveFullscreen();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&fullscreenActive()&&!document.querySelector('dialog[open]')){e.preventDefault();if(window.spectralMobileReading?.isFrame)window.spectralMobileReading.toggleFullscreen();else exitFullscreen();}});
  window.spectralFullscreen={sync:syncFullscreen,toggle:toggleFullscreen};
  // Smooth only the visual interpolation; milestones still report real progress.

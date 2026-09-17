@@ -1,7 +1,7 @@
 import {singleLineFormula} from './single-line-convergence.js?v=153';
-import {firstQuadrantFormula} from './first-quadrant-convergence.js?v=156';
-import {hodgeContent} from './hodge.js?v=156';
-import {lerayContent} from './leray.js?v=156';
+import {firstQuadrantFormula} from './first-quadrant-convergence.js?v=157';
+import {hodgeContent} from './hodge.js?v=157';
+import {lerayContent} from './leray.js?v=157';
 import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;

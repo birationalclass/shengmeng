@@ -120,3 +120,9 @@ body.toolbar-idle .notebook-toolbar #sceneTitle{opacity:.24}
 .notebook-toolbar #coverButton:active svg{transform:scale(.9)}
 body.toolbar-idle .notebook-toolbar :is(#fullscreen,#coverButton),body.toolbar-idle .cover-actions #coverFullscreen{border-color:transparent;background:transparent}
 @media(prefers-reduced-motion:reduce){.notebook-toolbar #coverButton svg{transition:none;transform:none!important}}
+
+/* One header geometry in both modes: no alternate containing block or width. */
+body>.notebook-toolbar,.study-fullscreen .notebook-toolbar{
+ position:relative;inset:auto;max-width:none;flex:none;z-index:300;
+ transform:none;translate:none;scale:none;rotate:none;
+}
