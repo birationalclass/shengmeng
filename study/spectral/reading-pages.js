@@ -1,6 +1,6 @@
 import {singleLineTitle} from './single-line-convergence.js?v=145';
 import {firstQuadrantTitle} from './first-quadrant-convergence.js?v=145';
-import {lerayTitles} from './leray.js?v=145';
+import {lerayTitles} from './leray.js?v=149';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={

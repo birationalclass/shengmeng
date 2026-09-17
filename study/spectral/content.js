@@ -1,6 +1,6 @@
 import {singleLineFormula} from './single-line-convergence.js?v=145';
 import {firstQuadrantFormula} from './first-quadrant-convergence.js?v=145';
-import {lerayContent} from './leray.js?v=145';
+import {lerayContent} from './leray.js?v=149';
 import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;

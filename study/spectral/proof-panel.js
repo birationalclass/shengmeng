@@ -1,4 +1,4 @@
-import {proofStatement} from './proof-statements.js?v=145';
+import {proofStatement} from './proof-statements.js?v=149';
 // Concise exposition on the page; complete derivations in one accessible dialog.
 // Opening a proof never navigates the notebook or changes the diagram state.
 const proofs=new Map();let dialog=null;
@@ -30,8 +30,8 @@ export function proofPanel({key,title,titleMath='',formulas,note='',details,math
  const body=details.replace(/^(<p[^>]*>)\s*(?:<strong>)?(?:Proof\.|证明。|Construction\.|构造。)(?:<\/strong>)?\s*/,'$1').replace(/(?:Proof\.|证明。)\s*/g,'');
  const complete=statement+`<p class="proof-start"><strong>${english?'Proof.':'证明。'}</strong></p>`+body;
  proofs.set(key,{titleMarkup:esc(title)+(titleMath?' '+math(titleMath):''),details:complete,english});
- const hint=english?'Click a formula for the proof':'点击公式查看证明';
- return `<div class="exposition-summary">${formulas.map(f=>`<button type="button" class="proof-formula operation-equation" data-proof-detail="${esc(key)}" aria-haspopup="dialog" title="${hint}">${math(f,true)}</button>`).join('')}${note?`<p class="operation-note">${note}</p>`:''}<button type="button" class="proof-detail-link" data-proof-detail="${esc(key)}" aria-haspopup="dialog">${english?'Proof and derivation':'证明与推导'} <span aria-hidden="true">↗</span></button></div>`;
+ const hint=english?'More details':'点击公式查看更多';
+ return `<div class="exposition-summary">${formulas.map(f=>`<button type="button" class="proof-formula operation-equation" data-proof-detail="${esc(key)}" aria-haspopup="dialog" title="${hint}">${math(f,true)}</button>`).join('')}${note?`<p class="operation-note">${note}</p>`:''}<button type="button" class="proof-detail-link" data-proof-detail="${esc(key)}" aria-haspopup="dialog">${english?'More':'更多'} <span aria-hidden="true">↗</span></button></div>`;
 }
 export function proofSections(entries,{math,title=e=>e.name,note=e=>e.note}={}){
  return entries.map(e=>`<section class="proof-detail-section"><h3>${esc(title(e))}</h3>${e.f.map(f=>`<div class="operation-equation">${math(f,true)}</div>`).join('')}${note(e)?`<p>${note(e)}</p>`:''}</section>`).join('');

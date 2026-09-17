@@ -10,8 +10,9 @@ export function proofStatement({key,formulas,math,english}){
  const first=t('另假设滤过来自第一象限双复形的列滤过。','Assume further that this is the column filtration of a first-quadrant double complex.');
  if(key.startsWith('leray-')){
   const page=Number(key.slice(6));
-  const setup=t(`设 ${M('f:X\\to Y')} 是域上概形的态射，${M(R`\mathcal F`)} 是 ${M('X')} 上的拟凝聚层。取其在所有 ${M(R`\mathcal O_X`)}-模层中的内射分解 ${M(R`\mathcal{I}^\bullet`)}，令 ${M(R`\mathcal{A}^\bullet=f_*\mathcal{I}^\bullet`)}。`,`Let ${M('f:X\\to Y')} be a morphism of schemes over a field and ${M(R`\mathcal F`)} a quasi-coherent sheaf on ${M('X')}. Choose an injective resolution ${M(R`\mathcal{I}^\bullet`)} in all ${M(R`\mathcal O_X`)}-module sheaves, and put ${M(R`\mathcal{A}^\bullet=f_*\mathcal{I}^\bullet`)}.`);
-  assumptions=setup;
+  assumptions=t(`设 ${M('f:X\\to Y')} 是域上概形的态射，${M(R`\mathcal F`)} 是 ${M('X')} 上的拟凝聚层。`,`Let ${M('f:X\\to Y')} be a morphism of schemes over a field and ${M(R`\mathcal F`)} a quasi-coherent sheaf on ${M('X')}.`);
+  if(page>=1)assumptions+=t(`取其在所有 ${M(R`\mathcal O_X`)}-模层中的内射分解 ${M(R`\mathcal I^\bullet`)}。`,`Choose an injective resolution ${M(R`\mathcal I^\bullet`)} in all ${M(R`\mathcal O_X`)}-module sheaves.`);
+  if(page>=2)assumptions+=t(`令 ${M(R`\mathcal A^\bullet=f_*\mathcal I^\bullet`)}。`,`Put ${M(R`\mathcal A^\bullet=f_*\mathcal I^\bullet`)}.`);
   if(page<=4){kind=t('设定与陈述。','Setup and statement.');conclusionLead='';}
   if(page===5||page===6){
    assumptions+=t(`记 ${M(R`\mathcal B^q=\operatorname{im}d_{\mathcal A}^{q-1}`)}、${M(R`\mathcal Z^q=\ker d_{\mathcal A}^q`)}、${M(R`\mathcal H^q=\mathcal Z^q/\mathcal B^q`)}。给定内射分解 ${M(R`\mathcal B^q\to\mathcal U^{\bullet,q}`)} 和 ${M(R`\mathcal H^q\to\mathcal V^{\bullet,q}`)}。`,`Write ${M(R`\mathcal B^q=\operatorname{im}d_{\mathcal A}^{q-1}`)}, ${M(R`\mathcal Z^q=\ker d_{\mathcal A}^q`)}, and ${M(R`\mathcal H^q=\mathcal Z^q/\mathcal B^q`)}. Fix injective resolutions ${M(R`\mathcal B^q\to\mathcal U^{\bullet,q}`)} and ${M(R`\mathcal H^q\to\mathcal V^{\bullet,q}`)}.`);
@@ -23,7 +24,9 @@ export function proofStatement({key,formulas,math,english}){
    }
   }
   if(page>=7&&page<=12){
-   assumptions+=t(`取 ${M(R`\mathcal{A}^\bullet`)} 的 Cartan–Eilenberg 内射分解 ${M('(\\mathcal{J},h,v)')}，采用 ${M('hv=vh')} 的约定。令 ${M(R`K^{p,q}=\Gamma(Y,\mathcal{J}^{p,q})`)}、${M(R`\delta_1=\Gamma(h)`)}、${M(R`\delta_2|_{K^{p,q}}=(-1)^p\Gamma(v)`)}，并令 ${M(R`C^\bullet=\operatorname{Tot}K`)}、${M(R`D=\delta_1+\delta_2`)}；谱序列取列滤过。`,`Choose a Cartan–Eilenberg injective resolution ${M('(\\mathcal{J},h,v)')} of ${M(R`\mathcal{A}^\bullet`)}, with ${M('hv=vh')}. Put ${M(R`K^{p,q}=\Gamma(Y,\mathcal{J}^{p,q})`)}, ${M(R`\delta_1=\Gamma(h)`)}, ${M(R`\delta_2|_{K^{p,q}}=(-1)^p\Gamma(v)`)}, ${M(R`C^\bullet=\operatorname{Tot}K`)}, and ${M(R`D=\delta_1+\delta_2`)}. Use the column filtration.`);
+   assumptions+=t(`取 ${M(R`\mathcal A^\bullet`)} 的 Cartan–Eilenberg 内射分解 ${M(R`(\mathcal J,h,v)`)}，采用 ${M('hv=vh')} 的约定。令 ${M(R`K^{p,q}=\Gamma(Y,\mathcal J^{p,q})`)}。`,`Choose a Cartan–Eilenberg injective resolution ${M(R`(\mathcal J,h,v)`)} of ${M(R`\mathcal A^\bullet`)}, with ${M('hv=vh')}. Put ${M(R`K^{p,q}=\Gamma(Y,\mathcal J^{p,q})`)}.`);
+   if(page>=8)assumptions+=t(`令 ${M(R`\delta_1=\Gamma(h)`)}、${M(R`\delta_2|_{K^{p,q}}=(-1)^p\Gamma(v)`)}。`,`Put ${M(R`\delta_1=\Gamma(h)`)} and ${M(R`\delta_2|_{K^{p,q}}=(-1)^p\Gamma(v)`)}.`);
+   if(page>=9)assumptions+=t(`令 ${M(R`C^\bullet=\operatorname{Tot}K`)}、${M(R`D=\delta_1+\delta_2`)}，并采用列滤过。`,`Put ${M(R`C^\bullet=\operatorname{Tot}K`)} and ${M(R`D=\delta_1+\delta_2`)}, and use the column filtration.`);
    if(page===8)conclusions=[R`\delta_1^2=\delta_2^2=\delta_1\delta_2+\delta_2\delta_1=0`];
    if(page===10)conclusions=[R`E_2^{p,q}\cong H^p(Y,R^qf_*\mathcal F)`];
    if(page===11)conclusions=[R`H^n(C^\bullet,D)\cong H^n(X,\mathcal F)`];
@@ -36,6 +39,11 @@ export function proofStatement({key,formulas,math,english}){
  }else{
   assumptions=filtered;
   if(['er','e1','d0','d1','dr','filtered-Z','filtered-B'].includes(key)){kind=t('设定与陈述。','Setup and statement.');conclusionLead='';}
+  if(['filtered-inclusion','filtered-Z','filtered-B','inclusions'].includes(key)){
+   assumptions=t(`设 ${M(R`(C^\bullet,D)`)} 是带递减子复形滤过 ${M(R`F^\bullet C^\bullet`)} 的上链复形。`,`Let ${M(R`(C^\bullet,D)`)} be a cochain complex with a decreasing filtration ${M(R`F^\bullet C^\bullet`)} by subcomplexes.`);
+   if(key==='filtered-inclusion')assumptions+=t(`记 ${M(R`\iota_p:(F^pC^\bullet,D)\hookrightarrow(C^\bullet,D)`)} 为包含映射，取 ${M(R`a\in F^pC^n`)} 满足 ${M('Da=0')}。`,`Let ${M(R`\iota_p:(F^pC^\bullet,D)\hookrightarrow(C^\bullet,D)`)} be the inclusion, and let ${M(R`a\in F^pC^n`)} satisfy ${M('Da=0')}.`);
+   else assumptions+=first+t(`记 ${M('n=p+q')}。`,`Write ${M('n=p+q')}.`);
+  }
   if(['stable-term','stabilization'].includes(key)){
    assumptions+=first+t(`固定 ${M(R`p,q\ge0`)}。`,`Fix ${M(R`p,q\ge0`)}.`);
    conclusionLead=t(`则对所有 ${M(R`s\ge\max\{p+1,q+2\}`)}，该位置的入射、出射微分均为零，且下列映射为自然同构：`,`Then, for every ${M(R`s\ge\max\{p+1,q+2\}`)}, both incoming and outgoing differentials at this position vanish, and the following map is a natural isomorphism:`);

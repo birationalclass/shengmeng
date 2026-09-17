@@ -1,5 +1,5 @@
 import {representativeIn} from './math-notation.js?v=77';
-import {proofPanel,proofSections} from './proof-panel.js?v=145';
+import {proofPanel,proofSections} from './proof-panel.js?v=149';
 const R=String.raw;
 export function pageTransitionExposition({math,language}){
  const t=(z,e)=>language()==='en'?e:z;

@@ -1,4 +1,4 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=145';
+import {proofPanel,proofSections} from './proof-panel.js?v=149';
 import {createFilteredCycles} from './filtered-cycles.js?v=95';
 import {createFilteredDemo} from './filtered-demo.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=97';
@@ -14,11 +14,11 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
   const entries=[
    {name:['边界项','Boundary term'],f:[R`n=p+q,\quad r,s\in\mathbb Z`,R`x\in B_s^{p,q}\Longrightarrow x=Db\in F^pC^n`,R`Dx=D^2b=0\in F^{p+r}C^{n+1}`,R`B_s^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_r^{p,q}`],note:t('任何这里的边界都是总复形的闭元，所以满足每一个 Zᵣ 的像条件。图中沿用 1.14 的例子，蓝色像属于 B₂¹¹，因此也属于 Zᵣ¹¹。','Every such boundary is a total cocycle, so it satisfies the image condition for every Zᵣ. In the example from 1.14, the blue images lie in B₂¹¹ and hence in Zᵣ¹¹.')},
    {name:['高滤过项','Higher-filtration term'],f:[R`z\in Z_{r-1}^{p+1,q-1}\Longleftrightarrow\begin{cases}z\in F^{p+1}C^n,\\Dz\in F^{(p+1)+(r-1)}C^{n+1}=F^{p+r}C^{n+1},\end{cases}`,R`F^{p+1}C^n\subseteq F^pC^n`,R`Z_{r-1}^{p+1,q-1}=Z_r^{p,q}\cap F^{p+1}C^n\subseteq Z_r^{p,q}`],note:t('总次数仍为 (p+1)+(q−1)=p+q；两个子空间要求相同的像条件。','The total degree remains (p+1)+(q−1)=p+q; both subspaces impose the same condition on the image.')},
-   {name:['用于定义各页','Use in defining the pages'],f:[R`Z_{r-1}^{p+1,q-1}\subseteq Z_r^{p,q},\qquad B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`E_r^{p,q}:=\frac{Z_r^{p,q}}{Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}}\quad(r\ge0)`],note:t('分母是分子的子空间，因此 2.1 的商有定义。只证明 Bᵣ 包含于 Zᵣ 还没有检查完整的分母。','The denominator is a subspace of the numerator, so the quotient in 2.1 is defined. Bᵣ ⊆ Zᵣ alone does not check the entire denominator.')},
-   {name:['图中的投影','Projection in the diagram'],f:[R`\pi_p:F^pC^{p+q}\longrightarrow K^{p,q},\qquad a\longmapsto a_p`,R`\ker(\pi_p|_{Z_r^{p,q}})=Z_{r-1}^{p+1,q-1}`,R`\varphi_r:\pi_p(Z_r^{p,q})\longrightarrow E_r^{p,q},\quad\pi_p(a)\longmapsto[a]_r`,R`\ker\varphi_r=\pi_p(B_{r-1}^{p,q})`,R`E_r^{p,q}\cong\frac{\pi_p(Z_r^{p,q})}{\pi_p(B_{r-1}^{p,q})}`],note:t('前两步保证这个映射不依赖提升 a；它满射，且核正是所示边界的投影。动画中从 K 小块分出的子空间是 πₚ(Zᵣ)，不是 Zᵣ 本身。','The preceding inclusions make the map independent of the lift a. It is surjective with the displayed kernel. The subspace split off from a K tile is πₚ(Zᵣ), not Zᵣ itself.')}
+   {name:['子空间之和','Sum of subspaces'],f:[R`Z_{r-1}^{p+1,q-1}\subseteq Z_r^{p,q},\qquad B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}\subseteq Z_r^{p,q}`],note:t('两个子空间均包含在滤过闭元空间中，因此它们的和也包含在其中。','Both subspaces lie in the filtered cocycle space, so their sum does as well.')}
+
   ];
   board.dataset.currentProofTopic='inclusions';delete board.dataset.currentProofStep;
-  replaceMathContent(board,proofPanel({key:'inclusions',title:t('商空间分母的包含关系','The denominator is a subspace'),formulas:[entries[2].f[1]],note:t('D²=0 保证边界是闭元；高滤过项满足相同的像条件，因此整个分母都包含在分子中。','D²=0 makes boundaries cocycles; the higher-filtration term satisfies the same image condition, so the whole denominator lies in the numerator.'),details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note}),math,language}));
+  replaceMathContent(board,proofPanel({key:'inclusions',title:t('1.15 包含关系','1.15 Inclusion relations'),formulas:[entries[2].f[1]],note:t('D²=0 保证边界是闭元；高滤过项满足相同的像条件，因此上述子空间之和也满足该条件。','D²=0 makes boundaries cocycles; the higher-filtration term satisfies the same image condition, so their sum also satisfies that condition.'),details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note}),math,language}));
  }
  function exposition(){
   if(state.annotationStep===3){inclusionExposition();return;}
@@ -35,7 +35,7 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
    [R`F^{p-r}C^{n-1}\subseteq F^{p-r-1}C^{n-1}`,R`B_r^{p,q}\subseteq B_{r+1}^{p,q}`,R`r\ge p\ \Longrightarrow\ B_r^{p,q}=F^pC^n\cap D(C^{n-1})`]
   ];
   const note=topic==='Z'?[
-   t(`${math('D^{-1}')} 表示子空间的逆像，不要求 ${math('D')} 可逆。${math('Z_r^{p,q}')} 中的元素是总上链；通常不要求 ${math('Da=0')}，也不能把它当成 ${math('E_r')} 页上的核。`,`${math('D^{-1}')} denotes a preimage, not an inverse map. Elements of ${math('Z_r^{p,q}')} are total cochains; ${math('Da')} need not vanish. This is not a kernel on the ${math('E_r')} page.`),
+   t(`${math('D^{-1}')} 表示子空间的逆像，不要求 ${math('D')} 可逆。${math('Z_r^{p,q}')} 中的元素是总上链；通常不要求 ${math('Da=0')}。`,`${math('D^{-1}')} denotes a preimage, not an inverse map. Elements of ${math('Z_r^{p,q}')} are total cochains; ${math('Da')} need not vanish.`),
    t('需要检查各列分量之和的抵消。Zᵣ 通常不能表示为若干 K 小块的直和。','The sums of components must cancel in the excluded columns. In general Zᵣ is not a direct sum of selected K-terms.'),
    t('r=1 只检查首列；r=2 还要检查下一列。总次数 n 之外的分量为零。','For r=1 only the first column is tested; r=2 also tests the next. Components outside total degree n are zero.'),
    t('r 增大时像的条件更强，Zᵣ 缩小；目标滤过为零时，就要求 Da=0。','As r grows, the image condition becomes stronger and Zᵣ decreases. When the target filtration is zero, Da must be zero.')
@@ -43,7 +43,7 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
    r===0?t(`本图取 ${math('r=0')}。${math('D')} 保持滤过，所以 ${math('D(F^pC^{n-1})')} 已包含在 ${math('F^pC^n')} 中，恰好等于 ${math('B_0^{p,q}')}。一般 ${math('r')} 的定义仍需取交集。`,`Here ${math('r=0')}. Since ${math('D')} preserves the filtration, ${math('D(F^pC^{n-1})')} already lies in ${math('F^pC^n')} and equals ${math('B_0^{p,q}')}. For general ${math('r')} the intersection is still required.`):t('D 的像还需落入 FᵖCⁿ，交集才是 Bᵣ。整个 Fᵖ⁻ʳCⁿ⁻¹ 并不一定映入 Bᵣ。','Intersect the image of D with FᵖCⁿ to obtain Bᵣ. The whole source need not map into Bᵣ.'),
    t('b 可以从 p−r 列开始，但 Db 的所有 p 列之前的分量必须抵消。','The representative b may start in column p−r, but all components of Db before column p must cancel.'),
    t('这是总复形中的边界，因此由 D²=0 自动得到闭性。','These are boundaries in the total complex; D²=0 makes them cocycles.'),
-   t('r 增大时允许更多来源，所以 Bᵣ 增大。注意 Eᵣ 的分母使用 Bᵣ₋₁。','As r grows, more source columns are allowed and Bᵣ increases. The denominator of Eᵣ uses Bᵣ₋₁.')
+   t('r 增大时允许更多来源，所以 Bᵣ 增大。','As r grows, more source columns are allowed and Bᵣ increases.')
   ];
   proof.push(topic==='Z'?[
    R`u,s\in K^{1,1},\quad v\in K^{2,0}`,
@@ -71,7 +71,7 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
    R`B_r^{p,q}=D(F^{p-r}C^{n-1})\qquad(r\le0)`,
    R`B_{-1}^{p,q}=D(F^{p+1}C^{n-1})\subseteq F^{p+1}C^n`
   ]);
-  note.push(t('Z、B 的公式对每个整数 r 都有意义。r≤0 时像条件自动满足；上面说明了相应化简。负滤过层也不应误认为零：第一象限下，j≤0 时 FʲCⁿ=Cⁿ。','The formulas for Z and B make sense for every integer r. For r≤0 the relevant image containment is automatic, giving the displayed simplifications. A negative filtration level is not zero: in the first quadrant, FʲCⁿ=Cⁿ for j≤0.'));
+  note.push(t('上述定义对每个整数 r 都有意义。r≤0 时像条件自动满足；上面说明了相应化简。负滤过层也不应误认为零：第一象限下，j≤0 时 FʲCⁿ=Cⁿ。','The definition makes sense for every integer r. For r≤0 the relevant image containment is automatic, giving the displayed simplifications. A negative filtration level is not zero: in the first quadrant, FʲCⁿ=Cⁿ for j≤0.'));
   board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
   const entries=proof.map((f,j)=>({name:t(...names[topic][j]),f,note:note[j]}));
   const summary=topic==='Z'?[R`a\in Z_r^{p,q}\iff a\in F^pC^n,\ Da\in F^{p+r}C^{n+1}`]:[proof[0][2],R`x\in B_r^{p,q}\Longrightarrow Dx=0`];

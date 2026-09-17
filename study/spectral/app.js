@@ -1,7 +1,8 @@
+import {createInclusionDiagram} from './inclusion-diagram.js?v=149';
 import {subcomplexDiagram,prepareSubcomplexEntrance,animateSubcomplexEntrance} from './subcomplex-diagram.js?v=147';
-import {leraySetup} from './leray.js?v=145';
+import {leraySetup} from './leray.js?v=149';
 import {createDifferentialSweep} from './differential-sweep.js?v=120';
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=147';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=149';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
@@ -9,14 +10,14 @@ import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=8
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=78';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=145';
+import {createStabilityView} from './stability-view.js?v=149';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {singleLineContent} from './single-line-convergence.js?v=145';
-import {createAbutmentView} from './abutment-view.js?v=145';
+import {createAbutmentView} from './abutment-view.js?v=149';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=145';
+import {numberedPages} from './reading-pages.js?v=149';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -26,11 +27,11 @@ import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=147';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=145';
-import {translatePage,language,toggleLanguage} from './language.js?v=145';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=149';
+import {translatePage,language,toggleLanguage} from './language.js?v=149';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=145';
-import {createPageEvolution} from './page-evolution.js?v=145';
+import {createFilteredView} from './filtered-view.js?v=149';
+import {createPageEvolution} from './page-evolution.js?v=149';
 import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -55,6 +56,7 @@ let fitDiagram=()=>{},diagramResizeObserver=null,definitionAnimations=[],exposit
 const traceComplex=new Complex({...examples.d2,gens:[...examples.d2.gens,{id:'x',p:0,q:0},{id:'y',p:0,q:1}],v:[...examples.d2.v,['x','y',1]]});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const math=(tex,display=false)=>renderMathematics(katex,tex,display);
+const inclusionDiagram=createInclusionDiagram({viewport:$('.diagram-viewport'),diagram:$('#diagram'),math,language});
 const gradedProof=createGradedProof({board:$('#operationBoard'),math,language});
 const readingRail=createReadingRail({workspace:$('.notebook-workspace'),column:$('.explanation'),mobilePane:$('.slide-body'),content:$('#explanation'),language,cancelFollow:readingFocus.cancel});
 // Control labels use the same mathematical typesetting as the diagram.
@@ -73,7 +75,7 @@ const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(
 const playback=createAnimationPlayback({language,ready:()=>{
  if(notebookMotion.isAnimating())return false;
  return !$('#explanation').getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity);
-},prepareEntrance:()=>{if(isDoubleComplexView()&&state.initialReveal<=2)initialAnimations.prepare(state.initialReveal);else if(isDoubleComplexView()&&state.initialReveal===9)prepareSubcomplexEntrance($('#diagram'));},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
+},prepareEntrance:()=>{if(isDoubleComplexView()&&state.initialReveal<=2)initialAnimations.prepare(state.initialReveal);else if(isDoubleComplexView()&&state.initialReveal===9)prepareSubcomplexEntrance($('#diagram'));else if(isDoubleComplexView()&&state.initialReveal===10)inclusionDiagram.prepare();},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
 const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?ui('点击播放对应动画','Click to play this animation'):ui('放大查看公式','Enlarge formula')}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
@@ -652,6 +654,7 @@ function fixedDiagram(state=diagramState()){
  return base.slice(0,end)+`<g id="coordinate-frame">${frame}</g><g id="diagram-overlays">${overlay}</g><g id="diagram-edges">${edges}</g><g id="diagram-terms">${terms}</g></svg>`;
 }
 function renderPersistentDiagram(){
+ if(inclusionDiagram.sync(state))return;
  const host=$('#diagram'),holder=document.createElement('div');holder.innerHTML=fixedDiagram();const desired=holder.firstElementChild;
  if(!host.firstElementChild){host.append(desired);syncDiagramLabels();syncCoordinatePresentation();observeDiagramSize();return;}
  const current=host.firstElementChild;
@@ -802,6 +805,7 @@ async function playCurrentEntrance({waitUntil}){
   initialAnimations.play(state.initialReveal);await waitUntil(()=>!initialAnimations.isPlaying());
  }else if(isDoubleComplexView()&&state.initialReveal===9){
   definitionAnimations=animateSubcomplexEntrance($('#diagram'));await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));
+ }else if(isDoubleComplexView()&&state.initialReveal===10){await inclusionDiagram.play();
  }else if(state.module==='learn'&&state.step===6&&state.notePage===0){filteredView.enter();await waitUntil(()=>!filteredView.isPlaying());}
  else{emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
 }
