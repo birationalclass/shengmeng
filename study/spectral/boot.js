@@ -59,8 +59,9 @@
  const syncFullscreen=()=>{
   document.title=en()?'Spectral Sequence · Sheng Meng':'谱序列 · 孟晟';
   document.querySelector('.toolbar-actions').setAttribute('aria-label',en()?'Spectral Sequence':'谱序列');
-  const active=fullscreenActive(),label=en()?(active?'Exit Full':'Full'):(active?'退出全屏':'全屏'),actionLabel=en()?(active?'Exit fullscreen':'Enter fullscreen'):(active?'退出全屏':'进入全屏');
-  coverFullscreen.querySelector('span').textContent=label;lessonFullscreen.textContent='⛶ '+label;
+  const active=fullscreenActive(),actionLabel=en()?(active?'Exit fullscreen':'Enter fullscreen'):(active?'退出全屏':'进入全屏');
+  const coverButton=document.getElementById('coverButton'),coverLabel=en()?'Return to cover':'返回封面';
+  coverButton.setAttribute('aria-label',coverLabel);coverButton.title=coverLabel;
   window.spectralMobileReading?.syncFullscreen(active);
   for(const button of [coverFullscreen,lessonFullscreen]){button.setAttribute('aria-pressed',String(active));button.setAttribute('aria-label',actionLabel);button.title=active?actionLabel+' (Esc)':actionLabel;button.disabled=fullscreenPending;}
  };

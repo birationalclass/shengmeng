@@ -1,5 +1,5 @@
 /* A single persistent row of reading controls, including in fullscreen. */
-:root { --notebook-toolbar-height:64px;--notebook-full-button-width:92px;--notebook-cover-button-width:72px;--notebook-language-button-width:60px;--notebook-button-height:44px }
+:root { --notebook-toolbar-height:64px;--notebook-full-button-width:44px;--notebook-cover-button-width:44px;--notebook-language-button-width:60px;--notebook-button-height:44px }
 body>.notebook-toolbar {
   display:flex;justify-content:space-between;align-items:center;gap:16px;flex:none;
   width:100%;height:var(--notebook-toolbar-height);min-height:var(--notebook-toolbar-height);
@@ -68,12 +68,28 @@ html:lang(zh-CN):has(#mathLoader[data-cover-font="c"]) .notebook-toolbar #sceneT
 .cover-actions #coverSettings { box-sizing:border-box;width:44px;min-width:44px;max-width:44px;padding:0 }
 
 /* Keep full-screen controls below the screen edge and clear of the reading pane. */
-body.study-fullscreen {--notebook-toolbar-height:76px;display:flex;flex-direction:column;height:100dvh;min-height:0}
+body.study-fullscreen {display:flex;flex-direction:column;height:100dvh;min-height:0}
 body.study-fullscreen>main {display:flex;flex:1 1 0;min-height:0;width:100%;margin:0;overflow:hidden}
-.study-fullscreen .notebook-toolbar {padding-top:max(12px,env(safe-area-inset-top));padding-bottom:12px}
+.study-fullscreen .notebook-toolbar {padding-block:6px}
 .notebook-toolbar .toolbar-actions button {touch-action:manipulation;position:relative;pointer-events:auto}
-@media(max-width:680px){body.study-fullscreen{--notebook-toolbar-height:112px}}
+
 
 /* Only the visible control row participates in hit testing, including its icons. */
 .notebook-toolbar .toolbar-actions button>*,.cover-actions button>* {pointer-events:none}
 #mathLoader.is-ready,#mathLoader.is-ready * {pointer-events:none!important}
+
+/* Match the abstract-algebra toolbar: home precedes the title; fullscreen
+   changes only its glyph, never the button box or header height. */
+.notebook-toolbar .toolbar-brand {display:flex;align-items:center;gap:12px;min-width:0}
+.notebook-toolbar #coverButton {display:inline-flex;align-items:center;justify-content:center;flex:none;margin:0;padding:10px;border:0;background:transparent;color:var(--ink);border-radius:6px;touch-action:manipulation;position:relative}
+.notebook-toolbar .toolbar-icon svg {display:block;width:20px;height:20px;flex:none;pointer-events:none}
+.notebook-toolbar #fullscreen {padding:10px;border-color:var(--line);color:var(--ink);background:transparent}
+.cover-actions #coverFullscreen {padding:10px}
+.cover-actions #coverFullscreen svg {width:20px;height:20px;stroke-width:1.6}
+.fullscreen-restore {display:none}
+button[aria-pressed=true] .fullscreen-expand {display:none}
+button[aria-pressed=true] .fullscreen-restore {display:inline}
+.notebook-toolbar button,.cover-actions button {transition:opacity .65s ease,color .3s ease,background .3s ease}
+body.toolbar-idle .notebook-toolbar button,body.toolbar-idle .cover-actions button {opacity:.24}
+body.toolbar-idle .notebook-toolbar button:focus-visible,body.toolbar-idle .cover-actions button:focus-visible {opacity:1}
+@media(prefers-reduced-motion:reduce){.notebook-toolbar button,.cover-actions button{transition:none}}
