@@ -1,5 +1,5 @@
 // Shared semantic marks: abbreviations are stable; accessible names follow language.
-export const statementKinds={T:['Thm','定理','Theorem'],P:['Pro','命题','Proposition'],L:['Lem','引理','Lemma'],D:['Def','定义','Definition'],E:['Ex.','例子','Example'],C:['Cor','推论','Corollary']};
+export const statementKinds={T:['Thm','定理','Theorem'],P:['Pro','命题','Proposition'],L:['Lem','引理','Lemma'],D:['Def','定义','Definition'],E:['Ex','例子','Example'],C:['Cor','推论','Corollary']};
 export function statementMark(kind,english=false){
  const entry=statementKinds[kind];if(!entry)return '';
  const [text,zh,en]=entry,name=english?en:zh;

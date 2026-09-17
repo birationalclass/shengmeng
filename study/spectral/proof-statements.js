@@ -1,7 +1,7 @@
-import {statementMark} from './statement-marks.js?v=150';
-import {firstQuadrantContent} from './first-quadrant-convergence.js?v=145';
-import {kmVanishingProof} from './km-vanishing.js?v=145';
-import {singleLineContent} from './single-line-convergence.js?v=145';
+import {statementMark} from './statement-marks.js?v=153';
+import {firstQuadrantContent} from './first-quadrant-convergence.js?v=153';
+import {kmVanishingProof} from './km-vanishing.js?v=153';
+import {singleLineContent} from './single-line-convergence.js?v=153';
 // Full hypotheses and conclusions live with the shared proof presentation.
 // The compact formula shown in the notebook is not a theorem statement.
 export function proofStatement({key,formulas,math,english}){
@@ -61,7 +61,7 @@ export function proofStatement({key,formulas,math,english}){
   }
   if(key.startsWith('abutment-'))assumptions+=first;
   if(key==='abutment-degeneration'){
-   assumptions=t(`设 ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} 是收敛到 ${M(R`H^\bullet`)} 的第一象限上同调型谱序列，目标带收敛所指定的有限滤过 ${M('F')}。假设 ${M(R`d_s=0\ (s\ge r_0)`)}。`,`Let ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} be a first-quadrant cohomological spectral sequence converging to ${M(R`H^\bullet`)} with its specified finite filtration ${M('F')}. Assume ${M(R`d_s=0\ (s\ge r_0)`)}.`);
+   assumptions=t(`设 ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} 是收敛到 ${M(R`H^\bullet`)} 的第一象限上同调型谱序列，目标带收敛所指定的有限滤过 ${M('F')}。假设 ${M(R`d_s^{p,q}=0\ (\forall s\ge r_0,\ \forall p,q)`)}。`,`Let ${M(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} be a first-quadrant cohomological spectral sequence converging to ${M(R`H^\bullet`)} with its specified finite filtration ${M('F')}. Assume ${M(R`d_s^{p,q}=0\ (\forall s\ge r_0,\ \forall p,q)`)}.`);
    conclusions=[R`E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}\cong F^pH^{p+q}/F^{p+1}H^{p+q}`];
   }
  }
@@ -71,7 +71,7 @@ export function proofStatement({key,formulas,math,english}){
    assumptions=single.assumptions;
    hypothesisFormulas=single.filtration;
    conclusionLead=t(`则对每个 ${M(R`n\ge0`)}，分别有以下结论。`,`Then, for every ${M(R`n\ge0`)}, the following two assertions hold.`);
-   conclusionBody=`<p>${t(`若对所有 ${M(R`p>0,q\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零列可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`p>0,q\ge0`)} (only column zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`H^n\xrightarrow{\sim}E_{r_0}^{0,n}`)}<p>${t(`若对所有 ${M(R`q>0,p\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零行可能非零），则边缘映射为同构：`,`If ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`q>0,p\ge0`)} (only row zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}H^n`)}`;
+   conclusionBody=`<p>${t(`若 ${M(R`r_0\ge1`)} 且对所有 ${M(R`p>0,q\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零列可能非零），则边缘映射为同构：`,`If ${M(R`r_0\ge1`)} and ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`p>0,q\ge0`)} (only column zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`H^n\xrightarrow{\sim}E_{r_0}^{0,n}`)}<p>${t(`若 ${M(R`r_0\ge2`)} 且对所有 ${M(R`q>0,p\ge0`)} 都有 ${M(R`E_{r_0}^{p,q}=0`)}（仅第零行可能非零），则边缘映射为同构：`,`If ${M(R`r_0\ge2`)} and ${M(R`E_{r_0}^{p,q}=0`)} for all ${M(R`q>0,p\ge0`)} (only row zero may be nonzero), then the edge map is an isomorphism:`)}</p>${eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}H^n`)}`;
   }
  if(key==='abutment-convergence'){
   kind=t('定理。','Theorem.');

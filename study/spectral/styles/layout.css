@@ -3,12 +3,12 @@
   border:0;border-radius:0;background:transparent;box-shadow:none;
   overflow:hidden;overflow:clip;
 }
-/* Short windows scroll the reading surface instead of crushing the diagram. */
+/* Short windows keep the shell fixed; each reading column owns its scrolling. */
 @media(max-height:540px) {
   html,body { height:100%;min-height:0 }
   body { height:100dvh;overflow:hidden }
   main,.slide-deck.workspace { min-height:0 }
-  .slide-deck:not(.is-cover) .slide-body { overflow-y:auto }
+  .slide-deck:not(.is-cover) .slide-body { overflow:hidden }
 }
 @media(min-width:781px) and (max-height:540px) {
   :root {
@@ -16,7 +16,10 @@
     --notebook-exposition-height:160px;
     --notebook-controls-height:76px;
   }
-  .slide-deck:not(.is-cover) .visual-column { min-height:420px;padding-block:12px }
+  .slide-deck:not(.is-cover) .visual-column {display:flex;flex-direction:column;min-height:0;height:100%;padding-block:12px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+  .slide-deck .visualization-module {flex:none;overflow:visible}
+  .slide-deck .visualization-module .stage {flex:none;height:auto;min-height:0;max-height:none}
+  .slide-deck .math-exposition {flex:0 0 240px;margin-top:12px}
 }
 
 /* Figure interactions live on the figure; no separate controller surface. */

@@ -1,17 +1,17 @@
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=150';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=153';
 let lang=localStorage.getItem('spectral-language')==='en'?'en':'zh';
 export const language=()=>lang;
 export function toggleLanguage(){lang=lang==='zh'?'en':'zh';localStorage.setItem('spectral-language',lang);}
 const dictionary=new Map();
-function add(zh,en){dictionary.set(zh,en);}
+function add(zh,en){if(typeof zh==='string'&&zh.trim()&&typeof en==='string'&&en.trim())dictionary.set(zh,en);}
 function items(source,translations){translations.forEach((row,i)=>['title','text','note','proof'].forEach((key,j)=>{if(row[j])add(source[i][key],row[j]);}));}
 items(lessons,[
 ['One double complex, two differentials','Each node is a vector space, not a vector. Horizontal arrows increase the first index; vertical arrows increase the second. The two composite paths are negatives of one another.','Use the direction buttons to highlight horizontal or vertical arrows. Hovering highlights the corresponding arrows. The diagram is a schematic window: terms outside it are not assumed to vanish.','For any a, the two paths give δ₂δ₁a and δ₁δ₂a. Their sum must vanish for the square of the total differential to vanish.'],
 ['Total degree: a direct sum along a diagonal','The first-quadrant hypothesis makes each total-degree diagonal finite. Choose n to see the direct-sum factors of Cⁿ. Both differentials raise total degree by one.','The gold diagonal marks total degree i+j=n. The images of its terms lie on the next diagonal.','D²=δ₁²+(δ₁δ₂+δ₂δ₁)+δ₂²=0, so (C,D) is a cochain complex.'],
 ['Filtration: a segment of one diagonal','The slanted dashed box contains exactly the terms of total degree n whose first index is at least p. It ends at (n,0). Increasing p removes the leftmost term.','When p=n+1, the box is empty and Fⁿ⁺¹Cⁿ=0. When p=0, it contains all of Cⁿ. The endpoint (n,0) is always shown.','δ₁ sends i to i+1; δ₂ preserves i. Thus both images still have first index at least p. The image under D has total degree n+1: it need not remain inside the original diagonal box.'],
 ['E₀: define the quotient, then identify it','The quotient discards components with first index greater than p. Projection onto the pth column gives the canonical isomorphism, without choosing a complement.','The highlighted term is Kᵖᑫ under the canonical identification. Faded terms still belong to the original double complex; they have not been deleted. Here q=n−p.','The projection FᵖCⁿ→Kᵖⁿ⁻ᵖ is surjective with kernel Fᵖ⁺¹Cⁿ. The first isomorphism theorem gives the displayed canonical identification.'],
-['E₀','E₀ is the associated graded object; D induces d₀ on the quotient.','This entry concerns E₀ and d₀.','D preserves F, so d₀([a])=[Da] is well-defined. Projection onto column p identifies d₀ with δ₂.'],
-['E₁','E₁ is defined as a filtered quotient and is naturally isomorphic to columnwise d₀ cohomology; δ₁ induces d₁.','Both source and target of d₁ lie on E₁.','Anticommutation makes δ₁ preserve vertical cocycles and boundaries, giving a well-defined d₁.'],
+['E₀','The zeroth page of the column filtration is naturally isomorphic to the vertical complex.','',''],
+['Spectral sequence','A spectral sequence consists of all its pages, differentials and page-cohomology structure isomorphisms.','',''],
 ['General pages: the filtered quotient','Eᵣ is defined as a quotient in the original filtered complex; D induces dᵣ.','The natural isomorphism with preceding-page cohomology is a property. The new dᵣ still needs the original filtered complex.','D sends numerators and denominators into their target counterparts, inducing dᵣ. The construction theorem proves the natural isomorphism with preceding-page cohomology.']
 ]);
 items(convergence,[
@@ -51,7 +51,7 @@ export function translatePage(){
  while(node=walker.nextNode()){
   if(node.parentElement.closest('.katex,script,style,#languageButton'))continue;
   let item=original.get(node);if(!item||node.nodeValue!==item.output)item={source:node.nodeValue};
-  const trimmed=item.source.trim();item.output=lang==='en'?item.source.replace(trimmed,translate(trimmed)):item.source;
+  const trimmed=item.source.trim();if(!trimmed)continue;item.output=lang==='en'?item.source.replace(trimmed,translate(trimmed)):item.source;
   node.nodeValue=item.output;original.set(node,item);
  }
  document.querySelectorAll('[aria-label],[title]').forEach(el=>{

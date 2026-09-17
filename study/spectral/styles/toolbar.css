@@ -93,3 +93,12 @@ button[aria-pressed=true] .fullscreen-restore {display:inline}
 body.toolbar-idle .notebook-toolbar button,body.toolbar-idle .cover-actions button {opacity:.24}
 body.toolbar-idle .notebook-toolbar button:focus-visible,body.toolbar-idle .cover-actions button:focus-visible {opacity:1}
 @media(prefers-reduced-motion:reduce){.notebook-toolbar button,.cover-actions button{transition:none}}
+
+/* The reader title shares the cover face and fades with the idle controls. */
+.notebook-toolbar #sceneTitle{user-select:none;-webkit-user-select:none;transition:opacity .65s ease;color:var(--ink);background-image:var(--title-metal-gradient,linear-gradient(173deg,#fbf8ed 6%,#dce2df 37%,#a8b8b9 54%,#e2e8e1 76%,#b3c2c0 100%));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+body.toolbar-idle .notebook-toolbar #sceneTitle{opacity:.24}
+@media(prefers-reduced-motion:reduce){.notebook-toolbar #sceneTitle{transition:none}}
+.convergence-convention{font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.convention-alert{display:inline-flex;flex:none;width:19px;height:21px;justify-content:center;align-items:center;border:1px solid #df8c83;border-radius:4px;color:#df8c83;font:600 14px/1 system-ui}
+#explanation [data-statement="converge:3"] [data-reading-page="0"] .math-block{font-size:min(var(--reading-formula-rest-size),clamp(12px,1.4vw,20px));white-space:nowrap}
+#explanation [data-statement="converge:3"] [data-reading-page="0"].build-current .math-block{font-size:clamp(12px,1.4vw,20px)}

@@ -1,24 +1,23 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=150';
-import {createFilteredCycles} from './filtered-cycles.js?v=95';
-import {createFilteredDemo} from './filtered-demo.js?v=92';
+import {proofPanel,proofSections} from './proof-panel.js?v=153';
+import {createFilteredCycles} from './filtered-cycles.js?v=153';
 import {replaceMathContent} from './math-transitions.js?v=97';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.
 export function createFilteredView({viewport,diagram,point,board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
- const demo=createFilteredDemo({host:diagram,point}),cycles=createFilteredCycles({host:diagram,point,math});
+ const demo=createFilteredCycles({host:diagram,point,math,topic:'B'}),cycles=createFilteredCycles({host:diagram,point,math});
  let state=null,active=false,key='',topic='Z';
  const pageIndex=()=>Math.max(1,state.r);
  const names={Z:[['逆像条件','Preimage condition'],['逐列条件','Column conditions'],['第一步','First step'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']],B:[['像与交集','Image and intersection'],['代表元条件','Representative condition'],['一定是闭元','Always a cocycle'],['随 r 变化','As r varies'],['具体例子','Example'],['非正指标','Nonpositive indices']]};
  function inclusionExposition(){
   const entries=[
-   {name:['边界项','Boundary term'],f:[R`n=p+q,\quad r,s\in\mathbb Z`,R`x\in B_s^{p,q}\Longrightarrow x=Db\in F^pC^n`,R`Dx=D^2b=0\in F^{p+r}C^{n+1}`,R`B_s^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_r^{p,q}`],note:t('任何这里的边界都是总复形的闭元，所以满足每一个 Zᵣ 的像条件。图中沿用 1.14 的例子，蓝色像属于 B₂¹¹，因此也属于 Zᵣ¹¹。','Every such boundary is a total cocycle, so it satisfies the image condition for every Zᵣ. In the example from 1.14, the blue images lie in B₂¹¹ and hence in Zᵣ¹¹.')},
+   {name:['边界项','Boundary term'],f:[R`n=p+q,\quad r,s\in\mathbb Z`,R`x\in B_s^{p,q}\Longrightarrow x=Db\in F^pC^n`,R`Dx=D^2b=0\in F^{p+r}C^{n+1}`,R`B_s^{p,q}\subseteq F^pC^n\cap\ker D\subseteq Z_r^{p,q}`],note:t('任何这里的边界都是总复形的闭元，所以满足每一个 Zᵣ 的像条件。图中沿用 1.15 的例子，蓝色像属于 B₂¹¹，因此也属于 Zᵣ¹¹。','Every such boundary is a total cocycle, so it satisfies the image condition for every Zᵣ. In the example from 1.15, the blue images lie in B₂¹¹ and hence in Zᵣ¹¹.')},
    {name:['高滤过项','Higher-filtration term'],f:[R`z\in Z_{r-1}^{p+1,q-1}\Longleftrightarrow\begin{cases}z\in F^{p+1}C^n,\\Dz\in F^{(p+1)+(r-1)}C^{n+1}=F^{p+r}C^{n+1},\end{cases}`,R`F^{p+1}C^n\subseteq F^pC^n`,R`Z_{r-1}^{p+1,q-1}=Z_r^{p,q}\cap F^{p+1}C^n\subseteq Z_r^{p,q}`],note:t('总次数仍为 (p+1)+(q−1)=p+q；两个子空间要求相同的像条件。','The total degree remains (p+1)+(q−1)=p+q; both subspaces impose the same condition on the image.')},
    {name:['子空间之和','Sum of subspaces'],f:[R`Z_{r-1}^{p+1,q-1}\subseteq Z_r^{p,q},\qquad B_{r-1}^{p,q}\subseteq Z_r^{p,q}`,R`Z_{r-1}^{p+1,q-1}+B_{r-1}^{p,q}\subseteq Z_r^{p,q}`],note:t('两个子空间均包含在滤过闭元空间中，因此它们的和也包含在其中。','Both subspaces lie in the filtered cocycle space, so their sum does as well.')}
 
   ];
   board.dataset.currentProofTopic='inclusions';delete board.dataset.currentProofStep;
-  replaceMathContent(board,proofPanel({key:'inclusions',title:t('1.15 包含关系','1.15 Inclusion relations'),formulas:[entries[2].f[1]],note:t('D²=0 保证边界是闭元；高滤过项满足相同的像条件，因此上述子空间之和也满足该条件。','D²=0 makes boundaries cocycles; the higher-filtration term satisfies the same image condition, so their sum also satisfies that condition.'),details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note}),math,language}));
+  replaceMathContent(board,proofPanel({key:'inclusions',title:t('1.16 包含关系','1.16 Inclusion relations'),formulas:[entries[2].f[1]],note:t('D²=0 保证边界是闭元；高滤过项满足相同的像条件，因此上述子空间之和也满足该条件。','D²=0 makes boundaries cocycles; the higher-filtration term satisfies the same image condition, so their sum also satisfies that condition.'),details:proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note}),math,language}));
  }
  function exposition(){
   if(state.annotationStep===3){inclusionExposition();return;}
@@ -77,7 +76,7 @@ export function createFilteredView({viewport,diagram,point,board,math,language})
   const summary=topic==='Z'?[R`a\in Z_r^{p,q}\iff a\in F^pC^n,\ Da\in F^{p+r}C^{n+1}`]:[proof[0][2],R`x\in B_r^{p,q}\Longrightarrow Dx=0`];
   replaceMathContent(board,proofPanel({key:'filtered-'+topic,title:t(topic==='Z'?'滤过闭元的条件':'滤过边界的条件',topic==='Z'?'Filtered cocycle conditions':'Filtered boundary conditions'),formulas:summary,note:math(R`n=p+q`)+' · '+note[0],details:proofSections(entries,{math}),math,language}));
  }
- return {enter:()=>{if(topic==='Z')cycles.enter();},play:()=>topic==='Z'?cycles.play():demo.play(topic,true),stop:()=>{demo.clear();cycles.stop();},clear:()=>{demo.clear();cycles.clear();},isPlaying:()=>demo.isPlaying()||cycles.isPlaying(),sync(s){
+ return {enter:()=>{(topic==='Z'?cycles:demo).enter();},play:()=>topic==='Z'?cycles.play():demo.play(),stop:()=>{demo.stop();cycles.stop();},clear:()=>{demo.clear();cycles.clear();},isPlaying:()=>demo.isPlaying()||cycles.isPlaying(),sync(s){
   state=s;active=!s.cover&&s.module==='learn'&&s.step===6&&s.annotationStep>=1&&s.annotationStep<=3;
   viewport.classList.toggle('has-filtered-grid',active);
   if(!active){key='';demo.clear();cycles.clear();return;}

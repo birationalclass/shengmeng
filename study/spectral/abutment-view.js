@@ -1,7 +1,8 @@
-import {singleLineContent,singleLineTitle,singleLineDiagram} from './single-line-convergence.js?v=145';
-import {firstQuadrantContent,firstQuadrantTitle} from './first-quadrant-convergence.js?v=145';
-import {lerayExposition,lerayDiagram} from './leray.js?v=150';
-import {proofPanel,proofSections} from './proof-panel.js?v=150';
+import {createConvergencePages} from './convergence-pages.js?v=153';
+import {singleLineContent,singleLineTitle,singleLineDiagram} from './single-line-convergence.js?v=153';
+import {firstQuadrantContent,firstQuadrantTitle} from './first-quadrant-convergence.js?v=153';
+import {lerayExposition,lerayDiagram} from './leray.js?v=153';
+import {proofPanel,proofSections} from './proof-panel.js?v=153';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {visualMotion} from './visual-style.js?v=41';
@@ -13,6 +14,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  const host=document.createElement('div');host.id='abutmentView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  const toolbar=document.createElement('nav');toolbar.id='abutmentControls';toolbar.hidden=true;controls.append(toolbar);
  let active=false,context=null,n=3,p=1,key='';
+ const pages=createConvergencePages({math,language});
  const label=(x,y,tex,width=240,kind='')=>`<span class="abutment-label ${kind}" style="left:${x-width/2}px;top:${y-22}px;width:${width}px">${math(tex)}</span>`;
  const formula=f=>`<div class="operation-equation">${math(f,true)}</div>`;
  const filtrationProof=[
@@ -24,7 +26,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   {name:['起始页记号','Starting-page notation'],f:[R`E_{r_0}^{p,q}\Longrightarrow H^{p+q}`,R`\{(E_s^{\bullet,\bullet},d_s)\}_{s\ge r_0}\Longrightarrow H^\bullet`,R`E_2^{p,q}=H^p(Y,R^qf_*\mathcal F)\Longrightarrow H^{p+q}(X,\mathcal F)`],note:()=>t(`第一行用选定的起始页标示整条谱序列。Leray 谱序列在第二页有所示描述，之后仍须考虑 ${math('d_2,d_3,\\ldots')}；写 ${math('E_2')} 不表示第二页已经稳定。这里 ${math(R`\mathcal F`)} 是层，与滤过 ${math('F^p')} 不同。`,`The chosen starting page labels the spectral sequence. For the Leray spectral sequence, the displayed description is at page two; later differentials ${math('d_2,d_3,\\ldots')} still matter. Writing ${math('E_2')} does not assert stabilization there. The sheaf ${math(R`\mathcal F`)} is distinct from the filtration ${math('F^p')}.`),refs:'notation'}
  ];
  const degenerationProof=[
-  {name:['收敛与退化','Convergence and degeneration'],f:[R`d_s=0\quad(\forall s\ge r_0)`,R`\Longrightarrow\quad E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`],note:()=>t(`第一行是从第 ${math('r_0')} 页退化的额外条件。收敛本身不保证它成立；即使在 ${math('E_2')} 退化，也首先得到 ${math(R`E_2^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`)}，而不是 ${math(R`E_2^{p,q}\cong H^{p+q}`)}。`,`The first line is the additional condition for degeneration at page ${math('r_0')}. Convergence alone does not imply it. Even degeneration at ${math('E_2')} identifies its terms with the graded pieces of the target, not with the whole target.`),refs:'degeneration'}
+  {name:['收敛与退化','Convergence and degeneration'],f:[R`d_s^{p,q}=0\quad(\forall s\ge r_0,\ \forall p,q)`,R`\Longrightarrow\quad E_{r_0}^{p,q}\cong E_{r_0+1}^{p,q}\cong\cdots\cong E_\infty^{p,q}`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`],note:()=>t(`第一行是从第 ${math('r_0')} 页退化的额外条件。收敛本身不保证它成立；即使在 ${math('E_2')} 退化，也首先得到 ${math(R`E_2^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}`)}，而不是 ${math(R`E_2^{p,q}\cong H^{p+q}`)}。`,`The first line is the additional condition for degeneration at page ${math('r_0')}. Convergence alone does not imply it. Even degeneration at ${math('E_2')} identifies its terms with the graded pieces of the target, not with the whole target.`),refs:'degeneration'}
  ];
  const referenceLink=(url,label)=>`<a href="${url}" target="_blank" rel="noopener">${label}</a>`;
  const mc='https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf',weibel='https://math.mit.edu/~hrm/palestine/weibel/05-spectral_sequences.pdf';
@@ -36,8 +38,10 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  }
  function definitionExposition(){
   board.dataset.currentProofTopic='convergence-definition';board.dataset.currentProofStep='0';
-  const family=math(R`\{(E_r^{\bullet,\bullet},d_r)\}_{r\ge0}`);
-  replaceMathContent(board,`<div class="proof-body convergence-definition"><p class="operation-note">${t(`本文固定第一象限双复形的列滤过，以及 2.11 定义的上同调诱导滤过 ${math('F')}。我们称由此得到的谱序列 ${family} <strong>收敛到</strong> ${math(R`H^\bullet(C^\bullet,D)`)}，<strong>如果</strong>对所有 ${math(R`p,q\ge0`)}，闭代表元给出自然同构`,`Fix the column filtration of the first-quadrant double complex and its induced filtration ${math('F')} on cohomology from 2.11. We say that the resulting spectral sequence ${family} <strong>converges to</strong> ${math(R`H^\bullet(C^\bullet,D)`)} <strong>if</strong>, for all ${math(R`p,q\ge0`)}, cocycle representatives give natural isomorphisms`)}</p>${formula(R`E_\infty^{p,q}\xrightarrow{\sim}\frac{F^pH^{p+q}(C^\bullet,D)}{F^{p+1}H^{p+q}(C^\bullet,D)}`)}${formula(R`[a]_\infty\longmapsto[a]_H+F^{p+1}H^{p+q}(C^\bullet,D)`)}</div><p class="operation-note proof-reference">${references({refs:'definition'})}</p>`);
+  const family=math(R`\{(E_r^{\bullet,\bullet},d_r)\}_{r\ge0}`),iso=R`E_\infty^{p,q}\xrightarrow{\sim}\frac{F^pH^{p+q}(C^\bullet,D)}{F^{p+1}H^{p+q}(C^\bullet,D)}`,map=R`[a]_\infty\longmapsto[a]_H+F^{p+1}H^{p+q}(C^\bullet,D)`;
+  const note=t(`称谱序列 ${family} 收敛到 ${math(R`H^\bullet(C^\bullet,D)`)}，如果闭代表元对所有 ${math('p,q')} 给出上面的自然同构，其中 ${math('F')} 必须是 1.12 的诱导滤过。`,`We say that the spectral sequence ${family} converges to ${math(R`H^\bullet(C^\bullet,D)`)} if cocycle representatives give the displayed natural isomorphisms for every ${math('p,q')}, with ${math('F')} the induced filtration from 1.12.`)+t('这里指定滤过及自然同构；McCleary 的抽象定义只要求存在这样的滤过和同构。','Here the filtration and natural maps are specified; McCleary’s abstract definition only requires the existence of a suitable filtration and isomorphisms.');
+  const details=`<p><strong>${t('定义。','Definition.')}</strong> ${note}</p>${formula(iso)}${formula(map)}${formula(R`F^pH^n(C^\bullet,D):=\operatorname{im}\!\left(H^n(F^pC^\bullet,D)\xrightarrow{H^n(\iota_p)}H^n(C^\bullet,D)\right)`)}<p><strong>${t('说明。','Remark.')}</strong> ${t(`McCleary 的 Definition 2.4 只要求目标上存在某个滤过，使稳定项同构于关联分次。本文针对已经给定的双复形及其列滤过，进一步指定诱导滤过和闭代表元给出的自然同构；这是本课的加强约定，并非另引入技术术语“强收敛”。`,`McCleary’s Definition 2.4 asks for the existence of a filtration on the target whose associated graded is isomorphic to the limit term. For our fixed double complex and column filtration, we additionally specify the induced filtration and the natural cocycle map. This is the convention of this course, not a new use of the technical term “strong convergence”.`)}</p><p>${t('Theorem 2.15 的列滤过谱序列正是这里的谱序列；其证明调用 Theorem 2.6，后者使用上述诱导滤过。下一条定理证明该自然映射为同构，因而满足本文约定。','The column-filtration spectral sequence in Theorem 2.15 is the one used here. Its proof invokes Theorem 2.6, which uses this induced filtration. The next theorem proves that the natural map is an isomorphism, establishing our convention.')}</p><p>${references({refs:'definition'})} · ${referenceLink(mc+'#page=62','Theorem 2.15')}</p>`;
+  replaceMathContent(board,proofPanel({key:'convergence-definition',title:t('2.8 定义：收敛','2.8 Definition: Convergence'),formulas:[iso],note,details,detailsAreComplete:true,math,language}));
  }
  function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','degeneration','single-line'][context.notePage||0];}
  function exposition(){
@@ -45,7 +49,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   const topic=expositionTopic();if(topic==='definition'){definitionExposition();return;}
   if(topic==='convergence'||topic==='single-line'){
    const convergence=topic==='convergence',entry=convergence?firstQuadrantContent({math,t}):singleLineContent({math,t});
-   const title=convergence?'2.13 '+t(...firstQuadrantTitle):'2.15 '+t(...singleLineTitle);
+   const title=convergence?'2.9 '+t(...firstQuadrantTitle):'2.11 '+t(...singleLineTitle);
    board.dataset.currentProofTopic=topic;delete board.dataset.currentProofStep;
    replaceMathContent(board,proofPanel({key:'abutment-'+topic,title,formulas:entry.f,note:entry.note,details:entry.detail,math,language}));return;
   }
@@ -57,7 +61,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
    notation:{f:[notationProof[0].f[2]],note:t('E₂ 标示有明确描述的起始页，不表示第二页已经稳定。','E₂ labels the starting page with an explicit description; it does not assert stabilization on page two.')},
    degeneration:{f:degenerationProof[0].f.slice(0,2),note:t('退化是所有后续微分为零的额外条件，收敛本身不保证它成立。','Degeneration imposes the additional condition that every later differential vanish; convergence alone does not imply it.')}
   },summary=summaries[topic];
-  replaceMathContent(board,proofPanel({key:'abutment-'+topic,title:topic==='degeneration'?'2.14 '+t('退化','Degeneration'):t(...entries[0].name),formulas:summary.f,note:summary.note,details:(topic==='degeneration'?formula(R`E_{s+1}^{p,q}\cong\frac{\ker d_s^{p,q}}{\operatorname{im}d_s^{p-s,q+s-1}}=\frac{E_s^{p,q}}{0}\cong E_s^{p,q}\qquad(s\ge r_0)`)+`<p>${t('逐页迭代给出与稳定页的自然同构，再使用收敛同构。','Iterating gives the natural identification with the stable page; apply the convergence isomorphism.')}</p>`:'')+proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note()})+`<p>${references(entry)}</p>`,math,language}));
+  replaceMathContent(board,proofPanel({key:'abutment-'+topic,title:topic==='degeneration'?'2.10 '+t('退化','Degeneration'):t(...entries[0].name),formulas:summary.f,note:summary.note,details:(topic==='degeneration'?formula(R`E_{s+1}^{p,q}\cong\frac{\ker d_s^{p,q}}{\operatorname{im}d_s^{p-s,q+s-1}}=\frac{E_s^{p,q}}{0}\cong E_s^{p,q}\qquad(s\ge r_0)`)+`<p>${t('逐页迭代给出与稳定页的自然同构，再使用收敛同构。','Iterating gives the natural identification with the stable page; apply the convergence isomorphism.')}</p>`:'')+proofSections(entries,{math,title:e=>t(...e.name),note:e=>e.note()})+`<p>${references(entry)}</p>`,math,language}));
  }
  function replaceScene(scene){
   for(const old of [...host.children]){
@@ -67,6 +71,8 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   host.append(scene);if(!visualMotion().reduced)scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().enter,easing:visualMotion().easing});
  }
  function draw(){
+  pages.stop();
+  if(context.step===3&&context.notePage>=1){replaceScene(pages.build(['','convergence','degeneration','extreme'][context.notePage]));return;}
   if(context.step===4){const scene=document.createElement("div");scene.className="abutment-scene";scene.innerHTML=lerayDiagram({page:context.notePage||0,label,t});replaceScene(scene);return;}
   if(context.step===3&&context.notePage===3){const scene=document.createElement('div');scene.className='abutment-scene';scene.innerHTML=singleLineDiagram({label,t});replaceScene(scene);return;}
   const y=i=>105+54*i,final=context.step===3,applied=context.step===2||context.step===3&&context.notePage<=1;
@@ -96,10 +102,11 @@ export function createAbutmentView({viewport,board,controls,math,language}){
   e.target.nextElementSibling.textContent=e.target.value;draw();exposition();
  });
 
- return {sync(s){
+ return {play:()=>pages.play(),stop:()=>pages.stop(),isPlaying:()=>pages.isPlaying(),sync(s){
+  if(s.module==='initial'&&s.effect==='hfiltration')s={...s,module:'converge',step:2,notePage:0};
   const wasActive=active;active=!s.cover&&s.module==='converge'&&s.step>=2;context=s;
   host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===4;viewport.classList.toggle('has-abutment-view',active);
-  if(!active){key='';window.spectralAbutment={active:false};return;}
+  if(!active){pages.stop();key='';window.spectralAbutment={active:false};return;}
   if(!wasActive){n=s.n;p=Math.max(0,Math.min(s.p,n));}
   const next=[s.step,s.notePage,n,p,language()].join(':');if(next!==key){key=next;draw();paintControls();}fit();exposition();
  }};

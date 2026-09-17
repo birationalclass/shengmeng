@@ -1,7 +1,8 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=150';
+import {spectralExampleExposition,spectralFamilyExposition} from './spectral-examples.js?v=153';
+import {proofPanel,proofSections} from './proof-panel.js?v=153';
 import {cycleDefinition,boundaryDefinition,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=97';
-import {cohomologyExposition} from './cohomology-view.js?v=150';
+import {cohomologyExposition} from './cohomology-view.js?v=153';
 // The current entry selects a concise exposition; details never change the diagram.
 export function createDifferentialProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
@@ -48,6 +49,7 @@ export function createDifferentialProof({board,math,language}){
  };
  function noteMath(text){if(/\$[^$]+\$/.test(text))return text.split(/(\$[^$]+\$)/g).map(part=>part.startsWith('$')?math(part.slice(1,-1)):noteMath(part)).join('');return text.replace(/K\^\{p,q\}|F\^pC\^\{p\+q\}|a∈K\^\{p,q\}|\[a\]₀/g,token=>math({'a∈K^{p,q}':R`a\in K^{p,q}`,'[a]₀':R`[a]_0`}[token]||token));}
  function paint(){
+  if(context?.state.module==='learn'&&[3,4].includes(context.state.step)){replaceMathContent(board,(context.state.step===3?spectralExampleExposition:spectralFamilyExposition)({math,language}));return;}
   const pageTopic=context?.state.module==='learn'?({3:['e0','d0'],4:['e1','d1'],5:['er','dr']}[context.state.step]?.[context.state.notePage]):null;
   if(pageTopic)topic=pageTopic;
   if(topic==='cohom'){

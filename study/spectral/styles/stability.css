@@ -4,22 +4,22 @@
 .has-stability-view #diagram{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 .stability-scene{position:absolute;inset:0;width:840px;height:525px;transform:scale(var(--stability-scale,1));transform-origin:0 0}
 .stability-scene svg{position:absolute;inset:0;width:840px;height:525px;overflow:visible}
-.stability-axis{fill:none;stroke:#739396;stroke-width:1;opacity:.48}
-.stability-node{fill:#10272c;stroke:#33565c;stroke-width:.8;opacity:.4;transition:stroke var(--motion-emphasis) ease,opacity var(--motion-emphasis) ease}
-.stability-node.central{fill:#18353a;stroke:var(--gold);stroke-width:1.4;opacity:1}
-.stability-zero-space{fill:#112429;stroke:#668086;stroke-width:1;opacity:.8}
+.stability-axis{fill:none;stroke:var(--muted);stroke-width:1;opacity:.22}
+.stability-node{fill:var(--panel);stroke:var(--graph-border);stroke-width:.8;opacity:.4;transition:stroke var(--motion-emphasis) ease,opacity var(--motion-emphasis) ease}
+.stability-node.central{fill:var(--panel);stroke:var(--gold);stroke-width:1.4;opacity:1}
+.stability-zero-space{fill:var(--panel);stroke:var(--graph-border);stroke-width:1;opacity:.8}
 .stability-map{fill:none;stroke:currentColor;color:#638f98;stroke-width:1.5;opacity:.35;transition:opacity var(--motion-emphasis) ease,color var(--motion-emphasis) ease}
 .stability-map.is-emphasized{color:var(--gold);opacity:1}
-.stability-label{position:absolute;display:flex;height:40px;align-items:center;justify-content:center;white-space:nowrap;font-size:22px;line-height:1;color:#e0ebed;pointer-events:none}
+.stability-label{position:absolute;display:flex;height:40px;align-items:center;justify-content:center;white-space:nowrap;font-size:22px;line-height:1;color:var(--ink);pointer-events:none}
 .stability-label .katex{font-size:1em}
-.stability-label.context{font-size:19px;opacity:.28}
-.stability-label.central{color:#f3ead2}
-.stability-label.zero{font-size:28px;color:#b9cbd0}
-.stability-label.zero-name{font-size:19px;color:#afc0c7}
+.stability-label.context{font-size:20px;opacity:.38}
+.stability-label.central{color:var(--gold)}
+.stability-label.zero{font-size:28px;color:var(--muted)}
+.stability-label.zero-name{font-size:20px;color:var(--ink)}
 .stability-label.map{font-size:20px;color:var(--gold)}
 .stability-label.page-title{font-size:31px;color:var(--teal)}
-.stability-label.parameters{font-size:23px;color:#cbdcde}
-.stability-label.axis{font-size:16px;color:#8ca5aa}
+.stability-label.parameters{font-size:23px;color:var(--ink)}
+.stability-label.axis{font-size:16px;color:var(--muted)}
 .stability-flow{fill:none;stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 3px #f8d58a66)}
 .stability-particle{fill:#ffe4a2;stroke:#fff5dc;stroke-width:1;filter:drop-shadow(0 0 4px #ffd27399)}
 .stability-moving-zero{fill:#fff0be;paint-order:stroke;stroke:#102228;stroke-width:5px;font-family:KaTeX_Main,serif;font-weight:400}
@@ -35,3 +35,5 @@
 .stability-example{color:var(--gold);margin-top:14px}
 @media(max-width:780px){#stabilityControls{gap:5px}#stabilityControls button{padding:5px 8px}.stability-example-picker{font-size:12px}}
 @media(prefers-reduced-motion:reduce){#stabilityView,.stability-node,.stability-map,.stability-result{transition:none!important}}
+
+.stability-node,.stability-zero-space{rx:9px}.stability-label.grid-label{font-size:20px}.stability-zero-space{opacity:1}.stability-label.zero-name{opacity:0}

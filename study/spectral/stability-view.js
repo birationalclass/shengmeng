@@ -1,21 +1,22 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {visualMotion} from './visual-style.js?v=41';
-import {createStabilityProof} from './stability-proof.js?v=150';
+import {createStabilityProof} from './stability-proof.js?v=153';
 
 export const stabilityExamples=Object.freeze([{p:1,q:1,r:3},{p:0,q:0,r:2},{p:1,q:0,r:2}]);
 // All positions share one coordinate map. Negative indices, not a display edge,
 // are the reason the two endpoint spaces vanish.
-const point=(p,q)=>[260+100*p,322-68*q];
+const point=(p,q)=>[300+125*p,370-75*q];
 const clamp=x=>Math.max(0,Math.min(1,x)),smooth=x=>{x=clamp(x);return x*x*(3-2*x);};
 const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
 const segment=(a,b,ha,hb)=>{
  const d=b.map((v,i)=>v-a[i]),edge=h=>Math.min(h[0]/Math.abs(d[0]),h[1]/Math.abs(d[1]));
  return `M${mix(a,b,edge(ha)).join(',')} L${mix(b,a,edge(hb)).join(',')}`;
 };
-export function createStabilityView({viewport,board,controls,math,language}){
+export function createStabilityView({viewport,diagram,board,controls,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;
  const host=document.createElement('div');host.id='stabilityView';host.inert=true;host.setAttribute('aria-hidden','true');viewport.append(host);
  const toolbar=document.createElement('nav');toolbar.id='stabilityControls';toolbar.hidden=true;controls.append(toolbar);
+ let entranceFrame=0,entranceRun=0,entranceBusy=false,entranceResolve=null,sourceLabels=new Map();
  let active=false,context=null,exampleIndex=0,key='',scene=null,mode='outgoing',frame=0,run=0,sceneSerial=0;
  const proof=createStabilityProof({board,math,language,onSelect:mode=>selectMode(mode,false)});
  const label=(x,y,tex,width=120,cls='')=>`<span class="stability-label ${cls}" style="left:${x-width/2}px;top:${y-20}px;width:${width}px">${math(tex)}</span>`;
@@ -24,7 +25,7 @@ export function createStabilityView({viewport,board,controls,math,language}){
   const {p,q,r}=current();window.spectralStability={active,exampleIndex,p,q,r,mode,phase,source:[p-r,q+r-1],target:[p+r,q-r+1],centralTermPresent:!!scene?.querySelector('[data-central]')};
  }
  function cancel(){
-  run++;cancelAnimationFrame(frame);frame=0;
+  run++;cancelAnimationFrame(frame);frame=0;entranceRun++;cancelAnimationFrame(entranceFrame);entranceBusy=false;entranceResolve?.();entranceResolve=null;
   for(const el of host.querySelectorAll('.stability-trace')){
    const opacity=getComputedStyle(el).opacity;
    if(visualMotion().reduced)el.remove();else el.animate([{opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards'}).finished.then(()=>el.remove(),()=>el.remove());
@@ -33,26 +34,61 @@ export function createStabilityView({viewport,board,controls,math,language}){
  function draw(){
   cancel();const e=current(),{p,q,r}=e,source=point(p-r,q+r-1),center=point(p,q),target=point(p+r,q-r+1);
   const previous=scene,fid=`stability-flow-${++sceneSerial}`;scene=document.createElement('div');scene.className='stability-scene';scene.dataset.flowId=fid;
-  let svg=`<defs><marker id="stability-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker><linearGradient id="${fid}" gradientUnits="userSpaceOnUse"><stop stop-color="#f4d89b" stop-opacity="0"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#fff0bd"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#f4d89b" stop-opacity="0"/></linearGradient></defs><path class="stability-axis" d="M24,322 H792 M260,432 V18"/>`,labels=label(75,25,`E_${r}`,100,'page-title')+label(560,15,R`p=${p},\quad q=${q},\quad r=${r}`,360,'parameters')+label(805,322,'i',25,'axis')+label(244,17,'j',25,'axis');
+  let svg=`<defs><marker id="stability-tip" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1.5,1.5 L7,4.5 L1.5,7.5" fill="none" stroke="currentColor" stroke-width="1.3"/></marker><linearGradient id="${fid}" gradientUnits="userSpaceOnUse"><stop stop-color="#f4d89b" stop-opacity="0"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#fff0bd"/><stop stop-color="#f4d89b" stop-opacity=".75"/><stop stop-color="#f4d89b" stop-opacity="0"/></linearGradient></defs><path class="stability-axis" d="M20,402 H834 M252,477 V24"/>`,labels=label(75,25,`E_${r}`,100,'page-title')+label(560,15,R`p=${p},\quad q=${q},\quad r=${r}`,360,'parameters')+label(830,420,'p',25,'axis')+label(236,22,'q',25,'axis');
   for(let i=0;i<=4;i++)for(let j=0;j<=4;j++){
    const [x,y]=point(i,j),central=i===p&&j===q;
-   svg+=`<rect class="stability-node ${central?'central':''}" ${central?'data-central':''} data-p="${i}" data-q="${j}" x="${x-40}" y="${y-18}" width="80" height="36" rx="8"/>`;
-   labels+=label(x,y,`E_${r}^{${i},${j}}`,78,central?'central':'context');
+   svg+=`<rect class="stability-node ${central?'central':''}" ${central?'data-central':''} data-p="${i}" data-q="${j}" x="${x-34}" y="${y-19}" width="68" height="38" rx="8"/>`;
+   labels+=label(x,y,`E_${r}^{${i},${j}}`,67,'grid-label '+(central?'central':'context'));
   }
   for(const [name,pos,indices] of [['incoming',source,[p-r,q+r-1]],['outgoing',target,[p+r,q-r+1]]]){
-   svg+=`<rect class="stability-zero-space" data-zero-end="${name}" data-p="${indices[0]}" data-q="${indices[1]}" x="${pos[0]-53}" y="${pos[1]-22}" width="106" height="44" rx="9"/>`;
-   labels+=label(pos[0],pos[1],`0`,70,'zero')+label(pos[0],pos[1]-40,`E_${r}^{${indices.join(',')}}`,120,'zero-name');
+   svg+=`<rect class="stability-zero-space" data-zero-end="${name}" data-p="${indices[0]}" data-q="${indices[1]}" x="${pos[0]-34}" y="${pos[1]-19}" width="68" height="38" rx="9"/>`;
+   labels+=label(pos[0],pos[1],`0`,67,'zero')+label(pos[0],pos[1],`E_${r}^{${indices.join(',')}}`,67,'zero-name');
   }
-  const paths={incoming:segment(source,center,[58,26],[45,23]),outgoing:segment(center,target,[45,23],[58,26])};
+  const paths={incoming:segment(source,center,[39,24],[39,24]),outgoing:segment(center,target,[39,24],[39,24])};
   svg+=`<path class="stability-map incoming" data-map="incoming" data-source="${p-r},${q+r-1}" data-target="${p},${q}" d="${paths.incoming}" marker-end="url(#stability-tip)"/><path class="stability-map outgoing" data-map="outgoing" data-source="${p},${q}" data-target="${p+r},${q-r+1}" d="${paths.outgoing}" marker-end="url(#stability-tip)"/>`;
   labels+=label((source[0]+center[0])/2,(source[1]+center[1])/2-19,`d_${r}`,60,'map')+label((center[0]+target[0])/2,(center[1]+target[1])/2-19,`d_${r}`,60,'map');
-  labels+=label(60,342,'-2',35,'axis')+label(160,342,'-1',35,'axis')+label(243,394,'-1',35,'axis');
+  labels+=label(50,420,'-2',35,'axis')+label(175,420,'-1',35,'axis')+label(236,445,'-1',35,'axis');
   const stable=context.step===1?R`E_\infty^{${p},${q}}:=E_{${r}}^{${p},${q}}`:R`E_{${r}}^{${p},${q}}\xrightarrow{\sim}E_{${r+1}}^{${p},${q}}\xrightarrow{\sim}\cdots`;
-  labels+=`<div class="stability-result" style="left:250px;top:411px;width:490px">${math(stable)}</div>`;
+
   scene.innerHTML=`<svg viewBox="0 0 840 525" role="img" aria-label="${t('第一象限中的入射与出射零微分','Zero incoming and outgoing differentials in the first quadrant')}">${svg}</svg>${labels}`;
   host.append(scene);if(previous){previous.setAttribute('aria-hidden','true');if(visualMotion().reduced)previous.remove();else previous.animate([{opacity:getComputedStyle(previous).opacity},{opacity:0}],{duration:visualMotion().exit,fill:'forwards'}).finished.then(()=>previous.remove(),()=>previous.remove());}
-  if(!visualMotion().reduced)scene.animate([{opacity:0},{opacity:1}],{duration:visualMotion().enter,easing:visualMotion().easing});
-  updateMode();diagnostic();
+
+  updateMode();prepareEntrance();diagnostic();
+ }
+
+ function capture(s){
+  if(s.module!=='converge'||s.step!==0||s.notePage!==2||active)return;
+  sourceLabels=new Map([...diagram.querySelectorAll('.node')].map(node=>[`${node.dataset.p},${node.dataset.q}`,node.querySelector('.math-anchor')?.dataset.tex]));
+ }
+ function prepareEntrance(){
+  if(!scene)return;scene.dataset.entrance='waiting';delete scene.dataset.labelsChanged;
+  for(const el of scene.querySelectorAll('.stability-axis,.axis,.page-title,.parameters,.stability-map,.map,.stability-zero-space,.zero,.zero-name,.stability-result'))el.style.opacity='0';
+  for(const el of scene.querySelectorAll('.stability-node,.grid-label')){el.style.transform='translateX(-130px)';el.style.opacity='1';}
+  for(const el of scene.querySelectorAll('.stability-node.central'))el.classList.remove('central');
+  const labels=[...scene.querySelectorAll('.grid-label')];
+  labels.forEach((el,i)=>{el.dataset.finalTex=`E_${current().r}^{${Math.floor(i/5)},${i%5}}`;el.innerHTML=math(sourceLabels.get(`${Math.floor(i/5)},${i%5}`)||el.dataset.finalTex);});
+ }
+ async function enter(){
+  if(!scene||!active)return;cancel();prepareEntrance();entranceBusy=true;const id=entranceRun,start=performance.now(),duration=5400;
+  await new Promise(resolve=>{
+   entranceResolve=resolve;
+   const tick=now=>{
+    if(id!==entranceRun||!active){resolve();return;}
+    const elapsed=visualMotion().reduced?duration:Math.min(duration,now-start),shift=smooth(elapsed/1000),axis=smooth((elapsed-1000)/500),highlight=smooth((elapsed-1600)/650),arrows=smooth((elapsed-2350)/800),ends=smooth((elapsed-3250)/650),zero=smooth((elapsed-4250)/650);
+    scene.dataset.entrance=elapsed<1000?'shift':elapsed<1600?'axes':elapsed<2350?'highlight':elapsed<3250?'arrows':elapsed<4250?'endpoints':elapsed<4900?'zero':'complete';
+    for(const el of scene.querySelectorAll('.stability-node,.grid-label')){el.style.transform=`translateX(${-130*(1-shift)}px)`;el.style.opacity=String(el.hasAttribute('data-central')||el.classList.contains('central')?1:1-.62*highlight);}
+    for(const el of scene.querySelectorAll('.stability-axis,.axis'))el.style.opacity=String(.22*axis);
+    for(const el of scene.querySelectorAll('.page-title,.parameters'))el.style.opacity=String(axis);
+    const central=scene.querySelector('[data-central]');central.style.stroke=`color-mix(in srgb,var(--graph-border) ${100*(1-highlight)}%,var(--gold))`;central.style.strokeWidth=String(.8+.6*highlight);
+    if(elapsed>=1600&&!scene.dataset.labelsChanged){scene.dataset.labelsChanged='true';for(const el of scene.querySelectorAll('.grid-label')){el.innerHTML=math(el.dataset.finalTex);if(!visualMotion().reduced)el.animate([{opacity:0},{opacity:1}],{duration:450});}}
+    for(const el of scene.querySelectorAll('.stability-map')){const length=el.getTotalLength();el.style.opacity=String(arrows);el.style.strokeDasharray=String(length);el.style.strokeDashoffset=String(length*(1-arrows));}
+    for(const el of scene.querySelectorAll('.map'))el.style.opacity=String(arrows);
+    for(const el of scene.querySelectorAll('.stability-zero-space'))el.style.opacity=String(ends);
+    for(const el of scene.querySelectorAll('.zero-name'))el.style.opacity=String(ends*(1-zero));
+    for(const el of scene.querySelectorAll('.zero,.stability-result'))el.style.opacity=String(zero);
+    if(elapsed<duration)entranceFrame=requestAnimationFrame(tick);else{entranceBusy=false;entranceResolve=null;diagnostic('ready');resolve();}
+   };tick(start);
+  });
  }
 
  function updateMode(){
@@ -87,7 +123,7 @@ export function createStabilityView({viewport,board,controls,math,language}){
  toolbar.addEventListener('click',e=>{if(!active)return;const b=e.target.closest('[data-stability-mode],[data-stability-replay]');if(!b)return;selectMode(b.dataset.stabilityMode||mode,true);});
  toolbar.addEventListener('change',e=>{if(!active||e.target.id!=='stabilityExample')return;exampleIndex=Number(e.target.value);draw();paintControls();proof.render({state:context,example:current()});animate(mode);});
  const fit=()=>fitDiagramSurface(viewport,host,'--stability-scale');new ResizeObserver(fit).observe(viewport);
- return {play:()=>animate(mode),clear:cancel,isPlaying:()=>frame!==0,sync(s){
+ return {capture,prepare:prepareEntrance,enter,play:()=>animate(mode),clear:cancel,isPlaying:()=>entranceBusy||frame!==0,sync(s){
   const was=active,expositionOnly=!s.cover&&s.module==='converge'&&s.step===0&&s.notePage<2;active=!s.cover&&s.module==='converge'&&s.step<=1&&!expositionOnly;context=s;host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===0&&s.notePage<2;viewport.classList.toggle('has-stability-view',active);
   if(!active){if(was)cancel();key='';proof.render(expositionOnly?{state:s,example:current()}:null);diagnostic();return;}
   const next=[s.step,s.notePage,language()].join(':');if(next!==key){key=next;proof.render({state:s,example:current()});mode=proof.mode();draw();paintControls();}else proof.render({state:s,example:current()});fit();

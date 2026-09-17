@@ -1,22 +1,22 @@
 const R=String.raw;
-export const singleLineTitle=['推论：单列或单行的收敛','Corollary: Single-column or single-row convergence'];
-export const singleLineFormula=R`\begin{gathered}E_{r_0}^{p,q}\Longrightarrow H^{p+q}\\E_{r_0}^{p,q}=0\ (p>0)\\\Longrightarrow\ H^n\cong E_{r_0}^{0,n}\\E_{r_0}^{p,q}=0\ (q>0)\\\Longrightarrow\ E_{r_0}^{n,0}\cong H^n\end{gathered}`;
+export const singleLineTitle=['极端情形','Extreme Case'];
+export const singleLineFormula=R`\begin{gathered}E_{r_0}^{p,q}\Longrightarrow H^{p+q}\\[.5em]\text{Then}\\[.4em](1)\ r_0\ge1,\quad E_{r_0}^{p,q}=0\ (p>0,\ q\ge0)\\\text{implies}\quad H^n\cong E_{r_0}^{0,n}.\\[.6em](2)\ r_0\ge2,\quad E_{r_0}^{p,q}=0\ (q>0,\ p\ge0)\\\text{implies}\quad E_{r_0}^{n,0}\cong H^n.\end{gathered}`;
 
 // This statement concerns an abstract convergent spectral sequence, not a
 // particular sheaf or double complex. Fix the finite target filtration explicitly.
 export function singleLineContent({math,t}){
  const eq=x=>`<div class="operation-equation">${math(x,true)}</div>`,para=x=>`<p>${x}</p>`;
  const setup=t(`设第一象限上同调型谱序列收敛到带有限滤过的 ${math(R`H^\bullet`)}，${math(R`r_0\ge2`)}。以下两个条件分别使用。`,`Let a first-quadrant cohomological spectral sequence converge to ${math(R`H^\bullet`)} with a finite filtration, ${math(R`r_0\ge2`)}. The following are two separate cases.`);
- const assumptions=t(`设 ${math(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} 是第一象限上同调型谱序列，${math(R`r_0\ge2`)}，微分双次数为 ${math('(s,1-s)')}。设它收敛到 ${math(R`H^\bullet`)}，具体指对每个 ${math(R`n\ge0`)}，给定有限滤过及相容同构：`,`Let ${math(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} be a first-quadrant cohomological spectral sequence with ${math(R`r_0\ge2`)} and differentials of bidegree ${math('(s,1-s)')}. Assume it converges to ${math(R`H^\bullet`)}: for each ${math(R`n\ge0`)}, fix a finite filtration and compatible isomorphisms:`);
+ const assumptions=t(`设 ${math(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} 是第一象限上同调型谱序列，${math(R`r_0\ge1`)}，微分双次数为 ${math('(s,1-s)')}。设它收敛到 ${math(R`H^\bullet`)}，具体指对每个 ${math(R`n\ge0`)}，给定有限滤过及相容同构：`,`Let ${math(R`(E_s^{p,q},d_s)_{s\ge r_0}`)} be a first-quadrant cohomological spectral sequence with ${math(R`r_0\ge1`)} and differentials of bidegree ${math('(s,1-s)')}. Assume it converges to ${math(R`H^\bullet`)}: for each ${math(R`n\ge0`)}, fix a finite filtration and compatible isomorphisms:`);
  const filtration=[R`H^n=F^0H^n\supseteq\cdots\supseteq F^{n+1}H^n=0`,R`E_\infty^{p,n-p}\cong F^pH^n/F^{p+1}H^n`];
- const conclusions=[R`\bigl[E_{r_0}^{p,q}=0\ (p>0,\ q\ge0)\bigr]\ \Longrightarrow\ H^n\xrightarrow{\sim}E_{r_0}^{0,n}`,R`\bigl[E_{r_0}^{p,q}=0\ (q>0,\ p\ge0)\bigr]\ \Longrightarrow\ E_{r_0}^{n,0}\xrightarrow{\sim}H^n`];
+ const conclusions=[R`\bigl[r_0\ge1,\ E_{r_0}^{p,q}=0\ (p>0,\ q\ge0)\bigr]\ \text{ implies }\ H^n\xrightarrow{\sim}E_{r_0}^{0,n}`,R`\bigl[r_0\ge2,\ E_{r_0}^{p,q}=0\ (q>0,\ p\ge0)\bigr]\ \text{ implies }\ E_{r_0}^{n,0}\xrightarrow{\sim}H^n`];
  const detail=para(t('先设只剩第零列。零项在后续页仍为零；对每个后续页，唯一可能非零的项的入射与出射微分如下：','Suppose only column zero remains. Zero terms remain zero on later pages. On each later page, the incoming and outgoing differentials at a possibly nonzero term are'))+
  eq(R`\underbrace{E_s^{-s,n+s-1}}_{0}\xrightarrow{d_s^{-s,n+s-1}}E_s^{0,n}\xrightarrow{d_s^{0,n}}\underbrace{E_s^{s,n-s+1}}_{0}\qquad(s\ge r_0)`)+
- para(t(`第一项因第一象限条件为零，第三项因其列指标为正而为零。这里仅需 ${math(R`s\ge r_0\ge1`)}，故单列结论实际在 ${math(R`r_0\ge1`)} 时就成立。其它位置的项为零，其出射微分也为零。因此所有后续微分均为零，引用 2.14：`,`The source is zero by the first-quadrant condition, and the target is zero because its column is positive. This only requires ${math(R`s\ge r_0\ge1`)}, so the single-column assertion already holds for ${math(R`r_0\ge1`)}. All other terms are zero, so their outgoing differentials also vanish. Thus every later differential is zero, and 2.14 applies:`))+
- eq(R`d_s=0\quad(s\ge r_0)\quad\overset{2.14}{\Longrightarrow}\quad E_{r_0}^{p,q}\cong E_\infty^{p,q}`)+
- eq(R`E_{r_0}^{p,n-p}=0\ \Longrightarrow\ E_s^{p,n-p}=0\ (s\ge r_0)\ \Longrightarrow\ E_\infty^{p,n-p}=0\qquad(1\le p\le n)`)+
+ para(t(`第一项因第一象限条件为零，第三项因其列指标为正而为零。这里仅需 ${math(R`s\ge r_0\ge1`)}，故单列结论实际在 ${math(R`r_0\ge1`)} 时就成立。其它位置的项为零，其出射微分也为零。因此所有后续微分均为零，引用 2.10：`,`The source is zero by the first-quadrant condition, and the target is zero because its column is positive. This only requires ${math(R`s\ge r_0\ge1`)}, so the single-column assertion already holds for ${math(R`r_0\ge1`)}. All other terms are zero, so their outgoing differentials also vanish. Thus every later differential is zero, and 2.10 applies:`))+
+ eq(R`d_s^{p,q}=0\quad(\forall s\ge r_0,\ \forall p,q)\quad\text{by 2.10}\quad E_{r_0}^{p,q}\cong E_\infty^{p,q}`)+
+ eq(R`E_{r_0}^{p,n-p}=0\ \text{ implies }\ E_s^{p,n-p}=0\ (s\ge r_0)\ \text{ implies }\ E_\infty^{p,n-p}=0\qquad(1\le p\le n)`)+
  para(t('由收敛给出的同构，对每个正的滤过指标，','By the convergence isomorphisms, for each positive filtration index,'))+
- eq(R`\frac{F^pH^n}{F^{p+1}H^n}\cong E_\infty^{p,n-p}=0\quad\Longrightarrow\quad F^pH^n=F^{p+1}H^n\qquad(1\le p\le n)`)+
+ eq(R`\frac{F^pH^n}{F^{p+1}H^n}\cong E_\infty^{p,n-p}=0\quad\text{ implies }\quad F^pH^n=F^{p+1}H^n\qquad(1\le p\le n)`)+
  para(t('将这些等式与假设中的零端点相接，得到','Combining these equalities with the assumed zero endpoint gives'))+
  eq(R`F^1H^n=F^2H^n=\cdots=F^{n+1}H^n=0`)+
  eq(R`\therefore\quad F^pH^n=0\qquad(1\le p\le n+1)`)+
@@ -25,10 +25,10 @@ export function singleLineContent({math,t}){
  para(t(`其中第一个箭头是商映射，因为 ${math(R`F^1H^n=0`)} 而为同构。零端点 ${math(R`F^{n+1}H^n=0`)} 是假设；仅有各商为零只能推出相邻滤过项相等。`,`The first arrow is the quotient map, an isomorphism because ${math(R`F^1H^n=0`)}. The zero endpoint ${math(R`F^{n+1}H^n=0`)} is an assumption; vanishing quotients alone only imply equality of adjacent filtration terms.`))+
  para(t('再设只剩第零行。此时后续微分为','Now suppose only row zero remains. The later differentials are'))+
  eq(R`\underbrace{E_s^{n-s,s-1}}_{0}\xrightarrow{d_s^{n-s,s-1}}E_s^{n,0}\xrightarrow{d_s^{n,0}}\underbrace{E_s^{n+s,1-s}}_{0}\qquad(s\ge r_0\ge2)`)+
- para(t(`<strong>这里用到 ${math(R`r_0\ge2`)}：</strong>对每个 ${math(R`s\ge r_0`)}，有 ${math(R`s-1>0`)} 和 ${math(R`1-s<0`)}。因此入射源因位于正行而为零，出射目标因位于负行而为零。其它位置的项为零，故全部后续微分均为零。再引用 2.14，并使用收敛的滤过：`,`<strong>This is where ${math(R`r_0\ge2`)} is used:</strong> for every ${math(R`s\ge r_0`)}, we have ${math(R`s-1>0`)} and ${math(R`1-s<0`)}. Thus the incoming source vanishes because its row is positive, and the outgoing target vanishes because its row is negative. All other terms are zero, so all later differentials vanish. Apply 2.14 and then the convergence filtration:`))+
- eq(R`d_s=0\quad(s\ge r_0)\quad\overset{2.14}{\Longrightarrow}\quad E_{r_0}^{p,q}\cong E_\infty^{p,q}`)+
- eq(R`E_{r_0}^{p,n-p}=0\ \Longrightarrow\ E_s^{p,n-p}=0\ (s\ge r_0)\ \Longrightarrow\ E_\infty^{p,n-p}=0\qquad(0\le p<n)`)+
- eq(R`\frac{F^pH^n}{F^{p+1}H^n}\cong E_\infty^{p,n-p}=0\quad\Longrightarrow\quad F^pH^n=F^{p+1}H^n\qquad(0\le p<n)`)+
+ para(t(`<strong>这里用到 ${math(R`r_0\ge2`)}：</strong>对每个 ${math(R`s\ge r_0`)}，有 ${math(R`s-1>0`)} 和 ${math(R`1-s<0`)}。因此入射源因位于正行而为零，出射目标因位于负行而为零。其它位置的项为零，故全部后续微分均为零。再引用 2.10，并使用收敛的滤过：`,`<strong>This is where ${math(R`r_0\ge2`)} is used:</strong> for every ${math(R`s\ge r_0`)}, we have ${math(R`s-1>0`)} and ${math(R`1-s<0`)}. Thus the incoming source vanishes because its row is positive, and the outgoing target vanishes because its row is negative. All other terms are zero, so all later differentials vanish. Apply 2.10 and then the convergence filtration:`))+
+ eq(R`d_s^{p,q}=0\quad(\forall s\ge r_0,\ \forall p,q)\quad\text{by 2.10}\quad E_{r_0}^{p,q}\cong E_\infty^{p,q}`)+
+ eq(R`E_{r_0}^{p,n-p}=0\ \text{ implies }\ E_s^{p,n-p}=0\ (s\ge r_0)\ \text{ implies }\ E_\infty^{p,n-p}=0\qquad(0\le p<n)`)+
+ eq(R`\frac{F^pH^n}{F^{p+1}H^n}\cong E_\infty^{p,n-p}=0\quad\text{ implies }\quad F^pH^n=F^{p+1}H^n\qquad(0\le p<n)`)+
  para(t('这次从滤过的首端开始，得到','This time, starting from the first filtration term gives'))+
  eq(R`H^n=F^0H^n=F^1H^n=\cdots=F^nH^n,\qquad F^{n+1}H^n=0`)+
  eq(R`E_{r_0}^{n,0}\xrightarrow{\sim}E_\infty^{n,0}\xrightarrow{\sim}\frac{F^nH^n}{F^{n+1}H^n}\xrightarrow{\sim}H^n`)+

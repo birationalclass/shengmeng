@@ -1,5 +1,5 @@
-import {markedTitle} from './statement-marks.js?v=150';
-import {proofStatement} from './proof-statements.js?v=150';
+import {markedTitle} from './statement-marks.js?v=153';
+import {proofStatement} from './proof-statements.js?v=153';
 // Concise exposition on the page; complete derivations in one accessible dialog.
 // Opening a proof never navigates the notebook or changes the diagram state.
 const proofs=new Map();let dialog=null;
@@ -24,12 +24,12 @@ document.addEventListener('click',e=>{
  if(!panel.open)panel.showModal();
  if(!matchMedia('(prefers-reduced-motion:reduce)').matches)panel.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'});
 },true);
-export function proofPanel({key,title,titleMath='',formulas,note='',details,math,language}){
+export function proofPanel({key,title,titleMath='',formulas,note='',details,detailsAreComplete=false,math,language}){
  const english=language()==='en';
  const statement=proofStatement({key,formulas,math,english});
  // Statement first, then exactly one opening proof label. Existing proof prose stays intact.
  const body=details.replace(/^(<p[^>]*>)\s*(?:<strong>)?(?:Proof\.|证明。|Construction\.|构造。)(?:<\/strong>)?\s*/,'$1').replace(/(?:Proof\.|证明。)\s*/g,'');
- const complete=statement+`<p class="proof-start"><strong>${english?'Proof.':'证明。'}</strong></p>`+body;
+ const complete=detailsAreComplete?details:statement+`<p class="proof-start"><strong>${english?'Proof.':'证明。'}</strong></p>`+body;
  proofs.set(key,{titleMarkup:markedTitle(title,english)+(titleMath?' '+math(titleMath):''),details:complete,english});
  const hint=english?'More details':'点击公式查看更多';
  return `<div class="exposition-summary">${formulas.map(f=>`<button type="button" class="proof-formula operation-equation" data-proof-detail="${esc(key)}" aria-haspopup="dialog" title="${hint}">${math(f,true)}</button>`).join('')}${note?`<p class="operation-note">${note}</p>`:''}<button type="button" class="proof-detail-link" data-proof-detail="${esc(key)}" aria-haspopup="dialog">${english?'More':'更多'} <span aria-hidden="true">↗</span></button></div>`;

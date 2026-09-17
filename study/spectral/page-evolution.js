@@ -1,5 +1,5 @@
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
-import {createDifferentialProof} from './differential-proof.js?v=150';
+import {createDifferentialProof} from './differential-proof.js?v=153';
 // The existing two-dimensional diagram is the physical E0 plane.
 // Its affine projection changes only the view. Further pages are cohomology objects.
 export function createPageEvolution({origin,viewport,diagram,controls,board,math,language}){
@@ -51,7 +51,7 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
   for(let i=0;i<=4;i++){const a=pos(i,0,r),b=pos(i,4,r),c=pos(0,i,r),d=pos(4,i,r);svg+=`<path class="evolution-grid" d="M${a} L${b} M${c} L${d}"/>`;}
   for(let p=0;p<=4;p++)for(let q=0;q<=4;q++){const [x,y]=pos(p,q,r),selected=p===point.p&&q===point.q;svg+=`<g class="evolution-point ${selected?'is-selected':''}" role="button" tabindex="${selected?'0':'-1'}" data-page="${r}" data-p="${p}" data-q="${q}" aria-label="E_${r}^{${p},${q}}"><circle class="evolution-hit" cx="${x}" cy="${y}" r="10"/><circle class="evolution-dot" cx="${x}" cy="${y}" r="${selected?5:2.8}"/></g>`;}
   const [p,q]=[point.p,point.q],tp=p+r,tq=q-r+1,source=pos(p,q,r);
-  const awaitingDifferential=context?.module==='learn'&&context.notePage===0&&((context.step===3&&r===0)||(context.step===4&&r===1)||(context.step===5&&r===current));
+  const awaitingDifferential=context?.module==='learn'&&context.notePage===0&&(context.step===5&&r===current);
   if(!awaitingDifferential&&tp<=4&&tq>=0&&tq<=4){
    const target=pos(tp,tq,r),dx=target[0]-source[0],dy=target[1]-source[1],len=Math.hypot(dx,dy);
    svg+=`<path class="evolution-differential" data-source="${p},${q},${r}" data-target="${tp},${tq},${r}" d="M${source[0]+dx*9/len},${source[1]+dy*9/len} L${target[0]-dx*9/len},${target[1]-dy*9/len}" marker-end="url(#evolution-tip-${r%4})"/>`;
@@ -161,19 +161,19 @@ export function createPageEvolution({origin,viewport,diagram,controls,board,math
  new ResizeObserver(()=>{projectionKey='';fit();if(engaged)drawPages();}).observe(viewport);
  reduced.addEventListener('change',e=>{if(e.matches){transformAnimation?.finish();layerAnimations.forEach(a=>a.finish());}});
  async function playCurrent(){
-  if(!engaged)return;
-  if(context.step===4&&context.notePage===0){
-   cancel();const run=token;
-   if(tilted&&!reduced.matches){const scene=overlay.querySelector('.evolution-scene');const fade=scene?.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});if(fade){layerAnimations.push(fade);await fade.finished.catch(()=>{});}if(run!==token)return;}
-   generated=0;current=0;start=0;tilted=false;projectionKey='';fit(false);drawPages();
-   await beginCohomology(0);if(!engaged||context.step!==4||context.notePage!==0||token!==run+1)return;
-   if(!reduced.matches){overlay.classList.add('has-r-glow');const glint=overlay.querySelector('.evolution-r-glint');const glow=glint?.getAnimations()[0];if(glow){layerAnimations.push(glow);await glow.finished.catch(()=>{});}overlay.classList.remove('has-r-glow');}
+  if(!engaged||context.step!==4)return;
+  cancel();const run=token;generated=0;current=0;start=0;tilted=true;projectionKey='';busy=true;fit(true);drawPages();
+  await wait(1000);if(run!==token)return;
+  for(let r=1;r<=3;r++){
+   generated=r;current=r;construction={r:r-1,phase:3};projectionKey='';drawPages(r);
+   await wait(1800);if(run!==token)return;
   }
+  construction=null;busy=false;drawPages();paintControls();exposition();
  }
  function showResult(){
   // Reading E1 or d1 does not require having watched the construction first.
   if(!engaged||context?.step!==4)return;
-  cancel();generated=1;current=1;start=0;tilted=true;projectionKey='';fit(false);drawPages();paintControls();exposition();
+  cancel();generated=3;current=3;start=0;tilted=true;projectionKey='';fit(false);drawPages();paintControls();exposition();
  }
  return {sync,play:playCurrent,showResult,clear(){cancel();fit(false);},isTilted:()=>engaged&&tilted};
 }

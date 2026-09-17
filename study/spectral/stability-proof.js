@@ -1,6 +1,6 @@
-import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=150';
+import {pageTransitionExposition,pageCohomologyExposition} from './page-transition.js?v=153';
 import {replaceMathContent} from './math-transitions.js?v=97';
-import {proofPanel,proofSections} from './proof-panel.js?v=150';
+import {proofPanel,proofSections} from './proof-panel.js?v=153';
 
 export function createStabilityProof({board,math,language}){
  const R=String.raw,t=(zh,en)=>language()==='en'?en:zh;let context=null,selectedMode='outgoing';
@@ -20,8 +20,9 @@ export function createStabilityProof({board,math,language}){
   const stable=context.state.step===1;
   const formulas=stable?[R`r_0:=\max\{p+1,q+2\},\qquad s\ge r_0`,R`\phi_s^{p,q}:E_s^{p,q}\xrightarrow{\sim}E_{s+1}^{p,q},\quad[a]_s\longmapsto[a]_{s+1}`]:[R`r>\max\{p,q+1\}\Longrightarrow d_r^{p,q}=d_r^{p-r,q+r-1}=0`,R`E_r^{p,q}\xrightarrow{\sim}E_{r+1}^{p,q}\xrightarrow{\sim}\cdots`];
   const note=stable?t(`对每个固定的 ${math('p,q')}，后续各页具有相同的分子与分母。稳定界可以依赖 ${math('p,q')}；沿上述自然同构识别后记作 ${math('E_\\infty^{p,q}')}。`,`For fixed ${math('p,q')}, all later pages have the same numerator and denominator. The bound may depend on ${math('p,q')}; their common term under these natural identifications is denoted ${math('E_\\infty^{p,q}')}.`):t('入射源与出射靶都落在第一象限外，因此像为零、核为整个当前项。','The incoming source and outgoing target lie outside the first quadrant, so the image is zero and the kernel is the entire current term.');
-  const details=proofSections(derivation(),{math,title:e=>t(...e.name),note:e=>e.note})+'<p><a href="https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf#page=19" target="_blank" rel="noopener">McCleary, §1.1, p. 5; Theorem 2.6</a></p>';
-  replaceMathContent(board,proofPanel({key:stable?'stable-term':'stabilization',title:t('逐位置稳定与自然同构的证明','Pointwise stabilization and the natural isomorphisms'),formulas,note,details,math,language}));
+  const entries=derivation();
+  const details=proofSections(entries.slice(0,2),{math,title:e=>t(...e.name),note:e=>e.note})+`<p>${t('由 2.3，以下自然映射是同构；对所有后续页迭代这些同构，即得到稳定项。','By 2.3, the following natural map is an isomorphism. Iterating these isomorphisms through the later pages gives the stable term.')}</p><div class="operation-equation">${math(R`\pi_s^{p,q}:E_s^{p,q}\xrightarrow{\sim}E_{s+1}^{p,q},\quad[a]_s\longmapsto[a]_{s+1}`,true)}</div><div class="operation-equation">${math(R`E_\infty^{p,q}:=E_{r_0}^{p,q},\quad r_0>\max\{p,q+1\}`,true)}</div>`;
+  replaceMathContent(board,proofPanel({key:'stabilization',title:t('2.5 命题：逐位置稳定','2.5 Proposition: Pointwise stabilization'),formulas:[],note,details,math,language}));
   board.dataset.currentProofTopic=stable?'einfty':'stabilization';delete board.dataset.currentProofStep;
  }
  return {render(c){context=c;if(c)paint();},selectMode(mode){selectedMode=mode;},mode:()=>context?.state.step===1?'stable':selectedMode};
