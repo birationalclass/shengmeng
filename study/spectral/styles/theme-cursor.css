@@ -1,0 +1,15 @@
+/* Native cursor assets only: no overlay or altered pointer hit testing. */
+@media (any-hover:hover) and (any-pointer:fine){
+ html[data-theme-cursor=on],html[data-theme-cursor=on] body{cursor:var(--theme-cursor-arrow,auto)!important}
+ html[data-theme-cursor=on] :is(button,a[href],select,summary,label[for],[role=button],.reading-page,.panel-style-option,.cover-font-grid label,.statement-mark-choices label,input[type=checkbox],input[type=radio],input[type=range],.arrow[data-concept],.continuation[data-concept]){cursor:var(--theme-cursor-link,pointer)!important}
+ html[data-theme-cursor=on] :is(button,a[href],summary,[role=button],.reading-page):active{cursor:var(--theme-cursor-press,pointer)!important}
+ html[data-theme-cursor=on] :is(button,a[href],summary,label,[role=button]) :is(svg,span,.katex,.katex *){cursor:inherit!important}
+ html[data-theme-cursor=on] #diagram.origin-selection .node:not([data-origin-selectable]){cursor:var(--theme-cursor-arrow,auto)!important}
+ html[data-theme-cursor=on] :is(button,input,select):disabled{cursor:not-allowed!important}
+ html[data-theme-cursor=on] :is(textarea,input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=button])){cursor:text!important}
+}
+
+#themeCursor{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:36px;height:21px;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--panel);transition:background .2s,border-color .2s}
+#themeCursor::before{content:'';position:absolute;width:13px;height:13px;left:3px;top:3px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s}
+#themeCursor:checked{background:color-mix(in srgb,var(--gold) 45%,var(--bg));border-color:var(--gold)}
+#themeCursor:checked::before{transform:translateX(15px);background:var(--ink)}

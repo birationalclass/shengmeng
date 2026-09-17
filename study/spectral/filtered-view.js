@@ -1,5 +1,5 @@
-import {proofPanel,proofSections} from './proof-panel.js?v=153';
-import {createFilteredCycles} from './filtered-cycles.js?v=153';
+import {proofPanel,proofSections} from './proof-panel.js?v=155';
+import {createFilteredCycles} from './filtered-cycles.js?v=155';
 import {replaceMathContent} from './math-transitions.js?v=97';
 // Z_r and B_r live in the filtered total complex, not in a single K-term.
 // Regions encode subspace relations only; their areas never encode dimensions.

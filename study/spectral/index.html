@@ -1,7 +1,7 @@
 <!doctype html>
 <html data-panel-style="sand" data-mark-style="square" lang="zh-CN" class="math-loading">
 <head>
-<meta charset="utf-8"><script src="appearance-init.js?v=150"></script><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><script src="appearance-init.js?v=155"></script><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="从第一象限双复形到谱序列收敛：精确有理数计算、滤过可视化、代表元追踪与收敛证明。">
 <meta name="theme-color" content="#11100d"><title>Spectral Sequence · Sheng Meng</title>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -11,10 +11,12 @@
 <script src="mobile-reading.js?v=81" defer></script>
 <script src="boot.js?v=154" defer></script>
 <script src="toolbar-controls.js?v=154" defer></script>
-<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=153"></script>
+<script src="theme-cursor.js?v=155" defer></script>
+<link rel="stylesheet" href="styles/theme-cursor.css?v=155">
+<script src="vendor/katex.min.js" defer></script><script type="module" src="app.js?v=155"></script>
 <link rel="stylesheet" href="styles/abutment.css?v=132">
 <link rel="stylesheet" href="styles/stability.css?v=153">
-<link rel="stylesheet" href="styles/panel-style.css?v=97">
+<link rel="stylesheet" href="styles/panel-style.css?v=155">
 <link rel="stylesheet" href="styles/mobile-reading.css?v=81">
 <link rel="stylesheet" href="styles/playback.css?v=98"><link rel="stylesheet" href="styles/proof-panel.css?v=112">
 <link rel="stylesheet" href="styles/differential-sweep.css?v=119">
@@ -56,6 +58,7 @@
 <div class="motion-setting"><label id="playbackLoopLabel" for="playback-loop">循环播放</label><input id="playback-loop" type="checkbox" role="switch" checked></div>
 <div class="motion-setting motion-speed"><label id="playbackDelayLabel" for="playback-delay">显示完成后等待</label><output id="playback-delay-value" for="playback-delay">2 秒</output><input id="playback-delay" type="range" min="0" max="5" step="0.5" value="2"></div>
 <div class="motion-setting motion-speed"><label id="playbackIntervalLabel" for="playback-interval">播放结束后间隔</label><output id="playback-interval-value" for="playback-interval">5 秒</output><input id="playback-interval" type="range" min="0" max="10" step="0.5" value="5"></div><p id="playbackHint"></p></fieldset>
+<div class="motion-setting motion-auto-fold"><label id="themeCursorLabel" for="themeCursor">使用配套主题指针</label><input id="themeCursor" type="checkbox" role="switch" checked aria-describedby="themeCursorHint"><p id="themeCursorHint">默认开启；关闭后使用系统指针。</p></div>
 <p id="motionScope" class="motion-scope"></p>
 <div class="motion-setting motion-auto-fold"><label id="motionAutoCollapseLabel" for="motionAutoCollapse">自动折叠</label><input id="motionAutoCollapse" type="checkbox" role="switch" aria-describedby="motionAutoCollapseHint"><p id="motionAutoCollapseHint">显示下一条时收起此前内容；默认关闭。</p></div>
 <div class="motion-setting"><label id="motionEffectLabel" for="motionEffect">收放效果</label><select id="motionEffect"><option value="soft">柔和收放</option><option value="slide">简洁收放</option><option value="none">关闭动画</option></select></div>

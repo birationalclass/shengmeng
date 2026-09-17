@@ -1,6 +1,6 @@
 const R=String.raw;
 export const firstQuadrantTitle=['第一象限收敛性','First-quadrant convergence'];
-export const firstQuadrantFormula=R`\begin{gathered}E_r^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)\\[.4em]E_\infty^{p,q}\cong\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}\end{gathered}`;
+export const firstQuadrantFormula=R`\begin{gathered}E_r^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)\\[.4em]E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}(C^\bullet,D)\end{gathered}`;
 export function firstQuadrantContent({math,t}){
  const eq=x=>`<div class="operation-equation">${math(x,true)}</div>`,para=x=>`<p>${x}</p>`;
  const mc='https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/McCleary-UGSS.pdf';
@@ -8,7 +8,7 @@ export function firstQuadrantContent({math,t}){
  const assumptions=t(`设 ${math(R`(K^{\bullet,\bullet},\delta_1,\delta_2)`)} 是向量空间（或同一环上的模）的第一象限双复形。本文使用 McCleary 定理 2.15 的第一种（列滤过）谱序列，记号约定为 ${math(R`F=F_I,\ E_r={}^{I}E_r`)}，采用 ${math(R`\delta_1\delta_2+\delta_2\delta_1=0`)} 的约定。令总复形及其列滤过为`,`Let ${math(R`(K^{\bullet,\bullet},\delta_1,\delta_2)`)} be a first-quadrant double complex of vector spaces (or modules over a fixed ring). We use the first (column-filtration) spectral sequence of McCleary’s Theorem 2.15, writing ${math(R`F=F_I,\ E_r={}^{I}E_r`)}. Assume ${math(R`\delta_1\delta_2+\delta_2\delta_1=0`)}. Define its total complex and column filtration by`);
  const hypothesisFormulas=[R`K^{i,j}=0\quad(i<0\text{ or }j<0)`,R`C^n:=\bigoplus_{i+j=n}K^{i,j},\qquad D:=\delta_1+\delta_2`,R`F^pC^n:=\bigoplus_{\substack{i+j=n\\i\ge p}}K^{i,j}`,R`H^n:=H^n(C^\bullet,D),\qquad F^pH^n:=\operatorname{im}\!\left(H^n(F^pC^\bullet,D|_{F^pC^\bullet})\xrightarrow{H^n(\iota_p)} H^n(C^\bullet,D)\right)`];
  const conclusionLead=t('则列滤过的谱序列按照 2.8 的约定，相对于上述诱导滤过收敛到总上同调，具体有以下有限滤过及自然同构。行滤过的谱序列同样收敛到总上同调，使用其自身诱导的滤过。','Then the column-filtration spectral sequence converges to total cohomology with respect to the specified induced filtration, in the sense of 2.8, with the following finite filtration and natural isomorphisms. The row-filtration spectral sequence also converges to total cohomology, with its own induced filtration.');
- const conclusions=[R`H^n=F^0H^n\supseteq\cdots\supseteq F^{n+1}H^n=0\qquad(n\ge0)`,R`E_r^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)`,R`E_\infty^{p,q}\xrightarrow{\sim}\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}\qquad(p,q\ge0)`];
+ const conclusions=[R`H^n=F^0H^n\supseteq\cdots\supseteq F^{n+1}H^n=0\qquad(n\ge0)`,R`E_r^{p,q}\Longrightarrow H^{p+q}(C^\bullet,D)`,R`E_\infty^{p,q}\xrightarrow{\sim}\operatorname{Gr}_F^pH^{p+q}=\frac{F^pH^{p+q}}{F^{p+1}H^{p+q}}\qquad(p,q\ge0)`];
  const detail=para(t('我们先验证列滤过的逐次数有限性。第一象限条件给出','We first verify that the column filtration is finite in each degree. The first-quadrant condition gives'))+
  eq(R`C^n=\bigoplus_{i=0}^{n}K^{i,n-i},\qquad F^0C^n=C^n,\qquad F^{n+1}C^n=0`)+
  para(t(`此外 ${math(R`D(F^pC^n)\subseteq F^pC^{n+1}`)}。下面直接使用前面定义的诱导滤过，构造 2.8 要求的自然同构并验证端点。`,`Moreover, ${math(R`D(F^pC^n)\subseteq F^pC^{n+1}`)}. We now use the previously defined induced filtration to construct the natural isomorphism required by 2.8 and verify its endpoints.`))+
@@ -39,6 +39,6 @@ export function firstQuadrantContent({math,t}){
  para(t('这一更具体的结论确实由 McCleary 的证明给出：他在定理 2.6 前定义上同调滤过为包含映射诱导的像，定理 2.6 及其证明使用该滤过；定理 2.15 对列滤过和行滤过分别应用 2.6。因此引用 2.15 时，可以取各自的诱导滤过，而无需另行选择滤过。这并不声称满足抽象定义 2.4 的滤过唯一。','McCleary’s proof does give this more specific conclusion: immediately before Theorem 2.6, he defines the cohomology filtration as the image of the map induced by inclusion. Theorem 2.6 and its proof use that filtration, and Theorem 2.15 applies 2.6 separately to the column and row filtrations. Thus each sequence converges with respect to its own induced filtration, with no further choice. This does not assert uniqueness among all filtrations satisfying the abstract Definition 2.4.'))+
  para(references);
  return {assumptions,hypothesisFormulas,conclusionLead,conclusions,detail,
- f:[R`F^0C^n=C^n,\qquad F^{n+1}C^n=0`,R`E_\infty^{p,q}\cong F^pH^{p+q}/F^{p+1}H^{p+q}`],
- note:t(`本文采用 McCleary 的列滤过谱序列 ${math(R`E_r={}^{I}E_r`)}。第一象限使每条总次数对角线有限，因此自动收敛到总上同调。`,`We use McCleary’s column-filtration spectral sequence ${math(R`E_r={}^{I}E_r`)}. Each total-degree diagonal is finite, giving convergence to total cohomology.`)+`<br>${references}`};
+ f:[R`F^0C^n=C^n,\qquad F^{n+1}C^n=0`,R`E_\infty^{p,q}\cong\operatorname{Gr}_F^pH^{p+q}=F^pH^{p+q}/F^{p+1}H^{p+q}`],
+ note:t(`本文采用 McCleary 的列滤过谱序列 ${math(R`E_r={}^{I}E_r`)}。第一象限使每条总次数对角线有限，因此自动收敛到总上同调。`,`We use McCleary’s column-filtration spectral sequence ${math(R`E_r={}^{I}E_r`)}. Each total-degree diagonal is finite, giving convergence to total cohomology.`)+t('可以类比 Hodge 分解来理解这些分次片段，但这里只得到滤过商；典范的 Hodge 分解还需要 Kähler 条件提供的额外结构，详见第 3 节。','These graded pieces suggest a comparison with Hodge decomposition, but convergence gives filtration quotients only; the canonical Hodge decomposition needs the additional structure supplied by the Kähler condition (Section 3).')+`<br>${references}`};
 }

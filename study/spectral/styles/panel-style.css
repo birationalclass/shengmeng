@@ -81,3 +81,16 @@ html[data-panel-style=glass] .slide-deck .visualization-module .diagram-controls
 @media(max-width:780px){html[data-panel-style] {--panel-inset:18px;--notebook-controls-height:120px}html[data-panel-style] .slide-deck:not(.is-cover) .explanation {padding:20px 12px 20px 8px}html[data-panel-style] .slide-deck:not(.is-cover) .visual-column {padding:16px 12px 16px 26px;grid-template-rows:auto clamp(290px,42dvh,390px)}html[data-panel-style] .slide-deck .math-exposition {padding-top:18px}html[data-panel-style] .notebook-toolbar #sceneTitle {font-size:25px}html[data-panel-style] .notebook-workspace .statement-heading .statement-title {font-size:17px!important}}
 @media(max-width:420px){html[data-panel-style] {--panel-inset:13px;--exposition-control-size:13px}html[data-panel-style] .notebook-workspace {--reading-formula-size:19px;--reading-heading-size:18px}html[data-panel-style] .slide-deck .diagram-controls :is(button,select,label),html[data-panel-style] .slide-deck #evolutionControls button {font-size:13px}html[data-panel-style] #motionSettings {padding:19px}.panel-style-option {padding:10px;gap:9px}.panel-style-mini{width:33px}.panel-style-copy small{font-size:12px}}
 @media(pointer:coarse){html[data-panel-style] .slide-deck .diagram-controls :is(button,select) {min-height:42px}html[data-panel-style] .panel-style-option {min-height:64px}}
+
+/* Formula selection and hover use the active surface palette, never a fixed teal. */
+html[data-panel-style]{--reading-interaction-accent:var(--teal)}
+html[data-panel-style=sand]{--reading-interaction-accent:var(--gold)}
+html[data-panel-style] .notebook-workspace .explanation .math-block[data-concept]:hover,
+html[data-panel-style] .notebook-workspace .explanation .math-block.concept-linked,
+html[data-panel-style] .notebook-workspace .build-card.concept-linked>.math-block{
+ background:color-mix(in srgb,var(--reading-interaction-accent) 7%,transparent);box-shadow:none;
+}
+html[data-panel-style] .notebook-workspace :is(.statement-toggle,.build-toggle):hover{
+ background:color-mix(in srgb,var(--reading-interaction-accent) 7%,transparent);
+ border-color:color-mix(in srgb,var(--reading-interaction-accent) 24%,transparent);color:var(--ink);
+}

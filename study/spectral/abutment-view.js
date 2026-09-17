@@ -1,8 +1,9 @@
 import {createConvergencePages} from './convergence-pages.js?v=153';
 import {singleLineContent,singleLineTitle,singleLineDiagram} from './single-line-convergence.js?v=153';
-import {firstQuadrantContent,firstQuadrantTitle} from './first-quadrant-convergence.js?v=153';
-import {lerayExposition,lerayDiagram} from './leray.js?v=153';
-import {proofPanel,proofSections} from './proof-panel.js?v=153';
+import {firstQuadrantContent,firstQuadrantTitle} from './first-quadrant-convergence.js?v=155';
+import {hodgeExposition,hodgeDiagram} from './hodge.js?v=155';
+import {lerayExposition,lerayDiagram} from './leray.js?v=155';
+import {proofPanel,proofSections} from './proof-panel.js?v=155';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {replaceMathContent} from './math-transitions.js?v=97';
 import {visualMotion} from './visual-style.js?v=41';
@@ -45,6 +46,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  }
  function expositionTopic(){return context.step===2?'hfiltration':['definition','convergence','degeneration','single-line'][context.notePage||0];}
  function exposition(){
+  if(context.step===5){replaceMathContent(board,hodgeExposition({page:context.notePage||0,math,language}));return;}
   if(context.step===4){replaceMathContent(board,lerayExposition({page:context.notePage||0,math,language}));return;}
   const topic=expositionTopic();if(topic==='definition'){definitionExposition();return;}
   if(topic==='convergence'||topic==='single-line'){
@@ -73,6 +75,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  function draw(){
   pages.stop();
   if(context.step===3&&context.notePage>=1){replaceScene(pages.build(['','convergence','degeneration','extreme'][context.notePage]));return;}
+  if(context.step===5){const scene=document.createElement('div');scene.className='abutment-scene hodge-scene';scene.innerHTML=hodgeDiagram({page:context.notePage||0,label,t});replaceScene(scene);return;}
   if(context.step===4){const scene=document.createElement("div");scene.className="abutment-scene";scene.innerHTML=lerayDiagram({page:context.notePage||0,label,t});replaceScene(scene);return;}
   if(context.step===3&&context.notePage===3){const scene=document.createElement('div');scene.className='abutment-scene';scene.innerHTML=singleLineDiagram({label,t});replaceScene(scene);return;}
   const y=i=>105+54*i,final=context.step===3,applied=context.step===2||context.step===3&&context.notePage<=1;
@@ -105,7 +108,7 @@ export function createAbutmentView({viewport,board,controls,math,language}){
  return {play:()=>pages.play(),stop:()=>pages.stop(),isPlaying:()=>pages.isPlaying(),sync(s){
   if(s.module==='initial'&&s.effect==='hfiltration')s={...s,module:'converge',step:2,notePage:0};
   const wasActive=active;active=!s.cover&&s.module==='converge'&&s.step>=2;context=s;
-  host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step===4;viewport.classList.toggle('has-abutment-view',active);
+  host.classList.toggle('is-active',active);host.inert=!active;host.setAttribute('aria-hidden',String(!active));toolbar.hidden=!active||s.step>=4;viewport.classList.toggle('has-abutment-view',active);
   if(!active){pages.stop();key='';window.spectralAbutment={active:false};return;}
   if(!wasActive){n=s.n;p=Math.max(0,Math.min(s.p,n));}
   const next=[s.step,s.notePage,n,p,language()].join(':');if(next!==key){key=next;draw();paintControls();}fit();exposition();

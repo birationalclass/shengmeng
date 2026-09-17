@@ -1,4 +1,4 @@
-import {proofPanel} from './proof-panel.js?v=153';
+import {proofPanel} from './proof-panel.js?v=155';
 export function spectralExampleExposition({math,language}){
  const R=String.raw,t=(z,e)=>language()==='en'?e:z,M=x=>math(x),eq=x=>`<div class="operation-equation">${math(x,true)}</div>`;
  const map=R`\begin{array}{rcl}\Phi_0^{p,q}:K^{p,q}&\xrightarrow{\sim}&E_0^{p,q}\\a&\longmapsto&[a]_0=a+F^{p+1}C^{p+q}\end{array}`;

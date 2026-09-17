@@ -1,9 +1,10 @@
 import {statementMark,stripStatementKind,createStatementMarkSettings} from './statement-marks.js?v=153';
 import {createInclusionDiagram} from './inclusion-diagram.js?v=151';
 import {subcomplexDiagram,prepareSubcomplexEntrance,animateSubcomplexEntrance} from './subcomplex-diagram.js?v=153';
-import {leraySetup} from './leray.js?v=153';
+import {hodgeSetup} from './hodge.js?v=155';
+import {leraySetup} from './leray.js?v=155';
 import {createDifferentialSweep} from './differential-sweep.js?v=120';
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=153';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=155';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
@@ -11,14 +12,14 @@ import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=8
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
 import {createPanelStyle} from './panel-style.js?v=150';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=153';
+import {createStabilityView} from './stability-view.js?v=155';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {singleLineContent} from './single-line-convergence.js?v=153';
-import {createAbutmentView} from './abutment-view.js?v=153';
+import {createAbutmentView} from './abutment-view.js?v=155';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=153';
+import {numberedPages} from './reading-pages.js?v=155';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -28,12 +29,12 @@ import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=147';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=153';
-import {translatePage,language,toggleLanguage} from './language.js?v=153';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=155';
+import {translatePage,language,toggleLanguage} from './language.js?v=155';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=153';
-import {createPageEvolution} from './page-evolution.js?v=153';
-import {createNotebookMotion} from './notebook-motion.js?v=92';
+import {createFilteredView} from './filtered-view.js?v=155';
+import {createPageEvolution} from './page-evolution.js?v=155';
+import {createNotebookMotion} from './notebook-motion.js?v=155';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
 const GRID_MAX=4, INITIAL_STEPS=12;
@@ -47,7 +48,7 @@ const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanat
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
 const openStatements=new Set(),openBuilds=new Set([0]),visitedStatements=new Set();
 let revealedBuild=-1,revealedTotalStep=0,revealedFiltrationStep=0,revealedGradedStep=0;
-const readingSections=[['initial:0','learn:6'],['learn:5','converge:0','learn:3','learn:4','converge:3'],['converge:4']];
+const readingSections=[['initial:0','learn:6'],['learn:5','converge:0','learn:3','learn:4','converge:3'],['converge:5'],['converge:4']];
 const readingOrder=readingSections.flat();
 const readingSection=key=>String(readingSections.findIndex(section=>section.includes(key))+1||2);
 const NODE_HALF_W=34,NODE_HALF_H=19;
@@ -144,6 +145,7 @@ const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module
  const content=page.indices.map(i=>{
   const tex=language()==='en'?fs[i-1]:fs[i-1]?.replaceAll('\\text{Then}','\\text{则}').replaceAll('\\text{implies}','\\text{推出}');
   const formula=block(tex,concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`);
+  if(module==='converge'&&step===5)return hodgeSetup({math,t:ui,page:i-1})+formula;
   if(module==='converge'&&step===4&&(i<=7||i===14))return leraySetup({math,t:ui,page:i-1})+formula;
   if(module==='learn'&&step===4&&i===3)return `<div class="reading-hypothesis"><span>${ui('其中','where')}</span>${formula}</div>`;
   if(module==='converge'&&step===0&&i===3)return `<div class="reading-hypothesis"><p>${ui('设','Let')}</p>${formula}<p>${ui('则','Then')}</p></div>`;
@@ -165,7 +167,7 @@ function statementMarkup(item,module,step,grouped=false){
  return `<article class="formal-statement notebook-card${meta.continued?' section-continuation':''}" data-statement="${key}" data-step="${step}" hidden>${statementHeading({...meta,name:meta.name||item.title},key)}<div class="statement-body">${meta.intro?`<p class="formal-intro">${meta.intro}</p>`:''}${entries}<div class="slide-supplement"><details><summary>展开数学理由</summary><p>${item.proof||item.text||''}</p></details></div></div></article>`;
 }
 function sectionTwoMarkup(section=2){
- const heading=statementHeading(section===2?statementMeta('learn',5):statementMeta('converge',4),String(section)).replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
+ const heading=statementHeading(section===2?statementMeta('learn',5):statementMeta('converge',section===3?5:4),String(section)).replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
  const groups=readingSections[section-1].map(key=>{const [module,num]=key.split(':'),step=Number(num);return statementMarkup(module==='learn'?lessons[step+1]:convergence[step],module,step,true);}).join('');
  return `<article class="formal-statement notebook-card notebook-section" data-section="${section}" hidden>${heading}<div class="statement-body section-body">${groups}</div></article>`;
 }
@@ -297,7 +299,8 @@ function statementMeta(module=state.module,step=state.step){
  const order=readingOrder.indexOf(`${module}:${['lab','trace'].includes(module)?0:step}`);
  if(module==='initial'&&step===0)return {...meta,kind:'§',number:'1',name:ui('第一象限双复形','First-quadrant double complex'),symbol:null};
  if(module==='learn'&&step>=3&&step<=6)return {...meta,kind:'§',number:'2',name:ui('谱序列','Spectral sequence'),symbol:raw`(E_r,d_r)`,showName:true,continued:step!==5};
- if(module==='converge'&&step===4)return {kind:'§',number:'3',name:ui('代数几何应用 · Leray 谱序列','Algebraic geometry · Leray spectral sequence'),concepts:[]};
+ if(module==='converge'&&step===5)return {kind:'§',number:'3',name:ui('Hodge 分解','Hodge decomposition'),concepts:[]};
+ if(module==='converge'&&step===4)return {kind:'§',number:'4',name:ui('代数几何应用 · Leray 谱序列','Algebraic geometry · Leray spectral sequence'),concepts:[]};
  if(['converge','lab','trace'].includes(module))return {...meta,kind:'§',number:'2',continued:true};
  return {...meta,number:order<0?meta.number:String(order+1)};
 }
@@ -499,7 +502,7 @@ function doubleComplexCompanion(item){
  $('#explanation').dataset.notebook=language();
  const heading=statementHeading(statementMeta('initial',0),'1').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
  $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${statementMark('D',language()==='en')}${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${statementMark(c.concept==='inclusion'?'P':'D',language()==='en')}${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>c.concept==='filtration'&&j===1?consequence(f,'filteredmap','data-filtration-fragment hidden'):c.concept==='graded'&&j===1?`<div data-graded-fragment hidden>${block(f,'gradedmap')}</div>`:block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?consequence(raw`D^2=0`,'totalsquare','data-total-fragment hidden'):''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
- $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup()+sectionTwoMarkup(3));
+ $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup()+sectionTwoMarkup(3)+sectionTwoMarkup(4));
  $('#sceneNote').textContent='';
 }
 // Folding stays manual unless the reader explicitly enables auto-collapse.

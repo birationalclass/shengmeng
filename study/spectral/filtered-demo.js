@@ -10,6 +10,24 @@ export const filteredExample={
  B:[{a:{beta:1},image:{b:1},inside:true},{a:{alpha:1},image:{c:1},inside:false},{a:{alpha:1,beta:1},image:{c:1,b:1},inside:false},{a:{beta:2},image:{b:2},inside:true}]
 };
 
+// Positions encode whole cochains inside filtration regions, not K-components.
+// Keep both demonstrations and the stationary copies on this shared geometry.
+export function filteredSampleGeometry(topic,point){
+ const mix=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t),Z=topic==='Z';
+ const source=Z?[point(1,1),point(2,0)]:[point(0,1),point(1,0)];
+ const center=Z?point(3,0):mix(point(1,1),point(2,0),.5);
+ const direction=point(1,0).map((x,i)=>x-point(0,1)[i]),length=Math.hypot(...direction);
+ const offset=direction.map(x=>7*x/length);
+ const destinations=[center.map((x,i)=>x-offset[i]),Z?point(2,1):point(0,2),Z?point(1,2):mix(point(0,2),point(1,1),.5),center.map((x,i)=>x+offset[i])];
+ // Yellow samples precede the blue pair; classification and source outlines
+ // follow membership, rather than a hard-coded position or colour swap.
+ const order=[2,0,1,3];
+ return filteredExample[topic].map((example,i)=>{
+  const from=mix(...source,.34+order[i]*.105),to=destinations[i];
+  return {example,from,to,control:[(from[0]+to[0])/2+12*(i-1.5),(from[1]+to[1])/2-30-8*i]};
+ });
+}
+
 // D acts on total cochains. Points along a grouping line represent whole
 // cochains, not individual K components, and the tracks are not delta arrows.
 export function createFilteredDemo({host,point}){
@@ -23,12 +41,9 @@ export function createFilteredDemo({host,point}){
  }
  function play(topic,force=false){
   if(key===topic&&!force)return;clear();key=topic;running=true;const run=serial;
-  const Z=topic==='Z',source=Z?[point(1,1),point(2,0)]:[point(0,1),point(1,0)];
-  const inside=Z?point(3,0):point(1,1),out1=Z?point(2,1):point(0,2),out2=Z?point(1,2):mix(point(0,2),point(1,1),.5);
-  const destinations=[[inside[0]-7,inside[1]-3],out1,out2,[inside[0]+7,inside[1]+3]];
+  const Z=topic==='Z';
   layer=document.createElementNS(ns,'svg');layer.id='filteredTrace';layer.classList.add('element-trace-layer','filtered-trace-layer');layer.setAttribute('viewBox','0 0 840 525');layer.dataset.topic=topic;layer.setAttribute('role','img');layer.setAttribute('aria-label',Z?'Test total cochains: their D images must lie in F cubed C cubed':'Boundary representatives: keep the D images lying in F one C squared');
-  const samples=filteredExample[topic].map((example,i)=>{
-   const from=mix(...source,.34+i*.105),to=destinations[i],control=[(from[0]+to[0])/2+12*(i-1.5),(from[1]+to[1])/2-30-8*i];
+  const samples=filteredSampleGeometry(topic,point).map(({example,from,to,control},i)=>{
    const track=document.createElementNS(ns,'path');track.setAttribute('d',`M${from} Q${control} ${to}`);track.setAttribute('fill','none');track.setAttribute('stroke',example.inside?'var(--blue)':'var(--gold)');track.setAttribute('stroke-width','1.1');track.setAttribute('opacity','0');layer.append(track);
    const circle=document.createElementNS(ns,'circle');circle.dataset.sample=i+1;circle.dataset.inside=example.inside;circle.setAttribute('r','4.3');circle.setAttribute('fill','var(--ink)');circle.setAttribute('stroke','var(--bg)');circle.setAttribute('stroke-width','1.4');layer.append(circle);
    return {from,to,control,track,circle,example};

@@ -1,6 +1,7 @@
 import {singleLineFormula} from './single-line-convergence.js?v=153';
-import {firstQuadrantFormula} from './first-quadrant-convergence.js?v=153';
-import {lerayContent} from './leray.js?v=153';
+import {firstQuadrantFormula} from './first-quadrant-convergence.js?v=155';
+import {hodgeContent} from './hodge.js?v=155';
+import {lerayContent} from './leray.js?v=155';
 import {filteredSubspaces,pageQuotientTex,generalPageDefinition} from './filtered-notation.js?v=92';
 import {representativeIn} from './math-notation.js?v=77';
 const t=String.raw;
@@ -22,7 +23,7 @@ export const convergence=[
  {title:'收敛定义',f:[t`\{(E_r,d_r)\}_{r\ge0}\Longrightarrow H^\bullet(C^\bullet,D)`,firstQuadrantFormula,t`E_{r_0}^{p,q}\Longrightarrow H^{p+q}`,t`\begin{gathered}d_s^{p,q}=0\\(\forall s\ge r_0,\ \forall p,q)\end{gathered}`,singleLineFormula],text:'收敛的定义、总复形的收敛性质、起始页记号与退化。',note:'',proof:''}
 ];
 
-convergence.push(lerayContent);
+convergence.push(lerayContent,hodgeContent);
 
 export const initial=[
  {...lessons[0],title:'双复形与总复形',tag:'INITIAL DATA',note:''}
