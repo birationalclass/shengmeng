@@ -20,7 +20,7 @@ html{background:var(--cover-background)}html.math-loading body>header,html.math-
 @keyframes cover-reading-reveal{from{opacity:0}to{opacity:1}}
 #mathLoader.awaiting-entry .loader-line>i::after,#mathLoader.loading-failed .loader-line>i::after{animation-play-state:paused}#mathLoader.awaiting-entry .loader-status{visibility:hidden}
 
-#coverFullscreen{position:absolute;top:max(22px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:9px 13px;border:1px solid #64899066;border-radius:5px;background:transparent;color:#afcccc;font:12px system-ui,sans-serif;letter-spacing:.6px;cursor:pointer}#coverFullscreen svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}#coverFullscreen:hover,#coverFullscreen[aria-pressed=true]{color:#d3f1e8;border-color:#a0cbb788}#coverFullscreen:focus-visible{outline:1px solid #a6d8ca;outline-offset:4px}
+#coverFullscreen{position:absolute;top:max(22px,env(safe-area-inset-top));right:max(22px,env(safe-area-inset-right));display:inline-flex;align-items:center;gap:9px;min-height:40px;padding:9px 13px;border:1px solid #64899066;border-radius:5px;background:transparent;color:#afcccc;font:12px system-ui,sans-serif;letter-spacing:.6px;cursor:pointer}#coverFullscreen svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}#coverFullscreen:hover{color:#d3f1e8;border-color:#a0cbb788}#coverFullscreen:focus-visible{outline:1px solid #a6d8ca;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){.loader-line,.loader-line>i{transition:none!important}.loader-line>i::after{animation:none;opacity:.12}#mathLoader.awaiting-entry .loader-line{transition-delay:0s}}
 
 /* Fine silver lettering: open spacing and a shallow, restrained edge.
@@ -77,7 +77,7 @@ html{background:var(--cover-background)}html.math-loading body>header,html.math-
 #coverLanguage{min-width:66px}
 #coverLanguage::after{content:'';position:absolute;right:-9px;top:50%;height:12px;width:1px;transform:translateY(-50%);background:#9cadaa33}
 .cover-actions #coverFullscreen svg,.cover-actions #coverSettings svg{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;width:14px;height:14px;stroke-width:1.25}
-.cover-actions #coverSettings:hover,.cover-actions #coverLanguage:hover,.cover-actions #coverFullscreen:hover,.cover-actions #coverFullscreen[aria-pressed=true]{color:#e4e9df;background:#b8c5bd06}
+.cover-actions #coverSettings:hover,.cover-actions #coverLanguage:hover,.cover-actions #coverFullscreen:hover{color:#e4e9df;background:#b8c5bd06}
 .cover-actions #coverSettings:focus-visible,.cover-actions #coverLanguage:focus-visible,.cover-actions #coverFullscreen:focus-visible{outline:1px solid #b5c4b9;outline-offset:3px}
 #coverLanguage:disabled{opacity:.5;cursor:wait}
 @media(max-width:480px){.cover-actions{gap:14px}.loader-eyebrow{gap:13px;font-size:9px}#coverLanguage::after{right:-7px}}
@@ -123,3 +123,6 @@ html{background:var(--cover-background)}html.math-loading body>header,html.math-
 .cover-font-grid input:focus-visible+.cover-font-option{outline:2px solid #cfdfbf;outline-offset:3px}
 #motionSettings #coverFontHint{font-size:11px;line-height:1.6;color:#94aaa0;margin:14px 0 0}
 @media(max-width:400px){.cover-actions{gap:7px}.cover-actions #coverLanguage,.cover-actions #coverSettings,.cover-actions #coverFullscreen{font-size:10px;padding-inline:5px;gap:5px}#coverLanguage{min-width:55px}#coverLanguage::after{right:-4px}}
+
+/* Cover copy is presentation content, including cloned title bands. */
+#mathLoader,#mathLoader *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}

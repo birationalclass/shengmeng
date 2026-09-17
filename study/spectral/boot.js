@@ -110,16 +110,26 @@
   syncFullscreen();window.spectralMobileReading?.sync();
   if(replay&&!overlay.hidden&&!overlay.classList.contains('is-ready'))animateTitle();
  };
+ let coverReturnAnimation=null;
  const showCover=()=>{
   if(window.spectralMobileReading?.returnToCover())return;
+  const returning=overlay.hidden||overlay.classList.contains('is-ready');
+  coverReturnAnimation?.cancel();
   overlay.hidden=false;overlay.inert=false;document.querySelector('.notebook-toolbar').inert=true;overlay.classList.remove('is-ready');document.documentElement.classList.add('math-loading');
   syncCoverLanguage();
+  if(returning&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+   // Fade the opaque cover surface itself; leave every control's hit box fixed.
+   document.documentElement.classList.remove('math-loading');
+   coverReturnAnimation=overlay.animate([{opacity:0},{opacity:1}],{duration:380,easing:'ease-out'});
+   coverReturnAnimation.finished.then(()=>{if(!overlay.classList.contains('is-ready'))document.documentElement.classList.add('math-loading');},()=>{});
+  }
   if(done){start.disabled=false;start.hidden=false;status.textContent='';status.setAttribute('aria-hidden','true');}window.spectralMobileReading?.sync();
  };
  const ready=()=>{if(failed)return;done=true;document.body.setAttribute('aria-busy','false');overlay.classList.add('awaiting-entry');bar.setAttribute('aria-hidden','true');showCover();window.spectralMobileReading?.onReady();};
  const enter=()=>{
   if(!done||failed)return false;
   if(window.spectralMobileReading?.requestEntry())return false;
+  coverReturnAnimation?.cancel();
   start.disabled=true;overlay.inert=true;document.querySelector('.notebook-toolbar').inert=false;document.documentElement.classList.remove('math-loading');overlay.classList.add('is-ready');
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)overlay.hidden=true;
   return true;

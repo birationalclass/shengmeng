@@ -6,9 +6,11 @@
   clearTimeout(timer);document.body.classList.remove('toolbar-idle');
   if(!fine.matches||document.hidden)return;
   timer=setTimeout(()=>{
-   if(!document.querySelector('dialog[open],.notebook-toolbar :focus-visible,.cover-actions :focus-visible'))document.body.classList.add('toolbar-idle');
+   if(!document.querySelector('dialog[open]')&&!(document.body.classList.contains('toolbar-keyboard')&&document.querySelector('.notebook-toolbar :focus-visible,.cover-actions :focus-visible')))document.body.classList.add('toolbar-idle');
   },2400);
  }
+ document.addEventListener('pointerdown',()=>document.body.classList.remove('toolbar-keyboard'),{passive:true});
+ document.addEventListener('keydown',()=>document.body.classList.add('toolbar-keyboard'),{passive:true});
  for(const type of ['pointermove','pointerdown','keydown','focusin','focusout'])document.addEventListener(type,wake,{passive:true});
  document.addEventListener('close',wake,true);
  document.addEventListener('visibilitychange',wake);

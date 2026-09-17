@@ -91,7 +91,7 @@ button[aria-pressed=true] .fullscreen-expand {display:none}
 button[aria-pressed=true] .fullscreen-restore {display:inline}
 .notebook-toolbar button,.cover-actions button {transition:opacity .65s ease,color .3s ease,background .3s ease}
 body.toolbar-idle .notebook-toolbar button,body.toolbar-idle .cover-actions button {opacity:.24}
-body.toolbar-idle .notebook-toolbar button:focus-visible,body.toolbar-idle .cover-actions button:focus-visible {opacity:1}
+body.toolbar-idle.toolbar-keyboard .notebook-toolbar button:focus-visible,body.toolbar-idle.toolbar-keyboard .cover-actions button:focus-visible {opacity:1}
 @media(prefers-reduced-motion:reduce){.notebook-toolbar button,.cover-actions button{transition:none}}
 
 /* The reader title shares the cover face and fades with the idle controls. */
@@ -102,3 +102,21 @@ body.toolbar-idle .notebook-toolbar #sceneTitle{opacity:.24}
 .convention-alert{display:inline-flex;flex:none;width:19px;height:21px;justify-content:center;align-items:center;border:1px solid #df8c83;border-radius:4px;color:#df8c83;font:600 14px/1 system-ui}
 #explanation [data-statement="converge:3"] [data-reading-page="0"] .math-block{font-size:min(var(--reading-formula-rest-size),clamp(12px,1.4vw,20px));white-space:nowrap}
 #explanation [data-statement="converge:3"] [data-reading-page="0"].build-current .math-block{font-size:clamp(12px,1.4vw,20px)}
+
+/* A fixed hit box with transient feedback; pressed state changes only the icon. */
+.notebook-toolbar #fullscreen,.cover-actions #coverFullscreen,.notebook-toolbar #coverButton{
+ border:1px solid transparent;background:transparent;color:var(--muted);
+ transition:opacity .65s ease,color .25s ease,border-color .25s ease,background-color .25s ease;
+}
+.notebook-toolbar #coverButton svg{transition:transform .25s ease;stroke:currentColor}
+@media(hover:hover) and (pointer:fine){
+ body:not(.toolbar-idle) .notebook-toolbar :is(#fullscreen,#coverButton):hover,
+ body:not(.toolbar-idle) .cover-actions #coverFullscreen:hover{
+  color:var(--gold);border-color:var(--line);background:color-mix(in srgb,var(--gold) 6%,transparent);
+ }
+ body:not(.toolbar-idle) .notebook-toolbar #coverButton:hover svg{transform:translateY(-2px)}
+}
+.notebook-toolbar :is(#fullscreen,#coverButton):active,.cover-actions #coverFullscreen:active{color:var(--gold)}
+.notebook-toolbar #coverButton:active svg{transform:scale(.9)}
+body.toolbar-idle .notebook-toolbar :is(#fullscreen,#coverButton),body.toolbar-idle .cover-actions #coverFullscreen{border-color:transparent;background:transparent}
+@media(prefers-reduced-motion:reduce){.notebook-toolbar #coverButton svg{transition:none;transform:none!important}}
