@@ -1,0 +1,15 @@
+/* Reading cards navigate the presentation instead of selecting their text. */
+.notebook-workspace .explanation,
+.notebook-workspace .explanation * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Shared focus treatment for the cover, notebook, figures and dialogs.
+   Keep focus and keyboard behavior; only suppress the extra outline. */
+:focus,
+:focus-visible,
+.cover-font-grid input:focus-visible + .cover-font-option {
+  outline: none !important;
+  outline-offset: 0 !important;
+}
