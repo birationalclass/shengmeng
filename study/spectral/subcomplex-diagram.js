@@ -7,16 +7,19 @@ export function subcomplexDiagram({p,point,region,label,node}){
  let overlays='',edges='',terms='';
  for(let n=first;n<=last;n++){
   const start=point(first,n-first),end=point(n,0),order=n-first;
-  overlays+=`<g class="subcomplex-degree" data-chain-order="${order}"><path class="diag-box" data-degree="${n}" data-first="${first}" data-last="${n}" d="${region(start,end,0)}"/>${label(start[0]-94,start[1],String.raw`F^{${p}}C^{${n}}`,110,34,true)}</g>`;
+  overlays+=`<g class="subcomplex-degree" data-chain-order="${order}"><path class="diag-box" data-degree="${n}" data-first="${first}" data-last="${n}" d="${region(start,end,0)}"/>${label(end[0],end[1]+52,String.raw`F^{${p}}C^{${n}}`,110,34,true)}</g>`;
   if(n===last)continue;
-  const next=point(first,n+1-first),x=start[0],y1=start[1]-22,y2=next[1]+22;
-  edges+=`<g class="subcomplex-map" data-chain-order="${order}" data-from-degree="${n}" data-to-degree="${n+1}"><path class="subcomplex-arrow" d="M${x},${y1} V${y2}" fill="none" stroke="var(--teal)" stroke-width="3.2" stroke-linecap="round"/><path d="M${x-5},${y2+7} L${x},${y2} L${x+5},${y2+7}" fill="none" stroke="var(--teal)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>${label(x+26,(y1+y2)/2,'D',34,26,true)}</g>`;
+  // Connect adjacent diagonal envelopes near their lower ends. The arrow
+  // moves right and up; its position is derived from the same K grid.
+  const next=point(n+1,0),from=[end[0]+36,end[1]+10],to=[next[0]-70,next[1]-6];
+  const angle=Math.atan2(to[1]-from[1],to[0]-from[0]),tip=(side)=>[to[0]-8*Math.cos(angle)+side*4.5*Math.sin(angle),to[1]-8*Math.sin(angle)-side*4.5*Math.cos(angle)].join(',');
+  edges+=`<g class="subcomplex-map" data-chain-order="${order}" data-from-degree="${n}" data-to-degree="${n+1}"><path class="subcomplex-arrow" d="M${from.join(',')} L${to.join(',')}" fill="none" stroke="var(--teal)" stroke-width="3.2" stroke-linecap="round"/><path d="M${tip(-1)} L${to.join(',')} L${tip(1)}" fill="none" stroke="var(--teal)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>${label((from[0]+to[0])/2+12,(from[1]+to[1])/2-26,'D',34,26,true)}</g>`;
  }
- // Reserve the preceding column for degree labels; keep the remaining K
- // blocks at their original positions, including dim context above the chain.
- for(let i=first;i<=Math.max(4,last);i++)for(let j=0;j<=4;j++){
+ // Keep the entire original grid, including column zero. Degree labels live
+ // below K^{n,0}, so they no longer occupy a column of the grid.
+ for(let i=0;i<=Math.max(4,last);i++)for(let j=0;j<=4;j++){
   if(i>4&&i+j>last)continue;
-  terms+=node(i,j,`K^{${i},${j}}`,{muted:i+j>last});
+  terms+=node(i,j,`K^{${i},${j}}`,{muted:i<first||i+j>last});
  }
  return {overlays,edges,terms};
 }

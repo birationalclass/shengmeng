@@ -27,7 +27,7 @@ export function createInclusionDiagram({viewport,diagram,math,language}){
   }
   for(let i=0;i<3;i++){
    const x=columns[i];
-   shapes+=`<path class="inclusion-arrow vertical" d="M${x-7},211 Q${x-7},202 ${x},202 V319" marker-end="url(#inclusion-tip)"/>`;
+   shapes+=`<path class="inclusion-arrow vertical" d="M${x+7},211 Q${x+7},202 ${x},202 V319" marker-end="url(#inclusion-tip)"/>`;
    labels+=label(x+48,262,R`\iota_p^{${degrees[i]}}`,'map inclusion');
   }
   host.innerHTML=`<div class="inclusion-scene"><svg viewBox="0 0 840 525" role="img" aria-label="${language()==='en'?'Inclusion of the filtered subcomplex into the total complex; the diagram commutes':'滤过子复形到总复形的包含；图表交换'}"><defs><marker id="inclusion-tip" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M2,2 L8,5 L2,8" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs>${shapes}</svg>${labels}</div>`;
