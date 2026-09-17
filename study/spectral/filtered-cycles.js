@@ -1,5 +1,5 @@
 import {visualMotion} from './visual-style.js?v=41';
-import {filteredSampleGeometry} from './filtered-demo.js?v=155';
+import {filteredSampleGeometry} from './filtered-demo.js?v=156';
 
 // Fixed example p=q=1, r=2. A dot is a whole total cochain, not a K-component.
 // Z outlines source cocycles; B outlines representatives and labels their D-images.
