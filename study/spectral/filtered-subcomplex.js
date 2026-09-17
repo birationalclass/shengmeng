@@ -2,6 +2,7 @@ import {proofPanel,proofSections} from './proof-panel.js?v=145';
 const R=String.raw;
 export function filteredSubcomplexExposition({concept,math,language}){
  const t=(z,e)=>language()==='en'?e:z,M=f=>math(f),sub=concept==='subcomplex';
+ if(sub)return `<p class="operation-note">${t(`由 1.9，这是 ${M(R`(C^\ast,D)`)} 的子复形。`,`This is a subcomplex of ${M(R`(C^\ast,D)`)} by 1.9.`)}</p>`;
  const source=t('McCleary，第 2 版，§2.2，定义 2.5 后，第 33 页。书中用同一个 d 表示限制微分，并将诱导映射记为 H(inclusion)。这里沿用总微分 D，记包含为 ιₚ。','McCleary, second edition, §2.2, after Definition 2.5, p. 33. The book keeps d for the restricted differential and writes H(inclusion) for the induced map. Here the total differential is D and the inclusion is denoted by ιₚ.');
  const entries=sub?[
  {name:t('限制微分','Restricted differential'),f:[R`D(F^pC^n)\subseteq F^pC^{n+1}`,R`D|_{F^pC^n}:F^pC^n\longrightarrow F^pC^{n+1},\qquad a\longmapsto Da`,R`(D|_{F^pC^{n+1}})\circ(D|_{F^pC^n})=D^2|_{F^pC^n}=0`],note:t('因此这些空间与限制映射组成上链子复形。微分保持滤过指标 p，而把上链次数 n 提高 1。','These spaces and restricted maps form a cochain subcomplex. The differential preserves the filtration index p and raises the cochain degree n by one.')},

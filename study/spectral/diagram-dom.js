@@ -4,6 +4,8 @@ import {visualMotion} from './visual-style.js?v=41';
 export function syncGraphChildren(target,source){
  if(target.innerHTML===source.innerHTML)return;
  if(target.id==='diagram-terms'){
+  const wanted=new Set([...source.children].map(el=>`${el.dataset.p},${el.dataset.q}`));
+  for(const old of [...target.children])if(!wanted.has(`${old.dataset.p},${old.dataset.q}`))old.remove();
   for(const next of [...source.children]){
    const old=target.querySelector(`[data-p="${next.dataset.p}"][data-q="${next.dataset.q}"]`);
    if(!old){target.append(next);continue;}
@@ -14,7 +16,7 @@ export function syncGraphChildren(target,source){
    }
   }
  }else{
-  const key=el=>{if(target.id==='diagram-overlays')return el.tagName+':'+[...el.classList].filter(c=>c!=='concept-active').join(' ');const shape=el.matches('path,polygon,rect,foreignObject')?el:el.querySelector('path,polygon,rect,foreignObject');return el.tagName+':'+(shape?[shape.tagName,shape.getAttribute('d'),shape.getAttribute('points'),shape.getAttribute('x'),shape.getAttribute('y')].join(':'):el.outerHTML);};
+  const key=el=>{if(target.id==='diagram-overlays')return el.tagName+':'+[...el.classList].filter(c=>c!=='concept-active').join(' ')+':'+(el.dataset.chainOrder??'');const shape=el.matches('path,polygon,rect,foreignObject')?el:el.querySelector('path,polygon,rect,foreignObject');return el.tagName+':'+(shape?[shape.tagName,shape.getAttribute('d'),shape.getAttribute('points'),shape.getAttribute('x'),shape.getAttribute('y')].join(':'):el.outerHTML);};
   const existing=new Map([...target.children].map(el=>[key(el),el]));let cursor=target.firstElementChild;
   for(const next of [...source.children]){
    const k=key(next),old=existing.get(k);let el=old||next;

@@ -1,6 +1,7 @@
+import {subcomplexDiagram,prepareSubcomplexEntrance,animateSubcomplexEntrance} from './subcomplex-diagram.js?v=147';
 import {leraySetup} from './leray.js?v=145';
 import {createDifferentialSweep} from './differential-sweep.js?v=120';
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=145';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=147';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
@@ -22,7 +23,7 @@ import {visualMotion} from './visual-style.js?v=41';
 import {createInitialAnimations} from './initial-animations.js?v=96';
 import {createFiltrationTrace} from './filtration-animations.js?v=92';
 import {replaceMathContent} from './math-transitions.js?v=97';
-import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=41';
+import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=147';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
 import {lessons,convergence,initial,totalCohomology} from './content.js?v=145';
@@ -72,7 +73,7 @@ const filtrationTrace=createFiltrationTrace({host:$('#diagram'),point:(p,q)=>xy(
 const playback=createAnimationPlayback({language,ready:()=>{
  if(notebookMotion.isAnimating())return false;
  return !$('#explanation').getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity);
-},prepareEntrance:()=>{if(isDoubleComplexView()&&state.initialReveal<=2)initialAnimations.prepare(state.initialReveal);},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
+},prepareEntrance:()=>{if(isDoubleComplexView()&&state.initialReveal<=2)initialAnimations.prepare(state.initialReveal);else if(isDoubleComplexView()&&state.initialReveal===9)prepareSubcomplexEntrance($('#diagram'));},enter:playCurrentEntrance,play:playCurrentAnimation,stop:stopDiagramAnimation,prepare:()=>{if(state.module==='learn'&&state.step===5&&state.notePage===0)pageFormation.prepare(Math.max(1,state.r));},settle:()=>evolution.showResult()});
 const block=(t,concept='',number='')=>`<div class="math-block${number?' has-subnumber':''}" data-formula="${esc(t)}" ${concept?`data-concept="${concept}"`:''} role="button" tabindex="0" aria-label="${concept?ui('点击播放对应动画','Click to play this animation'):ui('放大查看公式','Enlarge formula')}">${number?`<span class="formula-subnumber">${number}</span>`:''}${math(t,true)}<button class="formula-zoom" data-zoom aria-label="放大查看公式" title="点击放大公式">↗</button></div>`;
 const scene=()=>state.module==='trace'?traceComplex:complexes[state.example];
 const pageR=()=>state.module==='trace'&&state.step>=4?state.step-2:state.r;
@@ -112,8 +113,8 @@ function svgStart(maxP=GRID_MAX,maxQ=GRID_MAX){
 function node(p,qv,tex,{dim,muted=false,active=false}={}){let [x,y]=xy(p,qv);return `<g class="node ${muted?'muted':''} ${active?'trace-active':''} ${state.selected?.p===p&&state.selected?.q===qv?'selected':''} ${dim===0?'zero':''}" role="button" tabindex="0" data-p="${p}" data-q="${qv}"${selectableTraceOrigin(state,p,qv)?' data-origin-selectable':''} aria-label="位置 (${p},${qv})${dim!==undefined?`, 维数 ${dim}`:''}"><rect class="node-bg" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9"/><rect class="node-tint" x="${x-NODE_HALF_W}" y="${y-NODE_HALF_H}" width="${2*NODE_HALF_W}" height="${2*NODE_HALF_H}" rx="9" aria-hidden="true"/>${label(x,y,tex,67,36,tex.length>28)}</g>`;}
 // Rounded convex hull of the endpoint term boxes, with a four-unit margin.
 // This is the smallest convex grouping region with these rounded corner offsets.
-function diagonalRegion(start,end){
- const radius=13,a=NODE_HALF_W+4-radius,b=NODE_HALF_H+4-radius;
+function diagonalRegion(start,end,margin=4){
+ const radius=9+margin,a=NODE_HALF_W+margin-radius,b=NODE_HALF_H+margin-radius;
  const points=[start,end].flatMap(([x,y])=>[[-a,-b],[a,-b],[a,b],[-a,b]].map(([dx,dy])=>[x+dx,y+dy]));
  const unique=[...new Map(points.map(point=>[point.join(','),point])).values()].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
  const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
@@ -481,7 +482,7 @@ function doubleComplexCompanion(item){
  {title:'总微分',concept:'totalmap',f:[raw`D:=\delta_1+\delta_2:C^n\longrightarrow C^{n+1}`]},
  {title:ui('总上同调','Total cohomology'),concept:'totalcohom',f:[raw`\begin{gathered}H^n(C^\bullet,D):=\\\frac{\ker(D:C^n\to C^{n+1})}{\operatorname{im}(D:C^{n-1}\to C^n)}\end{gathered}`]},
  {title:'列滤过',concept:'filtration',f:[raw`F^pC^n:=\bigoplus_{i\ge p}K^{i,n-i}`,raw`D(F^pC^n)\subseteq F^pC^{n+1}`]},
- {title:ui('滤过子复形','Filtration subcomplex'),concept:'subcomplex',f:[raw`(F^pC^\bullet,D|_{F^pC^\bullet})`,raw`D|_{F^pC^n}:F^pC^n\longrightarrow F^pC^{n+1}`]},
+ {title:ui('滤过子复形','Filtration subcomplex'),concept:'subcomplex',f:[raw`(F^pC^\bullet,D|_{F^pC^\bullet})`]},
  {title:ui('包含诱导映射','Inclusion-induced map'),concept:'inclusion',f:[raw`\iota_p:(F^pC^\bullet,D)\hookrightarrow(C^\bullet,D)`,raw`\begin{gathered}H^n(\iota_p):\\H^n(F^pC^\bullet,D)\longrightarrow H^n(C^\bullet,D)\end{gathered}`]},
  {title:ui('关联分次函子','Graded functor'),concept:'graded',f:gradedFormulas},
  ];
@@ -567,6 +568,10 @@ function fixedDiagram(state=diagramState()){
  let base=svgStart(GRID_MAX,GRID_MAX),end=base.indexOf('</defs>')+7;
  let frame=base.slice(end),edges='',terms='',overlay='',caption='',kind='K',h=false,v=false,filter=false,total=false,selected=false;
  const finite=['lab','trace'].includes(m);
+ if(m==='initial'&&state.effect==='subcomplex'){
+  const view=subcomplexDiagram({p,point:xy,region:diagonalRegion,label,node});
+  return base.slice(0,end)+`<g id="coordinate-frame">${frame}</g><g id="diagram-overlays">${view.overlays}</g><g id="diagram-edges">${view.edges}</g><g id="diagram-terms">${view.terms}</g></svg>`;
+ }
  if(m==='initial'){
   total=['total','totalmap','totalcohom','filtration','filteredmap','subcomplex','inclusion'].includes(state.effect);filter=['filtration','filteredmap','subcomplex','inclusion'].includes(state.effect);h=total?['totalmap','filteredmap','subcomplex'].includes(state.effect):state.seenH;v=total?['totalmap','filteredmap'].includes(state.effect):state.seenV;
   if(state.effect==='graded'){total=true;filter=true;selected=true;h=false;v=false;}
@@ -795,6 +800,8 @@ function syncPlayback(){playback.sync({key:playbackKey(),kind:playbackKind(),has
 async function playCurrentEntrance({waitUntil}){
  if(isDoubleComplexView()&&state.initialReveal<=2){
   initialAnimations.play(state.initialReveal);await waitUntil(()=>!initialAnimations.isPlaying());
+ }else if(isDoubleComplexView()&&state.initialReveal===9){
+  definitionAnimations=animateSubcomplexEntrance($('#diagram'));await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));
  }else if(state.module==='learn'&&state.step===6&&state.notePage===0){filteredView.enter();await waitUntil(()=>!filteredView.isPlaying());}
  else{emphasizeCurrentDefinition();await Promise.all(definitionAnimations.map(a=>a.finished.catch(()=>{})));}
 }
