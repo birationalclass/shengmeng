@@ -1,5 +1,5 @@
 import {kmVanishingProof} from './km-vanishing.js?v=145';
-import {proofPanel} from './proof-panel.js?v=149';
+import {proofPanel} from './proof-panel.js?v=150';
 const R=String.raw;
 export const lerayTitles=[['几何设定','Geometric setup'],['内射分解','Injective resolution'],['直像复形','The pushforward complex'],['边界、闭元与上同调层','Boundaries, cycles and cohomology sheaves'],['辅助内射分解','Auxiliary injective resolutions'],['马蹄引理与逐项构造','Horseshoe construction'],['Cartan–Eilenberg 分解','Cartan–Eilenberg resolution'],['全局截面对象','The object of global sections'],['微分与符号约定','Differentials and signs'],['总复形与列滤过','Total complex and column filtration'],['Leray 谱序列的第二页','The second page of Leray'],['总上同调的识别','Identification of total cohomology'],['Leray 收敛','Leray convergence'],['应用：由总上同调消失推出直像消失','Application: vanishing of higher direct images'],['应用：有理奇点与解消','Application: rational singularities']];
 export function leraySetup({math,t,page}){

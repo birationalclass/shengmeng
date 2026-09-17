@@ -1,23 +1,24 @@
+import {statementMark,stripStatementKind,createStatementMarkSettings} from './statement-marks.js?v=150';
 import {createInclusionDiagram} from './inclusion-diagram.js?v=149';
 import {subcomplexDiagram,prepareSubcomplexEntrance,animateSubcomplexEntrance} from './subcomplex-diagram.js?v=147';
-import {leraySetup} from './leray.js?v=149';
+import {leraySetup} from './leray.js?v=150';
 import {createDifferentialSweep} from './differential-sweep.js?v=120';
-import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=149';
+import {filteredSubcomplexExposition} from './filtered-subcomplex.js?v=150';
 import {createPageFormation} from './page-formation.js?v=92';
 import {createAnimationPlayback} from './animation-playback.js?v=96';
 import {createGradedTrace} from './graded-animation.js?v=92';
 import {initialTraceContext,selectableTraceOrigin} from './initial-traces.js?v=89';
 import {gradedFormulas,createGradedProof} from './associated-graded.js?v=91';
-import {createPanelStyle} from './panel-style.js?v=78';
+import {createPanelStyle} from './panel-style.js?v=150';
 import {renderMathematics} from './math-notation.js?v=77';
-import {createStabilityView} from './stability-view.js?v=149';
+import {createStabilityView} from './stability-view.js?v=150';
 import {installReadingTouch} from './reading-touch.js?v=74';
 import {singleLineContent} from './single-line-convergence.js?v=145';
-import {createAbutmentView} from './abutment-view.js?v=149';
+import {createAbutmentView} from './abutment-view.js?v=150';
 import {createReadingRail} from './reading-rail.js?v=82';
 import {fitDiagramSurface} from './diagram-viewport.js?v=67';
 import {alignDiagramRelation} from './diagram-labels.js?v=84';
-import {numberedPages} from './reading-pages.js?v=149';
+import {numberedPages} from './reading-pages.js?v=150';
 import {createReadingFocus} from './reading-focus.js?v=80';
 import {replaceBigradedLabel} from './bigraded-labels.js?v=64';
 import {visualMotion} from './visual-style.js?v=41';
@@ -27,11 +28,11 @@ import {replaceMathContent} from './math-transitions.js?v=97';
 import {syncGraphChildren,fadeGraphAddition,restingOpacity} from './diagram-dom.js?v=147';
 import {createDegreeSweep,createIndexedSweep,createTotalTrace} from './total-animations.js?v=92';
 import {Complex,examples,texVector,matrixTex,q,rank,basisVector} from './algebra.js';
-import {lessons,convergence,initial,totalCohomology} from './content.js?v=149';
-import {translatePage,language,toggleLanguage} from './language.js?v=149';
+import {lessons,convergence,initial,totalCohomology} from './content.js?v=150';
+import {translatePage,language,toggleLanguage} from './language.js?v=150';
 import {operationMarkup,viewNames,actionNames,totalDegreeTex} from './workbench.js?v=90';
-import {createFilteredView} from './filtered-view.js?v=149';
-import {createPageEvolution} from './page-evolution.js?v=149';
+import {createFilteredView} from './filtered-view.js?v=150';
+import {createPageEvolution} from './page-evolution.js?v=150';
 import {createNotebookMotion} from './notebook-motion.js?v=92';
 import {createSquareTrace} from './element-trace.js?v=57';
 const $=s=>document.querySelector(s),raw=String.raw;
@@ -40,6 +41,7 @@ const GRID_ORIGIN={x:170,y:370};
 const squareTrace=createSquareTrace($('#diagram'));
 const initialAnimations=createInitialAnimations({diagram:$('#diagram')});
 const panelStyle=createPanelStyle({language});
+const markSettings=createStatementMarkSettings({language});
 const notebookMotion=createNotebookMotion({language});
 const readingFocus=createReadingFocus({motion:notebookMotion,column:$('.explanation'),mobilePane:$('.slide-body')});
 const revealedReadings=new Map(),foldedReadings=new Set(),foldedSections=new Set();
@@ -138,7 +140,7 @@ function diagonal(n,p,box=true,showLabel=true){
  if(showLabel)out+=label(700,17,raw`i+j=${n}`,120,24,true);return out;
 }
 const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module,step,fs.length).map((page,index)=>{
- const title=Array.isArray(page.title)?esc(ui(...page.title)):page.title?.name?`${esc(ui(...page.title.name))} ${math(page.title.symbol)}`:page.title?math(page.title):'';
+ const title=Array.isArray(page.title)?esc(page.kind?stripStatementKind(ui(...page.title)):ui(...page.title)):page.title?.name?`${esc(ui(...page.title.name))} ${math(page.title.symbol)}`:page.title?math(page.title):'';
  const content=page.indices.map(i=>{
   const formula=block(fs[i-1],concepts[i-1]||'').replace('class="math-block"',`class="math-block reading-formula" data-annotation="${i}"`);
   if(module==='converge'&&step===4&&(i<=7||i===14))return leraySetup({math,t:ui,page:i-1})+formula;
@@ -148,7 +150,7 @@ const formulas=(fs,concepts=[],number='',module='',step=0)=>numberedPages(module
   if(module==='converge'&&step===3&&i===4)return formula+consequence(raw`E_{r_0}^{p,q}\cong E_\infty^{p,q}`,'page');
   return formula;
  }).join('');
- return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
+ return `<section class="numbered-entry" data-reading-page="${index}" hidden><div class="build-heading"><h4><span class="statement-subnumber">${page.number}</span><button data-select-reading="${index}">${statementMark(page.kind,language()==='en')}${title}</button></h4><button class="build-toggle" data-toggle-reading="${index}" aria-expanded="false" aria-label="${ui('展开','Expand')}"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${content}</div></section>`;
 }).join('');
 function statementHeading(meta,key){
  const subject=(meta.showName&&meta.symbol?esc(meta.name)+' ':'')+(meta.symbol?math(meta.symbol):esc(meta.name||''));
@@ -211,7 +213,7 @@ function render(updateControls=true){
  if(!state.cover&&state.module==='initial')revealedBuild=Math.max(revealedBuild,state.initialReveal);
  if(state.module==='initial')companion(initial[state.step]);if(state.module==='learn')companion(state.step===0?totalCohomology:lessons[state.step+1]);if(state.module==='lab')labCompanion();if(state.module==='trace')traceCompanion();if(state.module==='converge')companion(convergence[state.step]);
  $('.inspector .mini-label').textContent='点击图中的项，查看其含义';$('.legend').innerHTML='';$('#panelIndex').textContent='';
- renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();syncPlayback();window.spectralFullscreen?.sync();
+ markSettings.sync();renderPersistentDiagram();if(updateControls)controls();inspect();renderWorkspaceState();fitDiagram();translatePage();readingRail.sync();notebookMotion.sync();window.spectralState={...state,language:language()};syncInitialEntrance();syncPlayback();window.spectralFullscreen?.sync();
 }
 function move(i){state.step=Math.max(0,Math.min(stepCount()-1,i));if(state.module==='lab')state.r=state.step;state.notePage=0;state.annotationStep=1;state.chosenAction=1;state.pinned=null;state.pinnedKey=null;state.selected=null;render();}
 function moduleChange(m){activateStatement(`${m}:${m==='learn'?5:0}`);}
@@ -470,7 +472,7 @@ function continuation(x1,y1,x2,y2,concept=''){const marker=concept==='delta1'?'h
 
 function isDoubleComplexView(){return !state.cover&&state.module==='initial'&&state.step===0;}
 function consequence(formula,concept,attribute=''){
- return `<div class="reading-consequence" ${attribute}><span class="consequence-cue">${ui('有','We have')}</span>${block(formula,concept)}</div>`;
+ return `<div class="reading-consequence" ${attribute}><span class="consequence-cue">${statementMark('P',language()==='en')}</span>${block(formula,concept)}</div>`;
 }
 function doubleComplexCompanion(item){
  $('#sceneTitle').textContent=ui('谱序列','Spectral Sequence');
@@ -491,7 +493,7 @@ function doubleComplexCompanion(item){
  const assumptions=[raw`K:=\{K^{p,q}\}_{(p,q)\in\mathbb Z^2}`];
  $('#explanation').dataset.notebook=language();
  const heading=statementHeading(statementMeta('initial',0),'1').replace('data-select-statement','data-select-section').replace('data-toggle-statement','data-toggle-section');
- $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>c.concept==='filtration'&&j===1?consequence(f,'filteredmap','data-filtration-fragment hidden'):c.concept==='graded'&&j===1?`<div data-graded-fragment hidden>${block(f,'gradedmap')}</div>`:block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?consequence(raw`D^2=0`,'totalsquare','data-total-fragment hidden'):''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
+ $('#explanation').innerHTML=`<article class="formal-statement notebook-card notebook-section" data-section="1" hidden>${heading}<div class="statement-body section-body"><section class="formal-statement build-statement reading-group is-active" data-statement="initial:0" data-step="0" hidden data-content-language="${language()}"><div class="statement-body"><section class="build-card" data-build="0" data-concept="space" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.1</span><button data-select-build="0">${statementMark('D',language()==='en')}${ui('对象','Object')} ${math(raw`K^{-,-}`)}</button></h4><button class="build-toggle" data-toggle-build="0" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${assumptions.map(f=>block(f,'space')).join('')}</div></section>${cards.map((c,i)=>`<section class="build-card" data-build="${i+1}" data-concept="${c.concept}" hidden><div class="build-heading"><h4><span class="statement-subnumber">1.${i+2}</span><button data-select-build="${i+1}">${statementMark(c.concept==='inclusion'?'P':'D',language()==='en')}${c.title}</button></h4><button class="build-toggle" data-toggle-build="${i+1}" aria-expanded="false" aria-label="展开"><span class="fold-glyph" aria-hidden="true"></span></button></div><div class="build-content">${c.f.map((f,j)=>c.concept==='filtration'&&j===1?consequence(f,'filteredmap','data-filtration-fragment hidden'):c.concept==='graded'&&j===1?`<div data-graded-fragment hidden>${block(f,'gradedmap')}</div>`:block(f,c.concept==='filtration'&&j===1?'filteredmap':c.concept)).join('')}${i===2?`<div class="relation-choices"><button class="relation-choice" data-concept="square1">${math(raw`\delta_1^2=0`)}</button><button class="relation-choice" data-concept="square2">${math(raw`\delta_2^2=0`)}</button></div>`:i===5?consequence(raw`D^2=0`,'totalsquare','data-total-fragment hidden'):''}</div></section>`).join('')}</div></section>${statementMarkup(lessons[7],'learn',6,true)}</div></article>`;
  $('#explanation').insertAdjacentHTML('beforeend',sectionTwoMarkup()+sectionTwoMarkup(3));
  $('#sceneNote').textContent='';
 }

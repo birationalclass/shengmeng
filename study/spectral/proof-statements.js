@@ -1,3 +1,4 @@
+import {statementMark} from './statement-marks.js?v=150';
 import {firstQuadrantContent} from './first-quadrant-convergence.js?v=145';
 import {kmVanishingProof} from './km-vanishing.js?v=145';
 import {singleLineContent} from './single-line-convergence.js?v=145';
@@ -15,6 +16,7 @@ export function proofStatement({key,formulas,math,english}){
   if(page>=2)assumptions+=t(`令 ${M(R`\mathcal A^\bullet=f_*\mathcal I^\bullet`)}。`,`Put ${M(R`\mathcal A^\bullet=f_*\mathcal I^\bullet`)}.`);
   if(page<=4){kind=t('设定与陈述。','Setup and statement.');conclusionLead='';}
   if(page===5||page===6){
+   if(page===5)kind=t('引理。','Lemma.');
    assumptions+=t(`记 ${M(R`\mathcal B^q=\operatorname{im}d_{\mathcal A}^{q-1}`)}、${M(R`\mathcal Z^q=\ker d_{\mathcal A}^q`)}、${M(R`\mathcal H^q=\mathcal Z^q/\mathcal B^q`)}。给定内射分解 ${M(R`\mathcal B^q\to\mathcal U^{\bullet,q}`)} 和 ${M(R`\mathcal H^q\to\mathcal V^{\bullet,q}`)}。`,`Write ${M(R`\mathcal B^q=\operatorname{im}d_{\mathcal A}^{q-1}`)}, ${M(R`\mathcal Z^q=\ker d_{\mathcal A}^q`)}, and ${M(R`\mathcal H^q=\mathcal Z^q/\mathcal B^q`)}. Fix injective resolutions ${M(R`\mathcal B^q\to\mathcal U^{\bullet,q}`)} and ${M(R`\mathcal H^q\to\mathcal V^{\bullet,q}`)}.`);
    conclusionLead=t(`则存在相容内射分解 ${M(R`\mathcal Z^q\to\mathcal W^{\bullet,q}`)} 和 ${M(R`\mathcal A^q\to\mathcal J^{\bullet,q}`)}，使下列复形短正合列与原层短正合列相容且逐项分裂：`,`Then there exist compatible injective resolutions ${M(R`\mathcal Z^q\to\mathcal W^{\bullet,q}`)} and ${M(R`\mathcal A^q\to\mathcal J^{\bullet,q}`)} fitting into the following degreewise split exact sequences, which lift the original sheaf sequences:`);
    conclusions=[R`0\to\mathcal U^{\bullet,q}\to\mathcal W^{\bullet,q}\to\mathcal V^{\bullet,q}\to0`,R`0\to\mathcal W^{\bullet,q}\to\mathcal J^{\bullet,q}\to\mathcal U^{\bullet,q+1}\to0`];
@@ -75,5 +77,5 @@ export function proofStatement({key,formulas,math,english}){
   kind=t('定理。','Theorem.');
   ({assumptions,hypothesisFormulas,conclusions,conclusionLead}=firstQuadrantContent({math,t}));
  }
- return `<section class="proof-statement"><div class="proof-hypotheses"><p><strong>${kind}</strong> ${assumptions}</p>${hypothesisFormulas.map(eq).join('')}</div>${conclusionLead?`<p class="proof-conclusion-lead">${conclusionLead}</p>`:''}<div class="proof-conclusions">${conclusionBody||conclusions.map(eq).join('')}</div></section>`;
+ return `<section class="proof-statement"><div class="proof-hypotheses"><p>${statementMark(({ '命题。':'P','Proposition.':'P','定理。':'T','Theorem.':'T','推论。':'C','Corollary.':'C','引理。':'L','Lemma.':'L' })[kind],english)||`<strong>${kind}</strong>`} ${assumptions}</p>${hypothesisFormulas.map(eq).join('')}</div>${conclusionLead?`<p class="proof-conclusion-lead">${conclusionLead}</p>`:''}<div class="proof-conclusions">${conclusionBody||conclusions.map(eq).join('')}</div></section>`;
 }

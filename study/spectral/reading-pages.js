@@ -1,6 +1,6 @@
 import {singleLineTitle} from './single-line-convergence.js?v=145';
 import {firstQuadrantTitle} from './first-quadrant-convergence.js?v=145';
-import {lerayTitles} from './leray.js?v=149';
+import {lerayTitles} from './leray.js?v=150';
 // A numbered entry is a persistent semantic unit, not a replaceable slide slot.
 // A map and its representative rule, or the two sides of an equality, stay together.
 const groups={
@@ -14,9 +14,14 @@ const groups={
  'converge:3':{section:2,first:12,items:[[1],[2],[4],[5]]},
  'converge:4':{section:3,first:1,items:Array.from({length:lerayTitles.length},(_,i)=>[i+1])}
 };
+const kinds={
+ 'learn:3':['D','D'],'learn:6':['D','D','P'],'learn:4':['D','D'],'learn:5':['D','D'],
+ 'converge:0':['P','D','P'],'converge:1':['D'],'converge:2':['D'],'converge:3':['D','T','D','C'],
+ 'converge:4':['','D','D','D','D','L','D','D','D','D','P','P','T','E','E']
+};
 export function numberedPages(module,step,count){
  const group=groups[`${module}:${step}`]||{section:2,first:module==='lab'?20:22,items:Array.from({length:count},(_,i)=>[i+1])};
- return group.items.map((indices,i)=>({indices,actions:group.actions?.[i]??indices,focus:group.focus?.[i]??indices[0],number:`${group.section}.${group.first+i}`,title:titles[`${module}:${step}`]?.[i]}));
+ return group.items.map((indices,i)=>({indices,kind:kinds[`${module}:${step}`]?.[i],actions:group.actions?.[i]??indices,focus:group.focus?.[i]??indices[0],number:`${group.section}.${group.first+i}`,title:titles[`${module}:${step}`]?.[i]}));
 }
 
 // Short headings remain readable while their formula bodies are folded.
