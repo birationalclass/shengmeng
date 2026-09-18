@@ -1,7 +1,7 @@
 import {installCourseNavigation} from '../course-navigation.js?v=2';
 const requestedLocation=location.hash;
 import {createCover} from './cover.js?v=6';
-import {chapters,ui,notation} from './notebook-content.js?v=6';
+import {chapters,ui,notation} from './notebook-content.js?v=8';
 import {drawDiagram} from './diagrams.js?v=6';
 import {statementMark} from '../spectral/statement-marks.js?v=153';
 const R=String.raw,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
