@@ -20,10 +20,13 @@ All formula labels use local KaTeX. SVG geometry and HTML labels share one 800 b
 
 ## Reading order
 
-1. The specific singular-cochain double complex of complex varieties, its signed differentials and total complex. General algebra is linked to the spectral course.
-2. Simplicial schemes and endomorphisms, the transported filtration L, and the Hodge-theoretic input.
-3. Equivariant comparison: statement, induced action, first pages, convergence, weight degeneration, naturality and representative formula.
-4. Nodal-curve example and proper descent.
+1. Simplicial schemes: the simplex category, functorial definition, face and degeneracy maps, identities, split degeneracies, morphisms and the Čech nerve.
+2. The specific singular-cochain double complex of complex varieties, its signed differentials and total complex.
+3. The transported filtration L and the Hodge-theoretic input, with smooth projective hypotheses introduced explicitly here.
+4. Equivariant comparison: statement, action, first pages, convergence, weight degeneration, naturality and representatives.
+5. Nodal-curve example and proper descent.
+
+The foundational definitions follow Stacks Project, Sections 14.2–14.3 and 85.26. Generic double-complex algebra is linked to the spectral course rather than repeated.
 
 ## Precise references
 

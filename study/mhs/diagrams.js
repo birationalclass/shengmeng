@@ -44,16 +44,33 @@ const commSquare=(a,b,horizontal,left,right,route=state.route||'top',result='')=
  label(400,t-28,horizontal,145,35,c.teal);label(400,bottom-28,horizontal,145,35,c.teal);label(l-78,229,left,130,50,c.blue);label(r+76,229,right,130,50,c.teal);
  if(result)label(400,410,result,710,43,c.gold);
 };
-if(type==='comparison'){
+if(type==='simplex-category'){
+ label(400,65,R`\delta_1^{(2)}:[1]\hookrightarrow[2]`,460,45,c.gold);
+ for(let k=0;k<2;k++){dot(275+250*k,155,c.blue,7);label(275+250*k,119,String(k),40,30,c.blue);}
+ for(let k=0;k<3;k++){dot(150+250*k,315,c.teal,7);label(150+250*k,354,String(k),40,30,c.teal);}
+ arrow(275,168,150,296,c.gold);arrow(525,168,650,296,c.gold);
+ text(400,411,loc('保序单射跳过顶点 1','The increasing injection skips vertex 1'));
+}else if(type==='simplicial-object'||type==='cech-nerve'){
+ const xs=[140,395,650],cech=type==='cech-nerve';
+ for(let p=0;p<3;p++)box(xs[p],210,cech?[R`U`,R`U\times_SU`,R`U\times_SU\times_SU`][p]:`X_${p}`,cech?195:110,56,p===0?c.blue:c.teal);
+ for(let p=1;p<3;p++){
+  const margin=cech?105:66;
+  for(let i=0;i<=p;i++){const y=156+i*13;path(`M ${xs[p]-25} 179 V ${y} H ${xs[p-1]+25} V 178`,c.teal,1.5,`marker-end="url(#${id}-teal)"`);}
+  label((xs[p]+xs[p-1])/2,99,R`d_0^{(${p})},\ldots,d_${p}^{(${p})}`,235,38,c.teal);
+  for(let j=0;j<p;j++){const y=282+j*17;path(`M ${xs[p-1]+25} 241 V ${y} H ${xs[p]-25} V 242`,c.blue,1.5,`marker-end="url(#${id}-blue)"`);}
+  label((xs[p]+xs[p-1])/2,331,R`s_0^{(${p-1})},\ldots,s_${p-1}^{(${p-1})}`,235,38,c.blue);
+ }
+ text(400,408,loc('面映射向左 · 退化映射向右','Faces point left · degeneracies point right'));
+}else if(type==='comparison'){
 box(172,255,R`\operatorname{Gr}_L^pH^n`,240,65,c.blue);box(620,255,R`E_2^{p,q}`,190,65,c.teal);box(400,90,R`E_\infty^{p,q}`,182,59,c.gold);
 arrow(223,211,340,126,c.blue);arrow(573,211,460,126,c.teal);arrow(310,255,511,255,c.gold);
 label(253,152,R`\rho_{p,q}`,105,45,c.blue);label(548,152,R`\sigma_{p,q}`,115,45,c.teal);label(404,226,R`\alpha_{p,q}=\sigma^{-1}\rho`,267,43,c.gold);
 text(166,311,loc('收敛','Convergence'));text(626,311,loc('权重退化','Weight degeneration'));label(400,383,R`\alpha_{p,q}\Phi_L^p=T_2^{p,q}\alpha_{p,q}`,600,55);
 }else if(type==='simplicial'){
- const xs=[145,395,645];for(const y of [114,302])for(let p=0;p<3;p++)box(xs[p],y,`X_${p}`,110,53,p===0?c.blue:c.teal);
+ const xs=[145,395,645];for(const y of [114,302])for(let p=0;p<3;p++)box(xs[p],y,`${y===114?'X':'Y'}_${p}`,110,53,p===0?c.blue:c.teal);
  for(let p=1;p<=2;p++){for(let i=0;i<=p;i++){let offset=(i-p/2)*19;arrow(xs[p]-64,114+offset,xs[p-1]+64,114+offset,c.teal);arrow(xs[p]-64,302+offset,xs[p-1]+64,302+offset,c.teal);}label((xs[p]+xs[p-1])/2,71,R`d_0^{(${p})},\ldots,d_${p}^{(${p})}`,145,38,c.teal);}
  for(let p=0;p<3;p++){arrow(xs[p],153,xs[p],263,c.blue,`data-emphasis="action"`);label(xs[p]+33,208,`f_${p}`,50,35,c.blue);}
- label(400,404,R`d_i^{(p)}\circ f_p=f_{p-1}\circ d_i^{(p)}`,610,44,c.gold);
+ label(400,404,R`d_{i,Y}^{(p)}\circ f_p=f_{p-1}\circ d_{i,X}^{(p)}`,610,44,c.gold);
 }else if(type==='complex'){grid('K',state.focus||'h',state.n||3);}
 else if(type==='filtration'){grid('K','filtration',state.n??3,state.p??1);}
 else if(type==='representative'){grid('K','leading',state.n??3,state.p??1);}
