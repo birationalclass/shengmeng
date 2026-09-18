@@ -14,7 +14,7 @@ export function installCourseNavigation({course,language,entries,current,navigat
   if(m.type==='present'){peers.set(m.id,{...m,seen:Date.now()});return;}
   if(m.type==='bye'){peers.delete(m.id);return;}
   if(m.type==='located'&&m.target===id){clearTimeout(pending.get(m.request));pending.delete(m.request);return;}
-  if(m.type==='locate'&&m.target===id){if(await locate(m)){channel.postMessage({type:'located',id,target:m.id,request:m.request});window.focus();announce();}}
+  if(m.type==='locate'&&m.target===id&&ready&&entries().some(e=>e.entry===m.entry)){channel.postMessage({type:'located',id,target:m.id,request:m.request});await locate(m);window.focus();announce();}
  };channel.postMessage({type:'hello',id});announce();}catch{}
  const presence=setInterval(announce,4000);
  window.addEventListener('pagehide',()=>{channel?.postMessage({type:'bye',id});clearInterval(presence);});

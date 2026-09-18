@@ -1,4 +1,4 @@
-import {installCourseNavigation} from '../course-navigation.js?v=1';
+import {installCourseNavigation} from '../course-navigation.js?v=2';
 const requestedLocation=location.hash;
 let courseNavigation;
 import {statementMark,stripStatementKind,createStatementMarkSettings} from './statement-marks.js?v=153';

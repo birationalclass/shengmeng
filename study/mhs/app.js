@@ -1,4 +1,4 @@
-import {installCourseNavigation} from '../course-navigation.js?v=1';
+import {installCourseNavigation} from '../course-navigation.js?v=2';
 const requestedLocation=location.hash;
 import {createCover} from './cover.js?v=6';
 import {chapters,ui,notation} from './notebook-content.js?v=6';
