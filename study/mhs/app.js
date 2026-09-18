@@ -1,8 +1,8 @@
 import {installCourseNavigation} from '../course-navigation.js?v=2';
 const requestedLocation=location.hash;
 import {createCover} from './cover.js?v=6';
-import {chapters,ui,notation} from './notebook-content.js?v=9';
-import {drawDiagram} from './diagrams.js?v=9';
+import {chapters,ui,notation} from './notebook-content.js?v=10';
+import {drawDiagram} from './diagrams.js?v=10';
 import {statementMark} from '../spectral/statement-marks.js?v=153';
 const R=String.raw,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const safeStore={get(k,f){try{return localStorage.getItem(k)||f}catch{return f}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
@@ -57,7 +57,7 @@ if(g==='descent'){button(inline(['回看等变比较','Revisit equivariant compa
 async function replay(){const svg=$('#diagram .diagram-scene[data-current]');if(!svg)return;const edges=[...svg.querySelectorAll('[data-emphasis], [data-route]')];const chosen=edges.length?edges:[...svg.querySelectorAll('rect')];chosen.forEach(el=>{const from=+getComputedStyle(el).opacity;const rest=+(el.getAttribute('opacity')||1);for(const a of el.getAnimations())a.cancel();animateTo(el,[{opacity:from},{opacity:Math.max(.12,rest*.35),offset:.35},{opacity:rest}],{duration:ms(1.2)});});}
 async function traceRoute(route){graphState.route=route;renderControls();await renderGraph();if(!entered||!['action','equivariance'].includes(chapters[current].graph))return;const svg=$('#diagram .diagram-scene[data-current]');if(!svg||reduce)return;
 // A representative follows both sides of the same square. Fade the terminal point out continuously.
-const drawing=svg.querySelector('svg');const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx','0');dot.setAttribute('cy','0');dot.setAttribute('r','5');dot.setAttribute('fill','#ffd078');dot.style.opacity='0';drawing.append(dot);
+const drawing=svg.querySelector('svg');const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');dot.setAttribute('cx','0');dot.setAttribute('cy','0');dot.setAttribute('r','5');dot.setAttribute('fill','var(--mhs-diagram-gold)');dot.style.opacity='0';drawing.append(dot);
 const points=route==='top'?[[205,122],[595,122],[595,332]]:[[205,122],[205,332],[595,332]];
 await animateTo(dot,[{transform:`translate(${points[0][0]}px,${points[0][1]}px)`,opacity:0},{transform:`translate(${points[0][0]}px,${points[0][1]}px)`,opacity:1,offset:.08},{transform:`translate(${points[1][0]}px,${points[1][1]}px)`,opacity:1,offset:.46},{transform:`translate(${points[2][0]}px,${points[2][1]}px)`,opacity:1,offset:.83},{transform:`translate(${points[2][0]}px,${points[2][1]}px)`,opacity:0}],{duration:ms(2.2)});dot.remove();}
 function references(c){return c.refs?.length?'<nav class="course-references">'+c.refs.map(r=>`<a data-course-link href="../${r.course}/#entry=${r.entry}&part=${r.part||1}" target="math-notebook-${r.course}">${L(r.label)} ↗</a>`).join('')+'</nav>':'';}
@@ -77,7 +77,7 @@ document.addEventListener('fullscreenchange',syncFullscreen);
 $$('[data-action]').forEach(b=>b.onclick=()=>{if(b.dataset.action==='language'){lang=lang==='zh'?'en':'zh';safeStore.set('mhs-language',lang);translateUI();renderCards();renderControls();renderProof();renderGraph(true);}if(b.dataset.action==='cover')showCover();if(b.dataset.action==='settings')$('#settings').showModal();if(b.dataset.action==='fullscreen')fullscreen();});
 $('#more').onclick=openProof;$('#closeProof').onclick=()=>$('#proofDialog').close();$('#closeSettings').onclick=()=>$('#settings').close();$('#beginSlides').onclick=enter;$('#mathLoader').onclick=e=>{if(!e.target.closest('a,button'))enter();};$('#hideAnimation').onclick=()=>{hiddenAnimation=true;stopPlayback();$('#diagram').style.opacity='0';$('#hideAnimation').hidden=true;};$('#replay').onclick=()=>{schedulePlayback();replay();};
 $('#coverFont').value=safeStore.get('mhs-cover-font','c');$('#coverMotion').checked=safeStore.get('mhs-cover-motion','true')==='true';$('#coverFont').onchange=e=>{safeStore.set('mhs-cover-font',e.target.value);cover.sync();};$('#coverMotion').onchange=e=>{safeStore.set('mhs-cover-motion',e.target.checked);cover.play();};$('#replayCover').onclick=()=>{$('#settings').close();showCover();};
-$('#theme').value=safeStore.get('mhs-panel-style','sand');document.documentElement.dataset.panelStyle=$('#theme').value;$('#theme').onchange=e=>{document.documentElement.dataset.panelStyle=e.target.value;safeStore.set('mhs-panel-style',e.target.value);renderGraph(true);};
+$('#theme').value=safeStore.get('mhs-panel-style','sand');document.documentElement.dataset.panelStyle=$('#theme').value;$('#theme').onchange=e=>{document.documentElement.dataset.panelStyle=e.target.value;safeStore.set('mhs-panel-style',e.target.value);};
 for(const id of ['autoplay','loop']){$('#'+id).checked=safeStore.get('mhs-'+id,'true')==='true';$('#'+id).onchange=e=>{safeStore.set('mhs-'+id,e.target.checked);schedulePlayback();};}
 for(const id of ['delay','interval']){$('#'+id).value=safeStore.get('mhs-'+id,id==='delay'?'2':'5');$('#'+id+'Value').textContent=$('#'+id).value+' s';$('#'+id).oninput=e=>{safeStore.set('mhs-'+id,e.target.value);$('#'+id+'Value').textContent=e.target.value+' s';schedulePlayback();};}
 $('#duration').oninput=e=>{duration=+e.target.value;$('#durationValue').textContent=(duration/1000).toFixed(1)+' s';safeStore.set('mhs-duration',duration);};$('#reduce').onchange=e=>{reduce=e.target.checked;safeStore.set('mhs-reduce',reduce);cover.play();schedulePlayback();};

@@ -1,15 +1,15 @@
 const R=String.raw;
-export const colors={teal:'#70decf',blue:'#93c4ff',gold:'#ffd078',ink:'#edf5f5',muted:'#7697a2',line:'#355762'};
+const paletteKeys=['teal','blue','gold','ink','muted','line'];
 let serial=0;
 export function drawDiagram(type,state,lang,math){
-const id=`g${++serial}`,out=[],labels=[];let labelOpacity=1;const styles=getComputedStyle(document.documentElement),c=Object.fromEntries(Object.keys(colors).map(k=>[k,styles.getPropertyValue('--'+k).trim()||colors[k]]));const loc=(a,b)=>lang==='zh'?a:b;
+const id=`g${++serial}`,out=[],labels=[];let labelOpacity=1;const c=Object.fromEntries(paletteKeys.map(k=>[k,`var(--mhs-diagram-${k})`]));const loc=(a,b)=>lang==='zh'?a:b;
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;');
 const line=(x1,y1,x2,y2,color=c.line,width=1,extra='')=>out.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" ${extra}/>`);
 const path=(d,color=c.teal,width=1.5,extra='')=>out.push(`<path d="${d}" stroke="${color}" stroke-width="${width}" fill="none" ${extra}/>`);
 const arrow=(x1,y1,x2,y2,color=c.teal,extra='')=>line(x1,y1,x2,y2,color,1.5,`marker-end="url(#${id}-${color===c.gold?'gold':color===c.blue?'blue':color===c.muted?'muted':'teal'})" ${extra}`);
 const label=(x,y,tex,w=150,h=40,color=c.ink,size='')=>labels.push(`<div class="diagram-label ${size}" style="left:${x-w/2}px;top:${y-h/2}px;width:${w}px;height:${h}px;color:${color};opacity:${labelOpacity}" data-center="${x},${y}">${math(tex)}</div>`);
 const text=(x,y,s,color=c.muted,size=13)=>out.push(`<text x="${x}" y="${y}" text-anchor="middle" fill="${color}" font-size="${size}" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">${esc(s)}</text>`);
-const box=(x,y,tex,w=126,h=47,color=c.teal,extra='')=>{out.push(`<g ${extra}><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="9" fill="var(--panel)" stroke="${color}" stroke-opacity=".62"/>`);label(x,y,tex,w-6,h,color);out.push('</g>');};
+const box=(x,y,tex,w=126,h=47,color=c.teal,extra='')=>{out.push(`<g ${extra}><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="9" class="diagram-card" fill="url(#${id}-material)" stroke="${color}" stroke-opacity=".62"/>`);label(x,y,tex,w-6,h,color===c.teal?c.ink:color);out.push('</g>');};
 const dot=(x,y,color=c.teal,r=5,extra='')=>out.push(`<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" ${extra}/>`);
 const grid=(kind='K',mode='all',n=3,p0=1)=>{
  const X=p=>110+128*p,Y=q=>367-73*q,sel=state.focus||'h';
@@ -54,7 +54,7 @@ if(type==='simplex-category'){
  const xs=[140,395,650],cech=type==='cech-nerve';
  for(let p=0;p<3;p++)box(xs[p],210,cech?[R`U`,R`U\times_SU`,R`U\times_SU\times_SU`][p]:`X_${p}`,cech?195:110,56,p===0?c.blue:c.teal);
  for(let p=1;p<3;p++){
-  const margin=cech?105:66;
+
   for(let i=0;i<=p;i++){const y=156+i*13;path(`M ${xs[p]-25} 179 V ${y} H ${xs[p-1]+25} V 178`,c.teal,1.5,`marker-end="url(#${id}-teal)"`);}
   label((xs[p]+xs[p-1])/2,99,R`d_0^{(${p})},\ldots,d_${p}^{(${p})}`,235,38,c.teal);
   for(let j=0;j<p;j++){const y=282+j*17;path(`M ${xs[p-1]+25} 241 V ${y} H ${xs[p]-25} V 242`,c.blue,1.5,`marker-end="url(#${id}-blue)"`);}
@@ -126,6 +126,6 @@ else if(type==='pages'){
  label(400,387,R`\operatorname{Gr}^W_wH^n(X,\mathbb Q)\cong E_2^{n-w,w}`,710,55);
 }
 const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 800 450');svg.setAttribute('aria-hidden','true');svg.dataset.graph=type;
-svg.innerHTML=`<defs>${['teal','blue','gold','muted'].map(name=>`<marker id="${id}-${name}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="${c[name]}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker>`).join('')}</defs>${out.join('')}`;
+svg.innerHTML=`<defs><linearGradient id="${id}-material" x1="0" y1="0" x2="1" y2="1"><stop stop-color="var(--mhs-diagram-surface-start)"/><stop offset="1" stop-color="var(--mhs-diagram-surface-end)"/></linearGradient>${['teal','blue','gold','muted'].map(name=>`<marker id="${id}-${name}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1 L7 4 L1 7" fill="none" stroke="${c[name]}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></marker>`).join('')}</defs>${out.join('')}`;
 const scene=document.createElement('div');scene.className='diagram-scene';scene.dataset.graph=type;scene.append(svg);const overlay=document.createElement('div');overlay.className='diagram-math';overlay.innerHTML=labels.join('');scene.append(overlay);return scene;
 }

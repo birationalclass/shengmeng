@@ -45,9 +45,9 @@ entry('simplicial-morphism','1.6',pair('单纯态射与自映射','Simplicial mo
  R`d_{i,Y}^{(p)}f_p=f_{p-1}d_{i,X}^{(p)}`,R`s_{i,Y}^{(p)}f_p=f_{p+1}s_{i,X}^{(p)}`
 ],[step('自然变换','Natural transformation',[R`Y(\alpha)f_q=f_pX(\alpha)\quad(\alpha:[p]\to[q])`],pair(R`单纯态射就是两个反变函子间的自然变换。每个保序映射都由跳过与合并映射复合而成，所以只须检查面与退化映射的交换关系。当 $Y_\bullet=X_\bullet$ 时得到单纯自映射；不要求其可逆。`,R`A simplicial morphism is a natural transformation. Every nondecreasing map is a composite of omissions and identifications, so it suffices to check compatibility with faces and degeneracies. Taking $Y_\bullet=X_\bullet$ gives a simplicial endomorphism; invertibility is not required.`))],{graph:'simplicial'}),
 entry('cech-nerve','1.7',pair('Čech 神经','The Čech nerve'),[
- R`u:U\to S,\qquad X_p:=\underbrace{U\times_S\cdots\times_SU}_{p+1\ \text{factors}}`,
- R`d_i(u_0,\ldots,u_p)=(u_0,\ldots,\widehat{u_i},\ldots,u_p)`,
- R`s_i(u_0,\ldots,u_p)=(u_0,\ldots,u_i,u_i,\ldots,u_p)`
+ R`u:U\to S`,R`X_p:=\underbrace{U\times_S\cdots\times_SU}_{p+1\ \text{factors}}`,
+ R`\begin{gathered}d_i:(u_0,\ldots,u_p)\\\longmapsto(u_0,\ldots,\widehat{u_i},\ldots,u_p)\end{gathered}`,
+ R`\begin{gathered}s_i:(u_0,\ldots,u_p)\\\longmapsto(u_0,\ldots,u_i,u_i,\ldots,u_p)\end{gathered}`
 ],[step('用纤维积构造','Construction with fibre products',[
  R`X(\alpha)(u_0,\ldots,u_q)=(u_{\alpha(0)},\ldots,u_{\alpha(p)})`
 ],pair(R`设 $u$ 是复概形态射。上述坐标式在每个测试概形的点上理解；投影与对角态射使它们成为概形态射。选取坐标与复合相容，故定义反变函子。此构造不要求 $u$ 是覆盖，也没有在此断言上同调下降。`,R`Let $u$ be a morphism of complex schemes. Interpret the coordinate formulas on points valued in any test scheme. Projections and diagonals make them scheme morphisms. Selecting coordinates respects composition, so this defines a contravariant functor. The construction does not require $u$ to be a cover and does not assert cohomological descent.`))],{kind:'example',graph:'cech-nerve'})
