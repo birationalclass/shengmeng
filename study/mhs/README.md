@@ -1,32 +1,19 @@
 # Equivariant Mixed Hodge Structure
 
-A bilingual, continuous interactive study note by Sheng Meng. The central objective is Theorem 1 of `MHS_EQUIV.pdf`: the canonical comparison
+Bilingual interactive notes using the Spectral Sequence course’s reading interface.
 
-`alpha_{p,q}: Gr_L^p H^{p+q}(X_bullet,Q) -> E_2^{p,q}`
+## Reading interface
 
-is an isomorphism of pure Hodge structures of weight q and commutes with the actual induced endomorphisms.
+Golden sand is the default theme. The cover, icon toolbar, framed statement abbreviations, themed cursor, continuous left-hand cards, current formula emphasis, diagram above a brief explanation, and More proof dialog follow the spectral course. The toolbar wakes only when the pointer enters its own region. Keyboard focus also keeps its controls visible.
 
-## Mathematical scope
+Enter, Space and the right arrow advance formulas and sections; the left arrow goes back. The reading rail jumps directly to any section. Settings control theme, autoplay, delay, looping, animation duration and reduced motion. Diagram parameters are inside settings.
 
-- Each X_p is a finite disjoint union of smooth projective complex varieties.
-- A simplicial endomorphism f_bullet is given. No semisimplicity or invertibility hypothesis is added to the central theorem.
-- h is the alternating sum of face pullbacks, v = (-1)^p d_sing, D = h + v.
-- W_w H^n = L^{n-w} H^n; F is induced from the de Rham model.
-- Deligne's MHS construction, Hodge compatibility of the spectral sequence, and proper descent are identified as foundational inputs.
-- Finite-filtration convergence gives rho; weight degeneration gives sigma. The proof checks equivariance of both, then composes alpha = sigma^{-1} rho.
-- The nodal-curve example distinguishes the original E_1 terms from their normalized row complex.
-- Descent to a singular variety is applied only with an equivariant hypercover; arbitrary endomorphisms are not asserted to lift automatically.
+## Mathematical conventions
 
-## Interface
+The first-quadrant double complex uses delta_1 and delta_2, with the sign included in delta_2, and total differential D = delta_1 + delta_2. F denotes its column filtration and the induced filtration on total cohomology. L denotes the transported filtration on simplicial cohomology. The Hodge filtration is separately denoted F_Hdg.
 
-One continuous notebook, progressively revealed collapsible statements, a persistent unframed diagram, controls directly below it, and an independent mathematical proof panel. Chinese/English, cover, fullscreen, Enter/arrow navigation, adjustable animation duration, and reduced motion are supported.
+Finite-filtration convergence, weight degeneration, and the naturality of their comparison maps are distinguished. Mixed Hodge compatibility and proper descent are stated as foundational inputs. Source documents are under sources/.
 
-All mathematical diagram labels use local KaTeX. SVG geometry and HTML math labels share one 800 × 450 coordinate container and the same responsive transform, including in WebKit. Dashed arrows only indicate omitted continuation; actual differentials and morphisms are solid. Higher differentials lie within each page plane. Grid points represent bidegrees, not dimensions.
+## Rendering
 
-Taking cohomology is shown by restricting to kernels, forming the quotient by incoming images, and only then displaying the new page. It is not drawn as a linear map on all of the preceding page. Proof-step buttons do not change the diagram state.
-
-Source PDFs are preserved under `sources/`. No source PDF was edited. Deligne and Weibel links point to the primary mathematical sources.
-
-## Validation
-
-Served with the site's static HTTP server. The browser checks cover all 13 sections, all 43 independent proof steps, every diagram control, Chinese/English, responsive layout, and mathematical rendering errors. Chrome and WebKit are both checked. Separate motion checks exercise interrupted transitions, folding endpoints, pulse endpoints, quotient formation and cleanup of outgoing diagrams.
+All formula labels use local KaTeX. SVG geometry and HTML labels share one 800 by 450 coordinate plane. Diagram colors read the active theme. The content adapter notebook-content.js synchronizes the original content with the spectral course’s notation.

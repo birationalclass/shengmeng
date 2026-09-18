@@ -2,14 +2,14 @@ const R=String.raw;
 export const colors={teal:'#70decf',blue:'#93c4ff',gold:'#ffd078',ink:'#edf5f5',muted:'#7697a2',line:'#355762'};
 let serial=0;
 export function drawDiagram(type,state,lang,math){
-const id=`g${++serial}`,out=[],labels=[];let labelOpacity=1;const c=colors;const loc=(a,b)=>lang==='zh'?a:b;
+const id=`g${++serial}`,out=[],labels=[];let labelOpacity=1;const styles=getComputedStyle(document.documentElement),c=Object.fromEntries(Object.keys(colors).map(k=>[k,styles.getPropertyValue('--'+k).trim()||colors[k]]));const loc=(a,b)=>lang==='zh'?a:b;
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;');
 const line=(x1,y1,x2,y2,color=c.line,width=1,extra='')=>out.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" ${extra}/>`);
 const path=(d,color=c.teal,width=1.5,extra='')=>out.push(`<path d="${d}" stroke="${color}" stroke-width="${width}" fill="none" ${extra}/>`);
 const arrow=(x1,y1,x2,y2,color=c.teal,extra='')=>line(x1,y1,x2,y2,color,1.5,`marker-end="url(#${id}-${color===c.gold?'gold':color===c.blue?'blue':color===c.muted?'muted':'teal'})" ${extra}`);
 const label=(x,y,tex,w=150,h=40,color=c.ink,size='')=>labels.push(`<div class="diagram-label ${size}" style="left:${x-w/2}px;top:${y-h/2}px;width:${w}px;height:${h}px;color:${color};opacity:${labelOpacity}" data-center="${x},${y}">${math(tex)}</div>`);
 const text=(x,y,s,color=c.muted,size=13)=>out.push(`<text x="${x}" y="${y}" text-anchor="middle" fill="${color}" font-size="${size}" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">${esc(s)}</text>`);
-const box=(x,y,tex,w=126,h=47,color=c.teal,extra='')=>{out.push(`<g ${extra}><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="9" fill="#142d36" stroke="${color}" stroke-opacity=".62"/>`);label(x,y,tex,w-6,h,color);out.push('</g>');};
+const box=(x,y,tex,w=126,h=47,color=c.teal,extra='')=>{out.push(`<g ${extra}><rect x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" rx="9" fill="var(--panel)" stroke="${color}" stroke-opacity=".62"/>`);label(x,y,tex,w-6,h,color);out.push('</g>');};
 const dot=(x,y,color=c.teal,r=5,extra='')=>out.push(`<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" ${extra}/>`);
 const grid=(kind='K',mode='all',n=3,p0=1)=>{
  const X=p=>110+128*p,Y=q=>367-73*q,sel=state.focus||'h';
