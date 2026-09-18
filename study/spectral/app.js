@@ -1,3 +1,6 @@
+import {installCourseNavigation} from '../course-navigation.js?v=1';
+const requestedLocation=location.hash;
+let courseNavigation;
 import {statementMark,stripStatementKind,createStatementMarkSettings} from './statement-marks.js?v=153';
 import {createInclusionDiagram} from './inclusion-diagram.js?v=151';
 import {subcomplexDiagram,prepareSubcomplexEntrance,animateSubcomplexEntrance} from './subcomplex-diagram.js?v=153';
@@ -263,7 +266,7 @@ function navigateReading(direction){
 }
 window.spectralNavigateReading=navigateReading;
 installReadingTouch({navigate:navigateReading});
-window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
+window.addEventListener('hashchange',()=>{let m=location.hash.slice(1);if(m.startsWith('entry='))return;if(state.cover){if(m!=='title')history.replaceState(null,'',location.pathname+location.search+'#title');return;}if(m==='title'&&!state.cover){$('#coverButton').click();return;}if(['initial','learn','lab','trace','converge'].includes(m)&&(m!==state.module||state.cover))moduleChange(m);});
 document.querySelectorAll('[data-tex]').forEach(el=>el.innerHTML=math(el.dataset.tex));
 // Every fresh visit waits on the title slide, including saved lesson URLs.
 history.replaceState(null,'',location.pathname+location.search+'#title');
@@ -401,6 +404,14 @@ $('#explanation').addEventListener('click',e=>{
  }
  // The whole numbered entry selects its reading position. Explicit controls
  // retain their own action, and formula clicks can still preview the concept.
+ const fragmentBuild=e.target.closest('.build-card');
+ if(fragmentBuild&&!e.target.closest('a,input,select,textarea')){
+  const index=Number(fragmentBuild.dataset.build);
+  if([6,8,12].includes(index)&&e.target.closest('.math-block,.reading-consequence')){
+   const second=!!e.target.closest('[data-total-fragment],[data-filtration-fragment],[data-graded-fragment]');
+   selectInitialBuild(index,second?1:0);e.stopPropagation();return;
+  }
+ }
  const entry=e.target.closest('.build-card,.numbered-entry');
  if(!entry||e.target.closest('button,a,input,select,textarea,summary,[data-zoom]'))return;
  if(entry.matches('.build-card')){
@@ -746,7 +757,7 @@ function relationOverlay(effect){
  if(loaded.some(f=>f.status==='rejected')){window.spectralBoot?.fail();return;}
  await document.fonts.ready;completed++;report();
  for(let i=0;i<2;i++){await new Promise(requestAnimationFrame);completed++;report();}
- window.spectralBoot?.ready();syncInitialEntrance();
+ window.spectralBoot?.ready();syncInitialEntrance();await courseNavigation?.restore(requestedLocation);
 })().catch(()=>window.spectralBoot?.fail());
 
 
@@ -862,3 +873,18 @@ $('#explanation').addEventListener('click',event=>{
  const entry=event.target.closest('.build-card,.numbered-entry');if(!entry)return;
  queueMicrotask(()=>{if(entry.classList.contains('build-current'))playback.restart(true);});
 });
+
+function locationEntries(){
+ const initial=Array.from({length:13},(_,index)=>({entry:`1.${index+1}`,title:document.querySelector(`[data-select-build="${index}"]`)?.textContent.trim()||'',build:index,parts:[6,8,12].includes(index)?2:1}));
+ const rest=readingOrder.filter(key=>key!=='initial:0').flatMap(key=>{const [module,step]=key.split(':');return numberedPages(module,Number(step),0).map((page,index)=>({entry:String(page.number??page.no??''),title:Array.isArray(page.title)?page.title[language()==='en'?1:0]:Array.isArray(page.title?.name)?page.title.name[language()==='en'?1:0]:'',key,index,parts:1}));});
+ return [...initial,...rest].filter(e=>e.entry);
+}
+courseNavigation=installCourseNavigation({course:'spectral',language,entries:locationEntries,current:()=>{
+ const item=isDoubleComplexView()?locationEntries().find(e=>e.build===state.initialReveal):locationEntries().find(e=>e.key===activeStatementKey()&&e.index===state.notePage);
+ const part=state.initialReveal===6?state.totalStep:state.initialReveal===8?state.filtrationStep:state.initialReveal===12&&state.gradedMode==='differential'?1:0;
+ return{entry:item?.entry||'1.1',part:isDoubleComplexView()?part+1:1};
+},navigate:async(item,part)=>{
+ if(state.cover){if(!window.spectralBoot?.enter())return;state.cover=false;}
+ if(item.build!==undefined){activateStatement('initial:0');selectInitialBuild(item.build,part-1);}
+ else{activateStatement(item.key);selectReadingPage(item.index);}
+}});

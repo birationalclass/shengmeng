@@ -8,23 +8,24 @@
 <link rel="stylesheet" href="../spectral/vendor/katex.min.css">
 <link rel="stylesheet" href="../spectral/styles/tokens.css?v=67">
 <link rel="stylesheet" href="../spectral/styles/panel-style.css?v=157">
+<link rel="stylesheet" href="../spectral/styles/cover.css?v=154">
 <link rel="stylesheet" href="../spectral/styles/sand.css?v=153">
 <link rel="stylesheet" href="../spectral/styles/statement-marks.css?v=153">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=6">
 <link rel="stylesheet" href="../spectral/styles/theme-cursor.css?v=157">
 <script defer src="../spectral/vendor/katex.min.js"></script>
 <script defer src="../spectral/theme-cursor.js?v=157"></script>
-<script defer src="../spectral/toolbar-controls.js?v=158"></script>
-<script type="module" src="app.js?v=3"></script>
+<script defer src="../spectral/toolbar-controls.js?v=159"></script>
+<script type="module" src="app.js?v=6"></script>
 </head>
 <body>
-<div id="cover" class="cover">
- <nav class="cover-actions"><button data-action="language" aria-label="Language">EN</button><button data-action="settings" data-icon="settings" aria-label="设置"></button><button data-action="fullscreen" data-icon="fullscreen" aria-label="全屏"></button></nav>
- <div class="cover-inner"><p class="eyebrow" data-i18n="notes">学习笔记</p><h1>Mixed Hodge<br>Structure</h1><div class="cover-rule"></div><p class="author">Sheng Meng</p><p class="cover-sub" data-i18n="coverSub">从单纯上同调到等变比较定理</p><button id="enter" disabled>正在准备公式…</button><div class="load-track"><i id="loadProgress"></i></div><p class="orientation-note">手机建议横屏阅读 · Best read in landscape</p></div>
- <a href="../spectral/" class="cover-back">Spectral Sequence ↗</a>
+<div id="mathLoader" class="cover-intro" data-cover-font="c">
+ <nav class="cover-actions"><button id="coverLanguage" data-action="language" aria-label="Switch to English">Eng</button><button id="coverSettings" data-action="settings" data-icon="settings" aria-label="设置"></button><button id="coverFullscreen" data-action="fullscreen" data-icon="fullscreen" aria-label="全屏"></button></nav>
+ <div class="loader-inner"><p class="loader-eyebrow" data-i18n="notes">学习笔记</p><h1 class="loader-title" lang="zh-CN"><span class="loader-title-depth" aria-hidden="true">混合 Hodge 结构</span><span class="loader-title-face">混合 Hodge 结构</span></h1><p class="loader-author" lang="zh-CN">孟晟</p><p class="orientation-note" data-label="orientation">手机建议横屏阅读</p><div class="loader-entry"><div class="loader-line" role="progressbar" aria-label="加载数学资源" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="loadProgress"></i></div><p id="loaderStatus" class="loader-status" data-i18n="preparing">正在准备公式…</p><button id="beginSlides" disabled>开始阅读</button></div></div>
+ <a href="../spectral/" class="cover-back" data-label="spectral">谱序列 ↗</a>
 </div>
 <div id="app" inert>
- <header class="notebook-toolbar"><button data-action="cover" data-icon="home" aria-label="返回封面"></button><h1 id="sceneTitle">Mixed Hodge Structure</h1><nav class="toolbar-actions"><button data-action="language">EN</button><button data-action="settings" data-icon="settings" aria-label="设置"></button><button data-action="fullscreen" data-icon="fullscreen" aria-label="全屏"></button></nav></header>
+ <header class="notebook-toolbar"><button data-action="cover" data-icon="home" aria-label="返回封面"></button><h1 id="sceneTitle">MHS</h1><nav class="toolbar-actions"><button data-action="language">EN</button><button data-action="settings" data-icon="settings" aria-label="设置"></button><button data-action="fullscreen" data-icon="fullscreen" aria-label="全屏"></button></nav></header>
  <main class="workspace">
   <nav id="readingRail" class="reading-rail" aria-label="阅读导航"></nav>
   <section class="notebook" aria-label="定义与命题"><div id="cards"></div></section>
@@ -37,6 +38,8 @@
 <dialog id="proofDialog"><header><h2 id="proofTitle"></h2><button id="closeProof" aria-label="关闭证明">×</button></header><div id="proofDetail" class="dialog-body"></div></dialog>
 <dialog id="settings"><header><h2 data-label="settings">设置</h2><button id="closeSettings" aria-label="关闭设置">×</button></header><div class="dialog-body">
  <label><span data-label="theme">面板风格</span><select id="theme"><option value="sand">金沙 · Golden sand</option><option value="editorial">青墨 · Editorial</option><option value="glass">静谧玻璃 · Quiet glass</option></select></label>
+ <label><span data-label="coverFont">中文封面风格</span><select id="coverFont"><option value="a">A · 清雅宋体</option><option value="c">C · 书法风格</option></select></label>
+ <label><span data-label="coverMotion">封面标题入场动画</span><input id="coverMotion" type="checkbox" checked></label><button id="replayCover" data-label="replayCover">重播封面动画</button>
  <label><span id="themeCursorLabel">使用配套主题指针</span><input id="themeCursor" type="checkbox" checked></label><small id="themeCursorHint"></small>
  <label><span data-label="autoplay">自动播放</span><input id="autoplay" type="checkbox" checked></label>
  <label><span data-label="delay">开始前等待</span><input id="delay" type="range" min="0" max="5" step=".5" value="2"><output id="delayValue">2 s</output></label>
@@ -45,7 +48,7 @@
  <label><span data-i18n="duration">动画时长</span><input id="duration" type="range" min="500" max="2000" step="100" value="1000"><output id="durationValue">1 s</output></label>
  <label><span data-i18n="reduce">减少动态效果</span><input id="reduce" type="checkbox"></label>
  <details><summary data-label="parameters">当前图示参数</summary><div id="controls" class="controls"></div><button id="replay" data-i18n="replay">重播</button></details>
- <a href="../spectral/">Spectral Sequence ↗</a>
+ <a href="../spectral/" data-label="spectral">谱序列 ↗</a>
 </div></dialog>
 <noscript>此笔记需要 JavaScript。<a href="sources/MHS_EQUIV.pdf">阅读 PDF</a></noscript>
 </body></html>

@@ -4,7 +4,7 @@ Bilingual interactive notes using the Spectral Sequence course’s reading inter
 
 ## Reading interface
 
-Golden sand is the default theme. The cover, icon toolbar, framed statement abbreviations, themed cursor, continuous left-hand cards, current formula emphasis, diagram above a brief explanation, and More proof dialog follow the spectral course. The toolbar wakes only when the pointer enters its own region. Keyboard focus also keeps its controls visible.
+Golden sand is the default theme. The cover, icon toolbar, framed statement abbreviations, themed cursor, continuous left-hand cards, current formula emphasis, diagram above a brief explanation, and More proof dialog follow the spectral course. The toolbar remains bright while the pointer is inside its region and dims when it leaves; there is no inactivity timer. The cover reuses the spectral course’s CSS and full-title slice animation, including metal sheen, supporting-copy reveal, and Chinese font options.
 
 Enter, Space and the right arrow advance formulas and sections; the left arrow goes back. The reading rail jumps directly to any section. Settings control theme, autoplay, delay, looping, animation duration and reduced motion. Diagram parameters are inside settings.
 
@@ -17,3 +17,14 @@ Finite-filtration convergence, weight degeneration, and the naturality of their 
 ## Rendering
 
 All formula labels use local KaTeX. SVG geometry and HTML labels share one 800 by 450 coordinate plane. Diagram colors read the active theme. The content adapter notebook-content.js synchronizes the original content with the spectral course’s notation.
+
+## Reading order
+
+1. The specific singular-cochain double complex of complex varieties, its signed differentials and total complex. General algebra is linked to the spectral course.
+2. Simplicial schemes and endomorphisms, the transported filtration L, and the Hodge-theoretic input.
+3. Equivariant comparison: statement, induced action, first pages, convergence, weight degeneration, naturality and representative formula.
+4. Nodal-curve example and proper descent.
+
+## Precise references
+
+Both courses provide a toolbar locator and copyable `#entry=1.9&part=2` links. Links open the referenced subsection and emphasize its requested item. Cross-course links use BroadcastChannel to reuse an already loaded, same-origin, updated course tab; otherwise a named target opens a new tab. Browser focus policies may keep the source tab foreground. Tabs on another origin or still running an old build must be refreshed before cooperating.

@@ -55,7 +55,7 @@ text(166,311,loc('收敛','Convergence'));text(626,311,loc('权重退化','Weigh
  for(let p=0;p<3;p++){arrow(xs[p],153,xs[p],263,c.blue,`data-emphasis="action"`);label(xs[p]+33,208,`f_${p}`,50,35,c.blue);}
  label(400,404,R`d_i^{(p)}\circ f_p=f_{p-1}\circ d_i^{(p)}`,610,44,c.gold);
 }else if(type==='complex'){grid('K',state.focus||'h',state.n||3);}
-else if(type==='filtration'){grid('K','filtration',state.n??3,state.p??1);label(579,425,R`W_{${(state.n??3)-(state.p??1)}}H^{${state.n??3}}=L^{${state.p??1}}H^{${state.n??3}}`,330,35,c.gold,'small');}
+else if(type==='filtration'){grid('K','filtration',state.n??3,state.p??1);}
 else if(type==='representative'){grid('K','leading',state.n??3,state.p??1);}
 else if(type==='hodge'){
  const w=state.w??2,l=state.ell??1;const X=a=>185+115*a,Y=b=>345-80*b;
