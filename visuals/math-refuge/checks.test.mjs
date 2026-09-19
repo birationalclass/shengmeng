@@ -8,9 +8,11 @@ import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES} from './site-layout.js?v=7-garden';
+import {writingPose,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=7-garden';
 
-test('seven finite camera chapters with seminar and ocean views',()=>{
-  assert.equal(SHOTS.length,7);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));
+test('eight finite camera chapters with auditorium, ocean and garden views',()=>{
+  assert.equal(SHOTS.length,8);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='山水花园'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -19,7 +21,7 @@ test('seven finite camera chapters with seminar and ocean views',()=>{
     }
   }
   assert.equal(fadeAt(0),1);assert.equal(fadeAt(.5),0);assert(Math.abs(fadeAt(1)-1)<1e-9);
-  const wrap=advanceShot(6,27.98,.05,1);assert.equal(wrap.index,0);assert(wrap.time>=0&&wrap.time<.1);
+  const wrap=advanceShot(7,37.98,.05,1);assert.equal(wrap.index,0);assert(wrap.time>=0&&wrap.time<.1);
   assert.deepEqual(advanceShot(0,1,-5,1),{index:0,time:1});
 });
 
@@ -60,12 +62,14 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
   async function inlineAddon(file){
     let source=await fs.readFile(new URL(file,import.meta.url),'utf8');
     source=source.replaceAll("from 'three'",`from '${coreURL}'`);
-    if(file.startsWith('./landscape.js'))source=source.replace(`import * as THREE from '${coreURL}';`,'const THREE=globalThis.__retreatTestThree;').replace('./landscape-shape.js',new URL('./landscape-shape.js',import.meta.url).href);
+    if(file.startsWith('./landscape.js'))source=source.replace(`import * as THREE from '${coreURL}';`,'const THREE=globalThis.__retreatTestThree;').replace('./landscape-shape.js?v=7-garden',new URL('./landscape-shape.js',import.meta.url).href).replace('./garden-water.js?v=7-garden',await inlineAddon('./garden-water.js'));
+    source=source.replace('./site-layout.js?v=7-garden',new URL('./site-layout.js',import.meta.url).href);
     return asModule(source);
   }
   let source=await fs.readFile(new URL('./scene.js',import.meta.url),'utf8');
   source=source.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;');
-  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile','./landscape.js?v=6-landscape'])source=source.replace(file,await inlineAddon(file));
+  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile','./landscape.js?v=7-garden'])source=source.replace(file,await inlineAddon(file));
+  source=source.replace('./site-layout.js?v=7-garden',new URL('./site-layout.js',import.meta.url).href);
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -77,7 +81,11 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const scene=new Three.Scene();
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
     assert(result.water.isMesh);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
-    assert.equal(scene.getObjectByName('Ocean conference table').userData.seats,14);
+    assert(!scene.getObjectByName('Ocean conference table'));
+    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,32);assert.deepEqual(auditorium.userData.facing,[0,0,-1]);
+    assert(scene.getObjectByName('Small seminar lectern'));assert.equal(auditorium.userData.architectureScale,BUILDING_SCALE);
+    assert(Math.abs(BUILDING_SCALE**2-2)<1e-12);
+    assert(auditorium.userData.seatPositions.every(p=>Math.abs(p[0]-28)>2&&p[2]>-4));
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
     assert.equal(result.ocean.position.y,result.site.seaLevel);
     for(const z of [-14,0,14]){
@@ -89,12 +97,13 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       if(!object.geometry)continue;
       assert([...object.geometry.attributes.position.array].every(Number.isFinite));
       if(object.isInstancedMesh){assert([...object.instanceMatrix.array].every(Number.isFinite));instances+=object.count;}
-      triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
+      if(object.isMesh)triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
     }
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
-    assert(instances>3000);assert(triangles<900000,`Complete modeled vegetation remains within the 900k scene budget: ${triangles}`);
-    assert(scene.children.filter(o=>o.isMesh).length<240,'Spatial instancing must bound model draw batches');
+    assert(instances>3000);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
+    assert(scene.children.filter(o=>o.isMesh).length<330,'Spatial instancing must bound model draw batches');
     for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Olive leaf canopies','Palm fronds','Fern understory','Coastal grasses','Weathered coastal outcrops'])assert(scene.getObjectByName(name),name);
+    for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Connected waterfall and winding creek'])assert(scene.getObjectByName(name),name);
     assert(!scene.children.some(o=>o.geometry?.type==='ConeGeometry'));
     assert(result.landscape.plantings.length>150);
     for(const [x,y,z] of result.landscape.plantings){assert(canPlant(x,z));assert.equal(y,elevation(x,z));}
@@ -133,6 +142,31 @@ test('continuous ridges, level foundations and actual waterline stay consistent'
   }
   for(let x=-500;x<100;x+=8)for(let z=-500;z<200;z+=8){assert(Number.isFinite(elevation(x,z)));assert(Number.isFinite(slope(x,z)));assert(Math.abs(elevation(x+.001,z)-elevation(x,z))<.1);}
   assert(elevation(-260,-180)>60);assert(!canPlant(28,0));
+});
+
+test('water descends through the garden, is carved below the surface and avoids the buildings',()=>{
+  let previous=Infinity;
+  for(let i=0;i<=300;i++){
+    const p=riverPoint(i/300);assert(p.y<=previous+1e-8);previous=p.y;
+    assert(!(p.x>-17&&p.x<49&&p.z>-14.5&&p.z<16));
+    assert(elevation(p.x,p.z)<p.y-.3,'Water surface must not be buried in the terrain');
+    assert(watercourse(p.x,p.z).distance<.05);
+  }
+  assert.equal(LAWNS.length,2);assert.equal(GIANT_TREES.length,3);assert.equal(BAMBOO_GROVES.length,3);
+});
+
+test('chalk lift, wear, damp wiping and drying are bounded and deterministic',()=>{
+  const rows=[[80,40,500,70],[100,180,800,100]];
+  assert(!writingPose(rows,0).contact);assert.equal(rowReveal(1,1,2),1);
+  for(let i=0;i<=100;i++){const p=writingPose(rows,i/100),e=eraserPose(i/100);assert([p.x,p.y,e.x,e.y,e.angle].every(Number.isFinite));assert(e.angle<-.1);}
+  assert(chalkLength(.07)<chalkLength(0));assert.equal(chalkLength(10),.045);
+  assert(wetOpacity(0)>wetOpacity(6));assert.equal(wetOpacity(12),0);
+  const data=new Uint8ClampedArray(20*20*4);for(let x=1;x<10;x++)data[(8*20+x)*4+3]=255;
+  const guides=inkGuides({data,width:20,height:20},[[0,0,19,19]]);assert(guides[0].includes(8));assert(guides[0].includes(null));
+  const wipes=Array.from({length:701},(_,i)=>eraserPose(i/700)).filter(p=>p.contact);
+  for(let y=0;y<=640;y+=20)for(let x=0;x<=1536;x+=24){
+    assert(wipes.some(p=>{const dx=x-p.x,dy=y-p.y,c=Math.cos(p.angle),s=Math.sin(p.angle);return Math.abs(dx*c+dy*s)<=ERASER_HALF_WIDTH&&Math.abs(-dx*s+dy*c)<=ERASER_HALF_HEIGHT;}),'Tilted wipe must cover the whole board');
+  }
 });
 
 test('locally served landscape photographs match their CC0 source manifest',async()=>{
@@ -190,11 +224,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=3-coast',state);
+  source=source.replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=7-garden',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
-    const ctx={drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){}};contexts.push(ctx);return ctx;
+    const ctx={drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){}};contexts.push(ctx);return ctx;
   }})};
   globalThis.Image=class{set src(value){this.url=value;queueMicrotask(()=>this.onload());}};
   globalThis.fetch=async()=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'))});
@@ -206,6 +240,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
+    assert(scene.getObjectByName('Writing chalk').userData.length<.17);
+    assert(scene.getObjectByName('Falling chalk powder').geometry.attributes.position.count===64);
     lecture.playing=false;const time=lecture.clock.elapsed;lecture.update(.1);assert.equal(lecture.clock.elapsed,time);
     const uploads=boards.map(b=>b.children[0].material.map.version);
     for(let i=0;i<50;i++)lecture.update(.1);
@@ -215,6 +251,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     lecture.select(64);await Promise.resolve();lecture.staticPage();lecture.update(.1,true);
     assert.equal(lecture.clock.page,64);assert.equal(lecture.clock.slots[lecture.clock.active].progress,1);
     assert(!scene.getObjectByName('Writing chalk').visible);assert(!scene.getObjectByName('Moving blackboard eraser').visible);
+    assert(!scene.getObjectByName('Falling chalk powder').visible);
+    assert(boards.every(b=>b.children[0].material.roughnessMap.isCanvasTexture));
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
     assert(lecture.focus().toArray().every(Number.isFinite));lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}

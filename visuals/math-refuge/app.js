@@ -4,12 +4,13 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=6-landscape';
-import {createLecture} from './lecture.js?v=5-mobile';
+import {createRetreat} from './scene.js?v=7-garden';
+import {createLecture} from './lecture.js?v=7-garden';
+import {BUILDING_SCALE} from './site-layout.js?v=7-garden';
 import {createChalkReader} from './chalk-reader.js?v=5-mobile';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=3-coast';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=7-garden';
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -47,7 +48,7 @@ function applyShot(dt){
   const position=curves[shot].position.getPointAt(t),target=curves[shot].target.getPointAt(t);
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
-    const framing=boardFraming(camera.aspect,s.fov),focus=lecture.focus(framing.single);target.copy(focus);position.copy(focus).add(new THREE.Vector3(0,0,framing.distance));
+    const framing=boardFraming(camera.aspect,s.fov),focus=lecture.focus(framing.single);target.copy(focus);position.copy(focus).add(new THREE.Vector3(0,0,framing.distance*BUILDING_SCALE));
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*1.5));target.lerpVectors(controls.target,target,1-Math.exp(-dt*1.5));}
   }
   if(blend){
@@ -128,7 +129,8 @@ try{
   resize();
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
   $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
-  lecture=await createLecture(scene,renderer);
+  const lectureRoot=new THREE.Group();lectureRoot.name='Enlarged auditorium blackboards';lectureRoot.scale.setScalar(BUILDING_SCALE);scene.add(lectureRoot);
+  lecture=await createLecture(lectureRoot,renderer);
   reader=createChalkReader(lecture);
   for(const [i,page] of lecture.pages.entries()){
     const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${page.source} · ${page.title}`;$('lecturePage').append(option);
@@ -204,7 +206,7 @@ function updateLectureUI(){
 }
 function focusLecture(){
   if(!lecture)return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;
-  if(reduced.matches){const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(framing.single);free=false;touring=false;blend=null;camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(0,0,framing.distance));controls.target.copy(focus);controls.update();updateLabels();}
+  if(reduced.matches){const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(framing.single);free=false;touring=false;blend=null;camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(0,0,framing.distance*BUILDING_SCALE));controls.target.copy(focus);controls.update();updateLabels();}
   else resumeTour();
 }
 $('lectureButton').addEventListener('click',()=>{

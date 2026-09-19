@@ -1,4 +1,5 @@
 // Deterministic continuous terrain shared by geometry, planting and shoreline.
+import {watercourse} from './site-layout.js?v=7-garden';
 export const seaLevel=-9;
 const mix=(a,b,t)=>a+(b-a)*t;
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
@@ -21,11 +22,14 @@ export function elevation(x,z){
   const foundation=smooth(1,1.5,Math.max(Math.abs(x-10)/34,Math.abs(z)/20));
   const land=mix(-2.1,raw,foundation);
   const cliff=smooth(coastline(z)-4,coastline(z)+11,x);
-  return mix(land,-22,cliff);
+  const base=mix(land,-22,cliff),river=watercourse(x,z);
+  const valley=1-smooth(river.width*.86,river.width+3.1,river.distance);
+  return mix(base,river.y-.85,valley);
 }
 export function slope(x,z){return Math.hypot(elevation(x+.5,z)-elevation(x-.5,z),elevation(x,z+.5)-elevation(x,z-.5));}
 export function canPlant(x,z){
-  return x<coastline(z)-9 && !(x>-21&&x<53&&Math.abs(z)<22) && slope(x,z)<1.25 && elevation(x,z)>seaLevel+3;
+  const river=watercourse(x,z);
+  return river.distance>river.width+1.8&&x<coastline(z)-9 && !(x>-21&&x<53&&Math.abs(z)<22) && slope(x,z)<1.25 && elevation(x,z)>seaLevel+3;
 }
 export function shoreline(z){
   let a=coastline(z)-4,b=coastline(z)+11;

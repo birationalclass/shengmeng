@@ -3,7 +3,8 @@ import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=6-landscape';
+import {createLandscape} from './landscape.js?v=7-garden';
+import {BUILDING_SCALE} from './site-layout.js?v=7-garden';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -79,16 +80,16 @@ export async function createRetreat(renderer,scene,report){
     box([x,y+.24,z],[w,.48,.9],edge);box([x,y+.48,z],[w-.13,.03,.75],soil);
     for(let i=0;i<Math.ceil(w*2);i++){
       const px=x+(random()-.5)*(w-.1),pz=z+(random()-.5)*.7;
-      landscape.shrub(px,y+.5,pz,.52+random()*.2);
+      landscape.shrub(px,y+.5,pz,(.52+random()*.2)*BUILDING_SCALE);
     }
   }
   function tree(x,y,z,scale=1){
-    landscape.tree(x,y,z,scale);
+    landscape.tree(x,y,z,scale*BUILDING_SCALE);
   }
   function sofa(x,y,z,angle=0){
     const group=new THREE.Group();group.position.set(x,y,z);group.rotation.y=angle;
     // Transform upholstered modules into the common instancing batches.
-    const part=(p,s,m)=>{const v=new THREE.Vector3(...p).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(group.position);soft(v.toArray(),s,m,[0,angle,0]);};
+    const part=(p,s,m)=>{const v=new THREE.Vector3(...p).divideScalar(BUILDING_SCALE).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(group.position);soft(v.toArray(),s.map(d=>d/BUILDING_SCALE),m,[0,angle,0]);};
     part([0,.21,0],[3.1,.34,1.1],edge);part([0,.56,-.48],[3.05,.85,.27],darkFabric);
     for(const a of [-1,0,1]){
       part([a,.46,.04],[.96,.22,.91],pale);part([a,.73,-.25],[.86,.56,.23],pale);
@@ -98,11 +99,12 @@ export async function createRetreat(renderer,scene,report){
     for(const px of [-1.2,1.2])for(const pz of [-.35,.35])part([px,.06,pz],[.09,.15,.09],brass);
   }
   function table(x,y,z,w=2,d=1){
-    soft([x,y+.57,z],[w,.12,d],timber);
-    for(const dx of [-w*.36,w*.36])for(const dz of [-d*.33,d*.33])box([x+dx,y+.28,z+dz],[.075,.55,.075],brass);
+    const p=(a,b,c)=>[x+a/BUILDING_SCALE,y+b/BUILDING_SCALE,z+c/BUILDING_SCALE],s=a=>a.map(v=>v/BUILDING_SCALE);
+    soft(p(0,.57,0),s([w,.12,d]),timber);
+    for(const dx of [-w*.36,w*.36])for(const dz of [-d*.33,d*.33])box(p(dx,.28,dz),s([.075,.55,.075]),brass);
     // Closed notebooks and ceramic bowl.
-    box([x-.2,y+.66,z],[.4,.055,.3],blackboard);
-    instance(cylinder,ceramic,[x+.4,y+.72,z],[.13,.19,.13]);
+    box(p(-.2,.66,0),s([.4,.055,.3]),blackboard);
+    instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
   report('正在搭建书院与庭院…');
   floor(0,33,29,0,0);floor(5.15,27,20,-1,-1);floor(9.8,19,14,-4,-3);floor(13.6,13,10,-5,-3);
@@ -188,38 +190,31 @@ export async function createRetreat(renderer,scene,report){
   for(const z of [-11,-4,3,10])beam([37,-3,z],[47,-.2,z],.13,steel);
   for(const z of [-10,0,9]){sofa(44,.3,z,Math.PI/2);table(46,.3,z,1.1,1.1);}
   for(const z of [-12,11])planter(41,.3,z,3);
-  // Fourteen modeled conference chairs surround a single generous oak table.
-  soft([28,1.08,-1],[4.6,.18,11.8],timber);
-  for(const z of [-4.5,2.5])box([28,.68,z],[2.7,.68,.45],edge);
-  // Recessed cable troughs, inset power lids and table-edge trim at chair height.
-  for(const z of [-4,0,4]){
-    soft([28,1.18,z],[.32,.018,.75],steel);
-    for(const dz of [-.2,.2])box([28,1.191,z+dz],[.14,.006,.04],rubber);
-  }
-  for(const x of [25.73,30.27])box([x,1.04,-1],[.018,.035,11.2],brass);
-  const conferenceTable=new THREE.Object3D();conferenceTable.name='Ocean conference table';
-  conferenceTable.position.set(28,1.08,-1);conferenceTable.userData={seats:14,room:[20,20]};scene.add(conferenceTable);
-  function chair(x,z,angle){
-    const part=(p,s,m)=>{const v=new THREE.Vector3(...p).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(new THREE.Vector3(x,.3,z));soft(v.toArray(),s,m,[0,angle,0]);};
+  // Mathematics seminar: all seats face the north blackboards, not one another.
+  const auditorium=new THREE.Object3D();auditorium.name='Mathematics auditorium seating';
+  auditorium.userData={seats:32,rows:4,centralAisle:3.4,facing:[0,0,-1],frontClearance:6.65,seatPositions:[]};scene.add(auditorium);
+  function chair(x,z,angle,height=0){
+    const part=(p,s,m)=>{const v=new THREE.Vector3(...p).divideScalar(BUILDING_SCALE).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(new THREE.Vector3(x,.3+height,z));(Math.min(...s)<.12?box:soft)(v.toArray(),s.map(d=>d/BUILDING_SCALE),m,[0,angle,0]);};
     part([0,.48,0],[.78,.17,.82],darkFabric);part([0,.94,-.36],[.78,.86,.16],pale);
     for(const a of [-.43,.43])part([a,.77,0],[.09,.1,.72],timber);
     for(const a of [-.29,.29])for(const b of [-.28,.28])part([a,.22,b],[.045,.44,.045],steel);
     part([0,.69,-.31],[.67,.015,.02],darkFabric);
   }
-  for(const z of [-5.7,-3.8,-1.9,0,1.9,3.8]){
-    chair(24.65,z,Math.PI/2);chair(31.35,z,-Math.PI/2);
-    for(const x of [26.25,29.75]){
-      box([x,1.21,z],[.52,.025,.7],pale);box([x+.32,1.22,z],[.025,.022,.52],brass);
-      instance(cylinder,glass,[x,1.32,z+.52],[.075,.23,.075]);
-    }
+  for(let row=0;row<4;row++){
+    const z=-3.8+row*3.1,height=row*.12;
+    if(row)for(const x of [23.2,32.8])box([x,.31+height/2,z],[7.9,height,2.45],timber);
+    for(const x of [20.5,22.3,24.1,25.9,30.1,31.9,33.7,35.5]){chair(x,z,Math.PI,height);auditorium.userData.seatPositions.push([x,.3+height,z]);}
   }
-  chair(28,-8.05,Math.PI);chair(28,6.05,0);
+  // Off-axis compact lectern leaves all six writing surfaces visible.
+  box([19.1,.3+.52/BUILDING_SCALE,-7.5],[.65,1.04,.55].map(v=>v/BUILDING_SCALE),timber);soft([19.1,.3+1.08/BUILDING_SCALE,-7.5],[1.1,.12,.78].map(v=>v/BUILDING_SCALE),timber,[-.12,0,0]);
+  const lectern=new THREE.Object3D();lectern.name='Small seminar lectern';lectern.position.set(19.1,.3+1.08/BUILDING_SCALE,-7.5);lectern.userData.heightAboveFloor=1.08;scene.add(lectern);
+  beam([19.3,.3+1.16/BUILDING_SCALE,-7.6],[19.3,.3+1.48/BUILDING_SCALE,-7.72],.012/BUILDING_SCALE,steel);
   litStrip([28,4.05,-1],[.16,.1,11]);
   for(const z of [-5,3])beam([28,4.12,z],[28,5,z],.012,steel);
   // A dedicated presentation wall does not obstruct the ocean-facing glazing.
   const seminarCanvas=document.createElement('canvas');seminarCanvas.width=1536;seminarCanvas.height=768;
   const seminarCtx=seminarCanvas.getContext('2d');seminarCtx.fillStyle='#142c2c';seminarCtx.fillRect(0,0,1536,768);
-  seminarCtx.fillStyle='#e7d4aa';seminarCtx.textAlign='center';seminarCtx.font='86px "PingFang SC", sans-serif';seminarCtx.fillText('海景会议室',768,245);
+  seminarCtx.fillStyle='#e7d4aa';seminarCtx.textAlign='center';seminarCtx.font='86px "PingFang SC", sans-serif';seminarCtx.fillText('山海数学报告厅',768,245);
   seminarCtx.font='40px "Times New Roman", serif';seminarCtx.fillText('MATHEMATICAL REFUGE / SEMINAR ROOM',768,350);
   seminarCtx.fillStyle='#b6d6c7';seminarCtx.font='48px "PingFang SC", sans-serif';seminarCtx.fillText('让不同的想法，在这里相遇。',768,545);
   const seminarMap=new THREE.CanvasTexture(seminarCanvas);seminarMap.colorSpace=THREE.SRGBColorSpace;
@@ -317,13 +312,14 @@ export async function createRetreat(renderer,scene,report){
   // The east-facing cliff drops below sea level; land, trees and rocks never
   // continue across the water. Keep a level foundation beneath both wings.
   const {seaLevel,elevation,coastline}=landscape.site;
+  const architectureObjects=new Set(scene.children);
   landscape.populate();landscape.finish();
   // A separate animated ocean shader avoids recursively rendering two planar
   // reflection cameras. Fine normal waves, Fresnel and sun glitter are analytic;
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      time:{value:0},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      time:{value:0},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
       varying vec3 vWorld;
@@ -334,11 +330,11 @@ export async function createRetreat(renderer,scene,report){
         #include <fog_vertex>
       }`,
     fragmentShader:`
-      uniform float time;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform float time;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
       #include <common>
       #include <fog_pars_fragment>
       void main(){
-        vec2 uv=vWorld.xz;
+        vec2 uv=vWorld.xz/siteScale;
         vec3 a=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)).xyz*2.0-1.0;
         vec3 b=texture2D(normalMap,uv*.013+vec2(-time*.008,time*.005)).xyz*2.0-1.0;
         vec3 normal=normalize(vec3((a.x+b.x)*.20,1.0,(a.y+b.y)*.20));
@@ -361,25 +357,26 @@ export async function createRetreat(renderer,scene,report){
       }`
   });
   const ocean=new THREE.Mesh(new THREE.PlaneGeometry(8000,8000),oceanMaterial);
-  ocean.name='Panoramic ocean';ocean.rotation.x=-Math.PI/2;ocean.position.set(0,seaLevel,0);scene.add(ocean);
+  ocean.name='Panoramic ocean';ocean.rotation.x=-Math.PI/2;ocean.position.set(0,seaLevel*BUILDING_SCALE,0);scene.add(ocean);
   report('正在布置光照与镜头…');
   for(const {geo,material,matrices} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
     mesh.castShadow=material!==glass&&material!==light;mesh.receiveShadow=material!==glass;
-    mesh.computeBoundingSphere();scene.add(mesh);
+    mesh.computeBoundingSphere();scene.add(mesh);architectureObjects.add(mesh);
   }
+  for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
   const sky=new Sky();sky.scale.setScalar(12000);scene.add(sky);
   sky.material.uniforms.turbidity.value=4;sky.material.uniforms.rayleigh.value=1.5;
   sky.material.uniforms.mieCoefficient.value=.005;sky.material.uniforms.mieDirectionalG.value=.8;
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
-  sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55,right:55,top:45,bottom:-45,near:1,far:200});
-  sun.target.position.set(12,3,0);scene.add(sun.target);
+  sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
+  sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
   sun.shadow.normalBias=.04;sun.shadow.bias=-.00015;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
   for(const p of [[0,4,-3],[-6,8.7,-3],[-5,12.8,-3],[28,4,-4],[28,4,4],[27,8.5,-5]]){
-    const lamp=new THREE.PointLight('#ffd09b',90,17,2);lamp.position.fromArray(p);scene.add(lamp);interiorLights.push(lamp);
+    const lamp=new THREE.PointLight('#ffd09b',180,17*BUILDING_SCALE,2);lamp.position.fromArray(p).multiplyScalar(BUILDING_SCALE);scene.add(lamp);interiorLights.push(lamp);
   }
   scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
@@ -389,11 +386,11 @@ export async function createRetreat(renderer,scene,report){
     sky.material.uniforms.sunPosition.value.copy(sunDirection);
     water.material.uniforms.sunDirection.value.copy(sunDirection);
     ocean.material.uniforms.sunDirection.value.copy(sunDirection);
-    sun.position.copy(sunDirection).multiplyScalar(65);sun.intensity=1.4+t*2.5;
+    sun.position.copy(sunDirection).multiplyScalar(65*BUILDING_SCALE);sun.intensity=1.4+t*2.5;
     ambient.intensity=.65+t*.95;sun.color.setHSL(.09,.25+(1-t)*.3,.85);
-    interiorLights.forEach(l=>l.intensity=50+(1-t)*120);
+    interiorLights.forEach(l=>l.intensity=(50+(1-t)*120)*BUILDING_SCALE**2);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   lighting(62,true);
-  return {water,ocean,sun,lighting,sculpture,materials,landscape,site:{elevation,coastline,seaLevel},triangleObjects:scene.children.length,dispose(){landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {water,ocean,sun,lighting,sculpture,materials,landscape,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

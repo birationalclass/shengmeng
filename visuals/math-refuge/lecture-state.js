@@ -1,5 +1,5 @@
 export const BOARD_ORDER=[0,2,4,1,3,5];
-export const PHASE_SECONDS={lift:2.6,erase:4.8,write:23,hold:8};
+export const PHASE_SECONDS={lift:2.6,erase:24,write:23,hold:8};
 export function boardSlot(page){return BOARD_ORDER[((page%6)+6)%6];}
 export function boardHeights(mix){return [1.45+2.25*mix,3.7-2.25*mix];}
 export class LectureClock{
