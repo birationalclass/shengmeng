@@ -7,10 +7,11 @@ Static GitHub Pages application: upload JPEG/PNG/WebP, run Depth Anything V2 Sma
 - Drag/drop or file selection; decode validation; 20 MB/80 MP limits; texture capped at 1600 px.
 - Real AI inference with Transformers.js 3.8.1. WebGPU fp32 with WASM q8 fallback, progress, cancellation, timeout and retry. Lazy downloads only after Generate.
 - Pinned model `onnx-community/depth-anything-v2-small`, revision `4472b7362082ad9968fee890ca0f1e5aca36b93d`. Model files/runtime WASM download from Hugging Face/jsDelivr; network access is needed initially. Browser caches may be evicted.
-- Relative inverse depth converted to actual vertices with perspective compensation. Triangles crossing depth discontinuities are removed to reduce stretched foreground texture. No invented background inpainting or back surfaces.
+- Floating-point inverse depth is retained for mesh reconstruction (no intermediate 8-bit quantization), with perspective compensation. Adaptive grid diagonals follow the smaller depth jump. Surfaces stay connected by default to avoid black cracks; optional edge separation removes triangles crossing depth discontinuities to reduce stretched foreground texture. Neither mode invents background inpainting or back surfaces.
 - Texture/depth/point cloud modes; depth strength/inversion; mesh resolution; bounded orbit, keyboard rotation, zoom; automatic subtle motion respecting reduced motion; fullscreen; original comparison.
 - PNG render, grayscale depth PNG and self-contained textured binary glTF (GLB) export.
 - Original analytic landscape demo, explicitly marked DEMO, loads without the model. It is not presented as AI output.
+- Strength/inversion changes update existing position buffers; render-mode changes reuse geometry. Point-cloud attributes share mesh buffers. Rendering pauses when off-screen or hidden and static views render only on changes. Automatic motion waits until a drag has ended before starting its pause interval.
 
 ## Capability boundary
 
@@ -31,5 +32,7 @@ Three.js 0.180.0 (including OrbitControls and GLTFExporter), MIT; Transformers.j
 Serve the repository root over HTTP, then open `/visuals/3d/`. WebGPU needs a secure context (HTTPS or localhost). WASM single-thread mode works without cross-origin isolation. No build step.
 
 ## Verification
+
+Optimization revision: five Node regression tests cover floating-point depth, degenerate predictions, continuous/separated topology, triangle winding, perspective-preserving buffer updates and mocked GPU-to-WASM fallback. These tests do not execute the AI model or a browser. JavaScript syntax and local asset references checked; this revision has not repeated the browser tests below.
 
 2026-09-19, isolated macOS Chrome: real photo completed both WebGPU fp32 and WASM q8 inference (the latter with WebGPU capability removed in the test worker). Cancel/retry and corrupt-image feedback passed. Desktop 1440 px / mobile 390 px layouts inspected, no horizontal overflow. PNG/depth PNG downloaded; binary GLB parsed with embedded texture and mesh, without a duplicative vertex-colour multiplier. Fullscreen entry/exit and point-cloud mode also verified in the in-app browser. These checks do not claim testing on physical Android/iOS devices.

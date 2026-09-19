@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { GLTFExporter } from './vendor/GLTFExporter.js';
-import { createRelief, createDemo } from './geometry.js';
+import { createRelief, updateReliefPositions, createDemo } from './geometry.js?v=20260919-2';
 
 const $ = (id) => document.getElementById(id);
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -10,6 +10,8 @@ let renderer, controls, camera, scene, mesh, points, worker, job = 0, timer;
 let source, depth, sourceURL, texture, depthTexture, imageData, originalFile = null, busy = false;
 let mode = 'texture', geometry, version = 0, frameTime = 0, pausedUntil = 0;
 let distance = 6.1;
+let relief, updatePending=false, interacting=false, dirty=true, inView=true;
+let geometryBuilds=0, positionUpdates=0;
 const group = new THREE.Group();
 function status(message, error = false) { ui.status.textContent = message; ui.status.classList.toggle('error', error); }
 function setBusy(value) {
@@ -26,6 +28,7 @@ function releaseSource() {
 function resetView() {
   camera.position.set(0,0,distance); controls.target.set(0,0,0); controls.update();
   group.rotation.set(0,0,0); pausedUntil = performance.now() + 1800;
+  dirty=true;
 }
 function depthCanvas() {
   const canvas = document.createElement('canvas'); canvas.width=depth.width; canvas.height=depth.height;
@@ -36,13 +39,31 @@ function depthCanvas() {
   }
   ctx.putImageData(image,0,0); return canvas;
 }
+function updateMode() {
+  mesh.material.map=mode==='depth' ? depthTexture : texture;
+  mesh.material.needsUpdate=true;
+  points.visible=mode==='points';mesh.visible=!points.visible;dirty=true;
+}
+function updatePositions() {
+  if(!relief) return;
+  updateReliefPositions(relief,Number(ui.depthControl.value)/100,ui.invertToggle.checked,distance);
+  geometry.attributes.position.needsUpdate=true;
+  geometry.computeBoundingSphere();points.geometry.boundingSphere=geometry.boundingSphere;
+  ui.scene.dataset.positionUpdates=String(++positionUpdates);dirty=true;
+}
+function schedulePositions() {
+  if(updatePending)return;
+  updatePending=true;
+  requestAnimationFrame(()=>{updatePending=false;updatePositions();});
+}
 function rebuild() {
   if (!source || !depth || !renderer) return;
-  const data = createRelief(depth, source.width/source.height, Number(ui.detailControl.value), Number(ui.depthControl.value)/100, ui.invertToggle.checked, distance);
+  const data = createRelief(depth, source.width/source.height, Number(ui.detailControl.value), Number(ui.depthControl.value)/100, ui.invertToggle.checked, distance, $('edgeToggle').checked);
+  relief=data;
   const next = new THREE.BufferGeometry();
   next.setAttribute('position',new THREE.BufferAttribute(data.positions,3));
   next.setAttribute('uv',new THREE.BufferAttribute(data.uvs,2));
-  next.setIndex(data.indices); next.computeVertexNormals();
+  next.setIndex(data.indices);
   const colours = new Float32Array(data.count*3), colour = new THREE.Color();
   for (let i=0;i<data.count;i++) {
     const x=Math.min(source.width-1,Math.round(data.uvs[i*2]*(source.width-1)));
@@ -60,10 +81,10 @@ function rebuild() {
   }
   mesh.geometry=geometry;
   points.geometry.dispose(); points.geometry=new THREE.BufferGeometry();
-  points.geometry.setAttribute('position',geometry.attributes.position.clone());
-  points.geometry.setAttribute('color',geometry.attributes.color.clone());
-  mesh.material.map= mode==='depth' ? depthTexture : texture; mesh.material.needsUpdate=true;
-  points.visible=mode==='points'; mesh.visible=!points.visible;
+  points.geometry.setAttribute('position',geometry.attributes.position);
+  points.geometry.setAttribute('color',geometry.attributes.color);
+  updatePositions();updateMode();
+  ui.scene.dataset.geometryBuilds=String(++geometryBuilds);
   ui.meshStats.textContent=`${data.count.toLocaleString()} 顶点 · ${Math.round(data.indices.length/3).toLocaleString()} 三角面`;
   ui.scene.dataset.vertices=String(data.count); ui.scene.dataset.depthSource=originalFile ? (depth.ai ? 'ai' : 'pending') : 'analytic-demo';
   ui.scene.dataset.triangles=String(data.indices.length/3);
@@ -117,7 +138,7 @@ function generate() {
   setBusy(true); ui.progress.removeAttribute('value'); status('正在准备 AI 深度估计…');
   ui.loadingText.textContent='正在准备 AI 模型…';
   const id=++job;
-  if (!worker) worker=new Worker(new URL('./depth-worker.js',import.meta.url),{type:'module'});
+  if (!worker) worker=new Worker(new URL('./depth-worker.js?v=20260919-2',import.meta.url),{type:'module'});
   const fail=(message)=>{stopWorker();status(message,true);};
   timer=setTimeout(()=>fail('等待超过 5 分钟。可重新生成；请确认网络能访问 Hugging Face 和 jsDelivr。'),300000);
   worker.onerror=()=>fail('AI 引擎未能加载。请检查网络后重新生成，或使用最新版 Chrome / Edge。');
@@ -129,6 +150,7 @@ function generate() {
       depth={width:data.width,height:data.height,values:data.values,ai:true};
       depthTexture.dispose();depthTexture=new THREE.CanvasTexture(depthCanvas());
       rebuild();setBusy(false);resetView();
+      if(!reducedMotion.matches) {camera.position.set(.7,.15,distance);controls.update();}
       ui.sceneBadge.textContent=`AI DEPTH / ${data.backend}`;
       ui.sceneInfo.textContent='AI 单视图深度重建 · 拖动探索空间';
       status(`已生成 · Depth Anything V2 · ${data.backend}。可调整深度、对比原图或导出模型。`);
@@ -154,19 +176,24 @@ function resize() {
   camera.aspect=rect.width/rect.height;
   camera.fov = camera.aspect < 1 ? 2*Math.atan(2.65/(distance*camera.aspect))*180/Math.PI : 45;
   camera.updateProjectionMatrix();
+  dirty=true;
 }
 function tick(t) {
   requestAnimationFrame(tick);
-  if (document.hidden || !renderer) return;
+  if (document.hidden || !inView || !renderer) {frameTime=t;return;}
   const dt=Math.min(.05,(t-frameTime)/1000);frameTime=t;
-  if (ui.motionToggle.checked && !reducedMotion.matches && !busy && t>pausedUntil) {
+  const oldX=group.rotation.x,oldY=group.rotation.y;
+  if (ui.motionToggle.checked && !reducedMotion.matches && !busy && !interacting && t>pausedUntil) {
     group.rotation.y=THREE.MathUtils.damp(group.rotation.y,Math.sin(t*.00026)*.15,2,dt);
     group.rotation.x=THREE.MathUtils.damp(group.rotation.x,Math.cos(t*.00019)*.045,2,dt);
   } else {
     group.rotation.y=THREE.MathUtils.damp(group.rotation.y,0,3,dt);
     group.rotation.x=THREE.MathUtils.damp(group.rotation.x,0,3,dt);
   }
-  controls.update();renderer.render(scene,camera);
+  if(Math.abs(group.rotation.x)<1e-5)group.rotation.x=0;
+  if(Math.abs(group.rotation.y)<1e-5)group.rotation.y=0;
+  controls.update();
+  if(dirty || oldX!==group.rotation.x || oldY!==group.rotation.y) {renderer.render(scene,camera);dirty=false;}
 }
 try {
   renderer=new THREE.WebGLRenderer({canvas:ui.scene,antialias:true,alpha:true,preserveDrawingBuffer:true});
@@ -176,7 +203,10 @@ try {
   controls=new OrbitControls(camera,ui.scene);controls.enableDamping=true;controls.enablePan=false;
   controls.minDistance=3.3;controls.maxDistance=12;controls.minAzimuthAngle=-.75;controls.maxAzimuthAngle=.75;
   controls.minPolarAngle=Math.PI/2-.5;controls.maxPolarAngle=Math.PI/2+.5;
-  controls.addEventListener('start',()=>{pausedUntil=performance.now()+12000;});
+  controls.addEventListener('start',()=>{interacting=true;});
+  controls.addEventListener('end',()=>{interacting=false;pausedUntil=performance.now()+12000;});
+  controls.addEventListener('change',()=>{dirty=true;});
+  new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;dirty=true;}).observe(ui.viewer);
   new ResizeObserver(resize).observe(ui.viewer);resize();
   if (reducedMotion.matches) ui.motionToggle.checked=false;
   showDemo();requestAnimationFrame(tick);
@@ -193,15 +223,17 @@ window.addEventListener('drop',e=>e.preventDefault());
 ui.generateButton.addEventListener('click',generate);
 $('cancelButton').addEventListener('click',()=>{stopWorker();status('已取消。可重新生成，已下载的模型文件会尽可能复用。');});
 $('demoButton').addEventListener('click',showDemo);
-ui.depthControl.addEventListener('input',()=>{ui.depthValue.value=ui.depthControl.value+'%';rebuild();});
+ui.depthControl.addEventListener('input',()=>{ui.depthValue.value=ui.depthControl.value+'%';schedulePositions();});
 ui.detailControl.addEventListener('input',()=>{ui.detailValue.value=({'80':'轻量','160':'标准','240':'精细'})[ui.detailControl.value];rebuild();});
-ui.invertToggle.addEventListener('change',()=>{depthTexture.dispose();depthTexture=new THREE.CanvasTexture(depthCanvas());rebuild();});
+ui.invertToggle.addEventListener('change',()=>{depthTexture.dispose();depthTexture=new THREE.CanvasTexture(depthCanvas());updatePositions();updateMode();});
+$('edgeToggle').addEventListener('change',rebuild);
 document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{
-  mode=button.dataset.mode;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));setComparison(false);rebuild();
+  mode=button.dataset.mode;document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));setComparison(false);updateMode();
 }));
 ui.compareButton.addEventListener('click',()=>setComparison(ui.originalOverlay.hidden));
 $('resetButton').addEventListener('click',()=>{
   ui.depthControl.value=45;ui.depthValue.value='45%';ui.detailControl.value=160;ui.detailValue.value='标准';ui.invertToggle.checked=false;
+  $('edgeToggle').checked=false;setComparison(false);
   depthTexture.dispose();depthTexture=new THREE.CanvasTexture(depthCanvas());resetView();rebuild();
 });
 $('fullscreenButton').addEventListener('click',async()=>{
@@ -221,7 +253,9 @@ ui.scene.addEventListener('keydown',e=>{
   spherical.phi=THREE.MathUtils.clamp(spherical.phi+(e.key==='ArrowUp'?-.07:e.key==='ArrowDown'?.07:0),Math.PI/2-.5,Math.PI/2+.5);
   camera.position.setFromSpherical(spherical);controls.update();
 });
+ui.scene.addEventListener('webglcontextrestored',()=>{dirty=true;});
 $('saveImage').addEventListener('click',()=>{
+  updatePositions();
   renderer.render(scene,camera);
   const canvas=document.createElement('canvas');canvas.width=ui.scene.width;canvas.height=ui.scene.height;
   const ctx=canvas.getContext('2d');ctx.fillStyle='#142d24';ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -235,9 +269,10 @@ $('saveImage').addEventListener('click',()=>{
 });
 $('saveDepth').addEventListener('click',()=>depthCanvas().toBlob(blob=>{if(blob)download(blob,filename('-depth.png'));},'image/png'));
 $('saveModel').addEventListener('click',async()=>{
+  updatePositions();
   const button=$('saveModel');button.disabled=true;
   const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
-  const exportGeometry=geometry.clone();exportGeometry.deleteAttribute('color');
+  const exportGeometry=geometry.clone();exportGeometry.deleteAttribute('color');exportGeometry.computeVertexNormals();
   const exportMesh=new THREE.Mesh(exportGeometry,material);exportMesh.name='Single-view depth relief';
   exportMesh.userData={source:originalFile?'Depth Anything V2':'Analytic demo',representation:'2.5D single-view relief, no reconstructed back surface'};
   try {const buffer=await new GLTFExporter().parseAsync(exportMesh,{binary:true});download(new Blob([buffer],{type:'model/gltf-binary'}),filename('-relief.glb'));status('GLB 已导出，包含纹理与深度网格，可在 Blender 等软件中打开。');}

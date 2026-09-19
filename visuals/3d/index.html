@@ -7,7 +7,7 @@
   <meta name="description" content="3D化：上传一张照片，在设备上用 AI 估计深度，生成可交互、可导出的立体影像。Sheng Meng Visual Lab。">
   <title>3D化 · Spatial Studio · Sheng Meng</title>
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="studio.css?v=20260919-1">
+  <link rel="stylesheet" href="studio.css?v=20260919-2">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -42,6 +42,8 @@
         <div class="range-hints"><span>轻量</span><span>精细</span></div>
         <div class="switch-row"><label for="motionToggle">自动巡游</label><input id="motionToggle" type="checkbox" checked></div>
         <div class="switch-row"><label for="invertToggle">反转深度</label><input id="invertToggle" type="checkbox"></div>
+        <div class="switch-row"><label for="edgeToggle">分离前后景边缘</label><input id="edgeToggle" type="checkbox" aria-describedby="edgeHint"></div>
+        <p class="control-hint" id="edgeHint">默认连接表面，减少裂缝。开启后减少边缘拉伸，但会留下空隙。</p>
         <button id="resetButton" class="text-button">↺ 重置视角与参数</button>
         <p class="privacy-note">照片留在你的设备。首次 AI 生成需要联网下载模型，之后可复用浏览器缓存。</p>
       </aside>
@@ -70,6 +72,6 @@
   </main>
   <footer><span>SHENG MENG · SPATIAL STUDIO</span><div><a href="https://huggingface.co/onnx-community/depth-anything-v2-small" target="_blank" rel="noopener noreferrer">Depth Anything V2</a><a href="https://github.com/birationalclass/shengmeng/tree/main/visuals/3d" target="_blank" rel="noopener noreferrer">源码与技术说明 ↗</a></div></footer>
   <noscript><p class="no-script">请启用 JavaScript 以使用图片立体化工作台。</p></noscript>
-  <script type="module" src="app.js?v=20260919-1"></script>
+  <script type="module" src="app.js?v=20260919-2"></script>
 </body>
 </html>

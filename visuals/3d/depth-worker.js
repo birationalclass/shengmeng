@@ -1,4 +1,5 @@
 // Inference stays in a worker so model loading and WASM cannot block the UI.
+import {normalizeDepth} from './geometry.js?v=20260919-2';
 let estimator;
 let backend;
 let busy = false;
@@ -49,9 +50,10 @@ self.onmessage = async ({ data }) => {
       report('infer', { message: '正在估计深度 · WASM' });
       result = await estimator(image);
     }
-    const { depth } = result;
-    const values = new Float32Array(depth.width * depth.height);
-    for (let i = 0; i < values.length; i++) values[i] = depth.data[i * depth.channels] / 255;
+    const { depth, predicted_depth } = result;
+    // Preserve floating-point prediction; the display PNG is only 8-bit.
+    const values = normalizeDepth(predicted_depth.data);
+    if(values.length!==depth.width*depth.height) throw new Error('Unexpected depth dimensions');
     self.postMessage({ id, type: 'result', values, width: depth.width, height: depth.height, backend }, [values.buffer]);
   } catch (error) {
     estimator = null;

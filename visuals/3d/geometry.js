@@ -8,7 +8,25 @@ export function sampleDepth(depth, u, v) {
   const b = depth.values[y1 * depth.width + x0] * (1 - (x - x0)) + depth.values[y1 * depth.width + x1] * (x - x0);
   return a * (1 - (y - y0)) + b * (y - y0);
 }
-export function createRelief(depth, aspect, resolution, strength, invert, cameraDistance) {
+export function normalizeDepth(data) {
+  let min=Infinity, max=-Infinity;
+  for (const value of data) if (Number.isFinite(value)) { min=Math.min(min,value);max=Math.max(max,value); }
+  const span=max-min;
+  return Float32Array.from(data,value=>Number.isFinite(value) && span>1e-8 ? (value-min)/span : .5);
+}
+
+// Reuse topology/UVs during strength changes; only the position buffer changes.
+export function updateReliefPositions(data, strength, invert, cameraDistance) {
+  const {positions,uvs,values,w,h}=data;
+  for(let i=0;i<values.length;i++) {
+    const z=((invert ? 1-values[i] : values[i])-.5)*strength*1.9;
+    const perspective=(cameraDistance-z)/cameraDistance;
+    positions[i*3]=(uvs[i*2]-.5)*w*perspective;
+    positions[i*3+1]=(uvs[i*2+1]-.5)*h*perspective;
+    positions[i*3+2]=z;
+  }
+}
+export function createRelief(depth, aspect, resolution, strength, invert, cameraDistance, cutEdges=false) {
   const nx = Math.max(30, Math.round(resolution * Math.min(1, aspect)));
   const ny = Math.max(30, Math.round(resolution * Math.min(1, 1 / aspect)));
   const count = (nx + 1) * (ny + 1);
@@ -17,22 +35,24 @@ export function createRelief(depth, aspect, resolution, strength, invert, camera
   for (let y = 0; y <= ny; y++) for (let x = 0; x <= nx; x++) {
     const i = y * (nx + 1) + x, u = x / nx, v = y / ny;
     const d = sampleDepth(depth, u, v);
-    const z = ((invert ? 1 - d : d) - .5) * strength * 1.9;
-    const perspective = (cameraDistance - z) / cameraDistance;
-    positions.set([(u - .5) * w * perspective, (.5 - v) * h * perspective, z], i * 3);
     uvs.set([u, 1 - v], i * 2);
     values[i] = d;
   }
   const indices = [];
   const triangle = (a, b, c) => {
     // Cut occlusion boundaries instead of stretching texture across foreground gaps.
-    if (!depth.ai || Math.max(values[a], values[b], values[c]) - Math.min(values[a], values[b], values[c]) < .18 || strength < .01) indices.push(a, b, c);
+    if (!cutEdges || !depth.ai || Math.max(values[a], values[b], values[c]) - Math.min(values[a], values[b], values[c]) < .18) indices.push(a, b, c);
   };
   for (let y = 0; y < ny; y++) for (let x = 0; x < nx; x++) {
     const a = y * (nx + 1) + x, b = a + 1, c = a + nx + 1, d = c + 1;
-    triangle(a, c, b); triangle(b, c, d);
+    // Choose the diagonal with the smaller depth jump at object silhouettes.
+    if (Math.abs(values[a]-values[d]) < Math.abs(values[b]-values[c])) {
+      triangle(a,c,d);triangle(a,d,b);
+    } else { triangle(a,c,b);triangle(b,c,d); }
   }
-  return { positions, uvs, indices, count };
+  const data={ positions, uvs, indices, count, values, w, h };
+  updateReliefPositions(data,strength,invert,cameraDistance);
+  return data;
 }
 
 // Original procedural landscape. Its analytic depth is a demo, never labelled AI.
