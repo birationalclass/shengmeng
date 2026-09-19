@@ -154,13 +154,14 @@
       return .0176 * wander * (.30 * eddy + .50 * drift + .20 * fine);
     }
 
-    // Emission density is twice its original value across the full slider range.
+    // Fine-only emission uses four times the seed population at every density.
+    // Selected grains remain visually capped at micro-grain size.
     // A fixed minority of grains is continuously emitted along its true surface
     // normal. Each seed travels in one straight line at constant speed, fades
     // out, and returns to its source only while completely invisible.
     float emissionSelection() {
       float selector=fract(grain.x*37.17+grain.z*17.71);
-      float fine=(1.-step(.64,grain.z))*(1.-step(.16,grain.y));
+      float fine=(1.-step(.64,grain.z))*(1.-step(.64,grain.y));
       return step(selector,radiation*.40)*step(.0001,radiation)*mix(1.,fine,radiationFineOnly);
     }
     vec4 escapeGrain(vec3 normal, float chosen) {
@@ -422,7 +423,7 @@
     return [.0176*amount*(.30*eddyX+.50*driftX+.20*fineX),.0176*amount*(.30*eddyY+.50*driftY+.20*fineY)];
   }
   function radiationOffset(x,y,z,g0,g1,g2,g3,time,amount,normal=[0,0,1],fineOnly=false) {
-    if(fineOnly&&(g2>=.64||g1>=.16))return{offset:[0,0,0],alpha:1,chosen:0};
+    if(fineOnly&&(g2>=.64||g1>=.64))return{offset:[0,0,0],alpha:1,chosen:0};
     if(amount<.0001)return{offset:[0,0,0],alpha:1,chosen:0};
     const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
     const clamp=x=>Math.max(0,Math.min(1,x)),fract=x=>x-Math.floor(x);
