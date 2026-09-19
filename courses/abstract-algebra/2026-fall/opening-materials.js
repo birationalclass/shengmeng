@@ -74,6 +74,9 @@
     uniform float twoSided;
     uniform float extrusionTo;
     uniform float gemShare;
+    uniform float gemSparkle;
+    varying mediump float gemFlash;
+    varying mediump float gemFootprint;
     uniform float outroFall;
     uniform float outroExit;
     uniform mediump float complexity;
@@ -262,7 +265,9 @@
       // Rasterize a padded integer square, then evaluate the lettering grain at
       // its exact pixel centre. Do not let driver point-size rounding thicken it.
       letterFootprint=vec4((gl_Position.xy/gl_Position.w*.5+.5)*viewportSize,diameter,letterWeight);
-      gl_PointSize=letterWeight>0.?ceil(max(1.,diameter))+2.:diameter;
+      gemFlash=kind>.5?gemSparkle*pow(max(0.,sin(time*(.55+grain.w*.3)+grain.x*123.)),64.):0.;
+      gemFootprint=1.+gemFlash*1.6;
+      gl_PointSize=(letterWeight>0.?ceil(max(1.,diameter))+2.:diameter)*gemFootprint;
 
       vec3 lamp=normalize(mix(vec3(-.52,.64,.79),vec3(followLightCentre()-p.xy,1.25),spotlight*.65));
       float diffuse=max(0.,dot(n,lamp));
@@ -286,6 +291,8 @@
     }`;
 
   const fragment = `precision mediump float;
+    varying mediump float gemFlash;
+    varying mediump float gemFootprint;
     uniform mediump float narrativeLight;
     uniform mediump float depth;
     uniform mediump float complexity;
@@ -297,7 +304,7 @@
     varying mediump vec3 crystalLight;
     void main() {
       if(kind<-.5)discard;
-      vec2 p=gl_PointCoord*2.-1.;
+      vec2 p=(gl_PointCoord*2.-1.)*gemFootprint;
       float coverage=1.;
       if(letterFootprint.w>0.){
         float diameter=letterFootprint.z;
@@ -321,7 +328,8 @@
         vec2 cut=turned; if(kind>3.5&&kind<4.5)cut.x/=.73;
         vec2 edge=abs(cut);
         float cutRadius=kind<1.5?(edge.x+edge.y)*.86:max(max(edge.x,edge.y),(edge.x+edge.y)*.72);
-        if(cutRadius>1.)discard;
+        float star=gemFlash*(exp(-abs(p.x)*24.-abs(p.y)*2.2)+exp(-abs(p.y)*24.-abs(p.x)*2.2));
+        if(cutRadius>1.){float glow=star*opacity*.85;if(glow<.015)discard;gl_FragColor=vec4(vec3(.96,.94,.86),min(.9,glow));return;}
         float sector=floor((atan(cut.y,cut.x)+3.14159265)/.78539816);
         float faceAngle=(sector+.5)*.78539816-3.14159265;
         float table=1.-step(.37,cutRadius);
@@ -343,7 +351,7 @@
         // Colourless diamond reflects white light; coloured stones retain dark interiors.
         if(kind<1.5)crystal=mix(crystal,vec3(.68,.76,.82)*(.12+.27*internal),.24);
         float bevel=(1.-smoothstep(.018,.045,abs(cutRadius-.37)))*.05;
-        crystal+=vec3(.73,.83,.91)*bevel;
+        crystal+=vec3(.73,.83,.91)*bevel+vec3(.98,.97,.90)*(star*.8+gemFlash*spec*1.5);
         float alpha=(1.-smoothstep(.91,1.,cutRadius))*opacity;
         if(alpha<.075)discard;
         gl_FragColor=vec4(crystal*clamp(narrativeLight,.65,1.15),alpha*coverage);return;

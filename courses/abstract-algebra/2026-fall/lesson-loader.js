@@ -1,7 +1,7 @@
 /* Fetch only the requested section. The parent owns this document's lifetime. */
 (()=>{
   'use strict';
-  const version='20260919-section-loading-v1';
+  const version='20260919-course-polish-v1';
   const first=location.pathname.includes('/lesson-1/');
   const requested=new URLSearchParams(location.search).get('section');
   const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7])$/;
@@ -38,7 +38,7 @@
       if(first){
         window.LessonNotebookContent={[id]:payload.notebook};
         window.CurrentLessonExercises={[id]:payload.exercises};
-        scripts=['exercises-runtime.js','lesson.js','screen.js','embedded.js','../lesson-keyboard.js'];
+        scripts=[...(id==='1.2'?['axiom-lab.js']:[]),'exercises-runtime.js','lesson.js','screen.js','embedded.js','../lesson-keyboard.js'];
       }else{
         window.GroupCourseContent={[id]:payload.book};
         window.GroupCourseExercises={[id]:payload.exercises};

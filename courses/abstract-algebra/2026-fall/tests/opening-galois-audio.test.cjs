@@ -50,17 +50,18 @@ const frame=(o,{active=true,prelude=false,departing=false,t=0,direction=1,playin
  assert.equal(entry.adapter.status().suppressMain,true);assert.equal(entry.main.volume,.72,'key press starts smoothly at the current gain');
  let previousVolume=entry.main.volume;
  for(let i=0;i<60;i++){
-  frame(entry,{active:false,prelude:true});await wait();
+  frame(entry,{active:false,prelude:true,t:i*.05});await wait();
   assert(entry.main.volume<=previousVolume,'entry fade is monotone');previousVolume=entry.main.volume;
-  assert.equal(entry.score.paused,true);assert.equal(entry.score.currentTime,0,'visual entry must not consume score time');
-  if(i===19)assert(entry.main.volume<.6&&entry.main.volume>0,'fade is already audible after one second');
+  assert.equal(entry.score.paused,false,'Galois music starts during portrait formation');
+  entry.score.time+=.05;
+  if(i===19)assert(entry.score.volume>0,'score is audible within one second');
  }
  assert.equal(entry.main.volume,0);assert.equal(entry.main.paused,true);
- for(let i=0;i<80;i++)frame(entry,{active:false,prelude:true});
- assert.equal(entry.main.volume,0);assert.equal(entry.main.paused,true,'silent visual entry must not restart the original track');
- frame(entry,{active:false,prelude:true,enabled:false});frame(entry,{active:false,prelude:true,enabled:true});
- assert.equal(entry.main.paused,true);assert.equal(entry.main.volume,0);
- for(let i=0;i<65;i++){frame(entry,{t:i*.05});if(!entry.score.paused)entry.score.time+=.05;await wait();assert.equal(entry.main.volume,0,'no original-track flash when the score begins');}
+ const endOfEntry=entry.score.currentTime;
+ frame(entry,{t:0});await wait();
+ assert(Math.abs(entry.score.currentTime-endOfEntry)<.001,'story start does not rewind music');
+ assert.equal(entry.adapter.status().preludeOffset,endOfEntry);
+ for(let i=0;i<65;i++){frame(entry,{t:i*.05});if(!entry.score.paused)entry.score.time+=.05;await wait();assert.equal(entry.main.volume,0,'no original-track flash when the story begins');}
  assert.equal(entry.score.volume,.72);assert.equal(entry.score.paused,false);
  for(let i=0;i<65;i++){frame(entry,{active:false});await wait();}
  assert.equal(entry.main.volume,.72);assert.equal(entry.main.paused,false,'outro restores the first track smoothly');
@@ -71,5 +72,5 @@ const frame=(o,{active=true,prelude=false,departing=false,t=0,direction=1,playin
  assert.equal(entry.main.paused,true,'departure cannot restart the main track');
  entry.adapter.stop();assert.equal(entry.main.volume,.72);assert.equal(entry.adapter.status().mainGain,1);assert.equal(entry.adapter.status().prelude,false);
  const metadata=create();metadata.score.emit('loadedmetadata');assert.equal((await metadata.adapter.ready).duration,177);
- console.log(JSON.stringify({pass:true,checks:['no_autoplay','silent_unlock','3s_crossfade','entry_fade_on_key','silent_visual_entry','no_main_restart','score_cues_preserved','algebra_departure_fade','main_loop_preserved','main_time_preserved','no_frame_seeks','reverse_pause','forward_resync','mute','hidden','stop','late_promise','failure_fallback','gesture_retry','metadata_ready'],scoreSeeks:o.score.seeks},null,2));
+ console.log(JSON.stringify({pass:true,checks:['no_autoplay','silent_unlock','3s_crossfade','entry_fade_on_key','score_during_visual_entry','no_main_restart','continuous_score_after_entry','algebra_departure_fade','main_loop_preserved','main_time_preserved','no_frame_seeks','reverse_pause','forward_resync','mute','hidden','stop','late_promise','failure_fallback','gesture_retry','metadata_ready'],scoreSeeks:o.score.seeks},null,2));
 })().catch(e=>{console.error(e);process.exit(1);});

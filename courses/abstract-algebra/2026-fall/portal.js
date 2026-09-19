@@ -2,7 +2,7 @@
 (()=>{
   'use strict';
   const $=id=>document.getElementById(id),body=document.body;
-  const chapters=[{id:'1.1',title:['等价关系与集合的分类','Equivalence relations and partitions'],topics:[['relation','等价关系','Equivalence relations'],['quotient','等价类','Equivalence classes'],['partition','集合的分类','Partitions'],['check','自测','Self-check']]},{id:'1.2',title:['群的概念','The concept of a group'],topics:[['operation','代数运算','Binary operations'],['axioms','群的公理','Group axioms'],['symmetry','对称与群','Symmetries'],['properties','基本性质','Basic properties'],['powers','方幂与指数','Integer powers'],['criteria','群的判别','Recognizing groups'],['check','自测','Self-check']]}];
+  const chapters=[{id:'1.1',title:['等价关系与集合的分类','Equivalence relations and partitions'],topics:[['relation','等价关系','Equivalence relations'],['quotient','等价类','Equivalence classes'],['partition','集合的分类','Partitions'],['check','自测','Self-check']]},{id:'1.2',title:['群的概念','The concept of a group'],topics:[['operation','代数运算','Binary operations'],['axioms','群的公理','Group axioms'],['one-sided','单侧公理','One-sided axioms'],['symmetry','对称与群','Symmetries'],['properties','基本性质','Basic properties'],['powers','方幂与指数','Integer powers'],['criteria','群的判别','Recognizing groups'],['check','自测','Self-check']]}];
   const sections=window.CourseSections;
   sections.forEach(section=>{section.topics=chapters.find(c=>c.id===section.id)?.topics||window.GroupSections?.[section.id]?.topics||[['blank','空白测试页','Blank test page']];section.optional=!!window.GroupSections?.[section.id]?.optional;});
   window.CourseLanguage.add(Object.fromEntries(sections.map(s=>s.title)));
@@ -10,7 +10,7 @@
   const scheduleTranslations={};document.querySelectorAll('#schedule tbody tr').forEach((row,i)=>{const pair=window.CourseScheduleEnglish[i];if(!pair)return;const title=row.querySelector('h3'),focus=row.querySelector('.focus');if(title)scheduleTranslations[title.textContent.trim()]=pair[0]+(title.querySelector('a')?' ↗':'');scheduleTranslations[focus.textContent.trim()]=pair[1];});window.CourseLanguage.add(scheduleTranslations);
   const en=()=>window.CourseLanguage?.language==='en',t=(zh,english)=>en()?english:zh;
   body.classList.add('course-portal');
-  const header=document.createElement('header');header.className='portal-header';
+  const header=document.createElement('header');header.className='portal-header';header.setAttribute('aria-label','课程导航');
   header.innerHTML='<button id="portal-course-open" class="portal-icon" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></button><span class="portal-brand">代数学 Ⅰ</span><button id="portal-directory-open" type="button"></button><nav class="portal-section-nav" aria-label="教材小节导航"><button id="portal-prev" type="button"></button><button id="portal-next" type="button"></button></nav><button id="portal-language" type="button"></button><button id="portal-fullscreen" class="portal-icon" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect class="portal-fullscreen-expand" x="4" y="4" width="16" height="16" rx="1"/><rect class="portal-fullscreen-restore" x="8" y="8" width="8" height="8" rx=".5" fill="currentColor"/></svg></button><button id="portal-settings" class="portal-icon" type="button" aria-haspopup="dialog" aria-controls="pageStyleSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 3-.7 2.7-2 .9-2.5-.7-2 3.4 1.8 2v2.4l-1.8 2 2 3.4 2.5-.7 2 .9.7 2.7h5l.7-2.7 2-.9 2.5.7 2-3.4-1.8-2v-2.4l1.8-2-2-3.4-2.5.7-2-.9-.7-2.7Z"/><circle cx="12" cy="12" r="3"/></svg></button>';
   $('main').before(header);
   const content=document.createElement('div');content.id='portal-content';content.innerHTML='<section id="lecture-placeholder" hidden><div><p class="placeholder-number"></p><h1></h1><p class="placeholder-state"></p></div></section>';body.append(content);
@@ -29,6 +29,7 @@
   function scrollCourse(hash,behavior='smooth'){const target=document.getElementById(hash);if(!target)return;const top=courseScroller.contains(target)?courseScroller.scrollTop+target.getBoundingClientRect().top-courseScroller.getBoundingClientRect().top-20:0;courseScroller.scrollTo({top,behavior});window.scrollTo(0,0);}
   const link=(book,topic)=>`?view=lesson&section=${book}#${topic}`;
   function labels(){
+    header.setAttribute('aria-label',t('课程导航','Course navigation'));
     courseScroller.setAttribute('aria-label',t('课程介绍与安排','Course introduction and schedule'));
     document.title=t('代数学 Ⅰ · 2026 秋季 · 孟晟','Algebra Ⅰ · Autumn 2026 · Sheng Meng');
     $('portal-directory-open').textContent=t('目录','Contents');const current=sections.findIndex(s=>s.id===section),previous=view==='lesson'?sections[current-1]:null,next=sections[view==='lesson'?current+1:0];$('portal-prev').hidden=!previous;$('portal-next').hidden=!next;const name=s=>`§${s.id} ${s.title[en()?1:0]}`;$('portal-prev').textContent=previous?'← '+name(previous):'';$('portal-next').textContent=next?name(next)+' →':'';const brand=header.querySelector('.portal-brand');brand.textContent=view==='lesson'?name(sections[current]):t('代数学 Ⅰ','Algebra Ⅰ');brand.title=brand.textContent;$('portal-course-open').setAttribute('aria-label',t('课程安排','Course'));$('portal-course-open').title=t('课程安排','Course');$('portal-language').textContent=en()?'中文':'EN';$('portal-language').setAttribute('aria-label',t('切换到英文','Switch to Chinese'));$('portal-settings').setAttribute('aria-label',t('设置','Settings'));$('portal-settings').title=t('设置','Settings');$('portal-directory-title').textContent=t('教材目录','Textbook contents');
@@ -66,7 +67,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-section-loading-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-course-polish-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }

@@ -40,10 +40,14 @@
         '对非空集合 A 中的每一对元素，运算法则都给出唯一的 A 中元素。若元素是等价类，还须验证结果不依赖代表元的选择。',
         'An operation assigns a unique element of A to each ordered pair in a nonempty set A. For equivalence classes, the result must also be independent of representatives.'
       ]),
-      item('axioms',['定义 1.2.2','Definition 1.2.2'],['群','Groups'],'(ab)c = a(bc)<br>ea = ae = a<br>aa⁻¹ = a⁻¹a = e',[
+      item('axioms',['定义 1.2.2','Definition 1.2.2'],['群','Groups'],'结合律：(ab)c = a(bc)<br>单位元：ea = ae = a<br>逆元：aa⁻¹ = a⁻¹a = e',[
         '非空集合 G 配备代数运算。若满足结合律，存在对所有元素有效的双侧单位元 e，且每个元素都有双侧逆元，则称 G 为群。交换律是额外条件。',
         'A group is a nonempty set with an associative operation, a two-sided identity e, and a two-sided inverse for every element. Commutativity is an additional condition.'
-      ]),
+      ],{formulaEn:'Associativity: (ab)c = a(bc)<br>Identity: ea = ae = a<br>Inverses: aa⁻¹ = a⁻¹a = e'}),
+      item('one-sided',['扩展 1.2.2','Extension 1.2.2'],['单侧公理：哪些条件足够？','One-sided axioms: which conditions suffice?'],'结合律：(ab)c = a(bc)<br>左单位元：ea = a<br>左逆元：∀a ∃b，ba = e',[
+        '在非空集合 G 上给定封闭运算。若满足结合律，存在同一个左单位元 e，且每个元素都有相对于 e 的左逆元，则 G 是群。这是定义 1.2.2 的等价形式。',
+        'A nonempty set with a closed associative operation, one left identity e and a left inverse relative to e for every element is a group. This is equivalent to Definition 1.2.2.'
+      ],{extension:true,formulaEn:'Associativity: (ab)c = a(bc)<br>Left identity: ea = a<br>Left inverses: ∀a ∃b, ba = e',detail:['这是教学扩展编号；同侧判别的教材依据为定理 1.2.3。右侧可比较全部 32 种组合。','This extension label is instructional. The same-side criterion is textbook Theorem 1.2.3. Compare all 32 combinations on the right.']}),
       item('symmetry',['§1.2 · 几何演示','§1.2 · Geometric example'],['三角形的对称群','Symmetries of a triangle'],'D₃ = {e, r, r², s, rs, r²s}',[
         '群的元素也可以是变换，群运算是变换的复合。比较先旋转后反射、先反射后旋转：相同的轮廓不意味着相同的变换。',
         'Group elements may be transformations, with composition as the operation. Compare rotation followed by reflection with the reverse order: the same outline need not mean the same transformation.'

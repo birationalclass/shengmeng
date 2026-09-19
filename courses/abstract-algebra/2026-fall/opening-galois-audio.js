@@ -15,15 +15,16 @@
     let playEpoch = 0, scoreRequest = null, mainRequested = false, readySettled = false;
     let readyResolve;
     const ready = new Promise(resolve => { readyResolve = resolve; });
-    let preparation = null;
+    let preparation = null, preludeOffset = 0;
+    const scoreTime=()=>state.t+preludeOffset;
     const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
     const finite = (v, fallback) => Number.isFinite(Number(v)) ? Number(v) : fallback;
     const visible = () => typeof document === 'undefined' || !document.hidden;
     const allowed = () => authorized && !destroyed && state.playing && state.enabled && visible();
-    const wantsScore = () => allowed() && !state.prelude && !state.departing && state.active && state.direction >= 0 && !failed && !blocked;
-    const reverse = () => state.active && state.direction < 0;
+    const wantsScore = () => allowed() && !state.departing && (state.active || state.prelude) && state.direction >= 0 && !failed && !blocked;
+    const reverse = () => (state.active || state.prelude) && state.direction < 0;
     const duration = () => Number.isFinite(score.duration) && score.duration > 0 ? score.duration : null;
-    const atEnd = () => duration() !== null && state.t >= duration() - .025;
+    const atEnd = () => duration() !== null && scoreTime() >= duration() - .025;
 
     function settleReady() {
       if (readySettled) return;
@@ -39,7 +40,7 @@
 
     function seekScore(force = false) {
       if (score.seeking || (!force && clock - lastSeekAt < 700)) return;
-      const target = clamp(state.t, 0, duration() === null ? Infinity : Math.max(0, duration() - .002));
+      const target = clamp(scoreTime(), 0, duration() === null ? Infinity : Math.max(0, duration() - .002));
       if (!force && Math.abs(score.currentTime - target) <= .35) return;
       // A server without byte ranges can report seekable [0, 0] even when a
       // large part is buffered. Seeking then silently jumps to zero in Chrome.
@@ -160,11 +161,13 @@
         enabled: next.enabled === undefined ? previous.enabled : Boolean(next.enabled),
         volume: clamp(finite(next.volume, previous.volume), 0, 1)
       };
+      if(state.prelude&&!previous.prelude){preludeOffset=0;needSync=true;}
+      if(previous.prelude&&!state.prelude&&state.active){preludeOffset=finite(score.currentTime,previous.t);needSync=true;}
       clock += state.dt;
       if (state.prelude) entryFading = true;
       if (!state.prelude && !state.active) entryFading = false;
-      // Start the original track's fade with the visual entry. Its silent hold
-      // remains in place while the portrait forms and the new score prepares.
+      // Start the Galois track with portrait formation and crossfade immediately.
+      // Preserve its position when the story timeline starts after formation.
       if (state.playing && visible()) advanceMainGain(state.dt);
       const resumed = !previous.playing && state.playing || !previous.enabled && state.enabled;
       const changedDirection = previous.direction < 0 && state.direction >= 0;
@@ -221,7 +224,7 @@
 
     function stop(options = {}) {
       const reset = typeof options === 'boolean' ? options : options.reset !== false;
-      authorized = false;
+      authorized = false;preludeOffset=0;
       state = { ...state, active: false, prelude: false, departing: false, playing: false };
       blocked = false;
       pauseScore();
@@ -239,7 +242,7 @@
     function status() {
       return {
         authorized, active: state.active, prelude: state.prelude, departing: state.departing, mainGain, blocked, failed,
-        currentTime: finite(score.currentTime, 0), duration: duration(),
+        currentTime: Math.max(0,finite(score.currentTime, 0)-preludeOffset), mediaTime:finite(score.currentTime,0), preludeOffset, duration: duration(),
         scorePlaying: allowed() && !score.paused && score.volume > .001,
         scoreOwnsMusic: state.departing || state.prelude || state.active && !failed && !blocked || mix > .001,
         // A requested entry fade owns the music even during its quiet interval.

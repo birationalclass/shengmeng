@@ -13,7 +13,7 @@ for(const ids of [[3],[3,4],[4,3],[8,3,5]])for(const phaseOffset of [0,.37]){
     const s=timeline.seek(t),view=pose(t);
     assert.ok(view.zoom>=1&&view.zoom<=3.000001);
     if(ids[s.from]===3&&ids[s.to]===3||!s.moving&&ids[s.scene]===3){
-      assert.ok(view.zoom>=1&&view.zoom<=3+1e-12,'Lie-group zoom is limited to 300%');assert.deepEqual(view.target,[0,0,0]);
+      assert.equal(view.zoom,3,'Lie-group framing stays at 300% for the entire hold');assert.deepEqual(view.target,[0,0,0]);
       maxZoom=Math.max(maxZoom,view.zoom);
       assert.equal(view.angles[0],C.neutral.angles[0]);assert.equal(view.angles[1],0);
       assert.ok(Math.abs(view.angles[2])<=8*Math.PI/180+1e-12);

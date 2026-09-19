@@ -2,7 +2,7 @@
  * Orbit, framing and magnification share canonical time. Figure changes never
  * reset the camera or start another identical push-pull shot. The analytical
  * closed orbit is reversible and joins at the loop seam. The Lie-group view
- * stays centred with a gentle Z-axis roll and a slow zoom up to 300%.
+ * stays centred with a gentle Z-axis roll and a fixed 300% framing after entry.
  */
 (() => {
   'use strict';
@@ -23,6 +23,8 @@
   const defaultStarts = defaultHolds.map((hold,i)=>{const start=defaultDuration;defaultDuration+=hold+defaultTransitions[i];return start;});
   const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:defaultDuration};
   const lieScene = 3, lieRoll = 8 * Math.PI / 180;
+  // Each scene owns its framing; scale changes only while entering another scene.
+  const sceneZooms=Object.freeze([1,1,1,3,1,1,1,1,1,1]);
   function point(value) {
     return value&&value.length>=3&&[value[0],value[1],value[2]].every(Number.isFinite)
       ? [value[0],value[1],value[2]] : [0,0,0];
@@ -54,21 +56,16 @@
       .025*(Math.sin(angle-.4)+Math.sin(.4))
     ];
   }
-  function baseLogZoom(u) {
-    // The broad camera drift spans three figures in each direction. During
-    // some figures it pushes, during others it continues an orbit at almost
-    // fixed magnification; it never pulls farther back than the first frame.
-    return Math.log(2.35)*.5*(1-Math.cos(TAU*u));
-  }
   function sampleTimeline(state,route=defaultRoute) {
     const duration=Number(route.duration)>0?Number(route.duration):defaultRoute.duration;
     const position=((Number(state.position)||0)%duration+duration)%duration;
     const phaseOffset=Number.isFinite(route.phaseOffset)?route.phaseOffset:0;
     const u=((position/duration+phaseOffset)%1+1)%1;
-    const zoom=Math.exp(baseLogZoom(u));
+
     const from=indexOf(state.from===undefined?state.scene:state.from);
     const to=indexOf(state.to===undefined?state.scene:state.to);
     const interpolation=state.moving?ease(Number(state.progress)):0;
+    const zoom=state.moving?sceneZooms[from]+(sceneZooms[to]-sceneZooms[from])*interpolation:sceneZooms[indexOf(state.scene)];
     const focus=focuses[from].map((coordinate,axis)=>coordinate+(focuses[to][axis]-coordinate)*interpolation);
     // Keep the chosen real surface point nearly fixed in the image while
     // dollying. Its projected displacement scales as zoom^(-1/4), rather
@@ -80,11 +77,8 @@
     // with continuous position, velocity and acceleration.
     const fromLie=from===lieScene?1:0,toLie=to===lieScene?1:0;
     const weight=state.moving?fromLie+(toLie-fromLie)*interpolation:indexOf(state.scene)===lieScene?1:0;
-    const slot=route.sceneIds?route.sceneIds.indexOf(lieScene):lieScene;
-    const start=(route.starts||defaultStarts)[slot],hold=(route.holds||defaultHolds)[slot];
-    const phase=hold>0?clamp((position-start)/hold):0;
     // Zero velocity and acceleration at both ends; formation time is separate.
-    const lieZoom=1+2*Math.pow(Math.sin(Math.PI*phase),4);
+    const lieZoom=sceneZooms[lieScene];
     return blend(view,{angles:[neutral.angles[0],0,lieRoll*Math.sin(TAU*u)],zoom:lieZoom,target:[0,0,0]},weight);
   }
   // The portrait returns throughout its extended formation instead of snapping
@@ -120,11 +114,11 @@
     return pose;
   }
   window.CourseOpeningCamera=Object.freeze({
-    count:COUNT,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,portraitTransitionScale,groupWeight,frameGroup,groupReturnMs,
+    count:COUNT,sceneZooms,sample,sampleTimeline,blend,setFocuses,neutral,portraitWeight,portraitTransitionScale,groupWeight,frameGroup,groupReturnMs,
     manual:Object.freeze({yawPerPixel:.006,pitchPerPixel:.004,responsePerSecond:18,pitchLimit:.88}),
     evidence:()=>({
       source:'Original continuous whole-cycle spatial route; manual calibration from visuals/chaos/exact-camera.js',
-      approach:'Periodic spatial oval; cycloidal launch; slow broad dolly; E8 combines a gentle Z-axis roll with a 1x–3x zoom',
+      approach:'Periodic spatial oval; cycloidal launch; per-scene entry framing; E8 holds 3x with a gentle Z-axis roll',
       scenes:COUNT,zoomRange:[1,3],defaultSwitchInterval:30,defaultHoldSeconds:30,defaultCycleSeconds:defaultDuration/1000,
       lieScene,lieZoomRange:[1,3],lieRollDegrees:8,
       phaseOffset:'Normalized whole-loop offset; add old position/duration minus new position/duration when editing timing',

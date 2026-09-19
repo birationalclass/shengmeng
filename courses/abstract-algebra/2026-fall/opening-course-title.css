@@ -23,3 +23,17 @@ html:has(#courseOpening[open]),body.course-portal.opening-active { overflow:hidd
 #courseOpening .opening-direct-entry { position:fixed; z-index:15; left:50%; bottom:max(24px,calc(env(safe-area-inset-bottom) + 12px)); top:auto; margin:0; transform:translateX(-50%); max-width:calc(100vw - 32px); width:max-content; font-size:16px; text-align:center; }
 #courseOpening:not(.opening-loading):not(.opening-awaiting-start) .opening-direct-entry { display:none; }
 @media(max-width:700px) { #courseOpening .opening-language { right:calc(max(16px,calc(env(safe-area-inset-right) + 10px)) + 54px); top:max(15px,calc(env(safe-area-inset-top) + 8px)); } }
+/* One fixed toolbar: language, fullscreen, settings. No moving hit regions. */
+#courseOpening .opening-language{right:calc(max(28px,calc(env(safe-area-inset-right) + 18px)) + 112px);width:64px;box-sizing:border-box;text-align:center}
+#courseOpening .opening-fullscreen{position:fixed;z-index:16;top:max(20px,calc(env(safe-area-inset-top) + 10px));right:calc(max(28px,calc(env(safe-area-inset-right) + 18px)) + 56px);width:48px;height:48px;display:grid;place-items:center;padding:0;border:1px solid #bba16f70;border-radius:7px;background:#1b1812cc;color:#ead6b0;cursor:pointer;touch-action:manipulation;opacity:.22;transition:opacity .2s,border-color .15s,background .15s;transform:none}
+#courseOpening .opening-fullscreen svg{width:21px;height:21px;pointer-events:none}
+#courseOpening .opening-fullscreen-restore{display:none}
+#courseOpening .opening-fullscreen[aria-pressed=true] .opening-fullscreen-expand{display:none}
+#courseOpening .opening-fullscreen[aria-pressed=true] .opening-fullscreen-restore{display:inline}
+#courseOpening.has-pointer-controls .opening-fullscreen,#courseOpening .opening-fullscreen:is(:hover,:focus-visible){opacity:1}
+#courseOpening .opening-fullscreen:hover{background:#30291e;border-color:#dec593}
+#courseOpening .opening-fullscreen:focus-visible{outline:2px solid #d8bd86;outline-offset:3px}
+#courseOpening .opening-fullscreen::after{content:attr(data-hint);position:absolute;top:calc(100% + 10px);right:0;width:max-content;padding:8px 12px;border:1px solid #bba16f50;border-radius:7px;background:#191710;color:#ead6b0;font:13px/1.4 var(--sans);pointer-events:none;opacity:0}
+#courseOpening .opening-fullscreen:is(:hover,:focus-visible)::after{opacity:1}
+@media(max-width:700px){#courseOpening .opening-fullscreen{right:calc(max(16px,calc(env(safe-area-inset-right) + 10px)) + 54px);top:max(15px,calc(env(safe-area-inset-top) + 8px))}#courseOpening .opening-language{right:calc(max(16px,calc(env(safe-area-inset-right) + 10px)) + 108px)}}
+@media(pointer:coarse){#courseOpening .opening-fullscreen{opacity:.8}}

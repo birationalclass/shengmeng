@@ -17,7 +17,7 @@
   const playableScenes=Object.freeze([1,3,4,5,6,7,8]);
   const playable=id=>playableScenes.includes(id);
   const morphSpeedChoices=[.25,.5,.75,1,1.5],spinSpeedScale=2;
-  const defaults = Object.freeze({sceneCatalogVersion:1,backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,true,false,true,true,true,true,true,true,false])});
+  const defaults = Object.freeze({sceneCatalogVersion:1,backgroundBrightness:160,gemPercent:1.5,titleScale:115,quoteScale:115,textFade:2.4,complexityEnabled:true,complexityAmount:.5,depthEnabled:true,wanderEnabled:true,wanderAmount:.22,cameraEnabled:true,backgroundEnabled:true,radiationEnabled:true,radiationAmount:.45,radiationFineOnly:true,grainTypes:Object.freeze([true,true,true,true,true,true]),morphSpeed:.5,galoisScoreEnabled:true,shuffleScenes:false,spotlightEnabled:true,gemSparkleEnabled:true,spinEnabled:true,spinSpeed:.6,sceneDurations:Object.freeze([30,30,30,30,30,30,30,30,30,30]),sceneEnabled:Object.freeze([false,true,false,true,true,true,true,true,true,false])});
   const appearanceRanges={backgroundBrightness:[20,240],gemPercent:[0,5],titleScale:[80,160],quoteScale:[80,160],textFade:[.6,5]};
   const freshDefaults=()=>({...defaults,grainTypes:[...defaults.grainTypes],sceneEnabled:[...defaults.sceneEnabled],sceneDurations:[...defaults.sceneDurations]});
   let settings = freshDefaults(),catalogChanged=false;
@@ -42,15 +42,21 @@
   toggle.disabled=true;
   const startButton=root.querySelector('[data-start-animation]');
   const languageButton=root.querySelector('[data-opening-language]');
+  const fullscreenButton=root.querySelector('#openingFullscreen');
   const skipButton=root.querySelector('[data-opening-next]');
   let narrationLanguage=window.CourseLanguage?.language==='en'?'en':'zh';
   try{const saved=localStorage.getItem('courseOpeningNarrationLanguage.v1');if(saved==='zh'||saved==='en')narrationLanguage=saved;}catch(_){}
   function syncOpeningControls(){
     root.dataset.narrationLanguage=narrationLanguage;
+    if(fullscreenButton){const full=!!document.fullscreenElement,label=narrationLanguage==='en'?(full?'Exit fullscreen':'Enter fullscreen'):(full?'退出全屏':'全屏显示');fullscreenButton.setAttribute('aria-pressed',String(full));fullscreenButton.setAttribute('aria-label',label);fullscreenButton.dataset.hint=label;}
     if(languageButton){languageButton.textContent=narrationLanguage==='en'?'中文':'EN';languageButton.setAttribute('aria-label',narrationLanguage==='en'?(stage==='outro'?'标题切换为中文':'左侧台词切换为中文'):(stage==='outro'?'Switch title to English':'Switch left narration to English'));}
     if(skipButton){const target=stage==='playing'?'Galois':stage==='galois'?'Algebra I':'课程';skipButton.dataset.target=target;skipButton.querySelector('span').textContent=stage==='outro'?'进入课程':'跳过 · '+target;skipButton.setAttribute('aria-label',stage==='outro'?'进入课程':'跳过当前阶段，进入 '+target);}
   }
   languageButton?.addEventListener('click',event=>{event.stopPropagation();narrationLanguage=narrationLanguage==='en'?'zh':'en';try{localStorage.setItem('courseOpeningNarrationLanguage.v1',narrationLanguage);}catch(_){}film?.setNarrationLanguage(narrationLanguage);syncOpeningControls();});
+  fullscreenButton?.addEventListener('click',async event=>{event.stopPropagation();try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen({navigationUI:'hide'});if(dialog.open){dialog.close();dialog.showModal();}fullscreenButton.focus({preventScroll:true});}catch(_){}syncOpeningControls();film?.refresh();showControls();});
+  // Enter never activates any toolbar control, including native button defaults.
+  dialog.addEventListener('keydown',event=>{if(event.key==='Enter'&&event.target.closest?.('#openingMusicToggle,[data-opening-language],#openingFullscreen,#openingSettingsToggle')){event.preventDefault();event.stopImmediatePropagation();}},true);
+  dialog.addEventListener('keyup',event=>{if(event.key==='Enter'&&event.target.closest?.('#openingMusicToggle,[data-opening-language],#openingFullscreen,#openingSettingsToggle')){event.preventDefault();event.stopImmediatePropagation();}},true);
   skipButton?.addEventListener('click',event=>{event.stopPropagation();if(stage==='playing')requestCourseEntry();else if(stage==='galois')finishGalois();else if(stage==='outro')leaveOpening();});
   syncOpeningControls();
   function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['galois','outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['galois','outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*spinSpeedScale*Math.PI/180:0};}
@@ -131,6 +137,9 @@
     closeSettings();window.CourseOpeningVoice?.stop();film.outro();syncSettings();showControls();
   }
   function leaveOpening() {
+    // Commit the visible opening choice once, before the course title is painted.
+    // Calls made later by lesson navigation must not restore an old choice.
+    if(dialog.open)window.CourseLanguage?.set(narrationLanguage);
     entryVersion++;stage='closed';root.dataset.stage=stage;toggle.disabled=true;
     // Fullscreen belongs to the whole course and survives closing the animation.
     ownedFullscreen=false;
@@ -140,9 +149,9 @@
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
   }
   window.CourseOpeningExit=leaveOpening;
-  // Opening language controls the narration and final title; course UI and audio stay independent.
+  // Opening language controls narration and the final title, then passes to the course on exit.
   async function openOpening() {
-    if(root.dataset.contextLost==='true')return;
+    if(root.dataset.contextLost==='true'){const url=new URL(location.href);url.hash='';url.searchParams.set('view','course');url.searchParams.delete('section');location.replace(url);return;}
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
     if(dialog.open&&!alreadyLoading)return;
     if(!dialog.open||stage==='load-error'){dialog.classList.remove('opening-outro','opening-galois');boot.start();}
@@ -197,6 +206,7 @@
     event.preventDefault();film.direction(event.deltaY>0?1:-1);showControls();
   },{passive:false});
   document.addEventListener('fullscreenchange',()=>{
+    syncOpeningControls();
     if(!['playing','galois'].includes(stage))return;
     if(document.fullscreenElement===document.documentElement)ownedFullscreen=true;
     else if(!document.fullscreenElement){ownedFullscreen=false;dialog.focus({preventScroll:true});film?.refresh();showControls();}
@@ -204,6 +214,7 @@
   dialog.addEventListener('cancel',event=>{event.preventDefault();if(!panel.hidden)closeSettings(true);});
   panel.querySelector('[data-enter-course]').addEventListener('click',requestCourseEntry);
   window.CourseOpeningOpen=openOpening;
+  canvas.addEventListener('webglcontextrestored',()=>{delete root.dataset.contextLost;initialization=null;});
   canvas.addEventListener('webglcontextlost',event=>{
     event.preventDefault();leaveOpening();if(film)film.dispose();film=null;initialization=null;
     root.dataset.contextLost='true';delete root.dataset.ready;delete root._openingPreview;
@@ -270,7 +281,7 @@
     for(let i=0;i<grains.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;grains[i]=seed/4294967296;}
     const grainBuffer=buffer(grains,gl.STATIC_DRAW),inscriptionBuffer=buffer(inscriptions.attributes,gl.DYNAMIC_DRAW);
     const loc={source:gl.getAttribLocation(program,'start'),destination:gl.getAttribLocation(program,'finish'),normalSource:gl.getAttribLocation(program,'normalStart'),normalDestination:gl.getAttribLocation(program,'normalFinish'),grain:gl.getAttribLocation(program,'grain'),inscription:gl.getAttribLocation(program,'inscription'),quad:gl.getAttribLocation(background,'pos')};
-    for(const name of ['galoisLossFrom','galoisLossTo','galoisLeavesFrom','galoisLeavesTo','galoisLeafSpecs[0]','galoisFit','narrativeLight','progress','aspect','dpr','viewportSize','inscriptionScale','signatureScale','time','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
+    for(const name of ['galoisLossFrom','galoisLossTo','galoisLeavesFrom','galoisLeavesTo','galoisLeafSpecs[0]','galoisFit','narrativeLight','progress','aspect','dpr','viewportSize','inscriptionScale','signatureScale','time','gemSparkle','gemShare','outroFall','outroExit','complexity','depth','wander','camera','radiation','viewAngles','viewTarget','viewZoom','spotlight','objectSpin','extrusionFrom','extrusionTo','twoSided','radiationFineOnly','grainTypes[0]','impulses[0]','impulseRadii[0]'])loc[name]=gl.getUniformLocation(program,name);
     const bgLoc={};for(const name of ['time','aspect','camera','background','stageLight','spotlight','viewAngles','viewTarget','viewZoom'])bgLoc[name]=gl.getUniformLocation(background,name);
     function attribute(data,location,size){gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,size,gl.FLOAT,false,0,0);}
     const baseTransitions=[4200,4200,4200,5200,5400,5000,5000,5000,5000,5000],entranceHold=0;
@@ -437,7 +448,7 @@
       let target=pose.target.map(value=>value*visual.camera);
       if(!settings.depthEnabled&&!state.moving&&order[state.scene]<5)target[2]=0;
       target=materials.rotateObject(target,renderedSpin());
-      let view=cameraRig.frameGroup({angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:Math.max(1,1+(pose.zoom-1)*visual.camera),perspective:Math.max(visual.camera,settings.depthEnabled?1:0)},groupWeight());
+      let view=cameraRig.frameGroup({angles:[pose.angles[0]*visual.camera+orbit.pitch,pose.angles[1]*visual.camera+orbit.yaw,pose.angles[2]*visual.camera],target,zoom:pose.zoom,perspective:Math.max(visual.camera,settings.depthEnabled?1:0)},groupWeight());
       const topology=topologyWeight();
       if(topology>0){
         const rect=canvas.getBoundingClientRect();
@@ -547,7 +558,7 @@
       const impulseUniforms=impulses.uniforms();gl.uniform4fv(loc['impulses[0]'],impulseUniforms.values);gl.uniform1fv(loc['impulseRadii[0]'],impulseUniforms.radii);
       const treatment=storyTreatment();gl.uniform1f(loc.galoisLossFrom,treatment.from);gl.uniform1f(loc.galoisLossTo,treatment.to);gl.uniform1f(loc.galoisLeavesFrom,treatment.leavesFrom);gl.uniform1f(loc.galoisLeavesTo,treatment.leavesTo);gl.uniform4fv(loc['galoisLeafSpecs[0]'],window.CourseOpeningGalois.leaves.flatMap(leaf=>[...leaf.centre,leaf.radius,0]));gl.uniform2fv(loc.galoisFit,galoisFit());gl.uniform1f(loc.narrativeLight,treatment.light);
       gl.uniform1f(loc.progress,progress);gl.uniform1f(loc.aspect,width/height);gl.uniform2f(loc.viewportSize,width,height);gl.uniform1f(loc.dpr,ratio*Math.max(1,Math.min(1.4,rect.height/800)));gl.uniform1f(loc.inscriptionScale,window.CourseOpeningInscription.scale(rect.width,rect.height));gl.uniform1f(loc.signatureScale,window.CourseOpeningInscription.signatureScale(rect.width,rect.height));gl.uniform1f(loc.time,time);
-      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,renderedSpin());gl.uniform1f(loc.spotlight,visual.spotlight);gl.uniform1f(loc.twoSided,twoSidedWeight());gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.outroFall,outro&&!reduce&&document.documentElement.dataset.sandMotion!=='off'?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
+      const appearance=effective();for(const name of ['complexity','depth','wander'])gl.uniform1f(loc[name],appearance[name]);gl.uniform1f(loc.camera,view.perspective);gl.uniform3fv(loc.viewAngles,view.angles);gl.uniform3fv(loc.viewTarget,view.target);gl.uniform1f(loc.viewZoom,view.zoom);gl.uniform1f(loc.objectSpin,renderedSpin());gl.uniform1f(loc.spotlight,visual.spotlight);gl.uniform1f(loc.twoSided,twoSidedWeight());gl.uniform1f(loc.extrusionFrom,extrusionFrom);gl.uniform1f(loc.extrusionTo,extrusionTo);gl.uniform1f(loc.radiation,visual.radiation);gl.uniform1f(loc.radiationFineOnly,settings.radiationFineOnly?1:0);gl.uniform1fv(loc['grainTypes[0]'],settings.grainTypes.map(Number));gl.uniform1f(loc.gemShare,settings.gemPercent/100);gl.uniform1f(loc.gemSparkle,settings.gemSparkleEnabled&&!reduce?1:0);gl.uniform1f(loc.outroFall,outro&&!reduce&&document.documentElement.dataset.sandMotion!=='off'?(['hold','depart'].includes(outro.phase)?1:outro.phase==='form'?Math.max(0,(progress-.75)/.25):0):0);gl.uniform1f(loc.outroExit,outro?.phase==='depart'?outro.elapsed/(reduce?170:1000):-1);
       gl.drawArrays(gl.POINTS,0,N);root.dataset.scene=String(scene);root.dataset.progress=progress.toFixed(4);root.dataset.time=time.toFixed(3);root.dataset.direction=String(timeline.state().direction);root.dataset.cycles=String(timeline.state().cycles);root.dataset.spin=renderedSpin().toFixed(6);
     }
     function beginGalois(){
@@ -625,7 +636,7 @@
       window.CourseTitleDock.start(closingGeometry,leaveOpening);
     }
     function stop(){endOrbit();active=false;previous=0;cancelAnimationFrame(raf);raf=0;}
-    function needsFrames(){const target=effective();return impulses.active(time)||(!outro&&narration.needsFrames)||(outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||target.wander>0||visual.camera>0||(!reduce&&visual.spotlight>0)||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
+    function needsFrames(){const target=effective();return impulses.active(time)||(!outro&&narration.needsFrames)||(outro&&(outro.phase!=='hold'||!reduce))||orbit.pointer!==null||Math.abs(orbit.pitch-orbit.targetPitch)+Math.abs(orbit.yaw-orbit.targetYaw)>.0001||Math.abs(captionOpacity-(caption.classList.contains('is-visible')?1:0))>.001||sequence||(!reduce&&settings.backgroundEnabled&&captionOpacity>.001)||(settings.gemSparkleEnabled&&!reduce)||target.wander>0||visual.camera>0||(!reduce&&visual.spotlight>0)||visual.radiation>0||Math.abs(visual.spin)>.00001||cameraBridge!==null||Object.keys(visual).some(key=>Math.abs(visual[key]-target[key])>.0001);}
     function queue(){if(!raf&&active&&dialog.open&&!document.hidden&&needsFrames())raf=requestAnimationFrame(tick);}
     function tick(now){
       raf=0;if(!active||!dialog.open||document.hidden)return;
@@ -666,7 +677,7 @@
         narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:textFadeMs(),englishMs:8000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
       }
       const scoredHere=!outro&&!entrance&&storyScored&&Boolean(galoisState);
-      window.CourseOpeningAudio?.frame({active:scoredHere,prelude:terminalActive&&entrance&&!outro,departing:outro?.phase==='depart',t:scoredHere?timeline.state().holdElapsed/1000:0,dt,direction:timeline.state().direction});
+      window.CourseOpeningAudio?.frame({active:scoredHere,prelude:terminalActive&&entrance&&!outro,departing:outro?.phase==='depart',t:scoredHere?timeline.state().holdElapsed/1000:terminalActive&&entrance?elapsed/1000:0,dt,direction:timeline.state().direction});
       if(scoredHere&&galoisNode>=story.index.silence){
         const t=timeline.state().holdElapsed,year=window.CourseOpeningGaloisTimeline.sample({elapsed:t}).displayYear;
         root.querySelector('[data-caption-year]').textContent=String(year);root.dataset.galoisRecognition=t>=169000?'published':t>=166000?'recognized':'time';

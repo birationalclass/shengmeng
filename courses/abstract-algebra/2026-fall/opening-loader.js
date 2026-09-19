@@ -10,13 +10,13 @@
     "./opening-galois.js?v=20260914-unified-type",
     "./opening-geometry.js?v=20260914-rings-fine-signature",
     "./opening-impulse.js?v=20260913-galois-seven-scenes",
-    "./opening-materials.js?v=20260919-fine-emission-v2",
+    "./opening-materials.js?v=20260919-course-polish-v1",
     "./opening-timeline.js?v=20260913-galois-seven-scenes",
     "./opening-motion.js?v=20260913-galois-seven-scenes",
     "./opening-playlist.js?v=20260913-galois-seven-scenes",
-    "./opening-camera.js?v=20260913-lie-zoom300",
-    "./opening-audio-preload.js?v=20260913-preload-music",
-    "./opening-galois-audio.js?v=20260913-preload-music",
+    "./opening-camera.js?v=20260919-course-polish-v1",
+    "./opening-audio-preload.js?v=20260919-course-polish-v1",
+    "./opening-galois-audio.js?v=20260919-course-polish-v1",
     "./opening-audio.js?v=20260919-opening-controls-v1",
     "./opening-backdrop.js?v=20260914-rings-fine-signature",
     "./opening-voice.js?v=20260915-voice-timing-v1",
@@ -25,7 +25,7 @@
     "./opening-galois-timeline.js?v=20260914-galois-education",
     "./opening-inscription.js?v=20260914-rings-fine-signature",
     "./opening-fonts.js?v=20260915-course-title-v5",
-    "./opening.js?v=20260919-section-loading-v1"
+    "./opening.js?v=20260919-course-polish-v1"
 ];
   let loading=null;
   function load(){

@@ -6,7 +6,9 @@
     const listeners = new Set();
     const notify = value => { progress = value; for (const report of listeners) report(value); };
     function prepare(report = () => {}) {
-      if (complete) { report(1); return Promise.resolve(); }
+      if (complete && audio.readyState >= 2 && !audio.error) { report(1); return Promise.resolve(); }
+      // Web views may evict decoded media while the course is in the foreground.
+      if(complete){complete=false;progress=0;}
       listeners.add(report); report(progress);
       if (pending) return pending;
       pending = (async () => {
@@ -15,7 +17,7 @@
         const touch = () => { clearTimeout(watchdog); watchdog = setTimeout(() => abort.abort(), 45000); };
         try {
           notify(0); touch();
-          const response = await fetch(source, {signal: abort.signal});
+          const response = await fetch(objectUrl || source, {signal: abort.signal});
           if (!response.ok) throw new Error('Music download failed');
           const total = Number(response.headers.get('Content-Length')) || 0;
           let blob;
@@ -32,6 +34,7 @@
           } else blob = await response.blob();
           if (!blob.size) throw new Error('Empty music download');
           clearTimeout(watchdog); notify(.96);
+          if(objectUrl)URL.revokeObjectURL(objectUrl);
           objectUrl = URL.createObjectURL(blob);
           await new Promise((resolve, reject) => {
             const cleanup = () => { clearTimeout(watchdog); audio.removeEventListener('loadeddata', ready); audio.removeEventListener('error', failed); };
