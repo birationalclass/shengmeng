@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111c1b"><meta name="description" content="数学难民营：山间玻璃书院，可自由探索的三维空间与建筑镜头漫游。">
+  <meta name="theme-color" content="#111c1b"><meta name="description" content="数学难民营：海景错层书院、会议室与六块可升降粉笔黑板，逐页演示谱序列学习笔记。">
   <title>数学难民营 · Sheng Meng</title>
-  <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=1">
+  <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=3-coast">
+  <link rel="stylesheet" href="coastal-layout.css?v=3-coast">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 </head>
 <body>
@@ -20,16 +21,28 @@
     <p>原创三维场景，借鉴参考片的空间与镜头风格，非原片模型复刻。</p>
     <a href="https://www.bilibili.com/video/BV1umun6PEvs/" target="_blank" rel="noopener noreferrer">观看参考视频 ↗</a>
   </aside>
-  <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 山间抵达</p><h2 id="shotTitle">在喧嚣之外，<br>留一处思考的地方。</h2><p id="shotDescription">玻璃、光和水，围合一座开放的书院。</p></main>
+  <aside id="lecturePanel" class="chrome" hidden aria-label="谱序列黑板控制">
+    <div class="lecture-heading"><div><p>THE CHALK ROOM</p><h2>谱序列 · 海景研讨室</h2></div><button id="lectureClose" aria-label="关闭黑板控制">×</button></div>
+    <p id="lectureStatus" role="status">正在准备学习笔记…</p>
+    <label for="lecturePage">学习笔记页 <select id="lecturePage"></select></label>
+    <div class="lecture-actions"><button id="lecturePrevious">上一页</button><button id="lecturePlay" aria-pressed="true">暂停板书</button><button id="lectureNext">下一页</button></div>
+    <div class="lecture-actions"><button id="lectureRewrite">擦除重写</button><button id="lectureFocus">近看板书</button></div>
+    <div class="board-lift"><label for="boardLift0">Ⅰ 组 · A / B</label><input id="boardLift0" type="range" min="0" max="1" step="0.01" value="0" aria-label="第一组黑板升降"><button id="boardSwap0">互换</button></div>
+    <div class="board-lift"><label for="boardLift1">Ⅱ 组 · A / B</label><input id="boardLift1" type="range" min="0" max="1" step="0.01" value="0" aria-label="第二组黑板升降"><button id="boardSwap1">互换</button></div>
+    <div class="board-lift"><label for="boardLift2">Ⅲ 组 · A / B</label><input id="boardLift2" type="range" min="0" max="1" step="0.01" value="0" aria-label="第三组黑板升降"><button id="boardSwap2">互换</button></div>
+    <p class="lecture-note">三组双轨黑板，上下交替。拖动升降时暂停书写；可继续板书或逐页选择。减少动态模式下显示完整静态板书。</p>
+    <a href="../../study/spectral/" target="_blank" rel="noopener">打开原始谱序列学习笔记与完整证明 ↗</a>
+  </aside>
+  <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 海岸抵达</p><h2 id="shotTitle">山海之间，<br>留一处思考的地方。</h2><p id="shotDescription">错层书院 · 连桥会议翼 · 临海露台</p></main>
   <footer class="chrome">
-    <nav id="chapters" aria-label="选择镜头"><button data-shot="0" aria-current="true">01 <span>抵达</span></button><button data-shot="1">02 <span>水庭</span></button><button data-shot="2">03 <span>书室</span></button><button data-shot="3">04 <span>露台</span></button><button data-shot="4">05 <span>远眺</span></button></nav>
-    <div class="transport"><button id="tour" aria-pressed="true">暂停巡游</button><span id="mode" role="status">自动镜头</span><button id="hideUI" aria-label="隐藏界面，按 H 恢复">沉浸</button></div>
+    <nav id="chapters" aria-label="选择镜头"><button data-shot="0" aria-current="true">01 <span>抵达</span></button><button data-shot="1">02 <span>水庭</span></button><button data-shot="2">03 <span>书室</span></button><button data-shot="3">04 <span>会议室</span></button><button data-shot="4">05 <span>板书</span></button><button data-shot="5">06 <span>海景</span></button><button data-shot="6">07 <span>远眺</span></button></nav>
+    <div class="transport"><button id="lectureButton" aria-expanded="false" aria-controls="lecturePanel">黑板控制</button><button id="tour" aria-pressed="true">暂停巡游</button><span id="mode" role="status">自动镜头</span><button id="hideUI" aria-label="隐藏界面，按 H 恢复">沉浸</button></div>
     <div class="timeline"><span id="timelineFill"></span></div>
   </footer>
   <button id="showUI" hidden>显示界面</button>
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p></div>
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
-  <script type="module">import('./app.js?v=1').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=3-coast').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

@@ -4,12 +4,13 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=1';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=1';
+import {createRetreat} from './scene.js?v=3-coast';
+import {createLecture} from './lecture.js?v=3-coast';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=3-coast';
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let renderer,composer,camera,controls,retreat,bloom;
+let renderer,composer,camera,controls,retreat,bloom,lecture;
 let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer;
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -22,6 +23,7 @@ function fail(error){
   $('errorText').textContent='请启用浏览器硬件加速后重试。若仍无法打开，请换用新版 Safari、Chrome 或 Edge。';
 }
 function updateLabels(){
+  document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture));
   $('shotNumber').textContent=`0${shot+1} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
@@ -39,6 +41,11 @@ function resumeTour(){
 function applyShot(dt){
   const s=SHOTS[shot],fraction=time/s.duration,t=smoothProgress(fraction);
   const position=curves[shot].position.getPointAt(t),target=curves[shot].target.getPointAt(t);
+  if(s.lecture&&lecture){
+    // A steady board-height teaching camera follows the active pair, not a room orbit.
+    const focus=lecture.focus();target.copy(focus);position.copy(focus).add(new THREE.Vector3(0,.1,Math.max(6.2,5.9/camera.aspect)));
+    if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*1.5));target.lerpVectors(controls.target,target,1-Math.exp(-dt*1.5));}
+  }
   if(blend){
     blend.elapsed+=dt;const k=smoothProgress(Math.min(1,blend.elapsed/2));
     if(blend.position.distanceTo(position)>12){
@@ -93,7 +100,8 @@ function tick(stamp){
     const oldY=camera.position.y;camera.position.y=Math.max(-.8,camera.position.y);controls.target.y+=camera.position.y-oldY;
     controls.update();
   }
-  if(!reduced.matches)retreat.water.material.uniforms.time.value+=dt*.35;
+  if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;}
+  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();}
   composer.render();
 }
 try{
@@ -101,13 +109,19 @@ try{
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.08,3000);
+  camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.08,12000);
   controls=new OrbitControls(camera,$('world'));controls.enableDamping=true;controls.dampingFactor=.07;
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
   controls.addEventListener('start',()=>{stopTour();});
   camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();
   resize();
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
+  $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
+  lecture=await createLecture(scene,renderer);
+  for(const [i,page] of lecture.pages.entries()){
+    const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${page.source} · ${page.title}`;$('lecturePage').append(option);
+  }
+  if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.18,.4,1.1);composer.addPass(bloom);composer.addPass(new OutputPass());
   if(matchMedia('(max-width: 700px)').matches)$('quality').value='balanced';
@@ -149,7 +163,7 @@ window.addEventListener('keydown',event=>{
   if(/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
   const key=event.key.toLowerCase();
   if(key==='h'){immersive(!document.body.classList.contains('immersive'));return;}
-  if(key==='escape'){immersive(false);$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');return;}
+  if(key==='escape'){immersive(false);$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');return;}
   if(key===' ' && event.target.tagName!=='BUTTON'){event.preventDefault();$('tour').click();return;}
   if(['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){
     event.preventDefault();stopTour();keys.add(key);
@@ -158,7 +172,33 @@ window.addEventListener('keydown',event=>{
 window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();});
 window.addEventListener('resize',resize);
-reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;updateLabels();}});
+reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
 $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();renderer?.setAnimationLoop(null);fail(new Error('WebGL context lost'));});
 window.addEventListener('pagehide',()=>renderer?.setAnimationLoop(null));
 window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime=performance.now();renderer.setAnimationLoop(tick);}});
+
+let lectureStatus='';
+function updateLectureUI(){
+  const status=lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
+  $('lecturePlay').textContent=lecture.playing?'暂停板书':'继续板书';$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);
+  lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});
+}
+function focusLecture(){
+  if(!lecture)return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;
+  if(reduced.matches){free=false;touring=false;blend=null;camera.position.copy(lecture.focus()).add(new THREE.Vector3(0,.1,Math.max(6.2,5.9/camera.aspect)));controls.target.copy(lecture.focus());controls.update();updateLabels();}
+  else resumeTour();
+}
+$('lectureButton').addEventListener('click',()=>{
+  if(!lecture)return;$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();
+});
+$('lectureClose').addEventListener('click',()=>{$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');});
+$('lectureFocus').addEventListener('click',focusLecture);
+$('lecturePlay').addEventListener('click',()=>{if(!lecture)return;lecture.playing=!lecture.playing;if(reduced.matches)lecture.staticPage();});
+for(const [id,delta] of [['lecturePrevious',-1],['lectureNext',1]])$(id).addEventListener('click',()=>{if(!lecture)return;lecture.step(delta);if(reduced.matches||!lecture.playing)lecture.staticPage();});
+$('lectureRewrite').addEventListener('click',()=>{if(!lecture)return;lecture.rewrite();if(reduced.matches)lecture.staticPage();else lecture.playing=true;});
+$('lecturePage').addEventListener('change',event=>{if(!lecture)return;lecture.select(Number(event.target.value));if(reduced.matches||!lecture.playing)lecture.staticPage();});
+for(let pair=0;pair<3;pair++){
+  $('boardLift'+pair).addEventListener('input',event=>{if(!lecture)return;lecture.playing=false;lecture.lift(pair,event.target.value);});
+  $('boardSwap'+pair).addEventListener('click',()=>{if(!lecture)return;lecture.playing=false;lecture.lift(pair,1-lecture.heights()[pair]);});
+}
