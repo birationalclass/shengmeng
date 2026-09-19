@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eff2ed">
+  <meta name="description" content="3D化：上传一张照片，在设备上用 AI 估计深度，生成可交互、可导出的立体影像。Sheng Meng Visual Lab。">
+  <title>3D化 · Spatial Studio · Sheng Meng</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="studio.css?v=20260919-1">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <a class="skip" href="#workspace">跳到工作台</a>
+  <header class="header">
+    <a href="../" class="brand"><span class="brand-symbol" aria-hidden="true">◈</span><span>SHENG MENG<small>VISUAL LAB / 06</small></span></a>
+    <nav aria-label="页面导航"><a href="../">全部可视化 <span>↗</span></a><a href="../../">主页</a></nav>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">A NEW DIMENSION TO YOUR IMAGES</p><h1>3D化<span>让平面，拥有纵深。</span></h1></div>
+      <p class="intro-note">一张照片，一次空间探索。<br>上传图片，重建深度，从新的角度观看。</p>
+    </section>
+    <section class="workspace" id="workspace" aria-label="图片立体化工作台">
+      <aside class="sidebar">
+        <div class="panel-title"><span>01 / 图像</span><span class="local-badge">● 本机处理</span></div>
+        <label class="upload-zone" id="dropZone" for="imageInput">
+          <span class="upload-icon" aria-hidden="true">＋</span><strong>放入一张图片</strong><span>拖放到这里，或点击选择</span><small>JPG / PNG / WebP · 最大 20 MB</small>
+          <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" aria-label="上传要立体化的图片">
+        </label>
+        <div class="source-info"><img id="sourceThumb" alt="当前原图缩略图"><div><b id="sourceName">空间山谷</b><small id="sourceMeta">内置几何示例 · 无需下载模型</small></div><button id="demoButton" title="恢复示例" aria-label="恢复内置示例">↺</button></div>
+        <button class="generate primary" id="generateButton" disabled><span>生成立体影像</span><span aria-hidden="true">↗</span></button>
+        <div class="progress-wrap" id="progressWrap" hidden><progress id="progress" max="100" aria-label="模型下载与推理进度"></progress><button id="cancelButton">取消</button></div>
+        <p class="status" id="status" role="status" aria-live="polite">先拖动示例感受空间，再放入你的照片。</p>
+        <div class="divider"></div>
+        <div class="panel-title"><span>02 / 空间</span><span>LIVE</span></div>
+        <label class="slider-label" for="depthControl">立体强度 <output id="depthValue">45%</output></label>
+        <input id="depthControl" type="range" min="0" max="100" value="45">
+        <div class="range-hints"><span>平面</span><span>深邃</span></div>
+        <label class="slider-label" for="detailControl">网格细节 <output id="detailValue">标准</output></label>
+        <input id="detailControl" type="range" min="80" max="240" step="80" value="160">
+        <div class="range-hints"><span>轻量</span><span>精细</span></div>
+        <div class="switch-row"><label for="motionToggle">自动巡游</label><input id="motionToggle" type="checkbox" checked></div>
+        <div class="switch-row"><label for="invertToggle">反转深度</label><input id="invertToggle" type="checkbox"></div>
+        <button id="resetButton" class="text-button">↺ 重置视角与参数</button>
+        <p class="privacy-note">照片留在你的设备。首次 AI 生成需要联网下载模型，之后可复用浏览器缓存。</p>
+      </aside>
+      <div class="viewer" id="viewer">
+        <div class="viewer-top"><span class="live-dot">SPATIAL PREVIEW</span><span id="sceneBadge">几何示例 / DEMO</span></div>
+        <canvas id="scene" tabindex="0" aria-label="立体预览：拖动旋转，滚轮或双指缩放，方向键旋转，零键复位。"></canvas>
+        <img id="originalOverlay" alt="原图对比" hidden>
+        <div class="orientation" aria-hidden="true"><i></i><span>Y</span><b>X</b><em>Z</em></div>
+        <div class="viewer-caption"><span id="sceneTitle">空间山谷</span><small id="sceneInfo">可交互的几何示例</small></div>
+        <div class="viewer-bottom">
+          <div class="mode-tabs" role="group" aria-label="渲染方式">
+            <button data-mode="texture" aria-pressed="true">立体</button><button data-mode="depth" aria-pressed="false">深度</button><button data-mode="points" aria-pressed="false">点云</button>
+          </div>
+          <div class="view-actions"><button id="compareButton" aria-pressed="false">原图对比</button><button id="fullscreenButton" aria-label="全屏预览" title="全屏预览">⛶</button></div>
+        </div>
+        <div class="loading-veil" id="loadingVeil" hidden><div class="scanline"></div><span id="loadingText">正在理解图像深度…</span></div>
+        <div id="renderError" class="render-error" hidden role="alert">无法启动 3D 渲染。请开启浏览器硬件加速，或使用新版 Chrome / Safari。</div>
+      </div>
+    </section>
+    <div class="export-bar"><p><span class="tiny-dot"></span><span id="meshStats">正在准备场景</span><span class="gesture-hint">拖动旋转 · 滚轮缩放</span></p><div><button id="saveImage">保存画面 <span>PNG ↓</span></button><button id="saveDepth">深度图 <span>PNG ↓</span></button><button id="saveModel">导出模型 <span>GLB ↓</span></button></div></div>
+    <section class="notes" aria-label="技术与使用说明">
+      <article><span class="note-number">01</span><h2>照片变成空间</h2><p>AI 估计每个像素的相对深度，再将图像投射到三维网格上。人像、建筑与前后景明确的照片通常更适合。</p></article>
+      <article><span class="note-number">02</span><h2>保留真实的边界</h2><p>这是单视图深度重建（2.5D），适合视差与小角度浏览。被遮挡的部分和物体背面不在原图里，无法从深度图恢复。</p></article>
+      <article class="advanced-note"><span class="note-number">03</span><h2>探索完整 3D</h2><p>TRELLIS.2 等生成模型可进一步推测背面、形状与材质。通过官方云端体验，探索完整三维资产。</p><a href="https://huggingface.co/spaces/microsoft/TRELLIS.2" target="_blank" rel="noopener noreferrer">打开 TRELLIS.2 官方体验 ↗</a><small>将在第三方网站上传 · 可能需要登录或排队</small></article>
+    </section>
+  </main>
+  <footer><span>SHENG MENG · SPATIAL STUDIO</span><div><a href="https://huggingface.co/onnx-community/depth-anything-v2-small" target="_blank" rel="noopener noreferrer">Depth Anything V2</a><a href="https://github.com/birationalclass/shengmeng/tree/main/visuals/3d" target="_blank" rel="noopener noreferrer">源码与技术说明 ↗</a></div></footer>
+  <noscript><p class="no-script">请启用 JavaScript 以使用图片立体化工作台。</p></noscript>
+  <script type="module" src="app.js?v=20260919-1"></script>
+</body>
+</html>

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sheng Meng 的数学可视化实验室：参数有限元几何流、Willmore 流、Julia 集、混沌动力系统、Pascal 六点共线与向量丛。">
+  <meta name="description" content="Sheng Meng 的可视化实验室：图片 3D化、参数有限元几何流、Julia 集、混沌动力系统、Pascal 六点共线与向量丛。">
   <meta name="theme-color" content="#071513">
   <title>Visual Lab · Sheng Meng</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=20260826-release-3">
+  <link rel="stylesheet" href="styles.css?v=20260919-spatial">
 </head>
 <body>
   <a class="skip-link" href="#projects">跳到实验列表</a>
@@ -19,6 +19,7 @@
       <span><b>SHENG MENG</b><small>VISUAL LAB</small></span>
     </a>
     <nav aria-label="可视化实验导航">
+      <a href="./3d/">3D化</a>
       <a href="./surface-diffusion/">Surface Flow</a>
       <a href="./julia/">Julia Set</a>
       <a href="./chaos/">Chaos</a>
@@ -32,7 +33,7 @@
       <div class="hero-copy">
         <p class="eyebrow">00 / BROWSER EXPERIMENTS</p>
         <h1 id="hero-title">让数学结构<br><em>在屏幕上运动。</em></h1>
-        <p class="hero-lead">这里收录从桌面程序重构及为网页创作的互动实验。不需安装软件：打开浏览器，拖动、缩放，直接观察迭代、混沌、共线与粘合。</p>
+        <p class="hero-lead">这里收录从桌面程序重构及为网页创作的互动实验。不需安装软件：打开浏览器，拖动、缩放，探索数学结构，或让一张照片拥有空间深度。</p>
         <a class="primary-link" href="#projects">选择一个实验 <span aria-hidden="true">↓</span></a>
       </div>
 
@@ -44,8 +45,8 @@
       </div>
 
       <div class="lab-stats" aria-label="实验室摘要">
-        <div><b>05</b><span>可交互实验</span></div>
-        <div><b>0</b><span>第三方依赖</span></div>
+        <div><b>06</b><span>可交互实验</span></div>
+        <div><b>AI</b><span>图像深度重建</span></div>
         <div><b>GPU</b><span>优先实时渲染</span></div>
       </div>
     </section>
@@ -55,12 +56,26 @@
         <div class="section-heading">
           <p class="section-index">01 / EXPERIMENTS</p>
           <div>
-            <h2 id="projects-title">选择一个数学系统。</h2>
-            <p>每个项目都保留原作的数学模型，并为鼠标、键盘与触屏重新设计操作。</p>
+            <h2 id="projects-title">选择一种探索方式。</h2>
+            <p>从数学系统到空间影像，为鼠标、键盘与触屏设计的可交互实验。</p>
           </div>
         </div>
 
         <div class="project-grid">
+          <article class="project-card project-spatial">
+            <a class="preview-link" href="./3d/" aria-label="打开 3D化 图片立体化工作台">
+              <div class="project-preview spatial-preview" aria-hidden="true"><span class="spatial-sheet sheet-back"></span><span class="spatial-sheet sheet-mid"></span><span class="spatial-sheet sheet-front"></span><b>2D → 3D</b><small>SPATIAL STUDIO</small></div>
+            </a>
+            <div class="project-copy">
+              <div class="project-meta"><span>06 / SPATIAL IMAGING</span><b>NEW · AI DEPTH</b></div>
+              <h3><a href="./3d/">3D化</a></h3>
+              <p>上传一张图片，在本机用 AI 重建深度。旋转立体影像，探索点云，并导出带纹理的三维网格。</p>
+              <div class="project-actions">
+                <a class="launch-link" href="./3d/">打开工作台 <span aria-hidden="true">↗</span></a>
+                <a class="source-link" href="https://github.com/birationalclass/shengmeng/tree/main/visuals/3d" target="_blank" rel="noreferrer">源代码</a>
+              </div>
+            </div>
+          </article>
           <article class="project-card project-surface">
             <a class="preview-link" href="./surface-diffusion/" aria-label="打开参数有限元几何流实验">
               <div class="project-preview"><canvas id="surfacePreview" aria-hidden="true"></canvas></div>
@@ -143,7 +158,7 @@
       <p class="section-index">02 / PRINCIPLE</p>
       <h2 id="method-title">不是视频。<br><em>是正在计算的数学。</em></h2>
       <div class="method-grid">
-        <article><span>MODEL</span><b>原始方程</b><p>数学参数和迭代规则来自本地原作。</p></article>
+        <article><span>MODEL</span><b>模型与算法</b><p>从原始数学方程，到可在浏览器运行的开源深度模型。</p></article>
         <article><span>RENDER</span><b>实时生成</b><p>画面在你的设备上计算，不是预录制素材。</p></article>
         <article><span>INTERACT</span><b>可操作直觉</b><p>缩放、旋转、改变参数，比较结构的变化。</p></article>
       </div>
