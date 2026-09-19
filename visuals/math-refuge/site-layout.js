@@ -13,36 +13,37 @@ export function configureLectureRoot(root){
   root.position.set(HALL.boardX*BUILDING_SCALE-10.4*LECTURE_SCALE,DECK_Y*BUILDING_SCALE+LECTURE_LIFT,-28*LECTURE_SCALE);
 }
 export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
-// A rectangle union, not overlapping reflective planes. The middle branch
-// passes through an open-air court, never through the enclosed room floors.
-export const POOL_RECTS=[
-  [-22,-14,-24,24],[18,26,-24,24],[-14,18,-24,-16],[-14,18,16,24],
-  [2,5,-16,16],[26,54,-25.5,-17.5],[26,54,17.5,25.5],[54,62,-25.5,25.5]
+// The former pool ring and central water branch are now continuous dry decks.
+export const COURT_DECK=[-24,28,-25.5,25.5];
+export const SEA_TERRACE=[26,86,-28,28];
+export const SEA_STEPS=[
+  {x:86,z:-20,dx:1,dz:0,width:3.4},{x:86,z:20,dx:1,dz:0,width:3.4},
+  {x:60,z:-28,dx:0,dz:-1,width:3.4},{x:60,z:28,dx:0,dz:1,width:3.4},
+  {x:-24,z:-18,dx:-1,dz:0,width:2.4},
+  {x:-6,z:25.5,dx:0,dz:1,width:2.4},{x:11.5,z:25.5,dx:0,dz:1,width:2.4},
+  {x:-49,z:-29.5,dx:1,dz:0,width:2},{x:-40,z:-39.5,dx:1,dz:0,width:2},
+  {x:-30.5,z:-16,dx:1,dz:0,width:2},{x:-42,z:19,dx:-1,dz:0,width:2}
 ];
-export const SUNRISE_EDGE=62;
+export const DISTANT_ISLANDS=[
+  {x:230,z:-210,rx:48,rz:32,height:34,seed:1},
+  {x:410,z:-360,rx:65,rz:42,height:42,seed:2},
+  {x:300,z:240,rx:58,rz:40,height:28,seed:3},
+  {x:-200,z:300,rx:40,rz:26,height:24,seed:4}
+];
+// Kept as empty compatibility data for existing landscape placement helpers.
+export const POOL_RECTS=[];
+export const inPool=()=>false;
+export const poolTopology=()=>({cells:[],edges:[]});
+export const BRIDGES=[];
 export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-22,12,29,39],[-35,-23,-2,12]];
 export const inGarden=(x,z)=>GARDEN_PADS.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
-export const POOL_LEVEL=.20,POOL_DEPTH=1.25/BUILDING_SCALE;
-export function inPool(x,z,margin=0){return POOL_RECTS.some(([a,b,c,d])=>x>a-margin&&x<b+margin&&z>c-margin&&z<d+margin);}
-export function poolTopology(){
-  const xs=[...new Set(POOL_RECTS.flatMap(r=>r.slice(0,2)))].sort((a,b)=>a-b),zs=[...new Set(POOL_RECTS.flatMap(r=>r.slice(2)))].sort((a,b)=>a-b);
-  const cells=[],edges=[];
-  for(let i=0;i<xs.length-1;i++)for(let j=0;j<zs.length-1;j++){
-    const a=xs[i],b=xs[i+1],c=zs[j],d=zs[j+1];if(!inPool((a+b)/2,(c+d)/2))continue;
-    cells.push([a,b,c,d]);
-    for(const [x1,z1,x2,z2,x,z] of [[a,c,b,c,(a+b)/2,c-.001],[b,c,b,d,b+.001,(c+d)/2],[b,d,a,d,(a+b)/2,d+.001],[a,d,a,c,a-.001,(c+d)/2]])if(!inPool(x,z))edges.push([x1,z1,x2,z2]);
-  }
-  return {cells,edges};
-}
-export const BRIDGES=[{x:-18,z:8,span:10,width:2,rise:.28},{x:3.5,z:9,span:5,width:2,rise:.22},{x:22,z:2,span:10,width:2.2,rise:.28}];
-export const bridgeHeight=(bridge,t)=>DECK_Y+bridge.rise*Math.sin(Math.PI*Math.max(0,Math.min(1,t)));
 export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24]];
 export function inBuilding(x,z,margin=0){return ROOM_PADS.some(([a,b,c,d])=>x>a-margin&&x<b+margin&&z>c-margin&&z<d+margin)||(x>HALL.west-margin&&x<HALL.east+margin&&z>HALL.north-margin&&z<HALL.south+margin);}
 export const GIANT_TREES=[[-24,31,3],[-51,12,3.6],[-60,-44,3]];
 export const ORNAMENTAL_TREES=[[-28,3.5,'terminalia'],[-44,-5,'plumeria'],[-48,-27,'terminalia'],[-33,11,'plumeria'],[-29,-25,'terminalia'],[28,-6,'plumeria']];
 export const BAMBOO_GROVES=[[-25,-29,7,6],[-49,-15,5,8],[-44,30,6,3]];
 export const LAWNS=[{x:-4,z:34,rx:15,rz:3},{x:-29,z:5,rx:5,rz:5}];
-// The creek stays inland, separate from the hygienic closed pool system.
+// Retained legacy creek data; not constructed in this offshore design.
 export const RIVER_NODES=[[-82,25,-40,1.5],[-77,21,-37,1.7],[-74,3,-34,2.2],[-70,1,-25,1.7],[-65,0,-12,1.4],[-59,-.5,5,1.4],[-47,-1,23,1.6],[-33,-1.9,33,1.7],[-10,-3.04,45,2.2]].map(([x,y,z,w])=>[x-120,y,z,w]);
 const catmull=(a,b,c,d,t)=>.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
 export function riverPoint(t){

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=13-room-lighting';
-import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=13-room-lighting';
+import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=14-sea-terraces';
+import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=14-sea-terraces';
 
 // Real leaf/branch silhouettes, not opaque ellipsoids or billboard tree cards.
 // Each species/detail prototype is built once and instanced in spatial cells.

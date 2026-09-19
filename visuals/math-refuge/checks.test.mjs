@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=13-room-lighting';
-import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=13-room-lighting';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECK,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=14-sea-terraces';
+import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=14-sea-terraces';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,roofTarget,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -75,39 +75,20 @@ test('daytime closes the roof, night opens it, manual mode overrides both',()=>{
   assert.equal(daylightAt(0),0);assert.equal(daylightAt(12),1);
 });
 
-test('pool is one connected nonoverlapping union with an open core and sunrise edge',()=>{
-  const {cells,edges}=poolTopology();
-  assert(cells.length>10);assert(edges.length>10);
-  const area=cells.reduce((sum,[a,b,c,d])=>sum+(b-a)*(d-c),0);
-  assert.equal(area,2232);assert(area/952>2&&area/952<2.5);
-  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
-    const [a,b,c,d]=cells[i],[e,f,g,h]=cells[j];
-    assert(Math.min(b,f)<=Math.max(a,e)||Math.min(d,h)<=Math.max(c,g),'Reflection triangles cannot overlap');
-  }
-  const visited=new Set([0]),queue=[0];
-  while(queue.length){
-    const [a,b,c,d]=cells[queue.shift()];
-    cells.forEach(([e,f,g,h],j)=>{
-      const adjacent=((Math.abs(b-e)<1e-8||Math.abs(f-a)<1e-8)&&Math.min(d,h)>Math.max(c,g))||((Math.abs(d-g)<1e-8||Math.abs(h-c)<1e-8)&&Math.min(b,f)>Math.max(a,e));
-      if(adjacent&&!visited.has(j)){visited.add(j);queue.push(j);}
-    });
-  }
-  assert.equal(visited.size,cells.length);
-  for(const [a,b,c,d] of cells){
-    const x=(a+b)/2,z=(c+d)/2;assert(inPool(x,z));assert(!inBuilding(x,z));
-    assert(elevation(x,z)<POOL_LEVEL-POOL_DEPTH-.1,'Basin must clear terrain');
-  }
-  assert(inPool(3.5,0),'Pool passes through the core court');
-  assert(!inPool(-6,-4));assert(!inPool(11.5,-4));assert(inPool(58,0));
-  assert.equal(Math.max(...POOL_RECTS.map(r=>r[1])),SUNRISE_EDGE);
+test('pool is removed and the dry sea terrace extends well beyond its former edge',()=>{
+  assert.deepEqual(POOL_RECTS,[]);assert.deepEqual(BRIDGES,[]);assert.deepEqual(poolTopology(),{cells:[],edges:[]});
+  for(const [x,z] of [[3.5,0],[22,2],[58,0]])assert(!inPool(x,z));
+  const [a,b,c,d]=SEA_TERRACE;
+  assert((b-HALL.east)/(53-HALL.east)>4);assert((b-a)*(d-c)/(26*34)>3.5);
+  assert(a<COURT_DECK[1]&&c<COURT_DECK[2]&&d>COURT_DECK[3]);
+  assert((DECK_Y-seaLevel)*BUILDING_SCALE>1.3);
 });
 
-test('arched bridges land on dry banks and offer level companion crossings',()=>{
-  assert.equal(BRIDGES.length,3);
-  for(const b of BRIDGES){
-    assert(inPool(b.x,b.z));assert(!inPool(b.x-b.span/2,b.z));assert(!inPool(b.x+b.span/2,b.z));
-    assert.equal(bridgeHeight(b,0),DECK_Y);assert(Math.abs(bridgeHeight(b,1)-DECK_Y)<1e-10);
-    for(let i=0;i<=100;i++){const h=bridgeHeight(b,i/100);assert(h>=DECK_Y&&h<=DECK_Y+b.rise+1e-10);}
+test('distant islands keep the sunrise corridor clear',()=>{
+  assert.equal(DISTANT_ISLANDS.length,4);
+  for(const island of DISTANT_ISLANDS){
+    assert(Math.hypot(island.x-SEA_TERRACE[1],island.z)-Math.max(island.rx,island.rz)*1.15>170);
+    if(island.x>SEA_TERRACE[1])assert(Math.abs(island.z)-island.rz*1.15>(island.x+island.rx*1.15-SEA_TERRACE[1])*Math.tan(Math.PI/8));
   }
 });
 
@@ -210,7 +191,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
-    assert(result.water.isMesh);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
+    assert(!result.water);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
     const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,30);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
     assert.equal(auditorium.userData.seatsPerRow,10);
@@ -235,24 +216,37 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(Math.abs(BUILDING_SCALE**2-2)<1e-12);
     assert(auditorium.userData.seatPositions.every(p=>p[0]>HALL.west&&p[0]<HALL.boardX&&Math.abs(p[2])>=.75));
     assert.equal(auditorium.userData.clearHeight,4.9);assert(auditorium.userData.offshore);
-    assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,3);
-    assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,3);
+    assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,0);
+    assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,0);
     assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
     assert.equal(result.campus.lightingZones.length,8);
     for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
     for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}
     assert.equal(scene.children.filter(o=>o.isPointLight).length,0);
-    assert(scene.getObjectByName('Connected infinity pool and core water court'));assert(scene.getObjectByName('East infinity overflow sheet'));
+    for(const name of ['Connected infinity pool and core water court','East infinity overflow sheet','Side infinity overflow sheet','Sunrise infinity edge'])assert(!scene.getObjectByName(name));
+    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,9);
+    for(const island of result.islands.group.children){
+      const pos=island.geometry.attributes.position;
+      for(let i=1;i<=96;i++)assert.equal(pos.getY(i),pos.getY(0),'Island pole must not split into vertical spikes');
+      assert([...island.geometry.attributes.normal.array].every(Number.isFinite));
+    }
+    for(const sculpture of result.sculptures){
+      assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(sculpture.position.x/BUILDING_SCALE-f.cx)+1.3<=f.w/2+.001&&Math.abs(sculpture.position.z/BUILDING_SCALE-f.cz)+1.3<=f.d/2+.001),'Each sculpture needs a complete dry pedestal pad: '+sculpture.name);
+    }
+    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,9);
+    const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,SEA_STEPS.length);
+    for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
     assert.equal(result.ocean.position.y,result.site.seaLevel);
-    // Floor slabs must never cover swimming lanes, except the explicit level
-    // crossing beside each arch. This catches a visually hidden water court.
-    for(const f of result.layoutFloors.filter(f=>f.y===0))for(const [a,b,c,d] of poolTopology().cells){
-      const left=Math.max(a,f.cx-f.w/2),right=Math.min(b,f.cx+f.w/2),near=Math.max(c,f.cz-f.d/2),far=Math.min(d,f.cz+f.d/2);
-      if(right-left<.0001||far-near<.0001)continue;
-      assert(BRIDGES.some(br=>Math.abs(f.cx-br.x)<.001&&Math.abs(f.cz-(br.z+br.width/2+1))<.001),'Unexpected floor slab covers the pool: '+JSON.stringify(f));
+    // Both old pool branches and the extended east terrace are now dry.
+    for(const [x,z] of [[3.5,0],[22,2],[58,0],[84,0]]){
+      assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(x-f.cx)<f.w/2&&Math.abs(z-f.cz)<f.d/2));
+    }
+    for(const stair of SEA_STEPS){
+      const footX=stair.x+stair.dx*2.66,footZ=stair.z+stair.dz*2.66;
+      assert(!result.layoutFloors.some(f=>f.y===0&&Math.abs(footX-f.cx)<f.w/2-.01&&Math.abs(footZ-f.cz)<f.d/2-.01),'Sea stair must not end under another deck');
     }
     for(const z of [-14,0,14]){
       assert(result.site.elevation(0,z)<result.site.seaLevel);
@@ -263,8 +257,12 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
     const backs=allObjects.filter(o=>o.geometry?.name==='Reclined wraparound seat shell');
     assert.equal(backs.length,1);assert.equal(backs[0].count,30);
+    const dark=color=>Math.max(color.r,color.g,color.b)<.3;
+    assert(dark(backs[0].material.color),'Chair shells must not be ivory');
+    for(const leaf of result.campus.roof.children){assert(dark(leaf.children[0].material.color));assert(dark(leaf.children[1].material.color));}
     const pillows=allObjects.filter(o=>o.geometry?.name==='Aligned curved seat headrest');
     assert.equal(pillows.length,1);assert.equal(pillows[0].count,30);
+    assert(dark(pillows[0].material.color),'Chair headrests must not stay white');
     const pillow=pillows[0].geometry.attributes.position,layer=pillow.count/2;
     for(let i=layer;i<pillow.count;i++){
       const x=pillow.getX(i),y=pillow.getY(i),z=pillow.getZ(i);
@@ -275,9 +273,10 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const back=backs[0].geometry.attributes.position;
     assert(back.getZ(20)>back.getZ(10)+.15,'Seat sides wrap forward');
     assert(back.getZ(220)<back.getZ(10)-.17,'Seat top reclines backward');
-    assert(result.water.material.fragmentShader.includes('float rf0 = 0.06;'));
-    assert(result.water.material.fragmentShader.includes('70.0, 0.22, 0.4'));
     const platform=scene.getObjectByName('Unified platform top 0');assert(platform?.isMesh);
+    assert(dark(platform.material.color),'Terrace base must remain dark stone');
+    const fascia=scene.getObjectByName('Unified platform fascia 0').geometry.attributes.position;
+    assert(Math.min(...Array.from({length:fascia.count},(_,i)=>fascia.getY(i)))<seaLevel,'Raised terrace skirt hides the underside above the sea');
     const cells=platform.userData.cells;
     for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
       const [a,b,c,d]=cells[i],[e,f,g,h]=cells[j];
@@ -309,8 +308,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(calls.includes('NS 方程 · 存在性与光滑性'));assert(calls.includes('Hodge 猜想 ？'));assert(calls.includes('数学难民营'));
     assert(calls.includes('NS'));assert.equal(clippedFragments,12);
     assert.equal(calls.filter(t=>t==='数学难民营').length,1);assert(calls.includes('报告厅'));assert(calls.includes('图书馆'));
-    assert.equal(scene.getObjectByName('Sunrise pool chaise lounges').userData.count,12);
-    assert.equal(scene.getObjectByName('Sunrise infinity edge').userData.railings,false);
+    assert.equal(scene.getObjectByName('Sea terrace chaise lounges').userData.count,12);
+    assert.equal(scene.getObjectByName('Expanded sea lounge terrace').userData.pool,false);
     const movingLamp=scene.getObjectByName('Seminar downlight 1 warm downlight');scene.updateMatrixWorld(true);
     const closedLamp=movingLamp.getWorldPosition(new Three.Vector3());
     result.campus.setRoof(1);assert.equal(result.campus.roof.userData.open,1);scene.updateMatrixWorld(true);
@@ -320,20 +319,20 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const f of result.layoutFloors.filter(f=>f.y===0))assert(elevation(f.cx,f.cz)<seaLevel);
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
     assert(!calls.some(text=>text.includes('已解决')));
-    assert(result.water.material.uniforms.time);assert.equal(typeof result.lighting,'function');
+    assert(result.ocean.material.uniforms.time);assert.equal(typeof result.lighting,'function');
     result.lighting(0,true);result.lighting(100,true);result.dispose();
-    assert.deepEqual(result.ocean.material.uniforms.sunDirection.value.toArray(),result.water.material.uniforms.sunDirection.value.toArray());
+    assert(result.ocean.material.uniforms.sunDirection.value.toArray().every(Number.isFinite));
   }finally{delete globalThis.__retreatTestThree;delete globalThis.document;}
 });
 
 test('entire site is open sea with a constant submerged seabed',()=>{
   for(let x=-600;x<=600;x+=20)for(let z=-600;z<=600;z+=20){assert.equal(elevation(x,z),-15);assert.equal(slope(x,z),0);assert(!canPlant(x,z));}
-  assert.equal(shoreline(0),null);assert(seaLevel<DECK_Y);assert(DECK_Y-seaLevel<.6);
+  assert.equal(shoreline(0),null);assert(seaLevel<DECK_Y);assert(DECK_Y-seaLevel<1);
 });
 
-test('camera eye and orbit target never enter the ocean or pool',()=>{
+test('camera eye and orbit target never enter the ocean',()=>{
   const camera=new Three.PerspectiveCamera(50,1,.08,12000),target=new Three.Vector3();
-  const water=POOL_LEVEL*BUILDING_SCALE;
+  const water=seaLevel*BUILDING_SCALE;
   for(const eye of [-100,-1,0,1,2,20])for(const aim of [-100,0,2]){
     camera.position.set(5,eye,8);target.set(0,aim,0);constrainAboveWater(camera,target,water);
     assert(camera.position.y>=water+1);assert(target.y>=water+.05);assert(camera.quaternion.toArray().every(Number.isFinite));
@@ -421,7 +420,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=13-room-lighting',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=13-room-lighting',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=14-sea-terraces',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=14-sea-terraces',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){

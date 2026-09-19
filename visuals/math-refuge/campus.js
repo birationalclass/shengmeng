@@ -1,18 +1,18 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,HALL,POOL_LEVEL,POOL_DEPTH,poolTopology,BRIDGES,bridgeHeight,SUNRISE_EDGE,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=13-room-lighting';
-import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=13-room-lighting';
+import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECK,SEA_TERRACE,SEA_STEPS,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=14-sea-terraces';
+import {seaLevel} from './landscape-shape.js?v=14-sea-terraces';
+import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=14-sea-terraces';
 
-// Architectural geometry for the approved layout. Pool surfaces are a union,
-// classrooms are dry, and the offshore structure never becomes new terrain.
-export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials,Water,waterNormal}){
+// Architectural geometry for dry offshore decks, rooms and sea-access stairs.
+// No swimming basin or exposed support piles are constructed.
+export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
-  const shell=new THREE.MeshStandardMaterial({color:'#e4d5bd',roughness:.85,metalness:.02,envMapIntensity:.3});
-  const seatCloth=new THREE.MeshStandardMaterial({color:'#aa9076',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
-  const poolTile=new THREE.MeshStandardMaterial({color:'#124d53',roughness:.35,metalness:.08});
+  const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
+  const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
   const meta=(name,data)=>{const o=new THREE.Object3D();o.name=name;o.userData=data;scene.add(o);return o;};
   const lightingZones=[];
   const lampRing=new THREE.TorusGeometry(1,.025,8,64);
-  const acousticCeiling=new THREE.MeshPhysicalMaterial({color:'#d6c8af',roughness:1,metalness:0,specularIntensity:0,envMapIntensity:.04,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.08,.08)});
+  const acousticCeiling=new THREE.MeshPhysicalMaterial({color:'#655d50',roughness:1,metalness:0,specularIntensity:0,envMapIntensity:.04,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.08,.08)});
   function linearLamp(x,y,z,length){
     soft([x,y,z],[length,.12/S,.24/S],brass);
     box([x,y-.067/S,z],[length-.12/S,.02/S,.15/S],light);
@@ -77,25 +77,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     meta(name,{bounds:[cx-w/2,cx+w/2,cz-d/2,cz+d/2],floorY:y,clearHeight:clear,dry:true});
     return roof;
   }
-  function archBridge(b,i){
-    const n=24;
-    for(let k=0;k<n;k++){
-      const a=k/n,c=(k+1)/n,ya=bridgeHeight(b,a),yc=bridgeHeight(b,c),x=b.x+(a+c-1)*b.span/2;
-      box([x,(ya+yc)/2-.045,b.z],[b.span/n+.013,.09,b.width],timber,[0,0,Math.atan2(yc-ya,b.span/n)]);
-      for(const sign of [-1,1])beam([b.x+(a-.5)*b.span,ya+1/S,b.z+sign*b.width/2],[b.x+(c-.5)*b.span,yc+1/S,b.z+sign*b.width/2],.022,steel);
-    }
-    for(let k=0;k<=6;k++)for(const sign of [-1,1]){
-      const t=k/6,x=b.x+(t-.5)*b.span,y=bridgeHeight(b,t);
-      beam([x,y,b.z+sign*b.width/2],[x,y+1/S,b.z+sign*b.width/2],.025,steel);
-    }
-    meta('Small arch bridge '+(i+1),{...b,deckY:DECK_Y,ends:[b.x-b.span/2,b.x+b.span/2],steps:false});
-    // A separate level companion deck lets the water court remain reachable
-    // without climbing the curved bridge. This is not accessibility certification.
-    const z=b.z+b.width/2+1.0;
-    floor(0,b.span,1.2,b.x,z);railing(b.x,DECK_Y,z+.6,b.span);
-    meta('Level pool crossing '+(i+1),{x:b.x,z,width:1.2,span:b.span,deckY:DECK_Y});
-  }
-  // Main house: two dry, modest wings flank the open-to-sky water court.
+  // Main house wings connect across a continuous, open-to-sky dry courtyard.
+  floor(0,COURT_DECK[1]-COURT_DECK[0],COURT_DECK[3]-COURT_DECK[2],(COURT_DECK[0]+COURT_DECK[1])/2,0);
   floor(0,15,28,-6,0);floor(0,12,28,11.5,0);
   const upper=room('Academic living villa',-6,-4,12,18,3.2,0,['south','west','east'],false);
   const eastUpper=room('Discussion villa',11.5,-4,10,18,3.2,0,['south','west','east'],false);
@@ -107,7 +90,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   table(11,DECK_Y,-4,2.2,1.3);sofa(11,DECK_Y,-7);sofa(11,DECK_Y,-1,Math.PI);
   for(const x of [-9,-5]){table(x,upper+DECK_Y,-8,1.6,.8);sofa(x,upper+DECK_Y,-10);}
   table(11,eastUpper+DECK_Y,-7,2,1.2);sofa(11,eastUpper+DECK_Y,-9);sofa(11,eastUpper+DECK_Y,-5,Math.PI);
-  // Exterior stair runs beside the west wing, clear of the water branches.
+  // Exterior stair runs beside the west wing, linked to the lower sea terraces.
   const rise=upper,steps=28;
   for(let i=0;i<steps;i++)box([-12.75,DECK_Y+rise*(i+.5)/steps,12-i*.56],[1.25,rise/steps,.57],timber);
   beam([-13.4,DECK_Y+1/S,12],[-13.4,DECK_Y+rise+1/S,12-steps*.56],.025,steel);
@@ -123,13 +106,13 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   room('Service and tea kitchen',-36.5,19,11,8,2.8,0,['west','east']);
   box([-39,DECK_Y+.45,18],[2,.9,5],stone);box([-35,DECK_Y+1,19],[.12,2,7],timber);
-  // Dry entry paths avoid swimming lanes except at the three modeled crossings.
+  // Dry entry paths connect the rooms and continuous dry courtyard.
   floor(0,47,2.6,-46.5,8);floor(0,2.6,23,-46,-4.8);floor(0,2.5,2.6,-44.75,-16);
   floor(0,2.6,48,-63,-16);floor(0,3,2.6,-61.5,-28);floor(0,12,2.6,-57,-38);
   floor(0,38,2.2,-43,24.5);floor(0,2.2,19,-24,17);
   // Modular offshore garden trays and service spines; seawater stays beneath.
   for(const [a,b,c,d] of GARDEN_PADS){
-    box([(a+b)/2,-.2,(c+d)/2],[b-a,.5,d-c],edge);
+    box([(a+b)/2,-.4,(c+d)/2],[b-a,.9,d-c],edge);
     box([(a+b)/2,.145,(c+d)/2],[b-a-.12,.19,d-c-.12],materials.leaf);
   }
   meta('Offshore planted garden trays',{bounds:GARDEN_PADS,exposedPiles:false});
@@ -157,13 +140,14 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   meta('Bamboo tea pavilion light fixtures',{type:'single sheltered warm lantern',glareControlled:true});
 
   // A supported offshore platform: ocean remains under the hall, not landfill.
-  floor(0,26,34,40,0,false);
-  // Large-format honed limestone, aligned with the hall and pool rather than
+  const [tw,te,tn,ts]=SEA_TERRACE,terraceCenter=(tw+te)/2;
+  floor(0,te-tw,ts-tn,terraceCenter,0);
+  // Large-format honed limestone, aligned with the hall and sea edge rather than
   // the generic small-square grid. Restrained variation and 6 mm shadow joints.
   const mineralMap=terraceStoneMap();
-  const pavingMaterials=['#c5bca9','#c2baa9','#c8bfaf'].map(color=>new THREE.MeshStandardMaterial({color,map:mineralMap,roughness:.96,metalness:0,envMapIntensity:.12,normalMap:stone.normalMap,normalScale:new THREE.Vector2(.025,.025)}));
-  const borderMaterial=new THREE.MeshStandardMaterial({color:'#837f73',roughness:.96,metalness:0,envMapIntensity:.1});
-  const pavingRects=[[27.18,HALL.west,-16.82,16.82],[HALL.east,52.82,-16.82,16.82],[HALL.west,HALL.east,-16.82,HALL.north],[HALL.west,HALL.east,HALL.south,16.82]];
+  const pavingMaterials=['#736e61','#776f61','#70695b'].map(color=>new THREE.MeshStandardMaterial({color,map:mineralMap,roughness:.96,metalness:0,envMapIntensity:.12,normalMap:stone.normalMap,normalScale:new THREE.Vector2(.025,.025)}));
+  const borderMaterial=new THREE.MeshStandardMaterial({color:'#454b47',roughness:.96,metalness:0,envMapIntensity:.1});
+  const pavingRects=[[tw+.18,HALL.west,tn+.18,ts-.18],[HALL.east,te-.18,tn+.18,ts-.18],[HALL.west,HALL.east,tn+.18,HALL.north],[HALL.west,HALL.east,HALL.south,ts-.18]];
   let slabCount=0;
   for(const [a,b,c,d] of pavingRects){
     const nx=Math.ceil((b-a)/2.8),nz=Math.ceil((d-c)/1.7),w=(b-a)/nx,h=(d-c)/nz;
@@ -171,12 +155,12 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
       box([a+(i+.5)*w,DECK_Y+.004,c+(j+.5)*h],[w-.0045,.014,h-.0045],pavingMaterials[(i*7+j*3+slabCount++)%3]);
     }
   }
-  for(const z of [-16.91,16.91])box([40,DECK_Y+.006,z],[25.84,.018,.18],borderMaterial);
-  for(const x of [27.09,52.91])box([x,DECK_Y+.006,0],[.18,.018,33.64],borderMaterial);
+  for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw-.16,.018,.18],borderMaterial);
+  for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,0],[.18,.018,ts-tn-.36],borderMaterial);
   // A slim matte champagne threshold defines the entrance, not a shiny grid.
   box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,2.2],brass);
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
-  meta('Expanded sea lounge terrace',{bounds:[27,53,-17,17],eastClearance:53-HALL.east,poolRailings:false});
+  meta('Expanded sea lounge terrace',{bounds:SEA_TERRACE,eastClearance:te-HALL.east,pool:false,heightAboveSea:(DECK_Y-seaLevel)*S});
   // An open view corridor: only a low roofed link, not a tall structure.
   floor(0,1,2.2,26.5,2);
   box([30.5,2.55,2],[9,.13,2.4],edge);
@@ -244,7 +228,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     part([0,.45,.03],[1.04,.11,.83],shell,true);part([0,.53,.06],[.96,.18,.77],seatCloth,true,.035);
     instance(curvedShell,shell,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
     instance(curvedCloth,seatCloth,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
-    instance(headrest,pale,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
+    instance(headrest,seatCloth,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
     for(const sign of [-1,1]){part([sign*.51,.70,0],[.055,.065,.56],brass);part([sign*.51,.75,.04],[.12,.11,.51],seatCloth,true);}
     part([.57,.79,index%4===0?.28:-.07],index%4===0?[.48,.04,.32]:[.035,.30,.32],timber,true);
     seating.userData.seatPositions.push([x,base,z]);
@@ -265,53 +249,40 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const p=(a,b,c)=>[x+a/S,DECK_Y+b/S,z+c/S],size=s=>s.map(v=>v/S);
     soft(p(0,.32,0),size([2.15,.12,.84]),timber);
     for(let i=0;i<14;i++)box(p(-.98+i*.15,.39,0),size([.085,.035,.78]),timber);
-    soft(p(.36,.46,0),size([1.38,.16,.76]),pale);
-    soft(p(-.62,.74,0),size([.88,.16,.76]),pale,[0,0,-.48]);
+    soft(p(.36,.46,0),size([1.38,.16,.76]),darkFabric);
+    soft(p(-.62,.74,0),size([.88,.16,.76]),darkFabric,[0,0,-.48]);
     soft(p(-.88,1.02,0),size([.24,.15,.65]),darkFabric,[0,0,-.48]);
     for(const a of [-.8,.8])for(const c of [-.32,.32])box(p(a,.16,c),size([.055,.32,.055]),steel);
     for(const c of [-.35,.35])box(p(.36,.547,c),size([1.24,.006,.008]),darkFabric);
     loungers.push([x,z]);
   }
-  for(const z of [-7.8,-5.6,-3.4,3.4,5.6,7.8]){chaise(50.1,z);table(49.5,DECK_Y,z+1,.65,.65);}
-  for(const z of [-14,14])for(const x of [35.5,39.5,43.5])chaise(x,z);
-  meta('Sunrise pool chaise lounges',{count:loungers.length,positions:loungers,facing:[1,0,0]});
-  for(const z of [-6.5,6.5]){sofa(46,DECK_Y,z,Math.PI/2);table(47.2,DECK_Y,z,1,.7);}
-  // No fence, glass wall or handrail surrounds the infinity-pool edge.
-  floor(0,1.4,50,-23,0);floor(0,48,1.4,2,-25);floor(0,48,1.4,2,25);
-
-  const topology=poolTopology(),vertices=[],uv=[];
-  for(const [a,b,c,d] of topology.cells){
-    // Water's reflection normal is local +Z; rotate the entire XY surface to XZ.
-    for(const [x,z] of [[a,c],[a,d],[b,c],[b,c],[a,d],[b,d]]){vertices.push(x,-z,0);uv.push(x*.12,z*.12);}
-    box([(a+b)/2,POOL_LEVEL-POOL_DEPTH-.075,(c+d)/2],[b-a,.15,d-c],poolTile);
+  for(const z of [-16,-10,-4,4,10,16]){chaise(78,z);table(77.4,DECK_Y,z+1,.65,.65);}
+  for(const z of [-23,23])for(const x of [48,60,72])chaise(x,z);
+  meta('Sea terrace chaise lounges',{count:loungers.length,positions:loungers,facing:[1,0,0]});
+  for(const z of [-13,13]){sofa(60,DECK_Y,z,Math.PI/2);table(61.2,DECK_Y,z,1,.7);}
+  // Broad, shallow sea-access steps. Their foot lands just above mean sea
+  // level; the fascia continues below it so no support piles are exposed.
+  for(const [index,entry] of SEA_STEPS.entries()){
+    const {x,z,dx,dz,width}=entry,n=7,tread=.38,low=seaLevel+.025;
+    const rise=(DECK_Y-low)/n,heights=[];
+    for(let i=0;i<n;i++){
+      const top=DECK_Y-(i+1)*rise,base=seaLevel-.18,t=(i+.5)*tread;
+      box([x+dx*t,(top+base)/2,z+dz*t],dx?[tread+.002,top-base,width]:[width,top-base,tread+.002],pavingMaterials[i%3]);
+      heights.push(top);
+    }
+    // A restrained handrail only alongside the stair, not around the terrace.
+    for(const sign of [-1,1]){
+      const ox=-dz*sign*(width/2-.06),oz=dx*sign*(width/2-.06);
+      beam([x+ox,DECK_Y+.9/S,z+oz],[x+dx*(n-.5)*tread+ox,low+.9/S,z+dz*(n-.5)*tread+oz],.018/S,brass);
+      for(const i of [0,n-1]){
+        const t=(i+.5)*tread,top=heights[i];
+        beam([x+dx*t+ox,top,z+dz*t+oz],[x+dx*t+ox,top+.9/S,z+dz*t+oz],.016/S,brass);
+      }
+    }
+    meta('Sea access stair '+(index+1),{...entry,steps:n,heights,riserMetres:rise*S,treadMetres:tread*S,seaLevel});
   }
-  for(const [a,c,b,d] of topology.edges){
-    const horizontal=c===d,length=Math.hypot(b-a,d-c),cx=(a+b)/2,cz=(c+d)/2;
-    const overflow=(a===SUNRISE_EDGE&&b===SUNRISE_EDGE)||(c===d&&Math.abs(c)===25.5&&Math.min(a,b)>=26);
-    box([cx,POOL_LEVEL-POOL_DEPTH/2,cz],horizontal?[length,POOL_DEPTH,.15]:[.15,POOL_DEPTH,length],poolTile);
-    box([cx,overflow?POOL_LEVEL-.025:DECK_Y-.035,cz],horizontal?[length,.07,.22]:[.22,.07,length],stone);
-  }
-  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();g.computeBoundingSphere();
-  const water=new Water(g,{textureWidth:512,textureHeight:512,waterNormals:waterNormal,sunDirection:new THREE.Vector3(1,.2,0).normalize(),sunColor:0xffe8ca,waterColor:0x23646a,distortionScale:.7,alpha:1,fog:true});
-  // Local shader tuning only; keep the pinned shared Water addon unchanged.
-  water.material.fragmentShader=water.material.fragmentShader
-    .replace('100.0, 2.0, 0.5','70.0, 0.22, 0.4')
-    .replace('float rf0 = 0.3;','float rf0 = 0.06;')
-    .replace('reflectionSample * 0.9 + reflectionSample * specularLight','reflectionSample * 0.38 + reflectionSample * specularLight');
-  water.name='Connected infinity pool and core water court';water.rotation.x=-Math.PI/2;water.position.y=POOL_LEVEL;water.userData.cells=topology.cells;scene.add(water);
-  // Recessed overflow sheet and recovery trough: closed pool water does not
-  // mingle with the sea. Analytic shimmer shares the single pool time uniform.
-  const overflowMaterial=new THREE.MeshPhysicalMaterial({color:'#72a9ab',transparent:true,opacity:.36,roughness:.65,metalness:0,specularIntensity:.2,side:THREE.DoubleSide,depthWrite:false});
-  const overflow=new THREE.Mesh(new THREE.PlaneGeometry(51,.4),overflowMaterial);overflow.name='East infinity overflow sheet';overflow.rotation.y=Math.PI/2;overflow.position.set(SUNRISE_EDGE+.12,POOL_LEVEL-.2,0);scene.add(overflow);
-  box([SUNRISE_EDGE+.3,POOL_LEVEL-.5,0],[.65,.13,51.6],poolTile);
-  for(const z of [-25.5,25.5]){
-    const side=new THREE.Mesh(new THREE.PlaneGeometry(36,.4),overflowMaterial);side.position.set(44,POOL_LEVEL-.2,z+Math.sign(z)*.12);side.name='Side infinity overflow sheet';scene.add(side);
-    box([44,POOL_LEVEL-.5,z+Math.sign(z)*.3],[36,.13,.65],poolTile);
-  }
-  meta('Sunrise infinity edge',{x:SUNRISE_EDGE,facing:[1,0,0],separateFromOcean:true,poolLevel:POOL_LEVEL,railings:false});
-  BRIDGES.forEach(archBridge);
-  return {water,blind,seating,roof,setRoof,poolCells:topology.cells,lightingZones,
+  return {blind,seating,roof,setRoof,lightingZones,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();poolTile.dispose();g.dispose();water.material.uniforms.mirrorSampler.value.dispose();water.material.dispose();overflow.geometry.dispose();overflowMaterial.dispose();}
+    dispose(){lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

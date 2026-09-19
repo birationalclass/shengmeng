@@ -4,17 +4,18 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=13-room-lighting';
-import {createLecture} from './lecture.js?v=13-room-lighting';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,POOL_LEVEL} from './site-layout.js?v=13-room-lighting';
-import {createChalkReader} from './chalk-reader.js?v=13-room-lighting';
+import {createRetreat} from './scene.js?v=14-sea-terraces';
+import {createLecture} from './lecture.js?v=14-sea-terraces';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=14-sea-terraces';
+import {seaLevel} from './landscape-shape.js?v=14-sea-terraces';
+import {createChalkReader} from './chalk-reader.js?v=14-sea-terraces';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=13-room-lighting';
-import {RetreatTime,roofTarget} from './retreat-time.js?v=13-room-lighting';
-import {constrainAboveWater} from './camera-bounds.js?v=13-room-lighting';
-import {bindPhysicalButtons} from './physical-buttons.js?v=13-room-lighting';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=14-sea-terraces';
+import {RetreatTime,roofTarget} from './retreat-time.js?v=14-sea-terraces';
+import {constrainAboveWater} from './camera-bounds.js?v=14-sea-terraces';
+import {bindPhysicalButtons} from './physical-buttons.js?v=14-sea-terraces';
 const sceneTime=new RetreatTime();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -120,8 +121,8 @@ function tick(stamp){
     // Keep free-flight away from the clipping plane and terrain basement.
     controls.update();
   }
-  constrainAboveWater(camera,controls.target,POOL_LEVEL*BUILDING_SCALE);
-  if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
+  constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
+  if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
   updateSceneTime(dt);
   if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
   if(profile.direct)renderer.render(scene,camera);else composer.render();
@@ -136,7 +137,7 @@ try{
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
   cameraIntent=bindCameraIntent(document,$('world'),stopTour);
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
-  controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,POOL_LEVEL*BUILDING_SCALE));
+  controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE));
   controls.autoRotate=false;
   controls.addEventListener('start',()=>{stopTour();});
   camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();

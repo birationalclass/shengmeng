@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=13-room-lighting';
-import {BUILDING_SCALE} from './site-layout.js?v=13-room-lighting';
-import {createCampus} from './campus.js?v=13-room-lighting';
-import {daylightAt,wrapHour} from './retreat-time.js?v=13-room-lighting';
-import {platformUnion} from './platform-union.js?v=13-room-lighting';
+import {createLandscape} from './landscape.js?v=14-sea-terraces';
+import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=14-sea-terraces';
+import {createDistantIslands} from './distant-islands.js?v=14-sea-terraces';
+import {createCampus} from './campus.js?v=14-sea-terraces';
+import {daylightAt,wrapHour} from './retreat-time.js?v=14-sea-terraces';
+import {platformUnion} from './platform-union.js?v=14-sea-terraces';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -58,18 +58,19 @@ export async function createRetreat(renderer,scene,report){
   function floor(y,w,d,cx=0,cz=0){
     layoutFloors.push({y,w,d,cx,cz});
   }
+  const terraceBase=mat('#686458',1,0,{map:stoneMap,normalMap:stoneNormal,normalScale:new THREE.Vector2(.04,.04),envMapIntensity:.1});
   const platformGeometries=[];
   function buildPlatforms(){
     for(const y of new Set(layoutFloors.map(f=>f.y))){
       const rects=layoutFloors.filter(f=>f.y===y).map(f=>[f.cx-f.w/2,f.cx+f.w/2,f.cz-f.d/2,f.cz+f.d/2]);
-      const union=platformUnion(rects),top=[],sides=[];
+      const union=platformUnion(rects),top=[],sides=[],bottom=y===0?seaLevel-.2:y-.2;
       const quad=(out,a,b,c,d)=>out.push(...a,...b,...c,...a,...c,...d);
       for(const [a,b,c,d] of union.cells){
         quad(top,[a,y+.275,c],[a,y+.275,d],[b,y+.275,d],[b,y+.275,c]);
-        quad(sides,[a,y-.2,c],[b,y-.2,c],[b,y-.2,d],[a,y-.2,d]);
+        quad(sides,[a,bottom,c],[b,bottom,c],[b,bottom,d],[a,bottom,d]);
       }
-      for(const [a,c,b,d] of union.edges)quad(sides,[a,y-.2,c],[a,y+.275,c],[b,y+.275,d],[b,y-.2,d]);
-      for(const [positions,material,name] of [[top,stone,'Unified platform top'],[sides,edge,'Unified platform fascia']]){
+      for(const [a,c,b,d] of union.edges)quad(sides,[a,bottom,c],[a,y+.275,c],[b,y+.275,d],[b,bottom,d]);
+      for(const [positions,material,name] of [[top,terraceBase,'Unified platform top'],[sides,edge,'Unified platform fascia']]){
         const geometry=new THREE.BufferGeometry(),uv=[];
         for(let i=0;i<positions.length;i+=3)uv.push(positions[i]*.08,positions[i+2]*.08);
         geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));geometry.computeVertexNormals();
@@ -124,9 +125,8 @@ export async function createRetreat(renderer,scene,report){
     box(p(-.2,.66,0),s([.4,.055,.3]),blackboard);
     instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
-  report('正在搭建环绕泳池、小拱桥与海上报告厅…');
-  const campus=createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials,Water,waterNormal});
-  const {water}=campus;
+  report('正在搭建海上长露台与报告厅…');
+  const campus=createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
   // Independent chalkboards, with brief mathematical statements rather than
   // unverified solved/unsolved status announcements.
   function chalkboard(name,x,rotation,draw){
@@ -198,17 +198,34 @@ export async function createRetreat(renderer,scene,report){
   floor(0,5,3,-68,10);
   box([-68,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-68,1.48,10.21],4,'数学难民营','MATHEMATICAL REFUGE');
   litStrip([-68,2.25,10.14],[4.12,.025,.045]);
-  // Mathematical sculpture, a continuous torus knot in the entrance court.
-  const sculpture=new THREE.Mesh(new THREE.TorusKnotGeometry(.85,.075,256,16,2,3),brass);
-  sculpture.position.set(-5,1.6,10);sculpture.castShadow=true;scene.add(sculpture);
-  box([-5,.53,10],[2,.5,2],edge);
+  // A coherent family of large mathematical door sculptures, offset from
+  // entrances and sea-access stairs. Shared knot geometry bounds draw cost.
+  const sculptureGeometry=new Map(),sculptures=[];
+  const sculptureEntries=[
+    ['Academic lounge',-5,10,2,3],['Seminar hall',35.3,14.2,3,4],
+    ['Discussion room',14.5,9.5,2,5],['Library',-40.5,-8.2,3,5],
+    ['Residence I',-50.5,-25.5,2,3],['Residence II',-41.5,-35.5,2,5],
+    ['Tea service',-28.8,21.5,3,4],['Tea pavilion',-38.7,-25.8,3,5],
+    ['Arrival gate',-69.8,13.2,2,3]
+  ];
+  for(const [x,z,w,d] of [[-39,-9.1,6,4.6],[-50.5,-25.5,3.6,3.6],[-41.5,-35.5,3.6,3.6],[-28.8,21,4.8,4.2],[-38.7,-25.8,3.6,3.6],[-69,12,5,6]])floor(0,w,d,x,z);
+  for(const [name,x,z,p,q] of sculptureEntries){
+    const key=p+':'+q;
+    if(!sculptureGeometry.has(key)){const g=new THREE.TorusKnotGeometry(.78,.075,160,12,p,q);g.computeBoundingBox();sculptureGeometry.set(key,g);}
+    const geometry=sculptureGeometry.get(key),mesh=new THREE.Mesh(geometry,brass);
+    mesh.name=name+' mathematical sculpture';mesh.position.set(x,DECK_Y+.5-geometry.boundingBox.min.y,z);
+    mesh.castShadow=true;mesh.receiveShadow=true;mesh.userData={facility:name,footprint:[x-1.3,x+1.3,z-1.3,z+1.3]};
+    scene.add(mesh);sculptures.push(mesh);box([x,DECK_Y+.25,z],[2.6,.5,2.6],edge);
+  }
+  const sculpture=sculptures[0];
   // Room-specific pendant/cove fixtures are constructed with their rooms.
   // Only offshore architecture and contained garden planting remain.
   const {seaLevel,elevation,coastline}=landscape.site;
   const architectureObjects=new Set(scene.children);
   landscape.populate();landscape.finish();
-  // A separate animated ocean shader avoids recursively rendering two planar
-  // reflection cameras. Fine normal waves, Fresnel and sun glitter are analytic;
+  const islands=createDistantIslands(scene);
+  // Only the ocean remains: there is no pool mesh or planar reflection pass.
+  // Fine normal waves, Fresnel and sun glitter are analytic;
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
@@ -284,7 +301,6 @@ export async function createRetreat(renderer,scene,report){
   function lighting(value,regenerate=false){
     const t=value/100,sunDirection=new THREE.Vector3(1,.04+t*.6,0).normalize();
     sky.material.uniforms.sunPosition.value.copy(sunDirection);
-    water.material.uniforms.sunDirection.value.copy(sunDirection);
     ocean.material.uniforms.sunDirection.value.copy(sunDirection);
     sun.position.copy(sunDirection).multiplyScalar(65*BUILDING_SCALE);sun.intensity=1.4+t*2.5;
     ambient.intensity=.65+t*.95;sun.color.setHSL(.09,.25+(1-t)*.3,.85);
@@ -294,7 +310,7 @@ export async function createRetreat(renderer,scene,report){
   function setTime(hour,regenerate=false){
     const h=wrapHour(hour),day=daylightAt(h),a=(h-6)*Math.PI/12;
     const direction=new THREE.Vector3(Math.cos(a),Math.sin(a),0).normalize();
-    sky.material.uniforms.sunPosition.value.copy(direction);water.material.uniforms.sunDirection.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
+    sky.material.uniforms.sunPosition.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
     sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*2.1;sun.color.setHSL(.095,.28+(1-day)*.25,.85);
     ambient.intensity=.18+day*1.1;interiorLights.forEach(l=>l.intensity=(24+(1-day)*44)*BUILDING_SCALE**2*l.userData.gain);
     light.emissiveIntensity=.35+(1-day)*.3;scene.environmentIntensity=.12+day*.5;
@@ -302,5 +318,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   setTime(8,true);
-  return {water,ocean,sun,lighting,setTime,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {ocean,islands,sculptures,sun,lighting,setTime,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){islands.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }
