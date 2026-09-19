@@ -9,8 +9,71 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES} from './site-layout.js?v=7-garden';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE} from './site-layout.js?v=9-peninsula';
 import {writingPose,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=7-garden';
+
+test('pool is one connected nonoverlapping union with an open core and sunrise edge',()=>{
+  const {cells,edges}=poolTopology();
+  assert(cells.length>10);assert(edges.length>10);
+  const area=cells.reduce((sum,[a,b,c,d])=>sum+(b-a)*(d-c),0);
+  assert.equal(area,952); // Ring 576 + core 96 + arms 192 + east edge 88.
+  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
+    const [a,b,c,d]=cells[i],[e,f,g,h]=cells[j];
+    assert(Math.min(b,f)<=Math.max(a,e)||Math.min(d,h)<=Math.max(c,g),'Reflection triangles cannot overlap');
+  }
+  const visited=new Set([0]),queue=[0];
+  while(queue.length){
+    const [a,b,c,d]=cells[queue.shift()];
+    cells.forEach(([e,f,g,h],j)=>{
+      const adjacent=((Math.abs(b-e)<1e-8||Math.abs(f-a)<1e-8)&&Math.min(d,h)>Math.max(c,g))||((Math.abs(d-g)<1e-8||Math.abs(h-c)<1e-8)&&Math.min(b,f)>Math.max(a,e));
+      if(adjacent&&!visited.has(j)){visited.add(j);queue.push(j);}
+    });
+  }
+  assert.equal(visited.size,cells.length);
+  for(const [a,b,c,d] of cells){
+    const x=(a+b)/2,z=(c+d)/2;assert(inPool(x,z));assert(!inBuilding(x,z));
+    assert(elevation(x,z)<POOL_LEVEL-POOL_DEPTH-.1,'Basin must clear terrain');
+  }
+  assert(inPool(3.5,0),'Pool passes through the core court');
+  assert(!inPool(-6,-4));assert(!inPool(11.5,-4));assert(inPool(48,0));
+  assert.equal(Math.max(...POOL_RECTS.map(r=>r[1])),50);
+});
+
+test('arched bridges land on dry banks and offer level companion crossings',()=>{
+  assert.equal(BRIDGES.length,3);
+  for(const b of BRIDGES){
+    assert(inPool(b.x,b.z));assert(!inPool(b.x-b.span/2,b.z));assert(!inPool(b.x+b.span/2,b.z));
+    assert.equal(bridgeHeight(b,0),DECK_Y);assert(Math.abs(bridgeHeight(b,1)-DECK_Y)<1e-10);
+    for(let i=0;i<=100;i++){const h=bridgeHeight(b,i/100);assert(h>=DECK_Y&&h<=DECK_Y+b.rise+1e-10);}
+  }
+});
+
+test('compact east-facing boards fit the hall and camera follows their west-facing normals',()=>{
+  const root=new Three.Group();configureLectureRoot(root);root.updateMatrixWorld(true);
+  const forward=new Three.Vector3(0,0,1).applyQuaternion(root.quaternion);
+  assert(forward.distanceTo(new Three.Vector3(-1,0,0))<1e-12);
+  const floor=DECK_Y*BUILDING_SCALE,ceiling=floor+HALL.clearHeight;
+  for(const u of [22.4,28,33.6])for(const lift of [0,.25,.5,.75,1])for(const v of boardHeights(lift)){
+    const center=root.localToWorld(new Three.Vector3(u,v,-10.4));
+    assert(Math.abs(center.x-HALL.boardX*BUILDING_SCALE)<1e-8);
+    assert(center.y-1.025*LECTURE_SCALE>floor);
+    assert(center.y+1.025*LECTURE_SCALE<ceiling);
+    assert(Math.abs(center.z)+2.65*LECTURE_SCALE<HALL.south*BUILDING_SCALE);
+  }
+  const offset=new Three.Vector3(...lectureViewOffset(5));
+  assert(offset.x<0&&offset.y===0&&offset.z===0);
+  const shot=SHOTS.find(s=>s.name==='报告厅');
+  for(const p of shot.positions){assert(p[0]>HALL.west*BUILDING_SCALE&&p[0]<HALL.boardX*BUILDING_SCALE);assert(Math.abs(p[2])<.01);assert(p[1]<ceiling);}
+});
+
+test('offshore room and sunrise edge sit over sea while arrival stays west-connected',()=>{
+  for(const x of [HALL.west,(HALL.west+HALL.east)/2,HALL.east,50]){
+    for(const z of [HALL.north,0,HALL.south])assert(elevation(x,z)<seaLevel);
+  }
+  for(const x of [-70,-50,-24,-19])assert(elevation(x,8)>seaLevel);
+  for(let x=51;x<450;x+=9)for(let z=-150;z<=150;z+=15)assert(elevation(x,z)<seaLevel);
+});
+
 
 test('eight finite camera chapters with auditorium, ocean and garden views',()=>{
   assert.equal(SHOTS.length,8);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='山水花园'));
@@ -60,17 +123,17 @@ test('all page and JavaScript local asset references resolve',async()=>{
 test('scene assembly creates valid model buffers without a browser or GPU',async()=>{
   const coreURL=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const asModule=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+  const modules=new Map();
   async function inlineAddon(file){
-    let source=await fs.readFile(new URL(file,import.meta.url),'utf8');
-    source=source.replaceAll("from 'three'",`from '${coreURL}'`);
-    if(file.startsWith('./landscape.js'))source=source.replace(`import * as THREE from '${coreURL}';`,'const THREE=globalThis.__retreatTestThree;').replace('./landscape-shape.js?v=7-garden',new URL('./landscape-shape.js',import.meta.url).href).replace('./garden-water.js?v=7-garden',await inlineAddon('./garden-water.js'));
-    source=source.replace('./site-layout.js?v=7-garden',new URL('./site-layout.js',import.meta.url).href);
-    return asModule(source);
+    const url=new URL(file,import.meta.url);
+    if(modules.has(url.href))return modules.get(url.href);
+    let code=await fs.readFile(url,'utf8');
+    code=code.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;').replaceAll("from 'three'",`from '${coreURL}'`);
+    const dependencies=[...code.matchAll(/from\s+['"](\.[^'"]+)['"]/g)];
+    for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
+    const result=asModule(code);modules.set(url.href,result);return result;
   }
-  let source=await fs.readFile(new URL('./scene.js',import.meta.url),'utf8');
-  source=source.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;');
-  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile','./landscape.js?v=7-garden'])source=source.replace(file,await inlineAddon(file));
-  source=source.replace('./site-layout.js?v=7-garden',new URL('./site-layout.js',import.meta.url).href);
+  const sceneModule=await inlineAddon('./scene.js');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -78,19 +141,34 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
   };
   globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
   try{
-    const {createRetreat}=await import(asModule(source));
+    const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
     assert(result.water.isMesh);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
-    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,32);assert.deepEqual(auditorium.userData.facing,[0,0,-1]);
+    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,32);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
     assert(scene.getObjectByName('Small seminar lectern'));assert.equal(auditorium.userData.architectureScale,BUILDING_SCALE);
     assert(Math.abs(BUILDING_SCALE**2-2)<1e-12);
-    assert(auditorium.userData.seatPositions.every(p=>Math.abs(p[0]-28)>2&&p[2]>-4));
+    assert(auditorium.userData.seatPositions.every(p=>p[0]>HALL.west&&p[0]<HALL.boardX&&Math.abs(p[2])>=.75));
+    assert.equal(auditorium.userData.clearHeight,3.2);assert(auditorium.userData.offshore);
+    assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,3);
+    assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,3);
+    assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,3.2);
+    assert(scene.getObjectByName('Connected infinity pool and core water court'));assert(scene.getObjectByName('East infinity overflow sheet'));
+    assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
+    result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
     assert.equal(result.ocean.position.y,result.site.seaLevel);
+    // Floor slabs must never cover swimming lanes, except the explicit level
+    // crossing beside each arch. This catches a visually hidden water court.
+    for(const f of result.layoutFloors.filter(f=>f.y===0))for(const [a,b,c,d] of poolTopology().cells){
+      const left=Math.max(a,f.cx-f.w/2),right=Math.min(b,f.cx+f.w/2),near=Math.max(c,f.cz-f.d/2),far=Math.min(d,f.cz+f.d/2);
+      if(right-left<.0001||far-near<.0001)continue;
+      assert(BRIDGES.some(br=>Math.abs(f.cx-br.x)<.001&&Math.abs(f.cz-(br.z+br.width/2+1))<.001),'Unexpected floor slab covers the pool: '+JSON.stringify(f));
+    }
     for(const z of [-14,0,14]){
-      assert(result.site.elevation(28,z)>result.site.seaLevel);
+      assert(result.site.elevation(0,z)>result.site.seaLevel);
+      assert(result.site.elevation(HALL.west*BUILDING_SCALE,z)<result.site.seaLevel);
       assert(result.site.elevation(result.site.coastline(z)+15,z)<result.site.seaLevel);
     }
     let instances=0,triangles=0;
@@ -101,7 +179,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       if(object.isMesh)triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
     }
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
-    assert(instances>3000);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
+    assert(instances>1500);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
     assert(scene.children.filter(o=>o.isMesh).length<330,'Spatial instancing must bound model draw batches');
     for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Olive leaf canopies','Palm fronds','Fern understory','Coastal grasses','Weathered coastal outcrops'])assert(scene.getObjectByName(name),name);
     for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Connected waterfall and winding creek'])assert(scene.getObjectByName(name),name);
@@ -135,21 +213,23 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
 });
 
 test('continuous ridges, level foundations and actual waterline stay consistent',()=>{
-  for(const [x,z] of [[0,0],[28,0],[37,8],[-15,12]])assert.equal(elevation(x,z),-2.1);
+  for(const [x,z] of [[0,0],[-37,-16],[-56,-28],[-15,12]])assert.equal(elevation(x,z),-1.1);
   for(let z=-600;z<=600;z+=5){
     assert(Math.abs(elevation(shoreline(z),z)-seaLevel)<.0001);
-    assert(shoreline(z)>coastline(z)-4&&shoreline(z)<coastline(z)+11);
+    assert(shoreline(z)>coastline(z)-2&&shoreline(z)<coastline(z)+7);
     assert(!canPlant(coastline(z)+15,z));
   }
   for(let x=-500;x<100;x+=8)for(let z=-500;z<200;z+=8){assert(Number.isFinite(elevation(x,z)));assert(Number.isFinite(slope(x,z)));assert(Math.abs(elevation(x+.001,z)-elevation(x,z))<.1);}
-  assert(elevation(-260,-180)>60);assert(!canPlant(28,0));
+  assert(elevation(-260,0)>60);assert(!canPlant(HALL.west,0));
+  for(const x of [0,20,35,100,300])for(const z of [-160,-100,100,160])assert(elevation(x,z)<seaLevel,'North and south must remain open sea');
+  for(const z of [-60,0,60])assert(elevation(100,z)<seaLevel,'Eastern horizon has no land');
 });
 
 test('water descends through the garden, is carved below the surface and avoids the buildings',()=>{
   let previous=Infinity;
   for(let i=0;i<=300;i++){
     const p=riverPoint(i/300);assert(p.y<=previous+1e-8);previous=p.y;
-    assert(!(p.x>-17&&p.x<49&&p.z>-14.5&&p.z<16));
+    assert(!inPool(p.x,p.z,1));assert(!inBuilding(p.x,p.z));
     assert(elevation(p.x,p.z)<p.y-.3,'Water surface must not be buried in the terrain');
     assert(watercourse(p.x,p.z).distance<.05);
   }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import {seaLevel,coastline,elevation,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=7-garden';
-import {BUILDING_SCALE,GIANT_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint} from './site-layout.js?v=7-garden';
-import {createGardenWater} from './garden-water.js?v=7-garden';
+import {seaLevel,coastline,elevation,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=9-peninsula';
+import {BUILDING_SCALE,GIANT_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=9-peninsula';
+import {createGardenWater} from './garden-water.js?v=9-peninsula';
 
 // Real leaf/branch silhouettes, not opaque ellipsoids or billboard tree cards.
 // Each species/detail prototype is built once and instanced in spatial cells.
@@ -230,7 +230,7 @@ export async function createLandscape(renderer,scene,report){
     }
     for(const [cx,cz,rx,rz] of BAMBOO_GROVES)for(let i=0;i<48;i++){
       const a=rnd()*6.28,r=Math.sqrt(rnd()),x=cx+Math.cos(a)*rx*r,z=cz+Math.sin(a)*rz*r;
-      if(watercourse(x,z).distance<3)continue;
+      if(!canPlant(x,z))continue;
       const y=elevation(x,z),s=1.2+rnd()*.5,angle=rnd()*6.28;
       add(bambooPrototype.wood,bambooMaterial,x,y,z,s,angle,'Jointed bamboo stems',true);
       add(bambooPrototype.leaf,foliage,x,y,z,s,angle,'Bamboo leaf sprays',false);
@@ -248,7 +248,7 @@ export async function createLandscape(renderer,scene,report){
       const mesh=new THREE.Mesh(g,lawnMaterial);mesh.name='Soft lawn garden';mesh.scale.setScalar(BUILDING_SCALE);mesh.receiveShadow=true;scene.add(mesh);
       for(let i=0;i<170;i++){
         const a=rnd()*6.28,x=l.x+Math.cos(a)*l.rx*(.9+rnd()*.16),z=l.z+Math.sin(a)*l.rz*(.9+rnd()*.16);
-        if(Math.abs(x+6)<1.5||watercourse(x,z).distance<2.5)continue;
+        if(watercourse(x,z).distance<2.5||inPool(x,z,1)||inBuilding(x,z,1)||elevation(x,z)<seaLevel+.5)continue;
         add(flowerGeometry,flowerMaterials[i%3],x,elevation(x,z),z,.8+rnd()*.6,rnd()*6.28,'Garden flower borders',false);
         if(i%4===0)add(grassGeometry,foliage,x,elevation(x,z),z,.8,rnd()*6.28,'Flower border foliage',false);
       }
@@ -273,11 +273,11 @@ export async function createLandscape(renderer,scene,report){
   function populate(){
     report('正在种植分层林带与雕刻海岸山脊…');terrainMaterial=terrain();
     // Hero trees / palms frame the pool, leaving the steps and sea view clear.
-    tree(15.2,.28,11.5,1.18);tree(-14.8,.28,-10,1.25,'palm');tree(-14.5,.28,8,.95,'palm');
-    for(const [x,z] of [[14.2,10],[14.4,6],[1.8,11.8],[2,6.2],[-13,13],[-14,-11]])for(let i=0;i<4;i++)shrub(x+(rnd()-.5)*.75,.3,z+(rnd()-.5)*1.5,.65+rnd()*.25);
+    for(const [x,z] of [[-24,16],[-23,-22]])tree(x,elevation(x,z),z,1.15,'palm');
+    for(const [x,z] of [[-24,18],[-27,-24],[-26,1],[-34,5]])for(let i=0;i<4;i++)shrub(x+(rnd()-.5)*.75,elevation(x,z),z+(rnd()-.5)*1.5,.65+rnd()*.25);
     const occupied=[];
-    for(let i=0;i<950&&occupied.length<220;i++){
-      const x=-330+rnd()*390,z=-340+rnd()*570;
+    for(let i=0;i<2600&&occupied.length<200;i++){
+      const x=-420+rnd()*425,z=-76+rnd()*152;
       if(!canPlant(x,z)||noise(x*.033,z*.033)<.27||occupied.some(p=>Math.hypot(p[0]-x,p[1]-z)<7))continue;
       occupied.push([x,z]);plantings.push([x,elevation(x,z),z]);
       tree(x,elevation(x,z),z,1.15+rnd()*1.5);
@@ -289,12 +289,12 @@ export async function createLandscape(renderer,scene,report){
       add(grassGeometry,foliage,x,elevation(x,z),z,.65+rnd()*.8,rnd()*6.28,'Coastal grasses',false);
     }
     for(let i=0;i<125;i++){
-      const z=-155+rnd()*310,x=coastline(z)-2+rnd()*6;
-      if(Math.abs(z)<16&&x<50)continue;
+      const z=-70+rnd()*140,x=coastline(z)-7-rnd()*6;
+      if(elevation(x,z)<seaLevel+.7||inPool(x,z,4)||inBuilding(x,z,4))continue;
       const s=1.1+rnd()*2.2;
       add(rocks[i%3],rockMaterial,x,elevation(x,z)-.35,z,[s,s*(.55+rnd()*.7),s*.8],rnd()*6.28,'Weathered coastal outcrops',Math.abs(z)<65);
     }
-    for(const [x,z,s] of [[-18,16,2.2],[-20,9,1.7],[16,17,1.4],[-23,-18,2.5]])add(rocks[0],rockMaterial,x,elevation(x,z),z,[s,s*.65,s*.8],rnd()*6.28,'Garden stone outcrops');
+    for(const [x,z,s] of [[-23,22,1.4],[-27,13,1.2],[-25,-24,1.4],[-39,29,1.6]])add(rocks[0],rockMaterial,x,elevation(x,z),z,[s,s*.65,s*.8],rnd()*6.28,'Garden stone outcrops');
     garden();
   }
   function finish(){
@@ -302,10 +302,14 @@ export async function createLandscape(renderer,scene,report){
       const mesh=new THREE.InstancedMesh(geometry,material,matrices.length);mesh.name=name;matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=shadow;mesh.receiveShadow=true;mesh.computeBoundingSphere();mesh.boundingSphere.radius+=.35;scene.add(mesh);
     }
   }
-  // One small CPU-generated lookup follows the actual terrain-water crossing.
-  const shoreData=new Uint8Array(512*4);
-  for(let i=0;i<512;i++){const x=shoreline(-600+i/511*1200);shoreData.set([Math.round((x-30)/50*255),0,0,255],i*4);}
-  const shoreMap=new THREE.DataTexture(shoreData,512,1);shoreMap.minFilter=shoreMap.magFilter=THREE.LinearFilter;shoreMap.needsUpdate=true;textures.push(shoreMap);
+  // A small 2D depth lookup follows all three coasts rather than an east-only
+  // waterline. The ocean outside this patch remains clean uninterrupted water.
+  const shoreData=new Uint8Array(128*128*4);
+  for(let j=0;j<128;j++)for(let i=0;i<128;i++){
+    const x=-150+i/127*250,z=-110+j/127*220,depth=Math.max(0,Math.min(20,seaLevel-elevation(x,z)));
+    shoreData.set([Math.round(depth/20*255),0,0,255],(j*128+i)*4);
+  }
+  const shoreMap=new THREE.DataTexture(shoreData,128,128);shoreMap.minFilter=shoreMap.magFilter=THREE.LinearFilter;shoreMap.needsUpdate=true;textures.push(shoreMap);
   return {tree,shrub,populate,finish,shoreMap,site:{seaLevel,coastline,elevation,slope},plantings,
     update(dt){const step=Math.max(0,Math.min(dt,.05));clock.value+=step;gardenWater?.update(step);},
     dispose(){gardenWater?.dispose();ownedGeometry.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());[wood,foliage,rockMaterial,terrainMaterial,bambooMaterial,...flowerMaterials,...extraMaterials].forEach(m=>m?.dispose());}

@@ -3,8 +3,9 @@ import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=7-garden';
-import {BUILDING_SCALE} from './site-layout.js?v=7-garden';
+import {createLandscape} from './landscape.js?v=9-peninsula';
+import {BUILDING_SCALE} from './site-layout.js?v=9-peninsula';
+import {createCampus} from './campus.js?v=9-peninsula';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -34,7 +35,7 @@ export async function createRetreat(renderer,scene,report){
   const boxes=new THREE.BoxGeometry(1,1,1),roundedCache=new Map();
   const cylinder=new THREE.CylinderGeometry(1,1,1,12);
   const grout=mat('#606b61',.98),rubber=mat('#0e1b18',.97);
-  const batches=new Map(),dummy=new THREE.Object3D();
+  const batches=new Map(),dummy=new THREE.Object3D(),layoutFloors=[];
   function instance(geo,material,p,s,r=[0,0,0]){
     const key=geo.uuid+material.uuid;if(!batches.has(key))batches.set(key,{geo,material,matrices:[]});
     dummy.position.fromArray(p);dummy.scale.fromArray(s);dummy.rotation.set(...r);dummy.updateMatrix();
@@ -53,6 +54,7 @@ export async function createRetreat(renderer,scene,report){
   }
   function litStrip(p,size){box(p,size,light);}
   function floor(y,w,d,cx=0,cz=0){
+    layoutFloors.push({y,w,d,cx,cz});
     box([cx,y,cz],[w,.4,d],edge);box([cx,y+.23,cz],[w-.16,.09,d-.16],stone);
     litStrip([cx,y-.06,cz+d/2+.01],[w-.3,.035,.025]);
     litStrip([cx+w/2+.01,y-.06,cz],[.025,.035,d-.3]);
@@ -106,136 +108,9 @@ export async function createRetreat(renderer,scene,report){
     box(p(-.2,.66,0),s([.4,.055,.3]),blackboard);
     instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
-  report('正在搭建书院与庭院…');
-  floor(0,33,29,0,0);floor(5.15,27,20,-1,-1);floor(9.8,19,14,-4,-3);floor(13.6,13,10,-5,-3);
-  for(const y of [.28,5.43,10.08]){
-    const upper=y>9,mid=y>5,w=upper?11:mid?18:22,d=upper?8:mid?12:14,cx=upper?-5:mid?-3:0,cz=-3;
-    const h=upper?3.52:mid?4.37:4.87;
-    box([cx,y+.01,cz],[w,.035,d],timber);
-    glazing(cx-w/2,y,cz,d,h,'z');
-    if(!mid){
-      // A real opening to the meeting wing; do not leave glass across the link.
-      glazing(cx+w/2,y,-4.8,10.4,h,'z');glazing(cx+w/2,y,3.6,.8,h,'z');
-    }else glazing(cx+w/2,y,cz,d,h,'z');
-    glazing(cx,y,cz-d/2,w,h);
-    // Entrance at ground front; upper fronts are deliberately open loggias.
-    if(!mid){glazing(cx-6.5,y,cz+d/2,9,h);glazing(cx+6.5,y,cz+d/2,9,h);}
-    for(const x of [-w/2,w/2])for(const z of [-d/2,d/2])box([cx+x,y+h/2,cz+z],[.19,h,.19],steel);
-    for(let x=-w/2;x<=w/2;x+=.48)box([cx+x,y+h-.18,cz],[.12,.16,d],timber);
-    for(const z of [-d/2+.5,d/2-.5])litStrip([cx,y+h-.28,cz+z],[w-.6,.04,.05]);
-  }
-  // Vertical fins give the facade real thickness and depth at glancing angles.
-  for(let z=-9;z<=3;z+=.63)box([-11.2,5,z],[.25,10,.14],timber);
-  railing(-1,5.43,8.8,27);railing(12.4,5.43,-1,19.5,'z');railing(-14.4,5.43,-1,19.5,'z');
-  railing(-4,10.08,3.9,19);railing(5.4,10.08,-3,13.7,'z');
-  for(let i=0;i<11;i++){const y=-1.65+i*.18;box([-6,y,16-i*.37],[6,.18,.55],stone);litStrip([-6,y+.095,16-i*.37+.26],[5.8,.022,.025]);}
-  // Open stair between levels, to the west of the main reading room.
-  for(let i=0;i<26;i++){box([-12.5,.4+i*.19,3-i*.38],[2.05,.16,.43],timber);}
-  beam([-13.6,.9,3.2],[-13.6,5.8,-6.6],.035,brass);
-  for(let i=0;i<12;i++)beam([-13.6,.5+i*.42,3-i*.85],[-13.6,1.4+i*.42,3-i*.85],.02,steel);
-  // Reflection pool and stone footbridge (not a backdrop image).
-  box([8,.18,8],[11,.4,9],edge);box([8,.4,8],[10.7,.03,8.7],mat('#164d4a',.27,.4));
-  const water=new Water(new THREE.PlaneGeometry(10.55,8.55),{
-    textureWidth:1024,textureHeight:1024,waterNormals:waterNormal,sunDirection:new THREE.Vector3(-.5,.5,-.5),
-    sunColor:0xffe8ca,waterColor:0x164c48,distortionScale:1.5,alpha:1,fog:true
-  });
-  water.rotation.x=-Math.PI/2;water.position.set(8,.49,8);scene.add(water);
-  for(let i=0;i<8;i++){const x=5.2+i*.56,z=4.4+i*.99;box([x,.56,z],[1.5,.13,.68],stone);litStrip([x,.49,z+.34],[1.45,.025,.035]);}
-  for(const z of [3.5,12.5])box([8,.46,z],[11.1,.12,.23],stone);
-  for(const x of [2.5,13.5])box([x,.46,8],[.23,.12,9],stone);
-  // Exterior furniture and planted edges.
-  sofa(-7,.3,7);sofa(-11,.3,9,Math.PI/2);table(-7,.3,9,2.2,1.2);
-  sofa(-4,5.45,6);table(-4,5.45,7.4,2.1,.85);
-  for(const y of [.28,5.43])for(let x=-12;x<=11;x+=3)planter(x,y,y<1?-12:8.3,2.4);
-  for(const p of [[-13,.3,2],[-12,.3,11],[14,.3,-10],[-11,5.43,5],[9,5.43,-8],[-10,10.08,2]]){
-    planter(...p,1.6);tree(p[0],p[1]+.5,p[2],.75);
-  }
-  // Tall shelving with hundreds of individual books, timber ends and brass rails.
-  const bookMats=['#3f6860','#8e7251','#baa98a','#474d50','#6e554e'].map(c=>mat(c,.9));
-  for(const x of [-7,-3,1,5]){
-    box([x,2.6,-9.65],[3.6,4.6,.45],edge);
-    for(let row=0;row<6;row++){
-      const y=.65+row*.67;box([x,y,-9.2],[3.5,.075,.62],timber);
-      for(let b=0;b<20;b++){
-        const h=.34+random()*.21,bx=x-1.56+b*.163;
-        box([bx,y+h/2+.05,-9.12],[.12,h,.36],bookMats[Math.floor(random()*bookMats.length)]);
-        box([bx,y+h*.7,-8.93],[.08,.012,.009],brass);
-      }
-      litStrip([x,y+.025,-8.92],[3.3,.025,.018]);
-    }
-  }
-  sofa(3,.31,-5,Math.PI);sofa(7,.31,-2,-Math.PI/2);table(3,.31,-2,2.6,1.3);
-  sofa(-6,5.45,-2);table(-6,5.45,0,2.4,1);
-  for(const x of [-7,-3,1]){table(x,10.1,-4,2.6,1.3);sofa(x,10.1,-6);}
-  // A second, offset building volume: enclosed seminar hall, upper discussion
-  // pavilion, connecting gallery and a cantilevered ocean-facing belvedere.
-  report('正在扩建海景会议翼…');
-  floor(0,20,20,28,-1);floor(5.15,23,22,28,-1);
-  floor(0,10,3.2,15.5,1.8);floor(3.6,10,3.6,15.5,1.8);
-  glazing(15.5,.28,.2,10,3.25);glazing(15.5,.28,3.4,10,3.25);
-  box([28,.29,-1],[19.8,.04,19.8],timber);
-  // Doorway on the west connects the hall to the gallery without a glass barrier.
-  glazing(18,.28,-5.4,11.2,4.87,'z');glazing(18,.28,6.2,5.6,4.87,'z');
-  glazing(28,.28,-11,20,4.87);glazing(28,.28,9,20,4.87);
-  // Three broad ocean-view panes and a walk-through opening near the south end.
-  glazing(38,.28,-2.8,16.4,4.87,'z');glazing(38,.28,8.4,1.2,4.87,'z');
-  for(const x of [18,38])for(const z of [-11,9])box([x,2.7,z],[.23,4.9,.23],steel);
-  for(let x=19;x<38;x+=.65)box([x,4.92,-1],[.13,.17,19.8],timber);
-  for(const z of [-9.8,7.8])litStrip([28,4.77,z],[18,.045,.045]);
-  // Full-height structural piers and a visible cliff plinth support the extension.
-  box([28,-1.2,-1],[19.6,2,19.6],stone);
-  for(const z of [-10,0,8])box([37,-4.3,z],[.85,8.1,.85],stone);
-  floor(0,11,26,43.5,-1);
-  railing(49,.28,-1,26,'z');railing(43.5,.28,12,11);railing(43.5,.28,-14,11);
-  for(const z of [-11,-4,3,10])beam([37,-3,z],[47,-.2,z],.13,steel);
-  for(const z of [-10,0,9]){sofa(44,.3,z,Math.PI/2);table(46,.3,z,1.1,1.1);}
-  for(const z of [-12,11])planter(41,.3,z,3);
-  // Mathematics seminar: all seats face the north blackboards, not one another.
-  const auditorium=new THREE.Object3D();auditorium.name='Mathematics auditorium seating';
-  auditorium.userData={seats:32,rows:4,centralAisle:3.4,facing:[0,0,-1],frontClearance:6.65,seatPositions:[]};scene.add(auditorium);
-  function chair(x,z,angle,height=0){
-    const part=(p,s,m)=>{const v=new THREE.Vector3(...p).divideScalar(BUILDING_SCALE).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(new THREE.Vector3(x,.3+height,z));(Math.min(...s)<.12?box:soft)(v.toArray(),s.map(d=>d/BUILDING_SCALE),m,[0,angle,0]);};
-    part([0,.48,0],[.78,.17,.82],darkFabric);part([0,.94,-.36],[.78,.86,.16],pale);
-    for(const a of [-.43,.43])part([a,.77,0],[.09,.1,.72],timber);
-    for(const a of [-.29,.29])for(const b of [-.28,.28])part([a,.22,b],[.045,.44,.045],steel);
-    part([0,.69,-.31],[.67,.015,.02],darkFabric);
-  }
-  for(let row=0;row<4;row++){
-    const z=-3.8+row*3.1,height=row*.12;
-    if(row)for(const x of [23.2,32.8])box([x,.31+height/2,z],[7.9,height,2.45],timber);
-    for(const x of [20.5,22.3,24.1,25.9,30.1,31.9,33.7,35.5]){chair(x,z,Math.PI,height);auditorium.userData.seatPositions.push([x,.3+height,z]);}
-  }
-  // Off-axis compact lectern leaves all six writing surfaces visible.
-  box([19.1,.3+.52/BUILDING_SCALE,-7.5],[.65,1.04,.55].map(v=>v/BUILDING_SCALE),timber);soft([19.1,.3+1.08/BUILDING_SCALE,-7.5],[1.1,.12,.78].map(v=>v/BUILDING_SCALE),timber,[-.12,0,0]);
-  const lectern=new THREE.Object3D();lectern.name='Small seminar lectern';lectern.position.set(19.1,.3+1.08/BUILDING_SCALE,-7.5);lectern.userData.heightAboveFloor=1.08;scene.add(lectern);
-  beam([19.3,.3+1.16/BUILDING_SCALE,-7.6],[19.3,.3+1.48/BUILDING_SCALE,-7.72],.012/BUILDING_SCALE,steel);
-  litStrip([28,4.05,-1],[.16,.1,11]);
-  for(const z of [-5,3])beam([28,4.12,z],[28,5,z],.012,steel);
-  // A dedicated presentation wall does not obstruct the ocean-facing glazing.
-  const seminarCanvas=document.createElement('canvas');seminarCanvas.width=1536;seminarCanvas.height=768;
-  const seminarCtx=seminarCanvas.getContext('2d');seminarCtx.fillStyle='#142c2c';seminarCtx.fillRect(0,0,1536,768);
-  seminarCtx.fillStyle='#e7d4aa';seminarCtx.textAlign='center';seminarCtx.font='86px "PingFang SC", sans-serif';seminarCtx.fillText('山海数学报告厅',768,245);
-  seminarCtx.font='40px "Times New Roman", serif';seminarCtx.fillText('MATHEMATICAL REFUGE / SEMINAR ROOM',768,350);
-  seminarCtx.fillStyle='#b6d6c7';seminarCtx.font='48px "PingFang SC", sans-serif';seminarCtx.fillText('让不同的想法，在这里相遇。',768,545);
-  const seminarMap=new THREE.CanvasTexture(seminarCanvas);seminarMap.colorSpace=THREE.SRGBColorSpace;
-  const seminarScreen=new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.3),new THREE.MeshStandardMaterial({map:seminarMap,roughness:.7}));
-  seminarScreen.name='Conference entrance sign';seminarScreen.position.set(17.95,4.35,1.8);seminarScreen.rotation.y=-Math.PI/2;scene.add(seminarScreen);
-  // Upper floor set back from the edge: a smaller glazed room plus roof garden.
-  floor(9.1,14,11,27,-5);
-  box([27,5.45,-5],[13,.035,10],timber);
-  glazing(20.5,5.43,-5,10,3.67,'z');glazing(33.5,5.43,-5,10,3.67,'z');
-  glazing(27,5.43,-10,13,3.67);glazing(23,5.43,0,5,3.67);glazing(31,5.43,0,5,3.67);
-  for(const x of [20.5,33.5])for(const z of [-10,0])box([x,7.25,z],[.16,3.67,.16],steel);
-  sofa(24,5.45,-7);sofa(30,5.45,-7);table(27,5.45,-4,3.8,1.5);
-  railing(39.5,5.43,-1,22,'z');railing(28,5.43,10,23);railing(28,5.43,-12,23);
-  for(const x of [24,30,36]){sofa(x,5.45,3,Math.PI);table(x,5.45,5,1.6,.9);}
-  for(const x of [22,28,34])planter(x,5.43,9.25,3);
-  // Exterior stair lands at the open west side of the upper terrace.
-  floor(0,5,15,17,8);
-  for(let i=0;i<27;i++)box([17,.38+i*(5.05/26),13-i*.36],[2,.16,.4],timber);
-  beam([15.9,1.3,13.2],[15.9,6.35,3.64],.04,brass);
-  beam([18.1,1.3,13.2],[18.1,6.35,3.64],.04,brass);
-  for(let i=0;i<14;i++)for(const x of [15.9,18.1])beam([x,.4+i*.385,13-i*.72],[x,1.3+i*.385,13-i*.72],.022,steel);
+  report('正在搭建环绕泳池、小拱桥与海上报告厅…');
+  const campus=createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials,Water,waterNormal});
+  const {water}=campus;
   // Independent chalkboards, with brief mathematical statements rather than
   // unverified solved/unsolved status announcements.
   function chalkboard(name,x,rotation,draw){
@@ -243,10 +118,10 @@ export async function createRetreat(renderer,scene,report){
     const ctx=canvas.getContext('2d');ctx.fillStyle='#173d34';ctx.fillRect(0,0,1536,768);draw(ctx);
     const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;
     map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-    const backing=x>0?x+.1:x-.1;
-    box([backing,2.6,-3],[.16,3.1,5.8],timber);
-    const board=new THREE.Mesh(new THREE.PlaneGeometry(5.5,2.8),new THREE.MeshStandardMaterial({map,roughness:.95}));
-    board.name=name;board.rotation.y=rotation;board.position.set(x,2.6,-3);scene.add(board);
+    const backing=x-Math.sin(rotation)*.1;
+    box([backing,1.35,-3],[.12,1.8,4.2],timber);
+    const board=new THREE.Mesh(new THREE.PlaneGeometry(4,1.65),new THREE.MeshStandardMaterial({map,roughness:.95}));
+    board.name=name;board.rotation.y=rotation;board.position.set(x,1.35,-3);scene.add(board);
   }
   function fracturedNS(ctx){
     // Clip a single complete glyph layer into independently displaced shards.
@@ -270,14 +145,14 @@ export async function createRetreat(renderer,scene,report){
       ctx.closePath();ctx.clip();ctx.drawImage(glyph,0,0);ctx.restore();
     }
   }
-  chalkboard('NS conjecture blackboard',10.72,-Math.PI/2,ctx=>{
+  chalkboard('NS conjecture blackboard',-.15,-Math.PI/2,ctx=>{
     fracturedNS(ctx);
     ctx.fillStyle='#eee7cf';ctx.font='72px "PingFang SC", sans-serif';ctx.fillText('NS 方程 · 存在性与光滑性',85,115);
     ctx.font='64px "Times New Roman", serif';ctx.fillText('∂ₜu + (u · ∇)u = νΔu − ∇p',100,255);ctx.fillText('∇ · u = 0,     u(x, 0) = u₀(x)',100,355);
     ctx.font='42px "PingFang SC", sans-serif';ctx.fillStyle='#b8d3bd';ctx.fillText('三维、无外力、周期边界，ν > 0。',100,470);
     ctx.fillStyle='#eee7cf';ctx.fillText('任意光滑且散度为零的初始速度，',100,565);ctx.fillText('能否产生对所有时间都保持光滑的解？',100,635);
   });
-  chalkboard('Hodge conjecture blackboard',-10.72,Math.PI/2,ctx=>{
+  chalkboard('Hodge conjecture blackboard',-11.85,Math.PI/2,ctx=>{
     ctx.fillStyle='#eee7cf';ctx.font='82px "PingFang SC", sans-serif';ctx.fillText('Hodge 猜想 ？',85,130);
     ctx.font='48px "PingFang SC", sans-serif';ctx.fillText('在光滑复射影簇 X 上，',100,290);
     ctx.fillText('每个有理的 (p, p) 型上同调类，',100,385);
@@ -296,16 +171,17 @@ export async function createRetreat(renderer,scene,report){
   function sign(name,position,width){
     const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),signMaterial);plaque.name=name;plaque.position.fromArray(position);scene.add(plaque);
   }
-  box([0,4.23,4.07],[3.8,1.02,.16],brass);sign('Entrance lintel sign',[0,4.23,4.16],3.6);
-  litStrip([0,4.78,4.14],[3.65,.035,.045]);
-  box([-10.5,1.25,12.8],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-10.5,1.48,13.01],4);
-  litStrip([-10.5,2.25,12.94],[4.12,.025,.045]);
+  box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6);
+  sign('Conference entrance sign',[39,1.95,4.3],2.4);
+  litStrip([-6,2.5,5.17],[3.65,.025,.025]);
+  box([-24,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-24,1.48,10.21],4);
+  litStrip([-24,2.25,10.14],[4.12,.025,.045]);
   // Mathematical sculpture, a continuous torus knot in the entrance court.
   const sculpture=new THREE.Mesh(new THREE.TorusKnotGeometry(.85,.075,256,16,2,3),brass);
-  sculpture.position.set(-.2,1.8,8);sculpture.castShadow=true;scene.add(sculpture);
-  box([-.2,.53,8],[2,.5,2],edge);
+  sculpture.position.set(-5,1.6,10);sculpture.castShadow=true;scene.add(sculpture);
+  box([-5,.53,10],[2,.5,2],edge);
   // Suspension light rings and solid metal attachment wires.
-  for(const p of [[0,4.6,-1],[-5,9.15,-2],[-5,13,-3]]){
+  for(const p of [[-6,2.2,-2],[11,2.2,-3],[-7,4.85,-7]]){
     const ring=new THREE.Mesh(new THREE.TorusGeometry(1.8,.022,8,100),light);ring.rotation.x=Math.PI/2;ring.position.fromArray(p);scene.add(ring);
     for(const a of [0,2.09,4.18])beam([p[0]+Math.cos(a)*1.7,p[1],p[2]+Math.sin(a)*1.7],[p[0]+Math.cos(a)*1.7,p[1]+.35,p[2]+Math.sin(a)*1.7],.008,steel);
   }
@@ -343,9 +219,10 @@ export async function createRetreat(renderer,scene,report){
         float glitter=pow(max(dot(normal,normalize(sunDirection+view)),0.0),180.0);
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
         vec3 waterColor=mix(vec3(.016,.14,.17),vec3(.035,.25,.27),swell*.3);
-        float shoreX=30.0+50.0*texture2D(shoreMap,vec2(clamp((uv.y+600.0)/1200.0,0.0,1.0),.5)).r;
-        float shoreDistance=max(0.0,uv.x-shoreX);
-        float nearShore=(1.0-smoothstep(0.0,12.0,shoreDistance))*(1.0-smoothstep(540.0,600.0,abs(uv.y)));
+        vec2 shoreUV=vec2((uv.x+150.0)/250.0,(uv.y+110.0)/220.0);
+        float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
+        float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
+        float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
         waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
         vec3 color=mix(waterColor,vec3(.48,.67,.70),fresnel*.86)+vec3(1.0,.79,.48)*glitter*2.2;
@@ -375,14 +252,14 @@ export async function createRetreat(renderer,scene,report){
   sun.shadow.normalBias=.04;sun.shadow.bias=-.00015;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
-  for(const p of [[0,4,-3],[-6,8.7,-3],[-5,12.8,-3],[28,4,-4],[28,4,4],[27,8.5,-5]]){
+  for(const p of [[-6,2.1,-4],[11,2.1,-4],[-7,4.8,-7],[11,4.8,-7],[39,2.1,0],[-37,2,-16]]){
     const lamp=new THREE.PointLight('#ffd09b',180,17*BUILDING_SCALE,2);lamp.position.fromArray(p).multiplyScalar(BUILDING_SCALE);scene.add(lamp);interiorLights.push(lamp);
   }
   scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene();envScene.add(sky.clone());
   function lighting(value,regenerate=false){
-    const t=value/100,sunDirection=new THREE.Vector3(.8,.15+t*.7,.55).normalize();
+    const t=value/100,sunDirection=new THREE.Vector3(1,.04+t*.6,0).normalize();
     sky.material.uniforms.sunPosition.value.copy(sunDirection);
     water.material.uniforms.sunDirection.value.copy(sunDirection);
     ocean.material.uniforms.sunDirection.value.copy(sunDirection);
@@ -391,6 +268,6 @@ export async function createRetreat(renderer,scene,report){
     interiorLights.forEach(l=>l.intensity=(50+(1-t)*120)*BUILDING_SCALE**2);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
-  lighting(62,true);
-  return {water,ocean,sun,lighting,sculpture,materials,landscape,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  lighting(24,true);
+  return {water,ocean,sun,lighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }
