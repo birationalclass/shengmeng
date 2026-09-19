@@ -2,13 +2,16 @@ import * as THREE from 'three';
 
 // A continuous upholstered bucket back, bowed around the shoulders and
 // reclining by 13 degrees. Shared geometry is instanced for every seat.
-export function curvedSeatBack(upholstery=false){
+export function curvedSeatBack(upholstery=false,headrest=false){
   const nx=20,ny=10,positions=[],indices=[];
   for(let side=0;side<2;side++)for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){
     const u=i/nx*2-1,t=j/ny;
-    const half=upholstery?.46:.52,height=upholstery?.67:.78;
-    positions.push(u*half,.60+(upholstery?.035:0)+t*height,
-      -.30-.18*t+.17*u*u+(upholstery?.075:0)+(side===0?.035:-.035));
+    const half=headrest?.33:upholstery?.46:.52,height=headrest?.22:upholstery?.67:.78;
+    const x=u*half,y=(headrest?1.10:upholstery?.635:.60)+t*height;
+    // Every layer uses the same physical support curve, not separate UV curves.
+    // The pillow back stays 5 mm ahead of the upholstery front, avoiding overlap.
+    const support=-.30-(.18/.78)*(y-.60)+.17*(x/.52)**2;
+    positions.push(x,y,support+(headrest?.155:upholstery?.075:0)+(side===0?1:-1)*(headrest?.04:.035));
   }
   const layer=(nx+1)*(ny+1);
   for(let side=0;side<2;side++)for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
@@ -23,7 +26,7 @@ export function curvedSeatBack(upholstery=false){
   for(let k=0;k<rim.length;k++){
     const a=rim[k],b=rim[(k+1)%rim.length];indices.push(a,a+layer,b,b,a+layer,b+layer);
   }
-  const geometry=new THREE.BufferGeometry();geometry.name=upholstery?'Curved seat upholstery':'Reclined wraparound seat shell';
+  const geometry=new THREE.BufferGeometry();geometry.name=headrest?'Aligned curved seat headrest':upholstery?'Curved seat upholstery':'Reclined wraparound seat shell';
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
   // The cloth repeats at a constant physical scale rather than stretching by row.
   const uv=[];for(let side=0;side<2;side++)for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++)uv.push(i/nx,j/ny);

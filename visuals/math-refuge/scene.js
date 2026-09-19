@@ -3,11 +3,11 @@ import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=12-tactile';
-import {BUILDING_SCALE} from './site-layout.js?v=12-tactile';
-import {createCampus} from './campus.js?v=12-tactile';
-import {daylightAt,wrapHour} from './retreat-time.js?v=12-tactile';
-import {platformUnion} from './platform-union.js?v=12-tactile';
+import {createLandscape} from './landscape.js?v=13-room-lighting';
+import {BUILDING_SCALE} from './site-layout.js?v=13-room-lighting';
+import {createCampus} from './campus.js?v=13-room-lighting';
+import {daylightAt,wrapHour} from './retreat-time.js?v=13-room-lighting';
+import {platformUnion} from './platform-union.js?v=13-room-lighting';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -202,11 +202,7 @@ export async function createRetreat(renderer,scene,report){
   const sculpture=new THREE.Mesh(new THREE.TorusKnotGeometry(.85,.075,256,16,2,3),brass);
   sculpture.position.set(-5,1.6,10);sculpture.castShadow=true;scene.add(sculpture);
   box([-5,.53,10],[2,.5,2],edge);
-  // Suspension light rings and solid metal attachment wires.
-  for(const p of [[-6,2.2,-2],[11,2.2,-3],[-7,4.85,-7]]){
-    const ring=new THREE.Mesh(new THREE.TorusGeometry(1.8,.022,8,100),light);ring.rotation.x=Math.PI/2;ring.position.fromArray(p);scene.add(ring);
-    for(const a of [0,2.09,4.18])beam([p[0]+Math.cos(a)*1.7,p[1],p[2]+Math.sin(a)*1.7],[p[0]+Math.cos(a)*1.7,p[1]+.35,p[2]+Math.sin(a)*1.7],.008,steel);
-  }
+  // Room-specific pendant/cove fixtures are constructed with their rooms.
   // Only offshore architecture and contained garden planting remain.
   const {seaLevel,elevation,coastline}=landscape.site;
   const architectureObjects=new Set(scene.children);
@@ -274,8 +270,13 @@ export async function createRetreat(renderer,scene,report){
   sun.shadow.normalBias=.065;sun.shadow.bias=-.0002;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
-  for(const p of [[-6,2.1,-4],[11,2.1,-4],[-7,4.8,-7],[11,4.8,-7],[37,2.9,-2.7],[41,2.9,2.7],[-37,2,-16]]){
-    const lamp=new THREE.PointLight('#ffe0b5',100,17*BUILDING_SCALE,2);lamp.position.fromArray(p).multiplyScalar(BUILDING_SCALE);scene.add(lamp);interiorLights.push(lamp);
+  for(const zone of campus.lightingZones){
+    const lamp=new THREE.SpotLight(zone.color,70,14*BUILDING_SCALE,Math.PI*.38,.85,2);
+    lamp.name=zone.name+' warm downlight';lamp.userData.gain=zone.gain;
+    lamp.position.fromArray(zone.position);
+    if(zone.fixture)zone.fixture.add(lamp);else{lamp.position.multiplyScalar(BUILDING_SCALE);scene.add(lamp);}
+    lamp.target.position.fromArray(zone.target).multiplyScalar(BUILDING_SCALE);
+    scene.add(lamp.target);interiorLights.push(lamp);
   }
   scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
@@ -287,7 +288,7 @@ export async function createRetreat(renderer,scene,report){
     ocean.material.uniforms.sunDirection.value.copy(sunDirection);
     sun.position.copy(sunDirection).multiplyScalar(65*BUILDING_SCALE);sun.intensity=1.4+t*2.5;
     ambient.intensity=.65+t*.95;sun.color.setHSL(.09,.25+(1-t)*.3,.85);
-    interiorLights.forEach(l=>l.intensity=(50+(1-t)*120)*BUILDING_SCALE**2);
+    interiorLights.forEach(l=>l.intensity=(24+(1-t)*44)*BUILDING_SCALE**2*l.userData.gain);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   function setTime(hour,regenerate=false){
@@ -295,7 +296,7 @@ export async function createRetreat(renderer,scene,report){
     const direction=new THREE.Vector3(Math.cos(a),Math.sin(a),0).normalize();
     sky.material.uniforms.sunPosition.value.copy(direction);water.material.uniforms.sunDirection.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
     sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*2.1;sun.color.setHSL(.095,.28+(1-day)*.25,.85);
-    ambient.intensity=.18+day*1.1;interiorLights.forEach(l=>l.intensity=(28+(1-day)*42)*BUILDING_SCALE**2);
+    ambient.intensity=.18+day*1.1;interiorLights.forEach(l=>l.intensity=(24+(1-day)*44)*BUILDING_SCALE**2*l.userData.gain);
     light.emissiveIntensity=.35+(1-day)*.3;scene.environmentIntensity=.12+day*.5;
     scene.fog.color.set('#9fbfc7').lerp(new THREE.Color('#101b2b'),1-day);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}

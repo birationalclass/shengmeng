@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=12-tactile';
-import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=12-tactile';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=13-room-lighting';
+import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=13-room-lighting';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,roofTarget,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -119,11 +119,13 @@ test('compact east-facing boards fit the hall and camera follows their west-faci
   for(const u of [22.4,28,33.6])for(const lift of [0,.25,.5,.75,1])for(const v of boardHeights(lift)){
     const center=root.localToWorld(new Three.Vector3(u,v,-10.4));
     assert(Math.abs(center.x-HALL.boardX*BUILDING_SCALE)<1e-8);
-    assert(center.y-1.025*LECTURE_SCALE>=floor+.9);
+    assert(center.y-1.025*LECTURE_SCALE>=floor+1.35);
     assert(center.y+1.025*LECTURE_SCALE<ceiling);
     assert(Math.abs(center.z)+2.65*LECTURE_SCALE<HALL.south*BUILDING_SCALE);
   }
   const offset=new Three.Vector3(...lectureViewOffset(5));
+  const backingTop=root.localToWorld(new Three.Vector3(28,5.05,-10.82));
+  assert(backingTop.y<ceiling-.2,'The complete backing, not just the writing panels, clears the roof');
   assert(offset.x<0&&offset.y===0&&offset.z===0);
   const shot=SHOTS.find(s=>s.name==='报告厅');
   for(const p of shot.positions){assert(p[0]>HALL.west*BUILDING_SCALE&&p[0]<HALL.boardX*BUILDING_SCALE);assert(Math.abs(p[2])<.01);assert(p[1]<ceiling);}
@@ -210,12 +212,21 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
     assert(result.water.isMesh);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
-    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,36);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
+    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,30);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
+    assert.equal(auditorium.userData.seatsPerRow,10);
+    assert(Math.abs(LECTURE_SCALE/.6-1.2)<1e-10);
+    const frontX=Math.max(...auditorium.userData.seatPositions.map(p=>p[0]));
+    assert((HALL.boardX-frontX)*BUILDING_SCALE>4.9,'First row must be set back from the boards');
+    for(const x of new Set(auditorium.userData.seatPositions.map(p=>p[0])))assert.equal(auditorium.userData.seatPositions.filter(p=>p[0]===x).length,10);
     assert.equal(auditorium.userData.rows,3);assert.equal(HALL.south-HALL.north,20);
     assert.deepEqual(auditorium.userData.rowRises,[.36,.18,0]);
     const seatLevels=[...new Set(auditorium.userData.seatPositions.map(p=>p[1]))];assert.equal(seatLevels.length,3);
     assert(Math.abs((seatLevels[0]-seatLevels[1])*BUILDING_SCALE-.18)<1e-10);
     assert(scene.getObjectByName('Warm woven seminar carpet').material.roughness===1);
+    const frontCarpet=scene.getObjectByName('Warm woven seminar carpet').material.color;
+    const middleCarpet=scene.getObjectByName('Carpeted seating tier 1 1').material.color;
+    const rearCarpet=scene.getObjectByName('Carpeted seating tier 0 1').material.color;
+    for(const c of ['r','g','b'])assert(frontCarpet[c]>middleCarpet[c]&&middleCarpet[c]>rearCarpet[c]);
     assert.equal(scene.getObjectByName('Central carpeted stair aisle').userData.stepHeightMetres,.09);
     assert.equal(scene.getObjectByName('Transparent seminar side elevations').userData.northOpaqueWall,false);
     const paving=scene.getObjectByName('Honed limestone terrace paving').userData;
@@ -223,10 +234,14 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(scene.getObjectByName('Small seminar lectern'));assert.equal(auditorium.userData.architectureScale,BUILDING_SCALE);
     assert(Math.abs(BUILDING_SCALE**2-2)<1e-12);
     assert(auditorium.userData.seatPositions.every(p=>p[0]>HALL.west&&p[0]<HALL.boardX&&Math.abs(p[2])>=.75));
-    assert.equal(auditorium.userData.clearHeight,4.2);assert(auditorium.userData.offshore);
+    assert.equal(auditorium.userData.clearHeight,4.9);assert(auditorium.userData.offshore);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,3);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,3);
-    assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.2);
+    assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
+    assert.equal(result.campus.lightingZones.length,8);
+    for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
+    for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}
+    assert.equal(scene.children.filter(o=>o.isPointLight).length,0);
     assert(scene.getObjectByName('Connected infinity pool and core water court'));assert(scene.getObjectByName('East infinity overflow sheet'));
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
@@ -247,7 +262,16 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     let instances=0,triangles=0;
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
     const backs=allObjects.filter(o=>o.geometry?.name==='Reclined wraparound seat shell');
-    assert.equal(backs.length,1);assert.equal(backs[0].count,36);
+    assert.equal(backs.length,1);assert.equal(backs[0].count,30);
+    const pillows=allObjects.filter(o=>o.geometry?.name==='Aligned curved seat headrest');
+    assert.equal(pillows.length,1);assert.equal(pillows[0].count,30);
+    const pillow=pillows[0].geometry.attributes.position,layer=pillow.count/2;
+    for(let i=layer;i<pillow.count;i++){
+      const x=pillow.getX(i),y=pillow.getY(i),z=pillow.getZ(i);
+      const clothFront=-.30-(.18/.78)*(y-.60)+.17*(x/.52)**2+.11;
+      assert(z-clothFront>.0049,'Headrest back must not penetrate curved upholstery');
+    }
+    for(let j=0;j<=10;j++)assert.equal(pillow.getY(j*21),pillow.getY(j*21+20),'Headrest has no sideways roll');
     const back=backs[0].geometry.attributes.position;
     assert(back.getZ(20)>back.getZ(10)+.15,'Seat sides wrap forward');
     assert(back.getZ(220)<back.getZ(10)-.17,'Seat top reclines backward');
@@ -287,7 +311,11 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(calls.filter(t=>t==='数学难民营').length,1);assert(calls.includes('报告厅'));assert(calls.includes('图书馆'));
     assert.equal(scene.getObjectByName('Sunrise pool chaise lounges').userData.count,12);
     assert.equal(scene.getObjectByName('Sunrise infinity edge').userData.railings,false);
-    result.campus.setRoof(1);assert.equal(result.campus.roof.userData.open,1);result.campus.setRoof(0);
+    const movingLamp=scene.getObjectByName('Seminar downlight 1 warm downlight');scene.updateMatrixWorld(true);
+    const closedLamp=movingLamp.getWorldPosition(new Three.Vector3());
+    result.campus.setRoof(1);assert.equal(result.campus.roof.userData.open,1);scene.updateMatrixWorld(true);
+    assert(movingLamp.getWorldPosition(new Three.Vector3()).z>closedLamp.z+10,'Hall lighting travels with roof leaves');
+    result.campus.setRoof(0);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Framed specimen tree')).length,ORNAMENTAL_TREES.length);
     for(const f of result.layoutFloors.filter(f=>f.y===0))assert(elevation(f.cx,f.cz)<seaLevel);
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
@@ -393,7 +421,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=12-tactile',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=12-tactile',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=13-room-lighting',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=13-room-lighting',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -409,6 +437,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','roof','auto']);
+    const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
+    for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>1.1&&h<1.8,'Buttons remain reachable after boards are raised');}
     const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert(button.position.z<rest);button.userData.pressed=false;
     lecture.setConsoleState({roofOpen:true,automatic:false});assert.equal(lecture.consoleButtons[1].userData.lastLabel,'闭合顶盖');
     const phases=new Set();

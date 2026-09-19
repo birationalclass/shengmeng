@@ -2,12 +2,12 @@
 // ceiling heights stay physical after the shared site scale is applied.
 export const BUILDING_SCALE=Math.SQRT2;
 export const DECK_Y=.28;
-export const HALL={west:34.8,east:43.2,north:-10,south:10,boardX:42.7,clearHeight:4.2};
+export const HALL={west:34.8,east:43.2,north:-10,south:10,boardX:42.7,clearHeight:4.9};
 // Physical riser heights in metres, back to front; seats face east (+X).
-export const SEAT_ROWS=[{x:36.2,rise:.36},{x:38.2,rise:.18},{x:40.2,rise:0}];
-export const SEAT_COLUMNS=[-8.65,-7.15,-5.65,-4.15,-2.65,-1.15,1.15,2.65,4.15,5.65,7.15,8.65];
-export const LECTURE_SCALE=.6;
-export const LECTURE_LIFT=.65;
+export const SEAT_ROWS=[{x:36.2,rise:.36},{x:37.7,rise:.18},{x:39.2,rise:0}];
+export const SEAT_COLUMNS=[-6.2,-5,-3.8,-2.6,-1.4,1.4,2.6,3.8,5,6.2];
+export const LECTURE_SCALE=.72;
+export const LECTURE_LIFT=1.05;
 export function configureLectureRoot(root){
   root.scale.setScalar(LECTURE_SCALE);root.rotation.y=-Math.PI/2;
   root.position.set(HALL.boardX*BUILDING_SCALE-10.4*LECTURE_SCALE,DECK_Y*BUILDING_SCALE+LECTURE_LIFT,-28*LECTURE_SCALE);
