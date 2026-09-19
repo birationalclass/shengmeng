@@ -4,7 +4,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=5-mobile';
+import {createRetreat} from './scene.js?v=6-landscape';
 import {createLecture} from './lecture.js?v=5-mobile';
 import {createChalkReader} from './chalk-reader.js?v=5-mobile';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
@@ -110,7 +110,7 @@ function tick(stamp){
     const oldY=camera.position.y;camera.position.y=Math.max(-.8,camera.position.y);controls.target.y+=camera.position.y-oldY;
     controls.update();
   }
-  if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;}
+  if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
   if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
   if(profile.direct)renderer.render(scene,camera);else composer.render();
 }

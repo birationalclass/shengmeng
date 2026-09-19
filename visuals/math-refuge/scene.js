@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
-import {createDetailMaps,isDistantVegetation} from './surface-materials.js?v=5-mobile';
+import {createDetailMaps} from './surface-materials.js?v=5-mobile';
+import {createLandscape} from './landscape.js?v=6-landscape';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -28,9 +29,10 @@ export async function createRetreat(renderer,scene,report){
   const light=mat('#ffe2ac',.5,0,{emissive:'#ffcb79',emissiveIntensity:2.3});
   const blackboard=mat('#153f38',.95),ink=mat('#dddcc5',1);
   const materials={steel,stone,edge,brass,timber,pale,darkFabric,soil,leaf,glass,light,blackboard,ink};
+  const landscape=await createLandscape(renderer,scene,report);
   const boxes=new THREE.BoxGeometry(1,1,1),roundedCache=new Map();
-  const cylinder=new THREE.CylinderGeometry(1,1,1,12),sphere=new THREE.IcosahedronGeometry(1,1);
-  const distantFoliage=new THREE.IcosahedronGeometry(1,0),grout=mat('#606b61',.98),rubber=mat('#0e1b18',.97);
+  const cylinder=new THREE.CylinderGeometry(1,1,1,12);
+  const grout=mat('#606b61',.98),rubber=mat('#0e1b18',.97);
   const batches=new Map(),dummy=new THREE.Object3D();
   function instance(geo,material,p,s,r=[0,0,0]){
     const key=geo.uuid+material.uuid;if(!batches.has(key))batches.set(key,{geo,material,matrices:[]});
@@ -75,24 +77,13 @@ export async function createRetreat(renderer,scene,report){
   }
   function planter(x,y,z,w=2){
     box([x,y+.24,z],[w,.48,.9],edge);box([x,y+.48,z],[w-.13,.03,.75],soil);
-    for(let i=0;i<Math.floor(w*7);i++){
+    for(let i=0;i<Math.ceil(w*2);i++){
       const px=x+(random()-.5)*(w-.1),pz=z+(random()-.5)*.7;
-      instance(sphere,leaf,[px,y+.55+random()*.24,pz],[.15+random()*.18,.25+random()*.25,.15+random()*.15]);
+      landscape.shrub(px,y+.5,pz,.52+random()*.2);
     }
   }
   function tree(x,y,z,scale=1){
-    const h=3.6*scale;
-    const foliage=isDistantVegetation(x,z)?distantFoliage:sphere;
-    beam([x,y,z],[x+.13*scale,y+h,z],.065*scale,timber);
-    for(let b=0;b<7;b++){
-      const angle=b*2.399,by=y+h*(.56+random()*.4),length=(.7+random()*.7)*scale;
-      const end=[x+Math.cos(angle)*length,by+.45*scale,z+Math.sin(angle)*length];
-      beam([x,by-.55*scale,z],end,.025*scale,timber);
-      for(let j=0;j<15;j++){
-        const a=random()*Math.PI*2,r=Math.sqrt(random())*.7*scale;
-        instance(foliage,leaf,[end[0]+Math.cos(a)*r,end[1]+(random()-.5)*.45*scale,end[2]+Math.sin(a)*r],[.24*scale,.11*scale,.32*scale],[random(),random()*6,random()]);
-      }
-    }
+    landscape.tree(x,y,z,scale);
   }
   function sofa(x,y,z,angle=0){
     const group=new THREE.Group();group.position.set(x,y,z);group.rotation.y=angle;
@@ -325,46 +316,14 @@ export async function createRetreat(renderer,scene,report){
   }
   // The east-facing cliff drops below sea level; land, trees and rocks never
   // continue across the water. Keep a level foundation beneath both wings.
-  const seaLevel=-9;
-  const coastline=z=>49+Math.sin(z*.022)*5+Math.sin(z*.081)*2;
-  function elevation(x,z){
-    const raw=-2.7+Math.sin(x*.048+z*.02)*3+Math.cos(z*.055)*2+Math.sin(x*.17)*Math.cos(z*.13)*.8+Math.max(0,-z-30)*.065;
-    const blend=THREE.MathUtils.smoothstep(Math.max(Math.abs(x-10)/34,Math.abs(z)/20),1,1.5);
-    const land=THREE.MathUtils.lerp(-2.1,raw,blend);
-    const cliff=THREE.MathUtils.smoothstep(x,coastline(z)-4,coastline(z)+11);
-    return THREE.MathUtils.lerp(land,-22,cliff);
-  }
-  const terrainGeometry=new THREE.PlaneGeometry(650,650,180,180);terrainGeometry.rotateX(-Math.PI/2);
-  const positions=terrainGeometry.attributes.position,colors=new Float32Array(positions.count*3),col=new THREE.Color();
-  for(let i=0;i<positions.count;i++){
-    const x=positions.getX(i),z=positions.getZ(i),e=elevation(x,z);positions.setY(i,e);
-    col.setHSL(.25+Math.sin(x*.03)*.02,.18,.17+Math.sin(z*.02)*.025+random()*.025);colors.set([col.r,col.g,col.b],i*3);
-  }
-  terrainGeometry.setAttribute('color',new THREE.BufferAttribute(colors,3));terrainGeometry.computeVertexNormals();
-  const terrain=new THREE.Mesh(terrainGeometry,mat('#ffffff',1,0,{vertexColors:true}));terrain.receiveShadow=true;scene.add(terrain);
-  for(let i=0;i<190;i++){
-    const a=random()*Math.PI*2,r=25+random()*120,x=Math.cos(a)*r,z=Math.sin(a)*r;
-    if(x>coastline(z)-12 || (x>-20&&x<53&&Math.abs(z)<21))continue;
-    tree(x,elevation(x,z),z,1+random()*1.6);
-  }
-  // Granite clusters and background mountains anchor the building in the site.
-  const rock=mat('#626b60',.96);
-  for(let i=0;i<85;i++){
-    const a=random()*Math.PI*2,r=19+random()*25,x=Math.cos(a)*r,z=Math.sin(a)*r,s=.6+random()*3;
-    if(x>coastline(z)-5 || (x>14&&Math.abs(z)<20))continue;
-    instance(sphere,rock,[x,elevation(x,z)-.2,z],[s,s*.7,s*.8],[random(),random()*6,random()]);
-  }
-  for(let i=0;i<13;i++){
-    const x=-350+i*25,z=-180-random()*90;
-    const mountain=new THREE.Mesh(new THREE.ConeGeometry(50+random()*30,30+random()*65,7),mat('#596e68',1));
-    mountain.position.set(x,8,z);mountain.rotation.y=random()*6;scene.add(mountain);
-  }
+  const {seaLevel,elevation,coastline}=landscape.site;
+  landscape.populate();landscape.finish();
   // A separate animated ocean shader avoids recursively rendering two planar
   // reflection cameras. Fine normal waves, Fresnel and sun glitter are analytic;
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      time:{value:0},normalMap:{value:waterNormal},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      time:{value:0},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
       varying vec3 vWorld;
@@ -375,7 +334,7 @@ export async function createRetreat(renderer,scene,report){
         #include <fog_vertex>
       }`,
     fragmentShader:`
-      uniform float time;uniform sampler2D normalMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform float time;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
       #include <common>
       #include <fog_pars_fragment>
       void main(){
@@ -388,7 +347,13 @@ export async function createRetreat(renderer,scene,report){
         float glitter=pow(max(dot(normal,normalize(sunDirection+view)),0.0),180.0);
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
         vec3 waterColor=mix(vec3(.016,.14,.17),vec3(.035,.25,.27),swell*.3);
+        float shoreX=30.0+50.0*texture2D(shoreMap,vec2(clamp((uv.y+600.0)/1200.0,0.0,1.0),.5)).r;
+        float shoreDistance=max(0.0,uv.x-shoreX);
+        float nearShore=(1.0-smoothstep(0.0,12.0,shoreDistance))*(1.0-smoothstep(540.0,600.0,abs(uv.y)));
+        waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
+        float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
         vec3 color=mix(waterColor,vec3(.48,.67,.70),fresnel*.86)+vec3(1.0,.79,.48)*glitter*2.2;
+        color=mix(color,vec3(.67,.77,.71),foam*.45);
         gl_FragColor=vec4(color,1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -401,7 +366,7 @@ export async function createRetreat(renderer,scene,report){
   for(const {geo,material,matrices} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
-    mesh.castShadow=material!==glass&&material!==light&&geo!==distantFoliage;mesh.receiveShadow=material!==glass;
+    mesh.castShadow=material!==glass&&material!==light;mesh.receiveShadow=material!==glass;
     mesh.computeBoundingSphere();scene.add(mesh);
   }
   const sky=new Sky();sky.scale.setScalar(12000);scene.add(sky);
@@ -416,7 +381,7 @@ export async function createRetreat(renderer,scene,report){
   for(const p of [[0,4,-3],[-6,8.7,-3],[-5,12.8,-3],[28,4,-4],[28,4,4],[27,8.5,-5]]){
     const lamp=new THREE.PointLight('#ffd09b',90,17,2);lamp.position.fromArray(p);scene.add(lamp);interiorLights.push(lamp);
   }
-  scene.fog=new THREE.FogExp2('#9fbfc7',.00065);
+  scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene();envScene.add(sky.clone());
   function lighting(value,regenerate=false){
@@ -430,5 +395,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   lighting(62,true);
-  return {water,ocean,sun,lighting,sculpture,materials,site:{elevation,coastline,seaLevel},triangleObjects:scene.children.length,dispose(){environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {water,ocean,sun,lighting,sculpture,materials,landscape,site:{elevation,coastline,seaLevel},triangleObjects:scene.children.length,dispose(){landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

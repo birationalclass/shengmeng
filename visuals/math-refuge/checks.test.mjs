@@ -6,6 +6,8 @@ import * as Three from '../3d/vendor/three.module.js';
 import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
 import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
+import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
+import {createHash} from 'node:crypto';
 
 test('seven finite camera chapters with seminar and ocean views',()=>{
   assert.equal(SHOTS.length,7);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));
@@ -23,7 +25,7 @@ test('seven finite camera chapters with seminar and ocean views',()=>{
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js','scene.js','camera-paths.js','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js']){
+  for(const file of ['index.html','app.js','scene.js','camera-paths.js','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js','landscape-shape.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -55,10 +57,15 @@ test('all page and JavaScript local asset references resolve',async()=>{
 test('scene assembly creates valid model buffers without a browser or GPU',async()=>{
   const coreURL=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const asModule=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
-  async function inlineAddon(file){return asModule((await fs.readFile(new URL(file,import.meta.url),'utf8')).replaceAll("from 'three'",`from '${coreURL}'`));}
+  async function inlineAddon(file){
+    let source=await fs.readFile(new URL(file,import.meta.url),'utf8');
+    source=source.replaceAll("from 'three'",`from '${coreURL}'`);
+    if(file.startsWith('./landscape.js'))source=source.replace(`import * as THREE from '${coreURL}';`,'const THREE=globalThis.__retreatTestThree;').replace('./landscape-shape.js',new URL('./landscape-shape.js',import.meta.url).href);
+    return asModule(source);
+  }
   let source=await fs.readFile(new URL('./scene.js',import.meta.url),'utf8');
   source=source.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;');
-  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile'])source=source.replace(file,await inlineAddon(file));
+  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile','./landscape.js?v=6-landscape'])source=source.replace(file,await inlineAddon(file));
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -84,7 +91,27 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       if(object.isInstancedMesh){assert([...object.instanceMatrix.array].every(Number.isFinite));instances+=object.count;}
       triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
     }
-    assert(instances>10000);assert(triangles<1200000,'Far foliage should reduce the previous 1,509,512 triangles');
+    console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
+    assert(instances>3000);assert(triangles<900000,`Complete modeled vegetation remains within the 900k scene budget: ${triangles}`);
+    assert(scene.children.filter(o=>o.isMesh).length<240,'Spatial instancing must bound model draw batches');
+    for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Olive leaf canopies','Palm fronds','Fern understory','Coastal grasses','Weathered coastal outcrops'])assert(scene.getObjectByName(name),name);
+    assert(!scene.children.some(o=>o.geometry?.type==='ConeGeometry'));
+    assert(result.landscape.plantings.length>150);
+    for(const [x,y,z] of result.landscape.plantings){assert(canPlant(x,z));assert.equal(y,elevation(x,z));}
+    // Execute shader-patching callbacks against the pinned Three shader source.
+    // This catches missing replacement hooks, but is not a GPU compile test.
+    for(const name of ['Continuous mountain ridges','Olive leaf canopies']){
+      const m=scene.getObjectByName(name).material,shader={uniforms:{},vertexShader:Three.ShaderLib.standard.vertexShader,fragmentShader:Three.ShaderLib.standard.fragmentShader};
+      m.onBeforeCompile(shader);assert(Object.keys(shader.uniforms).length>0);assert(!shader.fragmentShader.includes('undefined'));assert(shader.vertexShader.includes(name.startsWith('Continuous')?'vTerrainPoint=position':'float sway='));
+    }
+    result.landscape.update(.016);result.landscape.update(-1);
+    const coast=scene.getObjectByName('Detailed coastal terrain').geometry.attributes.position;
+    for(let i=0;i<coast.count;i++){
+      const x=coast.getX(i),z=coast.getZ(i);if(Math.abs(x)!==90&&Math.abs(z)!==90)continue;
+      const vertical=Math.abs(x)===90,q=vertical?z:x,lo=Math.floor(q/6)*6,t=(q-lo)/6;
+      const expected=vertical?Three.MathUtils.lerp(elevation(x,lo),elevation(x,lo+6),t):Three.MathUtils.lerp(elevation(lo,z),elevation(lo+6,z),t);
+      assert(Math.abs(coast.getY(i)-expected)<.00002,'Fine and coarse terrain edges must not crack');
+    }
     assert(result.materials.pale.normalMap.isDataTexture);assert(result.materials.steel.roughnessMap.isDataTexture);
     assert(result.materials.pale.normalMap.generateMipmaps);assert(result.materials.timber.normalMap);
     assert(calls.includes('NS 方程 · 存在性与光滑性'));assert(calls.includes('Hodge 猜想 ？'));assert(calls.includes('数学难民营'));
@@ -94,8 +121,25 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(result.water.material.uniforms.time);assert.equal(typeof result.lighting,'function');
     result.lighting(0,true);result.lighting(100,true);result.dispose();
     assert.deepEqual(result.ocean.material.uniforms.sunDirection.value.toArray(),result.water.material.uniforms.sunDirection.value.toArray());
-    console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles}));
   }finally{delete globalThis.__retreatTestThree;delete globalThis.document;}
+});
+
+test('continuous ridges, level foundations and actual waterline stay consistent',()=>{
+  for(const [x,z] of [[0,0],[28,0],[37,8],[-15,12]])assert.equal(elevation(x,z),-2.1);
+  for(let z=-600;z<=600;z+=5){
+    assert(Math.abs(elevation(shoreline(z),z)-seaLevel)<.0001);
+    assert(shoreline(z)>coastline(z)-4&&shoreline(z)<coastline(z)+11);
+    assert(!canPlant(coastline(z)+15,z));
+  }
+  for(let x=-500;x<100;x+=8)for(let z=-500;z<200;z+=8){assert(Number.isFinite(elevation(x,z)));assert(Number.isFinite(slope(x,z)));assert(Math.abs(elevation(x+.001,z)-elevation(x,z))<.1);}
+  assert(elevation(-260,-180)>60);assert(!canPlant(28,0));
+});
+
+test('locally served landscape photographs match their CC0 source manifest',async()=>{
+  const assets=new URL('./assets/',import.meta.url),manifest=JSON.parse(await fs.readFile(new URL('landscape-sources.json',assets),'utf8'));
+  assert.equal(manifest.length,6);let total=0;
+  for(const item of manifest){const bytes=await fs.readFile(new URL(item.file,assets));assert.equal(createHash('sha256').update(bytes).digest('hex'),item.sha256);assert.equal(bytes.length,item.bytes);assert.equal(item.license,'CC0-1.0');assert(item.downloadURL.startsWith('https://dl.polyhaven.org/'));total+=bytes.length;}
+  assert(total<6500000);console.log(JSON.stringify({landscapeTextureBytes:total}));
 });
 
 test('three pairs alternate six slots, erase reused boards and wrap lecture pages',()=>{
