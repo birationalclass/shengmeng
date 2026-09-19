@@ -12,8 +12,8 @@
     ctx.textAlign='center';ctx.font=en?'106px OpeningCopperplate,serif':'106px CourseCalligraphy';ctx.fillText(en?'Sheng Meng':'孟晟',800,590);
     const data=ctx.getImageData(0,0,1600,800).data,ink=[];for(let i=0;i<1600*800;i++)if(data[i*4+3]>72)ink.push(i);return ink;
   }
-  function create(count){
-    const en=window.CourseLanguage?.language==='en',key=(en?'en':'zh')+count;if(cache.has(key))return cache.get(key);
+  function create(count,language=window.CourseLanguage?.language){
+    const en=language==='en',key=(en?'en':'zh')+count;if(cache.has(key))return cache.get(key);
     const ink=titleInk(en);
     let seed=137;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};const points=[];
     for(let i=0;i<count;i++){const pixel=ink[Math.floor(random()*ink.length)],x=((pixel%1600)+random()-800)/640,y=(400-Math.floor(pixel/1600)-random())/640;points.push([x,y,(random()-.5)*.004,Math.floor(pixel/1600)>470?1:0]);}

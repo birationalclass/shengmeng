@@ -13,11 +13,18 @@
   const header=document.createElement('header');header.className='portal-header';
   header.innerHTML='<button id="portal-course-open" class="portal-icon" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg></button><span class="portal-brand">代数学 Ⅰ</span><button id="portal-directory-open" type="button"></button><nav class="portal-section-nav" aria-label="教材小节导航"><button id="portal-prev" type="button"></button><button id="portal-next" type="button"></button></nav><button id="portal-language" type="button"></button><button id="portal-fullscreen" class="portal-icon" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect class="portal-fullscreen-expand" x="4" y="4" width="16" height="16" rx="1"/><rect class="portal-fullscreen-restore" x="8" y="8" width="8" height="8" rx=".5" fill="currentColor"/></svg></button><button id="portal-settings" class="portal-icon" type="button" aria-haspopup="dialog" aria-controls="pageStyleSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 3-.7 2.7-2 .9-2.5-.7-2 3.4 1.8 2v2.4l-1.8 2 2 3.4 2.5-.7 2 .9.7 2.7h5l.7-2.7 2-.9 2.5.7 2-3.4-1.8-2v-2.4l1.8-2-2-3.4-2.5.7-2-.9-.7-2.7Z"/><circle cx="12" cy="12" r="3"/></svg></button>';
   $('main').before(header);
-  const content=document.createElement('div');content.id='portal-content';content.innerHTML='<section id="lecture-placeholder" hidden><div><p class="placeholder-number"></p><h1></h1><p class="placeholder-state"></p></div></section><iframe id="lecture-frame" title="抽象代数交互课件" allow="fullscreen" hidden></iframe>';body.append(content);
+  const content=document.createElement('div');content.id='portal-content';content.innerHTML='<section id="lecture-placeholder" hidden><div><p class="placeholder-number"></p><h1></h1><p class="placeholder-state"></p></div></section>';body.append(content);
   const directory=document.createElement('dialog');directory.className='portal-directory';directory.setAttribute('aria-labelledby','portal-directory-title');directory.innerHTML='<div class="portal-directory-header"><h2 id="portal-directory-title"></h2><button class="portal-close" type="button" aria-label="关闭目录">×</button></div><div class="portal-directory-layout"><section class="directory-map-section"><label class="portal-directory-select"><select id="portal-directory-chapter" aria-label="选择教材章节"></select></label><div class="directory-map" role="group"><svg class="directory-routes directory-routes-wide" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true"></svg><svg class="directory-routes directory-routes-narrow" preserveAspectRatio="none" aria-hidden="true"></svg><div class="directory-nodes"></div></div><p class="directory-map-caption"></p></section><aside class="directory-detail" aria-live="polite"></aside></div>';body.append(directory);
   let view='course',section='1.1',anchor='relation',loadedSection='',courseScroll=0,directoryChapter=1,directorySelected='1.1';
   const phone=matchMedia('(max-width:767px), (pointer:coarse) and (max-width:1024px)');
-  const frame=$('lecture-frame'),courseScroller=$('course-scroll-region');
+  let frame=null;
+  const courseScroller=$('course-scroll-region');
+  function releaseLesson(){
+    // Removing the browsing context cancels its requests and disposes timers,
+    // event listeners, canvas contexts and section data. Do not cache windows.
+    if(frame){frame.remove();frame=null;}
+    loadedSection='';
+  }
   document.querySelector('.course-title-panel').addEventListener('wheel',event=>{if(view!=='course'||event.ctrlKey||document.querySelector('dialog[open]'))return;const unit=event.deltaMode===1?20:event.deltaMode===2?courseScroller.clientHeight:1;courseScroller.scrollBy({top:event.deltaY*unit,behavior:'instant'});event.preventDefault();},{passive:false});
   function scrollCourse(hash,behavior='smooth'){const target=document.getElementById(hash);if(!target)return;const top=courseScroller.contains(target)?courseScroller.scrollTop+target.getBoundingClientRect().top-courseScroller.getBoundingClientRect().top-20:0;courseScroller.scrollTo({top,behavior});window.scrollTo(0,0);}
   const link=(book,topic)=>`?view=lesson&section=${book}#${topic}`;
@@ -28,7 +35,7 @@
     directory.querySelector('.portal-close').setAttribute('aria-label',t('关闭目录','Close contents'));
     $('portal-directory-chapter').setAttribute('aria-label',t('选择教材章节','Choose a textbook chapter'));$('portal-directory-chapter').innerHTML=chapterNames.map((names,i)=>`<option value="${i+1}">${t('第 '+(i+1)+' 章','Chapter '+(i+1))} · ${names[en()?1:0]}</option>`).join('');$('portal-directory-chapter').value=directoryChapter;directoryItems();
     const fullscreenButton=$('portal-fullscreen'),fullscreenActive=!!document.fullscreenElement,fullscreenLabel=fullscreenActive?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen');fullscreenButton.hidden=phone.matches;fullscreenButton.setAttribute('aria-label',fullscreenLabel);fullscreenButton.title=fullscreenLabel;fullscreenButton.setAttribute('aria-pressed',String(fullscreenActive));
-    frame.title=t('抽象代数交互课件','Interactive abstract algebra lesson');
+    if(frame)frame.title=t('抽象代数交互课件','Interactive abstract algebra lesson');
     if(view==='lesson'&&!sections.find(s=>s.id===section).ready)placeholder();
   }
   function directoryDetail(){
@@ -55,12 +62,12 @@
     view=next.view==='lesson'?'lesson':'course';section=sections.some(c=>c.id===next.section)?next.section:'1.1';const chapter=sections.find(c=>c.id===section);anchor=chapter.topics.some(topic=>topic[0]===next.anchor)?next.anchor:chapter.topics[0][0];
     const url=new URL(location.href);url.searchParams.delete('v');url.searchParams.set('view',view);view==='lesson'?url.searchParams.set('section',section):url.searchParams.delete('section');url.hash=view==='lesson'?anchor:(next.courseHash||'');
     history[replace?'replaceState':'pushState'](null,'',url);
-    frame.hidden=view!=='lesson'||!chapter.ready;$('lecture-placeholder').hidden=view!=='lesson'||chapter.ready;content.hidden=view!=='lesson';body.classList.toggle('portal-lesson',view==='lesson');
+    if(view!=='lesson'||!chapter.ready||loadedSection!==section)releaseLesson();$('lecture-placeholder').hidden=view!=='lesson'||chapter.ready;content.hidden=view!=='lesson';body.classList.toggle('portal-lesson',view==='lesson');
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(loadedSection!==section){loadedSection=section;frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-textbook-refs-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
-      else frame.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
+      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-section-loading-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }
   function fromURL(){const url=new URL(location.href);navigate({view:url.searchParams.get('view'),section:url.searchParams.get('section'),anchor:url.hash==='#order'?'powers':url.hash.slice(1),courseHash:url.searchParams.get('view')==='lesson'?'':url.hash.slice(1)},true);}
@@ -74,8 +81,8 @@
   $('portal-fullscreen').onclick=async()=>{if(phone.matches)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen?.();}catch{}labels();};
   document.addEventListener('fullscreenchange',labels);phone.addEventListener('change',()=>{if(phone.matches&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});labels();});
   window.addEventListener('popstate',fromURL);
-  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow)return;const data=event.data;if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
-  window.addEventListener('course-language',()=>{labels();frame.contentWindow?.postMessage({type:'course-language',language:en()?'en':'zh'},location.origin);});
+  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;const data=event.data;if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
+  window.addEventListener('course-language',()=>{labels();frame?.contentWindow?.postMessage({type:'course-language',language:en()?'en':'zh'},location.origin);});
   function upcomingLabel(){
     document.querySelectorAll('#schedule tr.upcoming .focus').forEach(cell=>{
       if(cell.querySelector('.upcoming-watermark'))return;

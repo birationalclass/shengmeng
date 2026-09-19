@@ -47,7 +47,7 @@
   try{const saved=localStorage.getItem('courseOpeningNarrationLanguage.v1');if(saved==='zh'||saved==='en')narrationLanguage=saved;}catch(_){}
   function syncOpeningControls(){
     root.dataset.narrationLanguage=narrationLanguage;
-    if(languageButton){languageButton.textContent=narrationLanguage==='en'?'中文':'EN';languageButton.setAttribute('aria-label',narrationLanguage==='en'?'左侧台词切换为中文':'Switch left narration to English');}
+    if(languageButton){languageButton.textContent=narrationLanguage==='en'?'中文':'EN';languageButton.setAttribute('aria-label',narrationLanguage==='en'?(stage==='outro'?'标题切换为中文':'左侧台词切换为中文'):(stage==='outro'?'Switch title to English':'Switch left narration to English'));}
     if(skipButton){const target=stage==='playing'?'Galois':stage==='galois'?'Algebra I':'课程';skipButton.dataset.target=target;skipButton.querySelector('span').textContent=stage==='outro'?'进入课程':'跳过 · '+target;skipButton.setAttribute('aria-label',stage==='outro'?'进入课程':'跳过当前阶段，进入 '+target);}
   }
   languageButton?.addEventListener('click',event=>{event.stopPropagation();narrationLanguage=narrationLanguage==='en'?'zh':'en';try{localStorage.setItem('courseOpeningNarrationLanguage.v1',narrationLanguage);}catch(_){}film?.setNarrationLanguage(narrationLanguage);syncOpeningControls();});
@@ -140,7 +140,7 @@
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
   }
   window.CourseOpeningExit=leaveOpening;
-  // Opening language is local to the left narration; titles, audio and the course language stay independent.
+  // Opening language controls the narration and final title; course UI and audio stay independent.
   async function openOpening() {
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
@@ -203,7 +203,7 @@
   });
   dialog.addEventListener('cancel',event=>{event.preventDefault();if(!panel.hidden)closeSettings(true);});
   panel.querySelector('[data-enter-course]').addEventListener('click',requestCourseEntry);
-  document.querySelector('[data-replay-opening]').addEventListener('click',openOpening);
+  window.CourseOpeningOpen=openOpening;
   canvas.addEventListener('webglcontextlost',event=>{
     event.preventDefault();leaveOpening();if(film)film.dispose();film=null;initialization=null;
     root.dataset.contextLost='true';delete root.dataset.ready;delete root._openingPreview;
@@ -228,7 +228,7 @@
     const story=window.CourseOpeningGaloisStory;
     const storyShades=Array(story.nodes.length).fill(1);
     for(const [name,value] of Object.entries({school:.94,awakening:.98,exams:.87,symmetries:1.04,prison:.68,letter:.86,death:.70,silence:.9,recognition:1.03}))storyShades[story.index[name]]=value;
-    let closingGeometry=window.CourseOpeningOutro.create(N);
+    let closingGeometry=window.CourseOpeningOutro.create(N,narrationLanguage);root.dataset.outroLanguage=closingGeometry.language;
     const inscriptions=window.CourseOpeningInscription.create(N),portraitGeometry=geometry.galoisNode(0);
     inscriptions.mark(portraitGeometry.positions,portraitGeometry.letteringWeights,portraitGeometry.letteringWeights);
     inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
@@ -569,8 +569,9 @@
       panel.querySelector('[data-enter-course]').disabled=true;panel.querySelector('[data-enter-course]').textContent='伽罗瓦终章播放中';
       upload();updateCaption();showCaption(false);draw();queue();
     }
+    const outroLabel=()=>narrationLanguage==='en'?'Algebra Ⅰ. Sheng Meng.':'代数学 Ⅰ。孟晟。';
     function beginOutro(){
-      closingGeometry=window.CourseOpeningOutro.create(N);inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
+      closingGeometry=window.CourseOpeningOutro.create(N,narrationLanguage);root.dataset.outroLanguage=closingGeometry.language;inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
       const view=cameraPose(),captured=snapshot(false,time,true),capturedNormals=snapshotNormals(),capturedTwoSided=twoSidedWeight();
       if(impulses.active(time)){for(let i=0;i<N;i++){const k=i*3,local=materials.rotateObject(captured.subarray(k,k+3),-renderedSpin()),offset=materials.rotateObject(impulses.offset(local,time,grains[i*4]),renderedSpin());for(let a=0;a<3;a++)captured[k+a]+=offset[a];}}
       impulses.clear();cancelClick();
@@ -580,9 +581,22 @@
       orbit.pitch=orbit.yaw=orbit.targetPitch=orbit.targetYaw=0;
       source=destination=captured;normalSource=normalDestination=capturedNormals;twoSidedFrom=twoSidedTo=capturedTwoSided;extrusionFrom=extrusionTo=0;progress=1;
       outro={phase:terminalActive?'form':'return',elapsed:0,from:view,view};root.dataset.outro=outro.phase;
-      if(terminalActive){destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;canvas.setAttribute('aria-label',window.CourseTitleDock.label());}
+      if(terminalActive){destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;canvas.setAttribute('aria-label',outroLabel());}
       root.querySelector('[data-outro-hint]').textContent=window.CourseTitleDock.text('沙粒落字','Letters taking shape');
       panel.querySelector('[data-enter-course]').disabled=true;showCaption(false);upload();active=true;previous=0;queue();
+    }
+    function updateOutroLanguage(){
+      if(!outro||outro.phase==='depart'||closingGeometry.language===narrationLanguage)return;
+      const captured=snapshot(false,time,true),capturedNormals=snapshotNormals(),view=cameraPose();
+      closingGeometry=window.CourseOpeningOutro.create(N,narrationLanguage);
+      inscriptions.mark(closingGeometry.positions,undefined,closingGeometry.signatureWeights);
+      source=captured;normalSource=capturedNormals;destination=closingGeometry.positions;normalDestination=closingGeometry.normals;
+      twoSidedFrom=twoSidedTo=0;progress=0;
+      outro={phase:'form',elapsed:0,from:view,view};
+      root.dataset.outro='form';root.dataset.outroLanguage=closingGeometry.language;
+      canvas.setAttribute('aria-label',outroLabel());
+      panel.querySelector('[data-enter-course]').disabled=true;
+      upload();active=true;previous=0;queue();
     }
     function advanceOutro(dt){
       outro.elapsed+=dt;
@@ -594,7 +608,7 @@
         if(amount===1){
           outro.phase='form';outro.elapsed=0;outro.from=outro.view=neutral;root.dataset.outro='form';
           destination=closingGeometry.positions;normalDestination=closingGeometry.normals;twoSidedTo=0;progress=0;upload();
-          canvas.setAttribute('aria-label',window.CourseTitleDock.label());
+          canvas.setAttribute('aria-label',outroLabel());
         }
       }else if(outro.phase==='form'){
         progress=reduce?1:Math.min(1,outro.elapsed/3600);
@@ -677,7 +691,7 @@
     function refresh(){if(!outro)rebuildDurations();if(!settings.depthEnabled){endOrbit();orbit.targetPitch=orbit.targetYaw=0;}draw();queue();}
     let observer;
     function onVisibility(){previous=0;if(document.hidden){cancelAnimationFrame(raf);raf=0;}else queue();}
-    film={play,stop,refresh,direction,setNarrationLanguage(value){narration.setLanguage(value);draw();queue();},galois:beginGalois,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
+    film={play,stop,refresh,direction,setNarrationLanguage(value){narration.setLanguage(value);updateOutroLanguage();draw();queue();},galois:beginGalois,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
     root._openingPreview={
       show(index){const slot=order.indexOf(index);if(slot<0)throw new RangeError('Figure is not selected');stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+holds[slot]/2));draw();queue();},
       storyNode(index){const slot=order.indexOf(9);if(slot<0)throw new RangeError('Galois is not selected');stop();entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+story.atNode(index,storyHoldMs,storyMorphMs,storyScored)));draw();queue();},
@@ -692,6 +706,6 @@
     document.addEventListener('visibilitychange',onVisibility);observer=new ResizeObserver(draw);observer.observe(canvas);
     boot.advance(95,'准备呈现');updateCaption();draw();await paint();root.dataset.particleCount=String(N);root.dataset.ready='true';boot.advance(100,'准备完成');await paint();
   }
-  if(!location.hash&&new URLSearchParams(location.search).get("view")!=="lesson"&&!window.courseOpeningDismissed)openOpening();
+  if(!window.courseOpeningControllerLazy&& !location.hash&&new URLSearchParams(location.search).get("view")!=="lesson"&&!window.courseOpeningDismissed)openOpening();
   else document.documentElement.classList.remove('course-opening-pending');
 })();

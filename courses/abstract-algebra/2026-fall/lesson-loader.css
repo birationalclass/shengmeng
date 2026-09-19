@@ -1,0 +1,6 @@
+html.lesson-loading body> :not(.lesson-load-status):not(script){visibility:hidden!important}
+.lesson-load-status{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:var(--paper,#16150f);color:var(--ink,#d7c392);font:400 1rem/1.5 system-ui,sans-serif;letter-spacing:.08em}
+.lesson-load-status:before{content:"";width:7rem;height:1px;background:currentColor;opacity:.5;animation:lesson-load-pulse 1.6s ease-in-out infinite}
+.lesson-load-status button{font:inherit;color:inherit;background:transparent;border:1px solid currentColor;border-radius:.4rem;padding:.6rem 1.2rem;cursor:pointer}
+@keyframes lesson-load-pulse{50%{opacity:.15;transform:scaleX(.5)}}
+@media(prefers-reduced-motion:reduce){.lesson-load-status:before{animation:none}}
