@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {LectureClock,boardHeights,PHASE_SECONDS} from './lecture-state.js?v=7-garden';
-import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=11-open-sea';
+import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=12-tactile';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=11-open-sea';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=12-tactile';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -34,7 +34,7 @@ export async function createLecture(scene,renderer){
   await load(0);
   const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0;
   const frameMaterial=new THREE.MeshStandardMaterial({color:'#735c3e',roughness:.65});
-  const metal=new THREE.MeshStandardMaterial({color:'#9caa9e',roughness:.32,metalness:.65});
+  const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const wall=new THREE.Mesh(new THREE.BoxGeometry(17.2,4.8,.16),new THREE.MeshStandardMaterial({color:'#102421',roughness:1}));
   wall.position.set(28,2.65,-10.82);wall.name='Six-board lecture wall';scene.add(wall);
   const cube=new THREE.BoxGeometry(1,1,1);
@@ -50,7 +50,7 @@ export async function createLecture(scene,renderer){
       texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.generateMipmaps=true;texture.minFilter=THREE.LinearMipmapLinearFilter;
       const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;const roughCtx=roughCanvas.getContext('2d');roughCtx.fillStyle='white';roughCtx.fillRect(0,0,W/4,H/4);
       const roughTexture=new THREE.CanvasTexture(roughCanvas);
-      const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshStandardMaterial({map:texture,roughness:.98,roughnessMap:roughTexture}));
+      const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:roughTexture,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0}));
       group.add(surface);
       for(const y of [-BOARD_H/2,BOARD_H/2])part(group,[0,y,.025],[BOARD_W+.1,.07,.11],frameMaterial);
       for(const px of [-BOARD_W/2,BOARD_W/2])part(group,[px,0,.025],[.07,BOARD_H,.11],frameMaterial);
@@ -60,12 +60,29 @@ export async function createLecture(scene,renderer){
     part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
     for(let j=0;j<4;j++)part(scene,[x-1+j*.15,.39,-10.15],[.1,.025,.025],new THREE.MeshStandardMaterial({color:j%2?'#e6d4a0':'#ebe8d9',roughness:1}));
   }
-  const languageAnchor=new THREE.Object3D();languageAnchor.position.set(37,1.85,-10.1);languageAnchor.name='Bilingual chalk control anchor';scene.add(languageAnchor);
-  part(scene,[37,1.85,-10.42],[.85,.85,.16],metal);
-  const consoleMaterial=new THREE.MeshStandardMaterial({color:'#102b2a',roughness:.28,metalness:.65,emissive:'#167c75',emissiveIntensity:.25});
-  part(scene,[37,1.85,-10.32],[.76,.72,.06],consoleMaterial);
-  const diode=new THREE.MeshBasicMaterial({color:'#82f0d6'});
-  part(scene,[37,2.14,-10.27],[.61,.012,.012],diode);
+  // Three actual, labeled, spring-travel buttons on a modeled wall panel.
+  const consoleButtons=[],consoleTextures=[];
+  part(scene,[37,1.05,-10.46],[.96,1.55,.15],metal);
+  const consoleMaterial=new THREE.MeshStandardMaterial({color:'#283330',roughness:.86,metalness:.12});
+  part(scene,[37,1.05,-10.36],[.88,1.45,.08],consoleMaterial);
+  for(const [i,action] of ['language','roof','auto'].entries()){
+    const button=new THREE.Mesh(new THREE.BoxGeometry(.76,.34,.13),new THREE.MeshStandardMaterial({color:'#574e41',roughness:.9,metalness:.12}));
+    button.name='Physical chalk button '+action;button.position.set(37,1.5-i*.45,-10.245);
+    button.userData={action,pressed:false,restZ:-10.245,lastLabel:''};scene.add(button);
+    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=192;
+    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(texture);
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(.70,.28),new THREE.MeshStandardMaterial({map:texture,roughness:1,metalness:0,envMapIntensity:0}));label.position.z=.067;button.add(label);
+    button.userData.canvas=canvas;button.userData.texture=texture;consoleButtons.push(button);
+  }
+  function setConsoleState({roofOpen=false,automatic=true}={}){
+    const labels=[language==='zh'?'中文  /  EN':'EN  /  中文',roofOpen?'闭合顶盖':'打开顶盖',automatic?'日夜自动 · 开':'恢复自动'];
+    consoleButtons.forEach((b,i)=>{const title=labels[i];if(b.userData.lastLabel===title)return;b.userData.lastLabel=title;
+      const c=b.userData.canvas.getContext('2d');c.fillStyle='#29302a';c.fillRect(0,0,512,192);
+      c.fillStyle=i===2&&automatic?'#9bc1a7':'#bea984';c.fillRect(20,28,10,136);
+      c.fillStyle='#dfcfb6';c.textAlign='center';c.textBaseline='middle';c.font='46px "PingFang SC", sans-serif';c.fillText(title,276,96);b.userData.texture.needsUpdate=true;
+    });
+  }
+  setConsoleState();
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.014,.017,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1}));
   const chalkAxis=new THREE.Vector3(.28,.55,.79).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
@@ -129,7 +146,7 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));if(playing&&!reduced)effectTime+=dt;
+    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.position.z=THREE.MathUtils.damp(b.position.z,b.userData.restZ-(b.userData.pressed?.045:0),24,dt);if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
@@ -171,7 +188,7 @@ export async function createLecture(scene,renderer){
   function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;version++;}
   boards.forEach((_,i)=>draw(i));
   return {
-    update,pages,clock,languageAnchor,
+    update,pages,clock,consoleButtons,setConsoleState,
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
     async setLanguage(value){
       const next=value==='en'?'en':'zh';if(next===language)return;
@@ -185,6 +202,6 @@ export async function createLecture(scene,renderer){
     select,step(delta){select(clock.page+delta);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4)),
-    dispose(){dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
+    dispose(){consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }

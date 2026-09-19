@@ -2,7 +2,10 @@
 // ceiling heights stay physical after the shared site scale is applied.
 export const BUILDING_SCALE=Math.SQRT2;
 export const DECK_Y=.28;
-export const HALL={west:34.8,east:43.2,north:-4.2,south:4.2,boardX:42.7,clearHeight:4.2};
+export const HALL={west:34.8,east:43.2,north:-10,south:10,boardX:42.7,clearHeight:4.2};
+// Physical riser heights in metres, back to front; seats face east (+X).
+export const SEAT_ROWS=[{x:36.2,rise:.36},{x:38.2,rise:.18},{x:40.2,rise:0}];
+export const SEAT_COLUMNS=[-8.65,-7.15,-5.65,-4.15,-2.65,-1.15,1.15,2.65,4.15,5.65,7.15,8.65];
 export const LECTURE_SCALE=.6;
 export const LECTURE_LIFT=.65;
 export function configureLectureRoot(root){
@@ -14,7 +17,7 @@ export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
 // passes through an open-air court, never through the enclosed room floors.
 export const POOL_RECTS=[
   [-22,-14,-24,24],[18,26,-24,24],[-14,18,-24,-16],[-14,18,16,24],
-  [2,5,-16,16],[26,54,-19,-11],[26,54,11,19],[54,62,-19,19]
+  [2,5,-16,16],[26,54,-25.5,-17.5],[26,54,17.5,25.5],[54,62,-25.5,25.5]
 ];
 export const SUNRISE_EDGE=62;
 export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-22,12,29,39],[-35,-23,-2,12]];

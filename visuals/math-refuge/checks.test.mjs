@@ -9,11 +9,33 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=11-open-sea';
-import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=11-open-sea';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=12-tactile';
+import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=12-tactile';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,roofTarget,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
+import {bindPhysicalButtons} from './physical-buttons.js';
+import {platformUnion} from './platform-union.js';
+test('overlapping platform paths become a single surface without depth-fighting',()=>{
+  const {cells,edges}=platformUnion([[0,4,0,2],[1,3,-1,3],[0,4,0,2]]);
+  assert.equal(cells.reduce((sum,[a,b,c,d])=>sum+(b-a)*(d-c),0),12);
+  assert(edges.length>4);
+  for(const [a,b,c,d] of cells)assert(a<b&&c<d);
+});
+
+test('physical buttons click once, cancel drags, and restore camera controls',()=>{
+  const events={},canvas={addEventListener(t,f){events[t]=f;},removeEventListener(t){delete events[t];},setPointerCapture(){},releasePointerCapture(){}};
+  const controls={enabled:true},object={userData:{action:'roof'}},actions=[];
+  const binding=bindPhysicalButtons(canvas,controls,()=>object,a=>actions.push(a));
+  const event=(x=0,id=1)=>({button:0,pointerId:id,clientX:x,clientY:0,preventDefault(){},stopImmediatePropagation(){}});
+  events.pointerdown(event());assert(!controls.enabled);assert(object.userData.pressed);
+  events.pointerup(event(2));assert(controls.enabled);assert(!object.userData.pressed);assert.deepEqual(actions,['roof']);
+  events.pointerdown(event());events.pointerup(event(20));assert.equal(actions.length,1);assert(controls.enabled);
+  events.pointerdown(event());events.pointercancel(event());assert(controls.enabled);assert.equal(actions.length,1);
+  controls.enabled=false;events.pointerdown(event());events.lostpointercapture(event());assert(!controls.enabled);
+  binding.dispose();assert.deepEqual(events,{});
+});
+
 test('chalk skips blank trailing columns and lifts across inter-word gaps',()=>{
   const rows=[[0,0,200,20]],data=new Uint8ClampedArray(220*20*4);
   for(const x of [10,15,20,55,60])data[(8*220+x)*4+3]=255;
@@ -57,7 +79,7 @@ test('pool is one connected nonoverlapping union with an open core and sunrise e
   const {cells,edges}=poolTopology();
   assert(cells.length>10);assert(edges.length>10);
   const area=cells.reduce((sum,[a,b,c,d])=>sum+(b-a)*(d-c),0);
-  assert.equal(area,2128);assert(area/952>2&&area/952<2.5);
+  assert.equal(area,2232);assert(area/952>2&&area/952<2.5);
   for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
     const [a,b,c,d]=cells[i],[e,f,g,h]=cells[j];
     assert(Math.min(b,f)<=Math.max(a,e)||Math.min(d,h)<=Math.max(c,g),'Reflection triangles cannot overlap');
@@ -188,7 +210,16 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
     assert(result.water.isMesh);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
-    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,32);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
+    const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,36);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
+    assert.equal(auditorium.userData.rows,3);assert.equal(HALL.south-HALL.north,20);
+    assert.deepEqual(auditorium.userData.rowRises,[.36,.18,0]);
+    const seatLevels=[...new Set(auditorium.userData.seatPositions.map(p=>p[1]))];assert.equal(seatLevels.length,3);
+    assert(Math.abs((seatLevels[0]-seatLevels[1])*BUILDING_SCALE-.18)<1e-10);
+    assert(scene.getObjectByName('Warm woven seminar carpet').material.roughness===1);
+    assert.equal(scene.getObjectByName('Central carpeted stair aisle').userData.stepHeightMetres,.09);
+    assert.equal(scene.getObjectByName('Transparent seminar side elevations').userData.northOpaqueWall,false);
+    const paving=scene.getObjectByName('Honed limestone terrace paving').userData;
+    assert(paving.largeFormat&&paving.slabs>100);assert(paving.jointMetres<.007);assert.equal(paving.roughness,.96);
     assert(scene.getObjectByName('Small seminar lectern'));assert.equal(auditorium.userData.architectureScale,BUILDING_SCALE);
     assert(Math.abs(BUILDING_SCALE**2-2)<1e-12);
     assert(auditorium.userData.seatPositions.every(p=>p[0]>HALL.west&&p[0]<HALL.boardX&&Math.abs(p[2])>=.75));
@@ -215,6 +246,19 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     }
     let instances=0,triangles=0;
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
+    const backs=allObjects.filter(o=>o.geometry?.name==='Reclined wraparound seat shell');
+    assert.equal(backs.length,1);assert.equal(backs[0].count,36);
+    const back=backs[0].geometry.attributes.position;
+    assert(back.getZ(20)>back.getZ(10)+.15,'Seat sides wrap forward');
+    assert(back.getZ(220)<back.getZ(10)-.17,'Seat top reclines backward');
+    assert(result.water.material.fragmentShader.includes('float rf0 = 0.06;'));
+    assert(result.water.material.fragmentShader.includes('70.0, 0.22, 0.4'));
+    const platform=scene.getObjectByName('Unified platform top 0');assert(platform?.isMesh);
+    const cells=platform.userData.cells;
+    for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++){
+      const [a,b,c,d]=cells[i],[e,f,g,h]=cells[j];
+      assert(Math.min(b,f)-Math.max(a,e)<1e-7||Math.min(d,h)-Math.max(c,g)<1e-7,'No coplanar overlapping platform tops');
+    }
     for(const object of allObjects){
       if(!object.geometry)continue;
       assert([...object.geometry.attributes.position.array].every(Number.isFinite));
@@ -349,7 +393,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=11-open-sea',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=11-open-sea',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=12-tactile',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=12-tactile',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -363,6 +407,10 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const boards=scene.children.filter(o=>o.name.startsWith('Sliding chalkboard'));
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.includes('double complex'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
+    for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
+    assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','roof','auto']);
+    const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert(button.position.z<rest);button.userData.pressed=false;
+    lecture.setConsoleState({roofOpen:true,automatic:false});assert.equal(lecture.consoleButtons[1].userData.lastLabel,'闭合顶盖');
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));

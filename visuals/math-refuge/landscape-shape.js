@@ -1,5 +1,5 @@
 // Open-ocean site: no above-water terrain or natural shore vegetation.
-import {inBuilding,inPool,inGarden} from './site-layout.js?v=11-open-sea';
+import {inBuilding,inPool,inGarden} from './site-layout.js?v=12-tactile';
 export const seaLevel=-.25;
 const mix=(a,b,t)=>a+(b-a)*t;
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};

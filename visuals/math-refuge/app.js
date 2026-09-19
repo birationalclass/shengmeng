@@ -4,16 +4,17 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=11-open-sea';
-import {createLecture} from './lecture.js?v=11-open-sea';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,POOL_LEVEL} from './site-layout.js?v=11-open-sea';
-import {createChalkReader} from './chalk-reader.js?v=11-open-sea';
+import {createRetreat} from './scene.js?v=12-tactile';
+import {createLecture} from './lecture.js?v=12-tactile';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,POOL_LEVEL} from './site-layout.js?v=12-tactile';
+import {createChalkReader} from './chalk-reader.js?v=12-tactile';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=11-open-sea';
-import {RetreatTime,roofTarget} from './retreat-time.js?v=11-open-sea';
-import {constrainAboveWater} from './camera-bounds.js?v=11-open-sea';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=12-tactile';
+import {RetreatTime,roofTarget} from './retreat-time.js?v=12-tactile';
+import {constrainAboveWater} from './camera-bounds.js?v=12-tactile';
+import {bindPhysicalButtons} from './physical-buttons.js?v=12-tactile';
 const sceneTime=new RetreatTime();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -90,7 +91,7 @@ function resize(){
     // an already allocated WebGL framebuffer at the same dimensions.
     for(const target of [composer.renderTarget1,composer.renderTarget2])if(target.samples!==profile.samples){target.samples=profile.samples;target.dispose();}
     composer.setPixelRatio(profile.direct?1:profile.pixelRatio);composer.setSize(innerWidth,innerHeight);
-    bloom.enabled=profile.bloom;
+    bloom.enabled=false; // Chalk and stone must never acquire a screen-space halo.
   }
   renderer.shadowMap.enabled=profile.shadows;renderer.shadowMap.needsUpdate=true;
   if(retreat&&retreat.sun.shadow.mapSize.x!==profile.shadowSize){retreat.sun.shadow.mapSize.set(profile.shadowSize,profile.shadowSize);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;}
@@ -122,16 +123,16 @@ function tick(stamp){
   constrainAboveWater(camera,controls.target,POOL_LEVEL*BUILDING_SCALE);
   if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
   updateSceneTime(dt);
-  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();positionBoardConsole();}
+  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
   if(profile.direct)renderer.render(scene,camera);else composer.render();
 }
 try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,powerPreference:'high-performance'});
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
-  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.08,12000);
+  camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.2,12000);
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
   cameraIntent=bindCameraIntent(document,$('world'),stopTour);
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
@@ -145,12 +146,13 @@ try{
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await createLecture(lectureRoot,renderer);
   reader=createChalkReader(lecture);
+  installPhysicalControls();
   for(const [i,page] of lecture.pages.entries()){
     const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${page.source} · ${page.title}`;$('lecturePage').append(option);
   }
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.18,.4,1.1);composer.addPass(bloom);composer.addPass(new OutputPass());
+  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());
   setQuality();updateLabels();time=.85;applyShot(0);$('transition').style.opacity=0;
   // Shader compilation failures are reported, not hidden behind an endless loader.
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
@@ -187,25 +189,37 @@ function updateSceneTime(dt){
     renderer.shadowMap.needsUpdate=true;$('light').value=String(sceneTime.hour);
     const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
   }
-  const target=roofTarget(sceneTime.hour,sceneTime.mode);
-  for(const id of ['boardRoof','lectureRoof'])$(id).textContent=target>.5?'闭合屋顶':'打开屋顶';
-  for(const id of ['boardRoofAuto','lectureRoofAuto']){$(id).setAttribute('aria-pressed',String(sceneTime.mode==='auto'));$(id).textContent=sceneTime.mode==='auto'?'日夜自动 · 开':'恢复日夜自动';}
+  lecture?.setConsoleState({roofOpen:roofTarget(sceneTime.hour,sceneTime.mode)>.5,automatic:sceneTime.mode==='auto'});
 }
-function positionBoardConsole(){
-  const anchor=lecture.languageAnchor.getWorldPosition(new THREE.Vector3()),p=anchor.clone().project(camera),panel=$('boardConsole');
-  panel.hidden=!($('chalkReader').hidden&&$('lecturePanel').hidden&&$('settings').hidden&&p.z>-1&&p.z<1&&Math.abs(p.x)<1.25&&Math.abs(p.y)<1&&camera.position.distanceTo(anchor)<22&&camera.position.x<anchor.x&&camera.position.y<4.5);
-  if(!panel.hidden){panel.style.left=Math.max(72,Math.min(innerWidth-72,(p.x+1)*innerWidth/2))+'px';panel.style.top=Math.max(150,Math.min(innerHeight-165,(1-p.y)*innerHeight/2))+'px';}
-}
+let changingLanguage=false;
 async function switchChalkLanguage(){
-  if(!lecture)return;const buttons=[$('boardLanguage'),$('lectureLanguage')];buttons.forEach(b=>b.disabled=true);
+  if(!lecture||changingLanguage)return;changingLanguage=true;
   try{await lecture.setLanguage(lecture.language==='zh'?'en':'zh');
-    for(const [i,option] of [...$('lecturePage').options].entries()){const copy=lecture.copy(i);option.textContent=`${i+1}. ${copy.source} · ${copy.title}`;}
-    buttons.forEach(b=>b.textContent=lecture.language==='zh'?'中文 → EN':'EN → 中文');reader?.update();
-  }catch(error){$('lectureStatus').textContent=error.message;}finally{buttons.forEach(b=>b.disabled=false);}
+    for(const [i,option] of [...$('lecturePage').options].entries()){const copy=lecture.copy(i);option.textContent=`${i+1}. ${copy.source} · ${copy.title}`;}reader?.update();
+  }catch(error){$('lectureStatus').textContent=error.message;}finally{changingLanguage=false;}
 }
-for(const id of ['boardLanguage','lectureLanguage'])$(id).addEventListener('click',switchChalkLanguage);
-for(const id of ['boardRoof','lectureRoof'])$(id).addEventListener('click',()=>{sceneTime.mode=roofTarget(sceneTime.hour,sceneTime.mode)>.5?'closed':'open';});
-for(const id of ['boardRoofAuto','lectureRoofAuto'])$(id).addEventListener('click',()=>{sceneTime.mode='auto';});
+function installPhysicalControls(){
+  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
+  const hit=e=>{
+    const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
+    scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
+    const candidate=ray.intersectObjects(lecture.consoleButtons,false)[0];if(!candidate||candidate.distance>15)return null;
+    // Ignore transparent glazing, but opaque roof/walls must block a press.
+    for(const h of ray.intersectObjects(scene.children,true)){
+      if(h.distance>=candidate.distance-.015)break;
+      let visible=true;for(let p=h.object;p;p=p.parent)if(!p.visible)visible=false;
+      if(!visible||h.object.parent===candidate.object||h.object===candidate.object)continue;
+      const material=h.object.material;if(material?.transparent&&material.opacity<.5)continue;
+      if(h.object.isMesh)return null;
+    }
+    return candidate.object;
+  };
+  bindPhysicalButtons($('world'),controls,hit,action=>{
+    if(action==='language')switchChalkLanguage();
+    else if(action==='roof')sceneTime.mode=roofTarget(sceneTime.hour,sceneTime.mode)>.5?'closed':'open';
+    else if(action==='auto')sceneTime.mode='auto';
+  });
+}
 $('fullscreen').addEventListener('click',async()=>{
   try{
     if(document.fullscreenElement||document.webkitFullscreenElement){
