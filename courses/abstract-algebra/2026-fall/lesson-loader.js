@@ -1,10 +1,10 @@
 /* Fetch only the requested section. The parent owns this document's lifetime. */
 (()=>{
   'use strict';
-  const version='20260919-course-polish-v1';
+  const version='20260919-rings-v1';
   const first=location.pathname.includes('/lesson-1/');
   const requested=new URLSearchParams(location.search).get('section');
-  const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7])$/;
+  const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7]|3\.[1-6]|4\.[1-5])$/;
   const id=valid.test(requested)?requested:first?'1.1':'1.3';
   const controller=new AbortController();
   let disposed=false;
@@ -43,7 +43,7 @@
         window.GroupCourseContent={[id]:payload.book};
         window.GroupCourseExercises={[id]:payload.exercises};
         window.GroupTextbookReferences={[id]:payload.references};
-        scripts=['lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
+        scripts=[...(Number(id[0])>=3?['ring-models.js','ring-visuals.js']:['models.js','visuals.js']),'lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
       }
       for(const src of scripts)await script(`${src}?v=${version}`);
       if(disposed)return;
