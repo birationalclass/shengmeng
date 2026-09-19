@@ -41,8 +41,21 @@
   let film = null, initialization = null, visibilityTimer = 0, stage = 'loading', ownedFullscreen = false, entryVersion = 0;
   toggle.disabled=true;
   const startButton=root.querySelector('[data-start-animation]');
+  const languageButton=root.querySelector('[data-opening-language]');
+  const skipButton=root.querySelector('[data-opening-next]');
+  let narrationLanguage=window.CourseLanguage?.language==='en'?'en':'zh';
+  try{const saved=localStorage.getItem('courseOpeningNarrationLanguage.v1');if(saved==='zh'||saved==='en')narrationLanguage=saved;}catch(_){}
+  function syncOpeningControls(){
+    root.dataset.narrationLanguage=narrationLanguage;
+    if(languageButton){languageButton.textContent=narrationLanguage==='en'?'中文':'EN';languageButton.setAttribute('aria-label',narrationLanguage==='en'?'左侧台词切换为中文':'Switch left narration to English');}
+    if(skipButton){const target=stage==='playing'?'Galois':stage==='galois'?'Algebra I':'课程';skipButton.dataset.target=target;skipButton.querySelector('span').textContent=stage==='outro'?'进入课程':'跳过 · '+target;skipButton.setAttribute('aria-label',stage==='outro'?'进入课程':'跳过当前阶段，进入 '+target);}
+  }
+  languageButton?.addEventListener('click',event=>{event.stopPropagation();narrationLanguage=narrationLanguage==='en'?'zh':'en';try{localStorage.setItem('courseOpeningNarrationLanguage.v1',narrationLanguage);}catch(_){}film?.setNarrationLanguage(narrationLanguage);syncOpeningControls();});
+  skipButton?.addEventListener('click',event=>{event.stopPropagation();if(stage==='playing')requestCourseEntry();else if(stage==='galois')finishGalois();else if(stage==='outro')leaveOpening();});
+  syncOpeningControls();
   function effective() {return {complexity:settings.complexityEnabled?settings.complexityAmount:0,depth:settings.depthEnabled?1:0,wander:settings.wanderEnabled?settings.wanderAmount:0,camera:!['galois','outro','departing'].includes(stage)&&settings.cameraEnabled?1:0,background:settings.backgroundEnabled?1:0,spotlight:settings.spotlightEnabled?1:0,radiation:!['outro','departing'].includes(stage)&&settings.radiationEnabled?settings.radiationAmount:0,spin:!['galois','outro','departing'].includes(stage)&&settings.spinEnabled?settings.spinSpeed*spinSpeedScale*Math.PI/180:0};}
   function syncSettings() {
+    syncOpeningControls();
     root.dataset.settings = JSON.stringify(settings);
     root.style.setProperty('--title-scale',settings.titleScale/100);root.style.setProperty('--quote-scale',settings.quoteScale/100);root.style.setProperty('--text-fade',settings.textFade+'s');
     panel.querySelectorAll('[data-appearance-range]').forEach(input=>{
@@ -127,7 +140,7 @@
     const main=document.getElementById('main');if(main){main.setAttribute('tabindex','-1');main.focus({preventScroll:true});}
   }
   window.CourseOpeningExit=leaveOpening;
-  window.addEventListener('course-language',()=>{if(stage==='outro')film?.outro();});
+  // Opening language is local to the left narration; titles, audio and the course language stay independent.
   async function openOpening() {
     if(root.dataset.contextLost==='true')return;
     const alreadyLoading=dialog.open&&dialog.classList.contains('opening-loading');
@@ -167,7 +180,7 @@
     ownedFullscreen=document.fullscreenElement===document.documentElement||ownedFullscreen;
     stage='playing';root.dataset.stage=stage;
     dialog.classList.remove('opening-loading','opening-awaiting-start');dialog.classList.add('opening-ready');
-    toggle.disabled=false;dialog.focus({preventScroll:true});film.play();
+    toggle.disabled=false;dialog.focus({preventScroll:true});film.play();syncOpeningControls();
   }
   dialog.addEventListener('click',()=>{if(stage==='ready')startAnimation();else if(stage==='load-error')openOpening();});
   dialog.addEventListener('keydown',event=>{
@@ -238,7 +251,7 @@
     }
     const program = link(materials.vertex, materials.fragment), background = link(materials.backgroundVertex, materials.backgroundFragment);
     const backdrop=window.CourseOpeningBackdrop,lettering=backdrop.create(gl),letterProgram=link(backdrop.vertex,backdrop.fragment);
-    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes.map(item=>({...item,language:'zh'}))]);
+    const narration=window.CourseOpeningNarration.create(quote,[...backdrop.scenes,...story.nodes.map(item=>({...item,language:'zh'}))],{language:narrationLanguage});
     const letterLoc={pos:gl.getAttribLocation(letterProgram,'pos'),visibility:gl.getUniformLocation(letterProgram,'visibility'),texture:gl.getUniformLocation(letterProgram,'lettering'),sweepTime:gl.getUniformLocation(letterProgram,'sweepTime'),sweepEnabled:gl.getUniformLocation(letterProgram,'sweepEnabled')};
     let captionOpacity=0;const impulses=window.CourseOpeningImpulse.create();let clickCandidate=null;
     const quad = buffer(new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
@@ -604,7 +617,7 @@
       for(const key of Object.keys(visual)){visual[key]+=(target[key]-visual[key])*blend;if(Math.abs(visual[key]-target[key])<.0001)visual[key]=target[key];}
       const damping=1-Math.exp(-cameraRig.manual.responsePerSecond*dt/1000);
       orbit.pitch+=(orbit.targetPitch-orbit.pitch)*damping;orbit.yaw+=(orbit.targetYaw-orbit.yaw)*damping;
-      if(!outro&&orbit.pointer===null){
+      if(!outro){
         const free=1-portraitWeight(),topology=topologyWeight();
         if(free===1&&(topology===0||topology===1))spinAngle=Math.atan2(Math.sin(spinAngle),Math.cos(spinAngle));
         const angle=dt/1000*visual.spin*timeline.state().direction*free;
@@ -613,7 +626,7 @@
         if(cameraBridge){cameraBridge.elapsed+=dt;if(cameraBridge.elapsed>=cameraBridge.duration)cameraBridge=null;}
       }
       if(outro){advanceOutro(dt);if(!active)return;}
-      if(!outro&&sequence&&orbit.pointer===null&&!window.CourseOpeningVoice?.holdsScene()){
+      if(!outro&&sequence&&!window.CourseOpeningVoice?.holdsScene()){
         if(entrance){elapsed+=dt;progress=Math.max(0,Math.min(1,(elapsed-entranceHold)/entranceDuration));if(progress===1){entrance=false;entrancePose=null;pair='intro';syncTimeline(timeline.state());}}
         else {
           const music=window.CourseOpeningAudio?.scoreStatus();
@@ -632,7 +645,7 @@
       const captionTarget=caption.classList.contains('is-visible')?1:0;captionOpacity+=(captionTarget-captionOpacity)*(1-Math.exp(-dt/(textFadeMs()/3)));
       if(!outro){
         narration.setScene(narrationIndex(),timeline.state().cycles);
-        window.CourseOpeningVoice?.scene(scene,captionTarget===1&&!entrance,timeline.state().direction,timeline.state().cycles,narration.language==='en');
+        window.CourseOpeningVoice?.scene(scene,captionTarget===1&&!entrance,timeline.state().direction,timeline.state().cycles,true);
         narration.tick(dt,captionTarget===1&&!entrance,{fadeMs:reduce?0:textFadeMs(),englishMs:8000,holdEnglish:Boolean(window.CourseOpeningVoice?.holdsScene())});
       }
       const scoredHere=!outro&&!entrance&&storyScored&&Boolean(galoisState);
@@ -661,7 +674,7 @@
     function refresh(){if(!outro)rebuildDurations();if(!settings.depthEnabled){endOrbit();orbit.targetPitch=orbit.targetYaw=0;}draw();queue();}
     let observer;
     function onVisibility(){previous=0;if(document.hidden){cancelAnimationFrame(raf);raf=0;}else queue();}
-    film={play,stop,refresh,direction,galois:beginGalois,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
+    film={play,stop,refresh,direction,setNarrationLanguage(value){narration.setLanguage(value);draw();queue();},galois:beginGalois,outro:beginOutro,depart,outroReady:()=>outro?.phase==='hold',resetPolyhedra(){geometry.resetPolyhedra();upload();},dispose(){stop();root.removeEventListener('pointerdown',startClick);root.removeEventListener('pointermove',moveClick);root.removeEventListener('pointerup',releaseClick);root.removeEventListener('pointercancel',cancelClick);root.removeEventListener('lostpointercapture',cancelClick);lettering.dispose();if(observer)observer.disconnect();document.removeEventListener('visibilitychange',onVisibility);root.removeEventListener('pointerdown',beginOrbit);root.removeEventListener('pointermove',moveOrbit);for(const name of ['pointerup','pointercancel','lostpointercapture'])root.removeEventListener(name,endOrbit);}};
     root._openingPreview={
       show(index){const slot=order.indexOf(index);if(slot<0)throw new RangeError('Figure is not selected');stop();entrance=false;sequence=false;active=true;pair='preview';syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+holds[slot]/2));draw();queue();},
       storyNode(index){const slot=order.indexOf(9);if(slot<0)throw new RangeError('Galois is not selected');stop();entrance=false;sequence=false;active=true;syncTimeline(timeline.seek(routeCycle*timeline.duration+starts[slot]+story.atNode(index,storyHoldMs,storyMorphMs,storyScored)));draw();queue();},

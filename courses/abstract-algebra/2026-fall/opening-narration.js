@@ -1,5 +1,6 @@
-/* Left-hand narration shares the ring's type scale. Longer passages turn pages
-   at that size, preserving every word and the English-then-Chinese sequence. */
+/* Left-hand narration shares the ring's type scale and paginates long passages.
+   Explicit language selection stays fixed; callers without a preference retain
+   the legacy English-then-Chinese sequence. */
 (() => {
   'use strict';
   function paginate(text,fits,language){
@@ -15,11 +16,12 @@
     }
     return pages.length?pages:[''];
   }
-  window.CourseOpeningNarration={paginate,create(element,scenes){
+  window.CourseOpeningNarration={paginate,create(element,scenes,options={}){
     let scene=-1,cycle=0,language='en',phase='reading',elapsed=0,target='zh',fadeElapsed=0;
     let pages=[''],page=0,pageElapsed=0,layoutPending=false;
+    let preferred=options.language==='en'?'en':options.language==='zh'?'zh':null;
     const chineseOnly=()=>scene>=0&&scenes[scene].language==='zh';
-    const initialLanguage=()=>chineseOnly()?'zh':'en';
+    const initialLanguage=()=>preferred||(chineseOnly()?'zh':'en');
     const clearFade=()=>{element.classList.remove('is-language-changing');element.classList.remove('is-page-changing');};
     function layout(){
       const item=scenes[scene],full=(item.verse||item)[language]||'';
@@ -61,7 +63,7 @@
     function tick(dt,shown,{fadeMs=2400,holdEnglish=false,englishMs=8000}={}){
       if(scene<0||!shown)return;
       if(layoutPending)layout();
-      if(!chineseOnly()&&holdEnglish&&language!=='en'&&(phase!=='fading'||target!=='en'))fadeTo('en');
+      if(!preferred&&!chineseOnly()&&holdEnglish&&language!=='en'&&(phase!=='fading'||target!=='en'))fadeTo('en');
       if(phase==='fading'){
         if(language==='en'&&target==='zh'&&holdEnglish){phase='reading';clearFade();return;}
         fadeElapsed+=dt;
@@ -73,9 +75,9 @@
         elapsed+=dt;pageElapsed+=dt;
         const pageHold=language==='en'?englishMs/pages.length:Math.min(4000,10000/pages.length);
         if(page<pages.length-1&&pageElapsed>=pageHold){phase='paging';fadeElapsed=0;element.classList.add('is-page-changing');}
-        else if(!chineseOnly()&&language==='en'&&page===pages.length-1&&elapsed>=englishMs&&pageElapsed>=(pages.length>1?pageHold:0)&&!holdEnglish)fadeTo('zh');
+        else if(!preferred&&!chineseOnly()&&language==='en'&&page===pages.length-1&&elapsed>=englishMs&&pageElapsed>=(pages.length>1?pageHold:0)&&!holdEnglish)fadeTo('zh');
       }
     }
-    return{setScene,tick,reset(){scene=-1;phase='reading';clearFade();},get language(){return language;},get needsFrames(){return scene>=0&&(layoutPending||page<pages.length-1||phase!=='reading'||(!chineseOnly()&&language==='en'));}};
+    return{setScene,tick,setLanguage(value){preferred=value==='en'?'en':'zh';language=preferred;phase='reading';elapsed=0;if(scene>=0)render();},reset(){scene=-1;phase='reading';clearFade();},get language(){return language;},get needsFrames(){return scene>=0&&(layoutPending||page<pages.length-1||phase!=='reading'||(!preferred&&!chineseOnly()&&language==='en'));}};
   }};
 })();

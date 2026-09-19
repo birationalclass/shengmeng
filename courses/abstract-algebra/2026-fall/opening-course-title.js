@@ -1,13 +1,12 @@
-/* Shared language and title geometry for the opening and the course page. */
+/* Course UI labels and shared title geometry; narration has its own language. */
 (()=>{
   'use strict';
   const en=()=>window.CourseLanguage?.language==='en';
   const t=(zh,english)=>en()?english:zh;
   window.CourseLanguage.add({'加载背景音乐':'Loading music','准备中英文字体':'Preparing Chinese and English fonts','准备沙粒动画':'Preparing the sand animation','音乐加载未完成，请重试':'Music could not finish loading. Please retry.','字体加载未完成，请重试':'Fonts could not finish loading. Please retry.','点击或按空格 / 回车 · 重新加载':'Click, Space or Enter · retry','准备完成':'Ready','生成图形':'Building shapes','准备沙粒':'Preparing grains','准备呈现':'Preparing the scene','即将到来':'Upcoming'});
   function labels(){
-    const button=document.querySelector('[data-opening-language]');
-    if(button){button.textContent=en()?'中文':'EN';button.setAttribute('aria-label',t('切换到英文','Switch to Chinese'));}
-    const copy={'.loading-hint':['正在准备动画','Preparing the animation'],'.ready-hint':['点击或按空格 / 回车，开始动画','Click, Space or Enter · start animation'],'.galois-hint':['按空格或回车跳过伽罗瓦终章','Space or Enter · skip the Galois epilogue'],'.touch-hint':['在右上角设置中进入伽罗瓦终章','Open settings to enter the Galois epilogue']};
+    // The animation controller owns its independent narration-language button.
+    const copy={'.loading-hint':['正在准备动画','Preparing the animation'],'.ready-hint':['点击或按空格 / 回车，开始动画','Click, Space or Enter · start animation'],'.galois-hint':['按空格或回车跳过伽罗瓦终章','Space or Enter · skip the Galois epilogue'],'.touch-hint':['右下角可跳至伽罗瓦终章','Use the lower-right button to skip to Galois']};
     for(const [selector,pair] of Object.entries(copy)){const el=document.querySelector('#courseOpening '+selector);if(el)el.textContent=t(...pair);}
     document.querySelector('.hero h1')?.setAttribute('lang',en()?'en':'zh-CN');
     document.querySelector('.course-author')?.setAttribute('lang',en()?'en':'zh-CN');

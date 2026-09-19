@@ -3,6 +3,8 @@
   const dialog = document.getElementById('courseOpening');
   const audio = document.getElementById('openingMusic');
   const button = document.getElementById('openingMusicToggle');
+  // A shared note silhouette for sound-on and sound-off, with a clear diagonal slash.
+  button.innerHTML='<svg class="opening-music-symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="music-notes"><path d="M9 17.5V5.5l11-2v12M9 8.5l11-2"/><ellipse cx="6" cy="17.5" rx="3" ry="2.5"/><ellipse cx="17" cy="15.5" rx="3" ry="2.5"/></g><path class="music-mute-slash" d="M3 3l18 18"/></svg>';
   const key = 'courseOpeningMusic.v1';
   let enabled = true, active = false, blocked = false, failed = false, generation = 0;
   try { enabled = localStorage.getItem(key) !== 'off'; } catch (_) {}
@@ -13,9 +15,10 @@
   function wanted() { return active && dialog.open && !document.hidden && enabled && !failed; }
   function sync() {
     const track=score.status(),playing = wanted() && (!audio.paused||track.scorePlaying||track.scoreOwnsMusic);
-    button.textContent = failed ? '音乐暂不可用' : blocked && enabled ? '开启音乐' : playing ? '音乐 · 开' : '音乐 · 关';
+    button.dataset.sound=playing?'on':'off';
     button.setAttribute('aria-label', failed ? '音乐暂不可用' : playing ? '关闭入场音乐' : '开启入场音乐');
     button.setAttribute('aria-pressed', String(playing));
+    button.title=failed?'音乐暂不可用':playing?'关闭背景音乐':'开启背景音乐';
     button.disabled = failed;
     button.classList.toggle('needs-gesture', blocked && enabled);
     dialog.dataset.music = failed ? 'unavailable' : playing ? 'playing' : blocked && enabled ? 'awaiting-gesture' : 'paused';

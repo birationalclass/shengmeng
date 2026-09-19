@@ -303,3 +303,32 @@ button[data-replay-opening]{background:none;border:0;cursor:pointer;font:inherit
  #courseOpening .opening-quote[data-kind="ring-verse"][lang="zh-CN"]{line-height:2.2}
 }
 @media(prefers-reduced-motion:reduce){#courseOpening .opening-quote.is-page-changing{transition:none;transform:none}}
+
+/* Quiet, persistent mobile controls; 24px symbols inside 48px touch targets. */
+#courseOpening .opening-music-toggle{width:48px;height:48px;min-height:48px;padding:12px;display:grid;place-items:center;border-radius:50%;border-color:#d8bd8640;background:#17151080;color:#e0c795;opacity:.65;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+#courseOpening .opening-music-symbol{width:24px;height:24px;overflow:visible}
+#courseOpening .music-mute-slash{opacity:1;stroke:#e0c795;paint-order:stroke;filter:drop-shadow(0 0 1.5px #171510)}
+#courseOpening [data-sound=on] .music-mute-slash{opacity:0}
+#courseOpening [data-sound=off] .music-notes{opacity:.5}
+#courseOpening .opening-music-toggle:focus-visible,#courseOpening .opening-stage-skip:focus-visible{outline:2px solid #e0c795;outline-offset:5px}
+#courseOpening .opening-stage-skip{display:none;position:absolute;z-index:15;right:max(20px,calc(env(safe-area-inset-right) + 12px));bottom:max(22px,calc(env(safe-area-inset-bottom) + 12px));min-height:48px;padding:11px 15px 11px 18px;align-items:center;gap:14px;border:1px solid #d8bd8650;border-radius:28px;background:#1715109c;color:#e0c795;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:400 13px/1.5 OpeningSans,OpeningChinese,sans-serif;letter-spacing:.04em;cursor:pointer}
+#courseOpening .opening-stage-skip svg{width:21px;height:21px;flex:none}
+#courseOpening .opening-stage-skip:hover{border-color:#e0c7959c;background:#2b2419cc}
+@media(max-width:760px),(pointer:coarse){
+ #courseOpening .opening-music-toggle{top:max(15px,calc(env(safe-area-inset-top) + 8px));left:max(16px,calc(env(safe-area-inset-left) + 10px));bottom:auto;opacity:1}
+ #courseOpening #symmetry-particle-studies:is([data-stage=playing],[data-stage=galois],[data-stage=outro]) .opening-stage-skip{display:flex}
+}
+#courseOpening.opening-loading .opening-music-toggle,#courseOpening.opening-awaiting-start .opening-music-toggle{display:none}
+
+@media(max-width:760px),(pointer:coarse){
+ #courseOpening #symmetry-particle-studies .opening-music-toggle{top:max(15px,calc(env(safe-area-inset-top) + 8px))}
+ #courseOpening #symmetry-particle-studies:is([data-stage=playing],[data-stage=galois],[data-stage=outro]) .opening-enter-hint{display:none}
+ #courseOpening #symmetry-particle-studies .opening-galois-timeline{bottom:max(86px,calc(env(safe-area-inset-bottom) + 76px))}
+ #courseOpening #symmetry-particle-studies.is-galois-story .opening-caption{bottom:max(155px,calc(env(safe-area-inset-bottom) + 145px))}
+}
+
+/* Share the film's existing 2.4-second pointer-idle state. */
+#courseOpening .opening-language{opacity:.22;transition:opacity .35s ease,border-color .35s ease;min-height:48px}
+#courseOpening.has-pointer-controls .opening-language,#courseOpening .opening-language:hover,#courseOpening .opening-language:focus-visible{opacity:1}
+@media(pointer:coarse){#courseOpening .opening-language{opacity:.8}}
+@media(prefers-reduced-motion:reduce){#courseOpening .opening-language{transition:none}}

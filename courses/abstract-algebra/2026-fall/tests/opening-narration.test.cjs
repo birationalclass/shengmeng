@@ -33,3 +33,14 @@ for(let i=0;i<2;i++){
 }
 chinese.setScene(2,0);assert.equal(element.lang,'en','ordinary scenes keep the bilingual sequence');chinese.tick(8000,true);chinese.tick(2400,true);assert.equal(element.lang,'zh-CN');
 console.log('PASS: ordinary scenes retain English/Chinese fading and voice holds; Chinese-only narration stays Chinese on entry, cycles, voice holds and replay');
+// Explicit opening language affects only this narrator, persists across shots,
+// and cannot be overridden by automatic English voice timing or Chinese defaults.
+const selected=window.CourseOpeningNarration.create(element,chineseScenes,{language:'en'});
+selected.setScene(0);assert.equal(element.textContent,chineseScenes[0].en);
+selected.tick(90000,true);assert.equal(selected.language,'en');
+selected.setLanguage('zh');assert.equal(element.textContent,chineseScenes[0].zh);
+selected.tick(90000,true,{holdEnglish:true});assert.equal(selected.language,'zh');
+selected.setScene(1);assert.equal(selected.language,'zh');
+selected.setLanguage('en');assert.equal(element.textContent,chineseScenes[1].verse.en);
+selected.setScene(2);selected.tick(90000,true);assert.equal(selected.language,'en');
+console.log('PASS: explicit subtitle language persists without automatic switching');
