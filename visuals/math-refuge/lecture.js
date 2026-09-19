@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import {LectureClock,boardHeights,PHASE_SECONDS} from './lecture-state.js?v=7-garden';
-import {inkGuides,rowReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=7-garden';
+import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=10-offshore';
+
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=10-offshore';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -8,21 +10,25 @@ export async function createLecture(scene,renderer){
   const response=await fetch('./assets/chalk/pages.json?v=5-mobile');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
-  const cache=new Map(),pending=new Map(),guides=new Map();let loadingError=null,version=0;
+  const cache=new Map(),pending=new Map(),guides=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
+  if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin')]);
   function load(index){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
     if(pending.has(index))return pending.get(index);
+    const epoch=generation,lang=language;
     const job=new Promise((resolve,reject)=>{
       const image=new Image();image.onload=()=>{
-        cache.set(index,image);pending.delete(index);version++;
-        const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});sampleCtx.drawImage(image,0,0);
-        try{if(sampleCtx.getImageData)guides.set(index,inkGuides(sampleCtx.getImageData(0,0,W,H),pages[index].rows));}catch{ /* Column reveal still works if pixel readback is unavailable. */ }
+        if(epoch!==generation){resolve(null);return;}
+        const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
+        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image);pageRows.set(index,rows);
+        cache.set(index,sample);pending.delete(index);version++;
+        try{if(sampleCtx.getImageData)guides.set(index,inkGuides(sampleCtx.getImageData(0,0,W,H),rows));}catch{ /* Column reveal still works if pixel readback is unavailable. */ }
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
-        for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);}
-        resolve(image);
-      };image.onerror=()=>{pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].asset+'?v=5-mobile';
+        for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);pageRows.delete(key);}
+        resolve(sample);
+      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=5-mobile';
     });pending.set(index,job);return job;
   }
   await load(0);
@@ -54,6 +60,12 @@ export async function createLecture(scene,renderer){
     part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
     for(let j=0;j<4;j++)part(scene,[x-1+j*.15,.39,-10.15],[.1,.025,.025],new THREE.MeshStandardMaterial({color:j%2?'#e6d4a0':'#ebe8d9',roughness:1}));
   }
+  const languageAnchor=new THREE.Object3D();languageAnchor.position.set(37,1.85,-10.1);languageAnchor.name='Bilingual chalk control anchor';scene.add(languageAnchor);
+  part(scene,[37,1.85,-10.42],[.85,.85,.16],metal);
+  const consoleMaterial=new THREE.MeshStandardMaterial({color:'#102b2a',roughness:.28,metalness:.65,emissive:'#167c75',emissiveIntensity:.25});
+  part(scene,[37,1.85,-10.32],[.76,.72,.06],consoleMaterial);
+  const diode=new THREE.MeshBasicMaterial({color:'#82f0d6'});
+  part(scene,[37,2.14,-10.27],[.61,.012,.012],diode);
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.014,.017,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1}));
   const chalkAxis=new THREE.Vector3(.28,.55,.79).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
@@ -86,12 +98,12 @@ export async function createLecture(scene,renderer){
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0);const image=cache.get(slot.page);
     if(image){
-      const rows=pages[slot.page].rows;
+      const rows=pageRows.get(slot.page)||pages[slot.page].rows;
       // Reveal each complete mathematical row left to right, preserving exact
       // SVG fractions/superscripts. The grain is deterministic, never flickering.
       rows.forEach(([x,y,w,h],row)=>{
-        const p=rowReveal(slot.progress,row,rows.length);
-        if(p>0){ctx.save();ctx.beginPath();ctx.rect(x,y,w*p,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
+        const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
+        if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
       });
       ctx.drawImage(image,0,580,W,60,0,580,W,60);ctx.drawImage(dust,0,0);
       if(erasing){
@@ -137,7 +149,7 @@ export async function createLecture(scene,renderer){
     chalk.visible=playing&&!reduced&&ready&&clock.phase==='write';eraser.visible=playing&&!reduced&&ready&&clock.phase==='erase';
     if(chalk.visible){
       if(lastWritePage!==clock.page){lastWritePage=clock.page;previousTip=null;if(chalkLength(wear)<.06)wear=0;}
-      const pose=writingPose(pages[clock.page].rows,clock.progress,guides.get(clock.page));positionTool(chalk,pose.x,pose.y);chalk.position.z+=pose.contact?0:.055+pose.lift;
+      const pose=writingPose(pageRows.get(clock.page)||pages[clock.page].rows,clock.progress,guides.get(clock.page));positionTool(chalk,pose.x,pose.y);chalk.position.z+=pose.contact?0:.055+pose.lift;
       const tip=chalk.position.clone();
       if(previousTip&&pose.contact)wear+=Math.min(.07,tip.distanceTo(previousTip))*.007;
       const length=chalkLength(wear),propScale=1/(scene.scale.y||1);chalk.scale.set(propScale,length/.17*propScale,propScale);chalk.position.addScaledVector(chalkAxis,length*propScale/2);chalk.userData.length=length;chalk.userData.contact=pose.contact;previousTip=tip;
@@ -159,8 +171,16 @@ export async function createLecture(scene,renderer){
   function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;version++;}
   boards.forEach((_,i)=>draw(i));
   return {
-    update,pages,clock,
-    status:()=>loadingError?loadingError.message:`${clock.page+1} / ${pages.length} · ${phaseNames[clock.phase]} · ${pages[clock.page].title}`,
+    update,pages,clock,languageAnchor,
+    get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
+    async setLanguage(value){
+      const next=value==='en'?'en':'zh';if(next===language)return;
+      language=next;generation++;loadingError=null;cache.clear();pending.clear();guides.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
+      boards.forEach(b=>{b.last='';b.wet=null;});version++;
+      try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(load));}
+      catch(error){loadingError=error;throw error;}version++;
+    },
+    status:()=>loadingError?loadingError.message:`${clock.page+1} / ${pages.length} · ${phaseNames[clock.phase]} · ${chalkCopy(pages[clock.page],language).title}`,
     get playing(){return playing;},set playing(value){playing=value;},
     select,step(delta){select(clock.page+delta);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},

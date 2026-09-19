@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import {seaLevel,coastline,elevation,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=9-peninsula';
-import {BUILDING_SCALE,GIANT_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=9-peninsula';
-import {createGardenWater} from './garden-water.js?v=9-peninsula';
+import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=10-offshore';
+import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=10-offshore';
+import {createGardenWater} from './garden-water.js?v=10-offshore';
 
 // Real leaf/branch silhouettes, not opaque ellipsoids or billboard tree cards.
 // Each species/detail prototype is built once and instanced in spatial cells.
@@ -59,6 +59,24 @@ function olive(seed,low=false){
         const color=new THREE.Color().setHSL(.22+rnd()*.07,.17+rnd()*.18,.26+rnd()*.2);
         leaf(leaves,p,dir,(low?.33:.23)*(1+rnd()*.6),low?.067:.037,color,low);
       }
+    }
+  }
+  return {wood:wood.geometry(),leaf:leaves.geometry()};
+}
+function specimen(species){
+  const wood=builder(),leaves=builder(),rnd=seededRandom(species==='terminalia'?407:811),tiered=species==='terminalia';
+  tube(wood,[new THREE.Vector3(),new THREE.Vector3(.12,1.6,0),new THREE.Vector3(-.06,tiered?5:2.4,.12)],.14,.04,9);
+  for(let tier=0;tier<(tiered?4:2);tier++)for(let k=0;k<6;k++){
+    const a=k*Math.PI/3+tier*.63,y=tiered?2+tier*.85:1.6+tier*.7,r=tiered?2.1-tier*.29:1.5;
+    const start=new THREE.Vector3(0,y,0),end=new THREE.Vector3(Math.cos(a)*r,y+(tiered?.1:.6),Math.sin(a)*r);
+    tube(wood,[start,start.clone().lerp(end,.5).add(new THREE.Vector3(0,.18,0)),end],.05,.008,6);
+    for(let j=0;j<50;j++){
+      const t=.35+rnd()*.65,p=start.clone().lerp(end,t).add(new THREE.Vector3((rnd()-.5)*.7,(rnd()-.5)*.18,(rnd()-.5)*.7));
+      leaf(leaves,p,new THREE.Vector3(Math.cos(a+j*2.4),.2,Math.sin(a+j*2.4)),tiered?.18:.32,tiered?.055:.075,new THREE.Color(tiered?(j%5?'#78915a':'#b7b988'):'#456343'));
+    }
+    if(!tiered)for(let f=0;f<4;f++){
+      const p=end.clone().add(new THREE.Vector3((rnd()-.5)*.5,.12,(rnd()-.5)*.5));
+      for(let petal=0;petal<5;petal++)leaf(leaves,p,new THREE.Vector3(Math.cos(petal*1.256),.18,Math.sin(petal*1.256)),.10,.04,new THREE.Color('#fff3ca'));
     }
   }
   return {wood:wood.geometry(),leaf:leaves.geometry()};
@@ -163,9 +181,11 @@ export async function createLandscape(renderer,scene,report){
   };
   foliage.customProgramCacheKey=()=> 'refuge-leaf-breeze-v1';
   const prototypes=Array.from({length:3},(_,i)=>({near:olive(980+i*78),far:olive(980+i*78,true)}));
+  const specimenPrototypes={terminalia:specimen('terminalia'),plumeria:specimen('plumeria')};
   const palmPrototype=palm(),fernGeometry=fern(),grassGeometry=grass(),rocks=[boulder(11),boulder(17),boulder(25)];
   const bambooPrototype=bamboo(),flowerGeometry=flowers();
   const ownedGeometry=new Set([fernGeometry,grassGeometry,...rocks,...Object.values(palmPrototype),...prototypes.flatMap(p=>[...Object.values(p.near),...Object.values(p.far)])]);
+  for(const prototype of Object.values(specimenPrototypes))for(const g of Object.values(prototype))ownedGeometry.add(g);
   for(const g of [...Object.values(bambooPrototype),flowerGeometry])ownedGeometry.add(g);
   const batches=new Map(),dummy=new THREE.Object3D(),rnd=seededRandom(57019),plantings=[];
   function add(geometry,material,x,y,z,scale,angle,name,shadow=true){
@@ -222,7 +242,8 @@ export async function createLandscape(renderer,scene,report){
   let terrainMaterial,gardenWater;
   function garden(){
     gardenWater=createGardenWater(scene);
-    for(const [x,z,s] of GIANT_TREES)tree(x,elevation(x,z),z,s,'giant');
+    for(const [x,z,s] of GIANT_TREES)tree(x,.66,z,s,'giant');
+    for(const [x,z,species] of ORNAMENTAL_TREES){const p=specimenPrototypes[species];add(p.wood,wood,x,.65,z,1,0,'Specimen tree trunks',true);add(p.leaf,foliage,x,.65,z,1,0,species==='terminalia'?'Tiered Terminalia inspired crowns':'White frangipani inspired crowns',true);}
     // A near-site belt is deliberately denser than the distant mountain forest.
     for(let i=0;i<90;i++){
       const a=Math.PI*.52+rnd()*Math.PI*1.25,r=30+rnd()*30,x=Math.cos(a)*r,z=Math.sin(a)*r;
@@ -230,8 +251,8 @@ export async function createLandscape(renderer,scene,report){
     }
     for(const [cx,cz,rx,rz] of BAMBOO_GROVES)for(let i=0;i<48;i++){
       const a=rnd()*6.28,r=Math.sqrt(rnd()),x=cx+Math.cos(a)*rx*r,z=cz+Math.sin(a)*rz*r;
-      if(!canPlant(x,z))continue;
-      const y=elevation(x,z),s=1.2+rnd()*.5,angle=rnd()*6.28;
+      if(!canGardenPlant(x,z))continue;
+      const y=gardenElevation(x,z),s=1.2+rnd()*.5,angle=rnd()*6.28;
       add(bambooPrototype.wood,bambooMaterial,x,y,z,s,angle,'Jointed bamboo stems',true);
       add(bambooPrototype.leaf,foliage,x,y,z,s,angle,'Bamboo leaf sprays',false);
       if(i%3===0)shrub(x+.4,y,z,.8);
@@ -242,15 +263,15 @@ export async function createLandscape(renderer,scene,report){
     for(const l of LAWNS){
       const g=new THREE.PlaneGeometry(l.rx*2,l.rz*2,76,20);g.rotateX(-Math.PI/2);g.translate(l.x,0,l.z);
       const p=g.attributes.position,c=[],indices=[],color=new THREE.Color();
-      for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,elevation(x,z)+.026);const n=noise(x*7,z*7);color.setRGB(.68+n*.2,.8+n*.15,.58+n*.18);c.push(...color.toArray());}
+      for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,gardenElevation(x,z)+.026);const n=noise(x*7,z*7);color.setRGB(.68+n*.2,.8+n*.15,.58+n*.18);c.push(...color.toArray());}
       for(let i=0;i<g.index.count;i+=3){const ids=[g.index.getX(i),g.index.getX(i+1),g.index.getX(i+2)];if(ids.every(j=>lawnWeight(p.getX(j),p.getZ(j))>0))indices.push(...ids);}
       g.setIndex(indices);g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));g.computeVertexNormals();ownedGeometry.add(g);
       const mesh=new THREE.Mesh(g,lawnMaterial);mesh.name='Soft lawn garden';mesh.scale.setScalar(BUILDING_SCALE);mesh.receiveShadow=true;scene.add(mesh);
       for(let i=0;i<170;i++){
         const a=rnd()*6.28,x=l.x+Math.cos(a)*l.rx*(.9+rnd()*.16),z=l.z+Math.sin(a)*l.rz*(.9+rnd()*.16);
-        if(watercourse(x,z).distance<2.5||inPool(x,z,1)||inBuilding(x,z,1)||elevation(x,z)<seaLevel+.5)continue;
-        add(flowerGeometry,flowerMaterials[i%3],x,elevation(x,z),z,.8+rnd()*.6,rnd()*6.28,'Garden flower borders',false);
-        if(i%4===0)add(grassGeometry,foliage,x,elevation(x,z),z,.8,rnd()*6.28,'Flower border foliage',false);
+        if(watercourse(x,z).distance<2.5||inPool(x,z,1)||inBuilding(x,z,1)||!canGardenPlant(x,z))continue;
+        add(flowerGeometry,flowerMaterials[i%3],x,gardenElevation(x,z),z,.8+rnd()*.6,rnd()*6.28,'Garden flower borders',false);
+        if(i%4===0)add(grassGeometry,foliage,x,gardenElevation(x,z),z,.8,rnd()*6.28,'Flower border foliage',false);
       }
     }
     // Staggered rock buttresses make the cascade belong to a ravine.
@@ -273,10 +294,10 @@ export async function createLandscape(renderer,scene,report){
   function populate(){
     report('正在种植分层林带与雕刻海岸山脊…');terrainMaterial=terrain();
     // Hero trees / palms frame the pool, leaving the steps and sea view clear.
-    for(const [x,z] of [[-24,16],[-23,-22]])tree(x,elevation(x,z),z,1.15,'palm');
-    for(const [x,z] of [[-24,18],[-27,-24],[-26,1],[-34,5]])for(let i=0;i<4;i++)shrub(x+(rnd()-.5)*.75,elevation(x,z),z+(rnd()-.5)*1.5,.65+rnd()*.25);
+    for(const [x,z] of [[-26,28],[-23,-29]])tree(x,gardenElevation(x,z),z,1.15,'palm');
+    for(const [x,z] of [[-24,29],[-27,-28],[-26,1],[-34,5]])for(let i=0;i<4;i++)shrub(x+(rnd()-.5)*.75,gardenElevation(x,z),z+(rnd()-.5)*1.5,.65+rnd()*.25);
     const occupied=[];
-    for(let i=0;i<2600&&occupied.length<200;i++){
+    for(let i=0;i<4600&&occupied.length<200;i++){
       const x=-420+rnd()*425,z=-76+rnd()*152;
       if(!canPlant(x,z)||noise(x*.033,z*.033)<.27||occupied.some(p=>Math.hypot(p[0]-x,p[1]-z)<7))continue;
       occupied.push([x,z]);plantings.push([x,elevation(x,z),z]);
@@ -284,7 +305,7 @@ export async function createLandscape(renderer,scene,report){
       if(Math.hypot(x,z)<90)for(let j=0;j<3;j++){const sx=x+(rnd()-.5)*6,sz=z+(rnd()-.5)*6;if(canPlant(sx,sz))shrub(sx,elevation(sx,sz),sz,.7+rnd()*.6);}
     }
     for(let i=0;i<700;i++){
-      const x=-70+rnd()*115,z=-80+rnd()*160;
+      const x=-320+rnd()*180,z=-80+rnd()*160;
       if(!canPlant(x,z)||noise(x*.09,z*.09)<.38)continue;
       add(grassGeometry,foliage,x,elevation(x,z),z,.65+rnd()*.8,rnd()*6.28,'Coastal grasses',false);
     }
@@ -294,7 +315,7 @@ export async function createLandscape(renderer,scene,report){
       const s=1.1+rnd()*2.2;
       add(rocks[i%3],rockMaterial,x,elevation(x,z)-.35,z,[s,s*(.55+rnd()*.7),s*.8],rnd()*6.28,'Weathered coastal outcrops',Math.abs(z)<65);
     }
-    for(const [x,z,s] of [[-23,22,1.4],[-27,13,1.2],[-25,-24,1.4],[-39,29,1.6]])add(rocks[0],rockMaterial,x,elevation(x,z),z,[s,s*.65,s*.8],rnd()*6.28,'Garden stone outcrops');
+    for(const [x,z,s] of [[-23,29,1.4],[-27,5,1.2],[-25,-29,1.4],[-39,29,1.6]])add(rocks[0],rockMaterial,x,gardenElevation(x,z),z,[s,s*.65,s*.8],rnd()*6.28,'Garden stone outcrops');
     garden();
   }
   function finish(){

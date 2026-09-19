@@ -3,9 +3,10 @@ import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=9-peninsula';
-import {BUILDING_SCALE} from './site-layout.js?v=9-peninsula';
-import {createCampus} from './campus.js?v=9-peninsula';
+import {createLandscape} from './landscape.js?v=10-offshore';
+import {BUILDING_SCALE} from './site-layout.js?v=10-offshore';
+import {createCampus} from './campus.js?v=10-offshore';
+import {daylightAt,wrapHour} from './retreat-time.js?v=10-offshore';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -55,6 +56,7 @@ export async function createRetreat(renderer,scene,report){
   function litStrip(p,size){box(p,size,light);}
   function floor(y,w,d,cx=0,cz=0){
     layoutFloors.push({y,w,d,cx,cz});
+    if(y===0)for(let x=cx-w/2+.4;x<=cx+w/2-.39;x+=Math.min(6,Math.max(.5,w-.8)))for(let z=cz-d/2+.4;z<=cz+d/2-.39;z+=Math.min(6,Math.max(.5,d-.8)))box([x,-7.7,z],[.32,15.4,.32],steel);
     box([cx,y,cz],[w,.4,d],edge);box([cx,y+.23,cz],[w-.16,.09,d-.16],stone);
     litStrip([cx,y-.06,cz+d/2+.01],[w-.3,.035,.025]);
     litStrip([cx+w/2+.01,y-.06,cz],[.025,.035,d-.3]);
@@ -159,23 +161,29 @@ export async function createRetreat(renderer,scene,report){
     ctx.fillText('是否都是余维 p 的代数子簇之类',100,480);ctx.fillText('的有理线性组合？',100,565);
     ctx.fillStyle='#b8d3bd';ctx.font='34px "PingFang SC", sans-serif';ctx.fillText('从拓扑与分析，寻找代数几何的形状。',100,685);
   });
-  // A lit door lintel and a freestanding plaque beside the entrance steps.
-  const signCanvas=document.createElement('canvas');signCanvas.width=1536;signCanvas.height=384;
-  const signCtx=signCanvas.getContext('2d');signCtx.fillStyle='#162724';signCtx.fillRect(0,0,1536,384);
-  signCtx.fillStyle='#dfc58f';signCtx.fillRect(48,32,1440,3);signCtx.fillRect(48,349,1440,3);
-  signCtx.textAlign='center';signCtx.font='118px "PingFang SC", sans-serif';signCtx.fillText('数学难民营',768,204);
-  signCtx.font='30px "Times New Roman", serif';signCtx.fillText('MATHEMATICAL REFUGE',768,286);
-  const signMap=new THREE.CanvasTexture(signCanvas);signMap.colorSpace=THREE.SRGBColorSpace;
-  signMap.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-  const signMaterial=new THREE.MeshStandardMaterial({map:signMap,roughness:.6,emissive:'#dfc58f',emissiveMap:signMap,emissiveIntensity:.18});
-  function sign(name,position,width){
-    const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),signMaterial);plaque.name=name;plaque.position.fromArray(position);scene.add(plaque);
+  // One campus logo at the arrival gate; every room has its own function sign.
+  function sign(name,position,width,title,subtitle,rotation=0){
+    const canvas=document.createElement('canvas');canvas.width=1536;canvas.height=384;
+    const ctx=canvas.getContext('2d');ctx.fillStyle='#162724';ctx.fillRect(0,0,1536,384);
+    ctx.fillStyle='#dfc58f';ctx.fillRect(48,32,1440,3);ctx.fillRect(48,349,1440,3);
+    ctx.textAlign='center';ctx.font='118px "PingFang SC", sans-serif';ctx.fillText(title,768,204);
+    ctx.font='30px "Times New Roman", serif';ctx.fillText(subtitle,768,286);
+    const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+    const material=new THREE.MeshStandardMaterial({map,roughness:.6,emissive:'#dfc58f',emissiveMap:map,emissiveIntensity:.18});
+    const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),material);plaque.name=name;plaque.userData.label=title;plaque.position.fromArray(position);plaque.rotation.y=rotation;scene.add(plaque);
   }
-  box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6);
-  sign('Conference entrance sign',[39,1.95,4.3],2.4);
+  box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6,'学术客厅','ACADEMIC LOUNGE');
+  sign('Conference entrance sign',[39,2.65,4.3],2.4,'报告厅','SEMINAR HALL');
+  sign('Discussion entrance sign',[11.5,2.1,5.12],2.8,'讨论室','DISCUSSION ROOM');
+  sign('Library entrance sign',[-37,2,-10.88],2.8,'图书馆','LIBRARY');
+  sign('Residence one sign',[-51.88,1.9,-28],2.1,'研究员居所 Ⅰ','RESIDENCE I',Math.PI/2);
+  sign('Residence two sign',[-42.88,1.9,-38],2.1,'研究员居所 Ⅱ','RESIDENCE II',Math.PI/2);
+  sign('Tea kitchen sign',[-30.88,1.9,19],2.1,'茶室 · 服务','TEA & SERVICE',Math.PI/2);
+  sign('Garden tea sign',[-35,2.2,-26.45],2,'竹庭茶亭','GARDEN TEA PAVILION');
   litStrip([-6,2.5,5.17],[3.65,.025,.025]);
-  box([-24,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-24,1.48,10.21],4);
-  litStrip([-24,2.25,10.14],[4.12,.025,.045]);
+  floor(0,5,3,-68,10);
+  box([-68,1.25,10],[4.35,1.95,.4],edge);sign('Entrance wayfinding sign',[-68,1.48,10.21],4,'数学难民营','MATHEMATICAL REFUGE');
+  litStrip([-68,2.25,10.14],[4.12,.025,.045]);
   // Mathematical sculpture, a continuous torus knot in the entrance court.
   const sculpture=new THREE.Mesh(new THREE.TorusKnotGeometry(.85,.075,256,16,2,3),brass);
   sculpture.position.set(-5,1.6,10);sculpture.castShadow=true;scene.add(sculpture);
@@ -252,8 +260,8 @@ export async function createRetreat(renderer,scene,report){
   sun.shadow.normalBias=.04;sun.shadow.bias=-.00015;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
-  for(const p of [[-6,2.1,-4],[11,2.1,-4],[-7,4.8,-7],[11,4.8,-7],[39,2.1,0],[-37,2,-16]]){
-    const lamp=new THREE.PointLight('#ffd09b',180,17*BUILDING_SCALE,2);lamp.position.fromArray(p).multiplyScalar(BUILDING_SCALE);scene.add(lamp);interiorLights.push(lamp);
+  for(const p of [[-6,2.1,-4],[11,2.1,-4],[-7,4.8,-7],[11,4.8,-7],[37,2.9,-2.7],[41,2.9,2.7],[-37,2,-16]]){
+    const lamp=new THREE.PointLight('#ffe0b5',100,17*BUILDING_SCALE,2);lamp.position.fromArray(p).multiplyScalar(BUILDING_SCALE);scene.add(lamp);interiorLights.push(lamp);
   }
   scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
@@ -268,6 +276,16 @@ export async function createRetreat(renderer,scene,report){
     interiorLights.forEach(l=>l.intensity=(50+(1-t)*120)*BUILDING_SCALE**2);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
-  lighting(24,true);
-  return {water,ocean,sun,lighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  function setTime(hour,regenerate=false){
+    const h=wrapHour(hour),day=daylightAt(h),a=(h-6)*Math.PI/12;
+    const direction=new THREE.Vector3(Math.cos(a),Math.sin(a),0).normalize();
+    sky.material.uniforms.sunPosition.value.copy(direction);water.material.uniforms.sunDirection.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
+    sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*3.4;sun.color.setHSL(.095,.28+(1-day)*.25,.85);
+    ambient.intensity=.14+day*1.25;interiorLights.forEach(l=>l.intensity=(35+(1-day)*65)*BUILDING_SCALE**2);
+    light.emissiveIntensity=1.1+(1-day)*.6;scene.environmentIntensity=.16+day*.84;
+    scene.fog.color.set('#9fbfc7').lerp(new THREE.Color('#101b2b'),1-day);
+    if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
+  }
+  setTime(8,true);
+  return {water,ocean,sun,lighting,setTime,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

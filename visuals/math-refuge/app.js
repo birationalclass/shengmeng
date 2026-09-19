@@ -4,14 +4,16 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=9-peninsula';
-import {createLecture} from './lecture.js?v=7-garden';
-import {configureLectureRoot,lectureViewOffset} from './site-layout.js?v=9-peninsula';
-import {createChalkReader} from './chalk-reader.js?v=5-mobile';
+import {createRetreat} from './scene.js?v=10-offshore';
+import {createLecture} from './lecture.js?v=10-offshore';
+import {configureLectureRoot,lectureViewOffset} from './site-layout.js?v=10-offshore';
+import {createChalkReader} from './chalk-reader.js?v=10-offshore';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=9-peninsula';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=10-offshore';
+import {RetreatTime,roofTarget} from './retreat-time.js?v=10-offshore';
+const sceneTime=new RetreatTime();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -118,7 +120,8 @@ function tick(stamp){
     controls.update();
   }
   if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
-  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
+  updateSceneTime(dt);
+  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();positionBoardConsole();}
   if(profile.direct)renderer.render(scene,camera);else composer.render();
 }
 try{
@@ -169,9 +172,38 @@ $('settingsButton').addEventListener('click',()=>{
 $('quality').addEventListener('change',()=>{if(retreat)setQuality();});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{
-  if(!retreat)return;retreat.lighting(Number($('light').value));renderer.shadowMap.needsUpdate=true;clearTimeout(lightTimer);
-  lightTimer=setTimeout(()=>retreat.lighting(Number($('light').value),true),180);
+  if(!retreat)return;sceneTime.hour=Number($('light').value);lastSunUpdate=-1;clearTimeout(lightTimer);
+  lightTimer=setTimeout(()=>{retreat.setTime(sceneTime.hour,true);lastEnvironmentHour=sceneTime.hour;},180);
 });
+$('clockPlay').addEventListener('click',()=>{sceneTime.running=!sceneTime.running;$('clockPlay').setAttribute('aria-pressed',String(sceneTime.running));$('clockPlay').textContent=sceneTime.running?'暂停昼夜':'启动昼夜';});
+function updateSceneTime(dt){
+  const before=sceneTime.open;retreat.campus.setRoof(sceneTime.update(dt,reduced.matches));
+  if(Math.abs(before-sceneTime.open)>.00001)renderer.shadowMap.needsUpdate=true;
+  if(lastSunUpdate<0||Math.abs(sceneTime.hour-lastSunUpdate)>.02){
+    const regenerate=lastEnvironmentHour<0||Math.abs(sceneTime.hour-lastEnvironmentHour)>.5;
+    retreat.setTime(sceneTime.hour,regenerate);lastSunUpdate=sceneTime.hour;if(regenerate)lastEnvironmentHour=sceneTime.hour;
+    renderer.shadowMap.needsUpdate=true;$('light').value=String(sceneTime.hour);
+    const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
+  }
+  const target=roofTarget(sceneTime.hour,sceneTime.mode);
+  for(const id of ['boardRoof','lectureRoof'])$(id).textContent=target>.5?'闭合屋顶':'打开屋顶';
+  for(const id of ['boardRoofAuto','lectureRoofAuto']){$(id).setAttribute('aria-pressed',String(sceneTime.mode==='auto'));$(id).textContent=sceneTime.mode==='auto'?'日夜自动 · 开':'恢复日夜自动';}
+}
+function positionBoardConsole(){
+  const anchor=lecture.languageAnchor.getWorldPosition(new THREE.Vector3()),p=anchor.clone().project(camera),panel=$('boardConsole');
+  panel.hidden=!($('chalkReader').hidden&&$('lecturePanel').hidden&&$('settings').hidden&&p.z>-1&&p.z<1&&Math.abs(p.x)<1.25&&Math.abs(p.y)<1&&camera.position.distanceTo(anchor)<22&&camera.position.x<anchor.x&&camera.position.y<4.5);
+  if(!panel.hidden){panel.style.left=Math.max(72,Math.min(innerWidth-72,(p.x+1)*innerWidth/2))+'px';panel.style.top=Math.max(150,Math.min(innerHeight-165,(1-p.y)*innerHeight/2))+'px';}
+}
+async function switchChalkLanguage(){
+  if(!lecture)return;const buttons=[$('boardLanguage'),$('lectureLanguage')];buttons.forEach(b=>b.disabled=true);
+  try{await lecture.setLanguage(lecture.language==='zh'?'en':'zh');
+    for(const [i,option] of [...$('lecturePage').options].entries()){const copy=lecture.copy(i);option.textContent=`${i+1}. ${copy.source} · ${copy.title}`;}
+    buttons.forEach(b=>b.textContent=lecture.language==='zh'?'中文 → EN':'EN → 中文');reader?.update();
+  }catch(error){$('lectureStatus').textContent=error.message;}finally{buttons.forEach(b=>b.disabled=false);}
+}
+for(const id of ['boardLanguage','lectureLanguage'])$(id).addEventListener('click',switchChalkLanguage);
+for(const id of ['boardRoof','lectureRoof'])$(id).addEventListener('click',()=>{sceneTime.mode=roofTarget(sceneTime.hour,sceneTime.mode)>.5?'closed':'open';});
+for(const id of ['boardRoofAuto','lectureRoofAuto'])$(id).addEventListener('click',()=>{sceneTime.mode='auto';});
 $('fullscreen').addEventListener('click',async()=>{
   try{
     if(document.fullscreenElement||document.webkitFullscreenElement){

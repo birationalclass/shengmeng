@@ -4,7 +4,7 @@ import {readingFormulaWidth} from './display-profile.js?v=5-mobile';
 // screenshot of the 3D texture. The six physical boards remain in the scene.
 export function createChalkReader(lecture){
   const $=id=>document.getElementById(id),panel=$('chalkReader');
-  let page=-1,teaching=false,lastPlaying=null;
+  let page=-1,language='',teaching=false,lastPlaying=null;
   function show(open){panel.hidden=!open;$('readerOpen').setAttribute('aria-expanded',String(open));if(open){$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');update();}}
   function size(){
     const px=Number($('readerFont').value),entry=lecture.pages[lecture.clock.page];
@@ -14,10 +14,11 @@ export function createChalkReader(lecture){
   }
   function update(){
     if(panel.hidden)return;
-    if(page!==lecture.clock.page){
-      page=lecture.clock.page;const entry=lecture.pages[page];
-      $('readerSection').textContent=`${entry.source} · ${page+1} / ${lecture.pages.length}`;
-      $('readerTitle').textContent=entry.title;$('readerExplanation').textContent=entry.text;
+    if(page!==lecture.clock.page||language!==lecture.language){
+      page=lecture.clock.page;language=lecture.language;const entry=lecture.pages[page],copy=lecture.copy?.(page)||entry;
+      $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
+      $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
+      for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
       $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=5-mobile';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();

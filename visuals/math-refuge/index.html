@@ -7,6 +7,7 @@
   <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=3-coast">
   <link rel="stylesheet" href="coastal-layout.css?v=5-mobile">
   <link rel="stylesheet" href="chalk-reader.css?v=5-mobile">
+  <link rel="stylesheet" href="board-console.css?v=10-offshore">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 </head>
 <body>
@@ -16,7 +17,9 @@
     <h2>空间设置</h2>
     <label for="quality">画面质量 <select id="quality"><option value="balanced">流畅</option><option value="high" selected>精细</option></select></label>
     <p id="qualityReadout" aria-live="polite"></p>
-    <label for="light">日光 <input id="light" type="range" min="0" max="100" value="24"></label>
+    <label for="light">场景时间 <input id="light" type="range" min="0" max="23.99" step="0.05" value="8"></label>
+    <div class="clock-line"><output id="sceneClock">08:00</output><button id="clockPlay" aria-pressed="true">暂停昼夜</button></div>
+    <p>模拟时钟：10 分钟走完一天。自动屋顶在 06:00–18:00 闭合，夜间打开；手动开合优先。</p>
     <label for="rotationSensitivity">旋转灵敏度 <input id="rotationSensitivity" type="range" min="0.08" max="0.6" step="0.02" value="0.22"></label>
     <label for="speed">巡游速度 <select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
     <p>拖动后保持自由观察，松手不会自动巡游。点击“恢复巡游”或按空格才继续；章节与“近看板书”只定位镜头。方向键或 WASD 平移，Q / E 升降；触屏双指可平移、缩放。</p>
@@ -38,13 +41,15 @@
     <label for="lecturePage">学习笔记页 <select id="lecturePage"></select></label>
     <div class="lecture-actions"><button id="lecturePrevious">上一页</button><button id="lecturePlay" aria-pressed="true">暂停板书</button><button id="lectureNext">下一页</button></div>
     <div class="lecture-actions"><button id="lectureRewrite">擦除重写</button><button id="lectureFocus">近看板书</button><button id="lectureShade" aria-pressed="false">放下海景遮光帘</button></div>
+    <div class="lecture-actions"><button id="lectureLanguage">中文 / EN</button><button id="lectureRoof">打开屋顶</button><button id="lectureRoofAuto" aria-pressed="true">日夜自动</button></div>
     <div class="board-lift"><label for="boardLift0">Ⅰ 组 · A / B</label><input id="boardLift0" type="range" min="0" max="1" step="0.01" value="0" aria-label="第一组黑板升降"><button id="boardSwap0">互换</button></div>
     <div class="board-lift"><label for="boardLift1">Ⅱ 组 · A / B</label><input id="boardLift1" type="range" min="0" max="1" step="0.01" value="0" aria-label="第二组黑板升降"><button id="boardSwap1">互换</button></div>
     <div class="board-lift"><label for="boardLift2">Ⅲ 组 · A / B</label><input id="boardLift2" type="range" min="0" max="1" step="0.01" value="0" aria-label="第三组黑板升降"><button id="boardSwap2">互换</button></div>
     <p class="lecture-note">三组双轨黑板，上下交替。拖动升降时暂停书写；可继续板书或逐页选择。减少动态模式下显示完整静态板书。</p>
     <a href="../../study/spectral/" target="_blank" rel="noopener">打开原始谱序列学习笔记与完整证明 ↗</a>
   </aside>
-  <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 海岸抵达</p><h2 id="shotTitle">山海之间，<br>留一处思考的地方。</h2><p id="shotDescription">通透别墅 · 环抱水院 · 海上报告厅 · 东向日出</p></main>
+  <div id="boardConsole" class="board-console chrome" hidden aria-label="黑板旁智能控制台"><small>CHALK ROOM · CONTROL</small><button id="boardLanguage" aria-label="切换黑板中文或英文">中文 / EN</button><button id="boardRoof">打开屋顶</button><button id="boardRoofAuto" aria-pressed="true">日夜自动</button></div>
+  <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 海岸抵达</p><h2 id="shotTitle">海上相连，<br>留一处思考的地方。</h2><p id="shotDescription">海上平台 · 环抱水院 · 暖光报告厅 · 东向日出</p></main>
   <footer class="chrome">
     <nav id="chapters" aria-label="选择镜头"><button data-shot="0" aria-current="true">01 <span>抵达</span></button><button data-shot="1">02 <span>水庭</span></button><button data-shot="2">03 <span>书室</span></button><button data-shot="3">04 <span>报告厅</span></button><button data-shot="4">05 <span>板书</span></button><button data-shot="5">06 <span>海景</span></button><button data-shot="6">07 <span>远眺</span></button><button data-shot="7">08 <span>山水花园</span></button></nav>
     <div class="transport"><button id="lectureButton" aria-expanded="false" aria-controls="lecturePanel">黑板控制</button><button id="readerOpen" aria-expanded="false" aria-controls="chalkReader">高清板书</button><button id="tour" aria-pressed="true">暂停巡游</button><span id="mode" role="status">自动镜头</span><button id="fullscreen" aria-pressed="false">全屏浏览</button><button id="hideUI" aria-label="隐藏界面，按 H 恢复">沉浸</button></div>
@@ -54,6 +59,6 @@
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p></div>
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
-  <script type="module">import('./app.js?v=9-peninsula').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=10-offshore').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

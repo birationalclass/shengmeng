@@ -16,6 +16,7 @@ export function inkGuides(imageData,rows){
       }
       samples.push(best);if(best!==null)previous=best;
     }
+    samples.inkColumns=samples.map((v,i)=>v===null?-1:i).filter(i=>i>=0);
     return samples;
   });
 }
@@ -23,12 +24,27 @@ export function writingPose(rows,progress,guides){
   const t=clamp(progress)*rows.length,row=Math.min(rows.length-1,Math.floor(t)),f=t-row,[x,y,w,h]=rows[row],reveal=rowReveal(progress,row,rows.length);
   let px=x+w*reveal,py=y+h*.55,contact=f>=.08,lift=0;
   const samples=guides?.[row];
-  if(samples){const at=Math.min(samples.length-1,Math.floor(w*reveal/5)),ink=samples[at];if(ink===null)contact=false;else py=ink;}
+  if(samples){
+    const columns=samples.inkColumns||samples.map((v,i)=>v===null?-1:i).filter(i=>i>=0);
+    if(!columns.length){contact=false;px=x;}
+    else{
+      const q=reveal*Math.max(0,columns.length-1),i=Math.floor(q),a=columns[i],b=columns[Math.min(i+1,columns.length-1)],f=q-i;
+      px=x+Math.min(w,(a+(b-a)*f)*5);py=samples[a]+(samples[b]-samples[a])*f;
+      if(b-a>1&&f>.02&&f<.98){contact=false;lift=Math.sin(f*Math.PI)*.09;}
+    }
+  }
   if(f<.08){
-    const prior=rows[Math.max(0,row-1)],q=ease(f/.08);
-    px=prior[0]+prior[2]+(x-prior[0]-prior[2])*q;py=prior[1]+prior[3]*.55+(py-prior[1]-prior[3]*.55)*q;lift=Math.sin(q*Math.PI)*.16;contact=false;
+    const prior=rows[Math.max(0,row-1)],previous=guides?.[Math.max(0,row-1)],columns=previous?.inkColumns,q=ease(f/.08);
+    const end=prior[0]+(columns?.length?columns.at(-1)*5:prior[2]),start=px;
+    px=end+(start-end)*q;py=prior[1]+prior[3]*.55+(py-prior[1]-prior[3]*.55)*q;lift=Math.sin(q*Math.PI)*.16;contact=false;
   }
   return {x:px,y:py,contact,lift,row,reveal};
+}
+// Texture reveal and tool position share the same ink-only progression.
+export function inkReveal(rows,progress,row,guides){
+  if(progress*rows.length>=row+1)return rows[row][2];
+  if(progress*rows.length<row+.08)return 0;
+  return Math.max(0,writingPose(rows,progress,guides).x-rows[row][0]+5);
 }
 export function eraserPose(progress,width=1536,height=640){
   const t=clamp(progress)*ERASE_PASSES,row=Math.min(ERASE_PASSES-1,Math.floor(t)),f=t-row;
