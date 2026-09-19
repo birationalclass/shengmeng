@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import {LectureClock,boardHeights,PHASE_SECONDS} from './lecture-state.js?v=7-garden';
-import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=10-offshore';
+import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=11-open-sea';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=10-offshore';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=11-open-sea';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,HALL,POOL_LEVEL,POOL_DEPTH,poolTopology,BRIDGES,bridgeHeight,SUNRISE_EDGE,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES} from './site-layout.js?v=10-offshore';
+import {BUILDING_SCALE as S,DECK_Y,HALL,POOL_LEVEL,POOL_DEPTH,poolTopology,BRIDGES,bridgeHeight,SUNRISE_EDGE,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES} from './site-layout.js?v=11-open-sea';
 
 // Architectural geometry for the approved layout. Pool surfaces are a union,
 // classrooms are dry, and the offshore structure never becomes new terrain.
@@ -84,9 +84,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   for(const [a,b,c,d] of GARDEN_PADS){
     box([(a+b)/2,-.2,(c+d)/2],[b-a,.5,d-c],edge);
     box([(a+b)/2,.145,(c+d)/2],[b-a-.12,.19,d-c-.12],materials.leaf);
-    for(const x of [a+.6,b-.6])for(const z of [c+.6,d-.6])box([x,-7.65,z],[.4,15.3,.4],steel);
   }
-  meta('Offshore planted garden trays',{bounds:GARDEN_PADS,seabedSupported:true});
+  meta('Offshore planted garden trays',{bounds:GARDEN_PADS,exposedPiles:false});
   for(const [x,z,species] of ORNAMENTAL_TREES){
     if(x<0)floor(0,3.6,3.6,x,z);
     const w=2.2;box([x,.42,z],[w,.4,w],stone);box([x,.625,z],[w-.35,.025,w-.35],soil);
@@ -188,7 +187,6 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     // Water's reflection normal is local +Z; rotate the entire XY surface to XZ.
     for(const [x,z] of [[a,c],[a,d],[b,c],[b,c],[a,d],[b,d]]){vertices.push(x,-z,0);uv.push(x*.12,z*.12);}
     box([(a+b)/2,POOL_LEVEL-POOL_DEPTH-.075,(c+d)/2],[b-a,.15,d-c],poolTile);
-    for(const x of [a+.25,b-.25])box([x,-8,(c+d)/2],[.3,14.5,.3],steel);
   }
   for(const [a,c,b,d] of topology.edges){
     const horizontal=c===d,length=Math.hypot(b-a,d-c),cx=(a+b)/2,cz=(c+d)/2;

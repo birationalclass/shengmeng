@@ -9,10 +9,11 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=10-offshore';
-import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=10-offshore';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,bridgeHeight,HALL,DECK_Y,POOL_LEVEL,POOL_DEPTH,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,SUNRISE_EDGE,ORNAMENTAL_TREES} from './site-layout.js?v=11-open-sea';
+import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=11-open-sea';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,roofTarget,daylightAt} from './retreat-time.js';
+import {constrainAboveWater} from './camera-bounds.js';
 test('chalk skips blank trailing columns and lifts across inter-word gaps',()=>{
   const rows=[[0,0,200,20]],data=new Uint8ClampedArray(220*20*4);
   for(const x of [10,15,20,55,60])data[(8*220+x)*4+3]=255;
@@ -117,7 +118,7 @@ test('all facility footprints and expansion docks sit over open seawater',()=>{
 
 
 test('eight finite camera chapters with auditorium, ocean and garden views',()=>{
-  assert.equal(SHOTS.length,8);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='山水花园'));
+  assert.equal(SHOTS.length,8);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -223,25 +224,18 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
     assert(instances>1500);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
     assert(scene.children.filter(o=>o.isMesh).length<330,'Spatial instancing must bound model draw batches');
-    for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Olive leaf canopies','Palm fronds','Fern understory','Coastal grasses','Weathered coastal outcrops'])assert(scene.getObjectByName(name),name);
-    for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Connected waterfall and winding creek'])assert(scene.getObjectByName(name),name);
-    assert(!scene.children.some(o=>o.geometry?.type==='ConeGeometry'));
-    assert(result.landscape.plantings.length>150);
-    for(const [x,y,z] of result.landscape.plantings){assert(canPlant(x,z));assert.equal(y,elevation(x,z));}
-    // Execute shader-patching callbacks against the pinned Three shader source.
-    // This catches missing replacement hooks, but is not a GPU compile test.
-    for(const name of ['Continuous mountain ridges','Olive leaf canopies']){
-      const m=scene.getObjectByName(name).material,shader={uniforms:{},vertexShader:Three.ShaderLib.standard.vertexShader,fragmentShader:Three.ShaderLib.standard.fragmentShader};
-      m.onBeforeCompile(shader);assert(Object.keys(shader.uniforms).length>0);assert(!shader.fragmentShader.includes('undefined'));assert(shader.vertexShader.includes(name.startsWith('Continuous')?'vTerrainPoint=position':'float sway='));
+    for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Connected waterfall and winding creek','Mossy waterfall buttresses','Weathered coastal outcrops'])assert(!scene.getObjectByName(name),name+' must be removed');
+    for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Palm fronds','Fern understory'])assert(scene.getObjectByName(name),name);
+    assert.equal(result.landscape.plantings.length,0);
+    assert.equal(scene.getObjectByName('Offshore planted garden trays').userData.exposedPiles,false);
+    // No long vertical pile is left below any platform.
+    for(const o of allObjects.filter(o=>o.isInstancedMesh&&o.geometry.type==='BoxGeometry')){
+      const matrix=new Three.Matrix4(),p=new Three.Vector3(),q=new Three.Quaternion(),scale=new Three.Vector3();
+      for(let i=0;i<o.count;i++){o.getMatrixAt(i,matrix);matrix.decompose(p,q,scale);assert(!(p.y<-1&&scale.y>3),'Exposed support pile survived');}
     }
+    const m=scene.getObjectByName('Giant tree crowns').material,shader={uniforms:{},vertexShader:Three.ShaderLib.standard.vertexShader,fragmentShader:Three.ShaderLib.standard.fragmentShader};
+    m.onBeforeCompile(shader);assert(shader.vertexShader.includes('float sway='));
     result.landscape.update(.016);result.landscape.update(-1);
-    const coast=scene.getObjectByName('Detailed coastal terrain').geometry.attributes.position;
-    for(let i=0;i<coast.count;i++){
-      const x=coast.getX(i),z=coast.getZ(i);if(Math.abs(x)!==90&&Math.abs(z)!==90)continue;
-      const vertical=Math.abs(x)===90,q=vertical?z:x,lo=Math.floor(q/6)*6,t=(q-lo)/6;
-      const expected=vertical?Three.MathUtils.lerp(elevation(x,lo),elevation(x,lo+6),t):Three.MathUtils.lerp(elevation(lo,z),elevation(lo+6,z),t);
-      assert(Math.abs(coast.getY(i)-expected)<.00002,'Fine and coarse terrain edges must not crack');
-    }
     assert(result.materials.pale.normalMap.isDataTexture);assert(result.materials.steel.roughnessMap.isDataTexture);
     assert(result.materials.pale.normalMap.generateMipmaps);assert(result.materials.timber.normalMap);
     assert(calls.includes('NS 方程 · 存在性与光滑性'));assert(calls.includes('Hodge 猜想 ？'));assert(calls.includes('数学难民营'));
@@ -260,17 +254,19 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
   }finally{delete globalThis.__retreatTestThree;delete globalThis.document;}
 });
 
-test('continuous ridges, offshore seabed and actual waterline stay consistent',()=>{
-  for(const [x,z] of [[0,0],[-37,-16],[-56,-28],[-15,12]])assert(Math.abs(elevation(x,z)+15)<1e-8);
-  for(let z=-600;z<=600;z+=5){
-    assert(Math.abs(elevation(shoreline(z),z)-seaLevel)<.0001);
-    assert(shoreline(z)>coastline(z)-2&&shoreline(z)<coastline(z)+7);
-    assert(!canPlant(coastline(z)+15,z));
+test('entire site is open sea with a constant submerged seabed',()=>{
+  for(let x=-600;x<=600;x+=20)for(let z=-600;z<=600;z+=20){assert.equal(elevation(x,z),-15);assert.equal(slope(x,z),0);assert(!canPlant(x,z));}
+  assert.equal(shoreline(0),null);assert(seaLevel<DECK_Y);assert(DECK_Y-seaLevel<.6);
+});
+
+test('camera eye and orbit target never enter the ocean or pool',()=>{
+  const camera=new Three.PerspectiveCamera(50,1,.08,12000),target=new Three.Vector3();
+  const water=POOL_LEVEL*BUILDING_SCALE;
+  for(const eye of [-100,-1,0,1,2,20])for(const aim of [-100,0,2]){
+    camera.position.set(5,eye,8);target.set(0,aim,0);constrainAboveWater(camera,target,water);
+    assert(camera.position.y>=water+1);assert(target.y>=water+.05);assert(camera.quaternion.toArray().every(Number.isFinite));
   }
-  for(let x=-500;x<100;x+=8)for(let z=-500;z<200;z+=8){assert(Number.isFinite(elevation(x,z)));assert(Number.isFinite(slope(x,z)));assert(Math.abs(elevation(x+.001,z)-elevation(x,z))<.1);}
-  assert(elevation(-260,0)>60);assert(!canPlant(HALL.west,0));
-  for(const x of [0,20,35,100,300])for(const z of [-160,-100,100,160])assert(elevation(x,z)<seaLevel,'North and south must remain open sea');
-  for(const z of [-60,0,60])assert(elevation(100,z)<seaLevel,'Eastern horizon has no land');
+  for(const shot of SHOTS)for(const p of shot.positions)assert(p[1]>=water+1);
 });
 
 test('water descends through the garden, is carved below the surface and avoids the buildings',()=>{
@@ -353,7 +349,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=10-offshore',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=10-offshore',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=11-open-sea',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=11-open-sea',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){

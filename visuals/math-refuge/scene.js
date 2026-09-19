@@ -3,10 +3,10 @@ import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=10-offshore';
-import {BUILDING_SCALE} from './site-layout.js?v=10-offshore';
-import {createCampus} from './campus.js?v=10-offshore';
-import {daylightAt,wrapHour} from './retreat-time.js?v=10-offshore';
+import {createLandscape} from './landscape.js?v=11-open-sea';
+import {BUILDING_SCALE} from './site-layout.js?v=11-open-sea';
+import {createCampus} from './campus.js?v=11-open-sea';
+import {daylightAt,wrapHour} from './retreat-time.js?v=11-open-sea';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -56,7 +56,6 @@ export async function createRetreat(renderer,scene,report){
   function litStrip(p,size){box(p,size,light);}
   function floor(y,w,d,cx=0,cz=0){
     layoutFloors.push({y,w,d,cx,cz});
-    if(y===0)for(let x=cx-w/2+.4;x<=cx+w/2-.39;x+=Math.min(6,Math.max(.5,w-.8)))for(let z=cz-d/2+.4;z<=cz+d/2-.39;z+=Math.min(6,Math.max(.5,d-.8)))box([x,-7.7,z],[.32,15.4,.32],steel);
     box([cx,y,cz],[w,.4,d],edge);box([cx,y+.23,cz],[w-.16,.09,d-.16],stone);
     litStrip([cx,y-.06,cz+d/2+.01],[w-.3,.035,.025]);
     litStrip([cx+w/2+.01,y-.06,cz],[.025,.035,d-.3]);
@@ -193,8 +192,7 @@ export async function createRetreat(renderer,scene,report){
     const ring=new THREE.Mesh(new THREE.TorusGeometry(1.8,.022,8,100),light);ring.rotation.x=Math.PI/2;ring.position.fromArray(p);scene.add(ring);
     for(const a of [0,2.09,4.18])beam([p[0]+Math.cos(a)*1.7,p[1],p[2]+Math.sin(a)*1.7],[p[0]+Math.cos(a)*1.7,p[1]+.35,p[2]+Math.sin(a)*1.7],.008,steel);
   }
-  // The east-facing cliff drops below sea level; land, trees and rocks never
-  // continue across the water. Keep a level foundation beneath both wings.
+  // Only offshore architecture and contained garden planting remain.
   const {seaLevel,elevation,coastline}=landscape.site;
   const architectureObjects=new Set(scene.children);
   landscape.populate();landscape.finish();

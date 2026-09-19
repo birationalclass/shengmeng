@@ -1,5 +1,5 @@
 // All viewpoints share the peninsula plan: east +X, north -Z.
-import {BUILDING_SCALE} from './site-layout.js?v=10-offshore';
+import {BUILDING_SCALE} from './site-layout.js?v=11-open-sea';
 export const SHOTS=[
   {name:'海岸抵达',title:'海上相连，<br>一处安心思考的地方。',description:'海上模块平台 · 水院别墅 · 可扩展园区',duration:28,fov:49,
    positions:[[85,22,45],[74,17,36],[64,12,29],[55,8,24]],targets:[[10,2,0],[12,2,0],[14,2,0],[18,2,0]]},
@@ -13,10 +13,10 @@ export const SHOTS=[
    positions:[[39,1.4,-2.4],[39,1.4,-1],[39,1.4,1],[39,1.4,2.4]],targets:[[42.7,1.4,-2.4],[42.7,1.4,-1],[42.7,1.4,1],[42.7,1.4,2.4]]},
   {name:'海景露台',title:'从无边池沿，<br>望向日出与海平线。',description:'正东无边泳池 · 独立回水槽 · 无遮挡海景',duration:30,fov:58,
    positions:[[47,1.5,5],[48,1.5,2],[51,1.5,0],[52,1.5,-2]],targets:[[150,0,4.5],[150,0,2],[150,0,-2],[150,0,-4.5]]},
-  {name:'远眺',title:'把空间留白，<br>也把未来留给下一座小屋。',description:'北东南环海 · 海上栈桥与扩建 · 分散小别墅',duration:28,fov:50,
+  {name:'远眺',title:'把空间留白，<br>也把未来留给下一座小屋。',description:'四面环海 · 海上栈桥与扩建 · 分散小别墅',duration:28,fov:50,
    positions:[[-28,18,40],[-35,25,49],[-43,32,58],[-52,38,67]],targets:[[9,1,0],[10,1,0],[12,1,0],[14,1,0]]},
-  {name:'山水花园',title:'竹影、溪声，<br>与一棵巨树为邻。',description:'海上花园 · 竹庭茶亭 · 西岸山水远景',duration:38,fov:58,
-   positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-194,12,-36]]}
+  {name:'海上花园',title:'竹影、溪声，<br>与一棵巨树为邻。',description:'海上花园 · 竹庭茶亭 · 开阔海平线',duration:38,fov:58,
+   positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-60,8,-44]]}
 ];
 for(const shot of SHOTS)for(const key of ['positions','targets'])shot[key]=shot[key].map(p=>p.map(v=>v*BUILDING_SCALE));
 export function smoothProgress(t){return t*t*(3-2*t);}

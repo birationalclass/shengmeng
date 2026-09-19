@@ -4,15 +4,16 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=10-offshore';
-import {createLecture} from './lecture.js?v=10-offshore';
-import {configureLectureRoot,lectureViewOffset} from './site-layout.js?v=10-offshore';
-import {createChalkReader} from './chalk-reader.js?v=10-offshore';
+import {createRetreat} from './scene.js?v=11-open-sea';
+import {createLecture} from './lecture.js?v=11-open-sea';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,POOL_LEVEL} from './site-layout.js?v=11-open-sea';
+import {createChalkReader} from './chalk-reader.js?v=11-open-sea';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=10-offshore';
-import {RetreatTime,roofTarget} from './retreat-time.js?v=10-offshore';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=11-open-sea';
+import {RetreatTime,roofTarget} from './retreat-time.js?v=11-open-sea';
+import {constrainAboveWater} from './camera-bounds.js?v=11-open-sea';
 const sceneTime=new RetreatTime();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -116,9 +117,9 @@ function tick(stamp){
     if(keys.has('q'))move.y-=1;if(keys.has('e'))move.y+=1;
     if(move.lengthSq()){move.normalize().multiplyScalar(dt*(keys.has('shift')?10:4));camera.position.add(move);controls.target.add(move);}
     // Keep free-flight away from the clipping plane and terrain basement.
-    const oldY=camera.position.y;camera.position.y=Math.max(-.8,camera.position.y);controls.target.y+=camera.position.y-oldY;
     controls.update();
   }
+  constrainAboveWater(camera,controls.target,POOL_LEVEL*BUILDING_SCALE);
   if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
   updateSceneTime(dt);
   if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();positionBoardConsole();}
@@ -134,6 +135,7 @@ try{
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
   cameraIntent=bindCameraIntent(document,$('world'),stopTour);
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
+  controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,POOL_LEVEL*BUILDING_SCALE));
   controls.autoRotate=false;
   controls.addEventListener('start',()=>{stopTour();});
   camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();

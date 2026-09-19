@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=10-offshore';
-import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=10-offshore';
-import {createGardenWater} from './garden-water.js?v=10-offshore';
+import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v=11-open-sea';
+import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v=11-open-sea';
 
 // Real leaf/branch silhouettes, not opaque ellipsoids or billboard tree cards.
 // Each species/detail prototype is built once and instanced in spatial cells.
@@ -200,55 +199,9 @@ export async function createLandscape(renderer,scene,report){
     add(prototype.leaf,foliage,x,y,z,scale,a,species==='giant'?'Giant tree crowns':species==='palm'?'Palm fronds':'Olive leaf canopies',!distant);
   }
   function shrub(x,y,z,scale=1){add(fernGeometry,foliage,x,y,z,scale,rnd()*6.28,'Fern understory',false);}
-  function terrain(){
-    // A fine coastal patch and a broad continuous ridge mesh share one height
-    // function. Omit broad cells covered by the fine patch (no double surface).
-    const terrainMaterial=new THREE.MeshStandardMaterial({map:ground,normalMap:groundN,normalScale:new THREE.Vector2(.45,.45),roughness:1,vertexColors:true});
-    terrainMaterial.onBeforeCompile=shader=>{
-      shader.uniforms.ridgeRock={value:rock};
-      shader.vertexShader=shader.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vTerrainPoint;varying vec3 vTerrainNormal;').replace('#include <begin_vertex>','#include <begin_vertex>\nvTerrainPoint=position;vTerrainNormal=normal;');
-      shader.fragmentShader=shader.fragmentShader.replace('#include <common>','#include <common>\nuniform sampler2D ridgeRock;varying vec3 vTerrainPoint;varying vec3 vTerrainNormal;');
-      shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
-        vec3 weights=pow(abs(normalize(vTerrainNormal)),vec3(4.0));weights/=max(dot(weights,vec3(1.0)),.001);
-        vec3 p=vTerrainPoint*.23;
-        vec3 stone=texture2D(ridgeRock,p.yz).rgb*weights.x+texture2D(ridgeRock,p.xz).rgb*weights.y+texture2D(ridgeRock,p.xy).rgb*weights.z;
-        float cliff=smoothstep(.18,.6,1.0-abs(normalize(vTerrainNormal).y));
-        diffuseColor.rgb=mix(diffuseColor.rgb,stone,cliff*.92);
-      `);
-    };
-    terrainMaterial.customProgramCacheKey=()=> 'refuge-ridge-triplanar-v1';
-    for(const spec of [{width:1200,depth:1200,x:-330,z:-234,nx:200,nz:200,fine:false},{width:180,depth:180,x:0,z:0,nx:180,nz:180,fine:true}]){
-      const g=new THREE.PlaneGeometry(spec.width,spec.depth,spec.nx,spec.nz);g.rotateX(-Math.PI/2);g.translate(spec.x,0,spec.z);
-      const p=g.attributes.position,uv=g.attributes.uv,colors=[],color=new THREE.Color();
-      for(let i=0;i<p.count;i++){
-        const x=p.getX(i),z=p.getZ(i);let y=elevation(x,z);
-        // Fine boundary follows the coarse edge exactly, including intermediate
-        // samples; otherwise nonlinear heights leave hairline cracks.
-        if(spec.fine&&(Math.abs(x)===90||Math.abs(z)===90)){
-          const vertical=Math.abs(x)===90,q=vertical?z:x,lo=Math.floor(q/6)*6,t=(q-lo)/6;
-          y=vertical?THREE.MathUtils.lerp(elevation(x,lo),elevation(x,lo+6),t):THREE.MathUtils.lerp(elevation(lo,z),elevation(lo+6,z),t);
-        }
-        p.setY(i,y);uv.setXY(i,x*.24,z*.24);
-        const altitude=THREE.MathUtils.smoothstep(y,20,180),variation=fractal(x*.033,z*.033);
-        color.setHSL(.21+altitude*.025,.12+variation*.12,.47+variation*.12+altitude*.08);colors.push(color.r,color.g,color.b);
-      }
-      if(!spec.fine){const indices=[],old=g.index.array;for(let i=0;i<old.length;i+=3){const ids=[old[i],old[i+1],old[i+2]],x=ids.reduce((s,j)=>s+p.getX(j),0)/3,z=ids.reduce((s,j)=>s+p.getZ(j),0)/3;if(x>-90&&x<90&&z>-90&&z<90)continue;indices.push(...ids);}g.setIndex(indices);}
-      g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.computeVertexNormals();
-      ownedGeometry.add(g);
-      const mesh=new THREE.Mesh(g,terrainMaterial);mesh.name=spec.fine?'Detailed coastal terrain':'Continuous mountain ridges';mesh.scale.setScalar(BUILDING_SCALE);mesh.receiveShadow=true;scene.add(mesh);
-    }
-    return terrainMaterial;
-  }
-  let terrainMaterial,gardenWater;
   function garden(){
-    gardenWater=createGardenWater(scene);
     for(const [x,z,s] of GIANT_TREES)tree(x,.66,z,s,'giant');
     for(const [x,z,species] of ORNAMENTAL_TREES){const p=specimenPrototypes[species];add(p.wood,wood,x,.65,z,1,0,'Specimen tree trunks',true);add(p.leaf,foliage,x,.65,z,1,0,species==='terminalia'?'Tiered Terminalia inspired crowns':'White frangipani inspired crowns',true);}
-    // A near-site belt is deliberately denser than the distant mountain forest.
-    for(let i=0;i<90;i++){
-      const a=Math.PI*.52+rnd()*Math.PI*1.25,r=30+rnd()*30,x=Math.cos(a)*r,z=Math.sin(a)*r;
-      if(!canPlant(x,z))continue;tree(x,elevation(x,z),z,1.6+rnd()*1.1);
-    }
     for(const [cx,cz,rx,rz] of BAMBOO_GROVES)for(let i=0;i<48;i++){
       const a=rnd()*6.28,r=Math.sqrt(rnd()),x=cx+Math.cos(a)*rx*r,z=cz+Math.sin(a)*rz*r;
       if(!canGardenPlant(x,z))continue;
@@ -274,47 +227,13 @@ export async function createLandscape(renderer,scene,report){
         if(i%4===0)add(grassGeometry,foliage,x,gardenElevation(x,z),z,.8,rnd()*6.28,'Flower border foliage',false);
       }
     }
-    // Staggered rock buttresses make the cascade belong to a ravine.
-    for(let i=0;i<26;i++){
-      const t=.065+i/25*.115,p=riverPoint(t),q=riverPoint(t+.001),a=Math.atan2(q.z-p.z,q.x-p.x);
-      for(const sign of [-1,1]){const x=p.x-Math.sin(a)*(p.width+1.5)*sign,z=p.z+Math.cos(a)*(p.width+1.5)*sign;
-        add(rocks[i%3],rockMaterial,x,p.y-1.6,z,[3.5,2.8,2.7],rnd()*6.28,'Mossy waterfall buttresses',true);
-        if(i%3===0)shrub(x,p.y+.2,z,1.2);
-      }
-    }
-    // Riparian plants and smaller stones follow the water, never a random ring.
-    for(let i=0;i<100;i++){
-      const t=.18+i/100*.69,p=riverPoint(t),q=riverPoint(t+.001),a=Math.atan2(q.z-p.z,q.x-p.x),sign=i%2?1:-1;
-      const x=p.x-Math.sin(a)*(p.width+1)*sign,z=p.z+Math.cos(a)*(p.width+1)*sign;
-      shrub(x,elevation(x,z),z,.8+rnd()*.5);
-      if(i%4===0)add(rocks[i%3],rockMaterial,x,elevation(x,z)-.2,z,[1,.6,.8],a,'Creek bank stones',false);
-    }
   }
   const extraMaterials=[];
   function populate(){
-    report('正在种植分层林带与雕刻海岸山脊…');terrainMaterial=terrain();
+    report('正在布置海上树池、竹庭与草坪…');
     // Hero trees / palms frame the pool, leaving the steps and sea view clear.
     for(const [x,z] of [[-26,28],[-23,-29]])tree(x,gardenElevation(x,z),z,1.15,'palm');
     for(const [x,z] of [[-24,29],[-27,-28],[-26,1],[-34,5]])for(let i=0;i<4;i++)shrub(x+(rnd()-.5)*.75,gardenElevation(x,z),z+(rnd()-.5)*1.5,.65+rnd()*.25);
-    const occupied=[];
-    for(let i=0;i<4600&&occupied.length<200;i++){
-      const x=-420+rnd()*425,z=-76+rnd()*152;
-      if(!canPlant(x,z)||noise(x*.033,z*.033)<.27||occupied.some(p=>Math.hypot(p[0]-x,p[1]-z)<7))continue;
-      occupied.push([x,z]);plantings.push([x,elevation(x,z),z]);
-      tree(x,elevation(x,z),z,1.15+rnd()*1.5);
-      if(Math.hypot(x,z)<90)for(let j=0;j<3;j++){const sx=x+(rnd()-.5)*6,sz=z+(rnd()-.5)*6;if(canPlant(sx,sz))shrub(sx,elevation(sx,sz),sz,.7+rnd()*.6);}
-    }
-    for(let i=0;i<700;i++){
-      const x=-320+rnd()*180,z=-80+rnd()*160;
-      if(!canPlant(x,z)||noise(x*.09,z*.09)<.38)continue;
-      add(grassGeometry,foliage,x,elevation(x,z),z,.65+rnd()*.8,rnd()*6.28,'Coastal grasses',false);
-    }
-    for(let i=0;i<125;i++){
-      const z=-70+rnd()*140,x=coastline(z)-7-rnd()*6;
-      if(elevation(x,z)<seaLevel+.7||inPool(x,z,4)||inBuilding(x,z,4))continue;
-      const s=1.1+rnd()*2.2;
-      add(rocks[i%3],rockMaterial,x,elevation(x,z)-.35,z,[s,s*(.55+rnd()*.7),s*.8],rnd()*6.28,'Weathered coastal outcrops',Math.abs(z)<65);
-    }
     for(const [x,z,s] of [[-23,29,1.4],[-27,5,1.2],[-25,-29,1.4],[-39,29,1.6]])add(rocks[0],rockMaterial,x,gardenElevation(x,z),z,[s,s*.65,s*.8],rnd()*6.28,'Garden stone outcrops');
     garden();
   }
@@ -332,7 +251,7 @@ export async function createLandscape(renderer,scene,report){
   }
   const shoreMap=new THREE.DataTexture(shoreData,128,128);shoreMap.minFilter=shoreMap.magFilter=THREE.LinearFilter;shoreMap.needsUpdate=true;textures.push(shoreMap);
   return {tree,shrub,populate,finish,shoreMap,site:{seaLevel,coastline,elevation,slope},plantings,
-    update(dt){const step=Math.max(0,Math.min(dt,.05));clock.value+=step;gardenWater?.update(step);},
-    dispose(){gardenWater?.dispose();ownedGeometry.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());[wood,foliage,rockMaterial,terrainMaterial,bambooMaterial,...flowerMaterials,...extraMaterials].forEach(m=>m?.dispose());}
+    update(dt){const step=Math.max(0,Math.min(dt,.05));clock.value+=step;},
+    dispose(){ownedGeometry.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());[wood,foliage,rockMaterial,bambooMaterial,...flowerMaterials,...extraMaterials].forEach(m=>m?.dispose());}
   };
 }

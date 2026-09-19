@@ -1,6 +1,6 @@
-// Deterministic continuous terrain shared by geometry, planting and shoreline.
-import {watercourse,inBuilding,inPool,inGarden} from './site-layout.js?v=10-offshore';
-export const seaLevel=-3;
+// Open-ocean site: no above-water terrain or natural shore vegetation.
+import {inBuilding,inPool,inGarden} from './site-layout.js?v=11-open-sea';
+export const seaLevel=-.25;
 const mix=(a,b,t)=>a+(b-a)*t;
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
 const hash=(x,z)=>{const n=Math.sin(x*127.1+z*311.7)*43758.5453;return n-Math.floor(n);};
@@ -13,30 +13,12 @@ export function fractal(x,z){
   for(let i=0;i<5;i++){n+=noise(x,z)*a;x=x*2.07+13.7;z=z*2.03-9.2;a*=.48;}
   return n;
 }
-// A single west-connected peninsula. The coast recedes rapidly westwards to
-// the north and south; no terrain remains across the east-facing sea horizon.
-export const coastline=z=>-110-25*Math.pow(Math.abs(z)/100,4);
-export function elevation(x,z){
-  const west=smooth(65,260,-x);
-  const ridge=1-Math.abs(2*noise(x*.011+5,z*.009)-1);
-  const mountains=west*(28+fractal(x*.006,z*.006)*120+ridge*ridge*45);
-  const raw=-3+fractal(x*.029,z*.029)*9+mountains;
-  const land=raw;
-  const cliff=smooth(coastline(z)-2,coastline(z)+7,x);
-  const base=mix(land,-15,cliff),river=watercourse(x,z);
-  const valley=1-smooth(river.width*.86,river.width+3.1,river.distance);
-  return Math.min(base,mix(base,river.y-.85,valley));
-}
+// Compatibility sentinel outside the modeled world; no coast mesh is created.
+export const coastline=()=>-100000;
+export function elevation(){return -15;}
 export function slope(x,z){return Math.hypot(elevation(x+.5,z)-elevation(x-.5,z),elevation(x,z+.5)-elevation(x,z-.5));}
 export const gardenElevation=(x,z)=>inGarden(x,z) ? .24 : elevation(x,z);
 export const canGardenPlant=(x,z)=>inGarden(x,z)&&!inBuilding(x,z,.5)&&!inPool(x,z,.5)&&!(z>6.5&&z<9.5);
-export function canPlant(x,z){
-  const river=watercourse(x,z);
-  return river.distance>river.width+1.8&&x<coastline(z)-5&&!inBuilding(x,z,3)&&!inPool(x,z,3)&&!(x>-56&&x<25&&z>5&&z<11)&&slope(x,z)<1.25&&elevation(x,z)>seaLevel+1;
-}
-export function shoreline(z){
-  let a=coastline(z)-2,b=coastline(z)+7;
-  for(let i=0;i<22;i++){const mid=(a+b)/2;if(elevation(mid,z)>seaLevel)a=mid;else b=mid;}
-  return (a+b)/2;
-}
+export const canPlant=()=>false;
+export const shoreline=()=>null;
 export function seededRandom(seed){return ()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};}
