@@ -21,6 +21,7 @@ function fitMath(){
  });
 }
 window.addEventListener('lesson-rendered',()=>requestAnimationFrame(fitMath));
+window.addEventListener('lesson-math-changed',()=>requestAnimationFrame(fitMath));
 window.addEventListener('course-language',()=>requestAnimationFrame(fitMath));
 window.addEventListener('resize',()=>requestAnimationFrame(fitMath));
 document.fonts?.ready.then(()=>requestAnimationFrame(fitMath));
@@ -51,7 +52,7 @@ $('section-title').textContent=t(e.title);$('experiment-label').textContent=`${e
 scene.dataset.lessonScene=e.id;const u=new URL(location.href);u.hash=e.id;history.replaceState(null,'',u);
 if(e.id==='check')quiz(scene);else{
 scene.innerHTML=`<div class="notebook-visual">${e.visual?'<div class="group-demo"></div>':`<div class="group-focus">${formula(e.tex)}<p>${t(e.title)}</p></div>`}</div><section class="notebook-exposition">${e.proof?'<div class="group-proof"></div>':''}${e.example?`<article class="group-example"><h3>${t(['例子与应用','Example and application'])}</h3><p>${html(e.example)}</p></article>`:''}${e.extraProof?`<details class="group-detail"><summary>${t(['补充论证','Supporting argument'])}</summary>${e.extraProof.map(s=>`<p>${html(s)}</p>`).join('')}</details>`:''}${e.warning?`<aside class="group-warning"><h3>${t(['注意条件','Check the hypotheses'])}</h3><p>${html(e.warning)}</p></aside>`:''}<p class="group-recap">${t(['课堂任务：用自己的话解释左侧结论；指出一个关键条件，并举例说明。','Class task: explain the statement in your own words, identify a key hypothesis, and give an example.'])}</p></section>`;
-if(e.visual)window.GroupVisuals.render(scene.querySelector('.group-demo'),e.visual);
+if(e.visual)(e.visual.kind.startsWith('ring-')?window.RingVisuals:window.GroupVisuals).render(scene.querySelector('.group-demo'),e.visual);
 if(e.proof)proofPanel(scene.querySelector('.group-proof'),e.proof);
 }
 window.dispatchEvent(new Event('lesson-rendered'));
