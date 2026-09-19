@@ -1,10 +1,10 @@
 const translations = {
   zh: {
-    navCourses: "课程", navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
+    preprint: "预印本", navCourses: "课程", navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
     heroKicker: "华东师范大学 · 研究员", heroLine1: "结构、动力，", heroLine2: "与智能发现。",
     heroIntro: "我研究代数几何与动力系统，并探索人工智能如何辅助数学推理、拓展战略世界与交互体验。", exploreResearch: "探索研究", playGame: "试玩《无尽》", openVisualLab: "可视化实验室", openPascal: "探索帕斯卡定理",
-    coreFields: "2023 年以来的近期论文", phdYear: "新加坡国立大学数学博士", openQuestions: "开放问题，严谨方法", newFrontiers: "数学与游戏的新边界",
-    researchTitle: "近期论文与预印本。", researchLead: "学术研究区只呈现论文本身，并将最新 arXiv 记录置于最前。", viewArxiv: "在 arXiv 查看作者检索结果",
+    coreFields: "论文与预印本", phdYear: "新加坡国立大学数学博士", openQuestions: "开放问题，严谨方法", newFrontiers: "数学与游戏的新边界",
+    researchTitle: "论文与预印本。", researchLead: "代数几何与动力系统。按发表年份或预印本首发年份排序，每篇均附公开版本链接。", viewArxiv: "在 arXiv 查看作者检索结果",
     agTitle: "代数几何", agText: "射影簇、典范除子、环面结构与几何分类。", bgTitle: "双有理几何", bgText: "极小模型纲领、有理连通簇与结构分解。", dsTitle: "动力系统", dsText: "满射自同态、算术度、稠密轨道与动力刚性。",
     currentProgram: "当前研究计划", programText: "满射自同态的分类及其在算术动力系统中的应用，包括 Kawaguchi–Silverman 猜想与 Zariski 稠密轨道猜想。",
     exploratory: "探索方向", aiMathTitle: "让 AI 成为数学探索的伙伴。", aiMathLead: "研究机器智能如何辅助而非替代形式推理、猜想生成、文献导航与数学交流。",
