@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111c1b"><meta name="description" content="数学难民营：山间玻璃书院，可自由探索的三维空间与建筑镜头漫游。">
+  <title>数学难民营 · Sheng Meng</title>
+  <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=1">
+  <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
+</head>
+<body>
+  <canvas id="world" tabindex="0" aria-label="三维书院：拖动改变视角，滚轮缩放，方向键或 WASD 移动，空格暂停镜头。"></canvas>
+  <header class="chrome"><a href="../" class="back" aria-label="返回可视化列表">← <span>VISUAL LAB</span></a><div class="identity"><h1>数学难民营</h1><p>A RETREAT FOR WANDERING MINDS</p></div><button id="settingsButton" aria-expanded="false" aria-controls="settings">设置</button></header>
+  <aside id="settings" hidden>
+    <h2>空间设置</h2>
+    <label for="quality">画面质量 <select id="quality"><option value="balanced">流畅</option><option value="high" selected>精细</option></select></label>
+    <label for="light">日光 <input id="light" type="range" min="0" max="100" value="62"></label>
+    <label for="speed">巡游速度 <select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
+    <button id="fullscreen">全屏浏览</button>
+    <p>拖动即可接管镜头；方向键或 WASD 平移，Q / E 升降。触屏双指可平移、缩放。</p>
+    <p>原创三维场景，借鉴参考片的空间与镜头风格，非原片模型复刻。</p>
+    <a href="https://www.bilibili.com/video/BV1umun6PEvs/" target="_blank" rel="noopener noreferrer">观看参考视频 ↗</a>
+  </aside>
+  <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 山间抵达</p><h2 id="shotTitle">在喧嚣之外，<br>留一处思考的地方。</h2><p id="shotDescription">玻璃、光和水，围合一座开放的书院。</p></main>
+  <footer class="chrome">
+    <nav id="chapters" aria-label="选择镜头"><button data-shot="0" aria-current="true">01 <span>抵达</span></button><button data-shot="1">02 <span>水庭</span></button><button data-shot="2">03 <span>书室</span></button><button data-shot="3">04 <span>露台</span></button><button data-shot="4">05 <span>远眺</span></button></nav>
+    <div class="transport"><button id="tour" aria-pressed="true">暂停巡游</button><span id="mode" role="status">自动镜头</span><button id="hideUI" aria-label="隐藏界面，按 H 恢复">沉浸</button></div>
+    <div class="timeline"><span id="timelineFill"></span></div>
+  </footer>
+  <button id="showUI" hidden>显示界面</button>
+  <div id="transition" aria-hidden="true"></div>
+  <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p></div>
+  <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
+  <script type="module">import('./app.js?v=1').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+</body>
+</html>
