@@ -4,14 +4,16 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=3-coast';
-import {createLecture} from './lecture.js?v=3-coast';
+import {createRetreat} from './scene.js?v=5-mobile';
+import {createLecture} from './lecture.js?v=5-mobile';
+import {createChalkReader} from './chalk-reader.js?v=5-mobile';
+import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=3-coast';
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let renderer,composer,camera,controls,cameraInput,retreat,bloom,lecture;
+let renderer,composer,camera,controls,cameraInput,retreat,bloom,lecture,reader,profile,nativeSamples=0;
 let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer;
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -25,6 +27,7 @@ function fail(error){
 }
 function updateLabels(){
   document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture));
+  reader?.chapter(Boolean(SHOTS[shot].lecture),$('lecturePanel').hidden);
   $('shotNumber').textContent=`0${shot+1} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
@@ -44,7 +47,7 @@ function applyShot(dt){
   const position=curves[shot].position.getPointAt(t),target=curves[shot].target.getPointAt(t);
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
-    const focus=lecture.focus();target.copy(focus);position.copy(focus).add(new THREE.Vector3(0,.1,Math.max(6.2,5.9/camera.aspect)));
+    const framing=boardFraming(camera.aspect,s.fov),focus=lecture.focus(framing.single);target.copy(focus);position.copy(focus).add(new THREE.Vector3(0,0,framing.distance));
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*1.5));target.lerpVectors(controls.target,target,1-Math.exp(-dt*1.5));}
   }
   if(blend){
@@ -69,16 +72,22 @@ function applyShot(dt){
 }
 function resize(){
   if(!renderer)return;
-  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer?.setSize(innerWidth,innerHeight);
+  profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples);
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  renderer.setPixelRatio(profile.pixelRatio);renderer.setSize(innerWidth,innerHeight);
+  if(composer){
+    // Dispose on sample-count changes: changing .samples alone does not rebuild
+    // an already allocated WebGL framebuffer at the same dimensions.
+    for(const target of [composer.renderTarget1,composer.renderTarget2])if(target.samples!==profile.samples){target.samples=profile.samples;target.dispose();}
+    composer.setPixelRatio(profile.direct?1:profile.pixelRatio);composer.setSize(innerWidth,innerHeight);
+    bloom.enabled=profile.bloom;
+  }
+  renderer.shadowMap.enabled=profile.shadows;renderer.shadowMap.needsUpdate=true;
+  if(retreat&&retreat.sun.shadow.mapSize.x!==profile.shadowSize){retreat.sun.shadow.mapSize.set(profile.shadowSize,profile.shadowSize);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;}
+  $('qualityReadout').textContent=`${profile.pixelRatio.toFixed(2)}× 分辨率 · ${profile.direct?nativeSamples:profile.samples}× 抗锯齿`;
+  $('world').dataset.pixelRatio=String(profile.pixelRatio);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
 }
 function setQuality(){
-  const high=$('quality').value==='high';
-  renderer.setPixelRatio(Math.min(devicePixelRatio,high?1.75:1));
-  composer.setPixelRatio(renderer.getPixelRatio());
-  renderer.shadowMap.enabled=high;
-  renderer.shadowMap.needsUpdate=true;
-  bloom.enabled=high;
-  composer.renderTarget1.samples=high?4:0;composer.renderTarget2.samples=high?4:0;
   resize();
 }
 function tick(stamp){
@@ -102,11 +111,12 @@ function tick(stamp){
     controls.update();
   }
   if(!reduced.matches){retreat.water.material.uniforms.time.value+=dt*.35;retreat.ocean.material.uniforms.time.value+=dt;}
-  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();}
-  composer.render();
+  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
+  if(profile.direct)renderer.render(scene,camera);else composer.render();
 }
 try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,powerPreference:'high-performance'});
+  nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.9;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
@@ -119,13 +129,13 @@ try{
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
   $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
   lecture=await createLecture(scene,renderer);
+  reader=createChalkReader(lecture);
   for(const [i,page] of lecture.pages.entries()){
     const option=document.createElement('option');option.value=String(i);option.textContent=`${i+1}. ${page.source} · ${page.title}`;$('lecturePage').append(option);
   }
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),.18,.4,1.1);composer.addPass(bloom);composer.addPass(new OutputPass());
-  if(matchMedia('(max-width: 700px)').matches)$('quality').value='balanced';
   setQuality();updateLabels();time=.85;applyShot(0);$('transition').style.opacity=0;
   // Shader compilation failures are reported, not hidden behind an endless loader.
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
@@ -170,7 +180,8 @@ window.addEventListener('keydown',event=>{
   if(/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
   const key=event.key.toLowerCase();
   if(key==='h'){immersive(!document.body.classList.contains('immersive'));return;}
-  if(key==='escape'){immersive(false);$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');return;}
+  if(key==='escape'){immersive(false);$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');reader?.close();return;}
+  if(event.target.closest('#chalkReader,#lecturePanel,#settings'))return;
   if(key===' ' && event.target.tagName!=='BUTTON'){event.preventDefault();$('tour').click();return;}
   if(['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){
     event.preventDefault();stopTour();keys.add(key);
@@ -193,11 +204,11 @@ function updateLectureUI(){
 }
 function focusLecture(){
   if(!lecture)return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;
-  if(reduced.matches){free=false;touring=false;blend=null;camera.position.copy(lecture.focus()).add(new THREE.Vector3(0,.1,Math.max(6.2,5.9/camera.aspect)));controls.target.copy(lecture.focus());controls.update();updateLabels();}
+  if(reduced.matches){const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(framing.single);free=false;touring=false;blend=null;camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(0,0,framing.distance));controls.target.copy(focus);controls.update();updateLabels();}
   else resumeTour();
 }
 $('lectureButton').addEventListener('click',()=>{
-  if(!lecture)return;$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();
+  if(!lecture)return;reader?.close();$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();
 });
 $('lectureClose').addEventListener('click',()=>{$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');});
 $('lectureFocus').addEventListener('click',focusLecture);

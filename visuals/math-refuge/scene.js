@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Water} from './vendor/objects/Water.js';
 import {Sky} from './vendor/objects/Sky.js';
+import {createDetailMaps,isDistantVegetation} from './surface-materials.js?v=5-mobile';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -18,15 +19,18 @@ export async function createRetreat(renderer,scene,report){
     texture('stone-color.jpg',4,true),texture('stone-normal.jpg',4),texture('stone-rough.jpg',4)
   ]);
   const mat=(color,roughness=.7,metalness=0,other={})=>new THREE.MeshStandardMaterial({color,roughness,metalness,...other});
-  const steel=mat('#1d2526',.27,.82),stone=mat('#787e74',.55,0,{map:stoneMap,normalMap:stoneNormal,roughnessMap:stoneRough,normalScale:new THREE.Vector2(.12,.12)}),edge=mat('#111f20',.31,.25);
-  const brass=mat('#c7a779',.25,.78),timber=mat('#796143',.68,0,{map:woodMap,normalMap:woodNormal,normalScale:new THREE.Vector2(.2,.2),roughnessMap:woodRough});
-  const pale=mat('#c3b59d',.92),darkFabric=mat('#465955',.98),soil=mat('#302d21',1),leaf=mat('#46734e',.9,0,{side:THREE.DoubleSide});
-  const glass=new THREE.MeshPhysicalMaterial({color:'#c3e7dc',roughness:.07,metalness:.05,transparent:true,opacity:.15,depthWrite:false,side:THREE.DoubleSide});
+  const details=createDetailMaps(renderer.capabilities.getMaxAnisotropy());
+  const steel=mat('#1d2526',.58,.82,{roughnessMap:details.brushedRoughness}),stone=mat('#92978b',.72,0,{map:stoneMap,normalMap:stoneNormal,roughnessMap:stoneRough,normalScale:new THREE.Vector2(.18,.18)}),edge=mat('#111f20',.48,.25,{normalMap:details.plasterNormal,normalScale:new THREE.Vector2(.13,.13)});
+  const brass=mat('#c7a779',.52,.78,{roughnessMap:details.brushedRoughness}),timber=mat('#968064',.8,0,{map:woodMap,normalMap:woodNormal,normalScale:new THREE.Vector2(.16,.16),roughnessMap:woodRough});
+  const cloth={normalMap:details.clothNormal,roughnessMap:details.clothRoughness,normalScale:new THREE.Vector2(.28,.28)};
+  const pale=mat('#c3b59d',.98,0,cloth),darkFabric=mat('#465955',1,0,cloth),soil=mat('#302d21',1),leaf=mat('#46734e',.9);
+  const ceramic=mat('#d6cab6',.26),glass=new THREE.MeshPhysicalMaterial({color:'#c3e7dc',roughness:.06,metalness:0,ior:1.5,transparent:true,opacity:.15,depthWrite:false,side:THREE.FrontSide});
   const light=mat('#ffe2ac',.5,0,{emissive:'#ffcb79',emissiveIntensity:2.3});
   const blackboard=mat('#153f38',.95),ink=mat('#dddcc5',1);
   const materials={steel,stone,edge,brass,timber,pale,darkFabric,soil,leaf,glass,light,blackboard,ink};
-  const boxes=new THREE.BoxGeometry(1,1,1),round=new RoundedBoxGeometry(1,1,1,3,.13);
+  const boxes=new THREE.BoxGeometry(1,1,1),roundedCache=new Map();
   const cylinder=new THREE.CylinderGeometry(1,1,1,12),sphere=new THREE.IcosahedronGeometry(1,1);
+  const distantFoliage=new THREE.IcosahedronGeometry(1,0),grout=mat('#606b61',.98),rubber=mat('#0e1b18',.97);
   const batches=new Map(),dummy=new THREE.Object3D();
   function instance(geo,material,p,s,r=[0,0,0]){
     const key=geo.uuid+material.uuid;if(!batches.has(key))batches.set(key,{geo,material,matrices:[]});
@@ -34,7 +38,11 @@ export async function createRetreat(renderer,scene,report){
     batches.get(key).matrices.push(dummy.matrix.clone());
   }
   const box=(p,s,m=stone,r)=>instance(boxes,m,p,s,r);
-  const soft=(p,s,m=pale,r)=>instance(round,m,p,s,r);
+  const soft=(p,s,m=pale,r)=>{
+    const key=s.join(',');
+    if(!roundedCache.has(key))roundedCache.set(key,new RoundedBoxGeometry(...s,2,Math.min(...s)*.22));
+    instance(roundedCache.get(key),m,p,[1,1,1],r);
+  };
   function beam(a,b,radius,material=steel){
     const av=new THREE.Vector3(...a),bv=new THREE.Vector3(...b),mid=av.clone().add(bv).multiplyScalar(.5),direction=bv.clone().sub(av);
     const q=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),direction.clone().normalize());
@@ -45,6 +53,9 @@ export async function createRetreat(renderer,scene,report){
     box([cx,y,cz],[w,.4,d],edge);box([cx,y+.23,cz],[w-.16,.09,d-.16],stone);
     litStrip([cx,y-.06,cz+d/2+.01],[w-.3,.035,.025]);
     litStrip([cx+w/2+.01,y-.06,cz],[.025,.035,d-.3]);
+    // Paver joints and a thin slab-edge reveal give grazing light real geometry.
+    for(let x=-w/2+1.5;x<w/2-.1;x+=1.5)box([cx+x,y+.279,cz],[.012,.006,d-.2],grout);
+    for(let z=-d/2+1.5;z<d/2-.1;z+=1.5)box([cx,y+.279,cz+z],[w-.2,.006,.012],grout);
   }
   function glazing(x,y,z,width,height,axis='x'){
     const s=axis==='x'?[width,height,.035]:[.035,height,width];
@@ -54,6 +65,9 @@ export async function createRetreat(renderer,scene,report){
       const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[.075,height,.075],steel);
     }
     for(const h of [0,height])box([x,y+h,z],axis==='x'?[width,.09,.11]:[.11,.09,width],steel);
+    // Recessed dark seals sit inside the metal head/sill instead of more glass
+    // layers (which would add costly transparent overdraw on mobile).
+    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,.022,.052]:[.052,.022,width],rubber);
   }
   function railing(x,y,z,w,axis='x'){
     glazing(x,y,z,w,1.05,axis);
@@ -68,6 +82,7 @@ export async function createRetreat(renderer,scene,report){
   }
   function tree(x,y,z,scale=1){
     const h=3.6*scale;
+    const foliage=isDistantVegetation(x,z)?distantFoliage:sphere;
     beam([x,y,z],[x+.13*scale,y+h,z],.065*scale,timber);
     for(let b=0;b<7;b++){
       const angle=b*2.399,by=y+h*(.56+random()*.4),length=(.7+random()*.7)*scale;
@@ -75,7 +90,7 @@ export async function createRetreat(renderer,scene,report){
       beam([x,by-.55*scale,z],end,.025*scale,timber);
       for(let j=0;j<15;j++){
         const a=random()*Math.PI*2,r=Math.sqrt(random())*.7*scale;
-        instance(sphere,leaf,[end[0]+Math.cos(a)*r,end[1]+(random()-.5)*.45*scale,end[2]+Math.sin(a)*r],[.24*scale,.11*scale,.32*scale],[random(),random()*6,random()]);
+        instance(foliage,leaf,[end[0]+Math.cos(a)*r,end[1]+(random()-.5)*.45*scale,end[2]+Math.sin(a)*r],[.24*scale,.11*scale,.32*scale],[random(),random()*6,random()]);
       }
     }
   }
@@ -84,7 +99,10 @@ export async function createRetreat(renderer,scene,report){
     // Transform upholstered modules into the common instancing batches.
     const part=(p,s,m)=>{const v=new THREE.Vector3(...p).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(group.position);soft(v.toArray(),s,m,[0,angle,0]);};
     part([0,.21,0],[3.1,.34,1.1],edge);part([0,.56,-.48],[3.05,.85,.27],darkFabric);
-    for(const a of [-1,0,1]){part([a,.46,.04],[.96,.22,.91],pale);part([a,.73,-.25],[.86,.56,.23],pale);}
+    for(const a of [-1,0,1]){
+      part([a,.46,.04],[.96,.22,.91],pale);part([a,.73,-.25],[.86,.56,.23],pale);
+      part([a,.565,.405],[.83,.012,.012],darkFabric);
+    }
     part([-1.52,.52,0],[.22,.55,1.1],darkFabric);part([1.52,.52,0],[.22,.55,1.1],darkFabric);
     for(const px of [-1.2,1.2])for(const pz of [-.35,.35])part([px,.06,pz],[.09,.15,.09],brass);
   }
@@ -93,7 +111,7 @@ export async function createRetreat(renderer,scene,report){
     for(const dx of [-w*.36,w*.36])for(const dz of [-d*.33,d*.33])box([x+dx,y+.28,z+dz],[.075,.55,.075],brass);
     // Closed notebooks and ceramic bowl.
     box([x-.2,y+.66,z],[.4,.055,.3],blackboard);
-    instance(cylinder,pale,[x+.4,y+.72,z],[.13,.19,.13]);
+    instance(cylinder,ceramic,[x+.4,y+.72,z],[.13,.19,.13]);
   }
   report('正在搭建书院与庭院…');
   floor(0,33,29,0,0);floor(5.15,27,20,-1,-1);floor(9.8,19,14,-4,-3);floor(13.6,13,10,-5,-3);
@@ -182,6 +200,12 @@ export async function createRetreat(renderer,scene,report){
   // Fourteen modeled conference chairs surround a single generous oak table.
   soft([28,1.08,-1],[4.6,.18,11.8],timber);
   for(const z of [-4.5,2.5])box([28,.68,z],[2.7,.68,.45],edge);
+  // Recessed cable troughs, inset power lids and table-edge trim at chair height.
+  for(const z of [-4,0,4]){
+    soft([28,1.18,z],[.32,.018,.75],steel);
+    for(const dz of [-.2,.2])box([28,1.191,z+dz],[.14,.006,.04],rubber);
+  }
+  for(const x of [25.73,30.27])box([x,1.04,-1],[.018,.035,11.2],brass);
   const conferenceTable=new THREE.Object3D();conferenceTable.name='Ocean conference table';
   conferenceTable.position.set(28,1.08,-1);conferenceTable.userData={seats:14,room:[20,20]};scene.add(conferenceTable);
   function chair(x,z,angle){
@@ -189,6 +213,7 @@ export async function createRetreat(renderer,scene,report){
     part([0,.48,0],[.78,.17,.82],darkFabric);part([0,.94,-.36],[.78,.86,.16],pale);
     for(const a of [-.43,.43])part([a,.77,0],[.09,.1,.72],timber);
     for(const a of [-.29,.29])for(const b of [-.28,.28])part([a,.22,b],[.045,.44,.045],steel);
+    part([0,.69,-.31],[.67,.015,.02],darkFabric);
   }
   for(const z of [-5.7,-3.8,-1.9,0,1.9,3.8]){
     chair(24.65,z,Math.PI/2);chair(31.35,z,-Math.PI/2);
@@ -376,7 +401,7 @@ export async function createRetreat(renderer,scene,report){
   for(const {geo,material,matrices} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
-    mesh.castShadow=material!==glass&&material!==light;mesh.receiveShadow=material!==glass;
+    mesh.castShadow=material!==glass&&material!==light&&geo!==distantFoliage;mesh.receiveShadow=material!==glass;
     mesh.computeBoundingSphere();scene.add(mesh);
   }
   const sky=new Sky();sky.scale.setScalar(12000);scene.add(sky);
@@ -405,5 +430,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   lighting(62,true);
-  return {water,ocean,lighting,sculpture,materials,site:{elevation,coastline,seaLevel},triangleObjects:scene.children.length,dispose(){environment?.dispose();pmrem.dispose();}};
+  return {water,ocean,sun,lighting,sculpture,materials,site:{elevation,coastline,seaLevel},triangleObjects:scene.children.length,dispose(){environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

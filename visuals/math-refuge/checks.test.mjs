@@ -5,6 +5,7 @@ import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js';
 import * as Three from '../3d/vendor/three.module.js';
 import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
 import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
+import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
 
 test('seven finite camera chapters with seminar and ocean views',()=>{
   assert.equal(SHOTS.length,7);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));
@@ -22,7 +23,7 @@ test('seven finite camera chapters with seminar and ocean views',()=>{
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js','scene.js','camera-paths.js','lecture.js','lecture-state.js']){
+  for(const file of ['index.html','app.js','scene.js','camera-paths.js','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -45,7 +46,10 @@ test('all page and JavaScript local asset references resolve',async()=>{
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
   const app=await fs.readFile(new URL('app.js',root),'utf8');
-  for(const match of app.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
+  for(const file of ['app.js','chalk-reader.js']){
+    const code=await fs.readFile(new URL(file,root),'utf8');
+    for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
+  }
 });
 
 test('scene assembly creates valid model buffers without a browser or GPU',async()=>{
@@ -54,7 +58,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
   async function inlineAddon(file){return asModule((await fs.readFile(new URL(file,import.meta.url),'utf8')).replaceAll("from 'three'",`from '${coreURL}'`));}
   let source=await fs.readFile(new URL('./scene.js',import.meta.url),'utf8');
   source=source.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;');
-  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js'])source=source.replace(file,await inlineAddon(file));
+  for(const file of ['./vendor/geometries/RoundedBoxGeometry.js','./vendor/objects/Water.js','./vendor/objects/Sky.js','./surface-materials.js?v=5-mobile'])source=source.replace(file,await inlineAddon(file));
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -80,7 +84,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       if(object.isInstancedMesh){assert([...object.instanceMatrix.array].every(Number.isFinite));instances+=object.count;}
       triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
     }
-    assert(instances>10000);assert(triangles<5000000);
+    assert(instances>10000);assert(triangles<1200000,'Far foliage should reduce the previous 1,509,512 triangles');
+    assert(result.materials.pale.normalMap.isDataTexture);assert(result.materials.steel.roughnessMap.isDataTexture);
+    assert(result.materials.pale.normalMap.generateMipmaps);assert(result.materials.timber.normalMap);
     assert(calls.includes('NS 方程 · 存在性与光滑性'));assert(calls.includes('Hodge 猜想 ？'));assert(calls.includes('数学难民营'));
     assert(calls.includes('NS'));assert.equal(clippedFragments,12);
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
@@ -108,6 +114,8 @@ test('65 local SVG pages preserve notebook formula content and stay within the b
   assert.equal(pages.length,65);assert(pages.some(p=>p.source.startsWith('Hodge')));assert(pages.some(p=>p.source.startsWith('Leray')));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
+    const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
+    assert(formula.includes('<path'));assert(!formula.includes('data-mjx-error'));assert(page.formulaEm>0);
     assert(svg.includes('<path'));assert(!svg.includes('data-mjx-error'));assert(!svg.includes('<script'));
     assert(!/(?:href|src)="https?:/.test(svg));assert(page.tex.length>0);
     for(const [x,y,w,h] of page.rows){assert(x>=0&&y>=0);assert(x+w<=1536&&y+h<=640);}
@@ -117,6 +125,21 @@ test('65 local SVG pages preserve notebook formula content and stay within the b
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/data-shot="\d"/g)].length,SHOTS.length);
   for(let i=0;i<3;i++){assert(html.includes(`id="boardLift${i}"`));assert(html.includes(`id="boardSwap${i}"`));}
+});
+
+test('phone rendering preserves Retina pixels and AA within a bounded budget',()=>{
+  const portrait=displayProfile(390,844,3),landscape=displayProfile(844,390,3);
+  assert.equal(portrait.pixelRatio,3);assert.equal(portrait.samples,4);assert(portrait.direct);assert(!portrait.bloom);assert(portrait.shadows);
+  assert.equal(portrait.pixelRatio,landscape.pixelRatio);assert.equal(portrait.compact,landscape.compact);
+  for(const [w,h,dpr] of [[320,568,2],[430,932,3],[768,1024,2],[1440,900,2],[3840,2160,3]]){
+    const p=displayProfile(w,h,dpr);assert(w*h*p.pixelRatio*p.pixelRatio<=6000000.01);assert(p.pixelRatio<=dpr);assert(p.samples>0);
+  }
+  assert(!displayProfile(390,844,3,'high',4,0).direct,'Use compositor MSAA when native MSAA is absent');
+  assert.equal(displayProfile(390,844,3,'high',2,0).samples,2);
+  assert.equal(displayProfile(390,844,3,'high',0,0).samples,0);
+  const framing=boardFraming(390/844),visibleWidth=2*framing.distance*Math.tan(57*Math.PI/360)*(390/844);
+  assert(framing.single);assert(5.3/visibleWidth>.8);assert(framing.distance<5.9/(390/844));
+  assert(readingFormulaWidth(22,24)>=528,'Long formulas scroll instead of shrinking below the selected font size');
 });
 
 test('classroom assembles six independent boards and survives writing, erasing and manual lifts',async()=>{
@@ -140,6 +163,9 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
     lecture.playing=false;const time=lecture.clock.elapsed;lecture.update(.1);assert.equal(lecture.clock.elapsed,time);
+    const uploads=boards.map(b=>b.children[0].material.map.version);
+    for(let i=0;i<50;i++)lecture.update(.1);
+    assert.deepEqual(boards.map(b=>b.children[0].material.map.version),uploads,'Unchanged boards must not re-upload textures');
     lecture.lift(0,1);for(let i=0;i<50;i++)lecture.update(.1);
     assert(Math.abs(boards[0].position.y-3.7)<.001);assert(Math.abs(boards[1].position.y-1.45)<.001);
     lecture.select(64);await Promise.resolve();lecture.staticPage();lecture.update(.1,true);
@@ -148,6 +174,30 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
     assert(lecture.focus().toArray().every(Number.isFinite));lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
+});
+
+test('vector chalk reader respects dismissal and keeps text independent of WebGL',async()=>{
+  const originalDocument=globalThis.document,originalWidth=globalThis.innerWidth,originalHeight=globalThis.innerHeight;
+  const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
+  const elements=new Map([...html.matchAll(/id="([^"]+)"/g)].map(([,id])=>[id,{
+    hidden:['chalkReader','lecturePanel'].includes(id),style:{},value:id==='readerFont'?'24':'',attributes:{},events:{},
+    addEventListener(type,handler){this.events[type]=handler;},setAttribute(k,v){this.attributes[k]=v;},click(){this.events.click?.();}
+  }]));
+  globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
+  const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
+  const lecture={pages,clock:{page:0},playing:true};
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./display-profile.js?v=5-mobile',new URL('./display-profile.js',import.meta.url).href);
+  try{
+    const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+    const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
+    reader.chapter(true);assert(!panel.hidden);assert(elements.get('readerFormula').src.includes('formula-001.svg'));assert.equal(elements.get('readerExplanation').textContent,pages[0].text);
+    elements.get('readerClose').click();reader.chapter(true);assert(panel.hidden,'Do not reopen dismissed reader on same chapter');
+    reader.chapter(false);reader.chapter(true,false);assert(panel.hidden,'Do not cover the manually opened board control panel');
+    elements.get('readerOpen').click();assert(!panel.hidden);
+    elements.get('readerFont').value='30';elements.get('readerFont').events.input();assert.equal(elements.get('readerFormula').style.width,readingFormulaWidth(pages[0].formulaEm,30)+'px');
+    lecture.clock.page=1;reader.update();assert.equal(elements.get('readerExplanation').textContent,pages[1].text);
+    reader.close();assert(panel.hidden);
+  }finally{globalThis.document=originalDocument;globalThis.innerWidth=originalWidth;globalThis.innerHeight=originalHeight;}
 });
 
 test('mouse and touch rotation are slower, with zoom and pan preserved',async()=>{

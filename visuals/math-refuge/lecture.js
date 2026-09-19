@@ -4,7 +4,7 @@ import {LectureClock,boardHeights} from './lecture-state.js?v=3-coast';
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=3-coast');
+  const response=await fetch('./assets/chalk/pages.json?v=5-mobile');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
   const cache=new Map(),pending=new Map();let loadingError=null,version=0;
@@ -19,7 +19,7 @@ export async function createLecture(scene,renderer){
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key))cache.delete(key);
         resolve(image);
-      };image.onerror=()=>{pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].asset;
+      };image.onerror=()=>{pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].asset+'?v=5-mobile';
     });pending.set(index,job);return job;
   }
   await load(0);
@@ -38,7 +38,7 @@ export async function createLecture(scene,renderer){
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
       const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
       const ctx=canvas.getContext('2d'),texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
-      texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.generateMipmaps=false;texture.minFilter=THREE.LinearFilter;
+      texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.generateMipmaps=true;texture.minFilter=THREE.LinearMipmapLinearFilter;
       const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshStandardMaterial({map:texture,roughness:.98}));
       group.add(surface);
       for(const y of [-BOARD_H/2,BOARD_H/2])part(group,[0,y,.025],[BOARD_W+.1,.07,.11],frameMaterial);
@@ -57,12 +57,12 @@ export async function createLecture(scene,renderer){
   let seed=831;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   for(let i=0;i<12000;i++){g.fillStyle=i%2?'#e7f0d808':'#041c1b18';g.fillRect(random()*W,random()*H,1+random()*2,1);}
   const dust=document.createElement('canvas');dust.width=W;dust.height=H;
-  const d=dust.getContext('2d');d.fillStyle='#193d3370';
-  for(let i=0;i<16000;i++)d.fillRect(random()*W,random()*H,.5+random()*1.5,.7);
+  const d=dust.getContext('2d');d.fillStyle='#193d3328';
+  for(let i=0;i<6000;i++)d.fillRect(random()*W,random()*H,.5+random(),.6);
   function draw(index){
     const board=boards[index],slot=clock.slots[index],ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase';
-    const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${version}`;
+    const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}`;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0);const image=cache.get(slot.page);
     if(image){
@@ -118,7 +118,7 @@ export async function createLecture(scene,renderer){
     get playing(){return playing;},set playing(value){playing=value;},
     select,step(delta){select(clock.page+delta);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
-    heights:()=>[...targets],focus:()=>new THREE.Vector3(boards[clock.active].group.position.x,2.6,-10.4),
+    heights:()=>[...targets],focus:(single=false)=>new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4),
     dispose(){boards.forEach(board=>{board.texture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();}
   };
 }

@@ -34,15 +34,18 @@ for(const section of sections)for(const [formulaIndex,tex] of section.f.entries(
   const node=doc.convert(tex,{display:true});let svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
   if(svg.includes('data-mjx-error'))throw new Error(`Bad formula: ${tex}`);
   const viewBox=svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number);
-  const width=1360,height=260,scale=Math.min(width/viewBox[2],height/viewBox[3]);
+  const width=1360,height=260,scale=Math.min(.105,width/viewBox[2],height/viewBox[3]);
+  const formulaAsset=`formula-${String(pages.length+1).padStart(3,'0')}.svg`;
+  const standalone=svg.replace(/<svg[^>]*>/,`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${viewBox[2]/1000*24}" height="${viewBox[3]/1000*24}" viewBox="${viewBox.join(' ')}">`).replaceAll('currentColor','#eee9d5');
+  await fs.writeFile(new URL(formulaAsset,output),standalone);
   const w=viewBox[2]*scale,h=viewBox[3]*scale,x=(1536-w)/2,y=155+(height-h)/2;
   svg=svg.replace(/<svg[^>]*>/,`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${viewBox.join(' ')}" overflow="visible">`).replaceAll('currentColor','#eee9d5');
-  const title=chunks(section.title,28),notes=chunks(section.text||'',43);
+  const title=chunks(section.title,22),notes=chunks(section.text||'',32);
   const page=pages.length+1,asset=`page-${String(page).padStart(3,'0')}.svg`;
-  const lines=notes.slice(0,3).map((line,i)=>`<text x="88" y="${462+i*43}" font-size="31">${escape(line)}</text>`).join('');
-  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif"><text x="84" y="70" font-size="46" fill="#e4cf9c">${escape(title[0])}</text><text x="88" y="119" font-size="26" fill="#aac8b9">${escape(section.source)} · ${formulaIndex+1}/${section.f.length}${title[1]?' · '+escape(title[1]):''}</text>${svg}${lines}<text x="88" y="611" font-size="23" fill="#9dbbab">孟晟 · 谱序列学习笔记 / ${page}</text></g></svg>`;
+  const lines=notes.slice(0,3).map((line,i)=>`<text x="88" y="${463+i*46}" font-size="42">${escape(line)}</text>`).join('');
+  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif"><text x="84" y="75" font-size="58" fill="#e4cf9c">${escape(title[0])}</text><text x="88" y="123" font-size="30" fill="#aac8b9">${escape(section.source)} · ${formulaIndex+1}/${section.f.length}${title[1]?' · '+escape(title[1]):''}</text>${svg}${lines}<text x="88" y="611" font-size="25" fill="#9dbbab">孟晟 · 谱序列学习笔记 / ${page}</text></g></svg>`;
   await fs.writeFile(new URL(asset,output),body);
-  pages.push({title:section.title,source:section.source,tex,text:section.text||'',asset:`./assets/chalk/${asset}`,rows:[[80,25,1380,56],[80,91,1380,34],[x-8,y-8,w+16,h+16],...notes.slice(0,3).map((_,i)=>[80,432+i*43,1380,42])]});
+  pages.push({title:section.title,source:section.source,tex,text:section.text||'',asset:`./assets/chalk/${asset}`,formulaAsset:`./assets/chalk/${formulaAsset}`,formulaEm:viewBox[2]/1000,rows:[[80,12,1380,76],[80,88,1380,44],[x-8,y-8,w+16,h+16],...notes.slice(0,3).map((_,i)=>[80,423+i*46,1380,46])]});
 }
 await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:'../../study/spectral/',generator:'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
 await fs.copyFile(path.join(root,'LICENSE'),new URL('MATHJAX-LICENSE.txt',output));
