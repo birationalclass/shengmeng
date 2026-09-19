@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js';
 import * as Three from '../3d/vendor/three.module.js';
 import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
+import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 
 test('seven finite camera chapters with seminar and ocean views',()=>{
   assert.equal(SHOTS.length,7);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));
@@ -147,4 +148,29 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
     assert(lecture.focus().toArray().every(Number.isFinite));lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
+});
+
+test('mouse and touch rotation are slower, with zoom and pan preserved',async()=>{
+  const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
+  const source=(await fs.readFile(new URL('../3d/vendor/OrbitControls.js',import.meta.url),'utf8')).replace("from 'three'",`from '${core}'`);
+  const {OrbitControls}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+  for(const pointerType of ['mouse','touch']){
+    const camera=new Three.PerspectiveCamera(60,1,.1,1000);camera.position.set(0,0,10);
+    const controls=new OrbitControls(camera);let pointer,capture;
+    const element={clientHeight:800,addEventListener(type,handler,options){assert.equal(type,'pointerdown');pointer=handler;capture=options.capture;},removeEventListener(){}};
+    controls.domElement=element;
+    const zoom=controls.zoomSpeed,pan=controls.panSpeed,input=configureCameraInput(controls,element);
+    assert(capture);pointer({pointerType});
+    assert.equal(controls.rotateSpeed,DEFAULT_ROTATION*(pointerType==='touch'?.75:1));
+    assert.equal(controls.zoomSpeed,zoom);assert.equal(controls.panSpeed,pan);assert(controls.enableZoom&&controls.enablePan);
+    if(pointerType==='mouse')controls._handleMouseMoveRotate({clientX:100,clientY:0});
+    else{controls._pointers=[1];controls._handleTouchMoveRotate({pageX:100,pageY:0});}
+    for(let i=0;i<400;i++)controls.update();
+    assert(Math.abs(controls.getAzimuthalAngle()+Math.PI/4*controls.rotateSpeed)<1e-7);
+    input.set(.1);assert.equal(controls.rotateSpeed,.1*(pointerType==='touch'?.75:1));
+    input.set(NaN);assert.equal(controls.rotateSpeed,DEFAULT_ROTATION*(pointerType==='touch'?.75:1));input.dispose();
+  }
+  const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
+  assert.equal([...html.matchAll(/id="fullscreen"/g)].length,1);
+  assert(/<footer[\s\S]*id="fullscreen"[\s\S]*<\/footer>/.test(html));
 });

@@ -6,11 +6,12 @@ import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=3-coast';
 import {createLecture} from './lecture.js?v=3-coast';
+import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=3-coast';
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let renderer,composer,camera,controls,retreat,bloom,lecture;
+let renderer,composer,camera,controls,cameraInput,retreat,bloom,lecture;
 let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer;
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -110,7 +111,7 @@ try{
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.08,12000);
-  controls=new OrbitControls(camera,$('world'));controls.enableDamping=true;controls.dampingFactor=.07;
+  controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
   controls.addEventListener('start',()=>{stopTour();});
   camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();
@@ -146,17 +147,23 @@ $('settingsButton').addEventListener('click',()=>{
   $('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
 });
 $('quality').addEventListener('change',()=>{if(retreat)setQuality();});
+$('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{
   if(!retreat)return;retreat.lighting(Number($('light').value));renderer.shadowMap.needsUpdate=true;clearTimeout(lightTimer);
   lightTimer=setTimeout(()=>retreat.lighting(Number($('light').value),true),180);
 });
 $('fullscreen').addEventListener('click',async()=>{
   try{
-    if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();
-    else $('mode').textContent='请使用浏览器全屏';
-  }catch{$('mode').textContent='浏览器未允许全屏';}
+    if(document.fullscreenElement||document.webkitFullscreenElement){
+      const exit=document.exitFullscreen||document.webkitExitFullscreen;if(exit)await exit.call(document);
+    }else{
+      const enter=document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen;
+      if(enter)await enter.call(document.documentElement);else $('fullscreen').textContent='请使用浏览器全屏';
+    }
+  }catch{$('fullscreen').textContent='全屏未获允许，请重试';}
 });
-document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏浏览';});
+function syncFullscreen(){const active=Boolean(document.fullscreenElement||document.webkitFullscreenElement);$('fullscreen').textContent=active?'退出全屏':'全屏浏览';$('fullscreen').setAttribute('aria-pressed',String(active));}
+document.addEventListener('fullscreenchange',syncFullscreen);document.addEventListener('webkitfullscreenchange',syncFullscreen);
 function immersive(hide){document.body.classList.toggle('immersive',hide);$('showUI').hidden=!hide;if(hide){$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');}}
 $('hideUI').addEventListener('click',()=>immersive(true));$('showUI').addEventListener('click',()=>immersive(false));
 window.addEventListener('keydown',event=>{
