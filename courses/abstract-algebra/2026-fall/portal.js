@@ -59,7 +59,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(loadedSection!==section){loadedSection=section;frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-groups-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
+      else if(loadedSection!==section){loadedSection=section;frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-textbook-refs-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;}
       else frame.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }
