@@ -19,7 +19,7 @@
     <label for="light">日光 <input id="light" type="range" min="0" max="100" value="62"></label>
     <label for="rotationSensitivity">旋转灵敏度 <input id="rotationSensitivity" type="range" min="0.08" max="0.6" step="0.02" value="0.22"></label>
     <label for="speed">巡游速度 <select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
-    <p>拖动即可接管镜头；方向键或 WASD 平移，Q / E 升降。触屏双指可平移、缩放。</p>
+    <p>拖动后保持自由观察，松手不会自动巡游。点击“恢复巡游”或按空格才继续；章节与“近看板书”只定位镜头。方向键或 WASD 平移，Q / E 升降；触屏双指可平移、缩放。</p>
     <p>原创三维场景，借鉴参考片的空间与镜头风格，非原片模型复刻。</p>
     <a href="https://www.bilibili.com/video/BV1umun6PEvs/" target="_blank" rel="noopener noreferrer">观看参考视频 ↗</a>
   </aside>
@@ -54,6 +54,6 @@
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p></div>
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
-  <script type="module">import('./app.js?v=7-garden').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=8-manual').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

@@ -10,11 +10,12 @@ import {BUILDING_SCALE} from './site-layout.js?v=7-garden';
 import {createChalkReader} from './chalk-reader.js?v=5-mobile';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
+import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=7-garden';
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let renderer,composer,camera,controls,cameraInput,retreat,bloom,lecture,reader,profile,nativeSamples=0;
+let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
 let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer;
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -36,8 +37,13 @@ function updateLabels(){
   $('tour').textContent=touring?'暂停巡游':free?'恢复巡游':'继续巡游';
   $('tour').setAttribute('aria-pressed',String(touring));
   $('mode').textContent=touring?'自动镜头':free?'自由观察':'镜头已暂停';
+  $('world').dataset.mode=touring?'tour':free?'free':'paused';
 }
-function stopTour(){touring=false;free=true;blend=null;$('transition').style.opacity=0;updateLabels();}
+function stopTour(){
+  const changed=touring||!free||blend;
+  touring=false;free=true;blend=null;$('transition').style.opacity=0;
+  if(changed)updateLabels();
+}
 function resumeTour(){
   touring=true;free=false;
   blend={elapsed:0,position:camera.position.clone(),target:controls.target.clone(),fov:camera.fov};
@@ -69,7 +75,7 @@ function applyShot(dt){
   camera.updateProjectionMatrix();controls.update();
   const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
   $('timelineFill').style.width=`${100*(prior+time)/totalDuration}%`;
-  $('world').dataset.shot=String(shot);$('world').dataset.mode=touring?'tour':'free';
+  $('world').dataset.shot=String(shot);$('world').dataset.mode=touring?'tour':free?'free':'paused';
 }
 function resize(){
   if(!renderer)return;
@@ -123,7 +129,9 @@ try{
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.08,12000);
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
+  cameraIntent=bindCameraIntent(document,$('world'),stopTour);
   controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
+  controls.autoRotate=false;
   controls.addEventListener('start',()=>{stopTour();});
   camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();
   resize();
@@ -147,13 +155,13 @@ try{
 }catch(error){fail(error);}
 
 $('tour').addEventListener('click',()=>{
-  if(!renderer||!retreat)return;
-  if(touring){touring=false;$('transition').style.opacity=0;updateLabels();}else resumeTour();
+  if(!renderer||!retreat||!cameraIntent.canActivate())return;
+  if(touring){touring=false;blend=null;$('transition').style.opacity=0;updateLabels();}else resumeTour();
 });
 document.querySelectorAll('[data-shot]').forEach(button=>button.addEventListener('click',()=>{
-  if(!retreat)return;shot=Number(button.dataset.shot);time=.85;
-  if(reduced.matches){touring=false;free=false;blend=null;applyShot(0);$('transition').style.opacity=0;updateLabels();}
-  else resumeTour();
+  if(!retreat||!cameraIntent.canActivate())return;shot=Number(button.dataset.shot);time=.85;
+  // A chapter is a viewpoint selection, not permission to restart the tour.
+  touring=false;free=false;blend=null;applyShot(0);$('transition').style.opacity=0;updateLabels();
 }));
 $('settingsButton').addEventListener('click',()=>{
   $('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
@@ -184,7 +192,7 @@ window.addEventListener('keydown',event=>{
   if(key==='h'){immersive(!document.body.classList.contains('immersive'));return;}
   if(key==='escape'){immersive(false);$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');reader?.close();return;}
   if(event.target.closest('#chalkReader,#lecturePanel,#settings'))return;
-  if(key===' ' && event.target.tagName!=='BUTTON'){event.preventDefault();$('tour').click();return;}
+  if(key===' ' && event.target.tagName!=='BUTTON'){event.preventDefault();if(!event.repeat&&cameraIntent?.canActivate())$('tour').click();return;}
   if(['w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){
     event.preventDefault();stopTour();keys.add(key);
   }
@@ -205,9 +213,9 @@ function updateLectureUI(){
   lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});
 }
 function focusLecture(){
-  if(!lecture)return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;
-  if(reduced.matches){const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(framing.single);free=false;touring=false;blend=null;camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(0,0,framing.distance*BUILDING_SCALE));controls.target.copy(focus);controls.update();updateLabels();}
-  else resumeTour();
+  if(!lecture||!cameraIntent.canActivate())return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;
+  const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(framing.single);free=false;touring=false;blend=null;
+  camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(0,0,framing.distance*BUILDING_SCALE));controls.target.copy(focus);controls.update();$('transition').style.opacity=0;updateLabels();
 }
 $('lectureButton').addEventListener('click',()=>{
   if(!lecture)return;reader?.close();$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();

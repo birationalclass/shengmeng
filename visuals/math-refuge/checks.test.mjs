@@ -8,6 +8,7 @@ import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
+import {bindCameraIntent} from './camera-intent.js';
 import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES} from './site-layout.js?v=7-garden';
 import {writingPose,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=7-garden';
 
@@ -280,6 +281,33 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
     lecture.clock.page=1;reader.update();assert.equal(elements.get('readerExplanation').textContent,pages[1].text);
     reader.close();assert(panel.hidden);
   }finally{globalThis.document=originalDocument;globalThis.innerWidth=originalWidth;globalThis.innerHeight=originalHeight;}
+});
+
+test('drag-release clicks never restart touring; fresh clicks and keyboard remain usable',async()=>{
+  const handlers=new Map(),windowHandlers=new Map();let now=0,touring=true,manualCount=0;
+  const canvas={contains:()=>false},button={closest:()=>true},slider={closest:()=>null};
+  const root={hidden:false,addEventListener(type,fn){handlers.set(type,fn);},removeEventListener(type){handlers.delete(type);},defaultView:{addEventListener(type,fn){windowHandlers.set(type,fn);},removeEventListener(type){windowHandlers.delete(type);}}};
+  const guard=bindCameraIntent(root,canvas,()=>{touring=false;manualCount++;},()=>now);
+  function emit(type,extra={}){const event={pointerId:1,pointerType:'mouse',clientX:10,clientY:10,target:canvas,preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;},...extra};handlers.get(type)?.(event);return event;}
+  for(const pointerType of ['mouse','touch','pen']){
+    touring=true;emit('pointerdown',{pointerType});assert(!touring);assert(!guard.canActivate());
+    emit('pointermove',{clientX:100,pointerType});emit('pointerup',{clientX:100,pointerType});
+    const click=emit('click',{target:button});assert(click.prevented&&click.stopped);assert(!guard.canActivate());assert(!touring);
+    now+=1000;assert(guard.canActivate());assert(!touring,'Idle time must never resume the tour');
+  }
+  // A deliberate new button press is usable immediately after the drag,
+  // without relying on a guessed long lockout timer.
+  emit('pointerdown');emit('pointerup',{clientX:100});assert(!guard.canActivate());
+  emit('pointerdown',{target:button});emit('pointerup',{target:button});assert(!emit('click',{target:button}).stopped);assert(guard.canActivate());
+  assert(!emit('click',{target:button,detail:0}).stopped,'Keyboard activation is supported');
+  const prior=manualCount;emit('pointerdown',{target:slider});emit('pointermove',{target:slider,clientX:99});emit('pointerup',{target:slider,clientX:99});assert.equal(manualCount,prior,'Changing lighting/sensitivity is not a camera drag');
+  emit('pointerdown',{pointerType:'touch',pointerId:1});emit('pointerdown',{pointerType:'touch',pointerId:2});
+  emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
+  now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
+  guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
+  const app=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
+  assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
+  assert(app.includes('controls.autoRotate=false'));
 });
 
 test('mouse and touch rotation are slower, with zoom and pan preserved',async()=>{
