@@ -57,7 +57,7 @@ function waterNormals(){
  for(let j=0;j<n;j++)for(let i=0;i<n;i++){
   const x=i/n*Math.PI*2,y=j/n*Math.PI*2;
   const dx=.25*Math.cos(x*5+y*3)+.12*Math.cos(x*11-y*7),dy=.2*Math.cos(x*5+y*3)-.14*Math.cos(x*11-y*7);
-  const v=new THREE.Vector3(-dx,1,-dy).normalize(),k=(j*n+i)*4;
+  const v=new THREE.Vector3(-dx*.08,1,-dy*.08).normalize(),k=(j*n+i)*4;
   data[k]=(v.x*.5+.5)*255;data[k+1]=(v.z*.5+.5)*255;data[k+2]=(v.y*.5+.5)*255;data[k+3]=255;
  }
  const t=new THREE.DataTexture(data,n,n,THREE.RGBAFormat);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=t.minFilter=THREE.LinearFilter;t.needsUpdate=true;return t;
@@ -98,7 +98,7 @@ async function init(){
   // The exported scene is in metres. Blender Z-up becomes glTF Y-up.
   water=new Water(new THREE.PlaneGeometry(5.99,10.99),{textureWidth:512,textureHeight:512,waterNormals:waterNormals(),sunDirection:sun.position.clone().normalize(),sunColor:0xffe4bc,waterColor:0x315f59,distortionScale:.22,alpha:.88,fog:true});
   water.material.fragmentShader=water.material.fragmentShader.replace('float rf0 = 0.3;', 'float rf0 = 0.02;');water.material.needsUpdate=true;
-  water.rotation.x=-Math.PI/2;water.position.set(0,-.013,-.3);water.material.uniforms.size.value=34;scene.add(water);
+  water.rotation.x=-Math.PI/2;water.position.set(0,-.013,-.3);water.material.uniforms.size.value=18;scene.add(water);
   const draco=new DRACOLoader();draco.setDecoderPath('./vendor/');draco.setWorkerLimit(2);
   const loader=new GLTFLoader();loader.setDRACOLoader(draco);
   quality();setView('pool',true);controls.enabled=false;
