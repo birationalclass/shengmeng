@@ -101,3 +101,8 @@ window.CourseLanguage.add({
   "若存在固定 a₀ ∈ S，使 ya₀ = a₀ 在 S 中有解，且对每个 b ∈ S，a₀x = b 在 S 中有解，则 ya₀ = a₀ 的每个解都是 S 的左单位元。": "If there is a fixed a₀ ∈ S such that ya₀ = a₀ is solvable in S and a₀x = b is solvable in S for every b ∈ S, then every solution of ya₀ = a₀ is a left identity of S.",
   "结论只保证单侧单位元存在，不保证另一侧、唯一性或群结构。": "The conclusion gives a one-sided identity, not an identity on the other side, uniqueness or a group structure."
 });
+
+window.CourseLanguage.add({
+  '反例乘法表':'Counterexample multiplication table',
+  '行是左因子，列是右因子；表内为乘积。':'Rows give the left factor; columns give the right factor. Each entry is their product.'
+});
