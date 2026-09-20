@@ -67,7 +67,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260919-rings-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260920-unit-tables-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }
