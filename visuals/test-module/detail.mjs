@@ -36,7 +36,8 @@ export function refineArchitecture(a){
   // A slender crossing fleche and side chapels complete the silhouette.
   part(church,cyl,M.stone,[0,3.8,-.55],[.32,.9,.32]);part(church,cone,M.dark,[0,4.77,-.55],[.47,1.1,.47],[0,Math.PI/4,0]);rod(church,[0,5.25,-.55],[0,5.7,-.55],.027,M.gold);rod(church,[-.12,5.55,-.55],[.12,5.55,-.55],.025,M.gold);
   for(const sign of [-1,1])for(let j=0;j<3;j++){const chapel=new T.Group();church.add(chapel);chapel.position.set(sign*1.96,0,-1.8+j*1.18);chapel.rotation.y=sign*Math.PI/2;block(chapel,[.8,1.3,.9],[0,.64,0]);part(chapel,cone,M.dark,[0,1.6,0],[.65,.65,.72],[0,Math.PI/4,0]);window(chapel,0,.8,.47,.32,.6);}
-  for(let j=0;j<7;j++)block(church,[3.5-j*.12,.13, .36],[0,-.12-j*.08,2.30+j*.30],M.stone);
+  block(church,[3.1,.12,1.72],[0,-.09,3.37],M.stone);
+  for(let j=0;j<7;j++)block(church,[3.5-j*.12,.13,.36],[0,-.12-j*.08,4.40+j*.30],M.stone);
  }
  // Pagoda: structural bracket clusters, latticed screens and visibly raised tile ribs.
  for(const [i,f]of a.pagodaFloors.entries()){const w=3.5-i*.49;

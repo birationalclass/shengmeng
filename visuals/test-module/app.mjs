@@ -1,5 +1,5 @@
 import {setupMusic} from './music.mjs?v=20260920audio2';
-import {AtlasScene} from './scene.mjs?v=20260920detail3';
+import {AtlasScene} from './scene.mjs?v=20260920gears1';
 import {DURATION,PHASES,phaseAt,clamp} from './story.mjs?v=20260920detail3';
 const $=id=>document.getElementById(id),canvas=$('world');
 const defaults={speed:1,quality:'standard',captions:false,timeline:false,dust:true,loop:false,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches};

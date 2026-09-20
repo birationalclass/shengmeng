@@ -1,4 +1,4 @@
-import {refineArchitecture} from './detail.mjs?v=20260920detail3';
+import {refineArchitecture} from './detail.mjs?v=20260920gears1';
 import * as T from '../3d/vendor/three.module.js';
 import {smooth,clamp,mix,cameraAt,SITES} from './story.mjs?v=20260920detail3';
 const TAU=Math.PI*2;
@@ -41,11 +41,19 @@ export class AtlasScene{
  plate(parent,text,pos,w=4,h=1,opts={}){const m=this.mesh(parent,new T.PlaneGeometry(w,h),new T.MeshStandardMaterial({map:labelTexture(text,opts),roughness:.63,metalness:.23,transparent:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2}),pos);m.castShadow=false;m.receiveShadow=false;m.rotation.x=-Math.PI/2;return m;}
  gear(parent,r,teeth,pos,speed=.07,mat=this.materials.brass){
   const g=geo(`gear${r}-${teeth}`,()=>{const s=new T.Shape();for(let i=0;i<teeth*4;i++){const a=i*TAU/(teeth*4),rr=r*(i%4===1||i%4===2?1:.87),x=Math.cos(a)*rr,y=Math.sin(a)*rr;i?s.lineTo(x,y):s.moveTo(x,y);}s.closePath();const hole=new T.Path();hole.absarc(0,0,r*.37,0,TAU,true);s.holes.push(hole);return new T.ExtrudeGeometry(s,{depth:.18,bevelEnabled:true,bevelThickness:.025,bevelSize:.025,bevelSegments:1,steps:1});});
-  const group=new T.Group();parent.add(group);group.position.set(...pos);const wheel=this.mesh(group,g,mat);wheel.rotation.x=-Math.PI/2;for(let i=0;i<6;i++){const spoke=this.box(group,[r*.72,.16,.10],[Math.cos(i*TAU/6)*r*.53,.09,Math.sin(i*TAU/6)*r*.53],mat);spoke.rotation.y=-i*TAU/6;}this.cylinder(group,r*.16,.28,[0,.06,0],this.materials.gold);this.rotating.push({object:group,speed});return group;
+  const group=new T.Group();parent.add(group);group.position.set(...pos);const wheel=this.mesh(group,g,mat);wheel.rotation.x=-Math.PI/2;for(let i=0;i<6;i++){const spoke=this.box(group,[r*.72,.16,.10],[Math.cos(i*TAU/6)*r*.53,.09,Math.sin(i*TAU/6)*r*.53],mat);spoke.rotation.y=-i*TAU/6;}this.cylinder(group,r*.16,.28,[0,.06,0],this.materials.gold);group.userData.gear={radius:r,bottom:pos[1]-.08,top:pos[1]+.205};this.rotating.push({object:group,speed});return group;
  }
  platform(x,i){const p=new T.Group();p.position.x=x;this.scene.add(p);this.cylinder(p,7.65,.6,[0,-.55,0],this.materials.dark);this.cylinder(p,7.38,.23,[0,-.16,0],this.materials.brass);this.cylinder(p,7.08,.27,[0,.04,0],this.materials.paving);this.torus(p,7.22,.08,[0,.15,0]);this.torus(p,6.78,.045,[0,.24,0]);
   const ticks=new T.InstancedMesh(geo('tick',()=>new T.BoxGeometry(.035,.04,.22)),this.materials.gold,120),o=new T.Object3D();for(let k=0;k<120;k++){const a=k*TAU/120;o.position.set(Math.sin(a)*7,.22,Math.cos(a)*7);o.rotation.y=a;o.scale.set(1,1,k%5===0?1.8:1);o.updateMatrix();ticks.setMatrixAt(k,o.matrix);}p.add(ticks);
-  for(let j=0;j<3;j++)this.gear(p,1.0+j*.23,16+j*4,[-4+j*4,-.37,5.65],(j%2?-1:1)*(.12+j*.015));
+  // An exposed drive sits beyond the masonry footprint, on its own metal bracket.
+  const drive=new T.Group();p.add(drive);drive.position.set(-8.95,0,2.5);drive.userData.drivePod=true;
+  this.box(drive,[2.65,.18,2.65],[0,-.02,0],this.materials.dark);
+  for(const z of [-.85,.85])this.box(drive,[2.2,.14,.14],[1.55,-.32,z],this.materials.brass);
+  this.cylinder(drive,.23,.22,[0,.18,0],this.materials.brass);
+  this.cylinder(drive,.105,.64,[0,.37,0],this.materials.gold);
+  this.gear(drive,1.02,24,[0,.40,0],i%2?-.12:.12);
+  this.cylinder(drive,.17,.075,[0,.71,0],this.materials.dark);
+  for(const x of [-1.15,1.15])for(const z of [-1.15,1.15])this.cylinder(drive,.06,.045,[x,.095,z],this.materials.gold);
   this.makeRamparts(p,i);this.makeNameplate(p,i);
   for(let j=0;j<10;j++){const a=j*TAU/10;this.cylinder(p,.07,.07,[Math.sin(a)*7.28,.21,Math.cos(a)*7.28],this.materials.gold);}
   return p;
@@ -56,14 +64,14 @@ export class AtlasScene{
   const letters=['山','川','日','月','W','O','R','D'];this.letters=[];
   letters.forEach((c,i)=>{const x=(i%4-1.5)*1.62,z=i<4?-1.65:.7,tile=new T.Group();tile.position.set(x,1,z);g.add(tile);this.box(tile,[1.34,.38,1.45],[0,0,0],this.materials.brass);this.box(tile,[1.22,.07,1.34],[0,.23,0],this.materials.dark);this.plate(tile,c,[0,.273,0],1.13,1.23,{size:148,width:256,height:256,ink:'#ead8a7'});for(const s of [-1,1])this.cylinder(g,.095,.9,[x+s*.45,.9,z],this.materials.gold);this.letters.push({object:tile,x,z,i});});
   this.plate(g,'山 川 · WORD',[0,.91,2.16],7.2,.57,{size:66,width:1024,height:128});
-  this.gear(g,1.3,22,[-5.2,1,-.5],.21);this.gear(g,.88,16,[-5.3,1.03,1.65],-.31);this.gear(g,1,18,[5.1,1,-1.8],-.22);
+  // The exterior drive replaces decorative wheels intersecting the archive columns.
   for(const x of [-4.4,4.4]){this.cylinder(g,.17,3.15,[x,2.05,-2.85],this.materials.brass);this.cylinder(g,.28,.16,[x,3.66,-2.85],this.materials.gold);}this.rod(g,[-4.4,3.65,-2.85],[4.4,3.65,-2.85],.11,this.materials.brass);
   const page=this.plate(g,'Σ⁺',[0,2.45,-2.82],2.5,1.25,{size:133,width:512,height:256,sub:'THE ART OF CONCATENATION'});page.rotation.x=0;
   for(let j=0;j<18;j++){const x=-3.7+(j%9)*.92,z=-4.45+Math.floor(j/9)*.66;this.box(g,[.75,.13,.5],[x,.39,z],this.materials.dark);this.plate(g,String.fromCharCode(65+j),[x,.46,z],.52,.4,{size:90,width:128,height:128});}
   const book=new T.Group();g.add(book);book.position.set(4.55,1.1,2.8);book.rotation.y=-.28;for(const sign of [-1,1]){const half=this.box(book,[1.0,.15,1.55],[sign*.5,.1,0],this.materials.paper);half.rotation.z=-sign*.13;for(let j=0;j<7;j++)this.rod(book,[sign*.14,.22,-.52+j*.16],[sign*.88,.22,-.52+j*.16],.008,this.materials.brass);}
  }
  makeNewton(p){
-  const g=new T.Group();p.add(g);this.tree=g;this.risers.push({object:g,start:69,end:77});this.gear(g,3.2,44,[0,.27,0],.05,this.materials.dark);this.cylinder(g,2.8,.22,[0,.48,0],this.materials.brass);this.cylinder(g,2.7,.24,[0,.68,0],this.materials.wood);
+  const g=new T.Group();p.add(g);this.tree=g;this.risers.push({object:g,start:69,end:77});this.gear(g,3.2,44,[0,.29,0],.05,this.materials.dark);this.cylinder(g,.22,.18,[0,.51,0],this.materials.brass);this.cylinder(g,2.8,.10,[0,.60,0],this.materials.brass);this.cylinder(g,2.7,.24,[0,.77,0],this.materials.wood);
   const tips=[];const r=rng(1234);const branch=(a,b,thickness,depth)=>{const mid=a.clone().lerp(b,.5);mid.x+=(r()-.5)*.6;mid.z+=(r()-.5)*.6;const curve=new T.CatmullRomCurve3([a,mid,b]);this.mesh(g,new T.TubeGeometry(curve,8,thickness,7,false),depth>1?this.materials.wood:this.materials.brass);
    if(depth===0){tips.push(b);return;}const n=depth===3?4:3;for(let j=0;j<n;j++){const angle=j*TAU/n+r()*1.9,len=1.1+depth*.47,end=b.clone().add(v(Math.cos(angle)*len*.73,.65+r()*1.0,Math.sin(angle)*len*.73));branch(b,end,thickness*.58,depth-1);}};
   branch(v(0,.8,0),v(.15,3.7,0),.46,3);
@@ -87,7 +95,7 @@ export class AtlasScene{
   const geoLines=new T.BufferGeometry();geoLines.setAttribute('position',new T.Float32BufferAttribute(segments,3));this.neuralLines=new T.LineSegments(geoLines,new T.LineBasicMaterial({color:0xc9af76,transparent:true,opacity:.20}));g.add(this.neuralLines);
   this.pulses=new T.InstancedMesh(geo('pulse',()=>new T.SphereGeometry(.047,6,4)),new T.MeshBasicMaterial({color:0x9cfff0}),this.synapses.length);g.add(this.pulses);this.pulses.frustumCulled=false;
   for(let j=0;j<12;j++){const a=j*TAU/12;const server=this.box(g,[.45,.7+rand()*.9,.55],[Math.sin(a)*5.35,.8,Math.cos(a)*5.35],this.materials.dark);for(let k=0;k<4;k++)this.box(server,[.64,.025,.07],[0,-.25+k*.14,.51],this.materials.gold);}
-  this.gear(g,1.45,24,[-4.8,.56,3.1],.13);this.gear(g,1.45,24,[4.8,.56,-3.1],-.13);
+  // The server ring stays clear; its visible drive is on the external bracket.
   const core=new T.Group();g.add(core);core.position.set(0,4,0);for(let j=0;j<3;j++)this.torus(core,1.1+j*.3,.025,[0,0,0],this.materials.gold,[j*.8,j*.6,j*.4]);this.rotating.push({object:core,speed:.18});
  }
  makeTerrain(){
@@ -142,9 +150,9 @@ export class AtlasScene{
  }
 
  makePagoda(p){
-  const g=new T.Group();p.add(g);this.pagoda=g;g.scale.setScalar(.62);g.position.set(-1.7,0,-.7);this.pagodaFloors=[];this.makeChineseHouses(p);this.cylinder(g,4.6,.30,[0,.37,0],this.materials.stone);this.gear(g,4.2,56,[0,.56,0],.07);
+  const g=new T.Group();p.add(g);this.pagoda=g;g.scale.setScalar(.62);g.position.set(-1.7,0,-.7);this.pagodaFloors=[];this.makeChineseHouses(p);this.cylinder(g,4.6,.30,[0,.37,0],this.materials.stone);this.gear(g,4.2,56,[0,.65,0],.07);this.cylinder(g,.24,.48,[0,.78,0],this.materials.brass);
   const timber=new T.MeshStandardMaterial({color:0x774325,roughness:.7,metalness:.12}),roofMat=new T.MeshStandardMaterial({color:0x485b51,roughness:.64,metalness:.3});
-  for(let floor=0;floor<5;floor++){const level=new T.Group(),w=3.5-floor*.49,y=.85+floor*1.67;g.add(level);this.pagodaFloors.push({level,y,start:41+floor*2.8,end:44+floor*2.8});
+  for(let floor=0;floor<5;floor++){const level=new T.Group(),w=3.5-floor*.49,y=1.05+floor*1.67;g.add(level);this.pagodaFloors.push({level,y,start:41+floor*2.8,end:44+floor*2.8});
    this.box(level,[w*2,.17,w*2],[0,0,0],timber);for(const x of [-w*.78,w*.78])for(const z of [-w*.78,w*.78]){this.cylinder(level,.11,1.18,[x,.64,z],timber);this.box(level,[.53,.12,.35],[x,1.17,z],timber);this.box(level,[.36,.13,.58],[x,1.3,z],this.materials.brass);}
    for(const sign of [-1,1]){this.box(level,[w*1.7,.16,.13],[0,1.22,sign*w*.78],timber);this.box(level,[.13,.16,w*1.7],[sign*w*.78,1.22,0],timber);for(let j=-2;j<=2;j++){this.box(level,[.055,.48,.055],[j*w*.3,.36,sign*w*.93],timber);this.box(level,[.055,.48,.055],[sign*w*.93,.36,j*w*.3],timber);}this.box(level,[w*1.9,.075,.09],[0,.59,sign*w*.93],timber);this.box(level,[.09,.075,w*1.9],[sign*w*.93,.59,0],timber);}
    // Four curved roof faces with lifted eaves and layered timber brackets.
@@ -157,7 +165,7 @@ export class AtlasScene{
 
  makePermutation(p){
   const g=new T.Group();p.add(g);this.risers.push({object:g,start:99,end:107});this.permutation=g;
-  this.gear(g,3.3,48,[0,.4,0],.12);this.cylinder(g,2.85,.27,[0,.65,0],this.materials.stone);
+  this.gear(g,3.3,48,[0,.29,0],.12);this.cylinder(g,.24,.20,[0,.52,0],this.materials.brass);this.cylinder(g,2.85,.27,[0,.69,0],this.materials.stone);
   this.makeCathedral(g);
   this.roots=[];for(let i=0;i<3;i++){const root=new T.Group();g.add(root);const mat=new T.MeshStandardMaterial({color:[0xeee2bc,0x698987,0xa87842][i],metalness:.65,roughness:.26});this.mesh(root,new T.SphereGeometry(.48,24,16),mat,[0,.7,0]);this.cylinder(root,.16,.7,[0,.14,0]);this.torus(root,.68,.03,[0,.15,0]);this.plate(root,['α','αω','αω²'][i],[0,.18,.95],1.3,.5,{size:80,width:256,height:128});this.roots.push(root);}
   this.torus(g,4.3,.045,[0,1.1,0]);this.torus(g,4.6,.035,[0,1.1,0]);
@@ -196,7 +204,10 @@ export class AtlasScene{
     const half=length/2;for(let j=0;j<Math.ceil(half/.36);j++)this.box(pivot,[2.45,.14,.30],[0,0,(j+.5)*half/Math.ceil(half/.36)],this.materials.wood);
     for(const x of [-1.1,1.1]){this.box(pivot,[.12,.19,half],[x,-.08,half/2],this.materials.brass);for(let j=0;j<=4;j++)this.box(pivot,[.08,.75,.08],[x,.43,half*j/4],this.materials.wood);this.rod(pivot,[x,.8,0],[x,.8,half],.055,this.materials.brass);
      const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(new Float32Array(6),3));const line=new T.Line(geometry,new T.LineBasicMaterial({color:0x302a20}));g.add(line);chains.push({line,pivot,x,sign,half});}
-    this.gear(g,.68,14,[-2,.2,sign*length/2],sign*.17);
+    this.box(g,[1.72,.14,1.72],[-2.45,.04,sign*length/2],this.materials.dark);
+    for(const dz of [-.5,.5])this.box(g,[1.5,.12,.12],[-1.9,-.10,sign*length/2+dz],this.materials.brass);
+    this.cylinder(g,.16,.24,[-2.45,.23,sign*length/2],this.materials.brass);
+    this.gear(g,.68,14,[-2.45,.43,sign*length/2],sign*.17);
    }
    // Hanging side cables remain between the two gates while the leaves lower.
    for(const x of [-1.55,1.55]){const pts=[];for(let j=0;j<=28;j++){const u=j/28;pts.push(v(x,3.42-1.48*Math.sin(Math.PI*u),-length/2+length*u));}this.mesh(g,new T.TubeGeometry(new T.CatmullRomCurve3(pts),32,.035,5,false),this.materials.dark);}
