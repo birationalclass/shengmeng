@@ -1,13 +1,13 @@
-import {chinesePalace} from './chinese-palace.mjs?v=board-first1';
-import {wizardChess} from './wizard-chess.mjs?v=board-first1';
+import {chinesePalace} from './chinese-palace.mjs?v=owl-clearance1';
+import {wizardChess} from './wizard-chess.mjs?v=owl-clearance1';
 import {installFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
-import {ecnuCampus} from './ecnu-campus.mjs?v=board-first1';
-import {masonryTexture} from './castle-materials.mjs?v=board-first1';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=board-first1';
+import {ecnuCampus} from './ecnu-campus.mjs?v=owl-clearance1';
+import {masonryTexture} from './castle-materials.mjs?v=owl-clearance1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=owl-clearance1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {clockworkCity} from './clockwork.mjs?v=board-first1';
-import {jointMotion} from './architectural-motion.mjs?v=board-first1';
+import {clockworkCity} from './clockwork.mjs?v=owl-clearance1';
+import {jointMotion} from './architectural-motion.mjs?v=owl-clearance1';
 // Original miniature architecture: staged clockwork, luminous academies and glacial sculpture.
 const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.65,...extra});
 export function domainMaterials(a){
@@ -61,10 +61,10 @@ export function replaceDomain(a,p,index){if(index===0){ecnuCampus(a,p);return tr
 export function enrichDomain(a,p,index){
  const M=domainMaterials(a);p.userData.domain??=['clockwork-garden','jade-pavilion','glacial-lake','rose-chapel','brass-city','astral-sanctuary','enchanted-academy','celestial-wall'][index];
  // Terraced stone approaches, inset path and edge lighting tie the miniature together.
- if(index!==0)for(const side of [-1,1])for(let j=0;j<4;j++)a.box(p,[1.6,.12+j*.08,.40],[side*3.8,.17+j*.04,8.9-j*.37],index===2?M.snow:a.materials.stone);
+ if(index!==0&&index!==7)for(const side of [-1,1])for(let j=0;j<4;j++)a.box(p,[1.6,.12+j*.08,.40],[side*3.8,.17+j*.04,8.9-j*.37],index===2?M.snow:a.materials.stone);
 
 
 
 
- if(index===7){for(const s of [-1,1]){const beacon=group(p,s*10,4.1);a.cylinder(beacon,.36,1.4,[0,.85,0],a.materials.stone);a.cylinder(beacon,.55,.18,[0,1.62,0],M.gold);const flame=a.mesh(beacon,new T.OctahedronGeometry(.3),M.window,[0,1.99,0]);flame.scale.y=1.7;}}
+
 }

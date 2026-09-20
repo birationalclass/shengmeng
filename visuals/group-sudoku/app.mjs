@@ -1,9 +1,9 @@
-import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=board-first1';
-import {createBackgroundMusic} from './music.mjs?v=board-first1';
-import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=board-first1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=board-first1';
-import {cameraKey} from './camera-navigation.mjs?v=board-first1';
-import {THEMES} from './journey.mjs?v=board-first1';
+import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
+import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=owl-clearance1';
+import {cameraKey} from './camera-navigation.mjs?v=owl-clearance1';
+import {THEMES} from './journey.mjs?v=owl-clearance1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);let decorationSeconds=readBuildSeconds(storage);
@@ -13,8 +13,10 @@ const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
 const music=createBackgroundMusic({storage,t});
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 const cameraKeys=new Set();
-function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 建筑升起 · 棋盘展开','ARRIVE · BUILD · REVEAL'):'';}
+function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 棋盘升起 · 设施搭建','ARRIVE · BOARD · SCENERY'):'';}
+function beaconStatus(values){const node=$('beaconStatus');node.hidden=selected!==7;if(selected===7)node.textContent=t('烽火','BEACONS')+` ${values.filter(v=>v>0).length} / 81`;}
 function sync(){
+ beaconStatus(campaign.board(9));
  $('buildTimeLabel').textContent=t('装饰搭建时长','Scenery build time');$('buildTimeValue').value=decorationSeconds+t(' 秒',' s');$('buildTime').value=decorationSeconds;$('buildTimeNote').textContent=t('不含镜头移动和棋盘升起，下次搭建生效。','Excludes camera travel and board rise. Applies to the next build.');
  const done=campaign.completed,r=REGIONS[selected];$('progress').innerHTML=`${done.length} <span>/ 8</span>`;
  $('skillStatus').textContent=campaign.inverseUnlocked?t('单位 · 逆 · 已解锁','Identity · Inverse · Unlocked'):campaign.identityUnlocked?t('单位已解锁 · 第 4 关解锁逆卡','Identity unlocked · Inverse after level 4'):t('通关 3×3 获得单位元卡','Complete 3×3 to unlock Identity');
@@ -32,7 +34,7 @@ function positionTargets(){if(!world)return;const rect=canvas.getBoundingClientR
  if(!playing||!boardState)return;for(const b of $('boardHits').children){const k=+b.dataset.boardCell,p=world.cellProjection(selected,k),q=world.cellProjection(selected,k%boardState.n===boardState.n-1?k-1:k+1),w=Math.max(14,Math.abs(p.x-q.x)*rect.width*.88);b.style.left=p.x*rect.width+'px';b.style.top=p.y*rect.height+'px';b.style.width=w+'px';b.style.height=w*.72+'px';b.style.visibility=p.visible?'visible':'hidden';}}
 function renderBoard(state){
  const status=$('gameMount').querySelector('.sudoku-status');if(status&&/^(数字键填数|Number keys to enter)/.test(status.textContent))status.textContent=t('方向键 N/S/W/E 平移 · 滚轮缩放 · Shift＋方向键选格 · 数字键填数','Arrows move N/S/W/E · Wheel to zoom · Shift + arrows select cells · Number keys enter');
- const restore=document.activeElement?.hasAttribute('data-board-cell');boardState=state;world?.paint(selected,state);
+ const restore=document.activeElement?.hasAttribute('data-board-cell');boardState=state;world?.paint(selected,state);beaconStatus(state.values);
  $('boardHits').innerHTML=state.cells.map((cell,k)=>`<button data-board-cell="${k}" aria-label="${cell.label}" aria-pressed="${state.selected===k}" tabindex="${state.selected===k?0:-1}"></button>`).join('');positionTargets();
  if(restore)$('boardHits').querySelector(`[data-board-cell="${state.selected}"]`)?.focus({preventScroll:true});
 }

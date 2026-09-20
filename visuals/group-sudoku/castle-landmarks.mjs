@@ -1,6 +1,6 @@
 import * as T from '../3d/vendor/three.module.js';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
-import {installOwls} from './owls.mjs?v=owls-low1';
+import {installOwls} from './owls.mjs?v=owl-clearance1';
 // Reference silhouettes from BV1Dw411E7dY, adapted around an unobstructed board.
 function rock(a,p,x,z,h,rx,rz,M){
  a.cliffMaterial??=new T.MeshStandardMaterial({color:0x626861,roughness:.97,flatShading:true});

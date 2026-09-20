@@ -1,9 +1,12 @@
+import {PLACES} from './journey.mjs?v=beacon-ring1';
 import * as T from '../3d/vendor/three.module.js';
 const TAU=Math.PI*2;
+const bridgeAngles=[5,7].map(i=>Math.atan2((PLACES[i][0]-PLACES[6][0])/14.4,(PLACES[i][1]-PLACES[6][1])/13.8));
+export function owlClearance(q){return Math.max(...bridgeAngles.map(angle=>{const d=Math.abs(Math.atan2(Math.sin(q-angle),Math.cos(q-angle)));const u=Math.max(0,Math.min(1,1-(d-.35)/.25));return u*u*(3-2*u);}));}
 export function owlPose(time,index=0){
  const q=time*(.14+index*.013)+index*TAU/3;
- // Low flight outside the castle perimeter also clears the board in projection.
- return {x:Math.sin(q)*14.4,z:Math.cos(q)*13.8,y:2.8+Math.sin(q*2+index)*.25,
+ // A small overall lift, then a smooth higher arc over the two bridge approaches.
+ return {x:Math.sin(q)*14.4,z:Math.cos(q)*13.8,y:3.35+Math.sin(q*2+index)*.20+owlClearance(q)*1.25,
   heading:Math.atan2(Math.cos(q)*14.4,-Math.sin(q)*13.8),bank:Math.sin(q)*.13,
   flap:Math.sin(time*5.8+index*1.8)*.52*(Math.sin(time*.43+index)>.1?1:.12)};
 }

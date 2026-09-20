@@ -7,7 +7,7 @@ export const THEMES=[
  {name:'精密传动工坊',paper:'#263138',ink:'#e4d1a0',given:'#99a8aa',line:'#b2a17470',rim:0xb09057,frame:0x344047,motif:6},
  {name:'鹰巢山城',paper:'#1d2943',ink:'#e0e4eb',given:'#9faaca',line:'#9caccd77',rim:0xa9b4ce,frame:0x273453,motif:7},
  {name:'魔法学院',paper:'#24352c',ink:'#e5ce9b',given:'#9baf94',line:'#b79a6177',rim:0xb5894e,frame:0x3b4332,motif:8},
- {name:'紫檀金嵌',paper:'#34213b',ink:'#f2dcad',given:'#b79da9',line:'#c0a37480',rim:0xdbc078,frame:0x4a2b39,motif:9}
+ {name:'烽火连城',paper:'#34213b',ink:'#f2dcad',given:'#b79da9',line:'#c0a37480',rim:0xdbc078,frame:0x4a2b39,motif:9}
 ];
 export const clamp=x=>Math.max(0,Math.min(1,x));
 export const ease=x=>{x=clamp(x);return x*x*(3-2*x)};

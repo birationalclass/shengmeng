@@ -17,11 +17,11 @@ test('every domain has articulated landmarks and reduced motion resets their joi
   a.detailMotion.forEach((m,i)=>assert.deepEqual(m.object.position.toArray().concat(m.object.rotation.toArray().slice(0,3)),before[i],type));
  }
 });
-test('Great Wall stays on the disk behind the board and has moving flags',()=>{
+test('Great Wall forms a complete ring on the disk around the board and has moving flags',()=>{
  const a=builder(),root=new T.Group(),wall=greatWall(a,root);wall.updateMatrixWorld(true);let meshes=0;
  wall.traverse(o=>{if(!o.isMesh)return;meshes++;o.geometry.computeBoundingBox();const b=o.geometry.boundingBox;
   for(const x of [b.min.x,b.max.x])for(const y of [b.min.y,b.max.y])for(const z of [b.min.z,b.max.z]){
-   const p=new T.Vector3(x,y,z).applyMatrix4(o.matrixWorld);assert.ok(Math.hypot(p.x,p.z)<13.05);assert.ok(Math.abs(p.x)>6||p.z< -6,'Wall must not intrude into the board');
+   const p=new T.Vector3(x,y,z).applyMatrix4(o.matrixWorld);assert.ok(Math.hypot(p.x,p.z)<13.05);assert.ok(Math.abs(p.x)>6||Math.abs(p.z)>6,'Wall must not intrude into the board');
   }
- });assert.ok(meshes>200);assert.ok(a.detailMotion.length>=15);
+ });const segments=wall.children.filter(o=>o.userData.wallSegment);assert.equal(segments.length,64);assert.ok(segments[0].userData.wallSegment.height>segments[32].userData.wallSegment.height+1.9);for(let i=1;i<32;i++)assert.ok(segments[i].userData.wallSegment.height<segments[i-1].userData.wallSegment.height);assert.equal(segments[0].userData.wallSegment.start,0);assert.ok(Math.abs(segments.at(-1).userData.wallSegment.end-Math.PI*2)<1e-9);assert.equal(wall.children.filter(o=>o.userData.landmark==='great-wall-watchtower').length,8);assert.ok(meshes>200);assert.ok(a.detailMotion.length>=15);
 });

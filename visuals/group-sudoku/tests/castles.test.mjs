@@ -18,10 +18,12 @@ test('owls fly low outside the castle and never cover the board in the default p
  const bounds=(points)=>{const ps=points.map(p=>p.project(camera));return {left:Math.min(...ps.map(p=>p.x)),right:Math.max(...ps.map(p=>p.x)),bottom:Math.min(...ps.map(p=>p.y)),top:Math.max(...ps.map(p=>p.y))};};
  const board=bounds([-5.9,5.9].flatMap(x=>[-5.9,5.9].map(z=>new T.Vector3(x,1.595,z))));
  for(let t=0;t<180;t+=.1)for(let i=0;i<3;i++){
-  const p=owlPose(t,i);assert.ok(Object.values(p).every(Number.isFinite));assert.ok(Math.hypot(p.x,p.z)>=13.8-1e-9);assert.ok(p.y>=2.55&&p.y<=3.05);
+  const p=owlPose(t,i);assert.ok(Object.values(p).every(Number.isFinite));assert.ok(Math.hypot(p.x,p.z)>=13.8-1e-9);assert.ok(p.y>=3.15&&p.y<=4.80);
   const bird=bounds([-1.7,1.7].flatMap(dx=>[-.7,.7].flatMap(dy=>[-1.7,1.7].map(dz=>new T.Vector3(p.x+dx,p.y+dy,p.z+dz)))));
   assert.ok(bird.left>board.right||bird.right<board.left||bird.bottom>board.top||bird.top<board.bottom,'The owl silhouette must clear the projected board');
  }
 });
 
 test('wizard gestures stay outside the board, survive batching, and rest under reduced motion',()=>{const {a,p}=build(3),board={content:p,lift:new T.Group(),glow:new T.Group()};batchBuiltDomain(a,board);const gestures=a.detailMotion.filter(m=>m.mode==='gesture');assert.ok(gestures.length>=16);for(const m of gestures)m.object.traverse(o=>assert.ok(!board.batchedSources.includes(o)));const usable=new T.Box3(new T.Vector3(-5.9,1.4,-5.9),new T.Vector3(5.9,2.3,5.9));for(let t=0;t<12;t+=.2){updateArchitecturalMotion(a.detailMotion,t);p.updateMatrixWorld(true);for(const m of gestures)assert.ok(!new T.Box3().setFromObject(m.object).intersectsBox(usable));}updateArchitecturalMotion(a.detailMotion,7,true);for(const m of gestures)assert.equal(m.object.rotation[m.axis],m.base);});
+
+test('owl bodies and wings clear both adjacent bridge portals over a full flight cycle',()=>{for(const [dx,dz]of [[28,14],[-16,31]]){const distance=Math.hypot(dx,dz),nx=dx/distance,nz=dz/distance;for(const side of [-1,1]){const x=nx*13.1+nz*side*1.4,z=nz*13.1-nx*side*1.4;for(let t=0;t<140;t+=.05)for(let i=0;i<3;i++){const p=owlPose(t,i);if(Math.abs(p.x-x)<1.96&&Math.abs(p.z-z)<1.96)assert.ok(p.y-.7>3.46,'Wings must pass above the portal cap');}}}});
