@@ -1,13 +1,13 @@
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=pool-fireworks1';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=pool-fireworks1';
-import {updateOwls} from './owls.mjs?v=pool-fireworks1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=wizard1';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=wizard1';
+import {updateOwls} from './owls.mjs?v=wizard1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=pool-fireworks1';
-import {dollyRadius,panDistance} from './camera-navigation.mjs?v=pool-fireworks1';
-import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
+import {batchBuiltDomain} from './static-batches.mjs?v=wizard1';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=wizard1';
+import {updateArchitecturalMotion} from './architectural-motion.mjs?v=wizard1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
 export const REGIONS=[

@@ -1,11 +1,12 @@
+import {wizardChess} from './wizard-chess.mjs?v=wizard1';
 import {installFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
-import {ecnuCampus} from './ecnu-campus.mjs?v=pool-fireworks1';
-import {masonryTexture} from './castle-materials.mjs?v=pool-fireworks1';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=pool-fireworks1';
+import {ecnuCampus} from './ecnu-campus.mjs?v=wizard1';
+import {masonryTexture} from './castle-materials.mjs?v=wizard1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=wizard1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=enchanted1';
-import {jointMotion} from './architectural-motion.mjs?v=living1';
+import {jointMotion} from './architectural-motion.mjs?v=wizard1';
 // Original miniature architecture: staged clockwork, luminous academies and glacial sculpture.
 const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.65,...extra});
 export function domainMaterials(a){
@@ -55,7 +56,7 @@ function iceLake(a,p){
  installIceSkaters(a,p);
 }
 function castleKit(a){return {M:domainMaterials(a),group,arch,spire,hall,viaduct};}
-export function replaceDomain(a,p,index){if(index===0){ecnuCampus(a,p);return true;}if(index===4){clockworkCity(a,p);movingKeep(a,p,castleKit(a));return true;}if(index===2){iceLake(a,p);return true;}if(index===3){whiteCity(a,p,castleKit(a));return true;}if(index===5){eyrie(a,p,castleKit(a));installFireworks(a,p);return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
+export function replaceDomain(a,p,index){if(index===0){ecnuCampus(a,p);return true;}if(index===4){clockworkCity(a,p);movingKeep(a,p,castleKit(a));return true;}if(index===2){iceLake(a,p);return true;}if(index===3){wizardChess(a,p);return true;}if(index===5){eyrie(a,p,castleKit(a));installFireworks(a,p);return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
 export function enrichDomain(a,p,index){
  const M=domainMaterials(a);p.userData.domain??=['clockwork-garden','jade-pavilion','glacial-lake','rose-chapel','brass-city','astral-sanctuary','enchanted-academy','celestial-wall'][index];
  // Terraced stone approaches, inset path and edge lighting tie the miniature together.

@@ -8,6 +8,7 @@ export function updateArchitecturalMotion(tracks,time,reduced=false){
   const {object,axis,speed}=m;
   if(m.mode==='path'){if(reduced)object.position.copy(m.origin);else m.curve.getPoint((time*speed+m.phase)%1,object.position);continue;}
   const property=m.property||'rotation',base=m.base||0;
+  if(m.mode==='gesture'){const u=(time*speed+m.phase)%1;object[property][axis]=base+(reduced||u>.20?0:Math.sin(Math.PI*u/.20)**2*m.amplitude);continue;}
   const delta=reduced?0:m.mode==='sway'?Math.sin(time*speed+m.phase)*m.amplitude:m.mode==='lift'?(1-Math.cos(time*speed+m.phase))*m.amplitude/2:time*speed;
   object[property][axis]=base+delta;
  }

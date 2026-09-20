@@ -1,8 +1,8 @@
 import {createBackgroundMusic} from './music.mjs?v=music1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=music1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=pool-fireworks1';
-import {cameraKey} from './camera-navigation.mjs?v=pool-fireworks1';
-import {THEMES} from './journey.mjs?v=pool-fireworks1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=wizard1';
+import {cameraKey} from './camera-navigation.mjs?v=wizard1';
+import {THEMES} from './journey.mjs?v=wizard1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);

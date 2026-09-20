@@ -1,5 +1,5 @@
 import * as T from '../3d/vendor/three.module.js';
-import {jointMotion} from './architectural-motion.mjs?v=living1';
+import {jointMotion} from './architectural-motion.mjs?v=wizard1';
 import {installPoolBoats} from './pool-boats.mjs?v=pool1';
 const mat=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.7,...extra});
 export function ecnuCampus(a,p){
