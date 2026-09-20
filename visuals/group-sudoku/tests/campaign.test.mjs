@@ -45,3 +45,9 @@ test('regions unlock in sequence and replay preserves mastery',()=>{
  assert.equal(fresh.current,2);assert.equal(fresh.identityUnlocked,false);assert.deepEqual(fresh.completed,[]);assert.deepEqual(fresh.board(4),model.initial(4));
  assert.doesNotThrow(()=>clearLocalData(undefined));assert.throws(()=>clearLocalData({removeItem(){throw Error('blocked')}}),/blocked/);
  });
+
+test('inverse unlocks only after level four (5×5), and stays unlocked on replay',()=>{
+ const storage=memory(),c=new Campaign(model,storage);for(let n=2;n<=4;n++)c.save(n,full(n));assert.equal(c.inverseUnlocked,false);
+ c.save(5,model.initial(5));assert.equal(c.inverseUnlocked,false);c.save(5,full(5));assert.equal(c.inverseUnlocked,true);
+ const again=new Campaign(model,storage);assert.equal(again.inverseUnlocked,true);again.save(5,model.initial(5));assert.equal(again.inverseUnlocked,true);
+});

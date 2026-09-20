@@ -8,6 +8,7 @@ export class Campaign{
  get completed(){return Object.keys(this.finished).map(Number).sort((a,b)=>a-b);}
  get current(){return frontier(this.completed);}
  canEnter(n){return canEnter(n,this.completed);}
+ get inverseUnlocked(){return this.completed.includes(5);}
  get identityUnlocked(){return this.completed.includes(3);}
  board(n){return [...(this.boards[n]||this.model.initial(n))];}
  save(n,values){if(!this.valid(n,values))return false;this.boards[n]=[...values];if(this.model.inspect(values).kind==='complete')this.finished[n]=[...values];try{this.storage?.setItem(STORAGE_KEY,JSON.stringify({boards:this.boards,finished:this.finished}));}catch{this.persistent=false;}return true;}

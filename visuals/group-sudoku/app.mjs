@@ -1,5 +1,5 @@
-import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=reset1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=journey4';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=nameplate1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=nameplate1';
 import {THEMES} from './journey.mjs?v=journey4';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
@@ -11,11 +11,11 @@ function notify(message){$('toast').textContent=message;$('toast').hidden=false;
 function phase(value){busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 建筑升起 · 棋盘展开','ARRIVE · BUILD · REVEAL'):'';}
 function sync(){
  const done=campaign.completed,r=REGIONS[selected];$('progress').innerHTML=`${done.length} <span>/ 8</span>`;
- $('skillStatus').textContent=campaign.identityUnlocked?t('单位元卡 · 已解锁','Identity · Unlocked'):t('通关 3×3 获得单位元卡','Complete 3×3 to unlock Identity');
+ $('skillStatus').textContent=campaign.inverseUnlocked?t('单位 · 逆 · 已解锁','Identity · Inverse · Unlocked'):campaign.identityUnlocked?t('单位已解锁 · 第 4 关解锁逆卡','Identity unlocked · Inverse after level 4'):t('通关 3×3 获得单位元卡','Complete 3×3 to unlock Identity');
  $('gameEyebrow').textContent=`${r.n} × ${r.n} · ${en()?r.en:THEMES[selected].name}`;$('gameTitle').textContent=en()?r.en:r.zh;
  $('regionNav').innerHTML=REGIONS.map((r,i)=>`<button data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-current="${selected===i}" class="${done.includes(r.n)?'complete':''}">${r.n}×${r.n}<span>${r.zh}</span></button>`).join('');
  $('pins').innerHTML=REGIONS.map((r,i)=>`<button class="map-pin ${done.includes(r.n)?'complete':''}" data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-label="${r.zh} ${r.n}×${r.n}${campaign.canEnter(r.n)?'':' 尚未解锁'}">${r.n}×${r.n}${campaign.canEnter(r.n)?'':' ◇'}</button>`).join('');
- $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('motion').textContent=t('减少动态','Reduce motion');$('motion').setAttribute('aria-pressed',String(reduced));
+ $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('motionLabel').textContent=t('减少动态','Reduce motion');$('motion').checked=reduced;syncFullscreen();
  $('clearLocalData').textContent=t('清除本地记录（Cookie）','Clear local data');$('clearDataNote').textContent=t('重置通关进度、未完成棋局和地图设置，重新从 2×2 开始。','Reset progress, unfinished boards and map settings, then start again at 2×2.');
  $('clearDataTitle').textContent=t('清除本地记录？','Clear local data?');$('clearDataWarning').textContent=t('群数独的通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。此操作无法撤销。','Group Sudoku progress, unfinished boards and map settings will be deleted. You will restart at 2×2. This cannot be undone.');$('cancelClearData').textContent=t('取消','Cancel');$('confirmClearData').textContent=t('确认清除','Clear data');
  $('resume').textContent=done.length===8?t('点击棋盘，重游八域','Select a board to play again'):t(`继续 ${campaign.current}×${campaign.current} →`,`Continue ${campaign.current}×${campaign.current} →`);
@@ -32,11 +32,11 @@ function renderBoard(state){
 function openGame(index,{replay=false}={}){
  if(busy||!campaign.canEnter(index+2))return;selected=index;playing=true;document.body.classList.add('playing');document.body.classList.remove('touring');$('playHUD').hidden=false;$('stageTitle').hidden=false;
  if(replay)campaign.save(index+2,model.initial(index+2));sync();game?.destroy();
- game=window.AssociativitySudoku.render($('gameMount'),{level:index+2,values:campaign.board(index+2),completed:campaign.completed,fixedLevel:true,sceneBoard:true,actionSkills:true,requireIdentityUnlock:true,onRender:renderBoard,onChange:(n,v)=>{campaign.save(n,v);sync();if(!busy&&model.inspect(v).kind==='complete'){phase('bridge');queueMicrotask(()=>finish(n));}}});
+ game=window.AssociativitySudoku.render($('gameMount'),{level:index+2,values:campaign.board(index+2),completed:campaign.completed,fixedLevel:true,sceneBoard:true,actionSkills:true,requireIdentityUnlock:true,requireInverseUnlock:true,onRender:renderBoard,onChange:(n,v)=>{campaign.save(n,v);sync();if(!busy&&model.inspect(v).kind==='complete'){phase('bridge');queueMicrotask(()=>finish(n));}}});
  if(world){phase('assembly');world.arrive(index,()=>{phase('');sync();},reduced);}else phase('');
 }
 function finish(n){
- const all=campaign.completed.length===8;world?.setProgress(campaign.completed);notify(n===3?t('三阳开泰 · 单位元卡已解锁','THREEFOLD RENEWAL · IDENTITY UNLOCKED'):t(`${REGIONS[n-2].zh} · 通关`,`${REGIONS[n-2].en} · COMPLETE`));
+ const all=campaign.completed.length===8;world?.setProgress(campaign.completed);notify(n===3?t('三阳开泰 · 单位元卡已解锁','THREEFOLD RENEWAL · IDENTITY UNLOCKED'):n===5?t('五福临门 · 逆技能卡已解锁','FIVE BLESSINGS · INVERSE UNLOCKED'):t(`${REGIONS[n-2].zh} · 通关`,`${REGIONS[n-2].en} · COMPLETE`));
  if(all){phase('');showAtlas(true);return;}
  // Replay never takes away earned bridges or progress.
  if(n<campaign.current-1){phase('');showAtlas();return;}
@@ -56,13 +56,18 @@ $('cancelClearData').onclick=()=>$('clearDataDialog').close();
 $('confirmClearData').onclick=()=>{try{clearLocalData(storage);window.location.reload();}catch{$('clearDataDialog').close();notify(t('无法清除本地记录，请检查浏览器的存储权限。','Unable to clear local data. Please check browser storage permissions.'));}};
 for(const input of document.querySelectorAll('[name="mapStyle"]')){input.checked=input.value===mapStyle;input.addEventListener('change',()=>{mapStyle=input.value;world?.setMapStyle(mapStyle);try{storage?.setItem(MAP_STYLE_KEY,mapStyle);}catch{}});}
 $('language').onclick=()=>{window.CourseLanguage.language=en()?'zh':'en';document.documentElement.lang=en()?'en':'zh-CN';window.dispatchEvent(new Event('course-language'));sync();};
-$('motion').onclick=()=>{reduced=!reduced;sync();};$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notify(t('当前窗口不支持全屏','Fullscreen unavailable'));}};
+$('motion').onchange=()=>{reduced=$('motion').checked;sync();};
+function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement;}
+function syncFullscreen(){const active=!!fullscreenElement();document.documentElement.classList.toggle('is-fullscreen',active);$('fullscreen').setAttribute('aria-pressed',String(active));$('fullscreen').setAttribute('aria-label',active?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen'));}
+$('fullscreen').onclick=async()=>{const button=$('fullscreen');if(button.disabled)return;button.disabled=true;try{if(fullscreenElement()){const exit=document.exitFullscreen||document.webkitExitFullscreen;await exit.call(document);}else{const root=document.documentElement,enter=root.requestFullscreen||root.webkitRequestFullscreen;if(!enter)throw Error('unsupported');await enter.call(root);}}catch{notify(t('当前窗口不支持全屏','Fullscreen unavailable'));}finally{button.disabled=false;syncFullscreen();scheduleLayout();}};
 let pointer=null;
 canvas.addEventListener('pointerdown',e=>{if(e.button!==0||!world||busy)return;world.touring=false;pointer={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!pointer||!world)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(Math.hypot(e.clientX-pointer.startX,e.clientY-pointer.startY)>4)pointer.moved=true;if(pointer.moved)world.orbit(dx,dy);pointer.x=e.clientX;pointer.y=e.clientY;});
-canvas.addEventListener('pointerup',e=>{if(pointer&&!pointer.moved&&world&&!playing){const r=canvas.getBoundingClientRect(),hit=world.pick((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);if(hit>=0)choose(hit);}pointer=null;});canvas.addEventListener('pointercancel',()=>pointer=null);
+canvas.addEventListener('pointerup',e=>{if(pointer&&!pointer.moved&&world&&!playing){const r=canvas.getBoundingClientRect(),hit=world.pick((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);if(hit>=0)choose(hit);}pointer=null;});canvas.addEventListener('pointercancel',()=>pointer=null);canvas.addEventListener('lostpointercapture',()=>pointer=null);
 canvas.addEventListener('wheel',e=>{if(!world||busy)return;e.preventDefault();world.touring=false;world.zoom(e.deltaY);},{passive:false});
-window.addEventListener('resize',()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing?selected:-1);positionTargets();});document.addEventListener('visibilitychange',()=>last=0);
+let layoutFrame=0;function scheduleLayout(){cancelAnimationFrame(layoutFrame);layoutFrame=requestAnimationFrame(()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing?selected:-1);positionTargets();});}
+function onFullscreenChange(){if(pointer&&canvas.hasPointerCapture(pointer.id))canvas.releasePointerCapture(pointer.id);pointer=null;syncFullscreen();scheduleLayout();}
+document.addEventListener('fullscreenchange',onFullscreenChange);document.addEventListener('webkitfullscreenchange',onFullscreenChange);window.addEventListener('resize',scheduleLayout);window.visualViewport?.addEventListener('resize',scheduleLayout);document.addEventListener('visibilitychange',()=>last=0);
 function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;world?.updateWorld(time,dt,reduced);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}positionTargets();}
 function fallback(error){failed=true;world=null;$('loading').hidden=true;document.body.classList.add('map-fallback');phase('');openGame(campaign.current-2);notify(t('三维地图暂不可用，已切换为简洁棋盘。','3D unavailable. The accessible board is ready.'));console.error('Group sudoku map unavailable',error);}
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback('WebGL context lost');});sync();

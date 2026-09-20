@@ -11,21 +11,14 @@ export const THEMES=[
 ];
 export const clamp=x=>Math.max(0,Math.min(1,x));
 export const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
-export const stageTime={assembly:9.2,bridge:3.1,flight:4.2};
+export const stageTime={assembly:5.9,bridge:3.1,flight:4.2};
 export function frontier(completed){for(let n=2;n<=9;n++)if(!completed.includes(n))return n;return 9;}
 export function canEnter(n,completed){return n>=2&&n<=frontier(completed);}
 // The endpoint tangent is zero; intermediate camera keys carry velocity through
 // each shot, following the time-scaled Hermite crane used by the test module.
 export function cameraSpline(keys,t){let i=0;while(i<keys.length-2&&t>keys[i+1][0])i++;const a=keys[i],b=keys[i+1],p=keys[Math.max(0,i-1)],q=keys[Math.min(keys.length-1,i+2)],d=b[0]-a[0],u=clamp((t-a[0])/d),h0=2*u**3-3*u*u+1,h1=u**3-2*u*u+u,h2=-2*u**3+3*u*u,h3=u**3-u*u;return [1,2].map(k=>a[k].map((v,j)=>h0*v+h1*d*(i===0?0:(b[k][j]-p[k][j])/(b[0]-p[0]))+h2*b[k][j]+h3*d*(i===keys.length-2?0:(q[k][j]-a[k][j])/(q[0]-a[0]))));}
 
-export function arrivalPhase(t,wasBuilt=false){return t<2.8?'moving':wasBuilt?'ready':t<3?'settled':t<7.1?'building':t<9.2?'board':'ready';}
+export function arrivalPhase(t,wasBuilt=false){return t<2.8?'moving':wasBuilt?'ready':t<3?'settled':t<5.05?'building':t<5.9?'board':'ready';}
 
-export function plaqueOffset(index){
- const [cx,cz]=PLACES[index];
- for(const [x,z]of [[-18.6,0],[18.6,0],[0,14.5],[0,-14.5]]){
-  const px=cx+x,pz=cz+z;
-  if(Math.abs(px)>64||Math.abs(pz)>69)continue;
-  if(PLACES.every(([a,b])=>Math.hypot(Math.max(0,Math.abs(a-px)-5.15),Math.max(0,Math.abs(b-pz)-1.13))>13.1))return [x,z];
- }
- return [0,14.5];
-}
+// Nameplates sit centered below the circular platform, on the surrounding map.
+export function plaqueOffset(){return [0,14.5];}

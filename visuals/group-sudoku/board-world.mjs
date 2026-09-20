@@ -1,6 +1,6 @@
 import * as T from '../3d/vendor/three.module.js';
 import {landmark} from './landmarks.mjs?v=journey4';
-import {THEMES,plaqueOffset} from './journey.mjs?v=journey4';
+import {THEMES,plaqueOffset} from './journey.mjs?v=nameplate1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
 // Hit targets are projected from these world coordinates, so orbiting never detaches input.
@@ -25,7 +25,7 @@ export function installBoards(a){
   const boardObjects=new Set();p.traverse(o=>{if(o.isMesh)boardObjects.add(o);});buildSettlement(a,p,i,originals[i]);a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
   const parts=[];p.updateMatrixWorld(true);let serial=0;
   // Small meshes rise course by course; a roof follows its supporting walls.
-  p.traverse(o=>{if(!o.isMesh)return;const point=o.getWorldPosition(new T.Vector3());base.worldToLocal(point);const board=boardObjects.has(o);const delay=board?4.1+Math.max(0,point.y)*.15:.1+Math.min(2.4,Math.max(0,point.y)*.38)+(serial++%5)*.06;parts.push({object:o,position:o.position.clone(),scale:o.scale.clone(),delay,duration:board?1.05:1.1,lift:board?.85:1.6});});
+  p.traverse(o=>{if(!o.isMesh)return;const point=o.getWorldPosition(new T.Vector3());base.worldToLocal(point);const board=boardObjects.has(o);const delay=board?4.1+Math.max(0,point.y)*.15:.1+Math.min(2.4,Math.max(0,point.y)*.38)+(serial++%5)*.06;parts.push({object:o,position:o.position.clone(),scale:o.scale.clone(),delay:delay*.5,duration:(board?1.05:1.1)*.5,lift:board?.85:1.6});});
   const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;const gx=glowCanvas.getContext('2d'),grad=gx.createRadialGradient(64,64,28,64,64,64);grad.addColorStop(0,'#ffe4a580');grad.addColorStop(.6,'#ffe4a566');grad.addColorStop(1,'#ffe4a500');gx.fillStyle=grad;gx.fillRect(0,0,128,128);const glow=new T.Mesh(new T.PlaneGeometry(18,18),new T.MeshBasicMaterial({map:new T.CanvasTexture(glowCanvas),transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}));glow.rotation.x=-Math.PI/2;glow.position.y=.18;glow.visible=false;p.add(glow);mesh.material.emissiveMap=texture;
   a.boards.push({canvas,texture,mesh,n,content:p,parts,theme,glow});
  });
