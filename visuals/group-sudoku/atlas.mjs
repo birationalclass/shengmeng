@@ -6,7 +6,7 @@ import {updatePalaceFountains} from './palace-fountains.mjs?v=owl-clearance1';
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=wutong1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=autumn2';
 import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=owl-clearance1';
 import {updateOwls} from './owls.mjs?v=owl-clearance1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';

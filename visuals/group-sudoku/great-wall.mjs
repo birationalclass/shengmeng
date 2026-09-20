@@ -16,22 +16,45 @@ export function banner(a,parent,x,y,z,phase=0){
  return mast;
 }
 
+function autumnRandom(){let seed=913729;return ()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
+export function courtyardTreePositions(){
+ const rand=autumnRandom(),points=[];
+ for(let attempt=0;points.length<29&&attempt<6000;attempt++){
+  const q=rand()*Math.PI*2,r=7.8+rand()*1.95,x=Math.sin(q)*r,z=-Math.cos(q)*r;
+  if(Math.max(Math.abs(x),Math.abs(z))<6.92||z>5.9&&Math.abs(x)<2.0||points.some(p=>Math.hypot(x-p.x,z-p.z)<1.12))continue;
+  points.push({x,z,height:1.04+rand()*.45+(1-z/10)*.32,scale:.84+rand()*.20,phase:rand()*Math.PI*2});
+ }
+ return points;
+}
 function courtyardTrees(a,parent){
- const bark=new T.MeshStandardMaterial({color:0xb9b79a,roughness:.95}),patch=new T.MeshStandardMaterial({color:0x747d5b,roughness:1});
- const leaves=[0x667d48,0x81914e,0x9b9d50,0x73905a].map(color=>new T.MeshStandardMaterial({color,roughness:.94}));
+ const bark=new T.MeshStandardMaterial({color:0xc7bfa4,roughness:.95}),patch=new T.MeshStandardMaterial({color:0x887c61,roughness:1});
+ const leaves=[0xe3b637,0xf2cc60,0xd99b29,0xc68b2a].map(color=>new T.MeshStandardMaterial({color,roughness:.94}));
  const crownGeometry=new T.SphereGeometry(1,8,6),trunkGeometry=new T.CylinderGeometry(.085,.14,1,7);
- for(let i=0;i<32;i++){
-  const q=i*Math.PI/16;if(Math.abs(q-Math.PI)<.23)continue;
-  const tree=new T.Group();tree.userData.landmark='wutong-tree';tree.position.set(Math.sin(q)*9.55,.15,-Math.cos(q)*9.55);parent.add(tree);
-  const h=1.10+.40*(1+Math.cos(q))/2+.08*Math.sin(i*2.1);
+ courtyardTreePositions().forEach(({x,z,height:h,scale,phase},i)=>{
+  const tree=new T.Group();tree.userData.landmark='wutong-tree';tree.position.set(x,.15,z);parent.add(tree);
   const trunk=a.mesh(tree,trunkGeometry,bark,[0,h*.48,0]);trunk.scale.y=h;
   for(let j=0;j<5;j++){const angle=j*2.4+i;const mark=a.mesh(tree,new T.SphereGeometry(.06,5,4),patch,[Math.sin(angle)*.11,.18+j*h*.14,Math.cos(angle)*.11]);mark.scale.set(.8,1.8,.45);mark.rotation.y=angle;}
   for(let j=0;j<3;j++){
-   const angle=j*Math.PI*2/3+i*.7,dx=Math.sin(angle)*.28,dz=Math.cos(angle)*.28;
+   const angle=j*Math.PI*2/3+phase,dx=Math.sin(angle)*.28,dz=Math.cos(angle)*.28;
    a.rod(tree,[0,h*.60,0],[dx,h+.10,dz],.045,bark);
-   const crown=a.mesh(tree,crownGeometry,leaves[(i+j)%4],[dx,h+.15+(j===0?.16:0),dz]);crown.scale.set(.51,.39,.51);crown.rotation.y=angle;
+   const crown=a.mesh(tree,crownGeometry,leaves[(i+j)%4],[dx,h+.15+(j===0?.16:0),dz]);crown.scale.set(.51*scale,.39*scale,.51*scale);crown.rotation.y=angle;
   }
+ });
+}
+function autumnLeafFloor(parent){
+ const root=new T.Group();root.userData.landmark='autumn-leaf-floor';parent.add(root);
+ const area=new T.Shape();area.absarc(0,0,10.72,0,Math.PI*2,false);const hole=new T.Path();hole.moveTo(-6.04,-6.04);hole.lineTo(-6.04,6.04);hole.lineTo(6.04,6.04);hole.lineTo(6.04,-6.04);hole.closePath();area.holes.push(hole);
+ const bed=new T.Mesh(new T.ShapeGeometry(area,96),new T.MeshStandardMaterial({color:0xac7b32,roughness:1}));bed.rotation.x=-Math.PI/2;bed.position.y=.17;root.add(bed);
+ // Five-lobed fallen leaves, shared as one instanced mesh with varied colors,
+ // rotations and small height offsets rather than a tiled floor texture.
+ const leaf=new T.Shape();const outline=[[0,1],[.18,.43],[.65,.62],[.47,.12],[1,.04],[.42,-.25],[.51,-.58],[.12,-.44],[0,-.79],[-.12,-.44],[-.51,-.58],[-.42,-.25],[-1,.04],[-.47,.12],[-.65,.62],[-.18,.43]];
+ outline.forEach(([x,y],i)=>i?leaf.lineTo(x,y):leaf.moveTo(x,y));leaf.closePath();const geometry=new T.ShapeGeometry(leaf);geometry.rotateX(-Math.PI/2);
+ const count=14000,mesh=new T.InstancedMesh(geometry,new T.MeshStandardMaterial({roughness:1,side:T.DoubleSide}),count),rand=autumnRandom(),dummy=new T.Object3D(),palette=[0xe9b944,0xf2ce6d,0xce9230,0xbb7627,0xd6a446,0x93602b].map(c=>new T.Color(c));
+ for(let i=0;i<count;i++){
+  let x,z;do{x=(rand()-.5)*21.3;z=(rand()-.5)*21.3;}while(Math.hypot(x,z)>10.59||Math.max(Math.abs(x),Math.abs(z))<6.21);
+  const size=.09+rand()*.12;dummy.position.set(x,.19+rand()*.045,z);dummy.rotation.set((rand()-.5)*.10,rand()*Math.PI*2,(rand()-.5)*.10);dummy.scale.set(size,1,size*(.75+rand()*.55));dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);mesh.setColorAt(i,palette[Math.floor(rand()*palette.length)]);
  }
+ mesh.computeBoundingSphere();root.add(mesh);
 }
 
 export function greatWall(a,parent){
@@ -101,5 +124,6 @@ export function greatWall(a,parent){
   installWallBeacon(a,tower,h+.55,j);
  }
  courtyardTrees(a,wall);
+ autumnLeafFloor(parent);
  return wall;
 }
