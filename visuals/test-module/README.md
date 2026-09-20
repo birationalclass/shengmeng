@@ -22,7 +22,7 @@ The user-provided [reference video](https://www.bilibili.com/video/BV1MFtC6gEhY/
 
 Space: play/pause. Left/right: seek five seconds. 1–6: chapter. Drag: orbit around the current scene; wheel: zoom. Return-camera button restores the narrative route. Settings control speed, quality, captions, progress slider, dust, repeat and reduced motion. Opening settings does not stop the film. There are no video embeds, telemetry, AI API calls or external runtime requests. Music support accepts a local browser-playable file, with volume control and default playback; browsers that block autoplay start the music on the next page click or keypress. `soundtrack.mjs` points to the MP3 recorded from the user-selected QQ Music playback (application audio only, no microphone). The source recording is trimmed to one complete playthrough; music loops independently of the cinematic timeline. `?mute=1` enforces muted browser QA and prevents audio playback.
 
-Reduced-motion users start with a static view, and may explicitly play. WebGL failure retains an illustrated fallback and access to all mathematical notes. A single deterministic timeline drives cameras and models, so seeking is reversible. Settings are stored under `operations-atlas-v2`.
+The loading screen waits for a deliberate “点击进入动画” click after the scene is ready. This gesture starts the timeline and default soundtrack together. Before entry, no animation or audio plays. Reduced motion can be selected in settings. WebGL failure retains an illustrated fallback and access to all mathematical notes. A single deterministic timeline drives cameras and models, so seeking is reversible. Settings are stored under `operations-atlas-v2`.
 
 ## Development and verification
 
