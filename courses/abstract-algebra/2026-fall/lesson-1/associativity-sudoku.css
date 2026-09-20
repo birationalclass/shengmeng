@@ -1,0 +1,26 @@
+.algebra-sudoku{max-width:960px;margin:auto;--game-gold:#b79b59;--game-green:#568d83}
+.sudoku-intro{display:flex;align-items:center;justify-content:space-between;font-size:22px;margin-bottom:10px}.sudoku-intro span{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sudoku-rules,.sudoku-card-note{font-size:15px;line-height:1.75;color:var(--muted)}
+.sudoku-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:20px 0 12px}.sudoku-cards button{padding:14px 10px;text-align:left;border-radius:10px;background:transparent}.sudoku-cards strong{display:block;font-size:18px;font-weight:500}.sudoku-cards span{display:block;font-size:12px;line-height:1.5;margin-top:5px;color:var(--muted)}.sudoku-cards button[aria-pressed=true]{background:color-mix(in srgb,var(--game-gold) 16%,transparent);color:var(--ink);border-color:var(--game-gold)}
+.sudoku-play{display:grid;grid-template-columns:minmax(0,1fr) 175px;gap:24px;align-items:start;margin:18px 0}.sudoku-table-wrap{min-width:0}.sudoku-table{border-collapse:collapse;table-layout:fixed;width:100%;max-width:570px;margin:auto;font-variant-numeric:tabular-nums}.sudoku-table caption{caption-side:bottom;font-size:12px;color:var(--muted);padding-top:12px;line-height:1.5}.sudoku-table th{font-size:15px;font-weight:400;color:var(--muted);height:26px}.sudoku-table td{border:1px solid var(--line);padding:0}.sudoku-table th:first-child{width:25px}.sudoku-table td button{display:block;min-height:36px;width:100%;aspect-ratio:1;border:0;border-radius:0;padding:2px;background:transparent;color:var(--ink);font:24px Cambria,serif}.sudoku-table td button span{opacity:.17}.sudoku-table td button.given{background:transparent;color:var(--muted)}.sudoku-table td button.selected{outline:2px solid var(--game-gold);outline-offset:-2px;color:var(--ink)}
+.sudoku-table :is(th,td,td button,td button:hover,td button.selected){background:transparent!important}
+.sudoku-table .identity-mark{color:#ed6b65!important}
+.sudoku-table .inverse-mark{color:#aa98d3!important;text-decoration:underline;text-underline-offset:5px}
+.sudoku-table .cancel-mark{color:#75b4a4!important}
+.sudoku-table .path-mark{color:var(--game-gold)!important;box-shadow:inset 0 0 0 1px var(--game-gold)}
+.sudoku-table .target-mark{box-shadow:inset 0 0 0 2px var(--game-gold)}
+.sudoku-table .error-mark{color:#ed6b65!important;box-shadow:inset 0 0 0 2px #bd625d}
+
+.sudoku-tools{display:grid;gap:10px}.sudoku-tools>p{font-size:14px;color:var(--muted)}.sudoku-tools>button{font-size:13px;line-height:1.6;padding:9px}.sudoku-digits{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.sudoku-digits button{padding:9px 3px;font-size:20px;background:transparent}
+.sudoku-deduction{padding:15px 18px;border:1px solid var(--game-gold);border-radius:8px;margin:14px 0}.sudoku-deduction>p{font-size:13px;color:var(--muted)}.sudoku-paths{font:22px/1.8 Cambria,serif;margin:8px 0}.sudoku-status{min-height:2em;font-size:15px;line-height:1.8;margin:14px 0}.sudoku-proof{border-top:1px solid var(--line);padding:15px 0;font-size:16px;line-height:1.85}.sudoku-proof summary{cursor:pointer;color:var(--game-gold)}.sudoku-proof p{margin-top:12px}.sudoku-equation{overflow-wrap:anywhere;font-family:Cambria,serif}
+@media(max-width:850px){.sudoku-play{grid-template-columns:1fr;gap:14px}.sudoku-tools{grid-template-columns:repeat(3,1fr)}.sudoku-tools>p,.sudoku-digits{grid-column:1/-1}.sudoku-digits{grid-template-columns:repeat(9,1fr)}.sudoku-table td button{font-size:20px;min-height:28px}.sudoku-cards{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){.algebra-sudoku *{transition:none!important}}
+
+.sudoku-levels{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}.sudoku-levels button{padding:6px 11px;background:transparent;font-size:14px}.sudoku-levels button[aria-pressed=true]{border-color:var(--game-gold);color:var(--ink);background:color-mix(in srgb,var(--game-gold) 15%,transparent)}
+.sudoku-table-wrap{max-width:570px;width:100%;margin:auto}
+
+.sudoku-table{max-width:calc(80px + var(--sudoku-size,9)*40px)}
+
+.sudoku-cards button[aria-pressed=true] span{color:inherit;opacity:.85}
+
+.sudoku-certificate{margin-top:12px}.sudoku-certificate ol{padding-left:24px}.sudoku-certificate li{margin:8px 0;font-size:14px;line-height:1.7}

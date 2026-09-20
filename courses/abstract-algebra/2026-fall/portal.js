@@ -2,7 +2,7 @@
 (()=>{
   'use strict';
   const $=id=>document.getElementById(id),body=document.body;
-  const chapters=[{id:'1.1',title:['等价关系与集合的分类','Equivalence relations and partitions'],topics:[['relation','等价关系','Equivalence relations'],['quotient','等价类','Equivalence classes'],['partition','集合的分类','Partitions'],['check','自测','Self-check']]},{id:'1.2',title:['群的概念','The concept of a group'],topics:[['operation','代数运算','Binary operations'],['axioms','群的公理','Group axioms'],['one-sided','单侧公理','One-sided axioms'],['symmetry','对称与群','Symmetries'],['properties','基本性质','Basic properties'],['powers','方幂与指数','Integer powers'],['criteria','群的判别','Recognizing groups'],['check','自测','Self-check']]}];
+  const chapters=[{id:'1.1',title:['等价关系与集合的分类','Equivalence relations and partitions'],topics:[['relation','等价关系','Equivalence relations'],['quotient','等价类','Equivalence classes'],['partition','集合的分类','Partitions'],['check','自测','Self-check']]},{id:'1.2',title:['群的概念','The concept of a group'],topics:[['operation','代数运算','Binary operations'],['axioms','群的公理','Group axioms'],['one-sided','单侧公理','One-sided axioms'],['symmetry','对称与群','Symmetries'],['properties','基本性质','Basic properties'],['powers','方幂与指数','Integer powers'],['criteria','群的判别','Recognizing groups'],['associativity-game','拉丁方数独','Latin-square puzzles'],['check','自测','Self-check']]}];
   const sections=window.CourseSections;
   sections.forEach(section=>{section.topics=chapters.find(c=>c.id===section.id)?.topics||window.GroupSections?.[section.id]?.topics||[['blank','空白测试页','Blank test page']];section.optional=!!window.GroupSections?.[section.id]?.optional;});
   window.CourseLanguage.add(Object.fromEntries(sections.map(s=>s.title)));
@@ -67,7 +67,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();}
-      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260920-unit-tables-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260920-multiplication-game-v4&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
   }

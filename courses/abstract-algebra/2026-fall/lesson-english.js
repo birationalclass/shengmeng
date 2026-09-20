@@ -106,3 +106,35 @@ window.CourseLanguage.add({
   '反例乘法表':'Counterexample multiplication table',
   '行是左因子，列是右因子；表内为乘积。':'Rows give the left factor; columns give the right factor. Each entry is their product.'
 });
+
+// Multiplication maps, solvability and cancellation.
+window.CourseLanguage.add({
+  "设 G 为非空集合，二元运算就是映射 m : G × G → G，记 m(x,y) = xy。固定 a ∈ G，定义右乘映射 mₐ : G → G，mₐ(x) = m(x,a) = xa；左乘映射 Lₐ : G → G，Lₐ(x) = m(a,x) = ax。mₐ 与 Lₐ 中的 a 均为下标，用于标记固定的乘数。": "Let G be nonempty. A binary operation is a map m : G × G → G, written m(x,y) = xy. Fix a ∈ G. Define right multiplication mₐ : G → G by mₐ(x) = m(x,a) = xa, and left multiplication Lₐ : G → G by Lₐ(x) = m(a,x) = ax. In both mₐ and Lₐ, a is a subscript labeling the fixed multiplier.",
+  "固定 a。对每个 b ∈ G，xa = b 有解 ⇔ 对每个 b ∈ G，存在 x ∈ G 使 mₐ(x) = b ⇔ mₐ(G) = G ⇔ mₐ 满射。乘法表按行元素乘列元素读取；固定第 a 列、遍历各行，得到的正是全部 mₐ(x)。故满射等价于该列取遍 G。": "Fix a. The equation xa = b is solvable for every b ∈ G iff every b has a preimage under mₐ, iff mₐ(G) = G, iff mₐ is surjective. Read each table entry as row factor times column factor. Varying the row in column a lists all mₐ(x); surjectivity means this column covers G.",
+  "mₐ 单射 ⇔ 对任意 x,y ∈ G，xa = ya ⇒ x = y ⇔ 第 a 列不同位置的元素两两不同。这是对固定右因子 a 的消去律；对所有 a 都成立时，才是整个运算的右消去律。这里不需要 G 有限。": "The map mₐ is injective iff xa = ya implies x = y for all x,y ∈ G, iff entries at distinct positions in column a are distinct. This is cancellation with the fixed right factor a. Requiring it for every a gives right cancellation for the operation. No finiteness is needed here.",
+  "左右对偶：对每个 b ∈ G，ax = b 有解 ⇔ Lₐ 满射 ⇔ 第 a 行取遍 G；Lₐ 单射 ⇔ ax = ay ⇒ x = y ⇔ 第 a 行元素两两不同。下表 m(u,v) = u 的第 1 列取遍 G，但第 1 行只有 1：左右条件不能混淆。": "Dually, ax = b is solvable for every b ∈ G iff Lₐ is surjective iff row a covers G. The map Lₐ is injective iff ax = ay implies x = y iff row a has distinct entries. For m(u,v) = u below, column 1 covers G whereas row 1 contains only 1: the two sides must be distinguished.",
+  "有限情形的证明（单射 ⇒ 满射）：设 |G| = n。任意映射 f : G → G 若单射，则 n 个输入给出 n 个两两不同的输出；这些输出都在仅有 n 个元素的 G 中，故 f(G) = G。": "Finite case, injective ⇒ surjective: let |G| = n. If f : G → G is injective, its n inputs give n distinct outputs. All lie in the n-element set G, so f(G) = G.",
+  "有限情形的证明（满射 ⇒ 单射）：若 f : G → G 不单射，则至少两个不同输入给出同一输出，故 n 个输入至多给出 n − 1 个不同输出，不可能取遍 G。因此在有限 G 上，满射 ⇔ 单射 ⇔ 双射。应用于 mₐ 或 Lₐ，便得到一列或一行“取遍 G ⇔ 元素两两不同”。": "Finite case, surjective ⇒ injective: if f : G → G is not injective, two distinct inputs have the same output. Hence its n inputs produce at most n − 1 distinct outputs and cannot cover G. Thus surjective ⇔ injective ⇔ bijective on finite G. Applying this to mₐ or Lₐ proves that a column or row covers G iff its entries are distinct.",
+  "不论 G 是否有限，对每个 b，xa = b 恰有一个解 ⇔ mₐ 双射：有解就是满射，至多一个解就是单射。ax = b 与 Lₐ 同理。若 G 有限，单独要求“对每个 b 有解”或“该列（行）无重复”便已保证每个 b 恰有一个解。": "For finite or infinite G, xa = b has exactly one solution for every b iff mₐ is bijective: existence is surjectivity and at most one solution is injectivity. The same holds for ax = b and Lₐ. For finite G, either solvability for every b or no repeated entries already implies unique solvability for every b.",
+  "有限性不可省略：在 G = ℕ₀ = {0,1,2,…} 上取 m(x,y) = x + y，固定 a = 1。m₁(x) = x + 1 单射，但 0 不在像中，故不满射。其第 1 列 1,2,3,… 两两不同，却没有取遍 G；此例甚至满足结合律。": "Finiteness is essential: on G = ℕ₀ = {0,1,2,…}, let m(x,y) = x + y and fix a = 1. The map m₁(x) = x + 1 is injective but misses 0, so it is not surjective. Column 1 has distinct entries 1,2,3,… but does not cover G. This operation is even associative.",
+  "与扩展 A、B 的联系：扩展 A 的条件是结合律、mₐ₀ 满射，以及存在 e 使 Lₐ₀(e) = a₀；结论是 mₑ = id_G。扩展 B 则交换左右：Lₐ₀ 满射且 mₐ₀(e) = a₀，推出 Lₑ = id_G。id_G 表示恒等映射。": "Connection with Extensions A and B: Extension A assumes associativity, surjectivity of mₐ₀, and an e with Lₐ₀(e) = a₀; its conclusion is mₑ = id_G. Extension B reverses the sides: surjective Lₐ₀ and mₐ₀(e) = a₀ imply Lₑ = id_G. Here id_G is the identity map.",
+  "因此，非空有限 G 上的运算若满足结合律，且乘法表每行、每列元素都两两不同，则所有 mₐ、Lₐ 都满射，两类方程对所有 a,b 都有解；由定理 1.2.4，G 是群。只有某一列无重复并不够。映射与行列的对应关系本身不需要结合律。": "Consequently, an associative operation on a nonempty finite G defines a group if every row and every column has distinct entries: all mₐ and Lₐ are surjective, so both equations are solvable for every a,b; apply Theorem 1.2.4. A single column without repetitions does not suffice. The map–table correspondence itself requires no associativity.",
+  "扩展：运算与映射": "Extension: operations and maps",
+  "扩展 C · 运算、映射与乘法表": "Extension C · Operations, maps and tables",
+  "用映射理解运算与消去律": "Operations and cancellation through maps",
+  "固定 a：右乘看列，左乘看行；有限 G 上，满射 ⇔ 单射 ⇔ 双射。": "Fix a: right multiplication reads columns; left multiplication reads rows. On finite G, surjective ⇔ injective ⇔ bijective.",
+  "这里 G 只是非空集合，不预先假设它是群。除最后的群判别及引用扩展 A、B 外，均不需要结合律。": "Here G is only a nonempty set, not assumed to be a group. Associativity is needed only for the final group criterion and the references to Extensions A and B.",
+  "把运算写成 m : G × G → G。固定 a 后，mₐ(x) = m(x,a) = xa 是右乘映射，Lₐ(x) = m(a,x) = ax 是左乘映射。方程对所有右端有解对应满射，消去律对应单射；在有限集合上二者等价。": "Write the operation as m : G × G → G. Fixing a gives right multiplication mₐ(x) = m(x,a) = xa and left multiplication Lₐ(x) = m(a,x) = ax. Solvability for every target corresponds to surjectivity; cancellation corresponds to injectivity. These are equivalent on finite sets.",
+  "例：G = {0,1}，m(u,v) = u，a = 1": "Example: G = {0,1}, m(u,v) = u, a = 1",
+  "左乘 L₁：读第 1 行，得到 1,1；既非满射，也非单射。": "Left multiplication L₁: row 1 gives 1,1; neither surjective nor injective.",
+  "右乘 m₁：读第 1 列，得到 0,1；既是满射，也是单射。": "Right multiplication m₁: column 1 gives 0,1; both surjective and injective."
+});
+
+window.CourseLanguage.add({
+  "结合左右两侧：有限 G 上，所有 mₐ、Lₐ 都满射 ⇔ 所有 mₐ、Lₐ 都单射 ⇔ 乘法表每行、每列都恰好出现一次 G 的每个元素。这称为拉丁方条件，可比喻为“数独式的行列条件”，但不要求数独的小宫格条件；阶数也不必是 9。": "Combining both sides for finite G: all mₐ and Lₐ are surjective iff all are injective iff every row and every column contains each element of G exactly once. This is the Latin square condition, analogous to the row-and-column rule of Sudoku. It imposes no Sudoku subgrid rule, and the order need not be 9.",
+  "拉丁方不自动给出群：在 G = {0,1,2} 上定义 m(x,y) = x − y（模 3）。表中每行、每列都是 0,1,2 的排列，但 m(m(0,0),1) = 2，而 m(0,m(0,1)) = 1，故不满足结合律。满足拉丁方条件的运算称为拟群；有结合律的拟群才是群。": "A Latin square need not define a group: on G = {0,1,2}, set m(x,y) = x − y modulo 3. Every row and column is a permutation of 0,1,2, but m(m(0,0),1) = 2 whereas m(0,m(0,1)) = 1, so associativity fails. An operation with the Latin square property is a quasigroup; an associative quasigroup is a group.",
+  "拉丁方反例：m(x,y) = x − y（模 3）": "Latin square counterexample: m(x,y) = x − y modulo 3",
+  "每行、每列都无重复，但结合律不成立。": "Every row and column has distinct entries, but associativity fails."
+});
+
+window.CourseLanguage.add({'结合律实验室 · 八个关卡':'Associativity lab · Eight levels','用结合律补全乘法表':'Complete multiplication tables using associativity','拉丁方数独':'Latin-square puzzles'});

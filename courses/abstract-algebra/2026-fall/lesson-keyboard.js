@@ -6,7 +6,8 @@
   const active=()=>lesson()||document.body.classList.contains('portal-lesson');
   const blocked=()=>!!document.querySelector('dialog[open]');
   const key=e=>e.key==='Enter'?'Enter':e.key===' '||e.key==='Spacebar'?'Space':null;
-  const editing=target=>target?.closest?.('textarea,select,input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]),[contenteditable]:not([contenteditable="false"])');
+  const gameActive=()=>!!(document.querySelector('.algebra-sudoku')||document.querySelector('#lecture-frame')?.contentDocument?.querySelector('.algebra-sudoku'));
+  const editing=target=>gameActive()||target?.closest?.('.algebra-sudoku,textarea,select,input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]),[contenteditable]:not([contenteditable="false"])');
   function advance(){
     if(!active()||blocked())return;
     if(lesson())window.LessonScreen?.advance();
