@@ -1,7 +1,7 @@
 /* Fetch only the requested section. The parent owns this document's lifetime. */
 (()=>{
   'use strict';
-  const version='20260920-multiplication-game-v4';
+  const version='20260920-group-sudoku-journey';
   const first=location.pathname.includes('/lesson-1/');
   const requested=new URLSearchParams(location.search).get('section');
   const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7]|3\.[1-6]|4\.[1-5])$/;

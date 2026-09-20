@@ -27,3 +27,12 @@ test('partial entries persist; storage failure never prevents play',()=>{
  assert.equal(privateMode.save(3,full(3)),true);assert.equal(privateMode.identityUnlocked,true);assert.equal(privateMode.persistent,false);
  assert.equal(new Campaign(model).persistent,false);
 });
+
+test('regions unlock in sequence and replay preserves mastery',()=>{
+ const c=new Campaign(model,memory());assert.equal(c.current,2);assert.equal(c.canEnter(3),false);
+ c.save(3,full(3));assert.equal(c.current,2);assert.equal(c.canEnter(4),false);
+ c.save(2,full(2));assert.equal(c.current,4);assert.equal(c.canEnter(4),true);assert.equal(c.canEnter(5),false);
+ for(let n=4;n<=9;n++)c.save(n,full(n));assert.equal(c.completed.length,8);
+ for(let n=2;n<=9;n++)assert.equal(c.canEnter(n),true);
+ c.save(4,model.initial(4));assert.equal(c.completed.length,8);assert.equal(c.identityUnlocked,true);
+});

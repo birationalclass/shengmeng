@@ -1,18 +1,17 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#201c15"><meta name="description" content="群数独：羊皮纸机械地图上的八座城邦，从2×2到9×9，用行列条件与结合律补全群的乘法表。"><title>群数独 · 八域之书 · Sheng Meng</title><link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.css?v=world2"><link rel="stylesheet" href="style.css?v=world2"><script src="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js?v=world2" defer></script><script type="module" src="app.mjs?v=world2"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#201c15"><meta name="description" content="群数独：羊皮纸机械地图上的八座城邦，从2×2到9×9，用行列条件与结合律补全群的乘法表。"><title>群数独 · 八域之书 · Sheng Meng</title><link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.css?v=journey4"><link rel="stylesheet" href="style.css?v=journey4"><script src="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js?v=journey4" defer></script><script type="module" src="app.mjs?v=journey4"></script></head>
 <body>
 <main class="atlas" id="atlas">
  <canvas id="world" aria-label="八区域羊皮纸机械地图：拖动观察，点击区域选择关卡" tabindex="0"></canvas><div class="map-vignette" aria-hidden="true"></div>
  <header class="atlas-header"><a href="../" class="brand"><span class="brand-seal">G</span><span>SHENG MENG<small>VISUAL LAB · 群数独</small></span></a><nav><button id="overview">全图</button><button id="language" aria-label="切换到英文">EN</button><button id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel">设置</button><button id="motion" aria-pressed="false">减少动态</button><button id="fullscreen" aria-label="全屏">⛶</button></nav></header>
  <section id="settingsPanel" hidden><h2>地图样式 · Map style</h2><label><input type="radio" name="mapStyle" value="parchment" checked>手绘羊皮纸 · Parchment</label><label><input type="radio" name="mapStyle" value="mechanical">机械地图 · Mechanical</label></section>
- <section class="map-heading"><p>THE ATLAS OF GROUPS</p><h1>群数独<span>八域之书</span></h1><div class="heading-rule"></div><p id="mapLead">穿过机械城邦，以法则补全世界。</p></section>
  <div id="boardHits" class="board-hits" aria-label="三维乘法棋盘"></div><div id="pins" class="map-pins" aria-label="地图区域"></div>
- <aside class="campaign-log" aria-label="旅程进度"><p class="smallcaps" id="journeyLabel">YOUR JOURNEY</p><strong id="progress">0 <span>/ 8</span></strong><p id="skillStatus">单位元卡 · 待解锁</p><small id="unlockNote">通关 3×3 玉阶庭院获得</small><div class="progress-dots" id="progressDots"></div></aside>
- <section class="region-detail" aria-live="polite"><div><p class="smallcaps" id="regionKicker">CHAPTER I · C₂</p><h2 id="regionTitle">初始之门</h2><p id="regionSubtitle">2 × 2 · 从一枚空缺开始</p></div><button class="enter-region" id="enterRegion"><span id="enterText">进入棋局</span><span aria-hidden="true">↗</span></button></section>
- <footer class="atlas-footer"><p id="viewHint">拖动观察 · 滚轮缩放 · 点击城邦启程</p><nav id="regionNav" aria-label="八个棋局区域"></nav></footer>
+ <section id="stageTitle" class="stage-title" hidden><p id="gameEyebrow"></p><h1 id="gameTitle"></h1><span id="stagePhase" aria-live="polite"></span></section>
+ <aside class="campaign-log" aria-label="旅程进度"><p>THE EIGHT DOMAINS</p><strong id="progress">0 / 8</strong><small id="skillStatus"></small></aside>
+ <footer class="atlas-footer"><button id="resume">继续旅程 →</button><nav id="regionNav" aria-label="八个棋局区域"></nav></footer>
+ <section id="playHUD" hidden aria-label="棋局操作"><div id="gameMount"></div></section><p id="viewHint" class="view-hint"></p>
  <section id="loading" class="atlas-loading" aria-live="polite"><div class="loading-sigil">G</div><p>ASSEMBLING THE EIGHT DOMAINS</p><h2>法则，刻入世界。</h2><span id="loadStatus">正在展开羊皮纸地图…</span></section>
- <div id="mapFallback" hidden><p>地图暂时无法显示，仍可选择区域进入棋局。</p></div>
-<aside id="gamePanel" hidden aria-labelledby="gameTitle"><header class="board-header"><div><p class="smallcaps" id="gameEyebrow">THE FIRST GATE</p><h2 id="gameTitle">初始之门 · 2 × 2</h2></div><button id="closeGame" aria-label="收起棋局">收起棋局 ↗</button></header><div id="gameMount" class="game-mount"></div></aside>
+
 </main>
 <div id="toast" role="status" hidden></div>
 <script>window.CourseLanguage={language:'zh'};</script>

@@ -80,7 +80,13 @@
     return {kind:values.every(Boolean)?'complete':'partial',checked,filled:values.filter(Boolean).length};
   }
   const deduction=(values,preferred)=>forced(values,preferred);
-  const model={initial,inspect,deduction,product,level,puzzle,completeForced};
+  function applySkill(values,kind){
+    const n=Math.sqrt(values.length),out=[...values],givens=initial(n),changed=[],conflicts=[];
+    if(kind==='identity'){for(let x=1;x<=n;x++)for(const i of [(n-1)*n+x-1,(x-1)*n+n-1]){if(!givens[i]&&out[i]!==x){out[i]=x;changed.push(i);}}}
+    if(kind==='inverse'){values.forEach((v,i)=>{if(v!==n)return;const target=(i%n)*n+Math.floor(i/n);if(out[target]&&out[target]!==n)conflicts.push(target);else if(!out[target]&&!givens[target]){out[target]=n;changed.push(target);}});}
+    return conflicts.length?{values:[...values],changed:[],conflicts}:{values:out,changed:[...new Set(changed)],conflicts:[]};
+  }
+  const model={initial,inspect,deduction,product,level,puzzle,completeForced,applySkill};
   if(typeof module!=='undefined'&&module.exports)module.exports=model;
   if(typeof window==='undefined')return;
   window.AssociativitySudokuModel=model;
@@ -117,13 +123,13 @@
     function draw(focusCell=false){
       if(!root.isConnected){dispose();return;}
       const r=Math.floor(selected/N),c=selected%N,filled=values.filter(Boolean).length;
-      const cards=[['identity',t('单位元','Identity'),t(`将单位元 ${N} 标红`,`Mark identity ${N} in red`)],['inverse',t('逆元','Inverses'),t(`寻找乘积为 ${N} 的格子`,`Find products equal to ${N}`)],['cancellation',t('消去律','Cancellation'),t('检查当前行与列','Inspect the selected row/column')],['associativity',t('结合律','Associativity'),t('沿两条路径推出新格','Follow two paths to a new entry')]];
+      const cards=options.actionSkills?[["identity",t('单位','Identity'),t('填满单位元所在行和列','Fill the identity row and column')],["inverse",t('逆','Inverse'),t('已知左逆，补出对称位置的右逆','Mirror known left inverses to right inverses')]]:[['identity',t('单位元','Identity'),t(`将单位元 ${N} 标红`,`Mark identity ${N} in red`)],['inverse',t('逆元','Inverses'),t(`寻找乘积为 ${N} 的格子`,`Find products equal to ${N}`)],['cancellation',t('消去律','Cancellation'),t('检查当前行与列','Inspect the selected row/column')],['associativity',t('结合律','Associativity'),t('沿两条路径推出新格','Follow two paths to a new entry')]];
       const cardNote=skill==='identity'?t(`本关单位元是 ${N}。只将数字 ${N} 标红，网格背景保持不变。其单位元性质由本关的唯一补全证明确定。`,`The identity is ${N}. Only the digit ${N} turns red; cell backgrounds stay unchanged. Its identity property follows from the unique-completion proof for this level.`):
         skill==='inverse'?t(`标出已填且乘积为单位元 ${N} 的数字；完整表中，第 x 行的这一个列标就是 x 的逆元。`,`Marked entries have product equal to the identity ${N}. In the completed table, that column label in row x is the inverse of x.`):
         skill==='cancellation'?t('所选格子的行和列已标出。每行无重复对应左消去律，每列无重复对应右消去律。','The selected row and column are highlighted. Distinct row entries encode left cancellation; distinct column entries encode right cancellation.'):
         skill==='associativity'?t('用 (a·b)·c = a·(b·c) 连接四个格子。先算括号，不可交换因子。','Connect four cells using (a·b)·c = a·(b·c). Evaluate the parentheses first; do not swap factors.'):t('选择技能卡，查看它在乘法表中的含义。','Choose a skill card to see its meaning in the table.');
       root.innerHTML=`<nav class="sudoku-levels" ${options.fixedLevel?'hidden':''} aria-label="${t('选择关卡','Choose level')}">${Array.from({length:8},(_,i)=>i+2).map(n=>`<button type="button" data-level="${n}" aria-pressed="${N===n}">${n}×${n}${completed.has(n)?' ✓':''}</button>`).join('')}</nav><div class="sudoku-intro"><p>${N} × ${N} · ${t('拉丁方数独','Latin-square puzzle')}</p><span>${filled}/${N*N}</span></div><p class="sudoku-rules">${t(`填入 1—${N}，每行每列各出现一次，并满足结合律。没有宫格规则。${N===2?'本关先用行列无重复补出最后一格。':'线索和空缺分散在表中，结合行列条件与结合律逐格推导。'}`,`Enter 1–${N} once in each row and column, with associativity. No subgrid rule. ${N===2?'Start by completing the last cell using no repetitions.':'Clues and blanks are scattered; combine row/column rules with associativity.'}`)}</p>
-      <div class="sudoku-cards">${cards.map(([id,title,desc])=>`<button type="button" data-skill="${id}" ${id==='identity'&&identityLocked()?'disabled':''} aria-pressed="${skill===id}"><strong>${title}</strong><span>${id==='identity'&&identityLocked()?t('通关 3×3 后解锁','Complete 3×3 to unlock'):desc}</span></button>`).join('')}</div><p class="sudoku-card-note">${cardNote}</p>
+      <div class="sudoku-cards">${cards.map(([id,title,desc])=>`<button type="button" data-skill="${id}" title="${desc}" ${id==='identity'&&identityLocked()?'disabled':''} aria-pressed="${skill===id}"><strong>${title}</strong><span>${id==='identity'&&identityLocked()?t('通关 3×3 后解锁','Complete 3×3 to unlock'):desc}</span></button>`).join('')}</div><p class="sudoku-card-note">${cardNote}</p>
       <div class="sudoku-play"><div class="sudoku-table-wrap"><table class="sudoku-table" style="--sudoku-size:${N}"><caption>${t('行元素 × 列元素；浅色数字为给定线索','Row factor × column factor; muted numbers are given clues')}</caption><thead><tr><th scope="col">·</th>${Array.from({length:N},(_,i)=>`<th scope="col" class="${skill==='identity'&&i===N-1?'identity-mark':''}">${i+1}</th>`).join('')}</tr></thead><tbody>${Array.from({length:N},(_,row)=>`<tr><th scope="row" class="${skill==='identity'&&row===N-1?'identity-mark':''}">${row+1}</th>${Array.from({length:N},(_,col)=>{
         const i=index(row,col),v=values[i],classes=[given(i)?'given':'',i===selected?'selected':'',skill==='identity'&&v===N?'identity-mark':'',skill==='inverse'&&v===N?'inverse-mark':'',skill==='cancellation'&&(row===r||col===c)?'cancel-mark':'',skill==='associativity'&&hint?.cells.includes(i)?'path-mark':'',hint?.target===i?'target-mark':'',issue?.cells?.includes(i)?'error-mark':''].filter(Boolean).join(' ');
         return `<td><button type="button" data-cell="${i}" class="${classes}" tabindex="${i===selected?0:-1}" aria-label="${t(`第 ${row+1} 行，第 ${col+1} 列；${v||'空白'}${given(i)?'，已知':''}`,`Row ${row+1}, column ${col+1}; ${v||'blank'}${given(i)?', given':''}`)}" aria-pressed="${i===selected}">${v||'<span aria-hidden="true">·</span>'}</button></td>`;
@@ -145,7 +151,7 @@
       if(button.dataset.level){N=+button.dataset.level;values=initial(N);selected=initial(N).findIndex(v=>!v);skill='';hint=null;issue=null;message='';proofOpen=false;draw();return;}
       if(button.dataset.cell!==undefined){selected=+button.dataset.cell;draw(true);return;}
       if(button.dataset.digit){enter(+button.dataset.digit);return;}
-      if(button.dataset.skill){if(button.dataset.skill==='identity'&&identityLocked())return;skill=skill===button.dataset.skill?'':button.dataset.skill;hint=null;issue=null;message='';if(skill==='associativity')useHint();draw();return;}
+      if(button.dataset.skill){if(button.dataset.skill==='identity'&&identityLocked())return;if(options.actionSkills){skill=button.dataset.skill;const result=applySkill(values,skill);hint=null;issue=null;if(result.conflicts.length){issue={cells:result.conflicts};message=t('对称位置已有冲突，请先检查这些数字。','A transposed cell conflicts. Check those entries first.');}else{values=result.values;changed();message=skill==='identity'?t(`单位元为 ${N}：已填满其所在行和列。`,`Identity ${N}: its row and column are complete.`):t(`由 ba=e ⇒ ab=e，补入 ${result.changed.length} 个对称位置。`,`From ba=e ⇒ ab=e, filled ${result.changed.length} transposed cells.`);if(values.every(Boolean)){issue=inspect(values);message=feedback(issue);}}draw();return;}skill=skill===button.dataset.skill?'':button.dataset.skill;hint=null;issue=null;message='';if(skill==='associativity')useHint();draw();return;}
       switch(button.dataset.action){
         case 'erase':enter(0);return;
         case 'check':issue=inspect(values);message=feedback(issue);break;

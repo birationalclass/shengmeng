@@ -1,34 +1,40 @@
 import * as T from '../3d/vendor/three.module.js';
+import {landmark} from './landmarks.mjs?v=journey4';
+import {THEMES,plaqueOffset} from './journey.mjs?v=journey4';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
 // Hit targets are projected from these world coordinates, so orbiting never detaches input.
 export function installBoards(a){
- const originals=[null,a.pagoda,a.manor,a.cathedral,a.crystal,a.ai,null,null];
- originals.forEach(g=>g?.removeFromParent());
- a.boards=[];
- a.platforms.forEach((p,i)=>{
-  p.clear();const n=i+2,M=a.materials;
-  a.box(p,[21,.65,21],[0,-.48,0],M.dark);a.box(p,[20.65,.16,20.65],[0,-.08,0],M.brass);a.box(p,[20.35,.12,20.35],[0,.05,0],M.paving);
-  // Broad clear central court; buildings never occupy the board footprint.
-  a.box(p,[11.8,.52,11.8],[0,.40,0],M.wood);a.box(p,[11.5,.065,11.5],[0,.69,0],M.brass);a.box(p,[11.36,.07,11.36],[0,.75,0],M.wood);
-  for(const x of [-5.73,5.73])for(const z of [-5.73,5.73])a.cylinder(p,.06,.035,[x,.69,z],M.gold);
+ const originals=[null,a.pagoda,a.manor,a.cathedral,a.crystal,a.ai,null,null];originals.forEach(g=>g?.removeFromParent());a.boards=[];a.disks=[];
+ a.platforms.forEach((base,i)=>{
+  base.clear();const n=i+2,M=a.materials,theme=THEMES[i],trim=M.brass.clone(),frame=M.wood.clone();trim.color.setHex(theme.rim);frame.color.setHex(theme.frame);
+  a.cylinder(base,13.05,.62,[0,-.48,0],M.dark);a.cylinder(base,12.9,.15,[0,-.09,0],trim);const disk=a.cylinder(base,12.72,.12,[0,.05,0],M.paving);disk.userData.region=i;a.disks.push(disk);
+  const ring=a.torus(base,12.73,.065,[0,.13,0],trim.clone());a.markers[i]=ring;
+  for(let k=0;k<96;k++){const q=k*Math.PI/48;a.box(base,[.055,.035,k%4===0?.45:.18],[Math.sin(q)*12.35,.13,Math.cos(q)*12.35],trim).rotation.y=q;}
+  const p=new T.Group();base.add(p);p.visible=false;
+  a.box(p,[11.8,.52,11.8],[0,.40,0],frame);a.box(p,[11.5,.065,11.5],[0,.69,0],trim);a.box(p,[11.36,.07,11.36],[0,.75,0],frame);
+  // Corner fixtures and ornament vary with the region, while the grid stays clear.
+  for(const x of [-5.7,5.7])for(const z of [-5.7,5.7]){
+   if(i%3===0){a.cylinder(p,.13,.08,[x,.72,z],trim);a.torus(p,.20,.025,[x,.79,z],trim);}
+   else if(i%3===1){const gem=a.mesh(p,new T.OctahedronGeometry(.17),trim,[x,.79,z]);gem.rotation.y=Math.PI/4;}
+   else{a.box(p,[.39,.08,.13],[x,.74,z],trim);a.box(p,[.13,.08,.39],[x,.74,z],trim);}
+  }
+  for(let k=0;k<n*4;k++){const q=k*Math.PI*2/(n*4);a.cylinder(p,.035,.06,[Math.sin(q)*6.45,.23,Math.cos(q)*6.45],trim);}
   const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,a.renderer.capabilities.getMaxAnisotropy());
-  const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:.81,metalness:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;p.add(mesh);
-  a.boards.push({canvas,texture,mesh,n});
-  // Engraved perimeter trim and alternating masonry joints.
-  for(const z of [-10,10])a.box(p,[20,.045,.065],[0,.14,z],M.gold);
-  for(const x of [-10,10])a.box(p,[.065,.045,20],[x,.14,0],M.gold);
-  for(let k=0;k<20;k++)for(const side of [-1,1])a.box(p,[.45,.04,.06],[-9.5+k,.15,side*9.8],M.brass);
-  const ring=a.torus(p,10.4,.055,[0,-.15,0],M.gold.clone());a.markers[i]=ring;
-  buildSettlement(a,p,i,originals[i]);
-  a.makeNameplate(p,i);const plaque=p.children.at(-1);plaque.position.set(0,.23,10);
+  const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;p.add(mesh);
+  const boardObjects=new Set();p.traverse(o=>{if(o.isMesh)boardObjects.add(o);});buildSettlement(a,p,i,originals[i]);a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
+  const parts=[];p.updateMatrixWorld(true);let serial=0;
+  // Small meshes rise course by course; a roof follows its supporting walls.
+  p.traverse(o=>{if(!o.isMesh)return;const point=o.getWorldPosition(new T.Vector3());base.worldToLocal(point);const board=boardObjects.has(o);const delay=board?4.1+Math.max(0,point.y)*.15:.1+Math.min(2.4,Math.max(0,point.y)*.38)+(serial++%5)*.06;parts.push({object:o,position:o.position.clone(),scale:o.scale.clone(),delay,duration:board?1.05:1.1,lift:board?.85:1.6});});
+  const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;const gx=glowCanvas.getContext('2d'),grad=gx.createRadialGradient(64,64,28,64,64,64);grad.addColorStop(0,'#ffe4a580');grad.addColorStop(.6,'#ffe4a566');grad.addColorStop(1,'#ffe4a500');gx.fillStyle=grad;gx.fillRect(0,0,128,128);const glow=new T.Mesh(new T.PlaneGeometry(18,18),new T.MeshBasicMaterial({map:new T.CanvasTexture(glowCanvas),transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}));glow.rotation.x=-Math.PI/2;glow.position.y=.18;glow.visible=false;p.add(glow);mesh.material.emissiveMap=texture;
+  a.boards.push({canvas,texture,mesh,n,content:p,parts,theme,glow});
  });
- a.hitMeshes=a.boards.map(b=>b.mesh);
+ a.hitMeshes=a.disks;
 }
 function buildSettlement(a,p,i,original){
- const M=a.materials;
+ const M=a.materials;let houseIndex=0;
  function windows(g,w,h,z,columns=3){for(let f=0;f<Math.ceil(h/1.25);f++)for(let j=0;j<columns;j++){const x=(j-(columns-1)/2)*w/(columns+1),y=.65+f*1.14;if(y>h-.2)continue;a.box(g,[.37,.63,.10],[x,y,z],M.paper);a.box(g,[.27,.5,.025],[x,y,z+.065],M.dark);a.box(g,[.023,.5,.025],[x,y,z+.09],M.brass);a.box(g,[.28,.022,.025],[x,y,z+.09],M.brass);}}
- function house(x,z,w=2,h=1.6,chinese=false){const g=new T.Group();p.add(g);g.position.set(x,.14,z);a.box(g,[w+.32,.18,2.1],[0,.12,0],M.stone);a.box(g,[w,h,1.8],[0,h/2+.2,0],chinese?M.paper:M.stone);windows(g,w,h,.93,Math.max(2,Math.floor(w)));for(const sign of [-1,1]){const roof=a.box(g,[w*.65,.12,2.35],[sign*w*.26,h+.51,0],chinese?M.jade:M.dark);roof.rotation.z=-sign*.45;for(let k=-6;k<=6;k++)a.rod(g,[0,h+.77,k*.18],[sign*w*.6,h+.25,k*.18],.022,M.brass);}for(const x of [-w*.45,w*.45])a.box(g,[.085,h,.10],[x,h/2+.2,.96],M.wood);a.box(g,[w,.07,.11],[0,h+.14,.96],M.wood);return g;}
+ function house(x,z,w=2,h=1.6,chinese=false){const variants=[[],['pavilion','market'],['windmill','greenhouse'],['clocktower','pavilion'],['clocktower','gatehouse','market','well','greenhouse','market','pavilion','well'],['observatory','greenhouse','clocktower','pavilion'],[],['observatory','pavilion','greenhouse','clocktower','pavilion']][i],type=variants[houseIndex++];if(type)return landmark(a,p,type,x,z,type==='windmill'?.82:.95);const g=new T.Group();p.add(g);g.position.set(x,.14,z);a.box(g,[w+.32,.18,2.1],[0,.12,0],M.stone);a.box(g,[w,h,1.8],[0,h/2+.2,0],chinese?M.paper:M.stone);windows(g,w,h,.93,Math.max(2,Math.floor(w)));for(const sign of [-1,1]){const roof=a.box(g,[w*.65,.12,2.35],[sign*w*.26,h+.51,0],chinese?M.jade:M.dark);roof.rotation.z=-sign*.45;for(let k=-6;k<=6;k++)a.rod(g,[0,h+.77,k*.18],[sign*w*.6,h+.25,k*.18],.022,M.brass);}for(const x of [-w*.45,w*.45])a.box(g,[.085,h,.10],[x,h/2+.2,.96],M.wood);a.box(g,[w,.07,.11],[0,h+.14,.96],M.wood);return g;}
  function tower(x,z,h,spire=true){const g=new T.Group();g.position.set(x,.15,z);p.add(g);a.cylinder(g,.93,.2,[0,.13,0],M.stone);a.cylinder(g,.77,h,[0,h/2+.25,0],M.stone);for(let y=1;y<h;y+=1.1){a.torus(g,.80,.045,[0,y,0],M.paper);for(const side of [-1,1])a.box(g,[.22,.53,.05],[side*.25,y-.13,.744],M.dark);}a.cylinder(g,.96,.2,[0,h+.33,0],M.paper);if(spire){a.mesh(g,new T.ConeGeometry(1.05,1.7,8),M.jade,[0,h+1.27,0]);a.rod(g,[0,h+2.12,0],[0,h+2.65,0],.04,M.gold);}else for(let k=0;k<8;k++){const q=k*Math.PI/4;a.box(g,[.23,.42,.23],[Math.sin(q)*.83,h+.63,Math.cos(q)*.83],M.stone);}return g;}
  function arcade(z,span,count){for(let k=0;k<count;k++){const x=-span/2+k*span/(count-1);a.cylinder(p,.15,1.85,[x,1.18,z],M.paper);a.box(p,[.48,.13,.5],[x,.28,z],M.stone);a.box(p,[.40,.13,.42],[x,2.14,z],M.brass);}a.box(p,[span+.55,.23,.65],[0,2.32,z],M.stone);for(let k=0;k<count-1;k++){const x=-span/2+(k+.5)*span/(count-1);const arch=new T.Mesh(new T.TorusGeometry(span/(count-1)*.45,.08,5,16,Math.PI),M.paper);arch.position.set(x,1.6,z);p.add(arch);}}
  function tree(x,z,h=1.8){a.cylinder(p,.10,h,[x,h/2+.2,z],M.wood);a.mesh(p,new T.IcosahedronGeometry(.72,1),M.jade,[x,h+.2,z]);}
@@ -40,19 +46,26 @@ function buildSettlement(a,p,i,original){
  if(i===5){tower(0,-8,5.2);for(const x of [-7.7,7.7]){tower(x,-7.7,3.4);house(x,-2.4,2.3,2.5);house(x,2,2.1,2);tree(x,6.5);}arcade(-8,11,8);}
  if(i===6){for(const x of [-8,8])for(const z of [-8,-2,5.8])tower(x,z,z===-8?4.3:2.8,false);for(const x of [-8,8]){a.box(p,[.5,1.7,12],[x,1,-.7],M.stone);for(let z=-6;z<5;z+=.65)a.box(p,[.6,.33,.32],[x,2.03,z],M.paper);}a.box(p,[13,1.5,.5],[0,.92,-8],M.stone);house(0,-8,4.7,3.3);for(const x of [-4,4])tower(x,-8,3.4);}
  if(i===7){house(0,-8,5,4.2,true);for(const x of [-7.8,7.8]){tower(x,-8,5);house(x,-3,2.5,3.1,true);tower(x,2.2,3.8);house(x,6.6,2.4,2,true);}arcade(-6.8,10,10);for(const x of [-4.5,4.5]){tower(x,-8,3.5);a.rod(p,[x,4,-8],[0,5.6,-8],.06,M.gold);}}
+ // A low public monument complements the residential, sacred and civic buildings.
+ const centerpiece=['well','fountain','fountain','well','fountain','observatory','gatehouse','fountain'][i];landmark(a,p,centerpiece,0,9.15,i===5?.58:i===6?.68:.72);
+ if(i===0){landmark(a,p,'market',-8,0,.8);landmark(a,p,'pavilion',8,0,.8);}
+ if(i===1)landmark(a,p,'obelisk',-5,-9.3,.65);
+ if(i>=6){landmark(a,p,'market',-4.5,8.2,.7);landmark(a,p,'well',4.5,8.2,.7);}
  // Lanterns and bracketed exposed clockwork sit outside the playable square.
  for(const x of [-6.65,6.65])for(const z of [-6.65,6.65]){a.box(p,[.28,.18,.28],[x,.25,z],M.stone);a.cylinder(p,.045,.60,[x,.63,z],M.brass);a.box(p,[.20,.25,.20],[x,1.03,z],M.paper);a.mesh(p,new T.ConeGeometry(.2,.17,4),M.dark,[x,1.24,z]);}
  if(i>1){a.box(p,[1.6,.13,1.6],[-8,.25,8.2],M.dark);a.cylinder(p,.13,.25,[-8,.40,8.2]);a.gear(p,.61,18,[-8,.57,8.2],.13);}
 }
 export function paintBoard(a,index,state){
  const b=a.boards[index],{n,canvas,texture}=b,x=canvas.getContext('2d'),step=(SIZE-PAD*2)/(n+1),values=state.values;
- x.fillStyle='#30271d';x.fillRect(0,0,SIZE,SIZE);
- for(let k=0;k<1000;k++){x.strokeStyle=k%2?'#c3a26905':'#10090520';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);x.bezierCurveTo(360,y-5,800,y+5,SIZE,y);x.stroke();}
+ const theme=b.theme;x.fillStyle=theme.paper;x.fillRect(0,0,SIZE,SIZE);
+ for(let k=0;k<500;k++){x.strokeStyle=k%2?'#c3a26908':'#10090516';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);const wave=index===1||index===2?80:4;x.bezierCurveTo(360,y-wave*Math.sin(k),800,y+wave,SIZE,y);x.stroke();}
+ if(index===5){for(let k=0;k<90;k++){const px=(k*167)%SIZE,py=(k*233)%SIZE;x.fillStyle='#d2d9ee28';x.fillRect(px,py,1.6,1.6);}}
+ x.strokeStyle=theme.line;x.lineWidth=2;for(const inset of [12,22])x.strokeRect(inset,inset,SIZE-inset*2,SIZE-inset*2);
  const cell=(r,c)=>[PAD+(c+1)*step,PAD+(r+1)*step];
  x.textAlign='center';x.textBaseline='middle';x.font=`${step*.43}px Atlas,Georgia,serif`;
- for(let j=0;j<n;j++){x.fillStyle=state.skill==='identity'&&j===n-1?'#f18777':'#c5a365';x.fillText(j+1,PAD+(j+1.5)*step,PAD+step*.5);x.fillText(j+1,PAD+step*.5,PAD+(j+1.5)*step);}
- for(let r=0;r<n;r++)for(let c=0;c<n;c++){const k=r*n+c,[px,py]=cell(r,c),classes=state.cells?.[k]?.classes||'';x.lineWidth=1.6;x.strokeStyle='#b493555e';x.strokeRect(px,py,step,step);const accent=classes.includes('error-mark')?'#f18777':classes.includes('path-mark')?'#e3c276':classes.includes('cancel-mark')?'#84c4ab':null;if(k===state.selected||accent){x.strokeStyle=accent||'#efd095';x.lineWidth=k===state.selected?3.5:2;x.strokeRect(px+4,py+4,step-8,step-8);}
- x.fillStyle=classes.includes('identity-mark')?'#f18777':classes.includes('inverse-mark')?'#baa0e7':accent||(classes.includes('given')?'#bda781':'#f6e8c4');x.font=`${step*.59}px Atlas,Georgia,serif`;if(values[k]){x.shadowColor='#000';x.shadowOffsetY=2;x.shadowBlur=1;x.fillText(values[k],px+step/2,py+step*.52);x.shadowOffsetY=0;x.shadowBlur=0;}else{x.fillStyle='#8d785555';x.beginPath();x.arc(px+step/2,py+step/2,2.2,0,Math.PI*2);x.fill();}}
+ for(let j=0;j<n;j++){x.fillStyle=state.skill==='identity'&&j===n-1?'#f18777':theme.ink;x.fillText(j+1,PAD+(j+1.5)*step,PAD+step*.5);x.fillText(j+1,PAD+step*.5,PAD+(j+1.5)*step);}
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){const k=r*n+c,[px,py]=cell(r,c),classes=state.cells?.[k]?.classes||'';x.lineWidth=1.6;x.strokeStyle=theme.line;x.strokeRect(px,py,step,step);const accent=classes.includes('error-mark')?'#f18777':classes.includes('path-mark')?'#e3c276':classes.includes('cancel-mark')?'#84c4ab':null;if(k===state.selected||accent){x.strokeStyle=accent||(index===2?'#58442b':'#efd095');x.lineWidth=k===state.selected?3.5:2;x.strokeRect(px+4,py+4,step-8,step-8);}
+ x.fillStyle=classes.includes('identity-mark')?'#f18777':classes.includes('inverse-mark')?'#baa0e7':accent||(classes.includes('given')?theme.given:theme.ink);const fixed=classes.includes('given');x.font=`${fixed?'700':'italic 400'} ${step*(fixed?.57:.61)}px ${fixed?'Atlas,Georgia':'Georgia'},serif`;if(values[k]){if(fixed){x.lineWidth=1.8;x.strokeStyle=index===2?'#332a2070':'#100c08a0';x.strokeText(values[k],px+step/2,py+step*.52+1.7);x.shadowColor=index===2?'#fff8':'#000';x.shadowOffsetY=1;x.shadowBlur=1;}else if(!classes.includes('identity-mark')&&!classes.includes('inverse-mark')&&!accent)x.fillStyle=index===2?'#305566':'#c1e0e8';x.fillText(values[k],px+step/2,py+step*.52);x.shadowOffsetY=0;x.shadowBlur=0;if(fixed){x.strokeStyle=index===2?'#514b3e55':'#e2d2a34a';x.lineWidth=1;x.beginPath();x.moveTo(px+step*.34,py+step*.83);x.lineTo(px+step*.66,py+step*.83);x.stroke();}}else{x.fillStyle='#8d785555';x.beginPath();x.arc(px+step/2,py+step/2,2.2,0,Math.PI*2);x.fill();}}
  texture.needsUpdate=true;
 }
 export function cellPoint(a,index,k){const n=index+2,step=(SIZE-PAD*2)/(n+1),px=PAD+(k%n+1.5)*step,py=PAD+(Math.floor(k/n)+1.5)*step;return a.platforms[index].localToWorld(new T.Vector3((px/SIZE-.5)*WIDTH,.805,(py/SIZE-.5)*WIDTH));}
