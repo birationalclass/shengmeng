@@ -1,5 +1,5 @@
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=nameplate1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=nameplate1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=living1';
 import {THEMES} from './journey.mjs?v=journey4';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}

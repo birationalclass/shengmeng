@@ -1,5 +1,6 @@
 import * as T from '../3d/vendor/three.module.js';
-import {landmark} from './landmarks.mjs?v=journey4';
+import {landmark} from './landmarks.mjs?v=living1';
+import {greatWall} from './great-wall.mjs?v=living1';
 import {THEMES,plaqueOffset} from './journey.mjs?v=nameplate1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
@@ -45,7 +46,7 @@ function buildSettlement(a,p,i,original){
  if(i===4){arcade(-8,13,9);house(-7,-8,2.7,3);house(7,-8,2.7,3);for(const x of [-8,8])for(const z of [-3,2,6])house(x,z,2.2,1.5+(z===2?.65:0));const dial=new T.Group();p.add(dial);dial.position.set(0,2.58,-8);a.gear(dial,.7,20,[0,0,0],.15);}
  if(i===5){tower(0,-8,5.2);for(const x of [-7.7,7.7]){tower(x,-7.7,3.4);house(x,-2.4,2.3,2.5);house(x,2,2.1,2);tree(x,6.5);}arcade(-8,11,8);}
  if(i===6){for(const x of [-8,8])for(const z of [-8,-2,5.8])tower(x,z,z===-8?4.3:2.8,false);for(const x of [-8,8]){a.box(p,[.5,1.7,12],[x,1,-.7],M.stone);for(let z=-6;z<5;z+=.65)a.box(p,[.6,.33,.32],[x,2.03,z],M.paper);}a.box(p,[13,1.5,.5],[0,.92,-8],M.stone);house(0,-8,4.7,3.3);for(const x of [-4,4])tower(x,-8,3.4);}
- if(i===7){house(0,-8,5,4.2,true);for(const x of [-7.8,7.8]){tower(x,-8,5);house(x,-3,2.5,3.1,true);tower(x,2.2,3.8);house(x,6.6,2.4,2,true);}arcade(-6.8,10,10);for(const x of [-4.5,4.5]){tower(x,-8,3.5);a.rod(p,[x,4,-8],[0,5.6,-8],.06,M.gold);}}
+ if(i===7){greatWall(a,p);landmark(a,p,'pavilion',-8.4,1.8,1.05);landmark(a,p,'pavilion',8.4,1.8,1.05);landmark(a,p,'observatory',-8,6.7,.85);landmark(a,p,'greenhouse',8,6.7,.95);for(const x of [-7,7])tree(x,-3.4,1.8);}
  // A low public monument complements the residential, sacred and civic buildings.
  const centerpiece=['well','fountain','fountain','well','fountain','observatory','gatehouse','fountain'][i];landmark(a,p,centerpiece,0,9.15,i===5?.58:i===6?.68:.72);
  if(i===0){landmark(a,p,'market',-8,0,.8);landmark(a,p,'pavilion',8,0,.8);}

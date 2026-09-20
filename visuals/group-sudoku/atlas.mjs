@@ -1,6 +1,7 @@
 import * as T from '../3d/vendor/three.module.js';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=nameplate1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=living1';
 import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=nameplate1';
+import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
 export const REGIONS=[
@@ -80,7 +81,7 @@ export class SudokuAtlas extends AtlasScene{
   for(const sign of [-1,1]){const roof=this.box(p,[4.1,.16,7],[sign*1.75,5.05,0],this.materials.jade);roof.rotation.z=-sign*.42;for(let k=-12;k<=12;k++)this.rod(p,[0,5.82,k*.27],[sign*3.6,4.29,k*.27],.04,this.materials.brass);}
   for(let k=0;k<9;k++)this.box(p,[.8,.75,.8],[(k%3-1)*1.5,1.1,(Math.floor(k/3)-1)*1.5],this.materials.dark);
  }
- playPose(index){const [x,z]=PLACES[index],aim=V(x,.5,z+7.5),pos=V(x,34,z+26);pos.sub(aim).multiplyScalar(Math.max(1.15,1.45/this.camera.aspect)).add(aim);return {pos,aim};}
+ playPose(index){const [x,z]=PLACES[index],aim=V(x,.5,z+7.5),pos=V(x,34,z+26);pos.sub(aim).multiplyScalar(Math.max(index===7?1.30:1.15,1.45/this.camera.aspect)).add(aim);return {pos,aim};}
  focus(index){
   this.manual=null;this.touring=false;this.selected=index;this.fromPos=this.camera.position.clone();this.fromAim=this.currentTarget.clone();this.flight=0;
   if(index<0){this.toPos=V(3,126,141);this.toAim=V(0,0,0);}else{const pose=this.playPose(index);this.toPos=pose.pos;this.toAim=pose.aim;}
@@ -112,7 +113,7 @@ export class SudokuAtlas extends AtlasScene{
  updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
  updateWorld(t,dt,reduced=false){
   for(const {object,speed}of this.rotating)object.rotation.y=reduced?0:t*speed;
-  for(const {object,axis,speed} of this.detailMotion||[])object.rotation[axis]=reduced?0:t*speed;
+  updateArchitecturalMotion(this.detailMotion,t,reduced);
   this.dust.rotation.y=reduced?0:t*.002;
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}
