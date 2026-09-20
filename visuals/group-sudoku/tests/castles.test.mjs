@@ -12,4 +12,13 @@ test('owls keep flying after static batching, and reduced motion fixes body and 
  updateOwls(a.owls,2,false);const before=a.owls.map(o=>o.root.position.toArray());updateOwls(a.owls,9,false);a.owls.forEach((o,i)=>assert.notDeepEqual(o.root.position.toArray(),before[i]));
  updateOwls(a.owls,20,true);const frozen=a.owls.map(o=>[...o.root.position.toArray(),o.body.rotation.z,...o.wings.map(w=>w.rotation.z)]);updateOwls(a.owls,100,true);a.owls.forEach((o,i)=>assert.deepEqual([...o.root.position.toArray(),o.body.rotation.z,...o.wings.map(w=>w.rotation.z)],frozen[i]));
 });
-test('owl paths stay outside the board and clear the castle roof envelope',()=>{for(let t=0;t<180;t+=.1)for(let i=0;i<3;i++){const p=owlPose(t,i);assert.ok(Object.values(p).every(Number.isFinite));assert.ok(Math.hypot(p.x,p.z)>10.6);assert.ok(p.y>10);if(p.z< -5)assert.ok(p.y>11.5);}});
+test('owls fly low outside the castle and never cover the board in the default playing view',()=>{
+ const camera=new T.PerspectiveCamera(40,1280/720,.1,1000);camera.position.set(0,36.65,33.975);camera.lookAt(0,1,3.5);camera.updateMatrixWorld(true);
+ const bounds=(points)=>{const ps=points.map(p=>p.project(camera));return {left:Math.min(...ps.map(p=>p.x)),right:Math.max(...ps.map(p=>p.x)),bottom:Math.min(...ps.map(p=>p.y)),top:Math.max(...ps.map(p=>p.y))};};
+ const board=bounds([-5.9,5.9].flatMap(x=>[-5.9,5.9].map(z=>new T.Vector3(x,1.595,z))));
+ for(let t=0;t<180;t+=.1)for(let i=0;i<3;i++){
+  const p=owlPose(t,i);assert.ok(Object.values(p).every(Number.isFinite));assert.ok(Math.hypot(p.x,p.z)>=13.8-1e-9);assert.ok(p.y>=2.55&&p.y<=3.05);
+  const bird=bounds([-1.7,1.7].flatMap(dx=>[-.7,.7].flatMap(dy=>[-1.7,1.7].map(dz=>new T.Vector3(p.x+dx,p.y+dy,p.z+dz)))));
+  assert.ok(bird.left>board.right||bird.right<board.left||bird.bottom>board.top||bird.top<board.bottom,'The owl silhouette must clear the projected board');
+ }
+});

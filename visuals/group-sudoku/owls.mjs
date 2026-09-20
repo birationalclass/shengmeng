@@ -2,9 +2,9 @@ import * as T from '../3d/vendor/three.module.js';
 const TAU=Math.PI*2;
 export function owlPose(time,index=0){
  const q=time*(.14+index*.013)+index*TAU/3;
- // An outer circuit and a high return keep both the towers and board clear.
- return {x:Math.sin(q)*11.3,z:Math.cos(q)*10.7,y:10.8+Math.max(0,-Math.cos(q))*2.3+Math.sin(q*2+index)*.30,
-  heading:Math.atan2(Math.cos(q)*11.3,-Math.sin(q)*10.7),bank:Math.sin(q)*.13,
+ // Low flight outside the castle perimeter also clears the board in projection.
+ return {x:Math.sin(q)*14.4,z:Math.cos(q)*13.8,y:2.8+Math.sin(q*2+index)*.25,
+  heading:Math.atan2(Math.cos(q)*14.4,-Math.sin(q)*13.8),bank:Math.sin(q)*.13,
   flap:Math.sin(time*5.8+index*1.8)*.52*(Math.sin(time*.43+index)>.1?1:.12)};
 }
 export function installOwls(a,p){

@@ -1,6 +1,6 @@
 import * as T from '../3d/vendor/three.module.js';
-import {masonryTexture} from './castle-materials.mjs?v=castles1';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=castles1';
+import {masonryTexture} from './castle-materials.mjs?v=owls-low1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=owls-low1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=enchanted1';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
