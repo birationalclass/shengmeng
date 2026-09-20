@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#201c15"><meta name="description" content="群数独：羊皮纸机械地图上的八座城邦，从2×2到9×9，用行列条件与结合律补全群的乘法表。"><title>群数独 · 八域之书 · Sheng Meng</title><link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.css?v=journey4"><link rel="stylesheet" href="style.css?v=journey4"><script src="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js?v=journey4" defer></script><script type="module" src="app.mjs?v=journey4"></script></head>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#201c15"><meta name="description" content="群数独：羊皮纸机械地图上的八座城邦，从2×2到9×9，用行列条件与结合律补全群的乘法表。"><title>群数独 · 八域之书 · Sheng Meng</title><link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.css?v=journey4"><link rel="stylesheet" href="style.css?v=reset1"><script src="../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js?v=journey4" defer></script><script type="module" src="app.mjs?v=reset1"></script></head>
 <body>
 <main class="atlas" id="atlas">
  <canvas id="world" aria-label="八区域羊皮纸机械地图：拖动观察，点击区域选择关卡" tabindex="0"></canvas><div class="map-vignette" aria-hidden="true"></div>
  <header class="atlas-header"><a href="../" class="brand"><span class="brand-seal">G</span><span>SHENG MENG<small>VISUAL LAB · 群数独</small></span></a><nav><button id="overview">全图</button><button id="language" aria-label="切换到英文">EN</button><button id="settingsToggle" aria-expanded="false" aria-controls="settingsPanel">设置</button><button id="motion" aria-pressed="false">减少动态</button><button id="fullscreen" aria-label="全屏">⛶</button></nav></header>
- <section id="settingsPanel" hidden><h2>地图样式 · Map style</h2><label><input type="radio" name="mapStyle" value="parchment" checked>手绘羊皮纸 · Parchment</label><label><input type="radio" name="mapStyle" value="mechanical">机械地图 · Mechanical</label></section>
+ <section id="settingsPanel" hidden><h2>地图样式 · Map style</h2><label><input type="radio" name="mapStyle" value="parchment" checked>手绘羊皮纸 · Parchment</label><label><input type="radio" name="mapStyle" value="mechanical">机械地图 · Mechanical</label><div class="clear-local-data"><button id="clearLocalData" type="button" aria-describedby="clearDataNote">清除本地记录（Cookie）</button><p id="clearDataNote">重置通关进度、未完成棋局和地图设置，重新从 2×2 开始。</p></div></section>
  <div id="boardHits" class="board-hits" aria-label="三维乘法棋盘"></div><div id="pins" class="map-pins" aria-label="地图区域"></div>
  <section id="stageTitle" class="stage-title" hidden><p id="gameEyebrow"></p><h1 id="gameTitle"></h1><span id="stagePhase" aria-live="polite"></span></section>
  <aside class="campaign-log" aria-label="旅程进度"><p>THE EIGHT DOMAINS</p><strong id="progress">0 / 8</strong><small id="skillStatus"></small></aside>
@@ -13,6 +13,7 @@
  <section id="loading" class="atlas-loading" aria-live="polite"><div class="loading-sigil">G</div><p>ASSEMBLING THE EIGHT DOMAINS</p><h2>法则，刻入世界。</h2><span id="loadStatus">正在展开羊皮纸地图…</span></section>
 
 </main>
+<dialog id="clearDataDialog" aria-labelledby="clearDataTitle" aria-describedby="clearDataWarning"><h2 id="clearDataTitle">清除本地记录？</h2><p id="clearDataWarning">群数独的通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。此操作无法撤销。</p><div><button id="cancelClearData" type="button" autofocus>取消</button><button id="confirmClearData" type="button">确认清除</button></div></dialog>
 <div id="toast" role="status" hidden></div>
 <script>window.CourseLanguage={language:'zh'};</script>
 </body></html>

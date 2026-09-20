@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {createRequire} from 'node:module';
-import {Campaign,STORAGE_KEY} from '../campaign.mjs';
+import {Campaign,STORAGE_KEY,MAP_STYLE_KEY,clearLocalData} from '../campaign.mjs';
 const model=createRequire(import.meta.url)('../../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js');
 const full=n=>model.completeForced(model.initial(n)).values;
 const memory=()=>({value:null,getItem(){return this.value},setItem(key,value){assert.equal(key,STORAGE_KEY);this.value=value}});
@@ -36,3 +36,12 @@ test('regions unlock in sequence and replay preserves mastery',()=>{
  for(let n=2;n<=9;n++)assert.equal(c.canEnter(n),true);
  c.save(4,model.initial(4));assert.equal(c.completed.length,8);assert.equal(c.identityUnlocked,true);
 });
+
+ test('clear local data removes only group sudoku records and restores the first level',()=>{
+ const data=new Map(),storage={getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};
+ const c=new Campaign(model,storage);c.save(2,full(2));c.save(3,full(3));c.save(4,c.board(4));
+ data.set(MAP_STYLE_KEY,'mechanical');data.set('other-course-progress','keep');clearLocalData(storage);
+ assert.deepEqual([...data],[['other-course-progress','keep']]);const fresh=new Campaign(model,storage);
+ assert.equal(fresh.current,2);assert.equal(fresh.identityUnlocked,false);assert.deepEqual(fresh.completed,[]);assert.deepEqual(fresh.board(4),model.initial(4));
+ assert.doesNotThrow(()=>clearLocalData(undefined));assert.throws(()=>clearLocalData({removeItem(){throw Error('blocked')}}),/blocked/);
+ });

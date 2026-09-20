@@ -1,11 +1,11 @@
-import {Campaign} from './campaign.mjs?v=journey4';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=reset1';
 import {SudokuAtlas,REGIONS} from './atlas.mjs?v=journey4';
 import {THEMES} from './journey.mjs?v=journey4';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);
 let selected=campaign.current-2,world,game,playing=false,busy=false,boardState,last=0,time=0,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,toastTimer,mapStyle='parchment',failed=false;
-try{mapStyle=storage?.getItem('group-sudoku-map-style')||'parchment';}catch{}
+try{mapStyle=storage?.getItem(MAP_STYLE_KEY)||'parchment';}catch{}
 const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 function phase(value){busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 建筑升起 · 棋盘展开','ARRIVE · BUILD · REVEAL'):'';}
@@ -16,6 +16,8 @@ function sync(){
  $('regionNav').innerHTML=REGIONS.map((r,i)=>`<button data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-current="${selected===i}" class="${done.includes(r.n)?'complete':''}">${r.n}×${r.n}<span>${r.zh}</span></button>`).join('');
  $('pins').innerHTML=REGIONS.map((r,i)=>`<button class="map-pin ${done.includes(r.n)?'complete':''}" data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-label="${r.zh} ${r.n}×${r.n}${campaign.canEnter(r.n)?'':' 尚未解锁'}">${r.n}×${r.n}${campaign.canEnter(r.n)?'':' ◇'}</button>`).join('');
  $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('motion').textContent=t('减少动态','Reduce motion');$('motion').setAttribute('aria-pressed',String(reduced));
+ $('clearLocalData').textContent=t('清除本地记录（Cookie）','Clear local data');$('clearDataNote').textContent=t('重置通关进度、未完成棋局和地图设置，重新从 2×2 开始。','Reset progress, unfinished boards and map settings, then start again at 2×2.');
+ $('clearDataTitle').textContent=t('清除本地记录？','Clear local data?');$('clearDataWarning').textContent=t('群数独的通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。此操作无法撤销。','Group Sudoku progress, unfinished boards and map settings will be deleted. You will restart at 2×2. This cannot be undone.');$('cancelClearData').textContent=t('取消','Cancel');$('confirmClearData').textContent=t('确认清除','Clear data');
  $('resume').textContent=done.length===8?t('点击棋盘，重游八域','Select a board to play again'):t(`继续 ${campaign.current}×${campaign.current} →`,`Continue ${campaign.current}×${campaign.current} →`);
  $('viewHint').textContent=playing?t('点击选格 · 数字键落子 · 拖动空地观察','Select a cell · Type a number · Drag the ground to orbit'):t('已通关城邦可重玩 · 逐关开启吊桥','Revisit completed domains · Unlock bridges in order');
  world?.setProgress(done);positionTargets();
@@ -47,9 +49,12 @@ for(const id of ['regionNav','pins'])$(id).addEventListener('click',e=>{const b=
 $('overview').onclick=()=>showAtlas(campaign.completed.length===8);$('resume').onclick=()=>{if(campaign.completed.length!==8)openGame(campaign.current-2);};
 $('boardHits').addEventListener('click',e=>{if(busy)return;const b=e.target.closest('[data-board-cell]');if(b){game?.select(+b.dataset.boardCell);$('boardHits').querySelector(`[data-board-cell="${b.dataset.boardCell}"]`)?.focus({preventScroll:true});}});
 $('boardHits').addEventListener('keydown',e=>{if(!game||busy)return;const n=boardState.n,offset={ArrowLeft:-1,ArrowRight:1,ArrowUp:-n,ArrowDown:n}[e.key];if(offset){e.preventDefault();game.select((boardState.selected+offset+n*n)%(n*n));$('boardHits').querySelector(`[data-board-cell="${boardState.selected}"]`)?.focus({preventScroll:true});}else if(/^[1-9]$/.test(e.key)&&+e.key<=n){e.preventDefault();game.enter(+e.key);}else if(['Delete','Backspace'].includes(e.key)){e.preventDefault();game.enter(0);}});
-document.addEventListener('keydown',e=>{if(!playing||busy||!game||e.defaultPrevented||e.target.closest('#boardHits,#settingsPanel,input,textarea,select'))return;if(/^[1-9]$/.test(e.key)&&+e.key<=boardState.n){e.preventDefault();game.enter(+e.key);}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();game.enter(0);}});
+document.addEventListener('keydown',e=>{if(!playing||busy||!game||e.defaultPrevented||e.target.closest('#boardHits,#settingsPanel,#clearDataDialog,input,textarea,select'))return;if(/^[1-9]$/.test(e.key)&&+e.key<=boardState.n){e.preventDefault();game.enter(+e.key);}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();game.enter(0);}});
 $('settingsToggle').onclick=()=>{$('settingsPanel').hidden=!$('settingsPanel').hidden;$('settingsToggle').setAttribute('aria-expanded',String(!$('settingsPanel').hidden));};
-for(const input of document.querySelectorAll('[name="mapStyle"]')){input.checked=input.value===mapStyle;input.addEventListener('change',()=>{mapStyle=input.value;world?.setMapStyle(mapStyle);try{storage?.setItem('group-sudoku-map-style',mapStyle);}catch{}});}
+$('clearLocalData').onclick=()=>{$('clearDataDialog').showModal();$('cancelClearData').focus();};
+$('cancelClearData').onclick=()=>$('clearDataDialog').close();
+$('confirmClearData').onclick=()=>{try{clearLocalData(storage);window.location.reload();}catch{$('clearDataDialog').close();notify(t('无法清除本地记录，请检查浏览器的存储权限。','Unable to clear local data. Please check browser storage permissions.'));}};
+for(const input of document.querySelectorAll('[name="mapStyle"]')){input.checked=input.value===mapStyle;input.addEventListener('change',()=>{mapStyle=input.value;world?.setMapStyle(mapStyle);try{storage?.setItem(MAP_STYLE_KEY,mapStyle);}catch{}});}
 $('language').onclick=()=>{window.CourseLanguage.language=en()?'zh':'en';document.documentElement.lang=en()?'en':'zh-CN';window.dispatchEvent(new Event('course-language'));sync();};
 $('motion').onclick=()=>{reduced=!reduced;sync();};$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notify(t('当前窗口不支持全屏','Fullscreen unavailable'));}};
 let pointer=null;
