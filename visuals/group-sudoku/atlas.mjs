@@ -1,4 +1,4 @@
-import {updateBoardBeacons} from './board-beacons.mjs?v=beacons1';
+import {updateWallBeacons} from './board-beacons.mjs?v=wall-gate2';
 import {updateWorkshopClock} from './workshop-clock.mjs?v=clock1';
 import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=owl-clearance1';
 import {updateClockwork} from './clockwork.mjs?v=owl-clearance1';
@@ -6,11 +6,11 @@ import {updatePalaceFountains} from './palace-fountains.mjs?v=owl-clearance1';
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=owl-clearance1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=wall-gate2';
 import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=owl-clearance1';
 import {updateOwls} from './owls.mjs?v=owl-clearance1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=owl-clearance1';
+import {batchBuiltDomain} from './static-batches.mjs?v=wall-gate2';
 import {dollyRadius,panDistance} from './camera-navigation.mjs?v=owl-clearance1';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=owl-clearance1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
@@ -39,6 +39,15 @@ function parchment(){
  const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex;
 }
 export class SudokuAtlas extends AtlasScene{
+ resize(){
+  super.resize();
+  // The atlas is wider than the inherited scene: its far edge must survive
+  // overview zoom, shallow orbits, and the longer portrait overview distance.
+  const w=this.canvas.clientWidth||innerWidth,h=this.canvas.clientHeight||innerHeight;
+  this.camera.far=900;
+  this.camera.setViewOffset(w,h,0,-h*.04,w,h);
+  this.camera.updateProjectionMatrix();
+ }
  constructor(canvas){
   super(canvas,'standard');this.scene.background.setHex(0xa58c63);this.scene.fog.color.setHex(0xa58c63);this.scene.fog.density=.0015;this.renderer.toneMappingExposure=1.1;
   this.markers=[];for(let i=0;i<8;i++){const ring=this.torus(this.platforms[i],7.52,.10,[0,.30,0],new T.MeshStandardMaterial({color:0xc49a4c,emissive:0x77511b,emissiveIntensity:.25,metalness:.7,roughness:.35}));this.markers.push(ring);}
@@ -132,7 +141,7 @@ export class SudokuAtlas extends AtlasScene{
   updateOwls(this.owls,t,reduced);
   updateClockwork(this.machineMotion,t,reduced);
   updateWorkshopClock(this.clockHands);
-  updateBoardBeacons(this.boardBeacons,t,dt,reduced);
+  updateWallBeacons(this.wallBeacons,t,dt,reduced);
   updatePalaceFountains(this.palaceFountains,t,this.musicLevels,reduced,this.built.has(1));
   updateFireworks(this.fireworks,t,reduced,this.built.has(5));
   for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;

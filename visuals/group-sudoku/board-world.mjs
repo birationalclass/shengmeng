@@ -1,9 +1,9 @@
-import {installBoardBeacons,syncBoardBeacons} from './board-beacons.mjs?v=beacons1';
+import {syncWallBeacons} from './board-beacons.mjs?v=wall-gate2';
 import {planConstruction} from './construction.mjs?v=owl-clearance1';
 import * as T from '../3d/vendor/three.module.js';
 import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=owl-clearance1';
 import {landmark} from './landmarks.mjs?v=living1';
-import {greatWall} from './great-wall.mjs?v=owl-clearance1';
+import {greatWall} from './great-wall.mjs?v=wall-gate2';
 import {THEMES,plaqueOffset} from './journey.mjs?v=owl-clearance1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
@@ -27,7 +27,6 @@ export function installBoards(a){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,a.renderer.capabilities.getMaxAnisotropy());
   const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;lift.add(mesh);
   if(i===2){frame.color.setHex(0x6baac7);frame.map=null;frame.metalness=.3;frame.roughness=.18;mesh.material.roughness=.25;mesh.material.metalness=.25;}
-  if(i===7)a.boardBeacons=installBoardBeacons(lift);
   const boardObjects=new Set();lift.traverse(o=>{if(o.isMesh)boardObjects.add(o);});if(!replaceDomain(a,p,i))buildSettlement(a,p,i,originals[i]);enrichDomain(a,p,i);
   for(const x of [-4.9,4.9])for(const z of [-4.9,4.9]){a.cylinder(p,.3,.95,[x,.6,z],i===2?domainMaterials(a).ice:trim);a.cylinder(p,.43,.12,[x,1.03,z],trim);}a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
   const parts=planConstruction(p,lift,a);
@@ -62,7 +61,7 @@ function buildSettlement(a,p,i,original){
  if(i>1){a.box(p,[1.6,.13,1.6],[-8,.25,8.2],M.dark);a.cylinder(p,.13,.25,[-8,.40,8.2]);a.gear(p,.61,18,[-8,.57,8.2],.13);}
 }
 export function paintBoard(a,index,state){
- if(index===7){const progress=syncBoardBeacons(a.boardBeacons,state.values,a.wallBeacons);if(a.canvas&&progress){a.canvas.dataset.beaconsLit=String(progress.filled);a.canvas.dataset.beaconsTotal='81';}}
+ if(index===7){const progress=syncWallBeacons(a.wallBeacons,state.values);if(a.canvas&&progress){a.canvas.dataset.beaconsLit=String(progress.wallLit);a.canvas.dataset.beaconsTotal='8';}}
  const b=a.boards[index],{n,canvas,texture}=b,x=canvas.getContext('2d'),step=(SIZE-PAD*2)/(n+1),values=state.values;
  const theme=b.theme;x.fillStyle=theme.paper;x.fillRect(0,0,SIZE,SIZE);
  for(let k=0;k<500;k++){x.strokeStyle=k%2?'#c3a26908':'#10090516';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);const wave=index===1||index===2?80:4;x.bezierCurveTo(360,y-wave*Math.sin(k),800,y+wave,SIZE,y);x.stroke();}
@@ -74,7 +73,7 @@ export function paintBoard(a,index,state){
  x.textAlign='center';x.textBaseline='middle';x.font=`${step*.43}px Atlas,Georgia,serif`;
  for(let j=0;j<n;j++){x.fillStyle=state.skill==='identity'&&j===n-1?'#f18777':theme.ink;x.fillText(j+1,PAD+(j+1.5)*step,PAD+step*.5);x.fillText(j+1,PAD+step*.5,PAD+(j+1.5)*step);}
  for(let r=0;r<n;r++)for(let c=0;c<n;c++){const k=r*n+c,[px,py]=cell(r,c),classes=state.cells?.[k]?.classes||'';x.lineWidth=index===1?2.7:1.6;x.strokeStyle=theme.line;x.strokeRect(px,py,step,step);const accent=classes.includes('error-mark')?'#f18777':classes.includes('path-mark')?'#e3c276':classes.includes('cancel-mark')?'#84c4ab':null;if(k===state.selected||accent){x.strokeStyle=accent||(index===1?'#7e6950':index===2?'#58442b':'#efd095');x.lineWidth=k===state.selected?3.5:2;x.strokeRect(px+4,py+4,step-8,step-8);}
- x.fillStyle=classes.includes('identity-mark')?'#f18777':classes.includes('inverse-mark')?'#baa0e7':accent||(classes.includes('given')?theme.given:theme.ink);const fixed=classes.includes('given');x.font=`${fixed?'700':'italic 400'} ${step*(index===7?.39:fixed?.57:.61)}px ${fixed?'Atlas,Georgia':'Georgia'},serif`;if(values[k]){if(fixed&&index!==1){x.lineWidth=1.8;x.strokeStyle=index===2?'#332a2070':'#100c08a0';x.strokeText(values[k],px+step/2,py+step*(index===7?.78:.52)+1.7);x.shadowColor=index===2?'#fff8':'#000';x.shadowOffsetY=1;x.shadowBlur=1;}else if(!fixed&&!classes.includes('identity-mark')&&!classes.includes('inverse-mark')&&!accent)x.fillStyle=index===1?'#43574d':index===2?'#305566':'#c1e0e8';x.fillText(values[k],px+step/2,py+step*(index===7?.78:.52));x.shadowOffsetY=0;x.shadowBlur=0;if(fixed&&index!==1&&index!==7){x.strokeStyle=index===2?'#514b3e55':'#e2d2a34a';x.lineWidth=1;x.beginPath();x.moveTo(px+step*.34,py+step*.83);x.lineTo(px+step*.66,py+step*.83);x.stroke();}}else{x.fillStyle='#8d785555';x.beginPath();x.arc(px+step/2,py+step/2,2.2,0,Math.PI*2);x.fill();}}
+ x.fillStyle=classes.includes('identity-mark')?'#f18777':classes.includes('inverse-mark')?'#baa0e7':accent||(classes.includes('given')?theme.given:theme.ink);const fixed=classes.includes('given');x.font=`${fixed?'700':'italic 400'} ${step*(fixed?.57:.61)}px ${fixed?'Atlas,Georgia':'Georgia'},serif`;if(values[k]){if(fixed&&index!==1){x.lineWidth=1.8;x.strokeStyle=index===2?'#332a2070':'#100c08a0';x.strokeText(values[k],px+step/2,py+step*.52+1.7);x.shadowColor=index===2?'#fff8':'#000';x.shadowOffsetY=1;x.shadowBlur=1;}else if(!fixed&&!classes.includes('identity-mark')&&!classes.includes('inverse-mark')&&!accent)x.fillStyle=index===1?'#43574d':index===2?'#305566':'#c1e0e8';x.fillText(values[k],px+step/2,py+step*.52);x.shadowOffsetY=0;x.shadowBlur=0;if(fixed&&index!==1){x.strokeStyle=index===2?'#514b3e55':'#e2d2a34a';x.lineWidth=1;x.beginPath();x.moveTo(px+step*.34,py+step*.83);x.lineTo(px+step*.66,py+step*.83);x.stroke();}}else{x.fillStyle='#8d785555';x.beginPath();x.arc(px+step/2,py+step/2,2.2,0,Math.PI*2);x.fill();}}
  texture.needsUpdate=true;
 }
 export function cellPoint(a,index,k){const n=index+2,step=(SIZE-PAD*2)/(n+1),px=PAD+(k%n+1.5)*step,py=PAD+(Math.floor(k/n)+1.5)*step;return a.boards[index].lift.localToWorld(new T.Vector3((px/SIZE-.5)*WIDTH,.805,(py/SIZE-.5)*WIDTH));}

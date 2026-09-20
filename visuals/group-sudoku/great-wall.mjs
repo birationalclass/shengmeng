@@ -1,3 +1,4 @@
+import {installWallBeacon} from './board-beacons.mjs?v=wall-gate2';
 import * as T from '../3d/vendor/three.module.js';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
 
@@ -21,8 +22,9 @@ export function greatWall(a,parent){
  const cap=a.materials.paper.clone();cap.color.setHex(0xb8ad91);
  const mortar=a.materials.dark.clone();mortar.color.setHex(0x645f50);
  const at=q=>{const radius=11.35+.12*Math.cos(q*8);return new T.Vector3(Math.sin(q)*radius,0,-Math.cos(q)*radius);};
- // A closed ring; the southern parapet stays lower to preserve the playing view.
+ // The southern gateway replaces four wall sections with a genuinely open passage.
  for(let i=0;i<64;i++){
+  if(i>=30&&i<=33)continue;
   const q0=i*Math.PI*2/64,q1=(i+1)*Math.PI*2/64,p=at(q0),r=at(q1),d=r.clone().sub(p),len=d.length()+.045;
   const h=.55+2.00*(1+Math.cos((q0+q1)/2))/2;
   const segment=new T.Group();segment.userData.wallSegment={start:q0,end:q1,height:h};segment.position.copy(p.add(r).multiplyScalar(.5));segment.rotation.y=Math.atan2(d.x,d.z);wall.add(segment);
@@ -41,7 +43,20 @@ export function greatWall(a,parent){
  }
  for(const [j,q] of Array.from({length:8},(_,i)=>i*Math.PI/4).entries()){
   const p=at(q),tower=new T.Group();tower.position.copy(p);tower.rotation.y=-q;wall.add(tower);
-  tower.userData.landmark='great-wall-watchtower';const h=1.20+2.20*(1+Math.cos(q))/2,w=1.45;
+  tower.userData.landmark=j===4?'great-wall-gateway':'great-wall-watchtower';
+  if(j===4){
+   // No foundation, wall or painted door crosses the 3.0-wide opening.
+   for(const x of [-1.85,1.85]){
+    a.box(tower,[.72,2.0,1.6],[x,1.15,0],stone);
+    a.box(tower,[.84,.20,1.75],[x,.25,0],cap);
+    for(let y=.55;y<2.1;y+=.38)a.box(tower,[.73,.018,1.61],[x,y,0],mortar);
+   }
+   a.box(tower,[4.5,.32,1.7],[0,2.30,0],stone);
+   a.box(tower,[4.65,.13,1.85],[0,2.52,0],cap);
+   for(const z of [-.82,.82])for(let k=-5;k<=5;k++)a.box(tower,[.27,.36,.20],[k*.40,2.77,z],cap);
+   installWallBeacon(a,tower,2.60,j);continue;
+  }
+  const h=1.20+2.20*(1+Math.cos(q))/2,w=1.45;
   a.box(tower,[w+.3,.25,w+.3],[0,.25,0],cap);
   a.box(tower,[w,h,w],[0,h/2+.35,0],stone);
   for(let y=.7;y<h+.2;y+=.43)for(const side of [-1,1]){
@@ -65,12 +80,7 @@ export function greatWall(a,parent){
   a.box(tower,[.55,1.02,.03],[0,.87,w/2+.02],a.materials.dark);
   for(const x of [-.35,.35])a.box(tower,[.13,1.1,.12],[x,.91,w/2+.07],cap);
   a.box(tower,[.83,.15,.15],[0,1.49,w/2+.07],cap);
-  const flag=banner(a,tower,0,h+.50,0,j*1.7);flag.scale.setScalar(.65+.35*(1+Math.cos(q))/2);
-  // A small beacon turns within a fixed protective brazier.
-  const flame=new T.Group();flame.position.set(.45,h+.55,.25);tower.add(flame);
-  a.cylinder(flame,.13,.12,[0,.08,0],a.materials.dark);
-  const fire=a.mesh(flame,new T.ConeGeometry(.15,.48,5),new T.MeshStandardMaterial({color:0xffb447,emissive:0xff8d22,emissiveIntensity:1.2}),[0,.33,0]);fire.visible=false;a.wallBeacons.push({fire});
-  jointMotion(a,flame,{axis:'z',speed:2.2,amplitude:.10,phase:j});
+  installWallBeacon(a,tower,h+.55,j);
  }
  return wall;
 }

@@ -1,7 +1,7 @@
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=owl-clearance1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=wall-gate2';
 import {cameraKey} from './camera-navigation.mjs?v=owl-clearance1';
 import {THEMES} from './journey.mjs?v=owl-clearance1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
@@ -14,7 +14,7 @@ const music=createBackgroundMusic({storage,t});
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 const cameraKeys=new Set();
 function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 棋盘升起 · 设施搭建','ARRIVE · BOARD · SCENERY'):'';}
-function beaconStatus(values){const node=$('beaconStatus');node.hidden=selected!==7;if(selected===7)node.textContent=t('烽火','BEACONS')+` ${values.filter(v=>v>0).length} / 81`;}
+function beaconStatus(values){const node=$('beaconStatus');node.hidden=selected!==7;if(selected===7)node.textContent=t('城墙烽火','WALL BEACONS')+` ${Math.floor(values.filter(v=>v>0).length*8/81)} / 8 · `+t('填棋','FILLED')+` ${values.filter(v=>v>0).length} / 81`;}
 function sync(){
  beaconStatus(campaign.board(9));
  $('buildTimeLabel').textContent=t('装饰搭建时长','Scenery build time');$('buildTimeValue').value=decorationSeconds+t(' 秒',' s');$('buildTime').value=decorationSeconds;$('buildTimeNote').textContent=t('不含镜头移动和棋盘升起，下次搭建生效。','Excludes camera travel and board rise. Applies to the next build.');
