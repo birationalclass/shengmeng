@@ -1,9 +1,9 @@
-import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=palace-clock2';
-import {createBackgroundMusic} from './music.mjs?v=palace-clock2';
-import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=palace-clock2';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=palace-clock2';
-import {cameraKey} from './camera-navigation.mjs?v=palace-clock2';
-import {THEMES} from './journey.mjs?v=palace-clock2';
+import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=board-first1';
+import {createBackgroundMusic} from './music.mjs?v=board-first1';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=board-first1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=board-first1';
+import {cameraKey} from './camera-navigation.mjs?v=board-first1';
+import {THEMES} from './journey.mjs?v=board-first1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);let decorationSeconds=readBuildSeconds(storage);

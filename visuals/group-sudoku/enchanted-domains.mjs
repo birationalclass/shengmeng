@@ -1,13 +1,13 @@
-import {chinesePalace} from './chinese-palace.mjs?v=palace-clock2';
-import {wizardChess} from './wizard-chess.mjs?v=palace-clock2';
+import {chinesePalace} from './chinese-palace.mjs?v=board-first1';
+import {wizardChess} from './wizard-chess.mjs?v=board-first1';
 import {installFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
-import {ecnuCampus} from './ecnu-campus.mjs?v=palace-clock2';
-import {masonryTexture} from './castle-materials.mjs?v=palace-clock2';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=palace-clock2';
+import {ecnuCampus} from './ecnu-campus.mjs?v=board-first1';
+import {masonryTexture} from './castle-materials.mjs?v=board-first1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=board-first1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {clockworkCity} from './clockwork.mjs?v=palace-clock2';
-import {jointMotion} from './architectural-motion.mjs?v=palace-clock2';
+import {clockworkCity} from './clockwork.mjs?v=board-first1';
+import {jointMotion} from './architectural-motion.mjs?v=board-first1';
 // Original miniature architecture: staged clockwork, luminous academies and glacial sculpture.
 const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.65,...extra});
 export function domainMaterials(a){

@@ -1,4 +1,4 @@
-import {BUILD_TIME_KEY} from './construction.mjs?v=palace-clock2';
+import {BUILD_TIME_KEY} from './construction.mjs?v=board-first1';
 import {MUSIC_KEY} from './music.mjs?v=music1';
 import {frontier,canEnter} from './journey.mjs?v=journey4';
 export const STORAGE_KEY='shengmeng-group-sudoku-campaign-v1';

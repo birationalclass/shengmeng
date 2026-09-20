@@ -1,17 +1,17 @@
 import {updateWorkshopClock} from './workshop-clock.mjs?v=clock1';
-import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=palace-clock2';
-import {updateClockwork} from './clockwork.mjs?v=palace-clock2';
-import {updatePalaceFountains} from './palace-fountains.mjs?v=palace-clock2';
+import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=board-first1';
+import {updateClockwork} from './clockwork.mjs?v=board-first1';
+import {updatePalaceFountains} from './palace-fountains.mjs?v=board-first1';
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=palace-clock2';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=palace-clock2';
-import {updateOwls} from './owls.mjs?v=palace-clock2';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=board-first1';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=board-first1';
+import {updateOwls} from './owls.mjs?v=board-first1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=palace-clock2';
-import {dollyRadius,panDistance} from './camera-navigation.mjs?v=palace-clock2';
-import {updateArchitecturalMotion} from './architectural-motion.mjs?v=palace-clock2';
+import {batchBuiltDomain} from './static-batches.mjs?v=board-first1';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=board-first1';
+import {updateArchitecturalMotion} from './architectural-motion.mjs?v=board-first1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
 export const REGIONS=[

@@ -31,4 +31,4 @@ export function planConstruction(content,lift,atlas={}){
  parts.push({object:lift,position:lift.position.clone(),scale:lift.scale.clone(),rigid:true,board:true,lift:2.2});
  return parts;
 }
-export function constructionTiming(part,seconds=15){if(part.board)return {delay:seconds+.15,duration:BOARD_RISE_SECONDS};if(!part.decoration)return {delay:part.delay,duration:part.duration};const duration=Math.min(seconds*.3,part.twoStep?2.6:1.05);return {delay:part.order/Math.max(1,part.count-1)*(seconds-duration),duration};}
+export function constructionTiming(part,seconds=15){if(part.board)return {delay:0,duration:BOARD_RISE_SECONDS};if(!part.decoration)return {delay:part.delay,duration:part.duration};const duration=Math.min(seconds*.3,part.twoStep?2.6:1.05);return {delay:BOARD_RISE_SECONDS+.15+part.order/Math.max(1,part.count-1)*(seconds-duration),duration};}
