@@ -1,8 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PHASES,DURATION,phaseAt,gravityFlow,concatenate,compose,cameraAt} from './story.mjs';
+import {PHASES,DURATION,phaseAt,gravityFlow,concatenate,compose,cameraAt,crtExample,combineCRT,CAMERA_KEYS} from './story.mjs';
 const close=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);
 test('the timeline covers the whole film without gaps, with deterministic boundary selection',()=>{assert.equal(PHASES[0].start,0);assert.equal(PHASES.at(-1).end,DURATION);for(let i=0;i<PHASES.length;i++){const p=PHASES[i];assert.equal(phaseAt(p.start),p);assert.equal(phaseAt(p.end-.0001),p);if(i)assert.equal(PHASES[i-1].end,p.start);}assert.equal(phaseAt(DURATION).id,'epilogue');});
 test('camera positions are finite and continuous throughout portrait and landscape routes',()=>{for(const aspect of [.46,1,1.78,2.5]){let previous=cameraAt(0,aspect);for(let t=.01;t<=DURATION;t+=.01){const next=cameraAt(t,aspect);for(const key of ['pos','target'])for(let j=0;j<3;j++){assert.ok(Number.isFinite(next[key][j]));assert.ok(Math.abs(next[key][j]-previous[key][j])<.2);}previous=next;}}});
 test('constant-gravity evolution is an action of additive real time including negative time',()=>{for(const initial of [[0,0],[8,-2],[-2,4.5]])for(const s of [-3,.1,2])for(const t of [-.5,0,4]){const lhs=gravityFlow(gravityFlow(initial,t),s),rhs=gravityFlow(initial,s+t);lhs.forEach((x,i)=>close(x,rhs[i]));gravityFlow(gravityFlow(initial,t),-t).forEach((x,i)=>close(x,initial[i]));}});
 test('concatenation is associative for Chinese and English strings; neural function composition preserves order',()=>{for(const [u,v,w] of [['山','川','日'],['W','O','RD']])assert.equal(concatenate(concatenate(u,v),w),concatenate(u,concatenate(v,w)));const f=x=>Math.max(0,x),g=x=>2*x-3,h=x=>x+1;for(const x of [-4,0,7])assert.equal(compose(compose(f,g),h)(x),compose(f,compose(g,h))(x));assert.notEqual(compose(f,g)(-1),compose(g,f)(-1));});
+
+test('CRT reconstruction is bijective for every residue triple modulo 3, 5 and 7',()=>{const seen=new Set();for(let a=0;a<3;a++)for(let b=0;b<5;b++)for(let c=0;c<7;c++){const x=combineCRT([a,b,c]);assert.deepEqual([x%3,x%5,x%7],[a,b,c]);seen.add(x);}assert.equal(seen.size,105);assert.equal(combineCRT(crtExample.residues),23);});
+test('camera velocity remains continuous across shot anchors',()=>{const e=1e-4;for(const [time]of CAMERA_KEYS.slice(1,-1)){const a=cameraAt(time-e),b=cameraAt(time),c=cameraAt(time+e);for(const key of ['pos','target'])for(let j=0;j<3;j++)assert.ok(Math.abs((b[key][j]-a[key][j])/e-(c[key][j]-b[key][j])/e)<.02);}});
+
+test('the final camera enters a continuous, moving panoramic tour',()=>{for(const aspect of [.46,1.78]){const a=cameraAt(DURATION,aspect),b=cameraAt(DURATION+.001,aspect),c=cameraAt(DURATION+60,aspect);a.pos.forEach((x,i)=>assert.ok(Math.abs(x-b.pos[i])<.001));assert.ok(a.pos.some((x,i)=>Math.abs(x-c.pos[i])>5));}});
