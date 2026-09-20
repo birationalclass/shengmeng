@@ -4,7 +4,7 @@ import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './jo
 import {updateOwls} from './owls.mjs?v=owls-low1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {batchBuiltDomain} from './static-batches.mjs?v=owls-low1';
-import {dollyRadius} from './camera-navigation.mjs?v=enchanted2';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=pan1';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
@@ -98,6 +98,7 @@ export class SudokuAtlas extends AtlasScene{
  paint(index,state){paintBoard(this,index,state);}
  cellProjection(index,k){const p=cellPoint(this,index,k).project(this.camera);return {x:(p.x+1)/2,y:(1-p.y)/2,visible:p.z>-1&&p.z<1&&Math.abs(p.x)<1&&Math.abs(p.y)<1};}
  dolly(direction,dt){if(this.sequence||!direction)return;if(!this.manual)this.takeControl();this.touring=false;this.manual.radius=dollyRadius(this.manual.radius,direction,dt);}
+ pan(east,north,dt){if(this.sequence||(!east&&!north))return;if(!this.manual)this.takeControl();this.touring=false;const m=this.manual,normal=Math.max(1,Math.hypot(east,north)),d=panDistance(m.radius,1,dt);m.target.x+=east/normal*d;m.target.z-=north/normal*d;}
  zoom(delta){if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
  startTour(){this.sequence=null;this.manual=null;this.touring=true;this.tourTime=0;this.tourFrom=this.camera.position.clone();this.tourAim=this.currentTarget.clone();}
  resetArchitecture(index){const b=this.boards[index];if(b.staticBatch){b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
