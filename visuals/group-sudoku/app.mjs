@@ -1,19 +1,21 @@
-import {createBackgroundMusic} from './music.mjs?v=music1';
-import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=music1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=wizard1';
-import {cameraKey} from './camera-navigation.mjs?v=wizard1';
-import {THEMES} from './journey.mjs?v=wizard1';
+import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=palace-clock2';
+import {createBackgroundMusic} from './music.mjs?v=palace-clock2';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=palace-clock2';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=palace-clock2';
+import {cameraKey} from './camera-navigation.mjs?v=palace-clock2';
+import {THEMES} from './journey.mjs?v=palace-clock2';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
-const campaign=new Campaign(model,storage);
+const campaign=new Campaign(model,storage);let decorationSeconds=readBuildSeconds(storage);
 let selected=campaign.current-2,world,game,playing=false,busy=false,boardState,last=0,time=0,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,toastTimer,mapStyle='parchment',failed=false;
 try{mapStyle=storage?.getItem(MAP_STYLE_KEY)||'parchment';}catch{}
 const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
-createBackgroundMusic({storage,t});
+const music=createBackgroundMusic({storage,t});
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 const cameraKeys=new Set();
 function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 建筑升起 · 棋盘展开','ARRIVE · BUILD · REVEAL'):'';}
 function sync(){
+ $('buildTimeLabel').textContent=t('装饰搭建时长','Scenery build time');$('buildTimeValue').value=decorationSeconds+t(' 秒',' s');$('buildTime').value=decorationSeconds;$('buildTimeNote').textContent=t('不含镜头移动和棋盘升起，下次搭建生效。','Excludes camera travel and board rise. Applies to the next build.');
  const done=campaign.completed,r=REGIONS[selected];$('progress').innerHTML=`${done.length} <span>/ 8</span>`;
  $('skillStatus').textContent=campaign.inverseUnlocked?t('单位 · 逆 · 已解锁','Identity · Inverse · Unlocked'):campaign.identityUnlocked?t('单位已解锁 · 第 4 关解锁逆卡','Identity unlocked · Inverse after level 4'):t('通关 3×3 获得单位元卡','Complete 3×3 to unlock Identity');
  $('gameEyebrow').textContent=`${r.n} × ${r.n} · ${en()?r.en:THEMES[selected].name}`;$('gameTitle').textContent=en()?r.en:r.zh;
@@ -72,6 +74,7 @@ $('cancelClearData').onclick=()=>$('clearDataDialog').close();
 $('confirmClearData').onclick=()=>{try{clearLocalData(storage);window.location.reload();}catch{$('clearDataDialog').close();notify(t('无法清除本地记录，请检查浏览器的存储权限。','Unable to clear local data. Please check browser storage permissions.'));}};
 for(const input of document.querySelectorAll('[name="mapStyle"]')){input.checked=input.value===mapStyle;input.addEventListener('change',()=>{mapStyle=input.value;world?.setMapStyle(mapStyle);try{storage?.setItem(MAP_STYLE_KEY,mapStyle);}catch{}});}
 $('language').onclick=()=>{window.CourseLanguage.language=en()?'zh':'en';document.documentElement.lang=en()?'en':'zh-CN';window.dispatchEvent(new Event('course-language'));sync();};
+$('buildTime').oninput=()=>{decorationSeconds=buildSeconds($('buildTime').value);if(world)world.decorationSeconds=decorationSeconds;try{storage?.setItem(BUILD_TIME_KEY,String(decorationSeconds));}catch{}sync();};
 $('motion').onchange=()=>{reduced=$('motion').checked;sync();};
 function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement;}
 function syncFullscreen(){const active=!!fullscreenElement();document.documentElement.classList.toggle('is-fullscreen',active);$('fullscreen').setAttribute('aria-pressed',String(active));$('fullscreen').setAttribute('aria-label',active?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen'));}
@@ -84,7 +87,7 @@ canvas.addEventListener('wheel',e=>{if(!world||busy)return;e.preventDefault();wo
 let layoutFrame=0;function scheduleLayout(){cancelAnimationFrame(layoutFrame);layoutFrame=requestAnimationFrame(()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing||document.body.classList.contains('previewing')?selected:-1);positionTargets();});}
 function onFullscreenChange(){if(pointer&&canvas.hasPointerCapture(pointer.id))canvas.releasePointerCapture(pointer.id);pointer=null;syncFullscreen();scheduleLayout();}
 document.addEventListener('fullscreenchange',onFullscreenChange);document.addEventListener('webkitfullscreenchange',onFullscreenChange);window.addEventListener('resize',scheduleLayout);window.visualViewport?.addEventListener('resize',scheduleLayout);document.addEventListener('visibilitychange',()=>last=0);
-function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;if(!busy&&cameraKeys.size){world?.pan((cameraKeys.has('ArrowRight')?1:0)-(cameraKeys.has('ArrowLeft')?1:0),(cameraKeys.has('ArrowUp')?1:0)-(cameraKeys.has('ArrowDown')?1:0),dt);}world?.updateWorld(time,dt,reduced);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}positionTargets();}
+function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;if(!busy&&cameraKeys.size){world?.pan((cameraKeys.has('ArrowRight')?1:0)-(cameraKeys.has('ArrowLeft')?1:0),(cameraKeys.has('ArrowUp')?1:0)-(cameraKeys.has('ArrowDown')?1:0),dt);}if(world)world.musicLevels=music.readLevels(dt);world?.updateWorld(time,dt,reduced);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}positionTargets();}
 function fallback(error){failed=true;world=null;$('loading').hidden=true;document.body.classList.add('map-fallback');phase('');openGame(campaign.current-2);notify(t('三维地图暂不可用，已切换为简洁棋盘。','3D unavailable. The accessible board is ready.'));console.error('Group sudoku map unavailable',error);}
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback('WebGL context lost');});sync();
-try{await document.fonts.ready;world=new SudokuAtlas(canvas);world.setMapStyle(mapStyle);REGIONS.forEach((r,i)=>world.paint(i,{values:campaign.board(r.n),selected:-1,cells:model.initial(r.n).map(v=>({classes:v?'given':''}))}));world.restore(campaign.completed);world.updateWorld(0,0,true);$('loading').classList.add('done');setTimeout(()=>$('loading').hidden=true,750);const preview=Number(new URLSearchParams(location.search).get('preview'));if(Number.isInteger(preview)&&preview>=2&&preview<=9)previewArchitecture(preview-2);else if(campaign.completed.length===8)showAtlas(true);else openGame(campaign.current-2);animate(performance.now());}catch(error){fallback(error);}
+try{await document.fonts.ready;world=new SudokuAtlas(canvas);world.decorationSeconds=decorationSeconds;world.setMapStyle(mapStyle);REGIONS.forEach((r,i)=>world.paint(i,{values:campaign.board(r.n),selected:-1,cells:model.initial(r.n).map(v=>({classes:v?'given':''}))}));world.restore(campaign.completed);world.updateWorld(0,0,true);$('loading').classList.add('done');setTimeout(()=>$('loading').hidden=true,750);const preview=Number(new URLSearchParams(location.search).get('preview'));if(Number.isInteger(preview)&&preview>=2&&preview<=9)previewArchitecture(preview-2);else if(campaign.completed.length===8)showAtlas(true);else openGame(campaign.current-2);animate(performance.now());}catch(error){fallback(error);}

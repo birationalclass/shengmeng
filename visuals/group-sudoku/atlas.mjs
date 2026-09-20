@@ -1,13 +1,17 @@
+import {updateWorkshopClock} from './workshop-clock.mjs?v=clock1';
+import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=palace-clock2';
+import {updateClockwork} from './clockwork.mjs?v=palace-clock2';
+import {updatePalaceFountains} from './palace-fountains.mjs?v=palace-clock2';
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=wizard1';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=wizard1';
-import {updateOwls} from './owls.mjs?v=wizard1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=palace-clock2';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=palace-clock2';
+import {updateOwls} from './owls.mjs?v=palace-clock2';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=wizard1';
-import {dollyRadius,panDistance} from './camera-navigation.mjs?v=wizard1';
-import {updateArchitecturalMotion} from './architectural-motion.mjs?v=wizard1';
+import {batchBuiltDomain} from './static-batches.mjs?v=palace-clock2';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=palace-clock2';
+import {updateArchitecturalMotion} from './architectural-motion.mjs?v=palace-clock2';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
 export const REGIONS=[
@@ -103,28 +107,31 @@ export class SudokuAtlas extends AtlasScene{
  pan(east,north,dt){if(this.sequence||(!east&&!north))return;if(!this.manual)this.takeControl();this.touring=false;const m=this.manual,normal=Math.max(1,Math.hypot(east,north)),d=panDistance(m.radius,1,dt);m.target.x+=east/normal*d;m.target.z-=north/normal*d;}
  zoom(delta){if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
  startTour(){this.sequence=null;this.manual=null;this.touring=true;this.tourTime=0;this.tourFrom=this.camera.position.clone();this.tourAim=this.currentTarget.clone();}
- resetArchitecture(index){const b=this.boards[index];if(b.staticBatch){b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
+ resetArchitecture(index){const b=this.boards[index];if(b.staticBatch){for(const source of b.batchedSources||[])source.visible=true;b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
  showBuilt(index){const b=this.boards[index];b.content.visible=true;for(const part of b.parts){part.object.visible=true;part.object.position.copy(part.position);part.object.scale.copy(part.scale);}this.built.add(index);batchBuiltDomain(this,b);}
  restore(done){done.forEach(n=>this.showBuilt(n-2));for(let i=0;i<7;i++)this.bridgeProgress[i]=Array.from({length:i+1},(_,k)=>k+2).every(n=>done.includes(n))?1:0;this.setProgress(done);this.updateBridges();}
  arrive(index,onReady,reduced=false){
   this.manual=null;this.touring=false;this.selected=index;const pose=this.playPose(index),end=pose.pos.toArray(),aim=pose.aim.toArray(),b=this.boards[index];
-  const duration=this.built.has(index)?2.8:stageTime.assembly;
-  this.sequence={kind:'assembly',index,elapsed:0,duration,onReady,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[2.8,end,aim]]};
+  const decorationSeconds=buildSeconds(this.decorationSeconds),duration=this.built.has(index)?2.8:3+decorationSeconds+.15+BOARD_RISE_SECONDS;
+  this.sequence={kind:'assembly',index,elapsed:0,duration,decorationSeconds,onReady,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[2.8,end,aim]]};
   b.content.visible=true;if(!this.built.has(index))this.assemble(index,0);if(reduced)this.updateSequence(duration,true);
  }
- assemble(index,t){const b=this.boards[index];for(const part of b.parts){const u=ease((t-part.delay)/part.duration);part.object.visible=u>0;part.object.position.copy(part.position);part.object.position.y-=part.lift*(1-u);part.object.scale.copy(part.scale);if(!part.rigid)part.object.scale.y*=Math.max(.001,u);}}
+ assemble(index,t,seconds=buildSeconds(this.decorationSeconds)){const b=this.boards[index];for(const part of b.parts){const timing=constructionTiming(part,seconds),u=riseProgress((t-timing.delay)/timing.duration,part.twoStep);part.object.visible=u>0;part.object.position.copy(part.position);if(part.direction)part.object.position.addScaledVector(part.direction,-part.lift*(1-u));else part.object.position.y-=part.lift*(1-u);part.object.scale.copy(part.scale);if(!part.rigid)part.object.scale.y*=Math.max(.001,u);}}
  cross(index,onArrive,reduced=false){
   if(index>=7){onArrive?.();return;}this.manual=null;const a=V(PLACES[index][0],0,PLACES[index][1]),b=V(PLACES[index+1][0],0,PLACES[index+1][1]),mid=a.clone().add(b).multiplyScalar(.5),dir=b.clone().sub(a).normalize(),side=V(-dir.z,0,dir.x),look=mid.clone().addScaledVector(dir,3);look.y=1;
   const pose=this.playPose(index+1),end=pose.pos,endAim=pose.aim,near=mid.clone().add(end.clone().sub(b));
   this.sequence={kind:'bridge',index,elapsed:0,duration:8.6,onReady:onArrive,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[1.6,this.camera.position.toArray(),this.currentTarget.toArray()],[4.8,near.toArray(),mid.toArray()],[8.6,end.toArray(),endAim.toArray()]]};if(reduced)this.updateSequence(9,true);
  }
- updateSequence(dt,reduced){const q=this.sequence;if(!q)return;q.elapsed+=reduced?q.duration:dt;const t=Math.min(q.duration,q.elapsed);this.canvas.dataset.arrival=q.kind==='assembly'?arrivalPhase(t,this.built.has(q.index)):'bridge';if(q.kind==='assembly'&&!this.built.has(q.index))this.assemble(q.index,Math.max(0,t-3.0));if(q.kind==='bridge')this.bridgeProgress[q.index]=ease((t-1.4)/stageTime.bridge);const [pos,aim]=cameraSpline(q.keys,Math.min(t,q.keys.at(-1)[0]));this.camera.position.fromArray(pos);this.currentTarget.fromArray(aim);this.camera.lookAt(this.currentTarget);this.camera.rotation.z=0;if(t>=q.duration){if(q.kind==='assembly')this.showBuilt(q.index);else this.bridgeProgress[q.index]=1;this.sequence=null;this.fromPos=this.camera.position.clone();this.toPos=this.fromPos.clone();this.fromAim=this.currentTarget.clone();this.toAim=this.fromAim.clone();this.flight=1;q.onReady?.();}}
+ updateSequence(dt,reduced){const q=this.sequence;if(!q)return;q.elapsed+=reduced?q.duration:dt;const t=Math.min(q.duration,q.elapsed);this.canvas.dataset.arrival=q.kind==='assembly'?arrivalPhase(t,this.built.has(q.index),q.decorationSeconds):'bridge';if(q.kind==='assembly'&&!this.built.has(q.index))this.assemble(q.index,Math.max(0,t-3.0),q.decorationSeconds);if(q.kind==='bridge')this.bridgeProgress[q.index]=ease((t-1.4)/stageTime.bridge);const [pos,aim]=cameraSpline(q.keys,Math.min(t,q.keys.at(-1)[0]));this.camera.position.fromArray(pos);this.currentTarget.fromArray(aim);this.camera.lookAt(this.currentTarget);this.camera.rotation.z=0;if(t>=q.duration){if(q.kind==='assembly')this.showBuilt(q.index);else this.bridgeProgress[q.index]=1;this.sequence=null;this.fromPos=this.camera.position.clone();this.toPos=this.fromPos.clone();this.fromAim=this.currentTarget.clone();this.toAim=this.fromAim.clone();this.flight=1;q.onReady?.();}}
  updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
  updateWorld(t,dt,reduced=false){
   for(const {object,speed}of this.rotating)object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
   updateArchitecturalMotion(this.detailMotion,t,reduced);
   updateIceSkaters(this.iceSkaters,t,reduced);
   updateOwls(this.owls,t,reduced);
+  updateClockwork(this.machineMotion,t,reduced);
+  updateWorkshopClock(this.clockHands);
+  updatePalaceFountains(this.palaceFountains,t,this.musicLevels,reduced,this.built.has(1));
   updateFireworks(this.fireworks,t,reduced,this.built.has(5));
   for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;
   for(const ripple of this.poolRipples||[]){const u=((reduced?0:t*.18)+ripple.phase)%1;ripple.line.scale.setScalar(.6+u*1.1);ripple.line.material.opacity=.30*Math.sin(Math.PI*u);ripple.line.visible=this.built.has(0);}

@@ -5,7 +5,7 @@ export function musicPreferences(storage){
 }
 export function createBackgroundMusic({storage,t}){
  const audio=document.getElementById('backgroundMusic'),toggle=document.getElementById('musicEnabled'),slider=document.getElementById('musicVolume'),output=document.getElementById('musicVolumeValue'),note=document.getElementById('musicStatus');
- const prefs=musicPreferences(storage);let context,gain,source,attempt=0,started=false,pending=false,failed=false;
+ const prefs=musicPreferences(storage);let context,gain,source,analyser,wave,spectrum,attempt=0,started=false,pending=false,failed=false;
  audio.loop=true;audio.preload='none';audio.volume=prefs.volume;
  function save(){try{storage?.setItem(MUSIC_KEY,JSON.stringify(prefs));}catch{}}
  function sync(){
@@ -19,7 +19,7 @@ export function createBackgroundMusic({storage,t}){
  function ensureGraph(){
   if(context)return;const AudioContext=window.AudioContext||window.webkitAudioContext;if(!AudioContext)return;
   // GainNode also controls volume on iOS, where HTMLMediaElement.volume can be ignored.
-  try{context=new AudioContext();gain=context.createGain();gain.gain.value=prefs.enabled?prefs.volume:0;source=context.createMediaElementSource(audio);source.connect(gain);gain.connect(context.destination);audio.volume=1;}catch{context?.close().catch(()=>{});context=null;gain=null;audio.volume=prefs.volume;}
+  try{context=new AudioContext();gain=context.createGain();gain.gain.value=prefs.enabled?prefs.volume:0;source=context.createMediaElementSource(audio);analyser=context.createAnalyser();analyser.fftSize=512;analyser.smoothingTimeConstant=.7;wave=new Float32Array(analyser.fftSize);spectrum=new Uint8Array(analyser.frequencyBinCount);source.connect(analyser);analyser.connect(gain);gain.connect(context.destination);audio.volume=1;}catch{context?.close().catch(()=>{});context=null;gain=null;audio.volume=prefs.volume;}
  }
  async function start(){
   if(!prefs.enabled||document.hidden||pending)return;
@@ -36,5 +36,15 @@ export function createBackgroundMusic({storage,t}){
  slider.addEventListener('input',()=>{prefs.volume=Math.max(0,Math.min(100,Number(slider.value)))/100;applyVolume();save();sync();if(prefs.enabled)void start();});
  audio.addEventListener('error',()=>{pending=false;failed=true;sync();});audio.addEventListener('playing',()=>{pending=false;sync();});
  window.addEventListener('pagehide',()=>{attempt++;pending=false;audio.pause();});window.addEventListener('pageshow',()=>{if(started&&prefs.enabled)void start();});
- window.addEventListener('course-language',sync);sync();return {sync};
+ const levels={energy:0,bass:0};
+ function readLevels(dt=.016){let energy=0,bass=0;
+  if(analyser&&prefs.enabled&&prefs.volume>0&&!audio.paused&&context?.state==='running'){
+   analyser.getFloatTimeDomainData(wave);analyser.getByteFrequencyData(spectrum);
+   const raw=analyseMusic(wave,spectrum,context.sampleRate);energy=raw.energy;bass=raw.bass;
+  }
+  for(const key of ['energy','bass']){const value=key==='energy'?energy:bass;const rate=value>levels[key]?10:2.5;levels[key]+=(value-levels[key])*(1-Math.exp(-Math.max(0,dt)*rate));}return levels;
+ }
+ window.addEventListener('course-language',sync);sync();return {sync,readLevels};
 }
+
+export function analyseMusic(wave,spectrum,sampleRate=48000){let sum=0;for(const v of wave)sum+=v*v;const rms=Math.sqrt(sum/Math.max(1,wave.length));let bass=0,count=0;for(let i=1;i<spectrum.length;i++){const hz=i*sampleRate/(spectrum.length*2);if(hz>320)break;if(hz>=45){bass+=spectrum[i]/255;count++;}}return {energy:Math.min(1,rms*4.5),bass:count?bass/count:0};}

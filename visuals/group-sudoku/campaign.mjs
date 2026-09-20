@@ -1,8 +1,9 @@
+import {BUILD_TIME_KEY} from './construction.mjs?v=palace-clock2';
 import {MUSIC_KEY} from './music.mjs?v=music1';
 import {frontier,canEnter} from './journey.mjs?v=journey4';
 export const STORAGE_KEY='shengmeng-group-sudoku-campaign-v1';
 export const MAP_STYLE_KEY='group-sudoku-map-style';
-export function clearLocalData(storage){for(const key of [STORAGE_KEY,MAP_STYLE_KEY,MUSIC_KEY])storage?.removeItem(key);}
+export function clearLocalData(storage){for(const key of [STORAGE_KEY,MAP_STYLE_KEY,MUSIC_KEY,BUILD_TIME_KEY])storage?.removeItem(key);}
 export class Campaign{
  constructor(model,storage){this.model=model;this.storage=storage;this.boards={};this.finished={};this.persistent=!!storage;try{const data=JSON.parse(storage?.getItem(STORAGE_KEY)||'{}');for(let n=2;n<=9;n++){if(this.valid(n,data.boards?.[n]))this.boards[n]=data.boards[n];if(this.valid(n,data.finished?.[n])&&model.inspect(data.finished[n]).kind==='complete')this.finished[n]=data.finished[n];}}catch{this.persistent=false;}}
  valid(n,v){const clues=this.model.initial(n);return Array.isArray(v)&&v.length===n*n&&v.every((x,i)=>Number.isInteger(x)&&x>=0&&x<=n&&(!clues[i]||clues[i]===x));}

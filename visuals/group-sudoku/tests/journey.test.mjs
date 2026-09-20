@@ -13,6 +13,6 @@ test('cinematic interpolation has exact endpoints and continuous interior motion
  const a=cameraSpline(keys,2-1e-5),b=cameraSpline(keys,2+1e-5);assert.ok(Math.abs(a[0][0]-b[0][0])<.001);assert.ok(Math.abs(stageTime.bridge+stageTime.flight-7.3)<1e-9);
 });
 
-test('construction starts only after the camera has stopped, and the board follows the buildings',()=>{assert.equal(arrivalPhase(2.7),'moving');assert.equal(arrivalPhase(2.9),'settled');assert.equal(arrivalPhase(3),'building');assert.equal(arrivalPhase(5),'building');assert.equal(arrivalPhase(5.2),'board');assert.equal(arrivalPhase(6.4),'ready');assert.equal(arrivalPhase(2.8,true),'ready');});
+test('construction starts only after the camera has stopped, and the board follows the buildings',()=>{assert.equal(arrivalPhase(2.7),'moving');assert.equal(arrivalPhase(2.9),'settled');assert.equal(arrivalPhase(3),'building');assert.equal(arrivalPhase(5),'building');assert.equal(arrivalPhase(18.2),'board');assert.equal(arrivalPhase(19.35),'ready');assert.equal(arrivalPhase(2.8,true),'ready');});
 
 test('nameplates lie outside every disk',()=>{PLACES.forEach(([cx,cz],i)=>{const [x,z]=plaqueOffset(i);for(const [a,b]of PLACES)assert.ok(Math.hypot(Math.max(0,Math.abs(a-cx-x)-5.15),Math.max(0,Math.abs(b-cz-z)-1.13))>13.05);});});
