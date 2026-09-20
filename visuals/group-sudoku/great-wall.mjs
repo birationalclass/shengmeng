@@ -16,6 +16,24 @@ export function banner(a,parent,x,y,z,phase=0){
  return mast;
 }
 
+function courtyardTrees(a,parent){
+ const bark=new T.MeshStandardMaterial({color:0xb9b79a,roughness:.95}),patch=new T.MeshStandardMaterial({color:0x747d5b,roughness:1});
+ const leaves=[0x667d48,0x81914e,0x9b9d50,0x73905a].map(color=>new T.MeshStandardMaterial({color,roughness:.94}));
+ const crownGeometry=new T.SphereGeometry(1,8,6),trunkGeometry=new T.CylinderGeometry(.085,.14,1,7);
+ for(let i=0;i<32;i++){
+  const q=i*Math.PI/16;if(Math.abs(q-Math.PI)<.23)continue;
+  const tree=new T.Group();tree.userData.landmark='wutong-tree';tree.position.set(Math.sin(q)*9.55,.15,-Math.cos(q)*9.55);parent.add(tree);
+  const h=1.10+.40*(1+Math.cos(q))/2+.08*Math.sin(i*2.1);
+  const trunk=a.mesh(tree,trunkGeometry,bark,[0,h*.48,0]);trunk.scale.y=h;
+  for(let j=0;j<5;j++){const angle=j*2.4+i;const mark=a.mesh(tree,new T.SphereGeometry(.06,5,4),patch,[Math.sin(angle)*.11,.18+j*h*.14,Math.cos(angle)*.11]);mark.scale.set(.8,1.8,.45);mark.rotation.y=angle;}
+  for(let j=0;j<3;j++){
+   const angle=j*Math.PI*2/3+i*.7,dx=Math.sin(angle)*.28,dz=Math.cos(angle)*.28;
+   a.rod(tree,[0,h*.60,0],[dx,h+.10,dz],.045,bark);
+   const crown=a.mesh(tree,crownGeometry,leaves[(i+j)%4],[dx,h+.15+(j===0?.16:0),dz]);crown.scale.set(.51,.39,.51);crown.rotation.y=angle;
+  }
+ }
+}
+
 export function greatWall(a,parent){
  a.wallBeacons=[];const wall=new T.Group();wall.name='Great Wall · 万里长城';wall.userData.landmark='great-wall';parent.add(wall);
  const stone=a.materials.stone.clone();stone.color.setHex(0x9b947d);
@@ -82,5 +100,6 @@ export function greatWall(a,parent){
   a.box(tower,[.83,.15,.15],[0,1.49,w/2+.07],cap);
   installWallBeacon(a,tower,h+.55,j);
  }
+ courtyardTrees(a,wall);
  return wall;
 }

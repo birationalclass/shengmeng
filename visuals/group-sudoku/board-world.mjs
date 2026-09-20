@@ -3,7 +3,7 @@ import {planConstruction} from './construction.mjs?v=owl-clearance1';
 import * as T from '../3d/vendor/three.module.js';
 import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=owl-clearance1';
 import {landmark} from './landmarks.mjs?v=living1';
-import {greatWall} from './great-wall.mjs?v=wall-gate2';
+import {greatWall} from './great-wall.mjs?v=wutong1';
 import {THEMES,plaqueOffset} from './journey.mjs?v=owl-clearance1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.

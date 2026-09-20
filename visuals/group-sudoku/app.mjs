@@ -1,7 +1,7 @@
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=wall-gate2';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=wutong1';
 import {cameraKey} from './camera-navigation.mjs?v=owl-clearance1';
 import {THEMES} from './journey.mjs?v=owl-clearance1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
