@@ -1,8 +1,8 @@
 import * as T from '../3d/vendor/three.module.js';
-import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=ecnu-blue2';
+import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=pool-fireworks1';
 import {landmark} from './landmarks.mjs?v=living1';
 import {greatWall} from './great-wall.mjs?v=living1';
-import {THEMES,plaqueOffset} from './journey.mjs?v=ecnu-blue2';
+import {THEMES,plaqueOffset} from './journey.mjs?v=pool-fireworks1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
 // Hit targets are projected from these world coordinates, so orbiting never detaches input.

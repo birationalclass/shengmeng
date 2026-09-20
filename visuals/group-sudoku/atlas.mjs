@@ -1,10 +1,12 @@
+import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=ecnu-blue2';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=ecnu-blue2';
-import {updateOwls} from './owls.mjs?v=ecnu-blue2';
+import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=pool-fireworks1';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=pool-fireworks1';
+import {updateOwls} from './owls.mjs?v=pool-fireworks1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=ecnu-blue2';
-import {dollyRadius,panDistance} from './camera-navigation.mjs?v=ecnu-blue2';
+import {batchBuiltDomain} from './static-batches.mjs?v=pool-fireworks1';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=pool-fireworks1';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
@@ -123,6 +125,10 @@ export class SudokuAtlas extends AtlasScene{
   updateArchitecturalMotion(this.detailMotion,t,reduced);
   updateIceSkaters(this.iceSkaters,t,reduced);
   updateOwls(this.owls,t,reduced);
+  updateFireworks(this.fireworks,t,reduced,this.built.has(5));
+  for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;
+  for(const ripple of this.poolRipples||[]){const u=((reduced?0:t*.18)+ripple.phase)%1;ripple.line.scale.setScalar(.6+u*1.1);ripple.line.material.opacity=.30*Math.sin(Math.PI*u);ripple.line.visible=this.built.has(0);}
+  updatePoolBoats(this.poolBoats,t,reduced,this.built.has(0));
   this.dust.rotation.y=reduced?0:t*.002;for(const lift of this.clockworkLifts||[]){const progress=this.built.has(4)?1:this.sequence?.index===4?ease((this.sequence.elapsed-3.2)/2.4):0;lift.position.y=.55+progress*1.6;}
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}

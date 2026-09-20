@@ -1,6 +1,6 @@
 export const PLACES=[[-43,20],[-27,-9],[2,-25],[32,-19],[48,10],[21,28],[-7,14],[-23,45]];
 export const THEMES=[
- {name:'华东师大数学楼',paper:'#38252c',ink:'#f5e3b2',given:'#b5a17b',line:'#bc995777',rim:0xc7a261,frame:0x493226,motif:2},
+ {name:'华师大樱花水庭',paper:'#38252c',ink:'#f5e3b2',given:'#b5a17b',line:'#bc995777',rim:0xc7a261,frame:0x493226,motif:2},
  {name:'青玉回纹',paper:'#173c36',ink:'#e0edce',given:'#8ead9c',line:'#a2bba26f',rim:0x83af91,frame:0x224c41,motif:3},
  {name:'冰湖银霜',paper:'#adcfde',ink:'#173e58',given:'#244861',line:'#35637da0',rim:0xc8e4ed,frame:0x6baac7,motif:4},
  {name:'七重白城',paper:'#4a2527',ink:'#efdab0',given:'#b89785',line:'#b99a6577',rim:0xd0a356,frame:0x572e2c,motif:5},
