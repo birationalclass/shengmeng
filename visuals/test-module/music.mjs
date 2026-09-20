@@ -1,4 +1,4 @@
-import {SOUNDTRACK_URL,SOUNDTRACK_TITLE} from './soundtrack.mjs';
+import {SOUNDTRACK_URL,SOUNDTRACK_TITLE} from './soundtrack.mjs?v=20260920audio1';
 export function setupMusic({getPlaying,getTime}){
  const audio=document.createElement('audio');audio.id='soundtrack';audio.preload='metadata';audio.loop=true;audio.volume=.35;audio.muted=true;document.body.append(audio);
  const file=document.getElementById('musicFile'),toggle=document.getElementById('musicToggle'),volume=document.getElementById('musicVolume'),status=document.getElementById('musicStatus');let enabled=false,objectURL=null;

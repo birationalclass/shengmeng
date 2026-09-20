@@ -1,4 +1,3 @@
-// Set this to a same-origin decoded audio asset once the supplied encrypted
-// QQ Music cache is replaced with a browser-playable source. No network audio.
-export const SOUNDTRACK_URL=null;
+// Local capture of the user-selected QQ Music playback.
+export const SOUNDTRACK_URL=new URL('./audio/game-of-thrones.mp3',import.meta.url).href;
 export const SOUNDTRACK_TITLE='Game of Thrones · Ramin Djawadi';
