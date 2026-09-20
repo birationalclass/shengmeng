@@ -1,6 +1,6 @@
 import {setupMusic} from './music.mjs?v=20260920audio2';
-import {AtlasScene} from './scene.mjs?v=20260920h';
-import {DURATION,PHASES,phaseAt,clamp} from './story.mjs?v=20260920h';
+import {AtlasScene} from './scene.mjs?v=20260920detail3';
+import {DURATION,PHASES,phaseAt,clamp} from './story.mjs?v=20260920detail3';
 const $=id=>document.getElementById(id),canvas=$('world');
 const defaults={speed:1,quality:'standard',captions:false,timeline:false,dust:true,loop:false,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches};
 let prefs={...defaults};try{const saved=JSON.parse(localStorage.getItem('operations-atlas-v2')||'{}');for(const k of Object.keys(defaults))if(typeof saved[k]===typeof defaults[k])prefs[k]=saved[k];}catch{}

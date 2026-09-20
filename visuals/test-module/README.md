@@ -31,3 +31,11 @@ Serve the repository root with `python3 -m http.server 8766` and open `/visuals/
 Run `node --test visuals/test-module/story.test.mjs`. These tests check timeline boundaries, portrait/landscape camera position and velocity continuity, exhaustive CRT reconstruction for all 105 residue triples, the gravity-flow action law including inverse time, and the order and associativity of composition. The in-page algebraic arguments are proofs; finite automated examples are regression checks, not replacements for proofs.
 
 Browser checks cover loading removal, all chapter boundaries, pause and seek, settings while playing, notes, manual camera and reset, quality, end-of-film and repeat behavior, enforced muted audio, and responsive layouts. UI controls use native buttons, range inputs and dialogs. Fullscreen exit does not navigate.
+
+## Architectural refinement (September 2026)
+
+The [original title designer interview and production stills](https://www.artofthetitle.com/title/game-of-thrones/) informed the physical miniature approach: articulated masonry and joinery, surrounding building clusters, and lower, continuously moving camera passes. `detail.mjs` creates instanced timber brackets, lattice screens, raised tile ribs, cathedral archivolts/chapels/fleche, Tudor windows, exhibition trusses, bridge bolts and hinge barrels. Repeated details are batched under their actual animated assembly, preserving construction timing while reducing draw calls. Building assemblies now rise rigidly rather than stretching vertically.
+
+Flicker mitigation separates plaque surfaces, replaces near-coplanar roof lines with raised geometry, increases camera near distance, adjusts shadow depth bias and limits self-shadowing on small overlays. Animated crystal and pulse instances bypass stale frustum bounds. High quality uses a 4096 shadow map; standard remains 2048. Crystal architecture construction is aligned with its own chapter (129–137 seconds).
+
+Verification includes continuous camera positions and velocities, desktop chapter views, a portrait framing check, silent entry/audio checks, rendering logs, dynamic-instance visibility and a sampled desktop runtime of approximately 60 fps. This is a real-time procedural interpretation, not a reconstruction of HBO's production assets.
