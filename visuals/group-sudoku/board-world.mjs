@@ -1,7 +1,8 @@
 import * as T from '../3d/vendor/three.module.js';
+import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=enchanted2';
 import {landmark} from './landmarks.mjs?v=living1';
 import {greatWall} from './great-wall.mjs?v=living1';
-import {THEMES,plaqueOffset} from './journey.mjs?v=nameplate1';
+import {THEMES,plaqueOffset} from './journey.mjs?v=enchanted2';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
 // Hit targets are projected from these world coordinates, so orbiting never detaches input.
@@ -12,23 +13,26 @@ export function installBoards(a){
   a.cylinder(base,13.05,.62,[0,-.48,0],M.dark);a.cylinder(base,12.9,.15,[0,-.09,0],trim);const disk=a.cylinder(base,12.72,.12,[0,.05,0],M.paving);disk.userData.region=i;a.disks.push(disk);
   const ring=a.torus(base,12.73,.065,[0,.13,0],trim.clone());a.markers[i]=ring;
   for(let k=0;k<96;k++){const q=k*Math.PI/48;a.box(base,[.055,.035,k%4===0?.45:.18],[Math.sin(q)*12.35,.13,Math.cos(q)*12.35],trim).rotation.y=q;}
-  const p=new T.Group();base.add(p);p.visible=false;
-  a.box(p,[11.8,.52,11.8],[0,.40,0],frame);a.box(p,[11.5,.065,11.5],[0,.69,0],trim);a.box(p,[11.36,.07,11.36],[0,.75,0],frame);
+  const p=new T.Group();base.add(p);p.visible=false;const lift=new T.Group();p.add(lift);lift.position.y=.8;lift.userData.boardLift=true;
+  a.box(lift,[11.8,.52,11.8],[0,.40,0],frame);a.box(lift,[11.5,.065,11.5],[0,.69,0],trim);a.box(lift,[11.36,.07,11.36],[0,.75,0],frame);
   // Corner fixtures and ornament vary with the region, while the grid stays clear.
   for(const x of [-5.7,5.7])for(const z of [-5.7,5.7]){
-   if(i%3===0){a.cylinder(p,.13,.08,[x,.72,z],trim);a.torus(p,.20,.025,[x,.79,z],trim);}
-   else if(i%3===1){const gem=a.mesh(p,new T.OctahedronGeometry(.17),trim,[x,.79,z]);gem.rotation.y=Math.PI/4;}
-   else{a.box(p,[.39,.08,.13],[x,.74,z],trim);a.box(p,[.13,.08,.39],[x,.74,z],trim);}
+   if(i%3===0){a.cylinder(lift,.13,.08,[x,.72,z],trim);a.torus(lift,.20,.025,[x,.79,z],trim);}
+   else if(i%3===1){const gem=a.mesh(lift,new T.OctahedronGeometry(.17),trim,[x,.79,z]);gem.rotation.y=Math.PI/4;}
+   else{a.box(lift,[.39,.08,.13],[x,.74,z],trim);a.box(lift,[.13,.08,.39],[x,.74,z],trim);}
   }
-  for(let k=0;k<n*4;k++){const q=k*Math.PI*2/(n*4);a.cylinder(p,.035,.06,[Math.sin(q)*6.45,.23,Math.cos(q)*6.45],trim);}
+  for(let k=0;k<n*4;k++){const q=k*Math.PI*2/(n*4);a.cylinder(lift,.035,.06,[Math.sin(q)*6.45,.23,Math.cos(q)*6.45],trim);}
   const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,a.renderer.capabilities.getMaxAnisotropy());
-  const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;p.add(mesh);
-  const boardObjects=new Set();p.traverse(o=>{if(o.isMesh)boardObjects.add(o);});buildSettlement(a,p,i,originals[i]);a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
+  const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;lift.add(mesh);
+  if(i===2){frame.color.setHex(0x6baac7);frame.map=null;frame.metalness=.3;frame.roughness=.18;mesh.material.roughness=.25;mesh.material.metalness=.25;}
+  const boardObjects=new Set();lift.traverse(o=>{if(o.isMesh)boardObjects.add(o);});if(!replaceDomain(a,p,i))buildSettlement(a,p,i,originals[i]);enrichDomain(a,p,i);
+  for(const x of [-4.9,4.9])for(const z of [-4.9,4.9]){a.cylinder(p,.3,.95,[x,.6,z],i===2?domainMaterials(a).ice:trim);a.cylinder(p,.43,.12,[x,1.03,z],trim);}a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
   const parts=[];p.updateMatrixWorld(true);let serial=0;
-  // Small meshes rise course by course; a roof follows its supporting walls.
-  p.traverse(o=>{if(!o.isMesh)return;const point=o.getWorldPosition(new T.Vector3());base.worldToLocal(point);const board=boardObjects.has(o);const delay=board?4.1+Math.max(0,point.y)*.15:.1+Math.min(2.4,Math.max(0,point.y)*.38)+(serial++%5)*.06;parts.push({object:o,position:o.position.clone(),scale:o.scale.clone(),delay:delay*.5,duration:(board?1.05:1.1)*.5,lift:board?.85:1.6});});
+  // A rigid platform rises after the masonry; its texture and hit plane never squash.
+  p.traverse(o=>{if(!o.isMesh||boardObjects.has(o))return;const point=o.getWorldPosition(new T.Vector3());base.worldToLocal(point);const delay=.08+Math.min(1.35,Math.max(0,point.y)*.17)+(serial++%5)*.035;parts.push({object:o,position:o.position.clone(),scale:o.scale.clone(),delay,duration:.62,lift:1.8});});
+  parts.push({object:lift,position:lift.position.clone(),scale:lift.scale.clone(),delay:2.05,duration:1.2,lift:2.2,rigid:true});
   const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;const gx=glowCanvas.getContext('2d'),grad=gx.createRadialGradient(64,64,28,64,64,64);grad.addColorStop(0,'#ffe4a580');grad.addColorStop(.6,'#ffe4a566');grad.addColorStop(1,'#ffe4a500');gx.fillStyle=grad;gx.fillRect(0,0,128,128);const glow=new T.Mesh(new T.PlaneGeometry(18,18),new T.MeshBasicMaterial({map:new T.CanvasTexture(glowCanvas),transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}));glow.rotation.x=-Math.PI/2;glow.position.y=.18;glow.visible=false;p.add(glow);mesh.material.emissiveMap=texture;
-  a.boards.push({canvas,texture,mesh,n,content:p,parts,theme,glow});
+  a.boards.push({canvas,texture,mesh,n,content:p,parts,theme,glow,lift});
  });
  a.hitMeshes=a.disks;
 }
@@ -60,6 +64,7 @@ export function paintBoard(a,index,state){
  const b=a.boards[index],{n,canvas,texture}=b,x=canvas.getContext('2d'),step=(SIZE-PAD*2)/(n+1),values=state.values;
  const theme=b.theme;x.fillStyle=theme.paper;x.fillRect(0,0,SIZE,SIZE);
  for(let k=0;k<500;k++){x.strokeStyle=k%2?'#c3a26908':'#10090516';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);const wave=index===1||index===2?80:4;x.bezierCurveTo(360,y-wave*Math.sin(k),800,y+wave,SIZE,y);x.stroke();}
+ if(index===2){x.strokeStyle='#effaff88';x.lineWidth=1.3;for(let j=0;j<15;j++){const px=(j*173)%SIZE,py=(j*257)%SIZE;x.beginPath();x.moveTo(px,py);x.lineTo(px+53,py+81);x.lineTo(px+30,py+131);x.stroke();}}
  if(index===5){for(let k=0;k<90;k++){const px=(k*167)%SIZE,py=(k*233)%SIZE;x.fillStyle='#d2d9ee28';x.fillRect(px,py,1.6,1.6);}}
  x.strokeStyle=theme.line;x.lineWidth=2;for(const inset of [12,22])x.strokeRect(inset,inset,SIZE-inset*2,SIZE-inset*2);
  const cell=(r,c)=>[PAD+(c+1)*step,PAD+(r+1)*step];
@@ -69,4 +74,4 @@ export function paintBoard(a,index,state){
  x.fillStyle=classes.includes('identity-mark')?'#f18777':classes.includes('inverse-mark')?'#baa0e7':accent||(classes.includes('given')?theme.given:theme.ink);const fixed=classes.includes('given');x.font=`${fixed?'700':'italic 400'} ${step*(fixed?.57:.61)}px ${fixed?'Atlas,Georgia':'Georgia'},serif`;if(values[k]){if(fixed){x.lineWidth=1.8;x.strokeStyle=index===2?'#332a2070':'#100c08a0';x.strokeText(values[k],px+step/2,py+step*.52+1.7);x.shadowColor=index===2?'#fff8':'#000';x.shadowOffsetY=1;x.shadowBlur=1;}else if(!classes.includes('identity-mark')&&!classes.includes('inverse-mark')&&!accent)x.fillStyle=index===2?'#305566':'#c1e0e8';x.fillText(values[k],px+step/2,py+step*.52);x.shadowOffsetY=0;x.shadowBlur=0;if(fixed){x.strokeStyle=index===2?'#514b3e55':'#e2d2a34a';x.lineWidth=1;x.beginPath();x.moveTo(px+step*.34,py+step*.83);x.lineTo(px+step*.66,py+step*.83);x.stroke();}}else{x.fillStyle='#8d785555';x.beginPath();x.arc(px+step/2,py+step/2,2.2,0,Math.PI*2);x.fill();}}
  texture.needsUpdate=true;
 }
-export function cellPoint(a,index,k){const n=index+2,step=(SIZE-PAD*2)/(n+1),px=PAD+(k%n+1.5)*step,py=PAD+(Math.floor(k/n)+1.5)*step;return a.platforms[index].localToWorld(new T.Vector3((px/SIZE-.5)*WIDTH,.805,(py/SIZE-.5)*WIDTH));}
+export function cellPoint(a,index,k){const n=index+2,step=(SIZE-PAD*2)/(n+1),px=PAD+(k%n+1.5)*step,py=PAD+(Math.floor(k/n)+1.5)*step;return a.boards[index].lift.localToWorld(new T.Vector3((px/SIZE-.5)*WIDTH,.805,(py/SIZE-.5)*WIDTH));}
