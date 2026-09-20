@@ -13,12 +13,14 @@ export function configureLectureRoot(root){
   root.position.set(HALL.boardX*BUILDING_SCALE-10.4*LECTURE_SCALE,DECK_Y*BUILDING_SCALE+LECTURE_LIFT,-28*LECTURE_SCALE);
 }
 export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
-// The former pool ring and central water branch are now continuous dry decks.
-export const COURT_DECK=[-24,28,-25.5,25.5];
-export const SEA_TERRACE=[26,86,-28,28];
+// Separate dry decks are joined by shallow arch bridges above open sea.
+export const COURT_DECKS=[[-24,1.5,-25.5,25.5],[5.5,18,-25.5,25.5]];
+export const SEA_TERRACE=[26,56,-15,18];
+export const COFFEE_PAD=[32.8,44,-26,-17];
 export const SEA_STEPS=[
-  {x:86,z:-20,dx:1,dz:0,width:3.4},{x:86,z:20,dx:1,dz:0,width:3.4},
-  {x:60,z:-28,dx:0,dz:-1,width:3.4},{x:60,z:28,dx:0,dz:1,width:3.4},
+  {x:56,z:-11,dx:1,dz:0,width:3.4},{x:56,z:11,dx:1,dz:0,width:3.4},
+  {x:48,z:-15,dx:0,dz:-1,width:3.4},{x:48,z:18,dx:0,dz:1,width:3.4},
+  {x:44,z:-23,dx:1,dz:0,width:2},
   {x:-24,z:-18,dx:-1,dz:0,width:2.4},
   {x:-6,z:25.5,dx:0,dz:1,width:2.4},{x:11.5,z:25.5,dx:0,dz:1,width:2.4},
   {x:-49,z:-29.5,dx:1,dz:0,width:2},{x:-40,z:-39.5,dx:1,dz:0,width:2},
@@ -34,10 +36,10 @@ export const DISTANT_ISLANDS=[
 export const POOL_RECTS=[];
 export const inPool=()=>false;
 export const poolTopology=()=>({cells:[],edges:[]});
-export const BRIDGES=[];
+export const BRIDGES=[{x:3.5,z:8,axis:'x',span:6,width:2,rise:.3},{x:22,z:2,axis:'x',span:10,width:2.4,rise:.4},{x:39,z:-16,axis:'z',span:4,width:2,rise:.25}];
 export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-22,12,29,39],[-35,-23,-2,12]];
 export const inGarden=(x,z)=>GARDEN_PADS.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
-export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24]];
+export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24],[36,42,-25,-19]];
 export function inBuilding(x,z,margin=0){return ROOM_PADS.some(([a,b,c,d])=>x>a-margin&&x<b+margin&&z>c-margin&&z<d+margin)||(x>HALL.west-margin&&x<HALL.east+margin&&z>HALL.north-margin&&z<HALL.south+margin);}
 export const GIANT_TREES=[[-24,31,3],[-51,12,3.6],[-60,-44,3]];
 export const ORNAMENTAL_TREES=[[-28,3.5,'terminalia'],[-44,-5,'plumeria'],[-48,-27,'terminalia'],[-33,11,'plumeria'],[-29,-25,'terminalia'],[28,-6,'plumeria']];

@@ -4,24 +4,24 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=14-sea-terraces';
-import {createLecture} from './lecture.js?v=14-sea-terraces';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=14-sea-terraces';
-import {seaLevel} from './landscape-shape.js?v=14-sea-terraces';
-import {createChalkReader} from './chalk-reader.js?v=14-sea-terraces';
+import {createRetreat} from './scene.js?v=15-fixed-hall';
+import {createLecture} from './lecture.js?v=15-fixed-hall';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=15-fixed-hall';
+import {seaLevel} from './landscape-shape.js?v=15-fixed-hall';
+import {createChalkReader} from './chalk-reader.js?v=15-fixed-hall';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=14-sea-terraces';
-import {RetreatTime,roofTarget} from './retreat-time.js?v=14-sea-terraces';
-import {constrainAboveWater} from './camera-bounds.js?v=14-sea-terraces';
-import {bindPhysicalButtons} from './physical-buttons.js?v=14-sea-terraces';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=15-fixed-hall';
+import {RetreatTime} from './retreat-time.js?v=15-fixed-hall';
+import {constrainAboveWater} from './camera-bounds.js?v=15-fixed-hall';
+import {bindPhysicalButtons} from './physical-buttons.js?v=15-fixed-hall';
 const sceneTime=new RetreatTime();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
-let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer;
+let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer,suppressFadeShot=null;
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
   position:new THREE.CatmullRomCurve3(s.positions.map(p=>new THREE.Vector3(...p))),
@@ -50,8 +50,10 @@ function stopTour(){
   if(changed)updateLabels();
 }
 function resumeTour(){
-  touring=true;free=false;
-  blend={elapsed:0,position:camera.position.clone(),target:controls.target.clone(),fov:camera.fov};
+  touring=true;free=false;suppressFadeShot=shot;$('transition').style.opacity=0;
+  const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
+  controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
+  blend={elapsed:0,position,target,fov:camera.fov,duration:Math.min(5.5,2.2+position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)))*.04)};
   updateLabels();
 }
 function applyShot(dt){
@@ -63,19 +65,13 @@ function applyShot(dt){
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*1.5));target.lerpVectors(controls.target,target,1-Math.exp(-dt*1.5));}
   }
   if(blend){
-    blend.elapsed+=dt;const k=smoothProgress(Math.min(1,blend.elapsed/2));
-    if(blend.position.distanceTo(position)>12){
-      // Long jumps dissolve through black instead of flying through solid walls.
-      camera.position.copy(k<.5?blend.position:position);controls.target.copy(k<.5?blend.target:target);
-      camera.fov=k<.5?blend.fov:s.fov;$('transition').style.opacity=String(Math.sin(k*Math.PI));
-    }else{
-      camera.position.lerpVectors(blend.position,position,k);controls.target.lerpVectors(blend.target,target,k);
-      camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
-    }
+    blend.elapsed+=dt;const k=smoothProgress(Math.min(1,blend.elapsed/blend.duration));
+    camera.position.lerpVectors(blend.position,position,k);controls.target.lerpVectors(blend.target,target,k);
+    camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
     if(k===1)blend=null;
   }else{
     camera.position.copy(position);controls.target.copy(target);camera.fov=s.fov;
-    $('transition').style.opacity=String(fadeAt(fraction)*.85);
+    $('transition').style.opacity=String(suppressFadeShot===shot?0:fadeAt(fraction)*.85);
   }
   camera.updateProjectionMatrix();controls.update();
   const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
@@ -106,7 +102,7 @@ function tick(stamp){
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden)return;
   if(touring){
-    if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));if(shot!==state.index){shot=state.index;updateLabels();}time=state.time;}
+    if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));if(shot!==state.index){shot=state.index;suppressFadeShot=null;updateLabels();}time=state.time;}
     applyShot(dt);
   }else{
     const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;forward.normalize();
@@ -182,15 +178,14 @@ $('light').addEventListener('input',()=>{
 });
 $('clockPlay').addEventListener('click',()=>{sceneTime.running=!sceneTime.running;$('clockPlay').setAttribute('aria-pressed',String(sceneTime.running));$('clockPlay').textContent=sceneTime.running?'暂停昼夜':'启动昼夜';});
 function updateSceneTime(dt){
-  const before=sceneTime.open;retreat.campus.setRoof(sceneTime.update(dt,reduced.matches));
-  if(Math.abs(before-sceneTime.open)>.00001)renderer.shadowMap.needsUpdate=true;
+  sceneTime.update(dt,reduced.matches);
   if(lastSunUpdate<0||Math.abs(sceneTime.hour-lastSunUpdate)>.02){
     const regenerate=lastEnvironmentHour<0||Math.abs(sceneTime.hour-lastEnvironmentHour)>.5;
     retreat.setTime(sceneTime.hour,regenerate);lastSunUpdate=sceneTime.hour;if(regenerate)lastEnvironmentHour=sceneTime.hour;
     renderer.shadowMap.needsUpdate=true;$('light').value=String(sceneTime.hour);
     const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
   }
-  lecture?.setConsoleState({roofOpen:roofTarget(sceneTime.hour,sceneTime.mode)>.5,automatic:sceneTime.mode==='auto'});
+  lecture?.setConsoleState();
 }
 let changingLanguage=false;
 async function switchChalkLanguage(){
@@ -217,8 +212,6 @@ function installPhysicalControls(){
   };
   bindPhysicalButtons($('world'),controls,hit,action=>{
     if(action==='language')switchChalkLanguage();
-    else if(action==='roof')sceneTime.mode=roofTarget(sceneTime.hour,sceneTime.mode)>.5?'closed':'open';
-    else if(action==='auto')sceneTime.mode='auto';
   });
 }
 $('fullscreen').addEventListener('click',async()=>{

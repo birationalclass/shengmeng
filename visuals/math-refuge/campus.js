@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECK,SEA_TERRACE,SEA_STEPS,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=14-sea-terraces';
-import {seaLevel} from './landscape-shape.js?v=14-sea-terraces';
-import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=14-sea-terraces';
+import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,SEA_STEPS,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=15-fixed-hall';
+import {seaLevel} from './landscape-shape.js?v=15-fixed-hall';
+import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fixed-hall';
 
 // Architectural geometry for dry offshore decks, rooms and sea-access stairs.
 // No swimming basin or exposed support piles are constructed.
@@ -52,7 +52,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     }
     meta(name+' light fixtures',{type,color,glareControlled:true});
     // The two upstairs rooms use sky/ambient fill plus visible diffusers.
-    // Limit direct dynamic sources to eight for the whole campus.
+    // Limit direct dynamic sources to nine for the whole campus.
     if(!name.startsWith('Upper'))lightingZones.push({name,position:[x,pendant-.16,z],target:[x,y,z],gain,color});
   }
   function books(cx,y,z,w){
@@ -66,10 +66,11 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{spacing:1,frame:.035,seal:.012}:undefined;
       if(doors.includes(side)){
         const gap=1.45,pane=(width-gap)/2;
-        for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis);
-      }else glazing(x,y,z,width,h,axis);
+        for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,style);
+      }else glazing(x,y,z,width,h,axis,style);
     }
     if(ownRoof){for(let x=cx-w/2+.35;x<cx+w/2;x+=.65)box([x,y+h-.08,cz],[.09,.10,d-.1],timber);
       furnishLighting(name,cx,cz,w,d,y,h);
@@ -78,7 +79,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     return roof;
   }
   // Main house wings connect across a continuous, open-to-sky dry courtyard.
-  floor(0,COURT_DECK[1]-COURT_DECK[0],COURT_DECK[3]-COURT_DECK[2],(COURT_DECK[0]+COURT_DECK[1])/2,0);
+  for(const [a,b,c,d] of COURT_DECKS)floor(0,b-a,d-c,(a+b)/2,(c+d)/2);
   floor(0,15,28,-6,0);floor(0,12,28,11.5,0);
   const upper=room('Academic living villa',-6,-4,12,18,3.2,0,['south','west','east'],false);
   const eastUpper=room('Discussion villa',11.5,-4,10,18,3.2,0,['south','west','east'],false);
@@ -165,32 +166,65 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   floor(0,1,2.2,26.5,2);
   box([30.5,2.55,2],[9,.13,2.4],edge);
   for(const x of [28,31,34])for(const z of [.9,3.1])box([x,1.3,z],[.09,2.6,.09],steel);
-  const cx=(HALL.west+HALL.east)/2,cz=0;
+  const cx=(HALL.west+HALL.east)/2,cz=0,hallDepth=HALL.south-HALL.north;
   room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','south'],false,false);
   const carpetMaterial=new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1,metalness:0,envMapIntensity:.08,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.12,.12),roughnessMap:pale.roughnessMap});
   const tierCarpets=['#7d6e5c','#8e7e6a'].map(color=>{const material=carpetMaterial.clone();material.color.set(color);return material;});
   const carpet=new THREE.Mesh(new THREE.BoxGeometry(HALL.east-HALL.west-.16,.024,HALL.south-HALL.north-.16),carpetMaterial);
   carpet.name='Warm woven seminar carpet';carpet.position.set(cx,DECK_Y+.016,0);carpet.receiveShadow=true;scene.add(carpet);
-  // Four thin roof leaves telescope onto two side cassettes. A fixed warm
-  // light cove remains at the perimeter; nothing spans the open central sky.
-  const roof=new THREE.Group();roof.name='Retractable seminar sky roof';scene.add(roof);
-  const hallDepth=HALL.south-HALL.north,panelDepth=hallDepth/4;
-  const leaves=[],roofY=DECK_Y+HALL.clearHeight/S+.12;
-  for(const x of [HALL.west-.12,HALL.east+.12])box([x,roofY,0],[.28,.28,hallDepth+.5],shell);
-  for(const sign of [-1,1]){
-    box([cx,roofY,sign*(hallDepth/2+.25)],[9.05,.3,.52],shell);
-    box([cx,roofY-.13,sign*(hallDepth/2-.04)],[8.25,.035,.09],light);
-    for(let i=0;i<2;i++){
-      const leaf=new THREE.Group();roof.add(leaf);leaves.push({leaf,sign,i});
-      const panel=new THREE.Mesh(new THREE.BoxGeometry(8.75,.13,panelDepth),shell);panel.castShadow=true;panel.receiveShadow=true;leaf.add(panel);
-      const inset=new THREE.Mesh(new THREE.BoxGeometry(8.1,.022,panelDepth-.55),acousticCeiling);inset.position.y=-.082;inset.receiveShadow=true;leaf.add(inset);
-      for(const x of [-3.9,3.9]){const led=new THREE.Mesh(new THREE.BoxGeometry(.025,.025,panelDepth-.35),light);led.position.set(x,-.10,0);leaf.add(led);}
-    }
+  // Fixed two-storey hall: the ground floor keeps its board clearance.
+  const hallUpper=DECK_Y+HALL.clearHeight/S+.20;
+  floor(hallUpper,8.95,20.55,cx,0);
+  room('Upper seminar lounge',cx,0,7,13,2.8,hallUpper,['west','south'],false,true);
+  for(const z of [-10,10])railing(cx,hallUpper+DECK_Y,z,8.5);
+  sofa(cx,hallUpper+DECK_Y,-3);table(cx,hallUpper+DECK_Y,0,2,1.1);
+  books(cx,hallUpper+DECK_Y,-6.2,5);
+  const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
+  ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
+  for(const z of [-5,0,5])linearLamp(cx,DECK_Y+HALL.clearHeight/S-.16,z,6.5);
+  for(const z of [-4.5,4.5])lightingZones.push({name:'Seminar downlight '+z,position:[cx,DECK_Y+HALL.clearHeight/S-.35,z],target:[cx,DECK_Y,z],gain:.8,color:'#ffe1bb'});
+  const n=34,stairX=33.3;
+  for(let i=0;i<n;i++)box([stairX,DECK_Y+hallUpper*(i+.5)/n,10.05-i*.3],[1.3,hallUpper/n,.305],timber);
+  floor(hallUpper,3.8,2.4,34.4,0);
+  for(const x of [32.61,33.99])beam([x,DECK_Y+.9/S,10.2],[x,hallUpper+DECK_Y+.9/S,.15],.022,brass);
+  meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
+  meta('Seminar hall light fixtures',{type:'fixed acoustic ceiling with recessed linear diffusers',glareControlled:true});
+  meta('Fine east seminar glazing',{spacing:1,frame:.035,seal:.012});
+  // A small independent coffee cabin on the north platform.
+  const [cw,ce,cn,cs]=COFFEE_PAD;floor(0,ce-cw,cs-cn,(cw+ce)/2,(cn+cs)/2);
+  room('North coffee cabin',39,-22,6,6,2.9,0,['south'],false,true);
+  box([39,DECK_Y+.48,-23.6],[3.8,.96,1],timber);
+  box([39,DECK_Y+.99,-23.6],[3.95,.07,1.08],stone);
+  const machine=new THREE.Group();machine.name='Coffee machine';machine.position.set(39,DECK_Y+1.03,-23.6);scene.add(machine);
+  const coffeeMaterial=new THREE.MeshStandardMaterial({color:'#343634',roughness:.72,metalness:.25});
+  const part=(p,size,material)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(...size),material);m.position.fromArray(p);machine.add(m);};
+  part([0,.30,0],[.86,.60,.55],coffeeMaterial);part([0,.04,.23],[.94,.08,.7],steel);
+  part([0,.5,.285],[.72,.14,.025],blackboard);
+  for(const x of [-.23,.23]){
+    part([x,.25,.40],[.075,.07,.30],brass);
+    const cup=new THREE.Mesh(new THREE.CylinderGeometry(.10,.075,.15,16),shell);cup.position.set(x,.145,.39);machine.add(cup);
+    const bean=new THREE.Mesh(new THREE.CylinderGeometry(.12,.08,.22,12),timber);bean.position.set(x,.70,0);machine.add(bean);
   }
-  function setRoof(open){for(const {leaf,sign,i} of leaves){leaf.position.set(cx,roofY+i*.16*open,sign*((panelDepth/2+i*panelDepth)*(1-open)+(hallDepth/2+panelDepth/2+.2)*open));}roof.userData.open=open;}
-  setRoof(0);
-  for(const sign of [-1,1])lightingZones.push({name:'Seminar downlight '+sign,position:[0,-.4,0],fixture:leaves.find(p=>p.sign===sign&&p.i===0).leaf,target:[39,DECK_Y,sign*2.5],gain:.8,color:'#ffe1bb'});
-  meta('Seminar hall light fixtures',{type:'retractable acoustic ceiling with recessed linear diffusers',glareControlled:true});
+  machine.userData={groupHeads:2,cups:2,hoppers:2};
+  table(38,DECK_Y,-21,1.3,.75);sofa(36.9,DECK_Y,-21,Math.PI/2);
+  meta('North coffee cabin amenities',{coffeeMachine:true,counter:true,seating:true});
+  for(const [index,bridge] of BRIDGES.entries()){
+    const {x,z,axis,span,width,rise}=bridge,steps=28;
+    const point=(t,y)=>[x+(axis==='x'?(t-.5)*span:0),y,z+(axis==='z'?(t-.5)*span:0)];
+    for(let i=0;i<steps;i++){
+      const t=(i+.5)/steps,y=DECK_Y+rise*Math.sin(Math.PI*t);
+      const slope=rise*Math.PI/span*Math.cos(Math.PI*t);
+      box(point(t,y-.04),axis==='x'?[span/steps+.006,.08,width]:[width,.08,span/steps+.006],timber,axis==='x'?[0,0,Math.atan(slope)]:[-Math.atan(slope),0,0]);
+      for(const sign of [-1,1]){
+        const a=point(i/steps,DECK_Y+rise*Math.sin(Math.PI*i/steps)+.9/S),b=point((i+1)/steps,DECK_Y+rise*Math.sin(Math.PI*(i+1)/steps)+.9/S);
+        a[axis==='x'?2:0]+=sign*width/2;b[axis==='x'?2:0]+=sign*width/2;beam(a,b,.018,brass);
+      }
+    }
+    for(let i=0;i<=6;i++)for(const sign of [-1,1]){
+      const p=point(i/6,DECK_Y+rise*Math.sin(Math.PI*i/6));p[axis==='x'?2:0]+=sign*width/2;beam(p,[p[0],p[1]+.9/S,p[2]],.014,brass);
+    }
+    meta('Module arch bridge '+(index+1),bridge);
+  }
   // Both sides remain transparent. Acoustic absorption is on the carpet and
   // ceiling, not an opaque north wall blocking the left-hand sea view.
   meta('Transparent seminar side elevations',{northOpaqueWall:false,southOpaqueWall:false});
@@ -242,24 +276,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const blind=new THREE.Mesh(new THREE.BoxGeometry(.055,HALL.clearHeight/S,hallDepth-.6),new THREE.MeshStandardMaterial({color:'#293530',roughness:1}));
   blind.name='East teaching blackout shade';blind.position.set(43.04,DECK_Y+HALL.clearHeight/(2*S),0);blind.visible=false;scene.add(blind);
   box([43.04,DECK_Y+HALL.clearHeight/S-.04,0],[.18,.12,hallDepth-.6],steel);
-  // Resort chaise: teak slats, floating upholstered seat, inclined back,
-  // small pillow, stitched edge, and low brushed-metal feet. All face sunrise.
-  const loungers=[];
-  function chaise(x,z){
-    const p=(a,b,c)=>[x+a/S,DECK_Y+b/S,z+c/S],size=s=>s.map(v=>v/S);
-    soft(p(0,.32,0),size([2.15,.12,.84]),timber);
-    for(let i=0;i<14;i++)box(p(-.98+i*.15,.39,0),size([.085,.035,.78]),timber);
-    soft(p(.36,.46,0),size([1.38,.16,.76]),darkFabric);
-    soft(p(-.62,.74,0),size([.88,.16,.76]),darkFabric,[0,0,-.48]);
-    soft(p(-.88,1.02,0),size([.24,.15,.65]),darkFabric,[0,0,-.48]);
-    for(const a of [-.8,.8])for(const c of [-.32,.32])box(p(a,.16,c),size([.055,.32,.055]),steel);
-    for(const c of [-.35,.35])box(p(.36,.547,c),size([1.24,.006,.008]),darkFabric);
-    loungers.push([x,z]);
-  }
-  for(const z of [-16,-10,-4,4,10,16]){chaise(78,z);table(77.4,DECK_Y,z+1,.65,.65);}
-  for(const z of [-23,23])for(const x of [48,60,72])chaise(x,z);
-  meta('Sea terrace chaise lounges',{count:loungers.length,positions:loungers,facing:[1,0,0]});
-  for(const z of [-13,13]){sofa(60,DECK_Y,z,Math.PI/2);table(61.2,DECK_Y,z,1,.7);}
+  // No sun loungers remain on the compact sea terrace.
+  for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
   // Broad, shallow sea-access steps. Their foot lands just above mean sea
   // level; the fascia continues below it so no support piles are exposed.
   for(const [index,entry] of SEA_STEPS.entries()){
@@ -281,8 +299,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     }
     meta('Sea access stair '+(index+1),{...entry,steps:n,heights,riserMetres:rise*S,treadMetres:tread*S,seaLevel});
   }
-  return {blind,seating,roof,setRoof,lightingZones,
+  return {blind,seating,lightingZones,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

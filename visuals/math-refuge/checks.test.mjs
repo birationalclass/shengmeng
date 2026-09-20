@@ -9,10 +9,10 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECK,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=14-sea-terraces';
-import {writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=14-sea-terraces';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=15-fixed-hall';
+import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=15-fixed-hall';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
-import {RetreatTime,roofTarget,daylightAt} from './retreat-time.js';
+import {RetreatTime,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
 import {bindPhysicalButtons} from './physical-buttons.js';
 import {platformUnion} from './platform-union.js';
@@ -43,7 +43,7 @@ test('chalk skips blank trailing columns and lifts across inter-word gaps',()=>{
   for(let i=9;i<=100;i++){
     const p=writingPose(rows,i/100,guide);assert(p.x<=60.0001,'No sweep to the empty right edge');
     if(p.x>21&&p.x<54)assert(!p.contact,'Pen must lift across whitespace');
-    assert(inkReveal(rows,i/100,0,guide)>=p.x||i===100);
+    if(!p.entering)assert(inkReveal(rows,i/100,0,guide)>=p.x||i===100);
   }
   assert.equal(writingPose(rows,1,guide).x,60);
   const blank=inkGuides({data:new Uint8ClampedArray(220*20*4),width:220,height:20},rows);
@@ -63,24 +63,25 @@ test('all 65 handwritten captions switch languages without changing formulas',as
   for(const match of css.matchAll(/url\('([^']+)'\)/g))assert((await fs.stat(new URL(match[1],import.meta.url))).size>1000);
 });
 
-test('daytime closes the roof, night opens it, manual mode overrides both',()=>{
-  const clock=new RetreatTime();
-  for(const hour of [6,8,12,17.99])assert.equal(roofTarget(hour),0);
-  for(const hour of [0,5.99,18,23.99])assert.equal(roofTarget(hour),1);
-  clock.hour=22;for(let i=0;i<150;i++)clock.update(.1);assert(clock.open>.999);
-  clock.mode='closed';clock.update(0,true);assert.equal(clock.open,0);
-  clock.hour=12;clock.mode='open';clock.update(0,true);assert.equal(clock.open,1);
-  clock.mode='auto';clock.update(0,true);assert.equal(clock.open,0);
-  clock.hour=23.99;clock.running=true;clock.update(1);assert(clock.hour<1);
+test('scene clock wraps days, pauses and respects reduced motion without roof state',()=>{
+  const clock=new RetreatTime();clock.hour=23.99;clock.update(1);assert(clock.hour<1);
+  clock.running=false;const hour=clock.hour;clock.update(10);assert.equal(clock.hour,hour);
+  clock.running=true;clock.update(10,true);assert.equal(clock.hour,hour);
   assert.equal(daylightAt(0),0);assert.equal(daylightAt(12),1);
+  assert(!('open' in clock));assert(!('mode' in clock));
 });
 
-test('pool is removed and the dry sea terrace extends well beyond its former edge',()=>{
-  assert.deepEqual(POOL_RECTS,[]);assert.deepEqual(BRIDGES,[]);assert.deepEqual(poolTopology(),{cells:[],edges:[]});
-  for(const [x,z] of [[3.5,0],[22,2],[58,0]])assert(!inPool(x,z));
-  const [a,b,c,d]=SEA_TERRACE;
-  assert((b-HALL.east)/(53-HALL.east)>4);assert((b-a)*(d-c)/(26*34)>3.5);
-  assert(a<COURT_DECK[1]&&c<COURT_DECK[2]&&d>COURT_DECK[3]);
+test('compact sea terraces connect across seawater with three arch bridges',()=>{
+  assert.deepEqual(POOL_RECTS,[]);assert.deepEqual(poolTopology(),{cells:[],edges:[]});
+  assert.equal(BRIDGES.length,3);assert.equal(COURT_DECKS.length,2);
+  assert(SEA_TERRACE[1]===56&&SEA_TERRACE[1]>HALL.east);
+  const pads=[...COURT_DECKS,SEA_TERRACE,COFFEE_PAD];
+  const dry=(x,z)=>pads.some(([a,b,c,d])=>x>a&&x<b&&z>c&&z<d);
+  for(const b of BRIDGES){
+    assert(!dry(b.x,b.z),'Bridge center is above seawater');
+    for(const sign of [-1,1])assert(dry(b.x+(b.axis==='x'?sign*b.span/2:0),b.z+(b.axis==='z'?sign*b.span/2:0)),'Bridge ends overlap dry decks');
+    assert(b.rise>0&&b.rise<.5);
+  }
   assert((DECK_Y-seaLevel)*BUILDING_SCALE>1.3);
 });
 
@@ -219,12 +220,12 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,0);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,0);
     assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
-    assert.equal(result.campus.lightingZones.length,8);
+    assert.equal(result.campus.lightingZones.length,9);
     for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
     for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}
     assert.equal(scene.children.filter(o=>o.isPointLight).length,0);
     for(const name of ['Connected infinity pool and core water court','East infinity overflow sheet','Side infinity overflow sheet','Sunrise infinity edge'])assert(!scene.getObjectByName(name));
-    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,9);
+    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,10);
     for(const island of result.islands.group.children){
       const pos=island.geometry.attributes.position;
       for(let i=1;i<=96;i++)assert.equal(pos.getY(i),pos.getY(0),'Island pole must not split into vertical spikes');
@@ -233,15 +234,15 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const sculpture of result.sculptures){
       assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(sculpture.position.x/BUILDING_SCALE-f.cx)+1.3<=f.w/2+.001&&Math.abs(sculpture.position.z/BUILDING_SCALE-f.cz)+1.3<=f.d/2+.001),'Each sculpture needs a complete dry pedestal pad: '+sculpture.name);
     }
-    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,9);
+    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,10);
     const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,SEA_STEPS.length);
     for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
     assert.equal(result.ocean.position.y,result.site.seaLevel);
-    // Both old pool branches and the extended east terrace are now dry.
-    for(const [x,z] of [[3.5,0],[22,2],[58,0],[84,0]]){
+    // Retained terraces and the coffee pavilion have dry foundations.
+    for(const [x,z] of [[0,0],[10,2],[52,0],[39,-22]]){
       assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(x-f.cx)<f.w/2&&Math.abs(z-f.cz)<f.d/2));
     }
     for(const stair of SEA_STEPS){
@@ -259,7 +260,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(backs.length,1);assert.equal(backs[0].count,30);
     const dark=color=>Math.max(color.r,color.g,color.b)<.3;
     assert(dark(backs[0].material.color),'Chair shells must not be ivory');
-    for(const leaf of result.campus.roof.children){assert(dark(leaf.children[0].material.color));assert(dark(leaf.children[1].material.color));}
+    assert(!result.campus.roof);assert(!result.campus.setRoof);
+    assert(dark(scene.getObjectByName('Fixed seminar acoustic ceiling').material.color));
     const pillows=allObjects.filter(o=>o.geometry?.name==='Aligned curved seat headrest');
     assert.equal(pillows.length,1);assert.equal(pillows[0].count,30);
     assert(dark(pillows[0].material.color),'Chair headrests must not stay white');
@@ -308,13 +310,20 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(calls.includes('NS 方程 · 存在性与光滑性'));assert(calls.includes('Hodge 猜想 ？'));assert(calls.includes('数学难民营'));
     assert(calls.includes('NS'));assert.equal(clippedFragments,12);
     assert.equal(calls.filter(t=>t==='数学难民营').length,1);assert(calls.includes('报告厅'));assert(calls.includes('图书馆'));
-    assert.equal(scene.getObjectByName('Sea terrace chaise lounges').userData.count,12);
+    assert(!scene.getObjectByName('Sea terrace chaise lounges'));
     assert.equal(scene.getObjectByName('Expanded sea lounge terrace').userData.pool,false);
-    const movingLamp=scene.getObjectByName('Seminar downlight 1 warm downlight');scene.updateMatrixWorld(true);
-    const closedLamp=movingLamp.getWorldPosition(new Three.Vector3());
-    result.campus.setRoof(1);assert.equal(result.campus.roof.userData.open,1);scene.updateMatrixWorld(true);
-    assert(movingLamp.getWorldPosition(new Three.Vector3()).z>closedLamp.z+10,'Hall lighting travels with roof leaves');
-    result.campus.setRoof(0);
+    const hall=scene.getObjectByName('Two-storey seminar hall').userData;
+    assert(hall.fixedRoof&&hall.storeys===2&&hall.stairSteps===34);
+    assert(hall.riserMetres>.14&&hall.riserMetres<.18);
+    assert(scene.getObjectByName('Upper seminar lounge'));
+    assert.deepEqual(scene.getObjectByName('Coffee machine').userData,{groupHeads:2,cups:2,hoppers:2,architectureScale:BUILDING_SCALE});
+    assert(scene.getObjectByName('Coffee cabin sign'));assert(calls.includes('咖啡小屋'));
+    for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
+    const glazing=scene.getObjectByName('Fine east seminar glazing').userData;
+    assert.equal(glazing.spacing,1);assert.equal(glazing.frame,.035);assert.equal(glazing.seal,.012);
+    result.setTime(12,true);assert(scene.fog.density<=.0003);
+    const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
+    assert(sky.material.uniforms.turbidity.value<=2);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Framed specimen tree')).length,ORNAMENTAL_TREES.length);
     for(const f of result.layoutFloors.filter(f=>f.y===0))assert(elevation(f.cx,f.cz)<seaLevel);
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
@@ -359,9 +368,10 @@ test('chalk lift, wear, damp wiping and drying are bounded and deterministic',()
   assert(wetOpacity(0)>wetOpacity(6));assert.equal(wetOpacity(12),0);
   const data=new Uint8ClampedArray(20*20*4);for(let x=1;x<10;x++)data[(8*20+x)*4+3]=255;
   const guides=inkGuides({data,width:20,height:20},[[0,0,19,19]]);assert(guides[0].includes(8));assert(guides[0].includes(null));
-  const wipes=Array.from({length:701},(_,i)=>eraserPose(i/700)).filter(p=>p.contact);
-  for(let y=0;y<=640;y+=20)for(let x=0;x<=1536;x+=24){
-    assert(wipes.some(p=>{const dx=x-p.x,dy=y-p.y,c=Math.cos(p.angle),s=Math.sin(p.angle);return Math.abs(dx*c+dy*s)<=ERASER_HALF_WIDTH&&Math.abs(-dx*s+dy*c)<=ERASER_HALF_HEIGHT;}),'Tilted wipe must cover the whole board');
+  const inkRows=[[80,40,500,70],[100,180,800,100]],path=erasingPlan(null,inkRows);
+  const wipes=Array.from({length:701},(_,i)=>eraserPose(i/700,1536,640,path)).filter(p=>p.contact);
+  for(const [a,b,w,h] of inkRows)for(let y=b;y<=b+h;y+=10)for(let x=a;x<=a+w;x+=10){
+    assert(wipes.some(p=>{const dx=x-p.x,dy=y-p.y,c=Math.cos(p.angle),s=Math.sin(p.angle);return Math.abs(dx*c+dy*s)<=ERASER_HALF_WIDTH&&Math.abs(-dx*s+dy*c)<=ERASER_HALF_HEIGHT;}),'Tilted wipe must cover every ink-bearing row');
   }
 });
 
@@ -420,7 +430,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=14-sea-terraces',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=7-garden',state).replace('./chalk-motion.js?v=14-sea-terraces',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=15-fixed-hall',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=15-fixed-hall',state).replace('./chalk-motion.js?v=15-fixed-hall',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -435,11 +445,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.includes('double complex'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
-    assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','roof','auto']);
+    assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>1.1&&h<1.8,'Buttons remain reachable after boards are raised');}
     const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert(button.position.z<rest);button.userData.pressed=false;
-    lecture.setConsoleState({roofOpen:true,automatic:false});assert.equal(lecture.consoleButtons[1].userData.lastLabel,'闭合顶盖');
+    lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
@@ -535,4 +545,34 @@ test('mouse and touch rotation are slower, with zoom and pan preserved',async()=
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/id="fullscreen"/g)].length,1);
   assert(/<footer[\s\S]*id="fullscreen"[\s\S]*<\/footer>/.test(html));
+});
+test('sparse ink gives short local eraser passes and proportional chalk timing',()=>{
+  const width=1536,height=640,data=new Uint8ClampedArray(width*height*4);
+  const regions=[[80,40,24,8],[1000,420,120,35]];
+  for(const [x,y,w,h] of regions)for(let py=y;py<y+h;py++)for(let px=x;px<x+w;px++)data[(py*width+px)*4+3]=255;
+  const image={data,width,height},path=erasingPlan(image);
+  assert(path.duration<2,'Sparse writing should not cause a long empty-board wipe');
+  for(const segment of path.segments.filter(s=>s.contact)){
+    assert(Math.abs(segment.a[0]-segment.b[0])<=160);
+    assert(regions.some(([x,y,w,h])=>segment.a[0]>=x-32&&segment.a[0]<=x+w+32&&segment.a[1]>=y-28&&segment.a[1]<=y+h+28));
+  }
+  const poses=Array.from({length:701},(_,i)=>eraserPose(i/700,width,height,path)).filter(p=>p.contact);
+  for(const [x,y,w,h] of regions)for(let py=y;py<y+h;py+=2)for(let px=x;px<x+w;px+=2)
+    assert(poses.some(p=>{const dx=px-p.x,dy=py-p.y,c=Math.cos(p.angle),s=Math.sin(p.angle);return Math.abs(dx*c+dy*s)<=ERASER_HALF_WIDTH&&Math.abs(-dx*s+dy*c)<=ERASER_HALF_HEIGHT;}));
+  const rows=[[0,0,20,20],[0,40,1000,20]],plan=writingPlan(rows);
+  const short=plan.segments.filter(s=>s.row===0).reduce((sum,s)=>sum+s.cost,0);
+  assert(short/plan.total<.05,'A short equation must not take the same time as a full line');
+  const clock=new LectureClock(10);clock.setDurations(0,{write:2,erase:1});clock.startWrite();
+  assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
+});
+test('tour resume blends from current view without a blackout or teleport',async()=>{
+  const source=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
+  const resume=source.slice(source.indexOf('function resumeTour'),source.indexOf('function applyShot'));
+  assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
+  assert(resume.includes('controls.enableDamping=false')&&resume.includes('suppressFadeShot=shot'));
+  const apply=source.slice(source.indexOf('function applyShot'),source.indexOf('function resize'));
+  assert(apply.includes('lerpVectors(blend.position,position,k)'));
+  assert(!apply.includes('Math.sin(k*Math.PI)'));
+  assert(apply.includes('suppressFadeShot===shot?0'));
+  let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
 });

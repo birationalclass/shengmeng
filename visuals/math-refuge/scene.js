@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=14-sea-terraces';
-import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=14-sea-terraces';
-import {createDistantIslands} from './distant-islands.js?v=14-sea-terraces';
-import {createCampus} from './campus.js?v=14-sea-terraces';
-import {daylightAt,wrapHour} from './retreat-time.js?v=14-sea-terraces';
-import {platformUnion} from './platform-union.js?v=14-sea-terraces';
+import {createLandscape} from './landscape.js?v=15-fixed-hall';
+import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=15-fixed-hall';
+import {createDistantIslands} from './distant-islands.js?v=15-fixed-hall';
+import {createCampus} from './campus.js?v=15-fixed-hall';
+import {daylightAt,wrapHour} from './retreat-time.js?v=15-fixed-hall';
+import {platformUnion} from './platform-union.js?v=15-fixed-hall';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;
@@ -79,17 +79,17 @@ export async function createRetreat(renderer,scene,report){
       }
     }
   }
-  function glazing(x,y,z,width,height,axis='x'){
+  function glazing(x,y,z,width,height,axis='x',style={}){
     const s=axis==='x'?[width,height,.035]:[.035,height,width];
     box([x,y+height/2,z],s,glass);
-    const n=Math.ceil(width/2);
+    const frame=style.frame||.075,n=Math.ceil(width/(style.spacing||2));
     for(let i=0;i<=n;i++){
-      const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[.075,height,.075],steel);
+      const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[frame,height,frame],steel);
     }
-    for(const h of [0,height])box([x,y+h,z],axis==='x'?[width,.09,.11]:[.11,.09,width],steel);
+    for(const h of [0,height])box([x,y+h,z],axis==='x'?[width,frame,frame]:[frame,frame,width],steel);
     // Recessed dark seals sit inside the metal head/sill instead of more glass
     // layers (which would add costly transparent overdraw on mobile).
-    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,.022,.052]:[.052,.022,width],rubber);
+    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,style.seal||.022,frame*.7]:[frame*.7,style.seal||.022,width],rubber);
   }
   function railing(x,y,z,w,axis='x'){
     glazing(x,y,z,w,1.05,axis);
@@ -188,6 +188,7 @@ export async function createRetreat(renderer,scene,report){
   }
   box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6,'学术客厅','ACADEMIC LOUNGE');
   sign('Conference entrance sign',[39,2.65,10.1],2.4,'报告厅','SEMINAR HALL');
+  sign('Coffee cabin sign',[39,2,-18.9],2.3,'咖啡小屋','COFFEE CABIN');
   sign('Discussion entrance sign',[11.5,2.1,5.12],2.8,'讨论室','DISCUSSION ROOM');
   sign('Library entrance sign',[-37,2,-10.88],2.8,'图书馆','LIBRARY');
   sign('Residence one sign',[-51.88,1.9,-28],2.1,'研究员居所 Ⅰ','RESIDENCE I',Math.PI/2);
@@ -206,7 +207,7 @@ export async function createRetreat(renderer,scene,report){
     ['Discussion room',14.5,9.5,2,5],['Library',-40.5,-8.2,3,5],
     ['Residence I',-50.5,-25.5,2,3],['Residence II',-41.5,-35.5,2,5],
     ['Tea service',-28.8,21.5,3,4],['Tea pavilion',-38.7,-25.8,3,5],
-    ['Arrival gate',-69.8,13.2,2,3]
+    ['Arrival gate',-69.8,13.2,2,3],['Coffee cabin',34.3,-19.5,2,5]
   ];
   for(const [x,z,w,d] of [[-39,-9.1,6,4.6],[-50.5,-25.5,3.6,3.6],[-41.5,-35.5,3.6,3.6],[-28.8,21,4.8,4.2],[-38.7,-25.8,3.6,3.6],[-69,12,5,6]])floor(0,w,d,x,z);
   for(const [name,x,z,p,q] of sculptureEntries){
@@ -279,8 +280,8 @@ export async function createRetreat(renderer,scene,report){
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
   const sky=new Sky();sky.scale.setScalar(12000);scene.add(sky);
-  sky.material.uniforms.turbidity.value=4;sky.material.uniforms.rayleigh.value=1.5;
-  sky.material.uniforms.mieCoefficient.value=.005;sky.material.uniforms.mieDirectionalG.value=.8;
+  sky.material.uniforms.turbidity.value=1.8;sky.material.uniforms.rayleigh.value=2;
+  sky.material.uniforms.mieCoefficient.value=.002;sky.material.uniforms.mieDirectionalG.value=.8;
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
@@ -295,7 +296,7 @@ export async function createRetreat(renderer,scene,report){
     lamp.target.position.fromArray(zone.target).multiplyScalar(BUILDING_SCALE);
     scene.add(lamp.target);interiorLights.push(lamp);
   }
-  scene.fog=new THREE.FogExp2('#9fbfc7',.0015);
+  scene.fog=new THREE.FogExp2('#8dbbdf',.00028);
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene();envScene.add(sky.clone());
   function lighting(value,regenerate=false){
@@ -314,7 +315,8 @@ export async function createRetreat(renderer,scene,report){
     sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*2.1;sun.color.setHSL(.095,.28+(1-day)*.25,.85);
     ambient.intensity=.18+day*1.1;interiorLights.forEach(l=>l.intensity=(24+(1-day)*44)*BUILDING_SCALE**2*l.userData.gain);
     light.emissiveIntensity=.35+(1-day)*.3;scene.environmentIntensity=.12+day*.5;
-    scene.fog.color.set('#9fbfc7').lerp(new THREE.Color('#101b2b'),1-day);
+    scene.fog.density=.00028+(1-day)*.00055;
+    scene.fog.color.set('#8dbbdf').lerp(new THREE.Color('#101b2b'),1-day);
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   setTime(8,true);

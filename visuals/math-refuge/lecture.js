@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights,PHASE_SECONDS} from './lecture-state.js?v=7-garden';
-import {inkGuides,inkReveal,writingPose,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=14-sea-terraces';
+import {LectureClock,boardHeights} from './lecture-state.js?v=15-fixed-hall';
+import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=15-fixed-hall';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=14-sea-terraces';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=15-fixed-hall';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -10,7 +10,7 @@ export async function createLecture(scene,renderer){
   const response=await fetch('./assets/chalk/pages.json?v=5-mobile');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
-  const cache=new Map(),pending=new Map(),guides=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
+  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
   if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin')]);
   function load(index){
     if(index<0)return Promise.resolve(null);
@@ -23,10 +23,13 @@ export async function createLecture(scene,renderer){
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image);pageRows.set(index,rows);
         cache.set(index,sample);pending.delete(index);version++;
-        try{if(sampleCtx.getImageData)guides.set(index,inkGuides(sampleCtx.getImageData(0,0,W,H),rows));}catch{ /* Column reveal still works if pixel readback is unavailable. */ }
+        let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
+        if(pixels)guides.set(index,inkGuides(pixels,rows));
+        const wipe=erasingPlan(pixels,[...rows,[88,582,1000,42]]);erasePlans.set(index,wipe);
+        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration)});
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
-        for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);pageRows.delete(key);}
+        for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
       };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=5-mobile';
     });pending.set(index,job);return job;
@@ -62,10 +65,10 @@ export async function createLecture(scene,renderer){
   }
   // Three actual, labeled, spring-travel buttons on a modeled wall panel.
   const consoleButtons=[],consoleTextures=[];
-  part(scene,[37,.55,-10.46],[.96,1.55,.15],metal);
+  part(scene,[37,1.0,-10.46],[.96,.6,.15],metal);
   const consoleMaterial=new THREE.MeshStandardMaterial({color:'#283330',roughness:.86,metalness:.12});
-  part(scene,[37,.55,-10.36],[.88,1.45,.08],consoleMaterial);
-  for(const [i,action] of ['language','roof','auto'].entries()){
+  part(scene,[37,.55,-10.36],[.88,.5,.08],consoleMaterial);
+  for(const [i,action] of ['language'].entries()){
     const button=new THREE.Mesh(new THREE.BoxGeometry(.76,.34,.13),new THREE.MeshStandardMaterial({color:'#574e41',roughness:.9,metalness:.12}));
     button.name='Physical chalk button '+action;button.position.set(37,1.0-i*.45,-10.245);
     button.userData={action,pressed:false,restZ:-10.245,lastLabel:''};scene.add(button);
@@ -74,11 +77,11 @@ export async function createLecture(scene,renderer){
     const label=new THREE.Mesh(new THREE.PlaneGeometry(.70,.28),new THREE.MeshStandardMaterial({map:texture,roughness:1,metalness:0,envMapIntensity:0}));label.position.z=.067;button.add(label);
     button.userData.canvas=canvas;button.userData.texture=texture;consoleButtons.push(button);
   }
-  function setConsoleState({roofOpen=false,automatic=true}={}){
-    const labels=[language==='zh'?'中文  /  EN':'EN  /  中文',roofOpen?'闭合顶盖':'打开顶盖',automatic?'日夜自动 · 开':'恢复自动'];
+  function setConsoleState(){
+    const labels=[language==='zh'?'中文  /  EN':'EN  /  中文'];
     consoleButtons.forEach((b,i)=>{const title=labels[i];if(b.userData.lastLabel===title)return;b.userData.lastLabel=title;
       const c=b.userData.canvas.getContext('2d');c.fillStyle='#29302a';c.fillRect(0,0,512,192);
-      c.fillStyle=i===2&&automatic?'#9bc1a7':'#bea984';c.fillRect(20,28,10,136);
+      c.fillStyle='#bea984';c.fillRect(20,28,10,136);
       c.fillStyle='#dfcfb6';c.textAlign='center';c.textBaseline='middle';c.font='46px "PingFang SC", sans-serif';c.fillText(title,276,96);b.userData.texture.needsUpdate=true;
     });
   }
@@ -110,7 +113,7 @@ export async function createLecture(scene,renderer){
     const board=boards[index],slot=clock.slots[index],ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase';
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
-    const wetKey=wet&&wetAge<PHASE_SECONDS.erase+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
+    const wetKey=wet&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
     const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0);const image=cache.get(slot.page);
@@ -126,7 +129,7 @@ export async function createLecture(scene,renderer){
       if(erasing){
         const end=Math.floor(clock.progress*700);
         for(let i=wipeSamples;i<=end;i++){
-          const p=eraserPose(i/700);if(!p.contact)continue;
+          const p=eraserPose(i/700,W,H,wet.plan);if(!p.contact)continue;
           wipeCtx.save();wipeCtx.translate(p.x,p.y);wipeCtx.rotate(p.angle);wipeCtx.beginPath();wipeCtx.rect(-EW,-EH,EW*2,EH*2);wipeCtx.clip();wipeCtx.rotate(-p.angle);wipeCtx.translate(-p.x,-p.y);wipeCtx.drawImage(grain,0,0);wipeCtx.restore();
         }
         wipeSamples=end+1;ctx.drawImage(wipeCanvas,0,0);
@@ -134,7 +137,7 @@ export async function createLecture(scene,renderer){
     }
     const r=board.roughCtx;r.fillStyle='white';r.fillRect(0,0,W/4,H/4);
     if(wetKey)for(let i=0;i<=Math.floor(wet.progress*420);i++){
-      const p=eraserPose(i/420),age=effectTime-wet.started-i/420*PHASE_SECONDS.erase,opacity=wetOpacity(Math.max(0,age));if(!p.contact||opacity<=0)continue;
+      const p=eraserPose(i/420,W,H,wet.plan),age=effectTime-wet.started-i/420*wet.duration,opacity=wetOpacity(Math.max(0,age));if(!p.contact||opacity<=0)continue;
       for(const [target,scale] of [[ctx,1],[r,.25]]){target.save();target.translate(p.x*scale,p.y*scale);target.rotate(p.angle);target.fillStyle=scale===1?`rgba(4,24,22,${opacity*.32})`:`rgba(0,0,0,${opacity*.6})`;target.fillRect(-EW*scale,-EH*scale,EW*2*scale,EH*2*scale);target.restore();}
     }
     board.roughTexture.needsUpdate=true;
@@ -155,7 +158,7 @@ export async function createLecture(scene,renderer){
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
     if(clock.phase==='erase'){
-      if(oldPhase!=='erase'||oldActive!==clock.active||!boards[clock.active].wet){boards[clock.active].wet={started:effectTime,progress:0};wipeCanvas.width=W;wipeSamples=0;}
+      if(oldPhase!=='erase'||oldActive!==clock.active||!boards[clock.active].wet){boards[clock.active].wet={started:effectTime,progress:0,duration:clock.duration,plan:erasePlans.get(clock.slots[clock.active].page)};wipeCanvas.width=W;wipeSamples=0;}
       boards[clock.active].wet.progress=clock.progress;
     }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
     if(reduced)for(const board of boards)board.wet=null;
@@ -173,7 +176,7 @@ export async function createLecture(scene,renderer){
       dustAccumulator+=dt;
       if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
     }else previousTip=null;
-    if(eraser.visible){const p=eraserPose(clock.progress);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.z=-p.angle;eraser.rotation.x=.03;}
+    if(eraser.visible){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.z=-p.angle;eraser.rotation.x=.03;}
     fallingDust.visible=!reduced;
     if(playing&&!reduced)for(let i=0;i<particleCount;i++){
       const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;
@@ -192,7 +195,7 @@ export async function createLecture(scene,renderer){
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
     async setLanguage(value){
       const next=value==='en'?'en':'zh';if(next===language)return;
-      language=next;generation++;loadingError=null;cache.clear();pending.clear();guides.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
+      language=next;generation++;loadingError=null;cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
       boards.forEach(b=>{b.last='';b.wet=null;});version++;
       try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(load));}
       catch(error){loadingError=error;throw error;}version++;
