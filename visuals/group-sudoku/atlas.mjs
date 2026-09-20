@@ -1,10 +1,10 @@
 import * as T from '../3d/vendor/three.module.js';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=ecnu-blue1';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=ecnu-blue1';
-import {updateOwls} from './owls.mjs?v=ecnu-blue1';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=ecnu-blue2';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=ecnu-blue2';
+import {updateOwls} from './owls.mjs?v=ecnu-blue2';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=ecnu-blue1';
-import {dollyRadius,panDistance} from './camera-navigation.mjs?v=ecnu-blue1';
+import {batchBuiltDomain} from './static-batches.mjs?v=ecnu-blue2';
+import {dollyRadius,panDistance} from './camera-navigation.mjs?v=ecnu-blue2';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
 import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';

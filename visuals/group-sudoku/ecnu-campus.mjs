@@ -48,7 +48,7 @@ export function ecnuCampus(a,p){
   for(let j=0;j<6;j++)a.mesh(p,new T.IcosahedronGeometry(.35,1),green,[side*10.45,.43,1+j*.94]);
  }
  // Official seal is used intact on an ivory medallion, not behind the cells.
- const medal=a.cylinder(p,2.05,.13,[0,.20,9.4],stone);medal.userData.landmark='ecnu-official-seal';a.torus(p,2.06,.035,[0,.29,9.4],a.materials.brass);
+ const medal=a.cylinder(p,2.05,.13,[0,.20,9.4],stone);medal.userData.landmark='ecnu-official-seal';a.torus(p,2.06,.035,[0,.29,9.4],mat(0x93c4dc,{metalness:.18,roughness:.5}));
  if(typeof document!=='undefined'){
   const texture=new T.TextureLoader().load(new URL('./images/ecnu-seal.png',import.meta.url).href,t=>{const canvas=document.createElement('canvas');canvas.width=768;canvas.height=779;const ctx=canvas.getContext('2d');ctx.drawImage(t.image,0,0,768,779);const pixels=ctx.getImageData(0,0,768,779),d=pixels.data;for(let i=0;i<d.length;i+=4){const ink=Math.min(1,(255-d[i+1])/224);d[i]=147;d[i+1]=196;d[i+2]=220;d[i+3]=Math.round(d[i+3]*ink);}ctx.putImageData(pixels,0,0);t.image=canvas;t.needsUpdate=true;});texture.colorSpace=T.SRGBColorSpace;
   const image=a.mesh(p,new T.PlaneGeometry(3.76*5907/5988,3.76),new T.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}),[0,.28,9.4]);image.rotation.x=-Math.PI/2;
