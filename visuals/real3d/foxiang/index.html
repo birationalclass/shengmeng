@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Real3D · 佛香阁习作 · Sheng Meng</title>
+<meta name="description" content="佛香阁建筑三维习作，支持旋转、缩放、线框及 Blender 渲染对照。">
+<meta name="theme-color" content="#ece9e1"><link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css?v=20260920a">
+<script type="importmap">{"imports":{"three":"../../3d/vendor/three.module.js"}}</script>
+</head>
+<body>
+<header><a class="brand" href="../../../"><span class="brand-icon">◈</span><span>SHENG MENG<small>VISUAL LAB</small></span></a><nav><a href="../">水庭</a><a href="../../">全部可视化 ↗</a><a href="../../../">个人主页</a></nav></header>
+<main>
+<section class="intro"><div><p class="eyebrow">REAL3D / SCENE 002</p><h1>佛香阁<span>A study of Foxiang Pavilion.</span></h1></div><p class="lead">从湖面看向山林中的重檐楼阁。<br>参照视频重建的可旋转建筑习作。</p></section>
+<section class="workspace" id="workspace" aria-label="佛香阁三维浏览器">
+<div class="stage" id="stage">
+<canvas id="scene" tabindex="0" aria-label="三维佛香阁场景：拖动旋转、滚轮缩放、右键平移。方向键旋转，加减号缩放，0键复位。"></canvas>
+<img id="reference" src="assets/render.webp" alt="同一佛香阁场景在 Blender 中的静态精修渲染" hidden>
+<div class="stage-top"><span class="pill" id="modeLabel"><i></i> 实时三维</span><button id="fullscreen" class="glass" aria-label="全屏浏览">⛶ 全屏</button></div>
+<div class="loading" id="loading" role="status" aria-live="polite"><img src="assets/cover.webp" alt=""><div><span class="eyebrow">PREPARING YOUR VISIT</span><h2 id="loadingTitle">正在打开佛香阁场景</h2><p id="loadStatus">正在下载三维场景…</p><progress id="progress" max="100" value="0" aria-label="模型加载进度"></progress><button id="retry" hidden>重新加载</button></div></div>
+<div class="viewbar" role="group" aria-label="观看模式"><button data-mode="3d" aria-pressed="true">自由探索</button><button data-mode="render" aria-pressed="false">Blender 渲染图</button></div>
+<div class="hint" id="gestureHint">拖动旋转 · 滚轮缩放 · 右键平移</div>
+</div>
+<aside>
+<div class="panel-head"><p class="eyebrow">YOUR POINT OF VIEW</p><h2>从这里看。</h2></div>
+<div class="presets" role="group" aria-label="预设视角"><button data-view="pool" aria-pressed="true"><span>01</span>湖畔<small>正面构图</small></button><button data-view="terrace" aria-pressed="false"><span>02</span>近看<small>屋檐与栏杆</small></button><button data-view="overview" aria-pressed="false"><span>03</span>全景<small>空间的全貌</small></button><button data-view="back" aria-pressed="false"><span>04</span>另一面<small>围绕建筑</small></button></div>
+<div class="settings"><label class="switch"><span>缓慢环绕</span><input type="checkbox" id="orbit"></label><label class="switch"><span>显示线框</span><input type="checkbox" id="wire"></label><label for="exposure">画面亮度 <output id="exposureValue">1.0</output></label><input id="exposure" type="range" min="0.5" max="1.6" step="0.05" value="1"><label for="quality">画质</label><select id="quality"><option value="balanced">均衡 · 推荐</option><option value="high">精细</option><option value="low">流畅</option></select><button class="reset" id="reset">↺ 恢复初始视角</button></div>
+<p id="status" role="status" aria-live="polite">等待场景载入</p>
+</aside>
+</section>
+<section class="notes"><p><b>一个场景，多种视角。</b>楼阁、瓦垄、台基、阶梯和树木都来自同一个三维模型。触屏支持单指旋转、双指缩放和平移。</p><p>“Blender 渲染图”为离线路径追踪渲染；自由探索使用实时光照，树叶、水面和阴影表现会有所不同。这是视觉习作，建筑比例与构造未经测绘核验。</p><details><summary>素材与场景说明</summary><p>建筑与地形由参数化脚本建模；树木扫描素材来自 <a href="https://polyhaven.com" target="_blank" rel="noreferrer">Poly Haven</a>（CC0）。<a href="README.md">查看完整素材来源</a>。网页仅在你的浏览器渲染。</p></details></section>
+</main><footer><span>REAL3D — A STUDY IN SPACE & LIGHT</span><a href="../../">返回 Visual Lab ↗</a></footer>
+<noscript><p>请启用 JavaScript 来旋转场景。<a href="assets/render.webp">也可以查看静态图</a>。</p></noscript>
+<script type="module" src="app.js?v=20260920a"></script>
+</body></html>
