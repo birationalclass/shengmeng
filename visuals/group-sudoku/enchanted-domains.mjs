@@ -1,4 +1,5 @@
 import * as T from '../3d/vendor/three.module.js';
+import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=enchanted1';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
 // Original miniature architecture: staged clockwork, luminous academies and glacial sculpture.
@@ -42,10 +43,11 @@ function iceLake(a,p){
  // Opaque reflective ice avoids transparent sorting and transmission render passes.
  a.cylinder(p,12.32,.12,[0,.17,0],M.deepIce);a.cylinder(p,12.08,.045,[0,.26,0],M.ice);a.torus(p,12.22,.16,[0,.28,0],M.snow);
  for(let k=0;k<24;k++){const q=k*Math.PI/12,r=7.5+(k%4)*.65;const x=Math.sin(q)*r,z=Math.cos(q)*r;a.line(p,[[x,.29,z],[x*.91+.22,.29,z*.91],[x*.79-.18,.29,z*.79]],0xd8f4ff,.4);}
- for(let k=0;k<11;k++){const q=-1.2+k*.24;const x=Math.sin(q)*10.3,z=-Math.cos(q)*10.3;crystal(a,p,x,z,1.4+(k%4)*.72,.44+(k%3)*.16);}
- for(const s of [-1,1]){iceSwan(a,p,s*8.2,-1.8,s);for(let j=0;j<3;j++)frostedPine(a,p,s*(8.7-j*.18),3+j*1.75,1.6+j*.15);}
- const portal=group(p,0,-9);portal.userData.landmark='ice-arch';for(const s of [-1,1]){crystal(a,portal,s*2.2,0,3.5,.65);a.rod(portal,[s*2.2,3.3,0],[0,5.1,0],.19,M.ice);}const star=a.mesh(portal,new T.OctahedronGeometry(.65),M.blue,[0,3.3,0]);jointMotion(a,star,{mode:'rotate',axis:'y',speed:.2});
- for(const s of [-1,1]){crystal(a,p,s*3,9.3,1.25,.38);a.torus(p,.65,.08,[s*3,.31,9.3],M.snow);}
+ for(let k=0;k<11;k++){const q=-1.2+k*.24;const x=Math.sin(q)*11.25,z=-Math.cos(q)*11.25;crystal(a,p,x,z,1.4+(k%4)*.72,.44+(k%3)*.16);}
+ for(const s of [-1,1]){iceSwan(a,p,s*10.35,-1.8,s);for(let j=0;j<3;j++)frostedPine(a,p,s*(10.3-j*.3),3+j*1.75,1.6+j*.15);}
+ const portal=group(p,0,-10.3);portal.userData.landmark='ice-arch';for(const s of [-1,1]){crystal(a,portal,s*2.2,0,3.5,.65);a.rod(portal,[s*2.2,3.3,0],[0,5.1,0],.19,M.ice);}const star=a.mesh(portal,new T.OctahedronGeometry(.65),M.blue,[0,3.3,0]);jointMotion(a,star,{mode:'rotate',axis:'y',speed:.2});
+ for(const s of [-1,1]){crystal(a,p,s*3,10.5,1.25,.38);a.torus(p,.65,.08,[s*3,.31,10.5],M.snow);}
+ installIceSkaters(a,p);
 }
 function academy(a,p){
  p.userData.domain='enchanted-academy';viaduct(a,p,-10,8.3);hall(a,p,0,-8.3,7.2,3.4);spire(a,p,-6.9,-7.5,5.0,.79);spire(a,p,6.9,-7.5,6.3,.82);

@@ -1,5 +1,6 @@
-import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=nameplate1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=enchanted2';
+import {createBackgroundMusic} from './music.mjs?v=music1';
+import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=music1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=music-skating1';
 import {cameraKey} from './camera-navigation.mjs?v=enchanted2';
 import {THEMES} from './journey.mjs?v=enchanted2';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
@@ -8,6 +9,7 @@ const campaign=new Campaign(model,storage);
 let selected=campaign.current-2,world,game,playing=false,busy=false,boardState,last=0,time=0,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,toastTimer,mapStyle='parchment',failed=false;
 try{mapStyle=storage?.getItem(MAP_STYLE_KEY)||'parchment';}catch{}
 const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
+createBackgroundMusic({storage,t});
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 const cameraKeys=new Set();
 function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 建筑升起 · 棋盘展开','ARRIVE · BUILD · REVEAL'):'';}

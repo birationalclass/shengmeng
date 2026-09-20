@@ -1,6 +1,6 @@
 # 群数独 · 八域之书
 
-独立可视化模块。棋盘是三维场景中的实体表面，直接点击格子后用数字键或工具栏落子，不弹出游戏窗口。八区的装饰建筑围绕棋盘，随阶数增加逐步丰富。设置可切换手绘羊皮纸（山脉、河流、湖泊、森林与道路）和机械地图。羊皮纸三维地图、八种材质棋盘、黄铜坐标与机械城邦沿用测试模块的建筑细节和桥梁构件；原课程入口不变。所有资源在本网站加载，本模块不播放音频。
+独立可视化模块。棋盘是三维场景中的实体表面，直接点击格子后用数字键或工具栏落子，不弹出游戏窗口。八区的装饰建筑围绕棋盘，随阶数增加逐步丰富。设置可切换手绘羊皮纸（山脉、河流、湖泊、森林与道路）和机械地图。羊皮纸三维地图、八种材质棋盘、黄铜坐标与机械城邦沿用测试模块的建筑细节和桥梁构件；原课程入口不变。所有资源在本网站加载，背景音乐可在设置中控制。
 
 ## 八个区域
 
@@ -30,7 +30,7 @@ node --test courses/abstract-algebra/2026-fall/tests/associativity-sudoku.test.c
 - 镜头先停稳，建筑分层搭建，再把棋盘作为刚体整体托起，完整入场约 6.4 秒；减少动态时直接完成。棋盘点击坐标继承升降组的真实变换。
 - 建成后的重复静态构件采用实例合批，齿轮、升降塔、活动灯具和实时棋盘不参与静态合批。
 
-视觉研究：[Game of Thrones / Art of the Title](https://www.artofthetitle.com/title/game-of-thrones/)，[Warner Bros. Studio Tour / Hogwarts castle model](https://www.wbstudiotour.co.uk/press-office/wbstl-press-pack/)。参考机械生长、精细模型与魔法学院的建筑语汇；程序模型为原创，不含影视画面或音乐。
+视觉研究：[Game of Thrones / Art of the Title](https://www.artofthetitle.com/title/game-of-thrones/)，[Warner Bros. Studio Tour / Hogwarts castle model](https://www.wbstudiotour.co.uk/press-office/wbstl-press-pack/)。参考机械生长、精细模型与魔法学院的建筑语汇；建筑模型为原创，未使用影视画面。
 
 浏览器回归：`node visuals/group-sudoku/tests/navigation.browser.cjs`（需要 Playwright 和本地 Chrome；默认服务器端口 8781，可设 `SUDOKU_TEST_URL`）。
 
@@ -42,3 +42,9 @@ node --test courses/abstract-algebra/2026-fall/tests/associativity-sudoku.test.c
 - [Kew：Palm House](https://www.kew.org/read-and-watch/palm-house-secrets-facts)：铁框玻璃温室的结构语言。
 
 设置中的“建筑预览”可以只观看搭建，不解锁或保存棋局；可用 `?preview=6` 直接预览机械城邦，`?preview=4` 预览冰湖，`?preview=8` 预览魔法学院。再次预览会重新播放升起过程，返回旅程仍沿用原有进度。
+
+## 背景音乐
+
+使用用户提供的完整 MP3：`哈利波特BGM_专注学习歌单_BV18aStYbEpv.mp3`（42 分 45 秒），本地托管于 `audio/magic-study.mp3`。默认开启、12% 音量、循环播放；首次点击或按键后启动，以兼容浏览器自动播放限制。设置中可以关闭或调整 0–100% 音量，偏好单独保存在本机。使用流式媒体，音乐不阻塞三维页面加载，也不会因换关或建筑预览重新播放；音量通过 Web Audio 增益控制，以兼容移动浏览器。
+
+冰湖新增两位花样滑冰人物：沿棋盘外侧连续滑行，包含交替蹬冰、舒展手臂、周期旋转和淡冰痕；冰雕与霜松已外移，为滑行留出空间。“减少动态”会停止人物运动并隐藏冰痕。

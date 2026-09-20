@@ -1,5 +1,5 @@
 import * as T from '../3d/vendor/three.module.js';
-import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=enchanted2';
+import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=music-skating1';
 import {landmark} from './landmarks.mjs?v=living1';
 import {greatWall} from './great-wall.mjs?v=living1';
 import {THEMES,plaqueOffset} from './journey.mjs?v=enchanted2';

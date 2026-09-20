@@ -40,7 +40,7 @@ test('regions unlock in sequence and replay preserves mastery',()=>{
  test('clear local data removes only group sudoku records and restores the first level',()=>{
  const data=new Map(),storage={getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};
  const c=new Campaign(model,storage);c.save(2,full(2));c.save(3,full(3));c.save(4,c.board(4));
- data.set(MAP_STYLE_KEY,'mechanical');data.set('other-course-progress','keep');clearLocalData(storage);
+ data.set(MAP_STYLE_KEY,'mechanical');data.set('group-sudoku-music-v1','{}');data.set('other-course-progress','keep');clearLocalData(storage);
  assert.deepEqual([...data],[['other-course-progress','keep']]);const fresh=new Campaign(model,storage);
  assert.equal(fresh.current,2);assert.equal(fresh.identityUnlocked,false);assert.deepEqual(fresh.completed,[]);assert.deepEqual(fresh.board(4),model.initial(4));
  assert.doesNotThrow(()=>clearLocalData(undefined));assert.throws(()=>clearLocalData({removeItem(){throw Error('blocked')}}),/blocked/);
