@@ -3,9 +3,9 @@ export const THEMES=[
  {name:'乌木金线',paper:'#30251c',ink:'#f5e3b2',given:'#b5a17b',line:'#bc995777',rim:0xc7a261,frame:0x493226,motif:2},
  {name:'青玉回纹',paper:'#173c36',ink:'#e0edce',given:'#8ead9c',line:'#a2bba26f',rim:0x83af91,frame:0x224c41,motif:3},
  {name:'冰湖银霜',paper:'#adcfde',ink:'#173e58',given:'#244861',line:'#35637da0',rim:0xc8e4ed,frame:0x6baac7,motif:4},
- {name:'绛红鎏金',paper:'#4a2527',ink:'#efdab0',given:'#b89785',line:'#b99a6577',rim:0xd0a356,frame:0x572e2c,motif:5},
+ {name:'七重白城',paper:'#4a2527',ink:'#efdab0',given:'#b89785',line:'#b99a6577',rim:0xd0a356,frame:0x572e2c,motif:5},
  {name:'玄铁黄铜',paper:'#263138',ink:'#e4d1a0',given:'#99a8aa',line:'#b2a17470',rim:0xb09057,frame:0x344047,motif:6},
- {name:'星穹圣殿',paper:'#1d2943',ink:'#e0e4eb',given:'#9faaca',line:'#9caccd77',rim:0xa9b4ce,frame:0x273453,motif:7},
+ {name:'鹰巢山城',paper:'#1d2943',ink:'#e0e4eb',given:'#9faaca',line:'#9caccd77',rim:0xa9b4ce,frame:0x273453,motif:7},
  {name:'魔法学院',paper:'#24352c',ink:'#e5ce9b',given:'#9baf94',line:'#b79a6177',rim:0xb5894e,frame:0x3b4332,motif:8},
  {name:'紫檀金嵌',paper:'#34213b',ink:'#f2dcad',given:'#b79da9',line:'#c0a37480',rim:0xdbc078,frame:0x4a2b39,motif:9}
 ];

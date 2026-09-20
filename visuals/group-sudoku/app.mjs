@@ -1,8 +1,8 @@
 import {createBackgroundMusic} from './music.mjs?v=music1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=music1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=music-skating1';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=castles1';
 import {cameraKey} from './camera-navigation.mjs?v=enchanted2';
-import {THEMES} from './journey.mjs?v=enchanted2';
+import {THEMES} from './journey.mjs?v=castles1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);
@@ -81,7 +81,7 @@ canvas.addEventListener('pointerdown',e=>{if(e.button!==0||!world||busy)return;w
 canvas.addEventListener('pointermove',e=>{if(!pointer||!world)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(Math.hypot(e.clientX-pointer.startX,e.clientY-pointer.startY)>4)pointer.moved=true;if(pointer.moved)world.orbit(dx,dy);pointer.x=e.clientX;pointer.y=e.clientY;});
 canvas.addEventListener('pointerup',e=>{if(pointer&&!pointer.moved&&world&&!playing){const r=canvas.getBoundingClientRect(),hit=world.pick((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2);if(hit>=0)choose(hit);}pointer=null;});canvas.addEventListener('pointercancel',()=>pointer=null);canvas.addEventListener('lostpointercapture',()=>pointer=null);
 canvas.addEventListener('wheel',e=>{if(!world||busy)return;e.preventDefault();world.touring=false;world.zoom(e.deltaY);},{passive:false});
-let layoutFrame=0;function scheduleLayout(){cancelAnimationFrame(layoutFrame);layoutFrame=requestAnimationFrame(()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing?selected:-1);positionTargets();});}
+let layoutFrame=0;function scheduleLayout(){cancelAnimationFrame(layoutFrame);layoutFrame=requestAnimationFrame(()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing||document.body.classList.contains('previewing')?selected:-1);positionTargets();});}
 function onFullscreenChange(){if(pointer&&canvas.hasPointerCapture(pointer.id))canvas.releasePointerCapture(pointer.id);pointer=null;syncFullscreen();scheduleLayout();}
 document.addEventListener('fullscreenchange',onFullscreenChange);document.addEventListener('webkitfullscreenchange',onFullscreenChange);window.addEventListener('resize',scheduleLayout);window.visualViewport?.addEventListener('resize',scheduleLayout);document.addEventListener('visibilitychange',()=>last=0);
 function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;if(!busy&&cameraKeys.size)world?.dolly((cameraKeys.has('ArrowUp')?1:0)-(cameraKeys.has('ArrowDown')?1:0),dt);world?.updateWorld(time,dt,reduced);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}positionTargets();}

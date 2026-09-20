@@ -1,8 +1,9 @@
 import * as T from '../3d/vendor/three.module.js';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=music-skating1';
-import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=enchanted2';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=castles1';
+import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=castles1';
+import {updateOwls} from './owls.mjs?v=castles1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
-import {batchBuiltDomain} from './static-batches.mjs?v=music-skating1';
+import {batchBuiltDomain} from './static-batches.mjs?v=castles1';
 import {dollyRadius} from './camera-navigation.mjs?v=enchanted2';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=living1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
@@ -120,6 +121,7 @@ export class SudokuAtlas extends AtlasScene{
   for(const {object,speed}of this.rotating)object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
   updateArchitecturalMotion(this.detailMotion,t,reduced);
   updateIceSkaters(this.iceSkaters,t,reduced);
+  updateOwls(this.owls,t,reduced);
   this.dust.rotation.y=reduced?0:t*.002;for(const lift of this.clockworkLifts||[]){const progress=this.built.has(4)?1:this.sequence?.index===4?ease((this.sequence.elapsed-3.2)/2.4):0;lift.position.y=.55+progress*1.6;}
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}

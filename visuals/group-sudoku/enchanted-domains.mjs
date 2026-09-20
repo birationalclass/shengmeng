@@ -1,4 +1,6 @@
 import * as T from '../3d/vendor/three.module.js';
+import {masonryTexture} from './castle-materials.mjs?v=castles1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=castles1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=enchanted1';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
@@ -6,7 +8,8 @@ import {jointMotion} from './architectural-motion.mjs?v=living1';
 const material=(color,extra={})=>new T.MeshStandardMaterial({color,roughness:.65,...extra});
 export function domainMaterials(a){
  if(a.enchantedMaterials)return a.enchantedMaterials;
- return a.enchantedMaterials={limestone:material(0xc5c5be),slate:material(0x203f50,{metalness:.28,roughness:.4}),snow:material(0xe1edf1),ice:material(0x89c7de,{metalness:.28,roughness:.16,emissive:0x123a58,emissiveIntensity:.25}),deepIce:material(0x316e90,{metalness:.4,roughness:.21}),window:material(0xffcf7c,{emissive:0xffa648,emissiveIntensity:.8,roughness:.3}),blue:material(0x99deeb,{emissive:0x4fadc7,emissiveIntensity:.45}),dark:material(0x152c3b),gold:a.materials.gold};
+ const stone=masonryTexture(),roof=masonryTexture(true);
+ return a.enchantedMaterials={limestone:material(0xc5c5be,{map:stone,bumpMap:stone,bumpScale:.045}),slate:material(0x203f50,{map:roof,bumpMap:roof,bumpScale:.025,metalness:.18,roughness:.6}),snow:material(0xe1edf1),ice:material(0x89c7de,{metalness:.28,roughness:.16,emissive:0x123a58,emissiveIntensity:.25}),deepIce:material(0x316e90,{metalness:.4,roughness:.21}),window:material(0xffcf7c,{emissive:0xffa648,emissiveIntensity:.8,roughness:.3}),blue:material(0x99deeb,{emissive:0x4fadc7,emissiveIntensity:.45}),dark:material(0x152c3b),gold:a.materials.gold};
 }
 function group(parent,x=0,z=0){const g=new T.Group();g.position.set(x,.15,z);parent.add(g);return g;}
 function arch(a,p,x,y,z,w,h,stone,light){
@@ -45,31 +48,19 @@ function iceLake(a,p){
  for(let k=0;k<24;k++){const q=k*Math.PI/12,r=7.5+(k%4)*.65;const x=Math.sin(q)*r,z=Math.cos(q)*r;a.line(p,[[x,.29,z],[x*.91+.22,.29,z*.91],[x*.79-.18,.29,z*.79]],0xd8f4ff,.4);}
  for(let k=0;k<11;k++){const q=-1.2+k*.24;const x=Math.sin(q)*11.25,z=-Math.cos(q)*11.25;crystal(a,p,x,z,1.4+(k%4)*.72,.44+(k%3)*.16);}
  for(const s of [-1,1]){iceSwan(a,p,s*10.35,-1.8,s);for(let j=0;j<3;j++)frostedPine(a,p,s*(10.3-j*.3),3+j*1.75,1.6+j*.15);}
- const portal=group(p,0,-10.3);portal.userData.landmark='ice-arch';for(const s of [-1,1]){crystal(a,portal,s*2.2,0,3.5,.65);a.rod(portal,[s*2.2,3.3,0],[0,5.1,0],.19,M.ice);}const star=a.mesh(portal,new T.OctahedronGeometry(.65),M.blue,[0,3.3,0]);jointMotion(a,star,{mode:'rotate',axis:'y',speed:.2});
+ icePalace(a,p,castleKit(a));
  for(const s of [-1,1]){crystal(a,p,s*3,10.5,1.25,.38);a.torus(p,.65,.08,[s*3,.31,10.5],M.snow);}
  installIceSkaters(a,p);
 }
-function academy(a,p){
- p.userData.domain='enchanted-academy';viaduct(a,p,-10,8.3);hall(a,p,0,-8.3,7.2,3.4);spire(a,p,-6.9,-7.5,5.0,.79);spire(a,p,6.9,-7.5,6.3,.82);
- for(const s of [-1,1]){const wing=hall(a,p,s*8.25,-1.5,4.4,2.5);wing.rotation.y=s*Math.PI/2;spire(a,p,s*8.1,3.3,3.15,.6);spire(a,p,s*5.6,-9.9,3.5,.48);}
- // Suspended lanterns remain outside the unobstructed playable square.
- const M=domainMaterials(a);for(const s of [-1,1])for(let j=0;j<4;j++){const lamp=group(p,s*(7.2+(j%2)*.42),4.8-j*1.6);lamp.position.y=2.8+j*.16;a.mesh(lamp,new T.OctahedronGeometry(.12),M.window);jointMotion(a,lamp,{mode:'sway',property:'position',axis:'y',amplitude:.13,speed:.7,phase:j});}
-}
-function starSanctuary(a,p){
- const M=domainMaterials(a);p.userData.domain='astral-sanctuary';
- for(const s of [-1,1]){spire(a,p,s*7.7,-6.7,3.4,.7);for(let j=0;j<3;j++){a.cylinder(p,.19,1.9,[s*8.2,1.13,j*2],M.limestone);a.cylinder(p,.32,.15,[s*8.2,2.12,j*2],M.gold);}iceSwan(a,p,s*8.4,5.7,s);}
- const dome=group(p,0,-8.6);a.cylinder(dome,2.05,2.3,[0,1.3,0],M.limestone);a.cylinder(dome,2.22,.18,[0,2.51,0],M.gold);const roof=group(dome);roof.position.y=2.58;a.mesh(roof,new T.SphereGeometry(2.05,32,16,0,Math.PI*2,0,Math.PI/2),M.slate);for(let k=0;k<8;k++){const q=k*Math.PI/4;const pts=Array.from({length:13},(_,j)=>new T.Vector3(Math.sin(j*Math.PI/24)*2.08*Math.sin(q),Math.cos(j*Math.PI/24)*2.08,Math.sin(j*Math.PI/24)*2.08*Math.cos(q)));a.mesh(roof,new T.TubeGeometry(new T.CatmullRomCurve3(pts),12,.035,4,false),M.gold);}jointMotion(a,roof,{mode:'rotate',axis:'y',speed:.04});
- const astrolabe=group(p,0,-8.6);astrolabe.position.y=6.1;for(let j=0;j<3;j++)a.torus(astrolabe,1.35+j*.12,.045,[0,0,0],M.gold,[j*.65,.3+j*.6,j*.4]);a.mesh(astrolabe,new T.OctahedronGeometry(.45),M.blue);jointMotion(a,astrolabe,{mode:'rotate',axis:'y',speed:.10});
- for(let k=0;k<7;k++){const q=k*Math.PI*2/7;a.mesh(p,new T.OctahedronGeometry(.12),M.blue,[Math.sin(q)*10.4,.45,Math.cos(q)*10.4]);}
-}
-export function replaceDomain(a,p,index){if(index===4){clockworkCity(a,p);return true;}if(index===2){iceLake(a,p);return true;}if(index===5){starSanctuary(a,p);return true;}if(index===6){academy(a,p);return true;}return false;}
+function castleKit(a){return {M:domainMaterials(a),group,arch,spire,hall,viaduct};}
+export function replaceDomain(a,p,index){if(index===4){clockworkCity(a,p);movingKeep(a,p,castleKit(a));return true;}if(index===2){iceLake(a,p);return true;}if(index===3){whiteCity(a,p,castleKit(a));return true;}if(index===5){eyrie(a,p,castleKit(a));return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
 export function enrichDomain(a,p,index){
  const M=domainMaterials(a);p.userData.domain??=['clockwork-garden','jade-pavilion','glacial-lake','rose-chapel','brass-city','astral-sanctuary','enchanted-academy','celestial-wall'][index];
  // Terraced stone approaches, inset path and edge lighting tie the miniature together.
  for(const side of [-1,1])for(let j=0;j<4;j++)a.box(p,[1.6,.12+j*.08,.40],[side*3.8,.17+j*.04,8.9-j*.37],index===2?M.snow:a.materials.stone);
  if(index===0){for(const s of [-1,1]){spire(a,p,s*3.2,-8.6,2.3,.42);}const dial=group(p,0,-9.3);a.gear(dial,1.2,28,[0,.4,0],.10);a.torus(dial,1.38,.055,[0,.5,0],M.gold);}
  if(index===1){for(const s of [-1,1])for(let j=0;j<3;j++){const z=-1+j*2;a.cylinder(p,.05,1.2,[s*7.6,.77,z],M.gold);a.mesh(p,new T.SphereGeometry(.16,8,6),M.window,[s*7.6,1.4,z]);}for(let j=0;j<5;j++)a.box(p,[3.4-j*.28,.1,.45],[0,.18+j*.07,-6.25-j*.36],a.materials.stone);}
- if(index===3){spire(a,p,-4.7,-8.8,3.9,.5);spire(a,p,4.7,-8.8,4.9,.55);for(const s of [-1,1]){const wing=hall(a,p,s*8.3,-.3,3.2,2.4);wing.rotation.y=s*Math.PI/2;}}
+
 
  if(index===7){for(const s of [-1,1]){const beacon=group(p,s*10,4.1);a.cylinder(beacon,.36,1.4,[0,.85,0],a.materials.stone);a.cylinder(beacon,.55,.18,[0,1.62,0],M.gold);const flame=a.mesh(beacon,new T.OctahedronGeometry(.3),M.window,[0,1.99,0]);flame.scale.y=1.7;}}
 }
