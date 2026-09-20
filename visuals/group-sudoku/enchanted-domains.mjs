@@ -1,6 +1,7 @@
 import * as T from '../3d/vendor/three.module.js';
-import {masonryTexture} from './castle-materials.mjs?v=owls-low1';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=owls-low1';
+import {ecnuCampus} from './ecnu-campus.mjs?v=ecnu1';
+import {masonryTexture} from './castle-materials.mjs?v=ecnu1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=ecnu1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=enchanted1';
 import {jointMotion} from './architectural-motion.mjs?v=living1';
@@ -53,12 +54,12 @@ function iceLake(a,p){
  installIceSkaters(a,p);
 }
 function castleKit(a){return {M:domainMaterials(a),group,arch,spire,hall,viaduct};}
-export function replaceDomain(a,p,index){if(index===4){clockworkCity(a,p);movingKeep(a,p,castleKit(a));return true;}if(index===2){iceLake(a,p);return true;}if(index===3){whiteCity(a,p,castleKit(a));return true;}if(index===5){eyrie(a,p,castleKit(a));return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
+export function replaceDomain(a,p,index){if(index===0){ecnuCampus(a,p);return true;}if(index===4){clockworkCity(a,p);movingKeep(a,p,castleKit(a));return true;}if(index===2){iceLake(a,p);return true;}if(index===3){whiteCity(a,p,castleKit(a));return true;}if(index===5){eyrie(a,p,castleKit(a));return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
 export function enrichDomain(a,p,index){
  const M=domainMaterials(a);p.userData.domain??=['clockwork-garden','jade-pavilion','glacial-lake','rose-chapel','brass-city','astral-sanctuary','enchanted-academy','celestial-wall'][index];
  // Terraced stone approaches, inset path and edge lighting tie the miniature together.
  for(const side of [-1,1])for(let j=0;j<4;j++)a.box(p,[1.6,.12+j*.08,.40],[side*3.8,.17+j*.04,8.9-j*.37],index===2?M.snow:a.materials.stone);
- if(index===0){for(const s of [-1,1]){spire(a,p,s*3.2,-8.6,2.3,.42);}const dial=group(p,0,-9.3);a.gear(dial,1.2,28,[0,.4,0],.10);a.torus(dial,1.38,.055,[0,.5,0],M.gold);}
+
  if(index===1){for(const s of [-1,1])for(let j=0;j<3;j++){const z=-1+j*2;a.cylinder(p,.05,1.2,[s*7.6,.77,z],M.gold);a.mesh(p,new T.SphereGeometry(.16,8,6),M.window,[s*7.6,1.4,z]);}for(let j=0;j<5;j++)a.box(p,[3.4-j*.28,.1,.45],[0,.18+j*.07,-6.25-j*.36],a.materials.stone);}
 
 
