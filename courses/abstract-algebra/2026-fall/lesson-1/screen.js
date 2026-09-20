@@ -124,9 +124,9 @@
     footer.setAttribute('aria-label',en()?'Lesson progress':'讲义进度');
     scene.querySelector('.notebook-exposition')?.setAttribute('aria-label',en()?'Mathematical explanation':'数学阐述');
     const e=entries[selected];
-    scene.classList.toggle('relation-as-function',!!e.extension);
+    scene.classList.toggle('relation-as-function',e.topic==='relation'&&!!e.extension);
     let functionNote=scene.querySelector('.notebook-function-note');
-    if(e.extension){
+    if(e.topic==='relation'&&e.extension){
       if(!functionNote){functionNote=document.createElement('div');functionNote.className='notebook-function-note';scene.querySelector('.relation-layout')?.before(functionNote);}
       const hint=en()?'Click 0 or 1 to change the value of R for the row and column pair. F = False, T = True.':'点击矩阵中的 0 或 1，改变 R 对这一对元素的取值。F = False，T = True。';
       if(functionNote.textContent!==hint)functionNote.textContent=hint;

@@ -74,3 +74,30 @@ window.CourseLanguage.add({
 });
 
 window.CourseLanguage.add({'每个元素平方均为单位元，因此四个元素都等于自己的逆元。':'Every element squares to the identity, so all four elements are their own inverses.'});
+
+// Fixed-element identity extensions and their dual.
+window.CourseLanguage.add({
+  "设 S 为非空集合，具有满足结合律的二元运算 S × S → S。": "Let S be a nonempty set with an associative binary operation S × S → S.",
+  "两项条件中的 a₀ 是同一个固定元素；先选 a₀ 与 e，再任取 b。所有解都要求属于 S。": "The same fixed a₀ occurs in both assumptions. Choose a₀ and e before taking an arbitrary b. All solutions must lie in S.",
+  "扩展：右单位元": "Extension: a right identity",
+  "定理 1.2.4 · 扩展 A": "Theorem 1.2.4 · Extension A",
+  "结合律；∃a₀ ∃e [a₀e = a₀ 且 ∀b ∃y (ya₀ = b)]": "Associativity; ∃a₀ ∃e [a₀e = a₀ and ∀b ∃y (ya₀ = b)]",
+  "按假设固定 a₀ ∈ S，并选定 e ∈ S，使 a₀e = a₀。此后 e 不随 b 改变。": "Fix a₀ ∈ S as in the hypothesis and choose e ∈ S with a₀e = a₀. This e is independent of b.",
+  "任取 b ∈ S。由对同一个 a₀ 的可解性，存在 y ∈ S，使 ya₀ = b。": "Take any b ∈ S. Solvability for this same a₀ gives y ∈ S with ya₀ = b.",
+  "be = (ya₀)e = y(a₀e) = ya₀ = b。中间一步仅使用结合律。": "be = (ya₀)e = y(a₀e) = ya₀ = b. The middle step uses only associativity.",
+  "由于 b 任意，同一个 e 满足对所有 b ∈ S 有 be = b，故 e 是右单位元。这里不需要消去律、有限性或解的唯一性。": "Since b was arbitrary, this same e satisfies be = b for every b ∈ S. Thus e is a right identity. Cancellation, finiteness and uniqueness of solutions are not needed.",
+  "不能推出群：取 S = {0,1}，定义 uv = u。则 (uv)w = u = u(vw)，故结合律成立。任取固定 a₀，a₀e = a₀ 对每个 e 成立；对任意 b，取 y = b 即有 ya₀ = b。": "This does not imply a group: take S = {0,1} with uv = u. Then (uv)w = u = u(vw), so associativity holds. For any fixed a₀, every e satisfies a₀e = a₀; for any b choose y = b to obtain ya₀ = b.",
+  "若 f 是左单位元，则 f0 = 0、f1 = 1；但该运算给出 f0 = f1 = f，矛盾。因此没有左单位元，更不是群。每个元素却都是右单位元，故右单位元也未必唯一。": "If f were a left identity, f0 = 0 and f1 = 1. But the operation gives f0 = f1 = f, a contradiction. There is no left identity and hence no group. Every element is a right identity, so right identities need not be unique.",
+  "扩展：左单位元（对偶）": "Extension: a left identity (dual)",
+  "定理 1.2.4 · 扩展 B（对偶）": "Theorem 1.2.4 · Extension B (dual)",
+  "结合律；∃a₀ ∃e [ea₀ = a₀ 且 ∀b ∃x (a₀x = b)]": "Associativity; ∃a₀ ∃e [ea₀ = a₀ and ∀b ∃x (a₀x = b)]",
+  "按对偶假设固定 a₀ ∈ S，并选定 e ∈ S，使 ea₀ = a₀。此后 e 不随 b 改变。": "Fix a₀ ∈ S under the dual hypotheses and choose e ∈ S with ea₀ = a₀. This e is independent of b.",
+  "任取 b ∈ S。存在 x ∈ S，使 a₀x = b。这里仍使用同一个固定元素 a₀。": "Take any b ∈ S. There is an x ∈ S with a₀x = b, using the same fixed a₀.",
+  "eb = e(a₀x) = (ea₀)x = a₀x = b。因此 e 是全体元素的左单位元。": "eb = e(a₀x) = (ea₀)x = a₀x = b. Thus e is a left identity for every element.",
+  "对偶的含义：在 S 上定义反向乘法 u ⋆ v = vu。由 (u ⋆ v) ⋆ w = w(vu) = (wv)u = u ⋆ (v ⋆ w)，⋆ 也满足结合律。对 ⋆ 应用扩展 A，所得右单位元正是原乘法的左单位元。": "Duality means reversing multiplication: define u ⋆ v = vu on S. Indeed, (u ⋆ v) ⋆ w = w(vu) = (wv)u = u ⋆ (v ⋆ w), so ⋆ is associative. Applying Extension A to ⋆ produces a right identity for ⋆, which is a left identity for the original operation.",
+  "对偶反例：取 S = {0,1}，定义 uv = v。则 (uv)w = w = u(vw)。任取固定 a₀，ea₀ = a₀ 对每个 e 成立；对任意 b，取 x = b 即有 a₀x = b。": "Dual counterexample: take S = {0,1} with uv = v. Then (uv)w = w = u(vw). For any fixed a₀, every e satisfies ea₀ = a₀; for any b choose x = b to obtain a₀x = b.",
+  "若 f 是右单位元，则 0f = 0、1f = 1；但该运算给出 0f = 1f = f，矛盾。因此没有右单位元，也不是群。每个元素都是左单位元，故左单位元也未必唯一。": "If f were a right identity, 0f = 0 and 1f = 1. But the operation gives 0f = 1f = f, a contradiction. There is no right identity and hence no group. Every element is a left identity, so left identities need not be unique.",
+  "若存在固定 a₀ ∈ S，使 a₀x = a₀ 在 S 中有解，且对每个 b ∈ S，ya₀ = b 在 S 中有解，则 a₀x = a₀ 的每个解都是 S 的右单位元。": "If there is a fixed a₀ ∈ S such that a₀x = a₀ is solvable in S and ya₀ = b is solvable in S for every b ∈ S, then every solution of a₀x = a₀ is a right identity of S.",
+  "若存在固定 a₀ ∈ S，使 ya₀ = a₀ 在 S 中有解，且对每个 b ∈ S，a₀x = b 在 S 中有解，则 ya₀ = a₀ 的每个解都是 S 的左单位元。": "If there is a fixed a₀ ∈ S such that ya₀ = a₀ is solvable in S and a₀x = b is solvable in S for every b ∈ S, then every solution of ya₀ = a₀ is a left identity of S.",
+  "结论只保证单侧单位元存在，不保证另一侧、唯一性或群结构。": "The conclusion gives a one-sided identity, not an identity on the other side, uniqueness or a group structure."
+});
