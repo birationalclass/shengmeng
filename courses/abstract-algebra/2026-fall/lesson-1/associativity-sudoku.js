@@ -83,18 +83,22 @@
   const model={initial,inspect,deduction,product,level,puzzle,completeForced};
   if(typeof module!=='undefined'&&module.exports)module.exports=model;
   if(typeof window==='undefined')return;
+  window.AssociativitySudokuModel=model;
   let dispose=()=>{};
-  window.AssociativitySudoku={render(host){
+  window.AssociativitySudoku={render(host,options={}){
     dispose();const abort=new AbortController();dispose=()=>abort.abort();
-    let N=2,values=initial(N),selected=initial(N).findIndex(v=>!v),skill='',hint=null,issue=null,message='',proofOpen=false;
-    const index=(r,c)=>r*N+c,completed=new Set();
+    let N=options.level||2,values=options.values?[...options.values]:initial(N),selected=values.findIndex(v=>!v),skill='',hint=null,issue=null,message='',proofOpen=false;
+    const index=(r,c)=>r*N+c,completed=new Set(options.completed||[]);
+    if(selected<0)selected=0;
+    const changed=()=>options.onChange?.(N,[...values]);
+    const identityLocked=()=>options.requireIdentityUnlock&&!completed.has(3);
     const en=()=>window.CourseLanguage?.language==='en',t=(zh,eng)=>en()?eng:zh;
     host.innerHTML='<section class="algebra-sudoku"></section>';const root=host.firstElementChild;
     const given=i=>initial(N)[i]!==0;
     function feedback(result){
       if(result.kind==='repeat')return t(`${result.axis?'第 '+(result.a+1)+' 列':'第 '+(result.a+1)+' 行'}重复出现 ${result.value}。`,`${result.axis?'Column':'Row'} ${result.a+1} repeats ${result.value}.`);
       if(result.kind==='associativity')return t(`结合律不成立：(${result.a}·${result.b})·${result.c} = ${result.l}，但 ${result.a}·(${result.b}·${result.c}) = ${result.r}。`,`Associativity fails: (${result.a}·${result.b})·${result.c} = ${result.l}, but ${result.a}·(${result.b}·${result.c}) = ${result.r}.`);
-      if(result.kind==='complete'){completed.add(N);return t(`完成第 ${N-1} 关！每行每列均无重复，${N**3} 个三元组全部满足结合律。你补出了由这些线索唯一确定的 ${level(N).name} 乘法表。`,`Level ${N-1} complete! Every row and column has distinct entries; all ${N**3} triples satisfy associativity. These clues uniquely determine the ${level(N).name} table.`);}
+      if(result.kind==='complete'){const first=!completed.has(N);completed.add(N);if(first)options.onComplete?.(N,[...values]);return t(`完成第 ${N-1} 关！每行每列均无重复，${N**3} 个三元组全部满足结合律。你补出了由这些线索唯一确定的 ${level(N).name} 乘法表。`,`Level ${N-1} complete! Every row and column has distinct entries; all ${N**3} triples satisfy associativity. These clues uniquely determine the ${level(N).name} table.`);}
       return t(`已填 ${result.filled}/${N*N} 格；当前可计算的 ${result.checked} 个结合律等式全部成立，尚不能据此判定未填部分。`,`${result.filled}/${N*N} cells filled; all ${result.checked} currently evaluable associativity equations hold. Unfilled cells remain undetermined by this check.`);
     }
     function proofMarkup(){
@@ -118,19 +122,20 @@
         skill==='inverse'?t(`标出已填且乘积为单位元 ${N} 的数字；完整表中，第 x 行的这一个列标就是 x 的逆元。`,`Marked entries have product equal to the identity ${N}. In the completed table, that column label in row x is the inverse of x.`):
         skill==='cancellation'?t('所选格子的行和列已标出。每行无重复对应左消去律，每列无重复对应右消去律。','The selected row and column are highlighted. Distinct row entries encode left cancellation; distinct column entries encode right cancellation.'):
         skill==='associativity'?t('用 (a·b)·c = a·(b·c) 连接四个格子。先算括号，不可交换因子。','Connect four cells using (a·b)·c = a·(b·c). Evaluate the parentheses first; do not swap factors.'):t('选择技能卡，查看它在乘法表中的含义。','Choose a skill card to see its meaning in the table.');
-      root.innerHTML=`<nav class="sudoku-levels" aria-label="${t('选择关卡','Choose level')}">${Array.from({length:8},(_,i)=>i+2).map(n=>`<button type="button" data-level="${n}" aria-pressed="${N===n}">${n}×${n}${completed.has(n)?' ✓':''}</button>`).join('')}</nav><div class="sudoku-intro"><p>${N} × ${N} · ${t('拉丁方数独','Latin-square puzzle')}</p><span>${filled}/${N*N}</span></div><p class="sudoku-rules">${t(`填入 1—${N}，每行每列各出现一次，并满足结合律。没有宫格规则。${N===2?'本关先用行列无重复补出最后一格。':'线索和空缺分散在表中，结合行列条件与结合律逐格推导。'}`,`Enter 1–${N} once in each row and column, with associativity. No subgrid rule. ${N===2?'Start by completing the last cell using no repetitions.':'Clues and blanks are scattered; combine row/column rules with associativity.'}`)}</p>
-      <div class="sudoku-cards">${cards.map(([id,title,desc])=>`<button type="button" data-skill="${id}" aria-pressed="${skill===id}"><strong>${title}</strong><span>${desc}</span></button>`).join('')}</div><p class="sudoku-card-note">${cardNote}</p>
+      root.innerHTML=`<nav class="sudoku-levels" ${options.fixedLevel?'hidden':''} aria-label="${t('选择关卡','Choose level')}">${Array.from({length:8},(_,i)=>i+2).map(n=>`<button type="button" data-level="${n}" aria-pressed="${N===n}">${n}×${n}${completed.has(n)?' ✓':''}</button>`).join('')}</nav><div class="sudoku-intro"><p>${N} × ${N} · ${t('拉丁方数独','Latin-square puzzle')}</p><span>${filled}/${N*N}</span></div><p class="sudoku-rules">${t(`填入 1—${N}，每行每列各出现一次，并满足结合律。没有宫格规则。${N===2?'本关先用行列无重复补出最后一格。':'线索和空缺分散在表中，结合行列条件与结合律逐格推导。'}`,`Enter 1–${N} once in each row and column, with associativity. No subgrid rule. ${N===2?'Start by completing the last cell using no repetitions.':'Clues and blanks are scattered; combine row/column rules with associativity.'}`)}</p>
+      <div class="sudoku-cards">${cards.map(([id,title,desc])=>`<button type="button" data-skill="${id}" ${id==='identity'&&identityLocked()?'disabled':''} aria-pressed="${skill===id}"><strong>${title}</strong><span>${id==='identity'&&identityLocked()?t('通关 3×3 后解锁','Complete 3×3 to unlock'):desc}</span></button>`).join('')}</div><p class="sudoku-card-note">${cardNote}</p>
       <div class="sudoku-play"><div class="sudoku-table-wrap"><table class="sudoku-table" style="--sudoku-size:${N}"><caption>${t('行元素 × 列元素；浅色数字为给定线索','Row factor × column factor; muted numbers are given clues')}</caption><thead><tr><th scope="col">·</th>${Array.from({length:N},(_,i)=>`<th scope="col" class="${skill==='identity'&&i===N-1?'identity-mark':''}">${i+1}</th>`).join('')}</tr></thead><tbody>${Array.from({length:N},(_,row)=>`<tr><th scope="row" class="${skill==='identity'&&row===N-1?'identity-mark':''}">${row+1}</th>${Array.from({length:N},(_,col)=>{
         const i=index(row,col),v=values[i],classes=[given(i)?'given':'',i===selected?'selected':'',skill==='identity'&&v===N?'identity-mark':'',skill==='inverse'&&v===N?'inverse-mark':'',skill==='cancellation'&&(row===r||col===c)?'cancel-mark':'',skill==='associativity'&&hint?.cells.includes(i)?'path-mark':'',hint?.target===i?'target-mark':'',issue?.cells?.includes(i)?'error-mark':''].filter(Boolean).join(' ');
         return `<td><button type="button" data-cell="${i}" class="${classes}" tabindex="${i===selected?0:-1}" aria-label="${t(`第 ${row+1} 行，第 ${col+1} 列；${v||'空白'}${given(i)?'，已知':''}`,`Row ${row+1}, column ${col+1}; ${v||'blank'}${given(i)?', given':''}`)}" aria-pressed="${i===selected}">${v||'<span aria-hidden="true">·</span>'}</button></td>`;
       }).join('')}</tr>`).join('')}</tbody></table></div><div class="sudoku-tools"><p>${t('当前格','Selected cell')}：${r+1} · ${c+1}</p><div class="sudoku-digits">${Array.from({length:N},(_,i)=>`<button type="button" data-digit="${i+1}" ${given(selected)?'disabled':''}>${i+1}</button>`).join('')}</div><button type="button" data-action="erase" ${given(selected)?'disabled':''}>${t('清除此格','Clear cell')}</button><button type="button" data-action="check">${t('检查行列与结合律','Check rows, columns & associativity')}</button><button type="button" data-action="reset">${t('重新开始','Restart')}</button></div></div>
       <div class="sudoku-deduction" ${hint?'':'hidden'}>${hint?`<p>${hint.latin?t(`第 ${hint.line+1} ${hint.axis?'列':'行'}缺哪个元素？`,`Which element is missing in ${hint.axis?'column':'row'} ${hint.line+1}?`):t('同一乘积，两条路径','One product, two paths')}</p><div class="sudoku-paths" ${hint.latin?'hidden':''}><p>(${hint.a} · ${hint.b}) · ${hint.c} = ${hint.ab} · ${hint.c} = ${hint.target===hint.left?'?':hint.value}</p><p>${hint.a} · (${hint.b} · ${hint.c}) = ${hint.a} · ${hint.bc} = ${hint.target===hint.right?'?':hint.value}</p></div><button type="button" data-action="apply">${hint.latin?t(`由行列无重复填入 ${hint.value}`,`Use no repetitions to enter ${hint.value}`):t(`由结合律填入 ${hint.value}`,`Use associativity to enter ${hint.value}`)}</button>`:''}</div>
-      ${completed.has(N)&&N<9?`<button type="button" data-level="${N+1}">${t(`进入 ${N+1}×${N+1} 下一关 →`,`Next level: ${N+1}×${N+1} →`)}</button>`:''}<p class="sudoku-status" role="status">${message||t('可用数字键填数、方向键移动、退格删除。空格和回车在游戏内不会跳到下一讲。','Use number keys, arrow keys and Backspace. Space and Enter within the game do not advance the lesson.')}</p>
+      ${!options.fixedLevel&&completed.has(N)&&N<9?`<button type="button" data-level="${N+1}">${t(`进入 ${N+1}×${N+1} 下一关 →`,`Next level: ${N+1}×${N+1} →`)}</button>`:''}<p class="sudoku-status" role="status">${message||(options.fixedLevel?t('数字键填数 · 方向键移动 · 退格删除 · 进度自动保存于本机。','Number keys to enter · Arrows to move · Backspace to erase · Progress saved on this device.'):t('可用数字键填数、方向键移动、退格删除。空格和回车在游戏内不会跳到下一讲。','Use number keys, arrow keys and Backspace. Space and Enter within the game do not advance the lesson.'))}</p>
       <details class="sudoku-proof" ${proofOpen?'open':''}><summary>${t('为什么这些线索能唯一确定整张表？','Why do these clues determine a unique table?')}</summary>${proofMarkup()}</details>`;
       root.querySelector('details').addEventListener('toggle',e=>{proofOpen=e.currentTarget.open;});
-      if(focusCell)root.querySelector(`[data-cell="${selected}"]`)?.focus({preventScroll:true});
+      if(focusCell&&!options.sceneBoard)root.querySelector(`[data-cell="${selected}"]`)?.focus({preventScroll:true});
+      options.onRender?.({n:N,values:[...values],selected,skill,hint,issue,cells:[...root.querySelectorAll('[data-cell]')].map(b=>({classes:b.className,label:b.getAttribute('aria-label')}))});
     }
-    function enter(value){if(given(selected))return;values[selected]=value;hint=null;issue=null;message='';if(values.every(Boolean)){issue=inspect(values);message=feedback(issue);}draw(true);}
+    function enter(value){if(given(selected))return;values[selected]=value;changed();hint=null;issue=null;message='';if(values.every(Boolean)){issue=inspect(values);message=feedback(issue);}draw(true);}
     function useHint(){
       issue=inspect(values);if(issue.kind==='repeat'||issue.kind==='associativity'){message=feedback(issue);hint=null;return;}
       issue=null;hint=deduction(values,selected);if(hint){selected=hint.target;message='';}else message=feedback(inspect(values));
@@ -140,12 +145,12 @@
       if(button.dataset.level){N=+button.dataset.level;values=initial(N);selected=initial(N).findIndex(v=>!v);skill='';hint=null;issue=null;message='';proofOpen=false;draw();return;}
       if(button.dataset.cell!==undefined){selected=+button.dataset.cell;draw(true);return;}
       if(button.dataset.digit){enter(+button.dataset.digit);return;}
-      if(button.dataset.skill){skill=skill===button.dataset.skill?'':button.dataset.skill;hint=null;issue=null;message='';if(skill==='associativity')useHint();draw();return;}
+      if(button.dataset.skill){if(button.dataset.skill==='identity'&&identityLocked())return;skill=skill===button.dataset.skill?'':button.dataset.skill;hint=null;issue=null;message='';if(skill==='associativity')useHint();draw();return;}
       switch(button.dataset.action){
         case 'erase':enter(0);return;
         case 'check':issue=inspect(values);message=feedback(issue);break;
-        case 'reset':values=initial(N);selected=initial(N).findIndex(v=>!v);hint=null;issue=null;message='';skill='';break;
-        case 'apply':if(hint){values[hint.target]=hint.value;hint=null;issue=null;message=feedback(inspect(values));useHint();}break;
+        case 'reset':values=initial(N);changed();selected=initial(N).findIndex(v=>!v);hint=null;issue=null;message='';skill='';break;
+        case 'apply':if(hint){values[hint.target]=hint.value;changed();hint=null;issue=null;message=feedback(inspect(values));useHint();}break;
       }
       draw();
     },{signal:abort.signal});
@@ -157,6 +162,6 @@
       else if(/^[1-9]$/.test(event.key)&&+event.key<=N){event.preventDefault();event.stopPropagation();enter(+event.key);}
       else if(['Backspace','Delete'].includes(event.key)){event.preventDefault();event.stopPropagation();enter(0);}
     },{signal:abort.signal});
-    window.addEventListener('course-language',()=>{message='';draw();},{signal:abort.signal});draw();
+    window.addEventListener('course-language',()=>{message='';draw();},{signal:abort.signal});draw();return {select:i=>{if(i>=0&&i<N*N){selected=i;draw();}},enter:value=>enter(value),destroy:()=>{abort.abort();root.remove();}};
   }};
 })();
