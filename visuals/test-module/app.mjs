@@ -1,4 +1,4 @@
-import {setupMusic} from './music.mjs?v=20260920audio1';
+import {setupMusic} from './music.mjs?v=20260920audio2';
 import {AtlasScene} from './scene.mjs?v=20260920h';
 import {DURATION,PHASES,phaseAt,clamp} from './story.mjs?v=20260920h';
 const $=id=>document.getElementById(id),canvas=$('world');
