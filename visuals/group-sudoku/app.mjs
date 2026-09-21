@@ -1,3 +1,4 @@
+import {createCompletionRecords} from './records.mjs?v=records1';
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
@@ -13,9 +14,11 @@ const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
 const music=createBackgroundMusic({storage,t});
 function notify(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4500);}
 const cameraKeys=new Set();
+const completionRecords=createCompletionRecords({campaign,t,onOpen:()=>cameraKeys.clear()});
 function phase(value){cameraKeys.clear();busy=!!value;$('playHUD').inert=busy;$('boardHits').inert=busy;document.body.classList.toggle('travelling',busy);document.body.dataset.phase=value||'playing';$('stagePhase').textContent=value==='bridge'?t('吊桥开启 · 前往下一域','THE BRIDGE OPENS · ONWARD'):value==='assembly'?t('镜头就位 · 棋盘升起 · 设施搭建','ARRIVE · BOARD · SCENERY'):'';}
 function beaconStatus(values){const node=$('beaconStatus');node.hidden=selected!==7;if(selected===7)node.textContent=t('城墙烽火','WALL BEACONS')+` ${Math.floor(values.filter(v=>v>0).length*8/81)} / 8 · `+t('填棋','FILLED')+` ${values.filter(v=>v>0).length} / 81`;}
 function sync(){
+ completionRecords.sync();
  beaconStatus(campaign.board(9));
  $('buildTimeLabel').textContent=t('装饰搭建时长','Scenery build time');$('buildTimeValue').value=decorationSeconds+t(' 秒',' s');$('buildTime').value=decorationSeconds;$('buildTimeNote').textContent=t('不含镜头移动和棋盘升起，下次搭建生效。','Excludes camera travel and board rise. Applies to the next build.');
  const done=campaign.completed,r=REGIONS[selected];$('progress').innerHTML=`${done.length} <span>/ 8</span>`;
@@ -25,7 +28,7 @@ function sync(){
  $('pins').innerHTML=REGIONS.map((r,i)=>`<button class="map-pin ${done.includes(r.n)?'complete':''}" data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-label="${r.zh} ${r.n}×${r.n}${campaign.canEnter(r.n)?'':' 尚未解锁'}">${r.n}×${r.n}${campaign.canEnter(r.n)?'':' ◇'}</button>`).join('');
  $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('motionLabel').textContent=t('减少动态','Reduce motion');$('cameraHelp').textContent=t('↑ N · ↓ S · ← W · → E · 滚轮缩放 · 拖动环绕 · Shift＋方向键选格','↑ N · ↓ S · ← W · → E · Wheel to zoom · Drag to orbit · Shift + arrows select cells');$('motion').checked=reduced;syncFullscreen();
  $('clearLocalData').textContent=t('清除本地记录（Cookie）','Clear local data');$('clearDataNote').textContent=t('重置通关进度、未完成棋局和地图设置，重新从 2×2 开始。','Reset progress, unfinished boards and map settings, then start again at 2×2.');
- $('clearDataTitle').textContent=t('清除本地记录？','Clear local data?');$('clearDataWarning').textContent=t('群数独的通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。此操作无法撤销。','Group Sudoku progress, unfinished boards and map settings will be deleted. You will restart at 2×2. This cannot be undone.');$('cancelClearData').textContent=t('取消','Cancel');$('confirmClearData').textContent=t('确认清除','Clear data');
+ $('clearDataTitle').textContent=t('清除本地记录？','Clear local data?');$('clearDataWarning').textContent=t('本机通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。已提交的服务器记录保留。此操作无法撤销。','Local progress, unfinished boards and map settings will be deleted. Submitted server records remain. You will restart at 2×2. This cannot be undone.');$('cancelClearData').textContent=t('取消','Cancel');$('confirmClearData').textContent=t('确认清除','Clear data');
  $('resume').textContent=done.length===8?t('点击棋盘，重游八域','Select a board to play again'):t(`继续 ${campaign.current}×${campaign.current} →`,`Continue ${campaign.current}×${campaign.current} →`);
  $('viewHint').textContent=playing?t('点击选格 · 数字键落子 · 拖动空地观察','Select a cell · Type a number · Drag the ground to orbit'):t('已通关城邦可重玩 · 逐关开启吊桥','Revisit completed domains · Unlock bridges in order');
  world?.setProgress(done);positionTargets();
@@ -46,7 +49,7 @@ function openGame(index,{replay=false}={}){
 }
 function finish(n){
  const all=campaign.completed.length===8;world?.setProgress(campaign.completed);notify(n===3?t('三阳开泰 · 单位元卡已解锁','THREEFOLD RENEWAL · IDENTITY UNLOCKED'):n===5?t('五福临门 · 逆技能卡已解锁','FIVE BLESSINGS · INVERSE UNLOCKED'):t(`${REGIONS[n-2].zh} · 通关`,`${REGIONS[n-2].en} · COMPLETE`));
- if(all){phase('');showAtlas(true);return;}
+ if(all){phase('');showAtlas(true);completionRecords.completed();return;}
  // Replay never takes away earned bridges or progress.
  if(n<campaign.current-1){phase('');showAtlas();return;}
  const next=campaign.current-2;world?.setProgress(campaign.completed);
@@ -64,10 +67,10 @@ $('previewArchitecture').onclick=()=>{previewArchitecture(+$('previewRegion').va
 $('overview').onclick=()=>showAtlas(campaign.completed.length===8);$('resume').onclick=()=>{if(campaign.completed.length!==8)openGame(campaign.current-2);else showAtlas(true);};
 $('boardHits').addEventListener('click',e=>{if(busy)return;const b=e.target.closest('[data-board-cell]');if(b){game?.select(+b.dataset.boardCell);$('boardHits').querySelector(`[data-board-cell="${b.dataset.boardCell}"]`)?.focus({preventScroll:true});}});
 $('boardHits').addEventListener('keydown',e=>{if(!game||busy)return;if(!e.shiftKey&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))return;const n=boardState.n,offset={ArrowLeft:-1,ArrowRight:1,ArrowUp:-n,ArrowDown:n}[e.key];if(offset){e.preventDefault();game.select((boardState.selected+offset+n*n)%(n*n));$('boardHits').querySelector(`[data-board-cell="${boardState.selected}"]`)?.focus({preventScroll:true});}else if(/^[1-9]$/.test(e.key)&&+e.key<=n){e.preventDefault();game.enter(+e.key);}else if(['Delete','Backspace'].includes(e.key)){e.preventDefault();game.enter(0);}});
-document.addEventListener('keydown',e=>{if(!playing||busy||!game||e.defaultPrevented||e.target.closest('#boardHits,#settingsPanel,#clearDataDialog,input,textarea,select'))return;if(/^[1-9]$/.test(e.key)&&+e.key<=boardState.n){e.preventDefault();game.enter(+e.key);}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();game.enter(0);}});
+document.addEventListener('keydown',e=>{if(!playing||busy||!game||e.defaultPrevented||e.target.closest('#boardHits,#settingsPanel,dialog,input,textarea,select'))return;if(/^[1-9]$/.test(e.key)&&+e.key<=boardState.n){e.preventDefault();game.enter(+e.key);}else if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();game.enter(0);}});
 // Capture before focused board cells or buttons can interpret the arrow keys.
 function clearCameraKeys(){cameraKeys.clear();}
-document.addEventListener('keydown',e=>{if(!cameraKey(e)||e.target.closest('input,textarea,select,[contenteditable=true],#settingsPanel,#clearDataDialog')||!world||busy)return;e.preventDefault();e.stopImmediatePropagation();cameraKeys.add(e.key);world.touring=false;},true);
+document.addEventListener('keydown',e=>{if(!cameraKey(e)||e.target.closest('input,textarea,select,[contenteditable=true],#settingsPanel,dialog')||!world||busy)return;e.preventDefault();e.stopImmediatePropagation();cameraKeys.add(e.key);world.touring=false;},true);
 document.addEventListener('keyup',e=>cameraKeys.delete(e.key),true);
 window.addEventListener('blur',clearCameraKeys);document.addEventListener('visibilitychange',clearCameraKeys);
 $('settingsToggle').onclick=()=>{$('settingsPanel').hidden=!$('settingsPanel').hidden;$('settingsToggle').setAttribute('aria-expanded',String(!$('settingsPanel').hidden));};
