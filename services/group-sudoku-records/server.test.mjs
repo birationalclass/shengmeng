@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {createRequire} from 'node:module';
 import {createRecordsServer} from './server.mjs';
 const model=createRequire(import.meta.url)('../../courses/abstract-algebra/2026-fall/lesson-1/associativity-sudoku.js');
-const sid='20250000001',roster=[{id:sid,name:'张三',initials:'ZS'},{id:'20250000002',name:'另一测试',initials:'LYCS'}],secret='test-only-signing-secret-0123456789012345',adminPassword='test-only-admin-password';
+const sid='20250000001',roster=[{id:sid,name:'张三',initials:'ZS'},{id:'20250000002',name:'另一测试',initials:'LYCS'}],secret='test-only-signing-secret-0123456789012345',adminPassword='demo-pass';
 const boards=()=>Object.fromEntries(Array.from({length:8},(_,i)=>[i+2,model.completeForced(model.initial(i+2)).values]));
 async function start(dbPath,now){const app=createRecordsServer({dbPath,roster,secret,adminPassword,origins:['http://localhost:8781'],now});await new Promise(r=>app.server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+app.server.address().port;
  return {...app,call:async(path,{method='GET',body,token,origin='http://localhost:8781'}={})=>{const r=await fetch(base+path,{method,headers:{Origin:origin,...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,data:r.status===204?null:await r.json()};}};}

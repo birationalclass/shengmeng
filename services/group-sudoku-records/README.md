@@ -9,7 +9,7 @@ Requires Node.js 24+. Copy this repository onto the application server. Run as a
 - `RECORDS_DB`: absolute path to a persistent private `records.sqlite` file.
 - `RECORDS_ROSTER`: absolute path to the private JSON produced by the import script (omit after the first import if desired).
 - `RECORDS_SECRET`: persistent random secret, at least 32 characters. Keep it stable across restarts; changing it invalidates lookup/admin tokens.
-- `RECORDS_ADMIN_PASSWORD`: random teacher password, at least 16 characters.
+- `RECORDS_ADMIN_PASSWORD`: random teacher password, at least 8 characters.
 - `RECORDS_ORIGINS`: comma-separated website origins, normally `https://birationalclass.github.io`.
 - `HOST`: default `127.0.0.1` for a reverse proxy on the same machine.
 - `PORT`: default `8782`.

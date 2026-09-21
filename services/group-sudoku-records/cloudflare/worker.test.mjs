@@ -14,7 +14,7 @@ function setup(path=':memory:'){
  const db=new DatabaseSync(path);db.exec('PRAGMA foreign_keys=ON;'+readFileSync(new URL('./schema.sql',import.meta.url),'utf8'));
  for(const row of roster)db.prepare('INSERT OR IGNORE INTO students VALUES(?,?,?)').run(...row);
  const prepare=(sql,args=[])=>({bind:(...values)=>prepare(sql,values),first:async()=>db.prepare(sql).get(...args)||null,all:async()=>({results:db.prepare(sql).all(...args)}),run:async()=>({success:true,meta:db.prepare(sql).run(...args)})});
- const env={DB:{prepare},RECORDS_SECRET:'test-only-secret-0123456789-abcdefghijklmnopqrstuvwxyz',RECORDS_ADMIN_PASSWORD:'test-only-password-012345',RECORDS_ORIGINS:'https://birationalclass.github.io'};
+ const env={DB:{prepare},RECORDS_SECRET:'test-only-secret-0123456789-abcdefghijklmnopqrstuvwxyz',RECORDS_ADMIN_PASSWORD:'demo-pass',RECORDS_ORIGINS:'https://birationalclass.github.io'};
  let now=Date.now();
  const call=async(path,{method='GET',body,token,origin='https://birationalclass.github.io',ip='192.0.2.1'}={})=>{
   const res=await handle(new Request('https://records.test'+path,{method,headers:{Origin:origin,'CF-Connecting-IP':ip,...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},...(body?{body:JSON.stringify(body)}:{})}),env,now);

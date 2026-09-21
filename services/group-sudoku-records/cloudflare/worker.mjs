@@ -48,7 +48,7 @@ export async function handle(request,env,now=Date.now()){
   if(origin&&!allowed.includes(origin))throw fail(403,'此来源不允许访问。');
   if(origin)headers['Access-Control-Allow-Origin']=origin;
   if(request.method==='OPTIONS'){headers['Access-Control-Allow-Methods']='GET,POST,OPTIONS';headers['Access-Control-Allow-Headers']='Content-Type,Authorization';return send(204);}
-  if(!env.DB||!env.RECORDS_SECRET||env.RECORDS_SECRET.length<32||!env.RECORDS_ADMIN_PASSWORD||env.RECORDS_ADMIN_PASSWORD.length<16)throw fail(503,'通关登记服务尚未配置完成。');
+  if(!env.DB||!env.RECORDS_SECRET||env.RECORDS_SECRET.length<32||!env.RECORDS_ADMIN_PASSWORD||env.RECORDS_ADMIN_PASSWORD.length<8)throw fail(503,'通关登记服务尚未配置完成。');
   const path=new URL(request.url).pathname,ip=request.headers.get('CF-Connecting-IP')||'unknown';
   if(path==='/api/health'&&request.method==='GET'){const row=await env.DB.prepare('SELECT COUNT(*) AS total FROM students').first();return send(row.total?200:503,{ready:row.total>0,idLength:11});}
   if(path==='/api/lookup'&&request.method==='POST'){

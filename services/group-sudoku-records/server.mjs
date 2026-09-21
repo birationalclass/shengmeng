@@ -16,7 +16,7 @@ export function verifiedBoards(boards){
  return Array.from({length:8},(_,i)=>i+2).every(n=>{const values=boards[n],clues=model.initial(n);return Array.isArray(values)&&values.length===n*n&&values.every((v,k)=>Number.isInteger(v)&&v>=1&&v<=n&&(!clues[k]||clues[k]===v))&&model.inspect(values).kind==='complete';});
 }
 export function createRecordsServer({dbPath,roster=[],secret,adminPassword,origins=['https://birationalclass.github.io'],trustedProxy=false,now=()=>Date.now()}={}){
- if(!secret||secret.length<32||!adminPassword||adminPassword.length<16)throw Error('Set a signing secret of at least 32 characters and an admin password of at least 16 characters.');
+ if(!secret||secret.length<32||!adminPassword||adminPassword.length<8)throw Error('Set a signing secret of at least 32 characters and an admin password of at least 8 characters.');
  if(dbPath!==':memory:'){mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});}
  const db=new DatabaseSync(dbPath);if(dbPath!==':memory:')chmodSync(dbPath,0o600);
  db.exec(`PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;
