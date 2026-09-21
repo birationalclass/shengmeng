@@ -20,7 +20,7 @@ Bundle `index.mjs` as CommonJS `index.js` with esbuild for Node 20; keep `@cloud
 
 Set `RECORDS_SECRET` (at least 32 characters), `RECORDS_ADMIN_PASSWORD` (at least 8), and `RECORDS_COLLECTION_PREFIX` (`sudoku_` for production). `RECORDS_ORIGINS` defaults to `https://birationalclass.github.io`; localhost is permitted only in the testing function. Keep credentials, roster and database exports outside source control.
 
-Create collections with `PermissionInfo.AclTag=ADMINONLY` and verify their ACLs before importing. Students use document ID = full student ID and fields `{id,name,initials}`. Completions use document ID = full ID and fields `{id,name,initials,first_at,updated_at}`. Completion writes and retry IDs are committed in a database transaction; retrying preserves timestamps.
+Create collections with `PermissionInfo.AclTag=ADMINONLY` and verify their ACLs before importing. Students use document ID = full student ID and fields `{id,name,initials}`. Student progress uses document ID = full ID; guests use a generated `guest_` UUID. Records contain `{id,kind,name,initials,completedLevels,boards,first_at,reached_at,updated_at}`. Progress writes and retry IDs are committed in a transaction. A new higher level changes `reached_at`; retries and replaying equal/lower levels preserve it. Legacy eight-level records keep their timestamps and restore boards from the previous request log when necessary.
 
 Configure the event function's HTTP path using CloudBase's `CreateCloudBaseGWAPI` (`ServiceId`, `Path`, `Type:1`, `Name`, `AuthSwitch:2`, `EnableUnion:true`). The service's exact-origin CORS and teacher authentication apply independently of this public route. New route CLI commands for custom domains reject platform-owned default domains; use the event-function access API for this integration.
 
@@ -37,3 +37,11 @@ For future migrations, freeze old writes, back up, import without changing origi
 Local tests check transactions, retries, pagination, privacy, teacher access, origins and network error handling. Remote smoke tests use fictional students and check valid completion, rejected incomplete boards, duplicate retries, public initials and teacher export. Production checks read the real roster without writing fake completion records. Browser QA checks saved receipts and the public list at mobile width.
 
 Official references: [HTTP functions](https://docs.cloudbase.net/service/access-cloud-function), [default-domain behavior](https://docs.cloudbase.net/service/alias), [CORS handling](https://docs.cloudbase.net/service/cors), [free plan](https://cloudbase.net/pricing).
+
+## Player login and progress
+
+`POST /api/lookup` returns the student name and a short-lived lookup token. `POST /api/login` accepts student ID plus this token, or guest mode (optionally an existing guest session). It returns a signed 30-day player session and saved boards. This is roster identification, not password-protected identity verification. A guest keeps the same identity on the same browser while its session remains valid.
+
+`POST /api/progress` requires a player bearer token and a unique submission ID. Only contiguous, clue-preserving valid group tables from 2×2 through the highest completed level are accepted. Each player's highest completion is retained. Public and teacher lists sort by completed-level count descending, then the first timestamp of reaching that count ascending. Public student names use initials; guests get a Guest prefix and no student ID.
+
+Browser QA uses the separate testing function and fictional roster. The login input uses synchronous focus on user activation, numeric input mode, and visual-viewport sizing; actual software keyboard behavior depends on the mobile browser.

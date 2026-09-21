@@ -56,3 +56,27 @@ test('HTTP gateway rejects foreign origins, malformed bodies and supports browse
  assert.equal((await handleHttp({...event,httpMethod:'POST',headers:{'content-type':'text/plain'},body:'{}'},env)).statusCode,415);
  assert.equal((await handleHttp({...event,httpMethod:'POST',headers:{'content-type':'application/json'},body:'{'},env)).statusCode,400);
 });
+
+test('player login, partial progress, guest labels and highest-first stable rankings',async()=>{
+ const db=database(),store=createStore(db,'test_');await db.collection('test_students').doc('20250000001').set({id:'20250000001',name:'张三',initials:'ZS'});
+ const env={store,secret:'test-only-abcdefghijklmnopqrstuvwxyz-0123456789',password:'demo-pass',identity:'classroom',lookupLimit:200};let now=Date.now();
+ const call=(path,body,token)=>handle({path,method:body?'POST':'GET',body,token},env,now);
+ const all=boards(),partial=n=>Object.fromEntries(Object.entries(all).filter(([key])=>+key<=n));
+ const lookup=await call('/api/lookup',{studentId:'20250000001'});
+ assert.equal((await call('/api/login',{mode:'student',studentId:'20250000001'})).status,401);
+ const student=await call('/api/login',{mode:'student',studentId:'20250000001',lookupToken:lookup.data.lookupToken});assert.equal(student.data.account.name,'张三');
+ const guest=await call('/api/login',{mode:'guest'});assert.equal(guest.data.account.kind,'guest');
+ const resumed=await call('/api/login',{mode:'guest',sessionToken:guest.data.sessionToken});assert.equal(resumed.data.account.id,guest.data.account.id);
+ const save=(player,n,id=crypto.randomUUID())=>call('/api/progress',{boards:partial(n),submissionId:id},player.data.sessionToken);
+ assert.equal((await save(guest,2)).status,200);now+=1000;assert.equal((await save(student,2)).status,200);
+ let list=(await call('/api/records')).data.records;assert.equal(list[0].kind,'guest');assert.match(list[0].name,/^游客 /);assert.equal(list[1].name,'ZS');assert.equal(list[0].completedLevels,1);
+ now+=1000;const submissionId=crypto.randomUUID();const improved=await save(student,3,submissionId);assert.equal(improved.data.record.highestLevel,3);
+ now+=1000;await save(guest,3);list=(await call('/api/records')).data.records;assert.equal(list[0].name,'ZS');assert.equal(list[1].kind,'guest');
+ now+=1000;assert.equal((await save(student,2)).data.record.reachedAt,improved.data.record.reachedAt);assert.equal((await save(student,3,submissionId)).data.record.reachedAt,improved.data.record.reachedAt);
+ assert.equal((await call('/api/progress',{boards:{3:all[3]},submissionId:crypto.randomUUID()},student.data.sessionToken)).status,400);
+ assert.equal((await call('/api/progress',{boards:partial(2),submissionId:crypto.randomUUID()},'invalid')).status,401);
+ assert.equal((await save(guest,3,submissionId)).status,409);
+ now+=1000;await save(guest,9);list=(await call('/api/records')).data.records;assert.equal(list[0].kind,'guest');assert.equal(list[0].completedLevels,8);
+ const relogin=await call('/api/login',{mode:'student',studentId:'20250000001',lookupToken:lookup.data.lookupToken});assert.deepEqual(relogin.data.boards,partial(3));
+ const login=await call('/api/admin/session',{password:env.password});const full=(await call('/api/admin/records',undefined,login.data.token)).data.records;assert.equal(full[1].name,'张三');assert.equal(full[0].kind,'guest');assert.equal(full[0].studentId,'');
+});

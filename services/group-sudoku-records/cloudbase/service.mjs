@@ -1,6 +1,7 @@
 // CloudBase event-function protocol. The database is never exposed to browser clients.
-import {createHmac} from 'node:crypto';
+import {createHmac,randomUUID} from 'node:crypto';
 import {fail,sign,unpack,samePassword,mapRecord,verifiedBoards} from '../cloudflare/worker.mjs';
+import {verifiedProgress,ranked,publicRecord} from './progress.mjs';
 
 export async function handle(event,{store,secret,password,identity,adminIdentity=identity,lookupLimit=20},now=Date.now()){
  const send=(status,data)=>({status,data});
@@ -26,6 +27,30 @@ export async function handle(event,{store,secret,password,identity,adminIdentity
    await rate('lookup',lookupLimit);const s=await student(input.studentId);
    return send(200,{name:s.name,lookupToken:await sign({kind:'lookup',id:s.id,exp:now+300000},secret)});
   }
+  if(path==='/api/login'&&method==='POST'){
+   await rate('login',lookupLimit);
+   let account;
+   if(input.mode==='student'){
+    const s=await student(input.studentId),lookup=await unpack(input.lookupToken,'lookup',secret,now);
+    if(!lookup||lookup.id!==s.id)throw fail(401,'姓名查询已过期，请重新核对学号。');
+    account={id:s.id,kind:'student',name:s.name,initials:s.initials};
+   }else if(input.mode==='guest'){
+    const previous=await unpack(input.sessionToken,'player',secret,now);
+    account=previous?.account?.kind==='guest'?previous.account:{id:'guest_'+randomUUID(),kind:'guest',name:randomUUID().slice(0,8).toUpperCase(),initials:''};
+   }else throw fail(400,'请选择学号登录或游客登录。');
+   const saved=await store.record(account.id);
+   return send(200,{account,sessionToken:await sign({kind:'player',account,exp:now+30*86400000},secret),boards:saved?.boards||{},record:saved?publicRecord(saved):null});
+  }
+  if(path==='/api/progress'&&method==='POST'){
+   const session=await unpack(token,'player',secret,now);if(!session)throw fail(401,'登录已过期，请重新登录，进度已保留在本机。');
+   // Throttle by the verified player rather than a classroom's shared public IP.
+   const key=createHmac('sha256',secret).update('player:'+session.account.id).digest('hex');
+   if(await store.rate(key,Math.floor(now/60000))>30)throw fail(429,'同步过于频繁，请稍后重试。');
+   const count=verifiedProgress(input.boards);if(!count)throw fail(400,'请按顺序完成关卡后同步。');
+   if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(input.submissionId||''))throw fail(400,'缺少提交编号。');
+   const record=await store.saveProgress(session.account,input,count,new Date(now).toISOString());
+   return send(200,{saved:true,record:publicRecord(record)});
+  }
   if(path==='/api/completions'&&method==='POST'){
    await rate('submit',12);const s=await student(input.studentId),lookup=await unpack(input.lookupToken,'lookup',secret,now);
    if(!lookup||lookup.id!==s.id)throw fail(401,'姓名查询已过期，请重新输入学号。');
@@ -35,8 +60,8 @@ export async function handle(event,{store,secret,password,identity,adminIdentity
    const record=await store.save(s,input,new Date(now).toISOString());return send(200,{saved:true,record:mapRecord(record)});
   }
   if(path==='/api/records'&&method==='GET'){
-   const rows=await store.records();rows.sort((a,b)=>a.first_at.localeCompare(b.first_at));
-   return send(200,{records:rows.map(r=>mapRecord(r)),total:rows.length});
+   const rows=ranked(await store.records());
+   return send(200,{records:rows.map(r=>publicRecord(r)),total:rows.length});
   }
   if(path==='/api/admin/session'&&method==='POST'){
    await rate('admin',5);if(typeof input.password!=='string'||!await samePassword(input.password,password))throw fail(401,'教师口令不正确。');
@@ -44,8 +69,8 @@ export async function handle(event,{store,secret,password,identity,adminIdentity
   }
   if(path==='/api/admin/records'&&method==='GET'){
    if(!await unpack(token,'admin',secret,now))throw fail(401,'请先进行教师登录。');
-   const rows=await store.records();rows.sort((a,b)=>b.updated_at.localeCompare(a.updated_at));
-   return send(200,{records:rows.map(r=>mapRecord(r,true)),total:rows.length});
+   const rows=ranked(await store.records());
+   return send(200,{records:rows.map(r=>publicRecord(r,true)),total:rows.length});
   }
   throw fail(404,'未找到此接口。');
  } catch(error) {
