@@ -1,5 +1,5 @@
-import {RECORDS_CONFIG} from './records-config.mjs?v=records4-login';
-import {createRecordsApi} from './records-api.mjs?v=records4-login';
+import {RECORDS_CONFIG} from './records-config.mjs?v=records5-compact';
+import {createRecordsApi} from './records-api.mjs?v=records5-compact';
 export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()=>{}}){
  const $=id=>document.getElementById(id),login=$('playerDialog'),history=$('recordsDialog'),id=$('playerStudentId');
  const api=createRecordsApi({config:RECORDS_CONFIG,t});
@@ -65,7 +65,20 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
  window.addEventListener('online',flush);document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});$('recordsSync').onclick=flush;
  function displayRecords(records){
   rows=records;const list=$('recordsList');list.replaceChildren();if(!records.length){const p=document.createElement('p');p.className='records-empty';p.textContent=t('暂无通关记录。','No completed levels yet.');list.append(p);return;}
-  records.forEach((r,index)=>{const card=document.createElement('article');card.className='completion-card';const h=document.createElement('h3');h.textContent=`${index+1}. ${r.kind==='guest'&&document.documentElement.lang==='en'?r.name.replace(/^游客 /,'Guest '):r.name}`;const progress=document.createElement('p');progress.className='record-level';progress.textContent=t(`最高通关 ${r.highestLevel||9}×${r.highestLevel||9} · ${r.completedLevels} / 8 关`,`Highest ${r.highestLevel||9}×${r.highestLevel||9} · ${r.completedLevels} / 8 levels`);card.append(h,progress);if(r.studentId){const sid=document.createElement('p');sid.textContent=r.studentId;card.append(sid);}const date=document.createElement('p');date.textContent=t('通关时刻：','Reached: ')+new Date(r.reachedAt||r.firstCompletedAt).toLocaleString(document.documentElement.lang,{timeZone:'Asia/Shanghai',hour12:false});card.append(date);list.append(card);});
+  records.forEach((r,index)=>{
+   const card=document.createElement('article');card.className='completion-card';
+   const top=document.createElement('div');top.className='record-main';
+   const h=document.createElement('h3');h.textContent=`${index+1}. ${r.kind==='guest'&&document.documentElement.lang==='en'?r.name.replace(/^游客 /,'Guest '):r.name}`;h.title=h.textContent;
+   const level=r.highestLevel||9,progress=document.createElement('span');progress.className='record-level';progress.textContent=`${level}×${level} · ${r.completedLevels}/8`;progress.setAttribute('aria-label',t(`最高通关 ${level}×${level}，已通关 ${r.completedLevels} 关`,`Highest ${level}×${level}, ${r.completedLevels} levels completed`));
+   top.append(h,progress);
+   const meta=document.createElement('div');meta.className='record-meta';
+   const sid=document.createElement('span');sid.textContent=r.studentId||'';
+   const date=document.createElement('time'),iso=r.reachedAt||r.firstCompletedAt;date.dateTime=iso;
+   const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(iso)),part=type=>parts.find(p=>p.type===type)?.value;
+   date.textContent=`${part('year')}.${part('month')}.${part('day')} ${part('hour')}:${part('minute')}:${part('second')}`;
+   date.title=t('达到最高关卡时间（北京时间）','Highest level reached (China Standard Time)');date.setAttribute('aria-label',date.title+' '+date.textContent);
+   meta.append(sid,date);card.append(top,meta);list.append(card);
+  });
  }
  async function loadRecords(){
   const run=++recordsRun; text('recordsStatus','正在读取服务器记录…','Loading records…');$('recordsRefresh').disabled=true;

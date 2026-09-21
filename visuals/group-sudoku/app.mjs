@@ -1,4 +1,4 @@
-import {createCompletionRecords} from './records.mjs?v=records4-login';
+import {createCompletionRecords} from './records.mjs?v=records5-compact';
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
 import {Campaign,STORAGE_KEY,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
