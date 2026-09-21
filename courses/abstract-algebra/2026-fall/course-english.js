@@ -4,8 +4,8 @@ window.CourseLanguage.add({'代数学':'Algebra','代数学 Ⅰ':'Algebra Ⅰ','
 window.CourseLanguage.add({'2026 秋季':'Autumn 2026','查看课程安排':'View the schedule','2026 年秋季抽象代数 I 课程安排，日期为北京时间':'Abstract Algebra Ⅰ schedule, Autumn 2026; Beijing time','关闭页面设置':'Close appearance settings','选择页面风格':'Choose an appearance'});
 window.CourseScheduleEnglish=[
  ['Equivalence relations and partitions','Equivalence relations, partitions, equivalence classes and quotient sets.'],
- ['Groups and subgroups','Binary operations, group axioms, basic properties and integer powers; subgroup tests and generated subgroups.'],
- ['Group isomorphisms','Isomorphism invariants; constructing and ruling out isomorphisms; Cayley’s theorem.'],
+ ['The concept of a group','Binary operations, group axioms, basic properties and integer powers.'],
+ ['Subgroups and group isomorphisms','Subgroup tests and generated subgroups; isomorphism invariants; constructing and ruling out isomorphisms; Cayley’s theorem.'],
  ['Cyclic groups','Classification, subgroups and generators of cyclic groups; element orders.'],
  ['Permutation and symmetric groups','Cycle decomposition, orders of permutations, parity and alternating groups.'],
  ['Cosets','Coset decompositions, index, Lagrange’s theorem and its limitations.'],
