@@ -54,7 +54,7 @@ export class SudokuAtlas extends AtlasScene{
   for(const {object}of this.risers){object.position.y=0;object.visible=true;}this.animateNewScenes(205);for(const {g}of this.architecture){g.position.y=0;g.visible=true;}
   this.fromPos=V(3,110,115);this.toPos=this.fromPos.clone();this.camera.position.copy(this.fromPos);this.fromAim=V(0,0,0);this.toAim=this.fromAim.clone();this.currentTarget=this.fromAim.clone();this.flight=1;this.selected=-1;this.orrery.visible=false;
   installBoards(this);delete this.orbit;
-  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);
+  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.constructions=new Map();this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);
  }
  makeTerrain(){
   const board=this.box(this.scene,[142,1.8,146],[0,-2,0],this.materials.wood);board.receiveShadow=true;
@@ -117,24 +117,37 @@ export class SudokuAtlas extends AtlasScene{
  pan(east,north,dt){if(this.sequence||(!east&&!north))return;if(!this.manual)this.takeControl();this.touring=false;const m=this.manual,normal=Math.max(1,Math.hypot(east,north)),d=panDistance(m.radius,1,dt);m.target.x+=east/normal*d;m.target.z-=north/normal*d;}
  zoom(delta){if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
  startTour(){this.sequence=null;this.manual=null;this.touring=true;this.tourTime=0;this.tourFrom=this.camera.position.clone();this.tourAim=this.currentTarget.clone();}
- resetArchitecture(index){const b=this.boards[index];if(b.staticBatch){for(const source of b.batchedSources||[])source.visible=true;b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
+ resetArchitecture(index){this.constructions.delete(index);const b=this.boards[index];if(b.staticBatch){for(const source of b.batchedSources||[])source.visible=true;b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
  showBuilt(index){const b=this.boards[index];b.content.visible=true;for(const part of b.parts){part.object.visible=true;part.object.position.copy(part.position);part.object.scale.copy(part.scale);}this.built.add(index);batchBuiltDomain(this,b);}
  restore(done){done.forEach(n=>this.showBuilt(n-2));for(let i=0;i<7;i++)this.bridgeProgress[i]=Array.from({length:i+1},(_,k)=>k+2).every(n=>done.includes(n))?1:0;this.setProgress(done);this.updateBridges();}
  arrive(index,onReady,reduced=false){
   this.manual=null;this.touring=false;this.selected=index;const pose=this.playPose(index),end=pose.pos.toArray(),aim=pose.aim.toArray(),b=this.boards[index];
-  const decorationSeconds=buildSeconds(this.decorationSeconds),duration=this.built.has(index)?2.8:3+decorationSeconds+.15+BOARD_RISE_SECONDS;
+  const decorationSeconds=buildSeconds(this.decorationSeconds),existing=this.constructions.get(index),boardReady=this.built.has(index)||existing?.elapsed>=3+BOARD_RISE_SECONDS;
+  const duration=boardReady?2.8:Math.max(2.8,3+BOARD_RISE_SECONDS-(existing?.elapsed||0));
   this.sequence={kind:'assembly',index,elapsed:0,duration,decorationSeconds,onReady,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[2.8,end,aim]]};
-  b.content.visible=true;if(!this.built.has(index))this.assemble(index,0);if(reduced)this.updateSequence(duration,true);
+  b.content.visible=true;
+  if(!this.built.has(index)&&!existing){this.constructions.set(index,{elapsed:0,seconds:decorationSeconds});this.assemble(index,0,decorationSeconds);}
+  if(reduced){this.updateConstruction(0,true);this.updateSequence(duration,true);}
  }
+ updateConstruction(dt,reduced=false){
+  for(const [index,job]of this.constructions){
+   const duration=3+BOARD_RISE_SECONDS+.15+job.seconds;
+   job.elapsed=reduced?duration:Math.min(duration,job.elapsed+dt);
+   this.assemble(index,Math.max(0,job.elapsed-3),job.seconds);
+   if(job.elapsed>=duration){this.showBuilt(index);this.constructions.delete(index);}
+  }
+ }
+
  assemble(index,t,seconds=buildSeconds(this.decorationSeconds)){const b=this.boards[index];for(const part of b.parts){const timing=constructionTiming(part,seconds),u=riseProgress((t-timing.delay)/timing.duration,part.twoStep);part.object.visible=u>0;part.object.position.copy(part.position);if(part.direction)part.object.position.addScaledVector(part.direction,-part.lift*(1-u));else part.object.position.y-=part.lift*(1-u);part.object.scale.copy(part.scale);if(!part.rigid)part.object.scale.y*=Math.max(.001,u);}}
  cross(index,onArrive,reduced=false){
   if(index>=7){onArrive?.();return;}this.manual=null;const a=V(PLACES[index][0],0,PLACES[index][1]),b=V(PLACES[index+1][0],0,PLACES[index+1][1]),mid=a.clone().add(b).multiplyScalar(.5),dir=b.clone().sub(a).normalize(),side=V(-dir.z,0,dir.x),look=mid.clone().addScaledVector(dir,3);look.y=1;
   const pose=this.playPose(index+1),end=pose.pos,endAim=pose.aim,near=mid.clone().add(end.clone().sub(b));
   this.sequence={kind:'bridge',index,elapsed:0,duration:8.6,onReady:onArrive,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[1.6,this.camera.position.toArray(),this.currentTarget.toArray()],[4.8,near.toArray(),mid.toArray()],[8.6,end.toArray(),endAim.toArray()]]};if(reduced)this.updateSequence(9,true);
  }
- updateSequence(dt,reduced){const q=this.sequence;if(!q)return;q.elapsed+=reduced?q.duration:dt;const t=Math.min(q.duration,q.elapsed);this.canvas.dataset.arrival=q.kind==='assembly'?arrivalPhase(t,this.built.has(q.index),q.decorationSeconds):'bridge';if(q.kind==='assembly'&&!this.built.has(q.index))this.assemble(q.index,Math.max(0,t-3.0),q.decorationSeconds);if(q.kind==='bridge')this.bridgeProgress[q.index]=ease((t-1.4)/stageTime.bridge);const [pos,aim]=cameraSpline(q.keys,Math.min(t,q.keys.at(-1)[0]));this.camera.position.fromArray(pos);this.currentTarget.fromArray(aim);this.camera.lookAt(this.currentTarget);this.camera.rotation.z=0;if(t>=q.duration){if(q.kind==='assembly')this.showBuilt(q.index);else this.bridgeProgress[q.index]=1;this.sequence=null;this.fromPos=this.camera.position.clone();this.toPos=this.fromPos.clone();this.fromAim=this.currentTarget.clone();this.toAim=this.fromAim.clone();this.flight=1;q.onReady?.();}}
+ updateSequence(dt,reduced){const q=this.sequence;if(!q)return;q.elapsed+=reduced?q.duration:dt;const t=Math.min(q.duration,q.elapsed);this.canvas.dataset.arrival=q.kind==='assembly'?arrivalPhase(t,this.built.has(q.index),q.decorationSeconds):'bridge';if(q.kind==='bridge')this.bridgeProgress[q.index]=ease((t-1.4)/stageTime.bridge);const [pos,aim]=cameraSpline(q.keys,Math.min(t,q.keys.at(-1)[0]));this.camera.position.fromArray(pos);this.currentTarget.fromArray(aim);this.camera.lookAt(this.currentTarget);this.camera.rotation.z=0;if(t>=q.duration){if(q.kind==='bridge')this.bridgeProgress[q.index]=1;this.sequence=null;this.fromPos=this.camera.position.clone();this.toPos=this.fromPos.clone();this.fromAim=this.currentTarget.clone();this.toAim=this.fromAim.clone();this.flight=1;q.onReady?.();}}
  updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
  updateWorld(t,dt,reduced=false){
+  this.updateConstruction(dt,reduced);
   for(const {object,speed}of this.rotating)object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
   updateArchitecturalMotion(this.detailMotion,t,reduced);
   updateIceSkaters(this.iceSkaters,t,reduced);
@@ -147,7 +160,7 @@ export class SudokuAtlas extends AtlasScene{
   for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;
   for(const ripple of this.poolRipples||[]){const u=((reduced?0:t*.18)+ripple.phase)%1;ripple.line.scale.setScalar(.6+u*1.1);ripple.line.material.opacity=.30*Math.sin(Math.PI*u);ripple.line.visible=this.built.has(0);}
   updatePoolBoats(this.poolBoats,t,reduced,this.built.has(0));
-  this.dust.rotation.y=reduced?0:t*.002;for(const lift of this.clockworkLifts||[]){const progress=this.built.has(4)?1:this.sequence?.index===4?ease((this.sequence.elapsed-3.2)/2.4):0;lift.position.y=.55+progress*1.6;}
+  this.dust.rotation.y=reduced?0:t*.002;for(const lift of this.clockworkLifts||[]){const progress=this.built.has(4)?1:this.constructions.has(4)?ease((this.constructions.get(4).elapsed-3.2)/2.4):0;lift.position.y=.55+progress*1.6;}
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}
   else{this.flight=Math.min(1,this.flight+dt/(reduced?.01:1.65));const u=this.flight*this.flight*(3-2*this.flight);this.camera.position.lerpVectors(this.fromPos,this.toPos,u);this.currentTarget.lerpVectors(this.fromAim,this.toAim,u);this.camera.lookAt(this.currentTarget);}
