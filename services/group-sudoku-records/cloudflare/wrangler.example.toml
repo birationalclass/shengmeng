@@ -1,0 +1,18 @@
+name = "shengmeng-group-sudoku-records"
+main = "worker.mjs"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[vars]
+RECORDS_ORIGINS = "https://birationalclass.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "shengmeng-group-sudoku-records"
+database_id = "REPLACE_WITH_CREATED_D1_DATABASE_ID"
+
+[triggers]
+crons = ["17 3 * * *"]
+
+# Secrets are supplied with `wrangler secret put`, never stored in this file:
+# RECORDS_SECRET, RECORDS_ADMIN_PASSWORD

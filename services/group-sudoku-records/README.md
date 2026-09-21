@@ -47,3 +47,7 @@ node --test services/group-sudoku-records/server.test.mjs visuals/group-sudoku/t
 Tests use fictional students and disposable databases, including persistence across server restart, server-side puzzle validation, retry deduplication, roster matching, public ID masking, teacher expiry and rate limits. Do not use real student records for a public preview.
 
 Official references: [GitHub Pages is static hosting](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages), [Node SQLite API](https://nodejs.org/api/sqlite.html).
+
+## Live free deployment
+
+The production API uses the Workers + D1 implementation in [cloudflare/](cloudflare/README.md). Deployed 2026-09-21 on Workers Free, with a private APAC D1 database and 129 roster entries. See that directory for deployment and test details. The Node server above remains a self-hosting alternative.
