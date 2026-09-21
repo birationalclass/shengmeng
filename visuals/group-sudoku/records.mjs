@@ -1,14 +1,11 @@
-import {RECORDS_API_URL} from './records-config.mjs?v=records2-cloud';
+import {RECORDS_CONFIG} from './records-config.mjs?v=records3-china';
+import {createRecordsApi} from './records-api.mjs?v=records3-china';
 export function createCompletionRecords({campaign,t,onOpen=()=>{}}){
  const $=id=>document.getElementById(id),dialog=$('completionDialog'),history=$('recordsDialog'),form=$('completionForm'),id=$('completionStudentId'),name=$('completionStudentName'),status=$('completionStatus'),submit=$('completionSubmit');
  let lookupToken='',lookupId='',lookupRun=0,lookupAbort,submissionId='',submitting=false,adminToken='',rows=[],recordsRun=0,refreshTimer;
  const text=(node,zh,en)=>node.textContent=t(zh,en);
  const ready=()=>campaign.completed.length===8;
- async function api(path,{method='GET',body,token,signal}={}){
-  if(!RECORDS_API_URL)throw Error(t('通关登记尚未开放：正在配置服务器。','Registration is not available yet: server setup is in progress.'));
-  const response=await fetch(RECORDS_API_URL+path,{method,headers:{...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:'Bearer '+token}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:signal||AbortSignal.timeout(12000),cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'});
-  const data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||t('暂时无法连接，请稍后重试。','Unable to connect. Please try again.')),{status:response.status});return data;
- }
+ const api=createRecordsApi({config:RECORDS_CONFIG,t});
  function mobileHeight(){const v=window.visualViewport;document.documentElement.style.setProperty('--records-viewport-height',(v?.height||window.innerHeight)+'px');document.documentElement.style.setProperty('--records-viewport-top',(v?.offsetTop||0)+'px');}
  window.visualViewport?.addEventListener('resize',mobileHeight);window.visualViewport?.addEventListener('scroll',mobileHeight);mobileHeight();
  function sync(){

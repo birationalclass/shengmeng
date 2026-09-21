@@ -1,6 +1,6 @@
 # Group Sudoku server records
 
-The GitHub Pages site calls this API; the student roster and completion records are **not** static assets and must never be placed in the Pages repository. The server stores them in SQLite on a persistent private disk. The supplied workbook is read-only; only student ID and name are imported.
+The GitHub Pages site calls this API; the student roster and completion records are **not** static assets and must never be placed in the Pages repository. The published service stores them in a private Shanghai CloudBase database; the self-hosted alternative below uses SQLite on a persistent private disk. The supplied workbook is read-only; only student ID and name are imported.
 
 ## Start on an existing server
 
@@ -50,4 +50,4 @@ Official references: [GitHub Pages is static hosting](https://docs.github.com/en
 
 ## Live free deployment
 
-The production API uses the Workers + D1 implementation in [cloudflare/](cloudflare/README.md). Deployed 2026-09-21 on Workers Free, with a private APAC D1 database and 129 roster entries. See that directory for deployment and test details. The Node server above remains a self-hosting alternative.
+The production API now uses the Shanghai [CloudBase implementation](cloudbase/README.md). The former [Cloudflare implementation](cloudflare/README.md) is retained as a backup and rejects new submissions after cutover. The Node server above remains a self-hosting alternative.

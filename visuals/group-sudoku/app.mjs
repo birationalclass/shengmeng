@@ -1,4 +1,4 @@
-import {createCompletionRecords} from './records.mjs?v=records2-cloud';
+import {createCompletionRecords} from './records.mjs?v=records3-china';
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
 import {Campaign,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
@@ -8,7 +8,7 @@ import {THEMES} from './journey.mjs?v=owl-clearance1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 let storage;try{storage=localStorage;}catch{}
 const campaign=new Campaign(model,storage);let decorationSeconds=readBuildSeconds(storage);
-let selected=campaign.current-2,world,game,playing=false,busy=false,boardState,last=0,time=0,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,toastTimer,mapStyle='parchment',failed=false;
+let selected=campaign.current-2,world,game,playing=false,busy=false,boardState,last=0,time=0,toastTimer,mapStyle='parchment',failed=false;
 try{mapStyle=storage?.getItem(MAP_STYLE_KEY)||'parchment';}catch{}
 const en=()=>window.CourseLanguage.language==='en',t=(zh,eng)=>en()?eng:zh;
 const music=createBackgroundMusic({storage,t});
@@ -26,7 +26,7 @@ function sync(){
  $('gameEyebrow').textContent=`${r.n} × ${r.n} · ${en()?r.en:THEMES[selected].name}`;$('gameTitle').textContent=en()?r.en:r.zh;
  $('regionNav').innerHTML=REGIONS.map((r,i)=>`<button data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-current="${selected===i}" class="${done.includes(r.n)?'complete':''}">${r.n}×${r.n}<span>${r.zh}</span></button>`).join('');
  $('pins').innerHTML=REGIONS.map((r,i)=>`<button class="map-pin ${done.includes(r.n)?'complete':''}" data-region="${i}" ${campaign.canEnter(r.n)?'':'disabled'} aria-label="${r.zh} ${r.n}×${r.n}${campaign.canEnter(r.n)?'':' 尚未解锁'}">${r.n}×${r.n}${campaign.canEnter(r.n)?'':' ◇'}</button>`).join('');
- $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('motionLabel').textContent=t('减少动态','Reduce motion');$('cameraHelp').textContent=t('↑ N · ↓ S · ← W · → E · 滚轮缩放 · 拖动环绕 · Shift＋方向键选格','↑ N · ↓ S · ← W · → E · Wheel to zoom · Drag to orbit · Shift + arrows select cells');$('motion').checked=reduced;syncFullscreen();
+ $('overview').textContent=t('全图','Atlas');$('language').textContent=en()?'中文':'EN';$('settingsToggle').textContent=t('设置','Settings');$('cameraHelp').textContent=t('↑ N · ↓ S · ← W · → E · 滚轮缩放 · 拖动环绕 · Shift＋方向键选格','↑ N · ↓ S · ← W · → E · Wheel to zoom · Drag to orbit · Shift + arrows select cells');syncFullscreen();
  $('clearLocalData').textContent=t('清除本地记录（Cookie）','Clear local data');$('clearDataNote').textContent=t('重置通关进度、未完成棋局和地图设置，重新从 2×2 开始。','Reset progress, unfinished boards and map settings, then start again at 2×2.');
  $('clearDataTitle').textContent=t('清除本地记录？','Clear local data?');$('clearDataWarning').textContent=t('本机通关进度、未完成棋局和地图设置将被删除，并从 2×2 重新开始。已提交的服务器记录保留。此操作无法撤销。','Local progress, unfinished boards and map settings will be deleted. Submitted server records remain. You will restart at 2×2. This cannot be undone.');$('cancelClearData').textContent=t('取消','Cancel');$('confirmClearData').textContent=t('确认清除','Clear data');
  $('resume').textContent=done.length===8?t('点击棋盘，重游八域','Select a board to play again'):t(`继续 ${campaign.current}×${campaign.current} →`,`Continue ${campaign.current}×${campaign.current} →`);
@@ -45,7 +45,7 @@ function openGame(index,{replay=false}={}){
  if(busy||!campaign.canEnter(index+2))return;selected=index;playing=true;document.body.classList.add('playing');document.body.classList.remove('touring','previewing');$('playHUD').hidden=false;$('stageTitle').hidden=false;
  if(replay)campaign.save(index+2,model.initial(index+2));sync();game?.destroy();
  game=window.AssociativitySudoku.render($('gameMount'),{level:index+2,values:campaign.board(index+2),completed:campaign.completed,fixedLevel:true,sceneBoard:true,actionSkills:true,requireIdentityUnlock:true,requireInverseUnlock:true,onRender:renderBoard,onChange:(n,v)=>{campaign.save(n,v);sync();if(!busy&&model.inspect(v).kind==='complete'){phase('bridge');queueMicrotask(()=>finish(n));}}});
- if(world){phase('assembly');world.arrive(index,()=>{phase('');sync();},reduced);}else phase('');
+ if(world){phase('assembly');world.arrive(index,()=>{phase('');sync();},false);}else phase('');
 }
 function finish(n){
  const all=campaign.completed.length===8;world?.setProgress(campaign.completed);notify(n===3?t('三阳开泰 · 单位元卡已解锁','THREEFOLD RENEWAL · IDENTITY UNLOCKED'):n===5?t('五福临门 · 逆技能卡已解锁','FIVE BLESSINGS · INVERSE UNLOCKED'):t(`${REGIONS[n-2].zh} · 通关`,`${REGIONS[n-2].en} · COMPLETE`));
@@ -53,13 +53,13 @@ function finish(n){
  // Replay never takes away earned bridges or progress.
  if(n<campaign.current-1){phase('');showAtlas();return;}
  const next=campaign.current-2;world?.setProgress(campaign.completed);
- if(world&&n<9)world.cross(n-2,()=>{phase('');openGame(next);},reduced);else{phase('');openGame(next);}
+ if(world&&n<9)world.cross(n-2,()=>{phase('');openGame(next);},false);else{phase('');openGame(next);}
 }
 function showAtlas(tour=false){if(busy)return;playing=false;game?.destroy();game=null;$('boardHits').innerHTML='';$('playHUD').hidden=true;$('stageTitle').hidden=true;document.body.classList.remove('playing','previewing');document.body.classList.toggle('touring',tour);document.body.dataset.phase=tour?'tour':'atlas';sync();if(tour)world?.startTour();else world?.focus(-1);}
 function previewArchitecture(index){
  if(busy||!world)return;selected=index;playing=false;game?.destroy();game=null;$('boardHits').innerHTML='';$('playHUD').hidden=true;$('stageTitle').hidden=false;document.body.classList.remove('playing','touring');document.body.classList.add('previewing');sync();
  // The preview only assembles geometry; it never saves a board or unlocks a level.
- world.resetArchitecture(index);phase('assembly');world.arrive(index,()=>{phase('');document.body.dataset.phase='preview';$('stagePhase').textContent=world.constructions.has(index)?t('建筑正在搭建','BUILDING THE DOMAIN'):t('建筑预览 · 不影响通关进度','ARCHITECTURE PREVIEW · PROGRESS UNCHANGED');},reduced);
+ world.resetArchitecture(index);phase('assembly');world.arrive(index,()=>{phase('');document.body.dataset.phase='preview';$('stagePhase').textContent=world.constructions.has(index)?t('建筑正在搭建','BUILDING THE DOMAIN'):t('建筑预览 · 不影响通关进度','ARCHITECTURE PREVIEW · PROGRESS UNCHANGED');},false);
 }
 function choose(i){if(!busy&&campaign.canEnter(i+2))openGame(i,{replay:campaign.completed.includes(i+2)});}
 for(const id of ['regionNav','pins'])$(id).addEventListener('click',e=>{const b=e.target.closest('[data-region]');if(b&&!b.disabled)choose(+b.dataset.region);});
@@ -80,7 +80,6 @@ $('confirmClearData').onclick=()=>{try{clearLocalData(storage);window.location.r
 for(const input of document.querySelectorAll('[name="mapStyle"]')){input.checked=input.value===mapStyle;input.addEventListener('change',()=>{mapStyle=input.value;world?.setMapStyle(mapStyle);try{storage?.setItem(MAP_STYLE_KEY,mapStyle);}catch{}});}
 $('language').onclick=()=>{window.CourseLanguage.language=en()?'zh':'en';document.documentElement.lang=en()?'en':'zh-CN';window.dispatchEvent(new Event('course-language'));sync();};
 $('buildTime').oninput=()=>{decorationSeconds=buildSeconds($('buildTime').value);if(world)world.decorationSeconds=decorationSeconds;try{storage?.setItem(BUILD_TIME_KEY,String(decorationSeconds));}catch{}sync();};
-$('motion').onchange=()=>{reduced=$('motion').checked;sync();};
 function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement;}
 function syncFullscreen(){const active=!!fullscreenElement();document.documentElement.classList.toggle('is-fullscreen',active);$('fullscreen').setAttribute('aria-pressed',String(active));$('fullscreen').setAttribute('aria-label',active?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen'));}
 $('fullscreen').onclick=async()=>{const button=$('fullscreen');if(button.disabled)return;button.disabled=true;try{if(fullscreenElement()){const exit=document.exitFullscreen||document.webkitExitFullscreen;await exit.call(document);}else{const root=document.documentElement,enter=root.requestFullscreen||root.webkitRequestFullscreen;if(!enter)throw Error('unsupported');await enter.call(root);}}catch{notify(t('当前窗口不支持全屏','Fullscreen unavailable'));}finally{button.disabled=false;syncFullscreen();scheduleLayout();}};
@@ -92,7 +91,7 @@ canvas.addEventListener('wheel',e=>{if(!world||busy)return;e.preventDefault();wo
 let layoutFrame=0;function scheduleLayout(){cancelAnimationFrame(layoutFrame);layoutFrame=requestAnimationFrame(()=>{world?.resize();if(world&&!busy&&!world.touring)world.focus(playing||document.body.classList.contains('previewing')?selected:-1);positionTargets();});}
 function onFullscreenChange(){if(pointer&&canvas.hasPointerCapture(pointer.id))canvas.releasePointerCapture(pointer.id);pointer=null;syncFullscreen();scheduleLayout();}
 document.addEventListener('fullscreenchange',onFullscreenChange);document.addEventListener('webkitfullscreenchange',onFullscreenChange);window.addEventListener('resize',scheduleLayout);window.visualViewport?.addEventListener('resize',scheduleLayout);document.addEventListener('visibilitychange',()=>last=0);
-function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;if(!busy&&cameraKeys.size){world?.pan((cameraKeys.has('ArrowRight')?1:0)-(cameraKeys.has('ArrowLeft')?1:0),(cameraKeys.has('ArrowUp')?1:0)-(cameraKeys.has('ArrowDown')?1:0),dt);}if(world)world.musicLevels=music.readLevels(dt);world?.updateWorld(time,dt,reduced);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}else if(world&&!busy&&(playing||document.body.classList.contains('previewing'))){$('stagePhase').textContent=world.constructions.has(selected)?(playing?t('棋盘已就绪 · 可以填数 · 建筑继续搭建','BOARD READY · ENTER NUMBERS · SCENERY BUILDING'):t('建筑正在搭建','BUILDING THE DOMAIN')):playing?'':t('建筑预览 · 不影响通关进度','ARCHITECTURE PREVIEW · PROGRESS UNCHANGED');}positionTargets();}
+function animate(now){requestAnimationFrame(animate);if(document.hidden||failed){last=0;return;}const dt=last?Math.min(.08,(now-last)/1000):0;last=now;time+=dt;if(!busy&&cameraKeys.size){world?.pan((cameraKeys.has('ArrowRight')?1:0)-(cameraKeys.has('ArrowLeft')?1:0),(cameraKeys.has('ArrowUp')?1:0)-(cameraKeys.has('ArrowDown')?1:0),dt);}if(world)world.musicLevels=music.readLevels(dt);world?.updateWorld(time,dt,false);if(busy&&world?.sequence?.kind==='assembly'){$('stagePhase').textContent=({moving:t('平稳抵达','ARRIVING'),settled:t('镜头已就位','CAMERA SETTLED'),building:t('建筑正在搭建','BUILDING THE DOMAIN'),board:t('棋盘展开','REVEALING THE BOARD')})[canvas.dataset.arrival]||'';}else if(world&&!busy&&(playing||document.body.classList.contains('previewing'))){$('stagePhase').textContent=world.constructions.has(selected)?(playing?t('棋盘已就绪 · 可以填数 · 建筑继续搭建','BOARD READY · ENTER NUMBERS · SCENERY BUILDING'):t('建筑正在搭建','BUILDING THE DOMAIN')):playing?'':t('建筑预览 · 不影响通关进度','ARCHITECTURE PREVIEW · PROGRESS UNCHANGED');}positionTargets();}
 function fallback(error){failed=true;world=null;$('loading').hidden=true;document.body.classList.add('map-fallback');phase('');openGame(campaign.current-2);notify(t('三维地图暂不可用，已切换为简洁棋盘。','3D unavailable. The accessible board is ready.'));console.error('Group sudoku map unavailable',error);}
 canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback('WebGL context lost');});sync();
 try{await document.fonts.ready;world=new SudokuAtlas(canvas);world.decorationSeconds=decorationSeconds;world.setMapStyle(mapStyle);REGIONS.forEach((r,i)=>world.paint(i,{values:campaign.board(r.n),selected:-1,cells:model.initial(r.n).map(v=>({classes:v?'given':''}))}));world.restore(campaign.completed);world.updateWorld(0,0,true);$('loading').classList.add('done');setTimeout(()=>$('loading').hidden=true,750);const preview=Number(new URLSearchParams(location.search).get('preview'));if(Number.isInteger(preview)&&preview>=2&&preview<=9)previewArchitecture(preview-2);else if(campaign.completed.length===8)showAtlas(true);else openGame(campaign.current-2);animate(performance.now());}catch(error){fallback(error);}

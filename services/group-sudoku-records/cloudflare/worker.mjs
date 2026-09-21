@@ -1,6 +1,6 @@
 import clues from './clues.mjs';
 
-const fail=(status,message)=>Object.assign(new Error(message),{status});
+export const fail=(status,message)=>Object.assign(new Error(message),{status});
 const encoder=new TextEncoder();
 const b64=bytes=>btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');
 const unb64=s=>Uint8Array.from(atob(s.replaceAll('-','+').replaceAll('_','/')),c=>c.charCodeAt(0));
@@ -56,6 +56,7 @@ export async function handle(request,env,now=Date.now()){
    return send(200,{name:s.name,lookupToken:await sign({kind:'lookup',id:s.id,exp:now+300000},env.RECORDS_SECRET)});
   }
   if(path==='/api/completions'&&request.method==='POST'){
+   if(env.RECORDS_READ_ONLY==='true')throw fail(503,'通关服务已迁移，请刷新游戏页面后重新登记。');
    await rate(env,ip,'submit',12,now);const input=await readBody(request),s=await student(env,input.studentId),lookup=await unpack(input.lookupToken,'lookup',env.RECORDS_SECRET,now);
    if(!lookup||lookup.id!==s.id)throw fail(401,'姓名查询已过期，请重新输入学号。');
    if(input.name!==s.name)throw fail(400,'姓名与点名册不一致，请重新核对。');
@@ -86,3 +87,4 @@ export default {
  fetch:(request,env)=>handle(request,env),
  async scheduled(controller,env){await env.DB.prepare('DELETE FROM rate_limits WHERE minute<?').bind(Math.floor(Date.now()/60000)-1440).run();}
 };
+export {sign,unpack,samePassword,mapRecord};
