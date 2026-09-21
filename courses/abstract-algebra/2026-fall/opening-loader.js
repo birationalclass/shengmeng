@@ -14,7 +14,7 @@
     "./opening-timeline.js?v=20260913-galois-seven-scenes",
     "./opening-motion.js?v=20260913-galois-seven-scenes",
     "./opening-playlist.js?v=20260913-galois-seven-scenes",
-    "./opening-camera.js?v=20260919-course-polish-v1",
+    "./opening-camera.js?v=20260921-lie-framing",
     "./opening-audio-preload.js?v=20260919-course-polish-v1",
     "./opening-galois-audio.js?v=20260919-course-polish-v1",
     "./opening-audio.js?v=20260919-opening-controls-v1",

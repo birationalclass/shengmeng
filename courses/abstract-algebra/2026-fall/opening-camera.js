@@ -2,7 +2,7 @@
  * Orbit, framing and magnification share canonical time. Figure changes never
  * reset the camera or start another identical push-pull shot. The analytical
  * closed orbit is reversible and joins at the loop seam. The Lie-group view
- * stays centred with a gentle Z-axis roll and a fixed 300% framing after entry.
+ * stays centred with a gentle Z-axis roll and a fixed 160% framing after entry.
  */
 (() => {
   'use strict';
@@ -24,7 +24,7 @@
   const defaultRoute = {holds:defaultHolds,transitions:defaultTransitions,starts:defaultStarts,duration:defaultDuration};
   const lieScene = 3, lieRoll = 8 * Math.PI / 180;
   // Each scene owns its framing; scale changes only while entering another scene.
-  const sceneZooms=Object.freeze([1,1,1,3,1,1,1,1,1,1]);
+  const sceneZooms=Object.freeze([1,1,1,1.6,1,1,1,1,1,1]);
   function point(value) {
     return value&&value.length>=3&&[value[0],value[1],value[2]].every(Number.isFinite)
       ? [value[0],value[1],value[2]] : [0,0,0];
