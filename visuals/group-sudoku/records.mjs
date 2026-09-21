@@ -1,5 +1,5 @@
-import {RECORDS_CONFIG} from './records-config.mjs?v=records5-compact';
-import {createRecordsApi} from './records-api.mjs?v=records5-compact';
+import {RECORDS_CONFIG} from './records-config.mjs?v=records6-oneline';
+import {createRecordsApi} from './records-api.mjs?v=records6-oneline';
 export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()=>{}}){
  const $=id=>document.getElementById(id),login=$('playerDialog'),history=$('recordsDialog'),id=$('playerStudentId');
  const api=createRecordsApi({config:RECORDS_CONFIG,t});
@@ -67,17 +67,16 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
   rows=records;const list=$('recordsList');list.replaceChildren();if(!records.length){const p=document.createElement('p');p.className='records-empty';p.textContent=t('暂无通关记录。','No completed levels yet.');list.append(p);return;}
   records.forEach((r,index)=>{
    const card=document.createElement('article');card.className='completion-card';
-   const top=document.createElement('div');top.className='record-main';
    const h=document.createElement('h3');h.textContent=`${index+1}. ${r.kind==='guest'&&document.documentElement.lang==='en'?r.name.replace(/^游客 /,'Guest '):r.name}`;h.title=h.textContent;
    const level=r.highestLevel||9,progress=document.createElement('span');progress.className='record-level';progress.textContent=`${level}×${level} · ${r.completedLevels}/8`;progress.setAttribute('aria-label',t(`最高通关 ${level}×${level}，已通关 ${r.completedLevels} 关`,`Highest ${level}×${level}, ${r.completedLevels} levels completed`));
-   top.append(h,progress);
-   const meta=document.createElement('div');meta.className='record-meta';
-   const sid=document.createElement('span');sid.textContent=r.studentId||'';
+   const sid=document.createElement('span');sid.className='record-id';sid.textContent=r.studentId||'';
    const date=document.createElement('time'),iso=r.reachedAt||r.firstCompletedAt;date.dateTime=iso;
    const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(iso)),part=type=>parts.find(p=>p.type===type)?.value;
-   date.textContent=`${part('year')}.${part('month')}.${part('day')} ${part('hour')}:${part('minute')}:${part('second')}`;
-   date.title=t('达到最高关卡时间（北京时间）','Highest level reached (China Standard Time)');date.setAttribute('aria-label',date.title+' '+date.textContent);
-   meta.append(sid,date);card.append(top,meta);list.append(card);
+   const full=`${part('year')}.${part('month')}.${part('day')} ${part('hour')}:${part('minute')}:${part('second')}`;
+   const fullDate=document.createElement('span');fullDate.className='record-date-full';fullDate.textContent=full;
+   const shortDate=document.createElement('span');shortDate.className='record-date-short';shortDate.textContent=`${part('month')}.${part('day')} ${part('hour')}:${part('minute')}`;
+   date.append(fullDate,shortDate);date.title=t('达到最高关卡时间（北京时间）','Highest level reached (China Standard Time)')+' '+full;date.setAttribute('aria-label',date.title);
+   card.append(h,sid,progress,date);list.append(card);
   });
  }
  async function loadRecords(){
