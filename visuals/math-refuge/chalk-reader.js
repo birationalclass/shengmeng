@@ -1,4 +1,6 @@
-import {readingFormulaWidth} from './display-profile.js?v=5-mobile';
+import {chalkHTML} from './chalk-typography.js?v=16-lecture-light';
+import {controlLabel} from './control-label.js?v=16-lecture-light';
+import {readingFormulaWidth} from './display-profile.js?v=6-chalk-rows';
 
 // The reading layer uses vector formulas and real HTML text, not a magnified
 // screenshot of the 3D texture. The six physical boards remain in the scene.
@@ -18,12 +20,13 @@ export function createChalkReader(lecture){
       page=lecture.clock.page;language=lecture.language;const entry=lecture.pages[page],copy=lecture.copy?.(page)||entry;
       $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
+      $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text);
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=5-mobile';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=6-chalk-rows';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }
-    if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;$('readerPlay').textContent=lecture.playing?'暂停翻页':'继续翻页';$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
+    if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;controlLabel($('readerPlay'),lecture.playing?'暂停翻页':'继续翻页');$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
   }
   $('readerOpen').addEventListener('click',()=>show(panel.hidden));
   $('readerClose').addEventListener('click',()=>show(false));

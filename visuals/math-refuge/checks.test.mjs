@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=15-fixed-hall';
-import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=15-fixed-hall';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=16-lecture-light';
+import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=16-lecture-light';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -50,7 +50,7 @@ test('chalk skips blank trailing columns and lifts across inter-word gaps',()=>{
   assert(!writingPose(rows,.8,blank).contact);
 });
 
-test('all 65 handwritten captions switch languages without changing formulas',async()=>{
+test('all consolidated handwritten captions switch languages without changing formulas',async()=>{
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*25};}};
   for(const [i,p] of pages.entries())for(const lang of ['zh','en']){
@@ -63,12 +63,14 @@ test('all 65 handwritten captions switch languages without changing formulas',as
   for(const match of css.matchAll(/url\('([^']+)'\)/g))assert((await fs.stat(new URL(match[1],import.meta.url))).size>1000);
 });
 
-test('scene clock wraps days, pauses and respects reduced motion without roof state',()=>{
-  const clock=new RetreatTime();clock.hour=23.99;clock.update(1);assert(clock.hour<1);
-  clock.running=false;const hour=clock.hour;clock.update(10);assert.equal(clock.hour,hour);
-  clock.running=true;clock.update(10,true);assert.equal(clock.hour,hour);
+test('clock follows local wall time across midnight, resume and reduced motion; preview is explicit',()=>{
+  let now=new Date(2026,8,22,23,59,50);const clock=new RetreatTime(()=>now);
+  assert(Math.abs(clock.hour-(23+59/60+50/3600))<1e-9);
+  now=new Date(2026,8,23,0,0,5);clock.update(999,true);assert(Math.abs(clock.hour-5/3600)<1e-9);
+  clock.previewAt(21);now=new Date(2026,8,23,9,25,0);clock.update(1000);assert.equal(clock.hour,21);
+  assert(clock.preview);clock.sync();assert(!clock.preview);assert.equal(clock.hour,9+25/60);
+  now=new Date(2026,8,23,17,45,0);clock.update(0);assert.equal(clock.hour,17.75);
   assert.equal(daylightAt(0),0);assert.equal(daylightAt(12),1);
-  assert(!('open' in clock));assert(!('mode' in clock));
 });
 
 test('compact sea terraces connect across seawater with three arch bridges',()=>{
@@ -220,7 +222,11 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(scene.children.filter(o=>o.name.startsWith('Small arch bridge ')).length,0);
     assert.equal(scene.children.filter(o=>o.name.startsWith('Level pool crossing ')).length,0);
     assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
-    assert.equal(result.campus.lightingZones.length,9);
+    assert.equal(result.campus.lightingZones.filter(z=>z.task==='blackboard').length,3);
+    for(const name of ['Upper private studies','Upper small seminar','Upper seminar lounge'])assert(result.campus.lightingZones.some(z=>z.name===name));
+    const spots=scene.children.filter(o=>o.isSpotLight);
+    result.setTime(12);const daytime=spots.map(o=>o.intensity);result.setTime(23);
+    spots.forEach((lamp,i)=>{assert(lamp.intensity>daytime[i]);assert(lamp.distance>0&&lamp.intensity>60);});
     for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
     for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}
     assert.equal(scene.children.filter(o=>o.isPointLight).length,0);
@@ -319,8 +325,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.deepEqual(scene.getObjectByName('Coffee machine').userData,{groupHeads:2,cups:2,hoppers:2,architectureScale:BUILDING_SCALE});
     assert(scene.getObjectByName('Coffee cabin sign'));assert(calls.includes('咖啡小屋'));
     for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
-    const glazing=scene.getObjectByName('Fine east seminar glazing').userData;
-    assert.equal(glazing.spacing,1);assert.equal(glazing.frame,.035);assert.equal(glazing.seal,.012);
+    const glazing=scene.getObjectByName('Four-panel smart seminar glazing').userData;
+    assert.equal(glazing.panels,4);assert.equal(glazing.joints,3);assert(glazing.sealMetres<=.008);
+    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,4);
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
     assert(sky.material.uniforms.turbidity.value<=2);
@@ -393,9 +400,11 @@ test('three pairs alternate six slots, erase reused boards and wrap lecture page
   const elapsed=clock.elapsed;clock.update(-1);assert.equal(clock.elapsed,elapsed);
 });
 
-test('65 local SVG pages preserve notebook formula content and stay within the board',async()=>{
+test('Consolidated local SVG pages preserve notebook formula content and stay within the board',async()=>{
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
-  assert.equal(pages.length,65);assert(pages.some(p=>p.source.startsWith('Hodge')));assert(pages.some(p=>p.source.startsWith('Leray')));
+  assert(pages.length<40);assert(pages.some(p=>p.source.startsWith('§ 3.')));assert(pages.some(p=>p.source.startsWith('§ 4.')));
+  assert.equal(new Set(pages.map(p=>p.tex)).size,pages.length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
+  assert(pages.every(p=>/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=301));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
     const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
@@ -430,7 +439,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=15-fixed-hall',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=15-fixed-hall',state).replace('./chalk-motion.js?v=15-fixed-hall',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=16-lecture-light',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=16-lecture-light',state).replace('./chalk-motion.js?v=16-lecture-light',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -442,13 +451,13 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const {createLecture}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const scene=new Three.Scene(),lecture=await createLecture(scene,{capabilities:{getMaxAnisotropy:()=>8}});
     const boards=scene.children.filter(o=>o.name.startsWith('Sliding chalkboard'));
-    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.includes('double complex'));await lecture.setLanguage('zh');
+    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('double complex'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>1.1&&h<1.8,'Buttons remain reachable after boards are raised');}
-    const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert(button.position.z<rest);button.userData.pressed=false;
+    const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert(button.material.opacity>.035);assert(button.userData.smartGlass);button.userData.pressed=false;
     lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
@@ -461,8 +470,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.deepEqual(boards.map(b=>b.children[0].material.map.version),uploads,'Unchanged boards must not re-upload textures');
     lecture.lift(0,1);for(let i=0;i<50;i++)lecture.update(.1);
     assert(Math.abs(boards[0].position.y-3.7)<.001);assert(Math.abs(boards[1].position.y-1.45)<.001);
-    lecture.select(64);await Promise.resolve();lecture.staticPage();lecture.update(.1,true);
-    assert.equal(lecture.clock.page,64);assert.equal(lecture.clock.slots[lecture.clock.active].progress,1);
+    lecture.select(lecture.pages.length-1);await Promise.resolve();lecture.staticPage();lecture.update(.1,true);
+    assert.equal(lecture.clock.page,lecture.pages.length-1);assert.equal(lecture.clock.slots[lecture.clock.active].progress,1);
     assert(!scene.getObjectByName('Writing chalk').visible);assert(!scene.getObjectByName('Moving blackboard eraser').visible);
     assert(!scene.getObjectByName('Falling chalk powder').visible);
     assert(boards.every(b=>b.children[0].material.roughnessMap.isCanvasTexture));
@@ -476,12 +485,12 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
   const elements=new Map([...html.matchAll(/id="([^"]+)"/g)].map(([,id])=>[id,{
     hidden:['chalkReader','lecturePanel'].includes(id),style:{},value:id==='readerFont'?'24':'',attributes:{},events:{},
-    addEventListener(type,handler){this.events[type]=handler;},setAttribute(k,v){this.attributes[k]=v;},click(){this.events.click?.();}
+    addEventListener(type,handler){this.events[type]=handler;},setAttribute(k,v){this.attributes[k]=v;},getAttribute(k){return this.attributes[k];},click(){this.events.click?.();}
   }]));
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./display-profile.js?v=5-mobile',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=16-lecture-light',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=16-lecture-light',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=6-chalk-rows',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -544,7 +553,7 @@ test('mouse and touch rotation are slower, with zoom and pan preserved',async()=
   }
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
   assert.equal([...html.matchAll(/id="fullscreen"/g)].length,1);
-  assert(/<footer[\s\S]*id="fullscreen"[\s\S]*<\/footer>/.test(html));
+  assert(/<header[\s\S]*id="fullscreen"[\s\S]*<\/header>/.test(html));
 });
 test('sparse ink gives short local eraser passes and proportional chalk timing',()=>{
   const width=1536,height=640,data=new Uint8ClampedArray(width*height*4);
@@ -575,4 +584,46 @@ test('tour resume blends from current view without a blackout or teleport',async
   assert(!apply.includes('Math.sin(k*Math.PI)'));
   assert(apply.includes('suppressFadeShot===shot?0'));
   let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
+});
+
+test('manual board viewing yields after the configured idle time without restarting a tour',async()=>{
+  const {BoardFollow}=await import('./board-follow.js');let now=0;
+  const follow=new BoardFollow(20,()=>now);assert(follow.following);
+  follow.begin();now=45;assert(!follow.following,'A held drag never times out');
+  follow.end();now=64.99;assert(!follow.following);now=65;assert(follow.following);
+  follow.touch();now=70;follow.touch();now=89;assert(!follow.following);now=90;assert(follow.following);
+  follow.setDelay(5);follow.touch();now=94;assert(!follow.following);now=95;assert(follow.following);
+  follow.setDelay(60);follow.touch();now=154;assert(!follow.following);now=155;assert(follow.following);
+  follow.setDelay(100);assert.equal(follow.delay,60);follow.setDelay(1);assert.equal(follow.delay,5);
+  follow.begin();follow.reset();assert(follow.following);
+});
+
+test('multiline formulas write one row at a time and lift before the next',async()=>{
+  const {equationLines}=await import('./chalk-layout.mjs');
+  assert.deepEqual(equationLines(String.raw`\begin{gathered}a=b\\[.35em]c=\frac{d}{e}\\f=g\end{gathered}`),['a=b',String.raw`c=\frac{d}{e}`,'f=g']);
+  assert.equal(equationLines(String.raw`\frac{a+b}{c+d}`).length,1);
+  const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
+  const page=pages.find(p=>p.source==='§ 1.8');assert.equal(page.formulaRows.length,3);
+  const rows=page.formulaRows;
+  for(let i=1;i<rows.length;i++)assert(rows[i-1][1]+rows[i-1][3]<rows[i][1]);
+  const plan=writingPlan(rows);
+  for(let i=0;i<rows.length;i++){
+    const segment=plan.segments.find(s=>s.row===i&&s.contact),progress=(segment.start+segment.cost*.5)/plan.total;
+    assert(inkReveal(rows,progress,i)>0);
+    for(let j=i+1;j<rows.length;j++)assert.equal(inkReveal(rows,progress,j),0,'Later formulas must remain blank');
+    if(i>0){const entering=plan.segments.find(s=>s.row===i&&s.entering);assert(entering&&!entering.contact);}
+  }
+});
+
+
+test('inline mathematical letters, Unicode superscripts and operators always use print faces',async()=>{
+  const {chalkRuns,chalkHTML,chalkSVG}=await import('./chalk-typography.js');
+  for(const text of ['FᵖHⁿ','d²=0','Eᵣ','∂∂̄','𝓕','(−1)ᵖ','α→β','Kähler']){
+    const runs=chalkRuns(text);assert(runs.every(run=>run.math),text);
+    assert.equal(runs.map(run=>run.text).join(''),text);
+    assert(chalkHTML(text).includes('class="chalk-math"'));
+    assert(chalkSVG(text).includes('font-family="Times New Roman, serif"'));
+  }
+  assert.deepEqual(chalkRuns('设 X 为流形'),[{text:'设 ',math:false},{text:'X',math:true},{text:' 为流形',math:false}]);
+  assert(!chalkHTML('<x>').includes('<x>'),'Text must remain escaped');
 });

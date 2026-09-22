@@ -1,17 +1,17 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights} from './lecture-state.js?v=15-fixed-hall';
-import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=15-fixed-hall';
+import {LectureClock,boardHeights} from './lecture-state.js?v=16-lecture-light';
+import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=16-lecture-light';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=15-fixed-hall';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=16-lecture-light';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=5-mobile');
+  const response=await fetch('./assets/chalk/pages.json?v=6-chalk-rows');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
-  if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin')]);
+  if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]);
   function load(index){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
@@ -25,13 +25,13 @@ export async function createLecture(scene,renderer){
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
-        const wipe=erasingPlan(pixels,[...rows,[88,582,1000,42]]);erasePlans.set(index,wipe);
+        const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
         clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration)});
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
-      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=5-mobile';
+      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=6-chalk-rows';
     });pending.set(index,job);return job;
   }
   await load(0);
@@ -63,30 +63,30 @@ export async function createLecture(scene,renderer){
     part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
     for(let j=0;j<4;j++)part(scene,[x-1+j*.15,.39,-10.15],[.1,.025,.025],new THREE.MeshStandardMaterial({color:j%2?'#e6d4a0':'#ebe8d9',roughness:1}));
   }
-  // Three actual, labeled, spring-travel buttons on a modeled wall panel.
+  // Transparent capacitive interface laminated onto the east smart glazing.
   const consoleButtons=[],consoleTextures=[];
-  part(scene,[37,1.0,-10.46],[.96,.6,.15],metal);
-  const consoleMaterial=new THREE.MeshStandardMaterial({color:'#283330',roughness:.86,metalness:.12});
-  part(scene,[37,.55,-10.36],[.88,.5,.08],consoleMaterial);
-  for(const [i,action] of ['language'].entries()){
-    const button=new THREE.Mesh(new THREE.BoxGeometry(.76,.34,.13),new THREE.MeshStandardMaterial({color:'#574e41',roughness:.9,metalness:.12}));
-    button.name='Physical chalk button '+action;button.position.set(37,1.0-i*.45,-10.245);
-    button.userData={action,pressed:false,restZ:-10.245,lastLabel:''};scene.add(button);
-    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=192;
-    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(texture);
-    const label=new THREE.Mesh(new THREE.PlaneGeometry(.70,.28),new THREE.MeshStandardMaterial({map:texture,roughness:1,metalness:0,envMapIntensity:0}));label.position.z=.067;button.add(label);
-    button.userData.canvas=canvas;button.userData.texture=texture;consoleButtons.push(button);
-  }
+  const button=new THREE.Mesh(new THREE.PlaneGeometry(1.9,.78),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.035,depthWrite:false,toneMapped:false}));
+  button.name='Smart glass language touch surface';button.position.set(37,1,-11.34);
+  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true};scene.add(button);
+  const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
+  const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
+  const label=new THREE.Mesh(new THREE.PlaneGeometry(1.82,.68),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:.8,depthWrite:false,toneMapped:false}));label.position.z=.008;button.add(label);
+  button.userData.canvas=touchCanvas;button.userData.texture=touchTexture;consoleButtons.push(button);
   function setConsoleState(){
-    const labels=[language==='zh'?'中文  /  EN':'EN  /  中文'];
-    consoleButtons.forEach((b,i)=>{const title=labels[i];if(b.userData.lastLabel===title)return;b.userData.lastLabel=title;
-      const c=b.userData.canvas.getContext('2d');c.fillStyle='#29302a';c.fillRect(0,0,512,192);
-      c.fillStyle='#bea984';c.fillRect(20,28,10,136);
-      c.fillStyle='#dfcfb6';c.textAlign='center';c.textBaseline='middle';c.font='46px "PingFang SC", sans-serif';c.fillText(title,276,96);b.userData.texture.needsUpdate=true;
-    });
+    const title=language;if(button.userData.lastLabel===title)return;button.userData.lastLabel=title;
+    const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
+    c.fillStyle='#081c2444';c.fillRect(12,18,1000,348);
+    c.fillStyle='#9bece599';for(const x of [12,1010])c.fillRect(x,18,2,348);
+    for(const y of [18,364])c.fillRect(12,y,1000,2);
+    c.fillStyle='#91e3db';c.font='25px sans-serif';c.textAlign='left';c.fillText('LANGUAGE',64,85);
+    c.fillStyle='#96e7de22';c.fillRect(language==='zh'?48:530,115,442,192);
+    c.font='76px "PingFang SC", sans-serif';c.textAlign='center';
+    c.fillStyle=language==='zh'?'#dbfff7':'#7cacae';c.fillText('中文',276,244);
+    c.fillStyle=language==='en'?'#dbfff7':'#7cacae';c.fillText('EN',748,244);
+    c.fillStyle='#b9fff0';c.fillRect(language==='zh'?194:666,296,164,3);touchTexture.needsUpdate=true;
   }
   setConsoleState();
-  const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.014,.017,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1}));
+  const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.014,.017,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
   const chalkAxis=new THREE.Vector3(.28,.55,.79).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
   const eraser=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
@@ -125,7 +125,7 @@ export async function createLecture(scene,renderer){
         const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
         if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
       });
-      ctx.drawImage(image,0,580,W,60,0,580,W,60);ctx.drawImage(dust,0,0);
+      ctx.drawImage(dust,0,0);
       if(erasing){
         const end=Math.floor(clock.progress*700);
         for(let i=wipeSamples;i<=end;i++){
@@ -149,7 +149,7 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.position.z=THREE.MathUtils.damp(b.position.z,b.userData.restZ-(b.userData.pressed?.045:0),24,dt);if(playing&&!reduced)effectTime+=dt;
+    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.13:.035,18,dt);if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}

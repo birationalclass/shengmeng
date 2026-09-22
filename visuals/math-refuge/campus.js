@@ -12,6 +12,13 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const meta=(name,data)=>{const o=new THREE.Object3D();o.name=name;o.userData=data;scene.add(o);return o;};
   const lightingZones=[];
   const lampRing=new THREE.TorusGeometry(1,.025,8,64);
+  const shade=new THREE.LatheGeometry([new THREE.Vector2(.045,0),new THREE.Vector2(.14,-.035),new THREE.Vector2(.32,-.12),new THREE.Vector2(.48,-.24),new THREE.Vector2(.50,-.27),new THREE.Vector2(.47,-.30)],40);
+  const shadeMaterial=new THREE.MeshStandardMaterial({color:'#a6957b',roughness:.5,metalness:.45,side:THREE.DoubleSide});
+  function sculptedPendant(x,y,z,r=1){
+    instance(shade,shadeMaterial,[x,y,z],[r,r,r]);
+    instance(cylinder,light,[x,y-.255*r,z],[.43*r,.015,.43*r]);
+    beam([x,y,z],[x,y+.33,z],.009/S,steel);
+  }
   const acousticCeiling=new THREE.MeshPhysicalMaterial({color:'#655d50',roughness:1,metalness:0,specularIntensity:0,envMapIntensity:.04,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.08,.08)});
   function linearLamp(x,y,z,length){
     soft([x,y,z],[length,.12/S,.24/S],brass);
@@ -22,7 +29,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const ceiling=y+h,pendant=ceiling-.28;
     let type='recessed linear',gain=.65,color='#ffe1b9';
     if(name==='Academic living villa'){
-      type='double warm ring pendant';
+      type='layered bronze pendants with recessed opal diffusers';
+      for(const [dx,dz,r] of [[-1,-1,1.25],[1,.6,.9]])sculptedPendant(x+dx,pendant-.08,z+dz,r);
       for(const [dx,radius] of [[-1,.82],[1,.60]]){
         instance(lampRing,brass,[x+dx,pendant,z],[radius,radius,radius],[Math.PI/2,0,0]);
         instance(lampRing,light,[x+dx,pendant-.045,z],[radius,radius,radius],[Math.PI/2,0,0]);
@@ -40,7 +48,9 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
       }
       for(const side of [-1,1])box([x,ceiling-.04,z+side*(d/2-.3)],[w-.8,.018,.028],light);
     }else if(name==='Independent quiet library'){
-      type='three reading pendants';gain=.85;
+      type='three shielded reading pendants and shelf coves';gain=1;
+      for(const dx of [-4,4])lightingZones.push({name:'Library reading '+dx,position:[x+dx,pendant-.22,z],target:[x+dx,y+.65,z],gain:.75,color:'#ffecd8',power:250});
+      for(const side of [-1,1])box([x,ceiling-.09,z+side*(d/2-.35)],[w-.8,.025,.06],light);
       for(const dx of [-4,0,4])linearLamp(x+dx,pendant,z,1.7);
     }else if(name==='Discussion villa'||name==='Upper small seminar'){
       type='table-centered linear pendant';gain=.7;linearLamp(x,pendant,z,3.2);
@@ -51,9 +61,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
       for(const dz of [-1.5,1.5])linearLamp(x,ceiling-.16,z+dz,Math.min(4,w-1));
     }
     meta(name+' light fixtures',{type,color,glareControlled:true});
-    // The two upstairs rooms use sky/ambient fill plus visible diffusers.
-    // Limit direct dynamic sources to nine for the whole campus.
-    if(!name.startsWith('Upper'))lightingZones.push({name,position:[x,pendant-.16,z],target:[x,y,z],gain,color});
+    // Every occupied room receives actual illumination, including upstairs.
+    lightingZones.push({name,position:[x,pendant-.22,z],target:[x,y+.45,z],gain,color,power:name.startsWith('Quiet')?130:240});
   }
   function books(cx,y,z,w){
     box([cx,y+1.08,z],[w,2.16,.32],timber);
@@ -66,7 +75,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
-      const style=name==='Low sea-facing seminar hall'&&side==='east'?{spacing:1,frame:.035,seal:.012}:undefined;
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:4,spacing:5,frame:.022/S,seal:.008/S}:undefined;
       if(doors.includes(side)){
         const gap=1.45,pane=(width-gap)/2;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,style);
@@ -182,14 +191,23 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
   for(const z of [-5,0,5])linearLamp(cx,DECK_Y+HALL.clearHeight/S-.16,z,6.5);
-  for(const z of [-4.5,4.5])lightingZones.push({name:'Seminar downlight '+z,position:[cx,DECK_Y+HALL.clearHeight/S-.35,z],target:[cx,DECK_Y,z],gain:.8,color:'#ffe1bb'});
+  for(const z of [-4.5,4.5])lightingZones.push({name:'Seminar downlight '+z,position:[cx,DECK_Y+HALL.clearHeight/S-.35,z],target:[cx,DECK_Y,z],gain:1,color:'#ffe8cf',power:220});
+  // Recessed asymmetric wall-wash bars sit ahead of the boards, above eye level.
+  // Separate lighting circuits keep the chalk visible without brightening the glass.
+  for(const z of [-3,0,3]){
+    const x=HALL.boardX-1.05,y=DECK_Y+HALL.clearHeight/S-.18;
+    soft([x,y,z],[.22,.12,2.8],steel);
+    box([x+.045,y-.069,z],[.075,.012,2.55],light);
+    lightingZones.push({name:'Blackboard wall wash '+z,position:[x,y-.16,z],target:[HALL.boardX,DECK_Y+1.8,z],gain:1,color:'#fff0dc',power:150,range:6,angle:Math.PI*.32,task:'blackboard'});
+  }
+  meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
   const n=34,stairX=33.3;
   for(let i=0;i<n;i++)box([stairX,DECK_Y+hallUpper*(i+.5)/n,10.05-i*.3],[1.3,hallUpper/n,.305],timber);
   floor(hallUpper,3.8,2.4,34.4,0);
   for(const x of [32.61,33.99])beam([x,DECK_Y+.9/S,10.2],[x,hallUpper+DECK_Y+.9/S,.15],.022,brass);
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
-  meta('Seminar hall light fixtures',{type:'fixed acoustic ceiling with recessed linear diffusers',glareControlled:true});
-  meta('Fine east seminar glazing',{spacing:1,frame:.035,seal:.012});
+  meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});
+  meta('Four-panel smart seminar glazing',{panels:4,joints:3,sealMetres:.008,frameMetres:.022,touchLanguage:true});
   // A small independent coffee cabin on the north platform.
   const [cw,ce,cn,cs]=COFFEE_PAD;floor(0,ce-cw,cs-cn,(cw+ce)/2,(cn+cs)/2);
   room('North coffee cabin',39,-22,6,6,2.9,0,['south'],false,true);
@@ -301,6 +319,6 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   return {blind,seating,lightingZones,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }
