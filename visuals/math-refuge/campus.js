@@ -284,12 +284,15 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
-  const n=34,stairX=33.3,stairStart=9.6,landingCenter=-1.65;
-  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*.3+.13],[1.14,.012,.018],light);}
+  const n=34,stairX=33.3,stairStart=9.6,landingCenter=0,stairTread=.251;
+  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*stairTread],[1.3,hallUpper/n,stairTread+.005],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*stairTread+stairTread/2-.02],[1.14,.012,.018],light);}
   floor(hallUpper,3.8,2.4,34.4,landingCenter);
-  supportedFlight('Hall exterior stair',stairX,stairStart,n,.3,hallUpper,1.3,landingCenter+.9);
+  supportedFlight('Hall exterior stair',stairX,stairStart,n,stairTread,hallUpper,1.3,landingCenter+.9);
   guardTerrace('Hall complete upper guard',[[34.525,43.475,-10.275,10.275],[32.5,36.3,landingCenter-1.2,landingCenter+1.2]],hallUpper+DECK_Y,[{axis:'x',fixed:landingCenter+1.2,from:32.74,to:33.86}]);
-  for(const z of [landingCenter-.9,landingCenter+.9])box([32.74,(DECK_Y+hallUpper)/2,z],[.14,hallUpper-DECK_Y,.14],steel);
+  // Thin horizontal cantilever beams tie into the upper slab; no columns below
+  // the landing obstruct the centered ground-floor approach.
+  for(const z of [landingCenter-.9,landingCenter+.9])box([34.4,DECK_Y+hallUpper-.10,z],[3.65,.18,.12],steel);
+  meta('Centered upper hall entrance',{doorCenterZ:0,landingCenterZ:landingCenter,landingBounds:[32.5,36.3,-1.2,1.2],supportColumns:0,cantileverBeams:2,treadMetres:stairTread*S});
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
   meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});
   meta('Seamless smart seminar glazing',{panels:1,joints:0,sealMetres:0,frameMetres:.022,touchLanguage:true});

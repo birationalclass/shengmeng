@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=40-imac','scene.js?v=40-imac','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=41-centered-entry','scene.js?v=41-centered-entry','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=40-imac',root),'utf8');
-  for(const file of ['app.js?v=40-imac','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=41-centered-entry',root),'utf8');
+  for(const file of ['app.js?v=41-centered-entry','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=40-imac');
+  const sceneModule=await inlineAddon('./scene.js?v=41-centered-entry');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -264,6 +264,16 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
           assert.deepEqual(rail.tops[i],[p[0],p[1]+rail.height,p[2]],'Handrail connects to the post cap');
         }
       }
+    }
+    const entrance=scene.getObjectByName('Centered upper hall entrance').userData;
+    assert.equal(entrance.doorCenterZ,entrance.landingCenterZ);assert.equal(entrance.supportColumns,0);
+    assert(entrance.treadMetres>.32&&entrance.treadMetres<.38);
+    const hallFlight=scene.getObjectByName('Hall exterior stair').userData;
+    assert(hallFlight.startZ+hallFlight.tread/2<HALL.south,'Centered upper entrance must not push the stair foot into the route');
+    const supportMatrix=new Three.Matrix4(),supportPosition=new Three.Vector3(),supportScale=new Three.Vector3(),supportRotation=new Three.Quaternion();
+    for(const mesh of scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.steel))for(let i=0;i<mesh.count;i++){
+      mesh.getMatrixAt(i,supportMatrix);supportMatrix.decompose(supportPosition,supportRotation,supportScale);
+      assert(!(supportPosition.x>32.4&&supportPosition.x<33.1&&Math.abs(supportPosition.z)<3&&supportPosition.y<3&&supportScale.y>2),'No tall column beneath the hall landing');
     }
     for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
@@ -687,7 +697,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=40-imac',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=41-centered-entry',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -736,7 +746,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=40-imac',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=41-centered-entry',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));

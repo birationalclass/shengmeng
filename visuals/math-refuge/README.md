@@ -176,3 +176,7 @@ All three modeled automatic glass entrances now match the hall's 4.9 m glass-wal
 - Official references checked: https://www.apple.com/imac/ and https://www.apple.com/imac/specs/ (front, side and rear images linked from the product page).
 
 - Smart-glass hit planes now have color writes disabled permanently, including hover/press states; only alpha-masked lettering provides feedback. Language buttons show the **destination** language: Chinese content displays `Eng`, and English content displays `中`. This supersedes the earlier current-state label behavior.
+
+## 2026-09-23 — Centered upper entrance without landing columns
+
+The hall's upper landing is now centered at Z=0, matching the west lounge entrance. The two tall columns beneath it are removed; shallow horizontal beams meet the upper slab, while the stair stringers and continuous guards remain. The 34-step flight keeps its lower end at Z=9.6 and uses approximately 35.5 cm physical treads, so the upper arrival is aligned without projecting the foot past the south facade. Geometry checks cover center alignment, connected tread/landing/rails, tread depth, the clear lower route and absence of the former tall columns. This is scene modeling, not a structural-engineering certification.
