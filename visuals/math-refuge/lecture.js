@@ -63,23 +63,26 @@ export async function createLecture(scene,renderer){
     part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
     for(let j=0;j<4;j++)part(scene,[x-1+j*.15,.39,-10.15],[.1,.025,.025],new THREE.MeshStandardMaterial({color:j%2?'#e6d4a0':'#ebe8d9',roughness:1}));
   }
-  // Transparent capacitive interface laminated onto the east smart glazing.
+  // One synchronized glass toggle below each board column. Align all three
+  // toward the right of their column so the middle control clears the glass joint.
   const consoleButtons=[],consoleTextures=[];
-  const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.10,depthWrite:false,toneMapped:false}));
-  button.name='Smart glass language touch surface';button.position.set(33.6,-.10,-11.34);
-  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:2};scene.add(button);
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
-  const label=new THREE.Mesh(new THREE.PlaneGeometry(2.1,.58),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));label.position.z=.008;button.add(label);
-  button.userData.canvas=touchCanvas;button.userData.texture=touchTexture;consoleButtons.push(button);
+  for(let column=0;column<3;column++){
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.14,depthWrite:false,toneMapped:false}));
+    button.name=`Smart glass language touch surface ${column+1}`;button.position.set(23.9+column*5.6,-.10,-11.34);
+    button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:column===0?1:2,canvas:touchCanvas,texture:touchTexture};
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(2.16,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
+    label.position.z=.008;button.add(label);scene.add(button);consoleButtons.push(button);
+  }
   function setConsoleState(){
-    const title=language;if(button.userData.lastLabel===title)return;button.userData.lastLabel=title;
+    if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
+    for(const button of consoleButtons)button.userData.lastLabel=language;
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
-    // One bright action below the right-hand board, within a single pane.
-    c.textAlign='center';
-    c.font='154px "PingFang SC", sans-serif';c.fillStyle='#f3fff9';
-    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,241);
-    c.fillStyle='#b9fff0';c.fillRect(326,305,372,5);
+    c.textAlign='center';c.shadowColor='#4fe3d8';c.shadowBlur=12;
+    c.font='600 184px "PingFang SC", sans-serif';c.fillStyle='#ffffff';
+    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,250);
+    c.shadowBlur=0;c.fillStyle='#d9fff7';c.fillRect(290,316,444,7);
     touchTexture.needsUpdate=true;
   }
   setConsoleState();
@@ -146,7 +149,7 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.22:.10,18,dt);if(playing&&!reduced)effectTime+=dt;
+    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.28:.14,18,dt);if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
@@ -194,7 +197,7 @@ export async function createLecture(scene,renderer){
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
     async setLanguage(value){
       const next=value==='en'?'en':'zh';if(next===language)return;
-      language=next;generation++;loadingError=null;cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
+      language=next;setConsoleState();generation++;loadingError=null;cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
       boards.forEach(b=>{b.last='';b.wet=null;});version++;
       try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(load));}
       catch(error){loadingError=error;throw error;}version++;

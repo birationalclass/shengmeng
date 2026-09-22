@@ -6,7 +6,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=20-slower-tour';
-import {createLecture} from './lecture.js?v=20-slower-tour';
+import {createLecture} from './lecture.js?v=21-language-columns';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=20-slower-tour';
 import {seaLevel} from './landscape-shape.js?v=20-slower-tour';
 import {createChalkReader} from './chalk-reader.js?v=20-slower-tour';

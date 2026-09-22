@@ -108,7 +108,7 @@ Scene assembly uses real Three.js geometry with mocked texture/PMREM/canvas/imag
 - All mathematical expressions, including inline variables, Unicode superscripts and symbols in titles or prose, use print faces in the 3D board, vector reader and generated SVG pages. Chinese prose retains the chalk font.
 - Controls are unframed line icons in the upper-right corner, with tooltips and accessible names. Chapter navigation uses a fine active underline.
 
-- Four finite-range, shadow-free warm fill lights simulate reflected room light in the seminar hall, reducing dark seat sides and ceiling/ground contrast at night. The glass language control is a single toggle centered below the rightmost board, fully clear of the backing and glass joints, with larger high-contrast lettering.
+- Four finite-range, shadow-free warm fill lights simulate reflected room light in the seminar hall, reducing dark seat sides and ceiling/ground contrast at night. Each of the three board columns has a single language toggle below it, consistently aligned to clear the glass joints and board backing. Larger bright lettering and a cyan underline improve visibility. All three share the same language state, and any one switches the entire classroom.
 
 - Six relevant teaching units now include compact vector diagrams from the notebook conventions: a double complex, total-degree diagonal, column filtration, second-page differential, zeroth page and stable-page diagonal. Formula and diagram ink regions are disjoint; labels remain print mathematics.
 - Writing speed is adjustable from 0.25× to 2× independently of touring. Chinese ink contact advances at half the mathematical-ink speed; the chalk shaft tilts down and outward from its anchored upper tip.

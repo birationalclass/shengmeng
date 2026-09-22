@@ -456,16 +456,22 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('double complex'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
-    assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language']);
+    assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>.85&&h<1.1,'Language button sits below the writing boards');}
     const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert(button.material.opacity>.035);assert(button.userData.smartGlass);button.userData.pressed=false;
     lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
     assert(button.userData.singleToggle);
-    const touchPosition=layoutRoot.localToWorld(button.position.clone()),halfWidth=button.geometry.parameters.width*.72/2;
-    assert(touchPosition.z-halfWidth>.5,'Entire control clears the central glass joint');
-    assert(touchPosition.z+halfWidth<5*BUILDING_SCALE-.5,'Control stays clear of the next glass joint');
-    assert(Math.abs(touchPosition.z-4.032)<.01,'Control is centered under the rightmost board');assert(touchPosition.y+button.geometry.parameters.height*.72/2<DECK_Y*BUILDING_SCALE+1.23,'Touch control clears the bottom of the board backing');
+    for(const [column,control] of lecture.consoleButtons.entries()){
+      const touchPosition=layoutRoot.localToWorld(control.position.clone()),halfWidth=control.geometry.parameters.width*.72/2;
+      for(const joint of [-5,0,5].map(v=>v*BUILDING_SCALE))assert(Math.abs(touchPosition.z-joint)>halfWidth+.20,'Entire control clears each glass joint');
+      const center=22.4+column*5.6;
+      assert(Math.abs(control.position.x-center)+control.geometry.parameters.width/2<2.65,'Control stays beneath its own board column');
+      assert(touchPosition.y+control.geometry.parameters.height*.72/2<DECK_Y*BUILDING_SCALE+1.23,'Touch control clears the board backing');
+    }
+    await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'));
+    await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'));
+    assert.equal(new Set(lecture.consoleButtons.map(b=>b.userData.texture)).size,1,'All controls share the same visible language state');
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
