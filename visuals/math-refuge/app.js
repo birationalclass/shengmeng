@@ -7,7 +7,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=31-site-final';
-import {createLecture} from './lecture.js?v=34-duan-seminar';
+import {createLecture} from './lecture.js?v=35-responsive-reports';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=31-site-final';
 import {seaLevel} from './landscape-shape.js?v=31-site-final';
 import {createChalkReader} from './chalk-reader.js?v=32-report-position';
@@ -169,7 +169,7 @@ function tick(stamp){
     lastUIStamp=stamp;
     if(lecture){updateLectureUI();reader?.update();}
     if(SHOTS[shot].lecture&&lecture){
-      $('mode').textContent=choosingReport?'选择报告人 / 主题':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`;
+      $('mode').textContent=reportProgress||reportLoadError||(choosingReport?'选择报告人 / 主题':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`);
       $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
       $('world').dataset.board=String(lecture.clock.active);
     }else delete $('world').dataset.boardFollow;
@@ -231,6 +231,8 @@ try{
   $('world').dataset.ready='true';$('world').dataset.entered='false';
   $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').hidden=false;$('enterButton').focus({preventScroll:true});
   renderer.setAnimationLoop(tick);
+  // Fetch only manifests and covers in the background, without delaying entry.
+  lecture.preloadReports();
 }catch(error){fail(error);}
 
 $('tour').addEventListener('click',()=>{
@@ -279,12 +281,17 @@ function populateReport(){
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
   $('world').dataset.report=lecture.report.id;
 }
-let changingLanguage=false,changingReport=false,reportLoadError='';
+let changingLanguage=false,changingReport=false,reportLoadError='',reportProgress='',reportRequest=0;
 async function switchReport(id){
-  if(!lecture||changingReport||changingLanguage)return;changingReport=true;reportLoadError='';$('reportSelect').disabled=true;
-  try{await lecture.setReport(id);populateReport();if(reduced.matches){lecture.playing=false;lecture.staticPage();}reader?.close();selectShot(0);}
-  catch(error){reportLoadError=error.message;$('lectureStatus').textContent=error.message;$('reportSelect').value=lecture.report.id;$('mode').textContent=error.message;}
-  finally{changingReport=false;$('reportSelect').disabled=false;}
+  if(!lecture||changingLanguage)return;
+  const request=++reportRequest;changingReport=true;reportLoadError='';
+  $('reportSelect').value=id;
+  reportProgress='正在切换至 '+$('reportSelect').selectedOptions[0].textContent+'…';
+  $('lectureStatus').textContent=reportProgress;$('mode').textContent=reportProgress;
+  $('reportSelect').setAttribute('aria-busy','true');
+  try{if(!await lecture.setReport(id)||request!==reportRequest)return;populateReport();if(reduced.matches){lecture.playing=false;lecture.staticPage();}reader?.close();selectShot(0);}
+  catch(error){if(request!==reportRequest)return;reportLoadError=error.message;$('lectureStatus').textContent=error.message;$('reportSelect').value=lecture.report.id;$('mode').textContent=error.message;}
+  finally{if(request===reportRequest){changingReport=false;reportProgress='';$('reportSelect').setAttribute('aria-busy','false');}}
 }
 $('reportButton').addEventListener('click',()=>{if(!lecture||!cameraIntent.canActivate())return;$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');selectShot(0,true);reader?.close();});
 $('reportSelect').addEventListener('change',event=>switchReport(event.target.value));
@@ -350,7 +357,7 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime
 
 let lectureStatus='';
 function updateLectureUI(){
-  const status=reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
+  const status=reportProgress||reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
   $('lecturePlay').disabled=lecture.clock.ended;$('lectureNext').disabled=lecture.clock.page===lecture.pages.length-1;$('lecturePrevious').disabled=lecture.clock.page===0;
   controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);

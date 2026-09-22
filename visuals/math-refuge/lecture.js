@@ -5,23 +5,23 @@ import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOp
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-position';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
+import {createReportLoader} from './report-loader.js?v=35-responsive-reports';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
   let activeReport=REPORTS.find(report=>report.id==='hu');
-  const response=await fetch(activeReport.manifest+'?v=32-report-position');
-  if(!response.ok)throw new Error('Unable to load the opening report');
-  let {pages}=await response.json(),clock=new LectureClock(pages.length);
+  const prepareReport=createReportLoader(),openingReport=await prepareReport(activeReport);
+  let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null;
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
   if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]);
-  function load(index){
+  function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
     if(pending.has(index))return pending.get(index);
     const epoch=generation,lang=language;
     const job=new Promise((resolve,reject)=>{
-      const image=new Image();image.onload=()=>{
+      const image=preparedImage||new Image();const ready=()=>{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
         const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image);pageRows.set(index,rows);
@@ -34,10 +34,12 @@ export async function createLecture(scene,renderer){
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
-      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=32-report-position';
+      };
+      if(preparedImage){queueMicrotask(ready);return;}
+      image.onload=ready;image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=32-report-position';
     });pending.set(index,job);return job;
   }
-  await load(0);
+  await load(0,openingReport.cover);
   const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0,writingSpeed=1;
   const frameMaterial=new THREE.MeshStandardMaterial({color:'#735c3e',roughness:.65});
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
@@ -116,11 +118,11 @@ export async function createLecture(scene,renderer){
     const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle='#c5f8ef';header.font='500 66px "PingFang SC", sans-serif';
     header.fillText(language==='zh'?'报告人 / 报告主题':'SPEAKER / TOPIC',996,154);reportHeader.texture.needsUpdate=true;
     for(const [index,button] of reportButtons.entries()){
-      const report=REPORTS[index],selected=report.id===activeReport.id,c=button.userData.canvas.getContext('2d');
+      const report=REPORTS[index],waiting=report.id===pendingReport?.id,selected=report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
       c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowColor='#56e4d4';c.shadowBlur=selected?8:2;c.fillStyle=selected?'#fff2cf':'#e5fff8';
       c.font='600 78px "PingFang SC", sans-serif';c.fillText(language==='zh'?report.speaker:report.speakerEn,996,91);
       c.shadowBlur=0;c.font='400 37px "PingFang SC", sans-serif';c.fillStyle='#d2f5e9';
-      const topic=language==='zh'?report.topic:report.topicEn,words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;
+      const topic=waiting?(language==='zh'?'正在准备报告…':'Preparing report…'):(language==='zh'?report.topic:report.topicEn),words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;
       for(const word of words){if(c.measureText(line+word).width>960){c.fillText(line,996,y);line=word;y+=47;}else line+=word;}c.fillText(line,996,y);
       if(selected){c.fillStyle='#f4d6a1';c.fillRect(816,224,180,4);}button.userData.texture.needsUpdate=true;button.userData.selected=selected;
     }
@@ -277,18 +279,25 @@ export async function createLecture(scene,renderer){
   boards.forEach((_,i)=>draw(i));
   return {
     update,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,setConsoleState,
+    get pendingReport(){return pendingReport;},
+    preloadReports:()=>Promise.allSettled(REPORTS.map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     async setReport(id){
       const next=REPORTS.find(r=>r.id===id);if(!next)throw new Error('未知报告');
-      const response=await fetch(next.manifest+'?v=32-report-position');if(!response.ok)throw new Error('报告加载失败，请重试。');
-      const manifest=await response.json();if(!manifest.pages?.length)throw new Error('报告内容为空');
-      // Keep the current talk intact until its replacement cover is available.
-      await new Promise((resolve,reject)=>{const image=new Image();image.onload=resolve;image.onerror=()=>reject(new Error('报告封面加载失败，请重试。'));image.src=manifest.pages[0].formulaAsset;});
-      generation++;pages=manifest.pages;activeReport=next;clock=new LectureClock(pages.length);loadingError=null;
-      cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;
-      boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
-      parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
-      playing=true;version++;setReportState();await load(0);boards.forEach((_,i)=>draw(i));
+      const request=++reportRequest;pendingReport=next;setReportState();
+      try{
+        const manifest=await prepareReport(next);if(request!==reportRequest)return false;
+        // Keep the current talk intact until its replacement cover is available.
+        generation++;pages=manifest.pages;activeReport=next;clock=new LectureClock(pages.length);loadingError=null;
+        cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;
+        boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
+        parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
+        playing=true;version++;await load(0,manifest.cover);
+        if(request!==reportRequest)return false;
+        // A new report starts on a clean board; there is no previous page to lift or erase.
+        clock.startWrite();boards.forEach((_,i)=>draw(i));return true;
+      }catch(error){if(request!==reportRequest)return false;throw error;}
+      finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
     setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
     get writingSpeed(){return writingSpeed;},
@@ -297,7 +306,7 @@ export async function createLecture(scene,renderer){
       const next=value==='en'?'en':'zh';if(next===language)return;
       language=next;setConsoleState();setReportState();generation++;loadingError=null;cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
       boards.forEach(b=>{b.last='';b.wet=null;});version++;
-      try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(load));}
+      try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(index=>load(index)));}
       catch(error){loadingError=error;throw error;}version++;
     },
     status:()=>loadingError?loadingError.message:`${clock.page+1} / ${pages.length} · ${clock.ended?'报告结束':phaseNames[clock.phase]} · ${chalkCopy(pages[clock.page],language).title}`,

@@ -462,7 +462,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -539,13 +539,24 @@ test('classroom assembles six independent boards and survives writing, erasing a
       assert(b.position.x-b.geometry.parameters.width/2>8.4);
     }
     await lecture.setLanguage('en');
+    const fetchReport=globalThis.fetch;
+    globalThis.fetch=async()=>({ok:false});await assert.rejects(lecture.setReport('duan'));
+    assert.equal(lecture.report.id,'hu','Failed loading preserves the current talk');assert.equal(lecture.pendingReport,null);
+    let releaseDuan;
+    globalThis.fetch=url=>url.includes('/duan/')?new Promise(resolve=>{releaseDuan=()=>resolve(fetchReport(url));}):fetchReport(url);
+    const slowDuan=lecture.setReport('duan');
+    assert.equal(lecture.pendingReport.id,'duan','Selection acknowledges the click before the network responds');
+    assert.equal(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId,'duan');
+    await lecture.setReport('ye');assert.equal(lecture.report.id,'ye');
+    releaseDuan();assert.equal(await slowDuan,false);assert.equal(lecture.report.id,'ye','A stale response cannot override the latest selection');
+    globalThis.fetch=fetchReport;
     for(const id of ['duan','ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
       assert.equal(lecture.pages.length,id==='meng'?38:id==='duan'?34:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
     }
     lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
-    globalThis.fetch=async()=>({ok:false});await assert.rejects(lecture.setReport('hu'));assert.equal(lecture.report.id,'meng','Failed loading preserves the current talk');
+    globalThis.fetch=async()=>{throw new Error('Offline');};await lecture.setReport('hu');assert.equal(lecture.report.id,'hu','A prepared report switches without another network request');assert.equal(lecture.clock.phase,'write','A clean title board starts without an empty lift delay');
     lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
 });
