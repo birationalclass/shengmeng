@@ -1,6 +1,6 @@
-import {chalkRuns,mathFont} from './chalk-typography.js';
+import {chalkRuns,mathFont} from './chalk-typography.js?v=22-handwritten-cover';
 export function chalkCopy(page,language='zh'){
-  return language==='en'?page.en:{title:page.title,text:page.text,source:page.source};
+  return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
 }
 
 export function wrapChalkText(ctx,text,width){
@@ -10,14 +10,21 @@ export function wrapChalkText(ctx,text,width){
 }
 
 export function composeChalkPage(ctx,page,index,language,formula){
-  const copy=chalkCopy(page,language),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, Kaiti SC, serif',rows=[];
+  const copy=chalkCopy(page,language),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
   ctx.clearRect(0,0,1536,640);ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';
-  function measure(text,size){return chalkRuns(text).reduce((width,run)=>{ctx.font=`${size}px ${run.math?mathFont:font}`;return width+ctx.measureText(run.text).width;},0);}
+  const runFont=run=>run.math?mathFont:/[\u3400-\u9fff]/.test(run.text)?font:'RefugeLatin, cursive';
+  function measure(text,size){return chalkRuns(text).reduce((width,run)=>{ctx.font=`${size}px ${runFont(run)}`;return width+ctx.measureText(run.text).width;},0);}
   function textRow(text,x,y,size,color){
     while(measure(text,size)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
-    for(const run of chalkRuns(text)){ctx.font=`${size}px ${run.math?mathFont:font}`;ctx.fillText(run.text,cursor,y);const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    for(const run of chalkRuns(text)){ctx.font=`${size}px ${runFont(run)}`;ctx.fillText(run.text,cursor,y);const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
     rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+14],{chineseSpans}));
+  }
+  if(page.kind==='cover'){
+    const center=(text,y,size,color='#eee9d5')=>textRow(text,Math.max(84,(1536-measure(text,size))/2),y,size,color);
+    center(copy.title,190,106,'#e4cf9c');center(copy.author,325,56);
+    copy.text.split('\n').forEach((line,i)=>center(line,430+i*52,36));
+    return rows;
   }
   textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];ctx.drawImage(formula,x+8,y+8,w-16,h-16);rows.push(...(page.formulaRows||[[x,y,w,h]]));

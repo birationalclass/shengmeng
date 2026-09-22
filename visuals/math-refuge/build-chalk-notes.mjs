@@ -27,10 +27,18 @@ delete globalThis.document;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
 const output=new URL('./assets/chalk/',import.meta.url);await fs.mkdir(output,{recursive:true});
-const pages=[];
+const pages=[];let lessonIndex=0;
 for(const file of await fs.readdir(output))if(/^(page|formula)-\d+\.svg$/.test(file))await fs.unlink(new URL(file,output));
 for(const section of sections){
-  const tex=section.tex,diagram=boardDiagrams.get(pages.length);
+  if(section.kind==='cover'){
+    const asset='page-001.svg',formulaAsset='formula-001.svg';
+    const rows=[[120,80,1296,120],[120,265,1296,70],[0,0,0,0],[120,390,1296,54],[120,442,1296,54]];
+    const lines=[[section.title,190,106],[section.author,325,56],...[...section.text.split('\n')].map((text,i)=>[text,430+i*52,36])];
+    const body=`<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" text-anchor="middle" font-family="Kaiti SC, KaiTi, cursive">${lines.map(([text,y,size])=>`<text x="768" y="${y}" font-size="${size}">${chalkSVG(text)}</text>`).join('')}</g></svg>`;
+    await fs.writeFile(new URL(asset,output),body);await fs.writeFile(new URL(formulaAsset,output),'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"></svg>');
+    pages.push({...section,asset:`./assets/chalk/${asset}`,formulaAsset:`./assets/chalk/${formulaAsset}`,formulaEm:1,formulaRows:[],rows});continue;
+  }
+  const tex=section.tex,diagram=boardDiagrams.get(lessonIndex++);
   const parts=equationLines(tex).map(line=>{
     const node=doc.convert(line,{display:true}),svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
     if(svg.includes('data-mjx-error'))throw new Error(`Bad formula: ${line}`);

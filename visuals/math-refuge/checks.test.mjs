@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=20-slower-tour';
-import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=20-slower-tour';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=22-handwritten-cover';
+import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=22-handwritten-cover';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -406,13 +406,13 @@ test('Consolidated local SVG pages preserve notebook formula content and stay wi
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   assert(pages.length<40);assert(pages.some(p=>p.source.startsWith('§ 3.')));assert(pages.some(p=>p.source.startsWith('§ 4.')));
   assert.equal(new Set(pages.map(p=>p.tex)).size,pages.length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
-  assert(pages.every(p=>/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
+  assert(pages.every(p=>p.kind==='cover'||/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
     const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
-    assert(formula.includes('<path'));assert(!formula.includes('data-mjx-error'));assert(page.formulaEm>0);
-    assert(svg.includes('<path'));assert(!svg.includes('data-mjx-error'));assert(!svg.includes('<script'));
-    assert(!/(?:href|src)="https?:/.test(svg));assert(page.tex.length>0);
+    assert(page.kind==='cover'||formula.includes('<path'));assert(!formula.includes('data-mjx-error'));assert(page.formulaEm>0);
+    assert(page.kind==='cover'||svg.includes('<path'));assert(!svg.includes('data-mjx-error'));assert(!svg.includes('<script'));
+    assert(!/(?:href|src)="https?:/.test(svg));assert(page.kind==='cover'||page.tex.length>0);
     for(const [x,y,w,h] of page.rows){assert(x>=0&&y>=0);assert(x+w<=1536&&y+h<=640);}
   }
   assert(pages.some(p=>p.tex.includes('\\delta_1\\delta_2+\\delta_2\\delta_1=0')));
@@ -441,7 +441,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=20-slower-tour',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=20-slower-tour',state).replace('./chalk-motion.js?v=20-slower-tour',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=22-handwritten-cover',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=22-handwritten-cover',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -453,7 +453,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const {createLecture}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const scene=new Three.Scene(),lecture=await createLecture(scene,{capabilities:{getMaxAnisotropy:()=>8}});
     const boards=scene.children.filter(o=>o.name.startsWith('Sliding chalkboard'));
-    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('double complex'));await lecture.setLanguage('zh');
+    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('spectral'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
@@ -503,7 +503,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=20-slower-tour',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=20-slower-tour',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=7-chalk-diagrams',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=22-handwritten-cover',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -631,7 +631,7 @@ test('multiline formulas write one row at a time and lift before the next',async
 
 test('inline mathematical letters, Unicode superscripts and operators always use print faces',async()=>{
   const {chalkRuns,chalkHTML,chalkSVG}=await import('./chalk-typography.js');
-  for(const text of ['FᵖHⁿ','d²=0','Eᵣ','∂∂̄','𝓕','(−1)ᵖ','α→β','Kähler']){
+  for(const text of ['FᵖHⁿ','d²=0','Eᵣ','∂∂̄','𝓕','(−1)ᵖ','α→β']){
     const runs=chalkRuns(text);assert(runs.every(run=>run.math),text);
     assert.equal(runs.map(run=>run.text).join(''),text);
     assert(chalkHTML(text).includes('class="chalk-math"'));
@@ -678,4 +678,21 @@ test('room fill uses bounded reflected irradiance and chalk tip sits above its s
  const source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
  const axis=source.match(/const chalkAxis=new THREE.Vector3\(([^)]+)\)/)[1].split(',').map(Number);
  assert(axis[1]<0&&axis[2]>0,'The shaft must slope down and away from the anchored writing tip');
+});
+
+
+test('English prose remains handwritten while embedded mathematical variables stay print',async()=>{
+  const {chalkRuns,chalkHTML}=await import('./chalk-typography.js');
+  for(const text of ['Spectral Sequences','Sheng Meng','A double complex','Kähler and Dolbeault cohomology','Take the image of the map.']){
+    assert(chalkRuns(text).every(run=>!run.math),text);
+    assert(!chalkHTML(text).includes('chalk-math'),text);
+  }
+  const runs=chalkRuns('Let K be a double complex. The total differential D preserves the filtration.');
+  assert.deepEqual(runs.filter(run=>run.math).map(run=>run.text),['K','D']);
+  const calls=[],ctx={clearRect(){},fillText(text){calls.push({text,font:this.font});},measureText(t){return {width:[...t].length*20};},drawImage(){throw Error('The cover must not draw a formula');}};
+  const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
+  assert.equal(pages[0].kind,'cover');assert.equal(pages[0].author,'Sheng Meng');assert.equal(pages[1].source,'§ 1.1–1.5');assert.equal(pages[1].diagram.kind,'double');
+  composeChalkPage(ctx,pages[0],0,'en',null);
+  assert(calls.some(c=>c.text==='Spectral Sequences'&&c.font.includes('RefugeLatin')));
+  assert(calls.some(c=>c.text==='Sheng Meng'&&c.font.includes('RefugeLatin')));
 });
