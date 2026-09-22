@@ -1,5 +1,5 @@
-import {chalkHTML} from './chalk-typography.js?v=19-smooth-tour';
-import {controlLabel} from './control-label.js?v=19-smooth-tour';
+import {chalkHTML} from './chalk-typography.js?v=20-slower-tour';
+import {controlLabel} from './control-label.js?v=20-slower-tour';
 import {readingFormulaWidth} from './display-profile.js?v=7-chalk-diagrams';
 
 // The reading layer uses vector formulas and real HTML text, not a magnified

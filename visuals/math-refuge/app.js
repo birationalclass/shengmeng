@@ -1,23 +1,23 @@
 import * as THREE from 'three';
-import {controlLabel} from './control-label.js?v=19-smooth-tour';
+import {controlLabel} from './control-label.js?v=20-slower-tour';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=19-smooth-tour';
-import {createLecture} from './lecture.js?v=19-smooth-tour';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=19-smooth-tour';
-import {seaLevel} from './landscape-shape.js?v=19-smooth-tour';
-import {createChalkReader} from './chalk-reader.js?v=19-smooth-tour';
+import {createRetreat} from './scene.js?v=20-slower-tour';
+import {createLecture} from './lecture.js?v=20-slower-tour';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=20-slower-tour';
+import {seaLevel} from './landscape-shape.js?v=20-slower-tour';
+import {createChalkReader} from './chalk-reader.js?v=20-slower-tour';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=19-smooth-tour';
-import {BoardFollow} from './board-follow.js?v=19-smooth-tour';
-import {RetreatTime} from './retreat-time.js?v=19-smooth-tour';
-import {constrainAboveWater} from './camera-bounds.js?v=19-smooth-tour';
-import {bindPhysicalButtons} from './physical-buttons.js?v=19-smooth-tour';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=20-slower-tour';
+import {BoardFollow} from './board-follow.js?v=20-slower-tour';
+import {RetreatTime} from './retreat-time.js?v=20-slower-tour';
+import {constrainAboveWater} from './camera-bounds.js?v=20-slower-tour';
+import {bindPhysicalButtons} from './physical-buttons.js?v=20-slower-tour';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -56,7 +56,7 @@ function stopTour(){
 function beginTransition(){
   const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
   controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
-  blend={elapsed:0,position,target,fov:camera.fov,duration:reduced.matches?.8:transitionSeconds(position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration))))};
+  blend={elapsed:0,position,target,fov:camera.fov,duration:reduced.matches?1.6:transitionSeconds(position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration))))};
   $('transition').style.opacity=0;
 }
 function selectShot(index){
@@ -73,7 +73,7 @@ function applyShot(dt){
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
     const framing=boardFraming(camera.aspect,s.fov),focus=lecture.focus(true);target.copy(focus);position.copy(focus).add(new THREE.Vector3(...lectureViewOffset(framing.distance)));
-    if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*1.5));target.lerpVectors(controls.target,target,1-Math.exp(-dt*1.5));}
+    if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*.75));target.lerpVectors(controls.target,target,1-Math.exp(-dt*.75));}
   }
   if(blend){
     blend.elapsed+=dt;const k=smoothProgress(Math.min(1,blend.elapsed/blend.duration));

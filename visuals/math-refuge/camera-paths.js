@@ -20,7 +20,7 @@ export const SHOTS=[
 ];
 SHOTS.unshift(...SHOTS.splice(SHOTS.findIndex(s=>s.lecture),1));
 export const OPENING_OVERVIEW_MS=5000;
-export const transitionSeconds=distance=>Math.min(6.5,2.2+Math.max(0,distance)*.04);
+export const transitionSeconds=distance=>2*Math.min(6.5,2.2+Math.max(0,distance)*.04);
 for(const shot of SHOTS)for(const key of ['positions','targets'])shot[key]=shot[key].map(p=>p.map(v=>v*BUILDING_SCALE));
 export function smoothProgress(t){return t*t*t*(10+t*(-15+6*t));}
 export function advanceShot(index,time,delta,speed){

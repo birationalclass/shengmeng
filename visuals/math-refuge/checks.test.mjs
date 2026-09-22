@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=19-smooth-tour';
-import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=19-smooth-tour';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=20-slower-tour';
+import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=20-slower-tour';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -134,7 +134,7 @@ test('eight finite camera chapters with auditorium, ocean and garden views',()=>
       for(let i=0;i<=100;i++)assert(curve.getPointAt(smoothProgress(i/100)).toArray().every(Number.isFinite));
     }
   }
-  assert(SHOTS[0].lecture);assert.equal(OPENING_OVERVIEW_MS,5000);assert(transitionSeconds(100)>transitionSeconds(1));
+  assert(SHOTS[0].lecture);assert.equal(OPENING_OVERVIEW_MS,5000);assert(transitionSeconds(100)>transitionSeconds(1));assert.equal(transitionSeconds(0),4.4);assert.equal(transitionSeconds(200),13);
   const wrap=advanceShot(7,37.98,.05,1);assert.equal(wrap.index,0);assert(wrap.time>=0&&wrap.time<.1);
   assert.deepEqual(advanceShot(0,1,-5,1),{index:0,time:1});
 });
@@ -441,7 +441,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=19-smooth-tour',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=19-smooth-tour',state).replace('./chalk-motion.js?v=19-smooth-tour',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=20-slower-tour',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=20-slower-tour',state).replace('./chalk-motion.js?v=20-slower-tour',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -497,7 +497,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=19-smooth-tour',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=19-smooth-tour',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=7-chalk-diagrams',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=20-slower-tour',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=20-slower-tour',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=7-chalk-diagrams',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -589,7 +589,7 @@ test('tour resume blends from current view without a blackout or teleport',async
   const apply=source.slice(source.indexOf('function applyShot'),source.indexOf('function resize'));
   assert(apply.includes('lerpVectors(blend.position,position,k)'));
   assert(!apply.includes('Math.sin(k*Math.PI)'));
-  assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('selectShot(Number(button.dataset.shot))'));assert(source.includes('else if(blend)')); 
+  assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('selectShot(Number(button.dataset.shot))'));assert(source.includes('else if(blend)'));
   let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
 });
 
