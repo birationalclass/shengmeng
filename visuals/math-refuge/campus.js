@@ -10,6 +10,37 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
   const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
   const meta=(name,data)=>{const o=new THREE.Object3D();o.name=name;o.userData=data;scene.add(o);return o;};
+  // Rails and posts use the very same anchors, so every rail meets a post and
+  // every post lands on a tread or landing, including the changes of slope.
+  function supportedRail(name,anchors){
+    const height=.95/S,tops=anchors.map(p=>[p[0],p[1]+height,p[2]]);
+    for(const [i,p] of anchors.entries()){
+      box([p[0],p[1]+.012,p[2]],[.105,.024,.105],steel);
+      beam(p,tops[i],.018/S,brass);
+      if(i)for(const fraction of [1,.48])beam(
+        [anchors[i-1][0],anchors[i-1][1]+height*fraction,anchors[i-1][2]],
+        [p[0],p[1]+height*fraction,p[2]],fraction===1?.025/S:.012/S,brass);
+    }
+    meta(name,{anchors,tops,height,basePlates:true});
+  }
+  function supportedFlight(name,x,startZ,count,tread,rise,width,landingZ){
+    const top=i=>DECK_Y+rise*(i+1)/count,lastZ=startZ-(count-1)*tread;
+    for(const sign of [-1,1]){
+      const railX=x+sign*(width/2-.09),anchors=[];
+      const stride=Math.max(1,Math.floor(.9/(tread*S)));
+      for(let i=0;i<count;i++)if(i%stride===0||i===count-1)anchors.push([railX,top(i),startZ-i*tread]);
+      anchors.push([railX,DECK_Y+rise,landingZ]);
+      supportedRail(name+' rail '+sign,anchors);
+      // Rectangular steel stringers connect tread undersides to both bearings.
+      const a=new THREE.Vector3(railX,DECK_Y-.03,startZ+tread/2),b=new THREE.Vector3(railX,DECK_Y+rise-.14,landingZ);
+      const direction=b.clone().sub(a),mid=a.clone().add(b).multiplyScalar(.5);
+      box(mid.toArray(),[.10,direction.length(),.20],steel,[Math.atan2(direction.z,direction.y),0,0]);
+      box([railX,DECK_Y+.02,startZ],[.23,.08,.32],steel);
+      box([railX,DECK_Y+rise-.12,landingZ],[.20,.22,.26],steel);
+    }
+    for(let i=0;i<count;i++)box([x,top(i)-rise/count-.025,startZ-i*tread],[width-.10,.06,.13],steel);
+    meta(name,{count,x,startZ,lastZ,tread,rise,width,landingZ});
+  }
   const lightingZones=[];
   const lampRing=new THREE.TorusGeometry(1,.025,8,64);
   const shade=new THREE.LatheGeometry([new THREE.Vector2(.045,0),new THREE.Vector2(.14,-.035),new THREE.Vector2(.32,-.12),new THREE.Vector2(.48,-.24),new THREE.Vector2(.50,-.27),new THREE.Vector2(.47,-.30)],40);
@@ -104,7 +135,10 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   // Exterior stair runs beside the west wing, linked to the lower sea terraces.
   const rise=upper,steps=28;
   for(let i=0;i<steps;i++){box([-12.75,DECK_Y+rise*(i+.5)/steps,12-i*.56],[1.25,rise/steps,.57],timber);box([-12.75,DECK_Y+rise*(i+1)/steps+.005,12-i*.56+.25],[1.10,.012,.018],light);}
-  beam([-13.4,DECK_Y+1/S,12],[-13.4,DECK_Y+rise+1/S,12-steps*.56],.025,steel);
+  floor(upper,2,1.2,-12.25,-3.98);
+  supportedFlight('Villa exterior stair',-12.75,12,steps,.56,rise,1.25,-3.98);
+  supportedRail('Villa landing return',[[-13.285,upper+DECK_Y,-3.98],[-13.285,upper+DECK_Y,-4.49],[-12.25,upper+DECK_Y,-4.49]]);
+  for(const x of [-13.1,-11.6])box([x,(DECK_Y+upper)/2,-4.2],[.14,upper-DECK_Y,.14],steel);
 
   // Quiet, detached library and two compact residential villas landward.
   room('Independent quiet library',-37,-16,13,10,3.0,0,['south','east','west']);
@@ -209,9 +243,12 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
   const n=34,stairX=33.3;
-  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,10.05-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,10.05-i*.3+.13],[1.14,.012,.018],light);}
+  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,11.25-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,11.25-i*.3+.13],[1.14,.012,.018],light);}
   floor(hallUpper,3.8,2.4,34.4,0);
-  for(const x of [32.61,33.99])beam([x,DECK_Y+.9/S,10.2],[x,hallUpper+DECK_Y+.9/S,.15],.022,brass);
+  supportedFlight('Hall exterior stair',stairX,11.25,n,.3,hallUpper,1.3,.9);
+  supportedRail('Hall landing outer return',[[32.74,hallUpper+DECK_Y,.9],[32.74,hallUpper+DECK_Y,0],[32.74,hallUpper+DECK_Y,-1.05],[33.6,hallUpper+DECK_Y,-1.05],[34.5,hallUpper+DECK_Y,-1.05]]);
+  supportedRail('Hall landing inner return',[[33.86,hallUpper+DECK_Y,.9],[34.5,hallUpper+DECK_Y,.9]]);
+  for(const z of [-.9,.9])box([32.74,(DECK_Y+hallUpper)/2,z],[.14,hallUpper-DECK_Y,.14],steel);
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
   meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});
   meta('Four-panel smart seminar glazing',{panels:4,joints:3,sealMetres:.008,frameMetres:.022,touchLanguage:true});
@@ -317,11 +354,9 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     // A restrained handrail only alongside the stair, not around the terrace.
     for(const sign of [-1,1]){
       const ox=-dz*sign*(width/2-.06),oz=dx*sign*(width/2-.06);
-      beam([x+ox,DECK_Y+.9/S,z+oz],[x+dx*(n-.5)*tread+ox,low+.9/S,z+dz*(n-.5)*tread+oz],.018/S,brass);
-      for(const i of [0,n-1]){
-        const t=(i+.5)*tread,top=heights[i];
-        beam([x+dx*t+ox,top,z+dz*t+oz],[x+dx*t+ox,top+.9/S,z+dz*t+oz],.016/S,brass);
-      }
+      const anchors=[[x-dx*.14+ox,DECK_Y,z-dz*.14+oz]];
+      for(const i of [0,2,4,n-1]){const t=(i+.5)*tread;anchors.push([x+dx*t+ox,heights[i],z+dz*t+oz]);}
+      supportedRail('Sea stair '+(index+1)+' rail '+sign,anchors);
     }
     meta('Sea access stair '+(index+1),{...entry,steps:n,heights,riserMetres:rise*S,treadMetres:tread*S,seaLevel});
   }

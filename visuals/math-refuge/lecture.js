@@ -7,7 +7,7 @@ import {chalkCopy,composeChalkPage} from './chalk-language.js?v=22-handwritten-c
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=8-cover');
+  const response=await fetch('./assets/chalk/pages.json?v=9-author');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
@@ -31,7 +31,7 @@ export async function createLecture(scene,renderer){
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
-      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=8-cover';
+      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=9-author';
     });pending.set(index,job);return job;
   }
   await load(0);
@@ -41,6 +41,8 @@ export async function createLecture(scene,renderer){
   const wall=new THREE.Mesh(new THREE.BoxGeometry(17.2,4.8,.16),new THREE.MeshStandardMaterial({color:'#102421',roughness:1}));
   wall.position.set(28,2.65,-10.82);wall.name='Six-board lecture wall';scene.add(wall);
   const cube=new THREE.BoxGeometry(1,1,1);
+  const trayChalkGeometry=new THREE.CylinderGeometry(.018,.015,.16,10);
+  const trayChalkMaterials=['#f5efdc','#e9aa24','#e75575','#339bdd'].map(color=>new THREE.MeshStandardMaterial({color,roughness:1,emissive:color,emissiveIntensity:.18}));
   function part(parent,p,s,material){const mesh=new THREE.Mesh(cube,material);mesh.position.fromArray(p);mesh.scale.fromArray(s);parent.add(mesh);return mesh;}
   for(let pair=0;pair<3;pair++){
     const x=22.4+pair*5.6;
@@ -61,7 +63,12 @@ export async function createLecture(scene,renderer){
       boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
     }
     part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
-    for(let j=0;j<4;j++)part(scene,[x-1+j*.15,.39,-10.15],[.1,.025,.025],new THREE.MeshStandardMaterial({color:j%2?'#e6d4a0':'#ebe8d9',roughness:1}));
+    part(scene,[x,.385,-10.085],[5.4,.04,.025],metal);
+    for(let j=0;j<4;j++){
+      const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
+      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,.383,-10.2);
+      stick.userData={column:pair,colorIndex:j};scene.add(stick);
+    }
   }
   // One synchronized glass toggle below each board column. Align all three
   // toward the right of their column so the middle control clears the glass joint.
@@ -91,6 +98,12 @@ export async function createLecture(scene,renderer){
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
   const eraser=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
   const felt=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth*.98,eraserHeight*.98,.025),new THREE.MeshStandardMaterial({color:'#353d36',roughness:1}));felt.position.z=-.0475;eraser.add(felt);
+  const parkedErasers=Array.from({length:3},(_,column)=>{
+    const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,.430,-10.2);parked.rotation.set(-Math.PI/2,0,.035);
+    parked.userData={column,resting:true};scene.add(parked);return parked;
+  });
+  eraser.visible=false;
+  let eraserColumn=0,eraserReturn=null;
   const particleCount=64,particlePositions=new Float32Array(particleCount*3).fill(-10000),particles=Array.from({length:particleCount},()=>({life:0,vx:0,vy:0}));
   const dustGeometry=new THREE.BufferGeometry();dustGeometry.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));
   const dot=new Uint8Array(16*16*4);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const i=(y*16+x)*4,r=Math.hypot((x-7.5)/7.5,(y-7.5)/7.5);dot.set([255,255,255,Math.round(Math.max(0,1-r)*200)],i);}
@@ -166,7 +179,23 @@ export async function createLecture(scene,renderer){
       mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
-    chalk.visible=playing&&!reduced&&ready&&clock.phase==='write';eraser.visible=playing&&!reduced&&ready&&clock.phase==='erase';
+    chalk.visible=playing&&!reduced&&ready&&clock.phase==='write';
+    const erasing=!reduced&&ready&&clock.phase==='erase';
+    if(eraser.userData.state==='erasing'&&(!erasing||eraserColumn!==Math.floor(clock.active/2))){
+      eraserReturn={column:eraserColumn,elapsed:0,position:eraser.position.clone(),quaternion:eraser.quaternion.clone()};
+    }
+    if(reduced)eraserReturn=null;
+    if(erasing){
+      eraserColumn=Math.floor(clock.active/2);eraserReturn=null;eraser.visible=true;eraser.userData.state='erasing';
+    }else if(eraserReturn){
+      if(playing)eraserReturn.elapsed+=dt;
+      const t=Math.min(1,eraserReturn.elapsed/1.4),ease=t*t*(3-2*t),rest=parkedErasers[eraserReturn.column];
+      eraser.position.lerpVectors(eraserReturn.position,rest.position,ease);
+      eraser.position.z+=Math.sin(Math.PI*t)*.22;
+      eraser.quaternion.slerpQuaternions(eraserReturn.quaternion,rest.quaternion,ease);
+      eraser.visible=t<1;eraser.userData.state=t<1?'returning':'resting';if(t===1)eraserReturn=null;
+    }else{eraser.visible=false;eraser.userData.state='resting';}
+    parkedErasers.forEach((rest,column)=>{rest.visible=!(eraser.visible&&column===eraserColumn);});
     if(chalk.visible){
       if(lastWritePage!==clock.page){lastWritePage=clock.page;previousTip=null;if(chalkLength(wear)<.06)wear=0;}
       const pose=writingPose(pageRows.get(clock.page)||pages[clock.page].rows,clock.progress,guides.get(clock.page));positionTool(chalk,pose.x,pose.y);chalk.position.z+=pose.contact?0:.055+pose.lift;
@@ -176,7 +205,7 @@ export async function createLecture(scene,renderer){
       dustAccumulator+=dt;
       if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
     }else previousTip=null;
-    if(eraser.visible){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.z=-p.angle;eraser.rotation.x=.03;}
+    if(erasing){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.set(.03,0,-p.angle);}
     fallingDust.visible=!reduced;
     if(playing&&!reduced)for(let i=0;i<particleCount;i++){
       const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;
@@ -207,6 +236,6 @@ export async function createLecture(scene,renderer){
     select,step(delta){select(clock.page+delta);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4)),
-    dispose(){consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
+    dispose(){trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }

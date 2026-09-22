@@ -121,4 +121,7 @@ Scene assembly uses real Three.js geometry with mocked texture/PMREM/canvas/imag
 
 - Camera transitions now run at half the previous speed (4.4–13 seconds according to travel distance); the initial overview hold remains five seconds. Board-follow camera damping is also slower.
 
-- The opening board presents the lecture title, author Sheng Meng and scope, followed by the 36 teaching units. Non-mathematical English prose, titles and author names use the local Caveat handwriting face; embedded mathematical variables and formulas retain print typography. The title board has a longer reading pause.
+- The opening board presents the lecture title, author 孟晟 (Sheng Meng in English) and scope, followed by the 36 teaching units. Non-mathematical English prose, titles and author names use the local Caveat handwriting face; embedded mathematical variables and formulas retain print typography. The title board has a longer reading pause.
+
+- Exterior stairs have tread-mounted posts, baseplates, continuous landing returns and steel stringers. The hall flight meets its landing without burying the final treads. Sea-access handrails have matched post/rail anchors.
+- Each board column has white, yellow, pink and blue chalk, plus a felt-backed eraser that returns smoothly to its tray after wiping.

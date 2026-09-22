@@ -7,7 +7,7 @@ import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v=20-slower-tour';
 import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=20-slower-tour';
 import {createDistantIslands} from './distant-islands.js?v=20-slower-tour';
-import {createCampus} from './campus.js?v=20-slower-tour';
+import {createCampus} from './campus.js?v=23-stairs-trays';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 

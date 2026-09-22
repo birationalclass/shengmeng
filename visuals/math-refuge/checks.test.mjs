@@ -244,6 +244,22 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     }
     assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,10);
     const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,SEA_STEPS.length);
+    for(const name of ['Villa exterior stair','Hall exterior stair']){
+      const d=scene.getObjectByName(name).userData;
+      const landing=result.layoutFloors.find(f=>Math.abs(f.y-d.rise)<1e-8&&Math.abs(d.x-f.cx)<f.w/2&&Math.abs(d.landingZ-f.cz)<f.d/2);
+      assert(landing,'Stair arrives on a connected landing');
+      assert(d.lastZ-d.tread/2>=landing.cz+landing.d/2-.03,'Raised landing must not bury the last few steps');
+      for(const side of [-1,1]){
+        const rail=scene.getObjectByName(name+' rail '+side).userData;
+        assert(rail.anchors.length>10);
+        for(const [i,p] of rail.anchors.entries()){
+          assert(Math.abs(p[0]-d.x)+.0525<d.width/2,'Post footplate must fit on the tread');
+          const step=Math.round((d.startZ-p[2])/d.tread),onLanding=i===rail.anchors.length-1;
+          assert(Math.abs(p[1]-(DECK_Y+d.rise*(onLanding?1:(step+1)/d.count)))<1e-8,'Post foot meets tread height');
+          assert.deepEqual(rail.tops[i],[p[0],p[1]+rail.height,p[2]],'Handrail connects to the post cap');
+        }
+      }
+    }
     for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
@@ -453,6 +469,9 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const {createLecture}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const scene=new Three.Scene(),lecture=await createLecture(scene,{capabilities:{getMaxAnisotropy:()=>8}});
     const boards=scene.children.filter(o=>o.name.startsWith('Sliding chalkboard'));
+    const trayChalk=scene.children.filter(o=>o.name.startsWith('Tray chalk ')),trayErasers=scene.children.filter(o=>o.name.startsWith('Tray eraser '));
+    assert.equal(trayChalk.length,12);assert.equal(trayErasers.length,3);
+    for(let column=0;column<3;column++)assert.equal(new Set(trayChalk.filter(o=>o.userData.column===column).map(o=>o.material.color.getHex())).size,4);
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('spectral'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
@@ -472,8 +491,16 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'));
     await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'));
     assert.equal(new Set(lecture.consoleButtons.map(b=>b.userData.texture)).size,1,'All controls share the same visible language state');
-    const phases=new Set();
-    for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
+    const phases=new Set(),eraserStates=new Set(),movingEraser=scene.getObjectByName('Moving blackboard eraser');let returnCompleted=false;
+    for(let i=0;i<3500;i++){
+      const before=movingEraser.userData.state;lecture.update(.1);phases.add(lecture.clock.phase);eraserStates.add(movingEraser.userData.state);
+      assert.equal(trayErasers.filter(o=>o.visible).length+(movingEraser.visible?1:0),3,'One eraser per column, with no duplicate while in use');
+      if(before==='returning'&&movingEraser.userData.state==='resting'){
+        assert(trayErasers.some(o=>o.position.distanceTo(movingEraser.position)<1e-8&&o.quaternion.angleTo(movingEraser.quaternion)<1e-6),'Return ends exactly on the tray, felt down');returnCompleted=true;
+      }
+      if(i%10===0)await Promise.resolve();
+    }
+    assert(eraserStates.has('erasing')&&eraserStates.has('returning')&&returnCompleted);
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
     assert(scene.getObjectByName('Writing chalk').userData.length<.17);
     assert(scene.getObjectByName('Falling chalk powder').geometry.attributes.position.count===64);
@@ -664,7 +691,7 @@ test('diagram directions, board separation and bundled handwritten glyph coverag
    assert(p.formulaRows.every(r=>r[1]+r[3]<448),'Diagram must clear the prose');
  }
  const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
- for(const p of pages)for(const c of p.source+p.title+p.text)if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),'Missing handwritten character '+c);
+ for(const p of pages)for(const c of p.source+p.title+(p.author||'')+p.text)if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),'Missing handwritten character '+c);
  const {createHash}=await import('node:crypto');
  assert.equal(createHash('sha256').update(await fs.readFile(new URL('./assets/fonts/RefugeChinese.woff2',import.meta.url))).digest('hex'),coverage.sha256);
 });
@@ -691,7 +718,9 @@ test('English prose remains handwritten while embedded mathematical variables st
   assert.deepEqual(runs.filter(run=>run.math).map(run=>run.text),['K','D']);
   const calls=[],ctx={clearRect(){},fillText(text){calls.push({text,font:this.font});},measureText(t){return {width:[...t].length*20};},drawImage(){throw Error('The cover must not draw a formula');}};
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
-  assert.equal(pages[0].kind,'cover');assert.equal(pages[0].author,'Sheng Meng');assert.equal(pages[1].source,'§ 1.1–1.5');assert.equal(pages[1].diagram.kind,'double');
+  assert.equal(pages[0].kind,'cover');assert.equal(pages[0].author,'孟晟');assert.equal(pages[1].source,'§ 1.1–1.5');assert.equal(pages[1].diagram.kind,'double');
+  composeChalkPage(ctx,pages[0],0,'zh',null);
+  assert(calls.some(c=>c.text==='孟晟'&&c.font.includes('RefugeChinese')));
   composeChalkPage(ctx,pages[0],0,'en',null);
   assert(calls.some(c=>c.text==='Spectral Sequences'&&c.font.includes('RefugeLatin')));
   assert(calls.some(c=>c.text==='Sheng Meng'&&c.font.includes('RefugeLatin')));

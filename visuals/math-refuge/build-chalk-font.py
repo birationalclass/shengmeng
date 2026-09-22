@@ -7,7 +7,7 @@ from fontTools.ttLib import TTFont
 from fontTools import subset
 root = Path(__file__).resolve().parent
 pages = json.loads((root / 'assets/chalk/pages.json').read_text())['pages']
-text = ''.join(p['source'] + p['title'] + p['text'] for p in pages) + ' …，。；：（）！？、'
+text = ''.join(p['source'] + p['title'] + p.get('author', '') + p['text'] for p in pages) + ' …，。；：（）！？、'
 chars = set(text)
 source = TTFont(sys.argv[1])
 cmap = source.getBestCmap()

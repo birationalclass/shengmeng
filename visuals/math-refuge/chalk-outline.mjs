@@ -7,7 +7,7 @@ const R=String.raw;
 const gather=f=>f.length===1?f[0]:R`\begin{gathered}${f.join(R`\\[.35em]`)}\end{gathered}`;
 const page=(section,title,f,text,enTitle,enText)=>({source:`§ ${section}`,title,tex:gather(f),text,en:{title:enTitle,text:enText,source:`§ ${section}`}});
 export const outline=[
-{kind:'cover',source:'学习讲义',title:'谱序列',author:'Sheng Meng',tex:'',text:'双复形、滤过与收敛\nHodge 与 Leray 谱序列',en:{source:'LECTURE NOTES',title:'Spectral Sequences',author:'Sheng Meng',text:'Double complexes, filtrations and convergence\nHodge and Leray spectral sequences'}},
+{kind:'cover',source:'学习讲义',title:'谱序列',author:'孟晟',tex:'',text:'双复形、滤过与收敛\nHodge 与 Leray 谱序列',en:{source:'LECTURE NOTES',title:'Spectral Sequences',author:'Sheng Meng',text:'Double complexes, filtrations and convergence\nHodge and Leray spectral sequences'}},
 page('1.1–1.5','双复形',[
  R`K=\{K^{p,q}\},\qquad K^{p,q}=0\quad(p<0\text{ or }q<0)`,
  lessons[0].f.slice(0,2).join(R`\qquad`),lessons[0].f.slice(2).join(R`\qquad`)],
