@@ -13,5 +13,7 @@ export class Campaign{
  get inverseUnlocked(){return this.completed.includes(5);}
  get identityUnlocked(){return this.completed.includes(3);}
  board(n){return [...(this.boards[n]||this.model.initial(n))];}
+ persist(){try{this.storage?.setItem(STORAGE_KEY,JSON.stringify({boards:this.boards,finished:this.finished}));}catch{this.persistent=false;}}
+ mergeCompleted(boards){for(let n=2;n<=9;n++){const v=boards?.[n];if(this.valid(n,v)&&this.model.inspect(v).kind==='complete'){this.finished[n]=[...v];if(!this.boards[n])this.boards[n]=[...v];}}this.persist();}
  save(n,values){if(!this.valid(n,values))return false;this.boards[n]=[...values];if(this.model.inspect(values).kind==='complete')this.finished[n]=[...values];try{this.storage?.setItem(STORAGE_KEY,JSON.stringify({boards:this.boards,finished:this.finished}));}catch{this.persistent=false;}return true;}
 }

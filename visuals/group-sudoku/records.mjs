@@ -1,20 +1,23 @@
+import {takeWarmup} from './connection-warmup.mjs?v=background1';
+import {createConnection} from './connection.mjs?v=background1';
 import {RECORDS_CONFIG} from './records-config.mjs?v=records6-oneline';
 import {createRecordsApi} from './records-api.mjs?v=records6-oneline';
-export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()=>{}}){
+export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()=>{},api:apiOverride,connectionFactory=createConnection}){
  const $=id=>document.getElementById(id),login=$('playerDialog'),history=$('recordsDialog'),id=$('playerStudentId');
- const api=createRecordsApi({config:RECORDS_CONFIG,t});
+ const api=apiOverride||createRecordsApi({config:RECORDS_CONFIG,t});
  let account,sessionToken='',lookupToken='',lookupId='',lookupRun=0,lookupAbort,entering=false,startResolve;
- let pending=null,saving=false,retryTimer,adminToken='',rows=[],recordsRun=0,refreshTimer,saveMessage='';
+ let desired=null,connected=false,connectionState='connecting',pendingBlocked=false;
+ let pending=null,saving=false,adminToken='',rows=[],recordsRun=0,refreshTimer,saveMessage='';
  const read=key=>{try{return JSON.parse(storage?.getItem(key)||'null');}catch{return null;}};
  const write=(key,value)=>{try{storage?.setItem(key,JSON.stringify(value));}catch{}};
  const pendingKey=()=>`group-sudoku-pending:${account?.id}`;
- const displayName=()=>account?.kind==='guest'?t('游客 ','Guest ')+account.name:account?.name||'';
+ const displayName=()=>account?.local?t('游客（本机）','Guest (this device)'):account?.kind==='guest'?t('游客 ','Guest ')+account.name:account?.name||'';
  const text=(key,zh,en)=>$(key).textContent=t(zh,en);
  function mobileHeight(){const v=window.visualViewport;document.documentElement.style.setProperty('--records-viewport-height',(v?.height||innerHeight)+'px');document.documentElement.style.setProperty('--records-viewport-top',(v?.offsetTop||0)+'px');}
  window.visualViewport?.addEventListener('resize',mobileHeight);window.visualViewport?.addEventListener('scroll',mobileHeight);mobileHeight();
  function sync(){
-  text('recordsToggle','通关记录','Records');text('playerTitle','开启八域之旅','Enter the eight domains');text('playerIntro','选择身份，通关进度自动保存。','Choose how to enter. Completed levels are saved automatically.');
-  text('studentLogin','学号登录','Student login');text('guestLogin','游客登录','Guest login');text('playerIdLabel','学号','Student ID');text('playerIdHint','输入完整的 11 位学号，自动核对姓名。','Enter your 11-digit student ID to find your name.');
+  text('recordsToggle','通关记录','Records');text('playerTitle','开启八域之旅','Enter the eight domains');text('playerIntro','选择身份即可进入，服务器在后台连接。','Choose how to enter; the server connects in the background.');
+  text('studentLogin','学号登录','Student login');text('guestLogin','游客进入 · 无需等待','Enter as guest · No waiting');text('playerOffline','先以游客身份游玩','Play as guest for now');text('playerIdLabel','学号','Student ID');text('playerIdHint','输入完整的 11 位学号，自动核对姓名。','Enter your 11-digit student ID to find your name.');
   id.placeholder=t('轻点输入学号','Tap to enter student ID');text('playerEnter','确认姓名并进入','Confirm name and enter');text('playerBack','返回','Back');text('playerRetry','重新查询','Retry lookup');
   text('playerGuestNote','游客将以“游客＋编号”显示在通关记录中。','Guests appear in the records with a Guest prefix and an assigned code.');
   $('playerIdentity').textContent=account?t('当前身份：','Playing as: ')+displayName():'';text('playerChange','切换登录','Switch player');
@@ -22,6 +25,7 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
   text('recordsRefresh','刷新','Refresh');text('recordsSync','重试同步','Retry sync');$('recordsSync').hidden=!pending;$('recordsSync').disabled=saving;
   text('recordsTeacherSummary','教师导出完整记录','Teacher export');text('recordsPasswordLabel','教师口令','Teacher password');text('recordsTeacherLogin','登录','Sign in');text('recordsExport','导出 CSV','Export CSV');text('recordsLogout','退出教师查看','Sign out');text('recordsClose','关闭','Close');
   $('playerSaveStatus').textContent=saveMessage;
+  const badge=$('serverStatus');badge.dataset.state=connectionState;badge.textContent=connectionState==='connected'?t('服务器已连接','Server connected'):connectionState==='offline'?t('当前离线 · 本机保存','Offline · Saved locally'):connectionState==='retrying'?t('正在重连 · 可继续游玩','Reconnecting · Keep playing'):t('后台连接中 · 可直接进入','Connecting in background · Ready to play');
  }
  function invalidate(){lookupRun++;lookupAbort?.abort();lookupToken='';lookupId='';$('playerName').textContent='';$('playerEnter').disabled=true;$('playerLoginStatus').textContent='';}
  async function lookup(){
@@ -33,36 +37,66 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
  function enableLogin(enabled){entering=!enabled;for(const key of ['studentLogin','guestLogin','playerBack'])$(key).disabled=!enabled;id.readOnly=!enabled;$('playerEnter').disabled=!enabled||!lookupToken;}
  async function enter(mode){
   if(entering||mode==='student'&&(!lookupToken||lookupId!==id.value))return;
-  enableLogin(false);text('playerLoginStatus','正在进入…','Entering…');text('playerChoiceStatus','正在连接服务器…','Connecting…');
-  try{
-   const guest=read('group-sudoku-guest-session');
-   const data=await api('/api/login',{method:'POST',body:mode==='student'?{mode,studentId:lookupId,lookupToken}:{mode,sessionToken:guest?.sessionToken}});
-   account=data.account;sessionToken=data.sessionToken;
-   if(mode==='guest')write('group-sudoku-guest-session',{sessionToken,account});else write('group-sudoku-last-student',account.id);
-   await onLogin(data);pending=read(pendingKey());login.close();enableLogin(true);saveMessage='';sync();startResolve?.(data);startResolve=null;
-   if(pending)flush();else if(getCampaign().completed.length>(data.record?.completedLevels||0))queueProgress();
-  }catch(e){enableLogin(true);$('playerLoginStatus').textContent=e.message;$('playerChoiceStatus').textContent=e.message;}
+  enableLogin(false);
+  const guest=read('group-sudoku-guest-session');
+  if(mode==='guest'){
+   account=guest?.account||read('group-sudoku-local-guest');
+   if(!account){account={id:'local-guest-'+crypto.randomUUID(),kind:'guest',name:'',local:true};write('group-sudoku-local-guest',account);}
+   desired={mode,sessionToken:guest?.sessionToken};
+  }else{account={id:lookupId,kind:'student',name:$('playerName').textContent};desired={mode,studentId:lookupId,lookupToken};write('group-sudoku-last-student',account.id);}
+  sessionToken='';connected=false;pendingBlocked=false;
+  await onLogin({account,boards:{},local:true});pending=read(pendingKey());
+  login.close();enableLogin(true);saveMessage=t('进度保存在本机，联网后自动同步。','Progress is saved locally and syncs when connected.');sync();
+  startResolve?.({account});startResolve=null;connection.wake();
+ }
+ async function connectPlayer(signal){
+  if(!desired||connected)return;
+  let body={...desired};
+  if(body.mode==='student'&&!body.lookupToken){const found=await api('/api/lookup',{method:'POST',body:{studentId:body.studentId},signal});body.lookupToken=found.lookupToken;}
+  let data;
+  try{data=await api('/api/login',{method:'POST',body,signal});}
+  catch(error){if(error.status===401&&desired.mode==='student')desired.lookupToken='';throw error;}
+  if(signal.aborted)return;
+  const oldKey=pendingKey(),oldPending=pending;
+  account=data.account;sessionToken=data.sessionToken;connected=true;
+  if(account.kind==='guest'){desired.sessionToken=sessionToken;write('group-sudoku-guest-session',{sessionToken,account});}
+  await onLogin({...data,local:false});
+  pending=read(pendingKey())||oldPending;if(oldKey!==pendingKey()){write(pendingKey(),pending);write(oldKey,null);}
+  saveMessage='';sync();
+  if(getCampaign().completed.length>(data.record?.completedLevels||0))queueProgress();
  }
  $('studentLogin').onclick=()=>{$('playerChoices').hidden=true;$('playerStudentForm').hidden=false;invalidate();const last=read('group-sudoku-last-student');if(typeof last==='string')id.value=last;id.focus({preventScroll:true});if(id.value.length===11)lookup();};
- $('guestLogin').onclick=()=>enter('guest');$('playerBack').onclick=()=>{invalidate();$('playerStudentForm').hidden=true;$('playerChoices').hidden=false;$('studentLogin').focus();};
+ $('guestLogin').onclick=()=>enter('guest');$('playerOffline').onclick=()=>enter('guest');$('playerBack').onclick=()=>{invalidate();$('playerStudentForm').hidden=true;$('playerChoices').hidden=false;$('studentLogin').focus();};
  id.addEventListener('input',lookup);$('playerRetry').onclick=lookup;$('playerStudentForm').onsubmit=e=>{e.preventDefault();enter('student');};
- login.addEventListener('cancel',e=>e.preventDefault());$('playerChange').onclick=()=>location.reload();
+ login.addEventListener('cancel',e=>{e.preventDefault();void enter('guest');});$('playerChange').onclick=()=>location.reload();
  function queueProgress(){
   if(!account||!getCampaign().completed.length)return;
   const boards=structuredClone(getCampaign().finished),count=Object.keys(boards).length;
   if(!pending||Object.keys(pending.boards).length<count){pending={boards,submissionId:crypto.randomUUID()};write(pendingKey(),pending);}
-  flush();
+  pendingBlocked=false;connection.wake();sync();
  }
- async function flush(){
-  if(saving||!pending||!account)return;clearTimeout(retryTimer);saving=true;const current=pending;saveMessage=t('正在自动保存通关进度…','Saving completed levels…');sync();
+ async function flush(signal){
+  if(saving||!pending||!account||!connected||pendingBlocked)return;saving=true;const current=pending;saveMessage=t('正在自动保存通关进度…','Saving completed levels…');sync();
   try{
-   const data=await api('/api/progress',{method:'POST',token:sessionToken,body:current});if(!data.saved)throw Error(t('服务器未确认保存。','Save was not confirmed.'));
+   const data=await api('/api/progress',{method:'POST',token:sessionToken,body:current,signal});if(!data.saved)throw Error(t('服务器未确认保存。','Save was not confirmed.'));
    if(pending.submissionId===current.submissionId){pending=null;write(pendingKey(),null);}
    saveMessage=t(`已自动保存 · ${data.record.completedLevels} / 8 关`,`Saved · ${data.record.completedLevels} / 8 levels`);if(history.open)loadRecords();
-  }catch(e){saveMessage=t('进度已留在本机，等待同步。','Progress kept on this device; waiting to sync.');if(e.status===401)saveMessage=t('登录已过期，请在设置中重新登录；本机进度已保留。','Session expired. Sign in again in Settings; local progress is safe.');else retryTimer=setTimeout(flush,15000);}
-  finally{saving=false;sync();if(pending&&pending!==current)flush();}
+  }catch(e){
+   saveMessage=t('进度已留在本机，等待自动同步。','Progress kept on this device; waiting to sync.');
+   if(e.status===401){connected=false;sessionToken='';if(desired?.mode==='student')desired.lookupToken='';}
+   else if(e.status>=400&&e.status<500&&e.status!==429){pendingBlocked=true;saveMessage=e.message;return;}
+   throw e;
+  }finally{saving=false;sync();if(pending&&pending!==current)connection.wake();}
  }
- window.addEventListener('online',flush);document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});$('recordsSync').onclick=flush;
+ const connection=connectionFactory({run:async({signal})=>{
+  const warmup=takeWarmup(),health=warmup?await warmup:await api('/api/health',{signal});if(signal.aborted)return;if(!health?.ready)throw Error('Server not ready');
+  await connectPlayer(signal);await flush(signal);
+ },onState:state=>{connectionState=state;sync();}});
+ window.addEventListener('online',connection.wake);window.addEventListener('offline',connection.wake);
+ document.addEventListener('visibilitychange',connection.wake);
+ window.addEventListener('pagehide',connection.pause);
+ window.addEventListener('pageshow',connection.wake);
+ $('recordsSync').onclick=()=>{pendingBlocked=false;connection.wake();};
  function displayRecords(records){
   rows=records;const list=$('recordsList');list.replaceChildren();if(!records.length){const p=document.createElement('p');p.className='records-empty';p.textContent=t('暂无通关记录。','No completed levels yet.');list.append(p);return;}
   records.forEach((r,index)=>{

@@ -14,8 +14,8 @@ export function installBoards(a){
   base.clear();const n=i+2,M=a.materials,theme=THEMES[i],trim=M.brass.clone(),frame=M.wood.clone();trim.color.setHex(theme.rim);frame.color.setHex(theme.frame);
   a.cylinder(base,13.05,.62,[0,-.48,0],M.dark);a.cylinder(base,12.9,.15,[0,-.09,0],trim);const disk=a.cylinder(base,12.72,.12,[0,.05,0],M.paving);disk.userData.region=i;a.disks.push(disk);
   const ring=a.torus(base,12.73,.065,[0,.13,0],trim.clone());a.markers[i]=ring;
-  for(let k=0;k<96;k++){const q=k*Math.PI/48;a.box(base,[.055,.035,k%4===0?.45:.18],[Math.sin(q)*12.35,.13,Math.cos(q)*12.35],trim).rotation.y=q;}
-  const p=new T.Group();base.add(p);p.visible=false;const lift=new T.Group();p.add(lift);lift.position.y=.8;lift.userData.boardLift=true;
+  for(let k=0;k<(a.mobile?32:96);k++){const q=k*Math.PI*2/(a.mobile?32:96);a.box(base,[.055,.035,k%4===0?.45:.18],[Math.sin(q)*12.35,.13,Math.cos(q)*12.35],trim).rotation.y=q;}
+  const p=new T.Group();p.userData.domainIndex=i;base.add(p);p.visible=false;const lift=new T.Group();p.add(lift);lift.position.y=.8;lift.userData.boardLift=true;
   a.box(lift,[11.8,.52,11.8],[0,.40,0],frame);a.box(lift,[11.5,.065,11.5],[0,.69,0],trim);a.box(lift,[11.36,.07,11.36],[0,.75,0],frame);
   // Corner fixtures and ornament vary with the region, while the grid stays clear.
   for(const x of [-5.7,5.7])for(const z of [-5.7,5.7]){
@@ -27,11 +27,17 @@ export function installBoards(a){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,a.renderer.capabilities.getMaxAnisotropy());
   const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;lift.add(mesh);
   if(i===2){frame.color.setHex(0x6baac7);frame.map=null;frame.metalness=.3;frame.roughness=.18;mesh.material.roughness=.25;mesh.material.metalness=.25;}
-  const boardObjects=new Set();lift.traverse(o=>{if(o.isMesh)boardObjects.add(o);});if(!replaceDomain(a,p,i))buildSettlement(a,p,i,originals[i]);enrichDomain(a,p,i);
+  const board={canvas,texture,mesh,n,content:p,parts:[],theme,lift,decorated:false};
+  board.decorate=()=>{
+   if(board.decorated)return;board.glow?.removeFromParent();
+if(!replaceDomain(a,p,i))buildSettlement(a,p,i,originals[i]);enrichDomain(a,p,i);
   for(const x of [-4.9,4.9])for(const z of [-4.9,4.9]){a.cylinder(p,.3,.95,[x,.6,z],i===2?domainMaterials(a).ice:trim);a.cylinder(p,.43,.12,[x,1.03,z],trim);}a.makeNameplate(p,i);const nameplate=p.children.at(-1);const [nameX,nameZ]=plaqueOffset(i);nameplate.position.set(nameX,-.20,nameZ);
-  const parts=planConstruction(p,lift,a);
+  board.parts=planConstruction(p,lift,a);
+   if(board.glow)p.add(board.glow);board.decorated=true;
+  };
+  if(!a.mobile)board.decorate();
   const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;const gx=glowCanvas.getContext('2d'),grad=gx.createRadialGradient(64,64,28,64,64,64);grad.addColorStop(0,'#ffe4a580');grad.addColorStop(.6,'#ffe4a566');grad.addColorStop(1,'#ffe4a500');gx.fillStyle=grad;gx.fillRect(0,0,128,128);const glow=new T.Mesh(new T.PlaneGeometry(18,18),new T.MeshBasicMaterial({map:new T.CanvasTexture(glowCanvas),transparent:true,opacity:0,depthWrite:false,blending:T.AdditiveBlending}));glow.rotation.x=-Math.PI/2;glow.position.y=.18;glow.visible=false;p.add(glow);mesh.material.emissiveMap=texture;
-  a.boards.push({canvas,texture,mesh,n,content:p,parts,theme,glow,lift});
+  board.glow=glow;a.boards.push(board);
  });
  a.hitMeshes=a.disks;
 }
@@ -62,7 +68,7 @@ function buildSettlement(a,p,i,original){
 }
 export function paintBoard(a,index,state){
  if(index===7){const progress=syncWallBeacons(a.wallBeacons,state.values);if(a.canvas&&progress){a.canvas.dataset.beaconsLit=String(progress.wallLit);a.canvas.dataset.beaconsTotal='8';}}
- const b=a.boards[index],{n,canvas,texture}=b,x=canvas.getContext('2d'),step=(SIZE-PAD*2)/(n+1),values=state.values;
+ const b=a.boards[index];b.lastState=state;const {n,canvas,texture}=b,x=canvas.getContext('2d'),step=(SIZE-PAD*2)/(n+1),values=state.values;
  const theme=b.theme;x.fillStyle=theme.paper;x.fillRect(0,0,SIZE,SIZE);
  for(let k=0;k<500;k++){x.strokeStyle=k%2?'#c3a26908':'#10090516';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);const wave=index===1||index===2?80:4;x.bezierCurveTo(360,y-wave*Math.sin(k),800,y+wave,SIZE,y);x.stroke();}
  if(index===1){const wash=x.createRadialGradient(SIZE*.45,SIZE*.40,80,SIZE*.5,SIZE*.5,SIZE*.8);wash.addColorStop(0,'#f7f3e7');wash.addColorStop(1,'#e9e0c9');x.fillStyle=wash;x.fillRect(0,0,SIZE,SIZE);for(let k=0;k<6500;k++){const px=(k*173.317)%SIZE,py=(k*257.713)%SIZE;x.strokeStyle=k%3?'#8b7d4e0b':'#ffffff33';x.lineWidth=k%5===0?.65:.3;x.beginPath();x.moveTo(px,py);x.lineTo(px+2+(k%7)*1.2,py+((k%5)-2)*.4);x.stroke();}}

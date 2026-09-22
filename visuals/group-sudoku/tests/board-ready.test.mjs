@@ -20,3 +20,9 @@ test('re-entering an unfinished region preserves its construction and reduced mo
  const a=atlas(45);a.arrive(7,()=>{});step(a,5);const job=a.constructions.get(7);let ready=0;a.arrive(7,()=>ready++);assert.equal(a.constructions.get(7),job);assert.equal(a.sequence.duration,2.8);step(a,2.8);assert.equal(ready,1);a.updateConstruction(0,true);assert.ok(a.built.has(7));assert.equal(a.constructions.size,0);
  const b=atlas();b.arrive(2,()=>ready++,true);assert.equal(ready,2);assert.equal(b.sequence,null);assert.ok(b.built.has(2));
 });
+
+test('background progress restoration leaves active construction and bridge movement intact',()=>{
+ const a=atlas(45);a.setProgress=()=>{};a.updateBridges=()=>{};
+ a.arrive(0,()=>{});step(a,4.21);const job=a.constructions.get(0);a.cross(0,()=>{});a.bridgeProgress[0]=.35;
+ a.restore([2,3],{background:true});assert.equal(a.constructions.get(0),job);assert(!a.built.has(0));assert(a.built.has(1));assert.equal(a.bridgeProgress[0],.35);assert.equal(a.sequence.kind,'bridge');
+});

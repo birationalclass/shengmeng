@@ -1,3 +1,4 @@
+import {gentleZoom,mobileFrameScale} from './mobile.mjs?v=mobile1';
 import {updateWallBeacons} from './board-beacons.mjs?v=wall-gate2';
 import {updateWorkshopClock} from './workshop-clock.mjs?v=clock1';
 import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=owl-clearance1';
@@ -6,7 +7,7 @@ import {updatePalaceFountains} from './palace-fountains.mjs?v=owl-clearance1';
 import {updateFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {updatePoolBoats} from './pool-boats.mjs?v=pool1';
-import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=autumn2';
+import {installBoards,paintBoard,cellPoint} from './board-world.mjs?v=mobile1';
 import {PLACES,THEMES,ease,clamp,cameraSpline,stageTime,arrivalPhase} from './journey.mjs?v=owl-clearance1';
 import {updateOwls} from './owls.mjs?v=owl-clearance1';
 import {updateIceSkaters} from './ice-skaters.mjs?v=skating1';
@@ -14,7 +15,7 @@ import {batchBuiltDomain} from './static-batches.mjs?v=wall-gate2';
 import {dollyRadius,panDistance} from './camera-navigation.mjs?v=owl-clearance1';
 import {updateArchitecturalMotion} from './architectural-motion.mjs?v=owl-clearance1';
 import {illustratedMap} from './map-texture.mjs?v=journey4';
-import {AtlasScene} from '../test-module/scene.mjs?v=20260920gears1';
+import {AtlasScene} from '../test-module/scene.mjs?v=mobile1';
 export const REGIONS=[
  {n:2,en:'TWIN DRAGONS',zh:'二龙戏珠',group:'C₂'},
  {n:3,en:'THREEFOLD RENEWAL',zh:'三阳开泰',group:'C₃'},
@@ -48,13 +49,13 @@ export class SudokuAtlas extends AtlasScene{
   this.camera.setViewOffset(w,h,0,-h*.04,w,h);
   this.camera.updateProjectionMatrix();
  }
- constructor(canvas){
-  super(canvas,'standard');this.scene.background.setHex(0xa58c63);this.scene.fog.color.setHex(0xa58c63);this.scene.fog.density=.0015;this.renderer.toneMappingExposure=1.1;
+ constructor(canvas,{mobile=false}={}){
+  super(canvas,mobile?'low':'standard',{legacyScenery:false,antialias:!mobile,powerPreference:mobile?'low-power':'high-performance'});this.mobile=mobile;this.scene.background.setHex(0xa58c63);this.scene.fog.color.setHex(0xa58c63);this.scene.fog.density=.0015;this.renderer.toneMappingExposure=1.1;
   this.markers=[];for(let i=0;i<8;i++){const ring=this.torus(this.platforms[i],7.52,.10,[0,.30,0],new T.MeshStandardMaterial({color:0xc49a4c,emissive:0x77511b,emissiveIntensity:.25,metalness:.7,roughness:.35}));this.markers.push(ring);}
-  for(const {object}of this.risers){object.position.y=0;object.visible=true;}this.animateNewScenes(205);for(const {g}of this.architecture){g.position.y=0;g.visible=true;}
+  for(const {object}of this.risers){object.position.y=0;object.visible=true;}for(const {g}of this.architecture||[]){g.position.y=0;g.visible=true;}
   this.fromPos=V(3,110,115);this.toPos=this.fromPos.clone();this.camera.position.copy(this.fromPos);this.fromAim=V(0,0,0);this.toAim=this.fromAim.clone();this.currentTarget=this.fromAim.clone();this.flight=1;this.selected=-1;this.orrery.visible=false;
   installBoards(this);delete this.orbit;
-  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.constructions=new Map();this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);
+  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.constructions=new Map();this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);this.bridgeLast=Array(7).fill(-1);if(mobile){this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));this.dust.visible=false;this.resize();}
  }
  makeTerrain(){
   const board=this.box(this.scene,[142,1.8,146],[0,-2,0],this.materials.wood);board.receiveShadow=true;
@@ -72,7 +73,7 @@ export class SudokuAtlas extends AtlasScene{
  makeConnections(){
   this.platforms.push(this.platform(0,6),this.platform(0,7));
   this.platforms.forEach((p,i)=>p.position.set(PLACES[i][0],0,PLACES[i][1]));
-  this.buildCitadel(this.platforms[6]);this.buildArchive(this.platforms[7]);this.bridges=[];
+  if(this.legacyScenery){this.buildCitadel(this.platforms[6]);this.buildArchive(this.platforms[7]);}this.bridges=[];
   for(let i=0;i<7;i++){
    const a=this.platforms[i].position,b=this.platforms[i+1].position,d=b.clone().sub(a),length=d.length()-26.2,g=new T.Group();g.position.copy(a.clone().add(b).multiplyScalar(.5));g.rotation.y=Math.atan2(d.x,d.z);this.scene.add(g);const leaves=[],chains=[];
    for(const sign of [-1,1]){
@@ -101,7 +102,7 @@ export class SudokuAtlas extends AtlasScene{
   for(const sign of [-1,1]){const roof=this.box(p,[4.1,.16,7],[sign*1.75,5.05,0],this.materials.jade);roof.rotation.z=-sign*.42;for(let k=-12;k<=12;k++)this.rod(p,[0,5.82,k*.27],[sign*3.6,4.29,k*.27],.04,this.materials.brass);}
   for(let k=0;k<9;k++)this.box(p,[.8,.75,.8],[(k%3-1)*1.5,1.1,(Math.floor(k/3)-1)*1.5],this.materials.dark);
  }
- playPose(index){const [x,z]=PLACES[index],aim=V(x,1,z+3.5),pos=V(x,32,z+30);pos.sub(aim).multiplyScalar(Math.max(index===7?1.30:1.15,.98/this.camera.aspect)).add(aim);return {pos,aim};}
+ playPose(index){const [x,z]=PLACES[index],aim=V(x,1,z+3.5),pos=V(x,32,z+30);const scale=this.mobile?mobileFrameScale(this.canvas.clientWidth||innerWidth,this.canvas.clientHeight||innerHeight):Math.max(index===7?1.30:1.15,.98/this.camera.aspect);pos.sub(aim).multiplyScalar(scale).add(aim);return {pos,aim};}
  focus(index){
   this.manual=null;this.touring=false;this.selected=index;this.fromPos=this.camera.position.clone();this.fromAim=this.currentTarget.clone();this.flight=0;
   if(index<0){this.toPos=V(3,126,141);this.toAim=V(0,0,0);}else{const pose=this.playPose(index);this.toPos=pose.pos;this.toAim=pose.aim;}
@@ -115,12 +116,15 @@ export class SudokuAtlas extends AtlasScene{
  cellProjection(index,k){const p=cellPoint(this,index,k).project(this.camera);return {x:(p.x+1)/2,y:(1-p.y)/2,visible:p.z>-1&&p.z<1&&Math.abs(p.x)<1&&Math.abs(p.y)<1};}
  dolly(direction,dt){if(this.sequence||!direction)return;if(!this.manual)this.takeControl();this.touring=false;this.manual.radius=dollyRadius(this.manual.radius,direction,dt);}
  pan(east,north,dt){if(this.sequence||(!east&&!north))return;if(!this.manual)this.takeControl();this.touring=false;const m=this.manual,normal=Math.max(1,Math.hypot(east,north)),d=panDistance(m.radius,1,dt);m.target.x+=east/normal*d;m.target.z-=north/normal*d;}
- zoom(delta){if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
+ pinchZoom(ratio){if(this.sequence)return;if(!this.manual)this.takeControl();const pose=this.selected>=0?this.playPose(this.selected):null,base=pose?pose.pos.distanceTo(pose.aim):(this.manual.zoomBase??=this.manual.radius);this.manual.radius=gentleZoom(this.manual.radius,ratio,base);}
+ zoom(delta){if(this.mobile){this.pinchZoom(Math.exp(-Math.max(-100,Math.min(100,delta))*.001));return;}if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
  startTour(){this.sequence=null;this.manual=null;this.touring=true;this.tourTime=0;this.tourFrom=this.camera.position.clone();this.tourAim=this.currentTarget.clone();}
- resetArchitecture(index){this.constructions.delete(index);const b=this.boards[index];if(b.staticBatch){for(const source of b.batchedSources||[])source.visible=true;b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
- showBuilt(index){const b=this.boards[index];b.content.visible=true;for(const part of b.parts){part.object.visible=true;part.object.position.copy(part.position);part.object.scale.copy(part.scale);}this.built.add(index);batchBuiltDomain(this,b);}
- restore(done){done.forEach(n=>this.showBuilt(n-2));for(let i=0;i<7;i++)this.bridgeProgress[i]=Array.from({length:i+1},(_,k)=>k+2).every(n=>done.includes(n))?1:0;this.setProgress(done);this.updateBridges();}
+ ensureDomain(index){const b=this.boards[index];if(b.decorate&&!b.decorated){b.decorate();if(b.lastState)this.paint(index,b.lastState);}}
+ resetArchitecture(index){this.ensureDomain(index);this.constructions.delete(index);const b=this.boards[index];if(b.staticBatch){for(const source of b.batchedSources||[])source.visible=true;b.staticBatch.traverse(o=>{if(o.isInstancedMesh)o.dispose();});b.staticBatch.removeFromParent();b.staticBatch=null;b.batchedSources=[];}this.built.delete(index);this.assemble(index,0);}
+ showBuilt(index){this.ensureDomain(index);const b=this.boards[index];b.content.visible=true;for(const part of b.parts){part.object.visible=true;part.object.position.copy(part.position);part.object.scale.copy(part.scale);}this.built.add(index);batchBuiltDomain(this,b);}
+ restore(done,{background=false}={}){done.forEach(n=>{if(!background||(!this.built.has(n-2)&&!this.constructions.has(n-2)))this.showBuilt(n-2);});for(let i=0;i<7;i++){if(background&&this.sequence?.kind==='bridge'&&this.sequence.index===i)continue;this.bridgeProgress[i]=Array.from({length:i+1},(_,k)=>k+2).every(n=>done.includes(n))?1:0;}this.setProgress(done);this.updateBridges();}
  arrive(index,onReady,reduced=false){
+  this.ensureDomain(index);
   this.manual=null;this.touring=false;this.selected=index;const pose=this.playPose(index),end=pose.pos.toArray(),aim=pose.aim.toArray(),b=this.boards[index];
   const decorationSeconds=buildSeconds(this.decorationSeconds),existing=this.constructions.get(index),boardReady=this.built.has(index)||existing?.elapsed>=3+BOARD_RISE_SECONDS;
   const duration=boardReady?2.8:Math.max(2.8,3+BOARD_RISE_SECONDS-(existing?.elapsed||0));
@@ -145,21 +149,23 @@ export class SudokuAtlas extends AtlasScene{
   this.sequence={kind:'bridge',index,elapsed:0,duration:8.6,onReady:onArrive,keys:[[0,this.camera.position.toArray(),this.currentTarget.toArray()],[1.6,this.camera.position.toArray(),this.currentTarget.toArray()],[4.8,near.toArray(),mid.toArray()],[8.6,end.toArray(),endAim.toArray()]]};if(reduced)this.updateSequence(9,true);
  }
  updateSequence(dt,reduced){const q=this.sequence;if(!q)return;q.elapsed+=reduced?q.duration:dt;const t=Math.min(q.duration,q.elapsed);this.canvas.dataset.arrival=q.kind==='assembly'?arrivalPhase(t,this.built.has(q.index),q.decorationSeconds):'bridge';if(q.kind==='bridge')this.bridgeProgress[q.index]=ease((t-1.4)/stageTime.bridge);const [pos,aim]=cameraSpline(q.keys,Math.min(t,q.keys.at(-1)[0]));this.camera.position.fromArray(pos);this.currentTarget.fromArray(aim);this.camera.lookAt(this.currentTarget);this.camera.rotation.z=0;if(t>=q.duration){if(q.kind==='bridge')this.bridgeProgress[q.index]=1;this.sequence=null;this.fromPos=this.camera.position.clone();this.toPos=this.fromPos.clone();this.fromAim=this.currentTarget.clone();this.toAim=this.fromAim.clone();this.flight=1;q.onReady?.();}}
- updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
+ updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;if(this.bridgeLast?.[i]===u)continue;if(this.bridgeLast)this.bridgeLast[i]=u;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
  updateWorld(t,dt,reduced=false){
   this.updateConstruction(dt,reduced);
-  for(const {object,speed}of this.rotating)object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
-  updateArchitecturalMotion(this.detailMotion,t,reduced);
-  updateIceSkaters(this.iceSkaters,t,reduced);
-  updateOwls(this.owls,t,reduced);
-  updateClockwork(this.machineMotion,t,reduced);
-  updateWorkshopClock(this.clockHands);
-  updateWallBeacons(this.wallBeacons,t,dt,reduced);
-  updatePalaceFountains(this.palaceFountains,t,this.musicLevels,reduced,this.built.has(1));
-  updateFireworks(this.fireworks,t,reduced,this.built.has(5));
-  for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;
-  for(const ripple of this.poolRipples||[]){const u=((reduced?0:t*.18)+ripple.phase)%1;ripple.line.scale.setScalar(.6+u*1.1);ripple.line.material.opacity=.30*Math.sin(Math.PI*u);ripple.line.visible=this.built.has(0);}
-  updatePoolBoats(this.poolBoats,t,reduced,this.built.has(0));
+  const active=i=>!this.mobile||this.touring||this.selected===i||(this.sequence?.kind==='bridge'&&[this.sequence.index,this.sequence.index+1].includes(i));
+  const moving=object=>{if(!this.mobile)return true;for(let p=object;p;p=p.parent){if(!p.visible)return false;if(Number.isInteger(p.userData.domainIndex))return active(p.userData.domainIndex);}return true;};
+  for(const {object,speed}of this.rotating)if(moving(object))object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
+  updateArchitecturalMotion(this.mobile?this.detailMotion?.filter(m=>moving(m.object)):this.detailMotion,t,reduced);
+  if(active(2))updateIceSkaters(this.iceSkaters,t,reduced);
+  if(active(6))updateOwls(this.owls,t,reduced);
+  if(active(4))updateClockwork(this.machineMotion,t,reduced);
+  if(active(4))updateWorkshopClock(this.clockHands);
+  if(active(7))updateWallBeacons(this.wallBeacons,t,dt,reduced);
+  if(active(1))updatePalaceFountains(this.palaceFountains,t,this.musicLevels,reduced,this.built.has(1));
+  if(active(5))updateFireworks(this.fireworks,t,reduced,this.built.has(5));
+  if(active(0))for(const water of this.poolWater||[])water.uniforms.uTime.value=reduced?0:t;
+  if(active(0))for(const ripple of this.poolRipples||[]){const u=((reduced?0:t*.18)+ripple.phase)%1;ripple.line.scale.setScalar(.6+u*1.1);ripple.line.material.opacity=.30*Math.sin(Math.PI*u);ripple.line.visible=this.built.has(0);}
+  if(active(0))updatePoolBoats(this.poolBoats,t,reduced,this.built.has(0));
   this.dust.rotation.y=reduced?0:t*.002;for(const lift of this.clockworkLifts||[]){const progress=this.built.has(4)?1:this.constructions.has(4)?ease((this.constructions.get(4).elapsed-3.2)/2.4):0;lift.position.y=.55+progress*1.6;}
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}

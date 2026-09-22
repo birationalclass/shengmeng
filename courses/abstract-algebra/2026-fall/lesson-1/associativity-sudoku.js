@@ -169,6 +169,6 @@
       else if(/^[1-9]$/.test(event.key)&&+event.key<=N){event.preventDefault();event.stopPropagation();enter(+event.key);}
       else if(['Backspace','Delete'].includes(event.key)){event.preventDefault();event.stopPropagation();enter(0);}
     },{signal:abort.signal});
-    window.addEventListener('course-language',()=>{message='';draw();},{signal:abort.signal});draw();return {select:i=>{if(i>=0&&i<N*N){selected=i;draw();}},enter:value=>enter(value),destroy:()=>{abort.abort();root.remove();}};
+    window.addEventListener('course-language',()=>{message='';draw();},{signal:abort.signal});draw();return {updateCompleted:levels=>{for(const n of levels)completed.add(n);draw();},select:i=>{if(i>=0&&i<N*N){selected=i;draw();}},enter:value=>enter(value),destroy:()=>{abort.abort();root.remove();}};
   }};
 })();

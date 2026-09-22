@@ -51,3 +51,9 @@ test('inverse unlocks only after level four (5×5), and stays unlocked on replay
  c.save(5,model.initial(5));assert.equal(c.inverseUnlocked,false);c.save(5,full(5));assert.equal(c.inverseUnlocked,true);
  const again=new Campaign(model,storage);assert.equal(again.inverseUnlocked,true);again.save(5,model.initial(5));assert.equal(again.inverseUnlocked,true);
 });
+
+test('background server progress merges without replacing the active partial board or replay',()=>{
+ const storage=memory(),c=new Campaign(model,storage),partial=c.board(3),hint=model.deduction(partial);partial[hint.target]=hint.value;c.save(3,partial);
+ c.mergeCompleted({2:full(2),3:full(3),4:[1]});assert.deepEqual(c.completed,[2,3]);assert.deepEqual(c.board(3),partial);assert.deepEqual(new Campaign(model,storage).board(3),partial);
+ const assigned=memory();c.storage=assigned;c.persist();assert.deepEqual(new Campaign(model,assigned).completed,[2,3]);
+});
