@@ -6,7 +6,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=36-board-detail';
+import {createRetreat} from './scene.js?v=37-speaker';
 import {createLecture} from './lecture.js?v=36-board-detail';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
 import {seaLevel} from './landscape-shape.js?v=36-board-detail';
@@ -14,7 +14,7 @@ import {createChalkReader} from './chalk-reader.js?v=32-report-position';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=36-board-detail';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=37-speaker';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
@@ -41,8 +41,9 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
-let motionSample=false,lastUIStamp=0,choosingReport=false;
+let motionSample=false,lastUIStamp=0,choosingReport=false,speakerView=false;
 function shotPose(){
+  if(speakerView){const pose=retreat.campus.lectern.speakerPose();shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
   const s=SHOTS[shot],t=smoothProgress(time/s.duration);
   curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
   if(s.lecture&&lecture){
@@ -55,8 +56,8 @@ function fail(error){
   $('errorText').textContent='请启用浏览器硬件加速后重试。若仍无法打开，请换用新版 Safari、Chrome 或 Edge。';
 }
 function updateLabels(){
-  document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture));
-  reader?.chapter(Boolean(SHOTS[shot].lecture),$('lecturePanel').hidden);
+  document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture&&!speakerView));
+  reader?.chapter(Boolean(SHOTS[shot].lecture&&!speakerView),$('lecturePanel').hidden);
   $('shotNumber').textContent=opening?'总览':`0${shot+1} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
@@ -65,6 +66,7 @@ function updateLabels(){
   $('tour').setAttribute('aria-pressed',String(touring));
   $('mode').textContent=opening?'总览 · 5 秒后进入板书':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
+  if(speakerView){$('shotNumber').textContent='报告厅 / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
 }
 function stopTour(){
   opening=null;
@@ -86,15 +88,21 @@ function beginTransition(){
   $('transition').style.opacity=0;
 }
 function selectShot(index,reportView=false){
+  speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
   beginTransition();updateLabels();
 }
 function resumeTour(){
+  speakerView=false;
   opening=null;choosingReport=false;boardFollow.reset();touring=true;free=false;
   beginTransition();updateLabels();
 }
+function enterSpeakerView(){
+  opening=null;choosingReport=false;speakerView=true;touring=false;free=true;keys.clear();
+  reader?.close();beginTransition();updateLabels();
+}
 function applyShot(dt){
-  const s=SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
+  const s=speakerView?{fov:62}:SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*.75));target.lerpVectors(controls.target,target,1-Math.exp(-dt*.75));}
@@ -150,7 +158,7 @@ function tick(stamp){
     applyShot(dt);
   }else if(blend){
     applyShot(dt);
-  }else if(SHOTS[shot].lecture&&lecture&&boardFollow.following){
+  }else if(!speakerView&&SHOTS[shot].lecture&&lecture&&boardFollow.following){
     // Board tracking belongs to the teaching chapter, independently of touring.
     applyShot(reduced.matches?0:dt);
   }else{
@@ -169,11 +177,12 @@ function tick(stamp){
   if(stamp-lastUIStamp>=100){
     lastUIStamp=stamp;
     if(lecture){updateLectureUI();reader?.update();}
-    if(SHOTS[shot].lecture&&lecture){
+    if(!speakerView&&SHOTS[shot].lecture&&lecture){
       $('mode').textContent=reportProgress||reportLoadError||(choosingReport?'选择报告人 / 主题':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`);
       $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
       $('world').dataset.board=String(lecture.clock.active);
     }else delete $('world').dataset.boardFollow;
+    retreat.campus.lectern.update({playing:lecture.playing,page:lecture.clock.page,total:lecture.pages.length});
     $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
     $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
     const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
@@ -307,7 +316,7 @@ function installPhysicalControls(){
   const hit=e=>{
     const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
     scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
-    const candidate=ray.intersectObjects([...lecture.hoverTargets,...retreat.campus.automaticDoors.targets],false)[0];if(!candidate||candidate.distance>15)return null;
+    const candidate=ray.intersectObjects([...lecture.hoverTargets,...retreat.campus.automaticDoors.targets,...retreat.campus.lectern.targets],false)[0];if(!candidate||candidate.distance>15)return null;
     // Ignore transparent glazing, but opaque roof/walls must block a press.
     for(const h of ray.intersectObjects(scene.children,true)){
       if(h.distance>=candidate.distance-.015)break;
@@ -319,7 +328,11 @@ function installPhysicalControls(){
     return candidate.object;
   };
   bindPhysicalButtons($('world'),controls,hit,action=>{
-    if(action==='language')switchChalkLanguage();
+    if(action==='lectern:view')enterSpeakerView();
+    else if(action==='lectern:play')$('lecturePlay').click();
+    else if(action==='lectern:previous')$('lecturePrevious').click();
+    else if(action==='lectern:next')$('lectureNext').click();
+    else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('report:'))switchReport(action.slice(7));
   });
 }

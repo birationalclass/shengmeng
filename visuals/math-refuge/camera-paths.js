@@ -1,5 +1,6 @@
 // All viewpoints share the peninsula plan: east +X, north -Z.
-import {BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
+import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v=36-board-detail';
+const loungeEye=DECK_Y*2+HALL.clearHeight/BUILDING_SCALE+.20+1.65/BUILDING_SCALE;
 export const SHOTS=[
   {name:'海岸抵达',title:'海上相连，<br>一处安心思考的地方。',description:'海上长露台 · 远岛 · 可扩展园区',duration:28,fov:49,
    positions:[[90,25,48],[80,19,40],[70,13,33],[60,8,26]],targets:[[22,2,0],[24,2,0],[26,2,0],[28,2,0]]},
@@ -16,7 +17,9 @@ export const SHOTS=[
   {name:'远眺',title:'把空间留白，<br>也把未来留给下一座小屋。',description:'四面环海 · 海上栈桥与扩建 · 分散小别墅',duration:28,fov:50,
    positions:[[-28,18,40],[-35,25,49],[-43,32,58],[-52,38,67]],targets:[[9,1,0],[10,1,0],[12,1,0],[14,1,0]]},
   {name:'海上花园',title:'竹影、溪声，<br>与一棵巨树为邻。',description:'海上花园 · 竹庭茶亭 · 开阔海平线',duration:38,fov:58,
-   positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-60,8,-44]]}
+   positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-60,8,-44]]},
+  {name:'二楼客厅',title:'在海景里，<br>让想法自然相遇。',description:'六套彩色 iMac · 三组讨论环沙发 · 茶咖酒水吧',duration:34,fov:66,
+   positions:[[37.5,loungeEye,4.9],[37.6,loungeEye,2.0],[37.6,loungeEye,-.3],[37.8,loungeEye,-3.3]],targets:[[40.5,loungeEye-.35,0],[40.6,loungeEye-.35,-1.5],[40.6,loungeEye-.35,-3.4],[39.5,loungeEye-.35,-5.8]]}
 ];
 SHOTS.unshift(...SHOTS.splice(SHOTS.findIndex(s=>s.lecture),1));
 export const OPENING_OVERVIEW_MS=5000;

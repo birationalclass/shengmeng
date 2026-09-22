@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {createLectern} from './lectern.js?v=37-speaker';
+import {createUpperLounge} from './upper-lounge.js?v=37-speaker';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v=36-board-detail';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';
@@ -249,8 +251,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   floor(hallUpper,8.95,20.55,cx,0);
   room('Upper seminar lounge',cx,0,7,13,2.8,hallUpper,['west','south'],false,true);
 
-  sofa(cx,hallUpper+DECK_Y,-3);table(cx,hallUpper+DECK_Y,0,2,1.1);
-  books(cx,hallUpper+DECK_Y,-6.2,5);
+  const upperLounge=createUpperLounge(THREE);
+  upperLounge.group.position.set(cx,hallUpper+DECK_Y,0);upperLounge.group.scale.setScalar(1/S);scene.add(upperLounge.group);
   const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
   // Selected concept A: one low suspended oval, clear of the task lighting.
@@ -371,10 +373,9 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     seating.userData.seatPositions.push([x,base,z]);
   }
   for(const [row,{x,rise}] of SEAT_ROWS.entries())for(const [i,z] of SEAT_COLUMNS.entries())chair(x,z,rise,row*SEAT_COLUMNS.length+i);
-  const lectern=meta('Small seminar lectern',{heightAboveFloor:1.08});
-  lectern.position.set(41.3,DECK_Y,6.5);
-  box([41.3,DECK_Y+.5/S,6.5],[.42/S,1/S,.42/S],steel);
-  soft([41.3,DECK_Y+1.05/S,6.5],[.7/S,.08/S,.6/S],timber);
+  const lectern=createLectern(THREE);
+  lectern.group.position.set(41.3,DECK_Y+.028,6.5);
+  lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);
   // Operable blackout layer, separate from glazing and opaque chalkboards.
   const blind=new THREE.Mesh(new THREE.BoxGeometry(.055,HALL.clearHeight/S,hallDepth-.6),new THREE.MeshStandardMaterial({color:'#293530',roughness:1}));
   blind.name='East teaching blackout shade';blind.position.set(43.04,DECK_Y+HALL.clearHeight/(2*S),0);blind.visible=false;scene.add(blind);
@@ -383,8 +384,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
   // Sea access has been removed; the continuous platform fascia and edge lights
   // follow the same complete perimeter without stair projections.
-  return {blind,seating,lightingZones,automaticDoors,
+  return {blind,seating,lightingZones,automaticDoors,lectern,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }
