@@ -162,3 +162,7 @@ Code verification: 44 tests across `checks.test.mjs`, `music.test.mjs` and `repo
 - Each language toggle shows only its current state: `中` or `Eng`, centered below its board column.
 - Speaker eye height remains 1.68 m. The camera stands 1.35 m behind the lectern and pitches toward the console and audience. Aspect-aware FOV fits all display corners with a 16% edge margin, checked at desktop, tablet and 320/932–390/844 portrait ratios; resizing updates the FOV without changing position. The microphone is modeled hardware, not an audio recording feature.
 - All 46 code/geometry/interaction tests pass. Browser visual QA was not performed.
+
+## 2026-09-23 — Full-height glass doors
+
+All three modeled automatic glass entrances now match the hall's 4.9 m glass-wall height. The three upper transom panes and their intermediate horizontal frames are removed; sliding tracks sit above the full-height opening at ceiling level. Handles remain at 1.1 m above the floor instead of rising with the taller leaves. Hover opening, delayed closure and the fixed side-pane counts are unchanged. Geometry tests verify door-bottom/top alignment, reachable handle height and overhead track clearance; the 46-test suite passes.

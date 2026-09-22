@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=38-board-tone','scene.js?v=38-board-tone','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=39-full-height-doors','scene.js?v=39-full-height-doors','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=38-board-tone',root),'utf8');
-  for(const file of ['app.js?v=38-board-tone','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=39-full-height-doors',root),'utf8');
+  for(const file of ['app.js?v=39-full-height-doors','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=38-board-tone');
+  const sceneModule=await inlineAddon('./scene.js?v=39-full-height-doors');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -367,7 +367,19 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
     const glazing=scene.getObjectByName('Seamless smart seminar glazing').userData;
     assert.equal(glazing.panels,1);assert.equal(glazing.joints,0);assert(glazing.sealMetres<=.008);
-    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,12);
+    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,9);
+    for(const {group,leaves} of result.campus.automaticDoors.doors){
+      group.updateWorldMatrix(true,true);
+      assert(!group.userData.transom);assert.equal(group.userData.clearHeight,HALL.clearHeight/BUILDING_SCALE);
+      for(const {leaf} of leaves){
+        const pane=leaf.getObjectByName('Full-height sliding glass leaf'),bounds=new Three.Box3().setFromObject(pane);
+        assert(Math.abs(bounds.min.y-DECK_Y*BUILDING_SCALE)<1e-6);
+        assert(Math.abs(bounds.max.y-(DECK_Y*BUILDING_SCALE+HALL.clearHeight))<1e-6);
+        const handle=leaf.getObjectByName('Door handle').getWorldPosition(new Three.Vector3());assert(Math.abs(handle.y-DECK_Y*BUILDING_SCALE-1.1)<1e-6);
+      }
+      const rail=new Three.Box3().setFromObject(group.getObjectByName('Ceiling recessed door track'));
+      assert(rail.min.y>DECK_Y*BUILDING_SCALE+HALL.clearHeight,'Track stays above the full-height doorway');
+    }
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
     assert(sky.material.uniforms.turbidity.value<=2);
@@ -651,7 +663,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=38-board-tone',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=39-full-height-doors',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -700,7 +712,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=38-board-tone',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=39-full-height-doors',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));

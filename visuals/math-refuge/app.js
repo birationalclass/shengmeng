@@ -6,7 +6,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=38-board-tone';
+import {createRetreat} from './scene.js?v=39-full-height-doors';
 import {createLecture} from './lecture.js?v=38-board-tone';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
 import {seaLevel} from './landscape-shape.js?v=36-board-detail';

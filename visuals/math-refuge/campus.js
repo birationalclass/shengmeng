@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {createLectern} from './lectern.js?v=38-board-tone';
 import {createUpperLounge} from './upper-lounge.js?v=37-speaker';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
-import {createAutomaticDoors} from './automatic-doors.js?v=36-board-detail';
+import {createAutomaticDoors} from './automatic-doors.js?v=39-full-height-doors';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';
 import {seaLevel} from './landscape-shape.js?v=36-board-detail';
 import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fixed-hall';
@@ -134,9 +134,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
         const fixedStyle=isHall?{panels:side==='west'?2:1,frame:.022/S,seal:.005/S}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
-          const doorHeight=Math.min(h,2.8/S);
-          automaticDoors.add(scene,{x,y,z,width:gap,height:doorHeight,axis,name:side});
-          glazing(x,y+doorHeight+.075,z,gap,h-doorHeight-.075,axis,{panels:1,frame:.022/S});
+          automaticDoors.add(scene,{x,y,z,width:gap,height:h,handleHeight:1.1/S,axis,name:side});
         }
       }else glazing(x,y,z,width,h,axis,style);
     }
