@@ -21,8 +21,10 @@ export function composeChalkPage(ctx,page,index,language,formula){
     rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+14],{chineseSpans}));
   }
   if(page.kind==='cover'){
-    const center=(text,y,size,color='#eee9d5')=>textRow(text,Math.max(84,(1536-measure(text,size))/2),y,size,color);
-    center(copy.title,190,106,'#e4cf9c');center(copy.author,325,56);
+    const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
+    let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;
+    const lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);
+    lines.slice(0,2).forEach((line,i)=>center(line,lines.length>1?150+i*82:190,titleSize,'#e4cf9c'));center(copy.author,325,56);
     copy.text.split('\n').forEach((line,i)=>center(line,430+i*52,36));
     return rows;
   }

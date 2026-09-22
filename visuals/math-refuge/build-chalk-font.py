@@ -6,7 +6,7 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools import subset
 root = Path(__file__).resolve().parent
-pages = json.loads((root / 'assets/chalk/pages.json').read_text())['pages']
+pages = [p for path in [root / 'assets/chalk/pages.json', *sorted((root / 'assets/chalk').glob('*/pages.json'))] for p in json.loads(path.read_text())['pages']]
 text = ''.join(p['source'] + p['title'] + p.get('author', '') + p['text'] for p in pages) + ' …，。；：（）！？、'
 chars = set(text)
 source = TTFont(sys.argv[1])

@@ -7,10 +7,10 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=23-stairs-trays';
-import {createLecture} from './lecture.js?v=24-smooth-motion';
+import {createLecture} from './lecture.js?v=26-reports';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=22-handwritten-cover';
 import {seaLevel} from './landscape-shape.js?v=22-handwritten-cover';
-import {createChalkReader} from './chalk-reader.js?v=22-handwritten-cover';
+import {createChalkReader} from './chalk-reader.js?v=26-reports';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
@@ -41,13 +41,13 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
-let motionSample=false,lastUIStamp=0;
+let motionSample=false,lastUIStamp=0,choosingReport=false;
 function shotPose(){
   const s=SHOTS[shot],t=smoothProgress(time/s.duration);
   curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
   if(s.lecture&&lecture){
-    const framing=boardFraming(camera.aspect,s.fov);shotTarget.copy(lecture.focus(true));
-    shotPosition.copy(shotTarget).add(viewDirection.fromArray(lectureViewOffset(framing.distance)));
+    const framing=boardFraming(camera.aspect,s.fov);shotTarget.copy(choosingReport?lecture.reportFocus():lecture.focus(true));
+    shotPosition.copy(shotTarget).add(viewDirection.fromArray(lectureViewOffset(choosingReport?Math.max(4.6,framing.distance):framing.distance)));
   }
 }
 function fail(error){
@@ -85,12 +85,12 @@ function beginTransition(){
   frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
-function selectShot(index){
-  opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
+function selectShot(index,reportView=false){
+  choosingReport=reportView;opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
   beginTransition();updateLabels();
 }
 function resumeTour(){
-  opening=null;boardFollow.reset();touring=true;free=false;
+  opening=null;choosingReport=false;boardFollow.reset();touring=true;free=false;
   beginTransition();updateLabels();
 }
 function applyShot(dt){
@@ -169,7 +169,7 @@ function tick(stamp){
     lastUIStamp=stamp;
     if(lecture){updateLectureUI();reader?.update();}
     if(SHOTS[shot].lecture&&lecture){
-      $('mode').textContent=boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`;
+      $('mode').textContent=choosingReport?'选择报告人 / 主题':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`;
       $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
       $('world').dataset.board=String(lecture.clock.active);
     }else delete $('world').dataset.boardFollow;
@@ -213,9 +213,7 @@ try{
   lecture=await createLecture(lectureRoot,renderer);retreat.roomFill.apply(lectureRoot);
   reader=createChalkReader(lecture);
   installPhysicalControls();
-  for(const [i,page] of lecture.pages.entries()){
-    const option=document.createElement('option');option.value=String(i);option.textContent=`${page.source} · ${page.title}`;$('lecturePage').append(option);
-  }
+  populateReport();
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
@@ -271,9 +269,27 @@ function updateSceneTime(){
   lecture?.setConsoleState();
 }
 
-let changingLanguage=false;
+function populateReport(){
+  $('lecturePage').replaceChildren();
+  for(const [i,page] of lecture.pages.entries()){
+    const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
+  }
+  $('reportSelect').value=lecture.report.id;
+  $('lectureHeading').textContent=lecture.report.speaker+' · '+lecture.report.topic;
+  for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
+  $('world').dataset.report=lecture.report.id;
+}
+let changingLanguage=false,changingReport=false,reportLoadError='';
+async function switchReport(id){
+  if(!lecture||changingReport||changingLanguage)return;changingReport=true;reportLoadError='';$('reportSelect').disabled=true;
+  try{await lecture.setReport(id);populateReport();if(reduced.matches){lecture.playing=false;lecture.staticPage();}reader?.close();selectShot(0);}
+  catch(error){reportLoadError=error.message;$('lectureStatus').textContent=error.message;$('reportSelect').value=lecture.report.id;$('mode').textContent=error.message;}
+  finally{changingReport=false;$('reportSelect').disabled=false;}
+}
+$('reportButton').addEventListener('click',()=>{if(!lecture||!cameraIntent.canActivate())return;$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');selectShot(0,true);reader?.close();});
+$('reportSelect').addEventListener('change',event=>switchReport(event.target.value));
 async function switchChalkLanguage(){
-  if(!lecture||changingLanguage)return;changingLanguage=true;
+  if(!lecture||changingLanguage||changingReport)return;changingLanguage=true;
   try{await lecture.setLanguage(lecture.language==='zh'?'en':'zh');
     for(const [i,option] of [...$('lecturePage').options].entries()){const copy=lecture.copy(i);option.textContent=`${copy.source} · ${copy.title}`;}reader?.update();
   }catch(error){$('lectureStatus').textContent=error.message;}finally{changingLanguage=false;}
@@ -283,7 +299,7 @@ function installPhysicalControls(){
   const hit=e=>{
     const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
     scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
-    const candidate=ray.intersectObjects(lecture.consoleButtons,false)[0];if(!candidate||candidate.distance>15)return null;
+    const candidate=ray.intersectObjects([...lecture.consoleButtons,...lecture.reportButtons],false)[0];if(!candidate||candidate.distance>15)return null;
     // Ignore transparent glazing, but opaque roof/walls must block a press.
     for(const h of ray.intersectObjects(scene.children,true)){
       if(h.distance>=candidate.distance-.015)break;
@@ -296,6 +312,7 @@ function installPhysicalControls(){
   };
   bindPhysicalButtons($('world'),controls,hit,action=>{
     if(action==='language')switchChalkLanguage();
+    else if(action.startsWith('report:'))switchReport(action.slice(7));
   });
 }
 $('fullscreen').addEventListener('click',async()=>{
@@ -333,7 +350,7 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime
 
 let lectureStatus='';
 function updateLectureUI(){
-  const status=lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
+  const status=reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
   controlLabel($('lecturePlay'),lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);
   lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});

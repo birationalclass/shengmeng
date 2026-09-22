@@ -6,7 +6,7 @@ import {readingFormulaWidth} from './display-profile.js?v=8-cover';
 // screenshot of the 3D texture. The six physical boards remain in the scene.
 export function createChalkReader(lecture){
   const $=id=>document.getElementById(id),panel=$('chalkReader');
-  let page=-1,language='',teaching=false,lastPlaying=null;
+  let page=-1,reportId='',language='',teaching=false,lastPlaying=null;
   function show(open){panel.hidden=!open;$('readerOpen').setAttribute('aria-expanded',String(open));if(open){$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');update();}}
   function size(){
     const px=Number($('readerFont').value),entry=lecture.pages[lecture.clock.page];
@@ -16,7 +16,8 @@ export function createChalkReader(lecture){
   }
   function update(){
     if(panel.hidden)return;
-    if(page!==lecture.clock.page||language!==lecture.language){
+    if(page!==lecture.clock.page||language!==lecture.language||reportId!==lecture.report?.id){
+      reportId=lecture.report?.id;
       page=lecture.clock.page;language=lecture.language;const entry=lecture.pages[page],copy=lecture.copy?.(page)||entry;
       $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;

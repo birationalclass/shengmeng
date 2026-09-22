@@ -1,5 +1,5 @@
-// Generate local SVG chalk pages from the existing notebook, not retyped maths.
-// Usage: node build-chalk-notes.mjs /absolute/path/to/mathjax-full-3.2.2
+// Generate local SVG chalk pages from the notebook or attributed report summaries.
+// Usage: node build-chalk-notes.mjs /absolute/path/to/mathjax-full-3.2.2 [ye|hu]
 // MathJax is a build-only dependency; the deployed scene loads no math CDN.
 import fs from 'node:fs/promises';
 import {equationLines} from './chalk-layout.mjs';
@@ -22,23 +22,29 @@ const doc=mathjax.document('',{InputJax:new TeX({packages:['base','ams','newcomm
 // The notebook's proof-dialog module registers an event listener on import.
 // No UI is executed during this data-only extraction.
 globalThis.document={addEventListener(){}};
-const {outline:sections}=await import('./chalk-outline.mjs');
+const reportId=process.argv[3];
+const {REPORTS}=await import('./report-catalog.js');
+const report=reportId&&reportId!=='meng'?REPORTS.find(r=>r.id===reportId):null;
+if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
+const sections=report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
-const output=new URL('./assets/chalk/',import.meta.url);await fs.mkdir(output,{recursive:true});
+const assetBase=report?`./assets/chalk/${report.id}/`:'./assets/chalk/';
+const output=new URL(assetBase,import.meta.url);await fs.mkdir(output,{recursive:true});
 const pages=[];let lessonIndex=0;
 for(const file of await fs.readdir(output))if(/^(page|formula)-\d+\.svg$/.test(file))await fs.unlink(new URL(file,output));
 for(const section of sections){
   if(section.kind==='cover'){
     const asset='page-001.svg',formulaAsset='formula-001.svg';
     const rows=[[120,80,1296,120],[120,265,1296,70],[0,0,0,0],[120,390,1296,54],[120,442,1296,54]];
-    const lines=[[section.title,190,106],[section.author,325,56],...[...section.text.split('\n')].map((text,i)=>[text,430+i*52,36])];
+    const titleSize=report?60:106;
+    const lines=[[section.title,190,titleSize],[section.author,325,56],...[...section.text.split('\n')].map((text,i)=>[text,430+i*52,36])];
     const body=`<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" text-anchor="middle" font-family="Kaiti SC, KaiTi, cursive">${lines.map(([text,y,size])=>`<text x="768" y="${y}" font-size="${size}">${chalkSVG(text)}</text>`).join('')}</g></svg>`;
     await fs.writeFile(new URL(asset,output),body);await fs.writeFile(new URL(formulaAsset,output),'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"></svg>');
-    pages.push({...section,asset:`./assets/chalk/${asset}`,formulaAsset:`./assets/chalk/${formulaAsset}`,formulaEm:1,formulaRows:[],rows});continue;
+    pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm:1,formulaRows:[],rows});continue;
   }
-  const tex=section.tex,diagram=boardDiagrams.get(lessonIndex++);
+  const tex=section.tex,diagram=report?null:boardDiagrams.get(lessonIndex++);
   const parts=equationLines(tex).map(line=>{
     const node=doc.convert(line,{display:true}),svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
     if(svg.includes('data-mjx-error'))throw new Error(`Bad formula: ${line}`);
@@ -77,8 +83,8 @@ for(const section of sections){
   const lines=notes.slice(0,3).map((line,i)=>`<text x="88" y="${488+i*42}" font-size="36">${chalkSVG(line)}</text>`).join('');
   const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif"><text x="84" y="76" font-size="44" fill="#e4cf9c">${chalkSVG(section.source)}  ${chalkSVG(section.title)}</text>${svg}${lines}</g></svg>`;
   await fs.writeFile(new URL(asset,output),body);
-  pages.push({...section,asset:`./assets/chalk/${asset}`,formulaAsset:`./assets/chalk/${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,452+i*42,1380,42])]});
+  pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,452+i*42,1380,42])]});
 }
-await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:'../../study/spectral/',generator:'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
+await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?'CC BY 4.0':undefined,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
 await fs.copyFile(path.join(root,'LICENSE'),new URL('MATHJAX-LICENSE.txt',output));
-console.log(`Generated ${pages.length} chalk pages from the spectral notebook.`);
+console.log(`Generated ${pages.length} chalk pages for ${report?.speaker || '孟晟'}.`);

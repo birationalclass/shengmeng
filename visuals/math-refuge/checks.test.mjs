@@ -457,14 +457,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=22-handwritten-cover',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=22-handwritten-cover',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./report-catalog.js',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=26-reports',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=22-handwritten-cover',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
     const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){}};contexts.push(ctx);return ctx;
   }})};
   globalThis.Image=class{set src(value){this.url=value;queueMicrotask(()=>this.onload());}};
-  globalThis.fetch=async()=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'))});
+  globalThis.fetch=async(url)=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL(url.split('?')[0],import.meta.url),'utf8'))});
   try{
     const {createLecture}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const scene=new Three.Scene(),lecture=await createLecture(scene,{capabilities:{getMaxAnisotropy:()=>8}});
@@ -524,7 +524,18 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(!scene.getObjectByName('Falling chalk powder').visible);
     assert(boards.every(b=>b.children[0].material.roughnessMap.isCanvasTexture));
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
-    assert(lecture.focus().toArray().every(Number.isFinite));lecture.dispose();
+    assert(lecture.focus().toArray().every(Number.isFinite));
+    assert.equal(lecture.reportButtons.length,3);
+    for(const b of lecture.reportButtons){assert(b.position.x+b.geometry.parameters.width/2<18.17,'Selector clears the first glass joint and all boards');assert(b.position.x-b.geometry.parameters.width/2>8.4);}
+    await lecture.setLanguage('en');
+    for(const id of ['ye','hu','meng']){
+      await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
+      assert.equal(lecture.pages.length,id==='meng'?37:6);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
+      assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
+    }
+    lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
+    globalThis.fetch=async()=>({ok:false});await assert.rejects(lecture.setReport('hu'));assert.equal(lecture.report.id,'meng','Failed loading preserves the current talk');
+    lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
 });
 
@@ -537,7 +548,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   }]));
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
-  const lecture={pages,clock:{page:0},playing:true};
+  const lecture={pages,clock:{page:0},playing:true,report:{id:'meng'}};
   const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=22-handwritten-cover',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
@@ -548,6 +559,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
     elements.get('readerOpen').click();assert(!panel.hidden);
     elements.get('readerFont').value='30';elements.get('readerFont').events.input();assert.equal(elements.get('readerFormula').style.width,readingFormulaWidth(pages[0].formulaEm,30)+'px');
     lecture.clock.page=1;reader.update();assert.equal(elements.get('readerExplanation').textContent,pages[1].text);
+    lecture.pages=JSON.parse(await fs.readFile(new URL('./assets/chalk/hu/pages.json',import.meta.url),'utf8')).pages;lecture.report={id:'hu'};reader.update();assert.equal(elements.get('readerTitle').textContent,lecture.pages[1].title,'Reader refreshes at the same page number after switching talks');
     reader.close();assert(panel.hidden);
   }finally{globalThis.document=originalDocument;globalThis.innerWidth=originalWidth;globalThis.innerHeight=originalHeight;}
 });
@@ -747,4 +759,22 @@ test('English prose remains handwritten while embedded mathematical variables st
   composeChalkPage(ctx,pages[0],0,'en',null);
   assert(calls.some(c=>c.text==='Spectral Sequences'&&c.font.includes('RefugeLatin')));
   assert(calls.some(c=>c.text==='Sheng Meng'&&c.font.includes('RefugeLatin')));
+});
+
+test('speaker reports preserve paper sources, hypotheses, bilingual covers and complete assets',async()=>{
+  const {REPORTS}=await import('./report-catalog.js');
+  assert.deepEqual(REPORTS.map(r=>r.speaker),['孟晟','叶东','胡勇']);
+  const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
+  for(const report of REPORTS.slice(1)){
+    const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
+    assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,'CC BY 4.0');
+    assert.equal(data.pages.length,6);assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
+    for(const page of data.pages){
+      for(const c of page.source+page.title+page.text+(page.author||''))if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),`Missing glyph ${c}`);
+      assert(page.en.title&&page.en.text);
+      for(const path of [page.asset,page.formulaAsset]){const svg=await fs.readFile(new URL(path,import.meta.url),'utf8');assert(svg.startsWith('<svg'));assert(!svg.includes('data-mjx-error'));}
+    }
+    if(report.id==='hu'){assert(data.pages[2].tex.includes('243'));assert(data.pages[3].text.includes('243'));assert(data.pages[4].tex.includes('243'));}
+    if(report.id==='ye')assert(data.pages[2].tex.includes('fixed'));
+  }
 });
