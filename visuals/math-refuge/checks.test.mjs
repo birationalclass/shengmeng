@@ -9,8 +9,8 @@ import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=16-lecture-light';
-import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=16-lecture-light';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=18-board-diagrams';
+import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=18-board-diagrams';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
 import {constrainAboveWater} from './camera-bounds.js';
@@ -57,7 +57,7 @@ test('all consolidated handwritten captions switch languages without changing fo
     const copy=chalkCopy(p,lang);assert(copy.title&&copy.text);
     if(lang==='en')assert(!/[\u3400-\u9fff]/.test(copy.title+copy.text+copy.source));
     const rows=composeChalkPage(ctx,p,i,lang,{});
-    for(const [x,y,w,h] of rows){assert(x>=0&&y>=0&&x+w<=1536&&y+h<=580);}
+    for(const [x,y,w,h] of rows){assert(x>=0&&y>=0&&x+w<=1536&&y+h<=604);}
   }
   const css=await fs.readFile(new URL('./board-console.css',import.meta.url),'utf8');
   for(const match of css.matchAll(/url\('([^']+)'\)/g))assert((await fs.stat(new URL(match[1],import.meta.url))).size>1000);
@@ -224,12 +224,14 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
     assert.equal(result.campus.lightingZones.filter(z=>z.task==='blackboard').length,3);
     for(const name of ['Upper private studies','Upper small seminar','Upper seminar lounge'])assert(result.campus.lightingZones.some(z=>z.name===name));
+    assert.equal(result.pathLighting.count,26);const lanterns=scene.children.filter(o=>o.name.startsWith('Platform path lantern '));assert.equal(new Set(lanterns.map(o=>o.userData.type)).size,3);
     const spots=scene.children.filter(o=>o.isSpotLight);
     result.setTime(12);const daytime=spots.map(o=>o.intensity);result.setTime(23);
     spots.forEach((lamp,i)=>{assert(lamp.intensity>daytime[i]);assert(lamp.distance>0&&lamp.intensity>60);});
     for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
     for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}
-    assert.equal(scene.children.filter(o=>o.isPointLight).length,0);
+    const fills=scene.children.filter(o=>o.isPointLight);assert.equal(fills.length,4);
+    for(const lamp of fills){assert(!lamp.castShadow);assert.equal(lamp.userData.task,'seminar-fill');assert(lamp.position.x>HALL.west*BUILDING_SCALE&&lamp.position.x<HALL.east*BUILDING_SCALE);assert(lamp.intensity>0&&lamp.distance<16);}
     for(const name of ['Connected infinity pool and core water court','East infinity overflow sheet','Side infinity overflow sheet','Sunrise infinity edge'])assert(!scene.getObjectByName(name));
     assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,10);
     for(const island of result.islands.group.children){
@@ -404,7 +406,7 @@ test('Consolidated local SVG pages preserve notebook formula content and stay wi
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   assert(pages.length<40);assert(pages.some(p=>p.source.startsWith('§ 3.')));assert(pages.some(p=>p.source.startsWith('§ 4.')));
   assert.equal(new Set(pages.map(p=>p.tex)).size,pages.length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
-  assert(pages.every(p=>/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=301));
+  assert(pages.every(p=>/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
     const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
@@ -439,7 +441,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./chalk-language.js?v=16-lecture-light',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=16-lecture-light',state).replace('./chalk-motion.js?v=16-lecture-light',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./chalk-language.js?v=18-board-diagrams',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=18-board-diagrams',state).replace('./chalk-motion.js?v=18-board-diagrams',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -459,6 +461,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>1.1&&h<1.8,'Buttons remain reachable after boards are raised');}
     const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert(button.material.opacity>.035);assert(button.userData.smartGlass);button.userData.pressed=false;
     lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
+    assert(button.userData.singleToggle);
+    const touchPosition=layoutRoot.localToWorld(button.position.clone()),halfWidth=button.geometry.parameters.width*.72/2;
+    assert(touchPosition.z-halfWidth>5*BUILDING_SCALE+.5,'Entire control is inside the outer glass pane');
+    assert(touchPosition.z+halfWidth<10*BUILDING_SCALE-.5,'Control stays clear of the perimeter');
+    assert(touchPosition.z-halfWidth>6.2+2,'Control clears the complete board assembly');
     const phases=new Set();
     for(let i=0;i<3500;i++){lecture.update(.1);phases.add(lecture.clock.phase);if(i%10===0)await Promise.resolve();}
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
@@ -490,7 +497,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=16-lecture-light',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=16-lecture-light',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=6-chalk-rows',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=18-board-diagrams',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=18-board-diagrams',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=7-chalk-diagrams',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -626,4 +633,43 @@ test('inline mathematical letters, Unicode superscripts and operators always use
   }
   assert.deepEqual(chalkRuns('设 X 为流形'),[{text:'设 ',math:false},{text:'X',math:true},{text:' 为流形',math:false}]);
   assert(!chalkHTML('<x>').includes('<x>'),'Text must remain escaped');
+});
+
+
+test('Chinese ink takes twice the contact time while mathematical ink keeps its pace',()=>{
+ const base=[[0,0,100,30]],slow=[Object.assign([0,0,100,30],{chineseSpans:[[0,100]]})];
+ const contact=p=>p.segments.filter(s=>s.contact).reduce((n,s)=>n+s.cost,0);
+ assert.equal(contact(writingPlan(slow)),2*contact(writingPlan(base)));
+ const mixed=[Object.assign([0,0,100,30],{chineseSpans:[[0,40]]})];
+ assert(contact(writingPlan(mixed))>contact(writingPlan(base)));
+ assert(contact(writingPlan(mixed))<contact(writingPlan(slow)));
+});
+
+test('diagram directions, board separation and bundled handwritten glyph coverage are valid',async()=>{
+ const {diagramEdges}=await import('./chalk-diagrams.mjs');
+ for(const e of diagramEdges('differential'))assert.deepEqual(e.to.map((x,i)=>x-e.from[i]),[2,-1]);
+ for(const e of diagramEdges('zero'))assert.deepEqual(e.to.map((x,i)=>x-e.from[i]),[0,1]);
+ const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
+ assert.equal(pages.filter(p=>p.diagram).length,6);
+ for(const p of pages.filter(p=>p.diagram)){
+   for(const [i,a] of p.formulaRows.entries())for(const b of p.formulaRows.slice(i+1)){
+     assert(a[0]+a[2]<=b[0]||b[0]+b[2]<=a[0]||a[1]+a[3]<=b[1]||b[1]+b[3]<=a[1],'Independent ink regions cannot overlap');
+   }
+   assert(p.formulaRows.every(r=>r[1]+r[3]<448),'Diagram must clear the prose');
+ }
+ const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
+ for(const p of pages)for(const c of p.source+p.title+p.text)if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),'Missing handwritten character '+c);
+ const {createHash}=await import('node:crypto');
+ assert.equal(createHash('sha256').update(await fs.readFile(new URL('./assets/fonts/RefugeChinese.woff2',import.meta.url))).digest('hex'),coverage.sha256);
+});
+
+test('room fill uses bounded reflected irradiance and chalk tip sits above its shaft',async()=>{
+ const {createRoomFill}=await import('./room-fill.js');
+ const fill=createRoomFill(),m=new Three.MeshStandardMaterial(),root=new Three.Group();root.add(new Three.Mesh(new Three.BoxGeometry(),m));fill.apply(root);
+ const shader={uniforms:{},vertexShader:'#include <project_vertex>',fragmentShader:'#include <lights_fragment_maps>'};m.onBeforeCompile(shader,{});
+ assert(shader.vertexShader.includes('instanceMatrix*seminarVertex'));assert(shader.fragmentShader.includes('roomMask'));assert(shader.fragmentShader.includes('irradiance+='));assert.equal(m.emissiveIntensity,1);assert.equal(m.emissive.getHex(),0);
+ fill.setDaylight(1);const day=fill.strength.value;fill.setDaylight(0);assert(fill.strength.value>day);
+ const source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
+ const axis=source.match(/const chalkAxis=new THREE.Vector3\(([^)]+)\)/)[1].split(',').map(Number);
+ assert(axis[1]<0&&axis[2]>0,'The shaft must slope down and away from the anchored writing tip');
 });

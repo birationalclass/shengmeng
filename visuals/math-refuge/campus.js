@@ -81,6 +81,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,style);
       }else glazing(x,y,z,width,h,axis,style);
     }
+    for(const side of [-1,1]){box([cx,y+h-.12,cz+side*(d/2-.18)],[w-.36,.018,.022],light);box([cx+side*(w/2-.18),y+h-.12,cz],[.022,.018,d-.36],light);}
     if(ownRoof){for(let x=cx-w/2+.35;x<cx+w/2;x+=.65)box([x,y+h-.08,cz],[.09,.10,d-.1],timber);
       furnishLighting(name,cx,cz,w,d,y,h);
     }
@@ -102,7 +103,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   table(11,eastUpper+DECK_Y,-7,2,1.2);sofa(11,eastUpper+DECK_Y,-9);sofa(11,eastUpper+DECK_Y,-5,Math.PI);
   // Exterior stair runs beside the west wing, linked to the lower sea terraces.
   const rise=upper,steps=28;
-  for(let i=0;i<steps;i++)box([-12.75,DECK_Y+rise*(i+.5)/steps,12-i*.56],[1.25,rise/steps,.57],timber);
+  for(let i=0;i<steps;i++){box([-12.75,DECK_Y+rise*(i+.5)/steps,12-i*.56],[1.25,rise/steps,.57],timber);box([-12.75,DECK_Y+rise*(i+1)/steps+.005,12-i*.56+.25],[1.10,.012,.018],light);}
   beam([-13.4,DECK_Y+1/S,12],[-13.4,DECK_Y+rise+1/S,12-steps*.56],.025,steel);
 
   // Quiet, detached library and two compact residential villas landward.
@@ -198,11 +199,17 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const x=HALL.boardX-1.05,y=DECK_Y+HALL.clearHeight/S-.18;
     soft([x,y,z],[.22,.12,2.8],steel);
     box([x+.045,y-.069,z],[.075,.012,2.55],light);
-    lightingZones.push({name:'Blackboard wall wash '+z,position:[x,y-.16,z],target:[HALL.boardX,DECK_Y+1.8,z],gain:1,color:'#fff0dc',power:150,range:6,angle:Math.PI*.32,task:'blackboard'});
+    lightingZones.push({name:'Blackboard wall wash '+z,position:[x,y-.16,z],target:[HALL.boardX,DECK_Y+1.8,z],gain:1,color:'#fff0dc',power:90,range:7,angle:Math.PI*.4,task:'blackboard'});
   }
+  // Low-contrast reflected fill reaches chair sides and undersides, where the
+  // ceiling spots cannot. Finite range confines this shadow-free bounce to the hall.
+  for(const x of [37,41])for(const z of [-6.8,6.8]){
+    lightingZones.push({name:`Seminar indirect fill ${x} ${z}`,type:'point',position:[x,DECK_Y+2.35/S,z],gain:1,color:'#f9e8d5',power:65,range:11,task:'seminar-fill'});
+  }
+  meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
   const n=34,stairX=33.3;
-  for(let i=0;i<n;i++)box([stairX,DECK_Y+hallUpper*(i+.5)/n,10.05-i*.3],[1.3,hallUpper/n,.305],timber);
+  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,10.05-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,10.05-i*.3+.13],[1.14,.012,.018],light);}
   floor(hallUpper,3.8,2.4,34.4,0);
   for(const x of [32.61,33.99])beam([x,DECK_Y+.9/S,10.2],[x,hallUpper+DECK_Y+.9/S,.15],.022,brass);
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
@@ -304,6 +311,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     for(let i=0;i<n;i++){
       const top=DECK_Y-(i+1)*rise,base=seaLevel-.18,t=(i+.5)*tread;
       box([x+dx*t,(top+base)/2,z+dz*t],dx?[tread+.002,top-base,width]:[width,top-base,tread+.002],pavingMaterials[i%3]);
+      box([x+dx*(t+tread*.42),top-.012,z+dz*(t+tread*.42)],dx?[.018,.016,width-.16]:[width-.16,.016,.018],light);
       heights.push(top);
     }
     // A restrained handrail only alongside the stair, not around the terrace.

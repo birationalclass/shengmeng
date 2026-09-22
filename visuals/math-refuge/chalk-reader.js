@@ -1,6 +1,6 @@
-import {chalkHTML} from './chalk-typography.js?v=16-lecture-light';
-import {controlLabel} from './control-label.js?v=16-lecture-light';
-import {readingFormulaWidth} from './display-profile.js?v=6-chalk-rows';
+import {chalkHTML} from './chalk-typography.js?v=18-board-diagrams';
+import {controlLabel} from './control-label.js?v=18-board-diagrams';
+import {readingFormulaWidth} from './display-profile.js?v=7-chalk-diagrams';
 
 // The reading layer uses vector formulas and real HTML text, not a magnified
 // screenshot of the 3D texture. The six physical boards remain in the scene.
@@ -22,7 +22,7 @@ export function createChalkReader(lecture){
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text);
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=6-chalk-rows';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=7-chalk-diagrams';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }

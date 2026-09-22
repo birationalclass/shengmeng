@@ -7,8 +7,8 @@
   <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=3-coast">
   <link rel="stylesheet" href="coastal-layout.css?v=5-mobile">
   <link rel="stylesheet" href="chalk-reader.css?v=5-mobile">
-  <link rel="stylesheet" href="board-console.css?v=16-lecture-light">
-  <link rel="stylesheet" href="control-dock.css?v=16-lecture-light">
+  <link rel="stylesheet" href="board-console.css?v=18-board-diagrams">
+  <link rel="stylesheet" href="control-dock.css?v=18-board-diagrams">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 </head>
 <body>
@@ -22,6 +22,7 @@
     <div class="clock-line"><output id="sceneClock">--:--</output><button id="clockPlay" aria-pressed="true" class="icon-button" aria-label="回到当前时间" title="回到当前时间" data-tip="回到当前时间"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6M12 7v5l3 2"/></svg></button></div>
     <p>默认与设备的当前本地时间同步。拖动滑条可临时预览昼夜，点击按钮恢复同步。夜间自动开启室内照明。</p>
     <label for="boardFollowDelay">板书镜头回位 <output id="boardFollowDelayValue">20 秒</output><input id="boardFollowDelay" type="range" min="5" max="60" step="1" value="20"></label>
+    <label for="writingSpeed">板书速度 <output id="writingSpeedValue">1 ×</output><input id="writingSpeed" type="range" min="0.25" max="2" step="0.25" value="1"></label>
     <label for="rotationSensitivity">旋转灵敏度 <input id="rotationSensitivity" type="range" min="0.08" max="0.6" step="0.02" value="0.22"></label>
     <label for="speed">巡游速度 <select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
     <p>拖动后保持自由观察，松手不会自动巡游。点击“恢复巡游”或按空格才继续；板书模式允许手动调整镜头，停止操作后按设定时间自动跟随当前黑板，与巡游开关无关；其他章节只定位镜头。方向键或 WASD 平移，Q / E 升降；触屏双指可平移、缩放。</p>
@@ -59,6 +60,6 @@
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p></div>
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
-  <script type="module">import('./app.js?v=16-lecture-light').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=18-board-diagrams').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

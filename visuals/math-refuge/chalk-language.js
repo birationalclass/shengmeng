@@ -15,13 +15,13 @@ export function composeChalkPage(ctx,page,index,language,formula){
   function measure(text,size){return chalkRuns(text).reduce((width,run)=>{ctx.font=`${size}px ${run.math?mathFont:font}`;return width+ctx.measureText(run.text).width;},0);}
   function textRow(text,x,y,size,color){
     while(measure(text,size)>1368&&size>24)size--;
-    ctx.fillStyle=color;let cursor=x;
-    for(const run of chalkRuns(text)){ctx.font=`${size}px ${run.math?mathFont:font}`;ctx.fillText(run.text,cursor,y);cursor+=ctx.measureText(run.text).width;}
-    rows.push([x-4,y-size-4,Math.min(1376,cursor-x+8),size+14]);
+    ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
+    for(const run of chalkRuns(text)){ctx.font=`${size}px ${run.math?mathFont:font}`;ctx.fillText(run.text,cursor,y);const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+14],{chineseSpans}));
   }
   textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];ctx.drawImage(formula,x+8,y+8,w-16,h-16);rows.push(...(page.formulaRows||[[x,y,w,h]]));
   ctx.font=`36px ${font}`;const notes=wrapChalkText({measureText:text=>({width:measure(text,36)})},copy.text,1344);
-  notes.slice(0,3).forEach((line,i)=>textRow(line+(i===2&&notes.length>3?' …':''),88,465+i*42,36,'#eee9d5'));
+  notes.slice(0,3).forEach((line,i)=>textRow(line+(i===2&&notes.length>3?' …':''),88,488+i*42,36,'#eee9d5'));
   return rows;
 }

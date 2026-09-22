@@ -40,7 +40,8 @@ export function writingPlan(rows,guides){
     for(let i=0;i<columns.length;i++){
       const a=point(columns[i]),b=point(columns[Math.min(i+1,columns.length-1)]),gap=i+1<columns.length&&columns[i+1]-columns[i]>1;
       const distance=Math.hypot(b[0]-a[0],b[1]-a[1]);
-      segments.push({a,b,cost:Math.max(1,gap?distance/5:distance),contact:!gap,row});
+      const chinese=(rows[row].chineseSpans||[]).some(([left,right])=>(a[0]+b[0])/2>=left&&(a[0]+b[0])/2<=right);
+      segments.push({a,b,cost:Math.max(1,gap?distance/5:distance)*(chinese&&!gap?2:1),contact:!gap,row});
     }
     previous=point(columns.at(-1));
   });

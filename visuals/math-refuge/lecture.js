@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights} from './lecture-state.js?v=16-lecture-light';
-import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=16-lecture-light';
+import {LectureClock,boardHeights} from './lecture-state.js?v=18-board-diagrams';
+import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=18-board-diagrams';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=16-lecture-light';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=18-board-diagrams';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=6-chalk-rows');
+  const response=await fetch('./assets/chalk/pages.json?v=7-chalk-diagrams');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   const {pages}=await response.json(),clock=new LectureClock(pages.length);
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
@@ -31,11 +31,11 @@ export async function createLecture(scene,renderer){
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
-      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=6-chalk-rows';
+      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=7-chalk-diagrams';
     });pending.set(index,job);return job;
   }
   await load(0);
-  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0;
+  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0,writingSpeed=1;
   const frameMaterial=new THREE.MeshStandardMaterial({color:'#735c3e',roughness:.65});
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const wall=new THREE.Mesh(new THREE.BoxGeometry(17.2,4.8,.16),new THREE.MeshStandardMaterial({color:'#102421',roughness:1}));
@@ -66,8 +66,8 @@ export async function createLecture(scene,renderer){
   // Transparent capacitive interface laminated onto the east smart glazing.
   const consoleButtons=[],consoleTextures=[];
   const button=new THREE.Mesh(new THREE.PlaneGeometry(1.9,.78),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.035,depthWrite:false,toneMapped:false}));
-  button.name='Smart glass language touch surface';button.position.set(37,1,-11.34);
-  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true};scene.add(button);
+  button.name='Smart glass language touch surface';button.position.set(42.73,1,-11.34);
+  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:3};scene.add(button);
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
   const label=new THREE.Mesh(new THREE.PlaneGeometry(1.82,.68),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:.8,depthWrite:false,toneMapped:false}));label.position.z=.008;button.add(label);
@@ -75,19 +75,16 @@ export async function createLecture(scene,renderer){
   function setConsoleState(){
     const title=language;if(button.userData.lastLabel===title)return;button.userData.lastLabel=title;
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
-    c.fillStyle='#081c2444';c.fillRect(12,18,1000,348);
-    c.fillStyle='#9bece599';for(const x of [12,1010])c.fillRect(x,18,2,348);
-    for(const y of [18,364])c.fillRect(12,y,1000,2);
-    c.fillStyle='#91e3db';c.font='25px sans-serif';c.textAlign='left';c.fillText('LANGUAGE',64,85);
-    c.fillStyle='#96e7de22';c.fillRect(language==='zh'?48:530,115,442,192);
-    c.font='76px "PingFang SC", sans-serif';c.textAlign='center';
-    c.fillStyle=language==='zh'?'#dbfff7':'#7cacae';c.fillText('中文',276,244);
-    c.fillStyle=language==='en'?'#dbfff7':'#7cacae';c.fillText('EN',748,244);
-    c.fillStyle='#b9fff0';c.fillRect(language==='zh'?194:666,296,164,3);touchTexture.needsUpdate=true;
+    // One action, positioned within the outer pane, away from every mullion.
+    c.fillStyle='#91e3db';c.font='29px sans-serif';c.textAlign='center';c.fillText('LANGUAGE',512,90);
+    c.font='110px "PingFang SC", sans-serif';c.fillStyle='#dbfff7';
+    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,238);
+    c.fillStyle='#b9fff0';c.fillRect(376,290,272,3);
+    touchTexture.needsUpdate=true;
   }
   setConsoleState();
-  const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.014,.017,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
-  const chalkAxis=new THREE.Vector3(.28,.55,.79).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
+  const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
+  const chalkAxis=new THREE.Vector3(.22,-.42,.88).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
   const eraser=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
   const felt=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth*.98,eraserHeight*.98,.025),new THREE.MeshStandardMaterial({color:'#353d36',roughness:1}));felt.position.z=-.0475;eraser.add(felt);
@@ -154,7 +151,7 @@ export async function createLecture(scene,renderer){
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     if(playing&&ready&&!loadingError&&!reduced){
-      const prior=clock.page;clock.update(dt);
+      const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
     if(clock.phase==='erase'){
@@ -192,6 +189,8 @@ export async function createLecture(scene,renderer){
   boards.forEach((_,i)=>draw(i));
   return {
     update,pages,clock,consoleButtons,setConsoleState,
+    setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
+    get writingSpeed(){return writingSpeed;},
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
     async setLanguage(value){
       const next=value==='en'?'en':'zh';if(next===language)return;

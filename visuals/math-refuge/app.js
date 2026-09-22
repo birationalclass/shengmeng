@@ -1,23 +1,23 @@
 import * as THREE from 'three';
-import {controlLabel} from './control-label.js?v=16-lecture-light';
+import {controlLabel} from './control-label.js?v=18-board-diagrams';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=16-lecture-light';
-import {createLecture} from './lecture.js?v=16-lecture-light';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=16-lecture-light';
-import {seaLevel} from './landscape-shape.js?v=16-lecture-light';
-import {createChalkReader} from './chalk-reader.js?v=16-lecture-light';
+import {createRetreat} from './scene.js?v=18-board-diagrams';
+import {createLecture} from './lecture.js?v=18-board-diagrams';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=18-board-diagrams';
+import {seaLevel} from './landscape-shape.js?v=18-board-diagrams';
+import {createChalkReader} from './chalk-reader.js?v=18-board-diagrams';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=16-lecture-light';
-import {BoardFollow} from './board-follow.js?v=16-lecture-light';
-import {RetreatTime} from './retreat-time.js?v=16-lecture-light';
-import {constrainAboveWater} from './camera-bounds.js?v=16-lecture-light';
-import {bindPhysicalButtons} from './physical-buttons.js?v=16-lecture-light';
+import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=18-board-diagrams';
+import {BoardFollow} from './board-follow.js?v=18-board-diagrams';
+import {RetreatTime} from './retreat-time.js?v=18-board-diagrams';
+import {constrainAboveWater} from './camera-bounds.js?v=18-board-diagrams';
+import {bindPhysicalButtons} from './physical-buttons.js?v=18-board-diagrams';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -157,7 +157,7 @@ try{
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
   $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await createLecture(lectureRoot,renderer);
+  lecture=await createLecture(lectureRoot,renderer);retreat.roomFill.apply(lectureRoot);
   reader=createChalkReader(lecture);
   installPhysicalControls();
   for(const [i,page] of lecture.pages.entries()){
@@ -188,6 +188,7 @@ $('settingsButton').addEventListener('click',()=>{
 });
 $('quality').addEventListener('change',()=>{if(retreat)setQuality();});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
+$('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{
   if(!retreat)return;sceneTime.previewAt(Number($('light').value));lastSunUpdate=-1;clearTimeout(lightTimer);
