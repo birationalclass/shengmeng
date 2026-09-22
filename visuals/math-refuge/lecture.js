@@ -103,7 +103,8 @@ export async function createLecture(scene,renderer){
     parked.userData={column,resting:true};scene.add(parked);return parked;
   });
   eraser.visible=false;
-  let eraserColumn=0,eraserReturn=null;
+  let eraserColumn=0,eraserReturn=null,eraserPickup=null;
+  const eraserContact=new THREE.Object3D();
   const particleCount=64,particlePositions=new Float32Array(particleCount*3).fill(-10000),particles=Array.from({length:particleCount},()=>({life:0,vx:0,vy:0}));
   const dustGeometry=new THREE.BufferGeometry();dustGeometry.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));
   const dot=new Uint8Array(16*16*4);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const i=(y*16+x)*4,r=Math.hypot((x-7.5)/7.5,(y-7.5)/7.5);dot.set([255,255,255,Math.round(Math.max(0,1-r)*200)],i);}
@@ -124,9 +125,9 @@ export async function createLecture(scene,renderer){
   const wipeCtx=wipeCanvas.getContext('2d');let wipeSamples=0;
   function draw(index){
     const board=boards[index],slot=clock.slots[index],ctx=board.ctx;
-    const erasing=index===clock.active&&clock.phase==='erase';
+    const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
-    const wetKey=wet&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
+    const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
     const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0);const image=cache.get(slot.page);
@@ -166,7 +167,9 @@ export async function createLecture(scene,renderer){
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
-    if(playing&&ready&&!loadingError&&!reduced){
+    // Ink removal only starts after the felt reaches the board from its tray.
+    const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing';
+    if(playing&&ready&&!loadingError&&!reduced&&!collectingEraser){
       const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
@@ -181,12 +184,31 @@ export async function createLecture(scene,renderer){
     }
     chalk.visible=playing&&!reduced&&ready&&clock.phase==='write';
     const erasing=!reduced&&ready&&clock.phase==='erase';
-    if(eraser.userData.state==='erasing'&&(!erasing||eraserColumn!==Math.floor(clock.active/2))){
+    if(['erasing','pickup'].includes(eraser.userData.state)&&(!erasing||eraserColumn!==Math.floor(clock.active/2))){
       eraserReturn={column:eraserColumn,elapsed:0,position:eraser.position.clone(),quaternion:eraser.quaternion.clone()};
+      eraserPickup=null;
     }
-    if(reduced)eraserReturn=null;
+    if(reduced){eraserReturn=null;eraserPickup=null;}
     if(erasing){
-      eraserColumn=Math.floor(clock.active/2);eraserReturn=null;eraser.visible=true;eraser.userData.state='erasing';
+      const column=Math.floor(clock.active/2);
+      const starting=!eraserPickup&&(eraser.userData.state!=='erasing'||eraserColumn!==column);
+      if(starting){
+        const rest=parkedErasers[column];
+        eraserPickup={elapsed:0,position:rest.position.clone(),quaternion:rest.quaternion.clone()};
+        eraser.position.copy(rest.position);eraser.quaternion.copy(rest.quaternion);
+      }
+      eraserColumn=column;eraserReturn=null;eraser.visible=true;
+      if(eraserPickup){
+        if(playing&&!starting)eraserPickup.elapsed+=dt;
+        const t=Math.min(1,eraserPickup.elapsed/1.4),ease=t*t*(3-2*t);
+        const p=eraserPose(0,W,H,boards[clock.active].wet?.plan);
+        positionTool(eraserContact,p.x,p.y);eraserContact.position.z+=.047+p.lift;eraserContact.rotation.set(.03,0,-p.angle);
+        eraser.position.lerpVectors(eraserPickup.position,eraserContact.position,ease);
+        eraser.position.z+=Math.sin(Math.PI*t)*.22;
+        eraser.quaternion.slerpQuaternions(eraserPickup.quaternion,eraserContact.quaternion,ease);
+        eraser.userData.state='pickup';
+        if(t===1){eraserPickup=null;eraser.userData.state='erasing';boards[clock.active].wet.started=effectTime;}
+      }else eraser.userData.state='erasing';
     }else if(eraserReturn){
       if(playing)eraserReturn.elapsed+=dt;
       const t=Math.min(1,eraserReturn.elapsed/1.4),ease=t*t*(3-2*t),rest=parkedErasers[eraserReturn.column];
@@ -205,7 +227,7 @@ export async function createLecture(scene,renderer){
       dustAccumulator+=dt;
       if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
     }else previousTip=null;
-    if(erasing){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.set(.03,0,-p.angle);}
+    if(erasing&&!eraserPickup){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.set(.03,0,-p.angle);}
     fallingDust.visible=!reduced;
     if(playing&&!reduced)for(let i=0;i<particleCount;i++){
       const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;

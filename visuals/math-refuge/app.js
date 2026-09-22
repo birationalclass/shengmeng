@@ -6,11 +6,11 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=23-stairs-trays';
-import {createLecture} from './lecture.js?v=23-stairs-trays';
+import {createLecture} from './lecture.js?v=24-smooth-motion';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=22-handwritten-cover';
 import {seaLevel} from './landscape-shape.js?v=22-handwritten-cover';
 import {createChalkReader} from './chalk-reader.js?v=22-handwritten-cover';
-import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
+import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=22-handwritten-cover';
@@ -18,6 +18,7 @@ import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=22-handwritten-cover';
+import {motionCoordinate} from './camera-motion.js';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
@@ -30,6 +31,17 @@ const curves=SHOTS.map(s=>({
   target:new THREE.CatmullRomCurve3(s.targets.map(p=>new THREE.Vector3(...p)))
 }));
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
+const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
+const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
+let motionSample=false,lastUIStamp=0;
+function shotPose(){
+  const s=SHOTS[shot],t=smoothProgress(time/s.duration);
+  curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
+  if(s.lecture&&lecture){
+    const framing=boardFraming(camera.aspect,s.fov);shotTarget.copy(lecture.focus(true));
+    shotPosition.copy(shotTarget).add(viewDirection.fromArray(lectureViewOffset(framing.distance)));
+  }
+}
 function fail(error){
   console.error(error);$('loading').hidden=true;$('error').hidden=false;
   $('errorText').textContent='请启用浏览器硬件加速后重试。若仍无法打开，请换用新版 Safari、Chrome 或 Edge。';
@@ -56,7 +68,13 @@ function stopTour(){
 function beginTransition(){
   const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
   controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
-  blend={elapsed:0,position,target,fov:camera.fov,duration:reduced.matches?1.6:transitionSeconds(position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration))))};
+  shotPose();
+  const rotation=camera.quaternion.clone(),endRotation=new THREE.Quaternion().setFromRotationMatrix(lookMatrix.lookAt(shotPosition,shotTarget,viewUp));
+  blend={elapsed:0,position,target,fov:camera.fov,endPosition:shotPosition.clone(),endRotation,rotation,
+    distance:position.distanceTo(target),endDistance:shotPosition.distanceTo(shotTarget),
+    velocity:motionVelocity.clone(),acceleration:motionAcceleration.clone().clampLength(0,3),
+    duration:reduced.matches?1.6:Math.max(transitionSeconds(position.distanceTo(shotPosition)),rotation.angleTo(endRotation)/(Math.PI/14))};
+  frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
 function selectShot(index){
@@ -68,26 +86,25 @@ function resumeTour(){
   beginTransition();updateLabels();
 }
 function applyShot(dt){
-  const s=SHOTS[shot],fraction=time/s.duration,t=smoothProgress(fraction);
-  const position=curves[shot].position.getPointAt(t),target=curves[shot].target.getPointAt(t);
+  const s=SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
-    const framing=boardFraming(camera.aspect,s.fov),focus=lecture.focus(true);target.copy(focus);position.copy(focus).add(new THREE.Vector3(...lectureViewOffset(framing.distance)));
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*.75));target.lerpVectors(controls.target,target,1-Math.exp(-dt*.75));}
   }
+  const priorFov=camera.fov;
   if(blend){
-    blend.elapsed+=dt;const k=smoothProgress(Math.min(1,blend.elapsed/blend.duration));
-    camera.position.lerpVectors(blend.position,position,k);controls.target.lerpVectors(blend.target,target,k);
+    blend.elapsed+=dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
+    for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
+    camera.quaternion.slerpQuaternions(blend.rotation,blend.endRotation,k);
+    viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
+    controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
     camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
     if(k===1)blend=null;
   }else{
     camera.position.copy(position);controls.target.copy(target);camera.fov=s.fov;
     $('transition').style.opacity=0;
   }
-  camera.updateProjectionMatrix();controls.update();
-  const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
-  $('timelineFill').style.width=`${100*(prior+time)/totalDuration}%`;
-  $('world').dataset.shot=String(shot);$('world').dataset.mode=touring?'tour':free?'free':'paused';
+  if(camera.fov!==priorFov)camera.updateProjectionMatrix();controls.update();
 }
 function resize(){
   if(!renderer)return;
@@ -109,10 +126,12 @@ function resize(){
 function setQuality(){
   resize();
 }
+const frameSamples=[],cpuSamples=[];let metricsAt=0;
 function tick(stamp){
+  const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden)return;
-  if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
+  if(lecture)lecture.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
     if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(0);
@@ -138,18 +157,29 @@ function tick(stamp){
     // Keep free-flight away from the clipping plane and terrain basement.
     controls.update();
   }
-  if(SHOTS[shot].lecture&&lecture){
-    $('mode').textContent=boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`;
-    $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
-    $('world').dataset.board=String(lecture.clock.active);
+  if(stamp-lastUIStamp>=100){
+    lastUIStamp=stamp;
+    if(lecture){updateLectureUI();reader?.update();}
+    if(SHOTS[shot].lecture&&lecture){
+      $('mode').textContent=boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`;
+      $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
+      $('world').dataset.board=String(lecture.clock.active);
+    }else delete $('world').dataset.boardFollow;
     $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
-  }else delete $('world').dataset.boardFollow;
-  $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
-  $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
+    $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
+    const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
+    $('timelineFill').style.transform=`scaleX(${(prior+time)/totalDuration})`;
+    $('world').dataset.shot=String(shot);
+    updateSceneTime();
+  }
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
+  if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
+  previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
-  updateSceneTime(dt);
   if(profile.direct)renderer.render(scene,camera);else composer.render();
+  if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
+  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
+
 }
 try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,powerPreference:'high-performance'});
@@ -179,12 +209,19 @@ try{
     const option=document.createElement('option');option.value=String(i);option.textContent=`${page.source} · ${page.title}`;$('lecturePage').append(option);
   }
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
-  composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());
+  if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+  bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
   setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
   // Shader compilation failures are reported, not hidden behind an endless loader.
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
   await renderer.compileAsync(scene,camera);
+  // Upload textures before the user moves to a previously unseen part of the site.
+  const textures=new Set();scene.traverse(object=>{for(const material of Array.isArray(object.material)?object.material:[object.material])if(material)for(const value of Object.values(material))if(value?.isTexture)textures.add(value);});
+  for(const texture of textures)renderer.initTexture(texture);
+  // Submit off-screen geometry once as well, while the opaque loader is up.
+  const culled=[];scene.traverse(object=>{if(object.isMesh&&object.frustumCulled){culled.push(object);object.frustumCulled=false;}});
+  if(profile.direct)renderer.render(scene,camera);else composer.render();
+  culled.forEach(object=>object.frustumCulled=true);
   $('loading').hidden=true;$('world').dataset.ready='true';
   renderer.setAnimationLoop(tick);
 }catch(error){fail(error);}

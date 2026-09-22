@@ -4,7 +4,7 @@ export function displayProfile(width,height,dpr=1,quality='high',maxSamples=4,na
   const compact=Math.min(width,height)<=700,high=quality==='high';
   const budget=high?(compact?3500000:6000000):2200000;
   const pixelRatio=Math.min(Math.max(1,dpr||1),high?3:1.75,Math.sqrt(budget/(width*height)));
-  return {compact,pixelRatio,samples:Math.max(0,Math.min(high?4:2,maxSamples)),direct:compact&&nativeSamples>0,bloom:high&&!compact,shadows:high,shadowSize:compact?1024:2048};
+  return {compact,pixelRatio,samples:Math.max(0,Math.min(high?4:2,maxSamples)),direct:nativeSamples>0,bloom:false,shadows:high,shadowSize:compact?1024:2048};
 }
 export function boardFraming(aspect,fov=57){
   const tangent=Math.tan(fov*Math.PI/360);

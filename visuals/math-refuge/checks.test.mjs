@@ -495,12 +495,20 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(let i=0;i<3500;i++){
       const before=movingEraser.userData.state;lecture.update(.1);phases.add(lecture.clock.phase);eraserStates.add(movingEraser.userData.state);
       assert.equal(trayErasers.filter(o=>o.visible).length+(movingEraser.visible?1:0),3,'One eraser per column, with no duplicate while in use');
+      if(movingEraser.userData.state==='pickup'){
+        assert.equal(lecture.clock.progress,0,'No ink disappears before the eraser arrives');
+        const rest=trayErasers[Math.floor(lecture.clock.active/2)];assert(!rest.visible);
+        if(before!=='pickup'){
+          assert(movingEraser.position.distanceTo(rest.position)<1e-8,'Pick up the eraser exactly where it lies in this column’s tray');
+          lecture.playing=false;const position=movingEraser.position.clone();lecture.update(.1);assert(position.distanceTo(movingEraser.position)<1e-8,'Pause also freezes pickup');lecture.playing=true;
+        }
+      }
       if(before==='returning'&&movingEraser.userData.state==='resting'){
         assert(trayErasers.some(o=>o.position.distanceTo(movingEraser.position)<1e-8&&o.quaternion.angleTo(movingEraser.quaternion)<1e-6),'Return ends exactly on the tray, felt down');returnCompleted=true;
       }
       if(i%10===0)await Promise.resolve();
     }
-    assert(eraserStates.has('erasing')&&eraserStates.has('returning')&&returnCompleted);
+    assert(eraserStates.has('pickup')&&eraserStates.has('erasing')&&eraserStates.has('returning')&&returnCompleted);
     assert(phases.has('write'));assert(phases.has('erase'));assert(phases.has('lift'));
     assert(scene.getObjectByName('Writing chalk').userData.length<.17);
     assert(scene.getObjectByName('Falling chalk powder').geometry.attributes.position.count===64);
@@ -620,7 +628,7 @@ test('tour resume blends from current view without a blackout or teleport',async
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));
   const apply=source.slice(source.indexOf('function applyShot'),source.indexOf('function resize'));
-  assert(apply.includes('lerpVectors(blend.position,position,k)'));
+  assert(apply.includes('motionCoordinate('));assert(apply.includes('slerpQuaternions('));
   assert(!apply.includes('Math.sin(k*Math.PI)'));
   assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('selectShot(Number(button.dataset.shot))'));assert(source.includes('else if(blend)'));
   let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
@@ -636,6 +644,21 @@ test('manual board viewing yields after the configured idle time without restart
   follow.setDelay(60);follow.touch();now=154;assert(!follow.following);now=155;assert(follow.following);
   follow.setDelay(100);assert.equal(follow.delay,60);follow.setDelay(1);assert.equal(follow.delay,5);
   follow.begin();follow.reset();assert(follow.following);
+});
+
+test('camera retargeting preserves velocity and acceleration and settles without a snap',async()=>{
+  const {motionCoordinate}=await import('./camera-motion.js');
+  for(const [start,end,velocity,acceleration,duration] of [[0,100,0,0,9],[20,-15,4,-.2,8],[-12,30,-2,.15,12]]){
+    const h=.0001,position=t=>motionCoordinate(start,end,velocity,acceleration,duration,t/duration);
+    assert.equal(position(0),start);assert(Math.abs(position(duration)-end)<1e-8);
+    assert(Math.abs((position(h)-position(0))/h-velocity)<.001);
+    assert(Math.abs((position(2*h)-2*position(h)+position(0))/(h*h)-acceleration)<.01);
+    assert(Math.abs((position(duration)-position(duration-h))/h)<.001);
+    assert(Math.abs((position(duration)-2*position(duration-h)+position(duration-2*h))/(h*h))<.01);
+  }
+  const desktop=displayProfile(1440,900,2,'high',4,4);
+  assert(desktop.direct&&desktop.samples===4,'Native desktop antialiasing does not need another full-screen render pass');
+  assert(!displayProfile(1440,900,2,'high',4,0).direct,'Keep the compositor fallback without native MSAA');
 });
 
 test('multiline formulas write one row at a time and lift before the next',async()=>{
