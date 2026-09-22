@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
@@ -22,6 +23,13 @@ import {motionCoordinate} from './camera-motion.js';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
+const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
+let entered=false;
+$('enterButton').addEventListener('click',()=>{
+  if(entered||$('world').dataset.ready!=='true')return;
+  entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
+  backgroundMusic.start();$('world').focus({preventScroll:true});
+});
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,lightTimer,opening={started:null};
@@ -130,7 +138,7 @@ const frameSamples=[],cpuSamples=[];let metricsAt=0;
 function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
-  if(document.hidden)return;
+  if(document.hidden||!entered)return;
   if(lecture)lecture.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
@@ -222,7 +230,8 @@ try{
   const culled=[];scene.traverse(object=>{if(object.isMesh&&object.frustumCulled){culled.push(object);object.frustumCulled=false;}});
   if(profile.direct)renderer.render(scene,camera);else composer.render();
   culled.forEach(object=>object.frustumCulled=true);
-  $('loading').hidden=true;$('world').dataset.ready='true';
+  $('world').dataset.ready='true';$('world').dataset.entered='false';
+  $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').hidden=false;$('enterButton').focus({preventScroll:true});
   renderer.setAnimationLoop(tick);
 }catch(error){fail(error);}
 

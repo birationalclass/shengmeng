@@ -127,3 +127,9 @@ Scene assembly uses real Three.js geometry with mocked texture/PMREM/canvas/imag
 - Each board column has white, yellow, pink and blue chalk, plus a felt-backed eraser that lifts from its own tray before wiping and returns smoothly afterward. Ink removal waits until the felt reaches the board; pause freezes pickup and return.
 
 - Camera travel uses quintic position interpolation with incoming velocity/acceleration, fixed destination framing and quaternion spherical interpolation. Native desktop MSAA avoids an unnecessary HDR compositor/output pass; texture uploads are warmed behind the loader. DOM status updates run at 10 Hz while camera motion stays on the animation frame loop. Bounded frame/CPU samples are exposed on the canvas dataset for local performance checks.
+
+## Background music
+
+The user-provided “FLYING OVER NORWAY (4K UHD) 1HR Ambient Drone Film + Music by Nature Relaxation for Stress Relie.mp3” is included as `assets/audio/norway-ambient.m4a`: the full 57:27.513 stereo recording, AAC at 96 kb/s with fast-start metadata, a two-second entrance fade and three-second ending fade. The original file is unchanged. The web copy is approximately 42.1 MB and is requested only by the post-loading “点击进入” button or the music button; it does not block the 3D scene loader. The entrance holds the opening camera and lecture clock until the user enters. Playback loops at 18% initial volume, with remembered pause/volume preferences, gentle volume transitions and suspension while the tab is hidden. The recording is user-supplied and is not covered by the CC0 texture asset licenses.
+
+`node --test visuals/math-refuge/music.test.mjs` checks on-demand playback, autoplay rejection/retry, rapid toggle races, volume persistence, hidden-tab suspension and disposal.
