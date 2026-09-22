@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createLectern} from './lectern.js?v=37-speaker';
+import {createLectern} from './lectern.js?v=38-board-tone';
 import {createUpperLounge} from './upper-lounge.js?v=37-speaker';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v=36-board-detail';
@@ -377,9 +377,10 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   lectern.group.position.set(41.3,DECK_Y+.028,6.5);
   lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);
   // Operable blackout layer, separate from glazing and opaque chalkboards.
-  const blind=new THREE.Mesh(new THREE.BoxGeometry(.055,HALL.clearHeight/S,hallDepth-.6),new THREE.MeshStandardMaterial({color:'#293530',roughness:1}));
-  blind.name='East teaching blackout shade';blind.position.set(43.04,DECK_Y+HALL.clearHeight/(2*S),0);blind.visible=false;scene.add(blind);
-  box([43.04,DECK_Y+HALL.clearHeight/S-.04,0],[.18,.12,hallDepth-.6],steel);
+  const blind=new THREE.Mesh(new THREE.BoxGeometry(.008,HALL.clearHeight/S,hallDepth-.6),new THREE.MeshStandardMaterial({color:'#293530',roughness:1}));
+  // Keep the optional blind on the sea side, clear of the flush-mounted boards.
+  blind.name='East teaching blackout shade';blind.position.set(HALL.east+.029,DECK_Y+HALL.clearHeight/(2*S),0);blind.visible=false;scene.add(blind);
+  box([HALL.east+.04,DECK_Y+HALL.clearHeight/S-.04,0],[.04,.12,hallDepth-.6],steel);
   // No sun loungers remain on the compact sea terrace.
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
   // Sea access has been removed; the continuous platform fascia and edge lights

@@ -7,7 +7,7 @@ import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-positi
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
 import {createReportLoader} from './report-loader.js?v=35-responsive-reports';
 
-import {createBoardHardware,TRAY} from './board-hardware.js?v=36-board-detail';
+import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=38-board-tone';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
@@ -46,8 +46,6 @@ export async function createLecture(scene,renderer){
   const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
-  const wall=new THREE.Mesh(new THREE.BoxGeometry(17.2,4.8,.16),new THREE.MeshStandardMaterial({color:'#102421',roughness:1}));
-  wall.position.set(28,2.65,-10.82);wall.name='Six-board lecture wall';scene.add(wall);
   const cube=new THREE.BoxGeometry(1,1,1);
   const trayChalkGeometry=new THREE.CylinderGeometry(.018,.015,.16,10);
   const trayChalkMaterials=['#f5efdc','#e9aa24','#e75575','#339bdd'].map(color=>new THREE.MeshStandardMaterial({color,roughness:1,emissive:color,emissiveIntensity:.18}));
@@ -55,7 +53,8 @@ export async function createLecture(scene,renderer){
   for(let pair=0;pair<3;pair++){
     const x=22.4+pair*5.6;
     const track=new THREE.Group();track.name='Double-channel lift track '+(pair+1);scene.add(track);
-    track.userData={column:pair,depths:[-10.505,-10.345],travel:[1.45,3.7],wallMounted:true};
+    track.position.z=BOARD_MOUNT_OFFSET;
+    track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[1.45,3.7],glassMounted:true};
     for(const sign of [-1,1]){
       const railX=x+sign*2.745;
       for(const z of [-10.505,-10.345]){
@@ -63,13 +62,13 @@ export async function createLecture(scene,renderer){
         for(const dz of [-.066,.066])part(track,[railX,2.66,z+dz],[.075,4.94,.015],metal);
       }
       for(const y of [.30,2.65,5.02]){
-        part(track,[railX,y,-10.61],[.09,.075,.30],metal);
+        part(track,[railX,y,-10.61],[.09,.075,.26],metal);
         part(track,[railX,y,-10.735],[.16,.17,.03],metal);
       }
     }
     for(const y of [.22,5.1])part(track,[x,y,-10.51],[5.58,.06,.43],metal);
     for(let side=0;side<2;side++){
-      const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16);
+      const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16+BOARD_MOUNT_OFFSET);
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
       const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
       const ctx=canvas.getContext('2d'),texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
@@ -90,7 +89,7 @@ export async function createLecture(scene,renderer){
       part(group,[0,-BOARD_H/2-.07,.06],[.55,.05,.09],metal);
       boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
     }
-    const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,floorTop:TRAY.top};scene.add(tray);
+    const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,centerZ:TRAY.z,floorTop:TRAY.top};scene.add(tray);
     part(tray,[x,TRAY.y,TRAY.z],[5.42,.06,TRAY.depth],frameMaterial);
     for(const z of [TRAY.z-TRAY.depth/2,TRAY.z+TRAY.depth/2])part(tray,[x,.372,z],[5.42,.074,.025],frameMaterial);
     for(const dx of [-2.71,2.71])part(tray,[x+dx,.372,TRAY.z],[.025,.074,TRAY.depth],frameMaterial);
@@ -113,11 +112,12 @@ export async function createLecture(scene,renderer){
   }
   function setConsoleState(){
     if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
-    for(const button of consoleButtons)button.userData.lastLabel=language;
+    const label=language==='zh'?'中':'Eng';
+    for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;}
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
     c.textAlign='center';c.shadowBlur=0;
-    c.font='400 184px '+SCREEN_FONT;c.fillStyle=language==='zh'?'#f0e4ca':'#b9c9c6';c.fillText('中',315,250);
-    c.font='400 176px Baskerville, "Iowan Old Style", Georgia, serif';c.fillStyle=language==='en'?'#f0e4ca':'#b9c9c6';c.fillText('Eng',675,250);
+    c.font=language==='zh'?'400 184px '+SCREEN_FONT:'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
+    c.fillStyle='#f0e4ca';c.fillText(label,512,250);
     touchTexture.needsUpdate=true;
   }
   const reportButtons=[],reportTextures=[];
@@ -345,7 +345,7 @@ export async function createLecture(scene,renderer){
     get playing(){return playing&&!clock.ended;},set playing(value){playing=value;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
-    heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4)),
+    heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4+BOARD_MOUNT_OFFSET)),
     dispose(){hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }

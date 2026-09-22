@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=37-speaker','scene.js?v=37-speaker','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=38-board-tone','scene.js?v=38-board-tone','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=37-speaker',root),'utf8');
-  for(const file of ['app.js?v=37-speaker','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=38-board-tone',root),'utf8');
+  for(const file of ['app.js?v=38-board-tone','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=37-speaker');
+  const sceneModule=await inlineAddon('./scene.js?v=38-board-tone');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -345,6 +345,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(hall.fixedRoof&&hall.storeys===2&&hall.stairSteps===34);
     assert(hall.riserMetres>.14&&hall.riserMetres<.18);
     assert(scene.getObjectByName('Upper seminar lounge'));
+    const blindBounds=new Three.Box3().setFromObject(result.campus.blind);
+    assert(blindBounds.min.x>(HALL.east+.035/2)*BUILDING_SCALE,'Optional blind stays behind the glass, not inside relocated boards');
     const lounge=scene.getObjectByName('Upper sea-view academic lounge A');assert(lounge);
     const stations=lounge.getObjectByName('Six color iMac workstations').userData.stations;
     assert.equal(stations.length,6);assert.equal(new Set(stations.map(s=>s.color)).size,6);
@@ -477,7 +479,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./board-hardware.js?v=36-board-detail',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./board-hardware.js?v=38-board-tone',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -495,21 +497,21 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(lecture.report.id,'hu');assert.equal(lecture.pages[0].author,'胡勇');assert.equal(lecture.pages.length,26);
     assert.equal(lecture.reportButtons.find(button=>button.userData.selected).userData.reportId,'hu');
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('canonical'));await lecture.setLanguage('zh');
-    assert.equal(boards.length,6);
+    assert.equal(boards.length,6);assert(!scene.getObjectByName('Six-board lecture wall'));
     const rails=scene.children.filter(o=>o.name.startsWith('Double-channel lift track'));assert.equal(rails.length,3);
     for(const board of boards){
       const body=board.getObjectByName('Solid opaque board body');assert(body?.isMesh);assert(body.scale.z>.07);
       assert.equal(board.children.filter(o=>o.name==='Guide roller').length,4);
       assert.equal(board.children.filter(o=>o.name==='Rail carriage bracket').length,4);
-      for(const edge of board.children.filter(o=>o.name==='Thin nanmu frame')){assert.equal(edge.scale.y,.035);assert(edge.material.map.isDataTexture);assert(edge.material.bumpMap);}
+      for(const edge of board.children.filter(o=>o.name==='Thin nanmu frame')){assert.equal(edge.scale.y,.035);assert(edge.material.map.isDataTexture);assert(edge.material.bumpMap);assert.equal(edge.material.color.getHexString(),'735c3e');assert.equal(edge.material.roughness,.65);}
       scene.updateMatrixWorld(true);
       const center=board.getWorldPosition(new Three.Vector3()),ray=new Three.Raycaster(center.clone().add(new Three.Vector3(0,0,-.4)),new Three.Vector3(0,0,1));
       assert(ray.intersectObject(body).length>0,'Rear view hits a solid back rather than vanishing');
     }
     for(const [column,eraser] of trayErasers.entries()){
       const box=new Three.Box3().setFromObject(eraser),tray=scene.getObjectByName('Wide nanmu chalk tray '+(column+1));
-      assert(tray.userData.depth>=.5);assert(box.min.y>=tray.userData.floorTop-1e-7);
-      assert(box.min.z>-10.03-tray.userData.depth/2+.025&&box.max.z<-10.03+tray.userData.depth/2-.025,'Whole eraser is inside tray lips');
+      assert.equal(tray.userData.depth,.40);assert(tray.userData.depth>.23&&tray.userData.depth<.56);assert(box.min.y>=tray.userData.floorTop-1e-7);
+      assert(box.min.z>tray.userData.centerZ-tray.userData.depth/2+.025&&box.max.z<tray.userData.centerZ+tray.userData.depth/2-.025,'Whole eraser is inside tray lips');
       assert(box.min.z>boards[column*2+1].position.z+.08,'Eraser clears the frontmost moving frame');
       assert(eraser.getObjectByName('Textured layered felt').material.bumpMap);
       assert(eraser.getObjectByName('Rounded palm grip'));
@@ -519,6 +521,12 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
+    const glassInnerX=(HALL.east-.035/2)*BUILDING_SCALE;
+    for(const rail of rails){
+      assert(rail.userData.glassMounted);
+      const bounds=new Three.Box3().setFromObject(rail).applyMatrix4(layoutRoot.matrixWorld);
+      assert(glassInnerX-bounds.max.x>0&&glassInnerX-bounds.max.x<.005,'Mounting pads meet the glass with a tiny non-flickering clearance');
+    }
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>.85&&h<1.1,'Language button sits below the writing boards');}
     const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert(button.material.opacity>.035);assert(button.userData.smartGlass);button.userData.pressed=false;
     lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
@@ -530,8 +538,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
       assert(Math.abs(control.position.x-center)+control.geometry.parameters.width/2<2.65,'Control stays beneath its own board column');
       assert(touchPosition.y+control.geometry.parameters.height*.72/2<DECK_Y*BUILDING_SCALE+1.23,'Touch control clears the board backing');
     }
-    await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'));
-    await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'));
+    await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'&&b.userData.visibleLabel==='Eng'));
+    await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'&&b.userData.visibleLabel==='中'));
     assert.equal(new Set(lecture.consoleButtons.map(b=>b.userData.texture)).size,1,'All controls share the same visible language state');
     const phases=new Set(),eraserStates=new Set(),movingEraser=scene.getObjectByName('Moving blackboard eraser');let returnCompleted=false;
     for(let i=0;i<3500;i++){
@@ -643,7 +651,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=37-speaker',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=38-board-tone',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -692,7 +700,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=37-speaker',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=38-board-tone',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));

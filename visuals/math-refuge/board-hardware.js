@@ -1,5 +1,7 @@
 // Deterministic modeled hardware and small reusable PBR texture maps.
-export const TRAY={y:.305,z:-10.03,depth:.56,top:.335,restY:.400};
+// Rear mounting pads stop just inside the east smart-glass inner surface.
+export const BOARD_MOUNT_OFFSET=-.595;
+export const TRAY={y:.305,z:-10.09+BOARD_MOUNT_OFFSET,depth:.40,top:.335,restY:.400};
 export function createBoardHardware(T){
   const maps=[],materials=[],geometries=[];
   function texture(w,h,paint,color=false){
@@ -9,11 +11,13 @@ export function createBoardHardware(T){
     map.generateMipmaps=true;map.minFilter=T.LinearMipmapLinearFilter;if(color)map.colorSpace=T.SRGBColorSpace;maps.push(map);return map;
   }
   const grain=(x,y)=>Math.sin(y*.72+Math.sin(x*.018)*2.5+Math.sin(x*.061+y*.023)*.6);
-  const woodMap=texture(512,128,(x,y)=>{const g=grain(x,y),silk=Math.pow(Math.max(0,Math.sin(y*1.93+x*.006)),14)*20;return [130+g*13+silk,94+g*10+silk*.8,49+g*6+silk*.42].map(Math.round);},true);
+  // Neutral, low-contrast grain preserves the original brown rather than
+  // multiplying it by another yellow/gold color map.
+  const woodMap=texture(512,128,(x,y)=>Array(3).fill(Math.round(248+grain(x,y)*6)),true);
   const woodBump=texture(512,128,(x,y)=>Array(3).fill(Math.round(126+grain(x,y)*15)));
   const feltMap=texture(128,128,(x,y)=>{const noise=((x*73+y*151+x*y*7)%71)/71,thread=Math.sin(x*2.7+y*.17)*Math.sin(y*1.9);return [43+noise*18+thread*4,49+noise*18+thread*4,43+noise*15+thread*4].map(Math.round);},true);
   const mat=options=>{const m=new T.MeshStandardMaterial(options);materials.push(m);return m;};
-  const wood=mat({color:'#d6b778',map:woodMap,bumpMap:woodBump,bumpScale:.0015,roughness:.58,metalness:0,envMapIntensity:.16});wood.name='Golden-thread nanmu style';
+  const wood=mat({color:'#735c3e',map:woodMap,bumpMap:woodBump,bumpScale:.0015,roughness:.65,metalness:0,envMapIntensity:.16});wood.name='Original warm brown with fine wood grain';
   const back=mat({color:'#243c32',roughness:1,envMapIntensity:.04});back.name='Opaque chalkboard reverse';
   const felt=mat({color:'#b7b9a8',map:feltMap,bumpMap:feltMap,bumpScale:.0016,roughness:1,envMapIntensity:0});felt.name='Woven felt eraser pad';
   const rubber=mat({color:'#242b29',roughness:.95,envMapIntensity:0});

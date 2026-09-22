@@ -53,7 +53,20 @@ export function createLectern(T){
   }
   update();
   return {group,targets,update,
-    speakerPose(){group.updateWorldMatrix(true,false);return {position:group.localToWorld(new T.Vector3(0,1.68,.70)),target:group.localToWorld(new T.Vector3(2.2,.90,-5.5)),fov:62};},
+    speakerPose(aspect=16/9){
+      group.updateWorldMatrix(true,true);
+      const position=group.localToWorld(new T.Vector3(0,1.68,1.35));
+      const target=group.localToWorld(new T.Vector3(0,.80,-.55));
+      const forward=target.clone().sub(position).normalize(),right=new T.Vector3().crossVectors(forward,new T.Vector3(0,1,0)).normalize(),up=new T.Vector3().crossVectors(right,forward);
+      const display=group.getObjectByName('Embedded anti-glare touch display');
+      let tangent=Math.tan(62*Math.PI/360);
+      // Fit every screen corner with a 16% margin, including tall phones.
+      for(const x of [-.385,.385])for(const y of [-.1925,.1925]){
+        const v=display.localToWorld(new T.Vector3(x,y,0)).sub(position),depth=v.dot(forward);
+        tangent=Math.max(tangent,Math.abs(v.dot(right))/(depth*Math.max(.25,aspect)*.84),Math.abs(v.dot(up))/(depth*.84));
+      }
+      return {position,target,fov:2*Math.atan(tangent)*180/Math.PI};
+    },
     dispose(){texture.dispose();geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());}
   };
 }

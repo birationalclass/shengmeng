@@ -6,8 +6,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=37-speaker';
-import {createLecture} from './lecture.js?v=36-board-detail';
+import {createRetreat} from './scene.js?v=38-board-tone';
+import {createLecture} from './lecture.js?v=38-board-tone';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
 import {seaLevel} from './landscape-shape.js?v=36-board-detail';
 import {createChalkReader} from './chalk-reader.js?v=32-report-position';
@@ -43,7 +43,7 @@ const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
 let motionSample=false,lastUIStamp=0,choosingReport=false,speakerView=false;
 function shotPose(){
-  if(speakerView){const pose=retreat.campus.lectern.speakerPose();shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
+  if(speakerView){const pose=retreat.campus.lectern.speakerPose(camera.aspect);shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
   const s=SHOTS[shot],t=smoothProgress(time/s.duration);
   curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
   if(s.lecture&&lecture){
@@ -102,7 +102,7 @@ function enterSpeakerView(){
   reader?.close();beginTransition();updateLabels();
 }
 function applyShot(dt){
-  const s=speakerView?{fov:62}:SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
+  const s=speakerView?retreat.campus.lectern.speakerPose(camera.aspect):SHOTS[shot];shotPose();const position=shotPosition,target=shotTarget;
   if(s.lecture&&lecture){
     // A steady board-height teaching camera follows the active pair, not a room orbit.
     if(!blend&&dt>0){position.lerpVectors(camera.position,position,1-Math.exp(-dt*.75));target.lerpVectors(controls.target,target,1-Math.exp(-dt*.75));}
@@ -126,6 +126,7 @@ function resize(){
   if(!renderer)return;
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples);
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  if(speakerView&&retreat){camera.fov=retreat.campus.lectern.speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderer.setPixelRatio(profile.pixelRatio);renderer.setSize(innerWidth,innerHeight);
   if(composer){
     // Dispose on sample-count changes: changing .samples alone does not rebuild

@@ -21,6 +21,15 @@ test('lectern touch surfaces raycast, cancel drags and redraw only on state chan
     events.pointerdown(e(0));events.pointerup(e(30));assert.deepEqual(actions,[]);assert(controls.enabled);
     events.pointerdown(e(0));events.pointerup(e(0));assert.deepEqual(actions,['lectern:play']);binding.dispose();
     const body=l.group.getObjectByName('Tapered graphite spine');assert.equal(body.userData.action,'lectern:view');
+    for(const aspect of [320/932,390/844,768/1024,16/9,21/9]){
+      const pose=l.speakerPose(aspect),camera=new T.PerspectiveCamera(pose.fov,aspect,.2,100);
+      camera.position.copy(pose.position);camera.lookAt(pose.target);camera.updateMatrixWorld(true);
+      assert(pose.fov<95);assert.equal(pose.position.y,1.68);
+      for(const x of [-.385,.385])for(const y of [-.1925,.1925]){
+        const point=display.localToWorld(new T.Vector3(x,y,0)).project(camera);
+        assert(Math.abs(point.x)<=.84001&&Math.abs(point.y)<=.84001,'Entire control display fits with margin');assert(point.z>-1&&point.z<1);
+      }
+    }
     let triangles=0;l.group.traverse(o=>{if(o.geometry)triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});assert(triangles<15000);
   }finally{l.dispose();delete globalThis.document;}
 });
