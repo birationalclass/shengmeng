@@ -6,8 +6,14 @@
 - 板书引用文献时使用“作者 (年份)”格式，中英文及公式旁的归属说明保持一致。年份核对原文参考文献，以所引用版本为准；纯粹作为术语的姓名（如 Fourier 变换、Serre 对偶）不机械追加年份。
 - 第一板为标题、报告人及合作者信息。结尾独立一板写“谢谢！”（英文为 “Thank you!”），写完停留，不自动循环。
 - 中文和非数学英文使用现有手写体；数学公式及行内上下标使用印刷数学字体。
-- 用 `build-chalk-notes.mjs <mathjax-full目录> [ye|hu]` 生成 SVG 与清单，再用 `build-chalk-font.py <MaShanZheng.ttf>` 更新中文字形。
+- 用 `build-chalk-notes.mjs <mathjax-full目录> [ye|hu|duan]` 生成 SVG 与清单，再用 `build-chalk-font.py <MaShanZheng.ttf>` 更新中文字形。
 
 新增报告分别改编自 Huang–Ye 的 arXiv:2607.23057v1 和 Du–Hu 的 arXiv:2606.31170v1（均为 CC BY 4.0）。原文链接和全部作者列于每份清单；板书是教学整理，不是作者的逐字讲稿。
+
+报告人顺序为胡勇、Zhihao Duan、叶东、孟晟，开场默认胡勇。Zhihao Duan 的报告依据 Chen–Duan–Jia–Lee 的 [arXiv:2609.12750v1](https://arxiv.org/abs/2609.12750)，2026-09-11 提交。2026-09-22 按 INSPIRE 作者标识 `Z.Duan.2`（作者页 1695597）以最新日期排序核对，为其最新 arXiv 成果；姓名保留可核实的英文写法。
+
+Duan 报告包括 32 块正文、标题页与结束页。正文覆盖超条带代数、弱 Hopf 超代数、分次表示、两个基本例子、N=2 与 N=1 极小模型、分数费米数及边界 SymTFT。四幅原创简图分别解释 §2 的梯形算符、§3 Fig. 3 的四态孤子箭图、§5 Fig. 9 的交替真空和 §7 Fig. 19 的三边界结构；简图只表达拓扑或定性结构，不作为定量势能图。引用年份包括 Dijkgraaf–Verlinde–Verlinde (1991) 和 Goldstone–Wilczek (1981)。
+
+该 Duan 原文采用 arXiv 非独占分发许可，不能沿用前两份论文的 CC BY 标识。仓库只包含独立编写的双语教学阐述和简图，不存放原文 PDF、TeX 或原图。清单分别记录板书说明与原文许可。报告中的质量公式注明论文归一化；对称性约束允许的多重态，不单独断言每个多重态的存在或完整散射数据。
 
 引用年份已按上述原文参考文献核对：Hacon (2004)、Du–Gao (2016)、Cai (2008)、Chen–Hacon (2006)、Xiao (1986)；Gupta (2023)、Hoeffding (1963)。

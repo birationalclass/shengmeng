@@ -462,7 +462,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./report-catalog.js?v=32-report-position',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -532,16 +532,16 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(boards.every(b=>b.children[0].material.roughnessMap.isCanvasTexture));
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
     assert(lecture.focus().toArray().every(Number.isFinite));
-    assert.equal(lecture.reportButtons.length,3);
+    assert.equal(lecture.reportButtons.length,4);
     for(const b of lecture.reportButtons){
       const frameGap=19.4-(b.position.x+b.geometry.parameters.width/2);
       assert(frameGap>.1&&frameGap<.2,'Selector sits immediately beside, and clear of, the blackboard frame');
       assert(b.position.x-b.geometry.parameters.width/2>8.4);
     }
     await lecture.setLanguage('en');
-    for(const id of ['ye','hu','meng']){
+    for(const id of ['duan','ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
-      assert.equal(lecture.pages.length,id==='meng'?38:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
+      assert.equal(lecture.pages.length,id==='meng'?38:id==='duan'?34:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
     }
     lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
@@ -774,12 +774,12 @@ test('English prose remains handwritten while embedded mathematical variables st
 
 test('speaker reports preserve paper sources, hypotheses, bilingual covers and complete assets',async()=>{
   const {REPORTS}=await import('./report-catalog.js');
-  assert.deepEqual(REPORTS.map(r=>r.speaker),['胡勇','叶东','孟晟']);
+  assert.deepEqual(REPORTS.map(r=>r.speaker),['胡勇','Zhihao Duan','叶东','孟晟']);
   const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
   for(const report of REPORTS.filter(report=>report.id!=='meng')){
     const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
-    assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,'CC BY 4.0');
-    assert.equal(data.pages.length,26);assert.equal(data.pages.filter(p=>!p.kind).length,24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
+    assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,report.license||'CC BY 4.0');
+    assert.equal(data.pages.length,report.id==='duan'?34:26);assert.equal(data.pages.filter(p=>!p.kind).length,report.id==='duan'?32:24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
     for(const page of data.pages){
       for(const c of page.source+page.title+page.text+(page.author||''))if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),`Missing glyph ${c}`);
       assert(page.en.title&&(page.en.text||page.kind==='closing'));assert(!/[\u3400-\u9fff]/.test(page.en.source));
@@ -817,7 +817,7 @@ test('the final thanks board remains complete without automatically restarting',
 
 test('all report reveal rectangles isolate later lines, including inline scripts',async()=>{
   const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
-  for(const file of ['pages.json','hu/pages.json','ye/pages.json']){
+  for(const file of ['pages.json','hu/pages.json','ye/pages.json','duan/pages.json']){
     const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/'+file,import.meta.url),'utf8'));
     for(const page of pages)for(const lang of ['zh','en']){
       const rows=composeChalkPage(ctx,page,0,lang,{});

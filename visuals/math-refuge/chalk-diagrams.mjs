@@ -1,3 +1,4 @@
+import {duanDiagram} from './duan-diagrams.mjs';
 // Compact versions of the notebook's first-quadrant diagrams (p right, q up).
 // Dots denote terms, not dimensions; the finite drawing window is not truncation.
 export const boardDiagrams=new Map([
@@ -15,6 +16,7 @@ export function diagramEdges(kind){
  return [];
 }
 export function diagramSVG(kind,math){
+ const duan=duanDiagram(kind,math);if(duan)return duan;
  const xy=(p,q)=>[60+p*112,267-q*70],gold='#e4cf9c',ink='#eee9d5',blue='#a5dbcf';
  const label=(tex,x,y,size=25)=>math(tex,x,y,size);
  const arrow=([x,y],[u,v],colour)=>{const a=Math.atan2(v-y,u-x),sx=x+9*Math.cos(a),sy=y+9*Math.sin(a),ex=u-11*Math.cos(a),ey=v-11*Math.sin(a);return `<path d="M${sx} ${sy}L${ex} ${ey}m${-10*Math.cos(a-.45)} ${-10*Math.sin(a-.45)}L${ex} ${ey}l${-10*Math.cos(a+.45)} ${-10*Math.sin(a+.45)}" fill="none" stroke="${colour}" stroke-width="2.5" stroke-linecap="round"/>`;};

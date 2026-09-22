@@ -4,7 +4,7 @@ import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOp
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-position';
 
-import {REPORTS} from './report-catalog.js?v=32-report-position';
+import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -104,11 +104,11 @@ export async function createLecture(scene,renderer){
     const mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,toneMapped:false}));
     mesh.position.set(x,y,-11.332);mesh.name=name;scene.add(mesh);return {mesh,canvas,texture};
   }
-  const reportHeader=glassLabel(4.6,.55,reportX,3.85,'Smart glass report heading');
+  const reportHeader=glassLabel(4.6,.55,reportX,4.45,'Smart glass report heading');
   for(const [index,report] of REPORTS.entries()){
-    const label=glassLabel(4.6,.9,reportX,2.95-index*1.1,`Smart glass report ${report.id}`);
+    const label=glassLabel(4.6,.9,reportX,3.55-index*1.05,`Smart glass report ${report.id}`);
     const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,toneMapped:false,color:'#7be7df'}));
-    button.position.set(reportX,2.95-index*1.1,-11.34);button.name=`Report selection ${report.speaker}`;
+    button.position.set(reportX,3.55-index*1.05,-11.34);button.name=`Report selection ${report.speaker}`;
     scene.remove(label.mesh);label.mesh.position.set(0,0,.008);button.add(label.mesh);scene.add(button);
     button.userData={action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture};reportButtons.push(button);
   }
@@ -277,7 +277,7 @@ export async function createLecture(scene,renderer){
   boards.forEach((_,i)=>draw(i));
   return {
     update,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,setConsoleState,
-    reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.25,-11.34)),
+    reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     async setReport(id){
       const next=REPORTS.find(r=>r.id===id);if(!next)throw new Error('未知报告');
       const response=await fetch(next.manifest+'?v=32-report-position');if(!response.ok)throw new Error('报告加载失败，请重试。');

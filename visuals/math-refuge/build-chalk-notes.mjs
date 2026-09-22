@@ -87,6 +87,6 @@ for(const section of sections){
   await fs.writeFile(new URL(asset,output),body);
   pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,448+i*56,1380,56])]});
 }
-await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?'CC BY 4.0':undefined,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
+await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?(report.license||'CC BY 4.0'):undefined,sourceLicense:report?.sourceLicense,sourceVersion:report?.sourceVersion,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
 await fs.copyFile(path.join(root,'LICENSE'),new URL('MATHJAX-LICENSE.txt',output));
 console.log(`Generated ${pages.length} chalk pages for ${report?.speaker || '孟晟'}.`);
