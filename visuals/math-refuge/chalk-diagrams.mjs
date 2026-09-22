@@ -18,6 +18,12 @@ export function diagramSVG(kind,math){
  const xy=(p,q)=>[60+p*112,267-q*70],gold='#e4cf9c',ink='#eee9d5',blue='#a5dbcf';
  const label=(tex,x,y,size=25)=>math(tex,x,y,size);
  const arrow=([x,y],[u,v],colour)=>{const a=Math.atan2(v-y,u-x),sx=x+9*Math.cos(a),sy=y+9*Math.sin(a),ex=u-11*Math.cos(a),ey=v-11*Math.sin(a);return `<path d="M${sx} ${sy}L${ex} ${ey}m${-10*Math.cos(a-.45)} ${-10*Math.sin(a-.45)}L${ex} ${ey}l${-10*Math.cos(a+.45)} ${-10*Math.sin(a+.45)}" fill="none" stroke="${colour}" stroke-width="2.5" stroke-linecap="round"/>`;};
+ if(kind==='canonical'){
+   let out=label('X',78,70,42)+label('\\Sigma',385,70,42)+label('Y',78,255,42)+label('C',385,255,42);
+   out+=arrow([108,70],[355,70],gold)+arrow([78,100],[78,225],blue)+arrow([385,100],[385,225],blue)+arrow([108,255],[355,255],gold);
+   out+=label('\\phi_X',234,42,32)+label('f',44,163,30)+label('h',420,163,30)+label('\\delta',234,286,32);
+   return `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">${out}</svg>`;
+ }
  let out=`<path d="M39 280H447M46 286V32" fill="none" stroke="${ink}" stroke-width="1.5" opacity=".65"/>`;
  out+=label('p',445,292,24)+label('q',29,25,24);
  if(kind==='filter')out+=`<path d="M263 40H431V280H263Z" fill="${blue}" opacity=".075"/><path d="M265 45V280" stroke="${blue}" stroke-width="2" stroke-dasharray="5 7"/>`;

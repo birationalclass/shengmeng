@@ -26,8 +26,10 @@ const reportId=process.argv[3];
 const {REPORTS}=await import('./report-catalog.js');
 const report=reportId&&reportId!=='meng'?REPORTS.find(r=>r.id===reportId):null;
 if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
-const sections=report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
+const content=report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
+const sections=[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}];
+if(content.filter(p=>!p.kind).length<24)throw new Error('A one-hour report needs at least 24 substantive boards, excluding cover and closing.');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
 const assetBase=report?`./assets/chalk/${report.id}/`:'./assets/chalk/';
@@ -35,16 +37,16 @@ const output=new URL(assetBase,import.meta.url);await fs.mkdir(output,{recursive
 const pages=[];let lessonIndex=0;
 for(const file of await fs.readdir(output))if(/^(page|formula)-\d+\.svg$/.test(file))await fs.unlink(new URL(file,output));
 for(const section of sections){
-  if(section.kind==='cover'){
-    const asset='page-001.svg',formulaAsset='formula-001.svg';
+  if(section.kind==='cover'||section.kind==='closing'){
+    const number=String(pages.length+1).padStart(3,'0'),asset=`page-${number}.svg`,formulaAsset=`formula-${number}.svg`;
     const rows=[[120,80,1296,120],[120,265,1296,70],[0,0,0,0],[120,390,1296,54],[120,442,1296,54]];
     const titleSize=report?60:106;
-    const lines=[[section.title,190,titleSize],[section.author,325,56],...[...section.text.split('\n')].map((text,i)=>[text,430+i*52,36])];
+    const lines=section.kind==='closing'?[[section.title,360,124]]:[[section.title,190,titleSize],[section.author,325,56],...[...section.text.split('\n')].map((text,i)=>[text,430+i*52,36])];
     const body=`<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" text-anchor="middle" font-family="Kaiti SC, KaiTi, cursive">${lines.map(([text,y,size])=>`<text x="768" y="${y}" font-size="${size}">${chalkSVG(text)}</text>`).join('')}</g></svg>`;
     await fs.writeFile(new URL(asset,output),body);await fs.writeFile(new URL(formulaAsset,output),'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"></svg>');
     pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm:1,formulaRows:[],rows});continue;
   }
-  const tex=section.tex,diagram=report?null:boardDiagrams.get(lessonIndex++);
+  const tex=section.tex,diagram=report?(section.diagram||null):boardDiagrams.get(lessonIndex++);
   const parts=equationLines(tex).map(line=>{
     const node=doc.convert(line,{display:true}),svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
     if(svg.includes('data-mjx-error'))throw new Error(`Bad formula: ${line}`);

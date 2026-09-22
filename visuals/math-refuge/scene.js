@@ -1,13 +1,15 @@
 import * as THREE from 'three';
+import {createBoats} from './boats.js?v=31-site-final';
+import {createOpenBook} from './book-sculpture.js?v=31-site-final';
 import {createRoomFill} from './room-fill.js';
-import {createPathLighting} from './path-lighting.js';
+import {createPathLighting} from './path-lighting.js?v=31-site-final';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=20-slower-tour';
-import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=20-slower-tour';
+import {createLandscape} from './landscape.js?v=31-site-final';
+import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=31-site-final';
 import {createDistantIslands} from './distant-islands.js?v=20-slower-tour';
-import {createCampus} from './campus.js?v=23-stairs-trays';
+import {createCampus} from './campus.js?v=31-site-final';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -222,10 +224,10 @@ export async function createRetreat(renderer,scene,report){
   const sculptureGeometry=new Map(),sculptures=[];
   const sculptureEntries=[
     ['Academic lounge',-5,10,2,3],['Seminar hall',35.3,14.2,3,4],
-    ['Discussion room',14.5,9.5,2,5],['Library',-40.5,-8.2,3,5],
+    ['Discussion room',14.5,9.5,2,5],
     ['Residence I',-50.5,-25.5,2,3],['Residence II',-41.5,-35.5,2,5],
     ['Tea service',-28.8,21.5,3,4],['Tea pavilion',-38.7,-25.8,3,5],
-    ['Arrival gate',-69.8,13.2,2,3],['Coffee cabin',34.3,-19.5,2,5]
+    ['Arrival gate',-69.8,13.2,2,3]
   ];
   for(const [x,z,w,d] of [[-39,-9.1,6,4.6],[-50.5,-25.5,3.6,3.6],[-41.5,-35.5,3.6,3.6],[-28.8,21,4.8,4.2],[-38.7,-25.8,3.6,3.6],[-69,12,5,6]])floor(0,w,d,x,z);
   for(const [name,x,z,p,q] of sculptureEntries){
@@ -236,6 +238,10 @@ export async function createRetreat(renderer,scene,report){
     mesh.castShadow=true;mesh.receiveShadow=true;mesh.userData={facility:name,footprint:[x-1.3,x+1.3,z-1.3,z+1.3]};
     scene.add(mesh);sculptures.push(mesh);box([x,DECK_Y+.25,z],[2.6,.5,2.6],edge);
   }
+  const libraryBook=createOpenBook(),book=libraryBook.book;
+  book.position.set(-40.5,DECK_Y+.51,-8.2);book.rotation.y=.12;
+  book.userData={...book.userData,facility:'Library',footprint:[-41.8,-39.2,-9.5,-6.9]};scene.add(book);sculptures.push(book);
+  box([-40.5,DECK_Y+.25,-8.2],[2.6,.5,2.6],edge);
   const sculpture=sculptures[0];
   // Room-specific pendant/cove fixtures are constructed with their rooms.
   // Only offshore architecture and contained garden planting remain.
@@ -298,6 +304,7 @@ export async function createRetreat(renderer,scene,report){
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
   const roomFill=createRoomFill();roomFill.apply(scene);
+  const fleet=createBoats(scene);
   const sky=new Sky();sky.material.uniforms.nightVisibility={value:1};sky.material.fragmentShader='uniform float nightVisibility;\n'+sky.material.fragmentShader.replace('gl_FragColor = vec4( retColor, 1.0 );','gl_FragColor = vec4( retColor * nightVisibility, 1.0 );');sky.scale.setScalar(12000);scene.add(sky);
   sky.material.uniforms.turbidity.value=1.8;sky.material.uniforms.rayleigh.value=2;
   sky.material.uniforms.mieCoefficient.value=.002;sky.material.uniforms.mieDirectionalG.value=.8;
@@ -340,5 +347,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   setTime(localHour(new Date()),true);
-  return {ocean,islands,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

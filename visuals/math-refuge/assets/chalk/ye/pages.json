@@ -58,25 +58,25 @@
       ]
     },
     {
-      "source": "§ 1 · (1.4)",
-      "title": "离散最佳常数",
-      "tex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2\\geq\\mathcal C_{m,d}\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}",
-      "text": "取有限支撑且在原点为零的实函数。偶数阶使用离散 Laplace 算子的幂；奇数阶再取一次离散梯度。",
+      "source": "§ 1",
+      "title": "从一维 Hardy 不等式出发",
+      "tex": "\\sum_{n\\geq1}|u_n-u_{n-1}|^2\\geq\\frac14\\sum_{n\\geq1}\\frac{|u_n|^2}{n^2}",
+      "text": "先看有限支撑序列，并令 u_0=0。差分能量控制带奇异权的函数大小；高阶版本称为 Rellich 型不等式。",
       "en": {
-        "source": "§ 1 · (1.4)",
-        "title": "The discrete optimal constant",
-        "text": "Use finitely supported real functions vanishing at the origin. Even orders use powers of the discrete Laplacian; odd orders add a discrete gradient."
+        "source": "§ 1",
+        "title": "The one-dimensional starting point",
+        "text": "Take finitely supported sequences with u_0=0. Difference energy controls a singularly weighted norm; higher-order versions are of Rellich type."
       },
       "asset": "./assets/chalk/ye/page-002.svg",
       "formulaAsset": "./assets/chalk/ye/formula-002.svg",
-      "formulaEm": 14.5588,
+      "formulaEm": 13.4506,
       "diagram": null,
       "formulaRows": [
         [
           89,
-          206.51999999999998,
-          733.94,
-          151.96
+          208.77749999999997,
+          678.5300000000001,
+          147.44500000000002
         ]
       ],
       "rows": [
@@ -94,9 +94,296 @@
         ],
         [
           84,
-          201.51999999999998,
-          743.94,
-          161.96
+          203.77749999999997,
+          688.5300000000001,
+          157.44500000000002
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 1",
+      "title": "高维格点与容许函数",
+      "tex": "\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}",
+      "text": "研究有限支撑实函数，原点处取零。右侧奇异权不在原点求和；阶数固定，而维数将趋于无穷。",
+      "en": {
+        "source": "§ 1",
+        "title": "Admissible lattice functions",
+        "text": "Use finitely supported real functions vanishing at the origin. The singular weighted sum omits the origin. Keep the order fixed as dimension tends to infinity."
+      },
+      "asset": "./assets/chalk/ye/page-003.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-003.svg",
+      "formulaEm": 15.2715,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          250.6575,
+          769.575,
+          63.685
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          245.6575,
+          779.575,
+          73.685
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 1",
+      "title": "离散梯度与 Laplace 算子",
+      "tex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\end{gathered}",
+      "text": "这里的 e_j 是坐标单位向量，离散 Laplace 算子采用非负符号约定。邻点差分代替连续导数。",
+      "en": {
+        "source": "§ 1",
+        "title": "Discrete gradient and Laplacian",
+        "text": "The vectors e_j are coordinate unit vectors. The discrete Laplacian uses the nonnegative sign convention; neighbour differences replace derivatives."
+      },
+      "asset": "./assets/chalk/ye/page-004.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-004.svg",
+      "formulaEm": 19.037,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          165.5725,
+          589.8050000000001,
+          58.21000000000001
+        ],
+        [
+          89,
+          239.7825,
+          957.85,
+          159.645
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          160.5725,
+          967.85,
+          243.85500000000002
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 1 · (1.4)",
+      "title": "统一的高阶算子",
+      "tex": "\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}",
+      "text": "偶数阶迭代 Laplace 算子；奇数阶再施加一次梯度。这样一阶 Hardy 与二阶 Rellich 可以纳入同一框架。",
+      "en": {
+        "source": "§ 1 · (1.4)",
+        "title": "A common higher-order operator",
+        "text": "Even orders iterate the Laplacian; odd orders add one gradient. This places first-order Hardy and second-order Rellich inequalities in one framework."
+      },
+      "asset": "./assets/chalk/ye/page-005.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-005.svg",
+      "formulaEm": 13.8892,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          217.3325,
+          700.46,
+          130.33499999999998
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          212.3325,
+          710.46,
+          140.33499999999998
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 1 · (1.4)",
+      "title": "最佳常数的变分问题",
+      "tex": "\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}",
+      "text": "最佳常数是所有容许函数的能量比下确界。下界必须对全部函数成立；上界只需构造合适的试验函数。",
+      "en": {
+        "source": "§ 1 · (1.4)",
+        "title": "The optimal constant as an infimum",
+        "text": "The optimal constant is the infimum of an energy quotient. Lower bounds must hold for every admissible function; upper bounds require a suitable test function."
+      },
+      "asset": "./assets/chalk/ye/page-006.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-006.svg",
+      "formulaEm": 15.543899999999999,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          210.3775,
+          783.195,
+          144.245
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          205.3775,
+          793.195,
+          154.245
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 1",
+      "title": "离散与连续的维数尺度",
+      "tex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\end{gathered}",
+      "text": "已有结果确定了离散常数的增长阶，但没有确定首项系数。格点情形与连续情形的高维尺度本身就不同。",
+      "en": {
+        "source": "§ 1",
+        "title": "Discrete and continuous dimension scales",
+        "text": "Earlier work identified the lattice growth order but not its leading coefficient. The high-dimensional scale itself differs from the continuous setting."
+      },
+      "asset": "./assets/chalk/ye/page-007.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-007.svg",
+      "formulaEm": 18.1386,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          211.28499999999997,
+          394.81,
+          65.54500000000002
+        ],
+        [
+          89,
+          292.83,
+          912.93,
+          60.885000000000005
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          206.28499999999997,
+          922.93,
+          152.43000000000004
         ],
         [
           80,
@@ -114,16 +401,16 @@
     },
     {
       "source": "定理 1.1",
-      "title": "固定阶数的高维极限",
+      "title": "渐近首项的精确答案",
       "tex": "\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})",
-      "text": "先固定阶数，再令维数趋于无穷。该极限给出最佳常数的渐近首项。",
+      "text": "始终先固定正整数阶数 m。证明需要给出相同首项的上下界，而不仅仅是与维数幂次同阶。",
       "en": {
         "source": "Theorem 1.1",
-        "title": "The high-dimensional limit",
-        "text": "Fix the order before taking the dimension to infinity. The limit identifies the leading asymptotic coefficient."
+        "title": "The precise leading coefficient",
+        "text": "Fix the positive integer order m throughout. Matching upper and lower coefficients are required, beyond merely identifying the power of dimension."
       },
-      "asset": "./assets/chalk/ye/page-003.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-003.svg",
+      "asset": "./assets/chalk/ye/page-008.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-008.svg",
       "formulaEm": 14.5726,
       "diagram": null,
       "formulaRows": [
@@ -158,90 +445,41 @@
           452,
           1380,
           42
-        ]
-      ]
-    },
-    {
-      "source": "引理 1.2",
-      "title": "Fourier 转化",
-      "tex": "\\begin{gathered}\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\\\\\sum_n|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\end{gathered}",
-      "text": "存在零均值光滑周期函数 Ψ，将格点问题转化为平坦环面上的加权估计。",
-      "en": {
-        "source": "Lemma 1.2",
-        "title": "Fourier reduction",
-        "text": "A smooth periodic function Ψ with zero mean converts the lattice problem into weighted estimates on a flat torus."
-      },
-      "asset": "./assets/chalk/ye/page-004.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-004.svg",
-      "formulaEm": 15.309899999999999,
-      "diagram": null,
-      "formulaRows": [
-        [
-          89,
-          137,
-          550.2636951343994,
-          147.5399795848928
-        ],
-        [
-          89,
-          299.87376658727453,
-          748.3139673358285,
-          128.1262334127254
-        ]
-      ],
-      "rows": [
-        [
-          80,
-          22,
-          1380,
-          66
         ],
         [
           80,
-          95,
-          0,
-          0
-        ],
-        [
-          84,
-          132,
-          758.3139673358285,
-          301
-        ],
-        [
-          80,
-          452,
+          494,
           1380,
           42
         ]
       ]
     },
     {
-      "source": "§ 2",
-      "title": "权函数与集中估计",
-      "tex": "\\begin{gathered}\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\\\\\rho=\\frac{2\\omega}{d}=\\frac1d\\sum_{j=1}^d(1-\\cos x_j)\\end{gathered}",
-      "text": "在均匀概率测度下，归一化权函数是独立同分布随机变量的均值。集中与熵估计控制退化区域。",
+      "source": "§ 1",
+      "title": "Fourier 变换的目标空间",
+      "tex": "\\begin{gathered}\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\end{gathered}",
+      "text": "格点 Fourier 分析把问题放到周期环面上。零均值去掉常数模态，而离散差分的频率符号产生权函数 ω。",
       "en": {
-        "source": "§ 2",
-        "title": "Weights and concentration",
-        "text": "Under uniform probability measure, the normalized weight is an average of independent variables. Concentration and entropy estimates control degeneracy."
+        "source": "§ 1",
+        "title": "The Fourier target space",
+        "text": "Lattice Fourier analysis moves the problem to a periodic torus. Zero mean removes the constant mode, and the difference symbol produces the weight ω."
       },
-      "asset": "./assets/chalk/ye/page-005.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-005.svg",
-      "formulaEm": 12.2682,
+      "asset": "./assets/chalk/ye/page-009.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-009.svg",
+      "formulaEm": 13.7318,
       "diagram": null,
       "formulaRows": [
         [
           89,
           137,
-          408.67750311275773,
-          138.97951653557655
+          684.225222258808,
+          117.49489627922293
         ],
         [
           89,
-          289.0204834644235,
-          536.9054329010902,
-          138.97951653557655
+          270.226868620349,
+          465.58676325321045,
+          157.77313137965098
         ]
       ],
       "rows": [
@@ -260,7 +498,7 @@
         [
           84,
           132,
-          546.9054329010902,
+          694.225222258808,
           301
         ],
         [
@@ -278,17 +516,182 @@
       ]
     },
     {
+      "source": "引理 1.2",
+      "title": "加权范数的精确对应",
+      "tex": "\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx",
+      "text": "对每个容许函数存在零均值光滑周期函数 Ψ。这里 D 表示连续高阶微分，须与前面离散算子区分。",
+      "en": {
+        "source": "Lemma 1.2",
+        "title": "Correspondence of the weighted norm",
+        "text": "For each admissible lattice function there is a smooth zero-mean periodic Ψ. Here D denotes the continuous higher-order operator, distinct from its discrete counterpart."
+      },
+      "asset": "./assets/chalk/ye/page-010.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-010.svg",
+      "formulaEm": 12.484200000000001,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          206.51999999999998,
+          630.21,
+          151.96
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          201.51999999999998,
+          640.21,
+          161.96
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "引理 1.2",
+      "title": "差分能量的精确对应",
+      "tex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx",
+      "text": "与上一板结合，格点上的下界化为环面上的加权微分估计。系数 4^m 会在最后换算回格点常数。",
+      "en": {
+        "source": "Lemma 1.2",
+        "title": "Correspondence of difference energy",
+        "text": "Together with the previous identity this reduces lattice lower bounds to weighted torus estimates. The factor 4^m returns in the final conversion."
+      },
+      "asset": "./assets/chalk/ye/page-011.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-011.svg",
+      "formulaEm": 16.8111,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          213.06,
+          846.555,
+          138.88
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          208.06,
+          856.555,
+          148.88
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
       "source": "定理 1.3",
-      "title": "环面上的渐近常数",
-      "tex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}",
-      "text": "固定非负整数 k、ℓ 与正整数 γ，满足 0＜k−ℓ≤γ。加权 Hardy–Rellich 估计经迭代给出格点结论。",
+      "title": "更一般的环面问题",
+      "tex": "\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}",
+      "text": "积分均在环面上。固定非负整数 k、ℓ 和正整数 γ，满足 0<k−ℓ≤γ；测试函数为零均值周期函数。",
       "en": {
         "source": "Theorem 1.3",
-        "title": "Asymptotic torus constants",
-        "text": "Fix nonnegative integers k, ℓ and a positive integer γ with 0 < k − ℓ ≤ γ. Iteration of weighted estimates yields the lattice result."
+        "title": "A more general torus problem",
+        "text": "All integrals are over the torus. Fix nonnegative k, ℓ and positive integer γ with 0<k−ℓ≤γ; test functions are periodic and have zero mean."
       },
-      "asset": "./assets/chalk/ye/page-006.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-006.svg",
+      "asset": "./assets/chalk/ye/page-012.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-012.svg",
+      "formulaEm": 16.128,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          223.95,
+          812.4000000000001,
+          117.10000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          218.95,
+          822.4000000000001,
+          127.10000000000001
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "定理 1.3",
+      "title": "每增加一阶的代价",
+      "tex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}",
+      "text": "阶数差固定时，每增加一阶在首项上贡献 d/2。关键是先证明一阶跨越，再逐级迭代，并找到匹配的上界。",
+      "en": {
+        "source": "Theorem 1.3",
+        "title": "The cost of one additional order",
+        "text": "For fixed order gap, each step contributes d/2 at leading order. Prove one-step estimates, iterate them, then match the resulting lower bound."
+      },
+      "asset": "./assets/chalk/ye/page-013.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-013.svg",
       "formulaEm": 8.321200000000001,
       "diagram": null,
       "formulaRows": [
@@ -329,6 +732,782 @@
           494,
           1380,
           42
+        ]
+      ]
+    },
+    {
+      "source": "引理 2.1 · (2.1)",
+      "title": "一阶加权恒等式",
+      "tex": "\\begin{gathered}\\int V|\\nabla\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2]\\varphi^2\\\\{}+\\int V|\\nabla\\varphi+\\varphi F|^2\\end{gathered}",
+      "text": "V 为光滑权，F 为光滑向量场。展开平方并在环面上分部积分；周期性使边界项抵消。取非负权时可舍去平方项得到下界。",
+      "en": {
+        "source": "Lemma 2.1 · (2.1)",
+        "title": "A first-order weighted identity",
+        "text": "Let V and F be smooth. Expand the square and integrate by parts; periodicity cancels boundary terms. With nonnegative weight, dropping the square yields a lower bound."
+      },
+      "asset": "./assets/chalk/ye/page-014.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-014.svg",
+      "formulaEm": 15.674299999999999,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          157.39999999999998,
+          789.715,
+          117.10000000000001
+        ],
+        [
+          89,
+          290.5,
+          416.355,
+          117.10000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          152.39999999999998,
+          799.715,
+          260.20000000000005
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "引理 2.1 · (2.2)",
+      "title": "二阶恒等式与 Hessian",
+      "tex": "\\begin{gathered}\\int V|\\Delta\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2-\\Delta V]|\\nabla\\varphi|^2\\\\{}+\\int\\langle\\nabla^2V\\nabla\\varphi,\\nabla\\varphi\\rangle+\\int V|\\nabla^2\\varphi+F\\otimes\\nabla\\varphi|^2\\end{gathered}",
+      "text": "二阶情形额外出现权函数 Hessian 与梯度的耦合。这个项必须估计，不能像常系数情形那样直接忽略。",
+      "en": {
+        "source": "Lemma 2.1 · (2.2)",
+        "title": "The Hessian in the second-order identity",
+        "text": "A Hessian term couples the weight to the gradient. It needs an estimate and cannot be discarded as if the weight were constant."
+      },
+      "asset": "./assets/chalk/ye/page-015.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-015.svg",
+      "formulaEm": 19.8878,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          157.39999999999998,
+          1000.39,
+          117.10000000000001
+        ],
+        [
+          89,
+          290.5,
+          961.04,
+          117.10000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          152.39999999999998,
+          1010.39,
+          260.20000000000005
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 3 · (3.1)–(3.2)",
+      "title": "归一化权函数",
+      "tex": "\\begin{gathered}\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2\\\\|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho\\end{gathered}",
+      "text": "这些直接微分计算把权函数的变化量写成带维数衰减的项。连续 Laplace 算子在这里采用通常的二阶导数之和。",
+      "en": {
+        "source": "§ 3 · (3.1)–(3.2)",
+        "title": "The normalized weight",
+        "text": "Direct differentiation expresses weight fluctuations with dimension decay. Here the continuous Laplacian is the usual sum of second derivatives."
+      },
+      "asset": "./assets/chalk/ye/page-016.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-016.svg",
+      "formulaEm": 18.4123,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          163.32999999999998,
+          926.615,
+          159.645
+        ],
+        [
+          89,
+          338.975,
+          807.74,
+          62.69500000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          158.32999999999998,
+          936.615,
+          248.34000000000003
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "引理 2.3",
+      "title": "Hoeffding 集中估计",
+      "tex": "\\begin{gathered}d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}",
+      "text": "均匀概率测度下，各坐标独立。ρ 是有界随机变量的平均值，因此偏离 1 的区域概率随维数指数衰减。",
+      "en": {
+        "source": "Lemma 2.3",
+        "title": "Hoeffding concentration",
+        "text": "Coordinates are independent under uniform probability measure. The weight is an average of bounded variables, so deviations from one have exponentially small probability."
+      },
+      "asset": "./assets/chalk/ye/page-017.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-017.svg",
+      "formulaEm": 12.369,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          207.01999999999998,
+          624.45,
+          66.325
+        ],
+        [
+          89,
+          289.34499999999997,
+          528.12,
+          68.635
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          202.01999999999998,
+          634.45,
+          160.96
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "引理 2.4 · (2.7)",
+      "title": "熵把坏区域转成能量",
+      "tex": "\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)",
+      "text": "取非负连续函数 W_0 和 s>0。单有小概率还不足以控制任意测试函数；熵不等式将函数集中在坏区域的代价显式记录下来。",
+      "en": {
+        "source": "Lemma 2.4 · (2.7)",
+        "title": "Entropy converts concentration into energy",
+        "text": "Take nonnegative continuous W_0 and s>0. Small probability alone cannot control arbitrary test functions; entropy records the cost of concentrating on a bad region."
+      },
+      "asset": "./assets/chalk/ye/page-018.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-018.svg",
+      "formulaEm": 20.0133,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          221.8825,
+          1006.665,
+          121.235
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          216.8825,
+          1016.665,
+          131.235
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 2 · (2.8)",
+      "title": "与维数无关的对数 Sobolev 估计",
+      "tex": "\\begin{gathered}\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu\\\\\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu\\end{gathered}",
+      "text": "关键是常数不随维数增长。与前一板和指数矩估计结合，坏区域贡献能够吸收到主能量项中。",
+      "en": {
+        "source": "§ 2 · (2.8)",
+        "title": "A dimension-independent logarithmic Sobolev bound",
+        "text": "The key is that the constant does not grow with dimension. Combined with the previous estimate and exponential moments, this absorbs bad-region contributions into energy."
+      },
+      "asset": "./assets/chalk/ye/page-019.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-019.svg",
+      "formulaEm": 13.772,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          149.635,
+          694.6,
+          132.63
+        ],
+        [
+          89,
+          298.265,
+          595.9,
+          117.10000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          144.635,
+          704.6,
+          275.73
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 3.1 · (3.3)–(3.5)",
+      "title": "消去权后的均值误差",
+      "tex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\qquad\\int\\varphi\\,d\\mu=0\\\\|\\mathbb E_\\mu v|^2\\leq\\delta_d\\int v^2d\\mu,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\end{gathered}",
+      "text": "乘以权函数后，零均值一般不会保留。证明先估计新均值，再结合集中估计控制权退化附近的负幂项。",
+      "en": {
+        "source": "§ 3.1 · (3.3)–(3.5)",
+        "title": "The mean error after removing the weight",
+        "text": "Multiplication by the weight need not preserve zero mean. Estimate the new mean, then use concentration to control negative powers near the degenerate region."
+      },
+      "asset": "./assets/chalk/ye/page-020.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-020.svg",
+      "formulaEm": 22.1777,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          157.39999999999998,
+          580.825,
+          117.10000000000001
+        ],
+        [
+          89,
+          290.5,
+          1114.885,
+          117.10000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          152.39999999999998,
+          1124.885,
+          260.20000000000005
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "命题 1.4 · (1.6)–(1.7)",
+      "title": "一阶的两个基础估计",
+      "tex": "\\begin{gathered}\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\end{gathered}",
+      "text": "第一式保留权的次数，第二式降低一次权并获得维数因子。误差只依赖固定阶数参数，与测试函数无关。",
+      "en": {
+        "source": "Proposition 1.4 · (1.6)–(1.7)",
+        "title": "Two first-order estimates",
+        "text": "The first keeps the weight power; the second lowers it by one and gains a dimension factor. Errors depend on fixed order parameters, not on the test function."
+      },
+      "asset": "./assets/chalk/ye/page-021.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-021.svg",
+      "formulaEm": 16.0474,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          157.175,
+          715.1850000000001,
+          117.10000000000001
+        ],
+        [
+          89,
+          290.275,
+          808.37,
+          117.55000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          152.175,
+          818.37,
+          260.65
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "命题 1.4 · (1.8)–(1.9)",
+      "title": "二阶到一阶的基础估计",
+      "tex": "\\begin{gathered}\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\end{gathered}",
+      "text": "二阶加权恒等式控制 Hessian 误差，得到相同的降权代价。这一对估计使奇数阶与偶数阶都能进入迭代。",
+      "en": {
+        "source": "Proposition 1.4 · (1.8)–(1.9)",
+        "title": "Second-order to first-order estimates",
+        "text": "The second-order identity controls the Hessian error and gives the same weight-lowering cost. This pair lets both parity cases enter the iteration."
+      },
+      "asset": "./assets/chalk/ye/page-022.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-022.svg",
+      "formulaEm": 17.436400000000003,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          157.175,
+          784.6350000000001,
+          117.10000000000001
+        ],
+        [
+          89,
+          290.275,
+          877.8200000000002,
+          117.55000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          152.175,
+          887.8200000000002,
+          260.65
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 4.1 · (4.1)–(4.2)",
+      "title": "迭代得到环面下界",
+      "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}",
+      "text": "根据当前阶数的奇偶，分别使用一阶或二阶基础估计。每次降低一阶和一次权；固定次数的乘积保持误差趋于零。",
+      "en": {
+        "source": "§ 4.1 · (4.1)–(4.2)",
+        "title": "Iterating the torus lower bound",
+        "text": "Choose the first- or second-order estimate according to parity. Each step lowers derivative order and weight power by one; finitely many errors still vanish."
+      },
+      "asset": "./assets/chalk/ye/page-023.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-023.svg",
+      "formulaEm": 13.344,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          156.84,
+          673.2,
+          117.66
+        ],
+        [
+          89,
+          290.5,
+          471.065,
+          117.66
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          151.84,
+          683.2,
+          261.32
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 4.1 · (4.3)–(4.4)",
+      "title": "单一 Fourier 模态给出上界",
+      "tex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\end{gathered}",
+      "text": "将这个零均值测试函数代入变分比。奇偶导数只在正弦与余弦之间交换，权积分的共同首项给出匹配的上界。",
+      "en": {
+        "source": "§ 4.1 · (4.3)–(4.4)",
+        "title": "A single Fourier mode matches the upper bound",
+        "text": "Insert this zero-mean test function into the quotient. Derivatives alternate between sine and cosine; the common leading weighted integral matches the lower bound."
+      },
+      "asset": "./assets/chalk/ye/page-024.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-024.svg",
+      "formulaEm": 18.7054,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          182.8825,
+          311.96500000000003,
+          56
+        ],
+        [
+          89,
+          254.8825,
+          941.2700000000001,
+          127.235
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          177.8825,
+          951.2700000000001,
+          209.235
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "source": "§ 4.2",
+      "title": "回到格点并完成夹逼",
+      "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\end{gathered}",
+      "text": "下界来自 Fourier 对应。上界还需检查所选环面函数确实来自容许格点函数：支撑在两个相反单位格点的试验函数完成这一步。",
+      "en": {
+        "source": "§ 4.2",
+        "title": "Returning to the lattice",
+        "text": "Fourier correspondence gives the lower bound. For the upper bound, verify an admissible lattice preimage: a test function supported at two opposite unit sites completes the argument."
+      },
+      "asset": "./assets/chalk/ye/page-025.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-025.svg",
+      "formulaEm": 24.2416,
+      "diagram": null,
+      "formulaRows": [
+        [
+          89,
+          148.98749999999998,
+          605.625,
+          116.88499999999999
+        ],
+        [
+          89,
+          281.87249999999995,
+          1218.08,
+          134.14000000000001
+        ]
+      ],
+      "rows": [
+        [
+          80,
+          22,
+          1380,
+          66
+        ],
+        [
+          80,
+          95,
+          0,
+          0
+        ],
+        [
+          84,
+          143.98749999999998,
+          1228.08,
+          277.02500000000003
+        ],
+        [
+          80,
+          452,
+          1380,
+          42
+        ],
+        [
+          80,
+          494,
+          1380,
+          42
+        ]
+      ]
+    },
+    {
+      "kind": "closing",
+      "source": "报告结束",
+      "title": "谢谢！",
+      "author": "",
+      "tex": "",
+      "text": "",
+      "en": {
+        "source": "END",
+        "title": "Thank you!",
+        "author": "",
+        "text": ""
+      },
+      "asset": "./assets/chalk/ye/page-026.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-026.svg",
+      "formulaEm": 1,
+      "formulaRows": [],
+      "rows": [
+        [
+          120,
+          80,
+          1296,
+          120
+        ],
+        [
+          120,
+          265,
+          1296,
+          70
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          120,
+          390,
+          1296,
+          54
+        ],
+        [
+          120,
+          442,
+          1296,
+          54
         ]
       ]
     }

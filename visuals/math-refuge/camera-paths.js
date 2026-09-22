@@ -1,5 +1,5 @@
 // All viewpoints share the peninsula plan: east +X, north -Z.
-import {BUILDING_SCALE} from './site-layout.js?v=15-fixed-hall';
+import {BUILDING_SCALE} from './site-layout.js?v=31-site-final';
 export const SHOTS=[
   {name:'海岸抵达',title:'海上相连，<br>一处安心思考的地方。',description:'海上长露台 · 远岛 · 可扩展园区',duration:28,fov:49,
    positions:[[90,25,48],[80,19,40],[70,13,33],[60,8,26]],targets:[[22,2,0],[24,2,0],[26,2,0],[28,2,0]]},
@@ -11,7 +11,7 @@ export const SHOTS=[
    positions:[[35.3,1.5,0],[36.5,1.5,0],[37.9,1.4,0],[39.2,1.3,0]],targets:[[42.7,1.9,0],[42.7,1.9,0],[42.7,1.9,0],[42.7,1.9,0]]},
   {name:'板书',title:'一页一页，<br>让推理留下痕迹。',description:'六块升降黑板 · 粉笔落粉 · 擦除后续写',duration:70,fov:57,lecture:true,
    positions:[[39,1.4,-2.4],[39,1.4,-1],[39,1.4,1],[39,1.4,2.4]],targets:[[42.7,1.4,-2.4],[42.7,1.4,-1],[42.7,1.4,1],[42.7,1.4,2.4]]},
-  {name:'海景露台',title:'走上海景露台，<br>望见远岛与日出。',description:'深色石材海景露台 · 宽阶入海 · 正东开阔海景',duration:30,fov:58,
+  {name:'海景露台',title:'走上海景露台，<br>望见远岛与日出。',description:'深色石材海景露台 · 帆船与皮划艇 · 正东开阔海景',duration:30,fov:58,
    positions:[[46,1.5,3],[48,1.5,2],[51,1.5,0],[53,1.5,-2]],targets:[[180,0,4.5],[180,0,2],[180,0,-2],[180,0,-4.5]]},
   {name:'远眺',title:'把空间留白，<br>也把未来留给下一座小屋。',description:'四面环海 · 海上栈桥与扩建 · 分散小别墅',duration:28,fov:50,
    positions:[[-28,18,40],[-35,25,49],[-43,32,58],[-52,38,67]],targets:[[9,1,0],[10,1,0],[12,1,0],[14,1,0]]},

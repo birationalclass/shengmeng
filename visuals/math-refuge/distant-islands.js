@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DISTANT_ISLANDS} from './site-layout.js?v=15-fixed-hall';
-import {seaLevel} from './landscape-shape.js?v=15-fixed-hall';
+import {BUILDING_SCALE as S,DISTANT_ISLANDS} from './site-layout.js?v=31-site-final';
+import {seaLevel} from './landscape-shape.js?v=31-site-final';
 
 // Original low-cost radial terrain meshes, kept far away from the campus.
 // No land is added beneath the buildings and the due-east view stays open.

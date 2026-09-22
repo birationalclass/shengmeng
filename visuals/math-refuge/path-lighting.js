@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js';
+import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js?v=31-site-final';
 // Shared falloff patches avoid a separate realtime shadow/light pass per lantern.
 export function createPathLighting(scene,{box,beam,materials}){
   const {stone,steel,brass}=materials;
@@ -9,7 +9,7 @@ export function createPathLighting(scene,{box,beam,materials}){
   const map=new THREE.DataTexture(pixels,128,128);map.needsUpdate=true;map.colorSpace=THREE.SRGBColorSpace;
   const pool=new THREE.MeshBasicMaterial({map,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,toneMapped:false});
   const geometry=new THREE.PlaneGeometry(1,1),patches=[];
-  const positions=[[-20,-20],[-20,18],[-3,20],[15,20],[16,-20],[-44,8],[-57,8],[-65,8],[-63,-17],[-63,-34],[-63,-48],[-47,-15],[-42,-21],[-51,-27],[-42,-37],[-39,24.5],[-26,24.5],[-24,35],[-35,31],[-7,38],[28,-12],[28,14],[52,-12],[52,14],[34,-24],[42,-18]];
+  const positions=[[-20,-20],[-20,18],[-3,20],[15,20],[16,-20],[-44,8],[-57,8],[-65,8],[-63,-17],[-63,-34],[-63,-48],[-47,-15],[-42,-21],[-51,-27],[-42,-37],[-39,24.5],[-26,24.5],[-24,35],[-35,31],[28,-12],[28,14],[52,-12],[52,14],[34,-24],[42,-18]];
   for(const [i,[x,z]] of positions.entries()){
     const y=DECK_Y,type=i%3;
     if(type===0){ // Hollow limestone niche with a deeply recessed luminous ceiling.

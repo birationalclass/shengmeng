@@ -6,15 +6,15 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=23-stairs-trays';
-import {createLecture} from './lecture.js?v=26-reports';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=22-handwritten-cover';
-import {seaLevel} from './landscape-shape.js?v=22-handwritten-cover';
-import {createChalkReader} from './chalk-reader.js?v=26-reports';
+import {createRetreat} from './scene.js?v=31-site-final';
+import {createLecture} from './lecture.js?v=30-seminar';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=31-site-final';
+import {seaLevel} from './landscape-shape.js?v=31-site-final';
+import {createChalkReader} from './chalk-reader.js?v=30-seminar';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=22-handwritten-cover';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=31-site-final';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
@@ -183,7 +183,7 @@ function tick(stamp){
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
-  if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
+  if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
   if(profile.direct)renderer.render(scene,camera);else composer.render();
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
@@ -351,7 +351,8 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime
 let lectureStatus='';
 function updateLectureUI(){
   const status=reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
-  controlLabel($('lecturePlay'),lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  $('lecturePlay').disabled=lecture.clock.ended;$('lectureNext').disabled=lecture.clock.page===lecture.pages.length-1;$('lecturePrevious').disabled=lecture.clock.page===0;
+  controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);
   lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});
 }

@@ -1,4 +1,4 @@
-import {chalkHTML} from './chalk-typography.js?v=22-handwritten-cover';
+import {chalkHTML} from './chalk-typography.js?v=30-seminar';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {readingFormulaWidth} from './display-profile.js?v=8-cover';
 
@@ -21,14 +21,15 @@ export function createChalkReader(lecture){
       page=lecture.clock.page;language=lecture.language;const entry=lecture.pages[page],copy=lecture.copy?.(page)||entry;
       $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
-      $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=entry.kind==='cover';
+      $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text);
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=8-cover';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=30-seminar';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }
-    if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;controlLabel($('readerPlay'),lecture.playing?'暂停翻页':'继续翻页');$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
+    $('readerPlay').disabled=Boolean(lecture.clock.ended);$('readerNext').disabled=lecture.clock.page===lecture.pages.length-1;$('readerPrevious').disabled=lecture.clock.page===0;
+    if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;controlLabel($('readerPlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停翻页':'继续翻页');$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
   }
   $('readerOpen').addEventListener('click',()=>show(panel.hidden));
   $('readerClose').addEventListener('click',()=>show(false));

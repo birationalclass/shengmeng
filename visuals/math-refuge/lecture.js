@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights} from './lecture-state.js?v=22-handwritten-cover';
+import {LectureClock,boardHeights} from './lecture-state.js?v=30-seminar';
 import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=22-handwritten-cover';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=26-reports';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=30-seminar';
 
 import {REPORTS} from './report-catalog.js';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=9-author');
+  const response=await fetch('./assets/chalk/pages.json?v=30-seminar');
   if(!response.ok)throw new Error('Unable to load the spectral notebook');
   let {pages}=await response.json(),clock=new LectureClock(pages.length),activeReport=REPORTS[0];
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
@@ -30,10 +30,10 @@ export async function createLecture(scene,renderer){
         const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
         clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?16:8});
         // Retain six on-board pages and the active/next page, evict other SVGs.
-        const keep=new Set([...clock.slots.map(s=>s.page),clock.page,(clock.page+1)%pages.length]);
+        const keep=new Set([...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
         resolve(sample);
-      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=9-author';
+      };image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v=30-seminar';
     });pending.set(index,job);return job;
   }
   await load(0);
@@ -270,14 +270,14 @@ export async function createLecture(scene,renderer){
     if(accumulator>=.05||version){boards.forEach((_,i)=>draw(i));accumulator=0;version=0;}
   }
   // Reduced-motion users get complete static pages and explicit page controls.
-  function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;version++;}
+  function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;clock.ended=clock.page===pages.length-1;version++;}
   boards.forEach((_,i)=>draw(i));
   return {
     update,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,setConsoleState,
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(15.25,2.25,-11.34)),
     async setReport(id){
       const next=REPORTS.find(r=>r.id===id);if(!next)throw new Error('未知报告');
-      const response=await fetch(next.manifest+'?v=26-reports');if(!response.ok)throw new Error('报告加载失败，请重试。');
+      const response=await fetch(next.manifest+'?v=30-seminar');if(!response.ok)throw new Error('报告加载失败，请重试。');
       const manifest=await response.json();if(!manifest.pages?.length)throw new Error('报告内容为空');
       // Keep the current talk intact until its replacement cover is available.
       await new Promise((resolve,reject)=>{const image=new Image();image.onload=resolve;image.onerror=()=>reject(new Error('报告封面加载失败，请重试。'));image.src=manifest.pages[0].formulaAsset;});
@@ -297,9 +297,9 @@ export async function createLecture(scene,renderer){
       try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(load));}
       catch(error){loadingError=error;throw error;}version++;
     },
-    status:()=>loadingError?loadingError.message:`${clock.page+1} / ${pages.length} · ${phaseNames[clock.phase]} · ${chalkCopy(pages[clock.page],language).title}`,
-    get playing(){return playing;},set playing(value){playing=value;},
-    select,step(delta){select(clock.page+delta);},rewrite(){select(clock.page);},staticPage,
+    status:()=>loadingError?loadingError.message:`${clock.page+1} / ${pages.length} · ${clock.ended?'报告结束':phaseNames[clock.phase]} · ${chalkCopy(pages[clock.page],language).title}`,
+    get playing(){return playing&&!clock.ended;},set playing(value){playing=value;},
+    select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4)),
     dispose(){reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}

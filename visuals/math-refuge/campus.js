@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,SEA_STEPS,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=15-fixed-hall';
-import {seaLevel} from './landscape-shape.js?v=15-fixed-hall';
+import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=31-site-final';
+import {seaLevel} from './landscape-shape.js?v=31-site-final';
 import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fixed-hall';
 
-// Architectural geometry for dry offshore decks, rooms and sea-access stairs.
+// Architectural geometry for dry offshore decks, rooms and supported inter-storey stairs.
 // No swimming basin or exposed support piles are constructed.
 export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
@@ -171,7 +171,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     box([x,.44,z],[3.8,.4,3.8],stone);box([x,.645,z],[3.35,.025,3.35],soil);
   }
   floor(0,2,17,-63,-43.5);floor(0,8,2,-39,-29);floor(0,2,13,-30,-27);
-  floor(0,2,15,-24,32);floor(0,14,2,-37,31);floor(0,20,2,-13,38);
+  floor(0,2,15,-24,32);floor(0,14,2,-37,31);
   for(const [x,z] of [[-70,8],[-63,-53],[-24,40]]){
     floor(0,3,3,x,z);box([x,DECK_Y+.012,z],[1.2,.024,.07],brass);
     meta('Future platform connector '+x+','+z,{x,z,width:3});
@@ -185,8 +185,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   meta('Bamboo tea pavilion light fixtures',{type:'single sheltered warm lantern',glareControlled:true});
 
   // A supported offshore platform: ocean remains under the hall, not landfill.
-  const [tw,te,tn,ts]=SEA_TERRACE,terraceCenter=(tw+te)/2;
-  floor(0,te-tw,ts-tn,terraceCenter,0);
+  const [tw,te,tn,ts]=SEA_TERRACE,terraceCenter=(tw+te)/2,terraceCenterZ=(tn+ts)/2;
+  floor(0,te-tw,ts-tn,terraceCenter,terraceCenterZ);
   // Large-format honed limestone, aligned with the hall and sea edge rather than
   // the generic small-square grid. Restrained variation and 6 mm shadow joints.
   const mineralMap=terraceStoneMap();
@@ -201,7 +201,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     }
   }
   for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw-.16,.018,.18],borderMaterial);
-  for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,0],[.18,.018,ts-tn-.36],borderMaterial);
+  for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,terraceCenterZ],[.18,.018,ts-tn-.36],borderMaterial);
   // A slim matte champagne threshold defines the entrance, not a shiny grid.
   box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,2.2],brass);
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
@@ -340,26 +340,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   box([43.04,DECK_Y+HALL.clearHeight/S-.04,0],[.18,.12,hallDepth-.6],steel);
   // No sun loungers remain on the compact sea terrace.
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
-  // Broad, shallow sea-access steps. Their foot lands just above mean sea
-  // level; the fascia continues below it so no support piles are exposed.
-  for(const [index,entry] of SEA_STEPS.entries()){
-    const {x,z,dx,dz,width}=entry,n=7,tread=.38,low=seaLevel+.025;
-    const rise=(DECK_Y-low)/n,heights=[];
-    for(let i=0;i<n;i++){
-      const top=DECK_Y-(i+1)*rise,base=seaLevel-.18,t=(i+.5)*tread;
-      box([x+dx*t,(top+base)/2,z+dz*t],dx?[tread+.002,top-base,width]:[width,top-base,tread+.002],pavingMaterials[i%3]);
-      box([x+dx*(t+tread*.42),top-.012,z+dz*(t+tread*.42)],dx?[.018,.016,width-.16]:[width-.16,.016,.018],light);
-      heights.push(top);
-    }
-    // A restrained handrail only alongside the stair, not around the terrace.
-    for(const sign of [-1,1]){
-      const ox=-dz*sign*(width/2-.06),oz=dx*sign*(width/2-.06);
-      const anchors=[[x-dx*.14+ox,DECK_Y,z-dz*.14+oz]];
-      for(const i of [0,2,4,n-1]){const t=(i+.5)*tread;anchors.push([x+dx*t+ox,heights[i],z+dz*t+oz]);}
-      supportedRail('Sea stair '+(index+1)+' rail '+sign,anchors);
-    }
-    meta('Sea access stair '+(index+1),{...entry,steps:n,heights,riserMetres:rise*S,treadMetres:tread*S,seaLevel});
-  }
+  // Sea access has been removed; the continuous platform fascia and edge lights
+  // follow the same complete perimeter without stair projections.
   return {blind,seating,lightingZones,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
     dispose(){shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}

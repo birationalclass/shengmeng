@@ -8,21 +8,22 @@ export class LectureClock{
     this.count=count;this.timings=new Map();this.slots=Array.from({length:6},()=>({page:-1,progress:0}));this.select(0);
   }
   select(page){
-    this.page=((page%this.count)+this.count)%this.count;this.active=boardSlot(this.page);
+    this.page=Math.max(0,Math.min(this.count-1,Math.trunc(page)||0));this.ended=false;this.active=boardSlot(this.page);
     this.phase='lift';this.elapsed=0;
   }
-  next(delta=1){this.select(this.page+delta);}
+  next(delta=1){const next=Math.max(0,Math.min(this.count-1,this.page+delta));if(next!==this.page)this.select(next);}
   startWrite(){this.phase='write';this.elapsed=0;this.slots[this.active]={page:this.page,progress:0};}
   setDurations(page,durations){this.timings.set(page,durations);}
   get duration(){return this.timings.get(this.phase==='erase'?this.slots[this.active].page:this.page)?.[this.phase]||PHASE_SECONDS[this.phase];}
   update(dt){
+    if(this.ended)return;
     this.elapsed+=Math.max(0,Math.min(dt,.1));
     if(this.phase==='write')this.slots[this.active].progress=Math.min(1,this.elapsed/this.duration);
     if(this.elapsed<this.duration)return;
     if(this.phase==='lift'){
       if(this.slots[this.active].page>=0){this.phase='erase';this.elapsed=0;}else this.startWrite();
     }else if(this.phase==='erase')this.startWrite();
-    else if(this.phase==='write'){this.slots[this.active].progress=1;this.phase='hold';this.elapsed=0;}
+    else if(this.phase==='write'){this.slots[this.active].progress=1;this.phase='hold';this.elapsed=0;this.ended=this.page===this.count-1;}
     else this.next();
   }
   get progress(){return Math.min(1,this.elapsed/this.duration);}

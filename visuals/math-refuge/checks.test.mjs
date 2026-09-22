@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=31-site-final';
 import * as Three from '../3d/vendor/three.module.js';
 import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
 import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
-import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js';
+import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js?v=31-site-final';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=22-handwritten-cover';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=31-site-final';
 import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=22-handwritten-cover';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
@@ -54,7 +54,7 @@ test('all consolidated handwritten captions switch languages without changing fo
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*25};}};
   for(const [i,p] of pages.entries())for(const lang of ['zh','en']){
-    const copy=chalkCopy(p,lang);assert(copy.title&&copy.text);
+    const copy=chalkCopy(p,lang);assert(copy.title&&(copy.text||p.kind==='closing'));
     if(lang==='en')assert(!/[\u3400-\u9fff]/.test(copy.title+copy.text+copy.source));
     const rows=composeChalkPage(ctx,p,i,lang,{});
     for(const [x,y,w,h] of rows){assert(x>=0&&y>=0&&x+w<=1536&&y+h<=604);}
@@ -141,7 +141,7 @@ test('eight finite camera chapters with auditorium, ocean and garden views',()=>
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js','scene.js','camera-paths.js','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js','landscape-shape.js']){
+  for(const file of ['index.html','app.js?v=31-site-final','scene.js?v=31-site-final','camera-paths.js?v=31-site-final','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=31-site-final','landscape-shape.js?v=31-site-final']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js',root),'utf8');
-  for(const file of ['app.js','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=31-site-final',root),'utf8');
+  for(const file of ['app.js?v=31-site-final','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js');
+  const sceneModule=await inlineAddon('./scene.js?v=31-site-final');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -224,7 +224,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.equal(scene.getObjectByName('Low sea-facing seminar hall').userData.clearHeight,4.9);
     assert.equal(result.campus.lightingZones.filter(z=>z.task==='blackboard').length,3);
     for(const name of ['Upper private studies','Upper small seminar','Upper seminar lounge'])assert(result.campus.lightingZones.some(z=>z.name===name));
-    assert.equal(result.pathLighting.count,26);const lanterns=scene.children.filter(o=>o.name.startsWith('Platform path lantern '));assert.equal(new Set(lanterns.map(o=>o.userData.type)).size,3);
+    assert.equal(result.pathLighting.count,25);const lanterns=scene.children.filter(o=>o.name.startsWith('Platform path lantern '));assert.equal(new Set(lanterns.map(o=>o.userData.type)).size,3);
     const spots=scene.children.filter(o=>o.isSpotLight);
     result.setTime(12);const daytime=spots.map(o=>o.intensity);result.setTime(23);assert.equal(result.ocean.material.uniforms.nightVisibility.value,.06);
     spots.forEach((lamp,i)=>{assert(lamp.intensity>daytime[i]);assert(lamp.distance>0&&lamp.intensity>60);});
@@ -233,7 +233,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const fills=scene.children.filter(o=>o.isPointLight);assert.equal(fills.length,4);
     for(const lamp of fills){assert(!lamp.castShadow);assert.equal(lamp.userData.task,'seminar-fill');assert(lamp.position.x>HALL.west*BUILDING_SCALE&&lamp.position.x<HALL.east*BUILDING_SCALE);assert(lamp.intensity>0&&lamp.distance<16);}
     for(const name of ['Connected infinity pool and core water court','East infinity overflow sheet','Side infinity overflow sheet','Sunrise infinity edge'])assert(!scene.getObjectByName(name));
-    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,10);
+    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,9);
     for(const island of result.islands.group.children){
       const pos=island.geometry.attributes.position;
       for(let i=1;i<=96;i++)assert.equal(pos.getY(i),pos.getY(0),'Island pole must not split into vertical spikes');
@@ -242,8 +242,13 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const sculpture of result.sculptures){
       assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(sculpture.position.x/BUILDING_SCALE-f.cx)+1.3<=f.w/2+.001&&Math.abs(sculpture.position.z/BUILDING_SCALE-f.cz)+1.3<=f.d/2+.001),'Each sculpture needs a complete dry pedestal pad: '+sculpture.name);
     }
-    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,10);
-    const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,SEA_STEPS.length);
+    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,9);
+    const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,0);assert.equal(SEA_STEPS.length,0);
+    assert(!scene.getObjectByName('Coffee cabin mathematical sculpture'));assert(scene.getObjectByName('Library open book sculpture').userData.openBook);
+    assert(!LAWNS.some(l=>l.z===34));assert(!GARDEN_PADS.some(r=>r[0]===-22&&r[2]===29));
+    const [tw,te,tn,ts]=SEA_TERRACE;assert(result.layoutFloors.some(f=>f.y===0&&f.cx-f.w/2===tw&&f.cx+f.w/2===te&&f.cz-f.d/2===tn&&f.cz+f.d/2===ts),'Hall platform must match the declared paving bounds');
+    assert.equal(result.fleet.boats.filter(b=>b.userData.type==='sail').length,3);assert.equal(result.fleet.boats.filter(b=>b.userData.type==='kayak').length,2);
+    for(let i=0;i<100;i++)result.fleet.update(.1);for(const boat of result.fleet.boats){assert(Math.abs(boat.position.y-result.site.seaLevel)<.1);assert(!result.layoutFloors.some(f=>f.y===0&&Math.abs(boat.position.x/BUILDING_SCALE-f.cx)<f.w/2+3&&Math.abs(boat.position.z/BUILDING_SCALE-f.cz)<f.d/2+3));}
     for(const name of ['Villa exterior stair','Hall exterior stair']){
       const d=scene.getObjectByName(name).userData;
       const landing=result.layoutFloors.find(f=>Math.abs(f.y-d.rise)<1e-8&&Math.abs(d.x-f.cx)<f.w/2&&Math.abs(d.landingZ-f.cz)<f.d/2);
@@ -382,7 +387,7 @@ test('water descends through the garden, is carved below the surface and avoids 
     assert(elevation(p.x,p.z)<p.y-.3,'Water surface must not be buried in the terrain');
     assert(watercourse(p.x,p.z).distance<.05);
   }
-  assert.equal(LAWNS.length,2);assert.equal(GIANT_TREES.length,3);assert.equal(BAMBOO_GROVES.length,3);
+  assert.equal(LAWNS.length,1);assert.equal(GIANT_TREES.length,3);assert.equal(BAMBOO_GROVES.length,3);
 });
 
 test('chalk lift, wear, damp wiping and drying are bounded and deterministic',()=>{
@@ -407,13 +412,13 @@ test('locally served landscape photographs match their CC0 source manifest',asyn
   assert(total<6500000);console.log(JSON.stringify({landscapeTextureBytes:total}));
 });
 
-test('three pairs alternate six slots, erase reused boards and wrap lecture pages',()=>{
+test('three pairs alternate six slots, erase reused boards and stop at the last page',()=>{
   assert.deepEqual(Array.from({length:6},(_,i)=>boardSlot(i)),[0,2,4,1,3,5]);
   for(let value=0;value<=1;value+=.05){const [a,b]=boardHeights(value);assert(Math.abs(a+b-5.15)<1e-9);assert(a>=1.45&&a<=3.7);assert(b>=1.45&&b<=3.7);}
   const clock=new LectureClock(65),phases=new Set(),slots=new Set();
   for(let step=0;step<3000;step++){clock.update(.1);phases.add(clock.phase);slots.add(clock.active);assert(clock.progress>=0&&clock.progress<=1);}
   assert.deepEqual([...phases].sort(),['erase','hold','lift','write']);assert.equal(slots.size,6);
-  clock.select(64);clock.next();assert.equal(clock.page,0);clock.next(-1);assert.equal(clock.page,64);
+  clock.select(64);clock.next();assert.equal(clock.page,64);clock.next(-1);assert.equal(clock.page,63);clock.select(0);clock.next(-1);assert.equal(clock.page,0);
   clock.select(4);clock.startWrite();assert.equal(clock.slots[clock.active].page,4);assert.equal(clock.slots[clock.active].progress,0);
   const elapsed=clock.elapsed;clock.update(-1);assert.equal(clock.elapsed,elapsed);
 });
@@ -421,14 +426,14 @@ test('three pairs alternate six slots, erase reused boards and wrap lecture page
 test('Consolidated local SVG pages preserve notebook formula content and stay within the board',async()=>{
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   assert(pages.length<40);assert(pages.some(p=>p.source.startsWith('§ 3.')));assert(pages.some(p=>p.source.startsWith('§ 4.')));
-  assert.equal(new Set(pages.map(p=>p.tex)).size,pages.length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
-  assert(pages.every(p=>p.kind==='cover'||/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
+  assert.equal(new Set(pages.filter(p=>!p.kind).map(p=>p.tex)).size,pages.filter(p=>!p.kind).length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
+  assert(pages.every(p=>p.kind||/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
     const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
-    assert(page.kind==='cover'||formula.includes('<path'));assert(!formula.includes('data-mjx-error'));assert(page.formulaEm>0);
-    assert(page.kind==='cover'||svg.includes('<path'));assert(!svg.includes('data-mjx-error'));assert(!svg.includes('<script'));
-    assert(!/(?:href|src)="https?:/.test(svg));assert(page.kind==='cover'||page.tex.length>0);
+    assert(page.kind||formula.includes('<path'));assert(!formula.includes('data-mjx-error'));assert(page.formulaEm>0);
+    assert(page.kind||svg.includes('<path'));assert(!svg.includes('data-mjx-error'));assert(!svg.includes('<script'));
+    assert(!/(?:href|src)="https?:/.test(svg));assert(page.kind||page.tex.length>0);
     for(const [x,y,w,h] of page.rows){assert(x>=0&&y>=0);assert(x+w<=1536&&y+h<=640);}
   }
   assert(pages.some(p=>p.tex.includes('\\delta_1\\delta_2+\\delta_2\\delta_1=0')));
@@ -457,7 +462,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./report-catalog.js',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=26-reports',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=22-handwritten-cover',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./report-catalog.js',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=30-seminar',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -530,7 +535,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.setLanguage('en');
     for(const id of ['ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
-      assert.equal(lecture.pages.length,id==='meng'?37:6);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
+      assert.equal(lecture.pages.length,id==='meng'?38:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
     }
     lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
@@ -549,7 +554,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true,report:{id:'meng'}};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=22-handwritten-cover',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=30-seminar',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -586,7 +591,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=31-site-final',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -635,7 +640,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=31-site-final',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));
@@ -768,13 +773,37 @@ test('speaker reports preserve paper sources, hypotheses, bilingual covers and c
   for(const report of REPORTS.slice(1)){
     const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
     assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,'CC BY 4.0');
-    assert.equal(data.pages.length,6);assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
+    assert.equal(data.pages.length,26);assert.equal(data.pages.filter(p=>!p.kind).length,24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
     for(const page of data.pages){
       for(const c of page.source+page.title+page.text+(page.author||''))if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),`Missing glyph ${c}`);
-      assert(page.en.title&&page.en.text);
+      assert(page.en.title&&(page.en.text||page.kind==='closing'));assert(!/[\u3400-\u9fff]/.test(page.en.source));
       for(const path of [page.asset,page.formulaAsset]){const svg=await fs.readFile(new URL(path,import.meta.url),'utf8');assert(svg.startsWith('<svg'));assert(!svg.includes('data-mjx-error'));}
     }
-    if(report.id==='hu'){assert(data.pages[2].tex.includes('243'));assert(data.pages[3].text.includes('243'));assert(data.pages[4].tex.includes('243'));}
-    if(report.id==='ye')assert(data.pages[2].tex.includes('fixed'));
+    if(report.id==='hu'){assert(data.pages.find(p=>p.title==='新的几何亏格门槛').tex.includes('243'));assert(data.pages.find(p=>p.title==='等号要求怎样的纤维').text.includes('243'));assert(data.pages.find(p=>p.title==='高次数迫使纤维正则').tex.includes('243'));assert(data.pages.some(p=>p.diagram?.kind==='canonical'));}
+    if(report.id==='ye')assert(data.pages.find(p=>p.source==='定理 1.1').tex.includes('fixed'));
   }
+});
+
+test('inline p_g uses a real printed subscript in canvas, reader and SVG',async()=>{
+  const {chalkInlineRuns,chalkHTML,chalkSVG}=await import('./chalk-typography.js');
+  assert.deepEqual(chalkInlineRuns('p_g(X)'),[{text:'p',math:true},{text:'g',math:true,script:'sub'},{text:'(X)',math:true}]);
+  assert(chalkHTML('p_g(X)').includes('<sub>g</sub>'));assert(!chalkHTML('p_g(X)').includes('_'));
+  assert(chalkSVG('p_g(X)').includes('baseline-shift="sub"'));
+  assert(chalkHTML('K_X^2').includes('<sup>2</sup>'));
+  const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/hu/pages.json',import.meta.url),'utf8'));
+  for(const language of ['zh','en']){
+    const calls=[],ctx={clearRect(){},drawImage(){},fillText(text,x,y){calls.push({text,x,y,font:this.font});},measureText(text){return {width:text.length*parseFloat(this.font)*.5};}};
+    const rows=composeChalkPage(ctx,pages.find(p=>p.title==='等号要求怎样的纤维'),0,language,{}),p=calls.find(c=>c.text==='p'),g=calls.find(c=>c.text==='g');
+    assert(p&&g);assert(g.y>p.y);assert(parseFloat(g.font)<parseFloat(p.font));assert(g.font.includes('RefugeMath'));assert(!calls.some(c=>c.text.includes('p_g')));
+    assert(rows.some(([x,y,w,h])=>g.x>=x&&g.x<x+w&&g.y>y&&g.y+parseFloat(g.font)*.25<y+h),'Reveal bounds include the subscript descender');
+  }
+});
+
+test('the final thanks board remains complete without automatically restarting',()=>{
+  const clock=new LectureClock(3);clock.select(2);clock.setDurations(2,{write:.2});clock.startWrite();
+  for(let i=0;i<10;i++)clock.update(.1);
+  assert(clock.ended);assert.equal(clock.page,2);assert.equal(clock.phase,'hold');assert.equal(clock.slots[clock.active].progress,1);
+  const elapsed=clock.elapsed;for(let i=0;i<12000;i++)clock.update(.1);
+  assert.equal(clock.page,2);assert.equal(clock.elapsed,elapsed);clock.next();assert(clock.ended);
+  clock.next(-1);assert.equal(clock.page,1);assert(!clock.ended);
 });

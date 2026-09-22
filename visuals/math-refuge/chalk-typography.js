@@ -13,6 +13,24 @@ function printedTest(text){
   return /[A-Za-z].*[()[\]{}]|[()[\]{}].*[A-Za-z]/.test(core);
 }
 const escape=text=>text.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export function chalkHTML(text){return chalkRuns(text).map(run=>run.math?`<span class="chalk-math">${escape(run.text)}</span>`:escape(run.text)).join('');}
-
-export function chalkSVG(text){return chalkRuns(text).map(run=>run.math?`<tspan font-family="Times New Roman, serif">${escape(run.text)}</tspan>`:escape(run.text)).join('');}
+// Parse simple TeX scripts in prose once for canvas, HTML and SVG output.
+// Keep prose classification separate so ordinary English stays handwritten.
+export function chalkInlineRuns(text){
+  return chalkRuns(text).flatMap(run=>{
+    if(!run.math)return [run];
+    const parts=[];let at=0;
+    for(const match of run.text.matchAll(/([_^])(?:\{([^{}]+)\}|([A-Za-z0-9]))/g)){
+      if(match.index>at)parts.push({text:run.text.slice(at,match.index),math:true});
+      parts.push({text:match[2]||match[3],math:true,script:match[1]==='_'?'sub':'sup'});at=match.index+match[0].length;
+    }
+    if(at<run.text.length)parts.push({text:run.text.slice(at),math:true});return parts;
+  });
+}
+export function chalkHTML(text){return chalkInlineRuns(text).map(run=>{
+  const content=escape(run.text),body=run.script?`<${run.script}>${content}</${run.script}>`:content;
+  return run.math?`<span class="chalk-math">${body}</span>`:body;
+}).join('');}
+export function chalkSVG(text){return chalkInlineRuns(text).map(run=>{
+  const attrs=run.script?` font-size="70%" baseline-shift="${run.script}"`:'';
+  return run.math?`<tspan font-family="Times New Roman, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
+}).join('');}

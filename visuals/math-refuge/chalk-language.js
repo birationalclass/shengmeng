@@ -1,4 +1,4 @@
-import {chalkRuns,mathFont} from './chalk-typography.js?v=22-handwritten-cover';
+import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=30-seminar';
 export function chalkCopy(page,language='zh'){
   return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
 }
@@ -13,13 +13,14 @@ export function composeChalkPage(ctx,page,index,language,formula){
   const copy=chalkCopy(page,language),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
   ctx.clearRect(0,0,1536,640);ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';
   const runFont=run=>run.math?mathFont:/[\u3400-\u9fff]/.test(run.text)?font:'RefugeLatin, cursive';
-  function measure(text,size){return chalkRuns(text).reduce((width,run)=>{ctx.font=`${size}px ${runFont(run)}`;return width+ctx.measureText(run.text).width;},0);}
+  function measure(text,size){return chalkInlineRuns(text).reduce((width,run)=>{ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run)}`;return width+ctx.measureText(run.text).width;},0);}
   function textRow(text,x,y,size,color){
     while(measure(text,size)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
-    for(const run of chalkRuns(text)){ctx.font=`${size}px ${runFont(run)}`;ctx.fillText(run.text,cursor,y);const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
-    rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+14],{chineseSpans}));
+    for(const run of chalkInlineRuns(text)){ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run)}`;ctx.fillText(run.text,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0));const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+(chalkInlineRuns(text).some(run=>run.script)?20:14)],{chineseSpans}));
   }
+  if(page.kind==='closing'){textRow(copy.title,(1536-measure(copy.title,124))/2,360,124,'#e4cf9c');return rows;}
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
     let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;

@@ -17,15 +17,8 @@ export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
 export const COURT_DECKS=[[-24,1.5,-25.5,25.5],[5.5,18,-25.5,25.5]];
 export const SEA_TERRACE=[26,56,-15,18];
 export const COFFEE_PAD=[32.8,44,-26,-17];
-export const SEA_STEPS=[
-  {x:56,z:-11,dx:1,dz:0,width:3.4},{x:56,z:11,dx:1,dz:0,width:3.4},
-  {x:48,z:-15,dx:0,dz:-1,width:3.4},{x:48,z:18,dx:0,dz:1,width:3.4},
-  {x:44,z:-23,dx:1,dz:0,width:2},
-  {x:-24,z:-18,dx:-1,dz:0,width:2.4},
-  {x:-6,z:25.5,dx:0,dz:1,width:2.4},{x:11.5,z:25.5,dx:0,dz:1,width:2.4},
-  {x:-49,z:-29.5,dx:1,dz:0,width:2},{x:-40,z:-39.5,dx:1,dz:0,width:2},
-  {x:-30.5,z:-16,dx:1,dz:0,width:2},{x:-42,z:19,dx:-1,dz:0,width:2}
-];
+export const SEA_STEPS=[];
+
 export const DISTANT_ISLANDS=[
   {x:230,z:-210,rx:48,rz:32,height:34,seed:1},
   {x:410,z:-360,rx:65,rz:42,height:42,seed:2},
@@ -37,14 +30,14 @@ export const POOL_RECTS=[];
 export const inPool=()=>false;
 export const poolTopology=()=>({cells:[],edges:[]});
 export const BRIDGES=[{x:3.5,z:8,axis:'x',span:6,width:2,rise:.3},{x:22,z:2,axis:'x',span:10,width:2.4,rise:.4},{x:39,z:-16,axis:'z',span:4,width:2,rise:.25}];
-export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-22,12,29,39],[-35,-23,-2,12]];
+export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-35,-23,-2,12]];
 export const inGarden=(x,z)=>GARDEN_PADS.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
 export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24],[36,42,-25,-19]];
 export function inBuilding(x,z,margin=0){return ROOM_PADS.some(([a,b,c,d])=>x>a-margin&&x<b+margin&&z>c-margin&&z<d+margin)||(x>HALL.west-margin&&x<HALL.east+margin&&z>HALL.north-margin&&z<HALL.south+margin);}
 export const GIANT_TREES=[[-24,31,3],[-51,12,3.6],[-60,-44,3]];
 export const ORNAMENTAL_TREES=[[-28,3.5,'terminalia'],[-44,-5,'plumeria'],[-48,-27,'terminalia'],[-33,11,'plumeria'],[-29,-25,'terminalia'],[28,-6,'plumeria']];
 export const BAMBOO_GROVES=[[-25,-29,7,6],[-49,-15,5,8],[-44,30,6,3]];
-export const LAWNS=[{x:-4,z:34,rx:15,rz:3},{x:-29,z:5,rx:5,rz:5}];
+export const LAWNS=[{x:-29,z:5,rx:5,rz:5}];
 // Retained legacy creek data; not constructed in this offshore design.
 export const RIVER_NODES=[[-82,25,-40,1.5],[-77,21,-37,1.7],[-74,3,-34,2.2],[-70,1,-25,1.7],[-65,0,-12,1.4],[-59,-.5,5,1.4],[-47,-1,23,1.6],[-33,-1.9,33,1.7],[-10,-3.04,45,2.2]].map(([x,y,z,w])=>[x-120,y,z,w]);
 const catmull=(a,b,c,d,t)=>.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
