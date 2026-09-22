@@ -1,8 +1,12 @@
+// Match the original standard rendering density; frame budgeting never reduces clarity.
+export const MOBILE_PIXEL_RATIO=1.5;
+export function domainAnimationActive(index,{mobile,fullscreen,touring,selected,sequence}){return !mobile||!!fullscreen||!!touring||selected===index||(sequence?.kind==='bridge'&&[sequence.index,sequence.index+1].includes(index));}
 export function mobileDevice(width,height,coarse=false){return width<=600||(Math.min(width,height)<=600&&Math.max(width,height)<=1100)||(coarse&&Math.min(width,height)<=900);}
 export function mobileFrameRate({moving=false,recent=false}={}){return moving||recent?30:15;}
-export function gentleZoom(radius,ratio,base){
+export function gentleZoom(radius,ratio){
  const factor=Math.exp(Math.max(-.07,Math.min(.07,-Math.log(Math.max(.1,ratio))*.28)));
- return Math.max(base*.85,Math.min(base*1.3,radius*factor));
+ // Same usable range as desktop; only gesture sensitivity is reduced.
+ return Math.max(15,Math.min(230,radius*factor));
 }
 // Padding is a fraction of viewport height, so shallow landscape screens pull back.
 export function mobileFrameScale(width,height){

@@ -16,7 +16,7 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
  function mobileHeight(){const v=window.visualViewport;document.documentElement.style.setProperty('--records-viewport-height',(v?.height||innerHeight)+'px');document.documentElement.style.setProperty('--records-viewport-top',(v?.offsetTop||0)+'px');}
  window.visualViewport?.addEventListener('resize',mobileHeight);window.visualViewport?.addEventListener('scroll',mobileHeight);mobileHeight();
  function sync(){
-  text('recordsToggle','通关记录','Records');text('playerTitle','开启八域之旅','Enter the eight domains');text('playerIntro','选择身份即可进入，服务器在后台连接。','Choose how to enter; the server connects in the background.');
+  $('recordsToggle').setAttribute('aria-label',t('通关记录','Records'));$('recordsToggle').title=t('通关记录','Records');text('playerTitle','开启八域之旅','Enter the eight domains');text('playerIntro','选择身份即可进入，服务器在后台连接。','Choose how to enter; the server connects in the background.');
   text('studentLogin','学号登录','Student login');text('guestLogin','游客进入 · 无需等待','Enter as guest · No waiting');text('playerOffline','先以游客身份游玩','Play as guest for now');text('playerIdLabel','学号','Student ID');text('playerIdHint','输入完整的 11 位学号，自动核对姓名。','Enter your 11-digit student ID to find your name.');
   id.placeholder=t('轻点输入学号','Tap to enter student ID');text('playerEnter','确认姓名并进入','Confirm name and enter');text('playerBack','返回','Back');text('playerRetry','重新查询','Retry lookup');
   text('playerGuestNote','游客将以“游客＋编号”显示在通关记录中。','Guests appear in the records with a Guest prefix and an assigned code.');

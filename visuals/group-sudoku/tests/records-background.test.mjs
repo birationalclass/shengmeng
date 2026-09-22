@@ -4,6 +4,7 @@ globalThis.location={hostname:'localhost'};
 const {createCompletionRecords}=await import('../records.mjs');delete globalThis.location;
 class Element extends EventTarget{
  constructor(){super();this.value='';this.textContent='';this.dataset={};this.hidden=false;this.open=false;this.style={setProperty(){}};}
+ setAttribute(name,value){(this.attributes??={})[name]=String(value);}
  showModal(){this.open=true;}close(){this.open=false;}focus(){}
 }
 test('local entry resolves before login; recovery migrates and retries the same pending submission',async()=>{

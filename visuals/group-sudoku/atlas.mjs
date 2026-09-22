@@ -1,4 +1,4 @@
-import {gentleZoom,mobileFrameScale} from './mobile.mjs?v=mobile1';
+import {gentleZoom,mobileFrameScale,MOBILE_PIXEL_RATIO,domainAnimationActive} from './mobile.mjs?v=clarity4';
 import {updateWallBeacons} from './board-beacons.mjs?v=wall-gate2';
 import {updateWorkshopClock} from './workshop-clock.mjs?v=clock1';
 import {constructionTiming,riseProgress,buildSeconds,BOARD_RISE_SECONDS} from './construction.mjs?v=owl-clearance1';
@@ -28,17 +28,6 @@ export const REGIONS=[
 ];
 export {PLACES};
 const V=(...a)=>new T.Vector3(...a);
-function parchment(){
- const c=document.createElement('canvas');c.width=2048;c.height=1280;const x=c.getContext('2d');
- const gr=x.createRadialGradient(970,610,80,1024,640,1200);gr.addColorStop(0,'#d8c799');gr.addColorStop(.8,'#b79b69');gr.addColorStop(1,'#876a43');x.fillStyle=gr;x.fillRect(0,0,2048,1280);
- let seed=7841;const r=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
- for(let i=0;i<65000;i++){x.fillStyle=r()>.5?'#fff5d00c':'#442b1b0b';x.fillRect(r()*2048,r()*1280,1+r()*3,1+r()*2);}
- x.lineWidth=1;for(let y=40;y<1280;y+=22){x.strokeStyle='#66522d22';x.beginPath();for(let j=0;j<=2048;j+=8){const z=y+15*Math.sin(j*.018+y*.032)+8*Math.cos(j*.033-y*.026);j?x.lineTo(j,z):x.moveTo(j,z);}x.stroke();}
- for(let inset of [30,42,65]){x.strokeStyle='#61472077';x.lineWidth=inset===42?2:1;x.strokeRect(inset,inset,2048-inset*2,1280-inset*2);}
- x.save();x.translate(1024,640);for(let i=0;i<16;i++){x.rotate(Math.PI/8);x.strokeStyle='#614b3377';x.lineWidth=i%4===0?3:1;x.beginPath();x.moveTo(0,-30);x.lineTo(0,-110);x.stroke();}for(let radius of [38,97,113]){x.beginPath();x.arc(0,0,radius,0,Math.PI*2);x.stroke();}x.fillStyle='#574225';x.font='28px Georgia';x.textAlign='center';x.fillText('N',0,-127);x.restore();
- x.textAlign='center';x.fillStyle='#5d472e';x.font='30px Georgia';x.fillText('TERRA · ALGEBRA',1024,1160);x.font='15px Georgia';x.fillText('EIGHT DOMAINS OF COMPOSITION',1024,1193);
- const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex;
-}
 export class SudokuAtlas extends AtlasScene{
  resize(){
   super.resize();
@@ -50,17 +39,17 @@ export class SudokuAtlas extends AtlasScene{
   this.camera.updateProjectionMatrix();
  }
  constructor(canvas,{mobile=false}={}){
-  super(canvas,mobile?'low':'standard',{legacyScenery:false,antialias:!mobile,powerPreference:mobile?'low-power':'high-performance'});this.mobile=mobile;this.scene.background.setHex(0xa58c63);this.scene.fog.color.setHex(0xa58c63);this.scene.fog.density=.0015;this.renderer.toneMappingExposure=1.1;
+  super(canvas,'standard',{legacyScenery:false,antialias:true,powerPreference:mobile?'low-power':'high-performance'});this.mobile=mobile;this.scene.background.setHex(0xa58c63);this.scene.fog.color.setHex(0xa58c63);this.scene.fog.density=.0015;this.renderer.toneMappingExposure=1.1;
   this.markers=[];for(let i=0;i<8;i++){const ring=this.torus(this.platforms[i],7.52,.10,[0,.30,0],new T.MeshStandardMaterial({color:0xc49a4c,emissive:0x77511b,emissiveIntensity:.25,metalness:.7,roughness:.35}));this.markers.push(ring);}
   for(const {object}of this.risers){object.position.y=0;object.visible=true;}for(const {g}of this.architecture||[]){g.position.y=0;g.visible=true;}
   this.fromPos=V(3,110,115);this.toPos=this.fromPos.clone();this.camera.position.copy(this.fromPos);this.fromAim=V(0,0,0);this.toAim=this.fromAim.clone();this.currentTarget=this.fromAim.clone();this.flight=1;this.selected=-1;this.orrery.visible=false;
   installBoards(this);delete this.orbit;
-  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.constructions=new Map();this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);this.bridgeLast=Array(7).fill(-1);if(mobile){this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,1));this.dust.visible=false;this.resize();}
+  this.ray=new T.Raycaster();this.hitMeshes=this.disks;this.sequence=null;this.constructions=new Map();this.built=new Set();this.done=[];this.bridgeProgress=Array(7).fill(0);this.bridgeLast=Array(7).fill(-1);if(mobile){this.renderer.setPixelRatio(Math.min(devicePixelRatio||1,MOBILE_PIXEL_RATIO));this.renderer.shadowMap.autoUpdate=false;this.lastShadowTime=-Infinity;this.dust.visible=false;this.resize();}
  }
  makeTerrain(){
   const board=this.box(this.scene,[142,1.8,146],[0,-2,0],this.materials.wood);board.receiveShadow=true;
   this.box(this.scene,[141,.18,145],[0,-1.02,0],this.materials.brass);
-  const plane=new T.Mesh(new T.PlaneGeometry(140,144),new T.MeshStandardMaterial({map:parchment(),roughness:.95}));plane.rotation.x=-Math.PI/2;plane.position.y=-.91;plane.receiveShadow=true;this.scene.add(plane);this.terrainPlane=plane;this.mechanicalTexture=plane.material.map;this.parchmentTexture=illustratedMap();plane.material.map=this.parchmentTexture;
+  const plane=new T.Mesh(new T.PlaneGeometry(140,144),new T.MeshStandardMaterial({map:illustratedMap(),roughness:.95}));plane.rotation.x=-Math.PI/2;plane.position.y=-.91;plane.receiveShadow=true;this.scene.add(plane);this.terrainPlane=plane;
   for(let k=0;k<32;k++){const x=-56+k*3.5,z=-34+Math.sin(k*.63)*2;const h=.5+(k%4)*.4;const m=this.mesh(this.scene,new T.ConeGeometry(.5+(k%3)*.25,h,5),this.materials.stone,[x,-.8+h/2,z]);m.rotation.y=k*.8;}
   for(let k=0;k<5;k++)this.torus(this.scene,2+k*.45,.025,[0,-.82,0],this.materials.brass);
  }
@@ -111,12 +100,11 @@ export class SudokuAtlas extends AtlasScene{
  project(index){const [x,z]=PLACES[index];const p=V(x,1,z+11.7).project(this.camera);return {x:(p.x+1)*.5,y:(1-p.y)*.5,visible:p.z>-1&&p.z<1&&Math.abs(p.x)<1.1&&Math.abs(p.y)<1.1};}
  pick(x,y){this.ray.setFromCamera(new T.Vector2(x,y),this.camera);return this.ray.intersectObjects(this.hitMeshes)[0]?.object.userData.region??-1;}
  setProgress(done){this.done=[...done];this.markers.forEach((ring,i)=>{const cleared=done.includes(i+2);ring.material.color.setHex(cleared?0x699f80:0xc49a4c);ring.material.emissive.setHex(cleared?0x234b37:0x77511b);});}
- setMapStyle(style){this.terrainPlane.material.map=style==='mechanical'?this.mechanicalTexture:this.parchmentTexture;this.terrainPlane.material.needsUpdate=true;}
  paint(index,state){paintBoard(this,index,state);}
  cellProjection(index,k){const p=cellPoint(this,index,k).project(this.camera);return {x:(p.x+1)/2,y:(1-p.y)/2,visible:p.z>-1&&p.z<1&&Math.abs(p.x)<1&&Math.abs(p.y)<1};}
  dolly(direction,dt){if(this.sequence||!direction)return;if(!this.manual)this.takeControl();this.touring=false;this.manual.radius=dollyRadius(this.manual.radius,direction,dt);}
  pan(east,north,dt){if(this.sequence||(!east&&!north))return;if(!this.manual)this.takeControl();this.touring=false;const m=this.manual,normal=Math.max(1,Math.hypot(east,north)),d=panDistance(m.radius,1,dt);m.target.x+=east/normal*d;m.target.z-=north/normal*d;}
- pinchZoom(ratio){if(this.sequence)return;if(!this.manual)this.takeControl();const pose=this.selected>=0?this.playPose(this.selected):null,base=pose?pose.pos.distanceTo(pose.aim):(this.manual.zoomBase??=this.manual.radius);this.manual.radius=gentleZoom(this.manual.radius,ratio,base);}
+ pinchZoom(ratio){if(this.sequence)return;if(!this.manual)this.takeControl();this.manual.radius=gentleZoom(this.manual.radius,ratio);}
  zoom(delta){if(this.mobile){this.pinchZoom(Math.exp(-Math.max(-100,Math.min(100,delta))*.001));return;}if(!this.manual)this.takeControl();this.manual.radius=Math.max(15,Math.min(230,this.manual.radius*Math.exp(delta*.001)));}
  startTour(){this.sequence=null;this.manual=null;this.touring=true;this.tourTime=0;this.tourFrom=this.camera.position.clone();this.tourAim=this.currentTarget.clone();}
  ensureDomain(index){const b=this.boards[index];if(b.decorate&&!b.decorated){b.decorate();if(b.lastState)this.paint(index,b.lastState);}}
@@ -152,7 +140,7 @@ export class SudokuAtlas extends AtlasScene{
  updateBridges(){for(let i=0;i<this.bridges.length;i++){const {g,leaves,chains,length}=this.bridges[i],u=this.bridgeProgress[i]||0;if(this.bridgeLast?.[i]===u)continue;if(this.bridgeLast)this.bridgeLast[i]=u;g.visible=u>0;for(const leaf of leaves)leaf.rotation.x=leaf.userData.bridgeSide*(1-u)*1.25;g.updateMatrixWorld(true);for(const {line,pivot,x,sign,half}of chains){const tip=pivot.localToWorld(V(x,.15,half));g.worldToLocal(tip);const p=line.geometry.attributes.position;p.setXYZ(0,x,3.4,sign*length/2);p.setXYZ(1,tip.x,tip.y,tip.z);p.needsUpdate=true;line.geometry.computeBoundingSphere();}}}
  updateWorld(t,dt,reduced=false){
   this.updateConstruction(dt,reduced);
-  const active=i=>!this.mobile||this.touring||this.selected===i||(this.sequence?.kind==='bridge'&&[this.sequence.index,this.sequence.index+1].includes(i));
+  const active=i=>domainAnimationActive(i,this);
   const moving=object=>{if(!this.mobile)return true;for(let p=object;p;p=p.parent){if(!p.visible)return false;if(Number.isInteger(p.userData.domainIndex))return active(p.userData.domainIndex);}return true;};
   for(const {object,speed}of this.rotating)if(moving(object))object.rotation.y=(object.userData.phase||0)+(reduced?0:t*speed);
   updateArchitecturalMotion(this.mobile?this.detailMotion?.filter(m=>moving(m.object)):this.detailMotion,t,reduced);
@@ -170,6 +158,9 @@ export class SudokuAtlas extends AtlasScene{
   if(this.touring&&!this.sequence){this.tourTime=reduced?Math.max(5,this.tourTime):this.tourTime+dt;const u=ease(this.tourTime/5),q=this.tourTime*.024,r=this.camera.aspect<1?185:124,target=V(0,0,7),pos=V(Math.sin(q)*r,94+Math.sin(q*.7)*8,7+Math.cos(q)*r);this.camera.position.lerpVectors(this.tourFrom,pos,u);this.currentTarget.lerpVectors(this.tourAim,target,u);this.camera.lookAt(this.currentTarget);}
   else if(this.sequence){this.updateSequence(dt,reduced);}else if(this.manual){const {target:aim,radius,theta,phi}=this.manual;this.camera.position.set(aim.x+radius*Math.sin(phi)*Math.sin(theta),aim.y+radius*Math.cos(phi),aim.z+radius*Math.sin(phi)*Math.cos(theta));this.camera.lookAt(aim);this.currentTarget.copy(aim);}
   else{this.flight=Math.min(1,this.flight+dt/(reduced?.01:1.65));const u=this.flight*this.flight*(3-2*this.flight);this.camera.position.lerpVectors(this.fromPos,this.toPos,u);this.currentTarget.lerpVectors(this.fromAim,this.toAim,u);this.camera.lookAt(this.currentTarget);}
-  this.boards.forEach((b,i)=>{const complete=this.done.includes(i+2);b.mesh.material.emissive.setHex(complete?THEMES[i].rim:0);b.mesh.material.emissiveIntensity=complete?.18:0;if(b.glow){b.glow.visible=complete;b.glow.material.opacity=complete?.14+Math.sin(t*.8)*.025:0;}});this.updateBridges();this.renderer.render(this.scene,this.camera);
+  this.boards.forEach((b,i)=>{const complete=this.done.includes(i+2);b.mesh.material.emissive.setHex(complete?THEMES[i].rim:0);b.mesh.material.emissiveIntensity=complete?.18:0;if(b.glow){b.glow.visible=complete;b.glow.material.opacity=complete?.14+Math.sin(t*.8)*.025:0;}});this.updateBridges();
+  // Keep the original soft shadows; update their map at 8 Hz on phones instead of every frame.
+  if(this.mobile&&this.renderer.shadowMap.enabled&&(reduced||t-this.lastShadowTime>=.125)){this.renderer.shadowMap.needsUpdate=true;this.lastShadowTime=t;}
+  this.renderer.render(this.scene,this.camera);
  }
 }
