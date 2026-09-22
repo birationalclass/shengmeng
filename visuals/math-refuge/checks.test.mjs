@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=31-site-final';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=36-board-detail';
 import * as Three from '../3d/vendor/three.module.js';
 import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
 import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
-import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js?v=31-site-final';
+import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js?v=36-board-detail';
 import {createHash} from 'node:crypto';
 import {bindCameraIntent} from './camera-intent.js';
-import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=31-site-final';
+import {BUILDING_SCALE,riverPoint,watercourse,LAWNS,GIANT_TREES,BAMBOO_GROVES,POOL_RECTS,poolTopology,inPool,inBuilding,BRIDGES,COURT_DECKS,COFFEE_PAD,SEA_TERRACE,SEA_STEPS,DISTANT_ISLANDS,HALL,DECK_Y,configureLectureRoot,lectureViewOffset,LECTURE_SCALE,ROOM_PADS,GARDEN_PADS,ORNAMENTAL_TREES} from './site-layout.js?v=36-board-detail';
 import {writingPlan,erasingPlan,writingPose,inkReveal,rowReveal,eraserPose,wetOpacity,chalkLength,inkGuides,ERASER_HALF_WIDTH,ERASER_HALF_HEIGHT} from './chalk-motion.js?v=22-handwritten-cover';
 import {chalkCopy,composeChalkPage} from './chalk-language.js';
 import {RetreatTime,daylightAt} from './retreat-time.js';
@@ -76,7 +76,7 @@ test('clock follows local wall time across midnight, resume and reduced motion; 
 test('compact sea terraces connect across seawater with three arch bridges',()=>{
   assert.deepEqual(POOL_RECTS,[]);assert.deepEqual(poolTopology(),{cells:[],edges:[]});
   assert.equal(BRIDGES.length,3);assert.equal(COURT_DECKS.length,2);
-  assert(SEA_TERRACE[1]===56&&SEA_TERRACE[1]>HALL.east);
+  assert(SEA_TERRACE[1]===54&&SEA_TERRACE[1]>HALL.east);
   const pads=[...COURT_DECKS,SEA_TERRACE,COFFEE_PAD];
   const dry=(x,z)=>pads.some(([a,b,c,d])=>x>a&&x<b&&z>c&&z<d);
   for(const b of BRIDGES){
@@ -141,7 +141,7 @@ test('eight finite camera chapters with auditorium, ocean and garden views',()=>
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=31-site-final','scene.js?v=31-site-final','camera-paths.js?v=31-site-final','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=31-site-final','landscape-shape.js?v=31-site-final']){
+  for(const file of ['index.html','app.js?v=36-board-detail','scene.js?v=36-board-detail','camera-paths.js?v=36-board-detail','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=31-site-final',root),'utf8');
-  for(const file of ['app.js?v=31-site-final','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=36-board-detail',root),'utf8');
+  for(const file of ['app.js?v=36-board-detail','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=31-site-final');
+  const sceneModule=await inlineAddon('./scene.js?v=36-board-detail');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -233,7 +233,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const fills=scene.children.filter(o=>o.isPointLight);assert.equal(fills.length,4);
     for(const lamp of fills){assert(!lamp.castShadow);assert.equal(lamp.userData.task,'seminar-fill');assert(lamp.position.x>HALL.west*BUILDING_SCALE&&lamp.position.x<HALL.east*BUILDING_SCALE);assert(lamp.intensity>0&&lamp.distance<16);}
     for(const name of ['Connected infinity pool and core water court','East infinity overflow sheet','Side infinity overflow sheet','Sunrise infinity edge'])assert(!scene.getObjectByName(name));
-    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,9);
+    assert.equal(result.islands.group.children.length,4);assert.equal(result.sculptures.length,8);
     for(const island of result.islands.group.children){
       const pos=island.geometry.attributes.position;
       for(let i=1;i<=96;i++)assert.equal(pos.getY(i),pos.getY(0),'Island pole must not split into vertical spikes');
@@ -242,7 +242,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const sculpture of result.sculptures){
       assert(result.layoutFloors.some(f=>f.y===0&&Math.abs(sculpture.position.x/BUILDING_SCALE-f.cx)+1.3<=f.w/2+.001&&Math.abs(sculpture.position.z/BUILDING_SCALE-f.cz)+1.3<=f.d/2+.001),'Each sculpture needs a complete dry pedestal pad: '+sculpture.name);
     }
-    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,9);
+    assert.equal(new Set(result.sculptures.map(o=>o.userData.facility)).size,8);
     const stairs=scene.children.filter(o=>o.name.startsWith('Sea access stair '));assert.equal(stairs.length,0);assert.equal(SEA_STEPS.length,0);
     assert(!scene.getObjectByName('Coffee cabin mathematical sculpture'));assert(scene.getObjectByName('Library open book sculpture').userData.openBook);
     assert(!LAWNS.some(l=>l.z===34));assert(!GARDEN_PADS.some(r=>r[0]===-22&&r[2]===29));
@@ -348,9 +348,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.deepEqual(scene.getObjectByName('Coffee machine').userData,{groupHeads:2,cups:2,hoppers:2,architectureScale:BUILDING_SCALE});
     assert(scene.getObjectByName('Coffee cabin sign'));assert(calls.includes('咖啡小屋'));
     for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
-    const glazing=scene.getObjectByName('Four-panel smart seminar glazing').userData;
-    assert.equal(glazing.panels,4);assert.equal(glazing.joints,3);assert(glazing.sealMetres<=.008);
-    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,4);
+    const glazing=scene.getObjectByName('Seamless smart seminar glazing').userData;
+    assert.equal(glazing.panels,1);assert.equal(glazing.joints,0);assert(glazing.sealMetres<=.008);
+    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,12);
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
     assert(sky.material.uniforms.turbidity.value<=2);
@@ -462,7 +462,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./board-hardware.js?v=36-board-detail',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -480,7 +480,27 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(lecture.report.id,'hu');assert.equal(lecture.pages[0].author,'胡勇');assert.equal(lecture.pages.length,26);
     assert.equal(lecture.reportButtons.find(button=>button.userData.selected).userData.reportId,'hu');
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('canonical'));await lecture.setLanguage('zh');
-    assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
+    assert.equal(boards.length,6);
+    const rails=scene.children.filter(o=>o.name.startsWith('Double-channel lift track'));assert.equal(rails.length,3);
+    for(const board of boards){
+      const body=board.getObjectByName('Solid opaque board body');assert(body?.isMesh);assert(body.scale.z>.07);
+      assert.equal(board.children.filter(o=>o.name==='Guide roller').length,4);
+      assert.equal(board.children.filter(o=>o.name==='Rail carriage bracket').length,4);
+      for(const edge of board.children.filter(o=>o.name==='Thin nanmu frame')){assert.equal(edge.scale.y,.035);assert(edge.material.map.isDataTexture);assert(edge.material.bumpMap);}
+      scene.updateMatrixWorld(true);
+      const center=board.getWorldPosition(new Three.Vector3()),ray=new Three.Raycaster(center.clone().add(new Three.Vector3(0,0,-.4)),new Three.Vector3(0,0,1));
+      assert(ray.intersectObject(body).length>0,'Rear view hits a solid back rather than vanishing');
+    }
+    for(const [column,eraser] of trayErasers.entries()){
+      const box=new Three.Box3().setFromObject(eraser),tray=scene.getObjectByName('Wide nanmu chalk tray '+(column+1));
+      assert(tray.userData.depth>=.5);assert(box.min.y>=tray.userData.floorTop-1e-7);
+      assert(box.min.z>-10.03-tray.userData.depth/2+.025&&box.max.z<-10.03+tray.userData.depth/2-.025,'Whole eraser is inside tray lips');
+      assert(box.min.z>boards[column*2+1].position.z+.08,'Eraser clears the frontmost moving frame');
+      assert(eraser.getObjectByName('Textured layered felt').material.bumpMap);
+      assert(eraser.getObjectByName('Rounded palm grip'));
+    }
+    assert.match(scene.getObjectByName('Smart glass report heading').userData.date,/^\d{4}\.\d{2}\.\d{2}$/);
+    const hover=lecture.reportButtons[0];hover.userData.hovered=true;lecture.update(.1);assert(hover.userData.sheen.material.uniforms.strength.value>0);lecture.update(.1,true);assert.equal(hover.userData.sheen.material.uniforms.strength.value,0);hover.userData.hovered=false;assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
@@ -490,7 +510,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(button.userData.singleToggle);
     for(const [column,control] of lecture.consoleButtons.entries()){
       const touchPosition=layoutRoot.localToWorld(control.position.clone()),halfWidth=control.geometry.parameters.width*.72/2;
-      for(const joint of [-5,0,5].map(v=>v*BUILDING_SCALE))assert(Math.abs(touchPosition.z-joint)>halfWidth+.20,'Entire control clears each glass joint');
+      assert.equal(control.position.x,22.4+column*5.6,'Language label centered beneath column');
       const center=22.4+column*5.6;
       assert(Math.abs(control.position.x-center)+control.geometry.parameters.width/2<2.65,'Control stays beneath its own board column');
       assert(touchPosition.y+control.geometry.parameters.height*.72/2<DECK_Y*BUILDING_SCALE+1.23,'Touch control clears the board backing');
@@ -535,7 +555,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(lecture.reportButtons.length,4);
     for(const b of lecture.reportButtons){
       const frameGap=19.4-(b.position.x+b.geometry.parameters.width/2);
-      assert(frameGap>.1&&frameGap<.2,'Selector sits immediately beside, and clear of, the blackboard frame');
+      assert(frameGap>.6&&frameGap<.8,'Selector moves slightly left and remains clear of the blackboard frame');
       assert(b.position.x-b.geometry.parameters.width/2>8.4);
     }
     await lecture.setLanguage('en');
@@ -608,7 +628,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=31-site-final',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=36-board-detail',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -657,7 +677,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=31-site-final',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=36-board-detail',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));
@@ -838,4 +858,29 @@ test('all report reveal rectangles isolate later lines, including inline scripts
       }
     }
   }
+});
+test('automatic glass doors open on hover and close only after a stable delay',async()=>{
+  const {createAutomaticDoors}=await import('./automatic-doors.js');
+  const system=createAutomaticDoors(Three,new Three.MeshBasicMaterial(),new Three.MeshBasicMaterial()),root=new Three.Group();
+  const group=system.add(root,{x:0,y:0,z:0,width:2,height:2,axis:'x',name:'test'});
+  const sensor=system.targets[0],sensorPosition=sensor.position.clone();
+  sensor.userData.hovered=true;for(let i=0;i<30;i++)system.update(.1);
+  assert(sensor.userData.opening>.9999);assert(sensorPosition.equals(sensor.position),'Fixed sensor cannot escape the pointer as leaves open');
+  assert(group.children[0].position.x< -1.5&&group.children[1].position.x>1.5);
+  sensor.userData.hovered=false;for(let i=0;i<10;i++)system.update(.1);assert(sensor.userData.opening>.99);
+  for(let i=0;i<50;i++)system.update(.1);assert(sensor.userData.opening<.001);system.dispose();
+});
+test('hover lights text without activating controls and cancels cleanly',()=>{
+  const events={},canvas={style:{cursor:'crosshair'},addEventListener(t,f){events[t]=f;},removeEventListener(t){delete events[t];}};
+  const target={userData:{action:'language'}},controls={enabled:true};let actions=0;
+  const binding=bindPhysicalButtons(canvas,controls,()=>target,()=>actions++);
+  events.pointermove({buttons:0});assert(target.userData.hovered);assert.equal(actions,0);assert.equal(canvas.style.cursor,'pointer');
+  events.pointerleave();assert(!target.userData.hovered);assert.equal(canvas.style.cursor,'crosshair');binding.dispose();assert.deepEqual(events,{});
+});
+test('date heading follows Shanghai midnight and upper rails cover all but stated openings',async()=>{
+  const {seminarDate}=await import('./smart-screen.js'),{perimeterRails}=await import('./upper-guards.js');
+  assert.equal(seminarDate(new Date('2026-09-22T16:01:00Z')),'2026.09.23');
+  const rectangles=[[0,10,0,8],[-2,2,3,5]],openings=[{axis:'x',fixed:5,from:-1.8,to:-.6}],segments=perimeterRails(rectangles,openings);
+  const length=edges=>edges.reduce((sum,[a,b,c,d])=>sum+Math.hypot(c-a,d-b),0);
+  assert(Math.abs(length(platformUnion(rectangles).edges)-length(segments)-1.2)<1e-8);
 });

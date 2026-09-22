@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=31-site-final';
-import {seaLevel} from './landscape-shape.js?v=31-site-final';
+import {perimeterRails} from './upper-guards.js?v=36-board-detail';
+import {createAutomaticDoors} from './automatic-doors.js?v=36-board-detail';
+import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';
+import {seaLevel} from './landscape-shape.js?v=36-board-detail';
 import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fixed-hall';
 
 // Architectural geometry for dry offshore decks, rooms and supported inter-storey stairs.
@@ -10,18 +12,36 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
   const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
   const meta=(name,data)=>{const o=new THREE.Object3D();o.name=name;o.userData=data;scene.add(o);return o;};
+  const railJoint=new THREE.SphereGeometry(1,12,8),railAnchors=new Set(),joints=new Set();
   // Rails and posts use the very same anchors, so every rail meets a post and
   // every post lands on a tread or landing, including the changes of slope.
   function supportedRail(name,anchors){
     const height=.95/S,tops=anchors.map(p=>[p[0],p[1]+height,p[2]]);
     for(const [i,p] of anchors.entries()){
-      box([p[0],p[1]+.012,p[2]],[.105,.024,.105],steel);
-      beam(p,tops[i],.018/S,brass);
+      const key=p.map(v=>v.toFixed(5)).join(',');
+      if(!railAnchors.has(key)){railAnchors.add(key);box([p[0],p[1]+.012,p[2]],[.105,.024,.105],steel);beam(p,tops[i],.018/S,brass);}
+      for(const fraction of [1,.48]){
+        const radius=(fraction===1?.025:.018)/S,jointKey=key+':'+fraction;
+        if(!joints.has(jointKey)){joints.add(jointKey);instance(railJoint,brass,[p[0],p[1]+height*fraction,p[2]],[radius,radius,radius]);}
+      }
       if(i)for(const fraction of [1,.48])beam(
         [anchors[i-1][0],anchors[i-1][1]+height*fraction,anchors[i-1][2]],
         [p[0],p[1]+height*fraction,p[2]],fraction===1?.025/S:.012/S,brass);
     }
-    meta(name,{anchors,tops,height,basePlates:true});
+    meta(name,{anchors,tops,height,basePlates:true,continuousJoints:true});
+  }
+  function guardTerrace(name,rectangles,y,openings=[]){
+    const segments=perimeterRails(rectangles,openings),height=.95/S;
+    for(const [index,[a,b,c,d]] of segments.entries()){
+      const length=Math.hypot(c-a,d-b),count=Math.max(1,Math.ceil(length/1.3));
+      const anchors=Array.from({length:count+1},(_,i)=>[a+(c-a)*i/count,y,b+(d-b)*i/count]);
+      supportedRail(name+' edge '+index,anchors);
+      for(let i=0;i<count;i++){
+        const p=anchors[i],q=anchors[i+1],width=length/count-.02;
+        box([(p[0]+q[0])/2,y+height*.48,(p[2]+q[2])/2],a===c?[.024,height*.80,width]:[width,height*.80,.024],glass);
+      }
+    }
+    meta(name,{rectangles,segments,openings,height,completePerimeter:true});
   }
   function supportedFlight(name,x,startZ,count,tread,rise,width,landingZ){
     const top=i=>DECK_Y+rise*(i+1)/count,lastZ=startZ-(count-1)*tread;
@@ -41,7 +61,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     for(let i=0;i<count;i++)box([x,top(i)-rise/count-.025,startZ-i*tread],[width-.10,.06,.13],steel);
     meta(name,{count,x,startZ,lastZ,tread,rise,width,landingZ});
   }
-  const lightingZones=[];
+  const lightingZones=[],automaticDoors=createAutomaticDoors(THREE,glass,steel);
   const lampRing=new THREE.TorusGeometry(1,.025,8,64);
   const shade=new THREE.LatheGeometry([new THREE.Vector2(.045,0),new THREE.Vector2(.14,-.035),new THREE.Vector2(.32,-.12),new THREE.Vector2(.48,-.24),new THREE.Vector2(.50,-.27),new THREE.Vector2(.47,-.30)],40);
   const shadeMaterial=new THREE.MeshStandardMaterial({color:'#a6957b',roughness:.5,metalness:.45,side:THREE.DoubleSide});
@@ -106,10 +126,16 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
-      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:4,spacing:5,frame:.022/S,seal:.008/S}:undefined;
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.022/S,seal:.008/S}:undefined;
       if(doors.includes(side)){
-        const gap=1.45,pane=(width-gap)/2;
-        for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,style);
+        const isHall=name==='Low sea-facing seminar hall',gap=isHall?2.0:1.45,pane=(width-gap)/2;
+        const fixedStyle=isHall?{panels:side==='west'?2:1,frame:.022/S,seal:.005/S}:style;
+        for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
+        if(isHall){
+          const doorHeight=Math.min(h,2.8/S);
+          automaticDoors.add(scene,{x,y,z,width:gap,height:doorHeight,axis,name:side});
+          glazing(x,y+doorHeight+.075,z,gap,h-doorHeight-.075,axis,{panels:1,frame:.022/S});
+        }
       }else glazing(x,y,z,width,h,axis,style);
     }
     for(const side of [-1,1]){box([cx,y+h-.12,cz+side*(d/2-.18)],[w-.36,.018,.022],light);box([cx+side*(w/2-.18),y+h-.12,cz],[.022,.018,d-.36],light);}
@@ -126,7 +152,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const eastUpper=room('Discussion villa',11.5,-4,10,18,3.2,0,['south','west','east'],false);
   room('Upper private studies',-7,-7,9,10,2.8,upper,['south'],false);
   room('Upper small seminar',11,-7,8,10,2.8,eastUpper,['south'],false);
-  for(const [x,y] of [[-6,upper+DECK_Y],[11.5,eastUpper+DECK_Y]]){railing(x,y,5,12);sofa(x-2,y,3);table(x+1,y,3,1.2,.8);}
+  for(const [x,y] of [[-6,upper+DECK_Y],[11.5,eastUpper+DECK_Y]]){sofa(x-2,y,3);table(x+1,y,3,1.2,.8);}
   books(-6,DECK_Y,-12.65,10);
   sofa(-8,DECK_Y,-5);sofa(-4,DECK_Y,-5);sofa(-8,DECK_Y,0,Math.PI);table(-6,DECK_Y,-2,2.7,1.1);
   table(11,DECK_Y,-4,2.2,1.3);sofa(11,DECK_Y,-7);sofa(11,DECK_Y,-1,Math.PI);
@@ -135,9 +161,10 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   // Exterior stair runs beside the west wing, linked to the lower sea terraces.
   const rise=upper,steps=28;
   for(let i=0;i<steps;i++){box([-12.75,DECK_Y+rise*(i+.5)/steps,12-i*.56],[1.25,rise/steps,.57],timber);box([-12.75,DECK_Y+rise*(i+1)/steps+.005,12-i*.56+.25],[1.10,.012,.018],light);}
-  floor(upper,2,1.2,-12.25,-3.98);
+  floor(upper,2.2,1.2,-12.25,-3.98);
   supportedFlight('Villa exterior stair',-12.75,12,steps,.56,rise,1.25,-3.98);
-  supportedRail('Villa landing return',[[-13.285,upper+DECK_Y,-3.98],[-13.285,upper+DECK_Y,-4.49],[-12.25,upper+DECK_Y,-4.49]]);
+  guardTerrace('West villa complete upper guard',[[-12.275,.275,-13.275,5.275],[-13.35,-11.15,-4.58,-3.38]],upper+DECK_Y,[{axis:'x',fixed:-3.38,from:-13.285,to:-12.215}]);
+  guardTerrace('East villa complete upper guard',[[6.225,16.775,-13.275,5.275]],eastUpper+DECK_Y);
   for(const x of [-13.1,-11.6])box([x,(DECK_Y+upper)/2,-4.2],[.14,upper-DECK_Y,.14],steel);
 
   // Quiet, detached library and two compact residential villas landward.
@@ -207,11 +234,12 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
   meta('Expanded sea lounge terrace',{bounds:SEA_TERRACE,eastClearance:te-HALL.east,pool:false,heightAboveSea:(DECK_Y-seaLevel)*S});
   // An open view corridor: only a low roofed link, not a tall structure.
-  floor(0,1,2.2,26.5,2);
-  box([30.5,2.55,2],[9,.13,2.4],edge);
-  for(const x of [28,31,34])for(const z of [.9,3.1])box([x,1.3,z],[.09,2.6,.09],steel);
+  const canopyStart=24.5,canopyEnd=HALL.west+.02;
+  box([(canopyStart+canopyEnd)/2,2.55,0],[canopyEnd-canopyStart,.13,2.4],edge);
+  for(const x of [25,29.5,34.4])for(const z of [-1.1,1.1])box([x,1.3,z],[.09,2.6,.09],steel);
+  meta('Aligned rear entrance canopy',{startX:canopyStart,endX:canopyEnd,centerZ:0,bridgeZ:BRIDGES[1].z,doorZ:0});
   const cx=(HALL.west+HALL.east)/2,cz=0,hallDepth=HALL.south-HALL.north;
-  room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','south'],false,false);
+  room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','north','south'],false,false);
   const carpetMaterial=new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1,metalness:0,envMapIntensity:.08,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.12,.12),roughnessMap:pale.roughnessMap});
   const tierCarpets=['#7d6e5c','#8e7e6a'].map(color=>{const material=carpetMaterial.clone();material.color.set(color);return material;});
   const carpet=new THREE.Mesh(new THREE.BoxGeometry(HALL.east-HALL.west-.16,.024,HALL.south-HALL.north-.16),carpetMaterial);
@@ -220,12 +248,26 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const hallUpper=DECK_Y+HALL.clearHeight/S+.20;
   floor(hallUpper,8.95,20.55,cx,0);
   room('Upper seminar lounge',cx,0,7,13,2.8,hallUpper,['west','south'],false,true);
-  for(const z of [-10,10])railing(cx,hallUpper+DECK_Y,z,8.5);
+
   sofa(cx,hallUpper+DECK_Y,-3);table(cx,hallUpper+DECK_Y,0,2,1.1);
   books(cx,hallUpper+DECK_Y,-6.2,5);
   const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
-  for(const z of [-5,0,5])linearLamp(cx,DECK_Y+HALL.clearHeight/S-.16,z,6.5);
+  // Selected concept A: one low suspended oval, clear of the task lighting.
+  const pendant=new THREE.Group();pendant.name='Floating oval seminar pendant';pendant.position.set(37.4,DECK_Y+HALL.clearHeight/S-.45,0);scene.add(pendant);
+  const ovalGeometries=[];
+  function ovalBand(rx,rz,width,depth,material,dy){
+    const shape=new THREE.Shape();shape.absellipse(0,0,rx,rz,0,Math.PI*2,false,0);
+    const hole=new THREE.Path();hole.absellipse(0,0,rx-width,rz-width,0,Math.PI*2,true,0);shape.holes.push(hole);
+    const geometry=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,steps:1,curveSegments:80});ovalGeometries.push(geometry);
+    const mesh=new THREE.Mesh(geometry,material);mesh.rotation.x=Math.PI/2;mesh.position.y=dy;pendant.add(mesh);
+  }
+  ovalBand(1.55,5.5,.075,.09,brass,0);ovalBand(1.532,5.482,.037,.008,light,-.091);
+  for(const angle of [Math.PI/4,Math.PI*3/4,Math.PI*5/4,Math.PI*7/4]){
+    const x=37.4+1.51*Math.cos(angle),z=5.46*Math.sin(angle);
+    beam([x,pendant.position.y,z],[x,DECK_Y+HALL.clearHeight/S-.035,z],.006/S,steel);
+  }
+  pendant.userData={concept:'A',radii:[1.55,5.5],taskLightClearance:HALL.boardX-1.05-(37.4+1.55),suspensions:4};
   for(const z of [-4.5,4.5])lightingZones.push({name:'Seminar downlight '+z,position:[cx,DECK_Y+HALL.clearHeight/S-.35,z],target:[cx,DECK_Y,z],gain:1,color:'#ffe8cf',power:220});
   // Recessed asymmetric wall-wash bars sit ahead of the boards, above eye level.
   // Separate lighting circuits keep the chalk visible without brightening the glass.
@@ -242,16 +284,15 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
-  const n=34,stairX=33.3;
-  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,11.25-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,11.25-i*.3+.13],[1.14,.012,.018],light);}
-  floor(hallUpper,3.8,2.4,34.4,0);
-  supportedFlight('Hall exterior stair',stairX,11.25,n,.3,hallUpper,1.3,.9);
-  supportedRail('Hall landing outer return',[[32.74,hallUpper+DECK_Y,.9],[32.74,hallUpper+DECK_Y,0],[32.74,hallUpper+DECK_Y,-1.05],[33.6,hallUpper+DECK_Y,-1.05],[34.5,hallUpper+DECK_Y,-1.05]]);
-  supportedRail('Hall landing inner return',[[33.86,hallUpper+DECK_Y,.9],[34.5,hallUpper+DECK_Y,.9]]);
-  for(const z of [-.9,.9])box([32.74,(DECK_Y+hallUpper)/2,z],[.14,hallUpper-DECK_Y,.14],steel);
+  const n=34,stairX=33.3,stairStart=9.6,landingCenter=-1.65;
+  for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*.3],[1.3,hallUpper/n,.305],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*.3+.13],[1.14,.012,.018],light);}
+  floor(hallUpper,3.8,2.4,34.4,landingCenter);
+  supportedFlight('Hall exterior stair',stairX,stairStart,n,.3,hallUpper,1.3,landingCenter+.9);
+  guardTerrace('Hall complete upper guard',[[34.525,43.475,-10.275,10.275],[32.5,36.3,landingCenter-1.2,landingCenter+1.2]],hallUpper+DECK_Y,[{axis:'x',fixed:landingCenter+1.2,from:32.74,to:33.86}]);
+  for(const z of [landingCenter-.9,landingCenter+.9])box([32.74,(DECK_Y+hallUpper)/2,z],[.14,hallUpper-DECK_Y,.14],steel);
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
   meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});
-  meta('Four-panel smart seminar glazing',{panels:4,joints:3,sealMetres:.008,frameMetres:.022,touchLanguage:true});
+  meta('Seamless smart seminar glazing',{panels:1,joints:0,sealMetres:0,frameMetres:.022,touchLanguage:true});
   // A small independent coffee cabin on the north platform.
   const [cw,ce,cn,cs]=COFFEE_PAD;floor(0,ce-cw,cs-cn,(cw+ce)/2,(cn+cs)/2);
   room('North coffee cabin',39,-22,6,6,2.9,0,['south'],false,true);
@@ -342,8 +383,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
   // Sea access has been removed; the continuous platform fascia and edge lights
   // follow the same complete perimeter without stair projections.
-  return {blind,seating,lightingZones,
+  return {blind,seating,lightingZones,automaticDoors,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

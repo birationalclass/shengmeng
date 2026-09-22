@@ -15,7 +15,7 @@ export function configureLectureRoot(root){
 export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
 // Separate dry decks are joined by shallow arch bridges above open sea.
 export const COURT_DECKS=[[-24,1.5,-25.5,25.5],[5.5,18,-25.5,25.5]];
-export const SEA_TERRACE=[26,56,-15,18];
+export const SEA_TERRACE=[24,54,-16.5,16.5];
 export const COFFEE_PAD=[32.8,44,-26,-17];
 export const SEA_STEPS=[];
 
@@ -29,7 +29,7 @@ export const DISTANT_ISLANDS=[
 export const POOL_RECTS=[];
 export const inPool=()=>false;
 export const poolTopology=()=>({cells:[],edges:[]});
-export const BRIDGES=[{x:3.5,z:8,axis:'x',span:6,width:2,rise:.3},{x:22,z:2,axis:'x',span:10,width:2.4,rise:.4},{x:39,z:-16,axis:'z',span:4,width:2,rise:.25}];
+export const BRIDGES=[{x:3.5,z:8,axis:'x',span:6,width:2,rise:.3},{x:22,z:0,axis:'x',span:10,width:2.4,rise:.4},{x:39,z:-16.75,axis:'z',span:3.5,width:2,rise:.25}];
 export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-35,-23,-2,12]];
 export const inGarden=(x,z)=>GARDEN_PADS.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
 export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24],[36,42,-25,-19]];

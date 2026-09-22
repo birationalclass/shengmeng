@@ -6,19 +6,19 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=31-site-final';
-import {createLecture} from './lecture.js?v=35-responsive-reports';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=31-site-final';
-import {seaLevel} from './landscape-shape.js?v=31-site-final';
+import {createRetreat} from './scene.js?v=36-board-detail';
+import {createLecture} from './lecture.js?v=36-board-detail';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
+import {seaLevel} from './landscape-shape.js?v=36-board-detail';
 import {createChalkReader} from './chalk-reader.js?v=32-report-position';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=31-site-final';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=36-board-detail';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
-import {bindPhysicalButtons} from './physical-buttons.js?v=22-handwritten-cover';
+import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
 import {motionCoordinate} from './camera-motion.js';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
@@ -140,6 +140,7 @@ function tick(stamp){
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden||!entered)return;
   if(lecture)lecture.update(dt,reduced.matches);
+  retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
     if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(0);
@@ -306,7 +307,7 @@ function installPhysicalControls(){
   const hit=e=>{
     const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
     scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
-    const candidate=ray.intersectObjects([...lecture.consoleButtons,...lecture.reportButtons],false)[0];if(!candidate||candidate.distance>15)return null;
+    const candidate=ray.intersectObjects([...lecture.hoverTargets,...retreat.campus.automaticDoors.targets],false)[0];if(!candidate||candidate.distance>15)return null;
     // Ignore transparent glazing, but opaque roof/walls must block a press.
     for(const h of ray.intersectObjects(scene.children,true)){
       if(h.distance>=candidate.distance-.015)break;

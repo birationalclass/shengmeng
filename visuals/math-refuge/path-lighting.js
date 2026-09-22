@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js?v=31-site-final';
+import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js?v=36-board-detail';
 // Shared falloff patches avoid a separate realtime shadow/light pass per lantern.
 export function createPathLighting(scene,{box,beam,materials}){
   const {stone,steel,brass}=materials;

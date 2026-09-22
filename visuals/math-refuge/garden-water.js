@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {riverPoint,BUILDING_SCALE} from './site-layout.js?v=31-site-final';
+import {riverPoint,BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
 
 // One connected geometric watercourse; no extra planar reflection rendering.
 export function createGardenWater(scene){

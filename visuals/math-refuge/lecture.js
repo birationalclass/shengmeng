@@ -7,6 +7,9 @@ import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-positi
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
 import {createReportLoader} from './report-loader.js?v=35-responsive-reports';
 
+import {createBoardHardware,TRAY} from './board-hardware.js?v=36-board-detail';
+import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
+
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
@@ -41,7 +44,7 @@ export async function createLecture(scene,renderer){
   }
   await load(0,openingReport.cover);
   const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=true,accumulator=0,writingSpeed=1;
-  const frameMaterial=new THREE.MeshStandardMaterial({color:'#735c3e',roughness:.65});
+  const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const wall=new THREE.Mesh(new THREE.BoxGeometry(17.2,4.8,.16),new THREE.MeshStandardMaterial({color:'#102421',roughness:1}));
   wall.position.set(28,2.65,-10.82);wall.name='Six-board lecture wall';scene.add(wall);
@@ -51,7 +54,20 @@ export async function createLecture(scene,renderer){
   function part(parent,p,s,material){const mesh=new THREE.Mesh(cube,material);mesh.position.fromArray(p);mesh.scale.fromArray(s);parent.add(mesh);return mesh;}
   for(let pair=0;pair<3;pair++){
     const x=22.4+pair*5.6;
-    for(const dx of [-2.76,2.76])part(scene,[x+dx,2.7,-10.6],[.045,4.75,.09],metal);
+    const track=new THREE.Group();track.name='Double-channel lift track '+(pair+1);scene.add(track);
+    track.userData={column:pair,depths:[-10.505,-10.345],travel:[1.45,3.7],wallMounted:true};
+    for(const sign of [-1,1]){
+      const railX=x+sign*2.745;
+      for(const z of [-10.505,-10.345]){
+        part(track,[railX+sign*.033,2.66,z],[.028,4.94,.13],metal);
+        for(const dz of [-.066,.066])part(track,[railX,2.66,z+dz],[.075,4.94,.015],metal);
+      }
+      for(const y of [.30,2.65,5.02]){
+        part(track,[railX,y,-10.61],[.09,.075,.30],metal);
+        part(track,[railX,y,-10.735],[.16,.17,.03],metal);
+      }
+    }
+    for(const y of [.22,5.1])part(track,[x,y,-10.51],[5.58,.06,.43],metal);
     for(let side=0;side<2;side++){
       const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16);
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
@@ -61,45 +77,52 @@ export async function createLecture(scene,renderer){
       const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;const roughCtx=roughCanvas.getContext('2d');roughCtx.fillStyle='white';roughCtx.fillRect(0,0,W/4,H/4);
       const roughTexture=new THREE.CanvasTexture(roughCanvas);
       const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:roughTexture,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0}));
-      group.add(surface);
-      for(const y of [-BOARD_H/2,BOARD_H/2])part(group,[0,y,.025],[BOARD_W+.1,.07,.11],frameMaterial);
-      for(const px of [-BOARD_W/2,BOARD_W/2])part(group,[px,0,.025],[.07,BOARD_H,.11],frameMaterial);
+      surface.name='Matte writing face';group.add(surface);
+      const body=part(group,[0,0,-.043],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
+      for(const y of [-.65,.65]){const brace=part(group,[0,y,-.094],[BOARD_W-.16,.035,.022],frameMaterial);brace.name='Rear nanmu stiffener';}
+      for(const y of [-BOARD_H/2,BOARD_H/2]){const edge=part(group,[0,y,-.026],[BOARD_W+.035,.035,.12],frameMaterial);edge.name='Thin nanmu frame';}
+      for(const px of [-BOARD_W/2,BOARD_W/2]){const edge=part(group,[px,0,-.026],[BOARD_H,.035,.12],frameMaterial);edge.rotation.z=Math.PI/2;edge.name='Thin nanmu frame';}
+      for(const sign of [-1,1])for(const y of [-.70,.70]){
+        const carriage=part(group,[sign*2.702,y,-.055],[.145,.13,.055],metal);carriage.name='Rail carriage bracket';
+        const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.049,.049,.045,12),hardware.rubber);
+        wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.055);group.add(wheel);
+      }
       part(group,[0,-BOARD_H/2-.07,.06],[.55,.05,.09],metal);
       boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
     }
-    part(scene,[x,.33,-10.2],[5.4,.07,.23],frameMaterial);
-    part(scene,[x,.385,-10.085],[5.4,.04,.025],metal);
+    const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,floorTop:TRAY.top};scene.add(tray);
+    part(tray,[x,TRAY.y,TRAY.z],[5.42,.06,TRAY.depth],frameMaterial);
+    for(const z of [TRAY.z-TRAY.depth/2,TRAY.z+TRAY.depth/2])part(tray,[x,.372,z],[5.42,.074,.025],frameMaterial);
+    for(const dx of [-2.71,2.71])part(tray,[x+dx,.372,TRAY.z],[.025,.074,TRAY.depth],frameMaterial);
     for(let j=0;j<4;j++){
       const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
-      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,.383,-10.2);
+      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z);
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
     }
   }
-  // One synchronized glass toggle below each board column. Align all three
-  // toward the right of their column so the middle control clears the glass joint.
+  // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
   for(let column=0;column<3;column++){
     const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:0,depthWrite:false,toneMapped:false}));
-    button.name=`Smart glass language touch surface ${column+1}`;button.position.set(23.9+column*5.6,-.16,-11.34);
-    button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:column===0?1:2,canvas:touchCanvas,texture:touchTexture};
+    button.name=`Smart glass language touch surface ${column+1}`;button.position.set(22.4+column*5.6,-.16,-11.34);
+    button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:0,canvas:touchCanvas,texture:touchTexture};
     const label=new THREE.Mesh(new THREE.PlaneGeometry(2.16,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
-    label.position.z=.008;button.add(label);scene.add(button);consoleButtons.push(button);
+    label.position.z=.008;label.userData.screenLabel=true;button.add(label);addTextSheen(THREE,button,touchTexture,2.16,.60);scene.add(button);consoleButtons.push(button);
   }
   function setConsoleState(){
     if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
     for(const button of consoleButtons)button.userData.lastLabel=language;
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
-    c.textAlign='center';c.shadowColor='#4fe3d8';c.shadowBlur=12;
-    c.font='600 184px "PingFang SC", sans-serif';c.fillStyle='#ffffff';
-    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,250);
-    c.shadowBlur=0;c.fillStyle='#d9fff7';c.fillRect(290,316,444,7);
+    c.textAlign='center';c.shadowBlur=0;
+    c.font='400 184px '+SCREEN_FONT;c.fillStyle=language==='zh'?'#f0e4ca':'#b9c9c6';c.fillText('中',315,250);
+    c.font='400 176px Baskerville, "Iowan Old Style", Georgia, serif';c.fillStyle=language==='en'?'#f0e4ca':'#b9c9c6';c.fillText('Eng',675,250);
     touchTexture.needsUpdate=true;
   }
   const reportButtons=[],reportTextures=[];
-  // Keep the full-size touch targets beside the board frame (0.15 local units clear).
-  const reportX=16.9;
+  // Move the report list slightly left, retaining its full-size hit targets.
+  const reportX=16.35;let dateLabel='',dateCheck=0;
   function glassLabel(width,height,x,y,name){
     const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=240;
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;reportTextures.push(texture);
@@ -107,24 +130,29 @@ export async function createLecture(scene,renderer){
     mesh.position.set(x,y,-11.332);mesh.name=name;scene.add(mesh);return {mesh,canvas,texture};
   }
   const reportHeader=glassLabel(4.6,.55,reportX,4.45,'Smart glass report heading');
+  addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.55);
   for(const [index,report] of REPORTS.entries()){
     const label=glassLabel(4.6,.9,reportX,3.55-index*1.05,`Smart glass report ${report.id}`);
     const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,toneMapped:false,color:'#7be7df'}));
     button.position.set(reportX,3.55-index*1.05,-11.34);button.name=`Report selection ${report.speaker}`;
-    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);button.add(label.mesh);scene.add(button);
-    button.userData={action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture};reportButtons.push(button);
+    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,.9);scene.add(button);
+    Object.assign(button.userData,{action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture});reportButtons.push(button);
   }
   function setReportState(){
-    const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle='#c5f8ef';header.font='500 66px "PingFang SC", sans-serif';
-    header.fillText(language==='zh'?'报告人 / 报告主题':'SPEAKER / TOPIC',996,154);reportHeader.texture.needsUpdate=true;
+    dateLabel=seminarDate();
+    const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle=silverInk(header);header.font='400 78px Baskerville, "Iowan Old Style", Georgia, serif';
+    header.fillText(dateLabel,996,154);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
     for(const [index,button] of reportButtons.entries()){
       const report=REPORTS[index],waiting=report.id===pendingReport?.id,selected=report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
-      c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowColor='#56e4d4';c.shadowBlur=selected?8:2;c.fillStyle=selected?'#fff2cf':'#e5fff8';
-      c.font='600 78px "PingFang SC", sans-serif';c.fillText(language==='zh'?report.speaker:report.speakerEn,996,91);
-      c.shadowBlur=0;c.font='400 37px "PingFang SC", sans-serif';c.fillStyle='#d2f5e9';
+      c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowBlur=0;c.fillStyle=silverInk(c);
+      const font=language==='zh'?SCREEN_FONT:'Baskerville, "Iowan Old Style", Georgia, serif';
+      c.font='400 78px '+font;
+      const name=language==='zh'?report.speaker:report.speakerEn;c.fillText(name,996,91);
+      if(selected){const px=996-c.measureText(name).width-38;c.font='400 55px Georgia, serif';c.fillStyle='#e4cf9c';c.fillText('▸',px,88);}
+      c.font='400 40px '+font;c.fillStyle=silverInk(c);
       const topic=waiting?(language==='zh'?'正在准备报告…':'Preparing report…'):(language==='zh'?report.topic:report.topicEn),words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;
       for(const word of words){if(c.measureText(line+word).width>960){c.fillText(line,996,y);line=word;y+=47;}else line+=word;}c.fillText(line,996,y);
-      if(selected){c.fillStyle='#f4d6a1';c.fillRect(816,224,180,4);}button.userData.texture.needsUpdate=true;button.userData.selected=selected;
+      button.userData.texture.needsUpdate=true;button.userData.selected=selected;button.userData.selectionPointer=selected;
     }
   }
   const touchButtons=[...consoleButtons,...reportButtons];
@@ -132,10 +160,13 @@ export async function createLecture(scene,renderer){
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
   const chalkAxis=new THREE.Vector3(.22,-.42,.88).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
   const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
-  const eraser=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
-  const felt=new THREE.Mesh(new THREE.BoxGeometry(eraserWidth*.98,eraserHeight*.98,.025),new THREE.MeshStandardMaterial({color:'#353d36',roughness:1}));felt.position.z=-.0475;eraser.add(felt);
+  const eraser=new THREE.Mesh(hardware.roundedBox(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
+  const felt=new THREE.Mesh(hardware.roundedBox(eraserWidth*.98,eraserHeight*.98,.025,.012),hardware.felt);felt.name='Textured layered felt';felt.position.z=-.0525;eraser.add(felt);
+  const grip=new THREE.Mesh(hardware.roundedBox(eraserWidth*.7,eraserHeight*.54,.018,.016),frameMaterial);grip.name='Rounded palm grip';grip.position.z=.045;eraser.add(grip);
+  for(const sign of [-1,1]){const seam=part(eraser,[0,sign*eraserHeight*.33,.043],[eraserWidth*.76,.006,.004],hardware.rubber);seam.name='Recessed finger groove';}
+  for(let i=0;i<3;i++){const fibre=part(eraser,[0,0,-.044-i*.007],[eraserWidth*.985,eraserHeight*.985,.003],hardware.felt);fibre.name='Felt laminate';}
   const parkedErasers=Array.from({length:3},(_,column)=>{
-    const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,.430,-10.2);parked.rotation.set(-Math.PI/2,0,.035);
+    const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,TRAY.restY,TRAY.z);parked.rotation.set(-Math.PI/2,0,.035);
     parked.userData={column,resting:true};scene.add(parked);return parked;
   });
   eraser.visible=false;
@@ -199,7 +230,8 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.08:0,18,dt);if(playing&&!reduced)effectTime+=dt;
+    dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.08:0,18,dt);updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
+    dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
@@ -238,7 +270,7 @@ export async function createLecture(scene,renderer){
         if(playing&&!starting)eraserPickup.elapsed+=dt;
         const t=Math.min(1,eraserPickup.elapsed/1.4),ease=t*t*(3-2*t);
         const p=eraserPose(0,W,H,boards[clock.active].wet?.plan);
-        positionTool(eraserContact,p.x,p.y);eraserContact.position.z+=.047+p.lift;eraserContact.rotation.set(.03,0,-p.angle);
+        positionTool(eraserContact,p.x,p.y);eraserContact.position.z+=.052+p.lift;eraserContact.rotation.set(.03,0,-p.angle);
         eraser.position.lerpVectors(eraserPickup.position,eraserContact.position,ease);
         eraser.position.z+=Math.sin(Math.PI*t)*.22;
         eraser.quaternion.slerpQuaternions(eraserPickup.quaternion,eraserContact.quaternion,ease);
@@ -263,7 +295,7 @@ export async function createLecture(scene,renderer){
       dustAccumulator+=dt;
       if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
     }else previousTip=null;
-    if(erasing&&!eraserPickup){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.047+p.lift;eraser.rotation.set(.03,0,-p.angle);}
+    if(erasing&&!eraserPickup){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.052+p.lift;eraser.rotation.set(.03,0,-p.angle);}
     fallingDust.visible=!reduced;
     if(playing&&!reduced)for(let i=0;i<particleCount;i++){
       const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;
@@ -278,7 +310,7 @@ export async function createLecture(scene,renderer){
   function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;clock.ended=clock.page===pages.length-1;version++;}
   boards.forEach((_,i)=>draw(i));
   return {
-    update,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,setConsoleState,
+    update,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,hoverTargets:[...touchButtons,reportHeader.mesh],setConsoleState,
     get pendingReport(){return pendingReport;},
     preloadReports:()=>Promise.allSettled(REPORTS.map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
@@ -314,6 +346,6 @@ export async function createLecture(scene,renderer){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4)),
-    dispose(){reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
+    dispose(){hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }

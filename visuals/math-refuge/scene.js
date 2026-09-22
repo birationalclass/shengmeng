@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import {createBoats} from './boats.js?v=31-site-final';
-import {createOpenBook} from './book-sculpture.js?v=31-site-final';
+import {createBoats} from './boats.js?v=36-board-detail';
+import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js';
-import {createPathLighting} from './path-lighting.js?v=31-site-final';
+import {createPathLighting} from './path-lighting.js?v=36-board-detail';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=31-site-final';
-import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=31-site-final';
+import {createLandscape} from './landscape.js?v=36-board-detail';
+import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=36-board-detail';
 import {createDistantIslands} from './distant-islands.js?v=20-slower-tour';
-import {createCampus} from './campus.js?v=31-site-final';
+import {createCampus} from './campus.js?v=36-board-detail';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -34,7 +34,7 @@ export async function createRetreat(renderer,scene,report){
   const cloth={normalMap:details.clothNormal,roughnessMap:details.clothRoughness,normalScale:new THREE.Vector2(.28,.28)};
   const pale=mat('#c3b59d',.98,0,cloth),darkFabric=mat('#465955',1,0,cloth),soil=mat('#302d21',1),leaf=mat('#46734e',.9);
   const ceramic=mat('#d6cab6',.65),glass=new THREE.MeshPhysicalMaterial({color:'#c3e7dc',roughness:.3,metalness:0,ior:1.3,specularIntensity:.2,envMapIntensity:.22,transparent:true,opacity:.11,depthWrite:false,side:THREE.FrontSide});
-  const smartGlass=glass.clone();smartGlass.name='Four low-iron smart glass panels';smartGlass.roughness=.08;smartGlass.opacity=.075;smartGlass.color.set('#d5eef0');
+  const smartGlass=glass.clone();smartGlass.name='Seamless low-iron smart glass';smartGlass.roughness=.08;smartGlass.opacity=.075;smartGlass.color.set('#d5eef0');
   const light=mat('#dac6a5',.95,0,{emissive:'#d7b685',emissiveIntensity:.5});
   const blackboard=mat('#153f38',.95),ink=mat('#dddcc5',1);
   const materials={steel,stone,edge,brass,timber,pale,darkFabric,soil,leaf,glass,smartGlass,light,blackboard,ink};
@@ -93,7 +93,8 @@ export async function createRetreat(renderer,scene,report){
       const gap=style.seal||.006,pane=width/n;
       for(let i=0;i<n;i++){
         const k=(i+.5)*pane-width/2;
-        box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],axis==='x'?[pane-gap,height,.024]:[.024,height,pane-gap],smartGlass);
+        const clearWidth=n===1?width:pane-gap;
+        box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],axis==='x'?[clearWidth,height,.024]:[.024,height,clearWidth],smartGlass);
       }
       for(let i=1;i<n;i++){
         const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[gap,height,gap],rubber);
@@ -223,7 +224,7 @@ export async function createRetreat(renderer,scene,report){
   // entrances and sea-access stairs. Shared knot geometry bounds draw cost.
   const sculptureGeometry=new Map(),sculptures=[];
   const sculptureEntries=[
-    ['Academic lounge',-5,10,2,3],['Seminar hall',35.3,14.2,3,4],
+    ['Academic lounge',-5,10,2,3],
     ['Discussion room',14.5,9.5,2,5],
     ['Residence I',-50.5,-25.5,2,3],['Residence II',-41.5,-35.5,2,5],
     ['Tea service',-28.8,21.5,3,4],['Tea pavilion',-38.7,-25.8,3,5],

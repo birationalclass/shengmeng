@@ -1,5 +1,5 @@
 // All viewpoints share the peninsula plan: east +X, north -Z.
-import {BUILDING_SCALE} from './site-layout.js?v=31-site-final';
+import {BUILDING_SCALE} from './site-layout.js?v=36-board-detail';
 export const SHOTS=[
   {name:'海岸抵达',title:'海上相连，<br>一处安心思考的地方。',description:'海上长露台 · 远岛 · 可扩展园区',duration:28,fov:49,
    positions:[[90,25,48],[80,19,40],[70,13,33],[60,8,26]],targets:[[22,2,0],[24,2,0],[26,2,0],[28,2,0]]},
