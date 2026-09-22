@@ -9,9 +9,10 @@ import {REPORTS} from './report-catalog.js?v=32-report-position';
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
-  const response=await fetch('./assets/chalk/pages.json?v=32-report-position');
-  if(!response.ok)throw new Error('Unable to load the spectral notebook');
-  let {pages}=await response.json(),clock=new LectureClock(pages.length),activeReport=REPORTS.find(report=>report.id==='meng');
+  let activeReport=REPORTS.find(report=>report.id==='hu');
+  const response=await fetch(activeReport.manifest+'?v=32-report-position');
+  if(!response.ok)throw new Error('Unable to load the opening report');
+  let {pages}=await response.json(),clock=new LectureClock(pages.length);
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
   if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]);
   function load(index){

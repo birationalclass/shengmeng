@@ -7,7 +7,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=31-site-final';
-import {createLecture} from './lecture.js?v=32-report-position';
+import {createLecture} from './lecture.js?v=33-hu-opening';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=31-site-final';
 import {seaLevel} from './landscape-shape.js?v=31-site-final';
 import {createChalkReader} from './chalk-reader.js?v=32-report-position';
@@ -208,7 +208,7 @@ try{
   camera.position.copy(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.target.copy(curves[shot].target.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.update();
   resize();
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
-  $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
+  $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await createLecture(lectureRoot,renderer);retreat.roomFill.apply(lectureRoot);
   reader=createChalkReader(lecture);

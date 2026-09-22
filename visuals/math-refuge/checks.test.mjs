@@ -477,7 +477,9 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const trayChalk=scene.children.filter(o=>o.name.startsWith('Tray chalk ')),trayErasers=scene.children.filter(o=>o.name.startsWith('Tray eraser '));
     assert.equal(trayChalk.length,12);assert.equal(trayErasers.length,3);
     for(let column=0;column<3;column++)assert.equal(new Set(trayChalk.filter(o=>o.userData.column===column).map(o=>o.material.color.getHex())).size,4);
-    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('spectral'));await lecture.setLanguage('zh');
+    assert.equal(lecture.report.id,'hu');assert.equal(lecture.pages[0].author,'胡勇');assert.equal(lecture.pages.length,26);
+    assert.equal(lecture.reportButtons.find(button=>button.userData.selected).userData.reportId,'hu');
+    await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('canonical'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
