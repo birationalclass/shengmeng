@@ -57,7 +57,7 @@ test('all consolidated handwritten captions switch languages without changing fo
     const copy=chalkCopy(p,lang);assert(copy.title&&(copy.text||p.kind==='closing'));
     if(lang==='en')assert(!/[\u3400-\u9fff]/.test(copy.title+copy.text+copy.source));
     const rows=composeChalkPage(ctx,p,i,lang,{});
-    for(const [x,y,w,h] of rows){assert(x>=0&&y>=0&&x+w<=1536&&y+h<=604);}
+    for(const [x,y,w,h] of rows){assert(x>=0&&y>=0&&x+w<=1536&&y+h<=620);}
   }
   const css=await fs.readFile(new URL('./board-console.css',import.meta.url),'utf8');
   for(const match of css.matchAll(/url\('([^']+)'\)/g))assert((await fs.stat(new URL(match[1],import.meta.url))).size>1000);
@@ -462,7 +462,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./report-catalog.js',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=30-seminar',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./report-catalog.js?v=32-report-position',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -531,7 +531,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const board of boards)assert(board.position.toArray().every(Number.isFinite));
     assert(lecture.focus().toArray().every(Number.isFinite));
     assert.equal(lecture.reportButtons.length,3);
-    for(const b of lecture.reportButtons){assert(b.position.x+b.geometry.parameters.width/2<18.17,'Selector clears the first glass joint and all boards');assert(b.position.x-b.geometry.parameters.width/2>8.4);}
+    for(const b of lecture.reportButtons){
+      const frameGap=19.4-(b.position.x+b.geometry.parameters.width/2);
+      assert(frameGap>.1&&frameGap<.2,'Selector sits immediately beside, and clear of, the blackboard frame');
+      assert(b.position.x-b.geometry.parameters.width/2>8.4);
+    }
     await lecture.setLanguage('en');
     for(const id of ['ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
@@ -768,9 +772,9 @@ test('English prose remains handwritten while embedded mathematical variables st
 
 test('speaker reports preserve paper sources, hypotheses, bilingual covers and complete assets',async()=>{
   const {REPORTS}=await import('./report-catalog.js');
-  assert.deepEqual(REPORTS.map(r=>r.speaker),['孟晟','叶东','胡勇']);
+  assert.deepEqual(REPORTS.map(r=>r.speaker),['胡勇','叶东','孟晟']);
   const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
-  for(const report of REPORTS.slice(1)){
+  for(const report of REPORTS.filter(report=>report.id!=='meng')){
     const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
     assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,'CC BY 4.0');
     assert.equal(data.pages.length,26);assert.equal(data.pages.filter(p=>!p.kind).length,24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
@@ -806,4 +810,19 @@ test('the final thanks board remains complete without automatically restarting',
   const elapsed=clock.elapsed;for(let i=0;i<12000;i++)clock.update(.1);
   assert.equal(clock.page,2);assert.equal(clock.elapsed,elapsed);clock.next();assert(clock.ended);
   clock.next(-1);assert.equal(clock.page,1);assert(!clock.ended);
+});
+
+
+test('all report reveal rectangles isolate later lines, including inline scripts',async()=>{
+  const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
+  for(const file of ['pages.json','hu/pages.json','ye/pages.json']){
+    const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/'+file,import.meta.url),'utf8'));
+    for(const page of pages)for(const lang of ['zh','en']){
+      const rows=composeChalkPage(ctx,page,0,lang,{});
+      for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++){
+        const [x,y,w,h]=rows[i],[a,b,c,d]=rows[j];
+        assert(x+w<=a||a+c<=x||y+h<=b||b+d<=y,`${file} ${page.title} ${lang}: reveal rows ${i}/${j} overlap`);
+      }
+    }
+  }
 });

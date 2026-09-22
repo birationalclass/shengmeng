@@ -24,7 +24,7 @@ export function createChalkReader(lecture){
       $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text);
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=30-seminar';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=32-report-position';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }

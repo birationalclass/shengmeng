@@ -32,6 +32,7 @@ export function composeChalkPage(ctx,page,index,language,formula){
   textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];ctx.drawImage(formula,x+8,y+8,w-16,h-16);rows.push(...(page.formulaRows||[[x,y,w,h]]));
   ctx.font=`36px ${font}`;const notes=wrapChalkText({measureText:text=>({width:measure(text,36)})},copy.text,1344);
-  notes.slice(0,3).forEach((line,i)=>textRow(line+(i===2&&notes.length>3?' …':''),88,488+i*42,36,'#eee9d5'));
+  // Leave room for descenders and inline scripts: reveal rectangles must not overlap.
+  notes.slice(0,3).forEach((line,i)=>textRow(line+(i===2&&notes.length>3?' …':''),88,488+i*56,36,'#eee9d5'));
   return rows;
 }
