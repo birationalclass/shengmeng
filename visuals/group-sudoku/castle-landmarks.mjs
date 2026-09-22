@@ -15,6 +15,16 @@ function coveredBridge(a,p,x,z,length,K){const {M,group}=K,g=group(p,x,z);g.user
  for(const s of [-1,1]){const roof=a.box(g,[length+.35,.1,.74],[0,3.73,s*.25],M.slate);roof.rotation.x=s*.65;}
  for(const xx of [-length*.4,0,length*.4])a.box(g,[.45,1.65,.7],[xx,.82,0],M.limestone);return g;
 }
+// Sloped stone walks join actual landing points, with piers down to the platform.
+function stoneWalk(a,p,from,to,K,width=.9){
+ const M=K.M,dx=to[0]-from[0],dz=to[2]-from[2],dy=to[1]-from[1],run=Math.hypot(dx,dz),length=Math.hypot(run,dy);
+ const g=new T.Group();g.userData.landmark='connected-stone-walk';g.position.set((from[0]+to[0])/2,(from[1]+to[1])/2,(from[2]+to[2])/2);g.rotation.y=Math.atan2(dx,dz);p.add(g);
+ const deck=new T.Group();deck.rotation.x=-Math.atan2(dy,run);g.add(deck);
+ a.box(deck,[width,.18,length+.12],[0,-.09,0],M.limestone);
+ for(const side of [-1,1]){a.box(deck,[.11,.13,length],[side*(width-.1)/2,.49,0],M.limestone);for(let j=0;j<=Math.ceil(length/.6);j++)a.box(deck,[.09,.48,.09],[side*(width-.1)/2,.24,-length/2+j*length/Math.ceil(length/.6)],M.limestone);}
+ for(let j=0;j<=Math.ceil(run/1.6);j++){const t=j/Math.ceil(run/1.6),h=from[1]+dy*t-.18;a.box(p,[.38,h,.42],[from[0]+dx*t,h/2,from[2]+dz*t],M.limestone);}
+ return g;
+}
 export function hogwarts(a,p,K){const {M,group,spire,hall,arch}=K;p.userData.domain='enchanted-academy';
  // Uneven rocky foundations, dominant round tower and a low, long Great Hall.
  for(const [x,z,h,rx,rz]of [[-6.7,-8.1,1.6,1.9,1.6],[.3,-9.0,1.3,3.2,1.7],[7.8,-5.4,2.2,1.55,2.0],[-8.1,.2,1.4,1.8,2.9]])rock(a,p,x,z,h,rx,rz,M.dark);
@@ -24,7 +34,15 @@ export function hogwarts(a,p,K){const {M,group,spire,hall,arch}=K;p.userData.dom
  const tall=spire(a,p,5.5,-8.6,5.7,.61);tall.position.y=.9;spire(a,p,7.6,-5.8,4.2,.86).position.y=1.8;
  const annex=hall(a,p,-8.3,-1.8,4.9,2.6);annex.rotation.y=Math.PI/2;annex.position.y=.9;
  spire(a,p,-8.1,2.0,3.6,.7).position.y=.6;spire(a,p,8.3,.4,3.4,.53);
- const bridge=coveredBridge(a,p,8.3,4.8,5.1,K);bridge.rotation.y=Math.PI/2;
+ // Run the covered gallery from the east tower to a supported gate pavilion.
+ const bridge=coveredBridge(a,p,8.3,3.5,5.1,K);bridge.rotation.y=Math.PI/2;
+ const gate=hall(a,p,8.3,6.65,1.8,1.8);gate.position.y=.15;gate.userData.landmark='gallery-gatehouse';
+ stoneWalk(a,p,[7.6,1.95,-5.1],[8.3,1.99,-.05],K);
+ stoneWalk(a,p,[5.5,1.15,-8.6],[7.6,1.95,-6.35],K);
+ stoneWalk(a,p,[3.6,1.25,-8.5],[5.5,1.15,-8.6],K);
+ stoneWalk(a,p,[-5.55,1.3,-7.5],[-3.2,1.25,-8.5],K);
+ stoneWalk(a,p,[-7.35,1.3,-7.1],[-8.3,1.15,-4.1],K);
+ stoneWalk(a,p,[-8.3,1.15,.35],[-8.1,.85,1.5],K);
  const court=group(p,-.3,-11.05);for(let j=0;j<8;j++){const x=-3.1+j*.88;a.box(court,[.16,1.25,.35],[x,.76,0],M.limestone);if(j<7)arch(a,court,x+.44,.35,.12,.70,.96,M.limestone,M.dark);}a.box(court,[6.6,.17,.68],[0,1.42,0],M.slate);
  // Steep pitched roofs get small dormers, stone buttresses, and warm tracery.
  for(let j=0;j<5;j++){const x=-2.35+j*1.3;arch(a,great,x,3.5,.84,.35,.64,M.limestone,M.window);a.mesh(great,new T.ConeGeometry(.32,.43,4),M.slate,[x,4.23,.82]).rotation.y=Math.PI/4;}
@@ -56,13 +74,19 @@ export function icePalace(a,p,K){const {M,group}=K,root=group(p,0,-10.95);root.u
  for(let j=-3;j<=3;j++){const h=.65+(.5+.5*Math.sin(j*9))*.8;a.mesh(root,new T.ConeGeometry(.10,h,5),M.blue,[j*.46,4.4-h/2,.76]).rotation.z=Math.PI;}
 }
 export function eyrie(a,p,K){const {M,spire,hall,arch}=K;p.userData.domain='mountain-eyrie';
- for(const [x,z,h,rx,rz]of [[-3.5,-8.5,3.8,1.8,2.0],[.2,-9.3,4.9,2.0,1.6],[3.5,-8.0,3.4,1.6,1.8],[-8.4,-3,2.0,1.45,2.8]])rock(a,p,x,z,h,rx,rz,M.dark);
+ for(const [x,z,h,rx,rz]of [[-3.5,-8.5,3.8,1.8,2.0],[.2,-9.3,4.9,2.0,1.6],[3.5,-8.0,3.4,1.6,1.8],[-8.15,-5.5,1.6,.95,1.05]])rock(a,p,x,z,h,rx,rz,M.dark);
  for(const [x,z,h,r,base]of [[-3.5,-8.6,3.1,.61,3.3],[.2,-9.2,3.3,.86,4.2],[3.5,-8.1,3.0,.58,2.9],[-1.8,-10.3,2.6,.47,3.8]]){const t=spire(a,p,x,z,h,r);t.position.y=base;}
  const house=hall(a,p,.1,-8.1,5.4,1.5);house.position.y=3.1;
  // Narrow supported stone approaches echo the sheer-sided mountain fortress.
  for(const s of [-1,1]){for(let j=0;j<8;j++){const z=-5.6+j*1.22,y=.6+(7-j)*.18;a.box(p,[1.05,.22,1.26],[s*8.2,y,z],M.limestone);a.box(p,[.34,y,.46],[s*8.2,y/2,z],M.dark);for(const dx of [-.51,.51])a.box(p,[.09,.38,1.25],[s*8.2+dx,y+.26,z],M.limestone);}
   spire(a,p,s*8.15,-5.5,2.2,.5).position.y=1.7;
  }
+ // Both side approaches reach the mountain hall instead of ending at isolated towers.
+ stoneWalk(a,p,[-8.2,1.98,-5.6],[-6.7,2.55,-7.1],K);
+ stoneWalk(a,p,[-6.7,2.55,-7.1],[-2.45,3.35,-8.1],K);
+ stoneWalk(a,p,[8.2,1.98,-5.6],[6.7,2.5,-7.0],K);
+ stoneWalk(a,p,[6.7,2.5,-7.0],[2.65,3.35,-8.1],K);
+ stoneWalk(a,p,[8.2,.71,2.94],[7.8,.57,4.05],K);
  // Open moon-door rotunda, rather than another solid domed observatory.
  const court=new T.Group();court.position.set(7.8,.3,5.0);p.add(court);a.torus(court,1.2,.22,[0,.18,0],M.limestone);
  for(let j=0;j<8;j++){const q=j*Math.PI/4,facade=new T.Group();facade.rotation.y=q;court.add(facade);arch(a,facade,0,.4,1.1,.56,1.65,M.limestone,M.dark);a.cylinder(facade,.11,1.9,[.46,1.28,1.05],M.limestone);}a.torus(court,1.18,.15,[0,2.23,0],M.limestone);

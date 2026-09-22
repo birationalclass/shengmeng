@@ -4,7 +4,7 @@ import {installFireworks} from './fireworks.mjs?v=fireworks1';
 import * as T from '../3d/vendor/three.module.js';
 import {ecnuCampus} from './ecnu-campus.mjs?v=owl-clearance1';
 import {masonryTexture} from './castle-materials.mjs?v=owl-clearance1';
-import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=owl-clearance1';
+import {hogwarts,whiteCity,icePalace,eyrie,movingKeep} from './castle-landmarks.mjs?v=20260923-sand-links1';
 import {installIceSkaters} from './ice-skaters.mjs?v=skating1';
 import {clockworkCity} from './clockwork.mjs?v=owl-clearance1';
 import {jointMotion} from './architectural-motion.mjs?v=owl-clearance1';
@@ -60,11 +60,5 @@ function castleKit(a){return {M:domainMaterials(a),group,arch,spire,hall,viaduct
 export function replaceDomain(a,p,index){if(index===0){ecnuCampus(a,p);return true;}if(index===1){chinesePalace(a,p);return true;}if(index===4){clockworkCity(a,p);return true;}if(index===2){iceLake(a,p);return true;}if(index===3){wizardChess(a,p);return true;}if(index===5){eyrie(a,p,castleKit(a));installFireworks(a,p);return true;}if(index===6){hogwarts(a,p,castleKit(a));return true;}return false;}
 export function enrichDomain(a,p,index){
  const M=domainMaterials(a);p.userData.domain??=['clockwork-garden','jade-pavilion','glacial-lake','rose-chapel','brass-city','astral-sanctuary','enchanted-academy','celestial-wall'][index];
- // Terraced stone approaches, inset path and edge lighting tie the miniature together.
- if(index!==0&&index!==7)for(const side of [-1,1])for(let j=0;j<4;j++)a.box(p,[1.6,.12+j*.08,.40],[side*3.8,.17+j*.04,8.9-j*.37],index===2?M.snow:a.materials.stone);
-
-
-
-
-
+ // No freestanding front steps or scattered edge ornaments.
 }

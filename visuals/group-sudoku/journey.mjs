@@ -5,7 +5,7 @@ export const THEMES=[
  {name:'冰湖银霜',paper:'#adcfde',ink:'#173e58',given:'#244861',line:'#35637da0',rim:0xc8e4ed,frame:0x6baac7,motif:4},
  {name:'巫师棋庭',paper:'#303a42',ink:'#efdab0',given:'#b89785',line:'#b99a6577',rim:0xd0a356,frame:0x232c35,motif:5},
  {name:'精密传动工坊',paper:'#263138',ink:'#e4d1a0',given:'#99a8aa',line:'#b2a17470',rim:0xb09057,frame:0x344047,motif:6},
- {name:'鹰巢山城',paper:'#1d2943',ink:'#e0e4eb',given:'#9faaca',line:'#9caccd77',rim:0xa9b4ce,frame:0x273453,motif:7},
+ {name:'鹰巢山城',paper:'#62645e',ink:'#f1edda',given:'#e6ddbf',line:'#d4ceac99',rim:0xb3aa8c,frame:0x454942,motif:7},
  {name:'魔法学院',paper:'#24352c',ink:'#e5ce9b',given:'#9baf94',line:'#b79a6177',rim:0xb5894e,frame:0x3b4332,motif:8},
  {name:'烽火连城',paper:'#34213b',ink:'#f2dcad',given:'#b79da9',line:'#c0a37480',rim:0xdbc078,frame:0x4a2b39,motif:9}
 ];

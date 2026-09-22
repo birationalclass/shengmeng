@@ -1,6 +1,6 @@
 import {BUILD_TIME_KEY} from './construction.mjs?v=owl-clearance1';
 import {MUSIC_KEY} from './music.mjs?v=music1';
-import {frontier,canEnter} from './journey.mjs?v=journey4';
+import {frontier,canEnter} from './journey.mjs?v=20260923-sand-links1';
 export const STORAGE_KEY='shengmeng-group-sudoku-campaign-v1';
 export const MAP_STYLE_KEY='group-sudoku-map-style';
 export function clearLocalData(storage){for(const key of [STORAGE_KEY,MAP_STYLE_KEY,MUSIC_KEY,BUILD_TIME_KEY])storage?.removeItem(key);}

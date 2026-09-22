@@ -1,10 +1,10 @@
 import {syncWallBeacons} from './board-beacons.mjs?v=wall-gate2';
 import {planConstruction} from './construction.mjs?v=owl-clearance1';
 import * as T from '../3d/vendor/three.module.js';
-import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=owl-clearance1';
+import {replaceDomain,enrichDomain,domainMaterials} from './enchanted-domains.mjs?v=20260923-sand-links1';
 import {landmark} from './landmarks.mjs?v=living1';
 import {greatWall} from './great-wall.mjs?v=autumn2';
-import {THEMES,plaqueOffset} from './journey.mjs?v=owl-clearance1';
+import {THEMES,plaqueOffset} from './journey.mjs?v=20260923-sand-links1';
 const WIDTH=10.8,SIZE=1152,PAD=44;
 // Every playable cell is drawn on the same horizontal mesh as the timber board.
 // Hit targets are projected from these world coordinates, so orbiting never detaches input.
@@ -23,7 +23,7 @@ export function installBoards(a){
    else if(i%3===1){const gem=a.mesh(lift,new T.OctahedronGeometry(.17),trim,[x,.79,z]);gem.rotation.y=Math.PI/4;}
    else{a.box(lift,[.39,.08,.13],[x,.74,z],trim);a.box(lift,[.13,.08,.39],[x,.74,z],trim);}
   }
-  for(let k=0;k<n*4;k++){const q=k*Math.PI*2/(n*4);a.cylinder(lift,.035,.06,[Math.sin(q)*6.45,.23,Math.cos(q)*6.45],trim);}
+  // The board surround stays clean: no loose decorative studs.
   const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,a.renderer.capabilities.getMaxAnisotropy());
   const mesh=new T.Mesh(new T.PlaneGeometry(WIDTH,WIDTH),new T.MeshStandardMaterial({map:texture,roughness:i===4?.5:.81,metalness:i===4?.3:.04}));mesh.rotation.x=-Math.PI/2;mesh.position.y=.795;mesh.receiveShadow=false;mesh.userData.region=i;lift.add(mesh);
   if(i===2){frame.color.setHex(0x6baac7);frame.map=null;frame.metalness=.3;frame.roughness=.18;mesh.material.roughness=.25;mesh.material.metalness=.25;}
@@ -73,7 +73,12 @@ export function paintBoard(a,index,state){
  for(let k=0;k<500;k++){x.strokeStyle=k%2?'#c3a26908':'#10090516';const y=(k*37)%SIZE;x.beginPath();x.moveTo(0,y);const wave=index===1||index===2?80:4;x.bezierCurveTo(360,y-wave*Math.sin(k),800,y+wave,SIZE,y);x.stroke();}
  if(index===1){const wash=x.createRadialGradient(SIZE*.45,SIZE*.40,80,SIZE*.5,SIZE*.5,SIZE*.8);wash.addColorStop(0,'#f7f3e7');wash.addColorStop(1,'#e9e0c9');x.fillStyle=wash;x.fillRect(0,0,SIZE,SIZE);for(let k=0;k<6500;k++){const px=(k*173.317)%SIZE,py=(k*257.713)%SIZE;x.strokeStyle=k%3?'#8b7d4e0b':'#ffffff33';x.lineWidth=k%5===0?.65:.3;x.beginPath();x.moveTo(px,py);x.lineTo(px+2+(k%7)*1.2,py+((k%5)-2)*.4);x.stroke();}}
  if(index===2){x.strokeStyle='#effaff88';x.lineWidth=1.3;for(let j=0;j<15;j++){const px=(j*173)%SIZE,py=(j*257)%SIZE;x.beginPath();x.moveTo(px,py);x.lineTo(px+53,py+81);x.lineTo(px+30,py+131);x.stroke();}}
- if(index===5){for(let k=0;k<90;k++){const px=(k*167)%SIZE,py=(k*233)%SIZE;x.fillStyle='#d2d9ee28';x.fillRect(px,py,1.6,1.6);}}
+ if(index===5){
+  // Honed gray stone: deterministic mineral grain, without timber streaks.
+  x.fillStyle='#62645e';x.fillRect(0,0,SIZE,SIZE);
+  for(let k=0;k<34000;k++){const px=(k*173.317)%SIZE,py=(k*257.713)%SIZE;x.fillStyle=k%3?'#181b1715':'#e6e4d21b';x.fillRect(px,py,1+(k%3),1+(k%2));}
+  for(let k=0;k<18;k++){const y=k*71;x.strokeStyle='#dedbcb0b';x.lineWidth=2;x.beginPath();x.moveTo(0,y);x.bezierCurveTo(300,y+22,690,y-15,SIZE,y+35);x.stroke();}
+ }
  x.strokeStyle=theme.line;x.lineWidth=2;for(const inset of [12,22])x.strokeRect(inset,inset,SIZE-inset*2,SIZE-inset*2);
  const cell=(r,c)=>[PAD+(c+1)*step,PAD+(r+1)*step];
  x.textAlign='center';x.textBaseline='middle';x.font=`${step*.43}px Atlas,Georgia,serif`;

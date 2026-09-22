@@ -1,4 +1,4 @@
-import {PLACES} from './journey.mjs?v=beacon-ring1';
+import {PLACES} from './journey.mjs?v=20260923-sand-links1';
 import * as T from '../3d/vendor/three.module.js';
 const TAU=Math.PI*2;
 const bridgeAngles=[5,7].map(i=>Math.atan2((PLACES[i][0]-PLACES[6][0])/14.4,(PLACES[i][1]-PLACES[6][1])/13.8));

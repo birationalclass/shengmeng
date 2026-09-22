@@ -3,9 +3,9 @@ import {createCompletionRecords} from './records.mjs?v=clarity4';
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
 import {createBackgroundMusic} from './music.mjs?v=offline1';
 import {Campaign,STORAGE_KEY,clearLocalData} from './campaign.mjs?v=background1';
-import {SudokuAtlas,REGIONS} from './atlas.mjs?v=clarity4';
+import {SudokuAtlas,REGIONS} from './atlas.mjs?v=20260923-sand-links1';
 import {cameraKey} from './camera-navigation.mjs?v=owl-clearance1';
-import {THEMES} from './journey.mjs?v=owl-clearance1';
+import {THEMES} from './journey.mjs?v=20260923-sand-links1';
 const $=id=>document.getElementById(id),model=window.AssociativitySudokuModel,canvas=$('world');
 const mobileMode=mobileDevice(innerWidth,innerHeight,matchMedia('(pointer:coarse)').matches);document.body.classList.toggle('mobile-performance',mobileMode);
 let storage;try{storage=localStorage;}catch{}
