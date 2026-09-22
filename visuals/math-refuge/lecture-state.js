@@ -1,7 +1,9 @@
 export const BOARD_ORDER=[0,2,4,1,3,5];
 export const PHASE_SECONDS={lift:2.6,erase:24,write:23,hold:8};
 export function boardSlot(page){return BOARD_ORDER[((page%6)+6)%6];}
-export function boardHeights(mix){return [1.45+2.25*mix,3.7-2.25*mix];}
+// Close resting seams; the two depth-separated channels still pass freely.
+export const BOARD_LAYOUT={width:5.3,height:2.05,frame:.035,low:1.835,high:3.96,railBottom:.54,railTop:5.1};
+export function boardHeights(mix){const {low,high}=BOARD_LAYOUT,travel=high-low;return [low+travel*mix,high-travel*mix];}
 export class LectureClock{
   constructor(count){
     if(!Number.isInteger(count)||count<1)throw new Error('Lecture needs pages');

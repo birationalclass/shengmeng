@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=37-speaker';
 import * as Three from '../3d/vendor/three.module.js';
-import {LectureClock,boardSlot,boardHeights} from './lecture-state.js';
+import {LectureClock,boardSlot,boardHeights,BOARD_LAYOUT} from './lecture-state.js';
 import {configureCameraInput,DEFAULT_ROTATION} from './camera-input.js';
 import {displayProfile,boardFraming,readingFormulaWidth} from './display-profile.js';
 import {elevation,coastline,shoreline,canPlant,slope,seaLevel} from './landscape-shape.js?v=36-board-detail';
@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=42-warm-seating','scene.js?v=42-warm-seating','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=43-tight-boards','scene.js?v=42-warm-seating','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=42-warm-seating',root),'utf8');
-  for(const file of ['app.js?v=42-warm-seating','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=43-tight-boards',root),'utf8');
+  for(const file of ['app.js?v=43-tight-boards','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -481,7 +481,7 @@ test('locally served landscape photographs match their CC0 source manifest',asyn
 
 test('three pairs alternate six slots, erase reused boards and stop at the last page',()=>{
   assert.deepEqual(Array.from({length:6},(_,i)=>boardSlot(i)),[0,2,4,1,3,5]);
-  for(let value=0;value<=1;value+=.05){const [a,b]=boardHeights(value);assert(Math.abs(a+b-5.15)<1e-9);assert(a>=1.45&&a<=3.7);assert(b>=1.45&&b<=3.7);}
+  for(let value=0;value<=1;value+=.05){const [a,b]=boardHeights(value);assert(Math.abs(a+b-BOARD_LAYOUT.low-BOARD_LAYOUT.high)<1e-9);assert(a>=BOARD_LAYOUT.low&&a<=BOARD_LAYOUT.high);assert(b>=BOARD_LAYOUT.low&&b<=BOARD_LAYOUT.high);}
   const clock=new LectureClock(65),phases=new Set(),slots=new Set();
   for(let step=0;step<3000;step++){clock.update(.1);phases.add(clock.phase);slots.add(clock.active);assert(clock.progress>=0&&clock.progress<=1);}
   assert.deepEqual([...phases].sort(),['erase','hold','lift','write']);assert.equal(slots.size,6);
@@ -529,7 +529,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
   const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./board-hardware.js?v=38-board-tone',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=30-seminar',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace('./board-hardware.js?v=43-tight-boards',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v=35-responsive-reports',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v=32-report-position',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=43-tight-boards',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -549,6 +549,26 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('canonical'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert(!scene.getObjectByName('Six-board lecture wall'));
     const rails=scene.children.filter(o=>o.name.startsWith('Double-channel lift track'));assert.equal(rails.length,3);
+    for(let column=0;column<3;column++){
+      const [lower,upper]=boards.slice(column*2,column*2+2),bounds=o=>new Three.Box3().setFromObject(o);
+      const seam=(bounds(upper).min.y-bounds(lower).max.y)*LECTURE_SCALE;
+      assert(seam>.02&&seam<.035,'Resting board-to-board seam is about 3 cm');
+      const topGap=(bounds(rails[column].getObjectByName('Upper rail stop')).min.y-bounds(upper).max.y)*LECTURE_SCALE;
+      assert(topGap>.04&&topGap<.06,'Upper board clears the top stop by about 5 cm');
+      const tray=scene.getObjectByName('Wide nanmu chalk tray '+(column+1));
+      const trayGap=(bounds(lower).min.y-bounds(tray).max.y)*LECTURE_SCALE;
+      assert(trayGap>.035&&trayGap<.055,'Raised tray sits close below the lower frame without touching');
+      assert(Math.abs(tray.userData.floorTop-.655)<1e-9);
+      for(let step=0;step<=100;step++){
+        const heights=boardHeights(step/100);lower.position.y=heights[0];upper.position.y=heights[1];
+        assert(!bounds(lower).intersectsBox(bounds(upper)),'Separate depth channels keep every lift pose collision-free');
+        for(const board of [lower,upper]){
+          assert(bounds(board).max.y<bounds(rails[column].getObjectByName('Upper rail stop')).min.y);
+          assert(bounds(board).min.y>bounds(rails[column].getObjectByName('Lower rail stop')).max.y);
+        }
+      }
+      [lower.position.y,upper.position.y]=boardHeights(0);
+    }
     for(const board of boards){
       assert(!board.children.some(o=>o.isMesh&&o.scale.x===.55&&o.scale.y===.05&&o.scale.z===.09),'No redundant pale grab handle below the board');
       const body=board.getObjectByName('Solid opaque board body');assert(body?.isMesh);assert(body.scale.z>.07);
@@ -623,7 +643,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(let i=0;i<50;i++)lecture.update(.1);
     assert.deepEqual(boards.map(b=>b.children[0].material.map.version),uploads,'Unchanged boards must not re-upload textures');
     lecture.lift(0,1);for(let i=0;i<50;i++)lecture.update(.1);
-    assert(Math.abs(boards[0].position.y-3.7)<.001);assert(Math.abs(boards[1].position.y-1.45)<.001);
+    assert(Math.abs(boards[0].position.y-BOARD_LAYOUT.high)<.001);assert(Math.abs(boards[1].position.y-BOARD_LAYOUT.low)<.001);
     lecture.select(lecture.pages.length-1);await Promise.resolve();lecture.staticPage();lecture.update(.1,true);
     assert.equal(lecture.clock.page,lecture.pages.length-1);assert.equal(lecture.clock.slots[lecture.clock.active].progress,1);
     assert(!scene.getObjectByName('Writing chalk').visible);assert(!scene.getObjectByName('Moving blackboard eraser').visible);
@@ -707,7 +727,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=42-warm-seating',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=43-tight-boards',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -756,7 +776,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=42-warm-seating',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=43-tight-boards',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));

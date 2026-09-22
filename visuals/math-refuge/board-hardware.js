@@ -1,7 +1,7 @@
 // Deterministic modeled hardware and small reusable PBR texture maps.
 // Rear mounting pads stop just inside the east smart-glass inner surface.
 export const BOARD_MOUNT_OFFSET=-.595;
-export const TRAY={y:.305,z:-10.09+BOARD_MOUNT_OFFSET,depth:.40,top:.335,restY:.400};
+export const TRAY={y:.625,z:-10.09+BOARD_MOUNT_OFFSET,depth:.40,top:.655,restY:.720,lipY:.692};
 export function createBoardHardware(T){
   const maps=[],materials=[],geometries=[];
   function texture(w,h,paint,color=false){

@@ -186,3 +186,7 @@ The hall's upper landing is now centered at Z=0, matching the west lounge entran
 All three upstairs ring sofas now reuse the auditorium's actual materials: warm-brown `#776352` fabric with the same normal/roughness maps, dark `#544e45` lower shell and matching brass feet. All fifteen throw pillows use that same warm-brown fabric; the green/coral/purple upholstery and contrasting pillows are removed. Shapes, layout, computer colors, bar stools and other furniture are unchanged. Shared materials remain owned and disposed by the campus. Regression checks verify material identity across floors, fabric textures and all fifteen pillows; the 46-test suite passes without browser visual QA.
 
 The six redundant pale grab handles beneath the sliding boards are removed at the user's request. Board frames, guide rollers, tracks, trays and lift controls are retained.
+
+## 2026-09-23 — Tighter vertical blackboard spacing
+
+Board dimensions stay unchanged. Resting centers are now 1.835 and 3.960 in lecture-local coordinates: the physical frame-to-frame seam is 2.88 cm and the upper frame clears the top rail stop by 4.86 cm. Trays, lips, chalk and parked erasers rise together by 23.04 cm, leaving 4.57 cm below the lower frame. Lower tracks and mounting pads are shortened upward, and paired-board camera focus follows the new center. Geometry regression checks sample 101 lift positions per column, covering separate depth channels, rail-stop clearance and the three resting seams. All 46 code tests pass; no browser visual QA was performed.

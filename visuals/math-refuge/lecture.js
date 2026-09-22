@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights} from './lecture-state.js?v=30-seminar';
+import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=43-tight-boards';
 import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=22-handwritten-cover';
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-position';
@@ -7,10 +7,10 @@ import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-positi
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
 import {createReportLoader} from './report-loader.js?v=35-responsive-reports';
 
-import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=38-board-tone';
+import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
 
-const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
+const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer){
   let activeReport=REPORTS.find(report=>report.id==='hu');
@@ -54,19 +54,20 @@ export async function createLecture(scene,renderer){
     const x=22.4+pair*5.6;
     const track=new THREE.Group();track.name='Double-channel lift track '+(pair+1);scene.add(track);
     track.position.z=BOARD_MOUNT_OFFSET;
-    track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[1.45,3.7],glassMounted:true};
+    track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[BOARD_LAYOUT.low,BOARD_LAYOUT.high],glassMounted:true};
+    const railCenter=(BOARD_LAYOUT.railBottom+BOARD_LAYOUT.railTop)/2,railLength=BOARD_LAYOUT.railTop-BOARD_LAYOUT.railBottom+.06;
     for(const sign of [-1,1]){
       const railX=x+sign*2.745;
       for(const z of [-10.505,-10.345]){
-        part(track,[railX+sign*.033,2.66,z],[.028,4.94,.13],metal);
-        for(const dz of [-.066,.066])part(track,[railX,2.66,z+dz],[.075,4.94,.015],metal);
+        part(track,[railX+sign*.033,railCenter,z],[.028,railLength,.13],metal);
+        for(const dz of [-.066,.066])part(track,[railX,railCenter,z+dz],[.075,railLength,.015],metal);
       }
-      for(const y of [.30,2.65,5.02]){
+      for(const y of [.62,railCenter,5.02]){
         part(track,[railX,y,-10.61],[.09,.075,.26],metal);
         part(track,[railX,y,-10.735],[.16,.17,.03],metal);
       }
     }
-    for(const y of [.22,5.1])part(track,[x,y,-10.51],[5.58,.06,.43],metal);
+    for(const y of [BOARD_LAYOUT.railBottom,BOARD_LAYOUT.railTop]){const stop=part(track,[x,y,-10.51],[5.58,.06,.43],metal);stop.name=y===BOARD_LAYOUT.railTop?'Upper rail stop':'Lower rail stop';}
     for(let side=0;side<2;side++){
       const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16+BOARD_MOUNT_OFFSET);
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
@@ -90,8 +91,8 @@ export async function createLecture(scene,renderer){
     }
     const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,centerZ:TRAY.z,floorTop:TRAY.top};scene.add(tray);
     part(tray,[x,TRAY.y,TRAY.z],[5.42,.06,TRAY.depth],frameMaterial);
-    for(const z of [TRAY.z-TRAY.depth/2,TRAY.z+TRAY.depth/2])part(tray,[x,.372,z],[5.42,.074,.025],frameMaterial);
-    for(const dx of [-2.71,2.71])part(tray,[x+dx,.372,TRAY.z],[.025,.074,TRAY.depth],frameMaterial);
+    for(const z of [TRAY.z-TRAY.depth/2,TRAY.z+TRAY.depth/2])part(tray,[x,TRAY.lipY,z],[5.42,.074,.025],frameMaterial);
+    for(const dx of [-2.71,2.71])part(tray,[x+dx,TRAY.lipY,TRAY.z],[.025,.074,TRAY.depth],frameMaterial);
     for(let j=0;j<4;j++){
       const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
       stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z);
@@ -344,7 +345,7 @@ export async function createLecture(scene,renderer){
     get playing(){return playing&&!clock.ended;},set playing(value){playing=value;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
-    heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:2.6,-10.4+BOARD_MOUNT_OFFSET)),
+    heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
     dispose(){hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }
