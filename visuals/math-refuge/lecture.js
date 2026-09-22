@@ -104,7 +104,7 @@ export async function createLecture(scene,renderer){
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
   for(let column=0;column<3;column++){
-    const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:0,depthWrite:false,toneMapped:false}));
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
     button.name=`Smart glass language touch surface ${column+1}`;button.position.set(22.4+column*5.6,-.16,-11.34);
     button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:0,canvas:touchCanvas,texture:touchTexture};
     const label=new THREE.Mesh(new THREE.PlaneGeometry(2.16,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
@@ -112,11 +112,11 @@ export async function createLecture(scene,renderer){
   }
   function setConsoleState(){
     if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
-    const label=language==='zh'?'中':'Eng';
-    for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;}
+    const targetLanguage=language==='zh'?'en':'zh',label=targetLanguage==='zh'?'中':'Eng';
+    for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;button.userData.targetLanguage=targetLanguage;}
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
     c.textAlign='center';c.shadowBlur=0;
-    c.font=language==='zh'?'400 184px '+SCREEN_FONT:'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
+    c.font=targetLanguage==='zh'?'400 184px '+SCREEN_FONT:'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
     c.fillStyle='#f0e4ca';c.fillText(label,512,250);
     touchTexture.needsUpdate=true;
   }
@@ -133,7 +133,7 @@ export async function createLecture(scene,renderer){
   addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.55);
   for(const [index,report] of REPORTS.entries()){
     const label=glassLabel(4.6,.9,reportX,3.55-index*1.05,`Smart glass report ${report.id}`);
-    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,toneMapped:false,color:'#7be7df'}));
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
     button.position.set(reportX,3.55-index*1.05,-11.34);button.name=`Report selection ${report.speaker}`;
     scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,.9);scene.add(button);
     Object.assign(button.userData,{action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture});reportButtons.push(button);
@@ -230,7 +230,7 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.08:0,18,dt);updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
+    dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));

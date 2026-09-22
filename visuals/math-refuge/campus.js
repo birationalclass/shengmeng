@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createLectern} from './lectern.js?v=38-board-tone';
-import {createUpperLounge} from './upper-lounge.js?v=37-speaker';
+import {createUpperLounge} from './upper-lounge.js?v=40-imac';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v=39-full-height-doors';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';

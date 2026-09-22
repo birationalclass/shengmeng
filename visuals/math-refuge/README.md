@@ -166,3 +166,13 @@ Code verification: 44 tests across `checks.test.mjs`, `music.test.mjs` and `repo
 ## 2026-09-23 — Full-height glass doors
 
 All three modeled automatic glass entrances now match the hall's 4.9 m glass-wall height. The three upper transom panes and their intermediate horizontal frames are removed; sliding tracks sit above the full-height opening at ceiling level. Handles remain at 1.1 m above the floor instead of rising with the taller leaves. Hover opening, delayed closure and the fixed side-pane counts are unchanged. Geometry tests verify door-bottom/top alignment, reachable handle height and overhead track clearance; the 46-test suite passes.
+
+## 2026-09-23 — Clear discussion openings and revised iMac workstations
+
+- Removed the three single chairs in the C-sofa openings. Removed plants from round tables and the low central consoles; only the two floor-standing corner planters remain. Table books, three sofas and round tables are retained.
+- All six desks use one warm walnut-brown finish, and all work chairs share the same muted gray-green upholstery. Only the computers retain their six distinct colorways; no alternating colored desktops remain.
+- Rebuilt the stylized computer bodies using Apple's current iMac front/side/rear references and published 54.7 cm width / 46.1 cm overall height. Thin rounded cases, off-white screen surround, pale color-matched chin, separate rear hinge/support, flat base, camera and rear ports replace the previous overlapping boxes. The display uses a 16:9 local canvas; no Apple photography or software functionality is bundled. This is a procedural visual approximation, not Apple CAD.
+- The old stand reached forward through the display plane. Every new stand component is behind the case; 150 perspective-ray samples across all six display surfaces now hit the display first. Additional rays verify that the former visitor-chair footprints are clear to the rug. All 46 tests pass; no browser visual QA was performed.
+- Official references checked: https://www.apple.com/imac/ and https://www.apple.com/imac/specs/ (front, side and rear images linked from the product page).
+
+- Smart-glass hit planes now have color writes disabled permanently, including hover/press states; only alpha-masked lettering provides feedback. Language buttons show the **destination** language: Chinese content displays `Eng`, and English content displays `中`. This supersedes the earlier current-state label behavior.

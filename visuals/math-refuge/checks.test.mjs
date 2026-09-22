@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=39-full-height-doors','scene.js?v=39-full-height-doors','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=40-imac','scene.js?v=40-imac','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=39-full-height-doors',root),'utf8');
-  for(const file of ['app.js?v=39-full-height-doors','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=40-imac',root),'utf8');
+  for(const file of ['app.js?v=40-imac','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=39-full-height-doors');
+  const sceneModule=await inlineAddon('./scene.js?v=40-imac');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -350,9 +350,28 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const lounge=scene.getObjectByName('Upper sea-view academic lounge A');assert(lounge);
     const stations=lounge.getObjectByName('Six color iMac workstations').userData.stations;
     assert.equal(stations.length,6);assert.equal(new Set(stations.map(s=>s.color)).size,6);
+    assert.equal(new Set(stations.map(s=>s.deskColor)).size,1);assert.equal(new Set(stations.map(s=>s.chairColor)).size,1);
     assert(stations.every(s=>s.x<0&&Math.abs(s.z)>2));
+    assert(lounge.getObjectByName('Floor-standing lounge plants').userData.plants.every(p=>p.y===0));
+    lounge.updateWorldMatrix(true,true);
+    for(const station of stations){
+      assert.equal(station.computerWidth,.547);assert.equal(station.computerHeight,.461);assert(station.bodyDepth<.012);
+      const transform=v=>v.applyAxisAngle(new Three.Vector3(0,1,0),Math.PI/2).add(new Three.Vector3(station.x,0,station.z)).applyMatrix4(lounge.matrixWorld);
+      const eye=transform(new Three.Vector3(0,1.19,.55));
+      for(const u of [-.98,-.5,0,.5,.98])for(const v of [-.98,-.5,0,.5,.98]){
+        const target=transform(new Three.Vector3(station.screen[0]+u*station.screenSize[0]/2,station.screen[1]+v*station.screenSize[1]/2,station.screen[2]));
+        const hits=new Three.Raycaster(eye,target.clone().sub(eye).normalize()).intersectObject(lounge,true);
+        assert.equal(hits[0]?.object.material.name,'Unobstructed iMac display','Stand and chassis must not occlude any screen sample');
+      }
+    }
     const circles=lounge.getObjectByName('Three sea-facing discussion circles').userData.discussions;
     assert.equal(circles.length,3);assert(circles.every(s=>s.x>0&&s.opening==='west'));
+    assert(circles.every(s=>!s.visitorChair&&!s.tablePlant));
+    for(const pod of circles){
+      const origin=lounge.localToWorld(new Three.Vector3(pod.x-1.4,1.4,pod.z+.75));
+      const hit=new Three.Raycaster(origin,new Three.Vector3(0,-1,0)).intersectObject(lounge,true)[0];
+      assert(hit);assert(lounge.worldToLocal(hit.point.clone()).y<.07,'Former visitor-chair spot stays empty down to the rug');
+    }
     for(let i=1;i<circles.length;i++)assert(circles[i].z-circles[i-1].z>circles[i].radius*2+.8);
     const loungeBar=lounge.getObjectByName('Tea coffee and drinks bar').userData;
     assert.equal(loungeBar.bottles,60);assert(loungeBar.bounds[3]<-7);assert(loungeBar.tea&&loungeBar.sink);
@@ -540,7 +559,12 @@ test('classroom assembles six independent boards and survives writing, erasing a
       assert(glassInnerX-bounds.max.x>0&&glassInnerX-bounds.max.x<.005,'Mounting pads meet the glass with a tiny non-flickering clearance');
     }
     for(const b of lecture.consoleButtons){const h=layoutRoot.localToWorld(b.position.clone()).y-DECK_Y*BUILDING_SCALE;assert(h>.85&&h<1.1,'Language button sits below the writing boards');}
-    const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert(button.material.opacity>.035);assert(button.userData.smartGlass);button.userData.pressed=false;
+    const button=lecture.consoleButtons[0],rest=button.position.z;button.userData.pressed=true;lecture.update(.1);assert.equal(button.position.z,rest);assert.equal(button.material.opacity,0);assert(button.userData.smartGlass);button.userData.pressed=false;
+    for(const control of [...lecture.consoleButtons,...lecture.reportButtons]){
+      control.userData.pressed=true;control.userData.hovered=true;lecture.update(.1);
+      assert.equal(control.material.opacity,0);assert.equal(control.material.colorWrite,false,'Clickable hit plane cannot draw a rectangular background');
+      control.userData.pressed=false;control.userData.hovered=false;
+    }
     lecture.setConsoleState();assert(lecture.consoleButtons[0].userData.lastLabel);
     assert(button.userData.singleToggle);
     for(const [column,control] of lecture.consoleButtons.entries()){
@@ -550,8 +574,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
       assert(Math.abs(control.position.x-center)+control.geometry.parameters.width/2<2.65,'Control stays beneath its own board column');
       assert(touchPosition.y+control.geometry.parameters.height*.72/2<DECK_Y*BUILDING_SCALE+1.23,'Touch control clears the board backing');
     }
-    await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'&&b.userData.visibleLabel==='Eng'));
-    await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'&&b.userData.visibleLabel==='中'));
+    await lecture.setLanguage('en');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='en'&&b.userData.visibleLabel==='中'&&b.userData.targetLanguage==='zh'));
+    await lecture.setLanguage('zh');assert(lecture.consoleButtons.every(b=>b.userData.lastLabel==='zh'&&b.userData.visibleLabel==='Eng'&&b.userData.targetLanguage==='en'));
     assert.equal(new Set(lecture.consoleButtons.map(b=>b.userData.texture)).size,1,'All controls share the same visible language state');
     const phases=new Set(),eraserStates=new Set(),movingEraser=scene.getObjectByName('Moving blackboard eraser');let returnCompleted=false;
     for(let i=0;i<3500;i++){
@@ -663,7 +687,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=39-full-height-doors',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=40-imac',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -712,7 +736,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=39-full-height-doors',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=40-imac',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));
