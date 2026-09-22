@@ -180,3 +180,9 @@ All three modeled automatic glass entrances now match the hall's 4.9 m glass-wal
 ## 2026-09-23 — Centered upper entrance without landing columns
 
 The hall's upper landing is now centered at Z=0, matching the west lounge entrance. The two tall columns beneath it are removed; shallow horizontal beams meet the upper slab, while the stair stringers and continuous guards remain. The 34-step flight keeps its lower end at Z=9.6 and uses approximately 35.5 cm physical treads, so the upper arrival is aligned without projecting the foot past the south facade. Geometry checks cover center alignment, connected tread/landing/rails, tread depth, the clear lower route and absence of the former tall columns. This is scene modeling, not a structural-engineering certification.
+
+## 2026-09-23 — Ring sofas match the auditorium seats
+
+All three upstairs ring sofas now reuse the auditorium's actual materials: warm-brown `#776352` fabric with the same normal/roughness maps, dark `#544e45` lower shell and matching brass feet. All fifteen throw pillows use that same warm-brown fabric; the green/coral/purple upholstery and contrasting pillows are removed. Shapes, layout, computer colors, bar stools and other furniture are unchanged. Shared materials remain owned and disposed by the campus. Regression checks verify material identity across floors, fabric textures and all fifteen pillows; the 46-test suite passes without browser visual QA.
+
+The six redundant pale grab handles beneath the sliding boards are removed at the user's request. Board frames, guide rollers, tracks, trays and lift controls are retained.

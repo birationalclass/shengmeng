@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createLectern} from './lectern.js?v=38-board-tone';
-import {createUpperLounge} from './upper-lounge.js?v=40-imac';
+import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v=39-full-height-doors';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';
@@ -249,7 +249,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   floor(hallUpper,8.95,20.55,cx,0);
   room('Upper seminar lounge',cx,0,7,13,2.8,hallUpper,['west','south'],false,true);
 
-  const upperLounge=createUpperLounge(THREE);
+  const upperLounge=createUpperLounge(THREE,{seatCloth,seatShell:shell,seatMetal:brass});
   upperLounge.group.position.set(cx,hallUpper+DECK_Y,0);upperLounge.group.scale.setScalar(1/S);scene.add(upperLounge.group);
   const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);

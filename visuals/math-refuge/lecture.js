@@ -86,7 +86,6 @@ export async function createLecture(scene,renderer){
         const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.049,.049,.045,12),hardware.rubber);
         wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.055);group.add(wheel);
       }
-      part(group,[0,-BOARD_H/2-.07,.06],[.55,.05,.09],metal);
       boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
     }
     const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,centerZ:TRAY.z,floorTop:TRAY.top};scene.add(tray);

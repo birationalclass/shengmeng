@@ -1,6 +1,6 @@
 // Selected sketch A: west workstations, east conversation bays, north bar.
 // Physical metres, with a continuous clear arrival aisle at the west door.
-export function createUpperLounge(T){
+export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   const group=new T.Group();group.name='Upper sea-view academic lounge A';
   const mats=[],geos=[],textures=[],batches=new Map(),dummy=new T.Object3D();
   const material=(color,roughness=.8,metalness=0)=>{const m=new T.MeshStandardMaterial({color,roughness,metalness,envMapIntensity:.18});mats.push(m);return m;};
@@ -9,8 +9,8 @@ export function createUpperLounge(T){
   const fronts=colors.map(c=>material(new T.Color(c).lerp(new T.Color('#f3f1ed'),.62),.60,.22));
   const desktop=material('#8a6b50',.86),workChair=material('#697573',.98),bezel=material('#efeee9',.72);
   const plantPositions=[];
-  const cloth=['#709b87','#ba8070','#858da9'].map(c=>material(c,.98));
-  const warm=material('#d4b282',.86),rug=material('#b5a68d',1),rugBlue=material('#738e8f',1);
+  const barCloth=material('#709b87',.98);
+  const rug=material('#b5a68d',1),rugBlue=material('#738e8f',1);
   function geom(g){geos.push(g);return g;}
   const cube=geom(new T.BoxGeometry(1,1,1)),cyl=geom(new T.CylinderGeometry(1,1,1,24)),ball=geom(new T.SphereGeometry(1,12,8));
   function part(g,m,p,s=[1,1,1],r=[0,0,0],frame=null){
@@ -80,14 +80,15 @@ export function createUpperLounge(T){
   function sector(inner,outer,start,end,height){const s=new T.Shape();s.absarc(0,0,outer,start,end,false);s.absarc(0,0,inner,end,start,true);s.closePath();const g=new T.ExtrudeGeometry(s,{depth:height,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025,curveSegments:32});g.rotateX(-Math.PI/2);return geom(g);}
   const sofaBase=sector(1.00,1.77,-Math.PI*2/3,Math.PI*2/3,.18),sofaBack=sector(1.52,1.78,-Math.PI*2/3,Math.PI*2/3,.50);
   const cushion=sector(1.04,1.51,-Math.PI/3+.025,Math.PI/3-.025,.14);
+  sofaBase.name='Lounge dark seat shell';sofaBack.name='Lounge warm upholstered back';cushion.name='Lounge warm seat cushions';
   const discussions=[];
   for(const [i,z] of [-4.75,.45,5.6].entries()){
-    const x=2.62,m=cloth[i];discussions.push({x,z,radius:1.81,opening:'west',tableRadius:.64,visitorChair:false,tablePlant:false});
+    const x=2.62,m=seatCloth;discussions.push({x,z,radius:1.81,opening:'west',tableRadius:.64,visitorChair:false,tablePlant:false,upholsteryColor:m.color.getHexString(),shellColor:seatShell.color.getHexString()});
     part(cyl,rug,[x,.039,z],[1.92,.018,1.92]);
-    part(sofaBase,wood,[x,.15,z]);part(sofaBack,m,[x,.37,z]);
-    for(const a of [-1.9,-.95,0,.95,1.9])for(const r of [1.13,1.64])part(cyl,bronze,[x+r*Math.cos(a),.087,z+r*Math.sin(a)],[.032,.15,.032]);
+    part(sofaBase,seatShell,[x,.15,z]);part(sofaBack,m,[x,.37,z]);
+    for(const a of [-1.9,-.95,0,.95,1.9])for(const r of [1.13,1.64])part(cyl,seatMetal,[x+r*Math.cos(a),.087,z+r*Math.sin(a)],[.032,.15,.032]);
     for(const a of [-Math.PI/3,Math.PI/3])part(cushion,m,[x,.35,z],[1,1,1],[0,a,0]);
-    for(const a of [-1.65,-.85,0,.85,1.65])part(ball,i===1?warm:paint[(i+1)%6],[x+1.47*Math.cos(a),.68,z+1.47*Math.sin(a)],[.12,.22,.24],[0,-a,0]);
+    for(const a of [-1.65,-.85,0,.85,1.65])part(ball,seatCloth,[x+1.47*Math.cos(a),.68,z+1.47*Math.sin(a)],[.12,.22,.24],[0,-a,0]);
     part(cyl,wood,[x,.29,z],[.40,.54,.40]);part(cyl,ceramic,[x,.585,z],[.64,.045,.64]);
     box([x-.18,.635,z+.10],[.31,.04,.23],dark,null,[0,.2,0]);box([x-.12,.669,z+.08],[.27,.025,.20],paint[i],null,[0,-.1,0]);
   }
@@ -111,7 +112,7 @@ export function createUpperLounge(T){
   part(ball,ceramic,[-.86,1.19,-8.01],[.13,.15,.13]);stem([-.76,1.19,-8.01],[-.65,1.25,-8.01],.025,ceramic);
   box([.30,1.055,-8.03],[.62,.01,.38],dark);stem([.30,1.08,-8.24],[.30,1.39,-8.24],.018,bronze);stem([.30,1.39,-8.24],[.30,1.39,-8.03],.018,bronze);
   for(let i=0;i<10;i++)part(cyl,i%2?ceramic:bronze,[1.0+i*.20,1.115,-8.08],[.047,.12,.047]);
-  for(const x of [-2.7,-1.2,.3]){part(cyl,dark,[x,.075,-6.95],[.28,.055,.28]);part(cyl,bronze,[x,.42,-6.95],[.028,.70,.028]);part(ball,cloth[0],[x,.79,-6.95],[.29,.075,.26]);part(ball,cloth[0],[x,.95,-6.73],[.28,.18,.045]);}
+  for(const x of [-2.7,-1.2,.3]){part(cyl,dark,[x,.075,-6.95],[.28,.055,.28]);part(cyl,bronze,[x,.42,-6.95],[.028,.70,.028]);part(ball,barCloth,[x,.79,-6.95],[.29,.075,.26]);part(ball,barCloth,[x,.95,-6.73],[.28,.18,.045]);}
   meta('Tea coffee and drinks bar',{bottles:60,stools:3,espressoGroupHeads:2,tea:true,sink:true,bounds:[-3.66,3.96,-8.73,-7.59]});
   // Keep all tabletops clear of plants; greenery is floor-standing only.
   for(const z of [-2,3.5])box([-.3,.23,z],[.58,.46,1.1],wood);

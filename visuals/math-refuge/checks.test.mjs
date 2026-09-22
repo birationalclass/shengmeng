@@ -141,7 +141,7 @@ test('nine finite camera chapters with auditorium, upstairs, ocean and garden vi
 
 test('all page and JavaScript local asset references resolve',async()=>{
   const root=new URL('./',import.meta.url);
-  for(const file of ['index.html','app.js?v=41-centered-entry','scene.js?v=41-centered-entry','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
+  for(const file of ['index.html','app.js?v=42-warm-seating','scene.js?v=42-warm-seating','camera-paths.js?v=37-speaker','lecture.js','lecture-state.js','chalk-reader.js','display-profile.js','surface-materials.js','landscape.js?v=36-board-detail','landscape-shape.js?v=36-board-detail']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     const links=file.endsWith('.html') ? [...code.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m=>m[1]) : [...code.matchAll(/(?:from\s+|import\()['"](\.[^'"]+)['"]/g)].map(m=>m[1]);
     for(const link of links){if(link.startsWith('http'))continue;await fs.access(new URL(link.split('?')[0],root));}
@@ -163,8 +163,8 @@ test('all page and JavaScript local asset references resolve',async()=>{
   await scan(root);
   const html=await fs.readFile(new URL('index.html',root),'utf8');
   const ids=new Set([...html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
-  const app=await fs.readFile(new URL('app.js?v=41-centered-entry',root),'utf8');
-  for(const file of ['app.js?v=41-centered-entry','chalk-reader.js']){
+  const app=await fs.readFile(new URL('app.js?v=42-warm-seating',root),'utf8');
+  for(const file of ['app.js?v=42-warm-seating','chalk-reader.js']){
     const code=await fs.readFile(new URL(file,root),'utf8');
     for(const match of code.matchAll(/\$\('([^']+)'\)/g))assert(ids.has(match[1]),'Missing element '+match[1]);
   }
@@ -183,7 +183,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
     const result=asModule(code);modules.set(url.href,result);return result;
   }
-  const sceneModule=await inlineAddon('./scene.js?v=41-centered-entry');
+  const sceneModule=await inlineAddon('./scene.js?v=42-warm-seating');
   const calls=[];let clippedFragments=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
@@ -377,6 +377,15 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const circles=lounge.getObjectByName('Three sea-facing discussion circles').userData.discussions;
     assert.equal(circles.length,3);assert(circles.every(s=>s.x>0&&s.opening==='west'));
     assert(circles.every(s=>!s.visitorChair&&!s.tablePlant));
+    assert(circles.every(s=>s.upholsteryColor==='776352'&&s.shellColor==='544e45'));
+    for(const name of ['Lounge warm upholstered back','Lounge warm seat cushions']){
+      const mesh=lounge.children.find(o=>o.geometry?.name===name);
+      assert.equal(mesh.material,pillows[0].material,'Upstairs upholstery reuses the exact hall fabric, not a similar paint');
+      assert.equal(mesh.material.roughness,.97);assert(mesh.material.normalMap&&mesh.material.roughnessMap);
+    }
+    assert.equal(lounge.children.find(o=>o.geometry?.name==='Lounge dark seat shell').material,backs[0].material);
+    const sofaPillows=lounge.children.find(o=>o.geometry?.type==='SphereGeometry'&&o.material===pillows[0].material);
+    assert.equal(sofaPillows.count,15,'Every ring-sofa pillow uses the hall upholstery');
     for(const pod of circles){
       const origin=lounge.localToWorld(new Three.Vector3(pod.x-1.4,1.4,pod.z+.75));
       const hit=new Three.Raycaster(origin,new Three.Vector3(0,-1,0)).intersectObject(lounge,true)[0];
@@ -541,6 +550,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(boards.length,6);assert(!scene.getObjectByName('Six-board lecture wall'));
     const rails=scene.children.filter(o=>o.name.startsWith('Double-channel lift track'));assert.equal(rails.length,3);
     for(const board of boards){
+      assert(!board.children.some(o=>o.isMesh&&o.scale.x===.55&&o.scale.y===.05&&o.scale.z===.09),'No redundant pale grab handle below the board');
       const body=board.getObjectByName('Solid opaque board body');assert(body?.isMesh);assert(body.scale.z>.07);
       assert.equal(board.children.filter(o=>o.name==='Guide roller').length,4);
       assert.equal(board.children.filter(o=>o.name==='Rail carriage bracket').length,4);
@@ -697,7 +707,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
-  const app=await fs.readFile(new URL('./app.js?v=41-centered-entry',import.meta.url),'utf8');
+  const app=await fs.readFile(new URL('./app.js?v=42-warm-seating',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
   assert(app.includes('controls.autoRotate=false'));
 });
@@ -746,7 +756,7 @@ test('sparse ink gives short local eraser passes and proportional chalk timing',
   assert.equal(clock.duration,2);clock.slots[clock.active].page=0;clock.page=6;clock.phase='erase';assert.equal(clock.duration,1);
 });
 test('tour resume blends from current view without a blackout or teleport',async()=>{
-  const source=await fs.readFile(new URL('./app.js?v=41-centered-entry',import.meta.url),'utf8');
+  const source=await fs.readFile(new URL('./app.js?v=42-warm-seating',import.meta.url),'utf8');
   const resume=source.slice(source.indexOf('function beginTransition'),source.indexOf('function applyShot'));
   assert(resume.includes('camera.position.clone()')&&resume.includes('controls.target.clone()'));
   assert(resume.includes('controls.enableDamping=false')&&resume.includes('beginTransition();updateLabels()'));
