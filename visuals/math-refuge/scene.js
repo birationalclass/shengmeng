@@ -248,7 +248,7 @@ export async function createRetreat(renderer,scene,report){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      time:{value:0},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
       varying vec3 vWorld;
@@ -259,7 +259,7 @@ export async function createRetreat(renderer,scene,report){
         #include <fog_vertex>
       }`,
     fragmentShader:`
-      uniform float time;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
       #include <common>
       #include <fog_pars_fragment>
       void main(){
@@ -280,7 +280,7 @@ export async function createRetreat(renderer,scene,report){
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
         vec3 color=mix(waterColor,vec3(.28,.41,.43),fresnel*.45)+vec3(1.0,.79,.48)*glitter*.22;
         color=mix(color,vec3(.67,.77,.71),foam*.45);
-        gl_FragColor=vec4(color,1.0);
+        gl_FragColor=vec4(color*nightVisibility,1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
         #include <fog_fragment>
@@ -298,7 +298,7 @@ export async function createRetreat(renderer,scene,report){
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
   const roomFill=createRoomFill();roomFill.apply(scene);
-  const sky=new Sky();sky.scale.setScalar(12000);scene.add(sky);
+  const sky=new Sky();sky.material.uniforms.nightVisibility={value:1};sky.material.fragmentShader='uniform float nightVisibility;\n'+sky.material.fragmentShader.replace('gl_FragColor = vec4( retColor, 1.0 );','gl_FragColor = vec4( retColor * nightVisibility, 1.0 );');sky.scale.setScalar(12000);scene.add(sky);
   sky.material.uniforms.turbidity.value=1.8;sky.material.uniforms.rayleigh.value=2;
   sky.material.uniforms.mieCoefficient.value=.002;sky.material.uniforms.mieDirectionalG.value=.8;
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
@@ -329,6 +329,7 @@ export async function createRetreat(renderer,scene,report){
   }
   function setTime(hour,regenerate=false){
     const h=wrapHour(hour),day=daylightAt(h),a=(h-6)*Math.PI/12;roomFill.setDaylight(day);pathLighting.update(day);
+    sky.material.uniforms.nightVisibility.value=.008+day*.992;ocean.material.uniforms.nightVisibility.value=.06+day*.94;
     const direction=new THREE.Vector3(Math.cos(a),Math.sin(a),0).normalize();
     sky.material.uniforms.sunPosition.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
     sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*2.1;sun.color.setHSL(.095,.28+(1-day)*.25,.85);

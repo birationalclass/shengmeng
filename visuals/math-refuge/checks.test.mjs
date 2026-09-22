@@ -226,7 +226,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const name of ['Upper private studies','Upper small seminar','Upper seminar lounge'])assert(result.campus.lightingZones.some(z=>z.name===name));
     assert.equal(result.pathLighting.count,26);const lanterns=scene.children.filter(o=>o.name.startsWith('Platform path lantern '));assert.equal(new Set(lanterns.map(o=>o.userData.type)).size,3);
     const spots=scene.children.filter(o=>o.isSpotLight);
-    result.setTime(12);const daytime=spots.map(o=>o.intensity);result.setTime(23);
+    result.setTime(12);const daytime=spots.map(o=>o.intensity);result.setTime(23);assert.equal(result.ocean.material.uniforms.nightVisibility.value,.06);
     spots.forEach((lamp,i)=>{assert(lamp.intensity>daytime[i]);assert(lamp.distance>0&&lamp.intensity>60);});
     for(const name of ['Academic living villa','Discussion villa','Upper private studies','Upper small seminar','Independent quiet library','Quiet residential villa 1','Quiet residential villa 2','Service and tea kitchen','Seminar hall','Bamboo tea pavilion'])assert(scene.getObjectByName(name+' light fixtures'));
     for(const lamp of scene.children.filter(o=>o.isSpotLight)){assert(lamp.position.y>lamp.target.position.y);assert.equal(lamp.penumbra,.85);assert(!lamp.castShadow);}

@@ -114,3 +114,5 @@ Scene assembly uses real Three.js geometry with mocked texture/PMREM/canvas/imag
 - Writing speed is adjustable from 0.25× to 2× independently of touring. Chinese ink contact advances at half the mathematical-ink speed; the chalk shaft tilts down and outward from its anchored upper tip.
 - The hall has a bounded diffuse-irradiance fill approximation, in addition to actual lamps, to keep the ceiling, upper boards and chair backs from falling into black. It is an artistic approximation to bounced light, not ray-traced global illumination.
 - Continuous thin edge strips follow the union boundaries of platforms and roofs, with room perimeter coves, bridge edges and step nosings. Twenty-six platform lanterns alternate stone niches, bronze bollards and slender poles. Their soft ground pools are shared transparent falloff patches; they do not each add a realtime shadow map.
+
+- Sky scattering and water shading now follow the same day/night factor as the scene clock, so midnight no longer leaves a white horizon and daytime-blue sea behind the room lighting.
