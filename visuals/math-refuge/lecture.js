@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import {LectureClock,boardHeights} from './lecture-state.js?v=18-board-diagrams';
-import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=18-board-diagrams';
+import {LectureClock,boardHeights} from './lecture-state.js?v=19-smooth-tour';
+import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=19-smooth-tour';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=18-board-diagrams';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v=19-smooth-tour';
 
 const W=1536,H=640,BOARD_W=5.3,BOARD_H=2.05;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -65,21 +65,21 @@ export async function createLecture(scene,renderer){
   }
   // Transparent capacitive interface laminated onto the east smart glazing.
   const consoleButtons=[],consoleTextures=[];
-  const button=new THREE.Mesh(new THREE.PlaneGeometry(1.9,.78),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.035,depthWrite:false,toneMapped:false}));
-  button.name='Smart glass language touch surface';button.position.set(42.73,1,-11.34);
-  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:3};scene.add(button);
+  const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({color:'#7be7df',transparent:true,opacity:.10,depthWrite:false,toneMapped:false}));
+  button.name='Smart glass language touch surface';button.position.set(33.6,-.10,-11.34);
+  button.userData={action:'language',pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:2};scene.add(button);
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
-  const label=new THREE.Mesh(new THREE.PlaneGeometry(1.82,.68),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:.8,depthWrite:false,toneMapped:false}));label.position.z=.008;button.add(label);
+  const label=new THREE.Mesh(new THREE.PlaneGeometry(2.1,.58),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));label.position.z=.008;button.add(label);
   button.userData.canvas=touchCanvas;button.userData.texture=touchTexture;consoleButtons.push(button);
   function setConsoleState(){
     const title=language;if(button.userData.lastLabel===title)return;button.userData.lastLabel=title;
     const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
-    // One action, positioned within the outer pane, away from every mullion.
-    c.fillStyle='#91e3db';c.font='29px sans-serif';c.textAlign='center';c.fillText('LANGUAGE',512,90);
-    c.font='110px "PingFang SC", sans-serif';c.fillStyle='#dbfff7';
-    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,238);
-    c.fillStyle='#b9fff0';c.fillRect(376,290,272,3);
+    // One bright action below the right-hand board, within a single pane.
+    c.textAlign='center';
+    c.font='154px "PingFang SC", sans-serif';c.fillStyle='#f3fff9';
+    c.fillText(language==='zh'?'EN  ↔':'中文  ↔',512,241);
+    c.fillStyle='#b9fff0';c.fillRect(326,305,372,5);
     touchTexture.needsUpdate=true;
   }
   setConsoleState();
@@ -146,7 +146,7 @@ export async function createLecture(scene,renderer){
   }
   function select(page){clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
   function update(dt,reduced=false){
-    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.13:.035,18,dt);if(playing&&!reduced)effectTime+=dt;
+    dt=Math.max(0,Math.min(.1,dt));for(const b of consoleButtons)b.material.opacity=THREE.MathUtils.damp(b.material.opacity,b.userData.pressed?.22:.10,18,dt);if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
     const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}

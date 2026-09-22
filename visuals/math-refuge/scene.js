@@ -4,12 +4,12 @@ import {createPathLighting} from './path-lighting.js';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=18-board-diagrams';
-import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=18-board-diagrams';
-import {createDistantIslands} from './distant-islands.js?v=18-board-diagrams';
-import {createCampus} from './campus.js?v=18-board-diagrams';
-import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=18-board-diagrams';
-import {platformUnion} from './platform-union.js?v=18-board-diagrams';
+import {createLandscape} from './landscape.js?v=19-smooth-tour';
+import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=19-smooth-tour';
+import {createDistantIslands} from './distant-islands.js?v=19-smooth-tour';
+import {createCampus} from './campus.js?v=19-smooth-tour';
+import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=19-smooth-tour';
+import {platformUnion} from './platform-union.js?v=19-smooth-tour';
 
 export async function createRetreat(renderer,scene,report){
   let seed=82573;

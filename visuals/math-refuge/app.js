@@ -1,29 +1,29 @@
 import * as THREE from 'three';
-import {controlLabel} from './control-label.js?v=18-board-diagrams';
+import {controlLabel} from './control-label.js?v=19-smooth-tour';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=18-board-diagrams';
-import {createLecture} from './lecture.js?v=18-board-diagrams';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=18-board-diagrams';
-import {seaLevel} from './landscape-shape.js?v=18-board-diagrams';
-import {createChalkReader} from './chalk-reader.js?v=18-board-diagrams';
+import {createRetreat} from './scene.js?v=19-smooth-tour';
+import {createLecture} from './lecture.js?v=19-smooth-tour';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v=19-smooth-tour';
+import {seaLevel} from './landscape-shape.js?v=19-smooth-tour';
+import {createChalkReader} from './chalk-reader.js?v=19-smooth-tour';
 import {displayProfile,boardFraming} from './display-profile.js?v=5-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,fadeAt,advanceShot} from './camera-paths.js?v=18-board-diagrams';
-import {BoardFollow} from './board-follow.js?v=18-board-diagrams';
-import {RetreatTime} from './retreat-time.js?v=18-board-diagrams';
-import {constrainAboveWater} from './camera-bounds.js?v=18-board-diagrams';
-import {bindPhysicalButtons} from './physical-buttons.js?v=18-board-diagrams';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=19-smooth-tour';
+import {BoardFollow} from './board-follow.js?v=19-smooth-tour';
+import {RetreatTime} from './retreat-time.js?v=19-smooth-tour';
+import {constrainAboveWater} from './camera-bounds.js?v=19-smooth-tour';
+import {bindPhysicalButtons} from './physical-buttons.js?v=19-smooth-tour';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
-let shot=0,time=0,lastTime=0,touring=!reduced.matches,free=false,blend=null,lightTimer,suppressFadeShot=null;
+let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,lightTimer,opening={started:null};
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
   position:new THREE.CatmullRomCurve3(s.positions.map(p=>new THREE.Vector3(...p))),
@@ -37,28 +37,35 @@ function fail(error){
 function updateLabels(){
   document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture));
   reader?.chapter(Boolean(SHOTS[shot].lecture),$('lecturePanel').hidden);
-  $('shotNumber').textContent=`0${shot+1} / ${SHOTS[shot].name}`;
+  $('shotNumber').textContent=opening?'总览':`0${shot+1} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
   document.querySelectorAll('[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===shot)));
   controlLabel($('tour'),touring?'暂停巡游':free?'恢复巡游':'继续巡游');
   $('tour').setAttribute('aria-pressed',String(touring));
-  $('mode').textContent=SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
+  $('mode').textContent=opening?'总览 · 5 秒后进入板书':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
 }
 function stopTour(){
+  opening=null;
   if(SHOTS[shot].lecture)boardFollow.touch();
   const changed=touring||!free||blend;
   touring=false;free=true;blend=null;$('transition').style.opacity=0;
   if(changed)updateLabels();
 }
-function resumeTour(){
-  boardFollow.reset();
-  touring=true;free=false;suppressFadeShot=shot;$('transition').style.opacity=0;
+function beginTransition(){
   const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
   controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
-  blend={elapsed:0,position,target,fov:camera.fov,duration:Math.min(5.5,2.2+position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)))*.04)};
-  updateLabels();
+  blend={elapsed:0,position,target,fov:camera.fov,duration:reduced.matches?.8:transitionSeconds(position.distanceTo(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration))))};
+  $('transition').style.opacity=0;
+}
+function selectShot(index){
+  opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
+  beginTransition();updateLabels();
+}
+function resumeTour(){
+  opening=null;boardFollow.reset();touring=true;free=false;
+  beginTransition();updateLabels();
 }
 function applyShot(dt){
   const s=SHOTS[shot],fraction=time/s.duration,t=smoothProgress(fraction);
@@ -75,7 +82,7 @@ function applyShot(dt){
     if(k===1)blend=null;
   }else{
     camera.position.copy(position);controls.target.copy(target);camera.fov=s.fov;
-    $('transition').style.opacity=String(s.lecture||suppressFadeShot===shot?0:fadeAt(fraction)*.85);
+    $('transition').style.opacity=0;
   }
   camera.updateProjectionMatrix();controls.update();
   const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
@@ -106,12 +113,18 @@ function tick(stamp){
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden)return;
   if(lecture){lecture.update(dt,reduced.matches);updateLectureUI();reader?.update();}
+  if(opening){
+    if(opening.started===null)opening.started=stamp;
+    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(0);
+  }
   if(touring){
-    if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));if(shot!==state.index){shot=state.index;suppressFadeShot=null;updateLabels();}time=state.time;}
+    if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
+    applyShot(dt);
+  }else if(blend){
     applyShot(dt);
   }else if(SHOTS[shot].lecture&&lecture&&boardFollow.following){
     // Board tracking belongs to the teaching chapter, independently of touring.
-    blend=null;applyShot(reduced.matches?0:dt);
+    applyShot(reduced.matches?0:dt);
   }else{
     const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;forward.normalize();
     const right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0));
@@ -131,6 +144,8 @@ function tick(stamp){
     $('world').dataset.board=String(lecture.clock.active);
     $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
   }else delete $('world').dataset.boardFollow;
+  $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
+  $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);}
   updateSceneTime(dt);
@@ -152,7 +167,7 @@ try{
   controls.addEventListener('end',()=>{if(SHOTS[shot].lecture)boardFollow.end();});
   window.addEventListener('blur',()=>{if(boardFollow.interacting)boardFollow.end();});
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
-  camera.position.fromArray(SHOTS[0].positions[0]);controls.target.fromArray(SHOTS[0].targets[0]);controls.update();
+  camera.position.copy(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.target.copy(curves[shot].target.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.update();
   resize();
   retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
   $('loadMessage').textContent='正在安装六块升降黑板与谱序列板书…';
@@ -166,7 +181,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());
-  setQuality();updateSceneTime();updateLabels();time=.85;applyShot(0);$('transition').style.opacity=0;
+  setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
   // Shader compilation failures are reported, not hidden behind an endless loader.
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
   await renderer.compileAsync(scene,camera);
@@ -176,12 +191,10 @@ try{
 
 $('tour').addEventListener('click',()=>{
   if(!renderer||!retreat||!cameraIntent.canActivate())return;
-  if(touring){touring=false;blend=null;$('transition').style.opacity=0;updateLabels();}else resumeTour();
+  if(touring){opening=null;touring=false;blend=null;$('transition').style.opacity=0;updateLabels();}else resumeTour();
 });
 document.querySelectorAll('[data-shot]').forEach(button=>button.addEventListener('click',()=>{
-  if(!retreat||!cameraIntent.canActivate())return;shot=Number(button.dataset.shot);time=.85;boardFollow.reset();
-  // A chapter is a viewpoint selection, not permission to restart the tour.
-  touring=false;free=false;blend=null;applyShot(0);$('transition').style.opacity=0;updateLabels();
+  if(!retreat||!cameraIntent.canActivate())return;selectShot(Number(button.dataset.shot));
 }));
 $('settingsButton').addEventListener('click',()=>{
   $('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
@@ -280,9 +293,8 @@ function updateLectureUI(){
   lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});
 }
 function focusLecture(){
-  if(!lecture||!cameraIntent.canActivate())return;shot=SHOTS.findIndex(s=>s.lecture);time=.85;boardFollow.reset();
-  const framing=boardFraming(camera.aspect,SHOTS[shot].fov),focus=lecture.focus(true);free=false;touring=false;blend=null;
-  camera.fov=SHOTS[shot].fov;camera.updateProjectionMatrix();camera.position.copy(focus).add(new THREE.Vector3(...lectureViewOffset(framing.distance)));controls.target.copy(focus);controls.update();$('transition').style.opacity=0;updateLabels();
+  if(!lecture||!cameraIntent.canActivate())return;
+  selectShot(0);
 }
 $('lectureButton').addEventListener('click',()=>{
   if(!lecture)return;reader?.close();$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();

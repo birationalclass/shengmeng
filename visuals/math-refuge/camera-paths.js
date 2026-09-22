@@ -18,9 +18,11 @@ export const SHOTS=[
   {name:'海上花园',title:'竹影、溪声，<br>与一棵巨树为邻。',description:'海上花园 · 竹庭茶亭 · 开阔海平线',duration:38,fov:58,
    positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-60,8,-44]]}
 ];
+SHOTS.unshift(...SHOTS.splice(SHOTS.findIndex(s=>s.lecture),1));
+export const OPENING_OVERVIEW_MS=5000;
+export const transitionSeconds=distance=>Math.min(6.5,2.2+Math.max(0,distance)*.04);
 for(const shot of SHOTS)for(const key of ['positions','targets'])shot[key]=shot[key].map(p=>p.map(v=>v*BUILDING_SCALE));
-export function smoothProgress(t){return t*t*(3-2*t);}
-export function fadeAt(t){return Math.max(0,1-t/.035,(t-.965)/.035);}
+export function smoothProgress(t){return t*t*t*(10+t*(-15+6*t));}
 export function advanceShot(index,time,delta,speed){
   time+=Math.min(.1,Math.max(0,delta))*speed;
   while(time>=SHOTS[index].duration){time-=SHOTS[index].duration;index=(index+1)%SHOTS.length;}
