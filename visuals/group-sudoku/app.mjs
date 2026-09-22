@@ -1,6 +1,6 @@
 import {createCompletionRecords} from './records.mjs?v=records6-oneline';
 import {BUILD_TIME_KEY,readBuildSeconds,buildSeconds} from './construction.mjs?v=owl-clearance1';
-import {createBackgroundMusic} from './music.mjs?v=owl-clearance1';
+import {createBackgroundMusic} from './music.mjs?v=offline1';
 import {Campaign,STORAGE_KEY,MAP_STYLE_KEY,clearLocalData} from './campaign.mjs?v=owl-clearance1';
 import {SudokuAtlas,REGIONS} from './atlas.mjs?v=board-ready1';
 import {cameraKey} from './camera-navigation.mjs?v=owl-clearance1';

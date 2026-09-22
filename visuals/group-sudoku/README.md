@@ -47,6 +47,22 @@ node --test courses/abstract-algebra/2026-fall/tests/associativity-sudoku.test.c
 
 使用用户提供的完整 MP3：`哈利波特BGM_专注学习歌单_BV18aStYbEpv.mp3`（42 分 45 秒），本地托管于 `audio/magic-study.mp3`。默认开启、12% 音量、循环播放；首次点击或按键后启动，以兼容浏览器自动播放限制。设置中可以关闭或调整 0–100% 音量，偏好单独保存在本机。使用流式媒体，音乐不阻塞三维页面加载，也不会因换关或建筑预览重新播放；音量通过 Web Audio 增益控制，以兼容移动浏览器。
 
+### 在线缓冲与离线音乐
+
+原录音约 41.04 MB（128 kbps MP3，48 kHz 双声道），保持原音质。媒体元素先准备 metadata，首次手势开始播放，不经整首 `fetch` / `decodeAudioData`。关闭音乐或音量为零时移除媒体源并暂停音频上下文，重新开启时恢复位置；缓冲超时会释放请求并提示重试。`?mute=1` 同时静音媒体元素与增益节点，静音测试仍走真实解码流程。
+
+设置新增「下载离线音乐」「暂停／继续下载」「清除音乐缓存」。下载按 1 MiB 顺序 Range 请求，把压缩字节存入独立 IndexedDB；每块与进度在同一事务提交，关闭页面或网络中断后可续传。ETag / Last-Modified 与文件长度用于防止拼接不同版本，服务器忽略 Range 的完整响应会被取消，不整首读入内存。Web Locks 避免多个标签页同时修改下载；存储空间不足会给出提示。
+
+专用 Service Worker 仅拦截本模块的音乐 URL。完整离线副本优先响应播放请求，支持 206、尾部范围、HEAD 与 416，ReadableStream 按需求逐块读取；未下载完整时仍使用网络。音频使用 anonymous CORS 模式，让原生媒体请求经过 Service Worker。播放和音量调整保留现有 Analyser→Gain 路径，喷泉音乐响应不变。下载完成或清除缓存会刷新媒体源并恢复播放位置。
+
+这不是 ZIP 解压方案；41 MB 是压缩文件的磁盘占用，不是固定的内存预算。若整首解码成 32 位双声道 PCM，将约占 940 MiB，此实现避免该路径。每次 JS 下载／读取块上限为 1 MiB（Blob、传输及浏览器内部可能另有缓冲），实际媒体缓冲由浏览器控制，不能承诺进程内存硬上限。离线下载会申请持久存储；浏览器可拒绝，未持久化缓存可能被清理。
+
+离线范围仅包含音乐。页面首次加载、账号登录、三维资源和服务器通关记录尚未提供完整离线支持。下载须先联网完成；浏览器隐私模式或禁用 Service Worker / IndexedDB 时降级为在线播放。
+
+验证：`node --test visuals/group-sudoku/tests/music*.test.mjs`。静音浏览器回归页：`tests/music-harness.html?mute=1`，使用临时偏好，不登录、不写通关记录。已验证实际分块下载、服务器停止后的跨块/尾部 Range 与 416、离线跳转到 12 分钟、关闭后释放缓冲。此测试页始终静音。
+
+参考：[MDN Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)、[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB)、[存储配额和清理](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria)。
+
 冰湖新增两位花样滑冰人物：沿棋盘外侧连续滑行，包含交替蹬冰、舒展手臂、周期旋转和淡冰痕；冰雕与霜松已外移，为滑行留出空间。“减少动态”会停止人物运动并隐藏冰痕。
 
 

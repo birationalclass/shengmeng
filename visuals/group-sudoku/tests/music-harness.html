@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>静音音乐回归测试</title><link rel="stylesheet" href="../style.css?v=offline1"><style>body{overflow:auto;padding:30px;background:#201c15;color:#eee;font:16px sans-serif}#settingsPanel{display:block;position:static;max-height:none;width:min(400px,90vw);margin:20px 0}pre{white-space:pre-wrap}button{cursor:pointer}</style>
+<h1>静音音乐回归测试</h1><p>使用真实音频模块，不登录、不创建通关记录。</p><button id="start">开始静音播放</button><button id="rangeTest">验证离线 Range</button><button id="seek">跳转到 12 分钟</button>
+<section id="settingsPanel"><section class="music-settings"><h2 id="musicTitle"></h2><label><input id="musicEnabled" type="checkbox"><span id="musicToggleLabel"></span></label><label id="musicVolumeLabel" for="musicVolume"></label><output id="musicVolumeValue"></output><input id="musicVolume" type="range" min="0" max="100"><p id="musicStatus"></p><div class="music-offline-actions"><button id="musicDownload" disabled></button><button id="musicCacheClear" disabled></button></div><progress id="musicDownloadProgress" max="100" hidden></progress><p id="musicOfflineStatus" role="status"></p></section></section>
+<audio id="backgroundMusic" muted hidden></audio><pre id="state"></pre><pre id="result"></pre>
+<script type="module">
+import {createBackgroundMusic} from '../music.mjs?v=offline1';
+if(new URLSearchParams(location.search).get('mute')!=='1'){location.replace('?mute=1');}else{
+ createBackgroundMusic({storage:{getItem:()=>null,setItem:()=>{}},t:zh=>zh});
+ const audio=document.getElementById('backgroundMusic');
+ setInterval(()=>{document.getElementById('state').textContent=JSON.stringify({muted:audio.muted,paused:audio.paused,time:audio.currentTime,duration:audio.duration,source:!!audio.getAttribute('src'),buffered:Array.from({length:audio.buffered.length},(_,i)=>[audio.buffered.start(i),audio.buffered.end(i)])},null,2);},300);
+ document.getElementById('seek').onclick=()=>{audio.currentTime=720;};
+ document.getElementById('rangeTest').onclick=async()=>{try{
+  const url=new URL('../audio/magic-study.mp3',location.href),results=[];
+  for(const range of ['bytes=1048574-1048580','bytes=-128','bytes=41043789-']){
+   const response=await fetch(url,{headers:{Range:range}});const bytes=new Uint8Array(await response.arrayBuffer());
+   results.push({range,status:response.status,source:response.headers.get('X-Sudoku-Audio'),contentRange:response.headers.get('Content-Range'),length:bytes.length});
+  }
+  document.getElementById('result').textContent=JSON.stringify(results,null,2);
+ }catch(e){document.getElementById('result').textContent=e.message;}};
+}
+</script></html>
