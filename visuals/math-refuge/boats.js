@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S} from './site-layout.js?v=36-board-detail';
-import {seaLevel} from './landscape-shape.js?v=36-board-detail';
+import {BUILDING_SCALE as S} from './site-layout.js?v44-hall-clearance';
+import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 // Fixed offshore moorings; small bounded wave motion cannot drift through decks.
 export function createBoats(scene){
   const root=new THREE.Group();root.name='Offshore sailboats and kayaks';scene.add(root);

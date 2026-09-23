@@ -1,10 +1,11 @@
 import * as THREE from 'three';
+import {terracePaving} from './terrace-paving.js';
 import {createLectern} from './lectern.js?v=38-board-tone';
 import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
-import {createAutomaticDoors} from './automatic-doors.js?v=39-full-height-doors';
-import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v=36-board-detail';
-import {seaLevel} from './landscape-shape.js?v=36-board-detail';
+import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';
+import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
+import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fixed-hall';
 
 // Architectural geometry for dry offshore decks, rooms and supported inter-storey stairs.
@@ -32,8 +33,10 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
     }
     meta(name,{anchors,tops,height,basePlates:true,continuousJoints:true});
   }
-  function guardTerrace(name,rectangles,y,openings=[]){
-    const segments=perimeterRails(rectangles,openings),height=.95/S;
+  function guardTerrace(name,rectangles,y,openings=[],inset=0){
+    // The whole square footplate, not only its centre, must sit on the slab.
+    const railBounds=rectangles.map(([a,b,c,d])=>[a+inset,b-inset,c+inset,d-inset]);
+    const segments=perimeterRails(railBounds,openings),height=.95/S;
     for(const [index,[a,b,c,d]] of segments.entries()){
       const length=Math.hypot(c-a,d-b),count=Math.max(1,Math.ceil(length/1.3));
       const anchors=Array.from({length:count+1},(_,i)=>[a+(c-a)*i/count,y,b+(d-b)*i/count]);
@@ -134,7 +137,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
         const fixedStyle=isHall?{panels:side==='west'?2:1,frame:.022/S,seal:.005/S}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
-          automaticDoors.add(scene,{x,y,z,width:gap,height:h,handleHeight:1.1/S,axis,name:side});
+          automaticDoors.add(scene,{x,y,z,width:gap,height:h,axis,name:side});
         }
       }else glazing(x,y,z,width,h,axis,style);
     }
@@ -220,14 +223,12 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const pavingMaterials=['#736e61','#776f61','#70695b'].map(color=>new THREE.MeshStandardMaterial({color,map:mineralMap,roughness:.96,metalness:0,envMapIntensity:.12,normalMap:stone.normalMap,normalScale:new THREE.Vector2(.025,.025)}));
   const borderMaterial=new THREE.MeshStandardMaterial({color:'#454b47',roughness:.96,metalness:0,envMapIntensity:.1});
   const pavingRects=[[tw+.18,HALL.west,tn+.18,ts-.18],[HALL.east,te-.18,tn+.18,ts-.18],[HALL.west,HALL.east,tn+.18,HALL.north],[HALL.west,HALL.east,HALL.south,ts-.18]];
-  let slabCount=0;
-  for(const [a,b,c,d] of pavingRects){
-    const nx=Math.ceil((b-a)/2.8),nz=Math.ceil((d-c)/1.7),w=(b-a)/nx,h=(d-c)/nz;
-    for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){
-      box([a+(i+.5)*w,DECK_Y+.004,c+(j+.5)*h],[w-.0045,.014,h-.0045],pavingMaterials[(i*7+j*3+slabCount++)%3]);
-    }
+  const paving=terracePaving([tw+.18,te-.18,tn+.18,ts-.18],HALL);
+  const slabCount=paving.cells.length;
+  for(const {bounds:[a,b,c,d],column,row} of paving.cells){
+    box([(a+b)/2,DECK_Y+.004,(c+d)/2],[b-a-.0045,.014,d-c-.0045],pavingMaterials[(column*7+row*3)%3]);
   }
-  for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw-.16,.018,.18],borderMaterial);
+  for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw,.018,.18],borderMaterial);
   for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,terraceCenterZ],[.18,.018,ts-tn-.36],borderMaterial);
   // A slim matte champagne threshold defines the entrance, not a shiny grid.
   box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,2.2],brass);
@@ -236,7 +237,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   // An open view corridor: only a low roofed link, not a tall structure.
   const canopyStart=24.5,canopyEnd=HALL.west+.02;
   box([(canopyStart+canopyEnd)/2,2.55,0],[canopyEnd-canopyStart,.13,2.4],edge);
-  for(const x of [25,29.5,34.4])for(const z of [-1.1,1.1])box([x,1.3,z],[.09,2.6,.09],steel);
+  for(const x of [25,29.5,HALL.west-.4])for(const z of [-1.1,1.1])box([x,1.3,z],[.09,2.6,.09],steel);
   meta('Aligned rear entrance canopy',{startX:canopyStart,endX:canopyEnd,centerZ:0,bridgeZ:BRIDGES[1].z,doorZ:0});
   const cx=(HALL.west+HALL.east)/2,cz=0,hallDepth=HALL.south-HALL.north;
   room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','north','south'],false,false);
@@ -246,12 +247,13 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   carpet.name='Warm woven seminar carpet';carpet.position.set(cx,DECK_Y+.016,0);carpet.receiveShadow=true;scene.add(carpet);
   // Fixed two-storey hall: the ground floor keeps its board clearance.
   const hallUpper=DECK_Y+HALL.clearHeight/S+.20;
-  floor(hallUpper,8.95,20.55,cx,0);
-  room('Upper seminar lounge',cx,0,7,13,2.8,hallUpper,['west','south'],false,true);
+  floor(hallUpper,HALL.east-HALL.west+.55,hallDepth+.55,cx,0);
+  const loungeX=39;
+  room('Upper seminar lounge',loungeX,0,7,13,2.8,hallUpper,['west','south'],false,true);
 
   const upperLounge=createUpperLounge(THREE,{seatCloth,seatShell:shell,seatMetal:brass});
-  upperLounge.group.position.set(cx,hallUpper+DECK_Y,0);upperLounge.group.scale.setScalar(1/S);scene.add(upperLounge.group);
-  const ceiling=new THREE.Mesh(new THREE.BoxGeometry(8.1,.04,19.4),acousticCeiling);
+  upperLounge.group.position.set(loungeX,hallUpper+DECK_Y,0);upperLounge.group.scale.setScalar(1/S);scene.add(upperLounge.group);
+  const ceiling=new THREE.Mesh(new THREE.BoxGeometry(HALL.east-HALL.west-.3,.04,hallDepth-.6),acousticCeiling);
   ceiling.position.set(cx,DECK_Y+HALL.clearHeight/S,0);ceiling.receiveShadow=true;ceiling.name='Fixed seminar acoustic ceiling';scene.add(ceiling);
   // Selected concept A: one low suspended oval, clear of the task lighting.
   const pendant=new THREE.Group();pendant.name='Floating oval seminar pendant';pendant.position.set(37.4,DECK_Y+HALL.clearHeight/S-.45,0);scene.add(pendant);
@@ -284,15 +286,16 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
-  const n=34,stairX=33.3,stairStart=9.6,landingCenter=0,stairTread=.251;
+  const n=34,stairX=HALL.west-1.5,stairStart=9.6,landingCenter=0,stairTread=.251;
+  const landingX=HALL.west-.4,landingBounds=[landingX-1.9,landingX+1.9,-1.2,1.2];
   for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*stairTread],[1.3,hallUpper/n,stairTread+.005],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*stairTread+stairTread/2-.02],[1.14,.012,.018],light);}
-  floor(hallUpper,3.8,2.4,34.4,landingCenter);
+  floor(hallUpper,3.8,2.4,landingX,landingCenter);
   supportedFlight('Hall exterior stair',stairX,stairStart,n,stairTread,hallUpper,1.3,landingCenter+.9);
-  guardTerrace('Hall complete upper guard',[[34.525,43.475,-10.275,10.275],[32.5,36.3,landingCenter-1.2,landingCenter+1.2]],hallUpper+DECK_Y,[{axis:'x',fixed:landingCenter+1.2,from:32.74,to:33.86}]);
+  guardTerrace('Hall complete upper guard',[[HALL.west-.275,HALL.east+.275,HALL.north-.275,HALL.south+.275],landingBounds],hallUpper+DECK_Y,[{axis:'x',fixed:landingCenter+1.2-.08,from:stairX-.56,to:stairX+.56}],.08);
   // Thin horizontal cantilever beams tie into the upper slab; no columns below
   // the landing obstruct the centered ground-floor approach.
-  for(const z of [landingCenter-.9,landingCenter+.9])box([34.4,DECK_Y+hallUpper-.10,z],[3.65,.18,.12],steel);
-  meta('Centered upper hall entrance',{doorCenterZ:0,landingCenterZ:landingCenter,landingBounds:[32.5,36.3,-1.2,1.2],supportColumns:0,cantileverBeams:2,treadMetres:stairTread*S});
+  for(const z of [landingCenter-.9,landingCenter+.9])box([landingX,DECK_Y+hallUpper-.10,z],[3.65,.18,.12],steel);
+  meta('Centered upper hall entrance',{doorCenterZ:0,landingCenterZ:landingCenter,landingBounds,supportColumns:0,cantileverBeams:2,treadMetres:stairTread*S});
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
   meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});
   meta('Seamless smart seminar glazing',{panels:1,joints:0,sealMetres:0,frameMetres:.022,touchLanguage:true});

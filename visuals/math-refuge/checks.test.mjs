@@ -202,7 +202,20 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const frontX=Math.max(...auditorium.userData.seatPositions.map(p=>p[0]));
     assert((HALL.boardX-frontX)*BUILDING_SCALE>4.9,'First row must be set back from the boards');
     for(const x of new Set(auditorium.userData.seatPositions.map(p=>p[0])))assert.equal(auditorium.userData.seatPositions.filter(p=>p[0]===x).length,10);
-    assert.equal(auditorium.userData.rows,3);assert.equal(HALL.south-HALL.north,20);
+    assert.equal(auditorium.userData.rows,3);assert.equal(HALL.south-HALL.north,23);
+    const tiers=scene.children.filter(o=>o.name.startsWith('Carpeted seating tier '));
+    for(const tier of tiers){
+      const bounds=new Three.Box3().setFromObject(tier);
+      assert((HALL.south*BUILDING_SCALE-bounds.max.z)>2.3,'South entrance has a flat passage before the seating tiers');
+      assert((bounds.min.z-HALL.north*BUILDING_SCALE)>2.3,'North entrance has a flat passage before the seating tiers');
+    }
+    const hallGuard=scene.getObjectByName('Hall complete upper guard').userData;
+    const onSlab=(x,z)=>hallGuard.rectangles.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
+    for(const rail of scene.children.filter(o=>o.name.startsWith('Hall complete upper guard edge '))){
+      for(const [x,y,z] of rail.userData.anchors)for(const dx of [-.0525,.0525])for(const dz of [-.0525,.0525]){
+        assert(onSlab(x+dx,z+dz),'Entire square railing base stays on the upper slab');
+      }
+    }
     assert.deepEqual(auditorium.userData.rowRises,[.36,.18,0]);
     const seatLevels=[...new Set(auditorium.userData.seatPositions.map(p=>p[1]))];assert.equal(seatLevels.length,3);
     assert(Math.abs((seatLevels[0]-seatLevels[1])*BUILDING_SCALE-.18)<1e-10);
@@ -413,7 +426,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
         const pane=leaf.getObjectByName('Full-height sliding glass leaf'),bounds=new Three.Box3().setFromObject(pane);
         assert(Math.abs(bounds.min.y-DECK_Y*BUILDING_SCALE)<1e-6);
         assert(Math.abs(bounds.max.y-(DECK_Y*BUILDING_SCALE+HALL.clearHeight))<1e-6);
-        const handle=leaf.getObjectByName('Door handle').getWorldPosition(new Three.Vector3());assert(Math.abs(handle.y-DECK_Y*BUILDING_SCALE-1.1)<1e-6);
+        assert(!leaf.getObjectByName('Door handle'),'Automatic glass doors have no protruding handles');
       }
       const rail=new Three.Box3().setFromObject(group.getObjectByName('Ceiling recessed door track'));
       assert(rail.min.y>DECK_Y*BUILDING_SCALE+HALL.clearHeight,'Track stays above the full-height doorway');

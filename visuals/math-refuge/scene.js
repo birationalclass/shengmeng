@@ -1,15 +1,15 @@
 import * as THREE from 'three';
-import {createBoats} from './boats.js?v=36-board-detail';
+import {createBoats} from './boats.js?v44-hall-clearance';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js';
-import {createPathLighting} from './path-lighting.js?v=36-board-detail';
+import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v=36-board-detail';
-import {BUILDING_SCALE,DECK_Y} from './site-layout.js?v=36-board-detail';
-import {createDistantIslands} from './distant-islands.js?v=20-slower-tour';
-import {createCampus} from './campus.js?v=42-warm-seating';
+import {createLandscape} from './landscape.js?v44-hall-clearance';
+import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
+import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
+import {createCampus} from './campus.js?v45-paving-grid';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -208,7 +208,7 @@ export async function createRetreat(renderer,scene,report){
     const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),material);plaque.name=name;plaque.userData.label=title;plaque.position.fromArray(position);plaque.rotation.y=rotation;scene.add(plaque);
   }
   box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6,'学术客厅','ACADEMIC LOUNGE');
-  sign('Conference entrance sign',[39,2.65,10.1],2.4,'报告厅','SEMINAR HALL');
+  sign('Conference entrance sign',[(HALL.west+HALL.east)/2,2.65,HALL.south+.1],2.4,'报告厅','SEMINAR HALL');
   sign('Coffee cabin sign',[39,2,-18.9],2.3,'咖啡小屋','COFFEE CABIN');
   sign('Discussion entrance sign',[11.5,2.1,5.12],2.8,'讨论室','DISCUSSION ROOM');
   sign('Library entrance sign',[-37,2,-10.88],2.8,'图书馆','LIBRARY');

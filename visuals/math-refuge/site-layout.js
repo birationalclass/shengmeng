@@ -2,7 +2,8 @@
 // ceiling heights stay physical after the shared site scale is applied.
 export const BUILDING_SCALE=Math.SQRT2;
 export const DECK_Y=.28;
-export const HALL={west:34.8,east:43.2,north:-10,south:10,boardX:42.7,clearHeight:4.9};
+// Widen the side entrances while keeping the seats and blackboard wall fixed.
+export const HALL={west:34.8,east:43.2,north:-11.5,south:11.5,boardX:42.7,clearHeight:4.9};
 // Physical riser heights in metres, back to front; seats face east (+X).
 export const SEAT_ROWS=[{x:36.2,rise:.36},{x:37.7,rise:.18},{x:39.2,rise:0}];
 export const SEAT_COLUMNS=[-6.2,-5,-3.8,-2.6,-1.4,1.4,2.6,3.8,5,6.2];

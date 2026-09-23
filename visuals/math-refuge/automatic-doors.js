@@ -2,7 +2,7 @@
 export function createAutomaticDoors(T,glass,metal){
   const doors=[],targets=[],geometry=new T.BoxGeometry(1,1,1);
   const sensorMaterial=new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false,side:T.DoubleSide});
-  function add(parent,{x,y,z,width,height,handleHeight=1.1,axis,name}){
+  function add(parent,{x,y,z,width,height,axis,name}){
     const group=new T.Group();group.name='Automatic seminar door '+name;
     group.position.set(x,y+height/2,z);if(axis==='z')group.rotation.y=Math.PI/2;parent.add(group);
     const leaves=[];
@@ -12,7 +12,6 @@ export function createAutomaticDoors(T,glass,metal){
       for(const edge of [-1,1]){
         const jamb=new T.Mesh(geometry,metal);jamb.scale.set(.013,height,.032);jamb.position.x=edge*width/4;leaf.add(jamb);
       }
-      const handle=new T.Mesh(geometry,metal);handle.name='Door handle';handle.scale.set(.018,.38,.045);handle.position.set(-sign*(width/4-.10),handleHeight-height/2,.055);leaf.add(handle);
       leaves.push({leaf,sign});
     }
     const rail=new T.Mesh(geometry,metal);rail.name='Ceiling recessed door track';rail.scale.set(width*2.05,.075,.095);rail.position.y=height/2+.05;group.add(rail);
