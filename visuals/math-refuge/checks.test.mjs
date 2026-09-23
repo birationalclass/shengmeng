@@ -457,7 +457,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const flight of allObjects.filter(o=>o.name==='Seminar supported stair flight')){assert(flight.userData.riser>.14&&flight.userData.riser<.18);assert(flight.userData.tread>.25);}
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.getObjectByName('Continuous Shanghai sky');
-    assert(sky.material.uniforms.radius.value>.004&&sky.material.uniforms.radius.value<.005);
+    assert(sky.material.uniforms.radius.value>.008&&sky.material.uniforms.radius.value<.010);
     assert(sky.material.uniforms.day.value>.9);
     const environmentBefore=scene.environment;result.setTime(12.51,true);assert.equal(scene.environment,environmentBefore,'No half-hour reflection-map replacement');
     assert.equal(scene.children.filter(o=>o.name.startsWith('Framed specimen tree')).length,ORNAMENTAL_TREES.length);

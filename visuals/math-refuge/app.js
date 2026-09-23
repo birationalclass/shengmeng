@@ -12,8 +12,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v68-time';
-import {createLecture} from './lecture.js?v69-authored';
+import {createRetreat} from './scene.js?v70-sun-stars';
+import {createLecture} from './lecture.js?v70-sun-stars';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -23,7 +23,7 @@ import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v62-chalk-ink';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v68-time';
-import {shanghaiHour,approachHour,solarEvents} from './solar-state.js?v68-time';
+import {shanghaiHour,approachHour,solarEvents} from './solar-state.js?v70-sun-stars';
 import {createShanghaiWeather} from './shanghai-weather.js?v68-time';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
@@ -42,11 +42,12 @@ for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))])
 }
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 let entered=false;
-$('enterButton').addEventListener('click',()=>{
+function enterScene(){
   if(entered||$('world').dataset.ready!=='true')return;
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   backgroundMusic.start();$('world').focus({preventScroll:true});
-});
+}
+$('enterButton').addEventListener('click',enterScene);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
@@ -313,7 +314,8 @@ try{
   if(profile.direct)renderer.render(scene,camera);else composer.render();
   culled.forEach(object=>object.frustumCulled=true);
   $('world').dataset.ready='true';$('world').dataset.entered='false';
-  $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').hidden=false;$('enterButton').focus({preventScroll:true});
+  $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').disabled=false;
+  if($('loading').dataset.entryRequested==='true')enterScene();else $('enterButton').focus({preventScroll:true});
   renderer.setAnimationLoop(tick);
   // Fetch only manifests and covers in the background, without delaying entry.
   lecture.preloadReports();

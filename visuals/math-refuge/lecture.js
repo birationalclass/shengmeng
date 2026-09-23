@@ -26,7 +26,7 @@ export async function createLecture(scene,renderer,options={}){
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
   estimateDurations();
-  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='zh',generation=0;
+  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
   if(document.fonts)await Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]);
   function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
@@ -170,7 +170,7 @@ export async function createLecture(scene,renderer,options={}){
     }
   }
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
-  if(seminarScreen)reportHeader.mesh.visible=false;
+  if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
   const touchButtons=[...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
   setConsoleState();setReportState();
   if(disabled){reportHeader.mesh.visible=false;touchButtons.forEach(b=>b.visible=false);}
