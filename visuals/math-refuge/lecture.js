@@ -33,7 +33,7 @@ export async function createLecture(scene,renderer){
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
         const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
-        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?16:8});
+        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?2:8});
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}

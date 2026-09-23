@@ -689,6 +689,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
       assert.equal(lecture.pages.length,id==='meng'?38:id==='duan'?34:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
+      // Once the title is written, allow a brief reading beat before board two.
+      const clock=lecture.clock;clock.elapsed=clock.duration-.05;clock.update(.1);
+      assert.equal(clock.phase,'hold');assert.equal(clock.slots[clock.active].progress,1);
+      for(let i=0;i<19;i++)lecture.update(.1);
+      assert.equal(clock.page,0,'Keep a short pause after the final title stroke');
+      lecture.playing=false;lecture.update(.1);assert.equal(clock.page,0,'Manual pause remains respected');lecture.playing=true;
+      for(let i=0;i<2;i++)lecture.update(.1);
+      assert.equal(clock.page,1,'Begin the second board transition about two seconds after the title');
     }
     lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
     globalThis.fetch=async()=>{throw new Error('Offline');};await lecture.setReport('hu');assert.equal(lecture.report.id,'hu','A prepared report switches without another network request');assert.equal(lecture.clock.phase,'write','A clean title board starts without an empty lift delay');
