@@ -125,8 +125,8 @@ test('all facility footprints and expansion docks sit over open seawater',()=>{
 });
 
 
-test('ten finite camera chapters with auditorium, upstairs, ocean and garden views',()=>{
-  assert.equal(SHOTS.length,10);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
+test('finite camera destinations include all buildings, upstairs, ocean and garden views',()=>{
+  assert.equal(SHOTS.length,18);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -290,6 +290,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     }
     for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
+    const roofNumbers=[];scene.traverse(o=>{if(o.userData.roofNumber)roofNumbers.push(o);});
+    assert.deepEqual(roofNumbers.map(o=>o.userData.roofNumber).sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9]);
+    for(const o of roofNumbers){assert.equal(o.rotation.x,-Math.PI/2);assert(o.material.transparent&&!o.material.depthWrite);assert(o.geometry.parameters.width<=Math.min(o.userData.roof.width,o.userData.roof.depth));}
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
     assert.equal(result.ocean.position.y,result.site.seaLevel);
@@ -540,7 +543,13 @@ test('Consolidated local SVG pages preserve notebook formula content and stay wi
   assert(pages.some(p=>p.tex.includes('\\delta_1\\delta_2+\\delta_2\\delta_1=0')));
   assert(pages.some(p=>p.tex.includes('\\operatorname{Gr}_F')));
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
-  assert.equal([...html.matchAll(/data-shot="\d"/g)].length,SHOTS.length);
+  const {BUILDINGS,OUTDOOR_AREAS,buildingForShot}=await import('./building-catalog.js');
+  const destinations=[...BUILDINGS.map(b=>b.shot),...OUTDOOR_AREAS].map(name=>SHOTS.find(s=>s.name===name));
+  assert.equal(BUILDINGS.length,9);assert(destinations.every(Boolean));
+  assert.equal(buildingForShot('二楼客厅').number,buildingForShot('报告厅').number);
+  assert(BUILDINGS.every(b=>b.rooms.length&&b.rooms.every(r=>r.room!==undefined||SHOTS.some(s=>s.name===r.shot))));
+  assert(destinations.every(s=>!s.lecture),'Board focus belongs to the room controls');
+  assert(!html.slice(0,html.indexOf('</header>')).includes('seminarButton'),'Teaching building is a bottom destination');
   for(let i=0;i<3;i++){assert(html.includes(`id="boardLift${i}"`));assert(html.includes(`id="boardSwap${i}"`));}
 });
 
@@ -577,7 +586,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const trayChalk=scene.children.filter(o=>o.name.startsWith('Tray chalk ')),trayErasers=scene.children.filter(o=>o.name.startsWith('Tray eraser '));
     assert.equal(trayChalk.length,12);assert.equal(trayErasers.length,3);
     for(let column=0;column<3;column++)assert.equal(new Set(trayChalk.filter(o=>o.userData.column===column).map(o=>o.material.color.getHex())).size,4);
-    assert.equal(lecture.report.id,'hu');assert.equal(lecture.pages[0].author,'胡勇');assert.equal(lecture.pages.length,26);
+    assert.equal(lecture.report.id,'hu');assert.equal(lecture.pages[0].author,'胡勇');assert.equal(lecture.pages.length,32);
     assert.equal(lecture.reportButtons.find(button=>button.userData.selected).userData.reportId,'hu');
     await lecture.setLanguage('en');assert.equal(lecture.language,'en');assert(lecture.copy(0).title.toLowerCase().includes('canonical'));await lecture.setLanguage('zh');
     assert.equal(boards.length,6);assert(!scene.getObjectByName('Six-board lecture wall'));
@@ -708,7 +717,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     globalThis.fetch=fetchReport;
     for(const id of ['duan','ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
-      assert.equal(lecture.pages.length,id==='meng'?38:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
+      assert.equal(lecture.pages.length,id==='meng'?38:id==='hu'?32:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
       // Once the title is written, allow a brief reading beat before board two.
       const clock=lecture.clock;clock.elapsed=clock.duration-.05;clock.update(.1);
@@ -728,8 +737,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(!movingEraser.visible);assert(trayErasers.every(e=>e.visible));
     await lecture.seek(2);assert.deepEqual(lecture.clock.slots.filter(s=>s.page>=0).map(s=>s.page).sort((a,b)=>a-b),[0,1,2]);
     const oldSeek=lecture.seek(23),newSeek=lecture.seek(4);await Promise.all([oldSeek,newSeek]);assert.equal(lecture.clock.page,4,'Latest scrub wins');
-    await lecture.seek(25);assert(lecture.clock.ended);lecture.update(.1);assert.equal(lecture.clock.page,25);
+    const finalPage=lecture.pages.length-1;await lecture.seek(finalPage);assert(lecture.clock.ended);lecture.update(.1);assert.equal(lecture.clock.page,finalPage);
     await lecture.seek(1);assert(!lecture.clock.ended);assert.equal(lecture.clock.phase,'hold');
+    // Reentry while erasing used to dereference a cleared wet-ink cache.
+    await lecture.seek(7);lecture.clock.select(8);lecture.clock.phase='erase';lecture.clock.elapsed=lecture.clock.duration*.4;
+    const eraseProgress=lecture.clock.progress;await lecture.setRenderActive(false);await lecture.setRenderActive(true);
+    assert(!lecture.status().includes('Cannot'));assert(Math.abs(lecture.clock.progress-eraseProgress)<1e-9);
+    lecture.playing=true;for(let i=0;i<600&&lecture.clock.phase!=='write';i++)lecture.update(.1);
+    assert.equal(lecture.clock.phase,'write','Resuming an erase must reach fresh chalk writing');
     lecture.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
@@ -746,9 +761,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
     km.update(30);assert.equal(requests,0);assert.equal(contexts.length,imagesBefore,'Offscreen progress must not allocate/rasterize canvas pages');
     assert.deepEqual(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(b=>b.children[0].material.map.version),versions,'No offscreen texture uploads');
     assert(km.clock.page>part.start);const progressBefore={page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase};
-    const reentry=km.setRenderActive(true);assert(kmRoot.visible,'Boards remain visible while current pages load');await reentry;assert(kmRoot.visible);assert.deepEqual({page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase},progressBefore,'Reentry preserves estimated partial progress');
+    const reentry=km.setRenderActive(true);assert(kmRoot.visible,'Boards remain visible while current pages load');await reentry;assert(kmRoot.visible);assert.equal(km.clock.page,progressBefore.page);assert.equal(km.clock.phase,progressBefore.phase);assert(Math.abs(km.clock.progress-progressBefore.progress)<1e-9,'Reentry preserves estimated partial progress');
     const next=km.navigation.sections[1];await km.setRange(next.start,next.end);assert.equal(km.clock.active,0);assert(km.clock.slots.filter(s=>s.page>=0).every(s=>s.page===next.start),'A new student starts on clean boards');
     await km.seek(next.end);for(let i=0;i<100;i++)km.update(.1);assert.equal(km.clock.page,next.end);assert(km.clock.ended);km.dispose();
+    let forbiddenFetch=0;globalThis.fetch=async()=>{forbiddenFetch++;throw Error('Disabled room fetched content');};
+    const emptyRoot=new Three.Group(),empty=await createLecture(emptyRoot,{capabilities:{getMaxAnisotropy:()=>8}}, {disabled:true});
+    assert.equal(forbiddenFetch,0);assert.equal(emptyRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
+    assert.equal(await empty.setReport('hu'),false);assert.equal(await empty.setRange(0,3),false);empty.playing=true;empty.staticPage();empty.update(30);
+    assert(!empty.playing);assert(!empty.hasSelection);assert(empty.clock.slots.every(s=>s.page===-1));assert.equal(empty.hoverTargets.length,0);empty.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
 });
 
@@ -762,7 +782,7 @@ test('vector chalk reader respects dismissal and keeps text independent of WebGL
   globalThis.document={getElementById:id=>elements.get(id)};globalThis.innerWidth=390;globalThis.innerHeight=844;
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   const lecture={pages,clock:{page:0},playing:true,report:{id:'meng'}};
-  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v=30-seminar',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
+  const source=(await fs.readFile(new URL('./chalk-reader.js',import.meta.url),'utf8')).replace('./chalk-typography.js?v62-chalk-ink',new URL('./chalk-typography.js',import.meta.url).href).replace('./control-label.js?v=22-handwritten-cover',new URL('./control-label.js',import.meta.url).href).replace('./display-profile.js?v=8-cover',new URL('./display-profile.js',import.meta.url).href);
   try{
     const {createChalkReader}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const reader=createChalkReader(lecture),panel=elements.get('chalkReader');
@@ -855,7 +875,7 @@ test('tour resume blends from current view without a blackout or teleport',async
   const apply=source.slice(source.indexOf('function applyShot'),source.indexOf('function resize'));
   assert(apply.includes('motionCoordinate('));assert(apply.includes('slerpQuaternions('));
   assert(!apply.includes('Math.sin(k*Math.PI)'));
-  assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('selectShot(Number(button.dataset.shot))'));assert(source.includes('else if(blend)'));
+  assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('const index=Number(button.dataset.shot)'));assert(source.includes('selectShot(index)'));assert(source.includes('else if(blend)'));
   let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
 });
 
@@ -976,12 +996,12 @@ test('English prose remains handwritten while embedded mathematical variables st
 
 test('speaker reports preserve paper sources, hypotheses, bilingual covers and complete assets',async()=>{
   const {REPORTS}=await import('./report-catalog.js');
-  assert.deepEqual(REPORTS.map(r=>r.speaker),['胡勇','Zhihao Duan','叶东','孟晟']);
+  assert.deepEqual(REPORTS.map(r=>r.speaker),['胡勇','段治豪','叶东','孟晟']);
   const coverage=JSON.parse(await fs.readFile(new URL('./assets/fonts/chalk-coverage.json',import.meta.url),'utf8'));
   for(const report of REPORTS.filter(report=>report.id!=='meng')){
     const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
     assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,report.license||'CC BY 4.0');
-    assert.equal(data.pages.length,26);assert.equal(data.pages.filter(p=>!p.kind).length,24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
+    assert.equal(data.pages.length,report.id==='hu'?32:26);assert.equal(data.pages.filter(p=>!p.kind).length,report.id==='hu'?30:24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
     for(const page of data.pages){
       for(const c of page.source+page.title+page.text+(page.author||''))if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),`Missing glyph ${c}`);
       assert(page.en.title&&(page.en.text||page.kind==='closing'));assert(!/[\u3400-\u9fff]/.test(page.en.source));
@@ -1005,6 +1025,15 @@ test('inline p_g uses a real printed subscript in canvas, reader and SVG',async(
     assert(p&&g);assert(g.y>p.y);assert(parseFloat(g.font)<parseFloat(p.font));assert(g.font.includes('RefugeMath'));assert(!calls.some(c=>c.text.includes('p_g')));
     assert(rows.some(([x,y,w,h])=>g.x>=x&&g.x<x+w&&g.y>y&&g.y+parseFloat(g.font)*.25<y+h),'Reveal bounds include the subscript descender');
   }
+});
+
+test('handwritten descenders and script offsets fit the actual ink reveal bounds',()=>{
+  const calls=[];
+  const metrics=(text,font)=>{const px=parseFloat(font);return {width:text.length*px*.44,actualBoundingBoxLeft:px*.09,actualBoundingBoxRight:text.length*px*.44+px*.07,actualBoundingBoxAscent:px*.76,actualBoundingBoxDescent:/[gpqy]/.test(text)?px*.43:px*.06};};
+  const ctx={clearRect(){},drawImage(){},measureText(text){return metrics(text,this.font);},fillText(text,x,y){calls.push({x,y,...metrics(text,this.font)});}};
+  const page={kind:'cover',en:{title:'Geometry',author:'Yong Hu',text:'Study p_g(X)'},title:'Geometry',author:'Yong Hu',text:'Study p_g(X)'};
+  const rows=composeChalkPage(ctx,page,0,'en',null);
+  for(const ink of calls)assert(rows.some(([x,y,w,h])=>x<=ink.x-ink.actualBoundingBoxLeft&&y<=ink.y-ink.actualBoundingBoxAscent&&x+w>=ink.x+ink.actualBoundingBoxRight&&y+h>=ink.y+ink.actualBoundingBoxDescent),'The mask must include real descenders and overhanging strokes, not a fixed extra 10 pixels');
 });
 
 test('the final thanks board remains complete without automatically restarting',()=>{

@@ -31,6 +31,9 @@ test('lectern touch surfaces raycast, cancel drags and redraw only on state chan
       }
     }
     let triangles=0;l.group.traverse(o=>{if(o.geometry)triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});assert(triangles<15000);
+    const priorVersion=tex.version;l.setScreenEnabled(false);l.update({page:9,total:20});
+    assert(l.group.visible&&body.visible,'Disabling the display preserves the lectern furniture');assert(!display.visible);assert.equal(l.targets.length,0);assert.equal(tex.version,priorVersion);
+    l.setScreenEnabled(true);l.update({page:9,total:20});assert(display.visible);assert(tex.version>priorVersion);
   }finally{l.dispose();delete globalThis.document;}
 });
 
@@ -38,7 +41,9 @@ test('speaker view remains manual through idle time and exits only on explicit c
   const app=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
   const names=['enterSpeakerView','selectShot','resumeTour'];
   const definitions=names.map(name=>app.match(new RegExp('function '+name+'\\([^]*?\\n\\}'))[0]).join('\n');
-  const context=vm.createContext({SHOTS:[{name:'板书'},{name:'讨论班'}],keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
+  const {SHOTS}=await import('./camera-paths.js');
+  const {buildingForShot}=await import('./building-catalog.js');
+  const context=vm.createContext({SHOTS,buildingForShot,setSeminarPanel(){},keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
   vm.runInContext(definitions+';enterSpeakerView();',context);
   assert(context.speakerView);assert(!context.touring);assert(context.free);assert.equal(context.opening,null);assert.equal(context.keys.size,0);
   assert(app.includes('!speakerView&&SHOTS[shot].lecture&&lecture&&boardFollow.following'));

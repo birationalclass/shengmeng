@@ -1,6 +1,6 @@
 import {equationLines} from './chalk-layout.mjs';
 // Editorial blocks keep a mathematical argument together. Full explanations
-// remain available in the reader; the physical board uses short authored cues.
+// are kept with their blocks and reflowed onto the physical board at render time.
 export function flowBoard(pages){
  const first=pages[0];
  return {...first,annotation:undefined,diagram:null,layout:'flow',

@@ -218,3 +218,18 @@ Seminar body boards omit repeated section numbers and headings. Opening title bo
 - KM includes 38 new worked arguments (152 individual cue/equation steps), covering each of its 38 sections. Examples: pointed deformation counts, weighted slopes, negative curves, blow-up Jacobians, Kodaira via the Bochner identity, curve basepoint-freeness, ADE intersection matrices, Tjurina quotients, and explicit small-resolution charts. The existing Lemma 5.17(2) counterexample remains intact.
 - Proof coverage is deliberately scoped: curve cases do not prove the general basepoint-free/nonvanishing theorems, local flop charts do not prove general flip existence, and section extension does not by itself prove finite generation. These major general proofs still need development. Each worked page records what it actually establishes and its external inputs.
 - Browser QA: Chinese/English proof canvases, far-view retained steps, no WebGL console errors, GPU timing supported in the tested browser. Automated checks cover all board reveal rectangles, font coverage, section selection, offscreen scheduling and LOD invariants.
+
+
+## September 24: buildings, board layout and retained lecterns
+
+The bottom navigation lists nine numbered buildings, with matching translucent roof numbers. The auditorium includes its upstairs lounge. A background-free left list offers the rooms in the selected building; blackboard controls and KM chapter/section navigation are on the right.
+
+Physical boards restore concise mathematical explanations. Normal body pages target six to eight measured lines spread over the writing area, retaining all equations and bilingual text; diagrams and locally annotated definitions retain their authored grouping. Auditorium body boards retain section headings; seminar body boards omit repeated headings.
+
+The second and third teaching-building classrooms temporarily have blank boards, without loading reports or accepting touchscreen interaction. All lectern furniture remains visible. Screen display, touch targets and canvas updates can be suspended independently of the furniture.
+
+Reentering during an erase phase now restores the cached erase plan even when the wet-stroke cache has been cleared. The regression covers leaving mid-erase, returning at the same progress and continuing into writing. Duan's Chinese display name is 段治豪, with the font subset extended accordingly.
+
+Hu’s report has been rebuilt from Du–Hu, arXiv:2606.31170v1: 30 substantive boards plus opening and closing pages. Authored bilingual lines interleave explanations and equations; source correspondence and the scope of external inputs are recorded in `assets/chalk/hu/SOURCES.md`. English prose and section numbers use the user-selected Marck Script. Mathematical formulas retain their existing font while alternative mathematical typography is reviewed.
+
+Handwritten text now measures actual glyph ascents, descents and horizontal overhangs. Line layout and reveal clips share those metrics, preserving Marck Script descenders and inline subscripts instead of assuming a fixed bottom margin.

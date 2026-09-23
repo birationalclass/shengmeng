@@ -1,5 +1,6 @@
-import {createLectern} from './lectern.js?v53-section-sessions';
+import {createLectern} from './lectern.js?v62-chalk-ink';
 import * as THREE from 'three';
+import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {BUILDING_SCALE as S,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {SEMINAR as B,seminarFloor} from './seminar-layout.js?v53-section-sessions';
 import {curvedSeatBack} from './auditorium-furniture.js?v=15-fixed-hall';
@@ -93,6 +94,7 @@ export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instanc
     }
   }
   box([-84.8,seminarFloor(3)-.08/S,8],[10.4,.16/S,14],stone);
+  const roofNumber=createRoofNumber(scene,2,-84.8,seminarFloor(3),8,10.4,14);
   meta('Three-storey discussion building',{...B,seatsPerFloor:12,rowsPerFloor:2,connected:true});
-  return {lightingZones:zones,blinds,seats,lecterns,dispose(){lecterns.forEach(l=>l.dispose());back.dispose();cushion.dispose();cloth.dispose();carpet.dispose();shell.dispose();blinds.forEach(b=>{b.geometry.dispose();b.material.dispose();});}};
+  return {lightingZones:zones,blinds,seats,lecterns,dispose(){roofNumber.dispose();lecterns.forEach(l=>l.dispose());back.dispose();cushion.dispose();cloth.dispose();carpet.dispose();shell.dispose();blinds.forEach(b=>{b.geometry.dispose();b.material.dispose();});}};
 }

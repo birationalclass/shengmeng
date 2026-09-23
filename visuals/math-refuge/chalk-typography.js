@@ -30,7 +30,7 @@ export function chalkHTML(text){return chalkInlineRuns(text).map(run=>{
   const content=escape(run.text),body=run.script?`<${run.script}>${content}</${run.script}>`:content;
   return run.math?`<span class="chalk-math">${body}</span>`:body;
 }).join('');}
-export function chalkSVG(text){return chalkInlineRuns(text).map(run=>{
+export function chalkSVG(text,{heading=false}={}){return chalkInlineRuns(text).map(run=>{
   const attrs=run.script?` font-size="70%" baseline-shift="${run.script}"`:'';
-  return run.math?`<tspan font-family="Times New Roman, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
+  return run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?`<tspan font-family="Times New Roman, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
 }).join('');}

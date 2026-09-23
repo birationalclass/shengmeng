@@ -1,4 +1,4 @@
-import {chalkHTML} from './chalk-typography.js?v=30-seminar';
+import {chalkHTML} from './chalk-typography.js?v62-chalk-ink';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {readingFormulaWidth} from './display-profile.js?v=8-cover';
 
@@ -24,7 +24,7 @@ export function createChalkReader(lecture){
       $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text)+(entry.annotation?.label?'<br><span style="color:#d9c693">↳ '+chalkHTML(entry.annotation.label[language])+'</span>':'');
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v57-proof-flow';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v62-chalk-ink';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }

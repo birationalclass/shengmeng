@@ -78,7 +78,7 @@ for(const section of sections){
     const wrapper=inner=>`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640">${inner}</svg>`;
     const mathInk=ink.join('').replaceAll('currentColor','#eee9d5');
     const labels=flowLabels.map(l=>`<text x="${l.x}" y="${l.y}" font-size="${l.size}" fill="#e4cf9c" font-family="Kaiti SC, KaiTi, cursive">${chalkSVG(l.text)}</text>`).join('');
-    const heading=section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c" font-family="Kaiti SC, KaiTi, cursive">${chalkSVG(section.source)} ${chalkSVG(section.title)}</text>`;
+    const heading=section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c" font-family="Kaiti SC, KaiTi, cursive">${chalkSVG(section.source,{heading:true})} ${chalkSVG(section.title,{heading:true})}</text>`;
     await fs.writeFile(new URL(formulaAsset,output),wrapper(mathInk));await fs.writeFile(new URL(asset,output),wrapper(heading+mathInk+labels));
     pages.push({...section,formulaAsset:assetBase+formulaAsset,asset:assetBase+asset,formulaEm:38.4,formulaRows,flowLabels,rows:[[0,0,0,0],[0,0,0,0],[0,0,1536,640]]});continue;
   }
@@ -120,7 +120,7 @@ for(const section of sections){
   const notes=chunks(section.text||'',33);
   const page=pages.length+1,asset=`page-${String(page).padStart(3,'0')}.svg`;
   const lines=notes.slice(0,3).map((line,i)=>`<text x="88" y="${488+i*56}" font-size="36">${chalkSVG(line)}</text>`).join('');
-  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif">${section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c">${chalkSVG(section.source)}  ${chalkSVG(section.title)}</text>`}${svg}${lines}</g></svg>`;
+  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif">${section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c">${chalkSVG(section.source,{heading:true})}  ${chalkSVG(section.title,{heading:true})}</text>`}${svg}${lines}</g></svg>`;
   await fs.writeFile(new URL(asset,output),body);
   pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[section.hideHeading?[0,0,0,0]:[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,448+i*56,1380,56])]});
 }

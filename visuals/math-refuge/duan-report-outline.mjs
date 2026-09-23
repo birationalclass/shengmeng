@@ -5,7 +5,7 @@ const R=String.raw;
 const page=(source,title,tex,text,titleEn,textEn,diagram)=>({source,title,tex,text,en:{source,title:titleEn,text:textEn},...(diagram?{diagram}: {})});
 const figure=(kind,title,en,source)=>({kind,title,en,source:`arXiv:2609.12750v1, ${source}; simplified redrawing`});
 export const duanReport=[
- {kind:'cover',source:'论文报告 · 2026',title:'超条带代数与费米理论的非微扰谱',author:'Zhihao Duan',tex:'',text:'与 Jin Chen、Qiang Jia、Sungjay Lee 合作\narXiv:2609.12750 · 2026-09-11',en:{source:'PAPER SEMINAR · 2026',title:'Superstrip Algebras and Nonperturbative Spectra in Fermionic Theories',author:'Zhihao Duan',text:'Joint work with Jin Chen, Qiang Jia and Sungjay Lee\narXiv:2609.12750 · 2026-09-11'}},
+ {kind:'cover',source:'论文报告 · 2026',title:'超条带代数与费米理论的非微扰谱',author:'段治豪',tex:'',text:'与 Jin Chen、Qiang Jia、Sungjay Lee 合作\narXiv:2609.12750 · 2026-09-11',en:{source:'PAPER SEMINAR · 2026',title:'Superstrip Algebras and Nonperturbative Spectra in Fermionic Theories',author:'Zhihao Duan',text:'Joint work with Jin Chen, Qiang Jia and Sungjay Lee\narXiv:2609.12750 · 2026-09-11'}},
  page('§ 1','从对称性约束孤子谱',R`\mathcal H=\bigoplus_{i,j}\mathcal H_{ij},\qquad\mathcal H_{ij}:\ v_i\longrightarrow v_j`,
  '研究有质量间隙的二维费米体系。同一真空上的激发是粒子，不同真空间的插值是孤子；目标是用对称性限制它们如何组成多重态。',
  'Symmetry constraints on soliton spectra','In a gapped two-dimensional fermionic theory, equal asymptotic vacua give particles; distinct vacua give solitons. The aim is to constrain their multiplets using symmetry.'),

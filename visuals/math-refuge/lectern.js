@@ -21,7 +21,7 @@ export function createLectern(T){
   const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512;
   const ctx=canvas.getContext('2d'),texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;
   const screenMat=new T.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(screenMat);
-  add('Embedded anti-glare touch display',new T.PlaneGeometry(.77,.385),screenMat,[0,0,.061],console);
+  const display=add('Embedded anti-glare touch display',new T.PlaneGeometry(.77,.385),screenMat,[0,0,.061],console);
   const pads=[];
   for(const [i,action] of ['lectern:previous','lectern:play','lectern:next'].entries()){
     const pad=add('Touch control '+action,new T.PlaneGeometry(.225,.095),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[(i-1)*.25,-.114,.063],console);
@@ -39,8 +39,9 @@ export function createLectern(T){
   for(let i=0;i<7;i++)add('Microphone grille ring',new T.TorusGeometry(.023,.0016,4,16),meshMetal,[0,.010+i*.008,0],head).rotation.x=Math.PI/2;
   for(let i=0;i<8;i++){const a=i*Math.PI/4;add('Microphone grille rib',new T.CylinderGeometry(.0012,.0012,.056,5),meshMetal,[Math.cos(a)*.023,.034,Math.sin(a)*.023],head);}
   group.userData={heightAboveFloor:1.49,desktopHeight:1.035,eyeHeight:1.68,action:'lectern:view'};
-  let last='';
+  let last='',screenEnabled=true;
   function update({playing=false,page=0,total=0,seeking=false}={}){
+    if(!screenEnabled)return;
     const key=[playing,page,total,seeking,pads.map(p=>p.userData.hovered?1:0).join('')].join(':');if(last===key)return;last=key;
     ctx.fillStyle='#122426';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#9fcfc2';ctx.font='24px sans-serif';ctx.fillText('SEMINAR / SPEAKER CONSOLE',42,55);
     ctx.fillStyle='#e1e9e5';ctx.font='38px sans-serif';ctx.fillText('板书控制  /  CHALKBOARD',42,129);
@@ -53,7 +54,8 @@ export function createLectern(T){
     texture.needsUpdate=true;
   }
   update();
-  return {group,targets,update,
+  return {group,get targets(){return screenEnabled?targets:[];},update,
+    setScreenEnabled(value){if(screenEnabled===Boolean(value))return;screenEnabled=Boolean(value);display.visible=screenEnabled;pads.forEach(p=>p.visible=screenEnabled);progress.visible=screenEnabled;if(screenEnabled)last='';},
     speakerPose(aspect=16/9){
       group.updateWorldMatrix(true,true);
       const position=group.localToWorld(new T.Vector3(0,1.68,1.35));

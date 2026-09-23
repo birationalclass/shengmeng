@@ -3,6 +3,7 @@ import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
 import {teachingRoomAt} from './room-context.js?v57-proof-flow';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
+import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v62-chalk-ink';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -11,15 +12,15 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v57-proof-flow';
-import {createLecture} from './lecture.js?v57-proof-flow';
+import {createRetreat} from './scene.js?v62-chalk-ink';
+import {createLecture} from './lecture.js?v62-chalk-ink';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
-import {createChalkReader} from './chalk-reader.js?v57-proof-flow';
+import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v57-proof-flow';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v62-chalk-ink';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
@@ -28,6 +29,13 @@ import {motionCoordinate} from './camera-motion.js';
 const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
 
 const $=id=>document.getElementById(id);
+let panelBuilding=BUILDINGS[0];
+for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))]){
+  const button=document.createElement('button');button.dataset.shot=String(SHOTS.findIndex(s=>s.name===item.shot));
+  button.textContent=(item.number?item.number+'  ':'')+item.name;
+  if(item.number){button.dataset.building=String(item.number);button.setAttribute('aria-controls','seminarPanel');button.setAttribute('aria-expanded','false');}
+  if(item.number===2)button.id='seminarButton';$('chapters').append(button);
+}
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 let entered=false;
 $('enterButton').addEventListener('click',()=>{
@@ -56,7 +64,8 @@ function updateRoomVisibility(stamp){
     const visible=classroomVisible({distance:v.bounds.distanceToPoint(camera.position),inFrustum:roomFrustum.intersectsBox(v.bounds),eyeY:camera.position.y,floorY:v.floor,height:v.height,insideRoom,room:i,wasVisible:v.visible});
     if(visible!==v.visible){v.visible=visible;rooms[i].setRenderActive(visible);}
     v.consoleVisible=classroomVisible({distance:v.consoleBounds.distanceToPoint(camera.position),inFrustum:roomFrustum.intersectsBox(v.consoleBounds),eyeY:camera.position.y,floorY:v.floor,height:v.height,insideRoom,room:i,wasVisible:v.consoleVisible});
-    roomLecterns[i].group.visible=v.consoleVisible;
+    roomLecterns[i].group.visible=true;
+    roomLecterns[i].setScreenEnabled(v.consoleVisible&&!rooms[i].disabled);
   });
   $('world').dataset.renderingRooms=roomViews.map((v,i)=>v.visible?i:null).filter(i=>i!==null).join(',');
 }
@@ -81,12 +90,15 @@ function updateLabels(){
   $('shotNumber').textContent=opening?'总览':`${String(shot+1).padStart(2,'0')} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
-  document.querySelectorAll('[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===shot)));
+  const building=SHOTS[shot].lecture?BUILDINGS[activeRoom===0?0:1]:buildingForShot(SHOTS[shot].name);
+  const area=building?SHOTS.findIndex(s=>s.name===building.shot):shot;
+  if(!opening)$('shotNumber').textContent=SHOTS[shot].lecture?(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 板书':(building?building.number+' / ':'')+(building?.name||SHOTS[shot].name);
+  document.querySelectorAll('#chapters button[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===area)));
   controlLabel($('tour'),touring?'暂停巡游':free?'恢复巡游':'继续巡游');
   $('tour').setAttribute('aria-pressed',String(touring));
   $('mode').textContent=opening?'总览 · 5 秒后进入板书':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
-  if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'讨论班 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
+  if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
 }
 function stopTour(){
   opening=null;
@@ -111,7 +123,7 @@ function selectShot(index,reportView=false){
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
   beginTransition();updateLabels();
-  if(index===SHOTS.findIndex(s=>s.name==='讨论班')){$('seminarPanel').hidden=false;$('seminarButton').setAttribute('aria-expanded','true');}
+  if(!SHOTS[index].lecture){const building=buildingForShot(SHOTS[index].name);setSeminarPanel(Boolean(building),building);}
 }
 function resumeTour(){
   speakerView=false;
@@ -268,14 +280,14 @@ try{
   for(let level=0;level<3;level++){
     $('loadMessage').textContent='正在准备讨论班 '+(level+1)+' 层…';
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{defaultReport:level===1?'ye':'meng',viewScale:.52,requireSelection:true,hideBoardHeadings:true});
+    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
   rooms.forEach((room,i)=>{
     room.root.updateWorldMatrix(true,true);
     const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);
     roomViews.push({bounds,consoleBounds:new THREE.Box3().setFromObject(roomLecterns[i].group),consoleVisible:false,visible:false,floor:(i?seminarFloor(i-1):DECK_Y)*BUILDING_SCALE,height:i?3.8:4.9});
-    room.setRenderActive(false);roomLecterns[i].group.visible=false;
+    room.setRenderActive(false);roomLecterns[i].setScreenEnabled(false);
   });
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));
   buildSeminarNavigation();
@@ -306,8 +318,11 @@ $('tour').addEventListener('click',()=>{
   if(!renderer||!retreat||!cameraIntent.canActivate())return;
   if(touring){opening=null;touring=false;blend=null;$('transition').style.opacity=0;updateLabels();}else resumeTour();
 });
-document.querySelectorAll('[data-shot]').forEach(button=>button.addEventListener('click',()=>{
-  if(!retreat||!cameraIntent.canActivate())return;selectShot(Number(button.dataset.shot));
+document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.addEventListener('click',()=>{
+  if(!retreat||!cameraIntent.canActivate())return;
+  const index=Number(button.dataset.shot);
+  if(SHOTS[index].name==='报告厅')activateRoom(0,false);
+  selectShot(index);
 }));
 $('settingsButton').addEventListener('click',()=>{
   $('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
@@ -449,7 +464,7 @@ function focusLecture(){
   selectShot(0);
 }
 $('lectureButton').addEventListener('click',()=>{
-  if(!lecture)return;reader?.close();$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden)focusLecture();
+  if(!lecture)return;reader?.close();$('lecturePanel').hidden=!$('lecturePanel').hidden;$('lectureButton').setAttribute('aria-expanded',String(!$('lecturePanel').hidden));if(!$('lecturePanel').hidden){setSeminarPanel(false);focusLecture();}
 });
 $('lectureClose').addEventListener('click',()=>{$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');});
 $('lectureFocus').addEventListener('click',focusLecture);
@@ -483,7 +498,7 @@ function activateRoom(index,moveCamera=true){
   reportRequest++;changingReport=false;reportProgress='';reportLoadError='';
   activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);
   $('world').dataset.room=String(index);$('reportSelect').setAttribute('aria-busy','false');
-  reader?.close();populateReport();if(moveCamera)selectShot(0,!lecture.hasSelection);updateSeminarNavigation();
+  reader?.close();populateReport();if(moveCamera)selectShot(0,!lecture.hasSelection&&!lecture.disabled);updateSeminarNavigation();
   teachingShade=index===0?retreat.campus.blind.visible:retreat.campus.discussion.blinds[index-1].visible;
   $('lectureShade').setAttribute('aria-pressed',String(teachingShade));
 }
@@ -513,13 +528,27 @@ async function selectSeminarPart(part,page=part?.start){
 }
 
 function updateSeminarNavigation(){
- document.querySelectorAll('[data-room]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.room)===activeRoom)));
+ document.querySelectorAll('#buildingRooms button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.room!==undefined?Number(button.dataset.room)===activeRoom&&SHOTS[shot].lecture:button.dataset.roomShot===SHOTS[shot].name)));
  $('seminarCurriculum').hidden=activeRoom!==1;
- $('seminarRoomNote').textContent=activeRoom===0?'当前：主报告厅':activeRoom===1?'一层 · Kollár–Mori 研读班':'当前：'+activeRoom+' 层小教室 · 可用报告人按钮选题';
 }
-$('seminarButton').addEventListener('click',()=>{if(!lecture)return;$('seminarPanel').hidden=!$('seminarPanel').hidden;$('seminarButton').setAttribute('aria-expanded',String(!$('seminarPanel').hidden));if(!$('seminarPanel').hidden)selectShot(SHOTS.findIndex(s=>s.name==='讨论班'));});
-$('seminarClose').addEventListener('click',()=>{$('seminarPanel').hidden=true;$('seminarButton').setAttribute('aria-expanded','false');});
-document.querySelectorAll('[data-room]').forEach(button=>button.addEventListener('click',()=>activateRoom(Number(button.dataset.room))));
+function setSeminarPanel(open,building=panelBuilding){
+ $('seminarPanel').hidden=!open;
+ if(building)panelBuilding=building;
+ document.querySelectorAll('#chapters button[data-building]').forEach(b=>b.setAttribute('aria-expanded',String(open&&Number(b.dataset.building)===panelBuilding.number)));
+ if(!open)return;
+ $('buildingHeading').textContent=panelBuilding.number+' · '+panelBuilding.name;
+ $('buildingRooms').replaceChildren(...panelBuilding.rooms.map(room=>{
+   const button=document.createElement('button');button.textContent=room.name;
+   if(room.room!==undefined)button.dataset.room=String(room.room);
+   if(room.shot)button.dataset.roomShot=room.shot;
+   button.addEventListener('click',()=>{
+     if(room.room!==undefined)activateRoom(room.room,!room.shot);
+     if(room.shot)selectShot(SHOTS.findIndex(s=>s.name===room.shot));
+     updateSeminarNavigation();
+   });return button;
+ }));updateSeminarNavigation();
+}
+$('seminarClose').addEventListener('click',()=>setSeminarPanel(false));
 
 function syncRoomControls(){
  const room=teachingRoomAt(camera.position);
@@ -530,6 +559,7 @@ function syncRoomControls(){
  // During a journey the selected destination owns the camera; bind controls on arrival.
  if(room>=0&&room!==activeRoom&&!blend){activateRoom(room,false);speakerView=false;choosingReport=false;}
  reader?.chapter(room>=0&&room===activeRoom&&!speakerView&&Boolean(SHOTS[shot].lecture),$('lecturePanel').hidden);
- $('roomControls').hidden=room<0||room!==activeRoom;
- $('roomControls').setAttribute('aria-label',room===0?'报告厅黑板控制':room>0?'讨论班 '+room+' 层黑板控制':'房间外');
+ $('roomControls').hidden=room<0||room!==activeRoom||lecture.disabled;
+ if(room>=0&&lecture.disabled)$('mode').textContent='本层板书暂未开放';
+ $('roomControls').setAttribute('aria-label',room===0?'报告厅板书':room>0?'教学楼 '+room+' 层板书':'房间外');
 }

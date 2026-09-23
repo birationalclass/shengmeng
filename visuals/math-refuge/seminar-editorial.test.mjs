@@ -30,5 +30,5 @@ test('all consolidated bilingual boards have complete prose and deterministic, b
       }
     }
   }
-  assert.equal(count,116);assert.equal(marked,16);assert.equal(notes,2);
+  assert.equal(count,122);assert.equal(marked,15);assert.equal(notes,1);
 });

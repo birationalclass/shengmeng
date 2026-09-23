@@ -1,7 +1,9 @@
-import {createSeminarBuilding} from './seminar-building.js?v53-section-sessions';
+import {createSeminarBuilding} from './seminar-building.js?v62-chalk-ink';
 import * as THREE from 'three';
+import {BUILDINGS} from './building-catalog.js?v62-chalk-ink';
+import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {terracePaving} from './terrace-paving.js';
-import {createLectern} from './lectern.js?v53-section-sessions';
+import {createLectern} from './lectern.js?v62-chalk-ink';
 import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';
@@ -13,6 +15,7 @@ import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fix
 // No swimming basin or exposed support piles are constructed.
 export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
+  const roofNumbers=[];
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
   const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
   const meta=(name,data)=>{const o=new THREE.Object3D();o.name=name;o.userData=data;scene.add(o);return o;};
@@ -147,6 +150,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
       furnishLighting(name,cx,cz,w,d,y,h);
     }
     meta(name,{bounds:[cx-w/2,cx+w/2,cz-d/2,cz+d/2],floorY:y,clearHeight:clear,dry:true});
+    const building=BUILDINGS.find(b=>b.roof===name);
+    if(building&&ownRoof)roofNumbers.push(createRoofNumber(scene,building.number,cx,roof+.275,cz,w,d));
     return roof;
   }
   // Main house wings connect across a continuous, open-to-sky dry courtyard.
@@ -393,7 +398,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors});
   lightingZones.push(...discussion.lightingZones);
   return {blind,seating,lightingZones,automaticDoors,lectern,discussion,
+    roofNumbers,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }
