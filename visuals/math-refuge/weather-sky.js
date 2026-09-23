@@ -12,7 +12,16 @@ export function createWeatherSky({panorama=true}={}){
  vec3 celestial(vec3 d){float a=sidereal,c=cos(a),s=sin(a);vec3 pole=normalize(vec3(0.,.518,-.855));return d*c+cross(pole,d)*s+pole*dot(pole,d)*(1.-c);}
  // An all-sky photographic field resolves the bulge, rifts, nebulae and stellar density.
  // This fixed orientation is an artistic sky, not a date-calibrated planetarium.
- vec3 nightStars(vec3 direction){vec3 d=celestial(direction);vec3 pole=normalize(vec3(.76,-.58,.30));vec3 axis=normalize(vec3(.30,0.,-.76));vec3 other=cross(pole,axis);vec3 g=vec3(dot(d,axis),dot(d,other),dot(d,pole));vec2 uv=vec2(.5+atan(g.y,g.x)/6.28318530718,.5+asin(clamp(g.z,-1.,1.))/3.14159265359);vec3 field=texture2D(galaxyMap,uv).rgb;float luminance=dot(field,vec3(.2126,.7152,.0722));vec3 subdued=mix(vec3(luminance),field,.45);return subdued*(.12/(1.+3.*luminance))*galaxyMix;}
+ vec3 nightStars(vec3 direction){vec3 d=celestial(direction);vec3 pole=normalize(vec3(.76,-.58,.30));vec3 axis=normalize(vec3(.30,0.,-.76));vec3 other=cross(pole,axis);vec3 g=vec3(dot(d,axis),dot(d,other),dot(d,pole));vec2 uv=vec2(.5+atan(g.y,g.x)/6.28318530718,.5+asin(clamp(g.z,-1.,1.))/3.14159265359);// Separate the broad galactic field from unresolved photographic star grain.
+ vec3 field=texture2D(galaxyMap,uv).rgb;
+ vec3 diffuse=texture2D(galaxyMap,uv,3.5).rgb;
+ float haze=dot(diffuse,vec3(.2126,.7152,.0722));
+ float peak=max(0.,dot(field-diffuse,vec3(.2126,.7152,.0722)));
+ vec3 band=mix(vec3(haze),diffuse,.35)*(.30/(1.+2.*haze));
+ // Keep only resolved bright stars; the millions of faint points merge into the band.
+ vec3 bright=max(field-diffuse,vec3(0.))*smoothstep(.35,.70,peak)*.13;
+ return (band+bright)*galaxyMix;}
+
  void main(){vec3 d=normalize(ray);float y=max(d.y,0.0),horizon=pow(1.0-y,5.0);vec3 zenith=vec3(.014,.12,.43),edge=vec3(.32,.54,.80);vec3 clear=mix(zenith,edge,exp(-5.0*y));float facing=pow(max(dot(normalize(vec3(d.x,.001,d.z)),normalize(vec3(sunPosition.x,.001,sunPosition.z))),0.0),5.0);clear=mix(clear,vec3(.94,.32,.105),warm*horizon*facing*.78);vec3 night=mix(vec3(.0015,.003,.012),vec3(.006,.013,.027),horizon);vec3 color=mix(night,clear,day);color=mix(color,vec3(.33,.39,.47)*(.025+.975*day),cloud*storm*.68);
  if(stars>.0001)color+=nightStars(d)*stars*smoothstep(0.0,.18,d.y)*(1.-storm*.96);
  float angle=acos(clamp(dot(d,normalize(sunPosition)),-1.,1.));float edgeAA=max(fwidth(angle),.00004);float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float solar=showSun*smoothstep(-.002,.001,d.y); color+=sunColor*solar*(disk*(7.0+2.0*limb)+.18*exp(-pow(angle/.019,2.0)));

@@ -11,3 +11,9 @@ export function solarState(hour,date=new Date()){
  return {direction:[east,up,south],elevation,daylight,direct,warm,night:1-smooth(-9,-2,elevation),physicalRadius:.00465*(1+.0167*Math.cos(g)),radius:.00465*(1+.0167*Math.cos(g))*(1+.65*(1-smooth(0,14,Math.abs(elevation)))),solarNoon:(720-4*121.4737-eq+480)/60};
 }
 export function approachHour(current,target,dt){const delta=((target-current+36)%24)-12;return current+delta*(1-Math.exp(-Math.max(0,dt)/.55));}
+
+// Sunrise/sunset fallback at the conventional -0.833 degree centre elevation.
+export function solarEvents(date=new Date()){
+ const crossing=(lo,hi,rising)=>{for(let i=0;i<30;i++){const mid=(lo+hi)/2,above=solarState(mid,date).elevation>-.833;if(above===rising)hi=mid;else lo=mid;}return(lo+hi)/2;};
+ return {sunrise:crossing(0,12,true),sunset:crossing(12,24,false)};
+}
