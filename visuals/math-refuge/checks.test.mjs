@@ -720,13 +720,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(!km.hasSelection,'Opening a chapter folder does not start a talk');
     const part=km.navigation.sections[0];await km.setRange(part.start,part.end);km.playing=true;
     assert(km.hasSelection);assert.equal(km.progress.total,34);assert.equal(km.clock.active,0);
-    await km.setRenderActive(false);assert(!kmRoot.visible);
+    await km.setRenderActive(false);assert(kmRoot.visible,'Offscreen scheduling must never hide the board hardware or its last texture');
+    assert(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).every(b=>b.visible&&b.getObjectByName('Matte writing face').visible));
     let requests=0;globalThis.fetch=async(...args)=>{requests++;return fetchReport(...args);};
     const imagesBefore=contexts.length,versions=kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(b=>b.children[0].material.map.version);
     km.update(30);assert.equal(requests,0);assert.equal(contexts.length,imagesBefore,'Offscreen progress must not allocate/rasterize canvas pages');
     assert.deepEqual(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(b=>b.children[0].material.map.version),versions,'No offscreen texture uploads');
     assert(km.clock.page>part.start);const progressBefore={page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase};
-    await km.setRenderActive(true);assert(kmRoot.visible);assert.deepEqual({page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase},progressBefore,'Reentry preserves estimated partial progress');
+    const reentry=km.setRenderActive(true);assert(kmRoot.visible,'Boards remain visible while current pages load');await reentry;assert(kmRoot.visible);assert.deepEqual({page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase},progressBefore,'Reentry preserves estimated partial progress');
     const next=km.navigation.sections[1];await km.setRange(next.start,next.end);assert.equal(km.clock.active,0);assert(km.clock.slots.filter(s=>s.page>=0).every(s=>s.page===next.start),'A new student starts on clean boards');
     await km.seek(next.end);for(let i=0;i<100;i++)km.update(.1);assert.equal(km.clock.page,next.end);assert(km.clock.ended);km.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}

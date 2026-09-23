@@ -347,17 +347,17 @@ export async function createLecture(scene,renderer,options={}){
   // Reduced-motion users get complete static pages and explicit page controls.
   function staticPage(){clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;clock.ended=clock.page===clock.stopAt;version++;}
   boards.forEach((_,i)=>draw(i));
-  // Object3D normally visits invisible descendants to update their matrices.
-  // This room's root is fixed; defer that traversal until it is rendered again.
-  const updateRootWorld=scene.updateMatrixWorld;
-  scene.updateMatrixWorld=function(force){if(this.visible)updateRootWorld.call(this,force);};
+  // Keep the hardware and last completed texture visible at every distance.
+  // Only the board carriers and tools have changing local transforms.
+  const movingNodes=new Set([scene,...boards.map(b=>b.group),chalk,eraser]);
+  scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
     update,seek,root:scene,get renderActive(){return renderActive&&!hydrating;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
     screenAction:action=>seminarScreen?.action(action),
     async setRenderActive(value){
-      if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;scene.visible=false;
-      if(!value){hydrating=false;return;}
+      if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
+      if(!value){hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
       hydrating=true;const resume={page:clock.page,phase:clock.phase,progress:clock.progress};
       try{
         const visible=[...new Set([...clock.slots.map(s=>s.page),hasSelection?clock.page:-1])].filter(i=>i>=0);
@@ -368,8 +368,8 @@ export async function createLecture(scene,renderer,options={}){
         if(hasSelection)targets[Math.floor(clock.active/2)]=mix[Math.floor(clock.active/2)]=clock.active%2;
         boards.forEach(b=>{b.last='';b.wet=null;});eraserReturn=null;eraserPickup=null;eraser.userData.state='resting';
         previousTip=null;wipeCanvas.width=W;wipeSamples=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);
-        hydrating=false;update(0,true);scene.visible=true;
-      }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;scene.visible=true;}}
+        hydrating=false;update(0,true);
+      }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
     get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,hoverTargets:[...touchButtons,reportHeader.mesh],setConsoleState,
     get pendingReport(){return pendingReport;},
@@ -408,6 +408,6 @@ export async function createLecture(scene,renderer,options={}){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){scene.updateMatrixWorld=updateRootWorld;renderEpoch++;seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
+    dispose(){renderEpoch++;seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{board.texture.dispose();board.roughTexture.dispose();board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});cache.clear();guides.clear();}
   };
 }
