@@ -16,7 +16,7 @@ function section(id,title,en,prerequisites,goal,raw){
  const chapter=Number(id.split('.')[0]),pages=raw.trim().split('\n').filter(Boolean).map((line,i)=>{
   const [heading,tex,text,headingEn,textEn]=line.split('|');
   if(line.split('|').length!==5||!textEn)throw new Error('Incomplete KM board '+id+' '+i);
-  return {source:'§ '+id,title:heading,tex,text,chapter,section:id,en:{source:'§ '+id,title:headingEn,text:textEn}};
+  return {source:'§ '+id,title:heading,hideHeading:true,tex,text,chapter,section:id,en:{source:'§ '+id,title:headingEn,text:textEn}};
  });
  KM_SECTIONS.push({id,chapter,title,en,prerequisites,goal,boards:pages.length});kmBoards.push(...pages);
 }

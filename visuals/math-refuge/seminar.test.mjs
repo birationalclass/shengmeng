@@ -57,3 +57,21 @@ test('classroom visibility gates distant, behind-camera and other-floor boards w
  assert(classroomVisible({...state,distance:25,wasVisible:true}));assert(!classroomVisible({...state,distance:29,wasVisible:true}));
  assert(!classroomVisible({...state,insideRoom:-1,eyeY:8}));
 });
+
+import {composeChalkPage} from './chalk-language.js';
+test('seminar bodies write mathematics first without repeated headings; opening and closing boards stay',async()=>{
+ const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/km/pages.json',import.meta.url),'utf8'));
+ const calls=[],ctx={clearRect(){},fillText(text,x,y){calls.push({text,y});},drawImage(){},measureText(t){return {width:[...t].length*20};}};
+ for(const language of ['zh','en']){
+  for(const page of pages.filter(p=>!p.kind)){
+   calls.length=0;const rows=composeChalkPage(ctx,page,0,language,{});
+   assert(page.hideHeading);assert(!calls.some(c=>c.y===76));assert.equal(rows[0].formulaRow,0,'Writing begins with the mathematics');
+   const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');assert(!svg.includes('<text x="84" y="76"'));
+  }
+  for(const kind of ['cover','closing']){
+   calls.length=0;composeChalkPage(ctx,pages.find(p=>p.kind===kind),0,language,{}, {hideHeading:true});assert(calls.length>0,kind+' must still display its title');
+  }
+  const page={...pages[1],hideHeading:false};calls.length=0;composeChalkPage(ctx,page,0,language,{});assert(calls.some(c=>c.y===76),'Main auditorium keeps its report headings');
+  calls.length=0;composeChalkPage(ctx,page,0,language,{}, {hideHeading:true});assert(!calls.some(c=>c.y===76),'Other seminar rooms can opt out independently');
+ }
+});

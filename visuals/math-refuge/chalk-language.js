@@ -30,7 +30,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     copy.text.split('\n').forEach((line,i)=>center(line,430+i*52,36));
     return rows;
   }
-  textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
+  if(!page.hideHeading&&!options.hideHeading)textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];
   ctx.drawImage(formula,x+8,y+8,w-16,h-16);
   const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d],i)=>Object.assign([a,b,c-.00001,d-.00001],{formulaRow:i}));

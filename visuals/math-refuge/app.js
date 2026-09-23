@@ -11,7 +11,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v53-section-sessions';
-import {createLecture} from './lecture.js?v54-persistent-boards';
+import {createLecture} from './lecture.js?v55-seminar-no-headings';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v53-section-sessions';
@@ -249,7 +249,7 @@ try{
   for(let level=0;level<3;level++){
     $('loadMessage').textContent='正在准备讨论班 '+(level+1)+' 层…';
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true}:{defaultReport:level===1?'ye':'meng',viewScale:.52,requireSelection:true});
+    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{defaultReport:level===1?'ye':'meng',viewScale:.52,requireSelection:true,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
   rooms.forEach((room,i)=>{

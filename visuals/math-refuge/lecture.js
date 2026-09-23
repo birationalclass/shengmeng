@@ -4,10 +4,10 @@ import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v53-sec
 import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v49-late-frames';
 import {paintChalkStroke} from './chalk-annotations.js?v51-local-definitions';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v51-local-definitions';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v55-seminar-no-headings';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
-import {createReportLoader} from './report-loader.js?v53-section-sessions';
+import {createReportLoader} from './report-loader.js?v55-seminar-no-headings';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
@@ -34,7 +34,7 @@ export async function createLecture(scene,renderer,options={}){
       const image=preparedImage||new Image();const ready=()=>{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
-        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image,{deferStrokes:true});pageRows.set(index,rows);
+        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings});pageRows.set(index,rows);
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));

@@ -86,9 +86,9 @@ for(const section of sections){
   const notes=chunks(section.text||'',33);
   const page=pages.length+1,asset=`page-${String(page).padStart(3,'0')}.svg`;
   const lines=notes.slice(0,3).map((line,i)=>`<text x="88" y="${488+i*56}" font-size="36">${chalkSVG(line)}</text>`).join('');
-  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif"><text x="84" y="76" font-size="44" fill="#e4cf9c">${chalkSVG(section.source)}  ${chalkSVG(section.title)}</text>${svg}${lines}</g></svg>`;
+  const body=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640"><g fill="#eee9d5" font-family="Kaiti SC, STKaiti, KaiTi, PingFang SC, serif">${section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c">${chalkSVG(section.source)}  ${chalkSVG(section.title)}</text>`}${svg}${lines}</g></svg>`;
   await fs.writeFile(new URL(asset,output),body);
-  pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,448+i*56,1380,56])]});
+  pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[section.hideHeading?[0,0,0,0]:[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,448+i*56,1380,56])]});
 }
 await fs.writeFile(new URL('pages.json',output),JSON.stringify({chapters:km?.KM_CHAPTERS,sections:km?.KM_SECTIONS,erratum:km?{section:'5.2',start:km.kmOutline.findIndex(p=>p.title==='勘误一：反例的配对'),url:report.erratum}:undefined,source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?(report.license||'CC BY 4.0'):undefined,sourceLicense:report?.sourceLicense,sourceVersion:report?.sourceVersion,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
 await fs.copyFile(path.join(root,'LICENSE'),new URL('MATHJAX-LICENSE.txt',output));
