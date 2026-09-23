@@ -2,6 +2,7 @@
 // Usage: node build-chalk-notes.mjs /absolute/path/to/mathjax-full-3.2.2 [ye|hu]
 // MathJax is a build-only dependency; the deployed scene loads no math CDN.
 import fs from 'node:fs/promises';
+import {refineSeminarPage} from './seminar-editorial.js';
 import {equationLines} from './chalk-layout.mjs';
 import {chalkSVG} from './chalk-typography.js';
 import {boardDiagrams,diagramSVG} from './chalk-diagrams.mjs';
@@ -28,7 +29,7 @@ const report=reportId&&reportId!=='meng'?REPORTS.find(r=>r.id===reportId):null;
 if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
 const content=report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
-const sections=[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}];
+const sections=[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
 if(content.filter(p=>!p.kind).length<24)throw new Error('A one-hour report needs at least 24 substantive boards, excluding cover and closing.');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));

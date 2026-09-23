@@ -69,7 +69,7 @@ const lerayNotes=[
  ['CE 分解中的相应短正合列分裂，因此截面函子在这些列上保持正合；再取横向上同调得到 E₂。','The relevant sequences in the CE resolution split, so global sections preserve their exactness. Horizontal cohomology then gives page two.'],
  ['换一个方向先取上同调。内射层的直像为松层，对全局截面无高阶上同调，因此总复形计算 X 上的层上同调。','Take cohomology in the other direction. Direct images of injectives are flasque and acyclic for global sections, identifying the total cohomology on X.'],
  ['将第一象限收敛定理与上一条的总上同调识别结合，得到 Leray 收敛；第二页已由前面的构造明确给出。','Combine first-quadrant convergence with the preceding total-cohomology identification to obtain Leray convergence, with the previously identified second page.'],
- ['在讲义给定的特征零、射影双有理设定下，充分正扭曲使高次底空间上同调消失，再结合消失定理推出高阶直像消失。','In the stated characteristic-zero projective birational setting, sufficient twisting kills higher base cohomology; the vanishing theorem then yields vanishing of higher direct images.'],
+ ['在特征零的射影双有理设定下，充分正扭曲使高次底空间上同调消失，再结合消失定理推出高阶直像消失。','In the stated characteristic-zero projective birational setting, sufficient twisting kills higher base cohomology; the vanishing theorem then yields vanishing of higher direct images.'],
  ['取具有有理奇点的正规复簇及解消。高阶直像消失使第二页仅剩零行，单行收敛给出所示典范同构。','For a normal complex variety with rational singularities and a resolution, higher direct images vanish. Single-row convergence gives the canonical isomorphism.']
 ];
 for(const [i,tex] of hodgeContent.f.entries())outline.push(page(`3.${i+1}`,hodgeTitles[i][0],[tex],hodgeNotes[i][0],hodgeTitles[i][1],hodgeNotes[i][1]));

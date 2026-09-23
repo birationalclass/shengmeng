@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=43-tight-boards';
 import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=22-handwritten-cover';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v=32-report-position';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v48-seminar';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
-import {createReportLoader} from './report-loader.js?v=35-responsive-reports';
+import {createReportLoader} from './report-loader.js?v48-seminar';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
@@ -291,6 +291,7 @@ export async function createLecture(scene,renderer){
     if(chalk.visible){
       if(lastWritePage!==clock.page){lastWritePage=clock.page;previousTip=null;if(chalkLength(wear)<.06)wear=0;}
       const pose=writingPose(pageRows.get(clock.page)||pages[clock.page].rows,clock.progress,guides.get(clock.page));positionTool(chalk,pose.x,pose.y);chalk.position.z+=pose.contact?0:.055+pose.lift;
+      chalk.material.color.set(pageRows.get(clock.page)?.[pose.row]?.chalkColor||'#f3edda');
       const tip=chalk.position.clone();
       if(previousTip&&pose.contact)wear+=Math.min(.07,tip.distanceTo(previousTip))*.007;
       const length=chalkLength(wear),propScale=1/(scene.scale.y||1);chalk.scale.set(propScale,length/.17*propScale,propScale);chalk.position.addScaledVector(chalkAxis,length*propScale/2);chalk.userData.length=length;chalk.userData.contact=pose.contact;previousTip=tip;

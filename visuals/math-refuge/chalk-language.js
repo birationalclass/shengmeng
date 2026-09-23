@@ -1,4 +1,5 @@
 import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=30-seminar';
+import {drawChalkAnnotation} from './chalk-annotations.js?v48-seminar';
 export function chalkCopy(page,language='zh'){
   return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
 }
@@ -18,7 +19,7 @@ export function composeChalkPage(ctx,page,index,language,formula){
     while(measure(text,size)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
     for(const run of chalkInlineRuns(text)){ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run)}`;ctx.fillText(run.text,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0));const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
-    rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+(chalkInlineRuns(text).some(run=>run.script)?20:14)],{chineseSpans}));
+    rows.push(Object.assign([x-4,y-size-4,Math.min(1376,cursor-x+8),size+(chalkInlineRuns(text).some(run=>run.script)?20:14)],{chineseSpans,chalkColor:color}));
   }
   if(page.kind==='closing'){textRow(copy.title,(1536-measure(copy.title,124))/2,360,124,'#e4cf9c');return rows;}
   if(page.kind==='cover'){
@@ -30,9 +31,15 @@ export function composeChalkPage(ctx,page,index,language,formula){
     return rows;
   }
   textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
-  const [x,y,w,h]=page.rows[2];ctx.drawImage(formula,x+8,y+8,w-16,h-16);rows.push(...(page.formulaRows||[[x,y,w,h]]));
-  ctx.font=`36px ${font}`;const notes=wrapChalkText({measureText:text=>({width:measure(text,36)})},copy.text,1344);
+  const [x,y,w,h]=page.rows[2];
+  const scale=page.annotation?Math.min(1,990/w):1,top=page.annotation?140+(285-h*scale)/2:y;
+  ctx.drawImage(formula,x+8*scale,top+8*scale,(w-16)*scale,(h-16)*scale);
+  const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d])=>[x+(a-x)*scale,top+(b-y)*scale,c*scale-.00001,d*scale-.00001]);
+  const cues=drawChalkAnnotation(ctx,formulaRows,page.annotation,language);
+  rows.push(...formulaRows,...cues);
+  let noteSize=36,notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);
+  while(notes.length>3&&noteSize>26){noteSize--;notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);}
   // Leave room for descenders and inline scripts: reveal rectangles must not overlap.
-  notes.slice(0,3).forEach((line,i)=>textRow(line+(i===2&&notes.length>3?' …':''),88,488+i*56,36,'#eee9d5'));
+  notes.forEach((line,i)=>textRow(line,88,(notes.length>3?476:488)+i*(notes.length>3?40:56),noteSize,'#eee9d5'));
   return rows;
 }
