@@ -12,7 +12,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v70-sun-stars';
+import {createRetreat} from './scene.js?v72-night-rain';
 import {createLecture} from './lecture.js?v70-sun-stars';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -248,6 +248,7 @@ function tick(stamp){
   }
   updateAtmosphere(dt);
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
+  retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
@@ -343,6 +344,7 @@ $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.
 $('light').addEventListener('input',()=>{if(retreat)sceneTime.previewAt(Number($('light').value));});
 $('clockPlay').addEventListener('click',()=>{sceneTime.sync();updateSceneTime();});
 function weatherLabel(){
+ const mode=$('weatherMode').value;if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
  const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
  
  $('weatherSummary').textContent='上海 · '+(weatherStatus==='loading'?'正在获取天气':label)+(weatherStatus==='cached'?'（缓存）':'');
@@ -358,7 +360,7 @@ function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent
 $('timeRate').addEventListener('change',()=>{sceneTime.setRate($('timeRate').value);updateSceneTime();});
 $('timeRun').addEventListener('click',()=>{if(sceneTime.playing)sceneTime.pause();else sceneTime.play($('timeRate').value);updateSceneTime();});
 for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id).addEventListener('click',()=>{sceneTime.previewAt(eventHours()[event]-.05);sceneTime.play($('timeRate').value);updateSceneTime();});
-$('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:.13}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
+$('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
 function updateSceneTime(){
  sceneTime.update();if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
  $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');

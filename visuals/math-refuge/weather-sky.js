@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 export function createWeatherSky({panorama=true}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
- const uniforms={sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
+ const uniforms={seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
  const material=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms,vertexShader:`varying vec3 ray;void main(){ray=position;vec4 p=projectionMatrix*mat4(mat3(viewMatrix))*modelMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,fragmentShader:`
  uniform sampler2D galaxyMap;uniform float galaxyMix;
- precision highp float;varying vec3 ray;uniform vec3 sunPosition,sunColor;uniform float day,warm,direct,cloud,storm,clock,radius,showSun,stars,sidereal,twinkleTime;
+ precision highp float;varying vec3 ray;uniform vec3 sunPosition,sunColor,seaColor;uniform float seaHorizon;uniform float day,warm,direct,cloud,storm,clock,radius,showSun,stars,sidereal,twinkleTime;
  float hash(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
  float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
  float fbm(vec2 p){float v=0.,a=.55;for(int i=0;i<4;i++){v+=a*noise(p);p=p*2.03+17.3;a*=.48;}return v;}
@@ -17,18 +17,24 @@ export function createWeatherSky({panorama=true}={}){
  vec3 diffuse=texture2D(galaxyMap,uv,3.5).rgb;
  float haze=dot(diffuse,vec3(.2126,.7152,.0722));
  float peak=max(0.,dot(field-diffuse,vec3(.2126,.7152,.0722)));
- vec3 band=mix(vec3(haze),diffuse,.35)*(.30/(1.+2.*haze));
+ vec3 band=mix(vec3(haze),diffuse,.65)*(.68/(1.+2.5*haze));
  // Keep only resolved bright stars; the millions of faint points merge into the band.
- vec3 bright=max(field-diffuse,vec3(0.))*smoothstep(.35,.70,peak)*.13;
+ vec3 bright=max(field-diffuse,vec3(0.))*smoothstep(.38,.72,peak)*.20;
  // Smooth celestial-space phases keep stars independent, even during accelerated time.
  float phase=dot(d,vec3(127.1,311.7,74.7));
- float shimmer=1.+.22*sin(twinkleTime*1.7+phase)+.10*sin(twinkleTime*2.9+phase*1.618);
- return (band+bright*shimmer)*galaxyMix;}
+ float amount=mix(.06,.22,pow(1.-max(direction.y,0.),2.));
+ float shimmer=1.+amount*(sin(twinkleTime*1.7+phase)+.4*sin(twinkleTime*2.9+phase*1.618));
+ float transmission=exp(-.10/max(.07,direction.y));
+ return (band+bright*shimmer)*galaxyMix*transmission;}
 
+ // Rare deterministic meteors: a short tapered trail, never a repeating shower.
+ vec3 meteor(vec3 d){float event=floor(twinkleTime/31.);float age=mod(twinkleTime,31.)-4.-hash(vec2(event,7.))*12.;if(age<0.||age>1.5)return vec3(0.);float az=hash(vec2(event,3.))*6.28318;vec3 start=normalize(vec3(cos(az),.55+hash(vec2(event,5.)),sin(az)));vec3 tangent=normalize(cross(start,vec3(0.,1.,0.))*.8+vec3(0.,-.6,0.));float t=age/1.5;vec3 head=normalize(start+tangent*t*.30);vec3 tail=normalize(start+tangent*max(0.,t-.26)*.30);vec3 segment=head-tail;float along=clamp(dot(d-tail,segment)/max(dot(segment,segment),.000001),0.,1.);float distance=length(d-normalize(tail+segment*along));float width=max(length(fwidth(d))*.65,.00012);float line=exp(-pow(distance/width,2.))*pow(along,1.8);float fade=smoothstep(0.,.12,t)*(1.-smoothstep(.60,1.,t));return vec3(.30,.36,.42)*line*fade;}
  void main(){vec3 d=normalize(ray);float y=max(d.y,0.0),horizon=pow(1.0-y,5.0);vec3 zenith=vec3(.014,.12,.43),edge=vec3(.32,.54,.80);vec3 clear=mix(zenith,edge,exp(-5.0*y));float facing=pow(max(dot(normalize(vec3(d.x,.001,d.z)),normalize(vec3(sunPosition.x,.001,sunPosition.z))),0.0),5.0);clear=mix(clear,vec3(.94,.32,.105),warm*horizon*facing*.78);vec3 night=mix(vec3(.0015,.003,.012),vec3(.006,.013,.027),horizon);vec3 color=mix(night,clear,day);color=mix(color,vec3(.33,.39,.47)*(.025+.975*day),cloud*storm*.68);
- if(stars>.0001)color+=nightStars(d)*stars*smoothstep(0.0,.18,d.y)*(1.-storm*.96);
- float angle=acos(clamp(dot(d,normalize(sunPosition)),-1.,1.));float edgeAA=max(fwidth(angle),.00004);float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float solar=showSun*smoothstep(-.002,.001,d.y); color+=sunColor*solar*(disk*(7.0+2.0*limb)+.18*exp(-pow(angle/.019,2.0)));
- vec2 uv=d.xz/max(d.y+.12,.12)*1.55+vec2(clock*.0025,clock*.0008);float n=fbm(uv),threshold=mix(.80,.22,cloud);float density=smoothstep(threshold-.07,threshold+.12,n)*smoothstep(-.015,.09,d.y);float shade=fbm(uv+vec2(.065,.035));vec3 white=mix(vec3(.58,.66,.75),vec3(1.28,1.30,1.32),smoothstep(.2,.7,shade));white=mix(white,vec3(.38,.43,.50),storm*.6);white=mix(white,vec3(.94,.47,.23),warm*facing*.48);white=mix(vec3(.002,.003,.005),white,day);color=mix(color,white,density*.97);
+ if(stars>.0001)color+=(nightStars(d)+meteor(d))*stars*smoothstep(0.0,.18,d.y)*(1.-storm*.96);
+ float angle=acos(clamp(dot(d,normalize(sunPosition)),-1.,1.));float edgeAA=max(fwidth(angle),.00004);float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float horizonAA=max(fwidth(d.y),.000001);float aboveSea=smoothstep(-horizonAA,horizonAA,d.y);float solar=showSun*aboveSea; color+=sunColor*solar*(disk*(7.0+2.0*limb)+.18*exp(-pow(angle/.019,2.0)));
+ vec2 uv=d.xz/max(d.y+.12,.12)*1.55+vec2(clock*.0025,clock*.0008);float n=fbm(uv),threshold=mix(.80,.22,cloud);float density=smoothstep(threshold-.07,threshold+.12,n)*smoothstep(-.015,.09,d.y)*smoothstep(0.,.08,cloud);float shade=fbm(uv+vec2(.065,.035));vec3 white=mix(vec3(.58,.66,.75),vec3(1.28,1.30,1.32),smoothstep(.2,.7,shade));white=mix(white,vec3(.38,.43,.50),storm*.6);white=mix(white,vec3(.94,.47,.23),warm*facing*.48);white=mix(vec3(.002,.003,.005),white,day);color=mix(color,white,density*.97);
+ // The distant ocean meets the same horizontal ray used to clip the solar disk.
+ color=mix(color,seaColor,seaHorizon*(1.-aboveSea));
  gl_FragColor=vec4(max(color,vec3(0.0)),1.0);#include <tonemapping_fragment>
  #include <colorspace_fragment>
  }`.replace(';#include',';\n#include')});

@@ -459,6 +459,14 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const sky=scene.getObjectByName('Continuous Shanghai sky');
     assert(sky.material.uniforms.radius.value>.008&&sky.material.uniforms.radius.value<.010);
     assert(sky.material.uniforms.day.value>.9);
+    assert(result.rain.roofs.length>=9,'All teaching and villa roofs shelter the rain');
+    const rainEye={position:new Three.Vector3(35,4,0)};
+    result.rain.update(.016,rainEye,{rain:3,wind:8},1);
+    assert(result.rain.mesh.visible);assert.equal(result.rain.mesh.geometry.instanceCount,1800);
+    const rainPoints=result.rain.mesh.geometry.attributes.dropPosition.array;
+    for(let i=0;i<rainPoints.length;i+=3){if(result.rain.mesh.geometry.attributes.dropShape.array[i+2]===0)continue;for(const roof of result.rain.roofs)assert(!(rainPoints[i]>=roof[0]&&rainPoints[i]<=roof[1]&&rainPoints[i+2]>=roof[2]&&rainPoints[i+2]<=roof[3]&&rainPoints[i+1]<roof[4]),'Rain never enters covered rooms');}
+    result.rain.update(.016,rainEye,{rain:0,wind:8},1);assert(!result.rain.mesh.visible);
+
     const environmentBefore=scene.environment;result.setTime(12.51,true);assert.equal(scene.environment,environmentBefore,'No half-hour reflection-map replacement');
     assert.equal(scene.children.filter(o=>o.name.startsWith('Framed specimen tree')).length,ORNAMENTAL_TREES.length);
     for(const f of result.layoutFloors.filter(f=>f.y===0))assert(elevation(f.cx,f.cz)<seaLevel);
