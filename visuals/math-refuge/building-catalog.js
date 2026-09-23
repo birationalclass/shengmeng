@@ -1,3 +1,4 @@
+import {RESIDENCE_SHOTS,RESIDENCE_ROOMS} from './residence-layout.js?v73-residence';
 import {BUILDING_SCALE as S,DECK_Y} from './site-layout.js?v44-hall-clearance';
 const upperEye=2*DECK_Y+3.2/S+.20+1.5/S;
 export const BUILDINGS=[
@@ -11,6 +12,7 @@ export const BUILDINGS=[
   {number:8,name:'客舍一',shot:'客舍一',roof:'Quiet residential villa 1',rooms:[{name:'客房',shot:'客舍一'}]},
   {number:9,name:'客舍二',shot:'客舍二',roof:'Quiet residential villa 2',rooms:[{name:'客房',shot:'客舍二'}]}
 ];
+BUILDINGS.push({number:10,name:'住宅',shot:'海上住宅',rooms:RESIDENCE_ROOMS});
 export const OUTDOOR_AREAS=['庭院','海景露台','海上花园'];
 export const buildingForShot=name=>BUILDINGS.find(b=>b.shot===name||b.rooms.some(r=>r.shot===name));
 const viewpoint=(name,position,target)=>({name,title:name,description:'自由观察 · 拖动改变视角',duration:25,fov:58,positions:[position,[...position]],targets:[target,[...target]]});
@@ -25,3 +27,5 @@ export const BUILDING_SHOTS=[
   viewpoint('客舍一',[-53.5,DECK_Y+1.6/S,-27],[-57,1.2,-28]),
   viewpoint('客舍二',[-44.5,DECK_Y+1.6/S,-37],[-48,1.2,-38])
 ];
+
+BUILDING_SHOTS.push(...RESIDENCE_SHOTS);

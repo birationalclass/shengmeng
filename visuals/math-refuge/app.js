@@ -1,9 +1,10 @@
+import {createResidenceNotes} from './residence-notes.js?v73-residence';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v57-proof-flow';
 import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
 import {teachingRoomAt} from './room-context.js?v57-proof-flow';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
-import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v62-chalk-ink';
+import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v73-residence';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -12,7 +13,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v72-night-rain';
+import {createRetreat} from './scene.js?v73-residence';
 import {createLecture} from './lecture.js?v70-sun-stars';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -20,7 +21,7 @@ import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v62-chalk-ink';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v73-residence';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v68-time';
 import {shanghaiHour,approachHour,solarEvents} from './solar-state.js?v70-sun-stars';
@@ -33,6 +34,7 @@ const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new Boa
 
 const $=id=>document.getElementById(id);
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
+const residenceNotes=createResidenceNotes();
 let panelBuilding=BUILDINGS[0];
 for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))]){
   const button=document.createElement('button');button.dataset.shot=String(SHOTS.findIndex(s=>s.name===item.shot));
@@ -59,7 +61,7 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
-const rooms=[],roomLecterns=[],roomViews=[];
+const rooms=[],roomLecterns=[],roomViews=[],campusLightTarget=new THREE.Vector3(12*BUILDING_SCALE,3*BUILDING_SCALE,0);
 const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
 function updateRoomVisibility(stamp){
   if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateGeometryLOD(camera,innerHeight);
@@ -90,6 +92,7 @@ function fail(error){
   $('errorText').textContent='请启用浏览器硬件加速后重试。若仍无法打开，请换用新版 Safari、Chrome 或 Edge。';
 }
 function updateLabels(){
+  residenceNotes.update(SHOTS[shot].name);
   document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture&&!speakerView));
   reader?.chapter(Boolean(SHOTS[shot].lecture&&!speakerView)&&teachingRoomAt(camera.position)===activeRoom,$('lecturePanel').hidden);
   $('shotNumber').textContent=opening?'总览':`${String(shot+1).padStart(2,'0')} / ${SHOTS[shot].name}`;
@@ -246,6 +249,10 @@ function tick(stamp){
     $('world').dataset.shot=String(shot);
     updateSceneTime();
   }
+  retreat.residence.update(camera,retreat.sky.material.uniforms.day.value);
+  const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
+  const lightTarget=nearResidence?retreat.residence.root.position:campusLightTarget;
+  retreat.sun.target.position.lerp(lightTarget,1-Math.exp(-dt*2));
   updateAtmosphere(dt);
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
   retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);

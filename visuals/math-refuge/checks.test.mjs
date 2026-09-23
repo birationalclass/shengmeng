@@ -126,7 +126,7 @@ test('all facility footprints and expansion docks sit over open seawater',()=>{
 
 
 test('finite camera destinations include all buildings, upstairs, ocean and garden views',()=>{
-  assert.equal(SHOTS.length,18);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
+  assert.equal(SHOTS.length,26);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -189,11 +189,12 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
     PMREMGenerator:class{fromScene(){return {texture:new Three.Texture(),dispose(){}};}dispose(){}}
   };
-  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
+  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({measureText(text){return {width:text.length*18};},fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
   try{
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
+    const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.x< -1100);assert(result.residence.root.getObjectByName('Roof number 10'));
     assert(!result.water);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
     const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,30);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
@@ -291,7 +292,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const stair of stairs){const d=stair.userData;assert.equal(d.steps,7);assert(d.riserMetres>.15&&d.riserMetres<.2);assert(d.treadMetres>.5);assert(Math.abs(d.heights.at(-1)-seaLevel-.025)<1e-8);for(let i=1;i<d.heights.length;i++)assert(d.heights[i]<d.heights[i-1]);}
     assert(scene.getObjectByName('Independent quiet library'));assert(scene.getObjectByName('Quiet residential villa 1'));assert(scene.getObjectByName('Quiet residential villa 2'));
     const roofNumbers=[];scene.traverse(o=>{if(o.userData.roofNumber)roofNumbers.push(o);});
-    assert.deepEqual(roofNumbers.map(o=>o.userData.roofNumber).sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9]);
+    assert.deepEqual(roofNumbers.map(o=>o.userData.roofNumber).sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9,10]);
     for(const o of roofNumbers){assert.equal(o.rotation.x,-Math.PI/2);assert(o.material.transparent&&!o.material.depthWrite);assert(o.geometry.parameters.width<=Math.min(o.userData.roof.width,o.userData.roof.depth));}
     result.campus.setTeachingShade(true);assert(scene.getObjectByName('East teaching blackout shade').visible);result.campus.setTeachingShade(false);
     assert(scene.getObjectByName('Conference entrance sign').isMesh);
@@ -555,7 +556,7 @@ test('Consolidated local SVG pages preserve notebook formula content and stay wi
   const html=await fs.readFile(new URL('./index.html',import.meta.url),'utf8');
   const {BUILDINGS,OUTDOOR_AREAS,buildingForShot}=await import('./building-catalog.js');
   const destinations=[...BUILDINGS.map(b=>b.shot),...OUTDOOR_AREAS].map(name=>SHOTS.find(s=>s.name===name));
-  assert.equal(BUILDINGS.length,9);assert(destinations.every(Boolean));
+  assert.equal(BUILDINGS.length,10);assert(destinations.every(Boolean));
   assert.equal(buildingForShot('二楼客厅').number,buildingForShot('报告厅').number);
   assert(BUILDINGS.every(b=>b.rooms.length&&b.rooms.every(r=>r.room!==undefined||SHOTS.some(s=>s.name===r.shot))));
   assert(destinations.every(s=>!s.lecture),'Board focus belongs to the room controls');

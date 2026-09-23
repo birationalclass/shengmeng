@@ -1,6 +1,6 @@
 // All viewpoints share the peninsula plan: east +X, north -Z.
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
-import {BUILDING_SHOTS} from './building-catalog.js?v62-chalk-ink';
+import {BUILDING_SHOTS} from './building-catalog.js?v73-residence';
 const loungeEye=DECK_Y*2+HALL.clearHeight/BUILDING_SCALE+.20+1.65/BUILDING_SCALE;
 export const SHOTS=[
   {name:'海岸抵达',title:'海上相连，<br>一处安心思考的地方。',description:'海上长露台 · 远岛 · 可扩展园区',duration:28,fov:49,
