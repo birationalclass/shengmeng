@@ -1,0 +1,4 @@
+// Artistic bathymetry in metres, not a surveyed navigation chart.
+const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
+export function seaDepthAt(x,z){const shelf=22+66*smooth(55,310,Math.hypot(x+22,z));const west=18*Math.exp(-(((x+78)/47)**2+((z-16)/65)**2)),south=10*Math.exp(-(((x-3)/52)**2+((z+61)/39)**2)),channel=17*Math.exp(-(((x-28)/22)**2+(z/100)**2));return shelf-west-south+channel;}
+export const seaDepthGLSL=`float depthSquare(float x){return x*x;}float seaDepthAt(vec2 p){float shelf=22.0+66.0*smoothstep(55.0,310.0,length(p+vec2(22.0,0.0)));float west=18.0*exp(-depthSquare((p.x+78.0)/47.0)-depthSquare((p.y-16.0)/65.0));float south=10.0*exp(-depthSquare((p.x-3.0)/52.0)-depthSquare((p.y+61.0)/39.0));float channel=17.0*exp(-depthSquare((p.x-28.0)/22.0)-depthSquare(p.y/100.0));return shelf-west-south+channel;}`;

@@ -5,7 +5,9 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v53-section-sessions';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {Sky} from './vendor/objects/Sky.js';
+import {createWeatherSky} from './weather-sky.js?v67-dark-sky';
+import {solarState,shanghaiHour,smooth} from './solar-state.js?v67-dark-sky';
+import {seaDepthGLSL} from './sea-depth.js?v67-dark-sky';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -262,7 +264,7 @@ export async function createRetreat(renderer,scene,report){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
       varying vec3 vWorld;
@@ -273,9 +275,10 @@ export async function createRetreat(renderer,scene,report){
         #include <fog_vertex>
       }`,
     fragmentShader:`
-      uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform vec3 sunTint;uniform float sunStrength,overcast;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
       #include <common>
       #include <fog_pars_fragment>
+      ${seaDepthGLSL}
       void main(){
         vec2 uv=vWorld.xz/siteScale;
         vec3 a=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)).xyz*2.0-1.0;
@@ -285,14 +288,18 @@ export async function createRetreat(renderer,scene,report){
         float fresnel=pow(1.0-max(dot(normal,view),0.0),4.0);
         float glitter=pow(max(dot(normal,normalize(sunDirection+view)),0.0),180.0);
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
-        vec3 waterColor=mix(vec3(.016,.14,.17),vec3(.035,.25,.27),swell*.3);
+        float depth=seaDepthAt(uv);
+        vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
+        vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
+        waterColor*=.94+swell*.06;
         vec2 shoreUV=vec2((uv.x+150.0)/250.0,(uv.y+110.0)/220.0);
         float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
         float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
         float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
         waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
-        vec3 color=mix(waterColor,vec3(.28,.41,.43),fresnel*.45)+vec3(1.0,.79,.48)*glitter*.22;
+        vec3 reflected=mix(vec3(.07,.24,.43),vec3(.24,.28,.32),overcast);
+        vec3 color=mix(waterColor,reflected,fresnel*.62)+sunTint*glitter*.38*sunStrength;
         color=mix(color,vec3(.67,.77,.71),foam*.45);
         gl_FragColor=vec4(color*nightVisibility,1.0);
         #include <tonemapping_fragment>
@@ -328,9 +335,7 @@ export async function createRetreat(renderer,scene,report){
   }
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
-  const sky=new Sky();sky.material.uniforms.nightVisibility={value:1};sky.material.fragmentShader='uniform float nightVisibility;\n'+sky.material.fragmentShader.replace('gl_FragColor = vec4( retColor, 1.0 );','gl_FragColor = vec4( retColor * nightVisibility, 1.0 );');sky.scale.setScalar(12000);scene.add(sky);
-  sky.material.uniforms.turbidity.value=1.8;sky.material.uniforms.rayleigh.value=2;
-  sky.material.uniforms.mieCoefficient.value=.002;sky.material.uniforms.mieDirectionalG.value=.8;
+  const sky=createWeatherSky();scene.add(sky);
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
@@ -346,29 +351,30 @@ export async function createRetreat(renderer,scene,report){
     interiorLights.push(lamp);
   }
   scene.fog=new THREE.FogExp2('#8dbbdf',.00028);
+  // One neutral diffuse reflection probe; never swap discrete half-hour snapshots.
+  // Directional light, sky, water highlights and probe strength evolve continuously.
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
-  const envScene=new THREE.Scene();envScene.add(sky.clone());
-  function lighting(value,regenerate=false){
-    const t=value/100,sunDirection=new THREE.Vector3(1,.04+t*.6,0).normalize();
-    sky.material.uniforms.sunPosition.value.copy(sunDirection);
-    ocean.material.uniforms.sunDirection.value.copy(sunDirection);
-    sun.position.copy(sunDirection).multiplyScalar(65*BUILDING_SCALE);sun.intensity=1.4+t*2.5;
-    ambient.intensity=.65+t*.95;sun.color.setHSL(.09,.25+(1-t)*.3,.85);
-    interiorLights.forEach(l=>l.intensity=l.userData.power*(.20+(1-t)*.80)*BUILDING_SCALE**2*l.userData.gain);
-    if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
+  const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
+  environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
+  const weather={cloud:.14,rain:0,fog:0,wind:8},weatherTarget={...weather};let skySeconds=0;
+  const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#9bc6e4'),fogNight=new THREE.Color('#101b2b');
+  function setWeather(value){Object.assign(weatherTarget,{cloud:value?.cloud??.14,rain:value?.rain??0,fog:value?.fog??0,wind:value?.wind??8});}
+  function setTime(hour,regenerate=false,dt=0){
+    const state=solarState(hour),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
+    for(const key of Object.keys(weather))weather[key]+=(weatherTarget[key]-weather[key])*k;
+    const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
+    const u=sky.material.uniforms;u.sunPosition.value.fromArray(state.direction);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius;u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;
+    roomFill.setDaylight(day*(1-.3*storm));pathLighting.update(day);
+    ocean.material.uniforms.nightVisibility.value=.06+day*.94;ocean.material.uniforms.sunDirection.value.fromArray(state.direction);ocean.material.uniforms.sunTint.value.copy(u.sunColor.value);ocean.material.uniforms.sunStrength.value=state.direct*sunThrough;ocean.material.uniforms.overcast.value=storm;
+    sun.position.copy(sun.target.position).addScaledVector(u.sunPosition.value,90*BUILDING_SCALE);sun.intensity=state.direct*(.8+2.2*smooth(0,60,state.elevation))*sunThrough;sun.color.copy(u.sunColor.value);
+    ambient.intensity=.18+day*(1.15-.28*storm);ambient.color.set('#91beeb').lerp(new THREE.Color('#d0d5df'),storm*.7);ambient.groundColor.set('#423d33');
+    const lamps=1-smooth(.16,.7,day);interiorLights.forEach(l=>l.intensity=l.userData.power*(.22+lamps*.78)*BUILDING_SCALE**2*l.userData.gain);
+    light.emissiveIntensity=.45+lamps*1.05;scene.environmentIntensity=.08+day*(.52-.16*storm);
+    scene.fog.density=.00009+.00023*(1-day)+.00032*storm+.0012*weather.fog;
+    scene.fog.color.copy(fogDay).lerp(fogNight,1-day).lerp(new THREE.Color('#929eac'),storm*.4*day);
+    sky.userData.state={hour,elevation:state.elevation,cloud,day,sunIntensity:sun.intensity};
   }
-  function setTime(hour,regenerate=false){
-    const h=wrapHour(hour),day=daylightAt(h),a=(h-6)*Math.PI/12;roomFill.setDaylight(day);pathLighting.update(day);
-    sky.material.uniforms.nightVisibility.value=.008+day*.992;ocean.material.uniforms.nightVisibility.value=.06+day*.94;
-    const direction=new THREE.Vector3(Math.cos(a),Math.sin(a),0).normalize();
-    sky.material.uniforms.sunPosition.value.copy(direction);ocean.material.uniforms.sunDirection.value.copy(direction);
-    sun.position.copy(direction).multiplyScalar(65*BUILDING_SCALE);sun.intensity=day*2.1;sun.color.setHSL(.095,.28+(1-day)*.25,.85);
-    ambient.intensity=.18+day*1.1;interiorLights.forEach(l=>l.intensity=l.userData.power*(.22+(1-day)*.78)*BUILDING_SCALE**2*l.userData.gain);
-    light.emissiveIntensity=.45+(1-day)*1.05;scene.environmentIntensity=.12+day*.5;
-    scene.fog.density=.00028+(1-day)*.00055;
-    scene.fog.color.set('#8dbbdf').lerp(new THREE.Color('#101b2b'),1-day);
-    if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
-  }
-  setTime(localHour(new Date()),true);
-  return {updateGeometryLOD,ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
+  setTime(shanghaiHour(),true);
+  return {updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

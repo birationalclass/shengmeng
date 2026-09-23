@@ -1,3 +1,4 @@
+import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v62-chalk-ink';
 import * as THREE from 'three';
 import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v62-chalk-ink';
@@ -309,21 +310,21 @@ export async function createLecture(scene,renderer,options={}){
       eraserColumn=column;eraserReturn=null;eraser.visible=true;
       if(eraserPickup){
         if(playing&&!starting)eraserPickup.elapsed+=dt;
-        const t=Math.min(1,eraserPickup.elapsed/1.4),ease=t*t*(3-2*t);
+        const t=Math.min(1,eraserPickup.elapsed/1.8);
         const p=eraserPose(0,W,H,boards[clock.active].wet?.plan);
         positionTool(eraserContact,p.x,p.y);eraserContact.position.z+=.052+p.lift;eraserContact.rotation.set(.03,0,-p.angle);
-        eraser.position.lerpVectors(eraserPickup.position,eraserContact.position,ease);
-        eraser.position.z+=Math.sin(Math.PI*t)*.22;
-        eraser.quaternion.slerpQuaternions(eraserPickup.quaternion,eraserContact.quaternion,ease);
+        const pose=eraserTransfer(eraserContact.position,eraserPickup.position,1-t,TRAY.z+TRAY.depth/2+.22);
+        eraser.position.set(pose.x,pose.y,pose.z);
+        eraser.quaternion.slerpQuaternions(eraserContact.quaternion,eraserPickup.quaternion,pose.rotation);
         eraser.userData.state='pickup';
         if(t===1){eraserPickup=null;eraser.userData.state='erasing';boards[clock.active].wet.started=effectTime;}
       }else eraser.userData.state='erasing';
     }else if(eraserReturn){
       if(playing)eraserReturn.elapsed+=dt;
-      const t=Math.min(1,eraserReturn.elapsed/1.4),ease=t*t*(3-2*t),rest=parkedErasers[eraserReturn.column];
-      eraser.position.lerpVectors(eraserReturn.position,rest.position,ease);
-      eraser.position.z+=Math.sin(Math.PI*t)*.22;
-      eraser.quaternion.slerpQuaternions(eraserReturn.quaternion,rest.quaternion,ease);
+      const t=Math.min(1,eraserReturn.elapsed/1.8),rest=parkedErasers[eraserReturn.column];
+      const pose=eraserTransfer(eraserReturn.position,rest.position,t,TRAY.z+TRAY.depth/2+.22);
+      eraser.position.set(pose.x,pose.y,pose.z);
+      eraser.quaternion.slerpQuaternions(eraserReturn.quaternion,rest.quaternion,pose.rotation);
       eraser.visible=t<1;eraser.userData.state=t<1?'returning':'resting';if(t===1)eraserReturn=null;
     }else{eraser.visible=false;eraser.userData.state='resting';}
     parkedErasers.forEach((rest,column)=>{rest.visible=!(eraser.visible&&column===eraserColumn);});

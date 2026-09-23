@@ -12,8 +12,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v62-chalk-ink';
-import {createLecture} from './lecture.js?v62-chalk-ink';
+import {createRetreat} from './scene.js?v67-dark-sky';
+import {createLecture} from './lecture.js?v67-dark-sky';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -22,11 +22,13 @@ import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v62-chalk-ink';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
-import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
+import {RetreatTime} from './retreat-time.js?v67-dark-sky';
+import {shanghaiHour,approachHour} from './solar-state.js?v67-dark-sky';
+import {createShanghaiWeather} from './shanghai-weather.js?v67-dark-sky';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
 import {motionCoordinate} from './camera-motion.js';
-const sceneTime=new RetreatTime(),boardFollow=new BoardFollow();let lastSunUpdate=-1,lastEnvironmentHour=-1;
+const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
 
 const $=id=>document.getElementById(id);
 let panelBuilding=BUILDINGS[0];
@@ -45,7 +47,7 @@ $('enterButton').addEventListener('click',()=>{
 });
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
-let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,lightTimer,opening={started:null};
+let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
   position:new THREE.CatmullRomCurve3(s.positions.map(p=>new THREE.Vector3(...p))),
@@ -241,6 +243,7 @@ function tick(stamp){
     $('world').dataset.shot=String(shot);
     updateSceneTime();
   }
+  updateAtmosphere(dt);
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
@@ -296,7 +299,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
+  retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
   // Shader compilation failures are reported, not hidden behind an endless loader.
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
   await renderer.compileAsync(scene,camera);
@@ -332,26 +335,28 @@ $('adaptiveQuality').addEventListener('change',()=>{if(retreat){renderBudget.res
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
-$('light').addEventListener('input',()=>{
-  if(!retreat)return;sceneTime.previewAt(Number($('light').value));lastSunUpdate=-1;clearTimeout(lightTimer);
-  lightTimer=setTimeout(()=>{retreat.setTime(sceneTime.hour,true);lastEnvironmentHour=sceneTime.hour;},180);
-});
-$('clockPlay').addEventListener('click',()=>{clearTimeout(lightTimer);sceneTime.sync();lastSunUpdate=-1;updateSceneTime();});
+$('light').addEventListener('input',()=>{if(retreat)sceneTime.previewAt(Number($('light').value));});
+$('clockPlay').addEventListener('click',()=>{sceneTime.sync();updateSceneTime();});
+function weatherLabel(){
+ const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
+ const preview=$('weatherMode').value;$('weatherButton').textContent=preview==='live'?'上海 · '+(weatherStatus==='loading'?'天气':label):'预览 · '+({clear:'晴天',cloudy:'多云',rain:'雨天'}[preview]);
+ $('weatherSummary').textContent='上海 · '+(weatherStatus==='loading'?'正在获取天气':label)+(weatherStatus==='cached'?'（缓存）':'');
+ $('weatherDetail').textContent=weatherReading?`云量 ${Math.round(weatherReading.cloud*100)}% · 风速 ${weatherReading.wind} km/h · 降水 ${weatherReading.rain} mm · 日出 ${weatherReading.sunrise} / 日落 ${weatherReading.sunset} · 数据 ${weatherReading.time?.slice(11,16)||'—'}`:'连接不可用时使用晴朗天空预设；不会把预设当作实况。';
+}
+const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
+$('weatherButton').addEventListener('click',()=>{$('settingsButton').click();});
+$('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:.13}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
 function updateSceneTime(){
-  sceneTime.update();
-  if(lastSunUpdate<0||Math.abs(sceneTime.hour-lastSunUpdate)>.01){
-    const regenerate=lastEnvironmentHour<0||Math.abs(sceneTime.hour-lastEnvironmentHour)>.5;
-    retreat.setTime(sceneTime.hour,regenerate);lastSunUpdate=sceneTime.hour;if(regenerate)lastEnvironmentHour=sceneTime.hour;
-    renderer.shadowMap.needsUpdate=true;
-  }
-  if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
-  const minutes=Math.floor(sceneTime.hour*60);
-  $('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
-  controlLabel($('clockPlay'),sceneTime.preview?'回到当前时间':'已同步当前时间');
-  $('clockPlay').setAttribute('aria-pressed',String(!sceneTime.preview));
-  $('world').dataset.clockMode=sceneTime.preview?'preview':'local';
-  $('world').dataset.hour=sceneTime.hour.toFixed(4);
-  lecture?.setConsoleState();
+ sceneTime.update();if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
+ const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
+ controlLabel($('clockPlay'),sceneTime.preview?'回到上海当前时间':'已同步上海时间');$('clockPlay').setAttribute('aria-pressed',String(!sceneTime.preview));
+ $('world').dataset.clockMode=sceneTime.preview?'preview':'shanghai';$('world').dataset.hour=sceneTime.hour.toFixed(4);lecture?.setConsoleState();
+}
+function updateAtmosphere(dt){
+ sceneTime.update();visualHour=approachHour(visualHour,sceneTime.hour,dt);retreat.setTime(visualHour,false,dt);
+ const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
+ if(angle>.00028){renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;}
+ $('world').dataset.visualHour=(((visualHour%24)+24)%24).toFixed(4);
 }
 
 function populateReport(){

@@ -456,8 +456,10 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(let level=0;level<3;level++){const room=scene.getObjectByName('Discussion classroom '+(level+1));assert.equal(room.userData.rows,2);assert.equal(scene.getObjectByName('Discussion classroom seats '+(level+1)).userData.seats,12);assert(room.userData.bounds[1]<HALL.west-80);}
     for(const flight of allObjects.filter(o=>o.name==='Seminar supported stair flight')){assert(flight.userData.riser>.14&&flight.userData.riser<.18);assert(flight.userData.tread>.25);}
     result.setTime(12,true);assert(scene.fog.density<=.0003);
-    const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
-    assert(sky.material.uniforms.turbidity.value<=2);
+    const sky=scene.getObjectByName('Continuous Shanghai sky');
+    assert(sky.material.uniforms.radius.value>.004&&sky.material.uniforms.radius.value<.005);
+    assert(sky.material.uniforms.day.value>.9);
+    const environmentBefore=scene.environment;result.setTime(12.51,true);assert.equal(scene.environment,environmentBefore,'No half-hour reflection-map replacement');
     assert.equal(scene.children.filter(o=>o.name.startsWith('Framed specimen tree')).length,ORNAMENTAL_TREES.length);
     for(const f of result.layoutFloors.filter(f=>f.y===0))assert(elevation(f.cx,f.cz)<seaLevel);
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
@@ -667,6 +669,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(let i=0;i<3500;i++){
       const before=movingEraser.userData.state;lecture.update(.1);phases.add(lecture.clock.phase);eraserStates.add(movingEraser.userData.state);
       assert.equal(trayErasers.filter(o=>o.visible).length+(movingEraser.visible?1:0),3,'One eraser per column, with no duplicate while in use');
+      if(movingEraser.visible&&['pickup','returning'].includes(movingEraser.userData.state)){
+        const movingBox=new Three.Box3().setFromObject(movingEraser).expandByScalar(-.001);
+        for(const board of boards)assert(!movingBox.intersectsBox(new Three.Box3().setFromObject(board.getObjectByName('Solid opaque board body'))),'Eraser transfer clears every board backing');
+        for(let c=1;c<=3;c++)for(const part of scene.getObjectByName('Wide nanmu chalk tray '+c).children)assert(!movingBox.intersectsBox(new Three.Box3().setFromObject(part)),'Eraser transfer clears tray floor and all lips');
+      }
       if(movingEraser.userData.state==='pickup'){
         assert.equal(lecture.clock.progress,0,'No ink disappears before the eraser arrives');
         const rest=trayErasers[Math.floor(lecture.clock.active/2)];assert(!rest.visible);
