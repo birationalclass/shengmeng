@@ -1,5 +1,5 @@
 import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=30-seminar';
-import {drawChalkAnnotation} from './chalk-annotations.js?v49-late-frames';
+import {drawChalkAnnotation} from './chalk-annotations.js?v51-local-definitions';
 export function chalkCopy(page,language='zh'){
   return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
 }
@@ -32,16 +32,14 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   }
   textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];
-  const scale=page.annotation?Math.min(1,990/w):1,top=page.annotation?140+(285-h*scale)/2:y;
-  ctx.drawImage(formula,x+8*scale,top+8*scale,(w-16)*scale,(h-16)*scale);
-  const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d])=>[x+(a-x)*scale,top+(b-y)*scale,c*scale-.00001,d*scale-.00001]);
+  ctx.drawImage(formula,x+8,y+8,w-16,h-16);
+  const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d],i)=>Object.assign([a,b,c-.00001,d-.00001],{formulaRow:i}));
   const cues=drawChalkAnnotation(ctx,formulaRows,page.annotation,language,options);
-  rows.push(...formulaRows);
+  // Annotate immediately after the defining line, before the next equation.
+  formulaRows.forEach((row,i)=>{rows.push(row);if(i===cues.afterRow)rows.push(...cues);});
   let noteSize=36,notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);
   while(notes.length>3&&noteSize>26){noteSize--;notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);}
   // Leave room for descenders and inline scripts: reveal rectangles must not overlap.
   notes.forEach((line,i)=>textRow(line,88,(notes.length>3?476:488)+i*(notes.length>3?40:56),noteSize,'#eee9d5'));
-  // Complete the entire explanation before returning to the formula to mark it.
-  rows.push(...cues);
   return rows;
 }

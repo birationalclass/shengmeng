@@ -4,7 +4,7 @@ export function createReportLoader(){
   return function prepare(report){
     if(jobs.has(report.id))return jobs.get(report.id);
     const job=(async()=>{
-      const response=await fetch(report.manifest+'?v48-seminar');
+      const response=await fetch(report.manifest+'?v51-local-definitions');
       if(!response.ok)throw new Error('报告加载失败，请重试。');
       const manifest=await response.json();
       if(!manifest.pages?.length)throw new Error('报告内容为空');

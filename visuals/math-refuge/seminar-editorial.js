@@ -1,122 +1,31 @@
-// Each cue is tied to a specific board, rather than inferred from keywords.
-// c = dashed frame (legacy cue key), u = underline, b = bracket. Labels remain bilingual.
+// Sparse, authored definition cues. Unlisted pages intentionally have no marks.
+// focus = [left, top, width, height] within the selected formula row, measured
+// from the SVG glyph bounds. Recheck these bounds when changing the listed term.
 const cues={
-meng:`c|两个方向|Two directions
-u|沿对角线|Sum diagonally
-c|闭元模边界|Cycles / boundaries
-b|微分保持滤过|Preserved by D
-c|取像，不是全体|Take the image
-c|相邻层取商|Adjacent quotient
-b|先检查包含|Check inclusion
-c|代表元有条件|Filtered representatives
-u|总次数加一|Total degree +1
-u|再取上同调|Take cohomology
-b|固定一个位置|Fix a bidegree
-c|只剩纵向微分|Vertical differential
-u|得到关联分次|Associated graded
-b|只有一行|One surviving row
-c|光滑，不必全纯|Smooth coefficients
-u|反交换是关键|Anticommutation
-u|先取 Dolbeault|Dolbeault first
-c|滤过商|Filtration quotient
-b|紧 Kähler 假设|Compact Kähler
-u|与代表元无关|Independent of choices
-u|纯型分解|Decompose by type
-b|两个空间|Two spaces
-c|先取内射分解|Injective resolution
-c|逐项取直像|Direct image of terms
-b|核与像都是层|Sheaf kernels / images
-u|准备拼接|Prepare the resolutions
-b|两次马蹄引理|Horseshoe twice
-c|相容的双复形|Compatible maps
-u|现在取截面|Now take sections
-c|别漏掉符号|Keep the sign
-u|先纵向，再横向|Vertical, then horizontal
-c|第二页的识别|Identify page two
-u|换方向计算|Use the other direction
-u|识别收敛目标|Identify the abutment
-b|充分正扭曲|Sufficiently positive twist
-u|高阶直像消失|Higher images vanish`,
-hu:`b|几何假设|Hypotheses
-c|Cartier 与 nef|Cartier and nef
-u|降低亏格门槛|Lower the threshold
-c|纤维连通|Connected fibres
-b|门槛不能删|Keep the threshold
-u|等号限制纤维|Equality constrains fibres
-u|先排除一个分支|Exclude this branch
-b|共同的数值起点|Numerical starting point
-c|中间上同调|Intermediate cohomology
-u|还需控制示性数|Control the Euler term
-b|次数是整数|Degree is integral
-c|两个参数|Two parameters
-u|这里是严格不等式|Strict inequality
-u|加性估计更强|Use the additive bound
-b|映射相容|Compatible maps
-c|生成秩|Generated rank
-u|限制底曲线亏格|Bound the base genus
-c|两个次数相乘|Multiply the degrees
-u|曲面次数上界|Surface degree bound
-b|选最大的零除子|Maximal zero divisor
-u|一般点与扭曲|General points and twist
-u|二次界闭合|Close the degree bound
-b|两处都要取等号|Both bounds are sharp
-c|上界可以达到|The bound is attained`,
-ye:`b|先规定原点值|Value at the origin
-b|阶数固定|Fix the order
-c|非负号约定|Nonnegative convention
-b|按奇偶分开|Separate parity cases
-c|能量比下确界|Infimum of quotients
-u|尺度不同|Different scales
-u|首项系数也要匹配|Match the coefficient
-c|转到环面|Move to the torus
-b|连续算子|Continuous operator
-u|记住换算因子|Keep the conversion factor
-b|参数范围|Parameter range
-u|一步的代价|Cost of one step
-c|展开一个平方|Expand a square
-b|Hessian 项不能丢|Keep the Hessian term
-c|归一化权|Normalized weight
-u|指数小的坏区域|Exponential concentration
-u|小概率还不够|Probability is not enough
-b|常数与维数无关|Dimension-free constant
-c|均值需要重估|Re-estimate the mean
-b|保权与降权|Keep or lower the weight
-u|连接两种奇偶|Bridge the parity cases
-u|固定次数迭代|Finitely many steps
-c|只需一个试验函数|One test function
-u|上下界相遇|Matching bounds`,
-duan:`b|粒子与孤子|Particles and solitons
-c|不再是群乘法|Beyond group multiplication
-b|偶与奇分别记录|Keep both parities
-c|看自同态超代数|Endomorphism superalgebra
-b|保留费米奇偶性|Retain fermion parity
-c|图变成算符|A diagram is an operator
-u|交换奇交点有负号|Odd interchange: minus
-c|相容性投影|Compatibility projector
-b|还要检查奇偶反转|Check parity reversal
-u|同一多重态同质量|Equal mass in a multiplet
-b|线类型与交点不同|Line type versus junction
-c|保留 Majorana 模|Keep the Majorana mode
-u|两个方向，共四态|Four states, two directions
-b|只取特定形变|A specific deformation
-c|Chebyshev 结构|Chebyshev structure
-u|临界点给出真空|Critical points give vacua
-b|筛选保留的线|Select surviving lines
-c|保留奇偶分次|Keep the grading
-b|两种对称性互补|Complementary symmetries
-u|规范化与形变相容|Gauging and deformation
-c|带符号的真空计数|Signed vacuum count
-b|实超场|Real superfield
-b|负耦合的有隙分支|Negative, gapped branch
-c|奇偶交替|Alternating parity
-u|检查指标一致性|Check the indices
-c|局域作用|Localized action
-u|相位差给出分数部分|Phase difference
-b|这里是整数型|Integral in this case
-u|态转成边界算符|States to boundary operators
-b|三种边界角色|Three boundary roles
-c|统计信息仍保留|Statistics remain
-b|约束不等于完整谱|Constraints, not full spectra`
+  meng:{
+    5:{row:1,term:'F^pH^n',focus:[.021955,.064462,.626302,.782438]},
+    7:{row:0,term:'Z_r^{p,q}',focus:[.007719,.174945,.103730,.775152]},
+    8:{row:0,term:'E_{r}^{p,q}',focus:[.008444,.282859,.157246,.340885]},
+    15:{row:1,term:'\\mathcal A^{p,q}(X)',focus:[.008367,.053571,.310115,.892857]},
+    24:{row:0,term:'\\mathcal{A}^\\bullet',focus:[.017654,.056980,.232833,.738875]},
+    25:{row:2,term:'\\mathcal{H}^q',focus:[.007465,.075452,.113430,.690620]}
+  },
+  hu:{
+    16:{row:1,term:'r=\\operatorname{rank}(\\operatorname{im}\\mathrm{ev})',focus:[.635237,.300838,.356482,.659587],color:'u',label:{zh:'生成秩',en:'Generated rank'}}
+  },
+  ye:{
+    2:{row:0,term:'\\mathcal E(\\mathbb Z^d)',focus:[.005847,.047140,.151688,.905753]},
+    5:{row:0,term:'\\mathcal C_{m,d}',focus:[.004597,.333668,.110768,.343936]},
+    8:{row:1,term:'\\omega(x)',focus:[.008035,.329153,.197527,.313050]},
+    15:{row:0,term:'\\rho=2\\omega/d',focus:[.004479,.329074,.214361,.313195]},
+    18:{row:0,term:'\\operatorname{Ent}_\\mu(f^2)',focus:[.006119,.258629,.275907,.447325]}
+  },
+  duan:{
+    3:{row:0,term:'\\mathbb C^{n|m}',focus:[.362062,.043766,.103485,.700427]},
+    4:{row:1,term:'\\operatorname{Cl}_1',focus:[.343474,.090736,.085965,.738852]},
+    6:{row:0,term:'\\operatorname{sStr}_{\\mathscr C}(\\mathcal M)',focus:[.337954,.053571,.638720,.892857],color:'b',label:{zh:'超条带代数',en:'Super strip algebra'}},
+    21:{row:0,term:'I_W',focus:[.008824,.222248,.121887,.653689]}
+  }
 };
 
 export const wording=[
@@ -151,17 +60,11 @@ export const wording=[
 export function refineSeminarPage(page,report,index){
   const clean=s=>wording.reduce((text,[a,b])=>text.replaceAll(a,b),s||'');
   const result={...page,text:clean(page.text),en:{...page.en,text:clean(page.en?.text)}};
-  if(!page.kind){
-    const cue=cues[report]?.split('\n')[index-1];
-    if(!cue)throw new Error(`Missing editorial cue: ${report}/${index}`);
-    const [mark,zh,en]=cue.split('|');
-    const focusRows={
-      meng:{1:1,3:2,5:2,12:1,15:1,18:2,30:2,32:1},
-      hu:{4:1,9:1,16:1,18:1,24:1},
-      ye:{3:1,13:1,19:1},
-      duan:{2:1,4:1,6:1,8:1,12:1,18:1,24:1,26:1,31:1}
-    };
-    result.annotation={mark,label:{zh,en},row:focusRows[report]?.[index]??(mark==='u'?-1:0)};
+  delete result.annotation;
+  const cue=!page.kind&&cues[report]?.[index];
+  if(cue){
+    if(!page.tex.includes(cue.term))throw new Error(`Recheck definition focus: ${report}/${index}`);
+    result.annotation={mark:'c',...cue};
   }
   return result;
 }

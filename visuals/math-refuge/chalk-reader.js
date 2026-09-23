@@ -22,7 +22,7 @@ export function createChalkReader(lecture){
       $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
       $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
-      $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text)+(entry.annotation?'<br><span style="color:#d9c693">↳ '+chalkHTML(entry.annotation.label[language])+'</span>':'');
+      $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text)+(entry.annotation?.label?'<br><span style="color:#d9c693">↳ '+chalkHTML(entry.annotation.label[language])+'</span>':'');
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
       $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=32-report-position';
       $('readerFormula').hidden=false;$('readerError').hidden=true;

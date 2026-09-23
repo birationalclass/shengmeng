@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=43-tight-boards';
 import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v49-late-frames';
-import {paintChalkStroke} from './chalk-annotations.js?v49-late-frames';
+import {paintChalkStroke} from './chalk-annotations.js?v51-local-definitions';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v49-late-frames';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v51-local-definitions';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
-import {createReportLoader} from './report-loader.js?v48-seminar';
+import {createReportLoader} from './report-loader.js?v51-local-definitions';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';

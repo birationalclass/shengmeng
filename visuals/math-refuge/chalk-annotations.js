@@ -5,26 +5,26 @@ export function drawChalkAnnotation(ctx,rows,annotation,language,{deferStrokes=f
   if(!annotation||!rows.length)return [];
   const equationRows=rows.filter(r=>r[0]<700);
   const target=equationRows[annotation.row<0?equationRows.length-1:annotation.row]||rows[0];
-  const [x,y,w,h]=target,color=CHALK_COLORS[annotation.mark];
-  let pad=6;
+  const [left,top,width,height]=annotation.focus||[0,0,1,1];
+  const [tx,ty,tw,th]=target;
+  const [x,y,w,h]=[tx+left*tw,ty+top*th,width*tw,height*th],color=CHALK_COLORS[annotation.color||'c'];
+  let pad=4;
   for(const other of rows){
     if(other===target||other[0]+other[2]<=x||other[0]>=x+w)continue;
     const gap=other[1]>=y+h?other[1]-y-h:y>=other[1]+other[3]?y-other[1]-other[3]:0;
     pad=Math.min(pad,Math.max(.1,gap*.42));
   }
-  if(ctx.save&&ctx.fillRect){
-    ctx.save();ctx.globalCompositeOperation='source-atop';ctx.fillStyle=color;
-    ctx.fillRect(x,y,w,h);ctx.restore();
-  }
-  target.chalkColor=color;
+  // Mark the notation itself; preserve the original white mathematical ink.
   const strokes=[];
+  strokes.afterRow=rows.indexOf(target);
+  strokes.focusBounds=[x,y,w,h];
   function stroke(points){
     const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
     strokes.push(Object.assign([Math.min(...xs)-2,Math.min(...ys)-2,Math.max(...xs)-Math.min(...xs)+4,Math.max(...ys)-Math.min(...ys)+4],{strokePath:points,chalkColor:color,annotation:true}));
     if(!deferStrokes)paintChalkStroke(ctx,points,color);
   }
-  if(annotation.mark==='c'){
-    // Clockwise dashes, with lifted travel between them. No ellipse or scan reveal.
+  {
+    // One mark style: clockwise rectangular dashes, with lifted travel between them.
     const corners=[[x-pad*.5,y-pad*.5],[x+w+pad*.5,y-pad*.5],[x+w+pad*.5,y+h+pad*.5],[x-pad*.5,y+h+pad*.5]];
     corners.forEach((a,edge)=>{
       const b=corners[(edge+1)%4],length=Math.hypot(b[0]-a[0],b[1]-a[1]);
@@ -38,20 +38,20 @@ export function drawChalkAnnotation(ctx,rows,annotation,language,{deferStrokes=f
         stroke(points);
       }
     });
-  }else if(annotation.mark==='u'){
-    stroke(Array.from({length:33},(_,i)=>[x+w*i/32,y+h+pad*.45+Math.sin(i*.36)*pad*.12]));
-  }else{
-    stroke([[x+10,y-pad*.4],[x-pad*.5,y-pad*.5],[x-pad*.6,y+h+pad*.4],[x+11,y+h+pad*.5]]);
   }
-  const cueY=Math.max(185,Math.min(330,y+h/2)),label=annotation.label[language];
+  const label=annotation.label?.[language];
+  if(!label)return strokes;
+  // A short leader joins the frame, rather than floating in a fixed margin.
+  const tipX=x+w+pad*.5+7,centerY=y+h/2,noteX=tipX+44,cueY=centerY+10;
   ctx.fillStyle=color;ctx.font=`29px ${language==='zh'?'RefugeChinese':'RefugeLatin'}, cursive`;
   const tokens=language==='zh'?[...label]:label.split(/(\s+)/),lines=[];let line='';
-  for(const token of tokens){if(ctx.measureText(line+token).width>250&&line){lines.push(line.trim());line=token.trimStart();}else line+=token;}
+  for(const token of tokens){if(ctx.measureText(line+token).width>Math.min(360,1452-noteX)&&line){lines.push(line.trim());line=token.trimStart();}else line+=token;}
   if(line)lines.push(line);
-  lines.forEach((text,i)=>ctx.fillText(text,1180,cueY+i*38));
-  stroke([[1165,cueY-10],[1142,cueY-7],[1111,cueY-12]]);
-  stroke([[1122,cueY-20],[1111,cueY-12],[1123,cueY-5]]);
-  return [...strokes,Object.assign([1176,cueY-34,260,Math.max(1,lines.length)*38+12],{chalkColor:color,annotation:true})];
+  lines.forEach((text,i)=>ctx.fillText(text,noteX,cueY+i*35));
+  stroke([[noteX-9,centerY-2],[tipX+18,centerY+1],[tipX,centerY]]);
+  stroke([[tipX+10,centerY-6],[tipX,centerY],[tipX+10,centerY+5]]);
+  strokes.push(Object.assign([noteX-4,cueY-34,Math.max(...lines.map(text=>ctx.measureText(text).width))+8,Math.max(1,lines.length)*35+10],{chalkColor:color,annotation:true}));
+  return strokes;
 }
 
 export function paintChalkStroke(ctx,points,color){
