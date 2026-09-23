@@ -3,6 +3,7 @@
 // MathJax is a build-only dependency; the deployed scene loads no math CDN.
 import fs from 'node:fs/promises';
 import {refineSeminarPage} from './seminar-editorial.js';
+import {organizeBoards} from './board-flow.mjs';
 import {equationLines} from './chalk-layout.mjs';
 import {chalkSVG} from './chalk-typography.js';
 import {boardDiagrams,diagramSVG} from './chalk-diagrams.mjs';
@@ -30,13 +31,15 @@ const report=km?(await import('./seminar-catalog.js')).KM_REPORT:reportId&&repor
 if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
 const content=km?km.kmOutline:report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
-const sections=km?content:[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
+const rawSections=km?content:[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
+let diagramIndex=0;
+const sections=km?rawSections:organizeBoards(rawSections.map(p=>report||p.kind?p:{...p,diagram:boardDiagrams.get(diagramIndex++)}));
 if(content.filter(p=>!p.kind).length<24)throw new Error('A one-hour report needs at least 24 substantive boards, excluding cover and closing.');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
 const assetBase=report?`./assets/chalk/${report.id}/`:'./assets/chalk/';
 const output=new URL(assetBase,import.meta.url);await fs.mkdir(output,{recursive:true});
-const pages=[];let lessonIndex=0;
+const pages=[];
 for(const file of await fs.readdir(output))if(/^(page|formula)-\d+\.svg$/.test(file))await fs.unlink(new URL(file,output));
 for(const section of sections){
   if(section.kind==='cover'||section.kind==='closing'){
@@ -48,7 +51,38 @@ for(const section of sections){
     await fs.writeFile(new URL(asset,output),body);await fs.writeFile(new URL(formulaAsset,output),'<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"></svg>');
     pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm:1,formulaRows:[],rows});continue;
   }
-  const tex=section.tex,diagram=report?(section.diagram||null):boardDiagrams.get(lessonIndex++);
+  if(section.layout==='flow'){
+    const number=String(pages.length+1).padStart(3,'0'),formulaAsset=`formula-${number}.svg`,asset=`page-${number}.svg`;
+    const blocks=section.blocks.map(block=>({...block,parts:equationLines(block.tex).map(tex=>{
+      const node=doc.convert(tex,{display:true}),svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
+      if(svg.includes('data-mjx-error'))throw new Error('Invalid flow formula: '+tex);
+      return {svg,box:svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number)};
+    })}));
+    const start=section.hideHeading?30:104,bottom=616;
+    let scale=.040;
+    const height=()=>blocks.reduce((sum,b)=>sum+48+b.parts.reduce((n,p)=>n+p.box[3]*scale+14,0)+14,0);
+    const maxWidth=Math.max(...blocks.flatMap(b=>b.parts.map(p=>p.box[2])));
+    scale=Math.min(scale,1328/maxWidth);
+    while(height()>bottom-start&&scale>.021)scale-=.0005;
+    if(height()>bottom-start)throw new Error('Board too dense: '+section.title);
+    const formulaRows=[],flowLabels=[],ink=[];let y=start;
+    for(const b of blocks){
+      flowLabels.push({text:b.text,enText:b.enText,x:88,y:y+25,size:28});y+=48;
+      for(const p of b.parts){
+        const w=p.box[2]*scale,h=p.box[3]*scale,x=112;
+        ink.push(p.svg.replace(/<svg[^>]*>/,`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${p.box.join(' ')}">`));
+        formulaRows.push([x-2,y-2,w+4,h+4]);y+=h+14;
+      }
+      y+=14;
+    }
+    const wrapper=inner=>`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1536" height="640" viewBox="0 0 1536 640">${inner}</svg>`;
+    const mathInk=ink.join('').replaceAll('currentColor','#eee9d5');
+    const labels=flowLabels.map(l=>`<text x="${l.x}" y="${l.y}" font-size="${l.size}" fill="#e4cf9c" font-family="Kaiti SC, KaiTi, cursive">${chalkSVG(l.text)}</text>`).join('');
+    const heading=section.hideHeading?'':`<text x="84" y="76" font-size="44" fill="#e4cf9c" font-family="Kaiti SC, KaiTi, cursive">${chalkSVG(section.source)} ${chalkSVG(section.title)}</text>`;
+    await fs.writeFile(new URL(formulaAsset,output),wrapper(mathInk));await fs.writeFile(new URL(asset,output),wrapper(heading+mathInk+labels));
+    pages.push({...section,formulaAsset:assetBase+formulaAsset,asset:assetBase+asset,formulaEm:38.4,formulaRows,flowLabels,rows:[[0,0,0,0],[0,0,0,0],[0,0,1536,640]]});continue;
+  }
+  const tex=section.tex,diagram=section.diagram||null;
   const parts=equationLines(tex).map(line=>{
     let node;try{node=doc.convert(line,{display:true});}catch(error){throw new Error(section.source+' '+section.title+': '+line+' — '+error.message);}
     const svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);

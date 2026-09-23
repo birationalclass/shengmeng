@@ -9,6 +9,7 @@ root = Path(__file__).resolve().parent
 pages = [p for path in [root / 'assets/chalk/pages.json', *sorted((root / 'assets/chalk').glob('*/pages.json'))] for p in json.loads(path.read_text())['pages']]
 text = ''.join(p['source'] + p['title'] + p.get('author', '') + p['text'] for p in pages) + ' …，。；：（）！？、'
 text += (root / 'seminar-screen.js').read_text()
+text += ''.join(b.get('text', '') for p in pages for b in p.get('blocks', []))
 chars = set(text)
 source = TTFont(sys.argv[1])
 cmap = source.getBestCmap()

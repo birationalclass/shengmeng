@@ -1,5 +1,7 @@
 // Independently written reading-seminar notes, checked against KM98.
-// Section 1.1 is developed in detail; other sections retain explicitly labelled preparation outlines.
+// Each section includes worked arguments; metadata states their exact scope and external inputs.
+import {organizeBoards} from './board-flow.mjs';
+import {KM_PROOFS} from './km-proof-boards.mjs';
 const R=String.raw;
 export const KM_CHAPTERS=[
  ['有理曲线与典范类','Rational curves and the canonical class'],
@@ -356,25 +358,28 @@ section('7.6','进一步结果与全书回顾','Further results and synthesis','
 再次记住唯一指定的勘误|\text{KM98 Lemma 5.17(2): false in general}|Fujino (2007) 的两条直线反例已在 §5.2 完整计算。后续使用一般超平面、伴随或覆盖公式时，核查没有偷用该错误等式。|Remember the erratum|Audit later hyperplane and adjunction arguments against the explicitly computed counterexample to part (2).
 继续阅读的记录方式|\text{statement}+\text{hypotheses}+\text{source year}+\text{proof status}|本讨论按 Kollár–Mori (1998) 组织。进一步文献应单独注明年代和准确范围，避免把书中的历史展望当成今日完整定理清单。|Reading beyond the book|Date later references and record their exact scope; distinguish historical outlook from proved statements.
 `);
-// One student presents one section. Chapters are folders, never playback ranges.
-export const kmOutline=[];
-for(const chapter of KM_CHAPTERS){
- chapter.start=kmOutline.length;
- for(const part of KM_SECTIONS.filter(s=>s.chapter===chapter.id)){
-  part.start=kmOutline.length;part.preparation=part.id==='1.1'?'detailed':'outline';
-  const common={chapter:chapter.id,section:part.id};
-  kmOutline.push({...common,kind:'cover',source:'§ '+part.id,title:'§ '+part.id+' '+part.title,author:'Kollár–Mori (1998)',tex:'',text:'学生读书讨论班 · 本次只讲这一节\n'+(part.preparation==='detailed'?'定义、引理、证明与例子':'本节备课提纲 · 完整证明仍需逐节展开'),en:{source:'§ '+part.id,title:'§ '+part.id+' '+part.en,author:'Kollár–Mori (1998)',text:'Student reading seminar · one section per session\n'+(part.preparation==='detailed'?'Definitions, lemmas, proofs and examples':'Preparation outline · full proofs still to be developed')}});
-  kmOutline.push(...kmBoards.filter(p=>p.section===part.id));
-  kmOutline.push({...common,kind:'closing',source:'§ '+part.id+' 讨论结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END OF SECTION '+part.id,title:'Thank you!',author:'',text:''}});
-  part.end=kmOutline.length-1;part.total=part.end-part.start+1;
- }
- chapter.end=kmOutline.length-1;
-}
 
 for(const [title,kind,zh,en] of [
  ['A 系列方程','km-ade','ADE 例外曲线示意 · 每点一条负二曲线','Schematic ADE resolution graphs; each vertex represents a (-2)-curve'],
  ['公共解消比较','km-resolution','公共解消 · 两侧拉回比较','A common resolution for comparing pullbacks'],
  ['勘误三：吹起交点','km-blowup','原理示意 · 严格变换在 E 上分离','Schematic: the strict transforms meet E at distinct points'],
  ['共同的收缩图','km-flop','两个小模型 · 在同一个底上比较','Two small models over one base']]){
- const page=kmOutline.find(p=>p.title===title);page.diagram={kind,title:zh,en};
+ const page=kmBoards.find(p=>p.title===title);page.diagram={kind,title:zh,en};
+}
+
+// One student presents one section. Chapters are folders, never playback ranges.
+export const kmOutline=[];
+for(const chapter of KM_CHAPTERS){
+ chapter.start=kmOutline.length;
+ for(const part of KM_SECTIONS.filter(s=>s.chapter===chapter.id)){
+  part.start=kmOutline.length;part.preparation=part.id==='1.1'?'detailed':'worked-arguments';
+  const bodies=organizeBoards(kmBoards.filter(p=>p.section===part.id),{minimum:part.id==='1.1'?24:chapter.id===6?5:[2,4].includes(chapter.id)?4:0});
+  const proofs=KM_PROOFS.get(part.id)||[];part.proofs=proofs.map(p=>({title:p.title,...p.proof}));part.boards=bodies.length+proofs.length;
+  const common={chapter:chapter.id,section:part.id};
+  kmOutline.push({...common,kind:'cover',source:'§ '+part.id,title:'§ '+part.id+' '+part.title,author:'Kollár–Mori (1998)',tex:'',text:'学生读书讨论班 · 本次只讲这一节\n'+(part.preparation==='detailed'?'定义、引理、证明与例子':'含逐步计算与局部证明 · 深层定理注明引用'),en:{source:'§ '+part.id,title:'§ '+part.id+' '+part.en,author:'Kollár–Mori (1998)',text:'Student reading seminar · one section per session\n'+(part.preparation==='detailed'?'Definitions, lemmas, proofs and examples':'Worked arguments; deeper theorems explicitly cited')}});
+  kmOutline.push(...bodies,...proofs);
+  kmOutline.push({...common,kind:'closing',source:'§ '+part.id+' 讨论结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END OF SECTION '+part.id,title:'Thank you!',author:'',text:''}});
+  part.end=kmOutline.length-1;part.total=part.end-part.start+1;
+ }
+ chapter.end=kmOutline.length-1;
 }

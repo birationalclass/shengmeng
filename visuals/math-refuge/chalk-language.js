@@ -32,11 +32,16 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   }
   if(!page.hideHeading&&!options.hideHeading)textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c');
   const [x,y,w,h]=page.rows[2];
-  ctx.drawImage(formula,x+8,y+8,w-16,h-16);
+  if(page.layout==='flow')ctx.drawImage(formula,0,0,1536,640);
+  else ctx.drawImage(formula,x+8,y+8,w-16,h-16);
   const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d],i)=>Object.assign([a,b,c-.00001,d-.00001],{formulaRow:i}));
   const cues=drawChalkAnnotation(ctx,formulaRows,page.annotation,language,options);
   // Annotate immediately after the defining line, before the next equation.
   formulaRows.forEach((row,i)=>{rows.push(row);if(i===cues.afterRow)rows.push(...cues);});
+  if(page.layout==='flow'){
+    for(const label of page.flowLabels)textRow(language==='en'?label.enText:label.text,label.x,label.y,label.size,'#e4cf9c');
+    return rows.sort((a,b)=>a[1]-b[1]);
+  }
   let noteSize=36,notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);
   while(notes.length>3&&noteSize>26){noteSize--;notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);}
   // Leave room for descenders and inline scripts: reveal rectangles must not overlap.

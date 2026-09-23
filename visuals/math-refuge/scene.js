@@ -1,3 +1,4 @@
+import {roundedDetailLevel} from './render-budget.js?v56-continuous-scene';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v44-hall-clearance';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
@@ -47,10 +48,10 @@ export async function createRetreat(renderer,scene,report){
     // A campus-wide material batch defeats frustum culling: seeing one chair
     // used to submit the chairs and fittings in every building and storey.
     if(!geo.boundingSphere)geo.computeBoundingSphere();
-    const detail=geo.boundingSphere.radius*Math.max(...s)<1.2;
+
     const region=p[0]<-76?'seminar:'+Math.floor(p[1]/3):p[0]>30?'hall:'+Math.floor(p[1]/3):'campus';
-    const key=geo.uuid+material.uuid+region+detail;
-    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],detail,region});
+    const key=geo.uuid+material.uuid+region;
+    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],region});
     dummy.position.fromArray(p);dummy.scale.fromArray(s);dummy.rotation.set(...r);dummy.updateMatrix();
     batches.get(key).matrices.push(dummy.matrix.clone());
   }
@@ -303,17 +304,28 @@ export async function createRetreat(renderer,scene,report){
   ocean.name='Panoramic ocean';ocean.rotation.x=-Math.PI/2;ocean.position.set(0,seaLevel*BUILDING_SCALE,0);scene.add(ocean);
   report('正在布置光照与镜头…');
   buildPlatforms();
-  const detailBatches=[];
-  for(const {geo,material,matrices,detail,region} of batches.values()){
+  const lodBatches=[],lowGeometry=new Map();
+  for(const {geo,material,matrices,region} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
     mesh.castShadow=material!==glass&&material!==smartGlass&&material!==light&&material!==pathLighting.material;mesh.receiveShadow=material!==glass&&material!==smartGlass;
     mesh.computeBoundingSphere();mesh.computeBoundingBox();mesh.userData.spatialRegion=region;
-    scene.add(mesh);architectureObjects.add(mesh);if(detail)detailBatches.push(mesh);
+    scene.add(mesh);architectureObjects.add(mesh);
+    if(geo.type==='RoundedBoxGeometry'&&geo.parameters.segments>1){
+      if(!lowGeometry.has(geo)){const p=geo.parameters;lowGeometry.set(geo,new RoundedBoxGeometry(p.width,p.height,p.depth,1,p.radius));}
+      mesh.userData.lodLevel=0;lodBatches.push({mesh,high:geo,low:lowGeometry.get(geo),radius:geo.boundingSphere.radius*BUILDING_SCALE});
+    }
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
-  for(const mesh of detailBatches){mesh.updateMatrixWorld();mesh.userData.detailBounds=mesh.boundingBox.clone().applyMatrix4(mesh.matrixWorld);}
-  function updateDetailVisibility(position){for(const mesh of detailBatches)mesh.visible=mesh.userData.detailBounds.distanceToPoint(position)<(mesh.visible?65:60);}
+  for(const item of lodBatches){item.mesh.updateMatrixWorld();item.bounds=item.mesh.boundingBox.clone().applyMatrix4(item.mesh.matrixWorld);}
+  function updateGeometryLOD(camera,viewportHeight){
+    const focal=viewportHeight*camera.zoom/(2*Math.tan(camera.fov*Math.PI/360));
+    for(const item of lodBatches){
+      const pixels=item.radius*focal/Math.max(.1,item.bounds.distanceToPoint(camera.position));
+      const level=roundedDetailLevel(pixels,item.mesh.userData.lodLevel);
+      if(level!==item.mesh.userData.lodLevel){item.mesh.geometry=level?item.low:item.high;item.mesh.userData.lodLevel=level;}
+    }
+  }
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   const sky=new Sky();sky.material.uniforms.nightVisibility={value:1};sky.material.fragmentShader='uniform float nightVisibility;\n'+sky.material.fragmentShader.replace('gl_FragColor = vec4( retColor, 1.0 );','gl_FragColor = vec4( retColor * nightVisibility, 1.0 );');sky.scale.setScalar(12000);scene.add(sky);
@@ -358,5 +370,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   setTime(localHour(new Date()),true);
-  return {updateDetailVisibility,ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {updateGeometryLOD,ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

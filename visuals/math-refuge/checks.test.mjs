@@ -345,6 +345,25 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
     assert(instances>1500);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
     assert(scene.children.filter(o=>o.isMesh).length<550,'Spatial instancing must bound model draw batches');
+    const batches=scene.children.filter(o=>o.isInstancedMesh),originalGeometry=new Map(batches.map(m=>[m,m.geometry]));
+    const view=new Three.PerspectiveCamera(55,16/9,.2,12000);
+    for(const distance of [40,61,66,120,350,800]){
+      view.position.set(-distance,30,distance);result.updateGeometryLOD(view,1080);
+      assert(batches.every(m=>m.visible),'No architectural instance batch may disappear when the camera retreats');
+      for(const mesh of batches){
+        const original=originalGeometry.get(mesh);
+        if(original.type!=='RoundedBoxGeometry')assert.equal(mesh.geometry,original,'Stair treads, rails and structural boxes keep their geometry');
+        else{mesh.geometry.computeBoundingBox();original.computeBoundingBox();assert(mesh.geometry.boundingBox.min.distanceTo(original.boundingBox.min)<1e-5);assert(mesh.geometry.boundingBox.max.distanceTo(original.boundingBox.max)<1e-5);}
+      }
+    }
+    assert(batches.some(m=>m.userData.lodLevel===1),'Far rounded furniture uses lower tessellation, not an absent model');
+    const farTriangles=batches.reduce((n,m)=>n+(m.geometry.index?.count||m.geometry.attributes.position.count)/3*m.count,0);
+    const fullTriangles=batches.reduce((n,m)=>{const g=originalGeometry.get(m);return n+(g.index?.count||g.attributes.position.count)/3*m.count;},0);
+    assert(farTriangles<fullTriangles,'Far rounded LOD must reduce vertex work');
+    for(const mesh of batches.filter(m=>m.userData.lodLevel===1)){const high=originalGeometry.get(mesh);assert(mesh.geometry.attributes.position.count<high.attributes.position.count*.4,'Rounded corners use substantially fewer vertices');}
+    console.log(JSON.stringify({architecturalTriangles:fullTriangles,farLodTriangles:farTriangles,allBatchesVisible:true}));
+    for(const mesh of batches){mesh.geometry=originalGeometry.get(mesh);mesh.userData.lodLevel=0;}
+
     for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Connected waterfall and winding creek','Mossy waterfall buttresses','Weathered coastal outcrops'])assert(!scene.getObjectByName(name),name+' must be removed');
     for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Palm fronds','Fern understory'])assert(scene.getObjectByName(name),name);
     assert.equal(result.landscape.plantings.length,0);
@@ -509,7 +528,7 @@ test('Consolidated local SVG pages preserve notebook formula content and stay wi
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
   assert(pages.length<40);assert(pages.some(p=>p.source.startsWith('§ 3.')));assert(pages.some(p=>p.source.startsWith('§ 4.')));
   assert.equal(new Set(pages.filter(p=>!p.kind).map(p=>p.tex)).size,pages.filter(p=>!p.kind).length);assert.equal(new Set(pages.map(p=>p.text)).size,pages.length);
-  assert(pages.every(p=>p.kind||/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.diagram?336:301)));
+  assert(pages.every(p=>p.kind||/^§ /.test(p.source)));assert(pages.every(p=>p.rows[2][3]<=(p.layout==='flow'?640:p.diagram?336:301)));
   for(const page of pages){
     const svg=await fs.readFile(new URL(page.asset,import.meta.url),'utf8');
     const formula=await fs.readFile(new URL(page.formulaAsset,import.meta.url),'utf8');
@@ -689,7 +708,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     globalThis.fetch=fetchReport;
     for(const id of ['duan','ye','hu','meng']){
       await lecture.setReport(id);assert.equal(lecture.report.id,id);assert.equal(lecture.clock.page,0);assert.equal(lecture.pages[0].kind,'cover');assert.equal(lecture.language,'en');
-      assert.equal(lecture.pages.length,id==='meng'?38:id==='duan'?34:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
+      assert.equal(lecture.pages.length,id==='meng'?38:26);assert(lecture.clock.slots.every(slot=>slot.page<=0));assert(lecture.reportButtons.find(b=>b.userData.selected).userData.reportId===id);
       assert(trayErasers.every(e=>e.visible));assert(!movingEraser.visible);lecture.update(.1);
       // Once the title is written, allow a brief reading beat before board two.
       const clock=lecture.clock;clock.elapsed=clock.duration-.05;clock.update(.1);
@@ -719,7 +738,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(km.screenAction('seminar:chapter:1'));assert(km.hoverTargets.some(t=>t.visible&&t.userData.action==='seminar:section:1.1'));
     assert(!km.hasSelection,'Opening a chapter folder does not start a talk');
     const part=km.navigation.sections[0];await km.setRange(part.start,part.end);km.playing=true;
-    assert(km.hasSelection);assert.equal(km.progress.total,34);assert.equal(km.clock.active,0);
+    assert(km.hasSelection);assert.equal(km.progress.total,part.total);assert.equal(km.clock.active,0);
     await km.setRenderActive(false);assert(kmRoot.visible,'Offscreen scheduling must never hide the board hardware or its last texture');
     assert(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).every(b=>b.visible&&b.getObjectByName('Matte writing face').visible));
     let requests=0;globalThis.fetch=async(...args)=>{requests++;return fetchReport(...args);};
@@ -962,7 +981,7 @@ test('speaker reports preserve paper sources, hypotheses, bilingual covers and c
   for(const report of REPORTS.filter(report=>report.id!=='meng')){
     const data=JSON.parse(await fs.readFile(new URL(report.manifest,import.meta.url),'utf8'));
     assert.equal(data.source,report.url);assert.deepEqual(data.authors,report.authors);assert.equal(data.license,report.license||'CC BY 4.0');
-    assert.equal(data.pages.length,report.id==='duan'?34:26);assert.equal(data.pages.filter(p=>!p.kind).length,report.id==='duan'?32:24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
+    assert.equal(data.pages.length,26);assert.equal(data.pages.filter(p=>!p.kind).length,24);assert.equal(data.pages.at(-1).kind,'closing');assert.equal(data.pages.at(-1).title,'谢谢！');assert.equal(data.pages[0].author,report.speaker);assert.equal(data.pages[0].en.author,report.speakerEn);
     for(const page of data.pages){
       for(const c of page.source+page.title+page.text+(page.author||''))if(/[\u3400-\u9fff]/.test(c))assert(coverage.characters.includes(c),`Missing glyph ${c}`);
       assert(page.en.title&&(page.en.text||page.kind==='closing'));assert(!/[\u3400-\u9fff]/.test(page.en.source));

@@ -59,9 +59,9 @@ export const wording=[
 ];
 export function refineSeminarPage(page,report,index){
   const clean=s=>wording.reduce((text,[a,b])=>text.replaceAll(a,b),s||'');
-  const result={...page,text:clean(page.text),en:{...page.en,text:clean(page.en?.text)}};
+  const result={...page,editorialIndex:page.editorialIndex??index,text:clean(page.text),en:{...page.en,text:clean(page.en?.text)}};
   delete result.annotation;
-  const cue=!page.kind&&cues[report]?.[index];
+  const cue=!page.kind&&cues[report]?.[result.editorialIndex];
   if(cue){
     if(!page.tex.includes(cue.term))throw new Error(`Recheck definition focus: ${report}/${index}`);
     result.annotation={mark:'c',...cue};

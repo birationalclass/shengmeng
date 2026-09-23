@@ -1,13 +1,13 @@
-import {createSeminarScreen} from './seminar-screen.js?v53-section-sessions';
+import {createSeminarScreen} from './seminar-screen.js?v57-proof-flow';
 import * as THREE from 'three';
-import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v53-section-sessions';
+import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v57-proof-flow';
 import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v49-late-frames';
 import {paintChalkStroke} from './chalk-annotations.js?v51-local-definitions';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v55-seminar-no-headings';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v57-proof-flow';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
-import {createReportLoader} from './report-loader.js?v55-seminar-no-headings';
+import {createReportLoader} from './report-loader.js?v57-proof-flow';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
 import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
@@ -46,7 +46,7 @@ export async function createLecture(scene,renderer,options={}){
         resolve(sample);
       };
       if(preparedImage){queueMicrotask(ready);return;}
-      image.onload=ready;image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v53-section-sessions';
+      image.onload=ready;image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v57-proof-flow';
     });pending.set(index,job);return job;
   }
   await load(0,openingReport.cover);

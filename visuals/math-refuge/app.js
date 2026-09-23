@@ -1,7 +1,8 @@
-import {classroomVisible} from './classroom-visibility.js?v53-section-sessions';
-import {teachingRoomAt} from './room-context.js?v53-section-sessions';
-import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v53-section-sessions';
-import {KM_REPORT} from './seminar-catalog.js?v53-section-sessions';
+import {RenderBudget,createGpuTimer} from './render-budget.js?v57-proof-flow';
+import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
+import {teachingRoomAt} from './room-context.js?v57-proof-flow';
+import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
+import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -10,15 +11,15 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v53-section-sessions';
-import {createLecture} from './lecture.js?v55-seminar-no-headings';
+import {createRetreat} from './scene.js?v57-proof-flow';
+import {createLecture} from './lecture.js?v57-proof-flow';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
-import {createChalkReader} from './chalk-reader.js?v53-section-sessions';
+import {createChalkReader} from './chalk-reader.js?v57-proof-flow';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v53-section-sessions';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v57-proof-flow';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
@@ -48,7 +49,7 @@ const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirect
 const rooms=[],roomLecterns=[],roomViews=[];
 const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
 function updateRoomVisibility(stamp){
-  if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateDetailVisibility(camera.position);
+  if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateGeometryLOD(camera,innerHeight);
   roomFrustum.setFromProjectionMatrix(roomProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
   const insideRoom=teachingRoomAt(camera.position);
   roomViews.forEach((v,i)=>{
@@ -147,6 +148,7 @@ function resize(){
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples);
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
+  renderBudget.reset();renderScale=1;
   renderer.setPixelRatio(profile.pixelRatio);renderer.setSize(innerWidth,innerHeight);
   if(composer){
     // Dispose on sample-count changes: changing .samples alone does not rebuild
@@ -157,18 +159,33 @@ function resize(){
   }
   renderer.shadowMap.enabled=profile.shadows;renderer.shadowMap.needsUpdate=true;
   if(retreat&&retreat.sun.shadow.mapSize.x!==profile.shadowSize){retreat.sun.shadow.mapSize.set(profile.shadowSize,profile.shadowSize);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;}
-  $('qualityReadout').textContent=`${profile.pixelRatio.toFixed(2)}× 分辨率 · ${profile.direct?nativeSamples:profile.samples}× 抗锯齿`;
-  $('world').dataset.pixelRatio=String(profile.pixelRatio);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
+  updateQualityReadout();
+}
+function updateQualityReadout(){
+  const ratio=profile.pixelRatio*renderScale;
+  $('qualityReadout').textContent=`${ratio.toFixed(2)}× 分辨率 · ${profile.direct?nativeSamples:profile.samples}× 抗锯齿${renderScale<1?' · 自动平衡':''}`;
+  $('world').dataset.pixelRatio=String(ratio);$('world').dataset.renderScale=String(renderScale);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
+}
+function updateRenderBudget(stamp){
+  const ms=gpuTimer?.poll(stamp);if(ms!=null)renderBudget.sample(ms,stamp);
+  const reading=physicalRoom>=0&&(roomViews[physicalRoom]?.visible||speakerView);
+  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading});
+  if(scale===renderScale)return;renderScale=scale;
+  renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
+  if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
+  updateQualityReadout();
+
 }
 function setQuality(){
   resize();
 }
+const renderBudget=new RenderBudget();let gpuTimer=null,renderScale=1;
 const frameSamples=[],cpuSamples=[];let metricsAt=0;
 function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden||!entered)return;
-  updateRoomVisibility(stamp);
+  updateRoomVisibility(stamp);updateRenderBudget(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
@@ -217,13 +234,15 @@ function tick(stamp){
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
-  if(profile.direct)renderer.render(scene,camera);else composer.render();
+  if($('adaptiveQuality').value==='auto')gpuTimer?.begin(stamp);
+  try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
-  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
+  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
 try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,powerPreference:'high-performance'});
+  gpuTimer=createGpuTimer(renderer.getContext());
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -294,6 +313,7 @@ $('settingsButton').addEventListener('click',()=>{
   $('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
 });
 $('quality').addEventListener('change',()=>{if(retreat)setQuality();});
+$('adaptiveQuality').addEventListener('change',()=>{if(retreat){renderBudget.reset();updateRenderBudget(performance.now());}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
@@ -409,7 +429,7 @@ window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));win
 document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();});
 window.addEventListener('resize',resize);
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
-$('world').addEventListener('webglcontextlost',event=>{event.preventDefault();renderer?.setAnimationLoop(null);fail(new Error('WebGL context lost'));});
+$('world').addEventListener('webglcontextlost',event=>{event.preventDefault();renderer?.setAnimationLoop(null);gpuTimer?.dispose();fail(new Error('WebGL context lost'));});
 window.addEventListener('pagehide',()=>renderer?.setAnimationLoop(null));
 window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime=performance.now();renderer.setAnimationLoop(tick);}});
 
