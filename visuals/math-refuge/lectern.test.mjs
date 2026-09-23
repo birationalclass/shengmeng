@@ -7,7 +7,7 @@ import {createLectern} from './lectern.js';
 import {bindPhysicalButtons} from './physical-buttons.js';
 
 test('lectern touch surfaces raycast, cancel drags and redraw only on state changes',()=>{
-  globalThis.document={createElement:()=>({getContext:()=>({fillRect(){},fillText(){}})})};
+  globalThis.document={createElement:()=>({getContext:()=>({fillRect(){},fillText(){},beginPath(){},arc(){},fill(){}})})};
   const l=createLectern(T);l.group.updateMatrixWorld(true);
   try{
     const display=l.group.getObjectByName('Embedded anti-glare touch display'),tex=display.material.map;
@@ -38,7 +38,7 @@ test('speaker view remains manual through idle time and exits only on explicit c
   const app=await fs.readFile(new URL('./app.js',import.meta.url),'utf8');
   const names=['enterSpeakerView','selectShot','resumeTour'];
   const definitions=names.map(name=>app.match(new RegExp('function '+name+'\\([^]*?\\n\\}'))[0]).join('\n');
-  const context=vm.createContext({keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
+  const context=vm.createContext({SHOTS:[{name:'板书'},{name:'讨论班'}],keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
   vm.runInContext(definitions+';enterSpeakerView();',context);
   assert(context.speakerView);assert(!context.touring);assert(context.free);assert.equal(context.opening,null);assert.equal(context.keys.size,0);
   assert(app.includes('!speakerView&&SHOTS[shot].lecture&&lecture&&boardFollow.following'));

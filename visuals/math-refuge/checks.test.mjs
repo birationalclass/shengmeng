@@ -125,8 +125,8 @@ test('all facility footprints and expansion docks sit over open seawater',()=>{
 });
 
 
-test('nine finite camera chapters with auditorium, upstairs, ocean and garden views',()=>{
-  assert.equal(SHOTS.length,9);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
+test('ten finite camera chapters with auditorium, upstairs, ocean and garden views',()=>{
+  assert.equal(SHOTS.length,10);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -189,7 +189,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
     PMREMGenerator:class{fromScene(){return {texture:new Three.Texture(),dispose(){}};}dispose(){}}
   };
-  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
+  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
   try{
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
@@ -309,7 +309,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     let instances=0,triangles=0;
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
     const backs=allObjects.filter(o=>o.geometry?.name==='Reclined wraparound seat shell');
-    assert.equal(backs.length,1);assert.equal(backs[0].count,30);
+    assert.equal(backs.length,2);assert.deepEqual(backs.map(b=>b.count).sort((a,b)=>a-b),[30,36]);
     const dark=color=>Math.max(color.r,color.g,color.b)<.3;
     assert(dark(backs[0].material.color),'Chair shells must not be ivory');
     assert(!result.campus.roof);assert(!result.campus.setRoof);
@@ -418,8 +418,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
     const glazing=scene.getObjectByName('Seamless smart seminar glazing').userData;
     assert.equal(glazing.panels,1);assert.equal(glazing.joints,0);assert(glazing.sealMetres<=.008);
-    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,9);
-    for(const {group,leaves} of result.campus.automaticDoors.doors){
+    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,12);
+    for(const {group,leaves} of result.campus.automaticDoors.doors.filter(d=>!d.group.userData.side.startsWith('discussion-'))){
       group.updateWorldMatrix(true,true);
       assert(!group.userData.transom);assert.equal(group.userData.clearHeight,HALL.clearHeight/BUILDING_SCALE);
       for(const {leaf} of leaves){
@@ -431,6 +431,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       const rail=new Three.Box3().setFromObject(group.getObjectByName('Ceiling recessed door track'));
       assert(rail.min.y>DECK_Y*BUILDING_SCALE+HALL.clearHeight,'Track stays above the full-height doorway');
     }
+    for(let level=0;level<3;level++){const room=scene.getObjectByName('Discussion classroom '+(level+1));assert.equal(room.userData.rows,2);assert.equal(scene.getObjectByName('Discussion classroom seats '+(level+1)).userData.seats,12);assert(room.userData.bounds[1]<HALL.west-80);}
+    for(const flight of allObjects.filter(o=>o.name==='Seminar supported stair flight')){assert(flight.userData.riser>.14&&flight.userData.riser<.18);assert(flight.userData.tread>.25);}
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.children.find(o=>o.material?.uniforms?.turbidity);
     assert(sky.material.uniforms.turbidity.value<=2);
@@ -700,6 +702,15 @@ test('classroom assembles six independent boards and survives writing, erasing a
     }
     lecture.select(3);await lecture.setReport('meng');assert.equal(lecture.clock.page,0,'Selecting the current report restarts its title board');
     globalThis.fetch=async()=>{throw new Error('Offline');};await lecture.setReport('hu');assert.equal(lecture.report.id,'hu','A prepared report switches without another network request');assert.equal(lecture.clock.phase,'write','A clean title board starts without an empty lift delay');
+    await lecture.seek(17);assert.equal(lecture.clock.phase,'hold');assert.equal(lecture.clock.page,17);
+    assert.deepEqual(lecture.clock.slots.map(s=>s.page).sort((a,b)=>a-b),[12,13,14,15,16,17]);
+    assert(lecture.clock.slots.every(s=>s.progress===1));
+    lecture.heights().forEach((mix,pair)=>boardHeights(mix).forEach((y,side)=>assert.equal(boards[pair*2+side].position.y,y)));
+    assert(!movingEraser.visible);assert(trayErasers.every(e=>e.visible));
+    await lecture.seek(2);assert.deepEqual(lecture.clock.slots.filter(s=>s.page>=0).map(s=>s.page).sort((a,b)=>a-b),[0,1,2]);
+    const oldSeek=lecture.seek(23),newSeek=lecture.seek(4);await Promise.all([oldSeek,newSeek]);assert.equal(lecture.clock.page,4,'Latest scrub wins');
+    await lecture.seek(25);assert(lecture.clock.ended);lecture.update(.1);assert.equal(lecture.clock.page,25);
+    await lecture.seek(1);assert(!lecture.clock.ended);assert.equal(lecture.clock.phase,'hold');
     lecture.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
 });

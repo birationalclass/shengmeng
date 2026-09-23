@@ -20,10 +20,12 @@ export function createRoomFill(){
           #if defined(RE_IndirectDiffuse)
             vec3 outside=max(max(vec3(49.2,0.35,-14.1)-seminarWorld,seminarWorld-vec3(61.2,5.35,14.1)),vec3(0.0));
             float roomMask=1.0-smoothstep(0.0,1.1,length(outside));
+            vec3 seminarOutside=max(max(vec3(-124.5,0.35,2.8)-seminarWorld,seminarWorld-vec3(-113.0,12.55,19.8)),vec3(0.0));
+            roomMask=max(roomMask,1.0-smoothstep(0.0,0.8,length(seminarOutside)));
             irradiance+=vec3(1.0,0.89,0.75)*seminarFill*roomMask;
           #endif`);
       };
-      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v1';material.needsUpdate=true;
+      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v2';material.needsUpdate=true;
     }
   });}
   return {strength,apply,setDaylight(day){strength.value=.18+(1-day)*2.1;}};

@@ -28,7 +28,7 @@ export function createChalkReader(lecture){
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }
-    $('readerPlay').disabled=Boolean(lecture.clock.ended);$('readerNext').disabled=lecture.clock.page===lecture.pages.length-1;$('readerPrevious').disabled=lecture.clock.page===0;
+    $('readerPlay').disabled=Boolean(lecture.clock.ended);$('readerNext').disabled=lecture.clock.page===lecture.clock.stopAt;$('readerPrevious').disabled=lecture.clock.page===lecture.clock.startAt;
     if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;controlLabel($('readerPlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停翻页':'继续翻页');$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
   }
   $('readerOpen').addEventListener('click',()=>show(panel.hidden));

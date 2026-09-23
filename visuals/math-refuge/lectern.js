@@ -27,6 +27,7 @@ export function createLectern(T){
     const pad=add('Touch control '+action,new T.PlaneGeometry(.225,.095),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[(i-1)*.25,-.114,.063],console);
     materials.push(pad.material);pad.userData.action=action;pads.push(pad);
   }
+  const progress=add('Touch board progress',new T.PlaneGeometry(.705,.067),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[0,-.027,.064],console);materials.push(progress.material);progress.userData={action:'page:seek:0',progress:true};
   for(const x of [.445,.494])rounded('USB-C recessed port',.025,.010,.003,.004,rubber,[x,-.12,.061],console);
   rounded('Stylus recess',.035,.30,.003,.016,rubber,[-.49,0,.061],console);
   rounded('Presentation stylus',.011,.24,.009,.005,bronze,[-.49,0,.067],console);
@@ -39,12 +40,12 @@ export function createLectern(T){
   for(let i=0;i<8;i++){const a=i*Math.PI/4;add('Microphone grille rib',new T.CylinderGeometry(.0012,.0012,.056,5),meshMetal,[Math.cos(a)*.023,.034,Math.sin(a)*.023],head);}
   group.userData={heightAboveFloor:1.49,desktopHeight:1.035,eyeHeight:1.68,action:'lectern:view'};
   let last='';
-  function update({playing=false,page=0,total=0}={}){
-    const key=[playing,page,total,pads.map(p=>p.userData.hovered?1:0).join('')].join(':');if(last===key)return;last=key;
+  function update({playing=false,page=0,total=0,seeking=false}={}){
+    const key=[playing,page,total,seeking,pads.map(p=>p.userData.hovered?1:0).join('')].join(':');if(last===key)return;last=key;
     ctx.fillStyle='#122426';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#9fcfc2';ctx.font='24px sans-serif';ctx.fillText('SEMINAR / SPEAKER CONSOLE',42,55);
     ctx.fillStyle='#e1e9e5';ctx.font='38px sans-serif';ctx.fillText('板书控制  /  CHALKBOARD',42,129);
-    ctx.font='24px sans-serif';ctx.fillStyle='#a5b7b1';ctx.fillText(`PAGE  ${page+1} / ${total}     ·     ${playing?'WRITING':'PAUSED'}`,42,190);
-    ctx.font='22px sans-serif';ctx.fillText('点击讲台进入报告人视角',42,264);
+    ctx.font='46px sans-serif';ctx.fillStyle='#efdfbf';ctx.fillText(`${page+1} / ${total}`,42,209);ctx.font='22px sans-serif';ctx.fillStyle='#a5b7b1';ctx.fillText(seeking?'正在定位…':playing?'WRITING':'PAUSED',735,209);
+    ctx.fillStyle='#48665e';ctx.fillRect(44,287,936,6);ctx.fillStyle='#edc98e';const fraction=total>1?page/(total-1):0;ctx.fillRect(44,287,936*fraction,6);ctx.beginPath();ctx.arc(44+936*fraction,290,10,0,Math.PI*2);ctx.fill();
     for(const [i,label] of ['上一页',playing?'暂停板书':'继续板书','下一页'].entries()){
       ctx.fillStyle=pads[i].userData.hovered?'#416960':'#26413f';ctx.fillRect(30+i*332,344,298,123);
       ctx.fillStyle='#e5efea';ctx.font='30px sans-serif';ctx.fillText(label,72+i*332,417);

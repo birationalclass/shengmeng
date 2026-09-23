@@ -13,7 +13,7 @@ export function createReportLoader(){
         image.onerror=()=>reject(new Error('报告封面加载失败，请重试。'));
         image.src=manifest.pages[0].formulaAsset+'?v=32-report-position';
       });
-      return {pages:manifest.pages,cover};
+      return {pages:manifest.pages,cover,navigation:{chapters:manifest.chapters,sections:manifest.sections,erratum:manifest.erratum}};
     })();
     jobs.set(report.id,job);
     job.catch(()=>{if(jobs.get(report.id)===job)jobs.delete(report.id);});

@@ -1,6 +1,7 @@
+import {createSeminarBuilding} from './seminar-building.js?v52-km-rooms';
 import * as THREE from 'three';
 import {terracePaving} from './terrace-paving.js';
-import {createLectern} from './lectern.js?v=38-board-tone';
+import {createLectern} from './lectern.js?v52-km-rooms';
 import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';
@@ -389,8 +390,10 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
   // Sea access has been removed; the continuous platform fascia and edge lights
   // follow the same complete perimeter without stair projections.
-  return {blind,seating,lightingZones,automaticDoors,lectern,
+  const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors});
+  lightingZones.push(...discussion.lightingZones);
+  return {blind,seating,lightingZones,automaticDoors,lectern,discussion,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

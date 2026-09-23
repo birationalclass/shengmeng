@@ -21,6 +21,7 @@ export const SHOTS=[
   {name:'二楼客厅',title:'在海景里，<br>让想法自然相遇。',description:'六套彩色 iMac · 三组讨论环沙发 · 茶咖酒水吧',duration:34,fov:66,
    positions:[[37.5,loungeEye,4.9],[37.6,loungeEye,2.0],[37.6,loungeEye,-.3],[37.8,loungeEye,-3.3]],targets:[[40.5,loungeEye-.35,0],[40.6,loungeEye-.35,-1.5],[40.6,loungeEye-.35,-3.4],[39.5,loungeEye-.35,-5.8]]}
 ];
+SHOTS.push({name:'讨论班',title:'三层小教室，<br>逐章讨论一本书。',description:'西侧独立讨论班 · 每层两排座椅 · 章节研读',duration:35,fov:55,positions:[[-67,14,30],[-70,12,28],[-74,11,26],[-79,10,25]],targets:[[-85,5.3,8],[-85,5.3,8],[-85,5.3,8],[-85,5.3,8]]});
 SHOTS.unshift(...SHOTS.splice(SHOTS.findIndex(s=>s.lecture),1));
 export const OPENING_OVERVIEW_MS=5000;
 export const transitionSeconds=distance=>2*Math.min(6.5,2.2+Math.max(0,distance)*.04);

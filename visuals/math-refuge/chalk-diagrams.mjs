@@ -1,3 +1,4 @@
+import {kmDiagram} from './km-diagrams.mjs';
 import {duanDiagram} from './duan-diagrams.mjs';
 // Compact versions of the notebook's first-quadrant diagrams (p right, q up).
 // Dots denote terms, not dimensions; the finite drawing window is not truncation.
@@ -16,6 +17,7 @@ export function diagramEdges(kind){
  return [];
 }
 export function diagramSVG(kind,math){
+ const km=kmDiagram(kind,math);if(km)return km;
  const duan=duanDiagram(kind,math);if(duan)return duan;
  const xy=(p,q)=>[60+p*112,267-q*70],gold='#e4cf9c',ink='#eee9d5',blue='#a5dbcf';
  const label=(tex,x,y,size=25)=>math(tex,x,y,size);

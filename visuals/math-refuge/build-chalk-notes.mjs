@@ -25,11 +25,12 @@ const doc=mathjax.document('',{InputJax:new TeX({packages:['base','ams','newcomm
 globalThis.document={addEventListener(){}};
 const reportId=process.argv[3];
 const {REPORTS}=await import('./report-catalog.js');
-const report=reportId&&reportId!=='meng'?REPORTS.find(r=>r.id===reportId):null;
+const km=reportId==='km'?await import('./km-seminar-outline.mjs'):null;
+const report=km?(await import('./seminar-catalog.js')).KM_REPORT:reportId&&reportId!=='meng'?REPORTS.find(r=>r.id===reportId):null;
 if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
-const content=report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
+const content=km?km.kmOutline:report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
-const sections=[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
+const sections=km?content:[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
 if(content.filter(p=>!p.kind).length<24)throw new Error('A one-hour report needs at least 24 substantive boards, excluding cover and closing.');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
@@ -49,7 +50,8 @@ for(const section of sections){
   }
   const tex=section.tex,diagram=report?(section.diagram||null):boardDiagrams.get(lessonIndex++);
   const parts=equationLines(tex).map(line=>{
-    const node=doc.convert(line,{display:true}),svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
+    let node;try{node=doc.convert(line,{display:true});}catch(error){throw new Error(section.source+' '+section.title+': '+line+' — '+error.message);}
+    const svg=adaptor.outerHTML(adaptor.tags(node,'svg')[0]);
     if(svg.includes('data-mjx-error'))throw new Error(`Bad formula: ${line}`);
     return {svg,viewBox:svg.match(/viewBox="([^"]+)"/)[1].split(/\s+/).map(Number)};
   });
@@ -88,6 +90,6 @@ for(const section of sections){
   await fs.writeFile(new URL(asset,output),body);
   pages.push({...section,asset:`${assetBase}${asset}`,formulaAsset:`${assetBase}${formulaAsset}`,formulaEm,diagram:diagram||null,formulaRows,rows:[[80,22,1380,66],[80,95,0,0],[pageX-8,pageY-8,pageW+16,pageH+16],...notes.slice(0,3).map((_,i)=>[80,448+i*56,1380,56])]});
 }
-await fs.writeFile(new URL('pages.json',output),JSON.stringify({source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?(report.license||'CC BY 4.0'):undefined,sourceLicense:report?.sourceLicense,sourceVersion:report?.sourceVersion,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
+await fs.writeFile(new URL('pages.json',output),JSON.stringify({chapters:km?.KM_CHAPTERS,sections:km?.KM_SECTIONS,erratum:km?{section:'5.2',start:km.kmOutline.findIndex(p=>p.title==='勘误一：反例的配对'),url:report.erratum}:undefined,source:report?.url||'../../study/spectral/',authors:report?.authors,license:report?(report.license||'CC BY 4.0'):undefined,sourceLicense:report?.sourceLicense,sourceVersion:report?.sourceVersion,generator:report?'MathJax 3.2.2 SVG / attributed seminar summary':'MathJax 3.2.2 SVG / original notebook exports',pages},null,2)+'\n');
 await fs.copyFile(path.join(root,'LICENSE'),new URL('MATHJAX-LICENSE.txt',output));
 console.log(`Generated ${pages.length} chalk pages for ${report?.speaker || '孟晟'}.`);
