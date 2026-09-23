@@ -54,8 +54,8 @@ export function drawChalkAnnotation(ctx,rows,annotation,language,{deferStrokes=f
   return strokes;
 }
 
-export function paintChalkStroke(ctx,points,color){
+export function paintChalkStroke(ctx,points,color,width=2.8){
   if(!points?.length||!ctx.stroke)return;
-  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=2.8;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();
   points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();
 }

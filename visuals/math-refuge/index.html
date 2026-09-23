@@ -7,8 +7,8 @@
   <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v57-proof-flow">
   <link rel="stylesheet" href="coastal-layout.css?v=5-mobile">
   <link rel="stylesheet" href="chalk-reader.css?v=5-mobile">
-  <link rel="stylesheet" href="board-console.css?v68-time">
-  <link rel="stylesheet" href="control-dock.css?v62-chalk-ink"><link rel="stylesheet" href="atmosphere.css?v68-time">
+  <link rel="stylesheet" href="board-console.css?v69-authored">
+  <link rel="stylesheet" href="control-dock.css?v62-chalk-ink"><link rel="stylesheet" href="atmosphere.css?v69-authored">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
 </head>
 <body>
@@ -74,6 +74,8 @@
     <div class="board-lift"><label for="boardLift1">Ⅱ 组 · A / B</label><input id="boardLift1" type="range" min="0" max="1" step="0.01" value="0" aria-label="第二组黑板升降"><button id="boardSwap1" class="icon-button" aria-label="互换第2组黑板" title="互换第2组黑板" data-tip="互换第2组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <div class="board-lift"><label for="boardLift2">Ⅲ 组 · A / B</label><input id="boardLift2" type="range" min="0" max="1" step="0.01" value="0" aria-label="第三组黑板升降"><button id="boardSwap2" class="icon-button" aria-label="互换第3组黑板" title="互换第3组黑板" data-tip="互换第3组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <details class="board-preferences"><summary>板书设置</summary>
+    <label for="boardWritingStyle">书写样式 <select id="boardWritingStyle"><option value="refined">改进笔顺样式</option><option value="marck">C · Marck Script（舒展）· 非笔顺</option></select></label>
+    <p id="boardWritingStyleStatus" class="lecture-note">字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。</p>
     <label for="boardFollowDelay">板书镜头回位 <output id="boardFollowDelayValue">20 秒</output><input id="boardFollowDelay" type="range" min="5" max="60" step="1" value="20"></label>
     <label for="writingSpeed">板书速度 <output id="writingSpeedValue">1 ×</output><input id="writingSpeed" type="range" min="0.25" max="2" step="0.25" value="1"></label>
     </details>
@@ -90,6 +92,6 @@
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" role="status"><span>数学难民营</span><p id="loadMessage">正在构建空间…</p><button id="enterButton" class="entry-button" hidden>点击进入 <span aria-hidden="true">→</span></button></div>
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><a href="../">返回实验室</a></div>
-  <script type="module">import('./app.js?v68-time').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v69-authored').catch(error=>{console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

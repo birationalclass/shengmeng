@@ -1,11 +1,12 @@
+import {authoredContext,authoredFormula} from './authored-chalk.js?v69-authored';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v62-chalk-ink';
 import * as THREE from 'three';
 import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v62-chalk-ink';
 import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v49-late-frames';
-import {paintChalkStroke} from './chalk-annotations.js?v51-local-definitions';
+import {paintChalkStroke} from './chalk-annotations.js?v69-authored';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v62-chalk-ink';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v69-authored';
 
 import {REPORTS} from './report-catalog.js?v62-chalk-ink';
 import {createReportLoader} from './report-loader.js?v62-chalk-ink';
@@ -16,7 +17,7 @@ import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './
 const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer,options={}){
-  const disabled=Boolean(options.disabled);
+  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||REPORTS;
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
@@ -31,12 +32,12 @@ export async function createLecture(scene,renderer,options={}){
     if(index<0)return Promise.resolve(null);
     if(cache.has(index))return Promise.resolve(cache.get(index));
     if(pending.has(index))return pending.get(index);
-    const epoch=generation,lang=language;
+    const epoch=generation,lang=language,style=writingStyle;
     const job=new Promise((resolve,reject)=>{
-      const image=preparedImage||new Image();const ready=()=>{
+      let image=preparedImage||new Image();const ready=()=>{try{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
-        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings});pageRows.set(index,rows);
+        const recorder=style==='refined'&&canAuthor?authoredContext(sampleCtx):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
@@ -45,9 +46,10 @@ export async function createLecture(scene,renderer,options={}){
         // Retain six on-board pages and the active/next page, evict other SVGs.
         const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
         for(const key of cache.keys())if(cache.size>10&&!keep.has(key)){cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
-        resolve(sample);
+        resolve(sample);}catch(error){pending.delete(index);reject(error);}
       };
       if(preparedImage){queueMicrotask(ready);return;}
+      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){authoredFormula(pages[index].formulaAsset+'?v62-chalk-ink').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});return;}
       image.onload=ready;image.onerror=()=>{if(epoch!==generation){resolve(null);return;}pending.delete(index);reject(new Error('板书资源加载失败，请刷新重试。'));};image.src=pages[index].formulaAsset+'?v62-chalk-ink';
     });pending.set(index,job);return job;
   }
@@ -219,7 +221,7 @@ export async function createLecture(scene,renderer,options={}){
       // Reveal each complete mathematical row left to right, preserving exact
       // SVG fractions/superscripts. The grain is deterministic, never flickering.
       rows.forEach(([x,y,w,h],row)=>{
-        if(rows[row].strokePath){paintChalkStroke(ctx,strokeReveal(rows,slot.progress,row,guides.get(slot.page)),rows[row].chalkColor);return;}
+        if(rows[row].strokePath){paintChalkStroke(ctx,strokeReveal(rows,slot.progress,row,guides.get(slot.page)),rows[row].chalkColor,rows[row].strokeWidth);return;}
         const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
         if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
       });
@@ -401,9 +403,11 @@ export async function createLecture(scene,renderer,options={}){
     setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
     get writingSpeed(){return writingSpeed;},
     get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
-    async setLanguage(value){
+    get writingStyle(){return writingStyle;},
+    async setWritingStyle(value){const next=value==='marck'?'marck':'refined';if(next===writingStyle||disabled)return;const wasPlaying=playing,progress=clock.progress;playing=false;writingStyle=next;try{await this.setLanguage(language,true);clock.elapsed=progress*clock.duration;}finally{playing=wasPlaying;}},
+    async setLanguage(value,force=false){
       if(disabled)return false;
-      const next=value==='en'?'en':'zh';if(next===language)return;
+      const next=value==='en'?'en':'zh';if(next===language&&!force)return;
       seekRequest++;seeking=false;language=next;seminarScreen?.setLanguage(next);setConsoleState();setReportState();generation++;loadingError=null;cache.clear();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();wipeCanvas.width=W;wipeSamples=0;previousTip=null;
       boards.forEach(b=>{b.last='';b.wet=null;});version++;
       try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(index=>load(index)));}

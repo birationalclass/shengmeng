@@ -39,8 +39,13 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   if(page.kind==='cover'){
     const center=(text,y,size,color='#eee9d5')=>{while(measure(text,size)>1368&&size>24)size--;textRow(text,(1536-measure(text,size))/2,y,size,color);};
     let titleSize=106;while(measure(copy.title,titleSize)>1368&&titleSize>64)titleSize--;
-    const lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);
-    lines.slice(0,2).forEach((line,i)=>center(line,lines.length>1?150+i*82:190,titleSize,'#e4cf9c'));center(copy.author,325,56);
+    let lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);
+    if(options.authored){
+      let height;
+      do{lines=wrapChalkText({measureText:t=>({width:measure(t,titleSize)})},copy.title,1368);height=lines.reduce((sum,line)=>{const b=bounds(line,titleSize);return sum+b.ascent+b.descent;},0)+Math.max(0,lines.length-1)*18;if(lines.length<=2&&height<=178)break;titleSize-=2;}while(titleSize>28);
+      let top=80+(178-height)/2;for(const line of lines){const b=bounds(line,titleSize);center(line,top+b.ascent,titleSize,'#e4cf9c');top+=b.ascent+b.descent+18;}
+    }else lines.slice(0,2).forEach((line,i)=>center(line,lines.length>1?150+i*82:190,titleSize,'#e4cf9c'));
+    center(copy.author,325,56);
     copy.text.split('\n').forEach((line,i)=>center(line,430+i*52,36));
     return rows;
   }
