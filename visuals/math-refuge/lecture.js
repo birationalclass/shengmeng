@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v=43-tight-boards';
-import {inkGuides,inkReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v=22-handwritten-cover';
+import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v49-late-frames';
+import {paintChalkStroke} from './chalk-annotations.js?v49-late-frames';
 
-import {chalkCopy,composeChalkPage} from './chalk-language.js?v48-seminar';
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v49-late-frames';
 
 import {REPORTS} from './report-catalog.js?v=34-duan-seminar';
 import {createReportLoader} from './report-loader.js?v48-seminar';
@@ -27,7 +28,7 @@ export async function createLecture(scene,renderer){
       const image=preparedImage||new Image();const ready=()=>{
         if(epoch!==generation){resolve(null);return;}
         const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
-        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image);pageRows.set(index,rows);
+        const rows=composeChalkPage(sampleCtx,pages[index],index,lang,image,{deferStrokes:true});pageRows.set(index,rows);
         cache.set(index,sample);pending.delete(index);version++;
         let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
         if(pixels)guides.set(index,inkGuides(pixels,rows));
@@ -205,6 +206,7 @@ export async function createLecture(scene,renderer){
       // Reveal each complete mathematical row left to right, preserving exact
       // SVG fractions/superscripts. The grain is deterministic, never flickering.
       rows.forEach(([x,y,w,h],row)=>{
+        if(rows[row].strokePath){paintChalkStroke(ctx,strokeReveal(rows,slot.progress,row,guides.get(slot.page)),rows[row].chalkColor);return;}
         const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
         if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
       });

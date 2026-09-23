@@ -540,9 +540,8 @@ test('phone rendering preserves Retina pixels and AA within a bounded budget',()
 
 test('classroom assembles six independent boards and survives writing, erasing and manual lifts',async()=>{
   const core=new URL('../3d/vendor/three.module.js',import.meta.url).href;
-  const state=new URL('./lecture-state.js',import.meta.url).href;
   let source=await fs.readFile(new URL('./lecture.js',import.meta.url),'utf8');
-  source=source.replace('./board-hardware.js?v=43-tight-boards',new URL('./board-hardware.js',import.meta.url).href).replace('./smart-screen.js?v=36-board-detail',new URL('./smart-screen.js',import.meta.url).href).replace('./report-loader.js?v48-seminar',new URL('./report-loader.js',import.meta.url).href).replace('./report-catalog.js?v=34-duan-seminar',new URL('./report-catalog.js',import.meta.url).href).replace('./chalk-language.js?v48-seminar',new URL('./chalk-language.js',import.meta.url).href).replace("from 'three'",`from '${core}'`).replace('./lecture-state.js?v=43-tight-boards',state).replace('./chalk-motion.js?v=22-handwritten-cover',new URL('./chalk-motion.js',import.meta.url).href);
+  source=source.replace(/from '(\.\/[^'?]+)(?:\?[^']*)?'/g,(_,path)=>`from '${new URL(path,import.meta.url).href}'`).replace("from 'three'",`from '${core}'`);
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
@@ -969,6 +968,8 @@ test('all report reveal rectangles isolate later lines, including inline scripts
     for(const page of pages)for(const lang of ['zh','en']){
       const rows=composeChalkPage(ctx,page,0,lang,{});
       for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++){
+        // Paths are drawn separately after the text; their bounds are not scan clips.
+        if(rows[i].strokePath||rows[j].strokePath)continue;
         const [x,y,w,h]=rows[i],[a,b,c,d]=rows[j];
         assert(x+w<=a||a+c<=x||y+h<=b||b+d<=y,`${file} ${page.title} ${lang}: reveal rows ${i}/${j} overlap`);
       }

@@ -1,5 +1,5 @@
 // Each cue is tied to a specific board, rather than inferred from keywords.
-// c = circle, u = underline, b = bracket. Labels remain bilingual.
+// c = dashed frame (legacy cue key), u = underline, b = bracket. Labels remain bilingual.
 const cues={
 meng:`c|两个方向|Two directions
 u|沿对角线|Sum diagonally

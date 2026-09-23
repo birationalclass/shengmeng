@@ -1,5 +1,5 @@
 import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=30-seminar';
-import {drawChalkAnnotation} from './chalk-annotations.js?v48-seminar';
+import {drawChalkAnnotation} from './chalk-annotations.js?v49-late-frames';
 export function chalkCopy(page,language='zh'){
   return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
 }
@@ -10,7 +10,7 @@ export function wrapChalkText(ctx,text,width){
   if(line.trim())lines.push(line.trim());return lines;
 }
 
-export function composeChalkPage(ctx,page,index,language,formula){
+export function composeChalkPage(ctx,page,index,language,formula,options={}){
   const copy=chalkCopy(page,language),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
   ctx.clearRect(0,0,1536,640);ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';
   const runFont=run=>run.math?mathFont:/[\u3400-\u9fff]/.test(run.text)?font:'RefugeLatin, cursive';
@@ -35,11 +35,13 @@ export function composeChalkPage(ctx,page,index,language,formula){
   const scale=page.annotation?Math.min(1,990/w):1,top=page.annotation?140+(285-h*scale)/2:y;
   ctx.drawImage(formula,x+8*scale,top+8*scale,(w-16)*scale,(h-16)*scale);
   const formulaRows=(page.formulaRows||[[x,y,w,h]]).map(([a,b,c,d])=>[x+(a-x)*scale,top+(b-y)*scale,c*scale-.00001,d*scale-.00001]);
-  const cues=drawChalkAnnotation(ctx,formulaRows,page.annotation,language);
-  rows.push(...formulaRows,...cues);
+  const cues=drawChalkAnnotation(ctx,formulaRows,page.annotation,language,options);
+  rows.push(...formulaRows);
   let noteSize=36,notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);
   while(notes.length>3&&noteSize>26){noteSize--;notes=wrapChalkText({measureText:text=>({width:measure(text,noteSize)})},copy.text,1344);}
   // Leave room for descenders and inline scripts: reveal rectangles must not overlap.
   notes.forEach((line,i)=>textRow(line,88,(notes.length>3?476:488)+i*(notes.length>3?40:56),noteSize,'#eee9d5'));
+  // Complete the entire explanation before returning to the formula to mark it.
+  rows.push(...cues);
   return rows;
 }

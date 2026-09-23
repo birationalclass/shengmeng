@@ -27,12 +27,19 @@ function sample(plan,progress){
   const t=clamp(progress)*plan.total;let lo=0,hi=plan.segments.length-1;
   while(lo<hi){const mid=(lo+hi)>>1;if(plan.segments[mid].end<t)lo=mid+1;else hi=mid;}
   const s=plan.segments[lo],f=clamp((t-s.start)/s.cost);
-  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:s.a[1]+(s.b[1]-s.a[1])*f,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering};
+  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:s.a[1]+(s.b[1]-s.a[1])*f,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering,strokePoint:s.strokePoint};
 }
 export function writingPlan(rows,guides){
   const key=guides||rows;if(cache.has(key))return cache.get(key);
   const segments=[];let previous=null;
   rows.forEach(([x,y,w,h],row)=>{
+    const path=rows[row].strokePath;
+    if(path){
+      const first=path[0];
+      segments.push({a:previous||first,b:first,cost:previous?Math.max(10,Math.hypot(first[0]-previous[0],first[1]-previous[1])/6):12,contact:false,row,entering:true});
+      for(let i=0;i<path.length-1;i++)segments.push({a:path[i],b:path[i+1],cost:Math.max(1,Math.hypot(path[i+1][0]-path[i][0],path[i+1][1]-path[i][1])),contact:true,row,strokePoint:i});
+      previous=path.at(-1);return;
+    }
     const g=guides?.[row],columns=g?(g.inkColumns||g.map((v,i)=>v===null?-1:i).filter(i=>i>=0)):Array.from({length:Math.ceil(w/5)+1},(_,i)=>i);
     if(!columns.length)return;
     const point=c=>[x+Math.min(w,c*5),g?g[c]:y+h*.55],first=point(columns[0]);
@@ -54,6 +61,13 @@ export function inkReveal(rows,progress,row,guides){
   if(row<p.row)return rows[row][2];if(row>p.row||p.entering)return 0;
   return Math.max(0,Math.min(rows[row][2],p.x-rows[row][0]+5));
 }
+export function strokeReveal(rows,progress,row,guides){
+  const path=rows[row].strokePath;if(!path)return [];
+  if(progress>=1)return path;
+  const p=writingPose(rows,progress,guides);
+  if(row<p.row)return path;if(row>p.row||p.entering)return [];
+  return [...path.slice(0,p.strokePoint+1),[p.x,p.y]];
+}
 // Occupied 32 x 28 px tiles define short horizontal wipes. Empty regions
 // cause lifted travel, never a full-row wipe across the entire blackboard.
 export function erasingPlan(imageData,rows=[]){
@@ -66,6 +80,7 @@ export function erasingPlan(imageData,rows=[]){
       if(imageData){
         for(let py=y;py<Math.min(height,y+28)&&!ink;py++)for(let px=x;px<Math.min(width,x+32);px++)if(imageData.data[(py*width+px)*4+3]>=96){ink=true;break;}
       }else ink=rows.some(([a,b,w,h])=>x<a+w&&x+32>a&&y<b+h&&y+28>b);
+      if(!ink)ink=rows.some(r=>r.strokePath&&x<r[0]+r[2]&&x+32>r[0]&&y<r[1]+r[3]&&y+28>r[1]);
       occupied.push(ink);
     }
     const runs=[];
