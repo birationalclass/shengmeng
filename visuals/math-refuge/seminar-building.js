@@ -1,7 +1,7 @@
-import {createLectern} from './lectern.js?v52-km-rooms';
+import {createLectern} from './lectern.js?v53-section-sessions';
 import * as THREE from 'three';
 import {BUILDING_SCALE as S,DECK_Y} from './site-layout.js?v44-hall-clearance';
-import {SEMINAR as B,seminarFloor} from './seminar-layout.js?v52-km-rooms';
+import {SEMINAR as B,seminarFloor} from './seminar-layout.js?v53-section-sessions';
 import {curvedSeatBack} from './auditorium-furniture.js?v=15-fixed-hall';
 
 export function createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors}){

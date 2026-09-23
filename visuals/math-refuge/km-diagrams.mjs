@@ -17,7 +17,7 @@ export function kmDiagram(kind,math){
  }else if(kind==='km-flop'){
   out+=label('X',70,60,35)+label('X^+',405,60,35)+label('Z',240,260,35);
   out+=arrow(92,90,215,226)+arrow(385,90,265,226)+line(115,60,355,60,gold);
-  out+=label('f',120,172,26)+label('f^+',358,172,26)+label('D\cdot C<0',86,282,20)+label('D^+\cdot C^+>0',389,282,20);
+  out+=label('f',120,172,26)+label('f^+',358,172,26)+label(String.raw`D\cdot C<0`,86,282,20)+label(String.raw`D^+\cdot C^+>0`,389,282,20);
  }else if(kind==='km-blowup'){
   out+=line(35,68,183,244,gold)+line(35,244,183,68,blue)+`<circle cx="109" cy="156" r="5" fill="${ink}"/>`;
   out+=label('p',131,157)+label('L',37,49)+label('H',189,49);

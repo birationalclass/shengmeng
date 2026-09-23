@@ -1,7 +1,7 @@
-import {createSeminarBuilding} from './seminar-building.js?v52-km-rooms';
+import {createSeminarBuilding} from './seminar-building.js?v53-section-sessions';
 import * as THREE from 'three';
 import {terracePaving} from './terrace-paving.js';
-import {createLectern} from './lectern.js?v52-km-rooms';
+import {createLectern} from './lectern.js?v53-section-sessions';
 import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';

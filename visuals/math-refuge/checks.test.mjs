@@ -309,7 +309,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     let instances=0,triangles=0;
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
     const backs=allObjects.filter(o=>o.geometry?.name==='Reclined wraparound seat shell');
-    assert.equal(backs.length,2);assert.deepEqual(backs.map(b=>b.count).sort((a,b)=>a-b),[30,36]);
+    assert.equal(backs.reduce((n,b)=>n+b.count,0),66);assert(backs.length>=4,'Separate floors must be culled independently');
     const dark=color=>Math.max(color.r,color.g,color.b)<.3;
     assert(dark(backs[0].material.color),'Chair shells must not be ivory');
     assert(!result.campus.roof);assert(!result.campus.setRoof);
@@ -344,7 +344,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     }
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
     assert(instances>1500);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
-    assert(scene.children.filter(o=>o.isMesh).length<330,'Spatial instancing must bound model draw batches');
+    assert(scene.children.filter(o=>o.isMesh).length<550,'Spatial instancing must bound model draw batches');
     for(const name of ['Continuous mountain ridges','Detailed coastal terrain','Connected waterfall and winding creek','Mossy waterfall buttresses','Weathered coastal outcrops'])assert(!scene.getObjectByName(name),name+' must be removed');
     for(const name of ['Giant tree crowns','Jointed bamboo stems','Bamboo leaf sprays','Soft lawn garden','Garden flower borders','Palm fronds','Fern understory'])assert(scene.getObjectByName(name),name);
     assert.equal(result.landscape.plantings.length,0);
@@ -418,7 +418,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(let i=1;i<=3;i++)assert(scene.getObjectByName('Module arch bridge '+i));
     const glazing=scene.getObjectByName('Seamless smart seminar glazing').userData;
     assert.equal(glazing.panels,1);assert.equal(glazing.joints,0);assert(glazing.sealMetres<=.008);
-    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.length,1);assert.equal(smart[0].count,12);
+    const smart=scene.children.filter(o=>o.isInstancedMesh&&o.material===result.materials.smartGlass);assert.equal(smart.reduce((n,b)=>n+b.count,0),12);
     for(const {group,leaves} of result.campus.automaticDoors.doors.filter(d=>!d.group.userData.side.startsWith('discussion-'))){
       group.updateWorldMatrix(true,true);
       assert(!group.userData.transom);assert.equal(group.userData.clearHeight,HALL.clearHeight/BUILDING_SCALE);
@@ -712,6 +712,23 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.seek(25);assert(lecture.clock.ended);lecture.update(.1);assert.equal(lecture.clock.page,25);
     await lecture.seek(1);assert(!lecture.clock.ended);assert.equal(lecture.clock.phase,'hold');
     lecture.dispose();
+    globalThis.fetch=fetchReport;
+    const {KM_REPORT}=await import('./seminar-catalog.js');
+    const kmRoot=new Three.Group(),km=await createLecture(kmRoot,{capabilities:{getMaxAnisotropy:()=>8}},{reports:[KM_REPORT],defaultReport:'km',requireSelection:true});
+    km.playing=true;km.update(.1);assert(!km.playing);assert(!km.hasSelection);assert(km.clock.slots.every(s=>s.page===-1),'Entering a seminar never writes before selection');
+    assert(km.screenAction('seminar:chapter:1'));assert(km.hoverTargets.some(t=>t.visible&&t.userData.action==='seminar:section:1.1'));
+    assert(!km.hasSelection,'Opening a chapter folder does not start a talk');
+    const part=km.navigation.sections[0];await km.setRange(part.start,part.end);km.playing=true;
+    assert(km.hasSelection);assert.equal(km.progress.total,34);assert.equal(km.clock.active,0);
+    await km.setRenderActive(false);assert(!kmRoot.visible);
+    let requests=0;globalThis.fetch=async(...args)=>{requests++;return fetchReport(...args);};
+    const imagesBefore=contexts.length,versions=kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(b=>b.children[0].material.map.version);
+    km.update(30);assert.equal(requests,0);assert.equal(contexts.length,imagesBefore,'Offscreen progress must not allocate/rasterize canvas pages');
+    assert.deepEqual(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(b=>b.children[0].material.map.version),versions,'No offscreen texture uploads');
+    assert(km.clock.page>part.start);const progressBefore={page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase};
+    await km.setRenderActive(true);assert(kmRoot.visible);assert.deepEqual({page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase},progressBefore,'Reentry preserves estimated partial progress');
+    const next=km.navigation.sections[1];await km.setRange(next.start,next.end);assert.equal(km.clock.active,0);assert(km.clock.slots.filter(s=>s.page>=0).every(s=>s.page===next.start),'A new student starts on clean boards');
+    await km.seek(next.end);for(let i=0;i<100;i++)km.update(.1);assert.equal(km.clock.page,next.end);assert(km.clock.ended);km.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}
 });
 

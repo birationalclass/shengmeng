@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v44-hall-clearance';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
-import {createRoomFill} from './room-fill.js?v52-km-rooms';
+import {createRoomFill} from './room-fill.js?v53-section-sessions';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {Sky} from './vendor/objects/Sky.js';
@@ -9,7 +9,7 @@ import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v52-km-rooms';
+import {createCampus} from './campus.js?v53-section-sessions';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -44,7 +44,13 @@ export async function createRetreat(renderer,scene,report){
   const rubber=mat('#0e1b18',.97);
   const batches=new Map(),dummy=new THREE.Object3D(),layoutFloors=[];
   function instance(geo,material,p,s,r=[0,0,0]){
-    const key=geo.uuid+material.uuid;if(!batches.has(key))batches.set(key,{geo,material,matrices:[]});
+    // A campus-wide material batch defeats frustum culling: seeing one chair
+    // used to submit the chairs and fittings in every building and storey.
+    if(!geo.boundingSphere)geo.computeBoundingSphere();
+    const detail=geo.boundingSphere.radius*Math.max(...s)<1.2;
+    const region=p[0]<-76?'seminar:'+Math.floor(p[1]/3):p[0]>30?'hall:'+Math.floor(p[1]/3):'campus';
+    const key=geo.uuid+material.uuid+region+detail;
+    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],detail,region});
     dummy.position.fromArray(p);dummy.scale.fromArray(s);dummy.rotation.set(...r);dummy.updateMatrix();
     batches.get(key).matrices.push(dummy.matrix.clone());
   }
@@ -297,13 +303,17 @@ export async function createRetreat(renderer,scene,report){
   ocean.name='Panoramic ocean';ocean.rotation.x=-Math.PI/2;ocean.position.set(0,seaLevel*BUILDING_SCALE,0);scene.add(ocean);
   report('正在布置光照与镜头…');
   buildPlatforms();
-  for(const {geo,material,matrices} of batches.values()){
+  const detailBatches=[];
+  for(const {geo,material,matrices,detail,region} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
     mesh.castShadow=material!==glass&&material!==smartGlass&&material!==light&&material!==pathLighting.material;mesh.receiveShadow=material!==glass&&material!==smartGlass;
-    mesh.computeBoundingSphere();scene.add(mesh);architectureObjects.add(mesh);
+    mesh.computeBoundingSphere();mesh.computeBoundingBox();mesh.userData.spatialRegion=region;
+    scene.add(mesh);architectureObjects.add(mesh);if(detail)detailBatches.push(mesh);
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
+  for(const mesh of detailBatches){mesh.updateMatrixWorld();mesh.userData.detailBounds=mesh.boundingBox.clone().applyMatrix4(mesh.matrixWorld);}
+  function updateDetailVisibility(position){for(const mesh of detailBatches)mesh.visible=mesh.userData.detailBounds.distanceToPoint(position)<(mesh.visible?65:60);}
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   const sky=new Sky();sky.material.uniforms.nightVisibility={value:1};sky.material.fragmentShader='uniform float nightVisibility;\n'+sky.material.fragmentShader.replace('gl_FragColor = vec4( retColor, 1.0 );','gl_FragColor = vec4( retColor * nightVisibility, 1.0 );');sky.scale.setScalar(12000);scene.add(sky);
@@ -348,5 +358,5 @@ export async function createRetreat(renderer,scene,report){
     if(regenerate){environment?.dispose();environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;}
   }
   setTime(localHour(new Date()),true);
-  return {ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {updateDetailVisibility,ocean,islands,fleet,sculptures,sun,lighting,setTime,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

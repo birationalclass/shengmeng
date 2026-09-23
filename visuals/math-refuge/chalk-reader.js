@@ -19,16 +19,16 @@ export function createChalkReader(lecture){
     if(page!==lecture.clock.page||language!==lecture.language||reportId!==lecture.report?.id){
       reportId=lecture.report?.id;
       page=lecture.clock.page;language=lecture.language;const entry=lecture.pages[page],copy=lecture.copy?.(page)||entry;
-      $('readerSection').textContent=`${copy.source} · ${page+1} / ${lecture.pages.length}`;
+      $('readerSection').textContent=`${copy.source} · ${page-lecture.clock.startAt+1} / ${lecture.clock.stopAt-lecture.clock.startAt+1}`;
       $('readerTitle').textContent=copy.title;$('readerExplanation').textContent=copy.text;
       $('readerAuthor').hidden=entry.kind!=='cover';$('readerAuthor').textContent=copy.author||'';$('readerFormulaViewport').hidden=Boolean(entry.kind);
       $('readerTitle').innerHTML=chalkHTML(copy.title);$('readerExplanation').innerHTML=chalkHTML(copy.text)+(entry.annotation?.label?'<br><span style="color:#d9c693">↳ '+chalkHTML(entry.annotation.label[language])+'</span>':'');
       for(const id of ['readerTitle','readerExplanation'])$(id).style.fontFamily=language==='en'?'RefugeLatin, cursive':'RefugeChinese, cursive';
-      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v=32-report-position';
+      $('readerFormula').alt=entry.tex;$('readerFormula').src=entry.formulaAsset+'?v53-section-sessions';
       $('readerFormula').hidden=false;$('readerError').hidden=true;
       $('readerFormulaViewport').scrollLeft=0;size();
     }
-    $('readerPlay').disabled=Boolean(lecture.clock.ended);$('readerNext').disabled=lecture.clock.page===lecture.clock.stopAt;$('readerPrevious').disabled=lecture.clock.page===lecture.clock.startAt;
+    $('readerPlay').disabled=lecture.hasSelection===false||Boolean(lecture.clock.ended);$('readerNext').disabled=lecture.clock.page===lecture.clock.stopAt;$('readerPrevious').disabled=lecture.clock.page===lecture.clock.startAt;
     if(lastPlaying!==lecture.playing){lastPlaying=lecture.playing;controlLabel($('readerPlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停翻页':'继续翻页');$('readerPlay').setAttribute('aria-pressed',String(lecture.playing));}
   }
   $('readerOpen').addEventListener('click',()=>show(panel.hidden));

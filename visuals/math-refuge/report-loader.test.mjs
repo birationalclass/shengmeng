@@ -6,7 +6,7 @@ test('report preparation shares requests, reuses the cover, and retries a failed
   const originalFetch=globalThis.fetch,OriginalImage=globalThis.Image;
   let requests=0,images=0,fail=true;
   globalThis.fetch=async()=>{requests++;return {ok:!fail,json:async()=>({pages:[{formulaAsset:'cover.svg'}]})};};
-  globalThis.Image=class{set src(url){images++;assert.equal(url,'cover.svg?v=32-report-position');queueMicrotask(()=>this.onload());}};
+  globalThis.Image=class{set src(url){images++;assert.equal(url,'cover.svg?v53-section-sessions');queueMicrotask(()=>this.onload());}};
   try{
     const prepare=createReportLoader(),report={id:'test',manifest:'pages.json'};
     const failed=prepare(report);assert.equal(prepare(report),failed);await assert.rejects(failed);

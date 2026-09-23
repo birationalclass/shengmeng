@@ -10,15 +10,15 @@ export class LectureClock{
     this.count=count;this.startAt=0;this.stopAt=count-1;this.timings=new Map();this.slots=Array.from({length:6},()=>({page:-1,progress:0}));this.select(0);
   }
   select(page){
-    this.page=Math.max(0,Math.min(this.count-1,Math.trunc(page)||0));this.ended=false;this.active=boardSlot(this.page);
+    this.page=Math.max(this.startAt,Math.min(this.stopAt,Math.trunc(page)||0));this.ended=false;this.active=boardSlot(this.page-this.startAt);
     this.phase='lift';this.elapsed=0;
   }
   seek(page){
     this.page=Math.max(this.startAt,Math.min(this.stopAt,Math.trunc(page)||0));
-    this.active=boardSlot(this.page);this.phase='hold';this.elapsed=0;this.ended=this.page===this.stopAt;
+    this.active=boardSlot(this.page-this.startAt);this.phase='hold';this.elapsed=0;this.ended=this.page===this.stopAt;
     // Reconstruct exactly the last six pages in chronological order, never retain future ink.
     this.slots=Array.from({length:6},()=>({page:-1,progress:0}));
-    for(let p=Math.max(this.startAt,this.page-5);p<=this.page;p++)this.slots[boardSlot(p)]={page:p,progress:1};
+    for(let p=Math.max(this.startAt,this.page-5);p<=this.page;p++)this.slots[boardSlot(p-this.startAt)]={page:p,progress:1};
   }
   next(delta=1){const next=Math.max(this.startAt,Math.min(this.stopAt,this.page+delta));if(next!==this.page)this.select(next);}
   startWrite(){this.phase='write';this.elapsed=0;this.slots[this.active]={page:this.page,progress:0};}
@@ -34,6 +34,23 @@ export class LectureClock{
     }else if(this.phase==='erase')this.startWrite();
     else if(this.phase==='write'){this.slots[this.active].progress=1;this.phase='hold';this.elapsed=0;this.ended=this.page===this.stopAt;}
     else this.next();
+  }
+  // Off-screen playback advances only this small state machine. No canvas,
+  // image decoding, geometry or GPU work is needed, even after a long absence.
+  advance(dt,writingSpeed=1){
+    let remaining=Math.max(0,Number(dt)||0);
+    while(remaining>0&&!this.ended){
+      const rate=this.phase==='write'?writingSpeed:1;
+      const step=Math.min(remaining,Math.max(0,this.duration-this.elapsed)/rate);
+      this.elapsed+=step*rate;remaining-=step;
+      if(this.phase==='write')this.slots[this.active].progress=Math.min(1,this.elapsed/this.duration);
+      if(this.elapsed+1e-8<this.duration)break;
+      if(this.phase==='lift'){
+        if(this.slots[this.active].page>=0){this.phase='erase';this.elapsed=0;}else this.startWrite();
+      }else if(this.phase==='erase')this.startWrite();
+      else if(this.phase==='write'){this.slots[this.active].progress=1;this.phase='hold';this.elapsed=0;this.ended=this.page===this.stopAt;}
+      else this.next();
+    }
   }
   get progress(){return Math.min(1,this.elapsed/this.duration);}
 }

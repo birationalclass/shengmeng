@@ -1,5 +1,5 @@
 import {BUILDING_SCALE as S,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
-import {SEMINAR,seminarFloor} from './seminar-layout.js?v52-km-rooms';
+import {SEMINAR,seminarFloor} from './seminar-layout.js?v53-section-sessions';
 // Room membership follows the camera eye, not the last navigation button.
 export function teachingRoomAt({x,y,z}){
  const inside=(west,east,north,south,floor,height)=>x>west*S&&x<east*S&&z>north*S&&z<south*S&&y>floor*S&&y<(floor*S+height);

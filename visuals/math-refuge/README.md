@@ -190,3 +190,19 @@ The six redundant pale grab handles beneath the sliding boards are removed at th
 ## 2026-09-23 — Tighter vertical blackboard spacing
 
 Board dimensions stay unchanged. Resting centers are now 1.835 and 3.960 in lecture-local coordinates: the physical frame-to-frame seam is 2.88 cm and the upper frame clears the top rail stop by 4.86 cm. Trays, lips, chalk and parked erasers rise together by 23.04 cm, leaving 4.57 cm below the lower frame. Lower tracks and mounting pads are shortened upward, and paired-board camera focus follows the new center. Geometry regression checks sample 101 lift positions per column, covering separate depth channels, rail-stop clearance and the three resting seams. All 46 code tests pass; no browser visual QA was performed.
+
+## Three-storey reading seminar and room controls
+
+Based on the GitHub mainline through `ac3fefb`, preserving its lectern, automatic doors, upper lounge, paving, board hardware and local-definition chalk annotations. The independent west building has three smaller classrooms, each with two rows of six seats, six sliding boards, an interactive lectern, automatic glass entrance, lighting and independent report state. Supported exterior switchback stairs connect all floors.
+
+The first classroom follows Kollár–Mori (1998), 7 chapters / 38 sections / 336 boards. The left navigator offers chapter and section choices and a direct link to the Lemma 5.17(2) erratum computation; each section is an independent student session ending without looping. See `assets/chalk/km/SOURCES.md` for attribution, proof-status conventions and the counterexample. The upper classrooms use the existing report catalogue independently.
+
+Board-related controls occupy a frameless right-side dock only while the camera is inside a teaching room. The camera's position determines which classroom is controlled, including when entering manually. Outdoor door sensors remain active. The original upstairs lounge is still camera 09; the discussion building is camera 10.
+
+Lectern displays show the current board number and total. Previous/next, the screen progress bar and the accessible page/slider controls seek atomically: load the last six relevant pages, rebuild their slots, set board heights immediately, reset chalk/eraser/dust and show complete ink without lifting, erasing or writing transitions. Rapid seeks keep only the latest result. Explicit playback resumes normal writing; section/final endings remain stopped.
+
+### Section sessions and render scheduling
+
+The physical glass left of the KM boards now supports chapter folders and clickable section choices. A chapter is not a session. All seminar rooms initially have blank boards and require an explicit topic selection; entering, pausing or changing floors never starts a talk. Each section has its own title, closing and local progress count. §1.1 has 32 substantive boards plus title/thanks; the other sections are explicitly labelled preparation outlines pending detailed expansion.
+
+Every 100 ms, room visibility checks distance with hysteresis, camera frustum and storey occlusion. Hidden rooms do not redraw chalk canvases, update textures, animate tools or update off-screen lectern canvases. Lecterns have their own visibility bounds, so the speaker console remains usable when the blackboards are behind the camera. Started sessions advance a lightweight clock using estimated write durations; unselected and paused sessions stay still. Reentry loads only current on-board pages, spread across frames, and restores partial progress without restarting the session. These estimates intentionally do not reproduce every offscreen chalk stroke. Room geometry is hidden from draw submission while inactive. Shared architectural instances are split by building/storey; small remote fittings are distance-culled.

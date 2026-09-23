@@ -1,6 +1,7 @@
-import {teachingRoomAt} from './room-context.js?v52-km-rooms';
-import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v52-km-rooms';
-import {KM_REPORT} from './seminar-catalog.js?v52-km-rooms';
+import {classroomVisible} from './classroom-visibility.js?v53-section-sessions';
+import {teachingRoomAt} from './room-context.js?v53-section-sessions';
+import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v53-section-sessions';
+import {KM_REPORT} from './seminar-catalog.js?v53-section-sessions';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -9,15 +10,15 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v52-km-rooms';
-import {createLecture} from './lecture.js?v52-km-rooms';
+import {createRetreat} from './scene.js?v53-section-sessions';
+import {createLecture} from './lecture.js?v53-section-sessions';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
-import {createChalkReader} from './chalk-reader.js?v52-km-rooms';
+import {createChalkReader} from './chalk-reader.js?v53-section-sessions';
 import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v52-km-rooms';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v53-section-sessions';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v=22-handwritten-cover';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
@@ -44,7 +45,21 @@ const curves=SHOTS.map(s=>({
 const totalDuration=SHOTS.reduce((a,s)=>a+s.duration,0);
 const motionVelocity=new THREE.Vector3(),motionAcceleration=new THREE.Vector3(),previousPosition=new THREE.Vector3(),previousVelocity=new THREE.Vector3();
 const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirection=new THREE.Vector3(),lookMatrix=new THREE.Matrix4(),viewUp=new THREE.Vector3(0,1,0);
-const rooms=[],roomLecterns=[];let activeRoom=0,physicalRoom=-1;
+const rooms=[],roomLecterns=[],roomViews=[];
+const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
+function updateRoomVisibility(stamp){
+  if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateDetailVisibility(camera.position);
+  roomFrustum.setFromProjectionMatrix(roomProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
+  const insideRoom=teachingRoomAt(camera.position);
+  roomViews.forEach((v,i)=>{
+    const visible=classroomVisible({distance:v.bounds.distanceToPoint(camera.position),inFrustum:roomFrustum.intersectsBox(v.bounds),eyeY:camera.position.y,floorY:v.floor,height:v.height,insideRoom,room:i,wasVisible:v.visible});
+    if(visible!==v.visible){v.visible=visible;rooms[i].setRenderActive(visible);}
+    v.consoleVisible=classroomVisible({distance:v.consoleBounds.distanceToPoint(camera.position),inFrustum:roomFrustum.intersectsBox(v.consoleBounds),eyeY:camera.position.y,floorY:v.floor,height:v.height,insideRoom,room:i,wasVisible:v.consoleVisible});
+    roomLecterns[i].group.visible=v.consoleVisible;
+  });
+  $('world').dataset.renderingRooms=roomViews.map((v,i)=>v.visible?i:null).filter(i=>i!==null).join(',');
+}
+let activeRoom=0,physicalRoom=-1;
 let motionSample=false,lastUIStamp=0,choosingReport=false,speakerView=false;
 function shotPose(){
   if(speakerView){const pose=roomLecterns[activeRoom].speakerPose(camera.aspect);shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
@@ -62,7 +77,7 @@ function fail(error){
 function updateLabels(){
   document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture&&!speakerView));
   reader?.chapter(Boolean(SHOTS[shot].lecture&&!speakerView)&&teachingRoomAt(camera.position)===activeRoom,$('lecturePanel').hidden);
-  $('shotNumber').textContent=opening?'总览':`0${shot+1} / ${SHOTS[shot].name}`;
+  $('shotNumber').textContent=opening?'总览':`${String(shot+1).padStart(2,'0')} / ${SHOTS[shot].name}`;
   $('shotTitle').innerHTML=SHOTS[shot].title;
   $('shotDescription').textContent=SHOTS[shot].description;
   document.querySelectorAll('[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===shot)));
@@ -153,7 +168,8 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden||!entered)return;
-  if(lecture)lecture.update(dt,reduced.matches);
+  updateRoomVisibility(stamp);
+  rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
@@ -184,11 +200,11 @@ function tick(stamp){
     lastUIStamp=stamp;
     if(lecture){updateLectureUI();reader?.update();}
     if(!speakerView&&SHOTS[shot].lecture&&lecture){
-      $('mode').textContent=reportProgress||reportLoadError||(choosingReport?'选择报告人 / 主题':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`);
+      $('mode').textContent=reportProgress||reportLoadError||(choosingReport?(lecture.navigation?.sections?'选择本次小节':'选择报告人 / 主题'):boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`);
       $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
       $('world').dataset.board=String(lecture.clock.active);
     }else delete $('world').dataset.boardFollow;
-    roomLecterns.forEach((lectern,i)=>lectern.update({playing:rooms[i].playing,page:rooms[i].clock.page,total:rooms[i].pages.length,seeking:rooms[i].seeking}));
+    roomLecterns.forEach((lectern,i)=>{if(roomViews[i]?.consoleVisible)lectern.update({playing:rooms[i].playing,...rooms[i].progress,seeking:rooms[i].seeking});});
     $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
     $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
     const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
@@ -233,9 +249,15 @@ try{
   for(let level=0;level<3;level++){
     $('loadMessage').textContent='正在准备讨论班 '+(level+1)+' 层…';
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52}:{defaultReport:level===1?'ye':'meng',viewScale:.52});
-    room.playing=false;room.staticPage();room.update(0,true);retreat.roomFill.apply(root);rooms.push(room);
+    const room=await createLecture(root,renderer,level===0?{reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true}:{defaultReport:level===1?'ye':'meng',viewScale:.52,requireSelection:true});
+    room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
+  rooms.forEach((room,i)=>{
+    room.root.updateWorldMatrix(true,true);
+    const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);
+    roomViews.push({bounds,consoleBounds:new THREE.Box3().setFromObject(roomLecterns[i].group),consoleVisible:false,visible:false,floor:(i?seminarFloor(i-1):DECK_Y)*BUILDING_SCALE,height:i?3.8:4.9});
+    room.setRenderActive(false);roomLecterns[i].group.visible=false;
+  });
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));
   buildSeminarNavigation();
   installPhysicalControls();
@@ -248,7 +270,7 @@ try{
   renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
   await renderer.compileAsync(scene,camera);
   // Upload textures before the user moves to a previously unseen part of the site.
-  const textures=new Set();scene.traverse(object=>{for(const material of Array.isArray(object.material)?object.material:[object.material])if(material)for(const value of Object.values(material))if(value?.isTexture)textures.add(value);});
+  const textures=new Set();scene.traverseVisible(object=>{for(const material of Array.isArray(object.material)?object.material:[object.material])if(material)for(const value of Object.values(material))if(value?.isTexture)textures.add(value);});
   for(const texture of textures)renderer.initTexture(texture);
   // Submit off-screen geometry once as well, while the opaque loader is up.
   const culled=[];scene.traverse(object=>{if(object.isMesh&&object.frustumCulled){culled.push(object);object.frustumCulled=false;}});
@@ -299,15 +321,15 @@ function updateSceneTime(){
 
 function populateReport(){
   $('lecturePage').replaceChildren();
-  for(const [i,page] of lecture.pages.entries()){
+  for(let i=lecture.clock.startAt;i<=lecture.clock.stopAt;i++){
     const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
   }
   $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=report.speaker+' · '+report.topic;return option;}));
   $('reportSelect').value=lecture.report.id;
   $('lectureHeading').textContent=lecture.report.speaker+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
-  $('world').dataset.report=lecture.report.id;
-  $('lectureProgress').max=String(lecture.pages.length);$('lectureProgress').value=String(lecture.clock.page+1);
+  $('world').dataset.report=lecture.report.id;controlLabel($('reportButton'),lecture.navigation?.sections?'选择本次小节':'选择报告人和主题');
+  $('lectureProgress').max=String(lecture.progress.total);$('lectureProgress').value=String(lecture.progress.page+1);
 }
 let changingLanguage=false,changingReport=false,reportLoadError='',reportProgress='',reportRequest=0;
 async function switchReport(id){
@@ -326,7 +348,7 @@ $('reportSelect').addEventListener('change',event=>switchReport(event.target.val
 async function switchChalkLanguage(){
   if(!lecture||changingLanguage||changingReport)return;changingLanguage=true;
   try{await lecture.setLanguage(lecture.language==='zh'?'en':'zh');
-    for(const [i,option] of [...$('lecturePage').options].entries()){const copy=lecture.copy(i);option.textContent=`${copy.source} · ${copy.title}`;}reader?.update();
+    for(const option of $('lecturePage').options){const copy=lecture.copy(Number(option.value));option.textContent=`${copy.source} · ${copy.title}`;}reader?.update();
   }catch(error){$('lectureStatus').textContent=error.message;}finally{changingLanguage=false;}
 }
 function installPhysicalControls(){
@@ -334,16 +356,16 @@ function installPhysicalControls(){
   const hit=e=>{
     const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
     scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
-    const candidate=ray.intersectObjects([...retreat.campus.automaticDoors.targets,...(physicalRoom===activeRoom?[...lecture.hoverTargets,...roomLecterns[activeRoom].targets]:[])],false)[0];if(!candidate||candidate.distance>15)return null;
+    ray.far=15;const candidate=ray.intersectObjects([...retreat.campus.automaticDoors.targets,...(physicalRoom===activeRoom?[...lecture.hoverTargets.filter(t=>t.visible&&lecture.root.visible),...roomLecterns[activeRoom].targets]:[])],false)[0];if(!candidate||candidate.distance>15)return null;
     // Ignore transparent glazing, but opaque roof/walls must block a press.
-    for(const h of ray.intersectObjects(scene.children,true)){
+    for(const h of (ray.far=candidate.distance,ray.intersectObjects(scene.children.filter(o=>o.visible),true))){
       if(h.distance>=candidate.distance-.015)break;
       let visible=true;for(let p=h.object;p;p=p.parent)if(!p.visible)visible=false;
       if(!visible||h.object.parent===candidate.object||h.object===candidate.object)continue;
       const material=h.object.material;if(material?.transparent&&material.opacity<.5)continue;
       if(h.object.isMesh)return null;
     }
-    if(candidate.object.userData.progress)candidate.object.userData.action='page:seek:'+Math.round(candidate.uv.x*(lecture.pages.length-1));
+    if(candidate.object.userData.progress)candidate.object.userData.action='page:seek:'+(lecture.clock.startAt+Math.round(candidate.uv.x*(lecture.clock.stopAt-lecture.clock.startAt)));
     return candidate.object;
   };
   bindPhysicalButtons($('world'),controls,hit,action=>{
@@ -352,6 +374,8 @@ function installPhysicalControls(){
     else if(action==='lectern:previous')$('lecturePrevious').click();
     else if(action==='lectern:next')$('lectureNext').click();
     else if(action.startsWith('page:seek:'))seekLecture(Number(action.split(':')[2]));
+    else if(action.startsWith('seminar:section:'))selectSeminarPart(lecture.navigation.sections.find(s=>s.id===action.split(':')[2]));
+    else if(action.startsWith('seminar:'))lecture.screenAction(action);
     else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('report:'))switchReport(action.slice(7));
   });
@@ -392,10 +416,11 @@ window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime
 let lectureStatus='';
 function updateLectureUI(){
   const status=reportProgress||reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
-  $('lecturePlay').disabled=lecture.clock.ended;$('lectureNext').disabled=lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=lecture.clock.page===lecture.clock.startAt;
+  $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
+  for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;
   controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
-  $('lectureProgressValue').textContent=`${lecture.clock.page+1} / ${lecture.pages.length}`;
-  if(document.activeElement!==$('lectureProgress'))$('lectureProgress').value=String(lecture.clock.page+1);
+  $('lectureProgressValue').textContent=lecture.hasSelection?`${lecture.progress.page+1} / ${lecture.progress.total}`:'—';
+  if(document.activeElement!==$('lectureProgress'))$('lectureProgress').value=String(lecture.progress.page+1);
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);
   lecture.heights().forEach((value,i)=>{const slider=$('boardLift'+i);if(document.activeElement!==slider)slider.value=String(value);});
 }
@@ -424,21 +449,21 @@ for(let pair=0;pair<3;pair++){
 
 async function seekLecture(page){
   const targetLecture=lecture;
-  if(targetLecture.navigation?.chapters){const chapter=targetLecture.navigation.chapters.find(c=>page>=c.start&&page<=c.end);if(chapter){targetLecture.clock.startAt=chapter.start;targetLecture.clock.stopAt=chapter.end;}}
+  if(!targetLecture.hasSelection)return;
   try{if(await targetLecture.seek(page)&&targetLecture===lecture){
-    updateLectureUI();reader?.update();roomLecterns[activeRoom]?.update({playing:lecture.playing,page:lecture.clock.page,total:lecture.pages.length});
+    updateLectureUI();reader?.update();roomLecterns[activeRoom]?.update({playing:lecture.playing,...lecture.progress});
     // Manual seeking never launches a camera or board animation.
     if(SHOTS[shot].lecture&&!speakerView&&!choosingReport&&boardFollow.following){blend=null;applyShot(0);motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;}
   }}catch(error){$('lectureStatus').textContent=error.message;}
 }
-$('lectureProgress').addEventListener('input',event=>seekLecture(Number(event.target.value)-1));
+$('lectureProgress').addEventListener('input',event=>seekLecture(lecture.clock.startAt+Number(event.target.value)-1));
 $('lecternButton').addEventListener('click',()=>{if(lecture&&physicalRoom===activeRoom)enterSpeakerView();});
 function activateRoom(index,moveCamera=true){
   if(!rooms[index])return;
   reportRequest++;changingReport=false;reportProgress='';reportLoadError='';
-  lecture.playing=false;activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);lecture.playing=!reduced.matches;
+  activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);
   $('world').dataset.room=String(index);$('reportSelect').setAttribute('aria-busy','false');
-  reader?.close();populateReport();if(moveCamera)selectShot(0);updateSeminarNavigation();
+  reader?.close();populateReport();if(moveCamera)selectShot(0,!lecture.hasSelection);updateSeminarNavigation();
   teachingShade=index===0?retreat.campus.blind.visible:retreat.campus.discussion.blinds[index-1].visible;
   $('lectureShade').setAttribute('aria-pressed',String(teachingShade));
 }
@@ -446,20 +471,27 @@ function buildSeminarNavigation(){
  const nav=rooms[1].navigation,container=$('seminarChapters');container.replaceChildren();
  for(const chapter of nav.chapters){
   const group=document.createElement('details'),summary=document.createElement('summary');summary.textContent=`${chapter.id} · ${chapter.title}`;group.append(summary);group.open=chapter.id===1;
-  const play=document.createElement('button');play.textContent='从本章标题开始 · '+(chapter.end-chapter.start+1)+' 块';play.dataset.chapter=String(chapter.id);play.addEventListener('click',()=>selectSeminarPart(chapter,chapter.start));group.append(play);
   for(const part of nav.sections.filter(p=>p.chapter===chapter.id)){
    const button=document.createElement('button');button.textContent='§ '+part.id+' '+part.title;button.dataset.section=part.id;button.title='前置：'+part.prerequisites+'\n目标：'+part.goal;
-   button.addEventListener('click',()=>{selectSeminarPart(chapter,part.start);$('seminarGoal').textContent='前置：'+part.prerequisites+'。目标：'+part.goal;});group.append(button);
+   button.addEventListener('click',()=>{selectSeminarPart(part);$('seminarGoal').textContent='前置：'+part.prerequisites+'。目标：'+part.goal;});group.append(button);
   }container.append(group);
  }
- $('seminarErratum').addEventListener('click',()=>selectSeminarPart(nav.chapters.find(c=>c.id===5),nav.erratum.start));
+ $('seminarErratum').addEventListener('click',()=>selectSeminarPart(nav.sections.find(s=>s.id==='5.2'),nav.erratum.start));
  updateSeminarNavigation();
 }
-async function selectSeminarPart(chapter,page){
+async function selectSeminarPart(part,page=part?.start){
+ if(!part)return;
  if(activeRoom!==1)activateRoom(1);
- lecture.clock.startAt=chapter.start;lecture.clock.stopAt=chapter.end;
- await seekLecture(page);lecture.playing=false;updateSeminarNavigation();
+ const target=lecture;target.playing=false;
+ try{
+  if(!await target.setRange(part.start,part.end))return;
+  if(page!==part.start)await target.seek(page);
+  if(target!==lecture)return;
+  target.playing=!reduced.matches;selectShot(0);populateReport();updateLectureUI();reader?.update();updateSeminarNavigation();
+  $('seminarGoal').textContent='本次：§ '+part.id+' · '+part.title+'。前置：'+part.prerequisites+'。目标：'+part.goal;
+ }catch(error){$('lectureStatus').textContent=error.message;}
 }
+
 function updateSeminarNavigation(){
  document.querySelectorAll('[data-room]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.room)===activeRoom)));
  $('seminarCurriculum').hidden=activeRoom!==1;
