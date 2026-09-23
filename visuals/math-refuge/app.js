@@ -7,7 +7,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v45-paving-grid';
-import {createLecture} from './lecture.js?v=43-tight-boards';
+import {createLecture} from './lecture.js?v47-chalk-depth';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v=32-report-position';

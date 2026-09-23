@@ -585,6 +585,10 @@ test('classroom assembles six independent boards and survives writing, erasing a
     for(const board of boards){
       assert(!board.children.some(o=>o.isMesh&&o.scale.x===.55&&o.scale.y===.05&&o.scale.z===.09),'No redundant pale grab handle below the board');
       const body=board.getObjectByName('Solid opaque board body');assert(body?.isMesh);assert(body.scale.z>.07);
+      const face=board.getObjectByName('Matte writing face');
+      assert(face.position.z-(body.position.z+body.scale.z/2)>=.009,'Writing face has clearance from its opaque backing');
+      assert(face.material.depthTest&&face.material.depthWrite&&!face.material.transparent);
+      assert(face.material.polygonOffset&&face.material.polygonOffsetFactor===0&&face.material.polygonOffsetUnits<0,'Depth bias must not grow at grazing angles and occlude the chalk');
       assert.equal(board.children.filter(o=>o.name==='Guide roller').length,4);
       assert.equal(board.children.filter(o=>o.name==='Rail carriage bracket').length,4);
       for(const edge of board.children.filter(o=>o.name==='Thin nanmu frame')){assert.equal(edge.scale.y,.035);assert(edge.material.map.isDataTexture);assert(edge.material.bumpMap);assert.equal(edge.material.color.getHexString(),'735c3e');assert.equal(edge.material.roughness,.65);}

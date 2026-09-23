@@ -73,12 +73,14 @@ export async function createLecture(scene,renderer){
       group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
       const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;
       const ctx=canvas.getContext('2d'),texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
-      texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());texture.generateMipmaps=true;texture.minFilter=THREE.LinearMipmapLinearFilter;
+      texture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());texture.generateMipmaps=true;texture.minFilter=THREE.LinearMipmapLinearFilter;
       const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;const roughCtx=roughCanvas.getContext('2d');roughCtx.fillStyle='white';roughCtx.fillRect(0,0,W/4,H/4);
       const roughTexture=new THREE.CanvasTexture(roughCanvas);
-      const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:roughTexture,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0}));
+      // The backing is physically recessed by .01. Avoid slope-dependent
+      // depth bias, which grows at grazing angles and can occlude the chalk.
+      const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:roughTexture,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0,polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-1}));
       surface.name='Matte writing face';group.add(surface);
-      const body=part(group,[0,0,-.043],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
+      const body=part(group,[0,0,-.05],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
       for(const y of [-.65,.65]){const brace=part(group,[0,y,-.094],[BOARD_W-.16,.035,.022],frameMaterial);brace.name='Rear nanmu stiffener';}
       for(const y of [-BOARD_H/2,BOARD_H/2]){const edge=part(group,[0,y,-.026],[BOARD_W+.035,.035,.12],frameMaterial);edge.name='Thin nanmu frame';}
       for(const px of [-BOARD_W/2,BOARD_W/2]){const edge=part(group,[px,0,-.026],[BOARD_H,.035,.12],frameMaterial);edge.rotation.z=Math.PI/2;edge.name='Thin nanmu frame';}
