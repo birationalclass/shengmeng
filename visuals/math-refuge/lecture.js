@@ -288,6 +288,7 @@ export async function createLecture(scene,renderer,options={}){
   }
   function update(dt,reduced=false){
     if(disabled)return;
+    if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel();if(storageProgress>0||stored)return;}
     if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
@@ -371,9 +372,24 @@ export async function createLecture(scene,renderer,options={}){
   boards.forEach((_,i)=>draw(i));
   // Keep the hardware and last completed texture visible at every distance.
   // Only the board carriers and tools have changing local transforms.
-  const movingNodes=new Set([scene,...boards.map(b=>b.group),chalk,eraser]);
+  let storageRig=null,stored=false,storageProgress=0,storageLabel=null,storageLabelText='';
+  function updateStorageLabel(){if(!storageLabel)return;const text=stored?'升起黑板':'收起黑板';if(text===storageLabelText)return;storageLabelText=text;const c=storageLabel.canvas.getContext('2d');c.clearRect(0,0,1024,240);c.font='72px '+SCREEN_FONT;c.textAlign='center';c.fillStyle='#f1e8d3';c.fillText(text,512,150);storageLabel.texture.needsUpdate=true;}
+  if(options.retractable){
+    storageRig=new THREE.Group();storageRig.name='Whole six-board retracting assembly';scene.add(storageRig);
+    for(const node of [...scene.children])if(/^(Double-channel lift track|Sliding chalkboard|Wide nanmu chalk tray|Tray chalk|Tray eraser|Writing chalk|Moving blackboard eraser|Falling chalk powder)/.test(node.name))storageRig.add(node);
+    const slot=new THREE.Group();slot.name='Recessed blackboard storage slot';scene.add(slot);
+    const dark=new THREE.MeshStandardMaterial({color:'#101717',roughness:.9});
+    part(slot,[28,-1.385,-10.93],[17.4,.035,.86],dark);
+    for(const z of [-11.38,-10.48])part(slot,[28,-1.35,z],[17.55,.045,.055],metal);
+    for(const x of [19.24,36.76])part(slot,[x,-1.35,-10.93],[.055,.045,.95],metal);
+    storageLabel=glassLabel(2.2,.62,37.55,1.7,'Whole blackboard storage control');
+    storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
+  }
+  const movingNodes=new Set([scene,storageRig,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
+    get retractable(){return Boolean(storageRig);},get stored(){return stored;},
+    toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
@@ -401,6 +417,7 @@ export async function createLecture(scene,renderer,options={}){
     async setReport(id){
       if(disabled)return false;
       const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');
+      if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
       seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;

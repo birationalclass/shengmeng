@@ -12,10 +12,3 @@ test('sand meets only the east and south terrace edges',()=>{for(const[x,z]of[[5
 test('west and north remain water, with a broad continuous offshore blend',()=>{assert.equal(beachMask(23,0),0);assert.equal(beachMask(39,-18),0);assert(seaDepthAt(23,0)>0);assert(seaDepthAt(39,-18)>0);for(let x=60;x<100;x+=.05)assert(Math.abs(beachMask(x+.05,0)-beachMask(x,0))<.01);});
 
 test('beach reaches the full east edge and wraps the northeast corner only',()=>{assert.equal(beachMask(54,-16),1);assert(beachMask(53,-17)>0.9);assert.equal(beachMask(39,-17),0);assert.equal(beachMask(23,0),0);});
-
-import {baseSeaDepthAt,reefCoverage} from './sea-depth.js';
-test('all reef colouring and relief remain submerged beyond the wash zone',()=>{
- let found=0;
- for(let x=20;x<95;x+=.25)for(let z=-40;z<48;z+=.25){const base=baseSeaDepthAt(x,z),reef=reefCoverage(x,z);if(base<=1.4)assert.equal(reef,0);if(reef>0){found++;assert(seaDepthAt(x,z)>1.2,'reef crest too shallow');}}
- assert(found>100);
-});

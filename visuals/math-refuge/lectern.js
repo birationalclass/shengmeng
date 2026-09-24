@@ -27,6 +27,7 @@ export function createLectern(T){
     const pad=add('Touch control '+action,new T.PlaneGeometry(.225,.095),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[(i-1)*.25,-.114,.063],console);
     materials.push(pad.material);pad.userData.action=action;pads.push(pad);
   }
+  const storagePad=add('Whole board storage touch control',new T.PlaneGeometry(.24,.068),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[.24,.102,.065],console);materials.push(storagePad.material);storagePad.userData.action='lectern:stow';storagePad.visible=false;
   const progress=add('Touch board progress',new T.PlaneGeometry(.705,.067),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}),[0,-.027,.064],console);materials.push(progress.material);progress.userData={action:'page:seek:0',progress:true};
   for(const x of [.445,.494])rounded('USB-C recessed port',.025,.010,.003,.004,rubber,[x,-.12,.061],console);
   rounded('Stylus recess',.035,.30,.003,.016,rubber,[-.49,0,.061],console);
@@ -40,11 +41,13 @@ export function createLectern(T){
   for(let i=0;i<8;i++){const a=i*Math.PI/4;add('Microphone grille rib',new T.CylinderGeometry(.0012,.0012,.056,5),meshMetal,[Math.cos(a)*.023,.034,Math.sin(a)*.023],head);}
   group.userData={heightAboveFloor:1.49,desktopHeight:1.035,eyeHeight:1.68,action:'lectern:view'};
   let last='',screenEnabled=true;
-  function update({playing=false,page=0,total=0,seeking=false}={}){
+  function update({playing=false,page=0,total=0,seeking=false,retractable=false,stored=false}={}){
     if(!screenEnabled)return;
-    const key=[playing,page,total,seeking,pads.map(p=>p.userData.hovered?1:0).join('')].join(':');if(last===key)return;last=key;
+    storagePad.visible=retractable;
+    const key=[playing,page,total,seeking,retractable,stored,pads.map(p=>p.userData.hovered?1:0).join('')].join(':');if(last===key)return;last=key;
     ctx.fillStyle='#122426';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#9fcfc2';ctx.font='24px sans-serif';ctx.fillText('SEMINAR / SPEAKER CONSOLE',42,55);
     ctx.fillStyle='#e1e9e5';ctx.font='38px sans-serif';ctx.fillText('板书控制  /  CHALKBOARD',42,129);
+    if(retractable){ctx.fillStyle='#34544c';ctx.fillRect(674,85,310,84);ctx.fillStyle='#f1e8d3';ctx.font='30px sans-serif';ctx.fillText(stored?'升起黑板':'收起黑板',704,140);}
     ctx.font='46px sans-serif';ctx.fillStyle='#efdfbf';ctx.fillText(`${page+1} / ${total}`,42,209);ctx.font='22px sans-serif';ctx.fillStyle='#a5b7b1';ctx.fillText(seeking?'正在定位…':playing?'WRITING':'PAUSED',735,209);
     ctx.fillStyle='#48665e';ctx.fillRect(44,287,936,6);ctx.fillStyle='#edc98e';const fraction=total>1?page/(total-1):0;ctx.fillRect(44,287,936*fraction,6);ctx.beginPath();ctx.arc(44+936*fraction,290,10,0,Math.PI*2);ctx.fill();
     for(const [i,label] of ['上一页',playing?'暂停板书':'继续板书','下一页'].entries()){
@@ -55,7 +58,7 @@ export function createLectern(T){
   }
   update();
   return {group,get targets(){return screenEnabled?targets:[];},update,
-    setScreenEnabled(value){if(screenEnabled===Boolean(value))return;screenEnabled=Boolean(value);display.visible=screenEnabled;pads.forEach(p=>p.visible=screenEnabled);progress.visible=screenEnabled;if(screenEnabled)last='';},
+    setScreenEnabled(value){if(screenEnabled===Boolean(value))return;screenEnabled=Boolean(value);display.visible=screenEnabled;storagePad.visible=screenEnabled;pads.forEach(p=>p.visible=screenEnabled);progress.visible=screenEnabled;if(screenEnabled)last='';},
     speakerPose(aspect=16/9){
       group.updateWorldMatrix(true,true);
       const position=group.localToWorld(new T.Vector3(0,1.68,1.35));

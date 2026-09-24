@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {BUILDINGS} from './building-catalog.js?v76-villa';
 import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {terracePaving} from './terrace-paving.js';
-import {createLectern} from './lectern.js?v62-chalk-ink';
+import {createLectern} from './lectern.js?v101-storage';
 import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';

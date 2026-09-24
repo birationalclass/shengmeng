@@ -464,7 +464,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const flight of allObjects.filter(o=>o.name==='Seminar supported stair flight')){assert(flight.userData.riser>.14&&flight.userData.riser<.18);assert(flight.userData.tread>.25);}
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.getObjectByName('Continuous Shanghai sky');
-    assert(result.ocean.renderOrder>0&&sky.renderOrder>result.ocean.renderOrder,'Opaque buildings establish depth before the expensive water/sky backgrounds');
+    assert(result.ocean.material.transparent&&result.ocean.renderOrder<0,'Transparent water precedes glass and depth-free screen text');
+    assert(!sky.material.transparent&&sky.renderOrder>0,'Sky stays in the opaque background queue');
     assert(sky.material.depthTest&&!sky.material.depthWrite&&result.ocean.material.depthWrite);
     assert(sky.material.uniforms.radius.value>.0088&&sky.material.uniforms.radius.value<.0098);
     assert(sky.material.uniforms.day.value>.9);
@@ -776,6 +777,16 @@ test('classroom assembles six independent boards and survives writing, erasing a
     lecture.playing=true;for(let i=0;i<600&&lecture.clock.phase!=='write';i++)lecture.update(.1);
     assert.equal(lecture.clock.phase,'write','Resuming an erase must reach fresh chalk writing');
     lecture.dispose();
+    globalThis.fetch=fetchReport;
+    const storageRoot=new Three.Scene(),storage=await createLecture(storageRoot,{capabilities:{getMaxAnisotropy:()=>8}},{retractable:true});
+    const rig=storageRoot.getObjectByName('Whole six-board retracting assembly');
+    assert.equal(rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
+    assert(storage.hoverTargets.some(o=>o.userData.action==='lectern:stow'));
+    storage.toggleStorage();const frozen=storage.clock.elapsed;for(let i=0;i<50;i++)storage.update(.1);
+    assert(storage.stored&&!rig.visible);assert(storage.consoleButtons.every(b=>!b.visible));assert.equal(rig.position.y,-7.2);assert.equal(storage.clock.elapsed,frozen);
+    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);
+    assert(rig.visible&&!storage.stored);assert(storage.consoleButtons.every(b=>b.visible));assert.equal(rig.position.y,0);
+    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);await storage.setReport('hu');assert(!storage.stored);for(let i=0;i<50;i++)storage.update(.1);assert(rig.visible);assert.equal(rig.position.y,0);storage.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
     const kmRoot=new Three.Group(),km=await createLecture(kmRoot,{capabilities:{getMaxAnisotropy:()=>8}},{reports:[KM_REPORT],defaultReport:'km',requireSelection:true,boardScale:.5});

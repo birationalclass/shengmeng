@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v98-reef';
+import {createBeachMaterial} from './beach-material.js?v100-reef';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,12 +14,12 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v98-reef';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v100-reef';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v76-villa';
+import {createCampus} from './campus.js?v101-storage';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -303,11 +303,15 @@ export async function createRetreat(renderer,scene,report,device={}){
         for(int i=0;i<5;i++){
           float k=float(i),angle=.43+k*2.399963;
           vec2 direction=vec2(cos(angle),sin(angle));
-          float frequency=4.3+k*1.37,amplitude=.047/(1.+k*.24);
-          float phase=dot(p,direction)*frequency-time*sqrt(9.81*frequency)+k*1.37;
-          gradient+=direction*(amplitude*frequency*cos(phase));
-          float bend=-amplitude*frequency*frequency*sin(phase);
-          curvature+=mat2(direction.x*direction.x,direction.x*direction.y,direction.x*direction.y,direction.y*direction.y)*bend;
+          float frequency=2.4+k*.87,amplitude=.085/(1.+k*.32);
+          vec2 crossDirection=vec2(-direction.y,direction.x);
+          float warp=dot(p,crossDirection)*.47+time*.13+k*2.17;
+          float phase=dot(p,direction)*frequency-time*sqrt(9.81*frequency)+k*1.37+.8*sin(warp);
+          vec2 g=direction*frequency+crossDirection*(.376*cos(warp));
+          gradient+=g*(amplitude*cos(phase));
+          mat2 outerG=mat2(g.x*g.x,g.x*g.y,g.x*g.y,g.y*g.y);
+          mat2 outerCross=mat2(crossDirection.x*crossDirection.x,crossDirection.x*crossDirection.y,crossDirection.x*crossDirection.y,crossDirection.y*crossDirection.y);
+          curvature+=amplitude*(-sin(phase)*outerG-cos(phase)*.17672*sin(warp)*outerCross);
         }
       }
       float sandCaustic(vec2 bottom,float depth){
@@ -357,7 +361,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec2 drift=waveOffset*windWaves;
         vec2 waveUV=uv*.035+vec2(time*.011,-time*.007)-drift*.007;
         vec2 bend=vec2(sin(uv.y*.023+sin(uv.x*.017)),sin(uv.x*.019+sin(uv.y*.013)))*.09;
-        vec3 a=mix(texture2D(normalMap,waveUV+bend).xyz*2.-1.,scatteredNormal(waveUV+bend),.25);
+        vec3 a=mix(texture2D(normalMap,waveUV+bend).xyz*2.-1.,scatteredNormal(waveUV+bend),.6);
         vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,mat2(.7986,-.6018,.6018,.7986)*uv*.0173+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
         float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
         float effectiveWave=min(1.5,max(.5,waveStrength)+.8*windGain);
@@ -383,9 +387,12 @@ export async function createRetreat(renderer,scene,report,device={}){
         float nv=max(dot(normal,view),.001);
         float fresnel=.0204+.9796*pow(1.0-nv,5.0);
         vec3 halfVector=normalize(sunDirection+view);float nh=max(dot(normal,halfVector),0.0);
-        // GGX slope distribution; finite solar disk broadens the glint continuously.
-        float alpha=.012+.055*windGain+solarRadius*.45+rainAmount*.025,a2=alpha*alpha;
-        float distribution=a2/(3.14159265*pow(nh*nh*(a2-1.)+1.,2.));
+        // Gaussian wave slopes suppress GGX's long bright tails at the horizon.
+        // The half-vector determines the required slope, so sun elevation and
+        // observer height naturally move and reshape the specular footprint.
+        float alpha=.035+.09*windGain*effectiveWave+solarRadius*.45+rainAmount*.025,a2=alpha*alpha;
+        float nh2=max(nh*nh,.0001),slope2=(1.-nh2)/nh2;
+        float distribution=exp(-slope2/a2)/(3.14159265*a2*nh2*nh2);
         float nl=max(dot(normal,sunDirection),0.0),k=alpha*.5;
         float visibility=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
         float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
@@ -402,7 +409,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         if(sand>.001){
           vec2 bottom=uv-normal.xz*depth*.35;
           vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
-          vec3 sandColor=mix(vec3(.54,.49,.36),vec3(.055,.12,.10),reefCoverage(bottom));
+          vec3 sandColor=vec3(.54,.49,.36);
           vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
           float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
           shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
@@ -477,10 +484,10 @@ export async function createRetreat(renderer,scene,report,device={}){
   const fleet=createBoats(scene);
   const rain=createRain(scene);
   const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;
-  // Opaque architecture writes depth first. Hidden water/sky fragments can then
-  // fail early depth testing instead of shading through classroom walls/boards.
-  // Transparent glass still draws afterwards; no geometry is hidden or removed.
-  ocean.renderOrder=900;sky.renderOrder=1000;scene.add(sky);
+  // Opaque architecture and sky establish the background first. The ocean is
+  // transparent at the shore, so it must precede glass and non-depth-writing ink
+  // within the transparent queue. Keep depth tests: walls still occlude labels.
+  ocean.renderOrder=-100;sky.renderOrder=1000;scene.add(sky);
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);

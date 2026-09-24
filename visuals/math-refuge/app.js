@@ -19,8 +19,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v98-reef';
-import {createLecture} from './lecture.js?v88-arm-sweeps';
+import {createRetreat} from './scene.js?v101-storage';
+import {createLecture} from './lecture.js?v101-storage';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -289,7 +289,7 @@ function tick(stamp){
       $('world').dataset.boardFollow=boardFollow.following?'following':'manual';
       $('world').dataset.board=String(lecture.clock.active);
     }else delete $('world').dataset.boardFollow;
-    roomLecterns.forEach((lectern,i)=>{if(roomViews[i]?.consoleVisible)lectern.update({playing:rooms[i].playing,...rooms[i].progress,seeking:rooms[i].seeking});});
+    roomLecterns.forEach((lectern,i)=>{if(roomViews[i]?.consoleVisible)lectern.update({playing:rooms[i].playing,...rooms[i].progress,seeking:rooms[i].seeking,retractable:rooms[i].retractable,stored:rooms[i].stored});});
     $('world').dataset.camera=camera.position.toArray().map(x=>x.toFixed(3)).join(',');
     $('world').dataset.transition=blend?'moving':'settled';$('world').dataset.opening=opening?'overview':'complete';
     const prior=SHOTS.slice(0,shot).reduce((a,s)=>a+s.duration,0);
@@ -345,7 +345,7 @@ try{
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
   $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{retractable:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -495,6 +495,7 @@ function installPhysicalControls(){
   };
   bindPhysicalButtons($('world'),controls,hit,action=>{
     if(action==='lectern:view')enterSpeakerView();
+    else if(action==='lectern:stow')$('boardStorage').click();
     else if(action==='lectern:play')$('lecturePlay').click();
     else if(action==='lectern:previous')$('lecturePrevious').click();
     else if(action==='lectern:next')$('lectureNext').click();
@@ -538,8 +539,10 @@ reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lect
 window.addEventListener('pagehide',()=>renderer?.setAnimationLoop(null));
 window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime=performance.now();renderer.setAnimationLoop(tick);}});
 
+$('boardStorage').addEventListener('click',()=>{if(!lecture?.retractable)return;lecture.toggleStorage();boardFollow.touch();stopTour();updateLectureUI();});
 let lectureStatus='';
 function updateLectureUI(){
+  $('boardStorage').hidden=!lecture.retractable;$('boardStorage').textContent=lecture.stored?'升起黑板':'收起黑板';$('boardStorage').setAttribute('aria-pressed',String(lecture.stored));
   const status=reportProgress||reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
   $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
   for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;

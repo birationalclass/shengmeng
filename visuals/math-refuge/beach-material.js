@@ -1,12 +1,10 @@
-import {seaDepthGLSL} from './sea-depth.js?v98-reef';
 import * as THREE from 'three';
 export function createBeachMaterial(seaLevel){
  const clock={value:0},material=new THREE.MeshStandardMaterial({color:'#c9b88f',roughness:.94});
  material.onBeforeCompile=shader=>{
  shader.uniforms.sandTime=clock;shader.uniforms.sandSea={value:seaLevel};
  shader.vertexShader='varying vec3 sandWorld;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsandWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
- shader.fragmentShader=`${seaDepthGLSL}
-varying vec3 sandWorld;uniform float sandTime,sandSea;
+ shader.fragmentShader=`varying vec3 sandWorld;uniform float sandTime,sandSea;
  float sandHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
  float sandNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(sandHash(i),sandHash(i+vec2(1,0)),f.x),mix(sandHash(i+vec2(0,1)),sandHash(i+vec2(1,1)),f.x),f.y);}
  `+shader.fragmentShader;
@@ -30,7 +28,7 @@ varying vec3 sandWorld;uniform float sandTime,sandSea;
  float sandRelief=(grain-.5)*.006*coarseFade+(fine-.5)*.0017*fineFade;
  sandRelief*=mix(1.,.35,damp);
  float grainFade=coarseFade;
- diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.10,.15,.12),reefCoverage(sandWorld.xz/1.41421356237));
+
  diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.30*grainFade+fleck+(fine-.5)*.13*fineFade);
   diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.18);
  diffuseColor.rgb+=vec3(.10,.12,.11)*washEdge;
