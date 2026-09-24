@@ -458,6 +458,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const flight of allObjects.filter(o=>o.name==='Seminar supported stair flight')){assert(flight.userData.riser>.14&&flight.userData.riser<.18);assert(flight.userData.tread>.25);}
     result.setTime(12,true);assert(scene.fog.density<=.0003);
     const sky=scene.getObjectByName('Continuous Shanghai sky');
+    assert(result.ocean.renderOrder>0&&sky.renderOrder>result.ocean.renderOrder,'Opaque buildings establish depth before the expensive water/sky backgrounds');
+    assert(sky.material.depthTest&&!sky.material.depthWrite&&result.ocean.material.depthWrite);
     assert(sky.material.uniforms.radius.value>.008&&sky.material.uniforms.radius.value<.010);
     assert(sky.material.uniforms.day.value>.9);
     assert(result.rain.roofs.length>=9,'All teaching and villa roofs shelter the rain');

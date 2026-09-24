@@ -348,7 +348,11 @@ export async function createRetreat(renderer,scene,report,device={}){
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   const rain=createRain(scene);
-  const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;scene.add(sky);
+  const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;
+  // Opaque architecture writes depth first. Hidden water/sky fragments can then
+  // fail early depth testing instead of shading through classroom walls/boards.
+  // Transparent glass still draws afterwards; no geometry is hidden or removed.
+  ocean.renderOrder=900;sky.renderOrder=1000;scene.add(sky);
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
