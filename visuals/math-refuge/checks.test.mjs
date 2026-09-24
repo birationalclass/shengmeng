@@ -194,6 +194,12 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
     const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
+    const residenceLamps=[];result.residence.root.traverse(o=>{if(o.isPointLight)residenceLamps.push(o);});
+    result.residence.update({position:result.residence.root.position.clone()},0);
+    assert(residenceLamps.every(l=>l.visible&&l.intensity>0));
+    result.residence.update({position:new Three.Vector3(0,0,0)},0);
+    assert(residenceLamps.every(l=>l.visible&&l.intensity===0),'Distance changes lamp intensity without changing shader light counts');
+
     const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.x< -1100);assert(result.residence.root.getObjectByName('Roof number 10'));
     assert(!result.water);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
@@ -758,6 +764,11 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const oldSeek=lecture.seek(23),newSeek=lecture.seek(4);await Promise.all([oldSeek,newSeek]);assert.equal(lecture.clock.page,4,'Latest scrub wins');
     const finalPage=lecture.pages.length-1;await lecture.seek(finalPage);assert(lecture.clock.ended);lecture.update(.1);assert.equal(lecture.clock.page,finalPage);
     await lecture.seek(1);assert(!lecture.clock.ended);assert.equal(lecture.clock.phase,'hold');
+    const dryMaterial=boards[lecture.clock.active].children[0].material,dryRoughVersion=dryMaterial.roughnessMap.version,dryInkVersion=dryMaterial.map.version;
+    lecture.clock.slots[lecture.clock.active].progress=.5;lecture.update(.1,true);
+    assert(dryMaterial.map.version>dryInkVersion,'Changed ink still uploads');
+    assert.equal(dryMaterial.roughnessMap.version,dryRoughVersion,'Dry writing does not upload an unchanged roughness map');
+
     // Reentry while erasing used to dereference a cleared wet-ink cache.
     await lecture.seek(7);lecture.clock.select(8);lecture.clock.phase='erase';lecture.clock.elapsed=lecture.clock.duration*.4;
     const eraseProgress=lecture.clock.progress;await lecture.setRenderActive(false);await lecture.setRenderActive(true);

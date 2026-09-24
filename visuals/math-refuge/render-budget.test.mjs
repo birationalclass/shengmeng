@@ -15,7 +15,7 @@ test('resolution uses sustained GPU pressure, protects reading, and recovers slo
  feed(40,100);assert.equal(budget.scale,.65);
  budget.update(now,{reading:true});assert.equal(budget.scale,.80);
  for(let i=0;i<50;i++){now+=200;budget.sample(40,now);budget.update(now,{reading:true});}assert.equal(budget.scale,.80);
- feed(8,400);assert.equal(budget.scale,1);
+ feed(8,600);assert.equal(budget.scale,1);
  budget.sample(100,now+200);budget.update(now+200);assert.equal(budget.scale,1,'One expensive frame is not a reason to resize');
  feed(40,30);assert(budget.scale<1);budget.update(now,{enabled:false});assert.equal(budget.scale,1);
 });
@@ -47,4 +47,12 @@ test('GPU timer never waits for incomplete results and discards disjoint or expi
  disjoint=false;available=false;timer.begin(1200);timer.end();assert.equal(timer.poll(3000),null);assert.equal(deleted,3);
  timer.dispose();assert.equal(begins,3);
  const unsupported=createGpuTimer({getExtension:()=>null});unsupported.begin(1000);unsupported.end();assert.equal(unsupported.poll(2000),null);
+});
+test('60 Hz budget leaves headroom and does not restore detail at borderline frame times',()=>{
+ const budget=new RenderBudget();
+ for(let t=200;t<=5000;t+=200){budget.sample(17,t);budget.update(t,{reading:true});}
+ assert(budget.scale<1,'A 17 ms GPU frame already misses the 16.7 ms presentation deadline');
+ const reduced=budget.scale;
+ for(let t=5200;t<=30000;t+=200){budget.sample(10,t);budget.update(t,{reading:true});}
+ assert.equal(budget.scale,reduced,'Keep spare capacity instead of oscillating around 60 FPS');
 });

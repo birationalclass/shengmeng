@@ -23,8 +23,8 @@ export class RenderBudget{
     const ordered=[...this.samples].sort((a,b)=>a-b);
     this.gpuMs=ordered[Math.floor(ordered.length*.75)];
     let next=this.scale;
-    if(this.gpuMs>19)next=Math.max(floor,this.scale-Math.min(.12,Math.max(.04,this.scale*(1-Math.sqrt(16/this.gpuMs)))));
-    else if(this.gpuMs<12&&now-this.changedAt>=6000)next=Math.min(1,this.scale+.02);
+    if(this.gpuMs>15)next=Math.max(floor,this.scale-Math.min(.12,Math.max(.04,this.scale*(1-Math.sqrt(12/this.gpuMs)))));
+    else if(this.gpuMs<9&&now-this.changedAt>=10000)next=Math.min(1,this.scale+.02);
     next=Number(next.toFixed(2));
     if(next!==this.scale){this.scale=next;this.changedAt=now;this.samples=[];}
     return this.scale;

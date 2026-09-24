@@ -1,6 +1,6 @@
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
 import {advanceCloudWind,windVelocity} from './cloud-wind.js?v77-wind-clouds';
-import {createResidence} from './residence.js?v76-villa';
+import {createResidence} from './residence.js?v82-steady';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v56-continuous-scene';
 import * as THREE from 'three';
@@ -9,7 +9,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v79-mobile';
+import {createWeatherSky} from './weather-sky.js?v82-steady';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';

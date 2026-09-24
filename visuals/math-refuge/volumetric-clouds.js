@@ -26,6 +26,38 @@ export function createVolumetricClouds(renderer,device={}){
  void main(){if(coverage<.0001){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=topDistance(d,1.3),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/${steps}.;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
  for(int i=0;i<${steps};i++){vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
  float distanceFade=exp(-start*.025);cloudResult=vec4(color*distanceFade,(1.-transmittance)*distanceFade);}`});
- const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);let key='',last=-Infinity;
- return {get texture(){return targets[front].texture;},update(u){const v=[u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');const now=performance.now();u.cloudBlend.value=Math.min(1,(now-last)/interval);if(v===key||now-last<interval)return;const first=key==='';key=v;last=now;front=1-front;u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:1-front].texture;u.cloudBlend.value=first?1:0;uniforms.origin.value.copy(u.cloudOrigin.value);uniforms.coverage.value=u.cloud.value;uniforms.sun.value.copy(u.sunPosition.value);uniforms.sunTint.value.copy(u.sunColor.value);uniforms.day.value=u.day.value;uniforms.storm.value=u.storm.value;uniforms.offset.value.copy(u.cloudOffset.value);const previous=renderer.getRenderTarget(),auto=renderer.autoClear;try{renderer.autoClear=true;renderer.setRenderTarget(targets[front]);renderer.render(scene,camera);}finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}},dispose(){noise.dispose();targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};
+ const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
+ const tileCount=device.mobile?2:4;let key='',last=-Infinity,pending=null;
+ function capture(u){
+  uniforms.origin.value.copy(u.cloudOrigin.value);uniforms.coverage.value=u.cloud.value;uniforms.sun.value.copy(u.sunPosition.value);
+  uniforms.sunTint.value.copy(u.sunColor.value);uniforms.day.value=u.day.value;uniforms.storm.value=u.storm.value;uniforms.offset.value.copy(u.cloudOffset.value);
+ }
+ function renderTile(target,tile,count){
+  const y=Math.floor(tile*size/2/count),end=Math.floor((tile+1)*size/2/count);
+  // Keep the full viewport/UVs: the scissor only limits fragment work. Scissor
+  // state belongs to this target, so restoring the prior target restores its state.
+  target.scissor.set(0,y,size,end-y);target.scissorTest=true;
+  const previous=renderer.getRenderTarget(),auto=renderer.autoClear;
+  try{renderer.autoClear=true;renderer.setRenderTarget(target);renderer.render(scene,camera);}
+  finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}
+ }
+ function publish(u,now,next,first){
+  const prior=front;front=next;last=now;
+  u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
+ }
+ return {get texture(){return targets[front].texture;},update(u,now=performance.now()){
+  u.cloudBlend.value=Math.min(1,(now-last)/interval);
+  if(pending){
+   renderTile(targets[pending.target],pending.tile++,tileCount);
+   if(pending.tile===tileCount){key=pending.key;publish(u,now,pending.target,false);pending=null;}
+   return;
+  }
+  const nextKey=[u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');
+  if(nextKey===key||now-last<interval)return;
+  capture(u);const next=1-front;
+  // Prepare the initial panorama before entry. Later refreshes never publish a
+  // partially drawn image, nor overwrite the previous frame during its blend.
+  if(!key){renderTile(targets[next],0,1);key=nextKey;publish(u,now,next,true);return;}
+  pending={key:nextKey,target:next,tile:1};renderTile(targets[next],0,tileCount);
+ },dispose(){noise.dispose();targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};
 }

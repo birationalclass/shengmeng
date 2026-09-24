@@ -219,7 +219,7 @@ export async function createLecture(scene,renderer,options={}){
   function draw(index){
     const board=boards[index],slot=clock.slots[index];
     if(!renderActive||hydrating)return;
-    if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;}return;}
+    if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
@@ -247,12 +247,13 @@ export async function createLecture(scene,renderer,options={}){
         wipeSamples=end+1;ctx.drawImage(wipeCanvas,0,0,W,H);
       }
     }
-    const r=board.roughCtx;r.fillStyle='white';r.fillRect(0,0,W/4,H/4);
+    const r=board.roughCtx,roughChanged=board.roughKey!==wetKey;
+    if(roughChanged){r.fillStyle='white';r.fillRect(0,0,W/4,H/4);}
     if(wetKey)for(let i=0;i<=Math.floor(wet.progress*420);i++){
       const p=eraserPose(i/420,W,H,wet.plan),age=effectTime-wet.started-i/420*wet.duration,opacity=wetOpacity(Math.max(0,age));if(!p.contact||opacity<=0)continue;
-      for(const [target,scale] of [[ctx,1],[r,.25]]){target.save();target.translate(p.x*scale,p.y*scale);target.rotate(p.angle);target.fillStyle=scale===1?`rgba(4,24,22,${opacity*.32})`:`rgba(0,0,0,${opacity*.6})`;target.fillRect(-EW*scale,-EH*scale,EW*2*scale,EH*2*scale);target.restore();}
+      for(const [target,scale] of (roughChanged?[[ctx,1],[r,.25]]:[[ctx,1]])){target.save();target.translate(p.x*scale,p.y*scale);target.rotate(p.angle);target.fillStyle=scale===1?`rgba(4,24,22,${opacity*.32})`:`rgba(0,0,0,${opacity*.6})`;target.fillRect(-EW*scale,-EH*scale,EW*2*scale,EH*2*scale);target.restore();}
     }
-    board.roughTexture.needsUpdate=true;
+    if(roughChanged){board.roughKey=wetKey;board.roughTexture.needsUpdate=true;}
     board.texture.needsUpdate=true;
   }
   function positionTool(tool,x,y){
