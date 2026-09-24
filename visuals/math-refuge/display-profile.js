@@ -1,7 +1,7 @@
 // Spend the mobile pixel budget on edges and text before optional glow effects.
 export function displayProfile(width,height,dpr=1,quality='high',maxSamples=4,nativeSamples=4,device={}){
   width=Math.max(1,width);height=Math.max(1,height);
-  const compact=Math.min(width,height)<=700,high=quality==='high';
+  const compact=Math.min(width,height)<=700,high=quality!=='balanced';
   const mobile=Boolean(device.mobile),safe=Boolean(device.safe);
   const budget=mobile?(safe?650000:high?1200000:850000):high?(device.gpuTiming===false?2800000:compact?3500000:4000000):2200000;
   const pixelRatio=Math.min(Math.max(1,dpr||1),(mobile?(safe?1.25:2):high?3:1.75),Math.sqrt(budget/(width*height)));

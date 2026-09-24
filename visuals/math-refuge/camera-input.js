@@ -7,7 +7,15 @@ export function configureCameraInput(controls,element){
   const pointer=event=>{pointerType=event.pointerType;apply();};
   // Capture runs before OrbitControls begins handling this pointer gesture.
   element.addEventListener('pointerdown',pointer,{capture:true,passive:true});apply();
+  const wheel=event=>{if(!controls.enabled||!controls.object)return;event.preventDefault();event.stopImmediatePropagation();
+    const direction=controls.target.clone().sub(controls.object.position).normalize();
+    const pixels=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?element.clientHeight:1);
+    direction.multiplyScalar(-Math.max(-240,Math.min(240,pixels))*.012);
+    controls.object.position.add(direction);controls.target.add(direction);controls.update();
+    controls.dispatchEvent({type:'start'});controls.dispatchEvent({type:'end'});
+  };
+  element.addEventListener('wheel',wheel,{capture:true,passive:false});
   return {set(value){
     const number=Number(value);sensitivity=Number.isFinite(number)?Math.max(.08,Math.min(.6,number)):DEFAULT_ROTATION;apply();
-  },dispose(){element.removeEventListener('pointerdown',pointer,true);}};
+  },dispose(){element.removeEventListener('pointerdown',pointer,true);element.removeEventListener('wheel',wheel,true);}};
 }

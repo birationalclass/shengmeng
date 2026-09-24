@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {CLOUD_LEVELS} from './graphics-settings.js?v84-display';
 // Persistent 3D Perlin-like value/Worley density volume, not screen-space cloud stamps.
 function densityTexture(N=64){
  const data=new Uint8Array(N*N*N*4),hash=(x,y,z)=>{let n=Math.imul(x,374761393)^Math.imul(y,668265263)^Math.imul(z,2147483647);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;};
@@ -13,18 +14,18 @@ function densityTexture(N=64){
 }
 export function createVolumetricClouds(renderer,device={}){
  if(!renderer?.isWebGLRenderer||device.safe)return null;
- const size=device.cloudSize||1024,steps=device.cloudSteps||32,interval=device.cloudInterval||100;
+ let size=device.cloudSize||512,steps=device.cloudSteps||24,interval=device.cloudInterval||250;
  const noise=densityTexture(device.noiseSize||64),target=new T.WebGLRenderTarget(size,size/2,{type:renderer.extensions.has('EXT_color_buffer_float')?T.HalfFloatType:T.UnsignedByteType,depthBuffer:false,stencilBuffer:false});target.texture.wrapS=T.RepeatWrapping;const targets=[target,target.clone()];let front=0;
- const uniforms={origin:{value:new T.Vector3(0,.015,0)},volume:{value:noise},coverage:{value:0},sun:{value:new T.Vector3(0,1,0)},sunTint:{value:new T.Color('white')},day:{value:1},storm:{value:0},offset:{value:new T.Vector2()}};
+ const uniforms={marchSteps:{value:steps},origin:{value:new T.Vector3(0,.015,0)},volume:{value:noise},coverage:{value:0},sun:{value:new T.Vector3(0,1,0)},sunTint:{value:new T.Color('white')},day:{value:1},storm:{value:0},offset:{value:new T.Vector2()}};
  const material=new T.ShaderMaterial({glslVersion:T.GLSL3,uniforms,depthTest:false,depthWrite:false,vertexShader:'out vec2 cloudUV;void main(){cloudUV=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
  precision highp float;precision highp sampler3D;in vec2 cloudUV;out vec4 cloudResult;
- uniform sampler3D volume;uniform float coverage,day,storm;uniform vec3 sun,sunTint,origin;uniform vec2 offset;
+ uniform sampler3D volume;uniform float marchSteps;uniform float coverage,day,storm;uniform vec3 sun,sunTint,origin;uniform vec2 offset;
  float topDistance(vec3 d,float height){float r=6360.+origin.y,b=r*d.y;return -b+sqrt(b*b+pow(6360.+height,2.)-r*r);}
  float density(vec3 p,bool detailed){float altitude=length(p+vec3(0.,6360.,0.))-6360.;float h=(altitude-1.3)/1.8;if(h<=0.||h>=1.)return 0.;
   vec3 uv=vec3((p.x-offset.x)*.14,h*.23,(p.z-offset.y)*.14);vec3 n=texture(volume,uv).rgb;float shape=n.r*.78+n.g*.22;float detail=detailed?texture(volume,uv*3.7+vec3(.13,.21,.07)).g:.65;
   float profile=smoothstep(0.,.12,h)*(1.-smoothstep(.45,1.,h));float threshold=mix(.74,.30,coverage);float body=max(0.,shape-threshold)*5.5;body=max(0.,body-(1.-detail)*.32);return body*profile*smoothstep(0.,.06,coverage);}
- void main(){if(coverage<.0001){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=topDistance(d,1.3),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/${steps}.;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
- for(int i=0;i<${steps};i++){vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
+ void main(){if(coverage<.0001){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=topDistance(d,1.3),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/marchSteps;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
+ for(int i=0;i<32;i++){if(float(i)>=marchSteps)break;vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
  float distanceFade=exp(-start*.025);cloudResult=vec4(color*distanceFade,(1.-transmittance)*distanceFade);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
  const tileCount=device.mobile?2:4;let key='',last=-Infinity,pending=null;
@@ -45,7 +46,8 @@ export function createVolumetricClouds(renderer,device={}){
   const prior=front;front=next;last=now;
   u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
  }
- return {get texture(){return targets[front].texture;},update(u,now=performance.now()){
+ return {setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;targets.forEach(t=>t.setSize(size,size/2));key='';pending=null;last=-Infinity;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
+  if(u.cloud.value<.0001){pending=null;key='';u.useVolumeClouds.value=0;return;}u.useVolumeClouds.value=1;
   u.cloudBlend.value=Math.min(1,(now-last)/interval);
   if(pending){
    renderTile(targets[pending.target],pending.tile++,tileCount);

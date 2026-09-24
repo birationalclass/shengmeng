@@ -1,15 +1,16 @@
+import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
 import {advanceCloudWind,windVelocity} from './cloud-wind.js?v77-wind-clouds';
 import {createResidence} from './residence.js?v82-steady';
 import {createRain} from './weather-rain.js?v72-night-rain';
-import {roundedDetailLevel} from './render-budget.js?v56-continuous-scene';
+import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v44-hall-clearance';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v82-steady';
+import {createWeatherSky} from './weather-sky.js?v84-display';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -268,7 +269,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      windWaves:{value:1},waveStrength:{value:1},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
       varying vec3 vWorld;
@@ -279,23 +280,45 @@ export async function createRetreat(renderer,scene,report,device={}){
         #include <fog_vertex>
       }`,
     fragmentShader:`
-      uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform float windWaves,waveStrength,reflectionDetail,sunReflection;uniform vec2 windFlow,waveOffset;uniform float windSpeed,skyDay,skyCoverage,skyStorm;uniform sampler2D skyMap,skyCloudMap,skyCloudPrevious;uniform float skyPhysical,skyCloudBlend,skyCloudEnabled,solarRadius,waterDetail;uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
       #include <common>
       #include <fog_pars_fragment>
       ${seaDepthGLSL}
+      vec3 grazingSky(vec2 heading){
+        vec2 hUV=vec2(.5+atan(heading.y,heading.x)/6.28318530718,0.);
+        vec3 h=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,hUV).rgb+vec3(.006,.013,.027)*(1.-skyDay),skyPhysical);
+        h=mix(h,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
+        vec4 c=mix(texture2D(skyCloudPrevious,hUV),texture2D(skyCloudMap,hUV),skyCloudBlend);
+        return h*(1.-c.a*skyCloudEnabled)+c.rgb*skyCloudEnabled;
+      }
       void main(){
         vec2 uv=vWorld.xz/siteScale;
-        vec3 a=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)).xyz*2.0-1.0;
-        vec3 b=texture2D(normalMap,uv*.013+vec2(-time*.008,time*.005)).xyz*2.0-1.0;
-        vec3 normal=normalize(vec3((a.x+b.x)*.20,1.0,(a.y+b.y)*.20));
+        vec2 waveUV=uv-mix(vec2(time*.06,0.),waveOffset,windWaves);
+        vec3 a=texture2D(normalMap,waveUV*.035).xyz*2.0-1.0;
+        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,(uv-waveOffset*.68)*.013+vec2(.17,.31)).xyz*2.0-1.0;
+        float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
+        float chop=mix(.025,.22,windGain)*waveStrength;
+        vec2 crossWind=vec2(-windFlow.y,windFlow.x);
+        float swellPhase=dot(waveUV,windFlow)*.095;
+        vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y)*.55;
+        slopes+=windFlow*cos(swellPhase)*(.2+.6*windGain);
+        vec3 normal=normalize(vec3(slopes.x*chop,1.,slopes.y*chop));
         // Expanding impact rings have staggered births and fade before cell edges.
         vec2 cell=floor(vWorld.xz*.65),local=fract(vWorld.xz*.65)-.5;
         float seed=fract(sin(dot(cell,vec2(127.1,311.7)))*43758.5453),age=fract(time*1.6+seed),r=length(local);
         float ring=exp(-pow((r-age*.42)/.025,2.))*(1.-age)*smoothstep(0.,.08,age)*(1.-smoothstep(.37,.48,r));
         normal=normalize(normal+vec3(local.x,0.,local.y)*ring*rainAmount*.22);
         vec3 view=normalize(cameraPosition-vWorld);
-        float fresnel=pow(1.0-max(dot(normal,view),0.0),4.0);
-        float glitter=pow(max(dot(normal,normalize(sunDirection+view)),0.0),180.0);
+        float nv=max(dot(normal,view),.001);
+        float fresnel=.0204+.9796*pow(1.0-nv,5.0);
+        vec3 halfVector=normalize(sunDirection+view);float nh=max(dot(normal,halfVector),0.0);
+        // GGX slope distribution; finite solar disk broadens the glint continuously.
+        float alpha=.025+.07*windGain+solarRadius*.8+rainAmount*.025,a2=alpha*alpha;
+        float distribution=a2/(3.14159265*pow(nh*nh*(a2-1.)+1.,2.));
+        float nl=max(dot(normal,sunDirection),0.0),k=alpha*.5;
+        float visibility=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
+        float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
+        float glitter=min(12.,distribution*visibility*sunF/(4.*nv+.001));
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
         float depth=seaDepthAt(uv);
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
@@ -307,13 +330,21 @@ export async function createRetreat(renderer,scene,report,device={}){
         float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
         waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
-        vec3 reflected=mix(vec3(.07,.24,.43),vec3(.24,.28,.32),overcast);
-        vec3 color=mix(waterColor,reflected,fresnel*.62)+sunTint*glitter*.38*sunStrength;
-        color=mix(color,vec3(.67,.77,.71),foam*.45);
-        gl_FragColor=vec4(color*nightVisibility,1.0);
-        #include <fog_fragment>
-        // Match the analytic far ocean before the finite mesh edge becomes visible.
-        gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,smoothstep(2500.,3500.,length(vWorld.xz-cameraPosition.xz)));
+        vec3 reflection=reflect(-view,normal);reflection.y=max(.002,reflection.y);
+        vec2 reflectedUV=vec2(.5+atan(reflection.z,reflection.x)/6.28318530718,sqrt(clamp(asin(clamp(reflection.y,0.,1.))/1.57079632679,0.,1.)));
+        vec3 reflected=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,reflectedUV).rgb,skyPhysical);
+        reflected=mix(reflected,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
+        vec4 clouds=vec4(0.);if(reflectionDetail>.5)clouds=mix(texture2D(skyCloudPrevious,reflectedUV),texture2D(skyCloudMap,reflectedUV),skyCloudBlend);
+        reflected=reflected*(1.-clouds.a*skyCloudEnabled)+clouds.rgb*skyCloudEnabled;
+        reflected+=vec3(.002,.004,.009)*(1.-nightVisibility);
+        vec3 color=waterColor*nightVisibility*(1.-fresnel)+reflected*fresnel+sunTint*glitter*sunStrength*sunReflection;
+        color=mix(color,vec3(.67,.77,.71),foam*.45*nightVisibility);
+        float distanceToEye=length(vWorld.xz-cameraPosition.xz);
+        vec3 horizonColor=grazingSky(-view.xz);
+        float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
+        float edgeFade=smoothstep(1800.,3200.,distanceToEye);
+        color=mix(color,horizonColor,max(aerial,edgeFade));
+        gl_FragColor=vec4(color,1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`
@@ -336,11 +367,11 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
   for(const item of lodBatches){item.mesh.updateMatrixWorld();item.bounds=item.mesh.boundingBox.clone().applyMatrix4(item.mesh.matrixWorld);}
-  function updateGeometryLOD(camera,viewportHeight){
+  function updateGeometryLOD(camera,viewportHeight,full=false){
     const focal=viewportHeight*camera.zoom/(2*Math.tan(camera.fov*Math.PI/360));
     for(const item of lodBatches){
       const pixels=item.radius*focal/Math.max(.1,item.bounds.distanceToPoint(camera.position));
-      const level=roundedDetailLevel(pixels,item.mesh.userData.lodLevel);
+      const level=full?0:roundedDetailLevel(pixels,item.mesh.userData.lodLevel);
       if(level!==item.mesh.userData.lodLevel){item.mesh.geometry=level?item.low:item.high;item.mesh.userData.lodLevel=level;}
     }
   }
@@ -390,6 +421,12 @@ export async function createRetreat(renderer,scene,report,device={}){
     scene.fog.density=.000018+.00023*(1-day)+.00032*storm+.0012*weather.fog;
     scene.fog.color.copy(fogDay).lerp(fogNight,1-day).lerp(new THREE.Color('#929eac'),storm*.4*day);
     u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere();
+    const water=ocean.material.uniforms;water.skyMap.value=u.atmosphereMap.value;water.skyPhysical.value=u.useAtmosphere.value;water.skyCloudMap.value=u.cloudMap.value;water.skyCloudPrevious.value=u.cloudMapPrevious.value;water.skyCloudBlend.value=u.cloudBlend.value;water.skyCloudEnabled.value=u.useVolumeClouds.value;water.solarRadius.value=state.radius;
+    water.skyDay.value=day;water.skyCoverage.value=cloud;water.skyStorm.value=storm;
+    const vx=cloudWind.velocity.x,vz=cloudWind.velocity.z,windLength=Math.hypot(vx,vz);
+    if(windLength>.000001)water.windFlow.value.set(vx/windLength,vz/windLength);
+    water.windSpeed.value=weather.wind/3.6;water.waveOffset.value.set(cloudWind.offset.x*1000/BUILDING_SCALE*.45,cloudWind.offset.z*1000/BUILDING_SCALE*.45);
+    water.sunStrength.value=sunWaterVisibility(state.direction[1],state.radius)*(.22+.78*state.direct)*sunThrough;
     sky.userData.state={hour,elevation:state.elevation,cloud,day,sunIntensity:sun.intensity};
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}

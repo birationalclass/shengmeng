@@ -862,7 +862,7 @@ test('mouse and touch rotation are slower, with zoom and pan preserved',async()=
   for(const pointerType of ['mouse','touch']){
     const camera=new Three.PerspectiveCamera(60,1,.1,1000);camera.position.set(0,0,10);
     const controls=new OrbitControls(camera);let pointer,capture;
-    const element={clientHeight:800,addEventListener(type,handler,options){assert.equal(type,'pointerdown');pointer=handler;capture=options.capture;},removeEventListener(){}};
+    const element={clientHeight:800,addEventListener(type,handler,options){if(type==='pointerdown'){pointer=handler;capture=options.capture;}},removeEventListener(){}};
     controls.domElement=element;
     const zoom=controls.zoomSpeed,pan=controls.panSpeed,input=configureCameraInput(controls,element);
     assert(capture);pointer({pointerType});

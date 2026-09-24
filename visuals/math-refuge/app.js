@@ -1,7 +1,8 @@
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v84-display';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
-import {RenderBudget,createGpuTimer} from './render-budget.js?v82-steady';
+import {RenderBudget,createGpuTimer} from './render-budget.js?v84-display';
 import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
 import {teachingRoomAt} from './room-context.js?v57-proof-flow';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
@@ -15,13 +16,13 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v82-steady';
-import {createLecture} from './lecture.js?v83-eraser-arc';
+import {createRetreat} from './scene.js?v84-display';
+import {createLecture} from './lecture.js?v84-display';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
-import {displayProfile,boardFraming} from './display-profile.js?v81-imac';
-import {configureCameraInput} from './camera-input.js?v=4-controls';
+import {displayProfile,boardFraming} from './display-profile.js?v84-display';
+import {configureCameraInput} from './camera-input.js?v84-display';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v76-villa';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
@@ -69,7 +70,7 @@ const shotPosition=new THREE.Vector3(),shotTarget=new THREE.Vector3(),viewDirect
 const rooms=[],roomLecterns=[],roomViews=[],campusLightTarget=new THREE.Vector3(12*BUILDING_SCALE,3*BUILDING_SCALE,0);
 const roomFrustum=new THREE.Frustum(),roomProjection=new THREE.Matrix4();let visibilityAt=-Infinity;
 function updateRoomVisibility(stamp){
-  if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateGeometryLOD(camera,innerHeight);
+  if(stamp-visibilityAt<100)return;visibilityAt=stamp;camera.updateMatrixWorld();retreat?.updateGeometryLOD(camera,innerHeight,$('geometryDetail').value==='full');
   roomFrustum.setFromProjectionMatrix(roomProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse));
   const insideRoom=teachingRoomAt(camera.position);
   roomViews.forEach((v,i)=>{
@@ -171,6 +172,7 @@ function applyShot(dt){
 function resize(){
   if(!renderer)return;
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples,device);
+  profile.pixelRatio=resolutionRatio(profile.pixelRatio,$('resolutionScale').value,innerWidth,innerHeight,renderer.capabilities.maxTextureSize);profile.shadows=Number($('shadowQuality').value)>0;profile.shadowSize=Number($('shadowQuality').value)||1024;
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
@@ -189,23 +191,49 @@ function resize(){
 }
 function updateQualityReadout(){
   const ratio=profile.pixelRatio*renderScale;
+  $('resolutionValue').textContent=$('resolutionScale').value+'%';
   $('qualityReadout').textContent=`${ratio.toFixed(2)}× 分辨率 · ${profile.direct?nativeSamples:profile.samples}× 抗锯齿${renderScale<1?' · 自动平衡':''}`;
   $('world').dataset.pixelRatio=String(ratio);$('world').dataset.renderScale=String(renderScale);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
 }
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
-  const reading=physicalRoom>=0&&(roomViews[physicalRoom]?.visible||speakerView);
-  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile});
+  const desired=cloudOrder.indexOf($('cloudQuality').value),active=cloudOrder.indexOf(activeCloudQuality),target=1000/Number($('targetFPS').value);
+  if($('adaptiveQuality').value==='auto'&&desired>=0&&active>=0&&stamp-cloudAdjustedAt>6000&&renderBudget.gpuMs!=null){
+    const cost=renderBudget.gpuMs;let next=active;
+    if(cost>target*.85&&active>0)next--;
+    else if(cost<target*.45&&active<desired&&stamp-cloudAdjustedAt>20000)next++;
+    if(next!==active){activeCloudQuality=cloudOrder[next];retreat.sky.userData.setCloudQuality(activeCloudQuality);cloudAdjustedAt=stamp;renderBudget.reset();}
+  }
+  const reading=roomViews.some(v=>v.visible)||Boolean(SHOTS[shot].lecture)||speakerView;
+  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS:Number($('targetFPS').value),protectText:true});
   if(scale===renderScale)return;renderScale=scale;
   renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
   if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
   updateQualityReadout();
 
 }
+const graphicsKeys=['quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection'];
+let gpuName='',activeCloudQuality='medium',cloudAdjustedAt=0;const cloudOrder=['low','medium','high'];
+function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
-  resize();
+  resize();if(!retreat)return;
+  activeCloudQuality=$('cloudQuality').value;cloudAdjustedAt=performance.now();retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
+  retreat.ocean.material.uniforms.waterDetail.value=$('waterDetail').value==='high'?1:0;
+  retreat.ocean.material.uniforms.windWaves.value=$('windWaves').value==='on'?1:0;retreat.ocean.material.uniforms.waveStrength.value=Number($('waveStrength').value)/100;retreat.ocean.material.uniforms.reflectionDetail.value=$('waterReflection').value==='full'?1:0;retreat.ocean.material.uniforms.sunReflection.value=$('sunReflection').value==='on'?1:0;$('waveStrengthValue').textContent=$('waveStrength').value+'%';
+  const anisotropy=Math.min(Number($('textureFiltering').value),renderer.capabilities.getMaxAnisotropy()),seen=new Set();
+  scene.traverse(o=>{if(o.userData.boardSurface)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const key of ['map','normalMap','roughnessMap']){const t=m[key];if(t&&!seen.has(t)&&!t.isRenderTargetTexture){seen.add(t);if(t.anisotropy!==anisotropy){t.anisotropy=anisotropy;t.needsUpdate=true;}}}});
+  rooms.forEach(room=>room.setClarity($('boardClarity').value));
 }
-const renderBudget=new RenderBudget();let gpuTimer=null,renderScale=1;
+function applyGraphics(values){for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
+function detectGraphics(){
+ const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');gpuName=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'图形型号未公开';
+ $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
+ let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
+ const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
+ for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=0&&Number(value)<=150))$(id).value=value;}
+}
+const renderBudget=new RenderBudget();let gpuTimer=null,weatherTimer=null,renderScale=1,weatherGpuMs=null,weatherGpuSamples=[],weatherCpuMs=0,weatherProbeFrame=false,weatherProbeCounter=0;
 const frameSamples=[],cpuSamples=[];let metricsAt=0;
 function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
@@ -213,7 +241,9 @@ function tick(stamp){
   if(document.hidden||!entered)return;
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
   // Include cloud/atmosphere targets as well as the final scene in GPU timing.
-  if($('adaptiveQuality').value==='auto'||performanceMonitor.visible)gpuTimer?.begin(stamp);
+  weatherProbeFrame=!$('settings').hidden&&++weatherProbeCounter%3===0;
+  const weatherSample=weatherTimer?.poll(stamp);if(weatherSample!=null){weatherGpuSamples.push(weatherSample);if(weatherGpuSamples.length>40)weatherGpuSamples.shift();weatherGpuMs=weatherGpuSamples.reduce((a,b)=>a+b,0)/weatherGpuSamples.length;}
+  if(!weatherProbeFrame&&($('adaptiveQuality').value==='auto'||performanceMonitor.visible||!$('settings').hidden))gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
@@ -261,9 +291,10 @@ function tick(stamp){
   const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
   const lightTarget=nearResidence?retreat.residence.root.position:campusLightTarget;
   retreat.sun.target.position.lerp(lightTarget,1-Math.exp(-dt*2));
-  updateAtmosphere(dt);
+  const weatherStart=performance.now();if(weatherProbeFrame)weatherTimer?.begin(stamp);
+  try{updateAtmosphere(dt);}finally{if(weatherProbeFrame)weatherTimer?.end();}weatherCpuMs=performance.now()-weatherStart;
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
-  retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);
+  if($('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
@@ -271,14 +302,14 @@ function tick(stamp){
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
-  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
+  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
 try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
-  $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();fail(new Error('WebGL context lost'));});
+  $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();weatherTimer?.dispose();fail(new Error('WebGL context lost'));});
   renderer.debug.onShaderError=()=>fail(new Error('当前设备无法编译场景效果，请尝试低负载模式。'));
-  gpuTimer=createGpuTimer(renderer.getContext());device.gpuTiming=gpuTimer.supported;
+  gpuTimer=createGpuTimer(renderer.getContext());weatherTimer=createGpuTimer(renderer.getContext(),137);detectGraphics();device.gpuTiming=gpuTimer.supported;
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -348,8 +379,15 @@ document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.
 $('settingsButton').addEventListener('click',()=>{
   $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false');$('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
 });
-$('quality').addEventListener('change',()=>{if(retreat)setQuality();});
-$('adaptiveQuality').addEventListener('change',()=>{if(retreat){renderBudget.reset();updateRenderBudget(performance.now());}});
+$('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
+$('settingsClose').addEventListener('click',()=>{$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');});
+$('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('recommendStatus').textContent='已应用推荐 · 60 帧预算、文字保护、自动调整渲染精度。';});
+for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
+$('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textContent=$('waveStrength').value+'%';});
+$('resolutionScale').addEventListener('input',()=>{$('resolutionValue').textContent=$('resolutionScale').value+'%';});
+$('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setClarity($('boardClarity').value));try{localStorage.setItem('refuge-board-clarity',$('boardClarity').value);}catch{}});
+try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
+$('adaptiveQuality').addEventListener('change',()=>{if(retreat){renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});

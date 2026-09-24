@@ -12,11 +12,12 @@
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/"}}</script>
   <link rel="stylesheet" href="residence.css?v76-villa">
   <link rel="stylesheet" href="performance-monitor.css?v80-performance">
+  <link rel="stylesheet" href="graphics-settings.css?v84-display">
 </head>
 <body>
   <audio id="backgroundMusic" data-src="./assets/audio/norway-ambient.m4a" preload="none" loop></audio>
-  <canvas id="world" tabindex="0" aria-label="三维书院：拖动改变视角，滚轮缩放，方向键或 WASD 移动，空格暂停镜头。"></canvas>
-  <header class="chrome"><a href="../" class="back" aria-label="返回可视化列表">← <span>VISUAL LAB</span></a><div class="identity"><h1>数学难民营</h1><p>A RETREAT FOR WANDERING MINDS</p></div><div class="transport"><button id="tour" aria-pressed="true" class="icon-button" aria-label="暂停巡游" title="暂停巡游" data-tip="暂停巡游"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="pause-mark" d="M8 5v14M16 5v14"/><path class="play-mark" d="m8 4 12 8-12 8Z"/></svg></button><button id="musicButton" aria-pressed="false" class="icon-button" aria-label="播放背景音乐" title="播放背景音乐" data-tip="播放背景音乐"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/><path class="music-off" d="m3 3 18 18"/></svg></button><button id="fullscreen" aria-pressed="false" class="icon-button" aria-label="全屏浏览" title="全屏浏览" data-tip="全屏浏览"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="hideUI" class="icon-button" aria-label="隐藏界面，按 H 恢复" title="隐藏界面，按 H 恢复" data-tip="隐藏界面，按 H 恢复"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Zm1-9 18 18"/><circle cx="12" cy="12" r="3"/></svg></button><button id="performanceButton" aria-expanded="false" aria-controls="performancePanel" class="icon-button" aria-label="性能监测" title="性能监测" data-tip="性能监测"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17a9 9 0 1 1 18 0M5 13l2 1m1-7 1 2m7-2-1 2m4 4-2 1M12 15l4-5"/><circle cx="12" cy="16" r="2"/></svg></button><button id="settingsButton" aria-expanded="false" aria-controls="settings" class="icon-button" aria-label="设置" title="设置" data-tip="设置"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3-.7 2.3-2.2 1L4 5.7l-2 3.5 1.7 1.6v2.5L2 14.8l2 3.5 2.1-.6 2.2 1L9 21h4l.7-2.3 2.2-1 2.1.6 2-3.5-1.7-1.5v-2.5L20 9.2l-2-3.5-2.1.6-2.2-1L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div><span id="mode" role="status">自动镜头</span></header>
+  <canvas id="world" tabindex="0" aria-label="三维书院：拖动改变视角，滚轮前进后退，方向键或 WASD 移动，空格暂停镜头。"></canvas>
+  <header class="chrome"><a href="../" class="back" aria-label="返回可视化列表">← <span>VISUAL LAB</span></a><div class="identity"><h1>数学难民营</h1><p>A RETREAT FOR WANDERING MINDS</p></div><div class="transport"><button id="tour" aria-pressed="true" class="icon-button" aria-label="暂停巡游" title="暂停巡游" data-tip="暂停巡游"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="pause-mark" d="M8 5v14M16 5v14"/><path class="play-mark" d="m8 4 12 8-12 8Z"/></svg></button><button id="musicButton" aria-pressed="false" class="icon-button" aria-label="播放背景音乐" title="播放背景音乐" data-tip="播放背景音乐"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/><path class="music-off" d="m3 3 18 18"/></svg></button><button id="fullscreen" aria-pressed="false" class="icon-button" aria-label="全屏浏览" title="全屏浏览" data-tip="全屏浏览"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="hideUI" class="icon-button" aria-label="隐藏界面，按 H 恢复" title="隐藏界面，按 H 恢复" data-tip="隐藏界面，按 H 恢复"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Zm1-9 18 18"/><circle cx="12" cy="12" r="3"/></svg></button><button id="timeButton" class="icon-button" aria-label="时间与天气" aria-controls="timePanel" aria-expanded="false" title="时间与天气" data-tip="时间与天气"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 6.5V12l3.5 2"/></svg><span id="timeButtonClock" class="visually-hidden">--:--</span></button><button id="performanceButton" aria-expanded="false" aria-controls="performancePanel" class="icon-button" aria-label="性能监测" title="性能监测" data-tip="性能监测"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17a9 9 0 1 1 18 0M5 13l2 1m1-7 1 2m7-2-1 2m4 4-2 1M12 15l4-5"/><circle cx="12" cy="16" r="2"/></svg></button><button id="settingsButton" aria-expanded="false" aria-controls="settings" class="icon-button" aria-label="设置" title="设置" data-tip="设置"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3-.7 2.3-2.2 1L4 5.7l-2 3.5 1.7 1.6v2.5L2 14.8l2 3.5 2.1-.6 2.2 1L9 21h4l.7-2.3 2.2-1 2.1.6 2-3.5-1.7-1.5v-2.5L20 9.2l-2-3.5-2.1.6-2.2-1L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div><span id="mode" role="status">自动镜头</span></header>
   <aside id="performancePanel" class="chrome" hidden aria-label="性能监测">
     <div class="performance-heading"><h2>性能监测</h2><button id="performanceClose" class="icon-button" aria-label="关闭性能监测"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
     <div class="performance-main"><strong id="performanceFPS">—</strong><span>FPS</span></div><p id="performanceStatus">正在采样…</p>
@@ -25,7 +26,7 @@
     <p class="performance-note">P95：95% 的采样帧低于此耗时。CPU 为本页帧内工作，GPU 为场景与天空绘制采样；均不代表设备总占用率。纹理与几何体显示数量，不估算显存。</p>
   </aside>
   <nav id="roomControls" class="chrome" hidden aria-label="当前房间的黑板控制"><button id="lecternButton" class="icon-button" aria-label="讲台触控屏" title="讲台触控屏" data-tip="讲台触控屏"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v13H3zM8 21h8m-4-4v4M6 13h12m-8-5 4 2-4 2"/></svg></button><button id="reportButton" class="icon-button" aria-label="选择报告人和主题" title="选择报告人和主题" data-tip="选择报告人和主题"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="3"/><path d="M2 19v-2a6 6 0 0 1 12 0v2M16 5h6M16 10h6M18 15h4M18 20h4"/></svg></button><button id="lectureButton" aria-expanded="false" aria-controls="lecturePanel" class="icon-button" aria-label="板书" title="板书" data-tip="板书"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v12H3zM8 21l4-5 4 5M7 8h10M7 12h6"/></svg></button><button id="readerOpen" aria-expanded="false" aria-controls="chalkReader" class="icon-button" aria-label="高清板书" title="高清板书" data-tip="高清板书"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Zm0 0v15"/></svg></button></nav>
-  <button id="timeButton" class="chrome weather-chip" aria-controls="timePanel" aria-expanded="false" title="时间与天气">◷ 时间 <span id="timeButtonClock">--:--</span></button>
+
   <aside id="timePanel" class="chrome" hidden aria-label="时间与天气">
     <div class="time-heading"><h2>时间与天气</h2><button id="timeClose" class="icon-button" aria-label="关闭时间与天气">×</button></div>
     <label for="light">上海时间预览 <input id="light" type="range" min="0" max="23.99" step="0.01" value="12"></label>
@@ -40,18 +41,38 @@
     <p id="weatherDetail"></p><a href="https://open-meteo.com/" target="_blank" rel="noopener">天气数据：Open-Meteo ↗</a>
     <p class="sky-credit">星空影像：<a href="https://www.eso.org/public/images/eso0932a/" target="_blank" rel="noopener">ESO/S. Brunier</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>（球面映射与曝光调整）</p>
   </aside>
-  <aside id="settings" hidden>
-    <h2>空间设置</h2>
-    <label for="quality">画面质量 <select id="quality"><option value="balanced">流畅</option><option value="high" selected>精细</option></select></label>
-    <label for="adaptiveQuality">流畅度 <select id="adaptiveQuality"><option value="auto" selected>自动平衡</option><option value="fixed">固定画质</option></select></label>
-    <p id="qualityReadout" aria-live="polite"></p>
-    <label for="musicVolume">背景音乐音量 <output id="musicVolumeValue">18%</output><input id="musicVolume" type="range" min="0" max="100" step="1" value="18"></label>
-    <p class="music-credit">FLYING OVER NORWAY · Nature Relaxation</p>
-    <label for="rotationSensitivity">旋转灵敏度 <input id="rotationSensitivity" type="range" min="0.08" max="0.6" step="0.02" value="0.22"></label>
-    <label for="speed">巡游速度 <select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
-    <p>拖动后保持自由观察，松手不会自动巡游。点击“恢复巡游”或按空格才继续；其他章节只定位镜头。方向键或 WASD 平移，Q / E 升降；触屏双指可平移、缩放。</p>
-    <p>原创三维场景，借鉴参考片的空间与镜头风格，非原片模型复刻。</p>
-    <a href="https://www.bilibili.com/video/BV1umun6PEvs/" target="_blank" rel="noopener noreferrer">观看参考视频 ↗</a>
+  <aside id="settings" hidden aria-label="设置">
+    <div class="settings-heading"><h2>设置</h2><button id="settingsClose" aria-label="关闭设置">×</button></div>
+    <div class="settings-recommend"><p id="deviceReadout">正在检测图形能力…</p><button id="recommendGraphics">应用智能推荐</button><p id="recommendStatus">以 60 帧为目标，优先保留文字清晰度。</p></div>
+    <details open><summary>显示与性能</summary>
+      <label for="quality">画质预设<select id="quality"><option value="balanced">流畅</option><option value="high" selected>均衡清晰</option><option value="ultra">高精细</option><option value="custom">自定义</option></select></label>
+      <label for="targetFPS">目标帧率<select id="targetFPS"><option value="30">30 帧</option><option value="60" selected>60 帧</option><option value="120">120 帧</option></select></label>
+      <label for="resolutionScale">渲染精度<output id="resolutionValue">100%</output><input id="resolutionScale" type="range" min="75" max="150" step="5" value="100"></label>
+      <label for="adaptiveQuality">动态分辨率<select id="adaptiveQuality"><option value="auto" selected>自动 · 保护板书</option><option value="fixed">关闭 · 固定精度</option></select></label>
+      <p id="qualityReadout" aria-live="polite"></p>
+      <label for="shadowQuality">阴影<select id="shadowQuality"><option value="0">关闭</option><option value="1024">标准</option><option value="2048" selected>精细</option><option value="4096">超精细</option></select></label>
+      <label for="textureFiltering">斜视纹理清晰度<select id="textureFiltering"><option value="4">4×</option><option value="8">8×</option><option value="16" selected>16×</option></select></label>
+      <label for="geometryDetail">模型细节<select id="geometryDetail"><option value="auto">按屏幕大小优化</option><option value="full">始终精细</option></select></label>
+      <p>模型优化只简化远处圆角，不隐藏建筑。目标帧率控制自动画质预算，不限制屏幕刷新率。</p>
+    </details>
+    <details open><summary>环境效果</summary>
+      <label for="cloudQuality">体积云<select id="cloudQuality"><option value="off">关闭</option><option value="low">标准</option><option value="medium" selected>精细</option><option value="high">超精细</option></select></label>
+      <label for="waterDetail">海面波纹<select id="waterDetail"><option value="low">标准</option><option value="high" selected>精细</option></select></label>
+      <label for="windWaves">海浪随风变化<select id="windWaves"><option value="on">开启 · 实时风速与风向</option><option value="off">关闭 · 轻微涌浪</option></select></label>
+      <label for="waveStrength">波浪强度<output id="waveStrengthValue">100%</output><input id="waveStrength" type="range" min="0" max="150" step="10" value="100"></label>
+      <label for="waterReflection">天空倒影<select id="waterReflection"><option value="full">精细 · 天空与云</option><option value="simple">标准 · 天空</option></select></label>
+      <label for="sunReflection">太阳反光<select id="sunReflection"><option value="on">开启</option><option value="off">关闭</option></select></label>
+      <label for="rainEffects">雨滴与水面雨纹<select id="rainEffects"><option value="on">开启</option><option value="off">关闭</option></select></label>
+      <label for="starEffects">星空与流星<select id="starEffects"><option value="on">开启</option><option value="off">关闭</option></select></label>
+      <p id="weatherCost" role="status">环境耗时正在采样…</p><p>天气和时刻请在右上角「时间」中调整。</p>
+    </details>
+    <details><summary>操作与声音</summary>
+      <label for="musicVolume">背景音乐<output id="musicVolumeValue">18%</output><input id="musicVolume" type="range" min="0" max="100" step="1" value="18"></label>
+      <label for="rotationSensitivity">旋转灵敏度<input id="rotationSensitivity" type="range" min="0.08" max="0.6" step="0.02" value="0.22"></label>
+      <label for="speed">巡游速度<select id="speed"><option value="0.5">0.5 ×</option><option value="1" selected>1 ×</option><option value="1.5">1.5 ×</option></select></label>
+      <p>拖动自由观察 · 滚轮前进 / 后退 · WASD 平移 · Q / E 升降 · 空格切换巡游 · H 隐藏界面</p>
+      <p class="music-credit">音乐：FLYING OVER NORWAY · Nature Relaxation</p>
+    </details>
   </aside>
   <aside id="chalkReader" class="chrome" hidden aria-label="高清板书阅读">
     <div class="reader-heading"><div><p id="readerSection"></p><h2 id="readerTitle">谱序列学习笔记</h2></div><button id="readerClose" class="icon-button" aria-label="关闭高清板书" title="关闭高清板书" data-tip="关闭高清板书"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
@@ -83,6 +104,8 @@
     <div class="board-lift"><label for="boardLift1">Ⅱ 组 · A / B</label><input id="boardLift1" type="range" min="0" max="1" step="0.01" value="0" aria-label="第二组黑板升降"><button id="boardSwap1" class="icon-button" aria-label="互换第2组黑板" title="互换第2组黑板" data-tip="互换第2组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <div class="board-lift"><label for="boardLift2">Ⅲ 组 · A / B</label><input id="boardLift2" type="range" min="0" max="1" step="0.01" value="0" aria-label="第三组黑板升降"><button id="boardSwap2" class="icon-button" aria-label="互换第3组黑板" title="互换第3组黑板" data-tip="互换第3组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <details class="board-preferences"><summary>板书设置</summary>
+    <label for="boardClarity">远距文字清晰度 <select id="boardClarity"><option value="crisp" selected>清晰优先</option><option value="natural">柔和稳定</option></select></label>
+    <p class="lecture-note">保留抗闪烁过滤；远到不足一个像素的笔画请用高清阅读查看。</p>
     <label for="boardWritingStyle">书写样式 <select id="boardWritingStyle"><option value="refined">改进笔顺样式</option><option value="marck">C · Marck Script（舒展）· 非笔顺</option></select></label>
     <p id="boardWritingStyleStatus" class="lecture-note">字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。</p>
     <label for="boardFollowDelay">板书镜头回位 <output id="boardFollowDelayValue">20 秒</output><input id="boardFollowDelay" type="range" min="5" max="60" step="1" value="20"></label>
@@ -103,6 +126,6 @@
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><button onclick="const u=new URL(location.href);u.searchParams.set('safe','1');location.href=u.href">低负载模式进入</button><a href="../">返回实验室</a></div>
   <script>document.getElementById('enterButton').addEventListener('click',function(){document.getElementById('loading').dataset.entryRequested='true';if(document.getElementById('world').dataset.ready!=='true'){this.textContent='正在准备，即将进入…';this.disabled=true;}});</script>
   <script>window.refugeLoadingTimer=setTimeout(function(){if(document.getElementById('world').dataset.ready!=='true'){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='加载时间较长。可以重新加载，或用低负载模式进入。';}},60000);</script>
-  <script type="module">import('./app.js?v83-eraser-arc').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v84-display').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

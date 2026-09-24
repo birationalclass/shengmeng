@@ -73,5 +73,6 @@ test('eraser wipes deferred annotation paths even outside the base ink pixels',(
   const image={width:160,height:112,data:new Uint8ClampedArray(160*112*4)};
   const rows=[Object.assign([62,54,38,5],{strokePath:[[64,56],[98,57]]})],plan=erasingPlan(image,rows);
   assert(plan.segments.some(s=>s.contact),'Deferred frames are part of the wipe plan');
-  assert(plan.segments.filter(s=>s.contact).every(s=>s.a[0]>=48&&s.a[0]<=112&&s.a[1]<=70));
+  // v83 adds six pixels of wrist travel at either end of the occupied cell run.
+  assert(plan.segments.filter(s=>s.contact).every(s=>s.a[0]>=42&&s.a[0]<=118&&s.a[1]<=70));
 });

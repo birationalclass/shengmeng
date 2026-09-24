@@ -14,8 +14,9 @@ export class RenderBudget{
     if(now-this.lastSampleAt>1500)this.samples=[];
     this.lastSampleAt=now;this.samples.push(ms);if(this.samples.length>12)this.samples.shift();
   }
-  update(now,{enabled=true,reading=false,mobile=false}={}){
-    const floor=reading?(mobile?.96:.80):(mobile?.76:.65);
+  update(now,{enabled=true,reading=false,mobile=false,targetFPS=60,protectText=false}={}){
+    const floor=reading?(protectText?1:mobile?.96:.80):(mobile?.76:.65);
+    const budget=1000/Math.max(30,Math.min(120,targetFPS));
     if(!enabled){this.reset();return this.scale;}
     if(reading!==this.reading){this.reading=reading;this.samples=[];}
     if(this.scale<floor){this.scale=floor;this.changedAt=now;this.samples=[];return this.scale;}
@@ -23,8 +24,8 @@ export class RenderBudget{
     const ordered=[...this.samples].sort((a,b)=>a-b);
     this.gpuMs=ordered[Math.floor(ordered.length*.75)];
     let next=this.scale;
-    if(this.gpuMs>15)next=Math.max(floor,this.scale-Math.min(.12,Math.max(.04,this.scale*(1-Math.sqrt(12/this.gpuMs)))));
-    else if(this.gpuMs<9&&now-this.changedAt>=10000)next=Math.min(1,this.scale+.02);
+    if(this.gpuMs>budget*.9)next=Math.max(floor,this.scale-Math.min(.12,Math.max(.04,this.scale*(1-Math.sqrt(budget*.72/this.gpuMs)))));
+    else if(this.gpuMs<budget*.54&&now-this.changedAt>=10000)next=Math.min(1,this.scale+.02);
     next=Number(next.toFixed(2));
     if(next!==this.scale){this.scale=next;this.changedAt=now;this.samples=[];}
     return this.scale;
@@ -33,14 +34,14 @@ export class RenderBudget{
 
 // Poll only completed queries. Never gl.finish(), wait on a result, or retain
 // an unbounded query queue. Unsupported browsers keep the selected quality.
-export function createGpuTimer(gl){
+export function createGpuTimer(gl,interval=200){
   const ext=gl.getExtension?.('EXT_disjoint_timer_query_webgl2');
   const supported=Boolean(ext&&gl.createQuery&&gl.getQuery(ext.TIME_ELAPSED_EXT,ext.QUERY_COUNTER_BITS_EXT)>0);
   let pending=null,active=false,started=0;
   const clear=()=>{if(pending)gl.deleteQuery(pending);pending=null;};
   return {supported,
     begin(now){
-      if(!supported||pending||now-started<200||gl.isContextLost())return;
+      if(!supported||pending||now-started<interval||gl.isContextLost())return;
       if(gl.getQuery(ext.TIME_ELAPSED_EXT,gl.CURRENT_QUERY))return;
       pending=gl.createQuery();if(!pending)return;
       started=now;gl.beginQuery(ext.TIME_ELAPSED_EXT,pending);active=true;
