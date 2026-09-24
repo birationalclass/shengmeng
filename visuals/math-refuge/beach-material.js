@@ -10,15 +10,35 @@ export function createBeachMaterial(seaLevel){
  `+shader.fragmentShader;
  shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
  float sandHeight=sandWorld.y-sandSea;
- float runup=.035*(1.+sin(sandTime*.49+sandWorld.x*.11+sandWorld.z*.13));
+ float shoreNoise=sandNoise(sandWorld.xz*.43);
+ float surge=.5+.5*sin(sandTime*.62+sandNoise(sandWorld.xz*.075)*3.);
+ float runup=.015+.12*surge*surge+ .025*(shoreNoise-.5);
+ float film=1.-smoothstep(runup-.028,runup+.035,sandHeight);
+ float washEdge=exp(-pow((sandHeight-runup)/.016,2.))*smoothstep(.46,.8,shoreNoise)*surge;
  float patches0=sandNoise(sandWorld.xz*.19);
  float damp=1.-smoothstep(.02+runup,.48+runup,sandHeight+(patches0-.5)*.09);
  float patches=sandNoise(sandWorld.xz*.37)*.6+sandNoise(sandWorld.xz*1.7)*.4;
- float grain=sandNoise(sandWorld.xz*62.);
- float grainFade=1./(1.+80.*max(length(dFdx(sandWorld.xz)),length(dFdy(sandWorld.xz))));
- diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.18*grainFade);
- `).replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(.94,.32,damp);');
+ float footprint=max(length(dFdx(sandWorld.xz)),length(dFdy(sandWorld.xz)));
+ // Separate mineral flecks and millimetre grains, filtered before they alias.
+ float coarseFade=1.-smoothstep(.018,.09,footprint);
+ float fineFade=1.-smoothstep(.0015,.012,footprint);
+ float grain=sandNoise(sandWorld.xz*85.);
+ float fine=sandNoise(sandWorld.xz*420.);
+ float mineral=sandHash(floor(sandWorld.xz*93.));
+ float fleck=(smoothstep(.82,.97,mineral)*.24-smoothstep(.72,.93,1.-mineral)*.30)*coarseFade;
+ float sandRelief=(grain-.5)*.006*coarseFade+(fine-.5)*.0017*fineFade;
+ sandRelief*=mix(1.,.35,damp);
+ float grainFade=coarseFade;
+ diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.30*grainFade+fleck+(fine-.5)*.13*fineFade);
+  diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.48);
+ diffuseColor.rgb+=vec3(.10,.12,.11)*washEdge;
+ `).replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
+ vec3 sandQ0=dFdx(-vViewPosition),sandQ1=dFdy(-vViewPosition);
+ vec3 sandR1=cross(sandQ1,normal),sandR2=cross(normal,sandQ0);
+ float sandDet=dot(sandQ0,sandR1);
+ normal=normalize(abs(sandDet)*normal-sign(sandDet)*(dFdx(sandRelief)*sandR1+dFdy(sandRelief)*sandR2));
+ `).replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(mix(.94,.42,damp),.19,film);');
  };
- material.customProgramCacheKey=()=> 'sand-dry-wet-v91';
+ material.customProgramCacheKey=()=> 'sand-granular-v94';
  return {material,update(dt){clock.value+=Math.max(0,Math.min(.1,dt));}};
 }

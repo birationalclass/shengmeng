@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v91-shore';
+import {createBeachMaterial} from './beach-material.js?v94-sand';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,7 +14,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v91-shore';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v94-sand';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -396,7 +396,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.16);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
         float wash=pow(max(0.,sin(depth*10.-time*.55+sin(uv.x*.21+uv.y*.13))),10.);
-        foam=max(foam,beachMask(uv)*wash*exp(-depth*4.)*(.25+.35*a.x)*.4);
+        foam=max(foam,beachMask(uv)*wash*exp(-depth*7.)*smoothstep(.35,.75,coastNoise(uv*.7+vec2(time*.04,0.)))*.12);
         vec3 reflection=reflect(-view,normal);reflection.y=max(.002,reflection.y);
         vec2 reflectedUV=vec2(.5+atan(reflection.z,reflection.x)/6.28318530718,sqrt(clamp(asin(clamp(reflection.y,0.,1.))/1.57079632679,0.,1.)));
         vec3 reflected=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,reflectedUV).rgb,skyPhysical);

@@ -5,10 +5,12 @@ import {RESIDENCE} from './residence-layout.js';
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
 const villa=[RESIDENCE.origin[0]/S,RESIDENCE.origin[2]/S,(RESIDENCE.halfWidth+8)/S,(RESIDENCE.halfDepth+8)/S];
 export function terraceDistance(x,z){const dx=Math.abs(x-39)-15,dz=Math.abs(z)-16.5;return Math.hypot(Math.max(dx,0),Math.max(dz,0))+Math.min(Math.max(dx,dz),0);}
-const beachWidth=(x,z)=>10+8*smooth(30,54,x)+4*smooth(-10,20,z)+3.8*Math.sin(x*.17+z*.11)+2.3*Math.sin(z*.29-x*.07);
+const hash=(x,z)=>{const n=Math.sin(x*127.1+z*311.7)*43758.5453;return n-Math.floor(n);};
+const noise=(x,z)=>{const i=Math.floor(x),j=Math.floor(z),u=smooth(0,1,x-i),v=smooth(0,1,z-j);return (hash(i,j)*(1-u)+hash(i+1,j)*u)*(1-v)+(hash(i,j+1)*(1-u)+hash(i+1,j+1)*u)*v;};
+const beachWidth=(x,z)=>10+8*smooth(30,54,x)+4*smooth(-10,20,z)+10*(noise(x*.12,z*.12)-.5)+5*(noise(x*.31+4,z*.31-3)-.5)+1*(noise(x*.41,z*.41)-.5);
 const beachSides=(x,z)=>1-(1-smooth(48,54,x)*smooth(-16.5,-8,z))*(1-smooth(10.5,16.5,z)*smooth(24,32,x));
 export function beachMask(x,z){const d=terraceDistance(x,z);return beachSides(x,z)*smooth(-1.2,-.15,d)*(1-smooth(beachWidth(x,z)*.3,beachWidth(x,z)*1.8,d));}
-export function beachDepth(x,z){const d=Math.max(0,terraceDistance(x,z))*17/beachWidth(x,z);return -.65*S+2.25*smooth(0,13,d)+.07*Math.sin(x*.37+z*.31)*smooth(.5,2,d)*(1-smooth(5,9,d));}
+export function beachDepth(x,z){const d=Math.max(0,terraceDistance(x,z))*17/beachWidth(x,z);return -.65*S+2.25*smooth(0,13,d)+.18*(noise(x*1.1,z*1.1)-.5)*smooth(.5,2,d)*(1-smooth(5,9,d));}
 export function seaDepthAt(x,z){
  const campus=Math.hypot(Math.max(Math.abs(x+20.5)-74.5,0),Math.max(Math.abs(z+6)-49,0));
  const residence=(Math.hypot((x-villa[0])/villa[2],(z-villa[1])/villa[3])-1)*villa[3];
@@ -19,8 +21,11 @@ export function seaDepthAt(x,z){
 // Generate geographic constants from the same layout data used by the CPU model.
 const f=n=>Number(n).toFixed(9);
 export const seaDepthGLSL=`float terraceDistance(vec2 p){vec2 q=abs(p-vec2(39.,0.))-vec2(15.,16.5);return length(max(q,vec2(0.)))+min(max(q.x,q.y),0.);}
-float beachMask(vec2 p){float d=terraceDistance(p),w=10.+8.*smoothstep(30.,54.,p.x)+4.*smoothstep(-10.,20.,p.y)+3.8*sin(p.x*.17+p.y*.11)+2.3*sin(p.y*.29-p.x*.07);float sides=1.-(1.-smoothstep(48.,54.,p.x)*smoothstep(-16.5,-8.,p.y))*(1.-smoothstep(10.5,16.5,p.y)*smoothstep(24.,32.,p.x));return sides*smoothstep(-1.2,-.15,d)*(1.-smoothstep(w*.3,w*1.8,d));}
-float beachDepth(vec2 p){float w=10.+8.*smoothstep(30.,54.,p.x)+4.*smoothstep(-10.,20.,p.y)+3.8*sin(p.x*.17+p.y*.11)+2.3*sin(p.y*.29-p.x*.07),d=max(0.,terraceDistance(p))*17./w;return -${f(.65*S)}+2.25*smoothstep(0.,13.,d)+.07*sin(p.x*.37+p.y*.31)*smoothstep(.5,2.,d)*(1.-smoothstep(5.,9.,d));}
+float coastHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float coastNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(coastHash(i),coastHash(i+vec2(1,0)),f.x),mix(coastHash(i+vec2(0,1)),coastHash(i+vec2(1,1)),f.x),f.y);}
+float beachWidth(vec2 p){return 10.+8.*smoothstep(30.,54.,p.x)+4.*smoothstep(-10.,20.,p.y)+10.*(coastNoise(p*.12)-.5)+5.*(coastNoise(p*.31+vec2(4,-3))-.5)+1.*(coastNoise(p*.41)-.5);}
+float beachMask(vec2 p){float d=terraceDistance(p),w=beachWidth(p);float sides=1.-(1.-smoothstep(48.,54.,p.x)*smoothstep(-16.5,-8.,p.y))*(1.-smoothstep(10.5,16.5,p.y)*smoothstep(24.,32.,p.x));return sides*smoothstep(-1.2,-.15,d)*(1.-smoothstep(w*.3,w*1.8,d));}
+float beachDepth(vec2 p){float w=beachWidth(p),d=max(0.,terraceDistance(p))*17./w;return -${f(.65*S)}+2.25*smoothstep(0.,13.,d)+.18*(coastNoise(p*1.1)-.5)*smoothstep(.5,2.,d)*(1.-smoothstep(5.,9.,d));}
 float seaDepthAt(vec2 p){
  float campus=length(max(abs(p+vec2(20.5,6.0))-vec2(74.5,49.0),vec2(0.0)));
  float residence=(length((p-vec2(${f(villa[0])},${f(villa[1])}))/vec2(${f(villa[2])},${f(villa[3])}))-1.0)*${f(villa[3])};
