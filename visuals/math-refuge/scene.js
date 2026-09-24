@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v89-coast';
+import {createBeachMaterial} from './beach-material.js?v91-shore';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,7 +14,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v89-coast';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v91-shore';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -351,7 +351,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         float footprint=max(length(dFdx(uv)),length(dFdy(uv)));
         float detailFade=inversesqrt(1.+pow(surfaceDistance/650.,2.))*inversesqrt(1.+pow(footprint/.65,2.));
         vec2 rippleGradient;mat2 rippleCurvature;
-        float beachInfluence=beachMask(uv);
+        float beachInfluence=exp(-max(seaDepthAt(uv),0.)*.32);
         if(beachInfluence>.001){rippleField(vWorld.xz,rippleGradient,rippleCurvature);slopes=mix(slopes,-rippleGradient*.55/max(chop,.001),beachInfluence*.18);}
         vec3 normal=normalize(vec3(slopes.x*chop*detailFade,1.,slopes.y*chop*detailFade));
         // Expanding impact rings have staggered births and fade before cell edges.
@@ -377,11 +377,12 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
         vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
         waterColor*=.94+swell*.06;
-        float sand=beachMask(uv);
+        // One depth-driven optical model across the shelf: no beach-mask colour seam.
+        float sand=exp(-depth*.16);
         if(sand>.001){
           vec2 bottom=uv-normal.xz*depth*.35;
-          vec3 clarity=exp(-vec3(1.2,.18,.06)*depth);
-          vec3 sandColor=vec3(.62,.64,.54)*(.96+.04*sin(bottom.x*4.7+sin(bottom.y*1.3)));
+          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
+          vec3 sandColor=vec3(.54,.49,.36);
           vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
           float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
           shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
@@ -391,7 +392,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
         float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
         float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
-        waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
+        waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.16);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
         float wash=pow(max(0.,sin(depth*10.-time*.55+sin(uv.x*.21+uv.y*.13))),10.);
         foam=max(foam,beachMask(uv)*wash*exp(-depth*4.)*(.25+.35*a.x)*.4);
@@ -483,7 +484,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     sandSurface.update(dt);const state=solarState(hour,date),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
     for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
     const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
-    const u=sky.material.uniforms;u.sunPosition.value.fromArray(state.direction);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius;u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
+    const u=sky.material.uniforms;u.sunPosition.value.fromArray(state.direction);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius*(sky.userData.solarSize==='physical'?1:2+(1-smooth(0,14,Math.abs(state.elevation)))*smooth(-.1,.1,state.direction[0]));u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
     roomFill.setDaylight(day*(1-.3*storm));pathLighting.update(day);
     ocean.material.uniforms.rainAmount.value=Math.min(1,weather.rain/3);ocean.material.uniforms.nightVisibility.value=.06+day*.94;ocean.material.uniforms.sunDirection.value.fromArray(state.direction);ocean.material.uniforms.sunTint.value.copy(u.sunColor.value);ocean.material.uniforms.sunStrength.value=state.direct*sunThrough;ocean.material.uniforms.overcast.value=storm;
     sun.position.copy(sun.target.position).addScaledVector(u.sunPosition.value,90*BUILDING_SCALE);sun.intensity=state.direct*(.8+2.2*smooth(0,60,state.elevation))*sunThrough;sun.color.copy(u.sunColor.value);

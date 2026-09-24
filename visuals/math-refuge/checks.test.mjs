@@ -466,7 +466,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const sky=scene.getObjectByName('Continuous Shanghai sky');
     assert(result.ocean.renderOrder>0&&sky.renderOrder>result.ocean.renderOrder,'Opaque buildings establish depth before the expensive water/sky backgrounds');
     assert(sky.material.depthTest&&!sky.material.depthWrite&&result.ocean.material.depthWrite);
-    assert(sky.material.uniforms.radius.value>.0044&&sky.material.uniforms.radius.value<.0049);
+    assert(sky.material.uniforms.radius.value>.0088&&sky.material.uniforms.radius.value<.0098);
     assert(sky.material.uniforms.day.value>.9);
     assert(result.rain.roofs.length>=9,'All teaching and villa roofs shelter the rain');
     const rainEye={position:new Three.Vector3(35,4,0)};

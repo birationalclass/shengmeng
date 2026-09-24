@@ -1,5 +1,5 @@
-import {TimePresentation} from './time-presentation.js?v89-coast';
-import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v89-coast';
+import {TimePresentation} from './time-presentation.js?v91-shore';
+import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v91-shore';
 import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v84-display';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
@@ -18,7 +18,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v89-coast';
+import {createRetreat} from './scene.js?v91-shore';
 import {createLecture} from './lecture.js?v88-arm-sweeps';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -28,8 +28,8 @@ import {configureCameraInput} from './camera-input.js?v84-display';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v76-villa';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
-import {RetreatTime} from './retreat-time.js?v89-coast';
-import {shanghaiHour,solarEvents} from './solar-state.js?v89-coast';
+import {RetreatTime} from './retreat-time.js?v91-shore';
+import {shanghaiHour,solarEvents} from './solar-state.js?v91-shore';
 import {createShanghaiWeather} from './shanghai-weather.js?v77-wind-clouds';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
@@ -216,12 +216,13 @@ function updateRenderBudget(stamp){
   updateQualityReadout();
 
 }
-const graphicsKeys=['quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects'];
+const graphicsKeys=['quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
 let gpuName='',activeCloudQuality='medium',cloudAdjustedAt=0;const cloudOrder=['low','medium','high'];
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
   resize();if(!retreat)return;
   activeCloudQuality=$('cloudQuality').value;cloudAdjustedAt=performance.now();retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
   retreat.ocean.material.uniforms.waterDetail.value=$('waterDetail').value==='high'?1:0;

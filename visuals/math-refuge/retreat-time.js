@@ -7,7 +7,7 @@ export class RetreatTime{
   get date(){return this.preview?new Date(+this.baseDate+this.dayOffset*86400000):this.now();}
   previewAt(hour){this.dayOffset=0;this.baseDate=this.now();this.playing=false;this.preview=true;this.hour=wrapHour(hour);return this.hour;}
   setRate(rate){this.rate=Math.max(1,Math.min(60,Number(rate)||1));}
-  play(rate=this.rate){this.update();this.setRate(rate);this.preview=true;this.playing=true;}
+  play(rate=this.rate){if(!this.preview){this.dayOffset=0;this.baseDate=this.now();}this.update();this.setRate(rate);this.preview=true;this.playing=true;}
   pause(){this.update();this.preview=true;this.playing=false;}
-  sync(){this.playing=false;this.preview=false;return this.update();}
+  sync(){this.dayOffset=0;this.baseDate=this.now();this.playing=false;this.preview=false;return this.update();}
 }
