@@ -5,7 +5,7 @@ import {createReportLoader} from './report-loader.js';
 test('report preparation shares requests, reuses the cover, and retries a failed load',async()=>{
   const originalFetch=globalThis.fetch,OriginalImage=globalThis.Image;
   let requests=0,images=0,fail=true;
-  globalThis.fetch=async()=>{requests++;return {ok:!fail,json:async()=>({pages:[{formulaAsset:'cover.svg'}]})};};
+  globalThis.fetch=async()=>{requests++;return {ok:!fail,text:async()=>JSON.stringify({pages:[{formulaAsset:'cover.svg'}]})};};
   globalThis.Image=class{set src(url){images++;assert.equal(url,'cover.svg?v62-chalk-ink');queueMicrotask(()=>this.onload());}};
   try{
     const prepare=createReportLoader(),report={id:'test',manifest:'pages.json'};

@@ -1,3 +1,4 @@
+import {mobilePolicy,withDeadline} from './mobile-runtime.js?v79-mobile';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v57-proof-flow';
 import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
@@ -13,12 +14,12 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v78-shallow-water';
-import {createLecture} from './lecture.js?v70-sun-stars';
+import {createRetreat} from './scene.js?v79-mobile';
+import {createLecture} from './lecture.js?v79-mobile';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
-import {displayProfile,boardFraming} from './display-profile.js?v=24-smooth-motion';
+import {displayProfile,boardFraming} from './display-profile.js?v79-mobile';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v76-villa';
@@ -50,8 +51,10 @@ function enterScene(){
   backgroundMusic.start();$('world').focus({preventScroll:true});
 }
 $('enterButton').addEventListener('click',enterScene);
+const device=mobilePolicy({width:innerWidth,height:innerHeight,userAgent:navigator.userAgent,maxTouchPoints:navigator.maxTouchPoints,coarsePointer:matchMedia('(pointer: coarse)').matches,safe:new URLSearchParams(location.search).get('safe')==='1'});
+$('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0;
+let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0,failed=false;
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
 const keys=new Set(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -88,8 +91,8 @@ function shotPose(){
   }
 }
 function fail(error){
-  console.error(error);$('loading').hidden=true;$('error').hidden=false;
-  $('errorText').textContent='请启用浏览器硬件加速后重试。若仍无法打开，请换用新版 Safari、Chrome 或 Edge。';
+  clearTimeout(window.refugeLoadingTimer);failed=true;renderer?.setAnimationLoop(null);console.error(error);$('loading').hidden=true;$('error').hidden=false;
+  $('errorText').textContent=error.message?.includes('context')?'浏览器的图形资源已被回收。可以用低负载模式重新进入。':error.message||'场景暂时无法加载，请检查网络，或用低负载模式重试。';
 }
 function updateLabels(){
   residenceNotes.update(SHOTS[shot].name);
@@ -165,11 +168,12 @@ function applyShot(dt){
 }
 function resize(){
   if(!renderer)return;
-  profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples);
+  profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples,device);
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
-  renderer.setPixelRatio(profile.pixelRatio);renderer.setSize(innerWidth,innerHeight);
+  // One backing-store resize, rather than reallocating once for DPR and again for size.
+  renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio);
   if(composer){
     // Dispose on sample-count changes: changing .samples alone does not rebuild
     // an already allocated WebGL framebuffer at the same dimensions.
@@ -267,7 +271,9 @@ function tick(stamp){
 
 }
 try{
-  renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:true,powerPreference:'high-performance'});
+  renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
+  $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();fail(new Error('WebGL context lost'));});
+  renderer.debug.onShaderError=()=>fail(new Error('当前设备无法编译场景效果，请尝试低负载模式。'));
   gpuTimer=createGpuTimer(renderer.getContext());
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
@@ -285,16 +291,16 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.copy(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.target.copy(curves[shot].target.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.update();
   resize();
-  retreat=await createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;});
+  retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
   $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await createLecture(lectureRoot,renderer,{writingStyle:boardWritingStyle});retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
     $('loadMessage').textContent='正在准备讨论班 '+(level+1)+' 层…';
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{disabled:true,viewScale:.52,hideBoardHeadings:true});
+    const room=await createLecture(root,renderer,level===0?{boardScale:device.boardScale,writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
   rooms.forEach((room,i)=>{
@@ -311,22 +317,18 @@ try{
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
   retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
-  // Shader compilation failures are reported, not hidden behind an endless loader.
-  renderer.debug.onShaderError=()=>fail(new Error('The scene shader could not compile'));
-  await renderer.compileAsync(scene,camera);
-  // Upload textures before the user moves to a previously unseen part of the site.
-  const textures=new Set();scene.traverseVisible(object=>{for(const material of Array.isArray(object.material)?object.material:[object.material])if(material)for(const value of Object.values(material))if(value?.isTexture)textures.add(value);});
-  for(const texture of textures)renderer.initTexture(texture);
-  // Submit off-screen geometry once as well, while the opaque loader is up.
-  const culled=[];scene.traverse(object=>{if(object.isMesh&&object.frustumCulled){culled.push(object);object.frustumCulled=false;}});
+  $('loadMessage').textContent='正在呈现可见区域…';
+  await new Promise(resolve=>setTimeout(resolve,0));
+  // Keep normal frustum culling: never allocate/render the entire campus at startup.
+  if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(profile.direct)renderer.render(scene,camera);else composer.render();
-  culled.forEach(object=>object.frustumCulled=true);
-  $('world').dataset.ready='true';$('world').dataset.entered='false';
+  if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
+  clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
   $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').disabled=false;
   if($('loading').dataset.entryRequested==='true')enterScene();else $('enterButton').focus({preventScroll:true});
   renderer.setAnimationLoop(tick);
   // Fetch only manifests and covers in the background, without delaying entry.
-  lecture.preloadReports();
+  if(!device.mobile)lecture.preloadReports();
 }catch(error){fail(error);}
 
 $('tour').addEventListener('click',()=>{
@@ -469,9 +471,9 @@ window.addEventListener('keydown',event=>{
 });
 window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
 document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();});
-window.addEventListener('resize',resize);
+let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,180);});
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
-$('world').addEventListener('webglcontextlost',event=>{event.preventDefault();renderer?.setAnimationLoop(null);gpuTimer?.dispose();fail(new Error('WebGL context lost'));});
+
 window.addEventListener('pagehide',()=>renderer?.setAnimationLoop(null));
 window.addEventListener('pageshow',event=>{if(event.persisted&&retreat){lastTime=performance.now();renderer.setAnimationLoop(tick);}});
 

@@ -589,7 +589,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){}};contexts.push(ctx);return ctx;
   }})};
   globalThis.Image=class{set src(value){this.url=value;queueMicrotask(()=>this.onload());}};
-  globalThis.fetch=async(url)=>({ok:true,json:async()=>JSON.parse(await fs.readFile(new URL(url.split('?')[0],import.meta.url),'utf8'))});
+  globalThis.fetch=async(url)=>({ok:true,text:async()=>await fs.readFile(new URL(url.split('?')[0],import.meta.url),'utf8')});
   try{
     const {createLecture}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
     const scene=new Three.Scene(),lecture=await createLecture(scene,{capabilities:{getMaxAnisotropy:()=>8}});
@@ -645,7 +645,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
       assert(eraser.getObjectByName('Rounded palm grip'));
     }
     assert.match(scene.getObjectByName('Smart glass report heading').userData.date,/^\d{4}\.\d{2}\.\d{2}$/);
-    const hover=lecture.reportButtons[0];hover.userData.hovered=true;lecture.update(.1);assert(hover.userData.sheen.material.uniforms.strength.value>0);lecture.update(.1,true);assert.equal(hover.userData.sheen.material.uniforms.strength.value,0);hover.userData.hovered=false;assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6);
+    const hover=lecture.reportButtons[0];hover.userData.hovered=true;lecture.update(.1);assert(hover.userData.sheen.material.uniforms.strength.value>0);lecture.update(.1,true);assert.equal(hover.userData.sheen.material.uniforms.strength.value,0);hover.userData.hovered=false;assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,1,'Blank boards share a small texture before writing');
     for(const board of boards){const m=board.children[0].material;assert.equal(m.emissiveIntensity,0);assert.equal(m.specularIntensity,0);assert.equal(m.roughness,1);assert.equal(m.envMapIntensity,0);}
     assert.deepEqual(lecture.consoleButtons.map(b=>b.userData.action),['language','language','language']);
     const layoutRoot=new Three.Group();configureLectureRoot(layoutRoot);layoutRoot.updateMatrixWorld(true);
@@ -749,6 +749,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     await lecture.seek(17);assert.equal(lecture.clock.phase,'hold');assert.equal(lecture.clock.page,17);
     assert.deepEqual(lecture.clock.slots.map(s=>s.page).sort((a,b)=>a-b),[12,13,14,15,16,17]);
     assert(lecture.clock.slots.every(s=>s.progress===1));
+    assert.equal(new Set(boards.map(b=>b.children[0].material.map.uuid)).size,6,'Written boards retain independent textures');
     lecture.heights().forEach((mix,pair)=>boardHeights(mix).forEach((y,side)=>assert.equal(boards[pair*2+side].position.y,y)));
     assert(!movingEraser.visible);assert(trayErasers.every(e=>e.visible));
     await lecture.seek(2);assert.deepEqual(lecture.clock.slots.filter(s=>s.page>=0).map(s=>s.page).sort((a,b)=>a-b),[0,1,2]);
@@ -764,7 +765,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     lecture.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
-    const kmRoot=new Three.Group(),km=await createLecture(kmRoot,{capabilities:{getMaxAnisotropy:()=>8}},{reports:[KM_REPORT],defaultReport:'km',requireSelection:true});
+    const kmRoot=new Three.Group(),km=await createLecture(kmRoot,{capabilities:{getMaxAnisotropy:()=>8}},{reports:[KM_REPORT],defaultReport:'km',requireSelection:true,boardScale:.5});
+    assert(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).every(b=>b.children[0].material.map.image.width===128),'Unselected seminar has no full-size board textures');
     km.playing=true;km.update(.1);assert(!km.playing);assert(!km.hasSelection);assert(km.clock.slots.every(s=>s.page===-1),'Entering a seminar never writes before selection');
     assert(km.screenAction('seminar:chapter:1'));assert(km.hoverTargets.some(t=>t.visible&&t.userData.action==='seminar:section:1.1'));
     assert(!km.hasSelection,'Opening a chapter folder does not start a talk');
@@ -779,10 +781,10 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(km.clock.page>part.start);const progressBefore={page:km.clock.page,progress:km.clock.progress,phase:km.clock.phase};
     const reentry=km.setRenderActive(true);assert(kmRoot.visible,'Boards remain visible while current pages load');await reentry;assert(kmRoot.visible);assert.equal(km.clock.page,progressBefore.page);assert.equal(km.clock.phase,progressBefore.phase);assert(Math.abs(km.clock.progress-progressBefore.progress)<1e-9,'Reentry preserves estimated partial progress');
     const next=km.navigation.sections[1];await km.setRange(next.start,next.end);assert.equal(km.clock.active,0);assert(km.clock.slots.filter(s=>s.page>=0).every(s=>s.page===next.start),'A new student starts on clean boards');
-    await km.seek(next.end);for(let i=0;i<100;i++)km.update(.1);assert.equal(km.clock.page,next.end);assert(km.clock.ended);km.dispose();
+    await km.seek(next.end);assert(kmRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).every(b=>b.children[0].material.map.image.width===768),'Mobile ink uses quarter-area textures');for(let i=0;i<100;i++)km.update(.1);assert.equal(km.clock.page,next.end);assert(km.clock.ended);km.dispose();
     let forbiddenFetch=0;globalThis.fetch=async()=>{forbiddenFetch++;throw Error('Disabled room fetched content');};
     const emptyRoot=new Three.Group(),empty=await createLecture(emptyRoot,{capabilities:{getMaxAnisotropy:()=>8}}, {disabled:true});
-    assert.equal(forbiddenFetch,0);assert.equal(emptyRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
+    assert.equal(forbiddenFetch,0);assert(emptyRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).every(b=>b.children[0].material.map.image.width===128),'Disabled rooms keep only blank textures');assert.equal(emptyRoot.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
     assert.equal(await empty.setReport('hu'),false);assert.equal(await empty.setRange(0,3),false);empty.playing=true;empty.staticPage();empty.update(30);
     assert(!empty.playing);assert(!empty.hasSelection);assert(empty.clock.slots.every(s=>s.page===-1));assert.equal(empty.hoverTargets.length,0);empty.dispose();
   }finally{globalThis.fetch=originalFetch;globalThis.Image=originalImage;globalThis.document=originalDocument;}

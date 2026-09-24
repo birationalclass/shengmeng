@@ -233,3 +233,13 @@ Reentering during an erase phase now restores the cached erase plan even when th
 Hu’s report has been rebuilt from Du–Hu, arXiv:2606.31170v1: 30 substantive boards plus opening and closing pages. Authored bilingual lines interleave explanations and equations; source correspondence and the scope of external inputs are recorded in `assets/chalk/hu/SOURCES.md`. English prose and section numbers use the user-selected Marck Script. Mathematical formulas retain their existing font while alternative mathematical typography is reviewed.
 
 Handwritten text now measures actual glyph ascents, descents and horizontal overhangs. Line layout and reveal clips share those metrics, preserving Marck Script descenders and inline subscripts instead of assuming a fixed bottom margin.
+
+### Mobile Safari resource budget (v79)
+
+Based on upstream `253a1e4` (including the residence, volumetric clouds and shallow-water shelves). iPhone/iPad detection includes desktop-mode iPad Safari and remains stable on rotation. Mobile rendering caps the high-quality framebuffer at 1.2 million pixels / 2× DPR, avoids native MSAA and additional HDR compositor buffers, and debounces backing-store resizes. Desktop display limits remain unchanged.
+
+Startup now renders the visible scene without compiling, uploading and force-drawing the entire campus. Context loss is handled before asynchronous loading begins; network/image/font work has deadlines, and an independent 60-second watchdog provides retry controls. The error screen offers `?safe=1`, which uses analytic sky/cloud fallbacks and disables shadow maps. It preserves buildings, steps, blackboards and course content.
+
+Unselected/disabled rooms use shared 128×64 blank board textures. Written mobile boards allocate 768×320 textures on demand (one quarter of the original area), while authored stroke coordinates and the vector reading view retain their original precision. Offscreen boards retain the last written texture. Canvas caches explicitly release evicted backing stores. Mobile cloud targets are 256×128 with 16 steps, a 32³ density volume and 500 ms refreshes; atmosphere targets are 128×64 with 1-second refreshes. Cloud frames blend continuously. Neutral reflection probes no longer build duplicate volumetric resources.
+
+Validation: 85 automated checks passed, including classroom writing/erasing/seeking, lazy board allocation, iPad/iPhone budgets, resource deadlines, sky render-target fallback and refresh throttling. Desktop Safari entered both ordinary and safe modes. Chromium at a 390×844 viewport entered safe mode, continued multiple board pages and emitted no console errors. These are desktop browser checks, not measurements on a physical iPhone; actual affected iPhone/iOS remains unverified.

@@ -1,10 +1,11 @@
 // Spend the mobile pixel budget on edges and text before optional glow effects.
-export function displayProfile(width,height,dpr=1,quality='high',maxSamples=4,nativeSamples=4){
+export function displayProfile(width,height,dpr=1,quality='high',maxSamples=4,nativeSamples=4,device={}){
   width=Math.max(1,width);height=Math.max(1,height);
   const compact=Math.min(width,height)<=700,high=quality==='high';
-  const budget=high?(compact?3500000:6000000):2200000;
-  const pixelRatio=Math.min(Math.max(1,dpr||1),high?3:1.75,Math.sqrt(budget/(width*height)));
-  return {compact,pixelRatio,samples:Math.max(0,Math.min(high?4:2,maxSamples)),direct:nativeSamples>0,bloom:false,shadows:high,shadowSize:compact?1024:2048};
+  const mobile=Boolean(device.mobile),safe=Boolean(device.safe);
+  const budget=mobile?(safe?650000:high?1200000:850000):high?(compact?3500000:6000000):2200000;
+  const pixelRatio=Math.min(Math.max(1,dpr||1),(mobile?(safe?1.25:2):high?3:1.75),Math.sqrt(budget/(width*height)));
+  return {compact,pixelRatio,samples:Math.max(0,Math.min(high?4:2,maxSamples)),direct:mobile||nativeSamples>0,bloom:false,shadows:high&&!safe,shadowSize:mobile||compact?1024:2048};
 }
 export function boardFraming(aspect,fov=57){
   const tangent=Math.tan(fov*Math.PI/360);

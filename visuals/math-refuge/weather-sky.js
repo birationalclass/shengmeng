@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import {createVolumetricClouds} from './volumetric-clouds.js?v77-wind-clouds';
-import {createAtmosphereLUT} from './sky-atmosphere.js?v75-atmosphere';
-export function createWeatherSky({panorama=true,renderer}={}){
+import {createVolumetricClouds} from './volumetric-clouds.js?v79-mobile';
+import {createAtmosphereLUT} from './sky-atmosphere.js?v79-mobile';
+export function createWeatherSky({panorama=true,renderer,device={},probe=false}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
- const atmosphere=createAtmosphereLUT(renderer),volumeClouds=createVolumetricClouds(renderer);
+ const atmosphere=createAtmosphereLUT(probe?null:renderer,device),volumeClouds=createVolumetricClouds(probe?null:renderer,device);
  const uniforms={cloudOrigin:{value:new THREE.Vector3(0,.015,0)},cloudBlend:{value:1},cloudMapPrevious:{value:volumeClouds?.texture||fallback},cloudMap:{value:volumeClouds?.texture||fallback},cloudOffset:{value:new THREE.Vector2()},useVolumeClouds:{value:volumeClouds?1:0},atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:atmosphere?1:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
  const material=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms,vertexShader:`varying vec3 ray;void main(){ray=position;vec4 p=projectionMatrix*mat4(mat3(viewMatrix))*modelMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,fragmentShader:`
  uniform sampler2D cloudMap,cloudMapPrevious;uniform float cloudBlend;uniform float useVolumeClouds;uniform vec2 cloudOffset;uniform sampler2D atmosphereMap;uniform float useAtmosphere;uniform sampler2D galaxyMap;uniform float galaxyMix;

@@ -1,3 +1,4 @@
+import {withDeadline} from './mobile-runtime.js?v79-mobile';
 import {advanceCloudWind,windVelocity} from './cloud-wind.js?v77-wind-clouds';
 import {createResidence} from './residence.js?v76-villa';
 import {createRain} from './weather-rain.js?v72-night-rain';
@@ -8,7 +9,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v53-section-sessions';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v77-wind-clouds';
+import {createWeatherSky} from './weather-sky.js?v79-mobile';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -19,12 +20,12 @@ import {createCampus} from './campus.js?v76-villa';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
-export async function createRetreat(renderer,scene,report){
+export async function createRetreat(renderer,scene,report,device={}){
   let seed=82573;
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const loader=new THREE.TextureLoader();
   async function texture(name,repeat=1,srgb=false){
-    const map=await loader.loadAsync('./assets/'+name);map.wrapS=map.wrapT=THREE.RepeatWrapping;
+    const map=await withDeadline(loader.loadAsync('./assets/'+name),20000,'材质 '+name);map.wrapS=map.wrapT=THREE.RepeatWrapping;
     map.repeat.set(repeat,repeat);map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     if(srgb)map.colorSpace=THREE.SRGBColorSpace;return map;
   }
@@ -347,7 +348,7 @@ export async function createRetreat(renderer,scene,report){
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   const rain=createRain(scene);
-  const sky=createWeatherSky({renderer});sky.material.uniforms.seaHorizon.value=1;scene.add(sky);
+  const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;scene.add(sky);
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
@@ -366,7 +367,7 @@ export async function createRetreat(renderer,scene,report){
   // One neutral diffuse reflection probe; never swap discrete half-hour snapshots.
   // Directional light, sky, water highlights and probe strength evolve continuously.
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
-  const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
+  const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer,device,probe:true});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
   environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
   const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#477b9c'),fogNight=new THREE.Color('#101b2b');

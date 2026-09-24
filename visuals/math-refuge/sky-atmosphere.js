@@ -2,9 +2,10 @@ import * as T from 'three';
 // A compact sky-view LUT: spherical atmosphere, single scattering and Beer-Lambert
 // extinction. Inspired by Bruneton / Hillaire; not their full multiple-scattering solver.
 // Distances are kilometres. Rayleigh scale height 8 km; aerosol scale height 1.2 km.
-export function createAtmosphereLUT(renderer){
- if(!renderer?.isWebGLRenderer)return null;
- const target=new T.WebGLRenderTarget(256,128,{type:T.HalfFloatType,depthBuffer:false,stencilBuffer:false});
+export function createAtmosphereLUT(renderer,device={}){
+ if(!renderer?.isWebGLRenderer||device.safe||!renderer.extensions.has('EXT_color_buffer_float'))return null;
+ const size=device.atmosphereSize||256,interval=device.atmosphereInterval||250;
+ const target=new T.WebGLRenderTarget(size,size/2,{type:T.HalfFloatType,depthBuffer:false,stencilBuffer:false});
  target.texture.wrapS=T.RepeatWrapping;
  const uniforms={sun:{value:new T.Vector3(1,1,0).normalize()},aerosol:{value:1}};
  const material=new T.ShaderMaterial({uniforms,depthTest:false,depthWrite:false,vertexShader:'varying vec2 uvSky;void main(){uvSky=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
@@ -19,6 +20,6 @@ export function createAtmosphereLUT(renderer){
  for(int i=0;i<24;i++){float a=float(i)/24.,b=float(i+1)/24.;float t0=distance*a*a,t1=distance*b*b,stepLength=t1-t0;vec3 p=origin+d*((t0+t1)*.5),rho=density(p),segment=rho*stepLength;vec3 transmit=exp(-extinction(optical+segment*.5))*solarTransmission(p);radiance+=transmit*(betaR*rho.x*phaseR+vec3(.003996*aerosol)*rho.y*phaseM)*stepLength;optical+=segment;}
  gl_FragColor=vec4(radiance*8.,1.);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
- let key='';
- return {texture:target.texture,update(sun,cloud){const next=[sun.x,sun.y,sun.z,cloud].join(',');if(next===key)return;key=next;uniforms.sun.value.copy(sun).normalize();uniforms.aerosol.value= .12+cloud*2.;const previous=renderer.getRenderTarget(),auto=renderer.autoClear;try{renderer.autoClear=true;renderer.setRenderTarget(target);renderer.render(scene,camera);}finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}},dispose(){target.dispose();quad.geometry.dispose();material.dispose();}};
+ let key='',last=-Infinity;
+ return {texture:target.texture,update(sun,cloud){const next=[sun.x,sun.y,sun.z,cloud].map(v=>v.toFixed(3)).join(','),now=performance.now();if(next===key||now-last<interval)return;key=next;last=now;uniforms.sun.value.copy(sun).normalize();uniforms.aerosol.value= .12+cloud*2.;const previous=renderer.getRenderTarget(),auto=renderer.autoClear;try{renderer.autoClear=true;renderer.setRenderTarget(target);renderer.render(scene,camera);}finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}},dispose(){target.dispose();quad.geometry.dispose();material.dispose();}};
 }
