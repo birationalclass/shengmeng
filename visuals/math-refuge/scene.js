@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v100-reef';
+import {createBeachMaterial} from './beach-material.js?v102-sand-sun';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -12,7 +12,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v88-solar-water';
+import {createWeatherSky} from './weather-sky.js?v102-sand-sun';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v100-reef';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -398,7 +398,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
         // Bound radiance smoothly; avoid a flat clipped white column at grazing angles.
         float radiance=distribution*visibility*sunF/(4.*nv+.001);
-        float glitter=1.1*(1.-exp(-radiance*.4));
+        float glitter=.85*(1.-exp(-radiance*.32));
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
         float depth=seaDepthAt(uv)+(vWorld.y-oceanLevel);if(depth<=0.)discard;
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
@@ -450,10 +450,18 @@ export async function createRetreat(renderer,scene,report,device={}){
   ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
   ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
   // The east terrace ends at x=54; beach profile and optical depth share one model.
-  const sandGeometry=new THREE.PlaneGeometry(90*BUILDING_SCALE,93*BUILDING_SCALE,180,186);
+  const sandGeometry=new THREE.PlaneGeometry(90*BUILDING_SCALE,93*BUILDING_SCALE,288,298);
   sandGeometry.rotateX(-Math.PI/2);const sandPositions=sandGeometry.attributes.position;
   for(let i=0;i<sandPositions.count;i++){const x=39+sandPositions.getX(i)/BUILDING_SCALE,z=sandPositions.getZ(i)/BUILDING_SCALE;sandPositions.setXYZ(i,x*BUILDING_SCALE,seaLevel*BUILDING_SCALE-seaDepthAt(x,z),z*BUILDING_SCALE);}
-  sandGeometry.computeVertexNormals();const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE),sandMaterial=sandSurface.material;
+  // Sample the continuous height field for normals rather than triangulation slopes.
+  const sandNormals=sandGeometry.attributes.normal,eps=.025;
+  for(let i=0;i<sandPositions.count;i++){
+    const x=sandPositions.getX(i)/BUILDING_SCALE,z=sandPositions.getZ(i)/BUILDING_SCALE;
+    const dx=(seaDepthAt(x+eps,z)-seaDepthAt(x-eps,z))/(2*eps*BUILDING_SCALE);
+    const dz=(seaDepthAt(x,z+eps)-seaDepthAt(x,z-eps))/(2*eps*BUILDING_SCALE);
+    const n=new THREE.Vector3(dx,1,dz).normalize();sandNormals.setXYZ(i,n.x,n.y,n.z);
+  }
+  const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE),sandMaterial=sandSurface.material;
   const beach=new THREE.Mesh(sandGeometry,sandMaterial);beach.name='Irregular auditorium sand shelf';beach.receiveShadow=true;scene.add(beach);
   report('正在布置光照与镜头…');
   buildPlatforms();

@@ -73,10 +73,16 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  // Trace an apparent viewing ray back through the refracting atmosphere.
  vec3 solarRay=d;if(dot(d,normalize(sunPosition))>.97)solarRay=unrefractSunRay(d);
  // atan(cross,dot) remains stable at the disk centre; acos loses precision there.
- float angle=atan(length(cross(solarRay,normalize(sunPosition))),dot(solarRay,normalize(sunPosition)));float edgeAA=max(fwidth(angle),.00004);float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float horizonAA=max(fwidth(d.y),.000001);float aboveSea=smoothstep(-horizonAA,horizonAA,d.y);
+ float angle=atan(length(cross(solarRay,normalize(sunPosition))),dot(solarRay,normalize(sunPosition)));float edgeAA=max(fwidth(angle),radius*mix(.10,.24,warm));float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float horizonAA=max(fwidth(d.y),.000001);float aboveSea=smoothstep(-horizonAA,horizonAA,d.y);
  // Only the part actually below the sea horizon is occulted, in world-ray coordinates.
  // Once the full refracted disk clears the horizon no camera-dependent crop is applied.
- float solar=showSun*aboveSea; color+=sunColor*solar*(disk*(7.0+2.0*limb)+.18*exp(-pow(angle/.019,2.0)));
+ float solar=showSun*aboveSea;
+ // Sun-local scattering/exposure halo: smooth angular falloff, no full-scene bloom.
+ float innerHalo=exp(-pow(angle/(radius*2.4),2.));
+ float outerHalo=exp(-pow(angle/(radius*7.5),2.));
+ vec3 haloTint=mix(sunColor,vec3(1.,.30,.045),warm*.7);
+ color+=solar*(sunColor*(disk*(4.5+1.5*limb)+innerHalo*.8)
+   +haloTint*outerHalo*mix(.07,.26,warm));
  vec4 cloudLight=mix(texture2D(cloudMapPrevious,skyUV),texture2D(cloudMap,skyUV),cloudBlend);color=color*(1.-cloudLight.a*useVolumeClouds)+cloudLight.rgb*useVolumeClouds;
 
  // The distant ocean meets the same horizontal ray used to clip the solar disk.

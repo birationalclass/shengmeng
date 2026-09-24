@@ -19,17 +19,18 @@ export function createBeachMaterial(seaLevel){
  float patches=sandNoise(sandWorld.xz*.37)*.6+sandNoise(sandWorld.xz*1.7)*.4;
  float footprint=max(length(dFdx(sandWorld.xz)),length(dFdy(sandWorld.xz)));
  // Separate mineral flecks and millimetre grains, filtered before they alias.
- float coarseFade=1.-smoothstep(.018,.09,footprint);
- float fineFade=1.-smoothstep(.0015,.012,footprint);
- float grain=sandNoise(sandWorld.xz*85.);
- float fine=sandNoise(sandWorld.xz*420.);
- float mineral=sandHash(floor(sandWorld.xz*93.));
- float fleck=(smoothstep(.82,.97,mineral)*.24-smoothstep(.72,.93,1.-mineral)*.30)*coarseFade;
- float sandRelief=(grain-.5)*.006*coarseFade+(fine-.5)*.0017*fineFade;
+ float coarseFade=1.-smoothstep(.002,.012,footprint);
+ float fineFade=1.-smoothstep(.0004,.003,footprint);
+ vec2 grainUV=mat2(.8,.6,-.6,.8)*sandWorld.xz;
+ float grain=.55*sandNoise(grainUV*210.)+.45*sandNoise(mat2(.36,.93,-.93,.36)*grainUV*291.+vec2(17.,43.));
+ float fine=sandNoise(sandWorld.xz*670.);
+ float mineral=sandHash(floor(sandWorld.xz*227.));
+ float fleck=(smoothstep(.82,.97,mineral)*.09-smoothstep(.72,.93,1.-mineral)*.10)*coarseFade;
+ float sandRelief=(grain-.5)*.0007*coarseFade+(fine-.5)*.00022*fineFade;
  sandRelief*=mix(1.,.35,damp);
  float grainFade=coarseFade;
 
- diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.30*grainFade+fleck+(fine-.5)*.13*fineFade);
+ diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.12*grainFade+fleck+(fine-.5)*.08*fineFade);
   diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.18);
  diffuseColor.rgb+=vec3(.10,.12,.11)*washEdge;
  `).replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
@@ -39,6 +40,6 @@ export function createBeachMaterial(seaLevel){
  normal=normalize(abs(sandDet)*normal-sign(sandDet)*(dFdx(sandRelief)*sandR1+dFdy(sandRelief)*sandR2));
  `).replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(mix(.94,.42,damp),.19,film);');
  };
- material.customProgramCacheKey=()=> 'sand-granular-v98';
+ material.customProgramCacheKey=()=> 'sand-granular-v102';
  return {material,update(dt){clock.value+=Math.max(0,Math.min(.1,dt));}};
 }
