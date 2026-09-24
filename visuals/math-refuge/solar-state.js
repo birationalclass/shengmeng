@@ -8,9 +8,9 @@ export function solarState(hour,date=new Date()){
  const dec=.006918-.399912*Math.cos(g)+.070257*Math.sin(g)-.006758*Math.cos(2*g)+.000907*Math.sin(2*g)-.002697*Math.cos(3*g)+.00148*Math.sin(3*g),lat=31.2304*Math.PI/180,H=(h*60+eq+4*121.4737-480-720)*Math.PI/720;
  const east=-Math.cos(dec)*Math.sin(H),up=Math.sin(lat)*Math.sin(dec)+Math.cos(lat)*Math.cos(dec)*Math.cos(H),south=Math.sin(lat)*Math.cos(dec)*Math.cos(H)-Math.cos(lat)*Math.sin(dec),elevation=Math.asin(Math.max(-1,Math.min(1,up)))*180/Math.PI;
  const daylight=smooth(-6,12,elevation),direct=smooth(-.8,3,elevation),warm=1-smooth(0,20,elevation);
- return {direction:[east,up,south],elevation,daylight,direct,warm,night:1-smooth(-9,-2,elevation),physicalRadius:.00465*(1+.0167*Math.cos(g)),radius:.00465*(1+.0167*Math.cos(g))*(1+.65*(1-smooth(0,14,Math.abs(elevation))))*(2+(1-smooth(0,14,Math.abs(elevation)))*smooth(-.1,.1,east)),solarNoon:(720-4*121.4737-eq+480)/60};
+ return {direction:[east,up,south],elevation,daylight,direct,warm,night:1-smooth(-9,-2,elevation),physicalRadius:.00465*(1+.0167*Math.cos(g)),radius:.00465*(1+.0167*Math.cos(g)),solarNoon:(720-4*121.4737-eq+480)/60};
 }
-export function approachHour(current,target,dt){const delta=((target-current+36)%24)-12;return current+delta*(1-Math.exp(-Math.max(0,dt)/.55));}
+export function approachHour(current,target,dt){const delta=(((target-current+12)%24+24)%24)-12;return current+delta*(1-Math.exp(-Math.max(0,dt)/.55));}
 
 // Sunrise/sunset fallback at the conventional -0.833 degree centre elevation.
 export function solarEvents(date=new Date()){

@@ -43,7 +43,7 @@ export function createBoats(scene){
     }
   }
   [[75,13,.4],[-7,-60,-.7],[55,45,1.1]].forEach(([x,z,a],i)=>add('sail',x,z,a,i));
-  [[62,2,.35],[-17,45,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
+  [[77,2,.35],[-17,45,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
   let time=0;
   return {root,boats,update(dt){time+=Math.max(0,Math.min(dt,.1));boats.forEach((boat,i)=>{boat.position.y=seaLevel*S+.04+.055*Math.sin(time*.7+i*1.9);boat.rotation.z=.022*Math.sin(time*.6+i);boat.rotation.x=.012*Math.cos(time*.8+i);});},dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}};
 }

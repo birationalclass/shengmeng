@@ -1,19 +1,20 @@
-import {apparentSunDirection} from './solar-optics.js?v87-sky-seam';
+import {createBeachMaterial} from './beach-material.js?v89-coast';
+import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
-import {advanceWeatherWinds,windVelocity} from './cloud-wind.js?v87-sky-seam';
+import {advanceWeatherWinds,windVelocity} from './cloud-wind.js?v88-solar-water';
 import {createResidence} from './residence.js?v82-steady';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
-import {createBoats} from './boats.js?v44-hall-clearance';
+import {createBoats} from './boats.js?v88-solar-water';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v87-sky-seam';
-import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
-import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
+import {createWeatherSky} from './weather-sky.js?v88-solar-water';
+import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v89-coast';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -285,6 +286,39 @@ export async function createRetreat(renderer,scene,report,device={}){
       #include <common>
       #include <fog_pars_fragment>
       ${seaDepthGLSL}
+      vec2 waveHash(vec2 p){return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);}
+      vec3 scatteredNormal(vec2 p){
+        vec2 cell=floor(p*.7),f=fract(p*.7);f=f*f*(3.-2.*f);
+        vec2 dx=dFdx(p),dy=dFdy(p);
+        vec3 n00=textureGrad(normalMap,p+waveHash(cell)*19.,dx,dy).xyz;
+        vec3 n10=textureGrad(normalMap,p+waveHash(cell+vec2(1,0))*19.,dx,dy).xyz;
+        vec3 n01=textureGrad(normalMap,p+waveHash(cell+vec2(0,1))*19.,dx,dy).xyz;
+        vec3 n11=textureGrad(normalMap,p+waveHash(cell+vec2(1,1))*19.,dx,dy).xyz;
+        return mix(mix(n00,n10,f.x),mix(n01,n11,f.x),f.y)*2.-1.;
+      }
+      // Analytic shallow-water height field. Gradients bend rays; Hessians focus them.
+      void rippleField(vec2 p,out vec2 gradient,out mat2 curvature){
+        gradient=vec2(0.);curvature=mat2(0.);
+        for(int i=0;i<5;i++){
+          float k=float(i),angle=.43+k*2.399963;
+          vec2 direction=vec2(cos(angle),sin(angle));
+          float frequency=4.3+k*1.37,amplitude=.047/(1.+k*.24);
+          float phase=dot(p,direction)*frequency-time*sqrt(9.81*frequency)+k*1.37;
+          gradient+=direction*(amplitude*frequency*cos(phase));
+          float bend=-amplitude*frequency*frequency*sin(phase);
+          curvature+=mat2(direction.x*direction.x,direction.x*direction.y,direction.x*direction.y,direction.y*direction.y)*bend;
+        }
+      }
+      float sandCaustic(vec2 bottom,float depth){
+        vec2 p=bottom,gradient;mat2 curvature;float travel=min(depth,2.5)*.25;
+        // Two bounded inverse-ray iterations estimate the water entry point for this sand point.
+        for(int i=0;i<2;i++){rippleField(p,gradient,curvature);p=bottom-clamp(gradient*travel,vec2(-.35),vec2(.35));}
+        rippleField(p,gradient,curvature);
+        mat2 jacobian=mat2(1.)+curvature*travel;
+        float area=abs(jacobian[0][0]*jacobian[1][1]-jacobian[0][1]*jacobian[1][0]);
+        // Finite sun footprint prevents singular, razor-sharp or unbounded light lines.
+        return 1.5*exp(-area*area/.025);
+      }
       vec3 grazingSky(vec2 heading){
         vec2 hUV=vec2(.5+atan(heading.y,heading.x)/6.28318530718,0.);
         vec3 h=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,hUV).rgb+vec3(.006,.013,.027)*(1.-skyDay),skyPhysical);
@@ -302,19 +336,29 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec2 uv=vWorld.xz/siteScale;
         // Restore the earlier two counter-moving normal layers; their clocks are real-time.
         vec2 drift=waveOffset*windWaves;
-        vec3 a=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)-drift*.007).xyz*2.-1.;
-        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,uv*.013+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
+        vec2 waveUV=uv*.035+vec2(time*.011,-time*.007)-drift*.007;
+        vec2 bend=vec2(sin(uv.y*.023+sin(uv.x*.017)),sin(uv.x*.019+sin(uv.y*.013)))*.09;
+        vec3 a=mix(texture2D(normalMap,waveUV+bend).xyz*2.-1.,scatteredNormal(waveUV+bend),.25);
+        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,mat2(.7986,-.6018,.6018,.7986)*uv*.0173+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
         float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
         float chop=mix(.20,.28,windGain)*waveStrength;
         vec2 crossWind=vec2(-windFlow.y,windFlow.x);
         vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y);
-        slopes+=windFlow*cos(dot(uv,windFlow)*.095-time*(.55+.45*windGain))*.08*windGain;
-        vec3 normal=normalize(vec3(slopes.x*chop,1.,slopes.y*chop));
+        slopes+=(windFlow*cos(dot(uv,windFlow)*.095-time*.61)
+          +normalize(windFlow+crossWind*.73)*cos(dot(uv,windFlow+crossWind*.73)*.057-time*.43+1.7)*.57
+          +normalize(windFlow-crossWind*.41)*cos(dot(uv,windFlow-crossWind*.41)*.137-time*.79+4.1)*.31)*.06*windGain;
+        float surfaceDistance=length(vWorld.xz-cameraPosition.xz);
+        float footprint=max(length(dFdx(uv)),length(dFdy(uv)));
+        float detailFade=inversesqrt(1.+pow(surfaceDistance/650.,2.))*inversesqrt(1.+pow(footprint/.65,2.));
+        vec2 rippleGradient;mat2 rippleCurvature;
+        float beachInfluence=beachMask(uv);
+        if(beachInfluence>.001){rippleField(vWorld.xz,rippleGradient,rippleCurvature);slopes=mix(slopes,-rippleGradient*.55/max(chop,.001),beachInfluence*.18);}
+        vec3 normal=normalize(vec3(slopes.x*chop*detailFade,1.,slopes.y*chop*detailFade));
         // Expanding impact rings have staggered births and fade before cell edges.
         vec2 cell=floor(vWorld.xz*.65),local=fract(vWorld.xz*.65)-.5;
         float seed=fract(sin(dot(cell,vec2(127.1,311.7)))*43758.5453),age=fract(time*1.6+seed),r=length(local);
         float ring=exp(-pow((r-age*.42)/.025,2.))*(1.-age)*smoothstep(0.,.08,age)*(1.-smoothstep(.37,.48,r));
-        normal=normalize(normal+vec3(local.x,0.,local.y)*ring*rainAmount*.22);
+        normal=normalize(normal+vec3(local.x,0.,local.y)*ring*rainAmount*.22*detailFade);
         vec3 view=normalize(cameraPosition-vWorld);
         float nv=max(dot(normal,view),.001);
         float fresnel=.0204+.9796*pow(1.0-nv,5.0);
@@ -329,16 +373,28 @@ export async function createRetreat(renderer,scene,report,device={}){
         float radiance=distribution*visibility*sunF/(4.*nv+.001);
         float glitter=1.1*(1.-exp(-radiance*.4));
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
-        float depth=seaDepthAt(uv);
+        float depth=seaDepthAt(uv);if(depth<.005)discard;
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
         vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
         waterColor*=.94+swell*.06;
+        float sand=beachMask(uv);
+        if(sand>.001){
+          vec2 bottom=uv-normal.xz*depth*.35;
+          vec3 clarity=exp(-vec3(1.2,.18,.06)*depth);
+          vec3 sandColor=vec3(.62,.64,.54)*(.96+.04*sin(bottom.x*4.7+sin(bottom.y*1.3)));
+          vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
+          float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
+          shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
+          waterColor=mix(waterColor,shallow,sand);
+        }
         vec2 shoreUV=vec2((uv.x+150.0)/250.0,(uv.y+110.0)/220.0);
         float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
         float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
         float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
         waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.7);
         float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
+        float wash=pow(max(0.,sin(depth*10.-time*.55+sin(uv.x*.21+uv.y*.13))),10.);
+        foam=max(foam,beachMask(uv)*wash*exp(-depth*4.)*(.25+.35*a.x)*.4);
         vec3 reflection=reflect(-view,normal);reflection.y=max(.002,reflection.y);
         vec2 reflectedUV=vec2(.5+atan(reflection.z,reflection.x)/6.28318530718,sqrt(clamp(asin(clamp(reflection.y,0.,1.))/1.57079632679,0.,1.)));
         vec3 reflected=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,reflectedUV).rgb,skyPhysical);
@@ -361,6 +417,12 @@ export async function createRetreat(renderer,scene,report,device={}){
   const ocean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),oceanMaterial);
   ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
   ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
+  // The east terrace ends at x=54; beach profile and optical depth share one model.
+  const sandGeometry=new THREE.PlaneGeometry(90*BUILDING_SCALE,93*BUILDING_SCALE,180,186);
+  sandGeometry.rotateX(-Math.PI/2);const sandPositions=sandGeometry.attributes.position;
+  for(let i=0;i<sandPositions.count;i++){const x=39+sandPositions.getX(i)/BUILDING_SCALE,z=sandPositions.getZ(i)/BUILDING_SCALE;sandPositions.setXYZ(i,x*BUILDING_SCALE,seaLevel*BUILDING_SCALE-seaDepthAt(x,z),z*BUILDING_SCALE);}
+  sandGeometry.computeVertexNormals();const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE),sandMaterial=sandSurface.material;
+  const beach=new THREE.Mesh(sandGeometry,sandMaterial);beach.name='Irregular auditorium sand shelf';beach.receiveShadow=true;scene.add(beach);
   report('正在布置光照与镜头…');
   buildPlatforms();
   const lodBatches=[],lowGeometry=new Map();
@@ -417,8 +479,8 @@ export async function createRetreat(renderer,scene,report,device={}){
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
   const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#477b9c'),fogNight=new THREE.Color('#101b2b');
   function setWeather(value){Object.assign(weatherTarget,{cloud:value?.cloud??.14,rain:value?.rain??0,fog:value?.fog??0,wind:value?.wind??weatherTarget.wind,windDirection:Number.isFinite(value?.windDirection)?value.windDirection:weatherTarget.windDirection});}
-  function setTime(hour,regenerate=false,dt=0,weatherRate=1){
-    const state=solarState(hour),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
+  function setTime(hour,regenerate=false,dt=0,weatherRate=1,date=new Date()){
+    sandSurface.update(dt);const state=solarState(hour,date),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
     for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
     const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
     const u=sky.material.uniforms;u.sunPosition.value.fromArray(state.direction);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius;u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
@@ -441,5 +503,5 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setTime(shanghaiHour(),true);
-  return {residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){sandGeometry.dispose();sandMaterial.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }
