@@ -1,7 +1,7 @@
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
 const hallPassageMask=new HallPassageMask();
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v92-camera';
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v93-wave';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
@@ -19,7 +19,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v92-camera';
+import {createRetreat} from './scene.js?v93-wave';
 import {createLecture} from './lecture.js?v88-arm-sweeps';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -227,7 +227,7 @@ function setQuality(){
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
   retreat.ocean.material.uniforms.waterDetail.value=$('waterDetail').value==='high'?1:0;
-  retreat.ocean.material.uniforms.windWaves.value=$('windWaves').value==='on'?1:0;retreat.ocean.material.uniforms.waveStrength.value=Number($('waveStrength').value)/100;retreat.ocean.material.uniforms.reflectionDetail.value=$('waterReflection').value==='full'?1:0;retreat.ocean.material.uniforms.sunReflection.value=$('sunReflection').value==='on'?1:0;$('waveStrengthValue').textContent=$('waveStrength').value+'%';
+  retreat.ocean.material.uniforms.windWaves.value=$('windWaves').value==='on'?1:0;retreat.ocean.material.uniforms.waveStrength.value=Math.max(.5,Number($('waveStrength').value)/100);retreat.ocean.material.uniforms.reflectionDetail.value=$('waterReflection').value==='full'?1:0;retreat.ocean.material.uniforms.sunReflection.value=$('sunReflection').value==='on'?1:0;$('waveStrengthValue').textContent=$('waveStrength').value+'%';
   const anisotropy=Math.min(Number($('textureFiltering').value),renderer.capabilities.getMaxAnisotropy()),seen=new Set();
   scene.traverse(o=>{if(o.userData.boardSurface)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const key of ['map','normalMap','roughnessMap']){const t=m[key];if(t&&!seen.has(t)&&!t.isRenderTargetTexture){seen.add(t);if(t.anisotropy!==anisotropy){t.anisotropy=anisotropy;t.needsUpdate=true;}}}});
   rooms.forEach(room=>room.setClarity($('boardClarity').value));
@@ -237,9 +237,9 @@ function detectGraphics(){
  const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');gpuName=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'图形型号未公开';
  $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
  let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
- if(saved){try{if(!localStorage.getItem('refuge-wave-base-v92')){saved.waveStrength='20';saved.windWaves='on';localStorage.setItem('refuge-wave-base-v92','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
+ if(saved){try{if(!localStorage.getItem('refuge-wave-base-v93')){saved.waveStrength=String(Math.max(50,Number(saved.waveStrength)||50));saved.windWaves='on';localStorage.setItem('refuge-wave-base-v93','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
  const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
- for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=0&&Number(value)<=150))$(id).value=value;}
+ for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
 const renderBudget=new RenderBudget();let gpuTimer=null,weatherTimer=null,renderScale=1,weatherGpuMs=null,weatherGpuSamples=[],weatherCpuMs=0,weatherProbeFrame=false,weatherProbeCounter=0;
 const frameSamples=[],cpuSamples=[];let metricsAt=0;
