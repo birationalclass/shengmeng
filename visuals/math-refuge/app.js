@@ -1,3 +1,4 @@
+import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v79-mobile';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v57-proof-flow';
@@ -34,6 +35,7 @@ let boardWritingStyle='refined';try{if(localStorage.getItem('refuge-board-writin
 const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
 
 const $=id=>document.getElementById(id);
+const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 let panelBuilding=BUILDINGS[0];
@@ -191,7 +193,7 @@ function updateQualityReadout(){
   $('world').dataset.pixelRatio=String(ratio);$('world').dataset.renderScale=String(renderScale);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
 }
 function updateRenderBudget(stamp){
-  const ms=gpuTimer?.poll(stamp);if(ms!=null)renderBudget.sample(ms,stamp);
+  const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
   const reading=physicalRoom>=0&&(roomViews[physicalRoom]?.visible||speakerView);
   const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading});
   if(scale===renderScale)return;renderScale=scale;
@@ -264,8 +266,9 @@ function tick(stamp){
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
-  if($('adaptiveQuality').value==='auto')gpuTimer?.begin(stamp);
+  if($('adaptiveQuality').value==='auto'||performanceMonitor.visible)gpuTimer?.begin(stamp);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
+  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
