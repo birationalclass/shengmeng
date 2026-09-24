@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#162c32">
+  <meta name="description" content="潮汐之间：一片实时生成的海。探索夕照、涌浪、白沫与湿沙，亲手调节风、浪和日光。">
+  <title>潮汐之间 · Ocean Study | Visual Lab</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="ocean.css?v=20260925-ocean-3">
+</head>
+<body>
+  <main id="experience">
+    <canvas id="ocean" aria-label="实时三维海浪：拖动画面转动视角，滚轮调整观看距离" tabindex="0"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <header class="topbar interface">
+      <a class="brand" href="../"><span class="brand-icon">≈</span><span>VISUAL LAB <i>/</i> OCEAN STUDY</span></a>
+      <div class="top-actions">
+        <button id="aboutButton" aria-label="关于海浪模型">关于这片海 <span>↗</span></button>
+        <a href="../" class="back">返回实验室 <span>↗</span></a>
+      </div>
+    </header>
+    <section class="intro interface" aria-labelledby="title">
+      <p class="eyebrow"><span></span> NO. 11 — A LIVING SEASCAPE</p>
+      <h1 id="title">潮汐之间</h1>
+      <p class="english-title">Between tides.</p>
+      <p class="description">让风经过水面，让时间慢下来。</p>
+    </section>
+    <div class="scene-label interface"><span id="sceneNumber">01</span><div><b id="sceneName">落日熔金</b><small id="sceneEnglish">THE GOLDEN HOUR</small></div></div>
+    <div class="view-hint interface">拖动探索视角 <span>·</span> 滚轮靠近海面</div>
+    <button id="showUI" class="show-ui" hidden>显示控制 <span>H</span></button>
+    <section class="console interface" aria-label="海浪控制台">
+      <div class="console-top">
+        <div class="presets" role="group" aria-label="海面风景">
+          <button data-preset="golden" aria-pressed="true"><i class="swatch golden"></i>落日熔金</button>
+          <button data-preset="clear" aria-pressed="false"><i class="swatch clear"></i>晴日碧海</button>
+          <button data-preset="blue" aria-pressed="false"><i class="swatch blue"></i>暮色将至</button>
+        </div>
+        <div class="transport">
+          <button id="playButton" title="暂停 / 继续（空格）" aria-label="暂停海浪" aria-pressed="false"><span id="playIcon">Ⅱ</span></button>
+          <button id="stepButton" title="推进半秒，观察破浪阶段" aria-label="推进半秒" hidden>↦</button>
+          <button id="soundButton" title="海浪声" aria-label="开启海浪声" aria-pressed="false">♫</button>
+          <button id="captureButton" title="保存画面" aria-label="保存海面图片">▧</button>
+          <button id="fullscreenButton" title="全屏（F）" aria-label="进入全屏">⛶</button>
+          <button id="hideButton" title="隐藏界面（H）" aria-label="隐藏界面">◌</button>
+        </div>
+      </div>
+      <div class="sliders">
+        <label for="wave">涌浪高度 <output id="waveValue" for="wave">1.2 m</output><input id="wave" type="range" min="0.3" max="2.4" step="0.1" value="1.2"></label>
+        <label for="wind">海面风力 <output id="windValue" for="wind">45%</output><input id="wind" type="range" min="0" max="100" step="1" value="45"></label>
+        <label for="sun">太阳高度 <output id="sunValue" for="sun">5°</output><input id="sun" type="range" min="-3" max="30" step="0.5" value="5"></label>
+        <label for="speed">时间流速 <output id="speedValue" for="speed">1.0×</output><input id="speed" type="range" min="0.2" max="2" step="0.1" value="1"></label>
+      </div>
+      <div class="console-footer"><span><i class="live-dot"></i><span id="renderStatus">正在唤醒海面…</span></span><div><label for="quality">画质</label><select id="quality"><option value="auto">自适应</option><option value="high">精细</option><option value="low">流畅</option></select><button id="resetButton">重置视角 ↺</button></div></div>
+    </section>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+    <section id="fallback" class="fallback" hidden><h2>这片海需要 WebGL 2</h2><p>请启用浏览器硬件加速，或使用支持 WebGL 2 的浏览器。</p><a href="../">返回 Visual Lab ↗</a></section>
+    <noscript><p class="fallback">请启用 JavaScript，观看实时海浪。</p></noscript>
+  </main>
+  <dialog id="aboutDialog">
+    <button class="close-dialog" id="closeAbout" aria-label="关闭模型介绍">×</button>
+    <p class="eyebrow">THE ART & THE EQUATIONS</p><h2>一片由数学生长的海。</h2>
+    <p>长涌浪、细波纹、流动白沫和云层，都在你的设备上实时生成。夕阳照亮浪背；视角越贴近水面，天空的倒影越明显。</p>
+    <dl><dt>从涌浪到翻卷</dt><dd>远海叠加 18 组不同波长与方向的 Gerstner 波。近岸通过随波前变化的三维截面，连续经历抬升、变陡、卷唇和塌落；浪头具有真实的悬垂几何。</dd><dt>白水会流动</dt><dd>破浪会向独立的泡沫场注入白水。它被水流带向岸边，逐渐衰减；细小飞沫沿抛物线落回水面。</dd><dt>光与水</dt><dd>表面法线、Fresnel 反射、日光高光与近似透光，共同表现冷色浪体和暖色夕照。暂停后可逐次推进半秒，观察同一道浪如何变化。</dd></dl>
+    <p class="model-note">这是艺术化的实时混合模型：三维截面变形、方向波与泡沫输运。浪高为视觉尺度设定，并非实测有效波高；未求解完整 Navier–Stokes / FLIP 流体。</p>
+    <div class="references"><span>建模参考</span><a href="https://advances.realtimerendering.com/s2022/SIGGRAPH2022-Advances-Water-Malan.pdf" target="_blank" rel="noreferrer">SIGGRAPH 2022 · Horizon Forbidden West 水体 ↗</a><a href="https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-1-effective-water-simulation-physical-models" target="_blank" rel="noreferrer">NVIDIA GPU Gems · Gerstner 波 ↗</a><a href="https://www.sidefx.com/docs/houdini/fluid/oceans.html" target="_blank" rel="noreferrer">SideFX Houdini · Oceans ↗</a></div>
+    <p class="keys">空格 暂停 / 继续 &nbsp; · &nbsp; H 隐藏界面 &nbsp; · &nbsp; F 全屏<br>拖动改变视角，滚轮调整距离；触屏可单指拖动。</p>
+  </dialog>
+  <script type="module" src="ocean.js?v=20260925-ocean-3"></script>
+</body>
+</html>
