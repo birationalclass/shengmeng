@@ -12,10 +12,10 @@ test('resolution uses sustained GPU pressure, protects reading, and recovers slo
  const budget=new RenderBudget();let now=0;
  const feed=(ms,count)=>{for(let i=0;i<count;i++){now+=200;budget.sample(ms,now);budget.update(now);}};
  feed(8,40);assert.equal(budget.scale,1);
- feed(40,100);assert.equal(budget.scale,.76);
- budget.update(now,{reading:true});assert.equal(budget.scale,.96);
- for(let i=0;i<50;i++){now+=200;budget.sample(40,now);budget.update(now,{reading:true});}assert.equal(budget.scale,.96);
- feed(8,80);assert.equal(budget.scale,1);
+ feed(40,100);assert.equal(budget.scale,.65);
+ budget.update(now,{reading:true});assert.equal(budget.scale,.80);
+ for(let i=0;i<50;i++){now+=200;budget.sample(40,now);budget.update(now,{reading:true});}assert.equal(budget.scale,.80);
+ feed(8,400);assert.equal(budget.scale,1);
  budget.sample(100,now+200);budget.update(now+200);assert.equal(budget.scale,1,'One expensive frame is not a reason to resize');
  feed(40,30);assert(budget.scale<1);budget.update(now,{enabled:false});assert.equal(budget.scale,1);
 });
@@ -24,6 +24,15 @@ test('missing, invalid or stale GPU timing cannot lower quality',()=>{
  for(let t=0;t<60000;t+=200){budget.sample(NaN,t);budget.sample(300,t);budget.update(t);}assert.equal(budget.scale,1);
  for(let i=1;i<=8;i++)budget.sample(40,i*200);budget.update(10000);assert.equal(budget.scale,1);
  budget.sample(40,10200);assert.equal(budget.samples.length,1,'Do not reuse samples from another browser session');
+});
+test('sustained overload reacts promptly without forcing reading back to Retina saturation',()=>{
+ const budget=new RenderBudget();
+ for(let t=200;t<=6000;t+=200){budget.sample(50,t);budget.update(t,{reading:true});}
+ assert.equal(budget.scale,.8);
+ assert(budget.scale**2<.65,'The reading floor can actually reduce fragment load');
+ budget.update(6200,{enabled:false,reading:true});assert.equal(budget.scale,1,'Fixed quality remains an explicit full-resolution override');
+ for(let t=6400;t<=12000;t+=200){budget.sample(50,t);budget.update(t,{reading:true,mobile:true});}
+ assert.equal(budget.scale,.96,'Mobile already starts with a small framebuffer and keeps its reading floor');
 });
 test('GPU timer never waits for incomplete results and discards disjoint or expired queries',()=>{
  const ext={TIME_ELAPSED_EXT:1,QUERY_COUNTER_BITS_EXT:2,GPU_DISJOINT_EXT:3};

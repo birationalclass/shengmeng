@@ -13,7 +13,7 @@ test('iPhone and desktop-mode iPad retain mobile budgets in both orientations',(
   assert(d.direct);assert(d.pixelRatio<=2);assert(width*height*d.pixelRatio**2<=1200000.1);
  }
  const desktop=mobilePolicy({userAgent:'Macintosh',maxTouchPoints:0});
- assert(!desktop.mobile);assert.equal(desktop.boardScale,1);assert.equal(desktop.cloudSteps,32);
+ assert(!desktop.mobile);assert.equal(desktop.boardScale,1);assert.equal(desktop.cloudSteps,24);
  const safe=mobilePolicy({safe:true}),d=displayProfile(430,932,3,'high',4,0,safe);
  assert(safe.mobile);assert(!d.shadows);assert(d.direct);assert(d.pixelRatio<=1.25);
  assert(430*932*d.pixelRatio**2<=650000.1);
@@ -30,6 +30,17 @@ test('startup deadlines reject hung resources and abort network work',async()=>{
   globalThis.fetch=async()=>({ok:false,status:404});
   await assert.rejects(fetchLocal('/test'),/404/);
  }finally{globalThis.fetch=original;}
+});
+
+test('Retina desktops bound pixels even when Safari has no GPU timer',()=>{
+ for(const [width,height] of [[1280,720],[2240,1260],[2560,1440]]){
+  const automatic=displayProfile(width,height,2,'high',4,4,{gpuTiming:true});
+  const withoutTimer=displayProfile(width,height,2,'high',4,4,{gpuTiming:false});
+  assert(width*height*automatic.pixelRatio**2<=4000000.1);
+  assert(width*height*withoutTimer.pixelRatio**2<=2800000.1);
+  assert(withoutTimer.shadows);assert.equal(withoutTimer.samples,4);
+ }
+ const desktop=mobilePolicy();assert.equal(desktop.cloudSize,512);assert.equal(desktop.cloudInterval,250);
 });
 
 test('an image that never decodes cannot leave entry waiting forever',async()=>{

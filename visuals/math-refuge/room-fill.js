@@ -1,5 +1,6 @@
 // A bounded diffuse-irradiance approximation for reflected seminar-room light.
 // It lights material colour (not emission), with a soft boundary outside the room.
+import {optimizeLocalLights} from './local-light-shader.js?v81-imac';
 export function createRoomFill(){
   const strength={value:0},seen=new WeakSet();
   function apply(root){root.traverse(object=>{
@@ -7,7 +8,7 @@ export function createRoomFill(){
       if(!material?.isMeshStandardMaterial||seen.has(material))continue;
       seen.add(material);const prior=material.onBeforeCompile,priorKey=material.customProgramCacheKey();
       material.onBeforeCompile=function(shader,renderer){
-        prior.call(this,shader,renderer);shader.uniforms.seminarFill=strength;
+        prior.call(this,shader,renderer);optimizeLocalLights(shader);shader.uniforms.seminarFill=strength;
         shader.vertexShader='varying vec3 seminarWorld;\n'+shader.vertexShader;
         shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>',`#include <project_vertex>
           vec4 seminarVertex=vec4(transformed,1.0);
@@ -25,7 +26,7 @@ export function createRoomFill(){
             irradiance+=vec3(1.0,0.89,0.75)*seminarFill*roomMask;
           #endif`);
       };
-      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v2';material.needsUpdate=true;
+      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v3-local-lights';material.needsUpdate=true;
     }
   });}
   return {strength,apply,setDaylight(day){strength.value=.18+(1-day)*2.1;}};

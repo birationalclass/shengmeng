@@ -4,7 +4,7 @@ export function mobilePolicy({width=1280,height=800,userAgent='',maxTouchPoints=
  const mobile=ios||/Android|Mobile/.test(userAgent)||(coarsePointer&&Math.min(width,height)<=1024);
  const compact=mobile||safe;
  return {mobile:compact,ios,safe,boardScale:compact?.5:1,
-  cloudSize:compact?256:1024,cloudSteps:compact?16:32,cloudInterval:compact?500:100,
+  cloudSize:compact?256:512,cloudSteps:compact?16:24,cloudInterval:compact?500:250,
   noiseSize:compact?32:64,atmosphereSize:compact?128:256,atmosphereInterval:compact?1000:250};
 }
 export function withDeadline(promise,ms,label){

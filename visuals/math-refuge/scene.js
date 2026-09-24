@@ -6,7 +6,7 @@ import {roundedDetailLevel} from './render-budget.js?v56-continuous-scene';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v44-hall-clearance';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
-import {createRoomFill} from './room-fill.js?v53-section-sessions';
+import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v79-mobile';

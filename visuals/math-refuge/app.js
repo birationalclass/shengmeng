@@ -1,7 +1,7 @@
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
-import {mobilePolicy,withDeadline} from './mobile-runtime.js?v79-mobile';
+import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
-import {RenderBudget,createGpuTimer} from './render-budget.js?v57-proof-flow';
+import {RenderBudget,createGpuTimer} from './render-budget.js?v81-imac';
 import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
 import {teachingRoomAt} from './room-context.js?v57-proof-flow';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
@@ -15,12 +15,12 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v79-mobile';
+import {createRetreat} from './scene.js?v81-imac';
 import {createLecture} from './lecture.js?v79-mobile';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
-import {displayProfile,boardFraming} from './display-profile.js?v79-mobile';
+import {displayProfile,boardFraming} from './display-profile.js?v81-imac';
 import {configureCameraInput} from './camera-input.js?v=4-controls';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v76-villa';
@@ -195,7 +195,7 @@ function updateQualityReadout(){
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
   const reading=physicalRoom>=0&&(roomViews[physicalRoom]?.visible||speakerView);
-  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading});
+  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile});
   if(scale===renderScale)return;renderScale=scale;
   renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
   if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
@@ -212,6 +212,8 @@ function tick(stamp){
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden||!entered)return;
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
+  // Include cloud/atmosphere targets as well as the final scene in GPU timing.
+  if($('adaptiveQuality').value==='auto'||performanceMonitor.visible)gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
@@ -266,7 +268,6 @@ function tick(stamp){
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
-  if($('adaptiveQuality').value==='auto'||performanceMonitor.visible)gpuTimer?.begin(stamp);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
@@ -277,7 +278,7 @@ try{
   renderer=new THREE.WebGLRenderer({canvas:$('world'),antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
   $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();fail(new Error('WebGL context lost'));});
   renderer.debug.onShaderError=()=>fail(new Error('当前设备无法编译场景效果，请尝试低负载模式。'));
-  gpuTimer=createGpuTimer(renderer.getContext());
+  gpuTimer=createGpuTimer(renderer.getContext());device.gpuTiming=gpuTimer.supported;
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;

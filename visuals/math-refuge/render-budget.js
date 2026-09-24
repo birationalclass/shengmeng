@@ -14,8 +14,8 @@ export class RenderBudget{
     if(now-this.lastSampleAt>1500)this.samples=[];
     this.lastSampleAt=now;this.samples.push(ms);if(this.samples.length>12)this.samples.shift();
   }
-  update(now,{enabled=true,reading=false}={}){
-    const floor=reading?.96:.76;
+  update(now,{enabled=true,reading=false,mobile=false}={}){
+    const floor=reading?(mobile?.96:.80):(mobile?.76:.65);
     if(!enabled){this.reset();return this.scale;}
     if(reading!==this.reading){this.reading=reading;this.samples=[];}
     if(this.scale<floor){this.scale=floor;this.changedAt=now;this.samples=[];return this.scale;}
@@ -23,7 +23,7 @@ export class RenderBudget{
     const ordered=[...this.samples].sort((a,b)=>a-b);
     this.gpuMs=ordered[Math.floor(ordered.length*.75)];
     let next=this.scale;
-    if(this.gpuMs>19)next=Math.max(floor,this.scale-.04);
+    if(this.gpuMs>19)next=Math.max(floor,this.scale-Math.min(.12,Math.max(.04,this.scale*(1-Math.sqrt(16/this.gpuMs)))));
     else if(this.gpuMs<12&&now-this.changedAt>=6000)next=Math.min(1,this.scale+.02);
     next=Number(next.toFixed(2));
     if(next!==this.scale){this.scale=next;this.changedAt=now;this.samples=[];}
