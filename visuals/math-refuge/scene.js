@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v94-sand';
+import {createBeachMaterial} from './beach-material.js?v95-wash';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,7 +14,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v94-sand';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v95-wash';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -270,6 +270,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   // Fine normal waves, Fresnel and sun glitter are analytic;
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
+    transparent:true,depthWrite:true,
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
       oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:.5},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
@@ -411,7 +412,11 @@ export async function createRetreat(renderer,scene,report,device={}){
         float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
         float edgeFade=smoothstep(20000.,100000.,distanceToEye);
         color=mix(color,horizonColor,max(aerial,edgeFade));
-        gl_FragColor=vec4(color,1.0);
+        // Only the sand shelf has real geometry beneath the water to transmit.
+        // Thin shore film reveals grains; Fresnel retains grazing reflections.
+        float shoreTransmission=beachMask(uv)*exp(-depth*3.2);
+        float waterAlpha=1.-shoreTransmission*(1.-fresnel)*.88;
+        gl_FragColor=vec4(color,waterAlpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`

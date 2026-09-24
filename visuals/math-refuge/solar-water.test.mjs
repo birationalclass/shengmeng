@@ -10,3 +10,5 @@ test('wide blackboard regions use broad bows with stable eraser angle',()=>{cons
 test('sand meets only the east and south terrace edges',()=>{for(const[x,z]of[[54,0],[39,16.5]])assert(Math.abs(seaDepthAt(x,z)+.65*Math.SQRT2)<1e-8);});
 
 test('west and north remain water, with a broad continuous offshore blend',()=>{assert.equal(beachMask(23,0),0);assert.equal(beachMask(39,-18),0);assert(seaDepthAt(23,0)>0);assert(seaDepthAt(39,-18)>0);for(let x=60;x<100;x+=.05)assert(Math.abs(beachMask(x+.05,0)-beachMask(x,0))<.01);});
+
+test('beach reaches the full east edge and wraps the northeast corner only',()=>{assert.equal(beachMask(54,-16),1);assert(beachMask(53,-17)>0.9);assert.equal(beachMask(39,-17),0);assert.equal(beachMask(23,0),0);});

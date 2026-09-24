@@ -30,7 +30,7 @@ export function createBeachMaterial(seaLevel){
  sandRelief*=mix(1.,.35,damp);
  float grainFade=coarseFade;
  diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.30*grainFade+fleck+(fine-.5)*.13*fineFade);
-  diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.48);
+  diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.18);
  diffuseColor.rgb+=vec3(.10,.12,.11)*washEdge;
  `).replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
  vec3 sandQ0=dFdx(-vViewPosition),sandQ1=dFdy(-vViewPosition);
@@ -39,6 +39,6 @@ export function createBeachMaterial(seaLevel){
  normal=normalize(abs(sandDet)*normal-sign(sandDet)*(dFdx(sandRelief)*sandR1+dFdy(sandRelief)*sandR2));
  `).replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=mix(mix(.94,.42,damp),.19,film);');
  };
- material.customProgramCacheKey=()=> 'sand-granular-v94';
+ material.customProgramCacheKey=()=> 'sand-granular-v95';
  return {material,update(dt){clock.value+=Math.max(0,Math.min(.1,dt));}};
 }
