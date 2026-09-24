@@ -9,7 +9,7 @@ test('Shanghai solar motion and twilight are continuous across sunrise, sunset a
 });
 test('bathymetry is bounded, smooth and deepens into open water',()=>{
  let min=Infinity,max=0;for(let x=-350;x<=350;x+=4)for(let z=-350;z<=350;z+=4){const d=seaDepthAt(x,z);min=Math.min(min,d);max=Math.max(max,d);assert(Math.abs(seaDepthAt(x+.01,z)-d)<.015);assert(Math.abs(seaDepthAt(x,z+.01)-d)<.015);}
- assert(min>1&&max<110);assert(seaDepthAt(400,0)>seaDepthAt(-78,16)+40);assert(seaDepthAt(28,0)>seaDepthAt(-78,16));
+ assert(min>1&&max<110);assert(seaDepthAt(400,0)>seaDepthAt(-78,16)+40);assert(seaDepthAt(28,0)<3);
 });
 test('weather readings validate data, keep cloud cover bounded and expose source time',()=>{
  const w=parseWeather({current:{temperature_2m:26,cloud_cover:20,weather_code:1,time:'2026-09-24T12:00',precipitation:0,wind_speed_10m:9},daily:{sunrise:['2026-09-24T05:43'],sunset:['2026-09-24T17:48']}},5);assert.equal(w.cloud,.2);assert.equal(w.label,'晴间多云');assert.equal(w.sunrise,'05:43');assert.equal(w.fetched,5);assert.throws(()=>parseWeather({current:{temperature_2m:25}}));
@@ -22,3 +22,18 @@ test('stars fade through twilight and sunrise is tripled and ordinary sun double
 import {RetreatTime} from './retreat-time.js';import {solarEvents} from './solar-state.js';
 test('accelerated clock supports play, pause, 60x cap, midnight wrapping and resync',()=>{const clock=new RetreatTime(()=>new Date('2026-09-24T04:00:00Z'),shanghaiHour);assert.equal(clock.hour,12);clock.previewAt(23.99);clock.play(100);assert.equal(clock.rate,60);clock.update(60);assert(Math.abs(clock.hour-.99)<1e-10);clock.pause();const hour=clock.hour;clock.update(60);assert.equal(clock.hour,hour);clock.setRate(5);clock.play();clock.update(720);assert(Math.abs(clock.hour-(hour+1))<1e-10);clock.sync();assert.equal(clock.hour,12);assert.equal(clock.playing,false);assert.equal(clock.preview,false);});
 test('sunrise and sunset fallback bracket the Shanghai horizon',()=>{const date=new Date('2026-09-24T04:00:00Z'),events=solarEvents(date);assert(events.sunrise>5&&events.sunrise<7);assert(events.sunset>17&&events.sunset<19);for(const h of Object.values(events))assert(Math.abs(solarState(h,date).elevation+.833)<.00001);assert(solarState(events.sunrise-.05,date).elevation<-.833);assert(solarState(events.sunset+.05,date).elevation<-.833);});
+
+import {ROOM_PADS,SEA_TERRACE,BUILDING_SCALE} from './site-layout.js';
+import {RESIDENCE} from './residence-layout.js';
+test('every campus building and the remote residence have shallow surrounding water',()=>{
+ for(const [a,b,c,d] of [...ROOM_PADS,SEA_TERRACE,[-95,-73,-16,16]]){
+  for(const [x,z] of [[a-6,c-6],[b+6,d+6],[a-6,d+6],[b+6,c-6]])assert(seaDepthAt(x,z)<=3,`deep shore at ${x},${z}`);
+ }
+ for(let a=0;a<Math.PI*2;a+=.04){
+  const x=(RESIDENCE.origin[0]+(RESIDENCE.halfWidth+12)*Math.cos(a))/BUILDING_SCALE;
+  const z=(RESIDENCE.origin[2]+(RESIDENCE.halfDepth+12)*Math.sin(a))/BUILDING_SCALE;
+  assert(seaDepthAt(x,z)<3);
+  assert(Math.abs(seaDepthAt(x+.01,z)-seaDepthAt(x,z))<.015);
+ }
+ assert(seaDepthAt(-440,0)>80,'open channel remains deep');
+});

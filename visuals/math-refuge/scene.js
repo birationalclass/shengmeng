@@ -10,7 +10,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v77-wind-clouds';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
-import {seaDepthGLSL} from './sea-depth.js?v67-dark-sky';
+import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
