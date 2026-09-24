@@ -1,7 +1,7 @@
-import {apparentSunDirection} from './solar-optics.js?v86-environment';
+import {apparentSunDirection} from './solar-optics.js?v87-sky-seam';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
-import {advanceWeatherWinds,windVelocity} from './cloud-wind.js?v86-environment';
+import {advanceWeatherWinds,windVelocity} from './cloud-wind.js?v87-sky-seam';
 import {createResidence} from './residence.js?v82-steady';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v84-display';
@@ -11,7 +11,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v86-environment';
+import {createWeatherSky} from './weather-sky.js?v87-sky-seam';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -270,18 +270,18 @@ export async function createRetreat(renderer,scene,report,device={}){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
-      windWaves:{value:1},waveStrength:{value:1},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+      oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:1},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
-      varying vec3 vWorld;
-      #include <fog_pars_vertex>
+      uniform mat4 oceanCameraWorld,oceanInverseProjection;
+      varying vec3 oceanRay;
       void main(){
-        vec4 world=modelMatrix*vec4(position,1.0);vWorld=world.xyz;
-        vec4 mvPosition=viewMatrix*world;gl_Position=projectionMatrix*mvPosition;
-        #include <fog_vertex>
+        vec4 viewRay=oceanInverseProjection*vec4(position.xy,1.,1.);
+        oceanRay=mat3(oceanCameraWorld)*viewRay.xyz;
+        gl_Position=vec4(position.xy,0.,1.);
       }`,
     fragmentShader:`
-      uniform float windWaves,waveStrength,reflectionDetail,sunReflection;uniform vec2 windFlow,waveOffset;uniform float windSpeed,skyDay,skyCoverage,skyStorm;uniform sampler2D skyMap,skyCloudMap,skyCloudPrevious;uniform float skyPhysical,skyCloudBlend,skyCloudEnabled,solarRadius,waterDetail;uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;varying vec3 vWorld;
+      uniform float windWaves,waveStrength,reflectionDetail,sunReflection;uniform vec2 windFlow,waveOffset;uniform float windSpeed,skyDay,skyCoverage,skyStorm;uniform sampler2D skyMap,skyCloudMap,skyCloudPrevious;uniform float skyPhysical,skyCloudBlend,skyCloudEnabled,solarRadius,waterDetail;uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;uniform float oceanLevel;uniform mat4 oceanProjection;varying vec3 oceanRay;
       #include <common>
       #include <fog_pars_fragment>
       ${seaDepthGLSL}
@@ -293,16 +293,22 @@ export async function createRetreat(renderer,scene,report,device={}){
         return h*(1.-c.a*skyCloudEnabled)+c.rgb*skyCloudEnabled;
       }
       void main(){
+        vec3 rayDirection=normalize(oceanRay);
+        if(rayDirection.y>=-.0000001||cameraPosition.y<=oceanLevel)discard;
+        float travel=(oceanLevel-cameraPosition.y)/rayDirection.y;
+        vec3 vWorld=cameraPosition+rayDirection*travel;
+        vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
+        gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
         vec2 uv=vWorld.xz/siteScale;
-        vec2 waveUV=uv-mix(vec2(time*.06,0.),waveOffset,windWaves);
-        vec3 a=texture2D(normalMap,waveUV*.035).xyz*2.0-1.0;
-        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,(uv-mix(vec2(time*.06,0.),waveOffset,windWaves)*.68)*.013+vec2(.17,.31)).xyz*2.0-1.0;
+        // Restore the earlier two counter-moving normal layers; their clocks are real-time.
+        vec2 drift=waveOffset*windWaves;
+        vec3 a=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)-drift*.007).xyz*2.-1.;
+        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,uv*.013+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
         float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
-        float chop=mix(.055,.22,windGain)*waveStrength;
+        float chop=mix(.20,.28,windGain)*waveStrength;
         vec2 crossWind=vec2(-windFlow.y,windFlow.x);
-        float swellPhase=dot(uv,windFlow)*.095-time*(.55+.45*windGain);
-        vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y)*.55;
-        slopes+=windFlow*cos(swellPhase)*(.2+.6*windGain);
+        vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y);
+        slopes+=windFlow*cos(dot(uv,windFlow)*.095-time*(.55+.45*windGain))*.08*windGain;
         vec3 normal=normalize(vec3(slopes.x*chop,1.,slopes.y*chop));
         // Expanding impact rings have staggered births and fade before cell edges.
         vec2 cell=floor(vWorld.xz*.65),local=fract(vWorld.xz*.65)-.5;
@@ -345,15 +351,16 @@ export async function createRetreat(renderer,scene,report,device={}){
         float distanceToEye=length(vWorld.xz-cameraPosition.xz);
         vec3 horizonColor=grazingSky(-view.xz)*mix(vec3(.76,.84,.89),vec3(.94),skyStorm);
         float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
-        float edgeFade=smoothstep(1800.,3200.,distanceToEye);
+        float edgeFade=smoothstep(20000.,100000.,distanceToEye);
         color=mix(color,horizonColor,max(aerial,edgeFade));
         gl_FragColor=vec4(color,1.0);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`
   });
-  const ocean=new THREE.Mesh(new THREE.PlaneGeometry(8000,8000),oceanMaterial);
-  ocean.name='Panoramic ocean';ocean.rotation.x=-Math.PI/2;ocean.position.set(0,seaLevel*BUILDING_SCALE,0);scene.add(ocean);
+  const ocean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),oceanMaterial);
+  ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
+  ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
   report('正在布置光照与镜头…');
   buildPlatforms();
   const lodBatches=[],lowGeometry=new Map();

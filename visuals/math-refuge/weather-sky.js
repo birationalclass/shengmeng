@@ -25,7 +25,9 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  vec2 grid=uv*vec2(160.,80.),cell=floor(grid);
  float latitude=cos((uv.y-.5)*3.14159265);
  vec2 metric=vec2(max(.025,latitude),1.);
- float pixel=max(length(fwidth(grid)*metric)*.7071,.0001);
+ // Differentiate the continuous 3D direction, never wrapped longitude UVs.
+ // Across the +/-pi seam, UV derivatives jump by a whole texture width.
+ float pixel=max(length(fwidth(d))*.7071*(80./3.14159265),.0001);
  vec3 points=vec3(0.);
  for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){
   vec2 neighbor=cell+vec2(float(i),float(j));

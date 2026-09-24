@@ -1,4 +1,4 @@
-import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v86-environment';
+import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v87-sky-seam';
 import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v84-display';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
@@ -17,7 +17,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v86-environment';
+import {createRetreat} from './scene.js?v87-sky-seam';
 import {createLecture} from './lecture.js?v84-display';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -386,15 +386,11 @@ document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.
   if(SHOTS[index].name==='报告厅')activateRoom(0,false);
   selectShot(index);
 }));
-function showSettings(open,focusTime=false){
- $('settings').hidden=!open;
- $('settingsButton').setAttribute('aria-expanded',String(open));
- if(focusTime&&open){for(const section of document.querySelectorAll('#settings > details'))section.open=section.id==='timePanel';}
- $('timeButton').setAttribute('aria-expanded',String(open&&$('timePanel').open));
- if(open){if(focusTime)$('timePanel').scrollIntoView({block:'nearest'});else $('settings').scrollTop=0;}
+function showSettings(open){
+ if(open)closeTime();
+ $('settings').hidden=!open;$('settingsButton').setAttribute('aria-expanded',String(open));
 }
 $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));
-$('timePanel').addEventListener('toggle',()=>$('timeButton').setAttribute('aria-expanded',String(!$('settings').hidden&&$('timePanel').open)));
 $('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
 $('settingsClose').addEventListener('click',()=>showSettings(false));
 $('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('recommendStatus').textContent='已应用推荐 · 60 帧预算、文字保护、自动调整渲染精度。';});
@@ -419,8 +415,9 @@ function weatherLabel(){
 }
 function formatHour(h){const m=Math.floor(h*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
-function closeTime(){ $('timePanel').open=false;$('timeButton').setAttribute('aria-expanded','false'); }
-$('timeButton').addEventListener('click',()=>{showSettings(true,true);updateSunEvents();});
+function closeTime(){ $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false'); }
+$('timeClose').addEventListener('click',closeTime);
+$('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
 function eventHours(){const fallback=solarEvents();const parse=(text,otherwise)=>/^\d{2}:\d{2}$/.test(text||'')?Number(text.slice(0,2))+Number(text.slice(3))/60:otherwise;return {sunrise:parse(weatherReading?.sunrise,fallback.sunrise),sunset:parse(weatherReading?.sunset,fallback.sunset)};}
 function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent=formatHour(times.sunrise);$('sunsetTime').textContent=formatHour(times.sunset);$('sunEventSource').textContent=weatherReading?.sunrise?'上海今日 · 天气服务时刻':'上海今日 · 本地天文估算';}
 $('timeRate').addEventListener('change',()=>{sceneTime.setRate($('timeRate').value);updateSceneTime();});
