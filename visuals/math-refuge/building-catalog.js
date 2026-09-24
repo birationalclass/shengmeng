@@ -1,4 +1,4 @@
-import {RESIDENCE_SHOTS,RESIDENCE_ROOMS} from './residence-layout.js?v73-residence';
+import {RESIDENCE_SHOTS,RESIDENCE_ROOMS} from './residence-layout.js?v76-villa';
 import {BUILDING_SCALE as S,DECK_Y} from './site-layout.js?v44-hall-clearance';
 const upperEye=2*DECK_Y+3.2/S+.20+1.5/S;
 export const BUILDINGS=[

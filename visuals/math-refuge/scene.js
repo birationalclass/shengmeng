@@ -1,4 +1,4 @@
-import {createResidence} from './residence.js?v73-residence';
+import {createResidence} from './residence.js?v76-villa';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v56-continuous-scene';
 import * as THREE from 'three';
@@ -7,14 +7,14 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v53-section-sessions';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v72-night-rain';
+import {createWeatherSky} from './weather-sky.js?v75-atmosphere';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v67-dark-sky';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v73-residence';
+import {createCampus} from './campus.js?v76-villa';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -346,7 +346,7 @@ export async function createRetreat(renderer,scene,report){
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   const rain=createRain(scene);
-  const sky=createWeatherSky();sky.material.uniforms.seaHorizon.value=1;scene.add(sky);
+  const sky=createWeatherSky({renderer});sky.material.uniforms.seaHorizon.value=1;scene.add(sky);
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
@@ -365,10 +365,10 @@ export async function createRetreat(renderer,scene,report){
   // One neutral diffuse reflection probe; never swap discrete half-hour snapshots.
   // Directional light, sky, water highlights and probe strength evolve continuously.
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
-  const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
+  const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
   environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
   const weather={cloud:.14,rain:0,fog:0,wind:8},weatherTarget={...weather};let skySeconds=0;
-  const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#9bc6e4'),fogNight=new THREE.Color('#101b2b');
+  const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#477b9c'),fogNight=new THREE.Color('#101b2b');
   function setWeather(value){Object.assign(weatherTarget,{cloud:value?.cloud??.14,rain:value?.rain??0,fog:value?.fog??0,wind:value?.wind??8});}
   function setTime(hour,regenerate=false,dt=0){
     const state=solarState(hour),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
@@ -381,9 +381,9 @@ export async function createRetreat(renderer,scene,report){
     ambient.intensity=.18+day*(1.15-.28*storm);ambient.color.set('#91beeb').lerp(new THREE.Color('#d0d5df'),storm*.7);ambient.groundColor.set('#423d33');
     const lamps=1-smooth(.16,.7,day);interiorLights.forEach(l=>l.intensity=l.userData.power*(.22+lamps*.78)*BUILDING_SCALE**2*l.userData.gain);
     light.emissiveIntensity=.45+lamps*1.05;scene.environmentIntensity=.08+day*(.52-.16*storm);
-    scene.fog.density=.00009+.00023*(1-day)+.00032*storm+.0012*weather.fog;
+    scene.fog.density=.000018+.00023*(1-day)+.00032*storm+.0012*weather.fog;
     scene.fog.color.copy(fogDay).lerp(fogNight,1-day).lerp(new THREE.Color('#929eac'),storm*.4*day);
-    u.seaColor.value.copy(scene.fog.color);
+    u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere();
     sky.userData.state={hour,elevation:state.elevation,cloud,day,sunIntensity:sun.intensity};
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}

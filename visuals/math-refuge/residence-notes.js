@@ -1,7 +1,7 @@
 import {PAPERS} from './residence-profile.js?v73-residence';
 const HOME='../../';
 const pages={
- '海上住宅':{title:'孟晟 · 海上住宅',text:'住宅岛位于园区以西，离现有建筑群边缘约 1 公里。庭院将研究、会客和生活空间分开；左侧可选择房间。',links:[['个人主页',HOME]]},
+ '海上住宅':{title:'孟晟 · 海上住宅',text:'住宅岛位于园区以西，离现有建筑群边缘约 1 公里。庭院将研究、会客和生活空间分开；左侧可选择房间。',links:[['建筑平面与剖面','./residence-plan.html?v76-villa'],['个人主页',HOME]]},
  '住宅玄关':{title:'学术足迹',text:'Sheng Meng · 孟晟\n华东师范大学数学科学学院\n\n2022—至今 · 华东师范大学\n2019—2022 · 韩国高等科学研究院\n2018—2019 · 马克斯·普朗克数学研究所\n2013—2018 · 新加坡国立大学博士，导师张德齐',links:[['CV','https://math.ecnu.edu.cn/~smeng/CV.pdf']]},
  '住宅书房':{title:'研究与论文',text:'代数几何 · 双有理几何 · 动力系统\n书架旁的目录收录主页当前的 25 项论文与预印本。',papers:true,links:[['主页研究目录',HOME+'#research']]},
  '住宅展廊':{title:'数学可视化收藏',text:'把抽象结构转化为可以观察、旋转和探索的对象。室内雕塑是空间引子；下列链接进入实际交互作品。',links:[['三维可视化',HOME+'visuals/real3d/'],['Julia 集',HOME+'visuals/julia/'],['混沌吸引子',HOME+'visuals/chaos/'],['向量丛与直纹曲面',HOME+'visuals/vector-bundle/'],['Pascal 线',HOME+'visuals/pascal/'],['谱序列',HOME+'study/spectral/']]},

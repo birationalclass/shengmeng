@@ -1,6 +1,6 @@
 import {createSeminarBuilding} from './seminar-building.js?v62-chalk-ink';
 import * as THREE from 'three';
-import {BUILDINGS} from './building-catalog.js?v73-residence';
+import {BUILDINGS} from './building-catalog.js?v76-villa';
 import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {terracePaving} from './terrace-paving.js';
 import {createLectern} from './lectern.js?v62-chalk-ink';

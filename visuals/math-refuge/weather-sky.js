@@ -1,9 +1,11 @@
 import * as THREE from 'three';
-export function createWeatherSky({panorama=true}={}){
+import {createAtmosphereLUT} from './sky-atmosphere.js?v75-atmosphere';
+export function createWeatherSky({panorama=true,renderer}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
- const uniforms={seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
+ const atmosphere=createAtmosphereLUT(renderer);
+ const uniforms={atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:atmosphere?1:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
  const material=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms,vertexShader:`varying vec3 ray;void main(){ray=position;vec4 p=projectionMatrix*mat4(mat3(viewMatrix))*modelMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,fragmentShader:`
- uniform sampler2D galaxyMap;uniform float galaxyMix;
+ uniform sampler2D atmosphereMap;uniform float useAtmosphere;uniform sampler2D galaxyMap;uniform float galaxyMix;
  precision highp float;varying vec3 ray;uniform vec3 sunPosition,sunColor,seaColor;uniform float seaHorizon;uniform float day,warm,direct,cloud,storm,clock,radius,showSun,stars,sidereal,twinkleTime;
  float hash(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
  float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
@@ -13,23 +15,39 @@ export function createWeatherSky({panorama=true}={}){
  // An all-sky photographic field resolves the bulge, rifts, nebulae and stellar density.
  // This fixed orientation is an artistic sky, not a date-calibrated planetarium.
  vec3 nightStars(vec3 direction){vec3 d=celestial(direction);vec3 pole=normalize(vec3(.76,-.58,.30));vec3 axis=normalize(vec3(.30,0.,-.76));vec3 other=cross(pole,axis);vec3 g=vec3(dot(d,axis),dot(d,other),dot(d,pole));vec2 uv=vec2(.5+atan(g.y,g.x)/6.28318530718,.5+asin(clamp(g.z,-1.,1.))/3.14159265359);// Separate the broad galactic field from unresolved photographic star grain.
- vec3 field=texture2D(galaxyMap,uv).rgb;
- vec3 diffuse=texture2D(galaxyMap,uv,3.5).rgb;
+ // Star-removed diffuse panorama; photographic bloom is never used as a point source.
+ vec3 diffuse=texture2D(galaxyMap,uv).rgb;
  float haze=dot(diffuse,vec3(.2126,.7152,.0722));
- float peak=max(0.,dot(field-diffuse,vec3(.2126,.7152,.0722)));
  vec3 band=mix(vec3(haze),diffuse,.65)*(.68/(1.+2.5*haze));
- // Keep only resolved bright stars; the millions of faint points merge into the band.
- vec3 bright=max(field-diffuse,vec3(0.))*smoothstep(.38,.72,peak)*.20;
- // Smooth celestial-space phases keep stars independent, even during accelerated time.
- float phase=dot(d,vec3(127.1,311.7,74.7));
- float amount=mix(.06,.22,pow(1.-max(direction.y,0.),2.));
- float shimmer=1.+amount*(sin(twinkleTime*1.7+phase)+.4*sin(twinkleTime*2.9+phase*1.618));
+ vec2 grid=uv*vec2(160.,80.),cell=floor(grid);
+ float latitude=cos((uv.y-.5)*3.14159265);
+ vec2 metric=vec2(max(.025,latitude),1.);
+ float pixel=max(length(fwidth(grid)*metric)*.7071,.0001);
+ vec3 points=vec3(0.);
+ for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){
+  vec2 neighbor=cell+vec2(float(i),float(j));
+  vec2 key=vec2(mod(neighbor.x+160.,160.),neighbor.y);
+  float seed=hash(key+13.7);
+  if(seed>1.-.095*max(0.,latitude)&&neighbor.y>=0.&&neighbor.y<80.){
+   vec2 center=neighbor+.16+.68*vec2(hash(key+37.1),hash(key+91.3));
+   float distance=length((grid-center)*metric)/pixel;
+   float magnitude=hash(key+51.9);
+   // Gaussian pixel footprint: brightness varies, but stars never become resolved disks.
+   float sigma=mix(.40,.60,pow(magnitude,4.));
+   float core=exp(-.5*pow(distance/sigma,2.));
+   float halo=exp(-.5*pow(distance/1.15,2.))*.025*pow(magnitude,6.);
+   float phase=hash(key+77.)*6.2831853;
+   float shimmer=1.+(.035+.045*(1.-max(direction.y,0.)))*(sin(twinkleTime*1.8+phase)+.25*sin(twinkleTime*3.1+phase*2.3));
+   vec3 tint=mix(vec3(.78,.86,1.),vec3(1.,.90,.76),hash(key+19.));
+   points+=tint*(core+halo)*mix(.045,.65,pow(magnitude,3.))*shimmer;
+  }
+ }
  float transmission=exp(-.10/max(.07,direction.y));
- return (band+bright*shimmer)*galaxyMix*transmission;}
+ return (band*galaxyMix+points)*transmission;}
 
  // Rare deterministic meteors: a short tapered trail, never a repeating shower.
  vec3 meteor(vec3 d){float event=floor(twinkleTime/31.);float age=mod(twinkleTime,31.)-4.-hash(vec2(event,7.))*12.;if(age<0.||age>1.5)return vec3(0.);float az=hash(vec2(event,3.))*6.28318;vec3 start=normalize(vec3(cos(az),.55+hash(vec2(event,5.)),sin(az)));vec3 tangent=normalize(cross(start,vec3(0.,1.,0.))*.8+vec3(0.,-.6,0.));float t=age/1.5;vec3 head=normalize(start+tangent*t*.30);vec3 tail=normalize(start+tangent*max(0.,t-.26)*.30);vec3 segment=head-tail;float along=clamp(dot(d-tail,segment)/max(dot(segment,segment),.000001),0.,1.);float distance=length(d-normalize(tail+segment*along));float width=max(length(fwidth(d))*.65,.00012);float line=exp(-pow(distance/width,2.))*pow(along,1.8);float fade=smoothstep(0.,.12,t)*(1.-smoothstep(.60,1.,t));return vec3(.30,.36,.42)*line*fade;}
- void main(){vec3 d=normalize(ray);float y=max(d.y,0.0),horizon=pow(1.0-y,5.0);vec3 zenith=vec3(.014,.12,.43),edge=vec3(.32,.54,.80);vec3 clear=mix(zenith,edge,exp(-5.0*y));float facing=pow(max(dot(normalize(vec3(d.x,.001,d.z)),normalize(vec3(sunPosition.x,.001,sunPosition.z))),0.0),5.0);clear=mix(clear,vec3(.94,.32,.105),warm*horizon*facing*.78);vec3 night=mix(vec3(.0015,.003,.012),vec3(.006,.013,.027),horizon);vec3 color=mix(night,clear,day);color=mix(color,vec3(.33,.39,.47)*(.025+.975*day),cloud*storm*.68);
+ void main(){vec3 d=normalize(ray);float y=max(d.y,0.0),horizon=pow(1.0-y,5.0);vec3 zenith=vec3(.014,.12,.43),edge=vec3(.32,.54,.80);vec3 clear=mix(zenith,edge,exp(-5.0*y));float facing=pow(max(dot(normalize(vec3(d.x,.001,d.z)),normalize(vec3(sunPosition.x,.001,sunPosition.z))),0.0),5.0);clear=mix(clear,vec3(.94,.32,.105),warm*horizon*facing*.78);vec3 night=mix(vec3(.0015,.003,.012),vec3(.006,.013,.027),horizon);vec2 skyUV=vec2(.5+atan(d.z,d.x)/6.28318530718,sqrt(clamp(asin(clamp(d.y,0.,1.))/1.57079632679,0.,1.)));vec3 physical=texture2D(atmosphereMap,skyUV).rgb;vec3 color=mix(mix(night,clear,day),night*(1.-day)+physical,useAtmosphere);color=mix(color,vec3(.33,.39,.47)*(.025+.975*day),cloud*storm*.68);
  if(stars>.0001)color+=(nightStars(d)+meteor(d))*stars*smoothstep(0.0,.18,d.y)*(1.-storm*.96);
  float angle=acos(clamp(dot(d,normalize(sunPosition)),-1.,1.));float edgeAA=max(fwidth(angle),.00004);float disk=1.0-smoothstep(radius-edgeAA,radius+edgeAA,angle);float limb=sqrt(max(0.0,1.0-pow(angle/radius,2.0)));float horizonAA=max(fwidth(d.y),.000001);float aboveSea=smoothstep(-horizonAA,horizonAA,d.y);float solar=showSun*aboveSea; color+=sunColor*solar*(disk*(7.0+2.0*limb)+.18*exp(-pow(angle/.019,2.0)));
  vec2 uv=d.xz/max(d.y+.12,.12)*1.55+vec2(clock*.0025,clock*.0008);float n=fbm(uv),threshold=mix(.80,.22,cloud);float density=smoothstep(threshold-.07,threshold+.12,n)*smoothstep(-.015,.09,d.y)*smoothstep(0.,.08,cloud);float shade=fbm(uv+vec2(.065,.035));vec3 white=mix(vec3(.58,.66,.75),vec3(1.28,1.30,1.32),smoothstep(.2,.7,shade));white=mix(white,vec3(.38,.43,.50),storm*.6);white=mix(white,vec3(.94,.47,.23),warm*facing*.48);white=mix(vec3(.002,.003,.005),white,day);color=mix(color,white,density*.97);
@@ -40,10 +58,10 @@ export function createWeatherSky({panorama=true}={}){
  }`.replace(';#include',';\n#include')});
  let disposed=false,loadedAt=0,panoramaTexture;
  if(panorama&&typeof window!=='undefined'&&typeof Image!=='undefined'){
-  panoramaTexture=new THREE.TextureLoader().load(new URL('./assets/sky/eso0932a-6k.jpg',import.meta.url).href,texture=>{
+  panoramaTexture=new THREE.TextureLoader().load(new URL('./assets/sky/galaxy-diffuse.jpg',import.meta.url).href,texture=>{
    if(disposed){texture.dispose();return;}texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=THREE.RepeatWrapping;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.magFilter=THREE.LinearFilter;texture.anisotropy=4;uniforms.galaxyMap.value=texture;loadedAt=performance.now();
   },undefined,()=>{ /* Keep the continuous dark sky when offline. */ });
  }
- material.addEventListener('dispose',()=>{disposed=true;fallback.dispose();panoramaTexture?.dispose();});
- const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=()=>{uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};mesh.name='Continuous Shanghai sky';mesh.frustumCulled=false;mesh.scale.setScalar(10000);return mesh;
+ material.addEventListener('dispose',()=>{disposed=true;atmosphere?.dispose();fallback.dispose();panoramaTexture?.dispose();});
+ const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=()=>{uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};mesh.userData.updateAtmosphere=()=>atmosphere?.update(uniforms.sunPosition.value,uniforms.cloud.value);mesh.userData.updateAtmosphere();mesh.name='Continuous Shanghai sky';mesh.frustumCulled=false;mesh.scale.setScalar(10000);return mesh;
 }
