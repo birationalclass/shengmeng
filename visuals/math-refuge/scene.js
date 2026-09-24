@@ -1,6 +1,7 @@
+import {apparentSunDirection} from './solar-optics.js?v86-environment';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
-import {advanceCloudWind,windVelocity} from './cloud-wind.js?v77-wind-clouds';
+import {advanceWeatherWinds,windVelocity} from './cloud-wind.js?v86-environment';
 import {createResidence} from './residence.js?v82-steady';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v84-display';
@@ -10,7 +11,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v84-display';
+import {createWeatherSky} from './weather-sky.js?v86-environment';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v70-sun-stars';
 import {seaDepthGLSL} from './sea-depth.js?v78-shallow-water';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -295,11 +296,11 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec2 uv=vWorld.xz/siteScale;
         vec2 waveUV=uv-mix(vec2(time*.06,0.),waveOffset,windWaves);
         vec3 a=texture2D(normalMap,waveUV*.035).xyz*2.0-1.0;
-        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,(uv-waveOffset*.68)*.013+vec2(.17,.31)).xyz*2.0-1.0;
+        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,(uv-mix(vec2(time*.06,0.),waveOffset,windWaves)*.68)*.013+vec2(.17,.31)).xyz*2.0-1.0;
         float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
-        float chop=mix(.025,.22,windGain)*waveStrength;
+        float chop=mix(.055,.22,windGain)*waveStrength;
         vec2 crossWind=vec2(-windFlow.y,windFlow.x);
-        float swellPhase=dot(waveUV,windFlow)*.095;
+        float swellPhase=dot(uv,windFlow)*.095-time*(.55+.45*windGain);
         vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y)*.55;
         slopes+=windFlow*cos(swellPhase)*(.2+.6*windGain);
         vec3 normal=normalize(vec3(slopes.x*chop,1.,slopes.y*chop));
@@ -313,12 +314,14 @@ export async function createRetreat(renderer,scene,report,device={}){
         float fresnel=.0204+.9796*pow(1.0-nv,5.0);
         vec3 halfVector=normalize(sunDirection+view);float nh=max(dot(normal,halfVector),0.0);
         // GGX slope distribution; finite solar disk broadens the glint continuously.
-        float alpha=.025+.07*windGain+solarRadius*.8+rainAmount*.025,a2=alpha*alpha;
+        float alpha=.012+.055*windGain+solarRadius*.45+rainAmount*.025,a2=alpha*alpha;
         float distribution=a2/(3.14159265*pow(nh*nh*(a2-1.)+1.,2.));
         float nl=max(dot(normal,sunDirection),0.0),k=alpha*.5;
         float visibility=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
         float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
-        float glitter=min(12.,distribution*visibility*sunF/(4.*nv+.001));
+        // Bound radiance smoothly; avoid a flat clipped white column at grazing angles.
+        float radiance=distribution*visibility*sunF/(4.*nv+.001);
+        float glitter=1.1*(1.-exp(-radiance*.4));
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
         float depth=seaDepthAt(uv);
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
@@ -340,7 +343,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec3 color=waterColor*nightVisibility*(1.-fresnel)+reflected*fresnel+sunTint*glitter*sunStrength*sunReflection;
         color=mix(color,vec3(.67,.77,.71),foam*.45*nightVisibility);
         float distanceToEye=length(vWorld.xz-cameraPosition.xz);
-        vec3 horizonColor=grazingSky(-view.xz);
+        vec3 horizonColor=grazingSky(-view.xz)*mix(vec3(.76,.84,.89),vec3(.94),skyStorm);
         float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
         float edgeFade=smoothstep(1800.,3200.,distanceToEye);
         color=mix(color,horizonColor,max(aerial,edgeFade));
@@ -387,7 +390,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
-  sun.shadow.normalBias=.065;sun.shadow.bias=-.0002;scene.add(sun);
+  sun.shadow.normalBias=.018;sun.shadow.bias=-.00008;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
   for(const zone of campus.lightingZones){
@@ -404,12 +407,12 @@ export async function createRetreat(renderer,scene,report,device={}){
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer,device,probe:true});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
   environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
-  const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
+  const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
   const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#477b9c'),fogNight=new THREE.Color('#101b2b');
   function setWeather(value){Object.assign(weatherTarget,{cloud:value?.cloud??.14,rain:value?.rain??0,fog:value?.fog??0,wind:value?.wind??weatherTarget.wind,windDirection:Number.isFinite(value?.windDirection)?value.windDirection:weatherTarget.windDirection});}
   function setTime(hour,regenerate=false,dt=0,weatherRate=1){
     const state=solarState(hour),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
-    for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceCloudWind(cloudWind,weatherTarget.wind,weatherTarget.windDirection,dt*weatherRate);
+    for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
     const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
     const u=sky.material.uniforms;u.sunPosition.value.fromArray(state.direction);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius;u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
     roomFill.setDaylight(day*(1-.3*storm));pathLighting.update(day);
@@ -423,10 +426,10 @@ export async function createRetreat(renderer,scene,report,device={}){
     u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere();
     const water=ocean.material.uniforms;water.skyMap.value=u.atmosphereMap.value;water.skyPhysical.value=u.useAtmosphere.value;water.skyCloudMap.value=u.cloudMap.value;water.skyCloudPrevious.value=u.cloudMapPrevious.value;water.skyCloudBlend.value=u.cloudBlend.value;water.skyCloudEnabled.value=u.useVolumeClouds.value;water.solarRadius.value=state.radius;
     water.skyDay.value=day;water.skyCoverage.value=cloud;water.skyStorm.value=storm;
-    const vx=cloudWind.velocity.x,vz=cloudWind.velocity.z,windLength=Math.hypot(vx,vz);
+    const vx=waterWind.velocity.x,vz=waterWind.velocity.z,windLength=Math.hypot(vx,vz);
     if(windLength>.000001)water.windFlow.value.set(vx/windLength,vz/windLength);
-    water.windSpeed.value=weather.wind/3.6;water.waveOffset.value.set(cloudWind.offset.x*1000/BUILDING_SCALE*.45,cloudWind.offset.z*1000/BUILDING_SCALE*.45);
-    water.sunStrength.value=sunWaterVisibility(state.direction[1],state.radius)*(.22+.78*state.direct)*sunThrough;
+    water.windSpeed.value=weather.wind/3.6;water.waveOffset.value.set(waterWind.offset.x*1000/BUILDING_SCALE*.45,waterWind.offset.z*1000/BUILDING_SCALE*.45);
+    const apparent=apparentSunDirection(state.direction);water.sunDirection.value.fromArray(apparent);water.sunStrength.value=sunWaterVisibility(apparent[1],state.radius)*(.22+.78*state.direct)*sunThrough;
     sky.userData.state={hour,elevation:state.elevation,cloud,day,sunIntensity:sun.intensity};
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}

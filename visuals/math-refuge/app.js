@@ -1,3 +1,4 @@
+import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v86-environment';
 import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v84-display';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
@@ -16,7 +17,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v84-display';
+import {createRetreat} from './scene.js?v86-environment';
 import {createLecture} from './lecture.js?v84-display';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -130,6 +131,7 @@ function beginTransition(){
     distance:position.distanceTo(target),endDistance:shotPosition.distanceTo(shotTarget),
     velocity:motionVelocity.clone(),acceleration:motionAcceleration.clone().clampLength(0,3),
     duration:reduced.matches?1.6:Math.max(transitionSeconds(position.distanceTo(shotPosition)),rotation.angleTo(endRotation)/(Math.PI/14))};
+  const route=hallFloorRoute(position.toArray(),shotPosition.toArray());if(route){blend.route=new THREE.CatmullRomCurve3(route.map(p=>new THREE.Vector3(...p)),false,'centripetal');blend.duration=Math.max(blend.duration,blend.route.getLength()/3.2);}
   frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
@@ -158,6 +160,7 @@ function applyShot(dt){
   if(blend){
     blend.elapsed+=dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
     for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
+    if(blend.route)blend.route.getPointAt(k,camera.position);
     camera.quaternion.slerpQuaternions(blend.rotation,blend.endRotation,k);
     viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
     controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
@@ -212,12 +215,13 @@ function updateRenderBudget(stamp){
   updateQualityReadout();
 
 }
-const graphicsKeys=['quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection'];
+const graphicsKeys=['quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects'];
 let gpuName='',activeCloudQuality='medium',cloudAdjustedAt=0;const cloudOrder=['low','medium','high'];
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
   resize();if(!retreat)return;
   activeCloudQuality=$('cloudQuality').value;cloudAdjustedAt=performance.now();retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
   retreat.ocean.material.uniforms.waterDetail.value=$('waterDetail').value==='high'?1:0;
   retreat.ocean.material.uniforms.windWaves.value=$('windWaves').value==='on'?1:0;retreat.ocean.material.uniforms.waveStrength.value=Number($('waveStrength').value)/100;retreat.ocean.material.uniforms.reflectionDetail.value=$('waterReflection').value==='full'?1:0;retreat.ocean.material.uniforms.sunReflection.value=$('sunReflection').value==='on'?1:0;$('waveStrengthValue').textContent=$('waveStrength').value+'%';
@@ -289,11 +293,17 @@ function tick(stamp){
   }
   retreat.residence.update(camera,retreat.sky.material.uniforms.day.value);
   const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
-  const lightTarget=nearResidence?retreat.residence.root.position:campusLightTarget;
+  const hallCenter=new THREE.Vector3(39*BUILDING_SCALE,3,0),nearHall=camera.position.distanceTo(hallCenter)<65;
+  const lightTarget=nearResidence?retreat.residence.root.position:nearHall?hallCenter:campusLightTarget;
+  const shadowCamera=retreat.sun.shadow.camera,extent=nearResidence?65:nearHall?40:55*BUILDING_SCALE;
+  const previousLightTarget=retreat.sun.target.position.clone();
   retreat.sun.target.position.lerp(lightTarget,1-Math.exp(-dt*2));
+  if(Math.abs(shadowCamera.right-extent)>.01){Object.assign(shadowCamera,{left:-extent,right:extent,top:extent,bottom:-extent});shadowCamera.updateProjectionMatrix();renderer.shadowMap.needsUpdate=true;}
+  if(previousLightTarget.distanceToSquared(retreat.sun.target.position)>.000001)renderer.shadowMap.needsUpdate=true;
   const weatherStart=performance.now();if(weatherProbeFrame)weatherTimer?.begin(stamp);
   try{updateAtmosphere(dt);}finally{if(weatherProbeFrame)weatherTimer?.end();}weatherCpuMs=performance.now()-weatherStart;
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
+  if(free&&!blend&&motionSample){const clipped=stopAtHallSlab(previousPosition.toArray(),camera.position.toArray());const correction=new THREE.Vector3(...clipped).sub(camera.position);camera.position.add(correction);controls.target.add(correction);}
   if($('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
@@ -376,11 +386,17 @@ document.querySelectorAll('#chapters button[data-shot]').forEach(button=>button.
   if(SHOTS[index].name==='报告厅')activateRoom(0,false);
   selectShot(index);
 }));
-$('settingsButton').addEventListener('click',()=>{
-  $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false');$('settings').hidden=!$('settings').hidden;$('settingsButton').setAttribute('aria-expanded',String(!$('settings').hidden));
-});
+function showSettings(open,focusTime=false){
+ $('settings').hidden=!open;
+ $('settingsButton').setAttribute('aria-expanded',String(open));
+ if(focusTime&&open){for(const section of document.querySelectorAll('#settings > details'))section.open=section.id==='timePanel';}
+ $('timeButton').setAttribute('aria-expanded',String(open&&$('timePanel').open));
+ if(open){if(focusTime)$('timePanel').scrollIntoView({block:'nearest'});else $('settings').scrollTop=0;}
+}
+$('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));
+$('timePanel').addEventListener('toggle',()=>$('timeButton').setAttribute('aria-expanded',String(!$('settings').hidden&&$('timePanel').open)));
 $('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
-$('settingsClose').addEventListener('click',()=>{$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');});
+$('settingsClose').addEventListener('click',()=>showSettings(false));
 $('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('recommendStatus').textContent='已应用推荐 · 60 帧预算、文字保护、自动调整渲染精度。';});
 for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
 $('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textContent=$('waveStrength').value+'%';});
@@ -403,9 +419,8 @@ function weatherLabel(){
 }
 function formatHour(h){const m=Math.floor(h*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
-function closeTime(){ $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false'); }
-$('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
-$('timeClose').addEventListener('click',closeTime);
+function closeTime(){ $('timePanel').open=false;$('timeButton').setAttribute('aria-expanded','false'); }
+$('timeButton').addEventListener('click',()=>{showSettings(true,true);updateSunEvents();});
 function eventHours(){const fallback=solarEvents();const parse=(text,otherwise)=>/^\d{2}:\d{2}$/.test(text||'')?Number(text.slice(0,2))+Number(text.slice(3))/60:otherwise;return {sunrise:parse(weatherReading?.sunrise,fallback.sunrise),sunset:parse(weatherReading?.sunset,fallback.sunset)};}
 function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent=formatHour(times.sunrise);$('sunsetTime').textContent=formatHour(times.sunset);$('sunEventSource').textContent=weatherReading?.sunrise?'上海今日 · 天气服务时刻':'上海今日 · 本地天文估算';}
 $('timeRate').addEventListener('change',()=>{sceneTime.setRate($('timeRate').value);updateSceneTime();});

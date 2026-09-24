@@ -8,3 +8,5 @@ export function advanceCloudWind(state,speed,bearing,dt){
  for(const axis of ['x','z']){const old=state.velocity[axis];state.offset[axis]+=target[axis]*t+(old-target[axis])*4*(1-e);state.velocity[axis]=target[axis]+(old-target[axis])*e;}
  return state;
 }
+
+export function advanceWeatherWinds(cloud,water,speed,bearing,dt,clockRate=1){advanceCloudWind(cloud,speed,bearing,dt*clockRate);advanceCloudWind(water,speed,bearing,dt);}
