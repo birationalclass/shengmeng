@@ -7,7 +7,7 @@ export const CLOUD_LEVELS={low:{size:256,steps:16,interval:400},medium:{size:512
 export function recommendedGraphics({mobile=false,gpu='',maxTextureSize=4096}={}){
  // Model names only supply a safe initial choice; measured GPU time controls adaptation.
  const high=!mobile&&maxTextureSize>=8192&&!/Intel|SwiftShader|llvmpipe/i.test(gpu);
- return {...GRAPHICS_PRESETS[high?'high':'balanced'],resolutionScale:high?'125':'100',targetFPS:'60',adaptiveQuality:'auto',rainEffects:'on',starEffects:mobile?'off':'on',geometryDetail:'auto',windWaves:'on',waveStrength:'100',sunReflection:'on'};
+ return {...GRAPHICS_PRESETS[high?'high':'balanced'],resolutionScale:high?'125':'100',targetFPS:'60',adaptiveQuality:'auto',rainEffects:'on',starEffects:mobile?'off':'on',geometryDetail:'auto',windWaves:'on',waveStrength:'20',sunReflection:'on'};
 }
 export function resolutionRatio(base,scale,width,height,maxTextureSize=8192){
  return Math.max(.25,Math.min(base*Number(scale)/100,maxTextureSize/Math.max(width,height),Math.sqrt(8500000/(width*height))));

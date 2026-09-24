@@ -1,6 +1,7 @@
 import {TimePresentation} from './time-presentation.js?v91-shore';
-import {hallFloorRoute,stopAtHallSlab} from './hall-camera-route.js?v91-shore';
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v84-display';
+import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
+const hallPassageMask=new HallPassageMask();
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v92-camera';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
@@ -18,7 +19,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v91-shore';
+import {createRetreat} from './scene.js?v92-camera';
 import {createLecture} from './lecture.js?v88-arm-sweeps';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -132,7 +133,7 @@ function beginTransition(){
     distance:position.distanceTo(target),endDistance:shotPosition.distanceTo(shotTarget),
     velocity:motionVelocity.clone(),acceleration:motionAcceleration.clone().clampLength(0,3),
     duration:reduced.matches?1.6:Math.max(transitionSeconds(position.distanceTo(shotPosition)),rotation.angleTo(endRotation)/(Math.PI/14))};
-  const route=hallFloorRoute(position.toArray(),shotPosition.toArray());if(route){blend.route=new THREE.CatmullRomCurve3(route.map(p=>new THREE.Vector3(...p)),false,'centripetal');blend.duration=Math.max(blend.duration,blend.route.getLength()/3.2);}
+  const route=hallFloorRoute(position.toArray(),shotPosition.toArray());if(route){const points=route.map(p=>new THREE.Vector3(...p));blend.route=new THREE.CatmullRomCurve3(points,false,'centripetal');if(!curveClearsHall(blend.route,cameraProbeRadius(camera.near,Math.max(camera.fov,SHOTS[shot].fov||60),camera.aspect))){const safe=new THREE.CurvePath();for(let i=1;i<points.length;i++)safe.add(new THREE.LineCurve3(points[i-1],points[i]));blend.route=safe;}blend.duration=Math.max(blend.duration,blend.route.getLength()/3.2);}
   frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
@@ -236,6 +237,7 @@ function detectGraphics(){
  const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');gpuName=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'图形型号未公开';
  $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
  let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
+ if(saved){try{if(!localStorage.getItem('refuge-wave-base-v92')){saved.waveStrength='20';saved.windWaves='on';localStorage.setItem('refuge-wave-base-v92','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
  const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=0&&Number(value)<=150))$(id).value=value;}
 }
@@ -305,7 +307,7 @@ function tick(stamp){
   const weatherStart=performance.now();if(weatherProbeFrame)weatherTimer?.begin(stamp);
   try{updateAtmosphere(dt);}finally{if(weatherProbeFrame)weatherTimer?.end();}weatherCpuMs=performance.now()-weatherStart;
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
-  if(free&&!blend&&motionSample){const clipped=stopAtHallSlab(previousPosition.toArray(),camera.position.toArray());const correction=new THREE.Vector3(...clipped).sub(camera.position);camera.position.add(correction);controls.target.add(correction);}
+  if(motionSample){const opacity=hallPassageMask.update(previousPosition.toArray(),camera.position.toArray(),cameraProbeRadius(camera.near,camera.fov,camera.aspect),dt);$('transition').style.opacity=String(opacity);$('world').dataset.cameraPassage=opacity.toFixed(3);}
   if($('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}

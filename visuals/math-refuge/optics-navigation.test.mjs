@@ -25,3 +25,11 @@ test('two-way hall transitions use exterior stair route without intersecting the
  const stopped=stopAtHallSlab(high,low);assert(stopped[1]>HALL_SLAB.max[1]);
  assert.equal(hallFloorRoute([80,10,0],[80,2,0]),null);
 });
+import {cameraProbeRadius,HallPassageMask,curveClearsHall} from './hall-camera-route.js';
+test('near-plane probe grows with FOV and aspect ratio',()=>{assert(cameraProbeRadius(.1,90,2)>cameraProbeRadius(.1,45,1));});
+test('manual slab passage is masked in both directions and recovers without moving endpoints',()=>{
+ const high=[53,7.62,6.9],low=[50,2.1,0];
+ for(const [a,b] of [[high,low],[low,high]]){const mask=new HallPassageMask(),copy=[...b];assert.equal(mask.update(a,b,.2,.016),1);assert.deepEqual(b,copy);for(let i=0;i<60;i++)mask.update(b,b,.2,1/60);assert.equal(mask.opacity,0);}
+ const mask=new HallPassageMask();assert.equal(mask.update([80,10,0],[80,2,0],.2,.016),0);
+});
+test('route validator rejects curves that sweep through the slab',()=>{const c=new T.LineCurve3(new T.Vector3(53,7.62,6.9),new T.Vector3(50,2.1,0));assert.equal(curveClearsHall(c),false);});
