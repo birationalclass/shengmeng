@@ -270,3 +270,7 @@ The v81 depth-order follow-up draws opaque architecture before ocean and sky (tr
 - Dynamic resolution reacts to sustained GPU times above 15 ms and restores resolution only below 9 ms after a 10-second cooldown, leaving more room for a 16.7 ms frame deadline. Geometry and existing minimum scales remain intact.
 
 Validation: 91 automated tests passed, with focused scene and cloud tests rerun after adding assertions for dry texture uploads, fixed light count, stripe coverage, frozen uniforms, completed-image publication and renderer-state restoration. In the local M4 iMac's Codex Chromium browser at a 1280×720 viewport, night writing measured frame P50/P95 16.7/17.6 ms (scale 0.80, 2048×1152 buffer); the cloudy midday sea terrace measured 16.7/17.5 ms (scale 0.92). The preceding live version also measured near 60 FPS in this session (night P95 17.7 ms at scale 0.95), so these samples establish healthy operation, not a controlled FPS speedup. Cloud and board screenshots showed intact rendering, with no console errors. These are rolling samples, not a guarantee of 60 FPS across hardware, browsers or every camera move.
+
+### Curved eraser motion (v83)
+
+Local wiping passes now follow a shallow upward bow, ease into and out of each pass, and gently rotate the eraser. Lifted travel also curves between occupied regions. The tool, ink removal and damp trails share the same sampled path; tray pickup/return stays intact. All 42 scene/board checks passed, including dense and sparse ink coverage.

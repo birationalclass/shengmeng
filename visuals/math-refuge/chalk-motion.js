@@ -26,8 +26,8 @@ function sample(plan,progress){
   if(!plan.segments.length)return {x:0,y:0,contact:false,lift:.1,row:0};
   const t=clamp(progress)*plan.total;let lo=0,hi=plan.segments.length-1;
   while(lo<hi){const mid=(lo+hi)>>1;if(plan.segments[mid].end<t)lo=mid+1;else hi=mid;}
-  const s=plan.segments[lo],f=clamp((t-s.start)/s.cost);
-  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:s.a[1]+(s.b[1]-s.a[1])*f,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering,strokePoint:s.strokePoint};
+  const s=plan.segments[lo],linear=clamp((t-s.start)/s.cost),f=s.curve===undefined?linear:linear*linear*(3-2*linear);
+  return {x:s.a[0]+(s.b[0]-s.a[0])*f,y:s.a[1]+(s.b[1]-s.a[1])*f+(s.curve||0)*4*f*(1-f),sway:s.curve===undefined?0:Math.sin(2*Math.PI*f)*.035,contact:s.contact,lift:s.contact?0:.08*Math.sin(Math.PI*f),row:s.row,entering:s.entering,strokePoint:s.strokePoint};
 }
 export function writingPlan(rows,guides){
   const key=guides||rows;if(cache.has(key))return cache.get(key);
@@ -68,7 +68,7 @@ export function strokeReveal(rows,progress,row,guides){
   if(row<p.row)return path;if(row>p.row||p.entering)return [];
   return [...path.slice(0,p.strokePoint+1),[p.x,p.y]];
 }
-// Occupied 32 x 28 px tiles define short horizontal wipes. Empty regions
+// Occupied 32 x 28 px tiles define shallow, bowed wipes. Empty regions
 // cause lifted travel, never a full-row wipe across the entire blackboard.
 export function erasingPlan(imageData,rows=[]){
   const width=imageData?.width||1536,height=imageData?.height||640,segments=[];
@@ -87,16 +87,19 @@ export function erasingPlan(imageData,rows=[]){
     for(let i=0;i<occupied.length;i++)if(occupied[i]){const start=i;while(occupied[i+1])i++;runs.push([start,i]);}
     if(band%2)runs.reverse();
     for(const [left,right] of runs){
-      const a=[(band%2?right:left)*32+16,Math.min(height-1,y+14)],b=[(band%2?left:right)*32+16,Math.min(height-1,y+14)];
-      if(previous)segments.push({a:previous,b:a,cost:Math.max(10,Math.hypot(a[0]-previous[0],a[1]-previous[1])/4),contact:false,row:band});
-      segments.push({a,b,cost:Math.max(24,Math.abs(b[0]-a[0])),contact:true,row:band});previous=b;
+      const direction=band%2?-1:1;
+      const a=[(band%2?right:left)*32+16-direction*6,Math.min(height-1,y+14)],b=[(band%2?left:right)*32+16+direction*6,Math.min(height-1,y+14)];
+      // A small bow stays inside the overlapping wipe bands. Ease both ends so
+      // changing direction feels like a wrist movement instead of a sharp turn.
+      if(previous)segments.push({a:previous,b:a,cost:Math.max(10,Math.hypot(a[0]-previous[0],a[1]-previous[1])/4),curve:-12,contact:false,row:band});
+      segments.push({a,b,cost:Math.max(24,Math.abs(b[0]-a[0])),curve:-8,contact:true,row:band});previous=b;
     }
   }
   return plan(segments,450);
 }
 export function eraserPose(progress,width=1536,height=640,path){
   const p=sample(path||erasingPlan(null,[[32,18,width-64,height-36]]),progress);
-  return {...p,angle:-.19+Math.sin(progress*9)*.035};
+  return {...p,angle:-.19+Math.sin(progress*9)*.035+(p.sway||0)};
 }
 export function wetOpacity(age){return .16*Math.pow(clamp(1-age/DRY_SECONDS),1.4);}
 export function chalkLength(wear){return Math.max(.045,.17-Math.max(0,wear));}
