@@ -129,6 +129,6 @@
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><button onclick="const u=new URL(location.href);u.searchParams.set('safe','1');location.href=u.href">低负载模式进入</button><a href="../">返回实验室</a></div>
   <script>document.getElementById('enterButton').addEventListener('click',function(){document.getElementById('loading').dataset.entryRequested='true';if(document.getElementById('world').dataset.ready!=='true'){this.textContent='正在准备，即将进入…';this.disabled=true;}});</script>
   <script>window.refugeLoadingTimer=setTimeout(function(){if(document.getElementById('world').dataset.ready!=='true'){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='加载时间较长。可以重新加载，或用低负载模式进入。';}},60000);</script>
-  <script type="module">import('./app.js?v97-shore').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v98-reef').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v96-runup';
+import {createBeachMaterial} from './beach-material.js?v98-reef';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,7 +14,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v96-runup';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v98-reef';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -402,7 +402,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         if(sand>.001){
           vec2 bottom=uv-normal.xz*depth*.35;
           vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
-          vec3 sandColor=mix(vec3(.54,.49,.36),vec3(.055,.12,.10),reefMask(bottom));
+          vec3 sandColor=mix(vec3(.54,.49,.36),vec3(.055,.12,.10),reefCoverage(bottom));
           vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
           float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
           shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
