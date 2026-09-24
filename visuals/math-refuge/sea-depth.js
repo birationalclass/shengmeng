@@ -1,3 +1,4 @@
+import {reefMask,reefGLSL} from './shallow-reefs.js?v96-runup';
 // Artistic bathymetry in metres; inputs are site-plan coordinates, not world metres.
 // Two independent shelves keep the kilometre-wide channel between inhabited islands deep.
 import {BUILDING_SCALE as S} from './site-layout.js';
@@ -16,11 +17,12 @@ export function seaDepthAt(x,z){
  const residence=(Math.hypot((x-villa[0])/villa[2],(z-villa[1])/villa[3])-1)*villa[3];
  const distance=Math.max(0,Math.min(campus,residence));
  const shallows=1.5+.7*(.5+.5*Math.sin(x*.047+z*.029))+.8*smooth(0,22,distance);
- const base=shallows+(88-shallows)*smooth(22,205,distance);return base+(beachDepth(x,z)-base)*beachMask(x,z);
+ const base=shallows+(88-shallows)*smooth(22,205,distance);const depth=base+(beachDepth(x,z)-base)*beachMask(x,z);return depth-.65*reefMask(x,z)*smooth(.5,1.5,depth);
 }
 // Generate geographic constants from the same layout data used by the CPU model.
 const f=n=>Number(n).toFixed(9);
-export const seaDepthGLSL=`float terraceDistance(vec2 p){vec2 q=abs(p-vec2(39.,0.))-vec2(15.,16.5);return length(max(q,vec2(0.)))+min(max(q.x,q.y),0.);}
+export const seaDepthGLSL=`${reefGLSL}
+float terraceDistance(vec2 p){vec2 q=abs(p-vec2(39.,0.))-vec2(15.,16.5);return length(max(q,vec2(0.)))+min(max(q.x,q.y),0.);}
 float coastHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float coastNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(coastHash(i),coastHash(i+vec2(1,0)),f.x),mix(coastHash(i+vec2(0,1)),coastHash(i+vec2(1,1)),f.x),f.y);}
 float beachWidth(vec2 p){return 10.+8.*smoothstep(30.,54.,p.x)+4.*smoothstep(-10.,20.,p.y)+10.*(coastNoise(p*.12)-.5)+5.*(coastNoise(p*.31+vec2(4,-3))-.5)+1.*(coastNoise(p*.41)-.5);}
@@ -31,5 +33,5 @@ float seaDepthAt(vec2 p){
  float residence=(length((p-vec2(${f(villa[0])},${f(villa[1])}))/vec2(${f(villa[2])},${f(villa[3])}))-1.0)*${f(villa[3])};
  float distance=max(0.0,min(campus,residence));
  float shallows=1.5+.7*(.5+.5*sin(p.x*.047+p.y*.029))+.8*smoothstep(0.0,22.0,distance);
- return mix(mix(shallows,88.0,smoothstep(22.0,205.0,distance)),beachDepth(p),beachMask(p));
+ float depth=mix(mix(shallows,88.0,smoothstep(22.0,205.0,distance)),beachDepth(p),beachMask(p));return depth-.65*reefMask(p)*smoothstep(.5,1.5,depth);
 }`;

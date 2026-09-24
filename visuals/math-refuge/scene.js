@@ -1,4 +1,4 @@
-import {createBeachMaterial} from './beach-material.js?v95-wash';
+import {createBeachMaterial} from './beach-material.js?v96-runup';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -14,7 +14,7 @@ import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v88-solar-water';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
-import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v95-wash';
+import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v96-runup';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
@@ -327,11 +327,29 @@ export async function createRetreat(renderer,scene,report,device={}){
         vec4 c=mix(texture2D(skyCloudPrevious,hUV),texture2D(skyCloudMap,hUV),skyCloudBlend);
         return h*(1.-c.a*skyCloudEnabled)+c.rgb*skyCloudEnabled;
       }
+      float shoreHeight(vec2 p){
+        float d=seaDepthAt(p);
+        float envelope=beachMask(p)*exp(-max(d,0.)*.65);
+        float phase=time*.72+terraceDistance(p)*.38+coastNoise(p*.08)*1.5;
+        return envelope*(.13*sin(phase)+.045*sin(phase*1.43+1.7));
+      }
       void main(){
         vec3 rayDirection=normalize(oceanRay);
         if(rayDirection.y>=-.0000001||cameraPosition.y<=oceanLevel)discard;
         float travel=(oceanLevel-cameraPosition.y)/rayDirection.y;
         vec3 vWorld=cameraPosition+rayDirection*travel;
+        // Solve the actual ray / displaced shallow-water surface intersection.
+        // A bounded bracket avoids fixed-point divergence at grazing angles.
+        vec2 flatUV=vWorld.xz/siteScale;
+        if(beachMask(flatUV)>.001&&seaDepthAt(flatUV)<4.){
+          float lo=max(0.,(oceanLevel+.18-cameraPosition.y)/rayDirection.y);
+          float hi=(oceanLevel-.18-cameraPosition.y)/rayDirection.y;
+          for(int step=0;step<10;step++){
+            float mid=(lo+hi)*.5;vec3 q=cameraPosition+rayDirection*mid;
+            if(q.y>oceanLevel+shoreHeight(q.xz/siteScale))lo=mid;else hi=mid;
+          }
+          travel=(lo+hi)*.5;vWorld=cameraPosition+rayDirection*travel;
+        }
         vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
         gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
         vec2 uv=vWorld.xz/siteScale;
@@ -375,7 +393,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         float radiance=distribution*visibility*sunF/(4.*nv+.001);
         float glitter=1.1*(1.-exp(-radiance*.4));
         float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
-        float depth=seaDepthAt(uv);if(depth<.005)discard;
+        float depth=seaDepthAt(uv)+(vWorld.y-oceanLevel);if(depth<=0.)discard;
         vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
         vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
         waterColor*=.94+swell*.06;
@@ -384,7 +402,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         if(sand>.001){
           vec2 bottom=uv-normal.xz*depth*.35;
           vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
-          vec3 sandColor=vec3(.54,.49,.36);
+          vec3 sandColor=mix(vec3(.54,.49,.36),vec3(.055,.12,.10),reefMask(bottom));
           vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
           float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
           shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
@@ -415,7 +433,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         // Only the sand shelf has real geometry beneath the water to transmit.
         // Thin shore film reveals grains; Fresnel retains grazing reflections.
         float shoreTransmission=beachMask(uv)*exp(-depth*3.2);
-        float waterAlpha=1.-shoreTransmission*(1.-fresnel)*.88;
+        float waterAlpha=(1.-shoreTransmission*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
         gl_FragColor=vec4(color,waterAlpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

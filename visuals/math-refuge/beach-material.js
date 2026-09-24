@@ -1,20 +1,21 @@
+import {reefGLSL} from './shallow-reefs.js?v96-runup';
 import * as THREE from 'three';
 export function createBeachMaterial(seaLevel){
  const clock={value:0},material=new THREE.MeshStandardMaterial({color:'#c9b88f',roughness:.94});
  material.onBeforeCompile=shader=>{
  shader.uniforms.sandTime=clock;shader.uniforms.sandSea={value:seaLevel};
  shader.vertexShader='varying vec3 sandWorld;\n'+shader.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nsandWorld=(modelMatrix*vec4(transformed,1.)).xyz;');
- shader.fragmentShader=`varying vec3 sandWorld;uniform float sandTime,sandSea;
+ shader.fragmentShader=`${reefGLSL}
+varying vec3 sandWorld;uniform float sandTime,sandSea;
  float sandHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
  float sandNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(sandHash(i),sandHash(i+vec2(1,0)),f.x),mix(sandHash(i+vec2(0,1)),sandHash(i+vec2(1,1)),f.x),f.y);}
  `+shader.fragmentShader;
  shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
  float sandHeight=sandWorld.y-sandSea;
- float shoreNoise=sandNoise(sandWorld.xz*.43);
- float surge=.5+.5*sin(sandTime*.62+sandNoise(sandWorld.xz*.075)*3.);
- float runup=.015+.12*surge*surge+ .025*(shoreNoise-.5);
- float film=1.-smoothstep(runup-.028,runup+.035,sandHeight);
- float washEdge=exp(-pow((sandHeight-runup)/.016,2.))*smoothstep(.46,.8,shoreNoise)*surge;
+ // Wet sand persists above the moving water; do not paint a second moving edge.
+ float runup=.15;
+ float film=1.-smoothstep(-.03,.015,sandHeight);
+ float washEdge=0.;
  float patches0=sandNoise(sandWorld.xz*.19);
  float damp=1.-smoothstep(.02+runup,.48+runup,sandHeight+(patches0-.5)*.09);
  float patches=sandNoise(sandWorld.xz*.37)*.6+sandNoise(sandWorld.xz*1.7)*.4;
@@ -29,6 +30,7 @@ export function createBeachMaterial(seaLevel){
  float sandRelief=(grain-.5)*.006*coarseFade+(fine-.5)*.0017*fineFade;
  sandRelief*=mix(1.,.35,damp);
  float grainFade=coarseFade;
+ diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.10,.15,.12),reefMask(sandWorld.xz/1.41421356237));
  diffuseColor.rgb*=mix(1.,.57,damp)*(.94+.12*patches+(grain-.5)*.30*grainFade+fleck+(fine-.5)*.13*fineFade);
   diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(.74,.87,.90),film*.18);
  diffuseColor.rgb+=vec3(.10,.12,.11)*washEdge;

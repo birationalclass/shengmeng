@@ -19,7 +19,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v95-wash';
+import {createRetreat} from './scene.js?v97-shore';
 import {createLecture} from './lecture.js?v88-arm-sweeps';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -272,8 +272,10 @@ function tick(stamp){
     const move=new THREE.Vector3();
     if(keys.has('w')||keys.has('arrowup'))move.add(forward);
     if(keys.has('s')||keys.has('arrowdown'))move.sub(forward);
-    if(keys.has('a')||keys.has('arrowleft'))move.sub(right);
-    if(keys.has('d')||keys.has('arrowright'))move.add(right);
+    if(keys.has('arrowleft'))move.sub(right);
+    if(keys.has('arrowright'))move.add(right);
+    const yaw=(Number(keys.has('a'))-Number(keys.has('d')))*dt*.9;
+    if(yaw){const direction=controls.target.clone().sub(camera.position).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);controls.target.copy(camera.position).add(direction);if(SHOTS[shot].lecture)boardFollow.touch();}
     if(keys.has('q'))move.y-=1;if(keys.has('e'))move.y+=1;
     if(move.lengthSq()){if(SHOTS[shot].lecture)boardFollow.touch();move.normalize().multiplyScalar(dt*(keys.has('shift')?10:4));camera.position.add(move);controls.target.add(move);}
     // Keep free-flight away from the clipping plane and terrain basement.
