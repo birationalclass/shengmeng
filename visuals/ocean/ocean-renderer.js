@@ -1,5 +1,5 @@
 import * as THREE from '../3d/vendor/three.module.js';
-import { makeWaveSpectrum } from './wave-spectrum.js?v=20260925-ocean-4';
+import { makeWaveSpectrum } from './wave-spectrum.js?v=20260925-ocean-5';
 
 const environment = `
 uniform float uTime, uWave, uWind, uSun;
@@ -230,7 +230,7 @@ export class OceanRenderer {
     this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(56,1,.1,6500);
     const spectrum=waveSpectrum();
     this.uniforms={uTime:{value:5.6},uWave:{value:1.2},uWind:{value:.45},uSun:{value:5},uProfile:{value:makeProfileTexture()},uWaves:{value:spectrum.waves},uPhases:{value:spectrum.phases},uFoam:{value:null},uViewportHeight:{value:960}};
-    this.lastTime=null;this.meshQuality='fine';this.spectrumWind=.45;
+    this.lastTime=null;this.foamAccumulator=0;this.meshQuality='fine';this.spectrumWind=.45;
     this.setupSky();this.setupWater();this.setupBeach();this.setupFoam();this.setupWhitewater();this.setupFroth();this.setupSpray();
   }
   setupSky() {
@@ -490,21 +490,25 @@ export class OceanRenderer {
     this.camera.lookAt(this.camera.position.x+Math.sin(yaw)*30,this.camera.position.y+Math.sin(-.115+state.pitch)*30,this.camera.position.z-Math.cos(yaw)*30);
     if(this.lastTime===null){
       for(let i=0;i<96;i++){
-        this.uniforms.uTime.value=state.time-7.68+i*.08;this.foamUniforms.uDt.value=.08;this.foamUniforms.uPrevious.value=this.foamA.texture;
+        this.uniforms.uTime.value=state.time-7.68+(i+1)*.08;this.foamUniforms.uDt.value=.08;this.foamUniforms.uPrevious.value=this.foamA.texture;
         this.renderer.setRenderTarget(this.foamB);this.renderer.render(this.foamScene,this.foamCamera);
         [this.foamA,this.foamB]=[this.foamB,this.foamA];
       }
       this.renderer.setRenderTarget(null);this.uniforms.uTime.value=state.time;this.uniforms.uFoam.value=this.foamA.texture;
     }
-    const dt=this.lastTime===null ? .016 : Math.max(0,Math.min(2,state.time-this.lastTime));
-    if(dt>0 || this.lastTime===null){
-      const steps=Math.max(1,Math.ceil(dt/.04));
+    const dt=this.lastTime===null ? 0 : Math.max(0,Math.min(2,state.time-this.lastTime));
+    // Fixed transport steps avoid frame-rate-dependent half-float rounding,
+    // including very slow wet-sand drying at high display refresh rates.
+    this.foamAccumulator+=dt;
+    const stepDt=1/30,steps=Math.floor((this.foamAccumulator+1e-8)/stepDt);
+    if(steps>0){
       for(let i=0;i<steps;i++){
-        this.uniforms.uTime.value=state.time-dt+dt*(i+1)/steps;
-        this.foamUniforms.uDt.value=dt/steps;this.foamUniforms.uPrevious.value=this.foamA.texture;
+        this.uniforms.uTime.value=state.time-this.foamAccumulator+stepDt*(i+1);
+        this.foamUniforms.uDt.value=stepDt;this.foamUniforms.uPrevious.value=this.foamA.texture;
         this.renderer.setRenderTarget(this.foamB);this.renderer.render(this.foamScene,this.foamCamera);
         [this.foamA,this.foamB]=[this.foamB,this.foamA];
       }
+      this.foamAccumulator=Math.max(0,this.foamAccumulator-steps*stepDt);
       this.renderer.setRenderTarget(null);this.uniforms.uFoam.value=this.foamA.texture;this.uniforms.uTime.value=state.time;
     }
     this.lastTime=state.time;

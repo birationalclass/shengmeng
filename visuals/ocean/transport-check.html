@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8"><title>Whitewater transport check</title><pre id="report">Comparing 30 Hz and 144 Hz playback…</pre><script type="module">
+import {OceanRenderer} from './ocean-renderer.js?v=20260925-ocean-5';
+import {DataUtils,Color} from '../3d/vendor/three.module.js';
+function sample(fps){
+ const ocean=new OceanRenderer(document.createElement('canvas'));ocean.resize(32,32);
+ const render=ocean.renderer.render.bind(ocean.renderer);
+ ocean.renderer.render=(scene,camera)=>{if(scene!==ocean.scene)render(scene,camera);};
+ const state={time:7.1,wave:1.2,wind:.45,sun:5,yaw:0,pitch:0,distance:0,quality:'low',scale:1};
+ ocean.draw(state);
+ ocean.renderer.setClearColor(new Color(.35,1,0));
+ for(const target of [ocean.foamA,ocean.foamB]){ocean.renderer.setRenderTarget(target);ocean.renderer.clearColor();}
+ ocean.renderer.setRenderTarget(null);
+ for(let i=1;i<=fps*2;i++){state.time=7.1+i/fps;ocean.draw(state);}
+ const pixels=new Uint16Array(64*64*8);
+ ocean.renderer.readRenderTargetPixels(ocean.foamA,400,220,64,64,pixels.subarray(0,16384));
+ ocean.renderer.readRenderTargetPixels(ocean.foamA,600,220,64,64,pixels.subarray(16384));
+ ocean.renderer.dispose();
+ return Float32Array.from(pixels,DataUtils.fromHalfFloat);
+}
+const a=sample(30),b=sample(144);let maxDifference=0,foamSum=0,wetnessSum=0;
+for(let i=0;i<a.length;i+=4){maxDifference=Math.max(maxDifference,Math.abs(a[i]-b[i]),Math.abs(a[i+1]-b[i+1]));foamSum+=a[i];wetnessSum+=a[i+1];}
+const result={maxDifference,meanFoam:foamSum/8192,meanWetness:wetnessSum/8192,pass:maxDifference<.015&&foamSum>1&&wetnessSum/8192<.99&&wetnessSum/8192>.8};
+document.querySelector('#report').textContent=JSON.stringify(result,null,2);document.title=result.pass?'PASS — frame-rate independent transport':'FAIL — transport';
+</script>

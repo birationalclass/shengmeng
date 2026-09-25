@@ -24,7 +24,7 @@ node --check visuals/ocean/ocean-renderer.js
 node visuals/ocean/model-check.mjs
 ```
 
-The Node check validates the base authored profiles, not the full composed water surface. For the composed shader, serve and open `geometry-check.html`: it reads actual GPU outputs over 24 seconds, 3 wave scales and 5,922,816 samples. It checks finite positions, shore-coordinate alignment, continuous runup motion and positive bounded foam thickness. Browser QA additionally covers the full breaking cycle, wet/dry transitions, presets, sliders, pause/step, view drag, mobile layout and both mesh-quality settings. These are numerical and functional checks, not a claim of photorealism.
+The Node check validates the base authored profiles, not the full composed water surface. For the composed shader, serve and open `geometry-check.html`: it reads actual GPU outputs over 24 seconds, 3 wave scales and 5,922,816 samples. It checks finite positions, shore-coordinate alignment, continuous runup motion and positive bounded foam thickness. `transport-check.html` compares actual foam/wetness fields at 30 Hz and 144 Hz; fixed 30 Hz transport avoids refresh-rate-dependent half-float rounding. Browser QA additionally covers the full breaking cycle, wet/dry transitions, presets, sliders, pause/step, view drag, mobile layout and both mesh-quality settings. These are numerical and functional checks, not a claim of photorealism.
 
 ## Research and attribution
 

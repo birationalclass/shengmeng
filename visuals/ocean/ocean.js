@@ -1,4 +1,4 @@
-import { OceanRenderer } from './ocean-renderer.js?v=20260925-ocean-4';
+import { OceanRenderer } from './ocean-renderer.js?v=20260925-ocean-5';
 const $ = (id) => document.getElementById(id);
 const canvas = $('ocean');
 const state = { wave: 1.2, wind: .45, sun: 5, speed: 1, time: 7.1, paused: matchMedia('(prefers-reduced-motion: reduce)').matches, yaw: 0, pitch: 0, distance: 0, quality: 'auto', scale: 1 };
