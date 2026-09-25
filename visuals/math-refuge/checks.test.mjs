@@ -610,7 +610,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
-    const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){}};contexts.push(ctx);return ctx;
+    const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){},scale(){},arc(){},fill(){},moveTo(){},lineTo(){}};contexts.push(ctx);return ctx;
   }})};
   globalThis.Image=class{set src(value){this.url=value;queueMicrotask(()=>this.onload());}};
   globalThis.fetch=async(url)=>({ok:true,text:async()=>await fs.readFile(new URL(url.split('?')[0],import.meta.url),'utf8')});
