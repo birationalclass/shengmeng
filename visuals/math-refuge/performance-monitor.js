@@ -24,7 +24,7 @@ export function createPerformanceMonitor(doc=document){
  return {
   get visible(){return !panel.hidden;},
   gpu(value,stamp){if(Number.isFinite(value)){lastGPU=value;gpuAt=stamp;}},
-  frame(stamp,frameMs,cpuMs,renderer,{gpuSupported=false,ratio=1,rooms=0}={}){
+  frame(stamp,frameMs,cpuMs,renderer,{gpuSupported=false,ratio=1,rooms=0,adaptive='自动监测'}={}){
    if(panel.hidden||doc.hidden||!Number.isFinite(frameMs)||frameMs<=0)return;
    frames.push({ms:frameMs,cpu:cpuMs});if(frames.length>240)frames.shift();
    // A rolling two-second sample includes long frames, rather than hiding stalls.
@@ -37,7 +37,7 @@ export function createPerformanceMonitor(doc=document){
    write('performanceGPU',!gpuSupported?'浏览器不支持':lastGPU!==null&&stamp-gpuAt<2500?ms(lastGPU):'等待采样');
    write('performanceCalls',info.render.calls.toLocaleString());write('performanceTriangles',info.render.triangles.toLocaleString());
    write('performanceTextures',info.memory.textures.toLocaleString());write('performanceGeometries',info.memory.geometries.toLocaleString());
-   write('performanceResolution',canvas.width+' × '+canvas.height);write('performanceScale',ratio.toFixed(2)+'×');write('performanceRooms',String(rooms));
+   write('performanceResolution',canvas.width+' × '+canvas.height);write('performanceScale',ratio.toFixed(2)+'×');write('performanceRooms',String(rooms));write('performanceAdaptive',adaptive);
    history.push(stats.fps);if(history.length>60)history.shift();
    const max=Math.max(60,...history);
    $('performanceGraph').setAttribute('points',history.map((v,i)=>(i*280/59).toFixed(1)+','+(44-Math.min(1,v/max)*40).toFixed(1)).join(' '));

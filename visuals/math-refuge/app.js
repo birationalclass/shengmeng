@@ -1,11 +1,12 @@
+import {FrameQuality} from './frame-quality.js?v=air-frame-feedback';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v=refuge-ocean-1';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
 const hallPassageMask=new HallPassageMask();
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=adaptive-ocean-2';
-import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=air-frame-feedback';
+import {createPerformanceMonitor} from './performance-monitor.js?v=air-frame-feedback';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v84-display';
@@ -205,29 +206,38 @@ function updateQualityReadout(){
 }
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
-  const desired=cloudOrder.indexOf($('cloudQuality').value),active=cloudOrder.indexOf(activeCloudQuality),target=1000/Number($('targetFPS').value);
-  if($('adaptiveQuality').value==='auto'&&desired>=0&&active>=0&&stamp-cloudAdjustedAt>6000&&renderBudget.gpuMs!=null){
-    const cost=renderBudget.gpuMs;let next=active;
-    if(cost>target*.85&&active>0)next--;
-    else if(cost<target*.45&&active<desired&&stamp-cloudAdjustedAt>20000)next++;
-    if(next!==active){activeCloudQuality=cloudOrder[next];retreat.sky.userData.setCloudQuality(activeCloudQuality);cloudAdjustedAt=stamp;renderBudget.reset();}
-  }
   const reading=roomViews.some(v=>v.visible)||Boolean(SHOTS[shot].lecture)||speakerView;
-  const scale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS:Number($('targetFPS').value),protectText:true});
-  if(scale===renderScale)return;renderScale=scale;
-  renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
-  if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
-  updateQualityReadout();
+  const settings=frameQuality.settings({reading,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
+  if(activeCloudQuality!==settings.cloud){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  const shadows=settings.shadow>0;
+  if(renderer.shadowMap.enabled!==shadows){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
+  if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
+  const water=retreat.ocean.material.uniforms;
+  water.waterDetail.value=!settings.simpleWater&&$('waterDetail').value==='high'?1:0;
+  water.reflectionDetail.value=!settings.simpleWater&&$('waterReflection').value==='full'?1:0;
+  retreat.sky.material.uniforms.starsEnabled.value=settings.particles&&$('starEffects').value==='on'?1:0;
+  retreat.sky.material.uniforms.meteorEnabled.value=settings.particles&&$('meteorEffects').value==='on'?1:0;
+  const targetFPS=frameQuality.stats?.target||Math.min(Number($('targetFPS').value),60);
+  const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS,protectText:true});
+  const scale=Math.min(gpuScale,settings.scale);
+  if(scale!==renderScale){
+    renderScale=scale;renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
+    if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
+    updateQualityReadout();
+  }
+  const text=$('adaptiveQuality').value!=='auto'?'固定画质':frameQuality.level===0?'自动 · 按实际帧率监测':`自动降级 ${frameQuality.level}/5 · 云${settings.cloud==='off'?'关闭':settings.cloud==='low'?'标准':'精细'} · 阴影${shadows?'标准':'关闭'} · 渲染 ${Math.round(scale*100)}%`;
+  if($('adaptiveReadout').textContent!==text)$('adaptiveReadout').textContent=text;
+  if($('world').dataset.adaptiveLevel!==String(frameQuality.level))$('world').dataset.adaptiveLevel=String(frameQuality.level);
 
 }
 const graphicsKeys=['oceanModel','quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
-let gpuName='',activeCloudQuality='medium',cloudAdjustedAt=0;const cloudOrder=['low','medium','high'];
+let gpuName='',activeCloudQuality='medium';
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
-  resize();if(!retreat)return;
+  frameQuality.reset();resize();if(!retreat)return;
   oceanBudget.configure($('oceanModel').value,Number($('targetFPS').value));
   applyOceanQuality();
-  activeCloudQuality=$('cloudQuality').value;cloudAdjustedAt=performance.now();retreat.sky.userData.setCloudQuality(activeCloudQuality);
+  activeCloudQuality=$('cloudQuality').value;retreat.sky.userData.setCloudQuality(activeCloudQuality);
   retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
@@ -248,13 +258,14 @@ function detectGraphics(){
  const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
+const frameQuality=new FrameQuality();
 const oceanBudget=new OceanBudget();
 const oceanNames=['轻量海面','标准海面','Ocean 海浪'];
 function applyOceanQuality(){
  const mode=$('oceanModel').value;
  // In teaching rooms the surrounding sea remains visible, but surf simulation rests.
  const eligible=teachingRoomAt(camera.position)<0;
- const level=mode==='auto'&&!eligible?Math.min(1,oceanBudget.level):oceanBudget.level;
+ const level=mode==='auto'&&frameQuality.level>0?0:mode==='auto'&&!eligible?Math.min(1,oceanBudget.level):oceanBudget.level;
  const water=retreat.ocean.material.uniforms;water.oceanLite.value=level===0?1:0;
  retreat.ocean.userData.study.setEnabled(level===2);
  const text=(mode==='auto'?'自动 · ':'手动 · ')+oceanNames[level];
@@ -268,6 +279,7 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,(stamp-lastTime)/1000||0);lastTime=stamp;
   if(document.hidden||!entered)return;
+  frameQuality.sample(frameMs,stamp,{enabled:$('adaptiveQuality').value==='auto',targetFPS:Number($('targetFPS').value)});
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
   // Include cloud/atmosphere targets as well as the final scene in GPU timing.
   weatherProbeFrame=!$('settings').hidden&&++weatherProbeCounter%3===0;
@@ -331,7 +343,7 @@ function tick(stamp){
   try{updateAtmosphere(dt);}finally{if(weatherProbeFrame)weatherTimer?.end();}weatherCpuMs=performance.now()-weatherStart;
   constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
   if(motionSample){const opacity=hallPassageMask.update(previousPosition.toArray(),camera.position.toArray(),cameraProbeRadius(camera.near,camera.fov,camera.aspect),dt);$('transition').style.opacity=String(opacity);$('world').dataset.cameraPassage=opacity.toFixed(3);}
-  if($('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
+  if(frameQuality.level<2&&$('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
@@ -339,9 +351,9 @@ function tick(stamp){
   oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
   retreat.ocean.userData.study.update(camera,dt);surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
-  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length});
+  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
-  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
+  if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
 try{
@@ -428,7 +440,7 @@ $('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textConte
 $('resolutionScale').addEventListener('input',()=>{$('resolutionValue').textContent=$('resolutionScale').value+'%';});
 $('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setClarity($('boardClarity').value));try{localStorage.setItem('refuge-board-clarity',$('boardClarity').value);}catch{}});
 try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
-$('adaptiveQuality').addEventListener('change',()=>{if(retreat){renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
+$('adaptiveQuality').addEventListener('change',()=>{if(retreat){frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
@@ -555,7 +567,7 @@ window.addEventListener('keydown',event=>{
   }
 });
 window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
-document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();oceanBudget.resetSamples();});
+document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();oceanBudget.resetSamples();frameQuality.resetSamples();});
 let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,180);});
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
 
