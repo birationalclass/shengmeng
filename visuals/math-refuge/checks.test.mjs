@@ -953,7 +953,7 @@ test('tour resume blends from current view without a blackout or teleport',async
   const apply=source.slice(source.indexOf('function applyShot'),source.indexOf('function resize'));
   assert(apply.includes('motionCoordinate('));assert(apply.includes('slerpQuaternions('));
   assert(!apply.includes('Math.sin(k*Math.PI)'));
-  assert(!source.includes('fadeAt('));assert(source.includes('stamp-opening.started>=OPENING_OVERVIEW_MS'));assert(source.includes('const index=Number(button.dataset.shot)'));assert(source.includes('selectShot(index)'));assert(source.includes('else if(blend)'));
+  assert(!source.includes('fadeAt('));assert(source.includes('openingCameraLock.start(performance.now())'));assert(source.includes('const index=Number(button.dataset.shot)'));assert(source.includes('selectShot(index)'));assert(source.includes('else if(blend)'));
   let previous=0;for(let i=0;i<=100;i++){const k=smoothProgress(i/100);assert(k>=previous&&k-previous<.02);previous=k;}
 });
 

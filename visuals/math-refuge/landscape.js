@@ -1,3 +1,4 @@
+import {deferredTexture} from './deferred-textures.js?v106';
 import * as THREE from 'three';
 import {seaLevel,coastline,elevation,gardenElevation,canGardenPlant,slope,canPlant,shoreline,fractal,noise,seededRandom} from './landscape-shape.js?v44-hall-clearance';
 import {BUILDING_SCALE,GIANT_TREES,ORNAMENTAL_TREES,BAMBOO_GROVES,LAWNS,lawnWeight,watercourse,riverPoint,inPool,inBuilding} from './site-layout.js?v44-hall-clearance';
@@ -158,7 +159,7 @@ function boulder(seed){
 export async function createLandscape(renderer,scene,report){
   report('正在加载树皮、林地与风化岩面…');
   const textures=[],loader=new THREE.TextureLoader(),anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-  async function load(name,srgb=false){const t=await loader.loadAsync('./assets/'+name+'.jpg');t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=anisotropy;if(srgb)t.colorSpace=THREE.SRGBColorSpace;textures.push(t);return t;}
+  async function load(name,srgb=false){const t=deferredTexture('./assets/'+name+'.jpg');t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=anisotropy;if(srgb)t.colorSpace=THREE.SRGBColorSpace;textures.push(t);return t;}
   const [bark,barkN,ground,groundN,rock,rockN]=await Promise.all([load('bark-color',true),load('bark-normal'),load('forest-color',true),load('forest-normal'),load('cliff-color',true),load('cliff-normal')]);
   const wood=new THREE.MeshStandardMaterial({map:bark,normalMap:barkN,normalScale:new THREE.Vector2(.65,.65),roughness:.97,vertexColors:true});
   const foliage=new THREE.MeshStandardMaterial({color:'#d1d7bc',vertexColors:true,side:THREE.DoubleSide,roughness:.86});

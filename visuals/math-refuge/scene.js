@@ -1,3 +1,4 @@
+import {deferredTexture} from './deferred-textures.js?v106';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {createCampusOcean} from './ocean-study.js?v105';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
@@ -17,7 +18,7 @@ import {createWeatherSky} from './weather-sky.js?v105';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v44-hall-clearance';
+import {createLandscape} from './landscape.js?v106-44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
 import {createCampus} from './campus.js?v=103-pulley';
@@ -29,7 +30,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const loader=new THREE.TextureLoader();
   async function texture(name,repeat=1,srgb=false){
-    const map=await withDeadline(loader.loadAsync('./assets/'+name),20000,'材质 '+name);map.wrapS=map.wrapT=THREE.RepeatWrapping;
+    const map=deferredTexture('./assets/'+name);map.wrapS=map.wrapT=THREE.RepeatWrapping;
     map.repeat.set(repeat,repeat);map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     if(srgb)map.colorSpace=THREE.SRGBColorSpace;return map;
   }

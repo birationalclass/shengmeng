@@ -1,3 +1,5 @@
+import {startDeferredTextures} from './deferred-textures.js?v106';
+import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v106';
 import {SunriseIntro} from './sunrise-intro.js?v105';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
@@ -25,7 +27,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v105';
+import {createRetreat} from './scene.js?v106';
 import {createLecture} from './lecture.js?v104';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -33,7 +35,7 @@ import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v84-display';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=true-north-coast-1';
+import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=true-north-coast-1';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents} from './solar-state.js?v91-shore';
@@ -59,12 +61,20 @@ for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))])
 }
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 let entered=false;
+const openingCameraLock=new OpeningCameraLock();
+const cameraLocked=()=>openingCameraLock.locked(performance.now());
+// Capture before OrbitControls and scene hit targets, while other settings remain usable.
+for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventListener(type,event=>{
+ if(cameraLocked()&&event.target.closest?.('#world,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
+},{capture:true,passive:false});
 function enterScene(){
   if(entered||$('world').dataset.ready!=='true')return;
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
+  setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
   sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='30';
-  opening={started:null};
+  openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
+  selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
@@ -125,11 +135,12 @@ function updateLabels(){
   document.querySelectorAll('#chapters button[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===area)));
   controlLabel($('tour'),touring?'暂停巡游':free?'恢复巡游':'继续巡游');
   $('tour').setAttribute('aria-pressed',String(touring));
-  $('mode').textContent=opening?'总览 · 5 秒后进入报告厅':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
+  $('mode').textContent=opening?'左环漫滩上空 · 即将进入报告厅':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
   if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
 }
 function stopTour(){
+  if(cameraLocked())return;
   if(sunriseIntro.waiting){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   opening=null;
   if(SHOTS[shot].lecture)boardFollow.touch();
@@ -151,6 +162,7 @@ function beginTransition(){
   $('transition').style.opacity=0;
 }
 function selectShot(index,reportView=false,openingArrival=false){
+  if(cameraLocked()&&!openingArrival)return;
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
@@ -158,11 +170,13 @@ function selectShot(index,reportView=false,openingArrival=false){
   if(!SHOTS[index].lecture){const building=buildingForShot(SHOTS[index].name);setSeminarPanel(Boolean(building),building);}
 }
 function resumeTour(){
+  if(cameraLocked())return;
   speakerView=false;
   opening=null;choosingReport=false;boardFollow.reset();touring=true;free=false;
   beginTransition();updateLabels();
 }
 function enterSpeakerView(){
+  if(cameraLocked())return;
   opening=null;choosingReport=false;speakerView=true;touring=false;free=true;keys.clear();
   reader?.close();beginTransition();updateLabels();
 }
@@ -315,10 +329,12 @@ function tick(stamp){
   if(!weatherProbeFrame&&($('adaptiveQuality').value==='auto'||performanceMonitor.visible||!$('settings').hidden))gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
-  if(opening){
-    if(opening.started===null)opening.started=stamp;
-    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
-  }
+  const remaining=openingCameraLock.remaining(stamp);
+  controls.enabled=remaining===0;
+  $('openingHint').textContent=remaining?`开场运镜 · ${remaining} 秒后可操作镜头`:'镜头已解锁 · 拖动观察，滚轮前后移动';
+  $('openingHint').hidden=!entered;
+  if(remaining)$('mode').textContent='开场运镜';else if($('world').dataset.cameraLocked==='true')updateLabels();
+  $('world').dataset.cameraLocked=String(remaining>0);
   if(touring){
     if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
     applyShot(dt);
@@ -404,7 +420,7 @@ try{
   controls.addEventListener('end',()=>{if(SHOTS[shot].lecture)boardFollow.end();});
   window.addEventListener('blur',()=>{if(boardFollow.interacting)boardFollow.end();});
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
-  camera.position.copy(curves[shot].position.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.target.copy(curves[shot].target.getPointAt(smoothProgress(time/SHOTS[shot].duration)));controls.update();
+  camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
   $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
@@ -431,7 +447,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();applyShot(0);$('transition').style.opacity=0;
+  retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   $('loadMessage').textContent='正在呈现可见区域…';
   await new Promise(resolve=>setTimeout(resolve,0));
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
@@ -442,7 +458,7 @@ try{
   $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').disabled=false;
   if($('loading').dataset.entryRequested==='true')enterScene();else if(renderActivity.foreground)$('enterButton').focus({preventScroll:true});
   // Fetch only manifests and covers in the background, without delaying entry.
-  if(!device.mobile)lecture.preloadReports();
+
 }catch(error){fail(error);}
 
 $('tour').addEventListener('click',()=>{
@@ -586,6 +602,7 @@ $('hideUI').addEventListener('click',()=>immersive(true));$('showUI').addEventLi
 window.addEventListener('keydown',event=>{
   if(/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
   const key=event.key.toLowerCase();
+  if(cameraLocked()&&[' ','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){event.preventDefault();return;}
   if(key==='h'){immersive(!document.body.classList.contains('immersive'));return;}
   if(key==='escape'){immersive(false);closeTime();$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');reader?.close();return;}
   if(event.target.closest('#chalkReader,#lecturePanel,#settings'))return;
