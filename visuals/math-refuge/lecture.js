@@ -1,3 +1,4 @@
+import {drawPulley} from './pulley-icon.js?v=1';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v69-authored';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
@@ -290,7 +291,7 @@ export async function createLecture(scene,renderer,options={}){
   function update(dt,reduced=false){
     if(disabled||options.isActive?.()===false)return;
     if(storageRig&&stored&&storageProgress===1)return;
-    if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel();if(storageProgress>0||stored)return;}
+    if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel(reduced);if(storageProgress>0||stored)return;}
     if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
@@ -374,7 +375,7 @@ export async function createLecture(scene,renderer,options={}){
   boards.forEach((_,i)=>draw(i));
   // Keep the hardware and last completed texture visible at every distance.
   // Only the board carriers and tools have changing local transforms.
-  function updateStorageLabel(){if(!storageLabel)return;const text=stored?'升起黑板':'收起黑板';if(text===storageLabelText)return;storageLabelText=text;const c=storageLabel.canvas.getContext('2d');c.clearRect(0,0,1024,240);c.font='72px '+SCREEN_FONT;c.textAlign='center';c.fillStyle='#f1e8d3';c.fillText(text,512,150);storageLabel.texture.needsUpdate=true;}
+  function updateStorageLabel(reduced=false){if(!storageLabel)return;const step=reduced?(stored?60:0):Math.round(storageProgress*60),key=stored+':'+step;if(key===storageLabelText)return;storageLabelText=key;const c=storageLabel.canvas.getContext('2d');c.clearRect(0,0,256,256);drawPulley(c,128,128,205,step/60,stored);storageLabel.mesh.userData.label=stored?'升起黑板':'收起黑板';storageLabel.texture.needsUpdate=true;}
   if(options.retractable){
     storageRig=new THREE.Group();storageRig.name='Whole six-board retracting assembly';scene.add(storageRig);
     for(const node of [...scene.children])if(/^(Double-channel lift track|Sliding chalkboard|Wide nanmu chalk tray|Tray chalk|Tray eraser|Writing chalk|Moving blackboard eraser|Falling chalk powder)/.test(node.name))storageRig.add(node);
@@ -383,14 +384,14 @@ export async function createLecture(scene,renderer,options={}){
     part(slot,[28,-1.385,-10.93],[17.4,.035,.86],dark);
     for(const z of [-11.38,-10.48])part(slot,[28,-1.35,z],[17.55,.045,.055],metal);
     for(const x of [19.24,36.76])part(slot,[x,-1.35,-10.93],[.055,.045,.95],metal);
-    storageLabel=glassLabel(2.2,.62,37.55,1.7,'Whole blackboard storage control');
-    storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
+    storageLabel=glassLabel(.88,.88,37.55,1.7,'Whole blackboard storage control');
+    storageLabel.canvas.width=storageLabel.canvas.height=256;storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
   }
   if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
   const movingNodes=new Set([scene,storageRig,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
-    get retractable(){return Boolean(storageRig);},get stored(){return stored;},
+    get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
     toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageProgress===0;},get hasSelection(){return hasSelection;},
