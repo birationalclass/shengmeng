@@ -473,7 +473,7 @@ export class OceanRenderer {
     this.froth=new THREE.Points(geometry,material);this.froth.frustumCulled=false;this.froth.renderOrder=3;this.scene.add(this.froth);
   }
   resize(width,height){this.renderer.setSize(width,height,false);this.uniforms.uViewportHeight.value=height;this.camera.aspect=width/height;this.camera.updateProjectionMatrix();}
-  draw(state) {
+  draw(state, {render=true, updateCamera=true} = {}) {
     if(state.wind!==this.spectrumWind){
       const spectrum=waveSpectrum(state.wind);this.uniforms.uWaves.value=spectrum.waves;this.uniforms.uPhases.value=spectrum.phases;this.spectrumWind=state.wind;
     }
@@ -484,10 +484,12 @@ export class OceanRenderer {
       this.whitewater.geometry.dispose();this.whitewater.geometry=makeWhitewaterGeometry(meshQuality==='low');
     }
     this.uniforms.uTime.value=state.time;this.uniforms.uWave.value=state.wave;this.uniforms.uWind.value=state.wind;this.uniforms.uSun.value=state.sun;
+    if(updateCamera){
     const mobile=1-smooth(.6,1.1,this.camera.aspect);
     const yaw=state.yaw-mobile*.10-.22;
     this.camera.position.set(6.8-mobile*1.8,2.5+state.distance,7.5);
     this.camera.lookAt(this.camera.position.x+Math.sin(yaw)*30,this.camera.position.y+Math.sin(-.115+state.pitch)*30,this.camera.position.z-Math.cos(yaw)*30);
+    }
     if(this.lastTime===null){
       for(let i=0;i<96;i++){
         this.uniforms.uTime.value=state.time-7.68+(i+1)*.08;this.foamUniforms.uDt.value=.08;this.foamUniforms.uPrevious.value=this.foamA.texture;
@@ -512,10 +514,23 @@ export class OceanRenderer {
       this.renderer.setRenderTarget(null);this.uniforms.uFoam.value=this.foamA.texture;this.uniforms.uTime.value=state.time;
     }
     this.lastTime=state.time;
-    this.renderer.clear();this.renderer.render(this.scene,this.camera);
+    if(render){this.renderer.clear();this.renderer.render(this.scene,this.camera);}
   }
   isContextLost(){return this.renderer.getContext().isContextLost();}
 }
 
 export { makeProfileTexture, profiles as waveProfiles };
+// Reuse the exact study geometry/materials/transport in an existing renderer.
+// The host supplies its sky, camera and final render pass.
+export function createOceanLayer(renderer){
+ const ocean=Object.create(OceanRenderer.prototype);
+ ocean.renderer=renderer;ocean.scene=new THREE.Scene();ocean.camera=new THREE.PerspectiveCamera();
+ const spectrum=waveSpectrum();
+ ocean.uniforms={uTime:{value:5.6},uWave:{value:1.2},uWind:{value:.45},uSun:{value:5},uProfile:{value:makeProfileTexture()},uWaves:{value:spectrum.waves},uPhases:{value:spectrum.phases},uFoam:{value:null},uViewportHeight:{value:960}};
+ ocean.lastTime=null;ocean.foamAccumulator=0;ocean.meshQuality='fine';ocean.spectrumWind=.45;
+ const target=renderer.getRenderTarget(),clear=renderer.getClearColor(new THREE.Color()),alpha=renderer.getClearAlpha();
+ try{ocean.setupWater();ocean.beach={geometry:ocean.seaGeometry};ocean.setupFoam();ocean.setupWhitewater();ocean.setupFroth();ocean.setupSpray();}
+ finally{renderer.setRenderTarget(target);renderer.setClearColor(clear,alpha);}
+ return ocean;
+}
 export const modelGLSL = { environment, surfaceModel, whitewaterModel };

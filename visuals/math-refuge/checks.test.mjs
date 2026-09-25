@@ -193,7 +193,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
   try{
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
-    const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8}},scene,()=>{});
+    const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{});
     const residenceLamps=[];result.residence.root.traverse(o=>{if(o.isPointLight)residenceLamps.push(o);});
     result.residence.update({position:result.residence.root.position.clone()},0);
     assert(residenceLamps.every(l=>l.visible&&l.intensity>0));
@@ -353,7 +353,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       if(object.isMesh)triangles+=(object.geometry.index?.count || object.geometry.attributes.position.count)/3*(object.isInstancedMesh?object.count:1);
     }
     console.log(JSON.stringify({sceneObjects:scene.children.length,instances,triangles,forestTrees:result.landscape.plantings.length}));
-    assert(instances>1500);assert(triangles<1300000,`Expanded garden and auditorium must stay within the 1.3M scene budget: ${triangles}`);
+    let surfTriangles=0;result.ocean.userData.study.root.traverse(o=>{if(o.isMesh)surfTriangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});
+    assert(surfTriangles<=1100000,'Fine Ocean Study surface and whitewater keep their separate 1.1M budget');
+    assert(instances>1500);assert(triangles-surfTriangles<1300000,`Garden and auditorium retain their original 1.3M budget: ${triangles-surfTriangles}`);
     assert(scene.children.filter(o=>o.isMesh).length<550,'Spatial instancing must bound model draw batches');
     const batches=scene.children.filter(o=>o.isInstancedMesh),originalGeometry=new Map(batches.map(m=>[m,m.geometry]));
     const view=new Three.PerspectiveCamera(55,16/9,.2,12000);

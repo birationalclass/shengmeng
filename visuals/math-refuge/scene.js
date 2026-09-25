@@ -1,4 +1,5 @@
-import {createBeachMaterial} from './beach-material.js?v102-sand-sun';
+import {createBeachMaterial} from './beach-material.js?v=refuge-ocean-1';
+import {createCampusOcean} from './ocean-study.js?v=refuge-ocean-1';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -271,7 +272,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     transparent:true,depthWrite:true,
-    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
+    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{oceanStudy:{value:1},
       oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:.5},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
@@ -287,6 +288,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       #include <common>
       #include <fog_pars_fragment>
       ${seaDepthGLSL}
+      uniform float oceanStudy;
       vec2 waveHash(vec2 p){return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);}
       vec3 scatteredNormal(vec2 p){
         vec2 cell=floor(p*.7),f=fract(p*.7);f=f*f*(3.-2.*f);
@@ -345,6 +347,7 @@ export async function createRetreat(renderer,scene,report,device={}){
         // Solve the actual ray / displaced shallow-water surface intersection.
         // A bounded bracket avoids fixed-point divergence at grazing angles.
         vec2 flatUV=vWorld.xz/siteScale;
+        if(oceanStudy>.5&&smoothstep(.01,.15,beachMask(flatUV))*(1.-smoothstep(1.4,3.4,seaDepthAt(flatUV)))>.98)discard;
         if(beachMask(flatUV)>.001&&seaDepthAt(flatUV)<4.){
           float lo=max(0.,(oceanLevel+.18-cameraPosition.y)/rayDirection.y);
           float hi=(oceanLevel-.18-cameraPosition.y)/rayDirection.y;
@@ -461,7 +464,9 @@ export async function createRetreat(renderer,scene,report,device={}){
     const dz=(seaDepthAt(x,z+eps)-seaDepthAt(x,z-eps))/(2*eps*BUILDING_SCALE);
     const n=new THREE.Vector3(dx,1,dz).normalize();sandNormals.setXYZ(i,n.x,n.y,n.z);
   }
-  const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE),sandMaterial=sandSurface.material;
+  const study=createCampusOcean(renderer,scene,oceanMaterial.uniforms);
+  ocean.userData.study=study;
+  const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE,{foam:study.layer.uniforms.uFoam,enabled:oceanMaterial.uniforms.oceanStudy}),sandMaterial=sandSurface.material;
   const beach=new THREE.Mesh(sandGeometry,sandMaterial);beach.name='Irregular auditorium sand shelf';beach.receiveShadow=true;scene.add(beach);
   report('正在布置光照与镜头…');
   buildPlatforms();
@@ -543,5 +548,5 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setTime(shanghaiHour(),true);
-  return {residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){sandGeometry.dispose();sandMaterial.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>elevation(x/BUILDING_SCALE,z/BUILDING_SCALE)*BUILDING_SCALE,coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();sandGeometry.dispose();sandMaterial.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }
