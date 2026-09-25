@@ -485,6 +485,14 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     for(const name of ['NS conjecture blackboard','Hodge conjecture blackboard','Entrance lintel sign','Entrance wayfinding sign'])assert(scene.getObjectByName(name)?.isMesh,name);
     assert(!calls.some(text=>text.includes('已解决')));
     assert(result.ocean.material.uniforms.time);assert.equal(typeof result.lighting,'function');
+    const study=result.ocean.userData.study;
+    assert.equal(study.initialized,false,'Lightweight startup must not allocate surf geometry or foam buffers');
+    study.setEnabled(true);assert.equal(study.initialized,true);assert(study.root.visible);
+    const root=study.root;let surfFaces=0;root.traverse(o=>{if(o.isMesh)surfFaces+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});
+    assert(surfFaces>0&&surfFaces<=1100000);
+    study.setEnabled(false);assert(!root.visible);assert.equal(result.ocean.material.uniforms.oceanStudy.value,0);
+    study.update(new Three.PerspectiveCamera(),1); // Disabled updates must not call the mock renderer.
+    study.setEnabled(true);assert.equal(study.root,root,'Re-enabling reuses the existing allocation');study.setEnabled(false);
     result.lighting(0,true);result.lighting(100,true);result.dispose();
     assert(result.ocean.material.uniforms.sunDirection.value.toArray().every(Number.isFinite));
   }finally{delete globalThis.__retreatTestThree;delete globalThis.document;}

@@ -1,9 +1,10 @@
+import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v=refuge-ocean-1';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
 const hallPassageMask=new HallPassageMask();
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v93-wave';
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=adaptive-ocean-2';
 import {createPerformanceMonitor} from './performance-monitor.js?v80-performance';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
@@ -21,7 +22,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=refuge-ocean-1';
+import {createRetreat} from './scene.js?v=adaptive-ocean-2';
 import {createLecture} from './lecture.js?v101-storage';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -224,7 +225,8 @@ let gpuName='',activeCloudQuality='medium',cloudAdjustedAt=0;const cloudOrder=['
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
   resize();if(!retreat)return;
-  retreat.ocean.material.uniforms.oceanStudy.value=$('oceanModel').value==='study'?1:0;retreat.ocean.userData.study.setEnabled($('oceanModel').value==='study');
+  oceanBudget.configure($('oceanModel').value,Number($('targetFPS').value));
+  applyOceanQuality();
   activeCloudQuality=$('cloudQuality').value;cloudAdjustedAt=performance.now();retreat.sky.userData.setCloudQuality(activeCloudQuality);
   retreat.sky.userData.solarSize=$('sunSize').value;
   retreat.sky.material.uniforms.nightStyle.value=$('nightStyle').value==='vivid'?1:0;retreat.sky.material.uniforms.meteorEnabled.value=$('meteorEffects').value==='on'?1:0;
@@ -241,8 +243,24 @@ function detectGraphics(){
  $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
  let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
  if(saved){try{if(!localStorage.getItem('refuge-wave-base-v93')){saved.waveStrength=String(Math.max(50,Number(saved.waveStrength)||50));saved.windWaves='on';localStorage.setItem('refuge-wave-base-v93','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
+ // Move the former default Ocean selection to measured auto mode once.
+ try{if(!localStorage.getItem('refuge-ocean-auto-v1')){if(saved&&(!saved.oceanModel||saved.oceanModel==='study'))saved.oceanModel='auto';localStorage.setItem('refuge-ocean-auto-v1','1');if(saved)localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}
  const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
+}
+const oceanBudget=new OceanBudget();
+const oceanNames=['轻量海面','标准海面','Ocean 海浪'];
+function applyOceanQuality(){
+ const mode=$('oceanModel').value;
+ // In teaching rooms the surrounding sea remains visible, but surf simulation rests.
+ const eligible=teachingRoomAt(camera.position)<0;
+ const level=mode==='auto'&&!eligible?Math.min(1,oceanBudget.level):oceanBudget.level;
+ const water=retreat.ocean.material.uniforms;water.oceanLite.value=level===0?1:0;
+ retreat.ocean.userData.study.setEnabled(level===2);
+ const text=(mode==='auto'?'自动 · ':'手动 · ')+oceanNames[level];
+ if($('oceanQualityReadout').textContent!==text)$('oceanQualityReadout').textContent=text;
+ $('world').dataset.oceanQuality=['lite','classic','study'][level];
+ if(oceanBudget.stats)$('world').dataset.oceanPerformance=JSON.stringify(oceanBudget.stats);
 }
 const renderBudget=new RenderBudget();let gpuTimer=null,weatherTimer=null,renderScale=1,weatherGpuMs=null,weatherGpuSamples=[],weatherCpuMs=0,weatherProbeFrame=false,weatherProbeCounter=0;
 const frameSamples=[],cpuSamples=[];let metricsAt=0;
@@ -318,6 +336,7 @@ function tick(stamp){
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
+  oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
   retreat.ocean.userData.study.update(camera,dt);surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length});
@@ -536,7 +555,7 @@ window.addEventListener('keydown',event=>{
   }
 });
 window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
-document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();});
+document.addEventListener('visibilitychange',()=>{keys.clear();lastTime=performance.now();oceanBudget.resetSamples();});
 let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,180);});
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
 

@@ -1,5 +1,5 @@
 import {createBeachMaterial} from './beach-material.js?v=refuge-ocean-1';
-import {createCampusOcean} from './ocean-study.js?v=refuge-ocean-1';
+import {createCampusOcean} from './ocean-study.js?v=adaptive-ocean-2';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -272,7 +272,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   // this is not a fluid simulation or a photographic horizon backdrop.
   const oceanMaterial=new THREE.ShaderMaterial({
     transparent:true,depthWrite:true,
-    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{oceanStudy:{value:1},
+    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{oceanStudy:{value:0},oceanLite:{value:1},
       oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:.5},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
     }]),fog:true,
     vertexShader:`
@@ -288,7 +288,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       #include <common>
       #include <fog_pars_fragment>
       ${seaDepthGLSL}
-      uniform float oceanStudy;
+      uniform float oceanStudy,oceanLite;
       vec2 waveHash(vec2 p){return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);}
       vec3 scatteredNormal(vec2 p){
         vec2 cell=floor(p*.7),f=fract(p*.7);f=f*f*(3.-2.*f);
@@ -344,6 +344,34 @@ export async function createRetreat(renderer,scene,report,device={}){
         if(rayDirection.y>=-.0000001||cameraPosition.y<=oceanLevel)discard;
         float travel=(oceanLevel-cameraPosition.y)/rayDirection.y;
         vec3 vWorld=cameraPosition+rayDirection*travel;
+        // Lightweight sea retains depth, coastline, wind and sky colour, with
+        // one normal sample and no surf transport, inverse rays or caustics.
+        if(oceanLite>.5){
+          vec2 uv=vWorld.xz/siteScale;
+          float depth=seaDepthAt(uv);if(depth<=0.)discard;
+          vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
+          gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
+          vec2 drift=waveOffset*windWaves;
+          vec3 tex=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)-drift*.007).xyz*2.-1.;
+          vec3 normal=normalize(vec3(tex.x*.12,1.,tex.y*.12));
+          vec3 view=normalize(cameraPosition-vWorld),reflected=reflect(-view,normal);
+          reflected.y=max(.002,reflected.y);
+          vec2 skyUV=vec2(.5+atan(reflected.z,reflected.x)/6.2831853,sqrt(clamp(asin(reflected.y)/1.5707963,0.,1.)));
+          float fresnel=.0204+.9796*pow(1.-max(dot(normal,view),0.),5.);
+          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
+          vec3 body=(vec3(.54,.49,.36)*clarity+vec3(.008,.18,.23)*(1.-clarity))*nightVisibility;
+          vec3 sky=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,skyUV).rgb,skyPhysical);
+          vec3 color=mix(body,sky,fresnel);
+          float glint=pow(max(dot(reflect(-sunDirection,normal),view),0.),96.);
+          color+=sunTint*glint*.2*sunStrength*sunReflection;
+          float fog=1.-exp(-fogDensity*fogDensity*travel*travel);
+          color=mix(color,sky,fog);
+          float alpha=(1.-beachMask(uv)*exp(-depth*3.2)*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
+          gl_FragColor=vec4(color,alpha);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+          return;
+        }
         // Solve the actual ray / displaced shallow-water surface intersection.
         // A bounded bracket avoids fixed-point divergence at grazing angles.
         vec2 flatUV=vWorld.xz/siteScale;
@@ -466,7 +494,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   const study=createCampusOcean(renderer,scene,oceanMaterial.uniforms);
   ocean.userData.study=study;
-  const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE,{foam:study.layer.uniforms.uFoam,enabled:oceanMaterial.uniforms.oceanStudy}),sandMaterial=sandSurface.material;
+  const sandSurface=createBeachMaterial(seaLevel*BUILDING_SCALE,{foam:study.foam,enabled:oceanMaterial.uniforms.oceanStudy}),sandMaterial=sandSurface.material;
   const beach=new THREE.Mesh(sandGeometry,sandMaterial);beach.name='Irregular auditorium sand shelf';beach.receiveShadow=true;scene.add(beach);
   report('正在布置光照与镜头…');
   buildPlatforms();

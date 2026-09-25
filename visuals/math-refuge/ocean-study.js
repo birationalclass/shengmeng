@@ -7,7 +7,7 @@ import {BUILDING_SCALE as S} from './site-layout.js';
 // geographic embedding, bathymetry and lighting are adapted to the campus.
 import {OCEAN_ORIGIN,findShore} from './coastal-site.js?v=refuge-ocean-1';
 
-export function createCampusOcean(renderer,scene,water){
+function createActiveCampusOcean(renderer,scene,water){
  const layer=createOceanLayer(renderer),root=new THREE.Group();root.name='Ocean Study · original breaking surf';
  const matrix=new THREE.Matrix4().set(-.94,0,-.341174,88, 0,1,0,OCEAN_ORIGIN[1], .341174,0,-.94,-35, 0,0,0,1);
  const inverse=matrix.clone().invert(),shore=new Float32Array(256*4);
@@ -65,5 +65,28 @@ export function createCampusOcean(renderer,scene,water){
    finally{renderer.setRenderTarget(target);renderer.autoClear=auto;}
   },
   dispose(){const geometries=new Set();root.traverse(o=>{if(o.geometry)geometries.add(o.geometry);o.material?.dispose();});for(const g of geometries)g.dispose();for(const o of layer.foamScene.children){o.geometry.dispose();o.material.dispose();}layer.foamA.dispose();layer.foamB.dispose();layer.uniforms.uProfile.value.dispose();shoreTexture.dispose();scene.remove(root);}
+ };
+}
+
+// Allocate the million-triangle surf and foam buffers only after a successful
+// lightweight frame-rate trial (or an explicit manual selection).
+export function createCampusOcean(renderer,scene,water){
+ const empty=new THREE.DataTexture(new Uint8Array(4),1,1);empty.needsUpdate=true;
+ const foam={value:empty},placeholder=new THREE.Group();let current=null,enabled=false,wasActive=false;
+ return {
+  get root(){return current?.root||placeholder;},get initialized(){return current!==null;},foam,
+  setEnabled(value){
+   enabled=Boolean(value);
+   if(enabled&&!current){current=createActiveCampusOcean(renderer,scene,water);current.layer.lastTime=5.6+water.time.value;}
+   current?.setEnabled(enabled);
+   if(!enabled){wasActive=false;water.oceanStudy.value=0;}
+  },
+  update(camera,dt){
+   if(!enabled||!current)return;
+   // Resuming starts at today's sea time: no simulation catch-up or 96-pass prewarm.
+   if(!wasActive){current.layer.lastTime=5.6+water.time.value;current.layer.foamAccumulator=0;}
+   wasActive=true;current.update(camera,dt);foam.value=current.layer.uniforms.uFoam.value;water.oceanStudy.value=1;
+  },
+  dispose(){current?.dispose();empty.dispose();}
  };
 }
