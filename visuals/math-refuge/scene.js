@@ -1,5 +1,5 @@
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
-import {createCampusOcean} from './ocean-study.js?v=true-north-coast-1';
+import {createCampusOcean} from './ocean-study.js?v104';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -13,7 +13,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v=focus-pause';
+import {createWeatherSky} from './weather-sky.js?v104';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';

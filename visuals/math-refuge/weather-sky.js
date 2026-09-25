@@ -1,6 +1,6 @@
 import {solarRefractionGLSL} from './solar-optics.js?v86-environment';
 import * as THREE from 'three';
-import {createVolumetricClouds} from './volumetric-clouds.js?v84-display';
+import {createVolumetricClouds} from './volumetric-clouds.js?v104';
 import {createAtmosphereLUT} from './sky-atmosphere.js?v79-mobile';
 export function createWeatherSky({panorama=true,renderer,device={},probe=false}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;

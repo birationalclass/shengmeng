@@ -1,4 +1,3 @@
-import {drawPulley} from './pulley-icon.js?v=1';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v69-authored';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
@@ -162,7 +161,7 @@ export async function createLecture(scene,renderer,options={}){
     const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle=silverInk(header);header.font='400 78px Baskerville, "Iowan Old Style", Georgia, serif';
     header.fillText(dateLabel,996,154);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
     for(const [index,button] of reportButtons.entries()){
-      const report=reports[index],waiting=report.id===pendingReport?.id,selected=report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
+      const report=reports[index],waiting=report.id===pendingReport?.id,selected=!stored&&(hasSelection||Boolean(pendingReport))&&report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
       c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowBlur=0;c.fillStyle=silverInk(c);
       const font=language==='zh'?SCREEN_FONT:'Baskerville, "Iowan Old Style", Georgia, serif';
       c.font='400 78px '+font;
@@ -392,7 +391,7 @@ export async function createLecture(scene,renderer,options={}){
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
-    toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();}return stored;},
+    toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
@@ -458,3 +457,4 @@ export async function createLecture(scene,renderer,options={}){
     dispose(){renderEpoch++;seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
+import {drawPulley} from './pulley-icon.js?v=1';

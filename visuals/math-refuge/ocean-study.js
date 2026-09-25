@@ -25,6 +25,14 @@ export async function createCampusOcean(renderer,scene,water){
    shader=shader.replace(/vec3 sunDirection\(\)\{[^}]*\}/,'vec3 sunDirection(){return normalize(studySun);}');
    shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=texture2D(studySky,uv).rgb;if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.002,.004,.009)*(1.-studyNight);}\n`);
    if(key==='fragmentShader'){
+    // Break the uniform white film into advected, short-lived foam islands.
+    shader=shader.replace('float foamPatch=smoothstep(.35,.70,noise(vCA*1.8+uTime*.18));',`vec2 foamUV=vCA+vec2(.24,-.11)*uTime;
+       float foamPatch=smoothstep(.48,.72,noise(foamUV*.85+noise(foamUV*.13)*2.));
+       foamPatch*=smoothstep(.22,.65,noise(foamUV*3.7));`);
+    shader=shader.replace('float fine=(exp(-pow((waterThickness-.06)/.13,2.))*.45+crest*exp(-pow((waterThickness-.45)/.7,2.))*.2)*foamPatch;',
+      'float fine=(exp(-pow((waterThickness-.055)/.09,2.))*.25+crest*exp(-pow((waterThickness-.35)/.45,2.))*.22)*foamPatch*(.3+.7*crest);');
+    shader=shader.replace('float foam=band*exp(-pow((waterThickness-.45)/.7,2.))*.12*breakerLOD;',
+      'float foam=band*exp(-pow((waterThickness-.45)/.7,2.))*.08*breakerLOD*smoothstep(.32,.68,noise(vCA*.08+uTime*.025));');
     shader=shader.replace(/vec3 tone\(vec3 x\)\{[^}]*\}/,'vec3 tone(vec3 x){return x;}');
     const end=shader.lastIndexOf('}');shader=shader.slice(0,end)+'\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n'+shader.slice(end);
    }

@@ -1,7 +1,8 @@
+import {SunriseIntro} from './sunrise-intro.js?v104';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
-import {createSurfAudio} from './surf-audio.js?v=true-north-coast-1';
+import {createSurfAudio} from './surf-audio.js?v104';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
@@ -24,8 +25,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=103-pulley';
-import {createLecture} from './lecture.js?v=103-pulley';
+import {createRetreat} from './scene.js?v104';
+import {createLecture} from './lecture.js?v104';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -43,6 +44,8 @@ import {motionCoordinate} from './camera-motion.js';
 let boardWritingStyle='refined';try{if(localStorage.getItem('refuge-board-writing-style')==='marck')boardWritingStyle='marck';}catch{}
 const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
 
+const timePresentation=new TimePresentation(sceneTime.hour);
+const sunriseIntro=new SunriseIntro(sceneTime,timePresentation);
 const $=id=>document.getElementById(id);
 const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
@@ -59,7 +62,10 @@ let entered=false;
 function enterScene(){
   if(entered||$('world').dataset.ready!=='true')return;
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
-  backgroundMusic.start();$('world').focus({preventScroll:true});
+  backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
+  sunriseIntro.start(solarEvents(sceneTime.date).sunrise);$('timeRate').value='30';
+  selectShot(SHOTS.findIndex(s=>s.name==='海景露台'));
+  $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
 $('enterButton').addEventListener('click',enterScene);
@@ -218,7 +224,7 @@ function updateRenderBudget(stamp){
   const water=retreat.ocean.material.uniforms;
   water.waterDetail.value=!settings.simpleWater&&$('waterDetail').value==='high'?1:0;
   water.reflectionDetail.value=!settings.simpleWater&&$('waterReflection').value==='full'?1:0;
-  retreat.sky.material.uniforms.starsEnabled.value=settings.particles&&$('starEffects').value==='on'?1:0;
+  retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.meteorEnabled.value=settings.particles&&$('meteorEffects').value==='on'?1:0;
   const targetFPS=frameQuality.stats?.target||Math.min(Number($('targetFPS').value),60);
   const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS,protectText:true});
@@ -401,7 +407,7 @@ try{
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
   $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{isActive:()=>renderActivity.foreground,retractable:true,startStored:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{isActive:()=>renderActivity.foreground,retractable:true,startStored:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -465,8 +471,8 @@ $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(even
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
-$('light').addEventListener('input',()=>{if(retreat){timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
-$('clockPlay').addEventListener('click',()=>{timePresentation.seek();sceneTime.sync();updateSceneTime();});
+$('light').addEventListener('input',()=>{if(retreat){sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
+$('clockPlay').addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.sync();updateSceneTime();});
 function weatherLabel(){
  const mode=$('weatherMode').value;if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
  const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
@@ -481,19 +487,19 @@ $('timeClose').addEventListener('click',closeTime);
 $('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
 function eventHours(){const fallback=solarEvents(sceneTime.date);const parse=(text,otherwise)=>/^\d{2}:\d{2}$/.test(text||'')?Number(text.slice(0,2))+Number(text.slice(3))/60:otherwise;return sceneTime.dayOffset?fallback:{sunrise:parse(weatherReading?.sunrise,fallback.sunrise),sunset:parse(weatherReading?.sunset,fallback.sunset)};}
 function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent=formatHour(times.sunrise);$('sunsetTime').textContent=formatHour(times.sunset);$('sunEventSource').textContent=weatherReading?.sunrise?'上海今日 · 天气服务时刻':'上海今日 · 本地天文估算';}
-$('timeRate').addEventListener('change',()=>{sceneTime.setRate($('timeRate').value);updateSceneTime();});
-$('timeRun').addEventListener('click',()=>{if(sceneTime.playing)sceneTime.pause();else sceneTime.play($('timeRate').value);updateSceneTime();});
-for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id).addEventListener('click',()=>{timePresentation.seek();sceneTime.previewAt(eventHours()[event]-.05);sceneTime.play($('timeRate').value);updateSceneTime();});
+$('timeRate').addEventListener('change',()=>{sunriseIntro.cancel();sceneTime.setRate($('timeRate').value);updateSceneTime();});
+$('timeRun').addEventListener('click',()=>{sunriseIntro.cancel();if(sceneTime.playing)sceneTime.pause();else sceneTime.play($('timeRate').value);updateSceneTime();});
+for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id).addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(eventHours()[event]-.05);sceneTime.play($('timeRate').value);updateSceneTime();});
 $('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
 function updateSceneTime(){
  sceneTime.update();if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
- $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
+ $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=sunriseIntro.active?'开场日出 · 30× · 随后返回上海当前时间':!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
  controlLabel($('clockPlay'),sceneTime.preview?'回到上海当前时间':'已同步上海时间');$('clockPlay').setAttribute('aria-pressed',String(!sceneTime.preview));
  $('world').dataset.clockMode=sceneTime.preview?'preview':'shanghai';$('world').dataset.hour=sceneTime.hour.toFixed(4);lecture?.setConsoleState();
 }
-const timePresentation=new TimePresentation(sceneTime.hour);
+
 function updateAtmosphere(dt){
- sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
+ sunriseIntro.update(dt);sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
  const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
  if(angle>.00028){renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;}
  $('world').dataset.visualHour=(((visualHour%24)+24)%24).toFixed(4);
