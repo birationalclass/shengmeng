@@ -73,9 +73,16 @@ test('mobile sky uses bounded targets, throttles updates and restores render sta
  assert.equal(u.cloudMapPrevious.value,initial);assert.equal(u.cloudBlend.value,0);
  cloud.update(u,700);assert.equal(calls.length,3,'Do not overwrite the old frame while it still participates in blending');
  assert.equal(current,originalTarget);assert.equal(renderer.autoClear,false);cloud.dispose();
- const atmosphere=createAtmosphereLUT(renderer,policy);atmosphere.update(u.sunPosition.value,.6);
+ const atmosphere=createAtmosphereLUT(renderer,policy);atmosphere.update(u.sunPosition.value,.6,0);
  assert.equal(calls[3].target.width,128);assert.equal(calls[3].target.height,64);
- atmosphere.update(new T.Vector3(1,1,.01),.7);assert.equal(calls.length,4,'Atmosphere also respects its update interval');atmosphere.dispose();
+ atmosphere.update(new T.Vector3(1,1,.01),.7,10);assert.equal(calls.length,4,'Atmosphere also respects its update interval');
+ const oldSky=atmosphere.texture,skyInterval=policy.atmosphereInterval||250;
+ atmosphere.update(new T.Vector3(1,1,.01),.7,skyInterval);
+ assert.equal(atmosphere.previousTexture,oldSky);assert.notEqual(atmosphere.texture,oldSky);assert.equal(atmosphere.blend,0);
+ const newSky=atmosphere.texture,draws=calls.length;
+ atmosphere.update(new T.Vector3(1,1,.02),.7,skyInterval*1.5);
+ assert.equal(atmosphere.blend,.5);assert.equal(calls.length,draws,'Never overwrite a sky texture while it is still being blended');assert.equal(atmosphere.texture,newSky);
+ atmosphere.dispose();
  assert.equal(createVolumetricClouds(renderer,{safe:true}),null);assert.equal(createAtmosphereLUT(renderer,{safe:true}),null);
  renderer.extensions.has=()=>false;assert.equal(createAtmosphereLUT(renderer,policy),null);
  const compatible=createVolumetricClouds(renderer,policy);compatible.update(u);assert.equal(calls.at(-1).target.texture.type,T.UnsignedByteType);compatible.dispose();

@@ -4,6 +4,7 @@ import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js?v44-hall-
 export function createPathLighting(scene,{box,beam,materials}){
   const {stone,steel,brass}=materials;
   const glow=new THREE.MeshStandardMaterial({color:'#f4deba',roughness:.9,emissive:'#ffe2ac',emissiveIntensity:.1});
+  glow.userData.stripSource=true;
   const pixels=new Uint8Array(128*128*4);
   for(let y=0;y<128;y++)for(let x=0;x<128;x++){const r=Math.hypot(x-63.5,y-63.5)/64;pixels.set([255,219,163,Math.round(Math.max(0,1-r)**2*96)],(y*128+x)*4);}
   const map=new THREE.DataTexture(pixels,128,128);map.needsUpdate=true;map.colorSpace=THREE.SRGBColorSpace;

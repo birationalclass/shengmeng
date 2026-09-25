@@ -65,3 +65,12 @@ export function lawnWeight(x,z){
   for(const a of LAWNS){const r=Math.hypot((x-a.x)/a.rx,(z-a.z)/a.rz);weight=Math.max(weight,Math.max(0,Math.min(1,(1-r)*7)));}
   return weight;
 }
+
+// Shaft bounds in lecture-local coordinates, shared by floor and moving lids.
+export const BOARD_SHAFT={left:19.22,right:36.78,back:-11.4,front:-10.4};
+export const BOARD_SHAFT_PLAN=[
+  HALL.boardX-(10.4+BOARD_SHAFT.front)*LECTURE_SCALE/BUILDING_SCALE,
+  HALL.boardX-(10.4+BOARD_SHAFT.back)*LECTURE_SCALE/BUILDING_SCALE,
+  (BOARD_SHAFT.left-28)*LECTURE_SCALE/BUILDING_SCALE,
+  (BOARD_SHAFT.right-28)*LECTURE_SCALE/BUILDING_SCALE
+];

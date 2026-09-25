@@ -197,6 +197,17 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const result=await createRetreat({domElement:{dataset:{}},capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{},{isRenderActive:()=>sceneActive});
     assert.equal(probeRenders,0,'Background startup defers environment rendering');assert.equal(scene.environment,null);
     sceneActive=true;result.setTime(12);assert.equal(probeRenders,1);result.setTime(13);assert.equal(probeRenders,1,'The deferred probe renders exactly once');
+    result.setTime(0,false,.1);const wash=[];scene.traverse(o=>{if(o.isLight&&o.userData.task==='blackboard')wash.push(o);});
+    const lampBefore=wash.map(l=>l.intensity);result.setMediaOpen(true);
+    for(let i=0;i<60;i++)result.setTime(0,false,.1);
+    assert.equal(wash.length,3);wash.forEach((l,i)=>assert(l.intensity<lampBefore[i]*.001));
+    assert(result.campus.boardLampMaterial.emissiveIntensity<.001);assert(result.roomFill.hallGain.value>.69&&result.roomFill.hallGain.value<.71);
+    result.setMediaOpen(false);for(let i=0;i<60;i++)result.setTime(0,false,.1);
+    wash.forEach((l,i)=>assert(l.intensity>lampBefore[i]*.999));
+    const rotating=scene.getObjectByName('Rotating chair upper assembly'),basePart=scene.getObjectByName('Fixed machined swivel pedestal');
+    const before=new Three.Matrix4(),after=new Three.Matrix4(),baseBefore=new Three.Matrix4(),baseAfter=new Three.Matrix4();rotating.getMatrixAt(0,before);basePart.getMatrixAt(0,baseBefore);
+    result.campus.swivelChairs.turn(0);for(let i=0;i<30;i++)result.campus.swivelChairs.update(.1);
+    rotating.getMatrixAt(0,after);basePart.getMatrixAt(0,baseAfter);assert(!before.equals(after));assert(baseBefore.equals(baseAfter));
     const residenceLamps=[];result.residence.root.traverse(o=>{if(o.isPointLight)residenceLamps.push(o);});
     result.residence.update({position:result.residence.root.position.clone()},0);
     assert(residenceLamps.every(l=>l.visible&&l.intensity>0));
@@ -229,8 +240,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert.deepEqual(auditorium.userData.rowRises,[.36,.18,0]);
     const seatLevels=[...new Set(auditorium.userData.seatPositions.map(p=>p[1]))];assert.equal(seatLevels.length,3);
     assert(Math.abs((seatLevels[0]-seatLevels[1])*BUILDING_SCALE-.18)<1e-10);
-    assert(scene.getObjectByName('Warm woven seminar carpet').material.roughness===1);
-    const frontCarpet=scene.getObjectByName('Warm woven seminar carpet').material.color;
+    assert(scene.getObjectByName('Warm woven seminar carpet').children[0].material.roughness===1);
+    const frontCarpet=scene.getObjectByName('Warm woven seminar carpet').children[0].material.color;
     const middleCarpet=scene.getObjectByName('Carpeted seating tier 1 1').material.color;
     const rearCarpet=scene.getObjectByName('Carpeted seating tier 0 1').material.color;
     for(const c of ['r','g','b'])assert(frontCarpet[c]>middleCarpet[c]&&middleCarpet[c]>rearCarpet[c]);
@@ -610,7 +621,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
   const originalFetch=globalThis.fetch,originalImage=globalThis.Image,originalDocument=globalThis.document;
   const contexts=[];
   globalThis.document={createElement:()=>({width:0,height:0,getContext(){
-    const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){},scale(){},arc(){},fill(){},moveTo(){},lineTo(){}};contexts.push(ctx);return ctx;
+    const ctx={clearRect(){},fillText(){},measureText(t){return {width:[...t].length*24};},drawImage(){},fillRect(){},save(){},restore(){},beginPath(){},rect(){},clip(){},translate(){},rotate(){},scale(){},arc(){},fill(){},moveTo(){},lineTo(){},stroke(){},strokeRect(){},closePath(){}};contexts.push(ctx);return ctx;
   }})};
   globalThis.Image=class{set src(value){this.url=value;queueMicrotask(()=>this.onload());}};
   globalThis.fetch=async(url)=>({ok:true,text:async()=>await fs.readFile(new URL(url.split('?')[0],import.meta.url),'utf8')});
@@ -799,10 +810,10 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(storage.stored&&!rig.visible,'Initial frame has the whole board assembly fully stowed');
     assert.equal(rig.position.y,-7.2);assert(!storage.playing);
     storage.update(.1);assert(!rig.visible,'Startup must not animate the boards down from an exposed state');
-    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);assert(!storage.stored&&rig.visible);
+    storage.toggleStorage();for(let i=0;i<80;i++)storage.update(.1);assert(!storage.stored&&rig.visible);
     assert.equal(rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
     assert(storage.hoverTargets.some(o=>o.userData.action==='lectern:stow'));
-    storage.toggleStorage();const frozen=storage.clock.elapsed;for(let i=0;i<50;i++)storage.update(.1);
+    storage.toggleStorage();const frozen=storage.clock.elapsed;for(let i=0;i<80;i++)storage.update(.1);
     assert(storage.stored&&!rig.visible);assert(storage.consoleButtons.every(b=>!b.visible));assert.equal(rig.position.y,-7.2);assert.equal(storage.clock.elapsed,frozen);
     assert.equal(storage.renderActive,false,'A fully stored board is not an active classroom texture renderer');
     const inkMaterials=rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(o=>o.children[0].material);
@@ -811,8 +822,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),textureVersions,'No ink or roughness upload during 600 hidden frames');
     await storage.seek(6);
     assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),textureVersions,'Hidden progress changes defer board uploads until raised');
-    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);
-    assert(rig.visible&&!storage.stored);assert(storage.consoleButtons.every(b=>b.visible));assert.equal(rig.position.y,0);
+    storage.toggleStorage();for(let i=0;i<80;i++)storage.update(.1);
+    assert(rig.visible&&!storage.stored);assert(storage.consoleButtons[0].visible);assert(storage.consoleButtons.slice(1).every(b=>!b.visible));assert.equal(rig.position.y,0);
     assert(storage.renderActive);assert.equal(storage.clock.page,6);assert(inkMaterials.some((m,i)=>m.map.version>textureVersions[i][0]),'Raising restores the selected content');
     appFocused=false;storage.playing=true;
     const blurProgress=storage.clock.elapsed,blurMaps=inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]);
@@ -822,7 +833,12 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),blurMaps,'An asynchronous seek cannot paint boards after focus is lost');
     appFocused=true;storage.update(.1);
     assert(inkMaterials.some((m,i)=>m.map.version>blurMaps[i][0]),'Focus restoration paints deferred content');
-    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);await storage.setReport('hu');assert(!storage.stored);for(let i=0;i<50;i++)storage.update(.1);assert(rig.visible);assert.equal(rig.position.y,0);storage.dispose();
+    storage.toggleStorage();for(let i=0;i<80;i++)storage.update(.1);await storage.setReport('hu');assert(!storage.stored);for(let i=0;i<80;i++)storage.update(.1);assert(rig.visible);assert.equal(rig.position.y,0);
+    assert(storage.followEnabled);storage.screenAction('screen:media');assert(!storage.followEnabled);assert(storage.stored);storage.update(.1);assert(storage.screenMode.reportAlpha>0,'Report list fades instead of disappearing instantly');
+    for(let i=0;i<70;i++)storage.update(.1);assert.equal(rig.visible,false);assert(storage.screenMode.mediaAlpha>.99);assert(storage.reportButtons.every(b=>!b.visible));
+    storage.screenAction('screen:report');for(let i=0;i<10;i++)storage.update(.1);assert(storage.reportButtons.every(b=>b.visible));assert(storage.stored,'Opening the report list does not raise the boards');
+    storage.screenAction('screen:power');for(let i=0;i<10;i++)storage.update(.1);assert(storage.hoverTargets.some(b=>b.userData.action==='screen:power'));assert(!storage.hoverTargets.some(b=>b.userData.action==='screen:media'));
+    storage.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
     const kmRoot=new Three.Group(),km=await createLecture(kmRoot,{capabilities:{getMaxAnisotropy:()=>8}},{reports:[KM_REPORT],defaultReport:'km',requireSelection:true,boardScale:.5});

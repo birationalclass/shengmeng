@@ -1,3 +1,6 @@
+import {createSwivelChairs} from './swivel-chairs.js?v126';
+import {subtractRect} from './board-storage.js?v124';
+import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
 import {createSeminarBuilding} from './seminar-building.js?v62-chalk-ink';
 import * as THREE from 'three';
 import {BUILDINGS} from './building-catalog.js?v=true-north-coast-1';
@@ -249,8 +252,12 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','north','south'],false,false);
   const carpetMaterial=new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1,metalness:0,envMapIntensity:.08,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.12,.12),roughnessMap:pale.roughnessMap});
   const tierCarpets=['#7d6e5c','#8e7e6a'].map(color=>{const material=carpetMaterial.clone();material.color.set(color);return material;});
-  const carpet=new THREE.Mesh(new THREE.BoxGeometry(HALL.east-HALL.west-.16,.024,HALL.south-HALL.north-.16),carpetMaterial);
-  carpet.name='Warm woven seminar carpet';carpet.position.set(cx,DECK_Y+.016,0);carpet.receiveShadow=true;scene.add(carpet);
+  const carpet=new THREE.Group();carpet.name='Warm woven seminar carpet';scene.add(carpet);
+  // Close the former bare strip at the smart glass; leave only the real shaft.
+  for(const [a,b,c,d] of subtractRect([HALL.west+.08,HALL.east+.025,HALL.north+.08,HALL.south-.08],BOARD_SHAFT_PLAN)){
+    const tile=new THREE.Mesh(new THREE.BoxGeometry(b-a,.024,d-c),carpetMaterial);
+    tile.position.set((a+b)/2,DECK_Y+.016,(c+d)/2);tile.receiveShadow=true;carpet.add(tile);
+  }
   // Fixed two-storey hall: the ground floor keeps its board clearance.
   const hallUpper=DECK_Y+HALL.clearHeight/S+.20;
   floor(hallUpper,HALL.east-HALL.west+.55,hallDepth+.55,cx,0);
@@ -279,10 +286,11 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   for(const z of [-4.5,4.5])lightingZones.push({name:'Seminar downlight '+z,position:[cx,DECK_Y+HALL.clearHeight/S-.35,z],target:[cx,DECK_Y,z],gain:1,color:'#ffe8cf',power:220});
   // Recessed asymmetric wall-wash bars sit ahead of the boards, above eye level.
   // Separate lighting circuits keep the chalk visible without brightening the glass.
+  const boardLampMaterial=light.clone();boardLampMaterial.userData.stripSource=false;boardLampMaterial.name="Independent blackboard lamp circuit";
   for(const z of [-3,0,3]){
     const x=HALL.boardX-1.05,y=DECK_Y+HALL.clearHeight/S-.18;
     soft([x,y,z],[.22,.12,2.8],steel);
-    box([x+.045,y-.069,z],[.075,.012,2.55],light);
+    box([x+.045,y-.069,z],[.075,.012,2.55],boardLampMaterial);
     lightingZones.push({name:'Blackboard wall wash '+z,position:[x,y-.16,z],target:[HALL.boardX,DECK_Y+1.8,z],gain:1,color:'#fff0dc',power:90,range:7,angle:Math.PI*.4,task:'blackboard'});
   }
   // Low-contrast reflected fill reaches chair sides and undersides, where the
@@ -363,26 +371,8 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   meta('Central carpeted stair aisle',{width:1.6,stepHeightMetres:.09,runs:aisleRuns});
   const curvedShell=curvedSeatBack(),curvedCloth=curvedSeatBack(true),headrest=curvedSeatBack(true,true);
-  function chair(x,z,rise,index){
-    const angle=Math.PI/2,base=carpetTop+rise/S;
-    const pos=p=>new THREE.Vector3(...p).divideScalar(S).applyAxisAngle(new THREE.Vector3(0,1,0),angle).add(new THREE.Vector3(x,base,z)).toArray();
-    const part=(p,size,m,round=false,tilt=0)=>{
-      const orientation=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),angle)
-        .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1,0,0),tilt));
-      const rotation=new THREE.Euler().setFromQuaternion(orientation);
-      return (round?soft:box)(pos(p),size.map(v=>v/S),m,[rotation.x,rotation.y,rotation.z]);
-    };
-    part([0,.025,0],[.62,.045,.72],brass);
-    beam(pos([0,.055,.15]),pos([0,.44,-.12]),.04/S,brass);
-    part([0,.45,.03],[1.04,.11,.83],shell,true);part([0,.53,.06],[.96,.18,.77],seatCloth,true,.035);
-    instance(curvedShell,shell,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
-    instance(curvedCloth,seatCloth,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
-    instance(headrest,seatCloth,[x,base,z],[1/S,1/S,1/S],[0,angle,0]);
-    for(const sign of [-1,1]){part([sign*.51,.70,0],[.055,.065,.56],brass);part([sign*.51,.75,.04],[.12,.11,.51],seatCloth,true);}
-    part([.57,.79,index%4===0?.28:-.07],index%4===0?[.48,.04,.32]:[.035,.30,.32],timber,true);
-    seating.userData.seatPositions.push([x,base,z]);
-  }
-  for(const [row,{x,rise}] of SEAT_ROWS.entries())for(const [i,z] of SEAT_COLUMNS.entries())chair(x,z,rise,row*SEAT_COLUMNS.length+i);
+  for(const {x,rise} of SEAT_ROWS)for(const z of SEAT_COLUMNS)seating.userData.seatPositions.push([x,carpetTop+rise/S,z]);
+  const swivelChairs=createSwivelChairs(scene,seating.userData.seatPositions,{shell,cloth:seatCloth,metal:brass,timber,backs:[curvedShell,curvedCloth,headrest]},S);
   const lectern=createLectern(THREE);
   lectern.group.position.set(41.3,DECK_Y+.028,6.5);
   lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);
@@ -397,9 +387,9 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   // follow the same complete perimeter without stair projections.
   const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors});
   lightingZones.push(...discussion.lightingZones);
-  return {blind,seating,lightingZones,automaticDoors,lectern,discussion,
+  return {swivelChairs,boardLampMaterial,carpetMaterial,blind,seating,lightingZones,automaticDoors,lectern,discussion,
     roofNumbers,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.geometry.dispose();carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){swivelChairs.dispose();boardLampMaterial.dispose();roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.children.forEach(m=>m.geometry.dispose());carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

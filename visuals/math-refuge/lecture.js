@@ -1,3 +1,6 @@
+import {BoardStorage} from './board-storage.js?v124';
+import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
+import {createSmartGlassHub} from './smart-glass-hub.js?v109';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
 import {authoredContext,authoredFormula} from './authored-chalk.js?v69-authored';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
@@ -26,7 +29,9 @@ export async function createLecture(scene,renderer,options={}){
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
+  let screenHub=null;
   let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
+  const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
@@ -289,8 +294,17 @@ export async function createLecture(scene,renderer,options={}){
   }
   function update(dt,reduced=false){
     if(disabled||options.isActive?.()===false)return;
-    if(storageRig&&stored&&storageProgress===1)return;
-    if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel(reduced);if(storageProgress>0||stored)return;}
+    screenHub?.update(dt,storageProgress);
+    if(storageRig){
+      storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
+      const t=storageProgress*storageProgress*(3-2*storageProgress);
+      storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;
+      const u=storageMotion.lid,k=u*u*(3-2*u);
+      if(storageCap)storageCap.visible=u===0;
+      for(const lid of storageLids){lid.visible=u>0;lid.position.z=lid.userData.closedZ+lid.userData.sign*.55*k;lid.position.y=lid.userData.closedY-.065*Math.min(1,u*5);}
+      consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'&&b.userData.column===0));
+      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready)return;
+    }
     if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
@@ -378,24 +392,39 @@ export async function createLecture(scene,renderer,options={}){
   if(options.retractable){
     storageRig=new THREE.Group();storageRig.name='Whole six-board retracting assembly';scene.add(storageRig);
     for(const node of [...scene.children])if(/^(Double-channel lift track|Sliding chalkboard|Wide nanmu chalk tray|Tray chalk|Tray eraser|Writing chalk|Moving blackboard eraser|Falling chalk powder)/.test(node.name))storageRig.add(node);
-    const slot=new THREE.Group();slot.name='Recessed blackboard storage slot';scene.add(slot);
-    const dark=new THREE.MeshStandardMaterial({color:'#101717',roughness:.9});
-    part(slot,[28,-1.385,-10.93],[17.4,.035,.86],dark);
-    for(const z of [-11.38,-10.48])part(slot,[28,-1.35,z],[17.55,.045,.055],metal);
-    for(const x of [19.24,36.76])part(slot,[x,-1.35,-10.93],[.055,.045,.95],metal);
-    storageLabel=glassLabel(.88,.88,37.55,1.7,'Whole blackboard storage control');
+    const slot=storageWell=new THREE.Group();slot.name='Recessed blackboard storage shaft with sliding floor lids';scene.add(slot);
+    const {left,right,back,front}=BOARD_SHAFT,width=right-left,depth=front-back,cx=(left+right)/2,cz=(back+front)/2;
+    const floorY=(.028*BUILDING_SCALE-LECTURE_LIFT)/LECTURE_SCALE;
+    const dark=new THREE.MeshStandardMaterial({color:'#302f2b',roughness:1});
+    const floorMaterial=options.floorMaterial||new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1});
+    const bottom=-9.1;
+    part(slot,[cx,bottom,cz],[width,.08,depth],dark);
+    for(const z of [back-.025,front+.025])part(slot,[cx,(floorY-.075+bottom)/2,z],[width+.1,floorY-.075-bottom,.05],dark);
+    for(const x of [left-.025,right+.025])part(slot,[x,(floorY-.075+bottom)/2,cz],[.05,floorY-.075-bottom,depth],dark);
+    for(const sign of [-1,1]){
+      const lid=part(slot,[cx,floorY-.025,cz+sign*depth/4],[width,.05,depth/2],floorMaterial);
+      lid.name='Flush carpet sliding shaft lid '+sign;lid.receiveShadow=true;lid.castShadow=true;
+      lid.userData={closedZ:lid.position.z,closedY:lid.position.y,sign};storageLids.push(lid);
+    }
+    storageCap=part(slot,[cx,floorY-.025,cz],[width,.05,depth],floorMaterial);storageCap.name='Seamless closed shaft floor';storageCap.receiveShadow=true;storageLids.forEach(lid=>lid.visible=false);
+    storageLabel=glassLabel(.45,.45,35.7,-1.0,'Whole blackboard storage control');
     storageLabel.canvas.width=storageLabel.canvas.height=256;storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
   }
   if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
-  const movingNodes=new Set([scene,storageRig,...boards.map(b=>b.group),chalk,eraser]);
+  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...reportButtons],storage:storageLabel?.mesh,onStore:()=>{
+    stored=true;playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;consoleButtons.forEach(b=>b.visible=false);updateStorageLabel();setReportState();
+  }});
+  const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
+    get followEnabled(){return !disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
-    toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
+    toggleStorage(){if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
-    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageProgress===0;},get hasSelection(){return hasSelection;},
+    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
-    screenAction:action=>seminarScreen?.action(action),
+    screenAction:action=>screenHub?.action(action)||seminarScreen?.action(action),
+    screenWake:()=>screenHub?.wake(),get screenMode(){return screenHub?.state;},
     async setRenderActive(value){
       if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
       if(!value){hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
@@ -412,13 +441,13 @@ export async function createLecture(scene,renderer,options={}){
         hydrating=false;loadingError=null;update(0,true);
       }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
-    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,hoverTargets:disabled?[]:[...touchButtons,reportHeader.mesh],setConsoleState,
+    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...(screenHub?.targets||[])];},setConsoleState,
     get pendingReport(){return pendingReport;},
     preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
     async setReport(id){
       if(disabled)return false;
-      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');
+      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');screenHub?.report();
       if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
       seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();
       try{
@@ -454,7 +483,8 @@ export async function createLecture(scene,renderer,options={}){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){renderEpoch++;seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';
+

@@ -20,6 +20,13 @@ export function createAtmosphereLUT(renderer,device={}){
  for(int i=0;i<24;i++){float a=float(i)/24.,b=float(i+1)/24.;float t0=distance*a*a,t1=distance*b*b,stepLength=t1-t0;vec3 p=origin+d*((t0+t1)*.5),rho=density(p),segment=rho*stepLength;vec3 transmit=exp(-extinction(optical+segment*.5))*solarTransmission(p);radiance+=transmit*(betaR*rho.x*phaseR+vec3(.003996*aerosol)*rho.y*phaseM)*stepLength;optical+=segment;}
  gl_FragColor=vec4(radiance*8.,1.);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
- let key='',last=-Infinity;
- return {texture:target.texture,update(sun,cloud){const next=[sun.x,sun.y,sun.z,cloud].map(v=>v.toFixed(3)).join(','),now=performance.now();if(next===key||now-last<interval)return;key=next;last=now;uniforms.sun.value.copy(sun).normalize();uniforms.aerosol.value= .12+cloud*2.;const previous=renderer.getRenderTarget(),auto=renderer.autoClear;try{renderer.autoClear=true;renderer.setRenderTarget(target);renderer.render(scene,camera);}finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}},dispose(){target.dispose();quad.geometry.dispose();material.dispose();}};
+ const targets=[target,target.clone()];let front=0,previous=0,blend=1,key='',last=-Infinity;
+ return {get texture(){return targets[front].texture;},get previousTexture(){return targets[previous].texture;},get blend(){return blend;},update(sun,cloud,now=performance.now()){
+  const t=Math.max(0,Math.min(1,(now-last)/interval));blend=t*t*(3-2*t);
+  const next=[sun.x,sun.y,sun.z,cloud].join(',');if(next===key||now-last<interval)return;
+  const first=!key,back=1-front;uniforms.sun.value.copy(sun).normalize();uniforms.aerosol.value=.12+cloud*2.;
+  const prior=renderer.getRenderTarget(),auto=renderer.autoClear;
+  try{renderer.autoClear=true;renderer.setRenderTarget(targets[back]);renderer.render(scene,camera);}finally{renderer.setRenderTarget(prior);renderer.autoClear=auto;}
+  previous=first?back:front;front=back;blend=first?1:0;key=next;last=now;
+ },dispose(){targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};
 }

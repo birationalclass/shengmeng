@@ -1,6 +1,8 @@
+import {subtractRect} from './board-storage.js?v124';
+import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
 import {deferredTexture} from './deferred-textures.js?v106';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
-import {createCampusOcean} from './ocean-study.js?v105';
+import {createCampusOcean} from './ocean-study.js?v133';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -11,17 +13,17 @@ import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v=east-sailboat-2';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
-import {createRoomFill} from './room-fill.js?v81-imac';
-import {createPathLighting} from './path-lighting.js?v44-hall-clearance';
+import {createRoomFill} from './room-fill.js?v129';
+import {createPathLighting} from './path-lighting.js?v129';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v105';
+import {createWeatherSky} from './weather-sky.js?v112';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v106-44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v=103-pulley';
+import {createCampus} from './campus.js?v129';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -89,7 +91,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       const union=platformUnion(rects),top=[],sides=[],bottom=y===0?Math.min(...rects.flatMap(([a,b,c,d])=>[[a,c],[a,d],[b,c],[b,d]].map(([x,z])=>study.ground(x*BUILDING_SCALE,z*BUILDING_SCALE)/BUILDING_SCALE)))-.2:y-.2;
       const quad=(out,a,b,c,d)=>out.push(...a,...b,...c,...a,...c,...d);
       for(const [a,b,c,d] of union.cells){
-        quad(top,[a,y+.275,c],[a,y+.275,d],[b,y+.275,d],[b,y+.275,c]);
+        for(const [e,f,g,h] of (y===0?subtractRect([a,b,c,d],BOARD_SHAFT_PLAN):[[a,b,c,d]]))quad(top,[e,y+.275,g],[e,y+.275,h],[f,y+.275,h],[f,y+.275,g]);
         quad(sides,[a,bottom,c],[b,bottom,c],[b,bottom,d],[a,bottom,d]);
       }
       for(const [a,c,b,d] of union.edges){
@@ -521,7 +523,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const sun=new THREE.DirectionalLight('#ffdfaf',3.3);sun.castShadow=true;sun.position.set(-35,35,30);
   sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-55*BUILDING_SCALE,right:55*BUILDING_SCALE,top:45*BUILDING_SCALE,bottom:-45*BUILDING_SCALE,near:1,far:200*BUILDING_SCALE});
   sun.target.position.set(12,3,0).multiplyScalar(BUILDING_SCALE);scene.add(sun.target);
-  sun.shadow.normalBias=.018;sun.shadow.bias=-.00008;scene.add(sun);
+  sun.shadow.normalBias=.04;sun.shadow.bias=-.00025;scene.add(sun);
   const ambient=new THREE.HemisphereLight('#b5d7e0','#514a35',1.6);scene.add(ambient);
   const interiorLights=[];
   for(const zone of campus.lightingZones){
@@ -544,8 +546,10 @@ export async function createRetreat(renderer,scene,report,device={}){
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
   const warmColor=new THREE.Color('#ff7334'),noonColor=new THREE.Color('#fff4e0'),fogDay=new THREE.Color('#477b9c'),fogNight=new THREE.Color('#101b2b');
   function setWeather(value){Object.assign(weatherTarget,{cloud:value?.cloud??.14,rain:value?.rain??0,fog:value?.fog??0,wind:value?.wind??weatherTarget.wind,windDirection:Number.isFinite(value?.windDirection)?value.windDirection:weatherTarget.windDirection});}
+  const lampOffColor=new THREE.Color('#292c2a');let mediaTarget=0,mediaBlend=0;
+  function setMediaOpen(value){mediaTarget=value?1:0;}
   function setTime(hour,regenerate=false,dt=0,weatherRate=1,date=new Date()){
-    ensureEnvironment();
+    ensureEnvironment();mediaBlend+=(mediaTarget-mediaBlend)*(1-Math.exp(-Math.max(0,dt)/.4));roomFill.hallGain.value=1-.30*mediaBlend;
     const state=solarState(hour,date),campusSun=geographicDirectionToCampus(state.direction),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
     for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
     const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
@@ -554,12 +558,12 @@ export async function createRetreat(renderer,scene,report,device={}){
     ocean.material.uniforms.rainAmount.value=Math.min(1,weather.rain/3);ocean.material.uniforms.nightVisibility.value=.06+day*.94;ocean.material.uniforms.sunDirection.value.fromArray(campusSun);ocean.material.uniforms.sunTint.value.copy(u.sunColor.value);ocean.material.uniforms.sunStrength.value=state.direct*sunThrough;ocean.material.uniforms.overcast.value=storm;
     sun.position.copy(sun.target.position).addScaledVector(u.sunPosition.value,90*BUILDING_SCALE);sun.intensity=state.direct*(.8+2.2*smooth(0,60,state.elevation))*sunThrough;sun.color.copy(u.sunColor.value);
     ambient.intensity=.18+day*(1.15-.28*storm);ambient.color.set('#91beeb').lerp(new THREE.Color('#d0d5df'),storm*.7);ambient.groundColor.set('#423d33');
-    const lamps=1-smooth(.16,.7,day);interiorLights.forEach(l=>l.intensity=l.userData.power*(.22+lamps*.78)*BUILDING_SCALE**2*l.userData.gain);
-    light.emissiveIntensity=.45+lamps*1.05;scene.environmentIntensity=.08+day*(.52-.16*storm);
+    const lamps=1-smooth(.16,.7,day);interiorLights.forEach(l=>l.intensity=l.userData.power*(.22+lamps*.78)*BUILDING_SCALE**2*l.userData.gain*(l.userData.task==='blackboard'?1-mediaBlend:l.userData.task==='seminar-fill'?1-.3*mediaBlend:1));
+    light.emissiveIntensity=.45+lamps*1.05;campus.boardLampMaterial.emissiveIntensity=light.emissiveIntensity*(1-mediaBlend);campus.boardLampMaterial.color.copy(light.color).lerp(lampOffColor,mediaBlend);scene.environmentIntensity=.08+day*(.52-.16*storm);
     scene.fog.density=.000018+.00023*(1-day)+.00032*storm+.0012*weather.fog;
     scene.fog.color.copy(fogDay).lerp(fogNight,1-day).lerp(new THREE.Color('#929eac'),storm*.4*day);
     u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere();
-    const water=ocean.material.uniforms;water.skyMap.value=u.atmosphereMap.value;water.skyPhysical.value=u.useAtmosphere.value;water.skyCloudMap.value=u.cloudMap.value;water.skyCloudPrevious.value=u.cloudMapPrevious.value;water.skyCloudBlend.value=u.cloudBlend.value;water.skyCloudEnabled.value=u.useVolumeClouds.value;water.solarRadius.value=state.radius;
+    const water=ocean.material.uniforms;water.skyMap.value=u.atmosphereMap.value;water.skyPrevious.value=u.atmosphereMapPrevious.value;water.skyBlend.value=u.atmosphereBlend.value;water.skyPhysical.value=u.useAtmosphere.value;water.skyCloudMap.value=u.cloudMap.value;water.skyCloudPrevious.value=u.cloudMapPrevious.value;water.skyCloudBlend.value=u.cloudBlend.value;water.skyCloudEnabled.value=u.useVolumeClouds.value;water.solarRadius.value=state.radius;
     water.skyDay.value=day;water.skyCoverage.value=cloud;water.skyStorm.value=storm;
     const vx=waterWind.velocity.x,vz=waterWind.velocity.z,windLength=Math.hypot(vx,vz);
     if(windLength>.000001)water.windFlow.value.set(vx/windLength,vz/windLength);
@@ -569,5 +573,5 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setTime(shanghaiHour(),true);
-  return {residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {setMediaOpen,residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }
