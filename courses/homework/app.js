@@ -64,7 +64,7 @@ function captureLeaf(leaf){
 }
 // A flexible leaf is drawn as joined vertical bands. The reverse side carries
 // the destination page, while the old facing page stays beneath it until covered.
-function animateBookTurn(front,back,stationary,rect,forward){
+function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null){
  const stage=document.createElement('div');stage.className='page-turn-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
  if(stationary)stage.append(stationary);
  const shadow=document.createElement('div');shadow.className='turn-contact-shadow';
@@ -84,9 +84,13 @@ function animateBookTurn(front,back,stationary,rect,forward){
   scene.append(band);bands.push(band);
  }
  const landing=back.cloneNode(true);landing.classList.add('turn-landing');landing.style.opacity='0';stage.append(landing);
+ // Keep the destination's empty left half empty until the cover has landed.
+ // Clip the whole spread, including its paper, binding and outer shadows.
+ openingSpread?.classList.add('cover-opening');
+ const revealSpread=()=>openingSpread?.classList.remove('cover-opening');
  document.body.append(stage);turnStage=stage;
  let frame=0,startTime;
- const handle={cancel(){cancelAnimationFrame(frame)}};turnAnimation=handle;
+ const handle={cancel(){cancelAnimationFrame(frame);revealSpread()}};turnAnimation=handle;
  function draw(now){
   if(startTime===undefined)startTime=now;
   const t=Math.min(1,(now-startTime)/1020),motion=Math.min(1,t/.84),progress=(1-Math.cos(Math.PI*motion))/2;
@@ -106,11 +110,11 @@ function animateBookTurn(front,back,stationary,rect,forward){
   shadow.style.transformOrigin=forward?'left':'right';
   // Once flat, stop transforming text. A single aligned leaf bridges to the
   // already-laid-out live page, preventing per-band text rasterization jumps.
-  if(motion===1){scene.style.visibility='hidden';if(stationary)stationary.style.visibility='hidden';landing.style.opacity='1';stage.style.opacity=String(Math.max(0,1-(t-.84)/.16));}
+  if(motion===1){revealSpread();scene.style.visibility='hidden';if(stationary)stationary.style.visibility='hidden';landing.style.opacity='1';stage.style.opacity=String(Math.max(0,1-(t-.84)/.16));}
   stage.dataset.phase=motion===1?'settling':'turning';
   stage.dataset.progress=String(Math.round(progress*100));
   if(t<1)frame=requestAnimationFrame(draw);
-  else{stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}}
+  else{revealSpread();stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}}
  }
  frame=requestAnimationFrame(draw);
 }
@@ -131,7 +135,7 @@ function showBookPage(page){
   const newSpread=$$('.page-spread').find(p=>!p.hidden);
   const newLeaves=$$('.scan-page',newSpread).filter(p=>!p.hidden&&getComputedStyle(p).display!=='none');
   const back=captureLeaf(forward?newLeaves[0]:newLeaves.at(-1));
-  animateBookTurn(front,back,stationary,rect,forward);
+  animateBookTurn(front,back,stationary,rect,forward,before===-1&&step===2?newSpread:null);
  }
  return true;
 }
