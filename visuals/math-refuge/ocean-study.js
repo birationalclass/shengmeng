@@ -24,15 +24,15 @@ export async function createCampusOcean(renderer,scene,water){
    let shader=material[key].replaceAll('cameraPosition','studyCamera').replaceAll('viewMatrix','studyView');
    shader=shader.replaceAll('col+=light*min(18.,distribution*sf*gv*gl/(4.*nv))*smoothstep(-4.,1.,uSun);','float solarHighlight=distribution*sf*gv*gl/(4.*nv);col+=light*(3.*solarHighlight/(3.+solarHighlight))*smoothstep(-4.,1.,uSun)*studySunReflection*studySunStrength;');
    shader=shader.replace(/vec3 sunDirection\(\)\{[^}]*\}/,'vec3 sunDirection(){return normalize(studySun);}');
-   shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=mix(texture2D(studySkyPrevious,uv).rgb,texture2D(studySky,uv).rgb,studySkyBlend);if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.001,.0015,.0025)*(1.-studyNight);}\n`);
+   shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=mix(texture2D(studySkyPrevious,uv).rgb,texture2D(studySky,uv).rgb,studySkyBlend);if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.012,.016,.025)*(1.-smoothstep(-10.,0.,uSun));}\n`);
    if(key==='fragmentShader'){
     // Scattering needs incident light. The standalone study's fixed teal
     // night floor made both the refracted bed and distant water self-luminous.
     // Keep the daytime response; fade continuously through nautical twilight.
     shader=shader.replaceAll('mix(vec3(.014,.092,.105),vec3(.025,.24,.255),day)',
-      'mix(vec3(.0015,.0022,.0035),mix(vec3(.014,.092,.105),vec3(.025,.24,.255),day),smoothstep(-10.,4.,uSun))');
+      'mix(vec3(.009,.012,.018),mix(vec3(.014,.092,.105),vec3(.025,.24,.255),day),smoothstep(-10.,4.,uSun))');
     shader=shader.replace('vec3 ambient=mix(vec3(.22,.28,.38),vec3(.48,.64,.78),day);',
-      'vec3 ambient=mix(vec3(.006,.008,.012),mix(vec3(.22,.28,.38),vec3(.48,.64,.78),day),smoothstep(-10.,4.,uSun));');
+      'vec3 ambient=mix(vec3(.050,.055,.065),mix(vec3(.22,.28,.38),vec3(.48,.64,.78),day),smoothstep(-10.,4.,uSun));');
     // Evaluate normals in fixed world coordinates, not on the camera-following
     // adaptive vertices. Preserve unresolved slope energy as roughness.
     shader=shader.replace('n=normalize(vNormal)','n=vec3(0.,1.,0.)');
