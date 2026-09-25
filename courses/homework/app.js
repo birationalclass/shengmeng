@@ -216,6 +216,13 @@ function fitPaper(){
  root.style.setProperty('--canvas-width',width+'px');root.style.setProperty('--view-scale',scale);
  viewport.style.width=(width*scale+32)+'px';viewport.style.height=(height*scale+32)+'px';
  root.dataset.displayScale=scale.toFixed(4);
+ // Anchor the UI to the stationary paper surface, not the browser viewport.
+ // Keep it legible at normal sizes and fit it inside even a small cover leaf.
+ const inset=20*scale,uiScale=Math.min(1,(sheet.width*scale-2*inset)/370);
+ viewport.style.setProperty('--paper-inset',(16+inset)+'px');
+ viewport.style.setProperty('--paper-ui-scale',uiScale);
+ viewport.style.setProperty('--paper-settings-top',(16+inset+54*uiScale)+'px');
+ viewport.style.setProperty('--paper-settings-height',Math.max(0,(height*scale-2*inset-54*uiScale)/uiScale)+'px');
 }
 let orientationAttempted=false;
 async function requestLandscape(force=false){
