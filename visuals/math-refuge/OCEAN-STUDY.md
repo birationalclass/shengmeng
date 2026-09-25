@@ -1,3 +1,42 @@
+# Current coast: experiment 01 (2026-09-25)
+
+The campus now embeds `../ocean/elliptic-renderer.js` directly with the existing
+renderer and camera. Both sand ribbons, the kilometre distance field, 02 optical
+water, shallow overtopping, gentle ±10 cm relief, slow submerged branch tips,
+projected wave filtering and distant ocean depth are shared with 01. The former
+campus sand shelf and the four decorative offshore islands are no longer drawn.
+The campus keeps its real-time sky, cloud reflection, weather and solar direction.
+Geographic east is mathematical +x and north is +y. The coast overview is north-up;
+world +X is east and world −Z is north. The coast is translated only, with no
+90° rotation. Solar and cloud directions keep their original geographic frame.
+The main auditorium starts with all six boards fully stowed, without a startup
+lowering animation; the storage control or report selection can raise them.
+
+`elliptic-site.js` defines a rigid metre-scale embedding: the main auditorium
+centre maps exactly to mathematical `(x,y)=(2,0)` km. The architectural campus
+retains its connected platforms west of the coastal auditorium; room/furniture dimensions and teaching camera routes
+stay intact. Garden and guest terraces can extend over shallow water; continuous
+platform fascia now reaches below the sand. The detached residence follows the
+same branch 1.25 km south of the apex, with its interior viewpoints and
+room bounds translated together. Sailboats and kayaks moor beyond the sand and
+follow the current tide vertically. Buildings remain above peak demo tide.
+
+Navigation adds **曲线海岸总览**, **左环漫滩**, **主楼沙滩**. Settings expose 250 m
+grid lines, base tide, tidal animation and wave pause. The orbit range now covers
+14 km. Coast coordinates display the original equation's y axis, opposite Three's
+local z. The existing indoor navigation and board interactions remain available.
+All quality modes retain this terrain and water model. Lower tiers reduce short
+normal bands and fine spray; larger breaking bands retain their independent LOD.
+There are no extra WebGL contexts or old foam ping-pong render targets.
+
+Validation: numerical placement/inverse transform, shared terrain samples,
+residence viewpoints and water clearance, plus existing hall-route and villa-plan
+tests (42 scene checks and 12 placement/navigation/plan checks pass). Local browser checks cover full coast, main campus, settings and shader
+compilation. No GitHub publication is implied by these local checks.
+
+---
+The following is the implementation history, superseded by the shared 01 above.
+
 # Ocean Study integration
 
 The campus imports `createOceanLayer` from `../ocean/ocean-renderer.js`; it does not duplicate or approximate the original wave solver. The original page still creates its own renderer, sky and camera. The embedded layer shares the campus renderer, camera and render loop.

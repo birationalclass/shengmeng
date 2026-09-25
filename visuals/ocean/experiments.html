@@ -1,10 +1,10 @@
 <!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>海浪实验室 · 版本对照</title>
 <style>*{box-sizing:border-box}body{margin:0;background:#11232e;color:#edf1f0;font:14px/1.5 system-ui}nav{height:72px;display:flex;gap:10px;align-items:center;padding:12px 20px;border-bottom:1px solid #ffffff20}strong{font-size:16px;font-weight:500;margin-right:12px}button{font:inherit;padding:9px 14px;border:1px solid #ffffff35;border-radius:7px;background:transparent;color:inherit;cursor:pointer}button[aria-pressed=true]{background:#e2e7df;color:#17303b}#note{font-size:12px;color:#afc2c9;margin-left:auto}iframe{border:0;width:100%;height:calc(100dvh - 72px);display:block}iframe[hidden]{display:none}@media(max-width:700px){nav{height:116px;flex-wrap:wrap;gap:6px;padding:10px}strong{width:100%;font-size:15px}button{padding:6px 9px;font-size:12px}#note{display:none}iframe{height:calc(100dvh - 116px)}}</style>
-<nav aria-label="实验版本"><strong>海浪实验室</strong><button data-mode="original" aria-pressed="false">01 原版岸浪</button><button data-mode="optics" aria-pressed="false">02 水材质试验</button><button data-mode="fluid" aria-pressed="true">03 弱推浪水槽</button><button data-mode="breaker" aria-pressed="false">04 强推浪水槽</button><button data-mode="coasts" aria-pressed="false">05 三种沙滩路线</button><span id="note">各实验独立保留参数与进度</span></nav>
+<nav aria-label="实验版本"><strong>海浪实验室</strong><button data-mode="original" aria-pressed="false">01 沙滩形状</button><button data-mode="optics" aria-pressed="false">02 水材质试验</button><button data-mode="fluid" aria-pressed="true">03 弱推浪水槽</button><button data-mode="breaker" aria-pressed="false">04 强推浪水槽</button><button data-mode="coasts" aria-pressed="false">05 三种沙滩路线</button><span id="note">各实验独立保留参数与进度</span></nav>
 <main id="experiments"></main>
 <script>
-const sources={coasts:'./shorelines.html',original:'./index.html',optics:'./optical-study.html',fluid:'./experiments/fluid-player.html',breaker:'./experiments/fluid-player.html?variant=breaker'};
+const sources={coasts:'./shorelines.html',original:'./elliptic-beach.html',optics:'./optical-study.html',fluid:'./experiments/fluid-player.html',breaker:'./experiments/fluid-player.html?variant=breaker'};
 const frames=new Map();let selected='original';
 function notify(frame,active){frame.contentWindow?.postMessage({type:'ocean-experiment-visibility',active},location.origin);}
 function select(id){

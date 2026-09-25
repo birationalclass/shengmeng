@@ -1,5 +1,7 @@
 # 数学难民营 — A retreat for wandering minds
 
+当前海岸已接入海浪实验 01 的完整椭圆曲线沙带；主报告厅位于 `(2,0)` km，住宅沿右侧沙带布局。见 [当前海岸实现与验证](OCEAN-STUDY.md)。下文保留历次建筑设计记录。
+
 An original, navigable 3D architectural scene for Sheng Meng's Visual Lab. **Not a video, image panorama, or 2.5D photo displacement.** The structure, rooms, furniture, plants, sea-access steps and distant islands are modeled geometry. This is an initial reference-inspired scene, not a verified pixel-equivalent reconstruction of the supplied film.
 
 ## Reference and camera design

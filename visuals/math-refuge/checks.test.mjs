@@ -126,7 +126,7 @@ test('all facility footprints and expansion docks sit over open seawater',()=>{
 
 
 test('finite camera destinations include all buildings, upstairs, ocean and garden views',()=>{
-  assert.equal(SHOTS.length,26);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
+  assert.equal(SHOTS.length,29);assert(SHOTS.some(s=>s.lecture));assert(SHOTS.some(s=>s.name==='海景露台'));assert(SHOTS.some(s=>s.name==='海上花园'));assert(SHOTS.some(s=>s.name==='二楼客厅'));
   for(const shot of SHOTS){
     assert(shot.duration>=20);assert(shot.fov>30&&shot.fov<70);
     for(const points of [shot.positions,shot.targets]){
@@ -178,6 +178,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const url=new URL(file,import.meta.url);
     if(modules.has(url.href))return modules.get(url.href);
     let code=await fs.readFile(url,'utf8');
+    code=code.replaceAll('import.meta.url',JSON.stringify(url.href));
     code=code.replace("import * as THREE from 'three';",'const THREE=globalThis.__retreatTestThree;').replaceAll("from 'three'",`from '${coreURL}'`);
     const dependencies=[...code.matchAll(/from\s+['"](\.[^'"]+)['"]/g)];
     for(const match of dependencies)code=code.replace(match[1],await inlineAddon(new URL(match[1],url).href));
@@ -189,11 +190,11 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
     PMREMGenerator:class{fromScene(){probeRenders++;return {texture:new Three.Texture(),dispose(){}};}dispose(){}}
   };
-  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({measureText(text){return {width:text.length*18};},fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
+  globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({measureText(text){return {width:text.length*18};},fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){},getImageData(){return {data:new Uint8ClampedArray(256*256*4)};}})})};
   try{
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
-    const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{},{isRenderActive:()=>sceneActive});
+    const result=await createRetreat({domElement:{dataset:{}},capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{},{isRenderActive:()=>sceneActive});
     assert.equal(probeRenders,0,'Background startup defers environment rendering');assert.equal(scene.environment,null);
     sceneActive=true;result.setTime(12);assert.equal(probeRenders,1);result.setTime(13);assert.equal(probeRenders,1,'The deferred probe renders exactly once');
     const residenceLamps=[];result.residence.root.traverse(o=>{if(o.isPointLight)residenceLamps.push(o);});
@@ -202,7 +203,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     result.residence.update({position:new Three.Vector3(0,0,0)},0);
     assert(residenceLamps.every(l=>l.visible&&l.intensity===0),'Distance changes lamp intensity without changing shader light counts');
 
-    const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.x< -1100);assert(result.residence.root.getObjectByName('Roof number 10'));
+    const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.z>=1250);assert(result.residence.root.getObjectByName('Roof number 10'));
     assert(!result.water);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
     const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,30);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
@@ -269,7 +270,9 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(!scene.getObjectByName('Coffee cabin mathematical sculpture'));assert(scene.getObjectByName('Library open book sculpture').userData.openBook);
     assert(!LAWNS.some(l=>l.z===34));assert(!GARDEN_PADS.some(r=>r[0]===-22&&r[2]===29));
     const [tw,te,tn,ts]=SEA_TERRACE;assert(result.layoutFloors.some(f=>f.y===0&&f.cx-f.w/2===tw&&f.cx+f.w/2===te&&f.cz-f.d/2===tn&&f.cz+f.d/2===ts),'Hall platform must match the declared paving bounds');
-    assert.equal(result.fleet.boats.filter(b=>b.userData.type==='sail').length,3);assert.equal(result.fleet.boats.filter(b=>b.userData.type==='kayak').length,2);
+    assert.equal(result.fleet.boats.filter(b=>b.userData.type==='sail').length,4);assert.equal(result.fleet.boats.filter(b=>b.userData.type==='kayak').length,2);
+    const eastBoat=result.fleet.boats.find(b=>b.name==='Auditorium east sailboat');
+    assert(Math.abs(eastBoat.position.x-(HALL.west+HALL.east)*.5*BUILDING_SCALE-100)<1e-8);assert.equal(eastBoat.position.z,0);
     for(let i=0;i<100;i++)result.fleet.update(.1);for(const boat of result.fleet.boats){assert(Math.abs(boat.position.y-result.site.seaLevel)<.1);assert(!result.layoutFloors.some(f=>f.y===0&&Math.abs(boat.position.x/BUILDING_SCALE-f.cx)<f.w/2+3&&Math.abs(boat.position.z/BUILDING_SCALE-f.cz)<f.d/2+3));}
     for(const name of ['Villa exterior stair','Hall exterior stair']){
       const d=scene.getObjectByName(name).userData;
@@ -313,10 +316,10 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
       const footX=stair.x+stair.dx*2.66,footZ=stair.z+stair.dz*2.66;
       assert(!result.layoutFloors.some(f=>f.y===0&&Math.abs(footX-f.cx)<f.w/2-.01&&Math.abs(footZ-f.cz)<f.d/2-.01),'Sea stair must not end under another deck');
     }
-    for(const z of [-14,0,14]){
-      assert(result.site.elevation(0,z)<result.site.seaLevel);
-      assert(result.site.elevation(HALL.west*BUILDING_SCALE,z)<result.site.seaLevel);
-      assert(result.site.elevation(result.site.coastline(z)+15,z)<result.site.seaLevel);
+    for(const z of [-14,0,14])for(const x of [0,HALL.west*BUILDING_SCALE]){
+      const h=result.site.elevation(x,z);assert(Number.isFinite(h));
+      assert(h<DECK_Y*BUILDING_SCALE,'Shared sand terrain stays below occupied platforms');
+      assert(h>=-22,'Shared ocean floor remains bounded');
     }
     let instances=0,triangles=0;
     const allObjects=[];scene.traverse(o=>allObjects.push(o));
@@ -488,13 +491,13 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     assert(!calls.some(text=>text.includes('已解决')));
     assert(result.ocean.material.uniforms.time);assert.equal(typeof result.lighting,'function');
     const study=result.ocean.userData.study;
-    assert.equal(study.initialized,false,'Lightweight startup must not allocate surf geometry or foam buffers');
-    study.setEnabled(true);assert.equal(study.initialized,true);assert(study.root.visible);
+    assert.equal(study.initialized,true,'Every tier uses the same complete 01 coast');
     const root=study.root;let surfFaces=0;root.traverse(o=>{if(o.isMesh)surfFaces+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3;});
     assert(surfFaces>0&&surfFaces<=1100000);
-    study.setEnabled(false);assert(!root.visible);assert.equal(result.ocean.material.uniforms.oceanStudy.value,0);
-    study.update(new Three.PerspectiveCamera(),1); // Disabled updates must not call the mock renderer.
-    study.setEnabled(true);assert.equal(study.root,root,'Re-enabling reuses the existing allocation');study.setEnabled(false);
+    assert(!result.ocean.visible,'Legacy panoramic water must not cover the shared coast');
+    assert(!scene.getObjectByName('Distant offshore islands').visible);
+    for(const quality of [0,1,2]){study.setQuality(quality);study.update(new Three.PerspectiveCamera(),.016);assert(root.visible);}
+    assert.equal(study.root,root,'Quality changes never replace the terrain');
     result.lighting(0,true);result.lighting(100,true);result.dispose();
     assert(result.ocean.material.uniforms.sunDirection.value.toArray().every(Number.isFinite));
   }finally{delete globalThis.__retreatTestThree;delete globalThis.document;}
@@ -791,8 +794,12 @@ test('classroom assembles six independent boards and survives writing, erasing a
     lecture.dispose();
     globalThis.fetch=fetchReport;
     let appFocused=true;
-    const storageRoot=new Three.Scene(),storage=await createLecture(storageRoot,{capabilities:{getMaxAnisotropy:()=>8}},{retractable:true,isActive:()=>appFocused});
+    const storageRoot=new Three.Scene(),storage=await createLecture(storageRoot,{capabilities:{getMaxAnisotropy:()=>8}},{retractable:true,startStored:true,isActive:()=>appFocused});
     const rig=storageRoot.getObjectByName('Whole six-board retracting assembly');
+    assert(storage.stored&&!rig.visible,'Initial frame has the whole board assembly fully stowed');
+    assert.equal(rig.position.y,-7.2);assert(!storage.playing);
+    storage.update(.1);assert(!rig.visible,'Startup must not animate the boards down from an exposed state');
+    storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);assert(!storage.stored&&rig.visible);
     assert.equal(rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
     assert(storage.hoverTargets.some(o=>o.userData.action==='lectern:stow'));
     storage.toggleStorage();const frozen=storage.clock.elapsed;for(let i=0;i<50;i++)storage.update(.1);

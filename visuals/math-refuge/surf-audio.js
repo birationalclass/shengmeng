@@ -1,4 +1,4 @@
-import {shoreDistance,surfGain} from './coastal-site.js?v=refuge-ocean-1';
+import {shoreDistance,surfGain} from './coastal-site.js?v=true-north-coast-1';
 // Same filtered brown-noise source as Ocean Study. The host adds distance gain.
 export function createSurfAudio(){
  let context,source,filter,gain,enabled=false,lastDistance=100,elapsed=0;

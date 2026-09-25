@@ -1,7 +1,7 @@
 // Artistic bathymetry in metres; inputs are site-plan coordinates, not world metres.
 // Two independent shelves keep the kilometre-wide channel between inhabited islands deep.
 import {BUILDING_SCALE as S} from './site-layout.js';
-import {RESIDENCE} from './residence-layout.js';
+import {RESIDENCE} from './residence-layout.js?v=true-north-coast-1';
 const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
 const villa=[RESIDENCE.origin[0]/S,RESIDENCE.origin[2]/S,(RESIDENCE.halfWidth+8)/S,(RESIDENCE.halfDepth+8)/S];
 export function terraceDistance(x,z){const dx=Math.abs(x-39)-15,dz=Math.abs(z)-16.5;return Math.hypot(Math.max(dx,0),Math.max(dz,0))+Math.min(Math.max(dx,dz),0);}

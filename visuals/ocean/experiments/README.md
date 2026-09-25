@@ -1,9 +1,10 @@
 # Independent 3D beach-tank experiments
 
-Open `../experiments.html`. The four tabs retain their own iframe, controls,
+Open `../experiments.html`. The five tabs retain their own iframe, controls,
 camera and playback time while switching. Inactive experiments stop advancing.
-This retention lasts for the open page, not across a page reload. Original ocean
-and optical-study defaults are not replaced by either fluid experiment.
+This retention lasts for the open page, not across a page reload. Tab 01 now
+opens the elliptic beach ribbons described in `../ELLIPTIC-BEACH.md`. The
+optical study and the fluid experiments remain independent.
 
 ## What was reproduced
 

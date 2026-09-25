@@ -26,7 +26,7 @@ export async function createLecture(scene,renderer,options={}){
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
-  let storageRig=null,stored=false,storageProgress=0,storageLabel=null,storageLabelText='';
+  let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
@@ -59,7 +59,7 @@ export async function createLecture(scene,renderer,options={}){
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
-  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection,accumulator=0,writingSpeed=1;
+  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const cube=new THREE.BoxGeometry(1,1,1);
@@ -386,6 +386,7 @@ export async function createLecture(scene,renderer,options={}){
     storageLabel=glassLabel(2.2,.62,37.55,1.7,'Whole blackboard storage control');
     storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
   }
+  if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
   const movingNodes=new Set([scene,storageRig,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {

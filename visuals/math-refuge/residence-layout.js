@@ -1,10 +1,11 @@
+import {RESIDENCE_COAST_Z,RESIDENCE_COAST_X} from './elliptic-site.js?v=true-north-coast-1';
 import {BUILDING_SCALE as S} from './site-layout.js?v44-hall-clearance';
-// Metres in world space. East edge -1135 is >1 km west of campus deck -95*S.
-export const RESIDENCE={origin:[-1190,0,0],halfWidth:55,halfDepth:43,floor:.9,roof:5.2};
-export const residenceGap=()=>Math.abs(RESIDENCE.origin[0])-RESIDENCE.halfWidth-95*S;
-const view=(name,position,target,description)=>({name,title:name,description,duration:28,fov:58,residence:true,positions:[position,position].map(p=>[(p[0]+RESIDENCE.origin[0])/S,p[1]/S,p[2]/S]),targets:[target,target].map(p=>[(p[0]+RESIDENCE.origin[0])/S,p[1]/S,p[2]/S])});
+// Metres in the local campus frame; the detached home follows the right sand ribbon.
+export const RESIDENCE={origin:[RESIDENCE_COAST_X,0,RESIDENCE_COAST_Z],halfWidth:55,halfDepth:43,floor:.9,roof:5.2};
+export const residenceGap=()=>Math.hypot(RESIDENCE.origin[0]-39*S,RESIDENCE.origin[2])-RESIDENCE.halfWidth-95*S;
+const view=(name,position,target,description)=>({name,title:name,description,duration:28,fov:58,residence:true,positions:[position,position].map(p=>[(p[0]+RESIDENCE.origin[0])/S,p[1]/S,(p[2]+RESIDENCE.origin[2])/S]),targets:[target,target].map(p=>[(p[0]+RESIDENCE.origin[0])/S,p[1]/S,(p[2]+RESIDENCE.origin[2])/S])});
 export const RESIDENCE_SHOTS=[
- view('海上住宅',[44,21,46],[0,2,0],'独立住宅岛 · 距园区边缘约 1 公里 · 石、木与海风'),
+ view('海上住宅',[44,21,46],[0,2,0],'沙带独立住宅 · 距园区边缘约 1 公里 · 石、木与海风'),
  view('住宅玄关',[3,2.55,12],[0,2.3,0],'学术足迹 · 从新加坡到上海'),
  view('住宅书房',[-9.5,2.5,-5.2],[-13,2.05,-12],'研究书架 · 论文与预印本 · 海景书桌'),
  view('住宅展廊',[1.5,2.5,-7],[0,2.3,-12],'可视化收藏 · 数学结构的空间表达'),

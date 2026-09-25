@@ -1,7 +1,7 @@
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
-import {createSurfAudio} from './surf-audio.js?v=refuge-ocean-1';
+import {createSurfAudio} from './surf-audio.js?v=true-north-coast-1';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
@@ -15,7 +15,7 @@ import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
 import {teachingRoomAt} from './room-context.js?v57-proof-flow';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
-import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v76-villa';
+import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v=true-north-coast-1';
 import * as THREE from 'three';
 import {createBackgroundMusic} from './background-music.js?v=25-music';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
@@ -24,15 +24,15 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=focus-pause';
-import {createLecture} from './lecture.js?v=focus-pause';
+import {createRetreat} from './scene.js?v=east-sailboat-1';
+import {createLecture} from './lecture.js?v=coast-north-stowed-1';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v84-display';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v76-villa';
+import {SHOTS,smoothProgress,advanceShot,OPENING_OVERVIEW_MS,transitionSeconds} from './camera-paths.js?v=true-north-coast-1';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents} from './solar-state.js?v91-shore';
@@ -119,7 +119,7 @@ function updateLabels(){
   document.querySelectorAll('#chapters button[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===area)));
   controlLabel($('tour'),touring?'暂停巡游':free?'恢复巡游':'继续巡游');
   $('tour').setAttribute('aria-pressed',String(touring));
-  $('mode').textContent=opening?'总览 · 5 秒后进入板书':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
+  $('mode').textContent=opening?'总览 · 5 秒后进入报告厅':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
   if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
 }
@@ -263,14 +263,14 @@ function detectGraphics(){
 }
 const frameQuality=new FrameQuality();
 const oceanBudget=new OceanBudget();
-const oceanNames=['轻量海面','标准海面','Ocean 海浪'];
+const oceanNames=['01 曲线海岸 · 简化细节','01 曲线海岸 · 标准','01 曲线海岸 · 完整'];
 function applyOceanQuality(){
  const mode=$('oceanModel').value;
  // In teaching rooms the surrounding sea remains visible, but surf simulation rests.
  const eligible=teachingRoomAt(camera.position)<0;
  const level=mode==='auto'&&frameQuality.level>0?0:mode==='auto'&&!eligible?Math.min(1,oceanBudget.level):oceanBudget.level;
  const water=retreat.ocean.material.uniforms;water.oceanLite.value=level===0?1:0;
- retreat.ocean.userData.study.setEnabled(level===2);
+ retreat.ocean.userData.study.setQuality(level);
  const text=(mode==='auto'?'自动 · ':'手动 · ')+oceanNames[level];
  if($('oceanQualityReadout').textContent!==text)$('oceanQualityReadout').textContent=text;
  $('world').dataset.oceanQuality=['lite','classic','study'][level];
@@ -309,7 +309,7 @@ function tick(stamp){
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
-    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(0);
+    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'));
   }
   if(touring){
     if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
@@ -361,15 +361,16 @@ function tick(stamp){
   if(previousLightTarget.distanceToSquared(retreat.sun.target.position)>.000001)renderer.shadowMap.needsUpdate=true;
   const weatherStart=performance.now();if(weatherProbeFrame)weatherTimer?.begin(stamp);
   try{updateAtmosphere(dt);}finally{if(weatherProbeFrame)weatherTimer?.end();}weatherCpuMs=performance.now()-weatherStart;
-  constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE);
+  constrainAboveWater(camera,controls.target,retreat?.ocean.material.uniforms.oceanLevel.value??seaLevel*BUILDING_SCALE);
   if(motionSample){const opacity=hallPassageMask.update(previousPosition.toArray(),camera.position.toArray(),cameraProbeRadius(camera.near,camera.fov,camera.aspect),dt);$('transition').style.opacity=String(opacity);$('world').dataset.cameraPassage=opacity.toFixed(3);}
   if(frameQuality.level<2&&$('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
-  if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt);}
+  if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt,retreat.ocean.material.uniforms.oceanLevel.value);}
   oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
-  retreat.ocean.userData.study.update(camera,dt);surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
+  retreat.ocean.userData.study.update(camera,dt);
+  $('coastReadout').textContent='曲线坐标 ('+$('world').dataset.coastCoordinates+') km · 当前潮位 '+$('world').dataset.coastTide+' m';surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
   performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
@@ -388,8 +389,8 @@ try{
   camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.2,12000);
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
   cameraIntent=bindCameraIntent(document,$('world'),stopTour);
-  controls.minDistance=.4;controls.maxDistance=200;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
-  controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,seaLevel*BUILDING_SCALE));
+  controls.minDistance=.4;controls.maxDistance=14000;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
+  controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,retreat?.ocean.material.uniforms.oceanLevel.value??seaLevel*BUILDING_SCALE));
   controls.autoRotate=false;
   controls.addEventListener('start',()=>{stopTour();if(SHOTS[shot].lecture)boardFollow.begin();});
   controls.addEventListener('end',()=>{if(SHOTS[shot].lecture)boardFollow.end();});
@@ -400,7 +401,7 @@ try{
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
   $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{isActive:()=>renderActivity.foreground,retractable:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{isActive:()=>renderActivity.foreground,retractable:true,startStored:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -709,3 +710,7 @@ function syncRoomControls(){
 }
 
 $('surfSound').addEventListener('change',async event=>{try{await surfAudio.setEnabled(event.target.value==='on');}catch(error){event.target.value='off';console.error(error);}});
+
+for(const [id,key,parse] of [['coastGrid','grid',v=>v==='on'],['coastTide','tide',Number],['coastTidal','tidal',v=>v==='on'],['coastPause','paused',v=>v==='on']]){
+ $(id).addEventListener('input',event=>{if(retreat)retreat.ocean.userData.study.settings[key]=parse(event.target.value);});
+}

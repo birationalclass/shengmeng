@@ -1,7 +1,7 @@
 import * as T from 'three';
 import {VILLA_PLAN as PLAN} from './residence-plan.js?v76-villa';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {RESIDENCE as R} from './residence-layout.js?v76-villa';
+import {RESIDENCE as R} from './residence-layout.js?v=true-north-coast-1';
 import {BUILDING_SCALE as S} from './site-layout.js?v44-hall-clearance';
 import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 export function createResidence(scene,shared){
@@ -109,7 +109,7 @@ export function createResidence(scene,shared){
  for(const z of [22,26,30])for(const x of [-1,5]){box([x,.90,z],[.07,.65,.07],bronze);box([x,1.18,z],[.08,.045,.08],light);}
  for(const {g,m,matrices}of batches.values()){const mesh=new T.InstancedMesh(g,m,matrices.length);matrices.forEach((v,i)=>mesh.setMatrixAt(i,v));mesh.castShadow=m!==glass;mesh.receiveShadow=true;mesh.name='Residence material batch';mesh.computeBoundingSphere();root.add(mesh);}
  const number=createRoofNumber(root,10,12,F+4.8+.36,0,12,28);
- for(const [x,z,w,d,h]of PLAN.roofs){const metadata=new T.Object3D();metadata.name='Residence dry room';metadata.userData={bounds:[(R.origin[0]+x-w/2)/S,(R.origin[0]+x+w/2)/S,(z-d/2)/S,(z+d/2)/S],floorY:F/S,clearHeight:h+.3};scene.add(metadata);roofMetadata.push(metadata);}
+ for(const [x,z,w,d,h]of PLAN.roofs){const metadata=new T.Object3D();metadata.name='Residence dry room';metadata.userData={bounds:[(R.origin[0]+x-w/2)/S,(R.origin[0]+x+w/2)/S,(R.origin[2]+z-d/2)/S,(R.origin[2]+z+d/2)/S],floorY:F/S,clearHeight:h+.3};scene.add(metadata);roofMetadata.push(metadata);}
  const points=[];for(const [x,y,z,power]of [[12,4.8,8,130],[-13,3.7,-8,90],[-13,3.7,9,65],[0,3.7,-10,75]]){const p=new T.PointLight('#ffe4bb',power,18,2);p.position.set(x,y,z);p.userData.power=power;root.add(p);points.push(p);}root.updateMatrixWorld(true);root.userData.plan=PLAN;
  return {root,update(camera,day){const gain=1-T.MathUtils.smoothstep(camera.position.distanceTo(root.position),160,200);for(const p of points){p.intensity=p.userData.power*(1-.35*day)*gain;}light.emissiveIntensity=.3+(1-day)*.8;},dispose(){number.dispose();geometries.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());owned.forEach(m=>m.dispose());roofMetadata.forEach(m=>scene.remove(m));scene.remove(root);}};
 }

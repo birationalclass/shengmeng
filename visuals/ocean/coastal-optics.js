@@ -1,6 +1,19 @@
 // Experimental optical model; shared by exposed sand and refracted seabed.
 export const coastalOptics = `
-vec2 coastCoordinates(vec2 p){return vec2(dot(p,vec2(.94,.341174)),dot(p,vec2(.341174,-.94)));}
+vec2 coastCoordinates(vec2 p){
+ #ifdef CURVED_COAST
+ return p;
+ #else
+ return vec2(dot(p,vec2(.94,.341174)),dot(p,vec2(.341174,-.94)));
+ #endif
+}
+vec3 opticalBedNormal(vec2 ca){
+ #ifdef CURVED_COAST
+ return normalize(vec3(beachHeight(ca-vec2(.5,0.))-beachHeight(ca+vec2(.5,0.)),1.,beachHeight(ca-vec2(0.,.5))-beachHeight(ca+vec2(0.,.5))));
+ #else
+ return normalize(vec3(-.052,1.,-.019));
+ #endif
+}
 vec3 sandAlbedo(vec2 ca){
  float ripple=sin(ca.x*8.+noise(ca*.65)*3.+sin(ca.y*.8))*.5+.5;
  float filtered=1.-smoothstep(.3,1.5,length(fwidth(ca*8.)));
@@ -23,6 +36,10 @@ vec3 transmittedWater(vec3 p,vec3 view,vec3 n){
   vec3 hit=p+ray*travel;vec2 ca=coastCoordinates(hit.xz);
   float residual=hit.y-beachHeight(ca);
   float slope=.055*dot(ray.xz,vec2(.94,.341174));
+  #ifdef CURVED_COAST
+  float probe=.5;
+  slope=(beachHeight(ca+ray.xz*probe)-beachHeight(ca))/probe;
+  #endif
   travel=clamp(travel+residual/max(.08,-ray.y+slope),0.,60.);
  }
  vec2 bottom=coastCoordinates((p+ray*travel).xz);
@@ -30,7 +47,7 @@ vec3 transmittedWater(vec3 p,vec3 view,vec3 n){
  vec3 transmission=exp(-extinction*travel);
  float bottomDepth=max(0.,p.y-beachHeight(bottom));
  vec3 bottomLight=exp(-extinction*bottomDepth/max(.28,sunDirection().y));
- vec3 sand=sandAlbedo(bottom)*.57*coastIrradiance(normalize(vec3(-.052,1.,-.019)))*bottomLight;
+ vec3 sand=sandAlbedo(bottom)*.57*coastIrradiance(opticalBedNormal(bottom))*bottomLight;
  float day=smoothstep(5.,22.,uSun);
  vec3 scatter=mix(vec3(.014,.092,.105),vec3(.025,.24,.255),day);
  scatter*=.7+.3*max(0.,n.y);

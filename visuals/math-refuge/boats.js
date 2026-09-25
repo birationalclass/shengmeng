@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {BUILDING_SCALE as S} from './site-layout.js?v44-hall-clearance';
+import {BUILDING_SCALE as S,HALL} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 // Fixed offshore moorings; small bounded wave motion cannot drift through decks.
 export function createBoats(scene){
@@ -42,8 +42,11 @@ export function createBoats(scene){
       for(const sign of [-1,1]){const blade=mesh(group,new THREE.SphereGeometry(1,12,6),cream,[sign*1.05,.28,-sign*.65]);blade.scale.set(.30,.025,.12);blade.rotation.y=.55;}
     }
   }
-  [[75,13,.4],[-7,-60,-.7],[55,45,1.1]].forEach(([x,z,a],i)=>add('sail',x,z,a,i));
-  [[77,2,.35],[-17,45,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
+  [[75,85,.4],[-7,-85,-.7],[105,105,1.1]].forEach(([x,z,a],i)=>add('sail',x,z,a,i));
+  // 100 physical metres due east of the hall: curve coordinate (2.10, 0) km.
+  add('sail',(HALL.west+HALL.east)/2+100/S,0,.55,3);
+  boats.at(-1).name='Auditorium east sailboat';
+  [[77,65,.35],[-17,65,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
   let time=0;
-  return {root,boats,update(dt){time+=Math.max(0,Math.min(dt,.1));boats.forEach((boat,i)=>{boat.position.y=seaLevel*S+.04+.055*Math.sin(time*.7+i*1.9);boat.rotation.z=.022*Math.sin(time*.6+i);boat.rotation.x=.012*Math.cos(time*.8+i);});},dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}};
+  return {root,boats,update(dt,tide=seaLevel*S){time+=Math.max(0,Math.min(dt,.1));boats.forEach((boat,i)=>{boat.position.y=tide+.04+.055*Math.sin(time*.7+i*1.9);boat.rotation.z=.022*Math.sin(time*.6+i);boat.rotation.x=.012*Math.cos(time*.8+i);});},dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}};
 }

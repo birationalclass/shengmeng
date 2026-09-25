@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#163d49">
+  <title>曲线之间 · 沙滩形状实验 | 海浪实验室</title>
+  <link rel="stylesheet" href="elliptic-beach.css?v=20260925-4">
+  <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js"}}</script>
+</head>
+<body>
+<main>
+  <canvas id="beach" tabindex="0" aria-label="椭圆曲线沙带三维场景，拖动转向，使用下方按钮切换人眼与俯视视角"></canvas>
+  <header>
+    <div><p class="eyebrow">01 / COASTLINE STUDY</p><h1>曲线之间</h1><p class="subtitle">y² = x(x − 1)(x − 2) <span>·</span> 沙带两侧，都是海。</p></div>
+    <a href="experiments.html#optics" target="_top">02 水材质试验 ↗</a>
+  </header>
+  <aside class="map-panel" aria-label="公里尺度位置图">
+    <div class="map-heading"><span>你在这里</span><span>每格 0.5 km</span></div>
+    <canvas id="map" width="540" height="360" aria-label="沙带俯视定位图，标有公里网格、当前位置及观看方向"></canvas>
+    <div class="map-foot">北 ↑ +y <span>东 → +x</span></div>
+    <div class="map-foot">沙带宽 0.10 km <span>1 单位 = 1 km</span></div>
+  </aside>
+  <div id="viewLabel">环形沙带 · 向圈内望去</div>
+  <div id="navigation" aria-label="自由移动">
+    <div id="position" aria-live="off"></div>
+    <div class="movement-buttons" role="group" aria-label="移动方向，点击移动10米，按住连续移动">
+      <button data-move="forward">前进 ↑</button><button data-move="back">后退 ↓</button>
+      <button data-move="left">左移 ←</button><button data-move="right">右移 →</button>
+      <button data-move="up">升高 ＋</button><button data-move="down">降低 −</button>
+    </div>
+  </div>
+  <section class="controls" aria-label="场景控制">
+    <div class="views" role="group" aria-label="视点">
+      <button data-view="wash" aria-pressed="true">漫滩近看</button><button data-view="person" aria-pressed="false">站在环上</button><button data-view="outer" aria-pressed="false">望向外海</button><button data-view="branch" aria-pressed="false">右侧沙带</button><button data-view="aerial" aria-pressed="false">空中俯瞰</button><button data-view="plan" aria-pressed="false">公里网格</button>
+    </div>
+    <div class="settings">
+      <label id="walkLabel">环上位置 <input id="walk" type="range" min="0" max="359" step="1" value="0"><output id="walkValue">0°</output></label>
+      <label>光照 <select id="light"><option value="24">晴日</option><option value="5">夕阳</option><option value="-2">暮色</option></select></label>
+      <label>浪高 <input id="wave" type="range" min="0.2" max="1.8" step="0.1" value="0.6"><output id="waveValue">0.6 m</output></label>
+      <button id="pause" aria-pressed="false">暂停海浪</button><button id="reset">重置视点</button>
+    </div>
+    <div class="tide-controls"><label>基础潮位 <input id="tide" type="range" min="0" max="2.8" step="0.05" value="2.55"><output id="tideValue">2.55 m</output></label><button id="tidal" aria-pressed="true">潮汐起落：开</button><span id="tideNow"></span><small>演示周期 40 秒</small></div>
+    <div class="hint"><span id="help">拖动环顾 · 滚轮调整视野 · 人眼离沙面 1.7 m</span><span id="status" role="status">正在准备沙滩…</span></div>
+  </section>
+  <div id="error" role="alert" hidden></div>
+</main>
+<script type="module" src="elliptic-beach.js?v=20260925-4"></script>
+</body></html>
