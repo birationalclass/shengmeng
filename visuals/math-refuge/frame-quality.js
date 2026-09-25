@@ -25,9 +25,12 @@ export class FrameQuality{
    this.level--;this.changedAt=now;this.good=this.bad=0;this.recovering=true;
   }
  }
- settings({reading=false,cloud='medium',shadow=2048}={}){
+ settings({reading=false,clarity='crisp',pixelRatio=1,cloud='medium',shadow=2048}={}){
+  // Text needs both a relative floor and enough actual screen pixels. Never
+  // exceed the user's selected resolution (or the mobile allocation budget).
+  const readingFloor=clarity==='crisp'?Math.min(1,Math.max(.9,1.5/Math.max(.25,pixelRatio))):.75;
   return {
-   scale:Math.max(reading?.75:.7,[1,1,1,.9,.8,.7][this.level]),
+   scale:Math.max(reading?readingFloor:.7,[1,1,1,.9,.8,.7][this.level]),
    cloud:this.level>=2?'off':this.level>=1&&cloud!=='off'?'low':cloud,
    shadow:this.level>=2?0:this.level>=1?Math.min(shadow,1024):shadow,
    simpleWater:this.level>=1,particles:this.level<2,

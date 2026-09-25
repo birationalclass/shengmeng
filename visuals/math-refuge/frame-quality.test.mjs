@@ -1,12 +1,25 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {FrameQuality} from './frame-quality.js';
 function trial(){const b=new FrameQuality();let now=0;return {b,run(ms,duration,options={}){const end=now+duration;while(now<end){now+=ms;b.sample(ms,now,options);}return b.level;}};}
-test('30 FPS with no GPU timing reduces effects first, then reading resolution',()=>{
+test('30 FPS with no GPU timing reduces effects while preserving crisp reading',()=>{
  const t=trial();assert.equal(t.run(1000/30,2200),1);
  assert.deepEqual(t.b.settings({reading:true}),{scale:1,cloud:'low',shadow:1024,simpleWater:true,particles:true});
  t.run(1000/30,12000);assert.equal(t.b.level,5);
- const s=t.b.settings({reading:true});assert.equal(s.scale,.75);assert.equal(s.cloud,'off');assert.equal(s.shadow,0);assert(!s.particles);
+ const s=t.b.settings({reading:true});assert.equal(s.scale,1);assert.equal(s.cloud,'off');assert.equal(s.shadow,0);assert(!s.particles);
  assert.equal(t.b.stats.target,60);assert(Math.abs(t.b.stats.fps-30)<.01);
+});
+test('reading clarity protects real pixels without exceeding the selected pixel budget',()=>{
+ const t=trial();t.run(1000/30,14000);assert.equal(t.b.level,5);
+ for(const pixelRatio of [.65,1,1.6,2,2.5]){
+  const scale=t.b.settings({reading:true,pixelRatio}).scale;
+  assert(scale>=.9&&scale<=1);
+  assert(pixelRatio*scale>=Math.min(pixelRatio,1.5));
+ }
+ assert.equal(t.b.settings({reading:true,pixelRatio:2}).scale,.9);
+ assert.equal(t.b.settings({reading:true,clarity:'natural',pixelRatio:2}).scale,.75);
+ assert.equal(t.b.settings({reading:false,pixelRatio:2}).scale,.7);
+ assert.equal(t.b.settings({reading:true,pixelRatio:2}).cloud,'off');
+ assert.equal(t.b.settings({reading:true,pixelRatio:2}).shadow,0);
 });
 test('fluctuating 20–40 FPS falls back without needing a visible performance panel',()=>{
  const b=new FrameQuality();let now=0;

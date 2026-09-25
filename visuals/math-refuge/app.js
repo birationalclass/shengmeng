@@ -1,4 +1,4 @@
-import {FrameQuality} from './frame-quality.js?v=air-frame-feedback';
+import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v=refuge-ocean-1';
 const surfAudio=createSurfAudio();
@@ -206,8 +206,9 @@ function updateQualityReadout(){
 }
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
-  const reading=roomViews.some(v=>v.visible)||Boolean(SHOTS[shot].lecture)||speakerView;
-  const settings=frameQuality.settings({reading,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
+  const reading=rooms.some((room,i)=>roomViews[i]?.visible&&room.hasSelection&&!room.stored&&!room.disabled);
+  const protectReading=reading&&$('boardClarity').value==='crisp';
+  const settings=frameQuality.settings({reading,clarity:$('boardClarity').value,pixelRatio:profile.pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
   if(activeCloudQuality!==settings.cloud){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
@@ -225,7 +226,7 @@ function updateRenderBudget(stamp){
     if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
     updateQualityReadout();
   }
-  const text=$('adaptiveQuality').value!=='auto'?'固定画质':frameQuality.level===0?'自动 · 按实际帧率监测':`自动降级 ${frameQuality.level}/5 · 云${settings.cloud==='off'?'关闭':settings.cloud==='low'?'标准':'精细'} · 阴影${shadows?'标准':'关闭'} · 渲染 ${Math.round(scale*100)}%`;
+  const text=$('adaptiveQuality').value!=='auto'?'固定画质':(frameQuality.level===0?'自动 · 按实际帧率监测':`自动降级 ${frameQuality.level}/5 · 云${settings.cloud==='off'?'关闭':settings.cloud==='low'?'标准':'精细'} · 阴影${shadows?'标准':'关闭'} · 渲染 ${Math.round(scale*100)}%`)+(protectReading?' · 板书清晰保护':'');
   if($('adaptiveReadout').textContent!==text)$('adaptiveReadout').textContent=text;
   if($('world').dataset.adaptiveLevel!==String(frameQuality.level))$('world').dataset.adaptiveLevel=String(frameQuality.level);
 

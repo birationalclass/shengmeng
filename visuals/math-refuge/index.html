@@ -106,8 +106,8 @@
     <div class="board-lift"><label for="boardLift1">Ⅱ 组 · A / B</label><input id="boardLift1" type="range" min="0" max="1" step="0.01" value="0" aria-label="第二组黑板升降"><button id="boardSwap1" class="icon-button" aria-label="互换第2组黑板" title="互换第2组黑板" data-tip="互换第2组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <div class="board-lift"><label for="boardLift2">Ⅲ 组 · A / B</label><input id="boardLift2" type="range" min="0" max="1" step="0.01" value="0" aria-label="第三组黑板升降"><button id="boardSwap2" class="icon-button" aria-label="互换第3组黑板" title="互换第3组黑板" data-tip="互换第3组黑板"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20V4m-4 4 4-4 4 4m4-4v16m-4-4 4 4 4-4"/></svg></button></div>
     <details class="board-preferences"><summary>板书设置</summary>
-    <label for="boardClarity">远距文字清晰度 <select id="boardClarity"><option value="crisp" selected>清晰优先</option><option value="natural">柔和稳定</option></select></label>
-    <p class="lecture-note">保留抗闪烁过滤；远到不足一个像素的笔画请用高清阅读查看。</p>
+    <label for="boardClarity">板书清晰度 <select id="boardClarity"><option value="crisp" selected>清晰优先</option><option value="natural">柔和稳定</option></select></label>
+    <p class="lecture-note">清晰优先保护阅读分辨率，海面、云与阴影仍自动降级。柔和稳定允许进一步降低分辨率以改善帧率；远距小字可用高清阅读查看。</p>
     <label for="boardWritingStyle">书写样式 <select id="boardWritingStyle"><option value="refined">改进笔顺样式</option><option value="marck">C · Marck Script（舒展）· 非笔顺</option></select></label>
     <p id="boardWritingStyleStatus" class="lecture-note">字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。</p>
     <label for="boardFollowDelay">板书镜头回位 <output id="boardFollowDelayValue">20 秒</output><input id="boardFollowDelay" type="range" min="5" max="60" step="1" value="20"></label>
@@ -129,6 +129,6 @@
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><button onclick="const u=new URL(location.href);u.searchParams.set('safe','1');location.href=u.href">低负载模式进入</button><a href="../">返回实验室</a></div>
   <script>document.getElementById('enterButton').addEventListener('click',function(){document.getElementById('loading').dataset.entryRequested='true';if(document.getElementById('world').dataset.ready!=='true'){this.textContent='正在准备，即将进入…';this.disabled=true;}});</script>
   <script>window.refugeLoadingTimer=setTimeout(function(){if(document.getElementById('world').dataset.ready!=='true'){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='加载时间较长。可以重新加载，或用低负载模式进入。';}},60000);</script>
-  <script type="module">import('./app.js?v=stored-board-idle').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=board-reading-clarity').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>
