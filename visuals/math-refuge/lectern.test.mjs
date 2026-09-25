@@ -43,7 +43,7 @@ test('speaker view remains manual through idle time and exits only on explicit c
   const definitions=names.map(name=>app.match(new RegExp('function '+name+'\\([^]*?\\n\\}'))[0]).join('\n');
   const {SHOTS}=await import('./camera-paths.js');
   const {buildingForShot}=await import('./building-catalog.js');
-  const context=vm.createContext({SHOTS,buildingForShot,setSeminarPanel(){},keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
+  const context=vm.createContext({sunriseIntro:{waiting:false},SHOTS,buildingForShot,setSeminarPanel(){},keys:new Set(['w']),reader:{close(){}},boardFollow:{reset(){}},beginTransition(){},updateLabels(){},opening:{},choosingReport:true,speakerView:false,touring:true,free:false});
   vm.runInContext(definitions+';enterSpeakerView();',context);
   assert(context.speakerView);assert(!context.touring);assert(context.free);assert.equal(context.opening,null);assert.equal(context.keys.size,0);
   assert(app.includes('!speakerView&&SHOTS[shot].lecture&&lecture&&boardFollow.following'));

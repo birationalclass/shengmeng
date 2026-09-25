@@ -22,7 +22,7 @@ export function createVolumetricClouds(renderer,device={}){
  const material=new T.ShaderMaterial({glslVersion:T.GLSL3,uniforms,depthTest:false,depthWrite:false,vertexShader:'out vec2 cloudUV;void main(){cloudUV=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
  precision highp float;precision highp sampler3D;in vec2 cloudUV;out vec4 cloudResult;
  uniform sampler3D volume;uniform float marchSteps;uniform float coverageThreshold,coverage,day,storm;uniform vec3 sun,sunTint,origin;uniform vec2 offset;
- float topDistance(vec3 d,float height){float r=6360.+origin.y,b=r*d.y;return -b+sqrt(b*b+pow(6360.+height,2.)-r*r);}
+ float topDistance(vec3 d,float height){float r=6360.+origin.y,b=r*d.y;return -b+sqrt(max(0.,b*b+pow(6360.+height,2.)-r*r));}
  float regionalHash(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
  float regionalNoise(vec2 p){vec2 c=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(regionalHash(c),regionalHash(c+vec2(1,0)),f.x),mix(regionalHash(c+vec2(0,1)),regionalHash(c+vec2(1,1)),f.x),f.y);}
  float density(vec3 p,bool detailed){
@@ -45,7 +45,7 @@ export function createVolumetricClouds(renderer,device={}){
   body=max(0.,body-(1.-detail)*mix(.18,.36,type));
   return body*profile*mask*smoothstep(0.,.06,coverage);
  }
- void main(){if(coverage<.0001){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=topDistance(d,1.3),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/marchSteps;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
+ void main(){if(coverage<.0001||origin.y>=3.1){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=origin.y>=1.3?0.:max(0.,topDistance(d,1.3)),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/marchSteps;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
  for(int i=0;i<32;i++){if(float(i)>=marchSteps)break;vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
  float distanceFade=exp(-start*.025);cloudResult=vec4(color*distanceFade,(1.-transmittance)*distanceFade);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);

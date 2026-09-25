@@ -1,4 +1,4 @@
-import {SunriseIntro} from './sunrise-intro.js?v104';
+import {SunriseIntro} from './sunrise-intro.js?v105';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
@@ -25,7 +25,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v104';
+import {createRetreat} from './scene.js?v105';
 import {createLecture} from './lecture.js?v104';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -63,8 +63,8 @@ function enterScene(){
   if(entered||$('world').dataset.ready!=='true')return;
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  sunriseIntro.start(solarEvents(sceneTime.date).sunrise);$('timeRate').value='30';
-  selectShot(SHOTS.findIndex(s=>s.name==='海景露台'));
+  sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='30';
+  opening={started:null};
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
@@ -130,6 +130,7 @@ function updateLabels(){
   if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
 }
 function stopTour(){
+  if(sunriseIntro.waiting){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   opening=null;
   if(SHOTS[shot].lecture)boardFollow.touch();
   const changed=touring||!free||blend;
@@ -149,7 +150,8 @@ function beginTransition(){
   frameSamples.length=0;cpuSamples.length=0;metricsAt=0;
   $('transition').style.opacity=0;
 }
-function selectShot(index,reportView=false){
+function selectShot(index,reportView=false,openingArrival=false){
+  if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=.85;boardFollow.reset();touring=false;free=false;
   beginTransition();updateLabels();
@@ -179,7 +181,7 @@ function applyShot(dt){
     viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
     controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
     camera.fov=THREE.MathUtils.lerp(blend.fov,s.fov,k);$('transition').style.opacity=0;
-    if(k===1)blend=null;
+    if(k===1){blend=null;if(SHOTS[shot].name==='报告厅')sunriseIntro.arrive();}
   }else{
     camera.position.copy(position);controls.target.copy(target);camera.fov=s.fov;
     $('transition').style.opacity=0;
@@ -315,7 +317,7 @@ function tick(stamp){
   retreat?.campus.automaticDoors.update(dt,reduced.matches);
   if(opening){
     if(opening.started===null)opening.started=stamp;
-    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'));
+    if(stamp-opening.started>=OPENING_OVERVIEW_MS)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
   }
   if(touring){
     if(!blend){const state=advanceShot(shot,time,dt,Number($('speed').value));time=state.time;if(shot!==state.index){shot=state.index;beginTransition();updateLabels();}}
@@ -472,7 +474,7 @@ $('boardWritingStyle').addEventListener('change',async event=>{const select=even
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{if(retreat){sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
-$('clockPlay').addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.sync();updateSceneTime();});
+$('clockPlay').addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.setRate(1);$('timeRate').value='1';sceneTime.sync();updateSceneTime();});
 function weatherLabel(){
  const mode=$('weatherMode').value;if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
  const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
@@ -493,13 +495,13 @@ for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id
 $('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
 function updateSceneTime(){
  sceneTime.update();if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
- $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=sunriseIntro.active?'开场日出 · 30× · 随后返回上海当前时间':!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
+ $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=sunriseIntro.waiting?'抵达报告厅后开始日出':sunriseIntro.active?'开场日出 · 30× · 随后返回上海当前时间':!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
  controlLabel($('clockPlay'),sceneTime.preview?'回到上海当前时间':'已同步上海时间');$('clockPlay').setAttribute('aria-pressed',String(!sceneTime.preview));
  $('world').dataset.clockMode=sceneTime.preview?'preview':'shanghai';$('world').dataset.hour=sceneTime.hour.toFixed(4);lecture?.setConsoleState();
 }
 
 function updateAtmosphere(dt){
- sunriseIntro.update(dt);sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
+ if(sunriseIntro.update(dt))$('timeRate').value='1';sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
  const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
  if(angle>.00028){renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;}
  $('world').dataset.visualHour=(((visualHour%24)+24)%24).toFixed(4);

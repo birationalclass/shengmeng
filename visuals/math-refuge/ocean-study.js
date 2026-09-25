@@ -25,6 +25,9 @@ export async function createCampusOcean(renderer,scene,water){
    shader=shader.replace(/vec3 sunDirection\(\)\{[^}]*\}/,'vec3 sunDirection(){return normalize(studySun);}');
    shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=texture2D(studySky,uv).rgb;if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.002,.004,.009)*(1.-studyNight);}\n`);
    if(key==='fragmentShader'){
+    // The campus atmospheric LUT excludes the solar disk. Subtracting the
+    // standalone sky's disk here created a black reflected semicircle.
+    shader=shader.replaceAll('reflected-=vec3(5.,3.75,1.85)*(1.-smoothstep(.009,.012,length(r-sd)))*(1.-dusk*.7);','');
     // Break the uniform white film into advected, short-lived foam islands.
     shader=shader.replace('float foamPatch=smoothstep(.35,.70,noise(vCA*1.8+uTime*.18));',`vec2 foamUV=vCA+vec2(.24,-.11)*uTime;
        float foamPatch=smoothstep(.48,.72,noise(foamUV*.85+noise(foamUV*.13)*2.));
