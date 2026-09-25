@@ -1,0 +1,32 @@
+<!doctype html><meta charset="utf-8"><title>Ocean geometry regression probe</title><canvas></canvas><pre id="report">Running GPU model checks…</pre><script type="module">
+import * as THREE from '../3d/vendor/three.module.js';
+import {OceanRenderer,modelGLSL} from './ocean-renderer.js?v=20260925-ocean-4';
+const ocean=new OceanRenderer(document.querySelector('canvas'));ocean.resize(320,180);
+const state={time:7.1,wave:1.2,wind:.45,sun:5,yaw:0,pitch:0,distance:0,quality:'low',scale:1};ocean.draw(state);
+const uniforms={...ocean.uniforms,probeMode:{value:0}};
+const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const material=new THREE.ShaderMaterial({uniforms,vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:modelGLSL.environment+modelGLSL.surfaceModel+modelGLSL.whitewaterModel+`
+uniform float probeMode;varying vec2 vUv;
+void main(){float a=mix(-10.,90.,vUv.y);float edge=shore(a)+swashReach(a);float c=probeMode<.5?edge+mix(-.8,.3,vUv.x):mix(-25.,5.,vUv.x);vec2 ca=vec2(c,a);vec3 p=surfaceAt(ca);float physicalC=dot(p.xz,vec2(.94,.341174));gl_FragColor=vec4(abs(physicalC-ca.x),p.y-beachHeight(ca),foamThickness(ca),edge);}`});
+scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),material));
+const target=new THREE.WebGLRenderTarget(64,64,{type:THREE.FloatType,format:THREE.RGBAFormat,depthBuffer:false});
+const values=new Float32Array(64*64*4);let previous=null;
+let maxCoastDrift=0,maxFrameEdgeStep=0,maxFoamThickness=0,minCoastWaterDepth=1,samples=0;
+for(const wave of [.3,1.2,2.4]){
+ uniforms.uWave.value=wave;previous=null;
+ for(let frame=0;frame<=240;frame++){
+  uniforms.uTime.value=frame/10;
+  for(let mode=0;mode<2;mode++){
+   uniforms.probeMode.value=mode;ocean.renderer.setRenderTarget(target);ocean.renderer.render(scene,camera);ocean.renderer.readRenderTargetPixels(target,0,0,64,64,values);
+   for(let i=0;i<values.length;i+=4){
+    if(!Number.isFinite(values[i]+values[i+1]+values[i+2]+values[i+3]))throw Error('Non-finite geometry');
+    if(mode===0){maxCoastDrift=Math.max(maxCoastDrift,values[i]);minCoastWaterDepth=Math.min(minCoastWaterDepth,values[i+1]);if(previous)maxFrameEdgeStep=Math.max(maxFrameEdgeStep,Math.abs(values[i+3]-previous[i/4]));}
+    maxFoamThickness=Math.max(maxFoamThickness,values[i+2]);samples++;
+   }
+   if(mode===0)previous=Float32Array.from({length:4096},(_,i)=>values[i*4+3]);
+  }
+ }
+}
+const result={samples,maxCoastDrift,maxEdgeMovementPer100ms:maxFrameEdgeStep,maxFoamThickness,minCoastWaterDepth,pass:maxCoastDrift<.015&&maxFrameEdgeStep<.22&&maxFoamThickness>.06&&maxFoamThickness<.4&&minCoastWaterDepth>-.015};
+document.querySelector('#report').textContent=JSON.stringify(result,null,2);document.title=result.pass?'PASS — coast and foam geometry':'FAIL — coast and foam geometry';
+</script>
