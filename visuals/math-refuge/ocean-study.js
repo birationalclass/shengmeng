@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createOceanLayer} from '../ocean/ocean-renderer.js?v=refuge-ocean-1';
+import {createOceanLayer} from '../ocean/ocean-renderer.js?v=adaptive-ocean-2';
 import {seaDepthGLSL} from './sea-depth.js?v100-reef';
 import {BUILDING_SCALE as S} from './site-layout.js';
 
