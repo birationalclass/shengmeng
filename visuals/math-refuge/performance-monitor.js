@@ -9,12 +9,12 @@ export function summarizeFrames(frames){
 // synchronous GPU reads, or monitoring work while the panel is closed.
 export function createPerformanceMonitor(doc=document){
  const $=id=>doc.getElementById(id),panel=$('performancePanel'),button=$('performanceButton');
- const frames=[],history=[];let last=0,lastGPU=null,gpuAt=-Infinity;
+ const frames=[],history=[];let last=0,lastGPU=null,gpuAt=-Infinity,paused=false;
  const write=(id,value)=>{$(id).textContent=value;};
  const reset=()=>{frames.length=0;history.length=0;last=0;$('performanceGraph').setAttribute('points','');};
  function show(value){
   panel.hidden=!value;button.setAttribute('aria-expanded',String(value));reset();
-  if(value){write('performanceFPS','—');write('performanceStatus','正在采样…');}
+  if(value){write('performanceFPS','—');write('performanceStatus',paused?'页面失焦 · 渲染已暂停':'正在采样…');}
  }
  button.addEventListener('click',()=>show(panel.hidden));
  $('performanceClose').addEventListener('click',()=>{show(false);button.focus();});
@@ -23,9 +23,10 @@ export function createPerformanceMonitor(doc=document){
  const ms=value=>Number.isFinite(value)?value.toFixed(1)+' ms':'—';
  return {
   get visible(){return !panel.hidden;},
+  setPaused(value){paused=Boolean(value);reset();lastGPU=null;if(!panel.hidden){write('performanceFPS','—');write('performanceStatus',paused?'页面失焦 · 渲染已暂停':'正在采样…');}},
   gpu(value,stamp){if(Number.isFinite(value)){lastGPU=value;gpuAt=stamp;}},
   frame(stamp,frameMs,cpuMs,renderer,{gpuSupported=false,ratio=1,rooms=0,adaptive='自动监测'}={}){
-   if(panel.hidden||doc.hidden||!Number.isFinite(frameMs)||frameMs<=0)return;
+   if(paused||panel.hidden||doc.hidden||!Number.isFinite(frameMs)||frameMs<=0)return;
    frames.push({ms:frameMs,cpu:cpuMs});if(frames.length>240)frames.shift();
    // A rolling two-second sample includes long frames, rather than hiding stalls.
    let span=frames.reduce((sum,f)=>sum+f.ms,0);

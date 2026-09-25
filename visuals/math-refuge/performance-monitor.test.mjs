@@ -20,6 +20,9 @@ test('panel is idle while closed, throttles DOM work and labels unsupported GPU'
  monitor.frame(1100,16,3,renderer);assert.equal(elements.get('performanceGPU').text,'浏览器不支持');
  const first=writes;monitor.frame(1200,16,3,renderer);assert.equal(writes,first);
  monitor.gpu(7,1500);monitor.frame(1700,16,3,renderer,{gpuSupported:true});assert.equal(elements.get('performanceGPU').text,'7.0 ms');
+ monitor.setPaused(true);assert.equal(elements.get('performanceFPS').text,'—');assert.match(elements.get('performanceStatus').text,/渲染已暂停/);
+ const pausedWrites=writes;monitor.frame(2300,16,3,renderer);assert.equal(writes,pausedWrites);
+ monitor.setPaused(false);monitor.frame(2500,16,3,renderer);assert.equal(elements.get('performanceFPS').text,'63');
  doc.hidden=true;events.visibilitychange();assert.equal(elements.get('performanceFPS').text,'—');
  events.keydown({key:'Escape'});assert(!monitor.visible);
 });

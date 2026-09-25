@@ -221,14 +221,14 @@ export async function createLecture(scene,renderer,options={}){
   }
   function draw(index){
     const board=boards[index],slot=clock.slots[index];
-    if(!renderActive||hydrating||stored||storageProgress>0)return;
+    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
     const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
-    if(!renderActive||hydrating||stored||storageProgress>0)return;
+    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0,W,H);const image=cache.get(slot.page);
     if(image){
@@ -288,7 +288,7 @@ export async function createLecture(scene,renderer,options={}){
     finally{if(request===seekRequest){seeking=false;seekPinned.clear();}}
   }
   function update(dt,reduced=false){
-    if(disabled)return;
+    if(disabled||options.isActive?.()===false)return;
     if(storageRig&&stored&&storageProgress===1)return;
     if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel();if(storageProgress>0||stored)return;}
     if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}

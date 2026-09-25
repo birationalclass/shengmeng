@@ -184,16 +184,18 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const result=asModule(code);modules.set(url.href,result);return result;
   }
   const sceneModule=await inlineAddon('./scene.js?v=42-warm-seating');
-  const calls=[];let clippedFragments=0;
+  const calls=[];let clippedFragments=0,sceneActive=false,probeRenders=0;
   globalThis.__retreatTestThree={...Three,
     TextureLoader:class{async loadAsync(){const texture=new Three.Texture();texture.image={width:256,height:256};return texture;}},
-    PMREMGenerator:class{fromScene(){return {texture:new Three.Texture(),dispose(){}};}dispose(){}}
+    PMREMGenerator:class{fromScene(){probeRenders++;return {texture:new Three.Texture(),dispose(){}};}dispose(){}}
   };
   globalThis.document={createElement:()=>({width:0,height:0,getContext:()=>({measureText(text){return {width:text.length*18};},fillRect(){},fillText(text){calls.push(text);},save(){},restore(){},translate(){},rotate(){},beginPath(){},arc(){},fill(){},moveTo(){},lineTo(){},closePath(){},clip(){clippedFragments++;},drawImage(){}})})};
   try{
     const {createRetreat}=await import(sceneModule);
     const scene=new Three.Scene();
-    const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{});
+    const result=await createRetreat({capabilities:{getMaxAnisotropy:()=>8},getRenderTarget:()=>null,getClearColor:c=>c.set(0),getClearAlpha:()=>1,setRenderTarget(){},setClearColor(){},clearColor(){}},scene,()=>{},{isRenderActive:()=>sceneActive});
+    assert.equal(probeRenders,0,'Background startup defers environment rendering');assert.equal(scene.environment,null);
+    sceneActive=true;result.setTime(12);assert.equal(probeRenders,1);result.setTime(13);assert.equal(probeRenders,1,'The deferred probe renders exactly once');
     const residenceLamps=[];result.residence.root.traverse(o=>{if(o.isPointLight)residenceLamps.push(o);});
     result.residence.update({position:result.residence.root.position.clone()},0);
     assert(residenceLamps.every(l=>l.visible&&l.intensity>0));
@@ -788,7 +790,8 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert.equal(lecture.clock.phase,'write','Resuming an erase must reach fresh chalk writing');
     lecture.dispose();
     globalThis.fetch=fetchReport;
-    const storageRoot=new Three.Scene(),storage=await createLecture(storageRoot,{capabilities:{getMaxAnisotropy:()=>8}},{retractable:true});
+    let appFocused=true;
+    const storageRoot=new Three.Scene(),storage=await createLecture(storageRoot,{capabilities:{getMaxAnisotropy:()=>8}},{retractable:true,isActive:()=>appFocused});
     const rig=storageRoot.getObjectByName('Whole six-board retracting assembly');
     assert.equal(rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).length,6);
     assert(storage.hoverTargets.some(o=>o.userData.action==='lectern:stow'));
@@ -804,6 +807,14 @@ test('classroom assembles six independent boards and survives writing, erasing a
     storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);
     assert(rig.visible&&!storage.stored);assert(storage.consoleButtons.every(b=>b.visible));assert.equal(rig.position.y,0);
     assert(storage.renderActive);assert.equal(storage.clock.page,6);assert(inkMaterials.some((m,i)=>m.map.version>textureVersions[i][0]),'Raising restores the selected content');
+    appFocused=false;storage.playing=true;
+    const blurProgress=storage.clock.elapsed,blurMaps=inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]);
+    for(let i=0;i<600;i++)storage.update(1/60);
+    assert.equal(storage.clock.elapsed,blurProgress,'Unfocused pages do not advance board playback');
+    await storage.seek(7);
+    assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),blurMaps,'An asynchronous seek cannot paint boards after focus is lost');
+    appFocused=true;storage.update(.1);
+    assert(inkMaterials.some((m,i)=>m.map.version>blurMaps[i][0]),'Focus restoration paints deferred content');
     storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);await storage.setReport('hu');assert(!storage.stored);for(let i=0;i<50;i++)storage.update(.1);assert(rig.visible);assert.equal(rig.position.y,0);storage.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
