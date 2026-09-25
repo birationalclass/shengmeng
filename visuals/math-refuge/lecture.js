@@ -26,6 +26,7 @@ export async function createLecture(scene,renderer,options={}){
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
+  let storageRig=null,stored=false,storageProgress=0,storageLabel=null,storageLabelText='';
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
@@ -220,14 +221,14 @@ export async function createLecture(scene,renderer,options={}){
   }
   function draw(index){
     const board=boards[index],slot=clock.slots[index];
-    if(!renderActive||hydrating)return;
+    if(!renderActive||hydrating||stored||storageProgress>0)return;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
     const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
     const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
     const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
-    if(!renderActive||hydrating)return;
+    if(!renderActive||hydrating||stored||storageProgress>0)return;
     if(board.last===key)return;board.last=key;
     ctx.drawImage(grain,0,0,W,H);const image=cache.get(slot.page);
     if(image){
@@ -288,6 +289,7 @@ export async function createLecture(scene,renderer,options={}){
   }
   function update(dt,reduced=false){
     if(disabled)return;
+    if(storageRig&&stored&&storageProgress===1)return;
     if(storageRig){storageProgress=THREE.MathUtils.clamp(storageProgress+(stored?1:-1)*Math.min(dt,.1)/4.5,0,1);const t=storageProgress*storageProgress*(3-2*storageProgress);storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;consoleButtons.forEach(b=>b.visible=!stored&&storageProgress===0);updateStorageLabel();if(storageProgress>0||stored)return;}
     if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
@@ -372,7 +374,6 @@ export async function createLecture(scene,renderer,options={}){
   boards.forEach((_,i)=>draw(i));
   // Keep the hardware and last completed texture visible at every distance.
   // Only the board carriers and tools have changing local transforms.
-  let storageRig=null,stored=false,storageProgress=0,storageLabel=null,storageLabelText='';
   function updateStorageLabel(){if(!storageLabel)return;const text=stored?'升起黑板':'收起黑板';if(text===storageLabelText)return;storageLabelText=text;const c=storageLabel.canvas.getContext('2d');c.clearRect(0,0,1024,240);c.font='72px '+SCREEN_FONT;c.textAlign='center';c.fillStyle='#f1e8d3';c.fillText(text,512,150);storageLabel.texture.needsUpdate=true;}
   if(options.retractable){
     storageRig=new THREE.Group();storageRig.name='Whole six-board retracting assembly';scene.add(storageRig);
@@ -391,7 +392,7 @@ export async function createLecture(scene,renderer,options={}){
     get retractable(){return Boolean(storageRig);},get stored(){return stored;},
     toggleStorage(){if(storageRig){stored=!stored;if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
-    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating;},get hasSelection(){return hasSelection;},
+    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
     screenAction:action=>seminarScreen?.action(action),
     async setRenderActive(value){

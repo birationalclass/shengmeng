@@ -24,7 +24,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=adaptive-ocean-2';
-import {createLecture} from './lecture.js?v101-storage';
+import {createLecture} from './lecture.js?v=stored-board-idle';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -87,7 +87,7 @@ function updateRoomVisibility(stamp){
     roomLecterns[i].group.visible=true;
     roomLecterns[i].setScreenEnabled(v.consoleVisible&&!rooms[i].disabled);
   });
-  $('world').dataset.renderingRooms=roomViews.map((v,i)=>v.visible?i:null).filter(i=>i!==null).join(',');
+  $('world').dataset.renderingRooms=rooms.map((room,i)=>room.renderActive?i:null).filter(i=>i!==null).join(',');
 }
 let activeRoom=0,physicalRoom=-1;
 let motionSample=false,lastUIStamp=0,choosingReport=false,speakerView=false;
@@ -351,7 +351,7 @@ function tick(stamp){
   oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
   retreat.ocean.userData.study.update(camera,dt);surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
-  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:roomViews.filter(v=>v.visible).length,adaptive:$('adaptiveReadout').textContent});
+  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 

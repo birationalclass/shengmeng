@@ -794,8 +794,16 @@ test('classroom assembles six independent boards and survives writing, erasing a
     assert(storage.hoverTargets.some(o=>o.userData.action==='lectern:stow'));
     storage.toggleStorage();const frozen=storage.clock.elapsed;for(let i=0;i<50;i++)storage.update(.1);
     assert(storage.stored&&!rig.visible);assert(storage.consoleButtons.every(b=>!b.visible));assert.equal(rig.position.y,-7.2);assert.equal(storage.clock.elapsed,frozen);
+    assert.equal(storage.renderActive,false,'A fully stored board is not an active classroom texture renderer');
+    const inkMaterials=rig.children.filter(o=>o.name.startsWith('Sliding chalkboard')).map(o=>o.children[0].material);
+    const textureVersions=inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]);
+    for(let i=0;i<600;i++)storage.update(1/60);
+    assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),textureVersions,'No ink or roughness upload during 600 hidden frames');
+    await storage.seek(6);
+    assert.deepEqual(inkMaterials.map(m=>[m.map.version,m.roughnessMap?.version]),textureVersions,'Hidden progress changes defer board uploads until raised');
     storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);
     assert(rig.visible&&!storage.stored);assert(storage.consoleButtons.every(b=>b.visible));assert.equal(rig.position.y,0);
+    assert(storage.renderActive);assert.equal(storage.clock.page,6);assert(inkMaterials.some((m,i)=>m.map.version>textureVersions[i][0]),'Raising restores the selected content');
     storage.toggleStorage();for(let i=0;i<50;i++)storage.update(.1);await storage.setReport('hu');assert(!storage.stored);for(let i=0;i<50;i++)storage.update(.1);assert(rig.visible);assert.equal(rig.position.y,0);storage.dispose();
     globalThis.fetch=fetchReport;
     const {KM_REPORT}=await import('./seminar-catalog.js');
