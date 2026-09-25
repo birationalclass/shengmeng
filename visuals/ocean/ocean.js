@@ -1,4 +1,4 @@
-import { OceanRenderer } from './ocean-renderer.js?v=20260925-ocean-5';
+import { OceanRenderer } from './ocean-renderer.js?v=20260925-lab-6';
 const $ = (id) => document.getElementById(id);
 const canvas = $('ocean');
 const state = { wave: 1.2, wind: .45, sun: 5, speed: 1, time: 7.1, paused: matchMedia('(prefers-reduced-motion: reduce)').matches, yaw: 0, pitch: 0, distance: 0, quality: 'auto', scale: 1 };
@@ -178,3 +178,13 @@ canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); c
 canvas.addEventListener('webglcontextrestored', () => { program = null; init().catch(fail); });
 function fail(error) { console.error('Ocean renderer:', error); $('fallback').hidden = false; document.body.classList.add('render-failed'); $('renderStatus').textContent = '海面未能加载'; }
 init().catch(fail);
+
+// Pause inactive experiment frames without changing the saved user controls.
+let experimentActive=true, experimentWasPaused=false;
+addEventListener('message',event=>{
+ if(event.origin!==location.origin||event.source!==parent||event.data?.type!=='ocean-experiment-visibility')return;
+ const next=!!event.data.active;if(next===experimentActive)return;
+ experimentActive=next;
+ if(!next){experimentWasPaused=state.paused;state.paused=true;cancelAnimationFrame(raf);raf=0;last=0;updateAudio();}
+ else{state.paused=experimentWasPaused;last=0;syncPlayButton();schedule();updateAudio();}
+});

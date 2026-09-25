@@ -1,3 +1,4 @@
+import { coastalOptics, capillaryNormals, opticalBody, opticalReflection, opticalBeach } from './coastal-optics.js';
 import * as THREE from '../3d/vendor/three.module.js';
 import { makeWaveSpectrum } from './wave-spectrum.js?v=20260925-ocean-5';
 
@@ -221,7 +222,8 @@ function waveSpectrum(wind=.45) {
 }
 
 export class OceanRenderer {
-  constructor(canvas) {
+  constructor(canvas, { opticalStudy = false } = {}) {
+    this.opticalStudy=opticalStudy;
     this.canvas=canvas;
     this.renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     if(!this.renderer.extensions.has('EXT_color_buffer_float'))throw new Error('Floating-point render targets are required for whitewater transport.');
@@ -241,11 +243,11 @@ export class OceanRenderer {
   }
   setupWater() {
     this.seaGeometry=makeSeaGeometry();
-    const material=new THREE.ShaderMaterial({uniforms:this.uniforms,side:THREE.DoubleSide,transparent:true,depthWrite:true,forceSinglePass:true,
+    const material=new THREE.ShaderMaterial({defines:this.opticalStudy?{COASTAL_OPTICS:1}:{},uniforms:this.uniforms,side:THREE.DoubleSide,transparent:true,depthWrite:true,forceSinglePass:true,
       vertexShader:environment+surfaceModel+`
        varying vec3 vWorld,vNormal;varying vec2 vCA;varying vec4 vProfile;
        void main(){vec2 ca=position.xz;vec3 p=surfaceAt(ca);vec3 dc=surfaceAt(ca+vec2(.035,0.))-surfaceAt(ca-vec2(.035,0.));vec3 da=surfaceAt(ca+vec2(0.,.08))-surfaceAt(ca-vec2(0.,.08));vNormal=normalize(cross(dc,da));vWorld=p;vCA=ca;vProfile=profileAt(ca);gl_Position=projectionMatrix*viewMatrix*vec4(p,1.);}`,
-      fragmentShader:environment+surfaceModel+`
+      fragmentShader:environment+surfaceModel+coastalOptics+`
        uniform sampler2D uFoam;
        varying vec3 vWorld,vNormal;varying vec2 vCA;varying vec4 vProfile;
        void main(){
@@ -261,6 +263,7 @@ export class OceanRenderer {
         slope+=vec2(.96,-.28)*cos(dot(uv,vec2(6.1,-1.8))-uTime*5.4)*.48;
         slope+=vec2(.71,.71)*cos(dot(uv,vec2(11.1,11.1))-uTime*8.1)*.20;
         float detail=(.010+uWind*.023)*exp(-distance*.025)*(1.-vProfile.a*.45);
+        ${capillaryNormals}
         n=normalize(n+vec3(-slope.x,0.,-slope.y)*detail);
         vec3 sd=sunDirection(),r=reflect(-view,n);float reflectedHorizon=smoothstep(-.12,.06,r.y);r.y=max(.002,r.y);
         float day=smoothstep(5.,22.,uSun),dusk=1.-smoothstep(-3.,3.,uSun);
@@ -274,6 +277,7 @@ export class OceanRenderer {
         vec3 sand=mix(vec3(.19,.14,.10),vec3(.43,.34,.22),day);
         body=mix(sand,body,1.-exp(-max(0.,waterThickness)*2.8));
         body*=.6+.4*sat(n.y);
+        ${opticalBody}
         float underLip=1.-smoothstep(-.10,.30,vNormal.y);
         vec3 reflection=mix(reflected,mix(body*.35,reflected,reflectedHorizon),underLip);
         vec3 col=mix(body,reflection,fresnel*.87);
@@ -282,6 +286,7 @@ export class OceanRenderer {
         float spec=a2/(PI*den*den);float sf=.02+.98*pow(1.-sat(dot(view,halfV)),5.);
         vec3 light=mix(vec3(1.8,.91,.36),vec3(1.4,1.4,1.25),day)*(1.-dusk*.55);
         col+=light*min(14.,spec*sf*.24)*smoothstep(-4.,1.,uSun);
+        ${opticalReflection}
         // Persistent advected whitewater. Breakup contains several bubble
         // scales; no single repeated Voronoi cell or painted crest stripe.
         vec2 foamUV=(vCA-vec2(-35.,-45.))/vec2(60.,160.);
@@ -310,9 +315,9 @@ export class OceanRenderer {
   }
   setupBeach() {
     const geometry=this.seaGeometry;
-    const material=new THREE.ShaderMaterial({uniforms:this.uniforms,side:THREE.DoubleSide,
+    const material=new THREE.ShaderMaterial({defines:this.opticalStudy?{COASTAL_OPTICS:1}:{},uniforms:this.uniforms,side:THREE.DoubleSide,
       vertexShader:environment+surfaceModel+`varying vec3 vWorld;varying vec2 vCA;void main(){vec2 ca=position.xz;vec2 xz=worldXZ(ca);vWorld=vec3(xz.x,beachHeight(ca),xz.y);vCA=ca;gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}`,
-      fragmentShader:environment+surfaceModel+`
+      fragmentShader:environment+surfaceModel+coastalOptics+`
        uniform sampler2D uFoam;varying vec3 vWorld;varying vec2 vCA;
        void main(){
         float d=vCA.x-shore(vCA.y),day=smoothstep(5.,22.,uSun);
@@ -331,6 +336,7 @@ export class OceanRenderer {
         vec3 r=reflect(-view,n);
         col=mix(col,col*.44+sky(r,true)*.16,wet);
         col+=vec3(1.,.63,.32)*pow(sat(dot(r,sunDirection())),360.)*wet;
+        ${opticalBeach}
         float distance=length(vWorld-cameraPosition);
         col=mix(col,sky(normalize(vec3(-view.x,.005,-view.z)),false),min(.9,1.-exp(-distance*.00065)));
         gl_FragColor=vec4(tone(col),1.);
