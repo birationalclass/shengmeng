@@ -8,7 +8,7 @@ import {createResidence} from './residence.js?v=true-north-coast-1';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
-import {createBoats} from './boats.js?v=east-sailboat-1';
+import {createBoats} from './boats.js?v=east-sailboat-2';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v81-imac';
 import {createPathLighting} from './path-lighting.js?v44-hall-clearance';

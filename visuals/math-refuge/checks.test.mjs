@@ -272,7 +272,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     const [tw,te,tn,ts]=SEA_TERRACE;assert(result.layoutFloors.some(f=>f.y===0&&f.cx-f.w/2===tw&&f.cx+f.w/2===te&&f.cz-f.d/2===tn&&f.cz+f.d/2===ts),'Hall platform must match the declared paving bounds');
     assert.equal(result.fleet.boats.filter(b=>b.userData.type==='sail').length,4);assert.equal(result.fleet.boats.filter(b=>b.userData.type==='kayak').length,2);
     const eastBoat=result.fleet.boats.find(b=>b.name==='Auditorium east sailboat');
-    assert(Math.abs(eastBoat.position.x-(HALL.west+HALL.east)*.5*BUILDING_SCALE-100)<1e-8);assert.equal(eastBoat.position.z,0);
+    assert(Math.abs(eastBoat.position.x-(HALL.west+HALL.east)*.5*BUILDING_SCALE-100)<1e-8);assert(Math.abs(eastBoat.position.z-30)<1e-8);
     for(let i=0;i<100;i++)result.fleet.update(.1);for(const boat of result.fleet.boats){assert(Math.abs(boat.position.y-result.site.seaLevel)<.1);assert(!result.layoutFloors.some(f=>f.y===0&&Math.abs(boat.position.x/BUILDING_SCALE-f.cx)<f.w/2+3&&Math.abs(boat.position.z/BUILDING_SCALE-f.cz)<f.d/2+3));}
     for(const name of ['Villa exterior stair','Hall exterior stair']){
       const d=scene.getObjectByName(name).userData;

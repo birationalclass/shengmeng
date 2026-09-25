@@ -43,8 +43,8 @@ export function createBoats(scene){
     }
   }
   [[75,85,.4],[-7,-85,-.7],[105,105,1.1]].forEach(([x,z,a],i)=>add('sail',x,z,a,i));
-  // 100 physical metres due east of the hall: curve coordinate (2.10, 0) km.
-  add('sail',(HALL.west+HALL.east)/2+100/S,0,.55,3);
+  // Facing east from the hall: 100 m ahead and 30 m to the right (south).
+  add('sail',(HALL.west+HALL.east)/2+100/S,30/S,.55,3);
   boats.at(-1).name='Auditorium east sailboat';
   [[77,65,.35],[-17,65,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
   let time=0;
