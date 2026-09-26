@@ -24,7 +24,7 @@ export function createSeaPavilion(scene,materials,offset){
  const length=curve.getLength(),count=Math.ceil(length/.24);
  for(let i=0;i<count;i++){
   const u=(i+.5)/count,d=curve.getTangentAt(u);
-  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.003],wood,Math.atan2(d.x,d.z));
+  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.012],wood,Math.atan2(d.x,d.z));
  }
  // Open timber boardwalk: all structure stays below the walking surface.
  for(let i=0;i<48;i++)for(const side of [-1,1]){
@@ -43,7 +43,7 @@ export function createSeaPavilion(scene,materials,offset){
  // Align the pavilion's entrance normal with the arriving bridge tangent.
  pavilionTransform={x:end.x,z:end.z,angle:Math.atan2(tangent.z,-tangent.x)};
  box([cx,-.2,cz],[8,.32,7],edge);
- for(let i=0;i<29;i++)box([cx,-.025,cz-3.5+(i+.5)*7/29],[7.98,.05,7/29-.003],wood);
+ for(let i=0;i<29;i++)box([cx,-.025,cz-3.5+(i+.5)*7/29],[7.98,.05,7/29-.012],wood);
  for(const x of [-3.5,3.5])for(const z of [-3,3]){
   box([cx+x,1.48,cz+z],[.12,2.96,.12],frame);
   box([cx+x,.045,cz+z],[.27,.09,.27],brass);

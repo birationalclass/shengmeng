@@ -1,4 +1,4 @@
-import {createSeaPavilion} from './sea-pavilion.js?v=pavilion-clean-22';
+import {createSeaPavilion} from './sea-pavilion.js?v=plank-gaps-23';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
