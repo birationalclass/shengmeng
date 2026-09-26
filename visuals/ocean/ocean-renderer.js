@@ -483,11 +483,15 @@ export class OceanRenderer {
     if(state.wind!==this.spectrumWind){
       const spectrum=waveSpectrum(state.wind);this.uniforms.uWaves.value=spectrum.waves;this.uniforms.uPhases.value=spectrum.phases;this.spectrumWind=state.wind;
     }
-    const meshQuality=state.quality==='low'||state.scale<.55?'low':'fine';
+    const meshQuality=state.quality==='low'||state.scale<.55?'low':state.quality==='balanced'?'balanced':'fine';
     if(meshQuality!==this.meshQuality){
-      const previous=this.seaGeometry;this.seaGeometry=meshQuality==='low'?makeSeaGeometry(320,240):makeSeaGeometry();
+      const previous=this.seaGeometry;this.seaGeometry=meshQuality==='low'?makeSeaGeometry(320,240):meshQuality==='balanced'?makeSeaGeometry(480,320):makeSeaGeometry();
       this.water.geometry=this.beach.geometry=this.seaGeometry;previous.dispose();this.meshQuality=meshQuality;
-      this.whitewater.geometry.dispose();this.whitewater.geometry=makeWhitewaterGeometry(meshQuality==='low');
+      this.whitewater.geometry.dispose();
+      if(meshQuality==='balanced'){
+        this.whitewater.geometry=new THREE.PlaneGeometry(60,160,280,440);
+        this.whitewater.geometry.rotateX(-Math.PI/2);this.whitewater.geometry.translate(-5,0,35);
+      }else this.whitewater.geometry=makeWhitewaterGeometry(meshQuality==='low');
     }
     this.uniforms.uTime.value=state.time;this.uniforms.uWave.value=state.wave;this.uniforms.uWind.value=state.wind;this.uniforms.uSun.value=state.sun;
     if(updateCamera){

@@ -5,46 +5,24 @@
 <style>
 *{box-sizing:border-box}body{margin:0;background:#172b35;color:#fff;font:14px/1.6 system-ui}canvas{display:block;width:100vw;height:100vh;touch-action:none}header{position:absolute;top:24px;left:28px;right:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;pointer-events:none}h1{font-size:22px;font-weight:450;margin:0}p{margin:4px 0;opacity:.75;font-size:12px}section{position:absolute;bottom:24px;left:28px;right:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:#10232dbb;padding:16px;border:1px solid #ffffff20;border-radius:12px;backdrop-filter:blur(12px)}button,select{font:inherit;color:inherit;border:1px solid #ffffff40;border-radius:6px;padding:8px 14px;background:#ffffff0c;cursor:pointer}button[aria-pressed=true]{background:#e7e4d6;color:#263238}option{color:#222}label{display:flex;align-items:center;gap:8px}input{width:115px}#status{font-size:12px;opacity:.75;margin-left:auto}@media(max-width:600px){header{left:16px;top:16px}section{left:12px;right:12px;bottom:12px;padding:12px;gap:8px}h1{font-size:19px}input{width:80px}#status{width:100%;margin:0}}
 </style>
+<link rel="stylesheet" href="./optical-study.css?v=2">
 <canvas id="sea" aria-label="可切换新旧水材质的动态海岸"></canvas>
 <header><div><h1>海岸 · 水色试验</h1><p>拖动观察 · 滚轮调整视点高度</p></div><p style="pointer-events:auto"><a href="./experiments.html" target="_top" style="color:inherit">进入实验室 · 切换实验版本 ↗</a></p></header>
+<details id="resource-panel" class="resource-panel" open>
+ <summary><strong>资源观察台</strong><span id="score">采样中</span></summary>
+ <div class="resource-content">
+ <dl class="resource-meters"><div><dt>实际帧率 FPS</dt><dd id="fps">…</dd></div><div><dt>CPU 提交 P95 / ms</dt><dd id="cpu">…</dd></div><div><dt>GPU P95 / ms</dt><dd id="gpu">—</dd></div></dl>
+ <p id="budget-note" class="resource-note"></p><p id="resources"></p><p id="memory"></p>
+ <table><caption>本机采样 · MiB* 为几何与纹理估算</caption><thead><tr><th>档位</th><th>FPS</th><th>CPU ms</th><th>GPU ms</th><th>MiB*</th><th>资源分</th></tr></thead><tbody id="comparison"></tbody></table>
+ <button id="benchmark">同场景比较 · 约 18 秒</button><p id="measurement-note">切换档位可分别采样；同场景比较会暂时锁定视角。</p>
+ <details><summary>资源预算与评分依据</summary><p>节能 / 均衡 / 精细：像素上限 65 / 95 / 150 万，海面网格 320×240 / 480×320 / 640×440，细波 5 / 7 / 9 层。三档都保留立体浪沫、30 Hz 泡沫输运、折射与湿沙；隐藏页面停止渲染。</p><p>资源分：目标帧率达成 40 分，CPU 帧预算余量 15 分，GPU 帧预算余量 25 分，像素与三角形每秒提交量 20 分。工作量参考上限为每秒 1.8 亿；这是透明的预算评分，不是画质评分或耗电测量。</p><p>CPU 为 JS 渲染提交耗时，GPU 为非阻塞计时查询；均报告第 95 百分位。若 GPU 计时不可用，显示 —，其余 75 分归一化。缓冲与纹理为已知存储估算，不含驱动、帧缓冲、抗锯齿等；JS 堆可能涵盖同站其他页面。浏览器无法提供整机 CPU/GPU 占用率与总显存。</p></details>
+ </div></details>
 <section aria-label="试验控制">
  <button id="new" aria-pressed="true">新水材质</button><button id="old" aria-pressed="false">原版对照</button>
  <select id="light" aria-label="光照"><option value="5">夕阳</option><option value="24">晴日</option><option value="-2">暮色</option></select>
  <label>浪高 <input id="wave" type="range" min="0.3" max="2.5" step="0.1" value="1.2"><output id="height">1.2 m</output></label>
+ <select id="quality" aria-label="资源档位"><option value="eco">节能 · 30 FPS</option><option value="balanced" selected>均衡 · 60 FPS</option><option value="fine">精细 · 60 FPS</option></select>
  <button id="pause">暂停</button><button id="reset">重置视点</button><span id="status">正在准备海面…</span>
 </section>
-<script type="module">
-import {OceanRenderer} from './ocean-renderer.js?v=optical-study-1';
-const $=id=>document.getElementById(id),canvas=$('sea');
-const state={wave:1.2,wind:.45,sun:5,time:7.1,yaw:0,pitch:0,distance:0,quality:'auto',scale:1};
-let experimentActive=true;
-let paused=matchMedia('(prefers-reduced-motion: reduce)').matches,last=0,frames=0,start=performance.now(),pointer=null,engine;
-function draw(){engine.draw(state);canvas.dataset.time=state.time.toFixed(3);}
-function resize(){const ratio=Math.min(devicePixelRatio,Math.sqrt(1200000/(innerWidth*innerHeight)));engine.resize(Math.round(innerWidth*ratio),Math.round(innerHeight*ratio));draw();}
-function mode(optics){
- for(const mesh of [engine.water,engine.beach]){mesh.material.defines=optics?{COASTAL_OPTICS:1}:{};mesh.material.needsUpdate=true;}
- $('new').setAttribute('aria-pressed',String(optics));$('old').setAttribute('aria-pressed',String(!optics));draw();
-}
-addEventListener('message',e=>{if(e.origin===location.origin&&e.source===parent&&e.data?.type==='ocean-experiment-visibility'){experimentActive=!!e.data.active;last=0;}});
-function tick(now){
- if(experimentActive&&!document.hidden&&!paused){if(last)state.time+=Math.min(.1,(now-last)/1000);draw();frames++;}
- last=now;
- if(now-start>2000){$('status').textContent=`${paused?'已暂停':Math.round(frames*1000/(now-start))+' 帧/秒'} · ${state.time.toFixed(1)} 秒`;frames=0;start=now;}
- requestAnimationFrame(tick);
-}
-try{
- engine=new OceanRenderer(canvas,{opticalStudy:true});resize();
- $('new').onclick=()=>mode(true);$('old').onclick=()=>mode(false);
- $('light').onchange=e=>{state.sun=+e.target.value;draw();};
- $('wave').oninput=e=>{state.wave=+e.target.value;$('height').value=state.wave.toFixed(1)+' m';draw();};
- $('pause').textContent=paused?'继续':'暂停';
- $('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'继续':'暂停';last=0;};
- $('reset').onclick=()=>{state.yaw=state.pitch=state.distance=0;draw();};
- canvas.onpointerdown=e=>{pointer={id:e.pointerId,x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);};
- canvas.onpointermove=e=>{if(!pointer||pointer.id!==e.pointerId)return;state.yaw=Math.max(-.65,Math.min(.65,state.yaw-(e.clientX-pointer.x)*.0018));state.pitch=Math.max(-.12,Math.min(.22,state.pitch+(e.clientY-pointer.y)*.0011));pointer.x=e.clientX;pointer.y=e.clientY;draw();};
- canvas.onpointerup=canvas.onpointercancel=()=>pointer=null;
- canvas.addEventListener('wheel',e=>{e.preventDefault();state.distance=Math.max(-1.2,Math.min(5,state.distance+e.deltaY*.005));draw();},{passive:false});
- addEventListener('resize',resize);requestAnimationFrame(tick);
-}catch(e){$('status').textContent='无法启动：'+e.message;console.error(e);}
-</script>
+<script type="module" src="./optical-study.js?v=2"></script>
 </html>
