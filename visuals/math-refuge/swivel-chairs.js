@@ -5,19 +5,24 @@ export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,bac
  const root=new T.Group();root.name='Auditorium swivel chairs';scene.add(root);
  const parts=[],targets=[],owned=[],angles=positions.map(()=>0),goals=positions.map(()=>0),dummy=new T.Object3D(),pivot=new T.Object3D();
  const rubber=new T.MeshStandardMaterial({color:'#252b29',roughness:.96});
+ const satin=new T.MeshStandardMaterial({color:'#8f8c80',metalness:.72,roughness:.38});
+ const graphite=new T.MeshStandardMaterial({color:'#414542',metalness:.48,roughness:.5});
+ const profile=points=>{const g=new T.LatheGeometry(points.map(([r,y])=>new T.Vector2(r,y)),64);owned.push(g);return g;};
  const cylinder=(a,b,h)=>{const g=new T.CylinderGeometry(a,b,h,32);owned.push(g);return g;};
  const rounded=(w,h,d)=>{const g=new RoundedBoxGeometry(w,h,d,2,Math.min(w,h,d)*.18);owned.push(g);return g;};
  function add(g,m,p=[0,0,0],r=[0,0,0],rotating=false){
   const mesh=new T.InstancedMesh(g,m,positions.length);mesh.castShadow=true;mesh.receiveShadow=true;mesh.name=rotating?'Rotating chair upper assembly':'Fixed machined swivel pedestal';root.add(mesh);
   parts.push({mesh,p,r,rotating});if(rotating)targets.push(mesh);return mesh;
  }
- add(cylinder(.35,.38,.036),rubber,[0,.018,0]);
- add(cylinder(.33,.365,.044),metal,[0,.052,0]);
- add(cylinder(.20,.30,.045),metal,[0,.096,0]);
- add(cylinder(.078,.13,.24),metal,[0,.236,0]);
- add(cylinder(.09,.09,.035),rubber,[0,.367,0]);
- add(cylinder(.105,.105,.025),metal,[0,.389,0]);
- for(let i=0;i<4;i++){const a=i*Math.PI/2+Math.PI/4;add(cylinder(.014,.014,.008),metal,[Math.cos(a)*.265,.078,Math.sin(a)*.265]);}
+ // Low, radiused disc with a recessed rubber foot and a fine satin rim.
+ add(cylinder(.326,.326,.012),rubber,[0,.006,0]);
+ add(profile([[0,.012],[.316,.012],[.337,.015],[.345,.020],[.347,.026],[.345,.032],[.339,.037],[.31,.042],[.15,.046],[0,.046]]),graphite);
+ add(profile([[.338,.030],[.345,.029],[.346,.031],[.344,.034],[.338,.036]]),satin);
+ // Smooth integral socket, slim column and recessed swivel bearing.
+ add(profile([[0,.045],[.13,.045],[.112,.051],[.094,.066],[.075,.09],[.067,.13],[.063,.29],[.068,.325],[.082,.345],[0,.345]]),satin);
+ add(cylinder(.077,.077,.021),graphite,[0,.354,0]);
+ add(cylinder(.072,.072,.024),rubber,[0,.376,0]);
+ add(profile([[0,.383],[.073,.383],[.086,.389],[.11,.4],[.115,.41],[0,.414]]),satin);
  add(rounded(.58,.05,.47),metal,[0,.416,.015],[0,0,0],true);
  add(rounded(1.04,.11,.83),shell,[0,.45,.03],[0,0,0],true);
  add(rounded(.96,.18,.77),cloth,[0,.53,.06],[.035,0,0],true);
@@ -41,5 +46,5 @@ export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,bac
   positions.forEach((p,i)=>{if(p[0]===back)goals[i]=angles[i]+Math.atan2(Math.sin(desired-angles[i]),Math.cos(desired-angles[i]));});
  },update(dt){
   for(let i=0;i<angles.length;i++)if(Math.abs(goals[i]-angles[i])>.0001){angles[i]+= (goals[i]-angles[i])*(1-Math.exp(-dt*.38));write(i);}
- },dispose(){owned.forEach(g=>g.dispose());rubber.dispose();parts.forEach(p=>p.mesh.dispose());}};
+ },dispose(){owned.forEach(g=>g.dispose());rubber.dispose();satin.dispose();graphite.dispose();parts.forEach(p=>p.mesh.dispose());}};
 }
