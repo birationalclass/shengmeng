@@ -1,4 +1,4 @@
-import {createSeaPavilion} from './sea-pavilion.js?v=plank-gaps-23';
+import {createSeaPavilion} from './sea-pavilion.js?v=entrance-clean-24';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
@@ -76,7 +76,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    for(let i=0;i<obj.count;i++){
     obj.getMatrixAt(i,scratch);point.setFromMatrixPosition(scratch);
     const b=owner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
-    for(const dest of destinations(b)){if(dest[0]==='01B'&&['original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
+    for(const dest of destinations(b)){if(dest[0]==='01B'&&['original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy','removed-hall-entrance-bridge'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
    }
    obj.visible=false;
    for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();scene.add(track(m,id));}

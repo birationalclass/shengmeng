@@ -338,6 +338,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   table(38,DECK_Y,-21,1.3,.75);sofa(36.9,DECK_Y,-21,Math.PI/2);
   meta('North coffee cabin amenities',{coffeeMachine:true,counter:true,seating:true});
   for(const [index,bridge] of BRIDGES.entries()){
+    section(index===1?'removed-hall-entrance-bridge':'');
     const {x,z,axis,span,width,rise}=bridge,steps=28;
     const point=(t,y)=>[x+(axis==='x'?(t-.5)*span:0),y,z+(axis==='z'?(t-.5)*span:0)];
     for(let i=0;i<steps;i++){
@@ -353,6 +354,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
       const p=point(i/6,DECK_Y+rise*Math.sin(Math.PI*i/6));p[axis==='x'?2:0]+=sign*width/2;beam(p,[p[0],p[1]+.9/S,p[2]],.014,brass);
     }
     meta('Module arch bridge '+(index+1),bridge);
+    section('');
   }
   // Both sides remain transparent. Acoustic absorption is on the carpet and
   // ceiling, not an opaque north wall blocking the left-hand sea view.
