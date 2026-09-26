@@ -234,7 +234,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6,'学术客厅','ACADEMIC LOUNGE');
   sign('Conference entrance sign',[(HALL.west+HALL.east)/2,2.65,HALL.south+.1],3.45,'报告厅','SEMINAR HALL',0,.6);
-  sign('Conference west entrance sign',[HALL.west-.1,2.65,0],4.83,'报告厅','SEMINAR HALL',-Math.PI/2,.6);
+  sign('Conference north entrance sign',[(HALL.west+HALL.east)/2,2.65,HALL.north-.1],3.45,'报告厅','SEMINAR HALL',Math.PI,.6);
   sign('Coffee cabin sign',[39,2,-18.9],2.3,'咖啡小屋','COFFEE CABIN');
   sign('Discussion entrance sign',[11.5,2.1,5.12],2.8,'讨论室','DISCUSSION ROOM');
   sign('Library entrance sign',[-37,2,-10.88],2.8,'图书馆','LIBRARY');

@@ -1,5 +1,5 @@
-import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=parallel-joints-39';
-import {createSeaPavilion} from './sea-pavilion.js?v=parallel-joints-39';
+import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=border-deck-44';
+import {createSeaPavilion} from './sea-pavilion.js?v=border-deck-44';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
@@ -105,6 +105,20 @@ export function finishCampusLayout(scene,retreat,rooms){
  const top=.275*S,bottom=retreat.site.seaLevel-1;
  for(const b of campusLayout)if(b[0]!=='G'){
   const bounds=[anchor+b[4]-b[6]/2,anchor+b[4]+b[6]/2,-b[5]-b[7]/2,-b[5]+b[7]/2];
+  // The replacement platform envelope owns its perimeter lighting.
+  // Keep the strip outside the fascia so the slab cannot occlude it.
+  const stripMaterial=retreat.materials.terraceStrip;
+  if(stripMaterial){
+   const [west,east,north,south]=bounds,stripY=top-.045;
+   const strip=new T.Group();strip.name='Campus platform perimeter light '+b[0];
+   for(const z of [north-.012,south+.012]){
+    const m=new T.Mesh(new T.BoxGeometry(east-west+.024,.025,.024),stripMaterial);m.position.set((west+east)/2,stripY,z);strip.add(m);
+   }
+   for(const x of [west-.012,east+.012]){
+    const m=new T.Mesh(new T.BoxGeometry(.024,.025,south-north),stripMaterial);m.position.set(x,stripY,(north+south)/2);strip.add(m);
+   }
+   scene.add(track(strip,b[0]));
+  }
   const delta=buildingOffset(b[0]),hole=LECTERN_SHAFT_PLAN.map((v,i)=>v*S+(i<2?delta.x:delta.z));
   for(const [a,c,d,e] of (b[0]==='01B'?subtractRect(bounds,hole):[bounds])){
    const m=new T.Mesh(new T.BoxGeometry(c-a,top-bottom,e-d),[retreat.materials.edge,retreat.materials.edge,retreat.materials.stone,retreat.materials.edge,retreat.materials.edge,retreat.materials.edge]);m.position.set((a+c)/2,(top+bottom)/2,(d+e)/2);m.receiveShadow=m.castShadow=true;m.name='Campus platform '+b[0];scene.add(m);

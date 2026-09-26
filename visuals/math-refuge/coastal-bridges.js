@@ -1,4 +1,4 @@
-import {curvedDeck} from './bridge-deck.js?v=parallel-joints-39';
+import {curvedDeck} from './bridge-deck.js?v=border-deck-44';
 import * as T from '../3d/vendor/three.module.js';
 // Smooth the existing safe connection rather than moving any building anchors.
 export function bridgeCurve(path,buildings,ends,width=3){

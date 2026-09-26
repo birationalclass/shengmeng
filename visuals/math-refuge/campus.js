@@ -18,6 +18,7 @@ import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fix
 // No swimming basin or exposed support piles are constructed.
 export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
+  const doorFrame=new THREE.MeshStandardMaterial({color:0x353d40,roughness:.32,metalness:.72,envMapIntensity:.65});
   const roofNumbers=[];
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
   const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
@@ -145,7 +146,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
         const fixedStyle=isHall?{panels:1,frame:.022/S,seal:.005/S,seamless:side==='west'}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
-          automaticDoors.add(scene,{x,y,z,width:gap,height:h,axis,name:side,frameMaterial:brass});
+          automaticDoors.add(scene,{x,y,z,width:gap,height:h,axis,name:side,frameMaterial:doorFrame});
         }
       }else glazing(x,y,z,width,h,axis,style);
     }
@@ -241,8 +242,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   }
   for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw,.018,.18],borderMaterial);
   for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,terraceCenterZ],[.18,.018,ts-tn-.36],borderMaterial);
-  // A slim matte champagne threshold defines the entrance, not a shiny grid.
-  box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,4.4],brass);
+  // Flush threshold: no contrasting decorative strip across the entrance.
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
   meta('Expanded sea lounge terrace',{bounds:SEA_TERRACE,eastClearance:te-HALL.east,pool:false,heightAboveSea:(DECK_Y-seaLevel)*S});
   // An open view corridor: only a low roofed link, not a tall structure.
@@ -377,6 +377,6 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   return {swivelChairs,boardLampMaterial,carpetMaterial,blind,seating,lightingZones,automaticDoors,lectern,discussion,
     roofNumbers,
     setTeachingShade(closed){blind.visible=Boolean(closed);},
-    dispose(){swivelChairs.dispose();boardLampMaterial.dispose();roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.children.forEach(m=>m.geometry.dispose());carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
+    dispose(){doorFrame.dispose();swivelChairs.dispose();boardLampMaterial.dispose();roofNumbers.forEach(n=>n.dispose());discussion.dispose();lectern.dispose();upperLounge.dispose();ovalGeometries.forEach(g=>g.dispose());railJoint.dispose();automaticDoors.dispose();shade.dispose();shadeMaterial.dispose();coffeeMaterial.dispose();machine.traverse(o=>o.geometry?.dispose());lampRing.dispose();acousticCeiling.dispose();headrest.dispose();tierCarpets.forEach(m=>m.dispose());mineralMap.dispose();pavingMaterials.forEach(m=>m.dispose());borderMaterial.dispose();curvedShell.dispose();curvedCloth.dispose();carpet.children.forEach(m=>m.geometry.dispose());carpetMaterial.dispose();seatCloth.dispose();shell.dispose();}
   };
 }

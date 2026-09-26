@@ -13,6 +13,7 @@ export function createAutomaticDoors(T,glass,metal){
       const pane=new T.Mesh(geometry,glass);pane.name='Full-height sliding glass leaf';pane.scale.set(width/2+.012,height,.026);leaf.add(pane);
       for(const edge of [-1,1]){
         const jamb=new T.Mesh(geometry,seamMaterial||frameMaterial);jamb.name='Sliding door seam';if(seamMaterial){jamb.visible=false;seams.push(jamb);}jamb.scale.set(.013,height,.032);jamb.position.x=edge*width/4;leaf.add(jamb);
+        const bevel=new T.Mesh(geometry,seamMaterial||frameMaterial);bevel.name='Sliding door angled highlight bevel';bevel.scale.set(.004,height,.006);bevel.position.set(edge*width/4+.006,0,.018);bevel.rotation.y=Math.PI/4;if(seamMaterial){bevel.visible=false;seams.push(bevel);}leaf.add(bevel);
       }
       leaves.push({leaf,sign});
     }

@@ -1,4 +1,4 @@
-import {curvedDeck} from './bridge-deck.js?v=parallel-joints-39';
+import {curvedDeck} from './bridge-deck.js?v=border-deck-44';
 import * as T from '../3d/vendor/three.module.js';
 import {BUILDING_SCALE as S} from './site-layout.js';
 
@@ -11,8 +11,8 @@ export function createSeaPavilion(scene,materials,offset){
  const batches=new Map(),matrix=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0);
  const deck=materials.hallPaving||materials.terraceFloor||materials.stone;
  const steel=materials.steel,wood=materials.timber,edge=materials.edge,brass=materials.brass;
- const roof=new T.MeshStandardMaterial({color:0xc9c8bd,roughness:.86,metalness:.08});
- const frame=new T.MeshStandardMaterial({color:0x414a49,roughness:.7,metalness:.25});
+ const roof=new T.MeshStandardMaterial({color:0x454d50,roughness:.87,metalness:.12});
+ const frame=new T.MeshStandardMaterial({color:0x303736,roughness:.78,metalness:.12});
  const glow=new T.MeshStandardMaterial({color:0xc9ac78,emissive:0xffc680,emissiveIntensity:.45,roughness:.65});
  let pavilionTransform=null;
  function box(p,size,mat,yaw=0){
@@ -21,7 +21,7 @@ export function createSeaPavilion(scene,materials,offset){
   q.setFromAxisAngle(up,yaw);matrix.compose(new T.Vector3(...p),q,new T.Vector3(...size));batches.get(mat).push(matrix.clone());
  }
  function beam(a,b,width,height,mat){const d=new T.Vector3().subVectors(b,a);box(a.clone().add(b).multiplyScalar(.5).toArray(),[width,height,d.length()+.012],mat,Math.atan2(d.x,d.z));}
- const flare=u=>{const t=Math.max(0,Math.min(1,(u-.88)/.12));return 1+.5*t*t*(3-2*t);};
+ const flare=u=>{const t=Math.max(0,Math.min(1,u));return 3-2*t*t*t*(10-15*t+6*t*t);};
  const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*flare(u))).add(new T.Vector3(0,y,0));};
  const length=curve.getLength(),count=Math.ceil(length/.575);
  root.add(curvedDeck(curve,u=>2.8*flare(u),count,deck,1,.07));
@@ -48,9 +48,61 @@ export function createSeaPavilion(scene,materials,offset){
   box([cx+x,.045,cz+z],[.27,.09,.27],brass);
   box([cx+x,-3,cz+z],[.3,5.6,.3],steel);
  }
- box([cx,3.17,cz],[8.8,.16,7.8],roof);
- box([cx,3.04,cz],[8.3,.09,7.3],wood);
- for(let i=0;i<36;i++)box([cx-4.05+i*8.1/35,2.95,cz],[.065,.11,7.2],wood);
+ // Four gently swept roof faces, with individual tile courses and raised hip ridges.
+ const tileShade=new T.MeshStandardMaterial({color:0x535a59,roughness:.92,metalness:.04});
+ const ridgeMaterial=new T.MeshStandardMaterial({color:0x363f40,roughness:.78,metalness:.1});
+ const local=(x,y,z)=>{
+  const {x:ox,z:oz,angle}=pavilionTransform,c=Math.cos(angle),s=Math.sin(angle);
+  return new T.Vector3(ox+c*(x-ox)+s*(z-oz),y,oz-s*(x-ox)+c*(z-oz));
+ };
+ const roofPoint=(side,u,v,dy=0)=>{
+  const perimeter=[[u*4.65,-4.15],[4.65,u*4.15],[-u*4.65,4.15],[-4.65,-u*4.15]][side];
+  const y=3.08+1.9*(1-v)*(1-v)+.24*Math.pow(v,6)+.57*Math.pow(Math.abs(u),8)*Math.pow(v,6);
+  return local(cx+perimeter[0]*v,y+dy,cz+perimeter[1]*v);
+ };
+ const roofMesh=(dy,mat)=>{
+  const points=[],uvs=[];
+  for(let side=0;side<4;side++)for(let row=0;row<24;row++)for(let col=0;col<36;col++){
+   const u=col/18-1,U=(col+1)/18-1,v=row/24,V=(row+1)/24;
+   const corners=[roofPoint(side,u,v,dy),roofPoint(side,U,v,dy),roofPoint(side,U,V,dy),roofPoint(side,u,V,dy)];
+   for(const i of [0,2,1,0,3,2]){points.push(...corners[i].toArray());uvs.push(corners[i].x*.4,corners[i].z*.4);}
+  }
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(points,3));g.setAttribute('uv',new T.Float32BufferAttribute(uvs,2));g.computeVertexNormals();
+  const m=new T.Mesh(g,mat);m.name=dy?'Pavilion swept timber soffit':'Pavilion four swept tiled roof faces';m.castShadow=m.receiveShadow=true;root.add(m);
+ };
+ roof.side=T.DoubleSide;frame.side=T.DoubleSide;roofMesh(0,roof);roofMesh(-.11,frame);
+ function molding(points,radius,mat,name){
+  const path=new T.CatmullRomCurve3(points),mesh=new T.Mesh(new T.TubeGeometry(path,Math.max(12,points.length*2),radius,6,false),mat);
+  mesh.name=name;mesh.castShadow=mesh.receiveShadow=true;root.add(mesh);
+ }
+ for(let side=0;side<4;side++){
+  for(let row=3;row<=24;row++){
+   const v=row/24,points=Array.from({length:37},(_,j)=>roofPoint(side,j/18-1,v,.014));
+   molding(points,.017,tileShade,'Pavilion overlapping tile course');
+  }
+  for(let col=0;col<=36;col++){
+   const u=col/18-1,points=Array.from({length:23},(_,j)=>roofPoint(side,u,.09+.91*j/22,.027));
+   molding(points,.025,col%2?roof:tileShade,'Pavilion rounded tile channel');
+  }
+  molding(Array.from({length:25},(_,j)=>roofPoint(side,1,j/24,.065)),.075,ridgeMaterial,'Pavilion raised sweeping hip ridge');
+  molding(Array.from({length:37},(_,j)=>roofPoint(side,j/18-1,1,-.035)),.065,ridgeMaterial,'Pavilion curved eave fascia');
+ }
+ const peak=local(cx,5.08,cz);
+ const finial=new T.Mesh(new T.LatheGeometry([new T.Vector2(.12,0),new T.Vector2(.18,.07),new T.Vector2(.14,.15),new T.Vector2(.08,.24),new T.Vector2(.065,.36),new T.Vector2(0,.54)],24),ridgeMaterial);finial.position.copy(peak);finial.name='Pavilion roof finial';finial.castShadow=true;root.add(finial);
+ // A continuous timber frame and restrained brackets under the overhanging roof.
+ for(const z of [-3,3]){box([cx,2.84,cz+z],[7.25,.24,.16],frame);box([cx,2.56,cz+z],[7.1,.09,.1],frame);}
+ for(const x of [-3.5,3.5]){box([cx+x,2.84,cz],[.16,.24,6.2],frame);box([cx+x,2.56,cz],[.1,.09,6.1],frame);}
+ for(const x of [-3.5,3.5])for(const z of [-3,3]){
+  box([cx+x,.12,cz+z],[.42,.24,.42],deck);
+  box([cx+x,.27,cz+z],[.27,.07,.27],ridgeMaterial);
+  box([cx+x,1.55,cz+z],[.19,2.6,.19],frame);
+  for(let j=0;j<3;j++){
+   box([cx+x,2.61+j*.1,cz+z],[.34+j*.2,.085,.24],frame);
+   box([cx+x,2.65+j*.1,cz+z],[.24,.075,.34+j*.2],frame);
+  }
+ }
+ for(let i=0;i<20;i++)for(const z of [-3,3])box([cx-3.25+i*6.5/19,2.69,cz+z],[.035,.2,.055],frame);
+ for(let i=0;i<16;i++)for(const x of [-3.5,3.5])box([cx+x,2.69,cz-2.75+i*5.5/15],[.055,.2,.035],frame);
  for(const z of [-3.42,3.42]){
   // Floating timber benches, recessed supports and slatted backrest.
   box([cx,.44,cz+z*.79],[5.8,.085,.62],wood);
@@ -59,11 +111,27 @@ export function createSeaPavilion(scene,materials,offset){
   box([cx,2.96,cz+z*.88],[6,.016,.025],glow);
  }
  box([cx,.56,cz],[1.3,.08,.85],wood);box([cx,.27,cz],[.12,.54,.12],steel);
+ // Merge repeated roof tiles by material to keep the detailed roof inexpensive to draw.
+ const details=new Map();
+ for(const mesh of [...root.children])if(mesh.name.startsWith('Pavilion ')){
+  mesh.updateMatrix();const g=mesh.geometry.clone().applyMatrix4(mesh.matrix),flat=g.index?g.toNonIndexed():g;
+  if(!details.has(mesh.material))details.set(mesh.material,[]);details.get(mesh.material).push(flat);
+  if(flat!==g)g.dispose();mesh.geometry.dispose();root.remove(mesh);
+ }
+ for(const [mat,geometries] of details){
+  const merged=new T.BufferGeometry();
+  for(const key of ['position','normal','uv']){
+   const size=key==='uv'?2:3,total=geometries.reduce((n,g)=>n+g.attributes[key].array.length,0),array=new Float32Array(total);let start=0;
+   for(const g of geometries){array.set(g.attributes[key].array,start);start+=g.attributes[key].array.length;}
+   merged.setAttribute(key,new T.BufferAttribute(array,size));
+  }
+  geometries.forEach(g=>g.dispose());merged.computeBoundingSphere();const mesh=new T.Mesh(merged,mat);mesh.name='Pavilion merged roof detail';mesh.castShadow=mesh.receiveShadow=true;root.add(mesh);
+ }
  for(const [mat,transforms] of batches){
   const mesh=new T.InstancedMesh(new T.BoxGeometry(1,1,1),mat,transforms.length);
   transforms.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=mat!==glow;mesh.receiveShadow=true;
-  mesh.name='Sea pavilion '+(mat===roof?'warm grey roof':mat===frame?'charcoal columns':mat===wood?'timber details':'structure');mesh.computeBoundingSphere();root.add(mesh);
+  mesh.name='Sea pavilion '+(mat===roof?'grey tiled roof':mat===frame?'charcoal columns':mat===wood?'timber details':'structure');mesh.computeBoundingSphere();root.add(mesh);
  }
- root.userData.dimensions={bridgeLength:length,bridgeWidth:2.8,pavilion:[8,7]};
+ root.userData.dimensions={bridgeLength:length,bridgeWidth:2.8,entranceWidth:8.4,pavilion:[8,7]};
  return {root,position:new T.Vector3(end.x+tangent.x*3.95,0,end.z+tangent.z*3.95).add(origin)};
 }
