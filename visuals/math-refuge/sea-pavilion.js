@@ -1,4 +1,4 @@
-import {curvedDeck} from './bridge-deck.js';
+import {curvedDeck} from './bridge-deck.js?v=parallel-joints-39';
 import * as T from '../3d/vendor/three.module.js';
 import {BUILDING_SCALE as S} from './site-layout.js';
 

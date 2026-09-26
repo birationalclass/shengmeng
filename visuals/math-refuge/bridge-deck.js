@@ -1,7 +1,7 @@
 import * as T from '../3d/vendor/three.module.js';
 // Cut every slab to the curve, with common cross-sections instead of rotated boxes.
 export function curvedDeck(curve,width,count,material,columns=1,thickness=.08){
- const vertices=[],uv=[],length=curve.getLength(),gap=.004;
+ const vertices=[],uv=[],length=curve.getLength(),gap=.016;
  const point=(u,lateral,drop=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(lateral)).add(new T.Vector3(0,-drop,0));};
  const quad=(a,b,c,d)=>{for(const p of [a,c,b,a,d,c]){vertices.push(...p.toArray());uv.push(p.x*.0565685,p.z*.0565685);}};
  for(let i=0;i<count;i++){

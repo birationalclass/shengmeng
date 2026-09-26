@@ -1,5 +1,5 @@
-import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=deck-joints-38';
-import {createSeaPavilion} from './sea-pavilion.js?v=deck-joints-38';
+import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=parallel-joints-39';
+import {createSeaPavilion} from './sea-pavilion.js?v=parallel-joints-39';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
