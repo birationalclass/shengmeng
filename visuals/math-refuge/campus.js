@@ -370,14 +370,8 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
       riser.receiveShadow=true;scene.add(riser);
     }
   }
-  // Four 9 cm entry steps, then two 9 cm descents between successive rows.
-  // All heights below are metres before conversion to plan coordinates.
-  const aisleRuns=[[34.5,34.7,.09],[34.7,34.9,.18],[34.9,35.1,.27],[35.1,36.475,.36],[36.475,36.775,.27],[36.775,38.425,.18],[38.425,38.725,.09]];
-  for(const [a,b,height] of aisleRuns){
-    box([(a+b)/2,carpetTop+height/(2*S),0],[b-a,height/S,1.6],height>.18?tierCarpets[0]:tierCarpets[1]);
-    box([a+.012,carpetTop+height/S+.002,0],[.024,.004,1.6],darkFabric);
-  }
-  meta('Central carpeted stair aisle',{width:1.6,stepHeightMetres:.09,runs:aisleRuns});
+  // The central aisle stays on the continuous base carpet; tiers belong only under seats.
+  meta('Flat central carpeted aisle',{width:1.6,floorY:carpetTop,stepCount:0});
   const curvedShell=curvedSeatBack(),curvedCloth=curvedSeatBack(true),headrest=curvedSeatBack(true,true);
   for(const {x,rise} of SEAT_ROWS)for(const z of SEAT_COLUMNS)seating.userData.seatPositions.push([x,carpetTop+rise/S,z]);
   const swivelChairs=createSwivelChairs(scene,seating.userData.seatPositions,{shell,cloth:seatCloth,metal:brass,timber,backs:[curvedShell,curvedCloth,headrest]},S);
