@@ -1,5 +1,5 @@
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
-import {createMovementHud} from './movement-hud.js?v=15';
+import {createMovementHud} from './movement-hud.js?v=threshold-33';
 import {openingArrival} from './opening-arrival.js';
 import {KeyboardMotion} from './keyboard-motion.js?v=continuous-accel-13';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
