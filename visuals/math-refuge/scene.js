@@ -123,7 +123,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       for(let i=1;i<n;i++){
         const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[gap,height,gap],rubber);
       }
-      for(const k of [-width/2,width/2])box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[frame,height,frame],steel);
+      if(!style.seamless)for(const k of [-width/2,width/2])box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[frame,height,frame],steel);
     }else{
       box([x,y+height/2,z],axis==='x'?[width,height,.035]:[.035,height,width],glass);
       for(let i=0;i<=n;i++){
