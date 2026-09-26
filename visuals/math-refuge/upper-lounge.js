@@ -1,3 +1,4 @@
+import {createGrandPiano} from './grand-piano.js?v=concert-52';
 // Selected sketch A: west workstations, east conversation bays, north bar.
 // Physical metres, with a continuous clear arrival aisle at the west door.
 export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
@@ -82,7 +83,7 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   const cushion=sector(1.04,1.51,-Math.PI/3+.025,Math.PI/3-.025,.14);
   sofaBase.name='Lounge dark seat shell';sofaBack.name='Lounge warm upholstered back';cushion.name='Lounge warm seat cushions';
   const discussions=[];
-  for(const [i,z] of [-4.75,.45,5.6].entries()){
+  for(const [i,z] of [-4.75,5.6].entries()){
     const x=2.62,m=seatCloth;discussions.push({x,z,radius:1.81,opening:'west',tableRadius:.64,visitorChair:false,tablePlant:false,upholsteryColor:m.color.getHexString(),shellColor:seatShell.color.getHexString()});
     part(cyl,rug,[x,.039,z],[1.92,.018,1.92]);
     part(sofaBase,seatShell,[x,.15,z]);part(sofaBack,m,[x,.37,z]);
@@ -92,7 +93,8 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
     part(cyl,wood,[x,.29,z],[.40,.54,.40]);part(cyl,ceramic,[x,.585,z],[.64,.045,.64]);
     box([x-.18,.635,z+.10],[.31,.04,.23],dark,null,[0,.2,0]);box([x-.12,.669,z+.08],[.27,.025,.20],paint[i],null,[0,-.1,0]);
   }
-  meta('Three sea-facing discussion circles',{discussions,groups:3});
+  meta('Two sea-facing discussion circles',{discussions,groups:2});
+  const piano=createGrandPiano();piano.root.position.set(2.62,.04,1.3);group.add(piano.root);
   // North hospitality wall: worktop, backbar, display shelves and varied stock.
   box([.15,.50,-8.16],[7.5,1,.70],wood);box([.15,1.02,-8.05],[7.62,.06,.92],ceramic);
   for(let i=0;i<38;i++)box([-3.5+i*.195,.49,-7.799],[.027,.89,.018],oak);
@@ -122,5 +124,5 @@ export function createUpperLounge(T,{seatCloth,seatShell,seatMetal}){
   for(const {g,m,matrices} of batches.values()){
     const mesh=new T.InstancedMesh(g,m,matrices.length);mesh.name='Lounge furniture batch';matrices.forEach((v,i)=>mesh.setMatrixAt(i,v));mesh.castShadow=true;mesh.receiveShadow=true;mesh.computeBoundingSphere();group.add(mesh);
   }
-  return {group,dispose(){geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
+  return {group,dispose(){piano.dispose();geos.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
 }

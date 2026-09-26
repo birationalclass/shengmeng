@@ -1,14 +1,14 @@
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
-import {createMovementHud} from './movement-hud.js?v=threshold-33';
-import {openingArrival} from './opening-arrival.js';
-import {KeyboardMotion} from './keyboard-motion.js?v=continuous-accel-13';
+import {createMovementHud} from './movement-hud.js?v=range280-49';
+import {openingArrival} from './opening-arrival.js?v=opening-10s-48';
+import {KeyboardMotion} from './keyboard-motion.js?v=speed100-49';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
 import {startDeferredTextures} from './deferred-textures.js?v106';
-import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v118';
+import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v=opening-10s-48';
 import {SunriseIntro} from './sunrise-intro.js?v122';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
@@ -44,7 +44,7 @@ import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v84-display';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
-import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=true-north-coast-1';
+import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=concert-53';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents,solarState} from './solar-state.js?v91-shore';
@@ -64,7 +64,7 @@ $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$(
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
 installCoastWalks(SHOTS);
-{const o=buildingOffset('01B'),p=[24*BUILDING_SCALE+o.x-40,.275*BUILDING_SCALE,o.z-12];SHOTS.push({name:'海上小亭',title:'沿廊入海，停在风里。',description:'曲线石板步道 · 四角攒尖海上亭',duration:30,fov:58,positions:[[p[0]+20,12,p[2]+22],[p[0]+20,12,p[2]+22]],targets:[[p[0]+5,1,p[2]],[p[0]+5,1,p[2]]]});BUILDINGS[0].rooms.push({name:'海上小亭',shot:'海上小亭'});}
+{const o=buildingOffset('01B'),p=[24*BUILDING_SCALE+o.x-40,.275*BUILDING_SCALE,o.z];SHOTS.push({name:'海上小亭',title:'沿廊入海，停在风里。',description:'曲线石板步道 · 四角攒尖海上亭',duration:30,fov:58,positions:[[p[0]+20,12,p[2]+22],[p[0]+20,12,p[2]+22]],targets:[[p[0]+5,1,p[2]],[p[0]+5,1,p[2]]]});BUILDINGS[0].rooms.push({name:'海上小亭',shot:'海上小亭'});}
 for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?SEAT_ROWS[2].x-3.3:SEAT_ROWS[0].x+3.3)*BUILDING_SCALE+shift.x,p=[x,(DECK_Y+.028)*BUILDING_SCALE+(event==='sunrise'?SEAT_ROWS[2].rise:SEAT_ROWS[0].rise)+2.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'后排座椅前景 · 海平面日落':'第一排座椅前景 · 海平面日出',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
 BUILDINGS[0].rooms.push({name:'降下讲台',lecternLift:true});
 
@@ -94,7 +94,7 @@ function enterScene(){
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  if(['campus','stairs','pavilion'].includes(new URLSearchParams(location.search).get('view'))){opening=null;shot=SHOTS.findIndex(s=>s.name===({stairs:'旋转楼梯',pavilion:'海上小亭',campus:'远眺'}[new URLSearchParams(location.search).get('view')]));time=0;blend=null;free=true;touring=false;controls.enabled=true;sceneTime.previewAt(12);applyShot(0);updateLabels();}else replayOpening();
+  replayOpening();
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
@@ -111,7 +111,7 @@ function replayOpening(){
   openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
   selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
   const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
-  blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end);blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
+  blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }

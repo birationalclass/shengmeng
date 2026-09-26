@@ -1,8 +1,8 @@
 // World units are metres. Measure translation, not keyboard state or rotation.
 export function createMovementHud(hint,dial){
  const ticks=dial.querySelector('.speed-ticks'),needle=dial.querySelector('.speed-needle'),value=dial.querySelector('.speed-value');
- for(let i=0;i<=16;i++){
-  const a=(-112.5+i*225/16)*Math.PI/180,r=i%4?53:49;
+ for(let i=0;i<=28;i++){
+  const a=(-112.5+i*225/28)*Math.PI/180,r=i%4?53:49;
   const line=document.createElementNS('http://www.w3.org/2000/svg','line');
   for(const [k,v] of Object.entries({x1:80+Math.sin(a)*r,y1:56-Math.cos(a)*r,x2:80+Math.sin(a)*58,y2:56-Math.cos(a)*58}))line.setAttribute(k,v);
   ticks.append(line);
@@ -21,8 +21,8 @@ export function createMovementHud(hint,dial){
    speed+=(target-speed)*(1-Math.exp(-dt/.25));
    const visible=manual&&noticeAge>3.3&&speed>20;
    dial.classList.toggle('is-moving',visible);dial.setAttribute('aria-hidden',String(!visible));
-   value.textContent=String(Math.round(speed));
-   needle.style.transform=`rotate(${-112.5+225*Math.min(speed/80,1)}deg)`;
+   value.textContent=String(Math.min(280,Math.round(speed)));
+   needle.style.transform=`rotate(${-112.5+225*Math.min(speed/280,1)}deg)`;
   }
  };
 }

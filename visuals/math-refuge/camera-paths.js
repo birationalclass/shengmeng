@@ -20,7 +20,7 @@ export const SHOTS=[
    positions:[[-28,18,40],[-35,25,49],[-43,32,58],[-52,38,67]],targets:[[9,1,0],[10,1,0],[12,1,0],[14,1,0]]},
   {name:'海上花园',title:'竹影、溪声，<br>与一棵巨树为邻。',description:'海上花园 · 竹庭茶亭 · 开阔海平线',duration:38,fov:58,
    positions:[[-23,3,36],[-37,5,30],[-58,6,12],[-68,8,-20]],targets:[[-24,4,31],[-44,4,30],[-51,6,8],[-60,8,-44]]},
-  {name:'二楼客厅',title:'在海景里，<br>让想法自然相遇。',description:'六套彩色 iMac · 三组讨论环沙发 · 茶咖酒水吧',duration:34,fov:66,
+  {name:'二楼客厅',title:'在海景里，<br>让想法自然相遇。',description:'六套彩色 iMac · 三角钢琴 · 两组讨论环沙发 · 茶咖酒水吧',duration:34,fov:66,
    positions:[[37.5,loungeEye,4.9],[37.6,loungeEye,2.0],[37.6,loungeEye,-.3],[37.8,loungeEye,-3.3]],targets:[[40.5,loungeEye-.35,0],[40.6,loungeEye-.35,-1.5],[40.6,loungeEye-.35,-3.4],[39.5,loungeEye-.35,-5.8]]}
 ];
 SHOTS.push({name:'教学楼',title:'三层小教室，<br>一次讲透一小节。',description:'西侧教学楼 · 每层两排座椅 · 章节研读',duration:35,fov:55,positions:[[-67,14,30],[-70,12,28],[-74,11,26],[-79,10,25]],targets:[[-85,5.3,8],[-85,5.3,8],[-85,5.3,8],[-85,5.3,8]]});

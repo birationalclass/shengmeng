@@ -4,10 +4,13 @@ import {BUILDING_SCALE as S} from './site-layout.js';
 
 export function createSeaPavilion(scene,materials,offset){
  const root=new T.Group();root.name='Hall sea promenade and pavilion';scene.add(root);
- // Continue the western entrance canopy onto open water, bending north of the sunset axis.
+ // Scheme A: one shallow bow; both landing edges stay parallel to the hall platform.
  const origin=new T.Vector3(24*S+offset.x,.275*S,offset.z);
  root.position.copy(origin);
- const curve=new T.CatmullRomCurve3([[0,0,0],[-7,0,0],[-20,0,-7],[-36,0,-12]].map(p=>new T.Vector3(...p)));
+ const curve=new T.Curve();
+ curve.getPoint=(t,target=new T.Vector3())=>target.set(-40*t,0,-3*Math.sin(Math.PI*t)**2);
+ curve.getTangent=(t,target=new T.Vector3())=>target.set(-40,0,-3*Math.PI*Math.sin(2*Math.PI*t)).normalize();
+ curve.arcLengthDivisions=400;
  const batches=new Map(),matrix=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0);
  const deck=materials.hallPaving||materials.terraceFloor||materials.stone;
  const steel=materials.steel,wood=new T.MeshStandardMaterial({color:0x493d32,roughness:.68,metalness:.03}),edge=materials.edge,brass=materials.brass;
@@ -21,7 +24,7 @@ export function createSeaPavilion(scene,materials,offset){
   q.setFromAxisAngle(up,yaw);matrix.compose(new T.Vector3(...p),q,new T.Vector3(...size));batches.get(mat).push(matrix.clone());
  }
  function beam(a,b,width,height,mat){const d=new T.Vector3().subVectors(b,a);box(a.clone().add(b).multiplyScalar(.5).toArray(),[width,height,d.length()+.012],mat,Math.atan2(d.x,d.z));}
- const flare=u=>{const t=Math.max(0,Math.min(1,u));return 3-2*t*t*t*(10-15*t+6*t*t);};
+ const flare=u=>{const t=Math.max(0,Math.min(1,u*40/14));return 3-2*t*t*t*(10-15*t+6*t*t);};
  const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*flare(u))).add(new T.Vector3(0,y,0));};
  const length=curve.getLength(),count=Math.ceil(length/.575);
  root.add(curvedDeck(curve,u=>2.8*flare(u),count,deck,1,.07));
@@ -39,8 +42,8 @@ export function createSeaPavilion(scene,materials,offset){
   }
  }
  const end=curve.getPointAt(1),tangent=curve.getTangentAt(1),cx=end.x-3.95,cz=end.z;
- // Align the pavilion's entrance normal with the arriving bridge tangent.
- pavilionTransform={x:end.x,z:end.z,angle:Math.atan2(tangent.z,-tangent.x)};
+ // Keep the pavilion square to the campus axes, independently of the path.
+ pavilionTransform={x:end.x,z:end.z,angle:0};
  box([cx,-.2,cz],[8,.32,7],edge);
  for(let i=0;i<6;i++)for(let j=0;j<6;j++)box([cx-4+(j+.5)*8/6,-.025,cz-3.5+(i+.5)*7/6],[8/6-.006,.05,7/6-.006],deck);
  for(const x of [-3.5,3.5])for(const z of [-3,3]){
@@ -159,6 +162,6 @@ export function createSeaPavilion(scene,materials,offset){
   transforms.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=mat!==glow;mesh.receiveShadow=true;
   mesh.name='Sea pavilion '+(mat===roof?'grey tiled roof':mat===frame?'charcoal columns':mat===wood?'timber details':'structure');mesh.computeBoundingSphere();root.add(mesh);
  }
- root.userData.dimensions={bridgeLength:length,bridgeWidth:2.8,entranceWidth:8.4,pavilion:[8,7]};
+ root.userData.dimensions={scheme:'A',pavilionYaw:0,bridgeLength:length,bridgeWidth:2.8,entranceWidth:8.4,pavilion:[8,7]};
  return {root,position:new T.Vector3(end.x+tangent.x*3.95,0,end.z+tangent.z*3.95).add(origin)};
 }

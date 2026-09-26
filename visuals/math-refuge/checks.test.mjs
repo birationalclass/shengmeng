@@ -434,8 +434,8 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
         assert.equal(hits[0]?.object.material.name,'Unobstructed iMac display','Stand and chassis must not occlude any screen sample');
       }
     }
-    const circles=lounge.getObjectByName('Three sea-facing discussion circles').userData.discussions;
-    assert.equal(circles.length,3);assert(circles.every(s=>s.x>0&&s.opening==='west'));
+    const circles=lounge.getObjectByName('Two sea-facing discussion circles').userData.discussions;
+    assert.equal(circles.length,2);assert(circles.every(s=>s.x>0&&s.opening==='west'));
     assert(circles.every(s=>!s.visitorChair&&!s.tablePlant));
     assert(circles.every(s=>s.upholsteryColor==='776352'&&s.shellColor==='544e45'));
     for(const name of ['Lounge warm upholstered back','Lounge warm seat cushions']){
@@ -445,7 +445,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     }
     assert.equal(lounge.children.find(o=>o.geometry?.name==='Lounge dark seat shell').material,backs[0].material);
     const sofaPillows=lounge.children.find(o=>o.geometry?.type==='SphereGeometry'&&o.material===pillows[0].material);
-    assert.equal(sofaPillows.count,15,'Every ring-sofa pillow uses the hall upholstery');
+    assert.equal(sofaPillows.count,10,'Every ring-sofa pillow uses the hall upholstery');
     for(const pod of circles){
       const origin=lounge.localToWorld(new Three.Vector3(pod.x-1.4,1.4,pod.z+.75));
       const hit=new Three.Raycaster(origin,new Three.Vector3(0,-1,0)).intersectObject(lounge,true)[0];

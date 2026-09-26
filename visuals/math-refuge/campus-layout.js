@@ -1,13 +1,14 @@
-import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=pavilion-structure-45';
-import {createSeaPavilion} from './sea-pavilion.js?v=pavilion-structure-45';
+import {createHallTerraceFurniture} from './hall-terrace-furniture.js?v=grass-51';
+import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=smooth-bridges-47';
+import {createSeaPavilion} from './sea-pavilion.js?v=smooth-bridges-47';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
 import {BUILDING_SCALE as S,HALL,LECTERN_SHAFT_PLAN} from './site-layout.js';
 import {subtractRect} from './board-storage.js?v124';
 import {createLecternLift} from './lectern-lift.js';
-import {bridgePlan} from './campus-plan.js';
-import {routeBridge} from './campus-routing.js';
+import {bridgePlan} from './campus-plan.js?v=isolated-backup-47';
+import {routeBridge} from './campus-routing.js?v=anchors-49';
 
 const anchor=39*S;
 export const members=new Map(),sharedVertices=[];
@@ -76,8 +77,10 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    const chunks=new Map();
    for(let i=0;i<obj.count;i++){
     obj.getMatrixAt(i,scratch);point.setFromMatrixPosition(scratch);
+    // Old garden perimeter strips belong to the retired ground footprint.
+    if(obj.material?.userData?.stripSource&&point.y/(worldInstances?S:1)<.2)continue;
     const b=owner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
-    for(const dest of destinations(b)){if(dest[0]==='01B'&&['original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy','removed-hall-entrance-bridge'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
+    for(const dest of destinations(b)){if(dest[0]==='01B'&&['replaced-hall-terrace-furniture','original-hall-stair','hall-upper-edge-strip','removed-hall-west-canopy','removed-hall-entrance-bridge'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
    }
    obj.visible=false;
    for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();scene.add(track(m,id));}
@@ -89,6 +92,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
   bounds.getCenter(point).divideScalar(S);const b=owner(point.x,point.z);
   for(const dest of destinations(b).slice(1)){const copy=obj.clone(true);copy.position.add(offset(dest));copy.name='Layout '+dest[0]+' '+obj.name;scene.add(track(copy,dest[0]));}
   obj.applyMatrix4(relocation(b));track(obj,b[0]);
+  if(b[0]==='01B'&&obj.name.startsWith('Lantern soft ground pool'))obj.visible=false;
  }
  scene.updateMatrixWorld(true);
 }
@@ -131,6 +135,7 @@ export function finishCampusLayout(scene,retreat,rooms){
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);
  for(const [a,b] of bridgePlan.connections){const path=routeBridge(campusLayout.find(r=>r[0]===a),campusLayout.find(r=>r[0]===b),campusLayout);if(!path)throw Error('无法连接 '+a+'/'+b);createCoastalBridge(bridges,bridgeCurve(path,campusLayout,[a,b]),retreat.materials,anchor,top,'Curved stone bridge '+a+' '+b);}
  createHallSpiral(scene,retreat.materials,buildingOffset('01B'));
+ createHallTerraceFurniture(scene,retreat.materials,buildingOffset('01B'));
  const pavilion=createSeaPavilion(scene,retreat.materials,buildingOffset('01B'));if(retreat.campus)retreat.campus.seaPavilion=pavilion;
  scene.updateMatrixWorld(true);
  const ray=new T.Raycaster(),down=new T.Vector3(0,-1,0);

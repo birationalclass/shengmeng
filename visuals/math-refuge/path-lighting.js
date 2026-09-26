@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {BUILDING_SCALE as S,DECK_Y,GARDEN_PADS} from './site-layout.js?v44-hall-clearance';
 // Shared falloff patches avoid a separate realtime shadow/light pass per lantern.
-export function createPathLighting(scene,{box,beam,materials}){
+export function createPathLighting(scene,{box,beam,materials,section=()=>{}}){
   const {stone,steel,brass}=materials;
   const glow=new THREE.MeshStandardMaterial({color:'#f4deba',roughness:.9,emissive:'#ffe2ac',emissiveIntensity:.1});
   glow.userData.stripSource=true;
@@ -12,6 +12,7 @@ export function createPathLighting(scene,{box,beam,materials}){
   const geometry=new THREE.PlaneGeometry(1,1),patches=[];
   const positions=[[-20,-20],[-20,18],[-3,20],[15,20],[16,-20],[-44,8],[-57,8],[-65,8],[-63,-17],[-63,-34],[-63,-48],[-47,-15],[-42,-21],[-51,-27],[-42,-37],[-39,24.5],[-26,24.5],[-24,35],[-35,31],[28,-12],[28,14],[52,-12],[52,14],[34,-24],[42,-18]];
   for(const [i,[x,z]] of positions.entries()){
+    section(x>23&&Math.abs(z)<16.6?'replaced-hall-terrace-furniture':'');
     const y=DECK_Y,type=i%3;
     if(type===0){ // Hollow limestone niche with a deeply recessed luminous ceiling.
       box([x,y+.45,z-.19],[.72,.9,.10],stone);
@@ -29,6 +30,7 @@ export function createPathLighting(scene,{box,beam,materials}){
     const patch=new THREE.Mesh(geometry,pool);patch.name='Lantern soft ground pool '+i;patch.rotation.x=-Math.PI/2;patch.position.set(x,DECK_Y+.063,z);patch.scale.set(type===2?4:2.5,type===2?4:2.5,1);scene.add(patch);patches.push(patch);
     const marker=new THREE.Object3D();marker.name='Platform path lantern '+i;marker.position.set(x,y,z);marker.userData.type=['stone-niche','bronze-bollard','slender-pole'][type];scene.add(marker);
   }
+  section('');
   for(const [a,b,c,d] of GARDEN_PADS){
     for(const z of [c,d])box([(a+b)/2,.08,z],[b-a,.022,.024],glow);
     for(const x of [a,b])box([x,.08,(c+d)/2],[.024,.022,d-c],glow);

@@ -12,12 +12,12 @@ export function createAutomaticDoors(T,glass,metal){
       const leaf=new T.Group();leaf.position.x=sign*width/4;leaf.position.z=sign*.019;group.add(leaf);
       const pane=new T.Mesh(geometry,glass);pane.name='Full-height sliding glass leaf';pane.scale.set(width/2+.012,height,.026);leaf.add(pane);
       for(const edge of [-1,1]){
-        const jamb=new T.Mesh(geometry,seamMaterial||frameMaterial);jamb.name='Sliding door seam';if(seamMaterial){jamb.visible=false;seams.push(jamb);}jamb.scale.set(.013,height,.032);jamb.position.x=edge*width/4;leaf.add(jamb);
-        const bevel=new T.Mesh(geometry,seamMaterial||frameMaterial);bevel.name='Sliding door angled highlight bevel';bevel.scale.set(.004,height,.006);bevel.position.set(edge*width/4+.006,0,.018);bevel.rotation.y=Math.PI/4;if(seamMaterial){bevel.visible=false;seams.push(bevel);}leaf.add(bevel);
+        const jamb=new T.Mesh(geometry,seamMaterial||frameMaterial);jamb.name='Sliding door seam';if(seamMaterial){jamb.visible=false;seams.push(jamb);}jamb.scale.set(.007,height,.022);jamb.position.x=edge*width/4;leaf.add(jamb);
+        const bevel=new T.Mesh(geometry,seamMaterial||frameMaterial);bevel.name='Sliding door angled highlight bevel';bevel.scale.set(.0025,height,.004);bevel.position.set(edge*width/4+.0035,0,.012);bevel.rotation.y=Math.PI/4;if(seamMaterial){bevel.visible=false;seams.push(bevel);}leaf.add(bevel);
       }
       leaves.push({leaf,sign});
     }
-    const rail=new T.Mesh(geometry,frameMaterial);rail.name='Ceiling recessed door track';rail.scale.set(width*2.05,.075,.095);rail.position.y=height/2+.05;group.add(rail);
+    const rail=new T.Mesh(geometry,frameMaterial);rail.name='Ceiling recessed door track';rail.scale.set(width*2.05,.038,.045);rail.position.y=height/2+.05;group.add(rail);
     const sensor=new T.Mesh(new T.PlaneGeometry(width*2.1,height+.15),sensorMaterial);sensor.name='Door hover sensor '+name;
     sensor.position.z=.08;sensor.userData={autoDoor:true,hovered:false,opening:0,axis,name};group.add(sensor);targets.push(sensor);
     const door={group,sensor,leaves,width,height,opening:0,closeDelay:0,seamMaterial,seams,seamOpacity:0};doors.push(door);

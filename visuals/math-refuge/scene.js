@@ -15,7 +15,7 @@ import * as THREE from 'three';
 import {createBoats} from './boats.js?v=relocated-sunrise-11';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=campus-layout-20260926';
-import {createPathLighting} from './path-lighting.js?v129';
+import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v112';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
@@ -171,7 +171,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   }
   report('正在搭建海上长露台与报告厅…');
   const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
-  const pathLighting=createPathLighting(scene,{box,beam,materials});
+  const pathLighting=createPathLighting(scene,{box,beam,materials,section});
   materials.terraceStrip=pathLighting.material;
   // Independent chalkboards, with brief mathematical statements rather than
   // unverified solved/unsolved status announcements.

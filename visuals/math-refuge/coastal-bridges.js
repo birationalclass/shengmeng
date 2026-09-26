@@ -5,10 +5,24 @@ export function bridgeCurve(path,buildings,ends,width=3){
  const normal=(p,b)=>Math.abs(Math.abs(p[0]-b[4])-b[6]/2)<Math.abs(Math.abs(p[1]-b[5])-b[7]/2)?[Math.sign(p[0]-b[4]),0]:[0,Math.sign(p[1]-b[5])];
  const start=path[0],end=path.at(-1),ns=normal(start,buildings.find(b=>b[0]===ends[0])),ne=normal(end,buildings.find(b=>b[0]===ends[1]));
  const finish=points=>{
-  const lead=Math.min(4,Math.hypot(end[0]-start[0],end[1]-start[1])*.12),offset=(p,n,d)=>p.map((v,i)=>v+n[i]*d);
-  const middle=points.slice(1,-1).filter(p=>Math.hypot(p[0]-start[0],p[1]-start[1])>lead*1.7&&Math.hypot(p[0]-end[0],p[1]-end[1])>lead*1.7);
-  const result=[start,offset(start,ns,lead*.35),offset(start,ns,lead),...middle,offset(end,ne,lead),offset(end,ne,lead*.35),end];
-  result.startNormal=ns;result.endNormal=ne;return result;
+  // Smoothly remove lateral drift at the ends, with zero first/second derivatives
+  // of the blend. Dense, evenly spaced samples avoid a kink after a short lead-in.
+  const source=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(p[0],0,p[1])),false,'centripetal');
+  const samples=source.getSpacedPoints(240).map(p=>[p.x,p.z]),length=source.getLength();
+  const ease=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(10-15*t+6*t*t);};
+  let result;
+  for(const lead of [Math.min(18,length*.24),Math.min(10,length*.18),Math.min(5,length*.12)]){
+   result=samples.map((p,i)=>{
+    const t=i/240;let q=p.slice();
+    for(const [endPoint,n,distance] of [[start,ns,t*length],[end,ne,(1-t)*length]])if(distance<lead){
+     const dx=q[0]-endPoint[0],dy=q[1]-endPoint[1],along=dx*n[0]+dy*n[1],k=ease(distance/lead);
+     q=[endPoint[0]+n[0]*along+(dx-n[0]*along)*k,endPoint[1]+n[1]*along+(dy-n[1]*along)*k];
+    }
+    return q;
+   });
+   if(!blocked(result))break;
+  }
+  result[0]=start;result[result.length-1]=end;result.startNormal=ns;result.endNormal=ne;return result;
  };
  const blocked=points=>points.some(([x,y])=>buildings.some(b=>!ends.includes(b[0])&&Math.abs(x-b[4])<b[6]/2+width/2+.1&&Math.abs(y-b[5])<b[7]/2+width/2+.1));
  if(path.length===2){

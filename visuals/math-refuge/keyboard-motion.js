@@ -10,7 +10,8 @@ export class KeyboardMotion {
   const moving=['w','s','q','e','arrowup','arrowdown','arrowleft','arrowright',' ','x'].some(key=>keys.has(key));
   this.held=moving?this.held+dt:0;
   const t=Math.min(1,this.held/6),ramp=t*t*(3-2*t);
-  const speed=keys.has('shift')?10+10*ramp:4+8*ramp;
+  const maximum=100/3.6,initial=keys.has('shift')?10:4;
+  const speed=initial+(maximum-initial)*ramp;
   const weight=1-Math.exp(-dt/(length?.28:.12));
   for(let i=0;i<3;i++){this.velocity[i]+=((length?input[i]/length*speed:0)-this.velocity[i])*weight;if(!length&&Math.abs(this.velocity[i])<.001)this.velocity[i]=0;}
   const turn=(has('a')-has('d'))*.9;this.turn+=(turn-this.turn)*(1-Math.exp(-dt/.16));if(!turn&&Math.abs(this.turn)<.001)this.turn=0;

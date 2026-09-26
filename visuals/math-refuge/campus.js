@@ -7,7 +7,7 @@ import {BUILDINGS} from './building-catalog.js?v=true-north-coast-1';
 import {createRoofNumber} from './roof-number.js?v62-chalk-ink';
 import {terracePaving} from './terrace-paving.js';
 import {createLectern} from './lectern.js?v=103-pulley';
-import {createUpperLounge} from './upper-lounge.js?v=42-warm-seating';
+import {createUpperLounge} from './upper-lounge.js?v=concert-52';
 import {perimeterRails} from './upper-guards.js?v=36-board-detail';
 import {createAutomaticDoors} from './automatic-doors.js?v44-hall-clearance';
 import {BUILDING_SCALE as S,DECK_Y,HALL,COURT_DECKS,SEA_TERRACE,COFFEE_PAD,BRIDGES,GARDEN_PADS,GIANT_TREES,ORNAMENTAL_TREES,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
@@ -18,7 +18,7 @@ import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fix
 // No swimming basin or exposed support piles are constructed.
 export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
-  const doorFrame=new THREE.MeshStandardMaterial({color:0x353d40,roughness:.32,metalness:.72,envMapIntensity:.65});
+  const doorFrame=new THREE.MeshPhysicalMaterial({color:0x414c50,roughness:.48,metalness:.55,envMapIntensity:.22,clearcoat:.08,clearcoatRoughness:.4});
   const roofNumbers=[];
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
   const seatCloth=new THREE.MeshStandardMaterial({color:'#776352',roughness:.97,normalMap:pale.normalMap,roughnessMap:pale.roughnessMap});
@@ -74,7 +74,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     for(let i=0;i<count;i++)box([x,top(i)-rise/count-.025,startZ-i*tread],[width-.10,.06,.13],steel);
     meta(name,{count,x,startZ,lastZ,tread,rise,width,landingZ});
   }
-  const lightingZones=[],automaticDoors=createAutomaticDoors(THREE,glass,steel);
+  const lightingZones=[],automaticDoors=createAutomaticDoors(THREE,glass,doorFrame);
   const lampRing=new THREE.TorusGeometry(1,.025,8,64);
   const shade=new THREE.LatheGeometry([new THREE.Vector2(.045,0),new THREE.Vector2(.14,-.035),new THREE.Vector2(.32,-.12),new THREE.Vector2(.48,-.24),new THREE.Vector2(.50,-.27),new THREE.Vector2(.47,-.30)],40);
   const shadeMaterial=new THREE.MeshStandardMaterial({color:'#a6957b',roughness:.5,metalness:.45,side:THREE.DoubleSide});
@@ -139,11 +139,11 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
-      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.022/S,seal:.008/S}:undefined;
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.012/S,seal:.008/S}:undefined;
       if(doors.includes(side)){
         const isHall=name==='Low sea-facing seminar hall',isHallUpper=name==='Upper seminar lounge';
         const gap=(isHall?2.0:1.45)*(isHall||isHallUpper?1.5:1)*(isHall&&side==='west'?1.4:1),pane=(width-gap)/2;
-        const fixedStyle=isHall?{panels:1,frame:.022/S,seal:.005/S,seamless:side==='west'}:style;
+        const fixedStyle=isHall?{panels:1,frame:.012/S,seal:.005/S,seamless:side==='west'}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
           automaticDoors.add(scene,{x,y,z,width:gap,height:h,axis,name:side,frameMaterial:doorFrame});
@@ -369,7 +369,9 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   blind.name='East teaching blackout shade';blind.position.set(HALL.east+.029,DECK_Y+HALL.clearHeight/(2*S),0);blind.visible=false;scene.add(blind);
   box([HALL.east+.04,DECK_Y+HALL.clearHeight/S-.04,0],[.04,.12,hallDepth-.6],steel);
   // No sun loungers remain on the compact sea terrace.
+  section('replaced-hall-terrace-furniture');
   for(const z of [-11,13]){sofa(48,DECK_Y,z,Math.PI/2);table(49.2,DECK_Y,z,1,.7);}
+  section('');
   // Sea access has been removed; the continuous platform fascia and edge lights
   // follow the same complete perimeter without stair projections.
   const discussion=createSeminarBuilding(scene,{box,soft,beam,floor,glazing,instance,materials,automaticDoors});
