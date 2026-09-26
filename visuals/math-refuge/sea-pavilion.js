@@ -10,7 +10,7 @@ export function createSeaPavilion(scene,materials,offset){
  const curve=new T.CatmullRomCurve3([[0,0,0],[-7,0,0],[-20,0,-7],[-36,0,-12]].map(p=>new T.Vector3(...p)));
  const batches=new Map(),matrix=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0);
  const deck=materials.hallPaving||materials.terraceFloor||materials.stone;
- const steel=materials.steel,wood=materials.timber,edge=materials.edge,brass=materials.brass;
+ const steel=materials.steel,wood=new T.MeshStandardMaterial({color:0x493d32,roughness:.68,metalness:.03}),edge=materials.edge,brass=materials.brass;
  const roof=new T.MeshStandardMaterial({color:0x454d50,roughness:.87,metalness:.12});
  const frame=new T.MeshStandardMaterial({color:0x303736,roughness:.78,metalness:.12});
  const glow=new T.MeshStandardMaterial({color:0xc9ac78,emissive:0xffc680,emissiveIntensity:.45,roughness:.65});
@@ -89,6 +89,18 @@ export function createSeaPavilion(scene,materials,offset){
  }
  const peak=local(cx,5.08,cz);
  const finial=new T.Mesh(new T.LatheGeometry([new T.Vector2(.12,0),new T.Vector2(.18,.07),new T.Vector2(.14,.15),new T.Vector2(.08,.24),new T.Vector2(.065,.36),new T.Vector2(0,.54)],24),ridgeMaterial);finial.position.copy(peak);finial.name='Pavilion roof finial';finial.castShadow=true;root.add(finial);
+ // Visible structural load path: roof > curved rafters > purlins > column capitals.
+ for(let side=0;side<4;side++){
+  for(let rib=0;rib<=16;rib++)molding(Array.from({length:19},(_,j)=>roofPoint(side,rib/8-1,.18+.82*j/18,-.18)),.052,wood,'Pavilion swept timber rafter');
+  for(const v of [.38,.73,.9])molding(Array.from({length:25},(_,j)=>roofPoint(side,j/12-1,v,-.24)),.085,wood,'Pavilion continuous supporting purlin');
+ }
+ for(const z of [-3,3])box([cx,3.075,cz+z],[7.25,.30,.22],wood);
+ for(const x of [-3.5,3.5])box([cx+x,3.075,cz],[.22,.30,6.2],wood);
+ for(const x of [-3.5,3.5])for(const z of [-3,3]){
+  box([cx+x,3.015,cz+z],[.24,.5,.24],wood);
+  box([cx+x,3.16,cz+z],[.72,.14,.34],wood);
+  box([cx+x,3.19,cz+z],[.34,.14,.72],wood);
+ }
  // A continuous timber frame and restrained brackets under the overhanging roof.
  for(const z of [-3,3]){box([cx,2.84,cz+z],[7.25,.24,.16],frame);box([cx,2.56,cz+z],[7.1,.09,.1],frame);}
  for(const x of [-3.5,3.5]){box([cx+x,2.84,cz],[.16,.24,6.2],frame);box([cx+x,2.56,cz],[.1,.09,6.1],frame);}
@@ -103,14 +115,29 @@ export function createSeaPavilion(scene,materials,offset){
  }
  for(let i=0;i<20;i++)for(const z of [-3,3])box([cx-3.25+i*6.5/19,2.69,cz+z],[.035,.2,.055],frame);
  for(let i=0;i<16;i++)for(const x of [-3.5,3.5])box([cx+x,2.69,cz-2.75+i*5.5/15],[.055,.2,.035],frame);
- for(const z of [-3.42,3.42]){
-  // Floating timber benches, recessed supports and slatted backrest.
-  box([cx,.44,cz+z*.79],[5.8,.085,.62],wood);
-  for(const x of [-2.3,2.3])box([cx+x,.21,cz+z*.79],[.075,.42,.43],steel);
-  for(let i=0;i<3;i++)box([cx,.65+i*.1,cz+z*.9],[5.8,.065,.045],wood);
-  box([cx,2.96,cz+z*.88],[6,.016,.025],glow);
+ // Framed dark-wood benches: low lattice back, recessed seat panels and mortise-like legs.
+ for(const sign of [-1,1]){
+  const z=cz+sign*2.65,back=z+sign*.33;
+  for(const dz of [-.30,.30])box([cx,.43,z+dz],[5.8,.12,.085],wood);
+  for(let j=0;j<12;j++)box([cx-2.65+j*5.3/11,.482,z],[.46,.04,.50],wood);
+  for(const x of [-2.8,0,2.8]){
+   box([cx+x,.23,z-.23],[.11,.44,.11],wood);box([cx+x,.23,z+.23],[.11,.44,.11],wood);
+   box([cx+x,.69,back],[.09,.62,.09],wood);
+  }
+  box([cx,.94,back],[5.86,.09,.11],wood);box([cx,.60,back],[5.7,.065,.075],wood);
+  for(let j=0;j<17;j++)box([cx-2.64+j*.33,.77,back],[.035,.28,.045],wood);
+  box([cx,.27,z-sign*.23],[5.5,.09,.065],wood);
+  for(const x of [-2.82,2.82]){
+   box([cx+x,.70,z],[.075,.08,.69],wood);
+   box([cx+x,.59,z-sign*.28],[.065,.25,.065],wood);
+  }
+  box([cx,2.97,cz+sign*2.88],[6,.016,.025],glow);
  }
- box([cx,.56,cz],[1.3,.08,.85],wood);box([cx,.27,cz],[.12,.54,.12],steel);
+ // A low square tea table with inset stone centre, apron and four timber legs.
+ box([cx,.53,cz],[1.3,.075,.95],wood);box([cx,.573,cz],[1.12,.012,.77],deck);
+ for(const x of [-.51,.51])for(const z of [-.34,.34])box([cx+x,.265,cz+z],[.075,.5,.075],wood);
+ for(const z of [-.36,.36])box([cx,.44,cz+z],[1.08,.13,.055],wood);
+ for(const x of [-.53,.53])box([cx+x,.44,cz],[.055,.13,.72],wood);
  // Merge repeated roof tiles by material to keep the detailed roof inexpensive to draw.
  const details=new Map();
  for(const mesh of [...root.children])if(mesh.name.startsWith('Pavilion ')){
