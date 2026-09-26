@@ -12,7 +12,7 @@ import {createResidence} from './residence.js?v=true-north-coast-1';
 import {createRain} from './weather-rain.js?v72-night-rain';
 import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
-import {createBoats} from './boats.js?v=east-sailboat-2';
+import {createBoats} from './boats.js?v=relocated-sunrise-11';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=campus-layout-20260926';
 import {createPathLighting} from './path-lighting.js?v129';
@@ -563,7 +563,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     const state=solarState(hour,date),campusSun=geographicDirectionToCampus(state.direction),day=state.daylight,k=dt>0?1-Math.exp(-dt/4):1;
     for(const key of Object.keys(weather))if(key!=='windDirection')weather[key]+=(weatherTarget[key]-weather[key])*k;weather.windDirection=weatherTarget.windDirection;advanceWeatherWinds(cloudWind,waterWind,weatherTarget.wind,weatherTarget.windDirection,dt,weatherRate);
     const cloud=weather.cloud,storm=smooth(.4,1,cloud),sunThrough=1-.86*storm;
-    const u=sky.material.uniforms;u.sunPosition.value.fromArray(campusSun);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius*(sky.userData.solarSize==='physical'?1:2+(1-smooth(0,14,Math.abs(state.elevation)))*smooth(-.1,.1,state.direction[0]));u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
+    const u=sky.material.uniforms;u.sunPosition.value.fromArray(campusSun);u.sunColor.value.copy(noonColor).lerp(warmColor,state.warm);u.day.value=day;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=cloud;u.storm.value=storm;u.radius.value=state.radius*(sky.userData.solarSize==='physical'?1:2+(1-smooth(0,14,Math.abs(state.elevation))));u.stars.value=state.night;u.sidereal.value=hour*Math.PI/12;skySeconds+=dt*(.3+weather.wind/25);u.clock.value=skySeconds;u.cloudOffset.value.set(cloudWind.offset.x,cloudWind.offset.z);
     roomFill.setDaylight(day*(1-.3*storm));pathLighting.update(day);
     ocean.material.uniforms.rainAmount.value=Math.min(1,weather.rain/3);ocean.material.uniforms.nightVisibility.value=.06+day*.94;ocean.material.uniforms.sunDirection.value.fromArray(campusSun);ocean.material.uniforms.sunTint.value.copy(u.sunColor.value);ocean.material.uniforms.sunStrength.value=state.direct*sunThrough;ocean.material.uniforms.overcast.value=storm;
     sun.position.copy(sun.target.position).addScaledVector(u.sunPosition.value,90*BUILDING_SCALE);sun.intensity=state.direct*(.8+2.2*smooth(0,60,state.elevation))*sunThrough;sun.color.copy(u.sunColor.value);

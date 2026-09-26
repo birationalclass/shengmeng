@@ -1,3 +1,5 @@
+import {openingArrival} from './opening-arrival.js';
+import {KeyboardMotion} from './keyboard-motion.js';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
@@ -58,7 +60,7 @@ const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
-for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?HALL.east-.7:SEAT_ROWS[0].x)*BUILDING_SCALE+shift.x,p=[x,event==='sunrise'?DECK_Y*BUILDING_SCALE+1.65:(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[0].rise+1.18,shift.z+(event==='sunset'?SEAT_COLUMNS.find(z=>z>0)*BUILDING_SCALE:0)],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'最后一排座椅 · 坐姿观赏日落':'报告厅海景 · 上海今日太阳方位',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
+for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?SEAT_ROWS[2].x-3.3:SEAT_ROWS[0].x+3.3)*BUILDING_SCALE+shift.x,p=[x,(DECK_Y+.028)*BUILDING_SCALE+(event==='sunrise'?SEAT_ROWS[2].rise:SEAT_ROWS[0].rise)+2.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'后排座椅前景 · 海平面日落':'第一排座椅前景 · 海平面日出',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
 BUILDINGS[0].rooms.push({name:'降下讲台',lecternLift:true});
 
 OUTDOOR_AREAS.push('远眺','报告厅备份','访客小院','休息室二组');
@@ -97,9 +99,12 @@ function replayOpening(){
   controls.enableDamping=false;controls.update();
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);
   camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;
+  retreat.fleet.resetSunrisePass();
   sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='1';
   openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
   selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
+  const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
+  blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end);blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
@@ -110,7 +115,7 @@ $('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0,failed=false;
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
-const keys=new Set(),scene=new THREE.Scene();
+const keys=new Set(),keyboardMotion=new KeyboardMotion(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
   position:new THREE.CatmullRomCurve3(s.positions.map(p=>new THREE.Vector3(...p))),
   target:new THREE.CatmullRomCurve3(s.targets.map(p=>new THREE.Vector3(...p)))
@@ -175,6 +180,7 @@ function stopTour(){
   if(changed)updateLabels();
 }
 function beginTransition(){
+  keys.clear();keyboardMotion.reset();
   const position=camera.position.clone(),target=controls.target.clone(),damping=controls.enableDamping;
   controls.enableDamping=false;controls.update();camera.position.copy(position);controls.target.copy(target);controls.update();controls.enableDamping=damping;
   shotPose();
@@ -216,7 +222,8 @@ function applyShot(dt){
   if(blend){
     blend.elapsed+=dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
     for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
-    if(blend.route)blend.route.getPointAt(k,camera.position);
+    if(blend.openingPath)camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
+    else if(blend.route)blend.route.getPointAt(k,camera.position);
     camera.quaternion.slerpQuaternions(blend.rotation,blend.endRotation,k);
     viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
     controls.target.copy(camera.position).addScaledVector(viewDirection,THREE.MathUtils.lerp(blend.distance,blend.endDistance,k));
@@ -224,7 +231,7 @@ function applyShot(dt){
     if(k===1){
       const arrival=blend.openingArrival;blend=null;
       if(arrival){
-        sunriseIntro.arrive();
+        sunriseIntro.arrive();retreat.fleet.startSunrisePass();
         const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
         // A small, interruptible indoor push with zero speed at both ends.
         blend={elapsed:0,duration:15,position:camera.position.clone(),endPosition:camera.position.clone().addScaledVector(forward,.65),
@@ -365,7 +372,7 @@ function tick(stamp){
   const weatherSample=weatherTimer?.poll(stamp);if(weatherSample!=null){weatherGpuSamples.push(weatherSample);if(weatherGpuSamples.length>40)weatherGpuSamples.shift();weatherGpuMs=weatherGpuSamples.reduce((a,b)=>a+b,0)/weatherGpuSamples.length;}
   if(!weatherProbeFrame&&($('adaptiveQuality').value==='auto'||performanceMonitor.visible||!$('settings').hidden))gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
-  retreat?.campus.automaticDoors.update(dt,reduced.matches,[camera.position]);
+  retreat?.campus.automaticDoors.update(dt,reduced.matches,blend?.openingPath?[camera.position,new THREE.Vector3(...blend.openingPath.sample(blend.elapsed+1.2))]:[camera.position]);
   const remaining=openingCameraLock.remaining(stamp);
   if(remaining)controls.enabled=false;else if($('world').dataset.cameraLocked==='true')controls.enabled=true;
   $('openingHint').textContent=remaining?`开场运镜 · ${remaining} 秒后可操作镜头`:'镜头已解锁 · 拖动观察，滚轮前后移动';
@@ -383,15 +390,11 @@ function tick(stamp){
   }else{
     const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;forward.normalize();
     const right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0));
-    const move=new THREE.Vector3();
-    if(keys.has('w')||keys.has('arrowup'))move.add(forward);
-    if(keys.has('s')||keys.has('arrowdown'))move.sub(forward);
-    if(keys.has('q')||keys.has('arrowleft'))move.sub(right);
-    if(keys.has('e')||keys.has('arrowright'))move.add(right);
-    const yaw=(Number(keys.has('a'))-Number(keys.has('d')))*dt*.9;
+    const velocity=keyboardMotion.update(keys,dt);
+    const move=forward.multiplyScalar(velocity.forward*dt).addScaledVector(right,velocity.right*dt);move.y+=velocity.up*dt;
+    const yaw=velocity.yaw*dt;
     if(yaw){const direction=controls.target.clone().sub(camera.position).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);controls.target.copy(camera.position).add(direction);if(SHOTS[shot].lecture)boardFollow.touch();}
-    if(keys.has(' '))move.y+=1;if(keys.has('x'))move.y-=1;
-    if(move.lengthSq()){if(SHOTS[shot].lecture)boardFollow.touch();move.normalize().multiplyScalar(dt*(keys.has('shift')?10:4));camera.position.add(move);controls.target.add(move);}
+    if(move.lengthSq()){if(SHOTS[shot].lecture)boardFollow.touch();camera.position.add(move);controls.target.add(move);}
     // Keep free-flight away from the clipping plane and terrain basement.
     controls.update();
   }
@@ -557,7 +560,7 @@ function updateSceneTime(){
 }
 
 function updateAtmosphere(dt){
- if(hallSunRamp!==null){if(!sceneTime.playing||!sceneTime.preview)hallSunRamp=null;else if(!blend){hallSunRamp+=dt;sceneTime.setRate(sunViewRate(hallSunRamp));if(hallSunRamp>=5)hallSunRamp=null;}}
+ if(hallSunRamp!==null){if(!sceneTime.playing||!sceneTime.preview)hallSunRamp=null;else if(!blend){if(hallSunRamp===0&&SHOTS[shot].name==='报告厅看日出')retreat.fleet.startSunrisePass();hallSunRamp+=dt;sceneTime.setRate(sunViewRate(hallSunRamp));if(hallSunRamp>=5)hallSunRamp=null;}}
  if(sunriseIntro.update(dt))$('timeRate').value='1';sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
  const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
  if(angle>.00028){renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;}
@@ -656,7 +659,8 @@ window.addEventListener('keydown',event=>{
     event.preventDefault();stopTour();keys.add(key);
   }
 });
-window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
+window.addEventListener('keyup',event=>keys.delete(event.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();keyboardMotion.reset();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.clear();keyboardMotion.reset();}});
 let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(resize,180);});
 reduced.addEventListener('change',()=>{if(reduced.matches){touring=false;if(lecture){lecture.playing=false;lecture.staticPage();}updateLabels();}});
 
@@ -749,9 +753,10 @@ function updateSeminarNavigation(){
 let hallSunRamp=null;
 function viewHallSun(event){
  if(cameraLocked())return;
+ if(event==='sunrise')retreat.fleet.resetSunrisePass();
  sunriseIntro.cancel();timePresentation.seek();const hour=hallSunStart(event,sceneTime.date,$('sunSize').value==='physical');sceneTime.previewAt(hour);sceneTime.play(1);hallSunRamp=0;$('timeRate').value='30';updateSceneTime();
  const index=SHOTS.findIndex(s=>s.name==='报告厅'+(event==='sunrise'?'看日出':'看日落')),direction=geographicDirectionToCampus(solarState(hour,sceneTime.date).direction),p=SHOTS[index].positions[0];
- for(const target of curves[index].target.points)target.set(p[0]+direction[0]*500,p[1]+direction[1]*500,p[2]+direction[2]*500);curves[index].target.updateArcLengths();
+ for(const target of curves[index].target.points)target.set(p[0]+direction[0]*500,p[1]+(direction[1]-.10)*500,p[2]+direction[2]*500);curves[index].target.updateArcLengths();
  selectShot(index);setSeminarPanel(true,BUILDINGS[0]);
 }
 function setSeminarPanel(open,building=panelBuilding){

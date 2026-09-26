@@ -1,3 +1,4 @@
+import {buildingOffset} from './campus-layout.js';
 import * as THREE from 'three';
 import {BUILDING_SCALE as S,HALL} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -43,10 +44,12 @@ export function createBoats(scene){
     }
   }
   [[75,85,.4],[-7,-85,-.7],[105,105,1.1]].forEach(([x,z,a],i)=>add('sail',x,z,a,i));
-  // Facing east from the hall: 100 m ahead and 30 m to the right (south).
-  add('sail',(HALL.west+HALL.east)/2+100/S,30/S,.55,3);
+  const hallOffset=buildingOffset('01B'),hallX=(HALL.west+HALL.east)/2+hallOffset.x/S,hallZ=hallOffset.z/S;
+  // Moorings and the dawn pass move with the actual hall, independently of other boats.
+  add('sail',hallX+100/S,hallZ+30/S,.55,3);
   boats.at(-1).name='Auditorium east sailboat';
+  add('sail',hallX+85/S,hallZ-28/S,0,4);const passing=boats.at(-1);passing.name='Sunrise crossing sailboat';let passTime=0,passingActive=false;
   [[77,65,.35],[-17,65,-.8]].forEach(([x,z,a],i)=>add('kayak',x,z,a,i));
   let time=0;
-  return {root,boats,update(dt,tide=seaLevel*S){time+=Math.max(0,Math.min(dt,.1));boats.forEach((boat,i)=>{boat.position.y=tide+.04+.055*Math.sin(time*.7+i*1.9);boat.rotation.z=.022*Math.sin(time*.6+i);boat.rotation.x=.012*Math.cos(time*.8+i);});},dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}};
+  return {root,boats,resetSunrisePass(){passTime=0;passingActive=false;passing.position.z=hallZ*S-28;},startSunrisePass(){passingActive=true;},update(dt,tide=seaLevel*S){dt=Math.max(0,Math.min(dt,.1));time+=dt;if(passingActive)passTime=Math.min(45,passTime+dt);const u=passTime/45,e=u*u*(3-2*u);passing.position.z=hallZ*S-28+56*e+.18*Math.sin(time*.55)*Math.sin(Math.PI*u);passing.position.x=hallX*S+85+.5*Math.sin(time*.24)*Math.sin(Math.PI*u);passing.rotation.y=.035*Math.sin(time*.38);boats.forEach((boat,i)=>{boat.position.y=tide+.04+.055*Math.sin(time*.7+i*1.9);boat.rotation.z=.022*Math.sin(time*.6+i);boat.rotation.x=.012*Math.cos(time*.8+i);});},dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());scene.remove(root);}};
 }

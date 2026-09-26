@@ -356,7 +356,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const seating=meta('Mathematics auditorium seating',{seats:SEAT_ROWS.length*SEAT_COLUMNS.length,seatsPerRow:SEAT_COLUMNS.length,rows:3,centralAisle:1.6,facing:[1,0,0],seatPositions:[],rowRises:SEAT_ROWS.map(r=>r.rise),clearHeight:HALL.clearHeight,offshore:true});
   const carpetTop=DECK_Y+.028;
   // Two low carpeted seating tiers; the front row stays on the main floor.
-  for(const [i,a,b] of [[0,34.95,36.95],[1,36.95,38.45]]){
+  for(const [i,a,b] of [[0,34.5,36.725],[1,36.725,38.675]]){
     const rise=SEAT_ROWS[i].rise/S;
     for(const sign of [-1,1]){
       const riser=new THREE.Mesh(new THREE.BoxGeometry(b-a,rise,9.05),tierCarpets[i]);
@@ -366,7 +366,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   }
   // Four 9 cm entry steps, then two 9 cm descents between successive rows.
   // All heights below are metres before conversion to plan coordinates.
-  const aisleRuns=[[34.95,35.15,.09],[35.15,35.35,.18],[35.35,35.55,.27],[35.55,36.70,.36],[36.70,37.0,.27],[37.0,38.20,.18],[38.20,38.5,.09]];
+  const aisleRuns=[[34.5,34.7,.09],[34.7,34.9,.18],[34.9,35.1,.27],[35.1,36.475,.36],[36.475,36.775,.27],[36.775,38.425,.18],[38.425,38.725,.09]];
   for(const [a,b,height] of aisleRuns){
     box([(a+b)/2,carpetTop+height/(2*S),0],[b-a,height/S,1.6],height>.18?tierCarpets[0]:tierCarpets[1]);
     box([a+.012,carpetTop+height/S+.002,0],[.024,.004,1.6],darkFabric);

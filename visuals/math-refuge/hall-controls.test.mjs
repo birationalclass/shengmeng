@@ -17,7 +17,7 @@ assert.equal(lid.material,mat);assert.ok(lectern.group.position.y+1.49<DECK_Y*S)
 lift.toggle();for(let i=0;i<360;i++)lift.update(1/60);
 assert.ok(Math.abs(lectern.group.position.y-(DECK_Y+.028)*S)<1e-10);
 for(const month of [0,2,5,8,11])for(const physical of [true,false])for(const event of ['sunrise','sunset']){
- const date=new Date(Date.UTC(2026,month,21)),hour=hallSunStart(event,date,physical),state=solarState(hour,date),radius=state.radius*180/Math.PI*(physical?1:event==='sunrise'?3:2),alt=apparentAltitude(state.elevation);
+ const date=new Date(Date.UTC(2026,month,21)),hour=hallSunStart(event,date,physical),state=solarState(hour,date),radius=state.radius*180/Math.PI*(physical?1:3),alt=apparentAltitude(state.elevation);
  assert.ok(event==='sunrise'?alt+radius<-.15:alt-radius>.99);
 }
 assert.equal(sunViewRate(0),1);assert.equal(sunViewRate(5),30);for(let t=0;t<5;t+=.01)assert.ok(sunViewRate(t+.01)>=sunViewRate(t));
@@ -36,3 +36,7 @@ upper.getMatrixAt(0,after);const facing=new T.Vector3(0,0,1).transformDirection(
 assert.equal(chairs.targets.length,0);
 console.log('PASS: rear-row instances turn toward sunset; other rows and mouse non-interactivity remain unchanged');
 
+
+for(let i=1;i<3;i++)assert.ok(Math.abs(SEAT_ROWS[i].x-SEAT_ROWS[i-1].x-1.5*1.3)<1e-10);
+for(const [i,edge] of [[0,36.725],[1,38.675]])assert.ok((edge-SEAT_ROWS[i].x)*S>1.35);
+console.log('PASS: 30% wider row pitch and over 1.35m from seat pivot to front tier edge');
