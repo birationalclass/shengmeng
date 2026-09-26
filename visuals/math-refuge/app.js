@@ -1,3 +1,4 @@
+import {createMovementHud} from './movement-hud.js?v=15';
 import {openingArrival} from './opening-arrival.js';
 import {KeyboardMotion} from './keyboard-motion.js?v=continuous-accel-13';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
@@ -57,6 +58,7 @@ const timePresentation=new TimePresentation(sceneTime.hour);
 const sunriseIntro=new SunriseIntro(sceneTime,timePresentation);
 const $=id=>document.getElementById(id);
 const performanceMonitor=createPerformanceMonitor();
+const movementHud=createMovementHud($('openingHint'),$('movementHud'));
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
@@ -375,8 +377,7 @@ function tick(stamp){
   retreat?.campus.automaticDoors.update(dt,reduced.matches,blend?.openingPath?[camera.position,new THREE.Vector3(...blend.openingPath.sample(blend.elapsed+1.2))]:[camera.position]);
   const remaining=openingCameraLock.remaining(stamp);
   if(remaining)controls.enabled=false;else if($('world').dataset.cameraLocked==='true')controls.enabled=true;
-  $('openingHint').textContent=remaining?`开场运镜 · ${remaining} 秒后可操作镜头`:'镜头已解锁 · 拖动观察，滚轮前后移动';
-  $('openingHint').hidden=!entered;
+  movementHud.hint(remaining,dt);
   if(remaining)$('mode').textContent='开场运镜';else if($('world').dataset.cameraLocked==='true')updateLabels();
   $('world').dataset.cameraLocked=String(remaining>0);
   if(touring){
@@ -431,6 +432,7 @@ function tick(stamp){
   if(frameQuality.level<2&&$('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
+  movementHud.update(motionSample?motionVelocity.length():0,dt,!remaining&&!blend&&!touring&&!(SHOTS[shot].lecture&&lecture?.followEnabled&&boardFollow.following));
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt,retreat.ocean.material.uniforms.oceanLevel.value);}
   oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();

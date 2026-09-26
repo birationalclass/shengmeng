@@ -6,3 +6,15 @@
 #seminarPanel{position:fixed;left:24px;top:102px;bottom:100px;width:310px;z-index:5;overflow:auto;padding:22px;background:#102622eb;backdrop-filter:blur(22px);border-radius:18px;scrollbar-width:thin;color:#ecebda}
 #seminarPanel[hidden]{display:none}.seminar-heading{display:flex;align-items:center;justify-content:space-between}.seminar-heading h2{font-size:20px;font-weight:500;margin:0}.seminar-floors{display:flex;gap:12px;margin:18px 0}.seminar-floors button{padding:8px 0;border:0;border-radius:0;background:none;font-size:14px}.seminar-floors button[aria-pressed="true"]{color:#efd1a1;border-bottom:2px solid currentColor}#seminarPanel p{font-size:12px;line-height:1.8;color:#c2cfc2}#seminarPanel h3{font-size:16px;font-weight:500}#seminarPanel .seminar-warning{color:#f2cfa4;margin-bottom:3px}#seminarErratum{padding:8px 0;color:#ffe3b7;font-size:13px;background:none;border:0}#seminarChapters details{margin:15px 0}#seminarChapters summary{cursor:pointer;font-size:14px;line-height:1.8;color:#e9d7b4}#seminarChapters button{display:block;width:100%;padding:9px 0 9px 12px;text-align:left;border:0;border-radius:0;background:none;font-size:13px;line-height:1.6;color:#d8e4d9}#seminarChapters button:hover,#seminarChapters button:focus-visible{color:#ffdfab;background:#ffffff09}#seminarPanel a{display:block;font-size:12px;line-height:1.8;margin-top:20px;color:#ded0b0}#lectureProgress{width:100%;accent-color:#ebc995}#lectureProgressValue{font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:850px){#seminarPanel{left:14px;top:130px;bottom:105px;width:min(310px,calc(100vw - 28px))}.transport{gap:3px;flex-wrap:wrap;max-width:290px;justify-content:flex-end}#chapters{max-width:100%;overflow:auto}#chapters button{flex-shrink:0}}
+
+/* Subtle speed instrument, sharing the opening hint's fixed footprint. */
+.movement-status{height:90px;position:relative;pointer-events:none;margin-bottom:8px}
+#openingHint{position:absolute;inset:auto 0 0;margin:0;text-align:center;font-size:11px;letter-spacing:.04em;transition:opacity .8s ease}
+#movementHud{position:absolute;bottom:0;left:50%;width:140px;height:84px;transform:translateX(-50%);color:#eee9dc;opacity:0;transition:opacity 1.1s ease;filter:drop-shadow(0 1px 2px #0005);font-variant-numeric:tabular-nums}
+#movementHud.is-moving{opacity:.34}
+#movementHud svg{width:100%;height:100%;overflow:visible;fill:currentColor}
+#movementHud .speed-arc,#movementHud .speed-ticks{fill:none;stroke:currentColor;stroke-width:.7}
+#movementHud .speed-arc{opacity:.45}
+#movementHud .speed-needle{fill:none;stroke:currentColor;stroke-width:1;transform-origin:80px 56px}
+#movementHud .speed-value{position:absolute;top:51px;left:0;right:0;text-align:center;font-size:17px;font-weight:300;line-height:18px}
+#movementHud .speed-unit{position:absolute;top:71px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:.13em}

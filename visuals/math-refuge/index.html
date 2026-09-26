@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111c1b"><meta name="description" content="数学难民营：远岛环抱的现代海上别墅园区、海景露台、小帆船与朝向日出的报告厅，六块升降粉笔黑板演示可选择的数学报告。">
   <title>数学难民营 · Sheng Meng</title>
-  <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v57-proof-flow">
+  <link rel="icon" href="../../assets/favicon.svg"><link rel="stylesheet" href="style.css?v=movement-hud-15">
   <link rel="stylesheet" href="coastal-layout.css?v=5-mobile">
   <link rel="stylesheet" href="chalk-reader.css?v=5-mobile">
   <link rel="stylesheet" href="board-console.css?v=103-pulley">
@@ -118,7 +118,13 @@
   </aside>
   <main class="caption chrome"><p class="eyebrow" id="shotNumber">01 / 海岸抵达</p><h2 id="shotTitle">海上相连，<br>留一处思考的地方。</h2><p id="shotDescription">海上平台 · 海上拱桥 · 双层报告厅 · 北侧咖啡屋 · 东向日出</p></main>
   <footer class="chrome">
-    <p id="openingHint" hidden style="font-size:11px;letter-spacing:.04em;opacity:.72;text-align:center;margin:0 0 8px;pointer-events:none"></p>
+    <div class="movement-status">
+      <p id="openingHint" hidden></p>
+      <div id="movementHud" aria-label="移动时速" aria-hidden="true">
+        <svg viewBox="0 0 160 96" aria-hidden="true"><path class="speed-arc" d="M24 78 A60 60 0 1 1 136 78"/><g class="speed-ticks"></g><path class="speed-needle" d="M80 56 L80 12"/><circle cx="80" cy="56" r="2"/></svg>
+        <span class="speed-value">0</span><span class="speed-unit">km/h</span>
+      </div>
+    </div>
     <nav id="chapters" aria-label="园区楼栋与区域"></nav>
 
     <div class="timeline"><span id="timelineFill"></span></div>
@@ -136,7 +142,7 @@
   <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><button onclick="const u=new URL(location.href);u.searchParams.set('safe','1');location.href=u.href">低负载模式进入</button><a href="../">返回实验室</a></div>
   <script>document.getElementById('enterButton').addEventListener('click',function(){document.getElementById('loading').dataset.entryRequested='true';if(document.getElementById('world').dataset.ready!=='true'){this.textContent='正在准备，即将进入…';this.disabled=true;}});</script>
   <script>window.refugeLoadingTimer=setTimeout(function(){if(document.getElementById('world').dataset.ready!=='true'){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='加载时间较长。可以重新加载，或用低负载模式进入。';}},60000);</script>
-  <script type="module">import('./app.js?v=hall-doors-14').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <script type="module">import('./app.js?v=movement-hud-15').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
 </body>
 </html>
 
