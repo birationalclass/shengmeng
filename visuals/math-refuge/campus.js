@@ -140,7 +140,8 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
       const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.022/S,seal:.008/S}:undefined;
       if(doors.includes(side)){
-        const isHall=name==='Low sea-facing seminar hall',gap=isHall?2.0:1.45,pane=(width-gap)/2;
+        const isHall=name==='Low sea-facing seminar hall',isHallUpper=name==='Upper seminar lounge';
+        const gap=(isHall?2.0:1.45)*(isHall||isHallUpper?1.5:1),pane=(width-gap)/2;
         const fixedStyle=isHall?{panels:side==='west'?2:1,frame:.022/S,seal:.005/S}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
@@ -240,13 +241,13 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   for(const z of [tn+.09,ts-.09])box([terraceCenter,DECK_Y+.006,z],[te-tw,.018,.18],borderMaterial);
   for(const x of [tw+.09,te-.09])box([x,DECK_Y+.006,terraceCenterZ],[.18,.018,ts-tn-.36],borderMaterial);
   // A slim matte champagne threshold defines the entrance, not a shiny grid.
-  box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,2.2],brass);
+  box([HALL.west-.06,DECK_Y+.012,0],[.025,.012,3.2],brass);
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
   meta('Expanded sea lounge terrace',{bounds:SEA_TERRACE,eastClearance:te-HALL.east,pool:false,heightAboveSea:(DECK_Y-seaLevel)*S});
   // An open view corridor: only a low roofed link, not a tall structure.
   const canopyStart=24.5,canopyEnd=HALL.west+.02;
-  box([(canopyStart+canopyEnd)/2,2.55,0],[canopyEnd-canopyStart,.13,2.4],edge);
-  for(const x of [25,29.5,HALL.west-.4])for(const z of [-1.1,1.1])box([x,1.3,z],[.09,2.6,.09],steel);
+  box([(canopyStart+canopyEnd)/2,2.55,0],[canopyEnd-canopyStart,.13,3.4],edge);
+  for(const x of [25,29.5,HALL.west-.4])for(const z of [-1.6,1.6])box([x,1.3,z],[.09,2.6,.09],steel);
   meta('Aligned rear entrance canopy',{startX:canopyStart,endX:canopyEnd,centerZ:0,bridgeZ:BRIDGES[1].z,doorZ:0});
   const cx=(HALL.west+HALL.east)/2,cz=0,hallDepth=HALL.south-HALL.north;
   room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','north','south'],false,false);
