@@ -1,3 +1,4 @@
+import {relocateArchitecture} from './campus-layout.js';
 import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
 import {deferredTexture} from './deferred-textures.js?v106';
@@ -13,7 +14,7 @@ import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v=east-sailboat-2';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
-import {createRoomFill} from './room-fill.js?v129';
+import {createRoomFill} from './room-fill.js?v=campus-layout-20260926';
 import {createPathLighting} from './path-lighting.js?v129';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v112';
@@ -96,7 +97,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       }
       for(const [a,c,b,d] of union.edges){
         quad(sides,[a,bottom,c],[a,y+.275,c],[b,y+.275,d],[b,bottom,d]);
-        const length=Math.hypot(b-a,d-c);if(length>.03)box([(a+b)/2,y+.245,(c+d)/2],[Math.abs(b-a)||.018,.022,Math.abs(d-c)||.018],pathLighting.material);
+        const length=Math.hypot(b-a,d-c);if(y!==0&&length>.03)box([(a+b)/2,y+.245,(c+d)/2],[Math.abs(b-a)||.018,.022,Math.abs(d-c)||.018],pathLighting.material);
       }
       for(const [positions,material,name] of [[top,terraceBase,'Unified platform top'],[sides,edge,'Unified platform fascia']]){
         const geometry=new THREE.BufferGeometry(),uv=[];
@@ -269,6 +270,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const {seaLevel,elevation,coastline}=landscape.site;
   const architectureObjects=new Set(scene.children);
   landscape.populate();landscape.finish();
+  const campusPlants=new Set(scene.children.filter(o=>!architectureObjects.has(o)));
   const islands=createDistantIslands(scene);
   // Only the ocean remains: there is no pool mesh or planar reflection pass.
   // Fine normal waves, Fresnel and sun glitter are analytic;
@@ -501,10 +503,14 @@ export async function createRetreat(renderer,scene,report,device={}){
     }
   }
   for(const object of architectureObjects){object.scale.multiplyScalar(BUILDING_SCALE);object.position.multiplyScalar(BUILDING_SCALE);object.userData.architectureScale=BUILDING_SCALE;}
+  relocateArchitecture(scene,architectureObjects);
+  relocateArchitecture(scene,campusPlants,true);
+  const movedLOD=[];for(const item of lodBatches)for(const mesh of scene.children)if(mesh.isInstancedMesh&&mesh.visible&&mesh.geometry===item.high&&mesh.userData.layoutId)movedLOD.push({...item,mesh});lodBatches.splice(0,lodBatches.length,...movedLOD);
   for(const item of lodBatches){item.mesh.updateMatrixWorld();item.bounds=item.mesh.boundingBox.clone().applyMatrix4(item.mesh.matrixWorld);}
   function updateGeometryLOD(camera,viewportHeight,full=false){
     const focal=viewportHeight*camera.zoom/(2*Math.tan(camera.fov*Math.PI/360));
     for(const item of lodBatches){
+      item.mesh.updateMatrixWorld();item.bounds.copy(item.mesh.boundingBox).applyMatrix4(item.mesh.matrixWorld);
       const pixels=item.radius*focal/Math.max(.1,item.bounds.distanceToPoint(camera.position));
       const level=full?0:roundedDetailLevel(pixels,item.mesh.userData.lodLevel);
       if(level!==item.mesh.userData.lodLevel){item.mesh.geometry=level?item.low:item.high;item.mesh.userData.lodLevel=level;}

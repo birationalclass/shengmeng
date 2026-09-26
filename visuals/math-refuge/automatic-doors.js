@@ -17,13 +17,31 @@ export function createAutomaticDoors(T,glass,metal){
     const rail=new T.Mesh(geometry,metal);rail.name='Ceiling recessed door track';rail.scale.set(width*2.05,.075,.095);rail.position.y=height/2+.05;group.add(rail);
     const sensor=new T.Mesh(new T.PlaneGeometry(width*2.1,height+.15),sensorMaterial);sensor.name='Door hover sensor '+name;
     sensor.position.z=.08;sensor.userData={autoDoor:true,hovered:false,opening:0,axis,name};group.add(sensor);targets.push(sensor);
-    const door={group,sensor,leaves,width,opening:0,closeDelay:0};doors.push(door);
+    const door={group,sensor,leaves,width,height,opening:0,closeDelay:0};doors.push(door);
     group.userData={side:name,automatic:true,leafCount:2,clearWidth:width,clearHeight:height,transom:false};return group;
   }
-  function update(dt,reduced=false){
+  const a=new T.Vector3(),b=new T.Vector3(),direction=new T.Vector3(),hit=new T.Vector3();
+  const zone=new T.Box3(),ray=new T.Ray();
+  function cameraApproaches(d,path){
+    if(!path?.length)return false;
+    d.group.updateWorldMatrix(true,false);
+    // Door-local sensing keeps other floors and neighbouring facades independent.
+    zone.min.set(-d.width/2-.45,-d.height/2-.25,-3);
+    zone.max.set(d.width/2+.45,d.height/2+.25,3);
+    d.group.worldToLocal(a.copy(path[0]));
+    if(zone.containsPoint(a))return true;
+    for(let i=1;i<path.length;i++){
+      d.group.worldToLocal(b.copy(path[i]));
+      const length=direction.subVectors(b,a).length();
+      if(length>1e-6){ray.set(a,direction.divideScalar(length));if(ray.intersectBox(zone,hit)&&hit.distanceTo(a)<=length)return true;}
+      a.copy(b);
+    }
+    return false;
+  }
+  function update(dt,reduced=false,cameraPath=null){
     dt=Math.max(0,Math.min(.1,dt));
     for(const d of doors){
-      d.closeDelay=d.sensor.userData.hovered?1.2:Math.max(0,d.closeDelay-dt);
+      d.closeDelay=(d.sensor.userData.hovered||cameraApproaches(d,cameraPath))?1.2:Math.max(0,d.closeDelay-dt);
       const target=d.closeDelay>0?1:0;
       d.opening=reduced?target:T.MathUtils.damp(d.opening,target,target?3.6:2.5,dt);
       for(const {leaf,sign} of d.leaves)leaf.position.x=sign*(d.width/4+d.opening*(d.width/2+.035));

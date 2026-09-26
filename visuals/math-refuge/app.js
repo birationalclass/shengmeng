@@ -1,3 +1,4 @@
+import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
 import {startDeferredTextures} from './deferred-textures.js?v106';
@@ -9,7 +10,7 @@ import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v104';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
-import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v92-camera';
+import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=campus-layout-20260926';
 const hallPassageMask=new HallPassageMask();
 import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=air-frame-feedback';
 import {createPerformanceMonitor} from './performance-monitor.js?v=focus-pause';
@@ -17,7 +18,7 @@ import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v84-display';
 import {classroomVisible} from './classroom-visibility.js?v57-proof-flow';
-import {teachingRoomAt} from './room-context.js?v57-proof-flow';
+import {teachingRoomAt} from './room-context.js?v=campus-layout-20260926';
 import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-flow';
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
 import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v=true-north-coast-1';
@@ -54,6 +55,9 @@ const $=id=>document.getElementById(id);
 const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
+relocateShots(SHOTS);
+OUTDOOR_AREAS.push('远眺','报告厅备份','访客小院','休息室二组');
+for(const [i,n] of [[3,'共研工坊'],[4,'数学实验室'],[5,'北食阁'],[6,'南食阁'],[7,'休息室一组'],[8,'休息室三组']])BUILDINGS[i].name=n;
 let panelBuilding=BUILDINGS[0];
 for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))]){
   const button=document.createElement('button');button.dataset.shot=String(SHOTS.findIndex(s=>s.name===item.shot));
@@ -356,7 +360,7 @@ function tick(stamp){
   const weatherSample=weatherTimer?.poll(stamp);if(weatherSample!=null){weatherGpuSamples.push(weatherSample);if(weatherGpuSamples.length>40)weatherGpuSamples.shift();weatherGpuMs=weatherGpuSamples.reduce((a,b)=>a+b,0)/weatherGpuSamples.length;}
   if(!weatherProbeFrame&&($('adaptiveQuality').value==='auto'||performanceMonitor.visible||!$('settings').hidden))gpuTimer?.begin(stamp);
   rooms.forEach(room=>room.update(room.renderActive?dt:Math.min(60,frameMs/1000),reduced.matches));
-  retreat?.campus.automaticDoors.update(dt,reduced.matches);
+  retreat?.campus.automaticDoors.update(dt,reduced.matches,[camera.position]);
   const remaining=openingCameraLock.remaining(stamp);
   if(remaining)controls.enabled=false;else if($('world').dataset.cameraLocked==='true')controls.enabled=true;
   $('openingHint').textContent=remaining?`开场运镜 · ${remaining} 秒后可操作镜头`:'镜头已解锁 · 拖动观察，滚轮前后移动';
@@ -405,7 +409,7 @@ function tick(stamp){
   screenWebview.update(camera,rooms[0],scene);retreat.setMediaOpen(screenWebview.isOpen);retreat.campus.swivelChairs.update(dt);
   retreat.residence.update(camera,retreat.sky.material.uniforms.day.value);
   const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
-  const hallCenter=new THREE.Vector3(39*BUILDING_SCALE,3,0),nearHall=camera.position.distanceTo(hallCenter)<65;
+  const hallCenter=new THREE.Vector3(39*BUILDING_SCALE,3,0).add(buildingOffset('01B')),nearHall=camera.position.distanceTo(hallCenter)<65;
   const lightTarget=nearResidence?retreat.residence.root.position:nearHall?hallCenter:campusLightTarget;
   const shadowCamera=retreat.sun.shadow.camera,extent=nearResidence?65:nearHall?40:55*BUILDING_SCALE;
   const previousLightTarget=retreat.sun.target.position.clone();
@@ -463,6 +467,7 @@ try{
     const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
+  finishCampusLayout(scene,retreat,rooms);
   rooms.forEach((room,i)=>{
     room.root.updateWorldMatrix(true,true);
     const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);

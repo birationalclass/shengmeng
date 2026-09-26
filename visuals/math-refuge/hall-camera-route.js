@@ -1,6 +1,9 @@
+import {buildingOffset} from './campus-layout.js';
+const hallOffset=buildingOffset('01B');
 import {BUILDING_SCALE as S,DECK_Y,HALL} from './site-layout.js';
 const upper=2*DECK_Y+HALL.clearHeight/S+.20,eyeUp=upper*S+1.65,eyeDown=DECK_Y*S+1.65;
 export const HALL_SLAB={min:[(HALL.west-.275)*S,(DECK_Y+HALL.clearHeight/S)*S-.25,(HALL.north-.275)*S],max:[(HALL.east+.275)*S,upper*S+.25,(HALL.south+.275)*S]};
+for(const p of [HALL_SLAB.min,HALL_SLAB.max]){p[0]+=hallOffset.x;p[2]+=hallOffset.z;}
 export function slabHit(a,b,radius=0){
  let enter=0,exit=1;let inside=true;
  for(let i=0;i<3;i++){
@@ -16,7 +19,7 @@ export function hallFloorRoute(start,end){
  const x=(HALL.west-1.5)*S;
  const upstairs=[ [37.4*S,eyeUp,0],[34.8*S,eyeUp,0],[x,eyeUp,0],[x,eyeUp,1.32*S] ];
  const stairs=[[x,eyeDown,9.6*S],[x,eyeDown,0],[35.3*S,eyeDown,0]];
- const down=[...upstairs,...stairs];
+ const down=[...upstairs,...stairs].map(p=>[p[0]+hallOffset.x,p[1],p[2]+hallOffset.z]);
  return [start,...(start[1]>end[1]?down:[...down].reverse()),end];
 }
 export function stopAtHallSlab(start,end){const t=slabHit(start,end);if(t===null)return end;const d=Math.hypot(...end.map((v,i)=>v-start[i])),safe=Math.max(0,t-.08/Math.max(.001,d));return start.map((v,i)=>v+(end[i]-v)*safe);}
