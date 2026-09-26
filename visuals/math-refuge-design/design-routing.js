@@ -2,6 +2,14 @@
 export function routeBridge(a,b,buildings,width=3){
  if(!a||!b||a[0]===b[0])return null;
  const rects=buildings.filter(r=>r[8]!=='tree'&&r[8]!=='boat'&&r[8]!=='bench').map(r=>({id:r[0],x:r[4]-r[6]/2-width/2-.3,X:r[4]+r[6]/2+width/2+.3,y:r[5]-r[7]/2-width/2-.3,Y:r[5]+r[7]/2+width/2+.3}));
+ // A direct deck-to-deck span avoids arbitrary grid zigzags when the corridor is clear.
+ const dx=b[4]-a[4],dy=b[5]-a[5];
+ const edge=(r,x,y)=>{const t=Math.min(x?Math.abs(r[6]/2/x):Infinity,y?Math.abs(r[7]/2/y):Infinity);return [r[4]+x*t,r[5]+y*t];};
+ if(Math.hypot(dx,dy)>.01){
+  const p=edge(a,dx,dy),q=edge(b,-dx,-dy);
+  const crosses=r=>{let lo=0,hi=1;for(const [k,m,M]of [[0,r.x,r.X],[1,r.y,r.Y]]){const v=q[k]-p[k];if(Math.abs(v)<1e-8){if(p[k]<=m||p[k]>=M)return false;}else{const u=(m-p[k])/v,w=(M-p[k])/v;lo=Math.max(lo,Math.min(u,w));hi=Math.min(hi,Math.max(u,w));}}return hi>lo+1e-6;};
+  if((q[0]-p[0])*dx+(q[1]-p[1])*dy>0&&!rects.some(r=>r.id!==a[0]&&r.id!==b[0]&&crosses(r)))return [p,q];
+ }
  const anchors=r=>[[r[4]+r[6]/2,r[5],1,0],[r[4]-r[6]/2,r[5],-1,0],[r[4],r[5]+r[7]/2,0,1],[r[4],r[5]-r[7]/2,0,-1]];
  const blocked=(p,q,ignore=[])=>rects.some(r=>!ignore.includes(r.id)&&(Math.abs(p[0]-q[0])<1e-6?p[0]>r.x+1e-5&&p[0]<r.X-1e-5&&Math.max(p[1],q[1])>r.y+1e-5&&Math.min(p[1],q[1])<r.Y-1e-5:p[1]>r.y+1e-5&&p[1]<r.Y-1e-5&&Math.max(p[0],q[0])>r.x+1e-5&&Math.min(p[0],q[0])<r.X-1e-5));
  let best=null,cost=Infinity;

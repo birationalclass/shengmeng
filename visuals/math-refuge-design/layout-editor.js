@@ -1,3 +1,4 @@
+import {bridgePlan} from './bridge-plan-preset.js';
 import {STORAGE_KEY,snapshot,documentFor,validateDocument} from './layout-data.js';
 export function installLayoutEditor({bar,layout,members,sharedVertices,scene,focus,stop,onMove,design}){
  const editor=document.createElement('section');editor.id='layoutEditor';
@@ -58,7 +59,8 @@ export function installLayoutEditor({bar,layout,members,sharedVertices,scene,foc
  $('layoutFile').onchange=async e=>{try{const file=e.target.files[0];if(!file)return;if(file.size>2000000)throw Error('文件过大');const value=JSON.parse(await file.text());design.validate(value);validateDocument(value,[...baseLayout,...(value.assets||[]).map(a=>[a.id])]);remember();restore(value);status.textContent='已导入，可继续调整；点击保存后生效';}catch(err){status.textContent='导入失败：'+err.message;}finally{e.target.value='';}};
  // Versioned key makes the 30m shift a one-time baseline, never cumulative on reload.
  let saved=null;try{const text=localStorage.getItem(STORAGE_KEY);if(text){saved=JSON.parse(text);design.validate(saved);validateDocument(saved,[...baseLayout,...(saved.assets||[]).map(a=>[a.id])]);}}catch{saved=null;status.textContent='已保存数据无法读取，使用东移30米初始布局';}
- if(saved){restore(saved);dirty=false;status.textContent='已恢复上次保存的布局';}
+ if(new URLSearchParams(location.search).get('plan')==='bridges-20260926'){restore(bridgePlan);dirty=false;status.textContent='已载入你的布局及连桥方案 · 可继续调整并保存';}
+ else if(saved){restore(saved);dirty=false;status.textContent='已恢复上次保存的布局';}
  else {design.restore({version:1});apply(snapshot(layout).map(b=>({...b,east:b.east+30})),false);save();status.textContent='初始布局已整体向东 30 米（3 格），并保存';}
  history.length=0;refresh();
  window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
