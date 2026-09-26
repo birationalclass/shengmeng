@@ -120,5 +120,6 @@ export function setupLayoutPreview({scene,retreat,camera,controls,rooms,stop,set
  bar.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>focus(b.dataset.view));
  const design=createDesignTools({bar,layout,members,scene,camera,controls,anchor,materials:retreat.materials,bridgeGroup});
  installLayoutEditor({bar,layout,members,sharedVertices,scene,anchor,focus,stop,design,onMove:()=>{design.update();onMove?.();}});
+ if(new URLSearchParams(location.search).get('plan')==='bridges-20260926')setHour(12);
  focus('all');return {focus};
 }
