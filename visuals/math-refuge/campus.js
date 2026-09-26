@@ -245,10 +245,12 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   meta('Honed limestone terrace paving',{slabs:slabCount,jointMetres:.0045*S,rectangles:pavingRects,roughness:.96,largeFormat:true});
   meta('Expanded sea lounge terrace',{bounds:SEA_TERRACE,eastClearance:te-HALL.east,pool:false,heightAboveSea:(DECK_Y-seaLevel)*S});
   // An open view corridor: only a low roofed link, not a tall structure.
+  section('removed-hall-west-canopy');
   const canopyStart=24.5,canopyEnd=HALL.west+.02;
   box([(canopyStart+canopyEnd)/2,2.55,0],[canopyEnd-canopyStart,.13,3.4],edge);
   for(const x of [25,29.5,HALL.west-.4])for(const z of [-1.6,1.6])box([x,1.3,z],[.09,2.6,.09],steel);
   meta('Aligned rear entrance canopy',{startX:canopyStart,endX:canopyEnd,centerZ:0,bridgeZ:BRIDGES[1].z,doorZ:0});
+  section('');
   const cx=(HALL.west+HALL.east)/2,cz=0,hallDepth=HALL.south-HALL.north;
   room('Low sea-facing seminar hall',cx,cz,HALL.east-HALL.west,HALL.south-HALL.north,HALL.clearHeight,0,['west','north','south'],false,false);
   const carpetMaterial=new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1,metalness:0,envMapIntensity:.08,normalMap:pale.normalMap,normalScale:new THREE.Vector2(.12,.12),roughnessMap:pale.roughnessMap});
@@ -305,7 +307,8 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const n=34,stairX=HALL.west-1.5,stairStart=9.6,landingCenter=0,stairTread=.251;
   const landingX=HALL.west-.4,landingBounds=[landingX-1.9,landingX+1.9,-1.2,1.2];
   for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*stairTread],[1.3,hallUpper/n,stairTread+.005],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*stairTread+stairTread/2-.02],[1.14,.012,.018],light);}
-  floor(hallUpper,3.8,2.4,landingX,landingCenter);
+  // Keep the old landing only in the fixed backup; the main hall uses its new southwest stair.
+  box([landingX,hallUpper+.0375,landingCenter],[3.8,.475,2.4],materials.terraceFloor);
   supportedFlight('Hall exterior stair',stairX,stairStart,n,stairTread,hallUpper,1.3,landingCenter+.9);
   guardTerrace('Hall complete upper guard',[[HALL.west-.275,HALL.east+.275,HALL.north-.275,HALL.south+.275],landingBounds],hallUpper+DECK_Y,[{axis:'x',fixed:landingCenter+1.2-.08,from:stairX-.56,to:stairX+.56}],.08);
   // Thin horizontal cantilever beams tie into the upper slab; no columns below

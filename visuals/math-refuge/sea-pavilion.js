@@ -9,17 +9,22 @@ export function createSeaPavilion(scene,materials,offset){
  const curve=new T.CatmullRomCurve3([[0,0,0],[-7,0,0],[-20,0,-7],[-36,0,-12]].map(p=>new T.Vector3(...p)));
  const batches=new Map(),matrix=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0);
  const steel=materials.steel,wood=materials.timber,edge=materials.edge,brass=materials.brass;
+ const roof=new T.MeshStandardMaterial({color:0xc9c8bd,roughness:.86,metalness:.08});
+ const frame=new T.MeshStandardMaterial({color:0x414a49,roughness:.7,metalness:.25});
  const glow=new T.MeshStandardMaterial({color:0xc9ac78,emissive:0xffc680,emissiveIntensity:.45,roughness:.65});
+ let pavilionTransform=null;
  function box(p,size,mat,yaw=0){
+  if(pavilionTransform){const {x,z,angle}=pavilionTransform,dx=p[0]-x,dz=p[2]-z,c=Math.cos(angle),s=Math.sin(angle);p=[x+c*dx+s*dz,p[1],z-s*dx+c*dz];yaw+=angle;}
   if(!batches.has(mat))batches.set(mat,[]);
   q.setFromAxisAngle(up,yaw);matrix.compose(new T.Vector3(...p),q,new T.Vector3(...size));batches.get(mat).push(matrix.clone());
  }
  function beam(a,b,width,height,mat){const d=new T.Vector3().subVectors(b,a);box(a.clone().add(b).multiplyScalar(.5).toArray(),[width,height,d.length()+.012],mat,Math.atan2(d.x,d.z));}
- const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side)).add(new T.Vector3(0,y,0));};
- const length=curve.getLength(),count=Math.ceil(length/.155);
+ const flare=u=>{const t=Math.max(0,Math.min(1,(u-.88)/.12));return 1+.5*t*t*(3-2*t);};
+ const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*flare(u))).add(new T.Vector3(0,y,0));};
+ const length=curve.getLength(),count=Math.ceil(length/.24);
  for(let i=0;i<count;i++){
   const u=(i+.5)/count,d=curve.getTangentAt(u);
-  box(at(u,0,-.035).toArray(),[2.8,.07,length/count-.005],wood,Math.atan2(d.x,d.z));
+  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.003],wood,Math.atan2(d.x,d.z));
  }
  // Open timber boardwalk: all structure stays below the walking surface.
  for(let i=0;i<48;i++)for(const side of [-1,1]){
@@ -34,15 +39,17 @@ export function createSeaPavilion(scene,materials,offset){
    if(i%2===0){box(at(u,side*1.15,-2.8).toArray(),[.22,5.35,.22],steel);box(at(u,side*1.15,-.38).toArray(),[.34,.24,.34],edge);}
   }
  }
- const end=curve.getPointAt(1),cx=end.x-3.95,cz=end.z;
+ const end=curve.getPointAt(1),tangent=curve.getTangentAt(1),cx=end.x-3.95,cz=end.z;
+ // Align the pavilion's entrance normal with the arriving bridge tangent.
+ pavilionTransform={x:end.x,z:end.z,angle:Math.atan2(tangent.z,-tangent.x)};
  box([cx,-.2,cz],[8,.32,7],edge);
- for(let i=0;i<46;i++)box([cx,-.025,cz-3.5+(i+.5)*7/46],[7.98,.05,7/46-.004],wood);
+ for(let i=0;i<29;i++)box([cx,-.025,cz-3.5+(i+.5)*7/29],[7.98,.05,7/29-.003],wood);
  for(const x of [-3.5,3.5])for(const z of [-3,3]){
-  box([cx+x,1.48,cz+z],[.12,2.96,.12],steel);
+  box([cx+x,1.48,cz+z],[.12,2.96,.12],frame);
   box([cx+x,.045,cz+z],[.27,.09,.27],brass);
   box([cx+x,-3,cz+z],[.3,5.6,.3],steel);
  }
- box([cx,3.17,cz],[8.8,.16,7.8],wood);
+ box([cx,3.17,cz],[8.8,.16,7.8],roof);
  box([cx,3.04,cz],[8.3,.09,7.3],wood);
  for(let i=0;i<36;i++)box([cx-4.05+i*8.1/35,2.95,cz],[.065,.11,7.2],wood);
  for(const z of [-3.42,3.42]){
@@ -56,8 +63,8 @@ export function createSeaPavilion(scene,materials,offset){
  for(const [mat,transforms] of batches){
   const mesh=new T.InstancedMesh(new T.BoxGeometry(1,1,1),mat,transforms.length);
   transforms.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=mat!==glow;mesh.receiveShadow=true;
-  mesh.name='Sea pavilion '+(mat===wood?'timber details':'structure');mesh.computeBoundingSphere();root.add(mesh);
+  mesh.name='Sea pavilion '+(mat===roof?'warm grey roof':mat===frame?'charcoal columns':mat===wood?'timber details':'structure');mesh.computeBoundingSphere();root.add(mesh);
  }
  root.userData.dimensions={bridgeLength:length,bridgeWidth:2.8,pavilion:[8,7]};
- return {root,position:new T.Vector3(cx,0,cz).add(origin)};
+ return {root,position:new T.Vector3(end.x+tangent.x*3.95,0,end.z+tangent.z*3.95).add(origin)};
 }
