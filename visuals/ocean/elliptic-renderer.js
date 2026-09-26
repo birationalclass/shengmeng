@@ -82,25 +82,20 @@ export class EllipticRenderer{
   const sky=new THREE.Mesh(new THREE.SphereGeometry(15000,32,16),new THREE.ShaderMaterial({uniforms:this.uniforms,side:THREE.BackSide,depthWrite:false,vertexShader:'varying vec3 vRay;void main(){vRay=position;gl_Position=projectionMatrix*viewMatrix*vec4(position+cameraPosition,1.);}',fragmentShader:environment+horizonGLSL+'varying vec3 vRay;void main(){gl_FragColor=vec4(tone(panoramicBackground(normalize(vRay))),1.);}'}));
   sky.frustumCulled=false;sky.renderOrder=-10;
   if(options.sky!==false)this.scene.add(sky);else{sky.geometry.dispose();sky.material.dispose();}
-  // A screen-space ray/plane ocean covers the area outside the detailed mesh
-  // and writes actual water depth. A sky-only backdrop cannot hide seabeds.
-  this.uniforms.uProjection={value:new THREE.Matrix4()};
+  // Fill the entire sea background. Projecting an infinite water plane into
+  // finite depth quantizes the horizon and fights the detailed wave mesh.
+  // Far-depth testing keeps existing opaque geometry in front; never write it.
   this.uniforms.uInverseProjection={value:new THREE.Matrix4()};
   this.uniforms.uCameraWorld={value:new THREE.Matrix4()};
-  const farOcean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.ShaderMaterial({uniforms:this.uniforms,depthWrite:true,depthTest:true,
+  const farOcean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),new THREE.ShaderMaterial({uniforms:this.uniforms,depthWrite:false,depthTest:true,
    vertexShader:`uniform mat4 uInverseProjection,uCameraWorld;varying vec3 vRay;
-    void main(){vec4 ray=uInverseProjection*vec4(position.xy,1.,1.);vRay=mat3(uCameraWorld)*ray.xyz;gl_Position=vec4(position.xy,0.,1.);}`,
-   fragmentShader:environment+horizonGLSL+`uniform mat4 uProjection;varying vec3 vRay;
+    void main(){vec4 ray=uInverseProjection*vec4(position.xy,1.,1.);vRay=mat3(uCameraWorld)*ray.xyz;gl_Position=vec4(position.xy,1.,1.);}`,
+   fragmentShader:environment+horizonGLSL+`varying vec3 vRay;
     void main(){
      vec3 ray=normalize(vRay);if(ray.y>=-.0000001||cameraPosition.y<=uOceanLevel)discard;
-     float travel=(uOceanLevel-cameraPosition.y)/ray.y;
-     vec3 point=cameraPosition+ray*travel;
-     if(length(point.xz-cameraPosition.xz)<9000.)discard;
-     vec4 clip=uProjection*viewMatrix*vec4(point,1.);
-     gl_FragDepth=clamp(clip.z/clip.w*.5+.5,0.,.9999999);
      gl_FragColor=vec4(tone(distantSea(ray)),1.);
     }` }));
-  farOcean.frustumCulled=false;farOcean.renderOrder=-5;this.scene.add(farOcean);
+  farOcean.name='Continuous far ocean background';farOcean.frustumCulled=false;farOcean.renderOrder=options.backgroundOrder??-5;this.farOcean=farOcean;this.scene.add(farOcean);
   const sandMaterial=new THREE.ShaderMaterial({uniforms:this.uniforms,defines:{COASTAL_OPTICS:1,CURVED_COAST:1},side:THREE.DoubleSide,
    vertexShader:'varying vec3 vWorld;varying vec2 vCA;void main(){vWorld=position;vCA=position.xz;gl_Position=projectionMatrix*viewMatrix*vec4(position,1.);}',
    fragmentShader:fragment+coastalOptics+`
@@ -207,7 +202,6 @@ export class EllipticRenderer{
   const near=Math.max(.15,height*.003),far=Math.max(18000,height+16000);
   if(this.camera.near!==near||this.camera.far!==far){this.camera.near=near;this.camera.far=far;this.camera.updateProjectionMatrix();}
   this.camera.updateMatrixWorld();
-  this.uniforms.uProjection.value.copy(this.camera.projectionMatrix);
   this.uniforms.uInverseProjection.value.copy(this.camera.projectionMatrixInverse);
   this.uniforms.uCameraWorld.value.copy(this.camera.matrixWorld);
   this.uniforms.uFoamVisibility.value=foamVisibility(height);

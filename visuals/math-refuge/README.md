@@ -302,3 +302,9 @@ The scene loop now runs only after entry while the document is both visible and 
 Board painting checks the same focus gate even when an asynchronous seek/hydration finishes in the background. Background startup defers atmospheric/cloud draws and environment-probe rendering until focus returns. Existing geometry and textures remain cached.
 
 Validation: 62 targeted tests passed (including blur without hiding, hidden-tab focus events, pre-entry/background startup, BFCache lifecycle, disabled/disposed restart protection, queued frames, and board progress/texture stability across 600 paused updates). Scene checks additionally verify deferred environment generation happens exactly once after activation. The local page loaded and rendered with no console errors; native Safari/macOS focus behavior was not measured by the embedded-browser test.
+
+### Opening horizon depth fix (2026-09-26)
+
+Reproduced stair-step dark edges at the sunrise opening's sea/sky boundary on current main. The analytic far-water sheet wrote clamped world-space water depth, competing with the finite wave grid and the far-depth sky near the depth buffer's limit. It also left an unnecessary 9 km radial hole. The continuation now covers all downward sea rays at far depth, tests existing opaque depth but never writes it, and is drawn after the campus sky (order 1001) before transparent detailed waves. Real foreground geometry still occludes it. The standalone ocean retains its original sky/background draw order. Coast geometry, opening route, atmosphere and wave quality are unchanged.
+
+Validation: 50 targeted tests passed, including opening/sunrise and campus regressions, foreground-depth policy and view-ray agreement at camera heights 2, 20, 450 and 1800 m. Local browser replay confirmed the former stair-step boundary is continuous and compiled without console errors.

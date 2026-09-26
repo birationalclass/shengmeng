@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {EllipticRenderer} from '../ocean/elliptic-renderer.js';
+import {EllipticRenderer} from '../ocean/elliptic-renderer.js?v=horizon-depth-1';
 import {distanceSampler} from '../ocean/beach-navigation.js';
 import {bedHeight} from '../ocean/elliptic-model.js';
 import {makeWaveSpectrum} from '../ocean/wave-spectrum.js';
@@ -9,7 +9,7 @@ import {CAMPUS_ANCHOR,COAST_LIFT,toBeach,toMathCoordinates} from './elliptic-sit
 export async function createCampusOcean(renderer,scene,water){
  const field=await new THREE.TextureLoader().loadAsync(new URL('../ocean/elliptic-distance.png',import.meta.url).href);
  field.flipY=false;field.colorSpace=THREE.NoColorSpace;field.minFilter=field.magFilter=THREE.LinearFilter;field.generateMipmaps=false;
- const sample=distanceSampler(field.image),layer=new EllipticRenderer(null,field,{renderer,sky:false});
+ const sample=distanceSampler(field.image),layer=new EllipticRenderer(null,field,{renderer,sky:false,backgroundOrder:1001});
  const matrix=new THREE.Matrix4().set(1,0,0,CAMPUS_ANCHOR-2000, 0,1,0,COAST_LIFT, 0,0,1,0, 0,0,0,1);
  const inverse=matrix.clone().invert(),rotation=new THREE.Quaternion().setFromRotationMatrix(inverse);
  const root=new THREE.Group();root.name='01 · elliptic coast · main hall (2 km, 0 km)';
