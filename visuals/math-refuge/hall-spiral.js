@@ -23,7 +23,7 @@ export function createHallSpiral(scene,materials,offset){
   for(let j=5;j>=0;j--){const p=point(a+(b-a)*j/5,inner,0);shape.lineTo(p.x-cx,p.z-cz);}shape.closePath();
   const geometry=new T.ExtrudeGeometry(shape,{depth:.13,bevelEnabled:false,curveSegments:5});geometry.rotateX(Math.PI/2);const step=mesh(geometry,timber);step.position.set(cx,y,cz);step.name='Curved timber tread '+(i+1);
   bar(point(a+.012,inner+.08,y+.008),point(a+.012,outer-.08,y+.008),.008,light);
-  if(i%2===0||i===n-1)for(const rr of [inner+.08,outer-.08]){const p=point((a+b)/2,rr,y);box(p.x,y+.015,p.z,.085,.03,.085,steel);bar(p,p.clone().add(new T.Vector3(0,.96,0)),.015,brass);}
+  if(i%2===0||i===n-1)for(const rr of [inner+.08,outer-.08]){const p=point((a+b)/2,rr,y);box(p.x,y+.015,p.z,.085,.03,.085,steel);const t=(i+.5)/n,railY=bottom+rise*(t+(1-t)/n)+.95;bar(p,new T.Vector3(p.x,railY,p.z),.015,brass);}
  }
  // Continuous curved strings and handrails, sharing the original material objects.
  for(const rr of [inner+.08,outer-.08])for(const [lift,size,mat] of [[-.16,.065,steel],[.95,.025,brass],[.48,.012,brass]]){
@@ -44,13 +44,26 @@ export function createHallSpiral(scene,materials,offset){
  const north=HALL.north*S+offset.z,east=HALL.east*S+offset.x,edge=.275*S-.08*S;
  const deckNorth=north-SPIRAL.upperEdge,deckEast=east+SPIRAL.upperEdge;
  for(const [x1,z1,x2,z2] of [[landingWest,deckNorth,deckEast,deckNorth],[deckEast,deckNorth,deckEast,landingSouth],[landingWest,landingSouth,deckEast,landingSouth],[landingWest,deckNorth,landingWest,landingNorth]])box((x1+x2)/2,stripY,(z1+z2)/2,Math.abs(x2-x1)||stripWidth,stripHeight,Math.abs(z2-z1)||stripWidth,stripMaterial).name='Upper terrace continuous perimeter strip';
- function guard(x1,z1,x2,z2){const count=Math.ceil(Math.hypot(x2-x1,z2-z1)/1.4);for(let i=0;i<=count;i++){const x=T.MathUtils.lerp(x1,x2,i/count),z=T.MathUtils.lerp(z1,z2,i/count);bar(new T.Vector3(x,top,z),new T.Vector3(x,top+.95,z),.015,brass);}bar(new T.Vector3(x1,top+.95,z1),new T.Vector3(x2,top+.95,z2),.025,brass);const len=Math.hypot(x2-x1,z2-z1),m=box((x1+x2)/2,top+.46,(z1+z2)/2,len,.76,.028,glass);m.rotation.y=-Math.atan2(z2-z1,x2-x1);}
+ const guardPosts=new Set(),guardJoints=new Set();
+ function guard(x1,z1,x2,z2,lower=false){
+  const len=Math.hypot(x2-x1,z2-z1);if(len<.001)return;
+  const count=Math.max(1,Math.ceil(len/1.4));
+  for(let i=0;i<=count;i++){
+   const x=T.MathUtils.lerp(x1,x2,i/count),z=T.MathUtils.lerp(z1,z2,i/count),key=x.toFixed(4)+','+z.toFixed(4);
+   if(!guardPosts.has(key)){guardPosts.add(key);bar(new T.Vector3(x,top,z),new T.Vector3(x,top+.95,z),.015,brass);}
+  }
+  for(const lift of (lower?[.95,.48]:[.95])){
+   bar(new T.Vector3(x1,top+lift,z1),new T.Vector3(x2,top+lift,z2),lift===.95?.025:.012,brass);
+   for(const [x,z] of [[x1,z1],[x2,z2]]){const key=[x,z,lift].map(v=>v.toFixed(4)).join(',');if(!guardJoints.has(key)){guardJoints.add(key);const joint=mesh(new T.SphereGeometry(lift===.95?.025:.012,12,8),brass);joint.position.set(x,top+lift,z);}}
+  }
+  const m=box((x1+x2)/2,top+.46,(z1+z2)/2,len,.76,.028,glass);m.rotation.y=-Math.atan2(z2-z1,x2-x1);
+ }
  guard(west-edge,north-edge,east+edge,north-edge);guard(east+edge,north-edge,east+edge,south+edge);guard(east+edge,south+edge,west-edge,south+edge);
  guard(west-edge,north-edge,west-edge,landingZ-.8);
  const railLeft=point(start+sweep,inner+.08,top).x,railRight=point(start+sweep,outer-.08,top).x,railSouth=south+edge;
- guard(railLeft,landingNorth,railLeft,railSouth);
- guard(railLeft,railSouth,west-edge,railSouth);
- guard(railRight,landingNorth,west-edge,landingNorth);
+ guard(railLeft,landingNorth,railLeft,railSouth,true);
+ guard(railLeft,railSouth,west-edge,railSouth,true);
+ guard(railRight,landingNorth,west-edge,landingNorth,true);
  group.userData={steps:n,riser:rise/n,clearWidth:w,entry:point(start,r,bottom).toArray(),entryLeft:point(start,inner,bottom).toArray(),southwestCorner:[west,bottom,south],exit:[landingWest-.25,top,landingZ],landingCorner:[landingWest,top,landingSouth],upperSouthwestCorner:[landingWest,top,landingSouth],landingBounds:[landingLeft,landingWest,landingSouth-SPIRAL.landingDepth,landingSouth],materialPreserved:true};
  return group;
 }

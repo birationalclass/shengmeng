@@ -1,9 +1,13 @@
 import * as T from 'three';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 // Instanced parts share geometry across all thirty seats; only changed matrices upload.
-export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,backs},S){
+export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,backs,focusX=42.7},S){
  const root=new T.Group();root.name='Auditorium swivel chairs';scene.add(root);
- const parts=[],targets=[],owned=[],angles=positions.map(()=>0),goals=positions.map(()=>0),dummy=new T.Object3D(),pivot=new T.Object3D();
+ const restAngles=positions.map(([x,y,z])=>{
+  const t=Math.max(0,Math.min(1,(Math.abs(z)-1.4)/4.8)),weight=t*t*(3-2*t);
+  return Math.sign(z)*Math.min(25*Math.PI/180,Math.atan2(Math.abs(z),Math.max(.1,focusX-x))*.5)*weight;
+ });
+ const parts=[],targets=[],owned=[],angles=[...restAngles],goals=[...restAngles],dummy=new T.Object3D(),pivot=new T.Object3D();
  const rubber=new T.MeshStandardMaterial({color:'#252b29',roughness:.96});
  const satin=new T.MeshStandardMaterial({color:'#8f8c80',metalness:.72,roughness:.38});
  const graphite=new T.MeshStandardMaterial({color:'#414542',metalness:.48,roughness:.5});
@@ -41,9 +45,9 @@ export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,bac
  }
  positions.forEach((_,i)=>write(i,true));parts.forEach(p=>{p.mesh.computeBoundingSphere();p.mesh.boundingSphere.radius+=1;});
  return {targets:[],setSunsetDirection(direction,active){
-  const desired=active?Math.atan2(direction[0],direction[2])-Math.PI/2:0;
+  const sunsetAngle=Math.atan2(direction[0],direction[2])-Math.PI/2;
   const back=Math.min(...positions.map(p=>p[0]));
-  positions.forEach((p,i)=>{if(p[0]===back)goals[i]=angles[i]+Math.atan2(Math.sin(desired-angles[i]),Math.cos(desired-angles[i]));});
+  positions.forEach((p,i)=>{if(p[0]===back){const desired=active?sunsetAngle:restAngles[i];goals[i]=angles[i]+Math.atan2(Math.sin(desired-angles[i]),Math.cos(desired-angles[i]));}});
  },update(dt){
   for(let i=0;i<angles.length;i++)if(Math.abs(goals[i]-angles[i])>.0001){angles[i]+= (goals[i]-angles[i])*(1-Math.exp(-dt*.38));write(i);}
  },dispose(){owned.forEach(g=>g.dispose());rubber.dispose();satin.dispose();graphite.dispose();parts.forEach(p=>p.mesh.dispose());}};

@@ -362,12 +362,13 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const seating=meta('Mathematics auditorium seating',{seats:SEAT_ROWS.length*SEAT_COLUMNS.length,seatsPerRow:SEAT_COLUMNS.length,rows:3,centralAisle:1.6,facing:[1,0,0],seatPositions:[],rowRises:SEAT_ROWS.map(r=>r.rise),clearHeight:HALL.clearHeight,offshore:true});
   const carpetTop=DECK_Y+.028;
   // Two low carpeted seating tiers; the front row stays on the main floor.
+  const tierOuter=Math.max(...SEAT_COLUMNS.map(Math.abs))+1.05/S,tierInner=.8;
   const tierAdvance=.40/S; // Forty centimetres toward the front row in world space.
   for(const [i,a,b] of [[0,34.5,36.725+tierAdvance],[1,36.725+tierAdvance,38.675+tierAdvance]]){
     const rise=SEAT_ROWS[i].rise/S;
     for(const sign of [-1,1]){
-      const riser=new THREE.Mesh(new THREE.BoxGeometry(b-a,rise,9.05),tierCarpets[i]);
-      riser.name='Carpeted seating tier '+i+' '+sign;riser.position.set((a+b)/2,carpetTop+rise/2,sign*5.325);
+      const riser=new THREE.Mesh(new THREE.BoxGeometry(b-a,rise,tierOuter-tierInner),tierCarpets[i]);
+      riser.name='Carpeted seating tier '+i+' '+sign;riser.position.set((a+b)/2,carpetTop+rise/2,sign*(tierOuter+tierInner)/2);
       riser.receiveShadow=true;scene.add(riser);
     }
   }
@@ -375,7 +376,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   meta('Flat central carpeted aisle',{width:1.6,floorY:carpetTop,stepCount:0});
   const curvedShell=curvedSeatBack(),curvedCloth=curvedSeatBack(true),headrest=curvedSeatBack(true,true);
   for(const {x,rise} of SEAT_ROWS)for(const z of SEAT_COLUMNS)seating.userData.seatPositions.push([x,carpetTop+rise/S,z]);
-  const swivelChairs=createSwivelChairs(scene,seating.userData.seatPositions,{shell,cloth:seatCloth,metal:brass,timber,backs:[curvedShell,curvedCloth,headrest]},S);
+  const swivelChairs=createSwivelChairs(scene,seating.userData.seatPositions,{shell,cloth:seatCloth,metal:brass,timber,backs:[curvedShell,curvedCloth,headrest],focusX:HALL.boardX},S);
   const lectern=createLectern(THREE);
   lectern.group.position.set(41.3,DECK_Y+.028,6.5);
   lectern.group.scale.setScalar(1/S);lectern.group.rotation.y=Math.PI/2;scene.add(lectern.group);
