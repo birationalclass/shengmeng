@@ -1,7 +1,9 @@
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
-import {BUILDING_SCALE as S,HALL} from './site-layout.js';
+import {BUILDING_SCALE as S,HALL,LECTERN_SHAFT_PLAN} from './site-layout.js';
+import {subtractRect} from './board-storage.js?v124';
+import {createLecternLift} from './lectern-lift.js';
 import {bridgePlan} from './campus-plan.js';
 import {routeBridge} from './campus-routing.js';
 
@@ -99,7 +101,15 @@ export function finishCampusLayout(scene,retreat,rooms){
  for(const lamp of scene.children.filter(o=>o.isPointLight||o.isSpotLight)){const b=owner(lamp.position.x/S,lamp.position.z/S);lamp.position.add(buildingOffset(b[0]));if(lamp.target)lamp.target.position.add(buildingOffset(b[0]));}
 
  const top=.275*S,bottom=retreat.site.seaLevel-1;
- for(const b of campusLayout)if(b[0]!=='G'){const m=new T.Mesh(new T.BoxGeometry(b[6],top-bottom,b[7]),[retreat.materials.edge,retreat.materials.edge,retreat.materials.stone,retreat.materials.edge,retreat.materials.edge,retreat.materials.edge]);m.position.set(anchor+b[4],(top+bottom)/2,-b[5]);m.receiveShadow=m.castShadow=true;m.name='Campus platform '+b[0];scene.add(m);}
+ for(const b of campusLayout)if(b[0]!=='G'){
+  const bounds=[anchor+b[4]-b[6]/2,anchor+b[4]+b[6]/2,-b[5]-b[7]/2,-b[5]+b[7]/2];
+  const delta=buildingOffset(b[0]),hole=LECTERN_SHAFT_PLAN.map((v,i)=>v*S+(i<2?delta.x:delta.z));
+  for(const [a,c,d,e] of (b[0]==='01B'?subtractRect(bounds,hole):[bounds])){
+   const m=new T.Mesh(new T.BoxGeometry(c-a,top-bottom,e-d),[retreat.materials.edge,retreat.materials.edge,retreat.materials.stone,retreat.materials.edge,retreat.materials.edge,retreat.materials.edge]);m.position.set((a+c)/2,(top+bottom)/2,(d+e)/2);m.receiveShadow=m.castShadow=true;m.name='Campus platform '+b[0];scene.add(m);
+  }
+ }
+ if(retreat.campus?.lectern)retreat.campus.lecternLift=createLecternLift(scene,retreat.campus.lectern,retreat.campus.carpetMaterial,buildingOffset('01B'));
+ if(retreat.campus){const [a,b,c,d]=LECTERN_SHAFT_PLAN,delta=buildingOffset('01C'),cap=new T.Mesh(new T.BoxGeometry((b-a)*S,.024*S,(d-c)*S),retreat.campus.carpetMaterial);cap.position.set((a+b)/2*S+delta.x,(.28+.016)*S,(c+d)/2*S+delta.z);cap.receiveShadow=true;cap.name='Backup hall fixed lectern floor';scene.add(cap);}
  const bridges=new T.Group();bridges.name='September 26 campus bridges';scene.add(bridges);
  function deck(x,y,w,d,rotation=0){const m=new T.Mesh(new T.BoxGeometry(w,.28,d),retreat.materials.timber);m.position.set(anchor+x,top-.14,-y);m.rotation.y=rotation;m.receiveShadow=true;bridges.add(m);}
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);

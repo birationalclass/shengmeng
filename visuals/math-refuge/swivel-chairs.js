@@ -35,7 +35,11 @@ export function createSwivelChairs(scene,positions,{shell,cloth,metal,timber,bac
   }
  }
  positions.forEach((_,i)=>write(i,true));parts.forEach(p=>{p.mesh.computeBoundingSphere();p.mesh.boundingSphere.radius+=1;});
- return {targets,turn(index){if(Number.isInteger(index)&&index>=0&&index<goals.length)goals[index]+=Math.PI/4;},update(dt){
-  for(let i=0;i<angles.length;i++)if(Math.abs(goals[i]-angles[i])>.0001){angles[i]+= (goals[i]-angles[i])*(1-Math.exp(-dt*5));write(i);}
+ return {targets:[],setSunsetDirection(direction,active){
+  const desired=active?Math.atan2(direction[0],direction[2])-Math.PI/2:0;
+  const back=Math.min(...positions.map(p=>p[0]));
+  positions.forEach((p,i)=>{if(p[0]===back)goals[i]=angles[i]+Math.atan2(Math.sin(desired-angles[i]),Math.cos(desired-angles[i]));});
+ },update(dt){
+  for(let i=0;i<angles.length;i++)if(Math.abs(goals[i]-angles[i])>.0001){angles[i]+= (goals[i]-angles[i])*(1-Math.exp(-dt*.38));write(i);}
  },dispose(){owned.forEach(g=>g.dispose());rubber.dispose();parts.forEach(p=>p.mesh.dispose());}};
 }

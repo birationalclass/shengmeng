@@ -1,6 +1,6 @@
 import {createSwivelChairs} from './swivel-chairs.js?v126';
 import {subtractRect} from './board-storage.js?v124';
-import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
+import {BOARD_SHAFT_PLAN,LECTERN_SHAFT_PLAN} from './site-layout.js?v124';
 import {createSeminarBuilding} from './seminar-building.js?v62-chalk-ink';
 import * as THREE from 'three';
 import {BUILDINGS} from './building-catalog.js?v=true-north-coast-1';
@@ -254,7 +254,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const tierCarpets=['#7d6e5c','#8e7e6a'].map(color=>{const material=carpetMaterial.clone();material.color.set(color);return material;});
   const carpet=new THREE.Group();carpet.name='Warm woven seminar carpet';scene.add(carpet);
   // Close the former bare strip at the smart glass; leave only the real shaft.
-  for(const [a,b,c,d] of subtractRect([HALL.west+.08,HALL.east+.025,HALL.north+.08,HALL.south-.08],BOARD_SHAFT_PLAN)){
+  for(const [a,b,c,d] of subtractRect([HALL.west+.08,HALL.east+.025,HALL.north+.08,HALL.south-.08],BOARD_SHAFT_PLAN).flatMap(r=>subtractRect(r,LECTERN_SHAFT_PLAN))){
     const tile=new THREE.Mesh(new THREE.BoxGeometry(b-a,.024,d-c),carpetMaterial);
     tile.position.set((a+b)/2,DECK_Y+.016,(c+d)/2);tile.receiveShadow=true;carpet.add(tile);
   }

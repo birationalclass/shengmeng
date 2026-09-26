@@ -1,4 +1,5 @@
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
+import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
@@ -33,7 +34,7 @@ import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=horizon-depth-1';
 import {createLecture} from './lecture.js?v127';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
@@ -57,7 +58,8 @@ const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
-for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?HALL.east-.7:HALL.west+.7)*BUILDING_SCALE+shift.x,p=[x,DECK_Y*BUILDING_SCALE+1.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:'报告厅海景 · 上海今日太阳方位',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
+for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?HALL.east-.7:SEAT_ROWS[0].x)*BUILDING_SCALE+shift.x,p=[x,event==='sunrise'?DECK_Y*BUILDING_SCALE+1.65:(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[0].rise+1.18,shift.z+(event==='sunset'?SEAT_COLUMNS.find(z=>z>0)*BUILDING_SCALE:0)],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'最后一排座椅 · 坐姿观赏日落':'报告厅海景 · 上海今日太阳方位',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
+BUILDINGS[0].rooms.push({name:'降下讲台',lecternLift:true});
 
 OUTDOOR_AREAS.push('远眺','报告厅备份','访客小院','休息室二组');
 for(const [i,n] of [[3,'共研工坊'],[4,'数学实验室'],[5,'北食阁'],[6,'南食阁'],[7,'休息室一组'],[8,'休息室三组']])BUILDINGS[i].name=n;
@@ -409,7 +411,7 @@ function tick(stamp){
     $('world').dataset.shot=String(shot);
     updateSceneTime();
   }
-  screenWebview.update(camera,rooms[0],scene);retreat.setMediaOpen(screenWebview.isOpen);retreat.campus.swivelChairs.update(dt);
+  screenWebview.update(camera,rooms[0],scene);retreat.setMediaOpen(screenWebview.isOpen);const sunset=eventHours().sunset;retreat.campus.swivelChairs.setSunsetDirection(geographicDirectionToCampus(solarState(sunset,sceneTime.date).direction),visualHour>=sunset-2&&visualHour<=sunset+.5);retreat.campus.swivelChairs.update(dt);retreat.campus.lecternLift?.update(dt);if(retreat.campus.lecternLift?.moving)renderer.shadowMap.needsUpdate=true;$('lecternButton').disabled=activeRoom===0&&Boolean(retreat.campus.lecternLift?.lowered);
   retreat.residence.update(camera,retreat.sky.material.uniforms.day.value);
   const nearResidence=camera.position.distanceTo(retreat.residence.root.position)<180;
   const hallCenter=new THREE.Vector3(39*BUILDING_SCALE,3,0).add(buildingOffset('01B')),nearHall=camera.position.distanceTo(hallCenter)<65;
@@ -526,8 +528,8 @@ $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(even
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
-$('light').addEventListener('input',()=>{if(retreat){sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
-$('clockPlay').addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.setRate(1);$('timeRate').value='1';sceneTime.sync();updateSceneTime();});
+$('light').addEventListener('input',()=>{if(retreat){hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
+$('clockPlay').addEventListener('click',()=>{hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.setRate(1);$('timeRate').value='1';sceneTime.sync();updateSceneTime();});
 function weatherLabel(){
  const mode=$('weatherMode').value;if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
  const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
@@ -542,7 +544,7 @@ $('timeClose').addEventListener('click',closeTime);
 $('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
 function eventHours(){const fallback=solarEvents(sceneTime.date);const parse=(text,otherwise)=>/^\d{2}:\d{2}$/.test(text||'')?Number(text.slice(0,2))+Number(text.slice(3))/60:otherwise;return sceneTime.dayOffset?fallback:{sunrise:parse(weatherReading?.sunrise,fallback.sunrise),sunset:parse(weatherReading?.sunset,fallback.sunset)};}
 function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent=formatHour(times.sunrise);$('sunsetTime').textContent=formatHour(times.sunset);$('sunEventSource').textContent=weatherReading?.sunrise?'上海今日 · 天气服务时刻':'上海今日 · 本地天文估算';}
-$('timeRate').addEventListener('change',()=>{sunriseIntro.cancel();sceneTime.setRate($('timeRate').value);updateSceneTime();});
+$('timeRate').addEventListener('change',()=>{hallSunRamp=null;sunriseIntro.cancel();sceneTime.setRate($('timeRate').value);updateSceneTime();});
 $('timeRun').addEventListener('click',()=>{sunriseIntro.cancel();if(sceneTime.playing)sceneTime.pause();else sceneTime.play($('timeRate').value);updateSceneTime();});
 for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id).addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(eventHours()[event]-.05);sceneTime.play($('timeRate').value);updateSceneTime();});
 $('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
@@ -555,6 +557,7 @@ function updateSceneTime(){
 }
 
 function updateAtmosphere(dt){
+ if(hallSunRamp!==null){if(!sceneTime.playing||!sceneTime.preview)hallSunRamp=null;else if(!blend){hallSunRamp+=dt;sceneTime.setRate(sunViewRate(hallSunRamp));if(hallSunRamp>=5)hallSunRamp=null;}}
  if(sunriseIntro.update(dt))$('timeRate').value='1';sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);$('timeFade').style.opacity=String(timePresentation.opacity);retreat.setTime(visualHour,false,dt,sceneTime.playing?sceneTime.rate:1,sceneTime.date);
  const angle=Math.abs(((visualHour-lastShadowHour+36)%24)-12);
  if(angle>.00028){renderer.shadowMap.needsUpdate=true;lastShadowHour=visualHour;}
@@ -704,7 +707,7 @@ async function seekLecture(page){
   }}catch(error){$('lectureStatus').textContent=error.message;}
 }
 $('lectureProgress').addEventListener('input',event=>seekLecture(lecture.clock.startAt+Number(event.target.value)-1));
-$('lecternButton').addEventListener('click',()=>{if(lecture&&physicalRoom===activeRoom)enterSpeakerView();});
+$('lecternButton').addEventListener('click',()=>{if(lecture&&physicalRoom===activeRoom&&!(activeRoom===0&&retreat.campus.lecternLift?.lowered))enterSpeakerView();});
 function activateRoom(index,moveCamera=true){
   if(!rooms[index])return;
   reportRequest++;changingReport=false;reportProgress='';reportLoadError='';
@@ -743,9 +746,10 @@ function updateSeminarNavigation(){
  document.querySelectorAll('#buildingRooms button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.room!==undefined?Number(button.dataset.room)===activeRoom&&SHOTS[shot].lecture:button.dataset.roomShot===SHOTS[shot].name)));
  $('seminarCurriculum').hidden=activeRoom!==1;
 }
+let hallSunRamp=null;
 function viewHallSun(event){
  if(cameraLocked())return;
- sunriseIntro.cancel();timePresentation.seek();const hour=eventHours()[event]+(event==='sunrise'?.025:-.025);sceneTime.previewAt(hour);updateSceneTime();
+ sunriseIntro.cancel();timePresentation.seek();const hour=hallSunStart(event,sceneTime.date,$('sunSize').value==='physical');sceneTime.previewAt(hour);sceneTime.play(1);hallSunRamp=0;$('timeRate').value='30';updateSceneTime();
  const index=SHOTS.findIndex(s=>s.name==='报告厅'+(event==='sunrise'?'看日出':'看日落')),direction=geographicDirectionToCampus(solarState(hour,sceneTime.date).direction),p=SHOTS[index].positions[0];
  for(const target of curves[index].target.points)target.set(p[0]+direction[0]*500,p[1]+direction[1]*500,p[2]+direction[2]*500);curves[index].target.updateArcLengths();
  selectShot(index);setSeminarPanel(true,BUILDINGS[0]);
@@ -757,11 +761,12 @@ function setSeminarPanel(open,building=panelBuilding){
  if(!open)return;
  $('buildingHeading').textContent=panelBuilding.number+' · '+panelBuilding.name;
  $('buildingRooms').replaceChildren(...panelBuilding.rooms.map(room=>{
-   const button=document.createElement('button');button.textContent=room.name;
+   const button=document.createElement('button');button.textContent=room.lecternLift?(retreat?.campus.lecternLift?.lowered?'升起讲台':'降下讲台'):room.name;
    if(room.room!==undefined)button.dataset.room=String(room.room);
    if(room.shot)button.dataset.roomShot=room.shot;
    button.addEventListener('click',()=>{
      if(room.sunEvent){viewHallSun(room.sunEvent);return;}
+     if(room.lecternLift){if(speakerView)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'));retreat.campus.lecternLift.toggle();button.textContent=retreat.campus.lecternLift.lowered?'升起讲台':'降下讲台';button.setAttribute('aria-pressed',String(retreat.campus.lecternLift.lowered));return;}
      if(room.room!==undefined)activateRoom(room.room,!room.shot);
      if(room.shot)selectShot(SHOTS.findIndex(s=>s.name===room.shot));
      updateSeminarNavigation();
