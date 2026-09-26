@@ -8,6 +8,7 @@ export function createSeaPavilion(scene,materials,offset){
  root.position.copy(origin);
  const curve=new T.CatmullRomCurve3([[0,0,0],[-7,0,0],[-20,0,-7],[-36,0,-12]].map(p=>new T.Vector3(...p)));
  const batches=new Map(),matrix=new T.Matrix4(),q=new T.Quaternion(),up=new T.Vector3(0,1,0);
+ const deck=materials.hallPaving||materials.terraceFloor||materials.stone;
  const steel=materials.steel,wood=materials.timber,edge=materials.edge,brass=materials.brass;
  const roof=new T.MeshStandardMaterial({color:0xc9c8bd,roughness:.86,metalness:.08});
  const frame=new T.MeshStandardMaterial({color:0x414a49,roughness:.7,metalness:.25});
@@ -21,10 +22,10 @@ export function createSeaPavilion(scene,materials,offset){
  function beam(a,b,width,height,mat){const d=new T.Vector3().subVectors(b,a);box(a.clone().add(b).multiplyScalar(.5).toArray(),[width,height,d.length()+.012],mat,Math.atan2(d.x,d.z));}
  const flare=u=>{const t=Math.max(0,Math.min(1,(u-.88)/.12));return 1+.5*t*t*(3-2*t);};
  const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*flare(u))).add(new T.Vector3(0,y,0));};
- const length=curve.getLength(),count=Math.ceil(length/.24);
+ const length=curve.getLength(),count=Math.ceil(length/1.15);
  for(let i=0;i<count;i++){
   const u=(i+.5)/count,d=curve.getTangentAt(u);
-  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.012],wood,Math.atan2(d.x,d.z));
+  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.006],deck,Math.atan2(d.x,d.z));
  }
  // Open timber boardwalk: all structure stays below the walking surface.
  for(let i=0;i<48;i++)for(const side of [-1,1]){
@@ -43,7 +44,7 @@ export function createSeaPavilion(scene,materials,offset){
  // Align the pavilion's entrance normal with the arriving bridge tangent.
  pavilionTransform={x:end.x,z:end.z,angle:Math.atan2(tangent.z,-tangent.x)};
  box([cx,-.2,cz],[8,.32,7],edge);
- for(let i=0;i<29;i++)box([cx,-.025,cz-3.5+(i+.5)*7/29],[7.98,.05,7/29-.012],wood);
+ for(let i=0;i<6;i++)for(let j=0;j<6;j++)box([cx-4+(j+.5)*8/6,-.025,cz-3.5+(i+.5)*7/6],[8/6-.006,.05,7/6-.006],deck);
  for(const x of [-3.5,3.5])for(const z of [-3,3]){
   box([cx+x,1.48,cz+z],[.12,2.96,.12],frame);
   box([cx+x,.045,cz+z],[.27,.09,.27],brass);

@@ -1,4 +1,5 @@
-import {createSeaPavilion} from './sea-pavilion.js?v=entrance-clean-24';
+import {bridgeCurve,createCoastalBridge} from './coastal-bridges.js?v=stone-bridges-36';
+import {createSeaPavilion} from './sea-pavilion.js?v=stone-bridges-36';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
@@ -112,9 +113,9 @@ export function finishCampusLayout(scene,retreat,rooms){
  if(retreat.campus?.lectern)retreat.campus.lecternLift=createLecternLift(scene,retreat.campus.lectern,retreat.campus.carpetMaterial,buildingOffset('01B'));
  if(retreat.campus){const [a,b,c,d]=LECTERN_SHAFT_PLAN,delta=buildingOffset('01C'),cap=new T.Mesh(new T.BoxGeometry((b-a)*S,.024*S,(d-c)*S),retreat.campus.carpetMaterial);cap.position.set((a+b)/2*S+delta.x,(.28+.016)*S,(c+d)/2*S+delta.z);cap.receiveShadow=true;cap.name='Backup hall fixed lectern floor';scene.add(cap);}
  const bridges=new T.Group();bridges.name='September 26 campus bridges';scene.add(bridges);
- function deck(x,y,w,d,rotation=0){const m=new T.Mesh(new T.BoxGeometry(w,.28,d),retreat.materials.timber);m.position.set(anchor+x,top-.14,-y);m.rotation.y=rotation;m.receiveShadow=true;bridges.add(m);}
+ function deck(x,y,w,d,rotation=0){const m=new T.Mesh(new T.BoxGeometry(w,.28,d),retreat.materials.hallPaving||retreat.materials.terraceFloor||retreat.materials.stone);m.position.set(anchor+x,top-.14,-y);m.rotation.y=rotation;m.receiveShadow=true;bridges.add(m);}
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);
- for(const [a,b] of bridgePlan.connections){const path=routeBridge(campusLayout.find(r=>r[0]===a),campusLayout.find(r=>r[0]===b),campusLayout);if(!path)throw Error('无法连接 '+a+'/'+b);for(const v of path.slice(1,-1))deck(v[0],v[1],3,3);for(let i=1;i<path.length;i++){const p=path[i-1],q=path[i];deck((p[0]+q[0])/2,(p[1]+q[1])/2,3,Math.hypot(q[0]-p[0],q[1]-p[1]),Math.atan2(q[0]-p[0],-(q[1]-p[1])));}}
+ for(const [a,b] of bridgePlan.connections){const path=routeBridge(campusLayout.find(r=>r[0]===a),campusLayout.find(r=>r[0]===b),campusLayout);if(!path)throw Error('无法连接 '+a+'/'+b);createCoastalBridge(bridges,bridgeCurve(path,campusLayout,[a,b]),retreat.materials,anchor,top,'Curved stone bridge '+a+' '+b);}
  createHallSpiral(scene,retreat.materials,buildingOffset('01B'));
  const pavilion=createSeaPavilion(scene,retreat.materials,buildingOffset('01B'));if(retreat.campus)retreat.campus.seaPavilion=pavilion;
  scene.updateMatrixWorld(true);

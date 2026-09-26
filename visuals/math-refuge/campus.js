@@ -231,6 +231,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   // the generic small-square grid. Restrained variation and 6 mm shadow joints.
   const mineralMap=terraceStoneMap();
   const pavingMaterials=['#736e61','#776f61','#70695b'].map(color=>new THREE.MeshStandardMaterial({color,map:mineralMap,roughness:.96,metalness:0,envMapIntensity:.12,normalMap:stone.normalMap,normalScale:new THREE.Vector2(.025,.025)}));
+  materials.hallPaving=pavingMaterials[0];
   const borderMaterial=new THREE.MeshStandardMaterial({color:'#454b47',roughness:.96,metalness:0,envMapIntensity:.1});
   const pavingRects=[[tw+.18,HALL.west,tn+.18,ts-.18],[HALL.east,te-.18,tn+.18,ts-.18],[HALL.west,HALL.east,tn+.18,HALL.north],[HALL.west,HALL.east,HALL.south,ts-.18]];
   const paving=terracePaving([tw+.18,te-.18,tn+.18,ts-.18],HALL);
@@ -337,27 +338,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   machine.userData={groupHeads:2,cups:2,hoppers:2};
   table(38,DECK_Y,-21,1.3,.75);sofa(36.9,DECK_Y,-21,Math.PI/2);
   meta('North coffee cabin amenities',{coffeeMachine:true,counter:true,seating:true});
-  for(const [index,bridge] of BRIDGES.entries()){
-    // The former west connector is obsolete; do not leave fragments on adjacent decks.
-    if(index===1)continue;
-    section('');
-    const {x,z,axis,span,width,rise}=bridge,steps=28;
-    const point=(t,y)=>[x+(axis==='x'?(t-.5)*span:0),y,z+(axis==='z'?(t-.5)*span:0)];
-    for(let i=0;i<steps;i++){
-      const t=(i+.5)/steps,y=DECK_Y+rise*Math.sin(Math.PI*t);
-      const slope=rise*Math.PI/span*Math.cos(Math.PI*t);
-      box(point(t,y-.04),axis==='x'?[span/steps+.006,.08,width]:[width,.08,span/steps+.006],timber,axis==='x'?[0,0,Math.atan(slope)]:[-Math.atan(slope),0,0]);
-      for(const sign of [-1,1]){
-        const a=point(i/steps,DECK_Y+rise*Math.sin(Math.PI*i/steps)+.9/S),b=point((i+1)/steps,DECK_Y+rise*Math.sin(Math.PI*(i+1)/steps)+.9/S);
-        a[axis==='x'?2:0]+=sign*width/2;b[axis==='x'?2:0]+=sign*width/2;beam(a,b,.018,brass);
-      }
-    }
-    for(let i=0;i<=6;i++)for(const sign of [-1,1]){
-      const p=point(i/6,DECK_Y+rise*Math.sin(Math.PI*i/6));p[axis==='x'?2:0]+=sign*width/2;beam(p,[p[0],p[1]+.9/S,p[2]],.014,brass);
-    }
-    meta('Module arch bridge '+(index+1),bridge);
-    section('');
-  }
+  // Inter-building bridges are generated from the current campus connection plan.
   // Both sides remain transparent. Acoustic absorption is on the carpet and
   // ceiling, not an opaque north wall blocking the left-hand sea view.
   meta('Transparent seminar side elevations',{northOpaqueWall:false,southOpaqueWall:false});
