@@ -80,7 +80,7 @@ function enterScene(){
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  replayOpening();
+  if(new URLSearchParams(location.search).get('view')==='campus'){opening=null;shot=SHOTS.findIndex(s=>s.name==='远眺');time=0;blend=null;free=true;touring=false;controls.enabled=true;sceneTime.previewAt(12);applyShot(0);updateLabels();}else replayOpening();
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
