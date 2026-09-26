@@ -1,0 +1,489 @@
+import {BoardStorage} from './board-storage.js?v124';
+import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
+import {createSmartGlassHub} from './smart-glass-hub.js?v109';
+import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v137';
+import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
+import {createSeminarScreen} from './seminar-screen.js?v62-chalk-ink';
+import * as THREE from 'three';
+import {LectureClock,boardHeights,BOARD_LAYOUT} from './lecture-state.js?v62-chalk-ink';
+import {inkGuides,inkReveal,strokeReveal,writingPose,writingPlan,erasingPlan,eraserPose,wetOpacity,chalkLength,DRY_SECONDS,ERASER_HALF_WIDTH as EW,ERASER_HALF_HEIGHT as EH} from './chalk-motion.js?v137';
+import {paintChalkStroke} from './chalk-annotations.js?v69-authored';
+
+import {chalkCopy,composeChalkPage} from './chalk-language.js?v69-authored';
+
+import {REPORTS} from './report-catalog.js?v62-chalk-ink';
+import {createReportLoader} from './report-loader.js?v79-mobile';
+
+import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
+import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
+
+const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
+const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
+export async function createLecture(scene,renderer,options={}){
+  const pixelScale=options.boardScale===.5?.5:1;
+  const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:-.45};
+  const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||REPORTS;
+  let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
+  const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
+  let navigation=openingReport.navigation;
+  let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
+  let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
+  let screenHub=null;
+  let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
+  const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
+  const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
+  estimateDurations();
+  const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
+  if(document.fonts&&!disabled)await withDeadline(Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]),15000,'板书字体加载');
+  function clearPageCache(){for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
+  function load(index,preparedImage){
+    if(index<0)return Promise.resolve(null);
+    if(cache.has(index))return Promise.resolve(cache.get(index));
+    if(pending.has(index))return pending.get(index);
+    const epoch=generation,lang=language,style=writingStyle;
+    const job=new Promise((resolve,reject)=>{
+      let image=preparedImage||new Image();const ready=()=>{try{
+        if(epoch!==generation){resolve(null);return;}
+        const sample=document.createElement('canvas');sample.width=W;sample.height=H;const sampleCtx=sample.getContext('2d',{willReadFrequently:true});
+        const recorder=style==='refined'&&canAuthor?authoredContext(sampleCtx):null;let rows=composeChalkPage(recorder?.ctx||sampleCtx,pages[index],index,lang,image,{deferStrokes:true,hideHeading:options.hideBoardHeadings,authored:Boolean(recorder)});if(recorder)rows=recorder.rows(rows);pageRows.set(index,rows);
+        cache.set(index,sample);pending.delete(index);version++;
+        let pixels=null;try{if(sampleCtx.getImageData)pixels=sampleCtx.getImageData(0,0,W,H);}catch{ /* Measured text bounds remain a safe fallback. */ }
+        if(pixels)guides.set(index,inkGuides(pixels,rows));
+        const wipe=erasingPlan(pixels,rows);erasePlans.set(index,wipe);
+        clock.setDurations(index,{write:Math.max(.8,writingPlan(rows,guides.get(index)).duration),erase:Math.max(.4,wipe.duration),hold:pages[index].kind==='cover'?2:8});
+        // Retain six on-board pages and the active/next page, evict other SVGs.
+        const keep=new Set([...seekPinned,...clock.slots.map(s=>s.page),clock.page,Math.min(clock.page+1,pages.length-1)]);
+        for(const key of cache.keys())if(cache.size>(pixelScale<1?8:10)&&!keep.has(key)){cache.get(key).width=1;cache.get(key).height=1;cache.delete(key);guides.delete(key);erasePlans.delete(key);pageRows.delete(key);}
+        resolve(sample);}catch(error){pending.delete(index);reject(error);}
+      };
+      if(preparedImage){queueMicrotask(ready);return;}
+      if(style==='refined'&&canAuthor&&!pages[index].kind&&!pages[index].diagram){withDeadline(authoredFormula(pages[index].formulaAsset+'?v62-chalk-ink'),20000,'板书公式加载').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});return;}
+      decodeImage(pages[index].formulaAsset+'?v62-chalk-ink').then(result=>{image=result;ready();},error=>{pending.delete(index);reject(error);});
+    });pending.set(index,job);return job;
+  }
+  if(!disabled&&hasSelection)await load(0,openingReport.cover);
+  if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
+  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
+  const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
+  const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
+  const cube=new THREE.BoxGeometry(1,1,1);
+  const trayChalkGeometry=new THREE.CylinderGeometry(.018,.015,.16,10);
+  const trayChalkMaterials=['#f5efdc','#e9aa24','#e75575','#339bdd'].map(color=>new THREE.MeshStandardMaterial({color,roughness:1,emissive:color,emissiveIntensity:.18}));
+  function part(parent,p,s,material){const mesh=new THREE.Mesh(cube,material);mesh.position.fromArray(p);mesh.scale.fromArray(s);parent.add(mesh);return mesh;}
+  const blankCanvas=document.createElement('canvas');blankCanvas.width=128;blankCanvas.height=64;const blankCtx=blankCanvas.getContext('2d');blankCtx.fillStyle='#193d33';blankCtx.fillRect(0,0,128,64);
+  const blankTexture=new THREE.CanvasTexture(blankCanvas);blankTexture.colorSpace=THREE.SRGBColorSpace;
+  for(let pair=0;pair<3;pair++){
+    const x=22.4+pair*5.6;
+    const track=new THREE.Group();track.name='Double-channel lift track '+(pair+1);scene.add(track);
+    track.position.z=BOARD_MOUNT_OFFSET;
+    track.userData={column:pair,depths:[-10.505,-10.345].map(z=>z+BOARD_MOUNT_OFFSET),travel:[BOARD_LAYOUT.low,BOARD_LAYOUT.high],glassMounted:true};
+    const railCenter=(BOARD_LAYOUT.railBottom+BOARD_LAYOUT.railTop)/2,railLength=BOARD_LAYOUT.railTop-BOARD_LAYOUT.railBottom+.06;
+    for(const sign of [-1,1]){
+      const railX=x+sign*2.745;
+      for(const z of [-10.505,-10.345]){
+        part(track,[railX+sign*.033,railCenter,z],[.028,railLength,.13],metal);
+        for(const dz of [-.066,.066])part(track,[railX,railCenter,z+dz],[.075,railLength,.015],metal);
+      }
+      for(const y of [.62,railCenter,5.02]){
+        part(track,[railX,y,-10.61],[.09,.075,.26],metal);
+        part(track,[railX,y,-10.735],[.16,.17,.03],metal);
+      }
+    }
+    for(const y of [BOARD_LAYOUT.railBottom,BOARD_LAYOUT.railTop]){const stop=part(track,[x,y,-10.51],[5.58,.06,.43],metal);stop.name=y===BOARD_LAYOUT.railTop?'Upper rail stop':'Lower rail stop';}
+    for(let side=0;side<2;side++){
+      const group=new THREE.Group();group.position.set(x,boardHeights(0)[side],-10.45+side*.16+BOARD_MOUNT_OFFSET);
+      group.name=`Sliding chalkboard ${pair+1}${side?'B':'A'}`;scene.add(group);
+      const canvas=null,ctx=null,texture=blankTexture,roughCtx=null,roughTexture=null;
+      // The backing is physically recessed by .01. Avoid slope-dependent
+      // depth bias, which grows at grazing angles and can occlude the chalk.
+      const surface=new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W,BOARD_H),new THREE.MeshPhysicalMaterial({map:texture,color:'#c9c5bb',roughness:1,roughnessMap:null,metalness:0,specularIntensity:0,envMapIntensity:0,emissive:0x000000,emissiveIntensity:0,polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-1}));
+      surface.name='Matte writing face';group.add(surface);
+      const body=part(group,[0,0,-.05],[BOARD_W,BOARD_H,.08],hardware.back);body.name='Solid opaque board body';
+      for(const y of [-.65,.65]){const brace=part(group,[0,y,-.094],[BOARD_W-.16,.035,.022],frameMaterial);brace.name='Rear nanmu stiffener';}
+      for(const y of [-BOARD_H/2,BOARD_H/2]){const edge=part(group,[0,y,-.026],[BOARD_W+.035,.035,.12],frameMaterial);edge.name='Thin nanmu frame';}
+      for(const px of [-BOARD_W/2,BOARD_W/2]){const edge=part(group,[px,0,-.026],[BOARD_H,.035,.12],frameMaterial);edge.rotation.z=Math.PI/2;edge.name='Thin nanmu frame';}
+      for(const sign of [-1,1])for(const y of [-.70,.70]){
+        const carriage=part(group,[sign*2.702,y,-.055],[.145,.13,.055],metal);carriage.name='Rail carriage bracket';
+        const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.049,.049,.045,12),hardware.rubber);
+        wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.055);group.add(wheel);
+      }
+      surface.material.onBeforeCompile=shader=>{shader.uniforms.boardMipBias=boardMipBias;shader.fragmentShader='uniform float boardMipBias;\n'+shader.fragmentShader.replace('#include <map_fragment>',THREE.ShaderChunk.map_fragment.replace('texture2D( map, vMapUv )','texture2D( map, vMapUv, boardMipBias )'));};
+      surface.material.customProgramCacheKey=()=> 'board-readable-mips-v84';surface.userData.boardSurface=true;
+      boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
+    }
+    const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,centerZ:TRAY.z,floorTop:TRAY.top};scene.add(tray);
+    part(tray,[x,TRAY.y,TRAY.z],[5.42,.06,TRAY.depth],frameMaterial);
+    for(const z of [TRAY.z-TRAY.depth/2,TRAY.z+TRAY.depth/2])part(tray,[x,TRAY.lipY,z],[5.42,.074,.025],frameMaterial);
+    for(const dx of [-2.71,2.71])part(tray,[x+dx,TRAY.lipY,TRAY.z],[.025,.074,TRAY.depth],frameMaterial);
+    for(let j=0;j<4;j++){
+      const stick=new THREE.Mesh(trayChalkGeometry,trayChalkMaterials[j]);stick.name=`Tray chalk ${pair+1} ${j+1}`;
+      stick.rotation.z=Math.PI/2;stick.rotation.y=(j%2?1:-1)*.08;stick.position.set(x-.95+j*.24,TRAY.top+.020,TRAY.z);
+      stick.userData={column:pair,colorIndex:j};scene.add(stick);
+    }
+  }
+  // Three synchronized controls, centered exactly beneath their board columns.
+  const consoleButtons=[],consoleTextures=[];
+  const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
+  const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
+  for(let column=0;column<3;column++){
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
+    button.name=`Smart glass language touch surface ${column+1}`;button.position.set(22.4+column*5.6,-.16,-11.34);
+    button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:0,canvas:touchCanvas,texture:touchTexture};
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(2.16,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
+    label.position.z=.008;label.userData.screenLabel=true;button.add(label);addTextSheen(THREE,button,touchTexture,2.16,.60);scene.add(button);consoleButtons.push(button);
+  }
+  function setConsoleState(){
+    if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
+    const targetLanguage=language==='zh'?'en':'zh',label=targetLanguage==='zh'?'中':'Eng';
+    for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;button.userData.targetLanguage=targetLanguage;}
+    const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
+    c.textAlign='center';c.shadowBlur=0;
+    c.font=targetLanguage==='zh'?'400 184px '+SCREEN_FONT:'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
+    c.fillStyle='#f0e4ca';c.fillText(label,512,250);
+    touchTexture.needsUpdate=true;
+  }
+  const reportButtons=[],reportTextures=[];
+  // Move the report list slightly left, retaining its full-size hit targets.
+  const reportX=16.35;let dateLabel='',dateCheck=0;
+  function glassLabel(width,height,x,y,name){
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=240;
+    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;reportTextures.push(texture);
+    const mesh=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,toneMapped:false}));
+    mesh.position.set(x,y,-11.332);mesh.name=name;scene.add(mesh);return {mesh,canvas,texture};
+  }
+  const reportHeader=glassLabel(4.6,.55,reportX,4.45,'Smart glass report heading');
+  addTextSheen(THREE,reportHeader.mesh,reportHeader.texture,4.6,.55);
+  for(const [index,report] of (navigation?.sections?[]:reports).entries()){
+    const label=glassLabel(4.6,.9,reportX,3.55-index*1.05,`Smart glass report ${report.id}`);
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.02),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
+    button.position.set(reportX,3.55-index*1.05,-11.34);button.name=`Report selection ${report.speaker}`;
+    scene.remove(label.mesh);label.mesh.position.set(0,0,.008);label.mesh.userData.screenLabel=true;button.add(label.mesh);addTextSheen(THREE,button,label.texture,4.6,.9);scene.add(button);
+    Object.assign(button.userData,{action:`report:${report.id}`,reportId:report.id,smartGlass:true,pressed:false,canvas:label.canvas,texture:label.texture});reportButtons.push(button);
+  }
+  function setReportState(){
+    dateLabel=seminarDate();
+    const header=reportHeader.canvas.getContext('2d');header.clearRect(0,0,1024,240);header.textAlign='right';header.fillStyle=silverInk(header);header.font='400 78px Baskerville, "Iowan Old Style", Georgia, serif';
+    header.fillText(dateLabel,996,154);reportHeader.mesh.userData.date=dateLabel;reportHeader.texture.needsUpdate=true;
+    for(const [index,button] of reportButtons.entries()){
+      const report=reports[index],waiting=report.id===pendingReport?.id,selected=!stored&&(hasSelection||Boolean(pendingReport))&&report.id===(pendingReport||activeReport).id,c=button.userData.canvas.getContext('2d');
+      c.clearRect(0,0,1024,240);c.textAlign='right';c.shadowBlur=0;c.fillStyle=silverInk(c);
+      const font=language==='zh'?SCREEN_FONT:'Baskerville, "Iowan Old Style", Georgia, serif';
+      c.font='400 78px '+font;
+      const name=language==='zh'?report.speaker:report.speakerEn;c.fillText(name,996,91);
+      if(selected){const px=996-c.measureText(name).width-38;c.font='400 55px Georgia, serif';c.fillStyle='#e4cf9c';c.fillText('▸',px,88);}
+      c.font='400 40px '+font;c.fillStyle=silverInk(c);
+      const topic=waiting?(language==='zh'?'正在准备报告…':'Preparing report…'):(language==='zh'?report.topic:report.topicEn),words=language==='zh'?[...topic]:topic.split(/(?<= )/);let line='',y=159;
+      for(const word of words){if(c.measureText(line+word).width>960){c.fillText(line,996,y);line=word;y+=47;}else line+=word;}c.fillText(line,996,y);
+      button.userData.texture.needsUpdate=true;button.userData.selected=selected;button.userData.selectionPointer=selected;
+    }
+  }
+  const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
+  if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
+  const touchButtons=[...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
+  setConsoleState();setReportState();
+  if(disabled){reportHeader.mesh.visible=false;touchButtons.forEach(b=>b.visible=false);}
+  const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
+  const chalkAxis=new THREE.Vector3(.22,-.42,.88).normalize();chalk.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),chalkAxis);chalk.name='Writing chalk';scene.add(chalk);
+  const eraserWidth=EW*2/W*BOARD_W,eraserHeight=EH*2/H*BOARD_H;
+  const eraser=new THREE.Mesh(hardware.roundedBox(eraserWidth,eraserHeight,.08),frameMaterial);eraser.name='Moving blackboard eraser';scene.add(eraser);
+  const felt=new THREE.Mesh(hardware.roundedBox(eraserWidth*.98,eraserHeight*.98,.025,.012),hardware.felt);felt.name='Textured layered felt';felt.position.z=-.0525;eraser.add(felt);
+  const grip=new THREE.Mesh(hardware.roundedBox(eraserWidth*.7,eraserHeight*.54,.018,.016),frameMaterial);grip.name='Rounded palm grip';grip.position.z=.045;eraser.add(grip);
+  for(const sign of [-1,1]){const seam=part(eraser,[0,sign*eraserHeight*.33,.043],[eraserWidth*.76,.006,.004],hardware.rubber);seam.name='Recessed finger groove';}
+  for(let i=0;i<3;i++){const fibre=part(eraser,[0,0,-.044-i*.007],[eraserWidth*.985,eraserHeight*.985,.003],hardware.felt);fibre.name='Felt laminate';}
+  const parkedErasers=Array.from({length:3},(_,column)=>{
+    const parked=eraser.clone();parked.name=`Tray eraser ${column+1}`;parked.position.set(23.25+column*5.6,TRAY.restY,TRAY.z);parked.rotation.set(-Math.PI/2,0,.035);
+    parked.userData={column,resting:true};scene.add(parked);return parked;
+  });
+  eraser.visible=false;
+  let eraserColumn=0,eraserReturn=null,eraserPickup=null;
+  const eraserContact=new THREE.Object3D();
+  const particleCount=64,particlePositions=new Float32Array(particleCount*3).fill(-10000),particles=Array.from({length:particleCount},()=>({life:0,vx:0,vy:0}));
+  const dustGeometry=new THREE.BufferGeometry();dustGeometry.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));
+  const dot=new Uint8Array(16*16*4);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const i=(y*16+x)*4,r=Math.hypot((x-7.5)/7.5,(y-7.5)/7.5);dot.set([255,255,255,Math.round(Math.max(0,1-r)*200)],i);}
+  const dotMap=new THREE.DataTexture(dot,16,16);dotMap.needsUpdate=true;
+  const dustMaterial=new THREE.PointsMaterial({color:'#ece6cf',size:.014,map:dotMap,transparent:true,opacity:.36,depthWrite:false});
+  const fallingDust=new THREE.Points(dustGeometry,dustMaterial);fallingDust.name='Falling chalk powder';fallingDust.frustumCulled=false;scene.add(fallingDust);
+  let effectTime=0,wear=0,previousTip=null,lastWritePage=-1,particleCursor=0,dustAccumulator=0;
+  let grain,dust;
+  let seed=831;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  // Empty classrooms retain their board meshes but allocate no full-size ink buffers.
+  const wipeCanvas=document.createElement('canvas');wipeCanvas.width=1;wipeCanvas.height=1;
+  const wipeCtx=wipeCanvas.getContext('2d');let wipeSamples=0;
+  function resetWipe(){wipeCanvas.width=hasSelection?W*pixelScale:1;wipeCanvas.height=hasSelection?H*pixelScale:1;wipeCtx.setTransform?.(pixelScale,0,0,pixelScale,0,0);wipeSamples=0;}
+  function inkCanvas(){const c=document.createElement('canvas');c.width=W*pixelScale;c.height=H*pixelScale;const ctx=c.getContext('2d');ctx.setTransform?.(pixelScale,0,0,pixelScale,0,0);return [c,ctx];}
+  function ensureInk(board){
+    if(!grain){
+      let g,d;[grain,g]=inkCanvas();g.fillStyle='#193d33';g.fillRect(0,0,W,H);
+      for(let i=0;i<12000;i++){g.fillStyle=i%2?'#e7f0d808':'#041c1b18';g.fillRect(random()*W,random()*H,1+random()*2,1);}
+      [dust,d]=inkCanvas();d.fillStyle='#193d3328';for(let i=0;i<6000;i++)d.fillRect(random()*W,random()*H,.5+random(),.6);
+    }
+    if(board.canvas)return;
+    [board.canvas,board.ctx]=inkCanvas();board.texture=new THREE.CanvasTexture(board.canvas);board.texture.colorSpace=THREE.SRGBColorSpace;
+    board.texture.anisotropy=Math.min(pixelScale<1?4:16,renderer.capabilities.getMaxAnisotropy());board.texture.generateMipmaps=true;board.texture.minFilter=THREE.LinearMipmapLinearFilter;
+    const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;board.roughCtx=roughCanvas.getContext('2d');board.roughTexture=new THREE.CanvasTexture(roughCanvas);
+    const material=board.group.children[0].material;material.map=board.texture;material.roughnessMap=board.roughTexture;material.needsUpdate=true;
+  }
+  function draw(index){
+    const board=boards[index],slot=clock.slots[index];
+    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
+    if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
+    ensureInk(board);const ctx=board.ctx;
+    const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
+    const wet=board.wet,wetAge=wet?effectTime-wet.started:Infinity;
+    const wetKey=wet&&wet.progress>0&&wetAge<wet.duration+DRY_SECONDS?(Math.floor(effectTime*12)+':'+wet.progress.toFixed(3)):'';
+    const key=`${slot.page}:${slot.progress.toFixed(3)}:${erasing?clock.progress.toFixed(3):''}:${cache.has(slot.page)}:${wetKey}`;
+    if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
+    if(board.last===key)return;board.last=key;
+    ctx.drawImage(grain,0,0,W,H);const image=cache.get(slot.page);
+    if(image){
+      const rows=pageRows.get(slot.page)||pages[slot.page].rows;
+      // Reveal each complete mathematical row left to right, preserving exact
+      // SVG fractions/superscripts. The grain is deterministic, never flickering.
+      rows.forEach(([x,y,w,h],row)=>{
+        if(rows[row].strokePath){paintChalkStroke(ctx,strokeReveal(rows,slot.progress,row,guides.get(slot.page)),rows[row].chalkColor,rows[row].strokeWidth);return;}
+        const width=inkReveal(rows,slot.progress,row,guides.get(slot.page));
+        if(width>0){ctx.save();ctx.beginPath();ctx.rect(x,y,width,h);ctx.clip();ctx.drawImage(image,0,0);ctx.restore();}
+      });
+      ctx.drawImage(dust,0,0,W,H);
+      if(erasing){
+        const end=Math.floor(clock.progress*700);
+        for(let i=wipeSamples;i<=end;i++){
+          const p=eraserPose(i/700,W,H,wet?.plan||erasePlans.get(slot.page));if(!p.contact)continue;
+          wipeCtx.save();wipeCtx.translate(p.x,p.y);wipeCtx.rotate(p.angle);wipeCtx.beginPath();wipeCtx.rect(-EW,-EH,EW*2,EH*2);wipeCtx.clip();wipeCtx.rotate(-p.angle);wipeCtx.translate(-p.x,-p.y);wipeCtx.drawImage(grain,0,0,W,H);wipeCtx.restore();
+        }
+        wipeSamples=end+1;ctx.drawImage(wipeCanvas,0,0,W,H);
+      }
+    }
+    const r=board.roughCtx,roughChanged=board.roughKey!==wetKey;
+    if(roughChanged){r.fillStyle='white';r.fillRect(0,0,W/4,H/4);}
+    if(wetKey)for(let i=0;i<=Math.floor(wet.progress*420);i++){
+      const p=eraserPose(i/420,W,H,wet.plan),age=effectTime-wet.started-i/420*wet.duration,opacity=wetOpacity(Math.max(0,age));if(!p.contact||opacity<=0)continue;
+      for(const [target,scale] of (roughChanged?[[ctx,1],[r,.25]]:[[ctx,1]])){target.save();target.translate(p.x*scale,p.y*scale);target.rotate(p.angle);target.fillStyle=scale===1?`rgba(4,24,22,${opacity*.32})`:`rgba(0,0,0,${opacity*.6})`;target.fillRect(-EW*scale,-EH*scale,EW*2*scale,EH*2*scale);target.restore();}
+    }
+    if(roughChanged){board.roughKey=wetKey;board.roughTexture.needsUpdate=true;}
+    board.texture.needsUpdate=true;
+  }
+  function positionTool(tool,x,y){
+    const board=boards[clock.active].group;
+    tool.position.set(board.position.x+(x/W-.5)*BOARD_W,board.position.y+(.5-y/H)*BOARD_H,board.position.z+.014);
+  }
+  function select(page){if(disabled)return;clock.select(page);targets[Math.floor(clock.active/2)]=clock.active%2;version++;load(clock.page).catch(error=>{loadingError=error;});}
+  async function seek(page){
+    if(disabled)return false;
+    const request=++seekRequest,epoch=generation;
+    const target=Math.max(clock.startAt,Math.min(clock.stopAt,Math.trunc(page)||0));
+    seeking=true;seekPinned=new Set(Array.from({length:target-Math.max(clock.startAt,target-5)+1},(_,i)=>Math.max(clock.startAt,target-5)+i));
+    try{
+      await Promise.all(Array.from({length:target-Math.max(clock.startAt,target-5)+1},(_,i)=>load(Math.max(clock.startAt,target-5)+i)));
+      if(request!==seekRequest||epoch!==generation)return false;
+      clock.seek(target);
+      for(let pair=0;pair<3;pair++){
+        const a=clock.slots[pair*2].page,b=clock.slots[pair*2+1].page;
+        mix[pair]=targets[pair]=b>a?1:0;
+        boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
+      }
+      eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='resting';
+      parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;
+      particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
+      boards.forEach(b=>{b.wet=null;b.last='';});resetWipe();
+      boards.forEach((_,i)=>draw(i));version++;
+      return true;
+    }catch(error){if(request===seekRequest)loadingError=error;throw error;}
+    finally{if(request===seekRequest){seeking=false;seekPinned.clear();}}
+  }
+  function update(dt,reduced=false){
+    if(disabled||options.isActive?.()===false)return;
+    screenHub?.update(dt,storageProgress);
+    if(storageRig){
+      storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
+      const t=storageProgress*storageProgress*(3-2*storageProgress);
+      storageRig.position.y=t===0?0:-7.2*t;storageRig.visible=storageProgress<1;
+      const u=storageMotion.lid,k=u*u*(3-2*u);
+      if(storageCap)storageCap.visible=u===0;
+      for(const lid of storageLids){lid.visible=u>0;lid.position.z=lid.userData.closedZ+lid.userData.sign*.55*k;lid.position.y=lid.userData.closedY-.065*Math.min(1,u*5);}
+      consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'&&b.userData.column===0));
+      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready)return;
+    }
+    if(!renderActive||hydrating){if(playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
+    dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
+    dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
+    const oldPhase=clock.phase,oldActive=clock.active;
+    const ready=cache.has(clock.page)&&(clock.slots[clock.active].page<0||cache.has(clock.slots[clock.active].page));
+    if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
+    // Ink removal only starts after the felt reaches the board from its tray.
+    const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing';
+    if(playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
+      const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
+      if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
+    }
+    if(clock.phase==='erase'){
+      if(oldPhase!=='erase'||oldActive!==clock.active||!boards[clock.active].wet){boards[clock.active].wet={started:effectTime,progress:0,duration:clock.duration,plan:erasePlans.get(clock.slots[clock.active].page)};resetWipe();}
+      boards[clock.active].wet.progress=clock.progress;
+    }else if(oldPhase==='erase'&&boards[oldActive].wet)boards[oldActive].wet.progress=1;
+    if(reduced)for(const board of boards)board.wet=null;
+    for(let pair=0;pair<3;pair++){
+      mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
+      boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
+    }
+    chalk.visible=playing&&!reduced&&ready&&clock.phase==='write';
+    const erasing=!reduced&&ready&&clock.phase==='erase';
+    if(['erasing','pickup'].includes(eraser.userData.state)&&(!erasing||eraserColumn!==Math.floor(clock.active/2))){
+      eraserReturn={column:eraserColumn,elapsed:0,position:eraser.position.clone(),quaternion:eraser.quaternion.clone()};
+      eraserPickup=null;
+    }
+    if(reduced){eraserReturn=null;eraserPickup=null;}
+    if(erasing){
+      const column=Math.floor(clock.active/2);
+      const starting=!eraserPickup&&(eraser.userData.state!=='erasing'||eraserColumn!==column);
+      if(starting){
+        const rest=parkedErasers[column];
+        eraserPickup={elapsed:0,position:rest.position.clone(),quaternion:rest.quaternion.clone()};
+        eraser.position.copy(rest.position);eraser.quaternion.copy(rest.quaternion);
+      }
+      eraserColumn=column;eraserReturn=null;eraser.visible=true;
+      if(eraserPickup){
+        if(playing&&!starting)eraserPickup.elapsed+=dt;
+        const t=Math.min(1,eraserPickup.elapsed/1.8);
+        const p=eraserPose(0,W,H,boards[clock.active].wet?.plan);
+        positionTool(eraserContact,p.x,p.y);eraserContact.position.z+=.052+p.lift;eraserContact.rotation.set(.03,0,-p.angle);
+        const pose=eraserTransfer(eraserContact.position,eraserPickup.position,1-t,TRAY.z+TRAY.depth/2+.22);
+        eraser.position.set(pose.x,pose.y,pose.z);
+        eraser.quaternion.slerpQuaternions(eraserContact.quaternion,eraserPickup.quaternion,pose.rotation);
+        eraser.userData.state='pickup';
+        if(t===1){eraserPickup=null;eraser.userData.state='erasing';boards[clock.active].wet.started=effectTime;}
+      }else eraser.userData.state='erasing';
+    }else if(eraserReturn){
+      if(playing)eraserReturn.elapsed+=dt;
+      const t=Math.min(1,eraserReturn.elapsed/1.8),rest=parkedErasers[eraserReturn.column];
+      const pose=eraserTransfer(eraserReturn.position,rest.position,t,TRAY.z+TRAY.depth/2+.22);
+      eraser.position.set(pose.x,pose.y,pose.z);
+      eraser.quaternion.slerpQuaternions(eraserReturn.quaternion,rest.quaternion,pose.rotation);
+      eraser.visible=t<1;eraser.userData.state=t<1?'returning':'resting';if(t===1)eraserReturn=null;
+    }else{eraser.visible=false;eraser.userData.state='resting';}
+    parkedErasers.forEach((rest,column)=>{rest.visible=!(eraser.visible&&column===eraserColumn);});
+    if(chalk.visible){
+      if(lastWritePage!==clock.page){lastWritePage=clock.page;previousTip=null;if(chalkLength(wear)<.06)wear=0;}
+      const pose=writingPose(pageRows.get(clock.page)||pages[clock.page].rows,clock.progress,guides.get(clock.page));positionTool(chalk,pose.x,pose.y);chalk.position.z+=pose.contact?0:.055+pose.lift;
+      chalk.material.color.set(pageRows.get(clock.page)?.[pose.row]?.chalkColor||'#f3edda');
+      const tip=chalk.position.clone();
+      if(previousTip&&pose.contact)wear+=Math.min(.07,tip.distanceTo(previousTip))*.007;
+      const length=chalkLength(wear),propScale=1/(scene.scale.y||1);chalk.scale.set(propScale,length/.17*propScale,propScale);chalk.position.addScaledVector(chalkAxis,length*propScale/2);chalk.userData.length=length;chalk.userData.contact=pose.contact;previousTip=tip;
+      dustAccumulator+=dt;
+      if(pose.contact&&dustAccumulator>.09){dustAccumulator=0;const i=particleCursor++%particleCount;particles[i]={life:1.1,vx:(random()-.5)*.025,vy:-.015};particlePositions.set([tip.x,tip.y,tip.z+.016],i*3);}
+    }else previousTip=null;
+    if(erasing&&!eraserPickup){const p=eraserPose(clock.progress,W,H,boards[clock.active].wet?.plan);positionTool(eraser,p.x,p.y);eraser.position.z+=.052+p.lift;eraser.rotation.set(.03,0,-p.angle);}
+    fallingDust.visible=!reduced;
+    if(playing&&!reduced)for(let i=0;i<particleCount;i++){
+      const p=particles[i];if(p.life<=0)continue;p.life-=dt;p.vy-=dt*.11;
+      particlePositions[i*3]+=p.vx*dt;particlePositions[i*3+1]+=p.vy*dt;
+      if(p.life<=0)particlePositions[i*3+1]=-10000;
+    }
+    dustGeometry.attributes.position.needsUpdate=playing&&!reduced;
+    accumulator+=dt;
+    if(accumulator>=(pixelScale<1?.083:.05)||version){boards.forEach((_,i)=>draw(i));accumulator=0;version=0;}
+  }
+  // Reduced-motion users get complete static pages and explicit page controls.
+  function staticPage(){if(disabled)return;clock.startWrite();clock.slots[clock.active].progress=1;clock.phase='hold';clock.elapsed=0;clock.ended=clock.page===clock.stopAt;version++;}
+  boards.forEach((_,i)=>draw(i));
+  // Keep the hardware and last completed texture visible at every distance.
+  // Only the board carriers and tools have changing local transforms.
+  function updateStorageLabel(reduced=false){if(!storageLabel)return;const step=reduced?(stored?60:0):Math.round(storageProgress*60),key=stored+':'+step;if(key===storageLabelText)return;storageLabelText=key;const c=storageLabel.canvas.getContext('2d');c.clearRect(0,0,256,256);drawPulley(c,128,128,205,step/60,stored);storageLabel.mesh.userData.label=stored?'升起黑板':'收起黑板';storageLabel.texture.needsUpdate=true;}
+  if(options.retractable){
+    storageRig=new THREE.Group();storageRig.name='Whole six-board retracting assembly';scene.add(storageRig);
+    for(const node of [...scene.children])if(/^(Double-channel lift track|Sliding chalkboard|Wide nanmu chalk tray|Tray chalk|Tray eraser|Writing chalk|Moving blackboard eraser|Falling chalk powder)/.test(node.name))storageRig.add(node);
+    const slot=storageWell=new THREE.Group();slot.name='Recessed blackboard storage shaft with sliding floor lids';scene.add(slot);
+    const {left,right,back,front}=BOARD_SHAFT,width=right-left,depth=front-back,cx=(left+right)/2,cz=(back+front)/2;
+    const floorY=(.028*BUILDING_SCALE-LECTURE_LIFT)/LECTURE_SCALE;
+    const dark=new THREE.MeshStandardMaterial({color:'#302f2b',roughness:1});
+    const floorMaterial=options.floorMaterial||new THREE.MeshStandardMaterial({color:'#9d8d79',roughness:1});
+    const bottom=-9.1;
+    part(slot,[cx,bottom,cz],[width,.08,depth],dark);
+    for(const z of [back-.025,front+.025])part(slot,[cx,(floorY-.075+bottom)/2,z],[width+.1,floorY-.075-bottom,.05],dark);
+    for(const x of [left-.025,right+.025])part(slot,[x,(floorY-.075+bottom)/2,cz],[.05,floorY-.075-bottom,depth],dark);
+    for(const sign of [-1,1]){
+      const lid=part(slot,[cx,floorY-.025,cz+sign*depth/4],[width,.05,depth/2],floorMaterial);
+      lid.name='Flush carpet sliding shaft lid '+sign;lid.receiveShadow=true;lid.castShadow=true;
+      lid.userData={closedZ:lid.position.z,closedY:lid.position.y,sign};storageLids.push(lid);
+    }
+    storageCap=part(slot,[cx,floorY-.025,cz],[width,.05,depth],floorMaterial);storageCap.name='Seamless closed shaft floor';storageCap.receiveShadow=true;storageLids.forEach(lid=>lid.visible=false);
+    storageLabel=glassLabel(.45,.45,35.7,-1.0,'Whole blackboard storage control');
+    storageLabel.canvas.width=storageLabel.canvas.height=256;storageLabel.mesh.userData.action='lectern:stow';storageLabel.mesh.userData.smartGlass=true;touchButtons.push(storageLabel.mesh);updateStorageLabel();
+  }
+  if(storageRig&&stored){storageRig.position.y=-7.2;storageRig.visible=false;consoleButtons.forEach(b=>b.visible=false);chalk.visible=false;eraser.visible=false;fallingDust.visible=false;}
+  if(options.retractable)screenHub=createSmartGlassHub(THREE,scene,{reports:[reportHeader.mesh,...reportButtons],storage:storageLabel?.mesh,onStore:()=>{
+    stored=true;playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;consoleButtons.forEach(b=>b.visible=false);updateStorageLabel();setReportState();
+  }});
+  const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
+  scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
+  return {
+    get followEnabled(){return !disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
+    get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
+    toggleStorage(){if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
+    setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
+    update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
+    get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
+    screenAction:action=>screenHub?.action(action)||seminarScreen?.action(action),
+    screenWake:()=>screenHub?.wake(),get screenMode(){return screenHub?.state;},
+    async setRenderActive(value){
+      if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
+      if(!value){hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
+      hydrating=true;const resume={page:clock.page,phase:clock.phase,progress:clock.progress};
+      try{
+        const visible=[...new Set([...clock.slots.map(s=>s.page),hasSelection?clock.page:-1])].filter(i=>i>=0);
+        for(const index of visible){await load(index);if(epoch!==renderEpoch)return;await new Promise(resolve=>typeof requestAnimationFrame==='function'?requestAnimationFrame(resolve):resolve());}
+        if(epoch!==renderEpoch)return;
+        if(clock.page===resume.page&&clock.phase===resume.phase)clock.elapsed=resume.progress*clock.duration;
+        for(let pair=0;pair<3;pair++){const a=clock.slots[pair*2].page,b=clock.slots[pair*2+1].page;mix[pair]=targets[pair]=b>a?1:0;}
+        if(hasSelection)targets[Math.floor(clock.active/2)]=mix[Math.floor(clock.active/2)]=clock.active%2;
+        boards.forEach(b=>{b.last='';b.wet=null;});eraserReturn=null;eraserPickup=null;eraser.userData.state='resting';
+        previousTip=null;resetWipe();particles.forEach(p=>p.life=0);particlePositions.fill(-10000);
+        hydrating=false;loadingError=null;update(0,true);
+      }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
+    },
+    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...(screenHub?.targets||[])];},setConsoleState,
+    get pendingReport(){return pendingReport;},
+    preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.map(prepareReport)),
+    reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
+    async setReport(id){
+      if(disabled)return false;
+      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');screenHub?.report();
+      if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
+      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();
+      try{
+        const manifest=await prepareReport(next);if(request!==reportRequest)return false;
+        // Keep the current talk intact until its replacement cover is available.
+        generation++;navigation=manifest.navigation;pages=manifest.pages;activeReport=next;clock=new LectureClock(pages.length);estimateDurations();hasSelection=true;if(navigation?.sections)clock.stopAt=navigation.sections[0].end;loadingError=null;
+        clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
+        boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
+        parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
+        playing=true;version++;await load(0,manifest.cover);
+        if(request!==reportRequest)return false;
+        // A new report starts on a clean board; there is no previous page to lift or erase.
+        clock.startWrite();boards.forEach((_,i)=>draw(i));return true;
+      }catch(error){if(request!==reportRequest)return false;throw error;}
+      finally{if(request===reportRequest){pendingReport=null;setReportState();}}
+    },
+    setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
+    get writingSpeed(){return writingSpeed;},
+    get language(){return language;},copy:(index=clock.page)=>chalkCopy(pages[index],language),
+    get writingStyle(){return writingStyle;},
+    async setWritingStyle(value){const next=value==='marck'?'marck':'refined';if(next===writingStyle||disabled)return;const wasPlaying=playing,progress=clock.progress;playing=false;writingStyle=next;try{await this.setLanguage(language,true);clock.elapsed=progress*clock.duration;}finally{playing=wasPlaying;}},
+    async setLanguage(value,force=false){
+      if(disabled)return false;
+      const next=value==='en'?'en':'zh';if(next===language&&!force)return;
+      seekRequest++;seeking=false;language=next;seminarScreen?.setLanguage(next);setConsoleState();setReportState();generation++;loadingError=null;clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();previousTip=null;
+      boards.forEach(b=>{b.last='';b.wet=null;});version++;
+      try{await Promise.all([...new Set([clock.page,...clock.slots.map(s=>s.page)])].map(index=>load(index)));}
+      catch(error){loadingError=error;throw error;}version++;
+    },
+    setRange(start=0,end=pages.length-1){if(disabled)return Promise.resolve(false);hasSelection=true;seminarScreen?.select(navigation?.sections?.find(s=>s.start===start)?.id);clock.startAt=Math.max(0,Math.min(start,pages.length-1));clock.stopAt=Math.max(clock.startAt,Math.min(end,pages.length-1));return seek(start);},
+    status:()=>disabled?'本层板书暂未开放':loadingError?loadingError.message:!hasSelection?'请在左侧智慧屏选择本次内容':`${clock.page-clock.startAt+1} / ${clock.stopAt-clock.startAt+1} · ${clock.ended?(navigation?.sections?'本节结束':'报告结束'):phaseNames[clock.phase]} · ${chalkCopy(pages[clock.page],language).title}`,
+    get playing(){return hasSelection&&playing&&!clock.ended;},set playing(value){playing=hasSelection&&value;},
+    select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
+    lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
+    heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
+    dispose(){storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+  };
+}
+import {drawPulley} from './pulley-icon.js?v=1';

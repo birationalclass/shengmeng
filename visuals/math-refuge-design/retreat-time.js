@@ -1,0 +1,13 @@
+export const wrapHour=h=>((Number(h)||0)%24+24)%24;
+export function daylightAt(hour){return Math.max(0,Math.sin((wrapHour(hour)-6)*Math.PI/12));}
+export const localHour=date=>date.getHours()+date.getMinutes()/60+date.getSeconds()/3600+date.getMilliseconds()/3600000;
+export class RetreatTime{
+  constructor(now=()=>new Date(),hourOf=localHour){this.now=now;this.hourOf=hourOf;this.preview=false;this.playing=false;this.rate=1;this.hour=this.hourOf(this.now());this.dayOffset=0;this.baseDate=this.now();}
+  update(dt=0){if(!this.preview)this.hour=this.hourOf(this.now());else if(this.playing){const total=this.hour+Math.max(0,dt)*this.rate/3600;this.dayOffset+=Math.floor(total/24);this.hour=wrapHour(total);}return this.hour;}
+  get date(){return this.preview?new Date(+this.baseDate+this.dayOffset*86400000):this.now();}
+  previewAt(hour){this.dayOffset=0;this.baseDate=this.now();this.playing=false;this.preview=true;this.hour=wrapHour(hour);return this.hour;}
+  setRate(rate){this.rate=Math.max(1,Math.min(60,Number(rate)||1));}
+  play(rate=this.rate){if(!this.preview){this.dayOffset=0;this.baseDate=this.now();}this.update();this.setRate(rate);this.preview=true;this.playing=true;}
+  pause(){this.update();this.preview=true;this.playing=false;}
+  sync(){this.dayOffset=0;this.baseDate=this.now();this.playing=false;this.preview=false;return this.update();}
+}

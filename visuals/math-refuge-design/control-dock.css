@@ -1,0 +1,79 @@
+/* Unframed controls: position and colour establish hierarchy. */
+button,button:hover,select{border:0;border-radius:0;background:transparent;box-shadow:none}
+button:hover{color:#f5d7a4}
+button:focus-visible,select:focus-visible{outline:0;box-shadow:0 2px 0 #e5c99b}
+input:focus-visible{outline:none;filter:drop-shadow(0 0 3px #e5c99b66)}
+select{border-bottom:1px solid #c7caba40;padding:8px 0;color:#eee7d9}
+select option{background:#17302c;color:#eee7d9}
+header{padding:26px 32px;height:118px;pointer-events:none}
+header>a,header .transport{pointer-events:auto}
+.identity{position:absolute;left:50%;top:26px;transform:translateX(-50%);margin:0}
+.identity h1{font-size:20px}.identity p{font-size:8px}
+header .transport{position:absolute;right:24px;top:20px;display:flex;align-items:center;gap:7px;width:auto;flex-wrap:nowrap}
+.icon-button,.transport .icon-button,.transport #hideUI{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;width:42px;height:42px;min-height:42px;padding:9px;color:#d6e1d8;background:transparent;border:0;border-radius:50%;transition:color .2s,transform .2s}
+.icon-button svg{width:23px;height:23px;pointer-events:none;filter:drop-shadow(0 1px 4px #001c)}
+.icon-button:hover,.icon-button[aria-expanded=true],.icon-button[aria-pressed=true]{background:transparent;color:#f3d8ad}
+.icon-button:active{transform:scale(.92)}
+.icon-button:focus-visible{box-shadow:0 0 0 1px #e5c99b88}
+.icon-button::after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-size:11px;line-height:1.5;letter-spacing:.03em;color:#f4eddf;text-shadow:0 1px 5px #000;opacity:0;pointer-events:none;transition:opacity .15s}
+.icon-button:hover::after,.icon-button:focus-visible::after{opacity:1}
+.icon-button .play-mark{display:none}.icon-button[aria-pressed=false] .play-mark{display:block}.icon-button[aria-pressed=false] .pause-mark{display:none}
+#mode{position:absolute;right:33px;top:87px;font-size:11px;letter-spacing:.04em;min-width:0;color:#e4dfce;text-shadow:0 1px 5px #000}
+footer{justify-content:center;padding:22px 30px 18px;gap:0}
+#chapters{width:auto;max-width:100%;gap:18px;overflow-x:auto;white-space:nowrap}
+#chapters button{flex-shrink:0;padding:10px 2px;border:0;border-radius:0;background:transparent;font-size:12px;color:#d6d9ce}
+#chapters button[aria-current=true]{background:transparent;color:#f4d6a1;box-shadow:inset 0 -1px #e9c38b}
+#chapters span{margin-left:6px}.caption{bottom:110px}
+#settings,#lecturePanel,#chalkReader{border:0;box-shadow:0 18px 60px #0005;border-radius:16px;top:116px;max-height:calc(100dvh - 200px)}
+#settings{right:24px;width:320px;padding:24px}
+#settings label{display:grid;grid-template-columns:1fr 136px;gap:8px;font-size:13px}
+#settings label[for=boardFollowDelay]{grid-template-columns:1fr auto}
+#settings label[for=boardFollowDelay] input{grid-column:1/-1;width:100%}
+#boardFollowDelayValue{color:#e9cda3;font-size:12px}
+#settings .clock-line{justify-content:space-between}#settings .clock-line button{margin:0;width:42px}
+#lecturePanel{right:84px}#chalkReader{left:auto;right:84px}
+#seminarPanel{bottom:auto;max-height:calc(100dvh - 210px);width:260px;padding:6px 0;background:none;backdrop-filter:none;border:0;border-radius:0;box-shadow:none;text-shadow:0 1px 5px #001c}
+#seminarPanel .seminar-heading h2{font-size:16px}
+#buildingRooms{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:18px}
+#buildingRooms button{padding:4px 0;font-size:13px;text-align:left;border:0;background:none}
+#buildingRooms button[aria-pressed=true]{color:#f4d6a1}
+#seminarCurriculum{margin:20px 0;font-size:12px;line-height:1.8}
+#seminarCurriculum h3{font-size:15px;font-weight:500}
+#seminarChapters details{margin:12px 0}#seminarChapters summary{cursor:pointer}
+#seminarChapters button{display:block;text-align:left;padding:7px 0;font-size:12px}
+.lecture-actions,.reader-actions{justify-content:space-around;gap:16px}
+.lecture-actions .icon-button,.reader-actions .icon-button{flex:none}
+.board-lift{grid-template-columns:90px 1fr 42px}
+.lecture-heading .icon-button,.reader-heading .icon-button{padding:9px}
+#showUI{top:22px;right:24px;bottom:auto;background:transparent}
+@media(max-width:1050px){
+ .identity{left:92px;transform:none;text-align:left}.identity h1{font-size:17px}.identity p{font-size:7px}
+ #chapters{gap:12px}.back span{display:none}
+}
+@media(max-width:700px){
+ header{padding:18px;height:126px}.identity{top:19px;left:50%;transform:translateX(-50%);text-align:center}
+ header .transport{top:64px;right:14px;gap:2px}.transport .icon-button{width:40px;height:42px}
+ #mode{display:block;top:109px;right:21px;font-size:10px}
+ #settings,#lecturePanel,#chalkReader{top:140px;right:12px;left:auto;width:min(350px,calc(100vw - 24px));max-height:calc(100dvh - 224px)}
+ #lecturePanel,#chalkReader{right:56px;width:min(350px,calc(100vw - 68px))}
+ #chapters{width:100%;justify-content:flex-start;gap:14px}#chapters button{padding:10px 2px}
+ footer{padding:12px 18px max(14px,env(safe-area-inset-bottom))}.caption{bottom:104px}
+}
+@media(max-height:600px) and (orientation:landscape){
+ .identity{display:none}header .transport{top:8px}#mode{top:57px}
+ #settings,#lecturePanel,#chalkReader{top:80px;max-height:calc(100dvh - 152px)}
+}
+
+#musicButton[aria-pressed=true] .music-off{display:none}
+#settings label[for=musicVolume]{grid-template-columns:1fr auto}
+#settings label[for=musicVolume] input{grid-column:1/-1;width:100%}
+#musicVolumeValue{color:#e9cda3;font-size:12px}
+#settings .music-credit{font-size:10px;color:#a7b8ad;margin-top:-10px}
+@media(max-width:380px){header .transport{gap:1px;right:10px}.transport .icon-button{width:36px}}
+
+#loading .entry-button{margin-top:26px;padding:14px 26px;font-size:18px;letter-spacing:.16em;color:#efd8b1;border:0;background:transparent}
+#loading .entry-button span{font-size:20px;letter-spacing:0;margin-left:14px;display:inline-block;transition:transform .25s}
+#loading .entry-button:hover span{transform:translateX(5px)}
+#loading .entry-button:focus-visible{box-shadow:0 1px 0 #efd8b1}
+
+#roomControls{position:fixed;right:23px;top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:13px;align-items:center}#roomControls[hidden]{display:none}#roomControls .icon-button{width:44px;height:44px;padding:10px;background:none;border:0;border-radius:0;color:#f2eddf;filter:drop-shadow(0 1px 3px #001c19a0)}#roomControls .icon-button svg{width:24px;height:24px}#roomControls .icon-button::after{right:53px;top:50%;left:auto;bottom:auto;transform:translateY(-50%);white-space:nowrap}#roomControls .icon-button:hover{color:#f4cd8e;background:transparent}#roomControls .icon-button:focus-visible{outline:1px solid #dfc493;outline-offset:3px}@media(max-width:700px){#roomControls{right:9px;gap:7px}#roomControls .icon-button{width:38px;height:38px;padding:7px}}

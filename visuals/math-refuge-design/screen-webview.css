@@ -1,0 +1,32 @@
+.screen-webview{position:fixed;left:0;top:0;width:1440px;height:592.2px;transform-origin:0 0;z-index:0;overflow:hidden;background:#102724;border:1px solid #9faf9c66;box-shadow:0 0 14px #06141266;backface-visibility:hidden}.screen-webview header{position:static;display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 12px;background:#132b28;color:#e5decc}.screen-webview button{padding:2px 12px;border:0;font-size:20px}.screen-webview header span{font-size:13px;letter-spacing:.05em}.screen-webview iframe{display:block;width:100%;height:554.2px;border:0;background:white}.screen-webview .embed-note{height:20px;font-size:11px;color:#b4c4b9;margin:0;padding:3px 12px;background:#132b28}
+.screen-webview form{display:flex;flex:1;margin:0 12px;height:27px;gap:6px}.screen-webview input{flex:1;min-width:0;border:1px solid #62736d55;border-radius:4px;padding:3px 12px;background:#ffffff12;color:#eceadf;font-size:13px}.screen-webview button:disabled{opacity:.25;cursor:default}.screen-webview .embed-blocked{height:554.2px;display:flex;align-items:center;justify-content:center;padding:50px;color:#d4dcd0;font-size:20px;background:#152c2a}.screen-webview .embed-note{position:absolute;bottom:0;width:100%}
+
+.screen-webview,.screen-webview *{box-sizing:border-box}
+.screen-webview[hidden],.screen-webview [hidden]{display:none!important}
+
+/* Quiet glass-toolbar feedback, independent of the scene HUD buttons. */
+.screen-webview header{gap:3px;pointer-events:auto}
+.screen-webview header button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:32px;height:28px;padding:0 8px;border:1px solid transparent;border-radius:5px;background:transparent;color:#d7dfd4;line-height:1;cursor:pointer;box-shadow:none;transition:background-color 140ms ease,color 140ms ease,border-color 140ms ease,transform 90ms ease,box-shadow 140ms ease}
+.screen-webview header button:not(:disabled):hover{background:#d8e8d51c;border-color:#d8e8d538;color:#fff4d6;box-shadow:0 1px 5px #0002}
+.screen-webview header button:not(:disabled):active{background:#dfc99b36;border-color:#dfc99b66;transform:translateY(1px) scale(.94);box-shadow:inset 0 1px 3px #0005}
+.screen-webview header button:focus-visible{outline:2px solid #d9c79f;outline-offset:2px;background:#d8e8d51c}
+.screen-webview header button:disabled{opacity:.28;cursor:default;transform:none;box-shadow:none}
+.screen-webview header button[data-nav="close"]:not(:disabled):hover{background:#b865563d;border-color:#d58c7755;color:#ffe6de}
+.screen-webview input{transition:border-color 140ms ease,background-color 140ms ease,box-shadow 140ms ease}
+.screen-webview input:hover{border-color:#aabca380}
+.screen-webview input:focus{outline:none;border-color:#d9c79faa;background:#ffffff1b;box-shadow:0 0 0 2px #d9c79f20}
+@media(prefers-reduced-motion:reduce){.screen-webview header button,.screen-webview input{transition:none}.screen-webview header button:not(:disabled):active{transform:none}}
+
+#world{z-index:1}
+
+.screen-video-library{height:554.2px;overflow:auto;padding:22px 30px;background:#f5f2eb;color:#233b35;font-family:system-ui,sans-serif}
+.video-library-heading{display:flex;align-items:center;justify-content:space-between}.video-library-heading h2{font-size:24px;margin:0 0 12px}.screen-video-library button{color:#254b40;background:#e4e9df;cursor:pointer;border-radius:5px;font-size:15px;padding:8px 15px}.screen-video-library form{height:38px;margin:0;max-width:850px}.screen-video-library input{background:white;color:#203b32;font-size:16px;border:1px solid #bccdc2}.screen-video-library [role=status]{font-size:14px;color:#67796d}.video-library-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.screen-video-library .video-library-card{padding:0 0 12px;overflow:hidden;text-align:left;background:white;border:1px solid #dde3da;transition:box-shadow .15s}.video-library-card:hover{box-shadow:0 3px 12px #254b4026}.video-library-card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}.video-library-card strong,.video-library-card small{display:block;margin:10px 12px;font-size:15px;line-height:1.45}.video-library-card small{font-size:12px;color:#6e7f75}
+
+/* Window-attached controls: the video owns the full glass while watching. */
+.screen-webview.screen-player-fit iframe{position:absolute;inset:0;width:100%;height:100%;background:#000}
+.screen-webview.screen-player-fit header{display:none!important}
+.screen-webview .screen-fit-exit{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:3;width:32px;height:32px;padding:0;border:1px solid #ffffff52;border-radius:50%;background:#152823b8;color:#fff4dc;font:23px/28px system-ui;cursor:pointer;box-shadow:0 2px 8px #0004;transition:background .15s,box-shadow .15s}
+.screen-webview .screen-fit-exit:hover,.screen-webview .screen-fit-exit:focus-visible{background:#284438;box-shadow:0 0 0 3px #ffffff30;outline:none}
+.screen-webview .screen-video-library{position:absolute;right:0;top:36px;bottom:0;width:430px;height:auto;z-index:2;padding:18px;border-left:1px solid #d4dacd;box-shadow:-8px 0 22px #0002}
+.screen-video-library .video-library-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.screen-video-library .video-library-heading h2{font-size:20px}.screen-video-library .video-library-heading button{font-size:12px}.screen-video-library form{margin:0;height:36px}.screen-video-library input{font-size:13px;padding:4px 8px}.screen-video-library .video-library-card strong{font-size:13px}.screen-video-library .video-library-card small{font-size:11px}

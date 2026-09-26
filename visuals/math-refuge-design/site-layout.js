@@ -1,0 +1,76 @@
+// Plan axes: east +X, north -Z. Positions use plan units; furniture and
+// ceiling heights stay physical after the shared site scale is applied.
+export const BUILDING_SCALE=Math.SQRT2;
+export const DECK_Y=.28;
+// Widen the side entrances while keeping the seats and blackboard wall fixed.
+export const HALL={west:34.8,east:43.2,north:-11.5,south:11.5,boardX:42.7,clearHeight:4.9};
+// Physical riser heights in metres, back to front; seats face east (+X).
+export const SEAT_ROWS=[{x:36.2,rise:.36},{x:37.7,rise:.18},{x:39.2,rise:0}];
+export const SEAT_COLUMNS=[-6.2,-5,-3.8,-2.6,-1.4,1.4,2.6,3.8,5,6.2];
+export const LECTURE_SCALE=.72;
+export const LECTURE_LIFT=1.05;
+export function configureLectureRoot(root){
+  root.scale.setScalar(LECTURE_SCALE);root.rotation.y=-Math.PI/2;
+  root.position.set(HALL.boardX*BUILDING_SCALE-10.4*LECTURE_SCALE,DECK_Y*BUILDING_SCALE+LECTURE_LIFT,-28*LECTURE_SCALE);
+}
+export const lectureViewOffset=distance=>[-distance*LECTURE_SCALE,0,0];
+// Separate dry decks are joined by shallow arch bridges above open sea.
+export const COURT_DECKS=[[-24,1.5,-25.5,25.5],[5.5,18,-25.5,25.5]];
+export const SEA_TERRACE=[24,54,-16.5,16.5];
+export const COFFEE_PAD=[32.8,44,-26,-17];
+export const SEA_STEPS=[];
+
+export const DISTANT_ISLANDS=[
+  {x:230,z:-210,rx:48,rz:32,height:34,seed:1},
+  {x:410,z:-360,rx:65,rz:42,height:42,seed:2},
+  {x:300,z:240,rx:58,rz:40,height:28,seed:3},
+  {x:-200,z:300,rx:40,rz:26,height:24,seed:4}
+];
+// Kept as empty compatibility data for existing landscape placement helpers.
+export const POOL_RECTS=[];
+export const inPool=()=>false;
+export const poolTopology=()=>({cells:[],edges:[]});
+export const BRIDGES=[{x:3.5,z:8,axis:'x',span:6,width:2,rise:.3},{x:22,z:0,axis:'x',span:10,width:2.4,rise:.4},{x:39,z:-16.75,axis:'z',span:3.5,width:2,rise:.25}];
+export const GARDEN_PADS=[[-31,-20,26,37],[-58,-45,2,14],[-68,-54,-51,-40],[-33,-18,-38,-26],[-56,-44,-23,-7],[-51,-37,27,36],[-35,-23,-2,12]];
+export const inGarden=(x,z)=>GARDEN_PADS.some(([a,b,c,d])=>x>=a&&x<=b&&z>=c&&z<=d);
+export const ROOM_PADS=[[-13.5,1.5,-14,14],[5.5,17.5,-14,14],[-44,-30,-22,-10],[-61,-51,-33,-23],[-52,-42,-43,-33],[-43,-30,14,24],[36,42,-25,-19]];
+export function inBuilding(x,z,margin=0){return ROOM_PADS.some(([a,b,c,d])=>x>a-margin&&x<b+margin&&z>c-margin&&z<d+margin)||(x>HALL.west-margin&&x<HALL.east+margin&&z>HALL.north-margin&&z<HALL.south+margin);}
+export const GIANT_TREES=[[-24,31,3],[-51,12,3.6],[-60,-44,3]];
+export const ORNAMENTAL_TREES=[[-28,3.5,'terminalia'],[-44,-5,'plumeria'],[-48,-27,'terminalia'],[-33,11,'plumeria'],[-29,-25,'terminalia'],[28,-6,'plumeria']];
+export const BAMBOO_GROVES=[[-25,-29,7,6],[-49,-15,5,8],[-44,30,6,3]];
+export const LAWNS=[{x:-29,z:5,rx:5,rz:5}];
+// Retained legacy creek data; not constructed in this offshore design.
+export const RIVER_NODES=[[-82,25,-40,1.5],[-77,21,-37,1.7],[-74,3,-34,2.2],[-70,1,-25,1.7],[-65,0,-12,1.4],[-59,-.5,5,1.4],[-47,-1,23,1.6],[-33,-1.9,33,1.7],[-10,-3.04,45,2.2]].map(([x,y,z,w])=>[x-120,y,z,w]);
+const catmull=(a,b,c,d,t)=>.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t);
+export function riverPoint(t){
+  const q=Math.max(0,Math.min(1,t))*(RIVER_NODES.length-1),i=Math.min(RIVER_NODES.length-2,Math.floor(q)),f=q-i;
+  const a=RIVER_NODES[Math.max(0,i-1)],b=RIVER_NODES[i],c=RIVER_NODES[i+1],d=RIVER_NODES[Math.min(RIVER_NODES.length-1,i+2)];
+  return {x:catmull(a[0],b[0],c[0],d[0],f),y:b[1]+(c[1]-b[1])*f,z:catmull(a[2],b[2],c[2],d[2],f),width:b[3]+(c[3]-b[3])*f};
+}
+const samples=Array.from({length:157},(_,i)=>riverPoint(i/156));
+const riverBounds={minX:Math.min(...samples.map(p=>p.x-p.width))-5,maxX:Math.max(...samples.map(p=>p.x+p.width))+5,minZ:Math.min(...samples.map(p=>p.z-p.width))-5,maxZ:Math.max(...samples.map(p=>p.z+p.width))+5};
+export function watercourse(x,z){
+  if(x<riverBounds.minX||x>riverBounds.maxX||z<riverBounds.minZ||z>riverBounds.maxZ)return {distance:Infinity,y:0,width:0};
+  let result={distance:Infinity,y:0,width:0};
+  for(let i=0;i<samples.length-1;i++){
+    const a=samples[i],b=samples[i+1],dx=b.x-a.x,dz=b.z-a.z;
+    const t=Math.max(0,Math.min(1,((x-a.x)*dx+(z-a.z)*dz)/(dx*dx+dz*dz)));
+    const distance=Math.hypot(x-a.x-t*dx,z-a.z-t*dz);
+    if(distance<result.distance)result={distance,y:a.y+(b.y-a.y)*t,width:a.width+(b.width-a.width)*t};
+  }
+  return result;
+}
+export function lawnWeight(x,z){
+  let weight=0;
+  for(const a of LAWNS){const r=Math.hypot((x-a.x)/a.rx,(z-a.z)/a.rz);weight=Math.max(weight,Math.max(0,Math.min(1,(1-r)*7)));}
+  return weight;
+}
+
+// Shaft bounds in lecture-local coordinates, shared by floor and moving lids.
+export const BOARD_SHAFT={left:19.22,right:36.78,back:-11.4,front:-10.4};
+export const BOARD_SHAFT_PLAN=[
+  HALL.boardX-(10.4+BOARD_SHAFT.front)*LECTURE_SCALE/BUILDING_SCALE,
+  HALL.boardX-(10.4+BOARD_SHAFT.back)*LECTURE_SCALE/BUILDING_SCALE,
+  (BOARD_SHAFT.left-28)*LECTURE_SCALE/BUILDING_SCALE,
+  (BOARD_SHAFT.right-28)*LECTURE_SCALE/BUILDING_SCALE
+];
