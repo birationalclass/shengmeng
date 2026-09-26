@@ -222,18 +222,19 @@ export async function createRetreat(renderer,scene,report,device={}){
     ctx.fillStyle='#b8d3bd';ctx.font='34px "PingFang SC", sans-serif';ctx.fillText('从拓扑与分析，寻找代数几何的形状。',100,685);
   });
   // One campus logo at the arrival gate; every room has its own function sign.
-  function sign(name,position,width,title,subtitle,rotation=0){
-    const canvas=document.createElement('canvas');canvas.width=1536;canvas.height=384;
-    const ctx=canvas.getContext('2d');ctx.fillStyle='#162724';ctx.fillRect(0,0,1536,384);
-    ctx.fillStyle='#dfc58f';ctx.fillRect(48,32,1440,3);ctx.fillRect(48,349,1440,3);
-    ctx.textAlign='center';ctx.font='118px "PingFang SC", sans-serif';ctx.fillText(title,768,204);
-    ctx.font='30px "Times New Roman", serif';ctx.fillText(subtitle,768,286);
+  function sign(name,position,width,title,subtitle,rotation=0,height=width/4){
+    const canvas=document.createElement('canvas');canvas.width=Math.round(384*width/height);canvas.height=384;const signWidth=canvas.width;
+    const ctx=canvas.getContext('2d');ctx.fillStyle='#162724';ctx.fillRect(0,0,signWidth,384);
+    ctx.fillStyle='#dfc58f';ctx.fillRect(48,32,signWidth-96,3);ctx.fillRect(48,349,signWidth-96,3);
+    ctx.textAlign='center';ctx.font='118px "PingFang SC", sans-serif';ctx.fillText(title,signWidth/2,204);
+    ctx.font='30px "Times New Roman", serif';ctx.fillText(subtitle,signWidth/2,286);
     const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     const material=new THREE.MeshStandardMaterial({map,roughness:.6,emissive:'#dfc58f',emissiveMap:map,emissiveIntensity:.18});
-    const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,width/4),material);plaque.name=name;plaque.userData.label=title;plaque.position.fromArray(position);plaque.rotation.y=rotation;scene.add(plaque);
+    const plaque=new THREE.Mesh(new THREE.PlaneGeometry(width,height),material);plaque.name=name;plaque.userData.label=title;plaque.position.fromArray(position);plaque.rotation.y=rotation;scene.add(plaque);
   }
   box([-6,2.13,5.1],[3.8,.65,.16],brass);sign('Entrance lintel sign',[-6,2.13,5.2],3.6,'学术客厅','ACADEMIC LOUNGE');
-  sign('Conference entrance sign',[(HALL.west+HALL.east)/2,2.65,HALL.south+.1],2.4,'报告厅','SEMINAR HALL');
+  sign('Conference entrance sign',[(HALL.west+HALL.east)/2,2.65,HALL.south+.1],3,'报告厅','SEMINAR HALL',0,.6);
+  sign('Conference west entrance sign',[HALL.west-.1,2.65,0],4.2,'报告厅','SEMINAR HALL',-Math.PI/2,.6);
   sign('Coffee cabin sign',[39,2,-18.9],2.3,'咖啡小屋','COFFEE CABIN');
   sign('Discussion entrance sign',[11.5,2.1,5.12],2.8,'讨论室','DISCUSSION ROOM');
   sign('Library entrance sign',[-37,2,-10.88],2.8,'图书馆','LIBRARY');
