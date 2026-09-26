@@ -1,10 +1,10 @@
-import * as THREE from 'three';
+import * as THREE from '../3d/vendor/three.module.js';
 // A translucent marking lying just above the roof, not a floating billboard.
 export function createRoofNumber(scene,number,x,roofY,z,width,depth){
   const canvas=document.createElement('canvas');canvas.width=canvas.height=1024;
   const ctx=canvas.getContext('2d');ctx.fillStyle='#f3e4c7';
   ctx.font='600 820px Georgia, serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(String(number),512,552);
+  const fit=Math.min(820,820*900/Math.max(1,ctx.measureText(String(number)).width));ctx.font=`600 ${fit}px Georgia, serif`;ctx.fillText(String(number),512,552);
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;
   const size=Math.min(width,depth)*.85;
   const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,opacity:.52,depthTest:true,depthWrite:false,toneMapped:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});

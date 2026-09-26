@@ -16,7 +16,7 @@ import {curvedSeatBack,terraceStoneMap} from './auditorium-furniture.js?v=15-fix
 
 // Architectural geometry for dry offshore decks, rooms and supported inter-storey stairs.
 // No swimming basin or exposed support piles are constructed.
-export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
+export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials}){
   const {steel,stone,edge,brass,timber,pale,darkFabric,soil,glass,light,blackboard}=materials;
   const roofNumbers=[];
   const shell=new THREE.MeshStandardMaterial({color:'#544e45',roughness:.85,metalness:.02,envMapIntensity:.3});
@@ -300,6 +300,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   }
   meta('Seminar indirect lighting',{circuits:4,shadowFree:true,local:true});
   meta('Blackboard dedicated lighting',{circuits:3,independentOfTour:true,shielded:true,colorTemperature:3500});
+  section('original-hall-stair');
   const n=34,stairX=HALL.west-1.5,stairStart=9.6,landingCenter=0,stairTread=.251;
   const landingX=HALL.west-.4,landingBounds=[landingX-1.9,landingX+1.9,-1.2,1.2];
   for(let i=0;i<n;i++){box([stairX,DECK_Y+hallUpper*(i+.5)/n,stairStart-i*stairTread],[1.3,hallUpper/n,stairTread+.005],timber);box([stairX,DECK_Y+hallUpper*(i+1)/n+.005,stairStart-i*stairTread+stairTread/2-.02],[1.14,.012,.018],light);}
@@ -309,6 +310,7 @@ export function createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,tab
   // Thin horizontal cantilever beams tie into the upper slab; no columns below
   // the landing obstruct the centered ground-floor approach.
   for(const z of [landingCenter-.9,landingCenter+.9])box([landingX,DECK_Y+hallUpper-.10,z],[3.65,.18,.12],steel);
+  section('');
   meta('Centered upper hall entrance',{doorCenterZ:0,landingCenterZ:landingCenter,landingBounds,supportColumns:0,cantileverBeams:2,treadMetres:stairTread*S});
   meta('Two-storey seminar hall',{storeys:2,upperFloor:hallUpper+DECK_Y,fixedRoof:true,stairSteps:n,riserMetres:hallUpper/n*S});
   meta('Seminar hall light fixtures',{type:'shielded bronze linear pendants, warm seat lighting and dedicated board wall wash',glareControlled:true});

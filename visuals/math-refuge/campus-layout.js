@@ -1,5 +1,7 @@
+import {createHallSpiral} from './hall-spiral.js';
+import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
-import {BUILDING_SCALE as S} from './site-layout.js';
+import {BUILDING_SCALE as S,HALL} from './site-layout.js';
 import {bridgePlan} from './campus-plan.js';
 import {routeBridge} from './campus-routing.js';
 
@@ -71,7 +73,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    for(let i=0;i<obj.count;i++){
     obj.getMatrixAt(i,scratch);point.setFromMatrixPosition(scratch);
     const b=owner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
-    for(const dest of destinations(b)){const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
+    for(const dest of destinations(b)){if(dest[0]==='01B'&&obj.userData.campusParts?.[i]==='original-hall-stair')continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
    }
    obj.visible=false;
    for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();scene.add(track(m,id));}
@@ -102,9 +104,20 @@ export function finishCampusLayout(scene,retreat,rooms){
  function deck(x,y,w,d,rotation=0){const m=new T.Mesh(new T.BoxGeometry(w,.28,d),retreat.materials.timber);m.position.set(anchor+x,top-.14,-y);m.rotation.y=rotation;m.receiveShadow=true;bridges.add(m);}
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);
  for(const [a,b] of bridgePlan.connections){const path=routeBridge(campusLayout.find(r=>r[0]===a),campusLayout.find(r=>r[0]===b),campusLayout);if(!path)throw Error('无法连接 '+a+'/'+b);for(const v of path.slice(1,-1))deck(v[0],v[1],3,3);for(let i=1;i<path.length;i++){const p=path[i-1],q=path[i];deck((p[0]+q[0])/2,(p[1]+q[1])/2,3,Math.hypot(q[0]-p[0],q[1]-p[1]),Math.atan2(q[0]-p[0],-(q[1]-p[1])));}}
+ createHallSpiral(scene,retreat.materials,buildingOffset('01B'));
  scene.updateMatrixWorld(true);
+ const ray=new T.Raycaster(),down=new T.Vector3(0,-1,0);
+ if(typeof document!=='undefined')for(const b of [...campusLayout,['10','住宅',0,0,retreat.residence?.root.position.x-anchor||0,-(retreat.residence?.root.position.z||0),110,86]]){
+   if(b[0]==='10'&&!retreat.residence)continue;
+   const x=anchor+b[4],z=-b[5];ray.set(new T.Vector3(x,60,z),down);
+   const hits=ray.intersectObjects(scene.children.filter(o=>o.visible&&o.name!=='September 26 campus bridges'),true).filter(h=>h.object.isMesh&&!h.object.material?.transparent&&h.point.y<40);
+   const y=hits.length?hits[0].point.y:.4;
+   createRoofNumber(scene,b[0],x,y+.05,z,Math.min(11,b[6]*.42),Math.min(11,b[7]*.42));
+ }
 }
 export function relocateShots(shots){
+ const hall=buildingOffset('01B'),west=HALL.west*S+hall.x,south=HALL.south*S+hall.z,p=[west-14,10,south+10],t=[west-3,3,south-2];shots.push({name:'旋转楼梯',title:'南侧起步，绕西侧上楼。',description:'原有木踏步、金属扶手与踏步灯 · 弧形旋转楼梯',duration:25,fov:58,positions:[p,p.slice()],targets:[t,t.slice()]});
+
  for(const [name,id] of [['报告厅备份','01C'],['访客小院','06'],['休息室二组','R2']]){const b=campusLayout.find(r=>r[0]===id),p=[anchor+b[4]-35,18,-b[5]+32],t=[anchor+b[4],2,-b[5]];shots.push({name,title:name,description:'新布局 · 海上栈桥连接',duration:25,fov:58,positions:[p,p.slice()],targets:[t,t.slice()]});}
 
  const ids={'报告厅':'01B','板书':'01B','二楼客厅':'01B','海景露台':'01B','教学楼':'07','书室':'02','学术客厅':'03','楼上书房':'03','讨论楼':'04','楼上讨论室':'04','咖啡屋':'05N','茶室':'05S','客舍一':'R1','客舍二':'R3','海上花园':'G','庭院':'03'};

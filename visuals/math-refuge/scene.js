@@ -24,7 +24,7 @@ import {createDetailMaps} from './surface-materials.js?v=5-mobile';
 import {createLandscape} from './landscape.js?v106-44-hall-clearance';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
-import {createCampus} from './campus.js?v129';
+import {createCampus} from './campus.js?v=spiral-20260926';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
@@ -57,6 +57,8 @@ export async function createRetreat(renderer,scene,report,device={}){
   const boxes=new THREE.BoxGeometry(1,1,1),roundedCache=new Map();
   const cylinder=new THREE.CylinderGeometry(1,1,1,12);
   const rubber=mat('#0e1b18',.97);
+  let campusPart='';
+  const section=name=>{campusPart=name;};
   const batches=new Map(),dummy=new THREE.Object3D(),layoutFloors=[];
   function instance(geo,material,p,s,r=[0,0,0]){
     // A campus-wide material batch defeats frustum culling: seeing one chair
@@ -65,9 +67,9 @@ export async function createRetreat(renderer,scene,report,device={}){
 
     const region=p[0]<-76?'seminar:'+Math.floor(p[1]/3):p[0]>30?'hall:'+Math.floor(p[1]/3):'campus';
     const key=geo.uuid+material.uuid+region;
-    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],region});
+    if(!batches.has(key))batches.set(key,{geo,material,matrices:[],parts:[],region});
     dummy.position.fromArray(p);dummy.scale.fromArray(s);dummy.rotation.set(...r);dummy.updateMatrix();
-    batches.get(key).matrices.push(dummy.matrix.clone());
+    batches.get(key).matrices.push(dummy.matrix.clone());batches.get(key).parts.push(campusPart);
   }
   const box=(p,s,m=stone,r)=>instance(boxes,m,p,s,r);
   const soft=(p,s,m=pale,r)=>{
@@ -167,7 +169,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
   report('正在搭建海上长露台与报告厅…');
-  const campus=createCampus(scene,{box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
+  const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
   const pathLighting=createPathLighting(scene,{box,beam,materials});
   // Independent chalkboards, with brief mathematical statements rather than
   // unverified solved/unsolved status announcements.
@@ -491,9 +493,9 @@ export async function createRetreat(renderer,scene,report,device={}){
   report('正在布置光照与镜头…');
   buildPlatforms();
   const lodBatches=[],lowGeometry=new Map();
-  for(const {geo,material,matrices,region} of batches.values()){
+  for(const {geo,material,matrices,parts,region} of batches.values()){
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
-    matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
+    matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.userData.campusParts=parts;
     mesh.castShadow=material!==glass&&material!==smartGlass&&material!==light&&material!==pathLighting.material;mesh.receiveShadow=material!==glass&&material!==smartGlass;
     mesh.computeBoundingSphere();mesh.computeBoundingBox();mesh.userData.spatialRegion=region;
     scene.add(mesh);architectureObjects.add(mesh);

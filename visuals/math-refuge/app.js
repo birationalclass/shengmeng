@@ -10,7 +10,7 @@ import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v104';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
-import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=campus-layout-20260926';
+import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=spiral-20260926';
 const hallPassageMask=new HallPassageMask();
 import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=air-frame-feedback';
 import {createPerformanceMonitor} from './performance-monitor.js?v=focus-pause';
@@ -61,7 +61,7 @@ for(const [i,n] of [[3,'共研工坊'],[4,'数学实验室'],[5,'北食阁'],[6,
 let panelBuilding=BUILDINGS[0];
 for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))]){
   const button=document.createElement('button');button.dataset.shot=String(SHOTS.findIndex(s=>s.name===item.shot));
-  button.textContent=(item.number?item.number+'  ':'')+item.name;
+  button.textContent=(item.number?['01B','07','02','03','04','05N','05S','R1','R3','10'][item.number-1]+'  ':'')+item.name;
   if(item.number){button.dataset.building=String(item.number);button.setAttribute('aria-controls','seminarPanel');button.setAttribute('aria-expanded','false');}
   if(item.number===2)button.id='seminarButton';$('chapters').append(button);
 }
@@ -80,7 +80,7 @@ function enterScene(){
   entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  if(new URLSearchParams(location.search).get('view')==='campus'){opening=null;shot=SHOTS.findIndex(s=>s.name==='远眺');time=0;blend=null;free=true;touring=false;controls.enabled=true;sceneTime.previewAt(12);applyShot(0);updateLabels();}else replayOpening();
+  if(new URLSearchParams(location.search).get('view')==='campus'||new URLSearchParams(location.search).get('view')==='stairs'){opening=null;shot=SHOTS.findIndex(s=>s.name===(new URLSearchParams(location.search).get('view')==='stairs'?'旋转楼梯':'远眺'));time=0;blend=null;free=true;touring=false;controls.enabled=true;sceneTime.previewAt(12);applyShot(0);updateLabels();}else replayOpening();
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
