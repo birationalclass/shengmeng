@@ -22,7 +22,7 @@ export async function createCampusOcean(renderer,scene,water){
  for(const material of materials){
   for(const key of ['vertexShader','fragmentShader']){
    let shader=material[key].replaceAll('cameraPosition','studyCamera').replaceAll('viewMatrix','studyView');
-   shader=shader.replaceAll('col+=light*min(18.,distribution*sf*gv*gl/(4.*nv))*smoothstep(-4.,1.,uSun);','float solarHighlight=distribution*sf*gv*gl/(4.*nv);col+=light*(3.*solarHighlight/(3.+solarHighlight))*smoothstep(-4.,1.,uSun)*studySunReflection*studySunStrength;');
+   shader=shader.replaceAll('col+=light*min(18.,distribution*sf*gv*gl/(4.*nv))*smoothstep(-4.,1.,uSun);','float solarHighlight=distribution*sf*gv*gl/(4.*nv);col+=light*(1.05*solarHighlight/(1.05+solarHighlight))*smoothstep(-4.,1.,uSun)*studySunReflection*studySunStrength;');
    shader=shader.replace(/vec3 sunDirection\(\)\{[^}]*\}/,'vec3 sunDirection(){return normalize(studySun);}');
    shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=mix(texture2D(studySkyPrevious,uv).rgb,texture2D(studySky,uv).rgb,studySkyBlend);if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.012,.016,.025)*(1.-smoothstep(-10.,0.,uSun));}\n`);
    if(key==='fragmentShader'){
@@ -47,7 +47,7 @@ export async function createCampusOcean(renderer,scene,water){
     shader=shader.replace('float visible=1.-smoothstep(.65,2.8,fwidth(phase));',
       'float visible=(1.-smoothstep(.45,2.,fwidth(phase)))*(1.-smoothstep(.35,2.2,studyFrameDelta*sqrt(9.81*k+.000074*k*k*k)));');
     shader=shader.replace('max(.00016,pow(.10+uWind*.06,4.)+variance*.22)','max(.0004,pow(.10+uWind*.06,4.)+variance*.5+unresolvedSlope*.5)');
-    shader=shader.replace('nl=max(0.,sd.y),alpha2=.00016','nl=max(0.,sd.y),alpha2=.0004');
+    shader=shader.replace('nl=max(0.,sd.y),alpha2=.00016','nl=max(0.,sd.y),alpha2=.0045');
 
     // The campus atmospheric LUT excludes the solar disk. Subtracting the
     // standalone sky's disk here created a black reflected semicircle.
