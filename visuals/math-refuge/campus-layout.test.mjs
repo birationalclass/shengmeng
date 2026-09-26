@@ -9,7 +9,7 @@ const {BUILDING_SCALE:S}=await import('./site-layout.js');
 const scene=new T.Scene(),hall=new T.Mesh(new T.BoxGeometry(1,1,1),new T.MeshStandardMaterial());
 hall.position.set(39*S,2,0);scene.add(hall);m.relocateArchitecture(scene,[hall]);
 const rooms=[{root:new T.Group()},{root:new T.Group()}];
-const mat=new T.MeshStandardMaterial();m.finishCampusLayout(scene,{site:{seaLevel:-1},materials:{edge:mat,stone:mat,timber:mat}},rooms);
+const mat=new T.MeshStandardMaterial();m.finishCampusLayout(scene,{site:{seaLevel:-1},materials:{edge:mat,stone:mat,timber:mat,terraceFloor:mat,brass:mat,steel:mat,light:mat,glass:mat}},rooms);
 assert.ok(Math.abs(hall.position.x-(39*S-30))<1e-8);assert.equal(hall.position.z,0);
 assert.equal(rooms[0].root.position.x,-30);
 for(const b of m.campusLayout){const r=bridgePlan.buildings.find(r=>r.id===b[0]);assert.equal(b[4],r.east);assert.equal(b[5],r.north);}
@@ -23,3 +23,5 @@ const stair=scene.getObjectByName('Hall southwest curved stair');assert.equal(st
 for(const axis of [0,2])assert.ok(Math.abs(stair.userData.entryLeft[axis]-stair.userData.southwestCorner[axis])<1e-9);console.log("PASS: entrance left edge exactly coincides with hall southwest corner");
 
 assert.equal(stair.userData.landingBounds[1],stair.userData.upperSouthwestCorner[0]);assert.equal(stair.userData.landingBounds[3],stair.userData.upperSouthwestCorner[2]);assert.equal(stair.userData.landingCorner[1],stair.userData.exit[1]);console.log('PASS: upper landing shares exact west/south wall coordinates');
+
+const landing=stair.getObjectByName('Landing continuous terrace floor');assert.equal(landing.material[2],mat);assert.ok(Math.abs(landing.geometry.parameters.width-1.675)<1e-8);assert.ok(Math.abs(landing.position.y+.13-stair.userData.exit[1])<1e-9);console.log('PASS: trimmed landing shares terrace material and exact floor height');

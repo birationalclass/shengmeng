@@ -87,6 +87,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     layoutFloors.push({y,w,d,cx,cz});
   }
   const terraceBase=mat('#686458',1,0,{map:stoneMap,normalMap:stoneNormal,normalScale:new THREE.Vector2(.04,.04),envMapIntensity:.1});
+  materials.terraceFloor=terraceBase;
   const platformGeometries=[];
   function buildPlatforms(){
     for(const y of new Set(layoutFloors.map(f=>f.y))){

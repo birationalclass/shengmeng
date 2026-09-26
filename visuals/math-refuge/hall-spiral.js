@@ -10,7 +10,7 @@ export function spiralPlanPoint(west,south,t,radius=SPIRAL.radius){
 export function createHallSpiral(scene,materials,offset){
  const {timber,steel,brass,light,glass}=materials,group=new T.Group();group.name='Hall southwest curved stair';scene.add(group);
  const west=HALL.west*S+offset.x,south=HALL.south*S+offset.z;
- const cx=west-3.5,cz=south-2.65,bottom=DECK_Y*S,rise=DECK_Y*S+HALL.clearHeight+.20*S,top=bottom+rise;
+ const cx=west-3.5,cz=south-2.65,bottom=.275*S,rise=DECK_Y*S+HALL.clearHeight+.20*S,top=bottom+rise;
  const {steps:n,radius:r,width:w,start,sweep}=SPIRAL,inner=r-w/2,outer=r+w/2;
  const point=(a,r,y)=>{const [x,z]=spiralPlanPoint(west,south,(a-start)/sweep,r);return new T.Vector3(x,y,z);};
  function mesh(geometry,material){const m=new T.Mesh(geometry,material);m.castShadow=material!==light&&material!==glass;m.receiveShadow=true;group.add(m);return m;}
@@ -26,19 +26,25 @@ export function createHallSpiral(scene,materials,offset){
   if(i%2===0||i===n-1)for(const rr of [inner+.08,outer-.08]){const p=point((a+b)/2,rr,y);box(p.x,y+.015,p.z,.085,.03,.085,steel);bar(p,p.clone().add(new T.Vector3(0,.96,0)),.015,brass);}
  }
  // Continuous curved strings and handrails, sharing the original material objects.
- for(const rr of [inner+.08,outer-.08])for(const [lift,size,mat] of [[-.16,.065,steel],[.98,.025,brass],[.5,.012,brass]]){
-   const points=Array.from({length:161},(_,i)=>point(start+sweep*i/160,rr,bottom+rise*i/160+lift+.08));
+ for(const rr of [inner+.08,outer-.08])for(const [lift,size,mat] of [[-.16,.065,steel],[.95,.025,brass],[.48,.012,brass]]){
+   const points=Array.from({length:161},(_,i)=>point(start+sweep*i/160,rr,bottom+rise*(i/160+(1-i/160)/n)+lift));
    mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),160,size,8,false),mat);
  }
  const landingWest=west-SPIRAL.upperEdge,landingSouth=south+SPIRAL.upperEdge,landingZ=landingSouth-SPIRAL.landingDepth/2;
- box(landingWest-1,top-.13,landingZ,2.0,.26,SPIRAL.landingDepth,timber);
- for(const z of [landingZ-.8,landingZ+.8])bar(new T.Vector3(landingWest-2,top-.2,z),new T.Vector3(landingWest,top-.2,z),.07,steel);
+ const landingLeft=point(start+sweep,inner,top).x,landingWidth=landingWest-landingLeft,landingNorth=landingSouth-SPIRAL.landingDepth;
+ const floor=box((landingLeft+landingWest)/2,top-.13,landingZ,landingWidth,.26,SPIRAL.landingDepth,[materials.edge,materials.edge,materials.terraceFloor||materials.stone,materials.edge,materials.edge,materials.edge]);
+ floor.name='Landing continuous terrace floor';
+ const pos=floor.geometry.attributes.position,uv=floor.geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,(pos.getX(i)+floor.position.x-offset.x)/S*.08,(pos.getZ(i)+floor.position.z-offset.z)/S*.08);uv.needsUpdate=true;
+ for(const z of [landingNorth,landingSouth])bar(new T.Vector3(landingLeft,top-.2,z),new T.Vector3(landingWest,top-.2,z),.07,steel);
  // Rebuild the upper perimeter with an opening at the south end of its west edge.
  const north=HALL.north*S+offset.z,east=HALL.east*S+offset.x,edge=.275*S-.08*S;
  function guard(x1,z1,x2,z2){const count=Math.ceil(Math.hypot(x2-x1,z2-z1)/1.4);for(let i=0;i<=count;i++){const x=T.MathUtils.lerp(x1,x2,i/count),z=T.MathUtils.lerp(z1,z2,i/count);bar(new T.Vector3(x,top,z),new T.Vector3(x,top+.95,z),.015,brass);}bar(new T.Vector3(x1,top+.95,z1),new T.Vector3(x2,top+.95,z2),.025,brass);const len=Math.hypot(x2-x1,z2-z1),m=box((x1+x2)/2,top+.46,(z1+z2)/2,len,.76,.028,glass);m.rotation.y=-Math.atan2(z2-z1,x2-x1);}
  guard(west-edge,north-edge,east+edge,north-edge);guard(east+edge,north-edge,east+edge,south+edge);guard(east+edge,south+edge,west-edge,south+edge);
  guard(west-edge,north-edge,west-edge,landingZ-.8);
- guard(landingWest-2,landingSouth,west-edge,landingSouth);
- group.userData={steps:n,riser:rise/n,clearWidth:w,entry:point(start,r,bottom).toArray(),entryLeft:point(start,inner,bottom).toArray(),southwestCorner:[west,bottom,south],exit:[landingWest-.25,top,landingZ],landingCorner:[landingWest,top,landingSouth],upperSouthwestCorner:[landingWest,top,landingSouth],landingBounds:[landingWest-2,landingWest,landingSouth-SPIRAL.landingDepth,landingSouth],materialPreserved:true};
+ const railLeft=point(start+sweep,inner+.08,top).x,railRight=point(start+sweep,outer-.08,top).x,railSouth=south+edge;
+ guard(railLeft,landingNorth,railLeft,railSouth);
+ guard(railLeft,railSouth,west-edge,railSouth);
+ guard(railRight,landingNorth,west-edge,landingNorth);
+ group.userData={steps:n,riser:rise/n,clearWidth:w,entry:point(start,r,bottom).toArray(),entryLeft:point(start,inner,bottom).toArray(),southwestCorner:[west,bottom,south],exit:[landingWest-.25,top,landingZ],landingCorner:[landingWest,top,landingSouth],upperSouthwestCorner:[landingWest,top,landingSouth],landingBounds:[landingLeft,landingWest,landingSouth-SPIRAL.landingDepth,landingSouth],materialPreserved:true};
  return group;
 }
