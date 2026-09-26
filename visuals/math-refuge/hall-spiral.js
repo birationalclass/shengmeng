@@ -32,12 +32,18 @@ export function createHallSpiral(scene,materials,offset){
  }
  const landingWest=west-SPIRAL.upperEdge,landingSouth=south+SPIRAL.upperEdge,landingZ=landingSouth-SPIRAL.landingDepth/2;
  const landingLeft=point(start+sweep,inner,top).x,landingWidth=landingWest-landingLeft,landingNorth=landingSouth-SPIRAL.landingDepth;
- const floor=box((landingLeft+landingWest)/2,top-.13,landingZ,landingWidth,.26,SPIRAL.landingDepth,[materials.edge,materials.edge,materials.terraceFloor||materials.stone,materials.edge,materials.edge,materials.edge]);
+ const slabThickness=.475*S;
+ const floor=box((landingLeft+landingWest)/2,top-slabThickness/2,landingZ,landingWidth,slabThickness,SPIRAL.landingDepth,[materials.edge,materials.edge,materials.terraceFloor||materials.stone,materials.edge,materials.edge,materials.edge]);
  floor.name='Landing continuous terrace floor';
+ const stripMaterial=materials.terraceStrip||light,stripY=top-.03*S,stripHeight=.022*S,stripWidth=.018*S;
+ for(const z of [landingNorth,landingSouth])box((landingLeft+landingWest)/2,stripY,z,landingWidth,stripHeight,stripWidth,stripMaterial).name='Landing perimeter light strip';
+ box(landingLeft,stripY,landingZ,stripWidth,stripHeight,SPIRAL.landingDepth,stripMaterial).name='Landing perimeter light strip';
  const pos=floor.geometry.attributes.position,uv=floor.geometry.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,(pos.getX(i)+floor.position.x-offset.x)/S*.08,(pos.getZ(i)+floor.position.z-offset.z)/S*.08);uv.needsUpdate=true;
  for(const z of [landingNorth,landingSouth])bar(new T.Vector3(landingLeft,top-.2,z),new T.Vector3(landingWest,top-.2,z),.07,steel);
  // Rebuild the upper perimeter with an opening at the south end of its west edge.
  const north=HALL.north*S+offset.z,east=HALL.east*S+offset.x,edge=.275*S-.08*S;
+ const deckNorth=north-SPIRAL.upperEdge,deckEast=east+SPIRAL.upperEdge;
+ for(const [x1,z1,x2,z2] of [[landingWest,deckNorth,deckEast,deckNorth],[deckEast,deckNorth,deckEast,landingSouth],[landingWest,landingSouth,deckEast,landingSouth],[landingWest,deckNorth,landingWest,landingNorth]])box((x1+x2)/2,stripY,(z1+z2)/2,Math.abs(x2-x1)||stripWidth,stripHeight,Math.abs(z2-z1)||stripWidth,stripMaterial).name='Upper terrace continuous perimeter strip';
  function guard(x1,z1,x2,z2){const count=Math.ceil(Math.hypot(x2-x1,z2-z1)/1.4);for(let i=0;i<=count;i++){const x=T.MathUtils.lerp(x1,x2,i/count),z=T.MathUtils.lerp(z1,z2,i/count);bar(new T.Vector3(x,top,z),new T.Vector3(x,top+.95,z),.015,brass);}bar(new T.Vector3(x1,top+.95,z1),new T.Vector3(x2,top+.95,z2),.025,brass);const len=Math.hypot(x2-x1,z2-z1),m=box((x1+x2)/2,top+.46,(z1+z2)/2,len,.76,.028,glass);m.rotation.y=-Math.atan2(z2-z1,x2-x1);}
  guard(west-edge,north-edge,east+edge,north-edge);guard(east+edge,north-edge,east+edge,south+edge);guard(east+edge,south+edge,west-edge,south+edge);
  guard(west-edge,north-edge,west-edge,landingZ-.8);

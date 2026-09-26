@@ -1,3 +1,4 @@
+import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
@@ -32,7 +33,7 @@ import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=horizon-depth-1';
 import {createLecture} from './lecture.js?v127';
-import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y} from './site-layout.js?v44-hall-clearance';
+import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
@@ -41,7 +42,7 @@ import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=true-north-coast-1';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v91-shore';
-import {shanghaiHour,solarEvents} from './solar-state.js?v91-shore';
+import {shanghaiHour,solarEvents,solarState} from './solar-state.js?v91-shore';
 import {createShanghaiWeather} from './shanghai-weather.js?v77-wind-clouds';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
@@ -56,12 +57,14 @@ const performanceMonitor=createPerformanceMonitor();
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
+for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?HALL.east-.7:HALL.west+.7)*BUILDING_SCALE+shift.x,p=[x,DECK_Y*BUILDING_SCALE+1.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:'报告厅海景 · 上海今日太阳方位',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
+
 OUTDOOR_AREAS.push('远眺','报告厅备份','访客小院','休息室二组');
 for(const [i,n] of [[3,'共研工坊'],[4,'数学实验室'],[5,'北食阁'],[6,'南食阁'],[7,'休息室一组'],[8,'休息室三组']])BUILDINGS[i].name=n;
 let panelBuilding=BUILDINGS[0];
 for(const item of [...BUILDINGS,...OUTDOOR_AREAS.map(name=>({name,shot:name}))]){
   const button=document.createElement('button');button.dataset.shot=String(SHOTS.findIndex(s=>s.name===item.shot));
-  button.textContent=(item.number?['01B','07','02','03','04','05N','05S','R1','R3','10'][item.number-1]+'  ':'')+item.name;
+  button.textContent=(item.number?['1','07','02','03','04','05N','05S','R1','R3','10'][item.number-1]+'  ':'')+item.name;
   if(item.number){button.dataset.building=String(item.number);button.setAttribute('aria-controls','seminarPanel');button.setAttribute('aria-expanded','false');}
   if(item.number===2)button.id='seminarButton';$('chapters').append(button);
 }
@@ -740,6 +743,13 @@ function updateSeminarNavigation(){
  document.querySelectorAll('#buildingRooms button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.room!==undefined?Number(button.dataset.room)===activeRoom&&SHOTS[shot].lecture:button.dataset.roomShot===SHOTS[shot].name)));
  $('seminarCurriculum').hidden=activeRoom!==1;
 }
+function viewHallSun(event){
+ if(cameraLocked())return;
+ sunriseIntro.cancel();timePresentation.seek();const hour=eventHours()[event]+(event==='sunrise'?.025:-.025);sceneTime.previewAt(hour);updateSceneTime();
+ const index=SHOTS.findIndex(s=>s.name==='报告厅'+(event==='sunrise'?'看日出':'看日落')),direction=geographicDirectionToCampus(solarState(hour,sceneTime.date).direction),p=SHOTS[index].positions[0];
+ for(const target of curves[index].target.points)target.set(p[0]+direction[0]*500,p[1]+direction[1]*500,p[2]+direction[2]*500);curves[index].target.updateArcLengths();
+ selectShot(index);setSeminarPanel(true,BUILDINGS[0]);
+}
 function setSeminarPanel(open,building=panelBuilding){
  $('seminarPanel').hidden=!open;
  if(building)panelBuilding=building;
@@ -751,6 +761,7 @@ function setSeminarPanel(open,building=panelBuilding){
    if(room.room!==undefined)button.dataset.room=String(room.room);
    if(room.shot)button.dataset.roomShot=room.shot;
    button.addEventListener('click',()=>{
+     if(room.sunEvent){viewHallSun(room.sunEvent);return;}
      if(room.room!==undefined)activateRoom(room.room,!room.shot);
      if(room.shot)selectShot(SHOTS.findIndex(s=>s.name===room.shot));
      updateSeminarNavigation();

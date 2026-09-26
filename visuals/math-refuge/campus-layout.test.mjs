@@ -24,4 +24,6 @@ for(const axis of [0,2])assert.ok(Math.abs(stair.userData.entryLeft[axis]-stair.
 
 assert.equal(stair.userData.landingBounds[1],stair.userData.upperSouthwestCorner[0]);assert.equal(stair.userData.landingBounds[3],stair.userData.upperSouthwestCorner[2]);assert.equal(stair.userData.landingCorner[1],stair.userData.exit[1]);console.log('PASS: upper landing shares exact west/south wall coordinates');
 
-const landing=stair.getObjectByName('Landing continuous terrace floor');assert.equal(landing.material[2],mat);assert.ok(Math.abs(landing.geometry.parameters.width-1.675)<1e-8);assert.ok(Math.abs(landing.position.y+.13-stair.userData.exit[1])<1e-9);console.log('PASS: trimmed landing shares terrace material and exact floor height');
+const landing=stair.getObjectByName('Landing continuous terrace floor');assert.equal(landing.material[2],mat);assert.ok(Math.abs(landing.geometry.parameters.width-1.675)<1e-8);assert.ok(Math.abs(landing.position.y+landing.geometry.parameters.height/2-stair.userData.exit[1])<1e-9);console.log('PASS: trimmed landing shares terrace material and exact floor height');
+
+assert.ok(Math.abs(landing.geometry.parameters.height-.475*S)<1e-9);assert.equal(stair.children.filter(m=>m.name==='Landing perimeter light strip').length,3);console.log('PASS: matching platform thickness and three exposed lit edges');

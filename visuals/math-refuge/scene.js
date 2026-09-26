@@ -100,7 +100,7 @@ export async function createRetreat(renderer,scene,report,device={}){
       }
       for(const [a,c,b,d] of union.edges){
         quad(sides,[a,bottom,c],[a,y+.275,c],[b,y+.275,d],[b,bottom,d]);
-        const length=Math.hypot(b-a,d-c);if(y!==0&&length>.03)box([(a+b)/2,y+.245,(c+d)/2],[Math.abs(b-a)||.018,.022,Math.abs(d-c)||.018],pathLighting.material);
+        const length=Math.hypot(b-a,d-c);if(y!==0&&length>.03){const prior=campusPart;if(Math.abs(y-(DECK_Y+HALL.clearHeight/BUILDING_SCALE+.20))<.00001)campusPart='hall-upper-edge-strip';box([(a+b)/2,y+.245,(c+d)/2],[Math.abs(b-a)||.018,.022,Math.abs(d-c)||.018],pathLighting.material);campusPart=prior;}
       }
       for(const [positions,material,name] of [[top,terraceBase,'Unified platform top'],[sides,edge,'Unified platform fascia']]){
         const geometry=new THREE.BufferGeometry(),uv=[];
@@ -172,6 +172,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   report('正在搭建海上长露台与报告厅…');
   const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
   const pathLighting=createPathLighting(scene,{box,beam,materials});
+  materials.terraceStrip=pathLighting.material;
   // Independent chalkboards, with brief mathematical statements rather than
   // unverified solved/unsolved status announcements.
   function chalkboard(name,x,rotation,draw){

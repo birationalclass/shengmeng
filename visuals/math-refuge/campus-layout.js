@@ -73,7 +73,7 @@ export function relocateArchitecture(scene,objects,worldInstances=false){
    for(let i=0;i<obj.count;i++){
     obj.getMatrixAt(i,scratch);point.setFromMatrixPosition(scratch);
     const b=owner(point.x/(worldInstances?S:1),point.z/(worldInstances?S:1));
-    for(const dest of destinations(b)){if(dest[0]==='01B'&&obj.userData.campusParts?.[i]==='original-hall-stair')continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
+    for(const dest of destinations(b)){if(dest[0]==='01B'&&['original-hall-stair','hall-upper-edge-strip'].includes(obj.userData.campusParts?.[i]))continue;const unit=worldInstances?1:S;const transform=new T.Matrix4().makeScale(1/unit,1/unit,1/unit).multiply(relocation(dest)).multiply(new T.Matrix4().makeScale(unit,unit,unit));const matrix=scratch.clone().premultiply(transform);if(!chunks.has(dest[0]))chunks.set(dest[0],[]);matrix.designGroup=obj.userData.designGroups?.[i]||'';chunks.get(dest[0]).push(matrix);}
    }
    obj.visible=false;
    for(const [id,matrices] of chunks){const m=new T.InstancedMesh(obj.geometry,obj.material,matrices.length);m.name='Layout '+id+' '+obj.name;m.userData.designGroups=matrices.map(a=>a.designGroup);m.scale.copy(obj.scale);m.position.copy(obj.position);matrices.forEach((a,i)=>m.setMatrixAt(i,a));m.castShadow=obj.castShadow;m.receiveShadow=obj.receiveShadow;m.computeBoundingSphere();m.computeBoundingBox();scene.add(track(m,id));}
@@ -112,7 +112,7 @@ export function finishCampusLayout(scene,retreat,rooms){
    const x=anchor+b[4],z=-b[5];ray.set(new T.Vector3(x,60,z),down);
    const hits=ray.intersectObjects(scene.children.filter(o=>o.visible&&o.name!=='September 26 campus bridges'),true).filter(h=>h.object.isMesh&&!h.object.material?.transparent&&h.point.y<40);
    const y=hits.length?hits[0].point.y:.4;
-   createRoofNumber(scene,b[0],x,y+.05,z,Math.min(11,b[6]*.42),Math.min(11,b[7]*.42));
+   createRoofNumber(scene,b[0]==='01B'?'1':b[0],x,y+.05,z,Math.min(11,b[6]*.42),Math.min(11,b[7]*.42));
  }
 }
 export function relocateShots(shots){
