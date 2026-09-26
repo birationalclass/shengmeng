@@ -1,5 +1,5 @@
 import {openingArrival} from './opening-arrival.js';
-import {KeyboardMotion} from './keyboard-motion.js';
+import {KeyboardMotion} from './keyboard-motion.js?v=continuous-accel-13';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
