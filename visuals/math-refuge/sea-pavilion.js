@@ -1,3 +1,4 @@
+import {curvedDeck} from './bridge-deck.js';
 import * as T from '../3d/vendor/three.module.js';
 import {BUILDING_SCALE as S} from './site-layout.js';
 
@@ -22,11 +23,8 @@ export function createSeaPavilion(scene,materials,offset){
  function beam(a,b,width,height,mat){const d=new T.Vector3().subVectors(b,a);box(a.clone().add(b).multiplyScalar(.5).toArray(),[width,height,d.length()+.012],mat,Math.atan2(d.x,d.z));}
  const flare=u=>{const t=Math.max(0,Math.min(1,(u-.88)/.12));return 1+.5*t*t*(3-2*t);};
  const at=(u,side=0,y=0)=>{const p=curve.getPointAt(u),d=curve.getTangentAt(u);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*flare(u))).add(new T.Vector3(0,y,0));};
- const length=curve.getLength(),count=Math.ceil(length/1.15);
- for(let i=0;i<count;i++){
-  const u=(i+.5)/count,d=curve.getTangentAt(u);
-  box(at(u,0,-.035).toArray(),[2.8*flare(u),.07,length/count-.006],deck,Math.atan2(d.x,d.z));
- }
+ const length=curve.getLength(),count=Math.ceil(length/.575);
+ root.add(curvedDeck(curve,u=>2.8*flare(u),count,deck,1,.07));
  // Open timber boardwalk: all structure stays below the walking surface.
  for(let i=0;i<48;i++)for(const side of [-1,1]){
   beam(at(i/48,side*1.28,-.19),at((i+1)/48,side*1.28,-.19),.12,.27,steel);

@@ -1,3 +1,4 @@
+import {curvedDeck} from './bridge-deck.js';
 import * as T from '../3d/vendor/three.module.js';
 // Smooth the existing safe connection rather than moving any building anchors.
 export function bridgeCurve(path,buildings,ends,width=3){
@@ -27,10 +28,11 @@ export function createCoastalBridge(parent,points,materials,anchor,top,name){
  const length=curve.getLength(),batches=new Map(),matrix=new T.Matrix4(),quat=new T.Quaternion();
  const deck=materials.hallPaving||materials.terraceFloor||materials.stone;
  function part(p,size,mat,yaw=0){if(!batches.has(mat))batches.set(mat,[]);matrix.compose(p,quat.setFromAxisAngle(new T.Vector3(0,1,0),yaw),new T.Vector3(...size));batches.get(mat).push(matrix.clone());}
- const n=Math.ceil(length/1.15);
+ const n=Math.ceil(length/.575);
+ group.add(curvedDeck(curve,()=>3,n,deck,2,.16));
  for(let i=0;i<n;i++){
   const u=(i+.5)/n,p=curve.getPointAt(u),d=curve.getTangentAt(u),yaw=Math.atan2(d.x,d.z),side=new T.Vector3(-d.z,0,d.x);
-  for(const s of [-1,1])part(p.clone().addScaledVector(side,s*.75).add(new T.Vector3(0,-.08,0)),[1.495,.16,length/n-.006],deck,yaw);
+
   for(const s of [-1,1])part(p.clone().addScaledVector(side,s*1.47).add(new T.Vector3(0,-.17,0)),[.065,.22,length/n+.015],materials.edge,yaw);
  }
  const supports=Math.ceil(length/5.5);
