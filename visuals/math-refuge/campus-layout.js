@@ -1,3 +1,4 @@
+import {createSeaPavilion} from './sea-pavilion.js?v=sea-pavilion-17';
 import {createHallSpiral} from './hall-spiral.js';
 import {createRoofNumber} from './roof-number.js?v=campus-labels';
 import * as T from 'three';
@@ -115,6 +116,7 @@ export function finishCampusLayout(scene,retreat,rooms){
  const g=campusLayout.find(b=>b[0]==='G'),x=g[4],y=g[5],w=g[6],d=g[7];for(const a of [[x-w/2,y,3,d+3],[x+w/2,y,3,d+3],[x,y-d/2,w,3],[x,y+d/2,w,3],[x,y,3,d],[x,y,w,3]])deck(...a);
  for(const [a,b] of bridgePlan.connections){const path=routeBridge(campusLayout.find(r=>r[0]===a),campusLayout.find(r=>r[0]===b),campusLayout);if(!path)throw Error('无法连接 '+a+'/'+b);for(const v of path.slice(1,-1))deck(v[0],v[1],3,3);for(let i=1;i<path.length;i++){const p=path[i-1],q=path[i];deck((p[0]+q[0])/2,(p[1]+q[1])/2,3,Math.hypot(q[0]-p[0],q[1]-p[1]),Math.atan2(q[0]-p[0],-(q[1]-p[1])));}}
  createHallSpiral(scene,retreat.materials,buildingOffset('01B'));
+ const pavilion=createSeaPavilion(scene,retreat.materials,buildingOffset('01B'));if(retreat.campus)retreat.campus.seaPavilion=pavilion;
  scene.updateMatrixWorld(true);
  const ray=new T.Raycaster(),down=new T.Vector3(0,-1,0);
  if(typeof document!=='undefined')for(const b of [...campusLayout,['10','住宅',0,0,retreat.residence?.root.position.x-anchor||0,-(retreat.residence?.root.position.z||0),110,86]]){
