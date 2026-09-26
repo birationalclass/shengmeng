@@ -362,7 +362,8 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
   const seating=meta('Mathematics auditorium seating',{seats:SEAT_ROWS.length*SEAT_COLUMNS.length,seatsPerRow:SEAT_COLUMNS.length,rows:3,centralAisle:1.6,facing:[1,0,0],seatPositions:[],rowRises:SEAT_ROWS.map(r=>r.rise),clearHeight:HALL.clearHeight,offshore:true});
   const carpetTop=DECK_Y+.028;
   // Two low carpeted seating tiers; the front row stays on the main floor.
-  for(const [i,a,b] of [[0,34.5,36.725],[1,36.725,38.675]]){
+  const tierAdvance=.40/S; // Forty centimetres toward the front row in world space.
+  for(const [i,a,b] of [[0,34.5,36.725+tierAdvance],[1,36.725+tierAdvance,38.675+tierAdvance]]){
     const rise=SEAT_ROWS[i].rise/S;
     for(const sign of [-1,1]){
       const riser=new THREE.Mesh(new THREE.BoxGeometry(b-a,rise,9.05),tierCarpets[i]);
