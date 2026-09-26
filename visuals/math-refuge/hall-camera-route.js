@@ -1,4 +1,4 @@
-import {SPIRAL} from './hall-spiral.js';
+import {SPIRAL,spiralPlanPoint} from './hall-spiral.js';
 import {buildingOffset} from './campus-layout.js';
 const hallOffset=buildingOffset('01B');
 import {BUILDING_SCALE as S,DECK_Y,HALL} from './site-layout.js';
@@ -18,8 +18,8 @@ export function hallFloorRoute(start,end){
  // Only a transition crossing this slab is rerouted; ordinary observation is unchanged.
  if(slabHit(start,end)===null||Math.max(start[1],end[1])>eyeUp+1)return null;
  const west=HALL.west*S+hallOffset.x,cz=HALL.south*S+hallOffset.z-2.65,cx=west-3.5;
- const upperPath=[[37.4*S+hallOffset.x,eyeUp,hallOffset.z],[west+.7,eyeUp,cz+.65],[west-.8,eyeUp,cz+.65]];
- const flight=Array.from({length:33},(_,i)=>{const t=1-i/32,a=SPIRAL.start+SPIRAL.sweep*t;return [cx+SPIRAL.radius*Math.cos(a),eyeDown+(eyeUp-eyeDown)*t,cz+SPIRAL.radius*Math.sin(a)];});
+ const upperPath=[[37.4*S+hallOffset.x,eyeUp,hallOffset.z],[west+.7,eyeUp,HALL.south*S+hallOffset.z+SPIRAL.upperEdge-SPIRAL.landingDepth/2],[west-.8,eyeUp,HALL.south*S+hallOffset.z+SPIRAL.upperEdge-SPIRAL.landingDepth/2]];
+ const flight=Array.from({length:33},(_,i)=>{const t=1-i/32,a=SPIRAL.start+SPIRAL.sweep*t;const [x,z]=spiralPlanPoint(west,HALL.south*S+hallOffset.z,t);return [x,eyeDown+(eyeUp-eyeDown)*t,z];});
  const down=[...upperPath,...flight,[west-4,eyeDown,hallOffset.z],[35.3*S+hallOffset.x,eyeDown,hallOffset.z]];
  return [start,...(start[1]>end[1]?down:[...down].reverse()),end];
 }
