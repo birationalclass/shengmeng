@@ -103,3 +103,11 @@ for(const viewport of [{width:960,height:540},{width:1920,height:1080},{width:39
  b.tick(1);assert.equal(exited,false);assert(b.context.document.body.classList.contains('awaiting-scene'));
  b.tick(1);await promise;assert.equal(exited,true);assert(!b.context.document.body.classList.contains('awaiting-scene'));
 }
+
+for(const auth of ['pending','anonymous']){
+ const b=boot();b.context.refugeBoot.auth(auth);b.context.document.querySelector=()=>({open:true});
+ let resumed=false;const work=b.context.refugeBoot.waitForEntryUI().then(()=>resumed=true);
+ b.tick(.25);await work;
+ assert(resumed,'an open login dialog and pending auth cannot block scene construction');
+ assert.equal(b.context.refugeBoot.authorized,false,'background loading cannot bypass authentication');
+}
