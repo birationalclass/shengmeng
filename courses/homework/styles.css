@@ -211,7 +211,7 @@ html{background:#eae9e3}
 #notebook-stack{position:absolute;left:var(--book-left);top:var(--book-top);transform:scale(var(--scene-scale));transform-origin:0 0;z-index:1}
 .adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;transition:filter .2s;overflow:hidden;font-family:"Songti SC",STSong,serif}
 .adjacent-book:hover:not(:disabled){filter:brightness(1.035);color:#263d2f}
-.adjacent-book:focus-visible{outline:3px solid #677e61;outline-offset:12px}
+.adjacent-book:focus-visible,.notebook-cover[data-open-notebook]:focus-visible{outline:none;filter:brightness(1.035)}
 .previous-book,.previous-book-layer{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a}
 /* The third/top slot is fixed even with fewer books. Extra books occupy
    that same slot; only two stationary layers are ever drawn below it. */
@@ -219,7 +219,7 @@ html{background:#eae9e3}
 .previous-book-layer{left:calc(-125px - 3px * var(--stack-depth));top:calc(9px + 5px * var(--stack-depth));z-index:calc(3 - var(--stack-depth));pointer-events:none}
 .back-cover-binding{position:absolute;right:14px;top:0;bottom:0;width:3px;background:#38543d17;box-shadow:5px 0 9px #243f361a}
 .book-edge-label{position:absolute;left:34px;bottom:24px;font-size:17px;letter-spacing:.1em;color:#3d5847}
-.next-book{left:var(--stack-next-left);top:var(--stack-next-top);transform:rotate(12deg);transform-origin:bottom left;background-color:#a7bd9d;color:#294b40}
+.next-book{left:var(--stack-next-left);top:var(--stack-next-top);transform:rotate(var(--stack-next-angle,7deg));transform-origin:bottom left;background-color:#a7bd9d;color:#294b40}
 .next-book .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
 .stack-cover-title{position:absolute;inset:120px 0 auto;font-size:36px;letter-spacing:.2em}
 .stack-cover-title b{display:block;margin-top:100px;font-size:56px;font-weight:400;letter-spacing:.4em}

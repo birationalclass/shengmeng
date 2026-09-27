@@ -24,6 +24,7 @@ let note=typeof stored.note==='string'?stored.note:'',confirmed=stored.confirmed
 let student=1,active=0,prefsOpen=false;
 let settingsObserver;
 let bookPage=0,turnAnimation=null,turnStage=null;
+const nextBookPose={angle:7,x:14,y:14};
 const records={};
 const record=i=>{const id=[settings.subject,student,i].join('-');return records[id]||(records[id]=getDemoGrade(settings.subject,student,i))};
 const questions=()=>[getDemoQuestion(settings.subject,student,0),getDemoQuestion(settings.subject,student,1)];
@@ -309,7 +310,7 @@ function flipNotebook(direction){
   flight.style.transform=`translate3d(${pivotX-(incoming?w:0)}px,${pivotY-h/2}px,0) rotateZ(${-2*(incoming?1-p:p)}deg) rotateY(${(incoming?180:-180)*p}deg)`;
  }
  function park(p){
-  underlay.style.transform=`translate(${rightPivot.x}px,${rootRect.top-h/5*p}px) rotate(${12*p}deg)`;underlayLabel.style.opacity=String(p);
+  underlay.style.transform=`translate(${rightPivot.x+nextBookPose.x*scale*p}px,${rootRect.top+(-h/5+nextBookPose.y*scale)*p}px) rotate(${nextBookPose.angle*p}deg)`;underlayLabel.style.opacity=String(p);
  }
  function draw(now){
   if(startTime===undefined)startTime=now;
@@ -347,8 +348,8 @@ function settleNextNotebook(next,stage,restore){
  const cleanup=()=>{if(last){if(originalStyle===null)source.removeAttribute('style');else source.setAttribute('style',originalStyle);if(label)label.style.opacity=labelOpacity;}restore();};
  const handle={cancel(){cancelAnimationFrame(frame);cleanup();stage.remove();}};turnAnimation=handle;
  function pose(p){
-  if(last){source.style.top=(-sheet.height/5*(1-p))+'px';source.style.transform=`rotate(${12*(1-p)}deg)`;}
-  else sheetCopy.style.transform=`translate(${x}px,${y-h/5*(1-p)}px) rotate(${12*(1-p)}deg)`;
+  if(last){source.style.left=(root.offsetWidth-sheet.width+nextBookPose.x*(1-p))+'px';source.style.top=((-sheet.height/5+nextBookPose.y)*(1-p))+'px';source.style.transform=`rotate(${nextBookPose.angle*(1-p)}deg)`;}
+  else sheetCopy.style.transform=`translate(${x+nextBookPose.x*scale*(1-p)}px,${y+(-h/5+nextBookPose.y*scale)*(1-p)}px) rotate(${nextBookPose.angle*(1-p)}deg)`;
   if(label)label.style.opacity=String(1-p);
  }
  function draw(now){
@@ -434,9 +435,10 @@ function fitPaper(){
  viewport.style.setProperty('--book-top',(16+230*scale)+'px');
  viewport.style.setProperty('--book-right',(16+270*scale)+'px');
  viewport.style.setProperty('--book-bottom',(16+50*scale)+'px');
- viewport.style.setProperty('--stack-next-left',(width-sheet.width)+'px');
- // Rotate around the lower-left corner, anchored at 80% of the active cover.
- viewport.style.setProperty('--stack-next-top',(-height/5)+'px');
+ viewport.style.setProperty('--stack-next-left',(width-sheet.width+nextBookPose.x)+'px');
+ viewport.style.setProperty('--stack-next-angle',nextBookPose.angle+'deg');
+ // Shared pose keeps the idle book and both animation endpoints aligned.
+ viewport.style.setProperty('--stack-next-top',(-height/5+nextBookPose.y)+'px');
  root.style.setProperty('--sheet-width',sheet.width+'px');root.style.setProperty('--sheet-height',height+'px');
  root.style.setProperty('--canvas-width',width+'px');root.style.setProperty('--view-scale',scale);
  viewport.style.width=(sceneWidth*scale+32)+'px';viewport.style.height=(sceneHeight*scale+32)+'px';
