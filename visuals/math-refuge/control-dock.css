@@ -32,11 +32,51 @@ footer{justify-content:center;padding:22px 30px 18px;gap:0}
 #boardFollowDelayValue{color:#e9cda3;font-size:12px}
 #settings .clock-line{justify-content:space-between}#settings .clock-line button{margin:0;width:42px}
 #lecturePanel{right:84px}#chalkReader{left:auto;right:84px}
-#seminarPanel{bottom:auto;max-height:calc(100dvh - 210px);width:260px;padding:6px 0;background:none;backdrop-filter:none;border:0;border-radius:0;box-shadow:none;text-shadow:0 1px 5px #001c}
-#seminarPanel .seminar-heading h2{font-size:16px}
-#buildingRooms{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:18px}
-#buildingRooms button{padding:4px 0;font-size:13px;text-align:left;border:0;background:none}
-#buildingRooms button[aria-pressed=true]{color:#f4d6a1}
+/* A quiet thumb arc: primary destination below, smaller actions around it. */
+#seminarPanel{left:auto;top:auto;right:max(26px,env(safe-area-inset-right));bottom:calc(82px + env(safe-area-inset-bottom));width:264px;max-width:calc(100vw - 28px);max-height:calc(100dvh - 220px);padding:4px;overflow:auto;background:none;backdrop-filter:none;border:0;border-radius:0;box-shadow:none;scrollbar-width:thin;text-shadow:0 1px 4px #0019}
+#seminarPanel .seminar-heading{justify-content:flex-end;gap:10px;margin:0 4px 6px}
+#seminarPanel .seminar-heading h2{font-size:10px;font-weight:400;letter-spacing:.12em;color:#e0ddd09c}
+#seminarPanel #seminarClose{width:22px;height:22px;min-height:22px;padding:0;font-size:18px;color:#d0dad69c}
+#buildingRooms{position:relative;width:252px;height:200px;margin:0;padding:0}
+#buildingRooms .room-action{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;width:54px;min-height:66px;padding:0;border:0;background:none;text-align:center;color:#e4ede4bb;box-shadow:none;touch-action:manipulation}
+#buildingRooms .room-action:nth-child(1){right:0;bottom:0;width:70px}
+#buildingRooms .room-action:nth-child(2){right:4px;top:38px}
+#buildingRooms .room-action:nth-child(3){right:79px;top:0}
+#buildingRooms .room-action:nth-child(4){left:39px;top:14px}
+#buildingRooms .room-action:nth-child(5){left:0;top:90px}
+#buildingRooms .room-action:nth-child(6){left:87px;bottom:0}
+#buildingRooms .room-action:nth-child(7){left:111px;top:73px}
+.room-action-orb{position:relative;display:grid;place-items:center;width:50px;height:50px;border-radius:50%;border:1px solid #daeadd20;background:radial-gradient(circle at 45% 35%,#d8ead80b,#182c3429 75%);box-shadow:none;transition:transform .2s ease,border-color .2s ease,background .2s ease,color .2s ease}
+#buildingRooms .room-action:first-child .room-action-orb{width:66px;height:66px;border-color:#dceadf38;background:radial-gradient(circle at 45% 35%,#dfebd611,#1a30363b 80%)}
+.room-action-orb svg{width:23px;height:23px;filter:drop-shadow(0 1px 2px #001b);pointer-events:none}
+#buildingRooms .room-action:first-child svg{width:29px;height:29px}
+.room-action-badge{position:absolute;right:1px;bottom:0;font:400 8px/12px ui-monospace,monospace;color:inherit;letter-spacing:0;text-shadow:0 1px 3px #001a}
+.room-action-badge:empty{display:none}
+.room-action-label{font-size:9px;line-height:1.4;white-space:nowrap;letter-spacing:.04em;color:inherit;opacity:.75}
+#buildingRooms .room-action:hover,#buildingRooms .room-action[aria-pressed=true]{color:#f4ddaf}
+#buildingRooms .room-action:hover .room-action-orb{transform:translateY(-2px);border-color:#e5d9ba80;background:#c6d6c515}
+#buildingRooms .room-action[aria-pressed=true] .room-action-orb{border-color:#e9d6ac7a;background:radial-gradient(circle,#e5ca9220,#e5ca9205 72%)}
+#buildingRooms .room-action:focus-visible{outline:0;box-shadow:none}
+#buildingRooms .room-action:focus-visible .room-action-orb{outline:2px solid #ffe0a7;outline-offset:3px}
+#buildingRooms .room-action:active .room-action-orb{transform:scale(.93)}
+#seminarPanel[data-action-count="7"] #buildingRooms{height:224px}
+#seminarPanel[data-action-count="1"] #buildingRooms{height:88px}
+@media(max-width:700px){
+ #seminarPanel{left:auto;top:auto;right:max(12px,env(safe-area-inset-right));bottom:calc(72px + env(safe-area-inset-bottom));width:244px;max-height:calc(100dvh - 240px)}
+ #buildingRooms{width:232px;height:192px}
+ #buildingRooms .room-action:nth-child(3){right:72px}
+ #buildingRooms .room-action:nth-child(4){left:30px}
+ #buildingRooms .room-action:nth-child(6){left:73px}
+ #buildingRooms .room-action:nth-child(7){left:96px}
+ #seminarPanel .seminar-heading{margin-bottom:2px}
+ body:has(#seminarPanel:not([hidden])) .caption{left:18px;bottom:94px;max-width:108px}
+ body:has(#seminarPanel:not([hidden])) .caption h2,body:has(#seminarPanel:not([hidden])) .caption>p:last-child{display:none}
+ body:has(#seminarPanel:not([hidden])) .caption .eyebrow{font-size:10px;margin:0}
+}
+@media(max-height:600px) and (orientation:landscape){
+ #seminarPanel{right:64px;bottom:56px;max-height:calc(100dvh - 130px)}
+}
+@media(prefers-reduced-motion:reduce){.room-action-orb{transition:none}}
 #seminarCurriculum{margin:20px 0;font-size:12px;line-height:1.8}
 #seminarCurriculum h3{font-size:15px;font-weight:500}
 #seminarChapters details{margin:12px 0}#seminarChapters summary{cursor:pointer}

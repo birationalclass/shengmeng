@@ -1,3 +1,4 @@
+import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
 import {OpeningCache} from './opening-cache.js?v=opening-cache-81';
 import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
@@ -866,7 +867,7 @@ async function selectSeminarPart(part,page=part?.start){
 }
 
 function updateSeminarNavigation(){
- document.querySelectorAll('#buildingRooms button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.room!==undefined?Number(button.dataset.room)===activeRoom&&SHOTS[shot].lecture:button.dataset.roomShot===SHOTS[shot].name)));
+ document.querySelectorAll('#buildingRooms button').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.lecternLift!==undefined?Boolean(retreat?.campus.lecternLift?.lowered):button.dataset.room!==undefined?Number(button.dataset.room)===activeRoom&&SHOTS[shot].lecture:button.dataset.roomShot===SHOTS[shot].name)));
  $('seminarCurriculum').hidden=Boolean(panelBuilding.walk)||activeRoom!==1;
 }
 let hallSunRamp=null;
@@ -884,14 +885,17 @@ function setSeminarPanel(open,building=panelBuilding){
  document.querySelectorAll('#chapters button[data-building]').forEach(b=>b.setAttribute('aria-expanded',String(open&&Number(b.dataset.building)===panelBuilding.number)));
  walkButton.setAttribute('aria-expanded',String(open&&Boolean(panelBuilding.walk)));
  if(!open)return;
+ $('seminarPanel').dataset.actionCount=String(panelBuilding.rooms.length);
  $('buildingHeading').textContent=panelBuilding.walk?'漫步':panelBuilding.number+' · '+panelBuilding.name;
  $('buildingRooms').replaceChildren(...panelBuilding.rooms.map(room=>{
-   const button=document.createElement('button');button.textContent=room.lecternLift?(retreat?.campus.lecternLift?.lowered?'升起讲台':'降下讲台'):room.name;
+   const button=document.createElement('button');renderRoomAction(button,room,{lowered:retreat?.campus.lecternLift?.lowered,walk:panelBuilding.walk});
+   if(room.lecternLift)button.dataset.lecternLift='';
+   if(room.sunEvent)button.dataset.roomShot='报告厅'+(room.sunEvent==='sunrise'?'看日出':'看日落');
    if(room.room!==undefined)button.dataset.room=String(room.room);
    if(room.shot)button.dataset.roomShot=room.shot;
    button.addEventListener('click',()=>{
      if(room.sunEvent){viewHallSun(room.sunEvent);return;}
-     if(room.lecternLift){if(speakerView)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'));retreat.campus.lecternLift.toggle();button.textContent=retreat.campus.lecternLift.lowered?'升起讲台':'降下讲台';button.setAttribute('aria-pressed',String(retreat.campus.lecternLift.lowered));return;}
+     if(room.lecternLift){if(speakerView)selectShot(SHOTS.findIndex(s=>s.name==='报告厅'));retreat.campus.lecternLift.toggle();renderRoomAction(button,room,{lowered:retreat.campus.lecternLift.lowered});button.setAttribute('aria-pressed',String(retreat.campus.lecternLift.lowered));return;}
      if(room.room!==undefined)activateRoom(room.room,!room.shot);
      if(room.shot)selectShot(SHOTS.findIndex(s=>s.name===room.shot));
      updateSeminarNavigation();
