@@ -1,9 +1,9 @@
-import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-forty';
+import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-click-cover';
 import {getDemoQuestion,getDemoGrade} from './demo-grader.js';
 const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-// Synthetic identities for browsing forty notebooks; no real student data.
-const students=Array.from({length:40},(_,i)=>({name:'测试同学 '+String(i+1).padStart(2,'0'),id:'DEMO-'+String(i+1).padStart(3,'0')}));
+// Synthetic identities for browsing five notebooks; no real student data.
+const students=Array.from({length:5},(_,i)=>({name:'测试同学 '+String(i+1).padStart(2,'0'),id:'DEMO-'+String(i+1).padStart(3,'0')}));
 const subjects={university:'大学数学',secondary:'中学数学',general:'通用作业'};
 const panelFonts={sans:'简洁体',song:'宋体',hand:'手写体'};
 const paperBackgrounds={plain:'空白',ruled:'横线本',grid:'方格本',tian:'田字格'};
@@ -36,7 +36,7 @@ function render(){const s=students[student];const qs=questions();
  $('#workspace-tools').innerHTML=`<div class="paper-controls"><a class="home-link icon-button" href="../" aria-label="课程主页" data-tip="主页">${icons.home}</a><span id="account-slot"></span><button class="icon-button" data-action="preferences" aria-label="设置" aria-controls="preferences" aria-expanded="${prefsOpen}" data-tip="设置">${icons.settings}</button></div>`;
  if(account&&!document.body.classList.contains('has-homework-session'))$('#account-slot').append(account);
  window.dispatchEvent(new Event('homework-tools-ready'));
- $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 39→40 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
+ $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 ${students.length-1}→${students.length} 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
  $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
@@ -330,6 +330,9 @@ function finishNotebookTransfer(next,stage,restore){
 }
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
+ const cover=$('[data-open-notebook]');
+ const openCover=()=>{if(bookPage!==0||turnStage)return;requestLandscape();turnBook(1);};
+ cover.onclick=openCover;cover.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCover();}};
  const jump=$('#book-jump');jump.onchange=()=>{const n=Number(jump.value);if(Number.isInteger(n)&&n>=1&&n<=students.length){if(n-1!==student)changeStudent(n-1)}else jump.value=student+1;};jump.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();jump.onchange();}};
  $$('[data-question-region]').forEach(el=>{el.addEventListener('click',()=>selectQuestion(Number(el.dataset.questionRegion)));el.addEventListener('focusin',()=>selectQuestion(Number(el.dataset.questionRegion)))});
  $$('[data-edit-score]').forEach(b=>b.onclick=e=>{e.stopPropagation();editScore(Number(b.dataset.editScore))});
