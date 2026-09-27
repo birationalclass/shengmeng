@@ -98,7 +98,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
    const coverFace=source.firstElementChild.matches('.notebook-cover,.notebook-inner-cover');
    face.style.bottom=-Math.max(3,3*w/sheet.width)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
    const copy=source.cloneNode(true),offset=(forward!==isBack)?i*bandWidth:w-(i+1)*bandWidth;
-   if(coverFace){copy.classList.add('turn-cover-only');copy.firstElementChild.style.boxShadow=source.firstElementChild.classList.contains('notebook-cover')?'inset 7px 0 12px -10px #1c372f80':'inset -7px 0 12px -10px #1c372f80';}
+   if(coverFace){copy.classList.add('turn-cover-only');if(copy.firstElementChild.classList.contains('notebook-inner-cover'))copy.firstElementChild.style.height=`calc(${sheet.height}px + 3px * var(--binding-open,0))`;copy.firstElementChild.style.boxShadow=source.firstElementChild.classList.contains('notebook-cover')?'inset 7px 0 12px -10px #1c372f80':'inset -7px 0 12px -10px #1c372f80';}
    Object.assign(copy.style,{left:-offset+'px',top:'0',width:w+'px',height:h+'px',boxShadow:'none'});face.append(copy);
    const shade=document.createElement('div');shade.className='turn-shading';face.append(shade);band.append(face);
   }
