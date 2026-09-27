@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="control-dock.css?v62-chalk-ink"><link rel="stylesheet" href="atmosphere.css?v69-authored">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/","./hall-spiral.js":"./hall-spiral.js?v=concert-53","./campus-layout.js":"./campus-layout.js?v=concert-53","./automatic-doors.js?v44-hall-clearance":"./automatic-doors.js?v=concert-53","./scene.js?v=horizon-depth-1":"./scene.js?v=concert-53","./site-layout.js?v44-hall-clearance":"./site-layout.js?v=concert-53","./hall-camera-route.js?v=sw-corner-1":"./hall-camera-route.js?v=concert-53","./hall-sun-view.js":"./hall-sun-view.js?v=concert-53","./site-layout.js":"./site-layout.js?v=concert-53","./lectern-lift.js":"./lectern-lift.js?v=concert-53","./site-layout.js?v124":"./site-layout.js?v=concert-53","./swivel-chairs.js?v126":"./swivel-chairs.js?v=concert-53","./campus.js?v=spiral-20260926":"./campus.js?v=concert-53"}}</script>
   <link rel="stylesheet" href="residence.css?v76-villa">
-  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v106"><link rel="stylesheet" href="screen-webview.css?v123">
+  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v=arrival-54"><link rel="stylesheet" href="screen-webview.css?v123">
   <link rel="stylesheet" href="graphics-settings.css?v91-shore">
 </head>
 <body>
@@ -132,17 +132,45 @@
   <button id="showUI" hidden class="icon-button" aria-label="显示界面" title="显示界面" data-tip="显示界面"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
   <div id="timeFade" aria-hidden="true"></div>
   <div id="transition" aria-hidden="true"></div>
-  <div id="loading" aria-label="进入海上书院">
-    <div class="arrival-horizon" aria-hidden="true"><i></i></div>
-    <div class="arrival-copy"><p class="arrival-kicker">A RETREAT FOR WANDERING MINDS</p><h2>数学难民营</h2><p class="arrival-invitation">海天之间，留一处思考的地方。</p>
-    <button id="enterButton" class="entry-button">进入书院 <span aria-hidden="true">↗</span></button>
-    <p id="loadMessage" role="status">正在构建空间…</p><p class="arrival-note">可先点击进入，空间就绪后自动启程</p></div>
-    <div class="arrival-coordinate" aria-hidden="true">31° N / 121° E <span>海上书院 · SHANGHAI</span></div>
-  </div>
-  <div id="error" hidden role="alert"><h2>暂时无法打开三维空间</h2><p id="errorText"></p><button onclick="location.reload()">重新加载</button><button onclick="const u=new URL(location.href);u.searchParams.set('safe','1');location.href=u.href">低负载模式进入</button><a href="../">返回实验室</a></div>
-  <script>document.getElementById('enterButton').addEventListener('click',function(){document.getElementById('loading').dataset.entryRequested='true';if(document.getElementById('world').dataset.ready!=='true'){this.textContent='正在准备，即将进入…';this.disabled=true;}});</script>
-  <script>window.refugeLoadingTimer=setTimeout(function(){if(document.getElementById('world').dataset.ready!=='true'){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='加载时间较长。可以重新加载，或用低负载模式进入。';}},60000);</script>
-  <script type="module">import('./app.js?v=concert-53').catch(error=>{clearTimeout(window.refugeLoadingTimer);console.error(error);document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('errorText').textContent='场景文件未能加载，请检查网络后重试。';});</script>
+  <div id="loading" aria-label="进入海上书院"><div class="arrival-landscape" aria-hidden="true"><svg viewBox="0 0 1000 700"><ellipse cx="600" cy="350" rx="410" ry="185" transform="rotate(-22 600 350)"/><ellipse cx="600" cy="350" rx="395" ry="170" transform="rotate(-22 600 350)"/><path d="M142 492C318 400 434 536 586 433S868 241 1030 292"/></svg></div><div class="arrival-top" aria-hidden="true"><span>MATH REFUGE</span><span>31° N / 121° E</span></div><div class="arrival-copy"><p class="arrival-kicker">A PLACE TO THINK</p><h2>数学难民营</h2></div><div class="arrival-bottom"><div class="arrival-meter"><div class="arrival-readout"><p id="loadMessage" role="status">连接空间</p><output id="loadPercent">00<small>%</small></output></div><div id="loadProgress" class="arrival-track" role="progressbar" aria-label="场景准备进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="loadFill"></i></div></div><button id="enterButton" class="entry-button">进入<span aria-hidden="true">↗</span></button></div><div class="arrival-foot" aria-hidden="true"><span>SHANGHAI · AT SEA</span><span>VISUAL LAB / 01</span></div></div>
+  <div id="error" hidden aria-label="连接恢复"><div class="arrival-landscape" aria-hidden="true"><svg viewBox="0 0 1000 700"><ellipse cx="600" cy="350" rx="410" ry="185" transform="rotate(-22 600 350)"/><ellipse cx="600" cy="350" rx="395" ry="170" transform="rotate(-22 600 350)"/><path d="M142 492C318 400 434 536 586 433S868 241 1030 292"/></svg></div><div class="arrival-top" aria-hidden="true"><span>MATH REFUGE</span><span>31° N / 121° E</span></div><div class="arrival-copy"><p class="arrival-kicker">A PLACE TO THINK</p><h2>数学难民营</h2><p id="errorText" role="status">连接中断</p></div><div class="arrival-bottom"><div><div id="retryStatus" class="retry-readout" role="status">8 秒后重试</div><div class="retry-actions"><button id="retryPause">暂停重试</button><button id="retrySafe">低负载</button><a href="../">返回</a></div></div><button id="retryNow" class="entry-button">重试<span aria-hidden="true">↗</span></button></div><div class="arrival-foot" aria-hidden="true"><span>SHANGHAI · AT SEA</span><span>VISUAL LAB / 01</span></div></div>
+  <!-- Standalone bootstrap: remains available when a module dependency fails. -->
+  <script id="refugeBootstrap">
+(()=>{
+ const $=id=>document.getElementById(id),key='refuge-startup-retry',entryKey='refuge-entry-requested';
+ const read=k=>{try{return sessionStorage.getItem(k);}catch{return null;}},write=(k,v)=>{try{v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,v);}catch{}};
+ let attempts=Math.max(0,Number(read(key))||0),state='loading',paused=false,remaining=0,last=Date.now(),progress=0;
+ const delays=[8,15,30,60];
+ if(read(entryKey)==='1')$('loading').dataset.entryRequested='true';
+ function stage(value,label){if(state!=='loading')return;progress=Math.max(progress,Math.min(100,value));$('loadFill').style.transform=`scaleX(${progress/100})`;$('loadProgress').setAttribute('aria-valuenow',String(progress));$('loadPercent').innerHTML=String(Math.floor(progress)).padStart(2,'0')+'<small>%</small>';$('loadMessage').textContent=label;}
+ function retry(safe=false){
+  if(state!=='error')return;state='retrying';write(key,String(attempts+1));
+  const url=new URL(location.href);url.searchParams.set('_retry',String(Date.now()));if(safe)url.searchParams.set('safe','1');
+  $('retryStatus').textContent='重新连接';$('retryNow').disabled=true;location.replace(url.href);
+ }
+ function paintRetry(){
+  $('retryStatus').textContent=paused?'已暂停':navigator.onLine===false?'等待网络':document.hidden?'等待返回':`${Math.ceil(remaining)} 秒后重试`;
+  $('retryPause').textContent=paused?'继续重试':'暂停重试';
+ }
+ function fail(error){
+  console.error('[Refuge startup]',error);if(state==='error'||state==='retrying')return;
+  clearTimeout(window.refugeLoadingTimer);state='error';$('loading').hidden=true;$('error').hidden=false;
+  $('errorText').textContent=/context|WebGL|图形|编译/i.test(error?.message||'')?'图形恢复中':'连接中断';
+  remaining=delays[Math.min(attempts,delays.length-1)];last=Date.now();paintRetry();
+ }
+ function ready(){clearTimeout(window.refugeLoadingTimer);state='loading';stage(100,'准备就绪');state='ready';$('error').hidden=true;$('loading').hidden=false;write(key,null);attempts=0;}
+ window.refugeBoot={stage,fail,ready,entered(){state='entered';write(entryKey,null);$('loading').hidden=true;$('error').hidden=true;}};
+ $('enterButton').addEventListener('click',function(){write(entryKey,'1');$('loading').dataset.entryRequested='true';if($('world').dataset.ready!=='true'){this.textContent='即将进入';this.disabled=true;}});
+ $('retryNow').addEventListener('click',()=>retry());$('retrySafe').addEventListener('click',()=>retry(true));
+ $('retryPause').addEventListener('click',()=>{paused=!paused;last=Date.now();paintRetry();});
+ setInterval(()=>{const now=Date.now(),dt=Math.min(1,(now-last)/1000);last=now;if(state!=='error')return;if(!paused&&!document.hidden&&navigator.onLine!==false){remaining=Math.max(0,remaining-dt);if(!remaining){retry();return;}}paintRetry();},250);
+ addEventListener('online',()=>{if(state==='error'&&!paused){remaining=Math.min(remaining,1);paintRetry();}});
+ document.addEventListener('visibilitychange',()=>{last=Date.now();if(state==='error')paintRetry();});
+ window.refugeLoadingTimer=setTimeout(()=>{if(state==='loading')fail(new Error('Startup timeout'));},90000);
+ stage(3,'连接空间');
+ import('./app.js?v=arrival-54').catch(fail);
+})();
+  </script>
 </body>
 </html>
 

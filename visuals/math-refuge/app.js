@@ -91,7 +91,7 @@ for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventLi
 },{capture:true,passive:false});
 function enterScene(){
   if(entered||$('world').dataset.ready!=='true')return;
-  entered=true;lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
+  entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
   replayOpening();
@@ -157,8 +157,7 @@ function shotPose(){
   }
 }
 function fail(error){
-  clearTimeout(window.refugeLoadingTimer);failed=true;renderActivity.setEnabled(false);console.error(error);$('loading').hidden=true;$('error').hidden=false;
-  $('errorText').textContent=error.message?.includes('context')?'浏览器的图形资源已被回收。可以用低负载模式重新进入。':error.message||'场景暂时无法加载，请检查网络，或用低负载模式重试。';
+  failed=true;renderActivity.setEnabled(false);window.refugeBoot?.fail(error);
 }
 function updateLabels(){
   residenceNotes.update(SHOTS[shot].name);
@@ -455,6 +454,7 @@ function tick(stamp){
 
 }
 try{
+  window.refugeBoot?.stage(10,'准备画面');
   renderer=new THREE.WebGLRenderer({canvas:$('world'),alpha:true,antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
   $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();weatherTimer?.dispose();fail(new Error('WebGL context lost'));});
   renderer.debug.onShaderError=()=>fail(new Error('当前设备无法编译场景效果，请尝试低负载模式。'));
@@ -475,18 +475,19 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
-  retreat=await withDeadline(createRetreat(renderer,scene,text=>{$('loadMessage').textContent=text;},device),45000,'空间材质加载');
-  $('loadMessage').textContent='正在安装六块升降黑板与报告板书…';
+  retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device),45000,'空间材质加载');
+  window.refugeBoot?.stage(66,'准备书院');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,startStored:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
-    $('loadMessage').textContent='正在准备讨论班 '+(level+1)+' 层…';
+    window.refugeBoot?.stage(74+level*4,'准备书院');
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
     const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
+  window.refugeBoot?.stage(88,'整理空间');
   finishCampusLayout(scene,retreat,rooms);
   rooms.forEach((room,i)=>{
     room.root.updateWorldMatrix(true,true);
@@ -502,14 +503,14 @@ try{
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
   retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
-  $('loadMessage').textContent='正在呈现可见区域…';
+  window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  $('loadMessage').textContent='海上书院已准备就绪';$('enterButton').disabled=false;
+  window.refugeBoot?.ready();$('enterButton').disabled=false;
   if($('loading').dataset.entryRequested==='true')enterScene();else if(renderActivity.foreground)$('enterButton').focus({preventScroll:true});
   // Fetch only manifests and covers in the background, without delaying entry.
 
