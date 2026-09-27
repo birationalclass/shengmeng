@@ -128,7 +128,13 @@ function beginCornerLift(button){
   // its existing ruling and bottom cover edge.
   const base=document.createElement('div');base.className='corner-paper-base';
   Object.assign(base.style,{position:'absolute',left:x+'px',top:y+'px',width:w+'px',height:(h+4*scale)+'px',overflow:'hidden'});
-  const beneath=paper.cloneNode(true);Object.assign(beneath.style,{left:(r.left-x)+'px',top:(r.top-y)+'px',clipPath:'none',boxShadow:'0 2px 0 #d8dfcc,0 3px 0 #778b70'});base.append(beneath);stage.append(base);
+  const beneath=paper.cloneNode(true);Object.assign(beneath.style,{left:(r.left-x)+'px',top:(r.top-y)+'px',clipPath:'none',boxShadow:'0 2px 0 #d8dfcc,0 3px 0 #778b70'});
+  const belowNumber=Number(page.dataset.pageNumber)+(left?-bookStep():bookStep());
+  const below=$('[data-page-number="'+belowNumber+'"]');
+  const greenBelow=below?.classList.contains('notebook-inner-cover');
+  base.dataset.material=greenBelow?'green-cover':'paper';
+  if(greenBelow){beneath.replaceChildren();beneath.classList.add('notebook-inner-cover');beneath.style.setProperty('--paper-pattern','none');Object.assign(beneath.style,{height:(sheet.height+3)+'px',backgroundColor:'#a7bd9d',backgroundImage:'url("assets/cover-pulp.png")',backgroundSize:'720px 1020px',boxShadow:'none'});}
+  base.append(beneath);stage.append(base);
   paper.style.boxShadow='none';
  }
  const tiles=[],nx=12,ny=12,dx=w/nx,dy=h/ny;
