@@ -14,7 +14,7 @@
 #socialSwitch,#socialGuest{display:block;margin:17px auto 0;border:0;font-size:11px;color:#a3b4ac;padding:4px}#socialGuest{font-size:10px;color:#799089;margin-top:18px}
 #socialAuthStatus{font-size:11px;line-height:1.7;color:#d4bd98;min-height:18px;margin:14px 0 0}#socialAccountName{font-size:22px}.social-account-note{font-size:11px;color:#96aaa2}#socialLogout{margin-top:20px;border-radius:0;font-size:12px}
 #socialChatToggle{display:none;position:fixed;z-index:5;left:40px;top:auto;width:34px;height:34px;min-height:34px;padding:7px;color:#b3c8bf}#socialChatToggle svg{width:20px;height:20px}.in-scene #socialChatToggle{display:inline-flex}#socialChatToggle[hidden]{display:none}#socialChatToggle::after{left:0;right:auto}
-#socialChat{display:none;position:fixed;left:40px;bottom:158px;width:min(400px,calc(100vw - 50px));z-index:5;color:#d9e2d8;font-size:12px;opacity:0;transition:opacity 1.1s ease;pointer-events:none;text-shadow:0 1px 5px #000}
+#socialChat{display:none;position:fixed;left:40px;bottom:158px;width:min(640px,calc(100vw - 32px));z-index:5;color:#d9e2d8;font-size:12px;opacity:0;transition:opacity 1.1s ease;pointer-events:none;text-shadow:0 1px 5px #000}
 .in-scene #socialChat.expanded,.in-scene #socialChat.recent{display:block}#socialChat.recent,#socialChat.expanded{opacity:1}.social-chat-heading{display:none;justify-content:space-between;align-items:center;font-size:10px;color:#a0b5ad;padding:0 3px 9px;letter-spacing:.12em}.social-chat-heading i{font-style:normal;color:#597b74;margin:0 8px}.social-chat-heading button{font-size:18px;padding:0 5px;border:0}
 #socialChat.expanded{background:linear-gradient(120deg,#0b1a2138,#10222818);border:1px solid #b9ccc226;padding:13px 14px 10px;pointer-events:auto;backdrop-filter:blur(3px);text-shadow:0 1px 4px #000b;transition:opacity .25s}#socialChat.expanded .social-chat-heading{display:flex}
 #socialMessages{max-height:95px;overflow:hidden;mask-image:linear-gradient(transparent,#000 15%);padding:2px 0}#socialChat.expanded #socialMessages{max-height:220px;min-height:60px;overflow-y:auto;mask-image:none;scrollbar-width:thin;scrollbar-color:#6e8e8366 transparent}
@@ -43,7 +43,7 @@
 #socialResize{display:none;position:absolute;right:0;bottom:0;width:24px;height:24px;padding:5px;border:0;color:#adc5ba;cursor:nwse-resize;touch-action:none;background:none;opacity:.6}#socialResize:hover,#socialResize:focus-visible{opacity:1}#socialResize svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1;pointer-events:none}#socialChat.expanded #socialResize{display:block}.in-scene #socialChat.expanded{display:flex;flex-direction:column;height:var(--chat-height,auto)}#socialChat.expanded[data-resized] #socialMessages{flex:1;min-height:0;max-height:none}#socialChat.expanded .social-chat-heading,#socialChat.expanded #socialComposer{flex-shrink:0}#socialChat.expanded #socialComposer{padding-right:13px}
 
 /* Conversation cards remain translucent over the sea; formulas retain their own typography. */
-#socialChat.expanded{box-sizing:border-box;max-width:50vw;max-height:min(480px,calc(100dvh - 16px));border-radius:12px;background:linear-gradient(135deg,#101e27a8,#142a304f);backdrop-filter:blur(12px)}
+#socialChat.expanded{box-sizing:border-box;max-width:min(760px,calc(100vw - 32px));max-height:min(480px,calc(100dvh - 16px));border-radius:12px;background:linear-gradient(135deg,#101e27a8,#142a304f);backdrop-filter:blur(12px)}
 .social-chat-heading{gap:8px;flex-shrink:0;min-height:25px}.social-chat-heading #socialAI{margin-right:auto;font:12px/1.8 sans-serif;letter-spacing:.06em;color:#d4e8e2}.social-chat-heading button:focus-visible{outline:1px solid #b9d8cb}
 #socialMessages{min-height:0}#socialChat.expanded #socialMessages{flex:1;min-height:24px;max-height:280px;padding:4px 2px 10px}
 #socialMessages p{width:fit-content;max-width:92%;box-sizing:border-box;padding:8px 10px;border-radius:9px;background:#12222a63;text-align:left;margin:9px 0}
@@ -54,3 +54,10 @@
 #socialInput{resize:none;min-height:38px;max-height:90px;padding:2px 0;font-family:inherit}#socialComposer{flex-shrink:0}#socialChatPanel[hidden],#socialAISettings[hidden]{display:none!important}
 #socialChatPanel{flex-shrink:1;overflow:auto;min-height:0;padding:10px;margin:4px 0 8px;background:#07161cc9;border:1px solid #9dbbae30;border-radius:6px;font-size:11px}#socialChatPanel label{display:flex;align-items:center;gap:10px;margin:7px 0}#socialChatPanel input,#socialChatPanel select{box-sizing:border-box;min-width:0;flex:1;width:100%;background:#132830;color:#d2e1d9;border:1px solid #93b3a944;border-radius:4px;padding:6px;font:11px sans-serif}#socialChatPanel small{display:block;font-size:10px;line-height:1.6;color:#93aca6}#socialProviderStatus{font-size:10px;color:#cbbd9e}#socialAISettings button{font-size:11px;margin-top:5px}#socialChat:not(.expanded) #socialChatPanel{display:none}#socialChat:not(.expanded) #socialMessages p{background:transparent;text-shadow:0 1px 5px #000}
 @media(prefers-reduced-motion:reduce){.ai-working .message-body::after{animation:none}}
+
+/* Center the default conversation above the scene caption; dragged windows remain free. */
+#socialChat[data-default-position],#socialChatToggle[data-default-position]{left:50%;top:auto;bottom:var(--chat-bottom,260px);transform:translateX(-50%)}
+.in-scene #socialChat.expanded{height:var(--chat-height,clamp(200px,32dvh,320px))}
+#socialChat.expanded[data-default-position]{max-height:max(140px,calc(100dvh - var(--chat-bottom,260px) - 16px))}
+#socialChatToggle[data-default-position]:active{transform:translateX(-50%)}
+@media(max-width:600px){#socialChat[data-default-position]{width:calc(100vw - 32px)}}
