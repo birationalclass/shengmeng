@@ -20,3 +20,4 @@ export function openingCoast(){
  return points;
 }
 export const coastPath=()=>openingCoast().map((p,i)=>(i?'L':'M')+p.screen.map(v=>v.toFixed(3)).join(',')).join(' ');
+

@@ -43,7 +43,7 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
  b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.ready();
  assert(b.context.document.body.classList.contains('awaiting-scene'),'assets/session readiness cannot expose a blank canvas');
  assert.equal(b.context.refugeBoot.previewReady,false);
- b.context.refugeBoot.preview();assert(!b.context.document.body.classList.contains('awaiting-scene'));assert.equal(reveals,0);
+ b.context.refugeBoot.preview();assert(b.context.document.body.classList.contains('awaiting-scene'),'cloud readiness must retain the same first frame');assert.equal(reveals,0);
  b.tick(1);assert.equal(reveals,0,'login waits until the real-frame fade completes');
  b.tick(.5);assert.equal(reveals,1);assert.equal(b.context.refugeBoot.previewReady,true);
  b.context.refugeBoot.preview();b.tick(2);assert.equal(reveals,1,'later frames must not restart the fade');
@@ -93,4 +93,13 @@ for(const viewport of [{width:960,height:540},{width:1920,height:1080},{width:39
  assert(Math.abs(half/full-.5)<.01,'half progress ends at the middle of the visible coast');
  assert(full>0&&half>tenth&&full>half);
  assert(/<g clip-path="url\(#coastLoaded\)"><path[^>]*id="loadFill"/.test(html),'gold shares the clipping boundary');
+}
+
+{
+ const b=boot();b.context.refugeBoot.ready();b.context.refugeBoot.preview();b.tick(2);
+ assert(b.context.document.body.classList.contains('awaiting-scene'),'completed loading retains aligned poster');
+ let exited=false;const promise=b.context.refugeBoot.exitCoast().then(()=>exited=true);
+ assert.equal(b.get('coastExitClip').style.x,'1280px');assert.equal(b.get('coastExitClip').style.width,'0px');
+ b.tick(1);assert.equal(exited,false);assert(b.context.document.body.classList.contains('awaiting-scene'));
+ b.tick(1);await promise;assert.equal(exited,true);assert(!b.context.document.body.classList.contains('awaiting-scene'));
 }

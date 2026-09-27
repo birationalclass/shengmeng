@@ -92,8 +92,10 @@ const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.no
 for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventListener(type,event=>{
  if(cameraLocked()&&event.target.closest?.('#world,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
 },{capture:true,passive:false});
-function enterScene(){
-  if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
+let entryTransition=false;
+async function enterScene(){
+  if(entered||entryTransition||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
+  entryTransition=true;await window.refugeBoot?.exitCoast?.();
   entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
   replayOpening().catch(fail);

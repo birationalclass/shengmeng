@@ -110,7 +110,7 @@ body.awaiting-scene #loading{pointer-events:auto}
 /* The SVG and poster share the exact opening-camera projection and cover crop. */
 #loading .coast-progress{position:absolute;inset:0;pointer-events:none;transition:opacity .8s ease}
 #loading .coast-progress svg{display:block;width:100%;height:100%;overflow:visible}
-.coast-outline{fill:none;stroke:#82948e;stroke-opacity:.12;stroke-width:.65;vector-effect:non-scaling-stroke}
+.coast-outline{fill:none;stroke:url(#coastMetal);stroke-opacity:.08;stroke-width:.65;vector-effect:non-scaling-stroke}
 #loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;transform:none;background:none;box-shadow:none;filter:none;transition:none}
 /* Completed coastline stays until the user enters and #loading is hidden. */
 #loading .arrival-readout{justify-content:center;gap:14px}
@@ -123,3 +123,6 @@ body.awaiting-scene #loading{pointer-events:auto}
 #coastClip{transition:width 1s cubic-bezier(.22,.61,.36,1)}
 #loading #loadFill{stroke-linejoin:round;stroke-width:1.35;filter:none}
 @media(prefers-reduced-motion:reduce){#coastClip{transition:none}}
+
+#coastExitClip{transition:x 2s linear,width 2s linear}
+body.revealing-scene #arrivalVeil{transition-duration:.6s}
