@@ -27,8 +27,8 @@ window.addEventListener('resize',()=>requestAnimationFrame(fitMath));
 document.fonts?.ready.then(()=>requestAnimationFrame(fitMath));
 const reference=e=>window.GroupTextbookReferences[id][e.id];
 const entries=book.entries.concat({id:'check',title:['自测与书面练习','Self-check and written exercise'],tex:'',text:['本节原创练习。先独立作答，再查看理由；最后完成一道书面证明。答案与进度保存在当前浏览器中。','Original exercises for this section. Answer independently, then review the reasoning and finish a written proof. Progress is stored in this browser.']});
-window.LessonNotebookContent={[id]:entries.map(e=>({topic:e.id,ref:e.id==='check'?['本节自测','Section self-check']:reference(e).label,title:e.title,formula:formula(e.tex),text:e.text.map(window.GroupLessonMath.inline),detail:book.optional?['拓展阅读 · 不增加既定课表中的必讲课时。','Optional reading · outside the required scheduled teaching.']:undefined}))};
-let current=0,quizIndex=0;
+window.LessonNotebookContent={[id]:entries.map(e=>({topic:e.id,extension:!!e.extension,statementOnly:!!e.statementOnly,ref:e.id==='check'?['本节自测','Section self-check']:reference(e).label,title:e.title,formula:formula(e.tex),text:e.text.map(window.GroupLessonMath.inline),detail:book.optional?['拓展阅读 · 不增加既定课表中的必讲课时。','Optional reading · outside the required scheduled teaching.']:undefined}))};
+let current=0,quizIndex=0,disposeExtension=()=>{};
 const key=`algebra-groups-v1-${id}`;let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch{}
 const save=()=>{try{localStorage.setItem(key,JSON.stringify(saved));}catch{}};
 function proofPanel(root,steps){
@@ -46,12 +46,26 @@ root.querySelector('#quiz-retry').onclick=()=>{delete saved[quizIndex];delete sa
 if(q.written){const input=root.querySelector('#written-answer');input.value=saved['text'+quizIndex]||'';input.oninput=()=>{saved['text'+quizIndex]=input.value;save();};root.querySelector('#written-reveal').onclick=()=>{saved['reveal'+quizIndex]=true;save();quiz(root);};}
 window.LessonScreen?.refresh();
 }
+function extensionPanel(root,extension){
+ const overviews=[['把已有群的运算沿双射搬到 X 上。','Transport an existing group operation to X along a bijection.'],['有限非空集：使用同样大小的循环群。','Finite nonempty sets: use a cyclic group of the same size.'],['无限集：先让有限子集在对称差下成为交换群。','Infinite sets: first make the finite subsets an abelian group under symmetric difference.'],['使用等势结论，把这个群搬回原集合。','Use the cardinality equality to transport this group back to the original set.']];
+ const blocks=items=>items.map(item=>`<p>${html(item.text)}</p>${item.tex?`<div class="construction-math">${window.katex.renderToString(item.tex,{displayMode:true,throwOnError:true,strict:'ignore',output:'htmlAndMathml'})}</div>`:''}`).join('');
+ const disclosure=(item,kind)=>`<details class="construction-disclosure" data-${kind}="${item.id}"><summary><span class="construction-sign" aria-hidden="true"></span><span>${html(item.title)}</span></summary><div class="construction-disclosure-body">${blocks(item.blocks)}</div></details>`;
+ root.innerHTML=`<div class="group-construction">${extension.steps.map((step,i)=>`<article class="construction-step" id="construction-${step.id}"><h3>${html(step.title)}</h3><p class="construction-overview">${t(overviews[i])}</p>${disclosure({id:step.id+'-construction',title:['构造公式与说明','Construction and explanation'],blocks:step.blocks},'check')}<div class="construction-checks">${step.checks.map(check=>disclosure(check,'check')).join('')}</div></article>`).join('')}<section class="construction-toolbox" aria-labelledby="construction-toolbox-title"><h3 id="construction-toolbox-title">${t(['集合论工具箱 · 按需展开','Set-theory toolbox · Expand as needed'])}</h3><p>${t(['在选择公理下，无限 X 与其有限子集集合等势。定义与证明按需展开；空集没有单位元，不能成为群。','Assuming choice, infinite X is equipotent to its finite subsets. Expand definitions and proofs as needed. The empty set has no identity and admits no group structure.'])}</p>${extension.facts.map(fact=>disclosure(fact,'fact')).join('')}</section></div>`;
+ const association=root.querySelector('[data-check="subsets-associativity"]');
+ const visual=document.createElement('div');association.querySelector('.construction-disclosure-body').prepend(visual);
+ let mounted=false;
+ association.addEventListener('toggle',()=>{if(association.open&&!mounted){mounted=true;disposeExtension=window.SymmetricDifference.mount(visual);}});
+ // Native details is keyboard accessible and starts closed. Refresh sizing only
+ // after an explicit disclosure; never force a proof open during screen layout.
+ root.addEventListener('toggle',()=>requestAnimationFrame(()=>{fitMath();window.LessonScreen?.refresh();}),true);
+}
 function show(i){
-if(i<0||i>=entries.length)return;current=i;const e=entries[i],scene=$('scene');
+if(i<0||i>=entries.length)return;disposeExtension();disposeExtension=()=>{};current=i;const e=entries[i],scene=$('scene');
 $('section-title').textContent=t(e.title);$('experiment-label').textContent=`${e.id==='check'?t(['本节自测','Section self-check']):t(reference(e).label)} · ${t(e.title)}`;$('intro-title').textContent=t(book.title);document.title=`§${id} ${t(book.title)} · ${t(['抽象代数 I','Abstract Algebra I'])}`;
 scene.dataset.lessonScene=e.id;const u=new URL(location.href);u.hash=e.id;history.replaceState(null,'',u);
 if(e.id==='check')quiz(scene);else{
 scene.innerHTML=`<div class="notebook-visual">${e.visual?'<div class="group-demo"></div>':`<div class="group-focus">${formula(e.tex)}<p>${t(e.title)}</p></div>`}</div><section class="notebook-exposition">${e.proof?'<div class="group-proof"></div>':''}${e.example?`<article class="group-example"><h3>${t(['例子与应用','Example and application'])}</h3><p>${html(e.example)}</p></article>`:''}${e.extraProof?`<details class="group-detail"><summary>${t(['补充论证','Supporting argument'])}</summary>${e.extraProof.map(s=>`<p>${html(s)}</p>`).join('')}</details>`:''}${e.warning?`<aside class="group-warning"><h3>${t(['注意条件','Check the hypotheses'])}</h3><p>${html(e.warning)}</p></aside>`:''}<p class="group-recap">${t(['课堂任务：用自己的话解释左侧结论；指出一个关键条件，并举例说明。','Class task: explain the statement in your own words, identify a key hypothesis, and give an example.'])}</p></section>`;
+if(e.extension){scene.querySelector('.notebook-visual').replaceChildren();scene.querySelector('.notebook-visual').style.display='none';extensionPanel(scene.querySelector('.notebook-exposition'),e.extension);}
 if(e.visual)(e.visual.kind.startsWith('ring-')?window.RingVisuals:window.GroupVisuals).render(scene.querySelector('.group-demo'),e.visual);
 if(e.proof)proofPanel(scene.querySelector('.group-proof'),e.proof);
 }

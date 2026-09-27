@@ -68,6 +68,7 @@ window.GroupSections={
         "凯莱定理",
         "Cayley’s theorem"
       ],
+      ["set-group-construction", "任意非空集合上的群结构", "Group structures on nonempty sets"],
       [
         "automorphism",
         "自同构与内自同构",

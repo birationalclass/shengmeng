@@ -17,12 +17,15 @@
   const directory=document.createElement('dialog');directory.className='portal-directory';directory.setAttribute('aria-labelledby','portal-directory-title');directory.innerHTML='<div class="portal-directory-header"><h2 id="portal-directory-title"></h2><button class="portal-close" type="button" aria-label="关闭目录">×</button></div><div class="portal-directory-layout"><section class="directory-map-section"><label class="portal-directory-select"><select id="portal-directory-chapter" aria-label="选择教材章节"></select></label><div class="directory-map" role="group"><svg class="directory-routes directory-routes-wide" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true"></svg><svg class="directory-routes directory-routes-narrow" preserveAspectRatio="none" aria-hidden="true"></svg><div class="directory-nodes"></div></div><p class="directory-map-caption"></p></section><aside class="directory-detail" aria-live="polite"></aside></div>';body.append(directory);
   let view='course',section='1.1',anchor='relation',loadedSection='',courseScroll=0,directoryChapter=1,directorySelected='1.1';
   const phone=matchMedia('(max-width:767px), (pointer:coarse) and (max-width:1024px)');
-  let frame=null;
+  let frame=null,loadTicket=0;
+  const loading=window.CourseLoad;
+  loading.retry=()=>location.reload();
+  async function reveal(target){const ticket=++loadTicket;try{await loading.stylesReady();if(ticket!==loadTicket||target!==frame)return;if(target)target.style.visibility='';loading.finish();}catch{if(ticket===loadTicket)loading.fail();}}
   const courseScroller=$('course-scroll-region');
   function releaseLesson(){
     // Removing the browsing context cancels its requests and disposes timers,
     // event listeners, canvas contexts and section data. Do not cache windows.
-    if(frame){frame.remove();frame=null;}
+    loadTicket++;if(frame){frame.remove();frame=null;}
     loadedSection='';
   }
   document.querySelector('.course-title-panel').addEventListener('wheel',event=>{if(view!=='course'||event.ctrlKey||document.querySelector('dialog[open]'))return;const unit=event.deltaMode===1?20:event.deltaMode===2?courseScroller.clientHeight:1;courseScroller.scrollBy({top:event.deltaY*unit,behavior:'instant'});event.preventDefault();},{passive:false});
@@ -66,10 +69,10 @@
     if(view!=='lesson'||!chapter.ready||loadedSection!==section)releaseLesson();$('lecture-placeholder').hidden=view!=='lesson'||chapter.ready;content.hidden=view!=='lesson';body.classList.toggle('portal-lesson',view==='lesson');
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
-      if(!chapter.ready){placeholder();}
-      else if(!frame){loadedSection=section;frame=document.createElement('iframe');frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260920-group-sudoku-journey&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      if(!chapter.ready){placeholder();reveal(null);}
+      else if(!frame){loading.show();loadedSection=section;frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260927-loading-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
-    }else requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});labels();
+    }else {reveal(null);requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});}labels();
   }
   function fromURL(){const url=new URL(location.href);navigate({view:url.searchParams.get('view'),section:url.searchParams.get('section'),anchor:url.hash==='#order'?'powers':url.hash.slice(1),courseHash:url.searchParams.get('view')==='lesson'?'':url.hash.slice(1)},true);}
   $('portal-directory-open').onclick=()=>{directoryChapter=Number(section.split('.')[0]);directorySelected=section;labels();directory.showModal();};
@@ -82,7 +85,7 @@
   $('portal-fullscreen').onclick=async()=>{if(phone.matches)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen?.();}catch{}labels();};
   document.addEventListener('fullscreenchange',labels);phone.addEventListener('change',()=>{if(phone.matches&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});labels();});
   window.addEventListener('popstate',fromURL);
-  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;const data=event.data;if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
+  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;const data=event.data;if(data?.section===section){if(data.type==='lesson-progress')loading.update(data.percent,data.zh,data.en);if(data.type==='lesson-ready')reveal(frame);if(data.type==='lesson-error')loading.fail();}if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
   window.addEventListener('course-language',()=>{labels();frame?.contentWindow?.postMessage({type:'course-language',language:en()?'en':'zh'},location.origin);});
   function upcomingLabel(){
     document.querySelectorAll('#schedule tr.upcoming .focus').forEach(cell=>{

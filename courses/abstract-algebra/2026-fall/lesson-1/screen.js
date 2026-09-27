@@ -69,7 +69,7 @@
         </button>
         ${i!==selected&&e.formula?`<div class="notebook-preview" aria-hidden="true">${formula(e).split('<br>')[0]}</div>`:''}
         <div class="notebook-entry-body" id="notebook-entry-${i}" ${i===selected?'':'hidden'}>
-          ${e.extension?`<div class="notebook-extension-label">${en()?'Extension · beyond the textbook':'扩展 · 非教材条目'}</div>`:''}
+          ${e.extension&&!e.statementOnly?`<div class="notebook-extension-label">${en()?'Extension · beyond the textbook':'扩展 · 非教材条目'}</div>`:''}
           ${e.formula?`<div class="notebook-formula">${formula(e)}</div>`:''}<p>${text(e.text)}</p>${e.detail?`<p>${text(e.detail)}</p>`:''}${e.groupSudoku?`<p class="group-sudoku-entry"><a href="../../../../visuals/group-sudoku/" target="_blank" rel="noopener">${en()?'Group Sudoku · 3D adventure ↗':'群数独 · 三维闯关 ↗'}</a></p>`:''}
         </div>
       </article>`).join('')}</div>`;
