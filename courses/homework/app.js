@@ -17,13 +17,15 @@ const key='yuejian-paper-preferences-v3';
 let storageOK=true;
 function read(){try{return JSON.parse(localStorage.getItem(key))||{}}catch{storageOK=false;return {}}}
 const stored=read();
-function sanitize(v={}){const p=Object.hasOwn(presets,v.preset)?v.preset:'studio',base=presets[p],documentStyle='notebook';return {documentStyle,panelFont:Object.hasOwn(panelFonts,v.panelFont)?v.panelFont:'sans',background:Object.hasOwn(paperBackgrounds,v.background)?v.background:(documentStyle==='notebook'?'ruled':'plain'),reading:v.documentStyle!=='exam'&&Object.hasOwn(readingModes,v.reading)?v.reading:'double',preset:p,ink:Object.hasOwn(pens,v.ink)?v.ink:base.ink,marks:typeof v.marks==='boolean'?v.marks:true,subject:Object.hasOwn(subjects,v.subject)?v.subject:'university'}}
+function sanitize(v={}){const p=Object.hasOwn(presets,v.preset)?v.preset:'studio',base=presets[p],documentStyle='notebook';return {documentStyle,animations:typeof v.animations==='boolean'?v.animations:true,motionSpeed:v.motionSpeed==='fast'?'fast':'slow',panelFont:Object.hasOwn(panelFonts,v.panelFont)?v.panelFont:'sans',background:Object.hasOwn(paperBackgrounds,v.background)?v.background:(documentStyle==='notebook'?'ruled':'plain'),reading:v.documentStyle!=='exam'&&Object.hasOwn(readingModes,v.reading)?v.reading:'double',preset:p,ink:Object.hasOwn(pens,v.ink)?v.ink:base.ink,marks:typeof v.marks==='boolean'?v.marks:true,subject:Object.hasOwn(subjects,v.subject)?v.subject:'university'}}
 let settings=sanitize(stored.notebookDefaults?stored.settings:{...stored.settings,documentStyle:'notebook',reading:'double'}),candidates=Array.isArray(stored.candidates)?stored.candidates.slice(0,4).map(c=>({id:String(c.id),settings:sanitize(c.settings)})):[];
 let note=typeof stored.note==='string'?stored.note:'',confirmed=stored.confirmed||null;
 // Start with neighbours on both sides so both directions can be explored.
 let student=1,active=0,prefsOpen=false;
 let settingsObserver;
 let bookPage=0,turnAnimation=null,turnStage=null;
+const motionEnabled=()=>settings.animations&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motionRate=()=>settings.motionSpeed==='fast'?2:1;
 let notebookInteractionLocked=false;
 function runNotebookMotion(action){
  if(notebookInteractionLocked)return false;
@@ -35,12 +37,13 @@ function runNotebookMotion(action){
   document.body.classList.remove('notebook-interaction-locked');
   $('#paper-viewport').removeAttribute('aria-busy');
  };
+ if(!motionEnabled()){try{action()}finally{unlock()}return true}
  const waitForFinish=()=>{if(turnStage)requestAnimationFrame(waitForFinish);else unlock()};
  // Complete the highlight fade before creating any moving surface. One lock
  // spans closing, parking, flipping and straightening, including callbacks.
  setTimeout(()=>{
   try{action();requestAnimationFrame(waitForFinish)}catch(error){unlock();throw error}
- },matchMedia('(prefers-reduced-motion: reduce)').matches?0:450);
+ },450/motionRate());
  return true;
 }
 for(const type of ['click','pointerdown','keydown'])document.addEventListener(type,event=>{
@@ -55,7 +58,7 @@ const record=i=>{const id=[settings.subject,student,i].join('-');return records[
 const questions=()=>[getDemoQuestion(settings.subject,student,0),getDemoQuestion(settings.subject,student,1)];
 function persist(){try{localStorage.setItem(key,JSON.stringify({settings,candidates,note,confirmed,notebookDefaults:1}));storageOK=true}catch{storageOK=false}return storageOK}
 function announce(text,i=active){const s=$('#status');if(s)s.textContent=text;const near=$('[data-confirm-state="'+i+'"]');if(near)near.textContent=text}
-function prefMarkup(){return `<section class="paper-preferences" id="preferences" ${prefsOpen?'':'hidden'} aria-label="设置"><div class="preference-heading"><strong>设置</strong><button data-action="close-preferences" aria-label="关闭设置">收起 ↑</button></div><fieldset class="document-style-settings"><legend>文稿样式</legend><div class="document-style-options">${Object.entries(documentStyles).map(([id,name])=>`<label class="document-style-option"><input type="radio" name="document-style" value="${id}" ${id==='exam'?'disabled aria-label="试卷（暂未开放）"':''} ${settings.documentStyle===id?'checked':''}><span class="style-preview style-preview-${id}" aria-hidden="true"><i></i><i></i></span><span>${name}${id==='exam'?'<small>暂未开放</small>':''}</span></label>`).join('')}</div></fieldset><fieldset class="reading-settings"><legend>阅览方式</legend><div class="reading-options">${Object.entries(readingModes).map(([id,name])=>`<label class="reading-option"><input type="radio" name="reading" value="${id}" ${settings.reading===id?'checked':''}><span>${icons[id]}${name}</span></label>`).join('')}</div><p class="reading-hint">${settings.reading==='double'?'双页并排，按原稿顺序连续阅读。':'单页居中，向下连续阅读。'}</p><p class="narrow-reading-hint" ${settings.reading==='double'?'':'hidden'}>纸张比例固定，窗口只改变整体显示倍率。</p></fieldset><fieldset class="paper-background-settings"><legend>作业背景</legend><div class="background-options">${Object.entries(paperBackgrounds).map(([id,name])=>`<label class="background-option"><input type="radio" name="background" value="${id}" ${settings.background===id?'checked':''}><span class="paper-sample" data-paper="${id}" aria-hidden="true"></span><span>${name}</span></label>`).join('')}</div></fieldset><label class="pref-field panel-font-field">设置字体<select id="panel-font">${Object.entries(panelFonts).map(([id,name])=>`<option value="${id}" ${settings.panelFont===id?'selected':''}>${name}</option>`).join('')}</select></label><div class="preset-options" role="group" aria-label="外观方案">${Object.entries(presets).map(([id,p])=>`<button data-preset="${id}" aria-pressed="${id===settings.preset}">${p.name}</button>`).join('')}</div><div class="preference-controls"><div class="pref-field"><span>批注用墨</span><div class="pen-colors" role="group" aria-label="批注颜色">${Object.entries(pens).map(([color,name])=>`<button style="color:${color}" data-ink="${color}" aria-label="${name}" aria-pressed="${settings.ink===color}" title="${name}">✓</button>`).join('')}</div></div><label class="pref-field">示例学科<select id="subject">${Object.entries(subjects).map(([id,name])=>`<option value="${id}" ${id===settings.subject?'selected':''}>${name}</option>`).join('')}</select></label><button data-action="toggle-marks" id="marks-setting">${settings.marks?'隐藏批注':'显示批注'}</button></div><div class="preference-actions"><button data-action="confirm-choice">选定此版</button><button data-action="save-candidate" id="save-candidate">保留一个候选</button><button data-action="reset-style">恢复默认</button></div><div id="candidate-list" class="candidate-list"></div><p class="preference-help">仅保存在当前浏览器。选定后可复制偏好给我。</p><section id="choice-section" class="choice-section" hidden><label for="preference-note">还想怎样调整？</label><textarea id="preference-note" placeholder="例如：批注更贴近答案，或分数再小一些。">${esc(note)}</textarea><div class="preference-actions"><button data-action="copy-choice">复制偏好</button><button data-action="download-choice">下载偏好</button></div><textarea readonly id="preference-summary" class="preference-summary" aria-label="可复制的设计偏好"></textarea><p class="preference-help">复制后粘贴到对话中；这里不会自动发送。</p></section></section>`}
+function prefMarkup(){return `<section class="paper-preferences" id="preferences" ${prefsOpen?'':'hidden'} aria-label="设置"><div class="preference-heading"><strong>设置</strong><button data-action="close-preferences" aria-label="关闭设置">收起 ↑</button></div><fieldset class="document-style-settings"><legend>文稿样式</legend><div class="document-style-options">${Object.entries(documentStyles).map(([id,name])=>`<label class="document-style-option"><input type="radio" name="document-style" value="${id}" ${id==='exam'?'disabled aria-label="试卷（暂未开放）"':''} ${settings.documentStyle===id?'checked':''}><span class="style-preview style-preview-${id}" aria-hidden="true"><i></i><i></i></span><span>${name}${id==='exam'?'<small>暂未开放</small>':''}</span></label>`).join('')}</div></fieldset><fieldset class="reading-settings"><legend>阅览方式</legend><div class="reading-options">${Object.entries(readingModes).map(([id,name])=>`<label class="reading-option"><input type="radio" name="reading" value="${id}" ${settings.reading===id?'checked':''}><span>${icons[id]}${name}</span></label>`).join('')}</div><p class="reading-hint">${settings.reading==='double'?'双页并排，按原稿顺序连续阅读。':'单页居中，向下连续阅读。'}</p><p class="narrow-reading-hint" ${settings.reading==='double'?'':'hidden'}>纸张比例固定，窗口只改变整体显示倍率。</p></fieldset><fieldset class="animation-settings"><legend>动画</legend><label class="animation-toggle"><input id="animations-enabled" type="checkbox" ${settings.animations?'checked':''}>启用动画</label><span class="animation-direct">关闭后直接显示</span><div class="animation-speeds" role="group" aria-label="动画速度">${[['slow','慢 · 原速'],['fast','快 · 两倍速']].map(([value,label])=>`<label><input type="radio" name="motion-speed" value="${value}" ${settings.motionSpeed===value?'checked':''} ${settings.animations?'':'disabled'}><span>${label}</span></label>`).join('')}</div></fieldset><fieldset class="paper-background-settings"><legend>作业背景</legend><div class="background-options">${Object.entries(paperBackgrounds).map(([id,name])=>`<label class="background-option"><input type="radio" name="background" value="${id}" ${settings.background===id?'checked':''}><span class="paper-sample" data-paper="${id}" aria-hidden="true"></span><span>${name}</span></label>`).join('')}</div></fieldset><label class="pref-field panel-font-field">设置字体<select id="panel-font">${Object.entries(panelFonts).map(([id,name])=>`<option value="${id}" ${settings.panelFont===id?'selected':''}>${name}</option>`).join('')}</select></label><div class="preset-options" role="group" aria-label="外观方案">${Object.entries(presets).map(([id,p])=>`<button data-preset="${id}" aria-pressed="${id===settings.preset}">${p.name}</button>`).join('')}</div><div class="preference-controls"><div class="pref-field"><span>批注用墨</span><div class="pen-colors" role="group" aria-label="批注颜色">${Object.entries(pens).map(([color,name])=>`<button style="color:${color}" data-ink="${color}" aria-label="${name}" aria-pressed="${settings.ink===color}" title="${name}">✓</button>`).join('')}</div></div><label class="pref-field">示例学科<select id="subject">${Object.entries(subjects).map(([id,name])=>`<option value="${id}" ${id===settings.subject?'selected':''}>${name}</option>`).join('')}</select></label><button data-action="toggle-marks" id="marks-setting">${settings.marks?'隐藏批注':'显示批注'}</button></div><div class="preference-actions"><button data-action="confirm-choice">选定此版</button><button data-action="save-candidate" id="save-candidate">保留一个候选</button><button data-action="reset-style">恢复默认</button></div><div id="candidate-list" class="candidate-list"></div><p class="preference-help">仅保存在当前浏览器。选定后可复制偏好给我。</p><section id="choice-section" class="choice-section" hidden><label for="preference-note">还想怎样调整？</label><textarea id="preference-note" placeholder="例如：批注更贴近答案，或分数再小一些。">${esc(note)}</textarea><div class="preference-actions"><button data-action="copy-choice">复制偏好</button><button data-action="download-choice">下载偏好</button></div><textarea readonly id="preference-summary" class="preference-summary" aria-label="可复制的设计偏好"></textarea><p class="preference-help">复制后粘贴到对话中；这里不会自动发送。</p></section></section>`}
 function render(){const s=students[student];const qs=questions();
  const account=$('.auth-entry');if(account)$('#homework-auth').append(account);
  const tools=`<div class="paper-tools"><div class="paper-identity"><a class="wordmark" href="../" aria-label="返回课程主页">阅见</a><span>原稿演示</span><span class="paper-progress" data-progress></span></div></div>`;
@@ -72,7 +75,7 @@ function render(){const s=students[student];const qs=questions();
  $('#manuscript').innerHTML=renderNotebook({questions:qs,student:{...s,correct:student===1&&settings.subject!=='general'},grades:[record(0),record(1)],tools});
  bind();apply();refreshGrade(0);refreshGrade(1);selectQuestion(active);renderCandidates();sizeNotes();
 }
-function apply(){cancelPageTurn();const root=$('#manuscript');document.documentElement.style.setProperty('--ink',settings.ink);document.documentElement.dataset.panelFont=settings.panelFont;root.dataset.paper=settings.background;root.dataset.documentStyle=settings.documentStyle;$$('input[name=document-style]').forEach(el=>el.checked=el.value===settings.documentStyle);$$('[data-document-kind]').forEach(el=>el.textContent=documentStyles[settings.documentStyle]);$('#panel-font').value=settings.panelFont;$$('input[name=background]').forEach(el=>el.checked=el.value===settings.background);root.style.setProperty('--ink',settings.ink);root.style.setProperty('--paper',settings.documentStyle==='notebook'?'#fffef9':(settings.preset==='paper'?'#fffef8':'#fff')); root.classList.toggle('no-marks',!settings.marks);root.dataset.reading=settings.reading;$$('input[name=reading]').forEach(el=>el.checked=el.value===settings.reading);$('.reading-hint').textContent=settings.reading==='double'?(settings.documentStyle==='notebook'?'左右对页，用纸页下方的箭头翻页。':'两张试卷并排，按原稿顺序连续阅读。'):(settings.documentStyle==='notebook'?'每次一页，用纸页下方的箭头翻页。':'单页居中，向下连续阅读。');$('.narrow-reading-hint').hidden=true;$$('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.preset===settings.preset));$$('[data-ink]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ink===settings.ink));for(const [id,label,pressed] of [['marks',settings.marks?'隐藏批注':'显示批注',settings.marks],['zoom',document.fullscreenElement?'退出全屏':'全屏',Boolean(document.fullscreenElement)]]){const b=$('#'+id);b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',pressed);b.dataset.tip=label;}if($('#marks-setting'))$('#marks-setting').textContent=settings.marks?'隐藏批注':'显示批注';syncBookView();fitPaper();sizeNotes();scheduleSettingsMask();persist()}
+function apply(){cancelPageTurn();$('#animations-enabled').checked=settings.animations;$$('input[name=motion-speed]').forEach(el=>{el.checked=el.value===settings.motionSpeed;el.disabled=!settings.animations});document.documentElement.style.setProperty('--highlight-duration',(settings.animations?450/motionRate():0)+'ms');const root=$('#manuscript');document.documentElement.style.setProperty('--ink',settings.ink);document.documentElement.dataset.panelFont=settings.panelFont;root.dataset.paper=settings.background;root.dataset.documentStyle=settings.documentStyle;$$('input[name=document-style]').forEach(el=>el.checked=el.value===settings.documentStyle);$$('[data-document-kind]').forEach(el=>el.textContent=documentStyles[settings.documentStyle]);$('#panel-font').value=settings.panelFont;$$('input[name=background]').forEach(el=>el.checked=el.value===settings.background);root.style.setProperty('--ink',settings.ink);root.style.setProperty('--paper',settings.documentStyle==='notebook'?'#fffef9':(settings.preset==='paper'?'#fffef8':'#fff')); root.classList.toggle('no-marks',!settings.marks);root.dataset.reading=settings.reading;$$('input[name=reading]').forEach(el=>el.checked=el.value===settings.reading);$('.reading-hint').textContent=settings.reading==='double'?(settings.documentStyle==='notebook'?'左右对页，用纸页下方的箭头翻页。':'两张试卷并排，按原稿顺序连续阅读。'):(settings.documentStyle==='notebook'?'每次一页，用纸页下方的箭头翻页。':'单页居中，向下连续阅读。');$('.narrow-reading-hint').hidden=true;$$('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.preset===settings.preset));$$('[data-ink]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ink===settings.ink));for(const [id,label,pressed] of [['marks',settings.marks?'隐藏批注':'显示批注',settings.marks],['zoom',document.fullscreenElement?'退出全屏':'全屏',Boolean(document.fullscreenElement)]]){const b=$('#'+id);b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',pressed);b.dataset.tip=label;}if($('#marks-setting'))$('#marks-setting').textContent=settings.marks?'隐藏批注':'显示批注';syncBookView();fitPaper();sizeNotes();scheduleSettingsMask();persist()}
 function selectQuestion(i){active=i;$$('[data-question-region]').forEach(r=>r.dataset.active=String(Number(r.dataset.questionRegion)===i))}
 function sizeNotes(){$$('.ink-comment').forEach(t=>{t.style.height='auto';t.style.height=Math.max(36,t.scrollHeight)+'px'})}
 const bookStep=()=>settings.reading==='double'?2:1;
@@ -141,7 +144,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
  const handle={cancel(){cancelAnimationFrame(frame);revealSpread()}};turnAnimation=handle;
  function draw(now){
   if(startTime===undefined)startTime=now;
-  const t=Math.min(1,(now-startTime)/(coverTurn?1300:1020)),motion=Math.min(1,t/.84);
+  const t=Math.min(1,((now-startTime)*motionRate())/(coverTurn?1300:1020)),motion=Math.min(1,t/.84);
   // Keep angular velocity continuous through the midpoint. Unfold across
   // that interval instead of dwelling edge-on with both faces invisible.
   const progress=(1-Math.cos(Math.PI*motion))/2;
@@ -179,7 +182,7 @@ function showBookPage(page,onComplete=null){
  if(before===after){bookPage=page;return false}
  if(!notebookInteractionLocked)return runNotebookMotion(()=>showBookPage(page,onComplete));
  cancelPageTurn();if(scrollY>80)window.scrollTo({top:0,behavior:'instant'});
- const forward=after>before,animate=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const forward=after>before,animate=motionEnabled();
  const oldSpread=$$('.page-spread').find(p=>!p.hidden);
  const oldLeaves=$$('.scan-page',oldSpread).filter(p=>!p.hidden&&getComputedStyle(p).display!=='none');
  const turning=forward?oldLeaves.at(-1):oldLeaves[0],rect=turning.getBoundingClientRect();
@@ -195,7 +198,7 @@ function showBookPage(page,onComplete=null){
  return true;
 }
 function turnBook(direction){const step=bookStep(),start=bookPage===0?0:Math.floor((bookPage-1)/step)*step+1;const target=start===0?(direction>0?1:-1):start===1&&direction<0?0:start+direction*step;if(target<0||target>$$('[data-page-number]').length)return;showBookPage(target)}
-function smoothTo(el){if(el&&settings.documentStyle==='notebook'){const page=el.closest('[data-page-number]');if(page&&showBookPage(Number(page.dataset.pageNumber)))return}el?.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}
+function smoothTo(el){if(el&&settings.documentStyle==='notebook'){const page=el.closest('[data-page-number]');if(page&&showBookPage(Number(page.dataset.pageNumber)))return}el?.scrollIntoView({block:'center',behavior:motionEnabled()?'smooth':'instant'})}
 
 function locate(i,end=false){selectQuestion(i);smoothTo($('[data-question-'+(end?'end':'start')+'="'+i+'"]'))}
 function refreshGrade(i){const r=record(i);$('[data-total="'+i+'"]').textContent=r.scores.reduce((a,b)=>a+b,0);$('[data-score-state="'+i+'"]').textContent=r.confirmed?'已核 ✓':'建议';const c=$('[data-confirm="'+i+'"]');c.textContent=r.confirmed?'撤回确认':'确认 ✓';$('[data-confirm-state="'+i+'"]').textContent=r.confirmed?'已复核':'';const count=[0,1].filter(j=>record(j).confirmed).length;$$('[data-progress]').forEach(el=>el.textContent=count+' / 2 已复核');$$('[data-completion]').forEach(el=>el.textContent=count===2?'本份作业已复核完毕':'本次提交结束')}
@@ -227,7 +230,7 @@ function closeNotebookToLeft(next){
  const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
  function draw(now){
   if(startTime===undefined)startTime=now;
-  const elapsed=now-startTime,t=Math.min(1,elapsed/850),p=(1-Math.cos(Math.PI*t))/2;
+  const elapsed=(now-startTime)*motionRate(),t=Math.min(1,elapsed/850),p=(1-Math.cos(Math.PI*t))/2;
   flight.style.transform=`translate3d(${pivot}px,${top}px,0) rotateY(${-180*p}deg)`;
   stage.dataset.progress=String(Math.round(p*100));
   if(t===1){
@@ -241,7 +244,7 @@ function closeNotebookToLeft(next){
    stage.dataset.phase='placing';
    if(u===1){
     stage.dataset.phase='placed';placedAt??=now;
-    if(now-placedAt>=120){settleNextNotebook(next,stage,restore);return;}
+    if(now-placedAt>=120/motionRate()){settleNextNotebook(next,stage,restore);return;}
    }
   }
   frame=requestAnimationFrame(draw);
@@ -254,7 +257,7 @@ function flipNotebook(direction){
  if(!notebookInteractionLocked){runNotebookMotion(()=>flipNotebook(direction));return}
  // Close an open book before moving that whole book in either direction.
  if(bookPage!==0){
-  if(!incoming&&!matchMedia('(prefers-reduced-motion: reduce)').matches)closeNotebookToLeft(next);
+  if(!incoming&&motionEnabled())closeNotebookToLeft(next);
   else{
    showBookPage(0,()=>flipNotebook(direction));
    if(turnStage){turnStage.classList.add('book-transfer-stage');turnStage.dataset.closeDirection='right';}
@@ -262,7 +265,7 @@ function flipNotebook(direction){
   return;
  }
  const source=incoming?$('.previous-book'):$('.notebook-cover');
- if(!source||matchMedia('(prefers-reduced-motion: reduce)').matches){changeStudent(next);return}
+ if(!source||!motionEnabled()){changeStudent(next);return}
  cancelPageTurn();togglePreferences(false);
  const root=$('#manuscript'),rootRect=root.getBoundingClientRect(),scale=rootRect.width/root.offsetWidth,w=sheet.width*scale,h=sheet.height*scale;
  const tilt=-2*Math.PI/180;
@@ -342,15 +345,15 @@ function flipNotebook(direction){
  function draw(now){
   if(startTime===undefined)startTime=now;
   if(phase==='placing'){
-   const t=Math.min(1,(now-startTime)/650);park(t*t*(3-2*t));stage.dataset.progress=String(Math.round(t*100));
+   const t=Math.min(1,((now-startTime)*motionRate())/650);park(t*t*(3-2*t));stage.dataset.progress=String(Math.round(t*100));
    if(t===1){phase='placed';stage.dataset.phase='placed';startTime=now;}
    frame=requestAnimationFrame(draw);return;
   }
   if(phase==='placed'){
-   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;mountOriginal();flight.hidden=false;}
+   if(now-startTime>=120/motionRate()){phase='flipping';stage.dataset.phase='flipping';startTime=now;mountOriginal();flight.hidden=false;}
    frame=requestAnimationFrame(draw);return;
   }
-  const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
+  const t=Math.min(1,((now-startTime)*motionRate())/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
   pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
   else if(!incoming){settleNextNotebook(next,stage,restore);}
@@ -381,7 +384,7 @@ function settleNextNotebook(next,stage,restore){
  }
  function draw(now){
   if(startTime===undefined)startTime=now;
-  const t=Math.min(1,(now-startTime)/650),p=t*t*(3-2*t);pose(p);stage.dataset.progress=String(Math.round(p*100));
+  const t=Math.min(1,((now-startTime)*motionRate())/650),p=t*t*(3-2*t);pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
   else finishNotebookTransfer(next,stage,cleanup);
  }
@@ -414,6 +417,8 @@ function bind(){
  $$('[data-ink]').forEach(b=>b.onclick=()=>{settings.ink=b.dataset.ink;apply()});
  $$('input[name=document-style]').forEach(el=>el.onchange=()=>{if(el.value!=='notebook')return;settings.documentStyle='notebook';apply()});
  $$('input[name=reading]').forEach(el=>el.onchange=()=>{settings.reading=el.value;apply()});
+ $('#animations-enabled').onchange=e=>{settings.animations=e.target.checked;apply()};
+ $$('input[name=motion-speed]').forEach(el=>el.onchange=()=>{settings.motionSpeed=el.value;apply()});
  $('#panel-font').onchange=e=>{settings.panelFont=e.target.value;apply()};
  $$('input[name=background]').forEach(el=>el.onchange=()=>{settings.background=el.value;apply()});
  $('#subject').onchange=e=>{settings.subject=e.target.value;active=0;render()};

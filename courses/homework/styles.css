@@ -209,7 +209,7 @@ html{background:#eae9e3}
 #manuscript,#manuscript[data-reading=double],#manuscript[data-document-style=notebook][data-reading=double]{left:var(--book-left);top:var(--book-top);z-index:2;pointer-events:none}
 #manuscript .scan-page{pointer-events:auto}
 #notebook-stack{position:absolute;left:var(--book-left);top:var(--book-top);transform:scale(var(--scene-scale));transform-origin:0 0;z-index:1}
-.adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;filter:brightness(1);transition:filter .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1);overflow:hidden;font-family:"Songti SC",STSong,serif}
+.adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;filter:brightness(1);transition:filter var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1),color var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1);overflow:hidden;font-family:"Songti SC",STSong,serif}
 .adjacent-book:hover:not(:disabled){filter:brightness(1.035);color:#263d2f}
 .adjacent-book:focus-visible,.notebook-cover[data-open-notebook]:focus-visible{outline:none;filter:brightness(1.035)}
 .previous-book,.previous-book-layer{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a}
@@ -257,7 +257,7 @@ html{background:#eae9e3}
 
 .book-underlay-copy .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
 .notebook-cover,.adjacent-book{-webkit-user-select:none;user-select:none}
-.notebook-cover[data-open-notebook]{cursor:pointer;filter:brightness(1);transition:filter .45s cubic-bezier(.22,1,.36,1)}
+.notebook-cover[data-open-notebook]{cursor:pointer;filter:brightness(1);transition:filter var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1)}
 @media(hover:hover){#manuscript .notebook-cover[data-open-notebook]:hover{filter:brightness(1.035)}}
 
 /* The moving front cover and its final live surface share the same paint. */
@@ -286,3 +286,13 @@ html{background:#eae9e3}
 /* Release hover before motion; restore it only after the complete handoff. */
 .notebook-interaction-locked #paper-viewport,.notebook-interaction-locked #paper-viewport *{pointer-events:none!important}
 .notebook-interaction-locked .adjacent-book,.notebook-interaction-locked .notebook-cover[data-open-notebook]{filter:brightness(1)!important}
+
+.animation-settings{border:0;padding:0;margin:24px 0;color:inherit}
+.animation-settings legend{margin-bottom:12px;font-size:14px;color:var(--ink)}
+.animation-toggle{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.animation-toggle input{accent-color:var(--ink)}
+.animation-direct{font-size:12px;opacity:.65;margin-left:12px}
+.animation-speeds{display:flex;gap:24px;margin-top:14px}
+.animation-speeds label{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
+.animation-speeds input{accent-color:var(--ink)}
+.animation-speeds input:disabled+span{opacity:.35}
