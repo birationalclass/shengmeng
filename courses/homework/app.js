@@ -76,7 +76,7 @@ function captureLeaf(leaf){
 
 // A flexible leaf is drawn as joined vertical bands. The reverse side carries
 // the destination page, while the old facing page stays beneath it until covered.
-function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null){
+function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,onComplete=null){
  const stage=document.createElement('div');stage.className='page-turn-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
  if(stationary)stage.append(stationary);
  const shadow=document.createElement('div');shadow.className='turn-contact-shadow';
@@ -126,11 +126,11 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null){
   stage.dataset.phase=motion===1?'settling':'turning';
   stage.dataset.progress=String(Math.round(progress*100));
   if(t<1)frame=requestAnimationFrame(draw);
-  else{revealSpread();stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}}
+  else{revealSpread();stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}onComplete?.()}
  }
  frame=requestAnimationFrame(draw);
 }
-function showBookPage(page){
+function showBookPage(page,onComplete=null){
  if(settings.documentStyle!=='notebook')return false;
  const step=bookStep(),count=$$('[data-page-number]').length;
  const before=bookPage===0?-1:Math.floor((bookPage-1)/step),after=page<=0?-1:Math.floor((Math.min(page,count)-1)/step);
@@ -147,8 +147,8 @@ function showBookPage(page){
   const newSpread=$$('.page-spread').find(p=>!p.hidden);
   const newLeaves=$$('.scan-page',newSpread).filter(p=>!p.hidden&&getComputedStyle(p).display!=='none');
   const back=captureLeaf(forward?newLeaves[0]:newLeaves.at(-1));
-  animateBookTurn(front,back,stationary,rect,forward,before===-1&&step===2?newSpread:null);
- }
+  animateBookTurn(front,back,stationary,rect,forward,before===-1&&step===2?newSpread:null,onComplete);
+ }else onComplete?.();
  return true;
 }
 function turnBook(direction){const step=bookStep(),start=bookPage===0?0:Math.floor((bookPage-1)/step)*step+1;const target=start===0?(direction>0?1:-1):start===1&&direction<0?0:start+direction*step;if(target<0||target>$$('[data-page-number]').length)return;showBookPage(target)}
@@ -161,48 +161,69 @@ function confirmQuestion(i){selectQuestion(i);const r=record(i);if(r.confirmed){
 function editScore(i){selectQuestion(i);const el=$('[data-rubric="'+i+'"]');el.hidden=!el.hidden;if(!el.hidden){smoothTo($('[data-grade-for="'+i+'"]'));requestAnimationFrame(()=>$('[data-score="'+i+':0"]').focus({preventScroll:true}))}}
 // Only this disposable copy moves. The neighbouring book and the current
 // manuscript remain untouched until the copy has landed on the active book.
-function flipPreviousNotebook(){
- if(student===0||turnStage?.classList.contains('book-transfer-stage'))return;
- const next=student-1,source=$('.previous-book');
+function flipNotebook(direction){
+ const next=student+direction,incoming=direction<0;
+ if(next<0||next>=students.length||turnStage?.classList.contains('book-transfer-stage'))return;
+ // An open notebook first closes, then the whole closed book turns left.
+ if(!incoming&&bookPage!==0){showBookPage(0,()=>flipNotebook(direction));return}
+ const source=incoming?$('.previous-book'):$('.notebook-cover');
  if(!source||matchMedia('(prefers-reduced-motion: reduce)').matches){changeStudent(next);return}
  cancelPageTurn();togglePreferences(false);
  const root=$('#manuscript'),rootRect=root.getBoundingClientRect(),scale=rootRect.width/root.offsetWidth,w=sheet.width*scale,h=sheet.height*scale;
- const sourceRect=source.getBoundingClientRect();
- const start={x:sourceRect.left+(sourceRect.width-w)/2,y:sourceRect.top+(sourceRect.height-h)/2};
- const end={x:rootRect.right-w,y:rootRect.top};
+ const tilt=-2*Math.PI/180;
+ // The adjacent book's right binding and active book's left binding are the
+ // two endpoints of one hinge path. There is no independent airborne motion.
+ const neighbourRect=$('.previous-book')?.getBoundingClientRect();
+ const neighbourCenter=neighbourRect?{x:neighbourRect.left+neighbourRect.width/2,y:neighbourRect.top+neighbourRect.height/2}:{x:rootRect.left+(-125+sheet.width/2)*scale,y:rootRect.top+(9+sheet.height/2)*scale};
+ const leftPivot={x:neighbourCenter.x+w/2*Math.cos(tilt),y:neighbourCenter.y+w/2*Math.sin(tilt)};
+ const rightPivot={x:rootRect.right-w,y:rootRect.top+h/2};
+ const start=incoming?leftPivot:rightPivot,end=incoming?rightPivot:leftPivot;
  const front=captureLeaf(source);
- // Measure the next cover at native paper coordinates without swapping the
- // live student or borrowing any elements from the live manuscript.
- const template=document.createElement('template');
- template.innerHTML=renderNotebook({questions:[0,1].map(i=>getDemoQuestion(settings.subject,next,i)),student:students[next],grades:[0,1].map(i=>getDemoGrade(settings.subject,next,i)),tools:''});
- const target=template.content.querySelector('.notebook-cover');
+ // Build only the reverse face as an inert measurement copy. Live paper and
+ // student state are never swapped to prepare the animation.
+ let target;
+ if(incoming){
+  const template=document.createElement('template');
+  template.innerHTML=renderNotebook({questions:[0,1].map(i=>getDemoQuestion(settings.subject,next,i)),student:students[next],grades:[0,1].map(i=>getDemoGrade(settings.subject,next,i)),tools:''});
+  target=template.content.querySelector('.notebook-cover');
+ }else{
+  target=document.createElement('div');target.className='adjacent-book previous-book';
+  target.innerHTML='<span class="back-cover-binding" aria-hidden="true"></span>';
+  Object.assign(target.style,{position:'relative',left:'0',top:'0',transform:'none'});
+ }
+ target.style.animation='none';
  const measure=document.createElement('div');measure.className='page-spread cover-spread';
  Object.assign(measure.style,{position:'absolute',left:(sheet.width*(bookStep()-1))+'px',top:'0',display:'block',width:sheet.width+'px',pointerEvents:'none'});
  measure.inert=true;measure.setAttribute('aria-hidden','true');measure.append(target);root.append(measure);
  const back=captureLeaf(target);measure.remove();
- const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
- const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px'});
+ const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:incoming?'100% 50%':'0 50%'});
  for(const [copy,reverse] of [[front,false],[back,true]]){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
-  // The rotated source's bounding box includes its tilt; undo that expansion
-  // and reapply the tilt to the whole animated book rather than its text.
   copy.firstElementChild.style.transform=`scale(${scale})`;
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
+ const spine=document.createElement('div');spine.className='book-transfer-spine';Object.assign(spine.style,{width:Math.max(2,6*scale)+'px',left:incoming?'100%':'0'});flight.append(spine);
+ stage.style.perspectiveOrigin=`${(start.x+end.x)/2}px ${(start.y+end.y)/2}px`;
  stage.append(flight);document.body.append(stage);turnStage=stage;
+ // Lift the outgoing cover's copy to expose the tilted book underneath.
+ // Hide its stationary source, restoring it on completion or interruption.
+ const viewport=$('#paper-viewport');if(!incoming)viewport.classList.add('book-leaving');
+ const restore=()=>viewport.classList.remove('book-leaving');
  let frame=0,startTime;
- const handle={cancel(){cancelAnimationFrame(frame);stage.remove();}};turnAnimation=handle;
+ const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
+ function pose(p){
+  const pivotX=start.x+(end.x-start.x)*p,pivotY=start.y+(end.y-start.y)*p;
+  flight.style.transform=`translate3d(${pivotX-(incoming?w:0)}px,${pivotY-h/2}px,0) rotateZ(${-2*(incoming?1-p:p)}deg) rotateY(${(incoming?180:-180)*p}deg)`;
+ }
  function draw(now){
   if(startTime===undefined)startTime=now;
-  const t=Math.min(1,(now-startTime)/1080),motion=Math.min(1,t/.9),p=(1-Math.cos(Math.PI*motion))/2,lift=Math.sin(Math.PI*p);
-  flight.style.transform=`translate3d(${start.x+(end.x-start.x)*p}px,${start.y+(end.y-start.y)*p-42*lift}px,${70*lift}px) rotateZ(${-2*(1-p)}deg) rotateY(${-180*p}deg)`;
-  stage.dataset.progress=String(Math.round(p*100));
+  const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
+  pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
-  else{turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
+  else{restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
  }
- // Paint the clone exactly over its source before the first animation frame.
- flight.style.transform=`translate3d(${start.x}px,${start.y}px,0) rotateZ(-2deg)`;
- frame=requestAnimationFrame(draw);
+ pose(0);frame=requestAnimationFrame(draw);
 }
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
@@ -216,7 +237,7 @@ function bind(){
  $$('[data-feedback]').forEach(el=>el.oninput=()=>{const i=Number(el.dataset.feedback);record(i).feedback=el.value;record(i).confirmed=false;refreshGrade(i);sizeNotes()});
  $$('[data-confirm]').forEach(b=>b.onclick=()=>confirmQuestion(Number(b.dataset.confirm)));
  $$('[data-next]').forEach(b=>b.onclick=()=>locate(1-Number(b.dataset.next)));
- $$('[data-next-student]').forEach(b=>{b.disabled=student===students.length-1;b.onclick=()=>changeStudent(student+1)});
+ $$('[data-next-student]').forEach(b=>{b.disabled=student===students.length-1;b.onclick=()=>flipNotebook(1)});
  $$('[data-action]').forEach(b=>b.onclick=()=>action(b.dataset.action));
  $$('[data-preset]').forEach(b=>b.onclick=()=>{settings=sanitize({...settings,...presets[b.dataset.preset],preset:b.dataset.preset,subject:settings.subject,marks:settings.marks,reading:settings.reading});apply()});
  $$('[data-ink]').forEach(b=>b.onclick=()=>{settings.ink=b.dataset.ink;apply()});
@@ -249,7 +270,7 @@ let settingsMaskFrame=0;
 function scheduleSettingsMask(){if(settingsMaskFrame)return;settingsMaskFrame=requestAnimationFrame(()=>{settingsMaskFrame=0;syncSettingsMask()})}
 
 function togglePreferences(force){prefsOpen=typeof force==='boolean'?force:!prefsOpen;$('#preferences').hidden=!prefsOpen;syncSettingsMask();$('[data-action="preferences"]').setAttribute('aria-expanded',prefsOpen);if(prefsOpen){renderCandidates();$('#preferences').scrollTop=0;}else if($('#preferences').contains(document.activeElement))$('[data-action=preferences]').focus({preventScroll:true})}
-function action(name){if(name==='previous-student')flipPreviousNotebook();else if(name==='next-student')changeStudent(student+1);else if(name==='preferences')togglePreferences();else if(name==='close-preferences')togglePreferences(false);else if(name==='toggle-zoom'){toggleFullscreen()}else if(name==='toggle-marks'){settings.marks=!settings.marks;apply()}else if(name==='reset-style'){settings=sanitize({documentStyle:'notebook',preset:settings.preset,subject:settings.subject,reading:'double'});apply()}else if(name==='save-candidate'){if(candidates.length>=4)return;candidates.push({id:Date.now().toString(36),settings:{...settings}});persist();renderCandidates();announce(storageOK?'候选已保存在当前浏览器。':'候选仅暂存在当前页面，请下载备份。')}else if(name==='confirm-choice'){togglePreferences(true);$('#choice-section').hidden=false;confirmed={settings:{...settings},note,at:new Date().toISOString()};updateChoice();persist();smoothTo($('#choice-section'))}else if(name==='copy-choice')copyChoice();else if(name==='download-choice')downloadChoice()}
+function action(name){if(name==='previous-student')flipNotebook(-1);else if(name==='next-student')flipNotebook(1);else if(name==='preferences')togglePreferences();else if(name==='close-preferences')togglePreferences(false);else if(name==='toggle-zoom'){toggleFullscreen()}else if(name==='toggle-marks'){settings.marks=!settings.marks;apply()}else if(name==='reset-style'){settings=sanitize({documentStyle:'notebook',preset:settings.preset,subject:settings.subject,reading:'double'});apply()}else if(name==='save-candidate'){if(candidates.length>=4)return;candidates.push({id:Date.now().toString(36),settings:{...settings}});persist();renderCandidates();announce(storageOK?'候选已保存在当前浏览器。':'候选仅暂存在当前页面，请下载备份。')}else if(name==='confirm-choice'){togglePreferences(true);$('#choice-section').hidden=false;confirmed={settings:{...settings},note,at:new Date().toISOString()};updateChoice();persist();smoothTo($('#choice-section'))}else if(name==='copy-choice')copyChoice();else if(name==='download-choice')downloadChoice()}
 function renderCandidates(){$('#save-candidate').disabled=candidates.length>=4;$('#candidate-list').innerHTML=candidates.map((c,i)=>`<span class="candidate-item"><button data-candidate="${esc(c.id)}">候选 ${i+1} · ${presets[c.settings.preset].name}</button><button data-remove="${esc(c.id)}" aria-label="删除候选 ${i+1}">×</button></span>`).join('');$$('[data-candidate]').forEach(b=>b.onclick=()=>{const c=candidates.find(c=>c.id===b.dataset.candidate);const old=settings.subject;settings={...c.settings};if(old!==settings.subject)render();else apply();announce('已载入候选。')});$$('[data-remove]').forEach(b=>b.onclick=()=>{candidates=candidates.filter(c=>c.id!==b.dataset.remove);persist();renderCandidates()})}
 function summary(){return `阅见：原稿上的无框批改\n样式：${documentStyles[settings.documentStyle]}；阅览：${readingModes[settings.reading]}；作业背景：${paperBackgrounds[settings.background]}；设置字体：${panelFonts[settings.panelFont]}\n方案：${presets[settings.preset].name}\n用墨：${pens[settings.ink]}；示例：${subjects[settings.subject]}\n我的意见：${note||'暂无'}\n设置：${JSON.stringify(settings)}`}
 function updateChoice(){if(confirmed)confirmed={...confirmed,settings:{...settings},note};$('#preference-summary').value=summary()}
@@ -261,16 +282,18 @@ const sheet={width:720,height:1020};
 function fitPaper(){
  const root=$('#manuscript'),viewport=$('#paper-viewport');
  const width=sheet.width*bookStep(),height=sheet.height;
- const sceneWidth=width+400,sceneHeight=height+160;
+ const sceneWidth=width+420,sceneHeight=height+280;
  const availableWidth=Math.max(1,document.documentElement.clientWidth-48);
  const availableHeight=Math.max(1,window.innerHeight-80);
  const scale=Math.min(availableWidth/sceneWidth,availableHeight/sceneHeight);
  viewport.style.setProperty('--scene-scale',scale);
  viewport.style.setProperty('--book-left',(16+150*scale)+'px');
- viewport.style.setProperty('--book-top',(16+100*scale)+'px');
- viewport.style.setProperty('--book-right',(16+250*scale)+'px');
- viewport.style.setProperty('--book-bottom',(16+60*scale)+'px');
- viewport.style.setProperty('--stack-next-left',(width-sheet.width+sheet.width/4)+'px');
+ viewport.style.setProperty('--book-top',(16+230*scale)+'px');
+ viewport.style.setProperty('--book-right',(16+270*scale)+'px');
+ viewport.style.setProperty('--book-bottom',(16+50*scale)+'px');
+ viewport.style.setProperty('--stack-next-left',(width-sheet.width)+'px');
+ // Rotate around the lower-left corner, anchored at 80% of the active cover.
+ viewport.style.setProperty('--stack-next-top',(-height/5)+'px');
  root.style.setProperty('--sheet-width',sheet.width+'px');root.style.setProperty('--sheet-height',height+'px');
  root.style.setProperty('--canvas-width',width+'px');root.style.setProperty('--view-scale',scale);
  viewport.style.width=(sceneWidth*scale+32)+'px';viewport.style.height=(sceneHeight*scale+32)+'px';
@@ -278,10 +301,10 @@ function fitPaper(){
  // Anchor the UI to the stationary paper surface, not the browser viewport.
  // Keep it legible at normal sizes and fit it inside even a small cover leaf.
  const inset=20*scale,uiScale=Math.min(1,(sheet.width*scale-2*inset)/370);
- viewport.style.setProperty('--paper-inset',(16+250*scale+inset)+'px');
- viewport.style.setProperty('--paper-tools-top',(16+100*scale+inset)+'px');
+ viewport.style.setProperty('--paper-inset',(16+270*scale+inset)+'px');
+ viewport.style.setProperty('--paper-tools-top',(16+230*scale+inset)+'px');
  viewport.style.setProperty('--paper-ui-scale',uiScale);
- viewport.style.setProperty('--paper-settings-top',(16+100*scale+inset+54*uiScale)+'px');
+ viewport.style.setProperty('--paper-settings-top',(16+230*scale+inset+54*uiScale)+'px');
  viewport.style.setProperty('--paper-settings-height',Math.max(0,(height*scale-2*inset-54*uiScale)/uiScale)+'px');
 }
 async function toggleFullscreen(){
