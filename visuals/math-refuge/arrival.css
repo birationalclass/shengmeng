@@ -15,7 +15,6 @@
 #loading #loadPercent small{font-size:10px;letter-spacing:0;margin-left:5px;color:#7f9390}
 .arrival-track{height:2px;background:#a4bab229;position:relative}
 .arrival-track:after{content:"";position:absolute;left:0;right:0;top:7px;height:4px;background:repeating-linear-gradient(90deg,#9daea459 0 1px,transparent 1px 5%)}
-#loadFill{position:absolute;inset:0;background:#d8d8bd;transform:scaleX(0);transform-origin:left;box-shadow:0 0 9px #b3c5b72b;transition:transform .7s cubic-bezier(.22,.6,.2,1)}
 #loading .entry-button,#error .entry-button{position:relative;isolation:isolate;overflow:hidden;border:1px solid #b8c5bd65;border-radius:0;padding:15px 20px;width:150px;min-height:49px;margin:0;font-size:12px;letter-spacing:.18em;background:transparent;color:#e6e8df;transition:color .3s,border-color .3s}
 .entry-button:before{content:"";position:absolute;inset:0;z-index:-1;background:#dce0d3;transform:translateY(101%);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
 #loading .entry-button:hover,#error .entry-button:hover{color:#101c1c;border-color:#dce0d3;background:transparent}
@@ -112,8 +111,8 @@ body.awaiting-scene #loading{pointer-events:auto}
 #loading .coast-progress{position:absolute;inset:0;pointer-events:none;transition:opacity .8s ease}
 #loading .coast-progress svg{display:block;width:100%;height:100%;overflow:visible}
 .coast-outline{fill:none;stroke:#82948e;stroke-opacity:.12;stroke-width:.65;vector-effect:non-scaling-stroke}
-#loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;transform:none;background:none;box-shadow:none;filter:drop-shadow(0 0 2px #d8d3be55);transition:none}
-#loading[data-ready=true] .coast-progress{opacity:0;transition-delay:.35s}
+#loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;transform:none;background:none;box-shadow:none;filter:none;transition:none}
+/* Completed coastline stays until the user enters and #loading is hidden. */
 #loading .arrival-readout{justify-content:center;gap:14px}
 #loading #loadPercent{font-size:13px;color:#aebbb5}
 #loading #loadPercent small{font-size:10px}
@@ -122,5 +121,5 @@ body.awaiting-scene #loading{pointer-events:auto}
 /* Static satin-metal surface: no travelling highlight or repeated pulse. */
 #coastCore{fill:none;stroke:url(#coastSurface);stroke-width:.45;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 #coastClip{transition:width 1s cubic-bezier(.22,.61,.36,1)}
-#loading #loadFill{stroke-linejoin:round;stroke-width:1.35;filter:drop-shadow(0 0 1.2px #bba67e35)}
+#loading #loadFill{stroke-linejoin:round;stroke-width:1.35;filter:none}
 @media(prefers-reduced-motion:reduce){#coastClip{transition:none}}

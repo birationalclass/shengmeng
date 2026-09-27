@@ -31,7 +31,7 @@ export async function createLecture(scene,renderer,options={}){
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
-  let screenHub=null,openingDemo=null;
+  let screenHub=null,openingDemo=null,openingSurfacesReady=false;
   let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
@@ -443,12 +443,21 @@ export async function createLecture(scene,renderer,options={}){
       await Promise.all(Array.from({length:count},(_,i)=>load(first+i).then(()=>onProgress(++prepared/count*.9))));
       if(!await seek(Math.max(0,page-1)))return false;
       await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
-      onProgress(1);
       openingDemo={phase:'waiting',page,elapsed:0};
       stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
       screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
-      boards.forEach(b=>b.last='');boards.forEach((_,i)=>draw(i));playing=false;version++;return true;
+      boards.forEach(b=>b.last='');
+      // Allocate and upload every board before camera movement, including the
+      // clean board used by the opening writing demonstration.
+      for(let i=0;i<boards.length;i++){
+        ensureInk(boards[i]);draw(i);
+        renderer.initTexture?.(boards[i].texture);renderer.initTexture?.(boards[i].roughTexture);
+        onProgress(.9+.1*(i+1)/boards.length);
+        await new Promise(resolve=>setTimeout(resolve,16));
+      }
+      openingSurfacesReady=renderActive&&!hydrating&&options.isActive?.()!==false;
+      playing=false;version++;return true;
     },
     beginOpening(reduced=false){
       if(openingDemo?.phase!=='waiting')return false;
@@ -465,6 +474,9 @@ export async function createLecture(scene,renderer,options={}){
     async setRenderActive(value){
       if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
       if(!value){hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
+      // Opening boards are paused and already painted/uploaded. Becoming visible
+      // at the entrance must not reset and redraw six unchanged surfaces.
+      if(openingDemo?.phase==='waiting'&&openingSurfacesReady&&boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
       hydrating=true;const resume={page:clock.page,phase:clock.phase,progress:clock.progress};
       try{
         const visible=[...new Set([...clock.slots.map(s=>s.page),hasSelection?clock.page:-1])].filter(i=>i>=0);

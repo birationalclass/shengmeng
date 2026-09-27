@@ -92,5 +92,5 @@ for(const viewport of [{width:960,height:540},{width:1920,height:1080},{width:39
  assert(tenth>0&&tenth<full*.12,'10% cannot illuminate the right side');
  assert(Math.abs(half/full-.5)<.01,'half progress ends at the middle of the visible coast');
  assert(full>0&&half>tenth&&full>half);
- assert(html.includes('<g clip-path="url(#coastLoaded)"><path id="loadFill"'),'base gold shares the sweep clipping boundary');
+ assert(/<g clip-path="url\(#coastLoaded\)"><path[^>]*id="loadFill"/.test(html),'gold shares the clipping boundary');
 }
