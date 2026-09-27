@@ -122,6 +122,15 @@ function beginCornerLift(button){
  [...page.children].forEach((child,i)=>{const box=child.getBoundingClientRect();if(child.matches('.page-edge-turn')||box.right<x||box.left>x+w||box.bottom<y||box.top>y+h)paper.children[i]?.setAttribute('hidden','')});
  [...paper.children].filter(child=>child.hidden).forEach(child=>child.remove());
  const stage=document.createElement('div');stage.className='corner-lift-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const isCover=page.matches('.notebook-cover,.notebook-inner-cover');
+ if(!isCover){
+  // The page block remains flat below a single moving sheet, including
+  // its existing ruling and bottom cover edge.
+  const base=document.createElement('div');base.className='corner-paper-base';
+  Object.assign(base.style,{position:'absolute',left:x+'px',top:y+'px',width:w+'px',height:(h+4*scale)+'px',overflow:'hidden'});
+  const beneath=paper.cloneNode(true);Object.assign(beneath.style,{left:(r.left-x)+'px',top:(r.top-y)+'px',clipPath:'none'});base.append(beneath);stage.append(base);
+  paper.style.boxShadow='none';
+ }
  const shadow=document.createElement('div');shadow.className='corner-lift-shadow';Object.assign(shadow.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',transform:left?'none':'scaleX(-1)'});stage.append(shadow);
  const tiles=[],nx=12,ny=12,dx=w/nx,dy=h/ny;
  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)for(const lower of [false,true]){
@@ -184,9 +193,10 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
    const face=document.createElement('div');face.className='turn-face'+(isBack?' turn-face-back':'');face.style.width=(bandWidth+.6)+'px';
    // A turning cover is green card alone; the page-block edge stays below.
    const coverFace=source.firstElementChild.matches('.notebook-cover,.notebook-inner-cover');
-   face.style.bottom=-Math.max(3,3*w/sheet.width)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
+   face.style.bottom=coverFace?-Math.max(3,3*w/sheet.width)+'px':'0px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
    const copy=source.cloneNode(true),offset=(forward!==isBack)?i*bandWidth:w-(i+1)*bandWidth;
    if(coverFace){copy.classList.add('turn-cover-only');if(copy.firstElementChild.classList.contains('notebook-inner-cover'))copy.firstElementChild.style.height=`calc(${sheet.height}px + 3px * var(--binding-open,0))`;copy.firstElementChild.style.boxShadow=source.firstElementChild.classList.contains('notebook-cover')?'inset 7px 0 12px -10px #1c372f80':'inset -7px 0 12px -10px #1c372f80';}
+   if(!coverFace)copy.firstElementChild.style.boxShadow='none';
    Object.assign(copy.style,{left:-offset+'px',top:'0',width:w+'px',height:h+'px',boxShadow:'none'});face.append(copy);
    const shade=document.createElement('div');shade.className='turn-shading';shades.push({element:shade,band:i,back:isBack});face.append(shade);band.append(face);
   }
