@@ -269,3 +269,7 @@ html{background:#eae9e3}
 /* The reverse of the front cover is green stock, preceding scan page one. */
 #manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{--paper-pattern:none;background-color:#a7bd9d;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);color:#294b40;box-shadow:inset -7px 0 12px -10px #1c372f80}
 .notebook-inner-cover::before{display:none}
+
+/* Only the answer-paper half has a page-block edge beside the inside cover. */
+#manuscript[data-document-style=notebook][data-reading=double] .page-spread:has(>.notebook-inner-cover){background:transparent;box-shadow:none}
+#manuscript[data-document-style=notebook][data-reading=double] .notebook-inner-cover+.scan-page{box-shadow:inset 16px 0 25px -24px #45432a55,0 2px 0 #e1e2d7,0 4px 0 #fcfcf5,0 5px 0 #cbd0c6,0 12px 23px -16px #27302770}
