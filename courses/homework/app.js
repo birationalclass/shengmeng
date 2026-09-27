@@ -1,4 +1,4 @@
-import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-inner-cover';
+import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-edge-turn';
 import {getDemoQuestion,getDemoGrade} from './demo-grader.js';
 const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -87,7 +87,7 @@ function syncBookView(){
  const start=step===2?Math.floor((Math.max(1,bookPage)-1)/2)*2+1:Math.max(1,bookPage);
  $$('.page-spread').forEach(spread=>spread.hidden=spread.classList.contains('cover-spread')?!cover:cover||(notebook&&!$$('[data-page-number]',spread).some(p=>Number(p.dataset.pageNumber)>=start&&Number(p.dataset.pageNumber)<start+step)));
  pages.forEach(page=>page.hidden=cover||(notebook&&(Number(page.dataset.pageNumber)<start||Number(page.dataset.pageNumber)>=start+step)));
- $$('[data-turn]').forEach(b=>{b.disabled=Number(b.dataset.turn)<0?cover:!cover&&start+step>pages.length;if(b.classList.contains('book-previous'))b.textContent=start===1?'← 封面':'← 上一页'});
+ $$('[data-turn]').forEach(b=>{b.disabled=Number(b.dataset.turn)<0?cover:!cover&&start+step>pages.length;if(b.classList.contains('book-previous'))b.setAttribute('aria-label',start===1?'合上封面':'上一页')});
  $$('[data-jump-end]').forEach(b=>b.textContent=notebook?'核对续答 →':'核对续页 ↘');
  $('#manuscript').dataset.visiblePages=cover?'cover':notebook?(step===2&&start<pages.length?start+'–'+Math.min(start+1,pages.length):String(start)):'all';
 }
@@ -427,7 +427,7 @@ function bind(){
 // Fade only manuscript ink. Paper, ruling and the book binding are untouched.
 function syncSettingsMask(){
  const panel=$('#preferences');if(!panel)return;
- const layers=$$('.paper-tools,.document-heading,.page-running,.original-answer,.grade-ink,.teacher-writing,.page-next,.paper-footer,.submission-end,.cover-print',$('#manuscript'));
+ const layers=$$('.paper-tools,.document-heading,.page-running,.original-answer,.grade-ink,.teacher-writing,.page-next,.paper-footer,.page-edge-turn,.submission-end,.cover-print',$('#manuscript'));
  const clear=el=>{el.style.maskImage='';el.style.webkitMaskImage='';el.style.maskComposite='';el.style.webkitMaskComposite='';delete el.dataset.settingsMasked};
  if(panel.hidden){layers.forEach(clear);return}
  const p=panel.getBoundingClientRect(),feather=42;
