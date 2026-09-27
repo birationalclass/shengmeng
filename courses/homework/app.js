@@ -540,6 +540,7 @@ function fitPaper(){
  // Keep it legible at normal sizes and fit it inside even a small cover leaf.
  const inset=20*scale,uiScale=Math.min(1,(sheet.width*scale-2*inset)/370);
  viewport.style.setProperty('--paper-inset',(16+270*scale+inset)+'px');
+ viewport.style.setProperty('--paper-footer-left',(16+(150+width-sheet.width)*scale+inset)+'px');
  viewport.style.setProperty('--paper-tools-top',(16+230*scale+inset)+'px');
  viewport.style.setProperty('--paper-ui-scale',uiScale);
  viewport.style.setProperty('--paper-settings-top',(16+230*scale+inset+54*uiScale)+'px');
