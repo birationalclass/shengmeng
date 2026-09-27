@@ -24,6 +24,31 @@ let note=typeof stored.note==='string'?stored.note:'',confirmed=stored.confirmed
 let student=1,active=0,prefsOpen=false;
 let settingsObserver;
 let bookPage=0,turnAnimation=null,turnStage=null;
+let notebookInteractionLocked=false;
+function runNotebookMotion(action){
+ if(notebookInteractionLocked)return false;
+ notebookInteractionLocked=true;
+ document.body.classList.add('notebook-interaction-locked');
+ $('#paper-viewport').setAttribute('aria-busy','true');
+ const unlock=()=>{
+  notebookInteractionLocked=false;
+  document.body.classList.remove('notebook-interaction-locked');
+  $('#paper-viewport').removeAttribute('aria-busy');
+ };
+ const waitForFinish=()=>{if(turnStage)requestAnimationFrame(waitForFinish);else unlock()};
+ // Complete the highlight fade before creating any moving surface. One lock
+ // spans closing, parking, flipping and straightening, including callbacks.
+ setTimeout(()=>{
+  try{action();requestAnimationFrame(waitForFinish)}catch(error){unlock();throw error}
+ },matchMedia('(prefers-reduced-motion: reduce)').matches?0:450);
+ return true;
+}
+for(const type of ['click','pointerdown','keydown'])document.addEventListener(type,event=>{
+ if(notebookInteractionLocked&&(event.target.closest?.('#paper-viewport,.page-turn-stage')||(type==='keydown'&&['ArrowLeft','ArrowRight'].includes(event.key)))){
+  event.preventDefault();event.stopImmediatePropagation();
+ }
+},true);
+
 const nextBookPose={angle:5,x:28,y:28};
 const records={};
 const record=i=>{const id=[settings.subject,student,i].join('-');return records[id]||(records[id]=getDemoGrade(settings.subject,student,i))};
@@ -152,6 +177,7 @@ function showBookPage(page,onComplete=null){
  const step=bookStep(),count=$$('[data-page-number]').length;
  const before=bookPage===0?-1:Math.floor((bookPage-1)/step),after=page<=0?-1:Math.floor((Math.min(page,count)-1)/step);
  if(before===after){bookPage=page;return false}
+ if(!notebookInteractionLocked)return runNotebookMotion(()=>showBookPage(page,onComplete));
  cancelPageTurn();if(scrollY>80)window.scrollTo({top:0,behavior:'instant'});
  const forward=after>before,animate=!matchMedia('(prefers-reduced-motion: reduce)').matches;
  const oldSpread=$$('.page-spread').find(p=>!p.hidden);
@@ -225,6 +251,7 @@ function closeNotebookToLeft(next){
 function flipNotebook(direction){
  const next=student+direction,incoming=direction<0;
  if(next<0||next>=students.length||turnStage?.classList.contains('book-transfer-stage'))return;
+ if(!notebookInteractionLocked){runNotebookMotion(()=>flipNotebook(direction));return}
  // Close an open book before moving that whole book in either direction.
  if(bookPage!==0){
   if(!incoming&&!matchMedia('(prefers-reduced-motion: reduce)').matches)closeNotebookToLeft(next);

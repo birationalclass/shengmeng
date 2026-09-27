@@ -282,3 +282,7 @@ html{background:#eae9e3}
 /* Right pile mirrors the capped three-slot rule; only its top book moves. */
 .next-book{z-index:3}
 .next-book-layer{left:calc(var(--stack-next-left) + 3px * var(--stack-depth));top:calc(var(--stack-next-top) + 5px * var(--stack-depth));z-index:calc(3 - var(--stack-depth));pointer-events:none}
+
+/* Release hover before motion; restore it only after the complete handoff. */
+.notebook-interaction-locked #paper-viewport,.notebook-interaction-locked #paper-viewport *{pointer-events:none!important}
+.notebook-interaction-locked .adjacent-book,.notebook-interaction-locked .notebook-cover[data-open-notebook]{filter:brightness(1)!important}
