@@ -244,7 +244,17 @@ function flipNotebook(direction){
  const leftPivot={x:neighbourCenter.x+w/2*Math.cos(tilt),y:neighbourCenter.y+w/2*Math.sin(tilt)};
  const rightPivot={x:rootRect.right-w,y:rootRect.top+h/2};
  const start=incoming?leftPivot:rightPivot,end=incoming?rightPivot:leftPivot;
- const front=captureLeaf(source);
+ const moveOriginal=incoming&&student===1;
+ const sourceParent=source.parentNode,sourceSibling=source.nextSibling,sourceStyle=source.getAttribute('style');
+ const sourcePaint=moveOriginal?snapshotProperties.map(k=>k+':'+getComputedStyle(source).getPropertyValue(k)).join(';'):'';
+ const front=moveOriginal?document.createElement('div'):captureLeaf(source);
+ if(moveOriginal)front.className='turn-leaf-original';
+ const mountOriginal=()=>{
+  if(!moveOriginal||front.contains(source))return;
+  source.style.cssText=sourcePaint;
+  Object.assign(source.style,{position:'absolute',left:'0',top:'0',width:sheet.width+'px',height:sheet.height+'px',margin:'0',transform:`scale(${scale})`,transformOrigin:'0 0',pointerEvents:'none'});
+  front.append(source);
+ };
  // Build only the reverse face as an inert measurement copy. Live paper and
  // student state are never swapped to prepare the animation.
  let target;
@@ -262,7 +272,7 @@ function flipNotebook(direction){
  Object.assign(measure.style,{position:'absolute',left:(sheet.width*(bookStep()-1))+'px',top:'0',display:'block',width:sheet.width+'px',pointerEvents:'none'});
  measure.inert=true;measure.setAttribute('aria-hidden','true');measure.append(target);root.append(measure);
  const back=captureLeaf(target);measure.remove();
- const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.dataset.sourceMode=moveOriginal?'original':'copy';stage.inert=true;stage.setAttribute('aria-hidden','true');
  // First park the current book in the tilted right pile. Only after it is
  // fully at rest may the previous book's copy begin its own flight.
  let underlay=null,underlayLabel=null;
@@ -275,7 +285,7 @@ function flipNotebook(direction){
  const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:incoming?'100% 50%':'0 50%'});
  for(const [copy,reverse] of [[front,false],[back,true]]){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
-  copy.firstElementChild.style.transform=`scale(${scale})`;
+  if(copy.firstElementChild)copy.firstElementChild.style.transform=`scale(${scale})`;
   // Each snapshot is a single book; lower stack layers stay in the live pile.
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
@@ -285,7 +295,13 @@ function flipNotebook(direction){
  // Lift the outgoing cover's copy to expose the tilted book underneath.
  // Hide its stationary source, restoring it on completion or interruption.
  const viewport=$('#paper-viewport');viewport.classList.add('book-leaving');
- const restore=()=>viewport.classList.remove('book-leaving');
+ const restore=()=>{
+  if(moveOriginal&&front.contains(source)){
+   sourceParent.insertBefore(source,sourceSibling?.parentNode===sourceParent?sourceSibling:null);
+   if(sourceStyle===null)source.removeAttribute('style');else source.setAttribute('style',sourceStyle);
+  }
+  viewport.classList.remove('book-leaving');
+ };
  let frame=0,startTime,phase=incoming?'placing':'flipping';
  const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
  function pose(p){
@@ -303,7 +319,7 @@ function flipNotebook(direction){
    frame=requestAnimationFrame(draw);return;
   }
   if(phase==='placed'){
-   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;flight.hidden=false;}
+   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;mountOriginal();flight.hidden=false;}
    frame=requestAnimationFrame(draw);return;
   }
   const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
