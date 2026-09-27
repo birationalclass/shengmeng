@@ -163,11 +163,57 @@ function confirmQuestion(i){selectQuestion(i);const r=record(i);if(r.confirmed){
 function editScore(i){selectQuestion(i);const el=$('[data-rubric="'+i+'"]');el.hidden=!el.hidden;if(!el.hidden){smoothTo($('[data-grade-for="'+i+'"]'));requestAnimationFrame(()=>$('[data-score="'+i+':0"]').focus({preventScroll:true}))}}
 // Only this disposable copy moves. The neighbouring book and the current
 // manuscript remain untouched until the copy has landed on the active book.
+function closeNotebookToLeft(next){
+ cancelPageTurn();togglePreferences(false);
+ const root=$('#manuscript'),rect=root.getBoundingClientRect(),scale=rect.width/root.offsetWidth,w=sheet.width*scale,h=sheet.height*scale;
+ const spread=$$('.page-spread').find(p=>!p.hidden),leaves=$$('.scan-page',spread).filter(p=>!p.hidden&&getComputedStyle(p).display!=='none');
+ const front=captureLeaf(leaves.at(-1)),stationary=leaves.length>1?captureLeaf(leaves[0]):null;
+ const template=document.createElement('div');template.className='adjacent-book previous-book';template.innerHTML='<span class="back-cover-binding" aria-hidden="true"></span>';
+ Object.assign(template.style,{left:'0',top:'0',transform:'none'});root.append(template);const back=captureLeaf(template);template.remove();
+ const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction='left';stage.dataset.closeDirection='left';stage.dataset.phase='closing';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const pivot=rect.right-w,top=rect.top;stage.style.perspectiveOrigin=`${pivot}px ${top+h/2}px`;
+ if(stationary)stage.append(stationary);
+ const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:'0 50%'});
+ for(const [copy,reverse] of [[front,false],[back,true]]){
+  Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});Object.assign(copy.firstElementChild.style,{transform:`scale(${scale})`,boxShadow:'none'});
+  const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
+ }
+ stage.append(flight);document.body.append(stage);turnStage=stage;
+ const viewport=$('#paper-viewport');viewport.classList.add('book-leaving');const restore=()=>viewport.classList.remove('book-leaving');
+ const neighbour=$('#notebook-stack .previous-book')?.getBoundingClientRect();
+ const destination=neighbour?{x:neighbour.left+neighbour.width/2,y:neighbour.top+neighbour.height/2}:{x:rect.left+(-125+sheet.width/2)*scale,y:top+(9+sheet.height/2)*scale};
+ let frame=0,startTime,landed=null;
+ const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
+ function draw(now){
+  if(startTime===undefined)startTime=now;
+  const elapsed=now-startTime,t=Math.min(1,elapsed/850),p=(1-Math.cos(Math.PI*t))/2;
+  flight.style.transform=`translate3d(${pivot}px,${top}px,0) rotateY(${-180*p}deg)`;
+  stage.dataset.progress=String(Math.round(p*100));
+  if(t===1){
+   // Closing to the left exposes the back cover. Carry that same closed
+   // book onto the left pile; never snap it back to the right-hand cover.
+   if(!landed){landed=document.createElement('div');landed.className='book-settle-copy';Object.assign(landed.style,{width:w+'px',height:h+'px',transformOrigin:'50% 50%'});landed.append(back.cloneNode(true));stage.append(landed);flight.style.visibility='hidden';stationary?.remove();}
+   const u=Math.min(1,(elapsed-850)/380),q=u*u*(3-2*u),startX=pivot-w/2,startY=top+h/2;
+   landed.style.transform=`translate(${startX+(destination.x-startX)*q-w/2}px,${startY+(destination.y-startY)*q-h/2}px) rotate(${-2*q}deg)`;
+   stage.dataset.phase='placing';
+   if(u===1){settleNextNotebook(next,stage,restore);return;}
+  }
+  frame=requestAnimationFrame(draw);
+ }
+ flight.style.transform=`translate3d(${pivot}px,${top}px,0)`;frame=requestAnimationFrame(draw);
+}
 function flipNotebook(direction){
  const next=student+direction,incoming=direction<0,returningFromLast=incoming&&student===students.length-1;
  if(next<0||next>=students.length||turnStage?.classList.contains('book-transfer-stage'))return;
  // Close an open book before moving that whole book in either direction.
- if((!incoming||returningFromLast)&&bookPage!==0){showBookPage(0,()=>flipNotebook(direction));return}
+ if(bookPage!==0){
+  if(!incoming&&!matchMedia('(prefers-reduced-motion: reduce)').matches)closeNotebookToLeft(next);
+  else{
+   showBookPage(0,()=>flipNotebook(direction));
+   if(turnStage){turnStage.classList.add('book-transfer-stage');turnStage.dataset.closeDirection='right';}
+  }
+  return;
+ }
  const source=incoming?$('.previous-book'):$('.notebook-cover');
  if(!source||matchMedia('(prefers-reduced-motion: reduce)').matches){changeStudent(next);return}
  cancelPageTurn();togglePreferences(false);
