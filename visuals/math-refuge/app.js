@@ -815,3 +815,11 @@ $('surfSound').addEventListener('change',async event=>{try{await surfAudio.setEn
 for(const [id,key,parse] of [['coastGrid','grid',v=>v==='on'],['coastTide','tide',Number],['coastTidal','tidal',v=>v==='on'],['coastPause','paused',v=>v==='on']]){
  $(id).addEventListener('input',event=>{if(retreat)retreat.ocean.userData.study.settings[key]=parse(event.target.value);});
 }
+
+// Capture only the scene canvas synchronously after rendering; no chat/account UI.
+window.refugeCaptureFrame=()=>{
+ if(!renderer||!retreat)throw Error('场景尚未准备好');
+ if(profile.direct)renderer.render(scene,camera);else composer.render();
+ const source=renderer.domElement,scale=Math.min(1,1280/Math.max(source.width,source.height)),copy=document.createElement('canvas');copy.width=Math.max(1,Math.round(source.width*scale));copy.height=Math.max(1,Math.round(source.height*scale));copy.getContext('2d').drawImage(source,0,0,copy.width,copy.height);
+ let image=copy.toDataURL('image/jpeg',.82);for(const quality of [.7,.55,.4]){if(image.length<=560000)break;image=copy.toDataURL('image/jpeg',quality);}if(image.length>560000){const smaller=document.createElement('canvas');smaller.width=Math.round(copy.width*.7);smaller.height=Math.round(copy.height*.7);smaller.getContext('2d').drawImage(copy,0,0,smaller.width,smaller.height);image=smaller.toDataURL('image/jpeg',.55);}if(image.length>560000)throw Error('截图压缩失败，请重试');return image;
+};

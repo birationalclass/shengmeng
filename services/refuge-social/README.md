@@ -7,7 +7,7 @@ Independent CloudBase collections in the existing Shanghai environment. The Sudo
 Use the official authenticated CloudBase CLI from this directory:
 
 ```sh
-tcb fn deploy refuge-social --runtime Nodejs20.19 --install-dependency true --force --json
+tcb fn deploy refuge-social --config-file /path/to/private-production-ai.json --runtime Nodejs20.19 --install-dependency true --force --json
 ```
 
 Production HTTP mapping: `/refuge` -> `refuge-social`. Staging: `/refuge-test` -> `refuge-social-test`, with `REFUGE_PREFIX=refuge_test_`. Staging and production use distinct session cookies. The static frontend defaults to production; on localhost only, `?social=test` selects staging and `?social=local` selects the development API.
@@ -30,3 +30,16 @@ node local.mjs
 ```
 
 Local API uses in-memory SQLite unless `REFUGE_DB` names a persistent SQLite file. Do not expose the local development server publicly. Browser QA should use the isolated staging route. Never commit live credentials, session tokens or database exports.
+
+
+## Private scene AI
+
+The AI button sends only a JPEG of the 3D canvas, never account/chat UI. Public messages and private AI jobs are separate. Every history/poll request is scoped to the authenticated user. Screenshots are passed to the selected provider and are not retained in CloudBase; questions and answers are retained in `refuge_ai_jobs` (latest 20 displayed). Provider retention policies still apply.
+
+Create ADMINONLY `refuge_settings` and `refuge_ai_jobs`, with a `{userId:1,createdAt:-1}` index on the latter. Set a stable random `REFUGE_AI_SECRET` (at least 32 characters) in the function environment. Keep it outside Git and preserve it across deployments: changing it makes saved API keys unreadable. This workstation's private deployment config is `.tools/refuge-cloudbase/production-ai.json` outside the release checkout. Deploy from this service directory; its `functionRoot` is `..`. Function timeout is 60 seconds.
+
+An administrator opens chat → ⋯ to configure the model and API Key. Credentials are AES-256-GCM encrypted server-side and never returned to the client. Saving confirms storage, not provider validity. OpenAI Responses and Qwen vision (Beijing endpoint) are supported. Users select their provider locally. AI API billing is separate from CloudBase quota. Limits: 3 starts/minute and 20/day per account, 100/day total. Ordinary Enter sends public chat; the AI button explicitly sends a private visual question. Unconfigured providers return a clear error without fabricating an answer.
+
+The panel supports safe text, bold, inline code and local KaTeX formulas. HTML is never interpreted. Window position, dimensions and selected provider are stored in the browser, not the account. Resize minimum is 280×180, maximum width is 50% of the viewport and maximum height is 480px. Viewport limits override the minimum on small screens.
+
+Tests: `node --test service.test.mjs ai.test.mjs ../../visuals/math-refuge/social-send.test.mjs`.

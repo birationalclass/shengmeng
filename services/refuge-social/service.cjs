@@ -5,7 +5,7 @@ const fault=(status,message)=>Object.assign(new Error(message),{status});
 const publicUser=u=>({id:u.id,name:u.name,role:u.role==='admin'?'admin':'member',mutedUntil:u.mutedUntil||0});
 const passwordHash=async(password,salt)=>Buffer.from(await scrypt(password,salt,64)).toString('hex');
 const COOKIE='refuge_session';
-function createHandler(store,{origins=['https://birationalclass.github.io'],secure=true,now=Date.now,cookieName=COOKIE}={}){
+function createHandler(store,{origins=['https://birationalclass.github.io'],secure=true,now=Date.now,cookieName=COOKIE,ai=null}={}){
  return async function handle(event){
   const h=Object.fromEntries(Object.entries(event.headers||{}).map(([k,v])=>[k.toLowerCase(),v]));
   const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Vary':'Origin'};
@@ -32,7 +32,7 @@ function createHandler(store,{origins=['https://birationalclass.github.io'],secu
     if(!h.origin||!origins.includes(h.origin))throw fault(403,'来源不允许');
     if(!/^application\/json\b/.test(h['content-type']||''))throw fault(415,'请求格式不正确');
     const raw=event.isBase64Encoded?Buffer.from(event.body||'','base64').toString():event.body||'';
-    if(Buffer.byteLength(raw)>4096)throw fault(413,'内容过长');
+    if(Buffer.byteLength(raw)>(path==='/api/ai/start'?650000:4096))throw fault(413,'内容过长');
     try{input=JSON.parse(raw);}catch{throw fault(400,'请求格式不正确');}
     if(!input||Array.isArray(input)||typeof input!=='object')throw fault(400,'请求格式不正确');
    }
@@ -54,9 +54,37 @@ function createHandler(store,{origins=['https://birationalclass.github.io'],secu
    }
    if(path==='/api/session'&&method==='GET'){const {user}=await account();return send(200,{user:publicUser(user)});}
    if(path==='/api/logout'&&method==='POST'){const {sessionId}=await account();await store.remove('sessions',sessionId);cookie('',0);return send(200,{ok:true});}
+   if(path.startsWith('/api/ai/')){
+    const {user}=await account();if(!ai)throw fault(503,'AI 尚未配置');
+    const publicJob=job=>({id:job.id,status:job.status,text:job.text||'',question:job.question,provider:job.provider,createdAt:job.createdAt,updatedAt:job.updatedAt,error:job.error||null});
+    if(path==='/api/ai/providers'&&method==='GET')return send(200,{providers:await ai.list()});
+    if(path==='/api/ai/history'&&method==='GET'){await rate('ai-history:'+user.id,15);return send(200,{jobs:(await store.aiHistory(user.id)).reverse().map(publicJob)});}
+    if(path==='/api/ai/start'&&method==='POST'){
+     if(user.mutedUntil>at)throw fault(403,'禁言期间不可调用 AI');
+     if(!/^[a-f0-9-]{36}$/i.test(input.id||''))throw fault(400,'任务编号无效');
+     if(!['openai','qwen'].includes(input.provider))throw fault(400,'不支持的 AI 服务');
+     if(typeof input.image!=='string'||!/^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(input.image))throw fault(400,'请提供场景截图');
+     const bytes=Buffer.from(input.image.split(',')[1],'base64');if(bytes.length>450000||bytes.length<4||bytes[0]!==255||bytes[1]!==216||bytes[2]!==255)throw fault(400,'截图格式或大小不正确');
+     const id=hash(user.id+':ai:'+input.id),existing=await store.get('ai_jobs',id);if(existing)return send(200,{job:publicJob(existing)});
+     await rate('ai:'+user.id,3);await rate('ai-day:'+user.id,20,86400000);await rate('ai-total',100,86400000);
+     const question=typeof input.question==='string'?input.question.trim().slice(0,1500):'请解释当前画面，优先讲解其中可见的数学内容。';
+     const job={id,userId:user.id,provider:input.provider,question:question||'请解释当前画面。',createdAt:at,updatedAt:at,status:'starting'};
+     if(!await store.create('ai_jobs',id,job))return send(200,{job:publicJob(await store.get('ai_jobs',id))});
+     try{const result=await ai.start({...input,question:job.question});Object.assign(job,result,{updatedAt:now()});if(!job.responseId&&job.status!=='completed')throw fault(503,'AI 未返回任务编号');await store.put('ai_jobs',id,job);}catch(e){await store.update('ai_jobs',id,{status:'failed',error:e.status?e.message:'AI 请求失败',updatedAt:now()});throw e;}
+     return send(200,{job:publicJob(job)});
+    }
+    if(path==='/api/ai/poll'&&method==='POST'){
+     if(!/^[a-f0-9]{64}$/.test(input.id||''))throw fault(400,'任务无效');const job=await store.get('ai_jobs',input.id);if(!job||job.userId!==user.id)throw fault(404,'任务不存在');
+     if(!['completed','failed','cancelled','incomplete'].includes(job.status)){
+      await rate('ai-poll:'+user.id,20);if(now()-job.createdAt>600000){job.status='failed';job.error='任务已超时，请重新请求';}else if(job.responseId){Object.assign(job,await ai.poll(job));}job.updatedAt=now();await store.put('ai_jobs',job.id,job);
+     }return send(200,{job:publicJob(job)});
+    }
+    throw fault(404,'接口不存在');
+   }
    if(path.startsWith('/api/admin/')){
     const {user}=await account();if(user.role!=='admin')throw fault(403,'需要管理员权限');
     await rate('admin:'+user.id,30);
+    if(path==='/api/admin/ai'&&method==='POST'){if(!ai)throw fault(503,'AI 尚未启用');await ai.save(input);return send(200,{ok:true});}
     if(path==='/api/admin/users'&&method==='POST'){
      const after=typeof input.after==='string'&&/^[a-f0-9]{64}$/.test(input.after)?input.after:'';
      const rows=await store.users(after),more=rows.length>50,list=rows.slice(0,50);

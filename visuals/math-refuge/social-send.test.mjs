@@ -8,7 +8,7 @@ const code=source.slice(source.indexOf('function sendOptimistic('),source.indexO
 function setup(){
  const node=()=>({children:[],append(...nodes){for(const n of nodes){n.parent=this;this.children.push(n);}},remove(){this.parent.children.splice(this.parent.children.indexOf(this),1);},setAttribute(k,v){this[k]=v;},focus(){}});
  const elements={socialMessages:node(),socialInput:{...node(),value:''},socialComposer:node()},calls=[],confirmed=[];
- const ctx={document:{createElement:node},$:id=>elements[id],crypto:{randomUUID},generation:1,user:{name:'test'},activity(){},fadeMessage(){},message:e=>e.message,addMessages:items=>confirmed.push(...items),request:(path,payload)=>new Promise((resolve,reject)=>calls.push({path,payload,resolve,reject}))};
+ const ctx={renderChatText:(node,text)=>node.textContent=text,document:{createElement:node},$:id=>elements[id],crypto:{randomUUID},generation:1,user:{name:'test'},activity(){},fadeMessage(){},message:e=>e.message,addMessages:items=>confirmed.push(...items),request:(path,payload)=>new Promise((resolve,reject)=>calls.push({path,payload,resolve,reject}))};
  vm.runInNewContext(code,ctx);return {elements,calls,confirmed,send(text){elements.socialInput.value=text;elements.socialComposer.onsubmit({preventDefault(){}});}};
 }
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
