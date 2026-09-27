@@ -214,8 +214,6 @@ html{background:#eae9e3}
 .adjacent-book:focus-visible{outline:3px solid #677e61;outline-offset:12px}
 .previous-book{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a,-3px 6px 0 #e1dfcb,-4px 8px 0 #8b947a,-5px 10px 0 #8d9f82,-8px 20px 28px -12px #24302535}
 .back-cover-binding{position:absolute;right:14px;top:0;bottom:0;width:3px;background:#38543d17;box-shadow:5px 0 9px #243f361a}
-.back-cover-stamp{position:absolute;left:0;right:0;bottom:140px;font-size:21px;letter-spacing:.3em;color:#446149b0}
-.back-cover-stamp small{display:block;font:9px Georgia,serif;letter-spacing:.2em;margin-top:16px}
 .book-edge-label{position:absolute;left:34px;bottom:24px;font-size:17px;letter-spacing:.1em;color:#3d5847}
 .next-book{left:var(--stack-next-left);top:-72px;transform:none;background-color:#adba99}
 .next-book .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
@@ -235,4 +233,9 @@ html{background:#eae9e3}
 #manuscript .notebook-cover{background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px)}
 @media(prefers-reduced-motion:no-preference){.adjacent-book{animation:book-arrive .35s ease-out}@keyframes book-arrive{from{opacity:.65}to{opacity:1}}}
 
-#paper-viewport[data-book-open=true] .previous-book .book-edge-label{writing-mode:vertical-rl;left:40px;top:45px;bottom:auto;font-size:18px;letter-spacing:.16em}
+
+/* Whole-notebook handoff: the original stack stays stationary under a clone. */
+.book-transfer-stage{z-index:35;perspective:2400px;perspective-origin:50% 45%}
+.book-transfer-copy{position:absolute;left:0;top:0;transform-style:preserve-3d;transform-origin:50% 50%;will-change:transform}
+.book-transfer-face{position:absolute;inset:0;backface-visibility:hidden;transform:translateZ(.3px);box-shadow:0 10px 24px -8px #24302550}
+.book-transfer-back{transform:rotateY(180deg) translateZ(.3px)}

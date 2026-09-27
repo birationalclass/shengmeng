@@ -36,7 +36,7 @@ function render(){const s=students[student];const qs=questions();
  if(account&&!document.body.classList.contains('has-homework-session'))$('#account-slot').append(account);
  window.dispatchEvent(new Event('homework-tools-ready'));
  $('#reading-footer').innerHTML=`<div class="paper-controls"><span class="student-label">${s.name} · ${student+1} / ${students.length}</span><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
- $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-stamp">华东师范大学<small>EAST CHINA NORMAL UNIVERSITY</small></span><span class="book-edge-label">← 上一本 · ${students[student-1].name}</span><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-title" aria-hidden="true">华东师范大学<br><b>作业本</b></span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
+ $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-title" aria-hidden="true">华东师范大学<br><b>作业本</b></span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
  $('#manuscript').innerHTML=renderNotebook({questions:qs,student:{...s,correct:student===1&&settings.subject!=='general'},grades:[record(0),record(1)],tools});
@@ -159,6 +159,51 @@ function refreshGrade(i){const r=record(i);$('[data-total="'+i+'"]').textContent
 function commitScores(i){const inputs=$$('[data-score^="'+i+':"]');const qs=questions();const values=inputs.map(el=>Number(el.value));if(inputs.some((el,j)=>el.value===''||!Number.isFinite(values[j])||values[j]<0||values[j]>qs[i].criteria[j][1]||values[j]*2%1!==0)){announce('请输入范围内的分数，支持半分。',i);return false}record(i).scores=values;return true}
 function confirmQuestion(i){selectQuestion(i);const r=record(i);if(r.confirmed){r.confirmed=false;refreshGrade(i);announce('已撤回确认，可继续修改。',i);return}if(!commitScores(i))return;r.confirmed=true;refreshGrade(i);const next=1-i;if(!record(next).confirmed){locate(next);announce('第 '+questions()[i].number+' 题已确认。',i)}else announce('本份作业已复核完毕。',i)}
 function editScore(i){selectQuestion(i);const el=$('[data-rubric="'+i+'"]');el.hidden=!el.hidden;if(!el.hidden){smoothTo($('[data-grade-for="'+i+'"]'));requestAnimationFrame(()=>$('[data-score="'+i+':0"]').focus({preventScroll:true}))}}
+// Only this disposable copy moves. The neighbouring book and the current
+// manuscript remain untouched until the copy has landed on the active book.
+function flipPreviousNotebook(){
+ if(student===0||turnStage?.classList.contains('book-transfer-stage'))return;
+ const next=student-1,source=$('.previous-book');
+ if(!source||matchMedia('(prefers-reduced-motion: reduce)').matches){changeStudent(next);return}
+ cancelPageTurn();togglePreferences(false);
+ const root=$('#manuscript'),rootRect=root.getBoundingClientRect(),scale=rootRect.width/root.offsetWidth,w=sheet.width*scale,h=sheet.height*scale;
+ const sourceRect=source.getBoundingClientRect();
+ const start={x:sourceRect.left+(sourceRect.width-w)/2,y:sourceRect.top+(sourceRect.height-h)/2};
+ const end={x:rootRect.right-w,y:rootRect.top};
+ const front=captureLeaf(source);
+ // Measure the next cover at native paper coordinates without swapping the
+ // live student or borrowing any elements from the live manuscript.
+ const template=document.createElement('template');
+ template.innerHTML=renderNotebook({questions:[0,1].map(i=>getDemoQuestion(settings.subject,next,i)),student:students[next],grades:[0,1].map(i=>getDemoGrade(settings.subject,next,i)),tools:''});
+ const target=template.content.querySelector('.notebook-cover');
+ const measure=document.createElement('div');measure.className='page-spread cover-spread';
+ Object.assign(measure.style,{position:'absolute',left:(sheet.width*(bookStep()-1))+'px',top:'0',display:'block',width:sheet.width+'px',pointerEvents:'none'});
+ measure.inert=true;measure.setAttribute('aria-hidden','true');measure.append(target);root.append(measure);
+ const back=captureLeaf(target);measure.remove();
+ const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px'});
+ for(const [copy,reverse] of [[front,false],[back,true]]){
+  Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
+  // The rotated source's bounding box includes its tilt; undo that expansion
+  // and reapply the tilt to the whole animated book rather than its text.
+  copy.firstElementChild.style.transform=`scale(${scale})`;
+  const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
+ }
+ stage.append(flight);document.body.append(stage);turnStage=stage;
+ let frame=0,startTime;
+ const handle={cancel(){cancelAnimationFrame(frame);stage.remove();}};turnAnimation=handle;
+ function draw(now){
+  if(startTime===undefined)startTime=now;
+  const t=Math.min(1,(now-startTime)/1080),motion=Math.min(1,t/.9),p=(1-Math.cos(Math.PI*motion))/2,lift=Math.sin(Math.PI*p);
+  flight.style.transform=`translate3d(${start.x+(end.x-start.x)*p}px,${start.y+(end.y-start.y)*p-42*lift}px,${70*lift}px) rotateZ(${-2*(1-p)}deg) rotateY(${-180*p}deg)`;
+  stage.dataset.progress=String(Math.round(p*100));
+  if(t<1)frame=requestAnimationFrame(draw);
+  else{turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
+ }
+ // Paint the clone exactly over its source before the first animation frame.
+ flight.style.transform=`translate3d(${start.x}px,${start.y}px,0) rotateZ(-2deg)`;
+ frame=requestAnimationFrame(draw);
+}
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
  $$('[data-question-region]').forEach(el=>{el.addEventListener('click',()=>selectQuestion(Number(el.dataset.questionRegion)));el.addEventListener('focusin',()=>selectQuestion(Number(el.dataset.questionRegion)))});
@@ -204,7 +249,7 @@ let settingsMaskFrame=0;
 function scheduleSettingsMask(){if(settingsMaskFrame)return;settingsMaskFrame=requestAnimationFrame(()=>{settingsMaskFrame=0;syncSettingsMask()})}
 
 function togglePreferences(force){prefsOpen=typeof force==='boolean'?force:!prefsOpen;$('#preferences').hidden=!prefsOpen;syncSettingsMask();$('[data-action="preferences"]').setAttribute('aria-expanded',prefsOpen);if(prefsOpen){renderCandidates();$('#preferences').scrollTop=0;}else if($('#preferences').contains(document.activeElement))$('[data-action=preferences]').focus({preventScroll:true})}
-function action(name){if(name==='previous-student')changeStudent(student-1);else if(name==='next-student')changeStudent(student+1);else if(name==='preferences')togglePreferences();else if(name==='close-preferences')togglePreferences(false);else if(name==='toggle-zoom'){toggleFullscreen()}else if(name==='toggle-marks'){settings.marks=!settings.marks;apply()}else if(name==='reset-style'){settings=sanitize({documentStyle:'notebook',preset:settings.preset,subject:settings.subject,reading:'double'});apply()}else if(name==='save-candidate'){if(candidates.length>=4)return;candidates.push({id:Date.now().toString(36),settings:{...settings}});persist();renderCandidates();announce(storageOK?'候选已保存在当前浏览器。':'候选仅暂存在当前页面，请下载备份。')}else if(name==='confirm-choice'){togglePreferences(true);$('#choice-section').hidden=false;confirmed={settings:{...settings},note,at:new Date().toISOString()};updateChoice();persist();smoothTo($('#choice-section'))}else if(name==='copy-choice')copyChoice();else if(name==='download-choice')downloadChoice()}
+function action(name){if(name==='previous-student')flipPreviousNotebook();else if(name==='next-student')changeStudent(student+1);else if(name==='preferences')togglePreferences();else if(name==='close-preferences')togglePreferences(false);else if(name==='toggle-zoom'){toggleFullscreen()}else if(name==='toggle-marks'){settings.marks=!settings.marks;apply()}else if(name==='reset-style'){settings=sanitize({documentStyle:'notebook',preset:settings.preset,subject:settings.subject,reading:'double'});apply()}else if(name==='save-candidate'){if(candidates.length>=4)return;candidates.push({id:Date.now().toString(36),settings:{...settings}});persist();renderCandidates();announce(storageOK?'候选已保存在当前浏览器。':'候选仅暂存在当前页面，请下载备份。')}else if(name==='confirm-choice'){togglePreferences(true);$('#choice-section').hidden=false;confirmed={settings:{...settings},note,at:new Date().toISOString()};updateChoice();persist();smoothTo($('#choice-section'))}else if(name==='copy-choice')copyChoice();else if(name==='download-choice')downloadChoice()}
 function renderCandidates(){$('#save-candidate').disabled=candidates.length>=4;$('#candidate-list').innerHTML=candidates.map((c,i)=>`<span class="candidate-item"><button data-candidate="${esc(c.id)}">候选 ${i+1} · ${presets[c.settings.preset].name}</button><button data-remove="${esc(c.id)}" aria-label="删除候选 ${i+1}">×</button></span>`).join('');$$('[data-candidate]').forEach(b=>b.onclick=()=>{const c=candidates.find(c=>c.id===b.dataset.candidate);const old=settings.subject;settings={...c.settings};if(old!==settings.subject)render();else apply();announce('已载入候选。')});$$('[data-remove]').forEach(b=>b.onclick=()=>{candidates=candidates.filter(c=>c.id!==b.dataset.remove);persist();renderCandidates()})}
 function summary(){return `阅见：原稿上的无框批改\n样式：${documentStyles[settings.documentStyle]}；阅览：${readingModes[settings.reading]}；作业背景：${paperBackgrounds[settings.background]}；设置字体：${panelFonts[settings.panelFont]}\n方案：${presets[settings.preset].name}\n用墨：${pens[settings.ink]}；示例：${subjects[settings.subject]}\n我的意见：${note||'暂无'}\n设置：${JSON.stringify(settings)}`}
 function updateChoice(){if(confirmed)confirmed={...confirmed,settings:{...settings},note};$('#preference-summary').value=summary()}
