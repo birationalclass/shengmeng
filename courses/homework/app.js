@@ -39,7 +39,7 @@ function render(){const s=students[student];const qs=questions();
  window.dispatchEvent(new Event('homework-tools-ready'));
  $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 ${students.length-1}→${students.length} 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
  const previousLayers=Array.from({length:Math.min(2,Math.max(0,student-1))},(_,i)=>i+1).reverse().map(depth=>`<div class="adjacent-book previous-book-layer" style="--stack-depth:${depth}" aria-hidden="true"><span class="back-cover-binding"></span></div>`).join('');
- $('#notebook-stack').innerHTML=`${previousLayers}${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
+ $('#notebook-stack').innerHTML=`${previousLayers}${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
  $('#paper-viewport').dataset.lastBook=String(student===students.length-1);
@@ -276,11 +276,10 @@ function flipNotebook(direction){
  const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.dataset.sourceMode=moveOriginal?'original':'copy';stage.inert=true;stage.setAttribute('aria-hidden','true');
  // First park the current book in the tilted right pile. Only after it is
  // fully at rest may the previous book's copy begin its own flight.
- let underlay=null,underlayLabel=null;
+ let underlay=null;
  if(incoming){
   const copy=captureLeaf($('.notebook-cover'));Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
   copy.querySelector('.paper-footer')?.remove();
-  underlayLabel=document.createElement('span');underlayLabel.className='book-edge-label';underlayLabel.textContent='下一本 · '+students[student].name+' →';copy.firstElementChild.append(underlayLabel);
   underlay=document.createElement('div');underlay.className='book-settle-copy book-underlay-copy';Object.assign(underlay.style,{width:w+'px',height:h+'px'});underlay.append(copy);stage.append(underlay);stage.dataset.phase='placing';
  }
  const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:incoming?'100% 50%':'0 50%'});
@@ -310,7 +309,7 @@ function flipNotebook(direction){
   flight.style.transform=`translate3d(${pivotX-(incoming?w:0)}px,${pivotY-h/2}px,0) rotateZ(${-2*(incoming?1-p:p)}deg) rotateY(${(incoming?180:-180)*p}deg)`;
  }
  function park(p){
-  underlay.style.transform=`translate(${rightPivot.x+nextBookPose.x*scale*p}px,${rootRect.top+(-h/5+nextBookPose.y*scale)*p}px) rotate(${nextBookPose.angle*p}deg)`;underlayLabel.style.opacity=String(p);
+  underlay.style.transform=`translate(${rightPivot.x+nextBookPose.x*scale*p}px,${rootRect.top+(-h/5+nextBookPose.y*scale)*p}px) rotate(${nextBookPose.angle*p}deg)`;
  }
  function draw(now){
   if(startTime===undefined)startTime=now;
