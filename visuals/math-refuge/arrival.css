@@ -107,3 +107,14 @@ body.awaiting-scene #loading{pointer-events:auto}
 #loading #loadPercent{font:400 18px/1.3 'PingFang SC','Microsoft YaHei',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.02em;color:#d8e1da}
 #loading #loadPercent small{font-size:11px;margin-left:4px}
 #loading[data-ready=true] .arrival-meter{opacity:0;transform:translateY(4px);pointer-events:none}
+
+/* The SVG and poster share the exact opening-camera projection and cover crop. */
+#loading .coast-progress{position:absolute;inset:0;pointer-events:none;transition:opacity .8s ease}
+#loading .coast-progress svg{display:block;width:100%;height:100%;overflow:visible}
+.coast-outline{fill:none;stroke:#dfc58b;stroke-opacity:.29;stroke-width:1;vector-effect:non-scaling-stroke}
+#loading #loadFill{position:static;fill:none;stroke:#f2cf83;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100;transform:none;background:none;box-shadow:none;filter:drop-shadow(0 0 3px #edbb62) drop-shadow(0 0 8px #d9a34980);transition:stroke-dashoffset 1.15s linear;vector-effect:non-scaling-stroke}
+#loading[data-ready=true] .coast-progress{opacity:0;transition-delay:.35s}
+#loading .arrival-readout{justify-content:center;gap:14px}
+#loading #loadPercent{font-size:14px;color:#dbc99f}
+#loading #loadPercent small{font-size:10px}
+@media(prefers-reduced-motion:reduce){#loading #loadFill,#loading .coast-progress{transition:none}}

@@ -75,3 +75,11 @@ for(const type of ['click','keydown']){
  const b=boot();b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.preview();b.tick(2);b.context.document.querySelector=()=>({open:true});
  b.events[type]({type,key:'a',target:{closest:()=>null},preventDefault(){assert.fail('modal input must retain native behavior');},stopImmediatePropagation(){assert.fail('modal input must not be captured by entry');}});
 }
+
+{
+ const b=boot();b.context.refugeBoot.stage(45,'海岸');b.context.refugeBoot.stage(20,'旧回调');
+ assert.equal(b.get('loadProgress')['aria-valuenow'],'45','out-of-order callbacks cannot reverse progress');
+ assert.equal(b.get('loadFill').style.strokeDashoffset,'55');
+ b.context.refugeBoot.preview();assert(b.context.document.body.classList.contains('awaiting-scene'),'keep projected poster until final scene is ready');
+ b.context.refugeBoot.stage(NaN,'invalid');assert.equal(b.get('loadProgress')['aria-valuenow'],'45');
+}

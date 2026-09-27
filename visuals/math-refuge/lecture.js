@@ -21,11 +21,13 @@ import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './
 const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
 export async function createLecture(scene,renderer,options={}){
+  const reportProgress=options.onProgress||(()=>{});
   const pixelScale=options.boardScale===.5?.5:1;
   const disabled=Boolean(options.disabled),canAuthor=typeof document.createElementNS==='function'&&typeof window!=='undefined';let writingStyle=options.writingStyle==='marck'?'marck':'refined';const boardMipBias={value:-.45};
   const reports=disabled?[{id:'unavailable',speaker:'',speakerEn:'',topic:'',topicEn:'',url:'',sourceLabel:''}]:options.reports||REPORTS;
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
+  reportProgress(.25);
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
@@ -35,7 +37,8 @@ export async function createLecture(scene,renderer,options={}){
   const estimateDurations=()=>pages.forEach((p,i)=>clock.setDurations(i,{write:p.kind?12:Math.max(23,18+(p.text?.length||0)*.24+(p.tex?.length||0)*.07),erase:24,hold:p.kind==='cover'?2:8}));
   estimateDurations();
   const cache=new Map(),pending=new Map(),guides=new Map(),erasePlans=new Map(),pageRows=new Map();let loadingError=null,version=0,language='en',generation=0;
-  if(document.fonts&&!disabled)await withDeadline(Promise.all([document.fonts.load('42px RefugeChinese'),document.fonts.load('42px RefugeLatin'),document.fonts.load('42px RefugeMath')]),15000,'板书字体加载');
+  let fontsReady=0;
+  if(document.fonts&&!disabled)await withDeadline(Promise.all(['42px RefugeChinese','42px RefugeLatin','42px RefugeMath'].map(font=>document.fonts.load(font).then(result=>{reportProgress(.25+(++fontsReady)/3*.45);return result;}))),15000,'板书字体加载');
   function clearPageCache(){for(const c of cache.values()){c.width=1;c.height=1;}cache.clear();}
   function load(index,preparedImage){
     if(index<0)return Promise.resolve(null);
@@ -63,6 +66,7 @@ export async function createLecture(scene,renderer,options={}){
     });pending.set(index,job);return job;
   }
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
+  reportProgress(1);
   if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
   const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
@@ -428,15 +432,18 @@ export async function createLecture(scene,renderer,options={}){
   return {
     get followEnabled(){return !disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
-    async prepareOpening(){
+    async prepareOpening(onProgress=()=>{}){
       if(disabled||!storageRig)return false;
       playing=false;
       if(activeReport.id!==reports[0].id&&!await this.setReport(reports[0].id))return false;
       playing=false;hasSelection=true;clock.startAt=0;clock.stopAt=pages.length-1;
       // Stage the end of board seven; board eight is already clean in the upper channel.
       const page=Math.min(7,pages.length-1);
+      const first=Math.max(0,page-6),count=page-first+1;let prepared=0;
+      await Promise.all(Array.from({length:count},(_,i)=>load(first+i).then(()=>onProgress(++prepared/count*.9))));
       if(!await seek(Math.max(0,page-1)))return false;
       await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
+      onProgress(1);
       openingDemo={phase:'waiting',page,elapsed:0};
       stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;

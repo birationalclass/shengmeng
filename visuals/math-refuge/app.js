@@ -37,8 +37,8 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=arrival-light-74';
-import {createLecture} from './lecture.js?v129';
+import {createRetreat} from './scene.js?v=coast-arrival-91';
+import {createLecture} from './lecture.js?v=coast-arrival-91';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -518,11 +518,11 @@ try{
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
   await window.refugeBoot?.waitForEntryUI?.();
-  retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date}),45000,'空间材质加载');
+  retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')window.refugeBoot?.stage(value,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date}),45000,'空间材质加载');
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
-  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');openingPrepared=true;
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>window.refugeBoot?.stage(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  await withDeadline(lecture.prepareOpening(value=>window.refugeBoot?.stage(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -550,13 +550,17 @@ try{
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Compile materials before camera motion, rather than at a cached-video handoff.
-  if(renderer.compileAsync)await renderer.compileAsync(scene,camera);
+  if(renderer.compileAsync){
+    const compiling=renderer.compileAsync(scene,camera);
+    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(95+4*programs.filter(p=>p.isReady()).length/programs.length,'准备画面');},80);
+    try{await compiling;}finally{clearInterval(progressTimer);}
+  }
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
+  window.refugeBoot?.ready();window.refugeBoot?.preview();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 

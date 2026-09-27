@@ -4,7 +4,7 @@ import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
 import {deferredTexture} from './deferred-textures.js?v=arrival-live-71';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
-import {createCampusOcean} from './ocean-study.js?v=arrival-light-74';
+import {createCampusOcean} from './ocean-study.js?v=coast-arrival-91';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -30,6 +30,7 @@ import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour'
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
 export async function createRetreat(renderer,scene,report,device={},initialTime={}){
+  const checkpoint=async(value)=>{report(value);await new Promise(resolve=>setTimeout(resolve,16));};
   let seed=82573;
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const loader=new THREE.TextureLoader();
@@ -54,7 +55,9 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   const light=mat('#dac6a5',.95,0,{emissive:'#d7b685',emissiveIntensity:.5});
   const blackboard=mat('#153f38',.95),ink=mat('#dddcc5',1);
   const materials={steel,stone,edge,brass,timber,pale,darkFabric,soil,leaf,glass,smartGlass,light,blackboard,ink};
+  await checkpoint(20);
   const landscape=await createLandscape(renderer,scene,report);
+  await checkpoint(30);
   const boxes=new THREE.BoxGeometry(1,1,1),roundedCache=new Map();
   const cylinder=new THREE.CylinderGeometry(1,1,1,12);
   const rubber=mat('#0e1b18',.97);
@@ -172,6 +175,7 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   }
   report('正在搭建海上长露台与报告厅…');await new Promise(resolve=>setTimeout(resolve,16));
   const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
+  await checkpoint(38);
   const pathLighting=createPathLighting(scene,{box,beam,materials,section});
   materials.terraceStrip=pathLighting.material;
   // Independent chalkboards, with brief mathematical statements rather than
@@ -491,13 +495,16 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   const ocean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),oceanMaterial);
   ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
   ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
-  const study=await createCampusOcean(renderer,scene,oceanMaterial.uniforms);
+  const study=await createCampusOcean(renderer,scene,oceanMaterial.uniforms,value=>report(40+value*12));
   ocean.visible=false;
   ocean.userData.study=study;
   report('正在布置光照与镜头…');await new Promise(resolve=>setTimeout(resolve,16));
   buildPlatforms();
+  await checkpoint(52);
+  let completedBatches=0;
   const lodBatches=[],lowGeometry=new Map();
   for(const {geo,material,matrices,parts,region} of batches.values()){
+    if(completedBatches++%8===0)await checkpoint(52+completedBatches/batches.size*7);
     const mesh=new THREE.InstancedMesh(geo,material,matrices.length);
     matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));mesh.userData.campusParts=parts;
     mesh.castShadow=material!==glass&&material!==smartGlass&&material!==light&&material!==pathLighting.material;mesh.receiveShadow=material!==glass&&material!==smartGlass;
@@ -522,11 +529,13 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
       if(level!==item.mesh.userData.lodLevel){item.mesh.geometry=level?item.low:item.high;item.mesh.userData.lodLevel=level;}
     }
   }
+  await checkpoint(60);
   const residence=createResidence(scene,materials);
   const roomFill=createRoomFill();roomFill.apply(scene);
   const fleet=createBoats(scene);
   islands.group.visible=false;
   const rain=createRain(scene);
+  await checkpoint(62);
   const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;
   // Opaque architecture and sky establish the background first. The ocean is
   // transparent at the shore, so it must precede glass and non-depth-writing ink

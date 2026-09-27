@@ -1,3 +1,4 @@
+import {fetchProgressBlob} from './resource-progress.js';
 import * as THREE from 'three';
 import {EllipticRenderer} from '../ocean/elliptic-renderer.js?v=horizon-depth-1';
 import {distanceSampler} from '../ocean/beach-navigation.js';
@@ -6,10 +7,14 @@ import {makeWaveSpectrum} from '../ocean/wave-spectrum.js';
 import {CAMPUS_ANCHOR,COAST_LIFT,toBeach,toMathCoordinates} from './elliptic-site.js?v=true-north-coast-1';
 
 // One implementation of 01, embedded rigidly in the campus's physical metre frame.
-export async function createCampusOcean(renderer,scene,water){
- const field=await new THREE.TextureLoader().loadAsync(new URL('../ocean/elliptic-distance.png',import.meta.url).href);
+export async function createCampusOcean(renderer,scene,water,onProgress=()=>{}){
+ const blob=await fetchProgressBlob(new URL('../ocean/elliptic-distance.png',import.meta.url),value=>onProgress(value*.55));
+ const imageURL=URL.createObjectURL(blob);let field;
+ try{field=await new THREE.TextureLoader().loadAsync(imageURL);}finally{URL.revokeObjectURL(imageURL);}
+ onProgress(.7);await new Promise(resolve=>setTimeout(resolve,16));
  field.flipY=false;field.colorSpace=THREE.NoColorSpace;field.minFilter=field.magFilter=THREE.LinearFilter;field.generateMipmaps=false;
  const sample=distanceSampler(field.image),layer=new EllipticRenderer(null,field,{renderer,sky:false,backgroundOrder:1001});
+ onProgress(.9);await new Promise(resolve=>setTimeout(resolve,16));
  const matrix=new THREE.Matrix4().set(1,0,0,CAMPUS_ANCHOR-2000, 0,1,0,COAST_LIFT, 0,0,1,0, 0,0,0,1);
  const inverse=matrix.clone().invert(),rotation=new THREE.Quaternion().setFromRotationMatrix(inverse);
  const root=new THREE.Group();root.name='01 · elliptic coast · main hall (2 km, 0 km)';
@@ -85,7 +90,7 @@ export async function createCampusOcean(renderer,scene,water){
  }));
  layer.water.renderOrder=-100;
  for(const mesh of [...layer.scene.children]){mesh.frustumCulled=false;mesh.raycast=()=>{};root.add(mesh);}
- scene.add(root);
+ scene.add(root);onProgress(1);
  const settings={tide:2.55,tidal:true,grid:false,paused:false},empty=new THREE.DataTexture(new Uint8Array(4),1,1);empty.needsUpdate=true;
  let time=7.1,quality=2,lastWind=-1,targetWaves=null,previousEye=null;
  return {root,settings,initialized:true,foam:{value:empty},
