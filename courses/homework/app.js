@@ -29,6 +29,7 @@ const motionRate=()=>settings.motionSpeed==='fast'?2:1;
 let notebookInteractionLocked=false;
 function runNotebookMotion(action){
  if(notebookInteractionLocked)return false;
+ relaxCornerLift();
  notebookInteractionLocked=true;
  document.body.classList.add('notebook-interaction-locked');
  $('#paper-viewport').setAttribute('aria-busy','true');
@@ -92,7 +93,7 @@ function syncBookView(){
  $('#manuscript').dataset.visiblePages=cover?'cover':notebook?(step===2&&start<pages.length?start+'–'+Math.min(start+1,pages.length):String(start)):'all';
 }
 
-function cancelPageTurn(){turnAnimation?.cancel();turnAnimation=null;turnStage?.remove();turnStage=null}
+function cancelPageTurn(){clearCornerLift();turnAnimation?.cancel();turnAnimation=null;turnStage?.remove();turnStage=null}
 const snapshotProperties=('box-sizing display position top right bottom left width height min-width min-height max-width max-height padding margin gap border border-radius background background-image background-size box-shadow color font-family font-size font-weight font-style line-height letter-spacing text-align text-decoration white-space word-break overflow-wrap align-items justify-content flex flex-direction flex-wrap flex-shrink grid-template-columns transform transform-origin opacity z-index overflow vertical-align appearance isolation visibility').split(' ');
 function captureLeaf(leaf){
  if(!leaf)return null;
@@ -106,6 +107,46 @@ function captureLeaf(leaf){
  Object.assign(snapshot.style,{position:'absolute',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',pointerEvents:'none'});
  snapshot.append(copy);snapshot.inert=true;snapshot.setAttribute('aria-hidden','true');return snapshot;
 }
+
+// Lift a broad patch of the actual paper, preserving its print and texture.
+let cornerLift=null;
+function clearCornerLift(){if(!cornerLift)return;cancelAnimationFrame(cornerLift.frame);cornerLift.page.style.clipPath=cornerLift.oldClip;cornerLift.stage.remove();cornerLift=null}
+function relaxCornerLift(){cornerLift?.move(0)}
+function beginCornerLift(button){
+ if(button.disabled||notebookInteractionLocked||turnStage)return;
+ if(cornerLift?.button===button){cornerLift.move(1);return}
+ clearCornerLift();
+ const page=button.closest('.scan-page'),r=page.getBoundingClientRect(),scale=r.width/page.offsetWidth,left=Number(button.dataset.turn)<0;
+ const w=220*scale,h=190*scale,x=left?r.left:r.right-w,y=r.bottom-h;
+ const snapshot=captureLeaf(page),paper=snapshot.firstElementChild;
+ [...page.children].forEach((child,i)=>{const box=child.getBoundingClientRect();if(child.matches('.page-edge-turn')||box.right<x||box.left>x+w||box.bottom<y||box.top>y+h)paper.children[i]?.setAttribute('hidden','')});
+ const stage=document.createElement('div');stage.className='corner-lift-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const shadow=document.createElement('div');shadow.className='corner-lift-shadow';Object.assign(shadow.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',transform:left?'none':'scaleX(-1)'});stage.append(shadow);
+ const tiles=[],nx=8,ny=8,dx=w/nx,dy=h/ny;
+ for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
+  const tile=document.createElement('div');tile.className='corner-lift-tile';Object.assign(tile.style,{left:x+'px',top:y+'px',width:(dx+.45)+'px',height:(dy+.45)+'px'});
+  const copy=paper.cloneNode(true);Object.assign(copy.style,{left:(r.left-x-i*dx)+'px',top:(r.top-y-j*dy)+'px',clipPath:'none'});tile.append(copy);
+  const shade=document.createElement('div');shade.className='corner-lift-shade';tile.append(shade);stage.append(tile);tiles.push({tile,shade,i,j});
+ }
+ const oldClip=page.style.clipPath;
+ page.style.clipPath=left?`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% + 20px),220px calc(100% + 20px),220px calc(100% - 190px),-20px calc(100% - 190px))`:`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - 190px),calc(100% - 220px) calc(100% - 190px),calc(100% - 220px) calc(100% + 20px),-20px calc(100% + 20px))`;
+ document.body.append(stage);
+ const state={button,page,stage,oldClip,frame:0,progress:0,target:0,move:null};cornerLift=state;
+ function draw(p){
+  const warp=(u,v)=>{const inward=left?u:w-u,d=Math.max(0,1-inward/w-(h-v)/h),bend=d*d*p;return [u+(left?1:-1)*30*scale*bend,v-38*scale*bend]};
+  for(const {tile,shade,i,j} of tiles){const u=i*dx,v=j*dy,a=warp(u,v),b=warp(u+dx,v),c=warp(u,v+dy);tile.style.transform=`matrix(${(b[0]-a[0])/dx},${(b[1]-a[1])/dx},${(c[0]-a[0])/dy},${(c[1]-a[1])/dy},${a[0]},${a[1]})`;const inward=left?u:w-u;shade.style.opacity=String(.09*p*Math.max(0,1-inward/w-(h-v)/h));}
+  shadow.style.opacity=String(p);
+ }
+ state.move=target=>{if(state.target===target&&state.frame)return;cancelAnimationFrame(state.frame);state.target=target;const from=state.progress,start=performance.now(),duration=motionEnabled()?(target?450:600)/motionRate():0;
+  const tick=now=>{if(cornerLift!==state)return;const t=duration?Math.min(1,(now-start)/duration):1,e=t*t*(3-2*t);state.progress=from+(target-from)*e;draw(state.progress);if(t<1)state.frame=requestAnimationFrame(tick);else{state.frame=0;if(!target)clearCornerLift()}};state.frame=requestAnimationFrame(tick);
+ };
+ draw(0);state.move(1);
+}
+document.addEventListener('pointermove',e=>{if(!cornerLift)return;const r=cornerLift.button.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)relaxCornerLift()},{passive:true});
+window.addEventListener('resize',clearCornerLift);
+window.addEventListener('scroll',clearCornerLift,{passive:true});
+window.addEventListener('blur',relaxCornerLift);
+document.addEventListener('pointerout',e=>{if(!e.relatedTarget)relaxCornerLift()});
 
 // A flexible leaf is drawn as joined vertical bands. The reverse side carries
 // the destination page, while the old facing page stays beneath it until covered.
@@ -407,6 +448,7 @@ function bind(){
  $$('[data-edit-score]').forEach(b=>b.onclick=e=>{e.stopPropagation();editScore(Number(b.dataset.editScore))});
  $$('[data-close-rubric]').forEach(b=>b.onclick=()=>{$('[data-rubric="'+b.dataset.closeRubric+'"]').hidden=true});
  $$('[data-jump-end]').forEach(b=>b.onclick=()=>locate(Number(b.dataset.jumpEnd),true));
+ $$('.page-edge-turn').forEach(b=>{b.onpointerenter=e=>{if(e.pointerType!=='touch')beginCornerLift(b)};b.onfocus=()=>{if(b.matches(':focus-visible'))beginCornerLift(b)};b.onblur=relaxCornerLift});
  $$('[data-turn]').forEach(b=>b.onclick=()=>{if(bookPage===0&&Number(b.dataset.turn)>0)requestLandscape();turnBook(Number(b.dataset.turn))});
  $$('[data-jump-page]').forEach(b=>b.onclick=()=>smoothTo($('[data-page-number="'+b.dataset.jumpPage+'"]')));
  $$('[data-score]').forEach(el=>el.onchange=()=>{const [i,j]=el.dataset.score.split(':').map(Number),v=Number(el.value),max=questions()[i].criteria[j][1];if(el.value===''||!Number.isFinite(v)||v<0||v>max||v*2%1!==0){el.value=record(i).scores[j];announce('分数应在 0—'+max+' 之间，支持半分。',i);return}record(i).scores[j]=v;record(i).confirmed=false;refreshGrade(i)});
