@@ -85,12 +85,12 @@ for(const type of ['click','keydown']){
 }
 
 {
- const b=boot();b.context.refugeBoot.stage(66,'');
+ const b=boot();b.context.refugeBoot.stage(18,'');
  assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'0%','never reveal an unrendered canvas');
- b.context.refugeBoot.preview();assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'18%');
+ b.context.refugeBoot.preview();assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'40%');
  assert(b.context.document.body.classList.contains('live-preview'));
- b.context.refugeBoot.stage(80,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'60%');
- b.context.refugeBoot.stage(70,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'60%','late callbacks cannot shrink the reveal');
+ b.context.refugeBoot.stage(59,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'80%');
+ b.context.refugeBoot.stage(50,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'80%','late callbacks cannot shrink the reveal');
  b.context.refugeBoot.ready();b.context.refugeBoot.preview();
  assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'120%');
  assert.equal(b.context.refugeBoot.previewReady,false);b.tick(1.5);
@@ -111,3 +111,5 @@ for(const auth of ['pending','anonymous']){
 
 const app=readFileSync(new URL('./app.js',import.meta.url),'utf8');
 assert(!app.includes('ready();window.refugeBoot?.preview()'),'readiness alone cannot certify a rendered frame');
+
+assert(app.indexOf('await createArrivalEnvironment')<app.indexOf('retreat=await withDeadline(createRetreat'),'sea renders before architecture construction');

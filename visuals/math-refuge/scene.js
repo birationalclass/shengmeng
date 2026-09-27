@@ -29,6 +29,239 @@ import {createCampus} from './campus.js?v=spiral-20260926';
 import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour';
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
+export async function createArrivalEnvironment(renderer,scene,report,device,initialTime){
+  const seaLevel=2.55,waterNormal=deferredTexture('./assets/waternormals.jpg');
+  waterNormal.wrapS=waterNormal.wrapT=THREE.RepeatWrapping;
+  const landscape={shoreMap:null};
+  // Only the ocean remains: there is no pool mesh or planar reflection pass.
+  // Fine normal waves, Fresnel and sun glitter are analytic;
+  // this is not a fluid simulation or a photographic horizon backdrop.
+  const oceanMaterial=new THREE.ShaderMaterial({
+    transparent:true,depthWrite:true,
+    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{oceanStudy:{value:0},oceanLite:{value:1},
+      oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:.5},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
+    }]),fog:true,
+    vertexShader:`
+      uniform mat4 oceanCameraWorld,oceanInverseProjection;
+      varying vec3 oceanRay;
+      void main(){
+        vec4 viewRay=oceanInverseProjection*vec4(position.xy,1.,1.);
+        oceanRay=mat3(oceanCameraWorld)*viewRay.xyz;
+        gl_Position=vec4(position.xy,0.,1.);
+      }`,
+    fragmentShader:`
+      uniform float windWaves,waveStrength,reflectionDetail,sunReflection;uniform vec2 windFlow,waveOffset;uniform float windSpeed,skyDay,skyCoverage,skyStorm;uniform sampler2D skyMap,skyCloudMap,skyCloudPrevious;uniform float skyPhysical,skyCloudBlend,skyCloudEnabled,solarRadius,waterDetail;uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;uniform float oceanLevel;uniform mat4 oceanProjection;varying vec3 oceanRay;
+      #include <common>
+      #include <fog_pars_fragment>
+      ${seaDepthGLSL}
+      uniform float oceanStudy,oceanLite;
+      vec2 waveHash(vec2 p){return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);}
+      vec3 scatteredNormal(vec2 p){
+        vec2 cell=floor(p*.7),f=fract(p*.7);f=f*f*(3.-2.*f);
+        vec2 dx=dFdx(p),dy=dFdy(p);
+        vec3 n00=textureGrad(normalMap,p+waveHash(cell)*19.,dx,dy).xyz;
+        vec3 n10=textureGrad(normalMap,p+waveHash(cell+vec2(1,0))*19.,dx,dy).xyz;
+        vec3 n01=textureGrad(normalMap,p+waveHash(cell+vec2(0,1))*19.,dx,dy).xyz;
+        vec3 n11=textureGrad(normalMap,p+waveHash(cell+vec2(1,1))*19.,dx,dy).xyz;
+        return mix(mix(n00,n10,f.x),mix(n01,n11,f.x),f.y)*2.-1.;
+      }
+      // Analytic shallow-water height field. Gradients bend rays; Hessians focus them.
+      void rippleField(vec2 p,out vec2 gradient,out mat2 curvature){
+        gradient=vec2(0.);curvature=mat2(0.);
+        for(int i=0;i<5;i++){
+          float k=float(i),angle=.43+k*2.399963;
+          vec2 direction=vec2(cos(angle),sin(angle));
+          float frequency=2.4+k*.87,amplitude=.085/(1.+k*.32);
+          vec2 crossDirection=vec2(-direction.y,direction.x);
+          float warp=dot(p,crossDirection)*.47+time*.13+k*2.17;
+          float phase=dot(p,direction)*frequency-time*sqrt(9.81*frequency)+k*1.37+.8*sin(warp);
+          vec2 g=direction*frequency+crossDirection*(.376*cos(warp));
+          gradient+=g*(amplitude*cos(phase));
+          mat2 outerG=mat2(g.x*g.x,g.x*g.y,g.x*g.y,g.y*g.y);
+          mat2 outerCross=mat2(crossDirection.x*crossDirection.x,crossDirection.x*crossDirection.y,crossDirection.x*crossDirection.y,crossDirection.y*crossDirection.y);
+          curvature+=amplitude*(-sin(phase)*outerG-cos(phase)*.17672*sin(warp)*outerCross);
+        }
+      }
+      float sandCaustic(vec2 bottom,float depth){
+        vec2 p=bottom,gradient;mat2 curvature;float travel=min(depth,2.5)*.25;
+        // Two bounded inverse-ray iterations estimate the water entry point for this sand point.
+        for(int i=0;i<2;i++){rippleField(p,gradient,curvature);p=bottom-clamp(gradient*travel,vec2(-.35),vec2(.35));}
+        rippleField(p,gradient,curvature);
+        mat2 jacobian=mat2(1.)+curvature*travel;
+        float area=abs(jacobian[0][0]*jacobian[1][1]-jacobian[0][1]*jacobian[1][0]);
+        // Finite sun footprint prevents singular, razor-sharp or unbounded light lines.
+        return 1.5*exp(-area*area/.025);
+      }
+      vec3 grazingSky(vec2 heading){
+        vec2 hUV=vec2(.5+atan(heading.y,heading.x)/6.28318530718,0.);
+        vec3 h=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,hUV).rgb+vec3(.006,.013,.027)*(1.-skyDay),skyPhysical);
+        h=mix(h,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
+        vec4 c=mix(texture2D(skyCloudPrevious,hUV),texture2D(skyCloudMap,hUV),skyCloudBlend);
+        return h*(1.-c.a*skyCloudEnabled)+c.rgb*skyCloudEnabled;
+      }
+      float shoreHeight(vec2 p){
+        float d=seaDepthAt(p);
+        float envelope=beachMask(p)*exp(-max(d,0.)*.65);
+        float phase=time*.72+terraceDistance(p)*.38+coastNoise(p*.08)*1.5;
+        return envelope*(.13*sin(phase)+.045*sin(phase*1.43+1.7));
+      }
+      void main(){
+        vec3 rayDirection=normalize(oceanRay);
+        if(rayDirection.y>=-.0000001||cameraPosition.y<=oceanLevel)discard;
+        float travel=(oceanLevel-cameraPosition.y)/rayDirection.y;
+        vec3 vWorld=cameraPosition+rayDirection*travel;
+        // Lightweight sea retains depth, coastline, wind and sky colour, with
+        // one normal sample and no surf transport, inverse rays or caustics.
+        if(oceanLite>.5){
+          vec2 uv=vWorld.xz/siteScale;
+          float depth=seaDepthAt(uv);if(depth<=0.)discard;
+          vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
+          gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
+          vec2 drift=waveOffset*windWaves;
+          vec3 tex=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)-drift*.007).xyz*2.-1.;
+          vec3 normal=normalize(vec3(tex.x*.12,1.,tex.y*.12));
+          vec3 view=normalize(cameraPosition-vWorld),reflected=reflect(-view,normal);
+          reflected.y=max(.002,reflected.y);
+          vec2 skyUV=vec2(.5+atan(reflected.z,reflected.x)/6.2831853,sqrt(clamp(asin(reflected.y)/1.5707963,0.,1.)));
+          float fresnel=.0204+.9796*pow(1.-max(dot(normal,view),0.),5.);
+          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
+          vec3 body=(vec3(.54,.49,.36)*clarity+vec3(.008,.18,.23)*(1.-clarity))*nightVisibility;
+          vec3 sky=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,skyUV).rgb,skyPhysical);
+          vec3 color=mix(body,sky,fresnel);
+          float glint=pow(max(dot(reflect(-sunDirection,normal),view),0.),96.);
+          color+=sunTint*glint*.2*sunStrength*sunReflection;
+          float fog=1.-exp(-fogDensity*fogDensity*travel*travel);
+          color=mix(color,sky,fog);
+          float alpha=(1.-beachMask(uv)*exp(-depth*3.2)*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
+          gl_FragColor=vec4(color,alpha);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+          return;
+        }
+        // Solve the actual ray / displaced shallow-water surface intersection.
+        // A bounded bracket avoids fixed-point divergence at grazing angles.
+        vec2 flatUV=vWorld.xz/siteScale;
+        if(oceanStudy>.5&&smoothstep(.01,.15,beachMask(flatUV))*(1.-smoothstep(1.4,3.4,seaDepthAt(flatUV)))>.98)discard;
+        if(beachMask(flatUV)>.001&&seaDepthAt(flatUV)<4.){
+          float lo=max(0.,(oceanLevel+.18-cameraPosition.y)/rayDirection.y);
+          float hi=(oceanLevel-.18-cameraPosition.y)/rayDirection.y;
+          for(int step=0;step<10;step++){
+            float mid=(lo+hi)*.5;vec3 q=cameraPosition+rayDirection*mid;
+            if(q.y>oceanLevel+shoreHeight(q.xz/siteScale))lo=mid;else hi=mid;
+          }
+          travel=(lo+hi)*.5;vWorld=cameraPosition+rayDirection*travel;
+        }
+        vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
+        gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
+        vec2 uv=vWorld.xz/siteScale;
+        // Restore the earlier two counter-moving normal layers; their clocks are real-time.
+        vec2 drift=waveOffset*windWaves;
+        vec2 waveUV=uv*.035+vec2(time*.011,-time*.007)-drift*.007;
+        vec2 bend=vec2(sin(uv.y*.023+sin(uv.x*.017)),sin(uv.x*.019+sin(uv.y*.013)))*.09;
+        vec3 a=mix(texture2D(normalMap,waveUV+bend).xyz*2.-1.,scatteredNormal(waveUV+bend),.6);
+        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,mat2(.7986,-.6018,.6018,.7986)*uv*.0173+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
+        float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
+        float effectiveWave=min(1.5,max(.5,waveStrength)+.8*windGain);
+        float chop=mix(.20,.28,windGain)*effectiveWave;
+        vec2 crossWind=vec2(-windFlow.y,windFlow.x);
+        vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y);
+        slopes+=(windFlow*cos(dot(uv,windFlow)*.095-time*.61)
+          +normalize(windFlow+crossWind*.73)*cos(dot(uv,windFlow+crossWind*.73)*.057-time*.43+1.7)*.57
+          +normalize(windFlow-crossWind*.41)*cos(dot(uv,windFlow-crossWind*.41)*.137-time*.79+4.1)*.31)*.06*windGain;
+        float surfaceDistance=length(vWorld.xz-cameraPosition.xz);
+        float footprint=max(length(dFdx(uv)),length(dFdy(uv)));
+        float detailFade=inversesqrt(1.+pow(surfaceDistance/650.,2.))*inversesqrt(1.+pow(footprint/.65,2.));
+        vec2 rippleGradient;mat2 rippleCurvature;
+        float beachInfluence=exp(-max(seaDepthAt(uv),0.)*.32);
+        if(beachInfluence>.001){rippleField(vWorld.xz,rippleGradient,rippleCurvature);slopes=mix(slopes,-rippleGradient*.55/max(chop,.001),beachInfluence*.18);}
+        vec3 normal=normalize(vec3(slopes.x*chop*detailFade,1.,slopes.y*chop*detailFade));
+        // Expanding impact rings have staggered births and fade before cell edges.
+        vec2 cell=floor(vWorld.xz*.65),local=fract(vWorld.xz*.65)-.5;
+        float seed=fract(sin(dot(cell,vec2(127.1,311.7)))*43758.5453),age=fract(time*1.6+seed),r=length(local);
+        float ring=exp(-pow((r-age*.42)/.025,2.))*(1.-age)*smoothstep(0.,.08,age)*(1.-smoothstep(.37,.48,r));
+        normal=normalize(normal+vec3(local.x,0.,local.y)*ring*rainAmount*.22*detailFade);
+        vec3 view=normalize(cameraPosition-vWorld);
+        float nv=max(dot(normal,view),.001);
+        float fresnel=.0204+.9796*pow(1.0-nv,5.0);
+        vec3 halfVector=normalize(sunDirection+view);float nh=max(dot(normal,halfVector),0.0);
+        // Gaussian wave slopes suppress GGX's long bright tails at the horizon.
+        // The half-vector determines the required slope, so sun elevation and
+        // observer height naturally move and reshape the specular footprint.
+        float alpha=.035+.09*windGain*effectiveWave+solarRadius*.45+rainAmount*.025,a2=alpha*alpha;
+        float nh2=max(nh*nh,.0001),slope2=(1.-nh2)/nh2;
+        float distribution=exp(-slope2/a2)/(3.14159265*a2*nh2*nh2);
+        float nl=max(dot(normal,sunDirection),0.0),k=alpha*.5;
+        float visibility=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
+        float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
+        // Bound radiance smoothly; avoid a flat clipped white column at grazing angles.
+        float radiance=distribution*visibility*sunF/(4.*nv+.001);
+        float glitter=.85*(1.-exp(-radiance*.32));
+        float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
+        float depth=seaDepthAt(uv)+(vWorld.y-oceanLevel);if(depth<=0.)discard;
+        vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
+        vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
+        waterColor*=.94+swell*.06;
+        // One depth-driven optical model across the shelf: no beach-mask colour seam.
+        float sand=exp(-depth*.16);
+        if(sand>.001){
+          vec2 bottom=uv-normal.xz*depth*.35;
+          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
+          vec3 sandColor=vec3(.54,.49,.36);
+          vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
+          float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
+          shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
+          waterColor=mix(waterColor,shallow,sand);
+        }
+        vec2 shoreUV=vec2((uv.x+150.0)/250.0,(uv.y+110.0)/220.0);
+        float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
+        float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
+        float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
+        waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.16);
+        float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
+        float wash=pow(max(0.,sin(depth*10.-time*.55+sin(uv.x*.21+uv.y*.13))),10.);
+        foam=max(foam,beachMask(uv)*wash*exp(-depth*7.)*smoothstep(.35,.75,coastNoise(uv*.7+vec2(time*.04,0.)))*.12);
+        vec3 reflection=reflect(-view,normal);reflection.y=max(.002,reflection.y);
+        vec2 reflectedUV=vec2(.5+atan(reflection.z,reflection.x)/6.28318530718,sqrt(clamp(asin(clamp(reflection.y,0.,1.))/1.57079632679,0.,1.)));
+        vec3 reflected=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,reflectedUV).rgb,skyPhysical);
+        reflected=mix(reflected,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
+        vec4 clouds=vec4(0.);if(reflectionDetail>.5)clouds=mix(texture2D(skyCloudPrevious,reflectedUV),texture2D(skyCloudMap,reflectedUV),skyCloudBlend);
+        reflected=reflected*(1.-clouds.a*skyCloudEnabled)+clouds.rgb*skyCloudEnabled;
+        reflected+=vec3(.002,.004,.009)*(1.-nightVisibility);
+        vec3 color=waterColor*nightVisibility*(1.-fresnel)+reflected*fresnel+sunTint*glitter*sunStrength*sunReflection;
+        color=mix(color,vec3(.67,.77,.71),foam*.45*nightVisibility);
+        float distanceToEye=length(vWorld.xz-cameraPosition.xz);
+        vec3 horizonColor=grazingSky(-view.xz)*mix(vec3(.76,.84,.89),vec3(.94),skyStorm);
+        float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
+        float edgeFade=smoothstep(20000.,100000.,distanceToEye);
+        color=mix(color,horizonColor,max(aerial,edgeFade));
+        // Only the sand shelf has real geometry beneath the water to transmit.
+        // Thin shore film reveals grains; Fresnel retains grazing reflections.
+        float shoreTransmission=beachMask(uv)*exp(-depth*3.2);
+        float waterAlpha=(1.-shoreTransmission*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
+        gl_FragColor=vec4(color,waterAlpha);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`
+  });
+  const ocean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),oceanMaterial);
+  ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
+  ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
+  const study=await createCampusOcean(renderer,scene,oceanMaterial.uniforms,value=>report(10+value*8));
+  ocean.visible=false;
+  ocean.userData.study=study;
+
+  const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;
+  sky.userData.setCloudQuality('off');sky.renderOrder=1000;scene.add(sky);ocean.renderOrder=-100;
+  const state=solarState(initialTime.hour,initialTime.date),direction=geographicDirectionToCampus(state.direction),u=sky.material.uniforms,w=oceanMaterial.uniforms;
+  u.sunPosition.value.fromArray(direction);u.sunColor.value.set('#fff4e0').lerp(new THREE.Color('#ff7334'),state.warm);
+  u.day.value=state.daylight;u.warm.value=state.warm;u.direct.value=state.direct;u.cloud.value=.14;u.storm.value=0;u.stars.value=state.night;u.radius.value=state.radius;
+  scene.fog=new THREE.FogExp2(new THREE.Color('#477b9c').lerp(new THREE.Color('#101b2b'),1-state.daylight),.000018+.00023*(1-state.daylight));
+  u.seaColor.value.copy(scene.fog.color);sky.userData.updateAtmosphere(0);
+  for(const [key,source] of Object.entries({skyMap:'atmosphereMap',skyPrevious:'atmosphereMapPrevious',skyBlend:'atmosphereBlend',skyPhysical:'useAtmosphere',skyCloudMap:'cloudMap',skyCloudPrevious:'cloudMapPrevious',skyCloudBlend:'cloudBlend',skyCloudEnabled:'useVolumeClouds'})){(w[key]??={value:null}).value=u[source].value;}
+  w.nightVisibility.value=.06+state.daylight*.94;w.sunDirection.value.fromArray(geographicDirectionToCampus(apparentSunDirection(state.direction)));w.sunTint.value.copy(u.sunColor.value);w.sunStrength.value=state.direct;w.skyDay.value=state.daylight;study.setQuality(0);
+  return {ocean,sky,study,waterNormal};
+}
+
 export async function createRetreat(renderer,scene,report,device={},initialTime={}){
   const checkpoint=async(value)=>{report(value);await new Promise(resolve=>setTimeout(resolve,16));};
   let seed=82573;
@@ -278,226 +511,13 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   // Room-specific pendant/cove fixtures are constructed with their rooms.
   // Only offshore architecture and contained garden planting remain.
   const {seaLevel,elevation,coastline}=landscape.site;
-  const architectureObjects=new Set(scene.children);
+  const architectureObjects=new Set(scene.children.filter(o=>![initialTime.environment.ocean,initialTime.environment.sky,initialTime.environment.study.root].includes(o)));
   landscape.populate();landscape.finish();
-  const campusPlants=new Set(scene.children.filter(o=>!architectureObjects.has(o)));
+  const campusPlants=new Set(scene.children.filter(o=>!architectureObjects.has(o)&&![initialTime.environment.ocean,initialTime.environment.sky,initialTime.environment.study.root].includes(o)));
   const islands=createDistantIslands(scene);
-  // Only the ocean remains: there is no pool mesh or planar reflection pass.
-  // Fine normal waves, Fresnel and sun glitter are analytic;
-  // this is not a fluid simulation or a photographic horizon backdrop.
-  const oceanMaterial=new THREE.ShaderMaterial({
-    transparent:true,depthWrite:true,
-    uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{oceanStudy:{value:0},oceanLite:{value:1},
-      oceanCameraWorld:{value:new THREE.Matrix4()},oceanInverseProjection:{value:new THREE.Matrix4()},oceanProjection:{value:new THREE.Matrix4()},oceanLevel:{value:seaLevel*BUILDING_SCALE},windWaves:{value:1},waveStrength:{value:.5},reflectionDetail:{value:1},sunReflection:{value:1},windFlow:{value:new THREE.Vector2(1,0)},waveOffset:{value:new THREE.Vector2()},windSpeed:{value:2},skyDay:{value:1},skyCoverage:{value:0},skyStorm:{value:0},waterDetail:{value:1},skyMap:{value:null},skyCloudMap:{value:null},skyCloudPrevious:{value:null},skyCloudBlend:{value:1},skyCloudEnabled:{value:0},skyPhysical:{value:0},solarRadius:{value:.00465},sunTint:{value:new THREE.Color('#fff4df')},sunStrength:{value:1},rainAmount:{value:0},overcast:{value:0},time:{value:0},nightVisibility:{value:1},siteScale:{value:BUILDING_SCALE},normalMap:{value:waterNormal},shoreMap:{value:landscape.shoreMap},sunDirection:{value:new THREE.Vector3(1,.5,.4).normalize()}
-    }]),fog:true,
-    vertexShader:`
-      uniform mat4 oceanCameraWorld,oceanInverseProjection;
-      varying vec3 oceanRay;
-      void main(){
-        vec4 viewRay=oceanInverseProjection*vec4(position.xy,1.,1.);
-        oceanRay=mat3(oceanCameraWorld)*viewRay.xyz;
-        gl_Position=vec4(position.xy,0.,1.);
-      }`,
-    fragmentShader:`
-      uniform float windWaves,waveStrength,reflectionDetail,sunReflection;uniform vec2 windFlow,waveOffset;uniform float windSpeed,skyDay,skyCoverage,skyStorm;uniform sampler2D skyMap,skyCloudMap,skyCloudPrevious;uniform float skyPhysical,skyCloudBlend,skyCloudEnabled,solarRadius,waterDetail;uniform vec3 sunTint;uniform float sunStrength,overcast,rainAmount;uniform float time;uniform float nightVisibility;uniform float siteScale;uniform sampler2D normalMap;uniform sampler2D shoreMap;uniform vec3 sunDirection;uniform float oceanLevel;uniform mat4 oceanProjection;varying vec3 oceanRay;
-      #include <common>
-      #include <fog_pars_fragment>
-      ${seaDepthGLSL}
-      uniform float oceanStudy,oceanLite;
-      vec2 waveHash(vec2 p){return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);}
-      vec3 scatteredNormal(vec2 p){
-        vec2 cell=floor(p*.7),f=fract(p*.7);f=f*f*(3.-2.*f);
-        vec2 dx=dFdx(p),dy=dFdy(p);
-        vec3 n00=textureGrad(normalMap,p+waveHash(cell)*19.,dx,dy).xyz;
-        vec3 n10=textureGrad(normalMap,p+waveHash(cell+vec2(1,0))*19.,dx,dy).xyz;
-        vec3 n01=textureGrad(normalMap,p+waveHash(cell+vec2(0,1))*19.,dx,dy).xyz;
-        vec3 n11=textureGrad(normalMap,p+waveHash(cell+vec2(1,1))*19.,dx,dy).xyz;
-        return mix(mix(n00,n10,f.x),mix(n01,n11,f.x),f.y)*2.-1.;
-      }
-      // Analytic shallow-water height field. Gradients bend rays; Hessians focus them.
-      void rippleField(vec2 p,out vec2 gradient,out mat2 curvature){
-        gradient=vec2(0.);curvature=mat2(0.);
-        for(int i=0;i<5;i++){
-          float k=float(i),angle=.43+k*2.399963;
-          vec2 direction=vec2(cos(angle),sin(angle));
-          float frequency=2.4+k*.87,amplitude=.085/(1.+k*.32);
-          vec2 crossDirection=vec2(-direction.y,direction.x);
-          float warp=dot(p,crossDirection)*.47+time*.13+k*2.17;
-          float phase=dot(p,direction)*frequency-time*sqrt(9.81*frequency)+k*1.37+.8*sin(warp);
-          vec2 g=direction*frequency+crossDirection*(.376*cos(warp));
-          gradient+=g*(amplitude*cos(phase));
-          mat2 outerG=mat2(g.x*g.x,g.x*g.y,g.x*g.y,g.y*g.y);
-          mat2 outerCross=mat2(crossDirection.x*crossDirection.x,crossDirection.x*crossDirection.y,crossDirection.x*crossDirection.y,crossDirection.y*crossDirection.y);
-          curvature+=amplitude*(-sin(phase)*outerG-cos(phase)*.17672*sin(warp)*outerCross);
-        }
-      }
-      float sandCaustic(vec2 bottom,float depth){
-        vec2 p=bottom,gradient;mat2 curvature;float travel=min(depth,2.5)*.25;
-        // Two bounded inverse-ray iterations estimate the water entry point for this sand point.
-        for(int i=0;i<2;i++){rippleField(p,gradient,curvature);p=bottom-clamp(gradient*travel,vec2(-.35),vec2(.35));}
-        rippleField(p,gradient,curvature);
-        mat2 jacobian=mat2(1.)+curvature*travel;
-        float area=abs(jacobian[0][0]*jacobian[1][1]-jacobian[0][1]*jacobian[1][0]);
-        // Finite sun footprint prevents singular, razor-sharp or unbounded light lines.
-        return 1.5*exp(-area*area/.025);
-      }
-      vec3 grazingSky(vec2 heading){
-        vec2 hUV=vec2(.5+atan(heading.y,heading.x)/6.28318530718,0.);
-        vec3 h=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,hUV).rgb+vec3(.006,.013,.027)*(1.-skyDay),skyPhysical);
-        h=mix(h,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
-        vec4 c=mix(texture2D(skyCloudPrevious,hUV),texture2D(skyCloudMap,hUV),skyCloudBlend);
-        return h*(1.-c.a*skyCloudEnabled)+c.rgb*skyCloudEnabled;
-      }
-      float shoreHeight(vec2 p){
-        float d=seaDepthAt(p);
-        float envelope=beachMask(p)*exp(-max(d,0.)*.65);
-        float phase=time*.72+terraceDistance(p)*.38+coastNoise(p*.08)*1.5;
-        return envelope*(.13*sin(phase)+.045*sin(phase*1.43+1.7));
-      }
-      void main(){
-        vec3 rayDirection=normalize(oceanRay);
-        if(rayDirection.y>=-.0000001||cameraPosition.y<=oceanLevel)discard;
-        float travel=(oceanLevel-cameraPosition.y)/rayDirection.y;
-        vec3 vWorld=cameraPosition+rayDirection*travel;
-        // Lightweight sea retains depth, coastline, wind and sky colour, with
-        // one normal sample and no surf transport, inverse rays or caustics.
-        if(oceanLite>.5){
-          vec2 uv=vWorld.xz/siteScale;
-          float depth=seaDepthAt(uv);if(depth<=0.)discard;
-          vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
-          gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
-          vec2 drift=waveOffset*windWaves;
-          vec3 tex=texture2D(normalMap,uv*.035+vec2(time*.011,-time*.007)-drift*.007).xyz*2.-1.;
-          vec3 normal=normalize(vec3(tex.x*.12,1.,tex.y*.12));
-          vec3 view=normalize(cameraPosition-vWorld),reflected=reflect(-view,normal);
-          reflected.y=max(.002,reflected.y);
-          vec2 skyUV=vec2(.5+atan(reflected.z,reflected.x)/6.2831853,sqrt(clamp(asin(reflected.y)/1.5707963,0.,1.)));
-          float fresnel=.0204+.9796*pow(1.-max(dot(normal,view),0.),5.);
-          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
-          vec3 body=(vec3(.54,.49,.36)*clarity+vec3(.008,.18,.23)*(1.-clarity))*nightVisibility;
-          vec3 sky=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,skyUV).rgb,skyPhysical);
-          vec3 color=mix(body,sky,fresnel);
-          float glint=pow(max(dot(reflect(-sunDirection,normal),view),0.),96.);
-          color+=sunTint*glint*.2*sunStrength*sunReflection;
-          float fog=1.-exp(-fogDensity*fogDensity*travel*travel);
-          color=mix(color,sky,fog);
-          float alpha=(1.-beachMask(uv)*exp(-depth*3.2)*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
-          gl_FragColor=vec4(color,alpha);
-          #include <tonemapping_fragment>
-          #include <colorspace_fragment>
-          return;
-        }
-        // Solve the actual ray / displaced shallow-water surface intersection.
-        // A bounded bracket avoids fixed-point divergence at grazing angles.
-        vec2 flatUV=vWorld.xz/siteScale;
-        if(oceanStudy>.5&&smoothstep(.01,.15,beachMask(flatUV))*(1.-smoothstep(1.4,3.4,seaDepthAt(flatUV)))>.98)discard;
-        if(beachMask(flatUV)>.001&&seaDepthAt(flatUV)<4.){
-          float lo=max(0.,(oceanLevel+.18-cameraPosition.y)/rayDirection.y);
-          float hi=(oceanLevel-.18-cameraPosition.y)/rayDirection.y;
-          for(int step=0;step<10;step++){
-            float mid=(lo+hi)*.5;vec3 q=cameraPosition+rayDirection*mid;
-            if(q.y>oceanLevel+shoreHeight(q.xz/siteScale))lo=mid;else hi=mid;
-          }
-          travel=(lo+hi)*.5;vWorld=cameraPosition+rayDirection*travel;
-        }
-        vec4 projected=oceanProjection*viewMatrix*vec4(vWorld,1.);
-        gl_FragDepthEXT=min(.9999995,.5*projected.z/projected.w+.5);
-        vec2 uv=vWorld.xz/siteScale;
-        // Restore the earlier two counter-moving normal layers; their clocks are real-time.
-        vec2 drift=waveOffset*windWaves;
-        vec2 waveUV=uv*.035+vec2(time*.011,-time*.007)-drift*.007;
-        vec2 bend=vec2(sin(uv.y*.023+sin(uv.x*.017)),sin(uv.x*.019+sin(uv.y*.013)))*.09;
-        vec3 a=mix(texture2D(normalMap,waveUV+bend).xyz*2.-1.,scatteredNormal(waveUV+bend),.6);
-        vec3 b=vec3(0.);if(waterDetail>.5)b=texture2D(normalMap,mat2(.7986,-.6018,.6018,.7986)*uv*.0173+vec2(-time*.008,time*.005)-drift*.005).xyz*2.-1.;
-        float windGain=smoothstep(0.,14.,windSpeed)*windWaves;
-        float effectiveWave=min(1.5,max(.5,waveStrength)+.8*windGain);
-        float chop=mix(.20,.28,windGain)*effectiveWave;
-        vec2 crossWind=vec2(-windFlow.y,windFlow.x);
-        vec2 slopes=windFlow*(a.x+b.x)+crossWind*(a.y+b.y);
-        slopes+=(windFlow*cos(dot(uv,windFlow)*.095-time*.61)
-          +normalize(windFlow+crossWind*.73)*cos(dot(uv,windFlow+crossWind*.73)*.057-time*.43+1.7)*.57
-          +normalize(windFlow-crossWind*.41)*cos(dot(uv,windFlow-crossWind*.41)*.137-time*.79+4.1)*.31)*.06*windGain;
-        float surfaceDistance=length(vWorld.xz-cameraPosition.xz);
-        float footprint=max(length(dFdx(uv)),length(dFdy(uv)));
-        float detailFade=inversesqrt(1.+pow(surfaceDistance/650.,2.))*inversesqrt(1.+pow(footprint/.65,2.));
-        vec2 rippleGradient;mat2 rippleCurvature;
-        float beachInfluence=exp(-max(seaDepthAt(uv),0.)*.32);
-        if(beachInfluence>.001){rippleField(vWorld.xz,rippleGradient,rippleCurvature);slopes=mix(slopes,-rippleGradient*.55/max(chop,.001),beachInfluence*.18);}
-        vec3 normal=normalize(vec3(slopes.x*chop*detailFade,1.,slopes.y*chop*detailFade));
-        // Expanding impact rings have staggered births and fade before cell edges.
-        vec2 cell=floor(vWorld.xz*.65),local=fract(vWorld.xz*.65)-.5;
-        float seed=fract(sin(dot(cell,vec2(127.1,311.7)))*43758.5453),age=fract(time*1.6+seed),r=length(local);
-        float ring=exp(-pow((r-age*.42)/.025,2.))*(1.-age)*smoothstep(0.,.08,age)*(1.-smoothstep(.37,.48,r));
-        normal=normalize(normal+vec3(local.x,0.,local.y)*ring*rainAmount*.22*detailFade);
-        vec3 view=normalize(cameraPosition-vWorld);
-        float nv=max(dot(normal,view),.001);
-        float fresnel=.0204+.9796*pow(1.0-nv,5.0);
-        vec3 halfVector=normalize(sunDirection+view);float nh=max(dot(normal,halfVector),0.0);
-        // Gaussian wave slopes suppress GGX's long bright tails at the horizon.
-        // The half-vector determines the required slope, so sun elevation and
-        // observer height naturally move and reshape the specular footprint.
-        float alpha=.035+.09*windGain*effectiveWave+solarRadius*.45+rainAmount*.025,a2=alpha*alpha;
-        float nh2=max(nh*nh,.0001),slope2=(1.-nh2)/nh2;
-        float distribution=exp(-slope2/a2)/(3.14159265*a2*nh2*nh2);
-        float nl=max(dot(normal,sunDirection),0.0),k=alpha*.5;
-        float visibility=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
-        float sunF=.0204+.9796*pow(1.-max(dot(view,halfVector),0.),5.);
-        // Bound radiance smoothly; avoid a flat clipped white column at grazing angles.
-        float radiance=distribution*visibility*sunF/(4.*nv+.001);
-        float glitter=.85*(1.-exp(-radiance*.32));
-        float swell=.5+.5*sin(uv.x*.11+uv.y*.067+time*.65);
-        float depth=seaDepthAt(uv)+(vWorld.y-oceanLevel);if(depth<=0.)discard;
-        vec3 transmission=exp(-vec3(.23,.105,.065)*depth);
-        vec3 waterColor=vec3(.006,.065,.12)*(1.0-transmission)+vec3(.25,.37,.28)*transmission;
-        waterColor*=.94+swell*.06;
-        // One depth-driven optical model across the shelf: no beach-mask colour seam.
-        float sand=exp(-depth*.16);
-        if(sand>.001){
-          vec2 bottom=uv-normal.xz*depth*.35;
-          vec3 clarity=exp(-vec3(.42,.19,.12)*depth);
-          vec3 sandColor=vec3(.54,.49,.36);
-          vec3 shallow=sandColor*clarity+vec3(.008,.29,.34)*(1.-clarity);
-          float caustic=sandCaustic(bottom*siteScale,depth)*exp(-surfaceDistance/180.)/(1.+pow(footprint/.4,2.));
-          shallow+=vec3(.20,.27,.23)*caustic*exp(-depth*.6)*sunStrength;
-          waterColor=mix(waterColor,shallow,sand);
-        }
-        vec2 shoreUV=vec2((uv.x+150.0)/250.0,(uv.y+110.0)/220.0);
-        float inPatch=step(0.0,shoreUV.x)*step(shoreUV.x,1.0)*step(0.0,shoreUV.y)*step(shoreUV.y,1.0);
-        float shoreDistance=texture2D(shoreMap,clamp(shoreUV,0.0,1.0)).r*20.0;
-        float nearShore=(1.0-smoothstep(.2,8.0,shoreDistance))*inPatch;
-        waterColor=mix(waterColor,vec3(.06,.30,.27),nearShore*.16);
-        float foam=pow(.5+.5*sin(shoreDistance*2.2-time*.9+a.x*.7),8.0)*exp(-shoreDistance*.58)*nearShore;
-        float wash=pow(max(0.,sin(depth*10.-time*.55+sin(uv.x*.21+uv.y*.13))),10.);
-        foam=max(foam,beachMask(uv)*wash*exp(-depth*7.)*smoothstep(.35,.75,coastNoise(uv*.7+vec2(time*.04,0.)))*.12);
-        vec3 reflection=reflect(-view,normal);reflection.y=max(.002,reflection.y);
-        vec2 reflectedUV=vec2(.5+atan(reflection.z,reflection.x)/6.28318530718,sqrt(clamp(asin(clamp(reflection.y,0.,1.))/1.57079632679,0.,1.)));
-        vec3 reflected=mix(vec3(.07,.24,.43)*nightVisibility,texture2D(skyMap,reflectedUV).rgb,skyPhysical);
-        reflected=mix(reflected,vec3(.33,.39,.47)*(.025+.975*skyDay),skyCoverage*skyStorm*.68);
-        vec4 clouds=vec4(0.);if(reflectionDetail>.5)clouds=mix(texture2D(skyCloudPrevious,reflectedUV),texture2D(skyCloudMap,reflectedUV),skyCloudBlend);
-        reflected=reflected*(1.-clouds.a*skyCloudEnabled)+clouds.rgb*skyCloudEnabled;
-        reflected+=vec3(.002,.004,.009)*(1.-nightVisibility);
-        vec3 color=waterColor*nightVisibility*(1.-fresnel)+reflected*fresnel+sunTint*glitter*sunStrength*sunReflection;
-        color=mix(color,vec3(.67,.77,.71),foam*.45*nightVisibility);
-        float distanceToEye=length(vWorld.xz-cameraPosition.xz);
-        vec3 horizonColor=grazingSky(-view.xz)*mix(vec3(.76,.84,.89),vec3(.94),skyStorm);
-        float aerial=1.-exp(-fogDensity*fogDensity*distanceToEye*distanceToEye);
-        float edgeFade=smoothstep(20000.,100000.,distanceToEye);
-        color=mix(color,horizonColor,max(aerial,edgeFade));
-        // Only the sand shelf has real geometry beneath the water to transmit.
-        // Thin shore film reveals grains; Fresnel retains grazing reflections.
-        float shoreTransmission=beachMask(uv)*exp(-depth*3.2);
-        float waterAlpha=(1.-shoreTransmission*(1.-fresnel)*.88)*smoothstep(0.,.018,depth);
-        gl_FragColor=vec4(color,waterAlpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`
-  });
-  const ocean=new THREE.Mesh(new THREE.PlaneGeometry(2,2),oceanMaterial);
-  ocean.name='Panoramic ocean';ocean.position.y=seaLevel*BUILDING_SCALE;ocean.frustumCulled=false;ocean.raycast=()=>{};
-  ocean.onBeforeRender=(_renderer,_scene,camera)=>{const u=oceanMaterial.uniforms;u.oceanCameraWorld.value.copy(camera.matrixWorld);u.oceanInverseProjection.value.copy(camera.projectionMatrixInverse);u.oceanProjection.value.copy(camera.projectionMatrix);};scene.add(ocean);
-  const study=await createCampusOcean(renderer,scene,oceanMaterial.uniforms,value=>report(40+value*12));
-  ocean.visible=false;
-  ocean.userData.study=study;
+  const {ocean,sky,study}=initialTime.environment;
+  ocean.material.uniforms.shoreMap.value=landscape.shoreMap;
+  ocean.material.uniforms.normalMap.value=waterNormal;
   report('正在布置光照与镜头…');await new Promise(resolve=>setTimeout(resolve,16));
   buildPlatforms();
   await checkpoint(52);
@@ -536,7 +556,6 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   islands.group.visible=false;
   const rain=createRain(scene);
   await checkpoint(62);
-  const sky=createWeatherSky({renderer,device});sky.material.uniforms.seaHorizon.value=1;
   // Opaque architecture and sky establish the background first. The ocean is
   // transparent at the shore, so it must precede glass and non-depth-writing ink
   // within the transparent queue. Keep depth tests: walls still occlude labels.
