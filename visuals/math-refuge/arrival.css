@@ -111,10 +111,17 @@ body.awaiting-scene #loading{pointer-events:auto}
 /* The SVG and poster share the exact opening-camera projection and cover crop. */
 #loading .coast-progress{position:absolute;inset:0;pointer-events:none;transition:opacity .8s ease}
 #loading .coast-progress svg{display:block;width:100%;height:100%;overflow:visible}
-.coast-outline{fill:none;stroke:#c3c8bd;stroke-opacity:.16;stroke-width:.65;vector-effect:non-scaling-stroke}
-#loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100;transform:none;background:none;box-shadow:none;filter:drop-shadow(0 0 2px #d8d3be55);transition:stroke-dashoffset 1.15s linear;vector-effect:non-scaling-stroke}
+.coast-outline{fill:none;stroke:url(#coastMetal);stroke-opacity:.16;stroke-width:.65;vector-effect:non-scaling-stroke}
+#loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;stroke-dasharray:100 100;stroke-dashoffset:100;transform:none;background:none;box-shadow:none;filter:drop-shadow(0 0 2px #d8d3be55);transition:stroke-dashoffset 1.15s linear}
 #loading[data-ready=true] .coast-progress{opacity:0;transition-delay:.35s}
 #loading .arrival-readout{justify-content:center;gap:14px}
 #loading #loadPercent{font-size:13px;color:#aebbb5}
 #loading #loadPercent small{font-size:10px}
 @media(prefers-reduced-motion:reduce){#loading #loadFill,#loading .coast-progress{transition:none}}
+
+/* A quiet travelling highlight is decorative; the revealed length stays factual. */
+#coastSweep{fill:none;stroke:#eee5cc;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 193;animation:coast-sheen 4s linear infinite;filter:drop-shadow(0 0 2px #e8ddbc66);pointer-events:none}
+#coastMask{fill:none;stroke:url(#coastFade);stroke-width:8;stroke-dasharray:100 100;stroke-dashoffset:100;transition:stroke-dashoffset 1.15s linear}
+#loading #loadFill{stroke-linejoin:round}
+@keyframes coast-sheen{from{stroke-dashoffset:7}to{stroke-dashoffset:-107}}
+@media(prefers-reduced-motion:reduce){#coastSweep{display:none}#coastMask{transition:none}}

@@ -1,5 +1,5 @@
 import {PerspectiveCamera,Vector3} from '../3d/vendor/three.module.js';
-import {branchPoint,bedHeight} from '../ocean/elliptic-model.js';
+import {branchPoint} from '../ocean/elliptic-model.js';
 import {OPENING_POSE} from './opening-camera.js';
 import {fromBeach,COAST_LIFT} from './elliptic-site.js';
 // Poster is captured at 1280 x 720. SVG uses the identical cover mapping.
@@ -11,9 +11,8 @@ export function openingCoast(){
  for(let i=0;i<=600;i++){
   const t=1.25-i*2.5/600,[bx,bz]=branchPoint(t),[px,pz]=branchPoint(t+.0001);
   const dx=px-bx,dz=pz-bz,length=Math.hypot(dx,dz);
-  // Tide-height contour on the west-facing edge of the eastern beach.
-  let lo=0,hi=50;for(let j=0;j<20;j++){const d=(lo+hi)/2;if(bedHeight(d,bx,bz)>2.55)lo=d;else hi=d;}
-  const x=bx+dz/length*(lo+hi)/2,z=bz-dx/length*(lo+hi)/2;
+  // Smooth presentation contour: omit sub-pixel sand relief from the loading stroke.
+  const x=bx+dz/length*3,z=bz-dx/length*3;
   const [wx,wz]=fromBeach(x,z),v=new Vector3(wx,2.55+COAST_LIFT,wz).project(camera);
   const screen=[(v.x+1)*640,(1-v.y)*360];
   if(screen[0]>=12&&screen[0]<=1268)points.push({screen,world:[x,z]});
