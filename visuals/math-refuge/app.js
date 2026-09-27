@@ -389,7 +389,7 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
-  if(document.getElementById('socialDialog')?.open)return;
+  if(entered&&document.getElementById('socialDialog')?.open)return;
   if(startupAutomatic&&entered&&!entryTransition&&!openingPreparing&&!blend?.openingPath&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
@@ -562,7 +562,7 @@ try{
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.ready();window.refugeBoot?.preview();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
+  window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 

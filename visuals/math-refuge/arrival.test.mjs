@@ -95,6 +95,7 @@ for(const type of ['click','keydown']){
  assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'120%');
  assert.equal(b.context.refugeBoot.previewReady,false);b.tick(1.5);
  assert.equal(b.context.refugeBoot.previewReady,true);
+ assert.equal(b.get('arrivalVeil').hidden,true,'completed reveal removes the covering layer');
  assert(!b.context.document.body.classList.contains('awaiting-scene'));
  await b.context.refugeBoot.exitCoast();
  assert(b.context.document.body.classList.contains('live-preview'),'entry preserves the visible live scene');
@@ -107,3 +108,6 @@ for(const auth of ['pending','anonymous']){
  assert(resumed,'an open login dialog and pending auth cannot block scene construction');
  assert.equal(b.context.refugeBoot.authorized,false,'background loading cannot bypass authentication');
 }
+
+const app=readFileSync(new URL('./app.js',import.meta.url),'utf8');
+assert(!app.includes('ready();window.refugeBoot?.preview()'),'readiness alone cannot certify a rendered frame');
