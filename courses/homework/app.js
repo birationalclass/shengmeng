@@ -128,10 +128,9 @@ function beginCornerLift(button){
   // its existing ruling and bottom cover edge.
   const base=document.createElement('div');base.className='corner-paper-base';
   Object.assign(base.style,{position:'absolute',left:x+'px',top:y+'px',width:w+'px',height:(h+4*scale)+'px',overflow:'hidden'});
-  const beneath=paper.cloneNode(true);Object.assign(beneath.style,{left:(r.left-x)+'px',top:(r.top-y)+'px',clipPath:'none'});base.append(beneath);stage.append(base);
+  const beneath=paper.cloneNode(true);Object.assign(beneath.style,{left:(r.left-x)+'px',top:(r.top-y)+'px',clipPath:'none',boxShadow:'0 2px 0 #d8dfcc,0 3px 0 #778b70'});base.append(beneath);stage.append(base);
   paper.style.boxShadow='none';
  }
- const shadow=document.createElement('div');shadow.className='corner-lift-shadow';Object.assign(shadow.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',transform:left?'none':'scaleX(-1)'});stage.append(shadow);
  const tiles=[],nx=12,ny=12,dx=w/nx,dy=h/ny;
  for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)for(const lower of [false,true]){
   const tile=document.createElement('div');tile.className='corner-lift-tile';Object.assign(tile.style,{left:x+'px',top:y+'px',width:dx+'px',height:dy+'px',overflow:'visible',clipPath:lower?'polygon(calc(100% + .4px) -1px,calc(100% + .4px) calc(100% + .4px),-1px calc(100% + .4px))':'polygon(-.4px -.4px,calc(100% + 1px) -.4px,-.4px calc(100% + 1px))'});
@@ -162,7 +161,6 @@ function beginCornerLift(button){
    tile.style.transform=`matrix(${ex[0]},${ex[1]},${ey[0]},${ey[1]},${origin[0]},${origin[1]})`;
    const inward=left?u:w-u;shade.style.opacity=String(.09*p*Math.max(0,1-inward/w-(h-v)/h));
   }
-  shadow.style.opacity=String(p);
  }
  state.move=target=>{if(state.target===target&&(state.frame||state.progress===target))return;cancelAnimationFrame(state.frame);state.target=target;const from=state.progress,duration=motionEnabled()?600*Math.abs(target-from)/motionRate():0;
   let start;
