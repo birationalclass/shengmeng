@@ -12,3 +12,13 @@ let passes=0,previous=through.sample(0);
 for(let t=.01;t<=through.duration;t+=.01){const q=through.sample(t);assert(q.every(Number.isFinite));assert(q[0]>=previous[0]-1e-7);if(Math.abs(q[0]-pavilion.x)<3.5){assert(q[1]<2.8&&q[1]>1.8);assert(Math.abs(q[2])<.01);passes++;}previous=q;}
 assert(passes>10);assert.deepEqual(through.sample(through.duration),end);
 console.log('PASS: opening flies through pavilion below roof and above furniture, then stops inside hall');
+
+assert.equal(through.hallEntranceX,west);
+let crossings=0,inside=false;
+for(let t=0;t<=through.duration+.001;t+=.01){
+ const entered=through.sample(t)[0]>=through.hallEntranceX;
+ if(entered&&!inside)crossings++;
+ if(inside)assert(entered,'Once in the hall, the opening cannot leave and retrigger descent');
+ inside=entered;
+}
+assert.equal(crossings,1);assert(inside);

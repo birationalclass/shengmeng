@@ -16,7 +16,7 @@ export class StartupQuality{
   return false;
  }
  settings(desired){
-  if(this.level===2)return {...desired};
+  if(this.level===2)return {...desired,adaptiveQuality:'auto',oceanModel:'auto'};
   if(this.level===1)return {...desired,...STARTUP_GRAPHICS,resolutionScale:'100',textureFiltering:'4',cloudQuality:desired.cloudQuality==='off'?'off':'low'};
   return {...desired,...STARTUP_GRAPHICS};
  }

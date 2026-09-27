@@ -1,4 +1,4 @@
-import {BoardStorage} from './board-storage.js?v124';
+import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v109';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
@@ -419,6 +419,24 @@ export async function createLecture(scene,renderer,options={}){
   return {
     get followEnabled(){return !disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
+    async prepareOpening(){
+      if(disabled||!storageRig)return false;
+      playing=false;
+      if(activeReport.id!==reports[0].id&&!await this.setReport(reports[0].id))return false;
+      playing=false;hasSelection=true;clock.startAt=0;clock.stopAt=pages.length-1;
+      // Retain the preceding five boards and resume a partly written middle page.
+      if(!await seek(Math.floor((pages.length-1)/2)))return false;
+      clock.startWrite();clock.elapsed=clock.duration*.5;clock.slots[clock.active].progress=.5;
+      stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
+      storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
+      screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
+      boards.forEach(b=>b.last='');boards.forEach((_,i)=>draw(i));playing=true;version++;return true;
+    },
+    finishOpening(){
+      if(!storageRig)return;
+      if(!stored)this.toggleStorage();
+      if(screenHub?.state.power)screenHub.action('screen:power');
+    },
     toggleStorage(){if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},

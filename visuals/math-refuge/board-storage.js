@@ -1,6 +1,7 @@
 // Ordered interlock: lids must clear the shaft before the assembly moves.
 export class BoardStorage {
   constructor(stored=false){this.progress=stored?1:0;this.lid=0;this.phase='idle';}
+  reset(stored=false){this.progress=stored?1:0;this.lid=0;this.phase='idle';return this;}
   update(dt,stored){
     dt=Math.max(0,Math.min(.1,dt));const target=stored?1:0;
     if(this.progress!==target){

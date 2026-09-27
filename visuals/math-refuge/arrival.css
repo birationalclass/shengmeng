@@ -35,13 +35,13 @@
 
 #loading .arrival-top span,#loading .arrival-foot span,#error .arrival-top span,#error .arrival-foot span{font:inherit;letter-spacing:inherit}
 
-/* The entry is the first view of the dawn, rather than a separate loading page. */
+/* Reveal only a successfully rendered real opening frame. */
 body.arriving>.chrome,body.arriving>#showUI{visibility:hidden;pointer-events:none}
 #loading{background:transparent}
-#loading .arrival-landscape{background:#15232c;transition:opacity 1.2s ease}
-#loading .arrival-landscape:after{display:none}
-#loading .arrival-dawn{inset:0;width:100%;height:100%;opacity:1;fill:initial;stroke:none}
-#loading.scene-preview .arrival-landscape{opacity:0}
+#arrivalVeil{position:fixed;inset:0;z-index:11;background:#080f12;opacity:0;pointer-events:none;transition:opacity 1.4s ease}
+body.awaiting-scene #arrivalVeil{opacity:1;pointer-events:auto}
+body.revealing-scene #arrivalVeil{pointer-events:auto}
+body.awaiting-scene #loading{visibility:hidden}
 #loading:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(#06101850,transparent 35%,transparent 65%,#06101870);pointer-events:none}
 #loading .arrival-copy{top:15%;left:0;width:100%;text-align:center}
 #loading h2{font-size:clamp(28px,3.1vw,46px);font-weight:300;letter-spacing:.22em;text-shadow:0 2px 24px #0a142a60}
@@ -59,5 +59,5 @@ body.arriving>.chrome,body.arriving>#showUI{visibility:hidden;pointer-events:non
 #loading[data-auth=anonymous] .arrival-copy{opacity:.5}
 @keyframes entry-breathe{0%,100%{opacity:.4}50%{opacity:1}}
 body.entry-paused #loading *{animation-play-state:paused!important}
-@media(prefers-reduced-motion:reduce){#loading .entry-button{animation:none;opacity:.8}#loading .arrival-landscape{transition:none}}
+@media(prefers-reduced-motion:reduce){#loading .entry-button{animation:none;opacity:.8}#arrivalVeil{transition-duration:.2s}}
 @media(max-height:600px){#loading .arrival-copy{top:10%}#loading .arrival-bottom{bottom:35px}#loading .arrival-foot{display:none}}

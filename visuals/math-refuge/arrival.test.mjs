@@ -5,12 +5,12 @@ const html=readFileSync(new URL('./index.html',import.meta.url),'utf8');
 const script=html.match(/<script id="refugeBootstrap">([\s\S]*?)<\/script>/)[1].replace(/import\('\.\/app\.js[^']*'\)\.catch\(fail\);/,'');
 function boot(attempt=0){
  const nodes=new Map(),storage=new Map([['refuge-startup-retry',String(attempt)]]),events={};
- let now=0,interval,timeout,destination;
- const classes=()=>({add(){},remove(){},toggle(){}});
+ let now=0,interval,destination,nextTimer=0;const timers=new Map();
+ const classes=()=>{const values=new Set(['arriving','awaiting-scene']);return {add(...items){items.forEach(x=>values.add(x));},remove(...items){items.forEach(x=>values.delete(x));},toggle(x,on){if(on)values.add(x);else values.delete(x);},contains:x=>values.has(x)};};
  const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',classList:classes(),dataset:{},style:{},handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
- const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:f=>(timeout=f,1),clearTimeout:()=>timeout=null,setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
+ const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:(f,ms)=>{const id=++nextTimer;timers.set(id,{f,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
  context.window=context;vm.runInNewContext(script,context);
- return {context,get,storage,events,tick(seconds){for(let i=0;i<seconds*4;i++){now+=250;interval();}},click(id){get(id).handlers.click.call(get(id));},get destination(){return destination;},timeout:()=>timeout?.()};
+ return {context,get,storage,events,tick(seconds){for(let i=0;i<seconds*4;i++){now+=250;interval();for(const [id,timer] of timers)if(timer.at<=now){timers.delete(id);timer.f();}}},click(id){get(id).handlers.click.call(get(id));},get destination(){return destination;},timeout:()=>timers.get(context.refugeLoadingTimer)?.f()};
 }
 for(const [attempt,delay] of [[0,8],[1,15],[2,30],[3,60],[8,60]]){
  const b=boot(attempt);b.context.refugeBoot.fail(new Error('network'));b.tick(delay-1);assert.equal(b.destination,undefined);b.tick(1);assert.ok(b.destination.includes('_retry='));assert.equal(b.storage.get('refuge-startup-retry'),String(attempt+1));
@@ -37,3 +37,15 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
 {
  const b=boot();b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.requestEntry();assert.equal(b.get('entryStatus').textContent,'正在准备开场');b.context.refugeBoot.ready();assert.equal(b.get('enterButton').hidden,true,'login during loading keeps the entry queued');
 }
+
+{
+ const b=boot();let reveals=0;b.events['refuge-preview-ready']=()=>reveals++;
+ b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.ready();
+ assert(b.context.document.body.classList.contains('awaiting-scene'),'assets/session readiness cannot expose a blank canvas');
+ assert.equal(b.context.refugeBoot.previewReady,false);
+ b.context.refugeBoot.preview();assert(!b.context.document.body.classList.contains('awaiting-scene'));assert.equal(reveals,0);
+ b.tick(1);assert.equal(reveals,0,'login waits until the real-frame fade completes');
+ b.tick(.5);assert.equal(reveals,1);assert.equal(b.context.refugeBoot.previewReady,true);
+ b.context.refugeBoot.preview();b.tick(2);assert.equal(reveals,1,'later frames must not restart the fade');
+}
+assert(!html.includes('arrival-dawn'),'no illustration should appear before the real sea');

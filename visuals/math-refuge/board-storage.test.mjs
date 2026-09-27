@@ -29,3 +29,9 @@ test('floor cut retains all area except shaft, including boundary-straddling cut
   assert.equal(area,100-removed);
  }
 });
+
+test('replay preparation resets an interrupted storage movement to a raised, sealed state',()=>{
+ const s=new BoardStorage();for(let i=0;i<30;i++)s.update(.1,true);assert(s.progress>0&&s.progress<1);
+ s.reset();assert.equal(s.progress,0);assert.equal(s.lid,0);assert(s.ready);
+ s.update(.1,true);assert.equal(s.progress,0);assert(s.lid>0);
+});

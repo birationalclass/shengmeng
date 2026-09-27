@@ -9,13 +9,14 @@
   <link rel="stylesheet" href="chalk-reader.css?v=5-mobile">
   <link rel="stylesheet" href="board-console.css?v=103-pulley">
   <link rel="stylesheet" href="control-dock.css?v62-chalk-ink"><link rel="stylesheet" href="atmosphere.css?v69-authored">
-  <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/","./hall-spiral.js":"./hall-spiral.js?v=social-55","./campus-layout.js":"./campus-layout.js?v=social-55","./automatic-doors.js?v44-hall-clearance":"./automatic-doors.js?v=social-55","./scene.js?v=horizon-depth-1":"./scene.js?v=arrival-live-71","./site-layout.js?v44-hall-clearance":"./site-layout.js?v=social-55","./hall-camera-route.js?v=sw-corner-1":"./hall-camera-route.js?v=social-55","./hall-sun-view.js":"./hall-sun-view.js?v=social-55","./site-layout.js":"./site-layout.js?v=social-55","./lectern-lift.js":"./lectern-lift.js?v=social-55","./site-layout.js?v124":"./site-layout.js?v=social-55","./swivel-chairs.js?v126":"./swivel-chairs.js?v=social-55","./campus.js?v=spiral-20260926":"./campus.js?v=social-55","./landscape.js?v106-44-hall-clearance":"./landscape.js?v=arrival-live-71"}}</script>
+  <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/","./hall-spiral.js":"./hall-spiral.js?v=social-55","./campus-layout.js":"./campus-layout.js?v=social-55","./automatic-doors.js?v44-hall-clearance":"./automatic-doors.js?v=social-55","./scene.js?v=horizon-depth-1":"./scene.js?v=arrival-boards-73","./site-layout.js?v44-hall-clearance":"./site-layout.js?v=social-55","./hall-camera-route.js?v=sw-corner-1":"./hall-camera-route.js?v=social-55","./hall-sun-view.js":"./hall-sun-view.js?v=social-55","./site-layout.js":"./site-layout.js?v=social-55","./lectern-lift.js":"./lectern-lift.js?v=social-55","./site-layout.js?v124":"./site-layout.js?v=social-55","./swivel-chairs.js?v126":"./swivel-chairs.js?v=social-55","./campus.js?v=spiral-20260926":"./campus.js?v=social-55","./landscape.js?v106-44-hall-clearance":"./landscape.js?v=arrival-boards-73"}}</script>
   <link rel="stylesheet" href="residence.css?v76-villa">
-  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v=arrival-live-71"><link rel="stylesheet" href="screen-webview.css?v123">
+  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v=arrival-boards-73"><link rel="stylesheet" href="screen-webview.css?v123">
   <link rel="stylesheet" href="graphics-settings.css?v91-shore">
-  <link rel="stylesheet" href="../../study/spectral/vendor/katex.min.css"><script defer src="../../study/spectral/vendor/katex.min.js"></script><link rel="stylesheet" href="social.css?v=arrival-live-71">
+  <link rel="stylesheet" href="../../study/spectral/vendor/katex.min.css"><script defer src="../../study/spectral/vendor/katex.min.js"></script><link rel="stylesheet" href="social.css?v=arrival-boards-73">
 </head>
-<body class="arriving">
+<body class="arriving awaiting-scene">
+  <div id="arrivalVeil" aria-hidden="true"></div>
   <audio id="backgroundMusic" data-src="./assets/audio/norway-ambient.m4a" preload="none" loop></audio>
   <canvas id="world" tabindex="0" aria-label="三维书院：拖动改变视角，滚轮前进后退，W/S 前后移动，A/D 原地转向，Q/E 左右平移，方向键移动，空格上升，X 下降。"></canvas>
   <header class="chrome"><a href="../" class="back" aria-label="返回可视化列表">← <span>VISUAL LAB</span></a><div class="identity"><h1>数学难民营</h1><p>A RETREAT FOR WANDERING MINDS</p></div><div class="transport"><button id="tour" aria-pressed="true" class="icon-button" aria-label="暂停巡游" title="暂停巡游" data-tip="暂停巡游"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path class="pause-mark" d="M8 5v14M16 5v14"/><path class="play-mark" d="m8 4 12 8-12 8Z"/></svg></button><button id="musicButton" aria-pressed="false" class="icon-button" aria-label="播放背景音乐" title="播放背景音乐" data-tip="播放背景音乐"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/><path class="music-off" d="m3 3 18 18"/></svg></button><button id="fullscreen" aria-pressed="false" class="icon-button" aria-label="全屏浏览" title="全屏浏览" data-tip="全屏浏览"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button id="hideUI" class="icon-button" aria-label="隐藏界面，按 H 恢复" title="隐藏界面，按 H 恢复" data-tip="隐藏界面，按 H 恢复"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Zm1-9 18 18"/><circle cx="12" cy="12" r="3"/></svg></button><button id="timeButton" class="icon-button" aria-label="时间与天气" aria-controls="timePanel" aria-expanded="false" title="时间与天气" data-tip="时间与天气"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 6.5V12l3.5 2"/></svg><span id="timeButtonClock" class="visually-hidden">--:--</span></button><button id="performanceButton" aria-expanded="false" aria-controls="performancePanel" class="icon-button" aria-label="性能监测" title="性能监测" data-tip="性能监测"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17a9 9 0 1 1 18 0M5 13l2 1m1-7 1 2m7-2-1 2m4 4-2 1M12 15l4-5"/><circle cx="12" cy="16" r="2"/></svg></button><button id="settingsButton" aria-expanded="false" aria-controls="settings" class="icon-button" aria-label="设置" title="设置" data-tip="设置"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 3-.7 2.3-2.2 1L4 5.7l-2 3.5 1.7 1.6v2.5L2 14.8l2 3.5 2.1-.6 2.2 1L9 21h4l.7-2.3 2.2-1 2.1.6 2-3.5-1.7-1.5v-2.5L20 9.2l-2-3.5-2.1.6-2.2-1L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div><span id="mode" role="status">自动镜头</span></header>
@@ -134,7 +135,7 @@
   <div id="timeFade" aria-hidden="true"></div>
   <div id="transition" aria-hidden="true"></div>
   <div id="loading" aria-label="进入海上书院">
-    <div class="arrival-landscape" aria-hidden="true"><svg class="arrival-dawn" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="dawnSky" x2="0" y2="1"><stop stop-color="#101b2c"/><stop offset=".72" stop-color="#665d68"/><stop offset="1" stop-color="#d39271"/></linearGradient><linearGradient id="dawnSea" x2="0" y2="1"><stop stop-color="#8e827c"/><stop offset=".35" stop-color="#344e58"/><stop offset="1" stop-color="#142d35"/></linearGradient><radialGradient id="dawnGlow"><stop stop-color="#ffca9a" stop-opacity=".6"/><stop offset="1" stop-color="#d49370" stop-opacity="0"/></radialGradient></defs><path fill="url(#dawnSky)" d="M0 0h1600v510H0z"/><ellipse fill="url(#dawnGlow)" cx="1120" cy="470" rx="550" ry="300"/><circle fill="#fbdab6" cx="1120" cy="505" r="15"/><path fill="url(#dawnSea)" d="M0 510h1600v390H0z"/><g fill="none" stroke="#dcc4a0" opacity=".18"><path d="M1030 525h180m-195 12h210m-260 20h280m-315 26h350m-380 34h440m-510 50h600"/><path d="M0 557h800m-700 53h640m310 144h550M0 813h560"/></g><path fill="#18292f" d="M0 690Q160 660 370 739T850 810Q1190 830 1600 740V900H0z"/><path fill="#71858a" opacity=".45" d="M0 684Q160 654 370 733T850 804Q1190 824 1600 734v6Q1190 830 850 810Q580 790 370 739T0 690z"/></svg></div>
+
     <div class="arrival-top"><span>MATH REFUGE</span><span>31° N / 121° E</span></div>
     <div class="arrival-copy"><p class="arrival-kicker">A PLACE TO THINK</p><h2>数学难民营</h2></div>
     <div class="arrival-entry"><p id="entryStatus" role="status">正在连接书院</p><button id="enterButton" class="entry-button" hidden>点击继续</button></div>
@@ -142,13 +143,13 @@
     <div class="arrival-foot"><span>SHANGHAI · AT SEA</span><span>VISUAL LAB / 01</span></div>
   </div>
   <div id="error" hidden aria-label="连接恢复"><div class="arrival-landscape" aria-hidden="true"><svg viewBox="0 0 1000 700"><ellipse cx="600" cy="350" rx="410" ry="185" transform="rotate(-22 600 350)"/><ellipse cx="600" cy="350" rx="395" ry="170" transform="rotate(-22 600 350)"/><path d="M142 492C318 400 434 536 586 433S868 241 1030 292"/></svg></div><div class="arrival-top" aria-hidden="true"><span>MATH REFUGE</span><span>31° N / 121° E</span></div><div class="arrival-copy"><p class="arrival-kicker">A PLACE TO THINK</p><h2>数学难民营</h2><p id="errorText" role="status">连接中断</p></div><div class="arrival-bottom"><div><div id="retryStatus" class="retry-readout" role="status">8 秒后重试</div><div class="retry-actions"><button id="retryPause">暂停重试</button><button id="retrySafe">低负载</button><a href="../">返回</a></div></div><button id="retryNow" class="entry-button">重试<span aria-hidden="true">↗</span></button></div><div class="arrival-foot" aria-hidden="true"><span>SHANGHAI · AT SEA</span><span>VISUAL LAB / 01</span></div></div>
-  <script type="module" src="social.js?v=arrival-live-71"></script>
+  <script type="module" src="social.js?v=arrival-boards-73"></script>
   <!-- Standalone bootstrap: remains available when a module dependency fails. -->
   <script id="refugeBootstrap">
 (()=>{
  const $=id=>document.getElementById(id),key='refuge-startup-retry',entryKey='refuge-entry-requested';
  const read=k=>{try{return sessionStorage.getItem(k);}catch{return null;}},write=(k,v)=>{try{v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,v);}catch{}};
- let attempts=Math.max(0,Number(read(key))||0),state='loading',paused=false,remaining=0,last=Date.now(),progress=0,authState='pending';
+ let attempts=Math.max(0,Number(read(key))||0),state='loading',paused=false,remaining=0,last=Date.now(),progress=0,authState='pending',previewStarted=false,previewReady=false;
  const delays=[8,15,30,60];
  // A previous click never bypasses this visit's session check.
  write(entryKey,null);
@@ -170,12 +171,17 @@
  }
  function fail(error){
   console.error('[Refuge startup]',error);if(state==='error'||state==='retrying')return;
-  clearTimeout(window.refugeLoadingTimer);state='error';$('loading').hidden=true;$('error').hidden=false;
+  clearTimeout(window.refugeLoadingTimer);state='error';document.body.classList.remove('awaiting-scene','revealing-scene');$('loading').hidden=true;$('error').hidden=false;
   $('errorText').textContent=/context|WebGL|图形|编译/i.test(error?.message||'')?'图形恢复中':'连接中断';
   remaining=delays[Math.min(attempts,delays.length-1)];last=Date.now();paintRetry();
  }
  function ready(){clearTimeout(window.refugeLoadingTimer);state='loading';stage(100,'准备就绪');state='ready';$('error').hidden=true;$('loading').hidden=false;write(key,null);attempts=0;paintEntry();}
- window.refugeBoot={stage,fail,ready,auth,requestEntry,prepareAudio,get authorized(){return ['authenticated','guest'].includes(authState);},preview(){if(state!=='error')$('loading').classList.add('scene-preview');},entered(){state='entered';document.body.classList.remove('arriving');write(entryKey,null);$('loading').hidden=true;$('error').hidden=true;}};
+ function preview(){
+  if(previewStarted||state==='error'||state==='retrying')return;
+  previewStarted=true;document.body.classList.remove('awaiting-scene');document.body.classList.add('revealing-scene');
+  setTimeout(()=>{if(state==='error'||state==='retrying')return;previewReady=true;document.body.classList.remove('revealing-scene');window.dispatchEvent(new Event('refuge-preview-ready'));if($('loading').dataset.entryRequested==='true')window.dispatchEvent(new Event('refuge-entry'));},1400);
+ }
+ window.refugeBoot={stage,fail,ready,auth,requestEntry,prepareAudio,preview,get previewReady(){return previewReady;},get authorized(){return ['authenticated','guest'].includes(authState);},entered(){state='entered';document.body.classList.remove('arriving');write(entryKey,null);$('loading').hidden=true;$('error').hidden=true;}};
  $('enterButton').addEventListener('click',()=>{if(authState==='anonymous')window.dispatchEvent(new Event('refuge-login'));else{prepareAudio();requestEntry();}});
  $('retryNow').addEventListener('click',()=>retry());$('retrySafe').addEventListener('click',()=>retry(true));
  $('retryPause').addEventListener('click',()=>{paused=!paused;last=Date.now();paintRetry();});
@@ -184,7 +190,7 @@
  document.addEventListener('visibilitychange',()=>{last=Date.now();if(state==='error')paintRetry();});
  window.refugeLoadingTimer=setTimeout(()=>{if(state==='loading')fail(new Error('Startup timeout'));},90000);
  stage(3,'连接空间');
- import('./app.js?v=arrival-live-71').catch(fail);
+ import('./app.js?v=arrival-boards-73').catch(fail);
 })();
   </script>
 </body>

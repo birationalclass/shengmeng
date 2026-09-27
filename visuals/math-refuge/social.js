@@ -48,8 +48,14 @@ window.addEventListener('keydown',event=>{if(event.isComposing||$('socialDialog'
 $('socialDialog').addEventListener('cancel',()=>{$('world').focus({preventScroll:true});});
 document.addEventListener('visibilitychange',()=>{clearTimeout(pollTimer);if(!document.hidden)poll();});
 new MutationObserver(()=>{const entered=$('world').dataset.entered==='true';shell.classList.toggle('in-scene',entered);if(entered)poll();}).observe($('world'),{attributes:true,attributeFilter:['data-entered']});
-window.addEventListener('refuge-login',openAccount);
-request('session').then(data=>{setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(!data.user)openAccount();}).catch(error=>{window.refugeBoot?.auth('anonymous');openAccount();if(error.status!==401)$('socialAuthStatus').textContent='自动登录暂不可用，可手动登录或继续漫步。';});
+let entryLoginPending=false,entryLoginError='';
+function showEntryLogin(){
+ if(!entryLoginPending||!window.refugeBoot?.previewReady||$('world').dataset.entered==='true')return;
+ entryLoginPending=false;openAccount();if(entryLoginError)$('socialAuthStatus').textContent=entryLoginError;
+}
+window.addEventListener('refuge-preview-ready',showEntryLogin);
+window.addEventListener('refuge-login',()=>{entryLoginPending=true;showEntryLogin();});
+request('session').then(data=>{setUser(data.user);window.refugeBoot?.auth(data.user?'authenticated':'anonymous');if(!data.user){entryLoginPending=true;showEntryLogin();}}).catch(error=>{window.refugeBoot?.auth('anonymous');entryLoginPending=true;if(error.status!==401)entryLoginError='自动登录暂不可用，可手动登录或继续漫步。';showEntryLogin();});
 
 // Pointer capture keeps dragging stable across the scene canvas and touch screens.
 const chat=$('socialChat'),handle=$('socialDragHandle');let drag=null;

@@ -1,7 +1,7 @@
-import {StartupQuality} from './startup-quality.js?v=arrival-live-71';
+import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
 import {createMovementHud} from './movement-hud.js?v=range280-49';
-import {openingArrival} from './opening-arrival.js?v=opening-10s-48';
+import {openingArrival} from './opening-arrival.js?v=opening-boards-73';
 import {KeyboardMotion} from './keyboard-motion.js?v=speed100-49';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
@@ -38,7 +38,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=horizon-depth-1';
-import {createLecture} from './lecture.js?v127';
+import {createLecture} from './lecture.js?v128';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -83,40 +83,44 @@ walkButton.addEventListener('click',()=>{if(retreat&&cameraIntent.canActivate())
 const openingButton=document.createElement('button');openingButton.id='replayOpening';openingButton.textContent='开场';openingButton.setAttribute('aria-label','重新播放开场');$('chapters').prepend(openingButton);
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 const screenWebview=createScreenWebview(THREE);
-let entered=false;
+let entered=false,openingPreparing=false;
 const openingCameraLock=new OpeningCameraLock();
-const cameraLocked=()=>openingCameraLock.locked(performance.now());
+const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.now());
 // Capture before OrbitControls and scene hit targets, while other settings remain usable.
 for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventListener(type,event=>{
  if(cameraLocked()&&event.target.closest?.('#world,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
 },{capture:true,passive:false});
 function enterScene(){
-  if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized)return;
+  if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
   entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  replayOpening();
+  replayOpening().catch(fail);
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
-function replayOpening(){
+async function replayOpening(){
   if(!entered||!retreat||cameraLocked())return;
   screenWebview.close();if(activeRoom!==0)activateRoom(0,false);
-  if(!lecture.stored)lecture.toggleStorage();
-  motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
-  controls.enableDamping=false;controls.update();
-  camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);
-  camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;
-  retreat.fleet.resetSunrisePass();
-  sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='1';
-  openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
-  selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
-  const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
-  blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
-  $('world').focus({preventScroll:true});
-  renderActivity.setEnabled(!failed);
+  openingPreparing=true;
+  try{
+    motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
+    controls.enableDamping=false;controls.update();
+    camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);
+    camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;
+    blend=null;opening=null;free=true;touring=false;controls.enabled=false;
+    await lecture.prepareOpening();populateReport();
+    retreat.fleet.resetSunrisePass();
+    sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='1';
+    openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
+    selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
+    const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
+    blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
+    $('world').focus({preventScroll:true});
+    renderActivity.setEnabled(!failed);
+  }finally{openingPreparing=false;}
 }
-openingButton.addEventListener('click',replayOpening);
+openingButton.addEventListener('click',()=>replayOpening().catch(fail));
 window.addEventListener('refuge-entry',enterScene);
 const device=mobilePolicy({width:innerWidth,height:innerHeight,userAgent:navigator.userAgent,maxTouchPoints:navigator.maxTouchPoints,coarsePointer:matchMedia('(pointer: coarse)').matches,safe:new URLSearchParams(location.search).get('safe')==='1'});
 $('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
@@ -142,7 +146,7 @@ function updateRoomVisibility(stamp){
     if(visible!==v.visible){v.visible=visible;rooms[i].setRenderActive(visible);}
     v.consoleVisible=classroomVisible({distance:v.consoleBounds.distanceToPoint(camera.position),inFrustum:roomFrustum.intersectsBox(v.consoleBounds),eyeY:camera.position.y,floorY:v.floor,height:v.height,insideRoom,room:i,wasVisible:v.consoleVisible});
     roomLecterns[i].group.visible=true;
-    roomLecterns[i].setScreenEnabled(v.consoleVisible&&!rooms[i].disabled);
+    roomLecterns[i].setScreenEnabled(v.consoleVisible&&!rooms[i].disabled&&rooms[i].screenMode?.power!==false);
   });
   $('world').dataset.renderingRooms=rooms.map((room,i)=>room.renderActive?i:null).filter(i=>i!==null).join(',');
 }
@@ -231,7 +235,12 @@ function applyShot(dt){
   if(blend){
     blend.elapsed+=dt;const t=Math.min(1,blend.elapsed/blend.duration),k=smoothProgress(t);
     for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
-    if(blend.openingPath)camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
+    if(blend.openingPath){
+      camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
+      if(!blend.boardsLowered&&camera.position.x>=blend.openingPath.hallEntranceX){
+        blend.boardsLowered=true;rooms[0].finishOpening();roomLecterns[0].setScreenEnabled(false);
+      }
+    }
     else if(blend.route)blend.route.getPointAt(k,camera.position);
     camera.quaternion.slerpQuaternions(blend.rotation,blend.endRotation,k);
     viewDirection.set(0,0,-1).applyQuaternion(camera.quaternion);
@@ -333,7 +342,7 @@ function detectGraphics(){
  if(saved){try{if(!localStorage.getItem('refuge-wave-base-v93')){saved.waveStrength=String(Math.max(50,Number(saved.waveStrength)||50));saved.windWaves='on';localStorage.setItem('refuge-wave-base-v93','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
  // Move the former default Ocean selection to measured auto mode once.
  try{if(!localStorage.getItem('refuge-ocean-auto-v1')){if(saved&&(!saved.oceanModel||saved.oceanModel==='study'))saved.oceanModel='auto';localStorage.setItem('refuge-ocean-auto-v1','1');if(saved)localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}
- desiredGraphics={...Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),...recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}),...saved};
+ desiredGraphics={...Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),...recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}),...saved,adaptiveQuality:'auto',oceanModel:'auto'};
  const values=startupQuality.settings(desiredGraphics);
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
@@ -375,7 +384,7 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
-  if(startupAutomatic&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  if(startupAutomatic&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     if(startupQuality.level===2)startupAutomatic=false;
@@ -386,7 +395,7 @@ function tick(stamp){
     updateRenderBudget(stamp);gpuTimer?.begin(stamp);
     retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,dt,1,sceneTime.date);
     retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
-    try{renderer.render(scene,camera);}finally{gpuTimer?.end();}
+    try{renderer.render(scene,camera);window.refugeBoot?.preview();}finally{gpuTimer?.end();}
     return;
   }
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
@@ -504,7 +513,8 @@ try{
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device),45000,'空间材质加载');
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,startStored:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -533,10 +543,10 @@ try{
   await new Promise(resolve=>setTimeout(resolve,0));
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
-  if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();}
+  if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.preview();window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
+  window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 
