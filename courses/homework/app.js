@@ -182,7 +182,7 @@ function closeNotebookToLeft(next){
  const viewport=$('#paper-viewport');viewport.classList.add('book-leaving');const restore=()=>viewport.classList.remove('book-leaving');
  const neighbour=$('#notebook-stack .previous-book')?.getBoundingClientRect();
  const destination=neighbour?{x:neighbour.left+neighbour.width/2,y:neighbour.top+neighbour.height/2}:{x:rect.left+(-125+sheet.width/2)*scale,y:top+(9+sheet.height/2)*scale};
- let frame=0,startTime,landed=null;
+ let frame=0,startTime,landed=null,placedAt;
  const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
  function draw(now){
   if(startTime===undefined)startTime=now;
@@ -196,14 +196,17 @@ function closeNotebookToLeft(next){
    const u=Math.min(1,(elapsed-850)/380),q=u*u*(3-2*u),startX=pivot-w/2,startY=top+h/2;
    landed.style.transform=`translate(${startX+(destination.x-startX)*q-w/2}px,${startY+(destination.y-startY)*q-h/2}px) rotate(${-2*q}deg)`;
    stage.dataset.phase='placing';
-   if(u===1){settleNextNotebook(next,stage,restore);return;}
+   if(u===1){
+    stage.dataset.phase='placed';placedAt??=now;
+    if(now-placedAt>=120){settleNextNotebook(next,stage,restore);return;}
+   }
   }
   frame=requestAnimationFrame(draw);
  }
  flight.style.transform=`translate3d(${pivot}px,${top}px,0)`;frame=requestAnimationFrame(draw);
 }
 function flipNotebook(direction){
- const next=student+direction,incoming=direction<0,returningFromLast=incoming&&student===students.length-1;
+ const next=student+direction,incoming=direction<0;
  if(next<0||next>=students.length||turnStage?.classList.contains('book-transfer-stage'))return;
  // Close an open book before moving that whole book in either direction.
  if(bookPage!==0){
@@ -245,14 +248,14 @@ function flipNotebook(direction){
  measure.inert=true;measure.setAttribute('aria-hidden','true');measure.append(target);root.append(measure);
  const back=captureLeaf(target);measure.remove();
  const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.inert=true;stage.setAttribute('aria-hidden','true');
- // Reverse the final-book straightening: the current book retreats below
- // the incoming copy. Its own DOM stays fixed and is only temporarily hidden.
+ // First park the current book in the tilted right pile. Only after it is
+ // fully at rest may the previous book's copy begin its own flight.
  let underlay=null,underlayLabel=null;
- if(returningFromLast){
+ if(incoming){
   const copy=captureLeaf($('.notebook-cover'));Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
   copy.querySelector('.paper-footer')?.remove();
   underlayLabel=document.createElement('span');underlayLabel.className='book-edge-label';underlayLabel.textContent='下一本 · '+students[student].name+' →';copy.firstElementChild.append(underlayLabel);
-  underlay=document.createElement('div');underlay.className='book-settle-copy book-underlay-copy';Object.assign(underlay.style,{width:w+'px',height:h+'px'});underlay.append(copy);stage.append(underlay);stage.dataset.phase='tilting';
+  underlay=document.createElement('div');underlay.className='book-settle-copy book-underlay-copy';Object.assign(underlay.style,{width:w+'px',height:h+'px'});underlay.append(copy);stage.append(underlay);stage.dataset.phase='placing';
  }
  const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:incoming?'100% 50%':'0 50%'});
  for(const [copy,reverse] of [[front,false],[back,true]]){
@@ -267,24 +270,35 @@ function flipNotebook(direction){
  stage.append(flight);document.body.append(stage);turnStage=stage;
  // Lift the outgoing cover's copy to expose the tilted book underneath.
  // Hide its stationary source, restoring it on completion or interruption.
- const viewport=$('#paper-viewport');if(!incoming||returningFromLast)viewport.classList.add('book-leaving');
+ const viewport=$('#paper-viewport');viewport.classList.add('book-leaving');
  const restore=()=>viewport.classList.remove('book-leaving');
- let frame=0,startTime;
+ let frame=0,startTime,phase=incoming?'placing':'flipping';
  const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
  function pose(p){
   const pivotX=start.x+(end.x-start.x)*p,pivotY=start.y+(end.y-start.y)*p;
   flight.style.transform=`translate3d(${pivotX-(incoming?w:0)}px,${pivotY-h/2}px,0) rotateZ(${-2*(incoming?1-p:p)}deg) rotateY(${(incoming?180:-180)*p}deg)`;
-  if(underlay){const t=Math.min(1,p/.75),q=t*t*(3-2*t);underlay.style.transform=`translate(${rightPivot.x}px,${rootRect.top-h/5*q}px) rotate(${12*q}deg)`;underlayLabel.style.opacity=String(q);}
+ }
+ function park(p){
+  underlay.style.transform=`translate(${rightPivot.x}px,${rootRect.top-h/5*p}px) rotate(${12*p}deg)`;underlayLabel.style.opacity=String(p);
  }
  function draw(now){
   if(startTime===undefined)startTime=now;
+  if(phase==='placing'){
+   const t=Math.min(1,(now-startTime)/650);park(t*t*(3-2*t));stage.dataset.progress=String(Math.round(t*100));
+   if(t===1){phase='placed';stage.dataset.phase='placed';startTime=now;}
+   frame=requestAnimationFrame(draw);return;
+  }
+  if(phase==='placed'){
+   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;flight.style.visibility='visible';}
+   frame=requestAnimationFrame(draw);return;
+  }
   const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
   pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
   else if(!incoming){settleNextNotebook(next,stage,restore);}
   else finishNotebookTransfer(next,stage,restore);
  }
- pose(0);frame=requestAnimationFrame(draw);
+ pose(0);if(underlay){park(0);flight.style.visibility='hidden';}frame=requestAnimationFrame(draw);
 }
 // Lift a disposable copy of the next notebook into the reading position.
 // Its original stays visible and tilted underneath until the final handoff.
