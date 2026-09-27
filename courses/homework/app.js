@@ -91,7 +91,9 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
  for(let i=0;i<count;i++){
   const band=document.createElement('div');band.className='turn-band';band.style.width=bandWidth+'px';band.style.height=h+'px';
   for(const [source,isBack] of [[front,false],[back,true]]){
-   const face=document.createElement('div');face.className='turn-face'+(isBack?' turn-face-back':'');face.style.width=(bandWidth+.6)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
+   const face=document.createElement('div');face.className='turn-face'+(isBack?' turn-face-back':'');face.style.width=(bandWidth+.6)+'px';
+   // Preserve the cover's external paper edge while clipping horizontally.
+   face.style.bottom=-Math.max(3,3*w/sheet.width)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
    const copy=source.cloneNode(true),offset=(forward!==isBack)?i*bandWidth:w-(i+1)*bandWidth;
    Object.assign(copy.style,{left:-offset+'px',top:'0',width:w+'px',height:h+'px',boxShadow:'none'});face.append(copy);
    const shade=document.createElement('div');shade.className='turn-shading';face.append(shade);band.append(face);
@@ -115,8 +117,9 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
   for(let i=0;i<count;i++){
    const u=(i+.5)/count,angle=base+bend*(u-.5);
    const dx=motion===1?-bandWidth:bandWidth*Math.cos(angle),dz=motion===1?0:bandWidth*Math.sin(angle);
-   const lift=-7*wave*u*u;
-   bands[i].style.transform=`translate3d(${pivot+direction*(x+dx/2)-bandWidth/2}px,${rect.top+lift}px,${z+dz/2}px) rotateY(${-direction*angle}rad)`;
+   // Adjacent bands share the same vertical endpoints; individual lifts
+   // produce a stepped bottom edge and cracks between otherwise joined bands.
+   bands[i].style.transform=`translate3d(${pivot+direction*(x+dx/2)-bandWidth/2}px,${rect.top}px,${z+dz/2}px) rotateY(${-direction*angle}rad)`;
    bands[i].style.setProperty('--shade',String(wave*(.05+.12*u)));
    x+=dx;z+=dz;
   }
