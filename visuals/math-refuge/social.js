@@ -14,7 +14,8 @@ function openAccount(){window.dispatchEvent(new Event('refuge-social-focus'));$(
 function closeAccount(){$('socialDialog').close();$('world').focus({preventScroll:true});}
 function activity(){clearTimeout(fadeTimer);$('socialChat').classList.add('recent');fadeTimer=setTimeout(()=>{if(!chatOpen)$('socialChat').classList.remove('recent');},9000);}
 function openChat(){if($('world').dataset.entered!=='true')return;if(!user){openAccount();return;}chatOpen=true;window.dispatchEvent(new Event('refuge-social-focus'));$('socialChat').classList.add('expanded');$('socialComposer').hidden=false;$('socialChatToggle').setAttribute('aria-expanded','true');$('socialChatToggle').hidden=true;$('socialInput').focus();activity();poll();}
-function closeChat(){chatOpen=false;$('socialChat').classList.remove('expanded');$('socialComposer').hidden=true;$('socialChatToggle').setAttribute('aria-expanded','false');$('socialChatToggle').hidden=false;$('world').focus({preventScroll:true});activity();}
+function positionChatIcon(x,y){const icon=$('socialChatToggle');icon.style.left=Math.max(8,Math.min(innerWidth-42,x))+'px';icon.style.top=Math.max(8,Math.min(innerHeight-42,y))+'px';}
+function closeChat(){if(chatOpen){const r=$('socialChat').getBoundingClientRect();positionChatIcon(r.left,r.top);}chatOpen=false;$('socialChat').classList.remove('expanded');$('socialComposer').hidden=true;$('socialChatToggle').setAttribute('aria-expanded','false');$('socialChatToggle').hidden=false;$('world').focus({preventScroll:true});activity();}
 function addMessages(messages,initial=false){for(const item of messages){if(seen.has(item.id))continue;seen.add(item.id);const row=document.createElement('p'),name=document.createElement('b'),text=document.createElement('span'),time=document.createElement('time');time.dateTime=new Date(item.createdAt).toISOString();time.textContent=new Date(item.createdAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});time.title=new Date(item.createdAt).toLocaleString('zh-CN');row.className=item.mine?'own':'';name.textContent=item.name;text.textContent=item.text;row.append(time,name,text);$('socialMessages').append(row);if(!initial&&item.createdAt>latest)activity();latest=Math.max(latest,item.createdAt);}while($('socialMessages').children.length>50)$('socialMessages').firstElementChild.remove();$('socialMessages').scrollTop=$('socialMessages').scrollHeight;}
 let polling=false,lastActivity=Date.now();
 for(const type of ['pointerdown','keydown'])addEventListener(type,()=>{const idle=Date.now()-lastActivity>120000;lastActivity=Date.now();if(idle)poll();},{passive:true});
@@ -42,11 +43,12 @@ request('session').then(data=>setUser(data.user)).catch(()=>{});
 const chat=$('socialChat'),handle=$('socialDragHandle');let drag=null;
 function place(x,y){const r=chat.getBoundingClientRect(),left=Math.max(8,Math.min(innerWidth-r.width-8,x)),top=Math.max(8,Math.min(innerHeight-r.height-8,y));chat.style.left=left+'px';chat.style.top=top+'px';chat.style.bottom='auto';return {x:left,y:top};}
 try{const saved=JSON.parse(localStorage.getItem('refuge-chat-position'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y)){chat.style.left=Math.max(8,Math.min(innerWidth-408,saved.x))+'px';chat.style.top=Math.max(8,Math.min(innerHeight-300,saved.y))+'px';chat.style.bottom='auto';}}catch{}
+positionChatIcon(parseFloat(chat.style.left)|| (innerWidth<=600?18:40),parseFloat(chat.style.top)||Math.max(8,innerHeight-360));
 handle.addEventListener('pointerdown',event=>{if(event.target.closest('button')||event.button!==0)return;event.preventDefault();const r=chat.getBoundingClientRect();drag={dx:event.clientX-r.left,dy:event.clientY-r.top};handle.setPointerCapture(event.pointerId);});
 handle.addEventListener('pointermove',event=>{if(drag)place(event.clientX-drag.dx,event.clientY-drag.dy);});
 function endDrag(event){if(!drag)return;drag=null;if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);const r=chat.getBoundingClientRect();try{localStorage.setItem('refuge-chat-position',JSON.stringify({x:r.left,y:r.top}));}catch{}}
 handle.addEventListener('pointerup',endDrag);handle.addEventListener('pointercancel',endDrag);
-addEventListener('resize',()=>{if(chat.style.top){const r=chat.getBoundingClientRect();place(r.left,r.top);}});
+addEventListener('resize',()=>{const icon=$('socialChatToggle');positionChatIcon(parseFloat(icon.style.left),parseFloat(icon.style.top));if(chat.style.top){const r=chat.getBoundingClientRect();place(r.left,r.top);}});
 
 let adminNext=null,adminBusy=false;
 async function loadAccounts(more=false){
