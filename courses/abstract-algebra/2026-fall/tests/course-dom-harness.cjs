@@ -26,7 +26,7 @@ function shims(w){
 async function lesson(id){
  requests=[];errors=[];
  const folder=/^1\.[12]$/.test(id)?'lesson-1':'lesson-groups';
- const url='http://course.test'+prefix+folder+'/?embedded=1&section='+id+(id==='1.4'?'#set-group-construction':'');
+ const url='http://course.test'+prefix+folder+'/?embedded=1&section='+id+(id==='1.4'?'#set-group-construction':id==='1.6'?'#card-magic':'');
  const vc=new VirtualConsole();vc.on('jsdomError',e=>{if(e.type!=='css parsing')errors.push(e.message)});vc.on('error',e=>errors.push(String(e)));
  const dom=new JSDOM(fs.readFileSync(repo+prefix+folder+'/index.html','utf8'),{url,runScripts:'dangerously',resources:new Loader(),pretendToBeVisual:true,beforeParse:shims,virtualConsole:vc});
  const w=dom.window;
@@ -54,6 +54,7 @@ async function lesson(id){
   assert.equal(w.document.querySelectorAll('.construction-disclosure[open]').length,0);
   assert.equal(w.document.querySelectorAll('.katex-error').length,0);
  }
+ if(id==='1.6'){assert.match([...w.document.querySelectorAll('.notebook-entry')].at(-1).textContent,/纸牌魔术/);assert.equal(w.document.querySelectorAll('.card-magic-notebook .construction-step').length,3);assert.equal(w.document.querySelectorAll('.construction-disclosure[open]').length,0);assert(w.document.querySelector('a[href^="../../card-magic/"][target="_top"]'));w.CourseLanguage.set('en');await wait(20);assert.match(w.document.querySelector('.card-magic-notebook').textContent,/mind-reading/);assert.equal(w.document.querySelectorAll('.katex-error').length,0);}
  console.log(id, 'loaded; section requests:',requests.filter(x=>x.endsWith('.json')).length,'errors:',errors);
  assert.deepEqual(errors,[]);
 }

@@ -68,7 +68,11 @@ window.GroupSections={
         "凯莱定理",
         "Cayley’s theorem"
       ],
-      ["set-group-construction", "任意非空集合上的群结构", "Group structures on nonempty sets"],
+      [
+        "set-group-construction",
+        "任意非空集合上的群结构",
+        "Group structures on nonempty sets"
+      ],
       [
         "automorphism",
         "自同构与内自同构",
@@ -158,6 +162,11 @@ window.GroupSections={
         "check",
         "自测与书面练习",
         "Self-check and written exercise"
+      ],
+      [
+        "card-magic",
+        "纸牌魔术中的群论",
+        "Group theory in card magic"
       ]
     ]
   },

@@ -1,7 +1,7 @@
 /* Fetch only the requested section. The parent owns this document's lifetime. */
 (()=>{
   'use strict';
-  const version='20260927-loading-v2';
+  const version='20260927-card-magic-v1';
   const first=location.pathname.includes('/lesson-1/');
   const requested=new URLSearchParams(location.search).get('section');
   const valid=first?/^1\.[12]$/:/^(1\.[3-7]|2\.[1-7]|3\.[1-6]|4\.[1-5])$/;
@@ -44,7 +44,7 @@
         window.GroupCourseContent={[id]:payload.book};
         window.GroupCourseExercises={[id]:payload.exercises};
         window.GroupTextbookReferences={[id]:payload.references};
-        scripts=[...(id==='1.4'?['symmetric-difference.js']:[]),...(Number(id[0])>=3?['ring-models.js','ring-visuals.js']:['models.js','visuals.js']),'lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
+        scripts=[...(id==='1.4'?['symmetric-difference.js']:id==='1.6'?['card-magic.js']:[]),...(Number(id[0])>=3?['ring-models.js','ring-visuals.js']:['models.js','visuals.js']),'lesson.js','../lesson-1/screen.js','../lesson-1/embedded.js','../lesson-keyboard.js'];
       }
       for(const [i,src] of scripts.entries()){
         progress(25+Math.round(i/scripts.length*60),`§${id} · 正在准备交互 ${i+1}/${scripts.length}`,`§${id} · Preparing interactions ${i+1}/${scripts.length}`);

@@ -22,4 +22,4 @@ async function portal(){
  d.querySelector('#portal-course-open').click();await wait(70);assert.equal(d.querySelector('#lecture-frame'),null);assert.equal(d.querySelector('#course-load-cover').hidden,true);
  console.log('portal lifecycle passed; DOM limitations/errors:',errors);assert.deepEqual(errors,[]);
 }
-(async()=>{for(const id of ['1.1','1.2','1.4','2.5','3.1'])await lesson(id);await scenario('slow');await scenario('css');await scenario('script');await portal();process.exit(0)})().catch(e=>{console.error(e);process.exit(1)});
+(async()=>{for(const id of ['1.1','1.2','1.4','1.6','2.5','3.1'])await lesson(id);await scenario('slow');await scenario('css');await scenario('script');await portal();process.exit(0)})().catch(e=>{console.error(e);process.exit(1)});

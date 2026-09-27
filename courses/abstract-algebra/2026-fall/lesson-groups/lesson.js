@@ -26,7 +26,7 @@ window.addEventListener('course-language',()=>requestAnimationFrame(fitMath));
 window.addEventListener('resize',()=>requestAnimationFrame(fitMath));
 document.fonts?.ready.then(()=>requestAnimationFrame(fitMath));
 const reference=e=>window.GroupTextbookReferences[id][e.id];
-const entries=book.entries.concat({id:'check',title:['自测与书面练习','Self-check and written exercise'],tex:'',text:['本节原创练习。先独立作答，再查看理由；最后完成一道书面证明。答案与进度保存在当前浏览器中。','Original exercises for this section. Answer independently, then review the reasoning and finish a written proof. Progress is stored in this browser.']});
+const entries=book.entries.filter(e=>!e.afterSelfCheck).concat({id:'check',title:['自测与书面练习','Self-check and written exercise'],tex:'',text:['本节原创练习。先独立作答，再查看理由；最后完成一道书面证明。答案与进度保存在当前浏览器中。','Original exercises for this section. Answer independently, then review the reasoning and finish a written proof. Progress is stored in this browser.']},book.entries.filter(e=>e.afterSelfCheck));
 window.LessonNotebookContent={[id]:entries.map(e=>({topic:e.id,extension:!!e.extension,statementOnly:!!e.statementOnly,ref:e.id==='check'?['本节自测','Section self-check']:reference(e).label,title:e.title,formula:formula(e.tex),text:e.text.map(window.GroupLessonMath.inline),detail:book.optional?['拓展阅读 · 不增加既定课表中的必讲课时。','Optional reading · outside the required scheduled teaching.']:undefined}))};
 let current=0,quizIndex=0,disposeExtension=()=>{};
 const key=`algebra-groups-v1-${id}`;let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch{}
@@ -47,6 +47,7 @@ if(q.written){const input=root.querySelector('#written-answer');input.value=save
 window.LessonScreen?.refresh();
 }
 function extensionPanel(root,extension){
+ if(extension.kind==='card-magic'){window.CardMagic.mount(root,extension);return;}
  const overviews=[['把已有群的运算沿双射搬到 X 上。','Transport an existing group operation to X along a bijection.'],['有限非空集：使用同样大小的循环群。','Finite nonempty sets: use a cyclic group of the same size.'],['无限集：先让有限子集在对称差下成为交换群。','Infinite sets: first make the finite subsets an abelian group under symmetric difference.'],['使用等势结论，把这个群搬回原集合。','Use the cardinality equality to transport this group back to the original set.']];
  const blocks=items=>items.map(item=>`<p>${html(item.text)}</p>${item.tex?`<div class="construction-math">${window.katex.renderToString(item.tex,{displayMode:true,throwOnError:true,strict:'ignore',output:'htmlAndMathml'})}</div>`:''}`).join('');
  const disclosure=(item,kind)=>`<details class="construction-disclosure" data-${kind}="${item.id}"><summary><span class="construction-sign" aria-hidden="true"></span><span>${html(item.title)}</span></summary><div class="construction-disclosure-body">${blocks(item.blocks)}</div></details>`;

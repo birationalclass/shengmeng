@@ -70,7 +70,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();reveal(null);}
-      else if(!frame){loading.show();loadedSection=section;frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260927-loading-v2&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loading.show();loadedSection=section;frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260927-card-magic-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else {reveal(null);requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});}labels();
   }
