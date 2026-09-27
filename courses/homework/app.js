@@ -115,13 +115,13 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
  function draw(now){
   if(startTime===undefined)startTime=now;
   const t=Math.min(1,(now-startTime)/(coverTurn?1300:1020)),motion=Math.min(1,t/.84);
-  // At 90 degrees the card is edge-on: unfold the binding and align its
-  // lower rim there, before exposing the reverse face. Closing reverses it.
-  const progress=coverTurn?(motion<.42?.5*ease(motion/.42):motion<=.58?.5:.5+.5*ease((motion-.58)/.42)):(1-Math.cos(Math.PI*motion))/2;
-  const unfolding=ease((motion-.42)/.16);
+  // Keep angular velocity continuous through the midpoint. Unfold across
+  // that interval instead of dwelling edge-on with both faces invisible.
+  const progress=(1-Math.cos(Math.PI*motion))/2;
+  const unfolding=ease((motion-.36)/.28);
   stage.style.setProperty('--binding-open',String(forward?unfolding:1-unfolding));
   const wave=motion===1?0:Math.sin(Math.PI*progress);
-  const base=Math.PI*progress,bend=(coverTurn?.3*Math.abs(Math.cos(base)):.9)*wave;
+  const base=Math.PI*progress,bend=(coverTurn?.3:.9)*wave;
   let x=0,z=0;
   for(let i=0;i<count;i++){
    const u=(i+.5)/count,angle=base+bend*(u-.5);
@@ -138,7 +138,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
   // Once flat, stop transforming text. A single aligned leaf bridges to the
   // already-laid-out live page, preventing per-band text rasterization jumps.
   if(motion===1){revealSpread();scene.remove();stationary?.remove();landing.style.opacity='1';stage.style.opacity=String(Math.max(0,1-(t-.84)/.16));}
-  stage.dataset.phase=motion===1?'settling':coverTurn&&motion>=.42&&motion<=.58?'unfolding-binding':'turning';
+  stage.dataset.phase=motion===1?'settling':coverTurn&&motion>=.36&&motion<=.64?'unfolding-binding':'turning';
   stage.dataset.progress=String(Math.round(progress*100));
   if(t<1)frame=requestAnimationFrame(draw);
   else{revealSpread();stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}onComplete?.()}
