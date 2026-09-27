@@ -297,17 +297,22 @@ html{background:#eae9e3}
 .animation-speeds input{accent-color:var(--ink)}
 .animation-speeds input:disabled+span{opacity:.35}
 
-/* Turn from the outer paper edge, without a visible button or frame. */
-#manuscript[data-document-style=notebook] .page-edge-turn{position:absolute;top:0;bottom:0;width:16.666667%;height:100%;padding:0;margin:0;z-index:2;border:0;border-radius:0;outline:none;opacity:0;background:linear-gradient(to right,transparent,rgba(255,255,255,.55));transition:opacity var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1)}
+/* Transparent edge targets reveal only a gently lifted bottom corner. */
+#manuscript[data-document-style=notebook] .page-edge-turn{position:absolute;top:0;bottom:0;width:16.666667%;height:100%;padding:0;margin:0;z-index:2;border:0;border-radius:0;outline:none;background:none;--curl:0;--curl-paper:#f4f2e8;--curl-shadow:#92917e;--curl-light:#fffef9}
 #manuscript .page-edge-turn.book-next{right:0}
-#manuscript .page-edge-turn.book-previous{left:0;background:linear-gradient(to left,transparent,rgba(255,255,255,.55))}
-#manuscript .page-edge-turn:focus-visible{opacity:1}
-@media(hover:hover){#manuscript .page-edge-turn:hover:not(:disabled){opacity:1}}
-#manuscript .page-edge-turn:disabled{pointer-events:none;opacity:0}
+#manuscript .page-edge-turn.book-previous{left:0}
+#manuscript .notebook-inner-cover .page-edge-turn{--curl-paper:#a7b99a;--curl-shadow:#73886b;--curl-light:#bdcbae}
+.page-edge-turn::after{content:"";position:absolute;bottom:0;right:0;width:76px;height:76px;pointer-events:none;opacity:var(--curl);transform-origin:100% 100%;transform:scale(var(--curl));background:linear-gradient(135deg,transparent 44%,#34412c19 62%,transparent 79%);border-radius:70% 0 0 0;transition:transform var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1),opacity var(--highlight-duration,450ms) ease}
+.page-edge-turn::before{content:"";position:absolute;bottom:2px;right:2px;width:64px;height:64px;z-index:1;pointer-events:none;opacity:var(--curl);transform-origin:100% 100%;transform:perspective(350px) rotate3d(1,-1,0,calc(-28deg * var(--curl))) scale(var(--curl));clip-path:path("M 64 0 Q 61 37 0 64 L 64 64 Z");background:linear-gradient(135deg,var(--curl-shadow) 12%,var(--curl-paper) 48%,var(--curl-light) 80%,var(--curl-paper));border-radius:0 0 10px 0;transition:transform var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1),opacity var(--highlight-duration,450ms) ease}
+.page-edge-turn.book-previous::after{right:auto;left:0;transform-origin:100% 100%;transform:scaleX(-1) scale(var(--curl));translate:-76px 0}
+.page-edge-turn.book-previous::before{right:auto;left:0;transform-origin:100% 100%;transform:scaleX(-1) perspective(350px) rotate3d(1,-1,0,calc(-28deg * var(--curl))) scale(var(--curl));translate:-62px 0}
+#manuscript .page-edge-turn:focus-visible{--curl:1}
+@media(hover:hover){#manuscript .page-edge-turn:hover:not(:disabled){--curl:1}}
+#manuscript .page-edge-turn:disabled{pointer-events:none;--curl:0}
 #manuscript .grade-ink,#manuscript .teacher-writing{z-index:3}
 #manuscript .teacher-writing{position:relative}
-.notebook-interaction-locked #manuscript .page-edge-turn,.page-turn-stage .page-edge-turn{opacity:0!important}
-@media(prefers-reduced-motion:reduce){#manuscript .page-edge-turn{transition:none}}
+.notebook-interaction-locked #manuscript .page-edge-turn,.page-turn-stage .page-edge-turn{--curl:0!important}
+@media(prefers-reduced-motion:reduce){.page-edge-turn::before,.page-edge-turn::after{transition:none}}
 
 /* Low-contrast pulp stays registered to the cover during every turn. */
 .adjacent-book,#manuscript .notebook-cover,#manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{background-size:720px 1020px;background-repeat:repeat}
