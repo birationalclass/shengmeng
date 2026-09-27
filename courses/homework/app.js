@@ -120,13 +120,14 @@ function beginCornerLift(button){
  const w=220*scale,h=190*scale,x=left?r.left:r.right-w,y=r.bottom-h;
  const snapshot=captureLeaf(page),paper=snapshot.firstElementChild;
  [...page.children].forEach((child,i)=>{const box=child.getBoundingClientRect();if(child.matches('.page-edge-turn')||box.right<x||box.left>x+w||box.bottom<y||box.top>y+h)paper.children[i]?.setAttribute('hidden','')});
+ [...paper.children].filter(child=>child.hidden).forEach(child=>child.remove());
  const stage=document.createElement('div');stage.className='corner-lift-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
  const shadow=document.createElement('div');shadow.className='corner-lift-shadow';Object.assign(shadow.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',transform:left?'none':'scaleX(-1)'});stage.append(shadow);
- const tiles=[],nx=8,ny=8,dx=w/nx,dy=h/ny;
- for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
-  const tile=document.createElement('div');tile.className='corner-lift-tile';Object.assign(tile.style,{left:x+'px',top:y+'px',width:(dx+.45)+'px',height:(dy+.45)+'px'});
+ const tiles=[],nx=12,ny=12,dx=w/nx,dy=h/ny;
+ for(let j=0;j<ny;j++)for(let i=0;i<nx;i++)for(const lower of [false,true]){
+  const tile=document.createElement('div');tile.className='corner-lift-tile';Object.assign(tile.style,{left:x+'px',top:y+'px',width:dx+'px',height:dy+'px',overflow:'visible',clipPath:lower?'polygon(calc(100% + .4px) -1px,calc(100% + .4px) calc(100% + .4px),-1px calc(100% + .4px))':'polygon(-.4px -.4px,calc(100% + 1px) -.4px,-.4px calc(100% + 1px))'});
   const copy=paper.cloneNode(true);Object.assign(copy.style,{left:(r.left-x-i*dx)+'px',top:(r.top-y-j*dy)+'px',clipPath:'none'});tile.append(copy);
-  const shade=document.createElement('div');shade.className='corner-lift-shade';tile.append(shade);stage.append(tile);tiles.push({tile,shade,i,j});
+  const shade=document.createElement('div');shade.className='corner-lift-shade';tile.append(shade);stage.append(tile);tiles.push({tile,shade,i,j,lower});
  }
  const oldClip=page.style.clipPath;
  page.style.clipPath=left?`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% + 20px),220px calc(100% + 20px),220px calc(100% - 190px),-20px calc(100% - 190px))`:`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - 190px),calc(100% - 220px) calc(100% - 190px),calc(100% - 220px) calc(100% + 20px),-20px calc(100% + 20px))`;
@@ -134,7 +135,16 @@ function beginCornerLift(button){
  const state={button,page,stage,oldClip,frame:0,progress:0,target:0,move:null};cornerLift=state;
  function draw(p){
   const warp=(u,v)=>{const inward=left?u:w-u,d=Math.max(0,1-inward/w-(h-v)/h),bend=d*d*p;return [u+(left?1:-1)*30*scale*bend,v-38*scale*bend]};
-  for(const {tile,shade,i,j} of tiles){const u=i*dx,v=j*dy,a=warp(u,v),b=warp(u+dx,v),c=warp(u,v+dy);tile.style.transform=`matrix(${(b[0]-a[0])/dx},${(b[1]-a[1])/dx},${(c[0]-a[0])/dy},${(c[1]-a[1])/dy},${a[0]},${a[1]})`;const inward=left?u:w-u;shade.style.opacity=String(.09*p*Math.max(0,1-inward/w-(h-v)/h));}
+  for(const {tile,shade,i,j,lower} of tiles){
+   const u=i*dx,v=j*dy,a=warp(u,v),b=warp(u+dx,v),c=warp(u,v+dy),d=warp(u+dx,v+dy);
+   // Both triangles use the exact same warped corner vertices. A single
+   // affine quad cannot match its fourth corner and opens diagonal cracks.
+   const origin=lower?[b[0]+c[0]-d[0],b[1]+c[1]-d[1]]:a;
+   const ex=lower?[(d[0]-c[0])/dx,(d[1]-c[1])/dx]:[(b[0]-a[0])/dx,(b[1]-a[1])/dx];
+   const ey=lower?[(d[0]-b[0])/dy,(d[1]-b[1])/dy]:[(c[0]-a[0])/dy,(c[1]-a[1])/dy];
+   tile.style.transform=`matrix(${ex[0]},${ex[1]},${ey[0]},${ey[1]},${origin[0]},${origin[1]})`;
+   const inward=left?u:w-u;shade.style.opacity=String(.09*p*Math.max(0,1-inward/w-(h-v)/h));
+  }
   shadow.style.opacity=String(p);
  }
  state.move=target=>{if(state.target===target&&state.frame)return;cancelAnimationFrame(state.frame);state.target=target;const from=state.progress,start=performance.now(),duration=motionEnabled()?(target?450:600)/motionRate():0;
