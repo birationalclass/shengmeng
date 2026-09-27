@@ -302,19 +302,27 @@ function flipNotebook(direction){
  }
  pose(0);if(underlay){park(0);flight.hidden=true;}frame=requestAnimationFrame(draw);
 }
-// Lift a disposable copy of the next notebook into the reading position.
-// Its original stays visible and tilted underneath until the final handoff.
+// Keep the pile stationary while a copy moves, except for the final notebook:
+// there is no book beneath it, so move that original surface directly.
 function settleNextNotebook(next,stage,restore){
  const source=$('.next-book'),root=$('#manuscript'),rect=root.getBoundingClientRect(),scale=rect.width/root.offsetWidth;
  if(!source){finishNotebookTransfer(next,stage,restore);return}
  const w=sheet.width*scale,h=sheet.height*scale,x=rect.right-w,y=rect.top;
- const copy=captureLeaf(source);Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
- const sheetCopy=document.createElement('div');sheetCopy.className='book-settle-copy';Object.assign(sheetCopy.style,{width:w+'px',height:h+'px'});sheetCopy.append(copy);stage.append(sheetCopy);
- stage.dataset.phase='straightening';
- const label=copy.querySelector('.book-edge-label');let frame=0,startTime;
- const cleanup=restore;
+ const last=next===students.length-1,originalStyle=source.getAttribute('style');
+ let copy=null,sheetCopy=null;
+ if(!last){
+  copy=captureLeaf(source);Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
+  sheetCopy=document.createElement('div');sheetCopy.className='book-settle-copy';Object.assign(sheetCopy.style,{width:w+'px',height:h+'px'});sheetCopy.append(copy);stage.append(sheetCopy);
+ }
+ stage.dataset.phase='straightening';stage.dataset.settleMode=last?'original':'copy';
+ const label=(copy||source).querySelector('.book-edge-label'),labelOpacity=label?.style.opacity;let frame=0,startTime;
+ const cleanup=()=>{if(last){if(originalStyle===null)source.removeAttribute('style');else source.setAttribute('style',originalStyle);if(label)label.style.opacity=labelOpacity;}restore();};
  const handle={cancel(){cancelAnimationFrame(frame);cleanup();stage.remove();}};turnAnimation=handle;
- function pose(p){sheetCopy.style.transform=`translate(${x}px,${y-h/5*(1-p)}px) rotate(${12*(1-p)}deg)`;if(label)label.style.opacity=String(1-p);}
+ function pose(p){
+  if(last){source.style.top=(-sheet.height/5*(1-p))+'px';source.style.transform=`rotate(${12*(1-p)}deg)`;}
+  else sheetCopy.style.transform=`translate(${x}px,${y-h/5*(1-p)}px) rotate(${12*(1-p)}deg)`;
+  if(label)label.style.opacity=String(1-p);
+ }
  function draw(now){
   if(startTime===undefined)startTime=now;
   const t=Math.min(1,(now-startTime)/650),p=t*t*(3-2*t);pose(p);stage.dataset.progress=String(Math.round(p*100));
