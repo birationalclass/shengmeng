@@ -216,16 +216,16 @@ const sheet={width:720,height:1020};
 function fitPaper(){
  const root=$('#manuscript'),viewport=$('#paper-viewport');
  const width=sheet.width*bookStep(),height=sheet.height;
- const sceneWidth=width+220,sceneHeight=height+120;
+ const sceneWidth=width+400,sceneHeight=height+160;
  const availableWidth=Math.max(1,document.documentElement.clientWidth-48);
  const availableHeight=Math.max(1,window.innerHeight-80);
  const scale=Math.min(availableWidth/sceneWidth,availableHeight/sceneHeight);
  viewport.style.setProperty('--scene-scale',scale);
  viewport.style.setProperty('--book-left',(16+150*scale)+'px');
- viewport.style.setProperty('--book-top',(16+20*scale)+'px');
- viewport.style.setProperty('--book-right',(16+70*scale)+'px');
- viewport.style.setProperty('--book-bottom',(16+100*scale)+'px');
- viewport.style.setProperty('--stack-next-left',(width-sheet.width+26)+'px');
+ viewport.style.setProperty('--book-top',(16+100*scale)+'px');
+ viewport.style.setProperty('--book-right',(16+250*scale)+'px');
+ viewport.style.setProperty('--book-bottom',(16+60*scale)+'px');
+ viewport.style.setProperty('--stack-next-left',(width-sheet.width+sheet.width/4)+'px');
  root.style.setProperty('--sheet-width',sheet.width+'px');root.style.setProperty('--sheet-height',height+'px');
  root.style.setProperty('--canvas-width',width+'px');root.style.setProperty('--view-scale',scale);
  viewport.style.width=(sceneWidth*scale+32)+'px';viewport.style.height=(sceneHeight*scale+32)+'px';
@@ -233,10 +233,10 @@ function fitPaper(){
  // Anchor the UI to the stationary paper surface, not the browser viewport.
  // Keep it legible at normal sizes and fit it inside even a small cover leaf.
  const inset=20*scale,uiScale=Math.min(1,(sheet.width*scale-2*inset)/370);
- viewport.style.setProperty('--paper-inset',(16+70*scale+inset)+'px');
- viewport.style.setProperty('--paper-tools-top',(16+20*scale+inset)+'px');
+ viewport.style.setProperty('--paper-inset',(16+250*scale+inset)+'px');
+ viewport.style.setProperty('--paper-tools-top',(16+100*scale+inset)+'px');
  viewport.style.setProperty('--paper-ui-scale',uiScale);
- viewport.style.setProperty('--paper-settings-top',(16+20*scale+inset+54*uiScale)+'px');
+ viewport.style.setProperty('--paper-settings-top',(16+100*scale+inset+54*uiScale)+'px');
  viewport.style.setProperty('--paper-settings-height',Math.max(0,(height*scale-2*inset-54*uiScale)/uiScale)+'px');
 }
 async function toggleFullscreen(){
