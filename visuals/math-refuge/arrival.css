@@ -92,9 +92,9 @@ body:not(.arriving) #roomControls:not([hidden])>button{animation:entry-ui .28s e
 #loading #openingCacheProgress{display:block;width:100%;margin:7px 0 0;text-align:center;font:400 9px/16px ui-monospace,monospace;letter-spacing:.06em;color:#b9c5c099}
 #loading #openingCacheProgress[hidden]{display:none}
 
-/* Actual opening frame, available before any architecture or WebGL dependencies. */
+/* Neutral backdrop while the first live frame is prepared. */
 #arrivalVeil{background:#082b34}
-#arrivalSea{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+
 body.awaiting-scene #arrivalVeil,body.revealing-scene #arrivalVeil{pointer-events:none}
 body.awaiting-scene #loading .arrival-copy,body.awaiting-scene #loading .arrival-entry{visibility:visible}
 body.awaiting-scene #loading{pointer-events:auto}
@@ -107,22 +107,14 @@ body.awaiting-scene #loading{pointer-events:auto}
 #loading #loadPercent small{font-size:11px;margin-left:4px}
 #loading[data-ready=true] .arrival-meter{opacity:0;transform:translateY(4px);pointer-events:none}
 
-/* The SVG and poster share the exact opening-camera projection and cover crop. */
-#loading .coast-progress{position:absolute;inset:0;pointer-events:none;transition:opacity .8s ease}
-#loading .coast-progress svg{display:block;width:100%;height:100%;overflow:visible}
-.coast-outline{fill:none;stroke:url(#coastMetal);stroke-opacity:.08;stroke-width:.65;vector-effect:non-scaling-stroke}
-#loading #loadFill{position:static;fill:none;stroke:url(#coastMetal);stroke-width:1;stroke-linecap:round;transform:none;background:none;box-shadow:none;filter:none;transition:none}
-/* Completed coastline stays until the user enters and #loading is hidden. */
+
+/* The same live canvas is revealed from the centre; no poster-to-scene swap. */
+@property --arrival-radius{syntax:'<percentage>';inherits:false;initial-value:0%}
+#arrivalVeil{--arrival-radius:0%;opacity:1!important;background:radial-gradient(ellipse farthest-corner at 50% 50%,transparent max(0%,calc(var(--arrival-radius) - 12%)),#071c20 var(--arrival-radius));transition:--arrival-radius 1.4s cubic-bezier(.22,.61,.36,1);pointer-events:none!important}
+body:not(.live-preview) #arrivalVeil{background:#071c20}
+body:not(.arriving) #arrivalVeil{display:none}
+#loading #loadProgress{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 #loading .arrival-readout{justify-content:center;gap:14px}
 #loading #loadPercent{font-size:13px;color:#aebbb5}
 #loading #loadPercent small{font-size:10px}
-@media(prefers-reduced-motion:reduce){#loading #loadFill,#loading .coast-progress{transition:none}}
-
-/* Static satin-metal surface: no travelling highlight or repeated pulse. */
-#coastCore{fill:none;stroke:url(#coastSurface);stroke-width:.45;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-#coastClip{transition:width 1s cubic-bezier(.22,.61,.36,1)}
-#loading #loadFill{stroke-linejoin:round;stroke-width:1.35;filter:none}
-@media(prefers-reduced-motion:reduce){#coastClip{transition:none}}
-
-#coastExitClip{transition:x 2s linear,width 2s linear}
-body.revealing-scene #arrivalVeil{transition-duration:.6s}
+@media(prefers-reduced-motion:reduce){#arrivalVeil{transition:none}}
