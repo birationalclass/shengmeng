@@ -1,9 +1,9 @@
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
 import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
-import {createMovementHud} from './movement-hud.js?v=range280-49';
+import {createMovementHud} from './movement-hud.js?v=altitude-speed-109';
 import {openingArrival} from './opening-arrival.js?v=opening-boards-73';
-import {KeyboardMotion} from './keyboard-motion.js?v=speed100-49';
+import {KeyboardMotion} from './keyboard-motion.js?v=altitude-speed-109';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
@@ -432,7 +432,7 @@ function tick(stamp){
   }else{
     const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;forward.normalize();
     const right=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(0,1,0));
-    const velocity=keyboardMotion.update(keys,dt);
+    const velocity=keyboardMotion.update(keys,dt,Math.max(0,camera.position.y-(retreat?.ocean.material.uniforms.oceanLevel.value??0)));
     const move=forward.multiplyScalar(velocity.forward*dt).addScaledVector(right,velocity.right*dt);move.y+=velocity.up*dt;
     const yaw=velocity.yaw*dt;
     if(yaw){const direction=controls.target.clone().sub(camera.position).applyAxisAngle(new THREE.Vector3(0,1,0),yaw);controls.target.copy(camera.position).add(direction);if(SHOTS[shot].lecture)boardFollow.touch();}
@@ -473,7 +473,7 @@ function tick(stamp){
   if(frameQuality.level<2&&$('rainEffects').value==='on')retreat.rain.update(dt,camera,retreat.weather,retreat.sky.material.uniforms.day.value,reduced.matches);else{retreat.rain.mesh.visible=false;retreat.ocean.material.uniforms.rainAmount.value=0;}
   syncRoomControls();
   if(motionSample&&dt>0){motionVelocity.subVectors(camera.position,previousPosition).divideScalar(dt);motionAcceleration.subVectors(motionVelocity,previousVelocity).divideScalar(dt);}
-  movementHud.update(motionSample?motionVelocity.length():0,dt,!remaining&&!blend&&!touring&&!(SHOTS[shot].walk&&!free)&&!(SHOTS[shot].lecture&&lecture?.followEnabled&&boardFollow.following));
+  movementHud.update(motionSample?Math.hypot(motionVelocity.x,motionVelocity.z):0,dt,!remaining&&!blend&&!touring&&!(SHOTS[shot].walk&&!free)&&!(SHOTS[shot].lecture&&lecture?.followEnabled&&boardFollow.following),Math.max(0,camera.position.y-(retreat?.ocean.material.uniforms.oceanLevel.value??0)));
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt,retreat.ocean.material.uniforms.oceanLevel.value);}
   oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
