@@ -124,7 +124,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
   shadow.style.transformOrigin=forward?'left':'right';
   // Once flat, stop transforming text. A single aligned leaf bridges to the
   // already-laid-out live page, preventing per-band text rasterization jumps.
-  if(motion===1){revealSpread();scene.style.visibility='hidden';if(stationary)stationary.style.visibility='hidden';landing.style.opacity='1';stage.style.opacity=String(Math.max(0,1-(t-.84)/.16));}
+  if(motion===1){revealSpread();scene.remove();stationary?.remove();landing.style.opacity='1';stage.style.opacity=String(Math.max(0,1-(t-.84)/.16));}
   stage.dataset.phase=motion===1?'settling':'turning';
   stage.dataset.progress=String(Math.round(progress*100));
   if(t<1)frame=requestAnimationFrame(draw);
@@ -192,7 +192,9 @@ function closeNotebookToLeft(next){
   if(t===1){
    // Closing to the left exposes the back cover. Carry that same closed
    // book onto the left pile; never snap it back to the right-hand cover.
-   if(!landed){landed=document.createElement('div');landed.className='book-settle-copy';Object.assign(landed.style,{width:w+'px',height:h+'px',transformOrigin:'50% 50%'});landed.append(back.cloneNode(true));stage.append(landed);flight.style.visibility='hidden';stationary?.remove();}
+   // Captured descendants have explicit visibility, so hiding their parent
+   // cannot retire them. Remove the old folding faces in this same frame.
+   if(!landed){landed=document.createElement('div');landed.className='book-settle-copy';Object.assign(landed.style,{width:w+'px',height:h+'px',transformOrigin:'50% 50%'});landed.append(back.cloneNode(true));stage.append(landed);flight.remove();stationary?.remove();}
    const u=Math.min(1,(elapsed-850)/380),q=u*u*(3-2*u),startX=pivot-w/2,startY=top+h/2;
    landed.style.transform=`translate(${startX+(destination.x-startX)*q-w/2}px,${startY+(destination.y-startY)*q-h/2}px) rotate(${-2*q}deg)`;
    stage.dataset.phase='placing';
@@ -289,7 +291,7 @@ function flipNotebook(direction){
    frame=requestAnimationFrame(draw);return;
   }
   if(phase==='placed'){
-   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;flight.style.visibility='visible';}
+   if(now-startTime>=120){phase='flipping';stage.dataset.phase='flipping';startTime=now;flight.hidden=false;}
    frame=requestAnimationFrame(draw);return;
   }
   const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
@@ -298,7 +300,7 @@ function flipNotebook(direction){
   else if(!incoming){settleNextNotebook(next,stage,restore);}
   else finishNotebookTransfer(next,stage,restore);
  }
- pose(0);if(underlay){park(0);flight.style.visibility='hidden';}frame=requestAnimationFrame(draw);
+ pose(0);if(underlay){park(0);flight.hidden=true;}frame=requestAnimationFrame(draw);
 }
 // Lift a disposable copy of the next notebook into the reading position.
 // Its original stays visible and tilted underneath until the final handoff.
