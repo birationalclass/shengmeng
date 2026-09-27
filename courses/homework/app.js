@@ -1,8 +1,9 @@
-import {renderNotebook} from './notebook.js';
+import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-forty';
 import {getDemoQuestion,getDemoGrade} from './demo-grader.js';
 const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const students=[{name:'林同学',id:'20260018'},{name:'陈同学',id:'20260023'},{name:'周同学',id:'20260031'}];
+// Synthetic identities for browsing forty notebooks; no real student data.
+const students=Array.from({length:40},(_,i)=>({name:'测试同学 '+String(i+1).padStart(2,'0'),id:'DEMO-'+String(i+1).padStart(3,'0')}));
 const subjects={university:'大学数学',secondary:'中学数学',general:'通用作业'};
 const panelFonts={sans:'简洁体',song:'宋体',hand:'手写体'};
 const paperBackgrounds={plain:'空白',ruled:'横线本',grid:'方格本',tian:'田字格'};
@@ -19,7 +20,7 @@ const stored=read();
 function sanitize(v={}){const p=Object.hasOwn(presets,v.preset)?v.preset:'studio',base=presets[p],documentStyle='notebook';return {documentStyle,panelFont:Object.hasOwn(panelFonts,v.panelFont)?v.panelFont:'sans',background:Object.hasOwn(paperBackgrounds,v.background)?v.background:(documentStyle==='notebook'?'ruled':'plain'),reading:v.documentStyle!=='exam'&&Object.hasOwn(readingModes,v.reading)?v.reading:'double',preset:p,ink:Object.hasOwn(pens,v.ink)?v.ink:base.ink,marks:typeof v.marks==='boolean'?v.marks:true,subject:Object.hasOwn(subjects,v.subject)?v.subject:'university'}}
 let settings=sanitize(stored.notebookDefaults?stored.settings:{...stored.settings,documentStyle:'notebook',reading:'double'}),candidates=Array.isArray(stored.candidates)?stored.candidates.slice(0,4).map(c=>({id:String(c.id),settings:sanitize(c.settings)})):[];
 let note=typeof stored.note==='string'?stored.note:'',confirmed=stored.confirmed||null;
-// Start on the middle sample so both neighbouring books can be explored.
+// Start with neighbours on both sides so both directions can be explored.
 let student=1,active=0,prefsOpen=false;
 let settingsObserver;
 let bookPage=0,turnAnimation=null,turnStage=null;
@@ -35,10 +36,11 @@ function render(){const s=students[student];const qs=questions();
  $('#workspace-tools').innerHTML=`<div class="paper-controls"><a class="home-link icon-button" href="../" aria-label="课程主页" data-tip="主页">${icons.home}</a><span id="account-slot"></span><button class="icon-button" data-action="preferences" aria-label="设置" aria-controls="preferences" aria-expanded="${prefsOpen}" data-tip="设置">${icons.settings}</button></div>`;
  if(account&&!document.body.classList.contains('has-homework-session'))$('#account-slot').append(account);
  window.dispatchEvent(new Event('homework-tools-ready'));
- $('#reading-footer').innerHTML=`<div class="paper-controls"><span class="student-label">${s.name} · ${student+1} / ${students.length}</span><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
- $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-title" aria-hidden="true">华东师范大学<br><b>作业本</b></span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
+ $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 39→40 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
+ $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
+ $('#paper-viewport').dataset.lastBook=String(student===students.length-1);
  $('#manuscript').innerHTML=renderNotebook({questions:qs,student:{...s,correct:student===1&&settings.subject!=='general'},grades:[record(0),record(1)],tools});
  bind();apply();refreshGrade(0);refreshGrade(1);selectQuestion(active);renderCandidates();sizeNotes();
 }
@@ -221,12 +223,35 @@ function flipNotebook(direction){
   const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
   pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
+  else if(!incoming&&next===students.length-1){settleLastNotebook(next,stage,restore);}
   else{restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
+ }
+ pose(0);frame=requestAnimationFrame(draw);
+}
+// When the outgoing book leaves the last tilted notebook, that very book
+// turns flat and slides down into the reading position before the DOM handoff.
+function settleLastNotebook(next,stage,restore){
+ const source=$('.next-book'),root=$('#manuscript'),rect=root.getBoundingClientRect(),scale=rect.width/root.offsetWidth;
+ if(!source){restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();return}
+ const w=sheet.width*scale,h=sheet.height*scale,x=rect.right-w,y=rect.top;
+ const copy=captureLeaf(source);Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
+ const sheetCopy=document.createElement('div');sheetCopy.className='book-settle-copy';Object.assign(sheetCopy.style,{width:w+'px',height:h+'px'});sheetCopy.append(copy);stage.append(sheetCopy);
+ source.style.visibility='hidden';stage.dataset.phase='straightening';
+ const label=copy.querySelector('.book-edge-label');let frame=0,startTime;
+ const cleanup=()=>{source.style.visibility='';restore();};
+ const handle={cancel(){cancelAnimationFrame(frame);cleanup();stage.remove();}};turnAnimation=handle;
+ function pose(p){sheetCopy.style.transform=`translate(${x}px,${y-h/5*(1-p)}px) rotate(${12*(1-p)}deg)`;if(label)label.style.opacity=String(1-p);}
+ function draw(now){
+  if(startTime===undefined)startTime=now;
+  const t=Math.min(1,(now-startTime)/650),p=t*t*(3-2*t);pose(p);stage.dataset.progress=String(Math.round(p*100));
+  if(t<1)frame=requestAnimationFrame(draw);
+  else{cleanup();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
  }
  pose(0);frame=requestAnimationFrame(draw);
 }
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
+ const jump=$('#book-jump');jump.onchange=()=>{const n=Number(jump.value);if(Number.isInteger(n)&&n>=1&&n<=students.length){if(n-1!==student)changeStudent(n-1)}else jump.value=student+1;};jump.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();jump.onchange();}};
  $$('[data-question-region]').forEach(el=>{el.addEventListener('click',()=>selectQuestion(Number(el.dataset.questionRegion)));el.addEventListener('focusin',()=>selectQuestion(Number(el.dataset.questionRegion)))});
  $$('[data-edit-score]').forEach(b=>b.onclick=e=>{e.stopPropagation();editScore(Number(b.dataset.editScore))});
  $$('[data-close-rubric]').forEach(b=>b.onclick=()=>{$('[data-rubric="'+b.dataset.closeRubric+'"]').hidden=true});
