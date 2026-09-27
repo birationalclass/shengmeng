@@ -37,7 +37,8 @@ function render(){const s=students[student];const qs=questions();
  if(account&&!document.body.classList.contains('has-homework-session'))$('#account-slot').append(account);
  window.dispatchEvent(new Event('homework-tools-ready'));
  $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 ${students.length-1}→${students.length} 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
- $('#notebook-stack').innerHTML=`${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
+ const previousLayers=Array.from({length:Math.min(2,Math.max(0,student-1))},(_,i)=>i+1).reverse().map(depth=>`<div class="adjacent-book previous-book-layer" style="--stack-depth:${depth}" aria-hidden="true"><span class="back-cover-binding"></span></div>`).join('');
+ $('#notebook-stack').innerHTML=`${previousLayers}${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span><span class="book-edge-label">下一本 · ${students[student+1].name} →</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
  $('#paper-viewport').dataset.lastBook=String(student===students.length-1);
@@ -175,7 +176,7 @@ function closeNotebookToLeft(next){
  if(stationary)stage.append(stationary);
  const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:'0 50%'});
  for(const [copy,reverse] of [[front,false],[back,true]]){
-  Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});Object.assign(copy.firstElementChild.style,{transform:`scale(${scale})`,boxShadow:'none'});
+  Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
  stage.append(flight);document.body.append(stage);turnStage=stage;
@@ -263,8 +264,7 @@ function flipNotebook(direction){
  for(const [copy,reverse] of [[front,false],[back,true]]){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
   copy.firstElementChild.style.transform=`scale(${scale})`;
-  // Stack-edge shadows belong to the stationary pile, not the lifted book.
-  if(copy.firstElementChild.classList.contains('previous-book'))copy.firstElementChild.style.boxShadow='none';
+  // Each snapshot is a single book; lower stack layers stay in the live pile.
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
  const spine=document.createElement('div');spine.className='book-transfer-spine';Object.assign(spine.style,{width:Math.max(1,2*scale)+'px',left:incoming?'100%':'0'});flight.append(spine);

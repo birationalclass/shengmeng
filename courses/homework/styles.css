@@ -212,7 +212,11 @@ html{background:#eae9e3}
 .adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;transition:filter .2s;overflow:hidden;font-family:"Songti SC",STSong,serif}
 .adjacent-book:hover:not(:disabled){filter:brightness(1.035);color:#263d2f}
 .adjacent-book:focus-visible{outline:3px solid #677e61;outline-offset:12px}
-.previous-book{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a,-3px 6px 0 #e1dfcb,-4px 8px 0 #8b947a,-5px 10px 0 #8d9f82,-8px 20px 28px -12px #24302535}
+.previous-book,.previous-book-layer{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a}
+/* The third/top slot is fixed even with fewer books. Extra books occupy
+   that same slot; only two stationary layers are ever drawn below it. */
+.previous-book{z-index:3}
+.previous-book-layer{left:calc(-125px - 3px * var(--stack-depth));top:calc(9px + 5px * var(--stack-depth));z-index:calc(3 - var(--stack-depth));pointer-events:none}
 .back-cover-binding{position:absolute;right:14px;top:0;bottom:0;width:3px;background:#38543d17;box-shadow:5px 0 9px #243f361a}
 .book-edge-label{position:absolute;left:34px;bottom:24px;font-size:17px;letter-spacing:.1em;color:#3d5847}
 .next-book{left:var(--stack-next-left);top:var(--stack-next-top);transform:rotate(12deg);transform-origin:bottom left;background-color:#a7bd9d;color:#294b40}
@@ -253,7 +257,8 @@ html{background:#eae9e3}
 
 .book-underlay-copy .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
 .notebook-cover,.adjacent-book{-webkit-user-select:none;user-select:none}
-.notebook-cover[data-open-notebook]{cursor:pointer}
+.notebook-cover[data-open-notebook]{cursor:pointer;transition:filter .2s}
+@media(hover:hover){#manuscript .notebook-cover[data-open-notebook]:hover{filter:brightness(1.035)}}
 
 /* The moving front cover and its final live surface share the same paint. */
 .next-book,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;box-shadow:inset 7px 0 12px -10px #1c372f80,2px 2px 0 #d8dfcc,3px 3px 0 #778b70}
