@@ -24,7 +24,7 @@ let note=typeof stored.note==='string'?stored.note:'',confirmed=stored.confirmed
 let student=1,active=0,prefsOpen=false;
 let settingsObserver;
 let bookPage=0,turnAnimation=null,turnStage=null;
-const nextBookPose={angle:2,x:28,y:28};
+const nextBookPose={angle:5,x:28,y:28};
 const records={};
 const record=i=>{const id=[settings.subject,student,i].join('-');return records[id]||(records[id]=getDemoGrade(settings.subject,student,i))};
 const questions=()=>[getDemoQuestion(settings.subject,student,0),getDemoQuestion(settings.subject,student,1)];
