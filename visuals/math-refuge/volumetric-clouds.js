@@ -49,7 +49,7 @@ export function createVolumetricClouds(renderer,device={}){
  for(int i=0;i<32;i++){if(float(i)>=marchSteps)break;vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
  float distanceFade=exp(-start*.025);cloudResult=vec4(color*distanceFade,(1.-transmittance)*distanceFade);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
- const tileCount=device.mobile?2:4;let key='',last=-Infinity,pending=null;
+ const tileCount=device.mobile?4:8;let key='',last=-Infinity,pending=null;
  function capture(u){
   uniforms.origin.value.copy(u.cloudOrigin.value);uniforms.coverage.value=u.cloud.value;uniforms.coverageThreshold.value=thresholdFor(u.cloud.value);uniforms.sun.value.copy(u.sunPosition.value);
   uniforms.sunTint.value.copy(u.sunColor.value);uniforms.day.value=u.day.value;uniforms.storm.value=u.storm.value;uniforms.offset.value.copy(u.cloudOffset.value);
@@ -68,20 +68,23 @@ export function createVolumetricClouds(renderer,device={}){
   const prior=front;front=next;last=now;blendInterval=interval;hasFrame=true;
   u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
  }
- return {setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
+ return {async prepare(){
+  renderer.initTexture(noise);
+  await renderer.compileAsync?.(scene,camera);
+  for(const target of targets){renderer.initRenderTarget(target);await new Promise(resolve=>setTimeout(resolve,0));}
+ },setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
   if(u.cloud.value<.0001){pending=null;key='';u.useVolumeClouds.value=0;return;}u.useVolumeClouds.value=1;
   u.cloudBlend.value=Math.min(1,(now-last)/blendInterval);
   if(pending){
    renderTile(targets[pending.target],pending.tile++,tileCount);
-   if(pending.tile===tileCount){key=pending.key;publish(u,now,pending.target,false);pending=null;}
+   if(pending.tile===tileCount){key=pending.key;publish(u,now,pending.target,!hasFrame);pending=null;}
    return;
   }
   const nextKey=[u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');
   if(nextKey===key||now-last<blendInterval)return;
   capture(u);const next=1-front;targets[next].setSize(size,size/2);
-  // Prepare the initial panorama before entry. Later refreshes never publish a
-  // partially drawn image, nor overwrite the previous frame during its blend.
-  if(!key){renderTile(targets[next],0,1);key=nextKey;publish(u,now,next,!hasFrame);return;}
+  // First activation and quality changes use the same bounded tiles as refreshes.
+  // Publish only a complete panorama; keep the previous texture until then.
   pending={key:nextKey,target:next,tile:1};renderTile(targets[next],0,tileCount);
  },dispose(){noise.dispose();targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};
 }

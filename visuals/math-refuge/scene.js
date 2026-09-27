@@ -18,7 +18,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=flush-sill-81';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v=arrival-light-74';
+import {createWeatherSky} from './weather-sky.js?v=opening-smooth-111';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -579,8 +579,8 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   // Directional light, sky, water highlights and probe strength evolve continuously.
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer,device,probe:true});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
-  function ensureEnvironment(){
-    if(environment||device.startup||device.isRenderActive?.()===false)return;
+  function ensureEnvironment(force=false){
+    if(environment||(!force&&(device.startup||device.isRenderActive?.()===false)))return;
     environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
   }
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};
@@ -613,5 +613,5 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setTime(initialTime.hour??shanghaiHour(),true,0,1,initialTime.date??new Date());
-  return {setMediaOpen,residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {async prepareRendering(){await sky.userData.prepareClouds?.();await new Promise(resolve=>setTimeout(resolve,0));pmrem.compileCubemapShader();ensureEnvironment(true);},setMediaOpen,residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

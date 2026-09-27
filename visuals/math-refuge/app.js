@@ -37,7 +37,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=live-sea-108';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=opening-smooth-111';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -390,7 +390,7 @@ function tick(stamp){
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
   if(entered&&document.getElementById('socialDialog')?.open)return;
-  if(startupAutomatic&&entered&&!entryTransition&&!openingPreparing&&!blend?.openingPath&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  if(startupAutomatic&&entered&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
@@ -552,6 +552,8 @@ try{
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
   retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  window.refugeBoot?.stage(94,'准备光照');
+  await retreat.prepareRendering();
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Compile materials before camera motion, rather than at a cached-video handoff.

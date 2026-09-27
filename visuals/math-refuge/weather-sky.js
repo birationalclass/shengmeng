@@ -2,7 +2,7 @@ import {fadeToward} from './effect-fade.js?v=arrival-light-74';
 import {deferAsset} from './deferred-textures.js?v=arrival-live-71';
 import {solarRefractionGLSL} from './solar-optics.js?v86-environment';
 import * as THREE from 'three';
-import {createVolumetricClouds} from './volumetric-clouds.js?v=arrival-light-74';
+import {createVolumetricClouds} from './volumetric-clouds.js?v=opening-smooth-111';
 import {createAtmosphereLUT} from './sky-atmosphere.js?v112';
 export function createWeatherSky({panorama=true,renderer,device={},probe=false}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
@@ -104,6 +104,7 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  }
  material.addEventListener('dispose',()=>{disposed=true;atmosphere?.dispose();volumeClouds?.dispose();fallback.dispose();panoramaTexture?.dispose();});
  const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=(_r,_s,camera)=>{uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);uniforms.cloudOrigin.value.y=Math.max(.001,uniforms.cloudOrigin.value.y);uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};let cloudsEnabled=!device.startup,cloudVisibility=0;
+ mesh.userData.prepareClouds=()=>volumeClouds?.prepare();
  mesh.userData.setCloudQuality=level=>{cloudsEnabled=level!=='off';if(cloudsEnabled)volumeClouds?.setQuality(level);};
  mesh.userData.updateAtmosphere=(dt=0)=>{
   if(device.isRenderActive?.()===false)return;
