@@ -1,5 +1,5 @@
 // Start cheaply on every device; model names are only a ceiling, measured frames decide promotion.
-export const STARTUP_GRAPHICS={quality:'balanced',resolutionScale:'75',shadowQuality:'0',cloudQuality:'off',textureFiltering:'2',waterDetail:'low',waterReflection:'simple',oceanModel:'auto',adaptiveQuality:'auto',starEffects:'off',meteorEffects:'off',rainEffects:'off'};
+export const STARTUP_GRAPHICS={quality:'balanced',resolutionScale:'75',shadowQuality:'0',cloudQuality:'low',textureFiltering:'2',waterDetail:'low',waterReflection:'simple',oceanModel:'auto',adaptiveQuality:'auto',starEffects:'off',meteorEffects:'off',rainEffects:'off'};
 export class StartupQuality{
  constructor(){this.level=0;this.retryAt=0;this.warmup=750;this.resetSamples();}
  resetSamples(){this.frames=[];this.span=0;this.good=0;}
@@ -18,6 +18,6 @@ export class StartupQuality{
  settings(desired){
   if(this.level===2)return {...desired,adaptiveQuality:'auto',oceanModel:'auto'};
   if(this.level===1)return {...desired,...STARTUP_GRAPHICS,resolutionScale:'100',textureFiltering:'4',cloudQuality:desired.cloudQuality==='off'?'off':'low'};
-  return {...desired,...STARTUP_GRAPHICS};
+  return {...desired,...STARTUP_GRAPHICS,cloudQuality:desired.cloudQuality==='off'?'off':'low'};
  }
 }

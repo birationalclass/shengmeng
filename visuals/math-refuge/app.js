@@ -1,6 +1,7 @@
+import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
-import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
+import {StartupQuality} from './startup-quality.js?v=cloud-ready-113';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
 import {createMovementHud} from './movement-hud.js?v=altitude-speed-109';
 import {openingArrival} from './opening-arrival.js?v=opening-boards-73';
@@ -38,7 +39,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=render-stable-112';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-ready-113';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -564,12 +565,35 @@ try{
     const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(95+4*programs.filter(p=>p.isReady()).length/programs.length,'准备画面');},80);
     try{await compiling;}finally{clearInterval(progressTimer);}
   }
+  // Calibrate before entry. Test the selected weather instead of waiting for an idle tour.
+  window.refugeBoot?.stage(99,'匹配画质');
+  for(const level of (document.hidden||device.safe?[0]:[2,1,0])){
+    startupQuality.level=level;device.startup=level===0;
+    const settings=startupQuality.settings(desiredGraphics);
+    for(const [id,value] of Object.entries(settings))if(graphicsKeys.includes(id))$(id).value=value;
+    setQuality();await retreat.sky.userData.prepareClouds?.();
+    await renderer.compileAsync?.(scene,camera);
+    const frames=[],gpu=[];let last=performance.now();
+    if(document.hidden)break;
+    for(let i=0;i<20;i++){
+      const stamp=await new Promise(resolve=>{let done=false;const finish=t=>{if(done)return;done=true;clearTimeout(timer);resolve(t);};const timer=setTimeout(()=>finish(performance.now()),100);requestAnimationFrame(finish);});
+      if(i>=4)frames.push(stamp-last);last=stamp;
+      const measured=gpuTimer?.poll(stamp);if(measured!=null)gpu.push(measured);
+      gpuTimer?.begin(stamp);
+      try{retreat.setTime(sceneTime.hour,false,1/60,1,sceneTime.date);retreat.ocean.userData.study.update(camera,0);if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
+      window.refugeBoot?.preview();
+    }
+    $('world').dataset.startupCalibration=JSON.stringify({level,frames:frames.length,accepted:acceptsStartupQuality(frames,gpu,Number($('targetFPS').value))});
+    if(level===0||acceptsStartupQuality(frames,gpu,Number($('targetFPS').value)))break;
+  }
+  startupAutomatic=false;frameQuality.resetSamples();oceanBudget.resetSamples();
+  $('recommendStatus').textContent='加载时已匹配画质 · 运行中按实际帧率保护流畅度';
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
+  window.refugeBoot?.ready();$('world').dataset.startupTier=String(startupQuality.level);renderActivity.setEnabled(!failed);
   if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 

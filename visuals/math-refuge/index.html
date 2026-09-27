@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="control-dock.css?v=skill-arc-85"><link rel="stylesheet" href="atmosphere.css?v69-authored">
   <script type="importmap">{"imports":{"three":"../3d/vendor/three.module.js","three/addons/":"./vendor/","./hall-spiral.js":"./hall-spiral.js?v=social-55","./campus-layout.js":"./campus-layout.js?v=social-55","./automatic-doors.js?v44-hall-clearance":"./automatic-doors.js?v=social-55","./scene.js?v=horizon-depth-1":"./scene.js?v=opening-cache-81","./site-layout.js?v44-hall-clearance":"./site-layout.js?v=social-55","./hall-camera-route.js?v=sw-corner-1":"./hall-camera-route.js?v=social-55","./hall-sun-view.js":"./hall-sun-view.js?v=social-55","./site-layout.js":"./site-layout.js?v=social-55","./lectern-lift.js":"./lectern-lift.js?v=social-55","./site-layout.js?v124":"./site-layout.js?v=social-55","./swivel-chairs.js?v126":"./swivel-chairs.js?v=social-55","./campus.js?v=spiral-20260926":"./campus.js?v=flush-sill-81","./landscape.js?v106-44-hall-clearance":"./landscape.js?v=opening-cache-81","./residence-layout.js?v=true-north-coast-1":"./residence-layout.js?v=left-loop-home-86","./elliptic-site.js?v=true-north-coast-1":"./elliptic-site.js?v=left-loop-home-86","./elliptic-site.js":"./elliptic-site.js?v=left-loop-home-86","./campus-plan.js?v=isolated-backup-47":"./campus-plan.js?v=left-loop-home-86"}}</script>
   <link rel="stylesheet" href="residence.css?v76-villa">
-  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v=render-stable-112"><link rel="stylesheet" href="screen-webview.css?v123">
+  <link rel="stylesheet" href="performance-monitor.css?v80-performance"><link rel="stylesheet" href="arrival.css?v=startup-weather-114"><link rel="stylesheet" href="screen-webview.css?v123">
   <link rel="stylesheet" href="graphics-settings.css?v91-shore">
-  <link rel="stylesheet" href="../../study/spectral/vendor/katex.min.css"><script defer src="../../study/spectral/vendor/katex.min.js"></script><link rel="stylesheet" href="social.css?v=render-stable-112">
+  <link rel="stylesheet" href="../../study/spectral/vendor/katex.min.css"><script defer src="../../study/spectral/vendor/katex.min.js"></script><link rel="stylesheet" href="social.css?v=startup-weather-114">
 <style id="arrivalCritical">
 body{background:#071c20}#arrivalVeil{position:fixed;inset:0;z-index:11;pointer-events:none}
 body.arriving #world{visibility:visible}
@@ -143,7 +143,7 @@ body.arriving #world{visibility:visible}
     <div class="arrival-bottom"><div class="arrival-entry"><p id="entryStatus" role="status">正在连接书院</p><button id="enterButton" class="entry-button" hidden>点击继续</button></div><div class="arrival-meter"><div class="arrival-readout"><p id="loadMessage" role="status">连接空间</p><output id="loadPercent">00<small>%</small></output></div></div></div>
   </div>
   <div id="error" hidden aria-label="连接恢复"><div class="arrival-landscape" aria-hidden="true"><svg viewBox="0 0 1000 700"><ellipse cx="600" cy="350" rx="410" ry="185" transform="rotate(-22 600 350)"/><ellipse cx="600" cy="350" rx="395" ry="170" transform="rotate(-22 600 350)"/><path d="M142 492C318 400 434 536 586 433S868 241 1030 292"/></svg></div><div class="arrival-copy"><p class="arrival-kicker">A PLACE TO THINK</p><h2>数学难民营</h2><p id="errorText" role="status">连接中断</p></div><div class="arrival-bottom"><div><div id="retryStatus" class="retry-readout" role="status">8 秒后重试</div><div class="retry-actions"><button id="retryPause">暂停重试</button><button id="retrySafe">低负载</button><a href="../">返回</a></div></div><button id="retryNow" class="entry-button">重试<span aria-hidden="true">↗</span></button></div></div>
-  <script type="module" src="social.js?v=render-stable-112"></script>
+  <script type="module" src="social.js?v=startup-weather-114"></script>
   <!-- Standalone bootstrap: remains available when a module dependency fails. -->
   <script id="refugeBootstrap">
 (()=>{
@@ -207,7 +207,7 @@ body.arriving #world{visibility:visible}
  document.addEventListener('visibilitychange',()=>{last=Date.now();if(state==='error')paintRetry();});
  window.refugeLoadingTimer=setTimeout(()=>{if(state==='loading')fail(new Error('Startup timeout'));},90000);
  stage(3,'连接空间');
- import('./app.js?v=render-stable-112').catch(fail);
+ import('./app.js?v=startup-weather-114').catch(fail);
 })();
   </script>
 </body>
