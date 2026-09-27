@@ -36,3 +36,14 @@ test('AI jobs are private, idempotent, exclude screenshots and require admin con
  assert.equal((await b.call('messages',null,c.cookie)).data.messages.length,0);
  assert.ok(!JSON.stringify([...b.map.values()]).includes('data:image'));
 });
+
+test('unified identification routes existing and new names without creating an account',async()=>{
+ const b=setup();assert.equal((await b.call('identify',{name:'freshname'})).data.next,'register');
+ assert.equal([...b.map.keys()].filter(k=>k.startsWith('users')).length,0);
+ await b.call('register',{name:'Alice',password:'test-password'});
+ assert.deepEqual((await b.call('identify',{name:' ALICE '})).data,{next:'login'});
+ assert.equal((await b.call('identify',{name:'<invalid>'})).statusCode,400);
+ assert.equal((await b.call('identify',{name:'Alice'},'','https://evil.test')).statusCode,403);
+ for(let i=0;i<12;i++)await b.call('identify',{name:'randomname'});
+ assert.equal((await b.call('identify',{name:'Alice'})).statusCode,429);
+});

@@ -36,6 +36,13 @@ function createHandler(store,{origins=['https://birationalclass.github.io'],secu
     try{input=JSON.parse(raw);}catch{throw fault(400,'请求格式不正确');}
     if(!input||Array.isArray(input)||typeof input!=='object')throw fault(400,'请求格式不正确');
    }
+   if(path==='/api/identify'&&method==='POST'){
+    await rate('identify-ip:'+ip,12);
+    const name=typeof input.name==='string'?input.name.normalize('NFKC').trim():'';
+    if(!/^[\p{L}\p{N}_-]{3,24}$/u.test(name))throw fault(400,'难民名称需 3–24 字');
+    const existing=await store.get('users',hash(name.toLocaleLowerCase('en-US')));
+    return send(200,{next:existing?'login':'register'});
+   }
    if(['/api/register','/api/login'].includes(path)&&method==='POST'){
     await rate('auth-ip:'+ip,20);
     const name=typeof input.name==='string'?input.name.normalize('NFKC').trim():'',password=input.password;

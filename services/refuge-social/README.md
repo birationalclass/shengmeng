@@ -43,3 +43,5 @@ An administrator opens chat → ⋯ to configure the model and API Key. Credenti
 The panel supports safe text, bold, inline code and local KaTeX formulas. HTML is never interpreted. Window position, dimensions and selected provider are stored in the browser, not the account. Resize minimum is 280×180, maximum width is 50% of the viewport and maximum height is 480px. Viewport limits override the minimum on small screens.
 
 Tests: `node --test service.test.mjs ai.test.mjs ../../visuals/math-refuge/social-send.test.mjs`.
+
+The unified identity-first entry uses rate-limited `POST /api/identify` to return only `login` or `register` for a public username. It never creates an account. A new identity requires an explicit “创建并进入” submission; existing identities still require their password.
