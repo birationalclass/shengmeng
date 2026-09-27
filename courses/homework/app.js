@@ -143,7 +143,8 @@ function beginCornerLift(button){
  const hit=document.createElement('div');hit.className='corner-lift-hit';
  Object.assign(hit.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
  hit.onpointerdown=e=>{e.preventDefault();e.stopPropagation()};
- hit.onclick=e=>{e.preventDefault();e.stopPropagation();if(notebookInteractionLocked)return;const bounds=button.getBoundingClientRect();if(e.clientX>=bounds.left&&e.clientX<=bounds.right&&e.clientY>=bounds.top&&e.clientY<=bounds.bottom)button.click()};
+ hit.onpointerenter=e=>{if(e.pointerType!=='touch'&&!notebookInteractionLocked)cornerLift?.move(1)};
+ hit.onclick=e=>{e.preventDefault();e.stopPropagation();if(!notebookInteractionLocked)button.click()};
  stage.append(hit);
  const oldClip=page.style.clipPath;
  page.style.clipPath=left?`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% + 20px),220px calc(100% + 20px),220px calc(100% - 190px),-20px calc(100% - 190px))`:`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - 190px),calc(100% - 220px) calc(100% - 190px),calc(100% - 220px) calc(100% + 20px),-20px calc(100% + 20px))`;
@@ -172,7 +173,13 @@ function beginCornerLift(button){
 document.addEventListener('pointermove',e=>{
  if(e.pointerType==='touch'||notebookInteractionLocked||turnStage)return;
  // Keep the target stable when the lifted paper changes pointer hit-testing.
- const hit=$$('.page-edge-turn').find(button=>{if(button.disabled||!button.getClientRects().length)return false;const r=button.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom});
+ const hit=$$('.page-edge-turn').find(button=>{
+  if(button.disabled||!button.getClientRects().length)return false;
+  const r=button.getBoundingClientRect(),page=button.closest('.scan-page'),p=page.getBoundingClientRect(),scale=p.width/page.offsetWidth,left=Number(button.dataset.turn)<0;
+  const onEdge=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
+  const onCorner=e.clientY>=p.bottom-190*scale&&e.clientY<=p.bottom&&e.clientX>=(left?p.left:p.right-220*scale)&&e.clientX<=(left?p.left+220*scale:p.right);
+  return onEdge||onCorner;
+ });
  const control=e.target.closest?.('button,input,textarea,select,a');
  if(hit&&(!control||control===hit))beginCornerLift(hit);else relaxCornerLift();
 },{passive:true});

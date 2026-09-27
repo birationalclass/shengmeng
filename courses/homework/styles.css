@@ -313,3 +313,8 @@ html{background:#eae9e3}
 .corner-lift-stage *{pointer-events:none!important;transition:none!important}
 
 .corner-lift-stage .corner-lift-hit{position:absolute;z-index:2;pointer-events:auto!important;background:transparent;cursor:pointer;touch-action:manipulation}
+
+/* The corner target matches the full visible curl, not only the narrow edge. */
+#manuscript .page-edge-turn::after{content:"";position:absolute;bottom:0;right:0;width:220px;height:190px;background:transparent;pointer-events:auto}
+#manuscript .page-edge-turn.book-previous::after{right:auto;left:0}
+#manuscript .page-edge-turn:disabled::after{pointer-events:none}
