@@ -43,7 +43,7 @@ import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_R
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
-import {configureCameraInput} from './camera-input.js?v=entry-polish-100';
+import {configureCameraInput} from './camera-input.js?v=mouse-soft-110';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=concert-53';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
