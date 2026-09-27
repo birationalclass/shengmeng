@@ -1,4 +1,4 @@
-import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-click-cover';
+import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-inner-cover';
 import {getDemoQuestion,getDemoGrade} from './demo-grader.js';
 const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

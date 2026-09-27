@@ -265,3 +265,7 @@ html{background:#eae9e3}
 
 /* Preserve the pale page edge, closing only its left endpoint with the spine. */
 .notebook-cover::after,.next-book::after{content:"";position:absolute;left:0;bottom:-3px;width:5px;height:9px;background:linear-gradient(180deg,#a7bd9d00 0%,#a7bd9d 35%,#91a687 75%,#778b70 100%);box-shadow:inset 1px 0 1px #62785b55;border-radius:0 0 0 2px;pointer-events:none;z-index:1}
+
+/* The reverse of the front cover is green stock, preceding scan page one. */
+#manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{--paper-pattern:none;background-color:#a7bd9d;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);color:#294b40;box-shadow:inset -7px 0 12px -10px #1c372f80}
+.notebook-inner-cover::before{display:none}
