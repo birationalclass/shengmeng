@@ -261,4 +261,7 @@ html{background:#eae9e3}
 @media(hover:hover){#manuscript .notebook-cover[data-open-notebook]:hover{filter:brightness(1.035)}}
 
 /* The moving front cover and its final live surface share the same paint. */
-.next-book,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;box-shadow:inset 3px 0 0 #91a789,inset 7px 0 12px -10px #1c372f80,inset 0 -1px 0 #d8dfcc,0 2px 0 #778b70,2px 2px 0 #778b70}
+.next-book,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;overflow:visible;box-shadow:inset 7px 0 12px -10px #1c372f80,2px 2px 0 #d8dfcc,3px 3px 0 #778b70}
+
+/* Preserve the pale page edge, closing only its left endpoint with the spine. */
+.notebook-cover::after,.next-book::after{content:"";position:absolute;left:0;bottom:-3px;width:3px;height:5px;background:#778b70;border-radius:0 0 0 2px;pointer-events:none}
