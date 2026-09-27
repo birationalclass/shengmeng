@@ -8,7 +8,7 @@ function boot(attempt=0){
  let now=0,interval,destination,nextTimer=0;const timers=new Map();
  const classes=()=>{const values=new Set(['arriving','awaiting-scene']);return {add(...items){items.forEach(x=>values.add(x));},remove(...items){items.forEach(x=>values.delete(x));},toggle(x,on){if(on)values.add(x);else values.delete(x);},contains:x=>values.has(x)};};
  const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',classList:classes(),dataset:{},style:{},handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
- const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:(f,ms)=>{const id=++nextTimer;timers.set(id,{f,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
+ const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,querySelector:()=>null,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:(f,ms)=>{const id=++nextTimer;timers.set(id,{f,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
  context.window=context;vm.runInNewContext(script,context);
  return {context,get,storage,events,tick(seconds){for(let i=0;i<seconds*4;i++){now+=250;interval();for(const [id,timer] of timers)if(timer.at<=now){timers.delete(id);timer.f();}}},click(id){get(id).handlers.click.call(get(id));},get destination(){return destination;},timeout:()=>timers.get(context.refugeLoadingTimer)?.f()};
 }
@@ -49,3 +49,24 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
  b.context.refugeBoot.preview();b.tick(2);assert.equal(reveals,1,'later frames must not restart the fade');
 }
 assert(!html.includes('arrival-dawn'),'no illustration should appear before the real sea');
+
+for(const type of ['click','keydown']){
+ const b=boot();let entries=0;const e={type,key:'a',target:{closest:()=>null},preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}};
+ b.events['refuge-entry']=()=>entries++;b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.ready();
+ b.events[type](e);assert.equal(entries,0,'A blank/unrevealed startup cannot accidentally enter');
+ b.context.refugeBoot.preview();b.tick(2);b.events[type](e);
+ assert.equal(entries,1);assert(e.prevented&&e.stopped,'The entry gesture cannot also move the newly entered camera');
+ b.events[type](e);assert.equal(entries,1,'One entry per visit even with double clicks');
+}
+for(const blocker of ['dialog','input','shortcut','composition']){
+ const b=boot();let entries=0;b.events['refuge-entry']=()=>entries++;b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.ready();b.context.refugeBoot.preview();b.tick(2);
+ b.context.document.querySelector=()=>blocker==='dialog'?{}:null;
+ const event={type:'keydown',key:'a',ctrlKey:blocker==='shortcut',isComposing:blocker==='composition',target:{closest:()=>blocker==='input'?{}:null},preventDefault(){},stopImmediatePropagation(){}};
+ b.events.keydown(event);assert.equal(entries,0,blocker+' cannot trigger scene entry');
+}
+{
+ const b=boot();let logins=0,entries=0;b.events['refuge-login']=()=>logins++;b.events['refuge-entry']=()=>entries++;
+ b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.ready();b.context.refugeBoot.preview();b.tick(2);
+ b.events.click({type:'click',target:{closest:()=>null},preventDefault(){},stopImmediatePropagation(){}});
+ assert.equal(logins,1);assert.equal(entries,0,'A background gesture never bypasses login');
+}
