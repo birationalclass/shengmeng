@@ -1,4 +1,4 @@
-import {authRequest,currentUser,openAccount} from './auth.js?v=20260927';
+import {authRequest,currentUser,openAccount} from './auth.js?v=20260927-notebook-stack';
 const root=document.createElement('main');root.id='homework-workspace';root.hidden=true;document.body.append(root);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const states={uploading:'待识别',starting:'正在启动',recognizing:'识别与转录',transcribed:'待批改',grading:'正在批改',review:'待教师复核',failed:'需要处理'};

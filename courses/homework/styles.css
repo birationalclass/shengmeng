@@ -201,3 +201,38 @@ html{scrollbar-gutter:auto}
 #paper-viewport #preferences{position:absolute;top:var(--paper-settings-top);right:var(--paper-inset);width:370px;max-width:none;max-height:var(--paper-settings-height);transform:scale(var(--paper-ui-scale,1));transform-origin:top right}
 
 .paper-controls .home-link{text-decoration:none}.home-link:focus-visible{outline:1px dashed var(--ink);outline-offset:3px}
+
+/* A small desk arrangement: the previous back cover and next front cover are
+   physical neighbours, below the live book, in the same fixed paper coordinates. */
+html{background:#eae9e3}
+#paper-viewport{isolation:isolate;overflow:visible}
+#manuscript,#manuscript[data-reading=double],#manuscript[data-document-style=notebook][data-reading=double]{left:var(--book-left);top:var(--book-top);z-index:2;pointer-events:none}
+#manuscript .scan-page{pointer-events:auto}
+#notebook-stack{position:absolute;left:var(--book-left);top:var(--book-top);transform:scale(var(--scene-scale));transform-origin:0 0;z-index:1}
+.adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;transition:filter .2s;overflow:hidden;font-family:"Songti SC",STSong,serif}
+.adjacent-book:hover:not(:disabled){filter:brightness(1.035);color:#263d2f}
+.adjacent-book:focus-visible{outline:3px solid #677e61;outline-offset:12px}
+.previous-book{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a,-3px 6px 0 #e1dfcb,-4px 8px 0 #8b947a,-5px 10px 0 #8d9f82,-8px 20px 28px -12px #24302535}
+.back-cover-binding{position:absolute;right:14px;top:0;bottom:0;width:3px;background:#38543d17;box-shadow:5px 0 9px #243f361a}
+.back-cover-stamp{position:absolute;left:0;right:0;bottom:140px;font-size:21px;letter-spacing:.3em;color:#446149b0}
+.back-cover-stamp small{display:block;font:9px Georgia,serif;letter-spacing:.2em;margin-top:16px}
+.book-edge-label{position:absolute;left:34px;bottom:24px;font-size:17px;letter-spacing:.1em;color:#3d5847}
+.next-book{left:var(--stack-next-left);top:72px;transform:rotate(1deg);background-color:#adba99}
+.next-book .book-edge-label{left:auto;right:40px;bottom:25px}
+.stack-cover-title{position:absolute;inset:120px 0 auto;font-size:36px;letter-spacing:.2em}
+.stack-cover-title b{display:block;margin-top:100px;font-size:56px;font-weight:400;letter-spacing:.4em}
+#paper-viewport #workspace-tools{top:var(--paper-tools-top)}
+#account-slot{display:flex;align-items:center}
+#reading-footer{position:absolute;right:var(--paper-inset);bottom:calc(var(--book-bottom) + 28px * var(--scene-scale));z-index:8;transform:scale(var(--paper-ui-scale));transform-origin:bottom right;color:#647063}
+#reading-footer .paper-controls{gap:10px}
+#reading-footer .student-label{font-size:12px;margin-right:8px;color:#657160}
+#reading-footer .icon-button{color:#5c6d60}
+#reading-footer .icon-button::after{top:auto;bottom:calc(100% + 3px)}
+#reader-status{position:absolute;right:0;bottom:50px;font-size:12px;white-space:nowrap}
+/* Leave the bottom corner for the reading tools; page numbers stay on paper. */
+#manuscript .cover-footer{bottom:136px}
+#manuscript .paper-footer{bottom:136px}
+#manuscript .notebook-cover{background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px)}
+@media(prefers-reduced-motion:no-preference){.adjacent-book{animation:book-arrive .35s ease-out}@keyframes book-arrive{from{opacity:.65}to{opacity:1}}}
+
+#paper-viewport[data-book-open=true] .previous-book .book-edge-label{writing-mode:vertical-rl;left:40px;top:45px;bottom:auto;font-size:18px;letter-spacing:.16em}

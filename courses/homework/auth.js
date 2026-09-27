@@ -13,6 +13,9 @@ root.innerHTML=`<button class="auth-entry" type="button" aria-haspopup="dialog">
 <section class="auth-profile" hidden><p class="auth-profile-id"></p><p class="auth-profile-email"></p><p class="auth-profile-role"></p><button class="auth-primary" id="auth-continue" type="button">返回作业本</button><div class="auth-profile-actions"><button type="button" data-mode="reset">重设密码</button><button type="button" id="auth-logout">退出登录</button></div></section>
 <p class="auth-status" role="status" aria-live="polite"></p><p class="auth-footnote">登录后查看个人作业；未登录页面仅供体验。</p><button class="auth-teacher" type="button">教师入口</button></dialog>`;
 document.body.append(root);
+const entry=root.querySelector('.auth-entry');
+function mountAccount(){const slot=document.querySelector('#account-slot');const parent=slot&&root.dataset.signedIn!=='true'?slot:root;if(entry.parentElement!==parent)parent.append(entry);}
+window.addEventListener('homework-tools-ready',mountAccount);
 const $=s=>root.querySelector(s),$$=s=>[...root.querySelectorAll(s)];
 const dialog=$('dialog'),form=$('form');
 let mode='login',session=null,user=null,busy=false,teacher=false,challenge=null,retryAt=0,lastFocus=null;
@@ -34,9 +37,10 @@ async function call(path,input,token=session?.token){
  return data;
 }
 function updateEntry(){
- $('.auth-entry span').textContent=user?(user.role==='teacher'?'教师 · ':'')+user.studentId:'登录 / 注册';
- $('.auth-entry').setAttribute('aria-label',user?'账号：'+user.studentId:'登录或注册');
+ entry.querySelector('span').textContent=user?(user.role==='teacher'?'教师 · ':'')+user.studentId:'登录 / 注册';
+ entry.setAttribute('aria-label',user?'账号：'+user.studentId:'登录或注册');
  root.dataset.signedIn=String(Boolean(user));
+ mountAccount();
  window.dispatchEvent(new CustomEvent('homework-auth-change',{detail:user}));
 }
 function address(){const id=$('#auth-id').value.trim();return teacher&&['smeng','smeng@math.ecnu.edu.cn'].includes(id.toLowerCase())?'smeng@math.ecnu.edu.cn':/^\d{11}$/.test(id)?id+'@stu.ecnu.edu.cn':'';}
@@ -60,7 +64,7 @@ function setMode(next){
 function refreshSend(){const seconds=Math.max(0,Math.ceil((retryAt-Date.now())/1000));$('#auth-send').disabled=busy||seconds>0;$('#auth-send').textContent=seconds?seconds+' 秒后可重发':challenge?'重新发送':'获取验证码';}
 function setBusy(value){busy=value;form.setAttribute('aria-busy',String(value));$$('form input,form button,.auth-tabs button,.auth-teacher,.auth-profile-actions button').forEach(el=>el.disabled=value);if(!value){const verification=['register','reset'].includes(mode);$('#auth-code').disabled=!verification;$('#auth-confirm').disabled=!verification;}refreshSend();}
 function open(){lastFocus=document.activeElement;setMode(user?'profile':'login');dialog.showModal();(user?$('#auth-continue'):$('#auth-id')).focus();}
-$('.auth-entry').onclick=open;
+entry.onclick=open;
 $('.auth-close').onclick=()=>dialog.close();$('#auth-continue').onclick=()=>dialog.close();
 dialog.addEventListener('close',()=>{if(!busy)resetSecrets();lastFocus?.focus();});
 dialog.addEventListener('keydown',event=>event.stopPropagation());
