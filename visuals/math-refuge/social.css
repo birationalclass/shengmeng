@@ -13,7 +13,6 @@
 #socialSubmit{width:100%;border:1px solid #a8b9aa9c;border-radius:0;background:#c7d1bf;color:#10201e;font-size:12px;letter-spacing:.2em;padding:13px}#socialSubmit:disabled{opacity:.4}#socialSubmit span{float:right}
 #socialSwitch,#socialGuest{display:block;margin:17px auto 0;border:0;font-size:11px;color:#a3b4ac;padding:4px}#socialGuest{font-size:10px;color:#799089;margin-top:18px}
 #socialAuthStatus{font-size:11px;line-height:1.7;color:#d4bd98;min-height:18px;margin:14px 0 0}#socialAccountName{font-size:22px}.social-account-note{font-size:11px;color:#96aaa2}#socialLogout{margin-top:20px;border-radius:0;font-size:12px}
-#socialChatToggle{display:none;position:fixed;z-index:5;left:40px;top:auto;width:34px;height:34px;min-height:34px;padding:7px;color:#b3c8bf}#socialChatToggle svg{width:20px;height:20px}.in-scene #socialChatToggle{display:inline-flex}#socialChatToggle[hidden]{display:none}#socialChatToggle::after{left:0;right:auto}
 #socialChat{display:none;position:fixed;left:40px;bottom:158px;width:min(768px,calc(100vw - 32px));z-index:5;color:#d9e2d8;font-size:12px;opacity:0;transition:opacity 1.1s ease;pointer-events:none;text-shadow:0 1px 5px #000}
 .in-scene #socialChat.expanded,.in-scene #socialChat.recent{display:block}#socialChat.recent,#socialChat.expanded{opacity:1}.social-chat-heading{display:none;justify-content:space-between;align-items:center;font-size:10px;color:#a0b5ad;padding:0 3px 9px;letter-spacing:.12em}.social-chat-heading i{font-style:normal;color:#597b74;margin:0 8px}.social-chat-heading button{font-size:18px;padding:0 5px;border:0}
 #socialChat.expanded{background:linear-gradient(120deg,#0b1a2138,#10222818);border:1px solid #b9ccc226;padding:13px 14px 10px;pointer-events:auto;backdrop-filter:blur(3px);text-shadow:0 1px 4px #000b;transition:opacity .25s}#socialChat.expanded .social-chat-heading{display:flex}
@@ -21,7 +20,7 @@
 #socialMessages p{margin:7px 0;line-height:1.65;overflow-wrap:anywhere;animation:social-line .3s ease}#socialMessages b{font-weight:400;color:#a7c9c5;margin-right:10px}#socialMessages .own b{color:#d7c69f}#socialMessages .message-body{white-space:pre-wrap;user-select:text}
 #socialComposer{display:flex;align-items:center;gap:9px;border-top:1px solid #91a99b40;margin-top:9px;padding-top:9px}#socialComposer label{font-size:10px;color:#a0bfae}#socialInput{width:100%;min-width:0;background:none;border:0;outline:none;color:#e6eee3;font:12px/1.6 sans-serif;user-select:text}#socialSend{border:0;padding:3px 4px;color:#b8c6b3}#socialChatStatus{font-size:10px;color:#cdb899;margin:3px 0}#socialChatStatus:empty{display:none}
 @keyframes social-line{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
-@media(max-width:600px){#socialDialog{padding:35px 26px 22px}#socialChatToggle{left:18px}#socialChat{left:18px;bottom:182px;width:calc(100vw - 36px)}#socialChat.expanded #socialMessages{max-height:23vh}#loading .arrival-account,#error .arrival-account{right:7vw;top:67px}}
+@media(max-width:600px){#socialDialog{padding:35px 26px 22px}#socialChat{left:18px;bottom:182px;width:calc(100vw - 36px)}#socialChat.expanded #socialMessages{max-height:23vh}#loading .arrival-account,#error .arrival-account{right:7vw;top:67px}}
 @media(prefers-reduced-motion:reduce){#socialChat,#socialMessages p{transition:none;animation:none}}
 
 
@@ -32,13 +31,12 @@
 
 #socialAdminOpen,#socialAdminMore{font-size:12px;margin-top:18px}#socialAdminPanel{margin-top:20px;border-top:1px solid #8daba64a;padding-top:15px}.admin-heading{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#a8bdb6}.admin-heading button{font-size:10px;padding:5px 9px}#socialAdminRows{max-height:260px;overflow:auto;scrollbar-width:thin}.admin-row{padding:14px 0;border-bottom:1px solid #8daba62a}.admin-row b,.admin-row small{display:block;margin:3px 0}.admin-row b{font-size:12px;font-weight:400}.admin-row small{font-size:10px;color:#9ab0a8}.admin-row>div{display:flex;gap:8px;margin-top:9px}.admin-row select{background:#112426;color:#c6d3cb;border:1px solid #8daba64a;padding:5px;font-size:11px}.admin-row button{font-size:11px;padding:5px 12px}#socialAdminStatus{font-size:11px;color:#d4bd98}
 
-#socialChatToggle{cursor:grab;touch-action:none}#socialChatToggle:active{cursor:grabbing;transform:none}
 
 #socialMessages .social-sending{display:inline-block;vertical-align:middle;width:10px;height:10px;min-height:0;padding:0;margin:0 0 0 8px;border:1px solid #9ab7ae40;border-top-color:#c2d5c9;border-radius:50%;animation:social-send-spin .8s linear infinite;background:none;opacity:.8}#socialMessages .social-send-retry{font-size:10px;color:#d4bd98;margin-left:8px;padding:0 3px;border:0}@keyframes social-send-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#socialMessages .social-sending{animation:none;border-style:dotted}}
 
 #socialChat:not(.expanded) #socialMessages p{display:none}#socialChat:not(.expanded) #socialMessages p.fresh{display:block;animation:social-message-fade 9s linear forwards}#socialChat.expanded #socialMessages p{animation:none}#socialChat:not(.expanded) #socialMessages{mask-image:none;max-height:180px}#socialChat:not(.expanded) #socialChatStatus{display:none}@keyframes social-message-fade{0%,65%{opacity:1}100%{opacity:0}}
 
-#socialChat:not(.expanded) #socialMessages{padding-top:34px}
+
 
 #socialResize{display:none;position:absolute;right:0;bottom:0;width:24px;height:24px;padding:5px;border:0;color:#adc5ba;cursor:nwse-resize;touch-action:none;background:none;opacity:.6}#socialResize:hover,#socialResize:focus-visible{opacity:1}#socialResize svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1;pointer-events:none}#socialChat.expanded #socialResize{display:block}.in-scene #socialChat.expanded{display:flex;flex-direction:column;height:var(--chat-height,auto)}#socialChat.expanded[data-resized] #socialMessages{flex:1;min-height:0;max-height:none}#socialChat.expanded .social-chat-heading,#socialChat.expanded #socialComposer{flex-shrink:0}#socialChat.expanded #socialComposer{padding-right:13px}
 
@@ -56,10 +54,9 @@
 @media(prefers-reduced-motion:reduce){.ai-working .message-body::after{animation:none}}
 
 /* Center the default conversation above the bottom navigation; dragged windows remain free. */
-#socialChat[data-default-position],#socialChatToggle[data-default-position]{left:50%;top:auto;bottom:var(--chat-bottom,100px);transform:translateX(-50%)}
+#socialChat[data-default-position]{left:50%;top:auto;bottom:var(--chat-bottom,100px);transform:translateX(-50%)}
 .in-scene #socialChat.expanded{height:var(--chat-height,clamp(144px,23.04dvh,230.4px))}
 #socialChat.expanded[data-default-position]{max-height:max(140px,calc(100dvh - var(--chat-bottom,100px) - 16px))}
-#socialChatToggle[data-default-position]:active{transform:translateX(-50%)}
 @media(max-width:600px){#socialChat[data-default-position]{width:calc(100vw - 32px)}}
 
 /* Compact entry login floats over the same dawn scene. */

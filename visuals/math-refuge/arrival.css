@@ -65,7 +65,7 @@ body.entry-paused #loading *{animation-play-state:paused!important}
 
 /* Reveal useful groups in reading order; hidden panels remain hidden. */
 @keyframes entry-ui{from{opacity:0;visibility:hidden}to{opacity:1;visibility:visible}}
-body.entering-ui :is(header>.back,header>.identity,.caption,footer,#mode,#seminarPanel,#socialChatToggle,header .transport>button){animation:entry-ui .32s ease-out var(--entry-delay,0ms) both}
+body.entering-ui :is(header>.back,header>.identity,.caption,footer,#mode,#seminarPanel,header .transport>button){animation:entry-ui .32s ease-out var(--entry-delay,0ms) both}
 body.entering-ui .caption{--entry-delay:120ms}
 body.entering-ui footer,body.entering-ui #mode{--entry-delay:220ms}
 body.entering-ui header .transport>button{--entry-delay:320ms}
@@ -77,12 +77,11 @@ body.entering-ui header .transport>button:nth-child(6){--entry-delay:545ms}
 body.entering-ui header .transport>button:nth-child(7){--entry-delay:590ms}
 body.entering-ui header .transport>button:nth-child(8){--entry-delay:635ms}
 body.entering-ui #seminarPanel{--entry-delay:650ms}
-body.entering-ui #socialChatToggle{--entry-delay:800ms}
 body:not(.arriving) #roomControls:not([hidden])>button{animation:entry-ui .28s ease-out var(--room-entry-delay,0ms) both}
 #roomControls>button:nth-child(2){--room-entry-delay:55ms}
 #roomControls>button:nth-child(3){--room-entry-delay:110ms}
 #roomControls>button:nth-child(4){--room-entry-delay:165ms}
-@media(prefers-reduced-motion:reduce){body.entering-ui :is(header>.back,header>.identity,.caption,footer,#mode,#seminarPanel,#socialChatToggle,header .transport>button),body:not(.arriving) #roomControls:not([hidden])>button{animation:none}}
+@media(prefers-reduced-motion:reduce){body.entering-ui :is(header>.back,header>.identity,.caption,footer,#mode,#seminarPanel,header .transport>button),body:not(.arriving) #roomControls:not([hidden])>button{animation:none}}
 
 /* Signed-in identity stays with the central continue action. */
 #loading .arrival-entry>.arrival-account{position:static;display:block;max-width:100%;min-height:24px;margin:0 auto 2px;padding:0;line-height:24px;text-align:center;white-space:normal;overflow-wrap:anywhere;color:#dddccf}
