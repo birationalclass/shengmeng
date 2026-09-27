@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {recommendedGraphics,resolutionRatio,sunWaterVisibility} from './graphics-settings.js';
+import {recommendedGraphics,resolutionRatio,sunWaterVisibility,readingPixelRatio} from './graphics-settings.js';
 import {RenderBudget} from './render-budget.js';
 import {configureCameraInput} from './camera-input.js';
 import * as T from '../3d/vendor/three.module.js';
@@ -30,4 +30,14 @@ test('clock stays in the icon row and all display controls have one accessible i
  assert.match(html,/<header[\s\S]*id="timeButton"[\s\S]*<\/header>/);
  assert(!html.includes('观看参考视频'));
  for(const id of ['windWaves','waveStrength','waterReflection','sunReflection','geometryDetail','boardClarity'])assert.equal(html.split('id="'+id+'"').length-1,1);
+});
+
+test('desktop boards recover readable pixels from a 75% startup budget without inflating mobile allocation',()=>{
+ for(const [width,height,dpr] of [[1440,900,2],[1920,1080,1],[2560,1440,2]]){
+  const base=Math.sqrt(2200000/(width*height))*.75,ratio=readingPixelRatio(base,{enabled:true,width,height,dpr});
+  assert(ratio>=1&&ratio>=base);assert(ratio<=1.5);assert(width*height*ratio*ratio<=5000000.01);
+ }
+ assert.equal(readingPixelRatio(.7,{enabled:false}),.7,'Manual quality remains authoritative');
+ assert.equal(readingPixelRatio(.7,{enabled:true,mobile:true}),.7,'Keep Safari mobile/safe memory limits');
+ assert(readingPixelRatio(.6,{enabled:true,width:3840,height:2160,dpr:2})**2*3840*2160<=5000000.01);
 });

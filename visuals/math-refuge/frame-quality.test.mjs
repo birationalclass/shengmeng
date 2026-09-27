@@ -15,7 +15,7 @@ test('reading clarity protects real pixels without exceeding the selected pixel 
   assert(scale>=.9&&scale<=1);
   assert(pixelRatio*scale>=Math.min(pixelRatio,1.5));
  }
- assert.equal(t.b.settings({reading:true,pixelRatio:2}).scale,.9);
+ assert.equal(t.b.settings({reading:true,pixelRatio:2}).scale,1);
  assert.equal(t.b.settings({reading:true,clarity:'natural',pixelRatio:2}).scale,.75);
  assert.equal(t.b.settings({reading:false,pixelRatio:2}).scale,.7);
  assert.equal(t.b.settings({reading:true,pixelRatio:2}).cloud,'off');

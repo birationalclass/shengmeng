@@ -26,9 +26,8 @@ export class FrameQuality{
   }
  }
  settings({reading=false,clarity='crisp',pixelRatio=1,cloud='medium',shadow=2048}={}){
-  // Text needs both a relative floor and enough actual screen pixels. Never
-  // exceed the user's selected resolution (or the mobile allocation budget).
-  const readingFloor=clarity==='crisp'?Math.min(1,Math.max(.9,1.5/Math.max(.25,pixelRatio))):.75;
+  // Keep the reading buffer intact; shed weather and reflection work first.
+  const readingFloor=clarity==='crisp'?1:.75;
   return {
    scale:Math.max(reading?readingFloor:.7,[1,1,1,.9,.8,.7][this.level]),
    cloud:this.level>=2?'off':this.level>=1&&cloud!=='off'?'low':cloud,

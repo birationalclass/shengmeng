@@ -12,14 +12,14 @@ import {startDeferredTextures} from './deferred-textures.js?v=arrival-live-71';
 import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v=opening-10s-48';
 import {SunriseIntro} from './sunrise-intro.js?v122';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
-import {FrameQuality} from './frame-quality.js?v=board-reading-clarity';
+import {FrameQuality} from './frame-quality.js?v=reading-pixels-76';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v104';
 const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=sw-corner-1';
 const hallPassageMask=new HallPassageMask();
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio} from './graphics-settings.js?v=air-frame-feedback';
+import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio,readingPixelRatio} from './graphics-settings.js?v=reading-pixels-76';
 import {createPerformanceMonitor} from './performance-monitor.js?v=focus-pause';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
@@ -38,7 +38,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat} from './scene.js?v=arrival-light-74';
-import {createLecture} from './lecture.js?v128';
+import {createLecture} from './lecture.js?v129';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
@@ -240,8 +240,8 @@ function applyShot(dt){
     for(const axis of ['x','y','z'])camera.position[axis]=motionCoordinate(blend.position[axis],blend.endPosition[axis],blend.velocity[axis],blend.acceleration[axis],blend.duration,t);
     if(blend.openingPath){
       camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
-      if(!blend.boardsLowered&&camera.position.x>=blend.openingPath.hallEntranceX){
-        blend.boardsLowered=true;rooms[0].finishOpening();roomLecterns[0].setScreenEnabled(false);
+      if(!blend.openingBoardStarted&&camera.position.x>=blend.openingPath.hallEntranceX){
+        blend.openingBoardStarted=true;rooms[0].beginOpening(reduced.matches);
       }
     }
     else if(blend.route)blend.route.getPointAt(k,camera.position);
@@ -288,16 +288,17 @@ function resize(){
   updateQualityReadout();
 }
 function updateQualityReadout(){
-  const ratio=profile.pixelRatio*renderScale;
+  const ratio=renderer.getPixelRatio();
   $('resolutionValue').textContent=$('resolutionScale').value+'%';
   $('qualityReadout').textContent=`${ratio.toFixed(2)}× 分辨率 · ${profile.direct?nativeSamples:profile.samples}× 抗锯齿${renderScale<1?' · 自动平衡':''}`;
   $('world').dataset.pixelRatio=String(ratio);$('world').dataset.renderScale=String(renderScale);$('world').dataset.antialias=String(profile.direct?nativeSamples:profile.samples);
 }
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
-  const reading=rooms.some((room,i)=>roomViews[i]?.visible&&room.hasSelection&&!room.stored&&!room.disabled);
+  const reading=rooms.some((room,i)=>roomViews[i]?.visible&&room.hasSelection&&(!room.stored||room.storageProgress<1)&&!room.disabled);
   const protectReading=reading&&$('boardClarity').value==='crisp';
-  const settings=frameQuality.settings({reading,clarity:$('boardClarity').value,pixelRatio:profile.pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
+  const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
+  const settings=frameQuality.settings({reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
   if(activeCloudQuality!==settings.cloud){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
@@ -310,9 +311,9 @@ function updateRenderBudget(stamp){
   const targetFPS=frameQuality.stats?.target||Math.min(Number($('targetFPS').value),60);
   const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS,protectText:true});
   const scale=Math.min(gpuScale,settings.scale);
-  if(scale!==renderScale){
-    renderScale=scale;renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio*scale);
-    if(composer&&!profile.direct)composer.setPixelRatio(profile.pixelRatio*scale);
+  if(scale!==renderScale||Math.abs(renderer.getPixelRatio()-pixelRatio*scale)>.0001){
+    renderScale=scale;renderer.setDrawingBufferSize(innerWidth,innerHeight,pixelRatio*scale);
+    if(composer&&!profile.direct)composer.setPixelRatio(pixelRatio*scale);
     updateQualityReadout();
   }
   const text=$('adaptiveQuality').value!=='auto'?'固定画质':(frameQuality.level===0?'自动 · 按实际帧率监测':`自动降级 ${frameQuality.level}/5 · 云${settings.cloud==='off'?'关闭':settings.cloud==='low'?'标准':'精细'} · 阴影${shadows?'标准':'关闭'} · 渲染 ${Math.round(scale*100)}%`)+(protectReading?' · 板书清晰保护':'');
@@ -475,7 +476,7 @@ function tick(stamp){
   retreat.ocean.userData.study.update(camera,dt);
   $('coastReadout').textContent='曲线坐标 ('+$('world').dataset.coastCoordinates+') km · 当前潮位 '+$('world').dataset.coastTide+' m';surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
-  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:profile.pixelRatio*renderScale,rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
+  performanceMonitor.frame(stamp,frameMs,performance.now()-cpuStart,renderer,{gpuSupported:gpuTimer?.supported,ratio:renderer.getPixelRatio(),rooms:rooms.filter(room=>room.renderActive).length,adaptive:$('adaptiveReadout').textContent});
   if(frameMs>0&&frameMs<250){frameSamples.push(frameMs);cpuSamples.push(performance.now()-cpuStart);if(frameSamples.length>120){frameSamples.shift();cpuSamples.shift();}}
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 

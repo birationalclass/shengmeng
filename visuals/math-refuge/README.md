@@ -322,8 +322,10 @@ Validation: 28 focused entry, quality, focus, audio and opening checks pass. Bro
 
 ### Opening board choreography — 2026-09-27
 
-Before entry, the main hall has its six boards raised and composed from the first speaker’s mid-report pages (currently Yong Hu). The current page is half written and continues during the approach. Crossing the actual western hall entrance starts the normal interlocked descent; the smart glass and lectern display switch off. The power control remains available. Replaying the opening restores the first speaker and the same middle passage; seminar selections are unaffected.
+Before entry, the first speaker’s report (currently Yong Hu) is staged at the end of board seven, with a clean board waiting in the upper channel. Crossing the western entrance swaps that board into place and starts board eight. After five seconds of visible writing, the whole assembly descends and the smart glass and lectern screen turn off. Lift time, loading and unfocused time do not consume the writing preview. Replaying restores the same cue; manual report/page changes cancel it. Reduced-motion mode displays a static eighth board for five seconds.
 
 ### Continuous arrival light and interface — 2026-09-27
 
 The scene clock is set to the opening dawn before construction; preview, the first atmosphere computation, and entry all use that same time. Late weather readings ease in without zero-delta snapping. Atmospheric scattering, cloud visibility, and environment reflections fade with rendered time; cloud quality changes retain the previous panorama until its replacement is complete and then crossfade. Sky and ocean share effect strengths. Entry UI appears in short overlapping groups: identity, caption, navigation, toolbar buttons, room list, chat. Room controls fade in individually when entering a classroom. Reduced-motion preferences disable the stagger.
+
+Desktop board reading now restores up to 1.5 device pixels per CSS pixel from the cheap startup profile, capped at five million pixels. Crisp reading never receives another automatic resolution reduction; slow frames reduce clouds, shadows, particles and ocean work first. Mobile/safe allocation limits and explicitly fixed quality remain unchanged.

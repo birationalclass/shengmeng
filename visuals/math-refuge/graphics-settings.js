@@ -13,3 +13,11 @@ export function resolutionRatio(base,scale,width,height,maxTextureSize=8192){
  return Math.max(.25,Math.min(base*Number(scale)/100,maxTextureSize/Math.max(width,height),Math.sqrt(8500000/(width*height))));
 }
 export function sunWaterVisibility(height,radius){const t=Math.max(0,Math.min(1,(height+radius)/(2*radius)));return t*t*(3-2*t);}
+
+// Desktop teaching views must not inherit the cheap startup/backdrop pixel budget.
+// Limit the increase to five million pixels; mobile/safe mode keeps its tested allocation.
+export function readingPixelRatio(base,{enabled=false,mobile=false,width=1280,height=800,dpr=1,maxTextureSize=8192}={}){
+ if(!enabled||mobile)return base;
+ const target=Math.min(Math.max(1,dpr),1.5,Math.sqrt(5000000/(width*height)),maxTextureSize/Math.max(width,height));
+ return Math.max(base,target);
+}
