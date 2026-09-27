@@ -53,15 +53,15 @@ request('session').then(data=>setUser(data.user)).catch(()=>{});
 // Pointer capture keeps dragging stable across the scene canvas and touch screens.
 const chat=$('socialChat'),handle=$('socialDragHandle');let drag=null;
 function place(x,y){const r=chat.getBoundingClientRect();chat.removeAttribute('data-default-position');const left=Math.max(8,Math.min(innerWidth-r.width-8,x)),top=Math.max(8,Math.min(innerHeight-r.height-8,y));chat.style.left=left+'px';chat.style.top=top+'px';chat.style.bottom='auto';return {x:left,y:top};}
-// The default dock follows the caption without a per-frame layout read. Explicit drags keep their saved position.
+// The default dock sits just above the bottom navigation. Explicit drags keep their saved position.
 chat.setAttribute('data-default-position','');$('socialChatToggle').setAttribute('data-default-position','');
 function layoutDefaultChat(){
- const caption=document.querySelector('.caption'),footer=document.querySelector('footer');
- const top=Math.min(...[caption,footer].filter(Boolean).map(el=>el.getBoundingClientRect().top));
+ const footer=document.querySelector('footer');
+ const top=footer?.getBoundingClientRect().top??innerHeight;
  shell.style.setProperty('--chat-bottom',Math.max(24,innerHeight-top+16)+'px');
 }
 const chatLayoutObserver=new ResizeObserver(layoutDefaultChat);
-for(const el of document.querySelectorAll('.caption,footer'))chatLayoutObserver.observe(el);
+for(const el of document.querySelectorAll('footer'))chatLayoutObserver.observe(el);
 layoutDefaultChat();
 try{const saved=JSON.parse(localStorage.getItem('refuge-chat-position-v2'));if(saved&&Number.isFinite(saved.x)&&Number.isFinite(saved.y))positionChatIcon(saved.x,saved.y);}catch{}
 handle.addEventListener('pointerdown',event=>{if(event.target.closest('button')||event.button!==0)return;event.preventDefault();const r=chat.getBoundingClientRect();drag={dx:event.clientX-r.left,dy:event.clientY-r.top};handle.setPointerCapture(event.pointerId);});

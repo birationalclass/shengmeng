@@ -55,9 +55,9 @@
 #socialChatPanel{flex-shrink:1;overflow:auto;min-height:0;padding:10px;margin:4px 0 8px;background:#07161cc9;border:1px solid #9dbbae30;border-radius:6px;font-size:11px}#socialChatPanel label{display:flex;align-items:center;gap:10px;margin:7px 0}#socialChatPanel input,#socialChatPanel select{box-sizing:border-box;min-width:0;flex:1;width:100%;background:#132830;color:#d2e1d9;border:1px solid #93b3a944;border-radius:4px;padding:6px;font:11px sans-serif}#socialChatPanel small{display:block;font-size:10px;line-height:1.6;color:#93aca6}#socialProviderStatus{font-size:10px;color:#cbbd9e}#socialAISettings button{font-size:11px;margin-top:5px}#socialChat:not(.expanded) #socialChatPanel{display:none}#socialChat:not(.expanded) #socialMessages p{background:transparent;text-shadow:0 1px 5px #000}
 @media(prefers-reduced-motion:reduce){.ai-working .message-body::after{animation:none}}
 
-/* Center the default conversation above the scene caption; dragged windows remain free. */
-#socialChat[data-default-position],#socialChatToggle[data-default-position]{left:50%;top:auto;bottom:var(--chat-bottom,260px);transform:translateX(-50%)}
-.in-scene #socialChat.expanded{height:var(--chat-height,clamp(200px,32dvh,320px))}
-#socialChat.expanded[data-default-position]{max-height:max(140px,calc(100dvh - var(--chat-bottom,260px) - 16px))}
+/* Center the default conversation above the bottom navigation; dragged windows remain free. */
+#socialChat[data-default-position],#socialChatToggle[data-default-position]{left:50%;top:auto;bottom:var(--chat-bottom,100px);transform:translateX(-50%)}
+.in-scene #socialChat.expanded{height:var(--chat-height,clamp(160px,25.6dvh,256px))}
+#socialChat.expanded[data-default-position]{max-height:max(140px,calc(100dvh - var(--chat-bottom,100px) - 16px))}
 #socialChatToggle[data-default-position]:active{transform:translateX(-50%)}
 @media(max-width:600px){#socialChat[data-default-position]{width:calc(100vw - 32px)}}
