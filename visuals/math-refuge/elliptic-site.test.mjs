@@ -1,3 +1,4 @@
+import {bridgePlan} from './campus-plan.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CAMPUS_ANCHOR,COAST_LIFT,toBeach,fromBeach,beachDistance,campusGround,toMathCoordinates} from './elliptic-site.js';
@@ -17,8 +18,16 @@ test('full ring and branch terrain samples agree with the shared 01 geometry',()
  for(let i=0;i<=100;i++)for(const point of [ringPoint(i*Math.PI/50),branchPoint(-1.7+3.4*i/100)])assert(beachDistance(...point)<.08);
  for(const t of [-1.7,1.7])assert(Math.abs(campusGround(...fromBeach(...branchPoint(t)))-(-18+COAST_LIFT))<1e-8);
 });
-test('residence follows the sand ridge and its room cameras move with the building',()=>{
- assert(beachDistance(...toBeach(RESIDENCE.origin[0],RESIDENCE.origin[2]))<.02);
+test('the complete residence island sits inside the left loop and cameras follow it',()=>{
+ // The loop is z² = x(1-x)(2-x) in kilometre coordinates.
+ for(const dx of [-RESIDENCE.halfWidth,0,RESIDENCE.halfWidth])for(const dz of [-RESIDENCE.halfDepth,0,RESIDENCE.halfDepth]){
+  const [x,z]=toMathCoordinates(RESIDENCE.origin[0]+dx,RESIDENCE.origin[2]+dz);
+  assert(x>0&&x<1&&z*z<x*(1-x)*(2-x),'residence footprint must stay within the left ring');
+  assert(beachDistance(...toBeach(RESIDENCE.origin[0]+dx,RESIDENCE.origin[2]+dz))>300,'keep clear of the perimeter beach');
+ }
+ const plan=bridgePlan.buildings.find(b=>b.id==='10');
+ assert(Math.abs(plan.east-(RESIDENCE.origin[0]-CAMPUS_ANCHOR))<1e-8);
+ assert(Math.abs(plan.north+RESIDENCE.origin[2])<1e-8);
  const entry=RESIDENCE_SHOTS.find(s=>s.name==='住宅玄关');
  assert(Math.abs(entry.positions[0][2]*S-RESIDENCE.origin[2]-12)<1e-8);
  assert(Math.abs(entry.positions[0][0]*S-RESIDENCE.origin[0]-3)<1e-8);

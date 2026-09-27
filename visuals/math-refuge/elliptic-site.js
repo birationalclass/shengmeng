@@ -26,5 +26,6 @@ export function beachDistance(x,z){
 import {ringPoint} from '../ocean/elliptic-model.js';
 const coastSegments=[Array.from({length:721},(_,i)=>ringPoint(i*2*Math.PI/720)),Array.from({length:1801},(_,i)=>branchPoint(-1.7+3.4*i/1800))];
 export function campusGround(x,z){const p=toBeach(x,z);return bedHeight(beachDistance(...p),...p)+COAST_LIFT;}
-export const RESIDENCE_COAST_Z=1250;
-export const RESIDENCE_COAST_X=fromBeach(branchCentre(RESIDENCE_COAST_Z),RESIDENCE_COAST_Z)[0];
+// Detached residential island inside the left loop, clear of its perimeter beach.
+export const RESIDENCE_COAST_Z=0;
+export const RESIDENCE_COAST_X=fromBeach(500,RESIDENCE_COAST_Z)[0];

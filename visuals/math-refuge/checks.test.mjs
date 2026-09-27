@@ -214,7 +214,7 @@ test('scene assembly creates valid model buffers without a browser or GPU',async
     result.residence.update({position:new Three.Vector3(0,0,0)},0);
     assert(residenceLamps.every(l=>l.visible&&l.intensity===0),'Distance changes lamp intensity without changing shader light counts');
 
-    const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.z>=1250);assert(result.residence.root.getObjectByName('Roof number 10'));
+    const {residenceGap}=await import('./residence-layout.js');assert(residenceGap()>=1000);assert(result.residence.root.position.x< -1000);assert.equal(result.residence.root.position.z,0);assert(result.residence.root.getObjectByName('Roof number 10'));
     assert(!result.water);assert(result.ocean.isMesh);assert(result.sculpture.isMesh);assert(scene.environment);
     assert(!scene.getObjectByName('Ocean conference table'));
     const auditorium=scene.getObjectByName('Mathematics auditorium seating');assert.equal(auditorium.userData.seats,30);assert.deepEqual(auditorium.userData.facing,[1,0,0]);
