@@ -119,9 +119,8 @@ body.awaiting-scene #loading{pointer-events:auto}
 #loading #loadPercent small{font-size:10px}
 @media(prefers-reduced-motion:reduce){#loading #loadFill,#loading .coast-progress{transition:none}}
 
-/* A quiet travelling highlight is decorative; the revealed length stays factual. */
-#coastSweep{fill:none;stroke:#eee5cc;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 193;animation:coast-sheen 4s linear infinite;filter:drop-shadow(0 0 2px #e8ddbc66);pointer-events:none}
-#coastClip{transition:width 1.15s linear}
-#loading #loadFill{stroke-linejoin:round}
-@keyframes coast-sheen{from{stroke-dashoffset:7}to{stroke-dashoffset:-107}}
-@media(prefers-reduced-motion:reduce){#coastSweep{display:none}#coastClip{transition:width 1.15s linear}}
+/* Static satin-metal surface: no travelling highlight or repeated pulse. */
+#coastCore{fill:none;stroke:url(#coastSurface);stroke-width:.45;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#coastClip{transition:width 1s cubic-bezier(.22,.61,.36,1)}
+#loading #loadFill{stroke-linejoin:round;stroke-width:1.35;filter:drop-shadow(0 0 1.2px #bba67e35)}
+@media(prefers-reduced-motion:reduce){#coastClip{transition:none}}

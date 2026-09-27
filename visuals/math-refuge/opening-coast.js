@@ -8,8 +8,8 @@ export function openingCoast(){
  camera.position.fromArray(OPENING_POSE.position);camera.lookAt(...OPENING_POSE.target);camera.updateMatrixWorld();
  const points=[];
  // Geographic north is -Z, hence descending t traverses north to south.
- for(let i=0;i<=600;i++){
-  const t=1.25-i*2.5/600,[bx,bz]=branchPoint(t),[px,pz]=branchPoint(t+.0001);
+ for(let i=0;i<=1200;i++){
+  const t=1.25-i*2.5/1200,[bx,bz]=branchPoint(t),[px,pz]=branchPoint(t+.0001);
   const dx=px-bx,dz=pz-bz,length=Math.hypot(dx,dz);
   // Smooth presentation contour: omit sub-pixel sand relief from the loading stroke.
   const x=bx+dz/length*3,z=bz-dx/length*3;
@@ -19,4 +19,4 @@ export function openingCoast(){
  }
  return points;
 }
-export const coastPath=()=>openingCoast().map((p,i)=>(i?'L':'M')+p.screen.map(v=>v.toFixed(2)).join(',')).join(' ');
+export const coastPath=()=>openingCoast().map((p,i)=>(i?'L':'M')+p.screen.map(v=>v.toFixed(3)).join(',')).join(' ');
