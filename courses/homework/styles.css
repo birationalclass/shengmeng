@@ -86,8 +86,8 @@ html[data-panel-font=song]{--settings-font:"Songti SC",STSong,SimSun,serif}
 .turn-band{position:absolute;left:0;top:0;transform-style:preserve-3d;will-change:transform;transform-origin:50% 50%;pointer-events:none}
 .turn-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;transform:translateZ(.12px);pointer-events:none}
 .turn-face-back{transform:rotateY(180deg) translateZ(.12px)}
-.turn-shading{position:absolute;inset:0;pointer-events:none;background:rgba(44,39,24,var(--shade,0))}
-.turn-face-back .turn-shading{background:rgba(44,39,24,calc(var(--shade,0) * .7))}
+.turn-shading{position:absolute;inset:0;pointer-events:none;background:rgb(44,39,24);opacity:0;will-change:opacity}
+
 .turn-contact-shadow{position:absolute;opacity:0;filter:blur(15px);pointer-events:none;will-change:transform,opacity}
 
  #manuscript[data-document-style=notebook][data-reading=double] .scan-page:first-child .book-next,#manuscript[data-document-style=notebook][data-reading=double] .scan-page:nth-child(2) .book-previous{display:none}
@@ -209,7 +209,7 @@ html{background:#eae9e3}
 #manuscript,#manuscript[data-reading=double],#manuscript[data-document-style=notebook][data-reading=double]{left:var(--book-left);top:var(--book-top);z-index:2;pointer-events:none}
 #manuscript .scan-page{pointer-events:auto}
 #notebook-stack{position:absolute;left:var(--book-left);top:var(--book-top);transform:scale(var(--scene-scale));transform-origin:0 0;z-index:1}
-.adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:url("assets/cover-pulp.svg");box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;filter:brightness(1);transition:filter var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1),color var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1);overflow:hidden;font-family:"Songti SC",STSong,serif}
+.adjacent-book{position:absolute;display:block;width:720px;height:1020px;padding:0;color:#365142;text-align:center;border-radius:3px 7px 7px 3px;background-color:#9eaf91;background-image:url("assets/cover-pulp.png");box-shadow:1px 2px 0 #d9dcc7,2px 4px 0 #8b947a,3px 6px 0 #e1dfcb,4px 8px 0 #8b947a,5px 10px 0 #a6b498,8px 20px 28px -12px #24302545;filter:brightness(1);transition:filter var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1),color var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1);overflow:hidden;font-family:"Songti SC",STSong,serif}
 .adjacent-book:hover:not(:disabled){filter:brightness(1.035);color:#263d2f}
 .adjacent-book:focus-visible,.notebook-cover[data-open-notebook]:focus-visible{outline:none;filter:brightness(1.035)}
 .previous-book,.previous-book-layer{left:-125px;top:9px;transform:rotate(-2deg);background-color:#9bae94;border-radius:7px 3px 3px 7px;box-shadow:-1px 2px 0 #d9dcc7,-2px 4px 0 #8b947a}
@@ -234,7 +234,7 @@ html{background:#eae9e3}
 /* Leave the bottom corner for the reading tools; page numbers stay on paper. */
 #manuscript .cover-footer{bottom:136px}
 #manuscript .paper-footer{bottom:136px}
-#manuscript .notebook-cover{background-image:url("assets/cover-pulp.svg")}
+#manuscript .notebook-cover{background-image:url("assets/cover-pulp.png")}
 
 
 /* Whole-notebook handoff: the original stack stays stationary under a clone. */
@@ -267,7 +267,7 @@ html{background:#eae9e3}
 .notebook-cover::after,.next-book::after,.next-book-layer::after{content:"";position:absolute;left:0;bottom:-3px;width:5px;height:9px;background:linear-gradient(180deg,#a7bd9d00 0%,#a7bd9d 35%,#91a687 75%,#778b70 100%);box-shadow:inset 1px 0 1px #62785b55;border-radius:0 0 0 2px;pointer-events:none;z-index:1}
 
 /* The reverse of the front cover is green stock, preceding scan page one. */
-#manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{height:calc(var(--sheet-height,1020px) + 3px);--paper-pattern:none;background-color:#a7bd9d;background-image:url("assets/cover-pulp.svg");color:#294b40;overflow:visible;box-shadow:inset -7px 0 12px -10px #1c372f80}
+#manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{height:calc(var(--sheet-height,1020px) + 3px);--paper-pattern:none;background-color:#a7bd9d;background-image:url("assets/cover-pulp.png");color:#294b40;overflow:visible;box-shadow:inset -7px 0 12px -10px #1c372f80}
 /* Align the card itself with the right base; do not draw an extra rim. */
 .notebook-inner-cover::before{display:none}
 .turn-cover-only>.notebook-cover::after{transform-origin:left bottom;transform:scaleY(calc(1 - var(--binding-open,0)))}

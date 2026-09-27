@@ -119,7 +119,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
  scene.style.perspectiveOrigin=pivot+'px '+(rect.top+h/2)+'px';stage.append(scene);
  const coverTurn=front.firstElementChild.matches('.notebook-cover,.notebook-inner-cover');
  const ease=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v)};
- const bands=[];
+ const bands=[],shades=[];
  for(let i=0;i<count;i++){
   const band=document.createElement('div');band.className='turn-band';band.style.width=bandWidth+'px';band.style.height=h+'px';
   for(const [source,isBack] of [[front,false],[back,true]]){
@@ -130,7 +130,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
    const copy=source.cloneNode(true),offset=(forward!==isBack)?i*bandWidth:w-(i+1)*bandWidth;
    if(coverFace){copy.classList.add('turn-cover-only');if(copy.firstElementChild.classList.contains('notebook-inner-cover'))copy.firstElementChild.style.height=`calc(${sheet.height}px + 3px * var(--binding-open,0))`;copy.firstElementChild.style.boxShadow=source.firstElementChild.classList.contains('notebook-cover')?'inset 7px 0 12px -10px #1c372f80':'inset -7px 0 12px -10px #1c372f80';}
    Object.assign(copy.style,{left:-offset+'px',top:'0',width:w+'px',height:h+'px',boxShadow:'none'});face.append(copy);
-   const shade=document.createElement('div');shade.className='turn-shading';face.append(shade);band.append(face);
+   const shade=document.createElement('div');shade.className='turn-shading';shades.push({element:shade,band:i,back:isBack});face.append(shade);band.append(face);
   }
   scene.append(band);bands.push(band);
  }
@@ -140,7 +140,7 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
  openingSpread?.classList.add('cover-opening');
  const revealSpread=()=>openingSpread?.classList.remove('cover-opening');
  document.body.append(stage);turnStage=stage;
- let frame=0,startTime;
+ let frame=0,startTime,lastBinding;
  const handle={cancel(){cancelAnimationFrame(frame);revealSpread()}};turnAnimation=handle;
  function draw(now){
   if(startTime===undefined)startTime=now;
@@ -149,7 +149,8 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
   // that interval instead of dwelling edge-on with both faces invisible.
   const progress=(1-Math.cos(Math.PI*motion))/2;
   const unfolding=ease((motion-.36)/.28);
-  stage.style.setProperty('--binding-open',String(forward?unfolding:1-unfolding));
+  const binding=forward?unfolding:1-unfolding;
+  if(coverTurn&&binding!==lastBinding){stage.style.setProperty('--binding-open',String(binding));lastBinding=binding}
   const wave=motion===1?0:Math.sin(Math.PI*progress);
   const base=Math.PI*progress,bend=(coverTurn?.3:.9)*wave;
   let x=0,z=0;
@@ -159,9 +160,10 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
    // Adjacent bands share the same vertical endpoints; individual lifts
    // produce a stepped bottom edge and cracks between otherwise joined bands.
    bands[i].style.transform=`translate3d(${pivot+direction*(x+dx/2)-bandWidth/2}px,${rect.top}px,${z+dz/2}px) rotateY(${-direction*angle}rad)`;
-   bands[i].style.setProperty('--shade',String(wave*(.05+.12*u)));
+
    x+=dx;z+=dz;
   }
+  for(const shade of shades)shade.element.style.opacity=String(wave*(.05+.12*(shade.band+.5)/count)*(shade.back?.7:1));
   shadow.style.opacity=String(wave*.65);
   shadow.style.transform=`scaleX(${.45+.55*Math.abs(Math.cos(base))})`;
   shadow.style.transformOrigin=forward?'left':'right';
