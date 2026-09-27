@@ -9,7 +9,7 @@ import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
-import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v=opening-10s-48';
+import {OPENING_POSE,OpeningCameraLock,openingFrameFov} from './opening-camera.js?v=handoff-105';
 import {SunriseIntro} from './sunrise-intro.js?v122';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
 import {FrameQuality} from './frame-quality.js?v=reading-pixels-76';
@@ -96,21 +96,21 @@ let entryTransition=false;
 async function enterScene(){
   if(entered||entryTransition||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
   entryTransition=true;await window.refugeBoot?.exitCoast?.();
-  entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
+  entered=true;entryTransition=false;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
-  replayOpening().catch(fail);
+  replayOpening(true).catch(fail);
   $('world').focus({preventScroll:true});
   renderActivity.setEnabled(!failed);
 }
-async function replayOpening(){
+async function replayOpening(preserveInitialView=false){
   if(!entered||!retreat||cameraLocked())return;
   screenWebview.close();if(activeRoom!==0)activateRoom(0,false);
   openingPreparing=true;
   try{
     motionVelocity.set(0,0,0);motionAcceleration.set(0,0,0);motionSample=false;
     controls.enableDamping=false;controls.update();
-    camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);
-    camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;
+    if(!preserveInitialView){camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();}
+    controls.update();controls.enableDamping=true;
     blend=null;opening=null;free=true;touring=false;controls.enabled=false;
     if(!openingPrepared)await lecture.prepareOpening();openingPrepared=false;populateReport();
     retreat.fleet.resetSunrisePass();
@@ -119,7 +119,7 @@ async function replayOpening(){
     openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
-    blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
+    blend.openingPath=openingArrival(camera.position.toArray(),HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
     $('world').focus({preventScroll:true});
     renderActivity.setEnabled(!failed);
   }finally{openingPreparing=false;}
@@ -272,7 +272,7 @@ function resize(){
   if(!renderer)return;
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples,device);
   profile.pixelRatio=resolutionRatio(profile.pixelRatio,$('resolutionScale').value,innerWidth,innerHeight,renderer.capabilities.maxTextureSize);profile.shadows=Number($('shadowQuality').value)>0;profile.shadowSize=Number($('shadowQuality').value)||1024;
-  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  camera.aspect=innerWidth/innerHeight;if(!entered)camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
   // One backing-store resize, rather than reallocating once for DPR and again for size.
@@ -390,7 +390,7 @@ function tick(stamp){
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
   if(document.getElementById('socialDialog')?.open)return;
-  if(startupAutomatic&&!openingPreparing&&!blend?.openingPath&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  if(startupAutomatic&&entered&&!entryTransition&&!openingPreparing&&!blend?.openingPath&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
@@ -517,7 +517,7 @@ try{
   controls.addEventListener('end',()=>{if(SHOTS[shot].lecture)boardFollow.end();});
   window.addEventListener('blur',()=>{if(boardFollow.interacting)boardFollow.end();});
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
-  camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
+  camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();controls.update();
   resize();
   await window.refugeBoot?.waitForEntryUI?.();
   retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')window.refugeBoot?.stage(value,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date}),45000,'空间材质加载');

@@ -8,3 +8,9 @@ export class OpeningCameraLock{
  remaining(now){return Math.max(0,Math.ceil((this.until-now)/1000));}
  locked(now){return this.remaining(now)>0;}
 }
+
+// Match the 1280x720 first-frame poster's object-fit:cover crop exactly.
+export function openingFrameFov(aspect){
+ const verticalScale=Math.min(1,(1280/720)/Math.max(.01,aspect));
+ return 2*Math.atan(Math.tan(OPENING_POSE.fov*Math.PI/360)*verticalScale)*180/Math.PI;
+}
