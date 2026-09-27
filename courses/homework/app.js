@@ -121,7 +121,7 @@ function beginCornerLift(button){
  const snapshot=captureLeaf(page),paper=snapshot.firstElementChild;
  [...page.children].forEach((child,i)=>{const box=child.getBoundingClientRect();if(child.matches('.page-edge-turn')||box.right<x||box.left>x+w||box.bottom<y||box.top>y+h)paper.children[i]?.setAttribute('hidden','')});
  [...paper.children].filter(child=>child.hidden).forEach(child=>child.remove());
- const stage=document.createElement('div');stage.className='corner-lift-stage';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ const stage=document.createElement('div');stage.className='corner-lift-stage';stage.setAttribute('aria-hidden','true');
  const isCover=page.matches('.notebook-cover,.notebook-inner-cover');
  if(!isCover){
   // The page block remains flat below a single moving sheet, including
@@ -138,6 +138,13 @@ function beginCornerLift(button){
   const copy=paper.cloneNode(true);Object.assign(copy.style,{left:(r.left-x-i*dx)+'px',top:(r.top-y-j*dy)+'px',clipPath:'none'});tile.append(copy);
   const shade=document.createElement('div');shade.className='corner-lift-shade';tile.append(shade);stage.append(tile);tiles.push({tile,shade,i,j,lower});
  }
+ // Preserve the original corner's hit area while its visible paper is cut
+ // away. Otherwise the neighbouring notebook receives hover/click events.
+ const hit=document.createElement('div');hit.className='corner-lift-hit';
+ Object.assign(hit.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+ hit.onpointerdown=e=>{e.preventDefault();e.stopPropagation()};
+ hit.onclick=e=>{e.preventDefault();e.stopPropagation();if(notebookInteractionLocked)return;const bounds=button.getBoundingClientRect();if(e.clientX>=bounds.left&&e.clientX<=bounds.right&&e.clientY>=bounds.top&&e.clientY<=bounds.bottom)button.click()};
+ stage.append(hit);
  const oldClip=page.style.clipPath;
  page.style.clipPath=left?`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% + 20px),220px calc(100% + 20px),220px calc(100% - 190px),-20px calc(100% - 190px))`:`polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - 190px),calc(100% - 220px) calc(100% - 190px),calc(100% - 220px) calc(100% + 20px),-20px calc(100% + 20px))`;
  document.body.append(stage);
