@@ -93,5 +93,12 @@ test('mobile sky uses bounded targets, throttles updates and restores render sta
   assert.deepEqual(calls[start+tile].scissor,[0,tile*32,256,32]);
   if(tile<3)assert.equal(desktop.texture,published);
  }
- assert.notEqual(desktop.texture,published);assert.equal(current,originalTarget);desktop.dispose();
+ assert.notEqual(desktop.texture,published);assert.equal(current,originalTarget);
+ const oldCloud=desktop.texture,oldTarget=calls.at(-1).target,oldWidth=oldTarget.width;
+ desktop.setQuality('high');assert.equal(oldTarget.width,oldWidth,'Do not resize the panorama currently visible');
+ desktop.update(u,600);assert.equal(desktop.texture,oldCloud,'Finish the existing blend before reusing its old texture');
+ desktop.update(u,1500);assert.notEqual(desktop.texture,oldCloud);
+ assert.equal(u.cloudMapPrevious.value,oldCloud);assert.equal(u.cloudBlend.value,0,'Quality changes crossfade from the previous complete image');
+ assert.equal(oldTarget.width,oldWidth);assert.equal(calls.at(-1).target.width,1024);
+ desktop.dispose();
 });

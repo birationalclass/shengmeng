@@ -63,24 +63,25 @@ export function createVolumetricClouds(renderer,device={}){
   try{renderer.autoClear=true;renderer.setRenderTarget(target);renderer.render(scene,camera);}
   finally{renderer.setRenderTarget(previous);renderer.autoClear=auto;}
  }
+ let hasFrame=false,blendInterval=interval;
  function publish(u,now,next,first){
-  const prior=front;front=next;last=now;
+  const prior=front;front=next;last=now;blendInterval=interval;hasFrame=true;
   u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
  }
- return {setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;targets.forEach(t=>t.setSize(size,size/2));key='';pending=null;last=-Infinity;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
+ return {setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
   if(u.cloud.value<.0001){pending=null;key='';u.useVolumeClouds.value=0;return;}u.useVolumeClouds.value=1;
-  u.cloudBlend.value=Math.min(1,(now-last)/interval);
+  u.cloudBlend.value=Math.min(1,(now-last)/blendInterval);
   if(pending){
    renderTile(targets[pending.target],pending.tile++,tileCount);
    if(pending.tile===tileCount){key=pending.key;publish(u,now,pending.target,false);pending=null;}
    return;
   }
   const nextKey=[u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');
-  if(nextKey===key||now-last<interval)return;
-  capture(u);const next=1-front;
+  if(nextKey===key||now-last<blendInterval)return;
+  capture(u);const next=1-front;targets[next].setSize(size,size/2);
   // Prepare the initial panorama before entry. Later refreshes never publish a
   // partially drawn image, nor overwrite the previous frame during its blend.
-  if(!key){renderTile(targets[next],0,1);key=nextKey;publish(u,now,next,true);return;}
+  if(!key){renderTile(targets[next],0,1);key=nextKey;publish(u,now,next,!hasFrame);return;}
   pending={key:nextKey,target:next,tile:1};renderTile(targets[next],0,tileCount);
  },dispose(){noise.dispose();targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};
 }

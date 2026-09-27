@@ -323,3 +323,7 @@ Validation: 28 focused entry, quality, focus, audio and opening checks pass. Bro
 ### Opening board choreography — 2026-09-27
 
 Before entry, the main hall has its six boards raised and composed from the first speaker’s mid-report pages (currently Yong Hu). The current page is half written and continues during the approach. Crossing the actual western hall entrance starts the normal interlocked descent; the smart glass and lectern display switch off. The power control remains available. Replaying the opening restores the first speaker and the same middle passage; seminar selections are unaffected.
+
+### Continuous arrival light and interface — 2026-09-27
+
+The scene clock is set to the opening dawn before construction; preview, the first atmosphere computation, and entry all use that same time. Late weather readings ease in without zero-delta snapping. Atmospheric scattering, cloud visibility, and environment reflections fade with rendered time; cloud quality changes retain the previous panorama until its replacement is complete and then crossfade. Sky and ocean share effect strengths. Entry UI appears in short overlapping groups: identity, caption, navigation, toolbar buttons, room list, chat. Room controls fade in individually when entering a classroom. Reduced-motion preferences disable the stagger.

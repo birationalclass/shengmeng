@@ -35,3 +35,15 @@ test('enlarged dawn disk starts entirely below the horizon in every season',asyn
   assert(apparentAltitude(state.elevation)+3*state.radius*180/Math.PI<-.1);
  }
 });
+
+test('application fixes dawn before scene construction and preserves it on first entry',async()=>{
+ const {readFile}=await import('node:fs/promises'),{runInNewContext}=await import('node:vm');
+ const source=await readFile(new URL('./app.js',import.meta.url),'utf8');
+ const block=source.slice(source.indexOf('const sceneTime='),source.indexOf('const $='));
+ const context={RetreatTime,TimePresentation,SunriseIntro,BoardFollow:class{},shanghaiHour:()=>23,solarEvents:()=>({sunrise:6})};
+ const state=runInNewContext(block+';({hour:sceneTime.hour,visualHour,lastShadowHour,waiting:sunriseIntro.waiting,presentation:timePresentation.hour})',context);
+ assert(Math.abs(state.hour-5.9)<1e-12);assert.equal(state.visualHour,state.hour);assert.equal(state.lastShadowHour,state.hour);assert.equal(state.presentation,state.hour);assert(state.waiting);
+ assert(source.includes('device,{hour:sceneTime.hour,date:sceneTime.date}'));
+ assert(source.includes('if(!sunriseIntro.waiting)sunriseIntro.prepare('));
+ assert(!source.includes('retreat.setTime(solarEvents('),'Preview and entry use one clock');
+});

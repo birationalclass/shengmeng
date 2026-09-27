@@ -37,7 +37,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat} from './scene.js?v=horizon-depth-1';
+import {createRetreat} from './scene.js?v=arrival-light-74';
 import {createLecture} from './lecture.js?v128';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -58,6 +58,8 @@ const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new Boa
 
 const timePresentation=new TimePresentation(sceneTime.hour);
 const sunriseIntro=new SunriseIntro(sceneTime,timePresentation);
+sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
+visualHour=lastShadowHour=sceneTime.hour;
 const $=id=>document.getElementById(id);
 const performanceMonitor=createPerformanceMonitor();
 const movementHud=createMovementHud($('openingHint'),$('movementHud'));
@@ -111,7 +113,8 @@ async function replayOpening(){
     blend=null;opening=null;free=true;touring=false;controls.enabled=false;
     await lecture.prepareOpening();populateReport();
     retreat.fleet.resetSunrisePass();
-    sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);$('timeRate').value='1';
+    if(!sunriseIntro.waiting)sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
+    visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
     openingCameraLock.start(performance.now());keys.clear();controls.enabled=false;
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
@@ -393,7 +396,7 @@ function tick(stamp){
   if(!entered){
     // Preview uses the actual opening camera; no room/board/physics updates before entry.
     updateRenderBudget(stamp);gpuTimer?.begin(stamp);
-    retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,dt,1,sceneTime.date);
+    retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);
     retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
     try{renderer.render(scene,camera);window.refugeBoot?.preview();}finally{gpuTimer?.end();}
     return;
@@ -482,7 +485,7 @@ async function paintStartup(percent,label){
  await new Promise(resolve=>setTimeout(resolve,16));
  if(retreat&&renderActivity.foreground){
   retreat.sky.userData.setCloudQuality('off');retreat.ocean.userData.study.setQuality(0);
-  retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,0,1,sceneTime.date);
+  retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
   retreat.ocean.userData.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
  }
  await new Promise(resolve=>setTimeout(resolve,16));
@@ -510,7 +513,7 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
-  retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device),45000,'空间材质加载');
+  retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date}),45000,'空间材质加载');
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
@@ -538,7 +541,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Keep normal frustum culling: never allocate/render the entire campus at startup.

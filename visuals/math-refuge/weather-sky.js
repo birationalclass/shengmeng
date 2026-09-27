@@ -1,12 +1,13 @@
+import {fadeToward} from './effect-fade.js?v=arrival-light-74';
 import {deferAsset} from './deferred-textures.js?v=arrival-live-71';
 import {solarRefractionGLSL} from './solar-optics.js?v86-environment';
 import * as THREE from 'three';
-import {createVolumetricClouds} from './volumetric-clouds.js?v105';
+import {createVolumetricClouds} from './volumetric-clouds.js?v=arrival-light-74';
 import {createAtmosphereLUT} from './sky-atmosphere.js?v112';
 export function createWeatherSky({panorama=true,renderer,device={},probe=false}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
  const atmosphere=createAtmosphereLUT(probe?null:renderer,device),volumeClouds=createVolumetricClouds(probe?null:renderer,device);
- const uniforms={nightStyle:{value:0},meteorEnabled:{value:1},starsEnabled:{value:1},cloudOrigin:{value:new THREE.Vector3(0,.015,0)},cloudBlend:{value:1},cloudMapPrevious:{value:volumeClouds?.texture||fallback},cloudMap:{value:volumeClouds?.texture||fallback},cloudOffset:{value:new THREE.Vector2()},useVolumeClouds:{value:volumeClouds&&!device.startup?1:0},atmosphereBlend:{value:1},atmosphereMapPrevious:{value:atmosphere?.texture||fallback},atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:atmosphere?1:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
+ const uniforms={nightStyle:{value:0},meteorEnabled:{value:1},starsEnabled:{value:1},cloudOrigin:{value:new THREE.Vector3(0,.015,0)},cloudBlend:{value:1},cloudMapPrevious:{value:volumeClouds?.texture||fallback},cloudMap:{value:volumeClouds?.texture||fallback},cloudOffset:{value:new THREE.Vector2()},useVolumeClouds:{value:0},atmosphereBlend:{value:1},atmosphereMapPrevious:{value:atmosphere?.texture||fallback},atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
  const material=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms,vertexShader:`varying vec3 ray;void main(){ray=position;vec4 p=projectionMatrix*mat4(mat3(viewMatrix))*modelMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,fragmentShader:`
  uniform sampler2D cloudMap,cloudMapPrevious;uniform float cloudBlend;uniform float useVolumeClouds;uniform vec2 cloudOffset;uniform sampler2D atmosphereMap;uniform float useAtmosphere;uniform sampler2D galaxyMap;uniform float galaxyMix;
  precision highp float;uniform sampler2D atmosphereMapPrevious;uniform float atmosphereBlend;varying vec3 ray;uniform vec3 sunPosition,sunColor,seaColor;uniform float starsEnabled,nightStyle,meteorEnabled;uniform float seaHorizon;uniform float day,warm,direct,cloud,storm,clock,radius,showSun,stars,sidereal,twinkleTime;
@@ -102,5 +103,17 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
   },undefined,resolve);}));
  }
  material.addEventListener('dispose',()=>{disposed=true;atmosphere?.dispose();volumeClouds?.dispose();fallback.dispose();panoramaTexture?.dispose();});
- const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=(_r,_s,camera)=>{uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);uniforms.cloudOrigin.value.y=Math.max(.001,uniforms.cloudOrigin.value.y);uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};let cloudsEnabled=!device.startup;mesh.userData.setCloudQuality=level=>{cloudsEnabled=level!=='off';uniforms.useVolumeClouds.value=cloudsEnabled&&volumeClouds?1:0;if(cloudsEnabled)volumeClouds?.setQuality(level);};mesh.userData.updateAtmosphere=()=>{if(device.isRenderActive?.()===false)return;atmosphere?.update(uniforms.sunPosition.value,uniforms.cloud.value);if(atmosphere){uniforms.atmosphereMap.value=atmosphere.texture;uniforms.atmosphereMapPrevious.value=atmosphere.previousTexture;uniforms.atmosphereBlend.value=atmosphere.blend;}if(cloudsEnabled)volumeClouds?.update(uniforms);};mesh.userData.updateAtmosphere();mesh.name='Continuous Shanghai sky';mesh.frustumCulled=false;mesh.scale.setScalar(10000);return mesh;
+ const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=(_r,_s,camera)=>{uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);uniforms.cloudOrigin.value.y=Math.max(.001,uniforms.cloudOrigin.value.y);uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};let cloudsEnabled=!device.startup,cloudVisibility=0;
+ mesh.userData.setCloudQuality=level=>{cloudsEnabled=level!=='off';if(cloudsEnabled)volumeClouds?.setQuality(level);};
+ mesh.userData.updateAtmosphere=(dt=0)=>{
+  if(device.isRenderActive?.()===false)return;
+  // The first computation uses the scene's actual solar position, never the constructor's noon defaults.
+  atmosphere?.update(uniforms.sunPosition.value,uniforms.cloud.value);
+  if(atmosphere){uniforms.atmosphereMap.value=atmosphere.texture;uniforms.atmosphereMapPrevious.value=atmosphere.previousTexture;uniforms.atmosphereBlend.value=atmosphere.blend;}
+  uniforms.useAtmosphere.value=fadeToward(uniforms.useAtmosphere.value,atmosphere?1:0,dt);
+  if(cloudsEnabled)volumeClouds?.update(uniforms);
+  cloudVisibility=fadeToward(cloudVisibility,cloudsEnabled&&volumeClouds&&uniforms.cloud.value>=.0001?1:0,dt);
+  uniforms.useVolumeClouds.value=cloudVisibility;
+ };
+ mesh.name='Continuous Shanghai sky';mesh.frustumCulled=false;mesh.scale.setScalar(10000);return mesh;
 }
