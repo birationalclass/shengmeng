@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 const pending=[];let started=false,running=0;
-function pump(){while(started&&running<2&&pending.length){running++;pending.shift()().finally(()=>{running--;pump();});}}
+function pump(){while(started&&running<1&&pending.length){running++;pending.shift()().finally(()=>{running--;setTimeout(pump,32);});}}
 export function startDeferredTextures(){started=true;pump();}
+export function deferAsset(job){pending.push(job);pump();}
 export function deferredTexture(url){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=1;
  const ctx=canvas.getContext('2d');ctx.fillStyle=/normal|waternormals/.test(url)?'rgb(128,128,255)':'white';ctx.fillRect(0,0,1,1);

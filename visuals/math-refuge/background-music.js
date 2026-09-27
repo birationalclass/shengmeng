@@ -24,7 +24,7 @@ export function createBackgroundMusic({audio,button,volume,readout,events=docume
   function suspend(){revision++;pending=false;cancelFrame(frame);frame=0;audio.pause();audio.volume=0;show();}
   async function play(){
     if(disposed||events.hidden)return;
-    unlocked=true;enabled=true;pending=true;const token=++revision;
+    audio.muted=false;unlocked=true;enabled=true;pending=true;const token=++revision;
     cancelFrame(frame);frame=0;
     if(!audio.getAttribute('src'))audio.src=audio.dataset.src;
     show();

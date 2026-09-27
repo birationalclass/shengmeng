@@ -1,3 +1,4 @@
+import {StartupQuality} from './startup-quality.js?v=arrival-live-71';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
 import {createMovementHud} from './movement-hud.js?v=range280-49';
 import {openingArrival} from './opening-arrival.js?v=opening-10s-48';
@@ -7,7 +8,7 @@ import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
-import {startDeferredTextures} from './deferred-textures.js?v106';
+import {startDeferredTextures} from './deferred-textures.js?v=arrival-live-71';
 import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v=opening-10s-48';
 import {SunriseIntro} from './sunrise-intro.js?v122';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
@@ -29,7 +30,7 @@ import {configureSeminarRoot,seminarFloor} from './seminar-layout.js?v57-proof-f
 import {KM_REPORT} from './seminar-catalog.js?v57-proof-flow';
 import {BUILDINGS,OUTDOOR_AREAS,buildingForShot} from './building-catalog.js?v=true-north-coast-1';
 import * as THREE from 'three';
-import {createBackgroundMusic} from './background-music.js?v=25-music';
+import {createBackgroundMusic} from './background-music.js?v=arrival-live-71';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {OrbitControls} from '../3d/vendor/OrbitControls.js';
 import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
@@ -90,7 +91,7 @@ for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventLi
  if(cameraLocked()&&event.target.closest?.('#world,#chapters,#tour,#roomControls,#buildingRooms,#lecternConsole,#lecturePanel')){event.preventDefault();event.stopImmediatePropagation();}
 },{capture:true,passive:false});
 function enterScene(){
-  if(entered||$('world').dataset.ready!=='true')return;
+  if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized)return;
   entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
@@ -116,7 +117,7 @@ function replayOpening(){
   renderActivity.setEnabled(!failed);
 }
 openingButton.addEventListener('click',replayOpening);
-$('enterButton').addEventListener('click',enterScene);
+window.addEventListener('refuge-entry',enterScene);
 const device=mobilePolicy({width:innerWidth,height:innerHeight,userAgent:navigator.userAgent,maxTouchPoints:navigator.maxTouchPoints,coarsePointer:matchMedia('(pointer: coarse)').matches,safe:new URLSearchParams(location.search).get('safe')==='1'});
 $('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -308,7 +309,7 @@ function updateRenderBudget(stamp){
 
 }
 const graphicsKeys=['oceanModel','quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
-let gpuName='',activeCloudQuality='medium';
+let gpuName='',activeCloudQuality='off',desiredGraphics=null;const startupQuality=new StartupQuality();let startupAutomatic=true;
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
   frameQuality.reset();resize();if(!retreat)return;
@@ -324,7 +325,7 @@ function setQuality(){
   scene.traverse(o=>{if(o.userData.boardSurface)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const key of ['map','normalMap','roughnessMap']){const t=m[key];if(t&&!seen.has(t)&&!t.isRenderTargetTexture){seen.add(t);if(t.anisotropy!==anisotropy){t.anisotropy=anisotropy;t.needsUpdate=true;}}}});
   rooms.forEach(room=>room.setClarity($('boardClarity').value));
 }
-function applyGraphics(values){for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
+function applyGraphics(values){startupAutomatic=false;device.startup=false;for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
 function detectGraphics(){
  const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');gpuName=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'图形型号未公开';
  $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
@@ -332,7 +333,8 @@ function detectGraphics(){
  if(saved){try{if(!localStorage.getItem('refuge-wave-base-v93')){saved.waveStrength=String(Math.max(50,Number(saved.waveStrength)||50));saved.windWaves='on';localStorage.setItem('refuge-wave-base-v93','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
  // Move the former default Ocean selection to measured auto mode once.
  try{if(!localStorage.getItem('refuge-ocean-auto-v1')){if(saved&&(!saved.oceanModel||saved.oceanModel==='study'))saved.oceanModel='auto';localStorage.setItem('refuge-ocean-auto-v1','1');if(saved)localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}
- const values=saved||recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize});
+ desiredGraphics={...Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),...recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}),...saved};
+ const values=startupQuality.settings(desiredGraphics);
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
 const frameQuality=new FrameQuality();
@@ -362,18 +364,31 @@ const renderActivity=bindRenderActivity({setLoop:callback=>renderer?.setAnimatio
   if(opening?.started!=null)opening.started+=gap;
   if(Number.isFinite(boardFollow.lastInput))boardFollow.lastInput+=gap/1000;
   frameSamples.length=0;cpuSamples.length=0;weatherGpuSamples.length=0;weatherGpuMs=null;
-  oceanBudget.resetSamples();frameQuality.resetSamples();
+  oceanBudget.resetSamples();frameQuality.resetSamples();startupQuality.resetSamples();
   renderBudget.samples.length=0;renderBudget.gpuMs=null;renderBudget.lastSampleAt=0;
   $('world').dataset.renderActivity='running';performanceMonitor.setPaused(false);
  }
 });
 $('world').dataset.renderActivity='waiting';
-device.isRenderActive=()=>renderActivity.foreground;
+device.isRenderActive=()=>renderActivity.foreground;device.startup=true;
 function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
-  if(!renderActivity.running||!renderActivity.foreground||!entered)return;
+  if(!renderActivity.running||!renderActivity.foreground)return;
+  if(startupAutomatic&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+    const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
+    device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
+    if(startupQuality.level===2)startupAutomatic=false;
+  }
   frameQuality.sample(frameMs,stamp,{enabled:$('adaptiveQuality').value==='auto',targetFPS:Number($('targetFPS').value)});
+  if(!entered){
+    // Preview uses the actual opening camera; no room/board/physics updates before entry.
+    updateRenderBudget(stamp);gpuTimer?.begin(stamp);
+    retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,dt,1,sceneTime.date);
+    retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
+    try{renderer.render(scene,camera);}finally{gpuTimer?.end();}
+    return;
+  }
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
   // Include cloud/atmosphere targets as well as the final scene in GPU timing.
   weatherProbeFrame=!$('settings').hidden&&++weatherProbeCounter%3===0;
@@ -453,6 +468,17 @@ function tick(stamp){
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
+async function paintStartup(percent,label){
+ window.refugeBoot?.stage(percent,label);
+ await new Promise(resolve=>setTimeout(resolve,16));
+ if(retreat&&renderActivity.foreground){
+  retreat.sky.userData.setCloudQuality('off');retreat.ocean.userData.study.setQuality(0);
+  retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,0,1,sceneTime.date);
+  retreat.ocean.userData.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
+ }
+ await new Promise(resolve=>setTimeout(resolve,16));
+}
+
 try{
   window.refugeBoot?.stage(10,'准备画面');
   renderer=new THREE.WebGLRenderer({canvas:$('world'),alpha:true,antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
@@ -461,7 +487,7 @@ try{
   gpuTimer=createGpuTimer(renderer.getContext());weatherTimer=createGpuTimer(renderer.getContext(),137);detectGraphics();device.gpuTiming=gpuTimer.supported;
   nativeSamples=renderer.getContext().getParameter(renderer.getContext().SAMPLES);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.78;
-  renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.shadowMap.enabled=false;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.2,12000);
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
@@ -476,18 +502,18 @@ try{
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device),45000,'空间材质加载');
-  window.refugeBoot?.stage(66,'准备书院');
+  await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,startStored:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
-    window.refugeBoot?.stage(74+level*4,'准备书院');
+    await paintStartup(74+level*4,'准备讨论教室 '+(level+1));
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
     const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
-  window.refugeBoot?.stage(88,'整理空间');
+  await paintStartup(88,'整理空间');
   finishCampusLayout(scene,retreat,rooms);
   rooms.forEach((room,i)=>{
     room.root.updateWorldMatrix(true,true);
@@ -502,7 +528,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  retreat.setWeather(weatherReading);setQuality();updateSceneTime();updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(solarEvents(sceneTime.date).sunrise-.10,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
@@ -510,8 +536,8 @@ try{
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();}
   if(failed)throw new Error('场景效果未能加载，请尝试低负载模式。');
   clearTimeout(window.refugeLoadingTimer);$('error').hidden=true;$('world').dataset.ready='true';$('world').dataset.entered='false';
-  window.refugeBoot?.ready();$('enterButton').disabled=false;
-  if($('loading').dataset.entryRequested==='true')enterScene();else if(renderActivity.foreground)$('enterButton').focus({preventScroll:true});
+  window.refugeBoot?.preview();window.refugeBoot?.ready();$('world').dataset.startupTier='0';renderActivity.setEnabled(!failed);
+  if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 
 }catch(error){fail(error);}
@@ -534,12 +560,12 @@ $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidd
 $('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
 $('settingsClose').addEventListener('click',()=>showSettings(false));
 $('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('recommendStatus').textContent='已应用推荐 · 60 帧预算、文字保护、自动调整渲染精度。';});
-for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
+for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){startupAutomatic=false;device.startup=false;$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
 $('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textContent=$('waveStrength').value+'%';});
 $('resolutionScale').addEventListener('input',()=>{$('resolutionValue').textContent=$('resolutionScale').value+'%';});
 $('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setClarity($('boardClarity').value));try{localStorage.setItem('refuge-board-clarity',$('boardClarity').value);}catch{}});
 try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
-$('adaptiveQuality').addEventListener('change',()=>{if(retreat){frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
+$('adaptiveQuality').addEventListener('change',()=>{if(retreat){startupAutomatic=false;device.startup=false;frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});

@@ -1,7 +1,7 @@
 import {relocateArchitecture} from './campus-layout.js';
 import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
-import {deferredTexture} from './deferred-textures.js?v106';
+import {deferredTexture} from './deferred-textures.js?v=arrival-live-71';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {createCampusOcean} from './ocean-study.js?v=solar-glare-12';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
@@ -17,7 +17,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=campus-layout-20260926';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v112';
+import {createWeatherSky} from './weather-sky.js?v=arrival-live-71';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -37,7 +37,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     map.repeat.set(repeat,repeat);map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     if(srgb)map.colorSpace=THREE.SRGBColorSpace;return map;
   }
-  report('正在铺设材质与水面…');
+  report('正在铺设材质与水面…');await new Promise(resolve=>setTimeout(resolve,16));
   const [woodMap,woodNormal,woodRough,waterNormal,stoneMap,stoneNormal,stoneRough]=await Promise.all([
     texture('wood-color.jpg',5,true),texture('wood-normal.jpg',5),texture('wood-rough.jpg',5),texture('waternormals.jpg',1),
     texture('stone-color.jpg',4,true),texture('stone-normal.jpg',4),texture('stone-rough.jpg',4)
@@ -169,7 +169,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     box(p(-.2,.66,0),s([.4,.055,.3]),blackboard);
     instance(cylinder,ceramic,p(.4,.72,0),s([.13,.19,.13]));
   }
-  report('正在搭建海上长露台与报告厅…');
+  report('正在搭建海上长露台与报告厅…');await new Promise(resolve=>setTimeout(resolve,16));
   const campus=createCampus(scene,{section,box,soft,beam,floor,glazing,railing,sofa,table,planter,instance,cylinder,materials});
   const pathLighting=createPathLighting(scene,{box,beam,materials,section});
   materials.terraceStrip=pathLighting.material;
@@ -493,7 +493,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const study=await createCampusOcean(renderer,scene,oceanMaterial.uniforms);
   ocean.visible=false;
   ocean.userData.study=study;
-  report('正在布置光照与镜头…');
+  report('正在布置光照与镜头…');await new Promise(resolve=>setTimeout(resolve,16));
   buildPlatforms();
   const lodBatches=[],lowGeometry=new Map();
   for(const {geo,material,matrices,parts,region} of batches.values()){
@@ -551,7 +551,7 @@ export async function createRetreat(renderer,scene,report,device={}){
   const pmrem=new THREE.PMREMGenerator(renderer);let environment;
   const envScene=new THREE.Scene(),probe=createWeatherSky({panorama:false,renderer,device,probe:true});probe.material.uniforms.showSun.value=0;probe.material.uniforms.cloud.value=.18;envScene.add(probe);
   function ensureEnvironment(){
-    if(environment||device.isRenderActive?.()===false)return;
+    if(environment||device.startup||device.isRenderActive?.()===false)return;
     environment=pmrem.fromScene(envScene,.03,.1,20000);scene.environment=environment.texture;probe.geometry.dispose();probe.material.dispose();
   }
   const weather={cloud:.14,rain:0,fog:0,wind:8,windDirection:225},weatherTarget={...weather};let skySeconds=0;const cloudWind={velocity:windVelocity(8,225),offset:{x:0,z:0}},waterWind={velocity:windVelocity(8,225),offset:{x:0,z:0}};

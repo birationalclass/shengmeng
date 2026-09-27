@@ -6,8 +6,9 @@ const script=html.match(/<script id="refugeBootstrap">([\s\S]*?)<\/script>/)[1].
 function boot(attempt=0){
  const nodes=new Map(),storage=new Map([['refuge-startup-retry',String(attempt)]]),events={};
  let now=0,interval,timeout,destination;
- const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',dataset:{},style:{},handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
- const context={document:{hidden:false,getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:f=>(timeout=f,1),clearTimeout:()=>timeout=null,setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
+ const classes=()=>({add(){},remove(){},toggle(){}});
+ const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',classList:classes(),dataset:{},style:{},handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
+ const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:f=>(timeout=f,1),clearTimeout:()=>timeout=null,setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
  context.window=context;vm.runInNewContext(script,context);
  return {context,get,storage,events,tick(seconds){for(let i=0;i<seconds*4;i++){now+=250;interval();}},click(id){get(id).handlers.click.call(get(id));},get destination(){return destination;},timeout:()=>timeout?.()};
 }
@@ -21,6 +22,18 @@ for(const [attempt,delay] of [[0,8],[1,15],[2,30],[3,60],[8,60]]){
  const b=boot();b.timeout();assert.equal(b.get('error').hidden,false);b.context.refugeBoot.ready();b.tick(60);assert.equal(b.destination,undefined);assert.equal(b.get('error').hidden,true);assert.equal(b.get('loading').hidden,false);assert.equal(b.get('loadProgress')['aria-valuenow'],'100');b.context.refugeBoot.entered();assert.equal(b.get('loading').hidden,true);
 }
 {
- const b=boot();b.click('enterButton');assert.equal(b.storage.get('refuge-entry-requested'),'1');b.context.refugeBoot.fail(new Error('WebGL'));assert.equal(b.get('errorText').textContent,'图形恢复中');b.click('retrySafe');assert.ok(b.destination.includes('safe=1'));assert.ok(b.destination.includes('view=pavilion'));
+ const b=boot();b.context.refugeBoot.auth('authenticated');b.click('enterButton');assert.equal(b.storage.get('refuge-entry-requested'),'1');b.context.refugeBoot.fail(new Error('WebGL'));assert.equal(b.get('errorText').textContent,'图形恢复中');b.click('retrySafe');assert.ok(b.destination.includes('safe=1'));assert.ok(b.destination.includes('view=pavilion'));
 }
 console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe retry passed.');
+
+{
+ const b=boot();let requests=0,logins=0;b.events['refuge-entry']=()=>requests++;b.events['refuge-login']=()=>logins++;
+ b.context.refugeBoot.ready();b.click('enterButton');assert.equal(requests,0,'pending auth must not enter');
+ b.context.refugeBoot.auth('anonymous');b.click('enterButton');assert.equal(logins,1);assert.equal(requests,0);
+ b.context.refugeBoot.auth('authenticated');assert.equal(requests,0,'auto login waits for a click');assert.equal(b.get('enterButton').textContent,'点击继续');
+ b.click('enterButton');assert.equal(requests,1);assert.equal(b.get('loading').dataset.entryRequested,'true');
+ b.context.refugeBoot.entered();b.context.refugeBoot.requestEntry();assert.equal(requests,1,'entry cannot run twice');
+}
+{
+ const b=boot();b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.requestEntry();assert.equal(b.get('entryStatus').textContent,'正在准备开场');b.context.refugeBoot.ready();assert.equal(b.get('enterButton').hidden,true,'login during loading keeps the entry queued');
+}

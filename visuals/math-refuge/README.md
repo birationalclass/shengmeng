@@ -308,3 +308,14 @@ Validation: 62 targeted tests passed (including blur without hiding, hidden-tab 
 Reproduced stair-step dark edges at the sunrise opening's sea/sky boundary on current main. The analytic far-water sheet wrote clamped world-space water depth, competing with the finite wave grid and the far-depth sky near the depth buffer's limit. It also left an unnecessary 9 km radial hole. The continuation now covers all downward sea rays at far depth, tests existing opaque depth but never writes it, and is drawn after the campus sky (order 1001) before transparent detailed waves. Real foreground geometry still occludes it. The standalone ocean retains its original sky/background draw order. Coast geometry, opening route, atmosphere and wave quality are unchanged.
 
 Validation: 50 targeted tests passed, including opening/sunrise and campus regressions, foreground-depth policy and view-ray agreement at camera heights 2, 20, 450 and 1800 m. Local browser replay confirmed the former stair-step boundary is continuous and compiled without console errors.
+
+
+### Dawn entry and measured startup quality (2026-09-27)
+
+The arrival overlay first draws a lightweight SVG dawn while modules load, then fades into the real opening camera. Architecture, auditorium and seminar boards yield between loading stages. Material textures and the optional galaxy panorama share a serial deferred queue after entry. No distant geometry is removed.
+
+The session check runs independently of scene preparation. A remembered session reveals the breathing “点击继续” button and waits for an explicit click. An absent/failed session opens the compact login dialog; a successful login queues entry immediately, including when the scene is still loading. Failed credentials stay in the dialog. Guest entry remains available. The login/continue gesture primes muted audio so delayed entry can resume the existing soundtrack. Background/focus rendering suspension remains in force.
+
+Each visit starts at 75% of the balanced pixel budget with shadows, volumetric clouds and detailed water disabled. StartupQuality uses foreground frame cadence (and GPU timing when available) to promote one tier at a time; sustained 30 FPS cannot promote toward a 60 FPS target. A failed promotion backs off with a cooldown. Existing FrameQuality/OceanBudget continue managing performance after startup, and explicit graphics controls cancel automatic startup promotion.
+
+Validation: 28 focused entry, quality, focus, audio and opening checks pass. Browser fixtures exercise auto login, missing session, wrong password, successful login and a 390px login layout without contacting the production account API. The larger checks.test.mjs suite has two pre-existing harness failures (recursive data-URL expansion and Node's bare `three` resolution); both reproduce from unchanged 1f0a741 in a separate temporary baseline.
