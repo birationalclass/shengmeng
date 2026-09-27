@@ -2,9 +2,9 @@ import {AUTH_API} from './auth-config.js';
 const key='yuejian-auth-v1';
 const root=document.createElement('div');root.id='homework-auth';
 root.innerHTML=`<button class="auth-entry" type="button" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21v-2.5a7.5 7.5 0 0 1 15 0V21"/></svg><span>登录 / 注册</span></button>
-<dialog class="auth-dialog" aria-labelledby="auth-title"><button class="auth-close" type="button" aria-label="关闭登录窗口">×</button><p class="auth-kicker">阅见 · HOMEWORK</p><h1 id="auth-title">欢迎回来</h1><p class="auth-intro">用邮箱或学号和个人密码登录。</p>
+<dialog class="auth-dialog" aria-labelledby="auth-title"><button class="auth-close" type="button" aria-label="关闭登录窗口">×</button><p class="auth-kicker">阅见 · HOMEWORK</p><h1 id="auth-title">欢迎回来</h1><p class="auth-intro">用邮箱地址和个人密码登录。</p>
 <div class="auth-tabs" role="group" aria-label="账号操作"><button type="button" data-mode="login" aria-pressed="true">登录</button><button type="button" data-mode="register" aria-pressed="false">首次注册</button></div>
-<form id="auth-form"><label for="auth-id">邮箱或学号</label><input id="auth-id" name="username" autocomplete="username" inputmode="email" maxlength="254" autocapitalize="none" spellcheck="false" placeholder="完整邮箱或 11 位学号" required aria-describedby="auth-email"><p id="auth-email" class="auth-hint">注册时验证学校邮箱。</p>
+<form id="auth-form"><label for="auth-id">邮箱地址</label><input id="auth-id" name="username" autocomplete="username" inputmode="email" maxlength="254" autocapitalize="none" spellcheck="false" placeholder="请输入邮箱地址" required aria-describedby="auth-email"><p id="auth-email" class="auth-hint">注册时验证学校邮箱。</p>
 <div class="auth-verification" hidden><div class="auth-code-heading"><label for="auth-code">邮箱验证码</label><button id="auth-send" type="button">获取验证码</button></div><input id="auth-code" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="邮件中的 6 位数字"><p class="auth-hint">10 分钟内有效。<a href="https://mail.stu.ecnu.edu.cn" target="_blank" rel="noopener">打开学校邮箱 ↗</a></p></div>
 <label for="auth-password" id="auth-password-label">个人密码</label><div class="auth-password-row"><input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" placeholder="至少 10 个字符" required><button id="auth-show" type="button" aria-label="显示密码" aria-pressed="false">显示</button></div>
 <div class="auth-confirm" hidden><label for="auth-confirm">再次输入密码</label><input id="auth-confirm" type="password" autocomplete="new-password" minlength="10" maxlength="128" placeholder="再次输入新密码"></div>
@@ -53,7 +53,7 @@ function setMode(next){
  const profile=next==='profile',verification=['register','reset'].includes(next);
  form.hidden=profile;$('.auth-profile').hidden=!profile;$('.auth-tabs').hidden=profile;
  $('#auth-title').textContent={login:'欢迎回来',register:'开启你的作业本',reset:'重设个人密码',profile:'已登录'}[next];
- $('.auth-intro').textContent={login:'用邮箱或学号和个人密码登录。',register:'验证学校邮箱，再设置个人密码。',reset:'验证学校邮箱，为账号设置新密码。',profile:'账号已通过服务器验证。'}[next];
+ $('.auth-intro').textContent={login:'用邮箱地址和个人密码登录。',register:'验证学校邮箱，再设置个人密码。',reset:'验证学校邮箱，为账号设置新密码。',profile:'账号已通过服务器验证。'}[next];
  $('.auth-verification').hidden=!verification;$('.auth-confirm').hidden=!verification;
  $('#auth-code').required=verification;$('#auth-code').disabled=!verification;$('#auth-confirm').required=verification;$('#auth-confirm').disabled=!verification;
  $('#auth-password').autocomplete=verification?'new-password':'current-password';$('#auth-password-label').textContent=verification?'设置个人密码':'个人密码';
@@ -71,6 +71,7 @@ $('.auth-close').onclick=()=>dialog.close();$('#auth-continue').onclick=()=>dial
 dialog.addEventListener('close',()=>{if(!busy)resetSecrets();lastFocus?.focus();});
 dialog.addEventListener('keydown',event=>event.stopPropagation());
 $$('[data-mode]').forEach(b=>b.onclick=()=>{if(user)$('#auth-id').value=user.email;setMode(b.dataset.mode);});
+$('#auth-id').onblur=()=>{const id=$('#auth-id').value.trim();if(/^\d{11}$/.test(id))$('#auth-id').value=id+'@stu.ecnu.edu.cn';updateAddress();};
 $('#auth-id').oninput=()=>{challenge=null;$('#auth-code').value='';updateAddress();refreshSend();};
 $('#auth-show').onclick=()=>{const visible=$('#auth-password').type==='password';$('#auth-password').type=visible?'text':'password';$('#auth-show').textContent=visible?'隐藏':'显示';$('#auth-show').setAttribute('aria-pressed',String(visible));$('#auth-show').setAttribute('aria-label',visible?'隐藏密码':'显示密码');};
 $('#auth-send').onclick=async()=>{
