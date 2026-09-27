@@ -236,15 +236,15 @@ html{background:#eae9e3}
 /* Whole-notebook handoff: the original stack stays stationary under a clone. */
 .book-transfer-stage{z-index:35;perspective:2400px;perspective-origin:50% 45%}
 .book-transfer-copy{position:absolute;left:0;top:0;transform-style:preserve-3d;transform-origin:100% 50%;will-change:transform}
-.book-transfer-face{position:absolute;inset:0;backface-visibility:hidden;transform:translateZ(.3px);box-shadow:0 10px 24px -8px #24302550}
+.book-transfer-face{position:absolute;inset:0;backface-visibility:hidden;transform:translateZ(.3px)}
 .book-transfer-back{transform:rotateY(180deg) translateZ(.3px)}
 
 .book-transfer-spine{position:absolute;left:100%;top:0;height:100%;transform:translateX(-50%) rotateY(90deg);background:repeating-linear-gradient(90deg,#a1ad8e 0 1px,#e2dfc8 1px 2px);backface-visibility:visible}
 
 #paper-viewport.book-leaving #manuscript,#paper-viewport.book-leaving #workspace-tools,#paper-viewport.book-leaving #reading-footer{visibility:hidden}
 
-.stack-cover-preview{display:block;padding-top:105px;text-align:center;pointer-events:none}
-.stack-cover-preview .cover-print{font-family:var(--pen,"Kaiti SC",STKaiti,serif)}
+.stack-cover-preview{position:absolute;top:105px;left:48px;right:48px;display:block;text-align:center;pointer-events:none}
+.cover-print{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:normal}
 #book-jump{width:2.3em;padding:2px 0;text-align:center;font-size:inherit;color:inherit;border-bottom:1px solid transparent;cursor:text}
 #book-jump:hover,#book-jump:focus{border-bottom-color:currentColor}
 .book-settle-copy{position:absolute;left:0;top:0;transform-origin:0 100%;will-change:transform;pointer-events:none}
@@ -252,3 +252,6 @@ html{background:#eae9e3}
 #notebook-stack{--pen:"Kaiti SC",STKaiti,"KaiTi","Songti SC",Georgia,serif}
 
 .book-underlay-copy .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
+
+/* The moving front cover and its final live surface share the same paint. */
+.next-book,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;box-shadow:inset 7px 0 12px -10px #1c372f80,2px 2px 0 #d8dfcc,3px 3px 0 #778b70}

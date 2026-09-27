@@ -264,7 +264,7 @@ function flipNotebook(direction){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
   copy.firstElementChild.style.transform=`scale(${scale})`;
   // Stack-edge shadows belong to the stationary pile, not the lifted book.
-  copy.firstElementChild.style.boxShadow='none';
+  if(copy.firstElementChild.classList.contains('previous-book'))copy.firstElementChild.style.boxShadow='none';
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
  const spine=document.createElement('div');spine.className='book-transfer-spine';Object.assign(spine.style,{width:Math.max(1,2*scale)+'px',left:incoming?'100%':'0'});flight.append(spine);
@@ -323,19 +323,10 @@ function settleNextNotebook(next,stage,restore){
  }
  pose(0);frame=requestAnimationFrame(draw);
 }
-// Keep the exact landed pixels above the replacement DOM for two paints,
-// then retire the inert overlay. Cancelling at any point leaves live paper
-// visible and cannot schedule a late student switch.
+// Replace the landed copy and live paper atomically before the next paint.
+// A crossfade would double their text/shadows and create a brightness flash.
 function finishNotebookTransfer(next,stage,restore){
- restore();turnAnimation=null;turnStage=null;changeStudent(next);turnStage=stage;
- let frame=0,fade=null;
- const handle={cancel(){cancelAnimationFrame(frame);fade?.cancel();stage.remove();}};turnAnimation=handle;
- stage.dataset.phase='handoff';
- frame=requestAnimationFrame(()=>{frame=requestAnimationFrame(()=>{
-  if(turnAnimation!==handle)return;
-  fade=stage.animate([{opacity:1},{opacity:0}],{duration:120,easing:'ease-out',fill:'forwards'});
-  fade.finished.then(()=>{stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}}).catch(()=>{});
- });});
+ restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();
 }
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
