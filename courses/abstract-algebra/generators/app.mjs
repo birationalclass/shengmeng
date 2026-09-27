@@ -1,12 +1,14 @@
-import {Growth,values} from './dynamics.mjs?v=groups-8';
-import {groups,validate} from './model.mjs?v=groups-8';
-import {Scene} from './scene.mjs?v=groups-8';
+import {Growth,values} from './dynamics.mjs?v=orbit-glow-11';
+import {groups,validate} from './model.mjs?v=orbit-glow-11';
+import {Scene} from './scene.mjs?v=orbit-glow-11';
 const $=id=>document.getElementById(id);let en=false,g=groups.S3,seeds=new Set([1,2]),engine=null,playing=false,mode='continuous',targetRound=0,current=null,history=[],speed=1;
 const tr=(zh,english)=>en?english:zh;
 const scene=new Scene($('canvas'),toggleSeed);
 $('groupCards').replaceChildren(...Object.entries(groups).map(([key,g])=>{const b=document.createElement('button');b.dataset.group=key;b.innerHTML=`<b>${g.name}</b><small>|G| = ${g.labels.length}</small>`;return b;}));
 function toggleSeed(id){if(engine)return;if(seeds.has(id))seeds.delete(id);else seeds.add(id);scene.selection(seeds);scene.scores=values(g,seeds);renderPalette();render();}
-function renderPalette(){ $('palette').replaceChildren(...g.labels.map((label,id)=>{const b=document.createElement('button');b.setAttribute('aria-pressed',seeds.has(id));b.disabled=!!engine;b.innerHTML=`<b>${id+1}</b><small>${label}</small>`;b.setAttribute('aria-label',`${id+1}: ${label}`);b.onclick=()=>toggleSeed(id);return b;})); }
+function fitPalette(){const p=$('palette'),w=p.clientWidth,h=p.clientHeight;if(!w||!h)return;let best={size:0,cols:1};for(let cols=1;cols<=g.labels.length;cols++){const rows=Math.ceil(g.labels.length/cols),size=Math.min(76,(w-(cols-1)*6)/cols,(h-(rows-1)*6)/rows);if(size>best.size)best={size,cols};}p.style.setProperty('--ball',`${Math.max(1,Math.floor(best.size))}px`);p.style.setProperty('--cols',best.cols);}
+new ResizeObserver(fitPalette).observe($('palette'));
+function renderPalette(){ $('palette').replaceChildren(...g.labels.map((label,id)=>{const b=document.createElement('button');b.setAttribute('aria-pressed',seeds.has(id));b.disabled=!!engine;b.innerHTML=`<b>${id+1}</b>`;b.title=`${id+1}: ${label}`;b.setAttribute('aria-label',b.title);b.onpointerenter=b.onfocus=()=>{$('seedDetail').textContent=b.title;};b.onclick=()=>toggleSeed(id);return b;}));fitPalette(); }
 function render(){
   document.documentElement.lang=en?'en':'zh-CN';document.querySelectorAll('[data-zh]').forEach(el=>el.innerHTML=en?el.dataset.en:el.dataset.zh);$('lang').textContent=en?'中文':'EN';
   document.title=tr('生成元实验室 · 代数学','Generator laboratory · Algebra');$('fullscreen').setAttribute('aria-label',tr('全屏','Fullscreen'));document.querySelector('header a').setAttribute('aria-label',tr('返回代数学','Back to algebra'));$('canvas').setAttribute('aria-label',tr('群元素泡泡动画；点击泡泡或起点加号选择元素','Group element bubbles; select bubbles or use the seed picker'));
@@ -19,7 +21,7 @@ function render(){
   $('convention').textContent=g.family==='symmetric'?tr('置换乘法从右向左作用。','Permutation composition acts right to left.'):g===groups.D4?tr('r 为旋转 90°，s 为反射；sr = r⁻¹s。','r rotates 90°, s reflects; sr = r⁻¹s.'):g===groups.Q8?'i² = j² = k² = ijk = −1':tr('e 为单位元。','e is the identity.');
   $('identity').textContent=`${tr('单位元','Identity')} · ${g.e+1} = ${g.labels[g.e]}`;
   $('progress').style.width=`${scene.present.size/g.labels.length*100}%`;
-  $('summary').textContent=tr('生成值：左乘、右乘（含平方）能得到的不同新元素数。高值居内，优先碰撞；同值随机。','Generation value counts distinct unseen left/right products, including squares. Higher values move inward and collide first; ties are random.');
+  $('summary').textContent=tr('生成值：左乘、右乘（含平方）能得到的不同新元素数。高值居内；先取最高值，再从能产生新元素的伙伴中取最高值。同值随机。','Generation value counts distinct unseen left/right products, including squares. Higher values move inward. Select the highest value, then its highest-valued productive partner; ties are random.');
   document.querySelector('.size-ring').style.setProperty('--amount',`${scene.present.size/g.labels.length*360}deg`);
   document.querySelector('.pips').textContent='✦';
   $('outcome').textContent=engine?.done?tr(`已闭合 · ${engine.elements.size===g.labels.length?'生成整个群':'生成真子群'}`,`Closed · ${engine.elements.size===g.labels.length?'whole group':'proper subgroup'}`):'';
@@ -49,4 +51,4 @@ $('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await docume
 document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=false;render();}});
 // Prevent leftover focus from accidentally activating buttons with lesson keys.
 for(const type of ['keydown','keyup'])document.addEventListener(type,e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('button,a')&&!e.ctrlKey&&!e.metaKey&&!e.altKey)e.preventDefault();});
-let previous=performance.now();function frame(now){const dt=Math.min((now-previous)/1000,.04);previous=now;const finished=scene.tick(playing?dt*speed:engine&&!engine.done?0:dt,playing);scene.draw();if(finished)completed();requestAnimationFrame(frame);}reset();requestAnimationFrame(frame);
+let previous=performance.now();function frame(now){const dt=Math.min((now-previous)/1000,.04);previous=now;const finished=scene.tick(playing?dt*speed:engine&&!engine.done?0:dt,playing,dt);scene.draw();if(finished)completed();requestAnimationFrame(frame);}reset();requestAnimationFrame(frame);
