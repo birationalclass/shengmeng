@@ -1,6 +1,6 @@
-import {Growth,values} from './dynamics.mjs?v=orbit-glow-11';
-import {groups,validate} from './model.mjs?v=orbit-glow-11';
-import {Scene} from './scene.mjs?v=orbit-glow-11';
+import {Growth,values} from './dynamics.mjs?v=all-seeds-12';
+import {groups,validate} from './model.mjs?v=all-seeds-12';
+import {Scene} from './scene.mjs?v=all-seeds-12';
 const $=id=>document.getElementById(id);let en=false,g=groups.S3,seeds=new Set([1,2]),engine=null,playing=false,mode='continuous',targetRound=0,current=null,history=[],speed=1;
 const tr=(zh,english)=>en?english:zh;
 const scene=new Scene($('canvas'),toggleSeed);
