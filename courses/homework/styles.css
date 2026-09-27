@@ -270,11 +270,12 @@ html{background:#eae9e3}
 #manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{--paper-pattern:none;background-color:#a7bd9d;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);color:#294b40;overflow:visible;box-shadow:inset -7px 0 12px -10px #1c372f80}
 /* Match the stationary right base: green stock above one continuous green rim. */
 .notebook-inner-cover::before{content:"";display:block;position:absolute;inset:auto 0 -3px;height:3px;background:linear-gradient(to bottom,#a7bd9d 0 2px,#778b70 2px 3px);z-index:1;pointer-events:none}
-.turn-cover-only>.notebook-inner-cover::before{display:none}
+.turn-cover-only>.notebook-inner-cover::before{opacity:var(--binding-open,0)}
+.turn-cover-only>.notebook-cover::after{transform-origin:left bottom;transform:scaleY(calc(1 - var(--binding-open,0)))}
 
 /* Only the answer-paper half has a page-block edge beside the inside cover. */
 #manuscript[data-document-style=notebook][data-reading=double] .page-spread:has(>.notebook-inner-cover){background:transparent;box-shadow:none}
 #manuscript[data-document-style=notebook][data-reading=double] .notebook-inner-cover+.scan-page{box-shadow:inset 16px 0 25px -24px #45432a55,0 2px 0 #d8dfcc,0 3px 0 #778b70,0 12px 23px -16px #27302770}
 
-/* The green binding travels with the cover, mirrored on its reverse face. */
-.notebook-inner-cover::after{content:"";position:absolute;right:0;bottom:-3px;width:5px;height:9px;background:linear-gradient(180deg,#a7bd9d00 0%,#a7bd9d 35%,#91a687 75%,#778b70 100%);box-shadow:inset -1px 0 1px #62785b55;border-radius:0 0 2px 0;pointer-events:none;z-index:1}
+/* The unfolded binding becomes the flat rim, rather than a second end cap. */
+.notebook-inner-cover::after{display:none}
