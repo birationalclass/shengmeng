@@ -1,5 +1,4 @@
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
-import {OpeningCache} from './opening-cache.js?v=opening-cache-81';
 import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
 import {createMovementHud} from './movement-hud.js?v=range280-49';
@@ -10,7 +9,6 @@ import {hallSunStart,sunViewRate} from './hall-sun-view.js';
 import {finishCampusLayout,relocateShots,buildingOffset} from './campus-layout.js';
 import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
-import {startDeferredTextures} from './deferred-textures.js?v=arrival-live-71';
 import {OPENING_POSE,OpeningCameraLock} from './opening-camera.js?v=opening-10s-48';
 import {SunriseIntro} from './sunrise-intro.js?v122';
 import {bindRenderActivity} from './render-activity.js?v=focus-pause';
@@ -45,7 +43,7 @@ import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_R
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
-import {configureCameraInput} from './camera-input.js?v84-display';
+import {configureCameraInput} from './camera-input.js?v=entry-input-86';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
 import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=concert-53';
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
@@ -87,7 +85,7 @@ walkButton.addEventListener('click',()=>{if(retreat&&cameraIntent.canActivate())
 const openingButton=document.createElement('button');openingButton.id='replayOpening';openingButton.textContent='开场';openingButton.setAttribute('aria-label','重新播放开场');$('chapters').prepend(openingButton);
 const backgroundMusic=createBackgroundMusic({audio:$('backgroundMusic'),button:$('musicButton'),volume:$('musicVolume'),readout:$('musicVolumeValue')});
 const screenWebview=createScreenWebview(THREE);
-let entered=false,openingPreparing=false;
+let entered=false,openingPreparing=false,openingPrepared=false;
 const openingCameraLock=new OpeningCameraLock();
 const cameraLocked=()=>openingPreparing||openingCameraLock.locked(performance.now());
 // Capture before OrbitControls and scene hit targets, while other settings remain usable.
@@ -96,9 +94,7 @@ for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventLi
 },{capture:true,passive:false});
 function enterScene(){
   if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
-  if(openingCache?.state!=='ready')openingCache?.abort();
   entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
-  setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
   replayOpening().catch(fail);
   $('world').focus({preventScroll:true});
@@ -114,7 +110,7 @@ async function replayOpening(){
     camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);
     camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();controls.enableDamping=true;
     blend=null;opening=null;free=true;touring=false;controls.enabled=false;
-    await lecture.prepareOpening();populateReport();
+    if(!openingPrepared)await lecture.prepareOpening();openingPrepared=false;populateReport();
     retreat.fleet.resetSunrisePass();
     if(!sunriseIntro.waiting)sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
     visualHour=lastShadowHour=sceneTime.hour;$('timeRate').value='1';
@@ -122,7 +118,6 @@ async function replayOpening(){
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
     blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
-    if(openingCache?.play())cacheLayer.hidden=false;
     $('world').focus({preventScroll:true});
     renderActivity.setEnabled(!failed);
   }finally{openingPreparing=false;}
@@ -133,39 +128,6 @@ const device=mobilePolicy({width:innerWidth,height:innerHeight,userAgent:navigat
 $('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0,failed=false;
-let openingCache=null,cacheLayer=null,cacheContext=null,cacheSnapshot=null,cacheWaitSince=0;
-function openingCachePose(seconds){
- const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
- const path=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});
- const k=smoothProgress(Math.min(1,seconds/path.duration));
- camera.position.fromArray(path.sample(seconds));
- const startQ=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(new THREE.Vector3(...OPENING_POSE.position),new THREE.Vector3(...OPENING_POSE.target),new THREE.Vector3(0,1,0)));
- const endQ=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),new THREE.Vector3(0,1,0)));
- camera.quaternion.slerpQuaternions(startQ,endQ,k);camera.fov=THREE.MathUtils.lerp(OPENING_POSE.fov,SHOTS.find(s=>s.name==='报告厅').fov,k);camera.updateProjectionMatrix();camera.updateMatrixWorld();
- controls.target.copy(camera.position).addScaledVector(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion),THREE.MathUtils.lerp(new THREE.Vector3(...OPENING_POSE.position).distanceTo(new THREE.Vector3(...OPENING_POSE.target)),20,k));
-}
-function restoreCacheView(cancelled){
- if(!cacheSnapshot)return;
- const t=entered&&openingCache?.elapsed?openingCache.elapsed:0;
- openingCachePose(t);retreat.ocean.material.uniforms.time.value=cacheSnapshot.wave+t;
- retreat.setTime(cacheSnapshot.hour+t/3600,false,0,1,sceneTime.date);retreat.ocean.userData.study.update(camera,0);
- if(blend?.openingPath)blend.elapsed=t;
- if(profile.direct)renderer.render(scene,camera);else composer.render();
- if(cancelled){cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;}
-}
-function startOpeningCache(){
- cacheSnapshot={wave:retreat.ocean.material.uniforms.time.value,hour:sceneTime.hour};
- cacheLayer=document.createElement('canvas');cacheLayer.id='openingCache';cacheLayer.setAttribute('aria-hidden','true');cacheLayer.width=renderer.domElement.width;cacheLayer.height=renderer.domElement.height;
- Object.assign(cacheLayer.style,{position:'fixed',inset:'0',width:'100%',height:'100%',zIndex:'1',pointerEvents:'none'});document.body.append(cacheLayer);
- cacheContext=cacheLayer.getContext('2d',{alpha:false});cacheContext.drawImage(renderer.domElement,0,0);
- openingCache=new OpeningCache({canvas:renderer.domElement,mobile:device.mobile,onRestore:restoreCacheView,onState:(state,stats)=>{
-  $('world').dataset.openingCache=state;$('world').dataset.openingCacheStats=JSON.stringify(stats);if(state==='ready')$('world').dataset.openingCacheReady=JSON.stringify(stats);
-  const progress=$('openingCacheProgress');progress.hidden=!['preparing','recording','flushing','ready'].includes(state);progress.textContent='预渲染 '+stats.progress+'%';
-  if(['unavailable','memory-limit','decode-error'].includes(state)){cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;}
- }});
- startDeferredTextures();openingCache.start();
-}
-
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
 const keys=new Set(),keyboardMotion=new KeyboardMotion(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -306,7 +268,6 @@ function applyShot(dt){
 }
 function resize(){
   if(!renderer)return;
-  if(openingCache?.waiting||openingCache?.state==='playing')openingCache.abort();
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples,device);
   profile.pixelRatio=resolutionRatio(profile.pixelRatio,$('resolutionScale').value,innerWidth,innerHeight,renderer.capabilities.maxTextureSize);profile.shadows=Number($('shadowQuality').value)>0;profile.shadowSize=Number($('shadowQuality').value)||1024;
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
@@ -426,29 +387,8 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
-  if(!entered&&openingCache?.waiting){
-    openingCache.capture((seconds,step)=>{
-      openingCachePose(seconds);retreat.setTime(cacheSnapshot.hour+seconds/3600,false,step,1,sceneTime.date);
-      retreat.ocean.material.uniforms.time.value=cacheSnapshot.wave+seconds;retreat.ocean.userData.study.update(camera,step);
-      if(profile.direct)renderer.render(scene,camera);else composer.render();
-    });
-    return;
-  }
-  if(entered&&openingCache?.state==='playing'){
-    const elapsed=openingCache.present(dt,cacheContext);
-    if(blend?.openingPath)blend.elapsed=elapsed;
-    sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);
-    $('world').dataset.openingCacheTime=elapsed.toFixed(3);
-    $('openingHint').textContent='开场运镜 · '+openingCameraLock.remaining(stamp)+' 秒后可操作镜头';
-    if(openingCache.state==='finished'){
-      restoreCacheView(false);cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;
-      frameQuality.resetSamples();oceanBudget.resetSamples();renderBudget.samples.length=0;renderBudget.gpuMs=null;
-      motionSample=false;visibilityAt=-Infinity;
-    }
-    return;
-  }
-
-  if(startupAutomatic&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  if(document.getElementById('socialDialog')?.open)return;
+  if(startupAutomatic&&!openingPreparing&&!blend?.openingPath&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
@@ -461,10 +401,7 @@ function tick(stamp){
     retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);
     retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
     try{renderer.render(scene,camera);window.refugeBoot?.preview();}finally{gpuTimer?.end();}
-    if(window.refugeBoot?.previewReady&&!reduced.matches&&!openingCache){
-      if(!cacheWaitSince)cacheWaitSince=stamp;
-      if((startupQuality.level===2&&stamp-cacheWaitSince>1200)||stamp-cacheWaitSince>12000)startOpeningCache();
-    }
+    // Keep entry and opening on one renderer; avoid video decode-to-WebGL handoff.
     return;
   }
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
@@ -547,6 +484,7 @@ function tick(stamp){
 
 }
 async function paintStartup(percent,label){
+ await window.refugeBoot?.waitForEntryUI?.();
  window.refugeBoot?.stage(percent,label);
  await new Promise(resolve=>setTimeout(resolve,16));
  if(retreat&&renderActivity.foreground){
@@ -579,11 +517,12 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=OPENING_POSE.fov;camera.updateProjectionMatrix();controls.update();
   resize();
+  await window.refugeBoot?.waitForEntryUI?.();
   retreat=await withDeadline(createRetreat(renderer,scene,text=>{console.debug('[Refuge load]',text);const p=/光照/.test(text)?60:/搭建/.test(text)?40:/布置/.test(text)?32:/树皮/.test(text)?24:16;window.refugeBoot?.stage(p,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date}),45000,'空间材质加载');
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await withDeadline(createLecture(lectureRoot,renderer,{floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
-  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');
+  await withDeadline(lecture.prepareOpening(),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -610,6 +549,8 @@ try{
   retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
+  // Compile materials before camera motion, rather than at a cached-video handoff.
+  if(renderer.compileAsync)await renderer.compileAsync(scene,camera);
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
@@ -659,7 +600,7 @@ function weatherLabel(){
  $('weatherDetail').textContent=weatherReading?`云量 ${Math.round(weatherReading.cloud*100)}% · 风速 ${weatherReading.wind} km/h · ${Number.isFinite(weatherReading.windDirection)?weatherReading.windDirection+'° 来风':'风向暂无'}（10 m 风近似驱动云层） · 降水 ${weatherReading.rain} mm · 日出 ${weatherReading.sunrise} / 日落 ${weatherReading.sunset} · 数据 ${weatherReading.time?.slice(11,16)||'—'}`:'连接不可用时使用晴朗天空预设；不会把预设当作实况。';
 }
 function formatHour(h){const m=Math.floor(h*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-const weatherService=createShanghaiWeather({onChange(value,state){if(openingCache?.waiting){openingCache.abort();openingCache=null;cacheLayer?.remove();cacheWaitSince=0;}weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
+const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
 function closeTime(){ $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false'); }
 $('timeClose').addEventListener('click',closeTime);
 $('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});

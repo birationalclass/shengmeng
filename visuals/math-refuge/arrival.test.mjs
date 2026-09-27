@@ -48,7 +48,7 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
  b.tick(.5);assert.equal(reveals,1);assert.equal(b.context.refugeBoot.previewReady,true);
  b.context.refugeBoot.preview();b.tick(2);assert.equal(reveals,1,'later frames must not restart the fade');
 }
-assert(!html.includes('arrival-dawn'),'no illustration should appear before the real sea');
+assert(html.includes('arrivalSea'),'a lightweight sea is available before architecture loads');
 
 for(const type of ['click','keydown']){
  const b=boot();let entries=0;const e={type,key:'a',target:{closest:()=>null},preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}};
@@ -69,4 +69,9 @@ for(const blocker of ['dialog','input','shortcut','composition']){
  b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.ready();b.context.refugeBoot.preview();b.tick(2);
  b.events.click({type:'click',target:{closest:()=>null},preventDefault(){},stopImmediatePropagation(){}});
  assert.equal(logins,1);assert.equal(entries,0,'A background gesture never bypasses login');
+}
+
+for(const type of ['click','keydown']){
+ const b=boot();b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.preview();b.tick(2);b.context.document.querySelector=()=>({open:true});
+ b.events[type]({type,key:'a',target:{closest:()=>null},preventDefault(){assert.fail('modal input must retain native behavior');},stopImmediatePropagation(){assert.fail('modal input must not be captured by entry');}});
 }
