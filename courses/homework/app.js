@@ -164,10 +164,10 @@ function editScore(i){selectQuestion(i);const el=$('[data-rubric="'+i+'"]');el.h
 // Only this disposable copy moves. The neighbouring book and the current
 // manuscript remain untouched until the copy has landed on the active book.
 function flipNotebook(direction){
- const next=student+direction,incoming=direction<0;
+ const next=student+direction,incoming=direction<0,returningFromLast=incoming&&student===students.length-1;
  if(next<0||next>=students.length||turnStage?.classList.contains('book-transfer-stage'))return;
- // An open notebook first closes, then the whole closed book turns left.
- if(!incoming&&bookPage!==0){showBookPage(0,()=>flipNotebook(direction));return}
+ // Close an open book before moving that whole book in either direction.
+ if((!incoming||returningFromLast)&&bookPage!==0){showBookPage(0,()=>flipNotebook(direction));return}
  const source=incoming?$('.previous-book'):$('.notebook-cover');
  if(!source||matchMedia('(prefers-reduced-motion: reduce)').matches){changeStudent(next);return}
  cancelPageTurn();togglePreferences(false);
@@ -199,6 +199,15 @@ function flipNotebook(direction){
  measure.inert=true;measure.setAttribute('aria-hidden','true');measure.append(target);root.append(measure);
  const back=captureLeaf(target);measure.remove();
  const stage=document.createElement('div');stage.className='page-turn-stage book-transfer-stage';stage.dataset.direction=incoming?'right':'left';stage.inert=true;stage.setAttribute('aria-hidden','true');
+ // Reverse the final-book straightening: the current book retreats below
+ // the incoming copy. Its own DOM stays fixed and is only temporarily hidden.
+ let underlay=null,underlayLabel=null;
+ if(returningFromLast){
+  const copy=captureLeaf($('.notebook-cover'));Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
+  copy.querySelector('.paper-footer')?.remove();
+  underlayLabel=document.createElement('span');underlayLabel.className='book-edge-label';underlayLabel.textContent='下一本 · '+students[student].name+' →';copy.firstElementChild.append(underlayLabel);
+  underlay=document.createElement('div');underlay.className='book-settle-copy book-underlay-copy';Object.assign(underlay.style,{width:w+'px',height:h+'px'});underlay.append(copy);stage.append(underlay);stage.dataset.phase='tilting';
+ }
  const flight=document.createElement('div');flight.className='book-transfer-copy';Object.assign(flight.style,{width:w+'px',height:h+'px',transformOrigin:incoming?'100% 50%':'0 50%'});
  for(const [copy,reverse] of [[front,false],[back,true]]){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
@@ -210,29 +219,31 @@ function flipNotebook(direction){
  stage.append(flight);document.body.append(stage);turnStage=stage;
  // Lift the outgoing cover's copy to expose the tilted book underneath.
  // Hide its stationary source, restoring it on completion or interruption.
- const viewport=$('#paper-viewport');if(!incoming)viewport.classList.add('book-leaving');
+ const viewport=$('#paper-viewport');if(!incoming||returningFromLast)viewport.classList.add('book-leaving');
  const restore=()=>viewport.classList.remove('book-leaving');
  let frame=0,startTime;
  const handle={cancel(){cancelAnimationFrame(frame);restore();stage.remove();}};turnAnimation=handle;
  function pose(p){
   const pivotX=start.x+(end.x-start.x)*p,pivotY=start.y+(end.y-start.y)*p;
   flight.style.transform=`translate3d(${pivotX-(incoming?w:0)}px,${pivotY-h/2}px,0) rotateZ(${-2*(incoming?1-p:p)}deg) rotateY(${(incoming?180:-180)*p}deg)`;
+  if(underlay){const t=Math.min(1,p/.75),q=t*t*(3-2*t);underlay.style.transform=`translate(${rightPivot.x}px,${rootRect.top-h/5*q}px) rotate(${12*q}deg)`;underlayLabel.style.opacity=String(q);}
  }
  function draw(now){
   if(startTime===undefined)startTime=now;
   const t=Math.min(1,(now-startTime)/1150),motion=Math.min(1,t/.94),p=(1-Math.cos(Math.PI*motion))/2;
   pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
-  else if(!incoming&&next===students.length-1){settleLastNotebook(next,stage,restore);}
-  else{restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
+  else if(!incoming){settleNextNotebook(next,stage,restore);}
+  else finishNotebookTransfer(next,stage,restore);
  }
  pose(0);frame=requestAnimationFrame(draw);
 }
-// When the outgoing book leaves the last tilted notebook, that very book
-// turns flat and slides down into the reading position before the DOM handoff.
-function settleLastNotebook(next,stage,restore){
+// The revealed notebook settles into the reading position before handoff.
+// This also handles the last book, without exposing a newly-rendered upright
+// cover abruptly at the end of the outgoing flip.
+function settleNextNotebook(next,stage,restore){
  const source=$('.next-book'),root=$('#manuscript'),rect=root.getBoundingClientRect(),scale=rect.width/root.offsetWidth;
- if(!source){restore();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();return}
+ if(!source){finishNotebookTransfer(next,stage,restore);return}
  const w=sheet.width*scale,h=sheet.height*scale,x=rect.right-w,y=rect.top;
  const copy=captureLeaf(source);Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
  const sheetCopy=document.createElement('div');sheetCopy.className='book-settle-copy';Object.assign(sheetCopy.style,{width:w+'px',height:h+'px'});sheetCopy.append(copy);stage.append(sheetCopy);
@@ -245,9 +256,23 @@ function settleLastNotebook(next,stage,restore){
   if(startTime===undefined)startTime=now;
   const t=Math.min(1,(now-startTime)/650),p=t*t*(3-2*t);pose(p);stage.dataset.progress=String(Math.round(p*100));
   if(t<1)frame=requestAnimationFrame(draw);
-  else{cleanup();turnAnimation=null;turnStage=null;changeStudent(next);stage.remove();}
+  else finishNotebookTransfer(next,stage,cleanup);
  }
  pose(0);frame=requestAnimationFrame(draw);
+}
+// Keep the exact landed pixels above the replacement DOM for two paints,
+// then retire the inert overlay. Cancelling at any point leaves live paper
+// visible and cannot schedule a late student switch.
+function finishNotebookTransfer(next,stage,restore){
+ restore();turnAnimation=null;turnStage=null;changeStudent(next);turnStage=stage;
+ let frame=0,fade=null;
+ const handle={cancel(){cancelAnimationFrame(frame);fade?.cancel();stage.remove();}};turnAnimation=handle;
+ stage.dataset.phase='handoff';
+ frame=requestAnimationFrame(()=>{frame=requestAnimationFrame(()=>{
+  if(turnAnimation!==handle)return;
+  fade=stage.animate([{opacity:1},{opacity:0}],{duration:120,easing:'ease-out',fill:'forwards'});
+  fade.finished.then(()=>{stage.remove();if(turnAnimation===handle){turnAnimation=null;turnStage=null}}).catch(()=>{});
+ });});
 }
 function changeStudent(next){if(next<0||next>=students.length)return;cancelPageTurn();student=next;active=0;bookPage=0;render();window.scrollTo({top:0,behavior:'instant'})}
 function bind(){
