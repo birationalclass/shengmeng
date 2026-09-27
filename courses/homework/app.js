@@ -212,9 +212,11 @@ function flipNotebook(direction){
  for(const [copy,reverse] of [[front,false],[back,true]]){
   Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});
   copy.firstElementChild.style.transform=`scale(${scale})`;
+  // Stack-edge shadows belong to the stationary pile, not the lifted book.
+  copy.firstElementChild.style.boxShadow='none';
   const face=document.createElement('div');face.className='book-transfer-face'+(reverse?' book-transfer-back':'');face.append(copy);flight.append(face);
  }
- const spine=document.createElement('div');spine.className='book-transfer-spine';Object.assign(spine.style,{width:Math.max(2,6*scale)+'px',left:incoming?'100%':'0'});flight.append(spine);
+ const spine=document.createElement('div');spine.className='book-transfer-spine';Object.assign(spine.style,{width:Math.max(1,2*scale)+'px',left:incoming?'100%':'0'});flight.append(spine);
  stage.style.perspectiveOrigin=`${(start.x+end.x)/2}px ${(start.y+end.y)/2}px`;
  stage.append(flight);document.body.append(stage);turnStage=stage;
  // Lift the outgoing cover's copy to expose the tilted book underneath.
@@ -238,18 +240,17 @@ function flipNotebook(direction){
  }
  pose(0);frame=requestAnimationFrame(draw);
 }
-// The revealed notebook settles into the reading position before handoff.
-// This also handles the last book, without exposing a newly-rendered upright
-// cover abruptly at the end of the outgoing flip.
+// Lift a disposable copy of the next notebook into the reading position.
+// Its original stays visible and tilted underneath until the final handoff.
 function settleNextNotebook(next,stage,restore){
  const source=$('.next-book'),root=$('#manuscript'),rect=root.getBoundingClientRect(),scale=rect.width/root.offsetWidth;
  if(!source){finishNotebookTransfer(next,stage,restore);return}
  const w=sheet.width*scale,h=sheet.height*scale,x=rect.right-w,y=rect.top;
  const copy=captureLeaf(source);Object.assign(copy.style,{left:'0',top:'0',width:w+'px',height:h+'px'});copy.firstElementChild.style.transform=`scale(${scale})`;
  const sheetCopy=document.createElement('div');sheetCopy.className='book-settle-copy';Object.assign(sheetCopy.style,{width:w+'px',height:h+'px'});sheetCopy.append(copy);stage.append(sheetCopy);
- source.style.visibility='hidden';stage.dataset.phase='straightening';
+ stage.dataset.phase='straightening';
  const label=copy.querySelector('.book-edge-label');let frame=0,startTime;
- const cleanup=()=>{source.style.visibility='';restore();};
+ const cleanup=restore;
  const handle={cancel(){cancelAnimationFrame(frame);cleanup();stage.remove();}};turnAnimation=handle;
  function pose(p){sheetCopy.style.transform=`translate(${x}px,${y-h/5*(1-p)}px) rotate(${12*(1-p)}deg)`;if(label)label.style.opacity=String(1-p);}
  function draw(now){
