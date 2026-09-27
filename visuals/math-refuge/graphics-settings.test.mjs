@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {recommendedGraphics,resolutionRatio,sunWaterVisibility,readingPixelRatio} from './graphics-settings.js';
+import {recommendedGraphics,initialGraphics,resolutionRatio,sunWaterVisibility,readingPixelRatio} from './graphics-settings.js';
 import {RenderBudget} from './render-budget.js';
 import {configureCameraInput} from './camera-input.js';
 import * as T from '../3d/vendor/three.module.js';
@@ -40,4 +40,9 @@ test('desktop boards recover readable pixels from a 75% startup budget without i
  assert.equal(readingPixelRatio(.7,{enabled:false}),.7,'Manual quality remains authoritative');
  assert.equal(readingPixelRatio(.7,{enabled:true,mobile:true}),.7,'Keep Safari mobile/safe memory limits');
  assert(readingPixelRatio(.6,{enabled:true,width:3840,height:2160,dpr:2})**2*3840*2160<=5000000.01);
+});
+
+test('each visit replaces saved performance overrides with the detected recommendation',()=>{
+ const q=initialGraphics({mobile:true},{nightStyle:'natural',sunSize:'physical'}, {quality:'ultra',resolutionScale:'150',cloudQuality:'high',shadowQuality:'4096',targetFPS:'30',adaptiveQuality:'fixed',oceanModel:'study',nightStyle:'vivid'});
+ assert.equal(q.quality,'balanced');assert.equal(q.targetFPS,'60');assert.equal(q.resolutionScale,'100');assert.equal(q.cloudQuality,'low');assert.equal(q.adaptiveQuality,'auto');assert.equal(q.oceanModel,'auto');assert.equal(q.nightStyle,'vivid');
 });

@@ -15,7 +15,7 @@ import {roundedDetailLevel} from './render-budget.js?v84-display';
 import * as THREE from 'three';
 import {createBoats} from './boats.js?v=relocated-sunrise-11';
 import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
-import {createRoomFill} from './room-fill.js?v=campus-layout-20260926';
+import {createRoomFill} from './room-fill.js?v=flush-sill-81';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
 import {createWeatherSky} from './weather-sky.js?v=arrival-light-74';
@@ -131,10 +131,10 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
         const k=(i/n-.5)*width;box([x+(axis==='x'?k:0),y+height/2,z+(axis==='x'?0:k)],[frame,height,frame],steel);
       }
     }
-    for(const h of [0,height])box([x,y+h,z],axis==='x'?[width,frame,frame]:[frame,frame,width],steel);
+    for(const h of (style.flushSill?[height]:[0,height]))box([x,y+h,z],axis==='x'?[width,frame,frame]:[frame,frame,width],steel);
     // Recessed dark seals sit inside the metal head/sill instead of more glass
     // layers (which would add costly transparent overdraw on mobile).
-    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,style.seal??.006,frame*.7]:[frame*.7,style.seal??.006,width],rubber);
+    for(const h of (style.flushSill?[height-.07]:[.07,height-.07]))box([x,y+h,z],axis==='x'?[width,style.seal??.006,frame*.7]:[frame*.7,style.seal??.006,width],rubber);
   }
   function railing(x,y,z,w,axis='x'){
     glazing(x,y,z,w,1.05,axis);

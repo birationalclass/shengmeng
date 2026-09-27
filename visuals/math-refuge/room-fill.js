@@ -25,13 +25,19 @@ export function createRoomFill(stripLighting){
             vec3 classLocal=seminarWorld-vec3(${classShift.x.toFixed(6)},0.0,${classShift.z.toFixed(6)});
             vec3 outside=max(max(vec3(49.2,0.35,-14.1)-hallLocal,hallLocal-vec3(61.2,5.35,14.1)),vec3(0.0));
             float roomMask=(1.0-smoothstep(0.0,1.1,length(outside)))*hallLightingGain;
+            // Spill through the glass tapers across the terrace instead of
+            // stopping abruptly at the sill as a dark horizontal band.
+            float terraceX=smoothstep(60.8,61.5,hallLocal.x)*(1.0-smoothstep(63.0,77.0,hallLocal.x));
+            float terraceZ=1.0-smoothstep(14.1,18.0,abs(hallLocal.z));
+            float terraceFloor=smoothstep(0.30,0.38,hallLocal.y)*(1.0-smoothstep(0.48,0.8,hallLocal.y));
+            roomMask=max(roomMask,0.7*terraceX*terraceZ*terraceFloor);
             vec3 seminarOutside=max(max(vec3(-124.5,0.35,2.8)-classLocal,classLocal-vec3(-113.0,12.55,19.8)),vec3(0.0));
             roomMask=max(roomMask,1.0-smoothstep(0.0,0.8,length(seminarOutside)));
             irradiance+=vec3(1.0,0.89,0.75)*seminarFill*roomMask;
           #endif`);
         stripLighting?.applyShader(shader);
       };
-      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v4-strip-lights';material.needsUpdate=true;
+      material.customProgramCacheKey=()=>priorKey+'-seminar-diffuse-v5-flush-sill';material.needsUpdate=true;
     }
   });}
   return {strength,hallGain,apply,setDaylight(day){strength.value=.18+(1-day)*2.1;}};

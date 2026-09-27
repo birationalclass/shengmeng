@@ -21,3 +21,10 @@ export function readingPixelRatio(base,{enabled=false,mobile=false,width=1280,he
  const target=Math.min(Math.max(1,dpr),1.5,Math.sqrt(5000000/(width*height)),maxTextureSize/Math.max(width,height));
  return Math.max(base,target);
 }
+
+// Saved performance overrides must not replace the detected recommendation.
+export function initialGraphics(device,defaults={},saved={}){
+ const appearance={};
+ for(const key of ['nightStyle','sunSize','waveStrength'])if(saved?.[key]!=null)appearance[key]=saved[key];
+ return {...defaults,...appearance,...recommendedGraphics(device),waveStrength:appearance.waveStrength??'50'};
+}

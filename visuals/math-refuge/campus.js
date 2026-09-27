@@ -139,7 +139,7 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
-      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.006/S,seal:.004/S}:undefined;
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.006/S,seal:.004/S,flushSill:true}:undefined;
       if(doors.includes(side)){
         const isHall=name==='Low sea-facing seminar hall',isHallUpper=name==='Upper seminar lounge';
         const gap=(isHall?2.0:1.45)*(isHall||isHallUpper?1.5:1)*(isHall&&side==='west'?1.4:1),pane=(width-gap)/2;

@@ -1,3 +1,4 @@
+import {OpeningCache} from './opening-cache.js?v=opening-cache-81';
 import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
 import {createMovementHud} from './movement-hud.js?v=range280-49';
@@ -19,7 +20,7 @@ const surfAudio=createSurfAudio();
 import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=sw-corner-1';
 const hallPassageMask=new HallPassageMask();
-import {GRAPHICS_PRESETS,recommendedGraphics,resolutionRatio,readingPixelRatio} from './graphics-settings.js?v=reading-pixels-76';
+import {GRAPHICS_PRESETS,recommendedGraphics,initialGraphics,resolutionRatio,readingPixelRatio} from './graphics-settings.js?v=smart-default-81';
 import {createPerformanceMonitor} from './performance-monitor.js?v=focus-pause';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
@@ -94,6 +95,7 @@ for(const type of ['pointerdown','wheel','click','dblclick'])document.addEventLi
 },{capture:true,passive:false});
 function enterScene(){
   if(entered||$('world').dataset.ready!=='true'||!window.refugeBoot?.authorized||!window.refugeBoot?.previewReady)return;
+  if(openingCache?.state!=='ready')openingCache?.abort();
   entered=true;window.refugeBoot?.entered();lastTime=performance.now();$('loading').hidden=true;$('world').dataset.entered='true';
   setTimeout(()=>{startDeferredTextures();if(!device.mobile)lecture.preloadReports();},1000);
   backgroundMusic.start();surfAudio.setEnabled(true).catch(console.error);$('surfSound').value='on';
@@ -119,6 +121,7 @@ async function replayOpening(){
     selectShot(SHOTS.findIndex(s=>s.name==='报告厅'),false,true);
     const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
     blend.openingPath=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});blend.duration=blend.openingPath.duration;blend.route=null;blend.endPosition.fromArray(end);blend.endRotation.setFromRotationMatrix(lookMatrix.lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),viewUp));
+    if(openingCache?.play())cacheLayer.hidden=false;
     $('world').focus({preventScroll:true});
     renderActivity.setEnabled(!failed);
   }finally{openingPreparing=false;}
@@ -129,6 +132,39 @@ const device=mobilePolicy({width:innerWidth,height:innerHeight,userAgent:navigat
 $('world').dataset.deviceProfile=device.mobile?'mobile':'desktop';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let renderer,composer,camera,controls,cameraInput,cameraIntent,retreat,bloom,lecture,reader,profile,nativeSamples=0,failed=false;
+let openingCache=null,cacheLayer=null,cacheContext=null,cacheSnapshot=null,cacheWaitSince=0;
+function openingCachePose(seconds){
+ const offset=buildingOffset('01B'),end=[SEAT_ROWS[1].x*BUILDING_SCALE+offset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,offset.z];
+ const path=openingArrival(OPENING_POSE.position,HALL.west*BUILDING_SCALE+offset.x,offset.z,end,{x:retreat.campus.seaPavilion.position.x,bridgeX:retreat.campus.seaPavilion.root.position.x});
+ const k=smoothProgress(Math.min(1,seconds/path.duration));
+ camera.position.fromArray(path.sample(seconds));
+ const startQ=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(new THREE.Vector3(...OPENING_POSE.position),new THREE.Vector3(...OPENING_POSE.target),new THREE.Vector3(0,1,0)));
+ const endQ=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(new THREE.Vector3(...end),new THREE.Vector3(end[0]+20,end[1],end[2]),new THREE.Vector3(0,1,0)));
+ camera.quaternion.slerpQuaternions(startQ,endQ,k);camera.fov=THREE.MathUtils.lerp(OPENING_POSE.fov,SHOTS.find(s=>s.name==='报告厅').fov,k);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+ controls.target.copy(camera.position).addScaledVector(new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion),THREE.MathUtils.lerp(new THREE.Vector3(...OPENING_POSE.position).distanceTo(new THREE.Vector3(...OPENING_POSE.target)),20,k));
+}
+function restoreCacheView(cancelled){
+ if(!cacheSnapshot)return;
+ const t=entered&&openingCache?.elapsed?openingCache.elapsed:0;
+ openingCachePose(t);retreat.ocean.material.uniforms.time.value=cacheSnapshot.wave+t;
+ retreat.setTime(cacheSnapshot.hour+t/3600,false,0,1,sceneTime.date);retreat.ocean.userData.study.update(camera,0);
+ if(blend?.openingPath)blend.elapsed=t;
+ if(profile.direct)renderer.render(scene,camera);else composer.render();
+ if(cancelled){cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;}
+}
+function startOpeningCache(){
+ cacheSnapshot={wave:retreat.ocean.material.uniforms.time.value,hour:sceneTime.hour};
+ cacheLayer=document.createElement('canvas');cacheLayer.id='openingCache';cacheLayer.setAttribute('aria-hidden','true');cacheLayer.width=renderer.domElement.width;cacheLayer.height=renderer.domElement.height;
+ Object.assign(cacheLayer.style,{position:'fixed',inset:'0',width:'100%',height:'100%',zIndex:'1',pointerEvents:'none'});document.body.append(cacheLayer);
+ cacheContext=cacheLayer.getContext('2d',{alpha:false});cacheContext.drawImage(renderer.domElement,0,0);
+ openingCache=new OpeningCache({canvas:renderer.domElement,mobile:device.mobile,onRestore:restoreCacheView,onState:(state,stats)=>{
+  $('world').dataset.openingCache=state;$('world').dataset.openingCacheStats=JSON.stringify(stats);if(state==='ready')$('world').dataset.openingCacheReady=JSON.stringify(stats);
+  const progress=$('openingCacheProgress');progress.hidden=!['preparing','recording','flushing','ready'].includes(state);progress.textContent='预渲染 '+stats.progress+'%';
+  if(['unavailable','memory-limit','decode-error'].includes(state)){cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;}
+ }});
+ startDeferredTextures();openingCache.start();
+}
+
 let shot=SHOTS.findIndex(s=>s.name==='远眺'),time=SHOTS[shot].duration*.62,lastTime=0,touring=false,free=false,blend=null,opening={started:null};
 const keys=new Set(),keyboardMotion=new KeyboardMotion(),scene=new THREE.Scene();
 const curves=SHOTS.map(s=>({
@@ -269,6 +305,7 @@ function applyShot(dt){
 }
 function resize(){
   if(!renderer)return;
+  if(openingCache?.waiting||openingCache?.state==='playing')openingCache.abort();
   profile=displayProfile(innerWidth,innerHeight,devicePixelRatio,$('quality').value,renderer.capabilities.maxSamples,nativeSamples,device);
   profile.pixelRatio=resolutionRatio(profile.pixelRatio,$('resolutionScale').value,innerWidth,innerHeight,renderer.capabilities.maxTextureSize);profile.shadows=Number($('shadowQuality').value)>0;profile.shadowSize=Number($('shadowQuality').value)||1024;
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
@@ -338,15 +375,15 @@ function setQuality(){
   scene.traverse(o=>{if(o.userData.boardSurface)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const key of ['map','normalMap','roughnessMap']){const t=m[key];if(t&&!seen.has(t)&&!t.isRenderTargetTexture){seen.add(t);if(t.anisotropy!==anisotropy){t.anisotropy=anisotropy;t.needsUpdate=true;}}}});
   rooms.forEach(room=>room.setClarity($('boardClarity').value));
 }
-function applyGraphics(values){startupAutomatic=false;device.startup=false;for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
+function markManualGraphics(){ $('world').dataset.graphicsMode='manual';$('recommendStatus').textContent='当前使用手动配置 · 下次进入仍自动检测并采用智能推荐。'; }
+function applyGraphics(values){markManualGraphics();startupAutomatic=false;device.startup=false;for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
 function detectGraphics(){
  const gl=renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');gpuName=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):'图形型号未公开';
  $('deviceReadout').textContent=gpuName.replace(/^ANGLE \(/,'').replace(/^NVIDIA, /,'').split(' (0x')[0].slice(0,100)+' · '+innerWidth+' × '+innerHeight;
  let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
- if(saved){try{if(!localStorage.getItem('refuge-wave-base-v93')){saved.waveStrength=String(Math.max(50,Number(saved.waveStrength)||50));saved.windWaves='on';localStorage.setItem('refuge-wave-base-v93','1');localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}}
- // Move the former default Ocean selection to measured auto mode once.
- try{if(!localStorage.getItem('refuge-ocean-auto-v1')){if(saved&&(!saved.oceanModel||saved.oceanModel==='study'))saved.oceanModel='auto';localStorage.setItem('refuge-ocean-auto-v1','1');if(saved)localStorage.setItem('refuge-graphics-v84',JSON.stringify(saved));}}catch{}
- desiredGraphics={...Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),...recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}),...saved,adaptiveQuality:'auto',oceanModel:'auto'};
+ desiredGraphics=initialGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize},Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),saved);
+ $('world').dataset.graphicsMode='smart';
+ $('recommendStatus').textContent='智能推荐已自动启用 · 正在以轻量画面检测，随后按实测性能逐步提升。';
  const values=startupQuality.settings(desiredGraphics);
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
@@ -388,9 +425,32 @@ function tick(stamp){
   const cpuStart=performance.now(),frameMs=lastTime?stamp-lastTime:0;
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
+  if(!entered&&openingCache?.waiting){
+    openingCache.capture((seconds,step)=>{
+      openingCachePose(seconds);retreat.setTime(cacheSnapshot.hour+seconds/3600,false,step,1,sceneTime.date);
+      retreat.ocean.material.uniforms.time.value=cacheSnapshot.wave+seconds;retreat.ocean.userData.study.update(camera,step);
+      if(profile.direct)renderer.render(scene,camera);else composer.render();
+    });
+    return;
+  }
+  if(entered&&openingCache?.state==='playing'){
+    const elapsed=openingCache.present(dt,cacheContext);
+    if(blend?.openingPath)blend.elapsed=elapsed;
+    sceneTime.update(dt);visualHour=timePresentation.update(sceneTime.hour,dt);
+    $('world').dataset.openingCacheTime=elapsed.toFixed(3);
+    $('openingHint').textContent='开场运镜 · '+openingCameraLock.remaining(stamp)+' 秒后可操作镜头';
+    if(openingCache.state==='finished'){
+      restoreCacheView(false);cacheLayer.hidden=true;cacheLayer.width=cacheLayer.height=1;
+      frameQuality.resetSamples();oceanBudget.resetSamples();renderBudget.samples.length=0;renderBudget.gpuMs=null;
+      motionSample=false;visibilityAt=-Infinity;
+    }
+    return;
+  }
+
   if(startupAutomatic&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
+    $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
     if(startupQuality.level===2)startupAutomatic=false;
   }
   frameQuality.sample(frameMs,stamp,{enabled:$('adaptiveQuality').value==='auto',targetFPS:Number($('targetFPS').value)});
@@ -400,6 +460,10 @@ function tick(stamp){
     retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);
     retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
     try{renderer.render(scene,camera);window.refugeBoot?.preview();}finally{gpuTimer?.end();}
+    if(window.refugeBoot?.previewReady&&!reduced.matches&&!openingCache){
+      if(!cacheWaitSince)cacheWaitSince=stamp;
+      if((startupQuality.level===2&&stamp-cacheWaitSince>1200)||stamp-cacheWaitSince>12000)startOpeningCache();
+    }
     return;
   }
   updateRoomVisibility(stamp);updateRenderBudget(stamp);
@@ -573,13 +637,13 @@ function showSettings(open){
 $('settingsButton').addEventListener('click',()=>showSettings($('settings').hidden));
 $('quality').addEventListener('change',()=>{if(retreat&&GRAPHICS_PRESETS[$('quality').value])applyGraphics(GRAPHICS_PRESETS[$('quality').value]);});
 $('settingsClose').addEventListener('click',()=>showSettings(false));
-$('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('recommendStatus').textContent='已应用推荐 · 60 帧预算、文字保护、自动调整渲染精度。';});
-for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){startupAutomatic=false;device.startup=false;$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
+$('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize}));$('world').dataset.graphicsMode='smart';$('recommendStatus').textContent='智能推荐已应用 · 60 帧预算、文字保护、自动调整渲染精度。';});
+for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){markManualGraphics();startupAutomatic=false;device.startup=false;$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
 $('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textContent=$('waveStrength').value+'%';});
 $('resolutionScale').addEventListener('input',()=>{$('resolutionValue').textContent=$('resolutionScale').value+'%';});
 $('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setClarity($('boardClarity').value));try{localStorage.setItem('refuge-board-clarity',$('boardClarity').value);}catch{}});
 try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
-$('adaptiveQuality').addEventListener('change',()=>{if(retreat){startupAutomatic=false;device.startup=false;frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
+$('adaptiveQuality').addEventListener('change',()=>{if(retreat){markManualGraphics();startupAutomatic=false;device.startup=false;frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
 $('boardFollowDelay').addEventListener('input',event=>{boardFollow.setDelay(event.target.value);$('boardFollowDelayValue').textContent=boardFollow.delay+' 秒';});
 $('boardWritingStyle').addEventListener('change',async event=>{const select=event.target,prior=boardWritingStyle;boardWritingStyle=select.value;select.disabled=true;$('boardWritingStyleStatus').textContent='正在切换书写样式…';try{await Promise.all(rooms.map(room=>room.setWritingStyle(boardWritingStyle)));try{localStorage.setItem('refuge-board-writing-style',boardWritingStyle);}catch{}$('boardWritingStyleStatus').textContent=boardWritingStyle==='refined'?'字母、数字及已支持符号按人工笔顺书写；中文和其余符号保留原字形。':'Marck Script（舒展）· 原来的非笔顺显现方式。';}catch(error){boardWritingStyle=prior;select.value=prior;await Promise.allSettled(rooms.map(room=>room.setWritingStyle(prior)));$('boardWritingStyleStatus').textContent='切换未完成，已恢复原样式。';console.error(error);}finally{select.disabled=false;}});
 $('writingSpeed').addEventListener('input',event=>{const value=Number(event.target.value);lecture?.setWritingSpeed(value);$('writingSpeedValue').textContent=value+' ×';});
@@ -594,7 +658,7 @@ function weatherLabel(){
  $('weatherDetail').textContent=weatherReading?`云量 ${Math.round(weatherReading.cloud*100)}% · 风速 ${weatherReading.wind} km/h · ${Number.isFinite(weatherReading.windDirection)?weatherReading.windDirection+'° 来风':'风向暂无'}（10 m 风近似驱动云层） · 降水 ${weatherReading.rain} mm · 日出 ${weatherReading.sunrise} / 日落 ${weatherReading.sunset} · 数据 ${weatherReading.time?.slice(11,16)||'—'}`:'连接不可用时使用晴朗天空预设；不会把预设当作实况。';
 }
 function formatHour(h){const m=Math.floor(h*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
+const weatherService=createShanghaiWeather({onChange(value,state){if(openingCache?.waiting){openingCache.abort();openingCache=null;cacheLayer?.remove();cacheWaitSince=0;}weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
 function closeTime(){ $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false'); }
 $('timeClose').addEventListener('click',closeTime);
 $('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
