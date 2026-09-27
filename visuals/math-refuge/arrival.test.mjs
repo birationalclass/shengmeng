@@ -3,12 +3,12 @@ import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const html=readFileSync(new URL('./index.html',import.meta.url),'utf8');
 const script=html.match(/<script id="refugeBootstrap">([\s\S]*?)<\/script>/)[1].replace(/import\('\.\/app\.js[^']*'\)\.catch\(fail\);/,'');
-function boot(attempt=0){
+function boot(attempt=0,viewport){
  const nodes=new Map(),storage=new Map([['refuge-startup-retry',String(attempt)]]),events={};
  let now=0,interval,destination,nextTimer=0;const timers=new Map();
  const classes=()=>{const values=new Set(['arriving','awaiting-scene']);return {add(...items){items.forEach(x=>values.add(x));},remove(...items){items.forEach(x=>values.delete(x));},toggle(x,on){if(on)values.add(x);else values.delete(x);},contains:x=>values.has(x)};};
- const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',classList:classes(),dataset:{},style:{},handlers:{},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
- const context={Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,querySelector:()=>null,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:(f,ms)=>{const id=++nextTimer;timers.set(id,{f,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
+ const get=id=>{if(!nodes.has(id))nodes.set(id,{hidden:id==='error',classList:classes(),dataset:{},style:{},handlers:{},getAttribute(k){return this[k]??(id==='loadFill'&&k==='d'?html.match(/id="loadFill"[^>]* d="([^"]+)"/)[1]:null);},setAttribute(k,v){this[k]=v;},addEventListener(k,fn){this.handlers[k]=fn;}});return nodes.get(id);};
+ const context={innerWidth:viewport?.width,innerHeight:viewport?.height,Event:class {constructor(type){this.type=type;}},dispatchEvent:e=>events[e.type]?.(e),document:{hidden:false,hasFocus:()=>true,querySelector:()=>null,body:{classList:classes()},getElementById:get,addEventListener(k,f){events[k]=f;}},navigator:{onLine:true},location:{href:'https://example.test/?view=pavilion',replace(url){destination=url;}},sessionStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},console:{error(){}},Date:{now:()=>now},URL,setTimeout:(f,ms)=>{const id=++nextTimer;timers.set(id,{f,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:f=>interval=f,addEventListener:(k,f)=>events[k]=f};
  context.window=context;vm.runInNewContext(script,context);
  return {context,get,storage,events,tick(seconds){for(let i=0;i<seconds*4;i++){now+=250;interval();for(const [id,timer] of timers)if(timer.at<=now){timers.delete(id);timer.f();}}},click(id){get(id).handlers.click.call(get(id));},get destination(){return destination;},timeout:()=>timers.get(context.refugeLoadingTimer)?.f()};
 }
@@ -79,7 +79,18 @@ for(const type of ['click','keydown']){
 {
  const b=boot();b.context.refugeBoot.stage(45,'海岸');b.context.refugeBoot.stage(20,'旧回调');
  assert.equal(b.get('loadProgress')['aria-valuenow'],'45','out-of-order callbacks cannot reverse progress');
- assert.equal(b.get('loadFill').style.strokeDashoffset,'55');
+
  b.context.refugeBoot.preview();assert(b.context.document.body.classList.contains('awaiting-scene'),'keep projected poster until final scene is ready');
  b.context.refugeBoot.stage(NaN,'invalid');assert.equal(b.get('loadProgress')['aria-valuenow'],'45');
+}
+
+for(const viewport of [{width:960,height:540},{width:1920,height:1080},{width:390,height:844}]){
+ const b=boot(0,viewport);const clip=b.get('coastClip');
+ b.context.refugeBoot.stage(10,'');const tenth=parseFloat(clip.style.width);
+ b.context.refugeBoot.stage(50,'');const half=parseFloat(clip.style.width);
+ b.context.refugeBoot.stage(100,'');const full=parseFloat(clip.style.width);
+ assert(tenth>0&&tenth<full*.12,'10% cannot illuminate the right side');
+ assert(Math.abs(half/full-.5)<.01,'half progress ends at the middle of the visible coast');
+ assert(full>0&&half>tenth&&full>half);
+ assert(html.includes('<g clip-path="url(#coastLoaded)"><path id="loadFill"'),'base gold shares the sweep clipping boundary');
 }
