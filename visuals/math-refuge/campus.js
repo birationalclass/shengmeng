@@ -139,11 +139,11 @@ export function createCampus(scene,{section=()=>{},box,soft,beam,floor,glazing,r
     const y=base+DECK_Y,h=clear/S,roof=base+DECK_Y+h+.20;
     if(ownFloor)floor(base,w,d,cx,cz);if(ownRoof)floor(roof,w+.55,d+.55,cx,cz);
     for(const [side,x,z,width,axis] of [['south',cx,cz+d/2,w,'x'],['north',cx,cz-d/2,w,'x'],['west',cx-w/2,cz,d,'z'],['east',cx+w/2,cz,d,'z']]){
-      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.012/S,seal:.008/S}:undefined;
+      const style=name==='Low sea-facing seminar hall'&&side==='east'?{panels:1,frame:.006/S,seal:.004/S}:undefined;
       if(doors.includes(side)){
         const isHall=name==='Low sea-facing seminar hall',isHallUpper=name==='Upper seminar lounge';
         const gap=(isHall?2.0:1.45)*(isHall||isHallUpper?1.5:1)*(isHall&&side==='west'?1.4:1),pane=(width-gap)/2;
-        const fixedStyle=isHall?{panels:1,frame:.012/S,seal:.005/S,seamless:side==='west'}:style;
+        const fixedStyle=isHall?{panels:1,frame:.006/S,seal:.003/S,seamless:side==='west'}:style;
         for(const sign of [-1,1])glazing(x+(axis==='x'?sign*(gap+pane)/2:0),y,z+(axis==='z'?sign*(gap+pane)/2:0),pane,h,axis,fixedStyle);
         if(isHall){
           automaticDoors.add(scene,{x,y,z,width:gap,height:h,axis,name:side,frameMaterial:doorFrame});

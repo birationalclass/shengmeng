@@ -112,7 +112,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     }
   }
   function glazing(x,y,z,width,height,axis='x',style={}){
-    const frame=style.frame||.075,n=style.panels||Math.ceil(width/(style.spacing||2));
+    const frame=style.frame??.022,n=style.panels||Math.ceil(width/(style.spacing||2));
     if(style.panels){
       const gap=style.seal||.006,pane=width/n;
       for(let i=0;i<n;i++){
@@ -133,7 +133,7 @@ export async function createRetreat(renderer,scene,report,device={}){
     for(const h of [0,height])box([x,y+h,z],axis==='x'?[width,frame,frame]:[frame,frame,width],steel);
     // Recessed dark seals sit inside the metal head/sill instead of more glass
     // layers (which would add costly transparent overdraw on mobile).
-    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,style.seal||.022,frame*.7]:[frame*.7,style.seal||.022,width],rubber);
+    for(const h of [.07,height-.07])box([x,y+h,z],axis==='x'?[width,style.seal??.006,frame*.7]:[frame*.7,style.seal??.006,width],rubber);
   }
   function railing(x,y,z,w,axis='x'){
     glazing(x,y,z,w,1.05,axis);

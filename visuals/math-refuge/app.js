@@ -661,7 +661,9 @@ function syncFullscreen(){const active=Boolean(document.fullscreenElement||docum
 document.addEventListener('fullscreenchange',syncFullscreen);document.addEventListener('webkitfullscreenchange',syncFullscreen);
 function immersive(hide){document.body.classList.toggle('immersive',hide);$('showUI').hidden=!hide;if(hide){closeTime();$('settings').hidden=true;$('settingsButton').setAttribute('aria-expanded','false');}}
 $('hideUI').addEventListener('click',()=>immersive(true));$('showUI').addEventListener('click',()=>immersive(false));
+window.addEventListener('refuge-social-focus',()=>{keys.clear();keyboardMotion.reset();});
 window.addEventListener('keydown',event=>{
+  if(document.getElementById('socialDialog')?.open)return;
   if(/INPUT|SELECT|TEXTAREA/.test(event.target.tagName))return;
   const key=event.key.toLowerCase();
   if(cameraLocked()&&[' ','x','w','a','s','d','q','e','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(key)){event.preventDefault();return;}
