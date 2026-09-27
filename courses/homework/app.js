@@ -92,9 +92,11 @@ function animateBookTurn(front,back,stationary,rect,forward,openingSpread=null,o
   const band=document.createElement('div');band.className='turn-band';band.style.width=bandWidth+'px';band.style.height=h+'px';
   for(const [source,isBack] of [[front,false],[back,true]]){
    const face=document.createElement('div');face.className='turn-face'+(isBack?' turn-face-back':'');face.style.width=(bandWidth+.6)+'px';
-   // Preserve the cover's external paper edge while clipping horizontally.
-   face.style.bottom=-Math.max(3,3*w/sheet.width)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
+   // A turning cover is green card alone; the page-block edge stays below.
+   const coverFace=source.firstElementChild.matches('.notebook-cover,.notebook-inner-cover');
+   face.style.bottom=coverFace?'0':-Math.max(3,3*w/sheet.width)+'px';face.style.transformOrigin=(bandWidth/2)+'px 50%';
    const copy=source.cloneNode(true),offset=(forward!==isBack)?i*bandWidth:w-(i+1)*bandWidth;
+   if(coverFace){copy.classList.add('turn-cover-only');copy.firstElementChild.style.boxShadow=source.firstElementChild.classList.contains('notebook-cover')?'inset 7px 0 12px -10px #1c372f80':'inset -7px 0 12px -10px #1c372f80';}
    Object.assign(copy.style,{left:-offset+'px',top:'0',width:w+'px',height:h+'px',boxShadow:'none'});face.append(copy);
    const shade=document.createElement('div');shade.className='turn-shading';face.append(shade);band.append(face);
   }
