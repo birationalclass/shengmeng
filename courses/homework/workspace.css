@@ -24,3 +24,26 @@ body.has-homework-session{background:#f5f4ee}body.has-homework-session #paper-vi
 @media(max-width:650px){.work-header{height:70px;padding:0 22px}.work-shell{min-height:calc(100dvh - 70px)}.work-launcher{width:280px;display:grid;grid-template-columns:1fr 1fr;gap:22px;top:42%}#homework-workspace .work-icon-button,#homework-workspace #work-upload{width:128px;height:136px;border-radius:25px}#work-upload svg{width:50px;height:50px}#homework-workspace #work-refresh{width:64px;height:64px;justify-self:center}.work-main{padding:18px 16px 55px}.is-reading .work-launcher{display:flex;gap:8px;max-width:95vw}.work-status{font-size:11px}#work-library{padding:28px 20px}.work-icon-button::after{font-size:10px;letter-spacing:1px}#work-batches,#work-submissions{display:grid}}
 @media(prefers-reduced-motion:reduce){#homework-workspace .work-icon-button,.work-icon-button::after{transition:none}}
 @media print{body{background:white!important}body>*:not(#homework-workspace){display:none!important}.work-header,.work-launcher,.work-sidebar,.work-status,.work-view-tabs,.work-review,.work-document-header>button{display:none!important}.work-shell{display:block}.work-main{padding:0}.work-reading{display:block}.work-page{break-after:page;border:0;box-shadow:none}.work-feedback{position:static;max-height:none;break-before:page}.work-document-header{margin:0 0 12px}.work-typed{min-height:0}.work-scan{print-color-adjust:exact;-webkit-print-color-adjust:exact}.work-comment{break-inside:avoid}}
+/* Photographic study desk upload entrance. */
+#homework-workspace:not(.is-reading) .work-header{position:relative;z-index:2;background:linear-gradient(#fff9ec55,transparent)}
+#homework-workspace:not(.is-reading) .work-wordmark{color:#3f4134;text-shadow:0 1px 12px #fff8e4}
+#homework-workspace:not(.is-reading) .work-shell{position:static}
+#homework-workspace .work-desk{position:fixed;inset:0;width:100%;height:100dvh;border:0;border-radius:0;padding:0;background:#cbb28e url('./assets/study-desk.png') center center/cover no-repeat;display:block;cursor:pointer;color:#343a30;text-align:center;isolation:isolate}
+.work-desk::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#fff9ed0a,#fff4db12 70%,#20180e1a);z-index:-1;transition:background .3s}
+.work-desk-copy{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:max-content;max-width:90%;padding:28px 42px;border:1px solid transparent;border-radius:15px;transition:background .25s,border-color .25s,transform .25s}
+.work-desk-title{display:block;font-family:'Songti SC','STSong',serif;font-size:clamp(27px,2.8vw,44px);font-weight:400;letter-spacing:.14em;line-height:1.6;text-shadow:0 1px 18px #ffedc8}
+.work-desk-hint{display:block;margin-top:17px;font-size:12px;letter-spacing:.16em;color:#4b4c3c;text-shadow:0 1px 10px #fff1cf}
+.work-desk:hover .work-desk-copy{background:#fffaed14;border-color:#fff8e126}
+.work-desk.is-dragging .work-desk-copy{background:#fffbedb8;border-color:#fffef3;transform:translate(-50%,-50%) scale(1.04);box-shadow:0 20px 70px #44372222}
+#homework-workspace .work-desk:focus-visible{outline:0;box-shadow:inset 0 0 0 4px #f9f5d2}
+#homework-workspace:not(.is-reading) .work-launcher{position:fixed;left:50%;top:auto;bottom:28px;transform:translateX(-50%);z-index:3;display:flex;width:fit-content;gap:14px;padding:9px 15px;border:1px solid #fff7df66;border-radius:23px;background:#fffaebc9;backdrop-filter:blur(16px);box-shadow:0 8px 35px #3d302b1a}
+#homework-workspace:not(.is-reading) .work-launcher .work-icon-button,#homework-workspace:not(.is-reading) #work-refresh{width:44px;height:44px;border:0;border-radius:12px;background:transparent;box-shadow:none;color:#536048;margin:0}
+#homework-workspace:not(.is-reading) #work-upload{display:none}
+#homework-workspace:not(.is-reading) .work-icon-button svg{width:26px;height:26px}
+#homework-workspace:not(.is-reading) .work-icon-button:hover{transform:none;background:#ffffff60}
+#homework-workspace:not(.is-reading) .work-icon-button::after{top:auto;bottom:calc(100% + 24px);padding:5px 10px;border-radius:5px;background:#fff9ebed;color:#46533c}
+#homework-workspace:not(.is-reading) .needs-setup::before{top:4px;right:4px}
+#homework-workspace:not(.is-reading) .work-status:not(:empty){position:relative;z-index:2;width:fit-content;background:#fff9eee8;border-radius:8px;padding:9px 18px;box-shadow:0 3px 15px #443a2010}
+@media(max-width:650px){.work-desk-copy{top:54%;padding:22px 15px;width:90%}.work-desk-title{font-size:28px;letter-spacing:.08em}.work-desk-hint{font-size:11px;letter-spacing:.05em}#homework-workspace:not(.is-reading) .work-launcher{bottom:max(22px,env(safe-area-inset-bottom));gap:13px}.work-desk{background-position:50% center!important}}
+@media(prefers-reduced-motion:reduce){.work-desk-copy,.work-desk::before{transition:none}}
+@media print{.work-desk{display:none!important}}

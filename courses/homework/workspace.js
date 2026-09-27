@@ -28,7 +28,16 @@ function frame(){
  }
  empty();
 }
-function empty(){$('#work-content').innerHTML='';root.classList.remove('is-reading');}
+function empty(){
+ root.classList.remove('is-reading');
+ $('#work-content').innerHTML=`<button class="work-desk" id="work-desk" type="button" aria-label="${teacher()?'点击或拖放扫描作业到书桌上传':'打开我的作业'}"><span class="work-desk-copy"><span class="work-desk-title">${teacher()?'把作业，放在这里':'你的作业，在这里'}</span><span class="work-desk-hint">${teacher()?'点击桌面，或拖入 PDF / 照片':'点击桌面，翻开作业'}</span></span></button>`;
+ const desk=$('#work-desk');let dragDepth=0;
+ desk.onclick=()=>{if(loading)return;if(teacher())$('#work-files').click();else $('#work-library').showModal();};
+ desk.ondragenter=event=>{if(!event.dataTransfer.types.includes('Files'))return;event.preventDefault();if(teacher()&&!loading){dragDepth++;desk.classList.add('is-dragging');desk.querySelector('.work-desk-hint').textContent='松手，将作业放上书桌';}};
+ desk.ondragover=event=>{event.preventDefault();event.dataTransfer.dropEffect=teacher()&&!loading?'copy':'none';};
+ desk.ondragleave=()=>{if(--dragDepth<=0){dragDepth=0;desk.classList.remove('is-dragging');desk.querySelector('.work-desk-hint').textContent=teacher()?'点击桌面，或拖入 PDF / 照片':'点击桌面，翻开作业';}};
+ desk.ondrop=event=>{event.preventDefault();dragDepth=0;desk.classList.remove('is-dragging');desk.querySelector('.work-desk-hint').textContent=teacher()?'点击桌面，或拖入 PDF / 照片':'点击桌面，翻开作业';if(!teacher()||loading)return;const files=[...event.dataTransfer.files];if(files.length)run(()=>upload(files));};
+}
 function lists(){
  if(teacher()){
   $('#work-batches').innerHTML=batches.length?batches.map(b=>`<button class="work-list-item ${batch?.id===b.id?'selected':''}" data-batch="${esc(b.id)}"><strong>${esc(b.title)}</strong><span>${b.pages} 页 · ${esc(states[b.status]||b.status)}</span></button>`).join(''):'<p class="work-small">还没有上传。</p>';
