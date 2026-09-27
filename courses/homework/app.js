@@ -147,16 +147,23 @@ function beginCornerLift(button){
   }
   shadow.style.opacity=String(p);
  }
- state.move=target=>{if(state.target===target&&state.frame)return;cancelAnimationFrame(state.frame);state.target=target;const from=state.progress,start=performance.now(),duration=motionEnabled()?(target?450:600)/motionRate():0;
-  const tick=now=>{if(cornerLift!==state)return;const t=duration?Math.min(1,(now-start)/duration):1,e=t*t*(3-2*t);state.progress=from+(target-from)*e;draw(state.progress);if(t<1)state.frame=requestAnimationFrame(tick);else{state.frame=0;if(!target)clearCornerLift()}};state.frame=requestAnimationFrame(tick);
+ state.move=target=>{if(state.target===target&&(state.frame||state.progress===target))return;cancelAnimationFrame(state.frame);state.target=target;const from=state.progress,duration=motionEnabled()?600*Math.abs(target-from)/motionRate():0;
+  let start;
+  const tick=now=>{if(cornerLift!==state)return;start??=now;const t=duration?Math.min(1,(now-start)/duration):1,e=t*t*(3-2*t);state.progress=from+(target-from)*e;draw(state.progress);if(t<1)state.frame=requestAnimationFrame(tick);else{state.frame=0;if(!target)clearCornerLift()}};state.frame=requestAnimationFrame(()=>{state.frame=requestAnimationFrame(tick)});
  };
  draw(0);state.move(1);
 }
-document.addEventListener('pointermove',e=>{if(!cornerLift)return;const r=cornerLift.button.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)relaxCornerLift()},{passive:true});
+document.addEventListener('pointermove',e=>{
+ if(e.pointerType==='touch'||notebookInteractionLocked||turnStage)return;
+ // Keep the target stable when the lifted paper changes pointer hit-testing.
+ const hit=$$('.page-edge-turn').find(button=>{if(button.disabled||!button.getClientRects().length)return false;const r=button.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom});
+ const control=e.target.closest?.('button,input,textarea,select,a');
+ if(hit&&(!control||control===hit))beginCornerLift(hit);else relaxCornerLift();
+},{passive:true});
 window.addEventListener('resize',clearCornerLift);
 window.addEventListener('scroll',clearCornerLift,{passive:true});
 window.addEventListener('blur',relaxCornerLift);
-document.addEventListener('pointerout',e=>{if(!e.relatedTarget)relaxCornerLift()});
+document.documentElement.addEventListener('pointerleave',relaxCornerLift);
 
 // A flexible leaf is drawn as joined vertical bands. The reverse side carries
 // the destination page, while the old facing page stays beneath it until covered.
