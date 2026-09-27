@@ -1,7 +1,7 @@
 const local=/^(localhost|127\.0\.0\.1)$/.test(location.hostname),testMode=local?new URLSearchParams(location.search).get('social'):null;
 const API=testMode==='local'?'http://127.0.0.1:8783':'https://birationalclass-d3fw2j6t76955af0-1493130792.ap-shanghai.app.tcloudbase.com'+(testMode==='test'?'/refuge-test':'/refuge');
 const $=id=>document.getElementById(id);
-let generation=0,user=null,mode='login',busy=false,chatOpen=false,pollTimer,fadeTimer,latest=0,pending=null;
+let generation=0,user=null,mode='login',busy=false,chatOpen=false,pollTimer,fadeTimer,latest=0;
 const seen=new Set();
 async function request(path,data){
  const response=await fetch(API+'/api/'+path,{method:data?'POST':'GET',credentials:'include',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(12000)});
@@ -13,7 +13,7 @@ function setMode(value){mode=value;$('socialAuthTitle').textContent=value==='reg
 function openAccount(){window.dispatchEvent(new Event('refuge-social-focus'));$('socialDialog').showModal();setMode(mode);if(!user)$('socialName').focus();else $('socialClose').focus();}
 function closeAccount(){$('socialDialog').close();$('world').focus({preventScroll:true});}
 function activity(){clearTimeout(fadeTimer);$('socialChat').classList.add('recent');fadeTimer=setTimeout(()=>{if(!chatOpen)$('socialChat').classList.remove('recent');},9000);}
-function openChat(){if($('world').dataset.entered!=='true')return;if(!user){openAccount();return;}chatOpen=true;window.dispatchEvent(new Event('refuge-social-focus'));$('socialChat').classList.add('expanded');$('socialComposer').hidden=false;$('socialChatToggle').setAttribute('aria-expanded','true');$('socialChatToggle').hidden=true;$('socialInput').focus();activity();poll();}
+function openChat(){if($('world').dataset.entered!=='true')return;if(!user){openAccount();return;}if(chatOpen){$('socialInput').focus();return;}const anchor=$('socialChatToggle').getBoundingClientRect();chatOpen=true;window.dispatchEvent(new Event('refuge-social-focus'));$('socialChat').classList.add('expanded');$('socialComposer').hidden=false;place(anchor.left,anchor.top);$('socialChatToggle').setAttribute('aria-expanded','true');$('socialChatToggle').hidden=true;$('socialInput').focus();activity();poll();}
 function positionChatIcon(x,y){const icon=$('socialChatToggle');icon.style.left=Math.max(8,Math.min(innerWidth-42,x))+'px';icon.style.top=Math.max(8,Math.min(innerHeight-42,y))+'px';}
 function closeChat(){if(chatOpen){const r=$('socialChat').getBoundingClientRect();positionChatIcon(r.left,r.top);}chatOpen=false;$('socialChat').classList.remove('expanded');$('socialComposer').hidden=true;$('socialChatToggle').setAttribute('aria-expanded','false');$('socialChatToggle').hidden=false;$('world').focus({preventScroll:true});activity();}
 function addMessages(messages,initial=false){for(const item of messages){if(seen.has(item.id))continue;seen.add(item.id);const row=document.createElement('p'),name=document.createElement('b'),text=document.createElement('span'),time=document.createElement('time');time.dateTime=new Date(item.createdAt).toISOString();time.textContent=new Date(item.createdAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});time.title=new Date(item.createdAt).toLocaleString('zh-CN');row.className=item.mine?'own':'';name.textContent=item.name;text.textContent=item.text;row.append(time,name,text);$('socialMessages').append(row);if(!initial&&item.createdAt>latest)activity();latest=Math.max(latest,item.createdAt);}while($('socialMessages').children.length>50)$('socialMessages').firstElementChild.remove();$('socialMessages').scrollTop=$('socialMessages').scrollHeight;}
@@ -31,8 +31,17 @@ $('socialClose').onclick=closeAccount;$('socialGuest').onclick=closeAccount;$('s
 $('socialReveal').onclick=()=>{const show=$('socialPassword').type==='password';$('socialPassword').type=show?'text':'password';$('socialReveal').textContent=show?'隐藏':'显示';$('socialReveal').setAttribute('aria-pressed',String(show));};
 $('socialAuthForm').onsubmit=async event=>{event.preventDefault();if(busy)return;busy=true;$('socialSubmit').disabled=true;$('socialAuthStatus').textContent='连接中…';try{const result=await request(mode,{name:$('socialName').value,password:$('socialPassword').value,remember:$('socialRemember').checked});const verified=await request('session').catch(error=>{if(error.status===401){setMode('login');throw new Error('浏览器未保留登录 Cookie，请允许此站点 Cookie 后登录');}throw error;});setUser(verified.user||result.user);$('socialPassword').value='';$('socialAuthStatus').textContent=mode==='register'?'已创建账号并登录':'已登录';closeAccount();}catch(error){$('socialAuthStatus').textContent=message(error);}finally{busy=false;$('socialSubmit').disabled=false;}};
 $('socialLogout').onclick=async()=>{try{await request('logout',{});setUser(null);closeChat();setMode('login');$('socialName').focus();}catch(error){$('socialAuthStatus').textContent=message(error);}};
-$('socialChatToggle').onclick=()=>chatOpen?closeChat():openChat();$('socialChatClose').onclick=closeChat;
-$('socialComposer').onsubmit=async event=>{event.preventDefault();const text=$('socialInput').value.trim();if(!text||$('socialSend').disabled)return;$('socialSend').disabled=true;pending=pending?.text===text?pending:{id:crypto.randomUUID(),text};try{const result=await request('messages',pending);addMessages([result.message]);$('socialInput').value='';pending=null;$('socialChatStatus').textContent='';}catch(error){$('socialChatStatus').textContent=message(error);}finally{$('socialSend').disabled=false;$('socialInput').focus();}};
+$('socialChatToggle').onclick=event=>{if(bubbleMoved&&event.detail!==0){bubbleMoved=false;return;}chatOpen?closeChat():openChat();};$('socialChatClose').onclick=closeChat;
+function sendOptimistic(text){
+ const payload={id:crypto.randomUUID(),text},version=generation,row=document.createElement('p'),time=document.createElement('time'),name=document.createElement('b'),body=document.createElement('span'),status=document.createElement('button');
+ row.className='own social-pending';time.dateTime=new Date().toISOString();time.title='本机时间 · 等待服务器确认';time.textContent=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',hour12:false});name.textContent=user.name;body.textContent=text;status.type='button';row.append(time,name,body,status);$('socialMessages').append(row);$('socialMessages').scrollTop=$('socialMessages').scrollHeight;activity();
+ async function deliver(){status.disabled=true;status.className='social-sending';status.textContent='';status.setAttribute('aria-label','发送中');status.title='发送中';
+ try{const result=await request('messages',payload);if(version!==generation)return;row.remove();addMessages([result.message]);}
+ catch(error){if(version!==generation)return;status.disabled=false;status.className='social-send-retry';status.textContent='重试';status.setAttribute('aria-label','发送失败，点击重试');status.title=message(error);}
+ }
+ status.onclick=deliver;deliver();
+}
+$('socialComposer').onsubmit=event=>{event.preventDefault();const text=$('socialInput').value.trim();if(!text||!user)return;$('socialInput').value='';$('socialInput').focus();sendOptimistic(text);};
 window.addEventListener('keydown',event=>{if(event.isComposing||$('socialDialog').open)return;const typing=/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)||event.target.isContentEditable;if(chatOpen&&event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();closeChat();}else if(event.key==='Enter'&&!typing&&!event.target.closest('button,a,dialog')){event.preventDefault();event.stopImmediatePropagation();openChat();}},true);
 $('socialDialog').addEventListener('cancel',()=>{$('world').focus({preventScroll:true});});
 document.addEventListener('visibilitychange',()=>{clearTimeout(pollTimer);if(!document.hidden)poll();});
@@ -48,7 +57,7 @@ handle.addEventListener('pointerdown',event=>{if(event.target.closest('button')|
 handle.addEventListener('pointermove',event=>{if(drag)place(event.clientX-drag.dx,event.clientY-drag.dy);});
 function endDrag(event){if(!drag)return;drag=null;if(handle.hasPointerCapture(event.pointerId))handle.releasePointerCapture(event.pointerId);const r=chat.getBoundingClientRect();try{localStorage.setItem('refuge-chat-position',JSON.stringify({x:r.left,y:r.top}));}catch{}}
 handle.addEventListener('pointerup',endDrag);handle.addEventListener('pointercancel',endDrag);
-addEventListener('resize',()=>{const icon=$('socialChatToggle');positionChatIcon(parseFloat(icon.style.left),parseFloat(icon.style.top));if(chat.style.top){const r=chat.getBoundingClientRect();place(r.left,r.top);}});
+addEventListener('resize',()=>{const icon=$('socialChatToggle');positionChatIcon(parseFloat(icon.style.left),parseFloat(icon.style.top));if(chatOpen){const r=chat.getBoundingClientRect();place(r.left,r.top);}});
 
 let adminNext=null,adminBusy=false;
 async function loadAccounts(more=false){
@@ -62,3 +71,11 @@ async function loadAccounts(more=false){
 }
 $('socialAdminOpen').onclick=()=>{$('socialAdminPanel').hidden=!$('socialAdminPanel').hidden;if(!$('socialAdminPanel').hidden)loadAccounts();};
 $('socialAdminRefresh').onclick=()=>loadAccounts();$('socialAdminMore').onclick=()=>loadAccounts(true);
+
+// The compact bubble shares the expanded window's saved anchor.
+const bubble=$('socialChatToggle');let bubbleDrag=null,bubbleMoved=false;
+bubble.style.touchAction='none';
+bubble.addEventListener('pointerdown',event=>{if(event.button!==0)return;const r=bubble.getBoundingClientRect();bubbleMoved=false;bubbleDrag={x:event.clientX,y:event.clientY,left:r.left,top:r.top};bubble.setPointerCapture(event.pointerId);});
+bubble.addEventListener('pointermove',event=>{if(!bubbleDrag)return;const dx=event.clientX-bubbleDrag.x,dy=event.clientY-bubbleDrag.y;if(!bubbleMoved&&Math.hypot(dx,dy)<4)return;bubbleMoved=true;positionChatIcon(bubbleDrag.left+dx,bubbleDrag.top+dy);});
+function finishBubbleDrag(event){if(!bubbleDrag)return;bubbleDrag=null;if(bubble.hasPointerCapture(event.pointerId))bubble.releasePointerCapture(event.pointerId);if(bubbleMoved){const r=bubble.getBoundingClientRect();try{localStorage.setItem('refuge-chat-position',JSON.stringify({x:r.left,y:r.top}));}catch{}}}
+bubble.addEventListener('pointerup',finishBubbleDrag);bubble.addEventListener('pointercancel',finishBubbleDrag);
