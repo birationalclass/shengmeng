@@ -333,3 +333,11 @@ html{background:#eae9e3}
 /* Spread the lift along the edge while keeping the bend shallow. */
 .page-edge-turn::after{width:128px;height:48px;background:linear-gradient(160deg,transparent 35%,#34412c10 66%,transparent 88%)}
 .page-edge-turn.book-previous::after{translate:-128px 0}
+
+/* Animate the shared fold progress itself, including the return to flat. */
+@property --curl{syntax:"<number>";inherits:true;initial-value:0}
+#manuscript[data-document-style=notebook] .page-edge-turn{transition:--curl var(--corner-return-duration,600ms) cubic-bezier(.4,0,.2,1)}
+#manuscript .page-edge-turn::before,#manuscript .page-edge-turn::after{transition:none}
+#manuscript .scan-page:has(>.page-edge-turn){transition:clip-path var(--corner-return-duration,600ms) cubic-bezier(.4,0,.2,1)}
+@media(hover:hover){#manuscript[data-document-style=notebook] .page-edge-turn:hover:not(:disabled){transition-duration:var(--highlight-duration,450ms)}}
+@media(prefers-reduced-motion:reduce){#manuscript[data-document-style=notebook] .page-edge-turn{transition:none}}
