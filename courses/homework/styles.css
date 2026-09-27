@@ -318,14 +318,18 @@ html{background:#eae9e3}
 .adjacent-book,#manuscript .notebook-cover,#manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{background-size:720px 1020px;background-repeat:repeat}
 
 /* Remove the flat corner as the same piece of paper folds inward. */
-#manuscript .scan-page:has(>.page-edge-turn){--cut-left:0px;--cut-right:0px;clip-path:polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - var(--cut-right)),calc(100% - var(--cut-right)) calc(100% + 20px),var(--cut-left) calc(100% + 20px),-20px calc(100% - var(--cut-left)));transition:clip-path var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1)}
-#manuscript .scan-page:has(>.book-previous:focus-visible:not(:disabled)){--cut-left:76px}
-#manuscript .scan-page:has(>.book-next:focus-visible:not(:disabled)){--cut-right:76px}
+#manuscript .scan-page:has(>.page-edge-turn){--cut-left:0px;--cut-right:0px;clip-path:polygon(-20px -20px,calc(100% + 20px) -20px,calc(100% + 20px) calc(100% - var(--cut-right) * .32),calc(100% - var(--cut-right)) calc(100% + 20px),var(--cut-left) calc(100% + 20px),-20px calc(100% - var(--cut-left) * .32));transition:clip-path var(--highlight-duration,450ms) cubic-bezier(.22,1,.36,1)}
+#manuscript .scan-page:has(>.book-previous:focus-visible:not(:disabled)){--cut-left:140px}
+#manuscript .scan-page:has(>.book-next:focus-visible:not(:disabled)){--cut-right:140px}
 @media(hover:hover){
- #manuscript .scan-page:has(>.book-previous:hover:not(:disabled)){--cut-left:76px}
- #manuscript .scan-page:has(>.book-next:hover:not(:disabled)){--cut-right:76px}
+ #manuscript .scan-page:has(>.book-previous:hover:not(:disabled)){--cut-left:140px}
+ #manuscript .scan-page:has(>.book-next:hover:not(:disabled)){--cut-right:140px}
 }
-.page-edge-turn::before{bottom:0;right:0;transform-origin:100% 100%;clip-path:path("M 64 0 Q 61 37 0 64 L 0 0 Z");transform:translate(calc(-5px * var(--curl)),calc(-5px * var(--curl))) scale(var(--curl));border-radius:0;background:linear-gradient(135deg,var(--curl-light),var(--curl-paper) 48%,var(--curl-shadow) 95%)}
-.page-edge-turn.book-previous::before{left:0;right:auto;translate:-64px 0;transform:scaleX(-1) translate(calc(-5px * var(--curl)),calc(-5px * var(--curl))) scale(var(--curl))}
+.page-edge-turn::before{bottom:0;right:0;transform-origin:100% 100%;width:112px;height:40px;clip-path:path("M 112 0 Q 105 25 0 40 L 0 0 Z");transform:translate(calc(-2px * var(--curl)),calc(-2px * var(--curl))) scale(var(--curl));border-radius:0;background:linear-gradient(135deg,var(--curl-light),var(--curl-light) 25%,var(--curl-paper) 78%,var(--curl-shadow) 130%)}
+.page-edge-turn.book-previous::before{left:0;right:auto;translate:-112px 0;transform:scaleX(-1) translate(calc(-2px * var(--curl)),calc(-2px * var(--curl))) scale(var(--curl))}
 .notebook-interaction-locked #manuscript .scan-page{--cut-left:0px!important;--cut-right:0px!important}
 @media(prefers-reduced-motion:reduce){#manuscript .scan-page:has(>.page-edge-turn){transition:none}}
+
+/* Spread the lift along the edge while keeping the bend shallow. */
+.page-edge-turn::after{width:128px;height:48px;background:linear-gradient(160deg,transparent 35%,#34412c10 66%,transparent 88%)}
+.page-edge-turn.book-previous::after{translate:-128px 0}
