@@ -1,4 +1,4 @@
-import {contact} from './dynamics.mjs?v=motion-5';
+import {contact} from './dynamics.mjs?v=motion-6';
 const TAU=Math.PI*2;
 export class Scene {
  constructor(canvas,onPick){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.nodes=[];this.active=null;this.time=0;this.enabled=true;this.scores=new Map();this.resize=new ResizeObserver(()=>this.measure());this.resize.observe(canvas);canvas.addEventListener('pointerup',e=>{if(!this.enabled)return;const box=canvas.getBoundingClientRect();const n=this.nodes.find(n=>Math.hypot(n.x-e.clientX+box.left,n.y-e.clientY+box.top)<this.radius+7);if(n)onPick(n.id);});this.measure();}
@@ -17,9 +17,9 @@ export class Scene {
    n.vx+=ax*dt;n.vy+=ay*dt;const damp=Math.exp(-.12*dt);n.vx*=damp;n.vy*=damp;n.x+=n.vx*dt;n.y+=n.vy*dt;
    const top=r+Math.min(130,this.h*.26),bottom=Math.max(top+2*r,this.h-r-25);if(n.x<r+8){n.x=r+8;n.vx=Math.abs(n.vx);}if(n.x>this.w-r-8){n.x=this.w-r-8;n.vx=-Math.abs(n.vx);}if(n.y<top){n.y=top;n.vy=Math.abs(n.vy);}if(n.y>bottom){n.y=bottom;n.vy=-Math.abs(n.vy);}
   }
-  for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],b=live[j];if(a.parent!==undefined||b.parent!==undefined)continue;const hit=contact(a,b,r);if(hit){a.release=this.time+.5;b.release=this.time+.5;}if(hit&&advance&&op&&!op.hit&&((a.id===op.a&&b.id===op.b)||(a.id===op.b&&b.id===op.a)))this.birth(op,(a.x+b.x)/2,(a.y+b.y)/2);}
+  for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],b=live[j];if(a.parent!==undefined||b.parent!==undefined)continue;const size=n=>{if(n.born===undefined)return 1;const t=Math.min(1,Math.max(0,(this.time-n.born)/3.2));return .035+.965*t*t*(3-2*t);};const hit=contact(a,b,r*(size(a)+size(b))/2);if(hit){a.release=this.time+.5;b.release=this.time+.5;}if(hit&&advance&&op&&!op.hit&&((a.id===op.a&&b.id===op.b)||(a.id===op.b&&b.id===op.a)))this.birth(op,(a.x+b.x)/2,(a.y+b.y)/2);}
   if(advance&&op&&!op.hit&&op.a===op.b&&op.elapsed>1.2&&this.nodes[op.a].parent===undefined){const a=this.nodes[op.a];this.birth(op,a.x,a.y);}
-  for(const child of live.filter(n=>n.parent!==undefined).sort((a,b)=>a.born-b.born)){const parent=this.nodes[child.parent],t=Math.min(1,(this.time-child.born)/3.2),scale=.035+.965*t*t*(3-2*t),distance=r+r*scale*.98;child.x=parent.x+Math.cos(child.budAngle)*distance;child.y=parent.y+Math.sin(child.budAngle)*distance;child.vx=parent.vx;child.vy=parent.vy;if(t>=1){child.vx+=Math.cos(child.budAngle)*18;child.vy+=Math.sin(child.budAngle)*18;delete child.parent;}}
+  for(const child of live.filter(n=>n.parent!==undefined).sort((a,b)=>a.born-b.born)){const parent=this.nodes[child.parent],t=Math.min(1,(this.time-child.born)/3.2),scale=.035+.965*t*t*(3-2*t),distance=r+r*scale*.98;child.x=parent.x+Math.cos(child.budAngle)*distance;child.y=parent.y+Math.sin(child.budAngle)*distance;child.vx=parent.vx;child.vy=parent.vy;if(scale>=1/3){child.vx+=Math.cos(child.budAngle)*18;child.vy+=Math.sin(child.budAngle)*18;delete child.parent;}}
   if(op&&op.hit&&op.elapsed>2.8&&(op.a!==op.b||!op.fresh||this.nodes[op.c].parent===undefined)){this.active=null;return op;}return null;
  }
  birth(op,x,y){op.hit=true;op.elapsed=1.7;op.x=x;op.y=y;if(op.fresh){const n=this.nodes[op.c];n.x=x;n.y=y;n.vx=0;n.vy=0;n.born=this.time;if(op.a===op.b){n.parent=op.a;const parent=this.nodes[op.a];n.budAngle=Math.atan2(this.h*.55-parent.y,this.w/2-parent.x);n.x=parent.x+Math.cos(n.budAngle)*this.radius;n.y=parent.y+Math.sin(n.budAngle)*this.radius;}this.present.add(op.c);}this.onBirth?.(op);}
