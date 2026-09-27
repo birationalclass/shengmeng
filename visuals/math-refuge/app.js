@@ -1,3 +1,4 @@
+import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
 import {StartupQuality} from './startup-quality.js?v=arrival-real-72';
 import {WALK_MENU,installCoastWalks,walkProgress} from './coast-walks.js?v=coast-walk-16';
@@ -37,7 +38,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=opening-smooth-111';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=render-stable-112';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -276,7 +277,7 @@ function resize(){
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
   // One backing-store resize, rather than reallocating once for DPR and again for size.
-  renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio);
+  if(renderer.domElement.width!==Math.floor(innerWidth*profile.pixelRatio)||renderer.domElement.height!==Math.floor(innerHeight*profile.pixelRatio)||renderer.getPixelRatio()!==profile.pixelRatio)renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio);
   if(composer){
     // Dispose on sample-count changes: changing .samples alone does not rebuild
     // an already allocated WebGL framebuffer at the same dimensions.
@@ -300,10 +301,10 @@ function updateRenderBudget(stamp){
   const protectReading=reading&&$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   const settings=frameQuality.settings({reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
-  if(activeCloudQuality!==settings.cloud){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
+  if(activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
-  if(renderer.shadowMap.enabled!==shadows){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
-  if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
+  if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
+  if(shadows&&retreat.sun.shadow.mapSize.x!==settings.shadow&&(renderChangeGate.ready||settings.shadow<retreat.sun.shadow.mapSize.x)){retreat.sun.shadow.mapSize.set(settings.shadow,settings.shadow);retreat.sun.shadow.map?.dispose();retreat.sun.shadow.map=null;renderer.shadowMap.needsUpdate=true;}
   const water=retreat.ocean.material.uniforms;
   water.waterDetail.value=!settings.simpleWater&&$('waterDetail').value==='high'?1:0;
   water.reflectionDetail.value=!settings.simpleWater&&$('waterReflection').value==='full'?1:0;
@@ -312,7 +313,7 @@ function updateRenderBudget(stamp){
   const targetFPS=frameQuality.stats?.target||Math.min(Number($('targetFPS').value),60);
   const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS,protectText:true});
   const scale=Math.min(gpuScale,settings.scale);
-  if(scale!==renderScale||Math.abs(renderer.getPixelRatio()-pixelRatio*scale)>.0001){
+  if((renderChangeGate.ready||scale<renderScale)&&(scale!==renderScale||Math.abs(renderer.getPixelRatio()-pixelRatio*scale)>.0001)){
     renderScale=scale;renderer.setDrawingBufferSize(innerWidth,innerHeight,pixelRatio*scale);
     if(composer&&!profile.direct)composer.setPixelRatio(pixelRatio*scale);
     updateQualityReadout();
@@ -323,7 +324,7 @@ function updateRenderBudget(stamp){
 
 }
 const graphicsKeys=['oceanModel','quality','resolutionScale','shadowQuality','cloudQuality','textureFiltering','waterDetail','targetFPS','adaptiveQuality','rainEffects','starEffects','geometryDetail','windWaves','waveStrength','waterReflection','sunReflection','nightStyle','meteorEffects','sunSize'];
-let gpuName='',activeCloudQuality='off',desiredGraphics=null;const startupQuality=new StartupQuality();let startupAutomatic=true;
+let gpuName='',activeCloudQuality='off',desiredGraphics=null;const startupQuality=new StartupQuality(),renderChangeGate=new RenderChangeGate();let startupAutomatic=true;
 function saveGraphics(){try{localStorage.setItem('refuge-graphics-v84',JSON.stringify(Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value]))));}catch{}}
 function setQuality(){
   frameQuality.reset();resize();if(!retreat)return;
@@ -356,9 +357,8 @@ const oceanBudget=new OceanBudget();
 const oceanNames=['01 曲线海岸 · 简化细节','01 曲线海岸 · 标准','01 曲线海岸 · 完整'];
 function applyOceanQuality(){
  const mode=$('oceanModel').value;
- // In teaching rooms the surrounding sea remains visible, but surf simulation rests.
- const eligible=teachingRoomAt(camera.position)<0;
- const level=mode==='auto'&&frameQuality.level>0?0:mode==='auto'&&!eligible?Math.min(1,oceanBudget.level):oceanBudget.level;
+ // Room boundaries do not change shader variants; the measured budget owns the tier.
+ const level=mode==='auto'&&frameQuality.level>0?0:oceanBudget.level;
  const water=retreat.ocean.material.uniforms;water.oceanLite.value=level===0?1:0;
  retreat.ocean.userData.study.setQuality(level);
  const text=(mode==='auto'?'自动 · ':'手动 · ')+oceanNames[level];
@@ -390,7 +390,9 @@ function tick(stamp){
   const dt=Math.min(.05,frameMs/1000);lastTime=stamp;
   if(!renderActivity.running||!renderActivity.foreground)return;
   if(entered&&document.getElementById('socialDialog')?.open)return;
-  if(startupAutomatic&&entered&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
+  renderChangeGate.sample(camera.position.toArray(),camera.quaternion.toArray(),dt,!entered||Boolean(blend)||touring||keys.size>0);
+  if(!renderChangeGate.ready)startupQuality.resetSamples();
+  if(startupAutomatic&&renderChangeGate.ready&&entered&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
     const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
@@ -476,7 +478,7 @@ function tick(stamp){
   movementHud.update(motionSample?Math.hypot(motionVelocity.x,motionVelocity.z):0,dt,!remaining&&!blend&&!touring&&!(SHOTS[shot].walk&&!free)&&!(SHOTS[shot].lecture&&lecture?.followEnabled&&boardFollow.following),Math.max(0,camera.position.y-(retreat?.ocean.material.uniforms.oceanLevel.value??0)));
   previousPosition.copy(camera.position);previousVelocity.copy(motionVelocity);motionSample=true;
   if(!reduced.matches){retreat.ocean.material.uniforms.time.value+=dt;retreat.landscape.update(dt);retreat.fleet.update(dt,retreat.ocean.material.uniforms.oceanLevel.value);}
-  oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
+  oceanBudget.sample(frameMs,stamp,{active:!document.hidden,eligible:renderChangeGate.ready&&teachingRoomAt(camera.position)<0,gpuMs:renderBudget.gpuMs});applyOceanQuality();
   retreat.ocean.userData.study.update(camera,dt);
   $('coastReadout').textContent='曲线坐标 ('+$('world').dataset.coastCoordinates+') km · 当前潮位 '+$('world').dataset.coastTide+' m';surfAudio.update(camera.position,retreat.ocean.material.uniforms.time.value,dt);
   try{if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
