@@ -219,7 +219,7 @@ html{background:#eae9e3}
 .previous-book-layer{left:calc(-125px - 3px * var(--stack-depth));top:calc(9px + 5px * var(--stack-depth));z-index:calc(3 - var(--stack-depth));pointer-events:none}
 .back-cover-binding{position:absolute;right:14px;top:0;bottom:0;width:3px;background:#38543d17;box-shadow:5px 0 9px #243f361a}
 .book-edge-label{position:absolute;left:34px;bottom:24px;font-size:17px;letter-spacing:.1em;color:#3d5847}
-.next-book{left:var(--stack-next-left);top:var(--stack-next-top);transform:rotate(var(--stack-next-angle,5deg));transform-origin:bottom left;background-color:#a7bd9d;color:#294b40}
+.next-book,.next-book-layer{left:var(--stack-next-left);top:var(--stack-next-top);transform:rotate(var(--stack-next-angle,5deg));transform-origin:bottom left;background-color:#a7bd9d;color:#294b40}
 .next-book .book-edge-label{left:auto;right:35px;top:25px;bottom:auto}
 .stack-cover-title{position:absolute;inset:120px 0 auto;font-size:36px;letter-spacing:.2em}
 .stack-cover-title b{display:block;margin-top:100px;font-size:56px;font-weight:400;letter-spacing:.4em}
@@ -261,10 +261,10 @@ html{background:#eae9e3}
 @media(hover:hover){#manuscript .notebook-cover[data-open-notebook]:hover{filter:brightness(1.035)}}
 
 /* The moving front cover and its final live surface share the same paint. */
-.next-book,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;overflow:visible;box-shadow:inset 7px 0 12px -10px #1c372f80,2px 2px 0 #d8dfcc,3px 3px 0 #778b70}
+.next-book,.next-book-layer,#manuscript[data-document-style=notebook][data-reading] .notebook-cover:nth-child(n){border-radius:2px 5px 5px 2px;background-color:#a7bd9d;color:#294b40;overflow:visible;box-shadow:inset 7px 0 12px -10px #1c372f80,2px 2px 0 #d8dfcc,3px 3px 0 #778b70}
 
 /* Preserve the pale page edge, closing only its left endpoint with the spine. */
-.notebook-cover::after,.next-book::after{content:"";position:absolute;left:0;bottom:-3px;width:5px;height:9px;background:linear-gradient(180deg,#a7bd9d00 0%,#a7bd9d 35%,#91a687 75%,#778b70 100%);box-shadow:inset 1px 0 1px #62785b55;border-radius:0 0 0 2px;pointer-events:none;z-index:1}
+.notebook-cover::after,.next-book::after,.next-book-layer::after{content:"";position:absolute;left:0;bottom:-3px;width:5px;height:9px;background:linear-gradient(180deg,#a7bd9d00 0%,#a7bd9d 35%,#91a687 75%,#778b70 100%);box-shadow:inset 1px 0 1px #62785b55;border-radius:0 0 0 2px;pointer-events:none;z-index:1}
 
 /* The reverse of the front cover is green stock, preceding scan page one. */
 #manuscript[data-document-style=notebook][data-reading] .notebook-inner-cover{height:calc(var(--sheet-height,1020px) + 3px);--paper-pattern:none;background-color:#a7bd9d;background-image:repeating-linear-gradient(7deg,#ffffff05 0 1px,transparent 1px 4px);color:#294b40;overflow:visible;box-shadow:inset -7px 0 12px -10px #1c372f80}
@@ -278,3 +278,7 @@ html{background:#eae9e3}
 
 /* The unfolded binding becomes the flat rim, rather than a second end cap. */
 .notebook-inner-cover::after{display:none}
+
+/* Right pile mirrors the capped three-slot rule; only its top book moves. */
+.next-book{z-index:3}
+.next-book-layer{left:calc(var(--stack-next-left) + 3px * var(--stack-depth));top:calc(var(--stack-next-top) + 5px * var(--stack-depth));z-index:calc(3 - var(--stack-depth));pointer-events:none}

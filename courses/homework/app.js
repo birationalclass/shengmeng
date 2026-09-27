@@ -2,8 +2,8 @@ import {renderNotebook,renderCoverPrint} from './notebook.js?v=20260927-inner-co
 import {getDemoQuestion,getDemoGrade} from './demo-grader.js';
 const $=(s,root=document)=>root.querySelector(s), $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-// Synthetic identities for browsing five notebooks; no real student data.
-const students=Array.from({length:5},(_,i)=>({name:'测试同学 '+String(i+1).padStart(2,'0'),id:'DEMO-'+String(i+1).padStart(3,'0')}));
+// Synthetic identities for browsing eight notebooks; no real student data.
+const students=Array.from({length:8},(_,i)=>({name:'测试同学 '+String(i+1).padStart(2,'0'),id:'DEMO-'+String(i+1).padStart(3,'0')}));
 const subjects={university:'大学数学',secondary:'中学数学',general:'通用作业'};
 const panelFonts={sans:'简洁体',song:'宋体',hand:'手写体'};
 const paperBackgrounds={plain:'空白',ruled:'横线本',grid:'方格本',tian:'田字格'};
@@ -39,7 +39,8 @@ function render(){const s=students[student];const qs=questions();
  window.dispatchEvent(new Event('homework-tools-ready'));
  $('#reading-footer').innerHTML=`<div class="paper-controls"><label class="student-label">${s.name} · <input id="book-jump" type="number" min="1" max="${students.length}" value="${student+1}" aria-label="跳到第几本作业" title="输入本数并回车，可测试第 ${students.length-1}→${students.length} 本"> / ${students.length}</label><button class="icon-button" data-action="toggle-marks" id="marks" aria-label="隐藏批注" aria-pressed="${settings.marks}" data-tip="隐藏批注">${icons.marks}</button><button class="icon-button" data-action="toggle-zoom" id="zoom" aria-label="全屏" aria-pressed="${Boolean(document.fullscreenElement)}" data-tip="全屏">${icons.zoom}</button></div><span id="reader-status" role="status"></span>`;
  const previousLayers=Array.from({length:Math.min(2,Math.max(0,student-1))},(_,i)=>i+1).reverse().map(depth=>`<div class="adjacent-book previous-book-layer" style="--stack-depth:${depth}" aria-hidden="true"><span class="back-cover-binding"></span></div>`).join('');
- $('#notebook-stack').innerHTML=`${previousLayers}${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span></button>`:''}`;
+ const nextLayers=Array.from({length:Math.min(2,Math.max(0,students.length-student-2))},(_,i)=>i+1).reverse().map(depth=>`<div class="adjacent-book next-book-layer" style="--stack-depth:${depth}" aria-hidden="true"><span class="stack-cover-preview">${renderCoverPrint(students[student+1+depth],getDemoQuestion(settings.subject,student+1+depth,0).paper)}</span></div>`).join('');
+ $('#notebook-stack').innerHTML=`${nextLayers}${previousLayers}${student>0?`<button class="adjacent-book previous-book" data-action="previous-student" aria-label="上一本：${students[student-1].name}，封底"><span class="back-cover-binding" aria-hidden="true"></span></button>`:''}${student<students.length-1?`<button class="adjacent-book next-book" data-action="next-student" aria-label="下一本：${students[student+1].name}"><span class="stack-cover-preview" aria-hidden="true">${renderCoverPrint(students[student+1],getDemoQuestion(settings.subject,student+1,0).paper)}</span></button>`:''}`;
  $('#settings-root').innerHTML=prefMarkup();
  settingsObserver?.disconnect();settingsObserver=new ResizeObserver(syncSettingsMask);settingsObserver.observe($('#preferences'));
  $('#paper-viewport').dataset.lastBook=String(student===students.length-1);
