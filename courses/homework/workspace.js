@@ -111,10 +111,10 @@ async function* scanPages(files){
   if(file.size>30*1024*1024)throw new Error('单个文件请控制在 30 MB 以内。');
   if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')){
    const pdfjs=await import('./vendor/pdf.mjs');pdfjs.GlobalWorkerOptions.workerSrc=new URL('./vendor/pdf.worker.mjs',import.meta.url).href;
-   const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,enableXfa:false}).promise;
-   try{if(count+pdf.numPages>20)throw new Error('每批最多 20 页，请拆分文件后上传。');
+   const loadingTask=pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,enableXfa:false});
+   try{const pdf=await loadingTask.promise;if(count+pdf.numPages>20)throw new Error('每批最多 20 页，请拆分文件后上传。');
     for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),base=page.getViewport({scale:1}),viewport=page.getViewport({scale:1800/Math.max(base.width,base.height)}),canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;count++;yield await jpeg(canvas);page.cleanup();}
-   }finally{await pdf.destroy();}
+   }finally{await loadingTask.destroy();}
   }else{
    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('请选择 PDF、JPEG、PNG 或 WebP 文件。');
    if(++count>20)throw new Error('每批最多 20 页。');const bitmap=await createImageBitmap(file);
