@@ -26,7 +26,7 @@
     // Removing the browsing context cancels its requests and disposes timers,
     // event listeners, canvas contexts and section data. Do not cache windows.
     loadTicket++;if(frame){frame.remove();frame=null;}
-    loadedSection='';
+    loadedSection='';window.CourseHealth?.ready('lesson-frame');window.CourseHealth?.refresh();
   }
   document.querySelector('.course-title-panel').addEventListener('wheel',event=>{if(view!=='course'||event.ctrlKey||document.querySelector('dialog[open]'))return;const unit=event.deltaMode===1?20:event.deltaMode===2?courseScroller.clientHeight:1;courseScroller.scrollBy({top:event.deltaY*unit,behavior:'instant'});event.preventDefault();},{passive:false});
   function scrollCourse(hash,behavior='smooth'){const target=document.getElementById(hash);if(!target)return;const top=courseScroller.contains(target)?courseScroller.scrollTop+target.getBoundingClientRect().top-courseScroller.getBoundingClientRect().top-20:0;courseScroller.scrollTo({top,behavior});window.scrollTo(0,0);}
@@ -70,7 +70,7 @@
     if(view==='lesson'){
       window.CourseOpeningExit?.();window.CourseOpeningBoot?.dismiss();
       if(!chapter.ready){placeholder();reveal(null);}
-      else if(!frame){loading.show();loadedSection=section;frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260927-card-magic-v1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
+      else if(!frame){loading.show();loadedSection=section;window.CourseHealth?.expect('lesson-frame',`§${section} 内嵌课件`,`Section ${section} embedded lesson`,65000);frame=document.createElement('iframe');frame.style.visibility='hidden';frame.id='lecture-frame';frame.allow='fullscreen';frame.src=`${window.GroupSections?.[section]?'lesson-groups':'lesson-1'}/?v=20260928-health1&embedded=1&section=${section}&lang=${en()?'en':'zh'}#${anchor}`;content.append(frame);}
       else frame?.contentWindow?.postMessage({type:'course-navigate',section,anchor},location.origin);
     }else {reveal(null);requestAnimationFrame(()=>{if(next.courseHash)scrollCourse(next.courseHash,'instant');else courseScroller.scrollTo({top:courseScroll,behavior:'instant'});});}labels();
   }
@@ -85,7 +85,7 @@
   $('portal-fullscreen').onclick=async()=>{if(phone.matches)return;try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen?.();}catch{}labels();};
   document.addEventListener('fullscreenchange',labels);phone.addEventListener('change',()=>{if(phone.matches&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});labels();});
   window.addEventListener('popstate',fromURL);
-  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;const data=event.data;if(data?.section===section){if(data.type==='lesson-progress')loading.update(data.percent,data.zh,data.en);if(data.type==='lesson-ready')reveal(frame);if(data.type==='lesson-error')loading.fail();}if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
+  window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==frame?.contentWindow)return;const data=event.data;if(data?.section===section){if(data.type==='lesson-progress'){loading.update(data.percent,data.zh,data.en);window.CourseHealth?.expect('lesson-frame',`§${section} 内嵌课件`,`Section ${section} embedded lesson`,65000);}if(data.type==='lesson-ready'){window.CourseHealth?.ready('lesson-frame');reveal(frame);}if(data.type==='lesson-error'){window.CourseHealth?.ready('lesson-frame');loading.fail();}}if(data?.type==='lesson-location'&&data.section===section){anchor=data.anchor;const url=new URL(location.href);url.hash=anchor;history.replaceState(null,'',url);}if(data?.type==='course-route')navigate({view:data.view,section:data.section,anchor:data.anchor});});
   window.addEventListener('course-language',()=>{labels();frame?.contentWindow?.postMessage({type:'course-language',language:en()?'en':'zh'},location.origin);});
   function upcomingLabel(){
     document.querySelectorAll('#schedule tr.upcoming .focus').forEach(cell=>{
@@ -95,4 +95,5 @@
   }
   if(document.readyState==='complete')upcomingLabel();else document.addEventListener('DOMContentLoaded',upcomingLabel,{once:true});
   labels();fromURL();
+  window.CourseHealth?.appReady();
 })();

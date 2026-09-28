@@ -52,3 +52,4 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden){playing=fa
 // Prevent leftover focus from accidentally activating buttons with lesson keys.
 for(const type of ['keydown','keyup'])document.addEventListener(type,e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('button,a')&&!e.ctrlKey&&!e.metaKey&&!e.altKey)e.preventDefault();});
 let previous=performance.now();function frame(now){const dt=Math.min((now-previous)/1000,.04);previous=now;const finished=scene.tick(playing?dt*speed:engine&&!engine.done?0:dt,playing,dt);scene.draw();if(finished)completed();requestAnimationFrame(frame);}reset();requestAnimationFrame(frame);
+window.CourseHealth?.appReady();

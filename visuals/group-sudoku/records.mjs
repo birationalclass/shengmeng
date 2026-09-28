@@ -91,7 +91,7 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
  const connection=connectionFactory({run:async({signal})=>{
   const warmup=takeWarmup(),health=warmup?await warmup:await api('/api/health',{signal});if(signal.aborted)return;if(!health?.ready)throw Error('Server not ready');
   await connectPlayer(signal);await flush(signal);
- },onState:state=>{connectionState=state;sync();}});
+ },onState:state=>{connectionState=state;sync();if(state==='retrying'||state==='offline')window.CourseHealth?.report('D-SERVER','通关服务器暂未连接；可继续游玩，记录尚未确认同步。','Records server is not connected. You may keep playing; sync is not yet confirmed.',{key:'sudoku-server',severity:'warning'});else if(state==='connected')window.CourseHealth?.clear('sudoku-server');}});
  window.addEventListener('online',connection.wake);window.addEventListener('offline',connection.wake);
  document.addEventListener('visibilitychange',connection.wake);
  window.addEventListener('pagehide',connection.pause);
@@ -115,8 +115,8 @@ export function createCompletionRecords({getCampaign,t,storage,onLogin,onOpen=()
  }
  async function loadRecords(){
   const run=++recordsRun; text('recordsStatus','正在读取服务器记录…','Loading records…');$('recordsRefresh').disabled=true;
-  try{const data=await api(adminToken?'/api/admin/records':'/api/records',{token:adminToken});if(run!==recordsRun)return;displayRecords(data.records);text('recordsStatus',`已从服务器更新，共 ${data.records.length} 条。`,`Updated: ${data.records.length} record(s).`);}
-  catch(e){if(run!==recordsRun)return;rows=[];$('recordsList').replaceChildren();$('recordsStatus').textContent=e.message;if(e.status===401){adminToken='';$('recordsAdminActions').hidden=true;}}
+  try{const data=await api(adminToken?'/api/admin/records':'/api/records',{token:adminToken});if(run!==recordsRun)return;displayRecords(data.records);text('recordsStatus',`已从服务器更新，共 ${data.records.length} 条。`,`Updated: ${data.records.length} record(s).`);window.CourseHealth?.clear('sudoku-records');}
+  catch(e){if(run!==recordsRun)return;rows=[];$('recordsList').replaceChildren();$('recordsStatus').textContent=e.message;window.CourseHealth?.report('D-RECORDS','通关记录读取失败；请在记录窗口点击刷新。','Completion records could not load. Use Refresh in the records window.',{key:'sudoku-records',severity:'warning'});if(e.status===401){adminToken='';$('recordsAdminActions').hidden=true;}}
   finally{$('recordsRefresh').disabled=false;}
  }
  $('recordsToggle').onclick=()=>{onOpen();sync();history.showModal();mobileHeight();loadRecords();clearInterval(refreshTimer);refreshTimer=setInterval(()=>{if(history.open&&!document.hidden)loadRecords();},30000);};

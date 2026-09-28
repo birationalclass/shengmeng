@@ -114,3 +114,4 @@ document.addEventListener('keydown',e=>{
 window.addEventListener('hashchange',()=>{const i=LESSONS.findIndex(l=>`#${l.id}`===location.hash);if(i>=0)selectLesson(i,{hash:false});});
 applyPreferences();selectLesson(Math.max(0,LESSONS.findIndex(l=>`#${l.id}`===location.hash)),{hash:false});loadAlgorithm("R R R R");
 if(!window.katex)window.addEventListener('load',()=>renderMath($('lesson')),{once:true});
+window.CourseHealth?.appReady();
