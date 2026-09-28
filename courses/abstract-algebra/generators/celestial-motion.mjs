@@ -10,11 +10,11 @@ export const PLANET_PERIODS={
  'ice-planet':{reference:'Neptune',rotationHours:16,orbitDays:60190}
 };
 export function stableRandom(seed){let x=((seed+1)*9301+49297)%233280;return x/233280;}
-export function planetMotion(type,seed,slot=0){
+export function planetMotion(type,seed,slot=0,hostSeed=seed){
  const p=PLANET_PERIODS[type],variation=.86+stableRandom(seed*17+13)*.28;
  const spinSeconds=(6+Math.log(p.rotationHours/9.9)*4)*variation;
  const orbitSeconds=(9+Math.log1p(p.orbitDays/365.25)*2.8)*variation*(1+slot*.1);
- return {spinSeconds,orbitSeconds,spin:4*Math.PI/spinSeconds,orbit:2*Math.PI/orbitSeconds,inclination:(stableRandom(seed*43+7)-.5)*Math.PI/2,node:stableRandom(seed*61+3)*Math.PI*2};
+ return {spinSeconds,orbitSeconds,spin:4*Math.PI/spinSeconds,orbit:2*Math.PI/orbitSeconds,inclination:(stableRandom(hostSeed*43+7)-.5)*Math.PI/6,node:stableRandom(hostSeed*61+3)*Math.PI*2};
 }
 export function starMotion(seed){const radius=5+stableRandom(seed*11+9)*3;return {spinTilt:stableRandom(seed*29+5)*Math.PI/3,spinNode:stableRandom(seed*37+11)*Math.PI*2,spinPhase:stableRandom(seed*23+17)*Math.PI*2,radius,phase:stableRandom(seed*7+41)*Math.PI*2,orbit:2*Math.PI/(19+radius*3),inclination:0};}
 

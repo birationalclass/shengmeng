@@ -1,8 +1,8 @@
 import {mountBalanceControls} from './galaxy-balance.mjs?v=balance-2';
-import {mountCosmicControls} from './cosmic-controls.mjs?v=oblique-53';
-import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=oblique-53';
-import {GalaxyScene} from './galaxy-scene.mjs?v=oblique-53';
-import {enterGalaxy,pauseLaboratory} from './app.mjs?v=oblique-53';
+import {mountCosmicControls} from './cosmic-controls.mjs?v=depth-55';
+import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=depth-55';
+import {GalaxyScene} from './galaxy-scene.mjs?v=depth-55';
+import {enterGalaxy,pauseLaboratory} from './app.mjs?v=depth-55';
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
 import {RECORDS_CONFIG} from '../../../visuals/group-sudoku/records-config.mjs?v=records6-oneline';
 const $=id=>document.getElementById(id),read=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
@@ -31,7 +31,7 @@ function render(){
  const definitions={C4:['模 4 的剩余类构成加法群。一个生成元，四次相加回到单位元。','Addition of residue classes modulo 4. One generator; four additions return to the identity.'],S3:['三个对象的全部置换，以复合为运算。最小的非交换群。','All permutations of three objects under composition. The smallest non-abelian group.'],V4:['ℤ/2ℤ × ℤ/2ℤ。三个非单位元的平方都等于单位元。','ℤ/2ℤ × ℤ/2ℤ. Each of its three nonidentity elements squares to the identity.'],D4:['正方形的对称群：四种旋转、四种反射，以复合为运算。','The symmetries of a square: four rotations and four reflections, composed as transformations.'],Q8:['{±1, ±i, ±j, ±k}，i² = j² = k² = ijk = −1。四元数乘法不交换。','{±1, ±i, ±j, ±k}, with i² = j² = k² = ijk = −1. Quaternion multiplication is noncommutative.'],S4:['S₄ 是可解群，因此一般四次方程可用根式求解。','S₄ is solvable, so the general quartic equation is solvable by radicals.'],S5:['S₅ 不可解，因此一般五次方程不存在根式通解。特殊五次方程仍可能用根式求解。','S₅ is not solvable: there is no radical formula for the general quintic. Particular quintics may still be solvable by radicals.']};
  $('sectorDefinition').textContent=t(...definitions[g.key]);$('sectorState').textContent=open?t('点击中央星系探索','Click the central galaxy to explore'):t('完成前一星系后解锁','Complete the previous galaxy to unlock');
 
- for(const [id,offset] of [['previousGalaxy',-1],['nextGalaxy',1]]){const adjacent=GALAXIES[index+offset],button=$(id);button.hidden=!adjacent;if(adjacent){button.textContent=(offset<0?'← ':'')+adjacent.name+(offset>0?' →':'');button.setAttribute('aria-label',t(offset<0?'查看前一星系 ':'查看后一星系 ',offset<0?'Previous galaxy ':'Next galaxy ')+adjacent.name);button.onclick=()=>select(index+offset);}}
+ for(const [id,offset] of [['previousGalaxy',-1],['nextGalaxy',1]]){const adjacent=GALAXIES[index+offset],button=$(id);button.hidden=!adjacent;if(adjacent){button.textContent='';button.setAttribute('aria-label',t(offset<0?'查看前一星系 ':'查看后一星系 ',offset<0?'Previous galaxy ':'Next galaxy ')+adjacent.name);button.onclick=()=>select(index+offset);}}
 
  $('loginTitle').textContent=t('选择航行身份','Choose your identity');$('identityText').textContent=account.kind==='student'?`${account.name} · ${account.id}`:t('游客探索 · 无需等待连接','Explore as a guest · No waiting');$('studentIdentity').textContent=t('学号登录','Student login');$('guestIdentity').textContent=t('游客进入','Enter as guest');$('sidLabel').textContent=t('11 位学号','11-digit student ID');$('confirmIdentity').textContent=t('确认姓名并进入','Confirm name and enter');$('identityNote').textContent=t('使用群数独同一学号与姓名核对服务。','Uses the same student identity service as Group Sudoku.');$('prefsTitle').textContent=t('航行设置','Flight settings');$('motionLabel').textContent=t('星云动态与视差','Nebula motion and parallax');$('prefsIdentity').textContent=t('学生信息 / 切换登录','Student information / Switch player');$('prefsStudent').textContent=account.kind==='student'?`${account.name} · ${account.id}`:t('当前：游客','Current: guest');$('resetDemo').textContent=t('重置模拟航程','Reset demo journey');$('localNote').textContent=t('此版本不判定通关，不写入正式成绩。','This preview does not grade or submit completion records.');document.documentElement.lang=en?'en':'zh-CN';if(world){world.unlocked=Math.min(done,GALAXIES.length-1);world.completed=done;}window.dispatchEvent(new Event('cosmic-ui-change'));
 }

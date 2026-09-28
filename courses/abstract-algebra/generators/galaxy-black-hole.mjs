@@ -34,7 +34,7 @@ vec3 gas(vec3 p,vec3 v){
  float envelope=smoothstep(3.,3.25,r)*(1.-smoothstep(8.,12.,r))*pow(3./r,1.6);
  return color*density*envelope*beam*3.4;
 }
-uniform sampler2D frontMap;uniform sampler2D backMap;
+uniform sampler2D frontMap;uniform sampler2D backMap;uniform vec3 diskU;uniform vec3 diskV;uniform vec3 viewCenter;uniform float modelUnit;uniform mat4 depthProjection;
 vec3 mappedGas(vec4 hit){
  if(hit.w<.01)return vec3(0.);
  vec3 p=vec3(hit.x,0.,hit.y),tangent=normalize(vec3(-p.z,0.,p.x));
@@ -46,7 +46,11 @@ void main(){
  vec4 front=texture2D(frontMap,uv0),back=texture2D(backMap,uv0);
  vec3 light=mappedGas(front)+mappedGas(back)*.12;
  light=vec3(1.)-exp(-light*1.15);light=pow(light,vec3(.82));
- float shadow=(front.w<-.5||back.w<-.5)?1.:0.;float emission=max(light.r,max(light.g,light.b));gl_FragColor=vec4(light,max(shadow,smoothstep(.015,.32,emission)));
+ float shadow=(front.w<-.5||back.w<-.5)?1.:0.;float emission=max(light.r,max(light.g,light.b));float alpha=max(shadow,smoothstep(.015,.32,emission));if(alpha<.01)discard;
+ vec4 hit=front.w>.01?front:back;vec3 position=viewCenter;
+ if(shadow<.5&&hit.w>.01)position+=(diskU*hit.x+diskV*hit.y)*modelUnit;
+ vec4 clip=depthProjection*vec4(position,1.);gl_FragDepth=clamp(.5+.5*clip.z/clip.w,0.,1.);
+ gl_FragColor=vec4(light,alpha);
 }`;
 const rayShader=`
 precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform vec3 eye;uniform float zoom;uniform int layer;uniform vec3 diskN;uniform vec3 diskU;uniform vec3 diskV;
@@ -77,8 +81,8 @@ void main(){
 export function galaxyBlackHole(sphere){
  let mapSize=256;
  const targets=[0,1].map(()=>new T.WebGLRenderTarget(256,256,{type:T.HalfFloatType,minFilter:T.NearestFilter,magFilter:T.NearestFilter,depthBuffer:false}));
- const uniforms={resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture}};
- const material=new T.ShaderMaterial({uniforms,vertexShader:billboard,fragmentShader:gasShader,transparent:true,depthWrite:false});
+ const uniforms={resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()},viewCenter:{value:new T.Vector3()},modelUnit:{value:1},depthProjection:{value:new T.Matrix4()}};
+ const material=new T.ShaderMaterial({uniforms,vertexShader:billboard,fragmentShader:gasShader,transparent:true,depthWrite:true});
  const body=new T.Mesh(sphere,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
  const image=new T.Mesh(new T.PlaneGeometry(8.5*1.35,8.5*1.35),material);body.add(image);
  const ru={...uniforms,layer:{value:0},diskN:{value:new T.Vector3()},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()}};
@@ -93,6 +97,7 @@ export function galaxyBlackHole(sphere){
   const size=Math.max(128,Math.min(768,Math.ceil(projected/128)*128));
   if(size!==mapSize){mapSize=size;targets.forEach(t=>t.setSize(size,size));ru.resolution.value.set(size,size);lastEye.set(999,999,999);}
   const unit=new T.Vector3().setFromMatrixScale(body.matrixWorld).x*(8.5/22);
+  uniforms.diskU.value.copy(ru.diskU.value);uniforms.diskV.value.copy(ru.diskV.value);uniforms.viewCenter.value.setFromMatrixPosition(mv);uniforms.modelUnit.value=unit;uniforms.depthProjection.value.copy(camera.projectionMatrix);
   ru.eye.value.setFromMatrixPosition(mv).multiplyScalar(-1/unit);
   if(lastEye.distanceToSquared(ru.eye.value)<.0001&&lastN.distanceToSquared(ru.diskN.value)<1e-6&&lastU.distanceToSquared(ru.diskU.value)<1e-6)return;
   const previous=renderer.getRenderTarget();for(let i=0;i<2;i++){ru.layer.value=i;renderer.setRenderTarget(targets[i]);renderer.render(cacheScene,cacheCamera);}renderer.setRenderTarget(previous);

@@ -1,6 +1,6 @@
 import {pointerPose} from './galaxy-balance.mjs?v=balance-2';
-import {planetMotion,starMotion,stableRandom,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs?v=plane-size-47';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=scene-hole-3';
+import {planetMotion,starMotion,stableRandom,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs?v=shared-plane-54';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=depth-55';
 import {detailedStar} from './stellar-render.mjs?v=halo-52';
 import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 import {groups} from './model.mjs';
@@ -26,7 +26,7 @@ export class GalaxyScene{
   const sphere=new T.SphereGeometry(1,48,32),group=groups[g.key],layout=celestialLayout(group,71+index*19),stars=layout.filter(e=>e.rank.type.endsWith('star')),starOrbits=spreadStarOrbits(stars.length,71+index*131,1.5*(2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6));
   root.userData.extent=Math.max(11.5,...spreadStarOrbits(stars.length,71+index*131,2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6).map(m=>m.radius+bodyScale(g.order)*6));
   for(let i=0;i<g.order;i++){
-   const entry=layout[i],{order,rank}=entry,motion=rank.type.endsWith('planet')?planetMotion(rank.type,i+index*131,entry.slot):(rank.type.endsWith('star')?starOrbits[stars.findIndex(e=>e.element===i)]:starMotion(i+index*131)),kind=rank.type==='ring-planet'?3:rank.type==='gas-planet'?1:rank.type==='ice-planet'?2:0;
+   const entry=layout[i],{order,rank}=entry,motion=rank.type.endsWith('planet')?planetMotion(rank.type,i+index*131,entry.slot,entry.host+index*131):(rank.type.endsWith('star')?starOrbits[stars.findIndex(e=>e.element===i)]:starMotion(i+index*131)),kind=rank.type==='ring-planet'?3:rank.type==='gas-planet'?1:rank.type==='ice-planet'?2:0;
    const radius=1.5*bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
    const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
    planet.scale.setScalar(radius);
@@ -34,7 +34,7 @@ export class GalaxyScene{
 
    if(order===1)planet.position.set(0,0,0);
    else if(rank.type.endsWith('star'))planet.position.set(Math.cos(motion.phase)*motion.radius,0,Math.sin(motion.phase)*motion.radius);
-   planet.userData={...planet.userData,...entry,motion,galaxy:index,label:group.labels[i]};if(rank.type.endsWith('star'))planet.userData.spinBase=new T.Quaternion().setFromEuler(new T.Euler(motion.spinTilt,motion.spinNode,0,'YXZ'));planet.traverse(part=>part.layers.set(order===1?1:2));root.add(planet);root.userData.planets.push(planet);
+   planet.userData={...planet.userData,...entry,motion,galaxy:index,label:group.labels[i]};if(rank.type.endsWith('star'))planet.userData.spinBase=new T.Quaternion().setFromEuler(new T.Euler(motion.spinTilt,motion.spinNode,0,'YXZ'));planet.traverse(part=>part.layers.set(1));root.add(planet);root.userData.planets.push(planet);
 
   }
   let orbitExtent=0;
@@ -79,5 +79,5 @@ export class GalaxyScene{
  for(const s of this.systems){if(!s.visible)continue;const view=this.camera.position.clone().sub(s.position).normalize(),normal=new T.Vector3(0,1,0).applyQuaternion(s.quaternion),dot=normal.dot(view),elevation=Math.asin(Math.min(1,Math.max(-1,dot))),target=Math.max(3*Math.PI/180,Math.min(20*Math.PI/180,elevation));if(Math.abs(target-elevation)>1e-6){const tangent=normal.clone().addScaledVector(view,-dot).normalize(),desired=tangent.multiplyScalar(Math.cos(target)).addScaledVector(view,Math.sin(target));s.quaternion.premultiply(new T.Quaternion().setFromUnitVectors(normal,desired));}}
  this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);
  this.systems.forEach(s=>{if(!s.visible)return;for(const p of s.userData.planets){if(p.userData.hostLight)s.userData.planets[p.userData.host].getWorldPosition(p.userData.hostLight.value);}});
- this.systems.forEach((s,i)=>{if(!s.visible)return;s.userData.planets.forEach(p=>p.userData.updateBlackHole?.(this.renderer,this.camera));});this.camera.layers.set(0);this.renderer.render(this.scene,this.camera);this.renderer.autoClear=false;this.renderer.clearDepth();this.camera.layers.set(1);this.renderer.render(this.scene,this.camera);this.renderer.clearDepth();this.camera.layers.set(2);this.renderer.render(this.scene,this.camera);this.camera.layers.set(0);this.renderer.autoClear=true;}
+ this.systems.forEach((s,i)=>{if(!s.visible)return;s.userData.planets.forEach(p=>p.userData.updateBlackHole?.(this.renderer,this.camera));});this.camera.layers.set(0);this.renderer.render(this.scene,this.camera);this.renderer.autoClear=false;this.renderer.clearDepth();this.camera.layers.set(1);this.renderer.render(this.scene,this.camera);this.camera.layers.set(0);this.renderer.autoClear=true;}
 }
