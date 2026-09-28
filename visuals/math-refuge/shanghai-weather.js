@@ -13,6 +13,6 @@ export function createShanghaiWeather({onChange,fetcher=fetch,storage=globalThis
   catch{if(value&&now()-value.fetched>=7200000)value=null;if(!stopped)onChange?.(value,value?'cached':'unavailable');}
   finally{clearTimeout(timeout);if(!stopped)timer=setTimeout(refresh,900000);}
  }
- if(value)onChange?.(value,'cached');if(!value||now()-value.fetched>=900000)refresh();else timer=setTimeout(refresh,900000-(now()-value.fetched));
- return {dispose(){stopped=true;clearTimeout(timer);controller?.abort();},refresh};
+ if(value)onChange?.(value,'cached');const ready=!value||now()-value.fetched>=900000?refresh():Promise.resolve();if(value&&now()-value.fetched<900000)timer=setTimeout(refresh,900000-(now()-value.fetched));
+ return {ready,dispose(){stopped=true;clearTimeout(timer);controller?.abort();},refresh};
 }

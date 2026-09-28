@@ -39,7 +39,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-ready-113';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=reflection-ready-115';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -51,7 +51,7 @@ import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths
 import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents,solarState} from './solar-state.js?v91-shore';
-import {createShanghaiWeather} from './shanghai-weather.js?v77-wind-clouds';
+import {createShanghaiWeather} from './shanghai-weather.js?v=reflection-ready-115';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
 import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
 import {motionCoordinate} from './camera-motion.js';
@@ -500,6 +500,8 @@ async function paintStartup(percent,label){
  await new Promise(resolve=>setTimeout(resolve,16));
 }
 
+const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
+
 try{
   window.refugeBoot?.stage(10,'准备画面');
   renderer=new THREE.WebGLRenderer({canvas:$('world'),alpha:true,antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
@@ -554,19 +556,26 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  retreat.setWeather(weatherReading);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
-  window.refugeBoot?.stage(94,'准备光照');
+  window.refugeBoot?.stage(90,'读取天气');await weatherService.ready;
+  retreat.setWeather(weatherReading,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  // Hold the already rendered live frame while calibration reallocates GPU buffers.
+  renderer.render(scene,camera);
+  const arrivalHold=document.createElement('canvas');arrivalHold.id='arrivalRenderHold';
+  arrivalHold.width=renderer.domElement.width;arrivalHold.height=renderer.domElement.height;
+  arrivalHold.setAttribute('aria-hidden','true');arrivalHold.getContext('2d').drawImage(renderer.domElement,0,0);
+  document.body.append(arrivalHold);
+  window.refugeBoot?.stage(94,'准备光照与倒影');
   await retreat.prepareRendering();
   window.refugeBoot?.stage(95,'准备画面');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Compile materials before camera motion, rather than at a cached-video handoff.
   if(renderer.compileAsync){
     const compiling=renderer.compileAsync(scene,camera);
-    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(95+4*programs.filter(p=>p.isReady()).length/programs.length,'准备画面');},80);
+    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(95+1*programs.filter(p=>p.isReady()).length/programs.length,'准备画面');},80);
     try{await compiling;}finally{clearInterval(progressTimer);}
   }
   // Calibrate before entry. Test the selected weather instead of waiting for an idle tour.
-  window.refugeBoot?.stage(99,'匹配画质');
+  window.refugeBoot?.stage(97,'匹配天气画质');
   for(const level of (document.hidden||device.safe?[0]:[2,1,0])){
     startupQuality.level=level;device.startup=level===0;
     const settings=startupQuality.settings(desiredGraphics);
@@ -586,6 +595,18 @@ try{
     $('world').dataset.startupCalibration=JSON.stringify({level,frames:frames.length,accepted:acceptsStartupQuality(frames,gpu,Number($('targetFPS').value))});
     if(level===0||acceptsStartupQuality(frames,gpu,Number($('targetFPS').value)))break;
   }
+  window.refugeBoot?.stage(98,'准备倒影与阴影');
+  await retreat.sky.userData.prepareClouds?.();
+  retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
+  renderer.shadowMap.needsUpdate=true;
+  await renderer.compileAsync?.(scene,camera);
+  for(let i=0;i<3;i++){
+    retreat.ocean.userData.study.update(camera,0);
+    if(profile.direct)renderer.render(scene,camera);else composer.render();
+    await new Promise(resolve=>setTimeout(resolve,16));
+  }
+  window.refugeBoot?.stage(99,'完成画面');
+  arrivalHold.style.opacity='0';await new Promise(resolve=>setTimeout(resolve,450));arrivalHold.remove();
   startupAutomatic=false;frameQuality.resetSamples();oceanBudget.resetSamples();
   $('recommendStatus').textContent='加载时已匹配画质 · 运行中按实际帧率保护流畅度';
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
@@ -597,7 +618,7 @@ try{
   if($('loading').dataset.entryRequested==='true')enterScene();
   // Fetch only manifests and covers in the background, without delaying entry.
 
-}catch(error){fail(error);}
+}catch(error){document.getElementById('arrivalRenderHold')?.remove();fail(error);}
 
 $('tour').addEventListener('click',()=>{
   if(!renderer||!retreat||!cameraIntent.canActivate())return;
@@ -637,7 +658,7 @@ function weatherLabel(){
  $('weatherDetail').textContent=weatherReading?`云量 ${Math.round(weatherReading.cloud*100)}% · 风速 ${weatherReading.wind} km/h · ${Number.isFinite(weatherReading.windDirection)?weatherReading.windDirection+'° 来风':'风向暂无'}（10 m 风近似驱动云层） · 降水 ${weatherReading.rain} mm · 日出 ${weatherReading.sunrise} / 日落 ${weatherReading.sunset} · 数据 ${weatherReading.time?.slice(11,16)||'—'}`:'连接不可用时使用晴朗天空预设；不会把预设当作实况。';
 }
 function formatHour(h){const m=Math.floor(h*60);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
+
 function closeTime(){ $('timePanel').hidden=true;$('timeButton').setAttribute('aria-expanded','false'); }
 $('timeClose').addEventListener('click',closeTime);
 $('timeButton').addEventListener('click',()=>{const open=$('timePanel').hidden;showSettings(false);$('timePanel').hidden=!open;$('timeButton').setAttribute('aria-expanded',String(open));updateSunEvents();});
