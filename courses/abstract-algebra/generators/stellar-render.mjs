@@ -49,7 +49,12 @@ export function detailedStar(sphere,rank,seed){
  }`});
  const body=new T.Mesh(sphere,material);
  const coronaMat=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{time:{value:0},seed:{value:seed},tint:{value:tint}},vertexShader:billboard,fragmentShader:`varying vec2 vUv;uniform float time;uniform float seed;uniform vec3 tint;${noise}
- void main(){vec2 q=(vUv-.5)*5.;float r=length(q);if(r<.985)discard;float a=atan(q.y,q.x);vec3 p=vec3(cos(a)*6.,sin(a)*6.,time*.06+seed);float fil=fbm(p);float reach=.12+pow(fil,3.)*1.3;float ray=exp(-(r-1.)/reach)*(.18+fil*.5);float edge=exp(-pow((r-1.025)*45.,2.))*.3;
+ void main(){vec2 q=(vUv-.5)*5.;float r=length(q);if(r<.985)discard;float a=atan(q.y,q.x);float drift=a+.055*sin(time*.65+seed)+time*.035;
+  vec3 p=vec3(cos(drift)*6.,sin(drift)*6.,time*.32+seed);float fil=fbm(p);
+  float pulse=.5+.5*sin(time*1.65+a*5.+seed*2.+fil*5.);
+  float reach=.13+pow(fil,2.4)*(1.05+pulse*.85);
+  float outward=.68+.32*sin((r-1.)*17.-time*3.8+a*3.+fil*6.);
+  float ray=exp(-(r-1.)/reach)*(.14+fil*.55)*(.65+pulse*.55)*outward;float edge=exp(-pow((r-1.025)*45.,2.))*.3;
   float loop=0.;
   float opacity=(ray+edge+loop)*(1.-smoothstep(1.6,2.4,r));gl_FragColor=vec4(tint,opacity);
  }`});
