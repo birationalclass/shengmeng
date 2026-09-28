@@ -14,7 +14,7 @@ export function detailedPlanet(sphere,kind,seed){
  gl_FragColor=vec4(color,1.);
  #include <colorspace_fragment>
  }`});
- const body=new T.Mesh(sphere,material);const effects=[material];
+ const body=new T.Mesh(sphere,material);if(kind===0){body.rotation.z=23.44*Math.PI/180;body.userData.spinBasePlanet=body.quaternion.clone();}const effects=[material];
  if(kind===0){const cloudMat=new T.ShaderMaterial({uniforms,vertexShader:vertex,transparent:true,depthWrite:false,fragmentShader:`varying vec3 q;varying vec3 N;varying vec3 world;uniform float time;uniform float seed;uniform vec3 host;${noise}void main(){vec3 p=normalize(q);float a=time*.026; p=vec3(cos(a)*p.x-sin(a)*p.z,p.y,sin(a)*p.x+cos(a)*p.z);float cloud=fbm(p*7.+vec3(seed,0,0)+fbm(p*4.)*2.);float opacity=smoothstep(.52,.7,cloud)*.85;float lit=max(0.,dot(normalize(N),normalize(host-world)));gl_FragColor=vec4(vec3(.78,.85,.9)*(.04+lit),opacity);}`});const cloud=new T.Mesh(sphere,cloudMat);cloud.scale.setScalar(1.017);body.add(cloud);}
  const atmosphere=new T.Mesh(sphere,new T.ShaderMaterial({uniforms,vertexShader:vertex,side:T.BackSide,transparent:true,depthWrite:false,blending:T.AdditiveBlending,fragmentShader:`varying vec3 N;varying vec3 world;uniform vec3 host;void main(){vec3 n=normalize(N),v=normalize(cameraPosition-world);float rim=pow(1.-abs(dot(n,v)),3.5);float lit=smoothstep(-.25,.7,dot(n,normalize(host-world)));gl_FragColor=vec4(.20,.48,.84,rim*lit*.23);}`}));atmosphere.scale.setScalar(1.055);body.add(atmosphere);
  if(kind===3){

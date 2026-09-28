@@ -1,8 +1,8 @@
 import {pointerPose} from './galaxy-balance.mjs?v=balance-2';
 import {planetMotion,starMotion,stableRandom,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs?v=plane-size-47';
 import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=scene-hole-3';
-import {detailedStar} from './stellar-render.mjs?v=corona-50';
-import {detailedPlanet} from './planet-render.mjs?v=plane-size-47';
+import {detailedStar} from './stellar-render.mjs?v=halo-52';
+import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 import {groups} from './model.mjs';
 import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=plane-size-47';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
@@ -30,7 +30,7 @@ export class GalaxyScene{
    const radius=1.5*bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
    const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
    planet.scale.setScalar(radius);
-   if(kind===3&&rank.type.endsWith('planet')){const ringTilt=(10+20*stableRandom(i*47+index*83))*Math.PI/180;const orbitFrame=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),motion.node).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-motion.inclination));planet.userData.spinBasePlanet=orbitFrame.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),stableRandom(i*67+index)*Math.PI*2)).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),ringTilt));planet.quaternion.copy(planet.userData.spinBasePlanet);}
+   if((kind===0||kind===3)&&rank.type.endsWith('planet')){const ringTilt=(kind===0?23.44:10+20*stableRandom(i*47+index*83))*Math.PI/180;const orbitFrame=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),motion.node).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-motion.inclination));planet.userData.spinBasePlanet=orbitFrame.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),stableRandom(i*67+index)*Math.PI*2)).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),ringTilt));planet.quaternion.copy(planet.userData.spinBasePlanet);}
 
    if(order===1)planet.position.set(0,0,0);
    else if(rank.type.endsWith('star'))planet.position.set(Math.cos(motion.phase)*motion.radius,0,Math.sin(motion.phase)*motion.radius);
@@ -74,7 +74,10 @@ export class GalaxyScene{
   // Move all hosts first, so each planet follows its host in the same frame.
   for(const p of s.userData.planets){const d=p.userData;if(!d.rank.type.endsWith('star'))continue;const a=d.motion.phase+this.time*d.motion.orbit,r=d.motion.radius;p.position.set(Math.cos(a)*r,0,Math.sin(a)*r);}
   for(const p of s.userData.planets){const d=p.userData;if(d.host===null)continue;const host=s.userData.planets[d.host],r=(host.scale.x+p.scale.x)*(1.75+stableRandom(d.element*31+d.galaxy*53)* .6)+d.slot*p.scale.x*2.8,a=d.phase+this.time*d.motion.orbit;const offset=orbitalOffset(d.motion,a,r);p.position.copy(host.position).add(new T.Vector3(offset.x,offset.y,offset.z));}
- });this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);
+  });
+ // Keep the shared accretion/stellar plane in the approved low, oblique view range.
+ for(const s of this.systems){if(!s.visible)continue;const view=this.camera.position.clone().sub(s.position).normalize(),normal=new T.Vector3(0,1,0).applyQuaternion(s.quaternion),dot=normal.dot(view),elevation=Math.asin(Math.min(1,Math.max(-1,dot))),target=Math.max(3*Math.PI/180,Math.min(20*Math.PI/180,elevation));if(Math.abs(target-elevation)>1e-6){const tangent=normal.clone().addScaledVector(view,-dot).normalize(),desired=tangent.multiplyScalar(Math.cos(target)).addScaledVector(view,Math.sin(target));s.quaternion.premultiply(new T.Quaternion().setFromUnitVectors(normal,desired));}}
+ this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);
  this.systems.forEach(s=>{if(!s.visible)return;for(const p of s.userData.planets){if(p.userData.hostLight)s.userData.planets[p.userData.host].getWorldPosition(p.userData.hostLight.value);}});
  this.systems.forEach((s,i)=>{if(!s.visible)return;s.userData.planets.forEach(p=>p.userData.updateBlackHole?.(this.renderer,this.camera));});this.camera.layers.set(0);this.renderer.render(this.scene,this.camera);this.renderer.autoClear=false;this.renderer.clearDepth();this.camera.layers.set(1);this.renderer.render(this.scene,this.camera);this.renderer.clearDepth();this.camera.layers.set(2);this.renderer.render(this.scene,this.camera);this.camera.layers.set(0);this.renderer.autoClear=true;}
 }
