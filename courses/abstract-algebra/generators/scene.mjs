@@ -1,4 +1,4 @@
-import {contact} from './dynamics.mjs?v=newborn-drift-14';
+import {contact} from './dynamics.mjs?v=ranked-orbits-16';
 const TAU=Math.PI*2;
 
 export class Scene {
@@ -10,18 +10,20 @@ export class Scene {
  scale(n){return this.growth(n);}
  selection(seeds){this.seeds=new Set(seeds);this.present=new Set(seeds);}
  orbit(){const r=this.radius,top=r+Math.min(130,this.h*.26),bottom=Math.max(top+2*r,this.h-r-25);return {x:this.w/2,y:(top+bottom)/2,rx:Math.max(r*2,this.w/2-r-22),ry:Math.max(r,(bottom-top)/2),max:Math.max(1,...this.scores.values())};}
+ ranks(){const ids=this.enabled?this.nodes.map(n=>n.id):[...this.present],order=new Map(ids.map((id,i)=>[id,i]));ids.sort((a,b)=>(this.scores.get(b)||0)-(this.scores.get(a)||0)||order.get(a)-order.get(b));return new Map(ids.map((id,i)=>[id,.36+.58*Math.sqrt(i/Math.max(1,ids.length-1))]));}
  start(op){this.active={...op,elapsed:0,hit:false};}
  tick(dt,advance,visualDt=dt){const op=this.active;for(const n of this.nodes){const target=op&&!op.hit&&(n.id===op.a||n.id===op.b)?1:0;n.highlight=Math.max(0,Math.min(1,(n.highlight||0)+(target?visualDt:-visualDt)));}let finished=null;for(let elapsed=0;elapsed<dt;){const step=Math.min(1/120,dt-elapsed);elapsed+=step;const event=this.integrate(step,advance);if(event)finished=event;}return finished;}
  integrate(dt,advance){this.time+=dt;this.radius+=(this.targetRadius()-this.radius)*Math.min(1,dt*.8);const op=this.active;if(op&&advance)op.elapsed+=dt;const live=this.nodes.filter(n=>this.enabled||this.present.has(n.id)),max=Math.max(1,...this.scores.values()),r=this.radius;
-  const orbit=this.orbit();
-  for(const n of live){if(n.parent!==undefined)continue;if((n.protectedUntil||0)>this.time){n.x+=n.vx*dt;n.y+=n.vy*dt;continue;}const dx=n.x-orbit.x,dy=n.y-orbit.y,d=Math.hypot(dx,dy)||1,score=this.scores.get(n.id)||0,q=Math.max(.025,Math.hypot(dx/orbit.rx,dy/orbit.ry));const targetBand=this.enabled&&this.nodes.length>16?.36+.58*Math.sqrt((n.id+.5)/this.nodes.length):.94-.58*score/orbit.max;n.orbitBand+=(targetBand-n.orbitBand)*(1-Math.exp(-dt*.22));const band=n.orbitBand;
+  const orbit=this.orbit(),bands=this.ranks();
+  for(const n of live){if(n.parent!==undefined)continue;if((n.protectedUntil||0)>this.time){n.x+=n.vx*dt;n.y+=n.vy*dt;continue;}const dx=n.x-orbit.x,dy=n.y-orbit.y,d=Math.hypot(dx,dy)||1,score=this.scores.get(n.id)||0,q=Math.max(.025,Math.hypot(dx/orbit.rx,dy/orbit.ry));const targetBand=bands.get(n.id)??.94;n.orbitBand+=(targetBand-n.orbitBand)*(1-Math.exp(-dt*.22));const band=n.orbitBand;
    const radial=(n.vx*dx+n.vy*dy)/d,settle=n.protectedUntil?Math.min(1,Math.max(0,(this.time-n.protectedUntil)/1.2)):(n.release||0)>this.time?.12:1;
    let ax=settle*((dx*(band/q-1))*1.8-radial*dx/d*2.8)-dy/d*14+Math.sin(this.time*.8+n.noise)*3,ay=settle*((dy*(band/q-1))*1.8-radial*dy/d*2.8)+dx/d*14+Math.cos(this.time*.7+n.noise)*3;
    if(op&&!op.hit&&op.a!==op.b&&(n.id===op.a||n.id===op.b)){const other=this.nodes[n.id===op.a?op.b:op.a];const ddx=other.x-n.x,ddy=other.y-n.y,dist=Math.hypot(ddx,ddy)||1;const desired=Math.min(100,Math.max(42,dist*.65));ax=(ddx/dist*desired-n.vx)*2.3;ay=(ddy/dist*desired-n.vy)*2.3;}
    n.vx+=ax*dt;n.vy+=ay*dt;const damp=Math.exp(-.12*dt);n.vx*=damp;n.vy*=damp;n.x+=n.vx*dt;n.y+=n.vy*dt;
-   const top=r+Math.min(130,this.h*.26),bottom=Math.max(top+2*r,this.h-r-25);if(n.x<r+8){n.x=r+8;n.vx=Math.abs(n.vx);}if(n.x>this.w-r-8){n.x=this.w-r-8;n.vx=-Math.abs(n.vx);}if(n.y<top){n.y=top;n.vy=Math.abs(n.vy);}if(n.y>bottom){n.y=bottom;n.vy=-Math.abs(n.vy);}
+   const top=r+Math.min(130,this.h*.26),bottom=Math.max(top+2*r,this.h-r-25);if(n.x<r+8){n.x+=Math.min(r+8-n.x,40*dt);n.vx=Math.abs(n.vx);}if(n.x>this.w-r-8){n.x-=Math.min(n.x-(this.w-r-8),40*dt);n.vx=-Math.abs(n.vx);}if(n.y<top){n.y+=Math.min(top-n.y,40*dt);n.vy=Math.abs(n.vy);}if(n.y>bottom){n.y-=Math.min(n.y-bottom,40*dt);n.vy=-Math.abs(n.vy);}
   }
-  for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],b=live[j];if(a.parent!==undefined||b.parent!==undefined||(a.protectedUntil||0)>this.time||(b.protectedUntil||0)>this.time)continue;const hit=contact(a,b,r*(this.scale(a)+this.scale(b))/2);if(hit){a.release=this.time+.5;b.release=this.time+.5;}if(hit&&advance&&op&&!op.hit&&((a.id===op.a&&b.id===op.b)||(a.id===op.b&&b.id===op.a)))this.birth(op,(a.x+b.x)/2,(a.y+b.y)/2);}
+  for(const n of live)n.separationLeft=24*dt;
+  for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],b=live[j];if(a.parent!==undefined||b.parent!==undefined||(a.protectedUntil||0)>this.time||(b.protectedUntil||0)>this.time)continue;const hit=contact(a,b,r*(this.scale(a)+this.scale(b))/2,dt);if(hit){a.release=this.time+.5;b.release=this.time+.5;}if(hit&&advance&&op&&!op.hit&&((a.id===op.a&&b.id===op.b)||(a.id===op.b&&b.id===op.a)))this.birth(op,(a.x+b.x)/2,(a.y+b.y)/2);}
   if(advance&&op&&!op.hit&&op.a===op.b&&op.elapsed>1.2&&this.nodes[op.a].parent===undefined){const a=this.nodes[op.a];this.birth(op,a.x,a.y);}
   for(const child of live.filter(n=>n.parent!==undefined).sort((a,b)=>a.born-b.born)){const parent=this.nodes[child.parent],t=Math.min(1,(this.time-child.born)/3.2),scale=.035+.965*t*t*(3-2*t),distance=r*this.scale(parent)+r*this.scale(child)*.98;child.x=parent.x+Math.cos(child.budAngle)*distance;child.y=parent.y+Math.sin(child.budAngle)*distance;child.vx=parent.vx;child.vy=parent.vy;if(scale>=1/3){child.vx=Math.cos(child.budAngle)*18;child.vy=Math.sin(child.budAngle)*18;child.protectedUntil=this.time+2;const o=this.orbit();child.orbitBand=Math.hypot((child.x-o.x)/o.rx,(child.y-o.y)/o.ry);delete child.parent;}}
   if(op&&op.hit&&op.elapsed>2.8&&this.nodes.every(n=>!this.present.has(n.id)||n.born===undefined||this.time-n.born>=3.2&&(n.protectedUntil||0)<=this.time)){this.active=null;return op;}return null;
@@ -32,7 +34,7 @@ export class Scene {
     // An understated orbital field, drawn in CSS pixels on every display density.
     const glow=ctx.createRadialGradient(w/2,h*.56,10,w/2,h*.56,Math.min(w*.5,h*.48));glow.addColorStop(0,'#b1914420');glow.addColorStop(1,'#b1914400');ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
     const orbit=this.orbit();ctx.lineWidth=1;
-    for(let score=0;score<=orbit.max;score+=Math.max(1,Math.ceil(orbit.max/5))){const band=.94-.58*score/orbit.max;ctx.strokeStyle=score===0?'#d4b97925':'#d4b97918';ctx.beginPath();ctx.ellipse(orbit.x,orbit.y,orbit.rx*band,orbit.ry*band,0,0,TAU);ctx.stroke();ctx.fillStyle='#c6ad7666';ctx.font='10px system-ui';ctx.textAlign='center';ctx.fillText('✦ '+score,orbit.x+orbit.rx*band-14,orbit.y-7);}
+    for(let rank=0;rank<6;rank++){const band=.36+.58*Math.sqrt(rank/5);ctx.strokeStyle=rank===5?'#d4b97925':'#d4b97918';ctx.beginPath();ctx.ellipse(orbit.x,orbit.y,orbit.rx*band,orbit.ry*band,0,0,TAU);ctx.stroke();ctx.fillStyle='#c6ad7666';ctx.font='10px system-ui';ctx.textAlign='center';}
     if(op&&op.a!==op.b&&!op.hit){const a=this.nodes[op.a],b=this.nodes[op.b];ctx.strokeStyle='#e2c58788';ctx.setLineDash([3,7]);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.setLineDash([]);}
     if(op&&op.hit&&op.elapsed<2.7){const age=op.elapsed-1.7;ctx.save();ctx.globalAlpha=Math.max(0,1-age);ctx.fillStyle='#e9cb89';for(let k=0;k<18;k++){const angle=k*2.4;const dist=age*(25+k*5);ctx.beginPath();ctx.arc(op.x+Math.cos(angle)*dist,op.y+Math.sin(angle)*dist,1+(k%3)*.35,0,TAU);ctx.fill();}ctx.restore();}
     for(const n of this.nodes){const present=this.present.has(n.id);if(!present&&!this.enabled)continue;const selected=this.seeds.has(n.id),active=op&&(n.id===op.a||n.id===op.b),result=op&&op.hit&&n.id===op.c;const scale=this.scale(n),phase=n.highlight||0,light=phase*phase*(3-2*phase);ctx.save();ctx.translate(n.x,n.y);ctx.scale(scale,scale);ctx.globalAlpha=present?1:.62;
