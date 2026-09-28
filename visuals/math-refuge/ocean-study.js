@@ -93,12 +93,12 @@ export async function createCampusOcean(renderer,scene,water,onProgress=()=>{}){
  scene.add(root);onProgress(1);
  const settings={tide:2.55,tidal:true,grid:false,paused:false},empty=new THREE.DataTexture(new Uint8Array(4),1,1);empty.needsUpdate=true;
  let time=7.1,quality=2,lastWind=-1,targetWaves=null,previousEye=null;
- return {async prepare(){
+ return {async prepare(report=()=>{}){
    // Compile all near/far variants before crossing a room boundary can select one.
-   const warmScene=new THREE.Scene();
+   const warmScene=new THREE.Scene();let completed=0;
    for(const pair of qualityMaterials)for(const material of pair){
     const mesh=new THREE.Mesh(layer.water.geometry,material);warmScene.add(mesh);
-    await renderer.compileAsync?.(warmScene,layer.camera);warmScene.remove(mesh);
+    await renderer.compileAsync?.(warmScene,layer.camera);warmScene.remove(mesh);report(++completed/(qualityMaterials.length*2));
     await new Promise(resolve=>setTimeout(resolve,0));
    }
   },root,settings,initialized:true,foam:{value:empty},

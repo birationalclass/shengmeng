@@ -4,7 +4,7 @@ import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
 import {deferredTexture} from './deferred-textures.js?v=arrival-live-71';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
-import {createCampusOcean} from './ocean-study.js?v=render-stable-112';
+import {createCampusOcean} from './ocean-study.js?v=weather-progress-117';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
 import {sunWaterVisibility} from './graphics-settings.js?v84-display';
 import {withDeadline} from './mobile-runtime.js?v79-mobile';
@@ -18,7 +18,7 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=flush-sill-81';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v=soft-weather-116';
+import {createWeatherSky} from './weather-sky.js?v=weather-progress-117';
 import {solarState,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
@@ -613,5 +613,5 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   }
   function lighting(value){setTime(6+Math.max(0,Math.min(100,value))/100*6);}
   setTime(initialTime.hour??shanghaiHour(),true,0,1,initialTime.date??new Date());
-  return {beginArrivalFade(){environmentBlend=0;sky.userData.beginArrivalFade();},async prepareRendering(){await study.prepare();await sky.userData.prepareClouds?.();await new Promise(resolve=>setTimeout(resolve,0));pmrem.compileCubemapShader();ensureEnvironment(true);environmentBlend=1;},setMediaOpen,residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
+  return {beginArrivalFade(){environmentBlend=0;sky.userData.beginArrivalFade();},async prepareRendering(report=()=>{}){report(0,'海面材质');await study.prepare(value=>report(value*.25,'海面材质'));report(.25,'云层');await sky.userData.prepareClouds?.(value=>report(.25+value*.5,'云层'));await new Promise(resolve=>setTimeout(resolve,0));report(.75,'环境反射');pmrem.compileCubemapShader();ensureEnvironment(true);environmentBlend=1;report(1,'环境反射');},setMediaOpen,residence,rain,weather,updateGeometryLOD,ocean,islands,fleet,sculptures,sun,sky,lighting,setTime,setWeather,roomFill,pathLighting,sculpture,materials,landscape,campus,layoutFloors,site:{elevation:(x,z)=>study.ground(x,z),coastline:z=>coastline(z/BUILDING_SCALE)*BUILDING_SCALE,seaLevel:seaLevel*BUILDING_SCALE},triangleObjects:scene.children.length,dispose(){study.dispose();residence.dispose();rain.dispose();lowGeometry.forEach(g=>g.dispose());fleet.dispose();libraryBook.dispose();islands.dispose();pathLighting.dispose();sculptureGeometry.forEach(g=>g.dispose());terraceBase.dispose();platformGeometries.forEach(g=>g.dispose());campus.dispose();landscape.dispose();sky.geometry.dispose();sky.material.dispose();environment?.dispose();if(!environment){probe.geometry.dispose();probe.material.dispose();}pmrem.dispose();Object.values(details).forEach(map=>map.dispose());}};
 }

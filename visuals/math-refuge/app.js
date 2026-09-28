@@ -39,7 +39,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=soft-weather-116';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=weather-progress-117';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -490,7 +490,7 @@ function tick(stamp){
 }
 async function paintStartup(percent,label){
  await window.refugeBoot?.waitForEntryUI?.();
- window.refugeBoot?.stage(percent,label);
+ reportSceneProgress(percent,label);
  await new Promise(resolve=>setTimeout(resolve,16));
  if(retreat&&renderActivity.foreground){
   retreat.sky.userData.setCloudQuality('off');retreat.ocean.userData.study.setQuality(0);
@@ -500,10 +500,11 @@ async function paintStartup(percent,label){
  await new Promise(resolve=>setTimeout(resolve,16));
 }
 
+function reportSceneProgress(value,label){window.refugeBoot?.stage(value*.8,label);}
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
 
 try{
-  window.refugeBoot?.stage(10,'准备画面');
+  reportSceneProgress(10,'准备画面');
   renderer=new THREE.WebGLRenderer({canvas:$('world'),alpha:true,antialias:!device.mobile,powerPreference:device.mobile?'default':'high-performance'});
   $('world').addEventListener('webglcontextlost',event=>{event.preventDefault();gpuTimer?.dispose();weatherTimer?.dispose();fail(new Error('WebGL context lost'));});
   renderer.debug.onShaderError=()=>fail(new Error('当前设备无法编译场景效果，请尝试低负载模式。'));
@@ -524,15 +525,15 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();controls.update();
   resize();
-  const environment=await createArrivalEnvironment(renderer,scene,value=>window.refugeBoot?.stage(value,'准备海面'),device,{hour:sceneTime.hour,date:sceneTime.date});
+  const environment=await createArrivalEnvironment(renderer,scene,value=>reportSceneProgress(value,'准备海面'),device,{hour:sceneTime.hour,date:sceneTime.date});
   environment.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   await window.refugeBoot?.waitForEntryUI?.();
-  retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')window.refugeBoot?.stage(value,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date,environment}),45000,'空间材质加载');
+  retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')reportSceneProgress(value,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date,environment}),45000,'空间材质加载');
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>window.refugeBoot?.stage(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
-  await withDeadline(lecture.prepareOpening(value=>window.refugeBoot?.stage(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  await withDeadline(lecture.prepareOpening(value=>reportSceneProgress(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
@@ -556,7 +557,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  window.refugeBoot?.stage(90,'读取天气');await weatherService.ready;
+  window.refugeBoot?.stage(72,'天气数据');await weatherService.ready;window.refugeBoot?.stage(76,weatherReading?'天气已就绪':'天气预设已就绪');
   retreat.setWeather(weatherReading,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   // Hold the already rendered live frame while calibration reallocates GPU buffers.
   renderer.render(scene,camera);
@@ -564,18 +565,17 @@ try{
   arrivalHold.width=renderer.domElement.width;arrivalHold.height=renderer.domElement.height;
   arrivalHold.setAttribute('aria-hidden','true');arrivalHold.getContext('2d').drawImage(renderer.domElement,0,0);
   document.body.append(arrivalHold);
-  window.refugeBoot?.stage(94,'准备光照与倒影');
-  await retreat.prepareRendering();
-  window.refugeBoot?.stage(95,'准备画面');
+  await retreat.prepareRendering((value,label)=>window.refugeBoot?.stage(76+value*12,label));
+  window.refugeBoot?.stage(88,'场景材质');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Compile materials before camera motion, rather than at a cached-video handoff.
   if(renderer.compileAsync){
     const compiling=renderer.compileAsync(scene,camera);
-    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(95+1*programs.filter(p=>p.isReady()).length/programs.length,'准备画面');},80);
+    const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(88+2*programs.filter(p=>p.isReady()).length/programs.length,'场景材质');},80);
     try{await compiling;}finally{clearInterval(progressTimer);}
   }
   // Calibrate before entry. Test the selected weather instead of waiting for an idle tour.
-  window.refugeBoot?.stage(97,'匹配天气画质');
+  window.refugeBoot?.stage(90,'天气画质检测');
   for(const level of (document.hidden||device.safe?[0]:[2,1,0])){
     startupQuality.level=level;device.startup=level===0;
     const settings=startupQuality.settings(desiredGraphics);
@@ -586,7 +586,7 @@ try{
     if(document.hidden)break;
     for(let i=0;i<20;i++){
       const stamp=await new Promise(resolve=>{let done=false;const finish=t=>{if(done)return;done=true;clearTimeout(timer);resolve(t);};const timer=setTimeout(()=>finish(performance.now()),100);requestAnimationFrame(finish);});
-      if(i>=4)frames.push(stamp-last);last=stamp;
+      if(i>=4)frames.push(stamp-last);last=stamp;window.refugeBoot?.stage(90+((2-level)+(i+1)/20)*4/3,'天气画质检测');
       const measured=gpuTimer?.poll(stamp);if(measured!=null)gpu.push(measured);
       gpuTimer?.begin(stamp);
       try{retreat.setTime(sceneTime.hour,false,1/60,1,sceneTime.date);retreat.ocean.userData.study.update(camera,0);if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
@@ -595,23 +595,23 @@ try{
     $('world').dataset.startupCalibration=JSON.stringify({level,frames:frames.length,accepted:acceptsStartupQuality(frames,gpu,Number($('targetFPS').value))});
     if(level===0||acceptsStartupQuality(frames,gpu,Number($('targetFPS').value)))break;
   }
-  window.refugeBoot?.stage(98,'准备倒影与阴影');
-  await retreat.sky.userData.prepareClouds?.();
+  window.refugeBoot?.stage(94,'云层与水面倒影');
+  await retreat.sky.userData.prepareClouds?.(value=>window.refugeBoot?.stage(94+value*2,'云层与水面倒影'));
   retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
-  renderer.shadowMap.needsUpdate=true;
+  window.refugeBoot?.stage(96,'阴影与反射');renderer.shadowMap.needsUpdate=true;
   await renderer.compileAsync?.(scene,camera);
   for(let i=0;i<3;i++){
     retreat.ocean.userData.study.update(camera,0);
     if(profile.direct)renderer.render(scene,camera);else composer.render();
     await new Promise(resolve=>setTimeout(resolve,16));
   }
-  window.refugeBoot?.stage(99,'完成画面');
+  window.refugeBoot?.stage(97,'天气融合');
   // Reveal the selected live effects over real elapsed time, using normal weather fades.
   retreat.beginArrivalFade();arrivalHold.style.opacity='0';
   const revealStart=performance.now();let revealLast=revealStart;
   while(performance.now()-revealStart<2400){
     await new Promise(resolve=>setTimeout(resolve,16));
-    const now=performance.now(),dt=Math.min(.1,(now-revealLast)/1000);revealLast=now;
+    const now=performance.now(),dt=Math.min(.1,(now-revealLast)/1000);revealLast=now;window.refugeBoot?.stage(97+2.9*Math.min(1,(now-revealStart)/2400),'天气融合');
     retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);retreat.ocean.userData.study.update(camera,dt);
     if(profile.direct)renderer.render(scene,camera);else composer.render();
   }

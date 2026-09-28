@@ -104,11 +104,11 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  }
  material.addEventListener('dispose',()=>{disposed=true;atmosphere?.dispose();volumeClouds?.dispose();fallback.dispose();panoramaTexture?.dispose();});
  const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,48,24),material);mesh.onBeforeRender=(_r,_s,camera)=>{uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);uniforms.cloudOrigin.value.y=Math.max(.001,uniforms.cloudOrigin.value.y);uniforms.twinkleTime.value=performance.now()/1000;if(loadedAt)uniforms.galaxyMix.value=1-Math.exp(-(performance.now()-loadedAt)/1200);};let cloudsEnabled=!device.startup,cloudVisibility=0;
- mesh.userData.prepareClouds=async()=>{
+ mesh.userData.prepareClouds=async(report=()=>{})=>{
   await volumeClouds?.prepare();
-  if(!cloudsEnabled||!volumeClouds)return;
+  if(!cloudsEnabled||!volumeClouds){report(1);return;}
   // Complete the initial low-cost panorama before entry, independently of promotion.
-  for(let i=0;i<8;i++){volumeClouds.update(uniforms);await new Promise(resolve=>setTimeout(resolve,16));}
+  for(let i=0;i<8;i++){volumeClouds.update(uniforms);report((i+1)/8);await new Promise(resolve=>setTimeout(resolve,16));}
   uniforms.useVolumeClouds.value=cloudVisibility;
  };
  mesh.userData.beginArrivalFade=()=>{cloudVisibility=0;uniforms.useVolumeClouds.value=0;};
