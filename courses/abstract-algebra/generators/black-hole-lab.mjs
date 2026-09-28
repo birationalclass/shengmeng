@@ -86,7 +86,7 @@ void main(){
 let mapDirty=true,mapBuilds=0,frames=0,statsStart=performance.now(),lastMap=0;
 function cacheRays(){quad.material=rayMaterial;for(let i=0;i<2;i++){rayUniforms.layer.value=i;renderer.setRenderTarget(targets[i]);renderer.render(scene,camera);}renderer.setRenderTarget(null);quad.material=material;mapDirty=false;mapBuilds++;}
 
-let groupOrder=4;let azimuth=.25,elevation=.21,targetElevation=.21,targetAzimuth=.25,distance=29,paused=false,en=false,drag=null,last=performance.now();
+const requestedOrder=Number(new URLSearchParams(location.search).get('order'));let groupOrder=[4,24,120].includes(requestedOrder)?requestedOrder:4;let azimuth=.25,elevation=.21,targetElevation=.21,targetAzimuth=.25,distance=29,paused=false,en=false,drag=null,last=performance.now();
 function resize(){
  const narrow=innerWidth<700,aspect=innerWidth/innerHeight;
  const z=narrow?Math.max(37,10/(Math.tan(23*Math.PI/180)*aspect)):27;
@@ -100,7 +100,7 @@ function resize(){
  canvas.dataset.projectedSize=size.toFixed(1);mapDirty=true;
  document.querySelector('#actual-size').textContent=`${Math.round(size)} × ${Math.round(size)} px`;
 }
-for(const [id,order] of [['size4',4],['size24',24],['size120',120]])document.getElementById(id).onclick=()=>{groupOrder=order;resize();for(const k of ['size4','size24','size120'])document.getElementById(k).setAttribute('aria-pressed',String(k===id));};addEventListener('resize',resize);resize();
+for(const [id,order] of [['size4',4],['size24',24],['size120',120]])document.getElementById(id).onclick=()=>{groupOrder=order;resize();for(const k of ['size4','size24','size120'])document.getElementById(k).setAttribute('aria-pressed',String(k===id));};addEventListener('resize',resize);resize();for(const [id,order] of [['size4',4],['size24',24],['size120',120]])document.getElementById(id).setAttribute('aria-pressed',String(groupOrder===order));
 canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag)return;targetAzimuth-=(e.clientX-drag.x)*.006;targetElevation=Math.max(-1.4,Math.min(1.4,targetElevation+(e.clientY-drag.y)*.005));drag={x:e.clientX,y:e.clientY};});
 canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
