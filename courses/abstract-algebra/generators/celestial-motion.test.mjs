@@ -13,3 +13,5 @@ test('dense stellar systems occupy separated inner, middle and outer bands',()=>
 
 test('stellar orbits respect black-hole edge clearance',()=>{for(const size of [.3,.7,1.2]){const edge=8.5*1.35/2*size,star=size*.8;for(const m of spreadStarOrbits(25,71,edge*2.5+star))assert.ok(m.radius-star-edge>=edge*1.5);}});
 test('planet spin doubles while revolution stays unchanged',()=>{for(const type of Object.keys(PLANET_PERIODS)){const m=planetMotion(type,7);assert.ok(Math.abs(m.spin*m.spinSeconds-4*Math.PI)<1e-10);assert.ok(Math.abs(m.orbit*m.orbitSeconds-2*Math.PI)<1e-10);}});
+
+test('all stellar orbits remain in the accretion plane',()=>{for(let seed=0;seed<7;seed++){assert.equal(starMotion(seed).inclination,0);for(const m of spreadStarOrbits(25,seed))assert.equal(m.inclination,0);}assert.notEqual(planetMotion('gas-planet',7).inclination,0);});

@@ -1,10 +1,10 @@
 import {pointerPose} from './galaxy-balance.mjs?v=balance-2';
-import {planetMotion,starMotion,stableRandom,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs?v=orbits-46';
+import {planetMotion,starMotion,stableRandom,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs?v=plane-size-47';
 import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=scene-hole-3';
-import {detailedStar} from './stellar-render.mjs?v=orbits-46';
-import {detailedPlanet} from './planet-render.mjs?v=orbits-46';
+import {detailedStar} from './stellar-render.mjs?v=plane-size-47';
+import {detailedPlanet} from './planet-render.mjs?v=plane-size-47';
 import {groups} from './model.mjs';
-import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=orbits-46';
+import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=plane-size-47';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 import {stellarField} from './galaxy-art.mjs?v=disk-aligned-30';
 import {GALAXIES} from './galaxy-campaign.mjs?v=disk-aligned-30';
@@ -24,11 +24,11 @@ export class GalaxyScene{
  galaxy(g,index){
   const root=new T.Group();root.position.set(index*34,Math.sin(index*1.5)*2,-index*4);root.rotation.set(.12+index*.012,0,-.3+index*.045);root.userData.planets=[];this.scene.add(root);
   const field=stellarField(index);const dust=this.points(field.positions,field.colors,.65,.85);root.add(dust);root.userData.dust=dust;
-  const sphere=new T.SphereGeometry(1,48,32),group=groups[g.key],layout=celestialLayout(group,71+index*19),stars=layout.filter(e=>e.rank.type.endsWith('star')),starOrbits=spreadStarOrbits(stars.length,71+index*131,2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6);
-  root.userData.extent=Math.max(11.5,...starOrbits.map(m=>m.radius+bodyScale(g.order)*6));
+  const sphere=new T.SphereGeometry(1,48,32),group=groups[g.key],layout=celestialLayout(group,71+index*19),stars=layout.filter(e=>e.rank.type.endsWith('star')),starOrbits=spreadStarOrbits(stars.length,71+index*131,1.5*(2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6));
+  root.userData.extent=Math.max(11.5,...spreadStarOrbits(stars.length,71+index*131,2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6).map(m=>m.radius+bodyScale(g.order)*6));
   for(let i=0;i<g.order;i++){
    const entry=layout[i],{order,rank}=entry,motion=rank.type.endsWith('planet')?planetMotion(rank.type,i+index*131,entry.slot):(rank.type.endsWith('star')?starOrbits[stars.findIndex(e=>e.element===i)]:starMotion(i+index*131)),kind=rank.type==='ring-planet'?3:rank.type==='gas-planet'?1:rank.type==='ice-planet'?2:0;
-   const radius=bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
+   const radius=1.5*bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
    const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
    planet.scale.setScalar(radius);
    if(order===1)planet.position.set(0,0,0);
@@ -68,7 +68,7 @@ export class GalaxyScene{
 
  this.sky.position.copy(this.camera.position);this.sky.material.uniforms.time.value=this.time;this.systems.forEach((s,i)=>{s.userData.viewWeight=(s.userData.viewWeight??0)+((i===this.selected?1:0)-(s.userData.viewWeight??0))*(1-Math.exp(-dt*5));s.rotation.x=.12+i*.012+this.balance.x*s.userData.viewWeight;s.rotation.z=-.3+i*.045+this.balance.y*s.userData.viewWeight;s.rotation.y=-this.time*.045;s.userData.completion.value+=((i<this.completed?1:0)-s.userData.completion.value)*(1-Math.exp(-dt*1.7));s.userData.dust.material.uniforms.opacity.value=i<=this.unlocked?.85:.32;s.userData.planets.forEach(p=>{if(p.userData.spinBase)p.quaternion.copy(p.userData.spinBase).multiply(this.spinRotation.setFromAxisAngle(this.spinAxis,p.userData.motion.spinPhase-this.time*.15));else if(p.userData.order!==1){if(p.userData.spinBasePlanet)p.quaternion.copy(p.userData.spinBasePlanet).multiply(this.spinRotation.setFromAxisAngle(this.spinAxis,-this.time*p.userData.motion.spin));else p.rotation.y=-this.time*p.userData.motion.spin;}else p.rotation.y=-s.rotation.y;if(p.material.uniforms?.time)p.material.uniforms.time.value=this.time;if(p.userData.effects)p.userData.effects.forEach(m=>m.uniforms.time.value=this.time);});}); this.systems.forEach(s=>{if(!s.visible)return;
   // Move all hosts first, so each planet follows its host in the same frame.
-  for(const p of s.userData.planets){const d=p.userData;if(!d.rank.type.endsWith('star'))continue;const a=d.motion.phase+this.time*d.motion.orbit,r=d.motion.radius;p.position.set(Math.cos(a)*r,Math.sin(a)*r*d.motion.inclination,Math.sin(a)*r);}
+  for(const p of s.userData.planets){const d=p.userData;if(!d.rank.type.endsWith('star'))continue;const a=d.motion.phase+this.time*d.motion.orbit,r=d.motion.radius;p.position.set(Math.cos(a)*r,0,Math.sin(a)*r);}
   for(const p of s.userData.planets){const d=p.userData;if(d.host===null)continue;const host=s.userData.planets[d.host],r=(host.scale.x+p.scale.x)*(1.75+stableRandom(d.element*31+d.galaxy*53)* .6)+d.slot*p.scale.x*2.8,a=d.phase+this.time*d.motion.orbit;const offset=orbitalOffset(d.motion,a,r);p.position.copy(host.position).add(new T.Vector3(offset.x,offset.y,offset.z));}
  });this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);
  this.systems.forEach(s=>{if(!s.visible)return;for(const p of s.userData.planets){if(p.userData.hostLight)s.userData.planets[p.userData.host].getWorldPosition(p.userData.hostLight.value);}});

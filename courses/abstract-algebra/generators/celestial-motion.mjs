@@ -16,7 +16,7 @@ export function planetMotion(type,seed,slot=0){
  const orbitSeconds=(9+Math.log1p(p.orbitDays/365.25)*2.8)*variation*(1+slot*.1);
  return {spinSeconds,orbitSeconds,spin:4*Math.PI/spinSeconds,orbit:2*Math.PI/orbitSeconds,inclination:(stableRandom(seed*43+7)-.5)*Math.PI/2,node:stableRandom(seed*61+3)*Math.PI*2};
 }
-export function starMotion(seed){const radius=5+stableRandom(seed*11+9)*3;return {spinTilt:stableRandom(seed*29+5)*Math.PI/3,spinNode:stableRandom(seed*37+11)*Math.PI*2,spinPhase:stableRandom(seed*23+17)*Math.PI*2,radius,phase:stableRandom(seed*7+41)*Math.PI*2,orbit:2*Math.PI/(19+radius*3),inclination:(stableRandom(seed*19)-.5)*.15};}
+export function starMotion(seed){const radius=5+stableRandom(seed*11+9)*3;return {spinTilt:stableRandom(seed*29+5)*Math.PI/3,spinNode:stableRandom(seed*37+11)*Math.PI*2,spinPhase:stableRandom(seed*23+17)*Math.PI*2,radius,phase:stableRandom(seed*7+41)*Math.PI*2,orbit:2*Math.PI/(19+radius*3),inclination:0};}
 
 export function orbitalOffset(motion,angle,radius){
  const x=Math.cos(angle)*radius,z=Math.sin(angle)*radius,c=Math.cos(motion.node),s=Math.sin(motion.node),projected=z*Math.cos(motion.inclination);
@@ -26,7 +26,7 @@ export function spreadStarOrbits(count,seed=0,minRadius=3.8){
  return Array.from({length:count},(_,i)=>{
   const m=starMotion(seed+i*137),fraction=(i+.15+.7*stableRandom(seed+i*53))/Math.max(1,count);
   m.radius=minRadius+7.4*fraction;m.phase=i*2.3999632297+stableRandom(seed+i*97)*.55;
-  m.orbit=2*Math.PI/(19+m.radius*3);m.inclination=(stableRandom(seed+i*71)-.5)*.42;
+  m.orbit=2*Math.PI/(19+m.radius*3);m.inclination=0;
   return m;
  });
 }
