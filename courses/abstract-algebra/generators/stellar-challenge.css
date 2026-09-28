@@ -23,3 +23,35 @@ body>header,body>main{display:none!important}#demoComplete{display:none!importan
 #recordsDialog{--serif:Georgia,"Songti SC",serif;--sans:system-ui}#recordsDialog header{position:static;height:auto}#recordsDialog button{color:#efdfbb;background:#292318;border:1px solid #b99a5959;border-radius:5px}#recordsDialog summary{display:list-item}
 
 .challenge-mode .cosmic-home{opacity:0;pointer-events:none}
+
+/* Side notes are outside the scene; the leader starts at the actual projected body centre. */
+#annotationLines{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+#annotationLines path{fill:none;stroke:#a9cfea;stroke-width:.8;vector-effect:non-scaling-stroke}
+.annotation-column{position:absolute;top:25%;bottom:22%;width:clamp(90px,12vw,175px);overflow:auto;scrollbar-width:thin;scrollbar-color:#6682a050 transparent;pointer-events:auto;display:flex;flex-direction:column;justify-content:space-evenly;gap:8px}
+.annotation-column.left{left:3%}.annotation-column.right{right:3%}
+.celestial-note{flex:none;min-height:48px;width:100%;padding:8px 12px;border:0;border-bottom:1px solid #aecfff35;border-radius:0;background:linear-gradient(90deg,#061020dd,#13253c55);text-align:left;color:#a8c4de;transition:color .4s,background .4s}
+.annotation-column.right .celestial-note{text-align:right;background:linear-gradient(-90deg,#061020dd,#13253c55)}
+.celestial-note strong{display:block;font:16px Georgia;overflow-wrap:anywhere}.celestial-note small{display:block;font:10px/1.7 system-ui;letter-spacing:.06em;color:#7e9ebc}.celestial-note[aria-pressed=true],.celestial-note:hover{color:#fff;background:#284562aa}.celestial-note:focus-visible{outline:1px solid #c1e2ff;outline-offset:-2px}
+#forgeStar{width:auto;height:auto;border:0;border-radius:0;padding:0;background:none;box-shadow:none;pointer-events:none!important;filter:none!important;transform:none!important;gap:3px}#forgeStar .forge-rim{display:none}#forgeStar strong{font-size:26px}#forgeStar small{font-size:10px}#forgeStar:hover{box-shadow:none!important}
+#forgeStatus{max-width:80vw;text-align:center}#generationStep{font:clamp(16px,2vw,24px)/1.5 Georgia;color:#e3eaff;letter-spacing:.03em;margin-top:18px;max-width:60vw;overflow-wrap:anywhere;text-shadow:0 2px 12px #030716}
+@media(max-width:700px){.annotation-column{width:88px;top:27%;bottom:23%}.annotation-column.left{left:8px}.annotation-column.right{right:8px}.celestial-note{padding:7px 5px;min-height:42px}.celestial-note strong{font-size:12px}.celestial-note small{font-size:8px}#challengeHint{font-size:10px}.challenge-bottom{min-width:220px;bottom:20px}}
+
+/* A single nebula surface for account, preferences, records and confirmations. */
+body dialog.cosmic-dialog,body #recordsDialog.records-dialog[open]{--record-border:#8cadd342;--serif:Georgia,'Songti SC',serif;--sans:system-ui;color:#d5e8fb;border:1px solid #829cc54d;border-radius:12px;background:radial-gradient(ellipse at 8% 12%,#49366c66,transparent 56%),radial-gradient(ellipse at 100% 82%,#15556a66,transparent 62%),radial-gradient(circle,#cbe3ff66 .6px,transparent 1px) 0 0/53px 61px,#080f1e;box-shadow:0 35px 100px #000b,inset 0 1px #c5deff12;backdrop-filter:blur(20px)}
+body dialog.cosmic-dialog::backdrop,body #recordsDialog::backdrop{background:#020611b8;backdrop-filter:blur(9px)}
+body dialog.cosmic-dialog h2,body #recordsDialog h2{color:#e2edff;font-weight:400;letter-spacing:.06em}
+body dialog.cosmic-dialog p,body #recordsDialog .records-intro,body #recordsDialog .record-id,body #recordsDialog time,body #recordsDialog small{color:#a4bbd5}
+body dialog.cosmic-dialog button,body #recordsDialog button{background:#17294299;color:#d6eaff;border:1px solid #8dadd34d;border-radius:6px;min-height:42px;transition:background .25s,border-color .25s,box-shadow .25s}
+body dialog.cosmic-dialog button:hover,body #recordsDialog button:hover{background:#2a4163bb;border-color:#b0d6f3aa;box-shadow:0 0 18px #67b8ff20}
+body dialog.cosmic-dialog input:not([type=range]):not([type=checkbox]),body #recordsDialog input{background:#071120bb;color:#e0efff;border-color:#809fc55a;border-radius:6px}
+body dialog.cosmic-dialog input:focus-visible,body #recordsDialog input:focus-visible{border-color:#b4d9ff;box-shadow:0 0 0 3px #89bcff20}
+body #recordsDialog header,body #recordsDialog .records-actions{background:transparent}
+body #recordsDialog .record-level,body #recordsDialog .records-status,body #recordsDialog label,body #recordsDialog summary{color:#acd5f3!important}
+body #recordsDialog .records-scroll{scrollbar-color:#7398bd #111c2e}
+body #recordsDialog .records-scroll::-webkit-scrollbar-track{background:#111c2e}
+body #recordsDialog .records-scroll::-webkit-scrollbar-thumb{background:linear-gradient(#557d9e,#b2c7e2,#675a9d);border-color:#152034}
+
+.challenge-mode .cosmic-tools{opacity:1!important;pointer-events:auto!important;position:relative;z-index:10}.challenge-mode .cosmic-tools button{pointer-events:auto!important}
+#challengeSound,#annotationLines{display:none}#challengeExit{border:0;border-radius:0;background:none;font-size:24px;top:22px;left:22px}
+#groupDefinition{color:#bfd1e5;font-size:clamp(10px,1.05vw,14px);max-width:72vw;overflow:auto;scrollbar-width:thin;letter-spacing:0}#groupDefinition .katex-display{margin:10px 0}.challenge-heading{top:10%;max-width:76vw}#challengeSteps{margin:6px}#challengeSector{font-size:clamp(23px,2.7vw,36px)}
+@media(max-width:700px){.challenge-heading{top:15%;width:96%;max-width:96%}#groupDefinition{max-width:96vw;font-size:10px}#challengeExit{top:20px;left:12px}.annotation-column{top:34%}}

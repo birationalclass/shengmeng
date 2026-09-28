@@ -3,7 +3,7 @@ import * as T from '../../../visuals/3d/vendor/three.module.js';
 const vertex=`varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}`;
 const billboard=`varying vec2 uv0;void main(){uv0=uv;vec4 mv=modelViewMatrix*vec4(0.,0.,0.,1.);vec2 s=vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));mv.xy+=position.xy*s;gl_Position=projectionMatrix*mv;}`;
 const gasShader=`
-precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform float time;uniform vec3 eye;uniform float zoom;
+precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform float time;uniform vec3 eye;uniform float zoom;uniform float ignite;
 float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
 float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
 float fbm(vec3 p){float a=.5,n=0.;for(int k=0;k<4;k++){n+=a*noise(p);p=p*2.07+5.1;a*=.5;}return n;}
@@ -45,7 +45,7 @@ vec3 mappedGas(vec4 hit){
 void main(){
  vec4 front=texture2D(frontMap,uv0),back=texture2D(backMap,uv0);
  vec3 light=mappedGas(front)+mappedGas(back)*.12;
- light=vec3(1.)-exp(-light*1.15);light=pow(light,vec3(.82));
+ float radial=clamp((length(front.xy)-3.)/9.,0.,1.);float reveal=1.-smoothstep(ignite*1.35-.15,ignite*1.35+.12,radial);light*=mix(.28,1.,reveal);light=vec3(1.)-exp(-light*1.15);light=pow(light,vec3(.82));
  float shadow=(front.w<-.5||back.w<-.5)?1.:0.;float emission=max(light.r,max(light.g,light.b));float alpha=max(shadow,smoothstep(.015,.32,emission));if(alpha<.01)discard;
  vec4 hit=front.w>.01?front:back;vec3 position=viewCenter;
  if(shadow<.5&&hit.w>.01)position+=(diskU*hit.x+diskV*hit.y)*modelUnit;
@@ -53,7 +53,7 @@ void main(){
  gl_FragColor=vec4(light,alpha);
 }`;
 const rayShader=`
-precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform vec3 eye;uniform float zoom;uniform int layer;uniform vec3 diskN;uniform vec3 diskU;uniform vec3 diskV;
+precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform vec3 eye;uniform float zoom;uniform float ignite;uniform int layer;uniform vec3 diskN;uniform vec3 diskU;uniform vec3 diskV;
 vec3 acceleration(vec3 p,float h2){float r2=dot(p,p);return -1.5*h2*p/(r2*r2*sqrt(r2));}
 void main(){
  vec2 xy=(uv0-.5)*2.;xy.x*=resolution.x/resolution.y;
@@ -81,7 +81,7 @@ void main(){
 export function galaxyBlackHole(sphere){
  let mapSize=256;
  const targets=[0,1].map(()=>new T.WebGLRenderTarget(256,256,{type:T.HalfFloatType,minFilter:T.NearestFilter,magFilter:T.NearestFilter,depthBuffer:false}));
- const uniforms={resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()},viewCenter:{value:new T.Vector3()},modelUnit:{value:1},depthProjection:{value:new T.Matrix4()}};
+ const uniforms={ignite:{value:1},resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()},viewCenter:{value:new T.Vector3()},modelUnit:{value:1},depthProjection:{value:new T.Matrix4()}};
  const material=new T.ShaderMaterial({uniforms,vertexShader:billboard,fragmentShader:gasShader,transparent:true,depthWrite:true});
  const body=new T.Mesh(sphere,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
  const image=new T.Mesh(new T.PlaneGeometry(8.5*1.35,8.5*1.35),material);body.add(image);
@@ -89,7 +89,7 @@ export function galaxyBlackHole(sphere){
  const rm=new T.ShaderMaterial({uniforms:ru,vertexShader:vertex,fragmentShader:rayShader});
  const cacheScene=new T.Scene(),cacheCamera=new T.Camera();cacheScene.add(new T.Mesh(new T.PlaneGeometry(2,2),rm));
  const mv=new T.Matrix4(),lastN=new T.Vector3(9,9,9),lastU=new T.Vector3(9,9,9),lastEye=new T.Vector3(999,999,999);
- body.userData.effects=[material];
+ body.userData.effects=[material];body.userData.ignite=uniforms.ignite;
  body.userData.updateBlackHole=(renderer,camera)=>{
   mv.multiplyMatrices(camera.matrixWorldInverse,body.matrixWorld);
   ru.diskN.value.set(0,1,0).transformDirection(mv);ru.diskU.value.set(1,0,0).transformDirection(mv);ru.diskV.value.set(0,0,1).transformDirection(mv);

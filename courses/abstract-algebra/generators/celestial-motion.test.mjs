@@ -17,3 +17,19 @@ test('planet spin doubles while revolution stays unchanged',()=>{for(const type 
 test('all stellar orbits remain in the accretion plane',()=>{for(let seed=0;seed<7;seed++){assert.equal(starMotion(seed).inclination,0);for(const m of spreadStarOrbits(25,seed))assert.equal(m.inclination,0);}assert.notEqual(planetMotion('gas-planet',7).inclination,0);});
 
 test('all planets assigned to one host share a plane within 15 degrees',()=>{for(let host=0;host<120;host++){const a=planetMotion('gas-planet',1,0,host);assert.ok(Math.abs(a.inclination)<=Math.PI/12);for(let i=0;i<10;i++){const b=planetMotion('ocean-planet',i,i,host);assert.equal(a.inclination,b.inclination);assert.equal(a.node,b.node);}}});
+
+import {systemStarOrbits,planetOrbitRadius} from './celestial-motion.mjs';
+import {groups} from './model.mjs';
+import {celestialLayout,bodyScale} from './celestial-rank.mjs';
+test('shared orbital rule clears every black hole and planetary envelope at every phase',()=>{
+ for(const [key,g] of Object.entries(groups)){
+  const scale=bodyScale(g.table.length),layout=celestialLayout(g),stars=layout.filter(p=>p.rank.type.endsWith('star')),orbits=systemStarOrbits(layout,scale,71,0),edge=12*(8.5/22)*scale*3;
+  assert.deepEqual(orbits,systemStarOrbits(layout,scale,71,0));
+  for(let i=0;i<stars.length;i++){
+   const m=orbits[i];assert.equal(m.inclination,0);assert.ok(m.radius-scale*2.4>=edge*2.5-1e-9,key);
+   for(const p of layout.filter(p=>p.host===stars[i].element)){const radius=1.5*scale*p.rank.scale,r=planetOrbitRadius(scale*2.4,radius,p.element,0,p.slot);assert.ok(m.radius-r-radius*(p.rank.type==='ring-planet'?2.25:1.055)>edge,key);}
+   for(let j=0;j<i;j++){assert.equal(m.orbit,orbits[j].orbit);assert.ok(Math.hypot(m.radius*Math.cos(m.phase)-orbits[j].radius*Math.cos(orbits[j].phase),m.radius*Math.sin(m.phase)-orbits[j].radius*Math.sin(orbits[j].phase))>=scale*6-1e-9,key);}
+  }
+  if(stars.length===1)assert.ok(orbits[0].radius<edge*3,key+' should remain compact');
+ }
+});

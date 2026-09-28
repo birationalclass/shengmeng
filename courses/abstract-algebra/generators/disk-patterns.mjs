@@ -27,7 +27,7 @@ function constellationPoints(style,count,inner,outer,rand,normal){
 export function diskPoints(style,count=7600,inner=3,outer=20){let seed=811+style*173;const rand=()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646;},normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-8,rand())))*Math.cos(Math.PI*2*rand()),out=[];
  if(CONSTELLATIONS[style])return constellationPoints(style,count,inner,outer,rand,normal);
  for(let i=0;i<count;i++){let u=rand(),a=rand()*Math.PI*2;const type=style%5,arm=i%([2,2,7,8,2][type]),twist=[5.4,3.1,7.7,1.2,2.4][type]+Math.floor(style/5)*.8;
- if(type===0){u=Math.pow(u,.8);a=arm*Math.PI+twist*u+normal()*(.08+.15*u);if(style===5)a=(i%4)*Math.PI/2+u*5+normal()*.15;if(style===10)a=(i%3)*Math.PI*2/3+u*4+normal()*.13;}
+ if(type===0){u=Math.pow(u,.8);a=arm*Math.PI+twist*u+normal()*(.08+.15*u);if(style===5)a=(i%4)*Math.PI/2+u*2.6+normal()*.15;if(style===10)a=(i%3)*Math.PI*2/3+u*4+normal()*.13;}
  if(type===1){a=(i%2)*Math.PI+Math.max(0,u-.35)*twist*2+normal()*(.04+.15*u);if(style===6&&i%5===0){a+=1.2;u*=.7;}}
  if(type===2){const segment=i%13;u=Math.max(0,Math.min(1,segment/13+normal()*.07));a=segment*2.39996+u*twist+normal()*.18;if(style===7){u=.7+normal()*.07;a=rand()*Math.PI*2;}}
  if(type===3){u=(i%3===0?.32:.8)+normal()*.055;if(style===8)u=Math.sqrt(rand());if(style===18)a=(rand()-.5)*Math.PI*1.5+u;}
