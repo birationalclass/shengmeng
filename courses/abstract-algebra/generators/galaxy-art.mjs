@@ -1,7 +1,7 @@
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 
 // Deterministic, volumetric distributions rather than repeated flat spiral lines.
-export function stellarField(index,count=7600){
+export function stellarField(index,count=7600,extent=10){
  let seed=811+index*173;const rand=()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646;};
  const normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-8,rand())))*Math.cos(6.283185*rand());
  const positions=[],colors=[];
@@ -30,6 +30,9 @@ export function stellarField(index,count=7600){
    const theta=(i%7)*2.399963,r=2+Math.sqrt((i%7)/6)*4;
    x=Math.cos(theta)*r+normal()*1.35;z=Math.sin(theta)*r+normal()*1.15;y=normal()*.7;
   }
+  // Preserve the distinct cloud structures, with diffuse coverage across every orbit.
+  if(i%4===0){const r=extent*Math.sqrt(rand()),theta=rand()*Math.PI*2;x=r*Math.cos(theta);z=r*Math.sin(theta);y=normal()*.45;}
+  else {const r=Math.hypot(x,z),scaled=extent*Math.tanh(r/7);if(r>0){x*=scaled/r;z*=scaled/r;}}
   positions.push(x,y,z);
   const tint=low.clone().lerp(high,rand());tint.multiplyScalar(.35+rand()*.6);colors.push(tint.r,tint.g,tint.b);
  }

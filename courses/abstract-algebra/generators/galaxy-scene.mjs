@@ -6,7 +6,7 @@ import {detailedPlanet} from './planet-render.mjs?v=plane-size-47';
 import {groups} from './model.mjs';
 import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=plane-size-47';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {stellarField} from './galaxy-art.mjs?v=disk-aligned-30';
+import {stellarField} from './galaxy-art.mjs?v=orbit-dust-49';
 import {GALAXIES} from './galaxy-campaign.mjs?v=disk-aligned-30';
 export class GalaxyScene{
  constructor(canvas,onSelect,onEnter){
@@ -23,7 +23,6 @@ export class GalaxyScene{
  stars(){const p=[],c=[];let seed=37;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};for(let i=0;i<4500;i++){p.push((rand()-.5)*650,(rand()-.5)*420,(rand()-.5)*600);const s=.4+rand()*.6;c.push(s*.8,s*.87,s);}this.scene.add(this.points(p,c,1.4));}
  galaxy(g,index){
   const root=new T.Group();root.position.set(index*34,Math.sin(index*1.5)*2,-index*4);root.rotation.set(.12+index*.012,0,-.3+index*.045);root.userData.planets=[];this.scene.add(root);
-  const field=stellarField(index);const dust=this.points(field.positions,field.colors,.65,.85);root.add(dust);root.userData.dust=dust;
   const sphere=new T.SphereGeometry(1,48,32),group=groups[g.key],layout=celestialLayout(group,71+index*19),stars=layout.filter(e=>e.rank.type.endsWith('star')),starOrbits=spreadStarOrbits(stars.length,71+index*131,1.5*(2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6));
   root.userData.extent=Math.max(11.5,...spreadStarOrbits(stars.length,71+index*131,2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6).map(m=>m.radius+bodyScale(g.order)*6));
   for(let i=0;i<g.order;i++){
@@ -31,11 +30,16 @@ export class GalaxyScene{
    const radius=1.5*bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
    const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
    planet.scale.setScalar(radius);
+   if(kind===3&&rank.type.endsWith('planet')){const ringTilt=(10+20*stableRandom(i*47+index*83))*Math.PI/180;const orbitFrame=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),motion.node).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-motion.inclination));planet.userData.spinBasePlanet=orbitFrame.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),stableRandom(i*67+index)*Math.PI*2)).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),ringTilt));planet.quaternion.copy(planet.userData.spinBasePlanet);}
+
    if(order===1)planet.position.set(0,0,0);
    else if(rank.type.endsWith('star'))planet.position.set(Math.cos(motion.phase)*motion.radius,0,Math.sin(motion.phase)*motion.radius);
    planet.userData={...planet.userData,...entry,motion,galaxy:index,label:group.labels[i]};if(rank.type.endsWith('star'))planet.userData.spinBase=new T.Quaternion().setFromEuler(new T.Euler(motion.spinTilt,motion.spinNode,0,'YXZ'));planet.traverse(part=>part.layers.set(order===1?1:2));root.add(planet);root.userData.planets.push(planet);
 
   }
+  let orbitExtent=0;
+  for(const p of root.userData.planets){const d=p.userData;if(d.rank.type.endsWith('star'))orbitExtent=Math.max(orbitExtent,d.motion.radius+p.scale.x);if(d.host!==null){const host=root.userData.planets[d.host],r=(host.scale.x+p.scale.x)*(1.75+stableRandom(d.element*31+d.galaxy*53)*.6)+d.slot*p.scale.x*2.8;orbitExtent=Math.max(orbitExtent,host.userData.motion.radius+r+p.scale.x*(d.rank.type==='ring-planet'?2.25:1.055));}}
+  const field=stellarField(index,7600,orbitExtent*1.12),dust=this.points(field.positions,field.colors,.65,.85);root.add(dust);root.userData.dust=dust;
   const completion={value:0};root.userData.completion=completion;
   root.traverse(part=>{const material=part.material;if(!material?.isShaderMaterial)return;material.uniforms.completionColor=completion;material.fragmentShader='uniform float completionColor;\n'+material.fragmentShader.replace(/}\s*$/, 'float gray=dot(gl_FragColor.rgb,vec3(.2126,.7152,.0722));gl_FragColor.rgb=mix(vec3(gray),gl_FragColor.rgb,completionColor);\n}');});
   return root;
