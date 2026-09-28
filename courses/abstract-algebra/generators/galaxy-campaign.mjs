@@ -5,6 +5,8 @@ export const GALAXIES=[
  {key:'D4',name:'D₄',zh:'镜像星海',en:'Mirror sea',order:8,color:0xffbd79},
  {key:'Q8',name:'Q₈',zh:'深空八重奏',en:'Deep octet',order:8,color:0x9c9cff},
  {key:'S4',name:'S₄',zh:'万象旋臂',en:'Spiral worlds',order:24,color:0xff8dbf},
+ {key:'F56',name:'AGL(1,𝔽₈)',zh:'华夏星群',en:'Huaxia constellation',order:56,color:0xffb87d},
+ {key:'A5',name:'A₅',zh:'不可约之夜',en:'The indivisible night',order:60,color:0xbca8ff},
  {key:'S5',name:'S₅',zh:'群星交响',en:'Stellar symphony',order:120,color:0x9eeaff}
 ];
 export function progress(value){return Math.max(0,Math.min(GALAXIES.length,Math.floor(Number(value)||0)));}

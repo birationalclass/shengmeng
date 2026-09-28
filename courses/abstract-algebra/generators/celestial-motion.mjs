@@ -25,8 +25,8 @@ export function orbitalOffset(motion,angle,radius){
 export function spreadStarOrbits(count,seed=0,minRadius=3.8){
  return Array.from({length:count},(_,i)=>{
   const m=starMotion(seed+i*137),fraction=(i+.15+.7*stableRandom(seed+i*53))/Math.max(1,count);
-  m.radius=minRadius+7.4*fraction;m.phase=i*2.3999632297+stableRandom(seed+i*97)*.55;
-  m.orbit=2*Math.PI/(19+m.radius*3);m.inclination=0;
+  m.radius=minRadius+Math.max(12,minRadius*1.2,count*.65)*fraction;m.phase=i*2.3999632297+stableRandom(seed)*Math.PI*2;
+  m.orbit=2*Math.PI/(22+minRadius*2);m.inclination=0;
   return m;
  });
 }

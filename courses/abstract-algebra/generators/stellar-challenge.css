@@ -1,0 +1,25 @@
+body>header,body>main{display:none!important}#demoComplete{display:none!important}
+.cosmic-heading,.sector-info,.neighbor-label,#galaxyWatermark,.cosmic-bottom{transition:opacity .8s,filter .8s,transform .8s}
+.challenge-mode .cosmic-heading,.challenge-mode .sector-info,.challenge-mode .neighbor-label,.challenge-mode #galaxyWatermark,.challenge-mode .cosmic-bottom{opacity:0;filter:blur(6px);pointer-events:none!important}
+.challenge-mode .cosmic-tools{opacity:0;pointer-events:none}.challenge-mode .cosmic-tools button{pointer-events:none!important}
+#stellarChallenge{position:fixed;inset:0;z-index:5;pointer-events:none;color:#d9eaff;font-family:Georgia,'Songti SC',serif}
+#stellarChallenge button{pointer-events:auto;cursor:pointer}#stellarChallenge button:disabled{cursor:default}
+.challenge-heading{position:absolute;top:6%;left:50%;transform:translateX(-50%);text-align:center;letter-spacing:.14em}
+#challengeSector{font-size:clamp(24px,3vw,42px)}#challengeSteps{color:#b7a6ed;margin:12px}#challengeHint{font:12px system-ui;color:#91aac7;letter-spacing:.08em}
+.challenge-bottom{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;min-width:280px}
+#forgeStar{position:relative;width:104px;height:104px;border-radius:50%;padding:0;color:#e4f4ff;border:1px solid #b8d8ff8a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:radial-gradient(ellipse at 28% 16%,#e0f1ff44,transparent 38%),repeating-conic-gradient(from 20deg,#c1d8ff0a 0deg 1deg,transparent 1deg 3deg),radial-gradient(circle at 50% 65%,#262344,#09172b 72%);box-shadow:inset 0 0 0 4px #060d1b,inset 0 0 0 5px #97b7e455,inset 0 -12px 20px #03050d,0 5px 20px #000a,0 0 45px #789eff20;transition:transform .25s,box-shadow .4s,filter .4s}
+#forgeStar:hover:not(:disabled){transform:translateY(-3px);box-shadow:inset 0 0 0 4px #060d1b,inset 0 0 0 5px #97b7e4aa,0 0 55px #a7ceff45}#forgeStar:active:not(:disabled){transform:scale(.95)}#forgeStar:focus-visible{outline:2px solid #e1ddff;outline-offset:7px}
+#forgeStar strong{font:32px Georgia}#forgeStar small{font:9px system-ui;letter-spacing:.18em;color:#aebfda}.forge-rim{position:absolute;inset:-7px;border:1px solid #aebbf144;border-radius:50%;border-bottom-color:#d2bfff}
+#forgeStar[data-phase=generating] .forge-rim{animation:forge-spin 4s linear infinite}#forgeStar:disabled{filter:saturate(.55)}@keyframes forge-spin{to{transform:rotate(360deg)}}
+#forgeStatus{font:12px system-ui;color:#b5cbe2;min-height:18px}#chosenStars{display:flex;gap:8px;min-height:28px}#chosenStars button{border:1px solid #accaff55;border-radius:20px;background:#13233b99;color:#d8e8ff;min-width:34px;padding:6px 12px;font:15px Georgia}
+.celestial-label{position:absolute;transform:translate(-50%,-50%);min-width:26px;height:26px;padding:0;border:0;background:transparent;color:#c7dcf4a0;font:11px ui-monospace,monospace;text-shadow:0 1px 4px #000,0 0 8px #000;transition:color .3s,box-shadow .3s;border-radius:50%}
+.celestial-label:hover,.celestial-label:focus-visible{color:#fff;box-shadow:0 0 0 1px #c3e3ff,0 0 20px #9edbff77;outline:none}.celestial-label[aria-pressed=true]{color:#fff;box-shadow:0 0 0 1px #bfdfff88,0 0 18px #aadeff44}.celestial-label[data-lit=true]{color:#fff}
+#challengeExit,#challengeSound{position:absolute;top:27px;border:1px solid #b1c7e333;border-radius:50%;background:#0a172a77;color:#cadcf4;width:42px;height:42px}#challengeExit{left:30px}#challengeSound{right:30px}
+#challengeResult{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%) scale(.95);text-align:center;opacity:0;transition:opacity .6s,transform .6s;min-width:280px;pointer-events:none;text-shadow:0 3px 25px #000}
+#challengeResult.visible{opacity:1;transform:translate(-50%,-50%) scale(1)}#challengeResult>span{font-size:52px;color:#d6e8ff}#challengeResult h2{font-size:35px;font-weight:400;letter-spacing:.14em;margin:12px}#challengeResult p{font:12px system-ui;color:#c5d7ee}
+[data-phase=fail] #challengeResult{color:#e9bfd2}[data-phase=fail] .challenge-bottom{opacity:.3}
+@media(max-width:700px){.challenge-heading{top:12%;width:80%}.challenge-bottom{bottom:18px}#forgeStar{width:88px;height:88px}.celestial-label{min-width:23px;height:23px;font-size:10px}#challengeExit{left:16px}#challengeSound{right:16px}}
+
+#recordsDialog{--serif:Georgia,"Songti SC",serif;--sans:system-ui}#recordsDialog header{position:static;height:auto}#recordsDialog button{color:#efdfbb;background:#292318;border:1px solid #b99a5959;border-radius:5px}#recordsDialog summary{display:list-item}
+
+.challenge-mode .cosmic-home{opacity:0;pointer-events:none}

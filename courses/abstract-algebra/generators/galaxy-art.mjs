@@ -1,12 +1,12 @@
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 
 // Deterministic, volumetric distributions rather than repeated flat spiral lines.
-export function stellarField(index,count=7600,extent=10){
+export function stellarField(index,count=7600,extent=10,inner=0){
  let seed=811+index*173;const rand=()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646;};
  const normal=()=>Math.sqrt(-2*Math.log(Math.max(1e-8,rand())))*Math.cos(6.283185*rand());
  const positions=[],colors=[];
  const palettes=[[0x7296b8,0xdfb792],[0x91b6d3,0xbe94be],[0x7caaa7,0xe0cd9e],[0xb5a1d3,0xe3bda0],[0x869bda,0xbaabc7],[0xb6cadc,0xe0c8a7],[0x8aafd0,0xb79bc4]];
- const low=new T.Color(palettes[index][0]),high=new T.Color(palettes[index][1]);
+ const low=new T.Color(palettes[index%palettes.length][0]),high=new T.Color(palettes[index%palettes.length][1]);
  for(let i=0;i<count;i++){
   const u=rand(),a=rand()*Math.PI*2;let x,y,z;
   if(index===0){ // A broken, asymmetric nursery with open dark space.
@@ -33,6 +33,7 @@ export function stellarField(index,count=7600,extent=10){
   // Preserve the distinct cloud structures, with diffuse coverage across every orbit.
   if(i%4===0){const r=extent*Math.sqrt(rand()),theta=rand()*Math.PI*2;x=r*Math.cos(theta);z=r*Math.sin(theta);y=normal()*.45;}
   else {const r=Math.hypot(x,z),scaled=extent*Math.tanh(r/7);if(r>0){x*=scaled/r;z*=scaled/r;}}
+  const oldRadius=Math.hypot(x,z),newRadius=inner+(extent-inner)*Math.min(1,oldRadius/extent);if(oldRadius>0){x*=newRadius/oldRadius;z*=newRadius/oldRadius;}y=0;
   positions.push(x,y,z);
   const tint=low.clone().lerp(high,rand());tint.multiplyScalar(.35+rand()*.6);colors.push(tint.r,tint.g,tint.b);
  }

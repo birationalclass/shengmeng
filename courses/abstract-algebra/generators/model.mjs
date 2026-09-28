@@ -47,3 +47,10 @@ export class Closure {
 }
 // Equal masses: transfer the normal component; conserve tangential components.
 export function collide(a,b,n){const d=(a.x-b.x)*n.x+(a.y-b.y)*n.y;return [{x:a.x-d*n.x,y:a.y-d*n.y},{x:b.x+d*n.x,y:b.y+d*n.y}];}
+
+// AGL(1,F8), F8 = F2[t]/(t^3+t+1). Composition (a,b)(c,d)=(ac,ad+b).
+export function gf8Multiply(a,b){let out=0;while(b){if(b&1)out^=a;b>>=1;a<<=1;if(a&8)a^=11;}return out;}
+const affine=Array.from({length:56},(_,i)=>({a:1+Math.floor(i/8),b:i%8}));
+groups.F56=group('AGL(1,𝔽₈)',affine.map(({a,b})=>`(${a},${b})`),(i,j)=>{const x=affine[i],y=affine[j];return (gf8Multiply(x.a,y.a)-1)*8+(gf8Multiply(x.a,y.b)^x.b);});groups.F56.seeds=[1,8];
+const even=groups.S5.labels.map((label,i)=>({i,parity:[...label.matchAll(/\((\d+)\)/g)].reduce((s,m)=>s+m[1].length-1,0)%2})).filter(x=>x.parity===0).map(x=>x.i),evenIndex=new Map(even.map((x,i)=>[x,i]));
+groups.A5=group('A₅',even.map(i=>groups.S5.labels[i]),(i,j)=>evenIndex.get(groups.S5.table[even[i]][even[j]]));groups.A5.seeds=[groups.A5.labels.indexOf('(123)'),groups.A5.labels.indexOf('(12345)')];
