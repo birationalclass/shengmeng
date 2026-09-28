@@ -1,17 +1,18 @@
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 
 const billboard=`varying vec2 vUv;void main(){vUv=uv;vec4 mv=modelViewMatrix*vec4(0.,0.,0.,1.);vec2 s=vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));mv.xy+=position.xy*s;gl_Position=projectionMatrix*mv;}`;
+const diskVertex=billboard.replace('varying vec2 vUv;', 'varying vec2 vUv;varying vec3 diskNormal;varying vec3 diskU;varying vec3 diskV;').replace('vUv=uv;', 'vUv=uv;diskNormal=normalize(mat3(modelViewMatrix)*vec3(0.,1.,0.));diskU=normalize(mat3(modelViewMatrix)*vec3(1.,0.,0.));diskV=normalize(mat3(modelViewMatrix)*vec3(0.,0.,1.));');
 const noise=`float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}float fbm(vec3 p){float n=0.,a=.5;for(int i=0;i<5;i++){n+=noise(p)*a;p=p*2.03+7.17;a*=.5;}return n;}`;
 
 export function blackHole(sphere){
  const body=new T.Mesh(sphere,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
  // Null-ray orbital acceleration for a nonrotating unit Schwarzschild radius.
  // Finite integration budget and an artistic thin disk: a real-time approximation.
- const material=new T.ShaderMaterial({transparent:true,depthWrite:false,depthTest:false,uniforms:{time:{value:0}},vertexShader:billboard,fragmentShader:`
- varying vec2 vUv;uniform float time;${noise}
+ const material=new T.ShaderMaterial({transparent:true,depthWrite:false,depthTest:false,uniforms:{time:{value:0}},vertexShader:diskVertex,fragmentShader:`
+ varying vec2 vUv;varying vec3 diskNormal;varying vec3 diskU;varying vec3 diskV;uniform float time;${noise}
  vec3 disk(vec3 p,vec3 normal){
   float r=length(p);vec3 tangent=normalize(cross(normal,p));float beam=clamp(pow(1./(1.-dot(tangent,vec3(0,0,1))*.34),3.),.35,2.8);
-  float a=atan(p.z,p.x),flow=a-time*.32/pow(max(r/3.,1.),1.5);
+  float a=atan(dot(p,normalize(diskV)),dot(p,normalize(diskU))),flow=a-time*.32/pow(max(r/3.,1.),1.5);
   float turbulent=fbm(vec3(r*2.,cos(flow)*4.,sin(flow)*4.));
   float filaments=.48+.25*turbulent+.10*sin(r*19.+turbulent*9.+flow*2.);
   float heat=pow(3./max(3.,r),.75);vec3 c=mix(vec3(.7,.12,.025),vec3(1.,.84,.51),heat*heat);
@@ -19,7 +20,7 @@ export function blackHole(sphere){
  }
  void main(){
   vec2 screen=(vUv-.5)*22.;vec3 p=vec3(0.,0.,20.),v=normalize(vec3(screen,-20.));
-  float h2=dot(cross(p,v),cross(p,v)),alpha=0.;vec3 color=vec3(0.);vec3 normal=normalize(vec3(0.,1.,.24));bool captured=false;
+  float h2=dot(cross(p,v),cross(p,v)),alpha=0.;vec3 color=vec3(0.);vec3 normal=normalize(diskNormal);bool captured=false;
   for(int j=0;j<160;j++){
    float r=length(p);if(r<1.02){captured=true;break;}if(r>26.)break;
    float ds=clamp(r*.085,.055,.65);vec3 old=p;float before=dot(p,normal);

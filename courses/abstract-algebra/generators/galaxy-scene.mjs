@@ -1,9 +1,9 @@
-import {blackHole,detailedStar} from './stellar-render.mjs?v=stellar-29';
+import {blackHole,detailedStar} from './stellar-render.mjs?v=disk-aligned-30';
 import {groups} from './model.mjs';
-import {elementOrder,celestialRank} from './celestial-rank.mjs?v=stellar-29';
+import {elementOrder,celestialRank} from './celestial-rank.mjs?v=disk-aligned-30';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {stellarField,planetMaterial,addPlanetDetails} from './galaxy-art.mjs?v=stellar-29';
-import {GALAXIES} from './galaxy-campaign.mjs?v=stellar-29';
+import {stellarField,planetMaterial,addPlanetDetails} from './galaxy-art.mjs?v=disk-aligned-30';
+import {GALAXIES} from './galaxy-campaign.mjs?v=disk-aligned-30';
 export class GalaxyScene{
  constructor(canvas,onSelect){
   this.canvas=canvas;this.onSelect=onSelect;this.selected=0;this.unlocked=0;this.motion=true;this.pointer=new T.Vector2();this.target=new T.Vector3();this.look=new T.Vector3();this.camera=new T.PerspectiveCamera(46,1,.1,1600);this.camera.position.set(0,9,27);this.scene=new T.Scene();this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));this.renderer.outputColorSpace=T.SRGBColorSpace;this.scene.add(new T.AmbientLight(0xb7b4ff,.6));const light=new T.DirectionalLight(0xdaf6ff,2.4);light.position.set(-8,14,12);this.scene.add(light);const pink=new T.PointLight(0xee55cc,90,50);pink.position.set(6,3,8);this.scene.add(pink);this.ray=new T.Raycaster();this.ray.params.Points.threshold=.5;
@@ -16,7 +16,7 @@ export class GalaxyScene{
  points(pos,colors,size,opacity=1){const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));const mat=new T.ShaderMaterial({vertexColors:true,transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{size:{value:size},opacity:{value:opacity}},vertexShader:`uniform float size;varying vec3 c;void main(){c=color;vec4 p=modelViewMatrix*vec4(position,1.);gl_PointSize=clamp(size*150./max(1.,-p.z),1.,45.);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float opacity;varying vec3 c;void main(){float d=length(gl_PointCoord-.5)*2.;if(d>1.)discard;float a=pow(1.-d,2.5);gl_FragColor=vec4(c,a*opacity);}`});return new T.Points(geo,mat);}
  stars(){const p=[],c=[];let seed=37;const rand=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};for(let i=0;i<4500;i++){p.push((rand()-.5)*650,(rand()-.5)*420,(rand()-.5)*600);const s=.4+rand()*.6;c.push(s*.8,s*.87,s);}this.scene.add(this.points(p,c,1.4));}
  galaxy(g,index){
-  const root=new T.Group();root.position.set(index*34,Math.sin(index*1.5)*2,-index*4);root.rotation.set(.32+index*.045,0,-.2+index*.09);root.userData.planets=[];this.scene.add(root);
+  const root=new T.Group();root.position.set(index*34,Math.sin(index*1.5)*2,-index*4);root.rotation.set(.12+index*.012,0,-.3+index*.045);root.userData.planets=[];this.scene.add(root);
   const field=stellarField(index);const dust=this.points(field.positions,field.colors,.65,.85);root.add(dust);root.userData.dust=dust;
   const sphere=new T.SphereGeometry(1,48,32),group=groups[g.key];
   for(let i=0;i<g.order;i++){
