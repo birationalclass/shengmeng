@@ -277,13 +277,15 @@ function resize(){
   camera.aspect=innerWidth/innerHeight;if(!entered)camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
+  const bufferRatio=readingPixelRatio(profile.pixelRatio,{enabled:!entered&&$('boardClarity').value==='crisp',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
+  // Reserve readable board resolution before entry; never allocate it at the hall door.
   // One backing-store resize, rather than reallocating once for DPR and again for size.
-  if(renderer.domElement.width!==Math.floor(innerWidth*profile.pixelRatio)||renderer.domElement.height!==Math.floor(innerHeight*profile.pixelRatio)||renderer.getPixelRatio()!==profile.pixelRatio)renderer.setDrawingBufferSize(innerWidth,innerHeight,profile.pixelRatio);
+  if(renderer.domElement.width!==Math.floor(innerWidth*bufferRatio)||renderer.domElement.height!==Math.floor(innerHeight*bufferRatio)||renderer.getPixelRatio()!==bufferRatio)renderer.setDrawingBufferSize(innerWidth,innerHeight,bufferRatio);
   if(composer){
     // Dispose on sample-count changes: changing .samples alone does not rebuild
     // an already allocated WebGL framebuffer at the same dimensions.
     for(const target of [composer.renderTarget1,composer.renderTarget2])if(target.samples!==profile.samples){target.samples=profile.samples;target.dispose();}
-    composer.setPixelRatio(profile.direct?1:profile.pixelRatio);composer.setSize(innerWidth,innerHeight);
+    composer.setPixelRatio(profile.direct?1:bufferRatio);composer.setSize(innerWidth,innerHeight);
     bloom.enabled=false; // Chalk and stone must never acquire a screen-space halo.
   }
   renderer.shadowMap.enabled=profile.shadows;renderer.shadowMap.needsUpdate=true;
