@@ -1,5 +1,5 @@
-const mode=new URLSearchParams(location.search).get('quality')||'original';
-const optimized=mode==='balanced'||mode==='light';
+const mode=new URLSearchParams(location.search).get('quality')||'balanced';
+const optimized=true;
 const profile=mode==='light'?{pixels:900,fps:30,steps:400,octaves:3}:{pixels:1200,fps:45,steps:520,octaves:4};
 if(optimized)await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 const T=await import('../../../visuals/3d/vendor/three.module.js');
@@ -42,42 +42,52 @@ vec3 gas(vec3 p,vec3 v){
  float envelope=smoothstep(3.,3.25,r)*(1.-smoothstep(8.,12.,r))*pow(3./r,1.6);
  return color*density*envelope*beam*3.4;
 }
-vec3 acceleration(vec3 p,float h2){float r2=dot(p,p);return -1.5*h2*p/(r2*r2*sqrt(r2));}
+uniform sampler2D frontMap;uniform sampler2D backMap;
+vec3 mappedGas(vec4 hit){
+ if(hit.w<.01)return vec3(0.);
+ vec3 p=vec3(hit.x,0.,hit.y),tangent=normalize(vec3(-p.z,0.,p.x));
+ // Reconstruct the tangential component needed by the Doppler shading.
+ vec3 v=-tangent*hit.z+vec3(0.,sqrt(max(0.,1.-hit.z*hit.z)),0.);
+ return gas(p,v)*hit.w;
+}
 void main(){
- vec2 xy=(uv0-.5)*2.;xy.x*=resolution.x/resolution.y;
- // Camera roll provides a restrained diagonal view while the disk stays in world XZ.
- xy=mat2(.985,-.174,.174,.985)*xy;
- vec3 forward=normalize(-eye),right=normalize(cross(forward,vec3(0,1,0))),up=cross(right,forward);
- vec3 p=eye,v=normalize(forward+zoom*.43*(xy.x*right+xy.y*up));
- float h2=dot(cross(p,v),cross(p,v)),trans=1.;vec3 light=vec3(0.);bool captured=false;
- // Midpoint integration of Schwarzschild orbital acceleration (Rs=1).
- for(int i=0;i<${optimized?profile.steps:520};i++){
-  float r=length(p);if(r<1.005){captured=true;break;}if(r>55.)break;
-  float ds=clamp(r*.065,.025,.8);if(abs(p.y)<1.&&r>3.&&r<13.)ds=min(ds,.07);vec3 old=p,oldV=v;
-  vec3 halfV=v+acceleration(p,h2)*ds*.5,halfP=p+v*ds*.5;
-  v+=acceleration(halfP,h2)*ds;p+=halfV*ds;
-    float cylindrical=length(p.xz);
-  if(cylindrical>3.1&&cylindrical<12.&&abs(p.y)<.7){
-   float phase=atan(p.z,p.x)-time*1.8/pow(cylindrical/3.,1.5);
-   float clumps=clouds(cylindrical,atan(p.z,p.x),p.y);
-   float thickness=.09+.32*smoothstep(.28,.7,clumps);
-   float mist=exp(-pow(p.y/thickness,2.))*smoothstep(.24,.65,clumps);
-   float opacity=1.-exp(-mist*ds*.75);
-   light+=trans*gas(vec3(p.x,0.,p.z),v)*opacity*.8;trans*=1.-opacity*.6;
-  }
-  if(old.y*p.y<0.){
-   float fraction=old.y/(old.y-p.y);vec3 hit=mix(old,p,fraction);float radius=length(hit.xz);
-   if(radius>3.&&radius<12.){vec3 emission=gas(hit,mix(oldV,v,fraction));light+=trans*emission;trans*=.12;}
-  }
- }
- if(!captured)light+=trans*sky(normalize(v));
- // Gentle optical scatter; no painted circle is used to fake the lensing image.
+ vec4 front=texture2D(frontMap,uv0),back=texture2D(backMap,uv0);
+ vec3 light=mappedGas(front)+mappedGas(back)*.12;
  light=vec3(1.)-exp(-light*1.15);light=pow(light,vec3(.82));
  gl_FragColor=vec4(light,1.);
 }`});
-scene.add(new T.Mesh(new T.PlaneGeometry(2,2),material));
+const quad=new T.Mesh(new T.PlaneGeometry(2,2),material);scene.add(quad);
+// Cache geometry separately from animated gas. No iterative tracing in animation frames.
+const targets=[0,1].map(()=>new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,minFilter:T.NearestFilter,magFilter:T.NearestFilter,depthBuffer:false}));
+uniforms.frontMap={value:targets[0].texture};uniforms.backMap={value:targets[1].texture};
+const rayUniforms={...uniforms,layer:{value:0}};
+const rayMaterial=new T.ShaderMaterial({uniforms:rayUniforms,vertexShader:material.vertexShader,fragmentShader:`
+precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform vec3 eye;uniform float zoom;uniform int layer;
+vec3 acceleration(vec3 p,float h2){float r2=dot(p,p);return -1.5*h2*p/(r2*r2*sqrt(r2));}
+void main(){
+ vec2 xy=(uv0-.5)*2.;xy.x*=resolution.x/resolution.y;xy=mat2(.985,-.174,.174,.985)*xy;
+ vec3 f=normalize(-eye),right=normalize(cross(f,vec3(0,1,0))),up=cross(right,f);
+ vec3 p=eye,v=normalize(f+zoom*.43*(xy.x*right+xy.y*up));float h2=dot(cross(p,v),cross(p,v));int hits=0;
+ gl_FragColor=vec4(0.);
+ for(int i=0;i<240;i++){
+  float r=length(p);if(r<1.005||r>55.)break;
+  float ds=clamp(r*.065,.025,.8);vec3 old=p,oldV=v;
+  vec3 halfV=v+acceleration(p,h2)*ds*.5,halfP=p+v*ds*.5;
+  v+=acceleration(halfP,h2)*ds;p+=halfV*ds;
+  if(old.y*p.y<0.){
+   float fraction=old.y/(old.y-p.y);vec3 hit=mix(old,p,fraction);float radius=length(hit.xz);
+   if(radius>3.&&radius<12.){
+    if(hits==layer){vec3 tangent=normalize(vec3(-hit.z,0.,hit.x));gl_FragColor=vec4(hit.xz,dot(tangent,-normalize(mix(oldV,v,fraction))),1.);break;}
+    hits++;
+   }
+  }
+ }
+}`});
+let mapDirty=true,mapBuilds=0,frames=0,statsStart=performance.now(),lastMap=0;
+function cacheRays(){quad.material=rayMaterial;for(let i=0;i<2;i++){rayUniforms.layer.value=i;renderer.setRenderTarget(targets[i]);renderer.render(scene,camera);}renderer.setRenderTarget(null);quad.material=material;mapDirty=false;mapBuilds++;}
+
 let azimuth=.25,elevation=.21,targetElevation=.21,targetAzimuth=.25,distance=29,paused=false,en=false,drag=null,last=performance.now();
-function resize(){const ratio=Math.min(devicePixelRatio,1.25),limit=(optimized?profile.pixels:1500)/Math.max(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(ratio,Math.max(.35,limit)));renderer.setSize(innerWidth,innerHeight);renderer.getDrawingBufferSize(uniforms.resolution.value);uniforms.zoom.value=Math.max(1,.95/(innerWidth/innerHeight));}
+function resize(){const ratio=Math.min(devicePixelRatio,1.25),limit=(optimized?profile.pixels:1500)/Math.max(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(ratio,Math.max(.35,limit)));renderer.setSize(innerWidth,innerHeight);renderer.getDrawingBufferSize(uniforms.resolution.value);uniforms.zoom.value=Math.max(1,.95/(innerWidth/innerHeight));const w=mode==='light'?640:1000;for(const target of targets)target.setSize(w,Math.max(1,Math.round(w*innerHeight/innerWidth)));mapDirty=true;}
 addEventListener('resize',resize);resize();
 canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag)return;targetAzimuth-=(e.clientX-drag.x)*.006;targetElevation=Math.max(-1.4,Math.min(1.4,targetElevation+(e.clientY-drag.y)*.005));drag={x:e.clientX,y:e.clientY};});
@@ -89,9 +99,20 @@ function labels(){document.documentElement.lang=en?'en':'zh-CN';document.querySe
 document.querySelector('#language').onclick=()=>{en=!en;labels();};
 document.querySelector('#pause').onclick=e=>{paused=!paused;e.currentTarget.setAttribute('aria-pressed',String(paused));labels();};
 document.querySelector('#fullscreen').onclick=()=>{(document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()).catch(e=>error.textContent=e.message);};
-let lastDraw=0;renderer.setAnimationLoop(now=>{if(optimized&&(document.hidden||now-lastDraw<1000/profile.fps))return;lastDraw=now;const dt=Math.min((now-last)/1000,.05);last=now;if(!paused)uniforms.time.value+=dt;const ease=1-Math.exp(-dt*5);elevation+=(targetElevation-elevation)*ease;azimuth+=(targetAzimuth-azimuth)*ease;uniforms.eye.value.set(Math.sin(azimuth)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(azimuth)*Math.cos(elevation)*distance);renderer.render(scene,camera);});
-
-
-
-
+let lastDraw=0;
+document.addEventListener('visibilitychange',()=>{last=performance.now();});
+renderer.setAnimationLoop(now=>{
+ if(document.hidden||now-lastDraw<1000/profile.fps)return;
+ const moving=Math.abs(targetElevation-elevation)+Math.abs(targetAzimuth-azimuth)>.0001;
+ const nextEye=new T.Vector3(Math.sin(azimuth)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(azimuth)*Math.cos(elevation)*distance);
+ if(moving||nextEye.distanceToSquared(uniforms.eye.value)>.00001)mapDirty=true;
+ if(paused&&!moving&&!mapDirty){last=now;return;}
+ lastDraw=now;const dt=Math.min((now-last)/1000,.1);last=now;
+ if(!paused)uniforms.time.value+=dt;
+ const ease=1-Math.exp(-dt*8);elevation+=(targetElevation-elevation)*ease;azimuth+=(targetAzimuth-azimuth)*ease;
+ uniforms.eye.value.set(Math.sin(azimuth)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(azimuth)*Math.cos(elevation)*distance);
+ if(mapDirty&&(!moving||now-lastMap>100)){cacheRays();lastMap=now;}
+ renderer.render(scene,camera);frames++;
+ if(now-statsStart>2000){canvas.dataset.fps=(frames*1000/(now-statsStart)).toFixed(1);canvas.dataset.rayMapBuilds=String(mapBuilds);canvas.dataset.renderSize=uniforms.resolution.value.toArray().join('x');statsStart=now;frames=0;}
+});
 
