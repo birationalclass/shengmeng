@@ -50,8 +50,17 @@ export function detailedStar(sphere,rank,seed){
  const body=new T.Mesh(sphere,material);
  const coronaMat=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{time:{value:0},seed:{value:seed},tint:{value:tint}},vertexShader:billboard,fragmentShader:`varying vec2 vUv;uniform float time;uniform float seed;uniform vec3 tint;${noise}
  void main(){vec2 q=(vUv-.5)*5.;float r=length(q);if(r<.985)discard;float a=atan(q.y,q.x);vec3 p=vec3(cos(a)*6.,sin(a)*6.,time*.06+seed);float fil=fbm(p);float reach=.12+pow(fil,3.)*1.3;float ray=exp(-(r-1.)/reach)*(.18+fil*.5);float edge=exp(-pow((r-1.025)*45.,2.))*.3;
-  float loop=0.;for(int i=0;i<3;i++){float angle=float(i)*2.1+seed*.8;vec2 center=vec2(cos(angle),sin(angle))*1.09;float d=length(q-center);loop+=exp(-pow((d-.15)*95.,2.))*.26;}
+  float loop=0.;
   float opacity=(ray+edge+loop)*(1.-smoothstep(1.6,2.4,r));gl_FragColor=vec4(tint,opacity);
  }`});
- body.add(new T.Mesh(new T.PlaneGeometry(5,5),coronaMat));body.userData.effects=[material,coronaMat];return body;
+ body.add(new T.Mesh(new T.PlaneGeometry(5,5),coronaMat));body.userData.effects=[material,coronaMat];
+ // Three-dimensional magnetic arches rooted at two photospheric footpoints.
+ for(let j=0;j<4;j++){
+  const angle=seed*.9+j*1.7,normal=new T.Vector3(Math.cos(angle),Math.sin(angle),.35*Math.sin(seed+j)).normalize();
+  const tangent=new T.Vector3(-normal.y,normal.x,0).normalize(),points=[];
+  for(let k=0;k<=32;k++){const u=k/32;points.push(normal.clone().multiplyScalar(.975+Math.sin(u*Math.PI)*(.12+j*.025)).addScaledVector(tangent,(u-.5)*.32));}
+  const arch=new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),32,.006,5,false),new T.MeshBasicMaterial({color:tint,transparent:true,opacity:.7,blending:T.AdditiveBlending,depthWrite:false}));
+  body.add(arch);
+ }
+ return body;
 }

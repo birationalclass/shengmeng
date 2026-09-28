@@ -5,12 +5,21 @@ export function elementOrder(group,element){
  }
  throw new Error('Element has no finite order');
 }
-// A visual hierarchy, not an astrophysical mass classification.
-export function celestialRank(order){
- if(order===1)return {type:'black-hole',zh:'黑洞',en:'Black hole',scale:1.7};
- if(order===2)return {type:'blue-star',zh:'蓝白巨星',en:'Blue-white giant',scale:1.3};
- if(order===3)return {type:'gold-star',zh:'金色恒星',en:'Golden star',scale:1.06};
- if(order===4)return {type:'red-star',zh:'红色恒星',en:'Red star',scale:.88};
- if(order===5)return {type:'gas-planet',zh:'气态行星',en:'Gas planet',scale:.73};
- return {type:'ice-planet',zh:'冰岩行星',en:'Icy planet',scale:Math.max(.38,.65*Math.sqrt(6/order))};
+// Relative rank within this group's distinct element orders; decorative subtypes share a size.
+export function celestialRank(order,distinctOrders=[1,2,3],seed=0){
+ if(order===1)return {type:'black-hole',zh:'黑洞',en:'Black hole',scale:1};
+ const stellarOrder=[...new Set(distinctOrders)].filter(n=>n>1).sort((a,b)=>a-b)[0];
+ if(order===stellarOrder){const types=['gold-star','blue-star','red-star'],zh=['金色恒星','蓝白恒星','红色恒星'];return {type:types[seed%3],zh:zh[seed%3],en:'Star',scale:.8};}
+ const types=['ocean-planet','gas-planet','ice-planet'];return {type:types[seed%3],zh:['海洋行星','气态行星','冰岩行星'][seed%3],en:'Planet',scale:.6};
 }
+export function celestialLayout(group,seed=71){
+ const orders=group.labels.map((_,i)=>elementOrder(group,i)),distinct=[...new Set(orders)].sort((a,b)=>a-b);
+ const entries=orders.map((order,i)=>({element:i,order,rank:celestialRank(order,distinct,i),host:null,slot:0}));
+ const stars=entries.filter(x=>x.rank.type.endsWith('star'));
+ const shuffled=[...stars];const random=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
+ for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+ let count=0;for(const entry of entries){if(!entry.rank.type.endsWith('planet'))continue;const host=shuffled[count%shuffled.length];entry.host=host.element;entry.slot=Math.floor(count/shuffled.length);entry.phase=random()*Math.PI*2;count++;}
+ return entries;
+}
+
+export function bodyScale(groupOrder){return .544*Math.min(1.15,Math.pow(6/Math.max(1,groupOrder),.32));}
