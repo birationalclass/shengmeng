@@ -1,5 +1,5 @@
 import {completionRecord,publicRecord,rankedRecords,migrateRecord} from './campaign-record-data.mjs?v=nebula-66';
-import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-66';
+import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 import {groups} from './model.mjs?v=nebula-66';
 import {levels} from './challenge-model.mjs?v=nebula-66';
 export function mountCampaignRecords({getJourney,getAccount,t,api}){

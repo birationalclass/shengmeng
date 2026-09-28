@@ -1,5 +1,5 @@
 export const GALAXIES=[
- {key:'C4',name:'C₄',zh:'初光之境',en:'First light',order:4,color:0x70e3ff},
+ {key:'C4',name:'C₄',zh:'循环之道',en:'The way of cycles',order:4,color:0x70e3ff},
  {key:'V4',name:'V₄',zh:'两仪生四象',en:'Four images from two forces',order:4,color:0x80ffe0},
  {key:'S3',name:'S₃',zh:'交错双生',en:'Intertwined',order:6,color:0xe99cff},
  {key:'D4',name:'D₄',zh:'镜像星海',en:'Mirror sea',order:8,color:0xffbd79},

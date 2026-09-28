@@ -1,10 +1,5 @@
-// Same sequence as the canonical Endless MUSIC_TRACKS playlist.
-export const PLAYLIST=[
- ['Sun Mother','sun-mother'],['The Somnium','the-somnium'],['Ether','ether'],['Wither Away','wither-away'],
- ['Afterlife','afterlife'],['Mesa','mesa'],['Subterranean','subterranean'],['The Long Sleep','the-long-sleep'],
- ['Black Desert','black-desert'],["Hawking’s Waltz",'hawkings-waltz'],['Oceans of Time','oceans-of-time'],
- ['The Rising Dawn Bellows Like Thunder','the-rising-dawn-bellows-like-thunder'],['City of Ghosts','city-of-ghosts'],['Passage','passage']
-].map(([title,file])=>({title,src:new URL(`../../../endless/assets/music/${file}.ogg`,import.meta.url).href}));
+import {createOfflineMusic} from './music-offline.mjs?v=nebula-69';
+export const PLAYLIST=[{title:'INTERSTELLAR',src:new URL('./audio/interstellar.mp3',import.meta.url).href}];
 export function createPlaylistPlayer({audio,storage,onState=()=>{},tracks=PLAYLIST}){
  const key='generators-endless-music';let prefs;try{prefs=JSON.parse(storage.getItem(key)||'null');}catch{}
  let index=Number.isInteger(prefs?.index)?((prefs.index%tracks.length)+tracks.length)%tracks.length:0,enabled=prefs?.enabled!==false,volume=Number.isFinite(prefs?.volume)?Math.max(0,Math.min(1,prefs.volume)):.12;
@@ -25,7 +20,7 @@ export function createPlaylistPlayer({audio,storage,onState=()=>{},tracks=PLAYLI
   }catch(error){if(own!==request)return;state=error.name==='NotAllowedError'?'ready':'error';}
   finally{if(own===request){pending=false;emit();}}
  }
- function next(delta=1){request++;pending=false;audio.pause();index=(index+delta+tracks.length)%tracks.length;state='ready';save();attach();emit();if(enabled)void play();}
+ function next(delta=1){request++;pending=false;audio.pause();index=((index+delta)%tracks.length+tracks.length)%tracks.length;state='ready';save();attach();emit();if(enabled)void play();}
  audio.addEventListener('ended',()=>next());
  audio.addEventListener('error',()=>{request++;pending=false;state='error';emit();if(enabled&&++failures<tracks.length)next();});
  audio.addEventListener('playing',()=>{state='playing';emit();});
@@ -36,10 +31,11 @@ export function createPlaylistPlayer({audio,storage,onState=()=>{},tracks=PLAYLI
 }
 export function createEndlessMusic({storage,t}){
  const $=id=>document.getElementById(id),audio=$('backgroundMusic');audio.muted=new URLSearchParams(location.search).get('mute')==='1';
- $('musicStatus').insertAdjacentHTML('afterend','<div class="playlist-controls"><button id="musicPrevious" type="button">←</button><span id="musicTrackCount"></span><button id="musicNext" type="button">→</button></div>');
+ $('musicStatus').insertAdjacentHTML('afterend','<div class="playlist-controls" hidden><button id="musicPrevious" type="button">←</button><span id="musicTrackCount"></span><button id="musicNext" type="button">→</button></div>');
+ $('musicStatus').insertAdjacentHTML('afterend','<button id="musicDownload" type="button"></button><button id="musicCacheClear" type="button"></button><progress id="musicDownloadProgress" max="100" hidden></progress><p id="musicOfflineStatus" role="status"></p>');createOfflineMusic({t});
  const player=createPlaylistPlayer({audio,storage,onState:s=>{
   $('musicEnabled').checked=s.enabled;$('musicVolume').value=String(Math.round(s.volume*100));$('musicVolumeValue').textContent=Math.round(s.volume*100)+'%';
-  $('musicTitle').textContent=t('无尽 · 背景音乐','Endless · Soundtrack');$('musicToggleLabel').textContent=t('播放列表循环','Loop playlist');$('musicVolumeLabel').textContent=t('音量','Volume');
+  $('musicTitle').textContent=t('星际 · 背景音乐','Interstellar · Soundtrack');$('musicToggleLabel').textContent=t('背景音乐循环','Loop soundtrack');$('musicVolumeLabel').textContent=t('音量','Volume');
   $('musicStatus').textContent=s.title+' · '+(s.state==='error'?t('加载失败，点击重试','Load failed; tap to retry'):!s.enabled?t('已暂停','Paused'):s.state==='playing'?t('播放中','Playing'):s.state==='loading'?t('缓冲中','Buffering'):t('轻触页面开始','Tap to start'));
   $('musicTrackCount').textContent=`${s.index+1} / ${s.count}`;$('musicPrevious').setAttribute('aria-label',t('上一首','Previous track'));$('musicNext').setAttribute('aria-label',t('下一首','Next track'));
  }});

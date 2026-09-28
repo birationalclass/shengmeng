@@ -1,4 +1,4 @@
-import {GROUP_KNOWLEDGE,normalizeLives,loseLife,knowledgeFor} from './group-knowledge.mjs?v=nebula-66';
+import {GROUP_KNOWLEDGE,normalizeLives,loseLife,knowledgeFor} from './group-knowledge.mjs?v=nebula-69';
 import {GROUP_DEFINITIONS} from './group-definitions.mjs?v=nebula-66';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 import {levels,minimumGenerators,generationRound} from './challenge-model.mjs?v=nebula-66';
