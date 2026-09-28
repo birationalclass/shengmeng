@@ -492,7 +492,7 @@ export async function createLecture(scene,renderer,options={}){
       // at the entrance must not reset and redraw six unchanged surfaces.
       if(openingDemo?.phase==='waiting'&&openingSurfacesReady&&boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
       // Returning to a prepared room reuses its ink and mechanism positions unchanged.
-      if(boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
+      if(boards.every(b=>b.canvas)&&(!hasSelection||cache.has(clock.page))&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
       hydrating=true;const resume={page:clock.page,phase:clock.phase,progress:clock.progress};
       try{
         const visible=[...new Set([...clock.slots.map(s=>s.page),hasSelection?clock.page:-1])].filter(i=>i>=0);
