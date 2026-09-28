@@ -1,8 +1,15 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {planetMotion,starMotion,PLANET_PERIODS} from './celestial-motion.mjs';
+import {planetMotion,starMotion,PLANET_PERIODS,orbitalOffset,spreadStarOrbits} from './celestial-motion.mjs';
 test('compressed periods remain distinct, repeatable and visibly animated',()=>{
  for(const type of Object.keys(PLANET_PERIODS)){const a=planetMotion(type,7),b=planetMotion(type,8);assert.deepEqual(a,planetMotion(type,7));assert.notEqual(a.spin,b.spin);assert.ok(a.orbitSeconds>8&&a.orbitSeconds<30);assert.ok(a.spinSeconds>4&&a.spinSeconds<14);}
  assert.ok(planetMotion('gas-planet',7).spin>planetMotion('ocean-planet',7).spin);
  assert.ok(planetMotion('ice-planet',7).orbit<planetMotion('gas-planet',7).orbit);
 });
 test('stars have stable randomized distances and prograde orbits',()=>{const radii=new Set();for(let i=0;i<120;i++){const s=starMotion(i);assert.ok(s.radius>=5&&s.radius<8);assert.ok(s.orbit>0);radii.add(s.radius);}assert.equal(radii.size,120);});
+
+test('orbital planes have fixed bounded inclinations and preserve orbit radius',()=>{let positive=0,negative=0;for(let i=0;i<120;i++){const m=planetMotion('gas-planet',i);assert.ok(Math.abs(m.inclination)<=Math.PI/4);m.inclination>0?positive++:negative++;for(const a of [0,.7,2,4]){const p=orbitalOffset(m,a,3);assert.ok(Math.abs(Math.hypot(p.x,p.y,p.z)-3)<1e-10);const normal={x:-Math.sin(m.node)*Math.sin(m.inclination),y:Math.cos(m.inclination),z:-Math.cos(m.node)*Math.sin(m.inclination)};assert.ok(Math.abs(p.x*normal.x+p.y*normal.y+p.z*normal.z)<1e-10);}}assert.ok(positive>0&&negative>0);assert.notEqual(starMotion(1).spinTilt,starMotion(2).spinTilt);});
+
+test('dense stellar systems occupy separated inner, middle and outer bands',()=>{const a=spreadStarOrbits(25,71);assert.deepEqual(a,spreadStarOrbits(25,71));assert.ok(a[0].radius<4.2);assert.ok(a.at(-1).radius>10.8);for(let i=1;i<a.length;i++)assert.ok(a[i].radius>a[i-1].radius);});
+
+test('stellar orbits respect black-hole edge clearance',()=>{for(const size of [.3,.7,1.2]){const edge=8.5*1.35/2*size,star=size*.8;for(const m of spreadStarOrbits(25,71,edge*2.5+star))assert.ok(m.radius-star-edge>=edge*1.5);}});
+test('planet spin doubles while revolution stays unchanged',()=>{for(const type of Object.keys(PLANET_PERIODS)){const m=planetMotion(type,7);assert.ok(Math.abs(m.spin*m.spinSeconds-4*Math.PI)<1e-10);assert.ok(Math.abs(m.orbit*m.orbitSeconds-2*Math.PI)<1e-10);}});

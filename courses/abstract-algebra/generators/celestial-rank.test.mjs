@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {groups} from './model.mjs';
-import {elementOrder,celestialRank,celestialLayout,bodyScale} from './celestial-rank.mjs';
+import {elementOrder,celestialRank,celestialLayout,bodyScale,conjugacyClasses} from './celestial-rank.mjs';
 test('element orders match known cyclic and permutation distributions',()=>{
  assert.deepEqual(groups.C4.labels.map((_,i)=>elementOrder(groups.C4,i)),[1,4,2,4]);
  const counts={};groups.S5.labels.forEach((_,i)=>{const n=elementOrder(groups.S5,i);counts[n]=(counts[n]||0)+1;});
@@ -32,4 +32,10 @@ test('relative ranks and stable host assignments preserve exact element counts',
 
 test('group density scales all bodies down without changing tier ratios',()=>{
  let previous=Infinity;for(const order of [4,6,8,24,120]){const size=bodyScale(order);assert.ok(size>0&&size<previous);assert.equal((size*.8)/size,.8);assert.ok(Math.abs((size*.6)/size-.6)<1e-12);previous=size;}
+});
+
+test('S3 and S5 conjugacy classes partition elements and unify their appearances',()=>{
+ assert.deepEqual(conjugacyClasses(groups.S3).map(c=>c.length).sort((a,b)=>a-b),[1,2,3]);
+ assert.deepEqual(conjugacyClasses(groups.S5).map(c=>c.length).sort((a,b)=>a-b),[1,10,15,20,20,24,30]);
+ for(const group of Object.values(groups)){const classes=conjugacyClasses(group),entries=celestialLayout(group);assert.equal(new Set(classes.flat()).size,group.table.length);for(const members of classes){const first=entries[members[0]];for(const i of members){assert.deepEqual(entries[i].rank,first.rank);assert.equal(entries[i].appearanceSeed,first.appearanceSeed);assert.equal(entries[i].order,first.order);}}}
 });
