@@ -1,0 +1,56 @@
+import * as T from '../../../visuals/3d/vendor/three.module.js';
+
+const billboard=`varying vec2 vUv;void main(){vUv=uv;vec4 mv=modelViewMatrix*vec4(0.,0.,0.,1.);vec2 s=vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));mv.xy+=position.xy*s;gl_Position=projectionMatrix*mv;}`;
+const noise=`float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}float fbm(vec3 p){float n=0.,a=.5;for(int i=0;i<5;i++){n+=noise(p)*a;p=p*2.03+7.17;a*=.5;}return n;}`;
+
+export function blackHole(sphere){
+ const body=new T.Mesh(sphere,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
+ // Null-ray orbital acceleration for a nonrotating unit Schwarzschild radius.
+ // Finite integration budget and an artistic thin disk: a real-time approximation.
+ const material=new T.ShaderMaterial({transparent:true,depthWrite:false,depthTest:false,uniforms:{time:{value:0}},vertexShader:billboard,fragmentShader:`
+ varying vec2 vUv;uniform float time;${noise}
+ vec3 disk(vec3 p,vec3 normal){
+  float r=length(p);vec3 tangent=normalize(cross(normal,p));float beam=clamp(pow(1./(1.-dot(tangent,vec3(0,0,1))*.34),3.),.35,2.8);
+  float a=atan(p.z,p.x),flow=a-time*.32/pow(max(r/3.,1.),1.5);
+  float turbulent=fbm(vec3(r*2.,cos(flow)*4.,sin(flow)*4.));
+  float filaments=.48+.25*turbulent+.10*sin(r*19.+turbulent*9.+flow*2.);
+  float heat=pow(3./max(3.,r),.75);vec3 c=mix(vec3(.7,.12,.025),vec3(1.,.84,.51),heat*heat);
+  float fall=smoothstep(3.,3.45,r)*(1.-smoothstep(7.,10.,r));return c*filaments*fall*beam*1.8;
+ }
+ void main(){
+  vec2 screen=(vUv-.5)*22.;vec3 p=vec3(0.,0.,20.),v=normalize(vec3(screen,-20.));
+  float h2=dot(cross(p,v),cross(p,v)),alpha=0.;vec3 color=vec3(0.);vec3 normal=normalize(vec3(0.,1.,.24));bool captured=false;
+  for(int j=0;j<160;j++){
+   float r=length(p);if(r<1.02){captured=true;break;}if(r>26.)break;
+   float ds=clamp(r*.085,.055,.65);vec3 old=p;float before=dot(p,normal);
+   vec3 accel=-1.5*h2*p/pow(r,5.);v+=accel*ds;p+=v*ds;
+   float after=dot(p,normal);
+   if(before*after<0.){vec3 hit=mix(old,p,before/(before-after));float radius=length(hit);
+    if(radius>3.&&radius<10.){vec3 emission=disk(hit,normal);float opacity=.8*smoothstep(3.,3.6,radius)*(1.-smoothstep(6.,10.,radius)); color+=(1.-alpha)*emission*opacity;alpha+=(1.-alpha)*opacity;}
+   }
+  }
+  if(captured)alpha=1.;
+  float b=sqrt(h2),photon=exp(-pow((b-2.598)*48.,2.));color+=vec3(1.,.64,.27)*photon*.32;alpha=max(alpha,photon*.6);
+  color=vec3(1.)-exp(-color*1.2);gl_FragColor=vec4(color,alpha);
+ }`});
+ const image=new T.Mesh(new T.PlaneGeometry(8.5,8.5),material);image.renderOrder=12;body.add(image);body.userData.effects=[material];return body;
+}
+
+export function detailedStar(sphere,rank,seed){
+ const tint=new T.Color(rank.type==='blue-star'?0xaed7ff:rank.type==='gold-star'?0xffc35f:0xff693a);
+ const material=new T.ShaderMaterial({uniforms:{time:{value:0},seed:{value:seed},tint:{value:tint}},vertexShader:`varying vec3 p;varying vec3 n;varying vec3 view;void main(){p=position;n=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);view=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,fragmentShader:`varying vec3 p;varying vec3 n;varying vec3 view;uniform float time;uniform float seed;uniform vec3 tint;${noise}
+ void main(){vec3 q=normalize(p),shift=vec3(seed*2.3,time*.017,seed*.7);float broad=fbm(q*5.+shift);float cells=noise(q*72.+fbm(q*12.+shift)*2.7+shift);float lanes=smoothstep(.24,.56,cells);float fine=noise(q*165.+shift);
+  float activity=fbm(q*8.+shift);float umbra=smoothstep(.70,.79,activity);float penumbra=smoothstep(.64,.72,activity);
+  float mu=max(0.,dot(normalize(n),normalize(view))),limb=.24+.76*pow(mu,.58);
+  vec3 color=mix(tint*.32,tint*1.32+vec3(.1),.4+lanes*.55);color*=.82+fine*.23;color*=1.-penumbra*.38;color*=1.-umbra*.88;color*=limb;
+  gl_FragColor=vec4(color,1.);
+  #include <colorspace_fragment>
+ }`});
+ const body=new T.Mesh(sphere,material);
+ const coronaMat=new T.ShaderMaterial({transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{time:{value:0},seed:{value:seed},tint:{value:tint}},vertexShader:billboard,fragmentShader:`varying vec2 vUv;uniform float time;uniform float seed;uniform vec3 tint;${noise}
+ void main(){vec2 q=(vUv-.5)*5.;float r=length(q);if(r<.985)discard;float a=atan(q.y,q.x);vec3 p=vec3(cos(a)*6.,sin(a)*6.,time*.06+seed);float fil=fbm(p);float reach=.12+pow(fil,3.)*1.3;float ray=exp(-(r-1.)/reach)*(.18+fil*.5);float edge=exp(-pow((r-1.025)*45.,2.))*.3;
+  float loop=0.;for(int i=0;i<3;i++){float angle=float(i)*2.1+seed*.8;vec2 center=vec2(cos(angle),sin(angle))*1.09;float d=length(q-center);loop+=exp(-pow((d-.15)*95.,2.))*.26;}
+  float opacity=(ray+edge+loop)*(1.-smoothstep(1.6,2.4,r));gl_FragColor=vec4(tint,opacity);
+ }`});
+ body.add(new T.Mesh(new T.PlaneGeometry(5,5),coronaMat));body.userData.effects=[material,coronaMat];return body;
+}
