@@ -1,6 +1,6 @@
 const mode=new URLSearchParams(location.search).get('quality')||'balanced';
 const optimized=true;
-const profile=mode==='light'?{pixels:900,fps:30,steps:400,octaves:3}:{pixels:1200,fps:45,steps:520,octaves:4};
+const profile=mode==='light'?{pixels:900,steps:400,octaves:3}:{pixels:1200,steps:520,octaves:4};
 if(optimized)await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 const T=await import('../../../visuals/3d/vendor/three.module.js');
 // Independent preview: no changes to the production galaxy or account state.
@@ -86,9 +86,21 @@ void main(){
 let mapDirty=true,mapBuilds=0,frames=0,statsStart=performance.now(),lastMap=0;
 function cacheRays(){quad.material=rayMaterial;for(let i=0;i<2;i++){rayUniforms.layer.value=i;renderer.setRenderTarget(targets[i]);renderer.render(scene,camera);}renderer.setRenderTarget(null);quad.material=material;mapDirty=false;mapBuilds++;}
 
-let azimuth=.25,elevation=.21,targetElevation=.21,targetAzimuth=.25,distance=29,paused=false,en=false,drag=null,last=performance.now();
-function resize(){const ratio=Math.min(devicePixelRatio,1.25),limit=(optimized?profile.pixels:1500)/Math.max(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(ratio,Math.max(.35,limit)));renderer.setSize(innerWidth,innerHeight);renderer.getDrawingBufferSize(uniforms.resolution.value);uniforms.zoom.value=Math.max(1,.95/(innerWidth/innerHeight));const w=mode==='light'?640:1000;for(const target of targets)target.setSize(w,Math.max(1,Math.round(w*innerHeight/innerWidth)));mapDirty=true;}
-addEventListener('resize',resize);resize();
+let groupOrder=4;let azimuth=.25,elevation=.21,targetElevation=.21,targetAzimuth=.25,distance=29,paused=false,en=false,drag=null,last=performance.now();
+function resize(){
+ const narrow=innerWidth<700,aspect=innerWidth/innerHeight;
+ const z=narrow?Math.max(37,10/(Math.tan(23*Math.PI/180)*aspect)):27;
+ const depth=Math.hypot(narrow?0:1.2,narrow?16:12,z);
+ const base=groupOrder<=8?.61:groupOrder<=24?.32:.17;
+ // Match the production 8.5-unit billboard, identity scale 1.7, and 46-degree camera.
+ const size=8.5*base*1.7*innerHeight/(2*depth*Math.tan(23*Math.PI/180));
+ renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(size*1.35,size*1.35);
+ renderer.getDrawingBufferSize(uniforms.resolution.value);uniforms.zoom.value=1.35*22/(2*.43*29);
+ const w=Math.ceil(uniforms.resolution.value.x);for(const target of targets)target.setSize(w,w);
+ canvas.dataset.projectedSize=size.toFixed(1);mapDirty=true;
+ document.querySelector('#actual-size').textContent=`${Math.round(size)} × ${Math.round(size)} px`;
+}
+for(const [id,order] of [['size4',4],['size24',24],['size120',120]])document.getElementById(id).onclick=()=>{groupOrder=order;resize();for(const k of ['size4','size24','size120'])document.getElementById(k).setAttribute('aria-pressed',String(k===id));};addEventListener('resize',resize);resize();
 canvas.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
 canvas.addEventListener('pointermove',e=>{if(!drag)return;targetAzimuth-=(e.clientX-drag.x)*.006;targetElevation=Math.max(-1.4,Math.min(1.4,targetElevation+(e.clientY-drag.y)*.005));drag={x:e.clientX,y:e.clientY};});
 canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
@@ -102,7 +114,7 @@ document.querySelector('#fullscreen').onclick=()=>{(document.fullscreenElement?d
 let lastDraw=0;
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
 renderer.setAnimationLoop(now=>{
- if(document.hidden||now-lastDraw<1000/profile.fps)return;
+ if(document.hidden)return;
  const moving=Math.abs(targetElevation-elevation)+Math.abs(targetAzimuth-azimuth)>.0001;
  const nextEye=new T.Vector3(Math.sin(azimuth)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(azimuth)*Math.cos(elevation)*distance);
  if(moving||nextEye.distanceToSquared(uniforms.eye.value)>.00001)mapDirty=true;
@@ -111,8 +123,7 @@ renderer.setAnimationLoop(now=>{
  if(!paused)uniforms.time.value+=dt;
  const ease=1-Math.exp(-dt*8);elevation+=(targetElevation-elevation)*ease;azimuth+=(targetAzimuth-azimuth)*ease;
  uniforms.eye.value.set(Math.sin(azimuth)*Math.cos(elevation)*distance,Math.sin(elevation)*distance,Math.cos(azimuth)*Math.cos(elevation)*distance);
- if(mapDirty&&(!moving||now-lastMap>100)){cacheRays();lastMap=now;}
+ if(mapDirty){cacheRays();lastMap=now;}
  renderer.render(scene,camera);frames++;
  if(now-statsStart>2000){canvas.dataset.fps=(frames*1000/(now-statsStart)).toFixed(1);canvas.dataset.rayMapBuilds=String(mapBuilds);canvas.dataset.renderSize=uniforms.resolution.value.toArray().join('x');statsStart=now;frames=0;}
 });
-
