@@ -1,7 +1,7 @@
-import {completionRecord,publicRecord,rankedRecords,migrateRecord} from './campaign-record-data.mjs?v=nebula-61';
-import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-61';
-import {groups} from './model.mjs?v=nebula-61';
-import {levels} from './challenge-model.mjs?v=nebula-61';
+import {completionRecord,publicRecord,rankedRecords,migrateRecord} from './campaign-record-data.mjs?v=nebula-63';
+import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-63';
+import {groups} from './model.mjs?v=nebula-63';
+import {levels} from './challenge-model.mjs?v=nebula-63';
 export function mountCampaignRecords({getJourney,getAccount,t,api}){
  const link=document.createElement('link');link.rel='stylesheet';link.href=new URL('../../../visuals/group-sudoku/records.css?v=20260923-sand-links1',import.meta.url);document.head.append(link);
  document.body.insertAdjacentHTML('beforeend',"<dialog id=\"recordsDialog\" class=\"records-dialog\" aria-labelledby=\"recordsTitle\"><header><h2 id=\"recordsTitle\">通关记录</h2><button id=\"recordsClose\" type=\"button\">关闭</button></header><div class=\"records-body\"><p id=\"recordsIntro\" class=\"records-intro\">全员可查看。姓名显示拼音首字母，学号部分隐藏。</p><div class=\"records-actions\"><button id=\"recordsRefresh\" type=\"button\">刷新</button><p id=\"recordsStatus\" class=\"records-status\" role=\"status\" aria-live=\"polite\"></p><button id=\"recordsSync\" class=\"records-primary\" type=\"button\" hidden>重试同步</button></div><div class=\"records-scroll\" tabindex=\"0\" aria-labelledby=\"recordsTitle\"><div id=\"recordsList\"></div>\n\n<details><summary id=\"recordsTeacherSummary\">教师导出完整记录</summary><form id=\"recordsTeacherForm\"><label id=\"recordsPasswordLabel\" for=\"recordsPassword\">教师口令</label><input id=\"recordsPassword\" type=\"password\" autocomplete=\"current-password\" enterkeyhint=\"go\" required><button id=\"recordsTeacherLogin\" type=\"submit\">登录</button></form></details><div id=\"recordsAdminActions\" hidden><button id=\"recordsExport\" type=\"button\">导出 CSV</button><button id=\"recordsLogout\" type=\"button\">退出教师查看</button></div></div></div></dialog>");

@@ -7,7 +7,7 @@ export function dustField(key,count,inner,outer){
  const id=GALAXY_PATTERNS[key],[arms,twist,bar,magenta]=NEBULA_PROFILES[id];let seed=177+id*83;const rand=()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646;},positions=[],colors=[];
  for(let i=0;i<count;i++){const u=Math.pow(rand(),.78),r=inner+(outer-inner)*u,unit=r/outer;let a=(i%arms)*Math.PI*2/arms+twist*Math.log(unit+.12)+Math.sqrt(-2*Math.log(Math.max(.00001,rand())))*Math.cos(rand()*Math.PI*2)*(.16+u*.24);if(i%7===0)a=rand()*Math.PI*2;
  if(key==='S5'){const arm=i%3;a=[.15,2.35,4.6][arm]+u*[1.7,.95,.65][arm]+(rand()-.5)*(.25+.5*u);}
- positions.push(r*Math.cos(a),0,r*Math.sin(a));const warm=1-u,light=.25+rand()*.5;colors.push((.46+warm*.45+magenta*.1)*light,(.62+warm*.16-magenta*.08)*light,(.94-warm*.34)*light);}
+ const height=(rand()+rand()+rand()-1.5)*outer*.025*Math.sin(Math.PI*u);positions.push(r*Math.cos(a),height,r*Math.sin(a));const warm=1-u,light=.25+rand()*.5;colors.push((.46+warm*.45+magenta*.1)*light,(.62+warm*.16-magenta*.08)*light,(.94-warm*.34)*light);}
  return {positions,colors};
 }
 export function addNebula(T,root,key,inner,outer){
@@ -24,13 +24,13 @@ export function inflowSample(age,inner,outer,lane=0){
 }
 export function nearDustCopies(field,inner,outer,count=220){
  const pool=[];for(let i=0;i<field.positions.length;i+=3){const r=Math.hypot(field.positions[i],field.positions[i+2]);if(r>=inner&&r<=inner+(outer-inner)*.28)pool.push(i);}
- if(!pool.length)return {positions:[],colors:[],tails:[]};
- const positions=[],colors=[],tails=[];
- for(let i=0;i<count;i++){const j=pool[(i*137)%pool.length],phase=((i*618033)%1000000)/1000000;for(let tail=0;tail<6;tail++){positions.push(field.positions[j],phase,field.positions[j+2]);colors.push(field.colors[j],field.colors[j+1],field.colors[j+2]);tails.push(tail);}}
- return {positions,colors,tails};
+ if(!pool.length)return {positions:[],colors:[],tails:[],heights:[]};
+ const positions=[],colors=[],tails=[],heights=[];
+ for(let i=0;i<count;i++){const j=pool[(i*137)%pool.length],phase=((i*618033)%1000000)/1000000;for(let tail=0;tail<6;tail++){positions.push(field.positions[j],phase,field.positions[j+2]);colors.push(field.colors[j],field.colors[j+1],field.colors[j+2]);tails.push(tail);heights.push(field.positions[j+1]);}}
+ return {positions,colors,tails,heights};
 }
 export function addInflow(T,root,field,inner,outer,count=220){
- const copies=nearDustCopies(field,inner,outer,count),geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(copies.positions,3));geometry.setAttribute('color',new T.Float32BufferAttribute(copies.colors,3));geometry.setAttribute('tail',new T.Float32BufferAttribute(copies.tails,1));
- const material=new T.ShaderMaterial({vertexColors:true,transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{time:{value:0},inner:{value:inner*.085},opacity:{value:.8}},vertexShader:`uniform float time;uniform float inner;attribute float tail;varying float light;varying vec3 tint;void main(){float age=fract(position.y+time/9.);float u=max(0.,age-tail*.008);float startRadius=length(position.xz);float r=mix(startRadius,inner,pow(u,1.3));float a=atan(position.z,position.x)+u*u*6.8;vec4 p=modelViewMatrix*vec4(r*cos(a),0.,r*sin(a),1.);light=smoothstep(0.,.06,age)*(1.-smoothstep(.96,1.,age))*exp(-tail*.35);tint=mix(color,vec3(.8,.9,1.),u*.65);gl_PointSize=clamp((tail<.5?1.8:1.2)*100./max(1.,-p.z),1.,4.);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float opacity;varying float light;varying vec3 tint;void main(){float d=length(gl_PointCoord-.5)*2.;if(d>1.)discard;float a=pow(1.-d,1.7)*light*opacity;gl_FragColor=vec4(tint,a);}`});
+ const copies=nearDustCopies(field,inner,outer,count),geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute(copies.positions,3));geometry.setAttribute('color',new T.Float32BufferAttribute(copies.colors,3));geometry.setAttribute('tail',new T.Float32BufferAttribute(copies.tails,1));geometry.setAttribute('originHeight',new T.Float32BufferAttribute(copies.heights,1));
+ const material=new T.ShaderMaterial({vertexColors:true,transparent:true,depthWrite:false,blending:T.AdditiveBlending,uniforms:{time:{value:0},inner:{value:inner*.085},opacity:{value:.8}},vertexShader:`uniform float time;uniform float inner;attribute float tail;attribute float originHeight;varying float light;varying vec3 tint;void main(){float age=fract(position.y+time/9.);float u=max(0.,age-tail*.008);float startRadius=length(position.xz);float r=mix(startRadius,inner,pow(u,1.3));float a=atan(position.z,position.x)+u*u*6.8;vec4 p=modelViewMatrix*vec4(r*cos(a),originHeight*(1.-u),r*sin(a),1.);light=smoothstep(0.,.06,age)*(1.-smoothstep(.96,1.,age))*exp(-tail*.35);tint=mix(color,vec3(.8,.9,1.),u*.65);gl_PointSize=clamp((tail<.5?1.8:1.2)*100./max(1.,-p.z),1.,4.);gl_Position=projectionMatrix*p;}`,fragmentShader:`uniform float opacity;varying float light;varying vec3 tint;void main(){float d=length(gl_PointCoord-.5)*2.;if(d>1.)discard;float a=pow(1.-d,1.7)*light*opacity;gl_FragColor=vec4(tint,a);}`});
  const points=new T.Points(geometry,material);points.frustumCulled=false;root.add(points);return points;
 }
