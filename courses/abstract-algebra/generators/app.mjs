@@ -1,6 +1,6 @@
-import {Growth,values} from './dynamics.mjs?v=all-seeds-12';
-import {groups,validate} from './model.mjs?v=all-seeds-12';
-import {Scene} from './scene.mjs?v=all-seeds-12';
+import {Growth,values} from './dynamics.mjs?v=newborn-drift-14';
+import {groups,validate} from './model.mjs?v=newborn-drift-14';
+import {Scene} from './scene.mjs?v=newborn-drift-14';
 const $=id=>document.getElementById(id);let en=false,g=groups.S3,seeds=new Set([1,2]),engine=null,playing=false,mode='continuous',targetRound=0,current=null,history=[],speed=1;
 const tr=(zh,english)=>en?english:zh;
 const scene=new Scene($('canvas'),toggleSeed);
