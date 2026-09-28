@@ -4,3 +4,26 @@
 
 body:not(.galaxy-mode) .groups{display:none}body:not(.galaxy-mode) header h1{font-size:19px}
 
+
+#galaxyWatermark{position:absolute;left:45%;bottom:8%;transform:translateX(-50%);font:clamp(90px,13vw,220px)/1 Georgia,serif;letter-spacing:.06em;color:#9fbae4;opacity:.14;user-select:none;pointer-events:none;text-shadow:0 0 65px #7b8dff22;white-space:nowrap;mask-image:linear-gradient(to bottom,#000 35%,transparent 100%)}@media(max-width:750px){#galaxyWatermark{left:50%;bottom:25%;font-size:clamp(72px,24vw,120px);opacity:.16}.sector-info{bottom:62px}.cosmic-bottom{bottom:12px}}
+
+/* Math Refuge's unframed controls, with cosmic colours and explicit feedback. */
+.cosmic-tools button{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;width:44px;height:44px;min-height:44px;padding:9px;border:0;background:transparent;border-radius:50%;backdrop-filter:none;color:#c4d4ea;transition:color .22s,transform .22s,filter .22s}
+.cosmic-tools button svg{width:23px;height:23px;flex:none;filter:drop-shadow(0 1px 4px #000)}
+.cosmic-tools #cosmicAccount{width:auto;max-width:180px;border-radius:0;overflow:visible;font-size:12px}
+.cosmic-tools #cosmicAccount span{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cosmic-tools button:hover{background:transparent;color:#e2caff;filter:drop-shadow(0 0 8px #a5cfff66)}
+.cosmic-tools button:active{transform:scale(.91)}
+.cosmic-tools button:after{content:attr(data-tip);position:absolute;top:calc(100% + 8px);right:0;white-space:nowrap;font-size:11px;color:#e0eaff;text-shadow:0 2px 5px #000;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .18s,transform .18s}
+.cosmic-tools button:hover:after,.cosmic-tools button:focus-visible:after{opacity:1;transform:translateY(0)}
+#galaxyUI button:focus-visible,.cosmic-dialog button:focus-visible,.cosmic-home:focus-visible{outline:1px solid #c3ddff;outline-offset:5px}
+#galaxyUI button:not(:disabled),.cosmic-dialog button:not(:disabled){cursor:pointer;touch-action:manipulation}
+.cosmic-primary{transition:filter .2s,transform .2s,box-shadow .2s}
+.cosmic-primary:not(:disabled):hover{filter:brightness(1.12);box-shadow:0 0 32px #a8bfff35;transform:translateY(-2px)}
+.cosmic-primary:not(:disabled):active{transform:translateY(0) scale(.98)}
+.cosmic-demo{transition:color .2s;padding:12px 0;min-height:40px}
+.cosmic-demo:not(:disabled):hover{color:#e0c6ff;text-decoration:underline;text-underline-offset:6px}
+.cosmic-dialog button:not(.cosmic-primary){background:transparent;border-color:transparent;border-bottom:1px solid #8db5d72b;border-radius:0;transition:color .2s,background .2s}
+.cosmic-dialog button:not(.cosmic-primary):hover{color:#dfc7ff;background:#bdd7ff08}
+@media(max-width:750px){.cosmic-tools{gap:0}.cosmic-tools button{width:40px;height:44px}.cosmic-tools #cosmicAccount{width:40px;padding:8px}.cosmic-tools #cosmicAccount span{display:none}.cosmic-top{left:16px;right:12px;gap:8px}}
+
