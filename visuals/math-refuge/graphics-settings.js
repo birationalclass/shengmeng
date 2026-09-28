@@ -3,7 +3,7 @@ export const GRAPHICS_PRESETS={
  high:{quality:'high',resolutionScale:'100',shadowQuality:'2048',cloudQuality:'medium',textureFiltering:'16',waterDetail:'high',waterReflection:'full'},
  ultra:{quality:'ultra',resolutionScale:'125',shadowQuality:'4096',cloudQuality:'high',textureFiltering:'16',waterDetail:'high',waterReflection:'full'}
 };
-export const CLOUD_LEVELS={low:{size:256,steps:16,interval:400},medium:{size:512,steps:24,interval:250},high:{size:1024,steps:32,interval:160}};
+export const CLOUD_LEVELS={low:{size:384,steps:24,interval:650},medium:{size:640,steps:32,interval:450},high:{size:1024,steps:48,interval:300}};
 export function recommendedGraphics({mobile=false,gpu='',maxTextureSize=4096}={}){
  // Model names only supply a safe initial choice; measured GPU time controls adaptation.
  const high=!mobile&&maxTextureSize>=8192&&/RTX|Radeon|Apple M\d+ (Pro|Max|Ultra)/i.test(gpu);

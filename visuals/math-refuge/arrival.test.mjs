@@ -35,7 +35,7 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
  b.context.refugeBoot.entered();b.context.refugeBoot.requestEntry();assert.equal(requests,1,'entry cannot run twice');
 }
 {
- const b=boot();b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.requestEntry();assert.equal(b.get('entryStatus').textContent,'正在准备开场');b.context.refugeBoot.ready();assert.equal(b.get('enterButton').hidden,true,'login during loading keeps the entry queued');
+ const b=boot();b.context.refugeBoot.auth('authenticated');b.context.refugeBoot.requestEntry();assert.equal(b.get('entryStatus').textContent,'');b.context.refugeBoot.ready();assert.equal(b.get('enterButton').hidden,false,'queued entry preserves the button layout');assert.equal(b.get('enterButton').disabled,true,'queued entry cannot be submitted twice');
 }
 
 {
@@ -43,9 +43,7 @@ console.log('Arrival: backoff, offline/hidden/pause, recovery, entry and safe re
  b.context.refugeBoot.auth('anonymous');b.context.refugeBoot.ready();
  assert(b.context.document.body.classList.contains('awaiting-scene'),'assets/session readiness cannot expose a blank canvas');
  assert.equal(b.context.refugeBoot.previewReady,false);
- b.context.refugeBoot.preview();assert(b.context.document.body.classList.contains('awaiting-scene'),'entry waits while the live reveal expands');assert.equal(reveals,0);
- b.tick(1);assert.equal(reveals,0,'login waits until the real-frame fade completes');
- b.tick(.5);assert.equal(reveals,1);assert.equal(b.context.refugeBoot.previewReady,true);
+ b.context.refugeBoot.preview();assert(!b.context.document.body.classList.contains('awaiting-scene'));assert.equal(reveals,1,'ready real frame is enterable without a fixed delay');assert.equal(b.context.refugeBoot.previewReady,true);
  b.context.refugeBoot.preview();b.tick(2);assert.equal(reveals,1,'later frames must not restart the fade');
 }
 assert(!html.includes('id="arrivalSea"'),'no static poster replaces the live canvas');
@@ -93,7 +91,7 @@ for(const type of ['click','keydown']){
  b.context.refugeBoot.stage(50,'');assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'80%','late callbacks cannot shrink the reveal');
  b.context.refugeBoot.ready();b.context.refugeBoot.preview();
  assert.equal(b.get('arrivalVeil').style['--arrival-radius'],'120%');
- assert.equal(b.context.refugeBoot.previewReady,false);b.tick(1.5);
+ assert.equal(b.context.refugeBoot.previewReady,true,'ready live scene needs no additional timer');b.tick(1.5);
  assert.equal(b.context.refugeBoot.previewReady,true);
  assert.equal(b.get('arrivalVeil').hidden,true,'completed reveal removes the covering layer');
  assert(!b.context.document.body.classList.contains('awaiting-scene'));

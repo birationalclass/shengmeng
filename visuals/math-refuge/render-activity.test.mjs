@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bindRenderActivity} from './render-activity.js';
-function harness({focused=true,hidden=false}={}){
+function harness({focused=true,hidden=false,allowUnfocused=()=>false}={}){
  const target=()=>{const events=new Map();return {addEventListener(k,f){if(!events.has(k))events.set(k,new Set());events.get(k).add(f);},removeEventListener(k,f){events.get(k)?.delete(f);},emit(k){for(const f of events.get(k)||[])f();}};};
  const win=target(),doc=Object.assign(target(),{hidden,hasFocus:()=>focused});
  let time=1000,callback=null,frames=0,pauses=0;const resumes=[],loops=[];
- const gate=bindRenderActivity({doc,win,now:()=>time,setLoop:f=>{callback=f;loops.push(f);},frame:()=>frames++,onPause:()=>pauses++,onResume:gap=>resumes.push(gap)});
+ const gate=bindRenderActivity({doc,win,allowUnfocused,now:()=>time,setLoop:f=>{callback=f;loops.push(f);},frame:()=>frames++,onPause:()=>pauses++,onResume:gap=>resumes.push(gap)});
  return {gate,doc,win,resumes,loops,get frames(){return frames;},get callback(){return callback;},get pauses(){return pauses;},focus(value){focused=value;win.emit(value?'focus':'blur');},advance(ms){time+=ms;},frame(){callback?.(time);}};
 }
 test('visible but unfocused windows stop the actual loop, including queued frames',()=>{
@@ -40,4 +40,11 @@ test('a missed focus event cancels even the RAF scheduled after the current call
  t.frame();assert(!t.gate.running);assert.equal(t.frames,0);
  const calls=t.loops.length;await Promise.resolve();
  assert.equal(t.loops.length,calls+1);assert.equal(t.callback,null);
+});
+
+test('visible loading previews animate before click, hidden pages and entered scenes still pause',()=>{
+ let entered=false;const t=harness({focused:false,allowUnfocused:()=>!entered});t.gate.setEnabled(true);t.frame();assert.equal(t.frames,1);assert(t.gate.foreground);
+ t.doc.hidden=true;t.doc.emit('visibilitychange');assert(!t.gate.running);
+ t.doc.hidden=false;t.doc.emit('visibilitychange');assert(t.gate.running);
+ entered=true;t.gate.setEnabled(true);assert(!t.gate.running);t.focus(true);assert(t.gate.running);
 });

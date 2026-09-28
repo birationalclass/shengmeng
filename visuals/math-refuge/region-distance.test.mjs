@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {regionAnchor,distanceLabel} from './region-distance.js';
+test('fixed destination and metre/kilometre readout',()=>{assert.deepEqual(regionAnchor({positions:[[0,0,0],[10,0,0]],targets:[[1000,0,0]]}),[5,0,0]);assert.deepEqual(regionAnchor({hallOrbit:true,positions:[[0,0,0]],targets:[[3,4,0]]}),[3,4,0]);assert.equal(distanceLabel([0,0,0],[3,4,0]),'5 m');assert.equal(distanceLabel([0,0,0],[1500,0,0]),'1.5 km');assert.equal(distanceLabel([0,0,0],null),'');});

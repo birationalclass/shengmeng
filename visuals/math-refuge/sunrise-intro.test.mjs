@@ -43,7 +43,7 @@ test('application fixes dawn before scene construction and preserves it on first
  const context={RetreatTime,TimePresentation,SunriseIntro,BoardFollow:class{},shanghaiHour:()=>23,solarEvents:()=>({sunrise:6})};
  const state=runInNewContext(block+';({hour:sceneTime.hour,visualHour,lastShadowHour,waiting:sunriseIntro.waiting,presentation:timePresentation.hour})',context);
  assert(Math.abs(state.hour-5.9)<1e-12);assert.equal(state.visualHour,state.hour);assert.equal(state.lastShadowHour,state.hour);assert.equal(state.presentation,state.hour);assert(state.waiting);
- assert(source.includes('device,{hour:sceneTime.hour,date:sceneTime.date}'));
+ assert(source.includes('device,{hour:sceneTime.hour,date:sceneTime.date,weather:'));
  assert(source.includes('if(!sunriseIntro.waiting)sunriseIntro.prepare('));
  assert(!source.includes('retreat.setTime(solarEvents('),'Preview and entry use one clock');
 });

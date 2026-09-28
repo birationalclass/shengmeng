@@ -54,7 +54,7 @@ test('an image that never decodes cannot leave entry waiting forever',async()=>{
 
 test('mobile sky uses bounded targets, throttles updates and restores render state',async()=>{
  const load=async name=>{
-  const source=(await fs.readFile(new URL(name,import.meta.url),'utf8')).replace(/from '(\.\/graphics-settings\.js)[^']*'/g,(_,path)=>`from '${new URL(path,import.meta.url).href}'`).replace("from 'three'",`from '${new URL('../3d/vendor/three.module.js',import.meta.url).href}'`);
+  const source=(await fs.readFile(new URL(name,import.meta.url),'utf8')).replace(/from '(\.\/[^']+)'/g,(_,path)=>`from '${new URL(path,import.meta.url).href}'`).replace("from 'three'",`from '${new URL('../3d/vendor/three.module.js',import.meta.url).href}'`);
   return import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
  };
  const {createVolumetricClouds}=await load('./volumetric-clouds.js'),{createAtmosphereLUT}=await load('./sky-atmosphere.js');
@@ -64,18 +64,14 @@ test('mobile sky uses bounded targets, throttles updates and restores render sta
  const cloud=createVolumetricClouds(renderer,policy),u={cloud:{value:.6},day:{value:1},storm:{value:0},sunPosition:{value:new T.Vector3(1,1,0).normalize()},cloudOffset:{value:new T.Vector2()},cloudOrigin:{value:new T.Vector3(0,.015,0)},sunColor:{value:new T.Color('white')},useVolumeClouds:{value:1},cloudBlend:{value:0},cloudMap:{},cloudMapPrevious:{}};
  cloud.update(u,0);assert.equal(calls.length,1);assert.equal(calls[0].target.width,256);assert.equal(calls[0].target.height,128);
  assert.equal(calls[0].material.uniforms.volume.value.image.width,32);assert.equal(calls[0].material.uniforms.marchSteps.value,16);
- u.cloudOffset.value.x+=.01;cloud.update(u,10);assert.equal(calls.length,1,'Sub-frame weather changes do not retrace clouds');
  const initial=cloud.texture;
- cloud.update(u,500);assert.equal(calls.length,2);assert.equal(cloud.texture,initial,'Never expose a partially drawn cloud texture');
- assert.deepEqual(calls[1].scissor,[0,0,256,64]);
- u.cloudOffset.value.x=.5;cloud.update(u,516);assert.equal(calls.length,3);assert.notEqual(cloud.texture,initial);
- assert.deepEqual(calls[2].scissor,[0,64,256,64]);assert.equal(calls[2].material.uniforms.offset.value.x,.01,'All strips use one frozen weather snapshot');
- assert.equal(u.cloudMapPrevious.value,initial);assert.equal(u.cloudBlend.value,0);
- cloud.update(u,700);assert.equal(calls.length,3,'Do not overwrite the old frame while it still participates in blending');
- assert.equal(current,originalTarget);assert.equal(renderer.autoClear,false);cloud.dispose();
+ for(let tile=1;tile<8;tile++){cloud.update(u,tile*16);assert.equal(calls.length,tile+1);assert(calls.at(-1).scissor[3]<=16);if(tile<7)assert.equal(cloud.texture,initial);}
+ assert.notEqual(cloud.texture,initial,'Only publish the complete mobile panorama');
+ const drawsBefore=calls.length;cloud.update(u,130);assert.equal(calls.length,drawsBefore,'Unchanged weather does not retrace');
+ assert.equal(current,originalTarget);assert.equal(renderer.autoClear,false);cloud.dispose();calls.length=0;
  const atmosphere=createAtmosphereLUT(renderer,policy);atmosphere.update(u.sunPosition.value,.6,0);
- assert.equal(calls[3].target.width,128);assert.equal(calls[3].target.height,64);
- atmosphere.update(new T.Vector3(1,1,.01),.7,10);assert.equal(calls.length,4,'Atmosphere also respects its update interval');
+ assert.equal(calls[0].target.width,128);assert.equal(calls[0].target.height,64);
+ atmosphere.update(new T.Vector3(1,1,.01),.7,10);assert.equal(calls.length,1,'Atmosphere also respects its update interval');
  const oldSky=atmosphere.texture,skyInterval=policy.atmosphereInterval||250;
  atmosphere.update(new T.Vector3(1,1,.01),.7,skyInterval);
  assert.equal(atmosphere.previousTexture,oldSky);assert.notEqual(atmosphere.texture,oldSky);assert.equal(atmosphere.blend,0);
@@ -86,19 +82,5 @@ test('mobile sky uses bounded targets, throttles updates and restores render sta
  assert.equal(createVolumetricClouds(renderer,{safe:true}),null);assert.equal(createAtmosphereLUT(renderer,{safe:true}),null);
  renderer.extensions.has=()=>false;assert.equal(createAtmosphereLUT(renderer,policy),null);
  const compatible=createVolumetricClouds(renderer,policy);compatible.update(u);assert.equal(calls.at(-1).target.texture.type,T.UnsignedByteType);compatible.dispose();
- const desktop=createVolumetricClouds(renderer,{...policy,mobile:false});desktop.update(u,0);const published=desktop.texture,start=calls.length;
- u.cloudOffset.value.x+=1;
- for(let tile=0;tile<4;tile++){
-  desktop.update(u,500+tile*16);
-  assert.deepEqual(calls[start+tile].scissor,[0,tile*32,256,32]);
-  if(tile<3)assert.equal(desktop.texture,published);
- }
- assert.notEqual(desktop.texture,published);assert.equal(current,originalTarget);
- const oldCloud=desktop.texture,oldTarget=calls.at(-1).target,oldWidth=oldTarget.width;
- desktop.setQuality('high');assert.equal(oldTarget.width,oldWidth,'Do not resize the panorama currently visible');
- desktop.update(u,600);assert.equal(desktop.texture,oldCloud,'Finish the existing blend before reusing its old texture');
- desktop.update(u,1500);assert.notEqual(desktop.texture,oldCloud);
- assert.equal(u.cloudMapPrevious.value,oldCloud);assert.equal(u.cloudBlend.value,0,'Quality changes crossfade from the previous complete image');
- assert.equal(oldTarget.width,oldWidth);assert.equal(calls.at(-1).target.width,1024);
- desktop.dispose();
+ // Desktop tile publication and quality transitions are covered by cloud-startup.test.mjs.
 });

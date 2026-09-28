@@ -122,3 +122,14 @@ body:not(.arriving) #arrivalVeil{display:none}
 #arrivalVeil[hidden]{display:none!important}
 
 #arrivalRenderHold{position:fixed;inset:0;width:100%;height:100%;z-index:10;pointer-events:none;opacity:1;transition:opacity 1.8s cubic-bezier(.22,.61,.36,1)}
+
+/* Stable cover grid, inspired by the spectral notebook's restrained silver serif title. */
+#loading .arrival-entry{height:122px;display:grid;grid-template-rows:38px 22px 62px;align-items:center;justify-items:center;margin:0 0 16px}
+#loading .arrival-entry>.arrival-account{grid-row:1;grid-column:1;margin:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:italic 24px/38px Baskerville,"Iowan Old Style",Georgia,"SimSun",serif;letter-spacing:.065em;color:#c6d3ce}
+#loading #entryStatus{grid-row:2;grid-column:1;min-height:22px;line-height:22px;font-size:11px}
+#loading #enterButton{grid-row:3;grid-column:1;min-height:62px;margin:0;font-family:"Songti SC","Noto Serif SC","SimSun",serif;font-weight:400}
+#loading[data-entry-requested=true] #enterButton{opacity:0;pointer-events:none}
+#loading h2{font:400 clamp(30px,3.7vw,54px)/1.3 "Songti SC","Noto Serif SC","Source Han Serif SC","SimSun",serif;letter-spacing:.09em;text-indent:.09em;color:#dce7e2;text-shadow:0 1px 0 #f7fff533,0 2px 1px #425957,0 5px 14px #06191b80}
+#loading .arrival-kicker{font-family:Baskerville,Georgia,serif;letter-spacing:.3em;color:#b0c2b9}
+#loading[data-auth=anonymous] .arrival-copy{opacity:1}
+#loading .arrival-bottom{min-height:174px}

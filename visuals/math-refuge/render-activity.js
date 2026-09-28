@@ -1,8 +1,8 @@
 // One owner for the render loop: visibility alone does not detect another app
 // or window taking focus. A queued callback must obey the same gate as events.
-export function bindRenderActivity({doc=document,win=window,setLoop,frame,onPause=()=>{},onResume=()=>{},now=()=>performance.now()}){
+export function bindRenderActivity({doc=document,win=window,setLoop,frame,onPause=()=>{},onResume=()=>{},allowUnfocused=()=>false,now=()=>performance.now()}){
  let enabled=false,running=false,pageVisible=true,focused=doc.hasFocus(),pausedAt=null,disposed=false,inFrame=false;
- const foreground=()=>pageVisible&&!doc.hidden&&focused&&doc.hasFocus();
+ const foreground=()=>pageVisible&&!doc.hidden&&(allowUnfocused()||(focused&&doc.hasFocus()));
  const callback=stamp=>{inFrame=true;try{if(!foreground()){sync();return;}if(running)frame(stamp);}finally{inFrame=false;}};
  function sync(){
   const next=!disposed&&enabled&&foreground();

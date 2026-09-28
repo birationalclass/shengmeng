@@ -1,3 +1,4 @@
+import {boardContentJump,advanceBoardQueue} from './board-transition.js';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v109';
@@ -68,7 +69,7 @@ export async function createLecture(scene,renderer,options={}){
   if(!disabled&&hasSelection)await load(0,openingReport.cover);
   reportProgress(1);
   if(navigation?.sections?.length)clock.stopAt=navigation.sections[0].end;
-  const boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
+  const contentFadeQueue=[],boards=[],mix=[0,0,0],targets=[0,0,0];let playing=hasSelection&&!stored,accumulator=0,writingSpeed=1;
   const hardware=createBoardHardware(THREE),frameMaterial=hardware.wood;
   const metal=new THREE.MeshStandardMaterial({color:'#ad9d87',roughness:.84,metalness:.25,envMapIntensity:.25});
   const cube=new THREE.BoxGeometry(1,1,1);
@@ -112,9 +113,10 @@ export async function createLecture(scene,renderer,options={}){
         const wheel=new THREE.Mesh(new THREE.CylinderGeometry(.049,.049,.045,12),hardware.rubber);
         wheel.name='Guide roller';wheel.rotation.z=Math.PI/2;wheel.position.set(sign*2.745,y,-.055);group.add(wheel);
       }
-      surface.material.onBeforeCompile=shader=>{shader.uniforms.boardMipBias=boardMipBias;shader.fragmentShader='uniform float boardMipBias;\n'+shader.fragmentShader.replace('#include <map_fragment>',THREE.ShaderChunk.map_fragment.replace('texture2D( map, vMapUv )','texture2D( map, vMapUv, boardMipBias )'));};
-      surface.material.customProgramCacheKey=()=> 'board-readable-mips-v84';surface.userData.boardSurface=true;
-      boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,wet:null,last:''});
+      const previousInk={value:blankTexture},inkBlend={value:1};
+      surface.material.onBeforeCompile=shader=>{shader.uniforms.boardMipBias=boardMipBias;shader.uniforms.previousInk=previousInk;shader.uniforms.inkBlend=inkBlend;shader.fragmentShader='uniform float boardMipBias;\nuniform sampler2D previousInk;\nuniform float inkBlend;\n'+shader.fragmentShader.replace('#include <map_fragment>',THREE.ShaderChunk.map_fragment.replace('texture2D( map, vMapUv )','mix(texture2D(previousInk,vMapUv,boardMipBias),texture2D(map,vMapUv,boardMipBias),inkBlend)'));};
+      surface.material.customProgramCacheKey=()=> 'board-readable-crossfade-120';surface.userData.boardSurface=true;
+      boards.push({group,canvas,ctx,texture,roughCtx,roughTexture,previousInk,inkBlend,fadeAge:1,wet:null,last:''});
     }
     const tray=new THREE.Group();tray.name='Wide nanmu chalk tray '+(pair+1);tray.userData={column:pair,depth:TRAY.depth,centerZ:TRAY.z,floorTop:TRAY.top};scene.add(tray);
     part(tray,[x,TRAY.y,TRAY.z],[5.42,.06,TRAY.depth],frameMaterial);
@@ -228,9 +230,18 @@ export async function createLecture(scene,renderer,options={}){
     const roughCanvas=document.createElement('canvas');roughCanvas.width=W/4;roughCanvas.height=H/4;board.roughCtx=roughCanvas.getContext('2d');board.roughTexture=new THREE.CanvasTexture(roughCanvas);
     const material=board.group.children[0].material;material.map=board.texture;material.roughnessMap=board.roughTexture;material.needsUpdate=true;
   }
+  function beginContentFade(board){
+    if(!board.canvas||contentFadeQueue.includes(board))return;
+    contentFadeQueue.push(board);
+    if(!board.previousCanvas){board.previousCanvas=document.createElement('canvas');board.previousCanvas.width=W;board.previousCanvas.height=H;board.previousInk.value=new THREE.CanvasTexture(board.previousCanvas);board.previousInk.value.colorSpace=THREE.SRGBColorSpace;board.previousInk.value.anisotropy=board.texture.anisotropy;}
+    board.previousCanvas.getContext('2d').drawImage(board.canvas,0,0);
+    board.previousInk.value.needsUpdate=true;board.fadeAge=0;board.inkBlend.value=0;
+  }
   function draw(index){
     const board=boards[index],slot=clock.slots[index];
     if(options.isActive?.()===false||!renderActive||hydrating||stored||storageProgress>0)return;
+    const content={page:slot.page,progress:slot.progress,available:cache.has(slot.page)};
+    if(boardContentJump(board.content,content))beginContentFade(board);board.content=content;
     if(slot.page<0){if(board.last==='blank')return;board.last='blank';if(board.canvas){board.ctx.fillStyle='#193d33';board.ctx.fillRect(0,0,W,H);board.texture.needsUpdate=true;board.roughCtx.fillStyle='white';board.roughCtx.fillRect(0,0,W/4,H/4);board.roughTexture.needsUpdate=true;board.roughKey='';}return;}
     ensureInk(board);const ctx=board.ctx;
     const erasing=index===clock.active&&clock.phase==='erase'&&clock.progress>0;
@@ -305,6 +316,8 @@ export async function createLecture(scene,renderer,options={}){
   }
   function update(dt,reduced=false){
     if(disabled||options.isActive?.()===false)return;
+    // Only the head of the queue advances: one board completes before the next starts.
+    if(reduced||renderActive&&!hydrating)advanceBoardQueue(contentFadeQueue,dt,reduced);
     screenHub?.update(dt,storageProgress);
     if(storageRig){
       storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
@@ -316,7 +329,8 @@ export async function createLecture(scene,renderer,options={}){
       consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'&&b.userData.column===0));
       updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready)return;
     }
-    if(!renderActive||hydrating){if(!openingDemo&&playing&&hasSelection&&!reduced&&!seeking&&!hydrating)clock.advance(dt,writingSpeed);return;}
+    // Offscreen boards retain their exact state; looking at sunrise must not fast-forward pages.
+    if(!renderActive||hydrating)return;
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
@@ -477,6 +491,8 @@ export async function createLecture(scene,renderer,options={}){
       // Opening boards are paused and already painted/uploaded. Becoming visible
       // at the entrance must not reset and redraw six unchanged surfaces.
       if(openingDemo?.phase==='waiting'&&openingSurfacesReady&&boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
+      // Returning to a prepared room reuses its ink and mechanism positions unchanged.
+      if(boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
       hydrating=true;const resume={page:clock.page,phase:clock.phase,progress:clock.progress};
       try{
         const visible=[...new Set([...clock.slots.map(s=>s.page),hasSelection?clock.page:-1])].filter(i=>i>=0);
@@ -535,7 +551,7 @@ export async function createLecture(scene,renderer,options={}){
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';

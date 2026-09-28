@@ -1,3 +1,4 @@
+import {cloudCoverageArea,coverageThreshold,distantCloudCoverage} from './cloud-coverage.js';
 import * as T from 'three';
 import {CLOUD_LEVELS} from './graphics-settings.js?v84-display';
 // Persistent 3D Perlin-like value/Worley density volume, not screen-space cloud stamps.
@@ -15,43 +16,49 @@ function densityTexture(N=64){
 export function createVolumetricClouds(renderer,device={}){
  if(!renderer?.isWebGLRenderer||device.safe)return null;
  let size=device.cloudSize||512,steps=device.cloudSteps||24,interval=device.cloudInterval||250;
- const noise=densityTexture(device.noiseSize||64),target=new T.WebGLRenderTarget(size,size/2,{type:renderer.extensions.has('EXT_color_buffer_float')?T.HalfFloatType:T.UnsignedByteType,depthBuffer:false,stencilBuffer:false});target.texture.wrapS=T.RepeatWrapping;const targets=[target,target.clone()];let front=0;
- const coverageQuantiles=[0.03557725293328986, 0.2114051797759194, 0.25193887045735985, 0.28106544011743545, 0.3049933947053252, 0.3278578215640751, 0.34643832371026445, 0.3650978786462471, 0.3822517187577652, 0.39874209191205334, 0.4152664543193353, 0.43056755824837767, 0.44513135375766877, 0.4605954689951862, 0.47483748649710744, 0.4885058515597245, 0.5032210031166335, 0.5174003195924649, 0.5313472915548605, 0.5449129211608166, 0.5599380736831316, 0.5748990645872083, 0.5901049132148516, 0.6046956450505222, 0.6205398731434861, 0.636390777259328, 0.6543391344117473, 0.6734547487437641, 0.6942006268157725, 0.7184535550312877, 0.7466102422960983, 0.7871598078048733, 0.9507641646631495];
- const thresholdFor=c=>{const v=(1-Math.max(0,Math.min(1,c)))*32,i=Math.min(31,Math.floor(v));return coverageQuantiles[i]+(coverageQuantiles[i+1]-coverageQuantiles[i])*(v-i);};
- const uniforms={coverageThreshold:{value:.5},marchSteps:{value:steps},origin:{value:new T.Vector3(0,.015,0)},volume:{value:noise},coverage:{value:0},sun:{value:new T.Vector3(0,1,0)},sunTint:{value:new T.Color('white')},day:{value:1},storm:{value:0},offset:{value:new T.Vector2()}};
+ const noise=densityTexture(device.noiseSize||64),target=new T.WebGLRenderTarget(size,size/2,{type:renderer.extensions.has('EXT_color_buffer_float')?T.HalfFloatType:T.UnsignedByteType,depthBuffer:false,stencilBuffer:false});target.texture.wrapS=T.RepeatWrapping;const targets=[target,target.clone(),target.clone()];let front=0,previous=0;
+ let areaKey='',area,thresholdKey='',calibratedThreshold=.5,calibratedDistantThreshold=.5;
+ const windows=[new T.Vector2(1,0),new T.Vector2(-1,0)];
+ const uniforms={seedOffset:{value:new T.Vector2()},sunriseBearing:{value:windows[0]},sunsetBearing:{value:windows[1]},coverageThreshold:{value:.5},distantThreshold:{value:.5},marchSteps:{value:steps},origin:{value:new T.Vector3(0,.015,0)},volume:{value:noise},coverage:{value:0},sun:{value:new T.Vector3(0,1,0)},sunTint:{value:new T.Color('white')},day:{value:1},storm:{value:0},offset:{value:new T.Vector2()}};
  const material=new T.ShaderMaterial({glslVersion:T.GLSL3,uniforms,depthTest:false,depthWrite:false,vertexShader:'out vec2 cloudUV;void main(){cloudUV=uv;gl_Position=vec4(position.xy,0.,1.);}',fragmentShader:`
  precision highp float;precision highp sampler3D;in vec2 cloudUV;out vec4 cloudResult;
- uniform sampler3D volume;uniform float marchSteps;uniform float coverageThreshold,coverage,day,storm;uniform vec3 sun,sunTint,origin;uniform vec2 offset;
+ uniform sampler3D volume;uniform float marchSteps;uniform float coverageThreshold,distantThreshold,coverage,day,storm;uniform vec3 sun,sunTint,origin;uniform vec2 offset,seedOffset,sunriseBearing,sunsetBearing;
  float topDistance(vec3 d,float height){float r=6360.+origin.y,b=r*d.y;return -b+sqrt(max(0.,b*b+pow(6360.+height,2.)-r*r));}
  float regionalHash(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
  float regionalNoise(vec2 p){vec2 c=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(regionalHash(c),regionalHash(c+vec2(1,0)),f.x),mix(regionalHash(c+vec2(0,1)),regionalHash(c+vec2(1,1)),f.x),f.y);}
  float density(vec3 p,bool detailed){
-  vec2 ground=p.xz-offset;
+  vec2 ground=p.xz-offset-seedOffset;
   vec2 warped=ground+vec2(regionalNoise(ground*.031),regionalNoise(ground*.027+19.))*8.;
   float region=.68*regionalNoise(warped*.065)+.32*regionalNoise(warped*.151+37.);
   // Regional coverage, independent of local erosion: clear corridors between cloud banks.
-  float mask=smoothstep(coverageThreshold-.035,coverageThreshold+.035,region);
-  mask=mix(mask,1.,smoothstep(.85,1.,coverage));
+  float distanceWeight=smoothstep(20.,60.,length(p.xz-origin.xz));
+  float localThreshold=mix(coverageThreshold,distantThreshold,distanceWeight);
+  float mask=smoothstep(localThreshold-.035,localThreshold+.035,region);
   float type=regionalNoise(ground*.09+71.);
   float altitude=length(p+vec3(0.,6360.,0.))-6360.;
-  float base=mix(1.3,1.7,type),thickness=mix(.55,1.35,type);
+  // Kilometre-scale rounded billows disturb both boundaries, not a flat slab.
+  float billow=regionalNoise(warped*.65+13.);
+  float base=1.32+.24*type+.18*(billow-.5);
+  float thickness=.75+.90*type+.40*billow;
   float h=(altitude-base)/thickness;if(h<=0.||h>=1.||mask<.001)return 0.;
-  vec3 uv=vec3(warped.x*.14,h*.23,warped.y*.14);
+  vec3 uv=vec3(warped.x*.12,h*.52,warped.y*.12);
   vec3 n=texture(volume,uv).rgb;
-  float shape=n.r*.78+n.g*.22;
-  float detail=detailed?texture(volume,uv*3.7+vec3(.13,.21,.07)).g:.65;
-  float profile=smoothstep(0.,.12,h)*(1.-smoothstep(mix(.3,.6,type),1.,h));
+  float shape=n.r*.52+n.g*.48;
+  float detail=texture(volume,uv*3.7+vec3(.13,.21,.07)).g;
+  float profile=pow(max(0.,4.*h*(1.-h)),.65);
   float body=max(0.,shape-mix(.48,.32,coverage))*5.5;
-  body=max(0.,body-(1.-detail)*mix(.18,.36,type));
+  body=max(0.,body-(1.-detail)*mix(.10,.22,type));
   return body*profile*mask*smoothstep(0.,.06,coverage);
  }
- void main(){if(coverage<.0001||origin.y>=3.1){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=origin.y>=1.3?0.:max(0.,topDistance(d,1.3)),end=min(topDistance(d,3.1),start+35.);float stepSize=(end-start)/marchSteps;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
- for(int i=0;i<32;i++){if(float(i)>=marchSteps)break;vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
- float distanceFade=exp(-start*.025);cloudResult=vec4(color*distanceFade,(1.-transmittance)*distanceFade);}`});
+ void main(){if(coverage<.0001||origin.y>=3.8){cloudResult=vec4(0.);return;}float az=(cloudUV.x-.5)*6.2831853,elevation=cloudUV.y*cloudUV.y*1.5707963;vec3 d=vec3(cos(az)*cos(elevation),sin(elevation),sin(az)*cos(elevation));float start=origin.y>=1.2?0.:max(0.,topDistance(d,1.2)),end=min(topDistance(d,3.8),start+35.);float stepSize=(end-start)/marchSteps;float jitter=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);vec3 color=vec3(0.);float transmittance=1.;float mu=dot(d,sun),forward=.10+.055*(1.-.65*.65)/pow(max(.04,1.+.65*.65-2.*.65*mu),1.5);
+ for(int i=0;i<48;i++){if(float(i)>=marchSteps)break;vec3 p=origin+d*(start+(float(i)+.2+.6*jitter)*stepSize);float rho=density(p,true);if(rho>.001){float optical=0.;for(int j=0;j<2;j++){float dist=.25+float(j)*.60;optical+=density(p+sun*dist,false)*.60;}float shadow=exp(-optical*5.);float a=1.-exp(-rho*stepSize*4.2);float h=clamp((length(p+vec3(0.,6360.,0.))-6360.-1.3)/1.8,0.,1.);vec3 ambient=mix(vec3(.19,.25,.33),vec3(.52,.60,.69),h)*(.008+.992*day)*(1.-storm*.38);vec3 direct=sunTint*shadow*(.65+forward)*day*(1.-storm*.55);color+=transmittance*a*(ambient+direct);transmittance*=1.-a;if(transmittance<.015)break;}}
+ // Distance haze changes radiance, not optical coverage: distant thick clouds still occlude the sun.
+ float distanceFade=exp(-start*.025);vec3 aerialTint=vec3(.52,.60,.69)*(.008+.992*day);cloudResult=vec4(mix(aerialTint*(1.-transmittance),color,distanceFade),1.-transmittance);}`});
  const scene=new T.Scene(),quad=new T.Mesh(new T.PlaneGeometry(2,2),material),camera=new T.Camera();scene.add(quad);
- const tileCount=device.mobile?4:8;let key='',last=-Infinity,pending=null;
+ const tileCount=device.mobile?8:16;let key='',last=-Infinity,pending=null;
  function capture(u){
-  uniforms.origin.value.copy(u.cloudOrigin.value);uniforms.coverage.value=u.cloud.value;uniforms.coverageThreshold.value=thresholdFor(u.cloud.value);uniforms.sun.value.copy(u.sunPosition.value);
+  if(u.cloudSeedOffset)uniforms.seedOffset.value.copy(u.cloudSeedOffset.value);
+  uniforms.origin.value.copy(u.cloudOrigin.value);uniforms.coverage.value=u.cloud.value;uniforms.coverageThreshold.value=calibratedThreshold;uniforms.distantThreshold.value=calibratedDistantThreshold;uniforms.sun.value.copy(u.sunPosition.value);
   uniforms.sunTint.value.copy(u.sunColor.value);uniforms.day.value=u.day.value;uniforms.storm.value=u.storm.value;uniforms.offset.value.copy(u.cloudOffset.value);
  }
  function renderTile(target,tile,count){
@@ -65,25 +72,33 @@ export function createVolumetricClouds(renderer,device={}){
  }
  let hasFrame=false,blendInterval=interval;
  function publish(u,now,next,first){
-  const prior=front;front=next;last=now;blendInterval=interval;hasFrame=true;
+  const prior=front;previous=prior;front=next;last=now;blendInterval=interval;hasFrame=true;
   u.cloudMap.value=targets[front].texture;u.cloudMapPrevious.value=targets[first?front:prior].texture;u.cloudBlend.value=first?1:0;
  }
- return {async prepare(){
+ let preparation;
+ return {tileCount,prepare(){return preparation??=(async()=>{
   renderer.initTexture(noise);
   await renderer.compileAsync?.(scene,camera);
   for(const target of targets){renderer.initRenderTarget(target);await new Promise(resolve=>setTimeout(resolve,0));}
- },setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
+ })();},setQuality(level){const q=CLOUD_LEVELS[level]||CLOUD_LEVELS.medium;if(size===q.size&&steps===q.steps)return;size=q.size;steps=q.steps;interval=q.interval;uniforms.marchSteps.value=steps;key='';pending=null;},get texture(){return targets[front].texture;},update(u,now=performance.now()){
   if(u.cloud.value<.0001){pending=null;key='';u.useVolumeClouds.value=0;return;}u.useVolumeClouds.value=1;
   u.cloudBlend.value=Math.min(1,(now-last)/blendInterval);
   if(pending){
-   renderTile(targets[pending.target],pending.tile++,tileCount);
-   if(pending.tile===tileCount){key=pending.key;publish(u,now,pending.target,!hasFrame);pending=null;}
+   if(pending.tile<tileCount)renderTile(targets[pending.target],pending.tile++,tileCount);
+   if(pending.tile===tileCount&&(!hasFrame||now-last>=blendInterval)){key=pending.key;publish(u,now,pending.target,!hasFrame);pending=null;}
    return;
   }
-  const nextKey=[u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');
-  if(nextKey===key||now-last<blendInterval)return;
-  capture(u);const next=1-front;targets[next].setSize(size,size/2);
-  // First activation and quality changes use the same bounded tiles as refreshes.
+  const bearings=[u.sunriseBearing?.value||windows[0],u.sunsetBearing?.value||windows[1]];
+  const seed=u.cloudSeedOffset?.value?.toArray()||[0,0];
+  const nextAreaKey=bearings.map(v=>v.toArray().join(',')).join(';')+':'+seed.join(',');
+  if(nextAreaKey!==areaKey){windows.forEach((v,i)=>v.copy(bearings[i]));area=cloudCoverageArea(windows.map(v=>v.toArray()),seed);areaKey=nextAreaKey;thresholdKey='';}
+  const nextThresholdKey=areaKey+':'+u.cloud.value.toFixed(2);
+  if(nextThresholdKey!==thresholdKey){calibratedThreshold=coverageThreshold(area,u.cloud.value);calibratedDistantThreshold=coverageThreshold(area,distantCloudCoverage(u.cloud.value));thresholdKey=nextThresholdKey;}
+  const nextKey=[areaKey,u.cloud.value,u.day.value,u.storm.value,...u.sunPosition.value.toArray(),...u.cloudOffset.value.toArray(),...u.cloudOrigin.value.toArray()].join(',');
+  if(nextKey===key)return;
+  capture(u);const next=targets.findIndex((_,i)=>i!==front&&i!==previous);targets[next].setSize(size,size/2);
+  // Triple buffering computes the next panorama while the two visible maps blend.
+  // Never render into either visible map. Quality changes retain bounded tile work.
   // Publish only a complete panorama; keep the previous texture until then.
   pending={key:nextKey,target:next,tile:1};renderTile(targets[next],0,tileCount);
  },dispose(){noise.dispose();targets.forEach(t=>t.dispose());quad.geometry.dispose();material.dispose();}};

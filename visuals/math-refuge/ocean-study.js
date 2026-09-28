@@ -23,14 +23,36 @@ export async function createCampusOcean(renderer,scene,water,onProgress=()=>{}){
  Object.assign(layer.uniforms,uniforms);
 
  const header='uniform mat4 studyView,studyMatrix;uniform vec3 studyCamera,studySun;uniform sampler2D studySky,studySkyPrevious,studyCloud,studyCloudPrevious;uniform vec2 studyMotion;uniform float studySkyBlend,studyFrameDelta,studyPhysical;uniform float studyNight,studyCloudBlend,studyCloudEnabled,studyReflection;\n';
+ // Blend only the distant background into the sky; nearby geometry stays opaque.
+ layer.farOcean.material.transparent=true;
  const materials=new Set([layer.waterNear,layer.waterFar,...layer.scene.children.map(o=>o.material)]);
  for(const material of materials){
   for(const key of ['vertexShader','fragmentShader']){
    let shader=material[key].replaceAll('cameraPosition','studyCamera').replaceAll('viewMatrix','studyView');
-   shader=shader.replaceAll('col+=light*min(18.,distribution*sf*gv*gl/(4.*nv))*smoothstep(-4.,1.,uSun);','float solarHighlight=distribution*sf*gv*gl/(4.*nv);col+=light*(1.05*solarHighlight/(1.05+solarHighlight))*smoothstep(-4.,1.,uSun)*studySunReflection*studySunStrength;');
+   shader=shader.replaceAll('col+=light*min(18.,distribution*sf*gv*gl/(4.*nv))*smoothstep(-4.,1.,uSun);','float solarHighlight=distribution*sf*gv*gl/(4.*nv);col+=light*(1.05*solarHighlight/(1.05+solarHighlight))*smoothstep(-4.,1.,uSun)*studySunReflection*studySunStrength*studySolarTransmission();');
    shader=shader.replace(/vec3 sunDirection\(\)\{[^}]*\}/,'vec3 sunDirection(){return normalize(studySun);}');
-   shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 sky(vec3 rd,bool clouds){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=mix(texture2D(studySkyPrevious,uv).rgb,texture2D(studySky,uv).rgb,studySkyBlend);col=mix(vec3(.07,.24,.43)*studyNight,col,studyPhysical);if(clouds&&studyReflection>.5){vec4 c=mix(texture2D(studyCloudPrevious,uv),texture2D(studyCloud,uv),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.012,.016,.025)*(1.-smoothstep(-10.,0.,uSun));}\n`);
+   shader=shader.replace(/vec3 sky\(vec3 rd,bool clouds\)\{[\s\S]*?\n\}\n(?=vec3 tone)/,`vec3 skyAt(vec3 rd,bool clouds,vec3 surface){vec3 d=normalize(mat3(studyMatrix)*rd);d.y=max(.002,d.y);vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(d.y)/1.5707963,0.,1.)));vec3 col=mix(texture2D(studySkyPrevious,uv).rgb,texture2D(studySky,uv).rgb,studySkyBlend);col=mix(vec3(.07,.24,.43)*studyNight,col,studyPhysical);if(clouds&&studyReflection>.5){vec3 worldSurface=(studyMatrix*vec4(surface,1.)).xyz;vec3 worldEye=(studyMatrix*vec4(studyCamera,1.)).xyz;
+float cloudTravel=max(0.,2300.-worldSurface.y)/max(.002,d.y);
+vec3 cloudRay=normalize(worldSurface+d*cloudTravel-worldEye);vec2 cloudUV=vec2(.5+atan(cloudRay.z,cloudRay.x)/6.2831853,sqrt(clamp(asin(clamp(cloudRay.y,0.,1.))/1.5707963,0.,1.)));
+vec4 c=mix(texture2D(studyCloudPrevious,cloudUV),texture2D(studyCloud,cloudUV),studyCloudBlend);col=col*(1.-c.a*studyCloudEnabled)+c.rgb*studyCloudEnabled;}return col+vec3(.012,.016,.025)*(1.-smoothstep(-10.,0.,uSun));}\nvec3 sky(vec3 rd,bool clouds){return skyAt(rd,clouds,studyCamera);}\n`);
    if(key==='fragmentShader'){
+    shader=`float studySolarTransmission(){
+      vec3 d=normalize(mat3(studyMatrix)*studySun);
+      vec2 uv=vec2(.5+atan(d.z,d.x)/6.2831853,sqrt(clamp(asin(clamp(d.y,0.,1.))/1.5707963,0.,1.)));
+      float opacity=mix(texture2D(studyCloudPrevious,uv).a,texture2D(studyCloud,uv).a,studyCloudBlend);
+      return clamp(1.-opacity*studyCloudEnabled,0.,1.);
+    }\n`+shader;
+
+    // Finite-height cloud parallax; atmosphere remains a distant directional lookup.
+    shader=shader.replace('vec3 reflected=sky(r,true),body=vec3(0.);','vec3 reflected=skyAt(r,true,vWorld),body=vec3(0.);');
+    shader=shader.replace('vec3 reflected=sky(r,true);','vec3 surface=studyCamera+ray*(max(0.,studyCamera.y-uOceanLevel)/max(.000001,-ray.y));vec3 reflected=skyAt(r,true,surface);');
+
+    shader=shader.replace('vec3 reflected=sky(r,true),body=vec3(0.);','vec3 reflected=skyAt(r,true,vWorld),body=vec3(0.);');
+    shader=shader.replace('vec3 reflected=sky(r,true);','vec3 surface=studyCamera+ray*(max(0.,studyCamera.y-uOceanLevel)/max(.000001,-ray.y));vec3 reflected=skyAt(r,true,surface);');
+
+    shader=shader.replace('gl_FragColor=vec4(tone(distantSea(ray)),1.);','gl_FragColor=vec4(tone(distantSea(ray)),smoothstep(0.,.014,-ray.y));');
+    shader=shader.replace('false)*vec3(.76,.84,.89);','false)*vec3(.97,.985,1.);');
+
     // Scattering needs incident light. The standalone study's fixed teal
     // night floor made both the refracted bed and distant water self-luminous.
     // Keep the daytime response; fade continuously through nautical twilight.

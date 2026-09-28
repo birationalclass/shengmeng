@@ -1,13 +1,13 @@
 import {fadeToward} from './effect-fade.js?v=arrival-light-74';
-import {deferAsset} from './deferred-textures.js?v=arrival-live-71';
+import {deferAsset} from './deferred-textures.js?v=startup-flow-145';
 import {solarRefractionGLSL} from './solar-optics.js?v86-environment';
 import * as THREE from 'three';
-import {createVolumetricClouds} from './volumetric-clouds.js?v=opening-smooth-111';
+import {createVolumetricClouds} from './volumetric-clouds.js?v=cloud-layout-149';
 import {createAtmosphereLUT} from './sky-atmosphere.js?v112';
 export function createWeatherSky({panorama=true,renderer,device={},probe=false}={}){
  const fallback=new THREE.DataTexture(new Uint8Array([0,0,0,255]),1,1);fallback.needsUpdate=true;
  const atmosphere=createAtmosphereLUT(probe?null:renderer,device),volumeClouds=createVolumetricClouds(probe?null:renderer,device);
- const uniforms={nightStyle:{value:0},meteorEnabled:{value:1},starsEnabled:{value:1},cloudOrigin:{value:new THREE.Vector3(0,.015,0)},cloudBlend:{value:1},cloudMapPrevious:{value:volumeClouds?.texture||fallback},cloudMap:{value:volumeClouds?.texture||fallback},cloudOffset:{value:new THREE.Vector2()},useVolumeClouds:{value:0},atmosphereBlend:{value:1},atmosphereMapPrevious:{value:atmosphere?.texture||fallback},atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
+ const uniforms={cloudSeedOffset:{value:new THREE.Vector2()},sunriseBearing:{value:new THREE.Vector2(1,0)},sunsetBearing:{value:new THREE.Vector2(-1,0)},nightStyle:{value:0},meteorEnabled:{value:1},starsEnabled:{value:1},cloudOrigin:{value:new THREE.Vector3(0,.015,0)},cloudBlend:{value:1},cloudMapPrevious:{value:volumeClouds?.texture||fallback},cloudMap:{value:volumeClouds?.texture||fallback},cloudOffset:{value:new THREE.Vector2()},useVolumeClouds:{value:0},atmosphereBlend:{value:1},atmosphereMapPrevious:{value:atmosphere?.texture||fallback},atmosphereMap:{value:atmosphere?.texture||fallback},useAtmosphere:{value:0},seaHorizon:{value:0},seaColor:{value:new THREE.Color('#8dbbdf')},sunPosition:{value:new THREE.Vector3(1,.5,0)},sunColor:{value:new THREE.Color('#fff4df')},day:{value:1},warm:{value:0},direct:{value:1},cloud:{value:.12},storm:{value:0},twinkleTime:{value:0},clock:{value:0},radius:{value:.00465},showSun:{value:1},stars:{value:0},sidereal:{value:0},galaxyMap:{value:fallback},galaxyMix:{value:0}};
  const material=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms,vertexShader:`varying vec3 ray;void main(){ray=position;vec4 p=projectionMatrix*mat4(mat3(viewMatrix))*modelMatrix*vec4(position,1.0);gl_Position=p.xyww;}`,fragmentShader:`
  uniform sampler2D cloudMap,cloudMapPrevious;uniform float cloudBlend;uniform float useVolumeClouds;uniform vec2 cloudOffset;uniform sampler2D atmosphereMap;uniform float useAtmosphere;uniform sampler2D galaxyMap;uniform float galaxyMix;
  precision highp float;uniform sampler2D atmosphereMapPrevious;uniform float atmosphereBlend;varying vec3 ray;uniform vec3 sunPosition,sunColor,seaColor;uniform float starsEnabled,nightStyle,meteorEnabled;uniform float seaHorizon;uniform float day,warm,direct,cloud,storm,clock,radius,showSun,stars,sidereal,twinkleTime;
@@ -83,16 +83,25 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
  float innerHalo=exp(-pow(angle/(radius*2.4),2.));
  float outerHalo=exp(-pow(angle/(radius*7.5),2.));
  vec3 haloTint=mix(sunColor,vec3(1.,.30,.045),warm*.7);
- color+=solar*(sunColor*(disk*(4.5+1.5*limb)+innerHalo*.8)
-   +haloTint*outerHalo*mix(.07,.26,warm));
- vec4 cloudLight=mix(texture2D(cloudMapPrevious,skyUV),texture2D(cloudMap,skyUV),cloudBlend);color=color*(1.-cloudLight.a*useVolumeClouds)+cloudLight.rgb*useVolumeClouds;
+ vec4 cloudLight=mix(texture2D(cloudMapPrevious,skyUV),texture2D(cloudMap,skyUV),cloudBlend);
+ float cloudOpacity=clamp(cloudLight.a*useVolumeClouds,0.,1.);
+ float transmission=1.-cloudOpacity;
+ // Cloud optical thickness controls the sun, without a low-altitude brightness override.
+ float solarTransmission=transmission;
+ // Cloud alpha already integrates Beer-Lambert extinction; do not apply it twice.
+ float diskTransmission=transmission;
+ color=color*transmission+cloudLight.rgb*useVolumeClouds;
+ color+=solar*(sunColor*disk*(4.5+1.5*limb)*diskTransmission
+   +(sunColor*innerHalo*.8+haloTint*outerHalo*mix(.07,.26,warm))*solarTransmission);
 
  // The distant ocean meets the same horizontal ray used to clip the solar disk.
  // Below the horizon the same grazing sky radiance continues behind the finite ocean.
  // Never insert a fixed fog-colour strip here.
  // Continue the distant sea beyond the finite water mesh, retaining sea/sky contrast.
- float seaSide=1.-smoothstep(-max(fwidth(d.y),.00003),max(fwidth(d.y),.00003),d.y);
- color*=mix(vec3(1.),mix(vec3(.76,.84,.89),vec3(.94),storm),seaSide);
+ // A narrow angular marine haze band, independent of framebuffer resolution.
+ float horizonSoftness=max(fwidth(d.y)*2.,.006);
+ float seaSide=1.-smoothstep(-horizonSoftness,horizonSoftness,d.y);
+ color*=mix(vec3(1.),mix(vec3(.90,.94,.96),vec3(.97),storm),seaSide);
  gl_FragColor=vec4(max(color,vec3(0.0)),1.0);#include <tonemapping_fragment>
  #include <colorspace_fragment>
  }`.replace(';#include',';\n#include')});
@@ -108,7 +117,7 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
   await volumeClouds?.prepare();
   if(!cloudsEnabled||!volumeClouds){report(1);return;}
   // Complete the initial low-cost panorama before entry, independently of promotion.
-  for(let i=0;i<8;i++){volumeClouds.update(uniforms);report((i+1)/8);await new Promise(resolve=>setTimeout(resolve,16));}
+  for(let i=0;i<volumeClouds.tileCount;i++){volumeClouds.update(uniforms);report((i+1)/volumeClouds.tileCount);await new Promise(resolve=>setTimeout(resolve,16));}
   uniforms.useVolumeClouds.value=cloudVisibility;
  };
  mesh.userData.beginArrivalFade=()=>{cloudVisibility=0;uniforms.useVolumeClouds.value=0;};

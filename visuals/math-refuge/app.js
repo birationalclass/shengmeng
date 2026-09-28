@@ -1,3 +1,8 @@
+import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
+import {regionAnchor,distanceLabel} from './region-distance.js';
+import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
+import {hallOrbit} from './hall-orbit.js';
+import {startDeferredTextures} from './deferred-textures.js?v=startup-flow-145';
 import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
@@ -13,7 +18,7 @@ import {createScreenWebview} from './screen-webview.js?v126';
 import {VIDEO_SITES} from './smart-glass-hub.js?v109';
 import {OPENING_POSE,OpeningCameraLock,openingFrameFov} from './opening-camera.js?v=handoff-105';
 import {SunriseIntro} from './sunrise-intro.js?v122';
-import {bindRenderActivity} from './render-activity.js?v=focus-pause';
+import {bindRenderActivity} from './render-activity.js?v=loading-visible-144';
 import {FrameQuality} from './frame-quality.js?v=reading-pixels-76';
 import {OceanBudget} from './ocean-budget.js?v=adaptive-ocean-2';
 import {createSurfAudio} from './surf-audio.js?v104';
@@ -39,7 +44,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=weather-progress-117';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -68,6 +73,14 @@ const movementHud=createMovementHud($('openingHint'),$('movementHud'));
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
 const residenceNotes=createResidenceNotes();
 relocateShots(SHOTS);
+// Building navigation frames the exterior; the opening path keeps its own indoor endpoint.
+{
+ const hall=SHOTS.find(s=>s.name==='报告厅'),offset=buildingOffset('01B');
+ const eye=[HALL.west*BUILDING_SCALE+offset.x-13,DECK_Y*BUILDING_SCALE+HALL.clearHeight+1.8,HALL.south*BUILDING_SCALE+offset.z+11];
+ const target=[(HALL.west+HALL.east)*.5*BUILDING_SCALE+offset.x,DECK_Y*BUILDING_SCALE+3.8,offset.z];
+ hall.positions=[eye,eye.slice()];hall.targets=[target,target.slice()];hall.fov=58;hall.hallOrbit=true;
+}
+
 installCoastWalks(SHOTS);
 {const o=buildingOffset('01B'),p=[24*BUILDING_SCALE+o.x-40,.275*BUILDING_SCALE,o.z];SHOTS.push({name:'海上小亭',title:'沿廊入海，停在风里。',description:'曲线石板步道 · 四角攒尖海上亭',duration:30,fov:58,positions:[[p[0]+20,12,p[2]+22],[p[0]+20,12,p[2]+22]],targets:[[p[0]+5,1,p[2]],[p[0]+5,1,p[2]]]});BUILDINGS[0].rooms.push({name:'海上小亭',shot:'海上小亭'});}
 for(const [label,event] of [['看日出','sunrise'],['看日落','sunset']]){const shift=buildingOffset('01B'),x=(event==='sunrise'?SEAT_ROWS[2].x-3.3:SEAT_ROWS[0].x+3.3)*BUILDING_SCALE+shift.x,p=[x,(DECK_Y+.028)*BUILDING_SCALE+(event==='sunrise'?SEAT_ROWS[2].rise:SEAT_ROWS[0].rise)+2.65,shift.z],t=[x+(event==='sunrise'?100:-100),p[1],p[2]];SHOTS.push({name:'报告厅'+label,title:label,description:event==='sunset'?'后排座椅前景 · 海平面日落':'第一排座椅前景 · 海平面日出',duration:30,fov:55,positions:[p,p.slice()],targets:[t,t.slice()]});BUILDINGS[0].rooms.push({name:label,sunEvent:event});}
@@ -162,6 +175,7 @@ function shotPose(){
   if(speakerView){const pose=roomLecterns[activeRoom].speakerPose(camera.aspect);shotPosition.copy(pose.position);shotTarget.copy(pose.target);return;}
   const s=SHOTS[shot],t=s.walk?walkProgress(time,s.duration):smoothProgress(time/s.duration);
   curves[shot].position.getPointAt(t,shotPosition);curves[shot].target.getPointAt(t,shotTarget);
+  if(s.hallOrbit&&!touring){shotPosition.fromArray(hallOrbit(s.positions[0],s.targets[0],time));shotTarget.fromArray(s.targets[0]);}
   if(s.lecture&&lecture){
     const framing=boardFraming(camera.aspect,s.fov);shotTarget.copy(choosingReport?lecture.reportFocus():lecture.focus(true));
     shotPosition.copy(shotTarget).add(viewDirection.fromArray([-(choosingReport?Math.max(4.6,framing.distance):framing.distance)*lecture.viewScale,0,0]));
@@ -170,7 +184,15 @@ function shotPose(){
 function fail(error){
   failed=true;renderActivity.setEnabled(false);window.refugeBoot?.fail(error);
 }
+function updateRegionDistance(){
+ const current=SHOTS[shot],building=current.lecture?BUILDINGS[activeRoom===0?0:1]:buildingForShot(current.name);
+ const destination=building?SHOTS.find(s=>s.name===building.shot):current;
+ const value=opening?'':distanceLabel(camera.position.toArray(),regionAnchor(destination));
+ const output=$('shotDistance');output.hidden=!value;if(output.textContent!==value)output.textContent=value;
+ output.title='镜头至'+(building?.name||current.name)+'定位点的空间直线距离';
+}
 function updateLabels(){
+  updateRegionDistance();
   residenceNotes.update(SHOTS[shot].name);
   document.body.classList.toggle('teaching',Boolean(SHOTS[shot].lecture&&!speakerView));
   reader?.chapter(Boolean(SHOTS[shot].lecture&&!speakerView)&&teachingRoomAt(camera.position)===activeRoom,$('lecturePanel').hidden);
@@ -183,7 +205,7 @@ function updateLabels(){
   document.querySelectorAll('#chapters button[data-shot]').forEach(b=>b.setAttribute('aria-current',String(Number(b.dataset.shot)===area)));
   controlLabel($('tour'),touring?'暂停巡游':free?'恢复巡游':'继续巡游');
   $('tour').setAttribute('aria-pressed',String(touring));
-  $('mode').textContent=opening?'左环漫滩上空 · 即将进入报告厅':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':'镜头已暂停';
+  $('mode').textContent=opening?'左环漫滩上空 · 即将进入报告厅':SHOTS[shot].lecture?'跟随当前板书':touring?'自动镜头':free?'自由观察':SHOTS[shot].hallOrbit&&!reduced.matches?'报告厅 · 缓慢环绕':'镜头已暂停';
   $('world').dataset.mode=touring?'tour':free?'free':'paused';
   if(SHOTS[shot].walk){walkButton.setAttribute('aria-current','true');$('mode').textContent=free?'自由观察':'沿岸漫步 · 操作镜头即可接管';}else walkButton.removeAttribute('aria-current');
   if(speakerView){$('shotNumber').textContent=(activeRoom===0?'报告厅':'教学楼 '+activeRoom+' 层')+' / 讲台';$('shotTitle').textContent='报告人视角';$('shotDescription').textContent='站在讲台后面向听众 · 触控屏可暂停或翻页 · 可自由转动观察';$('mode').textContent='报告人视角 · 手动观察';}
@@ -215,7 +237,9 @@ function selectShot(index,reportView=false,openingArrival=false){
   if(cameraLocked()&&!openingArrival)return;
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
-  choosingReport=reportView;opening=null;shot=index;time=SHOTS[index].walk?0:.85;boardFollow.reset();touring=false;free=false;
+  choosingReport=reportView;opening=null;shot=index;time=SHOTS[index].walk||SHOTS[index].hallOrbit?0:.85;boardFollow.reset();touring=false;
+  // Opening borrows the hall label, not its exterior orbit. Keep its final sunrise pose.
+  free=openingArrival;
   beginTransition();blend.openingArrival=openingArrival;updateLabels();
   if(SHOTS[index].walk)setSeminarPanel(true,WALK_MENU);
   else if(!SHOTS[index].lecture){const building=buildingForShot(SHOTS[index].name);setSeminarPanel(Boolean(building),building);}
@@ -277,7 +301,7 @@ function resize(){
   camera.aspect=innerWidth/innerHeight;if(!entered)camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();
   if(speakerView&&retreat){camera.fov=roomLecterns[activeRoom].speakerPose(camera.aspect).fov;camera.updateProjectionMatrix();}
   renderBudget.reset();renderScale=1;
-  const bufferRatio=readingPixelRatio(profile.pixelRatio,{enabled:!entered&&$('boardClarity').value==='crisp',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
+  const bufferRatio=readingPixelRatio(profile.pixelRatio,{enabled:$('boardClarity').value==='crisp',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
   // Reserve readable board resolution before entry; never allocate it at the hall door.
   // One backing-store resize, rather than reallocating once for DPR and again for size.
   if(renderer.domElement.width!==Math.floor(innerWidth*bufferRatio)||renderer.domElement.height!==Math.floor(innerHeight*bufferRatio)||renderer.getPixelRatio()!==bufferRatio)renderer.setDrawingBufferSize(innerWidth,innerHeight,bufferRatio);
@@ -301,9 +325,9 @@ function updateQualityReadout(){
 function updateRenderBudget(stamp){
   const ms=gpuTimer?.poll(stamp);if(ms!=null){renderBudget.sample(ms,stamp);performanceMonitor.gpu(ms,stamp);}
   const reading=rooms.some((room,i)=>roomViews[i]?.visible&&room.hasSelection&&(!room.stored||room.storageProgress<1)&&!room.disabled);
-  const protectReading=reading&&$('boardClarity').value==='crisp';
+  const protectReading=$('boardClarity').value==='crisp';
   const pixelRatio=readingPixelRatio(profile.pixelRatio,{enabled:protectReading&&$('adaptiveQuality').value==='auto',mobile:device.mobile,width:innerWidth,height:innerHeight,dpr:devicePixelRatio,maxTextureSize:renderer.capabilities.maxTextureSize});
-  const settings=frameQuality.settings({reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
+  const settings=frameQuality.settings({reading:protectReading||reading,clarity:$('boardClarity').value,pixelRatio,cloud:$('cloudQuality').value,shadow:Number($('shadowQuality').value)});
   if(activeCloudQuality!==settings.cloud&&(renderChangeGate.ready||['off','low','medium','high'].indexOf(settings.cloud)<['off','low','medium','high'].indexOf(activeCloudQuality))){activeCloudQuality=settings.cloud;retreat.sky.userData.setCloudQuality(activeCloudQuality);}
   const shadows=settings.shadow>0;
   if(renderer.shadowMap.enabled!==shadows&&(!shadows||renderChangeGate.ready)){renderer.shadowMap.enabled=shadows;renderer.shadowMap.needsUpdate=true;}
@@ -314,9 +338,9 @@ function updateRenderBudget(stamp){
   retreat.sky.material.uniforms.starsEnabled.value=$('starEffects').value==='on'?1:0;
   retreat.sky.material.uniforms.meteorEnabled.value=settings.particles&&$('meteorEffects').value==='on'?1:0;
   const targetFPS=frameQuality.stats?.target||Math.min(Number($('targetFPS').value),60);
-  const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading,mobile:device.mobile,targetFPS,protectText:true});
+  const gpuScale=renderBudget.update(stamp,{enabled:$('adaptiveQuality').value==='auto',reading:protectReading||reading,mobile:device.mobile,targetFPS,protectText:true});
   const scale=Math.min(gpuScale,settings.scale);
-  if((renderChangeGate.ready||scale<renderScale)&&(scale!==renderScale||Math.abs(renderer.getPixelRatio()-pixelRatio*scale)>.0001)){
+  if((renderChangeGate.ready||scale<renderScale||protectReading&&renderer.getPixelRatio()<pixelRatio)&&(scale!==renderScale||Math.abs(renderer.getPixelRatio()-pixelRatio*scale)>.0001)){
     renderScale=scale;renderer.setDrawingBufferSize(innerWidth,innerHeight,pixelRatio*scale);
     if(composer&&!profile.direct)composer.setPixelRatio(pixelRatio*scale);
     updateQualityReadout();
@@ -351,7 +375,8 @@ function detectGraphics(){
  let saved;try{saved=JSON.parse(localStorage.getItem('refuge-graphics-v84'));}catch{}
  desiredGraphics=initialGraphics({mobile:device.mobile,gpu:gpuName,maxTextureSize:renderer.capabilities.maxTextureSize},Object.fromEntries(graphicsKeys.map(k=>[k,$(k).value])),saved);
  $('world').dataset.graphicsMode='smart';
- $('recommendStatus').textContent='智能推荐已自动启用 · 正在以轻量画面检测，随后按实测性能逐步提升。';
+ $('recommendStatus').textContent='智能推荐已应用 · 优先准备天气与高清板书。';
+ startupQuality.level=device.safe?0:2;device.startup=device.safe;
  const values=startupQuality.settings(desiredGraphics);
  for(const [id,value] of Object.entries(values)){if(graphicsKeys.includes(id)&&$(id).querySelector?.('option[value="'+value+'"]'))$(id).value=value;else if((id==='resolutionScale'&&Number(value)>=75&&Number(value)<=150)||(id==='waveStrength'&&Number(value)>=50&&Number(value)<=150))$(id).value=value;}
 }
@@ -371,7 +396,7 @@ function applyOceanQuality(){
 }
 const renderBudget=new RenderBudget();let gpuTimer=null,weatherTimer=null,renderScale=1,weatherGpuMs=null,weatherGpuSamples=[],weatherCpuMs=0,weatherProbeFrame=false,weatherProbeCounter=0;
 const frameSamples=[],cpuSamples=[];let metricsAt=0;
-const renderActivity=bindRenderActivity({setLoop:callback=>renderer?.setAnimationLoop(callback),frame:tick,
+const renderActivity=bindRenderActivity({allowUnfocused:()=>!entered,setLoop:callback=>renderer?.setAnimationLoop(callback),frame:tick,
  onPause(){
   keys.clear();gpuTimer?.dispose();weatherTimer?.dispose();
   $('world').dataset.renderActivity='paused';performanceMonitor.setPaused(true);
@@ -396,7 +421,8 @@ function tick(stamp){
   renderChangeGate.sample(camera.position.toArray(),camera.quaternion.toArray(),dt,!entered||Boolean(blend)||touring||keys.size>0);
   if(!renderChangeGate.ready)startupQuality.resetSamples();
   if(startupAutomatic&&renderChangeGate.ready&&entered&&!entryTransition&&!openingPreparing&&!blend&&!touring&&keys.size===0&&motionVelocity.length()<.15&&window.refugeBoot?.previewReady&&startupQuality.sample(frameMs,stamp,{targetFPS:Number($('targetFPS').value),gpuMs:renderBudget.gpuMs})){
-    const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
+    startupQuality.level=device.safe?0:2;device.startup=device.safe;
+ const values=startupQuality.settings(desiredGraphics);for(const [id,value] of Object.entries(values))if(graphicsKeys.includes(id))$(id).value=value;
     device.startup=startupQuality.level===0;setQuality();$('world').dataset.startupTier=String(startupQuality.level);
     $('recommendStatus').textContent=startupQuality.level===2?'智能推荐已自动应用 · 60 帧目标、板书清晰保护，持续按实测性能调整。':'智能推荐已启用 · 正在逐步提升画质，优先保持流畅。';
     if(startupQuality.level===2)startupAutomatic=false;
@@ -407,7 +433,7 @@ function tick(stamp){
     updateRenderBudget(stamp);gpuTimer?.begin(stamp);
     retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);
     retreat.ocean.material.uniforms.time.value+=dt;retreat.ocean.userData.study.update(camera,dt);
-    try{renderer.render(scene,camera);window.refugeBoot?.preview();}finally{gpuTimer?.end();}
+    try{if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}finally{gpuTimer?.end();}
     // Keep entry and opening on one renderer; avoid video decode-to-WebGL handoff.
     return;
   }
@@ -428,6 +454,8 @@ function tick(stamp){
     applyShot(dt);
   }else if(blend){
     applyShot(dt);
+  }else if(SHOTS[shot].hallOrbit&&!free&&!speakerView&&!reduced.matches){
+    time=(time+dt)%100;applyShot(dt);
   }else if(SHOTS[shot].walk&&!free){
     time=Math.min(SHOTS[shot].duration,time+dt);applyShot(dt);
     if(time===SHOTS[shot].duration){free=true;updateLabels();}
@@ -446,7 +474,7 @@ function tick(stamp){
     controls.update();
   }
   if(stamp-lastUIStamp>=100){
-    lastUIStamp=stamp;
+    lastUIStamp=stamp;updateRegionDistance();
     if(lecture){updateLectureUI();reader?.update();}
     if(!speakerView&&SHOTS[shot].lecture&&lecture){
       $('mode').textContent=reportProgress||reportLoadError||(choosingReport?(lecture.navigation?.sections?'选择本次小节':'选择报告人 / 主题'):!lecture.followEnabled?'自由观察':boardFollow.following?'跟随当前板书':`自由观察 · ${Math.ceil(boardFollow.remaining)} 秒后跟随`);
@@ -490,19 +518,20 @@ function tick(stamp){
   if(stamp-metricsAt>1000&&frameSamples.length>20){metricsAt=stamp;if(!$('settings').hidden){$('weatherCost').textContent='云 / 大气预计算 GPU '+(weatherGpuMs==null?'待采样':weatherGpuMs.toFixed(2)+' ms')+' · CPU '+weatherCpuMs.toFixed(2)+' ms · 云 '+({low:'标准',medium:'精细',high:'超精细',off:'关闭'}[activeCloudQuality])+'（不含主画面的天空、水面和雨滴）';$('world').dataset.weatherCost=JSON.stringify({prepassGPU:weatherGpuMs,prepassCPU:weatherCpuMs,cloud:activeCloudQuality});}const frames=[...frameSamples].sort((a,b)=>a-b),cpu=[...cpuSamples].sort((a,b)=>a-b);$('world').dataset.performance=JSON.stringify({frameP50:frames[Math.floor(frames.length*.5)],frameP95:frames[Math.floor(frames.length*.95)],cpuP95:cpu[Math.floor(cpu.length*.95)],calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,direct:profile.direct,renderScale,gpuMs:renderBudget.gpuMs,gpuTiming:gpuTimer?.supported,adaptiveLevel:frameQuality.level,adaptiveFPS:frameQuality.stats?.fps});if(blend)$('world').dataset.transitionPerformance=$('world').dataset.performance;}
 
 }
+let startupPaintAt=0;
 async function paintStartup(percent,label){
  await window.refugeBoot?.waitForEntryUI?.();
  reportSceneProgress(percent,label);
  await new Promise(resolve=>setTimeout(resolve,16));
  if(retreat&&renderActivity.foreground){
-  retreat.sky.userData.setCloudQuality('off');retreat.ocean.userData.study.setQuality(0);
-  retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
+  const now=performance.now(),dt=startupPaintAt?Math.min(.1,(now-startupPaintAt)/1000):1/60;startupPaintAt=now;
+  retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);
   retreat.ocean.userData.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
  }
  await new Promise(resolve=>setTimeout(resolve,16));
 }
 
-function reportSceneProgress(value,label){window.refugeBoot?.stage(value*.8,label);}
+function reportSceneProgress(value,label){window.refugeBoot?.stage(value<20?value:24+(value-20)*.68,label);}
 const weatherService=createShanghaiWeather({onChange(value,state){weatherReading=value;weatherStatus=state;weatherLabel();updateSunEvents();if($('weatherMode').value==='live')retreat?.setWeather(value);}});
 
 try{
@@ -527,11 +556,28 @@ try{
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();controls.update();
   resize();
-  const environment=await createArrivalEnvironment(renderer,scene,value=>reportSceneProgress(value,'准备海面'),device,{hour:sceneTime.hour,date:sceneTime.date});
+  const environment=await createArrivalEnvironment(renderer,scene,value=>reportSceneProgress(value,'准备海面'),device,{hour:sceneTime.hour,date:sceneTime.date,weather:weatherReading});
   environment.study.update(camera,0);renderer.render(scene,camera);window.refugeBoot?.preview();
+  window.refugeBoot?.stage(18,'天气数据');await weatherService.ready;
+  const startupWeather=weatherReading?{...weatherReading}:{cloud:.14,rain:0,fog:0,wind:8,windDirection:225};
+  // Resolve the actual sky before architecture; no input gesture is required.
+  const skyUniforms=environment.sky.material.uniforms,waterUniforms=environment.ocean.material.uniforms;
+  skyUniforms.cloud.value=startupWeather.cloud*twilightCloudFactor(sceneTime.hour,solarEvents(sceneTime.date));
+  const cloudStorm=Math.max(0,Math.min(1,(skyUniforms.cloud.value-.4)/.6));skyUniforms.storm.value=cloudStorm*cloudStorm*(3-2*cloudStorm);
+  let earlyPaintAt=performance.now();
+  function paintEnvironment(){
+    const now=performance.now(),dt=Math.min(.1,(now-earlyPaintAt)/1000);earlyPaintAt=now;
+    environment.sky.userData.updateAtmosphere(dt);
+    for(const [key,source] of Object.entries({skyMap:'atmosphereMap',skyPrevious:'atmosphereMapPrevious',skyBlend:'atmosphereBlend',skyPhysical:'useAtmosphere',skyCloudMap:'cloudMap',skyCloudPrevious:'cloudMapPrevious',skyCloudBlend:'cloudBlend',skyCloudEnabled:'useVolumeClouds'}))waterUniforms[key].value=skyUniforms[source].value;
+    environment.study.update(camera,dt);renderer.render(scene,camera);window.refugeBoot?.preview();
+  }
+  environment.sky.userData.setCloudQuality($('cloudQuality').value);
+  await environment.sky.userData.prepareClouds(value=>{window.refugeBoot?.stage(18+value*6,'天空与海面倒影');paintEnvironment();});
+
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   await window.refugeBoot?.waitForEntryUI?.();
-  retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')reportSceneProgress(value,'构建空间');},device,{hour:sceneTime.hour,date:sceneTime.date,environment}),45000,'空间材质加载');
+  retreat=await withDeadline(createRetreat(renderer,scene,value=>{if(typeof value==='number')reportSceneProgress(value,'构建空间');paintEnvironment();},device,{hour:sceneTime.hour,date:sceneTime.date,weather:startupWeather,environment}),45000,'空间材质加载');
+  retreat.setWeather(startupWeather,true);setQuality();
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
   lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
@@ -559,15 +605,15 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  window.refugeBoot?.stage(72,'天气数据');await weatherService.ready;window.refugeBoot?.stage(76,weatherReading?'天气已就绪':'天气预设已就绪');
-  retreat.setWeather(weatherReading,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
+  window.refugeBoot?.stage(70.3,'材质纹理');await startDeferredTextures(value=>window.refugeBoot?.stage(70.3+value*5.7,'材质纹理'));window.refugeBoot?.stage(78,'材质就绪');
+  retreat.setWeather(startupWeather,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   // Hold the already rendered live frame while calibration reallocates GPU buffers.
   renderer.render(scene,camera);
   const arrivalHold=document.createElement('canvas');arrivalHold.id='arrivalRenderHold';
   arrivalHold.width=renderer.domElement.width;arrivalHold.height=renderer.domElement.height;
   arrivalHold.setAttribute('aria-hidden','true');arrivalHold.getContext('2d').drawImage(renderer.domElement,0,0);
   document.body.append(arrivalHold);
-  await retreat.prepareRendering((value,label)=>window.refugeBoot?.stage(76+value*12,label));
+  await retreat.prepareRendering((value,label)=>window.refugeBoot?.stage(78+value*10,label));
   window.refugeBoot?.stage(88,'场景材质');
   await new Promise(resolve=>setTimeout(resolve,0));
   // Compile materials before camera motion, rather than at a cached-video handoff.
@@ -576,29 +622,10 @@ try{
     const progressTimer=setInterval(()=>{const programs=renderer.info.programs||[];if(programs.length)window.refugeBoot?.stage(88+2*programs.filter(p=>p.isReady()).length/programs.length,'场景材质');},80);
     try{await compiling;}finally{clearInterval(progressTimer);}
   }
-  // Calibrate before entry. Test the selected weather instead of waiting for an idle tour.
-  window.refugeBoot?.stage(90,'天气画质检测');
-  for(const level of (document.hidden||device.safe?[0]:[2,1,0])){
-    startupQuality.level=level;device.startup=level===0;
-    const settings=startupQuality.settings(desiredGraphics);
-    for(const [id,value] of Object.entries(settings))if(graphicsKeys.includes(id))$(id).value=value;
-    setQuality();await retreat.sky.userData.prepareClouds?.();
-    await renderer.compileAsync?.(scene,camera);
-    const frames=[],gpu=[];let last=performance.now();
-    if(document.hidden)break;
-    for(let i=0;i<20;i++){
-      const stamp=await new Promise(resolve=>{let done=false;const finish=t=>{if(done)return;done=true;clearTimeout(timer);resolve(t);};const timer=setTimeout(()=>finish(performance.now()),100);requestAnimationFrame(finish);});
-      if(i>=4)frames.push(stamp-last);last=stamp;window.refugeBoot?.stage(90+((2-level)+(i+1)/20)*4/3,'天气画质检测');
-      const measured=gpuTimer?.poll(stamp);if(measured!=null)gpu.push(measured);
-      gpuTimer?.begin(stamp);
-      try{retreat.setTime(sceneTime.hour,false,1/60,1,sceneTime.date);retreat.ocean.userData.study.update(camera,0);if(profile.direct)renderer.render(scene,camera);else composer.render();}finally{gpuTimer?.end();}
-      window.refugeBoot?.preview();
-    }
-    $('world').dataset.startupCalibration=JSON.stringify({level,frames:frames.length,accepted:acceptsStartupQuality(frames,gpu,Number($('targetFPS').value))});
-    if(level===0||acceptsStartupQuality(frames,gpu,Number($('targetFPS').value)))break;
-  }
+  window.refugeBoot?.stage(92,'天气与反射就绪');
   window.refugeBoot?.stage(94,'云层与水面倒影');
-  await retreat.sky.userData.prepareClouds?.(value=>window.refugeBoot?.stage(94+value*2,'云层与水面倒影'));
+  // Cloud panorama was prepared once with the selected quality.
+
   retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);
   window.refugeBoot?.stage(96,'阴影与反射');renderer.shadowMap.needsUpdate=true;
   await renderer.compileAsync?.(scene,camera);
@@ -607,19 +634,29 @@ try{
     if(profile.direct)renderer.render(scene,camera);else composer.render();
     await new Promise(resolve=>setTimeout(resolve,16));
   }
-  window.refugeBoot?.stage(97,'天气融合');
-  // Reveal the selected live effects over real elapsed time, using normal weather fades.
-  retreat.beginArrivalFade();arrivalHold.style.opacity='0';
-  const revealStart=performance.now();let revealLast=revealStart;
-  while(performance.now()-revealStart<2400){
-    await new Promise(resolve=>setTimeout(resolve,16));
-    const now=performance.now(),dt=Math.min(.1,(now-revealLast)/1000);revealLast=now;window.refugeBoot?.stage(97+2.9*Math.min(1,(now-revealStart)/2400),'天气融合');
-    retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);retreat.ocean.userData.study.update(camera,dt);
-    if(profile.direct)renderer.render(scene,camera);else composer.render();
-  }
+  // Warm both sides of the hall before motion, with the same readable framebuffer.
+  const savedCamera={position:camera.position.clone(),rotation:camera.quaternion.clone(),fov:camera.fov};
+  const hallOffset=buildingOffset('01B'),focus=lecture.reportFocus();
+  const hallEye=new THREE.Vector3(SEAT_ROWS[1].x*BUILDING_SCALE+hallOffset.x-.65,(DECK_Y+.028)*BUILDING_SCALE+SEAT_ROWS[1].rise+1.65,hallOffset.z);
+  const warmViews=[{eye:hallEye,target:focus},{eye:new THREE.Vector3(HALL.east*BUILDING_SCALE+hallOffset.x+25,hallEye.y,hallOffset.z),target:hallEye}];
+  try{
+    for(let i=0;i<warmViews.length;i++){
+      camera.position.copy(warmViews[i].eye);camera.lookAt(warmViews[i].target);camera.updateMatrixWorld();
+      retreat.ocean.userData.study.update(camera,0);await renderer.compileAsync?.(scene,camera);
+      for(let frame=0;frame<2;frame++){if(profile.direct)renderer.render(scene,camera);else composer.render();await new Promise(resolve=>setTimeout(resolve,16));}
+      window.refugeBoot?.stage(96.5+(i+1)*.25,'报告厅视角预热');
+    }
+  }finally{camera.position.copy(savedCamera.position);camera.quaternion.copy(savedCamera.rotation);camera.fov=savedCamera.fov;camera.updateProjectionMatrix();camera.updateMatrixWorld();retreat.ocean.userData.study.update(camera,0);}
+  window.refugeBoot?.stage(98,'首帧就绪');
+  // Preserve prepared effects and the opening camera; never clear and replay them.
+  retreat.sky.material.uniforms.cloudOrigin.value.copy(camera.position).multiplyScalar(.001);
+  retreat.sky.material.uniforms.cloudOrigin.value.y=Math.max(.001,retreat.sky.material.uniforms.cloudOrigin.value.y);
+  retreat.setTime(sceneTime.hour,false,1/60,1,sceneTime.date);
+  retreat.ocean.userData.study.update(camera,0);
+  if(profile.direct)renderer.render(scene,camera);else composer.render();
   arrivalHold.remove();
   startupAutomatic=false;frameQuality.resetSamples();oceanBudget.resetSamples();
-  $('recommendStatus').textContent='加载时已匹配画质 · 运行中按实际帧率保护流畅度';
+  $('world').dataset.graphicsMode='smart';$('recommendStatus').textContent=device.safe?'低负载模式 · 保留板书清晰度':'智能推荐已默认应用 · 60 帧预算、文字保护、运行中自动调整环境效果';
   // Keep normal frustum culling: never allocate/render the entire campus at startup.
   if(failed||renderer.getContext().isContextLost())throw new Error('WebGL context lost');
   if(renderActivity.foreground){if(profile.direct)renderer.render(scene,camera);else composer.render();window.refugeBoot?.preview();}
@@ -661,8 +698,10 @@ $('writingSpeed').addEventListener('input',event=>{const value=Number(event.targ
 $('rotationSensitivity').addEventListener('input',event=>cameraInput?.set(event.target.value));
 $('light').addEventListener('input',()=>{if(retreat){hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(Number($('light').value));}});
 $('clockPlay').addEventListener('click',()=>{hallSunRamp=null;sunriseIntro.cancel();timePresentation.seek();sceneTime.setRate(1);$('timeRate').value='1';sceneTime.sync();updateSceneTime();});
+function syncCloudControl(value){const percent=Math.round(Math.max(0,Math.min(1,value))*100);$('cloudCoverage').value=String(percent);$('cloudCoverageValue').textContent=percent+'%';$('cloudCoverage').setAttribute('aria-valuetext',percent+'%');}
+$('cloudCoverage').addEventListener('input',()=>{const value=Number($('cloudCoverage').value)/100;$('weatherMode').value='custom';retreat?.setCloudCoverage(value);weatherLabel();});
 function weatherLabel(){
- const mode=$('weatherMode').value;if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
+ const mode=$('weatherMode').value;syncCloudControl(mode==='live'?(weatherReading?.cloud??.14):mode==='clear'?0:mode==='cloudy'?.8:mode==='rain'?1:Number($('cloudCoverage').value)/100);if(mode!=='live'){$('weatherSummary').textContent=mode==='clear'?'预览 · 晴天 · 无云无雨':mode==='cloudy'?'预览 · 多云':mode==='custom'?'自定义云量':'预览 · 雨天';$('weatherDetail').textContent='正在使用天气预览；选择上海实时天气可恢复实况。';return;}
  const label=weatherReading?`${weatherReading.label} · ${Math.round(weatherReading.temperature)}°C`:'天气暂不可用';
  
  $('weatherSummary').textContent='上海 · '+(weatherStatus==='loading'?'正在获取天气':label)+(weatherStatus==='cached'?'（缓存）':'');
@@ -678,8 +717,10 @@ function updateSunEvents(){const times=eventHours();$('sunriseTime').textContent
 $('timeRate').addEventListener('change',()=>{hallSunRamp=null;sunriseIntro.cancel();sceneTime.setRate($('timeRate').value);updateSceneTime();});
 $('timeRun').addEventListener('click',()=>{sunriseIntro.cancel();if(sceneTime.playing)sceneTime.pause();else sceneTime.play($('timeRate').value);updateSceneTime();});
 for(const [id,event] of [['playSunrise','sunrise'],['playSunset','sunset']])$(id).addEventListener('click',()=>{sunriseIntro.cancel();timePresentation.seek();sceneTime.previewAt(eventHours()[event]-.05);sceneTime.play($('timeRate').value);updateSceneTime();});
-$('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
+$('weatherMode').addEventListener('change',()=>{const v=$('weatherMode').value;weatherLabel();if(v==='custom'){retreat?.setCloudCoverage(Number($('cloudCoverage').value)/100);return;}retreat?.setWeather(v==='live'?weatherReading:v==='clear'?{cloud:0,rain:0,fog:0}:v==='cloudy'?{cloud:.8}:{cloud:1,rain:3});});
 function updateSceneTime(){
+ const motion=retreat?.cloudMotion;if(motion){const speed=motion.speed.toFixed(1),factor='· 时间影响 '+motion.multiplier.toFixed(2)+'×';if($('cloudSpeedValue').textContent!==speed)$('cloudSpeedValue').textContent=speed;if($('cloudSpeedFactor').textContent!==factor)$('cloudSpeedFactor').textContent=factor;}
+
  sceneTime.update();if(document.activeElement!==$('light'))$('light').value=String(sceneTime.hour);
  if(sunriseIntro.catchingUp||sunriseIntro.active){$('introCatchRate').textContent=`${sunriseIntro.active?'开场日出':'自动追时'} · ${sceneTime.rate.toFixed(1)}×`;$('timeRate').value='intro';}else if($('timeRate').value==='intro')$('timeRate').value=String(sceneTime.rate);
  $('timeButtonClock').textContent=formatHour(sceneTime.hour);$('timeRun').textContent=sceneTime.playing?'暂停时间':'播放时间';$('timeState').textContent=sunriseIntro.waiting?'开场运镜 · 时间 1×':sunriseIntro.active?`开场日出 · ${sceneTime.rate.toFixed(1)}× · 5 秒渐进至 30×`:sunriseIntro.catchingUp?`正在追至上海当前时间 · ${Math.round(sceneTime.rate)}×`:!sceneTime.preview?'与上海当前时间同步':sceneTime.playing?`时间流逝 · ${sceneTime.rate}×`:'时间预览 · 已暂停';const minutes=Math.floor(sceneTime.hour*60);$('sceneClock').textContent=String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');
@@ -941,3 +982,12 @@ window.refugeCaptureFrame=()=>{
  const source=renderer.domElement,scale=Math.min(1,1280/Math.max(source.width,source.height)),copy=document.createElement('canvas');copy.width=Math.max(1,Math.round(source.width*scale));copy.height=Math.max(1,Math.round(source.height*scale));copy.getContext('2d').drawImage(source,0,0,copy.width,copy.height);
  let image=copy.toDataURL('image/jpeg',.82);for(const quality of [.7,.55,.4]){if(image.length<=560000)break;image=copy.toDataURL('image/jpeg',quality);}if(image.length>560000){const smaller=document.createElement('canvas');smaller.width=Math.round(copy.width*.7);smaller.height=Math.round(copy.height*.7);smaller.getContext('2d').drawImage(copy,0,0,smaller.width,smaller.height);image=smaller.toDataURL('image/jpeg',.55);}if(image.length>560000)throw Error('截图压缩失败，请重试');return image;
 };
+
+let photoBusy=false;
+$('photoButton').addEventListener('click',async()=>{
+ if(photoBusy||!entered||!renderer||!retreat)return;
+ photoBusy=true;$('photoButton').disabled=true;$('photoStatus').hidden=false;$('photoStatus').textContent='正在拍摄…';
+ try{const blob=await capturePhoto(renderer,scene,camera);downloadPhoto(blob);$('photoStatus').textContent='照片已生成';}
+ catch(error){console.error('[Photo]',error);$('photoStatus').textContent='拍摄失败，请重试';}
+ finally{photoBusy=false;$('photoButton').disabled=false;setTimeout(()=>{$('photoStatus').hidden=true;},3500);}
+});

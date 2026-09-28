@@ -9,4 +9,6 @@ export function advanceCloudWind(state,speed,bearing,dt){
  return state;
 }
 
-export function advanceWeatherWinds(cloud,water,speed,bearing,dt,clockRate=1){advanceCloudWind(cloud,speed,bearing,dt*clockRate);advanceCloudWind(water,speed,bearing,dt);}
+// Time acceleration saturates smoothly at 2x; wind remains the physical velocity source.
+export function cloudTimeRate(rate=1){const r=Math.max(0,Number(rate)||0);return r<=1?r:1-Math.expm1(-(r-1));}
+export function advanceWeatherWinds(cloud,water,speed,bearing,dt,clockRate=1){cloud.timeMultiplier=cloudTimeRate(clockRate);advanceCloudWind(cloud,speed,bearing,dt*cloud.timeMultiplier);advanceCloudWind(water,speed,bearing,dt);}
