@@ -6,6 +6,6 @@ export const GROUP_DEFINITIONS={
  Q8:String.raw`\begin{gathered}Q_8=\{\pm1,\pm i,\pm j,\pm k\}\le\mathbb H^\times\\i^2=j^2=k^2=ijk=-1\end{gathered}`,
  S4:String.raw`S_4=\bigl(\operatorname{Bij}(\{1,2,3,4\}),\circ\bigr)`,
  F56:String.raw`\begin{gathered}\operatorname{AGL}(1,\mathbb F_8)=\{x\mapsto ax+b\mid a\in\mathbb F_8^\times,\ b\in\mathbb F_8\},\ \circ\\\mathbb F_8=\mathbb F_2[t]/(t^3+t+1)\end{gathered}`,
- A5:String.raw`A_5=\ker\!\left(\operatorname{sgn}:S_5\to\{\pm1\}\right),\qquad\circ`,
+ A5:String.raw`A_5=\{\sigma\in S_5\mid\sigma\text{ 为偶置换}\},\qquad\circ`,
  S5:String.raw`S_5=\bigl(\operatorname{Bij}(\{1,2,3,4,5\}),\circ\bigr)`
 };

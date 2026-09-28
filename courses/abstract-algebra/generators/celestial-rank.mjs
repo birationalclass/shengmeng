@@ -26,6 +26,7 @@ export function celestialLayout(group,seed=71){
  const classes=conjugacyClasses(group),classOf=new Map();classes.forEach((members,index)=>members.forEach(i=>classOf.set(i,index)));
  const entries=orders.map((order,i)=>{const classIndex=classOf.get(i),members=classes[classIndex];return {element:i,order,classIndex,classSize:members.length,appearanceSeed:members[0],rank:celestialRank(order,distinct,classIndex),host:null,slot:0};});
  const stars=entries.filter(x=>x.rank.type.endsWith('star'));
+ if(new Set(stars.map(x=>x.rank.type)).size===1)for(const star of stars)star.rank={...star.rank,type:'blue-star',zh:'蓝巨星',en:'Blue giant'};
  const shuffled=[...stars];const random=()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646;};
  for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
  let count=0;for(const entry of entries){if(!entry.rank.type.endsWith('planet'))continue;const host=shuffled[count%shuffled.length];entry.host=host.element;entry.slot=Math.floor(count/shuffled.length);entry.phase=random()*Math.PI*2;count++;}

@@ -39,3 +39,5 @@ test('S3 and S5 conjugacy classes partition elements and unify their appearances
  assert.deepEqual(conjugacyClasses(groups.S5).map(c=>c.length).sort((a,b)=>a-b),[1,10,15,20,20,24,30]);
  for(const group of Object.values(groups)){const classes=conjugacyClasses(group),entries=celestialLayout(group);assert.equal(new Set(classes.flat()).size,group.table.length);for(const members of classes){const first=entries[members[0]];for(const i of members){assert.deepEqual(entries[i].rank,first.rank);assert.equal(entries[i].appearanceSeed,first.appearanceSeed);assert.equal(entries[i].order,first.order);}}}
 });
+
+test('a single stellar appearance uses blue giants without changing the tier size',()=>{for(const key of ['C4','S3','Q8','F56','A5']){const stars=celestialLayout(groups[key]).filter(x=>x.rank.type.endsWith('star'));assert.ok(stars.length);for(const s of stars){assert.equal(s.rank.type,'blue-star');assert.equal(s.rank.scale,.8);}}});

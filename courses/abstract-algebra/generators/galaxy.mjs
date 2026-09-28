@@ -1,11 +1,11 @@
-import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-63';
+import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-65';
 import {mountBalanceControls} from './galaxy-balance.mjs?v=balance-2';
-import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-63';
-import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-63';
-import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-63';
-import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-63';
-import {groups} from './model.mjs?v=nebula-63';
-import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-63';
+import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-65';
+import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-65';
+import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-65';
+import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-65';
+import {groups} from './model.mjs?v=nebula-65';
+import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-65';
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
 import {RECORDS_CONFIG} from '../../../visuals/group-sudoku/records-config.mjs?v=records6-oneline';
 const $=id=>document.getElementById(id),read=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
@@ -51,7 +51,7 @@ $('guestIdentity').onclick=()=>{const guest=read('group-sudoku-guest-session')?.
 function enterSelected(){if(!unlocked(index,done)||transition||world.challenge)return;challenge.open(GALAXIES[index].key,groups[GALAXIES[index].key],GALAXIES[index].name,journey[GALAXIES[index].key].passed);} $('returnGalaxies').onclick=()=>challenge?.close();
 $('demoComplete').onclick=()=>{if(transition||!unlocked(index,done))return;done=complete(index,done);write(key(),done);transition=true;render();$('flightNotice').textContent=index<GALAXIES.length-1?t('航道已解锁 · 正在跃迁','Route unlocked · In transit'):t('模拟航程完成','Demo journey complete');$('flightNotice').classList.add('visible');setTimeout(()=>{transition=false;if(index<GALAXIES.length-1)select(index+1);else render();setTimeout(()=>$('flightNotice').classList.remove('visible'),1500);},650);};
 try{world=new GalaxyScene($('cosmosCanvas'),select,enterSelected);world.motion=$('cosmicMotion').checked;world.select(index);}catch(error){$('cosmicHint').textContent=t('3D 渲染不可用，请开启浏览器硬件加速。','3D unavailable. Enable browser hardware acceleration.');document.body.classList.add('cosmos-fallback');console.error(error);}
-challenge=mountStellarChallenge({world,t,onExit:()=>render(),onPass:(key,stage,seconds)=>{const r=journey[key];r.passed=Math.max(r.passed,stage+1);r.times[stage]=seconds;write('generators-campaign-v1:'+account.id,journey);records?.save(true);done=completedCount(journey,GALAXIES,groups);render();}});
+challenge=mountStellarChallenge({world,t,getIdentity:()=>account.id,onExit:()=>render(),onPass:(key,stage,seconds)=>{const r=journey[key];r.passed=Math.max(r.passed,stage+1);r.times[stage]=seconds;write('generators-campaign-v1:'+account.id,journey);records?.save(true);done=completedCount(journey,GALAXIES,groups);render();}});
 render();window.CourseHealth?.appReady();
 
 if(!world) $('cosmicHint').textContent=t('3D 渲染不可用，请开启浏览器硬件加速。','3D unavailable. Enable browser hardware acceleration.');
