@@ -39,7 +39,7 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=reflection-ready-115';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=soft-weather-116';
 import {createLecture} from './lecture.js?v=coast-arrival-98';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -606,7 +606,16 @@ try{
     await new Promise(resolve=>setTimeout(resolve,16));
   }
   window.refugeBoot?.stage(99,'完成画面');
-  arrivalHold.style.opacity='0';await new Promise(resolve=>setTimeout(resolve,450));arrivalHold.remove();
+  // Reveal the selected live effects over real elapsed time, using normal weather fades.
+  retreat.beginArrivalFade();arrivalHold.style.opacity='0';
+  const revealStart=performance.now();let revealLast=revealStart;
+  while(performance.now()-revealStart<2400){
+    await new Promise(resolve=>setTimeout(resolve,16));
+    const now=performance.now(),dt=Math.min(.1,(now-revealLast)/1000);revealLast=now;
+    retreat.setTime(sceneTime.hour,false,dt,1,sceneTime.date);retreat.ocean.userData.study.update(camera,dt);
+    if(profile.direct)renderer.render(scene,camera);else composer.render();
+  }
+  arrivalHold.remove();
   startupAutomatic=false;frameQuality.resetSamples();oceanBudget.resetSamples();
   $('recommendStatus').textContent='加载时已匹配画质 · 运行中按实际帧率保护流畅度';
   // Keep normal frustum culling: never allocate/render the entire campus at startup.

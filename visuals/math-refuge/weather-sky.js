@@ -109,8 +109,9 @@ export function createWeatherSky({panorama=true,renderer,device={},probe=false}=
   if(!cloudsEnabled||!volumeClouds)return;
   // Complete the initial low-cost panorama before entry, independently of promotion.
   for(let i=0;i<8;i++){volumeClouds.update(uniforms);await new Promise(resolve=>setTimeout(resolve,16));}
-  cloudVisibility=uniforms.cloud.value>=.0001?1:0;uniforms.useVolumeClouds.value=cloudVisibility;
+  uniforms.useVolumeClouds.value=cloudVisibility;
  };
+ mesh.userData.beginArrivalFade=()=>{cloudVisibility=0;uniforms.useVolumeClouds.value=0;};
  mesh.userData.setCloudQuality=level=>{cloudsEnabled=level!=='off';if(cloudsEnabled)volumeClouds?.setQuality(level);};
  mesh.userData.updateAtmosphere=(dt=0)=>{
   if(device.isRenderActive?.()===false)return;
