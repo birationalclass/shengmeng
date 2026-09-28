@@ -32,6 +32,8 @@ function symmetric(n){
 for(const n of [4,5])groups['S'+n]=symmetric(n);
 for(const n of [3,4,5,8]){const g=group('C'+'₀₁₂₃₄₅₆₇₈₉'[n],Array.from({length:n},(_,i)=>i?'r'+(i===1?'':String(i).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d])):'e'),(a,b)=>(a+b)%n);g.seeds=[1];groups['C'+n]=g;}
 for(const n of [3,5,6]){const g=group('D'+'₀₁₂₃₄₅₆₇₈₉'[n],Array.from({length:2*n},(_,i)=>i===0?'e':(i%n?'r'+(i%n===1?'':String(i%n).replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d])):'')+(i>=n?'s':'')),(a,b)=>((a%n+(a<n?1:-1)*(b%n)+n)%n)+n*((Math.floor(a/n)+Math.floor(b/n))%2));g.seeds=[1,n];groups['D'+n]=g;}
+groups.C4.labels=['0̅','1̅','2̅','3̅'];groups.C4.operation='+';
+
 groups.V4=group('V₄',['e','a','b','ab'],(a,b)=>a^b);groups.V4.seeds=[1,2];
 groups.S3.family='symmetric';groups.S3.seeds=[1,2];groups.C6.seeds=[1];groups.D4.seeds=[1,4];groups.Q8.seeds=[2,4];
 export class Closure {

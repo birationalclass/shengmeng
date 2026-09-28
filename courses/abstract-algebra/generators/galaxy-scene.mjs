@@ -1,13 +1,13 @@
 import {pointerPose} from './galaxy-balance.mjs?v=balance-2';
-import {planetMotion,starMotion,stableRandom,orbitalOffset,systemStarOrbits,planetOrbitRadius} from './celestial-motion.mjs?v=nebula-65';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-65';
+import {planetMotion,starMotion,stableRandom,orbitalOffset,systemStarOrbits,planetOrbitRadius} from './celestial-motion.mjs?v=nebula-66';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-66';
 import {detailedStar} from './stellar-render.mjs?v=halo-52';
 import {detailedPlanet} from './planet-render.mjs?v=axial-51';
-import {groups} from './model.mjs?v=nebula-65';
-import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=nebula-65';
+import {groups} from './model.mjs?v=nebula-66';
+import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=nebula-66';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-65';
-import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-65';
+import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-66';
+import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-66';
 export class GalaxyScene{
  constructor(canvas,onSelect,onEnter){
   this.canvas=canvas;this.onEnter=onEnter;this.onSelect=onSelect;this.selected=0;this.unlocked=0;this.completed=0;this.motion=true;this.pointer=new T.Vector2();this.balanceTarget=new T.Vector2();this.balance=new T.Vector2();this.mouseBalance=new T.Vector2();this.mouseView=false;this.spinRotation=new T.Quaternion();this.spinAxis=new T.Vector3(0,1,0);this.target=new T.Vector3();this.look=new T.Vector3();this.camera=new T.PerspectiveCamera(46,1,.1,1600);this.camera.position.set(0,9,27);this.scene=new T.Scene();this.renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});this.renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));this.renderer.outputColorSpace=T.SRGBColorSpace;this.scene.add(new T.AmbientLight(0xb7b4ff,.6));const light=new T.DirectionalLight(0xdaf6ff,2.4);light.position.set(-8,14,12);this.scene.add(light);const pink=new T.PointLight(0xee55cc,90,50);pink.position.set(6,3,8);this.scene.add(pink);this.ray=new T.Raycaster();this.ray.layers.enable(1);this.ray.layers.enable(2);this.ray.params.Points.threshold=.5;

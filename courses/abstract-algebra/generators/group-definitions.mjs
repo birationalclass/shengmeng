@@ -1,5 +1,5 @@
 export const GROUP_DEFINITIONS={
- C4:String.raw`C_4=\langle r\mid r^4=e\rangle\cong(\mathbb Z/4\mathbb Z,+)`,
+ C4:String.raw`C_4=(\{\bar0,\bar1,\bar2,\bar3\},+),\qquad\bar a+\bar b=\overline{a+b}\pmod4`,
  V4:String.raw`V_4=(\mathbb Z/2\mathbb Z)^2,\qquad(a,b)+(c,d)=(a+c,b+d)`,
  S3:String.raw`S_3=\bigl(\operatorname{Bij}(\{1,2,3\}),\circ\bigr)`,
  D4:String.raw`D_4=\langle r,s\mid r^4=s^2=e,\ srs=r^{-1}\rangle`,

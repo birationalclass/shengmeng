@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {groups} from './model.mjs';import {GALAXIES} from './galaxy-campaign.mjs';
-import {closure,minimumGenerators,levels,generationRound,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-65';
+import {closure,minimumGenerators,levels,generationRound,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-66';
 import {elementOrder,conjugacyClasses} from './celestial-rank.mjs';import {diskPoints} from './disk-patterns.mjs';
 test('exact minimum rank and every possible prelit seed has a winning completion',()=>{for(const g of GALAXIES){const group=groups[g.key],m=minimumGenerators(group);assert.equal(m.rank,g.key==='C4'?1:2);for(const x of m.eligible){const set=m.sets.find(s=>s.includes(x));assert.equal(closure(group,set).size,g.order);}if(m.rank===2)for(let i=0;i<g.order;i++)assert.ok(closure(group,[i]).size<g.order);}});
 test('generation stops exactly at the generated subgroup, including failed choices',()=>{for(const key of ['C4','S3','D4','Q8','A5','F56','S5'])for(const seeds of [[groups[key].e],minimumGenerators(groups[key]).sets[0]]){const g=groups[key],known=new Set(seeds);let rounds=0;while(true){const events=generationRound(g,known);if(!events.length)break;events.forEach(e=>{assert.equal(g.table[e.a][e.b],e.c);known.add(e.c);});assert.ok(++rounds<20);}assert.deepEqual([...known].sort((a,b)=>a-b),[...closure(g,seeds)].sort((a,b)=>a-b));}});
