@@ -1,6 +1,6 @@
-import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=galaxy-art-21';
-import {GalaxyScene} from './galaxy-scene.mjs?v=galaxy-art-21';
-import {enterGalaxy,pauseLaboratory} from './app.mjs?v=galaxy-art-21';
+import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=galaxy-art-22';
+import {GalaxyScene} from './galaxy-scene.mjs?v=galaxy-art-22';
+import {enterGalaxy,pauseLaboratory} from './app.mjs?v=galaxy-art-22';
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
 import {RECORDS_CONFIG} from '../../../visuals/group-sudoku/records-config.mjs?v=records6-oneline';
 const $=id=>document.getElementById(id),read=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
@@ -28,7 +28,7 @@ function render(){
  $('galaxyWatermark').textContent=g.name;
  $('loginTitle').textContent=t('选择航行身份','Choose your identity');$('identityText').textContent=account.kind==='student'?`${account.name} · ${account.id}`:t('游客探索 · 无需等待连接','Explore as a guest · No waiting');$('studentIdentity').textContent=t('学号登录','Student login');$('guestIdentity').textContent=t('游客进入','Enter as guest');$('sidLabel').textContent=t('11 位学号','11-digit student ID');$('confirmIdentity').textContent=t('确认姓名并进入','Confirm name and enter');$('identityNote').textContent=t('使用群数独同一学号与姓名核对服务。','Uses the same student identity service as Group Sudoku.');$('prefsTitle').textContent=t('航行设置','Flight settings');$('motionLabel').textContent=t('星云动态与视差','Nebula motion and parallax');$('prefsIdentity').textContent=t('学生信息 / 切换登录','Student information / Switch player');$('prefsStudent').textContent=account.kind==='student'?`${account.name} · ${account.id}`:t('当前：游客','Current: guest');$('resetDemo').textContent=t('重置模拟航程','Reset demo journey');$('localNote').textContent=t('此版本不判定通关，不写入正式成绩。','This preview does not grade or submit completion records.');document.documentElement.lang=en?'en':'zh-CN';if(world)world.unlocked=Math.min(done,GALAXIES.length-1);
 }
-function select(i){if(transition)return;index=i;world?.select(i);render();}
+function select(i){if(transition||!Number.isInteger(i)||!GALAXIES[i])return;index=i;world?.select(i);render();}
 function assign(next){account=next;done=progress(read(key()));index=Math.min(done,GALAXIES.length-1);world?.select(index);render();}
 $('cosmicAccount').onclick=()=>{$('cosmicLogin').showModal();};$('cosmicSettings').onclick=()=>{$('cosmicPreferences').showModal();};$('prefsIdentity').onclick=()=>{$('cosmicPreferences').close();$('cosmicLogin').showModal();};document.querySelectorAll('.cosmic-close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('cosmicLang').onclick=()=>{en=!en;render();};$('cosmicFull').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>{});};document.addEventListener('fullscreenchange',()=>{$('cosmicFull').innerHTML=document.fullscreenElement?icons.restore:icons.full;tip('cosmicFull',document.fullscreenElement?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen'));});
