@@ -2,14 +2,16 @@ import cloudbase from '@cloudbase/node-sdk';
 import {webcrypto} from 'node:crypto';
 import {handle} from './service.mjs';
 import {createStore} from './store.mjs';
+import {createGeneratorStore} from '../../generators/cloudbase.mjs';
 import {handleHttp} from './http.mjs';
 globalThis.crypto??=webcrypto;
 const app=cloudbase.init({env:process.env.TCB_ENV||process.env.SCF_NAMESPACE});
 const store=createStore(app.database(),process.env.RECORDS_COLLECTION_PREFIX||'sudoku_');
+const generatorStore=createGeneratorStore(app.database(),process.env.GENERATORS_COLLECTION_PREFIX||(process.env.RECORDS_COLLECTION_PREFIX==='sudoku_test_'?'generators_test_':'generators_'));
 export async function main(event,context){
  // Read the current invocation's trusted context, never an event-supplied identity.
  const trusted=cloudbase.getCloudbaseContext(context);
- const env={store,secret:process.env.RECORDS_SECRET,password:process.env.RECORDS_ADMIN_PASSWORD,
+ const env={store,generatorStore,secret:process.env.RECORDS_SECRET,password:process.env.RECORDS_ADMIN_PASSWORD,
   identity:trusted.TCB_UUID||trusted.WX_OPENID||trusted.TCB_SOURCE_IP,
   adminIdentity:trusted.TCB_SOURCE_IP||trusted.TCB_UUID||trusted.WX_OPENID};
  if(event.httpMethod){

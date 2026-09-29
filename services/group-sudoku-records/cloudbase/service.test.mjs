@@ -10,7 +10,7 @@ function database(){
  const tables=new Map();let queue=Promise.resolve();
  const collection=(name,inTx=false)=>{
   if(!tables.has(name))tables.set(name,new Map());const table=tables.get(name);let offset=0,limit=100;
-  const query={doc:id=>({get:async()=>({data:inTx?(table.get(id)||null):(table.has(id)?[table.get(id)]:[])}),set:async value=>{table.set(id,structuredClone(value));}}),
+  const query={doc:id=>({get:async()=>({data:inTx?(table.get(id)||null):(table.has(id)?[table.get(id)]:[])}),set:async value=>{assert.ok(!Object.hasOwn(value,"_id"));table.set(id,{...structuredClone(value),_id:id});}}),
    orderBy:()=>query,skip:n=>{offset=n;return query;},limit:n=>{limit=n;return query;},get:async()=>({data:[...table.values()].slice(offset,offset+limit)})};return query;
  };
  return {collection,runTransaction:fn=>{const next=queue.then(()=>fn({collection:name=>collection(name,true)}));queue=next.catch(()=>{});return next;}};
@@ -79,4 +79,24 @@ test('player login, partial progress, guest labels and highest-first stable rank
  now+=1000;await save(guest,9);list=(await call('/api/records')).data.records;assert.equal(list[0].kind,'guest');assert.equal(list[0].completedLevels,8);
  const relogin=await call('/api/login',{mode:'student',studentId:'20250000001',lookupToken:lookup.data.lookupToken});assert.deepEqual(relogin.data.boards,partial(3));
  const login=await call('/api/admin/session',{password:env.password});const full=(await call('/api/admin/records',undefined,login.data.token)).data.records;assert.equal(full[1].name,'张三');assert.equal(full[0].kind,'guest');assert.equal(full[0].studentId,'');
+});
+
+import {createGeneratorStore} from '../../generators/cloudbase.mjs';
+test('generator attempts are verified, idempotent, private, and isolated from Sudoku',async()=>{
+ const db=database(),env={store:createStore(db,'test_'),generatorStore:createGeneratorStore(db,'generators_test_'),secret:'test-only-abcdefghijklmnopqrstuvwxyz-0123456789',password:'demo-pass',identity:'generator-test'};
+ const call=(path,body,token)=>handle({path,method:body?'POST':'GET',body,token},env);
+ const login=await call('/api/login',{mode:'guest'}),token=login.data.sessionToken;
+ const input={submissionId:crypto.randomUUID(),key:'C4',stage:0,seeds:[2],seconds:10};
+ const before=await env.store.records();
+ const results=await Promise.all([call('/api/generators/attempts',input,token),call('/api/generators/attempts',input,token)]);
+ assert.equal(results[0].status,200);assert.equal(results[1].data.consumedLives,1);
+ assert.equal((await call('/api/generators/attempts',{...input,seeds:[1]},token)).status,409);
+ assert.equal((await call('/api/generators/attempts',{...input,submissionId:crypto.randomUUID(),seeds:[1]},token)).data.journey.C4.passed,1);
+ assert.deepEqual(await env.store.records(),before);
+ assert.equal((await call('/api/records')).data.total,0);
+ assert.equal((await call('/api/generators/records')).data.total,1);
+ assert.equal((await call('/api/generators/progress')).status,401);
+ assert.equal((await call('/api/generators/admin/records')).status,401);
+ assert.equal((await call('/api/generators/attempts',{...input,submissionId:crypto.randomUUID(),seeds:[999]},token)).status,400);
+ const publicRows=(await call('/api/generators/records')).data;assert.ok(!JSON.stringify(publicRows).includes(login.data.account.id));
 });

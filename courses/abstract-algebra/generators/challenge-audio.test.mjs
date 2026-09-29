@@ -1,8 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBirthMelody} from './challenge-audio.mjs';
-test('births form bounded, varied phrases without immediate repetition or large leaps',()=>{
- let seed=71;const note=createBirthMelody(()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646;}),heard=[];
- for(let i=0;i<240;i++){const hz=note();assert.ok(hz>=392&&hz<=784);if(heard.length){const before=heard.at(-1);assert.notEqual(hz,before);assert.ok(Math.abs(12*Math.log2(hz/before))<=5.01);}heard.push(hz);}assert.ok(new Set(heard).size>=5);
-});
-test('phrase stays in range even when repeatedly choosing either edge',()=>{for(const random of [()=>0,()=>.999999]){const note=createBirthMelody();const edge=createBirthMelody(random);for(let i=0;i<100;i++)assert.ok(Number.isFinite(edge()));assert.ok(Number.isFinite(note()));}});
+import {birthFrequency} from './challenge-audio.mjs';
+test('the same element order always has the same pitch across calls',()=>{for(const n of [1,2,3,4,5,6,7]){const expected=birthFrequency(n);for(let i=0;i<20;i++)assert.equal(birthFrequency(n),expected);}});
+test('orders used by campaign groups have distinct ascending musical pitches',()=>{const notes=[1,2,3,4,5,6,7].map(birthFrequency);assert.equal(new Set(notes).size,7);for(let i=1;i<notes.length;i++)assert.ok(notes[i]>notes[i-1]);assert.ok(notes[0]>=260&&notes.at(-1)<1000);});
+test('invalid or extreme orders cannot produce inaudible or nonfinite values',()=>{for(const n of [undefined,null,0,-1,Infinity,NaN,1.5,1000000])assert.ok(birthFrequency(n)>=260&&birthFrequency(n)<2000);});

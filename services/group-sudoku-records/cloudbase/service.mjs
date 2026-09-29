@@ -2,8 +2,9 @@
 import {createHmac,randomUUID} from 'node:crypto';
 import {fail,sign,unpack,samePassword,mapRecord,verifiedBoards} from '../cloudflare/worker.mjs';
 import {verifiedProgress,ranked,publicRecord} from './progress.mjs';
+import {handleGenerators} from '../../generators/cloudbase.mjs';
 
-export async function handle(event,{store,secret,password,identity,adminIdentity=identity,lookupLimit=20},now=Date.now()){
+export async function handle(event,{store,generatorStore,secret,password,identity,adminIdentity=identity,lookupLimit=20},now=Date.now()){
  const send=(status,data)=>({status,data});
  try {
   if(!secret||secret.length<32||!password||password.length<8)throw fail(503,'通关登记服务尚未配置完成。');
@@ -12,6 +13,7 @@ export async function handle(event,{store,secret,password,identity,adminIdentity
   if(Buffer.byteLength(JSON.stringify(event))>16384)throw fail(413,'提交内容过大。');
   const {path,method='GET',body:input={},token=''}=event;
   if(!input||typeof input!=='object'||Array.isArray(input))throw fail(400,'请求格式不正确。');
+  if(typeof path==='string'&&path.startsWith('/api/generators/'))return await handleGenerators(event,{generatorStore,secret},now);
   const rate=async(scope,max)=>{
    const key=createHmac('sha256',secret).update(scope+':'+(scope==='admin'?adminIdentity:identity)).digest('hex');
    if(await store.rate(key,Math.floor(now/60000))>max)throw fail(429,'操作过于频繁，请一分钟后再试。');

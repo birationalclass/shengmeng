@@ -2,7 +2,7 @@ import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 import {createConnection} from '../../../visuals/group-sudoku/connection.mjs?v=background1';
 import {createEndlessMusic} from './endless-music.mjs?v=nebula-70';
 
-export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgress,clearJourney,render}){
+export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgress,clearJourney,render,onSession=()=>{}}){
  const $=id=>document.getElementById(id),svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
  const records=document.createElement('button');records.id='cosmicRecords';records.innerHTML=svg('<path d="M12 5C8 3 5 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z"/><path d="M12 5v15"/>');$('cosmicLang').before(records);
  const motion=document.createElement('button');motion.id='cosmicPause';motion.innerHTML=svg('<path d="M8 5v14M16 5v14"/>');records.before(motion);
@@ -20,7 +20,7 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
   // Identity is shared with Sudoku; this module never uploads simulated records.
   const before=getAccount(),journey=getProgress();assign(data.account);if(before.id!==data.account.id&&journey>getProgress()){write('generators-galaxy-demo:'+data.account.id,journey);assign(data.account);}
   if(data.account.kind==='guest'){write('group-sudoku-guest-session',{sessionToken:data.sessionToken,account:data.account});desired.sessionToken=data.sessionToken;}
-  verified=true;
+  onSession({...data,previousAccount:before});verified=true;
  },onState:state=>{server=state;sync();}});
  async function lookup(){
   const input=$('cosmicStudentId');input.value=input.value.replace(/\D/g,'').slice(0,11);invalidate();$('identityRetry').hidden=true;if(input.value.length!==11)return;
