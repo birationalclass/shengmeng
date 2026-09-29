@@ -1,3 +1,4 @@
+import {bindDiskExtinction} from './disk-volume.mjs?v=nebula-75';
 import {paletteFor} from './cosmic-palettes.mjs?v=nebula-74';
 import {watchPageActivity} from './page-activity.mjs?v=nebula-70';
 import {pointerPose} from './galaxy-balance.mjs?v=nebula-70';
@@ -8,7 +9,7 @@ import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 import {groups} from './model.mjs?v=nebula-66';
 import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=nebula-66';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-74';
+import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-75';
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 export class GalaxyScene{
  constructor(canvas,onSelect,onEnter){
@@ -42,6 +43,7 @@ export class GalaxyScene{
   for(const p of root.userData.planets){const d=p.userData;if(d.rank.type.endsWith('star'))orbitExtent=Math.max(orbitExtent,d.motion.radius+p.scale.x);if(d.host!==null){const host=root.userData.planets[d.host],r=planetOrbitRadius(host.scale.x,p.scale.x,d.element,d.galaxy,d.slot);orbitExtent=Math.max(orbitExtent,host.userData.motion.radius+r+p.scale.x*(d.rank.type==='ring-planet'?2.25:1.055));}}
   const innerDust=8.5*1.35/2*bodyScale(g.order)*3,outerDust=orbitExtent*1.12;
   const field=dustField(g.key,matchMedia('(max-width:700px)').matches?15000:24000,innerDust,outerDust),dust=this.points(field.positions,field.colors,.78,.7);root.add(dust);root.userData.dust=dust;root.userData.cloud=addNebula(T,root,g.key,innerDust,outerDust);
+  root.userData.updateExtinction=bindDiskExtinction(T,root,root.userData.cloud,outerDust);
   root.userData.inflow=addInflow(T,root,field,innerDust,outerDust,matchMedia('(max-width:700px)').matches?140:220);
 
   root.userData.orbitExtent=orbitExtent*1.06;
@@ -90,7 +92,7 @@ export class GalaxyScene{
  this.challenge?.pose();
  // Keep the shared accretion/stellar plane in the approved low, oblique view range.
  for(const s of this.systems){if(!s.visible)continue;const view=this.camera.position.clone().sub(s.position).normalize(),normal=new T.Vector3(0,1,0).applyQuaternion(s.quaternion),dot=normal.dot(view),elevation=Math.asin(Math.min(1,Math.max(-1,dot))),target=Math.max(3*Math.PI/180,Math.min(20*Math.PI/180,elevation));if(Math.abs(target-elevation)>1e-6){const tangent=normal.clone().addScaledVector(view,-dot).normalize(),desired=tangent.multiplyScalar(Math.cos(target)).addScaledVector(view,Math.sin(target));s.quaternion.premultiply(new T.Quaternion().setFromUnitVectors(normal,desired));}}
- this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);this.challenge?.project();
+ this.scene.updateMatrixWorld(true);this.camera.updateMatrixWorld(true);this.challenge?.project();this.systems.forEach(s=>{if(s.visible)s.userData.updateExtinction(this.camera);});
  this.systems.forEach(s=>{if(!s.visible)return;for(const p of s.userData.planets){if(p.userData.hostLight)s.userData.planets[p.userData.host].getWorldPosition(p.userData.hostLight.value);}});
  this.systems.forEach((s,i)=>{if(!s.visible)return;s.userData.planets.forEach(p=>p.userData.updateBlackHole?.(this.renderer,this.camera));});this.camera.layers.set(0);this.camera.layers.enable(1);this.renderer.render(this.scene,this.camera);}
 }

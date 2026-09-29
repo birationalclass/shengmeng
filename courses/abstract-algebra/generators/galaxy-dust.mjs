@@ -1,3 +1,4 @@
+import {diskDensityGLSL} from './disk-volume.mjs?v=nebula-75';
 import {paletteFor,dustTint} from './cosmic-palettes.mjs?v=nebula-74';
 // Reference-sheet art direction: broad cloudy arms, broken dust lanes and embedded stars.
 export const GALAXY_PATTERNS={C4:0,V4:1,S3:2,D4:3,Q8:4,S4:5,F56:6,A5:7,S5:8};
@@ -14,8 +15,8 @@ export function dustField(key,count,inner,outer,palette=paletteFor(key)){
 export function addNebula(T,root,key,inner,outer,palette=paletteFor(key)){
  const id=GALAXY_PATTERNS[key],profile=NEBULA_PROFILES[id],geometry=new T.PlaneGeometry(outer*2,outer*2);geometry.rotateX(-Math.PI/2);
  const material=new T.ShaderMaterial({transparent:true,side:T.DoubleSide,depthWrite:false,blending:T.AdditiveBlending,uniforms:{diskInner:{value:new T.Color(palette.mid)},diskOuter:{value:new T.Color(palette.outer)},diskEdge:{value:new T.Color(palette.edge)},inner:{value:inner/outer},profile:{value:new T.Vector4(...profile)},seed:{value:id*13.7},opacity:{value:.8}},vertexShader:`varying vec2 q;void main(){q=uv*2.-1.;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`precision highp float;uniform vec3 diskInner;uniform vec3 diskOuter;uniform vec3 diskEdge;varying vec2 q;uniform float inner;uniform vec4 profile;uniform float seed;uniform float opacity;
- float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7))+seed)*43758.5453);}float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}float fbm(vec2 p){return .57*noise(p)+.28*noise(p*2.07+7.)+.15*noise(p*4.13+17.);}
- void main(){float r=length(q);if(r<inner||r>1.)discard;float a=atan(-q.y,q.x),cloud=fbm(q*13.),fine=fbm(q*48.),phase=profile.x*(a-profile.y*log(r+.12));float arms=pow(.5+.5*cos(phase+(cloud-.5)*2.7),3.);float taper=smoothstep(inner,inner+.035,r)*(1.-smoothstep(.7,1.,r));float lane=smoothstep(.24,.64,fbm(q*24.+vec2(cos(phase),sin(phase))*.35));float clumps=smoothstep(.3,.8,cloud);float density=(.12+arms*.88)*(.3+clumps*1.8)*(.18+.82*lane)*taper;density*=.7+.3*sin(a+seed);
+${diskDensityGLSL}
+ void main(){float r=length(q);if(r<inner||r>1.)discard;float fine=fbm(q*48.),density=diskDensity(q);
  float u=clamp((r-inner)/(1.-inner),0.,1.);vec3 color=mix(diskInner,diskOuter,smoothstep(0.,.68,u));color=mix(color,diskEdge,smoothstep(.68,1.,u));color=mix(color,vec3(.85,.91,1.),smoothstep(.61,.87,fine)*.65);gl_FragColor=vec4(color,density*opacity*.6);}`});
  const cloud=new T.Mesh(geometry,material);cloud.userData.setPalette=p=>{material.uniforms.diskInner.value.set(p.mid);material.uniforms.diskOuter.value.set(p.outer);material.uniforms.diskEdge.value.set(p.edge);};root.add(cloud);return cloud;
 }
