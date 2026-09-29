@@ -5,8 +5,8 @@ import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-66';
 import {mountBalanceControls} from './galaxy-balance.mjs?v=nebula-70';
 import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-70';
 import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-69';
-import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-91';
-import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-92';
+import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-93';
+import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-93';
 import {groups} from './model.mjs?v=nebula-66';
 import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-66';
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
@@ -23,13 +23,15 @@ document.body.insertAdjacentHTML('afterbegin',`<div id="cosmos"><canvas id="cosm
 <button id="previousGalaxy" class="neighbor-label previous"></button><button id="nextGalaxy" class="neighbor-label next"></button><div id="galaxyWatermark" aria-hidden="true"></div><div class="cosmic-bottom"><span id="cosmicHint"></span><span id="demoLabel"></span></div><div id="flightNotice" role="status"></div></section>
 <button id="returnGalaxies" class="cosmic-return">← 星图</button>
 <dialog id="cosmicLogin" class="cosmic-dialog"><button class="cosmic-close" aria-label="关闭">×</button><p class="dialog-eyebrow">IDENTITY</p><h2 id="loginTitle"></h2><p id="identityText"></p><div id="identityChoices"><button id="studentIdentity" class="cosmic-primary"></button><button id="guestIdentity"></button></div><form id="cosmicStudentForm" hidden><label id="sidLabel" for="cosmicStudentId"></label><input id="cosmicStudentId" inputmode="numeric" autocomplete="off" maxlength="11" pattern="[0-9]{11}" required><p id="cosmicStudentName"></p><p id="cosmicLoginStatus" role="status"></p><button id="confirmIdentity" class="cosmic-primary" disabled></button></form><p id="identityNote"></p></dialog>
-<dialog id="cosmicPreferences" class="cosmic-dialog"><button class="cosmic-close" aria-label="关闭">×</button><p class="dialog-eyebrow">SETTINGS</p><h2 id="prefsTitle"></h2><label class="cosmic-setting"><span id="motionLabel"></span><input id="cosmicMotion" type="checkbox" checked></label><button id="prefsIdentity"></button><p id="prefsStudent"></p><button id="resetDemo"></button><p id="localNote"></p></dialog>`);
+<dialog id="cosmicPreferences" class="cosmic-dialog"><button class="cosmic-close" aria-label="关闭">×</button><p class="dialog-eyebrow">SETTINGS</p><h2 id="prefsTitle"></h2><label class="cosmic-setting"><span id="motionLabel"></span><input id="cosmicMotion" type="checkbox" checked></label><fieldset class="quality-settings"><legend id="qualityLabel"></legend><div class="quality-options"><button type="button" data-quality="auto"></button><button type="button" data-quality="high"></button><button type="button" data-quality="balanced"></button><button type="button" data-quality="power"></button></div><p id="qualityState" role="status"></p></fieldset><button id="prefsIdentity"></button><p id="prefsStudent"></p><button id="resetDemo"></button><p id="localNote"></p></dialog>`);
 const icon=path=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
 const icons={account:icon('<circle cx="12" cy="8" r="3.3"/><path d="M5 21v-3a7 7 0 0 1 14 0v3"/>'),settings:icon('<path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="#0a1324"/><circle cx="16" cy="17" r="2.5" fill="#0a1324"/>'),full:icon('<path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/>'),restore:icon('<rect x="7" y="7" width="10" height="10"/>')};
 $('cosmicAccount').innerHTML=icons.account+'<span></span>';$('cosmicSettings').innerHTML=icons.settings;$('cosmicFull').innerHTML=icons.full;
 function tip(id,label){const b=$(id);b.dataset.tip=label;b.setAttribute('aria-label',label);}
 const savedMotion=read('generators-nebula-motion');$('cosmicMotion').checked=savedMotion!==false;
-function render(){
+function renderQuality(){const names={auto:t('自动','Auto'),high:t('高画质','High'),balanced:t('均衡','Balanced'),power:t('省电','Power saving')};$('qualityLabel').textContent=t('画面质量','Visual quality');document.querySelectorAll('[data-quality]').forEach(b=>{b.textContent=names[b.dataset.quality];b.setAttribute('aria-pressed',String(b.dataset.quality===(world?.quality.mode||'auto')));});$('qualityState').textContent=world?.quality.mode==='auto'?t('自动调节 · 当前：','Adaptive · Current: ')+names[world.quality.current.id]:t('保持所选画质','Selected quality is fixed');}
+ document.querySelectorAll('[data-quality]').forEach(b=>b.onclick=()=>world?.setQuality(b.dataset.quality));window.addEventListener('galaxy-quality',renderQuality);
+ function render(){renderQuality();
  extension?.sync();
  tip('cosmicAccount',t('身份与学生信息','Identity and student information'));tip('cosmicLang',t('切换英文','Switch to Chinese'));tip('cosmicSettings',t('航行设置','Flight settings'));tip('cosmicFull',document.fullscreenElement?t('退出全屏','Exit fullscreen'):t('全屏','Fullscreen'));
  const g=GALAXIES[index],open=unlocked(index,done),finished=index<done; $('galaxyUI').setAttribute('aria-label',t('星系选择','Galaxy selection'));$('cosmicSettings').setAttribute('aria-label',t('设置','Settings'));document.querySelectorAll('.cosmic-close').forEach(b=>b.setAttribute('aria-label',t('关闭','Close'))); $('cosmosCanvas').setAttribute('aria-label',t('三维星系：','3D galaxy: ')+g.name+' · '+g.order+t('个天体',' celestial bodies'));$('cosmosCanvas').dataset.planetCount=world?.systems[index].userData.planets.length||g.order;

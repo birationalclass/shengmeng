@@ -92,11 +92,12 @@ export function galaxyBlackHole(sphere,palette=COSMIC_PALETTES[0]){
  const cacheScene=new T.Scene(),cacheCamera=new T.Camera();cacheScene.add(new T.Mesh(new T.PlaneGeometry(2,2),rm));
  const mv=new T.Matrix4(),lastN=new T.Vector3(9,9,9),lastU=new T.Vector3(9,9,9),lastEye=new T.Vector3(999,999,999);
  body.userData.setPalette=p=>{uniforms.gasLow.value.set(p.low);uniforms.gasMid.value.set(p.mid);uniforms.gasHot.value.set(p.hot);};body.userData.effects=[material];body.userData.ignite=uniforms.ignite;
- body.userData.updateBlackHole=(renderer,camera)=>{
+ body.userData.disposeBlackHole=()=>{targets.forEach(t=>t.dispose());cacheScene.children[0].geometry.dispose();rm.dispose();};
+ body.userData.updateBlackHole=(renderer,camera,maxSize=768)=>{
   mv.multiplyMatrices(camera.matrixWorldInverse,body.matrixWorld);
   ru.diskN.value.set(0,1,0).transformDirection(mv);ru.diskU.value.set(1,0,0).transformDirection(mv);ru.diskV.value.set(0,0,1).transformDirection(mv);
   const projected=11.475*new T.Vector3().setFromMatrixScale(body.matrixWorld).x*renderer.domElement.height*camera.projectionMatrix.elements[5]/(2*Math.abs(mv.elements[14]));
-  const size=Math.max(128,Math.min(768,Math.ceil(projected/128)*128));
+  const size=Math.max(128,Math.min(maxSize,Math.ceil(projected/128)*128));
   if(size!==mapSize){mapSize=size;targets.forEach(t=>t.setSize(size,size));ru.resolution.value.set(size,size);lastEye.set(999,999,999);}
   const unit=new T.Vector3().setFromMatrixScale(body.matrixWorld).x*(8.5/22);
   uniforms.diskU.value.copy(ru.diskU.value);uniforms.diskV.value.copy(ru.diskV.value);uniforms.viewCenter.value.setFromMatrixPosition(mv);uniforms.modelUnit.value=unit;uniforms.depthProjection.value.copy(camera.projectionMatrix);

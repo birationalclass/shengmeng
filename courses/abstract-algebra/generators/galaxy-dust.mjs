@@ -1,4 +1,4 @@
-import {diskDensityGLSL} from './disk-volume.mjs?v=nebula-75';
+import {diskDensityGLSL} from './disk-volume.mjs?v=nebula-93';
 import {paletteFor,dustTint} from './cosmic-palettes.mjs?v=nebula-74';
 // Reference-sheet art direction: broad cloudy arms, broken dust lanes and embedded stars.
 export const GALAXY_PATTERNS={C4:0,V4:1,S3:2,D4:3,Q8:4,S4:5,F56:6,A5:7,S5:8};
