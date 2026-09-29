@@ -101,3 +101,9 @@ body #recordsDialog .records-scroll::-webkit-scrollbar-thumb{background:linear-g
  .annotation-column .celestial-note{width:max-content;max-width:100%;min-width:72px;flex:0 0 auto;gap:12px;min-height:30px;box-sizing:border-box;text-align:left;padding:5px 8px;background:linear-gradient(180deg,#102139b3,#07111c99);border-bottom:1px solid #aecfff35}
  .annotation-column .celestial-note[aria-pressed=true]{background:#284562aa}
 }
+
+/* The element card itself fits its label and order in every orientation. */
+.annotation-column .celestial-note{width:max-content;max-width:100%;min-width:72px;box-sizing:border-box;flex:0 0 auto;gap:12px}
+.annotation-column.left{align-items:flex-start}.annotation-column.right{align-items:flex-end}
+.celestial-note strong{min-width:0}.celestial-note small{flex:none}
+@media(max-width:700px) and (orientation:portrait){.annotation-column.left,.annotation-column.right{align-items:flex-start}}

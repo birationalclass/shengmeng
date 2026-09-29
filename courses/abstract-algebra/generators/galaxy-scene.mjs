@@ -69,7 +69,7 @@ export class GalaxyScene{
  const extent=this.challenge?selectedSystem.userData.orbitExtent:selectedSystem.userData.extent;
  // The oblique disk occupies much less vertical space than its orbital radius.
  // Short landscape screens use that projection instead of the portrait envelope.
- const verticalProjection=landscape?.5:.78,verticalBudget=landscape?.58:(this.challenge?.51:.65);
+ const verticalProjection=landscape?.5:.78,verticalBudget=landscape?.70:(this.challenge?.51:.65);
  const portrait=this.w<=750&&this.h>this.w;
  const mainScale=portrait?halfW*(this.challenge?.98:1.3)/(this.challenge?selectedSystem.userData.orbitExtent:selectedSystem.userData.diskExtent):Math.min(1,halfW*(this.challenge?(narrow?.58:.72):narrow?.69:.57)/extent,halfH*verticalBudget/(extent*verticalProjection));
  this.systems.forEach((s,i)=>{
