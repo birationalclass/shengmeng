@@ -64,3 +64,24 @@ body #recordsDialog .records-scroll::-webkit-scrollbar-thumb{background:linear-g
 @keyframes begin-hint-breathe{0%,100%{opacity:.22}50%{opacity:.8}}
 .page-inactive *{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){#blackHoleStartHint.visible{animation:none;opacity:.65}}
+
+/* Phase-exclusive messages prevent stale generation text over the outcome. */
+#stellarChallenge:not([data-phase=generating]) #generationStep{display:none}
+#stellarChallenge:not([data-phase=select]) #blackHoleStartHint,#stellarChallenge:not([data-phase=select]) #challengeHint{display:none}
+#stellarChallenge[data-phase=success] .challenge-bottom,#stellarChallenge[data-phase=fail] .challenge-bottom,#stellarChallenge[data-phase=reading] .challenge-bottom{visibility:hidden}
+#generationStep{max-width:100%;margin:12px auto 0}
+@media(max-width:700px){.challenge-heading{top:max(82px,calc(env(safe-area-inset-top) + 68px));width:94%;max-width:94%}#challengeExit{top:max(23px,calc(env(safe-area-inset-top) + 5px));left:16px;width:44px;height:44px}#blackHoleStartHint{font-size:24px;margin:10px 0;white-space:normal}#generationStep{font-size:17px;line-height:1.45}#challengeResult{top:52%;width:90%;min-width:0}#challengeResult h2{font-size:30px}#challengeResult p{line-height:1.6}}
+
+@media(max-height:500px) and (orientation:landscape){
+ .challenge-heading{top:56px;width:66%;max-width:66%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1px 12px;letter-spacing:.05em}
+ #challengeSector{font-size:20px;text-align:right}#challengeSteps{margin:0;font-size:12px}#challengeLives{margin:0;font-size:13px;text-align:left;letter-spacing:4px}
+ #groupDefinition{grid-column:1/-1;max-width:100%;font-size:10px}#groupDefinition .katex-display{margin:4px 0}
+ #groupExplanation{grid-column:1/-1;margin:0;font-size:9px;line-height:1.25;max-width:100%}
+ #challengeHint{display:none}#blackHoleStartHint,#generationStep{grid-column:1/-1;margin:3px 0;font-size:18px;line-height:1.2;white-space:normal}
+ .annotation-column{top:38%;bottom:22%;width:15%;gap:3px}.celestial-note{min-height:26px;padding:4px 6px}
+ .challenge-bottom{bottom:8px;width:72%;min-width:0;display:grid;grid-template-columns:1fr auto;gap:3px 12px}
+ #chosenStars{justify-content:center;align-items:center;min-height:24px}#chosenStars button{padding:3px 8px;font-size:12px}.seed-title{font-size:10px}
+ #forgeStar{flex-direction:row;gap:8px}#forgeStar strong{font-size:21px}#forgeStar small{font-size:9px}#forgeStatus{grid-column:1/-1;min-height:12px;font-size:10px;line-height:1.3;max-width:100%}
+ #challengeResult{top:54%;width:70%;min-width:0}#challengeResult>span{font-size:26px}#challengeResult h2{font-size:27px;margin:4px}#challengeResult p{font-size:11px;margin:6px 0}
+ #challengeExit{top:12px;left:max(16px,env(safe-area-inset-left));width:44px;height:44px}
+}
