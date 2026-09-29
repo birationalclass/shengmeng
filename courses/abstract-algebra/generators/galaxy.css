@@ -36,7 +36,7 @@ body:not(.galaxy-mode) .groups{display:none}body:not(.galaxy-mode) header h1{fon
 .cosmic-tools button{white-space:nowrap}#cosmicRecordRows{max-height:280px;overflow:auto;scrollbar-width:thin;scrollbar-color:#93b7dd55 transparent}.cosmic-record-row{display:flex;align-items:center;justify-content:space-between;gap:20px;font:20px Georgia,serif;padding:14px 0;border-bottom:1px solid #98bce022}.cosmic-record-row small{font:11px system-ui;color:#9db4d3}
 .playlist-controls{display:flex;align-items:center;justify-content:space-between;gap:20px}.playlist-controls button{width:48px!important;margin:0!important;font-size:21px}.playlist-controls span{font:11px ui-monospace,monospace;color:#a7b9d0}
 #identityServer,#prefsServer{font-size:10px;color:#9fb9d5}.record-toolbar{display:flex;gap:18px;align-items:center;border-bottom:1px solid #93afd033}.record-toolbar button{width:auto!important;margin:0!important}.record-toolbar span{font-size:10px;color:#96b1d1}#cosmicRecordRows{padding:30px 0;font-size:23px}.dialog-actions{display:flex;gap:20px}
-@media(max-width:750px){.cosmic-top{top:18px}.cosmic-logo{left:42px;transform:none;text-align:left;font-size:13px}.cosmic-logo>span{font-size:7px}.cosmic-tools{gap:0;margin-top:48px}.cosmic-tools button{width:38px}.cosmic-heading{top:18%}#cosmicPreferences{left:16px;right:16px;top:104px;width:auto;max-height:calc(100dvh - 128px)}.cosmic-dialog{padding:30px 24px}.cosmic-heading h1{font-size:27px}}
+@media(max-width:750px){.cosmic-top{top:max(18px,env(safe-area-inset-top));align-items:center}.cosmic-logo{left:42px;transform:none;text-align:left;font-size:13px}.cosmic-logo>span{font-size:7px}.cosmic-tools{gap:0;margin-top:0}.cosmic-tools button{width:38px}.cosmic-heading{top:18%}#cosmicPreferences{left:16px;right:16px;top:80px;width:auto;max-height:calc(100dvh - 104px)}.cosmic-dialog{padding:30px 24px}.cosmic-heading h1{font-size:27px}}
 
 
 .neighbor-label{position:absolute;bottom:5.5%;font:18px Georgia,serif;color:#bad1ed;pointer-events:auto;border:0;background:transparent;padding:10px 20px;transition:color .25s,text-shadow .25s}.neighbor-label:hover{color:#fff;text-shadow:0 0 18px #a9cfff}.neighbor-label.previous{left:5%}.neighbor-label.next{right:5%}.neighbor-label[hidden]{display:none}@media(max-width:700px){.neighbor-label{bottom:24%;font-size:15px}.neighbor-label.previous{left:1%}.neighbor-label.next{right:1%}}
@@ -71,3 +71,6 @@ body #groupExtension{width:min(720px,calc(100vw - 32px));max-width:720px;box-siz
 @keyframes ecnu-starlight{0%,100%{opacity:.32}50%{opacity:.48}}
 @media(max-width:700px){#ecnuConstellation{right:4%;top:19%;width:clamp(105px,30vw,150px)}#ecnuConstellation.ready{animation:none;opacity:.22}}
 @media(prefers-reduced-motion:reduce){#ecnuConstellation.ready{animation:none}}
+
+/* Keep every mobile toolbar control on the home-button baseline. */
+@media(max-width:750px){.cosmic-tools{--tool-width:clamp(28px,calc((100vw - 88px)/7),34px);min-width:0}.cosmic-tools button,.cosmic-tools #cosmicAccount{width:var(--tool-width);min-width:0;flex:0 0 var(--tool-width);padding:5px}.cosmic-tools button svg{width:21px;height:21px}}
