@@ -1,3 +1,4 @@
+import {bindPortraitSwipe} from './galaxy-swipe.mjs?v=nebula-84';
 import {mountEcnuConstellation} from './ecnu-constellation.mjs?v=nebula-72';
 import {mountGroupExtension} from './group-extension.mjs?v=nebula-70';
 import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-66';
@@ -74,3 +75,6 @@ $('cosmicLogin').showModal();
 mountEcnuConstellation();
 
 document.getElementById('cosmicPreferences').insertAdjacentHTML('beforeend','<a class="disk-lab-link" href="palette-lab.html">黑洞配色 · 11 套星盘渐变 ↗</a>');
+
+let swipeNoticeTimer;
+bindPortraitSwipe({getState:()=>world&&!world.challenge&&!transition?{index,count:GALAXIES.length,passed:journey[GALAXIES[index].key].passed,required:levels(groups[GALAXIES[index].key]).length}:null,onSelect:select,onLocked:()=>{const note=$('flightNotice');note.textContent=t('通关当前星系后，可下滑查看下一星系','Complete this galaxy before swiping down to the next');note.classList.add('visible');clearTimeout(swipeNoticeTimer);swipeNoticeTimer=setTimeout(()=>note.classList.remove('visible'),2200);}});
