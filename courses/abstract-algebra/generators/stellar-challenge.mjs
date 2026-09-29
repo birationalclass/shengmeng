@@ -54,11 +54,11 @@ export function mountStellarChallenge({world,onPass,onExit,t,getIdentity=()=> 'g
  if(phase==='fail'){const f=Math.min(1,elapsed/2.5);if(i===game.group.e){p.userData.light.value=1+.3*Math.sin(f*Math.PI);scale=p.userData.baseSize;}else if(lit){p.position.applyAxisAngle(new T.Vector3(0,1,0),-f*Math.PI*2.5).multiplyScalar(Math.pow(1-f,1.7));scale*=Math.pow(1-f,1.5);p.userData.light.value*=1-Math.pow(f,3);}else p.userData.light.value=.06;}
 
  p.scale.setScalar(Math.max(.001,scale));}}
- function project(){if(!game)return;const root=world.systems[world.selected],fade=phase==='generating'?Math.min(1,elapsed/.85):phase==='select'?0:1;
- for(const [i,b] of labels.entries()){if(!b)continue;const v=root.userData.planets[i].getWorldPosition(new T.Vector3()).project(world.camera),rect=b.getBoundingClientRect(),column=b.parentElement.getBoundingClientRect(),path=leaders[i];const visible=rect.top>=column.top-1&&rect.bottom<=column.bottom+1&&v.z<1&&Math.abs(v.x)<=1&&Math.abs(v.y)<=1;
- path.visible=visible&&fade<1;if(!visible)continue;const x=(v.x*.5+.5)*world.w,y=(-v.y*.5+.5)*world.h,left=b.parentElement.classList.contains('left'),endX=left?rect.right:rect.left,endY=(rect.top+rect.bottom)/2,bendX=left?endX+22:endX-22;
- const first=Math.hypot(x-bendX,y-endY),total=first+22,erased=total*fade;
- let startX=x,startY=y,cornerX=bendX,cornerY=endY;if(erased<first){const u=erased/Math.max(.001,first);startX=x+(bendX-x)*u;startY=y+(endY-y)*u;}else{startX=bendX+(endX-bendX)*(erased-first)/22;startY=endY;cornerX=startX;}
+ function project(){if(!game)return;const portrait=world.w<=700&&world.h>world.w,root=world.systems[world.selected],fade=phase==='generating'?Math.min(1,elapsed/.85):phase==='select'?0:1;
+ for(const [i,b] of labels.entries()){if(!b)continue;const v=root.userData.planets[i].getWorldPosition(new T.Vector3()).project(world.camera),rect=b.getBoundingClientRect(),column=b.parentElement.getBoundingClientRect(),path=leaders[i];const visible=rect.top>=column.top-1&&rect.bottom<=column.bottom+1&&rect.left>=column.left-1&&rect.right<=column.right+1&&v.z<1&&Math.abs(v.x)<=1&&Math.abs(v.y)<=1;
+ path.visible=visible&&fade<1;if(!visible)continue;const x=(v.x*.5+.5)*world.w,y=(-v.y*.5+.5)*world.h,left=b.parentElement.classList.contains('left'),endX=portrait?(rect.left+rect.right)/2:(left?rect.right:rect.left),endY=portrait?(left?rect.bottom:rect.top):(rect.top+rect.bottom)/2,bendX=portrait?endX:(left?endX+22:endX-22),bendY=portrait?(left?endY+22:endY-22):endY;
+ const first=Math.hypot(x-bendX,y-bendY),total=first+22,erased=total*fade;
+ let startX=x,startY=y,cornerX=bendX,cornerY=bendY;if(erased<first){const u=erased/Math.max(.001,first);startX=x+(bendX-x)*u;startY=y+(bendY-y)*u;}else{startX=bendX+(endX-bendX)*(erased-first)/22;startY=bendY+(endY-bendY)*(erased-first)/22;cornerX=startX;cornerY=startY;}
  const vertices=path.geometry.attributes.position;[[startX,startY],[cornerX,cornerY],[endX,endY]].forEach(([px,py],j)=>{const v=new T.Vector3(px/world.w*2-1,1-py/world.h*2,.5).unproject(world.camera);vertices.setXYZ(j,v.x,v.y,v.z);});vertices.needsUpdate=true;path.material.opacity=(seeds.has(i)?.65:.2)*(1-fade*.35);}
  $('celestialLabels').style.opacity=String(1-fade);
  }
