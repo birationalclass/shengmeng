@@ -1,8 +1,10 @@
+import {COSMIC_PALETTES} from './cosmic-palettes.mjs?v=nebula-73';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 // S4-sized identity asset. Same gas shading and cached ray method as the approved lab.
 const vertex=`varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}`;
 const billboard=`varying vec2 uv0;void main(){uv0=uv;vec4 mv=modelViewMatrix*vec4(0.,0.,0.,1.);vec2 s=vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));mv.xy+=position.xy*s;gl_Position=projectionMatrix*mv;}`;
 const gasShader=`
+uniform vec3 gasLow;uniform vec3 gasMid;uniform vec3 gasHot;
 precision highp float;varying vec2 uv0;uniform vec2 resolution;uniform float time;uniform vec3 eye;uniform float zoom;uniform float ignite;
 float hash(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
 float noise(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
@@ -27,7 +29,7 @@ vec3 gas(vec3 p,vec3 v){
  float gaps=smoothstep(.22,.5,cloud);
  float density=(.08+2.8*pow(billow,1.8))*(.18+.82*gaps)*(.8+.3*thin+.015*fibers);
  float heat=pow(3./r,.75)*pow(max(.001,1.-sqrt(3./r)),.25)*2.;
- vec3 color=mix(vec3(.64,.095,.015),vec3(1.,.72,.36),clamp(heat,0.,1.));color=mix(color,vec3(1.,.94,.79),smoothstep(.82,1.15,heat));
+ vec3 color=mix(gasLow,gasMid,clamp(heat,0.,1.));color=mix(color,gasHot,smoothstep(.82,1.15,heat));
  vec3 tangent=normalize(vec3(-p.z,0.,p.x));float beta=sqrt(.5/(r-1.));
  float shift=sqrt(1.-1./r)*sqrt(1.-beta*beta)/(1.-beta*dot(tangent,-normalize(v)));
  float beam=clamp(pow(shift,3.),.16,3.5);
@@ -78,10 +80,10 @@ void main(){
   }
  }
 }`;
-export function galaxyBlackHole(sphere){
+export function galaxyBlackHole(sphere,palette=COSMIC_PALETTES[0]){
  let mapSize=256;
  const targets=[0,1].map(()=>new T.WebGLRenderTarget(256,256,{type:T.HalfFloatType,minFilter:T.NearestFilter,magFilter:T.NearestFilter,depthBuffer:false}));
- const uniforms={ignite:{value:1},resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()},viewCenter:{value:new T.Vector3()},modelUnit:{value:1},depthProjection:{value:new T.Matrix4()}};
+ const uniforms={gasLow:{value:new T.Color(palette.low)},gasMid:{value:new T.Color(palette.mid)},gasHot:{value:new T.Color(palette.hot)},ignite:{value:1},resolution:{value:new T.Vector2(256,256)},eye:{value:new T.Vector3(0,0,29)},zoom:{value:1.35*22/(2*.43*29)},time:{value:0},frontMap:{value:targets[0].texture},backMap:{value:targets[1].texture},diskU:{value:new T.Vector3()},diskV:{value:new T.Vector3()},viewCenter:{value:new T.Vector3()},modelUnit:{value:1},depthProjection:{value:new T.Matrix4()}};
  const material=new T.ShaderMaterial({uniforms,vertexShader:billboard,fragmentShader:gasShader,transparent:true,depthWrite:true});
  const body=new T.Mesh(sphere,new T.MeshBasicMaterial({colorWrite:false,depthWrite:false}));
  const image=new T.Mesh(new T.PlaneGeometry(8.5*1.35,8.5*1.35),material);body.add(image);
@@ -89,7 +91,7 @@ export function galaxyBlackHole(sphere){
  const rm=new T.ShaderMaterial({uniforms:ru,vertexShader:vertex,fragmentShader:rayShader});
  const cacheScene=new T.Scene(),cacheCamera=new T.Camera();cacheScene.add(new T.Mesh(new T.PlaneGeometry(2,2),rm));
  const mv=new T.Matrix4(),lastN=new T.Vector3(9,9,9),lastU=new T.Vector3(9,9,9),lastEye=new T.Vector3(999,999,999);
- body.userData.effects=[material];body.userData.ignite=uniforms.ignite;
+ body.userData.setPalette=p=>{uniforms.gasLow.value.set(p.low);uniforms.gasMid.value.set(p.mid);uniforms.gasHot.value.set(p.hot);};body.userData.effects=[material];body.userData.ignite=uniforms.ignite;
  body.userData.updateBlackHole=(renderer,camera)=>{
   mv.multiplyMatrices(camera.matrixWorldInverse,body.matrixWorld);
   ru.diskN.value.set(0,1,0).transformDirection(mv);ru.diskU.value.set(1,0,0).transformDirection(mv);ru.diskV.value.set(0,0,1).transformDirection(mv);

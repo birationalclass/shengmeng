@@ -4,7 +4,7 @@ import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-66';
 import {mountBalanceControls} from './galaxy-balance.mjs?v=nebula-70';
 import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-70';
 import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-69';
-import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-70';
+import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-73';
 import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-70';
 import {groups} from './model.mjs?v=nebula-66';
 import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-66';
@@ -72,3 +72,5 @@ records=mountCampaignRecords({getJourney:()=>journey,getAccount:()=>account,t,ap
 $('cosmicPreferences').insertAdjacentHTML('beforeend','<a class="disk-lab-link" href="galaxy-disk-lab.html">星盘图谱 · 20 种草图 ↗</a>');
 $('cosmicLogin').showModal();
 mountEcnuConstellation();
+
+document.getElementById('cosmicPreferences').insertAdjacentHTML('beforeend','<a class="disk-lab-link" href="palette-lab.html">黑洞配色 · 12 套星盘渐变 ↗</a>');

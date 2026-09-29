@@ -1,13 +1,14 @@
+import {paletteFor} from './cosmic-palettes.mjs?v=nebula-73';
 import {watchPageActivity} from './page-activity.mjs?v=nebula-70';
 import {pointerPose} from './galaxy-balance.mjs?v=nebula-70';
 import {planetMotion,starMotion,stableRandom,orbitalOffset,systemStarOrbits,planetOrbitRadius} from './celestial-motion.mjs?v=nebula-66';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-66';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-73';
 import {detailedStar} from './stellar-render.mjs?v=halo-52';
 import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 import {groups} from './model.mjs?v=nebula-66';
 import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=nebula-66';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-70';
+import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-73';
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 export class GalaxyScene{
  constructor(canvas,onSelect,onEnter){
@@ -28,7 +29,7 @@ export class GalaxyScene{
   for(let i=0;i<g.order;i++){
    const entry=layout[i],{order,rank}=entry,motion=rank.type.endsWith('planet')?planetMotion(rank.type,i+index*131,entry.slot,entry.host+index*131):(rank.type.endsWith('star')?starOrbits[stars.findIndex(e=>e.element===i)]:starMotion(i+index*131)),kind=rank.type==='ring-planet'?3:rank.type==='gas-planet'?1:rank.type==='ice-planet'?2:0;
    const radius=1.5*bodyScale(g.order)*rank.scale*(rank.type.endsWith('planet')?1:2);
-   const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
+   const planet=rank.type.endsWith('planet')?detailedPlanet(sphere,kind,entry.appearanceSeed+index*13):(order===1?galaxyBlackHole(sphere,paletteFor(g.key)):detailedStar(sphere,rank,entry.appearanceSeed+index*13));
    planet.traverse(part=>{if(part.material?.depthWrite)part.renderOrder=-50;});planet.scale.setScalar(radius);planet.userData.baseSize=radius;planet.userData.light={value:1};planet.userData.bodyOpacity={value:1};planet.traverse(o=>{if(!o.material?.isShaderMaterial)return;o.material.uniforms.bodyLight=planet.userData.light;o.material.uniforms.bodyOpacity=planet.userData.bodyOpacity;o.material.transparent=true;o.material.fragmentShader="uniform float bodyLight;uniform float bodyOpacity;\n"+o.material.fragmentShader.replace(/}\s*$/, "gl_FragColor.rgb*=bodyLight;gl_FragColor.a*=bodyOpacity; if(bodyOpacity<.003)discard;\n}");});
    if((kind===0||kind===3)&&rank.type.endsWith('planet')){const ringTilt=(kind===0?23.44:10+20*stableRandom(i*47+index*83))*Math.PI/180;const orbitFrame=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),motion.node).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),-motion.inclination));planet.userData.spinBasePlanet=orbitFrame.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),stableRandom(i*67+index)*Math.PI*2)).multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),ringTilt));planet.quaternion.copy(planet.userData.spinBasePlanet);}
 
