@@ -1,3 +1,4 @@
+import {mountEcnuConstellation} from './ecnu-constellation.mjs?v=nebula-72';
 import {mountGroupExtension} from './group-extension.mjs?v=nebula-70';
 import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-66';
 import {mountBalanceControls} from './galaxy-balance.mjs?v=nebula-70';
@@ -70,3 +71,4 @@ mountBalanceControls(world);
 records=mountCampaignRecords({getJourney:()=>journey,getAccount:()=>account,t,api});
 $('cosmicPreferences').insertAdjacentHTML('beforeend','<a class="disk-lab-link" href="galaxy-disk-lab.html">星盘图谱 · 20 种草图 ↗</a>');
 $('cosmicLogin').showModal();
+mountEcnuConstellation();
