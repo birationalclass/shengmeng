@@ -46,7 +46,7 @@ export class GalaxyScene{
   root.userData.updateExtinction=bindDiskExtinction(T,root,root.userData.cloud,outerDust);
   root.userData.inflow=addInflow(T,root,field,innerDust,outerDust,matchMedia('(max-width:700px)').matches?140:220);
 
-  root.userData.orbitExtent=orbitExtent*1.06;
+  root.userData.orbitExtent=orbitExtent*1.06;root.userData.diskExtent=outerDust;
   // Keep body framing independent of the expanded decorative/orbit envelope.
   // Otherwise extending outer orbits silently zooms every celestial model away.
   const framingInner=2.5*(8.5*1.35/2)*bodyScale(g.order)*2+bodyScale(g.order)*1.6;
@@ -70,7 +70,8 @@ export class GalaxyScene{
  // The oblique disk occupies much less vertical space than its orbital radius.
  // Short landscape screens use that projection instead of the portrait envelope.
  const verticalProjection=landscape?.5:.78,verticalBudget=landscape?.58:(this.challenge?.51:.65);
- const mainScale=Math.min(1,halfW*(this.challenge?(narrow?.58:.72):narrow?.69:.57)/extent,halfH*verticalBudget/(extent*verticalProjection));
+ const portrait=this.w<=750&&this.h>this.w;
+ const mainScale=portrait?halfW*(this.challenge?.98:1.3)/(this.challenge?selectedSystem.userData.orbitExtent:selectedSystem.userData.diskExtent):Math.min(1,halfW*(this.challenge?(narrow?.58:.72):narrow?.69:.57)/extent,halfH*verticalBudget/(extent*verticalProjection));
  this.systems.forEach((s,i)=>{
   const delta=i-this.selected,near=Math.abs(delta)<=1&&!this.challenge||delta===0;
   if(!near&&!s.userData.layoutReady){s.visible=false;return;}
