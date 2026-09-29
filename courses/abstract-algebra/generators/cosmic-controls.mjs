@@ -1,6 +1,6 @@
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 import {createConnection} from '../../../visuals/group-sudoku/connection.mjs?v=background1';
-import {createEndlessMusic} from './endless-music.mjs?v=nebula-69';
+import {createEndlessMusic} from './endless-music.mjs?v=nebula-70';
 
 export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgress,clearJourney,render}){
  const $=id=>document.getElementById(id),svg=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;

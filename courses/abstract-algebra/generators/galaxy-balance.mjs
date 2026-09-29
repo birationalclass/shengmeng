@@ -12,7 +12,7 @@ export class BalancePose{
   return {x:response(b*Math.cos(a)+g*Math.sin(a)),z:-response(g*Math.cos(a)-b*Math.sin(a))};
  }
 }
-// Permission is requested only from the explicit enable button. No heading/magnetometer needed.
+// Permission can be requested by the first mobile entry gesture or explicit enable.
 export function createBalanceInput({host=window,onTilt,onState}){
  const pose=new BalancePose();let enabled=false,listening=false,timer=null,state='off';
  const emit=s=>{state=s;onState(s);};
@@ -57,8 +57,8 @@ export function mountBalanceControls(world){
   toggle.textContent=label;toggle.disabled=state==='requesting';center.textContent=t('以当前姿势居中','Recenter at current position');center.disabled=!input.enabled;
   const messages={off:['倾斜手机，轻转星群','Tilt your phone to turn the galaxy'],requesting:['请允许设备方向访问','Allow orientation access'],waiting:['保持舒适姿势，等待传感器','Hold comfortably; waiting for sensor'],active:['重力控制已开启','Tilt control enabled'],denied:['未获授权，可再次点击开启','Permission not granted; tap to retry'],unsupported:['此浏览器不支持重力控制','Orientation is not supported here'],unavailable:['未收到姿态数据，可重试','No orientation data; tap to retry'],insecure:['请使用 HTTPS 在线页面开启','Open the HTTPS website to enable']};status.textContent=t(...messages[state]);
  }
- const toggleInput=()=>input.enabled?input.disable():input.enable();quick.onclick=toggleInput;toggle.onclick=toggleInput;center.onclick=()=>input.recenter();
+ let autoPending=mobile;const toggleInput=()=>{autoPending=false;return input.enabled?input.disable():input.enable();};quick.onclick=toggleInput;toggle.onclick=toggleInput;center.onclick=()=>input.recenter();
  window.addEventListener('cosmic-ui-change',sync);sync();
- if(mobile&&window.isSecureContext&&window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission!=='function')input.enable();
+ if(mobile&&window.isSecureContext&&window.DeviceOrientationEvent){if(typeof DeviceOrientationEvent.requestPermission!=='function'){autoPending=false;void input.enable();}else{const firstGesture=e=>{if(!autoPending)return;if(e.target.closest?.('#cosmicBalance,#balanceToggle'))return;autoPending=false;document.removeEventListener('click',firstGesture);void input.enable();};document.addEventListener('click',firstGesture);}}
  return input;
 }
