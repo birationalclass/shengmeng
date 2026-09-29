@@ -1,4 +1,4 @@
-import {COSMIC_PALETTES} from './cosmic-palettes.mjs?v=nebula-73';
+import {COSMIC_PALETTES} from './cosmic-palettes.mjs?v=nebula-74';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
 // S4-sized identity asset. Same gas shading and cached ray method as the approved lab.
 const vertex=`varying vec2 uv0;void main(){uv0=uv;gl_Position=vec4(position.xy,0.,1.);}`;

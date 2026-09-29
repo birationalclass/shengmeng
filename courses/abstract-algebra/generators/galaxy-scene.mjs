@@ -1,14 +1,14 @@
-import {paletteFor} from './cosmic-palettes.mjs?v=nebula-73';
+import {paletteFor} from './cosmic-palettes.mjs?v=nebula-74';
 import {watchPageActivity} from './page-activity.mjs?v=nebula-70';
 import {pointerPose} from './galaxy-balance.mjs?v=nebula-70';
 import {planetMotion,starMotion,stableRandom,orbitalOffset,systemStarOrbits,planetOrbitRadius} from './celestial-motion.mjs?v=nebula-66';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-73';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-74';
 import {detailedStar} from './stellar-render.mjs?v=halo-52';
 import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 import {groups} from './model.mjs?v=nebula-66';
 import {celestialLayout,bodyScale} from './celestial-rank.mjs?v=nebula-66';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-73';
+import {dustField,addInflow,addNebula} from './galaxy-dust.mjs?v=nebula-74';
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 export class GalaxyScene{
  constructor(canvas,onSelect,onEnter){

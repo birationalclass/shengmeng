@@ -1,7 +1,7 @@
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {COSMIC_PALETTES,dustTint} from './cosmic-palettes.mjs?v=nebula-73';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-73';
-import {addNebula,dustField} from './galaxy-dust.mjs?v=nebula-73';
+import {COSMIC_PALETTES,dustTint} from './cosmic-palettes.mjs?v=nebula-74';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-74';
+import {addNebula,dustField} from './galaxy-dust.mjs?v=nebula-74';
 import {watchPageActivity} from './page-activity.mjs?v=nebula-70';
 const canvas=document.querySelector('canvas'),renderer=new T.WebGLRenderer({canvas,antialias:true}),scene=new T.Scene(),camera=new T.PerspectiveCamera(46,1,.1,300),root=new T.Group();
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setClearColor(0x040711);scene.add(root);root.rotation.z=-.15;

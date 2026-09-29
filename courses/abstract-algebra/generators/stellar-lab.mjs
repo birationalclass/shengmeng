@@ -1,6 +1,6 @@
 import {planetMotion} from './celestial-motion.mjs?v=orbits-46';
 import * as T from '../../../visuals/3d/vendor/three.module.js';
-import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-73';
+import {galaxyBlackHole} from './galaxy-black-hole.mjs?v=nebula-74';
 import {detailedStar} from './stellar-render.mjs?v=halo-52';
 import {detailedPlanet} from './planet-render.mjs?v=axial-51';
 const canvas=document.querySelector('canvas'),renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=T.SRGBColorSpace;
