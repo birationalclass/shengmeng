@@ -60,19 +60,22 @@ export class GalaxyScene{
  select(index){if(!Number.isInteger(index)||!this.systems[index])return;this.selected=index;}
  draw(dt){
  this.challenge?.tick(dt);if(this.motion)this.orbitTime+=dt*this.sceneRate;
- const narrow=this.w<700,aspect=this.camera.aspect;
+ const narrow=this.w<700,landscape=this.w>this.h&&this.h<=500,aspect=this.camera.aspect;
  this.balance.lerp(this.motion?(this.mouseView?this.mouseBalance:this.balanceTarget):new T.Vector2(),1-Math.exp(-dt*5));
  this.camera.position.set(0,12,27);this.camera.lookAt(0,0,0);this.camera.updateMatrixWorld(true);
  const depth=this.camera.position.length(),halfH=depth*Math.tan(23*Math.PI/180),halfW=halfH*aspect;
  const right=new T.Vector3(1,0,0).applyQuaternion(this.camera.quaternion),up=new T.Vector3(0,1,0).applyQuaternion(this.camera.quaternion);
  const selectedSystem=this.systems[this.selected];
  const extent=this.challenge?selectedSystem.userData.orbitExtent:selectedSystem.userData.extent;
- const mainScale=Math.min(1,halfW*(this.challenge?(narrow?.58:.72):narrow?.69:.57)/extent,halfH*(this.challenge?.51:.65)/(extent*.78));
+ // The oblique disk occupies much less vertical space than its orbital radius.
+ // Short landscape screens use that projection instead of the portrait envelope.
+ const verticalProjection=landscape?.5:.78,verticalBudget=landscape?.58:(this.challenge?.51:.65);
+ const mainScale=Math.min(1,halfW*(this.challenge?(narrow?.58:.72):narrow?.69:.57)/extent,halfH*verticalBudget/(extent*verticalProjection));
  this.systems.forEach((s,i)=>{
   const delta=i-this.selected,near=Math.abs(delta)<=1&&!this.challenge||delta===0;
   if(!near&&!s.userData.layoutReady){s.visible=false;return;}
   const x=delta===0?0:Math.sign(delta)*(near?.82:1.7);
-  const y=delta===0?0:(narrow?(this.h>this.w&&delta>0?.56:-.37):-.72);
+  const y=delta===0?(landscape&&this.challenge?-.12:0):(narrow?(this.h>this.w&&delta>0?.56:-.37):-.72);
   const position=right.clone().multiplyScalar(x*halfW).addScaledVector(up,y*halfH);
   const scale=mainScale*(delta===0?1:near?.24:.12),ease=1-Math.exp(-dt*3.1);
   // New neighbors start beyond the viewport; outgoing neighbors remain visible until offscreen.
