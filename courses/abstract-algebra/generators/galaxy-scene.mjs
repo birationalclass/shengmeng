@@ -72,7 +72,7 @@ export class GalaxyScene{
   const delta=i-this.selected,near=Math.abs(delta)<=1&&!this.challenge||delta===0;
   if(!near&&!s.userData.layoutReady){s.visible=false;return;}
   const x=delta===0?0:Math.sign(delta)*(near?.82:1.7);
-  const y=delta===0?0:(narrow?-.37:-.72);
+  const y=delta===0?0:(narrow?(this.h>this.w&&delta>0?.56:-.37):-.72);
   const position=right.clone().multiplyScalar(x*halfW).addScaledVector(up,y*halfH);
   const scale=mainScale*(delta===0?1:near?.24:.12),ease=1-Math.exp(-dt*3.1);
   // New neighbors start beyond the viewport; outgoing neighbors remain visible until offscreen.
