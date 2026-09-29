@@ -21,6 +21,7 @@ export function createGeneratorStore(db,prefix='generators_'){
    const request=col('requests',tx).doc(input.submissionId),ref=col('records',tx).doc(account.id),prior=one(await request.get()),old=one(await ref.get());
    const fingerprint=createHash('sha256').update(JSON.stringify(attempt)).digest('hex');
    if(prior){if(prior.accountId!==account.id||prior.fingerprint!==fingerprint)throw fail(409,'提交编号已使用。');return old;}
+   if((old?.journey?.[attempt.key]?.passed||0)>attempt.stage)return old;
    const row=old?Object.fromEntries(Object.entries(old).filter(([key])=>key!=="_id")):{...account,journey:{},consumedLives:0,highest:-1,completedLevels:0,reachedAt:null};
    const minute=Math.floor(Date.parse(at)/60000);row.rateCount=row.rateMinute===minute?(row.rateCount||0)+1:1;row.rateMinute=minute;if(row.rateCount>60)throw fail(429,'同步过于频繁，请稍后重试。');
    const r=row.journey[attempt.key]||{version:2,passed:0,times:[]};

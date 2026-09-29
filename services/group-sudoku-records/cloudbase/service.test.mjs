@@ -92,6 +92,9 @@ test('generator attempts are verified, idempotent, private, and isolated from Su
  assert.equal(results[0].status,200);assert.equal(results[1].data.consumedLives,1);
  assert.equal((await call('/api/generators/attempts',{...input,seeds:[1]},token)).status,409);
  assert.equal((await call('/api/generators/attempts',{...input,submissionId:crypto.randomUUID(),seeds:[1]},token)).data.journey.C4.passed,1);
+ const saved=await env.generatorStore.record(login.data.account.id);
+ assert.equal((await call('/api/generators/attempts',{...input,submissionId:crypto.randomUUID()},token)).data.consumedLives,1);
+ assert.deepEqual(await env.generatorStore.record(login.data.account.id),saved);
  assert.deepEqual(await env.store.records(),before);
  assert.equal((await call('/api/records')).data.total,0);
  assert.equal((await call('/api/generators/records')).data.total,1);

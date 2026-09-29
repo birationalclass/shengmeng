@@ -22,3 +22,5 @@ Tests: `node --test services/group-sudoku-records/cloudbase/service.test.mjs cou
 Deploy the shared host with dependencies included; preserve its environment variables, gateway paths and CORS configuration. Validate the test host first, retain a rollback version, and compare original Sudoku public records before/after the production update. Test writes belong only in test collections.
 
 Verified deployment (2026-09-29): both production routes returned HTTP 200; the original Sudoku public-record digest was unchanged; GitHub Pages preflight returned 204 with the same allowed origin. Cloud function version `1` retains the pre-generator host as a rollback snapshot (0% traffic). Test smoke checks passed on the dedicated test collections.
+
+Completed-stage replay policy: a stage is new only when it has not been cleared. Replaying a cleared stage does not consume lives, require mandatory reading, overwrite completion times, or enqueue any result. First-time offline attempts already queued still retry with their original UUID. The server ignores any later attempts for an already-cleared stage, protecting against older clients.

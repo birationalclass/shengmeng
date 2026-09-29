@@ -1,5 +1,8 @@
 // A durable, per-account outbox. A retry always keeps its original submission ID.
-export function createGeneratorSync({api,read,write,getAccount,onProgress,onStatus=()=>{}}){
+export function shouldSubmitAttempt(attempt,journey){
+ return (journey[attempt.key]?.passed||0)<=attempt.stage;
+}
+export function createGeneratorSync({api,read,write,getAccount,getJourney=()=>({}),onProgress,onStatus=()=>{}}){
  let session=null,busy=false,timer;
  const key=id=>'generators-outbox-v1:'+id;
  async function flush(){
@@ -19,5 +22,5 @@ export function createGeneratorSync({api,read,write,getAccount,onProgress,onStat
   }catch(error){onStatus('pending',error.message);if(!error.status||error.status>=500||error.status===429)timer=setTimeout(flush,30000);}
   finally{busy=false;if(session!==own)void flush();}
  }
- return {flush,setSession(value){session=value;void flush();},enqueue(attempt){const id=getAccount().id;write(key(id),[...(read(key(id))||[]),{...attempt,submissionId:crypto.randomUUID()}]);onStatus('pending');void flush();}};
+ return {flush,setSession(value){session=value;void flush();},enqueue(attempt){if(!shouldSubmitAttempt(attempt,getJourney()))return false;const id=getAccount().id;write(key(id),[...(read(key(id))||[]),{...attempt,submissionId:crypto.randomUUID()}]);onStatus('pending');void flush();return true;}};
 }

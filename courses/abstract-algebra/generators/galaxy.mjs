@@ -1,4 +1,4 @@
-import {createGeneratorSync} from './generator-sync.mjs?v=nebula-96';
+import {createGeneratorSync} from './generator-sync.mjs?v=nebula-97';
 import {bindPortraitSwipe} from './galaxy-swipe.mjs?v=nebula-84';
 import {mountEcnuConstellation} from './ecnu-constellation.mjs?v=nebula-72';
 import {mountGroupExtension} from './group-extension.mjs?v=nebula-70';
@@ -7,7 +7,7 @@ import {mountBalanceControls} from './galaxy-balance.mjs?v=nebula-70';
 import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-96';
 import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-69';
 import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-93';
-import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-96';
+import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-97';
 import {groups} from './model.mjs?v=nebula-66';
 import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=nebula-66';
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
@@ -18,7 +18,7 @@ if(!account){account={id:'local-guest-'+crypto.randomUUID(),kind:'guest',name:''
 const t=(zh,eng)=>en?eng:zh,api=createRecordsApi({config:RECORDS_CONFIG,t}),key=()=>`generators-galaxy-demo:${account.id}`;
 let cloudStatus='connecting';
 let journey=normalizeJourney(read('generators-campaign-v1:'+account.id),GALAXIES,groups),challenge,records,extension;done=completedCount(journey,GALAXIES,groups);
-const cloudSync=createGeneratorSync({api,read,write,onStatus:state=>{cloudStatus=state;render();},getAccount:()=>account,onProgress:data=>{for(const g of GALAXIES){const remote=data.journey[g.key];if(remote&&remote.passed>journey[g.key].passed)journey[g.key]=remote;}write('generators-campaign-v1:'+account.id,journey);done=completedCount(journey,GALAXIES,groups);render();}});
+const cloudSync=createGeneratorSync({api,read,write,getJourney:()=>journey,onStatus:state=>{cloudStatus=state;render();},getAccount:()=>account,onProgress:data=>{for(const g of GALAXIES){const remote=data.journey[g.key];if(remote&&remote.passed>journey[g.key].passed)journey[g.key]=remote;}write('generators-campaign-v1:'+account.id,journey);done=completedCount(journey,GALAXIES,groups);render();}});
 window.addEventListener('online',()=>cloudSync.flush());
 document.body.insertAdjacentHTML('afterbegin',`<div id="cosmos"><canvas id="cosmosCanvas" aria-label="三维星系场景"></canvas><div class="cosmos-vignette"></div></div>
 <section id="galaxyUI" aria-label="星系选择"><div class="cosmic-top"><a href="../" aria-label="返回代数学" class="cosmic-home">⌂</a><div class="cosmic-tools"><button id="cosmicAccount">◈ <span></span></button><button id="cosmicLang">EN</button><button id="cosmicSettings" aria-label="设置">⚙</button><button id="cosmicFull" aria-label="全屏">□</button></div></div>
