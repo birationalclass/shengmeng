@@ -32,3 +32,15 @@ nodes.push(
 {id:'properreduce',title:'proper 到 projective 的归约',status:'conditional',x:536,y:1170,deps:['projective','effdown','nefpull','chow'],decl:'negativity_descends',file:'Descent.lean',paper:'proper',statement:'在改造及推拉条件下，射影 negativity 结论推出 proper 的有效性等价。',scope:'归约逻辑已验证。Chow 存在性与几何公式是参数，射影几何定理也仍未完成。',inputs:['推拉恒等式与推出的交换关系。','nef 拉回保持和射影 negativity 结论。'],steps:[['上升','拉回 D 并传递 nef 与底上的有效推出。'],['射影结论','对拉回应用射影 negativity。'],['下降','沿推出恢复 D 的有效性。']]},
 {id:'fiberdown',title:'纤维支撑二择一下降',status:'conditional',x:536,y:1290,deps:['setdown','projective2','chow'],decl:'fiber_dichotomy_descends',file:'Descent.lean',paper:'proper',statement:'满射改造上每个复合纤维的支撑二择一，下降到底上每个纤维。',scope:'纤维与集合的归约已验证；支撑等于逆像与射影纤维结论仍需几何证明。',inputs:['改造满射。','上方支撑是下方支撑的逆像。','上方每个纤维满足二择一。'],steps:[['复合纤维','复合纤维等于原纤维的逆像。'],['满射下降','应用已验证的集合二择一下降。']]}
 );
+
+Object.assign(nodes.find(n=>n.id==='projection'),{
+  deps:['geomcycle'],statement:'需要证明 (π*D)·Γ = D·π_*[Γ]，由此得到 −π*D 的相对 nef 性。',
+  scope:'完整的几何交数等式尚待形式化。真实 Scheme-cycle 推出的基础部分已验证；nef 符号推论也已验证。',
+  inputs:['π:X′→X 是 proper birational，f:X→Y，g=f∘π。D 为 X 上的 R-Cartier 除子。','Γ⊂X′ 是满足 g(Γ) 为点的完整整曲线。','需建立 Cartier 拉回与曲线交数的投影公式，而不只是给交数一个线性接口。'],
+  steps:[['若 π 压缩 Γ','π_*[Γ]=0，需证明 (π*D)·Γ=0。'],['若 π(Γ)=C 是曲线','令 r=[k(Γ):k(C)]>0，需证明 (π*D)·Γ=r(D·C)。'],['推出 nef 拉回','此时 C 被 f 压缩，D·C≤0，所以 (π*D)·Γ≤0。']]
+});
+nodes.find(n=>n.id==='projection').precise={
+  zh:{setup:'π:X′→X，f:X→Y，g=f∘π；D 是 X 上的 R-Cartier 除子。Γ⊂X′ 是被 g 压缩的完整整曲线。',zero:'若 π(Γ) 是点：',curve:'若 π(Γ)=C 是曲线：',degree:'r=[k(Γ):k(C)]>0。这里 r 是函数域扩张次数。',use:'因为 g 压缩 Γ，曲线 C 也被 f 压缩。−D 为 f-nef 意味着 D·C≤0，因此以上两种情形都给 (π*D)·Γ≤0，即 −π*D 为 g-nef。',gap:'已证明 cycle 推出的零值／次数权重性质。还需构造实际 Cartier 拉回和曲线交数，并证明上面的等式。'},
+  en:{setup:'π:X′→X, f:X→Y, g=f∘π. D is an R-Cartier divisor on X. Γ⊂X′ is a proper integral curve contracted by g.',zero:'If π(Γ) is a point:',curve:'If π(Γ)=C is a curve:',degree:'r=[k(Γ):k(C)]>0 is the function-field extension degree.',use:'Since g contracts Γ, f contracts C. Relative nefness of −D gives D·C≤0. Both cases yield (π*D)·Γ≤0, so −π*D is g-nef.',gap:'The zero / degree weights in actual scheme-cycle pushforward are proved. Actual Cartier pullback and curve intersection, and the displayed identity, remain to be constructed and proved.'}
+};
+nodes.push({id:'geomcycle',title:'真实 Scheme-cycle 的推出',status:'done',x:20,y:1290,deps:[],decl:'scheme_cycle_map_effective',related:['scheme_mapCoeff_zero_of_drop','scheme_mapCoeff_of_same_weight','scheme_cycle_map_zero_of_drop'],file:'GeometricCycles.lean',paper:'proper',statement:'直接对 mathlib 的 AlgebraicCycle 与 Scheme 态射，证明推出保持有效，以及降维为零、同维按剩余域次数计重。',scope:'这四条结果使用真实 Scheme-cycle API。它们还不包含 Cartier 拉回和曲线交数的完整射影公式。',inputs:['Scheme 态射 f 的 QuasiCompact 条件。','权重函数 wx,wy 指定维数／余维数。','cycle 的系数为实数；有效性为逐点非负。'],steps:[['推出保持有效','每项都是非负系数乘自然数次数权重，再取有限和。'],['降维为零','wx(x)≠wy(f(x)) 时，mapCoeff 的定义给权重 0。'],['同维按次数计重','wx(x)=wy(f(x)) 时，权重等于 f.residueDegree(x)。']]});

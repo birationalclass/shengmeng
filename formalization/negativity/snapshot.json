@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T18:16:03+08:00",
+  "checkedAt": "2026-10-01T19:11:21+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "cfff2d45dd83ff6e30ead245ec9a152a88a3f5109a97485aa7f771dc9d0ad3a1"
+      "sha256": "4f04912c46fe0042869a38aa68ce6c43704243fd7b0c0e65a0cd5f297beec008"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "92c37930a1a6936be45ad6d2bd3de177b6881cd35e29723ffc424fe6618b4eea"
+      "sha256": "66e3edd88e8b5ea5bf9f3add289a7972cae6e483ea8f04015c4c7cd1df381285"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,10 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/GeometricCycles.lean",
+      "sha256": "c32407305fc44436fbcd4d39b9f7853f54f0d9839f9269f0da8d7441f9f32adc"
     },
     {
       "path": "Negativity/Numerical.lean",
@@ -46,6 +50,46 @@
     }
   ],
   "declarations": {
+    "scheme_cycle_map_effective": {
+      "path": "Negativity/GeometricCycles.lean",
+      "line": 15,
+      "code": "theorem scheme_cycle_map_effective {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f]\n    {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    (c : AlgebraicCycle X ℝ) (hc : CycleEffective c) :\n    CycleEffective (AlgebraicCycle.map f wx wy c) := by\n  intro y\n  change 0 ≤ ∑ᶠ x ∈ f.base ⁻¹' {y}, c x * (AlgebraicCycle.mapCoeff f wx wy x : ℝ)\n  apply finsum_nonneg\n  intro x\n  apply finsum_nonneg\n  intro _\n  exact mul_nonneg (hc x) (Nat.cast_nonneg _)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_mapCoeff_zero_of_drop": {
+      "path": "Negativity/GeometricCycles.lean",
+      "line": 28,
+      "code": "theorem scheme_mapCoeff_zero_of_drop {X Y : Scheme} (f : X ⟶ Y)\n    {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N) (x : X)\n    (h : wx x ≠ wy (f.base x)) : AlgebraicCycle.mapCoeff f wx wy x = 0 := by\n  simp [AlgebraicCycle.mapCoeff, h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_mapCoeff_of_same_weight": {
+      "path": "Negativity/GeometricCycles.lean",
+      "line": 34,
+      "code": "theorem scheme_mapCoeff_of_same_weight {X Y : Scheme} (f : X ⟶ Y)\n    {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N) (x : X)\n    (h : wx x = wy (f.base x)) :\n    AlgebraicCycle.mapCoeff f wx wy x = f.residueDegree x := by\n  simp [AlgebraicCycle.mapCoeff, h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_cycle_map_zero_of_drop": {
+      "path": "Negativity/GeometricCycles.lean",
+      "line": 41,
+      "code": "theorem scheme_cycle_map_zero_of_drop {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f]\n    {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    (c : AlgebraicCycle X ℝ)\n    (h : ∀ x, c x ≠ 0 → wx x ≠ wy (f.base x)) :\n    AlgebraicCycle.map f wx wy c = 0 := by\n  have hz : ∀ x, c x * (AlgebraicCycle.mapCoeff f wx wy x : ℝ) = 0 := by\n    intro x\n    by_cases hx : c x = 0\n    · simp [hx]\n    · simp [scheme_mapCoeff_zero_of_drop f wx wy x (h x hx)]\n  ext y\n  simp [AlgebraicCycle.map, Function.locallyFinsupp.map, hz]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "exists_effective_shift": {
       "path": "Negativity/Numerical.lean",
       "line": 18,

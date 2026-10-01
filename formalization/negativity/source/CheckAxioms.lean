@@ -23,3 +23,7 @@ import Negativity
 #print axioms Negativity.push_embDomain
 #print axioms Negativity.push_add_exceptional
 #print axioms Negativity.effective_descends_coefficients
+#print axioms Negativity.scheme_cycle_map_effective
+#print axioms Negativity.scheme_mapCoeff_zero_of_drop
+#print axioms Negativity.scheme_mapCoeff_of_same_weight
+#print axioms Negativity.scheme_cycle_map_zero_of_drop
