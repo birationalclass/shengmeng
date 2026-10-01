@@ -6,3 +6,5 @@ public import Negativity.Coefficients
 public import Negativity.Interfaces
 public import Negativity.Descent
 public import Negativity.GeometricCycles
+
+public import Negativity.Projection

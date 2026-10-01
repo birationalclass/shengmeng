@@ -4,6 +4,7 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'Projection.lean': ['scheme_cycle_map_single', 'scheme_curve_push_of_same_weight', 'scheme_curve_push_of_drop', 'projection_cases_from_cycle_push', 'nonpositive_pullback_from_cycle_push', 'projection_formula_on_real_span', 'scheme_effective_descends'],
     'GeometricCycles.lean': ['scheme_cycle_map_effective', 'scheme_mapCoeff_zero_of_drop', 'scheme_mapCoeff_of_same_weight', 'scheme_cycle_map_zero_of_drop'],
     'Numerical.lean': ['exists_effective_shift', 'effective_of_curve_tests'],
     'Coefficients.lean': ['effective_push', 'negative_is_exceptional', 'exists_least_effective_shift'],
@@ -72,7 +73,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

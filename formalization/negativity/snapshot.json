@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T19:11:21+08:00",
+  "checkedAt": "2026-10-01T19:27:28+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "4f04912c46fe0042869a38aa68ce6c43704243fd7b0c0e65a0cd5f297beec008"
+      "sha256": "cf48487576a138a0efb9aed9c08eaff053baeabac8a1f128ba20538c1e597c34"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "66e3edd88e8b5ea5bf9f3add289a7972cae6e483ea8f04015c4c7cd1df381285"
+      "sha256": "8707cdc63a0aff1485031e273ac7c09e7f0f3dc615849e1cbe9ca41bcc8c9081"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,10 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/Projection.lean",
+      "sha256": "94aa04809b97f39cd0fbc21e474b7f027eaaa2adcc70645f6a52a27752c12371"
     },
     {
       "path": "Negativity/GeometricCycles.lean",
@@ -50,6 +54,76 @@
     }
   ],
   "declarations": {
+    "scheme_cycle_map_single": {
+      "path": "Negativity/Projection.lean",
+      "line": 12,
+      "code": "theorem scheme_cycle_map_single {X Y : Scheme} (f : X ⟶ Y) [QuasiCompact f]\n    {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    [DecidableEq X] [DecidableEq Y] (x : X) (a : ℝ) :\n    AlgebraicCycle.map f wx wy (single x a) =\n      single (f.base x) (a * (AlgebraicCycle.mapCoeff f wx wy x : ℝ)) := by\n  ext y\n  change (∑ᶠ z ∈ f.base ⁻¹' {y}, single x a z *\n    (AlgebraicCycle.mapCoeff f wx wy z : ℝ)) = _\n  rw [finsum_eq_single _ x (by intro z hz; simp [single_apply, hz])]\n  by_cases hy : y = f.base x <;> simp [single_apply, hy, eq_comm]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_curve_push_of_same_weight": {
+      "path": "Negativity/Projection.lean",
+      "line": 24,
+      "code": "theorem scheme_curve_push_of_same_weight {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    [DecidableEq X] [DecidableEq Y] (x : X) (h : wx x = wy (f.base x)) :\n    AlgebraicCycle.map f wx wy (single x (1 : ℝ)) =\n      f.residueDegree x • single (f.base x) (1 : ℝ) := by\n  rw [scheme_cycle_map_single, scheme_mapCoeff_of_same_weight f wx wy x h]\n  ext y\n  by_cases hy : y = f.base x <;> simp [single_apply, hy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_curve_push_of_drop": {
+      "path": "Negativity/Projection.lean",
+      "line": 34,
+      "code": "theorem scheme_curve_push_of_drop {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    [DecidableEq X] [DecidableEq Y] (x : X) (h : wx x ≠ wy (f.base x)) :\n    AlgebraicCycle.map f wx wy (single x (1 : ℝ)) = 0 := by\n  rw [scheme_cycle_map_single, scheme_mapCoeff_zero_of_drop f wx wy x h]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "projection_cases_from_cycle_push": {
+      "path": "Negativity/Projection.lean",
+      "line": 44,
+      "code": "theorem projection_cases_from_cycle_push {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    [DecidableEq X] [DecidableEq Y]\n    (down : AlgebraicCycle Y ℝ →+ ℝ)\n    (up : AlgebraicCycle X ℝ →+ ℝ) (x : X)\n    (hcompat : up (single x 1) = down (AlgebraicCycle.map f wx wy (single x 1))) :\n    (wx x ≠ wy (f.base x) ∧ up (single x 1) = 0) ∨\n      (wx x = wy (f.base x) ∧\n        up (single x 1) = (f.residueDegree x : ℝ) * down (single (f.base x) 1)) := by\n  by_cases h : wx x = wy (f.base x)\n  · right\n    refine ⟨h, ?_⟩\n    rw [hcompat, scheme_curve_push_of_same_weight f wx wy x h, map_nsmul]\n    simp [nsmul_eq_mul]\n  · left\n    refine ⟨h, ?_⟩\n    rw [hcompat, scheme_curve_push_of_drop f wx wy x h, map_zero]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "nonpositive_pullback_from_cycle_push": {
+      "path": "Negativity/Projection.lean",
+      "line": 64,
+      "code": "theorem nonpositive_pullback_from_cycle_push {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    [DecidableEq X] [DecidableEq Y]\n    (down : AlgebraicCycle Y ℝ →+ ℝ)\n    (up : AlgebraicCycle X ℝ →+ ℝ) (testUp : Set X) (testDown : Set Y)\n    (hcompat : ∀ x ∈ testUp,\n      up (single x 1) = down (AlgebraicCycle.map f wx wy (single x 1)))\n    (himage : ∀ x ∈ testUp, wx x = wy (f.base x) → f.base x ∈ testDown)\n    (hnef : ∀ y ∈ testDown, down (single y 1) ≤ 0) :\n    ∀ x ∈ testUp, up (single x 1) ≤ 0 := by\n  intro x hx\n  rcases projection_cases_from_cycle_push f wx wy down up x (hcompat x hx) with\n    ⟨_, hzero⟩ | ⟨hweight, heq⟩\n  · exact le_of_eq hzero\n  · rw [heq]\n    exact mul_nonpos_of_nonneg_of_nonpos (Nat.cast_nonneg _) (hnef _ (himage x hx hweight))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "projection_formula_on_real_span": {
+      "path": "Negativity/Projection.lean",
+      "line": 84,
+      "code": "theorem projection_formula_on_real_span {V W : Type*}\n    [AddCommGroup V] [Module ℝ V] [AddCommGroup W] [Module ℝ W]\n    (pull : V →ₗ[ℝ] W) (down : V →ₗ[ℝ] ℝ) (up : W →ₗ[ℝ] ℝ)\n    (cartier : Set V) (hcartier : ∀ D ∈ cartier, up (pull D) = down D)\n    (D : V) (hD : D ∈ Submodule.span ℝ cartier) : up (pull D) = down D := by\n  exact LinearMap.eqOn_span (f := up.comp pull) (g := down) hcartier hD",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_effective_descends": {
+      "path": "Negativity/Projection.lean",
+      "line": 93,
+      "code": "theorem scheme_effective_descends {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    (D : AlgebraicCycle Y ℝ) (lifted : AlgebraicCycle X ℝ)\n    (hleft : AlgebraicCycle.map f wx wy lifted = D)\n    (hlifted : CycleEffective lifted) : CycleEffective D := by\n  rw [← hleft]\n  exact scheme_cycle_map_effective f wx wy lifted hlifted",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "scheme_cycle_map_effective": {
       "path": "Negativity/GeometricCycles.lean",
       "line": 15,

@@ -27,3 +27,11 @@ import Negativity
 #print axioms Negativity.scheme_mapCoeff_zero_of_drop
 #print axioms Negativity.scheme_mapCoeff_of_same_weight
 #print axioms Negativity.scheme_cycle_map_zero_of_drop
+
+#print axioms Negativity.scheme_cycle_map_single
+#print axioms Negativity.scheme_curve_push_of_same_weight
+#print axioms Negativity.scheme_curve_push_of_drop
+#print axioms Negativity.projection_cases_from_cycle_push
+#print axioms Negativity.nonpositive_pullback_from_cycle_push
+#print axioms Negativity.projection_formula_on_real_span
+#print axioms Negativity.scheme_effective_descends
