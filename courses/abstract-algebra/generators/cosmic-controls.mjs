@@ -7,7 +7,10 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
  const records=document.createElement('button');records.id='cosmicRecords';records.innerHTML=svg('<path d="M12 5C8 3 5 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z"/><path d="M12 5v15"/>');$('cosmicLang').before(records);
  const motion=document.createElement('button');motion.id='cosmicPause';motion.innerHTML=svg('<path d="M8 5v14M16 5v14"/>');records.before(motion);
  $('cosmicStudentForm').insertAdjacentHTML('beforeend','<button type="button" id="identityRetry" hidden></button><button type="button" id="identityBack"></button><button type="button" id="identityOffline"></button>');
- $('identityText').insertAdjacentHTML('afterend','<p id="identityServer" role="status"></p>');
+ $('identityText').insertAdjacentHTML('afterend','<p id="identityServer" role="status"></p><div id="identityCurrent"><button id="identityContinue" class="cosmic-primary" type="button"></button><button id="identitySwitch" type="button"></button></div>');
+ let switching=false;
+ $('identityContinue').onclick=()=>$('cosmicLogin').close();
+ $('identitySwitch').onclick=()=>{switching=true;sync();};
  $('prefsStudent').insertAdjacentHTML('afterend','<p id="prefsServer" role="status"></p>');
  $('cosmicPreferences').insertAdjacentHTML('beforeend',`<section class="music-settings"><h3 id="musicTitle"></h3><label class="cosmic-setting"><span id="musicToggleLabel"></span><input id="musicEnabled" type="checkbox"></label><div class="volume-heading"><label for="musicVolume" id="musicVolumeLabel"></label><output id="musicVolumeValue"></output></div><input id="musicVolume" type="range" min="0" max="100" value="12"><p id="musicStatus"></p></section><button id="clearCosmicData"></button>`);
  document.body.insertAdjacentHTML('beforeend',`<audio id="backgroundMusic"></audio><dialog id="cosmicRecordPanel" class="cosmic-dialog"><button class="cosmic-close" id="closeCosmicRecords">×</button><h2 id="cosmicRecordsTitle"></h2><div class="record-toolbar"><button id="refreshCosmicRecords"></button><span id="cosmicRecordsStatus" role="status"></span></div><div id="cosmicRecordRows"></div><p id="cosmicRecordsNote"></p></dialog><dialog id="cosmicClearDialog" class="cosmic-dialog"><h2 id="cosmicClearTitle"></h2><p id="cosmicClearNote"></p><div class="dialog-actions"><button id="cancelCosmicClear"></button><button id="confirmCosmicClear"></button></div></dialog>`);
@@ -37,10 +40,10 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
  }
  $('studentIdentity').onclick=()=>{invalidate();$('identityChoices').hidden=true;$('cosmicStudentForm').hidden=false;const last=read('group-sudoku-last-student');if(typeof last==='string')$('cosmicStudentId').value=last;$('cosmicStudentId').focus();if($('cosmicStudentId').value.length===11)lookup();};
  $('cosmicStudentId').oninput=lookup;$('identityRetry').onclick=lookup;
- $('identityBack').onclick=()=>{invalidate();$('cosmicStudentForm').hidden=true;$('identityChoices').hidden=false;};
+ $('identityBack').onclick=()=>{invalidate();$('cosmicStudentForm').hidden=true;switching=false;sync();};
  $('guestIdentity').onclick=$('identityOffline').onclick=()=>enter('guest');
  $('cosmicStudentForm').onsubmit=e=>{e.preventDefault();enter('student');};
- $('cosmicLogin').addEventListener('close',()=>{invalidate();$('identityChoices').hidden=false;});
+ $('cosmicLogin').addEventListener('close',()=>{invalidate();switching=false;sync();});
  for(const event of ['online','offline','pageshow'])window.addEventListener(event,()=>connection.wake());document.addEventListener('visibilitychange',()=>connection.wake());
  records.onclick=()=>{sync();$('cosmicRecordPanel').showModal();};$('closeCosmicRecords').onclick=()=>$('cosmicRecordPanel').close();$('refreshCosmicRecords').onclick=()=>{sync();$('cosmicRecordsStatus').textContent=t('已从本机更新','Updated from this device');};
  $('resetDemo').onclick=$('clearCosmicData').onclick=()=>$('cosmicClearDialog').showModal();
@@ -50,8 +53,17 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
   const text=(id,zh,en)=>$(id).textContent=t(zh,en),label=(id,zh,en)=>{const b=$(id),s=t(zh,en);b.setAttribute('aria-label',s);b.dataset.tip=s;};
   label('cosmicRecords','探索记录','Exploration records');label('cosmicPause',$('cosmicMotion').checked?'暂停星系动态':'继续星系动态',$('cosmicMotion').checked?'Pause scene':'Resume scene');motion.setAttribute('aria-pressed',String(!$('cosmicMotion').checked));motion.innerHTML=svg($('cosmicMotion').checked?'<path d="M8 5v14M16 5v14"/>':'<path d="m8 5 11 7-11 7Z"/>');
   const status=server==='connected'?t('身份服务器已连接','Identity server connected'):server==='offline'?t('当前离线 · 可继续探索','Offline · Continue exploring'):server==='retrying'?t('正在重连 · 可继续探索','Reconnecting · Continue exploring'):t('后台连接中 · 可直接进入','Connecting in background · Ready to enter');$('identityServer').textContent=$('prefsServer').textContent=status;
+  $('identityServer').dataset.state=server;
+  const current=getAccount(),signedIn=!current.local&&!!current.name;
+  const displayName=current.kind==='student'?current.name:t('游客 ','Guest ')+(current.name||current.id.replace(/^local-guest-|^guest_/, '').slice(0,8).toUpperCase());
+  $('loginTitle').textContent=switching?t('切换账号','Switch account'):signedIn?t('当前航行身份','Current identity'):t('本机航行身份','Local identity');
+  $('identityText').textContent=displayName+(current.kind==='student'?' · '+current.id:'');
+  $('identityCurrent').hidden=switching;
+  $('identityChoices').hidden=!switching||!$('cosmicStudentForm').hidden;
+  text('identityContinue','继续探索','Continue exploring');text('identitySwitch','切换账号','Switch account');
+  $('identityNote').textContent=switching?t('选择学生账号或游客身份；各账号进度分别保存。','Choose a student or guest account. Progress is saved separately.'):t('探索进度按当前账号保存。','Exploration progress is saved for this account.');
   document.querySelector('.cosmic-home').setAttribute('aria-label',t('返回代数学','Back to algebra'));const a=getAccount();$('prefsStudent').textContent=a.kind==='student'?`${a.name} · ${a.id}`:a.local?t('游客（本机）','Guest (this device)'):t('游客 ','Guest ')+a.name;
-  text('identityRetry','重新查询','Retry lookup');text('identityBack','返回','Back');text('identityOffline','先以游客身份游玩','Play as guest for now');text('guestIdentity','游客进入 · 无需等待','Enter as guest · No waiting');
+  text('identityRetry','重新查询','Retry lookup');text('identityBack','返回','Back');text('identityOffline','先以游客身份游玩','Play as guest for now');text('guestIdentity','使用游客账号','Use guest account');
   text('clearCosmicData','清除本地记录','Clear local data');text('cosmicClearTitle','清除本机模拟航程？','Clear this device’s demo journey?');text('cosmicClearNote','仅清除当前身份的星系模拟进度与星云设置，群数独记录和登录身份保留。','Clears this identity’s local galaxy demo and nebula settings. Sudoku records and identity are retained.');text('cancelCosmicClear','取消','Cancel');text('confirmCosmicClear','确认清除','Clear');
   text('cosmicRecordsTitle','探索记录','Exploration records');text('refreshCosmicRecords','刷新','Refresh');text('cosmicRecordsNote','通关条件尚未启用；这里仅显示本机模拟航程，不计入正式成绩。','Win conditions are not enabled. This is local simulated progress, not official results.');
   $('cosmicRecordRows').replaceChildren(...GALAXIES.map((g,i)=>{const row=document.createElement('div');row.className='cosmic-record-row';const name=document.createElement('span'),state=document.createElement('small');name.textContent=String(i+1).padStart(2,'0')+' · '+g.name;state.textContent=i<getProgress()?t('已模拟探索','Simulated'):t('未完成','Not completed');row.append(name,state);return row;}));text('closeCosmicRecords','关闭','Close');

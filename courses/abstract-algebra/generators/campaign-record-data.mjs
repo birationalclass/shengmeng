@@ -9,3 +9,20 @@ export function completionRecord(account,journey,galaxies,previous,at=null){
 }
 export function publicRecord(r,full=false){return {...r,name:r.kind==='guest'?'游客 '+(r.name||r.id.replace(/^local-guest-|^guest_/, '').slice(0,8).toUpperCase()):full?r.name:(r.initials||'—'),studentId:r.kind==='guest'?'':full?r.id:r.id.slice(0,3)+'****'+r.id.slice(-4)};}
 export function rankedRecords(records){return [...records].sort((a,b)=>b.highest-a.highest||String(a.reachedAt||'9999').localeCompare(String(b.reachedAt||'9999')));}
+
+// Public rows mask student IDs. Only highlight a unique identity match.
+export function ownRecordIndex(rows,account){
+ if(!account?.id)return -1;
+ const matches=[];
+ rows.forEach((r,i)=>{
+  if(r.kind!==account.kind)return;
+  if(r.id){if(r.id===account.id)matches.push(i);return;}
+  if(account.kind==='guest'){
+   if(account.name&&r.name==='游客 '+account.name)matches.push(i);
+  }else{
+   const masked=account.id.slice(0,3)+'****'+account.id.slice(-4);
+   if((r.studentId===account.id&&r.name===account.name)||(r.studentId===masked&&account.initials&&r.name===account.initials))matches.push(i);
+  }
+ });
+ return matches.length===1?matches[0]:-1;
+}
