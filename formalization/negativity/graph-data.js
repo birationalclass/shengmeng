@@ -450,3 +450,330 @@ Object.assign(find('strict'),{
  steps:[['明确对象','D 是素除子的有限实系数形式和。这里的 cycle 保留实际除子系数。'],['构造严格变换','在 Q 泛点的同构邻域上取对应素点，再取闭包得到 Q̃。几何同构开集仍待证明。'],['计算推出','同构给函数域次数 1；被压缩的除子降维贡献 0。已有实际 AlgebraicCycle.map 公式。'],['得到负分量结论','若 f_*D 有效，所有非 exceptional 分量系数均非负；因此负分量必为 exceptional。']]
 });
 find('curves').deps.push('strict');
+
+// Release 11: actual codimension-one geometry and user-guided routes.
+nodes.push(...[
+  {
+    "id": "modsurj",
+    "title": "proper 双有理态射的满射性",
+    "status": "done",
+    "statement": "proper 双有理态射到整概形为满射。",
+    "scope": "实际 Scheme 态射：非空同构开集稠密，proper 的闭映射性质使像等于整个底。无需额外假设满射。",
+    "inputs": [
+      "Y 整，f proper 且在非空开集为同构。"
+    ],
+    "steps": [
+      [
+        "稠密像",
+        "同构开集包含于像，且在整底上稠密。"
+      ],
+      [
+        "闭像",
+        "proper 给闭映射，稠密闭像即整个底。",
+        "proper_birational_surjective"
+      ]
+    ],
+    "deps": [],
+    "decl": "proper_birational_surjective",
+    "file": "CodimensionOne.lean",
+    "x": 278,
+    "y": 2900,
+    "paper": "proper"
+  },
+  {
+    "id": "hartshornegraph",
+    "title": "Hartshorne：实际图像闭包",
+    "status": "conditional",
+    "statement": "非空开集 U→P 的图像闭包 Z⊂X×_S P 给 proper 双有理满射 Z→X 及 proper Z→P。",
+    "scope": "真实 scheme-theoretic image 的构造已验证。P→S proper 及 U 上的映射是本构造的输入；有限覆盖产生这些映射并使整体射影，仍属于完整 Chow 引理。",
+    "inputs": [
+      "X 整且 Noetherian 拓扑，X→S 与 P→S proper。",
+      "非空开集 U⊂X 上给实际态射 g:U→P，满足到底 S 的交换关系。"
+    ],
+    "steps": [
+      [
+        "取实际图像",
+        "构造 graph:U→X×_S P，再取 graph.image。"
+      ],
+      [
+        "证明双有理",
+        "graph.toImage 为稠密开嵌入，分离投影的稠密开截面给 U 上同构。",
+        "isIso_over_dense_open_section"
+      ],
+      [
+        "proper 与满射",
+        "闭嵌入和 proper 投影复合给 proper；双有理到整底的闭稠密像给满射。",
+        "hartshorne_graph_closure"
+      ]
+    ],
+    "deps": [
+      "modsurj"
+    ],
+    "decl": "hartshorne_graph_closure",
+    "file": "HartshorneGraph.lean",
+    "related": [
+      "isIso_over_dense_open_section"
+    ],
+    "x": 278,
+    "y": 2900,
+    "paper": "proper"
+  },
+  {
+    "id": "relativesigns",
+    "title": "相对 nef 与曲线正性的取负符号",
+    "status": "done",
+    "statement": "在被 f 压缩的曲线上，nef(−D) ⇔ D·C≤0；curvePositive(−E) ⇔ E·C<0。",
+    "scope": "验证相对数值定义和线性取负。curvePositive 仅指所有压缩曲线上的严格正次数，不声称等价于几何 f-ample。",
+    "inputs": [
+      "给定压缩曲线谓词及线性交数。",
+      "应用到几何 f-ample 时，还须用其限制到完整纤维曲线的正次数性质。"
+    ],
+    "steps": [
+      [
+        "限制测试范围",
+        "只对 contracted c 的曲线量化。"
+      ],
+      [
+        "线性取负",
+        "degree(−D)=−degree(D)，将非负／严格正改写为非正／严格负。",
+        "relative_nef_neg_iff"
+      ]
+    ],
+    "deps": [],
+    "decl": "relative_nef_neg_iff",
+    "file": "RelativeNumerics.lean",
+    "related": [
+      "relative_curvePositive_neg_iff"
+    ],
+    "x": 278,
+    "y": 2900,
+    "paper": "proper"
+  },
+  {
+    "id": "ratproduct",
+    "title": "k(t) 的主除子次数零",
+    "status": "done",
+    "statement": "不可约因子按重数与多项式次数加权；有限零极点贡献加无穷远阶数等于 0。",
+    "scope": "使用实际 RatFunc、normalizedFactors 和 inftyValuation。已证明范数路线的基域 k(t) 计算；一般曲线的范数赋值传递、闭点识别与线丛次数尚未完成。",
+    "inputs": [
+      "k 为任意域，a∈k(t) 非零。",
+      "有限处贡献写成分子与分母不可约因子的次数和，保留实际重数。"
+    ],
+    "steps": [
+      [
+        "计算有限处",
+        "不可约分解的次数和等于多项式次数。",
+        "polynomial_factor_degree_sum"
+      ],
+      [
+        "计算无穷远",
+        "真实无穷远赋值给 ord∞(a)=−intDegree(a)。",
+        "rationalInfinityOrder_eq"
+      ],
+      [
+        "相加得到零",
+        "分子次数减分母次数，与无穷远阶数相消。",
+        "rationalFunction_principal_degree_zero"
+      ]
+    ],
+    "deps": [],
+    "decl": "rationalFunction_principal_degree_zero",
+    "file": "RationalProductFormula.lean",
+    "related": [
+      "polynomial_factor_degree_sum",
+      "rationalInfinityOrder_eq"
+    ],
+    "x": 278,
+    "y": 2900,
+    "paper": "proper"
+  },
+  {
+    "id": "normalsections",
+    "title": "正规 stalk ⇒ 正规仿射坐标环",
+    "status": "done",
+    "statement": "整概形的所有实际局部环整闭，则每个非空仿射开集的坐标环整闭。",
+    "scope": "用实际仿射开集与其素谱对应，把 Scheme stalk 识别为坐标环的素理想局部化，再应用整闭性的局部判据。没有假设坐标环整闭。",
+    "inputs": [
+      "Y 整，所有实际 stalk 均整闭。",
+      "非空仿射开集 U。"
+    ],
+    "steps": [
+      [
+        "识别实际局部化",
+        "对每个极大理想使用 hU.fromSpec，取得对应点及其实际 stalk。"
+      ],
+      [
+        "整闭性局部判据",
+        "所有极大局部化整闭，推出 Γ(Y,U) 整闭。",
+        "normal_affine_sections"
+      ]
+    ],
+    "deps": [],
+    "decl": "normal_affine_sections",
+    "file": "NormalSections.lean",
+    "x": 278,
+    "y": 2900,
+    "paper": "proper"
+  }
+]);
+Object.assign(find("codimone"),{
+  "title": "正规底上余维一处同构",
+  "status": "done",
+  "statement": "proper birational f:X→Y 在一个包含 Y 所有余维一点的开集 U 上为同构；对应点唯一，真实 stalk map 为同构，且仍为余维一点。",
+  "scope": "完整几何存在证明已通过 Lean。使用实际 integral Scheme、coheight、stalk、proper 赋值判据及截面的 spreading out；没有假设同构邻域或 stalk 同构存在。",
+  "inputs": [
+    "X、Y 是整概形，Y 局部 Noetherian；f proper。",
+    "给定态射 f 在非空开集上为同构，这是此处双有理态射的定义。",
+    "Y 的实际局部环均整闭，表达正规性；没有假设结论中的 U。"
+  ],
+  "steps": [
+    [
+      "余维一给 DVR",
+      "使用 ringKrullDim_stalk_eq_coheight，从实际 coheight=1 和正规性得到 DVR。",
+      "normal_codimensionOne_stalk_isDVR"
+    ],
+    [
+      "构造泛点方块并提升",
+      "从非空同构开集取泛点逆映射，构造实际 DVR 方块，再应用 proper 赋值判据。",
+      "proper_birational_isIso_near_DVR"
+    ],
+    [
+      "铺开截面，证明为逆",
+      "把局部环上的提升铺开为开邻域截面；separated 使其闭，泛点使其稠密，整概形上遂为同构。",
+      "separated_dominant_section_isIso"
+    ],
+    [
+      "合并所有邻域",
+      "取各余维一点的邻域之并，利用同构的 Zariski 局部性得到统一开集。",
+      "proper_birational_isIso_on_codimensionOne_open"
+    ],
+    [
+      "对应素点及局部环",
+      "证明原态射的 stalk map 同构、余维保持与纤维对应点唯一。",
+      "proper_birational_codimensionOne_unique_preimage"
+    ]
+  ],
+  "decl": "proper_birational_isIso_on_codimensionOne_open",
+  "file": "CodimensionOne.lean",
+  "related": [
+    "generic_stalk_dominant",
+    "normal_codimensionOne_stalk_isDVR",
+    "separated_dominant_section_isIso",
+    "proper_birational_isIso_near_DVR",
+    "proper_birational_isIso_near_codimensionOne",
+    "proper_birational_isIso_on_codimensionOne_open",
+    "stalkMap_isIso_over_isomorphism_open",
+    "proper_birational_codimensionOne_unique_preimage"
+  ],
+  "deps": [
+    "dvrfoundation",
+    "valuative"
+  ]
+});
+Object.assign(find("cover"),{
+  "title": "exceptional 闭点的曲线覆盖",
+  "status": "assumption",
+  "statement": "对正规底上的 projective birational f，exceptional locus 的每个闭点 x 位于一条被 f 压缩的完整曲线上。",
+  "scope": "按 Zariski 主定理推进：center 是最大同构开集的补集；其上任一原像点均非 quasi-finite，需取得经过该点的正维纤维分量，再用射影截面取曲线。不能只证明整个纤维某处维数 ≥1。余维一同构已完成，但一般 center 点的判据和曲线构造仍待接入。",
+  "inputs": [
+    "f 为射影双有理态射，底正规；x 为 exceptional 闭点，y=f(x)。",
+    "Zariski 主定理的准确推论：若在 y 的任一原像点 quasi-finite，正规性及 proper 性给 y 的同构开邻域。",
+    "故 center 上纤维在每个原像点的局部维数为正；还需在包含 x 的射影分量内切出经过 x 的曲线。"
+  ],
+  "steps": [
+    [
+      "明确 center",
+      "令 U 为最大同构开集，center=Y∖U。这里 f 的有理逆未定义，与实际纤维 f⁻¹(y) 不同。"
+    ],
+    [
+      "Zariski 主定理：待接几何",
+      "quasi-finite 给局部有限代数；双有理把它嵌入分式域，整闭性使其等于基环。铺开的截面由 proper/separated 成为同构。"
+    ],
+    [
+      "局部正维：待接几何",
+      "反证：若 x 处纤维局部维数为零，则 f 在 x 处 quasi-finite，使 y 属于 U，矛盾。"
+    ],
+    [
+      "经过指定闭点的曲线：待构造",
+      "在包含 x 的正维射影纤维分量内，逐次用经过 x 的超平面截到维数 1。所得完整曲线被 f 压缩。"
+    ]
+  ],
+  "deps": [
+    "zmtfinite",
+    "normalfinite",
+    "normalsections"
+  ]
+});
+Object.assign(find("intersection"),{
+  "title": "真实交数与正性接口",
+  "status": "assumption",
+  "statement": "对被 f 压缩的完整曲线 C：−D 为 f-nef 给 D·C≤0；−E 为 f-ample 给 E·C<0。还需从真实 Cartier 次数接通有效性及支撑的正性。",
+  "scope": "相对 nef 的符号条件就是定义，已单独形式化其取负推论。相对 ample 的限制在完整纤维曲线上为 ample，给严格正次数；不把“曲线上严格正”误定义成几何 ample 的等价条件。剩余接口是实际交数、线性及有效除子的次数正性。",
+  "inputs": [
+    "C 必须是被 f 压缩的完整曲线；−D 为 f-nef、−E 为 f-ample。",
+    "从 𝒪(D)|C 的真实次数构造交数及线性；f-ample 的曲线限制须接到这个次数。",
+    "有效 B 且 C 不被 Supp B 包含，则 B·C≥0；若还相交，则 B·C>0。"
+  ],
+  "steps": [
+    [
+      "相对测试曲线",
+      "f-nef 只测试 f 压缩的曲线；取负的数值符号等价已验证。",
+      "relative_nef_neg_iff"
+    ],
+    [
+      "相对 ample 的限制",
+      "在压缩曲线上限制相对 ample 线丛，再由 ample 的正次数得到 E·C<0；数值取负推论已验证。",
+      "relative_curvePositive_neg_iff"
+    ],
+    [
+      "真实有效除子的正性：待接几何",
+      "次数来自曲线上的有效除子重数；有限非负重数给非负，相交给至少一个正重数。"
+    ]
+  ],
+  "deps": [
+    "relativesigns"
+  ]
+});
+Object.assign(find("chow"),{
+  "title": "Chow 改造与几何推拉性质",
+  "status": "assumption",
+  "statement": "按 Hartshorne 构造射影改造，再正规化；图像闭包的 proper、双有理与满射步骤已验证，完整射影性和几何推拉尚未完成。",
+  "scope": "没有把改造存在性换成显式假设后标成完成。hartshorne_graph_closure 构造真实 scheme-theoretic image 与投影；仍需有限仿射覆盖的射影嵌入组合、射影性证明及有限正规化。全局交数公式和 Cartier 推拉也仍为独立剩余任务。",
+  "inputs": [
+    "已完成：非空开集到 proper 辅助空间的图像闭包；改造 proper、双有理且满射。",
+    "待完成：按 Hartshorne 用有限仿射覆盖与射影嵌入，证明所得改造对底射影，再正规化。",
+    "待完成：真实 Cartier 射影公式、推出拉回恒等式、有效性与支撑拉回。"
+  ],
+  "steps": [
+    [
+      "图像闭包：已验证",
+      "在 X×_S P 中取 scheme-theoretic image，得到实际 Z、π、q 和稠密开嵌入；proper 与双有理均已证明。",
+      "hartshorne_graph_closure"
+    ],
+    [
+      "有限覆盖与射影性：待完成",
+      "按 Hartshorne 组合各仿射开集的射影嵌入，证明投影满足所需射影性。proper 投影本身不能替代这一步。"
+    ],
+    [
+      "正规化与几何公式：待完成",
+      "接入有限正规化、真实 Cartier 拉回、次数及支撑，再调用已验证的下降逻辑。"
+    ]
+  ],
+  "deps": [
+    "hartshornegraph",
+    "modsurj"
+  ]
+});
+find('codimone').related=find('codimone').related.filter(d=>d!==find('codimone').decl);
+find('dvrfoundation').scope='正规一维局部环的 DVR 刻画已接入实际 stalk；codimone 现已使用 coheight 与 ringKrullDim 的对应，从几何余维一直接取得 DVR。';
+find('valuative').scope='proper 与 separated 的实际赋值判据已验证；codimone 现已构造双有理泛点方块、铺开提升并证明邻域同构。';
+find('localorder').scope='DVR 阶数与剩余域次数计算已验证；codimone 现已从实际 proper birational 几何提供余维一对应点的 stalk 同构。真实 Cartier 拉回系数的识别仍需接入。';
+find('strict').scope='实际余维一同构开集、唯一对应素点和 stalk 同构已完成。剩余为取对应点闭包作为实际严格变换、连接真实维数权重与 Cartier 除子系数；实际 Scheme-cycle 推出公式已可复用。';
+find('strict').steps[1][1]='已从 proper birational 几何构造同构开集、唯一余维一对应点及其 stalk 同构。将该点闭包接为实际素除子仍待完成。';
+find('projection').deps.push('ratproduct');
+find('projection').steps[2][1]='范数与赋值路线：先用已验证的 k(t) 主除子次数零，再证明一般函数域扩张中 ord_p(Na)=Σ_q f_q ord_q(a)，识别完整曲线所有闭点；得到主除子次数零后才能定义截面无关的线丛次数。';
+find('projection').precise.zh.gap='已完成真实模层交换图、局部重数计数及 k(t) 主除子次数零。按函数域范数与赋值继续证明全局主除子次数零，再构造线丛次数、正规化兼容性及完整 Cartier 交数公式；hcompat 尚未删除。';
+find('projection').precise.en.gap='The actual pullback square, local multiplicity counting and the k(t) principal-degree-zero calculation are verified. Continue with norm/valuation transport for general function fields, define section-independent line-bundle degree, then connect normalization and actual Cartier intersection. hcompat remains open.';
+find('cover').upstream=[['Stacks · Normal-base quasi-finite-point isomorphism','https://stacks.math.columbia.edu/tag/0BFP']];
+
+find('pushpull').scope='真实 cycle 的逐系数推拉推导已完成；余维一同构开集与实际 stalk 同构现已从正规 proper birational 几何证明。剩余为实际 Cartier 局部方程及拉回的 Weil cycle、素点闭包与维数权重。';

@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'CodimensionOne.lean': ['generic_stalk_dominant', 'normal_codimensionOne_stalk_isDVR', 'separated_dominant_section_isIso', 'proper_birational_isIso_near_DVR', 'proper_birational_isIso_near_codimensionOne', 'proper_birational_isIso_on_codimensionOne_open', 'stalkMap_isIso_over_isomorphism_open', 'proper_birational_codimensionOne_unique_preimage', 'proper_birational_surjective'],
+    'HartshorneGraph.lean': ['isIso_over_dense_open_section', 'hartshorne_graph_closure'],
+    'RelativeNumerics.lean': ['relative_nef_neg_iff', 'relative_curvePositive_neg_iff'],
+    'RationalProductFormula.lean': ['polynomial_factor_degree_sum', 'rationalInfinityOrder_eq', 'rationalFunction_principal_degree_zero'],
+    'NormalSections.lean': ['normal_affine_sections'],
     'PointPullback.lean': ['point_pullback_tensor_iso', 'point_pullback_tensor_length', 'finite_flat_point_pullback_degree', 'finite_flat_point_pullback_degree_over_base'],
     'CurveSelection.lean': ['exists_closedPoint_outside_support', 'finiteType_exists_closedPoint_outside_support'],
     'LocalConnectedness.lean': ['localRing_idempotent_trivial', 'localRing_not_product_nontrivial'],
@@ -85,7 +90,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

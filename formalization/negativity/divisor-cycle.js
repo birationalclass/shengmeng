@@ -11,7 +11,7 @@ export function divisorCyclePanel(n, en) {
  <div class="formula">f<sub>*</sub>[P] = 0 &nbsp; (P exceptional)</div>
  <h3>${en?'The coefficient identity actually used':'证明实际使用的系数等式'}</h3>
  <div class="formula">coeff<sub>Q</sub>(f<sub>*</sub>D) = coeff<sub>Q̃</sub>(D)</div>
- <p>${en?'Thus f_*D≥0 forces every negative coefficient of D to lie on an exceptional divisor. The coefficient-model implication is verified; constructing the geometric strict transform and codimension-one isomorphism remains open.':'所以 f_*D≥0 时，D 的负系数分量必为 exceptional。系数模型上的这一推导已验证；真实严格变换与余维一同构开集仍待构造。'}</p>
+ <p>${en?'Thus f_*D≥0 forces every negative coefficient of D to lie on an exceptional divisor. The coefficient-model implication is verified; the actual codimension-one open and corresponding stalks are now verified. The prime-divisor closure, dimension weights and Cartier coefficient identification remain open.':'所以 f_*D≥0 时，D 的负系数分量必为 exceptional。系数模型上的这一推导已验证；实际余维一同构开集与对应 stalk 已验证；素点闭包、维数权重和 Cartier 系数识别仍待接入。'}</p>
  <button class="text-button" data-select="negative">${en?'Verified coefficient implication →':'已验证的系数推导 →'}</button>
  <p><a href="https://stacks.math.columbia.edu/tag/0BFP" target="_blank" rel="noopener">Stacks · 33.17.3 ↗</a></p>
  </section>`;

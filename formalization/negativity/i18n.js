@@ -359,6 +359,227 @@ Object.assign(entries,{
     ]
   ]
 });
+
+Object.assign(entries,{
+  "codimone": [
+    "Codimension-one isomorphism over a normal base",
+    "A proper birational f:X→Y is an isomorphism over one open containing every codimension-one point of Y. The corresponding point is unique, its stalk map is an isomorphism, and codimension one is preserved.",
+    "The complete geometric existence proof is verified on actual integral Schemes, coheight and stalks. It constructs the generic valuative square and spreads its lift to a section; neither the neighborhood nor stalk isomorphism is assumed.",
+    [
+      "X,Y integral; Y locally Noetherian; f proper.",
+      "The given morphism is an isomorphism over some nonempty open: the definition of BirationalMorphism used here.",
+      "Actual stalks of Y are integrally closed, expressing normality. The conclusion open is not an input."
+    ],
+    [
+      [
+        "Codimension one gives a DVR",
+        "Use the actual coheight/stalk-dimension identity and normality."
+      ],
+      [
+        "Construct and lift the generic square",
+        "Use the inverse on the birational open, then properness for the actual DVR square."
+      ],
+      [
+        "Spread the section and prove it is inverse",
+        "Separatedness gives a closed section; its generic image is dense, and the source is reduced."
+      ],
+      [
+        "Union of neighborhoods",
+        "Glue the isomorphisms by Zariski locality over the union of all codimension-one neighborhoods."
+      ],
+      [
+        "Corresponding prime point and local ring",
+        "Prove the actual stalk map is an isomorphism, preserve coheight one and prove uniqueness of the preimage."
+      ]
+    ]
+  ],
+  "cover": [
+    "Contracted curves through exceptional closed points",
+    "For a projective birational map to a normal base, every exceptional closed point lies on a complete contracted curve.",
+    "Follow Zariski main: the center is the complement of the maximal isomorphism open. Every point over the center is non-quasi-finite. Obtain a positive-dimensional fiber component through the specified point, then cut a curve. A positive-dimensional component somewhere in the fiber is insufficient. The general center-point criterion and curve construction remain open.",
+    [
+      "f projective birational, target normal; x an exceptional closed point and y=f(x).",
+      "Exact Zariski main consequence: quasi-finiteness at any preimage of y gives an isomorphism neighborhood of y, using normality and properness.",
+      "Use positive local fiber dimension at x, then hyperplanes through x in that projective component."
+    ],
+    [
+      [
+        "Specify the center",
+        "Center=Y minus the maximal isomorphism open. The undefined rational inverse is distinct from the actual fiber f⁻¹(y)."
+      ],
+      [
+        "Zariski main: geometric bridge",
+        "A quasi-finite local map comes from a finite algebra; birationality embeds it in the fraction field and normality identifies it with the base. Spread the section and use proper/separated."
+      ],
+      [
+        "Local positive dimension: geometric bridge",
+        "Local fiber dimension zero implies quasi-finiteness at x, contradicting y being in the center."
+      ],
+      [
+        "Curve through the closed point: open construction",
+        "Cut the positive-dimensional projective component by hyperplanes through x to obtain a complete contracted curve."
+      ]
+    ]
+  ],
+  "intersection": [
+    "Actual intersection and positivity",
+    "For a complete curve C contracted by f: −D being f-nef gives D·C≤0; −E being f-ample gives E·C<0. Actual effective-divisor degree must still provide the support signs.",
+    "The relative nef sign is its definition; the linear negation is verified separately. Relative ampleness restricts to an ample line bundle on a complete fiber curve, giving positive degree. Strict curve positivity is not claimed equivalent to geometric ampleness. Actual intersection and effective-divisor positivity remain open.",
+    [
+      "C must be a complete contracted curve; −D f-nef and −E f-ample.",
+      "Construct intersection from the actual degree of 𝒪(D)|C and connect ample restrictions.",
+      "Effective B and C not contained in its support imply B·C≥0; also meeting the support gives B·C>0."
+    ],
+    [
+      [
+        "Relative test curves",
+        "Only contracted curves occur in the nef definition; the negative-sign equivalence is verified."
+      ],
+      [
+        "Restriction of relative ampleness",
+        "The ample restriction has positive degree; its numerical negative-sign consequence is verified."
+      ],
+      [
+        "Effective-divisor positivity: open geometry",
+        "Actual multiplicities are nonnegative; meeting the support supplies a positive one."
+      ]
+    ]
+  ],
+  "chow": [
+    "Chow modification and geometric identities",
+    "Follow Hartshorne: construct a projective modification, then normalize. The graph-closure properness, birationality and surjectivity are verified; projectivity and complete geometric identities remain open.",
+    "The actual graph image and projections are constructed. Remaining tasks are the finite affine-cover projective construction, its projectivity, finite normalization, global intersection and Cartier push-pull. The modification existence is not assumed and then labeled complete.",
+    [
+      "Verified: graph closure from a nonempty open into a proper auxiliary space, with proper birational surjective modification.",
+      "Open: Hartshorne’s finite affine cover and projective embeddings, proof of projectivity, then normalization.",
+      "Open: actual Cartier projection, push-pull, effectivity and support pullback."
+    ],
+    [
+      [
+        "Graph closure: verified",
+        "Use the actual scheme-theoretic image in X×_S P and its projections."
+      ],
+      [
+        "Finite cover and projectivity: open",
+        "Combine Hartshorne’s affine-cover projective embeddings; a proper projection alone does not prove this step."
+      ],
+      [
+        "Normalization and geometric identities: open",
+        "Connect finite normalization and actual Cartier degree/support to the verified descent logic."
+      ]
+    ]
+  ],
+  "modsurj": [
+    "Surjectivity of proper birational morphisms",
+    "A proper birational morphism to an integral scheme is surjective.",
+    "Actual Scheme maps: the nonempty isomorphism open is dense, and properness makes the image closed. Surjectivity is proved, not assumed.",
+    [
+      "Y integral, f proper and an isomorphism over a nonempty open."
+    ],
+    [
+      [
+        "Dense image",
+        "The image contains the dense isomorphism open."
+      ],
+      [
+        "Closed image",
+        "A proper map is closed, so its dense image is the whole target."
+      ]
+    ]
+  ],
+  "hartshornegraph": [
+    "Hartshorne: actual graph closure",
+    "The graph closure of U→P in X×_S P gives proper birational surjective Z→X and proper Z→P.",
+    "The actual scheme-theoretic image is verified. The proper auxiliary P and map on U are inputs to this construction; building the finite family and proving projectivity remain part of the full Chow lemma.",
+    [
+      "X integral with Noetherian topology; X→S and P→S proper.",
+      "A nonempty open U and actual map g:U→P commuting over S."
+    ],
+    [
+      [
+        "Actual image",
+        "Construct the graph morphism and its scheme-theoretic image."
+      ],
+      [
+        "Birationality",
+        "The image map is a dense open immersion; its open section gives an isomorphism over U."
+      ],
+      [
+        "Properness and surjectivity",
+        "Compose the closed immersion with proper projections; the closed dense image covers X."
+      ]
+    ]
+  ],
+  "relativesigns": [
+    "Relative nef and curve-positive negation signs",
+    "On contracted curves, nef(−D) iff D·C≤0; curvePositive(−E) iff E·C<0.",
+    "Verified relative numerical definitions and linear negation. CurvePositive means strictly positive degrees on contracted curves, and is not claimed equivalent to geometric f-ampleness.",
+    [
+      "A predicate for contracted curves and linear intersection maps.",
+      "Applying this to f-ample requires its positive-degree restriction to complete fiber curves."
+    ],
+    [
+      [
+        "Restrict the test curves",
+        "Quantify only over contracted curves."
+      ],
+      [
+        "Linear negation",
+        "Rewrite degree(−D)=−degree(D) to obtain the nonpositive/strictly negative signs."
+      ]
+    ]
+  ],
+  "ratproduct": [
+    "Principal degree zero over k(t)",
+    "Count irreducible factors with multiplicity and polynomial-degree weights. Finite zero/pole contributions plus the order at infinity sum to zero.",
+    "Uses actual RatFunc, normalizedFactors and inftyValuation. This is the base k(t) calculation for the norm route. General-curve norm transport, place identification and line-bundle degree remain open.",
+    [
+      "k any field and a∈k(t) nonzero.",
+      "Finite contributions are the degree sums of actual numerator and denominator factors, with multiplicities."
+    ],
+    [
+      [
+        "Finite places",
+        "The degrees of actual irreducible factors sum to the polynomial degree."
+      ],
+      [
+        "Infinity",
+        "The actual infinity valuation gives ord∞(a)=−intDegree(a)."
+      ],
+      [
+        "Sum to zero",
+        "Finite contributions cancel the infinity order."
+      ]
+    ]
+  ],
+  "normalsections": [
+    "Normal stalks imply normal affine coordinate rings",
+    "If the actual stalks of an integral scheme are integrally closed, every nonempty affine-open coordinate ring is integrally closed.",
+    "Identify actual affine Scheme stalks with prime localizations of the coordinate ring, then apply the local criterion for integral closure. Normal coordinate rings are not assumed.",
+    [
+      "Y integral with all actual stalks integrally closed.",
+      "A nonempty affine open U."
+    ],
+    [
+      [
+        "Actual localizations",
+        "For each maximal ideal, use hU.fromSpec and its actual stalk."
+      ],
+      [
+        "Local normality criterion",
+        "All maximal localizations are integrally closed, so Γ(Y,U) is integrally closed."
+      ]
+    ]
+  ]
+});
+entries.dvrfoundation[2]='The actual stalk DVR theorem is integrated. codimone now derives the DVR hypothesis directly from geometric coheight one and the stalk-dimension identity.';
+entries.valuative[2]='Actual proper/separated valuative criteria are verified. codimone now constructs the birational generic square, spreads the lift and proves the neighborhood isomorphism.';
+entries.localorder[2]='DVR orders and residue degrees are verified. codimone now supplies actual codimension-one stalk isomorphisms from proper birational geometry; identifying actual Cartier coefficients remains open.';
+entries.strict[2]='The actual codimension-one isomorphism open, unique corresponding prime point and stalk isomorphism are verified. Remaining tasks are its closure as the geometric strict transform, dimension weights and Cartier coefficients. Actual Scheme-cycle pushforward formulas can be reused.';
+entries.strict[4][1][1]='The actual isomorphism open, unique codimension-one preimage and stalk isomorphism are constructed. Connect the closure of that point to the geometric prime divisor.';
+entries.projection[4][2][1]='Follow norms and valuations: use the verified k(t) principal degree zero, prove ord_p(Na)=Σ_q f_q ord_q(a), identify all closed points of the complete curve, and define line-bundle degree independently of the rational section.';
+
+entries.pushpull[2]='Actual cycle coefficient push-pull is verified, and the codimension-one isomorphism open and stalks are now proved from normal proper birational geometry. Actual Cartier local equations and pullback Weil cycles, prime-point closures and dimension weights still need to instantiate the identity.';
 export function translateNodes(nodes){return nodes.map(n=>{if(!english)return n;const [title,statement,scope,inputs,steps]=entries[n.id];return {...n,title,statement,scope,inputs,steps:steps.map((s,i)=>[...s,n.steps[i]?.[2]])};});}
 const pairs=[['展开纸牌','Spread cards'],['折叠纸牌','Stack cards'],['展开输入','Expand inputs'],['收起输入','Collapse inputs'],['所选及直接前提','Selected + direct premises'],['设置','Settings'],['阅读设置','Reading settings'],['字号独立于图谱缩放，设置自动保存在本机。','Font size is independent of graph zoom. Settings are saved locally.'],['节点字号','Node font size'],['证明详情字号','Proof detail font size'],['工具栏字号','Toolbar font size'],['详情面板宽度','Detail panel width'],['数学证明的阅读预览','Mathematical proof reading preview'],['恢复默认','Reset defaults'],['中文 / EN','ZH / EN'],['基础输入','Base inputs'],['结论','Result'],['显示全部 · Home','Frame all · Home'],['显示全部','Frame all'],['聚焦所选 · 小数点键','Frame selected · decimal key'],['聚焦所选','Frame selected'],['放大','Zoom in'],['缩小','Zoom out'],['缩放比例','Zoom level'],['节点编辑区：拖动空白平移，滚轮缩放，Home 显示全部，小数点键聚焦。','Node editor: drag the background to pan, wheel to zoom, Home to frame all, decimal key to frame selected.'],['关闭','Close'],['详情','Details'],['节点工作区参考 ','The workspace follows '],[' 的接口连线与视图导航。形式化图谱参考 ',' sockets, links and view navigation. The proof atlas is inspired by '],['个已验证定理','verified theorems'],['证明步骤与依赖','Proof steps and dependencies'],['中英文阅读','Bilingual reading'],['首个形式化项目','FIRST FORMALIZATION PROJECT'],['从数学证明到 Lean','From mathematics to Lean'],['打开工作区 ↗','Open workspace ↗'],['只看直接前提','Direct premises only'],['切换中英文','Switch language'],['全屏显示','Fullscreen'],['放大三维图','Zoom in'],['缩小三维图','Zoom out'],['可点击的证明依赖图','Interactive proof dependency graph'],['图谱视角','Graph view'],['所选证明步骤','Selected proof step'],['节点详情','Node details'],['Negativity lemma 原始证明 PDF','Negativity lemma original proof PDF'],['三维证明依赖图。拖动旋转，滚轮缩放；键盘方向键旋转，加减键缩放。','3D proof dependency graph. Drag to orbit, wheel to zoom. Arrow keys rotate; plus/minus zoom.'],['返回主页 ↗','Homepage ↗'],['数学 · 证明 · 可追溯的验证','MATHEMATICS · PROOFS · TRACEABLE VERIFICATION'],['看见证明的每一层。','See every layer of a proof.'],['从一条定理出发，沿着依赖追问：它用了什么？哪些推导已经通过 Lean，哪些几何结论仍作为假设？','Start with a theorem and follow its premises: which steps are verified in Lean, and which geometric results remain assumptions?'],['负性引理 · 从有限系数到双有理几何','Negativity · from finite coefficients to birational geometry'],['数值与系数核心已验证；几何接口仍待接入。点击节点，深入证明依赖、原始论证和 Lean 源码。','Numerical, coefficient and descent arguments are verified. Geometric interfaces remain open. Explore dependencies, original arguments and Lean source.'],['◐ 部分完成 · 条件式定理已验证','◐ In progress · conditional theorems verified'],['有限系数','Finite coefficients'],['几何假设','Geometric inputs'],['条件式 negativity','Conditional negativity'],['完整几何定理','Full geometric theorem'],['探索证明图谱 ↗','Explore the proof atlas ↗'],['如何读这张证明地图','Reading the proof atlas'],['“暂作假设”表示一个尚未从几何定义证明的输入，不表示代码中新增了 axiom。每个已验证节点都附有对应源码与验证记录。','An assumed input has not yet been proved from geometric definitions; it is not a new Lean axiom. Each verified node links to source and evidence.'],['查看验证依据 →','Verification evidence →'],
 ['形式化验证','Formalization'],['证明图谱','Proof atlas'],['原始证明','Original proof'],['验证记录','Verification evidence'],['一条证明，沿依赖逐层展开。','Explore a proof through its dependencies.'],['数值核心已通过 Lean。完整的几何定理仍在建设中。','The numerical core is verified in Lean. The full geometric theorem is under construction.'],['下载 Lean 工程 ↓','Download Lean project ↓'],['原始证明 PDF ↗','Original proof PDF ↗'],['证明依赖地图','Proof dependency atlas'],['点击结论查看它依赖的步骤，再点击依赖继续深入。箭头从前提指向结论。','Select a result to explore its premises. Arrows run from premises to conclusions.'],['展开图谱','Expand atlas'],['恢复分栏','Restore panels'],['✓ 模型内已验证',englishStatuses.done],['◐ 条件式已验证',englishStatuses.conditional],['◇ 暂作假设',englishStatuses.assumption],['○ 待完成目标',englishStatuses.pending],['2D 平面','2D map'],['3D 空间','3D space'],['显示范围','Show'],['全图（弱化无关）','Full graph · dim unrelated'],['所选结论及其前提','Selected result and premises'],['仅看未完成几何输入','Open geometric inputs'],['← 返回上一节点','← Previous node'],['选中关系','Selection'],['◎ 当前结论','◎ Selected result'],['实线边框：直接前提','Solid border: direct premise'],['虚线边框：间接前提','Dashed border: indirect premise'],['淡化：非当前依赖','Dimmed: unrelated'],['当前结论','Selected result'],['直接前提','Direct premise'],['间接前提','Indirect premise'],['非当前依赖','Unrelated'],['01 · 数值与输入','01 · Coefficients and inputs'],['02 · 已验证的推导','02 · Verified deductions'],['03 · 几何目标','03 · Geometric goals'],['图谱为人工整理的数学依赖蓝图，不是 Lean 内核自动导出的全部常量依赖。','This is a curated mathematical blueprint, not a kernel-extracted constant dependency graph.'],['依赖与假设','Premises & assumptions'],['证明步骤','Proof steps'],['Lean 源码','Lean source'],['为了得到这个结论，先需要','Direct premises'],['尚需建立的几何内容','Remaining geometric inputs'],['当前输入 / 假设','Current inputs / hypotheses'],['沿这条路径，仍需承认的几何输入','Assumed geometric inputs on this path'],['琥珀色表示显式假设或待补的几何桥接，不是代码中的新增 axiom。','Amber marks explicit hypotheses or open geometric bridges, not new Lean axioms.'],['接下来哪些结论使用它','Results using this node'],['这是当前图谱的最终目标。','This is a final goal in the current atlas.'],['没有其他项目节点；使用 mathlib 基础与下列明确输入。','No other project nodes; uses mathlib foundations and the explicit inputs below.'],['本模型层没有未证明的几何依赖；其参数条件仍须满足。','This model-level path has no open geometric dependencies; the theorem parameters still apply.'],['已验证源码的阅读导览','Guide to verified source'],['原始数学证明 / 待完成计划','Mathematical proof / open plan'],['非实时 Lean 执行','Not a live Lean session'],['← 上一步','← Previous'],['下一步 →','Next →'],['对应原始证明 ↘','Corresponding original proof ↘'],['对应形式化节点 →','Related formalization node →'],['此节点尚无完成的 Lean 几何证明。图中的中文论证不能替代形式化验证。','This node has no completed geometric Lean proof. The explanatory argument is not a formal verification.'],['阅读原始证明 →','Read original proof →'],['正在读取源码快照…','Loading source snapshot…'],['缺少对应源码，不能展示验证标记。','Source is missing; verification cannot be displayed.'],['下载源码','Download source'],['GitHub 定位 ↗','View on GitHub ↗'],['第 ','line '],[' 行',''],['参数假设请看定理完整类型。依赖仅含 Lean 常用基础公理，不意味着这些参数假设已从几何得到证明。','Read the complete theorem type for parameter hypotheses. Foundational axiom checks do not prove those hypotheses from geometry.'],['重置视角','Reset view'],['聚焦依赖链','Focus premises'],['定位节点','Locate node'],['横向：证明类别 · 纵向：步骤位置','Horizontal: proof category · Vertical: step position'],['纵深：依赖推导层级','Depth: deduction level'],['拖动旋转 · 滚轮或 ＋／− 缩放 · 点击节点查看证明。3D 层次仅表示推导深度，验证状态仍由颜色表示。','Drag to rotate · Wheel or ＋／− to zoom · Select a node to read the proof. Depth indicates deduction level; colors indicate verification status.'],['每一个“已验证”，都有明确范围。','Every verification claim has a precise scope.'],['正在读取验证记录…','Loading verification evidence…'],['个已验证定理','verified theorems'],['公理检查无 sorryAx','Axiom audit: no sorryAx'],['当前源码快照 · 本地验证','Current source snapshot · verified locally'],['验证日期 · 中国标准时间','Checked at · China Standard Time'],['公理依赖：','Axiom dependencies: '],['。没有新增几何公理；未完成内容仍是显式参数或规划节点。','. No new geometric axioms; open geometry remains in explicit parameters or planning nodes.'],['完整验证日志 ↗','Verification log ↗'],['源码 SHA-256 清单 ↗','Source SHA-256 manifest ↗'],['公理检查脚本 ↗','Axiom audit script ↗'],['公开源码的指纹','Public source fingerprints'],['验证记录加载失败，请刷新或下载工程核查。','Evidence failed to load. Refresh or download the project.'],['源码快照加载失败。','Source snapshot failed to load.'],['复现编译与公理检查','Reproduce the build and axiom audit'],['设计参考与图谱语义','Design references and graph semantics'],['在此页展开原始 PDF','Open original PDF on this page'],['阅读原版 PDF ↗','Read original PDF ↗'],['下载原始 LaTeX ↓','Download original LaTeX ↓'],['GitHub 源码 ↗','GitHub source ↗'],['← 形式化验证','← Formalization'],['构造有效的相对反 ample 除子','Construct an effective relatively anti-ample divisor'],['exceptional locus 被支撑包含','Support contains the exceptional locus'],['取最大比值，得到矛盾','Maximum ratio and contradiction'],['每个纤维全在支撑内，或完全不相交','Each fiber is contained in the support or disjoint from it'],['从 projective 推广到 proper','From projective to proper'],['以下是原稿的阅读导览。完整表述、符号与证明以随附的 PDF / LaTeX 原稿为准；下方不是新增的 Lean 验证结果。','This is a reading guide to the original note. Consult the attached PDF / LaTeX for full statements and proofs; this guide is not additional Lean verification.'],['在仿射底 Y 上，取 f-ample Cartier 除子 A。双有理性使 f∗O(−A) 泛秩为一，故存在非零全局截面 s。令 E = −A + div(s)，则 E 有效且 −E 相对 ample。','Over an affine base Y, choose an f-ample Cartier divisor A. Birationality makes f∗O(−A) generically rank one, so it has a nonzero global section s. Set E=−A+div(s); E is effective and −E relatively ample.'],['正规底上的 exceptional locus 被压缩曲线覆盖。对每条这样的曲线 C，E·C < 0；E 的有效性迫使 C 包含在 Supp E 中。','Over a normal base, contracted curves cover the exceptional locus. Each such curve has E·C < 0, so effectivity forces it into Supp E.'],['假设 f∗D 有效而 D 不有效。负系数分量是 exceptional，且 E 在其上系数为正。取 e = max(−coeffᵢ(D)/coeffᵢ(E))。则 D+eE 有效，并在某个负分量 F 上系数为零。','Assume f∗D is effective and D is not. Negative components are exceptional, with positive E-coefficients. Set e=max(−coeffᵢ(D)/coeffᵢ(E)); D+eE is effective and vanishes at a negative component F.'],['取 F 中不被其支撑包含的压缩曲线 C，于是 0 ≤ (D+eE)·C = D·C + e(E·C) < 0，矛盾。','Choose a contracted curve C in F outside the shifted support. Then 0 ≤ (D+eE)·C=D·C+e(E·C)<0, a contradiction.'],['由连通纤维性质，若纤维遇到 Supp D 却不包含于其中，可找到纤维内与支撑相交但不被其包含的曲线 C。此时 D·C > 0，与 −D 相对 nef 矛盾。','Connected projective fibers supply a curve C meeting but not contained in Supp D whenever a fiber partly meets it. Then D·C>0, contradicting relative nefness of −D.'],['用 Chow 引理与正规化取 π : X′ → X，使复合态射 projective。对 D′ = π∗D 应用射影版本，再用投影公式、π∗D′ = D 和支撑的拉回及纤维满射下降结论。','Apply Chow’s lemma and normalization to obtain π:X′→X with projective composite. Apply the projective theorem to D′=π∗D, then descend using projection, push-pull, support preimages and surjectivity.'],['工程固定 Lean 和 mathlib 版本。网页不执行 Lean；此处展示的是已完成的本地编译记录和精确源码快照。条件式定理的参数假设不会出现在 #print axioms 中，必须同时阅读其完整类型。','The project pins Lean and mathlib versions. This page displays local build evidence and exact source snapshots. Conditional theorem parameters do not appear in #print axioms; read their full types as well.'],['参考 ','Inspired by '],[' 的依赖导航、',' dependency navigation, '],[' 的逐步证明阅读，以及实验性 ',' stepwise proof reading, and experimental '],[' 对验证证据、假设和未完成工作的区分。本页为独立实现，没有集成这些工具的验证后端。',' distinctions between verification, hypotheses and open work. This independent page does not integrate their verification backends.'],['绿色：模型内定理已编译；蓝绿色：带显式几何接口假设的定理已编译；琥珀色：尚未证明的输入；灰色：完整目标未完成。连线表示阅读与形式化规划中的前提关系，几何假设节点的边不是内核公理依赖。','Green: verified model theorem. Cyan: verified theorem with explicit interface hypotheses. Amber: unproved input. Gray: open geometric goal. Edges show curated proof premises, not kernel axiom dependencies.']

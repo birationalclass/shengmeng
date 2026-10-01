@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T01:15:53+08:00",
+  "checkedAt": "2026-10-02T02:18:33+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "544715e80f70bc89adc076aaf2c5fd05fd9b269ffd835b0ac232a83974d21d9b"
+      "sha256": "2c7299758fbdc6a587e01390d1485af0461eec0aa1fba5e2c584e02cb46924cd"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "a791a59cfb67462ad3bc9c21c44c17ecce3a6f3cd0c3672ea87f5229549dd52e"
+      "sha256": "f9c8cc56ce8973ef70786fd6b6da5e9f56247258814a7c33fbd97c3ad60e0b35"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/CodimensionOne.lean",
+      "sha256": "3dd5e0a455e9fb16d0c4b70760930ca9c702baf7c27a34fcf282b882147fff06"
+    },
+    {
+      "path": "Negativity/HartshorneGraph.lean",
+      "sha256": "fec4213b0d83771a7aa57042d37bfe2d3261bc2ac65272dcc8e77756c8a3d412"
+    },
+    {
+      "path": "Negativity/RelativeNumerics.lean",
+      "sha256": "1739fe4e06b64caf90966b11bf31ba5fa31d274cb9bbceffa58a6d03ec7299e8"
+    },
+    {
+      "path": "Negativity/RationalProductFormula.lean",
+      "sha256": "1b2dad8c64364a7180dbcb03132dd502d1e6ff5df4223f904ffa7de87679ff6c"
+    },
+    {
+      "path": "Negativity/NormalSections.lean",
+      "sha256": "019aec8394cb45097c1633c6f501c67b301a2526e69be6db8bdf23150d64d6c1"
     },
     {
       "path": "Negativity/PointPullback.lean",
@@ -94,6 +114,176 @@
     }
   ],
   "declarations": {
+    "generic_stalk_dominant": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 19,
+      "code": "theorem generic_stalk_dominant (Y : Scheme.{u}) [IsIntegral Y] :\n    IsDominant (Y.fromSpecStalk (genericPoint Y)) := by\n  constructor\n  apply Dense.mono (s₁ := {genericPoint Y})\n  · intro y hy\n    rw [Set.mem_singleton_iff] at hy\n    subst y\n    exact ⟨IsLocalRing.closedPoint _, Y.fromSpecStalk_closedPoint⟩\n  · rw [dense_iff_closure_eq]\n    exact (genericPoint_spec Y).def",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_codimensionOne_stalk_isDVR": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 32,
+      "code": "theorem normal_codimensionOne_stalk_isDVR (Y : Scheme.{u}) [IsIntegral Y]\n    [IsLocallyNoetherian Y] (y : Y)\n    [IsIntegrallyClosed (Y.presheaf.stalk y)] (hy : Order.coheight y = 1) :\n    IsDiscreteValuationRing (Y.presheaf.stalk y) := by\n  apply scheme_normal_one_dimensional_stalk_isDVR Y y\n  rw [ringKrullDim_stalk_eq_coheight, hy]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separated_dominant_section_isIso": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 42,
+      "code": "theorem separated_dominant_section_isIso {X Y : Scheme.{u}} [IsReduced X]\n    (f : X ⟶ Y) [IsSeparated f] (s : Y ⟶ X) [IsDominant s]\n    (hs : s ≫ f = 𝟙 Y) : IsIso f := by\n  have : IsClosedImmersion (s ≫ f) := by rw [hs]; infer_instance\n  have : IsClosedImmersion s := IsClosedImmersion.of_comp s f\n  have : Surjective s := surjective_of_isDominant_of_isClosed_range s\n    s.isClosedEmbedding.isClosed_range\n  have : IsIso s := isIso_of_isClosedImmersion_of_surjective s\n  have : IsIso (s ≫ f) := by rw [hs]; infer_instance\n  exact IsIso.of_isIso_comp_left s f\n\nset_option backward.isDefEq.respectTransparency false in",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_isIso_near_DVR": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 57,
+      "code": "theorem proper_birational_isIso_near_DVR {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f) (y : Y)\n    [IsDiscreteValuationRing (Y.presheaf.stalk y)] :\n    ∃ V : Y.Opens, y ∈ V ∧ IsIso (f ∣_ V) := by\n  classical\n  obtain ⟨U, hU, hIso⟩ := hf\n  have : Nonempty U := hU\n  have : IsIso (f ∣_ U) := hIso\n  let η := genericPoint Y\n  have hη : η ∈ U := ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr\n    (by simpa using hU)\n  let a : Spec Y.functionField ⟶ U := U.fromSpecStalkOfMem η hη\n  have : IsDominant (a ≫ U.ι) := by\n    simpa [a, η] using generic_stalk_dominant Y\n  have : IsDominant a := IsDominant.of_comp_of_isOpenImmersion a U.ι\n  let top : Spec Y.functionField ⟶ X := a ≫ inv (f ∣_ U) ≫ (f ⁻¹ᵁ U).ι\n  have hpre : Nonempty (f ⁻¹ᵁ U) := ⟨inv (f ∣_ U) ⟨η, hη⟩⟩\n  have : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n    ((f ⁻¹ᵁ U).isOpen.dense (by simpa using hpre))\n  have : IsDominant top := by dsimp [top]; infer_instance\n  let R : Type u := Y.presheaf.stalk y\n  have : IsDomain R := inferInstanceAs (IsDomain (Y.presheaf.stalk y))\n  have : IsDiscreteValuationRing R :=\n    inferInstanceAs (IsDiscreteValuationRing (Y.presheaf.stalk y))\n  have : IsFractionRing R Y.functionField :=\n    inferInstanceAs (IsFractionRing (Y.presheaf.stalk y) Y.functionField)\n  have hspec : Spec.map (CommRingCat.ofHom (algebraMap R Y.functionField)) ≫\n      Y.fromSpecStalk y = Y.fromSpecStalk η := by\n    exact Y.SpecMap_stalkSpecializes_fromSpecStalk ((genericPoint_spec Y).specializes trivial)\n  have hw : top ≫ f = Spec.map (CommRingCat.ofHom (algebraMap R Y.functionField)) ≫\n      Y.fromSpecStalk y := by\n    rw [hspec]\n    dsimp [top]\n    simp only [Category.assoc]\n    rw [← morphismRestrict_ι, IsIso.inv_hom_id_assoc]\n    exact U.fromSpecStalkOfMem_ι η hη\n  obtain ⟨lift, hl, hr⟩ := proper_dvr_lift f R Y.functionField top (Y.fromSpecStalk y) hw\n  obtain ⟨V, hyV, s, hspread, hs⟩ :=\n    spread_out_of_isGermInjective' (𝟙 Y) f lift (by simpa using hr)\n  have hsf : s ≫ f = V.ι := by simpa using hs\n  have hVs : Set.range s ⊆ Set.range (f ⁻¹ᵁ V).ι := by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨x, rfl⟩\n    change f (s x) ∈ V\n    rw [← Scheme.Hom.comp_apply, hsf]\n    exact x.2\n  let s' : V.toScheme ⟶ (f ⁻¹ᵁ V) := IsOpenImmersion.lift (f ⁻¹ᵁ V).ι s hVs\n  have hs'ι : s' ≫ (f ⁻¹ᵁ V).ι = s := IsOpenImmersion.lift_fac _ _ hVs\n  have : IsDominant s := by\n    have : IsDominant\n        ((Spec.map (CommRingCat.ofHom (algebraMap R Y.functionField)) ≫\n          V.fromSpecStalkOfMem y hyV) ≫ s) := by\n      rw [Category.assoc, ← hspread, hl]\n      infer_instance\n    exact IsDominant.of_comp\n      (Spec.map (CommRingCat.ofHom (algebraMap R Y.functionField)) ≫\n        V.fromSpecStalkOfMem y hyV) s\n  have : IsDominant s' := by\n    have : IsDominant (s' ≫ (f ⁻¹ᵁ V).ι) := by rw [hs'ι]; infer_instance\n    exact IsDominant.of_comp_of_isOpenImmersion s' (f ⁻¹ᵁ V).ι\n  have : Nonempty (f ⁻¹ᵁ V) := ⟨s' ⟨y, hyV⟩⟩\n  have : IsIntegral (f ⁻¹ᵁ V).toScheme := inferInstance\n  refine ⟨V, hyV, separated_dominant_section_isIso (f ∣_ V) s' ?_⟩\n  rw [← cancel_mono V.ι, Category.assoc, morphismRestrict_ι,\n    ← Category.assoc, hs'ι, hsf, Category.id_comp]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_isIso_near_codimensionOne": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 127,
+      "code": "theorem proper_birational_isIso_near_codimensionOne {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) (y : Y)\n    [IsIntegrallyClosed (Y.presheaf.stalk y)] (hy : Order.coheight y = 1) :\n    ∃ V : Y.Opens, y ∈ V ∧ IsIso (f ∣_ V) := by\n  have := normal_codimensionOne_stalk_isDVR Y y hy\n  exact proper_birational_isIso_near_DVR f hf y",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_isIso_on_codimensionOne_open": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 137,
+      "code": "theorem proper_birational_isIso_on_codimensionOne_open {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnormal : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y)) :\n    ∃ U : Y.Opens, (∀ y : Y, Order.coheight y = 1 → y ∈ U) ∧ IsIso (f ∣_ U) := by\n  classical\n  have (y : Y) : IsIntegrallyClosed (Y.presheaf.stalk y) := hnormal y\n  choose V hy hIso using fun y : {y : Y // Order.coheight y = 1} ↦\n    proper_birational_isIso_near_codimensionOne f hf y.1 y.2\n  have hiso : IsIso (f ∣_ ⨆ y, V y) := by\n    let 𝒰 := Scheme.Opens.iSupOpenCover V\n    refine (IsZariskiLocalAtTarget.iff_of_openCover (P := .isomorphisms _) 𝒰).mpr fun y ↦ ?_\n    refine (MorphismProperty.arrow_mk_iso_iff (.isomorphisms _)\n      ((morphismRestrictRestrict ..).symm ≪≫ morphismRestrictOpensRange ..)).mp ?_\n    have : Scheme.Opens.ι _ ''ᵁ (𝒰.f y).opensRange = V y := by\n      simp only [Scheme.Opens.iSupOpenCover, 𝒰, ← Scheme.Hom.opensRange_comp,\n        Scheme.homOfLE_ι, Scheme.Opens.opensRange_ι]\n    rw [this]\n    exact hIso y\n  exact ⟨⨆ y, V y, fun y hy' ↦ Opens.mem_iSup.mpr ⟨⟨y, hy'⟩, hy ⟨y, hy'⟩⟩, hiso⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "stalkMap_isIso_over_isomorphism_open": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 160,
+      "code": "theorem stalkMap_isIso_over_isomorphism_open {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (U : Y.Opens) [IsIso (f ∣_ U)] (x : X) (hx : f x ∈ U) :\n    IsIso (f.stalkMap x) := by\n  let z : (f ⁻¹ᵁ U).toScheme := ⟨x, hx⟩\n  have : IsIso (((f ⁻¹ᵁ U).ι ≫ f).stalkMap z) := by\n    rw [← morphismRestrict_ι, Scheme.Hom.stalkMap_comp]\n    infer_instance\n  rw [Scheme.Hom.stalkMap_comp] at this\n  have : IsIso (f.stalkMap x ≫ (f ⁻¹ᵁ U).ι.stalkMap z) := by\n    simpa only [Scheme.Opens.ι_apply] using this\n  exact IsIso.of_isIso_comp_right (f.stalkMap x) ((f ⁻¹ᵁ U).ι.stalkMap z)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_codimensionOne_unique_preimage": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 174,
+      "code": "theorem proper_birational_codimensionOne_unique_preimage {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) (y : Y)\n    [IsIntegrallyClosed (Y.presheaf.stalk y)] (hy : Order.coheight y = 1) :\n    ∃ x : X, f x = y ∧ IsIso (f.stalkMap x) ∧ Order.coheight x = 1 ∧\n      ∀ x' : X, f x' = y → x' = x := by\n  obtain ⟨U, hyU, hIso⟩ := proper_birational_isIso_near_codimensionOne f hf y hy\n  have : IsIso (f ∣_ U) := hIso\n  obtain ⟨z, hz⟩ := (f ∣_ U).surjective ⟨y, hyU⟩\n  have hz' : f z.1 = y :=\n    (morphismRestrict_base_coe f U z).symm.trans (congrArg Subtype.val hz)\n  refine ⟨z.1, hz', stalkMap_isIso_over_isomorphism_open f U z.1 z.2, ?_, ?_⟩\n  · calc\n      Order.coheight z.1 = Order.coheight z :=\n        coheight_eq_of_isOpenImmersion (f := (f ⁻¹ᵁ U).ι)\n      _ = Order.coheight ((f ∣_ U) z) :=\n        (coheight_eq_of_isOpenImmersion (f := f ∣_ U)).symm\n      _ = Order.coheight (U.ι ((f ∣_ U) z)) :=\n        (coheight_eq_of_isOpenImmersion (f := U.ι)).symm\n      _ = 1 := by rw [hz]; exact hy\n  · intro x' hx'\n    have hxU : f x' ∈ U := hx' ▸ hyU\n    have he : (f ∣_ U) ⟨x', hxU⟩ = (f ∣_ U) z := by\n      apply Subtype.ext\n      rw [morphismRestrict_base_coe, morphismRestrict_base_coe]\n      exact hx'.trans hz'.symm\n    exact congrArg Subtype.val ((f ∣_ U).isOpenEmbedding.injective he)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_surjective": {
+      "path": "Negativity/CodimensionOne.lean",
+      "line": 204,
+      "code": "theorem proper_birational_surjective {X Y : Scheme.{u}} [IsIntegral Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) : Surjective f := by\n  obtain ⟨U, hU, hIso⟩ := hf\n  have : IsIso (f ∣_ U) := hIso\n  have : IsDominant U.ι := Opens.isDominant_ι (U.isOpen.dense (by simpa using hU))\n  have : IsDominant ((f ∣_ U) ≫ U.ι) := inferInstance\n  have : IsDominant ((f ⁻¹ᵁ U).ι ≫ f) := by rwa [morphismRestrict_ι] at this\n  have : IsDominant f := IsDominant.of_comp (f ⁻¹ᵁ U).ι f\n  exact surjective_of_isDominant_of_isClosed_range f f.isClosedMap.isClosed_range",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "isIso_over_dense_open_section": {
+      "path": "Negativity/HartshorneGraph.lean",
+      "line": 15,
+      "code": "theorem isIso_over_dense_open_section {Z X : Scheme.{u}} (π : Z ⟶ X)\n    [IsSeparated π] (U : X.Opens) (t : U.toScheme ⟶ Z)\n    [IsOpenImmersion t] [IsDominant t] (ht : t ≫ π = U.ι) :\n    IsIso (π ∣_ U) := by\n  have hrange : Set.range t ⊆ Set.range (π ⁻¹ᵁ U).ι := by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨x, rfl⟩\n    change π (t x) ∈ U\n    rw [← Scheme.Hom.comp_apply, ht]\n    exact x.2\n  let s : U.toScheme ⟶ (π ⁻¹ᵁ U) := IsOpenImmersion.lift (π ⁻¹ᵁ U).ι t hrange\n  have hs : s ≫ (π ⁻¹ᵁ U).ι = t := IsOpenImmersion.lift_fac _ _ hrange\n  have : IsOpenImmersion (s ≫ (π ⁻¹ᵁ U).ι) := by rw [hs]; infer_instance\n  have : IsOpenImmersion s := IsOpenImmersion.of_comp s (π ⁻¹ᵁ U).ι\n  have : IsDominant (s ≫ (π ⁻¹ᵁ U).ι) := by rw [hs]; infer_instance\n  have : IsDominant s := IsDominant.of_comp_of_isOpenImmersion s (π ⁻¹ᵁ U).ι\n  have hsection : s ≫ (π ∣_ U) = 𝟙 U.toScheme := by\n    rw [← cancel_mono U.ι, Category.assoc, morphismRestrict_ι,\n      ← Category.assoc, hs, ht, Category.id_comp]\n  have : IsClosedImmersion (s ≫ (π ∣_ U)) := by rw [hsection]; infer_instance\n  have : IsClosedImmersion s := IsClosedImmersion.of_comp s (π ∣_ U)\n  have : Surjective s := surjective_of_isDominant_of_isClosed_range s\n    s.isClosedEmbedding.isClosed_range\n  have : IsIso s := (isIso_iff_isOpenImmersion_and_surjective s).mpr\n    ⟨inferInstance, inferInstance⟩\n  have : IsIso (s ≫ (π ∣_ U)) := by rw [hsection]; infer_instance\n  exact IsIso.of_isIso_comp_left s (π ∣_ U)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "hartshorne_graph_closure": {
+      "path": "Negativity/HartshorneGraph.lean",
+      "line": 48,
+      "code": "theorem hartshorne_graph_closure {X S P : Scheme.{u}} [IsIntegral X]\n    [NoetherianSpace X] (f : X ⟶ S) [IsProper f] (p : P ⟶ S) [IsProper p]\n    (U : X.Opens) (hU : Nonempty U) (g : U.toScheme ⟶ P)\n    (hg : g ≫ p = U.ι ≫ f) :\n    ∃ (Z : Scheme.{u}) (π : Z ⟶ X) (q : Z ⟶ P) (t : U.toScheme ⟶ Z),\n      IsProper π ∧ IsProper q ∧ π ≫ f = q ≫ p ∧\n      IsOpenImmersion t ∧ IsDominant t ∧ t ≫ π = U.ι ∧\n      BirationalMorphism π ∧ Surjective π := by\n  let graph : U.toScheme ⟶ pullback f p := pullback.lift U.ι g hg.symm\n  have : NoetherianSpace U.toScheme :=\n    U.ι.isOpenEmbedding.isEmbedding.isInducing.noetherianSpace\n  have : QuasiCompact graph := inferInstance\n  have hgraph : graph ≫ pullback.fst f p = U.ι := by simp [graph]\n  have : IsImmersion (graph ≫ pullback.fst f p) := by rw [hgraph]; infer_instance\n  have : IsImmersion graph := IsImmersion.of_comp graph (pullback.fst f p)\n  let π : graph.image ⟶ X := graph.imageι ≫ pullback.fst f p\n  let q : graph.image ⟶ P := graph.imageι ≫ pullback.snd f p\n  have : IsProper π := by dsimp [π]; infer_instance\n  have : IsProper q := by dsimp [q]; infer_instance\n  have ht : graph.toImage ≫ π = U.ι := by simp [π, hgraph]\n  have : IsIso (π ∣_ U) := isIso_over_dense_open_section π U graph.toImage ht\n  have hbir : BirationalMorphism π := ⟨U, hU, inferInstance⟩\n  refine ⟨graph.image, π, q, graph.toImage, inferInstance, inferInstance,\n    ?_, inferInstance, inferInstance, ht, hbir, proper_birational_surjective π hbir⟩\n  dsimp [π, q]\n  simp only [Category.assoc, pullback.condition]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "relative_nef_neg_iff": {
+      "path": "Negativity/RelativeNumerics.lean",
+      "line": 21,
+      "code": "theorem relative_nef_neg_iff {V C : Type*} [AddCommGroup V] [Module ℝ V]\n    (contracted : C → Prop) (degree : C → V →ₗ[ℝ] ℝ) (D : V) :\n    RelativeNef contracted degree (-D) ↔ ∀ c, contracted c → degree c D ≤ 0 := by\n  simp [RelativeNef]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "relative_curvePositive_neg_iff": {
+      "path": "Negativity/RelativeNumerics.lean",
+      "line": 28,
+      "code": "theorem relative_curvePositive_neg_iff {V C : Type*} [AddCommGroup V] [Module ℝ V]\n    (contracted : C → Prop) (degree : C → V →ₗ[ℝ] ℝ) (E : V) :\n    RelativeCurvePositive contracted degree (-E) ↔\n      ∀ c, contracted c → degree c E < 0 := by\n  simp [RelativeCurvePositive]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_factor_degree_sum": {
+      "path": "Negativity/RationalProductFormula.lean",
+      "line": 14,
+      "code": "theorem polynomial_factor_degree_sum {F : Type*} [Field F] [DecidableEq F]\n    (p : F[X]) (hp : p ≠ 0) :\n    ((normalizedFactors p).map Polynomial.natDegree).sum = p.natDegree := by\n  rw [← Polynomial.natDegree_multiset_prod _ (zero_notMem_normalizedFactors p),\n    prod_normalizedFactors_eq hp, Polynomial.natDegree_normalize]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalInfinityOrder_eq": {
+      "path": "Negativity/RationalProductFormula.lean",
+      "line": 25,
+      "code": "theorem rationalInfinityOrder_eq {F : Type*} [Field F]\n    (a : RatFunc F) (ha : a ≠ 0) :\n    rationalInfinityOrder a = -a.intDegree := by\n  classical\n  simp [rationalInfinityOrder, RatFunc.inftyValuation_apply,\n    RatFunc.inftyValuation_of_nonzero F ha]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalFunction_principal_degree_zero": {
+      "path": "Negativity/RationalProductFormula.lean",
+      "line": 37,
+      "code": "theorem rationalFunction_principal_degree_zero {F : Type*} [Field F] [DecidableEq F]\n    (a : RatFunc F) (ha : a ≠ 0) :\n    (((normalizedFactors a.num).map Polynomial.natDegree).sum : ℤ) -\n      (((normalizedFactors a.denom).map Polynomial.natDegree).sum : ℤ) +\n      rationalInfinityOrder a = 0 := by\n  rw [polynomial_factor_degree_sum a.num (RatFunc.num_ne_zero ha),\n    polynomial_factor_degree_sum a.denom a.denom_ne_zero,\n    rationalInfinityOrder_eq a ha]\n  simp [RatFunc.intDegree]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_affine_sections": {
+      "path": "Negativity/NormalSections.lean",
+      "line": 15,
+      "code": "theorem normal_affine_sections (Y : Scheme) [IsIntegral Y]\n    (hnormal : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) (hU : IsAffineOpen U) [Nonempty U] :\n    IsIntegrallyClosed Γ(Y, U) := by\n  let R : Type _ := Γ(Y, U)\n  let stalk (P : Ideal R) [P.IsMaximal] : Type _ :=\n    Y.presheaf.stalk (hU.fromSpec ⟨P, inferInstance⟩)\n  exact @IsIntegrallyClosed.of_isLocalization_maximal R inferInstance stalk\n    (fun P _ ↦ inferInstance)\n    (fun P _ ↦ Y.presheaf.algebra_section_stalk\n      ⟨hU.fromSpec ⟨P, inferInstance⟩, (hU.isoSpec.inv _).2⟩)\n    (fun P _ ↦ hU.isLocalization_stalk' ⟨P, inferInstance⟩ (hU.isoSpec.inv _).2)\n    inferInstance (fun P _ ↦ hnormal _)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "point_pullback_tensor_iso": {
       "path": "Negativity/PointPullback.lean",
       "line": 12,

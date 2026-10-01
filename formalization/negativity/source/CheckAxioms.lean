@@ -82,3 +82,21 @@ import Negativity
 #print axioms Negativity.finiteType_exists_closedPoint_outside_support
 #print axioms Negativity.localRing_idempotent_trivial
 #print axioms Negativity.localRing_not_product_nontrivial
+
+#print axioms Negativity.generic_stalk_dominant
+#print axioms Negativity.normal_codimensionOne_stalk_isDVR
+#print axioms Negativity.separated_dominant_section_isIso
+#print axioms Negativity.proper_birational_isIso_near_DVR
+#print axioms Negativity.proper_birational_isIso_near_codimensionOne
+#print axioms Negativity.proper_birational_isIso_on_codimensionOne_open
+#print axioms Negativity.stalkMap_isIso_over_isomorphism_open
+#print axioms Negativity.proper_birational_codimensionOne_unique_preimage
+#print axioms Negativity.proper_birational_surjective
+#print axioms Negativity.isIso_over_dense_open_section
+#print axioms Negativity.hartshorne_graph_closure
+#print axioms Negativity.relative_nef_neg_iff
+#print axioms Negativity.relative_curvePositive_neg_iff
+#print axioms Negativity.polynomial_factor_degree_sum
+#print axioms Negativity.rationalInfinityOrder_eq
+#print axioms Negativity.rationalFunction_principal_degree_zero
+#print axioms Negativity.normal_affine_sections
