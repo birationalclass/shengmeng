@@ -12,20 +12,23 @@ export function compactProofLayout(nodes,ids,factor=1,maxRows=4,options={}){
   function rank(id){if(!ranks.has(id)){const n=byId.get(id);ranks.set(id,n.deps.length?Math.max(0,...n.deps.filter(d=>ids.has(d)).map(rank))+1:0);}return ranks.get(id);}
   [...ids].forEach(rank);
   const roots=nodes.filter(n=>ids.has(n.id)&&!n.deps.length);
-  const stacked=roots.length>5&&!options.expandedInputs;
+  const stacked=roots.length>1&&!options.expandedInputs;
+  const active=roots.some(n=>n.id===options.selected)?options.selected:roots.at(-1)?.id;
   let y=85;
   roots.forEach((n,i)=>{
-    const compact=stacked&&n.id!==options.selected;
-    const h=(compact?66:150)*factor;
-    layout.set(n.id,{x:65,y,h,rank:0,column:0,base:true,compact,stackIndex:i});
-    y+=h+(compact?-8:18)*factor;
+    const compact=stacked&&n.id!==active;
+    const visibleH=(compact?48:150)*factor;
+    layout.set(n.id,{x:65,y,h:150*factor,visibleH,rank:0,column:0,base:true,compact,stackIndex:i});
+    y+=visibleH+(compact?0:18)*factor;
   });
-  const inputHeight=y-85;
+  const bottom=roots.length?layout.get(roots.at(-1).id).y+layout.get(roots.at(-1).id).visibleH:85;
+  roots.forEach(n=>{const p=layout.get(n.id);p.h=Math.min(p.h,bottom-p.y);});
+  const inputHeight=bottom-85;
   let left=roots.length?465*factor:65;
   const levels=[...new Set([...ranks.values()].filter(r=>r>0))].sort((a,b)=>a-b);
   for(const r of levels){
     const layer=nodes.filter(n=>ids.has(n.id)&&rank(n.id)===r);
-    const anchor=n=>{const deps=n.deps.map(id=>layout.get(id)).filter(Boolean);return deps.length?deps.reduce((s,p)=>s+p.y+p.h/2,0)/deps.length:0;};
+    const anchor=n=>{const deps=n.deps.map(id=>layout.get(id)).filter(Boolean);return deps.length?deps.reduce((s,p)=>s+p.y+(p.visibleH||p.h)/2,0)/deps.length:0;};
     layer.sort((a,b)=>anchor(a)-anchor(b));
     const cols=Math.ceil(layer.length/maxRows),groups=Array.from({length:cols},(_,c)=>layer.slice(c*maxRows,(c+1)*maxRows));
     const height=n=>Math.max(150,104+n.deps.length*22)*factor;

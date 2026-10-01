@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T20:34:06+08:00",
+  "checkedAt": "2026-10-02T00:25:12+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "e6b432d6b54d07cc218910c1d0e25021f6cc2f5959e04a7b042a2e8c0b62fd97"
+      "sha256": "08d7d07ae121c3f56bad1ab623b79d6ffc42a5f3d2c5db163fba3dea2829a319"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "0acbc3b802500830b6728a1f3c032afa0fa5c44e443be1338f65cf5fc8c790a3"
+      "sha256": "45e2f412bacc8f190f5536938533909400be8c4fecdea7415f801e7c2d5a4fe8"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,14 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/AffineSections.lean",
+      "sha256": "49a3c4aa93ce55b873eef4f73458ed6af4438ddb70c8c00eb43bfeb94f2b3afe"
+    },
+    {
+      "path": "Negativity/NormalBirational.lean",
+      "sha256": "0610d57c973e454ca43336fde44c4e7ace5aea87e77df5fab4b90a4ad8edd975"
     },
     {
       "path": "Negativity/LocalGeometry.lean",
@@ -62,6 +70,46 @@
     }
   ],
   "declarations": {
+    "affine_quasicoherent_exists_nonzero_section": {
+      "path": "Negativity/AffineSections.lean",
+      "line": 14,
+      "code": "theorem affine_quasicoherent_exists_nonzero_section (R : CommRingCat.{u})\n    (M : (Spec R).Modules) [M.IsQuasicoherent] (hM : ¬ IsZero M) :\n    ∃ s : (moduleSpecΓFunctor.obj M), s ≠ 0 := by\n  by_contra h\n  have hzero : ∀ s : (moduleSpecΓFunctor.obj M), s = 0 := by\n    simpa using h\n  have : Subsingleton (moduleSpecΓFunctor.obj M) :=\n    ⟨fun a b => (hzero a).trans (hzero b).symm⟩\n  have hz := ModuleCat.isZero_of_subsingleton (moduleSpecΓFunctor.obj M)\n  have ht := (tilde.functor R).map_isZero hz\n  exact hM (ht.of_iso (asIso M.fromTildeΓ).symm)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "integral_birational_algebraMap_bijective": {
+      "path": "Negativity/NormalBirational.lean",
+      "line": 15,
+      "code": "theorem integral_birational_algebraMap_bijective\n    (R S K : Type*) [CommRing R] [IsDomain R] [IsIntegrallyClosed R]\n    [CommRing S] [Field K] [Algebra R S] [Algebra R K]\n    [IsFractionRing R K] [Algebra.IsIntegral R S]\n    (j : S →ₐ[R] K) (hj : Function.Injective j) :\n    Function.Bijective (algebraMap R S) := by\n  constructor\n  · intro a b h\n    apply IsFractionRing.injective R K\n    simpa using congrArg j h\n  · intro b\n    obtain ⟨a, ha⟩ := IsIntegrallyClosed.algebraMap_eq_of_integral\n      ((Algebra.IsIntegral.isIntegral (R := R) b).map j)\n    exact ⟨a, hj (by simpa using ha)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_birational_algebraMap_bijective": {
+      "path": "Negativity/NormalBirational.lean",
+      "line": 31,
+      "code": "theorem finite_birational_algebraMap_bijective\n    (R S K : Type*) [CommRing R] [IsDomain R] [IsIntegrallyClosed R]\n    [CommRing S] [Field K] [Algebra R S] [Algebra R K]\n    [IsFractionRing R K] [Module.Finite R S]\n    (j : S →ₐ[R] K) (hj : Function.Injective j) :\n    Function.Bijective (algebraMap R S) := by\n  exact integral_birational_algebraMap_bijective R S K j hj",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_birational_spec_isIso": {
+      "path": "Negativity/NormalBirational.lean",
+      "line": 42,
+      "code": "theorem finite_birational_spec_isIso\n    (R S K : Type u) [CommRing R] [IsDomain R] [IsIntegrallyClosed R]\n    [CommRing S] [Field K] [Algebra R S] [Algebra R K]\n    [IsFractionRing R K] [Module.Finite R S]\n    (j : S →ₐ[R] K) (hj : Function.Injective j) :\n    IsIso (Spec.map (CommRingCat.ofHom (algebraMap R S))) := by\n  let e : R ≃+* S := RingEquiv.ofBijective (algebraMap R S)\n    (finite_birational_algebraMap_bijective R S K j hj)\n  have : IsIso (CommRingCat.ofHom (algebraMap R S)) :=\n    e.toCommRingCatIso.isIso_hom\n  infer_instance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "normal_one_dimensional_local_isDVR": {
       "path": "Negativity/LocalGeometry.lean",
       "line": 19,

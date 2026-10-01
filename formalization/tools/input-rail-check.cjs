@@ -31,7 +31,7 @@ const assert=require('node:assert/strict');
   assert(!(await page.locator(`[data-node="${id}"]`).evaluate(e=>e.classList.contains('compact-input'))));
   await page.locator('#editorSelect').selectOption('projective2');
   await page.locator('#scope').selectOption('direct');
-  assert.equal(await page.locator('#graph .base-card:not([hidden])').count(),2);
+  assert.equal(await page.locator('#graph .base-card:not([hidden])').count(),2);assert.equal(await page.locator('#graph .base-card:not(.compact-input):not([hidden])').count(),1);await page.locator('.input-rail-toggle').click();assert.equal(await page.locator('#graph .compact-input:not([hidden])').count(),0);await page.locator('.input-rail-toggle').click();
   assert.equal(await page.locator('[data-node="fiber"]').getAttribute('data-base-input'),'false');
   await page.locator('#scope').selectOption('all');
   await page.locator('[data-view="3d"]').click();

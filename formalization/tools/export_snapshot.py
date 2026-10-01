@@ -4,6 +4,8 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'AffineSections.lean': ['affine_quasicoherent_exists_nonzero_section'],
+    'NormalBirational.lean': ['integral_birational_algebraMap_bijective', 'finite_birational_algebraMap_bijective', 'finite_birational_spec_isIso'],
     'LocalGeometry.lean': ['normal_one_dimensional_local_isDVR', 'scheme_normal_one_dimensional_stalk_isDVR', 'proper_dvr_lift', 'proper_valuative_lift_unique', 'proper_quasiFinite_isFinite', 'proper_finite_fiber_neighborhood'],
     'LocalPushPull.lean': ['dvr_order_ringEquiv', 'dvr_fraction_order_well_defined', 'dvr_fraction_order_ringEquiv', 'scheme_pushpull_of_local_coefficients', 'scheme_stalk_fraction_order_of_iso', 'scheme_residueDegree_of_iso', 'scheme_residueDegree_of_stalk_iso', 'scheme_pushpull_of_local_isomorphisms'],
     'Projection.lean': ['scheme_cycle_map_single', 'scheme_curve_push_of_same_weight', 'scheme_curve_push_of_drop', 'projection_cases_from_cycle_push', 'nonpositive_pullback_from_cycle_push', 'projection_formula_on_real_span', 'scheme_effective_descends'],
@@ -75,7 +77,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

@@ -18,9 +18,9 @@ const assert=require('node:assert/strict');
    const color=await page.locator('[data-node="projective2"] .node-heading').evaluate(e=>getComputedStyle(e).backgroundColor);
    assert.equal(color,'rgb(68, 73, 80)','Pending heading must match the gray legend');
    const view=await page.locator('.graph-scroll').boundingBox();
-   const boxes=await page.locator('#graph .node:not([hidden])').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {id:e.dataset.node,x:r.x,y:r.y,w:r.width,h:r.height}}));
+   const boxes=await page.locator('#graph .node:not([hidden])').evaluateAll(es=>es.map(e=>{const r=e.getBoundingClientRect();return {id:e.dataset.node,x:r.x,y:r.y,w:r.width,h:r.height,base:e.dataset.baseInput==='true'}}));
    for(const a of boxes){assert(a.x>=view.x-1&&a.y>=view.y-1&&a.x+a.w<=view.x+view.width+1&&a.y+a.h<=view.y+view.height+1,'Direct view should fit the viewport');}
-   for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i],b=boxes[j];assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,'Nodes overlap');}
+   for(let i=0;i<boxes.length;i++)for(let j=i+1;j<boxes.length;j++){const a=boxes[i],b=boxes[j];if(a.base&&b.base)continue;assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,'Nodes overlap');}
    if(size.width===1773&&lang==='en')await page.screenshot({path:process.env.SCREENSHOT_PATH||'C:/Users/math1/Documents/Math/output/formalization-site/compact-fiber.png'});
    await page.locator('#editorSelect').selectOption('codimone');
    ids=await page.locator('#graph .node:not([hidden])').evaluateAll(es=>es.map(e=>e.dataset.node).sort());

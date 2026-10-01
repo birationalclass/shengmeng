@@ -51,3 +51,8 @@ import Negativity
 #print axioms Negativity.proper_valuative_lift_unique
 #print axioms Negativity.proper_quasiFinite_isFinite
 #print axioms Negativity.proper_finite_fiber_neighborhood
+
+#print axioms Negativity.integral_birational_algebraMap_bijective
+#print axioms Negativity.finite_birational_algebraMap_bijective
+#print axioms Negativity.finite_birational_spec_isIso
+#print axioms Negativity.affine_quasicoherent_exists_nonzero_section

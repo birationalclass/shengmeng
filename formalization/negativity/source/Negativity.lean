@@ -12,3 +12,6 @@ public import Negativity.Projection
 public import Negativity.LocalPushPull
 
 public import Negativity.LocalGeometry
+
+public import Negativity.NormalBirational
+public import Negativity.AffineSections

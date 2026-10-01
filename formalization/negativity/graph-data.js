@@ -91,3 +91,19 @@ find('dvrfoundation').upstream=[['mathlib · DVR characterization',mathlibSource
 find('valuative').upstream=[['mathlib · Valuative criterion',mathlibSource+'AlgebraicGeometry/ValuativeCriterion.lean']];
 find('zmtfinite').upstream=[['mathlib · Zariski’s main theorem',mathlibSource+'AlgebraicGeometry/ZariskisMainTheorem.lean']];
 find('geomcycle').upstream=[['mathlib · Actual algebraic cycles',mathlibSource+'AlgebraicGeometry/AlgebraicCycle/Basic.lean']];
+
+// Proved affine geometry; keep the remaining global construction explicit.
+nodes.push(
+ {id:'affinesections',title:'仿射拟凝聚层的非零截面',status:'done',x:20,y:2400,deps:[],decl:'affine_quasicoherent_exists_nonzero_section',file:'AffineSections.lean',paper:'antiample',statement:'真实 Spec R 上，非零拟凝聚 O 模存在非零全局截面。',scope:'使用 mathlib 的仿射拟凝聚层—模等价证明；不是把截面存在性作为假设。仍需证明本题的 f_*O_X(−A) 拟凝聚且非零。',inputs:['M 是 Spec R 上的真实 O 模且拟凝聚。','M 非零（¬ IsZero M）。'],steps:[['反设所有截面为零','全局截面模是零对象。'],['仿射等价','拟凝聚 M 同构于其全局截面模的 tilde 层，因而也为零。'],['矛盾','与 M 非零矛盾，得到非零全局截面。']]},
+ {id:'normalfinite',title:'正规底上的仿射有限双有理同构',status:'done',x:20,y:2520,deps:[],decl:'finite_birational_spec_isIso',related:['integral_birational_algebraMap_bijective','finite_birational_algebraMap_bijective'],file:'NormalBirational.lean',paper:'support',statement:'R 为整闭整环，S 为有限 R-代数且可嵌入 Frac(R) 时，Spec S→Spec R 是同构。',scope:'环映射的双射性与实际 Spec 态射的 IsIso 均已证明。一般正规双有理态射到这些仿射数据的转换及开集拼接尚未完成。',inputs:['R 是整闭整环，K 是它的分式域。','S 是有限 R-模。','j:S→ₐ[R]K 是单射；这是明确的双有理代数数据。'],steps:[['有限推出整性','S 的每个元素均在 R 上整。'],['整闭性','j(s)∈Frac(R) 在 R 上整，所以来自某个 r∈R。'],['单射性恢复元素','j 单射给 s=r，故 R→S 满射；分式域嵌入给单射。'],['实际 Spec 同构','环同构经 Spec 反变函子得到概形同构。']]}
+);
+find('affinesections').upstream=[['mathlib · Affine quasicoherent sheaves',mathlibSource+'AlgebraicGeometry/Modules/Tilde.lean']];
+find('normalfinite').upstream=[['mathlib · Integral closure',mathlibSource+'RingTheory/IntegralClosure/IntegrallyClosed.lean']];
+Object.assign(find('antiample'),{
+ deps:['affinesections'],
+ scope:'第一步由 projective 闭嵌入直接取 i*O(1)，是 very ample 的定义性构造。仿射非零拟凝聚层有非零截面这一通用步骤已验证。仍需接入 O(1)、直接像及其拟凝聚/非零性，并构造截面的有效 Cartier 零除子。',
+ inputs:['projective 闭嵌入 i:X→P^n_R；取 L=i*O(1)≅O_X(A)。无需另证 A 的深层存在定理。','证明 F=f_*L⁻¹ 是拟凝聚且非零，应用 affinesections。','从非零截面 s 构造 E=−A+div(s)，证明有效性与 O_X(−E)≅L。'],
+ steps:[['定义性选取 A','由 projective 的闭嵌入取 L=i*O(1)。它为 f-very ample，因而 f-ample；当前库仍需这些几何对象的接口。'],['证明直接像非零','F=f_*L⁻¹ 在双有理同构稠密开集上为可逆层，所以非零；还需拟凝聚性。'],['仿射非零截面：已验证','对拟凝聚且非零的 F 应用 affine_quasicoherent_exists_nonzero_section，取得 s。'],['截面到有效除子','令 E=−A+div(s)。证明这是有效 Cartier 除子，O_X(−E)≅L，从而 −E 为 f-ample；此几何桥接尚未完成。']]
+});
+find('cover').deps=['zmtfinite','normalfinite'];
+find('cover').inputs=['proper quasi-finite ⇒ finite 已复用；正规底的有限双有理同构已完成仿射环与 Spec 版本，仍需一般概形的仿射化和拼接。','正维射影纤维中经过指定点的曲线存在性。'];
