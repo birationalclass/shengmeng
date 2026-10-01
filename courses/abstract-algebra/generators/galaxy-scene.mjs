@@ -73,7 +73,10 @@ export class GalaxyScene{
  const depth=this.camera.position.length(),halfH=depth*Math.tan(23*Math.PI/180),halfW=halfH*aspect;
  const right=new T.Vector3(1,0,0).applyQuaternion(this.camera.quaternion),up=new T.Vector3(0,1,0).applyQuaternion(this.camera.quaternion);
  const selectedSystem=this.systems[this.selected];
- const extent=this.challenge?selectedSystem.userData.orbitExtent:selectedSystem.userData.extent;
+ const desktopMap=!this.challenge&&!this.mobile&&this.w>=900&&this.h>500;
+ // Extended galaxies need a map overview that accounts for their outer bodies.
+ const mapExtent=desktopMap?Math.max(selectedSystem.userData.extent,selectedSystem.userData.orbitExtent*.68):selectedSystem.userData.extent;
+ const extent=this.challenge?selectedSystem.userData.orbitExtent:mapExtent;
  // The oblique disk occupies much less vertical space than its orbital radius.
  // Desktop challenges and short landscape screens fit the projected disk, not a sphere.
  const desktopChallenge=!!this.challenge&&!this.mobile&&this.w>=900&&this.h>500;
