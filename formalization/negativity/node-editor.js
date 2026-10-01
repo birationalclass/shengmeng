@@ -1,4 +1,4 @@
-import {t} from './i18n.js?v=20261001-formal-5';
+import {t} from './i18n.js?v=20261001-formal-6';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected}) {
   const byId=new Map(nodes.map(n=>[n.id,n])),ranks=new Map(),layout=new Map();

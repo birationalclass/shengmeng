@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T19:27:28+08:00",
+  "checkedAt": "2026-10-01T19:52:45+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "cf48487576a138a0efb9aed9c08eaff053baeabac8a1f128ba20538c1e597c34"
+      "sha256": "be7b0b1f3fc0c1b23c7ebe9c6ee9d833ed606bf559ad38637cadff354bf0fa2c"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "8707cdc63a0aff1485031e273ac7c09e7f0f3dc615849e1cbe9ca41bcc8c9081"
+      "sha256": "ce0ecf3ddd515e6d7112c63aa48d3b3489a12937647c0b50354854d419e1f0ae"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,10 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/LocalPushPull.lean",
+      "sha256": "b2ce2a5902ff27dfa61c55fad83843c6525dbe645ef20a30d225d541c0e72562"
     },
     {
       "path": "Negativity/Projection.lean",
@@ -54,6 +58,86 @@
     }
   ],
   "declarations": {
+    "dvr_order_ringEquiv": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 13,
+      "code": "theorem dvr_order_ringEquiv {R S : Type*} [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [CommRing S] [IsDomain S]\n    [IsDiscreteValuationRing S] (e : R ≃+* S) (a : R) :\n    addVal S (e a) = addVal R a := by\n  by_cases ha : a = 0\n  · simp [ha]\n  obtain ⟨p, hp⟩ := exists_prime R\n  obtain ⟨n, u, hu⟩ := eq_unit_mul_pow_irreducible ha hp.irreducible\n  have hep : Irreducible (e p) := hp.irreducible.map e\n  rw [addVal_def a u hp.irreducible n hu]\n  apply addVal_def (e a) (Units.map e.toMonoidHom u) hep n\n  simpa using congrArg e hu",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_fraction_order_well_defined": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 34,
+      "code": "theorem dvr_fraction_order_well_defined {R : Type*} [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] (a b c d : R)\n    (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0) (hd : d ≠ 0)\n    (h : a * d = c * b) : LocalFractionOrder R a b = LocalFractionOrder R c d := by\n  have va : addVal R a ≠ ⊤ := by simpa [addVal_eq_top_iff] using ha\n  have vb : addVal R b ≠ ⊤ := by simpa [addVal_eq_top_iff] using hb\n  have vc : addVal R c ≠ ⊤ := by simpa [addVal_eq_top_iff] using hc\n  have vd : addVal R d ≠ ⊤ := by simpa [addVal_eq_top_iff] using hd\n  have hv := congrArg (fun z => (addVal R z).toNat) h\n  rw [addVal_mul, addVal_mul, ENat.toNat_add va vd, ENat.toNat_add vc vb] at hv\n  unfold LocalFractionOrder\n  omega",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_fraction_order_ringEquiv": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 48,
+      "code": "theorem dvr_fraction_order_ringEquiv {R S : Type*} [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [CommRing S] [IsDomain S]\n    [IsDiscreteValuationRing S] (e : R ≃+* S) (a b : R) :\n    LocalFractionOrder S (e a) (e b) = LocalFractionOrder R a b := by\n  simp [LocalFractionOrder, dvr_order_ringEquiv]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_pushpull_of_local_coefficients": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 57,
+      "code": "theorem scheme_pushpull_of_local_coefficients {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    (D : AlgebraicCycle Y ℝ) (lifted : AlgebraicCycle X ℝ) (strict : Y → X)\n    (hcoeff : ∀ y, lifted (strict y) = D y)\n    (hsection : ∀ y, D y ≠ 0 → f.base (strict y) = y)\n    (hdegree : ∀ y, D y ≠ 0 → AlgebraicCycle.mapCoeff f wx wy (strict y) = 1)\n    (hexceptional : ∀ x, x ≠ strict (f.base x) →\n      lifted x = 0 ∨ wx x ≠ wy (f.base x)) :\n    AlgebraicCycle.map f wx wy lifted = D := by\n  ext y\n  change (∑ᶠ x ∈ f.base ⁻¹' {y}, lifted x *\n    (AlgebraicCycle.mapCoeff f wx wy x : ℝ)) = D y\n  have hz : ∀ x, x ≠ strict y →\n      (∑ᶠ (_ : x ∈ f.base ⁻¹' {y}), lifted x *\n        (AlgebraicCycle.mapCoeff f wx wy x : ℝ)) = 0 := by\n    intro x hx\n    by_cases hxy : f.base x = y\n    · have hx' : x ≠ strict (f.base x) := by simpa [hxy] using hx\n      rcases hexceptional x hx' with hzero | hdrop\n      · simp [hzero]\n      · simp [scheme_mapCoeff_zero_of_drop f wx wy x hdrop]\n    · simp [Set.mem_preimage, Set.mem_singleton_iff, hxy]\n  rw [finsum_eq_single _ (strict y) hz]\n  by_cases hD : D y = 0\n  · simp [hcoeff, hD]\n  · simp [hsection y hD, hcoeff, hdegree y hD]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_stalk_fraction_order_of_iso": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 86,
+      "code": "theorem scheme_stalk_fraction_order_of_iso {X Y : Scheme} (f : X ⟶ Y) (x : X)\n    [IsIso (f.stalkMap x)]\n    [IsDomain (Y.presheaf.stalk (f x))] [IsDomain (X.presheaf.stalk x)]\n    [IsDiscreteValuationRing (Y.presheaf.stalk (f x))]\n    [IsDiscreteValuationRing (X.presheaf.stalk x)]\n    (a b : Y.presheaf.stalk (f x)) :\n    LocalFractionOrder (X.presheaf.stalk x) ((f.stalkMap x).hom a) ((f.stalkMap x).hom b) =\n      LocalFractionOrder (Y.presheaf.stalk (f x)) a b := by\n  exact dvr_fraction_order_ringEquiv (asIso (f.stalkMap x)).commRingCatIsoToRingEquiv a b",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_residueDegree_of_iso": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 97,
+      "code": "theorem scheme_residueDegree_of_iso {X Y : Scheme} (f : X ⟶ Y) (x : X)\n    [IsIso (f.residueFieldMap x)] : f.residueDegree x = 1 := by\n  let := (f.residueFieldMap x).hom.toAlgebra\n  change Module.finrank (Y.residueField (f x)) (X.residueField x) = 1\n  exact Module.finrank_of_bijective_algebraMap\n    (asIso (f.residueFieldMap x)).commRingCatIsoToRingEquiv.bijective",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_residueDegree_of_stalk_iso": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 105,
+      "code": "theorem scheme_residueDegree_of_stalk_iso {X Y : Scheme} (f : X ⟶ Y) (x : X)\n    [IsIso (f.stalkMap x)] : f.residueDegree x = 1 := by\n  have : IsIso (f.residueFieldMap x) :=\n    (IsLocalRing.ResidueField.mapEquiv\n      (asIso (f.stalkMap x)).commRingCatIsoToRingEquiv).toCommRingCatIso.isIso_hom\n  exact scheme_residueDegree_of_iso f x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_pushpull_of_local_isomorphisms": {
+      "path": "Negativity/LocalPushPull.lean",
+      "line": 114,
+      "code": "theorem scheme_pushpull_of_local_isomorphisms {X Y : Scheme} (f : X ⟶ Y)\n    [QuasiCompact f] {N : Type*} [DecidableEq N] (wx : X → N) (wy : Y → N)\n    (D : AlgebraicCycle Y ℝ) (lifted : AlgebraicCycle X ℝ) (strict : Y → X)\n    (hcoeff : ∀ y, lifted (strict y) = D y)\n    (hsection : ∀ y, D y ≠ 0 → f.base (strict y) = y)\n    (hweight : ∀ y, D y ≠ 0 → wx (strict y) = wy (f.base (strict y)))\n    (hstalk : ∀ y, D y ≠ 0 → IsIso (f.stalkMap (strict y)))\n    (hexceptional : ∀ x, x ≠ strict (f.base x) →\n      lifted x = 0 ∨ wx x ≠ wy (f.base x)) :\n    AlgebraicCycle.map f wx wy lifted = D := by\n  apply scheme_pushpull_of_local_coefficients f wx wy D lifted strict hcoeff hsection\n  · intro y hy\n    have := hstalk y hy\n    rw [scheme_mapCoeff_of_same_weight f wx wy (strict y) (hweight y hy),\n      scheme_residueDegree_of_stalk_iso]\n  · exact hexceptional",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "scheme_cycle_map_single": {
       "path": "Negativity/Projection.lean",
       "line": 12,

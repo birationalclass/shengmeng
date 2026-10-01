@@ -35,3 +35,12 @@ import Negativity
 #print axioms Negativity.nonpositive_pullback_from_cycle_push
 #print axioms Negativity.projection_formula_on_real_span
 #print axioms Negativity.scheme_effective_descends
+
+#print axioms Negativity.dvr_order_ringEquiv
+#print axioms Negativity.dvr_fraction_order_well_defined
+#print axioms Negativity.dvr_fraction_order_ringEquiv
+#print axioms Negativity.scheme_pushpull_of_local_coefficients
+#print axioms Negativity.scheme_stalk_fraction_order_of_iso
+#print axioms Negativity.scheme_residueDegree_of_iso
+#print axioms Negativity.scheme_residueDegree_of_stalk_iso
+#print axioms Negativity.scheme_pushpull_of_local_isomorphisms

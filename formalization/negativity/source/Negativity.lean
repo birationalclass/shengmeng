@@ -8,3 +8,5 @@ public import Negativity.Descent
 public import Negativity.GeometricCycles
 
 public import Negativity.Projection
+
+public import Negativity.LocalPushPull

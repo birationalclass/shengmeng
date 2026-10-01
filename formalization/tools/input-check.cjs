@@ -20,6 +20,13 @@ const assert=require('node:assert/strict');
   assert((await p.locator('#sourcePanel').innerText()).includes('projection_cases_from_cycle_push'));
   await p.locator('#editorSelect').selectOption('realspan');
   assert((await p.locator('#sourcePanel').innerText()).includes('projection_formula_on_real_span'));
+  await p.locator('#editorSelect').selectOption('localorder');
+  assert((await p.locator('#sourcePanel').innerText()).includes('dvr_order_ringEquiv'));
+  await p.locator('#editorSelect').selectOption('pushpullcriterion');
+  const criterion=await p.locator('#sourcePanel .source-code').first().innerText();
+  assert(criterion.includes('scheme_pushpull_of_local_isomorphisms'));
+  assert(criterion.includes('(hstalk :'));
+  assert(!criterion.includes('(hleft :'),'The local push-pull criterion must derive, not assume, hleft');
  }
  assert.deepEqual(errors,[]);console.log('PASS: exact remaining inputs, proved effectivity dependency, actual cycle descent source, Cartier compatibility, bilingual span/case navigation.');
 }finally{await b.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
