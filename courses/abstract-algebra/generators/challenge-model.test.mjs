@@ -10,3 +10,9 @@ test('A5 class sizes and element orders match the icosahedral group',()=>{const 
 test('20 dust styles are strictly planar and keep the accretion cavity empty',()=>{const fingerprints=new Set();for(let style=0;style<20;style++){const p=diskPoints(style,200,4,25);fingerprints.add(p.slice(0,12).join(','));for(let i=0;i<p.length;i+=3){assert.equal(p[i+1],0);const r=Math.hypot(p[i],p[i+2]);assert.ok(r>=4&&r<=25);}}assert.equal(fingerprints.size,20);});
 
 test('removed bonus stage does not falsely award the minimum-generator challenge',()=>{const j=normalizeJourney({D4:{passed:1,times:[9]},S4:{passed:2,times:[8,19]},A5:{version:2,passed:1,times:[20]}},GALAXIES,groups);assert.equal(j.D4.passed,0);assert.equal(j.S4.passed,1);assert.deepEqual(j.S4.times,[19]);assert.equal(j.A5.passed,1);assert.deepEqual(normalizeJourney(j,GALAXIES,groups),j);});
+
+test('unfinished galaxies restart, complete galaxies persist',async()=>{
+ const {completedJourney}=await import('./challenge-model.mjs');const {GALAXIES}=await import('./galaxy-campaign.mjs');const {groups}=await import('./model.mjs');
+ const saved=completedJourney({S4:{version:2,passed:1,times:[4]},A5:{version:2,passed:2,times:[3,5]}},GALAXIES,groups);
+ assert.equal(saved.S4.passed,0);assert.deepEqual(saved.S4.times,[]);assert.equal(saved.A5.passed,2);
+});

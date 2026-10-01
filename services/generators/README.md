@@ -15,7 +15,9 @@ Routes under the existing `/records` base:
 - `GET /api/generators/records`: public ranking with initials and masked student IDs; no raw account ID or proofs.
 - `GET /api/generators/admin/records`: existing teacher token required; full records for export.
 
-The browser keeps a per-account retry outbox. Cloud and local progress merge without lowering local progress. Historical local summaries lack generation proofs and are retained locally, not silently promoted to server-verified results. Replaying the relevant stages establishes verified cloud progress. Partial stage proofs may arrive out of order; only contiguous completed stages contribute to the ranking.
+The browser keeps a per-account retry outbox. Only complete galaxies are persisted; successful partial stages remain in the active run and restart on exit. Complete run submissions carry every stage proof. At login, superior local complete-galaxy summaries can be imported via authenticated `POST /api/generators/sync`; otherwise cloud progress is downloaded. This user-requested legacy import accepts bounded progress summaries, rather than claiming they contain generation proofs.
+
+`POST /api/generators/reset` requires a signed player token, `confirm: true` and the current `epoch`. It resets only this account’s generator journey, times and consumed lives. A minimal empty record with incremented epoch prevents old devices/outboxes from restoring cleared progress. It is excluded from rankings. Deduplication request fingerprints remain technical metadata, not gameplay records. All writes check epoch; frontend clears local life state and outbox only after server success.
 
 Tests: `node --test services/group-sudoku-records/cloudbase/service.test.mjs courses/abstract-algebra/generators/generator-sync.test.mjs`.
 

@@ -103,3 +103,31 @@ test('generator attempts are verified, idempotent, private, and isolated from Su
  assert.equal((await call('/api/generators/attempts',{...input,submissionId:crypto.randomUUID(),seeds:[999]},token)).status,400);
  const publicRows=(await call('/api/generators/records')).data;assert.ok(!JSON.stringify(publicRows).includes(login.data.account.id));
 });
+
+test('whole-galaxy sync, reset epoch and account isolation',async()=>{
+ const db=database(),env={store:createStore(db,'test_'),generatorStore:createGeneratorStore(db,'generators_test_'),secret:'test-only-abcdefghijklmnopqrstuvwxyz-0123456789',password:'demo-pass',identity:'generator-test'};
+ const call=(path,body,token)=>handle({path,method:body?'POST':'GET',body,token},env);
+ const a=(await call('/api/login',{mode:'guest'})).data,b=(await call('/api/login',{mode:'guest'})).data;
+ const sync=(body,token=a.sessionToken)=>call('/api/generators/sync',body,token);
+ assert.equal((await sync({journey:{S4:{passed:1,times:[10]}},epoch:0})).data.journey.S4,undefined);
+ let out=await sync({journey:{S4:{passed:2,times:[10,20]}},consumedLives:5,epoch:0});assert.equal(out.data.journey.S4.passed,2);assert.equal(out.data.consumedLives,5);
+ out=await sync({journey:{S4:{passed:1}},epoch:0});assert.equal(out.data.journey.S4.passed,2);
+ await sync({journey:{C4:{passed:1,times:[3]}},epoch:0},b.sessionToken);
+ assert.equal((await call('/api/generators/reset',{confirm:true,epoch:0})).status,401);
+ assert.equal((await call('/api/generators/reset',{epoch:0},a.sessionToken)).status,400);
+ out=await call('/api/generators/reset',{confirm:true,epoch:0},a.sessionToken);assert.equal(out.data.epoch,1);assert.equal(out.data.consumedLives,0);
+ out=await sync({journey:{S4:{passed:2}},consumedLives:5,epoch:0});assert.equal(out.data.reset,true);assert.deepEqual(out.data.journey,{});
+ assert.equal((await call('/api/generators/progress',undefined,b.sessionToken)).data.journey.C4.passed,1);
+ assert.equal((await call('/api/generators/records')).data.total,1);
+ assert.equal((await call('/api/records')).data.total,0);
+});
+
+test('only a complete run bundle persists a multi-stage galaxy',async()=>{
+ const {groups}=await import('../../../courses/abstract-algebra/generators/model.mjs');const {minimumGenerators}=await import('../../../courses/abstract-algebra/generators/challenge-model.mjs');
+ const db=database(),env={store:createStore(db,'test_'),generatorStore:createGeneratorStore(db,'generators_test_'),secret:'test-only-abcdefghijklmnopqrstuvwxyz-0123456789',password:'demo-pass',identity:'generator-test'};
+ const call=(path,body,token)=>handle({path,method:body?'POST':'GET',body,token},env);const login=(await call('/api/login',{mode:'guest'})).data;
+ const seeds=minimumGenerators(groups.S4).sets[0],first={key:'S4',stage:0,seeds,seconds:3,submissionId:crypto.randomUUID()};
+ assert.equal((await call('/api/generators/attempts',first,login.sessionToken)).data.journey.S4,undefined);
+ const full={...first,submissionId:crypto.randomUUID(),stages:[first,{...first,stage:1,preset:seeds[0]}]};
+ const out=await call('/api/generators/attempts',full,login.sessionToken);assert.equal(out.status,200);assert.equal(out.data.journey.S4.passed,2);
+});

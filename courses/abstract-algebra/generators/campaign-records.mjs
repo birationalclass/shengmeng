@@ -1,4 +1,4 @@
-import {completionRecord,publicRecord,rankedRecords,migrateRecord,ownRecordIndex,withOwnLocalRecord} from './campaign-record-data.mjs?v=nebula-101';
+import {completionRecord,publicRecord,rankedRecords,migrateRecord,ownRecordIndex,withOwnLocalRecord} from './campaign-record-data.mjs?v=nebula-102';
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 import {groups} from './model.mjs?v=nebula-66';
 import {levels} from './challenge-model.mjs?v=nebula-66';
@@ -8,7 +8,7 @@ export function mountCampaignRecords({getJourney,getAccount,t,api,retrySync=asyn
  const $=id=>document.getElementById(id);let admin='',cloudRows=null,cloudMessage='',loadVersion=0;
  const storageKey='generators-completion-records-v1';let records={};
  try{records=JSON.parse(localStorage.getItem(storageKey))||{};records=Object.fromEntries(Object.entries(records).map(([id,r])=>[id,migrateRecord(r,GALAXIES)]));}catch{}
- function save(completed=false){const account=getAccount(),r=completionRecord(account,getJourney(),GALAXIES,records[account.id],completed?new Date().toISOString():null);if(r){records[account.id]=r;try{localStorage.setItem(storageKey,JSON.stringify(records));}catch{}}}
+ function save(completed=false){const account=getAccount(),r=completionRecord(account,getJourney(),GALAXIES,records[account.id],completed?new Date().toISOString():null);if(r){r.consumedLives=Number(JSON.parse(localStorage.getItem('generators-consumed-v1:'+account.id)||'0'))||0;records[account.id]=r;try{localStorage.setItem(storageKey,JSON.stringify(records));}catch{}}else{delete records[account.id];try{localStorage.setItem(storageKey,JSON.stringify(records));}catch{}}}
  function level(r){return (r.highest<0?t('未通关','Not completed'):String(r.highest+1).padStart(2,'0')+'. '+GALAXIES[r.highest].name)+' · 💔 '+(r.consumedLives||0);}
  function refresh(){save();$('recordsTitle').textContent=t('通关记录','Completion records');$('recordsIntro').textContent=t('最高通关关卡优先；同关卡按通关时间从早到晚排列。姓名显示拼音首字母。','Highest completed level first; ties are ordered by the time reached, earliest first. Student names use pinyin initials.');$('recordsStatus').textContent=cloudMessage||t('本机记录 · 正在读取云端…','Local records · Loading cloud…');
  for(const [id,zh,en] of [['recordsClose','关闭','Close'],['recordsRefresh','刷新','Refresh'],['recordsTeacherSummary','教师导出完整记录','Teacher: export full records'],['recordsPasswordLabel','教师口令','Teacher password'],['recordsTeacherLogin','登录','Log in'],['recordsExport','导出 CSV','Export CSV'],['recordsLogout','退出教师查看','Exit teacher view']])$(id).textContent=t(zh,en);
@@ -23,5 +23,5 @@ export function mountCampaignRecords({getJourney,getAccount,t,api,retrySync=asyn
  $('recordsLogout').onclick=()=>{admin='';cloudRows=null;$('recordsAdminActions').hidden=true;void loadCloud();};$('recordsDialog').addEventListener('close',()=>{loadVersion++;admin='';cloudRows=null;$('recordsAdminActions').hidden=true;$('recordsPassword').value='';});
  $('recordsExport').onclick=()=>{if(!admin||!cloudRows)return;const rows=[['排名','身份','学号','姓名','最高关卡','达到最高关卡时间（UTC）'],...cloudRows.map((r,i)=>{return[i+1,r.kind==='guest'?'游客':'学生',r.studentId,r.name,level(r),r.reachedAt];})],quote=x=>{const q=String.fromCharCode(34),v=String(x??'').replace(/^[=+@-]/,String.fromCharCode(39)+'$&');return q+v.replaceAll(q,q+q)+q;},csv='\ufeff'+rows.map(r=>r.map(quote).join(',')).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='生成元-通关记录.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  window.addEventListener('cosmic-ui-change',()=>{if($('recordsDialog').open)refresh();});
- return {save};
+ return {save,clear(){delete records[getAccount().id];localStorage.setItem(storageKey,JSON.stringify(records));cloudRows=null;cloudMessage='';}};
 }

@@ -13,3 +13,6 @@ export function levels(group){const rank=minimumGenerators(group).rank,n=group.t
 export function generationRound(group,known){const products=new Map();for(const a of known)for(const b of known){const c=group.table[a][b];if(!known.has(c)&&!products.has(c))products.set(c,{a,b,c});}return [...products.values()];}
 export function normalizeJourney(raw,galaxies,groups){const out={};for(const g of galaxies){const count=levels(groups[g.key]).length,r=raw?.[g.key];out[g.key]={version:2,passed:Math.max(0,Math.min(count,Math.floor(Number(r?.passed)||0)-(r?.version===2||g.order<8?0:1))),times:Array.isArray(r?.times)?r.times.slice(r?.version===2||g.order<8?0:1).slice(0,count):[]};}return out;}
 export function completedCount(journey,galaxies,groups){let n=0;for(const g of galaxies){if((journey[g.key]?.passed||0)<levels(groups[g.key]).length)break;n++;}return n;}
+
+// Only complete galaxies survive leaving or reloading a challenge.
+export function completedJourney(raw,galaxies,groups){const out=normalizeJourney(raw,galaxies,groups);for(const g of galaxies)if(out[g.key].passed<levels(groups[g.key]).length)out[g.key]={version:2,passed:0,times:[]};return out;}
