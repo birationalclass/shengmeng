@@ -44,3 +44,10 @@ import Negativity
 #print axioms Negativity.scheme_residueDegree_of_iso
 #print axioms Negativity.scheme_residueDegree_of_stalk_iso
 #print axioms Negativity.scheme_pushpull_of_local_isomorphisms
+
+#print axioms Negativity.normal_one_dimensional_local_isDVR
+#print axioms Negativity.scheme_normal_one_dimensional_stalk_isDVR
+#print axioms Negativity.proper_dvr_lift
+#print axioms Negativity.proper_valuative_lift_unique
+#print axioms Negativity.proper_quasiFinite_isFinite
+#print axioms Negativity.proper_finite_fiber_neighborhood

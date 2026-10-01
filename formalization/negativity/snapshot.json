@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T19:52:45+08:00",
+  "checkedAt": "2026-10-01T20:34:06+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "be7b0b1f3fc0c1b23c7ebe9c6ee9d833ed606bf559ad38637cadff354bf0fa2c"
+      "sha256": "e6b432d6b54d07cc218910c1d0e25021f6cc2f5959e04a7b042a2e8c0b62fd97"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "ce0ecf3ddd515e6d7112c63aa48d3b3489a12937647c0b50354854d419e1f0ae"
+      "sha256": "0acbc3b802500830b6728a1f3c032afa0fa5c44e443be1338f65cf5fc8c790a3"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,10 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/LocalGeometry.lean",
+      "sha256": "a7a28d7853b15ca1b8fc1b704477e0e327d115ba381d77569c0f2de695790b85"
     },
     {
       "path": "Negativity/LocalPushPull.lean",
@@ -58,6 +62,66 @@
     }
   ],
   "declarations": {
+    "normal_one_dimensional_local_isDVR": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 19,
+      "code": "theorem normal_one_dimensional_local_isDVR (R : Type*) [CommRing R]\n    [IsDomain R] [IsNoetherianRing R] [IsLocalRing R] [IsIntegrallyClosed R]\n    (hdim : ringKrullDim R = 1) : IsDiscreteValuationRing R := by\n  have hfield : ¬ IsField R := by\n    intro h\n    have hzero := ringKrullDim_eq_zero_of_isField h\n    rw [hdim] at hzero\n    exact one_ne_zero hzero\n  have : KrullDimLE 1 R := krullDimLE_iff.mpr hdim.le\n  have hprime : ∀ P : Ideal R, P ≠ ⊥ → P.IsPrime → P = maximalIdeal R := by\n    intro P hP hp\n    exact eq_maximalIdeal (hp.isMaximal_of_ne_bot hP)\n  have hnormal : IsIntegrallyClosed R ∧\n      ∀ P : Ideal R, P ≠ ⊥ → P.IsPrime → P = maximalIdeal R :=\n    ⟨inferInstance, hprime⟩\n  have : IsPrincipalIdealRing R :=\n    ((tfae_of_isNoetherianRing_of_isLocalRing_of_isDomain R).out 4 1).mp hnormal\n  exact { not_a_field' := isField_iff_maximalIdeal_eq.not.mp hfield }",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_normal_one_dimensional_stalk_isDVR": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 41,
+      "code": "theorem scheme_normal_one_dimensional_stalk_isDVR (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X] (x : X)\n    [IsIntegrallyClosed (X.presheaf.stalk x)]\n    (hdim : ringKrullDim (X.presheaf.stalk x) = 1) :\n    IsDiscreteValuationRing (X.presheaf.stalk x) :=\n  normal_one_dimensional_local_isDVR _ hdim",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_dvr_lift": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 51,
+      "code": "theorem proper_dvr_lift {X Y : Scheme.{u}} (f : X ⟶ Y) [IsProper f]\n    (R K : Type u) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]\n    [Field K] [Algebra R K] [IsFractionRing R K]\n    (top : Spec (.of K) ⟶ X) (bottom : Spec (.of R) ⟶ Y)\n    (w : top ≫ f = Spec.map (CommRingCat.ofHom (algebraMap R K)) ≫ bottom) :\n    ∃ lift : Spec (.of R) ⟶ X,\n      Spec.map (CommRingCat.ofHom (algebraMap R K)) ≫ lift = top ∧\n      lift ≫ f = bottom := by\n  have hp : (ValuativeCriterion ⊓ @QuasiCompact ⊓ @QuasiSeparated ⊓ @LocallyOfFiniteType) f := by\n    rw [← IsProper.eq_valuativeCriterion]\n    exact inferInstance\n  let square : ValuativeCommSq f := {R := R, K := K, i₁ := top, i₂ := bottom, commSq := ⟨w⟩}\n  obtain ⟨lift⟩ := ((ValuativeCriterion.existence hp.1.1.1) square).exists_lift\n  exact ⟨lift.l, lift.fac_left, lift.fac_right⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_valuative_lift_unique": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 68,
+      "code": "theorem proper_valuative_lift_unique {X Y : Scheme} (f : X ⟶ Y) [IsProper f]\n    (square : ValuativeCommSq f) : Subsingleton square.commSq.LiftStruct :=\n  IsSeparated.valuativeCriterion f square",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_quasiFinite_isFinite": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 74,
+      "code": "theorem proper_quasiFinite_isFinite {X Y : Scheme} (f : X ⟶ Y)\n    [IsProper f] [LocallyQuasiFinite f] : IsFinite f :=\n  IsFinite.of_isProper_of_locallyQuasiFinite f",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_finite_fiber_neighborhood": {
+      "path": "Negativity/LocalGeometry.lean",
+      "line": 80,
+      "code": "theorem proper_finite_fiber_neighborhood {X Y : Scheme} (f : X ⟶ Y)\n    [IsProper f] (y : Y) (hfinite : (f ⁻¹' {y}).Finite) :\n    ∃ V : Y.Opens, y ∈ V ∧ IsFinite (f ∣_ V) :=\n  exists_isFinite_morphismRestrict_of_finite_preimage_singleton f y hfinite",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "dvr_order_ringEquiv": {
       "path": "Negativity/LocalPushPull.lean",
       "line": 13,

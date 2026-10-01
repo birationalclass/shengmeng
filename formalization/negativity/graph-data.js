@@ -64,3 +64,30 @@ nodes.push({id:'localcartier',title:'Cartier 局部方程与 Weil cycle',status:
 nodes.push({id:'pushpullcriterion',title:'真实 cycle 的局部推拉判据',status:'conditional',x:278,y:1680,deps:['geomcycle','localorder','codimone','localcartier'],decl:'scheme_pushpull_of_local_isomorphisms',related:['scheme_pushpull_of_local_coefficients'],file:'LocalPushPull.lean',paper:'proper',statement:'严格变换处系数一致且实际 stalk map 为同构，其余非零分量降维，则真实 cycle 推出等于 D。',scope:'直接证明 AlgebraicCycle.map π wx wy lifted=D，不再把整个 hleft 等式当参数。严格变换、stalk 同构、实际 Cartier 系数与维数选择仍需由几何构造给出。',inputs:['hcoeff：lifted(strict y)=D(y)。','hsection：D(y)非零时 π(strict y)=y。','hweight：非例外分量和像的权重相同。','hstalk：这些严格变换处的真实 stalkMap 为 IsIso。','hexceptional：其余分量的系数为零或维数／权重下降。'],steps:[['移除例外贡献','权重下降给 mapCoeff=0，因此没有推出贡献。'],['严格变换次数','由真实 stalk 同构推出 residueDegree=1。'],['恢复原系数','每个底上点只剩严格变换的一个非零贡献，等于 D(y)。'],['cycle 等式','逐点 ext 得到 π_*lifted=D。']]});
 nodes.find(n=>n.id==='pushpull').deps=['pushpullcriterion'];
 nodes.find(n=>n.id==='pushpull').scope='真实 cycle 的逐系数推拉推导已完成；仍待从正规 proper birational 几何构造余维一同构开集，以及实际 Cartier 局部方程／拉回的 Weil cycle。';
+
+// Separate Theorem 1.4(2) from the effectivity argument in 1.4(1).
+Object.assign(find('projective2'), {
+ title:'独立结论：纤维支撑 (1.4(2))',
+ statement:'设 f:X→Y 为正规簇间 projective birational 态射，D 为有效 R-Cartier 除子且 −D 为 f-nef。则每个纤维与 Supp D 不相交，或包含于其中。',
+ scope:'原稿 Theorem 1.4(2) 的独立结论，不用于第 (1) 项的有效性证明。这里只通过 fiberdown 下降到 proper 版本的第 (2) 项。单有 D 有效不足以推出此结论。',
+ inputs:['f 是正规簇间 projective birational 态射。','D 为有效 R-Cartier 除子，−D 为 f-nef。','需要真实连通纤维、纤维内曲线及交数的几何实现。'],
+ steps:[['假定纤维遇到支撑','若该纤维不包含在支撑内，取遇到支撑但不被包含的纤维内曲线 C。'],['有效性与 nef 矛盾','D·C>0，而 −D 为 f-nef 给 D·C≤0。因此整条纤维包含在支撑内。'],['独立用途','用于 proper 版本第 (2) 项的支撑下降；第 (1) 项不依赖它。']]
+});
+find('proper').statement='正规簇间 proper birational f，D 为 R-Cartier 且 −D 为 f-nef：第 (1) 项是 D 有效 ⇔ f_*D 有效；第 (2) 项是在 D 有效时的纤维支撑二择一。';
+find('proper').scope='两条独立的目标分支。properreduce 证明第 (1) 项的归约；fiberdown 处理第 (2) 项，不是第 (1) 项的前提。完整几何证明仍未完成。';
+nodes.push(
+ {id:'dvrfoundation',title:'正规一维局部环 ⇒ DVR',status:'done',x:20,y:2040,deps:[],decl:'normal_one_dimensional_local_isDVR',related:['scheme_normal_one_dimensional_stalk_isDVR'],file:'LocalGeometry.lean',paper:'proper',statement:'Noetherian、局部、整闭的整环若 Krull 维数为 1，则为 DVR；已接到真实 integral Scheme 的 stalk。',scope:'复用 mathlib 的 DVR 刻画，DVR 不再作为这条引理的输入。几何余维一与 stalk 维数 1 的对应仍需证明。',inputs:['Noetherian、局部、整闭整环。','ringKrullDim R = 1。'],steps:[['排除域','域的 Krull 维数为 0，与维数 1 矛盾。'],['唯一非零素理想','维数至多 1 使每个非零素理想都等于局部环极大理想。'],['使用已验证刻画','由整闭性与唯一非零素理想得到 PID，排除域后得到 DVR。']]},
+ {id:'valuative',title:'proper 赋值判据：DVR 提升',status:'done',x:20,y:2160,deps:[],decl:'proper_dvr_lift',related:['proper_valuative_lift_unique'],file:'LocalGeometry.lean',paper:'proper',statement:'真实 proper Scheme 态射的 DVR／分式域交换方块存在唯一提升。',scope:'直接接入 mathlib 已证明的 proper 和 separated 赋值判据。双有理应用中的泛点映射和交换方块仍需构造；本节点没有假设提升存在。',inputs:['真实 Scheme 态射 f 及 IsProper f。','DVR R、其分式域 K，以及给定的交换方块。'],steps:[['proper 判据','从 IsProper f 得到 ValuativeCriterion f。'],['存在提升','对 DVR 方块提取提升及两条交换三角形。'],['唯一性','proper 蕴含 separated，其赋值判据给提升唯一。']]},
+ {id:'zmtfinite',title:'mathlib：Zariski 主定理推论',status:'done',x:20,y:2280,deps:[],decl:'proper_quasiFinite_isFinite',related:['proper_finite_fiber_neighborhood'],file:'LocalGeometry.lean',paper:'support',statement:'proper + quasi-finite ⇒ finite；proper 态射的有限纤维有邻域使限制态射 finite。',scope:'这是 mathlib 已完成定理的复用，已在项目固定版本编译。不等于已证明正规底上的 finite birational 态射为同构，也不等于已证明 exceptional 点的曲线存在。',inputs:['IsProper f；第一条另需 LocallyQuasiFinite f。','第二条需 (f⁻¹{y}).Finite。'],steps:[['已有定理','复用 IsFinite.of_isProper_of_locallyQuasiFinite。'],['有限纤维邻域','复用 exists_isFinite_morphismRestrict_of_finite_preimage_singleton。'],['仍需几何桥接','结合双有理性与正规性得到同构，再连接正维纤维中的曲线存在。']]}
+);
+find('codimone').deps=['dvrfoundation','valuative'];
+find('codimone').inputs=['正规一维 Noetherian 局部环为 DVR 已证明；仍需识别几何余维一和 stalk 维数。','proper 赋值方块存在唯一提升已接入；仍需构造双有理泛点方块并推出邻域同构。','从同构开集构造严格变换及实际 stalk 同构。'];
+find('cover').deps=['zmtfinite'];
+find('cover').inputs=['Zariski 主定理及 proper quasi-finite ⇒ finite 已在 mathlib；仍需 finite birational 到正规底的同构推论。','正维射影纤维中经过指定点的曲线存在性。'];
+
+// Exact upstream sources used by the verified library integrations.
+const mathlibSource='https://github.com/leanprover-community/mathlib4/blob/2a885768dae569d938bb9ff3474da6a8753bb90a/Mathlib/';
+find('dvrfoundation').upstream=[['mathlib · DVR characterization',mathlibSource+'RingTheory/DiscreteValuationRing/TFAE.lean']];
+find('valuative').upstream=[['mathlib · Valuative criterion',mathlibSource+'AlgebraicGeometry/ValuativeCriterion.lean']];
+find('zmtfinite').upstream=[['mathlib · Zariski’s main theorem',mathlibSource+'AlgebraicGeometry/ZariskisMainTheorem.lean']];
+find('geomcycle').upstream=[['mathlib · Actual algebraic cycles',mathlibSource+'AlgebraicGeometry/AlgebraicCycle/Basic.lean']];

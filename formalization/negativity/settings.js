@@ -1,4 +1,4 @@
-import {t} from './i18n.js?v=20261001-formal-6';
+import {t} from './i18n.js?v=20261001-formal-7';
 const defaults={node:18,detail:17,ui:14,width:390};
 export function installSettings(){
   let stored={};try{stored=JSON.parse(localStorage.getItem('formalization-typography')||'{}');}catch{}
