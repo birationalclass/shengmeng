@@ -1,4 +1,4 @@
-import {t,english,englishStatuses} from './i18n.js?v=20261001-formal-2';
+import {t,english,englishStatuses} from './i18n.js?v=20261001-formal-3';
 // Perspective projection of the same curated proof DAG; no new proof dependencies.
 export function createSpatialGraph({host,nodes,select,relation}) {
   const byId=new Map(nodes.map(n=>[n.id,n])), depths=new Map();
