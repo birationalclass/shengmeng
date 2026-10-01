@@ -4,6 +4,12 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'StrictTransform.lean': ['geometricStrictTransform_image', 'geometricStrictTransform_injective', 'geometric_exceptional_iff', 'scheme_cycle_strictTransform_coefficient', 'weilCycleCoefficients_pushforward'],
+    'CartierPushPull.lean': ['proper_birational_weil_cycle_pushforward', 'exists_cartierAtlas_pullback_pushforward', 'cartierAtlas_real_sum_isWeilDivisor', 'exists_realCartier_pullback_pushforward', 'exists_realCartier_effectivity_descent'],
+    'CartierPullback.lean': ['dominant_genericPoint_eq', 'dominantFunctionFieldMap_stalk', 'exists_cartierAtlas_pullback', 'dominantFunctionFieldMap_order_of_stalk_iso'],
+    'CartierAtlas.lean': ['cartierAtlas_order_agrees', 'schemeRationalOrder_zero_of_unit_germs', 'finite_schemeRationalOrder_on_affine', 'cartierAtlas_coefficient_eq', 'cartierAtlas_locallyFiniteSupport', 'cartierAtlas_weilCycle_isWeilDivisor', 'cartierAtlas_weilCycle_eq_of_unit_transitions', 'cartierAtlas_weilCycle_finite_support'],
+    'CodimensionSupport.lean': ['finite_heightOne_primes_containing', 'finite_codimensionOne_nonunit_germs'],
+    'FractionFieldOrders.lean': ['dvr_rationalOrder_represents', 'dvr_rationalOrder_unit', 'dvr_rationalOrder_mul', 'dvr_rationalOrder_unit_transition'],
     'CodimensionOne.lean': ['generic_stalk_dominant', 'normal_codimensionOne_stalk_isDVR', 'separated_dominant_section_isIso', 'proper_birational_isIso_near_DVR', 'proper_birational_isIso_near_codimensionOne', 'proper_birational_isIso_on_codimensionOne_open', 'stalkMap_isIso_over_isomorphism_open', 'proper_birational_codimensionOne_unique_preimage', 'proper_birational_surjective'],
     'HartshorneGraph.lean': ['isIso_over_dense_open_section', 'hartshorne_graph_closure'],
     'RelativeNumerics.lean': ['relative_nef_neg_iff', 'relative_curvePositive_neg_iff'],
@@ -90,7 +96,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

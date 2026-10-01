@@ -100,3 +100,59 @@ import Negativity
 #print axioms Negativity.rationalInfinityOrder_eq
 #print axioms Negativity.rationalFunction_principal_degree_zero
 #print axioms Negativity.normal_affine_sections
+
+#print axioms Negativity.dvr_rationalOrder_represents
+
+#print axioms Negativity.dvr_rationalOrder_unit
+
+#print axioms Negativity.dvr_rationalOrder_mul
+
+#print axioms Negativity.dvr_rationalOrder_unit_transition
+
+#print axioms Negativity.finite_heightOne_primes_containing
+
+#print axioms Negativity.finite_codimensionOne_nonunit_germs
+
+#print axioms Negativity.cartierAtlas_order_agrees
+
+#print axioms Negativity.schemeRationalOrder_zero_of_unit_germs
+
+#print axioms Negativity.finite_schemeRationalOrder_on_affine
+
+#print axioms Negativity.cartierAtlas_coefficient_eq
+
+#print axioms Negativity.cartierAtlas_locallyFiniteSupport
+
+#print axioms Negativity.cartierAtlas_weilCycle_isWeilDivisor
+
+#print axioms Negativity.cartierAtlas_weilCycle_eq_of_unit_transitions
+
+#print axioms Negativity.cartierAtlas_weilCycle_finite_support
+
+#print axioms Negativity.dominant_genericPoint_eq
+
+#print axioms Negativity.dominantFunctionFieldMap_stalk
+
+#print axioms Negativity.exists_cartierAtlas_pullback
+
+#print axioms Negativity.dominantFunctionFieldMap_order_of_stalk_iso
+
+#print axioms Negativity.proper_birational_weil_cycle_pushforward
+
+#print axioms Negativity.exists_cartierAtlas_pullback_pushforward
+
+#print axioms Negativity.cartierAtlas_real_sum_isWeilDivisor
+
+#print axioms Negativity.exists_realCartier_pullback_pushforward
+
+#print axioms Negativity.exists_realCartier_effectivity_descent
+
+#print axioms Negativity.geometricStrictTransform_image
+
+#print axioms Negativity.geometricStrictTransform_injective
+
+#print axioms Negativity.geometric_exceptional_iff
+
+#print axioms Negativity.scheme_cycle_strictTransform_coefficient
+
+#print axioms Negativity.weilCycleCoefficients_pushforward

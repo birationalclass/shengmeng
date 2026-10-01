@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T02:18:33+08:00",
+  "checkedAt": "2026-10-02T03:07:44+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "2c7299758fbdc6a587e01390d1485af0461eec0aa1fba5e2c584e02cb46924cd"
+      "sha256": "2b0b7ced13e105aae6440cfe8109137338f7cf7ecf17373d1f0773e27d665d31"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "f9c8cc56ce8973ef70786fd6b6da5e9f56247258814a7c33fbd97c3ad60e0b35"
+      "sha256": "30c5a30b26ad8d65c08cd56f2a76379b0d4b612cfb9f8cde69bcbf5829784240"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,30 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/StrictTransform.lean",
+      "sha256": "b793cc989e6bd3cc4e1afe9da1b4f60c975f989049034ee3a62e064d95030ab4"
+    },
+    {
+      "path": "Negativity/CartierPushPull.lean",
+      "sha256": "f0daa558d2e8ceec9f36d59940de9e84ed1d4730caa046bc1b90e229e81e1a28"
+    },
+    {
+      "path": "Negativity/CartierPullback.lean",
+      "sha256": "0614a8ab8b1b31e5f9d15f018aa70f58a3a04d4c0e4277e0248e5b6cc45d2824"
+    },
+    {
+      "path": "Negativity/CartierAtlas.lean",
+      "sha256": "85fa6f66cb3edd174e05cb896ba102df8ef7e801808b355f30c79cb1b02bf577"
+    },
+    {
+      "path": "Negativity/CodimensionSupport.lean",
+      "sha256": "1473ad5fb7caabe7f7dd923b332749f99e30cd6ff3dedb3d20eeeacc7ae3dc1d"
+    },
+    {
+      "path": "Negativity/FractionFieldOrders.lean",
+      "sha256": "f99eb73c65200f1bb209c6011e4b99d299a2228980765479c60f2d776efd2ad2"
     },
     {
       "path": "Negativity/CodimensionOne.lean",
@@ -114,6 +138,286 @@
     }
   ],
   "declarations": {
+    "geometricStrictTransform_image": {
+      "path": "Negativity/StrictTransform.lean",
+      "line": 24,
+      "code": "theorem geometricStrictTransform_image {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y] (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) (y : PrimeDivisorPoint Y) :\n    f (geometricStrictTransform hnY f hf y) = y := by\n  have := hnY y\n  exact (proper_birational_codimensionOne_unique_preimage f hf y y.2).choose_spec.1",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "geometricStrictTransform_injective": {
+      "path": "Negativity/StrictTransform.lean",
+      "line": 32,
+      "code": "theorem geometricStrictTransform_injective {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y] (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) :\n    Function.Injective (geometricStrictTransform hnY f hf) := by\n  intro y z h\n  apply Subtype.ext\n  have hh := congrArg (fun x : PrimeDivisorPoint X ↦ f x) h\n  simpa only [geometricStrictTransform_image] using hh",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "geometric_exceptional_iff": {
+      "path": "Negativity/StrictTransform.lean",
+      "line": 44,
+      "code": "theorem geometric_exceptional_iff {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y] (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) (x : PrimeDivisorPoint X) :\n    ExceptionalIndex (geometricStrictTransform hnY f hf) x ↔ Order.coheight (f x) ≠ 1 := by\n  classical\n  constructor\n  · intro hx hy\n    have := hnY (f x)\n    let h := proper_birational_codimensionOne_unique_preimage f hf (f x) hy\n    apply hx\n    refine ⟨⟨f x, hy⟩, ?_⟩\n    apply Subtype.ext\n    exact (h.choose_spec.2.2.2 x rfl).symm\n  · intro hy hx\n    obtain ⟨y, rfl⟩ := hx\n    rw [geometricStrictTransform_image] at hy\n    exact hy y.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "scheme_cycle_strictTransform_coefficient": {
+      "path": "Negativity/StrictTransform.lean",
+      "line": 64,
+      "code": "theorem scheme_cycle_strictTransform_coefficient {X Y : Scheme} [IsIntegral X]\n    [IsIntegral Y] [IsLocallyNoetherian Y]\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (E : AlgebraicCycle X ℝ) (y : PrimeDivisorPoint Y) :\n    AlgebraicCycle.map f Order.coheight Order.coheight E y =\n      E (geometricStrictTransform hnY f hf y) := by\n  classical\n  have := hnY y\n  let h := proper_birational_codimensionOne_unique_preimage f hf y y.2\n  let x := geometricStrictTransform hnY f hf y\n  have hxy : f x = y := geometricStrictTransform_image hnY f hf y\n  have : IsIso (f.stalkMap (x : X)) := h.choose_spec.2.1\n  change (∑ᶠ z ∈ f.base ⁻¹' {(y : Y)}, E z *\n    (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight z : ℝ)) = E x\n  have hsingle : ∀ z : X, z ≠ x →\n      (∑ᶠ (_ : z ∈ f.base ⁻¹' {(y : Y)}), E z *\n        (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight z : ℝ)) = 0 := by\n    intro z hz\n    have hzy : f z ≠ y := fun he ↦ hz (h.choose_spec.2.2.2 z he)\n    simp [Set.mem_preimage, Set.mem_singleton_iff, hzy]\n  rw [finsum_eq_single _ (x : X) hsingle]\n  have hweight : Order.coheight (x : X) = Order.coheight (f x) := by rw [x.2, hxy, y.2]\n  rw [scheme_mapCoeff_of_same_weight f Order.coheight Order.coheight x hweight,\n    scheme_residueDegree_of_stalk_iso]\n  simp [hxy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "weilCycleCoefficients_pushforward": {
+      "path": "Negativity/StrictTransform.lean",
+      "line": 100,
+      "code": "theorem weilCycleCoefficients_pushforward {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y] [CompactSpace X] [CompactSpace Y]\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) (E : AlgebraicCycle X ℝ) :\n    weilCycleCoefficients Y (AlgebraicCycle.map f Order.coheight Order.coheight E) =\n      birationalPush (geometricStrictTransform hnY f hf)\n        (geometricStrictTransform_injective hnY f hf) (weilCycleCoefficients X E) := by\n  ext y\n  exact scheme_cycle_strictTransform_coefficient hnY f hf E y",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_birational_weil_cycle_pushforward": {
+      "path": "Negativity/CartierPushPull.lean",
+      "line": 14,
+      "code": "theorem proper_birational_weil_cycle_pushforward {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian Y]\n    {R : Type*} [Semiring R]\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (D : AlgebraicCycle Y R) (E : AlgebraicCycle X R)\n    (hD : AlgebraicCycle.IsWeilDivisor D) (hE : AlgebraicCycle.IsWeilDivisor E)\n    (hcoeff : ∀ x : X, Order.coheight (f x) = 1 → E x = D (f x)) :\n    AlgebraicCycle.map f Order.coheight Order.coheight E = D := by\n  classical\n  ext y\n  change (∑ᶠ x ∈ f.base ⁻¹' {y}, E x *\n    (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight x : R)) = D y\n  by_cases hy : Order.coheight y = 1\n  · have := hnY y\n    obtain ⟨x, hxy, hstalk, hx, huniq⟩ :=\n      proper_birational_codimensionOne_unique_preimage f hf y hy\n    have : IsIso (f.stalkMap x) := hstalk\n    have hsingle : ∀ z : X, z ≠ x →\n        (∑ᶠ (_ : z ∈ f.base ⁻¹' {y}), E z *\n          (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight z : R)) = 0 := by\n      intro z hz\n      have hzy : f z ≠ y := fun h ↦ hz (huniq z h)\n      simp [Set.mem_preimage, Set.mem_singleton_iff, hzy]\n    rw [finsum_eq_single _ x hsingle]\n    have hweight : Order.coheight x = Order.coheight (f x) := by rw [hx, hxy, hy]\n    rw [scheme_mapCoeff_of_same_weight f Order.coheight Order.coheight x hweight,\n      scheme_residueDegree_of_stalk_iso]\n    simp [hxy, hcoeff x (by rwa [hxy])]\n  · have hDy : D y = 0 := by\n      by_contra h\n      exact hy (hD h)\n    rw [hDy]\n    apply finsum_eq_zero_of_forall_eq_zero\n    intro x\n    by_cases hxy : f x = y\n    · by_cases hEx : E x = 0\n      · simp [hEx]\n      · have hx : Order.coheight x = 1 := hE hEx\n        have hdrop : Order.coheight x ≠ Order.coheight (f x) := by\n          rw [hx, hxy]\n          exact Ne.symm hy\n        simp [scheme_mapCoeff_zero_of_drop f Order.coheight Order.coheight x hdrop]\n    · simp [Set.mem_preimage, Set.mem_singleton_iff, hxy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_cartierAtlas_pullback_pushforward": {
+      "path": "Negativity/CartierPushPull.lean",
+      "line": 62,
+      "code": "theorem exists_cartierAtlas_pullback_pushforward {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : Surjective f := proper_birational_surjective f hf\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map\n          (dominantFunctionFieldMap f : _ →* _) (A.equation (A.covers (f z)).choose)) ∧\n      AlgebraicCycle.map f Order.coheight Order.coheight (B.weilCycle hnX) =\n        A.weilCycle hnY := by\n  classical\n  have : Surjective f := proper_birational_surjective f hf\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_pullback f A\n  refine ⟨B, hB, ?_⟩\n  apply proper_birational_weil_cycle_pushforward hnY f hf _ _\n    (cartierAtlas_weilCycle_isWeilDivisor Y hnY A)\n    (cartierAtlas_weilCycle_isWeilDivisor X hnX B)\n  intro x hy\n  have := hnY (f x)\n  obtain ⟨w, hw, hstalk, hwc, huniq⟩ :=\n    proper_birational_codimensionOne_unique_preimage f hf (f x) hy\n  have hwx : x = w := huniq x rfl\n  have hx : Order.coheight x = 1 := hwx ▸ hwc\n  have : IsIso (f.stalkMap x) := hwx ▸ hstalk\n  obtain ⟨z, hz⟩ := B.covers x\n  obtain ⟨hle, _, heq⟩ := hB z\n  change B.coefficient hnX x = A.coefficient hnY (f x)\n  rw [cartierAtlas_coefficient_eq X hnX B z x hx hz,\n    cartierAtlas_coefficient_eq Y hnY A (A.covers (f z)).choose (f x) hy (hle hz), heq]\n  exact dominantFunctionFieldMap_order_of_stalk_iso hnX hnY f x hx hy _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_real_sum_isWeilDivisor": {
+      "path": "Negativity/CartierPushPull.lean",
+      "line": 103,
+      "code": "theorem cartierAtlas_real_sum_isWeilDivisor (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} (A : τ → CartierAtlas X ι) (c : τ → ℝ) (s : Finset τ) :\n    AlgebraicCycle.IsWeilDivisor (∑ t ∈ s, (A t).weightedWeilCycle hn (c t)) := by\n  classical\n  induction s using Finset.induction_on with\n  | empty => simpa using (AlgebraicCycle.isWeilDivisor_zero (X := X) (R := ℝ))\n  | @insert t s ht ih =>\n    rw [Finset.sum_insert ht]\n    apply AlgebraicCycle.IsWeilDivisor.add _ ih\n    exact (Function.locallyFinsuppWithin.support_mapRange_subset _ _ _).trans\n      (cartierAtlas_weilCycle_isWeilDivisor X hn (A t))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_pullback_pushforward": {
+      "path": "Negativity/CartierPushPull.lean",
+      "line": 119,
+      "code": "theorem exists_realCartier_pullback_pushforward {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    {ι τ : Type*} (A : τ → CartierAtlas Y ι) (c : τ → ℝ) (s : Finset τ) :\n    letI : Surjective f := proper_birational_surjective f hf\n    ∃ B : τ → CartierAtlas X X,\n      (∀ t z, (B t).chart z ≤ f ⁻¹ᵁ (A t).chart ((A t).covers (f z)).choose ∧\n        z ∈ (B t).chart z ∧ (B t).equation z =\n          Units.map (dominantFunctionFieldMap f : _ →* _)\n            ((A t).equation ((A t).covers (f z)).choose)) ∧\n      AlgebraicCycle.map f Order.coheight Order.coheight\n        (∑ t ∈ s, (B t).weightedWeilCycle hnX (c t)) =\n          ∑ t ∈ s, (A t).weightedWeilCycle hnY (c t) := by\n  classical\n  have : Surjective f := proper_birational_surjective f hf\n  choose B hB using fun t ↦ exists_cartierAtlas_pullback f (A t)\n  refine ⟨B, hB, ?_⟩\n  apply proper_birational_weil_cycle_pushforward hnY f hf _ _\n    (cartierAtlas_real_sum_isWeilDivisor Y hnY A c s)\n    (cartierAtlas_real_sum_isWeilDivisor X hnX B c s)\n  intro x hy\n  have := hnY (f x)\n  obtain ⟨w, hw, hstalk, hwc, huniq⟩ :=\n    proper_birational_codimensionOne_unique_preimage f hf (f x) hy\n  have hwx : x = w := huniq x rfl\n  have hx : Order.coheight x = 1 := hwx ▸ hwc\n  have : IsIso (f.stalkMap x) := hwx ▸ hstalk\n  simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n  apply Finset.sum_congr rfl\n  intro t ht\n  obtain ⟨z, hz⟩ := (B t).covers x\n  obtain ⟨hle, _, heq⟩ := hB t z\n  have hc : (B t).coefficient hnX x = (A t).coefficient hnY (f x) := by\n    rw [cartierAtlas_coefficient_eq X hnX (B t) z x hx hz,\n      cartierAtlas_coefficient_eq Y hnY (A t) ((A t).covers (f z)).choose\n        (f x) hy (hle hz), heq]\n    exact dominantFunctionFieldMap_order_of_stalk_iso hnX hnY f x hx hy _\n  change c t * ((B t).coefficient hnX x : ℝ) = c t * ((A t).coefficient hnY (f x) : ℝ)\n  rw [hc]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_effectivity_descent": {
+      "path": "Negativity/CartierPushPull.lean",
+      "line": 163,
+      "code": "theorem exists_realCartier_effectivity_descent {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    {ι τ : Type*} (A : τ → CartierAtlas Y ι) (c : τ → ℝ) (s : Finset τ) :\n    letI : Surjective f := proper_birational_surjective f hf\n    ∃ B : τ → CartierAtlas X X,\n      (∀ t z, (B t).chart z ≤ f ⁻¹ᵁ (A t).chart ((A t).covers (f z)).choose ∧\n        z ∈ (B t).chart z ∧ (B t).equation z =\n          Units.map (dominantFunctionFieldMap f : _ →* _)\n            ((A t).equation ((A t).covers (f z)).choose)) ∧\n      AlgebraicCycle.map f Order.coheight Order.coheight\n        (∑ t ∈ s, (B t).weightedWeilCycle hnX (c t)) =\n          ∑ t ∈ s, (A t).weightedWeilCycle hnY (c t) ∧\n      (CycleEffective (∑ t ∈ s, (B t).weightedWeilCycle hnX (c t)) →\n        CycleEffective (∑ t ∈ s, (A t).weightedWeilCycle hnY (c t))) := by\n  have : Surjective f := proper_birational_surjective f hf\n  obtain ⟨B, hB, hm⟩ := exists_realCartier_pullback_pushforward hnX hnY f hf A c s\n  refine ⟨B, hB, hm, ?_⟩\n  intro he\n  rw [← hm]\n  exact scheme_cycle_map_effective f Order.coheight Order.coheight _ he",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_genericPoint_eq": {
+      "path": "Negativity/CartierPullback.lean",
+      "line": 13,
+      "code": "theorem dominant_genericPoint_eq {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) [IsDominant f] : f (genericPoint X) = genericPoint Y := by\n  symm\n  apply (genericPoint_spec Y).eq\n  simpa only [Set.image_univ, f.denseRange.closure_range] using\n    (genericPoint_spec X).image f.continuous",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominantFunctionFieldMap_stalk": {
+      "path": "Negativity/CartierPullback.lean",
+      "line": 28,
+      "code": "theorem dominantFunctionFieldMap_stalk {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) [IsDominant f] (x : X) (r : Y.presheaf.stalk (f x)) :\n    dominantFunctionFieldMap f (algebraMap (Y.presheaf.stalk (f x)) Y.functionField r) =\n      algebraMap (X.presheaf.stalk x) X.functionField ((f.stalkMap x).hom r) := by\n  change ((Y.presheaf.stalkSpecializes ((genericPoint_spec Y).specializes trivial) ≫\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      f.stalkMap (genericPoint X)) r) =\n        ((f.stalkMap x ≫ X.presheaf.stalkSpecializes\n          ((genericPoint_spec X).specializes trivial)) r)\n  simp only [TopCat.Presheaf.stalkCongr_inv, ← Category.assoc,\n    TopCat.Presheaf.stalkSpecializes_comp]\n  rw [Scheme.Hom.stalkSpecializes_stalkMap]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_cartierAtlas_pullback": {
+      "path": "Negativity/CartierPullback.lean",
+      "line": 44,
+      "code": "theorem exists_cartierAtlas_pullback {X Y : Scheme} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) [IsDominant f] {ι : Type*} (A : CartierAtlas Y ι) :\n    ∃ B : CartierAtlas X X, ∀ z : X,\n      B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n      B.equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n        (A.equation (A.covers (f z)).choose) := by\n  classical\n  have ha (z : X) : ∃ V : X.Opens, IsAffineOpen V ∧ z ∈ V ∧\n      V ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose := by\n    obtain ⟨_, ⟨V, hV, rfl⟩, hzV, hVle⟩ :=\n      X.isBasis_affineOpens.exists_subset_of_mem_open\n        (A.covers (f z)).choose_spec (f ⁻¹ᵁ A.chart (A.covers (f z)).choose).isOpen\n    exact ⟨V, hV, hzV, hVle⟩\n  choose V hV hzV hle using ha\n  let B : CartierAtlas X X := {\n    chart := V\n    affine := hV\n    nonempty := fun z ↦ ⟨z, hzV z⟩\n    covers := fun z ↦ ⟨z, hzV z⟩\n    equation := fun z ↦ Units.map (dominantFunctionFieldMap f : _ →* _)\n      (A.equation (A.covers (f z)).choose)\n    transition := by\n      intro z w x hz hw\n      obtain ⟨u, hu⟩ := A.transition _ _ (f x) (hle z hz) (hle w hw)\n      refine ⟨Units.map ((f.stalkMap x).hom : _ →* _) u, ?_⟩\n      apply Units.ext\n      have hc := congrArg (fun v : Y.functionFieldˣ ↦\n        dominantFunctionFieldMap f (v : Y.functionField)) hu\n      simp only [Units.val_mul, Units.coe_map, map_mul] at hc\n      change dominantFunctionFieldMap f\n        (algebraMap (Y.presheaf.stalk (f x)) Y.functionField (u : Y.presheaf.stalk (f x))) *\n        dominantFunctionFieldMap f (A.equation (A.covers (f z)).choose : Y.functionField) =\n        dominantFunctionFieldMap f (A.equation (A.covers (f w)).choose : Y.functionField) at hc\n      rw [dominantFunctionFieldMap_stalk f x (u : Y.presheaf.stalk (f x))] at hc\n      exact hc }\n  exact ⟨B, fun z ↦ ⟨hle z, hzV z, rfl⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominantFunctionFieldMap_order_of_stalk_iso": {
+      "path": "Negativity/CartierPullback.lean",
+      "line": 84,
+      "code": "theorem dominantFunctionFieldMap_order_of_stalk_iso {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsDominant f] (x : X) [IsIso (f.stalkMap x)]\n    (hx : Order.coheight x = 1) (hy : Order.coheight (f x) = 1)\n    (a : Y.functionFieldˣ) :\n    schemeRationalOrder X hnX x hx (Units.map (dominantFunctionFieldMap f : _ →* _) a) =\n      schemeRationalOrder Y hnY (f x) hy a := by\n  have := hnX x\n  have := hnY (f x)\n  have := normal_codimensionOne_stalk_isDVR X x hx\n  have := normal_codimensionOne_stalk_isDVR Y (f x) hy\n  let R := Y.presheaf.stalk (f x)\n  obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj (nonZeroDivisors R) (a : Y.functionField)\n  have hs : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hr : r ≠ 0 := by\n    intro hz\n    have hsk : algebraMap R Y.functionField (s : R) ≠ 0 := by\n      simpa only [map_zero] using (IsFractionRing.injective R Y.functionField).ne hs\n    exact mul_ne_zero a.ne_zero hsk (by simpa only [hz, map_zero] using h)\n  have hs' : (f.stalkMap x).hom (s : R) ≠ 0 := by\n    simpa only [map_zero] using (ConcreteCategory.bijective_of_isIso (f.stalkMap x)).1.ne hs\n  have hr' : (f.stalkMap x).hom r ≠ 0 := by\n    simpa only [map_zero] using (ConcreteCategory.bijective_of_isIso (f.stalkMap x)).1.ne hr\n  unfold schemeRationalOrder\n  rw [dvr_rationalOrder_represents _ _ a r s hr hs h]\n  rw [dvr_rationalOrder_represents _ _ _ _ _ hr' hs' (by\n    have hc := congrArg (dominantFunctionFieldMap f) h\n    rw [map_mul, dominantFunctionFieldMap_stalk f x (s : R),\n      dominantFunctionFieldMap_stalk f x r] at hc\n    exact hc)]\n  exact scheme_stalk_fraction_order_of_iso f x r s",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_order_agrees": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 36,
+      "code": "theorem cartierAtlas_order_agrees (X : Scheme) [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x)) {ι : Type*}\n    (A : CartierAtlas X ι) (i j : ι) (x : X) (hx : Order.coheight x = 1)\n    (hi : x ∈ A.chart i) (hj : x ∈ A.chart j) :\n    schemeRationalOrder X hn x hx (A.equation i) =\n      schemeRationalOrder X hn x hx (A.equation j) := by\n  obtain ⟨u, hu⟩ := A.transition i j x hi hj\n  have := hn x\n  have := normal_codimensionOne_stalk_isDVR X x hx\n  unfold schemeRationalOrder\n  rw [← hu, dvr_rationalOrder_unit_transition]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "schemeRationalOrder_zero_of_unit_germs": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 50,
+      "code": "theorem schemeRationalOrder_zero_of_unit_germs (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) [Nonempty U] (a : X.functionFieldˣ) (r s : Γ(X, U))\n    (h : (a : X.functionField) * X.germToFunctionField U s = X.germToFunctionField U r)\n    (x : X) (hxU : x ∈ U) (hx : Order.coheight x = 1)\n    (hr : IsUnit (X.presheaf.germ U x hxU r))\n    (hs : IsUnit (X.presheaf.germ U x hxU s)) :\n    schemeRationalOrder X hn x hx a = 0 := by\n  have := hn x\n  have := normal_codimensionOne_stalk_isDVR X x hx\n  unfold schemeRationalOrder\n  rw [dvr_rationalOrder_represents _ _ a _ _ hr.ne_zero hs.ne_zero (by\n    simpa only [Scheme.algebraMap_germ_eq_germToFunctionField] using h)]\n  simp [LocalFractionOrder, addVal_eq_zero_iff.mpr hr, addVal_eq_zero_iff.mpr hs]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_schemeRationalOrder_on_affine": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 68,
+      "code": "theorem finite_schemeRationalOrder_on_affine (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) (hU : IsAffineOpen U) [Nonempty U] (a : X.functionFieldˣ) :\n    {x : U | ∃ hx : Order.coheight (x : X) = 1,\n      schemeRationalOrder X hn x hx a ≠ 0}.Finite := by\n  have := functionField_isFractionRing_of_isAffineOpen X U hU\n  obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj (nonZeroDivisors Γ(X, U)) (a : X.functionField)\n  have hs : (s : Γ(X, U)) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hr : r ≠ 0 := by\n    intro hz\n    have hsk : algebraMap Γ(X, U) X.functionField (s : Γ(X, U)) ≠ 0 := by\n      simpa only [map_zero] using (IsFractionRing.injective Γ(X, U) X.functionField).ne hs\n    exact mul_ne_zero a.ne_zero hsk (by simpa only [hz, map_zero] using h)\n  apply ((finite_codimensionOne_nonunit_germs X U hU r hr).union\n    (finite_codimensionOne_nonunit_germs X U hU s hs)).subset\n  rintro x ⟨hx, ha⟩\n  by_cases hru : IsUnit (X.presheaf.germ U x x.2 r)\n  · right\n    refine ⟨hx, ?_⟩\n    intro hsu\n    exact ha (schemeRationalOrder_zero_of_unit_germs X hn U a r s h x x.2 hx hru hsu)\n  · exact Or.inl ⟨hx, hru⟩\n\nnoncomputable def CartierAtlas.coefficient {X : Scheme} [IsIntegral X]\n    [IsLocallyNoetherian X] {ι : Type*} (A : CartierAtlas X ι)\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x)) (x : X) : ℤ := by\n  classical\n  exact if hx : Order.coheight x = 1 then\n    schemeRationalOrder X hn x hx (A.equation (A.covers x).choose) else 0",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_coefficient_eq": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 99,
+      "code": "theorem cartierAtlas_coefficient_eq (X : Scheme) [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x)) {ι : Type*}\n    (A : CartierAtlas X ι) (i : ι) (x : X) (hx : Order.coheight x = 1)\n    (hi : x ∈ A.chart i) : A.coefficient hn x = schemeRationalOrder X hn x hx (A.equation i) := by\n  classical\n  simp only [CartierAtlas.coefficient, dite_eq_left hx]\n  exact cartierAtlas_order_agrees X hn A _ i x hx (A.covers x).choose_spec hi",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_locallyFiniteSupport": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 109,
+      "code": "theorem cartierAtlas_locallyFiniteSupport (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) : LocallyFiniteSupport (A.coefficient hn) := by\n  classical\n  intro x\n  obtain ⟨i, hi⟩ := A.covers x\n  have : Nonempty (A.chart i) := A.nonempty i\n  refine ⟨A.chart i, (A.chart i).isOpen.mem_nhds hi, ?_⟩\n  apply ((finite_schemeRationalOrder_on_affine X hn (A.chart i) (A.affine i)\n    (A.equation i)).image Subtype.val).subset\n  rintro y ⟨hy, hcoeff⟩\n  have hcy : A.coefficient hn y ≠ 0 := hcoeff\n  have hc : Order.coheight y = 1 := by\n    by_contra h\n    exact hcy (by simp [CartierAtlas.coefficient, h])\n  refine ⟨⟨y, hy⟩, ⟨hc, ?_⟩, rfl⟩\n  rwa [← cartierAtlas_coefficient_eq X hn A i y hc hy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_weilCycle_isWeilDivisor": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 136,
+      "code": "theorem cartierAtlas_weilCycle_isWeilDivisor (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) : AlgebraicCycle.IsWeilDivisor (A.weilCycle hn) := by\n  classical\n  intro x hx\n  change Order.coheight x = 1\n  by_contra h\n  exact hx (by simp [CartierAtlas.weilCycle, CartierAtlas.coefficient, h])",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_weilCycle_eq_of_unit_transitions": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 148,
+      "code": "theorem cartierAtlas_weilCycle_eq_of_unit_transitions (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι κ : Type*} (A : CartierAtlas X ι) (B : CartierAtlas X κ)\n    (h : ∀ i j (x : X), x ∈ A.chart i → x ∈ B.chart j →\n      ∃ u : (X.presheaf.stalk x)ˣ,\n        Units.map (algebraMap (X.presheaf.stalk x) X.functionField : _ →* _) u *\n          A.equation i = B.equation j) :\n    A.weilCycle hn = B.weilCycle hn := by\n  classical\n  ext x\n  change A.coefficient hn x = B.coefficient hn x\n  by_cases hx : Order.coheight x = 1\n  · obtain ⟨i, hi⟩ := A.covers x\n    obtain ⟨j, hj⟩ := B.covers x\n    rw [cartierAtlas_coefficient_eq X hn A i x hx hi,\n      cartierAtlas_coefficient_eq X hn B j x hx hj]\n    obtain ⟨u, hu⟩ := h i j x hi hj\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    unfold schemeRationalOrder\n    rw [← hu, dvr_rationalOrder_unit_transition]\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_weilCycle_finite_support": {
+      "path": "Negativity/CartierAtlas.lean",
+      "line": 173,
+      "code": "theorem cartierAtlas_weilCycle_finite_support (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) : (A.weilCycle hn).support.Finite :=\n  (A.weilCycle hn).finite_support",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_heightOne_primes_containing": {
+      "path": "Negativity/CodimensionSupport.lean",
+      "line": 16,
+      "code": "theorem finite_heightOne_primes_containing {R : Type*} [CommRing R] [IsDomain R]\n    [IsNoetherianRing R] (r : R) (hr : r ≠ 0) :\n    {p : PrimeSpectrum R | p.asIdeal.height = 1 ∧ r ∈ p.asIdeal}.Finite := by\n  have hi : Function.Injective (fun p : PrimeSpectrum R ↦ p.asIdeal) :=\n    fun p q h ↦ PrimeSpectrum.ext h\n  apply ((Ideal.span {r}).finite_minimalPrimes_of_isNoetherianRing.preimage hi.injOn).subset\n  intro p hp\n  apply Ideal.mem_minimalPrimes_of_height_le\n  · exact Ideal.span_le.mpr (by simpa using hp.2)\n  · rw [hp.1]\n    exact Ideal.one_le_height_span_singleton_of_mem_nonZeroDivisors\n      (mem_nonZeroDivisors_iff_ne_zero.mpr hr)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_codimensionOne_nonunit_germs": {
+      "path": "Negativity/CodimensionSupport.lean",
+      "line": 32,
+      "code": "theorem finite_codimensionOne_nonunit_germs (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (U : X.Opens) (hU : IsAffineOpen U) [Nonempty U]\n    (r : Γ(X, U)) (hr : r ≠ 0) :\n    {x : U | Order.coheight (x : X) = 1 ∧\n      ¬ IsUnit (X.presheaf.germ U x x.2 r)}.Finite := by\n  have : IsNoetherianRing Γ(X, U) := IsLocallyNoetherian.component_noetherian ⟨U, hU⟩\n  have hi : Function.Injective hU.primeIdealOf := hU.isoSpec.hom.isOpenEmbedding.injective\n  apply ((finite_heightOne_primes_containing r hr).preimage hi.injOn).subset\n  intro x hx\n  constructor\n  · rw [idealHeight_eq_coheight]\n    change Order.coheight (hU.isoSpec.hom x) = 1\n    rw [coheight_eq_of_isOpenImmersion]\n    exact (coheight_eq_of_isOpenImmersion (f := U.ι)).symm.trans hx.1\n  · rw [hU.primeIdealOf_eq_map_closedPoint]\n    change X.presheaf.germ U x x.2 r ∈ IsLocalRing.maximalIdeal _\n    exact (IsLocalRing.mem_maximalIdeal _).mpr hx.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_represents": {
+      "path": "Negativity/FractionFieldOrders.lean",
+      "line": 19,
+      "code": "theorem dvr_rationalOrder_represents (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) (r s : R) (hr : r ≠ 0) (hs : s ≠ 0)\n    (heq : (a : K) * algebraMap R K s = algebraMap R K r) :\n    DvrRationalOrder R K a = LocalFractionOrder R r s := by\n  let b := IsLocalization.sec (nonZeroDivisors R) (a : K)\n  have hb : (b.2 : R) ≠ 0 := nonZeroDivisors.ne_zero b.2.2\n  have he : (a : K) * algebraMap R K (b.2 : R) = algebraMap R K b.1 :=\n    IsLocalization.sec_spec (nonZeroDivisors R) (a : K)\n  have hn : b.1 ≠ 0 := by\n    intro hz\n    have hbk : algebraMap R K (b.2 : R) ≠ 0 := by\n      simpa only [map_zero] using (IsFractionRing.injective R K).ne hb\n    have hm := mul_ne_zero a.ne_zero hbk\n    apply hm\n    exact he.trans (by rw [hz, map_zero])\n  apply dvr_fraction_order_well_defined b.1 b.2 r s hn hb hr hs\n  apply IsFractionRing.injective R K\n  simp only [map_mul]\n  rw [← he, ← heq]\n  ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_unit": {
+      "path": "Negativity/FractionFieldOrders.lean",
+      "line": 42,
+      "code": "theorem dvr_rationalOrder_unit (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (u : Rˣ) :\n    DvrRationalOrder R K (Units.map (algebraMap R K : R →* K) u) = 0 := by\n  rw [dvr_rationalOrder_represents R K _ (u : R) 1 u.ne_zero one_ne_zero (by simp)]\n  simp [LocalFractionOrder, addVal_eq_zero_of_unit]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_mul": {
+      "path": "Negativity/FractionFieldOrders.lean",
+      "line": 50,
+      "code": "theorem dvr_rationalOrder_mul (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (a c : Kˣ) :\n    DvrRationalOrder R K (a * c) = DvrRationalOrder R K a + DvrRationalOrder R K c := by\n  obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj (nonZeroDivisors R) (a : K)\n  obtain ⟨⟨t, v⟩, h'⟩ := IsLocalization.surj (nonZeroDivisors R) (c : K)\n  have hs : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hv : (v : R) ≠ 0 := nonZeroDivisors.ne_zero v.2\n  have hsk : algebraMap R K (s : R) ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hs\n  have hvk : algebraMap R K (v : R) ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hv\n  have hr : r ≠ 0 := by\n    intro hz\n    exact mul_ne_zero a.ne_zero hsk (by simpa only [hz, map_zero] using h)\n  have ht : t ≠ 0 := by\n    intro hz\n    exact mul_ne_zero c.ne_zero hvk (by simpa only [hz, map_zero] using h')\n  rw [dvr_rationalOrder_represents R K (a * c) (r*t) (s*v)\n    (mul_ne_zero hr ht) (mul_ne_zero hs hv) (by\n      simp only [Units.val_mul, map_mul]\n      calc\n        (a : K) * (c : K) * (algebraMap R K s * algebraMap R K v) =\n            ((a : K) * algebraMap R K s) * ((c : K) * algebraMap R K v) := by ring\n        _ = algebraMap R K r * algebraMap R K t := by rw [h, h']),\n    dvr_rationalOrder_represents R K a r s hr hs h,\n    dvr_rationalOrder_represents R K c t v ht hv h']\n  have vr : addVal R r ≠ ⊤ := fun h ↦ hr (addVal_eq_top_iff.mp h)\n  have vt : addVal R t ≠ ⊤ := fun h ↦ ht (addVal_eq_top_iff.mp h)\n  have vs : addVal R (s : R) ≠ ⊤ := fun h ↦ hs (addVal_eq_top_iff.mp h)\n  have vv : addVal R (v : R) ≠ ⊤ := fun h ↦ hv (addVal_eq_top_iff.mp h)\n  simp only [LocalFractionOrder, addVal_mul, ENat.toNat_add vr vt,\n    ENat.toNat_add vs vv, Nat.cast_add]\n  ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_unit_transition": {
+      "path": "Negativity/FractionFieldOrders.lean",
+      "line": 87,
+      "code": "theorem dvr_rationalOrder_unit_transition (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (u : Rˣ) (a : Kˣ) :\n    DvrRationalOrder R K (Units.map (algebraMap R K : R →* K) u * a) =\n      DvrRationalOrder R K a := by\n  rw [dvr_rationalOrder_mul, dvr_rationalOrder_unit, zero_add]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "generic_stalk_dominant": {
       "path": "Negativity/CodimensionOne.lean",
       "line": 19,

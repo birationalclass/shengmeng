@@ -1,5 +1,5 @@
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-11';
-import {t} from './i18n.js?v=20261002-formal-11';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-12';
+import {t} from './i18n.js?v=20261002-formal-12';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected}) {
   const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,expandedInputs=false;
@@ -7,7 +7,7 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected}) {
   buildLayout();
   graph.querySelectorAll('.column-label').forEach(e=>e.remove());
   nodes.forEach(n=>{const p=layout.get(n.id)||{x:0,y:0,h:150*factor},b=graph.querySelector(`[data-node="${n.id}"]`);b.style.left=p.x+'px';b.style.top=p.y+'px';b.style.height=p.h+'px';b.style.setProperty('--node-x',p.x+'px');b.style.setProperty('--node-y',p.y+'px');b.innerHTML='';const heading=document.createElement('b');heading.className='node-heading';heading.textContent=n.title;heading.title=n.title;b.append(heading);const sockets=document.createElement('div');sockets.className='node-sockets';
-    if(!n.deps.length){const row=document.createElement('span');row.className='node-input empty-input';row.textContent='';sockets.append(row);}n.deps.forEach(id=>{const row=document.createElement('span');row.className='node-input';row.textContent=byId.get(id).title;row.title=byId.get(id).title;sockets.append(row);});b.append(sockets);const output=document.createElement('span');output.className='node-output';output.textContent=t('结论');b.append(output);const status=document.createElement('small');status.className=n.status;status.textContent=t(({done:'✓ 模型内已验证',conditional:'◐ 条件式已验证',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status]);b.append(status);const rel=document.createElement('span');rel.className='relation-tag';b.append(rel);});
+    if(!n.deps.length){const row=document.createElement('span');row.className='node-input empty-input';row.textContent='';sockets.append(row);}n.deps.forEach(id=>{const row=document.createElement('span');row.className='node-input';row.textContent=byId.get(id).title;row.title=byId.get(id).title;sockets.append(row);});b.append(sockets);const output=document.createElement('span');output.className='node-output';output.textContent=t('结论');b.append(output);const status=document.createElement('small');status.className=n.status;status.textContent=t(({done:'✓ Lean 已验证',conditional:'◐ 条件式已验证',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status]);b.append(status);const rel=document.createElement('span');rel.className='relation-tag';b.append(rel);});
   const inputRail=document.createElement('div');inputRail.className='base-input-rail';
   const railLabel=document.createElement('span'),railToggle=document.createElement('button');
   railToggle.type='button';railToggle.className='input-rail-toggle';

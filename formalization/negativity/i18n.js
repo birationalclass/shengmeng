@@ -1,6 +1,6 @@
 export const language=new URLSearchParams(location.search).get('lang')||localStorage.getItem('formalization-language')||'zh';
 export const english=language==='en';
-export const englishStatuses={done:'✓ Verified in model',conditional:'◐ Verified conditionally',assumption:'◇ Assumed input',pending:'○ Open geometric goal'};
+export const englishStatuses={done:'✓ Verified by Lean',conditional:'◐ Verified conditionally',assumption:'◇ Assumed input',pending:'○ Open geometric goal'};
 // Node translations preserve the distinction between model proofs and geometric inputs.
 const entries={
 dvrfoundation:['Normal one-dimensional local ring ⇒ DVR','A Noetherian integrally closed local domain of Krull dimension one is a DVR; this is connected to actual integral Scheme stalks.','Reuses the verified mathlib DVR characterization. DVR is not assumed here. Identifying geometric codimension one with stalk dimension one remains open.',['Noetherian integrally closed local domain.','ringKrullDim R = 1.'],[['Exclude fields','A field has Krull dimension zero.'],['Nonzero primes','Dimension at most one makes each nonzero prime the maximal ideal.'],['DVR characterization','Integral closure and the prime condition give a PID; excluding fields gives a DVR.']]],
@@ -580,9 +580,182 @@ entries.strict[4][1][1]='The actual isomorphism open, unique codimension-one pre
 entries.projection[4][2][1]='Follow norms and valuations: use the verified k(t) principal degree zero, prove ord_p(Na)=Σ_q f_q ord_q(a), identify all closed points of the complete curve, and define line-bundle degree independently of the rational section.';
 
 entries.pushpull[2]='Actual cycle coefficient push-pull is verified, and the codimension-one isomorphism open and stalks are now proved from normal proper birational geometry. Actual Cartier local equations and pullback Weil cycles, prime-point closures and dimension weights still need to instantiate the identity.';
+
+Object.assign(entries,{
+  "localcartier": [
+    "Cartier equations and actual Weil divisors",
+    "Construct a mathlib Weil divisor from Cartier equations on an actual integral normal locally Noetherian Scheme. Unit transitions glue the orders; support is locally finite and the result is independent of equivalent presentations.",
+    "Actual geometric construction is verified. The input atlas is Cartier local-equation data: nonzero rational equations and units in actual stalks. Coefficient equality, finite support and an existing Weil cycle are not assumed. Support is globally finite on a quasi-compact scheme.",
+    [
+      "X integral and locally Noetherian, with actual integrally closed stalks.",
+      "Cartier data: affine cover, nonzero rational equations, and actual local unit transitions."
+    ],
+    [
+      [
+        "Glue by units",
+        "Actual regular units have order zero, so chart coefficients agree."
+      ],
+      [
+        "Prove local finiteness",
+        "In any dimension, support lies in finitely many height-one primes containing the numerator or denominator."
+      ],
+      [
+        "Construct the Weil divisor",
+        "Glue actual orders into AlgebraicCycle and prove codimension-one support."
+      ],
+      [
+        "Presentation independence",
+        "Equivalent unit equations on different covers yield the same actual Weil divisor."
+      ]
+    ]
+  ],
+  "strict": [
+    "Actual strict transforms and pushforward coefficients",
+    "Construct the strict-transform injection on actual codimension-one generic points. Actual cycle pushforward reads its coefficient; ExceptionalIndex means the image is not codimension one.",
+    "The original finite-support model is instantiated: weilCycleCoefficients_pushforward identifies birationalPush with actual AlgebraicCycle.map. Prime divisors are represented by generic points, as in mathlib cycles. Neither the strict injection nor multiplicity one is assumed.",
+    [
+      "X and Y integral; Y locally Noetherian with integrally closed actual stalks.",
+      "A proper birational morphism. Quasi-compact X and Y are used for finite coefficient vectors."
+    ],
+    [
+      [
+        "Construct strict transforms",
+        "Choose the unique actual prime point from the codimension-one isomorphism theorem."
+      ],
+      [
+        "Identify exceptional primes",
+        "The strict-transform image is exactly source primes mapping to codimension one."
+      ],
+      [
+        "Compute actual coefficients",
+        "Unique preimages and residue degree one give coeff_Q(f_*D)=coeff_Q̃(D)."
+      ],
+      [
+        "Instantiate the original model",
+        "Use actual finite cycle support to construct Finsupp and identify birationalPush."
+      ]
+    ]
+  ],
+  "pushpull": [
+    "Actual real Cartier push-pull identity",
+    "Actual Cartier pullback along a proper birational morphism of integral normal schemes satisfies f_*(f*D)=D, including finite real combinations.",
+    "Actual pullback atlases and Weil cycles are constructed. Coefficient equality and multiplicity one follow from actual codimension-one stalk isomorphisms. Uses actual coheight weights and AlgebraicCycle.map; no hleft, hcoeff, arbitrary lifted cycle or exceptional-weight assumption.",
+    [
+      "X and Y integral, normal and locally Noetherian; f proper birational.",
+      "D is a finite real combination of actual Cartier atlases. Pullback atlases are constructed in the proof."
+    ],
+    [
+      [
+        "Construct actual pullback",
+        "Choose affine neighborhoods inside inverse-image charts and prove local unit compatibility."
+      ],
+      [
+        "Compare codimension-one orders",
+        "Actual isomorphic stalks preserve the DVR order of pulled-back equations."
+      ],
+      [
+        "Actual cycle push-pull",
+        "Unique codimension-one preimages have residue degree one; other weights contribute zero."
+      ],
+      [
+        "Real coefficients",
+        "Prove the identity directly for finite real combinations of actual Cartier cycles."
+      ]
+    ]
+  ],
+  "effdown": [
+    "Actual real Cartier effectivity descent",
+    "Construct actual pullback: effectivity of its Weil cycle implies effectivity of the original real Cartier Weil cycle.",
+    "Push-pull is established inside the proof; hleft is no longer required. Effective pullback is the mathematical condition when applying descent, not an open bridge. The projective negativity theorem producing that condition remains open.",
+    [
+      "A proper birational map of integral normal locally Noetherian schemes.",
+      "D is a finite real combination of actual Cartier atlases.",
+      "When applying descent, the constructed pullback is effective."
+    ],
+    [
+      [
+        "Construct and prove push-pull",
+        "Internally prove f_*(f*D)=D for the constructed real Cartier pullback."
+      ],
+      [
+        "Push forward effective cycles",
+        "Actual cycle pushforward preserves nonnegative coefficients; use the proved identity."
+      ]
+    ]
+  ],
+  "rationalorder": [
+    "DVR order of actual rational equations",
+    "The order of a nonzero fraction-field element is representation-independent, additive under multiplication and unchanged by actual local unit transitions.",
+    "Uses actual IsFractionRing numerators and denominators and DVR addVal, rather than an arbitrary pairing.",
+    [
+      "An actual DVR R with fraction field K; a nonzero rational equation in K."
+    ],
+    [
+      [
+        "Representation independence",
+        "Every nonzero numerator/denominator representation gives the same order."
+      ],
+      [
+        "Unit transitions",
+        "Actual local units have zero order; multiplicativity gives transition invariance."
+      ]
+    ]
+  ],
+  "divisorsupport": [
+    "Cartier support finiteness in every dimension",
+    "A nonzero Noetherian-domain element belongs to finitely many height-one primes. Actual affine Scheme codimension-one nonunit-germ points are finite.",
+    "Proved using finitely many minimal primes over a principal ideal. No Dedekind-ring restriction or finite-support input.",
+    [
+      "A nonzero section on a nonempty affine open of an integral locally Noetherian scheme."
+    ],
+    [
+      [
+        "Minimal primes",
+        "Height-one primes containing r are minimal over (r)."
+      ],
+      [
+        "Actual affine points",
+        "Identify ideal height and nonunit germs with geometric coheight and prime membership."
+      ]
+    ]
+  ],
+  "cartierpullback": [
+    "Actual Cartier equation pullback",
+    "Construct function-field pullback and Cartier pullback atlases from a dominant Scheme morphism; prove the generic/local-ring square, unit transitions and order invariance at isomorphic stalks.",
+    "The affine cover and rational equations are constructed. Compatibility follows from actual stalkSpecializes_stalkMap, rather than a supplied pullback cycle or compatibility equality.",
+    [
+      "An actual dominant morphism between integral schemes and a Cartier equation atlas.",
+      "Normal locally Noetherian schemes and an actual stalk isomorphism for order comparison."
+    ],
+    [
+      [
+        "Function-field pullback",
+        "Dominant morphisms map actual generic points to generic points."
+      ],
+      [
+        "Actual commuting square",
+        "Generic pullback commutes with actual local-ring maps."
+      ],
+      [
+        "Pullback atlas",
+        "Choose affine inverse-image neighborhoods and prove unit transitions for pulled-back equations."
+      ],
+      [
+        "Order comparison",
+        "Pulled-back fractions and actual stalk isomorphisms preserve DVR order."
+      ]
+    ]
+  ]
+});
+entries.negative[2]='The coefficient implication is verified. strict now constructs actual strict transforms and identifies ExceptionalIndex with source primes whose image is not codimension one.';
+entries.chow[2]='Actual Cartier pullback, Weil cycles, real-coefficient push-pull and effectivity descent are verified. The Hartshorne finite-affine-cover projectivity construction, finite normalization and curve-intersection/support properties remain open.';
+entries.chow[3][2]='Actual real Cartier push-pull and effectivity descent are verified. Curve projection, support preimages and finite normalization remain open.';
+entries.localorder[2]='DVR orders and residue degrees are verified. Actual Cartier atlases, function-field pullback and strict transforms now identify geometric coefficients and prove push-pull.';
+entries.projection[2]+=' Actual Cartier equation pullback and underlying Weil cycles are now verified; complete-curve line-bundle degree and intersection compatibility remain open.';
+entries.chow[4][2][1]='Finite normalization, curve projection and support preimages remain open. Actual real Cartier pullback, push-pull and effectivity descent are verified.';
 export function translateNodes(nodes){return nodes.map(n=>{if(!english)return n;const [title,statement,scope,inputs,steps]=entries[n.id];return {...n,title,statement,scope,inputs,steps:steps.map((s,i)=>[...s,n.steps[i]?.[2]])};});}
 const pairs=[['展开纸牌','Spread cards'],['折叠纸牌','Stack cards'],['展开输入','Expand inputs'],['收起输入','Collapse inputs'],['所选及直接前提','Selected + direct premises'],['设置','Settings'],['阅读设置','Reading settings'],['字号独立于图谱缩放，设置自动保存在本机。','Font size is independent of graph zoom. Settings are saved locally.'],['节点字号','Node font size'],['证明详情字号','Proof detail font size'],['工具栏字号','Toolbar font size'],['详情面板宽度','Detail panel width'],['数学证明的阅读预览','Mathematical proof reading preview'],['恢复默认','Reset defaults'],['中文 / EN','ZH / EN'],['基础输入','Base inputs'],['结论','Result'],['显示全部 · Home','Frame all · Home'],['显示全部','Frame all'],['聚焦所选 · 小数点键','Frame selected · decimal key'],['聚焦所选','Frame selected'],['放大','Zoom in'],['缩小','Zoom out'],['缩放比例','Zoom level'],['节点编辑区：拖动空白平移，滚轮缩放，Home 显示全部，小数点键聚焦。','Node editor: drag the background to pan, wheel to zoom, Home to frame all, decimal key to frame selected.'],['关闭','Close'],['详情','Details'],['节点工作区参考 ','The workspace follows '],[' 的接口连线与视图导航。形式化图谱参考 ',' sockets, links and view navigation. The proof atlas is inspired by '],['个已验证定理','verified theorems'],['证明步骤与依赖','Proof steps and dependencies'],['中英文阅读','Bilingual reading'],['首个形式化项目','FIRST FORMALIZATION PROJECT'],['从数学证明到 Lean','From mathematics to Lean'],['打开工作区 ↗','Open workspace ↗'],['只看直接前提','Direct premises only'],['切换中英文','Switch language'],['全屏显示','Fullscreen'],['放大三维图','Zoom in'],['缩小三维图','Zoom out'],['可点击的证明依赖图','Interactive proof dependency graph'],['图谱视角','Graph view'],['所选证明步骤','Selected proof step'],['节点详情','Node details'],['Negativity lemma 原始证明 PDF','Negativity lemma original proof PDF'],['三维证明依赖图。拖动旋转，滚轮缩放；键盘方向键旋转，加减键缩放。','3D proof dependency graph. Drag to orbit, wheel to zoom. Arrow keys rotate; plus/minus zoom.'],['返回主页 ↗','Homepage ↗'],['数学 · 证明 · 可追溯的验证','MATHEMATICS · PROOFS · TRACEABLE VERIFICATION'],['看见证明的每一层。','See every layer of a proof.'],['从一条定理出发，沿着依赖追问：它用了什么？哪些推导已经通过 Lean，哪些几何结论仍作为假设？','Start with a theorem and follow its premises: which steps are verified in Lean, and which geometric results remain assumptions?'],['负性引理 · 从有限系数到双有理几何','Negativity · from finite coefficients to birational geometry'],['数值与系数核心已验证；几何接口仍待接入。点击节点，深入证明依赖、原始论证和 Lean 源码。','Numerical, coefficient and descent arguments are verified. Geometric interfaces remain open. Explore dependencies, original arguments and Lean source.'],['◐ 部分完成 · 条件式定理已验证','◐ In progress · conditional theorems verified'],['有限系数','Finite coefficients'],['几何假设','Geometric inputs'],['条件式 negativity','Conditional negativity'],['完整几何定理','Full geometric theorem'],['探索证明图谱 ↗','Explore the proof atlas ↗'],['如何读这张证明地图','Reading the proof atlas'],['“暂作假设”表示一个尚未从几何定义证明的输入，不表示代码中新增了 axiom。每个已验证节点都附有对应源码与验证记录。','An assumed input has not yet been proved from geometric definitions; it is not a new Lean axiom. Each verified node links to source and evidence.'],['查看验证依据 →','Verification evidence →'],
-['形式化验证','Formalization'],['证明图谱','Proof atlas'],['原始证明','Original proof'],['验证记录','Verification evidence'],['一条证明，沿依赖逐层展开。','Explore a proof through its dependencies.'],['数值核心已通过 Lean。完整的几何定理仍在建设中。','The numerical core is verified in Lean. The full geometric theorem is under construction.'],['下载 Lean 工程 ↓','Download Lean project ↓'],['原始证明 PDF ↗','Original proof PDF ↗'],['证明依赖地图','Proof dependency atlas'],['点击结论查看它依赖的步骤，再点击依赖继续深入。箭头从前提指向结论。','Select a result to explore its premises. Arrows run from premises to conclusions.'],['展开图谱','Expand atlas'],['恢复分栏','Restore panels'],['✓ 模型内已验证',englishStatuses.done],['◐ 条件式已验证',englishStatuses.conditional],['◇ 暂作假设',englishStatuses.assumption],['○ 待完成目标',englishStatuses.pending],['2D 平面','2D map'],['3D 空间','3D space'],['显示范围','Show'],['全图（弱化无关）','Full graph · dim unrelated'],['所选结论及其前提','Selected result and premises'],['仅看未完成几何输入','Open geometric inputs'],['← 返回上一节点','← Previous node'],['选中关系','Selection'],['◎ 当前结论','◎ Selected result'],['实线边框：直接前提','Solid border: direct premise'],['虚线边框：间接前提','Dashed border: indirect premise'],['淡化：非当前依赖','Dimmed: unrelated'],['当前结论','Selected result'],['直接前提','Direct premise'],['间接前提','Indirect premise'],['非当前依赖','Unrelated'],['01 · 数值与输入','01 · Coefficients and inputs'],['02 · 已验证的推导','02 · Verified deductions'],['03 · 几何目标','03 · Geometric goals'],['图谱为人工整理的数学依赖蓝图，不是 Lean 内核自动导出的全部常量依赖。','This is a curated mathematical blueprint, not a kernel-extracted constant dependency graph.'],['依赖与假设','Premises & assumptions'],['证明步骤','Proof steps'],['Lean 源码','Lean source'],['为了得到这个结论，先需要','Direct premises'],['尚需建立的几何内容','Remaining geometric inputs'],['当前输入 / 假设','Current inputs / hypotheses'],['沿这条路径，仍需承认的几何输入','Assumed geometric inputs on this path'],['琥珀色表示显式假设或待补的几何桥接，不是代码中的新增 axiom。','Amber marks explicit hypotheses or open geometric bridges, not new Lean axioms.'],['接下来哪些结论使用它','Results using this node'],['这是当前图谱的最终目标。','This is a final goal in the current atlas.'],['没有其他项目节点；使用 mathlib 基础与下列明确输入。','No other project nodes; uses mathlib foundations and the explicit inputs below.'],['本模型层没有未证明的几何依赖；其参数条件仍须满足。','This model-level path has no open geometric dependencies; the theorem parameters still apply.'],['已验证源码的阅读导览','Guide to verified source'],['原始数学证明 / 待完成计划','Mathematical proof / open plan'],['非实时 Lean 执行','Not a live Lean session'],['← 上一步','← Previous'],['下一步 →','Next →'],['对应原始证明 ↘','Corresponding original proof ↘'],['对应形式化节点 →','Related formalization node →'],['此节点尚无完成的 Lean 几何证明。图中的中文论证不能替代形式化验证。','This node has no completed geometric Lean proof. The explanatory argument is not a formal verification.'],['阅读原始证明 →','Read original proof →'],['正在读取源码快照…','Loading source snapshot…'],['缺少对应源码，不能展示验证标记。','Source is missing; verification cannot be displayed.'],['下载源码','Download source'],['GitHub 定位 ↗','View on GitHub ↗'],['第 ','line '],[' 行',''],['参数假设请看定理完整类型。依赖仅含 Lean 常用基础公理，不意味着这些参数假设已从几何得到证明。','Read the complete theorem type for parameter hypotheses. Foundational axiom checks do not prove those hypotheses from geometry.'],['重置视角','Reset view'],['聚焦依赖链','Focus premises'],['定位节点','Locate node'],['横向：证明类别 · 纵向：步骤位置','Horizontal: proof category · Vertical: step position'],['纵深：依赖推导层级','Depth: deduction level'],['拖动旋转 · 滚轮或 ＋／− 缩放 · 点击节点查看证明。3D 层次仅表示推导深度，验证状态仍由颜色表示。','Drag to rotate · Wheel or ＋／− to zoom · Select a node to read the proof. Depth indicates deduction level; colors indicate verification status.'],['每一个“已验证”，都有明确范围。','Every verification claim has a precise scope.'],['正在读取验证记录…','Loading verification evidence…'],['个已验证定理','verified theorems'],['公理检查无 sorryAx','Axiom audit: no sorryAx'],['当前源码快照 · 本地验证','Current source snapshot · verified locally'],['验证日期 · 中国标准时间','Checked at · China Standard Time'],['公理依赖：','Axiom dependencies: '],['。没有新增几何公理；未完成内容仍是显式参数或规划节点。','. No new geometric axioms; open geometry remains in explicit parameters or planning nodes.'],['完整验证日志 ↗','Verification log ↗'],['源码 SHA-256 清单 ↗','Source SHA-256 manifest ↗'],['公理检查脚本 ↗','Axiom audit script ↗'],['公开源码的指纹','Public source fingerprints'],['验证记录加载失败，请刷新或下载工程核查。','Evidence failed to load. Refresh or download the project.'],['源码快照加载失败。','Source snapshot failed to load.'],['复现编译与公理检查','Reproduce the build and axiom audit'],['设计参考与图谱语义','Design references and graph semantics'],['在此页展开原始 PDF','Open original PDF on this page'],['阅读原版 PDF ↗','Read original PDF ↗'],['下载原始 LaTeX ↓','Download original LaTeX ↓'],['GitHub 源码 ↗','GitHub source ↗'],['← 形式化验证','← Formalization'],['构造有效的相对反 ample 除子','Construct an effective relatively anti-ample divisor'],['exceptional locus 被支撑包含','Support contains the exceptional locus'],['取最大比值，得到矛盾','Maximum ratio and contradiction'],['每个纤维全在支撑内，或完全不相交','Each fiber is contained in the support or disjoint from it'],['从 projective 推广到 proper','From projective to proper'],['以下是原稿的阅读导览。完整表述、符号与证明以随附的 PDF / LaTeX 原稿为准；下方不是新增的 Lean 验证结果。','This is a reading guide to the original note. Consult the attached PDF / LaTeX for full statements and proofs; this guide is not additional Lean verification.'],['在仿射底 Y 上，取 f-ample Cartier 除子 A。双有理性使 f∗O(−A) 泛秩为一，故存在非零全局截面 s。令 E = −A + div(s)，则 E 有效且 −E 相对 ample。','Over an affine base Y, choose an f-ample Cartier divisor A. Birationality makes f∗O(−A) generically rank one, so it has a nonzero global section s. Set E=−A+div(s); E is effective and −E relatively ample.'],['正规底上的 exceptional locus 被压缩曲线覆盖。对每条这样的曲线 C，E·C < 0；E 的有效性迫使 C 包含在 Supp E 中。','Over a normal base, contracted curves cover the exceptional locus. Each such curve has E·C < 0, so effectivity forces it into Supp E.'],['假设 f∗D 有效而 D 不有效。负系数分量是 exceptional，且 E 在其上系数为正。取 e = max(−coeffᵢ(D)/coeffᵢ(E))。则 D+eE 有效，并在某个负分量 F 上系数为零。','Assume f∗D is effective and D is not. Negative components are exceptional, with positive E-coefficients. Set e=max(−coeffᵢ(D)/coeffᵢ(E)); D+eE is effective and vanishes at a negative component F.'],['取 F 中不被其支撑包含的压缩曲线 C，于是 0 ≤ (D+eE)·C = D·C + e(E·C) < 0，矛盾。','Choose a contracted curve C in F outside the shifted support. Then 0 ≤ (D+eE)·C=D·C+e(E·C)<0, a contradiction.'],['由连通纤维性质，若纤维遇到 Supp D 却不包含于其中，可找到纤维内与支撑相交但不被其包含的曲线 C。此时 D·C > 0，与 −D 相对 nef 矛盾。','Connected projective fibers supply a curve C meeting but not contained in Supp D whenever a fiber partly meets it. Then D·C>0, contradicting relative nefness of −D.'],['用 Chow 引理与正规化取 π : X′ → X，使复合态射 projective。对 D′ = π∗D 应用射影版本，再用投影公式、π∗D′ = D 和支撑的拉回及纤维满射下降结论。','Apply Chow’s lemma and normalization to obtain π:X′→X with projective composite. Apply the projective theorem to D′=π∗D, then descend using projection, push-pull, support preimages and surjectivity.'],['工程固定 Lean 和 mathlib 版本。网页不执行 Lean；此处展示的是已完成的本地编译记录和精确源码快照。条件式定理的参数假设不会出现在 #print axioms 中，必须同时阅读其完整类型。','The project pins Lean and mathlib versions. This page displays local build evidence and exact source snapshots. Conditional theorem parameters do not appear in #print axioms; read their full types as well.'],['参考 ','Inspired by '],[' 的依赖导航、',' dependency navigation, '],[' 的逐步证明阅读，以及实验性 ',' stepwise proof reading, and experimental '],[' 对验证证据、假设和未完成工作的区分。本页为独立实现，没有集成这些工具的验证后端。',' distinctions between verification, hypotheses and open work. This independent page does not integrate their verification backends.'],['绿色：模型内定理已编译；蓝绿色：带显式几何接口假设的定理已编译；琥珀色：尚未证明的输入；灰色：完整目标未完成。连线表示阅读与形式化规划中的前提关系，几何假设节点的边不是内核公理依赖。','Green: verified model theorem. Cyan: verified theorem with explicit interface hypotheses. Amber: unproved input. Gray: open geometric goal. Edges show curated proof premises, not kernel axiom dependencies.']
+['形式化验证','Formalization'],['证明图谱','Proof atlas'],['原始证明','Original proof'],['验证记录','Verification evidence'],['一条证明，沿依赖逐层展开。','Explore a proof through its dependencies.'],['数值核心已通过 Lean。完整的几何定理仍在建设中。','The numerical core is verified in Lean. The full geometric theorem is under construction.'],['下载 Lean 工程 ↓','Download Lean project ↓'],['原始证明 PDF ↗','Original proof PDF ↗'],['证明依赖地图','Proof dependency atlas'],['点击结论查看它依赖的步骤，再点击依赖继续深入。箭头从前提指向结论。','Select a result to explore its premises. Arrows run from premises to conclusions.'],['展开图谱','Expand atlas'],['恢复分栏','Restore panels'],['✓ Lean 已验证',englishStatuses.done],['◐ 条件式已验证',englishStatuses.conditional],['◇ 暂作假设',englishStatuses.assumption],['○ 待完成目标',englishStatuses.pending],['2D 平面','2D map'],['3D 空间','3D space'],['显示范围','Show'],['全图（弱化无关）','Full graph · dim unrelated'],['所选结论及其前提','Selected result and premises'],['仅看未完成几何输入','Open geometric inputs'],['← 返回上一节点','← Previous node'],['选中关系','Selection'],['◎ 当前结论','◎ Selected result'],['实线边框：直接前提','Solid border: direct premise'],['虚线边框：间接前提','Dashed border: indirect premise'],['淡化：非当前依赖','Dimmed: unrelated'],['当前结论','Selected result'],['直接前提','Direct premise'],['间接前提','Indirect premise'],['非当前依赖','Unrelated'],['01 · 数值与输入','01 · Coefficients and inputs'],['02 · 已验证的推导','02 · Verified deductions'],['03 · 几何目标','03 · Geometric goals'],['图谱为人工整理的数学依赖蓝图，不是 Lean 内核自动导出的全部常量依赖。','This is a curated mathematical blueprint, not a kernel-extracted constant dependency graph.'],['依赖与假设','Premises & assumptions'],['证明步骤','Proof steps'],['Lean 源码','Lean source'],['为了得到这个结论，先需要','Direct premises'],['尚需建立的几何内容','Remaining geometric inputs'],['当前输入 / 假设','Current inputs / hypotheses'],['沿这条路径，仍需承认的几何输入','Assumed geometric inputs on this path'],['琥珀色表示显式假设或待补的几何桥接，不是代码中的新增 axiom。','Amber marks explicit hypotheses or open geometric bridges, not new Lean axioms.'],['接下来哪些结论使用它','Results using this node'],['这是当前图谱的最终目标。','This is a final goal in the current atlas.'],['没有其他项目节点；使用 mathlib 基础与下列明确输入。','No other project nodes; uses mathlib foundations and the explicit inputs below.'],['此依赖链没有未证明的几何输入；定理的定义条件仍须满足。','This path has no unproved geometric inputs; the theorem’s defining conditions still apply.'],['已验证源码的阅读导览','Guide to verified source'],['原始数学证明 / 待完成计划','Mathematical proof / open plan'],['非实时 Lean 执行','Not a live Lean session'],['← 上一步','← Previous'],['下一步 →','Next →'],['对应原始证明 ↘','Corresponding original proof ↘'],['对应形式化节点 →','Related formalization node →'],['此节点尚无完成的 Lean 几何证明。图中的中文论证不能替代形式化验证。','This node has no completed geometric Lean proof. The explanatory argument is not a formal verification.'],['阅读原始证明 →','Read original proof →'],['正在读取源码快照…','Loading source snapshot…'],['缺少对应源码，不能展示验证标记。','Source is missing; verification cannot be displayed.'],['下载源码','Download source'],['GitHub 定位 ↗','View on GitHub ↗'],['第 ','line '],[' 行',''],['参数假设请看定理完整类型。依赖仅含 Lean 常用基础公理，不意味着这些参数假设已从几何得到证明。','Read the complete theorem type for parameter hypotheses. Foundational axiom checks do not prove those hypotheses from geometry.'],['重置视角','Reset view'],['聚焦依赖链','Focus premises'],['定位节点','Locate node'],['横向：证明类别 · 纵向：步骤位置','Horizontal: proof category · Vertical: step position'],['纵深：依赖推导层级','Depth: deduction level'],['拖动旋转 · 滚轮或 ＋／− 缩放 · 点击节点查看证明。3D 层次仅表示推导深度，验证状态仍由颜色表示。','Drag to rotate · Wheel or ＋／− to zoom · Select a node to read the proof. Depth indicates deduction level; colors indicate verification status.'],['每一个“已验证”，都有明确范围。','Every verification claim has a precise scope.'],['正在读取验证记录…','Loading verification evidence…'],['个已验证定理','verified theorems'],['公理检查无 sorryAx','Axiom audit: no sorryAx'],['当前源码快照 · 本地验证','Current source snapshot · verified locally'],['验证日期 · 中国标准时间','Checked at · China Standard Time'],['公理依赖：','Axiom dependencies: '],['。没有新增几何公理；未完成内容仍是显式参数或规划节点。','. No new geometric axioms; open geometry remains in explicit parameters or planning nodes.'],['完整验证日志 ↗','Verification log ↗'],['源码 SHA-256 清单 ↗','Source SHA-256 manifest ↗'],['公理检查脚本 ↗','Axiom audit script ↗'],['公开源码的指纹','Public source fingerprints'],['验证记录加载失败，请刷新或下载工程核查。','Evidence failed to load. Refresh or download the project.'],['源码快照加载失败。','Source snapshot failed to load.'],['复现编译与公理检查','Reproduce the build and axiom audit'],['设计参考与图谱语义','Design references and graph semantics'],['在此页展开原始 PDF','Open original PDF on this page'],['阅读原版 PDF ↗','Read original PDF ↗'],['下载原始 LaTeX ↓','Download original LaTeX ↓'],['GitHub 源码 ↗','GitHub source ↗'],['← 形式化验证','← Formalization'],['构造有效的相对反 ample 除子','Construct an effective relatively anti-ample divisor'],['exceptional locus 被支撑包含','Support contains the exceptional locus'],['取最大比值，得到矛盾','Maximum ratio and contradiction'],['每个纤维全在支撑内，或完全不相交','Each fiber is contained in the support or disjoint from it'],['从 projective 推广到 proper','From projective to proper'],['以下是原稿的阅读导览。完整表述、符号与证明以随附的 PDF / LaTeX 原稿为准；下方不是新增的 Lean 验证结果。','This is a reading guide to the original note. Consult the attached PDF / LaTeX for full statements and proofs; this guide is not additional Lean verification.'],['在仿射底 Y 上，取 f-ample Cartier 除子 A。双有理性使 f∗O(−A) 泛秩为一，故存在非零全局截面 s。令 E = −A + div(s)，则 E 有效且 −E 相对 ample。','Over an affine base Y, choose an f-ample Cartier divisor A. Birationality makes f∗O(−A) generically rank one, so it has a nonzero global section s. Set E=−A+div(s); E is effective and −E relatively ample.'],['正规底上的 exceptional locus 被压缩曲线覆盖。对每条这样的曲线 C，E·C < 0；E 的有效性迫使 C 包含在 Supp E 中。','Over a normal base, contracted curves cover the exceptional locus. Each such curve has E·C < 0, so effectivity forces it into Supp E.'],['假设 f∗D 有效而 D 不有效。负系数分量是 exceptional，且 E 在其上系数为正。取 e = max(−coeffᵢ(D)/coeffᵢ(E))。则 D+eE 有效，并在某个负分量 F 上系数为零。','Assume f∗D is effective and D is not. Negative components are exceptional, with positive E-coefficients. Set e=max(−coeffᵢ(D)/coeffᵢ(E)); D+eE is effective and vanishes at a negative component F.'],['取 F 中不被其支撑包含的压缩曲线 C，于是 0 ≤ (D+eE)·C = D·C + e(E·C) < 0，矛盾。','Choose a contracted curve C in F outside the shifted support. Then 0 ≤ (D+eE)·C=D·C+e(E·C)<0, a contradiction.'],['由连通纤维性质，若纤维遇到 Supp D 却不包含于其中，可找到纤维内与支撑相交但不被其包含的曲线 C。此时 D·C > 0，与 −D 相对 nef 矛盾。','Connected projective fibers supply a curve C meeting but not contained in Supp D whenever a fiber partly meets it. Then D·C>0, contradicting relative nefness of −D.'],['用 Chow 引理与正规化取 π : X′ → X，使复合态射 projective。对 D′ = π∗D 应用射影版本，再用投影公式、π∗D′ = D 和支撑的拉回及纤维满射下降结论。','Apply Chow’s lemma and normalization to obtain π:X′→X with projective composite. Apply the projective theorem to D′=π∗D, then descend using projection, push-pull, support preimages and surjectivity.'],['工程固定 Lean 和 mathlib 版本。网页不执行 Lean；此处展示的是已完成的本地编译记录和精确源码快照。条件式定理的参数假设不会出现在 #print axioms 中，必须同时阅读其完整类型。','The project pins Lean and mathlib versions. This page displays local build evidence and exact source snapshots. Conditional theorem parameters do not appear in #print axioms; read their full types as well.'],['参考 ','Inspired by '],[' 的依赖导航、',' dependency navigation, '],[' 的逐步证明阅读，以及实验性 ',' stepwise proof reading, and experimental '],[' 对验证证据、假设和未完成工作的区分。本页为独立实现，没有集成这些工具的验证后端。',' distinctions between verification, hypotheses and open work. This independent page does not integrate their verification backends.'],['绿色：定理已通过 Lean，具体几何或模型范围见节点；蓝绿色：带显式几何接口假设的定理已编译；琥珀色：尚未证明的输入；灰色：完整目标未完成。连线表示阅读与形式化规划中的前提关系，几何假设节点的边不是内核公理依赖。','Green: Lean-verified theorem; read each node for its geometric or model scope. Cyan: verified theorem with explicit interface hypotheses. Amber: unproved input. Gray: open geometric goal. Edges show curated proof premises, not kernel axiom dependencies.']
 ];
 const sorted=pairs.sort((a,b)=>b[0].length-a[0].length);
 export function t(text){if(!english)return text;for(const [zh,en] of sorted)text=text.split(zh).join(en);return text;}

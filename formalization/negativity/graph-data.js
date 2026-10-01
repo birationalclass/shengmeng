@@ -1,4 +1,4 @@
-export const statusLabels = {done:'✓ 模型内已验证',conditional:'◐ 条件式已验证',assumption:'◇ 暂作假设',pending:'○ 待完成目标'};
+export const statusLabels = {done:'✓ Lean 已验证',conditional:'◐ 条件式已验证',assumption:'◇ 暂作假设',pending:'○ 待完成目标'};
 export const nodes = [
 {id:'max',title:'有限系数 · 最大比值',status:'done',x:20,y:60,deps:[],decl:'exists_effective_shift',file:'Numerical.lean',paper:'projective',statement:'存在 e > 0，使 d + e·a 逐项非负，并在某个原负系数位置等于零。',scope:'有限支撑实系数模型。已证明全部有限最大值论证；不要求指标类型本身有限。',inputs:['a 的所有系数非负。','若 dᵢ < 0，则 aᵢ > 0；d 存在负系数。'],steps:[['构造有限负支撑','从 d 的有限支撑筛选 dᵢ < 0 的指标。','let s := d.support.filter (fun i => d i < 0)'],['取得最大比值','在有限非空集合上选取 −dᵢ/aᵢ 的最大值。','s.exists_max_image (fun i => -d i / a i) hs'],['证明逐项非负','负项使用最大值不等式；非负项使用 e > 0 与 aᵢ ≥ 0。','(div_le_iff₀ hai).mp hle'],['找到归零分量','最大比值对应的指标 j 满足 dⱼ + e·aⱼ = 0。','div_mul_cancel₀']]},
 {id:'least',title:'最小有效平移量',status:'done',x:278,y:60,deps:['max'],decl:'exists_least_effective_shift',file:'Coefficients.lean',paper:'projective',statement:'对所有 t ≥ 0，d+t·a 有效，当且仅当 e ≤ t。',scope:'强化已验证的系数引理：不仅存在可行 e，而且它是有效平移的阈值。',inputs:['与最大比值引理相同的系数条件。'],steps:[['复用最大比值引理','取得 e、有效性与归零指标 j。','exists_effective_shift d a ha hcover hneg'],['证明必要性','若 d+t·a 有效，用 j 处的等式和 aⱼ > 0 推得 e ≤ t。','nlinarith'],['证明充分性','t ≥ e 且 aᵢ ≥ 0，所以 d+t·a 的每项至少为 d+e·a。','mul_le_mul_of_nonneg_right hle (ha i)']]},
@@ -777,3 +777,311 @@ find('projection').precise.en.gap='The actual pullback square, local multiplicit
 find('cover').upstream=[['Stacks · Normal-base quasi-finite-point isomorphism','https://stacks.math.columbia.edu/tag/0BFP']];
 
 find('pushpull').scope='真实 cycle 的逐系数推拉推导已完成；余维一同构开集与实际 stalk 同构现已从正规 proper birational 几何证明。剩余为实际 Cartier 局部方程及拉回的 Weil cycle、素点闭包与维数权重。';
+
+// Release 12: actual Cartier construction and geometric push-pull.
+nodes.push(...[
+  {
+    "id": "rationalorder",
+    "title": "有理方程的 DVR 阶数",
+    "status": "done",
+    "statement": "实际分式域非零元素的阶数与分式表示无关；乘法给阶数相加，实际局部单位过渡不改变阶数。",
+    "scope": "用 IsFractionRing、实际 numerator/denominator 与 DVR addVal 构造，不是任意线性配对。",
+    "inputs": [
+      "实际 DVR R 及其分式域 K；a 是 K 中非零有理方程。"
+    ],
+    "steps": [
+      [
+        "表示无关",
+        "任意非零分子分母给同一阶数。",
+        "dvr_rationalOrder_represents"
+      ],
+      [
+        "单位粘合",
+        "实际局部单位阶数为零，乘法加性给方程过渡不变。",
+        "dvr_rationalOrder_unit_transition"
+      ]
+    ],
+    "decl": "dvr_rationalOrder_unit_transition",
+    "file": "FractionFieldOrders.lean",
+    "deps": [
+      "localorder"
+    ],
+    "related": [
+      "dvr_rationalOrder_represents",
+      "dvr_rationalOrder_unit",
+      "dvr_rationalOrder_mul"
+    ],
+    "paper": "proper",
+    "x": 278,
+    "y": 3100
+  },
+  {
+    "id": "divisorsupport",
+    "title": "任意维 Cartier 支撑有限性",
+    "status": "done",
+    "statement": "Noetherian domain 的非零元素只落在有限个高度一素理想内；实际仿射 Scheme 上的余维一非单位 germ 点也有限。",
+    "scope": "用主理想的极小素理想有限性证明，不限制坐标环为 Dedekind，也不输入任何支撑有限假设。",
+    "inputs": [
+      "非零 section；整、局部 Noetherian Scheme 的非空仿射开集。"
+    ],
+    "steps": [
+      [
+        "主理想的极小素理想",
+        "包含 r 的高度一素理想都是 (r) 上的极小素理想。",
+        "finite_heightOne_primes_containing"
+      ],
+      [
+        "接入实际仿射点",
+        "用 Spec 与图册的同构，将高度和非单位 germ 识别为 coheight 与素理想条件。",
+        "finite_codimensionOne_nonunit_germs"
+      ]
+    ],
+    "decl": "finite_codimensionOne_nonunit_germs",
+    "file": "CodimensionSupport.lean",
+    "deps": [],
+    "related": [
+      "finite_heightOne_primes_containing"
+    ],
+    "paper": "proper",
+    "x": 278,
+    "y": 3100
+  },
+  {
+    "id": "cartierpullback",
+    "title": "实际 Cartier 方程拉回",
+    "status": "done",
+    "statement": "从 dominant Scheme 态射构造实际函数域拉回和 Cartier 拉回图册，证明泛点／局部环方块与单位过渡，并保持同构 stalk 上的阶数。",
+    "scope": "拉回图册的仿射覆盖及方程在证明中构造，兼容性来自实际 stalkSpecializes_stalkMap；不假设 pullback cycle 或兼容等式。",
+    "inputs": [
+      "整概形间实际 dominant 态射；Cartier 方程图册。",
+      "比较余维一阶数时使用正规、局部 Noetherian 及真实 stalk 同构。"
+    ],
+    "steps": [
+      [
+        "构造函数域拉回",
+        "dominant 态射映泛点到泛点，给实际函数域映射。",
+        "dominant_genericPoint_eq"
+      ],
+      [
+        "证明实际交换方块",
+        "泛点拉回与实际局部环映射相容。",
+        "dominantFunctionFieldMap_stalk"
+      ],
+      [
+        "构造拉回图册",
+        "在逆像中选择仿射邻域，拉回方程并证明其单位过渡。",
+        "exists_cartierAtlas_pullback"
+      ],
+      [
+        "同构处保持系数",
+        "拉回方程的实际分式表示与局部环同构相容，给相同 DVR 阶数。",
+        "dominantFunctionFieldMap_order_of_stalk_iso"
+      ]
+    ],
+    "decl": "exists_cartierAtlas_pullback",
+    "file": "CartierPullback.lean",
+    "deps": [
+      "localcartier",
+      "localorder"
+    ],
+    "related": [
+      "dominant_genericPoint_eq",
+      "dominantFunctionFieldMap_stalk",
+      "dominantFunctionFieldMap_order_of_stalk_iso"
+    ],
+    "paper": "proper",
+    "x": 278,
+    "y": 3100
+  }
+]);
+Object.assign(find("localcartier"),{
+  "title": "Cartier 局部方程与 Weil 除子",
+  "status": "done",
+  "statement": "从实际整正规、局部 Noetherian Scheme 的 Cartier 方程图册，构造 mathlib Weil divisor；按单位粘合，局部有限支撑，并与方程及开覆盖选择无关。",
+  "scope": "几何构造已完成。图册输入就是 Cartier 的局部方程定义：非零有理方程及局部环单位过渡。没有假设系数相等、支撑有限或已有 Weil cycle。拟紧时全局支撑有限；实际拉回另见相邻已验证节点。",
+  "inputs": [
+    "X 是整概形且局部 Noetherian，实际局部环整闭。",
+    "Cartier 数据：仿射开覆盖、非零有理方程及实际 stalk 中的单位过渡。"
+  ],
+  "steps": [
+    [
+      "单位过渡粘合",
+      "实际单位的阶数为零，各图册上的余维一阶数相同。",
+      "cartierAtlas_order_agrees"
+    ],
+    [
+      "局部支撑有限",
+      "任意维仿射坐标环中，把支撑包含于分子或分母的有限个高度一素理想。",
+      "finite_schemeRationalOrder_on_affine"
+    ],
+    [
+      "构造 Weil 除子",
+      "把局部系数粘合成实际 AlgebraicCycle；证明其支撑只在余维一。",
+      "cartierAtlas_weilCycle_isWeilDivisor"
+    ],
+    [
+      "覆盖与方程选择无关",
+      "不同覆盖上的等价单位方程给同一个实际 Weil 除子。",
+      "cartierAtlas_weilCycle_eq_of_unit_transitions"
+    ]
+  ],
+  "decl": "cartierAtlas_weilCycle_isWeilDivisor",
+  "file": "CartierAtlas.lean",
+  "deps": [
+    "rationalorder",
+    "divisorsupport",
+    "dvrfoundation"
+  ],
+  "related": [
+    "cartierAtlas_order_agrees",
+    "schemeRationalOrder_zero_of_unit_germs",
+    "finite_schemeRationalOrder_on_affine",
+    "cartierAtlas_coefficient_eq",
+    "cartierAtlas_locallyFiniteSupport",
+    "cartierAtlas_weilCycle_eq_of_unit_transitions",
+    "cartierAtlas_weilCycle_finite_support"
+  ],
+  "paper": "proper",
+  "x": 278,
+  "y": 3100
+});
+Object.assign(find("strict"),{
+  "title": "实际严格变换与推出系数",
+  "status": "done",
+  "statement": "构造 actual codimension-one generic points 上的 strict 单射；真实 cycle 推出系数等于严格变换系数，ExceptionalIndex 等价于像不再为余维一。",
+  "scope": "已接通原来的有限支撑系数模型：weilCycleCoefficients_pushforward 证明 birationalPush 与实际 AlgebraicCycle.map 一致。素除子由其泛点表示，这是 mathlib cycle 的定义；没有另假设 strict 单射或次数一。",
+  "inputs": [
+    "X、Y 整概形，Y 局部 Noetherian 且实际 stalk 整闭。",
+    "给定 proper birational 态射 f；转为有限系数时 X、Y 拟紧。"
+  ],
+  "steps": [
+    [
+      "构造严格变换",
+      "由余维一同构定理选择唯一对应的实际素点。",
+      "geometricStrictTransform_image"
+    ],
+    [
+      "识别 exceptional",
+      "证明 strict 为单射，且其像恰为映到余维一的源素点。",
+      "geometric_exceptional_iff"
+    ],
+    [
+      "计算真实推出系数",
+      "唯一原像的剩余域次数为一，得到 coeff_Q(f_*D)=coeff_Q̃(D)。",
+      "scheme_cycle_strictTransform_coefficient"
+    ],
+    [
+      "接回原模型",
+      "用真实 cycle 的有限支撑构造 Finsupp，证明与 birationalPush 相等。",
+      "weilCycleCoefficients_pushforward"
+    ]
+  ],
+  "decl": "weilCycleCoefficients_pushforward",
+  "file": "StrictTransform.lean",
+  "deps": [
+    "codimone",
+    "geomcycle",
+    "localorder"
+  ],
+  "related": [
+    "geometricStrictTransform_image",
+    "geometricStrictTransform_injective",
+    "geometric_exceptional_iff",
+    "scheme_cycle_strictTransform_coefficient"
+  ],
+  "paper": "proper",
+  "x": 278,
+  "y": 3100
+});
+Object.assign(find("pushpull"),{
+  "title": "真实 R-Cartier 除子的推拉恒等式",
+  "status": "done",
+  "statement": "正规整概形间 proper birational f 的实际 Cartier 拉回满足 f_*(f*D)=D，包括有限实线性组合的 R-Cartier 版本。",
+  "scope": "从函数域拉回构造每个 Cartier 图册，建立真实 Weil cycle；余维一系数相等与次数一来自实际 stalk 同构。使用实际 coheight 权重和 AlgebraicCycle.map。没有 hleft、hcoeff、任意 lifted 或 exceptional 权重假设。",
+  "inputs": [
+    "X、Y 整、正规、局部 Noetherian；f proper birational。",
+    "D 由有限个实际 Cartier 图册及实系数表示；拉回图册在证明中构造。"
+  ],
+  "steps": [
+    [
+      "构造实际拉回",
+      "取逆像中的仿射邻域，拉回有理方程，并由 stalk 方块证明单位过渡。",
+      "exists_cartierAtlas_pullback"
+    ],
+    [
+      "余维一系数相等",
+      "同构局部环保持实际拉回方程的 DVR 阶数。",
+      "dominantFunctionFieldMap_order_of_stalk_iso"
+    ],
+    [
+      "真实 cycle 推拉",
+      "底上素点有唯一原像且次数一；其它 coheight 权重贡献为零。",
+      "proper_birational_weil_cycle_pushforward"
+    ],
+    [
+      "实系数版本",
+      "直接对实际 Cartier cycles 的有限实线性组合证明推出拉回等式。",
+      "exists_realCartier_pullback_pushforward"
+    ]
+  ],
+  "decl": "exists_realCartier_pullback_pushforward",
+  "file": "CartierPushPull.lean",
+  "deps": [
+    "cartierpullback",
+    "localcartier",
+    "codimone"
+  ],
+  "related": [
+    "proper_birational_weil_cycle_pushforward",
+    "exists_cartierAtlas_pullback_pushforward",
+    "cartierAtlas_real_sum_isWeilDivisor"
+  ],
+  "paper": "proper",
+  "x": 278,
+  "y": 3100
+});
+Object.assign(find("effdown"),{
+  "title": "真实 R-Cartier 有效性下降",
+  "status": "done",
+  "statement": "构造实际拉回：若拉回 R-Cartier 除子的 Weil cycle 有效，则原除子的 Weil cycle 有效。",
+  "scope": "实际推拉恒等式在证明内部建立，已不需要 hleft。拉回有效是应用时的数学条件，不是缺失的几何桥接；射影 negativity 给出这项条件的完整几何证明仍待完成。",
+  "inputs": [
+    "正规整、局部 Noetherian 概形间 proper birational f。",
+    "D 是有限实线性组合的实际 Cartier 图册。",
+    "应用下降时已知构造的拉回有效。"
+  ],
+  "steps": [
+    [
+      "构造拉回并证明恒等式",
+      "复用实际 R-Cartier 拉回构造，内部证明 f_*(f*D)=D。",
+      "exists_realCartier_pullback_pushforward"
+    ],
+    [
+      "推出有效 cycle",
+      "真实 cycle 推出保持非负系数，再用已证明的恒等式得到原除子有效。",
+      "exists_realCartier_effectivity_descent"
+    ]
+  ],
+  "decl": "exists_realCartier_effectivity_descent",
+  "file": "CartierPushPull.lean",
+  "deps": [
+    "geomcycle",
+    "pushpull"
+  ],
+  "related": [
+    "scheme_effective_descends",
+    "effective_descends"
+  ],
+  "paper": "proper",
+  "x": 278,
+  "y": 3100
+});
+find('negative').deps=['push','strict'];
+find('negative').scope='系数推论已验证；strict 现已构造实际严格变换并证明 ExceptionalIndex 恰为像不在余维一的几何素点，模型可用于真实 Weil 除子。';
+find('chow').deps=['hartshornegraph','modsurj','pushpull'];
+find('chow').scope='实际 Cartier 拉回、Weil cycle、实系数推拉及有效性下降现已完成。按 Hartshorne 的有限仿射覆盖射影性、有限正规化以及曲线交数／支撑性质仍待完成。';
+find('chow').inputs[2]='已完成：实际 R-Cartier 推拉与有效性下降。待完成：曲线射影公式、支撑拉回及有限正规化。';
+find('localorder').scope='DVR 阶数与剩余域次数已验证；现在通过 actual Cartier atlas、函数域映射与严格变换完成几何系数识别和推拉。';
+find('projection').scope+=' 实际 Cartier 方程拉回及 underlying Weil cycle 现已完成；完整曲线的线丛次数与交数兼容仍待完成。';
+
+find('chow').steps[2][1]='有限正规化、曲线射影公式和支撑逆像仍待完成；实际 R-Cartier 拉回、推拉及有效性下降已经验证。';
