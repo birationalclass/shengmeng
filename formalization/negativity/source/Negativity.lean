@@ -49,3 +49,7 @@ public import Negativity.CartierPullback
 public import Negativity.CartierPushPull
 
 public import Negativity.StrictTransform
+
+public import Negativity.DivisorPullback
+
+public import Negativity.SeparableNorm

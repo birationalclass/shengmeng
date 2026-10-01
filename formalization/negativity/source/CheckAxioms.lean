@@ -156,3 +156,27 @@ import Negativity
 #print axioms Negativity.scheme_cycle_strictTransform_coefficient
 
 #print axioms Negativity.weilCycleCoefficients_pushforward
+
+#print axioms Negativity.affineDivisorDegree_single
+
+#print axioms Negativity.affinePointDivisorPullback_degree
+
+#print axioms Negativity.affineDivisorPullback_degree
+
+#print axioms Negativity.affinePointDivisorPullback_apply
+
+#print axioms Negativity.affineDivisorPullback_apply
+
+#print axioms Negativity.affinePrincipalDivisor_pullback
+
+#print axioms Negativity.closedPoint_residueDegree_one
+
+#print axioms Negativity.algebraicallyClosed_point_pullback_count
+
+#print axioms Negativity.affineDivisorPullback_support
+
+#print axioms Negativity.affineDivisorPullback_effective_iff
+
+#print axioms Negativity.algebraicallyClosed_effective_divisor_degree_pos
+
+#print axioms Negativity.separable_prime_ideal_norm

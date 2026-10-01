@@ -4,6 +4,8 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'DivisorPullback.lean': ['affineDivisorDegree_single', 'affinePointDivisorPullback_degree', 'affineDivisorPullback_degree', 'affinePointDivisorPullback_apply', 'affineDivisorPullback_apply', 'affinePrincipalDivisor_pullback', 'closedPoint_residueDegree_one', 'algebraicallyClosed_point_pullback_count', 'affineDivisorPullback_support', 'affineDivisorPullback_effective_iff', 'algebraicallyClosed_effective_divisor_degree_pos'],
+    'SeparableNorm.lean': ['separable_prime_ideal_norm'],
     'StrictTransform.lean': ['geometricStrictTransform_image', 'geometricStrictTransform_injective', 'geometric_exceptional_iff', 'scheme_cycle_strictTransform_coefficient', 'weilCycleCoefficients_pushforward'],
     'CartierPushPull.lean': ['proper_birational_weil_cycle_pushforward', 'exists_cartierAtlas_pullback_pushforward', 'cartierAtlas_real_sum_isWeilDivisor', 'exists_realCartier_pullback_pushforward', 'exists_realCartier_effectivity_descent'],
     'CartierPullback.lean': ['dominant_genericPoint_eq', 'dominantFunctionFieldMap_stalk', 'exists_cartierAtlas_pullback', 'dominantFunctionFieldMap_order_of_stalk_iso'],
@@ -96,7 +98,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

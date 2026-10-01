@@ -765,3 +765,60 @@ translate(document.body);new MutationObserver(records=>{for(const r of records){
 
 entries.fiberdown[2]='Only set-theoretic descent is proved: surjectivity, support preimages and the upper fiber dichotomy are hypotheses. The upper geometric dichotomy and the higher-dimensional curve step remain open. This is not a complete proof of Theorem 1.4(2).';
 pairs.push(['完整 negativity lemma 尚未形式化完成','The complete negativity lemma is not yet formalized'],['代码编译通过 ✓','Code compiled successfully ✓'],['个已编译定理声明（含条件式）','compiled theorem declarations (including conditional proofs)'],['设定：任意特征的代数闭域 k；variety 为整的、分离的有限型 k-scheme。D 为 ℝ-Cartier 除子；nef 和 ample 均相对于 f，交数在曲线正规化上取线丛次数。完整约定已补入 PDF 与 LaTeX 原稿。','Setting: an algebraically closed field k of arbitrary characteristic; varieties are integral separated finite-type k-schemes. D is R-Cartier; nefness and ampleness are relative to f. Intersections are degrees on normalized curves. Full conventions are included in the PDF and LaTeX note.']);
+
+Object.assign(entries,{
+  "affinedivisor": [
+    "Pointwise pullback and degree of finite divisors",
+    "For an actual finite map of affine normal curves, tensor-length point multiplicities extend to arbitrary finite signed divisors, and deg(h*D)=[L:K]deg(D) is proved.",
+    "Here degree means the closed-point sum of a finite divisor, not yet the degree of an arbitrary line bundle on a complete curve. There is no separability or characteristic-zero restriction. Principal pullback, inverse-image support and effectivity descent are also proved.",
+    [
+      "An actual finite torsion-free extension R→S of Dedekind domains; flatness follows from torsion-freeness.",
+      "Finite-type k-algebras R,S and their actual fraction fields K,L.",
+      "Point multiplicities are actual tensor lengths; over an algebraically closed field all closed-point residue degrees are one."
+    ],
+    [
+      [
+        "Extend from points",
+        "Extend genuine point pullbacks by additivity to arbitrary positive and negative integer coefficients."
+      ],
+      [
+        "Check local equations",
+        "From ord_q(h*a)=e_q ord_p(a), prove that principal-divisor pullback is the divisor of the pulled function."
+      ],
+      [
+        "Count multiplicities over an algebraically closed field",
+        "Zariski’s lemma gives residue degree one. The sum of tensor lengths equals [L:K], including inseparable degree."
+      ],
+      [
+        "Support and positivity",
+        "Pullback support is its inverse image. Effectivity is preserved and descends; a nonzero effective divisor has positive degree."
+      ]
+    ]
+  ],
+  "separablenorm": [
+    "Prime ideal norms for separable extensions",
+    "For a finite separable extension of Dedekind domains, N(P)=p^[k(P):k(p)]. The base fraction field need not be perfect.",
+    "An auxiliary result for the norm route, requiring extension separability. Point-length counting does not use this requirement. This is not yet the product formula on a complete curve.",
+    [
+      "A finite torsion-free Dedekind extension.",
+      "The fraction-field extension is separable; the actual maximal ideals P,p satisfy lying over."
+    ],
+    [
+      [
+        "Construct the normal closure",
+        "Take the integral closure in an actual finite normal field extension."
+      ],
+      [
+        "Compute in the Galois extension",
+        "Apply the verified prime-ideal norm theorem."
+      ],
+      [
+        "Descend through the tower",
+        "Norm transitivity and residue-degree multiplicativity cancel the normal-closure power."
+      ]
+    ]
+  ]
+});
+entries.projection[3]=['Verified: the pullback square, tensor lengths, finite-divisor degree pullback and principal-divisor compatibility.','Open: divisor representations of arbitrary complete-curve line bundles, representation-independent degree, normalization and the point-image case.','The main route is point-length counting, including inseparable maps; norms remain auxiliary.'];
+entries.projection[4][1]=['Point counts and finite divisors: verified','Actual tensor lengths count multiplicities. Additivity extends the formula to finite signed divisors, and compatibility with principal divisors is proved.'];
+entries.projection[4][2]=['Complete-curve line-bundle degree: open','Use affine neighborhoods locally, while keeping the global curves complete. Construct divisor representations and representation-independent degree, then connect normalization and the point-image case.'];

@@ -1087,3 +1087,97 @@ find('projection').scope+=' 实际 Cartier 方程拉回及 underlying Weil cycle
 find('chow').steps[2][1]='有限正规化、曲线射影公式和支撑逆像仍待完成；实际 R-Cartier 拉回、推拉及有效性下降已经验证。';
 
 find('fiberdown').scope='只完成集合层面的下降：假设改造满射、上方支撑等于逆像，并且上方每个纤维已满足二择一，才能推出下方结论。上方几何二择一及高维曲线步骤仍未完成；本节点不是完整的 Theorem 1.4(2) 证明。';
+
+// Actual point-counting route: finite divisors are verified, global line bundles remain open.
+nodes.push({
+  "id": "affinedivisor",
+  "title": "有限除子的逐点拉回与次数",
+  "status": "done",
+  "x": 536,
+  "y": 3500,
+  "deps": [
+    "pointtensor",
+    "principaldivisor"
+  ],
+  "decl": "affineDivisorPullback_degree",
+  "file": "DivisorPullback.lean",
+  "paper": "proper",
+  "related": [
+    "affineDivisorDegree_single",
+    "affinePointDivisorPullback_degree",
+    "affinePointDivisorPullback_apply",
+    "affineDivisorPullback_apply",
+    "affinePrincipalDivisor_pullback",
+    "closedPoint_residueDegree_one",
+    "algebraicallyClosed_point_pullback_count",
+    "affineDivisorPullback_support",
+    "affineDivisorPullback_effective_iff",
+    "algebraicallyClosed_effective_divisor_degree_pos"
+  ],
+  "statement": "在实际有限仿射正规曲线映射下，点的张量长度重数延伸为任意有限带符号除子的拉回，并证明 deg(h*D)=[L:K]deg(D)。",
+  "scope": "此处 deg 是有限除子的闭点次数和；还不是完整曲线上任意线丛的次数。无可分性或特征零限制。另已证明主除子拉回、支撑逆像和有效性等价。",
+  "inputs": [
+    "有限、无挠的实际 Dedekind 环扩张 R→S；平坦性从无挠性推出。",
+    "R、S 是有限型 k-代数，K、L 是其实际分式域。",
+    "闭点重数等于实际张量积长度；代数闭域下剩余域次数均为 1。"
+  ],
+  "steps": [
+    [
+      "从点到有限除子",
+      "沿点生成元作加法延伸，允许任意正负整数系数。",
+      "affineDivisorPullback_degree"
+    ],
+    [
+      "核对局部方程",
+      "由 ord_q(h*a)=e_q ord_p(a)，证明拉回主除子等于拉回函数的主除子。",
+      "affinePrincipalDivisor_pullback"
+    ],
+    [
+      "代数闭域下直接数重数",
+      "Zariski 引理给每个闭点次数 1，原像点的张量长度总和就是 [L:K]，包含不可分次数。",
+      "algebraicallyClosed_point_pullback_count"
+    ],
+    [
+      "支撑与正性",
+      "实际拉回支撑为原支撑的逆像；有效性保持并可下降，非零有效除子次数严格为正。",
+      "affineDivisorPullback_effective_iff"
+    ]
+  ]
+});
+nodes.push({
+  "id": "separablenorm",
+  "title": "可分扩张的素理想范数",
+  "status": "done",
+  "x": 278,
+  "y": 3650,
+  "deps": [],
+  "decl": "separable_prime_ideal_norm",
+  "file": "SeparableNorm.lean",
+  "paper": "proper",
+  "statement": "有限可分 Dedekind 扩张中，N(P)=p^[k(P):k(p)]。底分式域无需 perfect。",
+  "scope": "范数路线的辅助结果，要求扩张本身可分。逐点长度路线不使用这个要求；此结果也尚未构成完整曲线的乘积公式。",
+  "inputs": [
+    "有限、无挠 Dedekind 环扩张。",
+    "分式域扩张可分；P、p 是实际满足 lying over 的极大理想。"
+  ],
+  "steps": [
+    [
+      "构造正规闭包",
+      "在有限正规闭包中取整闭包，构造实际 Dedekind 环。"
+    ],
+    [
+      "在 Galois 扩张中算范数",
+      "应用已验证的素理想范数公式。"
+    ],
+    [
+      "沿塔下降",
+      "用范数传递性与剩余域次数乘法性，消去正规闭包的幂次。"
+    ]
+  ]
+});
+find('projection').deps.push('affinedivisor');
+find('projection').steps[1]=['逐点计数与有限除子：已验证','以实际张量长度计原像点重数，再由加法延伸到所有有限带符号除子；主除子拉回兼容也已证明。','affineDivisorPullback_degree'];
+find('projection').steps[2]=['完整曲线的线丛次数：待完成','局部可取仿射邻域；全局曲线仍须完整。建立任意线丛的除子表示及次数与表示无关，再接入正规化和像为点的情形。'];
+find('projection').precise.zh.gap='已完成实际逐点张量长度、有限除子的可加拉回与次数公式、主除子拉回兼容，以及代数闭域下直接重数计数。尚需建立完整曲线任意线丛的除子表示和次数与表示选择无关，并接入正规化及像为点的情形。当前仍未删除几何 hcompat。';
+find('projection').precise.en.gap='Actual tensor lengths, additive pullback and degree of finite divisors, principal-divisor compatibility, and direct multiplicity counting over an algebraically closed field are proved. Complete-curve divisor representations of arbitrary line bundles, representation-independent degree, normalization and the point-image case remain open. Geometric hcompat has not yet been removed.';
+find('projection').inputs=['已验证：交换图拉回同构、点的张量长度、有限除子次数拉回公式及主除子兼容。','待完成：完整曲线的任意线丛与除子的对应、次数的表示无关、正规化及像为点时的次数。','主线采用逐点长度计数，含不可分情形；范数结果保留为辅助证明。'];
