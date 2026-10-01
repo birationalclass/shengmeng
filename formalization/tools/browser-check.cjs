@@ -1,0 +1,22 @@
+// Set PLAYWRIGHT_MODULE to a Playwright install; SITE_URL defaults to localhost:4186.
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true});
+try{const page=await browser.newPage({viewport:{width:1600,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto((process.env.SITE_URL||'http://localhost:4186')+'/formalization/negativity/?lang=en#node=properreduce');
+await page.waitForSelector('#evidenceContent .evidence-grid');
+assert.equal(await page.locator('#graph [data-node="properreduce"]').getAttribute('data-relation'),'selected');
+assert.equal(await page.locator('#graph [data-node="effdown"]').getAttribute('data-relation'),'direct');
+assert.equal(await page.locator('#graph [data-node="fiberdown"]').getAttribute('data-relation'),'other');
+assert((await page.locator('body').innerText()).split('\n').filter(t=>/[\u3400-\u9fff]/.test(t)).every(t=>t==='中文'),'Untranslated English content');
+await page.locator('[data-view="3d"]').click();await page.locator('[data-camera="direct"]').click();await page.waitForTimeout(150);
+assert.equal(await page.locator('.spatial-node:visible').count(),5);
+await page.locator('#spatialSelect').selectOption('negative');await page.waitForTimeout(100);assert.equal(await page.locator('.spatial-node:visible').count(),2);
+const target=page.locator('[data-spatial-node="negative"]'),before=await target.getAttribute('style'),stage=page.locator('.spatial-stage'),box=await stage.boundingBox();
+await page.mouse.move(box.x+30,box.y+80);await page.mouse.down();await page.mouse.move(box.x+130,box.y+110,{steps:6});await page.mouse.up();await page.waitForTimeout(100);assert.notEqual(await target.getAttribute('style'),before,'Orbit does not update projection');
+await page.locator('#languageToggle').click();await page.waitForSelector('#evidenceContent .evidence-grid');assert.equal(await page.locator('#graph [data-node="negative"]').getAttribute('data-relation'),'selected');assert(await page.locator('#spatialGraph').isVisible());
+await page.locator('#spatialSelect').selectOption('properreduce');await page.getByRole('tab',{name:'Lean 源码'}).click();assert((await page.locator('.source-code').first().textContent()).includes('theorem negativity_descends'));
+await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);
+await page.goto((process.env.SITE_URL||'http://localhost:4186')+'/formalization/?lang=en');assert((await page.locator('h1').textContent()).includes('See every layer'));assert((await page.locator('body').innerText()).split('\n').filter(t=>/[\u3400-\u9fff]/.test(t)).every(t=>t==='中文'));
+console.log('PASS: dependency distinction, direct-premise 3D, orbit, bilingual selection, source, mobile and hub.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

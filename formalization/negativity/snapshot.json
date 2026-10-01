@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-01T14:08:57+08:00",
+  "checkedAt": "2026-10-01T18:16:03+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "02ae4ed617b82aea56db90dc2c9540303fac130f4f24d0eb1a7f7edad252a614"
+      "sha256": "cfff2d45dd83ff6e30ead245ec9a152a88a3f5109a97485aa7f771dc9d0ad3a1"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "f12ddc94d61d9e1c24e165a93bca74a654dce04b970b0e8239f2fc43053f0ec4"
+      "sha256": "92c37930a1a6936be45ad6d2bd3de177b6881cd35e29723ffc424fe6618b4eea"
     },
     {
       "path": "lakefile.toml",
@@ -37,6 +37,10 @@
       "sha256": "eef1d94dc57f8876a57c88590e148dee91a29ece8b212d28988ad13b6cca9a8f"
     },
     {
+      "path": "Negativity/Descent.lean",
+      "sha256": "b1f09b846090b18ac5d2f5d37752eeb3b3fdb0f374f91bd314888878a689df4d"
+    },
+    {
       "path": "Negativity/Interfaces.lean",
       "sha256": "5524e30885fda21f7e8692c34e45e39acd2150afdc94cd9bf052746b8df8634c"
     }
@@ -45,42 +49,216 @@
     "exists_effective_shift": {
       "path": "Negativity/Numerical.lean",
       "line": 18,
-      "code": "theorem exists_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧ Effective (d + e • a) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  classical\n  have hn : ∃ i, d i < 0 := by\n    simpa only [Effective, not_forall, not_le] using hneg\n  let s := d.support.filter (fun i => d i < 0)\n  have hs : s.Nonempty := by\n    obtain ⟨i, hi⟩ := hn\n    exact ⟨i, Finset.mem_filter.mpr ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩⟩\n  obtain ⟨j, hj, hmax⟩ := s.exists_max_image (fun i => -d i / a i) hs\n  have hdj : d j < 0 := (Finset.mem_filter.mp hj).2\n  have haj : 0 < a j := hcover j hdj\n  let e := -d j / a j\n  have he : 0 < e := div_pos (neg_pos.mpr hdj) haj\n  refine ⟨e, he, ?_, j, hdj, ?_⟩\n  · intro i\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    by_cases hi : d i < 0\n    · have hai := hcover i hi\n      have his : i ∈ s := Finset.mem_filter.mpr\n        ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩\n      have hle : -d i / a i ≤ e := hmax i his\n      have := (div_le_iff₀ hai).mp hle\n      linarith\n    · have hdi : 0 ≤ d i := le_of_not_gt hi\n      exact add_nonneg hdi (mul_nonneg he.le (ha i))\n  · simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    dsimp [e]\n    rw [div_mul_cancel₀ _ (ne_of_gt haj)]\n    ring"
+      "code": "theorem exists_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧ Effective (d + e • a) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  classical\n  have hn : ∃ i, d i < 0 := by\n    simpa only [Effective, not_forall, not_le] using hneg\n  let s := d.support.filter (fun i => d i < 0)\n  have hs : s.Nonempty := by\n    obtain ⟨i, hi⟩ := hn\n    exact ⟨i, Finset.mem_filter.mpr ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩⟩\n  obtain ⟨j, hj, hmax⟩ := s.exists_max_image (fun i => -d i / a i) hs\n  have hdj : d j < 0 := (Finset.mem_filter.mp hj).2\n  have haj : 0 < a j := hcover j hdj\n  let e := -d j / a j\n  have he : 0 < e := div_pos (neg_pos.mpr hdj) haj\n  refine ⟨e, he, ?_, j, hdj, ?_⟩\n  · intro i\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    by_cases hi : d i < 0\n    · have hai := hcover i hi\n      have his : i ∈ s := Finset.mem_filter.mpr\n        ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩\n      have hle : -d i / a i ≤ e := hmax i his\n      have := (div_le_iff₀ hai).mp hle\n      linarith\n    · have hdi : 0 ≤ d i := le_of_not_gt hi\n      exact add_nonneg hdi (mul_nonneg he.le (ha i))\n  · simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    dsimp [e]\n    rw [div_mul_cancel₀ _ (ne_of_gt haj)]\n    ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "effective_of_curve_tests": {
       "path": "Negativity/Numerical.lean",
       "line": 54,
-      "code": "theorem effective_of_curve_tests {I V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, coeff D i < 0 → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B j, Effective (coeff B) → coeff D j < 0 → coeff B j = 0 →\n      ∃ c, 0 ≤ intersection c B) :\n    Effective (coeff D) := by\n  by_contra hneg\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ :=\n    exists_effective_shift (coeff D) (coeff E) hE hcover hneg\n  have hcoeff : coeff (D + e • E) = coeff D + e • coeff E := by simp\n  obtain ⟨c, hc⟩ := hcurve (D + e • E) j (hcoeff.symm ▸ hshift) hj\n    (by simpa only [hcoeff] using hzero)\n  have hmul : e * intersection c E < 0 := mul_neg_of_pos_of_neg he (hanti c)\n  have hd := hnef c\n  simp only [map_add, map_smul, smul_eq_mul] at hc\n  linarith"
+      "code": "theorem effective_of_curve_tests {I V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, coeff D i < 0 → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B j, Effective (coeff B) → coeff D j < 0 → coeff B j = 0 →\n      ∃ c, 0 ≤ intersection c B) :\n    Effective (coeff D) := by\n  by_contra hneg\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ :=\n    exists_effective_shift (coeff D) (coeff E) hE hcover hneg\n  have hcoeff : coeff (D + e • E) = coeff D + e • coeff E := by simp\n  obtain ⟨c, hc⟩ := hcurve (D + e • E) j (hcoeff.symm ▸ hshift) hj\n    (by simpa only [hcoeff] using hzero)\n  have hmul : e * intersection c E < 0 := mul_neg_of_pos_of_neg he (hanti c)\n  have hd := hnef c\n  simp only [map_add, map_smul, smul_eq_mul] at hc\n  linarith",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "effective_push": {
       "path": "Negativity/Coefficients.lean",
       "line": 23,
-      "code": "theorem effective_push {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ} (hd : Effective d) :\n    Effective (birationalPush strict hinj d) := by\n  intro j\n  exact hd (strict j)"
+      "code": "theorem effective_push {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ} (hd : Effective d) :\n    Effective (birationalPush strict hinj d) := by\n  intro j\n  exact hd (strict j)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "negative_is_exceptional": {
       "path": "Negativity/Coefficients.lean",
       "line": 29,
-      "code": "theorem negative_is_exceptional {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ}\n    (hpush : Effective (birationalPush strict hinj d)) {i : I} (hi : d i < 0) :\n    ExceptionalIndex strict i := by\n  rintro ⟨j, rfl⟩\n  exact (not_lt_of_ge (hpush j)) hi"
+      "code": "theorem negative_is_exceptional {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ}\n    (hpush : Effective (birationalPush strict hinj d)) {i : I} (hi : d i < 0) :\n    ExceptionalIndex strict i := by\n  rintro ⟨j, rfl⟩\n  exact (not_lt_of_ge (hpush j)) hi",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "exists_least_effective_shift": {
       "path": "Negativity/Coefficients.lean",
       "line": 37,
-      "code": "theorem exists_least_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧\n      (∀ t : ℝ, 0 ≤ t → (Effective (d + t • a) ↔ e ≤ t)) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ := exists_effective_shift d a ha hcover hneg\n  refine ⟨e, he, ?_, j, hj, hzero⟩\n  intro t _ht\n  constructor\n  · intro ht\n    have hjpos := hcover j hj\n    have htj := ht j\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at htj hzero\n    nlinarith\n  · intro hle i\n    have hi := hshift i\n    have hprod : e * a i ≤ t * a i := mul_le_mul_of_nonneg_right hle (ha i)\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at hi ⊢\n    linarith"
+      "code": "theorem exists_least_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧\n      (∀ t : ℝ, 0 ≤ t → (Effective (d + t • a) ↔ e ≤ t)) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ := exists_effective_shift d a ha hcover hneg\n  refine ⟨e, he, ?_, j, hj, hzero⟩\n  intro t _ht\n  constructor\n  · intro ht\n    have hjpos := hcover j hj\n    have htj := ht j\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at htj hzero\n    nlinarith\n  · intro hle i\n    have hi := hshift i\n    have hprod : e * a i ≤ t * a i := mul_le_mul_of_nonneg_right hle (ha i)\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at hi ⊢\n    linarith",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "push_comp": {
+      "path": "Negativity/Descent.lean",
+      "line": 10,
+      "code": "theorem push_comp {I J K : Type*} (s : J → I) (t : K → J)\n    (hs : Function.Injective s) (ht : Function.Injective t) (d : I →₀ ℝ) :\n    birationalPush t ht (birationalPush s hs d) =\n      birationalPush (s ∘ t) (hs.comp ht) d := by\n  ext k\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "push_zero_iff_exceptional_support": {
+      "path": "Negativity/Descent.lean",
+      "line": 18,
+      "code": "theorem push_zero_iff_exceptional_support {I J : Type*} (s : J → I)\n    (hs : Function.Injective s) (d : I →₀ ℝ) :\n    birationalPush s hs d = 0 ↔ ∀ i, d i ≠ 0 → ExceptionalIndex s i := by\n  constructor\n  · intro h i hi\n    rintro ⟨j, rfl⟩\n    have hj := congrArg (fun z : J →₀ ℝ => z j) h\n    exact hi (by simpa using hj)\n  · intro h\n    ext j\n    by_contra hn\n    have hd : d (s j) ≠ 0 := by simpa using hn\n    exact h (s j) hd ⟨j, rfl⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_both_signs_iff_zero": {
+      "path": "Negativity/Descent.lean",
+      "line": 33,
+      "code": "theorem effective_both_signs_iff_zero {I : Type*} (d : I →₀ ℝ) :\n    Effective d ∧ Effective (-d) ↔ d = 0 := by\n  constructor\n  · rintro ⟨hp, hn⟩\n    ext i\n    have hpi := hp i\n    have hni := hn i\n    simp only [Finsupp.neg_apply] at hni\n    simpa using (le_antisymm (by linarith : d i ≤ 0) hpi)\n  · rintro rfl\n    constructor <;> intro i <;> simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "nonpositive_smul": {
+      "path": "Negativity/Descent.lean",
+      "line": 46,
+      "code": "theorem nonpositive_smul {V C : Type*} [AddCommGroup V] [Module ℝ V]\n    (degree : C → V →ₗ[ℝ] ℝ) (D : V) (a : ℝ) (ha : 0 ≤ a)\n    (hD : ∀ c, degree c D ≤ 0) : ∀ c, degree c (a • D) ≤ 0 := by\n  intro c\n  simpa using mul_nonpos_of_nonneg_of_nonpos ha (hD c)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "nonpositive_pullback": {
+      "path": "Negativity/Descent.lean",
+      "line": 54,
+      "code": "theorem nonpositive_pullback {V W C C' : Type*}\n    [AddCommGroup V] [Module ℝ V] [AddCommGroup W] [Module ℝ W]\n    (pull : V →ₗ[ℝ] W) (degree : C → V →ₗ[ℝ] ℝ)\n    (degree' : C' → W →ₗ[ℝ] ℝ) (D : V)\n    (hD : ∀ c, degree c D ≤ 0)\n    (hprojection : ∀ c', degree' c' (pull D) = 0 ∨\n      ∃ c r, 0 ≤ r ∧ degree' c' (pull D) = r * degree c D) :\n    ∀ c', degree' c' (pull D) ≤ 0 := by\n  intro c'\n  rcases hprojection c' with hzero | ⟨c, r, hr, h⟩\n  · exact le_of_eq hzero\n  · rw [h]\n    exact mul_nonpos_of_nonneg_of_nonpos hr (hD c)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_descends": {
+      "path": "Negativity/Descent.lean",
+      "line": 70,
+      "code": "theorem effective_descends {V W : Type*} (eff : V → Prop) (eff' : W → Prop)\n    (pull : V → W) (push : W → V) (D : V)\n    (hleft : push (pull D) = D)\n    (hpush : ∀ B, eff' B → eff (push B)) (hD : eff' (pull D)) : eff D := by\n  simpa only [hleft] using hpush (pull D) hD",
+      "axioms": []
+    },
+    "negativity_descends": {
+      "path": "Negativity/Descent.lean",
+      "line": 78,
+      "code": "theorem negativity_descends {V W Z : Type*}\n    (eff : V → Prop) (eff' : W → Prop) (effBase : Z → Prop)\n    (nef : V → Prop) (nef' : W → Prop)\n    (pull : V → W) (push : W → V) (fpush : V → Z) (gpush : W → Z)\n    (hleft : ∀ D, push (pull D) = D)\n    (hpush : ∀ B, eff' B → eff (push B))\n    (hbase : ∀ D, eff D → effBase (fpush D))\n    (hcommute : ∀ D, gpush (pull D) = fpush D)\n    (hnefpull : ∀ D, nef D → nef' (pull D))\n    (hprojective : ∀ B, nef' B → effBase (gpush B) → eff' B)\n    (D : V) (hD : nef D) : eff D ↔ effBase (fpush D) := by\n  constructor\n  · exact hbase D\n  · intro h\n    apply effective_descends eff eff' pull push D (hleft D) hpush\n    apply hprojective (pull D) (hnefpull D hD)\n    simpa only [hcommute D] using h",
+      "axioms": []
+    },
+    "subset_iff_preimage_subset": {
+      "path": "Negativity/Descent.lean",
+      "line": 97,
+      "code": "theorem subset_iff_preimage_subset {X X' : Type*} (p : X' → X)\n    (hp : Function.Surjective p) (A B : Set X) :\n    A ⊆ B ↔ p ⁻¹' A ⊆ p ⁻¹' B := by\n  constructor\n  · intro h x hx\n    exact h hx\n  · intro h x hx\n    obtain ⟨x', rfl⟩ := hp x\n    exact h hx",
+      "axioms": []
+    },
+    "disjoint_iff_preimage_disjoint": {
+      "path": "Negativity/Descent.lean",
+      "line": 108,
+      "code": "theorem disjoint_iff_preimage_disjoint {X X' : Type*} (p : X' → X)\n    (hp : Function.Surjective p) (A B : Set X) :\n    Disjoint A B ↔ Disjoint (p ⁻¹' A) (p ⁻¹' B) := by\n  simp only [Set.disjoint_left]\n  constructor\n  · intro h x hx hy\n    exact h hx hy\n  · intro h x hx hy\n    obtain ⟨x', rfl⟩ := hp x\n    exact h hx hy",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "support_dichotomy_descends": {
+      "path": "Negativity/Descent.lean",
+      "line": 121,
+      "code": "theorem support_dichotomy_descends {X X' : Type*} (p : X' → X)\n    (hp : Function.Surjective p) (fiber supp : Set X)\n    (h : Disjoint (p ⁻¹' fiber) (p ⁻¹' supp) ∨ p ⁻¹' fiber ⊆ p ⁻¹' supp) :\n    Disjoint fiber supp ∨ fiber ⊆ supp := by\n  rcases h with h | h\n  · exact Or.inl ((disjoint_iff_preimage_disjoint p hp fiber supp).mpr h)\n  · exact Or.inr ((subset_iff_preimage_subset p hp fiber supp).mpr h)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "composite_fiber": {
+      "path": "Negativity/Descent.lean",
+      "line": 130,
+      "code": "theorem composite_fiber {X X' Y : Type*} (p : X' → X) (f : X → Y) (y : Y) :\n    {x' | f (p x') = y} = p ⁻¹' {x | f x = y} := rfl",
+      "axioms": []
+    },
+    "fiber_dichotomy_descends": {
+      "path": "Negativity/Descent.lean",
+      "line": 135,
+      "code": "theorem fiber_dichotomy_descends {X X' Y : Type*}\n    (p : X' → X) (hp : Function.Surjective p) (f : X → Y) (supp : Set X)\n    (h : ∀ y, Disjoint {x' | f (p x') = y} (p ⁻¹' supp) ∨\n      {x' | f (p x') = y} ⊆ p ⁻¹' supp) :\n    ∀ y, Disjoint {x | f x = y} supp ∨ {x | f x = y} ⊆ supp := by\n  intro y\n  exact support_dichotomy_descends p hp _ supp (h y)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "push_embDomain": {
+      "path": "Negativity/Descent.lean",
+      "line": 146,
+      "code": "theorem push_embDomain {I J : Type*} (s : J → I)\n    (hs : Function.Injective s) (d : J →₀ ℝ) :\n    birationalPush s hs (Finsupp.embDomain ⟨s, hs⟩ d) = d := by\n  ext j\n  exact Finsupp.embDomain_apply_self ⟨s, hs⟩ d j",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "push_add_exceptional": {
+      "path": "Negativity/Descent.lean",
+      "line": 153,
+      "code": "theorem push_add_exceptional {I J : Type*} (s : J → I)\n    (hs : Function.Injective s) (d e : I →₀ ℝ)\n    (he : ∀ i, e i ≠ 0 → ExceptionalIndex s i) :\n    birationalPush s hs (d + e) = birationalPush s hs d := by\n  have hz := (push_zero_iff_exceptional_support s hs e).mpr he\n  ext j\n  have hj := congrArg (fun z : J →₀ ℝ => z j) hz\n  simpa [birationalPush] using hj",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_descends_coefficients": {
+      "path": "Negativity/Descent.lean",
+      "line": 164,
+      "code": "theorem effective_descends_coefficients {I J : Type*} (s : J → I)\n    (hs : Function.Injective s) (d : J →₀ ℝ) (lifted : I →₀ ℝ)\n    (hleft : birationalPush s hs lifted = d) (h : Effective lifted) :\n    Effective d := by\n  simpa only [hleft] using effective_push s hs h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "effective_iff_push_effective": {
       "path": "Negativity/Interfaces.lean",
       "line": 12,
-      "code": "theorem effective_iff_push_effective {I J V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (strict : J → I) (hinj : Function.Injective strict)\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (avoids : C → V → Prop) (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, ExceptionalIndex strict i → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B i, ExceptionalIndex strict i → coeff B i = 0 →\n      ∃ c, avoids c B)\n    (hinter : ∀ B c, Effective (coeff B) → avoids c B → 0 ≤ intersection c B) :\n    Effective (coeff D) ↔ Effective (birationalPush strict hinj (coeff D)) := by\n  constructor\n  · exact effective_push strict hinj\n  · intro hpush\n    have hex : ∀ i, coeff D i < 0 → ExceptionalIndex strict i :=\n      fun _ hi => negative_is_exceptional strict hinj hpush hi\n    apply effective_of_curve_tests coeff intersection D E hE\n      (fun i hi => hcover i (hex i hi)) hnef hanti\n    intro B i hB hi hzero\n    obtain ⟨c, hc⟩ := hcurve B i (hex i hi) hzero\n    exact ⟨c, hinter B c hB hc⟩"
+      "code": "theorem effective_iff_push_effective {I J V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (strict : J → I) (hinj : Function.Injective strict)\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (avoids : C → V → Prop) (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, ExceptionalIndex strict i → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B i, ExceptionalIndex strict i → coeff B i = 0 →\n      ∃ c, avoids c B)\n    (hinter : ∀ B c, Effective (coeff B) → avoids c B → 0 ≤ intersection c B) :\n    Effective (coeff D) ↔ Effective (birationalPush strict hinj (coeff D)) := by\n  constructor\n  · exact effective_push strict hinj\n  · intro hpush\n    have hex : ∀ i, coeff D i < 0 → ExceptionalIndex strict i :=\n      fun _ hi => negative_is_exceptional strict hinj hpush hi\n    apply effective_of_curve_tests coeff intersection D E hE\n      (fun i hi => hcover i (hex i hi)) hnef hanti\n    intro B i hB hi hzero\n    obtain ⟨c, hc⟩ := hcurve B i (hex i hi) hzero\n    exact ⟨c, hinter B c hB hc⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "exceptional_subset_support": {
       "path": "Negativity/Interfaces.lean",
       "line": 38,
-      "code": "theorem exceptional_subset_support {X C : Type*}\n    (exc supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcover : ∀ x ∈ exc, ∃ c, x ∈ curve c)\n    (hanti : ∀ c, degree c < 0)\n    (hnonneg : ∀ c, ¬ curve c ⊆ supp → 0 ≤ degree c) :\n    exc ⊆ supp := by\n  intro x hx\n  obtain ⟨c, hc⟩ := hcover x hx\n  have hsub : curve c ⊆ supp := by\n    by_contra h\n    exact (not_lt_of_ge (hnonneg c h)) (hanti c)\n  exact hsub hc"
+      "code": "theorem exceptional_subset_support {X C : Type*}\n    (exc supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcover : ∀ x ∈ exc, ∃ c, x ∈ curve c)\n    (hanti : ∀ c, degree c < 0)\n    (hnonneg : ∀ c, ¬ curve c ⊆ supp → 0 ≤ degree c) :\n    exc ⊆ supp := by\n  intro x hx\n  obtain ⟨c, hc⟩ := hcover x hx\n  have hsub : curve c ⊆ supp := by\n    by_contra h\n    exact (not_lt_of_ge (hnonneg c h)) (hanti c)\n  exact hsub hc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     },
     "fiber_support_dichotomy": {
       "path": "Negativity/Interfaces.lean",
       "line": 54,
-      "code": "theorem fiber_support_dichotomy {X C : Type*}\n    (fiber supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcurve : (fiber ∩ supp).Nonempty → ¬ fiber ⊆ supp →\n      ∃ c, curve c ⊆ fiber ∧ (curve c ∩ supp).Nonempty ∧ ¬ curve c ⊆ supp)\n    (hpositive : ∀ c, (curve c ∩ supp).Nonempty → ¬ curve c ⊆ supp → 0 < degree c)\n    (hnef : ∀ c, curve c ⊆ fiber → degree c ≤ 0) :\n    Disjoint fiber supp ∨ fiber ⊆ supp := by\n  by_cases hmeet : (fiber ∩ supp).Nonempty\n  · right\n    by_contra hsub\n    obtain ⟨c, hcf, hcmeet, hcs⟩ := hcurve hmeet hsub\n    exact (not_lt_of_ge (hnef c hcf)) (hpositive c hcmeet hcs)\n  · left\n    exact Set.disjoint_iff_inter_eq_empty.mpr (Set.not_nonempty_iff_eq_empty.mp hmeet)"
+      "code": "theorem fiber_support_dichotomy {X C : Type*}\n    (fiber supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcurve : (fiber ∩ supp).Nonempty → ¬ fiber ⊆ supp →\n      ∃ c, curve c ⊆ fiber ∧ (curve c ∩ supp).Nonempty ∧ ¬ curve c ⊆ supp)\n    (hpositive : ∀ c, (curve c ∩ supp).Nonempty → ¬ curve c ⊆ supp → 0 < degree c)\n    (hnef : ∀ c, curve c ⊆ fiber → degree c ≤ 0) :\n    Disjoint fiber supp ∨ fiber ⊆ supp := by\n  by_cases hmeet : (fiber ∩ supp).Nonempty\n  · right\n    by_contra hsub\n    obtain ⟨c, hcf, hcmeet, hcs⟩ := hcurve hmeet hsub\n    exact (not_lt_of_ge (hnef c hcf)) (hpositive c hcmeet hcs)\n  · left\n    exact Set.disjoint_iff_inter_eq_empty.mpr (Set.not_nonempty_iff_eq_empty.mp hmeet)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
     }
   },
   "graphEdges": "manually curated mathematical blueprint; not a kernel dependency dump",
