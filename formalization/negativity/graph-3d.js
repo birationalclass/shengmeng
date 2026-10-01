@@ -1,5 +1,5 @@
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-12';
-import {t,english,englishStatuses} from './i18n.js?v=20261002-formal-12';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-13';
+import {t,english,englishStatuses} from './i18n.js?v=20261002-formal-13';
 // Perspective projection of the same curated proof DAG; no new proof dependencies.
 export function createSpatialGraph({host,nodes,select,relation}) {
   const byId=new Map(nodes.map(n=>[n.id,n])), depths=new Map();
@@ -10,7 +10,7 @@ export function createSpatialGraph({host,nodes,select,relation}) {
   host.innerHTML=`<div class="spatial-controls"><button class="button small" data-camera="reset">重置视角</button><button class="button small" data-camera="focus" aria-pressed="false">聚焦依赖链</button><button class="button small" data-camera="direct" aria-pressed="false">只看直接前提</button><button class="button small" data-camera="in" aria-label="放大三维图">＋</button><button class="button small" data-camera="out" aria-label="缩小三维图">−</button><label>定位节点 <select id="spatialSelect">${nodes.map(n=>`<option value="${n.id}">${n.title}</option>`).join('')}</select></label></div><div class="spatial-stage" tabindex="0" role="region" aria-label="三维证明依赖图。拖动旋转，滚轮缩放；键盘方向键旋转，加减键缩放。"><canvas aria-hidden="true"></canvas><div class="spatial-cards"></div><div class="spatial-axis" aria-hidden="true">横向：证明类别 · 纵向：步骤位置<br>纵深：依赖推导层级</div></div><p class="spatial-hint">拖动旋转 · 滚轮或 ＋／− 缩放 · 点击节点查看证明。3D 层次仅表示推导深度，验证状态仍由颜色表示。</p>`;
   const stage=host.querySelector('.spatial-stage'),canvas=stage.querySelector('canvas'),ctx=canvas.getContext('2d'),cards=stage.querySelector('.spatial-cards'),picker=host.querySelector('select');
   const buttons=new Map();
-  nodes.forEach(n=>{const b=document.createElement('button');b.className=`spatial-node ${n.status}`;b.dataset.spatialNode=n.id;b.innerHTML=`<b></b><small></small><span class="relation-tag"></span>`;b.querySelector('b').textContent=n.title;b.querySelector('small').textContent=english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式已验证',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status];b.addEventListener('click',e=>{if(e.detail===0)select(n.id);});cards.append(b);buttons.set(n.id,b);});
+  nodes.forEach(n=>{const b=document.createElement('button');b.className=`spatial-node ${n.status}`;b.dataset.spatialNode=n.id;b.innerHTML=`<b></b><small></small><span class="relation-tag"></span>`;b.querySelector('b').textContent=n.title;b.querySelector('small').textContent=english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status];b.addEventListener('click',e=>{if(e.detail===0)select(n.id);});cards.append(b);buttons.set(n.id,b);});
   let yaw=-.38,pitch=.12,zoom=1,focused=false,directOnly=false,current='proper',scope='all',frame=0,pointer=null;
   const labels={selected:'当前结论',direct:'直接前提',indirect:'间接前提',other:'非当前依赖'};
   function schedule(){if(!frame)frame=requestAnimationFrame(draw);}
