@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-01T14:08:57+08:00",
+  "lean": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "files": [
+    {
+      "path": "Negativity.lean",
+      "sha256": "02ae4ed617b82aea56db90dc2c9540303fac130f4f24d0eb1a7f7edad252a614"
+    },
+    {
+      "path": "CheckAxioms.lean",
+      "sha256": "f12ddc94d61d9e1c24e165a93bca74a654dce04b970b0e8239f2fc43053f0ec4"
+    },
+    {
+      "path": "lakefile.toml",
+      "sha256": "1fce1bc35e3a7f0419621d0f20025d60202b7241a70f9e30fd8039acdcb0d9b3"
+    },
+    {
+      "path": "lake-manifest.json",
+      "sha256": "4d0301fd760ec69b12204fee628cfd373de8eda5df3a9947d82cb8c95d334779"
+    },
+    {
+      "path": "lean-toolchain",
+      "sha256": "ceb521c34ccf509ffab8850a94e147aefbc9b406506832eb83caae98c64e0116"
+    },
+    {
+      "path": "Negativity/Basic.lean",
+      "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/Numerical.lean",
+      "sha256": "39766a565a61e71b97a504319272b3ee824b84089b614b5a899c54bdd96473af"
+    },
+    {
+      "path": "Negativity/Coefficients.lean",
+      "sha256": "eef1d94dc57f8876a57c88590e148dee91a29ece8b212d28988ad13b6cca9a8f"
+    },
+    {
+      "path": "Negativity/Interfaces.lean",
+      "sha256": "5524e30885fda21f7e8692c34e45e39acd2150afdc94cd9bf052746b8df8634c"
+    }
+  ],
+  "declarations": {
+    "exists_effective_shift": {
+      "path": "Negativity/Numerical.lean",
+      "line": 18,
+      "code": "theorem exists_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧ Effective (d + e • a) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  classical\n  have hn : ∃ i, d i < 0 := by\n    simpa only [Effective, not_forall, not_le] using hneg\n  let s := d.support.filter (fun i => d i < 0)\n  have hs : s.Nonempty := by\n    obtain ⟨i, hi⟩ := hn\n    exact ⟨i, Finset.mem_filter.mpr ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩⟩\n  obtain ⟨j, hj, hmax⟩ := s.exists_max_image (fun i => -d i / a i) hs\n  have hdj : d j < 0 := (Finset.mem_filter.mp hj).2\n  have haj : 0 < a j := hcover j hdj\n  let e := -d j / a j\n  have he : 0 < e := div_pos (neg_pos.mpr hdj) haj\n  refine ⟨e, he, ?_, j, hdj, ?_⟩\n  · intro i\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    by_cases hi : d i < 0\n    · have hai := hcover i hi\n      have his : i ∈ s := Finset.mem_filter.mpr\n        ⟨Finsupp.mem_support_iff.mpr (ne_of_lt hi), hi⟩\n      have hle : -d i / a i ≤ e := hmax i his\n      have := (div_le_iff₀ hai).mp hle\n      linarith\n    · have hdi : 0 ≤ d i := le_of_not_gt hi\n      exact add_nonneg hdi (mul_nonneg he.le (ha i))\n  · simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    dsimp [e]\n    rw [div_mul_cancel₀ _ (ne_of_gt haj)]\n    ring"
+    },
+    "effective_of_curve_tests": {
+      "path": "Negativity/Numerical.lean",
+      "line": 54,
+      "code": "theorem effective_of_curve_tests {I V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, coeff D i < 0 → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B j, Effective (coeff B) → coeff D j < 0 → coeff B j = 0 →\n      ∃ c, 0 ≤ intersection c B) :\n    Effective (coeff D) := by\n  by_contra hneg\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ :=\n    exists_effective_shift (coeff D) (coeff E) hE hcover hneg\n  have hcoeff : coeff (D + e • E) = coeff D + e • coeff E := by simp\n  obtain ⟨c, hc⟩ := hcurve (D + e • E) j (hcoeff.symm ▸ hshift) hj\n    (by simpa only [hcoeff] using hzero)\n  have hmul : e * intersection c E < 0 := mul_neg_of_pos_of_neg he (hanti c)\n  have hd := hnef c\n  simp only [map_add, map_smul, smul_eq_mul] at hc\n  linarith"
+    },
+    "effective_push": {
+      "path": "Negativity/Coefficients.lean",
+      "line": 23,
+      "code": "theorem effective_push {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ} (hd : Effective d) :\n    Effective (birationalPush strict hinj d) := by\n  intro j\n  exact hd (strict j)"
+    },
+    "negative_is_exceptional": {
+      "path": "Negativity/Coefficients.lean",
+      "line": 29,
+      "code": "theorem negative_is_exceptional {I J : Type*} (strict : J → I)\n    (hinj : Function.Injective strict) {d : I →₀ ℝ}\n    (hpush : Effective (birationalPush strict hinj d)) {i : I} (hi : d i < 0) :\n    ExceptionalIndex strict i := by\n  rintro ⟨j, rfl⟩\n  exact (not_lt_of_ge (hpush j)) hi"
+    },
+    "exists_least_effective_shift": {
+      "path": "Negativity/Coefficients.lean",
+      "line": 37,
+      "code": "theorem exists_least_effective_shift {I : Type*} (d a : I →₀ ℝ)\n    (ha : Effective a) (hcover : ∀ i, d i < 0 → 0 < a i)\n    (hneg : ¬ Effective d) :\n    ∃ e : ℝ, 0 < e ∧\n      (∀ t : ℝ, 0 ≤ t → (Effective (d + t • a) ↔ e ≤ t)) ∧\n      ∃ j, d j < 0 ∧ (d + e • a) j = 0 := by\n  obtain ⟨e, he, hshift, j, hj, hzero⟩ := exists_effective_shift d a ha hcover hneg\n  refine ⟨e, he, ?_, j, hj, hzero⟩\n  intro t _ht\n  constructor\n  · intro ht\n    have hjpos := hcover j hj\n    have htj := ht j\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at htj hzero\n    nlinarith\n  · intro hle i\n    have hi := hshift i\n    have hprod : e * a i ≤ t * a i := mul_le_mul_of_nonneg_right hle (ha i)\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul] at hi ⊢\n    linarith"
+    },
+    "effective_iff_push_effective": {
+      "path": "Negativity/Interfaces.lean",
+      "line": 12,
+      "code": "theorem effective_iff_push_effective {I J V C : Type*}\n    [AddCommGroup V] [Module ℝ V]\n    (strict : J → I) (hinj : Function.Injective strict)\n    (coeff : V →ₗ[ℝ] (I →₀ ℝ)) (intersection : C → V →ₗ[ℝ] ℝ)\n    (avoids : C → V → Prop) (D E : V)\n    (hE : Effective (coeff E))\n    (hcover : ∀ i, ExceptionalIndex strict i → 0 < coeff E i)\n    (hnef : ∀ c, intersection c D ≤ 0)\n    (hanti : ∀ c, intersection c E < 0)\n    (hcurve : ∀ B i, ExceptionalIndex strict i → coeff B i = 0 →\n      ∃ c, avoids c B)\n    (hinter : ∀ B c, Effective (coeff B) → avoids c B → 0 ≤ intersection c B) :\n    Effective (coeff D) ↔ Effective (birationalPush strict hinj (coeff D)) := by\n  constructor\n  · exact effective_push strict hinj\n  · intro hpush\n    have hex : ∀ i, coeff D i < 0 → ExceptionalIndex strict i :=\n      fun _ hi => negative_is_exceptional strict hinj hpush hi\n    apply effective_of_curve_tests coeff intersection D E hE\n      (fun i hi => hcover i (hex i hi)) hnef hanti\n    intro B i hB hi hzero\n    obtain ⟨c, hc⟩ := hcurve B i (hex i hi) hzero\n    exact ⟨c, hinter B c hB hc⟩"
+    },
+    "exceptional_subset_support": {
+      "path": "Negativity/Interfaces.lean",
+      "line": 38,
+      "code": "theorem exceptional_subset_support {X C : Type*}\n    (exc supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcover : ∀ x ∈ exc, ∃ c, x ∈ curve c)\n    (hanti : ∀ c, degree c < 0)\n    (hnonneg : ∀ c, ¬ curve c ⊆ supp → 0 ≤ degree c) :\n    exc ⊆ supp := by\n  intro x hx\n  obtain ⟨c, hc⟩ := hcover x hx\n  have hsub : curve c ⊆ supp := by\n    by_contra h\n    exact (not_lt_of_ge (hnonneg c h)) (hanti c)\n  exact hsub hc"
+    },
+    "fiber_support_dichotomy": {
+      "path": "Negativity/Interfaces.lean",
+      "line": 54,
+      "code": "theorem fiber_support_dichotomy {X C : Type*}\n    (fiber supp : Set X) (curve : C → Set X) (degree : C → ℝ)\n    (hcurve : (fiber ∩ supp).Nonempty → ¬ fiber ⊆ supp →\n      ∃ c, curve c ⊆ fiber ∧ (curve c ∩ supp).Nonempty ∧ ¬ curve c ⊆ supp)\n    (hpositive : ∀ c, (curve c ∩ supp).Nonempty → ¬ curve c ⊆ supp → 0 < degree c)\n    (hnef : ∀ c, curve c ⊆ fiber → degree c ≤ 0) :\n    Disjoint fiber supp ∨ fiber ⊆ supp := by\n  by_cases hmeet : (fiber ∩ supp).Nonempty\n  · right\n    by_contra hsub\n    obtain ⟨c, hcf, hcmeet, hcs⟩ := hcurve hmeet hsub\n    exact (not_lt_of_ge (hnef c hcf)) (hpositive c hcmeet hcs)\n  · left\n    exact Set.disjoint_iff_inter_eq_empty.mpr (Set.not_nonempty_iff_eq_empty.mp hmeet)"
+    }
+  },
+  "graphEdges": "manually curated mathematical blueprint; not a kernel dependency dump",
+  "verification": "local lake build and #print axioms; not browser-side verification"
+}

@@ -1,0 +1,350 @@
+\documentclass[12pt,a4paper,psamsfonts]{amsart}
+
+% Layout and theorem styles follow arXiv:2309.07005v1.
+\usepackage{amssymb,amscd,amsxtra,calc}
+\usepackage{mathrsfs,mathtools,cmmib57}
+\usepackage{mathabx}
+\usepackage[colorlinks,linkcolor=blue,anchorcolor=blue,citecolor=green]{hyperref}
+
+\setlength{\topmargin}{0cm}
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setlength{\marginparwidth}{0cm}
+\setlength{\marginparsep}{0cm}
+\setlength{\textheight}{\paperheight - 2in -35pt}
+\setlength{\textwidth}{\paperwidth - 2in}
+\setlength{\headheight}{12.5pt}
+\setlength{\headsep}{25pt}
+\setlength{\footskip}{30pt}
+\renewcommand{\baselinestretch}{1.3}
+\pagestyle{headings}
+\setlength{\emergencystretch}{2em}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\OO}{\mathcal O}
+\DeclareMathOperator{\Supp}{Supp}
+\DeclareMathOperator{\codim}{codim}
+\DeclareMathOperator{\coeff}{coeff}
+
+\hypersetup{pdftitle={Negativity Lemma}}
+
+\title[Negativity Lemma]{Negativity Lemma}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\markboth{NEGATIVITY LEMMA}{NEGATIVITY LEMMA}
+
+\section{Detailed argument}
+
+\begin{lemma}\label{lem:antiample}
+Let $f\colon X\to Y$ be a projective birational morphism between
+normal varieties, with $Y$ affine. Then there exists an effective
+Cartier divisor $E$ on $X$ such that $-E$ is $f$-ample.
+\end{lemma}
+
+\begin{proof}
+Since $f$ is projective, we can choose an $f$-ample Cartier divisor
+$D$ on $X$. Put $\mathcal F=f_*\OO_X(-D)$. Since $f$ is projective,
+$\mathcal F$ is coherent. Since $f$ is birational, it is an
+isomorphism over a dense open subset of $Y$, on which $\mathcal F$
+is invertible. Thus $\mathcal F$ has generic rank one; in particular,
+$\mathcal F\neq0$.
+
+Since $Y$ is affine, a nonzero quasi-coherent sheaf on $Y$ has a
+nonzero global section. Hence we may choose
+\[
+0\neq s\in H^0(Y,\mathcal F)=H^0(X,\OO_X(-D)).
+\]
+Viewing $\OO_X(-D)$ as a subsheaf of the sheaf of rational functions,
+we regard $s$ as a nonzero rational function on $X$. Set
+\[
+E=-D+\operatorname{div}(s).
+\]
+The condition $s\in H^0(X,\OO_X(-D))$ says precisely that $E$ is
+an effective Cartier divisor. Indeed, if $d$ is a local equation
+of $D$, then $s/d$ is a nonzero regular function and is a local
+equation of $E$. Finally, $-E\sim D$, so $-E$ is $f$-ample.
+\end{proof}
+
+\begin{lemma}\label{lem:exceptional-support}
+Let $f\colon X\to Y$ be a projective birational morphism between
+varieties, with $Y$ normal, and let $E$ be an effective Cartier
+divisor on $X$ such that $-E$ is $f$-ample. Then $\Supp E$ contains
+the exceptional locus $\operatorname{Exc}(f)$.
+\end{lemma}
+
+\begin{proof}
+Since $Y$ is normal, $\operatorname{Exc}(f)$ is covered by complete
+integral curves contracted by $f$. For every such curve $C$, the
+$f$-ampleness of $-E$ gives $E\cdot C<0$. Since $E$ is effective,
+this forces $C\subseteq\Supp E$. Hence
+$\operatorname{Exc}(f)\subseteq\Supp E$.
+\end{proof}
+
+\begin{theorem}[Projective negativity lemma]\label{thm:negativity}
+Let $f\colon X\to Y$ be a projective birational morphism between normal
+varieties. Let $D$ be an $\R$-Cartier divisor on $X$ such that $-D$ is
+nef over $Y$. Then:
+\begin{enumerate}
+\item $D$ is effective if and only if $f_*D$ is effective.
+\item If $D$ is effective, then for every $y\in Y$, either
+\[
+f^{-1}(y)\cap\Supp D=\varnothing
+\qquad\text{or}\qquad
+f^{-1}(y)\subset\Supp D.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:negativity}]
+Both assertions are local on $Y$, so we may assume that $Y$ is affine.
+
+\textup{(1)}
+One direction is trivial. For the other direction, assume $f_*D\geq0$.
+Since $f$ is birational, every prime divisor with negative coefficient
+in $D$ is $f$-exceptional.
+
+Suppose, for a contradiction, that $D$ is not effective. Choose an effective
+Cartier divisor $E$ on $X$ such that $-E$ is $f$-ample, as in
+Lemma~\ref{lem:antiample}. By Lemma~\ref{lem:exceptional-support},
+the coefficient $\coeff_P(E)>0$ whenever $\coeff_P(D)<0$. Set
+\[
+e:=\max_{\coeff_P(D)<0}\frac{-\coeff_P(D)}{\coeff_P(E)}>0.
+\]
+Then $D+eE\geq0$, and we can find an $f$-exceptional prime
+divisor $F$ such that $F\not\subset\Supp(D+eE)$.
+Choose a closed point $x\in F\setminus\Supp(D+eE)$ and a
+curve $C\subset F$ through $x$ contracted by $f$.
+Then $C\not\subset\Supp(D+eE)$, so $(D+eE)\cdot C\geq0$.
+On the other hand,
+\[
+(D+eE)\cdot C=D\cdot C+e(E\cdot C)<0,
+\]
+because $-D$ is $f$-nef, $-E$ is $f$-ample, and $e>0$. This is a
+contradiction, so $D\geq0$.
+
+\textup{(2)}
+Assume $D\geq0$. Since $f$ is projective and birational and $Y$ is
+normal, its fibers are connected by Stein factorization.
+Suppose $f^{-1}(y)\cap\Supp D\neq\varnothing$. If
+$f^{-1}(y)\not\subset\Supp D$, connectedness gives a curve
+$C\subset f^{-1}(y)$ meeting $\Supp D$ but not contained in it.
+Then $D\cdot C>0$, contradicting the $f$-nefness of $-D$.
+Thus $f^{-1}(y)\subset\Supp D$.
+\end{proof}
+
+\begin{theorem}[Proper negativity lemma]\label{thm:proper-negativity}
+Let $f\colon X\to Y$ be a proper birational morphism between normal
+varieties. Let $D$ be an $\R$-Cartier divisor on $X$ such that $-D$ is
+nef over $Y$. Then:
+\begin{enumerate}
+\item $D$ is effective if and only if $f_*D$ is effective.
+\item If $D$ is effective, then for every $y\in Y$, either
+\[
+f^{-1}(y)\cap\Supp D=\varnothing
+\qquad\text{or}\qquad
+f^{-1}(y)\subset\Supp D.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By Chow's lemma and normalization, choose a proper birational
+morphism $\pi\colon X'\to X$ with $X'$ normal such that
+$f'=f\circ\pi\colon X'\to Y$ is projective. Set $D'=\pi^*D$.
+By the projection formula, $-D'$ is $f'$-nef, and
+\[
+\pi_*D'=D,\qquad f'_*D'=f_*D.
+\]
+If $f_*D\geq0$, Theorem~\ref{thm:negativity}\textup{(1)} gives
+$D'\geq0$, hence $D=\pi_*D'\geq0$. The converse is immediate.
+
+If $D\geq0$, then $D'\geq0$ and
+$\Supp D'=\pi^{-1}(\Supp D)$. By
+Theorem~\ref{thm:negativity}\textup{(2)}, each fiber of $f'$ is
+either disjoint from $\Supp D'$ or contained in it. Since
+$f'^{-1}(y)\to f^{-1}(y)$ is surjective, the same holds for $f$
+and $D$.
+\end{proof}
+
+\section{A concise proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:proper-negativity}]
+We may work over an affine open subset of $Y$. By Chow's lemma
+and normalization, choose $\pi\colon X'\to X$ proper birational
+with $X'$ normal and $f\circ\pi$ projective. The projection formula
+preserves relative nefness, and
+\[
+\pi_*\pi^*D=D,\qquad
+\Supp(\pi^*D)=\pi^{-1}(\Supp D)\quad\text{if }D\geq0.
+\]
+Thus both assertions descend from $X'$ to $X$, and we may assume
+that $f$ is projective.
+
+\textup{(1)} Suppose $f_*D\geq0$ but $D\not\geq0$.
+Choose an $f$-ample Cartier divisor $A$. The coherent sheaf
+$f_*\OO_X(-A)$ has generic rank one and hence, since $Y$ is affine,
+a nonzero global section $s$. Then $E=-A+\operatorname{div}(s)\geq0$
+and $-E$ is $f$-ample. Every contracted curve $C$ satisfies
+$E\cdot C<0$, so $C\subset\Supp E$. Such curves cover
+$\operatorname{Exc}(f)$; hence $\operatorname{Exc}(f)\subset\Supp E$.
+
+All negative components of $D$ are $f$-exceptional. Set
+\[
+e:=\max_{\coeff_P(D)<0}
+\frac{-\coeff_P(D)}{\coeff_P(E)}>0.
+\]
+Then $D+eE\geq0$, and some $f$-exceptional prime divisor $F$ is
+not contained in $\Supp(D+eE)$. Choose a contracted curve
+$C\subset F$ not contained in this support. We obtain
+\[
+0\leq(D+eE)\cdot C=D\cdot C+e(E\cdot C)<0,
+\]
+a contradiction. The reverse implication is immediate.
+
+\textup{(2)} Assume $D\geq0$ and
+$f^{-1}(y)\cap\Supp D\neq\varnothing$. The fiber is connected by
+Stein factorization. If it is not contained in $\Supp D$, there is
+a curve in the fiber meeting $\Supp D$ but not contained in it.
+Its intersection with $D$ is positive, contrary to the
+$f$-nefness of $-D$. Thus $f^{-1}(y)\subset\Supp D$.
+\end{proof}
+
+\section{Extension to quasi-projective bases}
+
+Lemma~\ref{lem:antiample} remains valid when the affine hypothesis
+on $Y$ is replaced by quasi-pro\-jec\-tivity: for a projective birational
+morphism $f\colon X\to Y$ between normal varieties with $Y$
+quasi-projective, there is an effective Cartier divisor $E$ such
+that $-E$ is $f$-ample. This strengthening also requires no
+Riemann--Roch.
+
+\begin{proof}
+Choose an $f$-ample line bundle $\mathcal L$ and put
+$\mathcal F=f_*\mathcal L^{-1}$. As in
+Lemma~\ref{lem:antiample}, $\mathcal F$ is coherent of generic rank
+one, so $\mathcal F\neq0$.
+
+Choose a very ample Cartier divisor $H$
+on $Y$. By the global-generation criterion for ampleness,
+$\mathcal F\otimes\OO_Y(mH)$ is generated by global sections for
+$m\gg0$. It is nonzero, so it has a nonzero global section.
+The projection formula gives
+\[
+\begin{split}
+0\neq s&\in H^0\bigl(Y,\mathcal F\otimes\OO_Y(mH)\bigr)\\
+&=H^0\bigl(X,\mathcal L^{-1}\otimes\OO_X(mf^*H)\bigr).
+\end{split}
+\]
+Its zero divisor $E$ satisfies
+\[
+\OO_X(-E)\simeq\mathcal L\otimes f^*\OO_Y(-mH).
+\]
+Tensoring with a line bundle pulled back from the base preserves
+relative ampleness, so $-E$ is again $f$-ample. If $Y$ is projective,
+then $X$ is projective. Taking $\mathcal L=\OO_X(A)$ for
+any very ample divisor $A$ on $X$ gives $E\sim mf^*H-A$ and hence
+the decomposition
+\[
+mf^*H\sim A+E,\qquad -E\sim_f A.
+\]
+
+
+Lemma~\ref{lem:exceptional-support} further shows
+that every exceptional prime divisor lies in $\Supp E$.
+The only additional input is global generation after a sufficiently
+large ample twist. No Riemann--Roch or section-growth estimate is
+needed.
+\end{proof}
+
+\begin{remark}
+The affine hypothesis is essential to the \emph{untwisted argument},
+not to the conclusion over a quasi-projective base. A nonzero
+coherent sheaf on a projective variety need not have any global
+sections. For example, with $f=\operatorname{id}_{\mathbf P^1}$ and
+$\mathcal L=\OO_{\mathbf P^1}(1)$, one has
+$f_*\mathcal L^{-1}=\OO_{\mathbf P^1}(-1)\neq0$ but
+$H^0(X,\mathcal L^{-1})=0$. The twist by $mH$ repairs precisely
+this failure. On an arbitrary normal base, a global very ample
+$H$ need not exist; for the negativity lemma it suffices to apply
+the affine construction on each affine open subset of the base.
+\end{remark}
+
+\begin{remark}
+For comparison, the projective decomposition also has the following proof, making
+explicit the section-growth argument usually used in Kodaira's
+lemma. Assume that $Y$ is projective, put $n=\dim X=\dim Y\geq1$,
+choose very ample Cartier divisors $H$ on $Y$ and $A$ on $X$,
+and set $M=f^*H$. Since $Y$ is normal and $f$ is proper birational,
+$f_*\OO_X=\OO_Y$. Thus
+\[
+h^0(X,\OO_X(mM))=h^0(Y,\OO_Y(mH))
+=\frac{H^n}{n!}m^n+O(m^{n-1}),\qquad H^n>0.
+\]
+The last equality follows from Serre vanishing and the Hilbert
+polynomial of the very ample divisor $H$. In particular, $M$ is
+big; it need not be ample.
+
+Choose an effective member $T\in|A|$. It is a Cartier divisor on
+the integral variety $X$, and $\dim T=n-1$. The coherent sheaf
+$\mathcal G=f_*\OO_T$ is supported on $f(T)$, whose dimension is at
+most $n-1$. By the projection formula and the Hilbert polynomial
+of $\mathcal G$ on $Y$,
+\[
+\begin{split}
+h^0(T,\OO_T(mM))
+&=h^0\bigl(Y,\mathcal G\otimes\OO_Y(mH)\bigr)\\
+&=O(m^{n-1}).
+\end{split}
+\]
+No normality or irreducibility of $T$ is needed. Taking global
+sections of the exact sequence
+\[
+0\longrightarrow\OO_X(mM-T)\longrightarrow\OO_X(mM)
+\longrightarrow\OO_T(mM)\longrightarrow0
+\]
+gives
+\[
+\begin{split}
+h^0(X,\OO_X(mM-A))
+&\geq h^0(X,\OO_X(mM))-h^0(T,\OO_T(mM))\\
+&\geq \frac{H^n}{n!}m^n-O(m^{n-1})>0
+\end{split}
+\]
+for $m\gg0$. We only use left exactness here; surjectivity of the
+restriction map is unnecessary. A nonzero section therefore gives
+an effective Cartier divisor $E\sim mM-A$. Equivalently,
+\[
+f^*H\sim_{\Q}\frac1m A+\frac1m E,
+\qquad -E\sim_f A.
+\]
+This is the requested decomposition into an ample divisor and an
+effective divisor. Lemma~\ref{lem:exceptional-support} shows that
+$\Supp E$ contains every exceptional prime divisor. When $n=0$,
+the assertion is immediate with $E=0$.
+
+The essential numerical input in this second proof is that the
+space of sections on $X$ grows like $m^n$, whereas the space of
+restrictions to $T$ grows at most like $m^{n-1}$. It is often
+expressed as an asymptotic Riemann--Roch argument. However, full
+Riemann--Roch is \emph{not logically necessary}: the Hilbert
+polynomial and Serre vanishing on $Y$ already give both estimates,
+and the first proof needs only global generation after an ample
+twist. Riemann--Roch alone computes an Euler characteristic, not
+$h^0$; a proof invoking it must also justify the relevant
+cohomological estimates. In particular, one cannot apply Serre
+vanishing on $X$ merely because $f^*H$ is big and nef. Neither
+construction uses the Hodge index theorem, and $E$ may have
+nonexceptional components.
+\end{remark}
+
+\end{document}
