@@ -1,5 +1,5 @@
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261001-formal-9';
-import {t} from './i18n.js?v=20261001-formal-9';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-10';
+import {t} from './i18n.js?v=20261002-formal-10';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected}) {
   const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,expandedInputs=false;

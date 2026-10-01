@@ -107,3 +107,346 @@ Object.assign(find('antiample'),{
 });
 find('cover').deps=['zmtfinite','normalfinite'];
 find('cover').inputs=['proper quasi-finite ⇒ finite 已复用；正规底的有限双有理同构已完成仿射环与 Spec 版本，仍需一般概形的仿射化和拼接。','正维射影纤维中经过指定点的曲线存在性。'];
+
+// Verified curve-local geometry and the actual pullback square.
+nodes.push(...[
+  {
+    "id": "curvefiberdegree",
+    "title": "有限平坦曲线的局部次数",
+    "status": "done",
+    "x": 20,
+    "y": 2700,
+    "decl": "finite_flat_fiber_functionField_degree",
+    "file": "CurveDegree.lean",
+    "statement": "实际有限平坦代数中，素点纤维满足 Σ e_q f_q=[L:K]，其中 K、L 是两端分式域。",
+    "scope": "真实 ramificationIdx、inertiaDeg 与函数域；复用 mathlib 的纤维长度公式。不假设射影交数等式。",
+    "inputs": [
+      "R→S 为整环上的有限平坦代数；p 为素理想，素点纤维给定 Fintype。",
+      "K、L 是对应分式域，带兼容的代数结构。"
+    ],
+    "steps": [
+      [
+        "纤维长度",
+        "复用 Σ e_q f_q=rank_R S。"
+      ],
+      [
+        "函数域次数",
+        "分式域上的维数等于有限平坦模的秩。"
+      ],
+      [
+        "带符号系数",
+        "对任意 n∈ℤ，纤维贡献为 n·[L:K]。"
+      ]
+    ],
+    "deps": [],
+    "related": [
+      "finite_flat_fiber_degree",
+      "finite_flat_signed_point_degree"
+    ],
+    "paper": "proper"
+  },
+  {
+    "id": "curveorder",
+    "title": "局部方程的阶数拉回",
+    "status": "done",
+    "x": 20,
+    "y": 2700,
+    "decl": "heightOneOrder_pullback",
+    "file": "CurveDegree.lean",
+    "statement": "真实 Dedekind 环与分式域上，ord_q(h*a)=e_q·ord_p(a)，乘积的阶数可加。",
+    "scope": "从 mathlib 的规范化 adic valuation 定义阶数并证明；并非把 Cartier 系数兼容性作为假设。此处是仿射正规曲线的局部方程。",
+    "inputs": [
+      "R、S 是 Dedekind 整环，S 为 R 上无挠代数。",
+      "p、q 是实际 height-one primes，q lies over p；a 是非零有理函数。"
+    ],
+    "steps": [
+      [
+        "实际赋值",
+        "ord_p(a)=−log(v_p(a))。"
+      ],
+      [
+        "赋值拉回",
+        "v_q(h*a)=v_p(a)^e_q。"
+      ],
+      [
+        "取对数",
+        "得到 ord_q(h*a)=e_q ord_p(a)。"
+      ]
+    ],
+    "deps": [],
+    "related": [
+      "heightOneOrder_mul"
+    ],
+    "paper": "proper"
+  },
+  {
+    "id": "localprojection",
+    "title": "局部射影公式：阶数与剩余域次数",
+    "status": "done",
+    "x": 20,
+    "y": 2700,
+    "decl": "finite_flat_order_fiber_degree",
+    "file": "CurveDegree.lean",
+    "statement": "有限平坦仿射 Dedekind 曲线中，Σ ord_q(h*a)·f_q=ord_p(a)·[L:K]。",
+    "scope": "两侧使用真实阶数、分歧指数及剩余域次数，等式已验证。仍需在完整曲线上拼接，才得到线丛的全局次数公式。",
+    "inputs": [
+      "有限平坦的 Dedekind 环扩张，带兼容分式域 K→L。",
+      "p 为实际非零素点，a∈Kˣ；纤维中的素点可有限枚举。"
+    ],
+    "steps": [
+      [
+        "构造纤维点",
+        "lying-over 的素理想非零，得到实际 height-one 点 q。"
+      ],
+      [
+        "代入阶数公式",
+        "把 ord_q(h*a) 写成 e_q ord_p(a)。"
+      ],
+      [
+        "计算纤维贡献",
+        "由 Σ e_q f_q=[L:K] 得到所需等式。"
+      ]
+    ],
+    "deps": [
+      "curveorder",
+      "curvefiberdegree"
+    ],
+    "related": [],
+    "paper": "proper"
+  },
+  {
+    "id": "principaldivisor",
+    "title": "仿射曲线的主 Weil 除子",
+    "status": "done",
+    "x": 20,
+    "y": 2700,
+    "decl": "affinePrincipalDivisor_effective_iff",
+    "file": "PrincipalDivisors.lean",
+    "statement": "非零有理函数给出真正有限支撑的主 Weil 除子；有效当且仅当函数属于坐标环，零除子当且仅当它是坐标环单位。",
+    "scope": "真实 Dedekind 坐标环和 adic valuations。有限支撑及单位变换不变性都已证明；不是任意系数模型。完整曲线的全局 Cartier 拼接和次数仍未构造。",
+    "inputs": [
+      "R 是实际 Dedekind 整环，K=Frac(R)。",
+      "a∈Kˣ 是非零有理函数。"
+    ],
+    "steps": [
+      [
+        "有限支撑",
+        "有非零阶数的点位于 a 或 a⁻¹ 的有限极点集合中。"
+      ],
+      [
+        "构造主除子",
+        "以 ord_p(a) 为系数构造 Finsupp。"
+      ],
+      [
+        "单位变换",
+        "乘以 R 的单位不改变系数，除子可加且反演取负。"
+      ],
+      [
+        "有效性与零判据",
+        "无极点推出 a 属于 R；a 与 a⁻¹ 均正则时 a 是 R 的单位。"
+      ]
+    ],
+    "deps": [
+      "curveorder"
+    ],
+    "related": [
+      "heightOneOrder_finite_support",
+      "affinePrincipalDivisor_apply",
+      "affinePrincipalDivisor_mul",
+      "heightOneOrder_regular_unit",
+      "affinePrincipalDivisor_unit_transition",
+      "heightOneOrder_nonneg_iff",
+      "affinePrincipalDivisor_inv",
+      "affinePrincipalDivisor_eq_zero_iff"
+    ],
+    "paper": "proper"
+  },
+  {
+    "id": "pullbackdiagram",
+    "title": "曲线交换图的拉回同构",
+    "status": "done",
+    "x": 20,
+    "y": 2700,
+    "decl": "curve_square_pullback_iso",
+    "file": "PullbackDiagram.lean",
+    "statement": "交换图 Γ→X′、C→X 中，两条路径对真实模层的拉回同构：i*π*L≅h*j*L。",
+    "scope": "直接使用真实 Scheme.Modules.pullback 的复合与相等态射同构。交换关系是图的条件；没有假设交数射影公式。全局次数公式是另一步。",
+    "inputs": [
+      "四个真实 Scheme 及态射 i、π、h、j，满足 i≫π=h≫j。",
+      "L 为底上任意实际模层；应用时取 𝒪_X(D)。"
+    ],
+    "steps": [
+      [
+        "复合拉回",
+        "i*π*L≅(π∘i)*L。"
+      ],
+      [
+        "交换图",
+        "π∘i=j∘h，所以两条复合相等。"
+      ],
+      [
+        "分解另一条路径",
+        "(j∘h)*L≅h*j*L，拼接同构。"
+      ]
+    ],
+    "deps": [],
+    "related": [],
+    "paper": "proper"
+  }
+]);
+
+find('projection').deps=['geomcycle','realspan','pullbackdiagram','localprojection','principaldivisor'];
+find('projection').scope='交换图上真实模层的拉回同构、仿射 Dedekind 曲线的阶数拉回与局部次数公式均已验证。尚需定义完整曲线的线丛次数并拼接局部结果，接入实际 Cartier 交数，才完成整个射影公式。';
+find('projection').inputs=['已验证：交换图 i*π*L≅h*j*L、ord_q(h*a)=e_q ord_p(a)、Σe_qf_q=[k(Γ):k(C)]。','待完成：对完整整曲线 h:Γ→C，构造线丛次数并证明 deg(h*L)=[k(Γ):k(C)]deg(L)，包括正规化及像为点的情形。','将这个次数公式实例化为 Cartier 交数，再应用已验证的实线性延伸。'];
+find('projection').steps=[['限制到曲线：拉回同构已验证','用 Γ→X′、C→X 的交换图得到 i*π*𝒪(D)≅h*j*𝒪(D)。','curve_square_pullback_iso'],['局部阶数与次数：已验证','仿射正规曲线上，阶数按分歧指数拉回，纤维剩余域次数加权后为函数域次数倍。','finite_flat_order_fiber_degree'],['完整曲线的次数：待完成','拼接局部方程，证明线丛次数公式；接入正规化以及像为点时次数为零。'],['回到交数','令 L=j*𝒪(D)，得到 (π*D)·Γ=deg(h*L)=r deg L=D·π_*[Γ]；再使用实线性延伸。']];
+find('projection').precise.zh.gap='已验证交换图的真实模层拉回同构，以及仿射 Dedekind 曲线上的局部阶数和剩余域次数计算。剩余目标是完整曲线上的 deg(h*L)=r·deg(L)，并把真实 Cartier 交数定义接到它；还需处理正规化及像为点的情形。现有 hcompat 参数尚不能删除。';
+find('projection').precise.en.gap='Pullback around the actual Scheme-module square and the local order / residue-degree computation on affine Dedekind curves are proved. The remaining goal is deg(h*L)=r·deg(L) on complete curves, connected to actual Cartier intersection, including normalization and the point-image case. The existing hcompat parameter cannot yet be removed.';
+find('curvefiberdegree').upstream=[['mathlib · Finite flat fiber degree',mathlibSource+'RingTheory/RamificationInertia/Basic.lean']];
+find('curveorder').upstream=[['mathlib · Valuations under extension',mathlibSource+'NumberTheory/RamificationInertia/Valuation.lean']];
+find('principaldivisor').upstream=[['mathlib · Finite valuation support',mathlibSource+'RingTheory/DedekindDomain/FiniteAdeleRing.lean']];
+find('pullbackdiagram').upstream=[['mathlib · Actual module-sheaf pullbacks',mathlibSource+'AlgebraicGeometry/Modules/Sheaf.lean']];
+
+// User-guided point-divisor, closed-point and ring-theoretic routes.
+nodes.push(...[
+  {
+    "id": "pointtensor",
+    "title": "点除子的张量拉回与重数",
+    "status": "done",
+    "x": 278,
+    "y": 2780,
+    "deps": [
+      "curvefiberdegree"
+    ],
+    "decl": "finite_flat_point_pullback_degree_over_base",
+    "related": [
+      "point_pullback_tensor_iso",
+      "point_pullback_tensor_length",
+      "finite_flat_point_pullback_degree"
+    ],
+    "file": "PointPullback.lean",
+    "paper": "proper",
+    "statement": "点 p 的实际张量拉回在 q 处有有限长度 m_q；Σm_q[k(q):k]=[L:K][k(p):k]。",
+    "scope": "用户提出的点除子计数路线已完成仿射局部代数版本。商环同构、长度有限性、重数等于分歧指数及基域次数权重均已证明。仍需将一般线丛表示为除子、在完整曲线上拼接并接入正规化。",
+    "inputs": [
+      "R、S 是域 k 上有限型 Dedekind 坐标环，S 是有限平坦 R-代数。",
+      "p 是实际非零素点；q 是 lying-over 的素点。",
+      "K、L 为兼容分式域；素点纤维可有限枚举。"
+    ],
+    "steps": [
+      [
+        "点的张量拉回",
+        "S_q/𝔪_pS_q ≅ S_q⊗_R(R/𝔪_p)，直接复用实际商环—张量同构。"
+      ],
+      [
+        "计算重数",
+        "quasi-finite 与 Noetherian 性保证长度有限；m_q=length(S_q⊗_R R/𝔪_p)=e_q。"
+      ],
+      [
+        "数原像并计重",
+        "Σm_q[k(q):k(p)]=[L:K]。"
+      ],
+      [
+        "计入点的基域次数",
+        "剩余域次数的塔公式给 Σm_q[k(q):k]=[L:K][k(p):k]。"
+      ]
+    ]
+  },
+  {
+    "id": "closedpoint",
+    "title": "归零分量的支撑外闭点",
+    "status": "done",
+    "x": 20,
+    "y": 2900,
+    "deps": [],
+    "decl": "finiteType_exists_closedPoint_outside_support",
+    "related": [
+      "exists_closedPoint_outside_support"
+    ],
+    "file": "CurveSelection.lean",
+    "paper": "projective",
+    "statement": "域上有限型实际概形中，若闭集 F 不被闭支撑 Z 包含，则存在闭点 x∈F∖Z。",
+    "scope": "已从 mathlib 的 Jacobson 性导出闭点存在，不把“存在 x”另作假设。应用时 F⊄Supp(D+eE) 来自归零系数及真实 Weil 支撑解释；经过 x 的压缩曲线仍需几何构造。",
+    "inputs": [
+      "实际概形 X 局部有限型于域 k。",
+      "F、Z 为闭集，且 F⊄Z。"
+    ],
+    "steps": [
+      [
+        "非空差集",
+        "F⊄Z 给 F∖Z 非空。"
+      ],
+      [
+        "局部闭性",
+        "F 闭且 Z 闭，所以 F∖Z 为局部闭集。"
+      ],
+      [
+        "Jacobson 性",
+        "域上有限型概形为 Jacobson，非空局部闭集包含闭点。"
+      ]
+    ]
+  },
+  {
+    "id": "localidempotents",
+    "title": "局部环的幂等元与非平凡分解",
+    "status": "done",
+    "x": 20,
+    "y": 3020,
+    "deps": [],
+    "decl": "localRing_idempotent_trivial",
+    "related": [
+      "localRing_not_product_nontrivial"
+    ],
+    "file": "LocalConnectedness.lean",
+    "paper": "fiber",
+    "statement": "真实局部环中，a²=a 蕴含 a=0 或 a=1；局部环不能分解成两个非零环的直积。",
+    "scope": "已完成 Hartshorne III §11／形式函数连通性论证的最后一个环论矛盾。尚未形式化把断开的几何纤维提升为完备局部环中的非平凡幂等元，所以未宣称连通纤维定理已完成。",
+    "inputs": [
+      "R 是实际交换局部环。",
+      "a²=a；或给定 R≅A×B，且 A、B 非零。"
+    ],
+    "steps": [
+      [
+        "局部环单位二择一",
+        "a 与 1−a 至少一个是单位。"
+      ],
+      [
+        "消去单位",
+        "a²=a 分别给 a=1 或 a=0。"
+      ],
+      [
+        "排除非零直积",
+        "直积中的 (1,0) 是非平凡幂等元，与前一步矛盾。"
+      ]
+    ]
+  }
+]);
+
+find('projection').deps.push('pointtensor');
+find('projection').steps[1]=['点除子的张量计数：已验证','S_q⊗_R(R/𝔪_p) 的长度给真实重数，按剩余域次数加权后为函数域次数倍。','finite_flat_point_pullback_degree_over_base'];
+find('projection').precise.zh.gap='交换图拉回、点除子的张量拉回商环、有限长度重数和次数加权计数均已验证。接下来按点除子的可加性延伸，并构造完整曲线的线丛次数及正规化兼容性，将真实 Cartier 交数接到 deg(h*L)=r·deg(L)。hcompat 尚未从完整几何证明。';
+find('projection').precise.en.gap='The pullback square, tensor quotient for a point divisor, finite local multiplicities and residue-degree-weighted counting are verified. Extend by additivity of point divisors, construct complete-curve line-bundle degree and normalization compatibility, then connect actual Cartier intersection to deg(h*L)=r·deg(L). Full geometric hcompat remains open.';
+find('curves').deps=['max','negative','support','closedpoint','cover'];
+find('curves').statement='e 的构造给负 exceptional 分量 F 在 D+eE 中系数为零。取闭点 x∈F∖Supp(D+eE)，再在 F 内取经过 x 的压缩曲线。';
+find('curves').scope='最大比值与归零系数已验证；域上有限型概形的支撑外闭点存在也已验证。零系数说明 F 不是支撑分支，并不说明 F 与支撑完全不相交。剩余是实际 Weil 支撑解释及 F 内压缩曲线的几何构造；不依赖第二部分的连通纤维。';
+find('curves').inputs=['反设 D 不有效且 f_*D 有效，负分量为 exceptional。','E 有效并包含 exceptional locus，故这些分量的 E 系数为正。','最大比值步骤得到 coeff_F(D+eE)=0；实际支撑解释给 F⊄Supp(D+eE)。','支撑外闭点已可选；还需从 f|F 的正维纤维中构造经过 x 的完整曲线。'];
+find('curves').steps=[['由 e 取得归零分量','e=max(−coeff_P(D)/coeff_P(E))，得到 D+eE 有效及某个负分量 F 的系数为零。','exists_effective_shift'],['选择支撑外闭点：已验证','F 不是支撑分支，所以 F⊄Supp(D+eE)。有限型概形的闭点引理给 x。','finiteType_exists_closedPoint_outside_support'],['在 F 内取曲线：待补几何','F 为 exceptional divisor，f|F 有正维纤维。在包含 x 的纤维内取完整曲线 C⊂F；由于 x 在支撑外，C 不被支撑包含。']];
+find('connected').deps=['normalfinite','localidempotents','cover'];
+find('connected').title='连通纤维与相交曲线（第二部分）';
+find('connected').statement='第二部分的几何支撑二择一路线：连通纤维若部分遇到支撑，需构造遇支撑却不被包含的纤维内曲线；高维选择步骤待修补。';
+find('connected').scope='仅用于纤维支撑二择一，第 (1) 部分及 proper 有效性下降不使用此节点。连通性按 Hartshorne III §11 的正规性、形式函数与幂等元路线推进；最后局部环矛盾已验证。一般高维纤维的相交曲线选择尚未完成，不能仅从 exceptional 曲线覆盖直接断言所需相交条件。';
+find('connected').inputs=['先证明 f_*𝒪_X=𝒪_Y：双有理性给分式域嵌入，proper 直接像有限性与整闭性恢复基环。','形式函数：Â≅lim H⁰(X_n,𝒪_Xn)。断开纤维给各阶兼容的非平凡幂等元；这一几何桥接尚待形式化。','局部环不存在非平凡幂等元已验证，得到矛盾后可推出连通纤维。','压缩曲线覆盖复用 cover；还需修补曲线同时遇支撑且不被包含的选择，不将覆盖误当成这个更强结论。'];
+find('connected').steps=[['正规性恢复结构层','利用 proper 的直接像有限性及双有理分式域嵌入，整闭性给 f_*𝒪_X=𝒪_Y；环论核心在 normalfinite。'],['形式函数与幂等元：待补几何','若纤维断开，各无穷小邻域产生兼容非平凡幂等元。形式函数把它送入基上完备局部环。'],['局部环矛盾：已验证','局部环幂等元只有 0、1，排除非平凡分解。','localRing_idempotent_trivial'],['高维相交曲线：待修补','复用曲线覆盖基础，但还需保证曲线遇支撑且不包含于支撑。此步只属于第二部分。']];
+find('pointtensor').upstream=[['mathlib · Ideal quotient and tensor base change',mathlibSource+'RingTheory/TensorProduct/Quotient.lean'],['mathlib · Multiplicity as local length',mathlibSource+'RingTheory/RamificationInertia/Ramification.lean']];
+find('closedpoint').upstream=[['mathlib · Jacobson closed-point selection',mathlibSource+'Topology/JacobsonSpace.lean']];
+find('connected').upstream=[['Stacks · Formal functions and idempotent argument','https://stacks.math.columbia.edu/tag/03H0'],['Stacks · Normal proper connectedness','https://stacks.math.columbia.edu/tag/0AY8']];
+
+// Prime-divisor pushforward: the exact geometric facts used by part (1).
+Object.assign(find('strict'),{
+ title:'素除子严格变换与推出系数',
+ deps:['codimone','geomcycle','localorder'],
+ statement:'D=Σa_P[P] 是素除子的有限形式和。对底上素除子 Q，唯一严格变换 Q̃ 推出为 Q；exceptional 素除子推出为零，故 coeff_Q(f_*D)=coeff_Q̃(D)。',
+ scope:'cycle 在这里就是除子的形式和。需要构造真实严格变换、证明余维一同构给函数域次数 1，并选择实际维数权重。已验证的 Scheme-cycle 推出公式与 stalk 同构次数为 1 可复用；余维一同构开集的几何构造仍待完成。',
+ inputs:['明确性质：proper birational f:X→Y 且 Y 正规时，对每个素除子 Q 的泛点 η_Q，存在其开邻域 U，使 f⁻¹(U)→U 为同构。','唯一严格变换 Q̃ 的函数域等于 k(Q)，所以 f_*[Q̃]=[Q]。','若 codim_Y f(P)≥2，则素除子 P 在除子推出中贡献为零。','由 D=Σa_P[P] 的有限和可加性，推出 coeff_Q(f_*D)=coeff_Q̃(D)。'],
+ steps:[['明确对象','D 是素除子的有限实系数形式和。这里的 cycle 保留实际除子系数。'],['构造严格变换','在 Q 泛点的同构邻域上取对应素点，再取闭包得到 Q̃。几何同构开集仍待证明。'],['计算推出','同构给函数域次数 1；被压缩的除子降维贡献 0。已有实际 AlgebraicCycle.map 公式。'],['得到负分量结论','若 f_*D 有效，所有非 exceptional 分量系数均非负；因此负分量必为 exceptional。']]
+});
+find('curves').deps.push('strict');

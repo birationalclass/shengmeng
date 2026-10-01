@@ -4,6 +4,14 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'PointPullback.lean': ['point_pullback_tensor_iso', 'point_pullback_tensor_length', 'finite_flat_point_pullback_degree', 'finite_flat_point_pullback_degree_over_base'],
+    'CurveSelection.lean': ['exists_closedPoint_outside_support', 'finiteType_exists_closedPoint_outside_support'],
+    'LocalConnectedness.lean': ['localRing_idempotent_trivial', 'localRing_not_product_nontrivial'],
+
+    'CurveDegree.lean': ['finite_flat_fiber_degree', 'finite_flat_signed_point_degree', 'finite_flat_fiber_functionField_degree', 'heightOneOrder_mul', 'heightOneOrder_pullback', 'finite_flat_order_fiber_degree'],
+    'PrincipalDivisors.lean': ['heightOneOrder_finite_support', 'affinePrincipalDivisor_apply', 'affinePrincipalDivisor_mul', 'heightOneOrder_regular_unit', 'affinePrincipalDivisor_unit_transition', 'heightOneOrder_nonneg_iff', 'affinePrincipalDivisor_effective_iff', 'affinePrincipalDivisor_inv', 'affinePrincipalDivisor_eq_zero_iff'],
+    'PullbackDiagram.lean': ['curve_square_pullback_iso'],
+
     'AffineSections.lean': ['affine_quasicoherent_exists_nonzero_section'],
     'NormalBirational.lean': ['integral_birational_algebraMap_bijective', 'finite_birational_algebraMap_bijective', 'finite_birational_spec_isIso'],
     'LocalGeometry.lean': ['normal_one_dimensional_local_isDVR', 'scheme_normal_one_dimensional_stalk_isDVR', 'proper_dvr_lift', 'proper_valuative_lift_unique', 'proper_quasiFinite_isFinite', 'proper_finite_fiber_neighborhood'],
@@ -77,7 +85,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

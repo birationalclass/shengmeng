@@ -56,3 +56,29 @@ import Negativity
 #print axioms Negativity.finite_birational_algebraMap_bijective
 #print axioms Negativity.finite_birational_spec_isIso
 #print axioms Negativity.affine_quasicoherent_exists_nonzero_section
+
+#print axioms Negativity.finite_flat_fiber_degree
+#print axioms Negativity.finite_flat_signed_point_degree
+#print axioms Negativity.finite_flat_fiber_functionField_degree
+#print axioms Negativity.heightOneOrder_mul
+#print axioms Negativity.heightOneOrder_pullback
+#print axioms Negativity.finite_flat_order_fiber_degree
+#print axioms Negativity.heightOneOrder_finite_support
+#print axioms Negativity.affinePrincipalDivisor_apply
+#print axioms Negativity.affinePrincipalDivisor_mul
+#print axioms Negativity.heightOneOrder_regular_unit
+#print axioms Negativity.affinePrincipalDivisor_unit_transition
+#print axioms Negativity.heightOneOrder_nonneg_iff
+#print axioms Negativity.affinePrincipalDivisor_effective_iff
+#print axioms Negativity.affinePrincipalDivisor_inv
+#print axioms Negativity.affinePrincipalDivisor_eq_zero_iff
+#print axioms Negativity.curve_square_pullback_iso
+
+#print axioms Negativity.point_pullback_tensor_iso
+#print axioms Negativity.point_pullback_tensor_length
+#print axioms Negativity.finite_flat_point_pullback_degree
+#print axioms Negativity.finite_flat_point_pullback_degree_over_base
+#print axioms Negativity.exists_closedPoint_outside_support
+#print axioms Negativity.finiteType_exists_closedPoint_outside_support
+#print axioms Negativity.localRing_idempotent_trivial
+#print axioms Negativity.localRing_not_product_nontrivial

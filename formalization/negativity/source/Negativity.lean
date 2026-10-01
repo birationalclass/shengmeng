@@ -15,3 +15,15 @@ public import Negativity.LocalGeometry
 
 public import Negativity.NormalBirational
 public import Negativity.AffineSections
+
+public import Negativity.CurveDegree
+
+public import Negativity.PrincipalDivisors
+
+public import Negativity.PullbackDiagram
+
+public import Negativity.PointPullback
+
+public import Negativity.CurveSelection
+
+public import Negativity.LocalConnectedness

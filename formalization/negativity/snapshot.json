@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T00:25:12+08:00",
+  "checkedAt": "2026-10-02T01:15:53+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "08d7d07ae121c3f56bad1ab623b79d6ffc42a5f3d2c5db163fba3dea2829a319"
+      "sha256": "544715e80f70bc89adc076aaf2c5fd05fd9b269ffd835b0ac232a83974d21d9b"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "45e2f412bacc8f190f5536938533909400be8c4fecdea7415f801e7c2d5a4fe8"
+      "sha256": "a791a59cfb67462ad3bc9c21c44c17ecce3a6f3cd0c3672ea87f5229549dd52e"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,30 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/PointPullback.lean",
+      "sha256": "87fd935ae2b36bd10903d00024151e65be4df78e26d8937c484d720fdb5fa355"
+    },
+    {
+      "path": "Negativity/CurveSelection.lean",
+      "sha256": "697fde67ed1afab66b0a950f0658dc2a428cfc7b2015f709cc96039b8353d6d3"
+    },
+    {
+      "path": "Negativity/LocalConnectedness.lean",
+      "sha256": "cff21c3a21c1a204bd7d361970fe5e47336e3baad6b4d000be531b972ca5c928"
+    },
+    {
+      "path": "Negativity/CurveDegree.lean",
+      "sha256": "2fee336c066dce37d84630be6034134e6e5d06ea4239c71c38613b7f9287e002"
+    },
+    {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "sha256": "907e724812f06ad5e531bdfc9d372f42a0e8f02fdfc674081acadbead18eadaa"
+    },
+    {
+      "path": "Negativity/PullbackDiagram.lean",
+      "sha256": "50cb7e6aaab0f16e060c02bd5dfee10056ea51c72614fafab232c058b13950bc"
     },
     {
       "path": "Negativity/AffineSections.lean",
@@ -70,6 +94,244 @@
     }
   ],
   "declarations": {
+    "point_pullback_tensor_iso": {
+      "path": "Negativity/PointPullback.lean",
+      "line": 12,
+      "code": "theorem point_pullback_tensor_iso (R S : Type*) [CommRing R] [CommRing S]\n    [Algebra R S] (p : Ideal R) :\n    Nonempty ((S ⧸ p.map (algebraMap R S)) ≃ₐ[S] S ⊗[R] (R ⧸ p)) :=\n  ⟨Algebra.TensorProduct.quotIdealMapEquivTensorQuot S p⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "point_pullback_tensor_length": {
+      "path": "Negativity/PointPullback.lean",
+      "line": 20,
+      "code": "theorem point_pullback_tensor_length {R S : Type*} [CommRing R] [CommRing S]\n    [IsNoetherianRing S] [Algebra R S] [Algebra.QuasiFinite R S]\n    (p : Ideal R) (q : Ideal S) [q.IsPrime] [q.LiesOver p] :\n    Module.length (Localization.AtPrime q)\n      ((Localization.AtPrime q) ⊗[R] (R ⧸ p)) = (q.ramificationIdx R : ℕ∞) := by\n  let Sq := Localization.AtPrime q\n  let e := Algebra.TensorProduct.quotIdealMapEquivTensorQuot Sq p\n  have hfinite : Module.length Sq (Sq ⧸ p.map (algebraMap R Sq)) ≠ ⊤ := by\n    rw [Module.length_eq_of_surjective\n      (R := Sq ⧸ p.map (algebraMap R Sq)) Ideal.Quotient.mk_surjective]\n    exact Module.length_ne_top\n  rw [← e.toLinearEquiv.length_eq, Ideal.ramificationIdx_eq p q]\n  exact (ENat.natCast_toNat hfinite).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_point_pullback_degree": {
+      "path": "Negativity/PointPullback.lean",
+      "line": 36,
+      "code": "theorem finite_flat_point_pullback_degree {R S K : Type*} (L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.Flat R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L]\n    (p : IsDedekindDomain.HeightOneSpectrum R) [Fintype (p.asIdeal.primesOver S)] :\n    ∑ q : p.asIdeal.primesOver S,\n      (Module.length (Localization.AtPrime q.1)\n        ((Localization.AtPrime q.1) ⊗[R] (R ⧸ p.asIdeal))).toNat *\n          q.1.inertiaDeg R = Module.finrank K L := by\n  have hlength (q : p.asIdeal.primesOver S) := point_pullback_tensor_length p.asIdeal q.1\n  simp_rw [hlength, ENat.toNat_natCast]\n  exact finite_flat_fiber_functionField_degree R S K L p.asIdeal",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_point_pullback_degree_over_base": {
+      "path": "Negativity/PointPullback.lean",
+      "line": 54,
+      "code": "theorem finite_flat_point_pullback_degree_over_base {R S K : Type*} (k L : Type*)\n    [Field k] [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra k R] [Algebra k S] [Algebra R S] [IsScalarTower k R S]\n    [Algebra.FiniteType k R] [Algebra.FiniteType k S]\n    [Module.Finite R S] [Module.Flat R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L]\n    (p : IsDedekindDomain.HeightOneSpectrum R) [Fintype (p.asIdeal.primesOver S)] :\n    ∑ q : p.asIdeal.primesOver S,\n      (Module.length (Localization.AtPrime q.1)\n        ((Localization.AtPrime q.1) ⊗[R] (R ⧸ p.asIdeal))).toNat *\n          q.1.inertiaDeg k = Module.finrank K L * p.asIdeal.inertiaDeg k := by\n  calc\n    _ = ∑ q : p.asIdeal.primesOver S,\n        ((Module.length (Localization.AtPrime q.1)\n          ((Localization.AtPrime q.1) ⊗[R] (R ⧸ p.asIdeal))).toNat *\n            q.1.inertiaDeg R) * p.asIdeal.inertiaDeg k := by\n      apply Finset.sum_congr rfl\n      intro q _\n      rw [Ideal.inertiaDeg_tower p.asIdeal q.1]\n      ring\n    _ = _ := by\n      rw [← Finset.sum_mul, finite_flat_point_pullback_degree (K := K) L p]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_closedPoint_outside_support": {
+      "path": "Negativity/CurveSelection.lean",
+      "line": 15,
+      "code": "theorem exists_closedPoint_outside_support (X : Scheme) [JacobsonSpace X]\n    (F Z : Set X) (hF : IsClosed F) (hZ : IsClosed Z) (hnot : ¬ F ⊆ Z) :\n    ∃ x : X, x ∈ F ∧ x ∉ Z ∧ IsClosed ({x} : Set X) := by\n  have hn : (F \\ Z).Nonempty := by\n    obtain ⟨x, hx, hnx⟩ := Set.not_subset.mp hnot\n    exact ⟨x, hx, hnx⟩\n  have hlc : IsLocallyClosed (F \\ Z) := by\n    exact hF.isLocallyClosed.inter hZ.isOpen_compl.isLocallyClosed\n  obtain ⟨x, hx, hc⟩ := nonempty_inter_closedPoints hn hlc\n  exact ⟨x, hx.1, hx.2, hc⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finiteType_exists_closedPoint_outside_support": {
+      "path": "Negativity/CurveSelection.lean",
+      "line": 28,
+      "code": "theorem finiteType_exists_closedPoint_outside_support (k : Type u) [Field k]\n    (X : Scheme.{u}) (f : X ⟶ Spec (CommRingCat.of k)) [LocallyOfFiniteType f]\n    (F Z : Set X) (hF : IsClosed F) (hZ : IsClosed Z) (hnot : ¬ F ⊆ Z) :\n    ∃ x : X, x ∈ F ∧ x ∉ Z ∧ IsClosed ({x} : Set X) := by\n  have : JacobsonSpace X := LocallyOfFiniteType.jacobsonSpace f\n  exact exists_closedPoint_outside_support X F Z hF hZ hnot",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "localRing_idempotent_trivial": {
+      "path": "Negativity/LocalConnectedness.lean",
+      "line": 11,
+      "code": "theorem localRing_idempotent_trivial (R : Type*) [CommRing R] [IsLocalRing R]\n    (a : R) (ha : a * a = a) : a = 0 ∨ a = 1 := by\n  rcases IsLocalRing.isUnit_or_isUnit_one_sub_self a with hu | hu\n  · right\n    apply hu.mul_left_cancel\n    simpa using ha\n  · left\n    have h : (1 - a) * a = (1 - a) * 0 := by rw [mul_zero];linear_combination -ha\n    exact hu.mul_left_cancel h",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ]
+    },
+    "localRing_not_product_nontrivial": {
+      "path": "Negativity/LocalConnectedness.lean",
+      "line": 23,
+      "code": "theorem localRing_not_product_nontrivial (R A B : Type*)\n    [CommRing R] [IsLocalRing R] [CommRing A] [CommRing B]\n    [Nontrivial A] [Nontrivial B] (e : R ≃+* A × B) : False := by\n  let a := e.symm (1, 0)\n  have ha : a * a = a := by apply e.injective;simp [a]\n  rcases localRing_idempotent_trivial R a ha with hzero | hone\n  · have h := congrArg (fun r => (e r).1) hzero\n    simp [a] at h\n  · have h := congrArg (fun r => (e r).2) hone\n    simp [a] at h",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_fiber_degree": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 15,
+      "code": "theorem finite_flat_fiber_degree (R S : Type*) [CommRing R] [IsDomain R]\n    [CommRing S] [Algebra R S] [Module.Finite R S] [Module.Flat R S]\n    (p : Ideal R) [p.IsPrime] [Fintype (p.primesOver S)] :\n    ∑ q : p.primesOver S, q.1.ramificationIdx R * q.1.inertiaDeg R =\n      Module.finrank R S :=\n  Ideal.sum_ramification_inertia_eq_finrank p S",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_signed_point_degree": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 24,
+      "code": "theorem finite_flat_signed_point_degree (R S : Type*) [CommRing R] [IsDomain R]\n    [CommRing S] [Algebra R S] [Module.Finite R S] [Module.Flat R S]\n    (p : Ideal R) [p.IsPrime] [Fintype (p.primesOver S)] (n : ℤ) :\n    ∑ q : p.primesOver S,\n      (n * (q.1.ramificationIdx R : ℤ)) * (q.1.inertiaDeg R : ℤ) =\n      n * (Module.finrank R S : ℤ) := by\n  have h : (∑ q : p.primesOver S,\n      (q.1.ramificationIdx R : ℤ) * (q.1.inertiaDeg R : ℤ)) =\n      (Module.finrank R S : ℤ) := by\n    exact_mod_cast finite_flat_fiber_degree R S p\n  simpa only [mul_assoc, ← Finset.mul_sum] using congrArg (fun z : ℤ => n * z) h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_fiber_functionField_degree": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 38,
+      "code": "theorem finite_flat_fiber_functionField_degree (R S K L : Type*)\n    [CommRing R] [IsDomain R] [CommRing S] [Algebra R S]\n    [Module.Finite R S] [Module.Flat R S] [Field K] [Field L]\n    [Algebra R K] [IsFractionRing R K] [Algebra S L] [IsFractionRing S L]\n    [Algebra K L] [Algebra R L] [IsScalarTower R K L] [IsScalarTower R S L]\n    (p : Ideal R) [p.IsPrime] [Fintype (p.primesOver S)] :\n    ∑ q : p.primesOver S, q.1.ramificationIdx R * q.1.inertiaDeg R =\n      Module.finrank K L := by\n  rw [finite_flat_fiber_degree R S p, IsFractionRing.finrank_eq R K S L]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_mul": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 56,
+      "code": "theorem heightOneOrder_mul {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (p : HeightOneSpectrum R) (a b : Kˣ) :\n    heightOneOrder K p (a * b) = heightOneOrder K p a + heightOneOrder K p b := by\n  have ha : p.valuation K (a : K) ≠ 0 := (Valuation.ne_zero_iff _).mpr a.ne_zero\n  have hb : p.valuation K (b : K) ≠ 0 := (Valuation.ne_zero_iff _).mpr b.ne_zero\n  simp only [heightOneOrder, Units.val_mul, map_mul, WithZero.log_mul ha hb, neg_add_rev]\n  omega",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_pullback": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 67,
+      "code": "theorem heightOneOrder_pullback {R S K : Type*} (L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.IsTorsionFree R S] [Field K] [Field L]\n    [Algebra R K] [IsFractionRing R K] [Algebra S L] [IsFractionRing S L]\n    [Algebra K L] [Algebra R L] [IsScalarTower R K L] [IsScalarTower R S L]\n    (p : HeightOneSpectrum R) (q : HeightOneSpectrum S)\n    [q.asIdeal.LiesOver p.asIdeal] (a : Kˣ) :\n    heightOneOrder L q (Units.map (algebraMap K L : K →* L) a) =\n      (q.asIdeal.ramificationIdx R : ℤ) * heightOneOrder K p a := by\n  unfold heightOneOrder\n  change -WithZero.log (q.valuation L (algebraMap K L (a : K))) = _\n  rw [← HeightOneSpectrum.valuation_liesOver L p q, WithZero.log_pow]\n  simp only [nsmul_eq_mul]\n  ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_flat_order_fiber_degree": {
+      "path": "Negativity/CurveDegree.lean",
+      "line": 92,
+      "code": "theorem finite_flat_order_fiber_degree {R S K : Type*} (L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.IsTorsionFree R S] [Module.Finite R S] [Module.Flat R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L]\n    (p : HeightOneSpectrum R) [Fintype (p.asIdeal.primesOver S)] (a : Kˣ) :\n    ∑ q : p.asIdeal.primesOver S,\n      heightOneOrder L (heightOnePrimeAbove p q)\n        (Units.map (algebraMap K L : K →* L) a) * (q.1.inertiaDeg R : ℤ) =\n      heightOneOrder K p a * (Module.finrank K L : ℤ) := by\n  have hq (q : p.asIdeal.primesOver S) :\n      heightOneOrder L (heightOnePrimeAbove p q)\n        (Units.map (algebraMap K L : K →* L) a) =\n      (q.1.ramificationIdx R : ℤ) * heightOneOrder K p a := by\n    have : (heightOnePrimeAbove p q).asIdeal.LiesOver p.asIdeal :=\n      show q.1.LiesOver p.asIdeal from inferInstance\n    exact heightOneOrder_pullback L p (heightOnePrimeAbove p q) a\n  calc\n    _ = ∑ q : p.asIdeal.primesOver S,\n        (heightOneOrder K p a * (q.1.ramificationIdx R : ℤ)) *\n          (q.1.inertiaDeg R : ℤ) := by\n      apply Finset.sum_congr rfl\n      intro q _\n      rw [hq]\n      ring\n    _ = _ := by\n      rw [finite_flat_signed_point_degree R S p.asIdeal,\n        ← IsFractionRing.finrank_eq R K S L]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_finite_support": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 13,
+      "code": "theorem heightOneOrder_finite_support {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K] (a : Kˣ) :\n    (Function.support (fun p : HeightOneSpectrum R => heightOneOrder K p a)).Finite := by\n  have hfin := (HeightOneSpectrum.Support.finite (R := R) (a : K)).union\n    (HeightOneSpectrum.Support.finite (R := R) (a : K)⁻¹)\n  apply hfin.subset\n  intro p hp\n  have hone : p.valuation K (a : K) ≠ 1 := by\n    intro h\n    simp [Function.mem_support, heightOneOrder, h] at hp\n  rcases lt_or_gt_of_ne hone with hlt | hgt\n  · right\n    change 1 < p.valuation K ((a : K)⁻¹)\n    rw [map_inv₀]\n    exact (one_lt_inv₀ (WithZero.pos_iff_ne_zero.mpr\n      ((Valuation.ne_zero_iff _).mpr a.ne_zero))).mpr hlt\n  · exact Or.inl hgt",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_apply": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 40,
+      "code": "theorem affinePrincipalDivisor_apply {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) (p : HeightOneSpectrum R) :\n    affinePrincipalDivisor K a p = heightOneOrder K p a := rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_mul": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 46,
+      "code": "theorem affinePrincipalDivisor_mul {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K] (a b : Kˣ) :\n    affinePrincipalDivisor (R := R) K (a * b) =\n      affinePrincipalDivisor K a + affinePrincipalDivisor K b := by\n  ext p\n  exact heightOneOrder_mul K p a b",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_regular_unit": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 54,
+      "code": "theorem heightOneOrder_regular_unit {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (p : HeightOneSpectrum R) (u : Rˣ) :\n    heightOneOrder K p (Units.map (algebraMap R K : R →* K) u) = 0 := by\n  have hunit : p.intValuation (u : R) = 1 := by\n    apply le_antisymm (p.intValuation_le_one _)\n    calc\n      1 = p.intValuation (u : R) * p.intValuation ((u⁻¹ : Rˣ) : R) := by\n        rw [← map_mul]; simp\n      _ ≤ p.intValuation (u : R) * 1 :=\n        mul_le_mul_of_nonneg_left (p.intValuation_le_one _) zero_le\n      _ = p.intValuation (u : R) := mul_one _\n  simp [heightOneOrder, HeightOneSpectrum.valuation_of_algebraMap, hunit]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_unit_transition": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 70,
+      "code": "theorem affinePrincipalDivisor_unit_transition {R : Type*} [CommRing R]\n    [IsDedekindDomain R] (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (u : Rˣ) (a : Kˣ) :\n    affinePrincipalDivisor (R := R) K (Units.map (algebraMap R K : R →* K) u * a) =\n      affinePrincipalDivisor K a := by\n  ext p\n  change heightOneOrder K p _ = heightOneOrder K p a\n  rw [heightOneOrder_mul, heightOneOrder_regular_unit, zero_add]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_nonneg_iff": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 80,
+      "code": "theorem heightOneOrder_nonneg_iff {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (p : HeightOneSpectrum R) (a : Kˣ) :\n    0 ≤ heightOneOrder K p a ↔ p.valuation K (a : K) ≤ 1 := by\n  have ha : p.valuation K (a : K) ≠ 0 := (Valuation.ne_zero_iff _).mpr a.ne_zero\n  rw [heightOneOrder, neg_nonneg, WithZero.log_le_iff_le_exp ha, WithZero.exp_zero]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_effective_iff": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 89,
+      "code": "theorem affinePrincipalDivisor_effective_iff {R : Type*} [CommRing R]\n    [IsDedekindDomain R] (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) :\n    (∀ p : HeightOneSpectrum R, 0 ≤ affinePrincipalDivisor K a p) ↔\n      ∃ r : R, algebraMap R K r = (a : K) := by\n  constructor\n  · intro h\n    exact HeightOneSpectrum.mem_integers_of_valuation_le_one K (a : K)\n      (fun p => (heightOneOrder_nonneg_iff K p a).mp (h p))\n  · rintro ⟨r, hr⟩ p\n    apply (heightOneOrder_nonneg_iff K p a).mpr\n    rw [← hr, HeightOneSpectrum.valuation_of_algebraMap]\n    exact p.intValuation_le_one r",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_inv": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 104,
+      "code": "theorem affinePrincipalDivisor_inv {R : Type*} [CommRing R] [IsDedekindDomain R]\n    (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K] (a : Kˣ) :\n    affinePrincipalDivisor (R := R) K a⁻¹ = -affinePrincipalDivisor K a := by\n  ext p\n  simp [affinePrincipalDivisor_apply, heightOneOrder, map_inv₀, WithZero.log_inv]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affinePrincipalDivisor_eq_zero_iff": {
+      "path": "Negativity/PrincipalDivisors.lean",
+      "line": 112,
+      "code": "theorem affinePrincipalDivisor_eq_zero_iff {R : Type*} [CommRing R]\n    [IsDedekindDomain R] (K : Type*) [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) :\n    affinePrincipalDivisor (R := R) K a = 0 ↔\n      ∃ u : Rˣ, Units.map (algebraMap R K : R →* K) u = a := by\n  constructor\n  · intro h\n    obtain ⟨r, hr⟩ := (affinePrincipalDivisor_effective_iff (R := R) K a).mp\n      (by intro p; simp [h])\n    have hinv : affinePrincipalDivisor (R := R) K a⁻¹ = 0 := by\n      rw [affinePrincipalDivisor_inv, h, neg_zero]\n    obtain ⟨s, hs⟩ := (affinePrincipalDivisor_effective_iff (R := R) K a⁻¹).mp\n      (by intro p; simp [hinv])\n    have hrs : r * s = 1 := by\n      apply IsFractionRing.injective R K\n      simp [map_mul, hr, hs]\n    refine ⟨⟨r, s, hrs, by simpa [mul_comm] using hrs⟩, ?_⟩\n    exact Units.ext hr\n  · rintro ⟨u, rfl⟩\n    ext p\n    exact heightOneOrder_regular_unit K p u",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_square_pullback_iso": {
+      "path": "Negativity/PullbackDiagram.lean",
+      "line": 12,
+      "code": "theorem curve_square_pullback_iso {C X B Y : Scheme.{u}}\n    (i : C ⟶ X) (f : X ⟶ Y) (h : C ⟶ B) (j : B ⟶ Y)\n    (square : i ≫ f = h ≫ j) (L : Y.Modules) :\n    Nonempty (((Scheme.Modules.pullback i).obj\n      ((Scheme.Modules.pullback f).obj L)) ≅\n      ((Scheme.Modules.pullback h).obj ((Scheme.Modules.pullback j).obj L))) := by\n  exact ⟨((Scheme.Modules.pullbackComp i f).app L) ≪≫\n    ((Scheme.Modules.pullbackCongr square).app L) ≪≫\n    ((Scheme.Modules.pullbackComp h j).symm.app L)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "affine_quasicoherent_exists_nonzero_section": {
       "path": "Negativity/AffineSections.lean",
       "line": 14,
