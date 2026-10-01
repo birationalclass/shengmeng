@@ -26,3 +26,13 @@ export function ownRecordIndex(rows,account){
  });
  return matches.length===1?matches[0]:-1;
 }
+
+export function withOwnLocalRecord(cloudRows,local,account){
+ const rows=cloudRows.map(r=>({...r}));if(!local)return rows;
+ const index=ownRecordIndex(rows,account),remote=rows[index];
+ if(!remote||local.highest>remote.highest||local.completedLevels>remote.completedLevels){
+  const own={...publicRecord(local),localOnly:true};
+  if(index<0)rows.push(own);else rows[index]={...own,consumedLives:Math.max(local.consumedLives||0,remote.consumedLives||0)};
+ }
+ return rankedRecords(rows);
+}

@@ -41,3 +41,13 @@ test('an uncleared stage remains new even with a higher galaxy in local progress
  assert.equal(shouldSubmitAttempt({key:'S4',stage:1,won:false},journey),true);
  assert.equal(shouldSubmitAttempt({key:'S4',stage:0,won:false},journey),false);
 });
+
+test('record refresh awaits an ongoing upload and progress fetch',async()=>{
+ const storage=new Map(),account={id:'guest'},calls=[];let release;
+ const gate=new Promise(r=>{release=r;});
+ const sync=createGeneratorSync({getAccount:()=>account,read:k=>storage.get(k),write:(k,v)=>storage.set(k,v),onProgress:()=>{},api:async(path)=>{calls.push(path);if(path.endsWith('/attempts'))await gate;return {journey:{}};}});
+ sync.enqueue({key:'C4',stage:0});sync.setSession({account,sessionToken:'token'});
+ await new Promise(r=>setTimeout(r,0));let refreshed=false;const waiting=sync.flush().then(()=>{refreshed=true;});
+ await new Promise(r=>setTimeout(r,0));assert.equal(refreshed,false);release();await waiting;
+ assert.equal(calls.filter(p=>p.endsWith('/attempts')).length,1);assert.ok(calls.some(p=>p.endsWith('/progress')));
+});

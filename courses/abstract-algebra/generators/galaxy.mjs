@@ -1,10 +1,11 @@
-import {createGeneratorSync} from './generator-sync.mjs?v=nebula-97';
+import {readGuestSession} from './guest-session.mjs?v=nebula-101';
+import {createGeneratorSync} from './generator-sync.mjs?v=nebula-101';
 import {bindPortraitSwipe} from './galaxy-swipe.mjs?v=nebula-84';
 import {mountEcnuConstellation} from './ecnu-constellation.mjs?v=nebula-72';
 import {mountGroupExtension} from './group-extension.mjs?v=nebula-70';
-import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-99';
+import {mountCampaignRecords} from './campaign-records.mjs?v=nebula-101';
 import {mountBalanceControls} from './galaxy-balance.mjs?v=nebula-70';
-import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-99';
+import {mountCosmicControls} from './cosmic-controls.mjs?v=nebula-101';
 import {GALAXIES,progress,unlocked,complete} from './galaxy-campaign.mjs?v=nebula-69';
 import {GalaxyScene} from './galaxy-scene.mjs?v=nebula-100';
 import {mountStellarChallenge} from './stellar-challenge.mjs?v=nebula-97';
@@ -13,7 +14,7 @@ import {levels,normalizeJourney,completedCount} from './challenge-model.mjs?v=ne
 import {createRecordsApi} from '../../../visuals/group-sudoku/records-api.mjs?v=records6-oneline';
 import {RECORDS_CONFIG} from '../../../visuals/group-sudoku/records-config.mjs?v=records6-oneline';
 const $=id=>document.getElementById(id),read=k=>{try{return JSON.parse(localStorage.getItem(k));}catch{return null;}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
-let en=false,index=0,account=read('group-sudoku-guest-session')?.account||read('group-sudoku-local-guest'),done=0,world,lookup='',lookupId='',run=0,abort,transition=false;
+let en=false,index=0,account=readGuestSession(read)?.account||read('group-sudoku-local-guest'),done=0,world,lookup='',lookupId='',run=0,abort,transition=false;
 if(!account){account={id:'local-guest-'+crypto.randomUUID(),kind:'guest',name:'',local:true};write('group-sudoku-local-guest',account);}
 const t=(zh,eng)=>en?eng:zh,api=createRecordsApi({config:RECORDS_CONFIG,t}),key=()=>`generators-galaxy-demo:${account.id}`;
 let cloudStatus='connecting';
@@ -57,7 +58,7 @@ $('studentIdentity').onclick=()=>{$('cosmicStudentForm').hidden=false;$('cosmicS
 $('cosmicStudentId').oninput=async()=>{const id=$('cosmicStudentId');id.value=id.value.replace(/\D/g,'').slice(0,11);const own=++run;abort?.abort();abort=new AbortController();lookup='';lookupId='';$('confirmIdentity').disabled=true;$('cosmicStudentName').textContent='';$('cosmicLoginStatus').textContent='';if(id.value.length!==11)return;$('cosmicLoginStatus').textContent=t('正在核对姓名…','Checking your name…');try{const data=await api('/api/lookup',{method:'POST',body:{studentId:id.value},signal:abort.signal});if(own!==run)return;lookup=data.lookupToken;lookupId=id.value;$('cosmicStudentName').textContent=data.name;$('cosmicLoginStatus').textContent=t('请核对姓名。','Please confirm your name.');$('confirmIdentity').disabled=false;}catch(e){if(own===run)$('cosmicLoginStatus').textContent=e.message;}};
 $('cosmicStudentForm').onsubmit=async e=>{e.preventDefault();if(!lookup||lookupId!==$('cosmicStudentId').value)return;$('confirmIdentity').disabled=true;const own=run;try{const data=await api('/api/login',{method:'POST',body:{mode:'student',studentId:lookupId,lookupToken:lookup},signal:abort.signal});if(own!==run)return;assign(data.account);write('group-sudoku-last-student',lookupId);$('cosmicLogin').close();}catch(e){if(own===run){$('cosmicLoginStatus').textContent=e.message;$('confirmIdentity').disabled=false;}}};
 $('cosmicLogin').addEventListener('close',()=>{run++;abort?.abort();lookup='';lookupId='';$('cosmicStudentId').value='';$('cosmicStudentName').textContent='';$('cosmicStudentForm').hidden=true;});
-$('guestIdentity').onclick=()=>{const guest=read('group-sudoku-guest-session')?.account||read('group-sudoku-local-guest');assign(guest);$('cosmicLogin').close();};
+$('guestIdentity').onclick=()=>{const guest=readGuestSession(read)?.account||read('group-sudoku-local-guest');assign(guest);$('cosmicLogin').close();};
 function enterSelected(){if(!unlocked(index,done)||transition||world.challenge)return;challenge.open(GALAXIES[index].key,groups[GALAXIES[index].key],GALAXIES[index].name,journey[GALAXIES[index].key].passed);} $('returnGalaxies').onclick=()=>challenge?.close();
 $('demoComplete').onclick=()=>{if(transition||!unlocked(index,done))return;done=complete(index,done);write(key(),done);transition=true;render();$('flightNotice').textContent=index<GALAXIES.length-1?t('航道已解锁 · 正在跃迁','Route unlocked · In transit'):t('模拟航程完成','Demo journey complete');$('flightNotice').classList.add('visible');setTimeout(()=>{transition=false;if(index<GALAXIES.length-1)select(index+1);else render();setTimeout(()=>$('flightNotice').classList.remove('visible'),1500);},650);};
 try{world=new GalaxyScene($('cosmosCanvas'),select,enterSelected);world.motion=$('cosmicMotion').checked;world.select(index);}catch(error){$('cosmicHint').textContent=t('3D 渲染不可用，请开启浏览器硬件加速。','3D unavailable. Enable browser hardware acceleration.');document.body.classList.add('cosmos-fallback');console.error(error);}

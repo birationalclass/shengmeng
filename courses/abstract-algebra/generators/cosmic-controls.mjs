@@ -1,3 +1,4 @@
+import {readGuestSession,sameReturningGuest,GUEST_SESSION_KEY} from './guest-session.mjs?v=nebula-101';
 import {GALAXIES} from './galaxy-campaign.mjs?v=nebula-69';
 import {createConnection} from '../../../visuals/group-sudoku/connection.mjs?v=background1';
 import {createEndlessMusic} from './endless-music.mjs?v=nebula-70';
@@ -14,15 +15,17 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
  $('prefsStudent').insertAdjacentHTML('afterend','<p id="prefsServer" role="status"></p>');
  $('cosmicPreferences').insertAdjacentHTML('beforeend',`<section class="music-settings"><h3 id="musicTitle"></h3><label class="cosmic-setting"><span id="musicToggleLabel"></span><input id="musicEnabled" type="checkbox"></label><div class="volume-heading"><label for="musicVolume" id="musicVolumeLabel"></label><output id="musicVolumeValue"></output></div><input id="musicVolume" type="range" min="0" max="100" value="12"><p id="musicStatus"></p></section><button id="clearCosmicData"></button>`);
  document.body.insertAdjacentHTML('beforeend',`<audio id="backgroundMusic"></audio><dialog id="cosmicRecordPanel" class="cosmic-dialog"><button class="cosmic-close" id="closeCosmicRecords">×</button><h2 id="cosmicRecordsTitle"></h2><div class="record-toolbar"><button id="refreshCosmicRecords"></button><span id="cosmicRecordsStatus" role="status"></span></div><div id="cosmicRecordRows"></div><p id="cosmicRecordsNote"></p></dialog><dialog id="cosmicClearDialog" class="cosmic-dialog"><h2 id="cosmicClearTitle"></h2><p id="cosmicClearNote"></p><div class="dialog-actions"><button id="cancelCosmicClear"></button><button id="confirmCosmicClear"></button></div></dialog>`);
- let server='connecting',desired={mode:'guest',sessionToken:read('group-sudoku-guest-session')?.sessionToken},verified=false,lookupToken='',lookupId='',run=0,abort;
+ const savedGuest=readGuestSession(read);if(savedGuest)write(GUEST_SESSION_KEY,savedGuest);
+ let identityError='',server='connecting',desired={mode:'guest',sessionToken:savedGuest?.sessionToken},verified=false,lookupToken='',lookupId='',run=0,abort;
  const invalidate=()=>{run++;abort?.abort();lookupToken='';lookupId='';$('confirmIdentity').disabled=true;$('cosmicStudentName').textContent='';$('cosmicLoginStatus').textContent='';};
  const connection=createConnection({run:async({signal})=>{
   if(verified)return;
   const body={...desired};if(body.mode==='student'&&!body.lookupToken){const found=await api('/api/lookup',{method:'POST',body:{studentId:body.studentId},signal});body.lookupToken=found.lookupToken;}
   const data=await api('/api/login',{method:'POST',body,signal});if(signal.aborted)return;
-  // Identity is shared with Sudoku; this module never uploads simulated records.
+  if(body.mode==='guest'&&!sameReturningGuest(readGuestSession(read),data)){identityError=t('游客身份已失效，本机进度已保留；未切换为新游客。','Guest identity expired. Local progress is retained; no new guest was selected.');throw new Error(identityError);}
+  identityError='';
   const before=getAccount(),journey=getProgress();assign(data.account);if(before.id!==data.account.id&&journey>getProgress()){write('generators-galaxy-demo:'+data.account.id,journey);assign(data.account);}
-  if(data.account.kind==='guest'){write('group-sudoku-guest-session',{sessionToken:data.sessionToken,account:data.account});desired.sessionToken=data.sessionToken;}
+  if(data.account.kind==='guest'){write(GUEST_SESSION_KEY,{sessionToken:data.sessionToken,account:data.account});desired.sessionToken=data.sessionToken;}
   onSession({...data,previousAccount:before});verified=true;
  },onState:state=>{server=state;sync();}});
  async function lookup(){
@@ -35,7 +38,7 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
   if(mode==='student'&&(!lookupToken||lookupId!==$('cosmicStudentId').value))return;
   connection.pause();verified=false;
   if(mode==='student'){desired={mode,studentId:lookupId,lookupToken};assign({id:lookupId,kind:'student',name:$('cosmicStudentName').textContent});write('group-sudoku-last-student',lookupId);}
-  else {const shared=read('group-sudoku-guest-session');desired={mode:'guest',sessionToken:shared?.sessionToken};assign(shared?.account||read('group-sudoku-local-guest'));}
+  else {const shared=readGuestSession(read);desired={mode:'guest',sessionToken:shared?.sessionToken};assign(shared?.account||read('group-sudoku-local-guest'));}
   $('cosmicLogin').close();connection.wake();sync();
  }
  $('studentIdentity').onclick=()=>{invalidate();$('identityChoices').hidden=true;$('cosmicStudentForm').hidden=false;const last=read('group-sudoku-last-student');if(typeof last==='string')$('cosmicStudentId').value=last;$('cosmicStudentId').focus();if($('cosmicStudentId').value.length===11)lookup();};
@@ -52,7 +55,7 @@ export function mountCosmicControls({t,api,read,write,getAccount,assign,getProgr
  function sync(){
   const text=(id,zh,en)=>$(id).textContent=t(zh,en),label=(id,zh,en)=>{const b=$(id),s=t(zh,en);b.setAttribute('aria-label',s);b.dataset.tip=s;};
   label('cosmicRecords','探索记录','Exploration records');label('cosmicPause',$('cosmicMotion').checked?'暂停星系动态':'继续星系动态',$('cosmicMotion').checked?'Pause scene':'Resume scene');motion.setAttribute('aria-pressed',String(!$('cosmicMotion').checked));motion.innerHTML=svg($('cosmicMotion').checked?'<path d="M8 5v14M16 5v14"/>':'<path d="m8 5 11 7-11 7Z"/>');
-  const status=server==='connected'?t('身份服务器已连接','Identity server connected'):server==='offline'?t('当前离线 · 可继续探索','Offline · Continue exploring'):server==='retrying'?t('正在重连 · 可继续探索','Reconnecting · Continue exploring'):t('后台连接中 · 可直接进入','Connecting in background · Ready to enter');$('identityServer').textContent=$('prefsServer').textContent=status;
+  const status=server==='connected'?t('身份服务器已连接','Identity server connected'):server==='offline'?t('当前离线 · 可继续探索','Offline · Continue exploring'):server==='retrying'?t('正在重连 · 可继续探索','Reconnecting · Continue exploring'):t('后台连接中 · 可直接进入','Connecting in background · Ready to enter');$('identityServer').textContent=$('prefsServer').textContent=identityError||status;
   $('identityServer').dataset.state=server;
   const current=getAccount(),signedIn=!current.local&&!!current.name;
   const displayName=current.kind==='student'?current.name:t('游客 ','Guest ')+(current.name||current.id.replace(/^local-guest-|^guest_/, '').slice(0,8).toUpperCase());

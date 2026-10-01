@@ -3,11 +3,17 @@ export function shouldSubmitAttempt(attempt,journey){
  return (journey[attempt.key]?.passed||0)<=attempt.stage;
 }
 export function createGeneratorSync({api,read,write,getAccount,getJourney=()=>({}),onProgress,onStatus=()=>{}}){
- let session=null,busy=false,timer;
+ let session=null,busy=false,timer,inFlight=null,failed=false;
  const key=id=>'generators-outbox-v1:'+id;
- async function flush(){
+ function flush(){
+  if(inFlight)return inFlight;
+  let initial;failed=false;
+  inFlight=Promise.resolve().then(()=>{initial=session;return runFlush();}).finally(()=>{inFlight=null;if(session!==initial||(!failed&&session&&session.account.id===getAccount().id&&(read(key(session.account.id))||[]).length))void flush();});
+  return inFlight;
+ }
+ async function runFlush(){
   if(busy||!session||session.account.id!==getAccount().id)return;
-  busy=true;const own=session;clearTimeout(timer);
+  busy=true;const own=session;clearTimeout(timer);timer=null;
   try{
    let queue=read(key(own.account.id))||[];
    while(queue.length){
@@ -19,8 +25,8 @@ export function createGeneratorSync({api,read,write,getAccount,getJourney=()=>({
    }
    const result=await api('/api/generators/progress',{token:own.sessionToken});
    if(session===own&&getAccount().id===own.account.id){onProgress(result);onStatus('synced');}
-  }catch(error){onStatus('pending',error.message);if(!error.status||error.status>=500||error.status===429)timer=setTimeout(flush,30000);}
-  finally{busy=false;if(session!==own)void flush();}
+  }catch(error){onStatus('pending',error.message);failed=true;if(!error.status||error.status>=500||error.status===429)timer=setTimeout(flush,30000);}
+  finally{busy=false;}
  }
  return {flush,setSession(value){session=value;void flush();},enqueue(attempt){if(!shouldSubmitAttempt(attempt,getJourney()))return false;const id=getAccount().id;write(key(id),[...(read(key(id))||[]),{...attempt,submissionId:crypto.randomUUID()}]);onStatus('pending');void flush();return true;}};
 }

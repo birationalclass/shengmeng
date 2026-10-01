@@ -17,3 +17,12 @@ test('local records use exact account id',()=>{
  assert.equal(ownRecordIndex([{id:'mine',kind:'guest',name:''}],{id:'mine',kind:'guest'}),0);
  assert.equal(ownRecordIndex([{id:'other',kind:'guest',name:'same'}],{id:'mine',kind:'guest',name:'same'}),-1);
 });
+
+test('own newer local progress remains visible without adding other local players',async()=>{
+ const {withOwnLocalRecord}=await import('./campaign-record-data.mjs');
+ const account={id:'guest_me',kind:'guest',name:'ME'},local={...account,highest:6,completedLevels:9};
+ const rows=withOwnLocalRecord([{kind:'guest',name:'游客 ME',highest:2,completedLevels:3,consumedLives:4}],local,account);
+ assert.equal(rows.length,1);assert.equal(rows[0].highest,6);assert.equal(rows[0].localOnly,true);assert.equal(rows[0].consumedLives,4);
+ assert.equal(withOwnLocalRecord([],local,account)[0].localOnly,true);
+ assert.equal(withOwnLocalRecord([{kind:'guest',name:'游客 ME',highest:7,completedLevels:12}],local,account)[0].localOnly,undefined);
+});
