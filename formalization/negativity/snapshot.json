@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T11:49:20+08:00",
+  "checkedAt": "2026-10-02T12:27:59+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "a35e0d43c379cad7ed4d72809a38980d94ac7981063d60fa6c3bd6825bea70e5"
+      "sha256": "0a99e85ee80a64601522241ec22f3845ed93ebe50cf5efb72e42bc36efa88ab1"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "3c558cf5b3d4d7a63505c82e43a10f7745b4fba9431be902ed8b1d5ee0f31fdb"
+      "sha256": "5d819b6f91974b9ef6175fdd17481eddf71b93d95c98b4bd7508ac5ef60427fd"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,10 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/RealCartierPullback.lean",
+      "sha256": "130cbbb1146baf519574ec0a13ab81187ec93688cf0cbe93eefefa7e7d381eff"
     },
     {
       "path": "Negativity/NormalExtension.lean",
@@ -182,6 +186,96 @@
     }
   ],
   "declarations": {
+    "dominantFunctionFieldMap_stalk_unit": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 13,
+      "code": "theorem dominantFunctionFieldMap_stalk_unit {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f]\n    (x : X) (u : (Y.presheaf.stalk (f x))ˣ) :\n    Units.map (dominantFunctionFieldMap f).toMonoidHom\n      (Units.map (algebraMap (Y.presheaf.stalk (f x)) Y.functionField).toMonoidHom u) =\n    Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom\n      (Units.map (f.stalkMap x).hom.toMonoidHom u) := by\n  apply Units.ext\n  exact dominantFunctionFieldMap_stalk f x (u : Y.presheaf.stalk (f x))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_pullback_coefficient_eq": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 26,
+      "code": "theorem cartierAtlas_pullback_coefficient_eq {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (f : X ⟶ Y) [IsDominant f] {ι : Type*}\n    (A : CartierAtlas Y ι) (B : CartierAtlas X X)\n    (hB : ∀ z : X, z ∈ B.chart z ∧\n      B.equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n        (A.equation (A.covers (f z)).choose))\n    (x : X) (hx : Order.coheight x = 1) (i : ι) (hi : f x ∈ A.chart i) :\n    B.coefficient hnX x = schemeRationalOrder X hnX x hx\n      (Units.map (dominantFunctionFieldMap f : _ →* _) (A.equation i)) := by\n  rw [cartierAtlas_coefficient_eq X hnX B x x hx (hB x).1, (hB x).2]\n  obtain ⟨u, hu⟩ := A.transition _ i (f x) (A.covers (f x)).choose_spec hi\n  have hp :\n      Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom\n        (Units.map (f.stalkMap x).hom.toMonoidHom u) *\n          Units.map (dominantFunctionFieldMap f).toMonoidHom (A.equation (A.covers (f x)).choose) =\n        Units.map (dominantFunctionFieldMap f).toMonoidHom (A.equation i) := by\n    apply Units.ext\n    have hc := congrArg (fun v : Y.functionFieldˣ =>\n      dominantFunctionFieldMap f (v : Y.functionField)) hu\n    simp only [Units.val_mul, Units.coe_map, map_mul] at hc ⊢\n    change dominantFunctionFieldMap f\n      (algebraMap (Y.presheaf.stalk (f x)) Y.functionField (u : Y.presheaf.stalk (f x))) *\n      dominantFunctionFieldMap f (A.equation (A.covers (f x)).choose : Y.functionField) =\n      dominantFunctionFieldMap f (A.equation i : Y.functionField) at hc\n    rw [dominantFunctionFieldMap_stalk f x (u : Y.presheaf.stalk (f x))] at hc\n    exact hc\n  have := hnX x\n  have := normal_codimensionOne_stalk_isDVR X x hx\n  change DvrRationalOrder (X.presheaf.stalk x) X.functionField\n    (Units.map (dominantFunctionFieldMap f).toMonoidHom (A.equation (A.covers (f x)).choose)) =\n    DvrRationalOrder (X.presheaf.stalk x) X.functionField\n      (Units.map (dominantFunctionFieldMap f).toMonoidHom (A.equation i))\n  rw [← hp]\n  exact (dvr_rationalOrder_unit_transition (X.presheaf.stalk x) X.functionField\n    (Units.map (f.stalkMap x).hom.toMonoidHom u)\n    (Units.map (dominantFunctionFieldMap f).toMonoidHom\n      (A.equation (A.covers (f x)).choose))).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_integralCombination_coefficients": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 69,
+      "code": "theorem cartierAtlas_integralCombination_coefficients (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℤ)\n    (B : CartierAtlas X X)\n    (hB : ∀ x : X, x ∈ B.chart x ∧\n      B.equation x = ∏ t, (A t).equation ((A t).covers x).choose ^ c t) :\n    ∀ x : X, B.coefficient hn x = ∑ t, c t * (A t).coefficient hn x := by\n  classical\n  intro x\n  by_cases hx : Order.coheight x = 1\n  · rw [cartierAtlas_coefficient_eq X hn B x x hx (hB x).1, (hB x).2]\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    unfold schemeRationalOrder\n    rw [dvr_rationalOrder_prod]\n    apply Finset.sum_congr rfl\n    intro t _\n    rw [dvr_rationalOrder_zpow, cartierAtlas_coefficient_eq X hn (A t) _ x hx\n      ((A t).covers x).choose_spec]\n    rfl\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_effective_decomposition_equations": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 95,
+      "code": "theorem exists_realCartier_effective_decomposition_equations (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, c t * ((A t).coefficient hn x : ℝ)) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (z : J → τ → ℤ)\n      (B : J → CartierAtlas X X),\n      (∀ j, 0 ≤ w j) ∧ (∑ j, w j • (fun t => (z j t : ℝ))) = c ∧\n      (∀ j, (B j).Effective) ∧\n      ∀ j x, x ∈ (B j).chart x ∧\n        (B j).equation x = ∏ t, (A t).equation ((A t).covers x).choose ^ z j t := by\n  classical\n  let S : Set X := ⋃ t, ((A t).weilCycle hn).support\n  have hS : S.Finite := Set.finite_iUnion (fun t => cartierAtlas_weilCycle_finite_support X hn (A t))\n  let : Fintype S := hS.fintype\n  let M (t : τ) (x : S) : ℚ := (A t).coefficient hn x.1\n  have hm : ∀ x : S, 0 ≤ rationalCoefficientMap M c x := by\n    intro x\n    simpa [rationalCoefficientMap, M] using he x.1\n  obtain ⟨J, hJ, w, z, hw, hzpos, _, hsum⟩ :=\n    effective_integral_coefficient_decomposition M c hm\n  let : Fintype J := hJ\n  choose B hB using fun j => exists_cartierAtlas_integralCombination X A (z j)\n  have hcoeff (j : J) (x : X) : (B j).coefficient hn x =\n      ∑ t, z j t * (A t).coefficient hn x :=\n    cartierAtlas_integralCombination_coefficients X hn A (z j) (B j)\n      (fun x => ⟨(hB j x).1, (hB j x).2.2⟩) x\n  have hzoutside (x : X) (hx : x ∉ S) (t : τ) : (A t).coefficient hn x = 0 := by\n    by_contra h\n    exact hx (Set.mem_iUnion.mpr ⟨t, h⟩)\n  refine ⟨J, hJ, w, z, B, hw, hsum, ?_, fun j x => ⟨(hB j x).1, (hB j x).2.2⟩⟩\n  intro j\n  apply (cartierAtlas_effective_iff_weil_nonneg X hn (B j)).mpr\n  intro x\n  change 0 ≤ (B j).coefficient hn x\n  rw [hcoeff]\n  by_cases hx : x ∈ S\n  · have hp := hzpos j ⟨x, hx⟩\n    change (0 : ℝ) ≤ ∑ t, (z j t : ℝ) * ((A t).coefficient hn x : ℝ) at hp\n    exact_mod_cast hp\n  · simp [hzoutside x hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_pullback_integralCombination_coefficients": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 140,
+      "code": "theorem cartierAtlas_pullback_integralCombination_coefficients {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (f : X ⟶ Y) [IsDominant f]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas Y ι) (z : τ → ℤ)\n    (B : CartierAtlas Y Y)\n    (hB : ∀ y : Y, y ∈ B.chart y ∧\n      B.equation y = ∏ t, (A t).equation ((A t).covers y).choose ^ z t)\n    (C : τ → CartierAtlas X X)\n    (hC : ∀ t x, x ∈ (C t).chart x ∧\n      (C t).equation x = Units.map (dominantFunctionFieldMap f : _ →* _)\n        ((A t).equation ((A t).covers (f x)).choose))\n    (B' : CartierAtlas X X)\n    (hB' : ∀ x : X, x ∈ B'.chart x ∧\n      B'.equation x = Units.map (dominantFunctionFieldMap f : _ →* _)\n        (B.equation (B.covers (f x)).choose)) :\n    ∀ x : X, B'.coefficient hnX x = ∑ t, z t * (C t).coefficient hnX x := by\n  classical\n  intro x\n  by_cases hx : Order.coheight x = 1\n  · rw [cartierAtlas_pullback_coefficient_eq hnX f B B' hB' x hx (f x) (hB (f x)).1,\n      (hB (f x)).2, map_prod]\n    simp_rw [map_zpow]\n    have := hnX x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    unfold schemeRationalOrder\n    rw [dvr_rationalOrder_prod]\n    apply Finset.sum_congr rfl\n    intro t _\n    rw [dvr_rationalOrder_zpow,\n      cartierAtlas_coefficient_eq X hnX (C t) x x hx (hC t x).1, (hC t x).2]\n    rfl\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "realWeightedWeilCycle_eq_of_integral_coefficients": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 176,
+      "code": "theorem realWeightedWeilCycle_eq_of_integral_coefficients (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι κ τ J : Type*} [Fintype τ] [Fintype J]\n    (A : τ → CartierAtlas X ι) (B : J → CartierAtlas X κ)\n    (c : τ → ℝ) (w : J → ℝ) (z : J → τ → ℤ)\n    (hsum : (∑ j, w j • (fun t => (z j t : ℝ))) = c)\n    (hcoeff : ∀ j x, (B j).coefficient hn x = ∑ t, z j t * (A t).coefficient hn x) :\n    (∑ j, (B j).weightedWeilCycle hn (w j)) =\n      ∑ t, (A t).weightedWeilCycle hn (c t) := by\n  classical\n  ext x\n  simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n  change (∑ j, w j * ((B j).coefficient hn x : ℝ)) =\n    ∑ t, c t * ((A t).coefficient hn x : ℝ)\n  simp_rw [hcoeff, Int.cast_sum, Int.cast_mul, Finset.mul_sum]\n  rw [Finset.sum_comm]\n  apply Finset.sum_congr rfl\n  intro t _\n  simp_rw [← mul_assoc, ← Finset.sum_mul]\n  have hs := congrFun hsum t\n  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at hs\n  rw [hs]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_cartierAtlas_pullback_data": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 202,
+      "code": "theorem exists_effective_cartierAtlas_pullback_data {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f]\n    {ι : Type*} (A : CartierAtlas Y ι) (hA : A.Effective) :\n    ∃ B : CartierAtlas X X, B.Effective ∧\n      B.vanishingSupport = f ⁻¹' A.vanishingSupport ∧\n      ∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧\n        z ∈ B.chart z ∧ B.equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n          (A.equation (A.covers (f z)).choose) := by\n  classical\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_pullback f A\n  have heffective : B.Effective := by\n    intro z x hx\n    obtain ⟨r, hr⟩ := hA _ (f x) ((hB z).1 hx)\n    refine ⟨(f.stalkMap x).hom r, ?_⟩\n    rw [(hB z).2.2]\n    rw [← dominantFunctionFieldMap_stalk f x r, hr]\n    rfl\n  refine ⟨B, heffective, ?_, hB⟩\n  ext x\n  rw [cartierAtlas_support_eq_on_chart X B x x (hB x).2.1,\n    Set.mem_preimage, cartierAtlas_support_eq_on_chart Y A _ (f x) (A.covers (f x)).choose_spec,\n    (hB x).2.2]\n  obtain ⟨r, hr⟩ := hA _ (f x) (A.covers (f x)).choose_spec\n  exact not_congr (rationalUnitAt_regular_pullback_iff f x _ r hr)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_termwise_pullback_support": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 233,
+      "code": "theorem exists_realCartier_termwise_pullback_support {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    [CompactSpace Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsDominant f]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas Y ι) (c : τ → ℝ)\n    (he : ∀ y : Y, 0 ≤ ∑ t, c t * ((A t).coefficient hnY y : ℝ)) :\n    ∃ C : τ → CartierAtlas X X,\n      CycleEffective (∑ t, (C t).weightedWeilCycle hnX (c t)) ∧\n      closure (∑ t, (C t).weightedWeilCycle hnX (c t)).support =\n        f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnY (c t)).support ∧\n      ∀ t x, (C t).chart x ≤ f ⁻¹ᵁ (A t).chart ((A t).covers (f x)).choose ∧\n        x ∈ (C t).chart x ∧ (C t).equation x = Units.map (dominantFunctionFieldMap f : _ →* _)\n          ((A t).equation ((A t).covers (f x)).choose) := by\n  classical\n  obtain ⟨J, hJ, w, z, B, hw, hsum, hB, hBeq⟩ :=\n    exists_realCartier_effective_decomposition_equations Y hnY A c he\n  let : Fintype J := hJ\n  choose C hC using fun t => exists_cartierAtlas_pullback f (A t)\n  choose B' hB' hsupp hB'eq using fun j =>\n    exists_effective_cartierAtlas_pullback_data f (B j) (hB j)\n  have hbase : (∑ j, (B j).weightedWeilCycle hnY (w j)) =\n      ∑ t, (A t).weightedWeilCycle hnY (c t) :=\n    realWeightedWeilCycle_eq_of_integral_coefficients Y hnY A B c w z hsum\n      (fun j => cartierAtlas_integralCombination_coefficients Y hnY A (z j) (B j) (hBeq j))\n  have hsource : (∑ j, (B' j).weightedWeilCycle hnX (w j)) =\n      ∑ t, (C t).weightedWeilCycle hnX (c t) :=\n    realWeightedWeilCycle_eq_of_integral_coefficients X hnX C B' c w z hsum\n      (fun j => cartierAtlas_pullback_integralCombination_coefficients hnX f A (z j)\n        (B j) (hBeq j) C (fun t x => (hC t x).2) (B' j) (fun x => (hB'eq j x).2))\n  have heff : CycleEffective (∑ j, (B' j).weightedWeilCycle hnX (w j)) := by\n    intro x\n    simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n    change 0 ≤ ∑ j, w j * ((B' j).coefficient hnX x : ℝ)\n    apply Finset.sum_nonneg\n    intro j _\n    apply mul_nonneg (hw j)\n    exact_mod_cast effective_cartierAtlas_weil_nonneg X hnX (B' j) (hB' j) x\n  have hs : closure (∑ j, (B' j).weightedWeilCycle hnX (w j)).support =\n      f ⁻¹' closure (∑ j, (B j).weightedWeilCycle hnY (w j)).support := by\n    rw [effective_cartier_real_sum_support X hnX B' w hw hB',\n      effective_cartier_real_sum_support Y hnY B w hw hB]\n    ext x\n    simp only [Set.mem_iUnion, Set.mem_preimage]\n    simp_rw [hsupp, Set.mem_preimage]\n  rw [hsource] at heff hs\n  rw [hbase] at hs\n  exact ⟨C, heff, hs, hC⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_termwise_fiber_descent": {
+      "path": "Negativity/RealCartierPullback.lean",
+      "line": 288,
+      "code": "theorem exists_realCartier_termwise_fiber_descent {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    [CompactSpace Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (p : X ⟶ Y) [IsProper p] (hp : BirationalMorphism p)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas Y ι) (c : τ → ℝ)\n    (he : ∀ y : Y, 0 ≤ ∑ t, c t * ((A t).coefficient hnY y : ℝ)) :\n    letI := birationalMorphism_dominant p hp\n    ∃ C : τ → CartierAtlas X X,\n      CycleEffective (∑ t, (C t).weightedWeilCycle hnX (c t)) ∧\n      (∀ t x, (C t).equation x = Units.map (dominantFunctionFieldMap p : _ →* _)\n        ((A t).equation ((A t).covers (p x)).choose)) ∧\n      ∀ (T : Type*) (g : Y → T) (y : T),\n        (Disjoint {x | g (p x) = y} (closure (∑ t, (C t).weightedWeilCycle hnX (c t)).support) ∨\n          {x | g (p x) = y} ⊆ closure (∑ t, (C t).weightedWeilCycle hnX (c t)).support) ↔\n        (Disjoint {x | g x = y} (closure (∑ t, (A t).weightedWeilCycle hnY (c t)).support) ∨\n          {x | g x = y} ⊆ closure (∑ t, (A t).weightedWeilCycle hnY (c t)).support) := by\n  have := birationalMorphism_dominant p hp\n  obtain ⟨C, hC, hs, heq⟩ := exists_realCartier_termwise_pullback_support hnX hnY p A c he\n  have hsurj : Function.Surjective p := (proper_birational_surjective p hp).1\n  refine ⟨C, hC, fun t x => (heq t x).2.2, ?_⟩\n  intro T g y\n  rw [hs, composite_fiber, ← disjoint_iff_preimage_disjoint p hsurj,\n    ← subset_iff_preimage_subset p hsurj]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "normal_local_annihilator_maximal_isPrincipal": {
       "path": "Negativity/NormalExtension.lean",
       "line": 26,

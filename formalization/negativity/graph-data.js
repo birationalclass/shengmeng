@@ -1634,3 +1634,32 @@ find('fiberdown').steps[3]=['所构造分解的全支撑拉回：已验证','支
 find('fiberdown').steps.push(['尚待接通','与原表示逐项拉回兼容，并完成上方纤维二择一。']);
 find('chow').deps.push('geomsupport');
 find('chow').scope='实际 R-Cartier 推拉、有效 Cartier 分解、全支撑识别及分解的支撑拉回已完成。仍缺有限覆盖的射影性、有限正规化、全局曲线交数、与原实表示逐项拉回兼容及上方纤维二择一。';
+
+// Actual original-presentation pullback: formal-18
+find('geomsupport').file='RealCartierPullback.lean';
+find('geomsupport').decl='exists_realCartier_termwise_pullback_support';
+find('geomsupport').statement='原实权重可为负；只要真实 Weil 实组合有效，其原表示的实际逐项拉回有效，且全支撑恰为原全支撑的逆像。';
+find('geomsupport').scope='原表示逐项拉回与有效分解拉回的系数兼容已证明，包括例外除子映到高余维中心的情形。实际有效性、全支撑闭包及支撑逆像全部完成；没有证明上方纤维必然二择一。';
+find('geomsupport').steps[3]=['原表示逐项拉回：已验证','保留原系数坐标及局部方程乘积；拉回实际单位后计算源空间 DVR 阶数，证明两个拉回的实际 Weil cycle 相同。','exists_realCartier_termwise_pullback_support'];
+find('geomsupport').steps.push(['例外除子的系数','底点不必余维一：使用该点真实 stalk 单位拉回，再在源空间余维一处计算系数。','cartierAtlas_pullback_integralCombination_coefficients']);
+find('geomsupport').related.push('exists_realCartier_decomposition_support_pullback');
+find('rdecomp').related.push('exists_realCartier_effective_decomposition_equations');
+find('rdecomp').scope='真实有效 Cartier 分解及原零系数保持已证明；增强版本还保留原系数坐标等式及实际局部方程乘积，因此可与原实表示逐项拉回核对。完整 negativity lemma 仍未完成。';
+find('fiberdown').status='done';
+find('fiberdown').file='RealCartierPullback.lean';
+find('fiberdown').decl='exists_realCartier_termwise_fiber_descent';
+find('fiberdown').title='真实 R-Cartier 纤维支撑下降';
+find('fiberdown').statement='proper birational 改造下，原有效 R-Cartier 表示的实际逐项拉回有效，且纤维支撑二择一在上下空间等价。';
+find('fiberdown').scope='实际 Scheme 满射、原表示逐项拉回、有效性、全支撑逆像及二择一的下降等价均已证明。此节点不证明上方二择一成立；完整定理尚未完成。';
+find('fiberdown').inputs=['实际正规整且局部 Noetherian 概形；底概形准紧；proper birational 改造。','原真实 R-Cartier 有限表示及任意实权重，其实际 Weil 实组合有效。','输出是上下空间的二择一等价；上方二择一成立仍需独立几何证明。'];
+find('fiberdown').steps=[
+ ['构造原表示拉回','逐项构造真实 Cartier 拉回，保留实际局部方程。','exists_cartierAtlas_pullback'],
+ ['兼容有效分解','用原系数坐标和局部方程乘积计算源空间系数，证明逐项拉回等于有效分解拉回。','cartierAtlas_pullback_integralCombination_coefficients'],
+ ['全支撑逆像','真实有效性和所有余维的支撑逆像已证明，不再作为输入。','exists_realCartier_termwise_pullback_support'],
+ ['实际下降','由 proper birational 的实际满射反映支撑不交和包含，得到二择一等价。','exists_realCartier_termwise_fiber_descent'],
+ ['剩余独立问题','上方纤维必然二择一的几何证明仍未完成；本节点只证明下降等价。']
+];
+find('fiberdown').related=['exists_realCartier_termwise_pullback_support','proper_birational_surjective','fiber_dichotomy_descends'];
+find('fiberdown').deps=['geomsupport','modsurj','setdown'];
+find('chow').scope='实际 R-Cartier 推拉、有效分解、原表示逐项拉回的有效性与全支撑逆像，以及二择一下降等价已完成。仍缺有限覆盖的射影性、有限正规化、全局曲线交数及上方纤维二择一。';
+find('geomsupport').related.push('dominantFunctionFieldMap_stalk_unit','cartierAtlas_pullback_coefficient_eq','cartierAtlas_integralCombination_coefficients','exists_realCartier_effective_decomposition_equations','cartierAtlas_pullback_integralCombination_coefficients','realWeightedWeilCycle_eq_of_integral_coefficients','exists_effective_cartierAtlas_pullback_data');

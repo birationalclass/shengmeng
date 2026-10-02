@@ -1073,3 +1073,24 @@ entries.fiberdown[4][2]=['Effective R-Cartier decomposition: verified','Every co
 entries.fiberdown[4][3]=['Full support pullback of the decomposition: verified','Identify support with the closure of nonzero Weil primes, then prove inverse-image support for its constructed pullback.'];
 entries.fiberdown[4].push(['Still to connect','Prove compatibility with original termwise pullback and complete the upstairs fiber dichotomy.']);
 entries.chow[2]='Actual R-Cartier push-pull, effective Cartier decomposition, full support identification and support pullback of the decomposition are proved. Finite-cover projectivity, finite normalization, global curve intersections, original termwise-pullback compatibility and the upstairs fiber dichotomy remain open.';
+
+// Actual original-presentation pullback: formal-18
+entries.geomsupport[1]='Original real weights may be negative. If the actual real Weil sum is effective, its original termwise Cartier pullback is effective and has exactly inverse-image full support.';
+entries.geomsupport[2]='Compatibility between original termwise pullback and effective-decomposition pullback is proved, including exceptional divisors above higher-codimension centers. Actual effectivity, support closure and inverse-image support are complete. The upstairs fiber dichotomy is not proved.';
+entries.geomsupport[4][3]=['Original termwise pullback: verified','Retain original coefficient coordinates and products of actual equations. Pull back actual local units and compute source DVR orders to prove equality of the actual pulled-back Weil cycles.'];
+entries.geomsupport[4].push(['Exceptional coefficients','The target point need not have codimension one: pull back units in its actual stalk, then compute orders at source codimension-one points.']);
+entries.rdecomp[2]='Actual effective Cartier decomposition and preservation of original zero coefficients are proved. The stronger version also retains original coefficient coordinates and products of actual local equations, allowing comparison with original termwise pullback. The full negativity lemma remains open.';
+entries.fiberdown=[
+ 'Actual R-Cartier fiber-support descent',
+ 'For a proper birational modification, the actual original termwise pullback of an effective R-Cartier presentation is effective, and the fiber-support dichotomy is equivalent upstairs and downstairs.',
+ 'Actual scheme surjectivity, original termwise pullback, effectivity, full inverse-image support and dichotomy descent equivalence are proved. This node does not prove that the upstairs dichotomy holds. The complete theorem is not proved.',
+ ['Actual normal integral locally Noetherian schemes, a quasi-compact target and a proper birational modification.','An actual finite R-Cartier presentation with arbitrary real weights and effective actual real Weil sum.','The output is equivalence of upstairs and downstairs alternatives. The upstairs alternative still needs a separate geometric proof.'],
+ [
+  ['Construct original pullback','Construct each actual Cartier pullback and retain its actual local equations.'],
+  ['Compare effective decomposition','Use original coordinates and products of local equations to prove equality of the two actual pulled-back Weil cycles.'],
+  ['Full inverse-image support','Actual effectivity and inverse-image support in all codimensions are proved rather than assumed.'],
+  ['Actual descent','Proper birational surjectivity reflects disjointness and containment, proving equivalence of both alternatives.'],
+  ['Separate remaining problem','The geometric proof that the upstairs alternative always holds remains open. This node proves only descent equivalence.']
+ ]
+];
+entries.chow[2]='Actual R-Cartier push-pull, effective decomposition, effectivity and full support of original termwise pullback, and dichotomy descent equivalence are proved. Finite-cover projectivity, finite normalization, global curve intersections and the upstairs fiber dichotomy remain open.';

@@ -1,7 +1,7 @@
-Verified 2026-10-02T11:49:20+08:00
+Verified 2026-10-02T12:27:59+08:00
 
 $ lake build
-⚠ [3888/3892] Built Negativity.NormalExtension (13s)
+⚠ [3888/3893] Replayed Negativity.NormalExtension
 warning: Negativity/NormalExtension.lean:128:2: Try this:
   haveI̵
 
@@ -26,7 +26,7 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [3889/3892] Replayed Negativity.CartierEffectivity
+⚠ [3889/3893] Replayed Negativity.CartierEffectivity
 warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
 
 Hint: Use `simp` instead of `simpa`:
@@ -42,14 +42,16 @@ Note: This linter can be disabled with `set_option linter.unusedVariables false`
 warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
 
 Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
-⚠ [3890/3892] Replayed Negativity.CartierVanishing
+⚠ [3890/3893] Replayed Negativity.CartierVanishing
 warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _hU
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (3892 jobs).
+✔ [3891/3893] Built Negativity.RealCartierPullback (14s)
+✔ [3892/3893] Built Negativity (12s)
+Build completed successfully (3893 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -253,3 +255,18 @@ $ lake env lean CheckAxioms.lean
 'Negativity.exists_realCartier_decomposition_support_pullback' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+'Negativity.dominantFunctionFieldMap_stalk_unit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierAtlas_pullback_coefficient_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierAtlas_integralCombination_coefficients' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_realCartier_effective_decomposition_equations' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.cartierAtlas_pullback_integralCombination_coefficients' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.realWeightedWeilCycle_eq_of_integral_coefficients' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.exists_effective_cartierAtlas_pullback_data' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_realCartier_termwise_pullback_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_realCartier_termwise_fiber_descent' depends on axioms: [propext, Classical.choice, Quot.sound]

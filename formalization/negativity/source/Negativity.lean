@@ -69,3 +69,5 @@ public import Negativity.NormalExtension
 public import Negativity.CartierEffectivity
 
 public import Negativity.CartierVanishing
+
+public import Negativity.RealCartierPullback

@@ -290,3 +290,21 @@ import Negativity
 #print axioms Negativity.exists_effective_real_sum_pullback_support
 
 #print axioms Negativity.exists_realCartier_decomposition_support_pullback
+
+#print axioms Negativity.dominantFunctionFieldMap_stalk_unit
+
+#print axioms Negativity.cartierAtlas_pullback_coefficient_eq
+
+#print axioms Negativity.cartierAtlas_integralCombination_coefficients
+
+#print axioms Negativity.exists_realCartier_effective_decomposition_equations
+
+#print axioms Negativity.cartierAtlas_pullback_integralCombination_coefficients
+
+#print axioms Negativity.realWeightedWeilCycle_eq_of_integral_coefficients
+
+#print axioms Negativity.exists_effective_cartierAtlas_pullback_data
+
+#print axioms Negativity.exists_realCartier_termwise_pullback_support
+
+#print axioms Negativity.exists_realCartier_termwise_fiber_descent
