@@ -464,3 +464,55 @@ import Negativity
 #print axioms Negativity.normal_curve_valuation_center_order
 
 #print axioms Negativity.proper_normal_curve_valuation_order_correspondence
+
+#print axioms Negativity.valuation_fraction_mem_of_unit_denominator
+
+#print axioms Negativity.valuation_chart_center_nonzero
+
+#print axioms Negativity.dedekind_chart_valuation_unique_prime
+
+#print axioms Negativity.valuation_constants_trivial
+
+#print axioms Negativity.integral_element_mem_valuation
+
+#print axioms Negativity.rational_infinity_ring_mem_of_parameter_pole
+
+#print axioms Negativity.functionField_valuation_integralClosure_chart_cover
+
+#print axioms Negativity.finite_place_parameter_regular
+
+#print axioms Negativity.infinity_place_parameter_pole
+
+#print axioms Negativity.twoChartValuation_injective
+
+#print axioms Negativity.twoChartValuation_ne_top
+
+#print axioms Negativity.twoChartValuation_contains_constants
+
+#print axioms Negativity.functionField_valuation_unique_twoChart_place
+
+#print axioms Negativity.dvr_heightOneOrder_regular
+
+#print axioms Negativity.dvr_heightOneOrder_eq_rationalOrder
+
+#print axioms Negativity.dedekind_prime_order_eq_valuationRing_order
+
+#print axioms Negativity.curve_twoChart_center_exists
+
+#print axioms Negativity.curveTwoChartCenter_valuation
+
+#print axioms Negativity.proper_normal_curve_twoChart_centers_bijective
+
+#print axioms Negativity.dedekind_prime_actual_curve_order
+
+#print axioms Negativity.twoChartPrincipalDivisor_actual_order
+
+#print axioms Negativity.curvePrincipalDivisor_coefficient
+
+#print axioms Negativity.proper_normal_curve_principal_degree_zero
+
+#print axioms Negativity.curvePrincipalDivisor_allPoints_coefficient
+
+#print axioms Negativity.cartierOrderDivisor_rationalTwist
+
+#print axioms Negativity.cartierTotalOrder_rationalTwist

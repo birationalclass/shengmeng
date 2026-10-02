@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T18:45:06+08:00",
+  "checkedAt": "2026-10-02T19:53:29+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "57335f7e4ae41d2e25d7b89567cd8251d46e3e16753b5aef2a9b9fcf39c13c86"
+      "sha256": "2d60ef903807f663e14aa16e4d4c116b2b66ef3a48ab18fdc3ca6da3c59ae284"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "d9d42d84c17c1cc8fc29c8c902ced69854271c8ca10ea56cc0115de902f3dc4f"
+      "sha256": "9c6170cca35ade35ef661dab84dccb337698641da74f6829b51a756330875114"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,34 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/DedekindValuationPlaces.lean",
+      "sha256": "9b799b53ca3be40f6970d6288951fb95f9290953d2c9cdd59b1ce3e06f9f0e73"
+    },
+    {
+      "path": "Negativity/ValuationChartCover.lean",
+      "sha256": "2ae1e7ef3848294732a44eb6a7d6ccf814c9772fca2aef9d72326aca76b0b62e"
+    },
+    {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "sha256": "e6c92f6bfefa855f852107200445a16be31a0af6abc835cd190520fd6f422abe"
+    },
+    {
+      "path": "Negativity/DvrAdicOrders.lean",
+      "sha256": "33649af9fcc5bc03600b8d691db9eaaf65d51c4d7adb38ea04d96734e2cbeec8"
+    },
+    {
+      "path": "Negativity/CurveChartPlaces.lean",
+      "sha256": "5bc86d5b68adfb08a5735a744da888463a4bd7bea8f85eb7c401560aa7b5d90d"
+    },
+    {
+      "path": "Negativity/CurvePrincipalDegree.lean",
+      "sha256": "c36bef2d2eb1afadd35008cd0647d89b10eb81f102a575a507bc7f1d8d3e802f"
+    },
+    {
+      "path": "Negativity/CartierPrincipalDegree.lean",
+      "sha256": "d3947f12e19eb0b05562d02d93564b66d2652002a71d6a886bf34e60fa4cf0c9"
     },
     {
       "path": "Negativity/RationalInfinityResidue.lean",
@@ -238,6 +266,266 @@
     }
   ],
   "declarations": {
+    "valuation_fraction_mem_of_unit_denominator": {
+      "path": "Negativity/DedekindValuationPlaces.lean",
+      "line": 15,
+      "code": "theorem valuation_fraction_mem_of_unit_denominator\n    {R K : Type*} [CommRing R] [IsDomain R] [Field K] [Algebra R K]\n    (A : ValuationSubring K) (hR : ∀ r : R, algebraMap R K r ∈ A)\n    (r d : R)\n    (hu : IsUnit (((algebraMap R K).codRestrict A.toSubring hR) d)) :\n    algebraMap R K r * (algebraMap R K d)⁻¹ ∈ A := by\n  have hd : A.valuation (algebraMap R K d) = 1 :=\n    (A.valuation_eq_one_iff _).mp hu\n  have hi : (algebraMap R K d)⁻¹ ∈ A := by\n    rw [← A.valuation_le_one_iff, map_inv₀, hd, inv_one]\n  exact A.toSubring.mul_mem (hR r) hi",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "valuation_chart_center_nonzero": {
+      "path": "Negativity/DedekindValuationPlaces.lean",
+      "line": 30,
+      "code": "theorem valuation_chart_center_nonzero\n    (R K : Type*) [CommRing R] [IsDomain R] [Field K]\n    [Algebra R K] [IsFractionRing R K]\n    (A : ValuationSubring K) (hA : A ≠ ⊤)\n    (hR : ∀ r : R, algebraMap R K r ∈ A) :\n    (IsLocalRing.maximalIdeal A).comap\n      ((algebraMap R K).codRestrict A.toSubring hR) ≠ ⊥ := by\n  let f := (algebraMap R K).codRestrict A.toSubring hR\n  intro hp\n  apply hA\n  apply top_unique\n  intro a _\n  obtain ⟨⟨r, d⟩, he⟩ := IsLocalization.surj (nonZeroDivisors R) a\n  have hd : (d : R) ≠ 0 := nonZeroDivisors.ne_zero d.2\n  have hdk : algebraMap R K (d : R) ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hd\n  have hu : IsUnit (f d) := by\n    by_contra h\n    have hm : (d : R) ∈ (IsLocalRing.maximalIdeal A).comap f := h\n    rw [hp, Ideal.mem_bot] at hm\n    exact hd hm\n  have ha : a = algebraMap R K r * (algebraMap R K (d : R))⁻¹ := by\n    rw [← div_eq_mul_inv, eq_div_iff hdk]\n    exact he\n  rw [ha]\n  exact valuation_fraction_mem_of_unit_denominator A hR r d hu",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dedekind_chart_valuation_unique_prime": {
+      "path": "Negativity/DedekindValuationPlaces.lean",
+      "line": 61,
+      "code": "theorem dedekind_chart_valuation_unique_prime\n    (R K : Type*) [CommRing R] [IsDedekindDomain R] [Field K]\n    [Algebra R K] [IsFractionRing R K]\n    (A : ValuationSubring K) (hA : A ≠ ⊤)\n    (hR : ∀ r : R, algebraMap R K r ∈ A) :\n    ∃! p : HeightOneSpectrum R, (p.valuation K).valuationSubring = A := by\n  let f := (algebraMap R K).codRestrict A.toSubring hR\n  let p : HeightOneSpectrum R := {\n    asIdeal := (IsLocalRing.maximalIdeal A).comap f,\n    isPrime := Ideal.comap_isPrime f _,\n    ne_bot := valuation_chart_center_nonzero R K A hA hR }\n  have hle : p.valuationSubringAtPrime K ≤ A := by\n    rintro a ⟨r, d, hd, rfl⟩\n    have hu : IsUnit (f d) := by\n      by_contra h\n      exact hd (show d ∈ p.asIdeal from h)\n    exact valuation_fraction_mem_of_unit_denominator A hR r d hu\n  have he : p.valuationSubringAtPrime K = A :=\n    ValuationSubring.eq_of_le_of_ne_top _ hle hA\n  rw [HeightOneSpectrum.valuationSubringAtPrime_eq_valuationSubring] at he\n  exact ⟨p, he, fun q hq ↦\n    HeightOneSpectrum.valuationSubring_valuation_injective K (hq.trans he.symm)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "valuation_constants_trivial": {
+      "path": "Negativity/ValuationChartCover.lean",
+      "line": 28,
+      "code": "theorem valuation_constants_trivial (k L : Type*) [Field k] [Field L]\n    [Algebra k L] (A : ValuationSubring L)\n    (hk : ∀ c : k, algebraMap k L c ∈ A) : A.valuation.IsTrivialOn k where\n  eq_one c hc := by\n    have hcL : algebraMap k L c ≠ 0 := by\n      simpa only [map_zero] using (algebraMap k L).injective.ne hc\n    have hci : (algebraMap k L c)⁻¹ ∈ A := by\n      simpa only [map_inv₀] using hk c⁻¹\n    have hu : IsUnit (⟨algebraMap k L c, hk c⟩ : A) :=\n      IsUnit.of_mul_eq_one ⟨(algebraMap k L c)⁻¹, hci⟩ (by\n        ext\n        exact mul_inv_cancel₀ hcL)\n    exact (A.valuation_eq_one_iff _).mp hu",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "integral_element_mem_valuation": {
+      "path": "Negativity/ValuationChartCover.lean",
+      "line": 45,
+      "code": "theorem integral_element_mem_valuation\n    (R L : Type*) [CommRing R] [Field L] [Algebra R L]\n    (A : ValuationSubring L) (hR : ∀ r : R, algebraMap R L r ∈ A)\n    (x : L) (hx : IsIntegral R x) : x ∈ A := by\n  let : Algebra R A := ((algebraMap R L).codRestrict A.toSubring hR).toAlgebra\n  have : IsScalarTower R A L := IsScalarTower.of_algebraMap_eq' rfl\n  obtain ⟨a, ha⟩ := IsIntegrallyClosed.algebraMap_eq_of_integral (R := A) hx.tower_top\n  exact ha ▸ a.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_ring_mem_of_parameter_pole": {
+      "path": "Negativity/ValuationChartCover.lean",
+      "line": 57,
+      "code": "theorem rational_infinity_ring_mem_of_parameter_pole\n    (k L : Type*) [Field k] [Field L] [Algebra (RatFunc k) L]\n    [Algebra k L] [IsScalarTower k (RatFunc k) L]\n    (A : ValuationSubring L) (hk : ∀ c : k, algebraMap k L c ∈ A)\n    (ht : algebraMap (RatFunc k) L RatFunc.X ∉ A)\n    (r : RationalInfinityRing k) : algebraMap (RatFunc k) L (r : RatFunc k) ∈ A := by\n  classical\n  let w := A.valuation.comap (algebraMap (RatFunc k) L)\n  have : A.valuation.IsTrivialOn k := valuation_constants_trivial k L A hk\n  have : w.IsTrivialOn k := ⟨fun c hc ↦ by\n    change A.valuation ((algebraMap (RatFunc k) L) (algebraMap k (RatFunc k) c)) = 1\n    rw [← IsScalarTower.algebraMap_apply k (RatFunc k) L]\n    exact Valuation.IsTrivialOn.eq_one c hc⟩\n  have htval : 1 < w RatFunc.X := by\n    change 1 < A.valuation (algebraMap (RatFunc k) L RatFunc.X)\n    exact lt_of_not_ge (by simpa only [A.valuation_le_one_iff] using ht)\n  rw [← A.valuation_le_one_iff]\n  change w (r : RatFunc k) ≤ 1\n  by_cases hr : (r : RatFunc k) = 0\n  · simp [hr]\n  have hdeg : (r : RatFunc k).intDegree ≤ 0 := by\n    apply WithZero.exp_le_exp.mp\n    have hrval : RatFunc.inftyValuation k (r : RatFunc k) ≤ 1 := r.2\n    simpa only [RatFunc.inftyValuation_apply, RatFunc.inftyValuation_of_nonzero k hr,\n      WithZero.exp_zero] using hrval\n  have hnd : (r : RatFunc k).num.natDegree ≤ (r : RatFunc k).denom.natDegree := by\n    dsimp [RatFunc.intDegree] at hdeg\n    omega\n  have hp := RatFunc.num_ne_zero hr\n  have hq := RatFunc.denom_ne_zero (r : RatFunc k)\n  rw [← RatFunc.num_div_denom (r : RatFunc k), map_div₀]\n  change w (((r : RatFunc k).num : RatFunc k)) /\n    w (((r : RatFunc k).denom : RatFunc k)) ≤ 1\n  rw [\n    Polynomial.valuation_eq_valuation_X_pow_natDegree_of_one_lt_valuation_X k htval hp,\n    Polynomial.valuation_eq_valuation_X_pow_natDegree_of_one_lt_valuation_X k htval hq]\n  exact (div_le_one₀ (pow_pos (lt_trans zero_lt_one htval) _)).mpr\n    (pow_le_pow_right' htval.le hnd)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "functionField_valuation_integralClosure_chart_cover": {
+      "path": "Negativity/ValuationChartCover.lean",
+      "line": 100,
+      "code": "theorem functionField_valuation_integralClosure_chart_cover\n    (k L : Type*) [Field k] [Field L] [Algebra (RatFunc k) L]\n    [Algebra k L] [IsScalarTower k (RatFunc k) L]\n    (A : ValuationSubring L) (hk : ∀ c : k, algebraMap k L c ∈ A) :\n    (∀ r : FunctionFieldPlaces.FiniteRing k L, (r : L) ∈ A) ∨\n      (∀ r : FunctionFieldPlaces.InfinityRing k L, (r : L) ∈ A) := by\n  classical\n  by_cases ht : algebraMap (RatFunc k) L RatFunc.X ∈ A\n  · left\n    have hpoly : ∀ p : k[X], algebraMap k[X] L p ∈ A := by\n      let w := A.valuation.comap (algebraMap (RatFunc k) L)\n      have : A.valuation.IsTrivialOn k := valuation_constants_trivial k L A hk\n      have : w.IsTrivialOn k := ⟨fun c hc ↦ by\n        change A.valuation ((algebraMap (RatFunc k) L) (algebraMap k (RatFunc k) c)) = 1\n        rw [← IsScalarTower.algebraMap_apply k (RatFunc k) L]\n        exact Valuation.IsTrivialOn.eq_one c hc⟩\n      intro p\n      rw [← A.valuation_le_one_iff]\n      change w (algebraMap k[X] (RatFunc k) p) ≤ 1\n      exact Polynomial.valuation_le_one_of_valuation_X_le_one k\n        (by change A.valuation (algebraMap (RatFunc k) L RatFunc.X) ≤ 1\n            exact (A.valuation_le_one_iff _).mpr ht) p\n    intro r\n    exact integral_element_mem_valuation k[X] L A hpoly (r : L) r.2\n  · right\n    have hinf : ∀ r : RationalInfinityRing k,\n        algebraMap (RationalInfinityRing k) L r ∈ A :=\n      rational_infinity_ring_mem_of_parameter_pole k L A hk ht\n    intro r\n    exact integral_element_mem_valuation (RationalInfinityRing k) L A hinf (r : L) r.2\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_place_parameter_regular": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 41,
+      "code": "theorem finite_place_parameter_regular (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L]\n    (p : HeightOneSpectrum (FunctionFieldPlaces.FiniteRing k L)) :\n    algebraMap (RatFunc k) L RatFunc.X ∈ (p.valuation L).valuationSubring := by\n  have h := p.valuation_le_one (K := L)\n    (algebraMap k[X] (FunctionFieldPlaces.FiniteRing k L) Polynomial.X)\n  change p.valuation L (algebraMap (FunctionFieldPlaces.FiniteRing k L) L\n    (algebraMap k[X] (FunctionFieldPlaces.FiniteRing k L) Polynomial.X)) ≤ 1 at h\n  rw [← IsScalarTower.algebraMap_apply] at h\n  exact h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "infinity_place_parameter_pole": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 55,
+      "code": "theorem infinity_place_parameter_pole (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L]\n    (q : HeightOneSpectrum (FunctionFieldPlaces.InfinityRing k L)) :\n    algebraMap (RatFunc k) L RatFunc.X ∉ (q.valuation L).valuationSubring := by\n  classical\n  let A := RationalInfinityRing k\n  let B := FunctionFieldPlaces.InfinityRing k L\n  let s : A := ⟨1 / RatFunc.X, by\n    change RatFunc.inftyValuation k (1 / RatFunc.X) ≤ 1\n    rw [RatFunc.inftyValuation.X_inv k]\n    decide⟩\n  have hs : s ∈ IsLocalRing.maximalIdeal A := by\n    rw [(RatFunc.inftyValuation k).mem_maximalIdeal_iff]\n    change RatFunc.inftyValuation k (1 / RatFunc.X) < 1\n    rw [RatFunc.inftyValuation.X_inv k]\n    decide\n  have hq : (q.under A).asIdeal = IsLocalRing.maximalIdeal A :=\n    IsLocalRing.eq_maximalIdeal (q.under A).isMaximal\n  have hsq : algebraMap A B s ∈ q.asIdeal := by\n    exact (show s ∈ (q.under A).asIdeal from hq ▸ hs)\n  have hv := (q.valuation_lt_one_iff_mem (K := L) (algebraMap A B s)).mpr hsq\n  change q.valuation L (algebraMap B L (algebraMap A B s)) < 1 at hv\n  have hsmap : algebraMap B L (algebraMap A B s) =\n      (algebraMap (RatFunc k) L RatFunc.X)⁻¹ := by\n    rw [← IsScalarTower.algebraMap_apply A B L,\n      IsScalarTower.algebraMap_apply A (RatFunc k) L]\n    simp [s]\n  rw [hsmap, map_inv₀] at hv\n  have hx : q.valuation L (algebraMap (RatFunc k) L RatFunc.X) ≠ 0 := by\n    apply (Valuation.ne_zero_iff _).mpr\n    exact (map_ne_zero_iff _ (algebraMap (RatFunc k) L).injective).mpr RatFunc.X_ne_zero\n  change ¬ q.valuation L (algebraMap (RatFunc k) L RatFunc.X) ≤ 1\n  exact not_le_of_gt ((inv_lt_one₀ (pos_iff_ne_zero.mpr hx)).mp hv)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChartValuation_injective": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 90,
+      "code": "theorem twoChartValuation_injective (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L] :\n    Function.Injective (FunctionFieldPlaces.twoChartValuation k L) := by\n  rintro (p | q) (p' | q') he\n  · exact congrArg Sum.inl (HeightOneSpectrum.valuationSubring_valuation_injective L he)\n  · change (p.valuation L).valuationSubring = (q'.valuation L).valuationSubring at he\n    exact False.elim (infinity_place_parameter_pole k L q'\n      (he ▸ finite_place_parameter_regular k L p))\n  · change (q.valuation L).valuationSubring = (p'.valuation L).valuationSubring at he\n    exact False.elim (infinity_place_parameter_pole k L q\n      (he.symm ▸ finite_place_parameter_regular k L p'))\n  · exact congrArg Sum.inr (HeightOneSpectrum.valuationSubring_valuation_injective L he)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChartValuation_ne_top": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 104,
+      "code": "theorem twoChartValuation_ne_top (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L] (p : FunctionFieldPlaces.TwoChartPlace k L) :\n    FunctionFieldPlaces.twoChartValuation k L p ≠ ⊤ := by\n  cases p with\n  | inl p =>\n    intro he\n    exact (Valuation.valuationSubring_eq_top_iff _).mp he inferInstance\n  | inr q =>\n    intro he\n    exact (Valuation.valuationSubring_eq_top_iff _).mp he inferInstance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChartValuation_contains_constants": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 116,
+      "code": "theorem twoChartValuation_contains_constants (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [Algebra k L] [IsScalarTower k (RatFunc k) L]\n    [FiniteDimensional (RatFunc k) L] [Algebra.IsSeparable (RatFunc k) L]\n    (p : FunctionFieldPlaces.TwoChartPlace k L) (c : k) :\n    algebraMap k L c ∈ FunctionFieldPlaces.twoChartValuation k L p := by\n  cases p with\n  | inl p =>\n    have h := p.valuation_le_one (K := L)\n      (algebraMap k (FunctionFieldPlaces.FiniteRing k L) c)\n    change p.valuation L ((algebraMap (RatFunc k) L) (algebraMap k (RatFunc k) c)) ≤ 1 at h\n    rw [← IsScalarTower.algebraMap_apply] at h\n    exact h\n  | inr q =>\n    have h := q.valuation_le_one (K := L)\n      (algebraMap k (FunctionFieldPlaces.InfinityRing k L) c)\n    change q.valuation L ((algebraMap (RatFunc k) L) (algebraMap k (RatFunc k) c)) ≤ 1 at h\n    rw [← IsScalarTower.algebraMap_apply] at h\n    exact h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "functionField_valuation_unique_twoChart_place": {
+      "path": "Negativity/FunctionFieldValuationPlaces.lean",
+      "line": 139,
+      "code": "theorem functionField_valuation_unique_twoChart_place (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [Algebra k L] [IsScalarTower k (RatFunc k) L]\n    [FiniteDimensional (RatFunc k) L] [Algebra.IsSeparable (RatFunc k) L]\n    (A : ValuationSubring L) (hA : A ≠ ⊤)\n    (hk : ∀ c : k, algebraMap k L c ∈ A) :\n    ∃! p : FunctionFieldPlaces.TwoChartPlace k L,\n      FunctionFieldPlaces.twoChartValuation k L p = A := by\n  have hex : ∃ p : FunctionFieldPlaces.TwoChartPlace k L,\n      FunctionFieldPlaces.twoChartValuation k L p = A := by\n    rcases functionField_valuation_integralClosure_chart_cover k L A hk with hfin | hinf\n    · obtain ⟨p, hp, _⟩ := dedekind_chart_valuation_unique_prime\n        (FunctionFieldPlaces.FiniteRing k L) L A hA hfin\n      exact ⟨.inl p, hp⟩\n    · obtain ⟨q, hq, _⟩ := dedekind_chart_valuation_unique_prime\n        (FunctionFieldPlaces.InfinityRing k L) L A hA hinf\n      exact ⟨.inr q, hq⟩\n  obtain ⟨p, hp⟩ := hex\n  exact ⟨p, hp, fun q hq ↦ twoChartValuation_injective k L (hq.trans hp.symm)⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_heightOneOrder_regular": {
+      "path": "Negativity/DvrAdicOrders.lean",
+      "line": 14,
+      "code": "theorem dvr_heightOneOrder_regular (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (r : R) (hr : r ≠ 0) :\n    heightOneOrder K (IsDiscreteValuationRing.maximalIdeal R)\n      (Units.mk0 (algebraMap R K r)\n        (by simpa only [map_zero] using (IsFractionRing.injective R K).ne hr)) =\n      ((addVal R r).toNat : ℤ) := by\n  obtain ⟨π, hπ⟩ := exists_irreducible R\n  obtain ⟨n, u, he⟩ := eq_unit_mul_pow_irreducible hr hπ\n  rw [heightOneOrder_regular_eq_multiplicity R K _ r hr,\n    addVal_def r u hπ n he, ENat.toNat_natCast]\n  have hi : Ideal.span {r} = (IsLocalRing.maximalIdeal R) ^ n := by\n    rw [he, Ideal.span_singleton_mul_left_unit u.isUnit,\n      ← Ideal.span_singleton_pow, ← hπ.maximalIdeal_eq]\n  rw [hi]\n  exact congrArg (fun t : ℕ ↦ (t : ℤ))\n    (multiplicity_pow_self_of_prime\n      (IsDiscreteValuationRing.maximalIdeal R).irreducible.prime n)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_heightOneOrder_eq_rationalOrder": {
+      "path": "Negativity/DvrAdicOrders.lean",
+      "line": 35,
+      "code": "theorem dvr_heightOneOrder_eq_rationalOrder (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) :\n    heightOneOrder K (IsDiscreteValuationRing.maximalIdeal R) a =\n      DvrRationalOrder R K a := by\n  obtain ⟨⟨r, s⟩, he⟩ := IsLocalization.surj (nonZeroDivisors R) (a : K)\n  have hs : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hsk : algebraMap R K (s : R) ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hs\n  have hr : r ≠ 0 := by\n    intro hz\n    exact mul_ne_zero a.ne_zero hsk (by simpa only [hz, map_zero] using he)\n  have hrk : algebraMap R K r ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hr\n  have ha : (a : K) = algebraMap R K r / algebraMap R K (s : R) :=\n    (eq_div_iff hsk).mpr he\n  let p := IsDiscreteValuationRing.maximalIdeal R\n  have hvr : p.valuation K (algebraMap R K r) ≠ 0 :=\n    (Valuation.ne_zero_iff _).mpr hrk\n  have hvs : p.valuation K (algebraMap R K (s : R)) ≠ 0 :=\n    (Valuation.ne_zero_iff _).mpr hsk\n  have hro := dvr_heightOneOrder_regular R K r hr\n  have hso := dvr_heightOneOrder_regular R K (s : R) hs\n  rw [dvr_rationalOrder_represents R K a r s hr hs he]\n  unfold heightOneOrder at hro hso ⊢\n  rw [ha, map_div₀, WithZero.log_div hvr hvs]\n  change _ = ((addVal R r).toNat : ℤ) - ((addVal R (s : R)).toNat : ℤ)\n  change -WithZero.log (p.valuation K (algebraMap R K r)) = _ at hro\n  change -WithZero.log (p.valuation K (algebraMap R K (s : R))) = _ at hso\n  omega",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dedekind_prime_order_eq_valuationRing_order": {
+      "path": "Negativity/DvrAdicOrders.lean",
+      "line": 70,
+      "code": "theorem dedekind_prime_order_eq_valuationRing_order\n    (R K : Type*) [CommRing R] [IsDedekindDomain R] [Field K]\n    [Algebra R K] [IsFractionRing R K] (p : HeightOneSpectrum R) (a : Kˣ) :\n    heightOneOrder K p a = DvrRationalOrder (p.valuation K).valuationSubring K a := by\n  obtain ⟨π, hπ⟩ := p.valuation_exists_uniformizer K\n  have hv := normalized_discrete_valuation_eq K (p.valuation K) π hπ\n  rw [← dvr_heightOneOrder_eq_rationalOrder]\n  unfold heightOneOrder\n  rw [hv]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_twoChart_center_exists": {
+      "path": "Negativity/CurveChartPlaces.lean",
+      "line": 28,
+      "code": "theorem curve_twoChart_center_exists\n    (p : FunctionFieldPlaces.TwoChartPlace k C.functionField) :\n    ∃ x : {x : C // Order.coheight x = 1},\n      normalCurvePointValuation C hn x x.2 =\n        FunctionFieldPlaces.twoChartValuation k C.functionField p := by\n  have hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈\n      FunctionFieldPlaces.twoChartValuation k C.functionField p := by\n    intro c\n    rw [← hbase]\n    exact twoChartValuation_contains_constants k C.functionField p c\n  obtain ⟨x, hx, _, he⟩ := proper_normal_curve_valuation_has_closed_point C hn hd k b\n    (FunctionFieldPlaces.twoChartValuation k C.functionField p)\n    (twoChartValuation_ne_top k C.functionField p) hk\n  exact ⟨⟨x, hx⟩, he⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curveTwoChartCenter_valuation": {
+      "path": "Negativity/CurveChartPlaces.lean",
+      "line": 48,
+      "code": "theorem curveTwoChartCenter_valuation\n    (p : FunctionFieldPlaces.TwoChartPlace k C.functionField) :\n    normalCurvePointValuation C hn (curveTwoChartCenter C hn hd k b hbase p)\n      (curveTwoChartCenter C hn hd k b hbase p).2 =\n      FunctionFieldPlaces.twoChartValuation k C.functionField p :=\n  Classical.choose_spec (curve_twoChart_center_exists C hn hd k b hbase p)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_twoChart_centers_bijective": {
+      "path": "Negativity/CurveChartPlaces.lean",
+      "line": 60,
+      "code": "theorem proper_normal_curve_twoChart_centers_bijective :\n    Function.Bijective (curveTwoChartCenter C hn hd k b hbase) := by\n  refine ⟨?_, ?_⟩\n  · intro p q he\n    apply twoChartValuation_injective k C.functionField\n    rw [← curveTwoChartCenter_valuation C hn hd k b hbase p,\n      ← curveTwoChartCenter_valuation C hn hd k b hbase q, he]\n  · intro x\n    have hk : ∀ c : k, algebraMap k C.functionField c ∈\n        normalCurvePointValuation C hn x x.2 := by\n      intro c\n      rw [hbase]\n      exact normalCurvePointValuation_contains_constants C hn x x.2 k b c\n    obtain ⟨p, hp, _⟩ := functionField_valuation_unique_twoChart_place k C.functionField\n      (normalCurvePointValuation C hn x x.2)\n      (normalCurvePointValuation_ne_top C hn x x.2) hk\n    refine ⟨p, Subtype.ext ?_⟩\n    apply normalCurvePointValuation_injective C hn k b\n      (curveTwoChartCenter C hn hd k b hbase p) x\n      (curveTwoChartCenter C hn hd k b hbase p).2 x.2\n    exact (curveTwoChartCenter_valuation C hn hd k b hbase p).trans hp\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dedekind_prime_actual_curve_order": {
+      "path": "Negativity/CurvePrincipalDegree.lean",
+      "line": 16,
+      "code": "theorem dedekind_prime_actual_curve_order\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (R : Type*) [CommRing R] [IsDedekindDomain R]\n    [Algebra R C.functionField] [IsFractionRing R C.functionField]\n    (p : HeightOneSpectrum R) (x : C) (hx : Order.coheight x = 1)\n    (hp : normalCurvePointValuation C hn x hx = (p.valuation C.functionField).valuationSubring)\n    (a : C.functionFieldˣ) :\n    heightOneOrder C.functionField p a = schemeRationalOrder C hn x hx a := by\n  have hlift := normalCurvePointValuation_lift C hn x hx\n  rw [hp] at hlift\n  obtain ⟨l, hl, hcx⟩ := hlift\n  have hxl : Order.coheight (l (IsLocalRing.closedPoint\n      (p.valuation C.functionField).valuationSubring)) = 1 := hcx.symm ▸ hx\n  rw [dedekind_prime_order_eq_valuationRing_order]\n  simpa only [hcx] using normal_curve_valuation_center_order C hn\n    (p.valuation C.functionField).valuationSubring l hl hxl a\n\nvariable (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b]\n    [Algebra (RatFunc k) C.functionField] [Algebra k C.functionField]\n    [IsScalarTower k (RatFunc k) C.functionField]\n    [FiniteDimensional (RatFunc k) C.functionField]\n    [Algebra.IsSeparable (RatFunc k) C.functionField]\n    (hbase : algebraMap k C.functionField = curveFunctionFieldBaseMap C k b)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChartPrincipalDivisor_actual_order": {
+      "path": "Negativity/CurvePrincipalDegree.lean",
+      "line": 54,
+      "code": "theorem twoChartPrincipalDivisor_actual_order\n    (a : C.functionFieldˣ) (p : FunctionFieldPlaces.TwoChartPlace k C.functionField) :\n    twoChartPrincipalDivisor C k a p =\n      schemeRationalOrder C hn (curveTwoChartCenter C hn hd k b hbase p)\n        (curveTwoChartCenter C hn hd k b hbase p).2 a := by\n  cases p with\n  | inl p =>\n    exact dedekind_prime_actual_curve_order C hn _ p _ _\n      (curveTwoChartCenter_valuation C hn hd k b hbase (.inl p)) a\n  | inr q =>\n    exact dedekind_prime_actual_curve_order C hn _ q _ _\n      (curveTwoChartCenter_valuation C hn hd k b hbase (.inr q)) a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curvePrincipalDivisor_coefficient": {
+      "path": "Negativity/CurvePrincipalDegree.lean",
+      "line": 73,
+      "code": "theorem curvePrincipalDivisor_coefficient (a : C.functionFieldˣ)\n    (x : {x : C // Order.coheight x = 1}) :\n    curvePrincipalDivisor C hn hd k b hbase a x = schemeRationalOrder C hn x x.2 a := by\n  obtain ⟨p, rfl⟩ := (proper_normal_curve_twoChart_centers_bijective C hn hd k b hbase).2 x\n  rw [curvePrincipalDivisor, Finsupp.mapDomain_apply_of_injective\n    (proper_normal_curve_twoChart_centers_bijective C hn hd k b hbase).1]\n  exact twoChartPrincipalDivisor_actual_order C hn hd k b hbase a p",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_principal_degree_zero": {
+      "path": "Negativity/CurvePrincipalDegree.lean",
+      "line": 87,
+      "code": "theorem proper_normal_curve_principal_degree_zero [IsAlgClosed k]\n    (a : C.functionFieldˣ) :\n    (∀ x : {x : C // Order.coheight x = 1},\n      curvePrincipalDivisor C hn hd k b hbase a x = schemeRationalOrder C hn x x.2 a) ∧\n    (curvePrincipalDivisor C hn hd k b hbase a).degree = 0 := by\n  refine ⟨curvePrincipalDivisor_coefficient C hn hd k b hbase a, ?_⟩\n  rw [curvePrincipalDivisor, Finsupp.degree_mapDomain, twoChartPrincipalDivisor,\n    Finsupp.sumElim_eq_add, map_add, Finsupp.degree_mapDomain, Finsupp.degree_mapDomain]\n  exact functionField_principal_order_sum_zero k C.functionField a\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curvePrincipalDivisor_allPoints_coefficient": {
+      "path": "Negativity/CartierPrincipalDegree.lean",
+      "line": 28,
+      "code": "theorem curvePrincipalDivisor_allPoints_coefficient (a : C.functionFieldˣ) (x : C) :\n    ((curvePrincipalDivisor C hn hd k b hbase a).mapDomain Subtype.val) x =\n      if hx : Order.coheight x = 1 then schemeRationalOrder C hn x hx a else 0 := by\n  classical\n  by_cases hx : Order.coheight x = 1\n  · rw [dite_eq_left hx]\n    change ((curvePrincipalDivisor C hn hd k b hbase a).mapDomain Subtype.val)\n      ((⟨x, hx⟩ : {x : C // Order.coheight x = 1}) : C) = _\n    rw [Finsupp.mapDomain_apply_of_injective Subtype.val_injective]\n    exact curvePrincipalDivisor_coefficient C hn hd k b hbase a ⟨x, hx⟩\n  · rw [dite_eq_right hx]\n    apply Finsupp.mapDomain_of_notMem_range\n    rintro ⟨y, rfl⟩\n    exact hx y.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierOrderDivisor_rationalTwist": {
+      "path": "Negativity/CartierPrincipalDegree.lean",
+      "line": 45,
+      "code": "theorem cartierOrderDivisor_rationalTwist {ι : Type*} (A : CartierAtlas C ι)\n    (a : C.functionFieldˣ) :\n    cartierOrderDivisor C hn (A.rationalTwist a) =\n      cartierOrderDivisor C hn A +\n        (curvePrincipalDivisor C hn hd k b hbase a).mapDomain Subtype.val := by\n  classical\n  ext x\n  rw [Finsupp.add_apply, cartierOrderDivisor_apply, cartierOrderDivisor_apply,\n    curvePrincipalDivisor_allPoints_coefficient C hn hd k b hbase a x]\n  by_cases hx : Order.coheight x = 1\n  · simp only [CartierAtlas.coefficient, dite_eq_left hx, CartierAtlas.rationalTwist]\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR C x hx\n    unfold schemeRationalOrder\n    rw [dvr_rationalOrder_mul]\n    dsimp only\n    exact add_comm _ _\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierTotalOrder_rationalTwist": {
+      "path": "Negativity/CartierPrincipalDegree.lean",
+      "line": 70,
+      "code": "theorem cartierTotalOrder_rationalTwist [IsAlgClosed k] {ι : Type*}\n    (A : CartierAtlas C ι) (a : C.functionFieldˣ) :\n    cartierTotalOrder C hn (A.rationalTwist a) = cartierTotalOrder C hn A := by\n  have hz := (proper_normal_curve_principal_degree_zero C hn hd k b hbase a).2\n  have he := cartierOrderDivisor_rationalTwist C hn hd k b hbase A a\n  change (cartierOrderDivisor C hn (A.rationalTwist a)).degree =\n    (cartierOrderDivisor C hn A).degree\n  rw [he, map_add, Finsupp.degree_mapDomain, hz, add_zero]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "rational_infinity_approximate_constant": {
       "path": "Negativity/RationalInfinityResidue.lean",
       "line": 17,

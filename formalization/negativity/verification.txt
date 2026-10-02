@@ -1,7 +1,7 @@
-Verified 2026-10-02T18:45:06+08:00
+Verified 2026-10-02T19:53:29+08:00
 
 $ lake build
-⚠ [3890/3907] Replayed Negativity.NormalExtension
+⚠ [3888/3914] Replayed Negativity.NormalExtension
 warning: Negativity/NormalExtension.lean:128:2: Try this:
   haveI̵
 
@@ -26,7 +26,7 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [3891/3907] Replayed Negativity.CartierEffectivity
+⚠ [3889/3914] Replayed Negativity.CartierEffectivity
 warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
 
 Hint: Use `simp` instead of `simpa`:
@@ -42,14 +42,16 @@ Note: This linter can be disabled with `set_option linter.unusedVariables false`
 warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
 
 Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
-⚠ [3892/3907] Replayed Negativity.CartierVanishing
+⚠ [3890/3914] Replayed Negativity.CartierVanishing
 warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _hU
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (3907 jobs).
+✔ [3912/3914] Built Negativity.CartierPrincipalDegree (17s)
+✔ [3913/3914] Built Negativity (15s)
+Build completed successfully (3914 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -350,3 +352,31 @@ $ lake env lean CheckAxioms.lean
 'Negativity.proper_normal_curve_valuation_order_correspondence' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+'Negativity.valuation_fraction_mem_of_unit_denominator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.valuation_chart_center_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dedekind_chart_valuation_unique_prime' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.valuation_constants_trivial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.integral_element_mem_valuation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.rational_infinity_ring_mem_of_parameter_pole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.functionField_valuation_integralClosure_chart_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.finite_place_parameter_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.infinity_place_parameter_pole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.twoChartValuation_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.twoChartValuation_ne_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.twoChartValuation_contains_constants' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.functionField_valuation_unique_twoChart_place' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dvr_heightOneOrder_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dvr_heightOneOrder_eq_rationalOrder' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dedekind_prime_order_eq_valuationRing_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.curve_twoChart_center_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.curveTwoChartCenter_valuation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proper_normal_curve_twoChart_centers_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dedekind_prime_actual_curve_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.twoChartPrincipalDivisor_actual_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.curvePrincipalDivisor_coefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proper_normal_curve_principal_degree_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.curvePrincipalDivisor_allPoints_coefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierOrderDivisor_rationalTwist' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierTotalOrder_rationalTwist' depends on axioms: [propext, Classical.choice, Quot.sound]

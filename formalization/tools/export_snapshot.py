@@ -4,6 +4,13 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'DedekindValuationPlaces.lean': ['valuation_fraction_mem_of_unit_denominator', 'valuation_chart_center_nonzero', 'dedekind_chart_valuation_unique_prime'],
+    'ValuationChartCover.lean': ['valuation_constants_trivial', 'integral_element_mem_valuation', 'rational_infinity_ring_mem_of_parameter_pole', 'functionField_valuation_integralClosure_chart_cover'],
+    'FunctionFieldValuationPlaces.lean': ['finite_place_parameter_regular', 'infinity_place_parameter_pole', 'twoChartValuation_injective', 'twoChartValuation_ne_top', 'twoChartValuation_contains_constants', 'functionField_valuation_unique_twoChart_place'],
+    'DvrAdicOrders.lean': ['dvr_heightOneOrder_regular', 'dvr_heightOneOrder_eq_rationalOrder', 'dedekind_prime_order_eq_valuationRing_order'],
+    'CurveChartPlaces.lean': ['curve_twoChart_center_exists', 'curveTwoChartCenter_valuation', 'proper_normal_curve_twoChart_centers_bijective'],
+    'CurvePrincipalDegree.lean': ['dedekind_prime_actual_curve_order', 'twoChartPrincipalDivisor_actual_order', 'curvePrincipalDivisor_coefficient', 'proper_normal_curve_principal_degree_zero'],
+    'CartierPrincipalDegree.lean': ['curvePrincipalDivisor_allPoints_coefficient', 'cartierOrderDivisor_rationalTwist', 'cartierTotalOrder_rationalTwist'],
     'RationalInfinityResidue.lean': ['rational_infinity_approximate_constant', 'rational_infinity_residue_constants_bijective', 'rational_infinity_residue_degree_one', 'rational_infinity_inertia_degree_one', 'infinity_pushforward_degree', 'twoChart_baseField_principal_degree_zero', 'algebraicallyClosed_infinity_point_degree_one', 'affineDivisorDegree_eq_order_sum'],
     'FunctionFieldDegree.lean': ['functionField_principal_degree_baseField_zero', 'functionField_principal_order_sum_zero'],
     'ValuationCenters.lean': ['curveFunctionFieldBaseMap_spec', 'local_valuation_fractionRing_bijective', 'valuation_generic_lift_over_base', 'proper_functionField_valuation_unique_lift', 'valuation_center_stalk_functionField_compat', 'valuation_center_stalk_bijective', 'normal_curve_stalk_isValuation', 'nontrivial_valuation_center_coheight_one', 'curve_coheight_one_isClosed', 'proper_normal_curve_unique_valuation_center_iso'],
@@ -111,9 +118,12 @@ readme = '''Negativity: coefficient core and conditional interfaces
 This snapshot is NOT a complete geometric proof of the negativity lemma.
 New algebraic norm/valuation and actual Cartier restriction/order proofs
 are included. Hartshorne I.6 actual curve-point/valuation bijection and local-order
-transport are proved. Finite/infinity place classification and principal-move
-degree independence, geometric ample positivity, full Chow construction
-and connected-fiber curve existence remain open.
+transport, exhaustive disjoint finite/infinity place classification, actual
+curve principal degree zero, and Cartier principal-move degree independence
+are proved under a compatible finite separable parameter. Constructing that
+parameter from the actual curve, full global pullback degree, normalization,
+point-image zero, real intersection linearity, geometric ample positivity,
+full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 
@@ -125,7 +135,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean, NormDivisor.lean, RationalDivisor.lean, InfinityNorm.lean, FunctionFieldProductFormula.lean, CartierDegree.lean, CartierCurveRestriction.lean, RealCartierCurveDegree.lean, CartierCurveMoving.lean, RationalInfinityResidue.lean, FunctionFieldDegree.lean, ValuationCenters.lean, NormalCurveValuations.lean, ValuationOrderTransport.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean, NormDivisor.lean, RationalDivisor.lean, InfinityNorm.lean, FunctionFieldProductFormula.lean, CartierDegree.lean, CartierCurveRestriction.lean, RealCartierCurveDegree.lean, CartierCurveMoving.lean, RationalInfinityResidue.lean, FunctionFieldDegree.lean, ValuationCenters.lean, NormalCurveValuations.lean, ValuationOrderTransport.lean, DedekindValuationPlaces.lean, ValuationChartCover.lean, FunctionFieldValuationPlaces.lean, DvrAdicOrders.lean, CurveChartPlaces.lean, CurvePrincipalDegree.lean, CartierPrincipalDegree.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

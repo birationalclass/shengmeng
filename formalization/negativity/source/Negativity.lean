@@ -97,3 +97,17 @@ public import Negativity.ValuationCenters
 public import Negativity.NormalCurveValuations
 
 public import Negativity.ValuationOrderTransport
+
+public import Negativity.DedekindValuationPlaces
+
+public import Negativity.ValuationChartCover
+
+public import Negativity.FunctionFieldValuationPlaces
+
+public import Negativity.DvrAdicOrders
+
+public import Negativity.CurveChartPlaces
+
+public import Negativity.CurvePrincipalDegree
+
+public import Negativity.CartierPrincipalDegree
