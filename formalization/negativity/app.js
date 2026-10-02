@@ -1,3 +1,4 @@
+import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
 import {installDependencyCurrent} from './dependency-current.js?v=20261002-continuous-1';
 import {installTheoremTarget} from './theorem-target.js?v=20261002-statusbar-1&proof=20261002-formal-22';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-22';
@@ -51,7 +52,7 @@ const graphHeight=Math.max(...nodes.map(n=>n.y))+140;graph.style.minHeight=graph
 svg.innerHTML='<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7997a3"/></marker></defs>';
 nodes.forEach(n=>n.deps.forEach(id=>{const d=byId.get(id),p=document.createElementNS('http://www.w3.org/2000/svg','path');let x1=d.x+232,y1=d.y+43,x2=n.x,y2=n.y+43;if(d.x===n.x){x1=d.x+116;y1=d.y+87;x2=n.x+116;y2=n.y;}
 const bend=Math.max(40,Math.abs(x2-x1)*.45);p.setAttribute('d',`M${x1},${y1} C${x1+bend},${y1} ${x2-bend},${y2} ${x2},${y2}`);p.setAttribute('marker-end','url(#arrow)');p.classList.add('edge');if(d.status==='assumption')p.classList.add('assumed');p.dataset.from=id;p.dataset.to=n.id;svg.append(p);}));
-function paint(){const scope=document.querySelector('#scope').value,chain=closure(selected);graph.querySelectorAll('.node').forEach(b=>{const n=byId.get(b.dataset.node);b.setAttribute('aria-pressed',String(n.id===selected));const dim=scope==='path'?!chain.has(n.id):scope==='open'?!['assumption','pending'].includes(n.status):!chain.has(n.id);b.classList.toggle('dimmed',dim);b.dataset.relation=relation(n.id);b.querySelector('.relation-tag').textContent=({selected:'当前结论',direct:'直接前提',indirect:'间接前提',other:'非当前依赖'})[relation(n.id)];});svg.querySelectorAll('.edge').forEach(p=>{const on=chain.has(p.dataset.from)&&chain.has(p.dataset.to);p.classList.toggle('active',on);p.style.display=scope==='open'?'none':'';p.style.opacity=scope==='path'&&!on?'0':'';});document.querySelector('#back').disabled=!history.length;document.querySelector('#forward').disabled=!future.length;const picker=document.querySelector('#editorSelect');if(picker)picker.value=selected;if(spatial)spatial.update(selected,scope);if(nodeEditor)nodeEditor.selectionChanged();}
+function paint(){const scope=document.querySelector('#scope').value,chain=closure(selected);graph.querySelectorAll('.node').forEach(b=>{const n=byId.get(b.dataset.node);b.setAttribute('aria-pressed',String(n.id===selected));const dim=scope==='path'?!chain.has(n.id):scope==='open'?!['assumption','pending'].includes(n.status):!chain.has(n.id);b.classList.toggle('dimmed',dim);b.dataset.relation=relation(n.id);b.querySelector('.relation-tag').textContent=({selected:'当前结论',direct:'直接前提',indirect:'间接前提',other:'非当前依赖'})[relation(n.id)];});svg.querySelectorAll('.edge').forEach(p=>{const on=chain.has(p.dataset.from)&&chain.has(p.dataset.to);p.classList.toggle('active',on);p.style.display=scope==='open'?'none':'';p.style.opacity=scope==='path'&&!on?'0':'';});document.querySelector('#back').disabled=!history.length;document.querySelector('#forward').disabled=!future.length;const picker=document.querySelector('#editorSelect');if(picker)picker.value=selected;if(spatial)spatial.update(selected,scope);if(nodeEditor)nodeEditor.selectionChanged();if(atlasDock)atlasDock.refresh(english);}
 function sourcePanel(n){const el=document.querySelector('#sourcePanel');if(!n.decl){el.innerHTML='<p class="notice">此节点尚无完成的 Lean 几何证明。图中的中文论证不能替代形式化验证。</p><a class="button" href="#paper-'+n.paper+'">阅读原始证明 →</a>';return;}
 if(!snapshot){el.innerHTML='<p>正在读取源码快照…</p>';return;}
 const source=snapshot.declarations[n.decl];if(!source){el.innerHTML='<p class="error">缺少对应源码，不能展示验证标记。</p>';return;}
@@ -75,16 +76,18 @@ if(location.hash.startsWith('#node=')){const id=location.hash.slice(6);if(byId.h
 const theoremTarget=installTheoremTarget();
 installWorkspace();
 installSettings();
+let atlasDock;
 const pickerLabel=document.createElement('label');pickerLabel.textContent=english?'Locate node ':'定位节点 ';const editorPicker=document.createElement('select');editorPicker.id='editorSelect';nodes.forEach(n=>{const o=document.createElement('option');o.value=n.id;o.textContent=n.title;editorPicker.append(o);});editorPicker.value=selected;editorPicker.onchange=()=>select(editorPicker.value);pickerLabel.append(editorPicker);document.querySelector('.graph-toolbar').append(pickerLabel);
 nodeEditor=createNodeEditor({viewport:document.querySelector('.graph-scroll'),graph,svg,nodes,select,selected:()=>selected,theoremTarget});
 spatial=createSpatialGraph({host:document.querySelector('#spatialGraph'),nodes,select,relation,theoremTarget});
+atlasDock=installAtlasDock({english});
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const three=b.dataset.view==='3d';localStorage.setItem('formalization-view',b.dataset.view);document.querySelector('#spatialGraph').hidden=!three;document.querySelector('.graph-scroll').hidden=three;document.querySelectorAll('[data-view]').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));if(three)spatial.show();else nodeEditor.show();});
 renderDetail();
 installLanguage({onChange(){
- renderHome();
+ renderHome();atlasDock.refresh(english);
  const translated=translateNodes(rawNodes);nodes.forEach((n,i)=>Object.assign(n,translated[i]));Object.assign(statusLabels,english?englishStatuses:rawLabels);
  for(const picker of [editorPicker,document.querySelector('#spatialSelect')])for(const option of picker.options)option.textContent=byId.get(option.value).title;
- pickerLabel.firstChild.nodeValue=english?'Locate node ':'定位节点 ';
+ pickerLabel.firstChild.nodeValue=english?'Locate node ':'定位节点 ';atlasDock.refresh(english);
  for(const n of nodes)graph.querySelector(`[data-node="${n.id}"]`).setAttribute('aria-label',n.title+' · '+statusLabels[n.status]);
  for(const status of ['done','conditional','assumption']){const pill=document.querySelector('.atlas-statusbar .legend .pill.'+status);pill.setAttribute('aria-label',statusLabels[status]+' · '+nodes.filter(n=>n.status===status).length+(english?' graph nodes':' 个图谱节点'));pill.title=english?'All graph nodes in this status, independent of the current filter':'此状态的全图节点数量，与当前筛选无关';}
  document.querySelector('.legend-total').textContent=english?'Full graph · '+nodes.length+' nodes':'全图 · '+nodes.length+' 节点';
