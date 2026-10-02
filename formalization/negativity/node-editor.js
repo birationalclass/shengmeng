@@ -16,7 +16,7 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   railToggle.type='button';railToggle.className='input-rail-toggle';
   const railHeader=document.createElement('div');railHeader.className='base-input-controls';
   Object.assign(railHeader.style,{position:'absolute',zIndex:'100',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'8px',boxSizing:'border-box',padding:'6px 8px',borderRadius:'10px',background:'#edf4fad9',color:'#566f7b'});
-  railHeader.append(railLabel,railToggle);viewport.append(railHeader);graph.append(inputRail);
+  railHeader.append(railLabel,railToggle);inputRail.append(railHeader);graph.append(inputRail);
   railToggle.onclick=()=>{stopMotion();const id=selected(),prior=layout.get(id),anchor=prior?{x:prior.x*zoom+x,y:prior.y*zoom+y}:null;expandedInputs=!expandedInputs;buildLayout();updateLinks();const next=layout.get(id);if(anchor&&next){x=anchor.x-next.x*zoom;y=anchor.y-next.y*zoom;}paint();};
   const ns='http://www.w3.org/2000/svg',wires=document.createElementNS(ns,'g'),links=[];
   const metalDefs=document.createElementNS(ns,'defs');
@@ -36,11 +36,13 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
       inputRail.style.left=((65-18*factor)*zoom+x)+'px';inputRail.style.top=((top-42*factor)*zoom+y)+'px';
       inputRail.style.width=336*factor*zoom+'px';inputRail.style.height=(bottom-top+60*factor)*zoom+'px';
       inputRail.style.fontSize=12*factor*zoom+'px';inputRail.style.padding=10*factor*zoom+'px';
-      const headerW=Math.min(Math.max(220,316*factor*zoom),viewport.clientWidth-16);
-      railHeader.style.width=headerW+'px';railHeader.style.fontSize=Math.max(11,12*factor*zoom)+'px';
-      const headerTop=top*zoom+y-Math.max(34,32*factor*zoom);
-      railHeader.style.left=(headerTop<8?viewport.clientWidth-headerW-8:Math.max(8,Math.min(viewport.clientWidth-headerW-8,(65-8*factor)*zoom+x)))+'px';
-      railHeader.style.top=Math.max(8,Math.min(viewport.clientHeight-90,headerTop))+'px';
+      // The controls belong to the group frame and share its camera geometry.
+      const unit=factor*zoom;
+      railHeader.style.left=10*unit+'px';railHeader.style.top=10*unit+'px';
+      railHeader.style.width=316*unit+'px';railHeader.style.fontSize=12*unit+'px';
+      railHeader.style.padding=6*unit+'px '+8*unit+'px';
+      railHeader.style.gap=8*unit+'px';railHeader.style.borderRadius=10*unit+'px';
+      inputRail.style.borderRadius=18*unit+'px';
       railLabel.textContent=t('基础输入')+' · '+roots.length;
       railToggle.hidden=roots.length<=1;railToggle.textContent=t(expandedInputs?'折叠纸牌':'展开纸牌');railToggle.setAttribute('aria-expanded',String(expandedInputs));
     }

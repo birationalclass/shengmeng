@@ -3,7 +3,7 @@ import {installTheoremTarget} from './theorem-target.js?v=20261002-statusbar-1&p
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-20';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-20';
 import {installSettings} from './settings.js?v=20261002-statusbar-1&proof=20261002-formal-20';
-import {createNodeEditor} from './node-editor.js?v=20261002-statusbar-1&proof=20261002-formal-20';
+import {createNodeEditor} from './node-editor.js?v=20261002-bound-rail-1&proof=20261002-formal-20';
 import {installWorkspace} from './workspace.js?v=20261002-statusbar-1&proof=20261002-formal-20';
 import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-refuge-1&proof=20261002-formal-20';
 import {createSpatialGraph} from './graph-3d.js?v=20261002-statusbar-1&proof=20261002-formal-20';
