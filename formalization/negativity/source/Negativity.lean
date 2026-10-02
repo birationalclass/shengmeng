@@ -121,3 +121,23 @@ public import Negativity.CurveFunctionField
 public import Negativity.CurveProductFormula
 
 public import Negativity.CartierDegreeInvariance
+
+public import Negativity.AffineCurveOrders
+
+public import Negativity.FiniteCurveOrders
+
+public import Negativity.CurveFiberPrimes
+
+public import Negativity.CurveClosedResidue
+
+public import Negativity.CurveFiberDegree
+
+public import Negativity.FiniteCurvePoints
+
+public import Negativity.CurveCartierFiber
+
+public import Negativity.CurveCartierDegree
+
+public import Negativity.ProperCurveFinite
+
+public import Negativity.ProperCurveCartierDegree

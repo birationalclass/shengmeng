@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T21:10:52+08:00",
+  "checkedAt": "2026-10-02T23:22:54+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "81d08acd53c9fb0728f2a4c4138441c1957e0ac0c1b9d5c23d93f3f2727725e0"
+      "sha256": "2efd4c513ec49a10e6357c3d1d49bf6cd976229ee8c0dbe70e6588afa49a437a"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "caaddbad6fc729d0a7d40839b359e66bd6681a956e7b17ee0297db704f9dbcce"
+      "sha256": "1c255d3dcbbc90aecb959cb7826ac1cdb2cfa216edf77ea888f8865c4050a717"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,46 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/AffineCurveOrders.lean",
+      "sha256": "d170e9a16fd868b5546f2600ea2cf575b3722f35b7df3520a15866fcd1d580e9"
+    },
+    {
+      "path": "Negativity/FiniteCurveOrders.lean",
+      "sha256": "0bdd696345ed689be151d5ded16a356c5a429a4310e92d79ece41af49f5ef7d3"
+    },
+    {
+      "path": "Negativity/CurveFiberPrimes.lean",
+      "sha256": "94f012c1241f0747c7b80431814eb186c14b8a2445efe9b36ad564791aa62115"
+    },
+    {
+      "path": "Negativity/CurveClosedResidue.lean",
+      "sha256": "2c30a54dde3d208415032342b6d3ae629ccc70663aea874d0b3d280adf103193"
+    },
+    {
+      "path": "Negativity/CurveFiberDegree.lean",
+      "sha256": "55fe23c3931cbf93552457ed1fbf6e6d61b14713bbd267b596f9242c351eb8f3"
+    },
+    {
+      "path": "Negativity/FiniteCurvePoints.lean",
+      "sha256": "1eb932f778bc58a99b5b5ff3071f3d5698383173ad034b66670430ea46f493a5"
+    },
+    {
+      "path": "Negativity/CurveCartierFiber.lean",
+      "sha256": "b066bf5bf26d180ad43a93e30af24d986e0d714e717ddb1934c4e13b52f566c7"
+    },
+    {
+      "path": "Negativity/CurveCartierDegree.lean",
+      "sha256": "302847308acf09c89eba6cc145f966ec6e58ca0d0ea90f3c72b0ddb26f098210"
+    },
+    {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "sha256": "38e47149e27a726f1e0b94ed72cc6a04c61d33a6a1b87c1dee77613cda6ad17b"
+    },
+    {
+      "path": "Negativity/ProperCurveCartierDegree.lean",
+      "sha256": "2b814ca925fa27e564e027ac8a8abe55332f879a5b20c49f03a0ce7e5ad4832f"
     },
     {
       "path": "Negativity/SeparatingParameter.lean",
@@ -286,6 +326,296 @@
     }
   ],
   "declarations": {
+    "normal_curve_affine_dedekind": {
+      "path": "Negativity/AffineCurveOrders.lean",
+      "line": 16,
+      "code": "theorem normal_curve_affine_dedekind (C : Scheme.{u}) [IsIntegral C]\n    [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (U : C.Opens) (hU : IsAffineOpen U) [Nonempty U] :\n    IsDedekindDomain Γ(C, U) := by\n  have : IsNoetherianRing Γ(C, U) := IsLocallyNoetherian.component_noetherian ⟨U, hU⟩\n  have : IsIntegrallyClosed Γ(C, U) := normal_affine_sections C hn U hU\n  have : Ring.KrullDimLE 1 Γ(C, U) := curve_affine_chart_dimension C hd U hU\n  have : Ring.DimensionLEOne Γ(C, U) := ⟨fun hp hprime => hprime.isMaximal_of_ne_bot hp⟩\n  exact { (inferInstance : IsDomain Γ(C, U)),\n    (inferInstance : IsNoetherianRing Γ(C, U)),\n    (inferInstance : Ring.DimensionLEOne Γ(C, U)),\n    (inferInstance : IsIntegrallyClosed Γ(C, U)) with }",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_affine_prime_coheight": {
+      "path": "Negativity/AffineCurveOrders.lean",
+      "line": 30,
+      "code": "theorem curve_affine_prime_coheight (C : Scheme.{u}) [IsIntegral C]\n    (U : C.Opens) (hU : IsAffineOpen U) [IsDedekindDomain Γ(C, U)]\n    (p : HeightOneSpectrum Γ(C, U)) :\n    Order.coheight (hU.fromSpec ⟨p.asIdeal, inferInstance⟩) = 1 := by\n  rw [coheight_eq_of_isOpenImmersion, ← idealHeight_eq_coheight]\n  apply le_antisymm\n  · have hle := Ideal.height_le_ringKrullDim_of_ne_top p.isPrime.ne_top\n    exact WithBot.coe_le_coe.mp (hle.trans (Ring.krullDimLE_iff.mp inferInstance))\n  · exact Order.one_le_iff_ne_zero.mpr (Ideal.height_eq_zero_iff_eq_bot.not.mpr p.ne_bot)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_curve_affine_prime_order": {
+      "path": "Negativity/AffineCurveOrders.lean",
+      "line": 46,
+      "code": "theorem normal_curve_affine_prime_order\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (U : C.Opens) (hU : IsAffineOpen U) [Nonempty U]\n    [IsDedekindDomain Γ(C, U)]\n    (p : HeightOneSpectrum Γ(C, U)) (a : C.functionFieldˣ) :\n    letI := functionField_isFractionRing_of_isAffineOpen C U hU\n    heightOneOrder C.functionField p a =\n      schemeRationalOrder C hn (hU.fromSpec ⟨p.asIdeal, inferInstance⟩)\n        (curve_affine_prime_coheight C U hU p) a := by\n  have := functionField_isFractionRing_of_isAffineOpen C U hU\n  let x := hU.fromSpec ⟨p.asIdeal, inferInstance⟩\n  have hxU : x ∈ U := (hU.isoSpec.inv ⟨p.asIdeal, inferInstance⟩).2\n  let T := C.presheaf.stalk x\n  let V := p.valuationSubringAtPrime C.functionField\n  let : Algebra Γ(C, U) T := C.presheaf.algebra_section_stalk ⟨x, hxU⟩\n  have : IsLocalization.AtPrime T p.asIdeal := hU.isLocalization_stalk' _ hxU\n  have : IsScalarTower Γ(C, U) T C.functionField :=\n    functionField_isScalarTower C U ⟨x, hxU⟩\n  have := hn x\n  have hx : Order.coheight x = 1 := curve_affine_prime_coheight C U hU p\n  have : IsDiscreteValuationRing T := normal_codimensionOne_stalk_isDVR C x hx\n  have hV : V = (p.valuation C.functionField).valuationSubring :=\n    p.valuationSubringAtPrime_eq_valuationSubring\n  have : IsDiscreteValuationRing V := by rw [hV]; infer_instance\n  let e : T ≃ₐ[Γ(C, U)] V := IsLocalization.algEquiv p.asIdeal.primeCompl T V\n  have he : (algebraMap V C.functionField).comp e.toRingHom =\n      algebraMap T C.functionField := by\n    apply IsLocalization.ringHom_ext p.asIdeal.primeCompl\n    ext r\n    change algebraMap V C.functionField (e (algebraMap Γ(C, U) T r)) =\n      algebraMap T C.functionField (algebraMap Γ(C, U) T r)\n    rw [e.commutes, ← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply]\n  have ho := dvr_rationalOrder_commonField_ringEquiv e.toRingEquiv he a\n  change heightOneOrder C.functionField p a = DvrRationalOrder T C.functionField a\n  rw [← ho]\n  have hv := dedekind_prime_order_eq_valuationRing_order Γ(C, U) C.functionField p a\n  let e' : V ≃+* (p.valuation C.functionField).valuationSubring :=\n    RingEquiv.ofBijective (ValuationSubring.inclusion V (p.valuation C.functionField).valuationSubring hV.le) ⟨\n      fun v w h => Subtype.ext (congrArg\n        (fun z : (p.valuation C.functionField).valuationSubring => (z : C.functionField)) h),\n      fun w => ⟨⟨w, hV.symm ▸ w.2⟩, rfl⟩⟩\n  exact hv.trans (dvr_rationalOrder_commonField_ringEquiv e' rfl a)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_curve_chart_generic_tower": {
+      "path": "Negativity/FiniteCurveOrders.lean",
+      "line": 20,
+      "code": "theorem finite_curve_chart_generic_tower :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    letI : Algebra Γ(Y, U) X.functionField :=\n      ((X.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n    IsScalarTower Γ(Y, U) Y.functionField X.functionField := by\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  let : Algebra Γ(Y, U) X.functionField :=\n    ((X.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n  apply IsScalarTower.of_algebraMap_eq\n  intro r\n  exact (dominantFunctionFieldMap_germ f U r).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_curve_chart_torsionFree": {
+      "path": "Negativity/FiniteCurveOrders.lean",
+      "line": 32,
+      "code": "theorem dominant_curve_chart_torsionFree :\n    Module.IsTorsionFree Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := by\n  apply Module.isTorsionFree_iff_algebraMap_injective.mpr\n  intro r s hrs\n  apply Y.germToFunctionField_injective U\n  apply (dominantFunctionFieldMap f).injective\n  rw [dominantFunctionFieldMap_germ f U, dominantFunctionFieldMap_germ f U]\n  exact congrArg (X.germToFunctionField (f ⁻¹ᵁ U)) hrs",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_fiber_order_degree": {
+      "path": "Negativity/FiniteCurveOrders.lean",
+      "line": 48,
+      "code": "theorem finite_normal_curve_fiber_order_degree\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsFinite f]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X ≤ 1) (hdY : Order.krullDim Y ≤ 1)\n    (hU : IsAffineOpen U) :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    letI : Algebra Γ(Y, U) X.functionField :=\n      ((X.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n    letI := normal_curve_affine_dedekind Y hnY hdY U hU\n    letI := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n    letI := dominant_curve_chart_torsionFree f U\n    letI : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n    ∀ (p : HeightOneSpectrum Γ(Y, U)) (a : Y.functionFieldˣ),\n      letI : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) :=\n        Fintype.ofFinite (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U))\n      ∑ q : p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U),\n        schemeRationalOrder X hnX ((hU.preimage f).fromSpec\n          ⟨q.1, inferInstance⟩)\n          (curve_affine_prime_coheight X (f ⁻¹ᵁ U) (hU.preimage f)\n            (heightOnePrimeAbove p q))\n          (Units.map (dominantFunctionFieldMap f).toMonoidHom a) * (q.1.inertiaDeg Γ(Y, U) : ℤ) =\n        schemeRationalOrder Y hnY (hU.fromSpec ⟨p.asIdeal, inferInstance⟩)\n          (curve_affine_prime_coheight Y U hU p) a *\n          (Module.finrank Y.functionField X.functionField : ℤ) := by\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  let : Algebra Γ(Y, U) X.functionField :=\n    ((X.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n  have : IsScalarTower Γ(Y, U) Γ(X, f ⁻¹ᵁ U) X.functionField :=\n    IsScalarTower.of_algebraMap_eq fun _ => rfl\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n  have := finite_curve_chart_generic_tower f U\n  have := functionField_isFractionRing_of_isAffineOpen Y U hU\n  have := functionField_isFractionRing_of_isAffineOpen X (f ⁻¹ᵁ U) (hU.preimage f)\n  have : Module.Flat Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := inferInstance\n  intro p a\n  let : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) := Fintype.ofFinite _\n  have he := finite_flat_order_fiber_degree (R := Γ(Y, U)) (S := Γ(X, f ⁻¹ᵁ U))\n    (K := Y.functionField) X.functionField p a\n  simp only [normal_curve_affine_prime_order X hnX (f ⁻¹ᵁ U) (hU.preimage f),\n    normal_curve_affine_prime_order Y hnY U hU, heightOnePrimeAbove,\n    RingHom.algebraMap_toAlgebra] at he\n  convert he using 1\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_chart_point_mem": {
+      "path": "Negativity/CurveFiberPrimes.lean",
+      "line": 19,
+      "code": "theorem curve_chart_point_mem (p : PrimeSpectrum Γ(Y, U)) : hU.fromSpec p ∈ U := by\n  exact (hU.isoSpec.inv p).2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_primeOver_maps_to_fiber": {
+      "path": "Negativity/CurveFiberPrimes.lean",
+      "line": 23,
+      "code": "theorem curve_primeOver_maps_to_fiber (p : PrimeSpectrum Γ(Y, U))\n    (q : p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) :\n    f ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩) = hU.fromSpec p := by\n  have hc : (⟨q.1, inferInstance⟩ : PrimeSpectrum Γ(X, f ⁻¹ᵁ U)).comap\n      (f.app U).hom = p := by\n    apply PrimeSpectrum.ext\n    exact (Ideal.over_def q.1 p.asIdeal).symm\n  have hs := congrArg (fun g : Spec Γ(X, f ⁻¹ᵁ U) ⟶ Y => g ⟨q.1, inferInstance⟩)\n    (hU.SpecMap_appLE_fromSpec f (hU.preimage f) le_rfl)\n  rw [← Scheme.Hom.app_eq_appLE] at hs\n  simp only [Scheme.Hom.comp_apply] at hs\n  change hU.fromSpec (Spec.map (f.app U) ⟨q.1, inferInstance⟩) =\n    f ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩) at hs\n  exact hs.symm.trans (congrArg hU.fromSpec hc)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_fiber_point_prime_liesOver": {
+      "path": "Negativity/CurveFiberPrimes.lean",
+      "line": 40,
+      "code": "theorem curve_fiber_point_prime_liesOver (p : PrimeSpectrum Γ(Y, U))\n    (x : X) (hx : f x = hU.fromSpec p) :\n    let hxU : x ∈ f ⁻¹ᵁ U := show f x ∈ U from hx.symm ▸ curve_chart_point_mem U hU p\n    ((hU.preimage f).primeIdealOf ⟨x, hxU⟩).asIdeal.LiesOver p.asIdeal := by\n  have hxU : x ∈ f ⁻¹ᵁ U := show f x ∈ U from hx.symm ▸ curve_chart_point_mem U hU p\n  have hc := IsAffineOpen.comap_primeIdealOf_appLE U hU (f ⁻¹ᵁ U)\n    (hU.preimage f) le_rfl hxU\n  rw [← Scheme.Hom.app_eq_appLE] at hc\n  change ((hU.preimage f).primeIdealOf ⟨x, hxU⟩).comap (f.app U).hom =\n    hU.primeIdealOf ⟨f x, hxU⟩ at hc\n  have hp : hU.primeIdealOf ⟨f x, hxU⟩ = p := by\n    apply hU.fromSpec.isOpenEmbedding.injective\n    rw [hU.fromSpec_primeIdealOf]\n    exact hx\n  have he := congrArg PrimeSpectrum.asIdeal (hc.trans hp)\n  exact ⟨he.symm⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_fiber_primes_actual_bijective": {
+      "path": "Negativity/CurveFiberPrimes.lean",
+      "line": 84,
+      "code": "theorem curve_fiber_primes_actual_bijective (p : PrimeSpectrum Γ(Y, U)) :\n    Function.Bijective (curveFiberPrimeEquiv f U hU p) :=\n  (curveFiberPrimeEquiv f U hU p).bijective\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_chart_base_scalar_tower": {
+      "path": "Negativity/CurveClosedResidue.lean",
+      "line": 21,
+      "code": "theorem curve_chart_base_scalar_tower :\n    letI : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n    letI : Algebra k Γ(X, f ⁻¹ᵁ U) :=\n      (Spec.preimage ((hU.preimage f).fromSpec ≫ f ≫ b)).hom.toAlgebra\n    IsScalarTower k Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := by\n  let : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n  let : Algebra k Γ(X, f ⁻¹ᵁ U) :=\n    (Spec.preimage ((hU.preimage f).fromSpec ≫ f ≫ b)).hom.toAlgebra\n  apply IsScalarTower.of_algebraMap_eq'\n  apply congrArg CommRingCat.Hom.hom\n  apply Spec.map_injective\n  symm\n  change Spec.map (Spec.preimage (hU.fromSpec ≫ b) ≫ f.app U) = _\n  rw [Spec.map_comp, Spec.map_preimage, Spec.map_preimage]\n  have hs := hU.SpecMap_appLE_fromSpec f (hU.preimage f) le_rfl\n  rw [← Scheme.Hom.app_eq_appLE] at hs\n  rw [← Category.assoc, hs, Category.assoc]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_chart_base_finiteType": {
+      "path": "Negativity/CurveClosedResidue.lean",
+      "line": 39,
+      "code": "theorem curve_chart_base_finiteType [LocallyOfFiniteType b] :\n    letI : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n    Algebra.FiniteType k Γ(Y, U) := by\n  let : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n  have hc : (Spec.preimage (hU.fromSpec ≫ b)).hom.FiniteType := by\n    apply (HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)).mp\n    rw [Spec.map_preimage]\n    infer_instance\n  exact hc\n\ninclude hU\nomit [IsAffineHom f] in",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_relative_residueDegree_one": {
+      "path": "Negativity/CurveClosedResidue.lean",
+      "line": 55,
+      "code": "theorem finite_normal_curve_relative_residueDegree_one\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    [IsFinite f] [IsDominant f] [IsAlgClosed k] [LocallyOfFiniteType b]\n    [Nonempty U] [Nonempty (f ⁻¹ᵁ U)]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X ≤ 1) (hdY : Order.krullDim Y ≤ 1) :\n    letI : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n    letI : Algebra k Γ(X, f ⁻¹ᵁ U) :=\n      (Spec.preimage ((hU.preimage f).fromSpec ≫ f ≫ b)).hom.toAlgebra\n    letI := normal_curve_affine_dedekind Y hnY hdY U hU\n    letI := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n    ∀ (p : HeightOneSpectrum Γ(Y, U)) (q : p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)),\n      q.1.inertiaDeg Γ(Y, U) = 1 := by\n  let : Algebra k Γ(Y, U) := (Spec.preimage (hU.fromSpec ≫ b)).hom.toAlgebra\n  let : Algebra k Γ(X, f ⁻¹ᵁ U) :=\n    (Spec.preimage ((hU.preimage f).fromSpec ≫ f ≫ b)).hom.toAlgebra\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have := curve_chart_base_scalar_tower f U hU k b\n  have := curve_chart_base_finiteType U hU k b\n  have : LocallyOfFiniteType (f ≫ b) := inferInstance\n  have := curve_chart_base_finiteType (f ⁻¹ᵁ U) (hU.preimage f) k (f ≫ b)\n  intro p q\n  have he := Ideal.inertiaDeg_tower (R := k) p.asIdeal q.1\n  have hp := closedPoint_residueDegree_one k Γ(Y, U) p\n  have hq := closedPoint_residueDegree_one k Γ(X, f ⁻¹ᵁ U) (heightOnePrimeAbove p q)\n  change q.1.inertiaDeg k = 1 at hq\n  simpa only [hp, hq, one_mul] using he.symm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_unweighted_order_degree": {
+      "path": "Negativity/CurveFiberDegree.lean",
+      "line": 28,
+      "code": "theorem finite_normal_curve_unweighted_order_degree :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    letI := normal_curve_affine_dedekind Y hnY hdY U hU\n    letI := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n    letI := dominant_curve_chart_torsionFree f U\n    letI : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n    ∀ (p : HeightOneSpectrum Γ(Y, U)) (a : Y.functionFieldˣ),\n      letI : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) := Fintype.ofFinite _\n      ∑ q : p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U),\n        schemeRationalOrder X hnX ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩)\n          (curve_affine_prime_coheight X (f ⁻¹ᵁ U) (hU.preimage f)\n            (heightOnePrimeAbove p q))\n          (Units.map (dominantFunctionFieldMap f).toMonoidHom a) =\n        schemeRationalOrder Y hnY (hU.fromSpec ⟨p.asIdeal, inferInstance⟩)\n          (curve_affine_prime_coheight Y U hU p) a *\n          (Module.finrank Y.functionField X.functionField : ℤ) := by\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n  intro p a\n  let : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) := Fintype.ofFinite _\n  have he := finite_normal_curve_fiber_order_degree f U hnX hnY hdX hdY hU p a\n  have hq := finite_normal_curve_relative_residueDegree_one f U hU k b hnX hnY hdX hdY p\n  simpa only [hq, Int.natCast_one, mul_one] using he\n\ninclude k b hU hnX hnY hdX hdY in",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_actual_fiber_order_degree": {
+      "path": "Negativity/CurveFiberDegree.lean",
+      "line": 60,
+      "code": "theorem finite_normal_curve_actual_fiber_order_degree :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    letI := normal_curve_affine_dedekind Y hnY hdY U hU\n    letI := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n    letI := dominant_curve_chart_torsionFree f U\n    letI : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n    ∀ (p : HeightOneSpectrum Γ(Y, U)) (a : Y.functionFieldˣ),\n      letI : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) := Fintype.ofFinite _\n      letI : Fintype {x : X // f x = hU.fromSpec ⟨p.asIdeal, inferInstance⟩} :=\n        Fintype.ofEquiv _ (curveFiberPrimeEquiv f U hU ⟨p.asIdeal, inferInstance⟩)\n      ∑ x : {x : X // f x = hU.fromSpec ⟨p.asIdeal, inferInstance⟩},\n        (if hx : Order.coheight (x : X) = 1 then\n          schemeRationalOrder X hnX x hx (Units.map (dominantFunctionFieldMap f).toMonoidHom a)\n        else 0) =\n        schemeRationalOrder Y hnY (hU.fromSpec ⟨p.asIdeal, inferInstance⟩)\n          (curve_affine_prime_coheight Y U hU p) a *\n          (Module.finrank Y.functionField X.functionField : ℤ) := by\n  classical\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n  intro p a\n  let : Fintype (p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U)) := Fintype.ofFinite _\n  let e := curveFiberPrimeEquiv f U hU ⟨p.asIdeal, inferInstance⟩\n  let : Fintype {x : X // f x = hU.fromSpec ⟨p.asIdeal, inferInstance⟩} := Fintype.ofEquiv _ e\n  rw [← e.sum_comp]\n  have he := finite_normal_curve_unweighted_order_degree f U hU k b hnX hnY hdX hdY p a\n  convert he using 1\n  apply Finset.sum_congr rfl\n  intro q _\n  have hx := curve_affine_prime_coheight X (f ⁻¹ᵁ U) (hU.preimage f) (heightOnePrimeAbove p q)\n  change Order.coheight ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩) = 1 at hx\n  change (if hx : Order.coheight ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩) = 1 then\n    schemeRationalOrder X hnX _ hx _ else 0) = _\n  exact dite_eq_left hx\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_affine_point_heightOne": {
+      "path": "Negativity/FiniteCurvePoints.lean",
+      "line": 16,
+      "code": "theorem curve_affine_point_heightOne (C : Scheme.{u}) [IsIntegral C]\n    (U : C.Opens) (hU : IsAffineOpen U) (x : C) (hxU : x ∈ U)\n    (hx : Order.coheight x = 1) :\n    ∃ p : HeightOneSpectrum Γ(C, U), hU.fromSpec ⟨p.asIdeal, inferInstance⟩ = x := by\n  have : Nonempty U := ⟨⟨x, hxU⟩⟩\n  let p := hU.primeIdealOf ⟨x, hxU⟩\n  have hp : p.asIdeal.height = 1 := by\n    rw [idealHeight_eq_coheight, ← coheight_eq_of_isOpenImmersion hU.fromSpec,\n      hU.fromSpec_primeIdealOf]\n    exact hx\n  have hn : p.asIdeal ≠ ⊥ := by\n    intro hz\n    rw [hz, Ideal.height_bot] at hp\n    norm_num at hp\n  exact ⟨⟨p.asIdeal, inferInstance, hn⟩, hU.fromSpec_primeIdealOf ⟨x, hxU⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_dominant_curve_preimage_nonempty": {
+      "path": "Negativity/FiniteCurvePoints.lean",
+      "line": 34,
+      "code": "theorem finite_dominant_curve_preimage_nonempty {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsDominant f] [IsFinite f] (U : Y.Opens) [Nonempty U] :\n    Nonempty (f ⁻¹ᵁ U) := by\n  have : Surjective f := surjective_of_isDominant_of_isClosed_range f\n    f.isClosedMap.isClosed_range\n  obtain ⟨y, hy⟩ := ‹Nonempty U›\n  obtain ⟨x, hx⟩ := f.surjective y\n  exact ⟨⟨x, by change f x ∈ U; rw [hx]; exact hy⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_maps_coheight_one": {
+      "path": "Negativity/FiniteCurvePoints.lean",
+      "line": 47,
+      "code": "theorem finite_normal_curve_maps_coheight_one {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsDominant f] [IsFinite f]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X ≤ 1) (hdY : Order.krullDim Y ≤ 1)\n    (x : X) (hx : Order.coheight x = 1) : Order.coheight (f x) = 1 := by\n  obtain ⟨U, hU, hyU, _⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := f x) trivial\n  have : Nonempty U := ⟨⟨f x, hyU⟩⟩\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨⟨x, hyU⟩⟩\n  let : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n  obtain ⟨q, hq⟩ := curve_affine_point_heightOne X (f ⁻¹ᵁ U) (hU.preimage f) x hyU hx\n  let p := q.under Γ(Y, U)\n  have : q.asIdeal.LiesOver p.asIdeal := ⟨rfl⟩\n  let q' : p.asIdeal.primesOver Γ(X, f ⁻¹ᵁ U) := ⟨q.asIdeal, inferInstance, inferInstance⟩\n  have he := curve_primeOver_maps_to_fiber f U hU ⟨p.asIdeal, inferInstance⟩ q'\n  change f ((hU.preimage f).fromSpec ⟨q.asIdeal, inferInstance⟩) = _ at he\n  rw [hq] at he\n  rw [he]\n  exact curve_affine_prime_coheight Y U hU p\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_cartier_fiber_orders": {
+      "path": "Negativity/CurveCartierFiber.lean",
+      "line": 34,
+      "code": "theorem finite_normal_curve_cartier_fiber_orders {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n          (A.equation (A.covers (f z)).choose)) ∧\n      ∀ (y : Y), Order.coheight y = 1 →\n      ∑ x : {x : X // f x = y}, B.coefficient hnX x =\n        A.coefficient hnY y * (Module.finrank Y.functionField X.functionField : ℤ) := by\n  classical\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_pullback f A\n  refine ⟨B, hB, ?_⟩\n  intro y hy\n  obtain ⟨U, hU, hyU, _⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := y) trivial\n  have : Nonempty U := ⟨⟨y, hyU⟩⟩\n  have := finite_dominant_curve_preimage_nonempty f U\n  let : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n  have := normal_curve_affine_dedekind Y hnY hdY U hU\n  have := normal_curve_affine_dedekind X hnX hdX (f ⁻¹ᵁ U) (hU.preimage f)\n  have := dominant_curve_chart_torsionFree f U\n  have : Module.Finite Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := f.finite_app U hU\n  obtain ⟨p, hp⟩ := curve_affine_point_heightOne Y U hU y hyU hy\n  subst y\n  let y : Y := hU.fromSpec ⟨p.asIdeal, inferInstance⟩\n  have he := finite_normal_curve_actual_fiber_order_degree f U hU k b hnX hnY hdX hdY p\n    (A.equation (A.covers y).choose)\n  rw [← cartierAtlas_coefficient_eq Y hnY A _ y hy (A.covers y).choose_spec] at he\n  convert he using 1\n  apply Finset.sum_congr (by ext x; simp)\n  intro x _\n  have hx : Order.coheight (x : X) = 1 := by\n    obtain ⟨q, hq⟩ := (curveFiberPrimeEquiv f U hU ⟨p.asIdeal, inferInstance⟩).surjective\n      ⟨x, x.2⟩\n    have hxc := curve_affine_prime_coheight X (f ⁻¹ᵁ U) (hU.preimage f) (heightOnePrimeAbove p q)\n    change Order.coheight ((hU.preimage f).fromSpec ⟨q.1, inferInstance⟩) = 1 at hxc\n    have hxe := congrArg Subtype.val hq\n    change (hU.preimage f).fromSpec ⟨q.1, inferInstance⟩ = x at hxe\n    simpa only [hxe] using hxc\n  rw [dite_eq_left hx, cartierAtlas_coefficient_eq X hnX B x x hx (hB x).2.1,\n    (hB x).2.2]\n  congr 2\n  exact congrArg (fun t : Y => A.equation (A.covers t).choose) x.2\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finsupp_mapDomain_actual_fiber": {
+      "path": "Negativity/CurveCartierDegree.lean",
+      "line": 16,
+      "code": "theorem finsupp_mapDomain_actual_fiber {α β : Type*} (f : α → β) (D : α →₀ ℤ)\n    (y : β) [Fintype {x : α // f x = y}] :\n    D.mapDomain f y = ∑ x : {x : α // f x = y}, D x := by\n  classical\n  calc\n    _ = ∑ x ∈ D.support with f x = y, D x := by\n      simp [Finsupp.mapDomain, Finsupp.sum, Finsupp.single_apply, Finset.sum_ite]\n    _ = ∑ x ∈ D.support.subtype (fun x => f x = y), D x :=\n      (Finset.sum_subtype_eq_sum_filter (fun x => D x)).symm\n    _ = _ := by\n      apply Finset.sum_subset (Finset.subset_univ _)\n      intro x _ hx\n      apply Finsupp.notMem_support_iff.mp\n      simpa only [Finset.mem_subtype] using hx\n\nvariable {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    [CompactSpace X] [CompactSpace Y]\n    (f : X ⟶ Y) [IsDominant f] [IsFinite f]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X ≤ 1) (hdY : Order.krullDim Y ≤ 1)\n\nlocal instance (y : Y) : Fintype {x : X // f x = y} := by\n  change Fintype (f ⁻¹' {y})\n  exact (f.finite_preimage_singleton y).fintype\n\ninclude k b hdX hdY",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_cartier_push_pull": {
+      "path": "Negativity/CurveCartierDegree.lean",
+      "line": 49,
+      "code": "theorem finite_normal_curve_cartier_push_pull {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n          (A.equation (A.covers (f z)).choose)) ∧\n      (cartierOrderDivisor X hnX B).mapDomain f =\n        (Module.finrank Y.functionField X.functionField : ℤ) • cartierOrderDivisor Y hnY A := by\n  classical\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  obtain ⟨B, hdata, hB⟩ := finite_normal_curve_cartier_fiber_orders f k b hnX hnY hdX hdY A\n  refine ⟨B, hdata, ?_⟩\n  ext y\n  rw [finsupp_mapDomain_actual_fiber]\n  change (∑ x : {x : X // f x = y}, B.coefficient hnX x) =\n    (Module.finrank Y.functionField X.functionField : ℤ) * A.coefficient hnY y\n  by_cases hy : Order.coheight y = 1\n  · exact (hB y hy).trans (mul_comm _ _)\n  · have hAy : A.coefficient hnY y = 0 := by simp [CartierAtlas.coefficient, hy]\n    rw [hAy, mul_zero]\n    apply Finset.sum_eq_zero\n    intro x _\n    have hx : Order.coheight (x : X) ≠ 1 := by\n      intro hxc\n      have he := finite_normal_curve_maps_coheight_one f hnX hnY hdX hdY x hxc\n      exact hy (x.2 ▸ he)\n    simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_curve_cartier_pullback_degree": {
+      "path": "Negativity/CurveCartierDegree.lean",
+      "line": 82,
+      "code": "theorem finite_normal_curve_cartier_pullback_degree {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n          (A.equation (A.covers (f z)).choose)) ∧\n      cartierTotalOrder X hnX B =\n      (Module.finrank Y.functionField X.functionField : ℤ) * cartierTotalOrder Y hnY A := by\n  let : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n  obtain ⟨B, hdata, hB⟩ := finite_normal_curve_cartier_push_pull f k b hnX hnY hdX hdY A\n  refine ⟨B, hdata, ?_⟩\n  have he := congrArg Finsupp.degree hB\n  rw [Finsupp.degree_mapDomain, map_zsmul] at he\n  unfold cartierTotalOrder\n  simpa only [Finsupp.degree_apply, Finsupp.sum, zsmul_eq_mul, Int.cast_id] using he\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_coheight_zero_generic": {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "line": 15,
+      "code": "theorem curve_coheight_zero_generic (C : Scheme.{u}) [IsIntegral C]\n    (x : C) (hx : Order.coheight x = 0) : x = genericPoint C := by\n  have hm := Order.coheight_eq_zero.mp hx\n  have hxg : x ≤ genericPoint C := (genericPoint_spec C).specializes trivial\n  have hgx : genericPoint C ≤ x := hm hxg\n  exact (Specializes.antisymm hgx hxg).eq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_nonGeneric_coheight_one": {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "line": 22,
+      "code": "theorem curve_nonGeneric_coheight_one (C : Scheme.{u}) [IsIntegral C]\n    (hd : Order.krullDim C ≤ 1) (x : C) (hx : x ≠ genericPoint C) :\n    Order.coheight x = 1 := by\n  have hle : Order.coheight x ≤ 1 := WithBot.coe_le_coe.mp ((Order.coheight_le_krullDim x).trans hd)\n  exact le_antisymm hle (Order.one_le_iff_ne_zero.mpr fun hz => hx (curve_coheight_zero_generic C x hz))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_genericPoint_not_closed": {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "line": 28,
+      "code": "theorem curve_genericPoint_not_closed (C : Scheme.{u}) [IsIntegral C]\n    (hd : Order.krullDim C = 1) : ¬ IsClosed ({genericPoint C} : Set C) := by\n  intro hc\n  obtain ⟨x, hx⟩ := curve_exists_coheight_one C hd\n  have he : x = genericPoint C := Set.mem_singleton_iff.mp\n    (hc.closure_eq ▸ ((genericPoint_spec C).specializes trivial).mem_closure)\n  have hm : IsMax (genericPoint C) := fun y _ => (genericPoint_spec C).specializes trivial\n  have hzero := Order.coheight_eq_zero.mpr hm\n  rw [he, hzero] at hx\n  norm_num at hx",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_dominant_curve_fibers_finite": {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "line": 42,
+      "code": "theorem proper_dominant_curve_fibers_finite {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsNoetherian X]\n    (f : X ⟶ Y) [IsDominant f] [IsProper f]\n    (hdX : Order.krullDim X ≤ 1) (hdY : Order.krullDim Y = 1) (y : Y) :\n    (f ⁻¹' {y}).Finite := by\n  by_cases hy : y = genericPoint Y\n  · apply Set.finite_singleton (genericPoint X) |>.subset\n    intro x hx\n    apply Set.mem_singleton_iff.mpr\n    by_contra hng\n    have hxc := curve_nonGeneric_coheight_one X hdX x hng\n    have hc := f.isClosedMap _ (curve_coheight_one_isClosed X hdX x hxc)\n    rw [Set.image_singleton] at hc\n    have he : f x = genericPoint Y := (Set.mem_singleton_iff.mp hx).trans hy\n    exact curve_genericPoint_not_closed Y hdY (he ▸ hc)\n  · have hcy := curve_coheight_one_isClosed Y hdY.le y\n      (curve_nonGeneric_coheight_one Y hdY.le y hy)\n    have hp : IsClosed (f ⁻¹' {y}) := hcy.preimage f.continuous\n    have : QuasiSober (f ⁻¹' {y}) := hp.isClosedEmbedding_subtypeVal.quasiSober\n    have hproper : closure (f ⁻¹' {y}) ≠ Set.univ := by\n      rw [hp.closure_eq]\n      intro he\n      have hη : genericPoint X ∈ f ⁻¹' {y} := he.symm ▸ Set.mem_univ _\n      have heq := Set.mem_singleton_iff.mp hη\n      rw [dominant_genericPoint_eq f] at heq\n      exact hy heq.symm\n    apply (NoetherianSpace.finite_coheight_one_of_closure_ne_univ hproper).subset\n    intro x hx\n    refine ⟨hx, curve_nonGeneric_coheight_one X hdX x ?_⟩\n    intro he\n    have heq := Set.mem_singleton_iff.mp hx\n    rw [he, dominant_genericPoint_eq f] at heq\n    exact hy heq.symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_dominant_integral_curve_isFinite": {
+      "path": "Negativity/ProperCurveFinite.lean",
+      "line": 80,
+      "code": "theorem proper_dominant_integral_curve_isFinite {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] [IsNoetherian X]\n    (f : X ⟶ Y) [IsDominant f] [IsProper f]\n    (hdX : Order.krullDim X = 1) (hdY : Order.krullDim Y = 1) : IsFinite f := by\n  have : LocallyQuasiFinite f := LocallyQuasiFinite.of_finite_preimage_singleton f\n    (proper_dominant_curve_fibers_finite f hdX.le hdY)\n  exact IsFinite.of_isProper_of_locallyQuasiFinite f",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_finite_cartier_pullback_degree": {
+      "path": "Negativity/ProperCurveCartierDegree.lean",
+      "line": 18,
+      "code": "theorem complete_normal_curve_finite_cartier_pullback_degree\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsDominant f] [IsFinite f]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X = 1) (hdY : Order.krullDim Y = 1)\n    {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace b\n    letI : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace (f ≫ b)\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n          (A.equation (A.covers (f z)).choose)) ∧\n      cartierTotalOrder X hnX B =\n        (Module.finrank Y.functionField X.functionField : ℤ) * cartierTotalOrder Y hnY A := by\n  let : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace b\n  let : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace (f ≫ b)\n  exact finite_normal_curve_cartier_pullback_degree f k b hnX hnY hdX.le hdY.le A",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_pullback_degree": {
+      "path": "Negativity/ProperCurveCartierDegree.lean",
+      "line": 45,
+      "code": "theorem complete_normal_curve_cartier_pullback_degree\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsDominant f] [IsProper f]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdX : Order.krullDim X = 1) (hdY : Order.krullDim Y = 1)\n    {ι : Type*} (A : CartierAtlas Y ι) :\n    letI : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace b\n    letI : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace (f ≫ b)\n    letI : Algebra Y.functionField X.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ B : CartierAtlas X X,\n      (∀ z : X, B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧ z ∈ B.chart z ∧\n        B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n          (A.equation (A.covers (f z)).choose)) ∧\n      cartierTotalOrder X hnX B =\n        (Module.finrank Y.functionField X.functionField : ℤ) * cartierTotalOrder Y hnY A := by\n  let : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace (f ≫ b)\n  have : IsNoetherian X := ⟨⟩\n  have := proper_dominant_integral_curve_isFinite f hdX hdY\n  exact complete_normal_curve_finite_cartier_pullback_degree f k b hnX hnY hdX hdY A",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "exists_finite_separable_transcendental_parameter": {
       "path": "Negativity/SeparatingParameter.lean",
       "line": 15,

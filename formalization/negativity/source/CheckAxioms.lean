@@ -542,3 +542,61 @@ import Negativity
 #print axioms Negativity.complete_normal_curve_principal_product_formula
 
 #print axioms Negativity.complete_normal_curve_cartier_degree_invariant
+
+#print axioms Negativity.normal_curve_affine_dedekind
+
+#print axioms Negativity.curve_affine_prime_coheight
+
+#print axioms Negativity.normal_curve_affine_prime_order
+
+#print axioms Negativity.finite_curve_chart_generic_tower
+
+#print axioms Negativity.dominant_curve_chart_torsionFree
+
+#print axioms Negativity.finite_normal_curve_fiber_order_degree
+
+#print axioms Negativity.curve_chart_point_mem
+
+#print axioms Negativity.curve_primeOver_maps_to_fiber
+
+#print axioms Negativity.curve_fiber_point_prime_liesOver
+
+#print axioms Negativity.curve_fiber_primes_actual_bijective
+
+#print axioms Negativity.curve_chart_base_scalar_tower
+
+#print axioms Negativity.curve_chart_base_finiteType
+
+#print axioms Negativity.finite_normal_curve_relative_residueDegree_one
+
+#print axioms Negativity.finite_normal_curve_unweighted_order_degree
+
+#print axioms Negativity.finite_normal_curve_actual_fiber_order_degree
+
+#print axioms Negativity.curve_affine_point_heightOne
+
+#print axioms Negativity.finite_dominant_curve_preimage_nonempty
+
+#print axioms Negativity.finite_normal_curve_maps_coheight_one
+
+#print axioms Negativity.finite_normal_curve_cartier_fiber_orders
+
+#print axioms Negativity.finsupp_mapDomain_actual_fiber
+
+#print axioms Negativity.finite_normal_curve_cartier_push_pull
+
+#print axioms Negativity.finite_normal_curve_cartier_pullback_degree
+
+#print axioms Negativity.curve_coheight_zero_generic
+
+#print axioms Negativity.curve_nonGeneric_coheight_one
+
+#print axioms Negativity.curve_genericPoint_not_closed
+
+#print axioms Negativity.proper_dominant_curve_fibers_finite
+
+#print axioms Negativity.proper_dominant_integral_curve_isFinite
+
+#print axioms Negativity.complete_normal_curve_finite_cartier_pullback_degree
+
+#print axioms Negativity.complete_normal_curve_cartier_pullback_degree
