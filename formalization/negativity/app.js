@@ -1,11 +1,11 @@
-import {installTheoremTarget} from './theorem-target.js?v=20261002-glass-1';
+import {installTheoremTarget} from './theorem-target.js?v=20261002-msmath-6';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-16';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-16';
 import {installSettings} from './settings.js?v=20261002-formal-16';
-import {createNodeEditor} from './node-editor.js?v=20261002-glass-1';
+import {createNodeEditor} from './node-editor.js?v=20261002-msmath-6';
 import {installWorkspace} from './workspace.js?v=20261002-formal-16';
 import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-formal-16';
-import {createSpatialGraph} from './graph-3d.js?v=20261002-glass-1';
+import {createSpatialGraph} from './graph-3d.js?v=20261002-msmath-6';
 import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-formal-16';
 const nodes=translateNodes(rawNodes),statusLabels=english?englishStatuses:rawLabels;
 document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
@@ -38,7 +38,7 @@ let selected='proper',history=[],step=0,activeTab='overview',snapshot=null;
 function closure(id,out=new Set()){if(out.has(id))return out;out.add(id);byId.get(id).deps.forEach(d=>closure(d,out));return out;}
 function relation(id){if(id===selected)return 'selected';if(byId.get(selected).deps.includes(id))return 'direct';return closure(selected).has(id)?'indirect':'other';}
 function depButton(n){return `<button class="dep-link" data-select="${n.id}">${safe(n.title)}<span class="${n.status}">${statusLabels[n.status]}</span></button>`;}
-nodes.forEach(n=>{const b=document.createElement('button');b.type='button';b.className=`node ${n.status}`;b.style.left=n.x+'px';b.style.top=n.y+'px';b.dataset.node=n.id;b.setAttribute('aria-pressed','false');b.innerHTML=`<b>${safe(n.title)}</b><small class="${n.status}">${statusLabels[n.status]}</small><span class="relation-tag"></span>`;b.addEventListener('click',()=>select(n.id));graph.append(b);});
+nodes.forEach(n=>{const b=document.createElement('button');b.type='button';b.className=`node ${n.status}`;b.style.left=n.x+'px';b.style.top=n.y+'px';b.dataset.node=n.id;b.setAttribute('aria-label',n.title+' · '+statusLabels[n.status]);b.setAttribute('aria-pressed','false');b.innerHTML=`<b>${safe(n.title)}</b><small class="${n.status}">${statusLabels[n.status]}</small><span class="relation-tag"></span>`;b.addEventListener('click',()=>select(n.id));graph.append(b);});
 const graphHeight=Math.max(...nodes.map(n=>n.y))+140;graph.style.minHeight=graphHeight+'px';svg.style.height=graphHeight+'px';
 svg.innerHTML='<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7997a3"/></marker></defs>';
 nodes.forEach(n=>n.deps.forEach(id=>{const d=byId.get(id),p=document.createElementNS('http://www.w3.org/2000/svg','path');let x1=d.x+232,y1=d.y+43,x2=n.x,y2=n.y+43;if(d.x===n.x){x1=d.x+116;y1=d.y+87;x2=n.x+116;y2=n.y;}
