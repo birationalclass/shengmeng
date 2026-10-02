@@ -12,8 +12,11 @@ without a parameter input, in arbitrary characteristic. Actual global Cartier pu
 curves, including inseparable maps, is proved with actual fibers and
 local equations. Actual Cartier curve intersection is now constructed; its
 rational-move independence, contracted-curve zero, effective-divisor signs
-and proper dominant curve degree formula are proved. Ambient normalization,
-Cartier pullback functoriality, real-presentation independence, geometric ample positivity,
+and proper dominant curve degree formula are proved. Actual ambient principal
+moving, zero-Weil intersection, integer additivity, arbitrary real-presentation
+independence (including different generators and covers), effective real-divisor
+intersection signs, and actual ambient Cartier/R-Cartier pullback composition
+are now proved. Ambient curve normalization, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

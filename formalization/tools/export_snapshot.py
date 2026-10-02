@@ -4,6 +4,15 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'AmbientCartierMoving.lean': ['movedCartierRestrictionData_rationalTwist', 'complete_normal_curve_ambient_cartier_principal_invariance'],
+    'CartierZeroIntersection.lean': ['cartier_support_empty_of_coefficients_zero', 'cartierTotalOrder_zero_of_support_empty', 'complete_normal_curve_zero_cartier_intersection'],
+    'CurveCartierCombinations.lean': ['moved_restriction_equation_on_chart', 'integral_combination_moved_local_units', 'exists_complete_curve_cartier_intersection_integralCombination'],
+    'RealCurveIntersection.lean': ['complete_normal_curve_cartier_integral_relation', 'complete_normal_curve_cartier_rational_relation', 'complete_normal_curve_cartier_real_relation', 'complete_normal_curve_real_cartier_intersection_wellDefined'],
+    'CartierReindex.lean': ['cartierAtlas_pointIndexed_coefficient', 'complete_normal_curve_cartier_intersection_pointIndexed'],
+    'RealIntersectionPresentations.lean': ['complete_normal_curve_real_cartier_presentation_independent'],
+    'EffectiveRealIntersection.lean': ['complete_normal_curve_effective_real_cartier_intersection_signs'],
+    'CurveIntersectionPullback.lean': ['curve_generic_stalk_pullback_comp', 'exists_complete_curve_cartier_intersection_pullback'],
+    'RealIntersectionPullback.lean': ['complete_normal_curve_real_cartier_intersection_point_image_zero', 'exists_complete_curve_real_cartier_intersection_pullback'],
     'CurvePointImageDegree.lean': ['cartierTotalOrder_zero_of_equations_one', 'constant_image_moved_cartier_restriction_degree_zero'],
     'CurveMoveDegree.lean': ['moved_cartier_restriction_ratio_equations', 'complete_normal_curve_moved_restriction_degree_independent'],
     'CartierCurveIntersection.lean': ['complete_normal_curve_cartier_intersection_eq_restriction', 'complete_normal_curve_cartier_intersection_wellDefined'],
@@ -147,8 +156,11 @@ without a parameter input, in arbitrary characteristic. Actual global Cartier pu
 curves, including inseparable maps, is proved with actual fibers and
 local equations. Actual Cartier curve intersection is now constructed; its
 rational-move independence, contracted-curve zero, effective-divisor signs
-and proper dominant curve degree formula are proved. Ambient normalization,
-Cartier pullback functoriality, real-presentation independence, geometric ample positivity,
+and proper dominant curve degree formula are proved. Actual ambient principal
+moving, zero-Weil intersection, integer additivity, arbitrary real-presentation
+independence (including different generators and covers), effective real-divisor
+intersection signs, and actual ambient Cartier/R-Cartier pullback composition
+are now proved. Ambient curve normalization, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

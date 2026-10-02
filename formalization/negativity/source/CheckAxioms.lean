@@ -625,3 +625,43 @@ import Negativity
 #print axioms Negativity.dominant_moved_restriction_equations
 
 #print axioms Negativity.complete_normal_curve_cartier_intersection_degree
+
+#print axioms Negativity.movedCartierRestrictionData_rationalTwist
+
+#print axioms Negativity.complete_normal_curve_ambient_cartier_principal_invariance
+
+#print axioms Negativity.cartier_support_empty_of_coefficients_zero
+
+#print axioms Negativity.cartierTotalOrder_zero_of_support_empty
+
+#print axioms Negativity.complete_normal_curve_zero_cartier_intersection
+
+#print axioms Negativity.moved_restriction_equation_on_chart
+
+#print axioms Negativity.integral_combination_moved_local_units
+
+#print axioms Negativity.exists_complete_curve_cartier_intersection_integralCombination
+
+#print axioms Negativity.complete_normal_curve_cartier_integral_relation
+
+#print axioms Negativity.complete_normal_curve_cartier_rational_relation
+
+#print axioms Negativity.complete_normal_curve_cartier_real_relation
+
+#print axioms Negativity.complete_normal_curve_real_cartier_intersection_wellDefined
+
+#print axioms Negativity.cartierAtlas_pointIndexed_coefficient
+
+#print axioms Negativity.complete_normal_curve_cartier_intersection_pointIndexed
+
+#print axioms Negativity.complete_normal_curve_real_cartier_presentation_independent
+
+#print axioms Negativity.complete_normal_curve_effective_real_cartier_intersection_signs
+
+#print axioms Negativity.curve_generic_stalk_pullback_comp
+
+#print axioms Negativity.exists_complete_curve_cartier_intersection_pullback
+
+#print axioms Negativity.complete_normal_curve_real_cartier_intersection_point_image_zero
+
+#print axioms Negativity.exists_complete_curve_real_cartier_intersection_pullback
