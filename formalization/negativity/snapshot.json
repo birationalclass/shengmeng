@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T23:22:54+08:00",
+  "checkedAt": "2026-10-03T00:30:41+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "2efd4c513ec49a10e6357c3d1d49bf6cd976229ee8c0dbe70e6588afa49a437a"
+      "sha256": "2b335db938016282e50efca7cf631d87ea1da18ac63212c9ccc96ba97e406110"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "1c255d3dcbbc90aecb959cb7826ac1cdb2cfa216edf77ea888f8865c4050a717"
+      "sha256": "08db41ae44e346dd4dc7263968f27ccfe2d40b01eec7b2d25e9a0558ce2124cc"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/CurvePointImageDegree.lean",
+      "sha256": "282b1e37fbd79e4b48b5e047814d8799a7901a11c1f8fcc06cec458c40c5a116"
+    },
+    {
+      "path": "Negativity/CurveMoveDegree.lean",
+      "sha256": "17984605c8d1735d2b28a16d712b68364e259dc451d30d0ac5918b976b457c0d"
+    },
+    {
+      "path": "Negativity/CartierCurveIntersection.lean",
+      "sha256": "0b3d9a9c281f2a2e83da8558fc36c5abce69f96fbdc43f82e5372fe23b1fe7e7"
+    },
+    {
+      "path": "Negativity/EffectiveCurveIntersection.lean",
+      "sha256": "4fa58ab3e42a0c7e4382cad10babbf51da3478e6cb65a0bf645a7cbdde0b32fb"
+    },
+    {
+      "path": "Negativity/CurveIntersectionDegree.lean",
+      "sha256": "5d10025bda107cf6be16744d836e30daa9613ad8585e097929faa01d1ebc3d4b"
     },
     {
       "path": "Negativity/AffineCurveOrders.lean",
@@ -326,6 +346,126 @@
     }
   ],
   "declarations": {
+    "cartierTotalOrder_zero_of_equations_one": {
+      "path": "Negativity/CurvePointImageDegree.lean",
+      "line": 16,
+      "code": "theorem cartierTotalOrder_zero_of_equations_one (C : Scheme) [IsIntegral C]\n    [IsLocallyNoetherian C] [CompactSpace C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    {ι : Type*} (B : CartierAtlas C ι) (hB : ∀ i, B.equation i = 1) :\n    cartierTotalOrder C hn B = 0 := by\n  classical\n  have hc (x : C) : B.coefficient hn x = 0 := by\n    by_cases hx : Order.coheight x = 1\n    · rw [cartierAtlas_coefficient_eq C hn B _ x hx (B.covers x).choose_spec, hB]\n      have := hn x\n      have := normal_codimensionOne_stalk_isDVR C x hx\n      unfold schemeRationalOrder\n      simpa only [map_one] using dvr_rationalOrder_unit (C.presheaf.stalk x) C.functionField\n        (1 : (C.presheaf.stalk x)ˣ)\n    · simp [CartierAtlas.coefficient, hx]\n  unfold cartierTotalOrder Finsupp.sum\n  apply Finset.sum_eq_zero\n  intro x _\n  exact hc x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "constant_image_moved_cartier_restriction_degree_zero": {
+      "path": "Negativity/CurvePointImageDegree.lean",
+      "line": 41,
+      "code": "theorem constant_image_moved_cartier_restriction_degree_zero\n    {C X : Scheme} [IsIntegral C] [IsIntegral X]\n    [IsLocallyNoetherian C] [CompactSpace C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (f : C ⟶ X) (hf : ∀ x : C, f x = f (genericPoint C))\n    {ι : Type*} (A : CartierAtlas X ι) :\n    ∃ (a : X.functionFieldˣ) (B : CartierAtlas C C),\n      f (genericPoint C) ∉ (A.rationalTwist a).vanishingSupport ∧\n      (∀ z : C, z ∈ B.chart z ∧\n        B.chart z ≤ f ⁻¹ᵁ (A.rationalTwist a).chart (A.covers (f z)).choose ∧\n        ∃ u : (X.presheaf.stalk (f (genericPoint C)))ˣ,\n          Units.map (algebraMap (X.presheaf.stalk (f (genericPoint C))) X.functionField).toMonoidHom u =\n            a * A.equation (A.covers (f z)).choose ∧\n          B.equation z = Units.map (f.stalkMap (genericPoint C)).hom.toMonoidHom u) ∧\n      (∀ z, B.equation z = 1) ∧ cartierTotalOrder C hn B = 0 := by\n  classical\n  let i := (A.covers (f (genericPoint C))).choose\n  let a := (A.equation i)⁻¹\n  have hη : f (genericPoint C) ∉ (A.rationalTwist a).vanishingSupport := by\n    rw [cartierAtlas_support_eq_on_chart X (A.rationalTwist a) i _\n      (A.covers (f (genericPoint C))).choose_spec]\n    intro h\n    apply h\n    refine ⟨1, ?_⟩\n    simp [CartierAtlas.rationalTwist, a]\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback f (A.rationalTwist a) hη\n  have he (z : C) : B.equation z = 1 := by\n    obtain ⟨u, hu, hBu⟩ := (hB z).2.2\n    have hu1 : Units.map (algebraMap (X.presheaf.stalk (f (genericPoint C))) X.functionField).toMonoidHom u = 1 := by\n      rw [hu]\n      simp [CartierAtlas.rationalTwist, hf z, a, i]\n    have huone : u = 1 := by\n      apply Units.ext\n      apply IsFractionRing.injective (X.presheaf.stalk (f (genericPoint C))) X.functionField\n      have hv := congrArg Units.val hu1\n      change algebraMap (X.presheaf.stalk (f (genericPoint C))) X.functionField (u : _) = 1 at hv\n      simpa only [Units.val_one, map_one] using hv\n    rw [hBu, huone, map_one]\n  refine ⟨a, B, hη, ?_, he, cartierTotalOrder_zero_of_equations_one C hn B he⟩\n  intro z\n  exact hB z\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "moved_cartier_restriction_ratio_equations": {
+      "path": "Negativity/CurveMoveDegree.lean",
+      "line": 31,
+      "code": "theorem moved_cartier_restriction_ratio_equations\n    {C X : Scheme} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι)\n    (a b : X.functionFieldˣ) (B₁ B₂ : CartierAtlas C C)\n    (h₁ : MovedCartierRestrictionData f A a B₁)\n    (h₂ : MovedCartierRestrictionData f A b B₂) :\n    ∃ r : C.functionFieldˣ, ∀ z : C, B₂.equation z = r * B₁.equation z := by\n  classical\n  let η := genericPoint C\n  let e := (algebraMap (X.presheaf.stalk (f η)) X.functionField).toMonoidHom\n  let p := (f.stalkMap η).hom.toMonoidHom\n  obtain ⟨u₀, hu₀, _⟩ := (h₁ η).2.2\n  obtain ⟨v₀, hv₀, _⟩ := (h₂ η).2.2\n  let w := v₀ * u₀⁻¹\n  have hw : Units.map e w = b * a⁻¹ := by\n    change Units.map e (v₀ * u₀⁻¹) = _\n    rw [map_mul, map_inv, hv₀, hu₀]\n    group\n  refine ⟨Units.map p w, fun z => ?_⟩\n  obtain ⟨u, hu, hBu⟩ := (h₁ z).2.2\n  obtain ⟨v, hv, hBv⟩ := (h₂ z).2.2\n  have huv : w * u = v := by\n    apply Units.map_injective (f := e)\n      (IsFractionRing.injective (X.presheaf.stalk (f η)) X.functionField)\n    rw [map_mul, hw, hu, hv]\n    group\n  rw [hBv, hBu, ← map_mul, huv]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_moved_restriction_degree_independent": {
+      "path": "Negativity/CurveMoveDegree.lean",
+      "line": 63,
+      "code": "theorem complete_normal_curve_moved_restriction_degree_independent\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι)\n    (a b : X.functionFieldˣ) (B₁ B₂ : CartierAtlas C C)\n    (h₁ : MovedCartierRestrictionData f A a B₁)\n    (h₂ : MovedCartierRestrictionData f A b B₂) :\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n    cartierTotalOrder C hn B₂ = cartierTotalOrder C hn B₁ := by\n  classical\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n  let : Algebra k C.functionField := (curveFunctionFieldBaseMap C k c).toAlgebra\n  obtain ⟨r, hr⟩ := moved_cartier_restriction_ratio_equations f A a b B₁ B₂ h₁ h₂\n  have he : cartierOrderDivisor C hn B₂ =\n      cartierOrderDivisor C hn (B₁.rationalTwist r) := by\n    ext x\n    rw [cartierOrderDivisor_apply, cartierOrderDivisor_apply]\n    by_cases hx : Order.coheight x = 1\n    · rw [cartierAtlas_coefficient_eq C hn B₂ x x hx (h₂ x).1,\n        cartierAtlas_coefficient_eq C hn (B₁.rationalTwist r) x x hx (h₁ x).1]\n      exact congrArg (schemeRationalOrder C hn x hx) (hr x)\n    · simp [CartierAtlas.coefficient, hx]\n  change (cartierOrderDivisor C hn B₂).degree = (cartierOrderDivisor C hn B₁).degree\n  rw [he]\n  exact complete_normal_curve_cartier_degree_invariant C hn hd k c rfl B₁ r\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_intersection_eq_restriction": {
+      "path": "Negativity/CartierCurveIntersection.lean",
+      "line": 42,
+      "code": "theorem complete_normal_curve_cartier_intersection_eq_restriction\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι)\n    (a : X.functionFieldˣ) (B : CartierAtlas C C)\n    (hB : MovedCartierRestrictionData f A a B) :\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n    cartierCurveIntersection hn f A = cartierTotalOrder C hn B := by\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n  exact complete_normal_curve_moved_restriction_degree_independent hn hd k c f A\n    a (movedCartierCurveRestriction f A).move B\n    (movedCartierCurveRestriction f A).atlas hB (movedCartierCurveRestriction f A).data",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_intersection_wellDefined": {
+      "path": "Negativity/CartierCurveIntersection.lean",
+      "line": 62,
+      "code": "theorem complete_normal_curve_cartier_intersection_wellDefined\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) :\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n    (∀ (a : X.functionFieldˣ) (B : CartierAtlas C C),\n      MovedCartierRestrictionData f A a B →\n      cartierCurveIntersection hn f A = cartierTotalOrder C hn B) ∧\n    ((∀ x : C, f x = f (genericPoint C)) → cartierCurveIntersection hn f A = 0) := by\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n  refine ⟨fun a B hB =>\n    complete_normal_curve_cartier_intersection_eq_restriction hn hd k c f A a B hB, ?_⟩\n  intro hf\n  obtain ⟨a, B, _, hB, _, hz⟩ :=\n    constant_image_moved_cartier_restriction_degree_zero hn f hf A\n  exact (complete_normal_curve_cartier_intersection_eq_restriction hn hd k c f A a B hB).trans hz\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartier_restriction_with_data": {
+      "path": "Negativity/EffectiveCurveIntersection.lean",
+      "line": 17,
+      "code": "theorem effective_cartier_restriction_with_data {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] (f : C ⟶ X)\n    {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hη : f (genericPoint C) ∉ A.vanishingSupport) :\n    ∃ B : CartierAtlas C C, MovedCartierRestrictionData f A 1 B ∧\n      B.Effective ∧ B.vanishingSupport = f ⁻¹' A.vanishingSupport := by\n  classical\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback f A hη\n  have hregular (z x : C) (hx : x ∈ B.chart z) :\n      ∃ r : X.presheaf.stalk (f x),\n        algebraMap (X.presheaf.stalk (f x)) X.functionField r =\n          (A.equation (A.covers (f z)).choose : X.functionField) ∧\n        algebraMap (C.presheaf.stalk x) C.functionField ((f.stalkMap x).hom r) =\n          (B.equation z : C.functionField) := by\n    obtain ⟨r, hr⟩ := hA _ (f x) ((hB z).2.1 hx)\n    obtain ⟨u, hu, hBu⟩ := (hB z).2.2\n    let sp : X.presheaf.stalk (f x) →+* X.presheaf.stalk (f (genericPoint C)) :=\n      (X.presheaf.stalkSpecializes\n        (f.base.hom.map_specializes ((genericPoint_spec C).specializes trivial))).hom\n    have he : sp r = (u : X.presheaf.stalk (f (genericPoint C))) := by\n      apply IsFractionRing.injective (X.presheaf.stalk (f (genericPoint C))) X.functionField\n      exact (stalkSpecialization_functionField X _ _ _ r).trans\n        (hr.trans (congrArg Units.val hu).symm)\n    refine ⟨r, hr, ?_⟩\n    exact calc\n      _ = (f.stalkMap (genericPoint C)).hom (sp r) :=\n        (generic_stalkMap_commutes f x r).symm\n      _ = (f.stalkMap (genericPoint C)).hom (u : X.presheaf.stalk (f (genericPoint C))) :=\n        congrArg (f.stalkMap (genericPoint C)).hom he\n      _ = _ := (congrArg Units.val hBu).symm\n  have hdata : MovedCartierRestrictionData f A 1 B := by\n    intro z\n    simpa only [one_mul] using hB z\n  have hBe : B.Effective := by\n    intro z x hx\n    obtain ⟨r, _, hr⟩ := hregular z x hx\n    exact ⟨(f.stalkMap x).hom r, hr⟩\n  refine ⟨B, hdata, hBe, ?_⟩\n  ext x\n  rw [cartierAtlas_support_eq_on_chart C B x x (hB x).1, Set.mem_preimage,\n    cartierAtlas_support_eq_on_chart X A _ (f x) (A.covers (f x)).choose_spec]\n  obtain ⟨r, hr, hs⟩ := hregular x x (hB x).1\n  rw [rationalUnitAt_regular_iff C x _ _ hs,\n    rationalUnitAt_regular_iff X (f x) _ r hr]\n  exact not_congr (isUnit_map_iff (f.stalkMap x).hom r)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_effective_cartier_intersection_signs": {
+      "path": "Negativity/EffectiveCurveIntersection.lean",
+      "line": 68,
+      "code": "theorem complete_normal_curve_effective_cartier_intersection_signs\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hη : f (genericPoint C) ∉ A.vanishingSupport) :\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n    0 ≤ cartierCurveIntersection hn f A ∧\n      ((f ⁻¹' A.vanishingSupport).Nonempty → 0 < cartierCurveIntersection hn f A) := by\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace c\n  obtain ⟨B, hdata, hBe, hS⟩ := effective_cartier_restriction_with_data f A hA hη\n  rw [complete_normal_curve_cartier_intersection_eq_restriction hn hd k c f A 1 B hdata]\n  refine ⟨effective_cartierTotalOrder_nonneg C hn B hBe, ?_⟩\n  intro hmeet\n  exact effective_cartierTotalOrder_pos_of_support C hn B hBe (hS.symm ▸ hmeet)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "generic_stalk_functionField_self": {
+      "path": "Negativity/CurveIntersectionDegree.lean",
+      "line": 14,
+      "code": "theorem generic_stalk_functionField_self (C : Scheme) [IsIntegral C]\n    (r : C.functionField) :\n    @algebraMap (C.presheaf.stalk (genericPoint C)) C.functionField _ _\n      (stalkFunctionFieldAlgebra C (genericPoint C)) r = r := by\n  change (C.presheaf.stalkSpecializes (specializes_refl (genericPoint C))).hom r = r\n  rw [TopCat.Presheaf.stalkSpecializes_refl]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "genericPoint_not_cartier_support": {
+      "path": "Negativity/CurveIntersectionDegree.lean",
+      "line": 22,
+      "code": "theorem genericPoint_not_cartier_support (X : Scheme) [IsIntegral X]\n    {ι : Type*} (A : CartierAtlas X ι) : genericPoint X ∉ A.vanishingSupport := by\n  let : Algebra (X.presheaf.stalk (genericPoint X)) X.functionField :=\n    stalkFunctionFieldAlgebra X (genericPoint X)\n  intro h\n  apply h\n  unfold RationalUnitAt\n  have hF : IsField (X.presheaf.stalk (genericPoint X)) :=\n    isField_stalk_of_closure_mem_irreducibleComponents X _\n      (by simp [irreducibleComponents_eq_singleton])\n  apply (Units.map_bijective (f := _) ?_).2\n  exact ⟨IsFractionRing.injective _ _,\n      (IsFractionRing.surjective_iff_isField\n        (R := X.presheaf.stalk (genericPoint X)) (K := X.functionField)).mpr hF⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_moved_restriction_equations": {
+      "path": "Negativity/CurveIntersectionDegree.lean",
+      "line": 40,
+      "code": "theorem dominant_moved_restriction_equations {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] (f : C ⟶ X) [IsDominant f]\n    {ι : Type*} (A : CartierAtlas X ι) (B : CartierAtlas C C)\n    (hB : MovedCartierRestrictionData f A 1 B) (z : C) :\n    B.equation z = Units.map (dominantFunctionFieldMap f).toMonoidHom\n      (A.equation (A.covers (f z)).choose) := by\n  obtain ⟨u, hu, hBu⟩ := (hB z).2.2\n  rw [one_mul] at hu\n  rw [hBu]\n  apply Units.ext\n  have hs := dominantFunctionFieldMap_stalk f (genericPoint C)\n    (u : X.presheaf.stalk (f (genericPoint C)))\n  rw [generic_stalk_functionField_self] at hs\n  have hv := congrArg Units.val hu\n  change algebraMap (X.presheaf.stalk (f (genericPoint C))) X.functionField\n    (u : X.presheaf.stalk (f (genericPoint C))) = _ at hv\n  rw [hv] at hs\n  exact hs.symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_intersection_degree": {
+      "path": "Negativity/CurveIntersectionDegree.lean",
+      "line": 64,
+      "code": "theorem complete_normal_curve_cartier_intersection_degree\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    [IsLocallyNoetherian C] [IsLocallyNoetherian X]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hdC : Order.krullDim C = 1) (hdX : Order.krullDim X = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (c : X ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) [IsProper f] [IsDominant f]\n    {ι : Type*} (A : CartierAtlas X ι) :\n    letI : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace c\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace (f ≫ c)\n    letI : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    cartierCurveIntersection hnC f A =\n      (Module.finrank X.functionField C.functionField : ℤ) * cartierTotalOrder X hnX A := by\n  classical\n  let : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace c\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace (f ≫ c)\n  let : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have hη : f (genericPoint C) ∉ A.vanishingSupport := by\n    rw [dominant_genericPoint_eq f]\n    exact genericPoint_not_cartier_support X A\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback f A hη\n  have hdata : MovedCartierRestrictionData f A 1 B := by\n    intro z\n    simpa only [one_mul] using hB z\n  obtain ⟨P, hP, hdeg⟩ :=\n    complete_normal_curve_cartier_pullback_degree f k c hnC hnX hdC hdX A\n  have he : cartierOrderDivisor C hnC B = cartierOrderDivisor C hnC P := by\n    ext x\n    rw [cartierOrderDivisor_apply, cartierOrderDivisor_apply]\n    by_cases hx : Order.coheight x = 1\n    · rw [cartierAtlas_coefficient_eq C hnC B x x hx (hB x).1,\n        cartierAtlas_coefficient_eq C hnC P x x hx (hP x).2.1,\n        dominant_moved_restriction_equations f A B hdata x, (hP x).2.2]\n    · simp [CartierAtlas.coefficient, hx]\n  rw [complete_normal_curve_cartier_intersection_eq_restriction\n    hnC hdC k (f ≫ c) f A 1 B hdata]\n  unfold cartierTotalOrder\n  rw [he]\n  exact hdeg\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "normal_curve_affine_dedekind": {
       "path": "Negativity/AffineCurveOrders.lean",
       "line": 16,

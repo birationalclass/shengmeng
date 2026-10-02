@@ -600,3 +600,28 @@ import Negativity
 #print axioms Negativity.complete_normal_curve_finite_cartier_pullback_degree
 
 #print axioms Negativity.complete_normal_curve_cartier_pullback_degree
+
+#print axioms Negativity.cartierTotalOrder_zero_of_equations_one
+
+#print axioms Negativity.constant_image_moved_cartier_restriction_degree_zero
+
+#print axioms Negativity.moved_cartier_restriction_ratio_equations
+
+#print axioms Negativity.complete_normal_curve_moved_restriction_degree_independent
+
+
+#print axioms Negativity.complete_normal_curve_cartier_intersection_eq_restriction
+
+#print axioms Negativity.complete_normal_curve_cartier_intersection_wellDefined
+
+#print axioms Negativity.effective_cartier_restriction_with_data
+
+#print axioms Negativity.complete_normal_curve_effective_cartier_intersection_signs
+
+#print axioms Negativity.generic_stalk_functionField_self
+
+#print axioms Negativity.genericPoint_not_cartier_support
+
+#print axioms Negativity.dominant_moved_restriction_equations
+
+#print axioms Negativity.complete_normal_curve_cartier_intersection_degree

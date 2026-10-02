@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'CurvePointImageDegree.lean': ['cartierTotalOrder_zero_of_equations_one', 'constant_image_moved_cartier_restriction_degree_zero'],
+    'CurveMoveDegree.lean': ['moved_cartier_restriction_ratio_equations', 'complete_normal_curve_moved_restriction_degree_independent'],
+    'CartierCurveIntersection.lean': ['complete_normal_curve_cartier_intersection_eq_restriction', 'complete_normal_curve_cartier_intersection_wellDefined'],
+    'EffectiveCurveIntersection.lean': ['effective_cartier_restriction_with_data', 'complete_normal_curve_effective_cartier_intersection_signs'],
+    'CurveIntersectionDegree.lean': ['generic_stalk_functionField_self', 'genericPoint_not_cartier_support', 'dominant_moved_restriction_equations', 'complete_normal_curve_cartier_intersection_degree'],
     'AffineCurveOrders.lean': ['normal_curve_affine_dedekind', 'curve_affine_prime_coheight', 'normal_curve_affine_prime_order'],
     'FiniteCurveOrders.lean': ['finite_curve_chart_generic_tower', 'dominant_curve_chart_torsionFree', 'finite_normal_curve_fiber_order_degree'],
     'CurveFiberPrimes.lean': ['curve_chart_point_mem', 'curve_primeOver_maps_to_fiber', 'curve_fiber_point_prime_liesOver', 'curve_fiber_primes_actual_bijective'],
@@ -140,7 +145,10 @@ from actual finite-type one-dimensional Scheme geometry. Actual complete
 normal curves have principal degree zero and Cartier principal-move invariance
 without a parameter input, in arbitrary characteristic. Actual global Cartier pullback degree for proper dominant complete normal
 curves, including inseparable maps, is proved with actual fibers and
-local equations. Ambient normalization, point-image zero, real intersection linearity, geometric ample positivity,
+local equations. Actual Cartier curve intersection is now constructed; its
+rational-move independence, contracted-curve zero, effective-divisor signs
+and proper dominant curve degree formula are proved. Ambient normalization,
+Cartier pullback functoriality, real-presentation independence, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

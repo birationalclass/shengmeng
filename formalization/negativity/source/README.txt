@@ -10,7 +10,10 @@ from actual finite-type one-dimensional Scheme geometry. Actual complete
 normal curves have principal degree zero and Cartier principal-move invariance
 without a parameter input, in arbitrary characteristic. Actual global Cartier pullback degree for proper dominant complete normal
 curves, including inseparable maps, is proved with actual fibers and
-local equations. Ambient normalization, point-image zero, real intersection linearity, geometric ample positivity,
+local equations. Actual Cartier curve intersection is now constructed; its
+rational-move independence, contracted-curve zero, effective-divisor signs
+and proper dominant curve degree formula are proved. Ambient normalization,
+Cartier pullback functoriality, real-presentation independence, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

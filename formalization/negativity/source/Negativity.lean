@@ -141,3 +141,13 @@ public import Negativity.CurveCartierDegree
 public import Negativity.ProperCurveFinite
 
 public import Negativity.ProperCurveCartierDegree
+
+public import Negativity.CurvePointImageDegree
+
+public import Negativity.CurveMoveDegree
+
+public import Negativity.CartierCurveIntersection
+
+public import Negativity.EffectiveCurveIntersection
+
+public import Negativity.CurveIntersectionDegree
