@@ -665,3 +665,53 @@ import Negativity
 #print axioms Negativity.complete_normal_curve_real_cartier_intersection_point_image_zero
 
 #print axioms Negativity.exists_complete_curve_real_cartier_intersection_pullback
+
+#print axioms Negativity.frobenius_isIntegral
+
+#print axioms Negativity.finiteType_perfectField_frobenius_finite
+
+#print axioms Negativity.finiteType_perfectField_iterateFrobenius_finite
+
+#print axioms Negativity.finiteType_perfectField_integralClosure_purelyInseparable_finite
+
+#print axioms Negativity.finiteType_perfectField_normal_integralClosure_finite
+
+#print axioms Negativity.finiteType_perfectField_integralClosure_finite
+
+#print axioms Negativity.finiteType_perfectField_relative_integralClosure_finite
+
+#print axioms Negativity.generic_stalk_preimage_nonempty_open
+
+#print axioms Negativity.generic_stalk_affine_functionField_embedding
+
+#print axioms Negativity.finiteType_perfectField_normalization_isFinite
+
+#print axioms Negativity.relative_integralClosure_isIntegrallyClosed
+
+#print axioms Negativity.generic_normalization_affine_sections_normal
+
+#print axioms Negativity.generic_normalization_stalks_normal
+
+#print axioms Negativity.finiteType_perfectField_normalization_birational
+
+#print axioms Negativity.generic_normalization_dimension_le_one
+
+#print axioms Negativity.finiteType_perfectField_normalization_surjective
+
+#print axioms Negativity.complete_integral_curve_normalization_properties
+
+#print axioms Negativity.complete_integral_curve_real_intersection_point_image_zero
+
+#print axioms Negativity.complete_integral_curve_real_cartier_presentation_independent
+
+#print axioms Negativity.complete_integral_curve_effective_real_intersection_signs
+
+#print axioms Negativity.exists_complete_integral_curve_real_intersection_pullback
+
+#print axioms Negativity.dominantFunctionFieldMap_comp
+
+#print axioms Negativity.complete_integral_curve_cartier_intersection_degree
+
+#print axioms Negativity.complete_integral_curve_real_cartier_intersection_degree
+
+#print axioms Negativity.finiteType_perfectField_normal_normalization_isIso

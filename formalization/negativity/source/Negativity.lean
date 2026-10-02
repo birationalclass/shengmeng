@@ -169,3 +169,35 @@ public import Negativity.EffectiveRealIntersection
 public import Negativity.CurveIntersectionPullback
 
 public import Negativity.RealIntersectionPullback
+
+public import Negativity.FiniteFrobenius
+
+public import Negativity.FrobeniusIntegralClosure
+
+public import Negativity.PerfectIntegralClosure
+
+public import Negativity.FiniteNormalizationAlgebra
+
+public import Negativity.RelativeIntegralClosureFinite
+
+public import Negativity.FiniteNormalizationGeometry
+
+public import Negativity.GenericNormalizationNormal
+
+public import Negativity.GenericNormalizationBirational
+
+public import Negativity.CurveNormalization
+
+public import Negativity.NormalizedCurveIntersection
+
+public import Negativity.NormalizedIntersectionSigns
+
+public import Negativity.NormalizedIntersectionPullback
+
+public import Negativity.FunctionFieldFunctoriality
+
+public import Negativity.NormalizedCurveDegree
+
+public import Negativity.NormalizedRealDegree
+
+public import Negativity.NormalNormalization

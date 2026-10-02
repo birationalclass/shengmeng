@@ -16,7 +16,16 @@ and proper dominant curve degree formula are proved. Actual ambient principal
 moving, zero-Weil intersection, integer additivity, arbitrary real-presentation
 independence (including different generators and covers), effective real-divisor
 intersection signs, and actual ambient Cartier/R-Cartier pullback composition
-are now proved. Ambient curve normalization, geometric ample positivity,
+are now proved. The integral closure of every finite-type perfect-field domain
+in any finite function-field extension is proved finite, including inseparable
+extensions. Actual Scheme normalization is proved finite, birational and normal.
+For complete integral curves its properness, surjectivity and dimension one are
+derived. Actual Cartier/R-Cartier intersection on nonnormal complete source curves,
+arbitrary real-presentation independence, effective-divisor signs, point-image
+zero and ambient pullback composition are proved on the constructed normalization.
+The degree formula for nonnormal source curves and normal target curves uses
+the original full function-field degree. Normalization functoriality for
+nonnormal image curves, full image-curve/cycle identification, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

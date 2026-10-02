@@ -4,6 +4,22 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'NormalNormalization.lean': ['finiteType_perfectField_normal_normalization_isIso'],
+    'FiniteFrobenius.lean': ['frobenius_isIntegral', 'finiteType_perfectField_frobenius_finite', 'finiteType_perfectField_iterateFrobenius_finite'],
+    'FrobeniusIntegralClosure.lean': ['finiteType_perfectField_integralClosure_purelyInseparable_finite'],
+    'PerfectIntegralClosure.lean': ['finiteType_perfectField_normal_integralClosure_finite'],
+    'FiniteNormalizationAlgebra.lean': ['finiteType_perfectField_integralClosure_finite'],
+    'RelativeIntegralClosureFinite.lean': ['finiteType_perfectField_relative_integralClosure_finite'],
+    'FiniteNormalizationGeometry.lean': ['generic_stalk_preimage_nonempty_open', 'generic_stalk_affine_functionField_embedding', 'finiteType_perfectField_normalization_isFinite'],
+    'GenericNormalizationNormal.lean': ['relative_integralClosure_isIntegrallyClosed', 'generic_normalization_affine_sections_normal', 'generic_normalization_stalks_normal'],
+    'GenericNormalizationBirational.lean': ['finiteType_perfectField_normalization_birational'],
+    'CurveNormalization.lean': ['generic_normalization_dimension_le_one', 'finiteType_perfectField_normalization_surjective', 'complete_integral_curve_normalization_properties'],
+    'NormalizedCurveIntersection.lean': ['complete_integral_curve_real_intersection_point_image_zero', 'complete_integral_curve_real_cartier_presentation_independent'],
+    'NormalizedIntersectionSigns.lean': ['complete_integral_curve_effective_real_intersection_signs'],
+    'NormalizedIntersectionPullback.lean': ['exists_complete_integral_curve_real_intersection_pullback'],
+    'FunctionFieldFunctoriality.lean': ['dominantFunctionFieldMap_comp'],
+    'NormalizedCurveDegree.lean': ['complete_integral_curve_cartier_intersection_degree'],
+    'NormalizedRealDegree.lean': ['complete_integral_curve_real_cartier_intersection_degree'],
     'AmbientCartierMoving.lean': ['movedCartierRestrictionData_rationalTwist', 'complete_normal_curve_ambient_cartier_principal_invariance'],
     'CartierZeroIntersection.lean': ['cartier_support_empty_of_coefficients_zero', 'cartierTotalOrder_zero_of_support_empty', 'complete_normal_curve_zero_cartier_intersection'],
     'CurveCartierCombinations.lean': ['moved_restriction_equation_on_chart', 'integral_combination_moved_local_units', 'exists_complete_curve_cartier_intersection_integralCombination'],
@@ -160,7 +176,16 @@ and proper dominant curve degree formula are proved. Actual ambient principal
 moving, zero-Weil intersection, integer additivity, arbitrary real-presentation
 independence (including different generators and covers), effective real-divisor
 intersection signs, and actual ambient Cartier/R-Cartier pullback composition
-are now proved. Ambient curve normalization, geometric ample positivity,
+are now proved. The integral closure of every finite-type perfect-field domain
+in any finite function-field extension is proved finite, including inseparable
+extensions. Actual Scheme normalization is proved finite, birational and normal.
+For complete integral curves its properness, surjectivity and dimension one are
+derived. Actual Cartier/R-Cartier intersection on nonnormal complete source curves,
+arbitrary real-presentation independence, effective-divisor signs, point-image
+zero and ambient pullback composition are proved on the constructed normalization.
+The degree formula for nonnormal source curves and normal target curves uses
+the original full function-field degree. Normalization functoriality for
+nonnormal image curves, full image-curve/cycle identification, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
