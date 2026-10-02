@@ -39,7 +39,12 @@ compatibility with this intersection is proved without an intersection identity
 input. Actual image integrality, properness and dimension alternatives are
 proved. The full ambient Cartier/R-Cartier projection formula is now proved,
 including actual embedded curves, actual ambient cycle pushforward, point-image
-zero and full inseparable degree. Geometric ample positivity,
+zero and full inseparable degree. A single actual Cartier pullback is fixed
+independently of all test curves; its real intersection composition is proved
+for every complete integral curve. Relative nefness is defined on actual
+contracted complete curves using the constructed intersection, and actual
+dominant pullback preserves it without an assumed geometric compatibility or
+nef-transport identity. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

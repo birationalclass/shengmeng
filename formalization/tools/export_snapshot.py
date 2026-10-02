@@ -4,6 +4,10 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualCycleProjectionCases.lean': ['actual_point_image_curve_cycle_zero', 'actual_complete_curve_cycle_projection_cases'],
+    'ActualRelativeNef.lean': ['actual_relative_nef_negative_iff', 'actual_relative_nef_canonical_pullback'],
+    'CanonicalRealPullbackIntersection.lean': ['actualCartierPullback_data', 'complete_integral_curve_canonical_real_pullback_intersection'],
+    'FixedCartierPullbackIntersection.lean': ['complete_curve_cartier_intersection_of_actual_pullback'],
     'EmbeddedCurveProjection.lean': ['residueDegree_precomp_closedImmersion', 'embedded_curve_actual_cycle_push', 'exists_embedded_complete_curve_real_projection_formula'],
     'ActualProjectionFormula.lean': ['exists_complete_integral_curve_actual_real_projection_formula'],
     'AmbientCurveProjection.lean': ['complete_integral_curve_ambient_real_projection'],
@@ -214,7 +218,12 @@ compatibility with this intersection is proved without an intersection identity
 input. Actual image integrality, properness and dimension alternatives are
 proved. The full ambient Cartier/R-Cartier projection formula is now proved,
 including actual embedded curves, actual ambient cycle pushforward, point-image
-zero and full inseparable degree. Geometric ample positivity,
+zero and full inseparable degree. A single actual Cartier pullback is fixed
+independently of all test curves; its real intersection composition is proved
+for every complete integral curve. Relative nefness is defined on actual
+contracted complete curves using the constructed intersection, and actual
+dominant pullback preserves it without an assumed geometric compatibility or
+nef-transport identity. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

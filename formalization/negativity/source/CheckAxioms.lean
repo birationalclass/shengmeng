@@ -775,3 +775,17 @@ import Negativity
 #print axioms Negativity.embedded_curve_actual_cycle_push
 
 #print axioms Negativity.exists_embedded_complete_curve_real_projection_formula
+
+#print axioms Negativity.complete_curve_cartier_intersection_of_actual_pullback
+
+#print axioms Negativity.actualCartierPullback_data
+
+#print axioms Negativity.complete_integral_curve_canonical_real_pullback_intersection
+
+#print axioms Negativity.actual_relative_nef_negative_iff
+
+#print axioms Negativity.actual_relative_nef_canonical_pullback
+
+#print axioms Negativity.actual_point_image_curve_cycle_zero
+
+#print axioms Negativity.actual_complete_curve_cycle_projection_cases

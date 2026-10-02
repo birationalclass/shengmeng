@@ -231,3 +231,11 @@ public import Negativity.AmbientCurveProjection
 public import Negativity.ActualProjectionFormula
 
 public import Negativity.EmbeddedCurveProjection
+
+public import Negativity.FixedCartierPullbackIntersection
+
+public import Negativity.CanonicalRealPullbackIntersection
+
+public import Negativity.ActualRelativeNef
+
+public import Negativity.ActualCycleProjectionCases
