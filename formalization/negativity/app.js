@@ -1,11 +1,11 @@
-import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-14';
-import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-14';
-import {installSettings} from './settings.js?v=20261002-formal-14';
-import {createNodeEditor} from './node-editor.js?v=20261002-formal-14';
-import {installWorkspace} from './workspace.js?v=20261002-formal-14';
-import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-formal-14';
-import {createSpatialGraph} from './graph-3d.js?v=20261002-formal-14';
-import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-formal-14';
+import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-15';
+import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-15';
+import {installSettings} from './settings.js?v=20261002-formal-15';
+import {createNodeEditor} from './node-editor.js?v=20261002-formal-15';
+import {installWorkspace} from './workspace.js?v=20261002-formal-15';
+import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-formal-15';
+import {createSpatialGraph} from './graph-3d.js?v=20261002-formal-15';
+import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-formal-15';
 const nodes=translateNodes(rawNodes),statusLabels=english?englishStatuses:rawLabels;
 const byId = new Map(nodes.map(n=>[n.id,n]));
 const graph=document.querySelector('#graph'), svg=document.querySelector('#edges');
@@ -50,6 +50,6 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const three=b
 renderDetail();
 installLanguage();
 if(localStorage.getItem('formalization-view')==='3d')document.querySelector('[data-view="3d"]').click();
-fetch('snapshot.json?v=20261002-formal-14').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(data=>{snapshot=data;sourcePanel(byId.get(selected));document.querySelector('#evidenceContent').innerHTML=`<div class="evidence-grid"><div><b>代码编译通过 ✓</b><small>当前源码快照 · 本地验证</small></div><div><b>${Object.keys(data.declarations).length} 个已编译定理声明（含条件式）</b><small>公理检查无 sorryAx</small></div><div><b>${safe(data.checkedAt)}</b><small>验证日期 · 中国标准时间</small></div></div><p>Lean <code>${safe(data.lean)}</code> · mathlib <code>${safe(data.mathlib.slice(0,12))}</code></p><p>公理依赖：<code>propext · Classical.choice · Quot.sound</code>。没有新增几何公理；未完成内容仍是显式参数或规划节点。</p><div class="actions"><a class="button" href="verification.txt">完整验证日志 ↗</a><a class="button" href="snapshot.json">源码 SHA-256 清单 ↗</a><a class="button" href="source/CheckAxioms.lean">公理检查脚本 ↗</a></div><details><summary>公开源码的指纹</summary><ul class="evidence-list">${data.files.map(f=>`<li><a href="source/${safe(f.path)}">${safe(f.path)}</a><br><code>${safe(f.sha256)}</code></li>`).join('')}</ul></details>`;}).catch(err=>{document.querySelector('#evidenceContent').innerHTML='<p class="error">验证记录加载失败，请刷新或下载工程核查。</p>';document.querySelector('#sourcePanel').innerHTML='<p class="error">源码快照加载失败。</p>';console.error(err);});
+fetch('snapshot.json?v=20261002-formal-15').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(data=>{snapshot=data;sourcePanel(byId.get(selected));document.querySelector('#evidenceContent').innerHTML=`<div class="evidence-grid"><div><b>代码编译通过 ✓</b><small>当前源码快照 · 本地验证</small></div><div><b>${Object.keys(data.declarations).length} 个已编译定理声明（含条件式）</b><small>公理检查无 sorryAx</small></div><div><b>${safe(data.checkedAt)}</b><small>验证日期 · 中国标准时间</small></div></div><p>Lean <code>${safe(data.lean)}</code> · mathlib <code>${safe(data.mathlib.slice(0,12))}</code></p><p>公理依赖：<code>propext · Classical.choice · Quot.sound</code>。没有新增几何公理；未完成内容仍是显式参数或规划节点。</p><div class="actions"><a class="button" href="verification.txt">完整验证日志 ↗</a><a class="button" href="snapshot.json">源码 SHA-256 清单 ↗</a><a class="button" href="source/CheckAxioms.lean">公理检查脚本 ↗</a></div><details><summary>公开源码的指纹</summary><ul class="evidence-list">${data.files.map(f=>`<li><a href="source/${safe(f.path)}">${safe(f.path)}</a><br><code>${safe(f.sha256)}</code></li>`).join('')}</ul></details>`;}).catch(err=>{document.querySelector('#evidenceContent').innerHTML='<p class="error">验证记录加载失败，请刷新或下载工程核查。</p>';document.querySelector('#sourcePanel').innerHTML='<p class="error">源码快照加载失败。</p>';console.error(err);});
 
 document.querySelector('#fullscreen').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>document.querySelector('#expandGraph').click());};

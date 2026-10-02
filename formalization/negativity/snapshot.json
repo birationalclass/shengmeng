@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T04:09:17+08:00",
+  "checkedAt": "2026-10-02T09:36:10+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "0dedf3549152667744cb5b30a4ba3f1dfcf160a19b144ae832a90802ebcf2f64"
+      "sha256": "b1fb1ec7fb8b6615043014d9ef16d76cb327b6ce2612121cf0f1fd2294ca222a"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "532672ae53a551d47080439e11a59b5a227e0fc26e89364c58e767c28a54deb9"
+      "sha256": "383e701876a63e06b3bf169179f87cf8d3595f8ff8000b79ce48ede10ef1b5bc"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,14 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "sha256": "8b7392a29b047db7b4d6305525e212fa663f70961c1290a73058a1b12af48690"
+    },
+    {
+      "path": "Negativity/CartierSupport.lean",
+      "sha256": "a737211c70a57373982950c4cd88eb4e9b41d7a6cddc91b469744c99dc2935d4"
     },
     {
       "path": "Negativity/DivisorPullback.lean",
@@ -146,6 +154,216 @@
     }
   ],
   "declarations": {
+    "birationalMorphism_dominant": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 17,
+      "code": "theorem birationalMorphism_dominant {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) (hf : BirationalMorphism f) : IsDominant f := by\n  obtain ⟨U, hU, hIso⟩ := hf\n  have : IsIso (f ∣_ U) := hIso\n  constructor\n  apply Dense.mono (s₁ := (U : Set Y))\n  · intro y hy\n    let z := inv (f ∣_ U) ⟨y, hy⟩\n    have hz : (f ∣_ U) z = ⟨y, hy⟩ := by\n      dsimp [z]\n      change ((inv (f ∣_ U) ≫ (f ∣_ U)) ⟨y, hy⟩) = _\n      simp\n    refine ⟨(f ⁻¹ᵁ U).ι z, ?_⟩\n    change (((f ⁻¹ᵁ U).ι ≫ f) z) = y\n    rw [← morphismRestrict_ι, Scheme.Hom.comp_apply, hz]\n    rfl\n  · exact U.isOpen.dense (by simpa using hU)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birationalMorphism_generic_stalk_isIso": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 36,
+      "code": "theorem birationalMorphism_generic_stalk_isIso {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) (hf : BirationalMorphism f) :\n    IsIso (f.stalkMap (genericPoint X)) := by\n  have := birationalMorphism_dominant f hf\n  obtain ⟨U, hU, hIso⟩ := hf\n  have : IsIso (f ∣_ U) := hIso\n  apply stalkMap_isIso_over_isomorphism_open f U (genericPoint X)\n  rw [dominant_genericPoint_eq f]\n  exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr (by simpa using hU)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominantFunctionFieldMap_germ": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 48,
+      "code": "theorem dominantFunctionFieldMap_germ {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f]\n    (U : Y.Opens) [Nonempty U] [Nonempty (f ⁻¹ᵁ U)] (r : Γ(Y, U)) :\n    dominantFunctionFieldMap f (Y.germToFunctionField U r) =\n      X.germToFunctionField (f ⁻¹ᵁ U) (f.app U r) := by\n  have hη : f (genericPoint X) ∈ U := by\n    rw [dominant_genericPoint_eq f]\n    exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr (by simpa using ‹Nonempty U›)\n  rw [← Scheme.algebraMap_germ_eq_germToFunctionField Y hη r,\n    dominantFunctionFieldMap_stalk f (genericPoint X), f.germ_stalkMap_apply]\n  exact Scheme.algebraMap_germ_eq_germToFunctionField X hη _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_birational_affine_bijective": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 63,
+      "code": "theorem finite_normal_birational_affine_bijective {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsFinite f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) (hU : IsAffineOpen U) [Nonempty U] :\n    Function.Bijective (f.app U) := by\n  have := birationalMorphism_dominant f hf\n  have := birationalMorphism_generic_stalk_isIso f hf\n  have hη : f (genericPoint X) ∈ U := by\n    rw [dominant_genericPoint_eq f]\n    exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr (by simpa using ‹Nonempty U›)\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨genericPoint X, hη⟩\n  let R := Γ(Y, U)\n  let S := Γ(X, f ⁻¹ᵁ U)\n  let : Algebra R S := (f.app U).hom.toAlgebra\n  have : Module.Finite R S := f.finite_app U hU\n  have : IsIntegrallyClosed R := normal_affine_sections Y hn U hU\n  have : IsFractionRing R Y.functionField := functionField_isFractionRing_of_isAffineOpen Y U hU\n  let g : Y.functionField ⟶ X.functionField :=\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      f.stalkMap (genericPoint X)\n  let e : Y.functionField ≃+* X.functionField :=\n    RingEquiv.ofBijective g.hom (ConcreteCategory.bijective_of_isIso g)\n  let j : S →ₐ[R] Y.functionField := {\n    __ := e.symm.toRingHom.comp (X.germToFunctionField (f ⁻¹ᵁ U)).hom\n    commutes' := by\n      intro r\n      apply e.injective\n      change e (e.symm (X.germToFunctionField (f ⁻¹ᵁ U) (f.app U r))) =\n        e (algebraMap R Y.functionField r)\n      rw [RingEquiv.apply_symm_apply]\n      exact (dominantFunctionFieldMap_germ f U r).symm }\n  have hj : Function.Injective j :=\n    e.symm.injective.comp (X.germToFunctionField_injective (f ⁻¹ᵁ U))\n  exact finite_birational_algebraMap_bijective R S Y.functionField j hj",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_normal_birational_isIso": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 101,
+      "code": "theorem finite_normal_birational_isIso {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsFinite f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y)) : IsIso f := by\n  classical\n  have hlocal (U : Y.Opens) (hU : IsAffineOpen U) : IsIso (f ∣_ U) := by\n    by_cases hne : Nonempty U\n    · have : Nonempty U := hne\n      have hb := finite_normal_birational_affine_bijective f hf hn U hU\n      have : IsIso (f.app U) := (ConcreteCategory.isIso_iff_bijective _).mpr hb\n      exact (isIso_morphismRestrict_iff_isIso_app f hU).mpr inferInstance\n    · have : IsEmpty U := not_nonempty_iff.mp hne\n      infer_instance\n  apply (IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := .isomorphisms _) (f := f)\n    (fun U : Y.affineOpens => (U : Y.Opens)) (iSup_affineOpens_eq_top Y)).mpr\n  intro U\n  exact hlocal U.1 U.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalStalks_restrict": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 120,
+      "code": "theorem normalStalks_restrict (Y : Scheme.{u}) (U : Y.Opens)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y)) :\n    ∀ y : U.toScheme, IsIntegrallyClosed (U.toScheme.presheaf.stalk y) := by\n  intro y\n  have := hn y.1\n  let e := RingEquiv.ofBijective (U.stalkIso y).hom.hom\n    (ConcreteCategory.bijective_of_isIso (U.stalkIso y).hom)\n  exact IsIntegrallyClosed.of_equiv e.symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birationalMorphism_restrict": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 131,
+      "code": "theorem birationalMorphism_restrict {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) (hf : BirationalMorphism f) (U : Y.Opens) [Nonempty U] :\n    BirationalMorphism (f ∣_ U) := by\n  obtain ⟨V, hV, hIso⟩ := hf\n  have : IsIso (f ∣_ V) := hIso\n  let W : U.toScheme.Opens := U.ι ⁻¹ᵁ V\n  have hUV : ((U ⊓ V : Y.Opens) : Set Y).Nonempty :=\n    nonempty_preirreducible_inter U.isOpen V.isOpen\n      (by simpa using ‹Nonempty U›) (by simpa using hV)\n  have hW : Nonempty W := by\n    obtain ⟨y, hyU, hyV⟩ := hUV\n    exact ⟨⟨⟨y, hyU⟩, hyV⟩⟩\n  have hiUV : IsIso (f ∣_ (U ⊓ V)) := by\n    have hi : IsIso ((f ∣_ V) ∣_ (V.ι ⁻¹ᵁ U)) := inferInstance\n    have himage : V.ι ''ᵁ (V.ι ⁻¹ᵁ U) = U ⊓ V := by\n      rw [Scheme.Hom.image_preimage_eq_opensRange_inf, Scheme.Opens.opensRange_ι, inf_comm]\n    have he := (MorphismProperty.arrow_mk_iso_iff (.isomorphisms _)\n      (morphismRestrictRestrict f V (V.ι ⁻¹ᵁ U))).mp hi\n    rwa [himage] at he\n  refine ⟨W, hW, ?_⟩\n  have himage : U.ι ''ᵁ W = U ⊓ V := by\n    dsimp [W]\n    rw [Scheme.Hom.image_preimage_eq_opensRange_inf, Scheme.Opens.opensRange_ι]\n  apply (MorphismProperty.arrow_mk_iso_iff (.isomorphisms _)\n    (morphismRestrictRestrict f U W)).mpr\n  rwa [himage]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_isIso_near_finite_fiber": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 160,
+      "code": "theorem proper_normal_birational_isIso_near_finite_fiber {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (y : Y) (hfinite : (f ⁻¹' {y}).Finite) :\n    ∃ U : Y.Opens, y ∈ U ∧ IsIso (f ∣_ U) := by\n  obtain ⟨U, hy, hfin⟩ := proper_finite_fiber_neighborhood f y hfinite\n  have : Nonempty U := ⟨y, hy⟩\n  have : IsFinite (f ∣_ U) := hfin\n  have := birationalMorphism_dominant f hf\n  have hη : f (genericPoint X) ∈ U := by\n    rw [dominant_genericPoint_eq f]\n    exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr (by simpa using ‹Nonempty U›)\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨genericPoint X, hη⟩\n  exact ⟨U, hy, finite_normal_birational_isIso (f ∣_ U)\n    (birationalMorphism_restrict f hf U) (normalStalks_restrict Y U hn)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birational_affine_functionField_embedding": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 179,
+      "code": "theorem birational_affine_functionField_embedding {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) (hf : BirationalMorphism f)\n    (U : Y.Opens) [Nonempty U] :\n    letI : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n    ∃ j : Γ(X, f ⁻¹ᵁ U) →ₐ[Γ(Y, U)] Y.functionField, Function.Injective j := by\n  have := birationalMorphism_dominant f hf\n  have := birationalMorphism_generic_stalk_isIso f hf\n  have hη : f (genericPoint X) ∈ U := by\n    rw [dominant_genericPoint_eq f]\n    exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr (by simpa using ‹Nonempty U›)\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨genericPoint X, hη⟩\n  let : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n  let g : Y.functionField ⟶ X.functionField :=\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      f.stalkMap (genericPoint X)\n  let e : Y.functionField ≃+* X.functionField :=\n    RingEquiv.ofBijective g.hom (ConcreteCategory.bijective_of_isIso g)\n  let j : Γ(X, f ⁻¹ᵁ U) →ₐ[Γ(Y, U)] Y.functionField := {\n    __ := e.symm.toRingHom.comp (X.germToFunctionField (f ⁻¹ᵁ U)).hom\n    commutes' := by\n      intro r\n      apply e.injective\n      change e (e.symm (X.germToFunctionField (f ⁻¹ᵁ U) (f.app U r))) =\n        e (algebraMap Γ(Y, U) Y.functionField r)\n      rw [RingEquiv.apply_symm_apply]\n      exact (dominantFunctionFieldMap_germ f U r).symm }\n  exact ⟨j, e.symm.injective.comp (X.germToFunctionField_injective (f ⁻¹ᵁ U))⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birational_relative_integralClosure_bijective": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 209,
+      "code": "theorem birational_relative_integralClosure_bijective {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) (hU : IsAffineOpen U) [Nonempty U] :\n    letI : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n    Function.Bijective (algebraMap Γ(Y, U)\n      (integralClosure Γ(Y, U) Γ(X, f ⁻¹ᵁ U))) := by\n  let : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n  obtain ⟨j, hj⟩ := birational_affine_functionField_embedding f hf U\n  have : IsIntegrallyClosed Γ(Y, U) := normal_affine_sections Y hn U hU\n  have : IsFractionRing Γ(Y, U) Y.functionField :=\n    functionField_isFractionRing_of_isAffineOpen Y U hU\n  exact integral_birational_algebraMap_bijective _ _ _\n    (j.comp (integralClosure Γ(Y, U) Γ(X, f ⁻¹ᵁ U)).val)\n    (hj.comp Subtype.val_injective)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_birational_fromNormalization_isIso": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 227,
+      "code": "theorem normal_birational_fromNormalization_isIso {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [QuasiCompact f] [QuasiSeparated f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y)) :\n    IsIso f.fromNormalization := by\n  have hlocal (U : Y.Opens) (hU : IsAffineOpen U) : IsIso (f.fromNormalization ∣_ U) := by\n    by_cases hne : Nonempty U\n    · have : Nonempty U := hne\n      have hb := birational_relative_integralClosure_bijective f hf hn U hU\n      let : Algebra Γ(Y, U) Γ(X, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra\n      have : IsIso (CommRingCat.ofHom (algebraMap Γ(Y, U)\n          (integralClosure Γ(Y, U) Γ(X, f ⁻¹ᵁ U)))) :=\n        (ConcreteCategory.isIso_iff_bijective _).mpr hb\n      have : IsIso (f.fromNormalization.app U) := by\n        rw [f.fromNormalization_app hU]\n        infer_instance\n      exact (isIso_morphismRestrict_iff_isIso_app f.fromNormalization hU).mpr inferInstance\n    · have : IsEmpty U := not_nonempty_iff.mp hne\n      infer_instance\n  apply (IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := .isomorphisms _)\n    (f := f.fromNormalization) (fun U : Y.affineOpens => (U : Y.Opens))\n    (iSup_affineOpens_eq_top Y)).mpr\n  intro U\n  exact hlocal U.1 U.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_isIso_near_quasiFiniteAt": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 254,
+      "code": "theorem proper_normal_birational_isIso_near_quasiFiniteAt {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (x : X) (hx : f.QuasiFiniteAt x) :\n    ∃ U : Y.Opens, f x ∈ U ∧ IsIso (f ∣_ U) := by\n  have := normal_birational_fromNormalization_isIso f hf hn\n  obtain ⟨V, hxV, hIso⟩ := f.exists_mem_and_isIso_morphismRestrict_toNormalization x hx\n  have : IsIso (f.toNormalization ∣_ V) := hIso\n  let U := f.fromNormalization ''ᵁ V\n  have hpre : f.fromNormalization ⁻¹ᵁ U = V := by\n    ext z\n    change (∃ v, v ∈ V ∧ f.fromNormalization v = f.fromNormalization z) ↔ z ∈ V\n    constructor\n    · rintro ⟨v, hv, he⟩\n      exact f.fromNormalization.isOpenEmbedding.injective he ▸ hv\n    · intro hz\n      exact ⟨z, hz, rfl⟩\n  have hmem : f x ∈ U := by\n    refine ⟨f.toNormalization x, hxV, ?_⟩\n    change ((f.toNormalization ≫ f.fromNormalization) x) = f x\n    rw [f.toNormalization_fromNormalization]\n  have hi : IsIso ((f.toNormalization ≫ f.fromNormalization) ∣_ U) := by\n    rw [morphismRestrict_comp]\n    have : IsIso (f.toNormalization ∣_ (f.fromNormalization ⁻¹ᵁ U)) := by rwa [hpre]\n    infer_instance\n  rw [f.toNormalization_fromNormalization] at hi\n  exact ⟨U, hmem, hi⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exceptional_point_not_quasiFiniteAt": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 285,
+      "code": "theorem exceptional_point_not_quasiFiniteAt {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (x : X) (hcenter : ∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U)) :\n    ¬ f.QuasiFiniteAt x := by\n  intro hx\n  obtain ⟨U, hxU, hU⟩ := proper_normal_birational_isIso_near_quasiFiniteAt f hf hn x hx\n  exact hcenter U hxU hU",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exceptional_fiber_point_not_isOpen_singleton": {
+      "path": "Negativity/FiniteNormalGeometry.lean",
+      "line": 297,
+      "code": "theorem exceptional_fiber_point_not_isOpen_singleton {X Y : Scheme.{u}}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f)\n    (hn : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (x : X) (hcenter : ∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U)) :\n    ¬ IsOpen {f.asFiber x} := by\n  rw [← Scheme.Hom.quasiFiniteAt_iff_isOpen_singleton_asFiber]\n  exact exceptional_point_not_quasiFiniteAt f hf hn x hcenter",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalUnitAt_unit_transition": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 22,
+      "code": "theorem rationalUnitAt_unit_transition (X : Scheme) [IsIntegral X]\n    (x : X) (a : X.functionFieldˣ) (u : (X.presheaf.stalk x)ˣ) :\n    RationalUnitAt X x\n      (Units.map (algebraMap (X.presheaf.stalk x) X.functionField : _ →* _) u * a) ↔\n      RationalUnitAt X x a := by\n  constructor\n  · rintro ⟨v, hv⟩\n    refine ⟨u⁻¹ * v, ?_⟩\n    rw [map_mul, hv, map_inv]\n    group\n  · rintro ⟨v, rfl⟩\n    exact ⟨u * v, map_mul _ _ _⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_support_eq_on_chart": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 41,
+      "code": "theorem cartierAtlas_support_eq_on_chart (X : Scheme) [IsIntegral X]\n    {ι : Type*} (A : CartierAtlas X ι) (i : ι) (x : X) (hx : x ∈ A.chart i) :\n    x ∈ A.vanishingSupport ↔ ¬ RationalUnitAt X x (A.equation i) := by\n  obtain ⟨u, hu⟩ := A.transition i _ x hx (A.covers x).choose_spec\n  change (¬ RationalUnitAt X x (A.equation (A.covers x).choose)) ↔ _\n  rw [← hu, rationalUnitAt_unit_transition]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalUnitAt_regular_iff": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 56,
+      "code": "theorem rationalUnitAt_regular_iff (X : Scheme) [IsIntegral X] (x : X)\n    (a : X.functionFieldˣ) (r : X.presheaf.stalk x)\n    (hr : algebraMap (X.presheaf.stalk x) X.functionField r = (a : X.functionField)) :\n    RationalUnitAt X x a ↔ IsUnit r := by\n  constructor\n  · rintro ⟨u, hu⟩\n    have he : (u : X.presheaf.stalk x) = r := by\n      apply IsFractionRing.injective (X.presheaf.stalk x) X.functionField\n      exact (congrArg Units.val hu).trans hr.symm\n    exact he ▸ u.isUnit\n  · rintro ⟨u, rfl⟩\n    exact ⟨u, Units.ext hr⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalUnitAt_regular_pullback_iff": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 71,
+      "code": "theorem rationalUnitAt_regular_pullback_iff {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f]\n    (x : X) (a : Y.functionFieldˣ) (r : Y.presheaf.stalk (f x))\n    (hr : algebraMap (Y.presheaf.stalk (f x)) Y.functionField r = (a : Y.functionField)) :\n    RationalUnitAt X x (Units.map (dominantFunctionFieldMap f : _ →* _) a) ↔\n      RationalUnitAt Y (f x) a := by\n  have hs : algebraMap (X.presheaf.stalk x) X.functionField ((f.stalkMap x).hom r) =\n      dominantFunctionFieldMap f (a : Y.functionField) := by\n    rw [← dominantFunctionFieldMap_stalk f x r, hr]\n  rw [rationalUnitAt_regular_iff X x _ _ hs,\n    rationalUnitAt_regular_iff Y (f x) a r hr]\n  exact isUnit_map_iff (f.stalkMap x).hom r",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_cartierAtlas_pullback_support": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 86,
+      "code": "theorem exists_effective_cartierAtlas_pullback_support {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y) [IsDominant f]\n    {ι : Type*} (A : CartierAtlas Y ι) (hA : A.Effective) :\n    ∃ B : CartierAtlas X X, B.Effective ∧\n      B.vanishingSupport = f ⁻¹' A.vanishingSupport ∧\n      ∀ z : X, B.equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n        (A.equation (A.covers (f z)).choose) := by\n  classical\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_pullback f A\n  have heffective : B.Effective := by\n    intro z x hx\n    obtain ⟨r, hr⟩ := hA _ (f x) ((hB z).1 hx)\n    refine ⟨(f.stalkMap x).hom r, ?_⟩\n    rw [(hB z).2.2]\n    rw [← dominantFunctionFieldMap_stalk f x r, hr]\n    rfl\n  refine ⟨B, heffective, ?_, fun z => (hB z).2.2⟩\n  ext x\n  rw [cartierAtlas_support_eq_on_chart X B x x (hB x).2.1,\n    Set.mem_preimage, cartierAtlas_support_eq_on_chart Y A _ (f x) (A.covers (f x)).choose_spec,\n    (hB x).2.2]\n  obtain ⟨r, hr⟩ := hA _ (f x) (A.covers (f x)).choose_spec\n  exact not_congr (rationalUnitAt_regular_pullback_iff f x _ r hr)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartierAtlas_weil_nonneg": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 112,
+      "code": "theorem effective_cartierAtlas_weil_nonneg (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective) :\n    ∀ x : X, 0 ≤ A.weilCycle hn x := by\n  classical\n  intro x\n  by_cases hx : Order.coheight x = 1\n  · obtain ⟨i, hi⟩ := A.covers x\n    obtain ⟨r, hr⟩ := hA i x hi\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    change 0 ≤ A.coefficient hn x\n    rw [cartierAtlas_coefficient_eq X hn A i x hx hi]\n    have hne : r ≠ 0 := by\n      intro hz\n      exact (A.equation i).ne_zero (by simpa [hz] using hr.symm)\n    unfold schemeRationalOrder\n    rw [dvr_rationalOrder_represents _ _ _ r 1 hne one_ne_zero (by simpa using hr.symm)]\n    simp [LocalFractionOrder]\n  · simp [CartierAtlas.weilCycle, CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_cartierAtlas_fiber_descent": {
+      "path": "Negativity/CartierSupport.lean",
+      "line": 137,
+      "code": "theorem exists_effective_cartierAtlas_fiber_descent {X X' : Scheme}\n    [IsIntegral X] [IsIntegral X'] (p : X' ⟶ X) [IsProper p]\n    (hp : BirationalMorphism p) {ι : Type*} (A : CartierAtlas X ι)\n    (hA : A.Effective) :\n    ∃ B : CartierAtlas X' X', B.Effective ∧\n      ∀ (T : Type*) (f : X → T) (y : T),\n        (Disjoint {x' | f (p x') = y} B.vanishingSupport ∨\n          {x' | f (p x') = y} ⊆ B.vanishingSupport) ↔\n        (Disjoint {x | f x = y} A.vanishingSupport ∨\n          {x | f x = y} ⊆ A.vanishingSupport) := by\n  have := birationalMorphism_dominant p hp\n  obtain ⟨B, hB, hs, _⟩ := exists_effective_cartierAtlas_pullback_support p A hA\n  have hsurj : Function.Surjective p := (proper_birational_surjective p hp).1\n  refine ⟨B, hB, ?_⟩\n  intro T f y\n  rw [hs, composite_fiber, ← disjoint_iff_preimage_disjoint p hsurj,\n    ← subset_iff_preimage_subset p hsurj]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "affineDivisorDegree_single": {
       "path": "Negativity/DivisorPullback.lean",
       "line": 21,

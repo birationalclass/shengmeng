@@ -53,3 +53,7 @@ public import Negativity.StrictTransform
 public import Negativity.DivisorPullback
 
 public import Negativity.SeparableNorm
+
+public import Negativity.FiniteNormalGeometry
+
+public import Negativity.CartierSupport

@@ -1,5 +1,5 @@
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-14';
-import {t,english,englishStatuses} from './i18n.js?v=20261002-formal-14';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-15';
+import {t,english,englishStatuses} from './i18n.js?v=20261002-formal-15';
 // Perspective projection of the same curated proof DAG; no new proof dependencies.
 export function createSpatialGraph({host,nodes,select,relation}) {
   const byId=new Map(nodes.map(n=>[n.id,n])), depths=new Map();

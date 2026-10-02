@@ -4,6 +4,8 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'FiniteNormalGeometry.lean': ['birationalMorphism_dominant', 'birationalMorphism_generic_stalk_isIso', 'dominantFunctionFieldMap_germ', 'finite_normal_birational_affine_bijective', 'finite_normal_birational_isIso', 'normalStalks_restrict', 'birationalMorphism_restrict', 'proper_normal_birational_isIso_near_finite_fiber', 'birational_affine_functionField_embedding', 'birational_relative_integralClosure_bijective', 'normal_birational_fromNormalization_isIso', 'proper_normal_birational_isIso_near_quasiFiniteAt', 'exceptional_point_not_quasiFiniteAt', 'exceptional_fiber_point_not_isOpen_singleton'],
+    'CartierSupport.lean': ['rationalUnitAt_unit_transition', 'cartierAtlas_support_eq_on_chart', 'rationalUnitAt_regular_iff', 'rationalUnitAt_regular_pullback_iff', 'exists_effective_cartierAtlas_pullback_support', 'effective_cartierAtlas_weil_nonneg', 'exists_effective_cartierAtlas_fiber_descent'],
     'DivisorPullback.lean': ['affineDivisorDegree_single', 'affinePointDivisorPullback_degree', 'affineDivisorPullback_degree', 'affinePointDivisorPullback_apply', 'affineDivisorPullback_apply', 'affinePrincipalDivisor_pullback', 'closedPoint_residueDegree_one', 'algebraicallyClosed_point_pullback_count', 'affineDivisorPullback_support', 'affineDivisorPullback_effective_iff', 'algebraicallyClosed_effective_divisor_degree_pos'],
     'SeparableNorm.lean': ['separable_prime_ideal_norm'],
     'StrictTransform.lean': ['geometricStrictTransform_image', 'geometricStrictTransform_injective', 'geometric_exceptional_iff', 'scheme_cycle_strictTransform_coefficient', 'weilCycleCoefficients_pushforward'],
@@ -43,7 +45,7 @@ for args in [['lake', 'build'], ['lake', 'env', 'lean', 'CheckAxioms.lean']]:
 audit = logs[1]
 axiom_records = {}
 for name in sum(names.values(), []):
-    match = re.search(r"'Negativity\." + name + r"' depends on axioms: \[(.*?)\]", audit)
+    match = re.search(r"'Negativity\." + name + r"' depends on axioms: \[(.*?)\]", audit, re.S)
     if match:
         actual = [a.strip() for a in match.group(1).split(',') if a.strip()]
     elif "'Negativity." + name + "' does not depend on any axioms" in audit:
@@ -98,7 +100,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

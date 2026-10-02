@@ -822,3 +822,100 @@ Object.assign(entries,{
 entries.projection[3]=['Verified: the pullback square, tensor lengths, finite-divisor degree pullback and principal-divisor compatibility.','Open: divisor representations of arbitrary complete-curve line bundles, representation-independent degree, normalization and the point-image case.','The main route is point-length counting, including inseparable maps; norms remain auxiliary.'];
 entries.projection[4][1]=['Point counts and finite divisors: verified','Actual tensor lengths count multiplicities. Additivity extends the formula to finite signed divisors, and compatibility with principal divisors is proved.'];
 entries.projection[4][2]=['Complete-curve line-bundle degree: open','Use affine neighborhoods locally, while keeping the global curves complete. Construct divisor representations and representation-independent degree, then connect normalization and the point-image case.'];
+
+Object.assign(entries,{
+  "normalfinite": [
+    "Finite birational Scheme isomorphisms over a normal base",
+    "A finite birational map of integral schemes to a normal target is an actual Scheme isomorphism. A finite fiber of a proper birational map also has an isomorphism neighborhood.",
+    "The actual generic-stalk isomorphism constructs the function-field embedding. Normal affine rings give coordinate-map bijectivity, and affine inverses glue globally. The previous affine-reduction and gluing gap is closed.",
+    [
+      "Actual integral schemes X,Y and BirationalMorphism f.",
+      "IsFinite f and integrally closed actual target stalks.",
+      "The finite-fiber corollary requires properness and a finite point set of the fiber."
+    ],
+    [
+      [
+        "Construct the function-field embedding",
+        "The birational isomorphism open gives an inverse generic-stalk map, embedding inverse-image sections into the actual target function field."
+      ],
+      [
+        "Prove each affine map",
+        "Finiteness gives integrality, normality gives surjectivity, and the function-field embedding gives injectivity."
+      ],
+      [
+        "Glue globally",
+        "Use the affine-open cover of Y and Zariski locality of Scheme isomorphisms."
+      ],
+      [
+        "Finite-fiber neighborhood",
+        "Apply the proper finite-fiber neighborhood theorem, restrict birationality and normality, and apply the global result."
+      ]
+    ]
+  ],
+  "zmtpoint": [
+    "Zariski main: isomorphism near a quasi-finite point",
+    "For a proper birational map to a normal target, one quasi-finite preimage point gives an isomorphism neighborhood of its image. Every exceptional fiber point is therefore nonisolated.",
+    "The pointwise result is proved using actual relative normalization and mathlib’s Zariski main theorem. It is no longer a coverage input. A complete curve in the fiber is not constructed here.",
+    [
+      "Actual integral schemes X,Y and a proper birational map f.",
+      "All actual target local rings are integrally closed.",
+      "The neighborhood theorem takes f.QuasiFiniteAt x. The exceptional center is defined by the absence of a target isomorphism neighborhood."
+    ],
+    [
+      [
+        "Identify relative normalization",
+        "On every affine open, birational embedding and normality identify the integral closure in inverse-image sections with the base ring. Glue globally."
+      ],
+      [
+        "Apply pointwise Zariski main",
+        "mathlib gives a toNormalization isomorphism near the specified point. Relative normalization is already Y, so transport the neighborhood to Y."
+      ],
+      [
+        "Exclude quasi-finiteness pointwise",
+        "An exceptional image belongs to no isomorphism open, so that preimage point cannot be quasi-finite."
+      ],
+      [
+        "Actual fiber is nonisolated",
+        "Quasi-finiteness is equivalent to its singleton being open in the actual fiber. Every exceptional singleton is not open."
+      ]
+    ]
+  ],
+  "cartiersupport": [
+    "Effective Cartier support pullback and descent",
+    "Actual effective Cartier pullback stays effective and Supp(p*D)=p⁻¹(Supp D). For proper birational modifications, the fiber-support alternatives upstairs and downstairs are equivalent.",
+    "Effectivity and support use regular equations and units in actual local rings; chart independence is proved. This covers effective Cartier divisors. General effective R-Cartier support remains open, and the fiber alternative itself is not proved here.",
+    [
+      "A dominant map p of actual integral schemes and an effective CartierAtlas A.",
+      "Effective means each rational local equation comes from a regular element of the actual local ring.",
+      "Descent also requires p proper and birational; surjectivity and the support identity are proved from geometry."
+    ],
+    [
+      [
+        "Define actual support",
+        "Nonunit local equations define support. Unit transitions prove independence from the chart."
+      ],
+      [
+        "Local pullback reflects units",
+        "The actual Scheme stalkMap is a local-ring map; a regular element pulls back to a unit exactly when it is a unit downstairs."
+      ],
+      [
+        "Construct effective pullback",
+        "Pull regular equations through actual stalk maps, outputting an effective CartierAtlas and the full inverse-image support identity."
+      ],
+      [
+        "Connect actual fiber descent",
+        "Proper birationality gives surjectivity. The proved support identity yields equivalence of disjointness or containment. The upstairs alternative still needs its own proof."
+      ]
+    ]
+  ]
+});
+entries.cover[2]='Pointwise isomorphism and nonisolated exceptional fiber points are proved. Remaining: connect a nonisolated closed point to a positive-dimensional fiber component and construct a complete curve through that point.';
+entries.cover[3]=['Verified: any quasi-finite preimage point gives a target isomorphism neighborhood for a proper birational map to a normal base; every exceptional fiber point is nonisolated.','Open: cut an actual complete curve through the specified closed point in a positive-dimensional projective fiber component.'];
+entries.cover[4][1]=['Pointwise Zariski main: verified','Relative normalization is the normal base itself. mathlib’s pointwise neighborhood theorem therefore gives a target isomorphism open for the original map.'];
+entries.cover[4][2]=['Each exceptional fiber point is nonisolated: verified','Quasi-finiteness is equivalent to an open singleton in the actual fiber. Exclude it at each point; positive-dimensional components and curves remain to be constructed.'];
+entries.fiberdown[2]='Set-theoretic descent is proved. Surjectivity and inverse-image support are now proved for actual effective Cartier pullbacks. The upstairs fiber dichotomy and general effective R-Cartier support remain open; the full negativity lemma is not complete.';
+entries.fiberdown[3]=['Verified: proper birational modifications are surjective.','Verified: actual effective Cartier support pullback and fiber descent. Open: general effective R-Cartier support.','Still open: the support alternative on every upstairs fiber. It is not assumed to be proved.'];
+entries.fiberdown[4]=[['Actual Cartier support: verified','Construct effective pullback and its full inverse-image support identity; this identity is no longer a Cartier-case input.'],['Fiber equivalence: verified','Proper birational surjectivity gives equivalence of the support alternatives upstairs and downstairs.'],['Still to connect','Prove the upstairs fiber alternative and identify general effective R-Cartier support.']];
+entries.chow[2]='Hartshorne graph closure, actual Cartier pullback, real-coefficient push-pull and effectivity descent are proved. Effective Cartier support pullback is now proved. Finite-cover projectivity, finite normalization, global curve intersections and general effective R-Cartier support remain open.';
+entries.chow[3][2]='Verified: actual R-Cartier push-pull and effectivity descent, and effective Cartier inverse-image support. Open: global curve projection, general effective R-Cartier support and finite normalization.';
+entries.chow[4][2][1]='Effective Cartier support pullback and actual R-Cartier push-pull are verified. Finite normalization, global curve intersections and general effective R-Cartier support remain open.';

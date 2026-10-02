@@ -180,3 +180,45 @@ import Negativity
 #print axioms Negativity.algebraicallyClosed_effective_divisor_degree_pos
 
 #print axioms Negativity.separable_prime_ideal_norm
+
+#print axioms Negativity.birationalMorphism_dominant
+
+#print axioms Negativity.birationalMorphism_generic_stalk_isIso
+
+#print axioms Negativity.dominantFunctionFieldMap_germ
+
+#print axioms Negativity.finite_normal_birational_affine_bijective
+
+#print axioms Negativity.finite_normal_birational_isIso
+
+#print axioms Negativity.normalStalks_restrict
+
+#print axioms Negativity.birationalMorphism_restrict
+
+#print axioms Negativity.proper_normal_birational_isIso_near_finite_fiber
+
+#print axioms Negativity.birational_affine_functionField_embedding
+
+#print axioms Negativity.birational_relative_integralClosure_bijective
+
+#print axioms Negativity.normal_birational_fromNormalization_isIso
+
+#print axioms Negativity.proper_normal_birational_isIso_near_quasiFiniteAt
+
+#print axioms Negativity.exceptional_point_not_quasiFiniteAt
+
+#print axioms Negativity.exceptional_fiber_point_not_isOpen_singleton
+
+#print axioms Negativity.rationalUnitAt_unit_transition
+
+#print axioms Negativity.cartierAtlas_support_eq_on_chart
+
+#print axioms Negativity.rationalUnitAt_regular_iff
+
+#print axioms Negativity.rationalUnitAt_regular_pullback_iff
+
+#print axioms Negativity.exists_effective_cartierAtlas_pullback_support
+
+#print axioms Negativity.effective_cartierAtlas_weil_nonneg
+
+#print axioms Negativity.exists_effective_cartierAtlas_fiber_descent

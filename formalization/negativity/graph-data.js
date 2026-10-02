@@ -1181,3 +1181,167 @@ find('projection').steps[2]=['完整曲线的线丛次数：待完成','局部�
 find('projection').precise.zh.gap='已完成实际逐点张量长度、有限除子的可加拉回与次数公式、主除子拉回兼容，以及代数闭域下直接重数计数。尚需建立完整曲线任意线丛的除子表示和次数与表示选择无关，并接入正规化及像为点的情形。当前仍未删除几何 hcompat。';
 find('projection').precise.en.gap='Actual tensor lengths, additive pullback and degree of finite divisors, principal-divisor compatibility, and direct multiplicity counting over an algebraically closed field are proved. Complete-curve divisor representations of arbitrary line bundles, representation-independent degree, normalization and the point-image case remain open. Geometric hcompat has not yet been removed.';
 find('projection').inputs=['已验证：交换图拉回同构、点的张量长度、有限除子次数拉回公式及主除子兼容。','待完成：完整曲线的任意线丛与除子的对应、次数的表示无关、正规化及像为点时的次数。','主线采用逐点长度计数，含不可分情形；范数结果保留为辅助证明。'];
+
+// Actual geometry: global normal isomorphisms, pointwise ZMT and effective Cartier support.
+Object.assign(find('normalfinite'),{
+  "title": "正规底上的有限双有理概形同构",
+  "file": "FiniteNormalGeometry.lean",
+  "decl": "finite_normal_birational_isIso",
+  "deps": [
+    "normalsections"
+  ],
+  "related": [
+    "birationalMorphism_dominant",
+    "birationalMorphism_generic_stalk_isIso",
+    "dominantFunctionFieldMap_germ",
+    "finite_normal_birational_affine_bijective",
+    "normalStalks_restrict",
+    "birationalMorphism_restrict",
+    "proper_normal_birational_isIso_near_finite_fiber"
+  ],
+  "statement": "有限双有理态射 f:X→Y，X、Y 整且 Y 正规，则实际 f 是概形同构。有限纤维的 proper 双有理态射也在像点附近同构。",
+  "scope": "由实际双有理同构开集构造泛点 stalk 同构及函数域嵌入；正规仿射环给坐标映射双射，再粘合为全局 Scheme 同构。原先的仿射化与粘合缺口已补齐。",
+  "inputs": [
+    "实际整概形 X、Y 及 BirationalMorphism f。",
+    "IsFinite f；Y 的实际 stalk 整闭。",
+    "有限纤维邻域推论要求 IsProper f 和该纤维的点集有限。"
+  ],
+  "steps": [
+    [
+      "构造实际函数域嵌入",
+      "同构开集给泛点 stalk 的逆映射，将逆像开集的截面嵌入 Y 的实际函数域。",
+      "birationalMorphism_generic_stalk_isIso"
+    ],
+    [
+      "在每个仿射开集上证明",
+      "有限性给整性，整闭性给坐标环映射满射；函数域嵌入给单射。",
+      "finite_normal_birational_affine_bijective"
+    ],
+    [
+      "全局粘合",
+      "沿 Y 的所有仿射开集覆盖，用同构态射的 Zariski 局部性得到 IsIso f。",
+      "finite_normal_birational_isIso"
+    ],
+    [
+      "有限纤维附近",
+      "先用 proper 的有限纤维邻域定理，再限制双有理性及正规性，应用全局同构结果。",
+      "proper_normal_birational_isIso_near_finite_fiber"
+    ]
+  ]
+});
+nodes.push({
+  "id": "zmtpoint",
+  "title": "Zariski 主定理：准有限点附近同构",
+  "status": "done",
+  "x": 278,
+  "y": 3800,
+  "deps": [
+    "normalfinite",
+    "normalsections"
+  ],
+  "file": "FiniteNormalGeometry.lean",
+  "decl": "proper_normal_birational_isIso_near_quasiFiniteAt",
+  "related": [
+    "birational_affine_functionField_embedding",
+    "birational_relative_integralClosure_bijective",
+    "normal_birational_fromNormalization_isIso",
+    "exceptional_point_not_quasiFiniteAt",
+    "exceptional_fiber_point_not_isOpen_singleton"
+  ],
+  "paper": "support",
+  "statement": "正规底上的 proper 双有理映射，只要在一个原像点 x 准有限，就在 f(x) 的开邻域同构。因此每个 exceptional 纤维点都非孤立。",
+  "scope": "点态结论已由实际相对正规化与 mathlib 的 Zariski 主定理证明，不再把它作为覆盖输入。此节点还没有构造纤维中的完整曲线。",
+  "inputs": [
+    "X、Y 是实际整概形，f 是 proper 且双有理。",
+    "Y 的所有实际局部环整闭。",
+    "邻域定理输入是 f.QuasiFiniteAt x；exceptional 推论用像点不属于同构开集来定义 center。"
+  ],
+  "steps": [
+    [
+      "识别相对正规化",
+      "在每个仿射开集的截面环中，双有理嵌入与整闭性给 integralClosure(R,Γ(f⁻¹U))=R；全局粘合。",
+      "normal_birational_fromNormalization_isIso"
+    ],
+    [
+      "应用点态 Zariski 主定理",
+      "mathlib 给 toNormalization 在指定准有限点附近的同构。相对正规化已经是 Y，将此邻域送回 Y。",
+      "proper_normal_birational_isIso_near_quasiFiniteAt"
+    ],
+    [
+      "逐点排除准有限",
+      "exceptional 的像不属于任何同构开集，故该点不准有限。",
+      "exceptional_point_not_quasiFiniteAt"
+    ],
+    [
+      "实际纤维非孤立",
+      "用准有限与实际纤维中单点开集的等价，证明每个 exceptional 纤维点的单点集都不是开集。",
+      "exceptional_fiber_point_not_isOpen_singleton"
+    ]
+  ]
+});
+nodes.push({
+  "id": "cartiersupport",
+  "title": "有效 Cartier 支撑拉回与下降",
+  "status": "done",
+  "x": 536,
+  "y": 3950,
+  "deps": [
+    "cartierpullback",
+    "modsurj",
+    "setdown"
+  ],
+  "file": "CartierSupport.lean",
+  "decl": "exists_effective_cartierAtlas_pullback_support",
+  "related": [
+    "rationalUnitAt_unit_transition",
+    "cartierAtlas_support_eq_on_chart",
+    "rationalUnitAt_regular_iff",
+    "rationalUnitAt_regular_pullback_iff",
+    "effective_cartierAtlas_weil_nonneg",
+    "exists_effective_cartierAtlas_fiber_descent"
+  ],
+  "paper": "proper",
+  "statement": "实际有效 Cartier 拉回保持有效，且 Supp(p*D)=p⁻¹(Supp D)。proper 双有理改造下，两边纤维的支撑二择一互相等价。",
+  "scope": "用实际局部环中的正则方程和单位来定义有效性及支撑，证明转换图册不改变支撑。这里只完成有效 Cartier 情形；一般有效 R-Cartier 的支撑识别仍待完成，也没有证明每个纤维必满足二择一。",
+  "inputs": [
+    "实际整概形之间的 dominant 映射 p，以及有效 CartierAtlas A。",
+    "Effective 表示每个局部有理方程都来自实际局部环的正则元素。",
+    "下降推论另外要求 p proper 且双有理；满射与支撑等式均由几何证明。"
+  ],
+  "steps": [
+    [
+      "定义真实支撑",
+      "局部方程不为局部环单位的点构成支撑；单位转换函数保证与图册选择无关。",
+      "cartierAtlas_support_eq_on_chart"
+    ],
+    [
+      "局部拉回反映单位",
+      "实际 Scheme stalkMap 是局部环同态，正则元素拉回为单位当且仅当原元素是单位。",
+      "rationalUnitAt_regular_pullback_iff"
+    ],
+    [
+      "构造有效拉回",
+      "把正则方程沿实际 stalkMap 拉回，输出有效 CartierAtlas 及完整支撑逆像等式。",
+      "exists_effective_cartierAtlas_pullback_support"
+    ],
+    [
+      "接到实际纤维下降",
+      "proper 双有理给满射；代入已证明的支撑逆像，纤维不相交／包含在上下两边等价。仍须另证上方二择一。",
+      "exists_effective_cartierAtlas_fiber_descent"
+    ]
+  ]
+});
+find('cover').deps=['zmtpoint'];
+find('cover').scope='点态同构判据与每个 exceptional 纤维点非孤立已完成。剩余是把非孤立闭点接为正维纤维分量，并实际构造经过该点的完整曲线；不能把非孤立结论直接标成曲线已存在。';
+find('cover').inputs=['已完成：正规底上的 proper 双有理映射在任一准有限点的像附近同构，故每个 exceptional 纤维点非孤立。','待完成：在包含指定闭点的正维射影纤维分量中，用超平面实际截出完整曲线。'];
+find('cover').steps[1]=['点态 Zariski 主定理：已验证','相对正规化在正规底上就是底；mathlib 的准有限点邻域同构因此给原态射的目标同构邻域。','proper_normal_birational_isIso_near_quasiFiniteAt'];
+find('cover').steps[2]=['每个 exceptional 纤维点非孤立：已验证','准有限等价于实际纤维中的单点开集；逐点排除准有限，得到每个单点都非开。正维分量与曲线构造仍待接入。','exceptional_fiber_point_not_isOpen_singleton'];
+find('fiberdown').deps.push('cartiersupport');
+find('fiberdown').related=['exists_effective_cartierAtlas_fiber_descent'];
+find('fiberdown').scope='集合下降逻辑已验证，实际有效 Cartier 情形的满射和支撑逆像也已由几何证明。仍须完成上方纤维二择一，以及一般有效 R-Cartier 的支撑识别；完整 negativity lemma 未完成。';
+find('fiberdown').inputs=['已完成：proper 双有理改造满射。','已完成：有效 Cartier 的实际支撑拉回及纤维下降。待完成：一般有效 R-Cartier。','仍待完成：上方每个纤维的支撑二择一；不能把它当作已经证明。'];
+find('fiberdown').steps=[['实际 Cartier 支撑：已验证','构造有效拉回及完整支撑逆像等式，不再把该等式作为 Cartier 情形的输入。','exists_effective_cartierAtlas_pullback_support'],['上下纤维等价：已验证','proper 双有理改造满射，给上下纤维的支撑二择一等价。','exists_effective_cartierAtlas_fiber_descent'],['尚待接通','完成上方的纤维二择一证明及一般有效 R-Cartier 支撑识别。']];
+find('chow').deps.push('cartiersupport');
+find('chow').scope='Hartshorne 图像闭包、实际 Cartier 拉回、实系数推拉与有效性下降均已完成；有效 Cartier 的支撑拉回现已完成。有限覆盖的射影性、有限正规化、全局曲线交数和一般有效 R-Cartier 支撑仍待完成。';
+find('chow').inputs[2]='已完成：实际 R-Cartier 推拉与有效性下降、有效 Cartier 支撑逆像。待完成：全局曲线射影公式、一般有效 R-Cartier 支撑以及有限正规化。';
+find('chow').steps[2][1]='有效 Cartier 支撑逆像和实际 R-Cartier 推拉已验证；有限正规化、全局曲线交数和一般有效 R-Cartier 支撑仍待完成。';
