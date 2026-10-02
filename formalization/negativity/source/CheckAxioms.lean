@@ -516,3 +516,29 @@ import Negativity
 #print axioms Negativity.cartierOrderDivisor_rationalTwist
 
 #print axioms Negativity.cartierTotalOrder_rationalTwist
+
+#print axioms Negativity.exists_finite_separable_transcendental_parameter
+
+#print axioms Negativity.exists_compatible_finite_separable_ratFunc_embedding
+
+#print axioms Negativity.integral_subring_krullDimLE_one
+
+#print axioms Negativity.affine_curve_ring_trdeg_one
+
+#print axioms Negativity.affine_curve_fractionField_finiteType_trdeg_one
+
+#print axioms Negativity.curve_affine_chart_dimension
+
+#print axioms Negativity.curve_affine_chart_not_field
+
+#print axioms Negativity.curve_affine_constants_compatible
+
+#print axioms Negativity.curve_functionField_properties_of_closed_point
+
+#print axioms Negativity.curve_exists_coheight_one
+
+#print axioms Negativity.finiteType_curve_exists_separating_parameter
+
+#print axioms Negativity.complete_normal_curve_principal_product_formula
+
+#print axioms Negativity.complete_normal_curve_cartier_degree_invariant

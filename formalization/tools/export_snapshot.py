@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'SeparatingParameter.lean': ['exists_finite_separable_transcendental_parameter', 'exists_compatible_finite_separable_ratFunc_embedding'],
+    'AffineCurveFunctionField.lean': ['integral_subring_krullDimLE_one', 'affine_curve_ring_trdeg_one', 'affine_curve_fractionField_finiteType_trdeg_one'],
+    'CurveFunctionField.lean': ['curve_affine_chart_dimension', 'curve_affine_chart_not_field', 'curve_affine_constants_compatible', 'curve_functionField_properties_of_closed_point', 'curve_exists_coheight_one', 'finiteType_curve_exists_separating_parameter'],
+    'CurveProductFormula.lean': ['complete_normal_curve_principal_product_formula'],
+    'CartierDegreeInvariance.lean': ['complete_normal_curve_cartier_degree_invariant'],
     'DedekindValuationPlaces.lean': ['valuation_fraction_mem_of_unit_denominator', 'valuation_chart_center_nonzero', 'dedekind_chart_valuation_unique_prime'],
     'ValuationChartCover.lean': ['valuation_constants_trivial', 'integral_element_mem_valuation', 'rational_infinity_ring_mem_of_parameter_pole', 'functionField_valuation_integralClosure_chart_cover'],
     'FunctionFieldValuationPlaces.lean': ['finite_place_parameter_regular', 'infinity_place_parameter_pole', 'twoChartValuation_injective', 'twoChartValuation_ne_top', 'twoChartValuation_contains_constants', 'functionField_valuation_unique_twoChart_place'],
@@ -120,8 +125,11 @@ New algebraic norm/valuation and actual Cartier restriction/order proofs
 are included. Hartshorne I.6 actual curve-point/valuation bijection and local-order
 transport, exhaustive disjoint finite/infinity place classification, actual
 curve principal degree zero, and Cartier principal-move degree independence
-are proved under a compatible finite separable parameter. Constructing that
-parameter from the actual curve, full global pullback degree, normalization,
+are proved; the compatible finite separable parameter is now constructed
+from actual finite-type one-dimensional Scheme geometry. Actual complete
+normal curves have principal degree zero and Cartier principal-move invariance
+without a parameter input, in arbitrary characteristic. Full global pullback
+degree and normalization,
 point-image zero, real intersection linearity, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing

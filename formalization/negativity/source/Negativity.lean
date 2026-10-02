@@ -111,3 +111,13 @@ public import Negativity.CurveChartPlaces
 public import Negativity.CurvePrincipalDegree
 
 public import Negativity.CartierPrincipalDegree
+
+public import Negativity.SeparatingParameter
+
+public import Negativity.AffineCurveFunctionField
+
+public import Negativity.CurveFunctionField
+
+public import Negativity.CurveProductFormula
+
+public import Negativity.CartierDegreeInvariance

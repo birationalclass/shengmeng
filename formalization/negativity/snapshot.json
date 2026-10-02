@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T19:53:29+08:00",
+  "checkedAt": "2026-10-02T21:10:52+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "2d60ef903807f663e14aa16e4d4c116b2b66ef3a48ab18fdc3ca6da3c59ae284"
+      "sha256": "81d08acd53c9fb0728f2a4c4138441c1957e0ac0c1b9d5c23d93f3f2727725e0"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "9c6170cca35ade35ef661dab84dccb337698641da74f6829b51a756330875114"
+      "sha256": "caaddbad6fc729d0a7d40839b359e66bd6681a956e7b17ee0297db704f9dbcce"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/SeparatingParameter.lean",
+      "sha256": "f2053b7d60481490f9902793d9b112c9ccb95c5c59fb007be06ea827b0557ca3"
+    },
+    {
+      "path": "Negativity/AffineCurveFunctionField.lean",
+      "sha256": "2e81179d3df0239884f83d377c1ca778d0063c1449735e035de2123240785e2a"
+    },
+    {
+      "path": "Negativity/CurveFunctionField.lean",
+      "sha256": "cebe07203fd7010f3dfedffe57ca6095af0affb6547745282e8e874fcf574b1e"
+    },
+    {
+      "path": "Negativity/CurveProductFormula.lean",
+      "sha256": "ce8b3499c563333ccc69023246ce6b130a2f5c90de8cd3c181863d5e4a9bd30a"
+    },
+    {
+      "path": "Negativity/CartierDegreeInvariance.lean",
+      "sha256": "534822838f1900ebfc8ab93fe8177f5e64dab602c37d16182acd38907434ab34"
     },
     {
       "path": "Negativity/DedekindValuationPlaces.lean",
@@ -266,6 +286,136 @@
     }
   ],
   "declarations": {
+    "exists_finite_separable_transcendental_parameter": {
+      "path": "Negativity/SeparatingParameter.lean",
+      "line": 15,
+      "code": "theorem exists_finite_separable_transcendental_parameter\n    (k L : Type*) [Field k] [PerfectField k] [Field L] [Algebra k L]\n    [Algebra.EssFiniteType k L] (hd : Algebra.trdeg k L = 1) :\n    ∃ t : L, Transcendental k t ∧\n      FiniteDimensional k⟮t⟯ L ∧ Algebra.IsSeparable k⟮t⟯ L := by\n  classical\n  obtain ⟨s, hs, hsep⟩ := exists_isTranscendenceBasis_and_isSeparable_of_perfectField k L\n  have hc : s.card = 1 := by\n    have hcard := hs.cardinalMk_eq_trdeg.trans hd\n    simp only [Cardinal.mk_fintype, Fintype.card_coe] at hcard\n    exact_mod_cast hcard\n  obtain ⟨t, ht⟩ := Finset.card_eq_one.mp hc\n  have hmem : t ∈ s := ht.symm ▸ Finset.mem_singleton_self t\n  have htrans := hs.1.transcendental (⟨t, hmem⟩ : s)\n  have hset : (s : Set L) = {t} := by simp only [ht, Finset.coe_singleton]\n  rw [hset] at hsep\n  have hsep' : Algebra.IsSeparable k⟮t⟯ L := hsep\n  have := hsep'\n  have : Algebra.EssFiniteType k⟮t⟯ L := Algebra.EssFiniteType.of_comp k k⟮t⟯ L\n  exact ⟨t, htrans, Algebra.finite_of_essFiniteType_of_isAlgebraic, hsep'⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_compatible_finite_separable_ratFunc_embedding": {
+      "path": "Negativity/SeparatingParameter.lean",
+      "line": 41,
+      "code": "theorem exists_compatible_finite_separable_ratFunc_embedding\n    (k L : Type*) [Field k] [PerfectField k] [Field L] [Algebra k L]\n    [Algebra.EssFiniteType k L] (hd : Algebra.trdeg k L = 1) :\n    ∃ f : RatFunc k →ₐ[k] L,\n      letI : Algebra (RatFunc k) L := f.toRingHom.toAlgebra\n      FiniteDimensional (RatFunc k) L ∧ Algebra.IsSeparable (RatFunc k) L := by\n  obtain ⟨t, ht, hfin, hsep⟩ := exists_finite_separable_transcendental_parameter k L hd\n  let e := RatFunc.algEquivOfTranscendental t ht\n  let f : RatFunc k →ₐ[k] L := (IntermediateField.adjoin k {t}).val.comp e.toAlgHom\n  refine ⟨f, ?_⟩\n  let : Algebra (RatFunc k) L := f.toRingHom.toAlgebra\n  have := hfin\n  have := hsep\n  exact ⟨Module.Finite.of_equiv_equiv e.symm.toRingEquiv (RingEquiv.refl L) (by\n    ext x\n    change (e (e.symm x) : L) = (x : L)\n    rw [e.apply_symm_apply]),\n    Algebra.IsSeparable.of_equiv_equiv e.symm.toRingEquiv (RingEquiv.refl L) (by\n      ext x\n      change (e (e.symm x) : L) = (x : L)\n      rw [e.apply_symm_apply])⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "integral_subring_krullDimLE_one": {
+      "path": "Negativity/AffineCurveFunctionField.lean",
+      "line": 17,
+      "code": "theorem integral_subring_krullDimLE_one\n    (A R : Type*) [CommRing A] [IsDomain A] [CommRing R] [IsDomain R]\n    [Algebra A R] [Algebra.IsIntegral A R] [Ring.KrullDimLE 1 R]\n    (hinj : Function.Injective (algebraMap A R)) : Ring.KrullDimLE 1 A := by\n  apply Ring.KrullDimLE.mk₁'\n  intro P hP hp\n  have := hp\n  obtain ⟨Q, hQ, hQP⟩ :=\n    Ideal.exists_ideal_over_prime_of_isIntegral_of_isDomain (S := R) P\n      (by rw [(RingHom.injective_iff_ker_eq_bot _).mp hinj]; exact bot_le)\n  have := hQ\n  have hQ0 : Q ≠ ⊥ := by\n    intro h\n    apply hP\n    rw [← hQP, h]\n    change RingHom.ker (algebraMap A R) = ⊥\n    exact (RingHom.injective_iff_ker_eq_bot _).mp hinj\n  have : Q.IsMaximal := hQ.isMaximal_of_ne_bot hQ0\n  rw [← hQP]\n  exact Ideal.isMaximal_under_of_isIntegral_of_isMaximal Q",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affine_curve_ring_trdeg_one": {
+      "path": "Negativity/AffineCurveFunctionField.lean",
+      "line": 40,
+      "code": "theorem affine_curve_ring_trdeg_one\n    (k R : Type u) [Field k] [CommRing R] [IsDomain R] [Algebra k R]\n    [Algebra.FiniteType k R] [Ring.KrullDimLE 1 R] (hR : ¬ IsField R) :\n    Algebra.trdeg k R = 1 := by\n  obtain ⟨n, g, hg, hint⟩ := exists_integral_inj_algHom_of_fg k R\n  let A := MvPolynomial (Fin n) k\n  let : Algebra A R := g.toRingHom.toAlgebra\n  have : Algebra.IsIntegral A R := ⟨hint⟩\n  have hinj : Function.Injective (algebraMap A R) := hg\n  have : FaithfulSMul A R := (faithfulSMul_iff_algebraMap_injective A R).mpr hinj\n  have : IsScalarTower k A R := IsScalarTower.of_algebraMap_eq fun x => (g.commutes x).symm\n  have : Ring.KrullDimLE 1 A := integral_subring_krullDimLE_one A R hinj\n  have hnle : n ≤ 1 := by\n    have hdim := Ring.krullDimLE_iff.mp (inferInstance : Ring.KrullDimLE 1 A)\n    change ringKrullDim (MvPolynomial (Fin n) k) ≤ 1 at hdim\n    simp only [MvPolynomial.ringKrullDim_of_isNoetherianRing_of_finite,\n      ringKrullDim_eq_zero_of_field, zero_add, Nat.card_eq_fintype_card,\n      Fintype.card_fin] at hdim\n    exact_mod_cast hdim\n  have hn0 : n ≠ 0 := by\n    intro hn\n    subst n\n    have hA : IsField A :=\n      (MvPolynomial.isEmptyAlgEquiv k (Fin 0)).toRingEquiv.toMulEquiv.isField\n        (Field.toIsField k)\n    exact hR (isField_of_isIntegral_of_isField' hA)\n  have hn : n = 1 := by omega\n  have heq := trdeg_add_eq k A (A := R)\n  rw [trdeg_eq_zero (R := A) (A := R), add_zero] at heq\n  rw [← heq]\n  change Algebra.trdeg k (MvPolynomial (Fin n) k) = 1\n  rw [MvPolynomial.trdeg_of_isDomain, hn]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affine_curve_fractionField_finiteType_trdeg_one": {
+      "path": "Negativity/AffineCurveFunctionField.lean",
+      "line": 78,
+      "code": "theorem affine_curve_fractionField_finiteType_trdeg_one\n    (k R L : Type u) [Field k] [CommRing R] [IsDomain R] [Algebra k R]\n    [Algebra.FiniteType k R] [Ring.KrullDimLE 1 R] (hR : ¬ IsField R)\n    [Field L] [Algebra R L] [IsFractionRing R L] [Algebra k L]\n    [IsScalarTower k R L] :\n    Algebra.EssFiniteType k L ∧ Algebra.trdeg k L = 1 := by\n  have : Algebra.EssFiniteType R L :=\n    Algebra.EssFiniteType.of_isLocalization L (nonZeroDivisors R)\n  have hft : Algebra.EssFiniteType k L := Algebra.EssFiniteType.comp k R L\n  have : Algebra.IsAlgebraic R L := IsLocalization.isAlgebraic L (nonZeroDivisors R)\n  have : FaithfulSMul R L :=\n    (faithfulSMul_iff_algebraMap_injective R L).mpr (IsFractionRing.injective R L)\n  have heq := trdeg_add_eq k R (A := L)\n  rw [trdeg_eq_zero (R := R) (A := L), add_zero, affine_curve_ring_trdeg_one k R hR] at heq\n  exact ⟨hft, heq.symm⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_affine_chart_dimension": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 15,
+      "code": "theorem curve_affine_chart_dimension (C : Scheme.{u}) [IsIntegral C]\n    (hd : Order.krullDim C ≤ 1) (U : C.Opens) (hU : IsAffineOpen U) :\n    Ring.KrullDimLE 1 Γ(C, U) := by\n  rw [Ring.krullDimLE_iff, ringKrullDim, Order.krullDim_eq_iSup_height]\n  apply iSup_le\n  intro p\n  rw [← PrimeSpectrum.height_eq_orderHeight, idealHeight_eq_coheight]\n  rw [← coheight_eq_of_isOpenImmersion hU.fromSpec]\n  exact (Order.coheight_le_krullDim (hU.fromSpec p)).trans hd",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_affine_chart_not_field": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 25,
+      "code": "theorem curve_affine_chart_not_field (C : Scheme.{u}) [IsIntegral C]\n    (U : C.Opens) (hU : IsAffineOpen U) (x : C) (hxU : x ∈ U)\n    (hx : Order.coheight x = 1) : ¬ IsField Γ(C, U) := by\n  intro hf\n  let := hf.toField\n  let p := hU.primeIdealOf ⟨x, hxU⟩\n  have hp : p.asIdeal.height = 1 := by\n    rw [idealHeight_eq_coheight]\n    change Order.coheight (hU.isoSpec.hom ⟨x, hxU⟩) = 1\n    rw [coheight_eq_of_isOpenImmersion]\n    exact (coheight_eq_of_isOpenImmersion (f := U.ι)).symm.trans hx\n  have hle := Ideal.height_le_ringKrullDim_of_ne_top p.isPrime.ne_top\n  rw [ringKrullDim_eq_zero_of_field, hp] at hle\n  norm_num at hle",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_affine_constants_compatible": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 42,
+      "code": "theorem curve_affine_constants_compatible (C : Scheme.{u}) [IsIntegral C]\n    (U : C.Opens) (hU : IsAffineOpen U) [Nonempty U]\n    (k : Type u) [Field k] (b : C ⟶ Spec (.of k)) :\n    (C.germToFunctionField U).hom.comp (Spec.preimage (hU.fromSpec ≫ b)).hom =\n      curveFunctionFieldBaseMap C k b := by\n  apply congrArg CommRingCat.Hom.hom\n  apply Spec.map_injective\n  change Spec.map (Spec.preimage (hU.fromSpec ≫ b) ≫ C.germToFunctionField U) = _\n  rw [Spec.map_comp, Spec.map_preimage, ← Category.assoc]\n  change (Spec.map (C.presheaf.germ U (genericPoint C) _) ≫ hU.fromSpec) ≫ b = _\n  change hU.fromSpecStalk _ ≫ b = _\n  rw [hU.fromSpecStalk_eq_fromSpecStalk]\n  exact (curveFunctionFieldBaseMap_spec C k b).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_functionField_properties_of_closed_point": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 56,
+      "code": "theorem curve_functionField_properties_of_closed_point\n    (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C ≤ 1)\n    (x : C) (hx : Order.coheight x = 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    [Algebra k C.functionField]\n    (hbase : algebraMap k C.functionField = curveFunctionFieldBaseMap C k b) :\n    Algebra.EssFiniteType k C.functionField ∧ Algebra.trdeg k C.functionField = 1 := by\n  obtain ⟨U, hU, hxU, _⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := x) trivial\n  have : Nonempty U := ⟨⟨x, hxU⟩⟩\n  let R := Γ(C, U)\n  let c : k →+* R := (Spec.preimage (hU.fromSpec ≫ b)).hom\n  let : Algebra k R := c.toAlgebra\n  have hc : c.FiniteType := by\n    apply (HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)).mp\n    rw [Spec.map_preimage]\n    infer_instance\n  have : Algebra.FiniteType k R := hc\n  have : Ring.KrullDimLE 1 R := curve_affine_chart_dimension C hd U hU\n  have : IsFractionRing R C.functionField := functionField_isFractionRing_of_isAffineOpen C U hU\n  have : IsScalarTower k R C.functionField := IsScalarTower.of_algebraMap_eq' (by\n    rw [hbase]\n    exact (curve_affine_constants_compatible C U hU k b).symm)\n  exact affine_curve_fractionField_finiteType_trdeg_one k R C.functionField\n    (curve_affine_chart_not_field C U hU x hxU hx)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_exists_coheight_one": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 83,
+      "code": "theorem curve_exists_coheight_one (C : Scheme.{u}) [IsIntegral C]\n    (hd : Order.krullDim C = 1) : ∃ x : C, Order.coheight x = 1 := by\n  by_contra h\n  have hall : ∀ x : C, Order.coheight x = 0 := by\n    intro x\n    have hxle : Order.coheight x ≤ 1 :=\n      WithBot.coe_le_coe.mp ((Order.coheight_le_krullDim x).trans hd.le)\n    have hxne : Order.coheight x ≠ 1 := fun hx => h ⟨x, hx⟩\n    exact Order.lt_one_iff.mp (lt_of_le_of_ne hxle hxne)\n  have hz : Order.krullDim C ≤ 0 := by\n    rw [Order.krullDim_eq_iSup_coheight]\n    apply iSup_le\n    intro x\n    simp only [hall x, WithBot.coe_zero, le_refl]\n  rw [hd] at hz\n  norm_num at hz",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finiteType_curve_exists_separating_parameter": {
+      "path": "Negativity/CurveFunctionField.lean",
+      "line": 105,
+      "code": "theorem finiteType_curve_exists_separating_parameter\n    (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n    (k : Type u) [Field k] [PerfectField k]\n    (b : C ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    [Algebra k C.functionField]\n    (hbase : algebraMap k C.functionField = curveFunctionFieldBaseMap C k b) :\n    ∃ f : RatFunc k →ₐ[k] C.functionField,\n      letI : Algebra (RatFunc k) C.functionField := f.toRingHom.toAlgebra\n      FiniteDimensional (RatFunc k) C.functionField ∧\n        Algebra.IsSeparable (RatFunc k) C.functionField := by\n  obtain ⟨x, hx⟩ := curve_exists_coheight_one C hd\n  obtain ⟨hft, htr⟩ := curve_functionField_properties_of_closed_point C hd.le x hx k b hbase\n  have := hft\n  exact exists_compatible_finite_separable_ratFunc_embedding k C.functionField htr",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_principal_product_formula": {
+      "path": "Negativity/CurveProductFormula.lean",
+      "line": 19,
+      "code": "theorem complete_normal_curve_principal_product_formula\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (b : C ⟶ Spec (.of k)) [IsProper b] [Algebra k C.functionField]\n    (hbase : algebraMap k C.functionField = curveFunctionFieldBaseMap C k b)\n    (a : C.functionFieldˣ) :\n    ∃ D : {x : C // Order.coheight x = 1} →₀ ℤ,\n      (∀ x, D x = schemeRationalOrder C hn x x.2 a) ∧ D.degree = 0 := by\n  obtain ⟨f, hfin, hsep⟩ := finiteType_curve_exists_separating_parameter C hd k b hbase\n  let : Algebra (RatFunc k) C.functionField := f.toRingHom.toAlgebra\n  have : IsScalarTower k (RatFunc k) C.functionField :=\n    IsScalarTower.of_algebraMap_eq fun x => (f.commutes x).symm\n  have := hfin\n  have := hsep\n  exact ⟨curvePrincipalDivisor C hn hd.le k b hbase a,\n    proper_normal_curve_principal_degree_zero C hn hd.le k b hbase a⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_degree_invariant": {
+      "path": "Negativity/CartierDegreeInvariance.lean",
+      "line": 17,
+      "code": "theorem complete_normal_curve_cartier_degree_invariant\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (b : C ⟶ Spec (.of k)) [IsProper b] [Algebra k C.functionField]\n    (hbase : algebraMap k C.functionField = curveFunctionFieldBaseMap C k b)\n    {ι : Type*} (A : CartierAtlas C ι) (a : C.functionFieldˣ) :\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace b\n    cartierTotalOrder C hn (A.rationalTwist a) = cartierTotalOrder C hn A := by\n  obtain ⟨f, hfin, hsep⟩ := finiteType_curve_exists_separating_parameter C hd k b hbase\n  let : Algebra (RatFunc k) C.functionField := f.toRingHom.toAlgebra\n  have : IsScalarTower k (RatFunc k) C.functionField :=\n    IsScalarTower.of_algebraMap_eq fun x => (f.commutes x).symm\n  have := hfin\n  have := hsep\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace b\n  exact cartierTotalOrder_rationalTwist C hn hd.le k b hbase A a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "valuation_fraction_mem_of_unit_denominator": {
       "path": "Negativity/DedekindValuationPlaces.lean",
       "line": 15,

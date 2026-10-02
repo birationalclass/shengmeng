@@ -5,8 +5,11 @@ New algebraic norm/valuation and actual Cartier restriction/order proofs
 are included. Hartshorne I.6 actual curve-point/valuation bijection and local-order
 transport, exhaustive disjoint finite/infinity place classification, actual
 curve principal degree zero, and Cartier principal-move degree independence
-are proved under a compatible finite separable parameter. Constructing that
-parameter from the actual curve, full global pullback degree, normalization,
+are proved; the compatible finite separable parameter is now constructed
+from actual finite-type one-dimensional Scheme geometry. Actual complete
+normal curves have principal degree zero and Cartier principal-move invariance
+without a parameter input, in arbitrary characteristic. Full global pullback
+degree and normalization,
 point-image zero, real intersection linearity, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
