@@ -731,3 +731,47 @@ import Negativity
 #print axioms Negativity.birational_functionFieldMap_bijective
 
 #print axioms Negativity.complete_integral_curves_normalization_lift_degree
+
+#print axioms Negativity.dominant_curve_generic_unit_comp
+
+#print axioms Negativity.generic_unit_transport_functionField
+
+#print axioms Negativity.complete_normal_curve_cartier_intersection_reparametrization
+
+#print axioms Negativity.complete_integral_curve_cartier_projection
+
+#print axioms Negativity.complete_integral_curve_real_cartier_projection
+
+#print axioms Negativity.dominant_generic_residueDegree_functionField
+
+#print axioms Negativity.curve_generic_height_preserved
+
+#print axioms Negativity.complete_integral_curve_actual_cycle_projection
+
+#print axioms Negativity.actual_image_isReduced
+
+#print axioms Negativity.proper_integral_actual_image_isIntegral
+
+#print axioms Negativity.complete_integral_curve_actual_image_properties
+
+#print axioms Negativity.closedImmersion_height_eq
+
+#print axioms Negativity.integral_scheme_point_or_curve
+
+#print axioms Negativity.complete_integral_curve_actual_image_dichotomy
+
+#print axioms Negativity.closedImmersion_residueFieldMap_bijective
+
+#print axioms Negativity.residueDegree_comp_closedImmersion
+
+#print axioms Negativity.actual_image_residueDegree_functionField
+
+#print axioms Negativity.complete_integral_curve_ambient_real_projection
+
+#print axioms Negativity.exists_complete_integral_curve_actual_real_projection_formula
+
+#print axioms Negativity.residueDegree_precomp_closedImmersion
+
+#print axioms Negativity.embedded_curve_actual_cycle_push
+
+#print axioms Negativity.exists_embedded_complete_curve_real_projection_formula

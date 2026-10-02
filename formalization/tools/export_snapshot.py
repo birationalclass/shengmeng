@@ -4,6 +4,16 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'EmbeddedCurveProjection.lean': ['residueDegree_precomp_closedImmersion', 'embedded_curve_actual_cycle_push', 'exists_embedded_complete_curve_real_projection_formula'],
+    'ActualProjectionFormula.lean': ['exists_complete_integral_curve_actual_real_projection_formula'],
+    'AmbientCurveProjection.lean': ['complete_integral_curve_ambient_real_projection'],
+    'ImageCycleMultiplicity.lean': ['closedImmersion_residueFieldMap_bijective', 'residueDegree_comp_closedImmersion', 'actual_image_residueDegree_functionField'],
+    'CurveImageCases.lean': ['closedImmersion_height_eq', 'integral_scheme_point_or_curve', 'complete_integral_curve_actual_image_dichotomy'],
+    'CurveImageGeometry.lean': ['actual_image_isReduced', 'proper_integral_actual_image_isIntegral', 'complete_integral_curve_actual_image_properties'],
+    'CurveCycleProjection.lean': ['dominant_generic_residueDegree_functionField', 'curve_generic_height_preserved', 'complete_integral_curve_actual_cycle_projection'],
+    'RealIntegralCurveProjection.lean': ['complete_integral_curve_real_cartier_projection'],
+    'IntegralCurveProjection.lean': ['complete_integral_curve_cartier_projection'],
+    'CurveRestrictionComposition.lean': ['dominant_curve_generic_unit_comp', 'generic_unit_transport_functionField', 'complete_normal_curve_cartier_intersection_reparametrization'],
     'CurveNormalizationLift.lean': ['birational_functionFieldMap_bijective', 'complete_integral_curves_normalization_lift_degree'],
     'NormalizationLift.lean': ['dominant_functionField_Spec_square', 'exists_finite_dominant_normalization_lift'],
     'RelativeNormalizationIdentification.lean': ['finite_dominant_generic_section_birational', 'finiteType_perfectField_relative_normalization_source_isIso'],
@@ -195,8 +205,16 @@ function field is finite and equals any actual normal finite dominant source.
 Actual finite dominant lifting to a nonnormal target's normalization is proved.
 Every proper dominant map between complete integral curves, with neither curve
 normal or smooth, has an actual finite dominant normalization lift, a commuting
-square and unchanged full function-field degree. Restriction compatibility
-with this lift, full image-curve/cycle identification, geometric ample positivity,
+square and unchanged full function-field degree. Local Cartier restriction compatibility along actual proper dominant maps is
+proved without requiring the ambient curve embedding to be dominant. Actual
+Cartier and arbitrary real Cartier projection formulas hold for maps between
+complete integral curves, neither normal nor smooth. Actual fundamental-cycle
+pushforward uses dimension weights and generic residue-field degrees, and its
+compatibility with this intersection is proved without an intersection identity
+input. Actual image integrality, properness and dimension alternatives are
+proved. The full ambient Cartier/R-Cartier projection formula is now proved,
+including actual embedded curves, actual ambient cycle pushforward, point-image
+zero and full inseparable degree. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

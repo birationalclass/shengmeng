@@ -30,8 +30,16 @@ function field is finite and equals any actual normal finite dominant source.
 Actual finite dominant lifting to a nonnormal target's normalization is proved.
 Every proper dominant map between complete integral curves, with neither curve
 normal or smooth, has an actual finite dominant normalization lift, a commuting
-square and unchanged full function-field degree. Restriction compatibility
-with this lift, full image-curve/cycle identification, geometric ample positivity,
+square and unchanged full function-field degree. Local Cartier restriction compatibility along actual proper dominant maps is
+proved without requiring the ambient curve embedding to be dominant. Actual
+Cartier and arbitrary real Cartier projection formulas hold for maps between
+complete integral curves, neither normal nor smooth. Actual fundamental-cycle
+pushforward uses dimension weights and generic residue-field degrees, and its
+compatibility with this intersection is proved without an intersection identity
+input. Actual image integrality, properness and dimension alternatives are
+proved. The full ambient Cartier/R-Cartier projection formula is now proved,
+including actual embedded curves, actual ambient cycle pushforward, point-image
+zero and full inseparable degree. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T04:19:02+08:00",
+  "checkedAt": "2026-10-03T05:15:07+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "25a814f048386bad0570d64d0050a4a4dc79f563f58151108552ffb13d1b4ab8"
+      "sha256": "f0e54cc212969b08cc575430125f9f79270cf640744628ff16dee1f912d9652f"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "67a4466b6eaf89e63fe50f59586c4a6db2d93111e35a8634c2e53f5c7aec68e4"
+      "sha256": "154fd9396fab05a6a814311916da7501bba090cba47c5eef6eee8c92637814c3"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,46 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/EmbeddedCurveProjection.lean",
+      "sha256": "3adaf8e61c345bff234632ed91f0e8f15766ed967a512eaf0ad02b2d0416c4f3"
+    },
+    {
+      "path": "Negativity/ActualProjectionFormula.lean",
+      "sha256": "f82f0868b1350c4ce6b3e6d44b72cc3fc16302b2cbfc4254e1adbcba98615e84"
+    },
+    {
+      "path": "Negativity/AmbientCurveProjection.lean",
+      "sha256": "dcd5057672e547def3a9da77284d575399e23bcc40ca4e6bca70a8b5a4a7fc56"
+    },
+    {
+      "path": "Negativity/ImageCycleMultiplicity.lean",
+      "sha256": "46f236b8dc0e0c54cd4d692d515834d3889c411b7ac90240147a8bd1093db659"
+    },
+    {
+      "path": "Negativity/CurveImageCases.lean",
+      "sha256": "4a00cda67c9b766e0cf2afce9b86ea24b46c5a4cad0aa53a4d5ba3e7336f64ab"
+    },
+    {
+      "path": "Negativity/CurveImageGeometry.lean",
+      "sha256": "3779dda40835aedec834c29be4ea8e279df5610537f545eed2943d5308ceae17"
+    },
+    {
+      "path": "Negativity/CurveCycleProjection.lean",
+      "sha256": "e14b7b395f94405943a4335908985a79af83fc100f64d49008f8d493e758b403"
+    },
+    {
+      "path": "Negativity/RealIntegralCurveProjection.lean",
+      "sha256": "e6839bfbce190dcae4277b29a2f833c37d58fa8690507c8f83fb0e94123b94c1"
+    },
+    {
+      "path": "Negativity/IntegralCurveProjection.lean",
+      "sha256": "ad4df78440387924e1dca1d62f1d9afa2e3622cfd6cd5937e801277f825102e7"
+    },
+    {
+      "path": "Negativity/CurveRestrictionComposition.lean",
+      "sha256": "69e612042bef433d9e56336340aa718e0c54b288a3f110d1c3a5339b20a1261f"
     },
     {
       "path": "Negativity/CurveNormalizationLift.lean",
@@ -466,6 +506,226 @@
     }
   ],
   "declarations": {
+    "residueDegree_precomp_closedImmersion": {
+      "path": "Negativity/EmbeddedCurveProjection.lean",
+      "line": 17,
+      "code": "theorem residueDegree_precomp_closedImmersion {C Y X : Scheme.{u}}\n    (g : C ⟶ Y) [IsClosedImmersion g] (p : Y ⟶ X) (x : C) :\n    p.residueDegree (g x) = (g ≫ p).residueDegree x := by\n  let : Algebra (X.residueField (p (g x))) (Y.residueField (g x)) :=\n    (p.residueFieldMap (g x)).hom.toAlgebra\n  let : Algebra (X.residueField (p (g x))) (C.residueField x) :=\n    ((g ≫ p).residueFieldMap x).hom.toAlgebra\n  let e := RingEquiv.ofBijective (g.residueFieldMap x).hom\n    (closedImmersion_residueFieldMap_bijective g x)\n  change Module.finrank (X.residueField (p (g x))) (Y.residueField (g x)) =\n    Module.finrank (X.residueField (p (g x))) (C.residueField x)\n  apply Algebra.finrank_eq_of_equiv_equiv (RingEquiv.refl _) e\n  change ((g ≫ p).residueFieldMap x).hom =\n    (p.residueFieldMap (g x) ≫ g.residueFieldMap x).hom\n  rw [Scheme.residueFieldMap_comp]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "embedded_curve_actual_cycle_push": {
+      "path": "Negativity/EmbeddedCurveProjection.lean",
+      "line": 35,
+      "code": "theorem embedded_curve_actual_cycle_push {C Y X : Scheme.{u}}\n    (g : C ⟶ Y) [IsClosedImmersion g] (p : Y ⟶ X) [QuasiCompact p]\n    (x : C) [DecidableEq C] [DecidableEq Y] [DecidableEq X] :\n    AlgebraicCycle.map p Order.height Order.height (single (g x) (1 : ℝ)) =\n      AlgebraicCycle.map (g ≫ p) Order.height Order.height (single x (1 : ℝ)) := by\n  rw [scheme_cycle_map_single, scheme_cycle_map_single]\n  simp only [AlgebraicCycle.mapCoeff, ← closedImmersion_height_eq g x,\n    Scheme.Hom.comp_apply, residueDegree_precomp_closedImmersion g p x]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_embedded_complete_curve_real_projection_formula": {
+      "path": "Negativity/EmbeddedCurveProjection.lean",
+      "line": 48,
+      "code": "theorem exists_embedded_complete_curve_real_projection_formula\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (hdC : Order.krullDim C = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsSeparated b] [LocallyOfFiniteType b]\n    (p : Y ⟶ X) [IsDominant p] [QuasiCompact p]\n    (g : C ⟶ Y) [IsClosedImmersion g] [IsProper ((g ≫ p) ≫ b)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : DecidableEq Y := Classical.decEq Y\n    letI : DecidableEq X := Classical.decEq X\n    ∃ P : τ → CartierAtlas Y Y,\n      (∀ t y, (P t).chart y ≤ p ⁻¹ᵁ (A t).chart ((A t).covers (p y)).choose ∧\n        y ∈ (P t).chart y ∧ (P t).equation y = Units.map (dominantFunctionFieldMap p).toMonoidHom\n          ((A t).equation ((A t).covers (p y)).choose)) ∧\n      normalizedRealCartierCurveIntersection hdC k ((g ≫ p) ≫ b) g P r =\n        (AlgebraicCycle.map p Order.height Order.height (single (g (genericPoint C)) (1 : ℝ)))\n          ((g ≫ p) (genericPoint C)) *\n            actualImageRealCartierIntersection hdC k b (g ≫ p) A r := by\n  classical\n  obtain ⟨P, hP, hI⟩ := exists_complete_integral_curve_actual_real_projection_formula\n    hdC k b p g A r\n  refine ⟨P, hP, ?_⟩\n  rw [embedded_curve_actual_cycle_push g p (genericPoint C)]\n  exact hI\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_complete_integral_curve_actual_real_projection_formula": {
+      "path": "Negativity/ActualProjectionFormula.lean",
+      "line": 21,
+      "code": "theorem exists_complete_integral_curve_actual_real_projection_formula\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (hdC : Order.krullDim C = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsSeparated b] [LocallyOfFiniteType b]\n    (p : Y ⟶ X) [IsDominant p] (g : C ⟶ Y) [IsProper ((g ≫ p) ≫ b)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : IsProper (g ≫ p) := IsProper.of_comp (g ≫ p) b\n    letI : DecidableEq C := Classical.decEq C\n    letI : DecidableEq X := Classical.decEq X\n    ∃ P : τ → CartierAtlas Y Y,\n      (∀ t y, (P t).chart y ≤ p ⁻¹ᵁ (A t).chart ((A t).covers (p y)).choose ∧\n        y ∈ (P t).chart y ∧ (P t).equation y = Units.map (dominantFunctionFieldMap p).toMonoidHom\n          ((A t).equation ((A t).covers (p y)).choose)) ∧\n      normalizedRealCartierCurveIntersection hdC k ((g ≫ p) ≫ b) g P r =\n        (AlgebraicCycle.map (g ≫ p) Order.height Order.height (single (genericPoint C) (1 : ℝ)))\n          ((g ≫ p) (genericPoint C)) *\n            actualImageRealCartierIntersection hdC k b (g ≫ p) A r := by\n  classical\n  have : IsProper (g ≫ p) := IsProper.of_comp (g ≫ p) b\n  obtain ⟨P, hP, hI⟩ := exists_complete_integral_curve_real_intersection_pullback\n    hdC k ((g ≫ p) ≫ b) p g A r\n  refine ⟨P, hP, hI.trans ?_⟩\n  exact complete_integral_curve_ambient_real_projection hdC k b (g ≫ p) A r\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_ambient_real_projection": {
+      "path": "Negativity/AmbientCurveProjection.lean",
+      "line": 37,
+      "code": "theorem complete_integral_curve_ambient_real_projection\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hdC : Order.krullDim C = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsSeparated b] [LocallyOfFiniteType b]\n    (f : C ⟶ X) [IsProper (f ≫ b)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : IsProper f := IsProper.of_comp f b\n    letI : DecidableEq C := Classical.decEq C\n    letI : DecidableEq X := Classical.decEq X\n    normalizedRealCartierCurveIntersection hdC k (f ≫ b) f A r =\n      (AlgebraicCycle.map f Order.height Order.height (single (genericPoint C) (1 : ℝ)))\n        (f (genericPoint C)) * actualImageRealCartierIntersection hdC k b f A r := by\n  classical\n  have : IsProper f := IsProper.of_comp f b\n  have h := complete_integral_curve_actual_image_properties hdC k b f\n  have : IsProper f.toImage := h.1\n  have : IsIntegral f.image := h.2.2.1\n  have : IsProper (f.imageι ≫ b) := h.2.2.2.1\n  let : Algebra f.image.functionField C.functionField :=\n    (dominantFunctionFieldMap f.toImage).toAlgebra\n  rcases complete_integral_curve_actual_image_dichotomy hdC k b f A r with ⟨hs, hz⟩ | hd\n  · have hd0 : Order.krullDim f.image = 0 := @Order.krullDim_eq_zero _ _ inferInstance hs\n    rw [hz]\n    simp only [actualImageRealCartierIntersection, hd0, zero_ne_one, dite_false, mul_zero]\n  · have hwt : Order.height (genericPoint C) = Order.height (f (genericPoint C)) := by\n      have he := (curve_generic_height_preserved hdC hd f.toImage).trans\n        (closedImmersion_height_eq f.imageι (f.toImage (genericPoint C)))\n      simpa only [← Scheme.Hom.comp_apply, Scheme.Hom.toImage_imageι] using he\n    rw [scheme_cycle_map_single,\n      scheme_mapCoeff_of_same_weight f Order.height Order.height (genericPoint C) hwt,\n      one_mul]\n    simp only [single_apply, ite_true]\n    rw [actual_image_residueDegree_functionField f]\n    have hv : actualImageRealCartierIntersection hdC k b f A r =\n        normalizedRealCartierCurveIntersection hd k (f.imageι ≫ b) f.imageι A r := by\n      simp only [actualImageRealCartierIntersection, dite_eq_left hd]\n    rw [hv]\n    have hp := complete_integral_curve_real_cartier_projection hdC hd k\n      (f.imageι ≫ b) f.toImage f.imageι A r\n    simpa only [← Category.assoc, Scheme.Hom.toImage_imageι] using hp\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "closedImmersion_residueFieldMap_bijective": {
+      "path": "Negativity/ImageCycleMultiplicity.lean",
+      "line": 15,
+      "code": "theorem closedImmersion_residueFieldMap_bijective {Y X : Scheme.{u}} (j : Y ⟶ X)\n    [IsClosedImmersion j] (y : Y) : Function.Bijective (j.residueFieldMap y) := by\n  refine ⟨(j.residueFieldMap y).hom.injective, ?_⟩\n  intro a\n  obtain ⟨s, hs⟩ := Y.residue_surjective y a\n  obtain ⟨t, ht⟩ := j.stalkMap_surjective y s\n  refine ⟨X.residue (j y) t, ?_⟩\n  rw [← CommRingCat.comp_apply, Scheme.residue_residueFieldMap]\n  simpa only [CommRingCat.comp_apply, ht] using hs",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "residueDegree_comp_closedImmersion": {
+      "path": "Negativity/ImageCycleMultiplicity.lean",
+      "line": 27,
+      "code": "theorem residueDegree_comp_closedImmersion {C Y X : Scheme.{u}}\n    (f : C ⟶ Y) (j : Y ⟶ X) [IsClosedImmersion j] (x : C) :\n    (f ≫ j).residueDegree x = f.residueDegree x := by\n  let : Algebra (X.residueField (j (f x))) (C.residueField x) :=\n    ((f ≫ j).residueFieldMap x).hom.toAlgebra\n  let : Algebra (Y.residueField (f x)) (C.residueField x) :=\n    (f.residueFieldMap x).hom.toAlgebra\n  let e := RingEquiv.ofBijective (j.residueFieldMap (f x)).hom\n    (closedImmersion_residueFieldMap_bijective j (f x))\n  change Module.finrank (X.residueField (j (f x))) (C.residueField x) =\n    Module.finrank (Y.residueField (f x)) (C.residueField x)\n  apply Algebra.finrank_eq_of_equiv_equiv e (RingEquiv.refl (C.residueField x))\n  change (j.residueFieldMap (f x) ≫ f.residueFieldMap x).hom =\n    ((f ≫ j).residueFieldMap x).hom\n  rw [Scheme.residueFieldMap_comp]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_image_residueDegree_functionField": {
+      "path": "Negativity/ImageCycleMultiplicity.lean",
+      "line": 46,
+      "code": "theorem actual_image_residueDegree_functionField {C X : Scheme.{u}} [IsIntegral C]\n    (f : C ⟶ X) [IsProper f] :\n    letI : IsIntegral f.image := proper_integral_actual_image_isIntegral f\n    letI : Algebra f.image.functionField C.functionField :=\n      (dominantFunctionFieldMap f.toImage).toAlgebra\n    f.residueDegree (genericPoint C) = Module.finrank f.image.functionField C.functionField := by\n  have : IsIntegral f.image := proper_integral_actual_image_isIntegral f\n  let : Algebra f.image.functionField C.functionField :=\n    (dominantFunctionFieldMap f.toImage).toAlgebra\n  have h := residueDegree_comp_closedImmersion f.toImage f.imageι (genericPoint C)\n  rw [Scheme.Hom.toImage_imageι] at h\n  exact h.trans (dominant_generic_residueDegree_functionField f.toImage)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "closedImmersion_height_eq": {
+      "path": "Negativity/CurveImageCases.lean",
+      "line": 15,
+      "code": "theorem closedImmersion_height_eq {Y X : Scheme.{u}} (j : Y ⟶ X)\n    [IsClosedImmersion j] (y : Y) : Order.height y = Order.height (j y) := by\n  have hsm : StrictMono j := by\n    intro a b hab\n    refine ⟨j.continuous.specialization_monotone hab.le, ?_⟩\n    intro hba\n    exact hab.not_ge (j.isEmbedding.isInducing.specializes_iff.mp hba)\n  apply Order.height_eq_of_strictMono j hsm\n  intro a b hba\n  have hb : b ∈ Set.range j := hba.le.mem_closed j.isClosedEmbedding.isClosed_range ⟨a, rfl⟩\n  obtain ⟨a', rfl⟩ := hb\n  refine ⟨a', ?_, rfl⟩\n  refine ⟨j.isEmbedding.isInducing.specializes_iff.mp hba.le, ?_⟩\n  intro haa'\n  exact hba.not_ge (j.continuous.specialization_monotone haa')",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "integral_scheme_point_or_curve": {
+      "path": "Negativity/CurveImageCases.lean",
+      "line": 33,
+      "code": "theorem integral_scheme_point_or_curve (Y : Scheme.{u}) [IsIntegral Y]\n    (hd : Order.krullDim Y ≤ 1) : Subsingleton Y ∨ Order.krullDim Y = 1 := by\n  classical\n  by_cases hs : Subsingleton Y\n  · exact Or.inl hs\n  · right\n    let : Nontrivial Y := not_subsingleton_iff_nontrivial.mp hs\n    obtain ⟨y, hy⟩ := exists_ne (genericPoint Y)\n    apply le_antisymm hd\n    apply Order.one_le_krullDim_iff.mpr\n    refine ⟨y, genericPoint Y, ?_⟩\n    have hle : y ≤ genericPoint Y := (genericPoint_spec Y).specializes trivial\n    refine ⟨hle, ?_⟩\n    intro hge\n    exact hy (Specializes.antisymm hge hle).eq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_actual_image_dichotomy": {
+      "path": "Negativity/CurveImageCases.lean",
+      "line": 52,
+      "code": "theorem complete_integral_curve_actual_image_dichotomy\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hdC : Order.krullDim C = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsSeparated b] [LocallyOfFiniteType b]\n    (f : C ⟶ X) [IsProper (f ≫ b)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    (Subsingleton f.image ∧\n      normalizedRealCartierCurveIntersection hdC k (f ≫ b) f A r = 0) ∨\n      Order.krullDim f.image = 1 := by\n  have h := complete_integral_curve_actual_image_properties hdC k b f\n  have : IsIntegral f.image := h.2.2.1\n  rcases integral_scheme_point_or_curve f.image h.2.2.2.2 with hs | hd\n  · left\n    let := hs\n    refine ⟨hs, complete_integral_curve_real_intersection_point_image_zero hdC k (f ≫ b) f ?_ A r⟩\n    intro x\n    have he := congrArg f.imageι (Subsingleton.elim (f.toImage x) (f.toImage (genericPoint C)))\n    simpa only [← Scheme.Hom.comp_apply, Scheme.Hom.toImage_imageι] using he\n  · exact Or.inr hd\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_image_isReduced": {
+      "path": "Negativity/CurveImageGeometry.lean",
+      "line": 16,
+      "code": "theorem actual_image_isReduced {C X : Scheme.{u}} [IsReduced C]\n    (f : C ⟶ X) [QuasiCompact f] : IsReduced f.image := by\n  apply +allowSynthFailures isReduced_of_isReduced_stalk\n  intro z\n  obtain ⟨U, hU, hzU, _⟩ :=\n    exists_isAffineOpen_mem_and_subset (U := ⊤) (x := f.imageι z) trivial\n  let V := f.imageι ⁻¹ᵁ U\n  have hV : IsAffineOpen V := hU.preimage f.imageι\n  have : _root_.IsReduced Γ(f.image, V) :=\n    isReduced_of_injective (f.toImage.app V).hom (f.toImage_app_injective ⟨U, hU⟩)\n  let x : V := ⟨z, hzU⟩\n  let : Algebra Γ(f.image, V) (f.image.presheaf.stalk z) :=\n    f.image.presheaf.algebra_section_stalk x\n  have := hV.isLocalization_stalk x\n  exact isReduced_localizationPreserves (hV.primeIdealOf x).asIdeal.primeCompl _ inferInstance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_integral_actual_image_isIntegral": {
+      "path": "Negativity/CurveImageGeometry.lean",
+      "line": 33,
+      "code": "theorem proper_integral_actual_image_isIntegral {C X : Scheme.{u}} [IsIntegral C]\n    (f : C ⟶ X) [IsProper f] : IsIntegral f.image := by\n  have : IsReduced f.image := actual_image_isReduced f\n  have : IrreducibleSpace f.image := f.toImage.surjective.irreducibleSpace f.toImage.continuous\n  exact isIntegral_of_irreducibleSpace_of_isReduced _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_actual_image_properties": {
+      "path": "Negativity/CurveImageGeometry.lean",
+      "line": 42,
+      "code": "theorem complete_integral_curve_actual_image_properties\n    {C X : Scheme.{u}} [IsIntegral C]\n    (hdC : Order.krullDim C = 1)\n    (k : Type u) [Field k]\n    (b : X ⟶ Spec (.of k)) [IsSeparated b] [LocallyOfFiniteType b]\n    (f : C ⟶ X) [IsProper (f ≫ b)] :\n    IsProper f.toImage ∧ Surjective f.toImage ∧ IsIntegral f.image ∧\n      IsProper (f.imageι ≫ b) ∧ Order.krullDim f.image ≤ 1 := by\n  have : IsProper f := IsProper.of_comp f b\n  have : IsProper f.toImage := by\n    have : IsProper (f.toImage ≫ f.imageι) := by simpa\n    exact IsProper.of_comp f.toImage f.imageι\n  have : Surjective f.toImage := inferInstance\n  have : IsIntegral f.image := proper_integral_actual_image_isIntegral f\n  have : UniversallyClosed (f.toImage ≫ (f.imageι ≫ b)) := by\n    rw [← Category.assoc, Scheme.Hom.toImage_imageι]\n    infer_instance\n  have : UniversallyClosed (f.imageι ≫ b) :=\n    UniversallyClosed.of_comp_surjective f.toImage (f.imageι ≫ b)\n  have : IsProper (f.imageι ≫ b) := ⟨⟩\n  refine ⟨inferInstance, inferInstance, inferInstance, inferInstance, ?_⟩\n  apply Order.krullDim_le_one_iff.mpr\n  intro y\n  by_cases hy : y = genericPoint f.image\n  · right\n    subst y\n    exact fun _ _ => (genericPoint_spec f.image).specializes trivial\n  · left\n    obtain ⟨x, rfl⟩ := f.toImage.surjective y\n    have hx : x ≠ genericPoint C := by\n      intro he\n      exact hy (he ▸ dominant_genericPoint_eq f.toImage)\n    have hc := f.toImage.isClosedMap _ (curve_coheight_one_isClosed C hdC.le x\n      (curve_nonGeneric_coheight_one C hdC.le x hx))\n    rw [Set.image_singleton] at hc\n    intro z hz\n    have he : z = f.toImage x := Set.mem_singleton_iff.mp\n      (hc.closure_eq ▸ hz.mem_closure)\n    exact he.symm ▸ le_refl _\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_generic_residueDegree_functionField": {
+      "path": "Negativity/CurveCycleProjection.lean",
+      "line": 17,
+      "code": "theorem dominant_generic_residueDegree_functionField\n    {C Y : Scheme.{u}} [IsIntegral C] [IsIntegral Y]\n    (f : C ⟶ Y) [IsDominant f] :\n    letI : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    f.residueDegree (genericPoint C) = Module.finrank Y.functionField C.functionField := by\n  let : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  let : Algebra (Y.residueField (f (genericPoint C))) (C.residueField (genericPoint C)) :=\n    (f.residueFieldMap (genericPoint C)).hom.toAlgebra\n  let rY : Y.functionField ⟶ Y.residueField (f (genericPoint C)) :=\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      Y.residue (f (genericPoint C))\n  have hrY : Function.Bijective rY := ⟨rY.hom.injective,\n    (Y.residue_surjective _).comp (ConcreteCategory.bijective_of_isIso\n      (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv).surjective⟩\n  let eY := RingEquiv.ofBijective rY.hom hrY\n  let eC := RingEquiv.ofBijective (C.residue (genericPoint C)).hom\n    ⟨(C.residue (genericPoint C)).hom.injective, C.residue_surjective _⟩\n  symm\n  apply Algebra.finrank_eq_of_equiv_equiv eY eC\n  change (rY ≫ f.residueFieldMap (genericPoint C)).hom =\n    (CommRingCat.ofHom (dominantFunctionFieldMap f) ≫ C.residue (genericPoint C)).hom\n  dsimp only [rY]\n  rw [Category.assoc, Scheme.residue_residueFieldMap]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_generic_height_preserved": {
+      "path": "Negativity/CurveCycleProjection.lean",
+      "line": 43,
+      "code": "theorem curve_generic_height_preserved\n    {C Y : Scheme.{u}} [IsIntegral C] [IsIntegral Y]\n    (hdC : Order.krullDim C = 1) (hdY : Order.krullDim Y = 1)\n    (f : C ⟶ Y) [IsDominant f] :\n    Order.height (genericPoint C) = Order.height (f (genericPoint C)) := by\n  rw [dominant_genericPoint_eq f]\n  apply WithBot.coe_injective\n  change (Order.height (⊤ : C) : WithBot ℕ∞) = (Order.height (⊤ : Y) : WithBot ℕ∞)\n  rw [Order.height_top_eq_krullDim, Order.height_top_eq_krullDim, hdC, hdY]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_actual_cycle_projection": {
+      "path": "Negativity/CurveCycleProjection.lean",
+      "line": 58,
+      "code": "theorem complete_integral_curve_actual_cycle_projection\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (hdC : Order.krullDim C = 1) (hdY : Order.krullDim Y = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (f : C ⟶ Y) [IsProper f] [IsDominant f] (j : Y ⟶ X)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    letI : DecidableEq C := Classical.decEq C\n    letI : DecidableEq Y := Classical.decEq Y\n    let pushed := AlgebraicCycle.map f Order.height Order.height (single (genericPoint C) (1 : ℝ))\n    pushed = single (genericPoint Y) (Module.finrank Y.functionField C.functionField : ℝ) ∧\n      normalizedRealCartierCurveIntersection hdC k (f ≫ b) (f ≫ j) A r =\n        pushed (genericPoint Y) * normalizedRealCartierCurveIntersection hdY k b j A r := by\n  classical\n  let : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have hpush : AlgebraicCycle.map f Order.height Order.height (single (genericPoint C) (1 : ℝ)) =\n      single (genericPoint Y) (Module.finrank Y.functionField C.functionField : ℝ) := by\n    rw [scheme_cycle_map_single,\n      scheme_mapCoeff_of_same_weight f Order.height Order.height (genericPoint C)\n        (curve_generic_height_preserved hdC hdY f),\n      dominant_generic_residueDegree_functionField f, dominant_genericPoint_eq f, one_mul]\n  refine ⟨hpush, ?_⟩\n  rw [hpush]\n  simp only [single_apply]\n  exact complete_integral_curve_real_cartier_projection hdC hdY k b f j A r\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_real_cartier_projection": {
+      "path": "Negativity/RealIntegralCurveProjection.lean",
+      "line": 16,
+      "code": "theorem complete_integral_curve_real_cartier_projection\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (hdC : Order.krullDim C = 1) (hdY : Order.krullDim Y = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (f : C ⟶ Y) [IsProper f] [IsDominant f] (j : Y ⟶ X)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    normalizedRealCartierCurveIntersection hdC k (f ≫ b) (f ≫ j) A r =\n      (Module.finrank Y.functionField C.functionField : ℝ) *\n        normalizedRealCartierCurveIntersection hdY k b j A r := by\n  classical\n  let : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  unfold normalizedRealCartierCurveIntersection\n  simp_rw [complete_integral_curve_cartier_projection hdC hdY k b f j]\n  push_cast\n  rw [Finset.mul_sum]\n  apply Finset.sum_congr rfl\n  intro t _\n  ring\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_cartier_projection": {
+      "path": "Negativity/IntegralCurveProjection.lean",
+      "line": 21,
+      "code": "theorem complete_integral_curve_cartier_projection\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (hdC : Order.krullDim C = 1) (hdY : Order.krullDim Y = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (f : C ⟶ Y) [IsProper f] [IsDominant f] (j : Y ⟶ X)\n    {ι : Type*} (A : CartierAtlas X ι) :\n    letI : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    normalizedCartierCurveIntersection hdC k (f ≫ b) (f ≫ j) A =\n      (Module.finrank Y.functionField C.functionField : ℤ) *\n        normalizedCartierCurveIntersection hdY k b j A := by\n  let nC := C.fromSpecStalk (genericPoint C)\n  let nY := Y.fromSpecStalk (genericPoint Y)\n  let : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have hC := complete_integral_curve_normalization_properties C hdC k (f ≫ b)\n  have hY := complete_integral_curve_normalization_properties Y hdY k b\n  have : IsLocallyNoetherian nC.normalization := hC.2.2.2.2.2.1\n  have : IsLocallyNoetherian nY.normalization := hY.2.2.2.2.2.1\n  have : IsProper (nY.fromNormalization ≫ b) := hY.2.2.2.2.2.2\n  obtain ⟨l, hl, hlf, hld, hdegree⟩ :=\n    complete_integral_curves_normalization_lift_degree hdC hdY k b f\n  have : IsFinite l := hlf\n  have : IsDominant l := hld\n  let : Algebra nY.normalization.functionField nC.normalization.functionField :=\n    (dominantFunctionFieldMap l).toAlgebra\n  have hI := complete_normal_curve_cartier_intersection_reparametrization\n    (generic_normalization_stalks_normal C) (generic_normalization_stalks_normal Y)\n    hC.2.2.2.2.1 hY.2.2.2.2.1 k (nY.fromNormalization ≫ b) l\n    (nY.fromNormalization ≫ j) A\n  rw [hdegree] at hI\n  have hcomp : l ≫ (nY.fromNormalization ≫ j) = nC.fromNormalization ≫ (f ≫ j) := by\n    rw [← Category.assoc, hl, Category.assoc]\n  rw [hcomp] at hI\n  simpa only [normalizedCartierCurveIntersection] using hI\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_curve_generic_unit_comp": {
+      "path": "Negativity/CurveRestrictionComposition.lean",
+      "line": 16,
+      "code": "theorem dominant_curve_generic_unit_comp\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (p : C ⟶ Y) [IsDominant p] (j : Y ⟶ X)\n    (u : (X.presheaf.stalk (j (genericPoint Y)))ˣ) :\n    Units.map (dominantFunctionFieldMap p).toMonoidHom\n      (Units.map (j.stalkMap (genericPoint Y)).hom.toMonoidHom u) =\n    Units.map ((p ≫ j).stalkMap (genericPoint C)).hom.toMonoidHom\n      (Units.map (X.presheaf.stalkCongr\n        (.of_eq (congrArg j (dominant_genericPoint_eq p)))).inv.hom.toMonoidHom u) := by\n  apply Units.ext\n  change (((j.stalkMap (genericPoint Y) ≫\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq p))).inv) ≫\n      p.stalkMap (genericPoint C)) u) = _\n  rw [TopCat.Presheaf.stalkCongr_inv]\n  change (((j.stalkMap (genericPoint Y) ≫ Y.presheaf.stalkSpecializes\n    (Inseparable.of_eq (dominant_genericPoint_eq p)).le) ≫ p.stalkMap (genericPoint C)) u) = _\n  rw [← Scheme.Hom.stalkSpecializes_stalkMap]\n  rw [Scheme.Hom.stalkMap_comp]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "generic_unit_transport_functionField": {
+      "path": "Negativity/CurveRestrictionComposition.lean",
+      "line": 36,
+      "code": "theorem generic_unit_transport_functionField\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    (p : C ⟶ Y) [IsDominant p] (j : Y ⟶ X)\n    (u : (X.presheaf.stalk (j (genericPoint Y)))ˣ) :\n    Units.map (algebraMap (X.presheaf.stalk (j (p (genericPoint C)))) X.functionField).toMonoidHom\n      (Units.map (X.presheaf.stalkCongr\n        (.of_eq (congrArg j (dominant_genericPoint_eq p)))).inv.hom.toMonoidHom u) =\n    Units.map (algebraMap (X.presheaf.stalk (j (genericPoint Y))) X.functionField).toMonoidHom u := by\n  apply Units.ext\n  change algebraMap (X.presheaf.stalk (j (p (genericPoint C)))) X.functionField\n    ((X.presheaf.stalkCongr (.of_eq (congrArg j (dominant_genericPoint_eq p)))).inv u) = _\n  rw [TopCat.Presheaf.stalkCongr_inv]\n  exact stalkSpecialization_functionField X _ _ _ (u : X.presheaf.stalk (j (genericPoint Y)))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_normal_curve_cartier_intersection_reparametrization": {
+      "path": "Negativity/CurveRestrictionComposition.lean",
+      "line": 54,
+      "code": "theorem complete_normal_curve_cartier_intersection_reparametrization\n    {C Y X : Scheme.{u}} [IsIntegral C] [IsIntegral Y] [IsIntegral X]\n    [IsLocallyNoetherian C] [IsLocallyNoetherian Y]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hdC : Order.krullDim C = 1) (hdY : Order.krullDim Y = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [IsProper b]\n    (p : C ⟶ Y) [IsProper p] [IsDominant p] (j : Y ⟶ X)\n    {ι : Type*} (A : CartierAtlas X ι) :\n    letI : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace b\n    letI : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace (p ≫ b)\n    letI : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap p).toAlgebra\n    cartierCurveIntersection hnC (p ≫ j) A =\n      (Module.finrank Y.functionField C.functionField : ℤ) * cartierCurveIntersection hnY j A := by\n  classical\n  let : CompactSpace Y := QuasiCompact.compactSpace_of_compactSpace b\n  let : CompactSpace C := QuasiCompact.compactSpace_of_compactSpace (p ≫ b)\n  let : Algebra Y.functionField C.functionField := (dominantFunctionFieldMap p).toAlgebra\n  let R := movedCartierCurveRestriction j A\n  have hη : (p ≫ j) (genericPoint C) ∉ (A.rationalTwist R.move).vanishingSupport := by\n    rw [Scheme.Hom.comp_apply, dominant_genericPoint_eq p]\n    exact R.avoids\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback (p ≫ j) (A.rationalTwist R.move) hη\n  have hdata : MovedCartierRestrictionData (p ≫ j) A R.move B := hB\n  obtain ⟨P, hP, hdeg⟩ := complete_normal_curve_cartier_pullback_degree\n    p k b hnC hnY hdC hdY R.atlas\n  have hc (x : C) : P.coefficient hnC x = B.coefficient hnC x := by\n    by_cases hx : Order.coheight x = 1\n    · let y := (R.atlas.covers (p x)).choose\n      have hy : j (p x) ∈ A.chart (A.covers (j y)).choose :=\n        (R.data y).2.1 (R.atlas.covers (p x)).choose_spec\n      obtain ⟨u, v, hu, hv⟩ := moved_restriction_equation_on_chart\n        (p ≫ j) A R.move B hdata x _ hy\n      obtain ⟨w, hw, hRw⟩ := (R.data y).2.2\n      let w' := Units.map (X.presheaf.stalkCongr\n        (.of_eq (congrArg j (dominant_genericPoint_eq p)))).inv.hom.toMonoidHom w\n      have hw' : Units.map\n          (algebraMap (X.presheaf.stalk ((p ≫ j) (genericPoint C))) X.functionField).toMonoidHom w' =\n            R.move * A.equation (A.covers (j y)).choose :=\n        (generic_unit_transport_functionField p j w).trans hw\n      have huw : u = w' := Units.map_injective\n        (f := (algebraMap (X.presheaf.stalk ((p ≫ j) (genericPoint C))) X.functionField).toMonoidHom)\n        (IsFractionRing.injective _ _) (hu.trans hw'.symm)\n      have he : P.equation x =\n          Units.map (algebraMap (C.presheaf.stalk x) C.functionField).toMonoidHom v * B.equation x := by\n        rw [(hP x).2.2, hRw, dominant_curve_generic_unit_comp]\n        change Units.map ((p ≫ j).stalkMap (genericPoint C)).hom.toMonoidHom w' = _\n        exact (congrArg (Units.map ((p ≫ j).stalkMap (genericPoint C)).hom.toMonoidHom) huw.symm).trans hv\n      rw [cartierAtlas_coefficient_eq C hnC P x x hx (hP x).2.1,\n        cartierAtlas_coefficient_eq C hnC B x x hx (hB x).1, he]\n      have := hnC x\n      have := normal_codimensionOne_stalk_isDVR C x hx\n      exact dvr_rationalOrder_unit_transition (C.presheaf.stalk x) C.functionField v _\n    · simp [CartierAtlas.coefficient, hx]\n  have heq : cartierOrderDivisor C hnC B = cartierOrderDivisor C hnC P := by\n    ext x\n    simpa only [cartierOrderDivisor_apply] using (hc x).symm\n  rw [complete_normal_curve_cartier_intersection_eq_restriction hnC hdC k (p ≫ b)\n    (p ≫ j) A R.move B hdata]\n  change (cartierOrderDivisor C hnC B).degree = _\n  rw [heq]\n  exact hdeg\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "birational_functionFieldMap_bijective": {
       "path": "Negativity/CurveNormalizationLift.lean",
       "line": 17,
