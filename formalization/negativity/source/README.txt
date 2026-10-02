@@ -44,7 +44,14 @@ independently of all test curves; its real intersection composition is proved
 for every complete integral curve. Relative nefness is defined on actual
 contracted complete curves using the constructed intersection, and actual
 dominant pullback preserves it without an assumed geometric compatibility or
-nef-transport identity. Geometric ample positivity,
+nef-transport identity. Actual exceptional closed-point curve coverage is now constructed over any
+algebraically closed field: Noether normalization and going-down build an
+affine integral curve through a prescribed point, actual scheme closure makes
+it complete, and actual Zariski main theorem places it in the contracted
+fiber. For an effective actual real Cartier divisor with zero coefficient at
+an exceptional prime, the support-outside closed point, contracted complete
+curve and nonnegative actual intersection are all constructed; no curve
+existence input is assumed. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

@@ -239,3 +239,21 @@ public import Negativity.CanonicalRealPullbackIntersection
 public import Negativity.ActualRelativeNef
 
 public import Negativity.ActualCycleProjectionCases
+
+public import Negativity.AffineLineThroughPoint
+
+public import Negativity.AffineCurveThroughPoint
+
+public import Negativity.FunctionFieldDimension
+
+public import Negativity.CompleteCurveClosure
+
+public import Negativity.CompleteCurveThroughPoint
+
+public import Negativity.IntegralClosedSubscheme
+
+public import Negativity.NonisolatedCompleteCurve
+
+public import Negativity.ExceptionalCompleteCurve
+
+public import Negativity.ZeroPrimeCurve

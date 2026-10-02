@@ -4,6 +4,15 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ZeroPrimeCurve.lean': ['zero_weil_coefficient_outside_geometric_support', 'zero_exceptional_prime_actual_curve_nonnegative_intersection'],
+    'ExceptionalCompleteCurve.lean': ['exceptional_closed_point_complete_contracted_curve'],
+    'NonisolatedCompleteCurve.lean': ['nonisolated_point_positive_irreducible_component', 'exists_complete_integral_curve_through_nonisolated_closed_point'],
+    'IntegralClosedSubscheme.lean': ['vanishingIdeal_subscheme_isReduced', 'closed_irreducible_actual_subscheme_properties'],
+    'CompleteCurveThroughPoint.lean': ['affine_chart_not_field_at_nonGeneric_point', 'dimension_one_of_curve_domain', 'exists_complete_integral_curve_through_closed_point'],
+    'CompleteCurveClosure.lean': ['dominant_functionField_constants_comp', 'quasiCompact_integral_actual_image_isIntegral', 'complete_integral_curve_actual_closure'],
+    'FunctionFieldDimension.lean': ['finiteType_domain_dimension_of_trdeg_le_one', 'affine_chart_dimension_of_functionField_trdeg_le_one', 'integral_scheme_dimension_of_functionField_trdeg_le_one'],
+    'AffineCurveThroughPoint.lean': ['integral_extension_krullDimLE_one', 'affine_integral_curve_through_maximal'],
+    'AffineLineThroughPoint.lean': ['affine_line_kernel_below_point'],
     'ActualCycleProjectionCases.lean': ['actual_point_image_curve_cycle_zero', 'actual_complete_curve_cycle_projection_cases'],
     'ActualRelativeNef.lean': ['actual_relative_nef_negative_iff', 'actual_relative_nef_canonical_pullback'],
     'CanonicalRealPullbackIntersection.lean': ['actualCartierPullback_data', 'complete_integral_curve_canonical_real_pullback_intersection'],
@@ -223,7 +232,14 @@ independently of all test curves; its real intersection composition is proved
 for every complete integral curve. Relative nefness is defined on actual
 contracted complete curves using the constructed intersection, and actual
 dominant pullback preserves it without an assumed geometric compatibility or
-nef-transport identity. Geometric ample positivity,
+nef-transport identity. Actual exceptional closed-point curve coverage is now constructed over any
+algebraically closed field: Noether normalization and going-down build an
+affine integral curve through a prescribed point, actual scheme closure makes
+it complete, and actual Zariski main theorem places it in the contracted
+fiber. For an effective actual real Cartier divisor with zero coefficient at
+an exceptional prime, the support-outside closed point, contracted complete
+curve and nonnegative actual intersection are all constructed; no curve
+existence input is assumed. Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

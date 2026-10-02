@@ -1,7 +1,7 @@
-Verified 2026-10-03T05:44:16+08:00
+Verified 2026-10-03T07:13:59+08:00
 
 $ lake build
-⚠ [3882/3989] Replayed Negativity.NormalExtension
+⚠ [3888/4000] Replayed Negativity.NormalExtension
 warning: Negativity/NormalExtension.lean:128:2: Try this:
   haveI̵
 
@@ -26,7 +26,7 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [3909/3989] Replayed Negativity.CartierEffectivity
+⚠ [3925/4000] Replayed Negativity.CartierEffectivity
 warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
 
 Hint: Use `simp` instead of `simpa`:
@@ -42,14 +42,27 @@ Note: This linter can be disabled with `set_option linter.unusedVariables false`
 warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
 
 Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
-⚠ [3910/3989] Replayed Negativity.CartierVanishing
+⚠ [3926/4000] Replayed Negativity.CartierVanishing
 warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
   [apply] _hU
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-Build completed successfully (3989 jobs).
+⚠ [3998/4000] Replayed Negativity.ZeroPrimeCurve
+warning: Negativity/ZeroPrimeCurve.lean:53:36: Variable name `hC` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hC
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Negativity/ZeroPrimeCurve.lean:54:7: Variable name `hp` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hp
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (4000 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -584,3 +597,34 @@ $ lake env lean CheckAxioms.lean
 'Negativity.actual_relative_nef_canonical_pullback' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.actual_point_image_curve_cycle_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.actual_complete_curve_cycle_projection_cases' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.affine_line_kernel_below_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.integral_extension_krullDimLE_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.affine_integral_curve_through_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.finiteType_domain_dimension_of_trdeg_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.affine_chart_dimension_of_functionField_trdeg_le_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.integral_scheme_dimension_of_functionField_trdeg_le_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.dominant_functionField_constants_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.quasiCompact_integral_actual_image_isIntegral' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.complete_integral_curve_actual_closure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.affine_chart_not_field_at_nonGeneric_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.dimension_one_of_curve_domain' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_complete_integral_curve_through_closed_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.vanishingIdeal_subscheme_isReduced' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.closed_irreducible_actual_subscheme_properties' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.nonisolated_point_positive_irreducible_component' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_complete_integral_curve_through_nonisolated_closed_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.exceptional_closed_point_complete_contracted_curve' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.zero_weil_coefficient_outside_geometric_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.zero_exceptional_prime_actual_curve_nonnegative_intersection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

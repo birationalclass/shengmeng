@@ -789,3 +789,41 @@ import Negativity
 #print axioms Negativity.actual_point_image_curve_cycle_zero
 
 #print axioms Negativity.actual_complete_curve_cycle_projection_cases
+
+#print axioms Negativity.affine_line_kernel_below_point
+
+#print axioms Negativity.integral_extension_krullDimLE_one
+
+#print axioms Negativity.affine_integral_curve_through_maximal
+
+#print axioms Negativity.finiteType_domain_dimension_of_trdeg_le_one
+
+#print axioms Negativity.affine_chart_dimension_of_functionField_trdeg_le_one
+
+#print axioms Negativity.integral_scheme_dimension_of_functionField_trdeg_le_one
+
+#print axioms Negativity.dominant_functionField_constants_comp
+
+#print axioms Negativity.quasiCompact_integral_actual_image_isIntegral
+
+#print axioms Negativity.complete_integral_curve_actual_closure
+
+#print axioms Negativity.affine_chart_not_field_at_nonGeneric_point
+
+#print axioms Negativity.dimension_one_of_curve_domain
+
+#print axioms Negativity.exists_complete_integral_curve_through_closed_point
+
+#print axioms Negativity.vanishingIdeal_subscheme_isReduced
+
+#print axioms Negativity.closed_irreducible_actual_subscheme_properties
+
+#print axioms Negativity.nonisolated_point_positive_irreducible_component
+
+#print axioms Negativity.exists_complete_integral_curve_through_nonisolated_closed_point
+
+#print axioms Negativity.exceptional_closed_point_complete_contracted_curve
+
+#print axioms Negativity.zero_weil_coefficient_outside_geometric_support
+
+#print axioms Negativity.zero_exceptional_prime_actual_curve_nonnegative_intersection
