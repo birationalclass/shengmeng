@@ -1,5 +1,5 @@
 import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-18';
-import {t,english,englishStatuses} from './i18n.js?v=20261002-formal-18';
+import {t,english,englishStatuses} from './i18n.js?v=20261002-msmath-8&proof=20261002-formal-18';
 // Perspective projection of the same curated proof DAG; no new proof dependencies.
 export function createSpatialGraph({host,nodes,select,relation,theoremTarget}) {
   const byId=new Map(nodes.map(n=>[n.id,n])), depths=new Map();
@@ -12,7 +12,7 @@ export function createSpatialGraph({host,nodes,select,relation,theoremTarget}) {
   const theoremCard=theoremTarget.createCard('3d');cards.append(theoremCard.element);theoremCard.element.style.transform='translate(-50%,-50%)';
   const theoremFocus=document.createElement('button');theoremFocus.type='button';theoremFocus.className='button small';theoremFocus.dataset.camera='theorem';theoremFocus.textContent=english?'Theorem':'最终定理';host.querySelector('.spatial-controls').prepend(theoremFocus);
   const buttons=new Map();
-  nodes.forEach(n=>{const b=document.createElement('button');b.className=`spatial-node ${n.status}`;b.dataset.spatialNode=n.id;b.setAttribute('aria-label',n.title+' · '+(english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status]));b.innerHTML=`<b></b><small></small><span class="relation-tag"></span>`;b.querySelector('b').textContent=n.title;b.querySelector('small').textContent=english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'◇ 暂作假设',pending:'○ 待完成目标'})[n.status];b.addEventListener('click',e=>{if(e.detail===0)select(n.id);});cards.append(b);buttons.set(n.id,b);});
+  nodes.forEach(n=>{const b=document.createElement('button');b.className=`spatial-node ${n.status}`;b.dataset.spatialNode=n.id;b.setAttribute('aria-label',n.title+' · '+(english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]));b.innerHTML=`<b></b><small></small><span class="relation-tag"></span>`;b.querySelector('b').textContent=n.title;b.querySelector('small').textContent=english?englishStatuses[n.status]:({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status];b.addEventListener('click',e=>{if(e.detail===0)select(n.id);});cards.append(b);buttons.set(n.id,b);});
   let yaw=-.38,pitch=.12,zoom=1,focused=false,directOnly=false,theoremFocused=false,current='proper',scope='all',frame=0,pointer=null;
   const labels={selected:'当前结论',direct:'直接前提',indirect:'间接前提',other:'非当前依赖'};
   function schedule(){if(!frame)frame=requestAnimationFrame(draw);}
