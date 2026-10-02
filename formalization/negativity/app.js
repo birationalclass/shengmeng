@@ -1,13 +1,13 @@
 import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
 import {installDependencyCurrent} from './dependency-current.js?v=20261002-continuous-1';
-import {installTheoremTarget} from './theorem-target.js?v=20261002-statusbar-1&proof=20261002-formal-22';
+import {installTheoremTarget} from './theorem-target.js?v=20261002-dock-2&proof=20261002-formal-22';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-22';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-22';
-import {installSettings} from './settings.js?v=20261002-statusbar-1&proof=20261002-formal-22';
+import {installSettings} from './settings.js?v=20261002-dock-2&proof=20261002-formal-22';
 import {createNodeEditor} from './node-editor.js?v=20261002-bound-rail-1&proof=20261002-formal-22';
-import {installWorkspace} from './workspace.js?v=20261002-statusbar-1&proof=20261002-formal-22';
+import {installWorkspace} from './workspace.js?v=20261002-dock-2&proof=20261002-formal-22';
 import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-refuge-1&proof=20261002-formal-22';
-import {createSpatialGraph} from './graph-3d.js?v=20261002-statusbar-1&proof=20261002-formal-22';
+import {createSpatialGraph} from './graph-3d.js?v=20261002-dock-2&proof=20261002-formal-22';
 import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-msmath-8&proof=20261002-formal-22';
 const nodes=translateNodes(rawNodes),statusLabels={...(english?englishStatuses:rawLabels)};
 document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
