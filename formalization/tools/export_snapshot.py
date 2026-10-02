@@ -4,6 +4,14 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'NormDivisor.lean': ['separable_relNorm_factorization', 'ideal_primePower_multiplicity', 'ideal_primePower_product_multiplicity', 'normalizedIdealPoints_asIdeal', 'separable_ideal_norm_order', 'heightOneOrder_regular_eq_multiplicity', 'separable_integral_norm_order', 'ideal_order_eq_point_count', 'idealFactorDivisor_apply', 'idealFactorDivisor_principal', 'affineDivisorPushforward_single', 'separable_ideal_norm_divisor', 'fractionFieldNormUnits_integral', 'separable_integral_principal_norm', 'separable_affine_principal_norm', 'affineDivisorPushforward_degree', 'separable_affine_principal_norm_degree', 'fractionRing_separable_of_fractionFields', 'separable_integral_functionField_norm', 'separable_functionField_principal_norm', 'separable_functionField_principal_norm_degree'],
+    'RationalDivisor.lean': ['polynomial_point_residueDegree', 'polynomial_prime_principal_divisor', 'polynomial_prime_principal_degree', 'polynomial_principal_degree', 'rational_affine_principal_degree', 'rational_actual_principal_degree_zero'],
+    'InfinityNorm.lean': ['normalized_discrete_valuation_eq', 'rational_infinity_normalized_valuation', 'rational_infinity_heightOneOrder', 'separable_infinity_principal_norm', 'twoChart_principal_degree_zero'],
+    'FunctionFieldProductFormula.lean': ['functionField_principal_degree_zero'],
+    'CartierDegree.lean': ['cartierOrderDivisor_apply', 'cartierTotalOrder_eq_of_unit_transitions', 'effective_cartierTotalOrder_nonneg', 'effective_cartierTotalOrder_pos', 'effective_cartierTotalOrder_pos_of_support'],
+    'CartierCurveRestriction.lean': ['stalkSpecialization_functionField', 'generic_stalkMap_commutes', 'exists_cartierAtlas_nondominant_pullback', 'exists_effective_nondominant_cartier_pullback', 'effective_cartier_restriction_order_signs'],
+    'RealCartierCurveDegree.lean': ['effective_real_cartier_curve_order_signs', 'effective_realCartier_curve_decomposition_order_signs'],
+    'CartierCurveMoving.lean': ['cartierAtlas_move_off_generic_curve', 'cartierAtlas_rationalTwist_transition', 'exists_moved_cartier_curve_restriction'],
     'RealCartierPullback.lean': ['dominantFunctionFieldMap_stalk_unit', 'cartierAtlas_pullback_coefficient_eq', 'cartierAtlas_integralCombination_coefficients', 'exists_realCartier_effective_decomposition_equations', 'cartierAtlas_pullback_integralCombination_coefficients', 'realWeightedWeilCycle_eq_of_integral_coefficients', 'exists_effective_cartierAtlas_pullback_data', 'exists_realCartier_termwise_pullback_support', 'exists_realCartier_termwise_fiber_descent'],
     'NormalExtension.lean': ['normal_local_annihilator_maximal_isPrincipal', 'normal_local_associated_principal_maximal_isPrincipal', 'normal_local_associated_principal_isDVR', 'normal_principal_associated_prime_isDVR', 'normal_principal_associated_prime_height_one', 'normal_divisibility_of_height_one_local', 'normal_fraction_regular_iff_height_one', 'normal_fraction_regular_of_height_one_denominators'],
     'CartierEffectivity.lean': ['dvr_rationalOrder_nonneg_iff_regular', 'normal_affine_rational_regular', 'cartierAtlas_effective_iff_weil_nonneg', 'exists_realCartier_effective_weil_decomposition'],
@@ -96,6 +104,10 @@ snapshot = {'schemaVersion': 1, 'checkedAt': date, 'lean': (project / 'lean-tool
 readme = '''Negativity: coefficient core and conditional interfaces
 
 This snapshot is NOT a complete geometric proof of the negativity lemma.
+New algebraic norm/valuation and actual Cartier restriction/order proofs
+are included. Complete Scheme-curve place identification, principal-move
+degree independence, geometric ample positivity, full Chow construction
+and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 
@@ -107,7 +119,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean, NormDivisor.lean, RationalDivisor.lean, InfinityNorm.lean, FunctionFieldProductFormula.lean, CartierDegree.lean, CartierCurveRestriction.lean, RealCartierCurveDegree.lean, CartierCurveMoving.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

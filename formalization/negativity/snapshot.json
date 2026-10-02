@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T12:27:59+08:00",
+  "checkedAt": "2026-10-02T16:51:39+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "0a99e85ee80a64601522241ec22f3845ed93ebe50cf5efb72e42bc36efa88ab1"
+      "sha256": "8af0c4b8dfec26911518c7c9badd4a7502219d9c06e45a83ece7e6074ff88770"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "5d819b6f91974b9ef6175fdd17481eddf71b93d95c98b4bd7508ac5ef60427fd"
+      "sha256": "deecd89c66834a6f3a19b186a07db5c8fad7700733200f6da5bfba7fe106120e"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,38 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/NormDivisor.lean",
+      "sha256": "9c9477be1d08a7dc5e52d19fa0d5eeb4e7ce0a2d8df14dac06ffe6e5d6602457"
+    },
+    {
+      "path": "Negativity/RationalDivisor.lean",
+      "sha256": "2b3a9ae69030e14e37bef9757a6298c7e088744b8ff1f897cb46d642ab8c53ba"
+    },
+    {
+      "path": "Negativity/InfinityNorm.lean",
+      "sha256": "a080775ed35887a8c7748fe93718df5d5222e8e28084d7f0d62a0edecd939d80"
+    },
+    {
+      "path": "Negativity/FunctionFieldProductFormula.lean",
+      "sha256": "b628ce2b0e2bc55d29912eeadbd7b8dad147ba54fe35df1365883bd8056a9726"
+    },
+    {
+      "path": "Negativity/CartierDegree.lean",
+      "sha256": "a9bde8496b415165399134a2d5bc55db79d208531834af108e84144946000c6f"
+    },
+    {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "sha256": "7ab9cfb1755decdda2b49e3d881b1b18a33289ce1239d2426f4d96a410d2fd4a"
+    },
+    {
+      "path": "Negativity/RealCartierCurveDegree.lean",
+      "sha256": "ca499a78936a59e17a26c6f52c84df9c10620a5e18c9e5a974173a5df20e9529"
+    },
+    {
+      "path": "Negativity/CartierCurveMoving.lean",
+      "sha256": "90190db584212e2e17005b5de0ada6fd172f138acffd226f38c25dcc874d8aff"
     },
     {
       "path": "Negativity/RealCartierPullback.lean",
@@ -186,6 +218,486 @@
     }
   ],
   "declarations": {
+    "separable_relNorm_factorization": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 20,
+      "code": "theorem separable_relNorm_factorization (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (I : Ideal S) (hI : I ≠ ⊥) :\n    Ideal.relNorm R I =\n      ((normalizedFactors I).map (fun Q => (Q.under R) ^ Q.inertiaDeg R)).prod := by\n  conv_lhs => rw [← Ideal.prod_normalizedFactors_eq_self hI]\n  rw [map_multiset_prod]\n  apply congrArg Multiset.prod\n  apply Multiset.map_congr rfl\n  intro Q hQ\n  have hQ0 : Q ≠ ⊥ := ne_zero_of_mem_normalizedFactors hQ\n  have : Q.IsPrime := ((Ideal.mem_normalizedFactors_iff hI).mp hQ).1\n  have : Q.IsMaximal := Ring.DimensionLEOne.maximalOfPrime hQ0 inferInstance\n  have hp0 : Q.under R ≠ ⊥ := Ideal.IsIntegral.under_ne_bot R hQ0\n  have : (Q.under R).IsMaximal := Ring.DimensionLEOne.maximalOfPrime hp0 inferInstance\n  exact separable_prime_ideal_norm R S Q (Q.under R)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "ideal_primePower_multiplicity": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 40,
+      "code": "theorem ideal_primePower_multiplicity (R : Type*) [CommRing R] [IsDedekindDomain R]\n    (p q : HeightOneSpectrum R) (n : ℕ) :\n    multiplicity p.asIdeal (q.asIdeal ^ n) = if p = q then n else 0 := by\n  rw [multiplicity_eq_count_normalizedFactors p.irreducible (pow_ne_zero n q.ne_bot),\n    normalizedFactors_pow, normalizedFactors_irreducible q.irreducible]\n  by_cases h : p = q\n  · subst q\n    simp\n  · have hpq : p.asIdeal ≠ q.asIdeal := fun he => h (HeightOneSpectrum.ext he)\n    simp [h, hpq]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "ideal_primePower_product_multiplicity": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 53,
+      "code": "theorem ideal_primePower_product_multiplicity (R : Type*)\n    [CommRing R] [IsDedekindDomain R] (p : HeightOneSpectrum R)\n    {α : Type*} (M : Multiset α) (point : α → HeightOneSpectrum R) (n : α → ℕ) :\n    multiplicity p.asIdeal ((M.map fun q => (point q).asIdeal ^ n q).prod) =\n      (M.map fun q => if p = point q then n q else 0).sum := by\n  have hne (M : Multiset α) :\n      (M.map fun q => (point q).asIdeal ^ n q).prod ≠ (0 : Ideal R) := by\n    induction M using Multiset.induction_on with\n    | empty => simp\n    | cons q M ih =>\n      simp only [Multiset.map_cons, Multiset.prod_cons]\n      exact mul_ne_zero (pow_ne_zero _ (point q).ne_bot) ih\n  induction M using Multiset.induction_on with\n  | empty => simp\n  | cons q M ih =>\n    simp only [Multiset.map_cons, Multiset.prod_cons, Multiset.sum_cons]\n    rw [multiplicity_mul p.prime (FiniteMultiplicity.of_prime_left p.prime\n      (mul_ne_zero (pow_ne_zero _ (point q).ne_bot) (hne M))),\n      ideal_primePower_multiplicity, ih]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalizedIdealPoints_asIdeal": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 80,
+      "code": "theorem normalizedIdealPoints_asIdeal (R : Type*) [CommRing R] [IsDedekindDomain R]\n    (I : Ideal R) (hI : I ≠ ⊥) :\n    (normalizedIdealPoints R I hI).map HeightOneSpectrum.asIdeal = normalizedFactors I := by\n  simp [normalizedIdealPoints, Multiset.map_map]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_ideal_norm_order": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 87,
+      "code": "theorem separable_ideal_norm_order (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (I : Ideal S) (hI : I ≠ ⊥) (p : HeightOneSpectrum R) :\n    multiplicity p.asIdeal (Ideal.relNorm R I) =\n      ((normalizedIdealPoints S I hI).map fun q =>\n        if p = q.under R then q.asIdeal.inertiaDeg R else 0).sum := by\n  have hn : Ideal.relNorm R I =\n      ((normalizedIdealPoints S I hI).map fun q =>\n        (q.under R).asIdeal ^ q.asIdeal.inertiaDeg R).prod := by\n    rw [separable_relNorm_factorization R S I hI]\n    have hmap := normalizedIdealPoints_asIdeal S I hI\n    rw [← hmap, Multiset.map_map]\n    rfl\n  rw [hn, ideal_primePower_product_multiplicity]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "heightOneOrder_regular_eq_multiplicity": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 106,
+      "code": "theorem heightOneOrder_regular_eq_multiplicity (R K : Type*)\n    [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (p : HeightOneSpectrum R) (a : R) (ha : a ≠ 0) :\n    heightOneOrder K p\n      (Units.mk0 (algebraMap R K a) (by simpa using (IsFractionRing.injective R K).ne ha)) =\n      (multiplicity p.asIdeal (Ideal.span {a}) : ℤ) := by\n  simp [heightOneOrder, HeightOneSpectrum.valuation_of_algebraMap,\n    p.intValuation_eq_exp_neg_multiplicity ha]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_integral_norm_order": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 117,
+      "code": "theorem separable_integral_norm_order (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (a : S) (ha : a ≠ 0) (p : HeightOneSpectrum R) :\n    heightOneOrder (FractionRing R) p\n      (Units.mk0 (algebraMap R (FractionRing R) (Algebra.intNorm R S a))\n        (by simpa using (IsFractionRing.injective R (FractionRing R)).ne (Algebra.intNorm_ne_zero.mpr ha))) =\n      (((normalizedIdealPoints S (Ideal.span {a}) (by simpa using ha)).map fun q =>\n        if p = q.under R then q.asIdeal.inertiaDeg R else 0).sum : ℤ) := by\n  rw [heightOneOrder_regular_eq_multiplicity R (FractionRing R) p _\n    (Algebra.intNorm_ne_zero.mpr ha)]\n  have h := separable_ideal_norm_order R S (Ideal.span {a}) (by simpa using ha) p\n  rw [Ideal.relNorm_singleton] at h\n  have hc := congrArg (fun n : ℕ => (n : ℤ)) h\n  simpa only [Nat.cast_multiset_sum, Multiset.map_map, Function.comp_def,\n    apply_ite, Nat.cast_zero] using hc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "ideal_order_eq_point_count": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 135,
+      "code": "theorem ideal_order_eq_point_count (R : Type*) [CommRing R] [IsDedekindDomain R]\n    (I : Ideal R) (hI : I ≠ ⊥) (p : HeightOneSpectrum R) :\n    multiplicity p.asIdeal I = (normalizedIdealPoints R I hI).count p := by\n  rw [multiplicity_eq_count_normalizedFactors p.irreducible hI, normalize_eq,\n    ← normalizedIdealPoints_asIdeal R I hI,\n    Multiset.count_map_eq_count' _ _ HeightOneSpectrum.asIdeal_injective]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "idealFactorDivisor_apply": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 147,
+      "code": "theorem idealFactorDivisor_apply (R : Type*) [CommRing R] [IsDedekindDomain R]\n    (I : Ideal R) (hI : I ≠ ⊥) (p : HeightOneSpectrum R) :\n    idealFactorDivisor R I hI p = (multiplicity p.asIdeal I : ℤ) := by\n  rw [ideal_order_eq_point_count R I hI p]\n  unfold idealFactorDivisor\n  generalize normalizedIdealPoints R I hI = M\n  induction M using Multiset.induction_on with\n  | empty => simp\n  | cons q M ih =>\n    simp only [Multiset.map_cons, Multiset.sum_cons, Finsupp.add_apply, ih, Multiset.count_cons]\n    by_cases h : q = p\n    · subst q\n      simp [add_comm]\n    · simp [Ne.symm h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "idealFactorDivisor_principal": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 162,
+      "code": "theorem idealFactorDivisor_principal (R K : Type*)\n    [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : R) (ha : a ≠ 0) :\n    idealFactorDivisor R (Ideal.span {a}) (by simpa using ha) =\n      affinePrincipalDivisor K (Units.mk0 (algebraMap R K a)\n        (by simpa using (IsFractionRing.injective R K).ne ha)) := by\n  ext p\n  rw [idealFactorDivisor_apply, affinePrincipalDivisor_apply,\n    heightOneOrder_regular_eq_multiplicity R K p a ha]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affineDivisorPushforward_single": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 181,
+      "code": "theorem affineDivisorPushforward_single (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] (q : HeightOneSpectrum S) (n : ℤ) :\n    affineDivisorPushforward R S (Finsupp.single q n) =\n      Finsupp.single (q.under R) (n * (q.asIdeal.inertiaDeg R : ℤ)) := by\n  simp [affineDivisorPushforward]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_ideal_norm_divisor": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 188,
+      "code": "theorem separable_ideal_norm_divisor (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (I : Ideal S) (hI : I ≠ ⊥) :\n    idealFactorDivisor R (Ideal.relNorm R I) (Ideal.relNorm_eq_bot_iff.not.mpr hI) =\n      affineDivisorPushforward R S (idealFactorDivisor S I hI) := by\n  ext p\n  rw [idealFactorDivisor_apply, separable_ideal_norm_order R S I hI p]\n  change _ = (Finsupp.applyAddHom p) (affineDivisorPushforward R S _)\n  simp only [idealFactorDivisor, map_multiset_sum, Multiset.map_map,\n    Function.comp_def, affineDivisorPushforward_single, one_mul,\n    Finsupp.applyAddHom_apply, Finsupp.single_apply]\n  push_cast\n  simp [eq_comm]\n\nnoncomputable def fractionFieldNormUnits (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S] :\n    (FractionRing S)ˣ →* (FractionRing R)ˣ :=\n  Units.map (Algebra.norm (FractionRing R) : FractionRing S →* FractionRing R)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "fractionFieldNormUnits_integral": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 210,
+      "code": "theorem fractionFieldNormUnits_integral (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    (a : S) (ha : a ≠ 0) :\n    fractionFieldNormUnits R S (Units.mk0 (algebraMap S (FractionRing S) a)\n      (by simpa using (IsFractionRing.injective S (FractionRing S)).ne ha)) =\n      Units.mk0 (algebraMap R (FractionRing R) (Algebra.intNorm R S a))\n        (by simpa using (IsFractionRing.injective R (FractionRing R)).ne (Algebra.intNorm_ne_zero.mpr ha)) := by\n  apply Units.ext\n  exact (Algebra.algebraMap_intNorm_fractionRing a).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_integral_principal_norm": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 221,
+      "code": "theorem separable_integral_principal_norm (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (a : S) (ha : a ≠ 0) :\n    affinePrincipalDivisor (FractionRing R)\n      (fractionFieldNormUnits R S (Units.mk0 (algebraMap S (FractionRing S) a)\n        (by simpa using (IsFractionRing.injective S (FractionRing S)).ne ha))) =\n      affineDivisorPushforward R S\n        (affinePrincipalDivisor (FractionRing S) (Units.mk0 (algebraMap S (FractionRing S) a)\n          (by simpa using (IsFractionRing.injective S (FractionRing S)).ne ha))) := by\n  rw [fractionFieldNormUnits_integral R S a ha]\n  have h := separable_ideal_norm_divisor R S (Ideal.span {a}) (by simpa using ha)\n  simpa only [Ideal.relNorm_singleton,\n    idealFactorDivisor_principal R (FractionRing R) _ (Algebra.intNorm_ne_zero.mpr ha),\n    idealFactorDivisor_principal S (FractionRing S) a ha] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_affine_principal_norm": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 240,
+      "code": "theorem separable_affine_principal_norm (R S : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (a : (FractionRing S)ˣ) :\n    affinePrincipalDivisor (FractionRing R) (fractionFieldNormUnits R S a) =\n      affineDivisorPushforward R S (affinePrincipalDivisor (FractionRing S) a) := by\n  obtain ⟨b, c, hc, hr⟩ := IsFractionRing.div_surjective (A := S) (a : FractionRing S)\n  have hc0 : c ≠ 0 := nonZeroDivisors.ne_zero hc\n  have hb : b ≠ 0 := by\n    intro hz\n    apply a.ne_zero\n    simp [hz] at hr\n    exact hr.symm\n  let u : (FractionRing S)ˣ := Units.mk0 (algebraMap S (FractionRing S) b)\n    (by simpa using (IsFractionRing.injective S (FractionRing S)).ne hb)\n  let v : (FractionRing S)ˣ := Units.mk0 (algebraMap S (FractionRing S) c)\n    (by simpa using (IsFractionRing.injective S (FractionRing S)).ne hc0)\n  have ha : a = u * v⁻¹ := by\n    apply Units.ext\n    simpa [u, v, div_eq_mul_inv] using hr.symm\n  rw [ha, map_mul, map_inv, affinePrincipalDivisor_mul,\n    affinePrincipalDivisor_inv, affinePrincipalDivisor_mul,\n    affinePrincipalDivisor_inv, map_add, map_neg]\n  dsimp [u, v]\n  rw [separable_integral_principal_norm R S b hb,\n    separable_integral_principal_norm R S c hc0]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affineDivisorPushforward_degree": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 270,
+      "code": "theorem affineDivisorPushforward_degree (k R S : Type*)\n    [Field k] [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra k R] [Algebra k S] [Algebra R S] [IsScalarTower k R S]\n    [Algebra.FiniteType k R] [Algebra.FiniteType k S] [Module.Finite R S]\n    (D : HeightOneSpectrum S →₀ ℤ) :\n    affineDivisorDegree k R (affineDivisorPushforward R S D) = affineDivisorDegree k S D := by\n  induction D using Finsupp.induction_linear with\n  | zero => simp\n  | add D E hD hE => simp only [map_add, hD, hE]\n  | single q n =>\n    rw [affineDivisorPushforward_single, affineDivisorDegree_single, affineDivisorDegree_single]\n    have : q.asIdeal.LiesOver (q.under R).asIdeal := ⟨rfl⟩\n    have h := Ideal.inertiaDeg_tower (R := k) (q.under R).asIdeal q.asIdeal\n    rw [h, Nat.cast_mul]\n    ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_affine_principal_norm_degree": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 289,
+      "code": "theorem separable_affine_principal_norm_degree (k R S : Type*)\n    [Field k] [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra k R] [Algebra k S] [Algebra R S] [IsScalarTower k R S]\n    [Algebra.FiniteType k R] [Algebra.FiniteType k S]\n    [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Algebra.IsSeparable (FractionRing R) (FractionRing S)]\n    (a : (FractionRing S)ˣ) :\n    affineDivisorDegree k R (affinePrincipalDivisor (FractionRing R) (fractionFieldNormUnits R S a)) =\n      affineDivisorDegree k S (affinePrincipalDivisor (FractionRing S) a) := by\n  rw [separable_affine_principal_norm, affineDivisorPushforward_degree]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "fractionRing_separable_of_fractionFields": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 302,
+      "code": "theorem fractionRing_separable_of_fractionFields (R S K L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.IsTorsionFree R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L] [Algebra.IsSeparable K L] :\n    Algebra.IsSeparable (FractionRing R) (FractionRing S) := by\n  apply Algebra.IsSeparable.of_equiv_equiv\n    (FractionRing.algEquiv R K).symm.toRingEquiv\n    (FractionRing.algEquiv S L).symm.toRingEquiv\n  ext x\n  exact IsFractionRing.algEquiv_commutes (FractionRing.algEquiv R K).symm\n    (FractionRing.algEquiv S L).symm x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_integral_functionField_norm": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 321,
+      "code": "theorem separable_integral_functionField_norm (R S K L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L] [Algebra.IsSeparable K L]\n    (a : S) (ha : a ≠ 0) :\n    affinePrincipalDivisor K (functionFieldNormUnits K L\n      (Units.mk0 (algebraMap S L a) (by simpa only [map_zero] using (IsFractionRing.injective S L).ne ha))) =\n      affineDivisorPushforward R S (affinePrincipalDivisor L\n        (Units.mk0 (algebraMap S L a) (by simpa only [map_zero] using (IsFractionRing.injective S L).ne ha))) := by\n  let : Algebra.IsSeparable (FractionRing R) (FractionRing S) :=\n    fractionRing_separable_of_fractionFields R S K L\n  let : FiniteDimensional K L := Module.Finite.of_isLocalization R S R⁰\n  let : IsIntegralClosure S R L := IsIntegralClosure.of_isIntegrallyClosed S R L\n  have hn : functionFieldNormUnits K L\n      (Units.mk0 (algebraMap S L a) (by simpa only [map_zero] using (IsFractionRing.injective S L).ne ha)) =\n      Units.mk0 (algebraMap R K (Algebra.intNorm R S a))\n        (by simpa only [map_zero] using (IsFractionRing.injective R K).ne (Algebra.intNorm_ne_zero.mpr ha)) := by\n    apply Units.ext\n    exact (Algebra.algebraMap_intNorm (K := K) (L := L) a).symm\n  rw [hn]\n  have h := separable_ideal_norm_divisor R S (Ideal.span {a}) (by simpa using ha)\n  simpa only [Ideal.relNorm_singleton,\n    idealFactorDivisor_principal R K _ (Algebra.intNorm_ne_zero.mpr ha),\n    idealFactorDivisor_principal S L a ha] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_functionField_principal_norm": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 350,
+      "code": "theorem separable_functionField_principal_norm (R S K L : Type*)\n    [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra R S] [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L] [Algebra.IsSeparable K L]\n    (a : Lˣ) :\n    affinePrincipalDivisor K (functionFieldNormUnits K L a) =\n      affineDivisorPushforward R S (affinePrincipalDivisor L a) := by\n  obtain ⟨b, c, hc, hr⟩ := IsFractionRing.div_surjective (A := S) (a : L)\n  have hc0 : c ≠ 0 := nonZeroDivisors.ne_zero hc\n  have hb : b ≠ 0 := by\n    intro hz\n    apply a.ne_zero\n    simp [hz] at hr\n    exact hr.symm\n  let u : Lˣ := Units.mk0 (algebraMap S L b)\n    (by simpa only [map_zero] using (IsFractionRing.injective S L).ne hb)\n  let v : Lˣ := Units.mk0 (algebraMap S L c)\n    (by simpa only [map_zero] using (IsFractionRing.injective S L).ne hc0)\n  have ha : a = u * v⁻¹ := by\n    apply Units.ext\n    simpa [u, v, div_eq_mul_inv] using hr.symm\n  rw [ha, map_mul, map_inv, affinePrincipalDivisor_mul,\n    affinePrincipalDivisor_inv, affinePrincipalDivisor_mul,\n    affinePrincipalDivisor_inv, map_add, map_neg]\n  dsimp [u, v]\n  rw [separable_integral_functionField_norm R S K L b hb,\n    separable_integral_functionField_norm R S K L c hc0]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_functionField_principal_norm_degree": {
+      "path": "Negativity/NormDivisor.lean",
+      "line": 380,
+      "code": "theorem separable_functionField_principal_norm_degree (k R S K L : Type*)\n    [Field k] [CommRing R] [IsDedekindDomain R] [CommRing S] [IsDedekindDomain S]\n    [Algebra k R] [Algebra k S] [Algebra R S] [IsScalarTower k R S]\n    [Algebra.FiniteType k R] [Algebra.FiniteType k S]\n    [Module.Finite R S] [Module.IsTorsionFree R S]\n    [Field K] [Field L] [Algebra R K] [IsFractionRing R K]\n    [Algebra S L] [IsFractionRing S L] [Algebra K L] [Algebra R L]\n    [IsScalarTower R K L] [IsScalarTower R S L] [Algebra.IsSeparable K L]\n    (a : Lˣ) :\n    affineDivisorDegree k R (affinePrincipalDivisor K (functionFieldNormUnits K L a)) =\n      affineDivisorDegree k S (affinePrincipalDivisor L a) := by\n  rw [separable_functionField_principal_norm R S K L, affineDivisorPushforward_degree]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_point_residueDegree": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 13,
+      "code": "theorem polynomial_point_residueDegree (k : Type*) [Field k]\n    (p : HeightOneSpectrum k[X]) (f : k[X]) (hf : p.asIdeal = Ideal.span {f}) :\n    p.asIdeal.inertiaDeg k = f.natDegree := by\n  rw [Ideal.inertiaDeg_eq_of_isMaximal (⊥ : Ideal k) p.asIdeal]\n  have he : Module.finrank (k ⧸ (⊥ : Ideal k)) (k[X] ⧸ p.asIdeal) =\n      Module.finrank k (k[X] ⧸ p.asIdeal) :=\n    Algebra.finrank_eq_of_equiv_equiv (RingEquiv.quotientBot k) (RingEquiv.refl _) (by\n      ext x\n      rfl)\n  rw [he, hf, finrank_quotient_span_eq_natDegree]\n\nnoncomputable def polynomialPrimePoint {k : Type*} [Field k]\n    (f : k[X]) (hf : Prime f) : HeightOneSpectrum k[X] :=\n  ⟨Ideal.span {f}, Ideal.isPrime_of_prime (Ideal.prime_span_singleton_iff.mpr hf),\n    by simpa using hf.ne_zero⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_prime_principal_divisor": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 29,
+      "code": "theorem polynomial_prime_principal_divisor (k K : Type*) [Field k]\n    [Field K] [Algebra k[X] K] [IsFractionRing k[X] K]\n    (f : k[X]) (hf : Prime f) :\n    affinePrincipalDivisor K (Units.mk0 (algebraMap k[X] K f)\n      (by simpa using (IsFractionRing.injective k[X] K).ne hf.ne_zero)) =\n      Finsupp.single (polynomialPrimePoint f hf) 1 := by\n  rw [← idealFactorDivisor_principal k[X] K f hf.ne_zero]\n  ext p\n  rw [idealFactorDivisor_apply, multiplicity_eq_count_normalizedFactors p.irreducible\n    (by simpa using hf.ne_zero)]\n  have hs : Irreducible (Ideal.span {f} : Ideal k[X]) :=\n    (Ideal.prime_span_singleton_iff.mpr hf).irreducible\n  rw [normalize_eq, normalizedFactors_irreducible hs, normalize_eq,\n    Multiset.count_singleton, Finsupp.single_apply]\n  by_cases h : p = polynomialPrimePoint f hf\n  · subst p; simp [polynomialPrimePoint]\n  · have hi : p.asIdeal ≠ Ideal.span {f} := by\n      intro he\n      exact h (HeightOneSpectrum.ext he)\n    simp [Ne.symm h, hi]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_prime_principal_degree": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 50,
+      "code": "theorem polynomial_prime_principal_degree (k K : Type*) [Field k]\n    [Field K] [Algebra k[X] K] [IsFractionRing k[X] K]\n    (f : k[X]) (hf : Prime f) :\n    affineDivisorDegree k k[X] (affinePrincipalDivisor K\n      (Units.mk0 (algebraMap k[X] K f)\n        (by simpa using (IsFractionRing.injective k[X] K).ne hf.ne_zero))) =\n      (f.natDegree : ℤ) := by\n  rw [polynomial_prime_principal_divisor k K f hf, affineDivisorDegree_single,\n    polynomial_point_residueDegree k _ f rfl, one_mul]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_principal_degree": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 62,
+      "code": "theorem polynomial_principal_degree (k K : Type*) [Field k]\n    [Field K] [Algebra k[X] K] [IsFractionRing k[X] K]\n    (f : k[X]) (hf : f ≠ 0) :\n    affineDivisorDegree k k[X] (affinePrincipalDivisor K\n      (Units.mk0 (algebraMap k[X] K f)\n        (by simpa using (IsFractionRing.injective k[X] K).ne hf))) =\n      (f.natDegree : ℤ) := by\n  induction f using UniqueFactorizationMonoid.induction_on_prime with\n  | h₁ => exact (hf rfl).elim\n  | h₂ f hu =>\n    obtain ⟨u, rfl⟩ := hu\n    have he : Units.mk0 (algebraMap k[X] K (u : k[X]))\n        (by simp) =\n        Units.map (algebraMap k[X] K : k[X] →* K) u := by\n      apply Units.ext; rfl\n    have hz : affinePrincipalDivisor (R := k[X]) K\n        (Units.map (algebraMap k[X] K : k[X] →* K) u) = 0 := by\n      ext p\n      exact heightOneOrder_regular_unit K p u\n    rw [he, hz, map_zero]\n    simp\n  | h₃ f p hf0 hp ih =>\n    have he : Units.mk0 (algebraMap k[X] K (p * f))\n        (by simpa using (IsFractionRing.injective k[X] K).ne hf) =\n        Units.mk0 (algebraMap k[X] K p)\n          (by simpa using (IsFractionRing.injective k[X] K).ne hp.ne_zero) *\n        Units.mk0 (algebraMap k[X] K f)\n          (by simpa using (IsFractionRing.injective k[X] K).ne hf0) := by\n      apply Units.ext\n      simp\n    rw [he, affinePrincipalDivisor_mul, map_add,\n      polynomial_prime_principal_degree k K p hp, ih hf0,\n      Polynomial.natDegree_mul hp.ne_zero hf0, Nat.cast_add]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_affine_principal_degree": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 97,
+      "code": "theorem rational_affine_principal_degree (k : Type*) [Field k]\n    (a : (RatFunc k)ˣ) :\n    affineDivisorDegree k k[X] (affinePrincipalDivisor (RatFunc k) a) =\n      (a : RatFunc k).intDegree := by\n  have hn := RatFunc.num_ne_zero a.ne_zero\n  have hd := RatFunc.denom_ne_zero (a : RatFunc k)\n  let u := Units.mk0 (algebraMap k[X] (RatFunc k) (a : RatFunc k).num)\n    (by simpa only [map_zero] using (IsFractionRing.injective k[X] (RatFunc k)).ne hn)\n  let v := Units.mk0 (algebraMap k[X] (RatFunc k) (a : RatFunc k).denom)\n    (by simpa only [map_zero] using (IsFractionRing.injective k[X] (RatFunc k)).ne hd)\n  have he : a = u * v⁻¹ := by\n    apply Units.ext\n    simpa [u, v, div_eq_mul_inv] using (RatFunc.num_div_denom (a : RatFunc k)).symm\n  conv_lhs => rw [he, affinePrincipalDivisor_mul, affinePrincipalDivisor_inv, map_add, map_neg]\n  dsimp [u, v]\n  rw [polynomial_principal_degree k (RatFunc k) _ hn,\n    polynomial_principal_degree k (RatFunc k) _ hd]\n  simp [RatFunc.intDegree, sub_eq_add_neg]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_actual_principal_degree_zero": {
+      "path": "Negativity/RationalDivisor.lean",
+      "line": 118,
+      "code": "theorem rational_actual_principal_degree_zero (k : Type*) [Field k]\n    (a : (RatFunc k)ˣ) :\n    affineDivisorDegree k k[X] (affinePrincipalDivisor (RatFunc k) a) +\n      rationalInfinityOrder (a : RatFunc k) = 0 := by\n  rw [rational_affine_principal_degree, rationalInfinityOrder_eq _ a.ne_zero]\n  omega",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalized_discrete_valuation_eq": {
+      "path": "Negativity/InfinityNorm.lean",
+      "line": 18,
+      "code": "theorem normalized_discrete_valuation_eq (K : Type*) [Field K]\n    (v : Valuation K ℤᵐ⁰) [v.IsNontrivial] (π : K)\n    (hπ : v π = WithZero.exp (-1 : ℤ)) :\n    (IsDiscreteValuationRing.maximalIdeal v.valuationSubring).valuation K = v := by\n  let A := v.valuationSubring\n  let : IsDiscreteValuationRing A := inferInstance\n  let p := IsDiscreteValuationRing.maximalIdeal A\n  have hmem : π ∈ v.valuationSubring := by\n    change v π ≤ 1\n    rw [hπ]\n    decide\n  let πA : A := ⟨π, hmem⟩\n  have hu : v.IsUniformizer π := by\n    rw [Valuation.IsUniformizer.iff,\n      Valuation.IsRankOneDiscrete.generator_eq_exp_neg_one_of_mem_range\n        (v := v) ⟨π, hπ⟩]\n    exact hπ\n  have hgen : p.asIdeal = Ideal.span {πA} := by\n    exact Valuation.IsUniformizer.is_generator (v := v) (π := πA) hu\n  have hpv : p.valuation K π = WithZero.exp (-1 : ℤ) := by\n    change p.valuation K (algebraMap A K πA) = _\n    rw [HeightOneSpectrum.valuation_of_algebraMap]\n    have hn : πA ≠ 0 := by\n      intro hz\n      have hz' : π = 0 := congrArg (fun x : A => (x : K)) hz\n      rw [hz', map_zero] at hπ\n      exact (WithZero.exp_ne_zero (a := (-1 : ℤ))) hπ.symm\n    rw [p.intValuation_eq_exp_neg_multiplicity hn, ← hgen,\n      multiplicity_eq_count_normalizedFactors p.irreducible p.ne_bot,\n      normalize_eq, normalizedFactors_irreducible p.irreducible, normalize_eq]\n    simp\n  have he : (p.valuation K).IsEquiv v := by\n    rw [Valuation.isEquiv_iff_val_le_one]\n    intro x\n    constructor\n    · intro hx\n      obtain ⟨a, ha⟩ := IsDiscreteValuationRing.exists_lift_of_le_one hx\n      rw [← ha]\n      exact a.2\n    · intro hx\n      let a : A := ⟨x, hx⟩\n      exact p.valuation_le_one a\n  ext x\n  by_cases hx : x = 0\n  · simp [hx]\n  have hvx : v x ≠ 0 := (Valuation.ne_zero_iff v).mpr hx\n  let n : ℤ := WithZero.log (v x)\n  have hpow : v (π ^ (-n)) = v x := by\n    rw [map_zpow₀, hπ, ← WithZero.exp_zsmul]\n    simp only [zsmul_eq_mul, Int.cast_id, neg_mul_neg, mul_one]\n    exact WithZero.exp_log hvx\n  have hadic : p.valuation K (π ^ (-n)) = v x := by\n    rw [map_zpow₀, hpv, ← WithZero.exp_zsmul]\n    simp only [zsmul_eq_mul, Int.cast_id, neg_mul_neg, mul_one]\n    exact WithZero.exp_log hvx\n  exact ((he.eq_iff).mpr hpow).symm.trans hadic",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_normalized_valuation": {
+      "path": "Negativity/InfinityNorm.lean",
+      "line": 75,
+      "code": "theorem rational_infinity_normalized_valuation (k : Type*) [Field k] :\n    (IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k)).valuation (RatFunc k) =\n      RatFunc.inftyValuation k := by\n  exact normalized_discrete_valuation_eq (RatFunc k) (RatFunc.inftyValuation k)\n    (1 / RatFunc.X) (RatFunc.inftyValuation.X_inv k)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_heightOneOrder": {
+      "path": "Negativity/InfinityNorm.lean",
+      "line": 83,
+      "code": "theorem rational_infinity_heightOneOrder (k : Type*) [Field k]\n    (a : (RatFunc k)ˣ) :\n    heightOneOrder (RatFunc k)\n      (IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k)) a =\n      rationalInfinityOrder (a : RatFunc k) := by\n  unfold heightOneOrder rationalInfinityOrder\n  rw [rational_infinity_normalized_valuation]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "separable_infinity_principal_norm": {
+      "path": "Negativity/InfinityNorm.lean",
+      "line": 93,
+      "code": "theorem separable_infinity_principal_norm (k B L : Type*) [Field k]\n    [CommRing B] [IsDedekindDomain B] [Field L]\n    [Algebra (RationalInfinityRing k) B] [Module.Finite (RationalInfinityRing k) B]\n    [Module.IsTorsionFree (RationalInfinityRing k) B]\n    [Algebra B L] [IsFractionRing B L] [Algebra (RatFunc k) L]\n    [Algebra (RationalInfinityRing k) L]\n    [IsScalarTower (RationalInfinityRing k) (RatFunc k) L]\n    [IsScalarTower (RationalInfinityRing k) B L]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    (affineDivisorPushforward (RationalInfinityRing k) B (affinePrincipalDivisor L a))\n        (IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k)) =\n      rationalInfinityOrder (functionFieldNormUnits (RatFunc k) L a : RatFunc k) := by\n  rw [← separable_functionField_principal_norm (RationalInfinityRing k) B (RatFunc k) L,\n    affinePrincipalDivisor_apply, rational_infinity_heightOneOrder]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChart_principal_degree_zero": {
+      "path": "Negativity/InfinityNorm.lean",
+      "line": 113,
+      "code": "theorem twoChart_principal_degree_zero (k S B L : Type*) [Field k]\n    [CommRing S] [IsDedekindDomain S] [CommRing B] [IsDedekindDomain B] [Field L]\n    [Algebra k S] [Algebra.FiniteType k S]\n    [Algebra k[X] S] [IsScalarTower k k[X] S]\n    [Module.Finite k[X] S] [Module.IsTorsionFree k[X] S]\n    [Algebra S L] [IsFractionRing S L] [Algebra (RatFunc k) L]\n    [Algebra k[X] L] [IsScalarTower k[X] (RatFunc k) L] [IsScalarTower k[X] S L]\n    [Algebra (RationalInfinityRing k) B] [Module.Finite (RationalInfinityRing k) B]\n    [Module.IsTorsionFree (RationalInfinityRing k) B]\n    [Algebra B L] [IsFractionRing B L] [Algebra (RationalInfinityRing k) L]\n    [IsScalarTower (RationalInfinityRing k) (RatFunc k) L]\n    [IsScalarTower (RationalInfinityRing k) B L]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    affineDivisorDegree k S (affinePrincipalDivisor L a) +\n      (affineDivisorPushforward (RationalInfinityRing k) B (affinePrincipalDivisor L a))\n        (IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k)) = 0 := by\n  rw [separable_infinity_principal_norm k B L a,\n    ← separable_functionField_principal_norm_degree k k[X] S (RatFunc k) L a]\n  exact rational_actual_principal_degree_zero k (functionFieldNormUnits (RatFunc k) L a)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "functionField_principal_degree_zero": {
+      "path": "Negativity/FunctionFieldProductFormula.lean",
+      "line": 85,
+      "code": "theorem functionField_principal_degree_zero (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    FunctionFieldPlaces.principalDegree k L a = 0 :=\n  FunctionFieldPlaces.principalDegree_eq_zero k L a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierOrderDivisor_apply": {
+      "path": "Negativity/CartierDegree.lean",
+      "line": 22,
+      "code": "theorem cartierOrderDivisor_apply (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (x : X) :\n    cartierOrderDivisor X hn A x = A.coefficient hn x := rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierTotalOrder_eq_of_unit_transitions": {
+      "path": "Negativity/CartierDegree.lean",
+      "line": 40,
+      "code": "theorem cartierTotalOrder_eq_of_unit_transitions (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι κ : Type*} (A : CartierAtlas X ι) (B : CartierAtlas X κ)\n    (h : ∀ i j (x : X), x ∈ A.chart i → x ∈ B.chart j →\n      ∃ u : (X.presheaf.stalk x)ˣ,\n        Units.map (algebraMap (X.presheaf.stalk x) X.functionField : _ →* _) u *\n          A.equation i = B.equation j) :\n    cartierTotalOrder X hn A = cartierTotalOrder X hn B := by\n  have he := cartierAtlas_weilCycle_eq_of_unit_transitions X hn A B h\n  have hd : cartierOrderDivisor X hn A = cartierOrderDivisor X hn B := by\n    ext x\n    exact congrArg (fun c : AlgebraicCycle X ℤ => c x) he\n  unfold cartierTotalOrder\n  rw [hd]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartierTotalOrder_nonneg": {
+      "path": "Negativity/CartierDegree.lean",
+      "line": 56,
+      "code": "theorem effective_cartierTotalOrder_nonneg (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective) :\n    0 ≤ cartierTotalOrder X hn A := by\n  apply Finsupp.sum_nonneg\n  intro x _\n  exact effective_cartierAtlas_weil_nonneg X hn A hA x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartierTotalOrder_pos": {
+      "path": "Negativity/CartierDegree.lean",
+      "line": 66,
+      "code": "theorem effective_cartierTotalOrder_pos (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hD : ∃ x : X, A.coefficient hn x ≠ 0) :\n    0 < cartierTotalOrder X hn A := by\n  apply Finsupp.sum_pos\n  · intro x hx\n    have hn0 := effective_cartierAtlas_weil_nonneg X hn A hA x\n    have hn1 : A.coefficient hn x ≠ 0 := Finsupp.mem_support_iff.mp hx\n    exact lt_of_le_of_ne hn0 (Ne.symm hn1)\n  · intro hz\n    obtain ⟨x, hx⟩ := hD\n    have he := congrArg (fun d : X →₀ ℤ => d x) hz\n    exact hx he",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartierTotalOrder_pos_of_support": {
+      "path": "Negativity/CartierDegree.lean",
+      "line": 84,
+      "code": "theorem effective_cartierTotalOrder_pos_of_support (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hS : A.vanishingSupport.Nonempty) :\n    0 < cartierTotalOrder X hn A := by\n  apply effective_cartierTotalOrder_pos X hn A hA\n  by_contra! h\n  have hz : (A.weilCycle hn).support = ∅ := by\n    ext x\n    simp [h, CartierAtlas.weilCycle]\n  rw [cartierAtlas_vanishingSupport_eq_closure_weilSupport X hn A, hz, closure_empty] at hS\n  exact Set.not_nonempty_empty hS",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "stalkSpecialization_functionField": {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "line": 12,
+      "code": "theorem stalkSpecialization_functionField (Y : Scheme) [IsIntegral Y]\n    (y z : Y) (h : y ⤳ z) (r : Y.presheaf.stalk z) :\n    algebraMap (Y.presheaf.stalk y) Y.functionField ((Y.presheaf.stalkSpecializes h).hom r) =\n      algebraMap (Y.presheaf.stalk z) Y.functionField r := by\n  change ((Y.presheaf.stalkSpecializes h ≫ Y.presheaf.stalkSpecializes\n    ((genericPoint_spec Y).specializes trivial)) r) = _\n  simp only [TopCat.Presheaf.stalkSpecializes_comp]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "generic_stalkMap_commutes": {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "line": 21,
+      "code": "theorem generic_stalkMap_commutes {X Y : Scheme} [IsIntegral X]\n    (f : X ⟶ Y) (x : X) (r : Y.presheaf.stalk (f x)) :\n    (f.stalkMap (genericPoint X)).hom\n      ((Y.presheaf.stalkSpecializes\n        (f.base.hom.map_specializes ((genericPoint_spec X).specializes trivial))).hom r) =\n      algebraMap (X.presheaf.stalk x) X.functionField ((f.stalkMap x).hom r) := by\n  exact f.stalkSpecializes_stalkMap_apply (genericPoint X) x\n    ((genericPoint_spec X).specializes trivial) r",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_cartierAtlas_nondominant_pullback": {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "line": 33,
+      "code": "theorem exists_cartierAtlas_nondominant_pullback {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y)\n    {ι : Type*} (A : CartierAtlas Y ι)\n    (hη : f (genericPoint X) ∉ A.vanishingSupport) :\n    ∃ B : CartierAtlas X X, ∀ z : X,\n      z ∈ B.chart z ∧ B.chart z ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose ∧\n      ∃ u : (Y.presheaf.stalk (f (genericPoint X)))ˣ,\n        Units.map (algebraMap (Y.presheaf.stalk (f (genericPoint X))) Y.functionField).toMonoidHom u =\n          A.equation (A.covers (f z)).choose ∧\n        B.equation z = Units.map (f.stalkMap (genericPoint X)).hom.toMonoidHom u := by\n  have hi (z : X) : f (genericPoint X) ∈ A.chart (A.covers (f z)).choose :=\n    (f.base.hom.map_specializes ((genericPoint_spec X).specializes trivial)).mem_open\n      (A.chart (A.covers (f z)).choose).isOpen (A.covers (f z)).choose_spec\n  have hu (z : X) : RationalUnitAt Y (f (genericPoint X))\n      (A.equation (A.covers (f z)).choose) := by\n    by_contra hz\n    exact hη ((cartierAtlas_support_eq_on_chart Y A _ _ (hi z)).mpr hz)\n  choose u hu using hu\n  have ha (z : X) : ∃ V : X.Opens, IsAffineOpen V ∧ z ∈ V ∧\n      V ≤ f ⁻¹ᵁ A.chart (A.covers (f z)).choose := by\n    obtain ⟨_, ⟨V, hV, rfl⟩, hzV, hle⟩ :=\n      X.isBasis_affineOpens.exists_subset_of_mem_open\n        (A.covers (f z)).choose_spec (f ⁻¹ᵁ A.chart (A.covers (f z)).choose).isOpen\n    exact ⟨V, hV, hzV, hle⟩\n  choose V hV hzV hle using ha\n  let B : CartierAtlas X X := {\n    chart := V\n    affine := hV\n    nonempty := fun z => ⟨z, hzV z⟩\n    covers := fun z => ⟨z, hzV z⟩\n    equation := fun z => Units.map (f.stalkMap (genericPoint X)).hom.toMonoidHom (u z)\n    transition := by\n      intro z w x hz hw\n      obtain ⟨v, hv⟩ := A.transition _ _ (f x) (hle z hz) (hle w hw)\n      let sp : Y.presheaf.stalk (f x) →+* Y.presheaf.stalk (f (genericPoint X)) :=\n        (Y.presheaf.stalkSpecializes\n        (f.base.hom.map_specializes ((genericPoint_spec X).specializes trivial))).hom\n      have hs : Units.map (algebraMap (Y.presheaf.stalk (f (genericPoint X))) Y.functionField).toMonoidHom\n          (Units.map sp.toMonoidHom v) =\n          Units.map (algebraMap (Y.presheaf.stalk (f x)) Y.functionField).toMonoidHom v := by\n        apply Units.ext\n        exact stalkSpecialization_functionField Y _ _ _ (v : Y.presheaf.stalk (f x))\n      have he : Units.map sp.toMonoidHom v * u z = u w := by\n        apply Units.ext\n        apply IsFractionRing.injective (Y.presheaf.stalk (f (genericPoint X))) Y.functionField\n        change (Units.map (algebraMap (Y.presheaf.stalk (f (genericPoint X))) Y.functionField).toMonoidHom\n          (Units.map sp.toMonoidHom v * u z) : Y.functionField) =\n          (Units.map (algebraMap (Y.presheaf.stalk (f (genericPoint X))) Y.functionField).toMonoidHom (u w) : Y.functionField)\n        exact congrArg Units.val (calc\n          _ = _ := map_mul _ _ _\n          _ = _ := congrArg₂ (fun a b => a * b) hs (hu z)\n          _ = _ := hv\n          _ = _ := (hu w).symm)\n      refine ⟨Units.map (f.stalkMap x).hom.toMonoidHom v, ?_⟩\n      have hsX : Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom\n          (Units.map (f.stalkMap x).hom.toMonoidHom v) =\n          Units.map (f.stalkMap (genericPoint X)).hom.toMonoidHom\n            (Units.map sp.toMonoidHom v) := by\n        apply Units.ext\n        exact (generic_stalkMap_commutes f x (v : Y.presheaf.stalk (f x))).symm\n      exact calc\n        _ = _ := congrArg (fun a => a * Units.map\n          (f.stalkMap (genericPoint X)).hom.toMonoidHom (u z)) hsX\n        _ = _ := (map_mul _ _ _).symm\n        _ = _ := congrArg (fun t : (Y.presheaf.stalk (f (genericPoint X)))ˣ =>\n          Units.map (f.stalkMap (genericPoint X)).hom.toMonoidHom t) he }\n  exact ⟨B, fun z => ⟨hzV z, hle z, u z, hu z, rfl⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_nondominant_cartier_pullback": {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "line": 104,
+      "code": "theorem exists_effective_nondominant_cartier_pullback {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] (f : X ⟶ Y)\n    {ι : Type*} (A : CartierAtlas Y ι) (hA : A.Effective)\n    (hη : f (genericPoint X) ∉ A.vanishingSupport) :\n    ∃ B : CartierAtlas X X, B.Effective ∧\n      B.vanishingSupport = f ⁻¹' A.vanishingSupport ∧\n      ∀ z (x : X), x ∈ B.chart z →\n        ∃ r : Y.presheaf.stalk (f x),\n          algebraMap (Y.presheaf.stalk (f x)) Y.functionField r =\n            (A.equation (A.covers (f z)).choose : Y.functionField) ∧\n          algebraMap (X.presheaf.stalk x) X.functionField ((f.stalkMap x).hom r) =\n            (B.equation z : X.functionField) := by\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback f A hη\n  have hregular (z x : X) (hx : x ∈ B.chart z) :\n      ∃ r : Y.presheaf.stalk (f x),\n        algebraMap (Y.presheaf.stalk (f x)) Y.functionField r =\n          (A.equation (A.covers (f z)).choose : Y.functionField) ∧\n        algebraMap (X.presheaf.stalk x) X.functionField ((f.stalkMap x).hom r) =\n          (B.equation z : X.functionField) := by\n    obtain ⟨r, hr⟩ := hA _ (f x) ((hB z).2.1 hx)\n    obtain ⟨u, hu, hBu⟩ := (hB z).2.2\n    let sp : Y.presheaf.stalk (f x) →+* Y.presheaf.stalk (f (genericPoint X)) :=\n      (Y.presheaf.stalkSpecializes\n        (f.base.hom.map_specializes ((genericPoint_spec X).specializes trivial))).hom\n    have he : sp r = (u : Y.presheaf.stalk (f (genericPoint X))) := by\n      apply IsFractionRing.injective (Y.presheaf.stalk (f (genericPoint X))) Y.functionField\n      exact (stalkSpecialization_functionField Y _ _ _ r).trans\n        (hr.trans (congrArg Units.val hu).symm)\n    refine ⟨r, hr, ?_⟩\n    exact calc\n      _ = (f.stalkMap (genericPoint X)).hom (sp r) :=\n        (generic_stalkMap_commutes f x r).symm\n      _ = (f.stalkMap (genericPoint X)).hom (u : Y.presheaf.stalk (f (genericPoint X))) :=\n        congrArg (f.stalkMap (genericPoint X)).hom he\n      _ = _ := (congrArg Units.val hBu).symm\n  have hBe : B.Effective := by\n    intro z x hx\n    obtain ⟨r, _, hr⟩ := hregular z x hx\n    exact ⟨(f.stalkMap x).hom r, hr⟩\n  refine ⟨B, hBe, ?_, hregular⟩\n  ext x\n  rw [cartierAtlas_support_eq_on_chart X B x x (hB x).1, Set.mem_preimage,\n    cartierAtlas_support_eq_on_chart Y A _ (f x) (A.covers (f x)).choose_spec]\n  obtain ⟨r, hr, hs⟩ := hregular x x (hB x).1\n  rw [rationalUnitAt_regular_iff X x _ _ hs,\n    rationalUnitAt_regular_iff Y (f x) _ r hr]\n  exact not_congr (isUnit_map_iff (f.stalkMap x).hom r)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartier_restriction_order_signs": {
+      "path": "Negativity/CartierCurveRestriction.lean",
+      "line": 155,
+      "code": "theorem effective_cartier_restriction_order_signs {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C] [CompactSpace C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hη : f (genericPoint C) ∉ A.vanishingSupport) :\n    ∃ B : CartierAtlas C C, B.Effective ∧\n      B.vanishingSupport = f ⁻¹' A.vanishingSupport ∧\n      0 ≤ cartierTotalOrder C hn B ∧\n      ((f ⁻¹' A.vanishingSupport).Nonempty → 0 < cartierTotalOrder C hn B) := by\n  obtain ⟨B, hB, hS, _⟩ := exists_effective_nondominant_cartier_pullback f A hA hη\n  refine ⟨B, hB, hS, effective_cartierTotalOrder_nonneg C hn B hB, ?_⟩\n  intro hmeet\n  apply effective_cartierTotalOrder_pos_of_support C hn B hB\n  exact hS.symm ▸ hmeet",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_real_cartier_curve_order_signs": {
+      "path": "Negativity/RealCartierCurveDegree.lean",
+      "line": 17,
+      "code": "theorem effective_real_cartier_curve_order_signs {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C] [IsLocallyNoetherian X]\n    [CompactSpace C]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (f : C ⟶ X) {ι τ : Type*} [Fintype τ]\n    (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (hc : ∀ t, 0 ≤ c t) (hA : ∀ t, (A t).Effective)\n    (hη : f (genericPoint C) ∉ closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support) :\n    ∃ B : {t : τ // 0 < c t} → CartierAtlas C C,\n      (∀ t, (B t).Effective) ∧\n      (⋃ t, (B t).vanishingSupport) =\n        f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support ∧\n      0 ≤ ∑ t, c t.1 * (cartierTotalOrder C hnC (B t) : ℝ) ∧\n      ((f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support).Nonempty →\n        0 < ∑ t, c t.1 * (cartierTotalOrder C hnC (B t) : ℝ)) := by\n  classical\n  have hS := effective_cartier_real_sum_support X hnX A c hc hA\n  have havoid (t : {t : τ // 0 < c t}) :\n      f (genericPoint C) ∉ (A t.1).vanishingSupport := by\n    intro h\n    apply hη\n    rw [hS]\n    exact Set.mem_iUnion.mpr ⟨t, h⟩\n  choose B hBe hBs hBn hBp using fun t : {t : τ // 0 < c t} =>\n    effective_cartier_restriction_order_signs hnC f (A t.1) (hA t.1) (havoid t)\n  have hsupport : (⋃ t, (B t).vanishingSupport) =\n      f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support := by\n    simp_rw [hBs]\n    rw [← Set.preimage_iUnion, ← hS]\n  have hterm (t : {t : τ // 0 < c t}) :\n      0 ≤ c t.1 * (cartierTotalOrder C hnC (B t) : ℝ) :=\n    mul_nonneg (le_of_lt t.2) (by exact_mod_cast hBn t)\n  refine ⟨B, hBe, hsupport, Finset.sum_nonneg (fun t _ => hterm t), ?_⟩\n  intro hmeet\n  obtain ⟨x, hx⟩ := hmeet\n  rw [← hsupport, Set.mem_iUnion] at hx\n  obtain ⟨t, ht⟩ := hx\n  have hpos : 0 < c t.1 * (cartierTotalOrder C hnC (B t) : ℝ) := by\n    apply mul_pos t.2\n    apply Int.cast_pos.mpr\n    apply hBp t\n    exact ⟨x, hBs t ▸ ht⟩\n  exact Finset.sum_pos' (fun t _ => hterm t) ⟨t, Finset.mem_univ t, hpos⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_realCartier_curve_decomposition_order_signs": {
+      "path": "Negativity/RealCartierCurveDegree.lean",
+      "line": 67,
+      "code": "theorem effective_realCartier_curve_decomposition_order_signs {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian C] [IsLocallyNoetherian X]\n    [CompactSpace C] [CompactSpace X]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (f : C ⟶ X) {ι τ : Type*} [Fintype τ]\n    (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, c t * ((A t).coefficient hnX x : ℝ))\n    (hη : f (genericPoint C) ∉ closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (B : J → CartierAtlas X X)\n      (R : {j : J // 0 < w j} → CartierAtlas C C),\n      (∀ j, 0 ≤ w j) ∧ (∀ j, (B j).Effective) ∧\n      (∑ j, (B j).weightedWeilCycle hnX (w j)) =\n        ∑ t, (A t).weightedWeilCycle hnX (c t) ∧\n      (∀ j, (R j).Effective) ∧\n      (⋃ j, (R j).vanishingSupport) =\n        f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support ∧\n      0 ≤ ∑ j, w j.1 * (cartierTotalOrder C hnC (R j) : ℝ) ∧\n      ((f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnX (c t)).support).Nonempty →\n        0 < ∑ j, w j.1 * (cartierTotalOrder C hnC (R j) : ℝ)) := by\n  classical\n  obtain ⟨J, hJ, w, B, hw, hB, _, hEq⟩ :=\n    exists_realCartier_effective_weil_decomposition X hnX A c he\n  let : Fintype J := hJ\n  have hηB : f (genericPoint C) ∉ closure (∑ j, (B j).weightedWeilCycle hnX (w j)).support := by\n    rw [hEq]\n    exact hη\n  obtain ⟨R, hR, hS, hn, hp⟩ :=\n    effective_real_cartier_curve_order_signs hnC hnX f B w hw hB hηB\n  rw [hEq] at hS hp\n  exact ⟨J, hJ, w, B, R, hw, hB, hEq, hR, hS, hn, hp⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_move_off_generic_curve": {
+      "path": "Negativity/CartierCurveMoving.lean",
+      "line": 33,
+      "code": "theorem cartierAtlas_move_off_generic_curve {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] (f : C ⟶ X)\n    {ι : Type*} (A : CartierAtlas X ι) :\n    ∃ a : X.functionFieldˣ, f (genericPoint C) ∉ (A.rationalTwist a).vanishingSupport := by\n  let i := (A.covers (f (genericPoint C))).choose\n  let a := (A.equation i)⁻¹\n  refine ⟨a, ?_⟩\n  have hi : f (genericPoint C) ∈ (A.rationalTwist a).chart i :=\n    (A.covers (f (genericPoint C))).choose_spec\n  rw [cartierAtlas_support_eq_on_chart X (A.rationalTwist a) i _ hi]\n  intro h\n  apply h\n  refine ⟨1, ?_⟩\n  simp [CartierAtlas.rationalTwist, a]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_rationalTwist_transition": {
+      "path": "Negativity/CartierCurveMoving.lean",
+      "line": 50,
+      "code": "theorem cartierAtlas_rationalTwist_transition {X : Scheme} [IsIntegral X]\n    {ι : Type*} (A : CartierAtlas X ι) (a : X.functionFieldˣ) (i j : ι)\n    (x : X) (u : (X.presheaf.stalk x)ˣ)\n    (hu : Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom u *\n      A.equation i = A.equation j) :\n    Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom u *\n      (A.rationalTwist a).equation i = (A.rationalTwist a).equation j := by\n  change _ * (a * _) = a * _\n  calc\n    _ = a * (Units.map (algebraMap (X.presheaf.stalk x) X.functionField).toMonoidHom u *\n        A.equation i) := by exact mul_left_comm _ _ _\n    _ = _ := congrArg (fun b => a * b) hu",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_moved_cartier_curve_restriction": {
+      "path": "Negativity/CartierCurveMoving.lean",
+      "line": 67,
+      "code": "theorem exists_moved_cartier_curve_restriction {C X : Scheme}\n    [IsIntegral C] [IsIntegral X] (f : C ⟶ X)\n    {ι : Type*} (A : CartierAtlas X ι) :\n    ∃ (a : X.functionFieldˣ) (B : CartierAtlas C C),\n      f (genericPoint C) ∉ (A.rationalTwist a).vanishingSupport ∧\n      ∀ z : C, z ∈ B.chart z ∧\n        B.chart z ≤ f ⁻¹ᵁ (A.rationalTwist a).chart (A.covers (f z)).choose ∧\n        ∃ u : (X.presheaf.stalk (f (genericPoint C)))ˣ,\n          Units.map (algebraMap (X.presheaf.stalk (f (genericPoint C))) X.functionField).toMonoidHom u =\n            a * A.equation (A.covers (f z)).choose ∧\n          B.equation z = Units.map (f.stalkMap (genericPoint C)).hom.toMonoidHom u := by\n  obtain ⟨a, ha⟩ := cartierAtlas_move_off_generic_curve f A\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_nondominant_pullback f (A.rationalTwist a) ha\n  exact ⟨a, B, ha, hB⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "dominantFunctionFieldMap_stalk_unit": {
       "path": "Negativity/RealCartierPullback.lean",
       "line": 13,

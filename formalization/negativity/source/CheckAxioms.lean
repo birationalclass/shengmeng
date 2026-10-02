@@ -308,3 +308,99 @@ import Negativity
 #print axioms Negativity.exists_realCartier_termwise_pullback_support
 
 #print axioms Negativity.exists_realCartier_termwise_fiber_descent
+
+#print axioms Negativity.separable_relNorm_factorization
+
+#print axioms Negativity.ideal_primePower_multiplicity
+
+#print axioms Negativity.ideal_primePower_product_multiplicity
+
+#print axioms Negativity.normalizedIdealPoints_asIdeal
+
+#print axioms Negativity.separable_ideal_norm_order
+
+#print axioms Negativity.heightOneOrder_regular_eq_multiplicity
+
+#print axioms Negativity.separable_integral_norm_order
+
+#print axioms Negativity.ideal_order_eq_point_count
+
+#print axioms Negativity.idealFactorDivisor_apply
+
+#print axioms Negativity.idealFactorDivisor_principal
+
+#print axioms Negativity.affineDivisorPushforward_single
+
+#print axioms Negativity.separable_ideal_norm_divisor
+
+#print axioms Negativity.fractionFieldNormUnits_integral
+
+#print axioms Negativity.separable_integral_principal_norm
+
+#print axioms Negativity.separable_affine_principal_norm
+
+#print axioms Negativity.affineDivisorPushforward_degree
+
+#print axioms Negativity.separable_affine_principal_norm_degree
+
+#print axioms Negativity.fractionRing_separable_of_fractionFields
+
+#print axioms Negativity.separable_integral_functionField_norm
+
+#print axioms Negativity.separable_functionField_principal_norm
+
+#print axioms Negativity.separable_functionField_principal_norm_degree
+
+#print axioms Negativity.polynomial_point_residueDegree
+
+#print axioms Negativity.polynomial_prime_principal_divisor
+
+#print axioms Negativity.polynomial_prime_principal_degree
+
+#print axioms Negativity.polynomial_principal_degree
+
+#print axioms Negativity.rational_affine_principal_degree
+
+#print axioms Negativity.rational_actual_principal_degree_zero
+
+#print axioms Negativity.normalized_discrete_valuation_eq
+
+#print axioms Negativity.rational_infinity_normalized_valuation
+
+#print axioms Negativity.rational_infinity_heightOneOrder
+
+#print axioms Negativity.separable_infinity_principal_norm
+
+#print axioms Negativity.twoChart_principal_degree_zero
+
+#print axioms Negativity.functionField_principal_degree_zero
+
+#print axioms Negativity.cartierOrderDivisor_apply
+
+#print axioms Negativity.cartierTotalOrder_eq_of_unit_transitions
+
+#print axioms Negativity.effective_cartierTotalOrder_nonneg
+
+#print axioms Negativity.effective_cartierTotalOrder_pos
+
+#print axioms Negativity.effective_cartierTotalOrder_pos_of_support
+
+#print axioms Negativity.stalkSpecialization_functionField
+
+#print axioms Negativity.generic_stalkMap_commutes
+
+#print axioms Negativity.exists_cartierAtlas_nondominant_pullback
+
+#print axioms Negativity.exists_effective_nondominant_cartier_pullback
+
+#print axioms Negativity.effective_cartier_restriction_order_signs
+
+#print axioms Negativity.effective_real_cartier_curve_order_signs
+
+#print axioms Negativity.effective_realCartier_curve_decomposition_order_signs
+
+#print axioms Negativity.cartierAtlas_move_off_generic_curve
+
+#print axioms Negativity.cartierAtlas_rationalTwist_transition
+
+#print axioms Negativity.exists_moved_cartier_curve_restriction
