@@ -1467,3 +1467,170 @@ find('fiberdown').steps[2]=['R-Cartier 分解：已验证','已构造非负 Weil
 find('fiberdown').steps.push(['尚待接通','证明非负 Weil 系数对应正则局部方程及完整支撑，并完成上方纤维二择一。']);
 find('chow').deps.push('rdecomp');
 find('chow').scope='有效 Cartier 支撑拉回、实际 R-Cartier 推拉及非负 Weil 系数分解已完成。有限覆盖的射影性、有限正规化、全局曲线交数、非负 Weil 系数的局部延拓与一般 R-Cartier 全支撑仍待完成。';
+
+nodes.push({
+  "id": "normalext",
+  "title": "正规环的余维一延拓",
+  "decl": "normal_fraction_regular_iff_height_one",
+  "file": "NormalExtension.lean",
+  "deps": [],
+  "status": "done",
+  "x": 278,
+  "y": 4400,
+  "paper": "proper",
+  "statement": "正规 Noetherian 整环 R 中，分式在每个高度一素理想处正则，当且仅当它属于 R。",
+  "scope": "环论延拓定理已证明。伴随素理想高度一及局部 DVR 均由证明推出，没有把余维一交集等式作为输入；适用于任意特征。",
+  "inputs": [
+    "实际正规 Noetherian 整环及其分式域。",
+    "分式在所有高度一素理想局部化处正则。"
+  ],
+  "steps": [
+    [
+      "行列式技巧",
+      "在正规局部环中用主理想商的消去子构造分式；积分性与非稳定情形给出主最大理想。",
+      "normal_local_annihilator_maximal_isPrincipal"
+    ],
+    [
+      "伴随素理想",
+      "在实际伴随素理想处局部化，证明该局部环为 DVR，从而高度恰为一。",
+      "normal_principal_associated_prime_height_one"
+    ],
+    [
+      "整除检测",
+      "若整除失败，主理想商中一个非零类产生高度一伴随素理想，和该处整除矛盾。",
+      "normal_divisibility_of_height_one_local"
+    ],
+    [
+      "分式延拓",
+      "选择真实分子分母，由高度一整除准则证明分式属于原环。",
+      "normal_fraction_regular_iff_height_one"
+    ]
+  ],
+  "related": [
+    "normal_local_annihilator_maximal_isPrincipal",
+    "normal_local_associated_principal_maximal_isPrincipal",
+    "normal_local_associated_principal_isDVR",
+    "normal_principal_associated_prime_isDVR",
+    "normal_principal_associated_prime_height_one",
+    "normal_divisibility_of_height_one_local",
+    "normal_fraction_regular_of_height_one_denominators"
+  ],
+  "upstream": [
+    [
+      "Stacks · normal height-one intersection",
+      "https://stacks.math.columbia.edu/tag/031T"
+    ]
+  ]
+});
+
+nodes.push({
+  "id": "cartiereff",
+  "title": "真实 Cartier 有效性：Weil 系数判据",
+  "decl": "cartierAtlas_effective_iff_weil_nonneg",
+  "file": "CartierEffectivity.lean",
+  "deps": [
+    "normalext",
+    "localcartier"
+  ],
+  "status": "done",
+  "x": 278,
+  "y": 4400,
+  "paper": "proper",
+  "statement": "正规局部 Noetherian 概形上，实际 Cartier 图册有效，当且仅当其所有真实 Weil 系数非负。",
+  "scope": "DVR 非负阶数、仿射开集的余维一延拓及实际 stalk 方程正则均已证明。有效性由这些证明推出，不再作为几何桥接输入。",
+  "inputs": [
+    "实际整且局部 Noetherian 的概形，所有实际 stalk 整闭。",
+    "真实 Cartier 图册及其实际 Weil cycle。"
+  ],
+  "steps": [
+    [
+      "DVR 正则性",
+      "非负分式阶数等价于分母整除分子，得到实际局部环元素。",
+      "dvr_rationalOrder_nonneg_iff_regular"
+    ],
+    [
+      "实际仿射延拓",
+      "在真实仿射坐标环上应用余维一延拓，局部化就是实际 Scheme stalk。",
+      "normal_affine_rational_regular"
+    ],
+    [
+      "有效性等价",
+      "Weil 非负性使所有图册方程在每个 stalk 正则；反向由 DVR 阶数给出。",
+      "cartierAtlas_effective_iff_weil_nonneg"
+    ]
+  ],
+  "related": [
+    "dvr_rationalOrder_nonneg_iff_regular",
+    "normal_affine_rational_regular"
+  ]
+});
+
+nodes.push({
+  "id": "geomsupport",
+  "title": "真实 Cartier 全支撑与实组合拉回",
+  "decl": "exists_realCartier_decomposition_support_pullback",
+  "file": "CartierVanishing.lean",
+  "deps": [
+    "cartiereff",
+    "rdecomp",
+    "cartiersupport"
+  ],
+  "status": "done",
+  "x": 278,
+  "y": 4400,
+  "paper": "proper",
+  "statement": "Cartier 全支撑等于实际 Weil 非零素分量的闭包；有效实组合的支撑是正权重项支撑的并集，所构造分解的拉回支撑是逆像。",
+  "scope": "实际单位邻域、全支撑闭性、余维一闭包、正权重实组合及分解的支撑拉回均已证明。仍需把该分解的拉回与原 R-Cartier 表示的逐项拉回核对；上方纤维二择一仍未完成。",
+  "inputs": [
+    "实际整、正规、局部 Noetherian 概形及 dominant 态射。",
+    "任意原实权重，但原实际 Weil 组合有效；构造分解时底概形准紧。"
+  ],
+  "steps": [
+    [
+      "识别全支撑",
+      "局部单位延拓为邻域单位截面；零阶数同时延拓方程与其逆，识别所有余维的支撑。",
+      "cartierAtlas_vanishingSupport_eq_closure_weilSupport"
+    ],
+    [
+      "正权重并集",
+      "有效 Cartier 系数非负，不会相消；有限并与闭包交换。",
+      "effective_cartier_real_sum_support"
+    ],
+    [
+      "实际拉回",
+      "构造每个有效 Cartier 的真实拉回；局部态射反映单位，得到实组合支撑逆像。",
+      "exists_effective_real_sum_pullback_support"
+    ],
+    [
+      "任意实表示",
+      "先构造有效 Cartier 分解，再拉回该分解。原表示逐项拉回的兼容及上方二择一仍待完成。",
+      "exists_realCartier_decomposition_support_pullback"
+    ]
+  ],
+  "related": [
+    "rationalUnitAt_exists_affine_unit_section",
+    "rationalUnitAt_isOpen",
+    "cartierAtlas_vanishingSupport_isClosed",
+    "normal_affine_rationalUnitAt_of_orders_zero",
+    "cartierAtlas_vanishingSupport_eq_closure_weilSupport",
+    "effective_cartier_real_sum_support",
+    "exists_effective_real_sum_pullback_support"
+  ]
+});
+
+find('rdecomp').title='真实 R-Cartier：有效 Cartier 分解';
+find('rdecomp').file='CartierEffectivity.lean';
+find('rdecomp').decl='exists_realCartier_effective_weil_decomposition';
+find('rdecomp').related=['exists_realCartier_nonnegative_weil_decomposition','exists_cartierAtlas_integralCombination','exists_cartierAtlas_integralCombination_coefficients'];
+find('rdecomp').deps.push('cartiereff');
+find('rdecomp').statement='原实际 Weil 实组合有效时，可构造非负实权重的实际有效 Cartier 图册分解，精确保持加权 Weil cycle 和原零系数。';
+find('rdecomp').scope='有理锥分解、整数组合、实际 Weil 系数及 Cartier 方程正则均已证明。等式为构造的实际 Weil cycle 等式；完整 negativity lemma 仍未完成。';
+find('rdecomp').steps[3]=['实际 Cartier 有效性：已证明','应用已证明的余维一延拓，把非负 Weil 系数转成正则局部方程。','cartierAtlas_effective_iff_weil_nonneg'];
+find('fiberdown').deps.push('geomsupport');
+find('fiberdown').scope='实际 Cartier 有效性、有效实组合的全支撑及所构造分解的支撑拉回已完成。仍缺分解拉回与原表示逐项拉回的兼容，以及上方纤维二择一；完整定理尚未完成。';
+find('fiberdown').inputs[1]='已完成：实际有效 Cartier 分解、全支撑闭包及分解的支撑拉回。待完成：与原表示逐项拉回兼容。';
+find('fiberdown').steps[2]=['有效 R-Cartier 分解：已验证','所有构造的 Cartier 项的局部方程均正则，实际 Weil cycle 等式已证明。','exists_realCartier_effective_weil_decomposition'];
+find('fiberdown').steps[3]=['所构造分解的全支撑拉回：已验证','支撑识别为 Weil 非零素分量的闭包，再证明分解拉回的支撑等于逆像。','exists_realCartier_decomposition_support_pullback'];
+find('fiberdown').steps.push(['尚待接通','与原表示逐项拉回兼容，并完成上方纤维二择一。']);
+find('chow').deps.push('geomsupport');
+find('chow').scope='实际 R-Cartier 推拉、有效 Cartier 分解、全支撑识别及分解的支撑拉回已完成。仍缺有限覆盖的射影性、有限正规化、全局曲线交数、与原实表示逐项拉回兼容及上方纤维二择一。';

@@ -63,3 +63,9 @@ public import Negativity.RationalCone
 public import Negativity.CartierCombinations
 
 public import Negativity.RealCartierDecomposition
+
+public import Negativity.NormalExtension
+
+public import Negativity.CartierEffectivity
+
+public import Negativity.CartierVanishing

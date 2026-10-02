@@ -1,8 +1,55 @@
-Verified 2026-10-02T10:13:25+08:00
+Verified 2026-10-02T11:49:20+08:00
 
 $ lake build
-Build completed successfully (3886 jobs).
+⚠ [3888/3892] Built Negativity.NormalExtension (13s)
+warning: Negativity/NormalExtension.lean:128:2: Try this:
+  haveI̵
 
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Negativity/NormalExtension.lean:185:2: Try this:
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Negativity/NormalExtension.lean:206:2: Try this:
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+⚠ [3889/3892] Replayed Negativity.CartierEffectivity
+warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hz] at he
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Negativity/CartierEffectivity.lean:54:25: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
+
+Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
+⚠ [3890/3892] Replayed Negativity.CartierVanishing
+warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hU
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (3892 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -176,5 +223,33 @@ $ lake env lean CheckAxioms.lean
  Classical.choice,
  Quot.sound]
 'Negativity.exists_realCartier_nonnegative_weil_decomposition' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.normal_local_annihilator_maximal_isPrincipal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_local_associated_principal_maximal_isPrincipal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.normal_local_associated_principal_isDVR' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_principal_associated_prime_isDVR' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_principal_associated_prime_height_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_divisibility_of_height_one_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_fraction_regular_iff_height_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_fraction_regular_of_height_one_denominators' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.dvr_rationalOrder_nonneg_iff_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_affine_rational_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierAtlas_effective_iff_weil_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_realCartier_effective_weil_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.rationalUnitAt_exists_affine_unit_section' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.rationalUnitAt_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierAtlas_vanishingSupport_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.normal_affine_rationalUnitAt_of_orders_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.cartierAtlas_vanishingSupport_eq_closure_weilSupport' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.effective_cartier_real_sum_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_effective_real_sum_pullback_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_realCartier_decomposition_support_pullback' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]

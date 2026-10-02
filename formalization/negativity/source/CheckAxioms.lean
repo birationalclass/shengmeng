@@ -250,3 +250,43 @@ import Negativity
 #print axioms Negativity.exists_cartierAtlas_integralCombination_coefficients
 
 #print axioms Negativity.exists_realCartier_nonnegative_weil_decomposition
+
+#print axioms Negativity.normal_local_annihilator_maximal_isPrincipal
+
+#print axioms Negativity.normal_local_associated_principal_maximal_isPrincipal
+
+#print axioms Negativity.normal_local_associated_principal_isDVR
+
+#print axioms Negativity.normal_principal_associated_prime_isDVR
+
+#print axioms Negativity.normal_principal_associated_prime_height_one
+
+#print axioms Negativity.normal_divisibility_of_height_one_local
+
+#print axioms Negativity.normal_fraction_regular_iff_height_one
+
+#print axioms Negativity.normal_fraction_regular_of_height_one_denominators
+
+#print axioms Negativity.dvr_rationalOrder_nonneg_iff_regular
+
+#print axioms Negativity.normal_affine_rational_regular
+
+#print axioms Negativity.cartierAtlas_effective_iff_weil_nonneg
+
+#print axioms Negativity.exists_realCartier_effective_weil_decomposition
+
+#print axioms Negativity.rationalUnitAt_exists_affine_unit_section
+
+#print axioms Negativity.rationalUnitAt_isOpen
+
+#print axioms Negativity.cartierAtlas_vanishingSupport_isClosed
+
+#print axioms Negativity.normal_affine_rationalUnitAt_of_orders_zero
+
+#print axioms Negativity.cartierAtlas_vanishingSupport_eq_closure_weilSupport
+
+#print axioms Negativity.effective_cartier_real_sum_support
+
+#print axioms Negativity.exists_effective_real_sum_pullback_support
+
+#print axioms Negativity.exists_realCartier_decomposition_support_pullback

@@ -982,3 +982,94 @@ entries.fiberdown[3][1]='Verified: effective Cartier support pullback and actual
 entries.fiberdown[4][2]=['R-Cartier decomposition: verified','Actual Cartier presentations with nonnegative Weil coefficients are constructed, preserving every original zero coefficient.'];
 entries.fiberdown[4].push(['Still to connect','Prove regular local equations and full support from nonnegative Weil coefficients, and complete the upstairs fiber dichotomy.']);
 entries.chow[2]='Effective Cartier support pullback, actual R-Cartier push-pull and nonnegative Weil decomposition are proved. Finite-cover projectivity, finite normalization, global curve intersections, local extension from nonnegative Weil coefficients and general R-Cartier full support remain open.';
+
+Object.assign(entries,{
+  "normalext": [
+    "Codimension-one extension on a normal domain",
+    "In a normal Noetherian domain R, a fraction belongs to R exactly when it is regular at every height-one prime.",
+    "The ring-theoretic extension theorem is proved. Height-one associated primes and actual local DVRs are outputs, not an assumed intersection identity. Arbitrary characteristic is allowed.",
+    [
+      "An actual normal Noetherian domain and its fraction field.",
+      "The fraction is regular at all height-one localizations."
+    ],
+    [
+      [
+        "Determinant trick",
+        "An annihilator witness in a principal quotient gives a principal maximal ideal using integral closedness."
+      ],
+      [
+        "Associated primes",
+        "Localize at an actual associated prime and prove the local ring is a DVR, hence its height is one."
+      ],
+      [
+        "Detect divisibility",
+        "A nonzero class in a principal quotient produces a height-one associated prime detecting failure of divisibility."
+      ],
+      [
+        "Extend the fraction",
+        "Choose actual numerator and denominator and apply the proved height-one divisibility criterion."
+      ]
+    ]
+  ],
+  "cartiereff": [
+    "Actual Cartier effectivity: the Weil criterion",
+    "On a normal locally Noetherian scheme, an actual Cartier presentation is effective exactly when all actual Weil coefficients are nonnegative.",
+    "DVR regularity, affine codimension-one extension and regular equations in actual stalks are proved. Effectivity is an output rather than a geometric bridge input.",
+    [
+      "An actual integral locally Noetherian scheme with integrally closed stalks.",
+      "Actual Cartier presentations and their constructed Weil cycles."
+    ],
+    [
+      [
+        "DVR regularity",
+        "Nonnegative fraction order is equivalent to divisibility of numerator by denominator."
+      ],
+      [
+        "Actual affine extension",
+        "Apply normal-domain extension to an actual affine coordinate ring and its actual scheme stalks."
+      ],
+      [
+        "Effectivity equivalence",
+        "Extend all equations to actual local rings; the converse follows from nonnegative DVR orders."
+      ]
+    ]
+  ],
+  "geomsupport": [
+    "Actual Cartier support and real-sum pullback",
+    "Full Cartier support is the closure of the nonzero actual Weil primes. Effective real sums have the union of positive-weight supports; the constructed decomposition has inverse-image pullback support.",
+    "Actual unit neighborhoods, closed support, codimension-one closure, positive real sums and pullback of the constructed decomposition are proved. Compatibility with termwise pullback of the original R-Cartier presentation and the upstairs fiber dichotomy remain open.",
+    [
+      "Actual integral normal locally Noetherian schemes and a dominant morphism.",
+      "Arbitrary original real weights with effective actual Weil sum; decomposition requires a quasi-compact base."
+    ],
+    [
+      [
+        "Full support",
+        "Extend local units to unit sections and extend both an equation and its inverse from zero height-one orders."
+      ],
+      [
+        "Positive-weight union",
+        "Effective Cartier coefficients do not cancel; closure commutes with finite unions."
+      ],
+      [
+        "Actual pullback",
+        "Construct effective Cartier pullbacks and use reflection of local units to prove inverse-image support."
+      ],
+      [
+        "Arbitrary real presentation",
+        "Construct an effective Cartier decomposition and pull it back. Compatibility with the original termwise pullback and the upstairs dichotomy remain open."
+      ]
+    ]
+  ]
+});
+
+entries.rdecomp[0]='Actual R-Cartier: effective Cartier decomposition';
+entries.rdecomp[1]='An effective actual real Weil combination has a constructed nonnegative real decomposition into actual effective Cartier presentations, preserving the weighted Weil cycle and every original zero coefficient.';
+entries.rdecomp[2]='Rational-cone decomposition, integral combinations, actual Weil coefficients and regular Cartier equations are proved. The equality is an equality of constructed actual Weil cycles. The full negativity lemma remains open.';
+entries.rdecomp[4][3]=['Actual Cartier effectivity: proved','Apply proved codimension-one extension to turn nonnegative Weil coefficients into regular local equations.'];
+entries.fiberdown[2]='Actual Cartier effectivity, full support of effective real sums and support pullback of the constructed decomposition are proved. Compatibility with original termwise pullback and the upstairs fiber dichotomy remain open. The complete theorem is not proved.';
+entries.fiberdown[3][1]='Verified: actual effective Cartier decomposition, geometric support closure and support pullback of the decomposition. Open: compatibility with the original termwise pullback.';
+entries.fiberdown[4][2]=['Effective R-Cartier decomposition: verified','Every constructed Cartier equation is regular in the actual stalks, and the actual Weil cycle identity is proved.'];
+entries.fiberdown[4][3]=['Full support pullback of the decomposition: verified','Identify support with the closure of nonzero Weil primes, then prove inverse-image support for its constructed pullback.'];
+entries.fiberdown[4].push(['Still to connect','Prove compatibility with original termwise pullback and complete the upstairs fiber dichotomy.']);
+entries.chow[2]='Actual R-Cartier push-pull, effective Cartier decomposition, full support identification and support pullback of the decomposition are proved. Finite-cover projectivity, finite normalization, global curve intersections, original termwise-pullback compatibility and the upstairs fiber dichotomy remain open.';

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T10:13:25+08:00",
+  "checkedAt": "2026-10-02T11:49:20+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "ff159d6e5d6da28f23d94e7192c1ae91b988c2d239ebda9fca1421e5e6f7eee1"
+      "sha256": "a35e0d43c379cad7ed4d72809a38980d94ac7981063d60fa6c3bd6825bea70e5"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "a47c84caac57a7ce3eb6083cc2078337671a5be5a52ad4a2168c1b231a153bb4"
+      "sha256": "3c558cf5b3d4d7a63505c82e43a10f7745b4fba9431be902ed8b1d5ee0f31fdb"
     },
     {
       "path": "lakefile.toml",
@@ -25,8 +25,24 @@
       "sha256": "ceb521c34ccf509ffab8850a94e147aefbc9b406506832eb83caae98c64e0116"
     },
     {
+      "path": "THIRD_PARTY_NOTICES.txt",
+      "sha256": "a4d7c52a492dec4b6cab829a6ca34278326d9a5b4b7ae5cfb51ca385c706f4b8"
+    },
+    {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/NormalExtension.lean",
+      "sha256": "688e32f48b564805b76870e5fa0299798f3a6d52bd9b01f7dafc280babbd2ecd"
+    },
+    {
+      "path": "Negativity/CartierEffectivity.lean",
+      "sha256": "bc986a0331436f80e8b96d97382500cc5fcb8107f4ab6229a88eb0861c2cfc74"
+    },
+    {
+      "path": "Negativity/CartierVanishing.lean",
+      "sha256": "75757b431b5d1b61376dfafca28fbbde2fc116e893ee423b006135944367e77a"
     },
     {
       "path": "Negativity/RationalCone.lean",
@@ -166,6 +182,206 @@
     }
   ],
   "declarations": {
+    "normal_local_annihilator_maximal_isPrincipal": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 26,
+      "code": "theorem normal_local_annihilator_maximal_isPrincipal (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsLocalRing R]\n    [IsIntegrallyClosed R] (a b : R) (ha : a ≠ 0)\n    (hb : b ∉ Ideal.span {a})\n    (hm : ∀ m ∈ maximalIdeal R, ∃ k : R, k * a = b * m) :\n    (maximalIdeal R).IsPrincipal := by\n  classical\n  have haunit : ¬ IsUnit a := by\n    intro h\n    apply hb\n    rw [Ideal.span_singleton_eq_top.mpr h]\n    trivial\n  have ham : a ∈ maximalIdeal R := by\n    simpa only [mem_maximalIdeal, mem_nonunits_iff] using haunit\n  have hb0 : b ≠ 0 := by\n    rintro rfl\n    exact hb (Ideal.zero_mem _)\n  let K := FractionRing R\n  let x : K := algebraMap R K b / algebraMap R K a\n  let M := Submodule.map (Algebra.linearMap R K) (maximalIdeal R)\n  have hak : algebraMap R K a ≠ 0 := IsFractionRing.to_map_eq_zero_iff.not.mpr ha\n  by_cases hx : ∀ y ∈ M, x * y ∈ M\n  · have hi := isIntegral_of_smul_mem_submodule M ?_ ?_ x hx\n    · obtain ⟨y, hy⟩ := IsIntegrallyClosed.algebraMap_eq_of_integral hi\n      refine (hb (Ideal.mem_span_singleton'.mpr ⟨y, ?_⟩)).elim\n      apply IsFractionRing.injective R K\n      rw [map_mul, hy, div_mul_cancel₀ _ hak]\n    · rw [Submodule.ne_bot_iff]\n      exact ⟨_, ⟨a, ham, rfl⟩, hak⟩\n    · exact Submodule.FG.map _ (IsNoetherian.noetherian _)\n  · have htop :\n        (M.map (DistribSMul.toLinearMap R K x)).comap (Algebra.linearMap R K) = ⊤ := by\n      contrapose! hx with h\n      rintro m' ⟨m, hm', rfl : algebraMap R K m = m'⟩\n      obtain ⟨k, hk⟩ := hm m hm'\n      have hk' : x * algebraMap R K m = algebraMap R K k := by\n        rw [← mul_div_right_comm, ← map_mul, ← hk, map_mul, mul_div_cancel_right₀ _ hak]\n      exact ⟨k, le_maximalIdeal h ⟨_, ⟨_, hm', rfl⟩, hk'⟩, hk'.symm⟩\n    obtain ⟨y, hym, hy⟩ : ∃ y ∈ maximalIdeal R, b * y = a := by\n      rw [Ideal.eq_top_iff_one, Submodule.mem_comap] at htop\n      obtain ⟨_, ⟨y, hym, rfl⟩, hy : x * algebraMap R K y = algebraMap R K 1⟩ := htop\n      rw [map_one, ← mul_div_right_comm, div_eq_one_iff_eq hak, ← map_mul] at hy\n      exact ⟨y, hym, IsFractionRing.injective R K hy⟩\n    refine ⟨⟨y, ?_⟩⟩\n    apply le_antisymm\n    · intro m hm'\n      obtain ⟨k, hk⟩ := hm m hm'\n      rw [← hy, mul_comm, mul_assoc] at hk\n      rw [← mul_left_cancel₀ hb0 hk, mul_comm]\n      exact Ideal.mem_span_singleton'.mpr ⟨_, rfl⟩\n    · rwa [Submodule.span_le, Set.singleton_subset_iff]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_local_associated_principal_maximal_isPrincipal": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 80,
+      "code": "theorem normal_local_associated_principal_maximal_isPrincipal (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsLocalRing R]\n    [IsIntegrallyClosed R] (a : R) (ha : a ≠ 0)\n    (h : IsAssociatedPrime (maximalIdeal R) (R ⧸ Ideal.span {a})) :\n    (maximalIdeal R).IsPrincipal := by\n  classical\n  obtain ⟨_, v, hv⟩ := isAssociatedPrime_iff.mp h\n  have hv0 : v ≠ 0 := by\n    rintro rfl\n    have ht : maximalIdeal R = ⊤ := by\n      simpa only [Submodule.colon_singleton_zero] using hv\n    exact (maximalIdeal.isMaximal R).ne_top ht\n  obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective v\n  apply normal_local_annihilator_maximal_isPrincipal R a b ha\n  · exact fun hb => hv0 (Ideal.Quotient.eq_zero_iff_mem.mpr hb)\n  · intro m hm\n    rw [hv, Submodule.mem_colon_singleton, Submodule.mem_bot] at hm\n    have hm' : m * b ∈ Ideal.span {a} := by\n      apply Ideal.Quotient.eq_zero_iff_mem.mp\n      simpa only [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul] using hm\n    simpa only [mul_comm] using Ideal.mem_span_singleton'.mp hm'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_local_associated_principal_isDVR": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 105,
+      "code": "theorem normal_local_associated_principal_isDVR (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsLocalRing R]\n    [IsIntegrallyClosed R] (a : R) (ha : a ≠ 0)\n    (h : IsAssociatedPrime (maximalIdeal R) (R ⧸ Ideal.span {a})) :\n    IsDiscreteValuationRing R := by\n  have hp := normal_local_associated_principal_maximal_isPrincipal R a ha h\n  have hf : ¬ IsField R := by\n    intro hf\n    let := hf.toField\n    have he : Ideal.span {a} = ⊤ := Ideal.span_singleton_eq_top.mpr (isUnit_iff_ne_zero.mpr ha)\n    rw [he] at h\n    exact not_isAssociatedPrime_of_subsingleton h\n  exact ((IsDiscreteValuationRing.TFAE R hf).out 5 1).mp hp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_principal_associated_prime_isDVR": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 121,
+      "code": "theorem normal_principal_associated_prime_isDVR (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]\n    (a : R) (ha : a ≠ 0) (p : Ideal R) [p.IsPrime]\n    (hp : IsAssociatedPrime p (R ⧸ Ideal.span {a})) :\n    IsDiscreteValuationRing (Localization.AtPrime p) := by\n  classical\n  let S := Localization.AtPrime p\n  haveI : IsIntegrallyClosed S :=\n    isIntegrallyClosed_of_isLocalization S p.primeCompl p.primeCompl_le_nonZeroDivisors\n  obtain ⟨_, v, hv⟩ := isAssociatedPrime_iff.mp hp\n  have hv0 : v ≠ 0 := by\n    rintro rfl\n    exact hp.isPrime.ne_top (by simpa only [Submodule.colon_singleton_zero] using hv)\n  obtain ⟨b, rfl⟩ := Ideal.Quotient.mk_surjective v\n  have hab : algebraMap R S a ≠ 0 := by\n    exact (map_ne_zero_iff (algebraMap R S)\n      (IsLocalization.injective S p.primeCompl_le_nonZeroDivisors)).mpr ha\n  have hbS : algebraMap R S b ∉ Ideal.span {algebraMap R S a} := by\n    intro hbS\n    have he : (Ideal.span {a}).map (algebraMap R S) =\n        Ideal.span {algebraMap R S a} := by\n      rw [Ideal.map_span, Set.image_singleton]\n    rw [← he, IsLocalization.algebraMap_mem_map_algebraMap_iff p.primeCompl] at hbS\n    obtain ⟨s, hs, hsb⟩ := hbS\n    apply hs\n    change s ∈ p\n    rw [hv, Submodule.mem_colon_singleton, Submodule.mem_bot]\n    apply Ideal.Quotient.eq_zero_iff_mem.mpr at hsb\n    simpa only [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul] using hsb\n  have hm : ∀ m ∈ maximalIdeal S, ∃ k : S,\n      k * algebraMap R S a = algebraMap R S b * m := by\n    intro m hm\n    obtain ⟨r, s, rfl⟩ := IsLocalization.exists_mk'_eq p.primeCompl m\n    have hr : r ∈ p := by\n      exact (IsLocalization.AtPrime.to_map_mem_maximal_iff S p r).mp\n        (IsLocalization.mk'_mem_iff.mp hm)\n    rw [hv, Submodule.mem_colon_singleton, Submodule.mem_bot] at hr\n    have hrb : r * b ∈ Ideal.span {a} := by\n      apply Ideal.Quotient.eq_zero_iff_mem.mp\n      simpa only [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul] using hr\n    obtain ⟨k, hk⟩ := Ideal.mem_span_singleton'.mp hrb\n    refine ⟨IsLocalization.mk' S k s, ?_⟩\n    calc\n      IsLocalization.mk' S k s * algebraMap R S a =\n          IsLocalization.mk' S (k * a) (s * 1) := by\n        rw [IsLocalization.mk'_mul, IsLocalization.mk'_one]\n      _ = IsLocalization.mk' S (b * r) (1 * s) := by rw [hk, mul_comm r b, mul_one, one_mul]\n      _ = algebraMap R S b * IsLocalization.mk' S r s := by\n        rw [IsLocalization.mk'_mul, IsLocalization.mk'_one]\n  have hprin := normal_local_annihilator_maximal_isPrincipal S _ _ hab hbS hm\n  have hf : ¬ IsField S := by\n    intro hf\n    let := hf.toField\n    have he : Ideal.span {algebraMap R S a} = ⊤ :=\n      Ideal.span_singleton_eq_top.mpr (isUnit_iff_ne_zero.mpr hab)\n    exact hbS (he ▸ trivial)\n  exact ((IsDiscreteValuationRing.TFAE S hf).out 5 1).mp hprin",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_principal_associated_prime_height_one": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 181,
+      "code": "theorem normal_principal_associated_prime_height_one (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]\n    (a : R) (ha : a ≠ 0) (p : Ideal R) [p.IsPrime]\n    (hp : IsAssociatedPrime p (R ⧸ Ideal.span {a})) : p.height = 1 := by\n  haveI := normal_principal_associated_prime_isDVR R a ha p hp\n  apply WithBot.coe_injective\n  change (p.height : WithBot ℕ∞) = 1\n  rw [← IsLocalization.AtPrime.ringKrullDim_eq_height p (Localization.AtPrime p)]\n  exact IsDiscreteValuationRing.ringKrullDim_eq_one (Localization.AtPrime p)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_divisibility_of_height_one_local": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 194,
+      "code": "theorem normal_divisibility_of_height_one_local (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]\n    (a b : R) (ha : a ≠ 0)\n    (hloc : ∀ (p : Ideal R) [p.IsPrime], p.height = 1 →\n      algebraMap R (Localization.AtPrime p) b ∈\n        Ideal.span {algebraMap R (Localization.AtPrime p) a}) :\n    b ∈ Ideal.span {a} := by\n  classical\n  by_contra hb\n  have hv : Ideal.Quotient.mk (Ideal.span {a}) b ≠ 0 := by\n    exact fun h => hb (Ideal.Quotient.eq_zero_iff_mem.mp h)\n  obtain ⟨p, hp, hle⟩ := exists_le_isAssociatedPrime_of_isNoetherianRing R _ hv\n  haveI := hp.isPrime\n  have ht := normal_principal_associated_prime_height_one R a ha p hp\n  have hm := hloc p ht\n  have he : (Ideal.span {a}).map (algebraMap R (Localization.AtPrime p)) =\n      Ideal.span {algebraMap R (Localization.AtPrime p) a} := by\n    rw [Ideal.map_span, Set.image_singleton]\n  rw [← he, IsLocalization.algebraMap_mem_map_algebraMap_iff p.primeCompl] at hm\n  obtain ⟨s, hs, hsb⟩ := hm\n  apply hs\n  apply hle\n  rw [Submodule.mem_colon_singleton, Submodule.mem_bot]\n  apply Ideal.Quotient.eq_zero_iff_mem.mpr at hsb\n  simpa only [Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul] using hsb",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_fraction_regular_iff_height_one": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 223,
+      "code": "theorem normal_fraction_regular_iff_height_one (R : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]\n    (x : FractionRing R) :\n    (∃ r : R, algebraMap R (FractionRing R) r = x) ↔\n    ∀ (p : Ideal R) [p.IsPrime], p.height = 1 →\n      ∃ y : Localization.AtPrime p,\n        algebraMap (Localization.AtPrime p) (FractionRing R) y = x := by\n  classical\n  constructor\n  · rintro ⟨r, rfl⟩ p _ _\n    exact ⟨algebraMap R (Localization.AtPrime p) r,\n      (IsScalarTower.algebraMap_apply R (Localization.AtPrime p) (FractionRing R) r).symm⟩\n  · intro hloc\n    obtain ⟨b, a, ha, rfl⟩ := IsFractionRing.div_surjective R x\n    have han : a ≠ 0 := nonZeroDivisors.ne_zero ha\n    have hak : algebraMap R (FractionRing R) a ≠ 0 :=\n      IsFractionRing.to_map_eq_zero_iff.not.mpr han\n    have hb : b ∈ Ideal.span {a} := by\n      apply normal_divisibility_of_height_one_local R a b han\n      intro p _ hp\n      obtain ⟨y, hy⟩ := hloc p hp\n      apply Ideal.mem_span_singleton'.mpr\n      refine ⟨y, ?_⟩\n      apply IsFractionRing.injective (Localization.AtPrime p) (FractionRing R)\n      rw [map_mul, ← IsScalarTower.algebraMap_apply R (Localization.AtPrime p),\n        ← IsScalarTower.algebraMap_apply R (Localization.AtPrime p), hy,\n        div_mul_cancel₀ _ hak]\n    obtain ⟨r, hr⟩ := Ideal.mem_span_singleton'.mp hb\n    refine ⟨r, ?_⟩\n    rw [eq_div_iff hak, ← map_mul, hr]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_fraction_regular_of_height_one_denominators": {
+      "path": "Negativity/NormalExtension.lean",
+      "line": 257,
+      "code": "theorem normal_fraction_regular_of_height_one_denominators (R K : Type*)\n    [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R]\n    [Field K] [Algebra R K] [IsFractionRing R K]\n    (x : K)\n    (hloc : ∀ (p : Ideal R) [p.IsPrime], p.height = 1 →\n      ∃ (r s : R), s ∉ p ∧ x * algebraMap R K s = algebraMap R K r) :\n    ∃ r : R, algebraMap R K r = x := by\n  classical\n  obtain ⟨b, a, ha, rfl⟩ := IsFractionRing.div_surjective R x\n  have han : a ≠ 0 := nonZeroDivisors.ne_zero ha\n  have hak : algebraMap R K a ≠ 0 := IsFractionRing.to_map_eq_zero_iff.not.mpr han\n  have hb : b ∈ Ideal.span {a} := by\n    apply normal_divisibility_of_height_one_local R a b han\n    intro p _ hp\n    obtain ⟨r, s, hs, heq⟩ := hloc p hp\n    have hsb : s * b = r * a := by\n      apply IsFractionRing.injective R K\n      rw [map_mul, map_mul]\n      have he := congrArg (fun z : K => z * algebraMap R K a) heq\n      rw [← mul_div_right_comm, div_mul_cancel₀ _ hak] at he\n      simpa only [mul_comm] using he\n    have he' : (Ideal.span {a}).map (algebraMap R (Localization.AtPrime p)) =\n        Ideal.span {algebraMap R (Localization.AtPrime p) a} := by\n      rw [Ideal.map_span, Set.image_singleton]\n    rw [← he', IsLocalization.algebraMap_mem_map_algebraMap_iff p.primeCompl]\n    exact ⟨s, hs, Ideal.mem_span_singleton'.mpr ⟨r, hsb.symm⟩⟩\n  obtain ⟨r, hr⟩ := Ideal.mem_span_singleton'.mp hb\n  refine ⟨r, ?_⟩\n  rw [eq_div_iff hak, ← map_mul, hr]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_nonneg_iff_regular": {
+      "path": "Negativity/CartierEffectivity.lean",
+      "line": 15,
+      "code": "theorem dvr_rationalOrder_nonneg_iff_regular (R K : Type*)\n    [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]\n    [Field K] [Algebra R K] [IsFractionRing R K] (a : Kˣ) :\n    0 ≤ DvrRationalOrder R K a ↔ ∃ r : R, algebraMap R K r = (a : K) := by\n  constructor\n  · intro hn\n    obtain ⟨⟨r, s⟩, he⟩ := IsLocalization.surj (nonZeroDivisors R) (a : K)\n    have hs : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n    have hsk : algebraMap R K (s : R) ≠ 0 := IsFractionRing.to_map_eq_zero_iff.not.mpr hs\n    have hr : r ≠ 0 := by\n      intro hz\n      exact mul_ne_zero a.ne_zero hsk (by simpa [hz] using he)\n    rw [dvr_rationalOrder_represents R K a r s hr hs he] at hn\n    have vr : addVal R r ≠ ⊤ := fun h => hr (addVal_eq_top_iff.mp h)\n    have vs : addVal R (s : R) ≠ ⊤ := fun h => hs (addVal_eq_top_iff.mp h)\n    have hle : (addVal R (s : R)).toNat ≤ (addVal R r).toNat := by\n      unfold LocalFractionOrder at hn\n      omega\n    have hle' : addVal R (s : R) ≤ addVal R r := by\n      rw [← ENat.natCast_toNat vs, ← ENat.natCast_toNat vr]\n      exact_mod_cast hle\n    obtain ⟨t, ht⟩ := addVal_le_iff_dvd.mp hle'\n    refine ⟨t, ?_⟩\n    apply mul_right_cancel₀ hsk\n    rw [he, ht, map_mul, mul_comm]\n  · rintro ⟨r, hr⟩\n    have hne : r ≠ 0 := by\n      intro hz\n      exact a.ne_zero (by simpa [hz] using hr.symm)\n    rw [dvr_rationalOrder_represents R K a r 1 hne one_ne_zero (by simpa using hr.symm)]\n    simp [LocalFractionOrder]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_affine_rational_regular": {
+      "path": "Negativity/CartierEffectivity.lean",
+      "line": 50,
+      "code": "theorem normal_affine_rational_regular (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) (hU : IsAffineOpen U) [Nonempty U] (a : X.functionFieldˣ)\n    (horder : ∀ (x : X) (hx : x ∈ U) (hc : Order.coheight x = 1),\n      0 ≤ schemeRationalOrder X hn x hc a) :\n    ∃ r : Γ(X, U), algebraMap Γ(X, U) X.functionField r = (a : X.functionField) := by\n  classical\n  let R := Γ(X, U)\n  have : IsNoetherianRing R := IsLocallyNoetherian.component_noetherian ⟨U, hU⟩\n  have : IsIntegrallyClosed R := normal_affine_sections X hn U hU\n  have : IsFractionRing R X.functionField := functionField_isFractionRing_of_isAffineOpen X U hU\n  apply normal_fraction_regular_of_height_one_denominators R X.functionField (a : X.functionField)\n  intro p _ hp\n  let S : Type _ := X.presheaf.stalk (hU.fromSpec ⟨p, inferInstance⟩)\n  let : Algebra R S := X.presheaf.algebra_section_stalk\n    ⟨hU.fromSpec ⟨p, inferInstance⟩, (hU.isoSpec.inv _).2⟩\n  have : IsLocalization.AtPrime S p :=\n    hU.isLocalization_stalk' ⟨p, inferInstance⟩ (hU.isoSpec.inv _).2\n  have : IsScalarTower R S X.functionField := functionField_isScalarTower X U\n    ⟨hU.fromSpec ⟨p, inferInstance⟩, (hU.isoSpec.inv _).2⟩\n  have hc : Order.coheight (hU.fromSpec ⟨p, inferInstance⟩) = 1 := by\n    rw [coheight_eq_of_isOpenImmersion (f := hU.fromSpec), ← idealHeight_eq_coheight]\n    exact hp\n  have := hn (hU.fromSpec ⟨p, inferInstance⟩)\n  have := normal_codimensionOne_stalk_isDVR X (hU.fromSpec ⟨p, inferInstance⟩) hc\n  obtain ⟨y, hy⟩ := (dvr_rationalOrder_nonneg_iff_regular S X.functionField a).mp\n    (horder _ (hU.isoSpec.inv _).2 hc)\n  obtain ⟨⟨r, s⟩, he⟩ := IsLocalization.surj p.primeCompl y\n  refine ⟨r, s, s.2, ?_⟩\n  have he' := congrArg (algebraMap S X.functionField) he\n  simpa only [map_mul, ← IsScalarTower.algebraMap_apply R S X.functionField, hy] using he'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_effective_iff_weil_nonneg": {
+      "path": "Negativity/CartierEffectivity.lean",
+      "line": 86,
+      "code": "theorem cartierAtlas_effective_iff_weil_nonneg (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) :\n    A.Effective ↔ ∀ x : X, 0 ≤ A.weilCycle hn x := by\n  constructor\n  · exact effective_cartierAtlas_weil_nonneg X hn A\n  · intro h\n    intro i x hx\n    have : Nonempty (A.chart i) := A.nonempty i\n    obtain ⟨r, hr⟩ := normal_affine_rational_regular X hn (A.chart i) (A.affine i)\n      (A.equation i) (by\n        intro y hy hc\n        have hh := h y\n        change 0 ≤ A.coefficient hn y at hh\n        rwa [cartierAtlas_coefficient_eq X hn A i y hc hy] at hh)\n    refine ⟨X.presheaf.germ (A.chart i) x hx r, ?_⟩\n    exact (Scheme.algebraMap_germ_eq_germToFunctionField X hx r).trans hr",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_effective_weil_decomposition": {
+      "path": "Negativity/CartierEffectivity.lean",
+      "line": 109,
+      "code": "theorem exists_realCartier_effective_weil_decomposition (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, c t * ((A t).coefficient hn x : ℝ)) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (B : J → CartierAtlas X X),\n      (∀ j, 0 ≤ w j) ∧ (∀ j, (B j).Effective) ∧\n      (∀ j x, (∑ t, c t * ((A t).coefficient hn x : ℝ)) = 0 →\n        (B j).coefficient hn x = 0) ∧\n      (∑ j, (B j).weightedWeilCycle hn (w j)) =\n        ∑ t, (A t).weightedWeilCycle hn (c t) := by\n  obtain ⟨J, hJ, w, B, hw, heff, hz, heq⟩ :=\n    exists_realCartier_nonnegative_weil_decomposition X hn A c he\n  refine ⟨J, hJ, w, B, hw, ?_, hz, heq⟩\n  intro j\n  apply (cartierAtlas_effective_iff_weil_nonneg X hn (B j)).mpr\n  exact heff j",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalUnitAt_exists_affine_unit_section": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 13,
+      "code": "theorem rationalUnitAt_exists_affine_unit_section (X : Scheme) [IsIntegral X]\n    (x : X) (a : X.functionFieldˣ) (ha : RationalUnitAt X x a) :\n    ∃ (U : X.Opens) (hU : IsAffineOpen U) (hx : x ∈ U)\n      (r : Γ(X, U)), IsUnit r ∧\n      algebraMap (X.presheaf.stalk x) X.functionField (X.presheaf.germ U x hx r) =\n        (a : X.functionField) := by\n  obtain ⟨u, hu⟩ := ha\n  obtain ⟨V, hxV, r, hr⟩ := X.presheaf.exists_germ_eq (u : X.presheaf.stalk x)\n  obtain ⟨_, ⟨W, hW, rfl⟩, hxW, hWV⟩ :=\n    X.isBasis_affineOpens.exists_subset_of_mem_open hxV V.isOpen\n  let s : Γ(X, W) := X.presheaf.map (homOfLE hWV).op r\n  have hs : X.presheaf.germ W x hxW s = (u : X.presheaf.stalk x) := by\n    exact (X.presheaf.germ_res_apply (homOfLE hWV) x hxW r).trans hr\n  have hxB : x ∈ X.basicOpen s := by\n    rw [Scheme.mem_basicOpen X s x hxW, hs]\n    exact u.isUnit\n  let t : Γ(X, X.basicOpen s) := X.presheaf.map (X.basicOpen_le s).hom.op s\n  have ht : X.presheaf.germ (X.basicOpen s) x hxB t = (u : X.presheaf.stalk x) := by\n    exact (X.presheaf.germ_res_apply (X.basicOpen_le s).hom x hxB s).trans hs\n  refine ⟨X.basicOpen s, hW.basicOpen s, hxB, t,\n    X.toRingedSpace.isUnit_res_basicOpen s, ?_⟩\n  rw [ht]\n  exact congrArg Units.val hu",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalUnitAt_isOpen": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 38,
+      "code": "theorem rationalUnitAt_isOpen (X : Scheme) [IsIntegral X] (a : X.functionFieldˣ) :\n    IsOpen {x : X | RationalUnitAt X x a} := by\n  apply isOpen_iff_forall_mem_open.mpr\n  intro x hx\n  obtain ⟨U, hU, hxU, r, hr, he⟩ := rationalUnitAt_exists_affine_unit_section X x a hx\n  have : Nonempty U := ⟨x, hxU⟩\n  have he' : X.germToFunctionField U r = (a : X.functionField) :=\n    (Scheme.algebraMap_germ_eq_germToFunctionField X hxU r).symm.trans he\n  refine ⟨U, ?_, U.isOpen, hxU⟩\n  intro y hy\n  obtain ⟨u, hu⟩ := hr.map (X.presheaf.germ U y hy).hom\n  refine ⟨u, Units.ext ?_⟩\n  change algebraMap (X.presheaf.stalk y) X.functionField (u : X.presheaf.stalk y) = _\n  rw [hu]\n  exact (Scheme.algebraMap_germ_eq_germToFunctionField X hy r).trans he'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_vanishingSupport_isClosed": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 55,
+      "code": "theorem cartierAtlas_vanishingSupport_isClosed (X : Scheme) [IsIntegral X]\n    {ι : Type*} (A : CartierAtlas X ι) : IsClosed A.vanishingSupport := by\n  apply isOpen_compl_iff.mp\n  have he : A.vanishingSupportᶜ =\n      ⋃ i, (A.chart i : Set X) ∩ {x | RationalUnitAt X x (A.equation i)} := by\n    ext x\n    simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_inter_iff, Set.mem_ofPred_eq]\n    constructor\n    · intro hx\n      obtain ⟨i, hi⟩ := A.covers x\n      refine ⟨i, hi, ?_⟩\n      rw [cartierAtlas_support_eq_on_chart X A i x hi] at hx\n      exact Classical.not_not.mp hx\n    · rintro ⟨i, hi, hu⟩\n      rw [cartierAtlas_support_eq_on_chart X A i x hi]\n      exact not_not_intro hu\n  rw [he]\n  exact isOpen_iUnion (fun i => (A.chart i).isOpen.inter (rationalUnitAt_isOpen X (A.equation i)))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_affine_rationalUnitAt_of_orders_zero": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 77,
+      "code": "theorem normal_affine_rationalUnitAt_of_orders_zero (X : Scheme) [IsIntegral X]\n    [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) (hU : IsAffineOpen U) [Nonempty U] (a : X.functionFieldˣ)\n    (hzero : ∀ (y : X), y ∈ U → ∀ hc : Order.coheight y = 1,\n      schemeRationalOrder X hn y hc a = 0) (x : X) (hx : x ∈ U) :\n    RationalUnitAt X x a := by\n  obtain ⟨r, hr⟩ := normal_affine_rational_regular X hn U hU a\n    (fun y hy hc => by rw [hzero y hy hc])\n  obtain ⟨s, hs⟩ := normal_affine_rational_regular X hn U hU a⁻¹ (by\n    intro y hy hc\n    have := hn y\n    have := normal_codimensionOne_stalk_isDVR X y hc\n    change 0 ≤ DvrRationalOrder (X.presheaf.stalk y) X.functionField a⁻¹\n    have he := dvr_rationalOrder_zpow (X.presheaf.stalk y) X.functionField a (-1)\n    rw [zpow_neg_one, neg_one_mul] at he\n    rw [he]\n    change 0 ≤ -schemeRationalOrder X hn y hc a\n    rw [hzero y hy hc]\n    rfl)\n  let r' := X.presheaf.germ U x hx r\n  let s' := X.presheaf.germ U x hx s\n  have hr' : algebraMap (X.presheaf.stalk x) X.functionField r' = (a : X.functionField) :=\n    (Scheme.algebraMap_germ_eq_germToFunctionField X hx r).trans hr\n  have hs' : algebraMap (X.presheaf.stalk x) X.functionField s' = (a⁻¹ : X.functionFieldˣ) :=\n    (Scheme.algebraMap_germ_eq_germToFunctionField X hx s).trans hs\n  have hmul : r' * s' = 1 := by\n    apply IsFractionRing.injective (X.presheaf.stalk x) X.functionField\n    rw [map_mul, hr', hs', map_one]\n    simp\n  let u : (X.presheaf.stalk x)ˣ := ⟨r', s', hmul, by rw [mul_comm]; exact hmul⟩\n  exact ⟨u, Units.ext hr'⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_vanishingSupport_eq_closure_weilSupport": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 114,
+      "code": "theorem cartierAtlas_vanishingSupport_eq_closure_weilSupport (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) :\n    A.vanishingSupport = closure (A.weilCycle hn).support := by\n  classical\n  apply Set.Subset.antisymm\n  · intro x hx\n    by_contra hxcl\n    obtain ⟨i, hi⟩ := A.covers x\n    let W : X.Opens := A.chart i ⊓\n      ⟨(closure (A.weilCycle hn).support)ᶜ, isClosed_closure.isOpen_compl⟩\n    have hxW : x ∈ W := ⟨hi, hxcl⟩\n    obtain ⟨_, ⟨V, hV, rfl⟩, hxV, hVW⟩ :=\n      X.isBasis_affineOpens.exists_subset_of_mem_open hxW W.isOpen\n    have : Nonempty V := ⟨x, hxV⟩\n    have hu : RationalUnitAt X x (A.equation i) :=\n      normal_affine_rationalUnitAt_of_orders_zero X hn V hV (A.equation i) (by\n        intro y hy hc\n        have hz : A.coefficient hn y = 0 := by\n          by_contra hyc\n          have hym : y ∈ (A.weilCycle hn).support := hyc\n          exact ((hVW hy).2) (subset_closure hym)\n        rw [cartierAtlas_coefficient_eq X hn A i y hc (hVW hy).1] at hz\n        exact hz) x hxV\n    exact (cartierAtlas_support_eq_on_chart X A i x hi).mp hx hu\n  · apply closure_minimal ?_ (cartierAtlas_vanishingSupport_isClosed X A)\n    intro x hx\n    change A.coefficient hn x ≠ 0 at hx\n    have hc : Order.coheight x = 1 := by\n      by_contra h\n      exact hx (by simp [CartierAtlas.coefficient, h])\n    obtain ⟨i, hi⟩ := A.covers x\n    rw [cartierAtlas_support_eq_on_chart X A i x hi]\n    rintro ⟨u, hu⟩\n    rw [cartierAtlas_coefficient_eq X hn A i x hc hi] at hx\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hc\n    unfold schemeRationalOrder at hx\n    rw [← hu] at hx\n    exact hx (dvr_rationalOrder_unit (X.presheaf.stalk x) X.functionField u)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_cartier_real_sum_support": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 159,
+      "code": "theorem effective_cartier_real_sum_support (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (hc : ∀ t, 0 ≤ c t) (hA : ∀ t, (A t).Effective) :\n    closure (∑ t, (A t).weightedWeilCycle hn (c t)).support =\n      ⋃ t : {t : τ // 0 < c t}, (A t.1).vanishingSupport := by\n  classical\n  have heff (t : τ) (x : X) : 0 ≤ (A t).coefficient hn x :=\n    effective_cartierAtlas_weil_nonneg X hn (A t) (hA t) x\n  have hs : (∑ t, (A t).weightedWeilCycle hn (c t)).support =\n      ⋃ t : {t : τ // 0 < c t}, ((A t.1).weilCycle hn).support := by\n    ext x\n    simp only [Set.mem_iUnion]\n    change ((∑ t, (A t).weightedWeilCycle hn (c t)) x ≠ 0) ↔ _\n    simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n    change (∑ t, c t * ((A t).coefficient hn x : ℝ)) ≠ 0 ↔ _\n    have hp : ∀ t ∈ Finset.univ, 0 ≤ c t * ((A t).coefficient hn x : ℝ) := by\n      intro t _\n      apply mul_nonneg (hc t)\n      exact_mod_cast heff t x\n    constructor\n    · intro hne\n      have hpos : 0 < ∑ t, c t * ((A t).coefficient hn x : ℝ) :=\n        lt_of_le_of_ne (Finset.sum_nonneg hp) hne.symm\n      obtain ⟨t, _, ht⟩ := (Finset.sum_pos_iff_of_nonneg hp).mp hpos\n      have hv : 0 ≤ ((A t).coefficient hn x : ℝ) := by exact_mod_cast heff t x\n      have hct : 0 < c t := by nlinarith [hv]\n      refine ⟨⟨t, hct⟩, ?_⟩\n      change (A t).coefficient hn x ≠ 0\n      intro hz\n      simp [hz] at ht\n    · rintro ⟨t, ht⟩\n      change (A t.1).coefficient hn x ≠ 0 at ht\n      have hz : 0 < (A t.1).coefficient hn x := lt_of_le_of_ne (heff t.1 x) ht.symm\n      have hpos : 0 < ∑ t, c t * ((A t).coefficient hn x : ℝ) :=\n        (Finset.sum_pos_iff_of_nonneg hp).mpr\n          ⟨t.1, Finset.mem_univ _, mul_pos t.2 (Int.cast_pos.mpr hz)⟩\n      exact ne_of_gt hpos\n  rw [hs, closure_iUnion_of_finite]\n  apply Set.iUnion_congr\n  intro t\n  exact (cartierAtlas_vanishingSupport_eq_closure_weilSupport X hn (A t.1)).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_real_sum_pullback_support": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 206,
+      "code": "theorem exists_effective_real_sum_pullback_support {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsDominant f]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas Y ι) (c : τ → ℝ)\n    (hc : ∀ t, 0 ≤ c t) (hA : ∀ t, (A t).Effective) :\n    ∃ B : τ → CartierAtlas X X, (∀ t, (B t).Effective) ∧\n      closure (∑ t, (B t).weightedWeilCycle hnX (c t)).support =\n        f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnY (c t)).support ∧\n      ∀ t z, (B t).equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n        ((A t).equation ((A t).covers (f z)).choose) := by\n  classical\n  choose B hB hs heq using fun t => exists_effective_cartierAtlas_pullback_support f (A t) (hA t)\n  refine ⟨B, hB, ?_, heq⟩\n  rw [effective_cartier_real_sum_support X hnX B c hc hB,\n    effective_cartier_real_sum_support Y hnY A c hc hA]\n  ext x\n  simp only [Set.mem_iUnion, Set.mem_preimage]\n  simp_rw [hs, Set.mem_preimage]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_decomposition_support_pullback": {
+      "path": "Negativity/CartierVanishing.lean",
+      "line": 233,
+      "code": "theorem exists_realCartier_decomposition_support_pullback {X Y : Scheme}\n    [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    [CompactSpace Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsDominant f]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas Y ι) (c : τ → ℝ)\n    (he : ∀ y : Y, 0 ≤ ∑ t, c t * ((A t).coefficient hnY y : ℝ)) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ)\n      (B : J → CartierAtlas Y Y) (B' : J → CartierAtlas X X),\n      (∀ j, 0 ≤ w j) ∧ (∀ j, (B j).Effective) ∧ (∀ j, (B' j).Effective) ∧\n      (∑ j, (B j).weightedWeilCycle hnY (w j)) =\n        ∑ t, (A t).weightedWeilCycle hnY (c t) ∧\n      closure (∑ j, (B' j).weightedWeilCycle hnX (w j)).support =\n        f ⁻¹' closure (∑ t, (A t).weightedWeilCycle hnY (c t)).support ∧\n      ∀ j z, (B' j).equation z = Units.map (dominantFunctionFieldMap f : _ →* _)\n        ((B j).equation ((B j).covers (f z)).choose) := by\n  classical\n  obtain ⟨J, hJ, w, B, hw, hB, _, hsum⟩ :=\n    exists_realCartier_effective_weil_decomposition Y hnY A c he\n  let : Fintype J := hJ\n  obtain ⟨B', hB', hs, heq⟩ :=\n    exists_effective_real_sum_pullback_support hnX hnY f B w hw hB\n  rw [hsum] at hs\n  exact ⟨J, hJ, w, B, B', hw, hB, hB', hsum, hs, heq⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "open_set_mem_convexHull_rational": {
       "path": "Negativity/RationalCone.lean",
       "line": 17,

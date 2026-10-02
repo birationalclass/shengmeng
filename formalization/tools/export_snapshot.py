@@ -4,6 +4,9 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'NormalExtension.lean': ['normal_local_annihilator_maximal_isPrincipal', 'normal_local_associated_principal_maximal_isPrincipal', 'normal_local_associated_principal_isDVR', 'normal_principal_associated_prime_isDVR', 'normal_principal_associated_prime_height_one', 'normal_divisibility_of_height_one_local', 'normal_fraction_regular_iff_height_one', 'normal_fraction_regular_of_height_one_denominators'],
+    'CartierEffectivity.lean': ['dvr_rationalOrder_nonneg_iff_regular', 'normal_affine_rational_regular', 'cartierAtlas_effective_iff_weil_nonneg', 'exists_realCartier_effective_weil_decomposition'],
+    'CartierVanishing.lean': ['rationalUnitAt_exists_affine_unit_section', 'rationalUnitAt_isOpen', 'cartierAtlas_vanishingSupport_isClosed', 'normal_affine_rationalUnitAt_of_orders_zero', 'cartierAtlas_vanishingSupport_eq_closure_weilSupport', 'effective_cartier_real_sum_support', 'exists_effective_real_sum_pullback_support', 'exists_realCartier_decomposition_support_pullback'],
     'RationalCone.lean': ['open_set_mem_convexHull_rational', 'open_set_exists_rational_convex_combination', 'positive_rational_coefficient_decomposition', 'rational_parameterization_preserves_zero', 'rationalCoefficientMap_cast', 'rationalCoefficientMap_comp_zero', 'effective_rational_coefficient_decomposition', 'rational_vector_positive_integer_multiple', 'effective_integral_coefficient_decomposition'],
     'CartierCombinations.lean': ['dvr_rationalOrder_zpow', 'dvr_rationalOrder_prod', 'exists_cartierAtlas_integralCombination', 'exists_cartierAtlas_integralCombination_coefficients'],
     'RealCartierDecomposition.lean': ['exists_realCartier_nonnegative_weil_decomposition'],
@@ -62,7 +65,7 @@ if 'sorryAx' in audit:
     raise RuntimeError('Unproved axiom detected')
 source = destination / 'source'
 source.mkdir(parents=True, exist_ok=True)
-files = ['Negativity.lean', 'CheckAxioms.lean', 'lakefile.toml', 'lake-manifest.json', 'lean-toolchain']
+files = ['Negativity.lean', 'CheckAxioms.lean', 'lakefile.toml', 'lake-manifest.json', 'lean-toolchain', 'THIRD_PARTY_NOTICES.txt']
 files += ['Negativity/' + n for n in ['Basic.lean', *names]]
 manifest = []
 for relative in files:
@@ -88,7 +91,7 @@ mathlib = next(p['rev'] for p in json.loads((project / 'lake-manifest.json').rea
 date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).isoformat(timespec='seconds')
 snapshot = {'schemaVersion': 1, 'checkedAt': date, 'lean': (project / 'lean-toolchain').read_text().strip(), 'mathlib': mathlib, 'files': manifest, 'declarations': declarations, 'graphEdges': 'manually curated mathematical blueprint; not a kernel dependency dump', 'verification': 'local lake build and #print axioms; not browser-side verification'}
 (destination / 'snapshot.json').write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding='utf-8')
-(destination / 'verification.txt').write_text('Verified ' + date + '\n\n' + '\n'.join(logs), encoding='utf-8')
+(destination / 'verification.txt').write_text('Verified ' + date + '\n\n' + '\n'.join(line.rstrip() for log in logs for line in log.splitlines()), encoding='utf-8')
 readme = '''Negativity: coefficient core and conditional interfaces
 
 This snapshot is NOT a complete geometric proof of the negativity lemma.
@@ -103,7 +106,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
