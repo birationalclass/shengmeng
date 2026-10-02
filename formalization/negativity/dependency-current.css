@@ -1,0 +1,34 @@
+/* Muted canvas gives the pale metal-glass cards a clearer silhouette. */
+body.proof-editor {
+  background:radial-gradient(ellipse at 8% 6%,#d3e4ef70,transparent 48%),
+    radial-gradient(ellipse at 100% 95%,#dccce65c,transparent 55%),
+    linear-gradient(135deg,#c0d3e1,#cfd6e2 55%,#d8cfdf);
+}
+/* Electric-blue flow follows the existing metal wires. These paths are decorative. */
+.proof-editor .dependency-current-core,.proof-editor .dependency-current-glow {
+  fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16 116;
+  stroke-dashoffset:16;opacity:0;pointer-events:none;vector-effect:non-scaling-stroke;
+}
+.proof-editor .metal-link .dependency-current-glow,.proof-editor .dependency-current-spatial .dependency-current-glow {
+  stroke:#159dff;stroke-width:6;filter:drop-shadow(0 0 3px #2587ff);stroke-opacity:.36;
+}
+.proof-editor .metal-link .dependency-current-core,.proof-editor .dependency-current-spatial .dependency-current-core {
+  stroke:#effbff;stroke-width:1.8;filter:drop-shadow(0 0 1.5px #058eff);
+}
+.proof-editor .dependency-current-halo {
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 0% 50%,#299fff28,transparent 68%);
+  box-shadow:inset 0 0 15px #369dff38,0 0 11px #218fff35;
+}
+.proof-editor .dependency-current-spatial {
+  position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:1;
+}
+.proof-editor .spatial-cards { z-index:2; }
+.proof-editor .dependency-current-note { color:#3185b3; }
+.proof-editor .metal-link .dependency-current-static,.proof-editor .dependency-current-spatial .dependency-current-static {
+  stroke-dasharray:none;opacity:.32;
+}
+@media(prefers-reduced-motion:reduce) {
+  .proof-editor .dependency-current-halo { display:none; }
+  .proof-editor .dependency-current-glow { filter:none; }
+}
