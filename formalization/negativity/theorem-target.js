@@ -1,4 +1,4 @@
-import {english} from './i18n.js?v=20261002-formal-18';
+import {english} from './i18n.js?v=20261002-refuge-1&proof=20261002-formal-18';
 
 // The module's final mathematical target is separate from the proof-step DAG.
 // Its status must not inherit the status of any compiled auxiliary lemma.
@@ -29,6 +29,9 @@ function createTheoremCard(view) {
   card.dataset.theoremCard = view;
   card.style.setProperty('--theorem-unit', '1');
   card.setAttribute('aria-labelledby', `theoremTargetTitle-${view}`);
+  function renderLanguage(){
+  const expanded=card.querySelector('.theorem-target-toggle')?.getAttribute('aria-expanded')!=='false';
+  const conventionsOpen=card.querySelector('.theorem-target-conventions')?.open||false;
   const text = english ? {
     label: 'FINAL THEOREM · THEOREM 1.4',
     title: 'Negativity lemma',
@@ -80,6 +83,8 @@ function createTheoremCard(view) {
     </div>`;
   const toggle = card.querySelector('.theorem-target-toggle');
   const body = card.querySelector('.theorem-target-body');
+  toggle.setAttribute('aria-expanded',String(expanded));toggle.textContent=expanded?text.collapse:text.expand;body.hidden=!expanded;
+  card.querySelector('details').open=conventionsOpen;
   const changed = () => card.dispatchEvent(new Event('theoremcardchange'));
   toggle.addEventListener('click', () => {
     const expanded = toggle.getAttribute('aria-expanded') !== 'true';
@@ -89,6 +94,9 @@ function createTheoremCard(view) {
     changed();
   });
   card.querySelector('details').addEventListener('toggle', changed);
+  }
+  renderLanguage();
+  window.addEventListener('languagechange',()=>{renderLanguage();card.dispatchEvent(new Event('theoremcardchange'));});
   return {
     element: card,
     layout(proofLayout, factor = 1, nodeFactor = factor) {

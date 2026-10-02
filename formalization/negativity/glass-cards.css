@@ -90,20 +90,19 @@ body.proof-editor {
 .proof-editor .node[aria-pressed=true] .relation-tag,
 .proof-editor .spatial-node[data-relation=selected] .relation-tag { color:#097ce5; font-weight:600; }
 .proof-editor .node[aria-pressed=true]::after,.proof-editor .spatial-node[data-relation=selected]::after {
-  content:''; position:absolute; inset:calc(-1.5px * var(--card-unit,1));
-  border-radius:calc(17.5px * var(--card-unit,1)); padding:calc(1.8px * var(--card-unit,1)); pointer-events:none;
-  background:conic-gradient(from var(--rim-angle),#83b6d24d,#eefcffef 12%,#80bfe4a3 20%,#aec7db42 36%,#f7fdff 55%,#609bd09e 64%,#dbe9f736 85%,#83b6d24d);
+  content:''; position:absolute; inset:0;
+  border-radius:inherit; padding:.65px; pointer-events:none;
+  background:linear-gradient(135deg,#82bfff9c,#ffffff8c 48%,#92b9d94d);
   -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
   mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
-  animation:rim-orbit 8s linear infinite;
+  animation:none;
 }
 @keyframes selection-light { 0%,100% { --light-position:12%; opacity:.55; } 50% { --light-position:88%; opacity:1; } }
 @keyframes rim-orbit { to { --rim-angle:360deg; } }
 .proof-editor .node.done[aria-pressed=true]::after,.proof-editor .spatial-node.done[data-relation=selected]::after {
-  background:conic-gradient(from var(--rim-angle),#668dc53d,#dbf5ff 9%,#57aeff 17%,#2279d59c 29%,#a6ceeb63 42%,#ffffff 51%,#63c3ff 60%,#286ec577 74%,#e5f5ff 90%,#668dc53d);
-  animation-duration:7s;
-  filter:drop-shadow(0 0 calc(3px * var(--card-unit,1)) #238ee766);
+  background:linear-gradient(135deg,#72b9ffa6,#ffffffa6 48%,#91b8d95c);
+  animation:none;filter:none;
 }
 .proof-editor .node.dimmed,.proof-editor .spatial-node[data-relation=other] { opacity:.24; }
 .proof-editor .node.dimmed:hover,.proof-editor .spatial-node[data-relation=other]:hover { opacity:.8; }
@@ -257,7 +256,7 @@ body.proof-editor {
 }
 .proof-editor .node.done[aria-pressed=true],.proof-editor .spatial-node.done[data-relation=selected] {
   background:radial-gradient(ellipse at 10% 0%,#ffffffdb,transparent 62%),linear-gradient(145deg,#e5f5fff5 0%,#c7dfefeb 42%,#eaf0f8f5 64%,#afcee6e8 100%);
-  box-shadow:inset 0 1px 2px #fffffff2,inset 0 -1px 2px #53799d40,0 8px 22px #3a6c9529,0 0 18px #3c9ded30;
+  box-shadow:inset 0 .65px 0 #ffffffe6,inset 0 -.65px 0 #53799d30,0 5px 12px #3a6c9524;
 }
 .proof-editor .compact-input.assumption::before,.proof-editor .spatial-compact-input.assumption::before { font-size:calc(12px * var(--card-unit,1)); }
 /* Quiet, floating controls use the same rounded glass language as the atlas. */

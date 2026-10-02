@@ -6,20 +6,24 @@ body.proof-editor {
 }
 /* Electric-blue flow follows the existing metal wires. These paths are decorative. */
 .proof-editor .dependency-current-core,.proof-editor .dependency-current-glow {
-  fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16 116;
-  stroke-dashoffset:16;opacity:0;pointer-events:none;vector-effect:non-scaling-stroke;
+  fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:12 112;
+  stroke-dashoffset:12;opacity:0;pointer-events:none;vector-effect:non-scaling-stroke;
 }
 .proof-editor .metal-link .dependency-current-glow,.proof-editor .dependency-current-spatial .dependency-current-glow {
-  stroke:#159dff;stroke-width:6;filter:drop-shadow(0 0 3px #2587ff);stroke-opacity:.36;
+  stroke:#159dff;stroke-width:4;stroke-opacity:.22;filter:none;
 }
 .proof-editor .metal-link .dependency-current-core,.proof-editor .dependency-current-spatial .dependency-current-core {
-  stroke:#effbff;stroke-width:1.8;filter:drop-shadow(0 0 1.5px #058eff);
+  stroke:#effbff;stroke-width:1.25;filter:none;
 }
 .proof-editor .dependency-current-halo {
   position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
-  background:radial-gradient(ellipse at 0% 50%,#299fff28,transparent 68%);
-  box-shadow:inset 0 0 15px #369dff38,0 0 11px #218fff35;
+  overflow:hidden;z-index:3;background:none;box-shadow:none;
 }
+.dependency-card-border {display:block;width:100%;height:100%;overflow:visible;pointer-events:none}
+.dependency-card-border path {fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;filter:none;pointer-events:none}
+.dependency-card-border .dependency-card-soft {stroke:#38a7f7;stroke-width:2.5;stroke-opacity:.22}
+.dependency-card-border .dependency-card-core {stroke:#d5f5ff;stroke-width:1;stroke-opacity:1}
+.dependency-card-merge {fill:#e1f8ff;stroke:#52b1ee;stroke-width:.65;opacity:0}
 .proof-editor .dependency-current-spatial {
   position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:1;
 }
@@ -32,3 +36,25 @@ body.proof-editor {
   .proof-editor .dependency-current-halo { display:none; }
   .proof-editor .dependency-current-glow { filter:none; }
 }
+
+/* Preserve the original metal cable; only its midsection is physically severed. */
+.dependency-current-blocker {pointer-events:none}
+.dependency-current-blocker path {fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.dependency-current-blocker .fracture-casing {stroke:#54758c;stroke-width:2.2}
+.dependency-current-blocker .fracture-strands {stroke:#c8a674;stroke-width:.65}
+.dependency-current-blocker .fracture-shine {stroke:#eefaff;stroke-width:.65}
+.dependency-current-blocker .blocked-charge {fill:#edbf72;opacity:.32;transform-box:fill-box;transform-origin:center}
+.dependency-current-blocker .blocked-port {fill:#fff1cb;stroke:none}
+.broken-wire-shadow {fill:none;stroke:#385c78;stroke-width:3.6;stroke-opacity:.22;vector-effect:non-scaling-stroke}
+.broken-wire-metal {fill:none;stroke:url(#atlas-wire-active-metal);stroke-width:2.6;vector-effect:non-scaling-stroke;stroke-dasharray:5 4}
+.broken-wire-highlight {fill:none;stroke:#f4fcff;stroke-width:.65;stroke-opacity:.7;vector-effect:non-scaling-stroke;stroke-dasharray:5 4}
+
+.typography-settings .motion-setting {grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;margin-bottom:8px}
+.typography-settings .motion-setting input {grid-column:auto;width:18px;height:18px;margin:0;accent-color:#1789f7;cursor:pointer}
+.typography-settings .motion-help {font-size:13px;line-height:1.5;margin-top:0}
+
+/* The leading specular glint is narrow; the trailing energy fades into the silver edge. */
+.dependency-card-border .dependency-orbit-bloom {stroke:#179fff;stroke-width:3.8}
+.dependency-card-border .dependency-orbit-thread {stroke:#56baff;stroke-width:1.15}
+.dependency-current-halo[data-flow-mode="orbit"] .dependency-card-core {stroke:#f0fcff;stroke-width:1.2}
+.dependency-current-halo[data-flow-mode="orbit"] .dependency-card-soft {stroke:#6dccff;stroke-width:3.2;stroke-opacity:.28}

@@ -19,7 +19,7 @@ const assert=require('node:assert/strict');
   assert(other.every(x=>x>boxes[0].x+boxes[0].w),'Derived results are not to the right');
   assert(boxes.some((r,i)=>i&&r.y<boxes[i-1].y+boxes[i-1].h),'Compact inputs should overlap slightly');
   for(const box of boxes){assert(await page.evaluate(({x,y,id})=>document.elementFromPoint(x,y)?.closest('[data-node]')?.dataset.node===id,{x:box.x+box.w/2,y:box.y+8,id:box.id}),'Stacked title is not clickable: '+box.id);}
-  assert((await page.locator('.base-input-rail').innerText()).includes(lang==='en'?'Base inputs':'基础输入'));
+  assert((await page.locator('.base-input-controls').innerText()).includes(lang==='en'?'Base inputs':'基础输入'));
   if(lang==='zh')await page.screenshot({path:'C:/Users/math1/Documents/Math/output/formalization-site/base-input-rail.png'});
   await page.locator('.input-rail-toggle').click();
   assert.equal(await page.locator('.input-rail-toggle').getAttribute('aria-expanded'),'true');
