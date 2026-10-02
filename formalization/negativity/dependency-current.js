@@ -2,7 +2,7 @@
 export function installDependencyCurrent({nodes,graph,svg,selected,spatialHost,english}) {
   const ns='http://www.w3.org/2000/svg',byId=new Map(nodes.map(n=>[n.id,n]));
   const stylesheet=document.createElement('link');stylesheet.rel='stylesheet';
-  stylesheet.href=new URL('./dependency-current.css?v=20261002-routing-3',import.meta.url).href;
+  stylesheet.href=new URL('./dependency-current.css?v=20261002-continuous-1',import.meta.url).href;
   document.head.append(stylesheet);
   const note=document.createElement('span');note.className='dependency-current-note';
   note.textContent=english?'Flow: premise → result':'流光：前提 → 结论';
@@ -47,15 +47,9 @@ export function installDependencyCurrent({nodes,graph,svg,selected,spatialHost,e
         const path=document.createElementNS(ns,'path');path.classList.add('dependency-card-'+layer);
         path.dataset.route=route;path.setAttribute('pathLength','100');border.append(path);paths.push(path);
       }
-      // Overlapping, tapered samples create a luminous head with a fading wake.
-      // They share one closed path and one timeline; no filters or frame-by-frame layout.
-      for(let i=0;i<32;i++)for(const layer of ['bloom','thread']){
-        const path=document.createElementNS(ns,'path');path.classList.add('dependency-orbit-'+layer);
-        path.dataset.route='orbit';path.dataset.wake=String(i);path.setAttribute('pathLength','100');
-        border.append(path);paths.push(path);
-      }
+      const rim=document.createElement('span');rim.className='dependency-orbit-rim';
       const merge=document.createElementNS(ns,'circle');merge.classList.add('dependency-card-merge');merge.setAttribute('r','1.7');border.append(merge);
-      e.append(border);card.append(e);record={elements:[e],border,paths,merge,animations:[],signature:''};halos.set(key,record);
+      e.append(border,rim);card.append(e);record={elements:[e],border,rim,paths,merge,animations:[],signature:''};halos.set(key,record);
     }
     const w=card.clientWidth,h=card.clientHeight;if(!w||!h)return;
     const css=getComputedStyle(card),r=Math.min(parseFloat(css.borderTopLeftRadius)||16,w/2-1,h/2-1),p=.75;
@@ -67,22 +61,25 @@ export function installDependencyCurrent({nodes,graph,svg,selected,spatialHost,e
     const orbit=upper+` L ${w-p} ${h-r} Q ${w-p} ${h-p} ${w-r} ${h-p} L ${r} ${h-p} Q ${p} ${h-p} ${p} ${h-r} L ${p} ${input} Z`;
     record.border.setAttribute('viewBox',`0 0 ${w} ${h}`);
     record.paths.forEach(path=>{const route=path.dataset.route,d={upper,lower,orbit}[route];if(path.getAttribute('d')!==d)path.setAttribute('d',d);
-      path.style.display=terminal?(route==='orbit'?'':'none'):(route==='orbit'?'none':'');
+      path.style.display=terminal?'none':(route==='orbit'?'none':'');
     });
-    const perimeter=record.paths.find(path=>path.dataset.route==='orbit').getTotalLength();
-    const wake=50,step=wake/32;
-    record.paths.filter(path=>path.dataset.route==='orbit').forEach(path=>{
-      const index=path.dataset.wake===undefined?null:+path.dataset.wake;
-      const layer=path.classList.contains('dependency-card-core')?'head':'bloom';
-      const phase=index===null?0:(index+.5)*step;
-      const span=index===null?(layer==='head'?2.4:7)/Math.max(1,perimeter)*100:step*1.45;
-      path.style.strokeDasharray=`${span} ${100-span}`;
-      if(index!==null){const strength=Math.pow(1-index/32,1.6);
-        path.style.strokeOpacity=String(strength*(path.classList.contains('dependency-orbit-thread')?.78:.2));}
-      const changed=path.dataset.phase!==String(phase);path.dataset.phase=String(phase);
-      if(changed&&path.getAnimations().length)path.getAnimations()[0].effect.setKeyframes(
-        [{strokeDashoffset:String(phase)},{strokeDashoffset:String(phase-100)}]);
-    });
+    record.rim.style.display=terminal?'':'none';
+    const geometry=[w,h,r,input].join(':');
+    if(record.rimGeometry!==geometry){
+      // Map constant arc speed to angle; a single continuous gradient paints the whole rim.
+      // Opposite rays meet opposite points of this symmetric outline, exactly half a perimeter apart.
+      const probe=record.paths.find(path=>path.dataset.route==='orbit'),length=probe.getTotalLength();
+      let previous;
+      record.rimFrames=Array.from({length:97},(_,i)=>{
+        const point=probe.getPointAtLength(length*i/96);
+        let angle=Math.atan2(point.y-h/2,point.x-w/2)*180/Math.PI+90;
+        if(previous===undefined&&angle<0)angle+=360;
+        if(previous!==undefined){while(angle<previous-180)angle+=360;while(angle>previous+180)angle-=360;}
+        previous=angle;return {offset:i/96,'--dependency-flow-angle':(angle-180)+'deg'};
+      });
+      record.rimGeometry=geometry;
+      if(record.rim.getAnimations().length)record.rim.getAnimations()[0].effect.setKeyframes(record.rimFrames);
+    }
     record.merge.setAttribute('cx',w-p);record.merge.setAttribute('cy',output);record.merge.style.display=terminal?'none':'';
     record.elements[0].dataset.flowMode=terminal?'orbit':'transit';
     record.elements[0].dataset.arrival=arrival;record.elements[0].dataset.departure=departure;
@@ -90,14 +87,10 @@ export function installDependencyCurrent({nodes,graph,svg,selected,spatialHost,e
     cancel(record);record.signature=signature;
     if(reduced.matches)return;
     if(terminal){
-      // A soft wake follows the crisp leading edge at constant arc speed, including corners.
       record.animations=[record.elements[0].animate([{opacity:0},{opacity:1}],
-        {delay:arrival,duration:400,fill:'forwards',easing:'ease-out'})];
-      record.paths.filter(path=>path.dataset.route==='orbit').forEach(path=>{
-        const phase=+path.dataset.phase;
-        record.animations.push(path.animate([{strokeDashoffset:String(phase)},{strokeDashoffset:String(phase-100)}],
-          {delay:arrival,duration:12000,iterations:Infinity,easing:'linear'}));
-      });
+        {delay:arrival,duration:400,fill:'forwards',easing:'ease-out'}),
+        record.rim.animate(record.rimFrames,
+          {delay:arrival,duration:12000,iterations:Infinity,easing:'linear'})];
     }else{
       const a=arrival/period,b=departure/period,c=Math.min(.999,(departure+340)/period),rise=(arrival+160)/period;
       record.animations=[record.elements[0].animate([{offset:0,opacity:0},{offset:a,opacity:0},

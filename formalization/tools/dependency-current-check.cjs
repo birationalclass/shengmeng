@@ -2,7 +2,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict');
 const root=process.env.SCREENSHOT_DIR;
 const site=process.env.SITE_URL||'http://localhost:4186';
-const version=process.env.RELEASE_QUERY||'20261002-routing-3';
+const version=process.env.RELEASE_QUERY||'20261002-continuous-1';
 const screenshotPrefix=process.env.SCREENSHOT_PREFIX||'dependency-current';
 (async()=>{
  const browser=await chromium.launch({channel:'msedge',headless:true});
@@ -14,8 +14,8 @@ const screenshotPrefix=process.env.SCREENSHOT_PREFIX||'dependency-current';
    await page.waitForSelector('#edges .dependency-current-core',{state:'attached'});
    assert.equal(await page.locator('.legend .pill.pending').count(),0);
    assert.match(await page.locator('.completion-status').innerText(),lang==='en'?/not yet formalized/:/尚未/);
-   assert((await page.locator('script[src^="app.js"]').getAttribute('src')).includes(process.env.APP_RELEASE||'20261002-routing-3'));
-   assert.equal(await page.locator('link[href*="dependency-current.css?v=20261002-routing-3"]').count(),1);
+   assert((await page.locator('script[src^="app.js"]').getAttribute('src')).includes(process.env.APP_RELEASE||'20261002-statusbar-1'));
+   assert.equal(await page.locator('link[href*="dependency-current.css?v=20261002-continuous-1"]').count(),1);
    await page.locator('#scope').selectOption('path');
    await page.waitForFunction(()=>document.querySelector('.graph-scroll').dataset.cameraMoving!=='true');
    const countsBefore=await page.locator('[data-status-count]').allTextContents();
@@ -56,23 +56,24 @@ const screenshotPrefix=process.env.SCREENSHOT_PREFIX||'dependency-current';
    const halo=page.locator('#graph [data-node="localcartier"] .dependency-current-halo');
    assert.equal(await halo.getAttribute('data-flow-mode'),'orbit');
    const terminal=await halo.evaluate(e=>{const p=e.querySelector('[data-route="orbit"].dependency-card-core'),length=p.getTotalLength();return {
-    d:p.getAttribute('d'),duration:p.getAnimations()[0].effect.getTiming().duration,display:getComputedStyle(p).display,
+    d:p.getAttribute('d'),duration:e.querySelector('.dependency-orbit-rim').getAnimations()[0].effect.getTiming().duration,display:getComputedStyle(p).display,
     start:((q)=>({x:q.x,y:q.y}))(p.getPointAtLength(0)),next:((q)=>({x:q.x,y:q.y}))(p.getPointAtLength(length*.02)),
     other:[...e.querySelectorAll('.dependency-card-core')].filter(q=>q!==p).map(q=>getComputedStyle(q).display),
     filter:getComputedStyle(e).filter,border:parseFloat(getComputedStyle(e.parentElement,'::after').paddingLeft)};});
    assert(terminal.d.endsWith('Z')&&terminal.duration===12000&&terminal.next.y<terminal.start.y&&terminal.other.every(d=>d==='none'));
    assert(terminal.filter==='none'&&terminal.border<1);
-   const wake=await halo.locator('.dependency-orbit-thread').evaluateAll(es=>es.map(e=>({
-    alpha:+getComputedStyle(e).strokeOpacity,phase:+e.dataset.phase,epoch:e.getAnimations()[0].startTime,
-    duration:e.getAnimations()[0].effect.getTiming().duration,frames:e.getAnimations()[0].effect.getKeyframes(),filter:getComputedStyle(e).filter})));
-   assert.equal(wake.length,32);assert(new Set(wake.map(w=>w.epoch)).size===1);
-   assert(wake.every(w=>w.duration===12000&&w.filter==='none'));
-   assert(wake.at(-1).phase>=49&&wake.at(-1).phase<=50,'The wake must cover half the closed perimeter');
-   assert(wake.every((w,i)=>i===0||w.alpha<wake[i-1].alpha&&w.phase>wake[i-1].phase));
-   assert(wake.every(w=>Math.abs(+w.frames[1].strokeDashoffset-(+w.frames[0].strokeDashoffset-100))<.0001));
+   const rim=halo.locator('.dependency-orbit-rim');
+   const wake=await rim.evaluate(e=>({
+     gradient:getComputedStyle(e,'::before').backgroundImage,mask:getComputedStyle(e,'::before').maskComposite,
+     filter:getComputedStyle(e).filter,epoch:e.getAnimations()[0].startTime,
+     frames:e.getAnimations()[0].effect.getKeyframes().map(k=>parseFloat(k['--dependency-flow-angle']))}));
+   assert(wake.gradient.includes('conic-gradient')&&wake.gradient.includes('180deg')&&wake.mask.includes('exclude'));
+   assert(wake.filter==='none'&&wake.frames.every((a,i)=>i===0||a>=wake.frames[i-1]));
+   assert(Math.abs(wake.frames.at(-1)-wake.frames[0]-360)<.0001,'The closed rim must wrap continuously');
+   assert.equal(await halo.locator('.dependency-orbit-thread,.dependency-orbit-bloom').count(),0);
+   assert(await halo.locator('[data-route="orbit"]').evaluateAll(es=>es.every(e=>getComputedStyle(e).display==='none')));
    await page.locator('[data-node-zoom="in"]').click();await page.waitForTimeout(80);
-   const epochs=await halo.locator('.dependency-orbit-thread').evaluateAll(es=>es.map(e=>e.getAnimations()[0].startTime));
-   assert(epochs.every((e,i)=>e===wake[i].epoch),'Zoom reset the wake phase');
+   assert.equal(await rim.evaluate(e=>e.getAnimations()[0].startTime),wake.epoch,'Zoom reset the rim phase');
    await page.locator('[data-frame="selected"]').click();
    await page.evaluate(()=>document.querySelectorAll('.dependency-current-core,.dependency-current-glow').forEach(e=>e.getAnimations().forEach(a=>{a.pause();const k=a.effect.getKeyframes();a.currentTime=(k[1].offset+k[3].offset)/2*a.effect.getTiming().duration;})));
    if(root)await page.screenshot({path:root+'/'+screenshotPrefix+'-'+lang+'.png'});

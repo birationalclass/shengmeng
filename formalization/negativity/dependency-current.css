@@ -53,8 +53,18 @@ body.proof-editor {
 .typography-settings .motion-setting input {grid-column:auto;width:18px;height:18px;margin:0;accent-color:#1789f7;cursor:pointer}
 .typography-settings .motion-help {font-size:13px;line-height:1.5;margin-top:0}
 
-/* The leading specular glint is narrow; the trailing energy fades into the silver edge. */
-.dependency-card-border .dependency-orbit-bloom {stroke:#179fff;stroke-width:3.8}
-.dependency-card-border .dependency-orbit-thread {stroke:#56baff;stroke-width:1.15}
-.dependency-current-halo[data-flow-mode="orbit"] .dependency-card-core {stroke:#f0fcff;stroke-width:1.2}
-.dependency-current-halo[data-flow-mode="orbit"] .dependency-card-soft {stroke:#6dccff;stroke-width:3.2;stroke-opacity:.28}
+/* A single masked gradient creates a continuous outer rim, with both ends fading out. */
+@property --dependency-flow-angle {syntax:'<angle>';inherits:true;initial-value:90deg}
+.dependency-orbit-rim {position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+.dependency-orbit-rim::before,.dependency-orbit-rim::after {
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:conic-gradient(from var(--dependency-flow-angle),
+    #249eff00 0deg,#249eff0d 12deg,#249eff30 32deg,#249eff70 60deg,
+    #249effb8 95deg,#52c0fff0 125deg,#b9edfff2 145deg,
+    #68ceffb8 158deg,#249eff50 172deg,#249eff00 180deg,#249eff00 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.dependency-orbit-rim::before {padding:1.15px}
+.dependency-orbit-rim::after {padding:2.8px;opacity:.18}

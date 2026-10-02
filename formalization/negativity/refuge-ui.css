@@ -65,3 +65,28 @@ body.proof-editor {grid-template-rows:64px minmax(0,1fr) 24px}
 
 .proof-editor .graph-toolbar #back {display:inline-flex}
 @media(max-width:760px){.proof-editor .graph-toolbar #back {padding:4px}}
+
+/* Footer controls replace the redundant atlas heading and metadata strip. */
+body.proof-editor {grid-template-rows:64px minmax(0,1fr) auto}
+.proof-editor footer.atlas-statusbar {height:auto;min-height:44px;display:flex;align-items:center;gap:16px;padding:7px 18px;white-space:normal;overflow:visible;border:0;border-top:.65px solid #ffffff60;background:#eaf1f66e}
+.proof-editor .atlas-statusbar .legend {display:flex;flex-wrap:wrap;align-items:center;flex:1;gap:6px 12px;margin:0;padding:0;min-width:0}
+.proof-editor .atlas-statusbar .pill {display:inline-flex;align-items:center;gap:5px;white-space:nowrap;border-radius:8px;padding:3px 7px;background:#ffffff50;font-size:calc(var(--ui-base-font) * .82);line-height:1.5}
+.proof-editor .atlas-statusbar .pill.done {background:#e3f4e85c}
+.proof-editor .atlas-statusbar .pill.conditional {background:#e4f3fb59}
+.proof-editor .atlas-statusbar .pill.assumption {background:#fff3da66}
+.proof-editor .atlas-statusbar .completion-status {display:inline-flex;align-items:center;gap:7px;padding:4px 9px;color:#b23849;background:#dc485410;border-radius:8px;font-size:calc(var(--ui-base-font) * .84);line-height:1.5;font-weight:600}
+.proof-editor .atlas-statusbar .completion-status[hidden] {display:none}
+.proof-editor .atlas-statusbar .completion-status::before {content:'!';display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:13px;height:13px;border:.9px solid currentColor;border-radius:50%;font:700 10px/1 var(--ui-font)}
+.proof-editor .atlas-statusbar .legend-total {font-size:calc(var(--ui-base-font) * .8);color:#647b8b}
+.proof-editor .atlas-statusbar #expandGraph {flex-shrink:0;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:9px;font-size:calc(var(--ui-base-font) * .82);min-height:30px;padding:5px 9px;color:#536f85;background:#ffffff40}
+.proof-editor .atlas-statusbar #expandGraph:hover {background:#ffffff80;color:#087ccd}
+@media(max-width:760px){
+  body.proof-editor {grid-template-rows:56px minmax(0,1fr) auto}
+  .proof-editor footer.atlas-statusbar {padding:6px 9px;gap:5px;align-items:flex-start}
+  .proof-editor .atlas-statusbar .legend {gap:4px 5px}
+  .proof-editor .atlas-statusbar .legend span,.proof-editor .atlas-statusbar #expandGraph span {display:inline-flex}
+  .proof-editor .atlas-statusbar .completion-status {flex-basis:100%;font-size:10px;padding:3px 6px}
+  .proof-editor .atlas-statusbar .pill,.proof-editor .atlas-statusbar .legend-total {font-size:9px;padding:2px 4px}
+  .proof-editor .atlas-statusbar #expandGraph {min-width:30px;width:30px;height:30px;padding:7px}
+  .proof-editor .atlas-statusbar #expandGraph span {display:none}
+}
