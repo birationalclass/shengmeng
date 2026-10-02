@@ -24,8 +24,14 @@ derived. Actual Cartier/R-Cartier intersection on nonnormal complete source curv
 arbitrary real-presentation independence, effective-divisor signs, point-image
 zero and ambient pullback composition are proved on the constructed normalization.
 The degree formula for nonnormal source curves and normal target curves uses
-the original full function-field degree. Normalization functoriality for
-nonnormal image curves, full image-curve/cycle identification, geometric ample positivity,
+the original full function-field degree. Actual finite dominant maps induce
+finite function-field extensions. Relative normalization in the actual source
+function field is finite and equals any actual normal finite dominant source.
+Actual finite dominant lifting to a nonnormal target's normalization is proved.
+Every proper dominant map between complete integral curves, with neither curve
+normal or smooth, has an actual finite dominant normalization lift, a commuting
+square and unchanged full function-field degree. Restriction compatibility
+with this lift, full image-curve/cycle identification, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

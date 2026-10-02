@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T03:41:16+08:00",
+  "checkedAt": "2026-10-03T04:19:02+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "45402a46ed3f636ffdaa00ffe2f991802403172de220ac7faa83222a02c497f8"
+      "sha256": "25a814f048386bad0570d64d0050a4a4dc79f563f58151108552ffb13d1b4ab8"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "2b36b9912849bebe725f962c653e3affd5ebfae9b85686932c896784c9133b64"
+      "sha256": "67a4466b6eaf89e63fe50f59586c4a6db2d93111e35a8634c2e53f5c7aec68e4"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/CurveNormalizationLift.lean",
+      "sha256": "0d32a6dcaf5f45d6901afb3ca98c490da20c712fec1d760a30a979c872f9e56c"
+    },
+    {
+      "path": "Negativity/NormalizationLift.lean",
+      "sha256": "9baf57cf4a351df991273cb7daaee2559743ed2f86a095653f8ac74d1105f330"
+    },
+    {
+      "path": "Negativity/RelativeNormalizationIdentification.lean",
+      "sha256": "eaed8ebae6bc8ea84e73e1444af63899a882966a95d90916c92450efdb2bf61a"
+    },
+    {
+      "path": "Negativity/RelativeFieldNormalization.lean",
+      "sha256": "ae60ef4c5705ce6b65e77bf209cf46f3f2d01521e30163b4e0aafeb05cdff951"
+    },
+    {
+      "path": "Negativity/FiniteFunctionField.lean",
+      "sha256": "3defbfa6d1c848d364ce87f68f629266c1e27bc4af4ed907c36f007328c8f2f8"
     },
     {
       "path": "Negativity/NormalNormalization.lean",
@@ -446,6 +466,86 @@
     }
   ],
   "declarations": {
+    "birational_functionFieldMap_bijective": {
+      "path": "Negativity/CurveNormalizationLift.lean",
+      "line": 17,
+      "code": "theorem birational_functionFieldMap_bijective\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsDominant f] (hf : BirationalMorphism f) :\n    Function.Bijective (dominantFunctionFieldMap f) := by\n  have := birationalMorphism_generic_stalk_isIso f hf\n  let φ : X.functionField ⟶ C.functionField :=\n    (X.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      f.stalkMap (genericPoint C)\n  have : IsIso φ := by dsimp only [φ]; infer_instance\n  exact ConcreteCategory.bijective_of_isIso φ",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curves_normalization_lift_degree": {
+      "path": "Negativity/CurveNormalizationLift.lean",
+      "line": 33,
+      "code": "theorem complete_integral_curves_normalization_lift_degree\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hdC : Order.krullDim C = 1) (hdX : Order.krullDim X = 1)\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsProper b]\n    (f : C ⟶ X) [IsProper f] [IsDominant f] :\n    let nC := C.fromSpecStalk (genericPoint C)\n    let nX := X.fromSpecStalk (genericPoint X)\n    letI : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    ∃ l : nC.normalization ⟶ nX.normalization,\n      l ≫ nX.fromNormalization = nC.fromNormalization ≫ f ∧\n      IsFinite l ∧ ∃ hl : IsDominant l,\n        letI := hl\n        letI : Algebra nX.normalization.functionField nC.normalization.functionField :=\n          (dominantFunctionFieldMap l).toAlgebra\n        Module.finrank nX.normalization.functionField nC.normalization.functionField =\n          Module.finrank X.functionField C.functionField := by\n  let nC := C.fromSpecStalk (genericPoint C)\n  let nX := X.fromSpecStalk (genericPoint X)\n  let : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have hC := complete_integral_curve_normalization_properties C hdC k (f ≫ b)\n  have hX := complete_integral_curve_normalization_properties X hdX k b\n  have : IsFinite nC.fromNormalization := hC.1\n  have : IsLocallyNoetherian nC.normalization := hC.2.2.2.2.2.1\n  have : IsProper (nC.fromNormalization ≫ (f ≫ b)) := hC.2.2.2.2.2.2\n  let : CompactSpace nC.normalization :=\n    QuasiCompact.compactSpace_of_compactSpace (nC.fromNormalization ≫ (f ≫ b))\n  have : IsNoetherian nC.normalization := ⟨⟩\n  have : IsDominant nC.fromNormalization := birationalMorphism_dominant _ hC.2.1\n  have : IsDominant nX.fromNormalization := birationalMorphism_dominant _ hX.2.1\n  have : IsFinite (nC.fromNormalization ≫ f) :=\n    proper_dominant_integral_curve_isFinite _ hC.2.2.2.2.1 hdX\n  obtain ⟨l, hl, hlf, hld⟩ := exists_finite_dominant_normalization_lift\n    (nC.fromNormalization ≫ f) (generic_normalization_stalks_normal C) k b\n  have : IsFinite l := hlf\n  have : IsDominant l := hld\n  let : Algebra nX.normalization.functionField nC.normalization.functionField :=\n    (dominantFunctionFieldMap l).toAlgebra\n  let eC : C.functionField ≃+* nC.normalization.functionField :=\n    RingEquiv.ofBijective (dominantFunctionFieldMap nC.fromNormalization)\n      (birational_functionFieldMap_bijective _ hC.2.1)\n  let eX : X.functionField ≃+* nX.normalization.functionField :=\n    RingEquiv.ofBijective (dominantFunctionFieldMap nX.fromNormalization)\n      (birational_functionFieldMap_bijective _ hX.2.1)\n  have hcomm : (dominantFunctionFieldMap nC.fromNormalization).comp (dominantFunctionFieldMap f) =\n      (dominantFunctionFieldMap l).comp (dominantFunctionFieldMap nX.fromNormalization) := by\n    rw [← dominantFunctionFieldMap_comp nC.fromNormalization f,\n      ← dominantFunctionFieldMap_comp l nX.fromNormalization]\n    congr 1\n    exact hl.symm\n  refine ⟨l, hl, hlf, hld, ?_⟩\n  symm\n  apply Algebra.finrank_eq_of_equiv_equiv eX eC\n  exact hcomm.symm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dominant_functionField_Spec_square": {
+      "path": "Negativity/NormalizationLift.lean",
+      "line": 14,
+      "code": "theorem dominant_functionField_Spec_square\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsDominant f] :\n    Spec.map (CommRingCat.ofHom (dominantFunctionFieldMap f)) ≫\n      X.fromSpecStalk (genericPoint X) = C.fromSpecStalk (genericPoint C) ≫ f := by\n  change Spec.map ((X.presheaf.stalkCongr\n    (.of_eq (dominant_genericPoint_eq f))).inv ≫ f.stalkMap (genericPoint C)) ≫ _ = _\n  rw [Spec.map_comp, Category.assoc, TopCat.Presheaf.stalkCongr_inv,\n    Scheme.SpecMap_stalkSpecializes_fromSpecStalk]\n  exact Scheme.SpecMap_stalkMap_fromSpecStalk f",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_finite_dominant_normalization_lift": {
+      "path": "Negativity/NormalizationLift.lean",
+      "line": 29,
+      "code": "theorem exists_finite_dominant_normalization_lift\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsFinite f] [IsDominant f]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (k : Type u) [Field k] [PerfectField k]\n    (b : X ⟶ Spec (.of k)) [LocallyOfFiniteType b] :\n    ∃ l : C ⟶ (X.fromSpecStalk (genericPoint X)).normalization,\n      l ≫ (X.fromSpecStalk (genericPoint X)).fromNormalization = f ∧\n      IsFinite l ∧ IsDominant l := by\n  let g := C.fromSpecStalk (genericPoint C)\n  let n := X.fromSpecStalk (genericPoint X)\n  let h := g ≫ f\n  let p := h.normalizationDesc g f rfl\n  have : IsIso p := finiteType_perfectField_relative_normalization_source_isIso f hnC k b\n  let v : Spec C.functionField ⟶ Spec X.functionField :=\n    Spec.map (CommRingCat.ofHom (dominantFunctionFieldMap f))\n  have : IsDominant v := by\n    have hv : Function.Surjective v := by\n      intro x\n      refine ⟨IsLocalRing.closedPoint C.functionField, ?_⟩\n      apply PrimeSpectrum.ext\n      simp only [Ideal.eq_bot_of_prime]\n    exact ⟨hv.denseRange⟩\n  have H : h = (v ≫ n.toNormalization) ≫ n.fromNormalization := by\n    rw [Category.assoc, n.toNormalization_fromNormalization]\n    exact (dominant_functionField_Spec_square f).symm\n  let d := h.normalizationDesc (v ≫ n.toNormalization) n.fromNormalization H\n  have hd : d ≫ n.fromNormalization = h.fromNormalization :=\n    h.normalizationDesc_comp _ _ H\n  have hp : p ≫ f = h.fromNormalization := h.normalizationDesc_comp g f rfl\n  let l := inv p ≫ d\n  have hl : l ≫ n.fromNormalization = f := by\n    dsimp only [l]\n    rw [Category.assoc, hd, ← hp, IsIso.inv_hom_id_assoc]\n  have : IsFinite l := by\n    have : IsFinite (l ≫ n.fromNormalization) := by rw [hl]; infer_instance\n    exact IsFinite.of_comp l n.fromNormalization\n  have : IsDominant d := by\n    have : IsDominant (h.toNormalization ≫ d) := by\n      rw [h.toNormalization_normalizationDesc _ _ H]\n      infer_instance\n    exact IsDominant.of_comp h.toNormalization d\n  exact ⟨l, hl, inferInstance, inferInstance⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_dominant_generic_section_birational": {
+      "path": "Negativity/RelativeNormalizationIdentification.lean",
+      "line": 17,
+      "code": "theorem finite_dominant_generic_section_birational\n    {N C : Scheme.{u}} [IsIntegral N] [IsIntegral C]\n    (p : N ⟶ C) [IsFinite p]\n    (s : Spec C.functionField ⟶ N) [IsDominant s]\n    (hs : s ≫ p = C.fromSpecStalk (genericPoint C)) : BirationalMorphism p := by\n  obtain ⟨U, hη, t, hspread, ht⟩ :=\n    spread_out_of_isGermInjective' (𝟙 C) p s (by simpa using hs)\n  have htp : t ≫ p = U.ι := by simpa using ht\n  have hrange : Set.range t ⊆ Set.range (p ⁻¹ᵁ U).ι := by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨x, rfl⟩\n    change p (t x) ∈ U\n    rw [← Scheme.Hom.comp_apply, htp]\n    exact x.2\n  let t' : U.toScheme ⟶ (p ⁻¹ᵁ U) := IsOpenImmersion.lift (p ⁻¹ᵁ U).ι t hrange\n  have ht'ι : t' ≫ (p ⁻¹ᵁ U).ι = t := IsOpenImmersion.lift_fac _ _ hrange\n  have : IsDominant t := by\n    have : IsDominant (U.fromSpecStalkOfMem (genericPoint C) hη ≫ t) := by\n      rw [← hspread]\n      infer_instance\n    exact IsDominant.of_comp (U.fromSpecStalkOfMem (genericPoint C) hη) t\n  have : IsDominant t' := by\n    have : IsDominant (t' ≫ (p ⁻¹ᵁ U).ι) := by rw [ht'ι]; infer_instance\n    exact IsDominant.of_comp_of_isOpenImmersion t' (p ⁻¹ᵁ U).ι\n  have : Nonempty (p ⁻¹ᵁ U) := ⟨t' ⟨genericPoint C, hη⟩⟩\n  refine ⟨U, ⟨⟨genericPoint C, hη⟩⟩, ?_⟩\n  apply separated_dominant_section_isIso (p ∣_ U) t'\n  rw [← cancel_mono U.ι, Category.assoc, morphismRestrict_ι,\n    ← Category.assoc, ht'ι, htp, Category.id_comp]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finiteType_perfectField_relative_normalization_source_isIso": {
+      "path": "Negativity/RelativeNormalizationIdentification.lean",
+      "line": 51,
+      "code": "theorem finiteType_perfectField_relative_normalization_source_isIso\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsFinite f] [IsDominant f]\n    (hnC : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (k : Type u) [Field k] [PerfectField k]\n    (b : X ⟶ Spec (.of k)) [LocallyOfFiniteType b] :\n    IsIso (((C.fromSpecStalk (genericPoint C)) ≫ f).normalizationDesc\n      (C.fromSpecStalk (genericPoint C)) f rfl) := by\n  let g := C.fromSpecStalk (genericPoint C)\n  let h := g ≫ f\n  let p := h.normalizationDesc g f rfl\n  have hp : p ≫ f = h.fromNormalization := h.normalizationDesc_comp g f rfl\n  have : IsFinite h.fromNormalization :=\n    finiteType_perfectField_relative_generic_normalization_isFinite f k b\n  have : IsFinite (p ≫ f) := by rw [hp]; infer_instance\n  have : IsFinite p := IsFinite.of_comp p f\n  have hs : h.toNormalization ≫ p = g := h.toNormalization_normalizationDesc g f rfl\n  exact finite_normal_birational_isIso p\n    (finite_dominant_generic_section_birational p h.toNormalization hs) hnC\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finiteType_perfectField_relative_generic_normalization_isFinite": {
+      "path": "Negativity/RelativeFieldNormalization.lean",
+      "line": 18,
+      "code": "theorem finiteType_perfectField_relative_generic_normalization_isFinite\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsFinite f] [IsDominant f]\n    (k : Type u) [Field k] [PerfectField k]\n    (b : X ⟶ Spec (.of k)) [LocallyOfFiniteType b] :\n    IsFinite ((C.fromSpecStalk (genericPoint C)) ≫ f).fromNormalization := by\n  let g := C.fromSpecStalk (genericPoint C)\n  let h := g ≫ f\n  let : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  have : FiniteDimensional X.functionField C.functionField := finite_dominant_functionField_finite f\n  refine { toIsAffineHom := inferInstance, finite_app := ?_ }\n  intro U hU\n  by_cases hne : Nonempty U\n  · have : Nonempty U := hne\n    have hη : f (genericPoint C) ∈ U := by\n      rw [dominant_genericPoint_eq f]\n      exact ((genericPoint_spec X).mem_open_set_iff U.isOpen).mpr (by simpa using hne)\n    have : Nonempty (f ⁻¹ᵁ U) := ⟨⟨genericPoint C, hη⟩⟩\n    let A := Γ(X, U)\n    let B := Γ(C, f ⁻¹ᵁ U)\n    let S := Γ(Spec C.functionField, h ⁻¹ᵁ U)\n    let : Algebra A B := (f.app U).hom.toAlgebra\n    let : Algebra A S := (h.app U).hom.toAlgebra\n    let : Algebra A C.functionField :=\n      ((C.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n    have : IsScalarTower A B C.functionField := IsScalarTower.of_algebraMap_eq' rfl\n    have := finite_curve_chart_generic_tower f U\n    have := functionField_isFractionRing_of_isAffineOpen X U hU\n    let : Algebra B Γ(Spec C.functionField, g ⁻¹ᵁ f ⁻¹ᵁ U) :=\n      (g.app (f ⁻¹ᵁ U)).hom.toAlgebra\n    obtain ⟨j, hj⟩ := generic_stalk_affine_functionField_embedding C (f ⁻¹ᵁ U)\n    let r : S ⟶ Γ(Spec C.functionField, g ⁻¹ᵁ f ⁻¹ᵁ U) :=\n      (Spec C.functionField).presheaf.map\n        (eqToHom (by simp [h])).op\n    have hr : IsIso r := by dsimp only [r]; infer_instance\n    have hcomp : h.app U ≫ r = f.app U ≫ g.app (f ⁻¹ᵁ U) := by\n      dsimp only [h, r]\n      rw [Scheme.Hom.comp_app]\n      simp\n    let jA : S →ₐ[A] C.functionField := {\n      __ := j.toRingHom.comp r.hom\n      commutes' a := by\n        change j ((h.app U ≫ r) a) = _\n        rw [hcomp]\n        exact j.commutes (f.app U a) }\n    let c : k →+* A := (Spec.preimage (hU.fromSpec ≫ b)).hom\n    let : Algebra k A := c.toAlgebra\n    have hc : c.FiniteType := by\n      apply (HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)).mp\n      rw [Spec.map_preimage]\n      infer_instance\n    have : Algebra.FiniteType k A := hc\n    have : Module.Finite A (integralClosure A S) :=\n      finiteType_perfectField_relative_integralClosure_finite\n        k A X.functionField C.functionField S jA\n          (hj.injective.comp (ConcreteCategory.bijective_of_isIso r).injective)\n    rw [Scheme.Hom.fromNormalization_app h hU, CommRingCat.hom_comp]\n    exact (RingHom.Finite.of_surjective _\n      (ConcreteCategory.bijective_of_isIso (h.normalizationObjIso hU).inv).surjective).comp\n        (RingHom.finite_algebraMap.mpr inferInstance)\n  · have : IsEmpty U := not_nonempty_iff.mp hne\n    have : IsEmpty (h.fromNormalization ⁻¹ᵁ U) :=\n      ⟨fun x => (hne ⟨⟨h.fromNormalization x.1, x.2⟩⟩).elim⟩\n    have : IsIso (h.fromNormalization ∣_ U) := inferInstance\n    have : IsIso (h.fromNormalization.app U) :=\n      (isIso_morphismRestrict_iff_isIso_app h.fromNormalization hU).mp inferInstance\n    exact RingHom.Finite.of_surjective _\n      (ConcreteCategory.bijective_of_isIso (h.fromNormalization.app U)).surjective\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "finite_dominant_functionField_finite": {
+      "path": "Negativity/FiniteFunctionField.lean",
+      "line": 18,
+      "code": "theorem finite_dominant_functionField_finite\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (f : C ⟶ X) [IsFinite f] [IsDominant f] :\n    letI : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n    FiniteDimensional X.functionField C.functionField := by\n  let : Algebra X.functionField C.functionField := (dominantFunctionFieldMap f).toAlgebra\n  obtain ⟨U, hU, hη, _⟩ :=\n    exists_isAffineOpen_mem_and_subset (U := ⊤) (x := genericPoint X) trivial\n  have : Nonempty U := ⟨⟨genericPoint X, hη⟩⟩\n  have hηC : f (genericPoint C) ∈ U := by rw [dominant_genericPoint_eq f]; exact hη\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨⟨genericPoint C, hηC⟩⟩\n  let A := Γ(X, U)\n  let B := Γ(C, f ⁻¹ᵁ U)\n  let : Algebra A B := (f.app U).hom.toAlgebra\n  let : Algebra A C.functionField :=\n    ((C.germToFunctionField (f ⁻¹ᵁ U)).hom.comp (f.app U).hom).toAlgebra\n  have : IsScalarTower A B C.functionField := IsScalarTower.of_algebraMap_eq fun _ => rfl\n  have := finite_curve_chart_generic_tower f U\n  have : Module.Finite A B := f.finite_app U hU\n  have := dominant_curve_chart_torsionFree f U\n  have : Algebra.IsIntegral A B := ⟨IsIntegral.of_finite A⟩\n  have := functionField_isFractionRing_of_isAffineOpen X U hU\n  have := functionField_isFractionRing_of_isAffineOpen C (f ⁻¹ᵁ U) (hU.preimage f)\n  have : IsLocalization (Algebra.algebraMapSubmonoid B A⁰) C.functionField := inferInstance\n  exact Module.Finite.of_isLocalization A B A⁰",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "finiteType_perfectField_normal_normalization_isIso": {
       "path": "Negativity/NormalNormalization.lean",
       "line": 15,

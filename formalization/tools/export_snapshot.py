@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'CurveNormalizationLift.lean': ['birational_functionFieldMap_bijective', 'complete_integral_curves_normalization_lift_degree'],
+    'NormalizationLift.lean': ['dominant_functionField_Spec_square', 'exists_finite_dominant_normalization_lift'],
+    'RelativeNormalizationIdentification.lean': ['finite_dominant_generic_section_birational', 'finiteType_perfectField_relative_normalization_source_isIso'],
+    'RelativeFieldNormalization.lean': ['finiteType_perfectField_relative_generic_normalization_isFinite'],
+    'FiniteFunctionField.lean': ['finite_dominant_functionField_finite'],
     'NormalNormalization.lean': ['finiteType_perfectField_normal_normalization_isIso'],
     'FiniteFrobenius.lean': ['frobenius_isIntegral', 'finiteType_perfectField_frobenius_finite', 'finiteType_perfectField_iterateFrobenius_finite'],
     'FrobeniusIntegralClosure.lean': ['finiteType_perfectField_integralClosure_purelyInseparable_finite'],
@@ -184,8 +189,14 @@ derived. Actual Cartier/R-Cartier intersection on nonnormal complete source curv
 arbitrary real-presentation independence, effective-divisor signs, point-image
 zero and ambient pullback composition are proved on the constructed normalization.
 The degree formula for nonnormal source curves and normal target curves uses
-the original full function-field degree. Normalization functoriality for
-nonnormal image curves, full image-curve/cycle identification, geometric ample positivity,
+the original full function-field degree. Actual finite dominant maps induce
+finite function-field extensions. Relative normalization in the actual source
+function field is finite and equals any actual normal finite dominant source.
+Actual finite dominant lifting to a nonnormal target's normalization is proved.
+Every proper dominant map between complete integral curves, with neither curve
+normal or smooth, has an actual finite dominant normalization lift, a commuting
+square and unchanged full function-field degree. Restriction compatibility
+with this lift, full image-curve/cycle identification, geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

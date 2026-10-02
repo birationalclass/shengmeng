@@ -715,3 +715,19 @@ import Negativity
 #print axioms Negativity.complete_integral_curve_real_cartier_intersection_degree
 
 #print axioms Negativity.finiteType_perfectField_normal_normalization_isIso
+
+#print axioms Negativity.finite_dominant_functionField_finite
+
+#print axioms Negativity.finiteType_perfectField_relative_generic_normalization_isFinite
+
+#print axioms Negativity.finite_dominant_generic_section_birational
+
+#print axioms Negativity.finiteType_perfectField_relative_normalization_source_isIso
+
+#print axioms Negativity.dominant_functionField_Spec_square
+
+#print axioms Negativity.exists_finite_dominant_normalization_lift
+
+#print axioms Negativity.birational_functionFieldMap_bijective
+
+#print axioms Negativity.complete_integral_curves_normalization_lift_degree

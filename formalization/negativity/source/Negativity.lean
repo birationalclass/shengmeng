@@ -201,3 +201,13 @@ public import Negativity.NormalizedCurveDegree
 public import Negativity.NormalizedRealDegree
 
 public import Negativity.NormalNormalization
+
+public import Negativity.FiniteFunctionField
+
+public import Negativity.RelativeFieldNormalization
+
+public import Negativity.RelativeNormalizationIdentification
+
+public import Negativity.NormalizationLift
+
+public import Negativity.CurveNormalizationLift
