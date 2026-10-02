@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'RationalInfinityResidue.lean': ['rational_infinity_approximate_constant', 'rational_infinity_residue_constants_bijective', 'rational_infinity_residue_degree_one', 'rational_infinity_inertia_degree_one', 'infinity_pushforward_degree', 'twoChart_baseField_principal_degree_zero', 'algebraicallyClosed_infinity_point_degree_one', 'affineDivisorDegree_eq_order_sum'],
+    'FunctionFieldDegree.lean': ['functionField_principal_degree_baseField_zero', 'functionField_principal_order_sum_zero'],
+    'ValuationCenters.lean': ['curveFunctionFieldBaseMap_spec', 'local_valuation_fractionRing_bijective', 'valuation_generic_lift_over_base', 'proper_functionField_valuation_unique_lift', 'valuation_center_stalk_functionField_compat', 'valuation_center_stalk_bijective', 'normal_curve_stalk_isValuation', 'nontrivial_valuation_center_coheight_one', 'curve_coheight_one_isClosed', 'proper_normal_curve_unique_valuation_center_iso'],
+    'NormalCurveValuations.lean': ['normalCurvePointValuation_ne_top', 'normalCurvePointValuation_contains_constants', 'normalCurvePointValuation_center_eq', 'normalCurvePointValuation_lift', 'normalCurvePointValuation_injective', 'proper_normal_curve_valuation_has_closed_point', 'proper_normal_curve_points_valuations_bijective'],
+    'ValuationOrderTransport.lean': ['dvr_rationalOrder_commonField_ringEquiv', 'normal_curve_valuation_center_order', 'proper_normal_curve_valuation_order_correspondence'],
     'NormDivisor.lean': ['separable_relNorm_factorization', 'ideal_primePower_multiplicity', 'ideal_primePower_product_multiplicity', 'normalizedIdealPoints_asIdeal', 'separable_ideal_norm_order', 'heightOneOrder_regular_eq_multiplicity', 'separable_integral_norm_order', 'ideal_order_eq_point_count', 'idealFactorDivisor_apply', 'idealFactorDivisor_principal', 'affineDivisorPushforward_single', 'separable_ideal_norm_divisor', 'fractionFieldNormUnits_integral', 'separable_integral_principal_norm', 'separable_affine_principal_norm', 'affineDivisorPushforward_degree', 'separable_affine_principal_norm_degree', 'fractionRing_separable_of_fractionFields', 'separable_integral_functionField_norm', 'separable_functionField_principal_norm', 'separable_functionField_principal_norm_degree'],
     'RationalDivisor.lean': ['polynomial_point_residueDegree', 'polynomial_prime_principal_divisor', 'polynomial_prime_principal_degree', 'polynomial_principal_degree', 'rational_affine_principal_degree', 'rational_actual_principal_degree_zero'],
     'InfinityNorm.lean': ['normalized_discrete_valuation_eq', 'rational_infinity_normalized_valuation', 'rational_infinity_heightOneOrder', 'separable_infinity_principal_norm', 'twoChart_principal_degree_zero'],
@@ -105,7 +110,8 @@ readme = '''Negativity: coefficient core and conditional interfaces
 
 This snapshot is NOT a complete geometric proof of the negativity lemma.
 New algebraic norm/valuation and actual Cartier restriction/order proofs
-are included. Complete Scheme-curve place identification, principal-move
+are included. Hartshorne I.6 actual curve-point/valuation bijection and local-order
+transport are proved. Finite/infinity place classification and principal-move
 degree independence, geometric ample positivity, full Chow construction
 and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
@@ -119,7 +125,7 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
-Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean, NormDivisor.lean, RationalDivisor.lean, InfinityNorm.lean, FunctionFieldProductFormula.lean, CartierDegree.lean, CartierCurveRestriction.lean, RealCartierCurveDegree.lean, CartierCurveMoving.lean.
+Proof source: Negativity/Numerical.lean, Coefficients.lean, Interfaces.lean, Descent.lean, GeometricCycles.lean, Projection.lean, LocalPushPull.lean, LocalGeometry.lean, NormalBirational.lean, AffineSections.lean, CurveDegree.lean, PrincipalDivisors.lean, PullbackDiagram.lean, PointPullback.lean, CurveSelection.lean, LocalConnectedness.lean, CodimensionOne.lean, HartshorneGraph.lean, RelativeNumerics.lean, RationalProductFormula.lean, NormalSections.lean, FractionFieldOrders.lean, CodimensionSupport.lean, CartierAtlas.lean, CartierPullback.lean, CartierPushPull.lean, StrictTransform.lean, DivisorPullback.lean, SeparableNorm.lean, FiniteNormalGeometry.lean, CartierSupport.lean, RationalCone.lean, CartierCombinations.lean, RealCartierDecomposition.lean, NormalExtension.lean, CartierEffectivity.lean, CartierVanishing.lean, RealCartierPullback.lean, NormDivisor.lean, RationalDivisor.lean, InfinityNorm.lean, FunctionFieldProductFormula.lean, CartierDegree.lean, CartierCurveRestriction.lean, RealCartierCurveDegree.lean, CartierCurveMoving.lean, RationalInfinityResidue.lean, FunctionFieldDegree.lean, ValuationCenters.lean, NormalCurveValuations.lean, ValuationOrderTransport.lean.
 '''
 (source / 'README.txt').write_text(readme, encoding='utf-8')
 with zipfile.ZipFile(destination / 'negativity-lean.zip', 'w', zipfile.ZIP_DEFLATED) as archive:

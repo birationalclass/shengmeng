@@ -404,3 +404,63 @@ import Negativity
 #print axioms Negativity.cartierAtlas_rationalTwist_transition
 
 #print axioms Negativity.exists_moved_cartier_curve_restriction
+
+#print axioms Negativity.rational_infinity_approximate_constant
+
+#print axioms Negativity.rational_infinity_residue_constants_bijective
+
+#print axioms Negativity.rational_infinity_residue_degree_one
+
+#print axioms Negativity.rational_infinity_inertia_degree_one
+
+#print axioms Negativity.infinity_pushforward_degree
+
+#print axioms Negativity.twoChart_baseField_principal_degree_zero
+
+#print axioms Negativity.algebraicallyClosed_infinity_point_degree_one
+
+#print axioms Negativity.affineDivisorDegree_eq_order_sum
+
+#print axioms Negativity.functionField_principal_degree_baseField_zero
+
+#print axioms Negativity.functionField_principal_order_sum_zero
+
+#print axioms Negativity.curveFunctionFieldBaseMap_spec
+
+#print axioms Negativity.local_valuation_fractionRing_bijective
+
+#print axioms Negativity.valuation_generic_lift_over_base
+
+#print axioms Negativity.proper_functionField_valuation_unique_lift
+
+#print axioms Negativity.valuation_center_stalk_functionField_compat
+
+#print axioms Negativity.valuation_center_stalk_bijective
+
+#print axioms Negativity.normal_curve_stalk_isValuation
+
+#print axioms Negativity.nontrivial_valuation_center_coheight_one
+
+#print axioms Negativity.curve_coheight_one_isClosed
+
+#print axioms Negativity.proper_normal_curve_unique_valuation_center_iso
+
+#print axioms Negativity.normalCurvePointValuation_ne_top
+
+#print axioms Negativity.normalCurvePointValuation_contains_constants
+
+#print axioms Negativity.normalCurvePointValuation_center_eq
+
+#print axioms Negativity.normalCurvePointValuation_lift
+
+#print axioms Negativity.normalCurvePointValuation_injective
+
+#print axioms Negativity.proper_normal_curve_valuation_has_closed_point
+
+#print axioms Negativity.proper_normal_curve_points_valuations_bijective
+
+#print axioms Negativity.dvr_rationalOrder_commonField_ringEquiv
+
+#print axioms Negativity.normal_curve_valuation_center_order
+
+#print axioms Negativity.proper_normal_curve_valuation_order_correspondence

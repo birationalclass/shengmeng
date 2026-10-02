@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T16:51:39+08:00",
+  "checkedAt": "2026-10-02T18:45:06+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "8af0c4b8dfec26911518c7c9badd4a7502219d9c06e45a83ece7e6074ff88770"
+      "sha256": "57335f7e4ae41d2e25d7b89567cd8251d46e3e16753b5aef2a9b9fcf39c13c86"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "deecd89c66834a6f3a19b186a07db5c8fad7700733200f6da5bfba7fe106120e"
+      "sha256": "d9d42d84c17c1cc8fc29c8c902ced69854271c8ca10ea56cc0115de902f3dc4f"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "sha256": "38cfb665225caf6770a39b306d11bf42e7c6d133f37137701a5f823130670f23"
+    },
+    {
+      "path": "Negativity/FunctionFieldDegree.lean",
+      "sha256": "a10fc8bf88b34c2d789af0b9f012903a571ddef9370646d2911fcc5eed991ffa"
+    },
+    {
+      "path": "Negativity/ValuationCenters.lean",
+      "sha256": "17a492da058e183402a1a919c0b3cd2af24865c2e139af895a95a09d7481eaf3"
+    },
+    {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "sha256": "a3746b3edc0c40ec990747f3ea67f13bf5ff7d30a834f46d800cc64cb4bd840a"
+    },
+    {
+      "path": "Negativity/ValuationOrderTransport.lean",
+      "sha256": "04ebd0d193655574fec4685638ce02d30d27739dd8a47c2af5de9b10066241ac"
     },
     {
       "path": "Negativity/NormDivisor.lean",
@@ -218,6 +238,306 @@
     }
   ],
   "declarations": {
+    "rational_infinity_approximate_constant": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 17,
+      "code": "theorem rational_infinity_approximate_constant (k : Type*) [Field k]\n    (a : RatFunc k) (ha : RatFunc.inftyValuation k a ≤ 1) :\n    ∃ c : k, RatFunc.inftyValuation k (a - RatFunc.C c) < 1 := by\n  by_cases hlt : RatFunc.inftyValuation k a < 1\n  · exact ⟨0, by simpa using hlt⟩\n  have hv : RatFunc.inftyValuation k a = 1 := le_antisymm ha (le_of_not_gt hlt)\n  have ha0 : a ≠ 0 := by\n    intro h\n    simp [h] at hv\n  have hid : a.intDegree = 0 := by\n    apply WithZero.exp_injective\n    simpa only [RatFunc.inftyValuation_apply, RatFunc.inftyValuation_of_nonzero k ha0,\n      WithZero.exp_zero] using hv\n  let p := a.num\n  let q := a.denom\n  have hp : p ≠ 0 := RatFunc.num_ne_zero ha0\n  have hq : q ≠ 0 := RatFunc.denom_ne_zero a\n  have hnd : p.natDegree = q.natDegree := by\n    dsimp [RatFunc.intDegree] at hid\n    dsimp [p, q]\n    omega\n  have hd : p.degree = q.degree := by\n    rw [Polynomial.degree_eq_natDegree hp, Polynomial.degree_eq_natDegree hq, hnd]\n  let c := p.leadingCoeff / q.leadingCoeff\n  have hc : c ≠ 0 := div_ne_zero (Polynomial.leadingCoeff_ne_zero.mpr hp)\n    (Polynomial.leadingCoeff_ne_zero.mpr hq)\n  have hdC : (Polynomial.C c * q).degree = q.degree :=\n    Polynomial.degree_C_mul_of_isUnit (IsUnit.mk0 c hc) q\n  have hlc : p.leadingCoeff = (Polynomial.C c * q).leadingCoeff := by\n    rw [Polynomial.leadingCoeff_C_mul_of_isUnit (IsUnit.mk0 c hc)]\n    dsimp [c]\n    rw [div_mul_cancel₀ _ (Polynomial.leadingCoeff_ne_zero.mpr hq)]\n  let g := p - Polynomial.C c * q\n  have hgdeg : g.degree < q.degree := by\n    exact (Polynomial.degree_sub_lt_left (hd.trans hdC.symm) hp hlc).trans_eq hd\n  have hqmap : algebraMap k[X] (RatFunc k) q ≠ 0 :=\n    by simpa only [map_zero] using (IsFractionRing.injective k[X] (RatFunc k)).ne hq\n  have hre : a - RatFunc.C c =\n      algebraMap k[X] (RatFunc k) g / algebraMap k[X] (RatFunc k) q := by\n    have hrepr : a = algebraMap k[X] (RatFunc k) p / algebraMap k[X] (RatFunc k) q :=\n      (RatFunc.num_div_denom a).symm\n    rw [hrepr]\n    dsimp [g]\n    simp only [map_sub, map_mul, RatFunc.algebraMap_C]\n    field_simp\n  refine ⟨c, ?_⟩\n  by_cases hg : g = 0\n  · rw [hre, hg]\n    simp\n  have hgmap : algebraMap k[X] (RatFunc k) g ≠ 0 :=\n    by simpa only [map_zero] using (IsFractionRing.injective k[X] (RatFunc k)).ne hg\n  have hgn : g.natDegree < q.natDegree := by\n    rw [Polynomial.natDegree_lt_iff_degree_lt hg]\n    simpa only [Polynomial.degree_eq_natDegree hq] using hgdeg\n  rw [hre, RatFunc.inftyValuation_apply,\n    RatFunc.inftyValuation_of_nonzero k (div_ne_zero hgmap hqmap),\n    RatFunc.intDegree_div hgmap hqmap, RatFunc.intDegree_polynomial,\n    RatFunc.intDegree_polynomial, ← WithZero.exp_zero]\n  apply WithZero.exp_lt_exp.mpr\n  exact sub_neg.mpr (by exact_mod_cast hgn)\n\nnoncomputable def rationalInfinityConstantHom (k : Type*) [Field k] :\n    k →+* RationalInfinityRing k :=\n  (algebraMap k (RatFunc k)).codRestrict (RatFunc.inftyValuation k).valuationSubring.toSubring\n    (fun c => by\n      change RatFunc.inftyValuation k (algebraMap k (RatFunc k) c) ≤ 1\n      exact Valuation.IsTrivialOn.valuation_algebraMap_le_one _ c)\n\nnoncomputable instance rationalInfinityConstantAlgebra (k : Type*) [Field k] :\n    Algebra k (RationalInfinityRing k) := (rationalInfinityConstantHom k).toAlgebra",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_residue_constants_bijective": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 89,
+      "code": "theorem rational_infinity_residue_constants_bijective (k : Type*) [Field k] :\n    Function.Bijective ((IsLocalRing.residue (RationalInfinityRing k)).comp\n      (rationalInfinityConstantHom k)) := by\n  refine ⟨RingHom.injective _, ?_⟩\n  intro x\n  obtain ⟨a, rfl⟩ := IsLocalRing.residue_surjective x\n  obtain ⟨c, hc⟩ := rational_infinity_approximate_constant k (a : RatFunc k) a.2\n  refine ⟨c, ?_⟩\n  change IsLocalRing.residue (RationalInfinityRing k) (rationalInfinityConstantHom k c) =\n    IsLocalRing.residue (RationalInfinityRing k) a\n  apply sub_eq_zero.mp\n  rw [← map_sub, IsLocalRing.residue_eq_zero_iff,\n    (RatFunc.inftyValuation k).mem_maximalIdeal_iff]\n  change RatFunc.inftyValuation k (RatFunc.C c - (a : RatFunc k)) < 1\n  rw [← neg_sub, Valuation.map_neg]\n  exact hc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_residue_degree_one": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 106,
+      "code": "theorem rational_infinity_residue_degree_one (k : Type*) [Field k] :\n    Module.finrank k (IsLocalRing.ResidueField (RationalInfinityRing k)) = 1 := by\n  let e : k ≃ₐ[k] IsLocalRing.ResidueField (RationalInfinityRing k) :=\n    AlgEquiv.ofBijective (Algebra.ofId k _)\n      (rational_infinity_residue_constants_bijective k)\n  rw [← e.toLinearEquiv.finrank_eq]\n  exact Module.finrank_self k",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_infinity_inertia_degree_one": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 114,
+      "code": "theorem rational_infinity_inertia_degree_one (k : Type*) [Field k] :\n    (IsLocalRing.maximalIdeal (RationalInfinityRing k)).inertiaDeg k = 1 := by\n  have : (IsLocalRing.maximalIdeal (RationalInfinityRing k)).LiesOver (⊥ : Ideal k) := inferInstance\n  rw [Ideal.inertiaDeg_eq_of_isMaximal (⊥ : Ideal k)\n    (IsLocalRing.maximalIdeal (RationalInfinityRing k))]\n  have he : Module.finrank (k ⧸ (⊥ : Ideal k))\n      ((RationalInfinityRing k) ⧸ IsLocalRing.maximalIdeal (RationalInfinityRing k)) =\n      Module.finrank k ((RationalInfinityRing k) ⧸ IsLocalRing.maximalIdeal (RationalInfinityRing k)) :=\n    Algebra.finrank_eq_of_equiv_equiv (RingEquiv.quotientBot k) (RingEquiv.refl _) (by\n      ext x\n      rfl)\n  rw [he]\n  exact rational_infinity_residue_degree_one k",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "infinity_pushforward_degree": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 130,
+      "code": "theorem infinity_pushforward_degree (k B : Type*) [Field k]\n    [CommRing B] [IsDedekindDomain B] [Algebra (RationalInfinityRing k) B]\n    [Module.Finite (RationalInfinityRing k) B] [Algebra k B]\n    [IsScalarTower k (RationalInfinityRing k) B]\n    (D : IsDedekindDomain.HeightOneSpectrum B →₀ ℤ) :\n    affineDivisorDegree k B D =\n      (affineDivisorPushforward (RationalInfinityRing k) B D)\n        (IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k)) := by\n  induction D using Finsupp.induction_linear with\n  | zero => simp\n  | add D E hD hE => simp only [map_add, Finsupp.coe_add, Pi.add_apply, hD, hE]\n  | single q n =>\n    have hq : (q.under (RationalInfinityRing k)).asIdeal =\n        IsLocalRing.maximalIdeal (RationalInfinityRing k) :=\n      IsLocalRing.eq_maximalIdeal (q.under (RationalInfinityRing k)).isMaximal\n    have hqp : q.under (RationalInfinityRing k) =\n        IsDiscreteValuationRing.maximalIdeal (RationalInfinityRing k) := by\n      exact IsDedekindDomain.HeightOneSpectrum.ext hq\n    have : q.asIdeal.LiesOver (q.under (RationalInfinityRing k)).asIdeal := ⟨rfl⟩\n    have ht := Ideal.inertiaDeg_tower (R := k)\n      (q.under (RationalInfinityRing k)).asIdeal q.asIdeal\n    rw [hq, rational_infinity_inertia_degree_one, one_mul] at ht\n    rw [affineDivisorDegree_single, affineDivisorPushforward_single, hqp,\n      Finsupp.single_eq_same, ht]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "twoChart_baseField_principal_degree_zero": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 158,
+      "code": "theorem twoChart_baseField_principal_degree_zero (k S B L : Type*) [Field k]\n    [CommRing S] [IsDedekindDomain S] [CommRing B] [IsDedekindDomain B] [Field L]\n    [Algebra k S] [Algebra.FiniteType k S]\n    [Algebra k[X] S] [IsScalarTower k k[X] S]\n    [Module.Finite k[X] S] [Module.IsTorsionFree k[X] S]\n    [Algebra S L] [IsFractionRing S L] [Algebra (RatFunc k) L]\n    [Algebra k[X] L] [IsScalarTower k[X] (RatFunc k) L] [IsScalarTower k[X] S L]\n    [Algebra (RationalInfinityRing k) B] [Module.Finite (RationalInfinityRing k) B]\n    [Module.IsTorsionFree (RationalInfinityRing k) B]\n    [Algebra B L] [IsFractionRing B L] [Algebra (RationalInfinityRing k) L]\n    [IsScalarTower (RationalInfinityRing k) (RatFunc k) L]\n    [IsScalarTower (RationalInfinityRing k) B L]\n    [Algebra k B] [IsScalarTower k (RationalInfinityRing k) B]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    affineDivisorDegree k S (affinePrincipalDivisor L a) +\n      affineDivisorDegree k B (affinePrincipalDivisor L a) = 0 := by\n  rw [infinity_pushforward_degree k B (affinePrincipalDivisor L a)]\n  exact twoChart_principal_degree_zero k S B L a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "algebraicallyClosed_infinity_point_degree_one": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 180,
+      "code": "theorem algebraicallyClosed_infinity_point_degree_one (k B : Type*)\n    [Field k] [IsAlgClosed k] [CommRing B] [IsDedekindDomain B]\n    [Algebra (RationalInfinityRing k) B] [Module.Finite (RationalInfinityRing k) B]\n    [Algebra k B] [IsScalarTower k (RationalInfinityRing k) B]\n    (q : IsDedekindDomain.HeightOneSpectrum B) : q.asIdeal.inertiaDeg k = 1 := by\n  have hq : (q.under (RationalInfinityRing k)).asIdeal =\n      IsLocalRing.maximalIdeal (RationalInfinityRing k) :=\n    IsLocalRing.eq_maximalIdeal (q.under (RationalInfinityRing k)).isMaximal\n  have : q.asIdeal.LiesOver (q.under (RationalInfinityRing k)).asIdeal := ⟨rfl⟩\n  have ht := Ideal.inertiaDeg_tower (R := k)\n    (q.under (RationalInfinityRing k)).asIdeal q.asIdeal\n  rw [hq, rational_infinity_inertia_degree_one, one_mul] at ht\n  have hp : 0 < q.asIdeal.inertiaDeg k := by\n    rw [ht]\n    exact Ideal.inertiaDeg_pos q.asIdeal (RationalInfinityRing k)\n  let : Field (B ⧸ q.asIdeal) := Ideal.Quotient.field q.asIdeal\n  have he : Module.finrank (k ⧸ (⊥ : Ideal k)) (B ⧸ q.asIdeal) =\n      Module.finrank k (B ⧸ q.asIdeal) :=\n    Algebra.finrank_eq_of_equiv_equiv (RingEquiv.quotientBot k) (RingEquiv.refl _) (by\n      ext x\n      rfl)\n  rw [Ideal.inertiaDeg_eq_of_isMaximal (⊥ : Ideal k) q.asIdeal, he] at hp ⊢\n  let : Module.Finite k (B ⧸ q.asIdeal) := Module.finite_of_finrank_pos hp\n  let e : k ≃ₐ[k] (B ⧸ q.asIdeal) :=\n    AlgEquiv.ofBijective (Algebra.ofId k _) IsAlgClosed.algebraMap_bijective_of_isIntegral\n  simpa using e.toLinearEquiv.finrank_eq.symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affineDivisorDegree_eq_order_sum": {
+      "path": "Negativity/RationalInfinityResidue.lean",
+      "line": 207,
+      "code": "theorem affineDivisorDegree_eq_order_sum (k R : Type*) [Field k] [CommRing R]\n    [IsDedekindDomain R] [Algebra k R]\n    (h : ∀ p : IsDedekindDomain.HeightOneSpectrum R, p.asIdeal.inertiaDeg k = 1)\n    (D : IsDedekindDomain.HeightOneSpectrum R →₀ ℤ) :\n    affineDivisorDegree k R D = D.degree := by\n  induction D using Finsupp.induction_linear with\n  | zero => simp\n  | add D E hD hE => simp only [map_add, hD, hE]\n  | single p n => simp [affineDivisorDegree_single, h, Finsupp.degree_single]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "functionField_principal_degree_baseField_zero": {
+      "path": "Negativity/FunctionFieldDegree.lean",
+      "line": 36,
+      "code": "theorem functionField_principal_degree_baseField_zero (k L : Type*) [Field k] [Field L]\n    [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    FunctionFieldPlaces.baseFieldPrincipalDegree k L a = 0 := by\n  unfold FunctionFieldPlaces.baseFieldPrincipalDegree\n  rw [infinity_pushforward_degree k (FunctionFieldPlaces.InfinityRing k L)\n    (affinePrincipalDivisor L a)]\n  exact functionField_principal_degree_zero k L a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "functionField_principal_order_sum_zero": {
+      "path": "Negativity/FunctionFieldDegree.lean",
+      "line": 49,
+      "code": "theorem functionField_principal_order_sum_zero (k L : Type*) [Field k] [IsAlgClosed k]\n    [Field L] [Algebra (RatFunc k) L] [FiniteDimensional (RatFunc k) L]\n    [Algebra.IsSeparable (RatFunc k) L] (a : Lˣ) :\n    (affinePrincipalDivisor L a :\n      IsDedekindDomain.HeightOneSpectrum (FunctionFieldPlaces.FiniteRing k L) →₀ ℤ).degree +\n    (affinePrincipalDivisor L a :\n      IsDedekindDomain.HeightOneSpectrum (FunctionFieldPlaces.InfinityRing k L) →₀ ℤ).degree = 0 := by\n  have h := functionField_principal_degree_baseField_zero k L a\n  unfold FunctionFieldPlaces.baseFieldPrincipalDegree at h\n  rw [affineDivisorDegree_eq_order_sum k (FunctionFieldPlaces.FiniteRing k L)\n      (closedPoint_residueDegree_one k (FunctionFieldPlaces.FiniteRing k L)),\n    affineDivisorDegree_eq_order_sum k (FunctionFieldPlaces.InfinityRing k L)\n      (algebraicallyClosed_infinity_point_degree_one k (FunctionFieldPlaces.InfinityRing k L))] at h\n  exact h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curveFunctionFieldBaseMap_spec": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 20,
+      "code": "theorem curveFunctionFieldBaseMap_spec (C : Scheme.{u}) [IsIntegral C]\n    (k : Type u) [Field k] (b : C ⟶ Spec (.of k)) :\n    Spec.map (CommRingCat.ofHom (curveFunctionFieldBaseMap C k b)) =\n      C.fromSpecStalk (genericPoint C) ≫ b := by\n  exact Spec.map_preimage _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "local_valuation_fractionRing_bijective": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 29,
+      "code": "theorem local_valuation_fractionRing_bijective\n    (R S K : Type*) [CommRing R] [IsDomain R] [ValuationRing R]\n    [CommRing S] [IsDomain S] [Field K] [Algebra R S] [Algebra S K]\n    [Algebra R K] [IsScalarTower R S K] [IsFractionRing R K]\n    [IsFractionRing S K] [IsLocalHom (algebraMap R S)] :\n    Function.Bijective (algebraMap R S) := by\n  refine ⟨?_, ?_⟩\n  · intro r t h\n    apply IsFractionRing.injective R K\n    simpa only [IsScalarTower.algebraMap_apply R S K] using\n      congrArg (algebraMap S K) h\n  · intro s\n    by_cases hs : s = 0\n    · exact ⟨0, by simp [hs]⟩\n    have hsK : algebraMap S K s ≠ 0 := by\n      simpa only [map_zero] using (IsFractionRing.injective S K).ne hs\n    obtain ⟨r, hr⟩ | ⟨r, hr⟩ :=\n      ValuationRing.isInteger_or_isInteger R (algebraMap S K s)\n    · exact ⟨r, (IsFractionRing.injective S K)\n        (by simpa only [IsScalarTower.algebraMap_apply R S K] using hr)⟩\n    · have hmul : algebraMap R S r * s = 1 := by\n        apply IsFractionRing.injective S K\n        simp only [map_mul, map_one, ← IsScalarTower.algebraMap_apply R S K,\n          hr, inv_mul_cancel₀ hsK]\n      have hu : IsUnit r := isUnit_of_map_unit (algebraMap R S) r\n        (IsUnit.of_mul_eq_one _ hmul)\n      refine ⟨↑(hu.unit⁻¹), ?_⟩\n      apply mul_left_cancel₀ ((hu.map (algebraMap R S)).ne_zero)\n      calc\n        algebraMap R S r * algebraMap R S (↑(hu.unit⁻¹)) = 1 := by\n          have he : r * ↑(hu.unit⁻¹) = 1 := by\n            simpa only [Units.val_mul, hu.unit_spec, Units.val_one] using\n              congrArg (fun v : Rˣ ↦ (v : R)) (mul_inv_cancel hu.unit)\n          simpa only [map_mul, map_one] using congrArg (algebraMap R S) he\n        _ = algebraMap R S r * s := hmul.symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "valuation_generic_lift_over_base": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 68,
+      "code": "theorem valuation_generic_lift_over_base (C : Scheme.{u}) [IsIntegral C]\n    (k : Type u) [Field k] (b : C ⟶ Spec (.of k))\n    (A : ValuationSubring C.functionField)\n    (hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈ A)\n    (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C)) :\n    l ≫ b = Spec.map (CommRingCat.ofHom\n      ((curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk)) := by\n  let f : k →+* A := (Spec.preimage (l ≫ b)).hom\n  have hpre : Spec.map (CommRingCat.ofHom f) = l ≫ b := Spec.map_preimage _\n  have hm : Spec.map (CommRingCat.ofHom ((algebraMap A C.functionField).comp f)) =\n      Spec.map (CommRingCat.ofHom (curveFunctionFieldBaseMap C k b)) := by\n    change Spec.map ((CommRingCat.ofHom f) ≫\n      CommRingCat.ofHom (algebraMap A C.functionField)) = _\n    rw [Spec.map_comp, hpre, ← Category.assoc, hl, curveFunctionFieldBaseMap_spec]\n  have he := congrArg CommRingCat.Hom.hom (Spec.map_injective hm)\n  have hf : f = (curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk := by\n    ext c\n    exact congrArg (fun g : k →+* C.functionField ↦ g c) he\n  rw [← hpre, hf]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_functionField_valuation_unique_lift": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 95,
+      "code": "theorem proper_functionField_valuation_unique_lift\n    (C : Scheme.{u}) [IsIntegral C] (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b]\n    (A : ValuationSubring C.functionField)\n    (hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈ A) :\n    ∃! l : Spec (.of A) ⟶ C,\n      Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n        C.fromSpecStalk (genericPoint C) ∧\n      l ≫ b = Spec.map (CommRingCat.ofHom\n        ((curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk)) := by\n  let constants : k →+* A :=\n    (curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk\n  let bottom := Spec.map (CommRingCat.ofHom constants)\n  have hw : C.fromSpecStalk (genericPoint C) ≫ b =\n      Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ bottom := by\n    rw [← curveFunctionFieldBaseMap_spec C k b, ← Spec.map_comp]\n    rfl\n  let square : ValuativeCommSq b := {\n    R := A, K := C.functionField, i₁ := C.fromSpecStalk (genericPoint C),\n    i₂ := bottom, commSq := ⟨hw⟩ }\n  have hp : (ValuativeCriterion ⊓ @QuasiCompact ⊓ @QuasiSeparated ⊓\n      @LocallyOfFiniteType) b := by\n    rw [← IsProper.eq_valuativeCriterion]\n    exact inferInstance\n  obtain ⟨lift⟩ := ((ValuativeCriterion.existence hp.1.1.1) square).exists_lift\n  refine ⟨lift.l, ⟨lift.fac_left, lift.fac_right⟩, ?_⟩\n  intro l hl\n  let other : square.commSq.LiftStruct := ⟨l, hl.1, hl.2⟩\n  have : Subsingleton square.commSq.LiftStruct := proper_valuative_lift_unique b square\n  exact congrArg CommSq.LiftStruct.l (Subsingleton.elim other lift)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "valuation_center_stalk_functionField_compat": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 129,
+      "code": "theorem valuation_center_stalk_functionField_compat\n    (C : Scheme.{u}) [IsIntegral C] (A : ValuationSubring C.functionField)\n    (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C)) :\n    (algebraMap A C.functionField).comp (Scheme.stalkClosedPointTo l).hom =\n      algebraMap (C.presheaf.stalk (l (IsLocalRing.closedPoint A))) C.functionField := by\n  let x := l (IsLocalRing.closedPoint A)\n  have hg : Spec.map (CommRingCat.ofHom\n      (algebraMap (C.presheaf.stalk x) C.functionField)) ≫ C.fromSpecStalk x =\n      C.fromSpecStalk (genericPoint C) :=\n    C.SpecMap_stalkSpecializes_fromSpecStalk ((genericPoint_spec C).specializes trivial)\n  have hm : Spec.map (CommRingCat.ofHom\n      ((algebraMap A C.functionField).comp (Scheme.stalkClosedPointTo l).hom)) =\n      Spec.map (CommRingCat.ofHom\n        (algebraMap (C.presheaf.stalk x) C.functionField)) := by\n    rw [← cancel_mono (C.fromSpecStalk x)]\n    change Spec.map ((Scheme.stalkClosedPointTo l) ≫\n        CommRingCat.ofHom (algebraMap A C.functionField)) ≫ C.fromSpecStalk x = _\n    rw [Spec.map_comp, Category.assoc,\n      Scheme.Spec_stalkClosedPointTo_fromSpecStalk, hl, hg]\n  exact congrArg CommRingCat.Hom.hom (Spec.map_injective hm)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "valuation_center_stalk_bijective": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 155,
+      "code": "theorem valuation_center_stalk_bijective\n    (C : Scheme.{u}) [IsIntegral C] (A : ValuationSubring C.functionField)\n    (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C))\n    [ValuationRing (C.presheaf.stalk (l (IsLocalRing.closedPoint A)))] :\n    Function.Bijective (Scheme.stalkClosedPointTo l).hom := by\n  let R := C.presheaf.stalk (l (IsLocalRing.closedPoint A))\n  let : Algebra R A := (Scheme.stalkClosedPointTo l).hom.toAlgebra\n  have : IsLocalHom (algebraMap R A) := by\n    change IsLocalHom (Scheme.stalkClosedPointTo l).hom\n    infer_instance\n  have : IsScalarTower R A C.functionField :=\n    IsScalarTower.of_algebraMap_eq'\n      (valuation_center_stalk_functionField_compat C A l hl).symm\n  exact local_valuation_fractionRing_bijective R A C.functionField",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_curve_stalk_isValuation": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 174,
+      "code": "theorem normal_curve_stalk_isValuation (C : Scheme.{u}) [IsIntegral C]\n    [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (x : C) : ValuationRing (C.presheaf.stalk x) := by\n  have hx : Order.coheight x ≤ 1 :=\n    WithBot.coe_le_coe.mp ((Order.coheight_le_krullDim x).trans hd)\n  by_cases hx0 : Order.coheight x = 0\n  · have : Ring.KrullDimLE 0 (C.presheaf.stalk x) :=\n      krullDimLE_of_coheight_le hx0.le\n    let : Field (C.presheaf.stalk x) := Ring.KrullDimLE.isField_of_isDomain.toField\n    infer_instance\n  · have hx1 : Order.coheight x = 1 :=\n      le_antisymm hx (Order.one_le_iff_ne_zero.mpr hx0)\n    have := hn x\n    have := normal_one_dimensional_local_isDVR (C.presheaf.stalk x)\n      (by rw [ringKrullDim_stalk_eq_coheight, hx1]; rfl)\n    infer_instance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "nontrivial_valuation_center_coheight_one": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 195,
+      "code": "theorem nontrivial_valuation_center_coheight_one\n    (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C ≤ 1)\n    (A : ValuationSubring C.functionField) (hA : A ≠ ⊤)\n    (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C)) :\n    Order.coheight (l (IsLocalRing.closedPoint A)) = 1 := by\n  let x := l (IsLocalRing.closedPoint A)\n  have hx : Order.coheight x ≤ 1 :=\n    WithBot.coe_le_coe.mp ((Order.coheight_le_krullDim x).trans hd)\n  have hx0 : Order.coheight x ≠ 0 := by\n    intro hzero\n    let R := C.presheaf.stalk x\n    have : Ring.KrullDimLE 0 R := krullDimLE_of_coheight_le hzero.le\n    have hsur : Function.Surjective (algebraMap R C.functionField) :=\n      (IsField.localization_map_bijective\n        (M := nonZeroDivisors R) (by simp)\n        Ring.KrullDimLE.isField_of_isDomain).2\n    apply hA\n    apply top_unique\n    intro a _\n    obtain ⟨r, hr⟩ := hsur a\n    have he := congrArg (fun f : R →+* C.functionField ↦ f r)\n      (valuation_center_stalk_functionField_compat C A l hl)\n    rw [hr] at he\n    rw [← he]\n    exact ((Scheme.stalkClosedPointTo l).hom r).2\n  exact le_antisymm hx (Order.one_le_iff_ne_zero.mpr hx0)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "curve_coheight_one_isClosed": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 226,
+      "code": "theorem curve_coheight_one_isClosed (C : Scheme.{u})\n    (hd : Order.krullDim C ≤ 1) (x : C) (hx : Order.coheight x = 1) :\n    IsClosed ({x} : Set C) := by\n  rw [← closure_eq_iff_isClosed]\n  apply Set.Subset.antisymm ?_ subset_closure\n  intro y hy\n  have hyx : y ≤ x := (specializes_iff_mem_closure).mpr hy\n  have hybound : Order.coheight y ≤ 1 :=\n    WithBot.coe_le_coe.mp ((Order.coheight_le_krullDim y).trans hd)\n  apply Set.mem_singleton_iff.mpr\n  by_contra hne\n  have hlt := (Order.coheight_le_coe_iff (n := 1)).mp hybound x\n    (show y < x from ⟨hyx, fun hxy ↦ hne ((hxy.antisymm hyx).eq)⟩)\n  rw [hx] at hlt\n  exact (lt_irrefl _ hlt)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_unique_valuation_center_iso": {
+      "path": "Negativity/ValuationCenters.lean",
+      "line": 247,
+      "code": "theorem proper_normal_curve_unique_valuation_center_iso\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b]\n    (A : ValuationSubring C.functionField)\n    (hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈ A) :\n    ∃! l : Spec (.of A) ⟶ C,\n      (Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n        C.fromSpecStalk (genericPoint C) ∧\n      l ≫ b = Spec.map (CommRingCat.ofHom\n        ((curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk))) ∧\n      Function.Bijective (Scheme.stalkClosedPointTo l).hom ∧\n      (A ≠ ⊤ → IsClosed ({l (IsLocalRing.closedPoint A)} : Set C)) := by\n  obtain ⟨l, hl, huniq⟩ := proper_functionField_valuation_unique_lift C k b A hk\n  have := normal_curve_stalk_isValuation C hn hd (l (IsLocalRing.closedPoint A))\n  exact ⟨l, ⟨hl, valuation_center_stalk_bijective C A l hl.1,\n    fun hA ↦ curve_coheight_one_isClosed C hd _\n      (nontrivial_valuation_center_coheight_one C hd A hA l hl.1)⟩,\n    fun other ho ↦ huniq other ho.1⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalCurvePointValuation_ne_top": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 26,
+      "code": "theorem normalCurvePointValuation_ne_top (C : Scheme.{u}) [IsIntegral C]\n    [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (x : C) (hx : Order.coheight x = 1) :\n    normalCurvePointValuation C hn x hx ≠ ⊤ := by\n  have := hn x\n  have := normal_codimensionOne_stalk_isDVR C x hx\n  intro he\n  let R := C.presheaf.stalk x\n  obtain ⟨p, hp⟩ := exists_prime R\n  have hpK : algebraMap R C.functionField p ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R C.functionField).ne hp.ne_zero\n  have hm : (algebraMap R C.functionField p)⁻¹ ∈ normalCurvePointValuation C hn x hx := by\n    rw [he]; trivial\n  obtain ⟨r, hr⟩ := hm\n  have hpr : p * r = 1 := by\n    apply IsFractionRing.injective R C.functionField\n    rw [map_mul, map_one]\n    change algebraMap (C.presheaf.stalk x) C.functionField p *\n      algebraMap (C.presheaf.stalk x) C.functionField r = 1\n    rw [hr]\n    exact mul_inv_cancel₀ hpK\n  exact hp.not_isUnit (IsUnit.of_mul_eq_one r hpr)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalCurvePointValuation_contains_constants": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 52,
+      "code": "theorem normalCurvePointValuation_contains_constants\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (x : C) (hx : Order.coheight x = 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) (c : k) :\n    curveFunctionFieldBaseMap C k b c ∈ normalCurvePointValuation C hn x hx := by\n  let constants : k →+* C.presheaf.stalk x := (Spec.preimage (C.fromSpecStalk x ≫ b)).hom\n  have he : (algebraMap (C.presheaf.stalk x) C.functionField).comp constants =\n      curveFunctionFieldBaseMap C k b := by\n    have hm : Spec.map (CommRingCat.ofHom\n        ((algebraMap (C.presheaf.stalk x) C.functionField).comp constants)) =\n        Spec.map (CommRingCat.ofHom (curveFunctionFieldBaseMap C k b)) := by\n      change Spec.map ((CommRingCat.ofHom constants) ≫\n        CommRingCat.ofHom (algebraMap (C.presheaf.stalk x) C.functionField)) = _\n      rw [Spec.map_comp]\n      have hconstants : Spec.map (CommRingCat.ofHom constants) = C.fromSpecStalk x ≫ b :=\n        Spec.map_preimage _\n      have hg : Spec.map (CommRingCat.ofHom\n          (algebraMap (C.presheaf.stalk x) C.functionField)) ≫ C.fromSpecStalk x =\n          C.fromSpecStalk (genericPoint C) :=\n        C.SpecMap_stalkSpecializes_fromSpecStalk ((genericPoint_spec C).specializes trivial)\n      rw [hconstants, ← Category.assoc, hg, curveFunctionFieldBaseMap_spec]\n    exact congrArg CommRingCat.Hom.hom (Spec.map_injective hm)\n  exact ⟨constants c, congrArg (fun f : k →+* C.functionField ↦ f c) he⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalCurvePointValuation_center_eq": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 79,
+      "code": "theorem normalCurvePointValuation_center_eq\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (A : ValuationSubring C.functionField) (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C))\n    (hx : Order.coheight (l (IsLocalRing.closedPoint A)) = 1) :\n    normalCurvePointValuation C hn (l (IsLocalRing.closedPoint A)) hx = A := by\n  let x := l (IsLocalRing.closedPoint A)\n  have := hn x\n  have := normal_codimensionOne_stalk_isDVR C x hx\n  have hsur := (valuation_center_stalk_bijective C A l hl).2\n  have hcomp := valuation_center_stalk_functionField_compat C A l hl\n  apply SetLike.ext\n  intro a\n  constructor\n  · rintro ⟨r, hr⟩\n    have he := congrArg (fun f : C.presheaf.stalk x →+* C.functionField ↦ f r) hcomp\n    rw [hr] at he\n    rw [← he]\n    exact ((Scheme.stalkClosedPointTo l).hom r).2\n  · intro ha\n    obtain ⟨r, hr⟩ := hsur ⟨a, ha⟩\n    refine ⟨r, ?_⟩\n    have he := congrArg (fun f : C.presheaf.stalk x →+* C.functionField ↦ f r) hcomp\n    calc\n      algebraMap (C.presheaf.stalk x) C.functionField r =\n          algebraMap A C.functionField ((Scheme.stalkClosedPointTo l).hom r) := he.symm\n      _ = a := congrArg (fun z : A ↦ (z : C.functionField)) hr",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalCurvePointValuation_lift": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 111,
+      "code": "theorem normalCurvePointValuation_lift\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (x : C) (hx : Order.coheight x = 1) :\n    ∃ l : Spec (.of (normalCurvePointValuation C hn x hx)) ⟶ C,\n      Spec.map (CommRingCat.ofHom\n        (algebraMap (normalCurvePointValuation C hn x hx) C.functionField)) ≫ l =\n          C.fromSpecStalk (genericPoint C) ∧\n      l (IsLocalRing.closedPoint (normalCurvePointValuation C hn x hx)) = x := by\n  let R := C.presheaf.stalk x\n  let A := normalCurvePointValuation C hn x hx\n  let e : R ≃+* A := RingEquiv.ofBijective (algebraMap R C.functionField).rangeRestrict\n    ⟨fun r t h ↦ (IsFractionRing.injective R C.functionField) (congrArg Subtype.val h),\n      RingHom.rangeRestrict_surjective _⟩\n  have : IsLocalHom e.toRingHom := IsLocalHom.of_surjective _ e.surjective\n  let l : Spec (.of A) ⟶ C := Spec.map (CommRingCat.ofHom e.toRingHom) ≫ C.fromSpecStalk x\n  have hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C) := by\n    dsimp only [l]\n    rw [← Category.assoc, ← Spec.map_comp]\n    exact C.SpecMap_stalkSpecializes_fromSpecStalk ((genericPoint_spec C).specializes trivial)\n  refine ⟨l, hl, ?_⟩\n  change (Spec.map (CommRingCat.ofHom e.toRingHom) ≫ C.fromSpecStalk x)\n    (IsLocalRing.closedPoint A) = x\n  rw [Scheme.Hom.comp_apply, Spec_closedPoint]\n  exact C.fromSpecStalk_closedPoint",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normalCurvePointValuation_injective": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 140,
+      "code": "theorem normalCurvePointValuation_injective\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (k : Type u) [Field k] (b : C ⟶ Spec (.of k)) [IsProper b]\n    (x y : C) (hx : Order.coheight x = 1) (hy : Order.coheight y = 1)\n    (he : normalCurvePointValuation C hn x hx = normalCurvePointValuation C hn y hy) :\n    x = y := by\n  let A := normalCurvePointValuation C hn x hx\n  obtain ⟨lx, hlx, hcx⟩ := normalCurvePointValuation_lift C hn x hx\n  have hly := normalCurvePointValuation_lift C hn y hy\n  rw [← he] at hly\n  obtain ⟨ly, hly, hcy⟩ := hly\n  obtain ⟨l, _, huniq⟩ := proper_functionField_valuation_unique_lift C k b A\n    (normalCurvePointValuation_contains_constants C hn x hx k b)\n  have hxl : lx = l := huniq lx ⟨hlx, valuation_generic_lift_over_base C k b A\n    (normalCurvePointValuation_contains_constants C hn x hx k b) lx hlx⟩\n  have hyl : ly = l := huniq ly ⟨hly, valuation_generic_lift_over_base C k b A\n    (normalCurvePointValuation_contains_constants C hn x hx k b) ly hly⟩\n  exact hcx.symm.trans ((congrArg (fun f : Spec (.of A) ⟶ C ↦\n    f (IsLocalRing.closedPoint A)) (hxl.trans hyl.symm)).trans hcy)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_valuation_has_closed_point": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 165,
+      "code": "theorem proper_normal_curve_valuation_has_closed_point\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b]\n    (A : ValuationSubring C.functionField) (hA : A ≠ ⊤)\n    (hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈ A) :\n    ∃ x : C, ∃ hx : Order.coheight x = 1,\n      IsClosed ({x} : Set C) ∧ normalCurvePointValuation C hn x hx = A := by\n  obtain ⟨l, hl, _⟩ := proper_functionField_valuation_unique_lift C k b A hk\n  have hx := nontrivial_valuation_center_coheight_one C hd A hA l hl.1\n  exact ⟨l (IsLocalRing.closedPoint A), hx, curve_coheight_one_isClosed C hd _ hx,\n    normalCurvePointValuation_center_eq C hn A l hl.1 hx⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_points_valuations_bijective": {
+      "path": "Negativity/NormalCurveValuations.lean",
+      "line": 197,
+      "code": "theorem proper_normal_curve_points_valuations_bijective\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b] :\n    Function.Bijective (normalCurveValuationMap C hn k b) := by\n  refine ⟨?_, ?_⟩\n  · intro x y h\n    apply Subtype.ext\n    exact normalCurvePointValuation_injective C hn k b x y x.2 y.2\n      (congrArg Subtype.val h)\n  · intro A\n    obtain ⟨x, hx, _, he⟩ := proper_normal_curve_valuation_has_closed_point\n      C hn hd k b A.1 A.2.1 A.2.2\n    exact ⟨⟨x, hx⟩, Subtype.ext he⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_commonField_ringEquiv": {
+      "path": "Negativity/ValuationOrderTransport.lean",
+      "line": 15,
+      "code": "theorem dvr_rationalOrder_commonField_ringEquiv\n    {R S K : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]\n    [CommRing S] [IsDomain S] [IsDiscreteValuationRing S] [Field K]\n    [Algebra R K] [IsFractionRing R K] [Algebra S K] [IsFractionRing S K]\n    (e : R ≃+* S) (he : (algebraMap S K).comp e.toRingHom = algebraMap R K)\n    (a : Kˣ) : DvrRationalOrder S K a = DvrRationalOrder R K a := by\n  obtain ⟨⟨r, s⟩, h⟩ := IsLocalization.surj (nonZeroDivisors R) (a : K)\n  have hs : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hsk : algebraMap R K (s : R) ≠ 0 := by\n    simpa only [map_zero] using (IsFractionRing.injective R K).ne hs\n  have hr : r ≠ 0 := by\n    intro hz\n    exact mul_ne_zero a.ne_zero hsk (by simpa only [hz, map_zero] using h)\n  have her : e r ≠ 0 := by simpa only [← e.map_zero] using e.injective.ne hr\n  have hes : e (s : R) ≠ 0 := by simpa only [← e.map_zero] using e.injective.ne hs\n  have hmap (t : R) : algebraMap S K (e t) = algebraMap R K t :=\n    congrArg (fun f : R →+* K ↦ f t) he\n  rw [dvr_rationalOrder_represents S K a (e r) (e s) her hes\n      (by rw [hmap, hmap]; exact h),\n    dvr_fraction_order_ringEquiv e r s,\n    dvr_rationalOrder_represents R K a r s hr hs h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "normal_curve_valuation_center_order": {
+      "path": "Negativity/ValuationOrderTransport.lean",
+      "line": 40,
+      "code": "theorem normal_curve_valuation_center_order\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (A : ValuationSubring C.functionField) [IsDiscreteValuationRing A]\n    (l : Spec (.of A) ⟶ C)\n    (hl : Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n      C.fromSpecStalk (genericPoint C))\n    (hx : Order.coheight (l (IsLocalRing.closedPoint A)) = 1)\n    (a : C.functionFieldˣ) :\n    DvrRationalOrder A C.functionField a =\n      schemeRationalOrder C hn (l (IsLocalRing.closedPoint A)) hx a := by\n  let x := l (IsLocalRing.closedPoint A)\n  have := hn x\n  have := normal_codimensionOne_stalk_isDVR C x hx\n  let e : C.presheaf.stalk x ≃+* A := RingEquiv.ofBijective\n    (Scheme.stalkClosedPointTo l).hom (valuation_center_stalk_bijective C A l hl)\n  exact dvr_rationalOrder_commonField_ringEquiv e\n    (valuation_center_stalk_functionField_compat C A l hl) a",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_curve_valuation_order_correspondence": {
+      "path": "Negativity/ValuationOrderTransport.lean",
+      "line": 63,
+      "code": "theorem proper_normal_curve_valuation_order_correspondence\n    (C : Scheme.{u}) [IsIntegral C] [IsLocallyNoetherian C]\n    (hn : ∀ x : C, IsIntegrallyClosed (C.presheaf.stalk x))\n    (hd : Order.krullDim C ≤ 1) (k : Type u) [Field k]\n    (b : C ⟶ Spec (.of k)) [IsProper b]\n    (A : ValuationSubring C.functionField) [IsDiscreteValuationRing A] (hA : A ≠ ⊤)\n    (hk : ∀ c : k, curveFunctionFieldBaseMap C k b c ∈ A) :\n    ∃ l : Spec (.of A) ⟶ C,\n      (Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l =\n        C.fromSpecStalk (genericPoint C) ∧\n      l ≫ b = Spec.map (CommRingCat.ofHom\n        ((curveFunctionFieldBaseMap C k b).codRestrict A.toSubring hk))) ∧\n      ∃ hx : Order.coheight (l (IsLocalRing.closedPoint A)) = 1,\n        IsClosed ({l (IsLocalRing.closedPoint A)} : Set C) ∧\n        (∀ a : C.functionFieldˣ,\n          DvrRationalOrder A C.functionField a =\n            schemeRationalOrder C hn (l (IsLocalRing.closedPoint A)) hx a) ∧\n        ∀ l' : Spec (.of A) ⟶ C,\n          Spec.map (CommRingCat.ofHom (algebraMap A C.functionField)) ≫ l' =\n            C.fromSpecStalk (genericPoint C) → l' = l := by\n  obtain ⟨l, hl, huniq⟩ := proper_functionField_valuation_unique_lift C k b A hk\n  have hx := nontrivial_valuation_center_coheight_one C hd A hA l hl.1\n  exact ⟨l, hl, hx, curve_coheight_one_isClosed C hd _ hx,\n    normal_curve_valuation_center_order C hn A l hl.1 hx,\n    fun l' hl' ↦ huniq l' ⟨hl', valuation_generic_lift_over_base C k b A hk l' hl'⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "separable_relNorm_factorization": {
       "path": "Negativity/NormDivisor.lean",
       "line": 20,

@@ -87,3 +87,13 @@ public import Negativity.CartierCurveRestriction
 public import Negativity.RealCartierCurveDegree
 
 public import Negativity.CartierCurveMoving
+
+public import Negativity.RationalInfinityResidue
+
+public import Negativity.FunctionFieldDegree
+
+public import Negativity.ValuationCenters
+
+public import Negativity.NormalCurveValuations
+
+public import Negativity.ValuationOrderTransport
