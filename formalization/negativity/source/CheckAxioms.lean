@@ -222,3 +222,31 @@ import Negativity
 #print axioms Negativity.effective_cartierAtlas_weil_nonneg
 
 #print axioms Negativity.exists_effective_cartierAtlas_fiber_descent
+
+#print axioms Negativity.open_set_mem_convexHull_rational
+
+#print axioms Negativity.open_set_exists_rational_convex_combination
+
+#print axioms Negativity.positive_rational_coefficient_decomposition
+
+#print axioms Negativity.rational_parameterization_preserves_zero
+
+#print axioms Negativity.rationalCoefficientMap_cast
+
+#print axioms Negativity.rationalCoefficientMap_comp_zero
+
+#print axioms Negativity.effective_rational_coefficient_decomposition
+
+#print axioms Negativity.rational_vector_positive_integer_multiple
+
+#print axioms Negativity.effective_integral_coefficient_decomposition
+
+#print axioms Negativity.dvr_rationalOrder_zpow
+
+#print axioms Negativity.dvr_rationalOrder_prod
+
+#print axioms Negativity.exists_cartierAtlas_integralCombination
+
+#print axioms Negativity.exists_cartierAtlas_integralCombination_coefficients
+
+#print axioms Negativity.exists_realCartier_nonnegative_weil_decomposition

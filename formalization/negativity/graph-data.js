@@ -1345,3 +1345,125 @@ find('chow').deps.push('cartiersupport');
 find('chow').scope='Hartshorne 图像闭包、实际 Cartier 拉回、实系数推拉与有效性下降均已完成；有效 Cartier 的支撑拉回现已完成。有限覆盖的射影性、有限正规化、全局曲线交数和一般有效 R-Cartier 支撑仍待完成。';
 find('chow').inputs[2]='已完成：实际 R-Cartier 推拉与有效性下降、有效 Cartier 支撑逆像。待完成：全局曲线射影公式、一般有效 R-Cartier 支撑以及有限正规化。';
 find('chow').steps[2][1]='有效 Cartier 支撑逆像和实际 R-Cartier 推拉已验证；有限正规化、全局曲线交数和一般有效 R-Cartier 支撑仍待完成。';
+
+// Proven R-coefficient algebra and actual Cartier / Weil decomposition.
+nodes.push({
+  "id": "rcone",
+  "title": "实系数有效分解：有理锥与清分母",
+  "status": "done",
+  "x": 278,
+  "y": 4100,
+  "deps": [],
+  "file": "RationalCone.lean",
+  "decl": "effective_integral_coefficient_decomposition",
+  "related": [
+    "open_set_mem_convexHull_rational",
+    "open_set_exists_rational_convex_combination",
+    "positive_rational_coefficient_decomposition",
+    "rational_parameterization_preserves_zero",
+    "rationalCoefficientMap_cast",
+    "rationalCoefficientMap_comp_zero",
+    "effective_rational_coefficient_decomposition",
+    "rational_vector_positive_integer_multiple"
+  ],
+  "paper": "proper",
+  "statement": "有理矩阵 M 与实系数 x 若满足 Mx≥0，则 x=Σwⱼzⱼ，wⱼ≥0、zⱼ为整数向量、Mzⱼ≥0；Mx 为零的位置在每个 Mzⱼ中仍为零。",
+  "scope": "有限系数定理已证明：精确分解、零系数约束及正清分母均为结论，不是额外输入。这里还没有把非负 Weil 系数转成 Cartier 的正则局部方程。",
+  "inputs": [
+    "有限个有理系数生成元及有限个素系数位置。",
+    "原实组合的所有系数非负；不要求原组合的各个实权重非负。"
+  ],
+  "steps": [
+    [
+      "保持所有零系数",
+      "用实坐标的有限有理张成空间取基，构造自动满足原有零系数等式的有理参数族。",
+      "rational_parameterization_preserves_zero"
+    ],
+    [
+      "有理开锥",
+      "用有理长方体顶点证明每个开集中的点都属于该开集内有理点的凸包。",
+      "open_set_mem_convexHull_rational"
+    ],
+    [
+      "精确有效分解",
+      "只在原正系数位置施加严格正条件，在零位置保持等式；得到有理有效组合。",
+      "effective_rational_coefficient_decomposition"
+    ],
+    [
+      "正清分母",
+      "取各有理分母的正乘积，调整实权重，把有理组合变成整数组合。",
+      "effective_integral_coefficient_decomposition"
+    ]
+  ],
+  "upstream": [
+    [
+      "Chen–Moriwaki · Proposition 2.4.16",
+      "https://webusers.imj-prg.fr/~huayi.chen/Recherche/adelic_curve.pdf#page=175"
+    ]
+  ]
+});
+nodes.push({
+  "id": "rdecomp",
+  "title": "真实 R-Cartier：非负 Weil 系数分解",
+  "status": "done",
+  "x": 536,
+  "y": 4100,
+  "deps": [
+    "rcone",
+    "localcartier"
+  ],
+  "file": "RealCartierDecomposition.lean",
+  "decl": "exists_realCartier_nonnegative_weil_decomposition",
+  "related": [
+    "dvr_rationalOrder_zpow",
+    "dvr_rationalOrder_prod",
+    "exists_cartierAtlas_integralCombination",
+    "exists_cartierAtlas_integralCombination_coefficients"
+  ],
+  "paper": "proper",
+  "statement": "正规准紧概形上，有效的 R-Cartier Weil cycle 可写成非负实权重的实际 Cartier 图册组合；每个图册的 Weil 系数非负，并且原零系数仍为零。",
+  "scope": "从真实局部方程构造整数组合，核验真实 Weil 系数及加权 cycle 等式。尚须证明非负 Weil 系数使局部方程正则，才能接到有效 R-Cartier 的完整支撑拉回。完整 negativity lemma 仍未完成。",
+  "inputs": [
+    "实际整、局部 Noetherian、准紧概形，所有实际 stalk 整闭。",
+    "有限个实际 CartierAtlas 与任意实权重。",
+    "原真实 Weil cycle 有效；不要求单个 Cartier 图册或原实权重有效。"
+  ],
+  "steps": [
+    [
+      "构造实际整数组合",
+      "把有限组图册的开集共同细分为仿射邻域；方程为整数次幂之积，单位转换函数也实际构造。",
+      "exists_cartierAtlas_integralCombination"
+    ],
+    [
+      "核验真实系数",
+      "真实 DVR 赋值在方程乘积及整数次幂下分别相加及相乘，得到实际 Weil 系数等式。",
+      "exists_cartierAtlas_integralCombination_coefficients"
+    ],
+    [
+      "接入有效分解",
+      "各图册的有限 Weil 支撑构成有限系数矩阵。应用有理锥分解，再构造相应实际 Cartier 图册。",
+      "exists_realCartier_nonnegative_weil_decomposition"
+    ],
+    [
+      "剩余几何桥接",
+      "非负 Weil 系数 ⇒ 局部方程正则；需正规 Noetherian 域的余维一延拓定理。完成后再识别全支撑与拉回。"
+    ]
+  ],
+  "upstream": [
+    [
+      "Chen–Moriwaki · Proposition 2.4.6",
+      "https://webusers.imj-prg.fr/~huayi.chen/Recherche/adelic_curve.pdf#page=170"
+    ],
+    [
+      "Stacks · normal Noetherian height-one intersection",
+      "https://stacks.math.columbia.edu/tag/031T"
+    ]
+  ]
+});
+find('fiberdown').deps.push('rdecomp');
+find('fiberdown').scope='有效 Cartier 的实际支撑拉回已完成；一般 R-Cartier 的有理锥分解、实际整数组合与非负 Weil 系数分解也已完成。仍缺非负 Weil 系数到正则局部方程的延拓、完整支撑识别，以及上方纤维二择一；完整定理尚未完成。';
+find('fiberdown').inputs[1]='已完成：有效 Cartier 支撑拉回，以及实际 R-Cartier 的非负 Weil 系数分解。待完成：非负 Weil 系数到正则局部方程及全支撑识别。';
+find('fiberdown').steps[2]=['R-Cartier 分解：已验证','已构造非负 Weil 系数的实际 Cartier 图册分解，原零系数保持为零。','exists_realCartier_nonnegative_weil_decomposition'];
+find('fiberdown').steps.push(['尚待接通','证明非负 Weil 系数对应正则局部方程及完整支撑，并完成上方纤维二择一。']);
+find('chow').deps.push('rdecomp');
+find('chow').scope='有效 Cartier 支撑拉回、实际 R-Cartier 推拉及非负 Weil 系数分解已完成。有限覆盖的射影性、有限正规化、全局曲线交数、非负 Weil 系数的局部延拓与一般 R-Cartier 全支撑仍待完成。';

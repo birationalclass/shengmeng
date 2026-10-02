@@ -919,3 +919,66 @@ entries.fiberdown[4]=[['Actual Cartier support: verified','Construct effective p
 entries.chow[2]='Hartshorne graph closure, actual Cartier pullback, real-coefficient push-pull and effectivity descent are proved. Effective Cartier support pullback is now proved. Finite-cover projectivity, finite normalization, global curve intersections and general effective R-Cartier support remain open.';
 entries.chow[3][2]='Verified: actual R-Cartier push-pull and effectivity descent, and effective Cartier inverse-image support. Open: global curve projection, general effective R-Cartier support and finite normalization.';
 entries.chow[4][2][1]='Effective Cartier support pullback and actual R-Cartier push-pull are verified. Finite normalization, global curve intersections and general effective R-Cartier support remain open.';
+
+Object.assign(entries,{
+  "rcone": [
+    "Effective real decomposition: rational cone and denominators",
+    "For a rational coefficient matrix M, Mx≥0 gives x=Σwⱼzⱼ with nonnegative real wⱼ, integral zⱼ and Mzⱼ≥0. Every zero position of Mx stays zero in each Mzⱼ.",
+    "The finite coefficient theorem proves exact decomposition, zero constraints and positive denominator clearing; none is an extra input. Nonnegative Weil coefficients have not yet been identified with regular Cartier local equations.",
+    [
+      "A finite rational family of generators and finitely many prime-coefficient positions.",
+      "The original real combination has nonnegative coefficients. Its original real weights need not be nonnegative."
+    ],
+    [
+      [
+        "Preserve all zero coefficients",
+        "A basis of the finite rational span of the real coordinates constructs a rational family satisfying every original zero-coefficient equation."
+      ],
+      [
+        "Rational open cone",
+        "Rational box vertices prove that every point of an open set lies in the convex hull of rational points inside that open set."
+      ],
+      [
+        "Exact effective decomposition",
+        "Impose positivity at the original positive positions while preserving equations at zero positions. This produces effective rational combinations."
+      ],
+      [
+        "Positive denominator clearing",
+        "Multiply by positive common denominators and adjust the real weights to obtain integral combinations."
+      ]
+    ]
+  ],
+  "rdecomp": [
+    "Actual R-Cartier: nonnegative Weil decomposition",
+    "An effective R-Cartier Weil cycle on a normal quasi-compact scheme is a nonnegative real sum of constructed Cartier presentations, each with nonnegative Weil coefficients and no new zero-position support.",
+    "Integral combinations are constructed from actual local equations; actual Weil coefficients and the weighted cycle identity are proved. Nonnegative Weil coefficients must still imply regular local equations before full effective R-Cartier support pullback is obtained. The full negativity lemma remains open.",
+    [
+      "An actual integral locally Noetherian quasi-compact scheme whose actual stalks are integrally closed.",
+      "Finitely many actual CartierAtlas presentations and arbitrary real weights.",
+      "The original actual Weil cycle is effective. Individual input presentations or their original weights need not be effective."
+    ],
+    [
+      [
+        "Construct actual integral combinations",
+        "Refine the finite family of chart opens to affine neighborhoods. Local equations and unit transitions are products of integral powers."
+      ],
+      [
+        "Verify actual coefficients",
+        "Actual DVR orders add on products and multiply on integral powers, proving the actual Weil-coefficient identity."
+      ],
+      [
+        "Connect effective decomposition",
+        "Finite Weil supports give the coefficient matrix. Apply rational-cone decomposition and construct the corresponding actual Cartier presentations."
+      ],
+      [
+        "Remaining geometric bridge",
+        "Nonnegative Weil coefficients must imply regular local equations via codimension-one extension on a normal Noetherian domain. Full support and pullback identification follows next."
+      ]
+    ]
+  ]
+});
+entries.fiberdown[2]='Actual effective Cartier support pullback is proved. Rational-cone decomposition, actual integral combinations and nonnegative Weil decomposition for R-Cartier are now proved. Nonnegative Weil coefficients must still give regular local equations and full support; the upstairs fiber dichotomy also remains open. The complete theorem is not proved.';
+entries.fiberdown[3][1]='Verified: effective Cartier support pullback and actual R-Cartier nonnegative Weil decomposition. Open: nonnegative Weil coefficients imply regular local equations and full support identification.';
+entries.fiberdown[4][2]=['R-Cartier decomposition: verified','Actual Cartier presentations with nonnegative Weil coefficients are constructed, preserving every original zero coefficient.'];
+entries.fiberdown[4].push(['Still to connect','Prove regular local equations and full support from nonnegative Weil coefficients, and complete the upstairs fiber dichotomy.']);
+entries.chow[2]='Effective Cartier support pullback, actual R-Cartier push-pull and nonnegative Weil decomposition are proved. Finite-cover projectivity, finite normalization, global curve intersections, local extension from nonnegative Weil coefficients and general R-Cartier full support remain open.';

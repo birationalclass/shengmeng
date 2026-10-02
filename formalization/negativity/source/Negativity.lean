@@ -57,3 +57,9 @@ public import Negativity.SeparableNorm
 public import Negativity.FiniteNormalGeometry
 
 public import Negativity.CartierSupport
+
+public import Negativity.RationalCone
+
+public import Negativity.CartierCombinations
+
+public import Negativity.RealCartierDecomposition

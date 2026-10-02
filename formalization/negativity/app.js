@@ -1,12 +1,35 @@
-import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-15';
-import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-15';
-import {installSettings} from './settings.js?v=20261002-formal-15';
-import {createNodeEditor} from './node-editor.js?v=20261002-formal-15';
-import {installWorkspace} from './workspace.js?v=20261002-formal-15';
-import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-formal-15';
-import {createSpatialGraph} from './graph-3d.js?v=20261002-formal-15';
-import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-formal-15';
+import {installTheoremTarget} from './theorem-target.js?v=20261002-glass-1';
+import {divisorCyclePanel} from './divisor-cycle.js?v=20261002-formal-16';
+import {curveDiagramPanel} from './curve-diagram.js?v=20261002-formal-16';
+import {installSettings} from './settings.js?v=20261002-formal-16';
+import {createNodeEditor} from './node-editor.js?v=20261002-glass-1';
+import {installWorkspace} from './workspace.js?v=20261002-formal-16';
+import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-formal-16';
+import {createSpatialGraph} from './graph-3d.js?v=20261002-glass-1';
+import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-formal-16';
 const nodes=translateNodes(rawNodes),statusLabels=english?englishStatuses:rawLabels;
+document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
+function renderStatusCounts(){
+  const legend=document.querySelector('.atlas > .legend');
+  if(!legend)return;
+  for(const status of ['done','conditional','assumption','pending']){
+    const pill=legend.querySelector('.pill.'+status);
+    if(!pill)continue;
+    const count=nodes.filter(n=>n.status===status).length;
+    const badge=document.createElement('b');
+    badge.className='status-count';
+    badge.dataset.statusCount=status;
+    badge.textContent=String(count);
+    pill.append(badge);
+    pill.title=english?'All graph nodes in this status, independent of the current filter':'此状态的全图节点数量，与当前筛选无关';
+    pill.setAttribute('aria-label',statusLabels[status]+' · '+count+(english?' graph nodes':' 个图谱节点'));
+  }
+  const total=document.createElement('span');
+  total.className='legend-total';
+  total.textContent=english?'Full graph · '+nodes.length+' nodes':'全图 · '+nodes.length+' 节点';
+  legend.append(total);
+}
+renderStatusCounts();
 const byId = new Map(nodes.map(n=>[n.id,n]));
 const graph=document.querySelector('#graph'), svg=document.querySelector('#edges');
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -41,15 +64,16 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{activeTab=b.da
 document.querySelector('#expandGraph').onclick=e=>{const expanded=document.querySelector('.atlas').classList.toggle('expanded');e.currentTarget.setAttribute('aria-pressed',String(expanded));e.currentTarget.querySelector('span').textContent=expanded?'恢复分栏':'展开图谱';nodeEditor.show();spatial.show();};
 document.querySelector('.pdf-view').addEventListener('toggle',e=>{const f=e.currentTarget.querySelector('iframe');if(e.currentTarget.open&&!f.src)f.src=f.dataset.src;});
 if(location.hash.startsWith('#node=')){const id=location.hash.slice(6);if(byId.has(id))selected=id;}
+const theoremTarget=installTheoremTarget();
 installWorkspace();
 installSettings();
 const pickerLabel=document.createElement('label');pickerLabel.textContent=english?'Locate node ':'定位节点 ';const editorPicker=document.createElement('select');editorPicker.id='editorSelect';nodes.forEach(n=>{const o=document.createElement('option');o.value=n.id;o.textContent=n.title;editorPicker.append(o);});editorPicker.value=selected;editorPicker.onchange=()=>select(editorPicker.value);pickerLabel.append(editorPicker);document.querySelector('.graph-toolbar').insertBefore(pickerLabel,document.querySelector('#back'));
-nodeEditor=createNodeEditor({viewport:document.querySelector('.graph-scroll'),graph,svg,nodes,select,selected:()=>selected});
-spatial=createSpatialGraph({host:document.querySelector('#spatialGraph'),nodes,select,relation});
+nodeEditor=createNodeEditor({viewport:document.querySelector('.graph-scroll'),graph,svg,nodes,select,selected:()=>selected,theoremTarget});
+spatial=createSpatialGraph({host:document.querySelector('#spatialGraph'),nodes,select,relation,theoremTarget});
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const three=b.dataset.view==='3d';localStorage.setItem('formalization-view',b.dataset.view);document.querySelector('#spatialGraph').hidden=!three;document.querySelector('.graph-scroll').hidden=three;document.querySelectorAll('[data-view]').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));if(three)spatial.show();else nodeEditor.show();});
 renderDetail();
 installLanguage();
 if(localStorage.getItem('formalization-view')==='3d')document.querySelector('[data-view="3d"]').click();
-fetch('snapshot.json?v=20261002-formal-15').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(data=>{snapshot=data;sourcePanel(byId.get(selected));document.querySelector('#evidenceContent').innerHTML=`<div class="evidence-grid"><div><b>代码编译通过 ✓</b><small>当前源码快照 · 本地验证</small></div><div><b>${Object.keys(data.declarations).length} 个已编译定理声明（含条件式）</b><small>公理检查无 sorryAx</small></div><div><b>${safe(data.checkedAt)}</b><small>验证日期 · 中国标准时间</small></div></div><p>Lean <code>${safe(data.lean)}</code> · mathlib <code>${safe(data.mathlib.slice(0,12))}</code></p><p>公理依赖：<code>propext · Classical.choice · Quot.sound</code>。没有新增几何公理；未完成内容仍是显式参数或规划节点。</p><div class="actions"><a class="button" href="verification.txt">完整验证日志 ↗</a><a class="button" href="snapshot.json">源码 SHA-256 清单 ↗</a><a class="button" href="source/CheckAxioms.lean">公理检查脚本 ↗</a></div><details><summary>公开源码的指纹</summary><ul class="evidence-list">${data.files.map(f=>`<li><a href="source/${safe(f.path)}">${safe(f.path)}</a><br><code>${safe(f.sha256)}</code></li>`).join('')}</ul></details>`;}).catch(err=>{document.querySelector('#evidenceContent').innerHTML='<p class="error">验证记录加载失败，请刷新或下载工程核查。</p>';document.querySelector('#sourcePanel').innerHTML='<p class="error">源码快照加载失败。</p>';console.error(err);});
+fetch('snapshot.json?v=20261002-formal-16').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(data=>{snapshot=data;sourcePanel(byId.get(selected));document.querySelector('#evidenceContent').innerHTML=`<div class="evidence-grid"><div><b>代码编译通过 ✓</b><small>当前源码快照 · 本地验证</small></div><div><b>${Object.keys(data.declarations).length} 个已编译定理声明（含条件式）</b><small>公理检查无 sorryAx</small></div><div><b>${safe(data.checkedAt)}</b><small>验证日期 · 中国标准时间</small></div></div><p>Lean <code>${safe(data.lean)}</code> · mathlib <code>${safe(data.mathlib.slice(0,12))}</code></p><p>公理依赖：<code>propext · Classical.choice · Quot.sound</code>。没有新增几何公理；未完成内容仍是显式参数或规划节点。</p><div class="actions"><a class="button" href="verification.txt">完整验证日志 ↗</a><a class="button" href="snapshot.json">源码 SHA-256 清单 ↗</a><a class="button" href="source/CheckAxioms.lean">公理检查脚本 ↗</a></div><details><summary>公开源码的指纹</summary><ul class="evidence-list">${data.files.map(f=>`<li><a href="source/${safe(f.path)}">${safe(f.path)}</a><br><code>${safe(f.sha256)}</code></li>`).join('')}</ul></details>`;}).catch(err=>{document.querySelector('#evidenceContent').innerHTML='<p class="error">验证记录加载失败，请刷新或下载工程核查。</p>';document.querySelector('#sourcePanel').innerHTML='<p class="error">源码快照加载失败。</p>';console.error(err);});
 
 document.querySelector('#fullscreen').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen().catch(()=>document.querySelector('#expandGraph').click());};

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-02T09:36:10+08:00",
+  "checkedAt": "2026-10-02T10:13:25+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "b1fb1ec7fb8b6615043014d9ef16d76cb327b6ce2612121cf0f1fd2294ca222a"
+      "sha256": "ff159d6e5d6da28f23d94e7192c1ae91b988c2d239ebda9fca1421e5e6f7eee1"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "383e701876a63e06b3bf169179f87cf8d3595f8ff8000b79ce48ede10ef1b5bc"
+      "sha256": "a47c84caac57a7ce3eb6083cc2078337671a5be5a52ad4a2168c1b231a153bb4"
     },
     {
       "path": "lakefile.toml",
@@ -27,6 +27,18 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/RationalCone.lean",
+      "sha256": "c8c3cedbfd5ece2a286ee99c7b592b79a97ed13982cc3972dba53445aaecaff4"
+    },
+    {
+      "path": "Negativity/CartierCombinations.lean",
+      "sha256": "720be0ae901441799021289e841c39b7b79e2ee92c8bd34c13ad9c2c72bd9945"
+    },
+    {
+      "path": "Negativity/RealCartierDecomposition.lean",
+      "sha256": "99b52cb66f138985ff1b83449afbd97772dc96dc2b8963a05b68c87cf2b4b8dd"
     },
     {
       "path": "Negativity/FiniteNormalGeometry.lean",
@@ -154,6 +166,146 @@
     }
   ],
   "declarations": {
+    "open_set_mem_convexHull_rational": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 17,
+      "code": "theorem open_set_mem_convexHull_rational {ι : Type*} [Fintype ι]\n    (U : Set (ι → ℝ)) (hU : IsOpen U) (x : ι → ℝ) (hx : x ∈ U) :\n    x ∈ convexHull ℝ {y | y ∈ U ∧ ∀ i, ∃ q : ℚ, (q : ℝ) = y i} := by\n  classical\n  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU x hx\n  choose lo hlo using fun i : ι => exists_rat_btwn (show x i - ε < x i by linarith)\n  choose hi hhi using fun i : ι => exists_rat_btwn (show x i < x i + ε by linarith)\n  let corners : Set (ι → ℝ) := Set.univ.pi (fun i => {(lo i : ℝ), (hi i : ℝ)})\n  have hcorners : corners ⊆ {y | y ∈ U ∧ ∀ i, ∃ q : ℚ, (q : ℝ) = y i} := by\n    intro y hy\n    have hmem (i : ι) : y i = (lo i : ℝ) ∨ y i = (hi i : ℝ) := by\n      simpa using hy i (Set.mem_univ i)\n    refine ⟨hball ?_, ?_⟩\n    · rw [Metric.mem_ball, dist_pi_lt_iff hε]\n      intro i\n      rw [Real.dist_eq, abs_lt]\n      rcases hmem i with he | he <;> rw [he] <;>\n        obtain ⟨hl, hr⟩ := hlo i <;> obtain ⟨hl', hr'⟩ := hhi i <;> constructor <;> linarith\n    · intro i\n      rcases hmem i with he | he\n      · exact ⟨lo i, he.symm⟩\n      · exact ⟨hi i, he.symm⟩\n  apply convexHull_mono hcorners\n  apply mem_convexHull_pi\n  intro i _\n  rw [convexHull_pair, segment_eq_Icc (le_trans (hlo i).2.le (hhi i).1.le)]\n  exact ⟨(hlo i).2.le, (hhi i).1.le⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "open_set_exists_rational_convex_combination": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 48,
+      "code": "theorem open_set_exists_rational_convex_combination {ι : Type*} [Fintype ι]\n    (U : Set (ι → ℝ)) (hU : IsOpen U) (x : ι → ℝ) (hx : x ∈ U) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (q : J → ι → ℚ),\n      (∀ j, 0 ≤ w j) ∧ (∑ j, w j = 1) ∧\n      (∀ j, (fun i => (q j i : ℝ)) ∈ U) ∧\n      ∑ j, w j • (fun i => (q j i : ℝ)) = x := by\n  classical\n  obtain ⟨J, hJ, w, z, hw, hsum, hz, heq⟩ :=\n    mem_convexHull_iff_exists_fintype.mp (open_set_mem_convexHull_rational U hU x hx)\n  have : Fintype J := hJ\n  choose q hq using fun j i => (hz j).2 i\n  have he (j : J) : (fun i => (q j i : ℝ)) = z j := funext (hq j)\n  refine ⟨J, hJ, w, q, hw, hsum, ?_, ?_⟩\n  · intro j\n    rw [he j]\n    exact (hz j).1\n  · simpa only [he] using heq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "positive_rational_coefficient_decomposition": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 80,
+      "code": "theorem positive_rational_coefficient_decomposition {ι κ : Type*}\n    [Fintype ι] [Fintype κ] (M : ι → κ → ℚ) (x : ι → ℝ)\n    (hx : ∀ k, 0 < rationalCoefficientMap M x k) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (q : J → ι → ℚ),\n      (∀ j, 0 ≤ w j) ∧ (∑ j, w j = 1) ∧\n      (∀ j k, 0 < rationalCoefficientMap M (fun i => (q j i : ℝ)) k) ∧\n      ∑ j, w j • rationalCoefficientMap M (fun i => (q j i : ℝ)) =\n        rationalCoefficientMap M x := by\n  let U : Set (ι → ℝ) := {z | ∀ k, 0 < rationalCoefficientMap M z k}\n  have hU : IsOpen U := by\n    have hEq : U = ⋂ k, {z | 0 < rationalCoefficientMap M z k} := by\n      ext z\n      simp [U]\n    rw [hEq]\n    apply isOpen_iInter_of_finite\n    intro k\n    exact isOpen_lt continuous_const\n      ((continuous_apply k).comp (rationalCoefficientMap M).continuous_of_finiteDimensional)\n  obtain ⟨J, hJ, w, q, hw, hsum, hq, heq⟩ :=\n    open_set_exists_rational_convex_combination U hU x hx\n  have : Fintype J := hJ\n  refine ⟨J, hJ, w, q, hw, hsum, hq, ?_⟩\n  have h := congrArg (rationalCoefficientMap M) heq\n  simpa only [map_sum, map_smul] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_parameterization_preserves_zero": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 108,
+      "code": "theorem rational_parameterization_preserves_zero {ι κ : Type*}\n    [Fintype ι] (M : ι → κ → ℚ) (x : ι → ℝ) :\n    ∃ (n : ℕ) (t : Fin n → ℝ) (q : Fin n → ι → ℚ),\n      rationalCoefficientMap q t = x ∧\n      (∀ k, rationalCoefficientMap M x k = 0 →\n        ∀ j, ∑ i, q j i * M i k = 0) := by\n  classical\n  let W : Submodule ℚ ℝ := Submodule.span ℚ (Set.range x)\n  have : FiniteDimensional ℚ W :=\n    FiniteDimensional.span_of_finite ℚ (Set.finite_range x)\n  let b := Module.finBasis ℚ W\n  let v (i : ι) : W := ⟨x i, Submodule.subset_span ⟨i, rfl⟩⟩\n  let q (j : Fin (Module.finrank ℚ W)) (i : ι) : ℚ := b.repr (v i) j\n  let t (j : Fin (Module.finrank ℚ W)) : ℝ := (b j : ℝ)\n  refine ⟨Module.finrank ℚ W, t, q, ?_, ?_⟩\n  · ext i\n    change (∑ j, t j * (q j i : ℝ)) = x i\n    have h := congrArg (fun a : W => (a : ℝ)) (b.sum_repr (v i))\n    simp only [Submodule.coe_sum, Submodule.coe_smul, Algebra.smul_def] at h\n    simpa [t, q, v, mul_comm] using h\n  · intro k hk j\n    have he : (∑ i, M i k • v i : W) = 0 := by\n      apply Subtype.ext\n      simpa [v, rationalCoefficientMap, Algebra.smul_def, mul_comm] using hk\n    have h := congrArg (fun a : W => b.repr a j) he\n    simpa [q, mul_comm] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalCoefficientMap_cast": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 136,
+      "code": "theorem rationalCoefficientMap_cast {ι κ : Type*} [Fintype ι]\n    (M : ι → κ → ℚ) (q : ι → ℚ) :\n    rationalCoefficientMap M (fun i => (q i : ℝ)) =\n      fun k => ((∑ i, q i * M i k : ℚ) : ℝ) := by\n  ext k\n  simp [rationalCoefficientMap]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rationalCoefficientMap_comp_zero": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 145,
+      "code": "theorem rationalCoefficientMap_comp_zero {ι κ τ : Type*}\n    [Fintype ι] [Fintype τ] (M : ι → κ → ℚ) (Q : τ → ι → ℚ)\n    (z : τ → ℝ) (k : κ) (hk : ∀ j, ∑ i, Q j i * M i k = 0) :\n    rationalCoefficientMap M (rationalCoefficientMap Q z) k = 0 := by\n  classical\n  simp only [rationalCoefficientMap, LinearMap.coe_mk, AddHom.coe_mk, Finset.sum_mul]\n  rw [Finset.sum_comm]\n  simp_rw [mul_assoc, ← Finset.mul_sum, ← Rat.cast_mul, ← Rat.cast_sum, hk,\n    Rat.cast_zero, mul_zero]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_rational_coefficient_decomposition": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 161,
+      "code": "theorem effective_rational_coefficient_decomposition {ι κ : Type*}\n    [Fintype ι] [Fintype κ] (M : ι → κ → ℚ) (x : ι → ℝ)\n    (hx : ∀ k, 0 ≤ rationalCoefficientMap M x k) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (q : J → ι → ℚ),\n      (∀ j, 0 ≤ w j) ∧ (∑ j, w j = 1) ∧\n      (∀ j k, 0 ≤ rationalCoefficientMap M (fun i => (q j i : ℝ)) k) ∧\n      (∀ j k, rationalCoefficientMap M x k = 0 →\n        rationalCoefficientMap M (fun i => (q j i : ℝ)) k = 0) ∧\n      ∑ j, w j • (fun i => (q j i : ℝ)) = x := by\n  classical\n  obtain ⟨n, t, Q, hQt, hQzero⟩ := rational_parameterization_preserves_zero M x\n  let P := {k : κ // 0 < rationalCoefficientMap M x k}\n  let U : Set (Fin n → ℝ) :=\n    {z | ∀ k : P, 0 < rationalCoefficientMap M (rationalCoefficientMap Q z) k.1}\n  have hU : IsOpen U := by\n    have hEq : U = ⋂ k : P,\n        {z | 0 < rationalCoefficientMap M (rationalCoefficientMap Q z) k.1} := by\n      ext z\n      simp [U]\n    rw [hEq]\n    apply isOpen_iInter_of_finite\n    intro k\n    exact isOpen_lt continuous_const\n      ((continuous_apply k.1).comp ((rationalCoefficientMap M).continuous_of_finiteDimensional.comp\n        (rationalCoefficientMap Q).continuous_of_finiteDimensional))\n  have ht : t ∈ U := by\n    intro k\n    rw [hQt]\n    exact k.2\n  obtain ⟨J, hJ, w, a, hw, hsum, ha, heq⟩ :=\n    open_set_exists_rational_convex_combination U hU t ht\n  have : Fintype J := hJ\n  let q (j : J) (i : ι) : ℚ := ∑ p, a j p * Q p i\n  have hq (j : J) : (fun i => (q j i : ℝ)) =\n      rationalCoefficientMap Q (fun p => (a j p : ℝ)) := by\n    rw [rationalCoefficientMap_cast]\n  have hz (j : J) (k : κ) (hk : rationalCoefficientMap M x k = 0) :\n      rationalCoefficientMap M (fun i => (q j i : ℝ)) k = 0 := by\n    rw [hq]\n    exact rationalCoefficientMap_comp_zero M Q _ k (hQzero k hk)\n  refine ⟨J, hJ, w, q, hw, hsum, ?_, hz, ?_⟩\n  · intro j k\n    by_cases hk : rationalCoefficientMap M x k = 0\n    · rw [hz j k hk]\n    · rw [hq]\n      exact (ha j ⟨k, lt_of_le_of_ne (hx k) (Ne.symm hk)⟩).le\n  · simp_rw [hq]\n    have h := congrArg (rationalCoefficientMap Q) heq\n    simpa only [map_sum, map_smul, hQt] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rational_vector_positive_integer_multiple": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 212,
+      "code": "theorem rational_vector_positive_integer_multiple {ι : Type*} [Fintype ι]\n    (q : ι → ℚ) :\n    ∃ (N : ℕ) (z : ι → ℤ), 0 < N ∧\n      (fun i => (z i : ℝ)) = (N : ℝ) • (fun i => (q i : ℝ)) := by\n  classical\n  let N : ℕ := ∏ i, (q i).den\n  have hN : 0 < N := Finset.prod_pos (fun i _ => (q i).den_pos)\n  have hd (i : ι) : (q i).den ∣ N := Finset.dvd_prod_of_mem _ (Finset.mem_univ i)\n  choose c hc using fun i => hd i\n  refine ⟨N, fun i => (q i).num * (c i : ℤ), hN, ?_⟩\n  ext i\n  simp only [Pi.smul_apply, smul_eq_mul, Int.cast_mul, Int.cast_natCast]\n  rw [Rat.cast_def, hc i, Nat.cast_mul]\n  have hden : ((q i).den : ℝ) ≠ 0 := by exact_mod_cast (q i).den_ne_zero\n  field_simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "effective_integral_coefficient_decomposition": {
+      "path": "Negativity/RationalCone.lean",
+      "line": 232,
+      "code": "theorem effective_integral_coefficient_decomposition {ι κ : Type*}\n    [Fintype ι] [Fintype κ] (M : ι → κ → ℚ) (x : ι → ℝ)\n    (hx : ∀ k, 0 ≤ rationalCoefficientMap M x k) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (z : J → ι → ℤ),\n      (∀ j, 0 ≤ w j) ∧\n      (∀ j k, 0 ≤ rationalCoefficientMap M (fun i => (z j i : ℝ)) k) ∧\n      (∀ j k, rationalCoefficientMap M x k = 0 →\n        rationalCoefficientMap M (fun i => (z j i : ℝ)) k = 0) ∧\n      ∑ j, w j • (fun i => (z j i : ℝ)) = x := by\n  classical\n  obtain ⟨J, hJ, w, q, hw, _, hq, hz, heq⟩ :=\n    effective_rational_coefficient_decomposition M x hx\n  have : Fintype J := hJ\n  choose N z hN hNz using fun j => rational_vector_positive_integer_multiple (q j)\n  have hNr (j : J) : (0 : ℝ) < N j := by exact_mod_cast hN j\n  refine ⟨J, hJ, fun j => w j / N j, z, ?_, ?_, ?_, ?_⟩\n  · intro j\n    exact div_nonneg (hw j) (hNr j).le\n  · intro j k\n    rw [hNz j, map_smul]\n    exact mul_nonneg (hNr j).le (hq j k)\n  · intro j k hk\n    rw [hNz j, map_smul, Pi.smul_apply, hz j k hk]\n    simp\n  · have hs (j : J) : (w j / (N j : ℝ)) • (fun i => (z j i : ℝ)) =\n        w j • (fun i => (q j i : ℝ)) := by\n      rw [hNz j, smul_smul, div_mul_cancel₀ _ (hNr j).ne']\n    simpa only [hs] using heq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_zpow": {
+      "path": "Negativity/CartierCombinations.lean",
+      "line": 23,
+      "code": "theorem dvr_rationalOrder_zpow (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    (a : Kˣ) (n : ℤ) :\n    DvrRationalOrder R K (a ^ n) = n * DvrRationalOrder R K a := by\n  have h := congrArg Multiplicative.toAdd (map_zpow (dvrRationalOrderHom R K) a n)\n  simpa [dvrRationalOrderHom] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "dvr_rationalOrder_prod": {
+      "path": "Negativity/CartierCombinations.lean",
+      "line": 30,
+      "code": "theorem dvr_rationalOrder_prod (R K : Type*) [CommRing R] [IsDomain R]\n    [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K]\n    {τ : Type*} (s : Finset τ) (a : τ → Kˣ) :\n    DvrRationalOrder R K (∏ t ∈ s, a t) = ∑ t ∈ s, DvrRationalOrder R K (a t) := by\n  have h := congrArg Multiplicative.toAdd (map_prod (dvrRationalOrderHom R K) a s)\n  change DvrRationalOrder R K (∏ t ∈ s, a t) =\n    Multiplicative.toAdd (∏ t ∈ s, Multiplicative.ofAdd (DvrRationalOrder R K (a t))) at h\n  exact h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_cartierAtlas_integralCombination": {
+      "path": "Negativity/CartierCombinations.lean",
+      "line": 42,
+      "code": "theorem exists_cartierAtlas_integralCombination (X : Scheme) [IsIntegral X]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℤ) :\n    ∃ B : CartierAtlas X X, ∀ z : X,\n      z ∈ B.chart z ∧\n      (∀ t, B.chart z ≤ (A t).chart ((A t).covers z).choose) ∧\n      B.equation z = ∏ t, (A t).equation ((A t).covers z).choose ^ c t := by\n  classical\n  let U (z : X) : X.Opens := ⨅ t, (A t).chart ((A t).covers z).choose\n  have hzU (z : X) : z ∈ U z := by\n    change z ∈ (↑(⨅ t, (A t).chart ((A t).covers z).choose) : Set X)\n    rw [TopologicalSpace.Opens.coe_iInf]\n    exact Set.mem_iInter.mpr (fun t => ((A t).covers z).choose_spec)\n  have ha (z : X) : ∃ V : X.Opens, IsAffineOpen V ∧ z ∈ V ∧ V ≤ U z := by\n    obtain ⟨_, ⟨V, hV, rfl⟩, hzV, hle⟩ :=\n      X.isBasis_affineOpens.exists_subset_of_mem_open (hzU z) (U z).isOpen\n    exact ⟨V, hV, hzV, hle⟩\n  choose V hV hzV hle using ha\n  have hc (z : X) (t : τ) : V z ≤ (A t).chart ((A t).covers z).choose :=\n    (hle z).trans (iInf_le _ t)\n  let B : CartierAtlas X X := {\n    chart := V\n    affine := hV\n    nonempty := fun z => ⟨z, hzV z⟩\n    covers := fun z => ⟨z, hzV z⟩\n    equation := fun z => ∏ t, (A t).equation ((A t).covers z).choose ^ c t\n    transition := by\n      intro z w x hz hw\n      choose u hu using fun t => (A t).transition _ _ x (hc z t hz) (hc w t hw)\n      refine ⟨∏ t, u t ^ c t, ?_⟩\n      simp only [map_prod, map_zpow]\n      rw [← Finset.prod_mul_distrib]\n      apply Finset.prod_congr rfl\n      intro t _\n      rw [← mul_zpow, hu t] }\n  exact ⟨B, fun z => ⟨hzV z, hc z, rfl⟩⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_cartierAtlas_integralCombination_coefficients": {
+      "path": "Negativity/CartierCombinations.lean",
+      "line": 81,
+      "code": "theorem exists_cartierAtlas_integralCombination_coefficients (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℤ) :\n    ∃ B : CartierAtlas X X, ∀ x : X,\n      B.coefficient hn x = ∑ t, c t * (A t).coefficient hn x := by\n  classical\n  obtain ⟨B, hB⟩ := exists_cartierAtlas_integralCombination X A c\n  refine ⟨B, ?_⟩\n  intro x\n  by_cases hx : Order.coheight x = 1\n  · rw [cartierAtlas_coefficient_eq X hn B x x hx (hB x).1, (hB x).2.2]\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    unfold schemeRationalOrder\n    rw [dvr_rationalOrder_prod]\n    apply Finset.sum_congr rfl\n    intro t _\n    rw [dvr_rationalOrder_zpow, cartierAtlas_coefficient_eq X hn (A t) _ x hx\n      ((A t).covers x).choose_spec]\n    rfl\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_realCartier_nonnegative_weil_decomposition": {
+      "path": "Negativity/RealCartierDecomposition.lean",
+      "line": 19,
+      "code": "theorem exists_realCartier_nonnegative_weil_decomposition (X : Scheme)\n    [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (c : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, c t * ((A t).coefficient hn x : ℝ)) :\n    ∃ (J : Type) (_ : Fintype J) (w : J → ℝ) (B : J → CartierAtlas X X),\n      (∀ j, 0 ≤ w j) ∧ (∀ j x, 0 ≤ (B j).coefficient hn x) ∧\n      (∀ j x, (∑ t, c t * ((A t).coefficient hn x : ℝ)) = 0 →\n        (B j).coefficient hn x = 0) ∧\n      (∑ j, (B j).weightedWeilCycle hn (w j)) =\n        ∑ t, (A t).weightedWeilCycle hn (c t) := by\n  classical\n  let S : Set X := ⋃ t, ((A t).weilCycle hn).support\n  have hS : S.Finite := Set.finite_iUnion (fun t => cartierAtlas_weilCycle_finite_support X hn (A t))\n  let : Fintype S := hS.fintype\n  let M (t : τ) (x : S) : ℚ := (A t).coefficient hn x.1\n  have hm : ∀ x : S, 0 ≤ rationalCoefficientMap M c x := by\n    intro x\n    simpa [rationalCoefficientMap, M] using he x.1\n  obtain ⟨J, hJ, w, z, hw, hzpos, hzzero, hsum⟩ :=\n    effective_integral_coefficient_decomposition M c hm\n  let : Fintype J := hJ\n  choose B hB using fun j => exists_cartierAtlas_integralCombination_coefficients X hn A (z j)\n  have hzoutside (x : X) (hx : x ∉ S) (t : τ) : (A t).coefficient hn x = 0 := by\n    by_contra h\n    apply hx\n    exact Set.mem_iUnion.mpr ⟨t, h⟩\n  have hcoeff (j : J) (x : S) : ((B j).coefficient hn x.1 : ℝ) =\n      rationalCoefficientMap M (fun t => (z j t : ℝ)) x := by\n    rw [hB]\n    simp [rationalCoefficientMap, M]\n  have houtside (j : J) (x : X) (hx : x ∉ S) : (B j).coefficient hn x = 0 := by\n    rw [hB]\n    simp [hzoutside x hx]\n  refine ⟨J, hJ, w, B, hw, ?_, ?_, ?_⟩\n  · intro j x\n    by_cases hx : x ∈ S\n    · have hp := hzpos j ⟨x, hx⟩\n      rw [← hcoeff j ⟨x, hx⟩] at hp\n      exact_mod_cast hp\n    · rw [houtside j x hx]\n  · intro j x hx0\n    by_cases hx : x ∈ S\n    · have hz := hzzero j ⟨x, hx⟩ (by simpa [rationalCoefficientMap, M] using hx0)\n      rw [← hcoeff j ⟨x, hx⟩] at hz\n      exact_mod_cast hz\n    · exact houtside j x hx\n  · ext x\n    simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n    change (∑ j, w j * ((B j).coefficient hn x : ℝ)) =\n      ∑ t, c t * ((A t).coefficient hn x : ℝ)\n    simp_rw [hB, Int.cast_sum, Int.cast_mul, Finset.mul_sum]\n    rw [Finset.sum_comm]\n    apply Finset.sum_congr rfl\n    intro t _\n    simp_rw [← mul_assoc, ← Finset.sum_mul]\n    have hs := congrFun hsum t\n    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul] at hs\n    rw [hs]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "birationalMorphism_dominant": {
       "path": "Negativity/FiniteNormalGeometry.lean",
       "line": 17,
