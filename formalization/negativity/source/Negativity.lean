@@ -257,3 +257,7 @@ public import Negativity.NonisolatedCompleteCurve
 public import Negativity.ExceptionalCompleteCurve
 
 public import Negativity.ZeroPrimeCurve
+
+public import Negativity.NegativeActualCenter
+
+public import Negativity.ActualNegativityWitness

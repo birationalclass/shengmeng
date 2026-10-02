@@ -827,3 +827,11 @@ import Negativity
 #print axioms Negativity.zero_weil_coefficient_outside_geometric_support
 
 #print axioms Negativity.zero_exceptional_prime_actual_curve_nonnegative_intersection
+
+#print axioms Negativity.actual_cycle_coefficient_over_isomorphism_open
+
+#print axioms Negativity.actual_negative_coefficient_image_in_center
+
+#print axioms Negativity.actualRealCartierCoefficients_apply
+
+#print axioms Negativity.actual_negativity_of_antiample_witness

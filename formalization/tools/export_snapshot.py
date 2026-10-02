@@ -4,6 +4,8 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualNegativityWitness.lean': ['actualRealCartierCoefficients_apply', 'actual_negativity_of_antiample_witness'],
+    'NegativeActualCenter.lean': ['actual_cycle_coefficient_over_isomorphism_open', 'actual_negative_coefficient_image_in_center'],
     'ZeroPrimeCurve.lean': ['zero_weil_coefficient_outside_geometric_support', 'zero_exceptional_prime_actual_curve_nonnegative_intersection'],
     'ExceptionalCompleteCurve.lean': ['exceptional_closed_point_complete_contracted_curve'],
     'NonisolatedCompleteCurve.lean': ['nonisolated_point_positive_irreducible_component', 'exists_complete_integral_curve_through_nonisolated_closed_point'],
@@ -239,7 +241,15 @@ it complete, and actual Zariski main theorem places it in the contracted
 fiber. For an effective actual real Cartier divisor with zero coefficient at
 an exceptional prime, the support-outside closed point, contracted complete
 curve and nonnegative actual intersection are all constructed; no curve
-existence input is assumed. Geometric ample positivity,
+existence input is assumed. Actual cycle pushforward preserves coefficients over every actual isomorphism
+open. Effectivity of the actual pushforward therefore places every negative
+coefficient over the actual exceptional center. The full maximum-ratio
+contradiction is now proved on actual Cartier presentations, actual contracted
+curves and actual intersection, with only the supplied E witness's effectivity,
+exceptional coverage and strict negative contracted-curve degrees as additional
+inputs. It does not construct E or derive geometric ample positivity; this is
+still a conditional first-part result, NOT the full negativity lemma.
+Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

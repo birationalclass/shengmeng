@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T07:13:59+08:00",
+  "checkedAt": "2026-10-03T07:34:09+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "50dd9631a0a7a11284953d935f63e7626c7d989dde59ceac5226c05b42d6cd90"
+      "sha256": "4f63b0533dc7f7fad17099dc863966368c2fc72decf3e2a7b2d3629ba86ba4da"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "1abd3d6fefc49807983ebebbf28afac94f7558c3145a63abb3c03dac6c468757"
+      "sha256": "3e3fd94f3d31a72cb25461e1fc0e2f49651498e0b54f1532b808a9d9561378bd"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,14 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualNegativityWitness.lean",
+      "sha256": "b764a1fa698105b9ad1edacefaa24744b6b17cf78811510b3efe74b7f2f69d77"
+    },
+    {
+      "path": "Negativity/NegativeActualCenter.lean",
+      "sha256": "dc588dc0442612a41e5bd9610f5b246f9566e15a6175f9aa1bdf856ba70dc5ad"
     },
     {
       "path": "Negativity/ZeroPrimeCurve.lean",
@@ -558,6 +566,46 @@
     }
   ],
   "declarations": {
+    "actualRealCartierCoefficients_apply": {
+      "path": "Negativity/ActualNegativityWitness.lean",
+      "line": 24,
+      "code": "theorem actualRealCartierCoefficients_apply\n    (X : Scheme.{u}) [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ) (x : X) :\n    actualRealCartierCoefficients X hn A r x =\n      ∑ t, r t * ((A t).coefficient hn x : ℝ) := by\n  simp [actualRealCartierCoefficients, cartierOrderDivisor_apply]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_negativity_of_antiample_witness": {
+      "path": "Negativity/ActualNegativityWitness.lean",
+      "line": 39,
+      "code": "theorem actual_negativity_of_antiample_witness\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d a : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t))\n    (hE : ∀ x : X, 0 ≤ ∑ t, a t * ((A t).coefficient hnX x : ℝ))\n    (hcover : ∀ x : X, Order.coheight x = 1 →\n      (∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U)) →\n      0 < ∑ t, a t * ((A t).coefficient hnX x : ℝ))\n    (hanti : ∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n      (j : C ⟶ X) [IsProper (j ≫ f ≫ b)], IsClosedImmersion j →\n      (∀ c : C, f (j c) = f (j (genericPoint C))) →\n      normalizedRealCartierCurveIntersection hd k (j ≫ f ≫ b) j A a < 0) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  classical\n  let D := actualRealCartierCoefficients X hnX A d\n  let E := actualRealCartierCoefficients X hnX A a\n  let Dc := ∑ t, (A t).weightedWeilCycle hnX (d t)\n  have hDc : ∀ x : X, Dc x = D x := by\n    intro x\n    simp [Dc, D, actualRealCartierCoefficients_apply,\n      CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle]\n  have hnegcenter : ∀ x : X, D x < 0 →\n      ∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U) := by\n    intro x hx\n    exact actual_negative_coefficient_image_in_center f Dc hpush x\n      (by rwa [hDc x])\n  have hcodim : ∀ x : X, D x < 0 → Order.coheight x = 1 := by\n    intro x hx\n    by_contra h\n    have hall : ∀ t : τ, (A t).coefficient hnX x = 0 := by\n      intro t\n      simp [CartierAtlas.coefficient, h]\n    have hz : D x = 0 := by simp [D, actualRealCartierCoefficients_apply, hall]\n    rw [hz] at hx\n    exact lt_irrefl _ hx\n  have he : Effective E := by\n    intro x\n    simpa [E, actualRealCartierCoefficients_apply] using hE x\n  have hecover : ∀ x : X, D x < 0 → 0 < E x := by\n    intro x hx\n    simpa [E, actualRealCartierCoefficients_apply] using\n      hcover x (hcodim x hx) (hnegcenter x hx)\n  suffices hd : Effective D by\n    intro x\n    simpa [D, actualRealCartierCoefficients_apply] using hd x\n  by_contra hneg\n  obtain ⟨e, hepos, hshift, η, hηneg, hzero⟩ := exists_effective_shift D E he hecover hneg\n  let r : τ → ℝ := fun t => d t + e * a t\n  have hr : ∀ x : X, (D + e • E) x = ∑ t, r t * ((A t).coefficient hnX x : ℝ) := by\n    intro x\n    simp only [Finsupp.add_apply, Finsupp.smul_apply, smul_eq_mul]\n    simp only [D, E, actualRealCartierCoefficients_apply]\n    dsimp [r]\n    rw [Finset.mul_sum, ← Finset.sum_add_distrib]\n    apply Finset.sum_congr rfl\n    intro t _\n    ring\n  have hB : ∀ x : X, 0 ≤ ∑ t, r t * ((A t).coefficient hnX x : ℝ) := by\n    intro x\n    rw [← hr x]\n    exact hshift x\n  have hz : (∑ t, r t * ((A t).coefficient hnX η : ℝ)) = 0 := by\n    rw [← hr η]\n    exact hzero\n  obtain ⟨C, j, hC, hdC, hp, hj, hc, _, hnonneg⟩ :=\n    zero_exceptional_prime_actual_curve_nonnegative_intersection k b f hf hnX hnY\n      η (hcodim η hηneg) (hnegcenter η hηneg) A r hB hz\n  have := hC\n  have := hp\n  have hDneg := (actual_relative_nef_negative_iff k (f ≫ b) f A d).mp hnef\n    C hdC j (by simpa only [Scheme.Hom.comp_apply] using hc)\n  have hEneg := hanti C hdC j hj hc\n  have hlinear : normalizedRealCartierCurveIntersection hdC k (j ≫ f ≫ b) j A r =\n      normalizedRealCartierCurveIntersection hdC k (j ≫ f ≫ b) j A d +\n        e * normalizedRealCartierCurveIntersection hdC k (j ≫ f ≫ b) j A a := by\n    unfold normalizedRealCartierCurveIntersection\n    dsimp [r]\n    rw [Finset.mul_sum, ← Finset.sum_add_distrib]\n    apply Finset.sum_congr rfl\n    intro t _\n    ring\n  have hmul := mul_neg_of_pos_of_neg hepos hEneg\n  have hDneg' : normalizedRealCartierCurveIntersection hdC k (j ≫ f ≫ b) j A d ≤ 0 := by\n    simpa only [← Category.assoc] using hDneg\n  rw [hlinear] at hnonneg\n  linarith\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cycle_coefficient_over_isomorphism_open": {
+      "path": "Negativity/NegativeActualCenter.lean",
+      "line": 18,
+      "code": "theorem actual_cycle_coefficient_over_isomorphism_open\n    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f]\n    (U : Y.Opens) [IsIso (f ∣_ U)] (x : X) (hx : f x ∈ U)\n    (D : AlgebraicCycle X ℝ) :\n    AlgebraicCycle.map f Order.coheight Order.coheight D (f x) = D x := by\n  classical\n  let z : (f ⁻¹ᵁ U).toScheme := ⟨x, hx⟩\n  have hweight : Order.coheight x = Order.coheight (f x) := by\n    calc\n      Order.coheight x = Order.coheight z :=\n        coheight_eq_of_isOpenImmersion (x := z) (f := (f ⁻¹ᵁ U).ι)\n      _ = Order.coheight ((f ∣_ U) z) :=\n        (coheight_eq_of_isOpenImmersion (x := z) (f := f ∣_ U)).symm\n      _ = Order.coheight (U.ι ((f ∣_ U) z)) :=\n        (coheight_eq_of_isOpenImmersion (x := (f ∣_ U) z) (f := U.ι)).symm\n      _ = Order.coheight (f x) :=\n        by simpa only [Scheme.Opens.ι_apply] using\n          congrArg (fun y : Y => Order.coheight y) (morphismRestrict_base_coe f U z)\n  have hunique : ∀ w : X, f w = f x → w = x := by\n    intro w hw\n    have hwU : f w ∈ U := hw ▸ hx\n    have he : (f ∣_ U) ⟨w, hwU⟩ = (f ∣_ U) z := by\n      apply Subtype.ext\n      rw [morphismRestrict_base_coe, morphismRestrict_base_coe]\n      exact hw\n    exact congrArg Subtype.val ((f ∣_ U).isOpenEmbedding.injective he)\n  have : IsIso (f.stalkMap x) := stalkMap_isIso_over_isomorphism_open f U x hx\n  change (∑ᶠ w ∈ f.base ⁻¹' {f x}, D w *\n    (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight w : ℝ)) = D x\n  have hsingle : ∀ w : X, w ≠ x →\n      (∑ᶠ (_ : w ∈ f.base ⁻¹' {f x}), D w *\n        (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight w : ℝ)) = 0 := by\n    intro w hw\n    have hne : f w ≠ f x := fun he => hw (hunique w he)\n    simp [Set.mem_preimage, Set.mem_singleton_iff, hne]\n  rw [finsum_eq_single _ x hsingle,\n    scheme_mapCoeff_of_same_weight f Order.coheight Order.coheight x hweight,\n    scheme_residueDegree_of_stalk_iso]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_negative_coefficient_image_in_center": {
+      "path": "Negativity/NegativeActualCenter.lean",
+      "line": 61,
+      "code": "theorem actual_negative_coefficient_image_in_center\n    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f]\n    (D : AlgebraicCycle X ℝ)\n    (he : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight D))\n    (x : X) (hneg : D x < 0) :\n    ∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U) := by\n  intro U hx hIso\n  have : IsIso (f ∣_ U) := hIso\n  have hc := he (f x)\n  rw [actual_cycle_coefficient_over_isomorphism_open f U x hx D] at hc\n  exact (not_lt_of_ge hc) hneg\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "zero_weil_coefficient_outside_geometric_support": {
       "path": "Negativity/ZeroPrimeCurve.lean",
       "line": 16,

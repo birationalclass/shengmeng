@@ -51,7 +51,15 @@ it complete, and actual Zariski main theorem places it in the contracted
 fiber. For an effective actual real Cartier divisor with zero coefficient at
 an exceptional prime, the support-outside closed point, contracted complete
 curve and nonnegative actual intersection are all constructed; no curve
-existence input is assumed. Geometric ample positivity,
+existence input is assumed. Actual cycle pushforward preserves coefficients over every actual isomorphism
+open. Effectivity of the actual pushforward therefore places every negative
+coefficient over the actual exceptional center. The full maximum-ratio
+contradiction is now proved on actual Cartier presentations, actual contracted
+curves and actual intersection, with only the supplied E witness's effectivity,
+exceptional coverage and strict negative contracted-curve degrees as additional
+inputs. It does not construct E or derive geometric ample positivity; this is
+still a conditional first-part result, NOT the full negativity lemma.
+Geometric ample positivity,
 full Chow construction and connected-fiber curve existence remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
