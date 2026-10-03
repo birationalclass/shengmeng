@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T12:13:11+08:00",
+  "checkedAt": "2026-10-03T13:58:25+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "ab6e880f01aecb2e61934ca12943592e97c448a2ce93f0cc03db173af799d0ac"
+      "sha256": "168be42e9f562840e6b4212ea4354c480ad8d212949ce380199151b6bcf9bd5f"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "5ce7a0fde65db2353099f1233bef341b22f1aa0bbbbb8eff95db365cc8b8e0c2"
+      "sha256": "8746317b1ff1614602f085f70ffe42a7a287988c388900636c4b01ad2efad04a"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,74 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualProperNegativityIff.lean",
+      "sha256": "a36e5fd96120dc1a9a6b956b5a6ba7ac59b90678ab41f98bf147154c4279a102"
+    },
+    {
+      "path": "Negativity/ActualProperNegativity.lean",
+      "sha256": "9f159644e356e2641c8981c2dcfc56116e250edb1a3b2c6c1f865f580c6eeb63"
+    },
+    {
+      "path": "Negativity/ActualProperAffineNegativity.lean",
+      "sha256": "34fcfa9a460cfa4fc119ce3f58f9949238dc02ba5aa5035c99f24ccdef1ec10b"
+    },
+    {
+      "path": "Negativity/HartshorneCartierModification.lean",
+      "sha256": "c11e2c8a2ce8fdf92ae9925768afb430ac4c30aeaa15338eb1202dd95a8a1279"
+    },
+    {
+      "path": "Negativity/BirationalCycleComposition.lean",
+      "sha256": "e50c25c8937a511de7f054385f4f7e3ce82a3547e7601889459d6f529e3210d3"
+    },
+    {
+      "path": "Negativity/CanonicalCartierPushPull.lean",
+      "sha256": "c34564413be92a2845478f5f6323728fd54c8673afc7470ea226da3d923a5386"
+    },
+    {
+      "path": "Negativity/ProjectiveProductCartierSections.lean",
+      "sha256": "42f3a21588d785b2943a1dbc5bdff3377c40a473dde27b031b45135adafe6e00"
+    },
+    {
+      "path": "Negativity/NormalHartshorneModification.lean",
+      "sha256": "8d534813af826df24604015db76f7937c112381e6af0d25a6624fa159b60ab0e"
+    },
+    {
+      "path": "Negativity/BirationalComposition.lean",
+      "sha256": "db82f72f25c381ae527c60cac400e4360ed138ac7e7ad35018fdcc38ebd962ce"
+    },
+    {
+      "path": "Negativity/HartshorneFiniteModification.lean",
+      "sha256": "7a63652be9c666b7de012d93bf096b7c69b5a1e14c7ac54e5dc8574c119a75e1"
+    },
+    {
+      "path": "Negativity/FiniteProperRelativeProduct.lean",
+      "sha256": "d330f7e9a4e324a13d0c6dd0473797e42316e14265b1e67d1de5cfcb074fdca2"
+    },
+    {
+      "path": "Negativity/AffineProductCharts.lean",
+      "sha256": "546c5116d690dc52c5a5b11d62e928e7eb598ad5d3484a08f072dbde06401557"
+    },
+    {
+      "path": "Negativity/HartshorneProjectionFinite.lean",
+      "sha256": "e54399de9326b7d1afa573f3cd2f5197b79352f2e841b543bae96c2301337c03"
+    },
+    {
+      "path": "Negativity/HartshorneAffineCover.lean",
+      "sha256": "7f00924ae3630bc75cf40cac5347efde512327cc42f2b03a8e01f04e5b7b9088"
+    },
+    {
+      "path": "Negativity/StandardProjectiveProper.lean",
+      "sha256": "8f2a3e0c0655447b3e82ec87bafa912d46efea65909570c83b9992e9fddd9b10"
+    },
+    {
+      "path": "Negativity/FiniteTypeProjectiveImmersion.lean",
+      "sha256": "81ea2941d0ae7dcaeec68084e62b0e8d4d9c3d7bc2dcef354555722e14756fa9"
+    },
+    {
+      "path": "Negativity/ProjectiveAffineChartAlgebra.lean",
+      "sha256": "50bf384483740b45fe2e939c5b33fc58da61050f5e3aba1c483f33c05ebb419f"
     },
     {
       "path": "Negativity/AffineFormalFunctions.lean",
@@ -710,6 +778,246 @@
     }
   ],
   "declarations": {
+    "actual_proper_negativity_effectivity_iff": {
+      "path": "Negativity/ActualProperNegativityIff.lean",
+      "line": 20,
+      "code": "theorem actual_proper_negativity_effectivity_iff\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t)) :\n    (∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ)) ↔\n      CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n        (∑ t, (A t).weightedWeilCycle hnX (d t))) := by\n  constructor\n  · intro he\n    apply scheme_cycle_map_effective f Order.coheight Order.coheight\n    intro x\n    simpa [CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle] using he x\n  · intro hp\n    exact actual_proper_negativity_part_one k b f hf hnX hnY A d hp hnef\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_negativity_part_one": {
+      "path": "Negativity/ActualProperNegativity.lean",
+      "line": 23,
+      "code": "theorem actual_proper_negativity_part_one\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t)) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  intro x\n  obtain ⟨U, hU, hxU, _⟩ := exists_isAffineOpen_mem_and_subset\n    (x := f x) (U := (⊤ : Y.Opens)) (by trivial)\n  have : Nonempty U := ⟨⟨f x, hxU⟩⟩\n  have : IsAffine U.toScheme := hU\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨⟨x, hxU⟩⟩\n  let : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n    ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n  let hnV := normalStalks_restrict X (f ⁻¹ᵁ U) hnX\n  let hnU := normalStalks_restrict Y U hnY\n  let AA (t : τ) := actualCartierPullback (f ⁻¹ᵁ U).ι (A t)\n  have hp := actual_real_cartier_pushforward_effective_on_open hnX hnY f hf U A d hpush\n  have hn := actual_relative_nef_on_target_open k b f U A (fun t => -d t) hnef\n  have : CompactSpace (f ⁻¹ᵁ U).toScheme :=\n    QuasiCompact.compactSpace_of_compactSpace (f ∣_ U)\n  have hall := actual_proper_affine_negativity_part_one k (U.ι ≫ b) (f ∣_ U)\n    (birationalMorphism_restrict f hf U) hnV hnU AA d hp hn\n  have hlocal := hall (⟨x, hxU⟩ : (f ⁻¹ᵁ U).toScheme)\n  simpa only [AA, actual_cartier_open_restriction_coefficient hnX (f ⁻¹ᵁ U),\n    Scheme.Opens.ι_apply] using hlocal\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_affine_negativity_part_one": {
+      "path": "Negativity/ActualProperAffineNegativity.lean",
+      "line": 23,
+      "code": "theorem actual_proper_affine_negativity_part_one\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t)) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  classical\n  obtain ⟨N, π, hint, hnoeth, hnN, hπ, hbir, hsur, _, A₀, ⟨S⟩⟩ :=\n    exists_actual_hartshorne_cartier_modification k b f\n  have : IsIntegral N := hint\n  have : IsLocallyNoetherian N := hnoeth\n  have : IsProper π := hπ\n  have : IsDominant π := birationalMorphism_dominant π hbir\n  have : CompactSpace N := QuasiCompact.compactSpace_of_compactSpace (π ≫ f)\n  let B t := actualCartierPullback π (A t)\n  let E := ∑ t, (B t).weightedWeilCycle hnN (d t)\n  let D := ∑ t, (A t).weightedWeilCycle hnX (d t)\n  have hmap : AlgebraicCycle.map π Order.coheight Order.coheight E = D :=\n    actual_canonical_real_cartier_push_pull hnN hnX π hbir A d\n  have hE : AlgebraicCycle.IsWeilDivisor E := by\n    simpa [E] using cartierAtlas_real_sum_isWeilDivisor N hnN B d Finset.univ\n  have hcomp : BirationalMorphism (π ≫ f) := actual_birational_morphism_comp π f hbir hf\n  have hp : CycleEffective (AlgebraicCycle.map (π ≫ f) Order.coheight Order.coheight E) := by\n    rw [actual_proper_birational_weil_pushforward_comp hnX hnY π hbir f hf E hE, hmap]\n    exact hpush\n  have hn : ActualRelativeNef k ((π ≫ f) ≫ b) (π ≫ f) B (fun t => -d t) := by\n    simpa only [Category.assoc] using\n      actual_relative_nef_canonical_pullback k (f ≫ b) f π A (fun t => -d t) hnef\n  have hall := actual_negativity_of_affine_section_cover k b (π ≫ f) hcomp hnN hnY B d hp hn A₀ S\n  have he : CycleEffective E := by\n    intro z\n    simpa [E, CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle] using hall z\n  have hd : CycleEffective D := by\n    rw [← hmap]\n    exact scheme_cycle_map_effective π Order.coheight Order.coheight E he\n  intro x\n  simpa [D, CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle] using hd x\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_hartshorne_cartier_modification": {
+      "path": "Negativity/HartshorneCartierModification.lean",
+      "line": 21,
+      "code": "theorem exists_actual_hartshorne_cartier_modification\n    {X Y : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] :\n    ∃ (N : Scheme.{u}) (π : N ⟶ X),\n      IsIntegral N ∧ IsLocallyNoetherian N ∧\n      (∀ z : N, IsIntegrallyClosed (N.presheaf.stalk z)) ∧\n      IsProper π ∧ BirationalMorphism π ∧ Surjective π ∧\n      ∃ (_ : IsIntegral N) (A : CartierAtlas N N),\n        Nonempty (CartierAffineSectionCover A N) := by\n  obtain ⟨n, d, P, N, p, a, π, q, hp, ha, haff, hint, hnoeth, hnormal,\n    hπ, hbir, hsur, hq, hw⟩ := exists_actual_normal_hartshorne_modification k b f\n  have : IsIntegral N := hint\n  have : IsFinite q := hq\n  obtain ⟨A, hS⟩ := exists_actual_projective_product_cartier_sections Γ(Y, ⊤) n d q a haff\n  exact ⟨N, π, hint, hnoeth, hnormal, hπ, hbir, hsur, hint, A, hS⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cycle_push_at_codimension_one_preimage": {
+      "path": "Negativity/BirationalCycleComposition.lean",
+      "line": 15,
+      "code": "theorem actual_cycle_push_at_codimension_one_preimage\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsLocallyNoetherian Y]\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (D : AlgebraicCycle X ℝ) (x : X) (hx : Order.coheight (f x) = 1) :\n    AlgebraicCycle.map f Order.coheight Order.coheight D (f x) = D x := by\n  rw [scheme_cycle_strictTransform_coefficient hnY f hf D ⟨f x, hx⟩]\n  congr 1\n  have := hnY (f x)\n  obtain ⟨z, hz, _, _, hu⟩ := proper_birational_codimensionOne_unique_preimage f hf (f x) hx\n  exact (hu _ (geometricStrictTransform_image hnY f hf ⟨f x, hx⟩)).trans (hu x rfl).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_birational_weil_pushforward_comp": {
+      "path": "Negativity/BirationalCycleComposition.lean",
+      "line": 31,
+      "code": "theorem actual_proper_birational_weil_pushforward_comp\n    {Z X Y : Scheme.{u}} [IsIntegral Z] [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (p : Z ⟶ X) [IsProper p] (hp : BirationalMorphism p)\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (D : AlgebraicCycle Z ℝ) (hD : AlgebraicCycle.IsWeilDivisor D) :\n    AlgebraicCycle.map (p ≫ f) Order.coheight Order.coheight D =\n      AlgebraicCycle.map f Order.coheight Order.coheight\n        (AlgebraicCycle.map p Order.coheight Order.coheight D) := by\n  apply proper_birational_weil_cycle_pushforward hnY (p ≫ f)\n    (actual_birational_morphism_comp p f hp hf) _ _\n    (actual_weil_cycle_pushforward_isWeil f _ (actual_weil_cycle_pushforward_isWeil p D hD)) hD\n  intro z hz\n  have hz' : Order.coheight (f (p z)) = 1 := by simpa only [Scheme.Hom.comp_apply] using hz\n  have := hnY (f (p z))\n  obtain ⟨x, _, _, hc, hu⟩ := proper_birational_codimensionOne_unique_preimage f hf (f (p z)) hz'\n  have hpx : Order.coheight (p z) = 1 := (hu (p z) rfl) ▸ hc\n  simp only [Scheme.Hom.comp_apply]\n  rw [actual_cycle_push_at_codimension_one_preimage hnY f hf _ (p z) hz',\n    actual_cycle_push_at_codimension_one_preimage hnX p hp D z hpx]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_canonical_real_cartier_push_pull": {
+      "path": "Negativity/CanonicalCartierPushPull.lean",
+      "line": 19,
+      "code": "theorem actual_canonical_real_cartier_push_pull\n    {Z X : Scheme.{u}} [IsIntegral Z] [IsIntegral X]\n    [IsLocallyNoetherian Z] [IsLocallyNoetherian X]\n    (hnZ : ∀ z : Z, IsIntegrallyClosed (Z.presheaf.stalk z))\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (p : Z ⟶ X) [IsProper p] (hp : BirationalMorphism p)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ) :\n    letI : IsDominant p := birationalMorphism_dominant p hp\n    AlgebraicCycle.map p Order.coheight Order.coheight\n      (∑ t, (actualCartierPullback p (A t)).weightedWeilCycle hnZ (d t)) =\n        ∑ t, (A t).weightedWeilCycle hnX (d t) := by\n  classical\n  have : IsDominant p := birationalMorphism_dominant p hp\n  let B t := actualCartierPullback p (A t)\n  apply proper_birational_weil_cycle_pushforward hnX p hp _ _\n  · simpa using cartierAtlas_real_sum_isWeilDivisor X hnX A d Finset.univ\n  · simpa using cartierAtlas_real_sum_isWeilDivisor Z hnZ B d Finset.univ\n  · intro z hz\n    obtain ⟨w, hw, hst, hc, hu⟩ := proper_birational_codimensionOne_unique_preimage p hp (p z) hz\n    have he : z = w := hu z rfl\n    have hcz : Order.coheight z = 1 := he ▸ hc\n    have : IsIso (p.stalkMap z) := he ▸ hst\n    simp only [Function.locallyFinsuppWithin.coe_sum, Finset.sum_apply]\n    apply Finset.sum_congr rfl\n    intro t _\n    obtain ⟨i, hi⟩ := (B t).covers z\n    obtain ⟨hle, _, heq⟩ := actualCartierPullback_data p (A t) i\n    have hcoeff : (B t).coefficient hnZ z = (A t).coefficient hnX (p z) := by\n      rw [cartierAtlas_coefficient_eq Z hnZ (B t) i z hcz hi,\n        cartierAtlas_coefficient_eq X hnX (A t) ((A t).covers (p i)).choose (p z) hz (hle hi),\n        heq]\n      exact dominantFunctionFieldMap_order_of_stalk_iso hnZ hnX p z hcz hz _\n    change d t * ((B t).coefficient hnZ z : ℝ) = d t * ((A t).coefficient hnX (p z) : ℝ)\n    rw [hcoeff]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_projective_product_cartier_sections": {
+      "path": "Negativity/ProjectiveProductCartierSections.lean",
+      "line": 21,
+      "code": "theorem exists_actual_projective_product_cartier_sections\n    (R : Type u) [CommRing R] (n : ℕ) (d : Fin n → ℕ)\n    {X P : Scheme.{u}} [IsIntegral X]\n    (q : X ⟶ P) [IsFinite q]\n    (a : ∀ i, P ⟶ Proj\n      (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) R))\n    (haff : ∀ (V : ∀ i, (Proj\n      (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) R)).Opens),\n      (∀ i, IsAffineOpen (V i)) → IsAffineOpen (⨅ i, a i ⁻¹ᵁ V i)) :\n    ∃ A : CartierAtlas X X, Nonempty (CartierAffineSectionCover A X) := by\n  classical\n  let G i := MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) R\n  let j i := q ≫ a i\n  let v (i : Fin n) (l : Fin (d i + 1)) : G i 1 :=\n    ⟨MvPolynomial.X l, MvPolynomial.isHomogeneous_X R l⟩\n  have hcover : ∀ i (x : X), ∃ l, j i x ∈ Proj.basicOpen (G i) (v i l : _) := by\n    intro i x\n    have htop := Proj.iSup_basicOpen_eq_top' (G i)\n      (fun l => (v i l : MvPolynomial (Fin (d i + 1)) R))\n      (fun l => ⟨1, (v i l).2⟩)\n      (mvPolynomial_degree_zero_adjoin_variables R (Fin (d i + 1)))\n    apply Opens.mem_iSup.mp\n    rw [htop]\n    trivial\n  choose idx hidx using hcover\n  let c (i : Fin n) (x : X) := v i (idx i x)\n  let gen i z := proj_coordinate_generic_of_point (G i) (j i) (c i z) z (hidx i z)\n  let r (i : Fin n) (t z : X) : X.functionFieldˣ := Units.mk0\n    (pulledProjCoordinateRatio (G i) (j i) (c i t) (c i z) (gen i z))\n    (pulled_proj_coordinate_ratio_ne_zero (G i) (j i) (c i t) (c i z)\n      (gen i t) (gen i z))\n  let V (z : X) (i : Fin n) := Proj.basicOpen (G i) (c i z : _)\n  let U z : X.Opens := q ⁻¹ᵁ (⨅ i, a i ⁻¹ᵁ V z i)\n  have hU (z x : X) : x ∈ U z ↔ ∀ i, j i x ∈ V z i := by\n    change q x ∈ (↑(⨅ i, a i ⁻¹ᵁ V z i) : Set P) ↔ _\n    simp only [Opens.coe_iInf, Set.mem_iInter, Scheme.Hom.coe_preimage, Set.mem_preimage]\n    rfl\n  have haffU : ∀ z, IsAffineOpen (U z) := by\n    intro z\n    exact (haff (V z) (fun i =>\n      Proj.isAffineOpen_basicOpen (G i) (c i z : MvPolynomial (Fin (d i + 1)) R)\n        (c i z).2 Nat.zero_lt_one)).preimage q\n  let A : CartierAtlas X X := {\n    chart := U\n    affine := haffU\n    nonempty z := ⟨z, (hU z z).mpr (fun i => hidx i z)⟩\n    covers z := ⟨z, (hU z z).mpr (fun i => hidx i z)⟩\n    equation z := ∏ i, r i (genericPoint X) z\n    transition := by\n      intro z w x hz hw\n      have hz' := (hU z x).mp hz\n      have hw' := (hU w x).mp hw\n      have hu (i : Fin n) : IsUnit\n          (projCoordinateRatioStalk (G i) (c i z) (c i w) (j i x) (hw' i)) :=\n        (proj_coordinate_ratio_stalk_unit_iff (G i) (c i z) (c i w)\n          (j i x) (hw' i)).mpr (hz' i)\n      let u i : (X.presheaf.stalk x)ˣ := Units.map\n        ((j i).stalkMap x).hom.toMonoidHom (hu i).unit\n      refine ⟨∏ i, u i, ?_⟩\n      apply Units.ext\n      simp only [Units.val_mul, Units.coe_map, Units.coe_prod, map_prod]\n      rw [← Finset.prod_mul_distrib]\n      apply Finset.prod_congr rfl\n      intro i _\n      change algebraMap (X.presheaf.stalk x) X.functionField\n        (((j i).stalkMap x).hom ((hu i).unit : _)) *\n        pulledProjCoordinateRatio (G i) (j i) (c i (genericPoint X)) (c i z)\n          (gen i z) = _\n      rw [IsUnit.unit_spec,\n        pulled_proj_coordinate_ratio_local (G i) (j i) (c i z) (c i w)\n          (gen i w) x (hw' i), mul_comm]\n      exact pulled_proj_coordinate_ratio_mul (G i) (j i)\n        (c i (genericPoint X)) (c i z) (c i w) (gen i z) (gen i w) }\n  let mult (t : X) : X.functionFieldˣ := ∏ i, r i t (genericPoint X)\n  let E (t : X) := A.rationalTwist (mult t)\n  have heq (t z : X) : (E t).equation z = ∏ i, r i t z := by\n    change ((∏ i, r i t (genericPoint X)) *\n      (∏ i, r i (genericPoint X) z) : X.functionFieldˣ) = _\n    rw [← Finset.prod_mul_distrib]\n    apply Finset.prod_congr rfl\n    intro i _\n    apply Units.ext\n    exact pulled_proj_coordinate_ratio_mul (G i) (j i)\n      (c i t) (c i (genericPoint X)) (c i z) (gen i (genericPoint X)) (gen i z)\n  let loc (t z : X) (x : X) (hx : x ∈ U z) (i : Fin n) : X.presheaf.stalk x :=\n    ((j i).stalkMap x).hom\n      (projCoordinateRatioStalk (G i) (c i t) (c i z) (j i x) ((hU z x).mp hx i))\n  have hreg (t z : X) (x : X) (hx : x ∈ U z) :\n      algebraMap (X.presheaf.stalk x) X.functionField (∏ i, loc t z x hx i) =\n        ((E t).equation z : X.functionField) := by\n    rw [heq, Units.coe_prod, map_prod]\n    apply Finset.prod_congr rfl\n    intro i _\n    exact pulled_proj_coordinate_ratio_local (G i) (j i) (c i t) (c i z)\n      (gen i z) x ((hU z x).mp hx i)\n  have heff : ∀ t, (E t).Effective := by\n    intro t z x hx\n    exact ⟨_, hreg t z x hx⟩\n  have hcomp (t : X) : (⟨(E t).vanishingSupportᶜ,\n      (cartierAtlas_vanishingSupport_isClosed X (E t)).isOpen_compl⟩ : X.Opens) = U t := by\n    ext x\n    obtain ⟨z, hz⟩ := A.covers x\n    change x ∉ (E t).vanishingSupport ↔ x ∈ U t\n    rw [cartierAtlas_support_eq_on_chart X (E t) z x hz]\n    simp only [not_not]\n    rw [rationalUnitAt_regular_iff X x ((E t).equation z) _ (hreg t z x hz),\n      IsUnit.prod_univ_iff, hU]\n    apply forall_congr'\n    intro i\n    dsimp [loc]\n    rw [isUnit_map_iff ((j i).stalkMap x).hom,\n      proj_coordinate_ratio_stalk_unit_iff (G i) (c i t) (c i z) (j i x)\n        ((hU z x).mp hz i)]\n    rfl\n  refine ⟨A, ⟨{ multiplier := mult, effective := heff, affine := ?_, covers := ?_ }⟩⟩\n  · intro t\n    rw [hcomp t]\n    exact haffU t\n  · intro x\n    have hx : x ∈ U x := (hU x x).mpr (fun i => hidx i x)\n    rw [← hcomp x] at hx\n    exact ⟨x, hx⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_normal_hartshorne_modification": {
+      "path": "Negativity/NormalHartshorneModification.lean",
+      "line": 25,
+      "code": "theorem exists_actual_normal_hartshorne_modification\n    {X Y : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] :\n    ∃ (n : ℕ) (d : Fin n → ℕ) (P N : Scheme.{u})\n      (p : P ⟶ Spec (.of Γ(Y, ⊤)))\n      (a : ∀ i, P ⟶ Proj\n        (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) Γ(Y, ⊤)))\n      (π : N ⟶ X) (q : N ⟶ P),\n      IsProper p ∧ (∀ i, a i ≫ actualProjectiveSpaceToSpec Γ(Y, ⊤) (d i) = p) ∧\n      (∀ (V : ∀ i, (Proj\n        (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) Γ(Y, ⊤))).Opens),\n        (∀ i, IsAffineOpen (V i)) → IsAffineOpen (⨅ i, a i ⁻¹ᵁ V i)) ∧\n      IsIntegral N ∧ IsLocallyNoetherian N ∧\n      (∀ z : N, IsIntegrallyClosed (N.presheaf.stalk z)) ∧\n      IsProper π ∧ BirationalMorphism π ∧ Surjective π ∧\n      IsFinite q ∧ π ≫ f ≫ Y.toSpecΓ = q ≫ p := by\n  obtain ⟨n, d, P, Z, p, a, π, q, hp, ha, haff, hint, hπ, hbir, hsur, hq, hw⟩ :=\n    exists_actual_hartshorne_finite_modification f\n  have : IsIntegral Z := hint\n  have : IsProper π := hπ\n  have : IsFinite q := hq\n  have : IsLocallyNoetherian Z := LocallyOfFiniteType.isLocallyNoetherian π\n  let g := Z.fromSpecStalk (genericPoint Z)\n  let ν := g.fromNormalization\n  have : IsFinite ν := finiteType_perfectField_normalization_isFinite Z k (π ≫ f ≫ b)\n  have hν : BirationalMorphism ν :=\n    finiteType_perfectField_normalization_birational Z k (π ≫ f ≫ b)\n  have : IsLocallyNoetherian g.normalization := LocallyOfFiniteType.isLocallyNoetherian ν\n  have hcomp : BirationalMorphism (ν ≫ π) := actual_birational_morphism_comp ν π hν hbir\n  refine ⟨n, d, P, g.normalization, p, a, ν ≫ π, ν ≫ q,\n    hp, ha, haff, inferInstance, inferInstance, generic_normalization_stalks_normal Z,\n    inferInstance, hcomp, proper_birational_surjective (ν ≫ π) hcomp,\n    inferInstance, ?_⟩\n  simp only [Category.assoc]\n  rw [hw]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birational_of_actual_generic_stalk_isIso": {
+      "path": "Negativity/BirationalComposition.lean",
+      "line": 18,
+      "code": "theorem birational_of_actual_generic_stalk_isIso\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) [LocallyOfFiniteType f] [IsSeparated f]\n    [IsIso (f.stalkMap (genericPoint X))] : BirationalMorphism f := by\n  let x := genericPoint X\n  let s₀ : Spec (Y.presheaf.stalk (f x)) ⟶ X :=\n    inv (Spec.map (f.stalkMap x)) ≫ X.fromSpecStalk x\n  have hs₀ : s₀ ≫ f = Y.fromSpecStalk (f x) := by\n    dsimp [s₀]\n    rw [Category.assoc, ← Scheme.SpecMap_stalkMap_fromSpecStalk,\n      IsIso.inv_hom_id_assoc]\n  obtain ⟨U, hyU, s, hspread, hs⟩ := spread_out_of_isGermInjective'\n    (𝟙 Y) f s₀ (by simpa using hs₀)\n  have : IsDominant (X.fromSpecStalk (genericPoint X)) := generic_stalk_dominant X\n  have : IsDominant s₀ := by dsimp [s₀, x]; infer_instance\n  have : IsDominant (U.fromSpecStalkOfMem (f x) hyU ≫ s) := by\n    rw [← hspread]; infer_instance\n  have : IsDominant s := IsDominant.of_comp (U.fromSpecStalkOfMem (f x) hyU) s\n  let s' : U.toScheme ⟶ (f ⁻¹ᵁ U).toScheme := IsOpenImmersion.lift (f ⁻¹ᵁ U).ι s (by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨y, rfl⟩\n    change f (s y) ∈ U\n    rw [← Scheme.Hom.comp_apply, hs]\n    exact y.2)\n  have hs' : s' ≫ (f ⁻¹ᵁ U).ι = s := IsOpenImmersion.lift_fac _ _ _\n  have : IsDominant (s' ≫ (f ⁻¹ᵁ U).ι) := by rw [hs']; infer_instance\n  have : IsDominant s' := IsDominant.of_comp_of_isOpenImmersion s' (f ⁻¹ᵁ U).ι\n  refine ⟨U, ⟨⟨f x, hyU⟩⟩, separated_dominant_section_isIso (f ∣_ U) s' ?_⟩\n  rw [← cancel_mono U.ι, Category.assoc, morphismRestrict_ι,\n    ← Category.assoc, hs', hs]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_birational_morphism_comp": {
+      "path": "Negativity/BirationalComposition.lean",
+      "line": 54,
+      "code": "theorem actual_birational_morphism_comp\n    {X Y Z : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsIntegral Z]\n    (f : X ⟶ Y) [LocallyOfFiniteType f] [IsSeparated f]\n    (g : Y ⟶ Z) [LocallyOfFiniteType g] [IsSeparated g]\n    (hf : BirationalMorphism f) (hg : BirationalMorphism g) :\n    BirationalMorphism (f ≫ g) := by\n  have : IsDominant f := birationalMorphism_dominant f hf\n  have : IsIso (f.stalkMap (genericPoint X)) := birationalMorphism_generic_stalk_isIso f hf\n  have : IsIso (g.stalkMap (f (genericPoint X))) := by\n    rw [dominant_genericPoint_eq f]\n    exact birationalMorphism_generic_stalk_isIso g hg\n  have : IsIso ((f ≫ g).stalkMap (genericPoint X)) := by\n    rw [Scheme.Hom.stalkMap_comp]\n    infer_instance\n  exact birational_of_actual_generic_stalk_isIso (f ≫ g)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_hartshorne_finite_modification": {
+      "path": "Negativity/HartshorneFiniteModification.lean",
+      "line": 25,
+      "code": "theorem exists_actual_hartshorne_finite_modification\n    {X Y : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X] [IsAffine Y]\n    (f : X ⟶ Y) [IsProper f] :\n    ∃ (n : ℕ) (d : Fin n → ℕ) (P Z : Scheme.{u})\n      (p : P ⟶ Spec (.of Γ(Y, ⊤)))\n      (a : ∀ i, P ⟶ Proj\n        (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) Γ(Y, ⊤)))\n      (π : Z ⟶ X) (q : Z ⟶ P),\n      IsProper p ∧ (∀ i, a i ≫ actualProjectiveSpaceToSpec Γ(Y, ⊤) (d i) = p) ∧\n      (∀ (V : ∀ i, (Proj\n        (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) Γ(Y, ⊤))).Opens),\n        (∀ i, IsAffineOpen (V i)) → IsAffineOpen (⨅ i, a i ⁻¹ᵁ V i)) ∧\n      IsIntegral Z ∧ IsProper π ∧ BirationalMorphism π ∧ Surjective π ∧\n      IsFinite q ∧ π ≫ f ≫ Y.toSpecΓ = q ≫ p := by\n  classical\n  have : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace f\n  have : IsNoetherian X := ⟨⟩\n  obtain ⟨ι, hι, U, d, j, W, hcover, hU, hne, hW, hWU, hj, hbase, hproper⟩ :=\n    exists_actual_hartshorne_affine_projective_cover f\n  letI : Fintype ι := hι\n  let n := Fintype.card ι\n  let e : ι ≃ Fin n := Fintype.equivFin ι\n  let V : Fin n → X.Opens := fun i => U (e.symm i)\n  let d' : Fin n → ℕ := fun i => d (e.symm i)\n  let T : Fin n → Scheme.{u} := fun i => Proj\n    (MvPolynomial.homogeneousSubmodule (Fin (d' i + 1)) Γ(Y, ⊤))\n  let b : ∀ i, T i ⟶ Spec (.of Γ(Y, ⊤)) := fun i =>\n    actualProjectiveSpaceToSpec Γ(Y, ⊤) (d' i)\n  let j' : ∀ i, (V i).toScheme ⟶ T i := fun i => j (e.symm i)\n  have hV : iSup V = ⊤ := by\n    dsimp [V]\n    rw [e.symm.surjective.iSup_comp, hcover]\n  obtain ⟨P, p, a, hp, ha, hl, _, haff⟩ := exists_actual_finite_proper_relative_product\n    (Spec (.of Γ(Y, ⊤))) n T b (fun i => hproper (e.symm i))\n  have : IsProper p := hp\n  let c : W.toScheme ⟶ Spec (.of Γ(Y, ⊤)) := W.ι ≫ f ≫ Y.toSpecΓ\n  let gi : ∀ i, W.toScheme ⟶ T i := fun i =>\n    X.homOfLE (hWU (e.symm i)) ≫ j' i\n  have hgi : ∀ i, gi i ≫ b i = c := by\n    intro i\n    dsimp [gi, j', b, T, d', V, c]\n    rw [Category.assoc, hbase, ← Category.assoc, Scheme.homOfLE_ι]\n  obtain ⟨g, hgp, hga⟩ := hl W.toScheme c gi hgi\n  have hj' : ∀ i, IsImmersion (j' i) := fun i => hj (e.symm i)\n  have hb : ∀ i, IsSeparated (b i) := by\n    intro i\n    have : IsProper (b i) := hproper (e.symm i)\n    infer_instance\n  obtain ⟨Z, π, q, hπ, hbir, hsur, hint, hq, hw⟩ :=\n    hartshorne_graph_second_projection_finite (f ≫ Y.toSpecΓ) p V hV T b hb a ha\n      j' hj' (fun i => hbase (e.symm i)) W hW\n      (fun i => hWU (e.symm i)) g hgp hga\n  exact ⟨n, d', P, Z, p, a, π, q, hp, ha, haff inferInstance,\n    hint, hπ, hbir, hsur, hq, hw⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_finite_proper_relative_product": {
+      "path": "Negativity/FiniteProperRelativeProduct.lean",
+      "line": 19,
+      "code": "theorem exists_actual_finite_proper_relative_product\n    (S : Scheme.{u}) (n : ℕ) (T : Fin n → Scheme.{u})\n    (b : ∀ i, T i ⟶ S) (hb : ∀ i, IsProper (b i)) :\n    ∃ (P : Scheme.{u}) (p : P ⟶ S) (a : ∀ i, P ⟶ T i),\n      IsProper p ∧ (∀ i, a i ≫ b i = p) ∧\n      (∀ (Q : Scheme.{u}) (c : Q ⟶ S) (g : ∀ i, Q ⟶ T i)\n        (hg : ∀ i, g i ≫ b i = c),\n        ∃ l : Q ⟶ P, l ≫ p = c ∧ ∀ i, l ≫ a i = g i) ∧\n      (∀ (Q : Scheme.{u}) (l₁ l₂ : Q ⟶ P),\n        l₁ ≫ p = l₂ ≫ p → (∀ i, l₁ ≫ a i = l₂ ≫ a i) → l₁ = l₂) ∧\n      (IsAffine S → ∀ (V : ∀ i, (T i).Opens),\n        (∀ i, IsAffineOpen (V i)) → IsAffineOpen (⨅ i, a i ⁻¹ᵁ V i)) := by\n  induction n with\n  | zero =>\n    refine ⟨S, 𝟙 S, (fun i => Fin.elim0 i), inferInstance, (fun i => Fin.elim0 i), ?_, ?_, ?_⟩\n    · intro Q c g hg\n      exact ⟨c, by simp, fun i => Fin.elim0 i⟩\n    · intro Q l₁ l₂ h _\n      simpa using h\n    · intro hS V _\n      have : IsAffine S := hS\n      simpa using (isAffineOpen_top S)\n  | succ n ih =>\n    obtain ⟨P', p', a', hp', ha', hl', hext', haff'⟩ := ih\n      (fun i => T i.succ) (fun i => b i.succ) (fun i => hb i.succ)\n    have : IsProper p' := hp'\n    have : IsProper (b 0) := hb 0\n    let P := pullback (b 0) p'\n    let p : P ⟶ S := pullback.snd (b 0) p' ≫ p'\n    let a : ∀ i, P ⟶ T i := Fin.cases (pullback.fst (b 0) p')\n      (fun i => pullback.snd (b 0) p' ≫ a' i)\n    have ha : ∀ i, a i ≫ b i = p := by\n      intro i\n      refine Fin.cases ?_ (fun i => ?_) i\n      · exact pullback.condition\n      · simp [a, p, ha']\n    refine ⟨P, p, a, by dsimp [p]; infer_instance, ha, ?_, ?_, ?_⟩\n    · intro Q c g hg\n      obtain ⟨l', hlp, hla⟩ := hl' Q c (fun i => g i.succ) (fun i => hg i.succ)\n      let l : Q ⟶ P := pullback.lift (g 0) l' ((hg 0).trans hlp.symm)\n      refine ⟨l, by simp [l, p, hlp], ?_⟩\n      intro i\n      refine Fin.cases ?_ (fun i => ?_) i\n      · simp [l, a]\n      · simp [l, a, hla]\n    · intro Q l₁ l₂ hp he\n      apply pullback.hom_ext\n      · exact he 0\n      · apply hext' Q (l₁ ≫ pullback.snd (b 0) p') (l₂ ≫ pullback.snd (b 0) p')\n        · simpa [p, Category.assoc] using hp\n        · intro i\n          simpa [a, Category.assoc] using he i.succ\n    · intro hS V hV\n      have : IsAffine S := hS\n      have heq : (⨅ i, a i ⁻¹ᵁ V i) =\n          pullback.fst (b 0) p' ⁻¹ᵁ V 0 ⊓\n            pullback.snd (b 0) p' ⁻¹ᵁ (⨅ i, a' i ⁻¹ᵁ V i.succ) := by\n        apply TopologicalSpace.Opens.ext\n        ext x\n        simp only [TopologicalSpace.Opens.coe_iInf, TopologicalSpace.Opens.coe_inf,\n          Scheme.Hom.coe_preimage, Set.mem_preimage, Set.mem_inter_iff, Set.mem_iInter]\n        change (∀ i, a i x ∈ V i) ↔\n          pullback.fst (b 0) p' x ∈ V 0 ∧\n          ∀ i, a' i (pullback.snd (b 0) p' x) ∈ V i.succ\n        simpa [a, Scheme.Hom.comp_apply] using\n          (Fin.forall_fin_succ (P := fun i => a i x ∈ V i))\n      rw [heq]\n      exact actual_affine_product_chart (b 0) p' (V 0) (hV 0)\n        (⨅ i, a' i ⁻¹ᵁ V i.succ) (haff' hS (fun i => V i.succ) (fun i => hV i.succ))\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_product_chart": {
+      "path": "Negativity/AffineProductCharts.lean",
+      "line": 21,
+      "code": "theorem actual_affine_product_chart\n    {X Y S : Scheme.{u}} [IsAffine S] (f : X ⟶ S) (g : Y ⟶ S)\n    (U : X.Opens) (hU : IsAffineOpen U) (V : Y.Opens) (hV : IsAffineOpen V) :\n    IsAffineOpen (pullback.fst f g ⁻¹ᵁ U ⊓ pullback.snd f g ⁻¹ᵁ V) := by\n  have : IsAffine U.toScheme := hU\n  have : IsAffine V.toScheme := hV\n  let p : pullback (U.ι ≫ f) (V.ι ≫ g) ⟶ pullback f g :=\n    pullback.map _ _ _ _ U.ι V.ι (𝟙 S) (by simp) (by simp)\n  have : IsOpenImmersion p := by dsimp [p]; infer_instance\n  have heq : p.opensRange = pullback.fst f g ⁻¹ᵁ U ⊓ pullback.snd f g ⁻¹ᵁ V := by\n    apply Opens.ext\n    simp [p, Scheme.Pullback.range_map]\n  rw [← heq]\n  exact isAffineOpen_opensRange p\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_graph_projection_isImmersion": {
+      "path": "Negativity/HartshorneProjectionFinite.lean",
+      "line": 18,
+      "code": "theorem actual_graph_projection_isImmersion\n    {Z X S P T : Scheme.{u}} (f : X ⟶ S) (p : P ⟶ S)\n    (b : T ⟶ S) (a : P ⟶ T) (j : X ⟶ T) [IsImmersion j]\n    (ha : a ≫ b = p) (hj : j ≫ b = f)\n    (π : Z ⟶ X) (q : Z ⟶ P) (hw : π ≫ f = q ≫ p)\n    [IsImmersion (pullback.lift π q hw)] (he : π ≫ j = q ≫ a) :\n    IsImmersion q := by\n  let r : Z ⟶ pullback j a := pullback.lift π q he\n  let v : pullback j a ⟶ pullback f p := pullback.lift\n    (pullback.fst j a) (pullback.snd j a) (by\n      rw [← hj, ← ha, ← Category.assoc, ← Category.assoc, pullback.condition])\n  have hr : r ≫ v = pullback.lift π q hw := by\n    apply pullback.hom_ext <;> simp [r, v]\n  have : IsImmersion (r ≫ v) := by rw [hr]; infer_instance\n  have : IsImmersion r := IsImmersion.of_comp r v\n  rw [← show r ≫ pullback.snd j a = q by simp [r]]\n  infer_instance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "hartshorne_graph_second_projection_finite": {
+      "path": "Negativity/HartshorneProjectionFinite.lean",
+      "line": 43,
+      "code": "theorem hartshorne_graph_second_projection_finite\n    {X S P : Scheme.{u}} [IsIntegral X] [NoetherianSpace X]\n    (f : X ⟶ S) [IsProper f] (p : P ⟶ S) [IsProper p]\n    {ι : Type*} (U : ι → X.Opens) (hcover : iSup U = ⊤)\n    (T : ι → Scheme.{u}) (b : ∀ i, T i ⟶ S)\n    (hb : ∀ i, IsSeparated (b i))\n    (a : ∀ i, P ⟶ T i) (ha : ∀ i, a i ≫ b i = p)\n    (j : ∀ i, (U i).toScheme ⟶ T i) (hj : ∀ i, IsImmersion (j i))\n    (hbase : ∀ i, j i ≫ b i = (U i).ι ≫ f)\n    (W : X.Opens) (hW : Nonempty W) (hWU : ∀ i, W ≤ U i)\n    (g : W.toScheme ⟶ P) (hg : g ≫ p = W.ι ≫ f)\n    (hcoord : ∀ i, g ≫ a i = X.homOfLE (hWU i) ≫ j i) :\n    ∃ (Z : Scheme.{u}) (π : Z ⟶ X) (q : Z ⟶ P),\n      IsProper π ∧ BirationalMorphism π ∧ Surjective π ∧\n      IsIntegral Z ∧ IsFinite q ∧ π ≫ f = q ≫ p := by\n  let graph : W.toScheme ⟶ pullback f p := pullback.lift W.ι g hg.symm\n  have : NoetherianSpace W.toScheme := W.ι.isOpenEmbedding.isEmbedding.isInducing.noetherianSpace\n  have : QuasiCompact graph := inferInstance\n  have hgraph : graph ≫ pullback.fst f p = W.ι := by simp [graph]\n  have : IsImmersion (graph ≫ pullback.fst f p) := by rw [hgraph]; infer_instance\n  have : IsImmersion graph := IsImmersion.of_comp graph (pullback.fst f p)\n  let Z := graph.image\n  let π : Z ⟶ X := graph.imageι ≫ pullback.fst f p\n  let q : Z ⟶ P := graph.imageι ≫ pullback.snd f p\n  let t : W.toScheme ⟶ Z := graph.toImage\n  have : IsProper π := by dsimp [π]; infer_instance\n  have : IsProper q := by dsimp [q]; infer_instance\n  have : IsReduced Z := actual_image_isReduced graph\n  have : IsOpenImmersion t := inferInstance\n  have : IsDominant t := inferInstance\n  have hr : IsPreirreducible (Set.range t) := by\n    simpa using (PreirreducibleSpace.isPreirreducible_univ (X := W.toScheme)).image\n      t t.continuous.continuousOn\n  have : IrreducibleSpace Z := {\n    isPreirreducible_univ := by rw [← t.denseRange.closure_range]; exact hr.closure\n    toNonempty := ⟨t hW.some⟩ }\n  have : IsIntegral Z := isIntegral_of_irreducibleSpace_of_isReduced _\n  have ht : t ≫ π = W.ι := by simp [t, π, hgraph]\n  have htq : t ≫ q = g := by simp [t, q, graph]\n  have hw : π ≫ f = q ≫ p := by dsimp [π, q]; simp [pullback.condition]\n  have : IsIso (π ∣_ W) := isIso_over_dense_open_section π W t ht\n  have hbir : BirationalMorphism π := ⟨W, hW, inferInstance⟩\n  have hlocal (i : ι) : IsImmersion ((π ⁻¹ᵁ U i).ι ≫ q) := by\n    let V := π ⁻¹ᵁ U i\n    let s : W.toScheme ⟶ V.toScheme := IsOpenImmersion.lift V.ι t (by\n      rw [Scheme.Opens.range_ι]\n      rintro _ ⟨x, rfl⟩\n      change π (t x) ∈ U i\n      rw [← Scheme.Hom.comp_apply, ht]\n      exact hWU i x.2)\n    have hs : s ≫ V.ι = t := IsOpenImmersion.lift_fac _ _ _\n    have : IsDominant (s ≫ V.ι) := by rw [hs]; infer_instance\n    have : IsDominant s := IsDominant.of_comp_of_isOpenImmersion s V.ι\n    have hsp : s ≫ (π ∣_ U i) = X.homOfLE (hWU i) := by\n      rw [← cancel_mono (U i).ι, Category.assoc, morphismRestrict_ι,\n        ← Category.assoc, hs, ht, Scheme.homOfLE_ι]\n    have : IsSeparated (b i) := hb i\n    have : IsImmersion (j i) := hj i\n    have he : (π ∣_ U i) ≫ j i = V.ι ≫ q ≫ a i := by\n      apply ext_of_isDominant_of_isSeparated (b i) ?_ s ?_\n      · simp only [Category.assoc, hbase, ha]\n        rw [← Category.assoc, morphismRestrict_ι, Category.assoc, hw]\n      · rw [← Category.assoc, hsp, ← hcoord]\n        rw [← Category.assoc s V.ι, hs, ← Category.assoc, htq]\n    have hv : (π ∣_ U i) ≫ ((U i).ι ≫ f) = (V.ι ≫ q) ≫ p := by\n      rw [← Category.assoc, morphismRestrict_ι, Category.assoc, hw, Category.assoc]\n      rfl\n    let v : V.toScheme ⟶ pullback ((U i).ι ≫ f) p :=\n      pullback.lift (π ∣_ U i) (V.ι ≫ q) hv\n    let c : pullback ((U i).ι ≫ f) p ⟶ pullback f p :=\n      pullback.map _ _ _ _ (U i).ι (𝟙 P) (𝟙 S) (by simp) (by simp)\n    have hc : v ≫ c = V.ι ≫ graph.imageι := by\n      apply pullback.hom_ext <;> simp [v, c, π, q, V]\n    have : IsImmersion (v ≫ c) := by rw [hc]; infer_instance\n    have : IsImmersion v := IsImmersion.of_comp v c\n    exact actual_graph_projection_isImmersion ((U i).ι ≫ f) p (b i) (a i) (j i)\n      (ha i) (hbase i) (π ∣_ U i) (V.ι ≫ q) hv he\n  have : LocallyQuasiFinite q := by\n    apply IsZariskiLocalAtSource.of_iSup_eq_top (P := @LocallyQuasiFinite)\n      (fun i => π ⁻¹ᵁ U i) (by rw [← Scheme.Hom.preimage_iSup, hcover]; simp)\n    intro i\n    have := hlocal i\n    infer_instance\n  have : IsFinite q := IsFinite.of_isProper_of_locallyQuasiFinite q\n  exact ⟨Z, π, q, inferInstance, hbir, proper_birational_surjective π hbir,\n    inferInstance, inferInstance, hw⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_hartshorne_affine_projective_cover": {
+      "path": "Negativity/HartshorneAffineCover.lean",
+      "line": 21,
+      "code": "theorem exists_actual_hartshorne_affine_projective_cover\n    {X Y : Scheme.{u}} [IsIntegral X] [CompactSpace X] [IsAffine Y]\n    (f : X ⟶ Y) [LocallyOfFiniteType f] :\n    ∃ (ι : Type u) (_ : Fintype ι) (U : ι → X.Opens) (d : ι → ℕ)\n      (j : ∀ i, (U i).toScheme ⟶ Proj\n        (MvPolynomial.homogeneousSubmodule (Fin (d i + 1)) Γ(Y, ⊤)))\n      (W : X.Opens),\n      iSup U = ⊤ ∧ (∀ i, IsAffineOpen (U i)) ∧\n      (∀ i, Nonempty (U i)) ∧ Nonempty W ∧ (∀ i, W ≤ U i) ∧\n      (∀ i, IsImmersion (j i)) ∧\n      (∀ i, j i ≫ actualProjectiveSpaceToSpec Γ(Y, ⊤) (d i) =\n        (U i).ι ≫ f ≫ Y.toSpecΓ) ∧\n      (∀ i, IsProper (actualProjectiveSpaceToSpec Γ(Y, ⊤) (d i))) := by\n  classical\n  obtain ⟨s, hs, hfin, hsup⟩ := X.isBasis_affineOpens.exists_finite_of_isCompact\n    (U := ⊤) (by simpa using isCompact_univ (X := X))\n  let s' : Set X.Opens := {U | U ∈ s ∧ Nonempty U}\n  have hfin' : s'.Finite := hfin.subset (fun _ h => h.1)\n  let ι := s'\n  letI : Fintype ι := hfin'.fintype\n  let U : ι → X.Opens := fun i => i.1\n  have hU : ∀ i, IsAffineOpen (U i) := fun i => hs i.2.1\n  have hne : ∀ i, Nonempty (U i) := fun i => i.2.2\n  have hcover : iSup U = ⊤ := by\n    apply top_unique\n    intro x hx\n    have hxs : x ∈ sSup s := by rw [← hsup]; trivial\n    obtain ⟨V, hVs, hxV⟩ := Opens.mem_sSup.mp hxs\n    exact Opens.mem_iSup.mpr ⟨⟨V, hVs, ⟨⟨x, hxV⟩⟩⟩, hxV⟩\n  have hp (i : ι) : ∃ (n : ℕ) (g : (U i).toScheme ⟶ Proj\n      (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) Γ(Y, ⊤))),\n      IsImmersion g ∧ g ≫ actualProjectiveSpaceToSpec Γ(Y, ⊤) n =\n        (U i).ι ≫ f ≫ Y.toSpecΓ := by\n    letI : IsAffine (U i).toScheme := hU i\n    simpa only [Category.assoc] using\n      exists_actual_affine_finite_type_projective_immersion ((U i).ι ≫ f)\n  choose d j hj hb using hp\n  let W : X.Opens := ⨅ i, U i\n  have hW : Nonempty W := by\n    refine ⟨⟨genericPoint X, ?_⟩⟩\n    change genericPoint X ∈ (↑(⨅ i, U i) : Set X)\n    rw [Opens.coe_iInf, Set.mem_iInter]\n    intro i\n    obtain ⟨x, hx⟩ := hne i\n    exact ((genericPoint_spec X).mem_open_set_iff (U i).isOpen).mpr ⟨x, trivial, hx⟩\n  exact ⟨ι, inferInstance, U, d, j, W, hcover, hU, hne, hW,\n    fun i => iInf_le U i, hj, hb, fun i => actual_standard_projective_space_proper _ _⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "projective_degree_zero_inclusion_bijective": {
+      "path": "Negativity/StandardProjectiveProper.lean",
+      "line": 16,
+      "code": "theorem projective_degree_zero_inclusion_bijective\n    (R : Type u) [CommRing R] (n : ℕ) :\n    Function.Bijective (projectiveDegreeZeroInclusion R n) := by\n  constructor\n  · intro r s h\n    exact MvPolynomial.C_injective (Fin (n + 1)) R (congrArg Subtype.val h)\n  · rintro ⟨p, hp⟩\n    refine ⟨p.coeff 0, Subtype.ext ?_⟩\n    exact (MvPolynomial.totalDegree_eq_zero_iff_eq_C.mp\n      ((MvPolynomial.totalDegree_zero_iff_isHomogeneous (Fin (n + 1))).mpr hp)).symm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_standard_projective_space_proper": {
+      "path": "Negativity/StandardProjectiveProper.lean",
+      "line": 31,
+      "code": "theorem actual_standard_projective_space_proper\n    (R : Type u) [CommRing R] (n : ℕ) :\n    IsProper (actualProjectiveSpaceToSpec R n) := by\n  classical\n  let 𝒜 := MvPolynomial.homogeneousSubmodule (Fin (n + 1)) R\n  have : Algebra.FiniteType (𝒜 0) (MvPolynomial (Fin (n + 1)) R) := by\n    refine ⟨⟨Finset.univ.image MvPolynomial.X, ?_⟩⟩\n    simpa using mvPolynomial_degree_zero_adjoin_variables R (Fin (n + 1))\n  have : IsIso (CommRingCat.ofHom (projectiveDegreeZeroInclusion R n)) :=\n    (ConcreteCategory.isIso_iff_bijective _).mpr\n      (projective_degree_zero_inclusion_bijective R n)\n  unfold actualProjectiveSpaceToSpec\n  infer_instance\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_projective_affine_chart_inclusion_over": {
+      "path": "Negativity/FiniteTypeProjectiveImmersion.lean",
+      "line": 28,
+      "code": "theorem actual_projective_affine_chart_inclusion_over\n    (R : Type u) [CommRing R] (n : ℕ) :\n    actualProjectiveAffineChartInclusion R n ≫ actualProjectiveSpaceToSpec R n =\n      Spec.map (CommRingCat.ofHom (actualProjectiveChartConstant R n)) := by\n  simp only [actualProjectiveAffineChartInclusion, actualProjectiveSpaceToSpec,\n    ← Category.assoc, Proj.awayι_toSpecZero, ← Spec.map_comp]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_affine_finite_type_projective_immersion": {
+      "path": "Negativity/FiniteTypeProjectiveImmersion.lean",
+      "line": 41,
+      "code": "theorem exists_actual_affine_finite_type_projective_immersion\n    {X Y : Scheme.{u}} [IsAffine X] [IsAffine Y]\n    (f : X ⟶ Y) [LocallyOfFiniteType f] :\n    ∃ (n : ℕ) (j : X ⟶ Proj\n      (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) Γ(Y, ⊤))),\n      IsImmersion j ∧ j ≫ actualProjectiveSpaceToSpec Γ(Y, ⊤) n = f ≫ Y.toSpecΓ := by\n  let R := Γ(Y, ⊤)\n  let B := Γ(X, ⊤)\n  letI : Algebra R B := f.appTop.hom.toAlgebra\n  have hf : f.appTop.hom.FiniteType := by\n    simpa! [Scheme.Hom.appLE, Scheme.Hom.appTop] using\n      f.finiteType_appLE (isAffineOpen_top Y) (isAffineOpen_top X) (by simp)\n  have : Algebra.FiniteType R B := hf\n  obtain ⟨n, φ, hφ, hbase⟩ := exists_actual_projective_affine_chart_quotient R B\n  let j : X ⟶ Proj (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) R) :=\n    X.toSpecΓ ≫ Spec.map (CommRingCat.ofHom φ) ≫ actualProjectiveAffineChartInclusion R n\n  have : IsClosedImmersion (Spec.map (CommRingCat.ofHom φ)) :=\n    IsClosedImmersion.spec_of_surjective _ hφ\n  refine ⟨n, j, by dsimp [j]; infer_instance, ?_⟩\n  dsimp [j]\n  rw [Category.assoc, Category.assoc, actual_projective_affine_chart_inclusion_over,\n    ← Spec.map_comp]\n  have hb : CommRingCat.ofHom (actualProjectiveChartConstant R n) ≫\n      CommRingCat.ofHom φ = f.appTop := by\n    apply CommRingCat.hom_ext\n    exact hbase\n  rw [hb]\n  exact (Scheme.toSpecΓ_naturality f).symm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_projective_chart_evaluation_constant": {
+      "path": "Negativity/ProjectiveAffineChartAlgebra.lean",
+      "line": 41,
+      "code": "theorem actual_projective_chart_evaluation_constant\n    {R B : Type u} [CommRing R] [CommRing B] [Algebra R B]\n    {n : ℕ} (g : MvPolynomial (Fin n) R →ₐ[R] B) (r : R) :\n    actualProjectiveChartEvaluation g (actualProjectiveChartConstant R n r) =\n      algebraMap R B r := by\n  let e : MvPolynomial (Fin (n + 1)) R →+* B :=\n    MvPolynomial.eval₂Hom (algebraMap R B) (Fin.cases 1 (fun i => g (MvPolynomial.X i)))\n  have he : e (MvPolynomial.X (0 : Fin (n + 1))) * 1 = 1 := by simp [e]\n  change Localization.awayLift e _ (isUnit_iff_exists_inv.mpr ⟨1, he⟩)\n    (Localization.mk (MvPolynomial.C r) ⟨_, 0, rfl⟩) = _\n  rw [Localization.awayLift_mk e _ (MvPolynomial.C r) 1 he 0]\n  simp [e]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_projective_chart_evaluation_coordinate": {
+      "path": "Negativity/ProjectiveAffineChartAlgebra.lean",
+      "line": 54,
+      "code": "theorem actual_projective_chart_evaluation_coordinate\n    {R B : Type u} [CommRing R] [CommRing B] [Algebra R B]\n    {n : ℕ} (g : MvPolynomial (Fin n) R →ₐ[R] B) (i : Fin n) :\n    actualProjectiveChartEvaluation g (actualProjectiveChartCoordinate R n i) =\n      g (MvPolynomial.X i) := by\n  let e : MvPolynomial (Fin (n + 1)) R →+* B :=\n    MvPolynomial.eval₂Hom (algebraMap R B) (Fin.cases 1 (fun i => g (MvPolynomial.X i)))\n  have he : e (MvPolynomial.X (0 : Fin (n + 1))) * 1 = 1 := by simp [e]\n  change Localization.awayLift e _ (isUnit_iff_exists_inv.mpr ⟨1, he⟩)\n    (Localization.mk (MvPolynomial.X i.succ) ⟨MvPolynomial.X 0 ^ 1, _⟩) = _\n  rw [Localization.awayLift_mk e _ (MvPolynomial.X i.succ) 1 he 1]\n  simp [e]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_projective_affine_chart_quotient": {
+      "path": "Negativity/ProjectiveAffineChartAlgebra.lean",
+      "line": 71,
+      "code": "theorem exists_actual_projective_affine_chart_quotient\n    (R B : Type u) [CommRing R] [CommRing B] [Algebra R B]\n    [Algebra.FiniteType R B] :\n    ∃ (n : ℕ) (φ : actualProjectiveAffineChart R n →+* B),\n      Function.Surjective φ ∧\n      φ.comp (actualProjectiveChartConstant R n) = algebraMap R B := by\n  obtain ⟨n, g, hg⟩ := (Algebra.FiniteType.iff_quotient_mvPolynomial'' (R := R) (S := B)).mp\n    (inferInstanceAs (Algebra.FiniteType R B))\n  let φ := actualProjectiveChartEvaluation g\n  let t : MvPolynomial (Fin n) R →+* actualProjectiveAffineChart R n :=\n    MvPolynomial.eval₂Hom (actualProjectiveChartConstant R n)\n      (actualProjectiveChartCoordinate R n)\n  have ht : φ.comp t = g.toRingHom := by\n    apply MvPolynomial.ringHom_ext\n    · intro r\n      simpa [φ, t] using actual_projective_chart_evaluation_constant g r\n    · intro i\n      simpa [φ, t] using actual_projective_chart_evaluation_coordinate g i\n  refine ⟨n, φ, ?_, ?_⟩\n  · intro b\n    obtain ⟨p, hp⟩ := hg b\n    refine ⟨t p, ?_⟩\n    change (φ.comp t) p = b\n    rw [ht]\n    exact hp\n  · ext r\n    exact actual_projective_chart_evaluation_constant g r\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "completion_power_quotient_eval": {
       "path": "Negativity/AffineFormalFunctions.lean",
       "line": 22,

@@ -94,8 +94,20 @@ relative projective interface consists of actual closed Proj embeddings
 commuting with the base morphism. Actual real-Cartier projective negativity
 (1), including both effectivity directions, is proved on a general normal
 base. No affine-base, divisor, section, E, numerical or local-effectivity
-witness is assumed. Relative Chow projectivity and actual proper
-birational fiber connectedness remain for the full proper two-part target.
+witness is assumed. The projective result is now subsumed by actual proper negativity (1).
+Hartshorne's finite affine cover and actual projective-chart immersions,
+actual graph image, proper birational surjective graph projection and
+finite projection to a constructed finite projective product are proved.
+The actual finite normalization gives an actual normal modification.
+Product coordinate ratios construct an actual Cartier affine-section
+cover on this modification, without an O(1), effective-section or
+positive-degree witness. Canonical actual Cartier push-pull, actual
+birational cycle composition and actual nef pullback perform descent.
+Actual proper real-Cartier negativity (1), including D>=0 iff f_*D>=0,
+is now proved over a general normal base in arbitrary characteristic,
+with no projectivity, modification, section, E or curve input.
+Actual proper birational fiber connectedness and therefore conclusion
+(2) remain open. The complete two-part theorem is NOT yet proved.
 The actual natural structure-sheaf map O_Y -> f_*O_X of a proper
 birational morphism to a normal locally Noetherian integral base is now
 proved to be an isomorphism, by actual codimension-one extension and
@@ -110,8 +122,13 @@ adic completion is proved bijective. This last theorem requires the
 source scheme itself to be affine: it does not establish the proper
 nonaffine global formal-functions comparison needed for actual fiber
 connectedness. The complete proper two-part target remains open.
-General geometric ample positivity,
-full Chow relative projectivity and actual proper birational fiber connectedness remain open.
+The geometric input needed from Hartshorne's modification for proper
+negativity (1) is complete. This does not claim a separately formalized
+Segre embedding or the general relative-projective Chow theorem.
+The remaining main-target gap is actual proper birational fiber
+connectedness via the proper nonaffine global formal-functions comparison.
+The independent fiber-support conclusion (2) and full two-part theorem
+remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 

@@ -951,3 +951,51 @@ import Negativity
 #print axioms Negativity.adic_completion_power_eval_transition
 
 #print axioms Negativity.actual_affine_formal_functions_bijective
+
+#print axioms Negativity.actual_projective_chart_evaluation_constant
+
+#print axioms Negativity.actual_projective_chart_evaluation_coordinate
+
+#print axioms Negativity.exists_actual_projective_affine_chart_quotient
+
+#print axioms Negativity.actual_projective_affine_chart_inclusion_over
+
+#print axioms Negativity.exists_actual_affine_finite_type_projective_immersion
+
+#print axioms Negativity.projective_degree_zero_inclusion_bijective
+
+#print axioms Negativity.actual_standard_projective_space_proper
+
+#print axioms Negativity.exists_actual_hartshorne_affine_projective_cover
+
+#print axioms Negativity.actual_graph_projection_isImmersion
+
+#print axioms Negativity.hartshorne_graph_second_projection_finite
+
+#print axioms Negativity.actual_affine_product_chart
+
+#print axioms Negativity.exists_actual_finite_proper_relative_product
+
+#print axioms Negativity.exists_actual_hartshorne_finite_modification
+
+#print axioms Negativity.birational_of_actual_generic_stalk_isIso
+
+#print axioms Negativity.actual_birational_morphism_comp
+
+#print axioms Negativity.exists_actual_normal_hartshorne_modification
+
+#print axioms Negativity.exists_actual_projective_product_cartier_sections
+
+#print axioms Negativity.actual_canonical_real_cartier_push_pull
+
+#print axioms Negativity.actual_cycle_push_at_codimension_one_preimage
+
+#print axioms Negativity.actual_proper_birational_weil_pushforward_comp
+
+#print axioms Negativity.exists_actual_hartshorne_cartier_modification
+
+#print axioms Negativity.actual_proper_affine_negativity_part_one
+
+#print axioms Negativity.actual_proper_negativity_part_one
+
+#print axioms Negativity.actual_proper_negativity_effectivity_iff

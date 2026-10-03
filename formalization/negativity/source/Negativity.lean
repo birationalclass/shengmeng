@@ -333,3 +333,37 @@ public import Negativity.InfinitesimalIdempotents
 public import Negativity.AffineThickeningSections
 
 public import Negativity.AffineFormalFunctions
+
+public import Negativity.ProjectiveAffineChartAlgebra
+
+public import Negativity.FiniteTypeProjectiveImmersion
+
+public import Negativity.StandardProjectiveProper
+
+public import Negativity.HartshorneAffineCover
+
+public import Negativity.HartshorneProjectionFinite
+
+public import Negativity.AffineProductCharts
+
+public import Negativity.FiniteProperRelativeProduct
+
+public import Negativity.HartshorneFiniteModification
+
+public import Negativity.BirationalComposition
+
+public import Negativity.NormalHartshorneModification
+
+public import Negativity.ProjectiveProductCartierSections
+
+public import Negativity.CanonicalCartierPushPull
+
+public import Negativity.BirationalCycleComposition
+
+public import Negativity.HartshorneCartierModification
+
+public import Negativity.ActualProperAffineNegativity
+
+public import Negativity.ActualProperNegativity
+
+public import Negativity.ActualProperNegativityIff
