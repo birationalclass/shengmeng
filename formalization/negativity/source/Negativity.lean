@@ -305,3 +305,15 @@ public import Negativity.ProjPolynomialSections
 public import Negativity.ProjectiveExceptionalWitness
 
 public import Negativity.ActualProjectiveAffineNegativity
+
+public import Negativity.CartierOpenRestriction
+
+public import Negativity.ActualOpenPushforward
+
+public import Negativity.ActualOpenNef
+
+public import Negativity.RelativeProjectiveEmbedding
+
+public import Negativity.ActualProjectiveNegativity
+
+public import Negativity.ActualProjectiveNegativityIff

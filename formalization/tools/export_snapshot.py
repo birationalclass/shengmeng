@@ -4,6 +4,12 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualProjectiveNegativityIff.lean': ['actual_projective_negativity_effectivity_iff'],
+    'ActualProjectiveNegativity.lean': ['actual_projective_negativity_part_one'],
+    'RelativeProjectiveEmbedding.lean': ['actual_relative_projective_embedding_cartier_sections'],
+    'ActualOpenNef.lean': ['actual_relative_nef_on_target_open'],
+    'ActualOpenPushforward.lean': ['actual_weil_cycle_pushforward_isWeil', 'actual_real_cartier_pushforward_effective_on_open'],
+    'CartierOpenRestriction.lean': ['actual_cartier_open_restriction_coefficient', 'actual_real_cartier_open_restriction_cycle'],
     'ActualProjectiveAffineNegativity.lean': ['actual_projective_affine_negativity'],
     'ProjectiveExceptionalWitness.lean': ['exists_actual_projective_exceptional_cartier'],
     'ProjPolynomialSections.lean': ['mvPolynomial_degree_zero_adjoin_variables', 'exists_actual_projective_space_cartier_sections'],
@@ -299,8 +305,15 @@ Cartier presentations over an affine normal base, with an actual closed
 embedding into standard relative projective space. No Cartier section,
 effective E, exceptional coverage or numerical positivity witness is an
 input. E itself is also constructed in a separate actual existence theorem.
-Global affine-base gluing, relative Chow projectivity and actual proper
-birational fiber connectedness remain for the complete main statements.
+Global affine-base gluing is now proved: fixed actual Cartier restrictions
+preserve local orders, actual pushforward effectivity restricts, and actual
+relative nefness restricts with genuine normalized intersections. The
+relative projective interface consists of actual closed Proj embeddings
+commuting with the base morphism. Actual real-Cartier projective negativity
+(1), including both effectivity directions, is proved on a general normal
+base. No affine-base, divisor, section, E, numerical or local-effectivity
+witness is assumed. Relative Chow projectivity and actual proper
+birational fiber connectedness remain for the full proper two-part target.
 General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing

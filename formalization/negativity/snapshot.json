@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T09:41:13+08:00",
+  "checkedAt": "2026-10-03T10:26:22+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "2c0b9123a2db1e8b0c8a4d86be325b0814a92b19fe64735e84cd5dc2882d3785"
+      "sha256": "5741b2d1796f972e360713ec74dba2a95b3c979db6aa1c9c653da96c1dd9be01"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "319ff676581dfea3dba8b08a63af768637622a774e6521ba7c2a2319522c4ce5"
+      "sha256": "a6caa78efcf649ac7007313c837d7bd65691aa66622f82e5a9b65b814eb297fd"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,30 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualProjectiveNegativityIff.lean",
+      "sha256": "dbcbca9ee7d56ab919bc272fb6b83fd57d1aa533b51961501b2811800f4f9133"
+    },
+    {
+      "path": "Negativity/ActualProjectiveNegativity.lean",
+      "sha256": "ef143939a4b219c3a92b982208b166adc6df722507f519ac790bff9a5e8f22f1"
+    },
+    {
+      "path": "Negativity/RelativeProjectiveEmbedding.lean",
+      "sha256": "3002ff6962f28913270cb4b5bcbbff9bbaaed7d7679578a130690c6564cacb6d"
+    },
+    {
+      "path": "Negativity/ActualOpenNef.lean",
+      "sha256": "b875555035757851d13aa021f172e0fe903656ad84f91f829c22ac3b547b55f4"
+    },
+    {
+      "path": "Negativity/ActualOpenPushforward.lean",
+      "sha256": "8b8f40b4ed758ef6f82eed168f40b13495a085bca634c3892c6f61558bff8761"
+    },
+    {
+      "path": "Negativity/CartierOpenRestriction.lean",
+      "sha256": "0a1bee9de8752be9b32cbca6185bcffed97bda5cdd98047ec3a702ca1fde378c"
     },
     {
       "path": "Negativity/ActualProjectiveAffineNegativity.lean",
@@ -654,6 +678,86 @@
     }
   ],
   "declarations": {
+    "actual_projective_negativity_effectivity_iff": {
+      "path": "Negativity/ActualProjectiveNegativityIff.lean",
+      "line": 20,
+      "code": "theorem actual_projective_negativity_effectivity_iff\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hproj : ActualLocallyProjective f)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t)) :\n    (∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ)) ↔\n      CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n        (∑ t, (A t).weightedWeilCycle hnX (d t))) := by\n  constructor\n  · intro he\n    apply scheme_cycle_map_effective f Order.coheight Order.coheight\n    intro x\n    simpa [CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle] using he x\n  · intro hp\n    exact actual_projective_negativity_part_one k b f hf hnX hnY hproj A d hp hnef\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_projective_negativity_part_one": {
+      "path": "Negativity/ActualProjectiveNegativity.lean",
+      "line": 26,
+      "code": "theorem actual_projective_negativity_part_one\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (hproj : ActualLocallyProjective f)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t)) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  intro x\n  obtain ⟨U, hU, hxU, _⟩ := exists_isAffineOpen_mem_and_subset\n    (x := f x) (U := (⊤ : Y.Opens)) (by trivial)\n  have : Nonempty U := ⟨⟨f x, hxU⟩⟩\n  have : IsAffine U.toScheme := hU\n  have : Nonempty (f ⁻¹ᵁ U) := ⟨⟨x, hxU⟩⟩\n  let : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n    ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n  let hnV := normalStalks_restrict X (f ⁻¹ᵁ U) hnX\n  let hnU := normalStalks_restrict Y U hnY\n  let AA (t : τ) := actualCartierPullback (f ⁻¹ᵁ U).ι (A t)\n  have hp := actual_real_cartier_pushforward_effective_on_open hnX hnY f hf U A d hpush\n  have hn := actual_relative_nef_on_target_open k b f U A (fun t => -d t) hnef\n  have : CompactSpace (f ⁻¹ᵁ U).toScheme :=\n    QuasiCompact.compactSpace_of_compactSpace (f ∣_ U)\n  obtain ⟨P⟩ := hproj U hU ‹Nonempty U›\n  have := P.closed\n  have hall := actual_projective_affine_negativity k (U.ι ≫ b) (f ∣_ U)\n    (birationalMorphism_restrict f hf U) hnV hnU AA d hp hn\n    P.dimension P.embedding\n  have hlocal := hall (⟨x, hxU⟩ : (f ⁻¹ᵁ U).toScheme)\n  simpa only [AA, actual_cartier_open_restriction_coefficient hnX (f ⁻¹ᵁ U),\n    Scheme.Opens.ι_apply] using hlocal\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_projective_embedding_cartier_sections": {
+      "path": "Negativity/RelativeProjectiveEmbedding.lean",
+      "line": 55,
+      "code": "theorem actual_relative_projective_embedding_cartier_sections\n    {X Y : Scheme.{u}} [IsIntegral X] [IsAffine Y]\n    (f : X ⟶ Y) (P : ActualRelativeProjectiveEmbedding f) :\n    ∃ A : CartierAtlas X X, Nonempty (CartierAffineSectionCover A X) := by\n  have := P.closed\n  exact exists_actual_projective_space_cartier_sections Γ(Y, ⊤) P.dimension P.embedding\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_nef_on_target_open": {
+      "path": "Negativity/ActualOpenNef.lean",
+      "line": 20,
+      "code": "theorem actual_relative_nef_on_target_open\n    {X Y : Scheme.{u}} [IsIntegral X]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) (f : X ⟶ Y)\n    (U : Y.Opens) [Nonempty (f ⁻¹ᵁ U)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ)\n    (hn : ActualRelativeNef k (f ≫ b) f A r) :\n    letI : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n      ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n    ActualRelativeNef k ((f ∣_ U) ≫ U.ι ≫ b) (f ∣_ U)\n      (fun t => actualCartierPullback (f ⁻¹ᵁ U).ι (A t)) r := by\n  let : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n    ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n  intro C _ hd g _ hc\n  have hproper : IsProper ((g ≫ (f ⁻¹ᵁ U).ι) ≫ f ≫ b) := by\n    rw [Category.assoc, ← Category.assoc (f ⁻¹ᵁ U).ι f b,\n      ← morphismRestrict_ι, Category.assoc]\n    infer_instance\n  have hconst : ∀ x : C, ((g ≫ (f ⁻¹ᵁ U).ι) ≫ f) x =\n      ((g ≫ (f ⁻¹ᵁ U).ι) ≫ f) (genericPoint C) := by\n    intro x\n    rw [Category.assoc, ← morphismRestrict_ι]\n    exact congrArg (fun y => U.ι y) (hc x)\n  have h := hn C hd (g ≫ (f ⁻¹ᵁ U).ι) hconst\n  rw [complete_integral_curve_canonical_real_pullback_intersection hd k\n    (g ≫ (f ∣_ U) ≫ U.ι ≫ b) (f ⁻¹ᵁ U).ι g A r]\n  simpa only [Category.assoc, ← Category.assoc (f ⁻¹ᵁ U).ι f b,\n    ← morphismRestrict_ι] using h\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_weil_cycle_pushforward_isWeil": {
+      "path": "Negativity/ActualOpenPushforward.lean",
+      "line": 16,
+      "code": "theorem actual_weil_cycle_pushforward_isWeil\n    {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f]\n    (D : AlgebraicCycle X ℝ) (hD : AlgebraicCycle.IsWeilDivisor D) :\n    AlgebraicCycle.IsWeilDivisor\n      (AlgebraicCycle.map f Order.coheight Order.coheight D) := by\n  intro y hn\n  by_contra hy\n  change Order.coheight y ≠ 1 at hy\n  apply hn\n  change (∑ᶠ x ∈ f.base ⁻¹' {y},\n    D x * (AlgebraicCycle.mapCoeff f Order.coheight Order.coheight x : ℝ)) = 0\n  apply finsum_eq_zero_of_forall_eq_zero\n  intro x\n  by_cases hxy : f x = y\n  · by_cases hx : D x = 0\n    · simp [hx]\n    · have hdrop : Order.coheight x ≠ Order.coheight (f x) := by\n        rw [hD.coheight_eq_one hx, hxy]\n        exact Ne.symm hy\n      rw [scheme_mapCoeff_zero_of_drop f Order.coheight Order.coheight x hdrop]\n      simp\n  · simp [Set.mem_preimage, Set.mem_singleton_iff, hxy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_real_cartier_pushforward_effective_on_open": {
+      "path": "Negativity/ActualOpenPushforward.lean",
+      "line": 44,
+      "code": "theorem actual_real_cartier_pushforward_effective_on_open\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (U : Y.Opens) [Nonempty U] [Nonempty (f ⁻¹ᵁ U)]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ)\n    (hp : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (r t)))) :\n    letI : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n      ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n    CycleEffective (AlgebraicCycle.map (f ∣_ U) Order.coheight Order.coheight\n      (∑ t, (actualCartierPullback (f ⁻¹ᵁ U).ι (A t)).weightedWeilCycle\n        (normalStalks_restrict X (f ⁻¹ᵁ U) hnX) (r t))) := by\n  classical\n  let : IsDominant (f ⁻¹ᵁ U).ι := Opens.isDominant_ι\n    ((f ⁻¹ᵁ U).isOpen.dense (by simpa using ‹Nonempty (f ⁻¹ᵁ U)›))\n  let hnV := normalStalks_restrict X (f ⁻¹ᵁ U) hnX\n  let hnU := normalStalks_restrict Y U hnY\n  let D := ∑ t, (A t).weightedWeilCycle hnX (r t)\n  let DV := ∑ t, (actualCartierPullback (f ⁻¹ᵁ U).ι (A t)).weightedWeilCycle hnV (r t)\n  have hDV : AlgebraicCycle.IsWeilDivisor DV := by\n    simpa [DV] using cartierAtlas_real_sum_isWeilDivisor (f ⁻¹ᵁ U).toScheme hnV\n      (fun t => actualCartierPullback (f ⁻¹ᵁ U).ι (A t)) r Finset.univ\n  have hlocal := birationalMorphism_restrict f hf U\n  intro y\n  by_cases hy : Order.coheight y = 1\n  · let z := geometricStrictTransform hnU (f ∣_ U) hlocal ⟨y, hy⟩\n    have hzy : (f ∣_ U) z = y := geometricStrictTransform_image hnU (f ∣_ U) hlocal ⟨y, hy⟩\n    have hxy : f ((f ⁻¹ᵁ U).ι z) = U.ι y := by\n      change f z.1.1 = y.1\n      exact (morphismRestrict_base_coe f U (z : (f ⁻¹ᵁ U).toScheme)).symm.trans\n        (congrArg Subtype.val hzy)\n    have hyY : Order.coheight (U.ι y) = 1 :=\n      (coheight_eq_of_isOpenImmersion U.ι).trans hy\n    have := hnY (U.ι y)\n    obtain ⟨W, hyW, hiW⟩ := proper_birational_isIso_near_codimensionOne f hf (U.ι y) hyY\n    have : IsIso (f ∣_ W) := hiW\n    have heq := actual_cycle_coefficient_over_isomorphism_open f W\n      ((f ⁻¹ᵁ U).ι z) (by rwa [hxy]) D\n    have hpos : 0 ≤ D ((f ⁻¹ᵁ U).ι z) := by\n      rw [← heq]\n      exact hp (f ((f ⁻¹ᵁ U).ι z))\n    rw [scheme_cycle_strictTransform_coefficient hnU (f ∣_ U) hlocal DV ⟨y, hy⟩]\n    change 0 ≤ DV z\n    rw [actual_real_cartier_open_restriction_cycle hnX (f ⁻¹ᵁ U) A r z]\n    exact hpos\n  · have hz : AlgebraicCycle.map (f ∣_ U) Order.coheight Order.coheight DV y = 0 := by\n      by_contra hne\n      exact hy ((actual_weil_cycle_pushforward_isWeil (f ∣_ U) DV hDV).coheight_eq_one hne)\n    rw [hz]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cartier_open_restriction_coefficient": {
+      "path": "Negativity/CartierOpenRestriction.lean",
+      "line": 18,
+      "code": "theorem actual_cartier_open_restriction_coefficient\n    {X : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) [Nonempty U] {ι : Type*} (A : CartierAtlas X ι) :\n    letI : IsDominant U.ι := Opens.isDominant_ι\n      (U.isOpen.dense (by simpa using ‹Nonempty U›))\n    ∀ x : U.toScheme,\n      (actualCartierPullback U.ι A).coefficient (normalStalks_restrict X U hnX) x =\n        A.coefficient hnX (U.ι x) := by\n  let : IsDominant U.ι := Opens.isDominant_ι\n    (U.isOpen.dense (by simpa using ‹Nonempty U›))\n  intro x\n  have hheight : Order.coheight (U.ι x) = Order.coheight x :=\n    coheight_eq_of_isOpenImmersion U.ι\n  by_cases hx : Order.coheight x = 1\n  · have hy : Order.coheight (U.ι x) = 1 := hheight.trans hx\n    have hd := actualCartierPullback_data U.ι A x\n    rw [cartierAtlas_coefficient_eq U.toScheme (normalStalks_restrict X U hnX)\n      (actualCartierPullback U.ι A) x x hx hd.2.1,\n      cartierAtlas_coefficient_eq X hnX A (A.covers (U.ι x)).choose (U.ι x)\n        hy (A.covers (U.ι x)).choose_spec, hd.2.2]\n    exact dominantFunctionFieldMap_order_of_stalk_iso\n      (normalStalks_restrict X U hnX) hnX U.ι x hx hy _\n  · have hy : Order.coheight (U.ι x) ≠ 1 := by rwa [hheight]\n    change Order.coheight x.1 ≠ 1 at hy\n    simp [CartierAtlas.coefficient, hx, hy]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_real_cartier_open_restriction_cycle": {
+      "path": "Negativity/CartierOpenRestriction.lean",
+      "line": 48,
+      "code": "theorem actual_real_cartier_open_restriction_cycle\n    {X : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (U : X.Opens) [Nonempty U] {ι τ : Type*} [Fintype τ]\n    (A : τ → CartierAtlas X ι) (r : τ → ℝ) :\n    letI : IsDominant U.ι := Opens.isDominant_ι\n      (U.isOpen.dense (by simpa using ‹Nonempty U›))\n    ∀ x : U.toScheme,\n      (∑ t, (actualCartierPullback U.ι (A t)).weightedWeilCycle\n        (normalStalks_restrict X U hnX) (r t)) x =\n      (∑ t, (A t).weightedWeilCycle hnX (r t)) (U.ι x) := by\n  let : IsDominant U.ι := Opens.isDominant_ι\n    (U.isOpen.dense (by simpa using ‹Nonempty U›))\n  intro x\n  simp [CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle,\n    actual_cartier_open_restriction_coefficient hnX U]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_projective_affine_negativity": {
       "path": "Negativity/ActualProjectiveAffineNegativity.lean",
       "line": 25,

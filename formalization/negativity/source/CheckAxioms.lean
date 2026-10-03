@@ -897,3 +897,19 @@ import Negativity
 #print axioms Negativity.exists_actual_projective_exceptional_cartier
 
 #print axioms Negativity.actual_projective_affine_negativity
+
+#print axioms Negativity.actual_cartier_open_restriction_coefficient
+
+#print axioms Negativity.actual_real_cartier_open_restriction_cycle
+
+#print axioms Negativity.actual_weil_cycle_pushforward_isWeil
+
+#print axioms Negativity.actual_real_cartier_pushforward_effective_on_open
+
+#print axioms Negativity.actual_relative_nef_on_target_open
+
+#print axioms Negativity.actual_relative_projective_embedding_cartier_sections
+
+#print axioms Negativity.actual_projective_negativity_part_one
+
+#print axioms Negativity.actual_projective_negativity_effectivity_iff

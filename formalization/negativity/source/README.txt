@@ -87,8 +87,15 @@ Cartier presentations over an affine normal base, with an actual closed
 embedding into standard relative projective space. No Cartier section,
 effective E, exceptional coverage or numerical positivity witness is an
 input. E itself is also constructed in a separate actual existence theorem.
-Global affine-base gluing, relative Chow projectivity and actual proper
-birational fiber connectedness remain for the complete main statements.
+Global affine-base gluing is now proved: fixed actual Cartier restrictions
+preserve local orders, actual pushforward effectivity restricts, and actual
+relative nefness restricts with genuine normalized intersections. The
+relative projective interface consists of actual closed Proj embeddings
+commuting with the base morphism. Actual real-Cartier projective negativity
+(1), including both effectivity directions, is proved on a general normal
+base. No affine-base, divisor, section, E, numerical or local-effectivity
+witness is assumed. Relative Chow projectivity and actual proper
+birational fiber connectedness remain for the full proper two-part target.
 General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
