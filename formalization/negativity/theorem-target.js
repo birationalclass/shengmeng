@@ -1,4 +1,4 @@
-import {english} from './i18n.js?v=20261003-formal-41';
+import {english} from './i18n.js?v=20261004-formal-42';
 
 // The module's final mathematical target is separate from the proof-step DAG.
 // Its status must not inherit the status of any compiled auxiliary lemma.
@@ -28,7 +28,7 @@ function createTheoremCard(view) {
   card.className = 'theorem-target-card';
   card.dataset.theoremCard = view;
   card.dataset.conclusionOne = 'done';
-  card.dataset.conclusionTwo = 'pending';
+  card.dataset.conclusionTwo = 'done';
   card.style.setProperty('--theorem-unit', '1');
   card.setAttribute('aria-labelledby', `theoremTargetTitle-${view}`);
   function renderLanguage(){
@@ -37,13 +37,13 @@ function createTheoremCard(view) {
   const text = english ? {
     label: 'FINAL THEOREM · THEOREM 1.4',
     title: 'Negativity lemma',
-    status: '○ Complete theorem still open',
+    status: '✓ Complete theorem verified by Lean',
     goal: 'Proof dependencies →',
     original: 'Original theorem ↗',
     collapse: 'Collapse', expand: 'Expand theorem',
     hypotheses: `Let ${k} be an algebraically closed field of arbitrary characteristic, and let ${f} be a proper birational morphism of normal ${k}-varieties (integral, separated and of finite type). Let ${D} be an ${rCartier} divisor on ${math('<mi>X</mi>', 'X')} such that ${minusD} is ${fNef}. Then:`,
     first: 'Effectivity · ✓ Verified by Lean',
-    second: 'Fiber support · ○ Open',
+    second: 'Fiber support · ✓ Verified by Lean',
     condition: `If ${effective}, then for every ${y},`,
     or: 'or',
     note: 'One module, one final theorem. The cards below are its proof steps and inputs.',
@@ -52,13 +52,13 @@ function createTheoremCard(view) {
   } : {
     label: '最终定理 · 原稿 THEOREM 1.4',
     title: 'Negativity lemma',
-    status: '○ 完整定理尚未形式化',
+    status: '✓ 完整定理已通过 Lean',
     goal: '查看证明依赖 →',
     original: '原稿定理 ↗',
     collapse: '收起', expand: '展开定理',
     hypotheses: `设 ${k} 为任意特征的代数闭域，${f} 为正规 ${k}-簇（整、分离、有限型）之间的 proper 双有理态射。设 ${D} 为 ${math('<mi>X</mi>', 'X')} 上的 ${rCartier} 除子，且 ${minusD} 为 ${fNef}。则：`,
     first: '有效性 · ✓ 已通过 Lean',
-    second: '纤维与支撑 · ○ 尚未完成',
+    second: '纤维与支撑 · ✓ 已通过 Lean',
     condition: `若 ${effective}，则对每个 ${y}，`,
     or: '或',
     note: '一个模块，一个最终定理。下方卡片是它的证明步骤与输入。',

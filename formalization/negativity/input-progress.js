@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-formal-41';
+const release = '20261004-formal-42';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -19,12 +19,12 @@ const gaps = {
       '∃c ∀n：ker[H¹(Iⁿ⁺꜀⁺¹𝒪_X)→H¹(𝒪_X)] 在向 H¹(Iⁿ⁺¹𝒪_X) 的转移下消失。',
       ['已证明：实际 Čech 上同调、模结构、两段正合性、障碍转移自然性及有限仿射覆盖。',
        '已证明：统一截面核界和实际非仿射比较单射。',
-       '待证明：proper 分次上同调 Rees 模有限生成及统一消失界，去掉 hvanish，进而给出满射并去掉 hff。完整定理仍未完成。']],
+       '已证明：实际 Rees 上同调有限生成给出统一消失界；完整定理无需 hvanish 或 hff 输入。']],
     en: ['Prove uniform vanishing of the proper cohomology kernel',
       '∃c ∀n: ker[H¹(Iⁿ⁺꜀⁺¹O_X)→H¹(O_X)] vanishes under transition to H¹(Iⁿ⁺¹O_X).',
       ['Proved: actual Cech cohomology, module structure, two exactness statements, obstruction naturality and a finite affine cover.',
        'Proved: the uniform section-kernel bound and injectivity of the actual nonaffine comparison.',
-       'Open: proper graded cohomology finite generation over Rees and uniform kernel vanishing. Remove hvanish, then prove surjectivity and remove hff. The complete theorem remains open.']]
+       'Proved: actual Rees cohomology finite generation gives uniform kernel vanishing. The complete theorem requires no hvanish or hff input.']]
   },
   chow: {
     zh: ['完成 Chow 构造的射影性',
@@ -54,7 +54,7 @@ const verifiedSteps = [
   ['complete_integral_curve_positive_of_affine_section_cover', ['给定实际仿射截面覆盖时，证明完整曲线交数严格为正。', 'Given an actual affine section cover, derive positive complete-curve intersection.']],
   ['proper_normal_birational_structure_sheaf_isIso', ['实际结构层 𝒪_Y→f_*𝒪_X 同构已证明。', 'The actual structure-sheaf isomorphism O_Y→f_*O_X is proved.']],
   ['actual_infinitesimal_nontrivial_idempotent', ['真实各阶加厚的相容非平凡幂等元已构造。', 'Compatible nontrivial idempotents on genuine thickenings are constructed.']],
-  ['actual_affine_formal_functions_bijective', ['仿射源的规范完备化比较已证明；proper 非仿射比较仍缺。', 'The canonical affine-source completion comparison is proved; proper nonaffine comparison remains open.']],
+  ['actual_affine_formal_functions_bijective', ['仿射源的规范完备化比较已证明；proper 正规双有理态射的实际闭纤维比较另有已验证定理。', 'The canonical affine-source completion comparison is proved; a separate verified theorem gives the actual closed-fiber comparison for proper normal birational maps.']],
   ['connected_complete_scheme_actual_crossing_curve', ['已连通的完整 Scheme 上，高维相交曲线的构造已完成。', 'Crossing curves are constructed in every dimension on already connected proper schemes.']],
   ['finiteType_perfectField_normalization_isFinite', ['实际正规化的有限性已证明。', 'Finiteness of actual normalization is proved.']],
   ['exists_embedded_complete_curve_real_projection_formula', ['实际 R-Cartier 曲线射影公式已证明。', 'The actual real-Cartier curve projection formula is proved.']],
@@ -90,15 +90,15 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
   const explanation = openNodes.length ? text('下面列的是仍须证明的几何环节，不包括通常的定理假设。', 'These are the geometric steps still requiring proof, separate from ordinary theorem conditions.') :
     node.status === 'pending' ? text('辅助定理通过不代表最终定理完成。还须完成实际几何实例化与结论的衔接。', 'Compiled helper theorems do not complete the final theorem. Actual geometric instantiation and the final deduction still need to be connected.') :
     text('这只说明图谱中没有开放输入；定理仍须满足其适用条件。', 'This concerns open inputs in the atlas; the theorem’s stated conditions still apply.');
-  return `<section class="input-progress" data-input-progress="${escapeHTML(node.id)}"><div class="input-progress-heading"><span class="input-progress-icon ${openNodes.length ? 'open' : ''}">${openNodes.length?'?':'✓'}</span><div><h3>${escapeHTML(summary)}</h3><p>${escapeHTML(explanation)}</p></div></div><div class="input-progress-columns"><section class="input-pending-column"><h4 class="input-column-heading">? ${text('待证','Still to prove')}</h4>${gapCards || `<p class="input-small">${escapeHTML(explanation)}</p>`}</section>${doneTexts.length ? `<section class="input-completed"><h4 class="input-column-heading">✓ ${text('已证','Proved')}</h4><ul>${doneTexts.map(s => `<li>${escapeHTML(s)}</li>`).join('')}</ul><p class="input-small">${node.status === 'done' ? text('此节点在所列适用条件下已证明；完整主定理的剩余工作见独立目标卡。', 'This node is proved under its stated conditions; the separate main-target card lists the remaining work for the complete theorem.') : text('上述条件式结果不会自动证明其射影来源或完整 negativity lemma。', 'These conditional results do not automatically prove their projective origin or the complete negativity lemma.')}</p></section>` : `<section class="input-completed"><h4 class="input-column-heading">✓ ${text('已证','Proved')}</h4><p class="input-small">${text('此节点尚无已完成的 Lean 声明；下方前提的验证不等于本节点已证。','This node has no completed Lean declaration. Verified premises do not prove this node.')}</p></section>`}</div>${conditions.length ? `<details class="input-conditions"><summary>${text('定理的适用条件（不是完成进度）','Theorem conditions (not completion progress)')}</summary><ul>${conditions.map(s => `<li>${escapeHTML(s)}</li>`).join('')}</ul></details>` : ''}${isOpen && openNodes.length ? `<p class="input-color-note"><span aria-hidden="true">?</span>${text('黄色问号＝此项尚未证明。含此输入的结论目前只完成条件式验证。', 'Yellow question mark = this item is unproved. Results using it are currently verified only conditionally.')}</p>` : ''}</section>`;
+  return `<section class="input-progress" data-input-progress="${escapeHTML(node.id)}"><div class="input-progress-heading"><span class="input-progress-icon ${openNodes.length ? 'open' : ''}">${openNodes.length?'?':'✓'}</span><div><h3>${escapeHTML(summary)}</h3><p>${escapeHTML(explanation)}</p></div></div><div class="input-progress-columns">${openNodes.length ? `<section class="input-pending-column"><h4 class="input-column-heading">? ${text('待证','Still to prove')}</h4>${gapCards || `<p class="input-small">${escapeHTML(explanation)}</p>`}</section>` : ''}${doneTexts.length ? `<section class="input-completed"><h4 class="input-column-heading">✓ ${text('已证','Proved')}</h4><ul>${doneTexts.map(s => `<li>${escapeHTML(s)}</li>`).join('')}</ul><p class="input-small">${node.status === 'done' ? text('此节点在所列适用条件下已证明；完整主定理在独立目标卡中另行验证。', 'This node is proved under its stated conditions; the complete main theorem is separately verified at the target card.') : text('上述辅助定理只保证所列假设下的蕴含；完整主定理在独立目标卡中另行验证。', 'These auxiliary results verify the implication under their stated hypotheses; the complete main theorem is separately verified at the target card.')}</p></section>` : `<section class="input-completed"><h4 class="input-column-heading">✓ ${text('已证','Proved')}</h4><p class="input-small">${text('此节点尚无已完成的 Lean 声明；下方前提的验证不等于本节点已证。','This node has no completed Lean declaration. Verified premises do not prove this node.')}</p></section>`}</div>${conditions.length ? `<details class="input-conditions"><summary>${text('定理的适用条件（不是完成进度）','Theorem conditions (not completion progress)')}</summary><ul>${conditions.map(s => `<li>${escapeHTML(s)}</li>`).join('')}</ul></details>` : ''}${isOpen && openNodes.length ? `<p class="input-color-note"><span aria-hidden="true">?</span>${text('黄色问号＝此项尚未证明。含此输入的结论目前只完成条件式验证。', 'Yellow question mark = this item is unproved. Results using it are currently verified only conditionally.')}</p>` : ''}</section>`;
 }
 
 export async function installInputProgress() {
   const root = document.querySelector('#overviewPanel');
   if (!root) return;
-  const appScript = document.querySelector('script[src*="app.js?v=20261003-formal-41"]');
+  const appScript = document.querySelector('script[src*="app.js?v=20261004-formal-42"]');
   const proof = appScript ? new URL(appScript.src).searchParams.get('proof') : '';
-  const moduleURL = new URL('./graph-data.js?v=20261003-formal-41', import.meta.url);
+  const moduleURL = new URL('./graph-data.js?v=20261004-formal-42', import.meta.url);
   moduleURL.searchParams.set('v', release);
   if (proof) moduleURL.searchParams.set('proof', proof);
   const {nodes} = await import(moduleURL.href);
@@ -151,7 +151,7 @@ export async function installInputProgress() {
     watch();
   }
   watch();refresh();
-  const snapshotURL=new URL('./snapshot.json?v=20261003-formal-41',import.meta.url);
+  const snapshotURL=new URL('./snapshot.json?v=20261004-formal-42',import.meta.url);
   snapshotURL.searchParams.set('v',proof || release);
   try {const response=await fetch(snapshotURL);if(response.ok){declarations=(await response.json()).declarations||{};refresh(true);}}
   catch { /* The main evidence panel owns snapshot failure reporting. */ }
