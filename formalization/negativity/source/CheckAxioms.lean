@@ -869,3 +869,31 @@ import Negativity
 #print axioms Negativity.complete_integral_curve_cartier_intersection_inverse
 
 #print axioms Negativity.actual_negativity_of_affine_section_cover
+
+#print axioms Negativity.proj_coordinate_ratio_stalk_unit_iff
+
+#print axioms Negativity.proj_coordinate_ratio_stalk_mul
+
+#print axioms Negativity.proj_coordinate_ratio_section_germ
+
+#print axioms Negativity.pulled_proj_coordinate_ratio_local
+
+#print axioms Negativity.pulled_proj_coordinate_ratio_ne_zero
+
+#print axioms Negativity.pulled_proj_coordinate_ratio_mul
+
+#print axioms Negativity.proj_coordinate_generic_of_point
+
+#print axioms Negativity.exists_actual_proj_cartier_atlas
+
+#print axioms Negativity.exists_actual_proj_cartier_affine_section_cover
+
+#print axioms Negativity.exists_actual_proj_sections_of_generators
+
+#print axioms Negativity.mvPolynomial_degree_zero_adjoin_variables
+
+#print axioms Negativity.exists_actual_projective_space_cartier_sections
+
+#print axioms Negativity.exists_actual_projective_exceptional_cartier
+
+#print axioms Negativity.actual_projective_affine_negativity

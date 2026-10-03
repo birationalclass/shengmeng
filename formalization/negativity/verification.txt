@@ -1,7 +1,7 @@
-Verified 2026-10-03T08:51:19+08:00
+Verified 2026-10-03T09:41:13+08:00
 
 $ lake build
-⚠ [3884/4018] Replayed Negativity.NormalExtension
+⚠ [3880/4036] Replayed Negativity.NormalExtension
 warning: Negativity/NormalExtension.lean:128:2: Try this:
   haveI̵
 
@@ -26,7 +26,30 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [3912/4018] Replayed Negativity.AffineLineAvoiding
+⚠ [3919/4036] Replayed Negativity.CartierEffectivity
+warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hz] at he
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Negativity/CartierEffectivity.lean:54:25: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
+
+Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
+⚠ [3920/4036] Replayed Negativity.CartierVanishing
+warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hU
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3950/4036] Replayed Negativity.AffineLineAvoiding
 warning: Negativity/AffineLineAvoiding.lean:49:15: This simp argument is unused:
   AlgHom.coe_comp
 
@@ -59,30 +82,7 @@ Hint: Omit it from the simp argument list.
     MvPolynomial.aeval_C, MvPolynomial.aeval_X]
 
 Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
-⚠ [3917/4018] Replayed Negativity.CartierEffectivity
-warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp [hz] at he
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-warning: Negativity/CartierEffectivity.lean:54:25: Variable name `hx` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _hx
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
-
-Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
-⚠ [3918/4018] Replayed Negativity.CartierVanishing
-warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _hU
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [4005/4018] Replayed Negativity.ZeroPrimeCurve
+⚠ [4023/4036] Replayed Negativity.ZeroPrimeCurve
 warning: Negativity/ZeroPrimeCurve.lean:53:36: Variable name `hC` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -95,8 +95,8 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _hp
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [4017/4018] Built Negativity (13s)
-Build completed successfully (4018 jobs).
+✔ [4035/4036] Built Negativity (12s)
+Build completed successfully (4036 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -699,3 +699,17 @@ $ lake env lean CheckAxioms.lean
  Classical.choice,
  Quot.sound]
 'Negativity.actual_negativity_of_affine_section_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proj_coordinate_ratio_stalk_unit_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proj_coordinate_ratio_stalk_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proj_coordinate_ratio_section_germ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.pulled_proj_coordinate_ratio_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.pulled_proj_coordinate_ratio_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.pulled_proj_coordinate_ratio_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proj_coordinate_generic_of_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_actual_proj_cartier_atlas' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_actual_proj_cartier_affine_section_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_actual_proj_sections_of_generators' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.mvPolynomial_degree_zero_adjoin_variables' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_actual_projective_space_cartier_sections' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.exists_actual_projective_exceptional_cartier' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_projective_affine_negativity' depends on axioms: [propext, Classical.choice, Quot.sound]

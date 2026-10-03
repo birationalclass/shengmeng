@@ -78,8 +78,18 @@ input. Actual affine nonvanishing section-cover geometry implies positive
 intersection on complete closed curves: a proper integral curve cannot lie
 inside an affine open. Negativity (1) is proved given actual Cartier affine
 section-cover data, with no supplied numerical positivity or E witness.
-Construction of those actual data from the relative projective embedding
-and O(1) remains open. General geometric ample positivity,
+Actual Proj coordinate ratios, stalk units and germs, their closed-embedding
+pullbacks, Cartier transitions, effective coordinate sections and affine
+nonvanishing loci are now constructed and proved. Standard polynomial
+degree-one generators supply the cover without additional section data.
+Actual projective-affine negativity (1) is proved for arbitrary real
+Cartier presentations over an affine normal base, with an actual closed
+embedding into standard relative projective space. No Cartier section,
+effective E, exceptional coverage or numerical positivity witness is an
+input. E itself is also constructed in a separate actual existence theorem.
+Global affine-base gluing, relative Chow projectivity and actual proper
+birational fiber connectedness remain for the complete main statements.
+General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T08:51:19+08:00",
+  "checkedAt": "2026-10-03T09:41:13+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "388c0f4d743fccd471d56b9d378ef2a8224101f2504c74e2b99b42f05adc8773"
+      "sha256": "2c0b9123a2db1e8b0c8a4d86be325b0814a92b19fe64735e84cd5dc2882d3785"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "026f0fdb7bc45d7bb2b226d41045988f92758ed6d92498eba1a4a081344132fe"
+      "sha256": "319ff676581dfea3dba8b08a63af768637622a774e6521ba7c2a2319522c4ce5"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,38 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualProjectiveAffineNegativity.lean",
+      "sha256": "b56cb8796704020b7b4c529662381c8048480cb29cd7c9903370f52d3f86cc39"
+    },
+    {
+      "path": "Negativity/ProjectiveExceptionalWitness.lean",
+      "sha256": "f5f688970beef573ab18ec41b7cbd5938f3bed7f1c4dc368d1c2f75ef476c11b"
+    },
+    {
+      "path": "Negativity/ProjPolynomialSections.lean",
+      "sha256": "561dbd735219a0b0fbd4101ec38c3b0c377b0b624784db1f40d7b652cda8bab6"
+    },
+    {
+      "path": "Negativity/ProjStandardSections.lean",
+      "sha256": "f15ff257c82cdfd6b6f2a3cd22c30d4a41560757cac2833a23b4e5f2ce548ddf"
+    },
+    {
+      "path": "Negativity/ProjCartierSections.lean",
+      "sha256": "ae5fbe7f093e7e33f50f9728cd9f317dc7e71f6409045f6a0e6ec0be0bb9c7ca"
+    },
+    {
+      "path": "Negativity/ProjCartierAtlas.lean",
+      "sha256": "4a26e37d6de4a5f573885a0eb454d59cc1e06ab4044f89146c0bd515069b8c45"
+    },
+    {
+      "path": "Negativity/ProjCoordinatePullback.lean",
+      "sha256": "885c64a9880256cff7859e1f161e714cae3f6128c4463c000d1225bfaee903ec"
+    },
+    {
+      "path": "Negativity/ProjCoordinateRatios.lean",
+      "sha256": "a838f0630126179e76f8b34c35e8e11e43110f9761dfeac8bc86ad08d8e11d6a"
     },
     {
       "path": "Negativity/ActualNegativityAffineSections.lean",
@@ -622,6 +654,146 @@
     }
   ],
   "declarations": {
+    "actual_projective_affine_negativity": {
+      "path": "Negativity/ActualProjectiveAffineNegativity.lean",
+      "line": 25,
+      "code": "theorem actual_projective_affine_negativity\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t))\n    (n : ℕ)\n    (j : X ⟶ Proj (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) Γ(Y, ⊤)))\n    [IsClosedImmersion j] :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  classical\n  obtain ⟨A₀, ⟨S⟩⟩ := exists_actual_projective_space_cartier_sections Γ(Y, ⊤) n j\n  let AA (t : τ) := (A t).pointIndexed\n  have hcyc : (∑ t, (AA t).weightedWeilCycle hnX (d t)) =\n      ∑ t, (A t).weightedWeilCycle hnX (d t) := by\n    apply Finset.sum_congr rfl\n    intro t _\n    ext x\n    simp [AA, CartierAtlas.weightedWeilCycle, CartierAtlas.weilCycle,\n      cartierAtlas_pointIndexed_coefficient]\n  have hp : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (AA t).weightedWeilCycle hnX (d t))) := by rwa [hcyc]\n  have hn : ActualRelativeNef k (f ≫ b) f AA (fun t => -d t) := by\n    intro C _ hd g _ hc\n    rw [complete_integral_curve_real_cartier_presentation_independent hnX hd k\n      (g ≫ f ≫ b) g AA A (fun t => -d t) (fun t => -d t)\n      (by intro x; simp [AA, cartierAtlas_pointIndexed_coefficient])]\n    exact hnef C hd g hc\n  have hall := actual_negativity_of_affine_section_cover k b f hf hnX hnY\n    AA d hp hn A₀ S\n  intro x\n  simpa [AA, cartierAtlas_pointIndexed_coefficient] using hall x\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_projective_exceptional_cartier": {
+      "path": "Negativity/ProjectiveExceptionalWitness.lean",
+      "line": 25,
+      "code": "theorem exists_actual_projective_exceptional_cartier\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (n : ℕ)\n    (j : X ⟶ Proj (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) Γ(Y, ⊤)))\n    [IsClosedImmersion j] :\n    ∃ E : CartierAtlas X X, E.Effective ∧\n      (∀ x : X, Order.coheight x = 1 →\n        (∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U)) → 0 < E.coefficient hnX x) ∧\n      (∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n        (i : C ⟶ X) [IsProper (i ≫ f ≫ b)], IsClosedImmersion i →\n        (∀ c : C, f (i c) = f (i (genericPoint C))) →\n        normalizedCartierCurveIntersection hd k (i ≫ f ≫ b) i E < 0) := by\n  obtain ⟨A, ⟨S⟩⟩ := exists_actual_projective_space_cartier_sections Γ(Y, ⊤) n j\n  have hanti : ∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n      (i : C ⟶ X) [IsProper (i ≫ f ≫ b)], IsClosedImmersion i →\n      (∀ c : C, f (i c) = f (i (genericPoint C))) →\n      normalizedCartierCurveIntersection hd k (i ≫ f ≫ b) i A.inverse < 0 := by\n    intro C _ hd i _ hi _hc\n    have := hi\n    rw [complete_integral_curve_cartier_intersection_inverse hnX hd k (i ≫ f ≫ b) i A]\n    exact neg_neg_of_pos (complete_integral_curve_positive_of_affine_section_cover\n      hd k (i ≫ f ≫ b) i A S)\n  obtain ⟨s, hE, hcover⟩ := exists_effective_exceptional_covering_cartier_twist\n    k b f hf hnX hnY A.inverse hanti\n  refine ⟨A.inverse.rationalTwist s, hE, hcover, ?_⟩\n  intro C _ hd i _ hi hc\n  rw [complete_integral_curve_ambient_cartier_principal_invariance\n    hd k (i ≫ f ≫ b) i A.inverse s]\n  exact hanti C hd i hi hc\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "mvPolynomial_degree_zero_adjoin_variables": {
+      "path": "Negativity/ProjPolynomialSections.lean",
+      "line": 20,
+      "code": "theorem mvPolynomial_degree_zero_adjoin_variables\n    (R : Type u) [CommRing R] (κ : Type) :\n    Algebra.adjoin (MvPolynomial.homogeneousSubmodule κ R 0)\n      (Set.range (MvPolynomial.X : κ → MvPolynomial κ R)) = ⊤ := by\n  let S := Algebra.adjoin (MvPolynomial.homogeneousSubmodule κ R 0)\n    (Set.range (MvPolynomial.X : κ → MvPolynomial κ R))\n  apply top_unique\n  intro p hp\n  clear hp\n  change p ∈ S\n  induction p using MvPolynomial.induction_on with\n  | C r =>\n    exact S.algebraMap_mem\n      ⟨MvPolynomial.C r, MvPolynomial.isHomogeneous_C κ r⟩\n  | add p q hp hq => exact S.add_mem hp hq\n  | mul_X p i hp =>\n    exact S.mul_mem hp (Algebra.subset_adjoin (Set.mem_range_self i))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_projective_space_cartier_sections": {
+      "path": "Negativity/ProjPolynomialSections.lean",
+      "line": 42,
+      "code": "theorem exists_actual_projective_space_cartier_sections\n    (R : Type u) [CommRing R] (n : ℕ)\n    {X : Scheme.{u}} [IsIntegral X]\n    (j : X ⟶ Proj (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) R))\n    [IsClosedImmersion j] :\n    ∃ A : CartierAtlas X X, Nonempty (CartierAffineSectionCover A X) := by\n  exact exists_actual_proj_sections_of_generators\n    (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) R) j (d := 1) Nat.zero_lt_one\n    (fun i => ⟨MvPolynomial.X i, MvPolynomial.isHomogeneous_X R i⟩)\n    (mvPolynomial_degree_zero_adjoin_variables R (Fin (n + 1)))\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_proj_sections_of_generators": {
+      "path": "Negativity/ProjStandardSections.lean",
+      "line": 18,
+      "code": "theorem exists_actual_proj_sections_of_generators\n    {R : Type u} {σ : Type*} [CommRing R] [SetLike σ R]\n    [AddSubgroupClass σ R] (𝒜 : ℕ → σ) [GradedRing 𝒜]\n    {X : Scheme.{u}} [IsIntegral X]\n    (j : X ⟶ Proj 𝒜) [IsClosedImmersion j] {d : ℕ} (hd : 0 < d)\n    {κ : Type*} (v : κ → 𝒜 d)\n    (hv : Algebra.adjoin (𝒜 0) (Set.range (fun i => (v i : R))) = ⊤) :\n    ∃ A : CartierAtlas X X, Nonempty (CartierAffineSectionCover A X) := by\n  classical\n  have htop := Proj.iSup_basicOpen_eq_top' 𝒜 (fun i => (v i : R))\n    (fun i => ⟨d, (v i).2⟩) hv\n  have hcover : ∀ x : X, ∃ i, j x ∈ Proj.basicOpen 𝒜 (v i : R) := by\n    intro x\n    apply TopologicalSpace.Opens.mem_iSup.mp\n    rw [htop]\n    trivial\n  choose idx hidx using hcover\n  exact exists_actual_proj_cartier_affine_section_cover 𝒜 j hd\n    (fun x => v (idx x)) hidx\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_proj_cartier_affine_section_cover": {
+      "path": "Negativity/ProjCartierSections.lean",
+      "line": 24,
+      "code": "theorem exists_actual_proj_cartier_affine_section_cover\n    (j : X ⟶ Proj 𝒜) [IsClosedImmersion j] {d : ℕ} (hd : 0 < d)\n    (c : X → 𝒜 d) (hc : ∀ x : X, j x ∈ Proj.basicOpen 𝒜 (c x : R)) :\n    ∃ A : CartierAtlas X X, Nonempty (CartierAffineSectionCover A X) := by\n  classical\n  obtain ⟨A, hA⟩ := exists_actual_proj_cartier_atlas 𝒜 j hd c hc\n  let gen (z : X) := proj_coordinate_generic_of_point 𝒜 j (c z) z (hc z)\n  let a := c (genericPoint X)\n  have ha : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (a : R) := hc (genericPoint X)\n  let mult (z : X) : X.functionFieldˣ := Units.mk0\n    (pulledProjCoordinateRatio 𝒜 j (c z) a ha)\n    (pulled_proj_coordinate_ratio_ne_zero 𝒜 j (c z) a (gen z) ha)\n  let E (z : X) := A.rationalTwist (mult z)\n  have heq (t i : X) : (E t).equation i = Units.mk0\n      (pulledProjCoordinateRatio 𝒜 j (c t) (c i) (gen i))\n      (pulled_proj_coordinate_ratio_ne_zero 𝒜 j (c t) (c i) (gen t) (gen i)) := by\n    apply Units.ext\n    change pulledProjCoordinateRatio 𝒜 j (c t) a ha * (A.equation i : X.functionField) = _\n    rw [(hA i).2]\n    exact pulled_proj_coordinate_ratio_mul 𝒜 j (c t) a (c i) ha (gen i)\n  have hreg (t i : X) (x : X) (hx : x ∈ A.chart i) :\n      algebraMap (X.presheaf.stalk x) X.functionField\n        ((j.stalkMap x).hom (projCoordinateRatioStalk 𝒜 (c t) (c i) (j x)\n          (by rw [(hA i).1] at hx; exact hx))) =\n        ((E t).equation i : X.functionField) := by\n    rw [heq]\n    exact pulled_proj_coordinate_ratio_local 𝒜 j (c t) (c i) (gen i) x\n      (by rw [(hA i).1] at hx; exact hx)\n  have heff : ∀ t, (E t).Effective := by\n    intro t i x hx\n    exact ⟨_, hreg t i x hx⟩\n  have hcomp (t : X) : (⟨(E t).vanishingSupportᶜ,\n      (cartierAtlas_vanishingSupport_isClosed X (E t)).isOpen_compl⟩ : X.Opens) =\n      j ⁻¹ᵁ Proj.basicOpen 𝒜 (c t : R) := by\n    ext x\n    obtain ⟨i, hi⟩ := A.covers x\n    have hi' : j x ∈ Proj.basicOpen 𝒜 (c i : R) := by\n      rw [(hA i).1] at hi\n      exact hi\n    have hs : (x ∉ (E t).vanishingSupport) ↔ j x ∈ Proj.basicOpen 𝒜 (c t : R) := by\n      rw [cartierAtlas_support_eq_on_chart X (E t) i x hi]\n      simp only [not_not]\n      rw [rationalUnitAt_regular_iff X x ((E t).equation i) _ (hreg t i x hi),\n        isUnit_map_iff (j.stalkMap x).hom,\n        proj_coordinate_ratio_stalk_unit_iff 𝒜 (c t) (c i) (j x) hi']\n      rfl\n    exact hs\n  refine ⟨A, ⟨{\n    multiplier := mult\n    effective := heff\n    affine := ?_\n    covers := ?_ }⟩⟩\n  · intro t\n    rw [hcomp t]\n    exact (Proj.isAffineOpen_basicOpen 𝒜 (c t : R) (c t).2 hd).preimage j\n  · intro x\n    refine ⟨x, ?_⟩\n    have hx : x ∈ j ⁻¹ᵁ Proj.basicOpen 𝒜 (c x : R) := hc x\n    rw [← hcomp x] at hx\n    exact hx\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proj_coordinate_generic_of_point": {
+      "path": "Negativity/ProjCartierAtlas.lean",
+      "line": 19,
+      "code": "theorem proj_coordinate_generic_of_point\n    (j : X ⟶ Proj 𝒜) {d : ℕ} (a : 𝒜 d) (x : X)\n    (hx : j x ∈ Proj.basicOpen 𝒜 (a : R)) :\n    j (genericPoint X) ∈ Proj.basicOpen 𝒜 (a : R) := by\n  exact ((genericPoint_spec X).mem_open_set_iff\n    (j ⁻¹ᵁ Proj.basicOpen 𝒜 (a : R)).isOpen).mpr ⟨x, trivial, hx⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_actual_proj_cartier_atlas": {
+      "path": "Negativity/ProjCartierAtlas.lean",
+      "line": 31,
+      "code": "theorem exists_actual_proj_cartier_atlas\n    (j : X ⟶ Proj 𝒜) [IsClosedImmersion j] {d : ℕ} (hd : 0 < d)\n    (c : X → 𝒜 d) (hc : ∀ x : X, j x ∈ Proj.basicOpen 𝒜 (c x : R)) :\n    ∃ A : CartierAtlas X X, ∀ z : X,\n      A.chart z = j ⁻¹ᵁ Proj.basicOpen 𝒜 (c z : R) ∧\n      (A.equation z : X.functionField) =\n        pulledProjCoordinateRatio 𝒜 j (c (genericPoint X)) (c z)\n          (proj_coordinate_generic_of_point 𝒜 j (c z) z (hc z)) := by\n  classical\n  let gen (z : X) := proj_coordinate_generic_of_point 𝒜 j (c z) z (hc z)\n  let a := c (genericPoint X)\n  have ha : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (a : R) := hc (genericPoint X)\n  let eqs (z : X) : X.functionFieldˣ := Units.mk0\n    (pulledProjCoordinateRatio 𝒜 j a (c z) (gen z))\n    (pulled_proj_coordinate_ratio_ne_zero 𝒜 j a (c z) ha (gen z))\n  let A : CartierAtlas X X := {\n    chart z := j ⁻¹ᵁ Proj.basicOpen 𝒜 (c z : R)\n    affine z := (Proj.isAffineOpen_basicOpen 𝒜 (c z : R) (c z).2 hd).preimage j\n    nonempty z := ⟨z, hc z⟩\n    covers z := ⟨z, hc z⟩\n    equation := eqs\n    transition := by\n      intro i l x hi hl\n      have hu := (proj_coordinate_ratio_stalk_unit_iff 𝒜 (c i) (c l) (j x) hl).mpr hi\n      obtain ⟨v, hv⟩ := hu\n      refine ⟨Units.map (j.stalkMap x).hom.toMonoidHom v, ?_⟩\n      apply Units.ext\n      simp only [Units.val_mul, Units.coe_map]\n      change algebraMap (X.presheaf.stalk x) X.functionField\n        ((j.stalkMap x).hom (v : (Proj 𝒜).presheaf.stalk (j x))) *\n        pulledProjCoordinateRatio 𝒜 j a (c i) (gen i) =\n          pulledProjCoordinateRatio 𝒜 j a (c l) (gen l)\n      rw [hv, pulled_proj_coordinate_ratio_local 𝒜 j (c i) (c l) (gen l) x hl, mul_comm]\n      exact pulled_proj_coordinate_ratio_mul 𝒜 j a (c i) (c l) (gen i) (gen l) }\n  exact ⟨A, fun _ => ⟨rfl, rfl⟩⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "pulled_proj_coordinate_ratio_local": {
+      "path": "Negativity/ProjCoordinatePullback.lean",
+      "line": 27,
+      "code": "theorem pulled_proj_coordinate_ratio_local\n    (j : X ⟶ Proj 𝒜) {d : ℕ} (a b : 𝒜 d)\n    (hb : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (b : R))\n    (x : X) (hx : j x ∈ Proj.basicOpen 𝒜 (b : R)) :\n    algebraMap (X.presheaf.stalk x) X.functionField\n      ((j.stalkMap x).hom (projCoordinateRatioStalk 𝒜 a b (j x) hx)) =\n      pulledProjCoordinateRatio 𝒜 j a b hb := by\n  have : Nonempty (j ⁻¹ᵁ Proj.basicOpen 𝒜 (b : R)) := ⟨genericPoint X, hb⟩\n  rw [← proj_coordinate_ratio_section_germ 𝒜 a b (j x) hx]\n  rw [j.germ_stalkMap_apply]\n  exact Scheme.algebraMap_germ_eq_germToFunctionField X hx _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "pulled_proj_coordinate_ratio_ne_zero": {
+      "path": "Negativity/ProjCoordinatePullback.lean",
+      "line": 39,
+      "code": "theorem pulled_proj_coordinate_ratio_ne_zero\n    (j : X ⟶ Proj 𝒜) {d : ℕ} (a b : 𝒜 d)\n    (ha : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (a : R))\n    (hb : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (b : R)) :\n    pulledProjCoordinateRatio 𝒜 j a b hb ≠ 0 := by\n  have hu := (proj_coordinate_ratio_stalk_unit_iff 𝒜 a b (j (genericPoint X)) hb).mpr ha\n  have : Nonempty (j ⁻¹ᵁ Proj.basicOpen 𝒜 (b : R)) := ⟨genericPoint X, hb⟩\n  intro hz\n  have hs : j.app (Proj.basicOpen 𝒜 (b : R)) (projCoordinateRatioSection 𝒜 a b) = 0 := by\n    apply X.germToFunctionField_injective (j ⁻¹ᵁ Proj.basicOpen 𝒜 (b : R))\n    exact hz.trans (map_zero _).symm\n  apply (hu.map (j.stalkMap (genericPoint X)).hom).ne_zero\n  rw [← proj_coordinate_ratio_section_germ 𝒜 a b (j (genericPoint X)) hb,\n    j.germ_stalkMap_apply, hs]\n  exact map_zero _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "pulled_proj_coordinate_ratio_mul": {
+      "path": "Negativity/ProjCoordinatePullback.lean",
+      "line": 59,
+      "code": "theorem pulled_proj_coordinate_ratio_mul\n    (j : X ⟶ Proj 𝒜) {d : ℕ} (a b c : 𝒜 d)\n    (hb : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (b : R))\n    (hc : j (genericPoint X) ∈ Proj.basicOpen 𝒜 (c : R)) :\n    pulledProjCoordinateRatio 𝒜 j a b hb * pulledProjCoordinateRatio 𝒜 j b c hc =\n      pulledProjCoordinateRatio 𝒜 j a c hc := by\n  rw [← pulled_proj_coordinate_ratio_local 𝒜 j a b hb (genericPoint X) hb,\n    ← pulled_proj_coordinate_ratio_local 𝒜 j b c hc (genericPoint X) hc,\n    ← pulled_proj_coordinate_ratio_local 𝒜 j a c hc (genericPoint X) hc,\n    ← map_mul, ← map_mul, proj_coordinate_ratio_stalk_mul]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proj_coordinate_ratio_stalk_unit_iff": {
+      "path": "Negativity/ProjCoordinateRatios.lean",
+      "line": 25,
+      "code": "theorem proj_coordinate_ratio_stalk_unit_iff {d : ℕ} (a b : 𝒜 d)\n    (x : Proj 𝒜) (hb : (b : R) ∉ x.asHomogeneousIdeal) :\n    IsUnit (projCoordinateRatioStalk 𝒜 a b x hb) ↔\n      (a : R) ∉ x.asHomogeneousIdeal := by\n  have : IsLocalHom (Proj.stalkIso 𝒜 x).inv.hom := isLocalHom_of_isIso _\n  rw [projCoordinateRatioStalk, isUnit_map_iff (Proj.stalkIso 𝒜 x).inv.hom,\n    ← HomogeneousLocalization.isUnit_iff_isUnit_val,\n    HomogeneousLocalization.val_mk, Localization.mk_eq_mk',\n    IsLocalization.AtPrime.isUnit_mk'_iff]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proj_coordinate_ratio_stalk_mul": {
+      "path": "Negativity/ProjCoordinateRatios.lean",
+      "line": 36,
+      "code": "theorem proj_coordinate_ratio_stalk_mul {d : ℕ} (a b c : 𝒜 d)\n    (x : Proj 𝒜) (hb : (b : R) ∉ x.asHomogeneousIdeal)\n    (hc : (c : R) ∉ x.asHomogeneousIdeal) :\n    projCoordinateRatioStalk 𝒜 a b x hb * projCoordinateRatioStalk 𝒜 b c x hc =\n      projCoordinateRatioStalk 𝒜 a c x hc := by\n  apply (ConcreteCategory.bijective_of_isIso (Proj.stalkIso 𝒜 x).hom).injective\n  simp only [projCoordinateRatioStalk, map_mul, Iso.inv_hom_id_apply]\n  apply HomogeneousLocalization.val_injective _\n  simp only [HomogeneousLocalization.val_mul, HomogeneousLocalization.val_mk,\n    Localization.mk_mul]\n  rw [Localization.mk_eq_mk_iff, Localization.r_iff_exists]\n  refine ⟨1, ?_⟩\n  simp only [OneMemClass.coe_one, one_mul, Submonoid.coe_mul]\n  ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proj_coordinate_ratio_section_germ": {
+      "path": "Negativity/ProjCoordinateRatios.lean",
+      "line": 61,
+      "code": "theorem proj_coordinate_ratio_section_germ {d : ℕ} (a b : 𝒜 d)\n    (x : Proj 𝒜) (hb : x ∈ Proj.basicOpen 𝒜 b) :\n    (Proj 𝒜).presheaf.germ (Proj.basicOpen 𝒜 b) x hb\n      (projCoordinateRatioSection 𝒜 a b) = projCoordinateRatioStalk 𝒜 a b x hb := by\n  have he := congrArg (fun m => m (HomogeneousLocalization.mk\n    (⟨d, a, b, ⟨1, by simp⟩⟩ : HomogeneousLocalization.NumDenSameDeg 𝒜\n      (Submonoid.powers (b : R)))))\n    (ProjectiveSpectrum.Proj.awayToSection_germ 𝒜 (b : R) x hb)\n  simp only [ConcreteCategory.comp_apply] at he\n  change (Proj 𝒜).presheaf.germ (Proj.basicOpen 𝒜 (b : R)) x hb\n    (projCoordinateRatioSection 𝒜 a b) = (Proj.stalkIso 𝒜 x).inv\n    (HomogeneousLocalization.mapId 𝒜 (Submonoid.powers_le.mpr hb) _) at he\n  rw [he]\n  unfold projCoordinateRatioStalk\n  apply congrArg (Proj.stalkIso 𝒜 x).inv\n  apply HomogeneousLocalization.val_injective _\n  simp [HomogeneousLocalization.mapId, HomogeneousLocalization.map_mk,\n    HomogeneousLocalization.val_mk]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_negativity_of_affine_section_cover": {
       "path": "Negativity/ActualNegativityAffineSections.lean",
       "line": 23,

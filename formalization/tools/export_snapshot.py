@@ -4,6 +4,14 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualProjectiveAffineNegativity.lean': ['actual_projective_affine_negativity'],
+    'ProjectiveExceptionalWitness.lean': ['exists_actual_projective_exceptional_cartier'],
+    'ProjPolynomialSections.lean': ['mvPolynomial_degree_zero_adjoin_variables', 'exists_actual_projective_space_cartier_sections'],
+    'ProjStandardSections.lean': ['exists_actual_proj_sections_of_generators'],
+    'ProjCartierSections.lean': ['exists_actual_proj_cartier_affine_section_cover'],
+    'ProjCartierAtlas.lean': ['proj_coordinate_generic_of_point', 'exists_actual_proj_cartier_atlas'],
+    'ProjCoordinatePullback.lean': ['pulled_proj_coordinate_ratio_local', 'pulled_proj_coordinate_ratio_ne_zero', 'pulled_proj_coordinate_ratio_mul'],
+    'ProjCoordinateRatios.lean': ['proj_coordinate_ratio_stalk_unit_iff', 'proj_coordinate_ratio_stalk_mul', 'proj_coordinate_ratio_section_germ'],
     'ActualNegativityAffineSections.lean': ['actual_negativity_of_affine_section_cover'],
     'CartierInverse.lean': ['cartierAtlas_inverse_coefficient', 'complete_integral_curve_cartier_intersection_inverse'],
     'CartierAffineSections.lean': ['complete_integral_curve_positive_of_affine_section_cover'],
@@ -282,8 +290,18 @@ input. Actual affine nonvanishing section-cover geometry implies positive
 intersection on complete closed curves: a proper integral curve cannot lie
 inside an affine open. Negativity (1) is proved given actual Cartier affine
 section-cover data, with no supplied numerical positivity or E witness.
-Construction of those actual data from the relative projective embedding
-and O(1) remains open. General geometric ample positivity,
+Actual Proj coordinate ratios, stalk units and germs, their closed-embedding
+pullbacks, Cartier transitions, effective coordinate sections and affine
+nonvanishing loci are now constructed and proved. Standard polynomial
+degree-one generators supply the cover without additional section data.
+Actual projective-affine negativity (1) is proved for arbitrary real
+Cartier presentations over an affine normal base, with an actual closed
+embedding into standard relative projective space. No Cartier section,
+effective E, exceptional coverage or numerical positivity witness is an
+input. E itself is also constructed in a separate actual existence theorem.
+Global affine-base gluing, relative Chow projectivity and actual proper
+birational fiber connectedness remain for the complete main statements.
+General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
