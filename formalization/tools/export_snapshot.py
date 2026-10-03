@@ -4,6 +4,22 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'RelativeFormalInjectivity.lean': ['actual_relative_formal_functions_injective'],
+    'AdicComparisonInjectivity.lean': ['adic_comparison_injective_of_uniform_kernel_bound'],
+    'RelativeKernelBound.lean': ['actual_relative_kernel_uniform_bound'],
+    'RelativeKernelFiniteness.lean': ['actual_relative_kernel_rees_module_finite'],
+    'RelativeKernelIntegral.lean': ['integral_of_all_valuation_subrings', 'actual_relative_kernel_monomial_integral'],
+    'ReesFractionField.lean': ['polynomial_scaled_mem_rees', 'rees_algebra_polynomial_fraction_field'],
+    'RelativeKernelWeighted.lean': ['actual_relative_kernel_weighted_valuation_mem'],
+    'AffineValuationBase.lean': ['actual_affine_ring_base_sections', 'actual_affine_ring_base_dominant', 'actual_affine_valuation_generic_dominant'],
+    'WeightedIdealExtension.lean': ['weighted_subring_ideal_mul', 'weighted_ideal_extension_mem'],
+    'RelativeKernelValuative.lean': ['actual_proper_birational_valuation_lift', 'actual_relative_kernel_valuative_contraction'],
+    'ProperBirationalGlobalFiniteness.lean': ['actual_proper_birational_global_functions_finite'],
+    'RelativeKernelFiltration.lean': ['actual_relative_kernel_ideal_mono', 'actual_relative_kernel_ideal_mul', 'actual_relative_kernel_filtration'],
+    'PullbackIdealProducts.lean': ['actual_affine_ideal_pullback_mul', 'actual_open_ideal_pullback_mul', 'actual_ideal_pullback_mul_over_affine_base', 'actual_ideal_pullback_pow_over_affine_base'],
+    'AffinePullbackIdeal.lean': ['actual_affine_ideal_pushforward', 'actual_affine_ideal_pullback'],
+    'RelativeFormalApproximation.lean': ['actual_relative_quotient_map_constant', 'actual_relative_restriction_transition', 'actual_relative_quotient_map_transition', 'actual_relative_formal_functions_bijective_of_uniform_approximation'],
+    'AdicApproximationComparison.lean': ['adic_comparison_bijective_of_uniform_approximation'],
     'ActualProperNegativityFull.lean': ['actual_proper_negativity_of_actual_formal_functions'],
     'GlobalClosedFiberConnectedness.lean': ['actual_closed_fibers_connected_of_affine_formal_functions'],
     'AffineNeighborhoodFiber.lean': ['actual_restricted_fiber_connected_iff'],
@@ -393,8 +409,15 @@ powers and actual scheme pullbacks. A disconnected actual closed-point
 fiber constructs a compatible nontrivial idempotent in its actual section
 limit. The base completion is local without requiring the original affine
 base ring to be local. Bijectivity of this precise constructed comparison
-would therefore give actual closed-fiber connectedness. This bijectivity
-is NOT proved and remains an explicit hypothesis.
+would therefore give actual closed-fiber connectedness. Actual proper birational geometry over an affine finite-type integral
+base over a perfect field now proves a uniform kernel bound, including
+the zero-ideal case. Actual valuative lifts prove homogeneous integrality
+over the Rees algebra, finite normalization gives a finite graded kernel
+module, and filtration stability supplies the uniform shift. The actual
+relative comparison is therefore proved injective for a nonaffine source.
+SURJECTIVITY is NOT proved. The missing actual eventual image-lifting
+bound is still explicit; the full comparison and full second negativity
+conclusion are NOT complete.
 Actual closed fibers are proved proper over the ground field. A genuine
 Chevalley/Jacobson constructible-locus argument proves that closed-fiber
 support dichotomy implies the dichotomy on every fiber. Actual affine

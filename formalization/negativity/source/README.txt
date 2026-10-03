@@ -135,8 +135,15 @@ powers and actual scheme pullbacks. A disconnected actual closed-point
 fiber constructs a compatible nontrivial idempotent in its actual section
 limit. The base completion is local without requiring the original affine
 base ring to be local. Bijectivity of this precise constructed comparison
-would therefore give actual closed-fiber connectedness. This bijectivity
-is NOT proved and remains an explicit hypothesis.
+would therefore give actual closed-fiber connectedness. Actual proper birational geometry over an affine finite-type integral
+base over a perfect field now proves a uniform kernel bound, including
+the zero-ideal case. Actual valuative lifts prove homogeneous integrality
+over the Rees algebra, finite normalization gives a finite graded kernel
+module, and filtration stability supplies the uniform shift. The actual
+relative comparison is therefore proved injective for a nonaffine source.
+SURJECTIVITY is NOT proved. The missing actual eventual image-lifting
+bound is still explicit; the full comparison and full second negativity
+conclusion are NOT complete.
 Actual closed fibers are proved proper over the ground field. A genuine
 Chevalley/Jacobson constructible-locus argument proves that closed-fiber
 support dichotomy implies the dichotomy on every fiber. Actual affine

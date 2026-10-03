@@ -1035,3 +1035,65 @@ import Negativity
 #print axioms Negativity.actual_closed_fibers_connected_of_affine_formal_functions
 
 #print axioms Negativity.actual_proper_negativity_of_actual_formal_functions
+
+#print axioms Negativity.adic_comparison_bijective_of_uniform_approximation
+
+#print axioms Negativity.actual_relative_quotient_map_constant
+
+#print axioms Negativity.actual_relative_restriction_transition
+
+#print axioms Negativity.actual_relative_quotient_map_transition
+
+#print axioms Negativity.actual_relative_formal_functions_bijective_of_uniform_approximation
+
+#print axioms Negativity.actual_affine_ideal_pushforward
+
+#print axioms Negativity.actual_affine_ideal_pullback
+
+#print axioms Negativity.actual_affine_ideal_pullback_mul
+
+#print axioms Negativity.actual_open_ideal_pullback_mul
+
+#print axioms Negativity.actual_ideal_pullback_mul_over_affine_base
+
+#print axioms Negativity.actual_ideal_pullback_pow_over_affine_base
+
+#print axioms Negativity.actual_relative_kernel_ideal_mono
+
+#print axioms Negativity.actual_relative_kernel_ideal_mul
+
+#print axioms Negativity.actual_relative_kernel_filtration
+
+#print axioms Negativity.actual_proper_birational_global_functions_finite
+
+#print axioms Negativity.actual_proper_birational_valuation_lift
+
+#print axioms Negativity.actual_relative_kernel_valuative_contraction
+
+#print axioms Negativity.weighted_subring_ideal_mul
+
+#print axioms Negativity.weighted_ideal_extension_mem
+
+#print axioms Negativity.actual_affine_ring_base_sections
+
+#print axioms Negativity.actual_affine_ring_base_dominant
+
+#print axioms Negativity.actual_affine_valuation_generic_dominant
+
+#print axioms Negativity.actual_relative_kernel_weighted_valuation_mem
+
+#print axioms Negativity.polynomial_scaled_mem_rees
+
+#print axioms Negativity.rees_algebra_polynomial_fraction_field
+
+#print axioms Negativity.integral_of_all_valuation_subrings
+
+#print axioms Negativity.actual_relative_kernel_monomial_integral
+
+#print axioms Negativity.actual_relative_kernel_rees_module_finite
+
+#print axioms Negativity.actual_relative_kernel_uniform_bound
+
+#print axioms Negativity.adic_comparison_injective_of_uniform_kernel_bound
+
+#print axioms Negativity.actual_relative_formal_functions_injective

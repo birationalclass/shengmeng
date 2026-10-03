@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-formal-38';
+const release = '20261003-formal-39';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -15,16 +15,16 @@ const gaps = {
        'Prove that coordinate sections are effective and their affine nonvanishing loci cover X.']]
   },
   properformalfunctions: {
-    zh: ['证明实际 proper 形式函数比较双射',
-      'Γ(U)̂_m → limₙ Γ(X_U×_U Uₙ,𝒪) 是双射；X_U 不要求仿射。',
-      ['实际比较映射、每阶取值、相容非平凡幂等元和局部完备环均已构造。',
-       '闭纤维连通到全部纤维支撑二择一及完整双结论的条件式衔接均已证明。',
-       '待证明这个真正非仿射的比较双射性，去掉显式 hff；完整定理仍未完成。']],
-    en: ['Prove actual proper formal-functions bijectivity',
-      'Γ(U)̂_m → limₙ Γ(X_U×_U Uₙ,O) must be bijective; X_U need not be affine.',
-      ['The actual comparison, evaluations, compatible nontrivial idempotents and local completion are constructed.',
-       'Closed-fiber connectedness to all-fiber support and the conditional two-part deduction are proved.',
-       'Prove this genuinely nonaffine bijectivity to remove explicit hff. The complete theorem remains open.']]
+    zh: ['证明实际 proper 形式函数满射',
+      '∃c ∀n：Γ(Xₙ₊꜀,𝒪)→Γ(Xₙ,𝒪) 的像来自 Γ(Y,𝒪)。',
+      ['已证明：实际核过滤的 Rees 有限生成和统一核界，未假定有限生成。',
+       '已证明：实际非仿射比较映射单射；底域 perfect，仿射底整且有限型。',
+       '待证明：实际截面提升界，从而给出满射并去掉 hff。这里需要一阶上同调控制，完整定理仍未完成。']],
+    en: ['Prove actual proper formal-functions surjectivity',
+      '∃c ∀n: the image Γ(Xₙ₊꜀,O)→Γ(Xₙ,O) comes from Γ(Y,O).',
+      ['Proved: finite generation of the actual kernel Rees module and a uniform kernel bound; finite generation is not assumed.',
+       'Proved: injectivity of the actual nonaffine comparison over a perfect finite-type affine integral base.',
+       'Open: the actual section-lifting bound, then surjectivity and removal of hff. First-cohomology control is needed; the complete theorem remains open.']]
   },
   chow: {
     zh: ['完成 Chow 构造的射影性',
@@ -39,6 +39,8 @@ const gaps = {
 };
 
 const verifiedSteps = [
+  ['actual_relative_kernel_uniform_bound', ['实际 proper 限制的统一核界已证明。', 'The uniform kernel bound for actual proper restriction is proved.']],
+  ['actual_relative_formal_functions_injective', ['实际非仿射形式函数比较映射单射已证明。', 'Injectivity of the actual nonaffine formal-functions comparison is proved.']],
   ['actual_relative_formal_functions_evaluation', ['真实非仿射相对比较映射及取值公式已构造。', 'The actual nonaffine relative comparison and evaluations are constructed.']],
   ['actual_closed_fiber_infinitesimal_nontrivial_idempotent', ['真实闭点纤维的相容非平凡幂等元已构造。', 'Compatible nontrivial idempotents from actual closed-point fibers are constructed.']],
   ['actual_closed_point_completion_local', ['真实闭点最大理想的完备环为局部环已证明。', 'The actual closed-point maximal-ideal completion is proved local.']],
@@ -62,7 +64,7 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
   const hasCoordinateGap = openNodes.some(n => n.id === 'projectivesections');
   const relevant = new Set();
   if (hasCoordinateGap) for (const name of verifiedSteps.slice(0,4).map(s => s[0])) relevant.add(name);
-  if (openNodes.some(n => n.id === 'properformalfunctions')) for (const name of ['actual_relative_formal_functions_evaluation','actual_closed_fiber_infinitesimal_nontrivial_idempotent','actual_closed_point_completion_local','actual_fiber_closed_subset_dichotomy_of_closed_points']) relevant.add(name);
+  if (openNodes.some(n => n.id === 'properformalfunctions')) for (const name of ['actual_relative_kernel_uniform_bound','actual_relative_formal_functions_injective','actual_relative_formal_functions_evaluation','actual_closed_fiber_infinitesimal_nontrivial_idempotent','actual_closed_point_completion_local','actual_fiber_closed_subset_dichotomy_of_closed_points']) relevant.add(name);
   if (openNodes.some(n => n.id === 'chow')) for (const name of ['finiteType_perfectField_normalization_isFinite','exists_embedded_complete_curve_real_projection_formula','actual_relative_nef_canonical_pullback']) relevant.add(name);
   const proved = verifiedSteps.filter(([name]) => relevant.has(name) && declarations[name]);
   const explicitDone = inputs.filter(s => /^(已完成|已证明|Proved|Verified|Completed)\s*[:：]/i.test(s));

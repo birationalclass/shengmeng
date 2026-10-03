@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T15:38:44+08:00",
+  "checkedAt": "2026-10-03T18:02:14+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "26c5fb67f4b6909c6abe1e911e85b0ef30be2f955e2288b4f0ad0f277b45be0f",
-      "lineCount": 393
+      "sha256": "ad6f7a00032fbf1be0f3d483ac4bcd3a649e297654eff7442628e2a19ff0c131",
+      "lineCount": 425
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "0807e72e33c3230af8513ad3da15c277f2164efbb0b097489cb1fe8b58117850",
-      "lineCount": 1037
+      "sha256": "b4f32e4ee83054d5fce94c70f8398c0d3463031f033184e377602f743fb49919",
+      "lineCount": 1099
     },
     {
       "path": "lakefile.toml",
@@ -34,6 +34,86 @@
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a",
       "lineCount": 18
+    },
+    {
+      "path": "Negativity/RelativeFormalInjectivity.lean",
+      "sha256": "1514732e2bca95ec4a44dfb54c7ced1c7bff733791c7ebfa5d5a859487849e33",
+      "lineCount": 46
+    },
+    {
+      "path": "Negativity/AdicComparisonInjectivity.lean",
+      "sha256": "ed94c1a2d6f9fdf86ab221468f93f127b98addd5452d0813c56ed51052fd0ca5",
+      "lineCount": 55
+    },
+    {
+      "path": "Negativity/RelativeKernelBound.lean",
+      "sha256": "5b20172b233fcefc83afe173bfec637e79d48ce31c5804c03099bdc2d051ef32",
+      "lineCount": 74
+    },
+    {
+      "path": "Negativity/RelativeKernelFiniteness.lean",
+      "sha256": "1f5d0aa924b105e3c7e451c6a32083b184bc9d70d9084ed887584fe8ac481236",
+      "lineCount": 60
+    },
+    {
+      "path": "Negativity/RelativeKernelIntegral.lean",
+      "sha256": "34215dd9bc906bc53b782a02379a0f03e72eb4ee412647b0eaaea90aa670b1f5",
+      "lineCount": 68
+    },
+    {
+      "path": "Negativity/ReesFractionField.lean",
+      "sha256": "7f4519d2f9a7e7c12f11e38a949e5a0fc233f5cb64c8f09d1a14f26cf1804bdf",
+      "lineCount": 59
+    },
+    {
+      "path": "Negativity/RelativeKernelWeighted.lean",
+      "sha256": "a24c8ab4e46ba2a49fd411d3d4b128181d0ece924c86d4960e1882d624446d92",
+      "lineCount": 42
+    },
+    {
+      "path": "Negativity/AffineValuationBase.lean",
+      "sha256": "14d921209fd6ed5bd664530bde7d9159493e685f0c843948ada682da3c1856de",
+      "lineCount": 73
+    },
+    {
+      "path": "Negativity/WeightedIdealExtension.lean",
+      "sha256": "5aafb0abe06a7e80bff9a9509f07464d349e48c9adc54158603551e2596885ab",
+      "lineCount": 68
+    },
+    {
+      "path": "Negativity/RelativeKernelValuative.lean",
+      "sha256": "4ea5a983fde0bdc6410186672d1844dab7d847f37424ea2cc1125f4b3ba389c9",
+      "lineCount": 79
+    },
+    {
+      "path": "Negativity/ProperBirationalGlobalFiniteness.lean",
+      "sha256": "a9780e98ed9e2b11918d71bb3e2a78ca03d654da1fcfecbbd1cf6f2f34e9bcde",
+      "lineCount": 68
+    },
+    {
+      "path": "Negativity/RelativeKernelFiltration.lean",
+      "sha256": "061b7e6908ced10010d70fe34adc343abc7f5905f83df6088bac709b479e8806",
+      "lineCount": 76
+    },
+    {
+      "path": "Negativity/PullbackIdealProducts.lean",
+      "sha256": "95608d7ccd864a0d14536b905f4d54c9f535477a151307d958ad272c17f7a930",
+      "lineCount": 67
+    },
+    {
+      "path": "Negativity/AffinePullbackIdeal.lean",
+      "sha256": "966f20538b0077795aab77041aa6d3b375535886d3a86d67b42ee540355580b3",
+      "lineCount": 53
+    },
+    {
+      "path": "Negativity/RelativeFormalApproximation.lean",
+      "sha256": "276ca587ac07cdabc9706cd78f61c0f420514737623aa8b79e8772fb855e16a8",
+      "lineCount": 99
+    },
+    {
+      "path": "Negativity/AdicApproximationComparison.lean",
+      "sha256": "72a3046ce58ea0e3a8f688fdce0cc4c3c0332ff977863526f4942ffa09f35740",
+      "lineCount": 143
     },
     {
       "path": "Negativity/ActualProperNegativityFull.lean",
@@ -1027,6 +1107,316 @@
     }
   ],
   "declarations": {
+    "actual_relative_formal_functions_injective": {
+      "path": "Negativity/RelativeFormalInjectivity.lean",
+      "line": 20,
+      "code": "theorem actual_relative_formal_functions_injective\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (k : Type u) [Field k] [PerfectField k]\n    [Algebra k Γ(Y, ⊤)] [Algebra.FiniteType k Γ(Y, ⊤)]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) :\n    Function.Injective (actualRelativeFormalFunctionsMap f I) := by\n  obtain ⟨c, hc⟩ := actual_relative_kernel_uniform_bound k f hf I\n  let K := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let B (n : ℕ) : Type u := Γ(actualRelativePowerThickening f I n, ⊤)\n  let t {m n : ℕ} (h : m ≤ n) : B n →+* B m :=\n    (actualRelativePowerInclusion f I h).appTop.hom\n  let q (n : ℕ) : (Γ(Y, ⊤) ⧸ K ^ (n + 1)) →+* B n :=\n    actualRelativeQuotientMap f I n\n  have hq : ∀ {m n : ℕ} (h : m ≤ n) (a : Γ(Y, ⊤) ⧸ K ^ (n + 1)),\n      t h (q n a) = q m (Ideal.Quotient.factor\n        (Ideal.pow_le_pow_right (Nat.add_le_add_right h 1)) a) :=\n    fun h a => actual_relative_quotient_map_transition f I h a\n  change Function.Injective (adicApproximationComparison K B t q hq)\n  apply adic_comparison_injective_of_uniform_kernel_bound K B t q hq c\n  intro n r hr\n  apply hc n\n  change actualRelativeRestriction f I (n + c) r = 0\n  exact (actual_relative_quotient_map_constant f I (n + c) r).symm.trans hr\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "adic_comparison_injective_of_uniform_kernel_bound": {
+      "path": "Negativity/AdicComparisonInjectivity.lean",
+      "line": 16,
+      "code": "theorem adic_comparison_injective_of_uniform_kernel_bound\n    {R : Type u} [CommRing R] (I : Ideal R)\n    (B : ℕ → Type v) [∀ n, CommRing (B n)]\n    (t : ∀ {m n : ℕ}, m ≤ n → (B n →+* B m))\n    (q : ∀ n, (R ⧸ I ^ (n + 1)) →+* B n)\n    (htq : ∀ {m n : ℕ} (h : m ≤ n) (a : R ⧸ I ^ (n + 1)),\n      t h (q n a) = q m (Ideal.Quotient.factor\n        (Ideal.pow_le_pow_right (Nat.add_le_add_right h 1)) a))\n    (c : ℕ)\n    (hker : ∀ n (r : R), q (n + c) (Ideal.Quotient.mk _ r) = 0 →\n      r ∈ I ^ (n + 1)) :\n    Function.Injective (adicApproximationComparison I B t q htq) := by\n  let P := adicApproximationComparison I B t q htq\n  intro a b hab\n  have hz : P (a - b) = 0 := by rw [map_sub, hab, sub_self]\n  have he : ∀ n, q n (AdicCompletion.evalₐ I (n + 1) (a - b)) = 0 := by\n    intro n\n    exact congrArg (fun x : compatibleRingElements B t => x.1 n) hz\n  have hab0 : a - b = 0 := by\n    apply AdicCompletion.ext_evalₐ\n    intro n\n    cases n with\n    | zero =>\n      have : Subsingleton (R ⧸ I ^ 0) := by simp [pow_zero]\n      exact Subsingleton.elim _ _\n    | succ n =>\n      obtain ⟨r, hr⟩ := Ideal.Quotient.mk_surjective\n        (AdicCompletion.evalₐ I (n + c + 1) (a - b))\n      have hk : r ∈ I ^ (n + 1) := hker n r (by rw [hr]; exact he (n + c))\n      have hp := adic_completion_power_eval_transition I\n        (show n + 1 ≤ n + c + 1 by omega) (a - b)\n      rw [← hr] at hp\n      change Ideal.Quotient.mk (I ^ (n + 1)) r =\n        AdicCompletion.evalₐ I (n + 1) (a - b) at hp\n      rw [← hp, map_zero]\n      exact Ideal.Quotient.eq_zero_iff_mem.mpr hk\n  exact sub_eq_zero.mp hab0\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_uniform_bound": {
+      "path": "Negativity/RelativeKernelBound.lean",
+      "line": 21,
+      "code": "theorem actual_relative_kernel_uniform_bound\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (k : Type u) [Field k] [PerfectField k]\n    [Algebra k Γ(Y, ⊤)] [Algebra.FiniteType k Γ(Y, ⊤)]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) :\n    ∃ c : ℕ, ∀ n, RingHom.ker (actualRelativeRestriction f I (n + c)) ≤\n      (I.ideal ⟨⊤, isAffineOpen_top Y⟩) ^ (n + 1) := by\n  let R := Γ(Y, ⊤)\n  let J := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let F := actualRelativeKernelFiltration f I\n  have hk := (actual_relative_kernel_filtration f I).2.1\n  by_cases hJ : J = ⊥\n  · have hI : I = ⊥ := by\n      apply le_antisymm (IdealSheafData.le_of_isAffine ?_) bot_le\n      change J ≤ (⊥ : Ideal R)\n      rw [hJ]\n    have : IsDominant f := birationalMorphism_dominant f hf\n    have : IsSchemeTheoreticallyDominant f := .of_isDominant f\n    refine ⟨0, fun n => ?_⟩\n    rw [← hk]\n    have hp : I ^ (n + 1) = ⊥ := by\n      ext U\n      simp only [IdealSheafData.ideal_pow, Pi.pow_apply, hI,\n        IdealSheafData.ideal_bot]\n      simp\n    simp only [actualRelativeKernelFiltration, actualRelativeKernelIdeal, hp,\n      IdealSheafData.comap_bot, IdealSheafData.map_bot, f.ker_eq_bot,\n      IdealSheafData.ideal_bot]\n    change (⊥ : Ideal R) ≤ _\n    exact bot_le\n  · have : IsNoetherianRing R := Algebra.FiniteType.isNoetherianRing k R\n    have : Module.Finite (reesAlgebra J) F.submodule :=\n      actual_relative_kernel_rees_module_finite k f hf I hJ\n    have hstable : F.Stable :=\n      (F.submodule_fg_iff_stable (fun n => IsNoetherian.noetherian (F.N n))).mp\n        (Module.Finite.iff_fg.mp inferInstance)\n    let G := J.stableFiltration (⊤ : Submodule R R)\n    obtain ⟨c, hc⟩ := hstable.exists_forall_le (F' := G) (by\n      simp [G, Ideal.stableFiltration])\n    refine ⟨c, fun n => ?_⟩\n    rw [← hk]\n    have hn := hc (n + 1)\n    have hg : G.N (n + 1) = J ^ (n + 1) := by\n      change J ^ (n + 1) • (⊤ : Submodule R R) = _\n      simpa only [Ideal.smul_eq_mul, Ideal.mul_top]\n    rw [hg] at hn\n    change F.N ((n + c) + 1) ≤ J ^ (n + 1)\n    have hi : (n + c) + 1 = (n + 1) + c := by omega\n    rw [hi]\n    exact hn\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_rees_module_finite": {
+      "path": "Negativity/RelativeKernelFiniteness.lean",
+      "line": 19,
+      "code": "theorem actual_relative_kernel_rees_module_finite\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (k : Type u) [Field k] [PerfectField k]\n    [Algebra k Γ(Y, ⊤)] [Algebra.FiniteType k Γ(Y, ⊤)]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) (hI : I.ideal ⟨⊤, isAffineOpen_top Y⟩ ≠ ⊥) :\n    Module.Finite (reesAlgebra (I.ideal ⟨⊤, isAffineOpen_top Y⟩))\n      (actualRelativeKernelFiltration f I).submodule := by\n  let R := Γ(Y, ⊤)\n  let J := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let A := reesAlgebra J\n  let F := FractionRing (Polynomial R)\n  have : IsNoetherianRing R := Algebra.FiniteType.isNoetherianRing k R\n  have : Algebra.FiniteType k A := Algebra.FiniteType.trans\n    (inferInstance : Algebra.FiniteType k R) (inferInstance : Algebra.FiniteType R A)\n  have : IsFractionRing A F := rees_algebra_polynomial_fraction_field J hI\n  have : Module.Finite A (integralClosure A F) :=\n    finiteType_perfectField_integralClosure_finite k A F F\n  let N := (actualRelativeKernelFiltration f I).submodule\n  let e := (PolynomialModule.equivPolynomialSelf (R := R)).restrictScalars A\n  let l : N →ₗ[A] F := ((Algebra.linearMap (Polynomial R) F).restrictScalars A).comp\n    (e.toLinearMap.comp N.subtype)\n  have hl (p : N) : l p ∈ (integralClosure A F).toSubmodule := by\n    let q := e p.1\n    change IsIntegral A (algebraMap (Polynomial R) F q)\n    rw [q.as_sum_support, map_sum]\n    apply IsIntegral.sum\n    intro n _hn\n    have hp : q.coeff n ∈ actualRelativeKernelIdeal f I n := by\n      change p.1.coeff n ∈ (actualRelativeKernelFiltration f I).N n\n      exact p.property n\n    exact actual_relative_kernel_monomial_integral f hf I n (q.coeff n) hp\n  let lc := l.codRestrict (integralClosure A F).toSubmodule hl\n  apply Module.Finite.of_injective lc\n  intro p q hpq\n  apply Subtype.ext\n  apply e.injective\n  apply IsFractionRing.injective (Polynomial R) F\n  exact congrArg Subtype.val hpq\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "integral_of_all_valuation_subrings": {
+      "path": "Negativity/RelativeKernelIntegral.lean",
+      "line": 15,
+      "code": "theorem integral_of_all_valuation_subrings\n    (A F : Type*) [CommRing A] [Field F] [Algebra A F] (x : F)\n    (hx : ∀ V : ValuationSubring F,\n      (∀ a : A, algebraMap A F a ∈ V) → x ∈ V) : IsIntegral A x := by\n  by_contra hn\n  have hn' : x ∉ (integralClosure A F).toSubring := hn\n  obtain ⟨V, hV, hxV⟩ :=\n    Subring.exists_le_valuationSubring_of_isIntegrallyClosedIn hn'\n  exact hxV (hx V fun a => hV ((integralClosure A F).algebraMap_mem a))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_monomial_integral": {
+      "path": "Negativity/RelativeKernelIntegral.lean",
+      "line": 30,
+      "code": "theorem actual_relative_kernel_monomial_integral\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) (n : ℕ)\n    (r : Γ(Y, ⊤)) (hr : r ∈ actualRelativeKernelIdeal f I n) :\n    IsIntegral (reesAlgebra (I.ideal ⟨⊤, isAffineOpen_top Y⟩))\n      (algebraMap (Polynomial Γ(Y, ⊤)) (FractionRing (Polynomial Γ(Y, ⊤)))\n        (monomial n r)) := by\n  let R := Γ(Y, ⊤)\n  let J := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let F := FractionRing (Polynomial R)\n  let ρ := algebraMap (Polynomial R) F\n  let φ : R →+* F := ρ.comp Polynomial.C\n  apply integral_of_all_valuation_subrings (reesAlgebra J) F\n  intro V hV\n  have hφ (s : R) : φ s ∈ V :=\n    hV ⟨Polynomial.C s, (reesAlgebra J).algebraMap_mem s⟩\n  let g : R →+* V := {\n    toFun s := ⟨φ s, hφ s⟩\n    map_zero' := Subtype.ext (map_zero φ)\n    map_one' := Subtype.ext (map_one φ)\n    map_add' s t := Subtype.ext (map_add φ s t)\n    map_mul' s t := Subtype.ext (map_mul φ s t) }\n  have hg : Function.Injective g := by\n    intro s t hst\n    exact ((IsFractionRing.injective (Polynomial R) F).comp Polynomial.C_injective)\n      (congrArg Subtype.val hst)\n  have hJ (s : R) (hs : s ∈ J) : (g s : F) * ρ Polynomial.X ∈ V := by\n    change ρ (Polynomial.C s) * ρ Polynomial.X ∈ V\n    have hm := hV ⟨monomial 1 s, reesAlgebra.monomial_mem.mpr (by simpa using hs)⟩\n    change ρ (monomial 1 s) ∈ V at hm\n    simpa only [← C_mul_X_pow_eq_monomial, pow_one, map_mul] using hm\n  have hw := actual_relative_kernel_weighted_valuation_mem f hf I n F V g hg\n    (ρ Polynomial.X) hJ r hr\n  change ρ (Polynomial.C r) * (ρ Polynomial.X) ^ n ∈ V at hw\n  simpa only [← C_mul_X_pow_eq_monomial, map_mul, map_pow] using hw\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "polynomial_scaled_mem_rees": {
+      "path": "Negativity/ReesFractionField.lean",
+      "line": 18,
+      "code": "theorem polynomial_scaled_mem_rees\n    (I : Ideal R) {a : R} (ha : a ∈ I) (p : R[X]) (n : ℕ)\n    (hn : p.natDegree ≤ n) : C (a ^ n) * p ∈ reesAlgebra I := by\n  intro i\n  rw [coeff_C_mul]\n  by_cases hi : i ≤ p.natDegree\n  · exact Ideal.mul_mem_right _ _\n      ((Ideal.pow_le_pow_right (hi.trans hn)) (Ideal.pow_mem_pow ha n))\n  · rw [coeff_eq_zero_of_natDegree_lt (lt_of_not_ge hi), mul_zero]\n    exact Ideal.zero_mem _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "rees_algebra_polynomial_fraction_field": {
+      "path": "Negativity/ReesFractionField.lean",
+      "line": 33,
+      "code": "theorem rees_algebra_polynomial_fraction_field (I : Ideal R) (hI : I ≠ ⊥) :\n    letI := reesPolynomialFractionAlgebra I\n    IsFractionRing (reesAlgebra I) (FractionRing R[X]) := by\n  let : Algebra (reesAlgebra I) (FractionRing R[X]) := reesPolynomialFractionAlgebra I\n  have hinj : Function.Injective (algebraMap (reesAlgebra I) (FractionRing R[X])) :=\n    (IsFractionRing.injective R[X] (FractionRing R[X])).comp Subtype.val_injective\n  have : FaithfulSMul (reesAlgebra I) (FractionRing R[X]) :=\n    (faithfulSMul_iff_algebraMap_injective _ _).mpr hinj\n  obtain ⟨a, ha, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hI\n  apply IsFractionRing.of_field\n  intro z\n  obtain ⟨p, q, _hq, rfl⟩ := IsFractionRing.div_surjective R[X] z\n  let n := max p.natDegree q.natDegree\n  let c := C (a ^ n)\n  have hc : c ≠ 0 := by simp [c, ha0]\n  refine ⟨⟨c * p, polynomial_scaled_mem_rees I ha p n (le_max_left _ _)⟩,\n    ⟨c * q, polynomial_scaled_mem_rees I ha q n (le_max_right _ _)⟩, ?_⟩\n  change algebraMap R[X] (FractionRing R[X]) p /\n      algebraMap R[X] (FractionRing R[X]) q =\n    algebraMap R[X] (FractionRing R[X]) (c * p) /\n      algebraMap R[X] (FractionRing R[X]) (c * q)\n  simp only [map_mul]\n  rw [mul_div_mul_left _ _ ((map_ne_zero_iff _\n    (IsFractionRing.injective R[X] (FractionRing R[X]))).mpr hc)]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_weighted_valuation_mem": {
+      "path": "Negativity/RelativeKernelWeighted.lean",
+      "line": 19,
+      "code": "theorem actual_relative_kernel_weighted_valuation_mem\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) (n : ℕ)\n    (F : Type u) [Field F] (V : ValuationSubring F)\n    (g : Γ(Y, ⊤) →+* V) (hg : Function.Injective g) (t : F)\n    (hI : ∀ r ∈ I.ideal ⟨⊤, isAffineOpen_top Y⟩, (g r : F) * t ∈ V)\n    (r : Γ(Y, ⊤)) (hr : r ∈ actualRelativeKernelIdeal f I n) :\n    (g r : F) * t ^ n ∈ V := by\n  let b := actualAffineRingBase Y g\n  have : IsDominant (Spec.map (CommRingCat.ofHom (algebraMap V F)) ≫ b) :=\n    actual_affine_valuation_generic_dominant Y V F g hg\n  have hcon := actual_relative_kernel_valuative_contraction f hf I n V F b\n  have he : (Scheme.ΓSpecIso (.of V)).hom.hom.comp b.appTop.hom = g :=\n    congrArg CommRingCat.Hom.hom (actual_affine_ring_base_sections Y g)\n  have hc : (actualRelativeKernelIdeal f I n).map g ≤\n      (I.ideal ⟨⊤, isAffineOpen_top Y⟩ ^ n).map g := by\n    have hm := Ideal.map_mono (f := (Scheme.ΓSpecIso (.of V)).hom.hom) hcon\n    simpa only [Ideal.map_map, he] using hm\n  exact weighted_ideal_extension_mem (I.ideal ⟨⊤, isAffineOpen_top Y⟩)\n    V.toSubring g t hI n (g r) (hc (Ideal.mem_map_of_mem g hr))\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_ring_base_sections": {
+      "path": "Negativity/AffineValuationBase.lean",
+      "line": 20,
+      "code": "theorem actual_affine_ring_base_sections (Y : Scheme.{u}) [IsAffine Y]\n    {V : Type u} [CommRing V] (g : Γ(Y, ⊤) →+* V) :\n    (actualAffineRingBase Y g).appTop ≫ (Scheme.ΓSpecIso (.of V)).hom =\n      CommRingCat.ofHom g := by\n  rw [actualAffineRingBase, Scheme.Hom.comp_appTop, Category.assoc]\n  have hn := Scheme.SpecΓIdentity.hom.naturality (CommRingCat.ofHom g)\n  change (Spec.map (CommRingCat.ofHom g)).appTop ≫ (Scheme.ΓSpecIso (.of V)).hom =\n    (Scheme.ΓSpecIso Γ(Y, ⊤)).hom ≫ CommRingCat.ofHom g at hn\n  rw [hn]\n  have hh : Y.isoSpec.inv.appTop ≫ (Scheme.ΓSpecIso Γ(Y, ⊤)).hom = 𝟙 _ := by\n    rw [← Scheme.toSpecΓ_appTop]\n    change Y.isoSpec.inv.appTop ≫ Y.isoSpec.hom.appTop = _\n    rw [← Scheme.Hom.comp_appTop, Y.isoSpec.hom_inv_id]\n    simp\n  rw [← Category.assoc, hh, Category.id_comp]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_ring_base_dominant": {
+      "path": "Negativity/AffineValuationBase.lean",
+      "line": 36,
+      "code": "theorem actual_affine_ring_base_dominant (Y : Scheme.{u}) [IsAffine Y]\n    {V : Type u} [CommRing V] (g : Γ(Y, ⊤) →+* V)\n    (hg : Function.Injective g) : IsDominant (actualAffineRingBase Y g) := by\n  have : IsDominant (Spec.map (CommRingCat.ofHom g)) := by\n    constructor\n    apply (PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical g).mpr\n    intro r hr\n    have hr0 : g r = 0 := hr\n    have : r = 0 := hg (hr0.trans (map_zero g).symm)\n    simpa [this] using (Ideal.zero_mem (nilradical Γ(Y, ⊤)))\n  dsimp [actualAffineRingBase]\n  infer_instance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_valuation_generic_dominant": {
+      "path": "Negativity/AffineValuationBase.lean",
+      "line": 52,
+      "code": "theorem actual_affine_valuation_generic_dominant\n    (Y : Scheme.{u}) [IsAffine Y]\n    (V K : Type u) [CommRing V] [IsDomain V] [ValuationRing V]\n    [Field K] [Algebra V K] [IsFractionRing V K]\n    (g : Γ(Y, ⊤) →+* V) (hg : Function.Injective g) :\n    IsDominant (Spec.map (CommRingCat.ofHom (algebraMap V K)) ≫\n      actualAffineRingBase Y g) := by\n  have : IsDominant (actualAffineRingBase Y g) :=\n    actual_affine_ring_base_dominant Y g hg\n  have : IsDominant (Spec.map (CommRingCat.ofHom (algebraMap V K))) := by\n    constructor\n    apply (PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical\n      (algebraMap V K)).mpr\n    intro r hr\n    have hr0 : algebraMap V K r = 0 := hr\n    have : r = 0 := (IsFractionRing.injective V K)\n      (hr0.trans (map_zero (algebraMap V K)).symm)\n    simpa [this] using (Ideal.zero_mem (nilradical V))\n  infer_instance\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "weighted_subring_ideal_mul": {
+      "path": "Negativity/WeightedIdealExtension.lean",
+      "line": 30,
+      "code": "theorem weighted_subring_ideal_mul (V : Subring F) (t : F) (n : ℕ) :\n    weightedSubringIdeal V t 1 * weightedSubringIdeal V t n ≤\n      weightedSubringIdeal V t (n + 1) := by\n  apply Ideal.mul_le.mpr\n  intro r hr s hs\n  change (r : F) * t ^ 1 ∈ V at hr\n  change (s : F) * t ^ n ∈ V at hs\n  change ((r * s : V) : F) * t ^ (n + 1) ∈ V\n  have hh := V.mul_mem hr hs\n  change ((r : F) * t ^ 1) * ((s : F) * t ^ n) ∈ V at hh\n  convert hh using 1 <;> simp only [Subring.coe_mul, pow_succ] <;> ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "weighted_ideal_extension_mem": {
+      "path": "Negativity/WeightedIdealExtension.lean",
+      "line": 46,
+      "code": "theorem weighted_ideal_extension_mem\n    (I : Ideal R) (V : Subring F) (g : R →+* V) (t : F)\n    (hI : ∀ r ∈ I, (g r : F) * t ∈ V)\n    (n : ℕ) (r : V) (hr : r ∈ (I ^ n).map g) :\n    (r : F) * t ^ n ∈ V := by\n  have hbase : I.map g ≤ weightedSubringIdeal V t 1 := by\n    apply Ideal.span_le.mpr\n    rintro _ ⟨s, hs, rfl⟩\n    change (g s : F) * t ^ 1 ∈ V\n    simpa only [pow_one] using hI s hs\n  have hall (n : ℕ) : (I.map g) ^ n ≤ weightedSubringIdeal V t n := by\n    induction n with\n    | zero =>\n      intro x _\n      change (x : F) * t ^ 0 ∈ V\n      simpa only [pow_zero, mul_one] using x.property\n    | succ n hn =>\n      rw [pow_succ']\n      exact (Ideal.mul_mono hbase hn).trans (weighted_subring_ideal_mul V t n)\n  exact hall n (by simpa only [Ideal.map_pow] using hr)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_birational_valuation_lift": {
+      "path": "Negativity/RelativeKernelValuative.lean",
+      "line": 19,
+      "code": "theorem actual_proper_birational_valuation_lift\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (V K : Type u) [CommRing V] [IsDomain V] [ValuationRing V]\n    [Field K] [Algebra V K] [IsFractionRing V K]\n    (b : Spec (.of V) ⟶ Y)\n    [IsDominant (Spec.map (CommRingCat.ofHom (algebraMap V K)) ≫ b)] :\n    ∃ l : Spec (.of V) ⟶ X, l ≫ f = b := by\n  let β := Spec.map (CommRingCat.ofHom (algebraMap V K)) ≫ b\n  obtain ⟨U, hU, hIso⟩ := hf\n  have : IsIso (f ∣_ U) := hIso\n  have hβU : Set.range β ⊆ Set.range U.ι := by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨z, rfl⟩\n    have hz : z = genericPoint (Spec (.of K)) := Subsingleton.elim _ _\n    rw [hz, dominant_genericPoint_eq β]\n    exact ((genericPoint_spec Y).mem_open_set_iff U.isOpen).mpr\n      (by simpa using hU)\n  let βU := IsOpenImmersion.lift U.ι β hβU\n  let a := βU ≫ inv (f ∣_ U) ≫ (f ⁻¹ᵁ U).ι\n  have ha : a ≫ f = β := by\n    dsimp [a]\n    rw [Category.assoc, Category.assoc, ← morphismRestrict_ι,\n      IsIso.inv_hom_id_assoc]\n    exact IsOpenImmersion.lift_fac _ _ hβU\n  have hp : (ValuativeCriterion ⊓ @QuasiCompact ⊓ @QuasiSeparated ⊓\n      @LocallyOfFiniteType) f := by\n    rw [← IsProper.eq_valuativeCriterion]\n    exact inferInstance\n  let square : ValuativeCommSq f :=\n    { R := V, K := K, i₁ := a, i₂ := b, commSq := ⟨ha⟩ }\n  obtain ⟨l⟩ := ((ValuativeCriterion.existence hp.1.1.1) square).exists_lift\n  exact ⟨l.l, l.fac_right⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_valuative_contraction": {
+      "path": "Negativity/RelativeKernelValuative.lean",
+      "line": 59,
+      "code": "theorem actual_relative_kernel_valuative_contraction\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (I : Y.IdealSheafData) (n : ℕ)\n    (V K : Type u) [CommRing V] [IsDomain V] [ValuationRing V]\n    [Field K] [Algebra V K] [IsFractionRing V K]\n    (b : Spec (.of V) ⟶ Y)\n    [IsDominant (Spec.map (CommRingCat.ofHom (algebraMap V K)) ≫ b)] :\n    (actualRelativeKernelIdeal f I n).map b.appTop.hom ≤\n      (I.ideal ⟨⊤, isAffineOpen_top Y⟩ ^ n).map b.appTop.hom := by\n  obtain ⟨l, hl⟩ := actual_proper_birational_valuation_lift f hf V K b\n  have hh : (((I ^ n).comap f).map f).comap b ≤ (I ^ n).comap b := by\n    rw [← hl, IdealSheafData.comap_comp, IdealSheafData.comap_comp]\n    exact IdealSheafData.comap_mono l\n      (IdealSheafData.comap_map_le ((I ^ n).comap f) f)\n  have he := hh ⟨⊤, isAffineOpen_top (Spec (.of V))⟩\n  rw [actual_affine_ideal_pullback, actual_affine_ideal_pullback] at he\n  exact he\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_birational_global_functions_finite": {
+      "path": "Negativity/ProperBirationalGlobalFiniteness.lean",
+      "line": 22,
+      "code": "theorem actual_proper_birational_global_functions_finite\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    (k : Type u) [Field k] [PerfectField k]\n    [Algebra k Γ(Y, ⊤)] [Algebra.FiniteType k Γ(Y, ⊤)]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f) :\n    letI : Algebra Γ(Y, ⊤) Γ(X, ⊤) := f.appTop.hom.toAlgebra\n    Module.Finite Γ(Y, ⊤) Γ(X, ⊤) := by\n  let : Nonempty (⊤ : Y.Opens) := ⟨⟨genericPoint Y, trivial⟩⟩\n  let : Nonempty (⊤ : X.Opens) := ⟨⟨genericPoint X, trivial⟩⟩\n  let : Nonempty (f ⁻¹ᵁ (⊤ : Y.Opens)) := ⟨⟨genericPoint X, trivial⟩⟩\n  let R := Γ(Y, ⊤)\n  let S := Γ(X, ⊤)\n  let : Algebra R S := f.appTop.hom.toAlgebra\n  let : IsDominant f := birationalMorphism_dominant f hf\n  have : IsFractionRing R Y.functionField :=\n    functionField_isFractionRing_of_isAffineOpen Y ⊤ (isAffineOpen_top Y)\n  have : Module.Finite R (integralClosure R Y.functionField) :=\n    finiteType_perfectField_integralClosure_finite k R Y.functionField Y.functionField\n  have : IsNoetherianRing R := Algebra.FiniteType.isNoetherianRing k R\n  let e : Y.functionField ≃+* X.functionField := RingEquiv.ofBijective\n    (dominantFunctionFieldMap f) (birational_functionField_pullback_bijective f hf)\n  let j : S →ₐ[R] Y.functionField := {\n    __ := e.symm.toRingHom.comp (X.germToFunctionField ⊤).hom\n    commutes' := by\n      intro r\n      apply e.injective\n      change e (e.symm (X.germToFunctionField ⊤ (f.appTop r))) =\n        e (algebraMap R Y.functionField r)\n      rw [RingEquiv.apply_symm_apply]\n      exact (dominantFunctionFieldMap_germ f ⊤ r).symm }\n  have hj : Function.Injective j :=\n    e.symm.injective.comp (X.germToFunctionField_injective ⊤)\n  have : Algebra.IsIntegral R S :=\n    algebraMap_isIntegral_iff.mp (isIntegral_appTop_of_universallyClosed f)\n  let jc : S →ₐ[R] integralClosure R Y.functionField := {\n    toFun s := ⟨j s, (Algebra.IsIntegral.isIntegral s).map j⟩\n    map_zero' := Subtype.ext (map_zero j)\n    map_one' := Subtype.ext (map_one j)\n    map_add' s t := Subtype.ext (map_add j s t)\n    map_mul' s t := Subtype.ext (map_mul j s t)\n    commutes' r := Subtype.ext (j.commutes r) }\n  apply Module.Finite.of_injective jc.toLinearMap\n  intro s t hst\n  exact hj (congrArg Subtype.val hst)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_ideal_mono": {
+      "path": "Negativity/RelativeKernelFiltration.lean",
+      "line": 20,
+      "code": "theorem actual_relative_kernel_ideal_mono {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData) (n : ℕ) :\n    actualRelativeKernelIdeal f I (n + 1) ≤ actualRelativeKernelIdeal f I n := by\n  have hh : I ^ (n + 1) ≤ I ^ n := by\n    intro U\n    simpa only [IdealSheafData.ideal_pow, Pi.pow_apply] using\n      (Ideal.pow_le_pow_right (I := I.ideal U) (Nat.le_succ n))\n  exact (IdealSheafData.map_mono f (IdealSheafData.comap_mono f hh))\n    ⟨⊤, isAffineOpen_top Y⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_ideal_mul": {
+      "path": "Negativity/RelativeKernelFiltration.lean",
+      "line": 30,
+      "code": "theorem actual_relative_kernel_ideal_mul {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData) (n : ℕ) :\n    I.ideal ⟨⊤, isAffineOpen_top Y⟩ * actualRelativeKernelIdeal f I n ≤\n      actualRelativeKernelIdeal f I (n + 1) := by\n  have hh : I * ((I ^ n).comap f).map f ≤ ((I ^ (n + 1)).comap f).map f := by\n    rw [IdealSheafData.le_map_iff_comap_le,\n      actual_ideal_pullback_mul_over_affine_base, pow_succ',\n      actual_ideal_pullback_mul_over_affine_base]\n    intro U\n    exact Ideal.mul_mono_right ((IdealSheafData.comap_map_le ((I ^ n).comap f) f) U)\n  exact hh ⟨⊤, isAffineOpen_top Y⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_kernel_filtration": {
+      "path": "Negativity/RelativeKernelFiltration.lean",
+      "line": 57,
+      "code": "theorem actual_relative_kernel_filtration {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] [QuasiCompact f] (I : Y.IdealSheafData) :\n    (actualRelativeKernelFiltration f I).N 0 = ⊤ ∧\n    (∀ n, (actualRelativeKernelFiltration f I).N (n + 1) =\n      RingHom.ker (actualRelativeRestriction f I n)) ∧\n    (∀ n, (actualRelativeKernelFiltration f I).N (n + 1) ≤\n      (actualRelativeKernelFiltration f I).N n) ∧\n    (∀ n, I.ideal ⟨⊤, isAffineOpen_top Y⟩ • (actualRelativeKernelFiltration f I).N n ≤\n      (actualRelativeKernelFiltration f I).N (n + 1)) := by\n  refine ⟨?_, ?_, (actualRelativeKernelFiltration f I).mono,\n    (actualRelativeKernelFiltration f I).smul_le⟩\n  · simp [actualRelativeKernelFiltration, actualRelativeKernelIdeal]\n  · intro n\n    change ((((I ^ (n + 1)).comap f).subschemeι ≫ f).ker).ideal\n      ⟨⊤, isAffineOpen_top Y⟩ = _\n    rw [Scheme.Hom.ker_apply]\n    rfl\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_ideal_pullback_mul": {
+      "path": "Negativity/PullbackIdealProducts.lean",
+      "line": 14,
+      "code": "theorem actual_affine_ideal_pullback_mul {X Y : Scheme.{u}} [IsAffine X] [IsAffine Y]\n    (f : X ⟶ Y) (I J : Y.IdealSheafData) :\n    (I * J).comap f = I.comap f * J.comap f := by\n  apply IdealSheafData.ext_of_isAffine\n  rw [actual_affine_ideal_pullback, IdealSheafData.ideal_mul, Pi.mul_apply, Ideal.map_mul,\n    IdealSheafData.ideal_mul, Pi.mul_apply, actual_affine_ideal_pullback,\n    actual_affine_ideal_pullback]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_open_ideal_pullback_mul": {
+      "path": "Negativity/PullbackIdealProducts.lean",
+      "line": 22,
+      "code": "theorem actual_open_ideal_pullback_mul {X : Scheme.{u}} (U : X.Opens)\n    (I J : X.IdealSheafData) :\n    (I * J).comap U.ι = I.comap U.ι * J.comap U.ι := by\n  ext W : 2\n  simp only [IdealSheafData.ideal_comap_of_isOpenImmersion, Opens.ι_appIso,\n    Iso.refl_inv, IdealSheafData.ideal_mul, Pi.mul_apply]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_ideal_pullback_mul_over_affine_base": {
+      "path": "Negativity/PullbackIdealProducts.lean",
+      "line": 30,
+      "code": "theorem actual_ideal_pullback_mul_over_affine_base {X Y : Scheme.{u}} [IsAffine Y]\n    (f : X ⟶ Y) (I J : Y.IdealSheafData) :\n    (I * J).comap f = I.comap f * J.comap f := by\n  ext U : 2\n  have : IsAffine U := U.2\n  have hu : ((I * J).comap f).comap U.1.ι =\n      (I.comap f * J.comap f).comap U.1.ι := by\n    rw [actual_open_ideal_pullback_mul, ← IdealSheafData.comap_comp,\n      ← IdealSheafData.comap_comp, ← IdealSheafData.comap_comp,\n      actual_affine_ideal_pullback_mul]\n  have hh := congrArg (fun K : U.1.toScheme.IdealSheafData =>\n    K.ideal ⟨⊤, isAffineOpen_top U.1⟩) hu\n  simp only [IdealSheafData.ideal_comap_of_isOpenImmersion, Opens.ι_appIso,\n    Iso.refl_inv] at hh\n  change ((I * J).comap f).ideal\n      ⟨U.1.ι ''ᵁ ⊤, (isAffineOpen_top U.1).image_of_isOpenImmersion U.1.ι⟩ =\n    (I.comap f * J.comap f).ideal\n      ⟨U.1.ι ''ᵁ ⊤, (isAffineOpen_top U.1).image_of_isOpenImmersion U.1.ι⟩ at hh\n  have heU : (⟨U.1.ι ''ᵁ ⊤,\n      (isAffineOpen_top U.1).image_of_isOpenImmersion U.1.ι⟩ : X.affineOpens) = U :=\n    Subtype.ext U.1.ι_image_top\n  exact Eq.mp (congrArg (fun V : X.affineOpens =>\n    ((I * J).comap f).ideal V = (I.comap f * J.comap f).ideal V) heU) hh",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_ideal_pullback_pow_over_affine_base": {
+      "path": "Negativity/PullbackIdealProducts.lean",
+      "line": 58,
+      "code": "theorem actual_ideal_pullback_pow_over_affine_base {X Y : Scheme.{u}} [IsAffine Y]\n    (f : X ⟶ Y) (I : Y.IdealSheafData) (n : ℕ) :\n    (I ^ n).comap f = I.comap f ^ n := by\n  induction n with\n  | zero => simp only [pow_zero, IdealSheafData.one_eq_top, IdealSheafData.comap_top]\n  | succ n hn =>\n    rw [pow_succ, actual_ideal_pullback_mul_over_affine_base, hn, pow_succ]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_ideal_pushforward": {
+      "path": "Negativity/AffinePullbackIdeal.lean",
+      "line": 15,
+      "code": "theorem actual_affine_ideal_pushforward {X Y : Scheme.{u}} [IsAffine X] [IsAffine Y]\n    (f : X ⟶ Y) (J : X.IdealSheafData) :\n    (J.map f).ideal ⟨⊤, isAffineOpen_top Y⟩ =\n      (J.ideal ⟨⊤, isAffineOpen_top X⟩).comap f.appTop.hom := by\n  have : IsAffineHom f := isAffineHom_of_isAffine f\n  exact IdealSheafData.ideal_map_of_isAffineHom J f ⟨⊤, isAffineOpen_top Y⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_ideal_pullback": {
+      "path": "Negativity/AffinePullbackIdeal.lean",
+      "line": 26,
+      "code": "theorem actual_affine_ideal_pullback {X Y : Scheme.{u}} [IsAffine X] [IsAffine Y]\n    (f : X ⟶ Y) (I : Y.IdealSheafData) :\n    (I.comap f).ideal ⟨⊤, isAffineOpen_top X⟩ =\n      (I.ideal ⟨⊤, isAffineOpen_top Y⟩).map f.appTop.hom := by\n  let K := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let L := (I.comap f).ideal ⟨⊤, isAffineOpen_top X⟩\n  have h (J : Ideal Γ(X, ⊤)) : L ≤ J ↔ K.map f.appTop.hom ≤ J := by\n    have hleft : L ≤ J ↔ I.comap f ≤ IdealSheafData.ofIdealTop J := by\n      constructor\n      · intro hj\n        apply IdealSheafData.le_of_isAffine\n        simpa using hj\n      · intro hj\n        simpa using hj ⟨⊤, isAffineOpen_top X⟩\n    rw [hleft, ← IdealSheafData.le_map_iff_comap_le, Ideal.map_le_iff_le_comap]\n    constructor\n    · intro hj\n      have hh := hj ⟨⊤, isAffineOpen_top Y⟩\n      rw [actual_affine_ideal_pushforward] at hh\n      simpa using hh\n    · intro hj\n      apply IdealSheafData.le_of_isAffine\n      rw [actual_affine_ideal_pushforward]\n      simpa using hj\n  exact ((h (K.map f.appTop.hom)).mpr le_rfl).antisymm ((h L).mp le_rfl)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_quotient_map_constant": {
+      "path": "Negativity/RelativeFormalApproximation.lean",
+      "line": 28,
+      "code": "theorem actual_relative_quotient_map_constant {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData) (n : ℕ) (r : Γ(Y, ⊤)) :\n    actualRelativeQuotientMap f I n (Ideal.Quotient.mk _ r) =\n      actualRelativeRestriction f I n r := by\n  have hc := (actual_relative_formal_functions_evaluation f I).2 r n\n  change (actualRelativePowerProjection f I n).appTop\n    ((actualAffineThickeningSectionsEquiv Y I n).symm\n      (AdicCompletion.evalₐ _ (n + 1) (AdicCompletion.of _ Γ(Y, ⊤) r))) = _ at hc\n  rw [AdicCompletion.evalₐ_of] at hc\n  exact hc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_restriction_transition": {
+      "path": "Negativity/RelativeFormalApproximation.lean",
+      "line": 39,
+      "code": "theorem actual_relative_restriction_transition {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (I : Y.IdealSheafData) {m n : ℕ} (h : m ≤ n) (r : Γ(Y, ⊤)) :\n    (actualRelativePowerInclusion f I h).appTop\n      (actualRelativeRestriction f I n r) = actualRelativeRestriction f I m r := by\n  have hs := IdealSheafData.inclusion_subschemeι\n    (IdealSheafData.comap_mono f (show I ^ (n + 1) ≤ I ^ (m + 1) from by\n      intro U\n      simpa only [IdealSheafData.ideal_pow, Pi.pow_apply] using\n        (Ideal.pow_le_pow_right (I := I.ideal U) (Nat.add_le_add_right h 1))))\n  exact congrArg (fun g : actualRelativePowerThickening f I m ⟶ X =>\n    g.appTop (f.appTop r)) hs",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_quotient_map_transition": {
+      "path": "Negativity/RelativeFormalApproximation.lean",
+      "line": 51,
+      "code": "theorem actual_relative_quotient_map_transition {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData) {m n : ℕ} (h : m ≤ n)\n    (a : Γ(Y, ⊤) ⧸ (I.ideal ⟨⊤, isAffineOpen_top Y⟩) ^ (n + 1)) :\n    (actualRelativePowerInclusion f I h).appTop\n      (actualRelativeQuotientMap f I n a) = actualRelativeQuotientMap f I m\n        (Ideal.Quotient.factor (Ideal.pow_le_pow_right (Nat.add_le_add_right h 1)) a) := by\n  obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective a\n  rw [actual_relative_quotient_map_constant]\n  change (actualRelativePowerInclusion f I h).appTop\n    (actualRelativeRestriction f I n r) = actualRelativeQuotientMap f I m\n      (Ideal.Quotient.mk _ r)\n  rw [actual_relative_quotient_map_constant]\n  exact actual_relative_restriction_transition f I h r",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_formal_functions_bijective_of_uniform_approximation": {
+      "path": "Negativity/RelativeFormalApproximation.lean",
+      "line": 70,
+      "code": "theorem actual_relative_formal_functions_bijective_of_uniform_approximation\n    {X Y : Scheme.{u}} (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData)\n    (c : ℕ)\n    (hker : ∀ n (r : Γ(Y, ⊤)), actualRelativeRestriction f I (n + c) r = 0 →\n      r ∈ (I.ideal ⟨⊤, isAffineOpen_top Y⟩) ^ (n + 1))\n    (himage : ∀ n (b : Γ(actualRelativePowerThickening f I (n + c), ⊤)),\n      ∃ r : Γ(Y, ⊤), actualRelativeRestriction f I n r =\n        (actualRelativePowerInclusion f I (Nat.le_add_right n c)).appTop b) :\n    Function.Bijective (actualRelativeFormalFunctionsMap f I) := by\n  let K := I.ideal ⟨⊤, isAffineOpen_top Y⟩\n  let B (n : ℕ) : Type u := Γ(actualRelativePowerThickening f I n, ⊤)\n  let t {m n : ℕ} (h : m ≤ n) : B n →+* B m :=\n    (actualRelativePowerInclusion f I h).appTop.hom\n  let q (n : ℕ) : (Γ(Y, ⊤) ⧸ K ^ (n + 1)) →+* B n :=\n    actualRelativeQuotientMap f I n\n  have hq : ∀ {m n : ℕ} (h : m ≤ n) (a : Γ(Y, ⊤) ⧸ K ^ (n + 1)),\n      t h (q n a) = q m (Ideal.Quotient.factor\n        (Ideal.pow_le_pow_right (Nat.add_le_add_right h 1)) a) :=\n    fun h a => actual_relative_quotient_map_transition f I h a\n  change Function.Bijective (adicApproximationComparison K B t q hq)\n  apply adic_comparison_bijective_of_uniform_approximation K B t q hq c\n  · intro n r hr\n    apply hker n r\n    exact (actual_relative_quotient_map_constant f I (n + c) r).symm.trans hr\n  · intro n b\n    obtain ⟨r, hr⟩ := himage n b\n    exact ⟨r, (actual_relative_quotient_map_constant f I n r).trans hr⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "adic_comparison_bijective_of_uniform_approximation": {
+      "path": "Negativity/AdicApproximationComparison.lean",
+      "line": 53,
+      "code": "theorem adic_comparison_bijective_of_uniform_approximation\n    (c : ℕ)\n    (hker : ∀ n (r : R), q (n + c) (Ideal.Quotient.mk _ r) = 0 → r ∈ I ^ (n + 1))\n    (himage : ∀ n (b : B (n + c)), ∃ r : R,\n      q n (Ideal.Quotient.mk _ r) = t (Nat.le_add_right n c) b) :\n    Function.Bijective (adicApproximationComparison I B t q htq) := by\n  classical\n  let P := adicApproximationComparison I B t q htq\n  constructor\n  · intro a b hab\n    have hz : P (a - b) = 0 := by rw [map_sub, hab, sub_self]\n    have he : ∀ n, q n (AdicCompletion.evalₐ I (n + 1) (a - b)) = 0 := by\n      intro n\n      exact congrArg (fun x : compatibleRingElements B t => x.1 n) hz\n    have hab0 : a - b = 0 := by\n      apply AdicCompletion.ext_evalₐ\n      intro n\n      cases n with\n      | zero =>\n        have : Subsingleton (R ⧸ I ^ 0) := by simp [pow_zero]\n        exact Subsingleton.elim _ _\n      | succ n =>\n        obtain ⟨r, hr⟩ := Ideal.Quotient.mk_surjective\n          (AdicCompletion.evalₐ I (n + c + 1) (a - b))\n        have hk : r ∈ I ^ (n + 1) := hker n r (by rw [hr]; exact he (n + c))\n        have hp := adic_completion_power_eval_transition I\n          (show n + 1 ≤ n + c + 1 by omega) (a - b)\n        rw [← hr] at hp\n        change Ideal.Quotient.mk (I ^ (n + 1)) r =\n          AdicCompletion.evalₐ I (n + 1) (a - b) at hp\n        rw [← hp, map_zero]\n        exact Ideal.Quotient.eq_zero_iff_mem.mpr hk\n    exact sub_eq_zero.mp hab0\n  · intro a\n    have hlift : ∀ n, ∃ r : R, q (n + c) (Ideal.Quotient.mk _ r) = a.1 (n + c) := by\n      intro n\n      obtain ⟨r, hr⟩ := himage (n + c) (a.1 (n + c + c))\n      exact ⟨r, hr.trans (a.2 (n + c) (n + c + c) (Nat.le_add_right _ c))⟩\n    choose r hr using hlift\n    have hrestrict : ∀ m n (h : m ≤ n),\n        q (m + c) (Ideal.Quotient.mk _ (r n)) = a.1 (m + c) := by\n      intro m n h\n      have hs := htq (Nat.add_le_add_right h c) (Ideal.Quotient.mk _ (r n))\n      change t (Nat.add_le_add_right h c) (q (n + c) (Ideal.Quotient.mk _ (r n))) =\n        q (m + c) (Ideal.Quotient.mk _ (r n)) at hs\n      rw [hr n, a.2 (m + c) (n + c) (Nat.add_le_add_right h c)] at hs\n      exact hs.symm\n    have hcongr : ∀ m n (h : m ≤ n),\n        Ideal.Quotient.mk (I ^ (m + 1)) (r n) =\n          Ideal.Quotient.mk (I ^ (m + 1)) (r m) := by\n      intro m n h\n      apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr\n      apply hker m (r n - r m)\n      rw [map_sub, map_sub, hrestrict m n h, hr m, sub_self]\n    let z (n : ℕ) : R ⧸ (I ^ n • ⊤ : Ideal R) := match n with\n      | 0 => 0\n      | n + 1 => (completionPowerQuotientEquiv I (n + 1)).symm\n          (Ideal.Quotient.mk _ (r n))\n    have hz {m n : ℕ} (h : m ≤ n) :\n        AdicCompletion.transitionMap I R h (z n) = z m := by\n      cases m with\n      | zero =>\n        have : Subsingleton (R ⧸ (I ^ 0 • ⊤ : Ideal R)) := by simp [pow_zero]\n        exact Subsingleton.elim _ _\n      | succ m =>\n        cases n with\n        | zero => omega\n        | succ n =>\n          apply (completionPowerQuotientEquiv I (m + 1)).injective\n          rw [completion_power_quotient_transition I h]\n          simp only [z, RingEquiv.apply_symm_apply]\n          change Ideal.Quotient.mk (I ^ (m + 1)) (r n) =\n            Ideal.Quotient.mk (I ^ (m + 1)) (r m)\n          exact hcongr m n (Nat.succ_le_succ_iff.mp h)\n    let b : AdicCompletion I R := ⟨z, hz⟩\n    refine ⟨b, ?_⟩\n    apply Subtype.ext\n    funext n\n    have heval : AdicCompletion.evalₐ I (n + 1) b = Ideal.Quotient.mk _ (r n) := by\n      rw [← completion_power_quotient_eval]\n      exact (completionPowerQuotientEquiv I (n + 1)).apply_symm_apply _\n    change q n (AdicCompletion.evalₐ I (n + 1) b) = a.1 n\n    rw [heval]\n    have hs := htq (Nat.le_add_right n c) (Ideal.Quotient.mk _ (r n))\n    change t (Nat.le_add_right n c) (q (n + c) (Ideal.Quotient.mk _ (r n))) =\n      q n (Ideal.Quotient.mk _ (r n)) at hs\n    rw [hr n, a.2 n (n + c) (Nat.le_add_right n c)] at hs\n    exact hs.symm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_proper_negativity_of_actual_formal_functions": {
       "path": "Negativity/ActualProperNegativityFull.lean",
       "line": 22,
