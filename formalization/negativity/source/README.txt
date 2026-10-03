@@ -172,5 +172,17 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
+The imported arbitrary-ring Laurent Cech finiteness and nonnegative-twist
+vanishing proofs are reused from a pinned Apache-2.0 upstream project and
+rebuilt with this toolchain. Their complete 17-file dependency chain,
+license, provenance and adaptations are included in External/Laurent.
+These are explicit-complex results: identification with actual projective
+scheme/coherent-sheaf cohomology and proper graded finite generation remain
+open. The upstream complete theorem over Q has not been independently
+rebuilt here and does not establish arbitrary-characteristic properness.
+Actual graded cocycle multiplication, quotient action and a genuine Rees
+module structure on cocycles are also verified; finite generation is not
+claimed.
+
 Proof sources: see Negativity.lean for the complete module import list, and
 CheckAxioms.lean / snapshot.json for the audited declarations and exact source locations.

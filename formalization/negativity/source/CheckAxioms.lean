@@ -1143,3 +1143,17 @@ import Negativity
 #print axioms Negativity.actual_closed_cech_module_action
 
 #print axioms Negativity.exists_actual_proper_affine_cech_cover
+
+#print axioms Negativity.actual_base_ideal_local_pullback_mem
+
+#print axioms Negativity.actual_relative_cech_graded_cocycle_multiplication
+
+#print axioms Negativity.actual_relative_ideal_section_mul_mem
+
+#print axioms Negativity.actual_relative_cech_graded_action_on_classes
+
+#print axioms Negativity.actual_relative_cech_cycles_rees_module
+
+#print axioms Negativity.imported_projective_laurent_cech_cohomology_finite
+
+#print axioms Negativity.imported_projective_laurent_cech_positive_twist_vanishing

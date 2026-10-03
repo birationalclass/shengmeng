@@ -1,4 +1,4 @@
-import {english} from './i18n.js?v=20261002-refuge-1&proof=20261003-formal-40';
+import {english} from './i18n.js?v=20261003-formal-41';
 
 // The module's final mathematical target is separate from the proof-step DAG.
 // Its status must not inherit the status of any compiled auxiliary lemma.

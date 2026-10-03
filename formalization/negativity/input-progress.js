@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-formal-40';
+const release = '20261003-formal-41';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -96,9 +96,9 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
 export async function installInputProgress() {
   const root = document.querySelector('#overviewPanel');
   if (!root) return;
-  const appScript = document.querySelector('script[src*="app.js"]');
+  const appScript = document.querySelector('script[src*="app.js?v=20261003-formal-41"]');
   const proof = appScript ? new URL(appScript.src).searchParams.get('proof') : '';
-  const moduleURL = new URL('./graph-data.js', import.meta.url);
+  const moduleURL = new URL('./graph-data.js?v=20261003-formal-41', import.meta.url);
   moduleURL.searchParams.set('v', release);
   if (proof) moduleURL.searchParams.set('proof', proof);
   const {nodes} = await import(moduleURL.href);
@@ -151,7 +151,7 @@ export async function installInputProgress() {
     watch();
   }
   watch();refresh();
-  const snapshotURL=new URL('./snapshot.json',import.meta.url);
+  const snapshotURL=new URL('./snapshot.json?v=20261003-formal-41',import.meta.url);
   snapshotURL.searchParams.set('v',proof || release);
   try {const response=await fetch(snapshotURL);if(response.ok){declarations=(await response.json()).declarations||{};refresh(true);}}
   catch { /* The main evidence panel owns snapshot failure reporting. */ }

@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ImportedProjectiveCechVanishing.lean': ['imported_projective_laurent_cech_positive_twist_vanishing'],
+    'ImportedProjectiveCechFiniteness.lean': ['imported_projective_laurent_cech_cohomology_finite'],
+    'ActualRelativeCechCycleModule.lean': ['actual_relative_cech_cycles_rees_module'],
+    'ActualRelativeCechGradedAction.lean': ['actual_relative_ideal_section_mul_mem', 'actual_relative_cech_graded_action_on_classes'],
+    'ActualRelativeCechMultiplication.lean': ['actual_base_ideal_local_pullback_mem', 'actual_relative_cech_graded_cocycle_multiplication'],
     'ActualProperCechCover.lean': ['exists_actual_proper_affine_cech_cover'],
     'ActualCechModule.lean': ['actual_closed_cech_module_action'],
     'ActualCechScalars.lean': ['actual_cech_difference_scale', 'actual_cech_boundary_scale', 'actual_cech_pullback_scale_zero', 'actual_cech_pullback_scale_one', 'actual_closed_cech_scalar_on_cocycles'],
@@ -255,6 +260,8 @@ source = destination / 'source'
 source.mkdir(parents=True, exist_ok=True)
 files = ['Negativity.lean', 'CheckAxioms.lean', 'lakefile.toml', 'lake-manifest.json', 'lean-toolchain', 'THIRD_PARTY_NOTICES.txt']
 files += ['Negativity/' + n for n in ['Basic.lean', *names]]
+files += [p.relative_to(project).as_posix() for p in sorted(
+    (project / 'Negativity/External/Laurent').rglob('*')) if p.is_file()]
 manifest = []
 for relative in files:
     data = (project / relative).read_bytes()
@@ -457,6 +464,18 @@ Reproduce (Lean's elan and Git are required):
 
 lean-toolchain pins Lean; lakefile.toml pins mathlib; lake-manifest.json pins
 transitive dependencies. .lake is deliberately excluded from this archive.
+The imported arbitrary-ring Laurent Cech finiteness and nonnegative-twist
+vanishing proofs are reused from a pinned Apache-2.0 upstream project and
+rebuilt with this toolchain. Their complete 17-file dependency chain,
+license, provenance and adaptations are included in External/Laurent.
+These are explicit-complex results: identification with actual projective
+scheme/coherent-sheaf cohomology and proper graded finite generation remain
+open. The upstream complete theorem over Q has not been independently
+rebuilt here and does not establish arbitrary-characteristic properness.
+Actual graded cocycle multiplication, quotient action and a genuine Rees
+module structure on cocycles are also verified; finite generation is not
+claimed.
+
 Proof sources: see Negativity.lean for the complete module import list, and
 CheckAxioms.lean / snapshot.json for the audited declarations and exact source locations.
 '''
