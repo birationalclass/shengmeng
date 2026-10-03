@@ -1,16 +1,27 @@
+import {recordAtlasRender,recordAtlasLayout} from './performance.js?v=20261003-perf-1';
 import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261002-formal-18';
 import {t,english} from './i18n.js?v=20261002-refuge-1&proof=20261003-formal-36';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theoremTarget}) {
-  const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,expandedInputs=false;
+  const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,expandedInputs=false,entries=[],roots=[],railBounds=null,revision=0;
+  const cards=new Map([...graph.querySelectorAll('.node')].map(b=>[b.dataset.node,b])),scopePicker=document.querySelector('#scope');
+  let viewWidth=viewport.clientWidth,viewHeight=viewport.clientHeight,renderFrame=0,detail='full';
   const theoremCard=theoremTarget.createCard('2d');graph.append(theoremCard.element);let theoremBox;
-  function buildLayout(){factor=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--node-base-font'))/16||1.125;const scope=document.querySelector('#scope').value;const ids=visibleProofIds(nodes,selected(),scope);layout=compactProofLayout(nodes,ids,factor,scope==='direct'?3:5,{selected:selected(),expandedInputs});graph.querySelectorAll('.node').forEach(b=>b.hidden=!ids.has(b.dataset.node));theoremBox=theoremCard.layout(layout,factor);}
+  function buildLayout(){
+    const start=performance.now();factor=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--node-base-font'))/16||1.125;
+    const scope=scopePicker.value,ids=visibleProofIds(nodes,selected(),scope);layout=compactProofLayout(nodes,ids,factor,scope==='direct'?3:5,{selected:selected(),expandedInputs});revision++;
+    entries=[...layout].map(([id,p])=>({id,p,b:cards.get(id)}));roots=entries.filter(e=>e.p.base);
+    for(const [id,b] of cards)b.hidden=!ids.has(id);
+    for(const {p,b} of entries){b.classList.toggle('base-card',!!p.base);b.classList.toggle('compact-input',!!p.compact);b.dataset.baseInput=String(!!p.base);b.style.zIndex=String(p.base?10+p.stackIndex:2);}
+    railBounds=roots.length?{top:Math.min(...roots.map(e=>e.p.y)),bottom:Math.max(...roots.map(e=>e.p.y+e.p.h))}:null;
+    theoremBox=theoremCard.layout(layout,factor);recordAtlasLayout(start);
+  }
   buildLayout();
   graph.querySelectorAll('.column-label').forEach(e=>e.remove());
-  nodes.forEach(n=>{const p=layout.get(n.id)||{x:0,y:0,h:150*factor},b=graph.querySelector(`[data-node="${n.id}"]`);b.style.left=p.x+'px';b.style.top=p.y+'px';b.style.height=p.h+'px';b.style.setProperty('--node-x',p.x+'px');b.style.setProperty('--node-y',p.y+'px');b.innerHTML='';const heading=document.createElement('b');heading.className='node-heading';heading.textContent=n.title;heading.title=n.title;b.append(heading);const sockets=document.createElement('div');sockets.className='node-sockets';
-    if(!n.deps.length){const row=document.createElement('span');row.className='node-input empty-input';row.textContent='';sockets.append(row);}n.deps.forEach(id=>{const row=document.createElement('span');row.className='node-input';row.textContent=byId.get(id).title;row.title=byId.get(id).title;sockets.append(row);});b.append(sockets);const output=document.createElement('span');output.className='node-output';output.textContent=t('结论');b.append(output);const status=document.createElement('small');status.className=n.status;status.textContent=t(({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);b.append(status);const rel=document.createElement('span');rel.className='relation-tag';b.append(rel);});
+  nodes.forEach(n=>{const p=layout.get(n.id)||{x:0,y:0,h:150*factor},b=cards.get(n.id);b.style.left=p.x+'px';b.style.top=p.y+'px';b.style.height=p.h+'px';b.style.setProperty('--node-x',p.x+'px');b.style.setProperty('--node-y',p.y+'px');b.innerHTML='';const heading=document.createElement('b');heading.className='node-heading';heading.textContent=n.title;heading.title=n.title;b.append(heading);const sockets=document.createElement('div');sockets.className='node-sockets';
+    if(!n.deps.length){const row=document.createElement('span');row.className='node-input empty-input';row.textContent='';sockets.append(row);}n.deps.forEach(id=>{const row=document.createElement('span');row.className='node-input';row.textContent=byId.get(id).title;row.title=byId.get(id).title;sockets.append(row);});b.append(sockets);const output=document.createElement('span');output.className='node-output';output.textContent=t('结论');b.append(output);const status=document.createElement('small');status.className=n.status;status.textContent=t(({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);b.append(status);const rel=document.createElement('span');rel.className='relation-tag';b.append(rel);const summary=document.createElement('span');summary.className='node-summary';summary.textContent=n.deps.length?(english?n.deps.length+(n.deps.length===1?' premise':' premises'):n.deps.length+' 个前提'):(english?'Base input':'基础输入');b.append(summary);});
   // Half-round ports sit outside the card; wires meet the outer arc, not the text.
-  nodes.forEach(n=>{const b=graph.querySelector(`[data-node="${n.id}"]`);n.deps.forEach((_,i)=>{const inputPort=document.createElement('span');inputPort.className='node-input-socket';inputPort.setAttribute('aria-hidden','true');inputPort.style.setProperty('--socket-y',(58+22*i)+'px');b.append(inputPort);});const outputPort=document.createElement('span');outputPort.className='node-output-socket';outputPort.setAttribute('aria-hidden','true');b.append(outputPort);});
+  nodes.forEach(n=>{const b=cards.get(n.id);n.deps.forEach((_,i)=>{const inputPort=document.createElement('span');inputPort.className='node-input-socket';inputPort.setAttribute('aria-hidden','true');if(i===0)inputPort.dataset.first='';inputPort.style.setProperty('--socket-y',(58+22*i)+'px');b.append(inputPort);});const outputPort=document.createElement('span');outputPort.className='node-output-socket';outputPort.setAttribute('aria-hidden','true');b.append(outputPort);});
   const inputRail=document.createElement('div');inputRail.className='base-input-rail';
   const railLabel=document.createElement('span'),railToggle=document.createElement('button');
   railToggle.type='button';railToggle.className='input-rail-toggle';
@@ -22,32 +33,53 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   const metalDefs=document.createElementNS(ns,'defs');
   metalDefs.innerHTML='<linearGradient id="atlas-wire-metal" gradientUnits="userSpaceOnUse" x2="480" spreadMethod="reflect"><stop stop-color="#6b879d"/><stop offset=".24" stop-color="#d3e6f1"/><stop offset=".49" stop-color="#738ea4"/><stop offset=".74" stop-color="#bedbea"/><stop offset="1" stop-color="#5f7d96"/></linearGradient><linearGradient id="atlas-wire-active-metal" gradientUnits="userSpaceOnUse" x2="480" spreadMethod="reflect"><stop stop-color="#487ca7"/><stop offset=".23" stop-color="#d1efff"/><stop offset=".48" stop-color="#609fcd"/><stop offset=".74" stop-color="#a7dbf2"/><stop offset="1" stop-color="#477fa9"/></linearGradient>';
   svg.append(metalDefs);
-  svg.querySelectorAll('.edge').forEach(edge=>{const group=document.createElementNS(ns,'g'),shadow=document.createElementNS(ns,'path'),shine=document.createElementNS(ns,'path');group.classList.add('metal-link');shadow.classList.add('wire-shadow');shine.classList.add('wire-highlight');group.append(shadow,edge,shine);wires.append(group);links.push({edge,group,shadow,shine});});svg.append(wires);
-  function updateLinks(){links.forEach(({edge,group,shadow,shine})=>{const a=layout.get(edge.dataset.from),n=byId.get(edge.dataset.to),b=layout.get(n.id);const shown=Boolean(a&&b)&&document.querySelector('#scope').value!=='open';group.style.display=shown?'':'none';group.classList.toggle('active',edge.classList.contains('active'));group.classList.toggle('assumed',edge.classList.contains('assumed'));if(!shown)return;const x=a.x+306*factor,y=a.y+(a.compact?24:64)*factor,x2=b.x-6*factor,y2=b.y+(64+22*n.deps.indexOf(edge.dataset.from))*factor,bend=Math.max(75*factor,(x2-x)*.5),d=`M ${x} ${y} C ${x+bend} ${y}, ${x2-bend} ${y2}, ${x2} ${y2}`;[shadow,edge,shine].forEach(p=>p.setAttribute('d',d));edge.removeAttribute('marker-end');});}
+  svg.querySelectorAll('.edge').forEach(edge=>{const group=document.createElementNS(ns,'g'),shadow=document.createElementNS(ns,'path'),shine=document.createElementNS(ns,'path');group.classList.add('metal-link');shadow.classList.add('wire-shadow');shine.classList.add('wire-highlight');group.append(shadow,edge,shine);wires.append(group);links.push({edge,group,shadow,shine,index:byId.get(edge.dataset.to).deps.indexOf(edge.dataset.from),bounds:null,shown:null});});svg.append(wires);
+  function displayHeight(p){return p.compact?p.h:detail==='full'?p.h:Math.min(p.h,(detail==='summary'?108:detail==='title'?82:36)*factor);}
+  function portCenter(p,i=0){return p.compact?24*factor:detail==='full'?(64+22*i)*factor:displayHeight(p)/2;}
+  function updateLinks(){
+    const enabled=scopePicker.value!=='open';
+    for(const link of links){const {edge,group,shadow,shine}=link,a=layout.get(edge.dataset.from),b=layout.get(edge.dataset.to);link.bounds=null;
+      group.classList.toggle('active',edge.classList.contains('active'));group.classList.toggle('assumed',edge.classList.contains('assumed'));
+      if(!enabled||!a||!b)continue;
+      const ax=a.x+306*factor,ay=a.y+portCenter(a),bx=b.x-6*factor,by=b.y+portCenter(b,link.index),bend=Math.max(75*factor,(bx-ax)*.5),d=`M ${ax} ${ay} C ${ax+bend} ${ay}, ${bx-bend} ${by}, ${bx} ${by}`;
+      for(const path of [shadow,edge,shine])path.setAttribute('d',d);edge.removeAttribute('marker-end');
+      link.bounds={left:Math.min(ax,bx,ax+bend,bx-bend),right:Math.max(ax,bx,ax+bend,bx-bend),top:Math.min(ay,by),bottom:Math.max(ay,by)};
+    }
+  }
   updateLinks();
   let zoom=1,x=0,y=0,drag=null,space=false,lastFrame='selected',initialized=false,viewSelection=selected(),motionFrame=0,motionTarget=null,lastCurrentGeometry='';
   const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
   const controls=document.createElement('div');controls.className='editor-navigation';controls.innerHTML=`<button class="button small" data-frame="all" title="${t('显示全部 · Home')}">${t('显示全部')}</button><button class="button small" data-frame="selected" title="${t('聚焦所选 · 小数点键')}">${t('聚焦所选')}</button><button class="button small" data-node-zoom="in" aria-label="${t('放大')}">＋</button><button class="button small" data-node-zoom="out" aria-label="${t('缩小')}">−</button><output aria-label="${t('缩放比例')}">100%</output>`;viewport.append(controls);
   const output=controls.querySelector('output');viewport.tabIndex=0;viewport.setAttribute('role','region');viewport.setAttribute('aria-label',t('节点编辑区：拖动空白平移，滚轮缩放，Home 显示全部，小数点键聚焦。'));
   const theoremFocus=document.createElement('button');theoremFocus.type='button';theoremFocus.className='button small';theoremFocus.dataset.frame='theorem';theoremFocus.textContent=english?'Theorem':'最终定理';controls.insertBefore(theoremFocus,controls.firstChild);
-  function paint(){graph.classList.toggle('zoom-compact',zoom<.52);graph.style.transform='none';graph.style.width=viewport.clientWidth+'px';graph.style.minHeight=viewport.clientHeight+'px';graph.style.setProperty('--node-unit',zoom*factor);graph.style.setProperty('--view-x',x+'px');graph.style.setProperty('--view-y',y+'px');nodes.forEach(n=>{const p=layout.get(n.id);if(!p)return;const b=graph.querySelector(`[data-node="${n.id}"]`);b.classList.toggle('base-card',Boolean(p.base));b.classList.toggle('compact-input',Boolean(p.compact));b.dataset.baseInput=String(Boolean(p.base));b.style.zIndex=String(p.base?10+p.stackIndex:2);b.style.setProperty('--node-x',p.x*zoom+x+'px');b.style.setProperty('--node-y',p.y*zoom+y+'px');b.style.width=(300*factor*zoom)+'px';b.style.height=(p.h*zoom)+'px';});const roots=[...layout.values()].filter(p=>p.base);inputRail.hidden=!roots.length;
-    railHeader.style.display=roots.length?'flex':'none';
-    if(roots.length){const top=Math.min(...roots.map(p=>p.y)),bottom=Math.max(...roots.map(p=>p.y+p.h));
-      inputRail.style.left=((65-18*factor)*zoom+x)+'px';inputRail.style.top=((top-42*factor)*zoom+y)+'px';
-      inputRail.style.width=336*factor*zoom+'px';inputRail.style.height=(bottom-top+60*factor)*zoom+'px';
-      inputRail.style.fontSize=12*factor*zoom+'px';inputRail.style.padding=10*factor*zoom+'px';
-      // The controls belong to the group frame and share its camera geometry.
-      const unit=factor*zoom;
-      railHeader.style.left=10*unit+'px';railHeader.style.top=10*unit+'px';
-      railHeader.style.width=316*unit+'px';railHeader.style.fontSize=12*unit+'px';
-      railHeader.style.padding=6*unit+'px '+8*unit+'px';
-      railHeader.style.gap=8*unit+'px';railHeader.style.borderRadius=10*unit+'px';
-      inputRail.style.borderRadius=18*unit+'px';
-      railLabel.textContent=t('基础输入')+' · '+roots.length;
-      railToggle.hidden=roots.length<=1;railToggle.textContent=t(expandedInputs?'折叠纸牌':'展开纸牌');railToggle.setAttribute('aria-expanded',String(expandedInputs));
+  function paint(){if(!renderFrame)renderFrame=requestAnimationFrame(draw);}
+  function draw(frameTime){
+    renderFrame=0;if(document.hidden||!viewWidth||!viewHeight)return;
+    const start=performance.now(),unit=zoom*factor,mode=unit<.28?'micro':unit<.52?'title':unit<.9?'summary':'full';
+    if(mode!==detail){detail=mode;graph.dataset.detail=detail;revision++;updateLinks();}
+    graph.style.setProperty('--node-unit',unit);
+    const margin=90,clip={left:(-x-margin)/zoom,right:(viewWidth-x+margin)/zoom,top:(-y-margin)/zoom,bottom:(viewHeight-y+margin)/zoom};
+    let visibleNodes=0,visibleLinks=0;
+    for(const {p,b} of entries){const h=displayHeight(p),culled=p.x+300*factor<clip.left||p.x>clip.right||p.y+(p.compact?p.visibleH:h)<clip.top||p.y>clip.bottom;
+      if(b._culled!==culled){b.classList.toggle('viewport-culled',culled);b._culled=culled;}
+      if(culled)continue;visibleNodes++;
+      b.style.setProperty('--node-x',Math.round(p.x*zoom+x)+'px');b.style.setProperty('--node-y',Math.round(p.y*zoom+y)+'px');
+      if(b._unit!==unit||b._revision!==revision){b.style.width=300*unit+'px';b.style.height=h*zoom+'px';b.style.setProperty('--port-y',(portCenter(p)/factor-6)+'px');b._unit=unit;b._revision=revision;}
     }
-    theoremCard.place(theoremBox.x*zoom+x,theoremBox.y*zoom+y,zoom*factor);
-    svg.style.width=viewport.clientWidth+'px';svg.style.height=viewport.clientHeight+'px';wires.setAttribute('transform',`translate(${x} ${y}) scale(${zoom})`);output.textContent=Math.round(zoom*100)+'%';viewport.style.backgroundSize=(32*zoom)+'px '+(32*zoom)+'px';viewport.style.backgroundPosition=x+'px '+y+'px';const geometry=zoom+':'+factor;if(geometry!==lastCurrentGeometry){lastCurrentGeometry=geometry;window.dispatchEvent(new Event('atlasgeometrychange'));}}
+    for(const link of links){const b=link.bounds,shown=!!b&&b.right>=clip.left&&b.left<=clip.right&&b.bottom>=clip.top&&b.top<=clip.bottom;
+      if(shown)visibleLinks++;if(shown!==link.shown){link.group.style.display=shown?'':'none';link.shown=shown;}}
+    inputRail.hidden=!railBounds;railHeader.style.display=railBounds?'flex':'none';
+    if(railBounds){const {top,bottom}=railBounds;
+      inputRail.style.left=((65-18*factor)*zoom+x)+'px';inputRail.style.top=((top-42*factor)*zoom+y)+'px';
+      if(inputRail._unit!==unit||inputRail._revision!==revision){inputRail.style.width=336*unit+'px';inputRail.style.height=(bottom-top+60*factor)*zoom+'px';inputRail.style.borderRadius=18*unit+'px';
+        Object.assign(railHeader.style,{left:10*unit+'px',top:10*unit+'px',width:316*unit+'px',fontSize:Math.max(9,12*unit)+'px',padding:6*unit+'px '+8*unit+'px',gap:8*unit+'px',borderRadius:10*unit+'px'});
+        railLabel.textContent=t('基础输入')+' · '+roots.length;railToggle.hidden=roots.length<=1;railToggle.textContent=t(expandedInputs?'折叠纸牌':'展开纸牌');railToggle.setAttribute('aria-expanded',String(expandedInputs));inputRail._unit=unit;inputRail._revision=revision;
+      }
+    }
+    theoremCard.place(theoremBox.x*zoom+x,theoremBox.y*zoom+y,unit);wires.setAttribute('transform',`translate(${x} ${y}) scale(${zoom})`);
+    output.textContent=Math.round(zoom*100)+'%';viewport.style.backgroundSize=32*zoom+'px '+32*zoom+'px';viewport.style.backgroundPosition=x+'px '+y+'px';
+    recordAtlasRender(start,{visibleNodes,totalNodes:nodes.length,visibleLinks,totalLinks:links.length},frameTime);
+  }
   function placeSelection(){const p=layout.get(selected());if(!p)return;const w=viewport.clientWidth,h=Math.max(1,viewport.clientHeight-50),cardW=300*factor*zoom,cardH=(p.visibleH||p.h)*zoom,hasPremises=byId.get(selected()).deps.length>0;const left=Math.max(24,Math.min(w-cardW-24,w*(hasPremises?.76:.45)-cardW/2));return {x:left-p.x*zoom,y:Math.max(20,(h-cardH)/2)-p.y*zoom};}
   function stopMotion(finish=false){
     if(motionFrame)cancelAnimationFrame(motionFrame);motionFrame=0;
@@ -78,7 +110,7 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   viewport.addEventListener('pointermove',e=>{if(!drag||e.pointerId!==drag.id)return;x+=e.clientX-drag.x;y+=e.clientY-drag.y;drag.x=e.clientX;drag.y=e.clientY;paint();});
   const end=()=>{drag=null;viewport.classList.remove('panning');};viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
   viewport.addEventListener('keydown',e=>{if(e.target.closest('input,select'))return;if(e.code==='Space'){space=true;e.preventDefault();}else if(e.key==='Home'){e.preventDefault();frame('all');}else if(e.key==='.'||e.code==='NumpadDecimal'){e.preventDefault();frame('selected');}else if(['+','=','-'].includes(e.key)){e.preventDefault();scale(e.key==='-'?.85:1.15);}else if(e.key.startsWith('Arrow')){e.preventDefault();stopMotion();if(e.key==='ArrowLeft')x+=45;if(e.key==='ArrowRight')x-=45;if(e.key==='ArrowUp')y+=45;if(e.key==='ArrowDown')y-=45;paint();}});viewport.addEventListener('keyup',()=>space=false);viewport.addEventListener('blur',()=>space=false);
-  controls.querySelectorAll('[data-frame]').forEach(b=>b.onclick=()=>frame(b.dataset.frame));controls.querySelectorAll('[data-node-zoom]').forEach(b=>b.onclick=()=>scale(b.dataset.nodeZoom==='in'?1.15:1/1.15));new ResizeObserver(()=>{if(!viewport.clientWidth||!viewport.clientHeight)return;if(!initialized){initialized=true;frame();}else paint();}).observe(viewport);
+  controls.querySelectorAll('[data-frame]').forEach(b=>b.onclick=()=>frame(b.dataset.frame));controls.querySelectorAll('[data-node-zoom]').forEach(b=>b.onclick=()=>scale(b.dataset.nodeZoom==='in'?1.15:1/1.15));new ResizeObserver(es=>{viewWidth=es[0].contentRect.width;viewHeight=es[0].contentRect.height;graph.style.width=viewWidth+'px';graph.style.minHeight=viewHeight+'px';svg.style.width=viewWidth+'px';svg.style.height=viewHeight+'px';if(!viewWidth||!viewHeight)return;if(!initialized){initialized=true;frame();}else paint();}).observe(viewport);
   window.addEventListener('typographychange',()=>{stopMotion();const prior=layout.get(selected()),cx=(prior.x+150*factor)*zoom+x,cy=(prior.y+prior.h/2)*zoom+y;buildLayout();updateLinks();const next=layout.get(selected());x=cx-(next.x+150*factor)*zoom;y=cy-(next.y+next.h/2)*zoom;paint();});
   theoremCard.element.addEventListener('theoremcardchange',()=>{stopMotion();buildLayout();updateLinks();paint();});
   function selectionChanged(){
@@ -89,6 +121,8 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
     if(next&&anchor){x=anchor.x-next.x*zoom;y=anchor.y-next.y*zoom;}
     if(changed)moveSelection();else paint();
   }
-  function refreshLanguage(){nodes.forEach(n=>{const b=graph.querySelector(`[data-node="${n.id}"]`);b.querySelector('.node-heading').textContent=n.title;b.querySelector('.node-heading').title=n.title;n.deps.forEach((id,i)=>{const row=b.querySelectorAll('.node-input')[i];row.textContent=byId.get(id).title;row.title=byId.get(id).title;});b.querySelector('.node-output').textContent=t('结论');b.querySelector('small').textContent=t(({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);});paint();}
+  function refreshLanguage(){nodes.forEach(n=>{const b=cards.get(n.id);b.querySelector('.node-heading').textContent=n.title;b.querySelector('.node-heading').title=n.title;n.deps.forEach((id,i)=>{const row=b.querySelectorAll('.node-input')[i];row.textContent=byId.get(id).title;row.title=byId.get(id).title;});b.querySelector('.node-summary').textContent=n.deps.length?(english?n.deps.length+(n.deps.length===1?' premise':' premises'):n.deps.length+' 个前提'):(english?'Base input':'基础输入');b.querySelector('.node-output').textContent=t('结论');b.querySelector('small').textContent=t(({done:'✓ Lean 已验证',conditional:'◐ 条件式证明 · 输入未齐',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);});paint();}
+  graph.dataset.detail=detail;
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMotion();else paint();});
   return {show(){requestAnimationFrame(()=>{if(!initialized){initialized=true;frame();}else paint();});},selectionChanged,frame,refreshLanguage};
 }
