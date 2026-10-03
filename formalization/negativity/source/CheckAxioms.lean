@@ -913,3 +913,41 @@ import Negativity
 #print axioms Negativity.actual_projective_negativity_part_one
 
 #print axioms Negativity.actual_projective_negativity_effectivity_iff
+
+#print axioms Negativity.birational_functionField_pullback_bijective
+
+#print axioms Negativity.proper_normal_birational_affine_functions_bijective
+
+#print axioms Negativity.proper_normal_birational_structure_sheaf_isIso
+
+#print axioms Negativity.proper_normal_birational_open_functions_isIso
+
+#print axioms Negativity.proper_normal_birational_open_functions_bijective
+
+#print axioms Negativity.actual_clopen_nontrivial_global_idempotent
+
+#print axioms Negativity.actual_scheme_connected_of_global_idempotents_trivial
+
+#print axioms Negativity.actual_clopen_characteristic_exists_unique
+
+#print axioms Negativity.actual_clopen_characteristic_germ
+
+#print axioms Negativity.actual_clopen_characteristic_idempotent
+
+#print axioms Negativity.actual_clopen_characteristic_pullback
+
+#print axioms Negativity.actual_power_thickening_inclusion_point
+
+#print axioms Negativity.actual_infinitesimal_nontrivial_idempotent
+
+#print axioms Negativity.actual_affine_thickening_sections_pullback
+
+#print axioms Negativity.actual_affine_thickening_sections_transition
+
+#print axioms Negativity.completion_power_quotient_eval
+
+#print axioms Negativity.completion_power_quotient_transition
+
+#print axioms Negativity.adic_completion_power_eval_transition
+
+#print axioms Negativity.actual_affine_formal_functions_bijective

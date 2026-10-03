@@ -4,6 +4,14 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'AffineFormalFunctions.lean': ['completion_power_quotient_eval', 'completion_power_quotient_transition', 'adic_completion_power_eval_transition', 'actual_affine_formal_functions_bijective'],
+    'AffineThickeningSections.lean': ['actual_affine_thickening_sections_pullback', 'actual_affine_thickening_sections_transition'],
+    'InfinitesimalIdempotents.lean': ['actual_power_thickening_inclusion_point', 'actual_infinitesimal_nontrivial_idempotent'],
+    'ClopenCharacteristicSection.lean': ['actual_clopen_characteristic_exists_unique', 'actual_clopen_characteristic_germ', 'actual_clopen_characteristic_idempotent', 'actual_clopen_characteristic_pullback'],
+    'SchemeClopenIdempotent.lean': ['actual_clopen_nontrivial_global_idempotent', 'actual_scheme_connected_of_global_idempotents_trivial'],
+    'ProperBirationalSections.lean': ['proper_normal_birational_open_functions_isIso', 'proper_normal_birational_open_functions_bijective'],
+    'ProperBirationalStructureSheaf.lean': ['proper_normal_birational_structure_sheaf_isIso'],
+    'ProperBirationalFunctions.lean': ['birational_functionField_pullback_bijective', 'proper_normal_birational_affine_functions_bijective'],
     'ActualProjectiveNegativityIff.lean': ['actual_projective_negativity_effectivity_iff'],
     'ActualProjectiveNegativity.lean': ['actual_projective_negativity_part_one'],
     'RelativeProjectiveEmbedding.lean': ['actual_relative_projective_embedding_cartier_sections'],
@@ -314,6 +322,20 @@ commuting with the base morphism. Actual real-Cartier projective negativity
 base. No affine-base, divisor, section, E, numerical or local-effectivity
 witness is assumed. Relative Chow projectivity and actual proper
 birational fiber connectedness remain for the full proper two-part target.
+The actual natural structure-sheaf map O_Y -> f_*O_X of a proper
+birational morphism to a normal locally Noetherian integral base is now
+proved to be an isomorphism, by actual codimension-one extension and
+sheaf gluing. Actual functions descend on every open, including
+nonaffine and empty opens. Actual clopen decompositions construct
+characteristic sections and nontrivial idempotents; their genuine
+pullbacks are compatible. Actual ideal-power thickenings and their
+actual inverse-limit section ring are constructed, and a disconnected
+closed subscheme produces a compatible nontrivial idempotent in that
+ring. The canonical actual affine formal-functions comparison with
+adic completion is proved bijective. This last theorem requires the
+source scheme itself to be affine: it does not establish the proper
+nonaffine global formal-functions comparison needed for actual fiber
+connectedness. The complete proper two-part target remains open.
 General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing

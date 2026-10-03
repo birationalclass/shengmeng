@@ -1,7 +1,7 @@
-Verified 2026-10-03T10:26:22+08:00
+Verified 2026-10-03T12:13:11+08:00
 
 $ lake build
-⚠ [3887/4042] Replayed Negativity.NormalExtension
+⚠ [3898/4050] Replayed Negativity.NormalExtension
 warning: Negativity/NormalExtension.lean:128:2: Try this:
   haveI̵
 
@@ -26,7 +26,30 @@ The difference between `have` and `haveI` is that `haveI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-⚠ [3923/4042] Replayed Negativity.AffineLineAvoiding
+⚠ [3899/4050] Replayed Negativity.CartierEffectivity
+warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
+
+Hint: Use `simp` instead of `simpa`:
+  [apply] simp [hz] at he
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Negativity/CartierEffectivity.lean:54:25: Variable name `hx` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hx
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
+
+Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
+⚠ [3900/4050] Replayed Negativity.CartierVanishing
+warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hU
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3940/4050] Replayed Negativity.AffineLineAvoiding
 warning: Negativity/AffineLineAvoiding.lean:49:15: This simp argument is unused:
   AlgHom.coe_comp
 
@@ -59,30 +82,7 @@ Hint: Omit it from the simp argument list.
     MvPolynomial.aeval_C, MvPolynomial.aeval_X]
 
 Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
-⚠ [3939/4042] Replayed Negativity.CartierEffectivity
-warning: Negativity/CartierEffectivity.lean:26:42: `simp` already closes the goal
-
-Hint: Use `simp` instead of `simpa`:
-  [apply] simp [hz] at he
-
-Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-warning: Negativity/CartierEffectivity.lean:54:25: Variable name `hx` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _hx
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-warning: Negativity/CartierEffectivity.lean:93:4: Try this: intro h i x hx
-
-Note: This linter can be disabled with `set_option linter.tacticAnalysis.introMerge false`
-⚠ [3940/4042] Replayed Negativity.CartierVanishing
-warning: Negativity/CartierVanishing.lean:15:21: Variable name `hU` is not explicitly referenced.
-
-Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
-  [apply] _hU
-
-Note: This linter can be disabled with `set_option linter.unusedVariables false`
-⚠ [4018/4042] Replayed Negativity.ZeroPrimeCurve
+⚠ [4027/4050] Replayed Negativity.ZeroPrimeCurve
 warning: Negativity/ZeroPrimeCurve.lean:53:36: Variable name `hC` is not explicitly referenced.
 
 Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
@@ -95,8 +95,17 @@ Hint: The binding can be removed (if unused) or named `_` (if used implicitly). 
   [apply] _hp
 
 Note: This linter can be disabled with `set_option linter.unusedVariables false`
-✔ [4041/4042] Built Negativity (12s)
-Build completed successfully (4042 jobs).
+✔ [4044/4050] Built Negativity.SchemeClopenIdempotent (14s)
+⚠ [4045/4050] Replayed Negativity.ClopenCharacteristicSection
+warning: Negativity/ClopenCharacteristicSection.lean:49:10: `if_pos` has been deprecated: Use `ite_eq_left` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵p̵o̵s̵i̲t̲e̲_̲e̲q̲_̲l̲e̲f̲t̲
+warning: Negativity/ClopenCharacteristicSection.lean:52:10: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+Build completed successfully (4050 jobs).
 $ lake env lean CheckAxioms.lean
 'Negativity.exists_effective_shift' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.effective_of_curve_tests' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -725,3 +734,28 @@ $ lake env lean CheckAxioms.lean
  Quot.sound]
 'Negativity.actual_projective_negativity_part_one' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Negativity.actual_projective_negativity_effectivity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.birational_functionField_pullback_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proper_normal_birational_affine_functions_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.proper_normal_birational_structure_sheaf_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proper_normal_birational_open_functions_isIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.proper_normal_birational_open_functions_bijective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.actual_clopen_nontrivial_global_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_scheme_connected_of_global_idempotents_trivial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Negativity.actual_clopen_characteristic_exists_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_clopen_characteristic_germ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_clopen_characteristic_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_clopen_characteristic_pullback' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_power_thickening_inclusion_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_infinitesimal_nontrivial_idempotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_affine_thickening_sections_pullback' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_affine_thickening_sections_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.completion_power_quotient_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.completion_power_quotient_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.adic_completion_power_eval_transition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Negativity.actual_affine_formal_functions_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]

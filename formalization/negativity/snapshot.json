@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T10:26:22+08:00",
+  "checkedAt": "2026-10-03T12:13:11+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "5741b2d1796f972e360713ec74dba2a95b3c979db6aa1c9c653da96c1dd9be01"
+      "sha256": "ab6e880f01aecb2e61934ca12943592e97c448a2ce93f0cc03db173af799d0ac"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "a6caa78efcf649ac7007313c837d7bd65691aa66622f82e5a9b65b814eb297fd"
+      "sha256": "5ce7a0fde65db2353099f1233bef341b22f1aa0bbbbb8eff95db365cc8b8e0c2"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,38 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/AffineFormalFunctions.lean",
+      "sha256": "e3a72cde05e7dd9181baa5f0ccd6c0824fe67924b87e511bbc16ac977741820b"
+    },
+    {
+      "path": "Negativity/AffineThickeningSections.lean",
+      "sha256": "99608500673332db38fa8c22d7e074166cb38f79c4900e995c0a7628acb8a18d"
+    },
+    {
+      "path": "Negativity/InfinitesimalIdempotents.lean",
+      "sha256": "34f63a986c13a08a65e967daa43d91c680cbd5a4abeb64ead499bf29952d1d77"
+    },
+    {
+      "path": "Negativity/ClopenCharacteristicSection.lean",
+      "sha256": "55dceabf7d2e1307c6092e54c3d5af4eaa5f1de7efe0d41dbd1aa60102bd8ba7"
+    },
+    {
+      "path": "Negativity/SchemeClopenIdempotent.lean",
+      "sha256": "0e755d34c54bb90e982649e57c08afff14e0dbee9d8fded070c44b679c6bab01"
+    },
+    {
+      "path": "Negativity/ProperBirationalSections.lean",
+      "sha256": "9ca357a74902aed82511216ca669123d4d03398da0d3b297d69f9fa35d4d57bf"
+    },
+    {
+      "path": "Negativity/ProperBirationalStructureSheaf.lean",
+      "sha256": "0b663a684d307e4ad5c0ce0581f36bf6595105f1f247260c59b055b7ac8c5f75"
+    },
+    {
+      "path": "Negativity/ProperBirationalFunctions.lean",
+      "sha256": "641d94eeedc4269446b3a61d5356d21bfa468957ecdf0da5764400a0369f637a"
     },
     {
       "path": "Negativity/ActualProjectiveNegativityIff.lean",
@@ -678,6 +710,196 @@
     }
   ],
   "declarations": {
+    "completion_power_quotient_eval": {
+      "path": "Negativity/AffineFormalFunctions.lean",
+      "line": 22,
+      "code": "theorem completion_power_quotient_eval {R : Type*} [CommRing R]\n    (K : Ideal R) (n : ℕ) (a : AdicCompletion K R) :\n    completionPowerQuotientEquiv K n (a.1 n) = AdicCompletion.evalₐ K n a := rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "completion_power_quotient_transition": {
+      "path": "Negativity/AffineFormalFunctions.lean",
+      "line": 26,
+      "code": "theorem completion_power_quotient_transition {R : Type*} [CommRing R]\n    (K : Ideal R) {m n : ℕ} (h : m ≤ n) (a : R ⧸ (K ^ n • ⊤ : Ideal R)) :\n    completionPowerQuotientEquiv K m (AdicCompletion.transitionMap K R h a) =\n      Ideal.Quotient.factor (Ideal.pow_le_pow_right h)\n        (completionPowerQuotientEquiv K n a) := by\n  obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective a\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "adic_completion_power_eval_transition": {
+      "path": "Negativity/AffineFormalFunctions.lean",
+      "line": 34,
+      "code": "theorem adic_completion_power_eval_transition {R : Type*} [CommRing R]\n    (K : Ideal R) {m n : ℕ} (h : m ≤ n) (a : AdicCompletion K R) :\n    Ideal.Quotient.factor (Ideal.pow_le_pow_right h) (AdicCompletion.evalₐ K n a) =\n      AdicCompletion.evalₐ K m a := by\n  rw [← completion_power_quotient_eval, ← completion_power_quotient_eval,\n    ← completion_power_quotient_transition K h, a.2 h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_formal_functions_bijective": {
+      "path": "Negativity/AffineFormalFunctions.lean",
+      "line": 65,
+      "code": "theorem actual_affine_formal_functions_bijective (X : Scheme.{u}) [IsAffine X]\n    (I : X.IdealSheafData) : Function.Bijective (actualAffineFormalFunctionsMap X I) := by\n  classical\n  let K := I.ideal ⟨⊤, isAffineOpen_top X⟩\n  constructor\n  · intro a b hab\n    apply AdicCompletion.ext_evalₐ\n    intro n\n    cases n with\n    | zero =>\n      have : Subsingleton (Γ(X, ⊤) ⧸ K ^ 0) := by simp [pow_zero]\n      exact Subsingleton.elim _ _\n    | succ n =>\n      have h := congrArg (fun c : actualInfinitesimalSections I =>\n        actualAffineThickeningSectionsEquiv X I n (c.1 n)) hab\n      simpa [actualAffineFormalFunctionsMap] using h\n  · intro a\n    let v (n : ℕ) : Γ(X, ⊤) ⧸ (K ^ n • ⊤ : Ideal Γ(X, ⊤)) := match n with\n      | 0 => 0\n      | n + 1 => (completionPowerQuotientEquiv K (n + 1)).symm\n          (actualAffineThickeningSectionsEquiv X I n (a.1 n))\n    have hv {m n : ℕ} (h : m ≤ n) : AdicCompletion.transitionMap K Γ(X, ⊤) h (v n) = v m := by\n      cases m with\n      | zero =>\n        have : Subsingleton (Γ(X, ⊤) ⧸ (K ^ 0 • ⊤ : Ideal Γ(X, ⊤))) := by\n          simp [pow_zero]\n        exact Subsingleton.elim _ _\n      | succ m =>\n        cases n with\n        | zero => omega\n        | succ n =>\n          apply (completionPowerQuotientEquiv K (m + 1)).injective\n          rw [completion_power_quotient_transition]\n          simp only [v, RingEquiv.apply_symm_apply]\n          have ht := actual_affine_thickening_sections_transition X I\n            (Nat.succ_le_succ_iff.mp h) (a.1 n)\n          rw [a.2 m n (Nat.succ_le_succ_iff.mp h)] at ht\n          exact ht.symm\n    let b : AdicCompletion K Γ(X, ⊤) := ⟨v, hv⟩\n    refine ⟨b, ?_⟩\n    apply Subtype.ext\n    funext n\n    apply (actualAffineThickeningSectionsEquiv X I n).injective\n    change (actualAffineThickeningSectionsEquiv X I n)\n      ((actualAffineThickeningSectionsEquiv X I n).symm\n        (AdicCompletion.evalₐ K (n + 1) b)) = _\n    rw [RingEquiv.apply_symm_apply]\n    rw [← completion_power_quotient_eval]\n    exact (completionPowerQuotientEquiv K (n + 1)).apply_symm_apply _\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_thickening_sections_pullback": {
+      "path": "Negativity/AffineThickeningSections.lean",
+      "line": 25,
+      "code": "theorem actual_affine_thickening_sections_pullback (X : Scheme.{u}) [IsAffine X]\n    (I : X.IdealSheafData) (n : ℕ) (r : Γ(X, ⊤)) :\n    actualAffineThickeningSectionsEquiv X I n ((I ^ (n + 1)).subschemeι.appTop r) =\n      Ideal.Quotient.mk ((I.ideal ⟨⊤, isAffineOpen_top X⟩) ^ (n + 1)) r := by\n  have h := congrArg (fun f => f r)\n    ((I ^ (n + 1)).subschemeι_app ⟨⊤, isAffineOpen_top X⟩)\n  apply (actualAffineThickeningSectionsEquiv X I n).symm.injective\n  simpa! [actualAffineThickeningSectionsEquiv, actualPowerThickening,\n    Iso.commRingCatIsoToRingEquiv, RingEquiv.ofRingHom] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_affine_thickening_sections_transition": {
+      "path": "Negativity/AffineThickeningSections.lean",
+      "line": 39,
+      "code": "theorem actual_affine_thickening_sections_transition (X : Scheme.{u}) [IsAffine X]\n    (I : X.IdealSheafData) {m n : ℕ} (h : m ≤ n)\n    (s : Γ(actualPowerThickening I n, ⊤)) :\n    actualAffineThickeningSectionsEquiv X I m\n        ((actualPowerThickeningInclusion I h).appTop s) =\n      Ideal.Quotient.factor\n        (Ideal.pow_le_pow_right (I := I.ideal ⟨⊤, isAffineOpen_top X⟩)\n          (Nat.add_le_add_right h 1)) (actualAffineThickeningSectionsEquiv X I n s) := by\n  obtain ⟨r, rfl⟩ := (I ^ (n + 1)).subschemeι_app_surjective\n    ⟨⊤, isAffineOpen_top X⟩ s\n  have hf := IdealSheafData.inclusion_subschemeι\n    (show I ^ (n + 1) ≤ I ^ (m + 1) from by\n      intro U\n      simpa only [IdealSheafData.ideal_pow, Pi.pow_apply] using\n        (Ideal.pow_le_pow_right (I := I.ideal U) (Nat.add_le_add_right h 1)))\n  have hr := congrArg (fun f : actualPowerThickening I m ⟶ X => f.appTop r) hf\n  change (actualPowerThickeningInclusion I h).appTop\n    ((I ^ (n + 1)).subschemeι.appTop r) =\n      (I ^ (m + 1)).subschemeι.appTop r at hr\n  change actualAffineThickeningSectionsEquiv X I m\n      ((actualPowerThickeningInclusion I h).appTop ((I ^ (n + 1)).subschemeι.appTop r)) =\n    Ideal.Quotient.factor _ (actualAffineThickeningSectionsEquiv X I n\n      ((I ^ (n + 1)).subschemeι.appTop r))\n  erw [hr, actual_affine_thickening_sections_pullback,\n    actual_affine_thickening_sections_pullback]\n  rfl\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_power_thickening_inclusion_point": {
+      "path": "Negativity/InfinitesimalIdempotents.lean",
+      "line": 35,
+      "code": "theorem actual_power_thickening_inclusion_point {X : Scheme.{u}}\n    (I : X.IdealSheafData) {m n : ℕ} (h : m ≤ n)\n    (x : actualPowerThickening I m) :\n    actualPowerThickeningHomeomorph I n (actualPowerThickeningInclusion I h x) =\n      actualPowerThickeningHomeomorph I m x := by\n  apply Subtype.ext\n  exact congrArg (fun f => f x) (IdealSheafData.inclusion_subschemeι\n    (show I ^ (n + 1) ≤ I ^ (m + 1) from by\n      intro U\n      simpa only [IdealSheafData.ideal_pow, Pi.pow_apply] using\n        (Ideal.pow_le_pow_right (I := I.ideal U) (Nat.add_le_add_right h 1))))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_infinitesimal_nontrivial_idempotent": {
+      "path": "Negativity/InfinitesimalIdempotents.lean",
+      "line": 70,
+      "code": "theorem actual_infinitesimal_nontrivial_idempotent {X : Scheme.{u}}\n    (I : X.IdealSheafData) (S : Set I.subscheme) (hS : IsClopen S)\n    (h0 : S ≠ ∅) (h1 : S ≠ Set.univ) :\n    ∃ a : actualInfinitesimalSections I, a * a = a ∧ a ≠ 0 ∧ a ≠ 1 := by\n  classical\n  let SS (n : ℕ) : Set (actualPowerThickening I n) :=\n    (actualPowerThickeningHomeomorph I n) ⁻¹' S\n  have hc (n : ℕ) : IsClopen (SS n) :=\n    hS.preimage (actualPowerThickeningHomeomorph I n).continuous\n  have hcompat (m n : ℕ) (h : m ≤ n) :\n      (actualPowerThickeningInclusion I h).appTop\n        (actualClopenCharacteristic _ (SS n) (hc n)) =\n          actualClopenCharacteristic _ (SS m) (hc m) := by\n    have hs : (actualPowerThickeningInclusion I h) ⁻¹' SS n = SS m := by\n      ext x\n      change actualPowerThickeningHomeomorph I n\n          (actualPowerThickeningInclusion I h x) ∈ S ↔\n        actualPowerThickeningHomeomorph I m x ∈ S\n      rw [actual_power_thickening_inclusion_point]\n    rw [actual_clopen_characteristic_pullback]\n    simp only [hs]\n  let a : actualInfinitesimalSections I :=\n    ⟨fun n => actualClopenCharacteristic _ (SS n) (hc n), hcompat⟩\n  refine ⟨a, ?_, ?_, ?_⟩\n  · apply Subtype.ext\n    funext n\n    exact actual_clopen_characteristic_idempotent _ (SS n) (hc n)\n  · intro ha\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr h0\n    let z := (actualPowerThickeningHomeomorph I 0).symm x\n    have hz : z ∈ SS 0 := by simpa [SS, z] using hx\n    have he := congrArg (fun b : actualInfinitesimalSections I =>\n      (actualPowerThickening I 0).presheaf.Γgerm z (b.1 0)) ha\n    simp [a, actual_clopen_characteristic_germ, hz] at he\n  · intro ha\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr\n      (show Sᶜ ≠ ∅ from fun h => h1 (Set.compl_empty_iff.mp h))\n    let z := (actualPowerThickeningHomeomorph I 0).symm x\n    have hz : z ∉ SS 0 := by simpa [SS, z] using hx\n    have he := congrArg (fun b : actualInfinitesimalSections I =>\n      (actualPowerThickening I 0).presheaf.Γgerm z (b.1 0)) ha\n    simp [a, actual_clopen_characteristic_germ, hz] at he\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_clopen_characteristic_exists_unique": {
+      "path": "Negativity/ClopenCharacteristicSection.lean",
+      "line": 17,
+      "code": "theorem actual_clopen_characteristic_exists_unique (X : Scheme.{u})\n    (S : Set X) (hS : IsClopen S) :\n    ∃! a : Γ(X, ⊤), ∀ x : X,\n      X.presheaf.Γgerm x a = if x ∈ S then 1 else 0 := by\n  classical\n  let U : X.Opens := ⟨S, hS.isOpen⟩\n  let V : X.Opens := ⟨Sᶜ, hS.isClosed.isOpen_compl⟩\n  have hdisj : U ⊓ V = ⊥ := by ext x; change (x ∈ S ∧ x ∈ Sᶜ) ↔ False; simp\n  have hcover : U ⊔ V = ⊤ := by\n    ext x\n    change (x ∈ S ∨ x ∈ Sᶜ) ↔ True\n    exact iff_true_intro (em (x ∈ S))\n  let ee : Γ(X, U ⊔ V) ≅ CommRingCat.of (Γ(X, U) × Γ(X, V)) :=\n    (X.sheaf.isProductOfDisjoint U V hdisj).conePointUniqueUpToIso\n      (CommRingCat.prodFanIsLimit _ _)\n  let b : Γ(X, U ⊔ V) := ee.inv (1, 0)\n  have hbU : X.presheaf.map (homOfLE le_sup_left : U ⟶ U ⊔ V).op b = 1 := by\n    have h := IsLimit.conePointUniqueUpToIso_inv_comp\n      (X.sheaf.isProductOfDisjoint U V hdisj)\n      (CommRingCat.prodFanIsLimit _ _) ⟨WalkingPair.left⟩\n    exact congrArg (fun m => m (1, 0)) h\n  have hbV : X.presheaf.map (homOfLE le_sup_right : V ⟶ U ⊔ V).op b = 0 := by\n    have h := IsLimit.conePointUniqueUpToIso_inv_comp\n      (X.sheaf.isProductOfDisjoint U V hdisj)\n      (CommRingCat.prodFanIsLimit _ _) ⟨WalkingPair.right⟩\n    exact congrArg (fun m => m (1, 0)) h\n  let a : Γ(X, ⊤) := X.presheaf.map (eqToHom hcover.symm).op b\n  have ha (x : X) : X.presheaf.Γgerm x a = if x ∈ S then 1 else 0 := by\n    have hx : x ∈ U ⊔ V := by rw [hcover]; trivial\n    change X.presheaf.germ ⊤ x trivial a = _\n    rw [X.presheaf.germ_res_apply (eqToHom hcover.symm) x trivial b]\n    by_cases hxS : x ∈ S\n    · rw [if_pos hxS, ← X.presheaf.germ_res_apply\n        (homOfLE le_sup_left : U ⟶ U ⊔ V) x hxS b, hbU]\n      exact map_one _\n    · rw [if_neg hxS, ← X.presheaf.germ_res_apply\n        (homOfLE le_sup_right : V ⟶ U ⊔ V) x hxS b, hbV]\n      exact map_zero _\n  refine ⟨a, ha, ?_⟩\n  intro c hc\n  exact TopCat.Presheaf.section_ext X.sheaf ⊤ c a\n    (fun x _ => (hc x).trans (ha x).symm)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_clopen_characteristic_germ": {
+      "path": "Negativity/ClopenCharacteristicSection.lean",
+      "line": 65,
+      "code": "theorem actual_clopen_characteristic_germ (X : Scheme.{u}) (S : Set X)\n    (hS : IsClopen S) (x : X) :\n    X.presheaf.Γgerm x (actualClopenCharacteristic X S hS) =\n      if x ∈ S then 1 else 0 :=\n  (actual_clopen_characteristic_exists_unique X S hS).exists.choose_spec x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_clopen_characteristic_idempotent": {
+      "path": "Negativity/ClopenCharacteristicSection.lean",
+      "line": 71,
+      "code": "theorem actual_clopen_characteristic_idempotent (X : Scheme.{u}) (S : Set X)\n    (hS : IsClopen S) :\n    actualClopenCharacteristic X S hS * actualClopenCharacteristic X S hS =\n      actualClopenCharacteristic X S hS := by\n  classical\n  apply TopCat.Presheaf.section_ext X.sheaf ⊤\n  intro x _\n  change X.presheaf.Γgerm x\n    (actualClopenCharacteristic X S hS * actualClopenCharacteristic X S hS) =\n      X.presheaf.Γgerm x (actualClopenCharacteristic X S hS)\n  simp only [map_mul, actual_clopen_characteristic_germ]\n  split <;> simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_clopen_characteristic_pullback": {
+      "path": "Negativity/ClopenCharacteristicSection.lean",
+      "line": 88,
+      "code": "theorem actual_clopen_characteristic_pullback {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (S : Set Y) (hS : IsClopen S) :\n    f.appTop (actualClopenCharacteristic Y S hS) =\n      actualClopenCharacteristic X (f ⁻¹' S) (hS.preimage f.continuous) := by\n  classical\n  apply TopCat.Presheaf.section_ext X.sheaf ⊤\n  intro x _\n  change X.presheaf.Γgerm x (f.appTop (actualClopenCharacteristic Y S hS)) =\n    X.presheaf.Γgerm x (actualClopenCharacteristic X (f ⁻¹' S) _)\n  calc\n    _ = f.stalkMap x (Y.presheaf.Γgerm (f x) (actualClopenCharacteristic Y S hS)) :=\n      (f.germ_stalkMap_apply ⊤ x trivial _).symm\n    _ = _ := by\n      simp only [actual_clopen_characteristic_germ]\n      by_cases hx : f x ∈ S <;> simp [hx]\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_clopen_nontrivial_global_idempotent": {
+      "path": "Negativity/SchemeClopenIdempotent.lean",
+      "line": 19,
+      "code": "theorem actual_clopen_nontrivial_global_idempotent (X : Scheme.{u})\n    (S : Set X) (hS : IsClopen S) (h0 : S ≠ ∅) (h1 : S ≠ Set.univ) :\n    ∃ a : Γ(X, ⊤), a * a = a ∧ a ≠ 0 ∧ a ≠ 1 := by\n  classical\n  let U : X.Opens := ⟨S, hS.isOpen⟩\n  let V : X.Opens := ⟨Sᶜ, hS.isClosed.isOpen_compl⟩\n  have : Nonempty U := by\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr h0\n    exact ⟨⟨x, hx⟩⟩\n  have : Nonempty V := by\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr\n      (show Sᶜ ≠ ∅ from fun h => h1 (Set.compl_empty_iff.mp h))\n    exact ⟨⟨x, hx⟩⟩\n  have hdisj : U ⊓ V = ⊥ := by\n    ext x\n    change (x ∈ S ∧ x ∈ Sᶜ) ↔ False\n    simp\n  have hcover : U ⊔ V = ⊤ := by\n    ext x\n    change (x ∈ S ∨ x ∈ Sᶜ) ↔ True\n    exact iff_true_intro (em (x ∈ S))\n  let ee : Γ(X, U ⊔ V) ≅ CommRingCat.of (Γ(X, U) × Γ(X, V)) :=\n    (X.sheaf.isProductOfDisjoint U V hdisj).conePointUniqueUpToIso\n      (CommRingCat.prodFanIsLimit _ _)\n  have ee' : Γ(X, ⊤) ≅ CommRingCat.of (Γ(X, U) × Γ(X, V)) := by\n    rw [← hcover]\n    exact ee\n  let e := ee'.commRingCatIsoToRingEquiv\n  let a := e.symm (1, 0)\n  refine ⟨a, ?_, ?_, ?_⟩\n  · apply e.injective\n    simp [a]\n  · intro ha\n    have h := congrArg (fun r => (e r).1) ha\n    simp [a] at h\n  · intro ha\n    have h := congrArg (fun r => (e r).2) ha\n    simp [a] at h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_scheme_connected_of_global_idempotents_trivial": {
+      "path": "Negativity/SchemeClopenIdempotent.lean",
+      "line": 63,
+      "code": "theorem actual_scheme_connected_of_global_idempotents_trivial\n    (X : Scheme.{u}) [Nonempty X]\n    (h : ∀ a : Γ(X, ⊤), a * a = a → a = 0 ∨ a = 1) :\n    ConnectedSpace X := by\n  apply connectedSpace_iff_clopen.mpr\n  refine ⟨inferInstance, ?_⟩\n  intro S hS\n  by_contra hn\n  have hn := not_or.mp hn\n  obtain ⟨a, ha, hzero, hone⟩ :=\n    actual_clopen_nontrivial_global_idempotent X S hS hn.1 hn.2\n  exact (h a ha).elim hzero hone\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_open_functions_isIso": {
+      "path": "Negativity/ProperBirationalSections.lean",
+      "line": 16,
+      "code": "theorem proper_normal_birational_open_functions_isIso\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) : IsIso (f.app U) := by\n  have : IsIso (actualStructureSheafPullback f) :=\n    proper_normal_birational_structure_sheaf_isIso f hf hnY\n  have : IsIso ((TopCat.Sheaf.forget CommRingCat Y.carrier).map\n    (actualStructureSheafPullback f)) := inferInstance\n  change IsIso f.c at this\n  change IsIso (f.c.app (op U))\n  infer_instance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_open_functions_bijective": {
+      "path": "Negativity/ProperBirationalSections.lean",
+      "line": 34,
+      "code": "theorem proper_normal_birational_open_functions_bijective\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) : Function.Bijective (f.app U) := by\n  have : IsIso (f.app U) :=\n    proper_normal_birational_open_functions_isIso f hf hnY U\n  exact ConcreteCategory.bijective_of_isIso (f.app U)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_structure_sheaf_isIso": {
+      "path": "Negativity/ProperBirationalStructureSheaf.lean",
+      "line": 28,
+      "code": "theorem proper_normal_birational_structure_sheaf_isIso\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y)) :\n    IsIso (actualStructureSheafPullback f) := by\n  apply TopCat.Sheaf.isIso_iff_isIso_basis\n    (B := fun U : Y.affineOpens => U.1)\n    (by simpa using Y.isBasis_affineOpens)\n  intro U\n  change IsIso (f.app U.1)\n  by_cases hne : Nonempty U.1\n  · have : Nonempty U.1 := hne\n    have : Nonempty (f ⁻¹ᵁ U.1) := by\n      obtain ⟨y, hy⟩ := hne\n      obtain ⟨x, hx⟩ := (proper_birational_surjective f hf).surj y\n      exact ⟨⟨x, by change f x ∈ U.1; rwa [hx]⟩⟩\n    exact (ConcreteCategory.isIso_iff_bijective _).mpr\n      (proper_normal_birational_affine_functions_bijective f hf hnY U.1 U.2)\n  · have hz : U.1 = ⊥ := by\n      ext x\n      change x ∈ U.1 ↔ False\n      exact ⟨fun hx => hne ⟨⟨x, hx⟩⟩, False.elim⟩\n    rw [hz]\n    exact isIso_of_isTerminal Y.sheaf.isTerminalOfEmpty\n      (X.sheaf.isTerminalOfEqEmpty (by simp)) (f.app ⊥)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "birational_functionField_pullback_bijective": {
+      "path": "Negativity/ProperBirationalFunctions.lean",
+      "line": 15,
+      "code": "theorem birational_functionField_pullback_bijective\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    (f : X ⟶ Y) (hf : BirationalMorphism f) :\n    letI : IsDominant f := birationalMorphism_dominant f hf\n    Function.Bijective (dominantFunctionFieldMap f) := by\n  let : IsDominant f := birationalMorphism_dominant f hf\n  have := birationalMorphism_generic_stalk_isIso f hf\n  let g := (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n    f.stalkMap (genericPoint X)\n  exact ConcreteCategory.bijective_of_isIso g",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "proper_normal_birational_affine_functions_bijective": {
+      "path": "Negativity/ProperBirationalFunctions.lean",
+      "line": 33,
+      "code": "theorem proper_normal_birational_affine_functions_bijective\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (U : Y.Opens) (hU : IsAffineOpen U) [Nonempty U]\n    [Nonempty (f ⁻¹ᵁ U)] : Function.Bijective (f.app U) := by\n  classical\n  let : IsDominant f := birationalMorphism_dominant f hf\n  let e : Y.functionField ≃+* X.functionField := RingEquiv.ofBijective\n    (dominantFunctionFieldMap f) (birational_functionField_pullback_bijective f hf)\n  constructor\n  · intro r s hrs\n    apply Y.germToFunctionField_injective U\n    apply e.injective\n    exact (dominantFunctionFieldMap_germ f U r).trans\n      ((congrArg (X.germToFunctionField (f ⁻¹ᵁ U)) hrs).trans\n        (dominantFunctionFieldMap_germ f U s).symm)\n  · intro r\n    let a := e.symm (X.germToFunctionField (f ⁻¹ᵁ U) r)\n    by_cases ha : a = 0\n    · refine ⟨0, ?_⟩\n      apply X.germToFunctionField_injective (f ⁻¹ᵁ U)\n      have he := congrArg e ha\n      simpa [a] using he.symm\n    · obtain ⟨s, hs⟩ := normal_affine_rational_regular Y hnY U hU (Units.mk0 a ha)\n        (by\n          intro y hyU hy\n          obtain ⟨x, hxy, hi, _hx, _hunique⟩ :=\n            proper_birational_codimensionOne_unique_preimage f hf y hy\n          subst y\n          have : IsIso (f.stalkMap x) := hi\n          have := hnY (f x)\n          have := normal_codimensionOne_stalk_isDVR Y (f x) hy\n          let v := X.presheaf.germ (f ⁻¹ᵁ U) x hyU r\n          let t := (inv (f.stalkMap x)).hom v\n          have hv : (f.stalkMap x).hom t = v := by\n            change ((inv (f.stalkMap x) ≫ f.stalkMap x) v) = v\n            simp\n          have ht : algebraMap (Y.presheaf.stalk (f x)) Y.functionField t = a := by\n            apply e.injective\n            change dominantFunctionFieldMap f\n              (algebraMap (Y.presheaf.stalk (f x)) Y.functionField t) = e a\n            rw [dominantFunctionFieldMap_stalk, hv]\n            exact (Scheme.algebraMap_germ_eq_germToFunctionField X hyU r).trans\n              (e.apply_symm_apply _).symm\n          exact (dvr_rationalOrder_nonneg_iff_regular (Y.presheaf.stalk (f x))\n            Y.functionField (Units.mk0 a ha)).mpr ⟨t, ht⟩)\n      refine ⟨s, ?_⟩\n      apply X.germToFunctionField_injective (f ⁻¹ᵁ U)\n      rw [← dominantFunctionFieldMap_germ f U s]\n      change e (algebraMap Γ(Y, U) Y.functionField s) = _\n      rw [hs]\n      exact e.apply_symm_apply _\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_projective_negativity_effectivity_iff": {
       "path": "Negativity/ActualProjectiveNegativityIff.lean",
       "line": 20,

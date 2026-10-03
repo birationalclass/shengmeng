@@ -17,12 +17,12 @@ const gaps = {
   connected: {
     zh: ['证明实际纤维连通',
       '正规底上的 proper 双有理态射 f，其实际纤维 f⁻¹(y) 连通。',
-      ['接通 f_*𝒪_X=𝒪_Y 的实际层论证明。',
-       '接通形式函数：将断开纤维转为完备局部环中的非平凡幂等元。']],
+      ['已完成实际 f_*𝒪_X=𝒪_Y、相容加厚幂等元及仿射源完备化比较。',
+       '待完成 proper 非仿射源的全局比较：R̂≅limₙ Γ(X×Spec(R/mⁿ⁺¹),𝒪)。']],
     en: ['Prove connectedness of actual fibers',
       'For proper birational f over a normal base, prove that actual fibers f⁻¹(y) are connected.',
-      ['Connect the actual sheaf-theoretic proof of f_*𝒪_X=𝒪_Y.',
-       'Connect formal functions: a disconnected fiber would produce a nontrivial idempotent in the completed local ring.']]
+      ['Actual f_*O_X=O_Y, compatible thickening idempotents and the affine-source completion comparison are proved.',
+       'Prove the proper nonaffine global comparison: R̂≅limₙ Γ(X×Spec(R/mⁿ⁺¹),O).']]
   },
   chow: {
     zh: ['完成 Chow 构造的射影性',
@@ -41,6 +41,9 @@ const verifiedSteps = [
   ['complete_integral_curve_ambient_cartier_principal_invariance', ['主除子移动保持实际完整曲线的交数。', 'Principal changes preserve actual complete-curve intersection.']],
   ['exists_effective_exceptional_covering_cartier_twist', ['给定严格负交数的 Cartier 除子时，构造 E 并证明 exceptional 素系数为正。', 'Given a strictly anti-positive Cartier divisor, construct E with positive exceptional-prime coefficients.']],
   ['complete_integral_curve_positive_of_affine_section_cover', ['给定实际仿射截面覆盖时，证明完整曲线交数严格为正。', 'Given an actual affine section cover, derive positive complete-curve intersection.']],
+  ['proper_normal_birational_structure_sheaf_isIso', ['实际结构层 𝒪_Y→f_*𝒪_X 同构已证明。', 'The actual structure-sheaf isomorphism O_Y→f_*O_X is proved.']],
+  ['actual_infinitesimal_nontrivial_idempotent', ['真实各阶加厚的相容非平凡幂等元已构造。', 'Compatible nontrivial idempotents on genuine thickenings are constructed.']],
+  ['actual_affine_formal_functions_bijective', ['仿射源的规范完备化比较已证明；proper 非仿射比较仍缺。', 'The canonical affine-source completion comparison is proved; proper nonaffine comparison remains open.']],
   ['connected_complete_scheme_actual_crossing_curve', ['已连通的完整 Scheme 上，高维相交曲线的构造已完成。', 'Crossing curves are constructed in every dimension on already connected proper schemes.']],
   ['finiteType_perfectField_normalization_isFinite', ['实际正规化的有限性已证明。', 'Finiteness of actual normalization is proved.']],
   ['exists_embedded_complete_curve_real_projection_formula', ['实际 R-Cartier 曲线射影公式已证明。', 'The actual real-Cartier curve projection formula is proved.']],
@@ -53,8 +56,8 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
   const hasCoordinateGap = openNodes.some(n => n.id === 'projectivesections');
   const relevant = new Set();
   if (hasCoordinateGap) for (const name of verifiedSteps.slice(0,4).map(s => s[0])) relevant.add(name);
-  if (openNodes.some(n => n.id === 'connected')) relevant.add('connected_complete_scheme_actual_crossing_curve');
-  if (openNodes.some(n => n.id === 'chow')) for (const name of verifiedSteps.slice(5).map(s => s[0])) relevant.add(name);
+  if (openNodes.some(n => n.id === 'connected')) for (const name of ['connected_complete_scheme_actual_crossing_curve','proper_normal_birational_structure_sheaf_isIso','actual_infinitesimal_nontrivial_idempotent','actual_affine_formal_functions_bijective']) relevant.add(name);
+  if (openNodes.some(n => n.id === 'chow')) for (const name of ['finiteType_perfectField_normalization_isFinite','exists_embedded_complete_curve_real_projection_formula','actual_relative_nef_canonical_pullback']) relevant.add(name);
   const proved = verifiedSteps.filter(([name]) => relevant.has(name) && declarations[name]);
   const explicitDone = inputs.filter(s => /^(已完成|已证明|Proved|Verified|Completed)\s*[:：]/i.test(s));
   const doneTexts = proved.length ? proved.map(([,labels]) => labels[english ? 1 : 0]) : explicitDone;

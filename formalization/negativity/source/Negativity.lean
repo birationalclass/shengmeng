@@ -317,3 +317,19 @@ public import Negativity.RelativeProjectiveEmbedding
 public import Negativity.ActualProjectiveNegativity
 
 public import Negativity.ActualProjectiveNegativityIff
+
+public import Negativity.ProperBirationalFunctions
+
+public import Negativity.ProperBirationalStructureSheaf
+
+public import Negativity.ProperBirationalSections
+
+public import Negativity.SchemeClopenIdempotent
+
+public import Negativity.ClopenCharacteristicSection
+
+public import Negativity.InfinitesimalIdempotents
+
+public import Negativity.AffineThickeningSections
+
+public import Negativity.AffineFormalFunctions
