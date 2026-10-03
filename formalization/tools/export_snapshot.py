@@ -236,7 +236,10 @@ for relative in files:
     target = source / relative
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
-    manifest.append({'path': relative, 'sha256': hashlib.sha256(data).hexdigest()})
+    record = {'path': relative, 'sha256': hashlib.sha256(data).hexdigest()}
+    if relative.endswith('.lean'):
+        record['lineCount'] = len(data.decode('utf-8-sig').splitlines())
+    manifest.append(record)
 declarations = {}
 for filename, declarations_in_file in names.items():
     code = (project / 'Negativity' / filename).read_text(encoding='utf-8-sig')
