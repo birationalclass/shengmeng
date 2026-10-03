@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-input-panel-1';
+const release = '20261003-input-panel-2';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -159,8 +159,15 @@ function installInspectorActions() {
     if(header.querySelector('.input-inspector-actions'))return;
     const en=document.documentElement.lang.startsWith('en');
     const actions=document.createElement('div');actions.className='input-inspector-actions';
-    actions.innerHTML=`<button type="button" data-inspector-action="source">〈/〉 Lean ${en?'source':'源码'}</button><button type="button" data-inspector-action="steps">≡ ${en?'Proof steps':'证明步骤'}</button>`;
-    header.querySelector('h2')?.insertAdjacentElement('afterend',actions);
+    actions.innerHTML=`<span class="input-goal-label">${en?'PROOF GOAL':'要证明'}</span><button type="button" data-inspector-action="source" title="${en?'Open Lean source':'打开 Lean 源码'}">Lean</button><button type="button" data-inspector-action="steps" title="${en?'Open proof steps':'打开证明步骤'}">Proof</button>`;
+    header.prepend(actions);
+    const statement=header.querySelector('.statement');
+    if(location.hash==='#node=antiample'){
+      header.querySelector('h2').textContent=en?'Construct effective E with −E relatively ample':'构造有效 E，使 −E 相对 ample';
+      statement.textContent=en?'For a projective birational morphism f:X→Y of normal varieties with affine Y, construct an effective Cartier divisor E such that −E is f-ample.':'对正规簇间的射影双有理态射 f:X→Y（Y 仿射），构造有效 Cartier 除子 E，使 −E 为 f-ample。';
+    }
+    const status=header.querySelector(':scope > .pill');
+    if(statement && status)statement.insertAdjacentElement('afterend',status);
     const extra=[...header.querySelectorAll(':scope > p:not(.statement)')];
     if(extra.length){
       const explanation=document.createElement('details');explanation.className='input-scope-details';
