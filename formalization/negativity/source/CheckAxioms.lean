@@ -835,3 +835,15 @@ import Negativity
 #print axioms Negativity.actualRealCartierCoefficients_apply
 
 #print axioms Negativity.actual_negativity_of_antiample_witness
+
+#print axioms Negativity.affine_line_through_point_avoiding_polynomial
+
+#print axioms Negativity.affine_integral_curve_through_maximal_avoiding
+
+#print axioms Negativity.exists_complete_integral_curve_through_closed_point_avoiding
+
+#print axioms Negativity.connected_closed_subset_crossing_component
+
+#print axioms Negativity.connected_complete_scheme_actual_crossing_curve
+
+#print axioms Negativity.actual_connected_contracted_scheme_support_dichotomy

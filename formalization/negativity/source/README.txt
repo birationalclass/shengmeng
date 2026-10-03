@@ -59,8 +59,18 @@ curves and actual intersection, with only the supplied E witness's effectivity,
 exceptional coverage and strict negative contracted-curve degrees as additional
 inputs. It does not construct E or derive geometric ample positivity; this is
 still a conditional first-part result, NOT the full negativity lemma.
+High-dimensional curve selection is now actually constructed: a line
+through a prescribed polynomial zero avoiding that zero set, an actual
+one-dimensional prime quotient with avoidance, and its actual complete
+scheme closure. Every nonempty proper closed subset of an actual connected
+proper scheme, including reducible and nonreduced schemes, is met by an actual
+complete integral curve not contained in it. Actual support dichotomy for
+effective real Cartier divisors with negative relative nefness is proved on
+connected complete contracted schemes, with no curve-existence or positive-
+intersection input. Connectedness of actual proper birational fibers is NOT
+proved by this result and remains open.
 Geometric ample positivity,
-full Chow construction and connected-fiber curve existence remain open.
+full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 

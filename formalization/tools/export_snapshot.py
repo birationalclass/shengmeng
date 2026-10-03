@@ -4,6 +4,11 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualConnectedSupport.lean': ['actual_connected_contracted_scheme_support_dichotomy'],
+    'ConnectedCurveCrossing.lean': ['connected_closed_subset_crossing_component', 'connected_complete_scheme_actual_crossing_curve'],
+    'CompleteCurveAvoiding.lean': ['exists_complete_integral_curve_through_closed_point_avoiding'],
+    'AffineCurveAvoiding.lean': ['affine_integral_curve_through_maximal_avoiding'],
+    'AffineLineAvoiding.lean': ['affine_line_through_point_avoiding_polynomial'],
     'ActualNegativityWitness.lean': ['actualRealCartierCoefficients_apply', 'actual_negativity_of_antiample_witness'],
     'NegativeActualCenter.lean': ['actual_cycle_coefficient_over_isomorphism_open', 'actual_negative_coefficient_image_in_center'],
     'ZeroPrimeCurve.lean': ['zero_weil_coefficient_outside_geometric_support', 'zero_exceptional_prime_actual_curve_nonnegative_intersection'],
@@ -249,8 +254,18 @@ curves and actual intersection, with only the supplied E witness's effectivity,
 exceptional coverage and strict negative contracted-curve degrees as additional
 inputs. It does not construct E or derive geometric ample positivity; this is
 still a conditional first-part result, NOT the full negativity lemma.
+High-dimensional curve selection is now actually constructed: a line
+through a prescribed polynomial zero avoiding that zero set, an actual
+one-dimensional prime quotient with avoidance, and its actual complete
+scheme closure. Every nonempty proper closed subset of an actual connected
+proper scheme, including reducible and nonreduced schemes, is met by an actual
+complete integral curve not contained in it. Actual support dichotomy for
+effective real Cartier divisors with negative relative nefness is proved on
+connected complete contracted schemes, with no curve-existence or positive-
+intersection input. Connectedness of actual proper birational fibers is NOT
+proved by this result and remains open.
 Geometric ample positivity,
-full Chow construction and connected-fiber curve existence remain open.
+full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 

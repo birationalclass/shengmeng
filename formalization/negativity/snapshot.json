@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T07:34:09+08:00",
+  "checkedAt": "2026-10-03T08:02:31+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "4f63b0533dc7f7fad17099dc863966368c2fc72decf3e2a7b2d3629ba86ba4da"
+      "sha256": "546a1c8d100a50180819fdad85e6087a25459c9881409062b4e12cd5a9fd1c74"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "3e3fd94f3d31a72cb25461e1fc0e2f49651498e0b54f1532b808a9d9561378bd"
+      "sha256": "00843144f78f225279b5110aa4c0411d11638bc1c5a8dce32edd9eaeb9924288"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,26 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualConnectedSupport.lean",
+      "sha256": "1a040b0349e87f802371dd7453d78adcad818b6f841a22fa4bc0035a7c57a9b9"
+    },
+    {
+      "path": "Negativity/ConnectedCurveCrossing.lean",
+      "sha256": "144836fb7ea28433401a7f09833a4eeddd30ef4d4958e141fcb62633ac634c89"
+    },
+    {
+      "path": "Negativity/CompleteCurveAvoiding.lean",
+      "sha256": "2850b876d71e938c6574aac9784b288370fed63251d6c97df55ffcab027f99f7"
+    },
+    {
+      "path": "Negativity/AffineCurveAvoiding.lean",
+      "sha256": "b428e968e4cc4c3fff741f301e6359c8efef022abb31f969e7ec49e9dd3e76c1"
+    },
+    {
+      "path": "Negativity/AffineLineAvoiding.lean",
+      "sha256": "c68185a456289131d23c6b4682cda420749839dd30ecad9759d278dc4df5079e"
     },
     {
       "path": "Negativity/ActualNegativityWitness.lean",
@@ -566,6 +586,66 @@
     }
   ],
   "declarations": {
+    "actual_connected_contracted_scheme_support_dichotomy": {
+      "path": "Negativity/ActualConnectedSupport.lean",
+      "line": 21,
+      "code": "theorem actual_connected_contracted_scheme_support_dichotomy\n    {X Y : Scheme.{u}} [IsIntegral X] [IsLocallyNoetherian X] [CompactSpace X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) (f : X ⟶ Y)\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, r t * ((A t).coefficient hnX x : ℝ))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -r t))\n    (Z : Scheme.{u}) [ConnectedSpace Z] (i : Z ⟶ X) [IsProper (i ≫ f ≫ b)]\n    (hcontract : ∀ z w : Z, f (i z) = f (i w)) :\n    (∀ z : Z, i z ∉ closure (∑ t, (A t).weightedWeilCycle hnX (r t)).support) ∨\n      (∀ z : Z, i z ∈ closure (∑ t, (A t).weightedWeilCycle hnX (r t)).support) := by\n  classical\n  let S := closure (∑ t, (A t).weightedWeilCycle hnX (r t)).support\n  let T : Set Z := i ⁻¹' S\n  have hT : IsClosed T := isClosed_closure.preimage i.continuous\n  by_cases hnone : ∀ z : Z, i z ∉ S\n  · exact Or.inl hnone\n  right\n  by_contra hn\n  have hne : T.Nonempty := by\n    simpa only [T, Set.nonempty_def, Set.mem_preimage, not_forall, not_not] using hnone\n  have hnall : ¬ Set.univ ⊆ T := by\n    intro hall\n    exact hn (fun z => hall trivial)\n  obtain ⟨C, j, hC, hdC, hj, hp, hmeet, havoid⟩ :=\n    connected_complete_scheme_actual_crossing_curve Z k (i ≫ f ≫ b) T hT hne hnall\n  have := hC\n  have := hj\n  have := hp\n  have hpC : IsProper ((j ≫ i) ≫ (f ≫ b)) := by\n    simpa only [Category.assoc] using hp\n  have hη : (j ≫ i) (genericPoint C) ∉ S := by\n    intro hm\n    apply havoid\n    rintro _ ⟨c, rfl⟩\n    have hsp : i (j (genericPoint C)) ⤳ i (j c) :=\n      (j ≫ i).continuous.specialization_monotone ((genericPoint_spec C).specializes trivial)\n    exact hsp.mem_closed isClosed_closure hm\n  have hconst : ∀ c : C, ((j ≫ i) ≫ f) c = ((j ≫ i) ≫ f) (genericPoint C) := by\n    intro c\n    simp only [Scheme.Hom.comp_apply]\n    exact hcontract (j c) (j (genericPoint C))\n  have hnonpos := (actual_relative_nef_negative_iff k (f ≫ b) f A r).mp hnef\n    C hdC (j ≫ i) hconst\n  have hmeets : ((j ≫ i) ⁻¹' S).Nonempty := by\n    obtain ⟨z, ⟨c, hc⟩, hzT⟩ := hmeet\n    refine ⟨c, ?_⟩\n    change i (j c) ∈ S\n    rw [hc]\n    exact hzT\n  have hpos := (complete_integral_curve_effective_real_intersection_signs hnX hdC k\n    ((j ≫ i) ≫ (f ≫ b)) (j ≫ i) A r he hη).2 hmeets\n  exact (not_lt_of_ge hnonpos) hpos\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "connected_closed_subset_crossing_component": {
+      "path": "Negativity/ConnectedCurveCrossing.lean",
+      "line": 17,
+      "code": "theorem connected_closed_subset_crossing_component\n    (T : Type*) [TopologicalSpace T] [NoetherianSpace T] [ConnectedSpace T]\n    (S : Set T) (hS : IsClosed S) (hne : S.Nonempty) (hnall : ¬ Set.univ ⊆ S) :\n    ∃ F ∈ irreducibleComponents T, (F ∩ S).Nonempty ∧ ¬ F ⊆ S := by\n  classical\n  by_contra hn\n  push Not at hn\n  let A : Set (Set T) := {F | F ∈ irreducibleComponents T ∧ ¬ F ⊆ S}\n  have hAfin : A.Finite := NoetherianSpace.finite_irreducibleComponents.subset\n    (fun _ hF => hF.1)\n  have hAc : IsClosed (⋃₀ A) := by\n    rw [Set.sUnion_eq_biUnion]\n    exact hAfin.isClosed_biUnion fun F hF => isClosed_of_mem_irreducibleComponents F hF.1\n  have hAS : ⋃₀ A = Sᶜ := by\n    ext x\n    constructor\n    · rintro ⟨F, hFA, hxF⟩ hxS\n      exact hFA.2 (hn F hFA.1 ⟨x, hxF, hxS⟩)\n    · intro hxS\n      exact Set.mem_sUnion.mpr ⟨irreducibleComponent x,\n        ⟨irreducibleComponent_mem_irreducibleComponents x,\n          fun h => hxS (h mem_irreducibleComponent)⟩, mem_irreducibleComponent⟩\n  have hopen : IsOpen S := by\n    have hc : IsClosed Sᶜ := hAS ▸ hAc\n    simpa using hc.isOpen_compl\n  have heq : S = Set.univ := (IsClopen.eq_univ ⟨hS, hopen⟩ hne)\n  exact hnall (by rw [heq])",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "connected_complete_scheme_actual_crossing_curve": {
+      "path": "Negativity/ConnectedCurveCrossing.lean",
+      "line": 51,
+      "code": "theorem connected_complete_scheme_actual_crossing_curve\n    (Z : Scheme.{u}) [ConnectedSpace Z] (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Z ⟶ Spec (.of k)) [IsProper b]\n    (S : Set Z) (hS : IsClosed S) (hne : S.Nonempty) (hnall : ¬ Set.univ ⊆ S) :\n    ∃ (C : Scheme.{u}) (j : C ⟶ Z), IsIntegral C ∧ Order.krullDim C = 1 ∧\n      IsClosedImmersion j ∧ IsProper (j ≫ b) ∧\n      (Set.range j ∩ S).Nonempty ∧ ¬ Set.range j ⊆ S := by\n  have : IsLocallyNoetherian Z := LocallyOfFiniteType.isLocallyNoetherian b\n  let : CompactSpace Z := QuasiCompact.compactSpace_of_compactSpace b\n  have : IsNoetherian Z := ⟨⟩\n  obtain ⟨F, hF, hFS, hFn⟩ := connected_closed_subset_crossing_component Z S hS hne hnall\n  have hFc := isClosed_of_mem_irreducibleComponents F hF\n  have hnot : ¬ F ∩ S ⊆ (∅ : Set Z) := by\n    obtain ⟨x, hx⟩ := hFS\n    exact fun h => h hx\n  obtain ⟨x, hxFS, _, hxc⟩ := finiteType_exists_closedPoint_outside_support k Z b\n    (F ∩ S) ∅ (hFc.inter hS) isClosed_empty hnot\n  let Fc : Closeds Z := ⟨F, hFc⟩\n  let I := Scheme.IdealSheafData.vanishingIdeal Fc\n  let Y := I.subscheme\n  let i : Y ⟶ Z := I.subschemeι\n  obtain ⟨hY, hi, hr⟩ := closed_irreducible_actual_subscheme_properties Z Fc hF.1\n  have := hY\n  have := hi\n  have hxrange : x ∈ Set.range i := by rw [hr]; exact hxFS.1\n  obtain ⟨z, hz⟩ := hxrange\n  have hzc : IsClosed ({z} : Set Y) := by\n    have he : i ⁻¹' ({x} : Set Z) = {z} := by\n      ext w\n      simp only [Set.mem_preimage, Set.mem_singleton_iff]\n      exact ⟨fun hw => i.isEmbedding.injective (hw.trans hz.symm), fun hw => hw ▸ hz⟩\n    exact he ▸ hxc.preimage i.continuous\n  let T : Set Y := i ⁻¹' S\n  have hT : IsClosed T := hS.preimage i.continuous\n  have hηT : genericPoint Y ∉ T := by\n    intro hm\n    apply hFn\n    intro y hy\n    have hyr : y ∈ Set.range i := by rw [hr]; exact hy\n    obtain ⟨w, rfl⟩ := hyr\n    have hsp : i (genericPoint Y) ⤳ i w :=\n      i.continuous.specialization_monotone ((genericPoint_spec Y).specializes trivial)\n    exact hsp.mem_closed hS hm\n  have hzT : z ∈ T := by\n    change i z ∈ S\n    rw [hz]\n    exact hxFS.2\n  have : IsProper (i ≫ b) := inferInstance\n  obtain ⟨C, j, hC, hdC, hj, hp, hzj, havoid⟩ :=\n    exists_complete_integral_curve_through_closed_point_avoiding Y k (i ≫ b) T hT hηT z hzc hzT\n  have := hj\n  obtain ⟨w, hw⟩ := hzj\n  refine ⟨C, j ≫ i, hC, hdC, inferInstance,\n    by simpa only [Category.assoc] using hp, ?_, ?_⟩\n  · refine ⟨x, ⟨w, ?_⟩, hxFS.2⟩\n    simpa only [Scheme.Hom.comp_apply, hw] using hz\n  · intro hall\n    apply havoid\n    rintro _ ⟨c, rfl⟩\n    exact hall ⟨c, by simp only [Scheme.Hom.comp_apply]⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_complete_integral_curve_through_closed_point_avoiding": {
+      "path": "Negativity/CompleteCurveAvoiding.lean",
+      "line": 19,
+      "code": "theorem exists_complete_integral_curve_through_closed_point_avoiding\n    (X : Scheme.{u}) [IsIntegral X] (k : Type u) [Field k] [IsAlgClosed k]\n    (b : X ⟶ Spec (.of k)) [IsProper b]\n    (S : Set X) (hS : IsClosed S) (hηS : genericPoint X ∉ S)\n    (x : X) (hxc : IsClosed ({x} : Set X)) (hxS : x ∈ S) :\n    ∃ (C : Scheme.{u}) (j : C ⟶ X), IsIntegral C ∧ Order.krullDim C = 1 ∧\n      IsClosedImmersion j ∧ IsProper (j ≫ b) ∧ x ∈ Set.range j ∧ ¬ Set.range j ⊆ S := by\n  classical\n  have hx : x ≠ genericPoint X := fun h => hηS (h ▸ hxS)\n  obtain ⟨U, hU, hxU, _⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤) (x := x) trivial\n  have : Nonempty U := ⟨⟨x, hxU⟩⟩\n  let R := Γ(X, U)\n  let c : k →+* R := (Spec.preimage (hU.fromSpec ≫ b)).hom\n  let : Algebra k R := c.toAlgebra\n  have hc : c.FiniteType := by\n    apply (HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)).mp\n    rw [Spec.map_preimage]\n    infer_instance\n  have : Algebra.FiniteType k R := hc\n  have : IsNoetherianRing R := Algebra.FiniteType.isNoetherianRing k R\n  let m := hU.primeIdealOf ⟨x, hxU⟩\n  have : m.asIdeal.IsMaximal := hU.primeIdealOf_isMaximal_of_isClosed ⟨x, hxU⟩ hxc\n  let T : Set (PrimeSpectrum R) := hU.fromSpec ⁻¹' S\n  have hT : IsClosed T := hS.preimage hU.fromSpec.continuous\n  obtain ⟨I, hI⟩ := (PrimeSpectrum.isClosed_iff_zeroLocus_ideal T).mp hT\n  have hηU : genericPoint X ∈ U :=\n    ((genericPoint_spec X).mem_open_set_iff U.isOpen).mpr ⟨x, trivial, hxU⟩\n  have hI0 : I ≠ ⊥ := by\n    intro he\n    have hTu : T = Set.univ := by rw [hI, he, PrimeSpectrum.zeroLocus_bot]\n    have hmem : hU.primeIdealOf ⟨genericPoint X, hηU⟩ ∈ T := by rw [hTu]; trivial\n    have hbad : hU.fromSpec (hU.primeIdealOf ⟨genericPoint X, hηU⟩) ∈ S := hmem\n    rw [hU.fromSpec_primeIdealOf] at hbad\n    exact hηS hbad\n  have hmT : m ∈ T := by\n    change hU.fromSpec m ∈ S\n    rw [hU.fromSpec_primeIdealOf]\n    exact hxS\n  have hIm : I ≤ m.asIdeal := (PrimeSpectrum.mem_zeroLocus m I).mp (hI ▸ hmT)\n  obtain ⟨v, hvI, hv⟩ := I.ne_bot_iff.mp hI0\n  obtain ⟨P, hP, hPm, hvP, hdim, hnf⟩ := affine_integral_curve_through_maximal_avoiding k R\n    (affine_chart_not_field_at_nonGeneric_point X x hx U hU hxU) m.asIdeal v hv (hIm hvI)\n  have := hP\n  have := hdim\n  let C₀ := Spec (.of (R ⧸ P))\n  let q : C₀ ⟶ Spec (.of R) := Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk P))\n  let f : C₀ ⟶ X := q ≫ hU.fromSpec\n  have : QuasiCompact f := ⟨fun _ _ _ => NoetherianSpace.isCompact _⟩\n  have hdC : Order.krullDim C₀ = 1 := by\n    rw [Order.krullDim_eq_of_orderIso (specOrderIsoPrimeSpectrum (.of (R ⧸ P))),\n      Order.krullDim_orderDual]\n    exact dimension_one_of_curve_domain (R ⧸ P) hnf\n  obtain ⟨hInt, hdI, hproper, _⟩ := complete_integral_curve_actual_closure hdC k b f\n  have hxq : m ∈ Set.range (PrimeSpectrum.comap (Ideal.Quotient.mk P)) := by\n    rw [range_comap_of_surjective _ _ Ideal.Quotient.mk_surjective,\n      PrimeSpectrum.mem_zeroLocus, Ideal.mk_ker]\n    exact hPm.le\n  obtain ⟨z, hz⟩ := hxq\n  have hfx : f z = x := by\n    change hU.fromSpec (q z) = x\n    change hU.fromSpec (PrimeSpectrum.comap (Ideal.Quotient.mk P) z) = x\n    rw [hz, hU.fromSpec_primeIdealOf]\n  have hqη : (q (genericPoint C₀)).asIdeal = P := by\n    change (PrimeSpectrum.comap (Ideal.Quotient.mk P) (genericPoint C₀)).asIdeal = P\n    rw [genericPoint_eq_bot_of_affine]\n    exact Ideal.mk_ker\n  have hfη : f (genericPoint C₀) ∉ S := by\n    intro hbad\n    have hTη : q (genericPoint C₀) ∈ T := hbad\n    have hIη : I ≤ (q (genericPoint C₀)).asIdeal :=\n      (PrimeSpectrum.mem_zeroLocus (q (genericPoint C₀)) I).mp (hI ▸ hTη)\n    exact hvP (hqη ▸ hIη hvI)\n  refine ⟨f.image, f.imageι, hInt, hdI, inferInstance, hproper,\n    ⟨f.toImage z, by simpa only [← Scheme.Hom.comp_apply, Scheme.Hom.toImage_imageι] using hfx⟩, ?_⟩\n  intro hall\n  apply hfη\n  have hm := hall (Set.mem_range_self (f.toImage (genericPoint C₀)))\n  simpa only [← Scheme.Hom.comp_apply, Scheme.Hom.toImage_imageι] using hm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affine_integral_curve_through_maximal_avoiding": {
+      "path": "Negativity/AffineCurveAvoiding.lean",
+      "line": 16,
+      "code": "theorem affine_integral_curve_through_maximal_avoiding\n    (k A : Type u) [Field k] [IsAlgClosed k] [CommRing A] [IsDomain A]\n    [Algebra k A] [Algebra.FiniteType k A] (hA : ¬ IsField A)\n    (m : Ideal A) [m.IsMaximal] (v : A) (hv : v ≠ 0) (hvm : v ∈ m) :\n    ∃ P : Ideal A, P.IsPrime ∧ P < m ∧ v ∉ P ∧\n      Ring.KrullDimLE 1 (A ⧸ P) ∧ ¬ IsField (A ⧸ P) := by\n  classical\n  obtain ⟨n, g, hg, hint⟩ := exists_integral_inj_algHom_of_fg k A\n  let B := MvPolynomial (Fin n) k\n  let : Algebra B A := g.toRingHom.toAlgebra\n  have : Algebra.IsIntegral B A := ⟨hint⟩\n  have hinj : Function.Injective (algebraMap B A) := hg\n  have : FaithfulSMul B A := (faithfulSMul_iff_algebraMap_injective B A).mpr hinj\n  have : IsScalarTower k B A := IsScalarTower.of_algebraMap_eq fun x => (g.commutes x).symm\n  have hn : 0 < n := by\n    by_contra hn\n    have hn0 : n = 0 := by omega\n    subst n\n    have hB : IsField B :=\n      (MvPolynomial.isEmptyAlgEquiv k (Fin 0)).toRingEquiv.toMulEquiv.isField\n        (Field.toIsField k)\n    exact hA (isField_of_isIntegral_of_isField' hB)\n  let q : Ideal B := m.under B\n  have hq : q.IsMaximal := Ideal.isMaximal_under_of_isIntegral_of_isMaximal m\n  have := hq\n  have : m.LiesOver q := ⟨rfl⟩\n  obtain ⟨a, hqa⟩ := MvPolynomial.eq_vanishingIdeal_singleton_of_isMaximal k hq\n  let J : Ideal A := Ideal.span {v}\n  have hJm : J ≤ m := (Ideal.span_singleton_le_iff_mem m).mpr hvm\n  have hJ : J.under B ≠ ⊥ := Ideal.under_ne_bot_of_integral_mem hv\n    (Ideal.mem_span_singleton_self v) (Algebra.IsIntegral.isIntegral v)\n  obtain ⟨w, hw, hw0⟩ := (J.under B).ne_bot_iff.mp hJ\n  have hwq : w ∈ q := hJm hw\n  have hwa : MvPolynomial.eval a w = 0 := by\n    have hwqa : w ∈ MvPolynomial.vanishingIdeal k {a} := hqa ▸ hwq\n    exact (MvPolynomial.mem_vanishingIdeal_singleton_iff a w).mp hwqa\n  obtain ⟨p, hp, hpq, hwp, ⟨e⟩⟩ :=\n    affine_line_through_point_avoiding_polynomial k n a w hw0 hwa\n  have := hp\n  have hpq' : p < q := by rwa [hqa]\n  obtain ⟨P, hPm, hP, hPp⟩ := Ideal.exists_ideal_lt_liesOver_of_lt m hpq'\n  have := hP\n  have := hPp\n  have : Algebra.IsIntegral (B ⧸ p) (A ⧸ P) := by\n    have hpunder : p = P.under B := P.over_def p\n    subst p\n    infer_instance\n  have hd : Ring.KrullDimLE 1 (B ⧸ p) := by\n    rw [Ring.krullDimLE_iff, e.ringKrullDim, ← Ring.krullDimLE_iff]\n    infer_instance\n  have := hd\n  have hdim : Ring.KrullDimLE 1 (A ⧸ P) :=\n    integral_extension_krullDimLE_one (B ⧸ p) (A ⧸ P)\n  have hnf : ¬ IsField (A ⧸ P) := by\n    intro h\n    have hb : IsField (B ⧸ p) := isField_of_isIntegral_of_isField\n      (FaithfulSMul.algebraMap_injective (B ⧸ p) (A ⧸ P)) h\n    exact Polynomial.not_isField k (e.symm.toMulEquiv.isField hb)\n  have hvP : v ∉ P := by\n    intro hvP\n    have hJP : J ≤ P := (Ideal.span_singleton_le_iff_mem P).mpr hvP\n    have hwP : algebraMap B A w ∈ P := hJP hw\n    have hwu : w ∈ P.under B := hwP\n    have hwe : w ∈ p := (P.over_def p).symm ▸ hwu\n    exact hwp hwe\n  exact ⟨P, hP, hPm, hvP, hdim, hnf⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "affine_line_through_point_avoiding_polynomial": {
+      "path": "Negativity/AffineLineAvoiding.lean",
+      "line": 17,
+      "code": "theorem affine_line_through_point_avoiding_polynomial\n    (k : Type u) [Field k] [Infinite k] (n : ℕ) (a : Fin n → k)\n    (b : MvPolynomial (Fin n) k) (hb : b ≠ 0) (hba : MvPolynomial.eval a b = 0) :\n    ∃ p : Ideal (MvPolynomial (Fin n) k), p.IsPrime ∧\n      p < MvPolynomial.vanishingIdeal k {a} ∧ b ∉ p ∧\n      Nonempty ((MvPolynomial (Fin n) k ⧸ p) ≃+* Polynomial k) := by\n  classical\n  have hex : ∃ z : Fin n → k, MvPolynomial.eval z b ≠ 0 := by\n    by_contra h\n    push Not at h\n    exact hb (MvPolynomial.funext (by simpa using h))\n  obtain ⟨z, hz⟩ := hex\n  have hza : z ≠ a := by\n    intro h\n    subst z\n    exact hz hba\n  have hi : ∃ i : Fin n, z i ≠ a i := by\n    by_contra h\n    push Not at h\n    exact hza (funext h)\n  obtain ⟨i, hi⟩ := hi\n  let δ := z i - a i\n  have hδ : δ ≠ 0 := sub_ne_zero.mpr hi\n  let v : Fin n → Polynomial k :=\n    fun j => Polynomial.C (a j) + Polynomial.C (z j - a j) * Polynomial.X\n  let β : MvPolynomial (Fin n) k →ₐ[k] Polynomial k := MvPolynomial.aeval v\n  let γ : Polynomial k →ₐ[k] MvPolynomial (Fin n) k :=\n    Polynomial.aeval (MvPolynomial.C δ⁻¹ * (MvPolynomial.X i - MvPolynomial.C (a i)))\n  have hβγ : β.comp γ = AlgHom.id k (Polynomial k) := by\n    apply Polynomial.algHom_ext\n    change β (γ Polynomial.X) = Polynomial.X\n    simp only [γ, β]\n    simp only [AlgHom.coe_comp, Function.comp_apply, Polynomial.aeval_X,\n      AlgHom.coe_id, id_eq, map_mul, map_sub, MvPolynomial.aeval_C,\n      MvPolynomial.aeval_X]\n    change Polynomial.C δ⁻¹ *\n      ((Polynomial.C (a i) + Polynomial.C δ * Polynomial.X) - Polynomial.C (a i)) = _\n    rw [add_sub_cancel_left, ← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hδ]\n    simp\n  have hsurj : Function.Surjective β := by\n    intro w\n    exact ⟨γ w, DFunLike.congr_fun hβγ w⟩\n  let p := RingHom.ker β.toRingHom\n  have hp : p.IsPrime := RingHom.ker_isPrime β.toRingHom\n  have heval0 : (Polynomial.aeval (0 : k)).comp β = MvPolynomial.aeval a := by\n    ext j\n    simp [β, v]\n  have heval1 : (Polynomial.aeval (1 : k)).comp β = MvPolynomial.aeval z := by\n    ext j\n    simp [β, v]\n  have hpq : p ≤ MvPolynomial.vanishingIdeal k {a} := by\n    intro w hw\n    rw [MvPolynomial.mem_vanishingIdeal_singleton_iff, ← heval0]\n    change (Polynomial.aeval (0 : k)) (β w) = 0\n    rw [show β w = 0 from hw, map_zero]\n  have hstrict : p < MvPolynomial.vanishingIdeal k {a} := by\n    apply lt_of_le_of_ne hpq\n    intro h\n    let w := MvPolynomial.X i - MvPolynomial.C (a i)\n    have hw : w ∈ MvPolynomial.vanishingIdeal k {a} := by\n      rw [MvPolynomial.mem_vanishingIdeal_singleton_iff]\n      simp [w]\n    have hwp : w ∈ p := h.symm ▸ hw\n    have he := congrArg (fun q : Polynomial k => q.coeff 1) (show β w = 0 from hwp)\n    simp [β, v, w] at he\n    exact hi (sub_eq_zero.mp he)\n  have hbp : b ∉ p := by\n    intro h\n    apply hz\n    have hb0 : β b = 0 := h\n    have hv : MvPolynomial.aeval z b = 0 := by\n      rw [← heval1]\n      change (Polynomial.aeval (1 : k)) (β b) = 0\n      rw [hb0, map_zero]\n    simpa using hv\n  exact ⟨p, hp, hstrict, hbp, ⟨RingHom.quotientKerEquivOfSurjective hsurj⟩⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actualRealCartierCoefficients_apply": {
       "path": "Negativity/ActualNegativityWitness.lean",
       "line": 24,

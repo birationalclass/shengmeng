@@ -261,3 +261,13 @@ public import Negativity.ZeroPrimeCurve
 public import Negativity.NegativeActualCenter
 
 public import Negativity.ActualNegativityWitness
+
+public import Negativity.AffineLineAvoiding
+
+public import Negativity.AffineCurveAvoiding
+
+public import Negativity.CompleteCurveAvoiding
+
+public import Negativity.ConnectedCurveCrossing
+
+public import Negativity.ActualConnectedSupport
