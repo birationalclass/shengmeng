@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-formal-39';
+const release = '20261003-formal-40';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -15,16 +15,16 @@ const gaps = {
        'Prove that coordinate sections are effective and their affine nonvanishing loci cover X.']]
   },
   properformalfunctions: {
-    zh: ['证明实际 proper 形式函数满射',
-      '∃c ∀n：Γ(Xₙ₊꜀,𝒪)→Γ(Xₙ,𝒪) 的像来自 Γ(Y,𝒪)。',
-      ['已证明：实际核过滤的 Rees 有限生成和统一核界，未假定有限生成。',
-       '已证明：实际非仿射比较映射单射；底域 perfect，仿射底整且有限型。',
-       '待证明：实际截面提升界，从而给出满射并去掉 hff。这里需要一阶上同调控制，完整定理仍未完成。']],
-    en: ['Prove actual proper formal-functions surjectivity',
-      '∃c ∀n: the image Γ(Xₙ₊꜀,O)→Γ(Xₙ,O) comes from Γ(Y,O).',
-      ['Proved: finite generation of the actual kernel Rees module and a uniform kernel bound; finite generation is not assumed.',
-       'Proved: injectivity of the actual nonaffine comparison over a perfect finite-type affine integral base.',
-       'Open: the actual section-lifting bound, then surjectivity and removal of hff. First-cohomology control is needed; the complete theorem remains open.']]
+    zh: ['证明 proper 上同调核的统一消失',
+      '∃c ∀n：ker[H¹(Iⁿ⁺꜀⁺¹𝒪_X)→H¹(𝒪_X)] 在向 H¹(Iⁿ⁺¹𝒪_X) 的转移下消失。',
+      ['已证明：实际 Čech 上同调、模结构、两段正合性、障碍转移自然性及有限仿射覆盖。',
+       '已证明：统一截面核界和实际非仿射比较单射。',
+       '待证明：proper 分次上同调 Rees 模有限生成及统一消失界，去掉 hvanish，进而给出满射并去掉 hff。完整定理仍未完成。']],
+    en: ['Prove uniform vanishing of the proper cohomology kernel',
+      '∃c ∀n: ker[H¹(Iⁿ⁺꜀⁺¹O_X)→H¹(O_X)] vanishes under transition to H¹(Iⁿ⁺¹O_X).',
+      ['Proved: actual Cech cohomology, module structure, two exactness statements, obstruction naturality and a finite affine cover.',
+       'Proved: the uniform section-kernel bound and injectivity of the actual nonaffine comparison.',
+       'Open: proper graded cohomology finite generation over Rees and uniform kernel vanishing. Remove hvanish, then prove surjectivity and remove hff. The complete theorem remains open.']]
   },
   chow: {
     zh: ['完成 Chow 构造的射影性',
@@ -39,6 +39,9 @@ const gaps = {
 };
 
 const verifiedSteps = [
+  ['actual_closed_cech_cohomology_exact', ['实际 Čech 一阶正合与障碍像已证明。', 'Actual first Cech exactness and the obstruction image are proved.']],
+  ['actual_closed_cech_module_action', ['实际核上同调的全局函数模结构已证明。', 'The global-function module structure on actual kernel cohomology is proved.']],
+  ['exists_actual_proper_affine_cech_cover', ['实际 proper 的有限仿射覆盖与仿射交集已构造。', 'A finite affine cover with affine intersections is constructed for the actual proper scheme.']],
   ['actual_relative_kernel_uniform_bound', ['实际 proper 限制的统一核界已证明。', 'The uniform kernel bound for actual proper restriction is proved.']],
   ['actual_relative_formal_functions_injective', ['实际非仿射形式函数比较映射单射已证明。', 'Injectivity of the actual nonaffine formal-functions comparison is proved.']],
   ['actual_relative_formal_functions_evaluation', ['真实非仿射相对比较映射及取值公式已构造。', 'The actual nonaffine relative comparison and evaluations are constructed.']],
@@ -64,7 +67,7 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
   const hasCoordinateGap = openNodes.some(n => n.id === 'projectivesections');
   const relevant = new Set();
   if (hasCoordinateGap) for (const name of verifiedSteps.slice(0,4).map(s => s[0])) relevant.add(name);
-  if (openNodes.some(n => n.id === 'properformalfunctions')) for (const name of ['actual_relative_kernel_uniform_bound','actual_relative_formal_functions_injective','actual_relative_formal_functions_evaluation','actual_closed_fiber_infinitesimal_nontrivial_idempotent','actual_closed_point_completion_local','actual_fiber_closed_subset_dichotomy_of_closed_points']) relevant.add(name);
+  if (openNodes.some(n => n.id === 'properformalfunctions')) for (const name of ['actual_closed_cech_cohomology_exact','actual_closed_cech_module_action','exists_actual_proper_affine_cech_cover','actual_relative_kernel_uniform_bound','actual_relative_formal_functions_injective','actual_relative_formal_functions_evaluation','actual_closed_fiber_infinitesimal_nontrivial_idempotent','actual_closed_point_completion_local','actual_fiber_closed_subset_dichotomy_of_closed_points']) relevant.add(name);
   if (openNodes.some(n => n.id === 'chow')) for (const name of ['finiteType_perfectField_normalization_isFinite','exists_embedded_complete_curve_real_projection_formula','actual_relative_nef_canonical_pullback']) relevant.add(name);
   const proved = verifiedSteps.filter(([name]) => relevant.has(name) && declarations[name]);
   const explicitDone = inputs.filter(s => /^(已完成|已证明|Proved|Verified|Completed)\s*[:：]/i.test(s));

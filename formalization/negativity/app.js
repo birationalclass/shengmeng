@@ -1,14 +1,14 @@
 import {installLeanLineCounts} from './line-counts.js?v=20261003-lines-1';
 import {installPerformanceHUD} from './performance.js?v=20261003-perf-1';
 import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
-import {installTheoremTarget} from './theorem-target.js?v=20261002-dock-2&proof=20261003-formal-39';
-import {divisorCyclePanel} from './divisor-cycle.js?v=20261003-formal-39';
-import {curveDiagramPanel} from './curve-diagram.js?v=20261003-formal-39';
-import {installSettings} from './settings.js?v=20261002-dock-2&proof=20261003-formal-39';
+import {installTheoremTarget} from './theorem-target.js?v=20261002-dock-2&proof=20261003-formal-40';
+import {divisorCyclePanel} from './divisor-cycle.js?v=20261003-formal-40';
+import {curveDiagramPanel} from './curve-diagram.js?v=20261003-formal-40';
+import {installSettings} from './settings.js?v=20261002-dock-2&proof=20261003-formal-40';
 import {createNodeEditor} from './node-editor.js?v=20261003-perf-1';
-import {installWorkspace} from './workspace.js?v=20261002-dock-2&proof=20261003-formal-39';
-import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-refuge-1&proof=20261003-formal-39';
-import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-msmath-8&proof=20261003-formal-39';
+import {installWorkspace} from './workspace.js?v=20261002-dock-2&proof=20261003-formal-40';
+import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261002-refuge-1&proof=20261003-formal-40';
+import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261002-msmath-8&proof=20261003-formal-40';
 const nodes=translateNodes(rawNodes),statusLabels={...(english?englishStatuses:rawLabels)};
 document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
 function renderHome(){

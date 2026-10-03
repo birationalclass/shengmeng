@@ -4,6 +4,17 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualProperCechCover.lean': ['exists_actual_proper_affine_cech_cover'],
+    'ActualCechModule.lean': ['actual_closed_cech_module_action'],
+    'ActualCechScalars.lean': ['actual_cech_difference_scale', 'actual_cech_boundary_scale', 'actual_cech_pullback_scale_zero', 'actual_cech_pullback_scale_one', 'actual_closed_cech_scalar_on_cocycles'],
+    'RelativeCechFormalComparison.lean': ['actual_relative_power_inclusion_comp', 'actual_relative_formal_functions_bijective_of_cech_kernel_vanishing'],
+    'RelativeCechSectionLifting.lean': ['actual_relative_section_lifting_of_cech_kernel_vanishing'],
+    'ActualCechKernelLifting.lean': ['actual_closed_cech_lifting_of_cohomology_kernel_bound'],
+    'ActualCechCohomologyExact.lean': ['actual_closed_cech_cohomology_exact'],
+    'ActualCechClosedTransition.lean': ['actual_closed_cech_connecting_naturality'],
+    'ActualCechClosedObstruction.lean': ['actual_closed_cech_obstruction_independent_of_lifts', 'actual_closed_cech_obstruction_zero_iff', 'actual_closed_cech_connecting_exact'],
+    'ActualCechClosedLifting.lean': ['actual_section_restriction_naturality', 'actual_cech_pullback_difference', 'actual_closed_cech_local_lift_pullback', 'actual_closed_cech_section_lifting_criterion'],
+    'ActualCechSections.lean': ['actual_section_restriction_trans', 'actual_cech_boundary_difference_zero', 'actual_cech_global_sections_exact'],
     'RelativeFormalInjectivity.lean': ['actual_relative_formal_functions_injective'],
     'AdicComparisonInjectivity.lean': ['adic_comparison_injective_of_uniform_kernel_bound'],
     'RelativeKernelBound.lean': ['actual_relative_kernel_uniform_bound'],
@@ -415,8 +426,16 @@ the zero-ideal case. Actual valuative lifts prove homogeneous integrality
 over the Rees algebra, finite normalization gives a finite graded kernel
 module, and filtration stability supplies the uniform shift. The actual
 relative comparison is therefore proved injective for a nonaffine source.
-SURJECTIVITY is NOT proved. The missing actual eventual image-lifting
-bound is still explicit; the full comparison and full second negativity
+SURJECTIVITY is NOT proved. Actual affine-cover Cech cohomology is now constructed with actual
+structure-sheaf gluing, local closed-immersion lifts, choice-independent
+connecting classes, genuine transition naturality and two exactness
+statements. The actual global-section module action is proved. Properness
+constructs a finite affine cover with affine intersections. A uniform
+actual first-cohomology kernel-transition vanishing bound would construct
+the actual section lifts and prove actual formal-functions bijectivity.
+This bound is NOT proved: proper graded cohomology finite generation and
+the resulting uniform kernel vanishing remain open. The missing actual
+eventual image-lifting bound is still explicit; the full comparison and full second negativity
 conclusion are NOT complete.
 Actual closed fibers are proved proper over the ground field. A genuine
 Chevalley/Jacobson constructible-locus argument proves that closed-fiber

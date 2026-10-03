@@ -141,8 +141,16 @@ the zero-ideal case. Actual valuative lifts prove homogeneous integrality
 over the Rees algebra, finite normalization gives a finite graded kernel
 module, and filtration stability supplies the uniform shift. The actual
 relative comparison is therefore proved injective for a nonaffine source.
-SURJECTIVITY is NOT proved. The missing actual eventual image-lifting
-bound is still explicit; the full comparison and full second negativity
+SURJECTIVITY is NOT proved. Actual affine-cover Cech cohomology is now constructed with actual
+structure-sheaf gluing, local closed-immersion lifts, choice-independent
+connecting classes, genuine transition naturality and two exactness
+statements. The actual global-section module action is proved. Properness
+constructs a finite affine cover with affine intersections. A uniform
+actual first-cohomology kernel-transition vanishing bound would construct
+the actual section lifts and prove actual formal-functions bijectivity.
+This bound is NOT proved: proper graded cohomology finite generation and
+the resulting uniform kernel vanishing remain open. The missing actual
+eventual image-lifting bound is still explicit; the full comparison and full second negativity
 conclusion are NOT complete.
 Actual closed fibers are proved proper over the ground field. A genuine
 Chevalley/Jacobson constructible-locus argument proves that closed-fiber

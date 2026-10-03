@@ -1097,3 +1097,49 @@ import Negativity
 #print axioms Negativity.adic_comparison_injective_of_uniform_kernel_bound
 
 #print axioms Negativity.actual_relative_formal_functions_injective
+
+#print axioms Negativity.actual_section_restriction_trans
+
+#print axioms Negativity.actual_cech_boundary_difference_zero
+
+#print axioms Negativity.actual_cech_global_sections_exact
+
+#print axioms Negativity.actual_section_restriction_naturality
+
+#print axioms Negativity.actual_cech_pullback_difference
+
+#print axioms Negativity.actual_closed_cech_local_lift_pullback
+
+#print axioms Negativity.actual_closed_cech_section_lifting_criterion
+
+#print axioms Negativity.actual_closed_cech_obstruction_independent_of_lifts
+
+#print axioms Negativity.actual_closed_cech_obstruction_zero_iff
+
+#print axioms Negativity.actual_closed_cech_connecting_exact
+
+#print axioms Negativity.actual_closed_cech_connecting_naturality
+
+#print axioms Negativity.actual_closed_cech_cohomology_exact
+
+#print axioms Negativity.actual_closed_cech_lifting_of_cohomology_kernel_bound
+
+#print axioms Negativity.actual_relative_section_lifting_of_cech_kernel_vanishing
+
+#print axioms Negativity.actual_relative_power_inclusion_comp
+
+#print axioms Negativity.actual_relative_formal_functions_bijective_of_cech_kernel_vanishing
+
+#print axioms Negativity.actual_cech_difference_scale
+
+#print axioms Negativity.actual_cech_boundary_scale
+
+#print axioms Negativity.actual_cech_pullback_scale_zero
+
+#print axioms Negativity.actual_cech_pullback_scale_one
+
+#print axioms Negativity.actual_closed_cech_scalar_on_cocycles
+
+#print axioms Negativity.actual_closed_cech_module_action
+
+#print axioms Negativity.exists_actual_proper_affine_cech_cover

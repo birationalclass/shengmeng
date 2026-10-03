@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T18:02:14+08:00",
+  "checkedAt": "2026-10-03T19:00:07+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "ad6f7a00032fbf1be0f3d483ac4bcd3a649e297654eff7442628e2a19ff0c131",
-      "lineCount": 425
+      "sha256": "d4cc2e59de6cab2a9fd81b7c0a092b3bc8700b6123562f023bebe4e8fa40f978",
+      "lineCount": 447
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "b4f32e4ee83054d5fce94c70f8398c0d3463031f033184e377602f743fb49919",
-      "lineCount": 1099
+      "sha256": "3dd37ff6a9db5ba1160506f22b298dad695e0191c7d019cd9ea8dcf434defbec",
+      "lineCount": 1145
     },
     {
       "path": "lakefile.toml",
@@ -34,6 +34,61 @@
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a",
       "lineCount": 18
+    },
+    {
+      "path": "Negativity/ActualProperCechCover.lean",
+      "sha256": "319d986c2e8ca68f59af1f1fe983f329a5741179dc0dee337417dc519ce70528",
+      "lineCount": 45
+    },
+    {
+      "path": "Negativity/ActualCechModule.lean",
+      "sha256": "0211081bcc03f52664fdc72094971ab1de92d6d6c1e4af262af91204623c1285",
+      "lineCount": 79
+    },
+    {
+      "path": "Negativity/ActualCechScalars.lean",
+      "sha256": "c8e2b18bdeec76fb60219de7060548f1a15159c171c0864d34317888f52281e1",
+      "lineCount": 117
+    },
+    {
+      "path": "Negativity/RelativeCechFormalComparison.lean",
+      "sha256": "2058e8b0c9273e8ace4047dd94ac463e6f6868ba103c22530ea2f95d56808bb4",
+      "lineCount": 60
+    },
+    {
+      "path": "Negativity/RelativeCechSectionLifting.lean",
+      "sha256": "9e4f415576ada31d2a11816a23e1dfac8123d79e195e3b7d73a09094716efc5f",
+      "lineCount": 58
+    },
+    {
+      "path": "Negativity/ActualCechKernelLifting.lean",
+      "sha256": "cee4272bcccd18da472e7393011f764da1f78abd713a1ed44edda6cd234c83a2",
+      "lineCount": 37
+    },
+    {
+      "path": "Negativity/ActualCechCohomologyExact.lean",
+      "sha256": "2dfb1e321992d055b55b89f4e2d1d80b491ab7210da923944a2d59f2485445e1",
+      "lineCount": 85
+    },
+    {
+      "path": "Negativity/ActualCechClosedTransition.lean",
+      "sha256": "ddb3698453578e5fc0dfcc75ba81682439780fb23da4e18752fe15b385a0144f",
+      "lineCount": 80
+    },
+    {
+      "path": "Negativity/ActualCechClosedObstruction.lean",
+      "sha256": "cf39099ac9e2bb7a7504467959acd682bb1ed4f6022d354c6964b3716ad2e488",
+      "lineCount": 130
+    },
+    {
+      "path": "Negativity/ActualCechClosedLifting.lean",
+      "sha256": "5ca6e3b3066b4fc1ff657a27685b0e40869492ecb9f5a9e8d02c161d764b82f6",
+      "lineCount": 121
+    },
+    {
+      "path": "Negativity/ActualCechSections.lean",
+      "sha256": "54bc3ffac3575e51c3ea0031b7503b5a7c9d5847ed782d97d20f4eee8b154784",
+      "lineCount": 130
     },
     {
       "path": "Negativity/RelativeFormalInjectivity.lean",
@@ -1107,6 +1162,236 @@
     }
   ],
   "declarations": {
+    "exists_actual_proper_affine_cech_cover": {
+      "path": "Negativity/ActualProperCechCover.lean",
+      "line": 19,
+      "code": "theorem exists_actual_proper_affine_cech_cover\n    {X Y : Scheme.{u}} [IsAffine Y] (f : X ⟶ Y) [IsProper f] :\n    ∃ (ι : Type u) (_ : Fintype ι) (U : ι → X.affineOpens),\n      iSup (fun k => (U k).1) = ⊤ ∧\n        (∀ j k, IsAffineOpen ((U j).1 ⊓ (U k).1)) ∧\n        (∀ j k l, IsAffineOpen (((U j).1 ⊓ (U k).1) ⊓ (U l).1)) := by\n  classical\n  have : CompactSpace X := QuasiCompact.compactSpace_of_compactSpace f\n  have : X.IsSeparated := ⟨by\n    rw [← terminal.comp_from f]\n    infer_instance⟩\n  obtain ⟨s, hs, hfin, hsup⟩ := X.isBasis_affineOpens.exists_finite_of_isCompact\n    (U := ⊤) (by simpa using isCompact_univ (X := X))\n  let ι := s\n  letI : Fintype ι := hfin.fintype\n  let U : ι → X.affineOpens := fun k => ⟨k.1, hs k.2⟩\n  have hcover : iSup (fun k => (U k).1) = ⊤ := by\n    apply top_unique\n    intro x hx\n    have hxs : x ∈ sSup s := by rw [← hsup]; trivial\n    obtain ⟨V, hVs, hxV⟩ := Opens.mem_sSup.mp hxs\n    exact Opens.mem_iSup.mpr ⟨⟨V, hVs⟩, hxV⟩\n  exact ⟨ι, inferInstance, U, hcover, fun j k => (U j).2.inf (U k).2,\n    fun j k l => ((U j).2.inf (U k).2).inf (U l).2⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_module_action": {
+      "path": "Negativity/ActualCechModule.lean",
+      "line": 72,
+      "code": "theorem actual_closed_cech_module_action {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤))\n    (a : actualClosedCechCocycles i U) :\n    r • QuotientAddGroup.mk' (actualClosedCechBoundary i U).range a =\n      QuotientAddGroup.mk' _ (actualClosedCechScaleCycle i U r a) := rfl\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_difference_scale": {
+      "path": "Negativity/ActualCechScalars.lean",
+      "line": 26,
+      "code": "theorem actual_cech_difference_scale (X : Scheme.{u}) {ι : Type v}\n    (U : ι → X.Opens) (r : Γ(X, ⊤)) (a : actualCechZero X U) :\n    actualCechDifference X U (actualCechScaleZero X U r a) =\n      actualCechScaleOne X U r (actualCechDifference X U a) := by\n  funext j k\n  change actualSectionRestriction X inf_le_right\n        (actualSectionRestriction X le_top r * a k) -\n      actualSectionRestriction X inf_le_left\n        (actualSectionRestriction X le_top r * a j) =\n    actualSectionRestriction X le_top r *\n      (actualSectionRestriction X inf_le_right (a k) -\n        actualSectionRestriction X inf_le_left (a j))\n  rw [map_mul, map_mul, actual_section_restriction_trans,\n    actual_section_restriction_trans, mul_sub]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_boundary_scale": {
+      "path": "Negativity/ActualCechScalars.lean",
+      "line": 41,
+      "code": "theorem actual_cech_boundary_scale (X : Scheme.{u}) {ι : Type v}\n    (U : ι → X.Opens) (r : Γ(X, ⊤)) (a : actualCechOne X U) (j k l : ι) :\n    actualCechBoundary X U (actualCechScaleOne X U r a) j k l =\n      actualSectionRestriction X le_top r * actualCechBoundary X U a j k l := by\n  change actualSectionRestriction X _ (actualSectionRestriction X le_top r * a k l) -\n    actualSectionRestriction X _ (actualSectionRestriction X le_top r * a j l) +\n    actualSectionRestriction X _ (actualSectionRestriction X le_top r * a j k) = _\n  simp only [map_mul, actual_section_restriction_trans]\n  change _ = actualSectionRestriction X le_top r * (_ - _ + _)\n  ring",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_pullback_scale_zero": {
+      "path": "Negativity/ActualCechScalars.lean",
+      "line": 52,
+      "code": "theorem actual_cech_pullback_scale_zero {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤)) (a : actualCechZero X U) :\n    actualCechPullbackZero i U (actualCechScaleZero X U r a) =\n      actualCechScaleZero Z (fun j => i ⁻¹ᵁ U j) (i.appTop r)\n        (actualCechPullbackZero i U a) := by\n  funext j\n  change i.app (U j) (actualSectionRestriction X le_top r * a j) = _\n  rw [map_mul, ← actual_section_restriction_naturality i le_top]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_pullback_scale_one": {
+      "path": "Negativity/ActualCechScalars.lean",
+      "line": 62,
+      "code": "theorem actual_cech_pullback_scale_one {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤)) (a : actualCechOne X U) :\n    actualCechPullbackOne i U (actualCechScaleOne X U r a) =\n      actualCechScaleOne Z (fun j => i ⁻¹ᵁ U j) (i.appTop r)\n        (actualCechPullbackOne i U a) := by\n  funext j k\n  change i.app (U j ⊓ U k) (actualSectionRestriction X le_top r * a j k) = _\n  rw [map_mul, ← actual_section_restriction_naturality i le_top]\n  rfl\n\ndef actualClosedCechScaleKernel {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤)) :\n    (actualCechPullbackZero i U).ker →+ (actualCechPullbackZero i U).ker :=\n  ((actualCechScaleZero X U r).comp (actualCechPullbackZero i U).ker.subtype).codRestrict _\n    (by intro a; change actualCechPullbackZero i U (actualCechScaleZero X U r a.1) = 0\n        rw [actual_cech_pullback_scale_zero, a.2, map_zero])\n\ndef actualClosedCechScaleCycle {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤)) :\n    actualClosedCechCocycles i U →+ actualClosedCechCocycles i U :=\n  ((actualCechScaleOne X U r).comp (actualClosedCechCocycles i U).subtype).codRestrict _ (by\n    intro a\n    constructor\n    · change actualCechPullbackOne i U (actualCechScaleOne X U r a.1) = 0\n      rw [actual_cech_pullback_scale_one, a.2.1, map_zero]\n    · change actualCechBoundary X U (actualCechScaleOne X U r a.1) = 0\n      funext j k l\n      rw [actual_cech_boundary_scale]\n      have ha := congrArg (fun t : actualCechTwo X U => t j k l) a.2.2\n      change actualCechBoundary X U a.1 j k l = 0 at ha\n      rw [ha, mul_zero]\n      rfl)\n\ndef actualClosedCechScalar {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤)) :\n    actualClosedCechHOne i U →+ actualClosedCechHOne i U :=\n  QuotientAddGroup.map (actualClosedCechBoundary i U).range\n    (actualClosedCechBoundary i U).range (actualClosedCechScaleCycle i U r) (by\n      rintro a ⟨c, rfl⟩\n      refine ⟨actualClosedCechScaleKernel i U r c, ?_⟩\n      apply Subtype.ext\n      exact actual_cech_difference_scale X U r c.1)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_scalar_on_cocycles": {
+      "path": "Negativity/ActualCechScalars.lean",
+      "line": 110,
+      "code": "theorem actual_closed_cech_scalar_on_cocycles {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (r : Γ(X, ⊤))\n    (a : actualClosedCechCocycles i U) :\n    actualClosedCechScalar i U r (QuotientAddGroup.mk' _ a) =\n      QuotientAddGroup.mk' _ (actualClosedCechScaleCycle i U r a) := rfl\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_power_inclusion_comp": {
+      "path": "Negativity/RelativeCechFormalComparison.lean",
+      "line": 16,
+      "code": "theorem actual_relative_power_inclusion_comp {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (I : Y.IdealSheafData) {l m n : ℕ} (hlm : l ≤ m) (hmn : m ≤ n) :\n    actualRelativePowerInclusion f I hlm ≫ actualRelativePowerInclusion f I hmn =\n      actualRelativePowerInclusion f I (hlm.trans hmn) := by\n  exact IdealSheafData.inclusion_comp _ _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_formal_functions_bijective_of_cech_kernel_vanishing": {
+      "path": "Negativity/RelativeCechFormalComparison.lean",
+      "line": 28,
+      "code": "theorem actual_relative_formal_functions_bijective_of_cech_kernel_vanishing\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    [IsLocallyNoetherian Y] (k : Type u) [Field k] [PerfectField k]\n    [Algebra k Γ(Y, ⊤)] [Algebra.FiniteType k Γ(Y, ⊤)]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (I : Y.IdealSheafData) {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun j => (U j).1))\n    (c : ℕ) (hvanish : ActualRelativeCechKernelVanishing f I U c) :\n    Function.Bijective (actualRelativeFormalFunctionsMap f I) := by\n  obtain ⟨d, hd⟩ := actual_relative_kernel_uniform_bound k f hf I\n  have hlift := actual_relative_section_lifting_of_cech_kernel_vanishing\n    f hf hnY I U hU c hvanish\n  apply actual_relative_formal_functions_bijective_of_uniform_approximation f I (d + c)\n  · intro n r hr\n    have he : n + (d + c) = (n + c) + d := by omega\n    rw [he] at hr\n    have hk := hd (n + c) hr\n    exact (Ideal.pow_le_pow_right (show n + 1 ≤ n + c + 1 by omega)) hk\n  · intro n b\n    let h : n + c ≤ n + (d + c) := by omega\n    let b' := (actualRelativePowerInclusion f I h).appTop b\n    obtain ⟨r, hr⟩ := hlift n b'\n    refine ⟨r, ?_⟩\n    have ht := congrArg\n      (fun g : actualRelativePowerThickening f I n ⟶\n        actualRelativePowerThickening f I (n + (d + c)) => g.appTop b)\n      (actual_relative_power_inclusion_comp f I (Nat.le_add_right n c) h)\n    change (actualRelativePowerInclusion f I (Nat.le_add_right n c)).appTop b' = _ at ht\n    exact hr.trans ht\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_section_lifting_of_cech_kernel_vanishing": {
+      "path": "Negativity/RelativeCechSectionLifting.lean",
+      "line": 31,
+      "code": "theorem actual_relative_section_lifting_of_cech_kernel_vanishing\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [IsAffine Y]\n    [IsLocallyNoetherian Y] (f : X ⟶ Y) [IsProper f]\n    (hf : BirationalMorphism f) (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    (I : Y.IdealSheafData) {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun k => (U k).1))\n    (c : ℕ) (hvanish : ActualRelativeCechKernelVanishing f I U c) :\n    ∀ n (b : Γ(actualRelativePowerThickening f I (n + c), ⊤)),\n      ∃ r : Γ(Y, ⊤), actualRelativeRestriction f I n r =\n        (actualRelativePowerInclusion f I (Nat.le_add_right n c)).appTop b := by\n  intro n b\n  let j := actualRelativePowerInclusion f I (Nat.le_add_right n c)\n  let i := ((I ^ (n + c + 1)).comap f).subschemeι\n  have hi : j ≫ i = ((I ^ (n + 1)).comap f).subschemeι :=\n    IdealSheafData.inclusion_subschemeι _\n  have : IsClosedImmersion j := by\n    dsimp [j, actualRelativePowerInclusion]\n    infer_instance\n  obtain ⟨s, hs⟩ := actual_closed_cech_lifting_of_cohomology_kernel_bound j i U hU\n    (hvanish n) b\n  obtain ⟨r, hrTop⟩ := (proper_normal_birational_open_functions_bijective f hf hnY ⊤).2 s\n  have hr : f.appTop r = s := hrTop\n  have ht := (congrArg (fun a : Γ(X, ⊤) => (j ≫ i).appTop a) hr).trans hs\n  rw [hi] at ht\n  exact ⟨r, ht⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_lifting_of_cohomology_kernel_bound": {
+      "path": "Negativity/ActualCechKernelLifting.lean",
+      "line": 19,
+      "code": "theorem actual_closed_cech_lifting_of_cohomology_kernel_bound\n    {X Z W : Scheme.{u}} (j : W ⟶ Z) (i : Z ⟶ X)\n    [IsClosedImmersion i] [IsClosedImmersion j]\n    {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun k => (U k).1))\n    (hkill : ∀ q : actualClosedCechHOne i (fun k => (U k).1),\n      actualClosedCechForget i (fun k => (U k).1) q = 0 →\n        actualClosedCechHOneTransition j i (fun k => (U k).1) q = 0)\n    (b : Γ(Z, ⊤)) :\n    ∃ s : Γ(X, ⊤), (j ≫ i).appTop s = j.appTop b := by\n  have hq : actualClosedCechForget i (fun k => (U k).1)\n      (actualClosedCechConnecting i U b) = 0 :=\n    (actual_closed_cech_cohomology_exact i U hU).le ⟨b, rfl⟩\n  have hz := hkill (actualClosedCechConnecting i U b) hq\n  rw [actual_closed_cech_connecting_naturality] at hz\n  exact (actual_closed_cech_obstruction_zero_iff (j ≫ i) U hU (j.appTop b)).mp hz\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_cohomology_exact": {
+      "path": "Negativity/ActualCechCohomologyExact.lean",
+      "line": 46,
+      "code": "theorem actual_closed_cech_cohomology_exact {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun j => (U j).1)) :\n    (actualClosedCechConnecting i U).range =\n      (actualClosedCechForget i (fun j => (U j).1)).ker := by\n  let V := fun j => (U j).1\n  ext q\n  constructor\n  · rintro ⟨b, rfl⟩\n    change actualClosedCechForget i V (actualClosedCechObstruction i U b) = 0\n    change ((actualClosedCechForgetCycle i V\n      (actualClosedCechLiftCocycle i V b (actualClosedCechLocalLift i U b)\n        (actual_closed_cech_local_lift_pullback i U b))) : actualCechHOne X V) = 0\n    apply (QuotientAddGroup.eq_zero_iff _).mpr\n    exact ⟨actualClosedCechLocalLift i U b, rfl⟩\n  · intro hq\n    obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective q\n    change ((actualClosedCechForgetCycle i V z) : actualCechHOne X V) = 0 at hq\n    obtain ⟨a, ha⟩ := (QuotientAddGroup.eq_zero_iff _).mp hq\n    have hd : actualCechDifference X V a = z.1 := congrArg Subtype.val ha\n    have hp : actualCechDifference Z (fun j => i ⁻¹ᵁ V j)\n        (actualCechPullbackZero i V a) = 0 := by\n      rw [actual_cech_pullback_difference, hd]\n      exact z.2.1\n    have hcover : (⊤ : Z.Opens) ≤ iSup (fun j => i ⁻¹ᵁ V j) := by\n      rw [← i.preimage_iSup]\n      exact i.preimage_mono hU\n    have hg : actualCechPullbackZero i V a ∈\n        (actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ V j)).range := by\n      rw [actual_cech_global_sections_exact Z (fun j => i ⁻¹ᵁ V j) hcover]\n      exact hp\n    obtain ⟨b, hb⟩ := hg\n    refine ⟨b, ?_⟩\n    change actualClosedCechObstruction i U b = (z : actualClosedCechHOne i V)\n    rw [← actual_closed_cech_obstruction_independent_of_lifts i U b a hb.symm]\n    exact congrArg (QuotientAddGroup.mk' (actualClosedCechBoundary i V).range)\n      (show actualClosedCechLiftCocycle i V b a hb.symm = z from Subtype.ext hd)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_connecting_naturality": {
+      "path": "Negativity/ActualCechClosedTransition.lean",
+      "line": 57,
+      "code": "theorem actual_closed_cech_connecting_naturality {X Z W : Scheme.{u}}\n    (j : W ⟶ Z) (i : Z ⟶ X) [IsClosedImmersion i] [IsClosedImmersion j]\n    {ι : Type v} (U : ι → X.affineOpens) (b : Γ(Z, ⊤)) :\n    actualClosedCechHOneTransition j i (fun k => (U k).1)\n      (actualClosedCechConnecting i U b) =\n        actualClosedCechConnecting (j ≫ i) U (j.appTop b) := by\n  let a := actualClosedCechLocalLift i U b\n  have ha : actualCechPullbackZero (j ≫ i) (fun k => (U k).1) a =\n      actualCechGlobalRestriction W (fun k => (j ≫ i) ⁻¹ᵁ (U k).1) (j.appTop b) := by\n    funext k\n    change (j ≫ i).app (U k).1 (a k) =\n      actualSectionRestriction W le_top (j.appTop b)\n    rw [Scheme.Hom.comp_app, ConcreteCategory.comp_apply]\n    have hi := congrArg (fun t : actualCechZero Z (fun k => i ⁻¹ᵁ (U k).1) => t k)\n      (actual_closed_cech_local_lift_pullback i U b)\n    change i.app (U k).1 (a k) = actualSectionRestriction Z le_top b at hi\n    rw [hi]\n    exact (actual_section_restriction_naturality j le_top b).symm\n  change _ = actualClosedCechObstruction (j ≫ i) U (j.appTop b)\n  rw [← actual_closed_cech_obstruction_independent_of_lifts (j ≫ i) U (j.appTop b) a ha]\n  rfl\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_obstruction_independent_of_lifts": {
+      "path": "Negativity/ActualCechClosedObstruction.lean",
+      "line": 59,
+      "code": "theorem actual_closed_cech_obstruction_independent_of_lifts {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens)\n    (b : Γ(Z, ⊤)) (a : actualCechZero X (fun j => (U j).1))\n    (ha : actualCechPullbackZero i (fun j => (U j).1) a =\n      actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ (U j).1) b) :\n    QuotientAddGroup.mk' _ (actualClosedCechLiftCocycle i (fun j => (U j).1) b a ha) =\n      actualClosedCechObstruction i U b := by\n  apply QuotientAddGroup.eq_iff_sub_mem.mpr\n  let c : (actualCechPullbackZero i (fun j => (U j).1)).ker :=\n    ⟨a - actualClosedCechLocalLift i U b, by\n      change actualCechPullbackZero i (fun j => (U j).1)\n        (a - actualClosedCechLocalLift i U b) = 0\n      rw [map_sub, ha, actual_closed_cech_local_lift_pullback, sub_self]⟩\n  refine ⟨c, ?_⟩\n  apply Subtype.ext\n  exact map_sub (actualCechDifference X (fun j => (U j).1)) _ _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_obstruction_zero_iff": {
+      "path": "Negativity/ActualCechClosedObstruction.lean",
+      "line": 76,
+      "code": "theorem actual_closed_cech_obstruction_zero_iff {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun j => (U j).1)) (b : Γ(Z, ⊤)) :\n    actualClosedCechObstruction i U b = 0 ↔ ∃ s : Γ(X, ⊤), i.appTop s = b := by\n  rw [actual_closed_cech_section_lifting_criterion i U hU b]\n  change (actualClosedCechLiftCocycle i (fun j => (U j).1) b\n    (actualClosedCechLocalLift i U b) (actual_closed_cech_local_lift_pullback i U b) :\n      actualClosedCechHOne i (fun j => (U j).1)) = 0 ↔ _\n  rw [QuotientAddGroup.eq_zero_iff]\n  constructor\n  · rintro ⟨c, hc⟩\n    exact ⟨c.1, c.2, congrArg Subtype.val hc⟩\n  · rintro ⟨c, hc, hd⟩\n    exact ⟨⟨c, hc⟩, Subtype.ext hd⟩\n\ndef actualClosedCechConnecting {X Z : Scheme.{u}} (i : Z ⟶ X)\n    [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens) :\n    Γ(Z, ⊤) →+ actualClosedCechHOne i (fun j => (U j).1) where\n  toFun := actualClosedCechObstruction i U\n  map_zero' := by\n    have h := actual_closed_cech_obstruction_independent_of_lifts i U 0 0 (by\n      rw [map_zero, map_zero])\n    rw [← h]\n    have hz : actualClosedCechLiftCocycle i (fun j => (U j).1) 0 0 (by\n        rw [map_zero, map_zero]) = 0 :=\n      Subtype.ext (map_zero (actualCechDifference X (fun j => (U j).1)))\n    rw [hz, map_zero]\n  map_add' b c := by\n    have ha : actualCechPullbackZero i (fun j => (U j).1)\n        (actualClosedCechLocalLift i U b + actualClosedCechLocalLift i U c) =\n      actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ (U j).1) (b + c) := by\n      rw [map_add, actual_closed_cech_local_lift_pullback,\n        actual_closed_cech_local_lift_pullback, map_add]\n    rw [← actual_closed_cech_obstruction_independent_of_lifts i U (b + c) _ ha]\n    change QuotientAddGroup.mk' _ _ = QuotientAddGroup.mk' _ _ + QuotientAddGroup.mk' _ _\n    rw [← map_add]\n    congr 1\n    apply Subtype.ext\n    exact map_add (actualCechDifference X (fun j => (U j).1)) _ _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_connecting_exact": {
+      "path": "Negativity/ActualCechClosedObstruction.lean",
+      "line": 121,
+      "code": "theorem actual_closed_cech_connecting_exact {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens)\n    (hU : (⊤ : X.Opens) ≤ iSup (fun j => (U j).1)) :\n    (actualClosedCechConnecting i U).ker = i.appTop.hom.toAddMonoidHom.range := by\n  ext b\n  change actualClosedCechObstruction i U b = 0 ↔ ∃ s, i.appTop s = b\n  exact actual_closed_cech_obstruction_zero_iff i U hU b\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_section_restriction_naturality": {
+      "path": "Negativity/ActualCechClosedLifting.lean",
+      "line": 14,
+      "code": "theorem actual_section_restriction_naturality {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {U V : X.Opens} (h : U ≤ V) (s : Γ(X, V)) :\n    actualSectionRestriction Z (i.preimage_mono h) (i.app V s) =\n      i.app U (actualSectionRestriction X h s) := by\n  exact congrArg (fun g : Γ(X, V) ⟶ Γ(Z, i ⁻¹ᵁ U) => g s)\n    (i.naturality (homOfLE h).op).symm\n\ndef actualCechPullbackZero {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) :\n    actualCechZero X U →+ actualCechZero Z (fun j => i ⁻¹ᵁ U j) where\n  toFun a j := i.app (U j) (a j)\n  map_zero' := by funext j; exact map_zero _\n  map_add' a b := by funext j; exact map_add _ _ _\n\ndef actualCechPullbackOne {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) :\n    actualCechOne X U →+ actualCechOne Z (fun j => i ⁻¹ᵁ U j) where\n  toFun a j k := i.app (U j ⊓ U k) (a j k)\n  map_zero' := by funext j k; exact map_zero _\n  map_add' a b := by funext j k; exact map_add _ _ _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_pullback_difference": {
+      "path": "Negativity/ActualCechClosedLifting.lean",
+      "line": 35,
+      "code": "theorem actual_cech_pullback_difference {X Z : Scheme.{u}} (i : Z ⟶ X)\n    {ι : Type v} (U : ι → X.Opens) (a : actualCechZero X U) :\n    actualCechDifference Z (fun j => i ⁻¹ᵁ U j) (actualCechPullbackZero i U a) =\n      actualCechPullbackOne i U (actualCechDifference X U a) := by\n  funext j k\n  change actualSectionRestriction Z _ (i.app (U k) (a k)) -\n    actualSectionRestriction Z _ (i.app (U j) (a j)) =\n      i.app (U j ⊓ U k)\n        (actualSectionRestriction X inf_le_right (a k) -\n          actualSectionRestriction X inf_le_left (a j))\n  rw [actual_section_restriction_naturality i inf_le_right,\n    actual_section_restriction_naturality i inf_le_left, map_sub]\n\ndef actualClosedCechLocalLift {X Z : Scheme.{u}} (i : Z ⟶ X)\n    [IsClosedImmersion i] {ι : Type v} (U : ι → X.affineOpens)\n    (b : Γ(Z, ⊤)) : actualCechZero X (fun j => (U j).1) :=\n  fun j => Classical.choose (i.app_surjective (U j).1 (U j).2\n    (actualSectionRestriction Z le_top b))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_local_lift_pullback": {
+      "path": "Negativity/ActualCechClosedLifting.lean",
+      "line": 54,
+      "code": "theorem actual_closed_cech_local_lift_pullback {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v}\n    (U : ι → X.affineOpens) (b : Γ(Z, ⊤)) :\n    actualCechPullbackZero i (fun j => (U j).1) (actualClosedCechLocalLift i U b) =\n      actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ (U j).1) b := by\n  funext j\n  exact Classical.choose_spec (i.app_surjective (U j).1 (U j).2\n    (actualSectionRestriction Z le_top b))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_cech_section_lifting_criterion": {
+      "path": "Negativity/ActualCechClosedLifting.lean",
+      "line": 68,
+      "code": "theorem actual_closed_cech_section_lifting_criterion {X Z : Scheme.{u}}\n    (i : Z ⟶ X) [IsClosedImmersion i] {ι : Type v}\n    (U : ι → X.affineOpens) (hU : (⊤ : X.Opens) ≤ iSup (fun j => (U j).1))\n    (b : Γ(Z, ⊤)) :\n    (∃ s : Γ(X, ⊤), i.appTop s = b) ↔\n      ∃ c : actualCechZero X (fun j => (U j).1),\n        actualCechPullbackZero i (fun j => (U j).1) c = 0 ∧\n        actualCechDifference X (fun j => (U j).1) c =\n          actualCechDifference X (fun j => (U j).1) (actualClosedCechLocalLift i U b) := by\n  let V := fun j => (U j).1\n  let a := actualClosedCechLocalLift i U b\n  let d := actualCechDifference X V\n  let p := actualCechPullbackZero i V\n  have ha : p a = actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ V j) b :=\n    actual_closed_cech_local_lift_pullback i U b\n  have hp (s : Γ(X, ⊤)) :\n      p (actualCechGlobalRestriction X V s) =\n        actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ V j) (i.appTop s) := by\n    funext j\n    exact (actual_section_restriction_naturality i le_top s).symm\n  have hg (s : Γ(X, ⊤)) : d (actualCechGlobalRestriction X V s) = 0 := by\n    exact (actual_cech_global_sections_exact X V hU).le ⟨s, rfl⟩\n  constructor\n  · rintro ⟨s, hs⟩\n    refine ⟨a - actualCechGlobalRestriction X V s, ?_, ?_⟩\n    · change p (a - actualCechGlobalRestriction X V s) = 0\n      rw [map_sub, hp, hs, ha, sub_self]\n    · change d (a - actualCechGlobalRestriction X V s) = d a\n      rw [map_sub, hg, sub_zero]\n  · rintro ⟨c, hc, hd⟩\n    have hdiff : d (a - c) = 0 := by\n      rw [map_sub, hd, sub_self]\n    have hrange : a - c ∈ AddMonoidHom.range (actualCechGlobalRestriction X V) := by\n      rw [actual_cech_global_sections_exact X V hU]\n      exact hdiff\n    obtain ⟨s, hs⟩ := hrange\n    refine ⟨s, ?_⟩\n    have hlocal : actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ V j) (i.appTop s) =\n        actualCechGlobalRestriction Z (fun j => i ⁻¹ᵁ V j) b := by\n      rw [← hp, hs, map_sub, hc, sub_zero, ha]\n    have hcover : (⊤ : Z.Opens) ≤ iSup (fun j => i ⁻¹ᵁ V j) := by\n      rw [← i.preimage_iSup]\n      exact i.preimage_mono hU\n    obtain ⟨t, _ht, htuniq⟩ := Z.sheaf.existsUnique_gluing' (fun j => i ⁻¹ᵁ V j)\n      ⊤ (fun _ => homOfLE le_top) hcover\n      (fun j => actualSectionRestriction Z le_top b) (by\n        intro j k\n        exact (actual_section_restriction_trans Z inf_le_left le_top b).trans\n          (actual_section_restriction_trans Z inf_le_right le_top b).symm)\n    exact (htuniq _ (fun j => congrArg (fun x => x j) hlocal)).trans\n      (htuniq _ (fun _ => rfl)).symm\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_section_restriction_trans": {
+      "path": "Negativity/ActualCechSections.lean",
+      "line": 18,
+      "code": "theorem actual_section_restriction_trans (X : Scheme.{u})\n    {U V W : X.Opens} (hUV : U ≤ V) (hVW : V ≤ W) (s : Γ(X, W)) :\n    actualSectionRestriction X hUV (actualSectionRestriction X hVW s) =\n      actualSectionRestriction X (hUV.trans hVW) s := by\n  change (X.presheaf.map (homOfLE hUV).op)\n    ((X.presheaf.map (homOfLE hVW).op) s) = _\n  rw [← ConcreteCategory.comp_apply, ← X.presheaf.map_comp]\n  rfl\n\ndef actualCechZero (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :=\n  ∀ i, Γ(X, U i)\n\ndef actualCechOne (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :=\n  ∀ i j, Γ(X, U i ⊓ U j)\n\ndef actualCechTwo (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :=\n  ∀ i j k, Γ(X, (U i ⊓ U j) ⊓ U k)\n\ninstance (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    AddCommGroup (actualCechZero X U) := inferInstanceAs (AddCommGroup (∀ i, Γ(X, U i)))\ninstance (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    AddCommGroup (actualCechOne X U) := inferInstanceAs (AddCommGroup (∀ i j, Γ(X, U i ⊓ U j)))\ninstance (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    AddCommGroup (actualCechTwo X U) := inferInstanceAs\n      (AddCommGroup (∀ i j k, Γ(X, (U i ⊓ U j) ⊓ U k)))\n\ndef actualCechDifference (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    actualCechZero X U →+ actualCechOne X U where\n  toFun a i j := actualSectionRestriction X inf_le_right (a j) -\n    actualSectionRestriction X inf_le_left (a i)\n  map_zero' := by\n    funext i j\n    change actualSectionRestriction X inf_le_right 0 -\n      actualSectionRestriction X inf_le_left 0 = 0\n    simp\n  map_add' a b := by\n    funext i j\n    change actualSectionRestriction X inf_le_right (a j + b j) -\n      actualSectionRestriction X inf_le_left (a i + b i) =\n      (actualSectionRestriction X inf_le_right (a j) -\n        actualSectionRestriction X inf_le_left (a i)) +\n      (actualSectionRestriction X inf_le_right (b j) -\n        actualSectionRestriction X inf_le_left (b i))\n    simp only [map_add]\n    abel\n\ndef actualCechBoundary (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    actualCechOne X U →+ actualCechTwo X U where\n  toFun a i j k :=\n    actualSectionRestriction X (le_inf (inf_le_left.trans inf_le_right) inf_le_right) (a j k) -\n    actualSectionRestriction X (le_inf (inf_le_left.trans inf_le_left) inf_le_right) (a i k) +\n    actualSectionRestriction X inf_le_left (a i j)\n  map_zero' := by\n    funext i j k\n    change actualSectionRestriction X _ 0 -\n      actualSectionRestriction X _ 0 + actualSectionRestriction X _ 0 = 0\n    simp\n  map_add' a b := by\n    funext i j k\n    change actualSectionRestriction X _ (a j k + b j k) -\n      actualSectionRestriction X _ (a i k + b i k) +\n      actualSectionRestriction X _ (a i j + b i j) =\n      (actualSectionRestriction X _ (a j k) - actualSectionRestriction X _ (a i k) +\n        actualSectionRestriction X _ (a i j)) +\n      (actualSectionRestriction X _ (b j k) - actualSectionRestriction X _ (b i k) +\n        actualSectionRestriction X _ (b i j))\n    simp only [map_add]\n    abel\n\ndef actualCechGlobalRestriction (X : Scheme.{u}) {ι : Type v} (U : ι → X.Opens) :\n    Γ(X, ⊤) →+ actualCechZero X U where\n  toFun s i := actualSectionRestriction X le_top s\n  map_zero' := by funext i; exact map_zero _\n  map_add' a b := by funext i; exact map_add _ _ _",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_boundary_difference_zero": {
+      "path": "Negativity/ActualCechSections.lean",
+      "line": 93,
+      "code": "theorem actual_cech_boundary_difference_zero (X : Scheme.{u})\n    {ι : Type v} (U : ι → X.Opens) (a : actualCechZero X U) :\n    actualCechBoundary X U (actualCechDifference X U a) = 0 := by\n  funext i j k\n  change _ - _ + _ = (0 : Γ(X, (U i ⊓ U j) ⊓ U k))\n  simp only [actualCechBoundary, actualCechDifference, AddMonoidHom.coe_mk,\n    ZeroHom.coe_mk, map_sub, actual_section_restriction_trans]\n  abel",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_cech_global_sections_exact": {
+      "path": "Negativity/ActualCechSections.lean",
+      "line": 106,
+      "code": "theorem actual_cech_global_sections_exact (X : Scheme.{u})\n    {ι : Type v} (U : ι → X.Opens) (hU : (⊤ : X.Opens) ≤ iSup U) :\n    AddMonoidHom.range (actualCechGlobalRestriction X U) =\n      AddMonoidHom.ker (actualCechDifference X U) := by\n  ext a\n  constructor\n  · rintro ⟨s, rfl⟩\n    change actualCechDifference X U (actualCechGlobalRestriction X U s) = 0\n    funext i j\n    change actualSectionRestriction X inf_le_right\n        (actualSectionRestriction X le_top s) -\n      actualSectionRestriction X inf_le_left (actualSectionRestriction X le_top s) = 0\n    rw [actual_section_restriction_trans, actual_section_restriction_trans, sub_self]\n  · intro ha\n    have hd : actualCechDifference X U a = 0 := ha\n    have hc : TopCat.Presheaf.IsCompatible X.presheaf U a := by\n      intro i j\n      have hij := congrArg (fun t : actualCechOne X U => t i j) hd\n      exact (sub_eq_zero.mp hij).symm\n    obtain ⟨s, hs, _⟩ := X.sheaf.existsUnique_gluing' U ⊤\n      (fun _ => homOfLE le_top) hU a hc\n    exact ⟨s, funext hs⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_relative_formal_functions_injective": {
       "path": "Negativity/RelativeFormalInjectivity.lean",
       "line": 20,
