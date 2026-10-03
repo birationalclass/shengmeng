@@ -69,7 +69,17 @@ effective real Cartier divisors with negative relative nefness is proved on
 connected complete contracted schemes, with no curve-existence or positive-
 intersection input. Connectedness of actual proper birational fibers is NOT
 proved by this result and remains open.
-Geometric ample positivity,
+Actual effective E construction by clearing base-ring denominators is now
+proved for every actual Cartier divisor over an affine birational base.
+Principal changes preserve the actual normalized intersection. Strictly
+anti-positive Cartier data yield a constructed effective E covering all
+actual exceptional primes, with neither E effectivity nor coverage as an
+input. Actual affine nonvanishing section-cover geometry implies positive
+intersection on complete closed curves: a proper integral curve cannot lie
+inside an affine open. Negativity (1) is proved given actual Cartier affine
+section-cover data, with no supplied numerical positivity or E witness.
+Construction of those actual data from the relative projective embedding
+and O(1) remains open. General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

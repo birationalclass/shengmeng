@@ -847,3 +847,25 @@ import Negativity
 #print axioms Negativity.connected_complete_scheme_actual_crossing_curve
 
 #print axioms Negativity.actual_connected_contracted_scheme_support_dichotomy
+
+#print axioms Negativity.exists_effective_cartier_rational_twist
+
+#print axioms Negativity.complete_integral_curve_ambient_cartier_principal_invariance
+
+#print axioms Negativity.exists_effective_exceptional_covering_cartier_twist
+
+#print axioms Negativity.actual_negativity_of_strictly_negative_cartier
+
+#print axioms Negativity.complete_integral_curve_not_affine
+
+#print axioms Negativity.complete_integral_curve_meets_complement_affine_open
+
+#print axioms Negativity.complete_integral_curve_effective_cartier_intersection_signs
+
+#print axioms Negativity.complete_integral_curve_positive_of_affine_section_cover
+
+#print axioms Negativity.cartierAtlas_inverse_coefficient
+
+#print axioms Negativity.complete_integral_curve_cartier_intersection_inverse
+
+#print axioms Negativity.actual_negativity_of_affine_section_cover

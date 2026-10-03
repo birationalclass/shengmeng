@@ -4,6 +4,15 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualNegativityAffineSections.lean': ['actual_negativity_of_affine_section_cover'],
+    'CartierInverse.lean': ['cartierAtlas_inverse_coefficient', 'complete_integral_curve_cartier_intersection_inverse'],
+    'CartierAffineSections.lean': ['complete_integral_curve_positive_of_affine_section_cover'],
+    'NormalizedCartierSigns.lean': ['complete_integral_curve_effective_cartier_intersection_signs'],
+    'CompleteCurveAffineAvoidance.lean': ['complete_integral_curve_not_affine', 'complete_integral_curve_meets_complement_affine_open'],
+    'ActualNegativityConstruction.lean': ['actual_negativity_of_strictly_negative_cartier'],
+    'EffectiveExceptionalWitness.lean': ['exists_effective_exceptional_covering_cartier_twist'],
+    'NormalizedPrincipalInvariance.lean': ['complete_integral_curve_ambient_cartier_principal_invariance'],
+    'CartierEffectiveTwist.lean': ['exists_effective_cartier_rational_twist'],
     'ActualConnectedSupport.lean': ['actual_connected_contracted_scheme_support_dichotomy'],
     'ConnectedCurveCrossing.lean': ['connected_closed_subset_crossing_component', 'connected_complete_scheme_actual_crossing_curve'],
     'CompleteCurveAvoiding.lean': ['exists_complete_integral_curve_through_closed_point_avoiding'],
@@ -264,7 +273,17 @@ effective real Cartier divisors with negative relative nefness is proved on
 connected complete contracted schemes, with no curve-existence or positive-
 intersection input. Connectedness of actual proper birational fibers is NOT
 proved by this result and remains open.
-Geometric ample positivity,
+Actual effective E construction by clearing base-ring denominators is now
+proved for every actual Cartier divisor over an affine birational base.
+Principal changes preserve the actual normalized intersection. Strictly
+anti-positive Cartier data yield a constructed effective E covering all
+actual exceptional primes, with neither E effectivity nor coverage as an
+input. Actual affine nonvanishing section-cover geometry implies positive
+intersection on complete closed curves: a proper integral curve cannot lie
+inside an affine open. Negativity (1) is proved given actual Cartier affine
+section-cover data, with no supplied numerical positivity or E witness.
+Construction of those actual data from the relative projective embedding
+and O(1) remains open. General geometric ample positivity,
 full Chow relative projectivity and actual proper birational fiber connectedness remain open.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.

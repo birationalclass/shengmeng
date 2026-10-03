@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T08:02:31+08:00",
+  "checkedAt": "2026-10-03T08:51:19+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "546a1c8d100a50180819fdad85e6087a25459c9881409062b4e12cd5a9fd1c74"
+      "sha256": "388c0f4d743fccd471d56b9d378ef2a8224101f2504c74e2b99b42f05adc8773"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "00843144f78f225279b5110aa4c0411d11638bc1c5a8dce32edd9eaeb9924288"
+      "sha256": "026f0fdb7bc45d7bb2b226d41045988f92758ed6d92498eba1a4a081344132fe"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,42 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualNegativityAffineSections.lean",
+      "sha256": "cfdf2b76bb8f8e7101fad1686d145d455a68660998917091e27b5ff7513a446c"
+    },
+    {
+      "path": "Negativity/CartierInverse.lean",
+      "sha256": "34ea47807f0ab419caa5817e3b699cebe6ca2d589e61eb096fc594436a860c17"
+    },
+    {
+      "path": "Negativity/CartierAffineSections.lean",
+      "sha256": "8f637c5f655515e762e803310c9970cae686c4effc9375988cd27cc21d9c84cd"
+    },
+    {
+      "path": "Negativity/NormalizedCartierSigns.lean",
+      "sha256": "46357ab26732bea965b8501ff20d4d874a3893905dcca188b27599219b1aa411"
+    },
+    {
+      "path": "Negativity/CompleteCurveAffineAvoidance.lean",
+      "sha256": "fd07f6bb8a6ade30b2323701a93044acb06932c38e2b71315f2a2a87f69049fb"
+    },
+    {
+      "path": "Negativity/ActualNegativityConstruction.lean",
+      "sha256": "d3174d08fc63b6e015cf80534425867b938bde21e91040515a7b1a92ae129304"
+    },
+    {
+      "path": "Negativity/EffectiveExceptionalWitness.lean",
+      "sha256": "d4ece44abcd279fe6474408c8948a412af8196ca5c9d5d2a26bbe5aec35f926e"
+    },
+    {
+      "path": "Negativity/NormalizedPrincipalInvariance.lean",
+      "sha256": "b5a80106ce5c7a7f3921a749b9c6f0f59a7831f708da8f028809166b817d6e90"
+    },
+    {
+      "path": "Negativity/CartierEffectiveTwist.lean",
+      "sha256": "852339808f23bbdb7b3074c5f2e9c6d73d5732bc7657c6a50792936cb04a191a"
     },
     {
       "path": "Negativity/ActualConnectedSupport.lean",
@@ -586,6 +622,116 @@
     }
   ],
   "declarations": {
+    "actual_negativity_of_affine_section_cover": {
+      "path": "Negativity/ActualNegativityAffineSections.lean",
+      "line": 23,
+      "code": "theorem actual_negativity_of_affine_section_cover\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ σ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t))\n    (A₀ : CartierAtlas X ι) (S : CartierAffineSectionCover A₀ σ) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  apply actual_negativity_of_strictly_negative_cartier k b f hf hnX hnY A d\n    hpush hnef A₀.inverse\n  intro C _ hd j _ hj _hc\n  have := hj\n  rw [complete_integral_curve_cartier_intersection_inverse hnX hd k (j ≫ f ≫ b) j A₀]\n  exact neg_neg_of_pos (complete_integral_curve_positive_of_affine_section_cover\n    hd k (j ≫ f ≫ b) j A₀ S)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "cartierAtlas_inverse_coefficient": {
+      "path": "Negativity/CartierInverse.lean",
+      "line": 31,
+      "code": "theorem cartierAtlas_inverse_coefficient\n    {X : Scheme} [IsIntegral X] [IsLocallyNoetherian X]\n    (hn : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    {ι : Type*} (A : CartierAtlas X ι) (x : X) :\n    A.inverse.coefficient hn x = -A.coefficient hn x := by\n  classical\n  by_cases hx : Order.coheight x = 1\n  · let i := (A.covers x).choose\n    have hi : x ∈ A.chart i := (A.covers x).choose_spec\n    rw [cartierAtlas_coefficient_eq X hn A.inverse i x hx hi,\n      cartierAtlas_coefficient_eq X hn A i x hx hi]\n    have := hn x\n    have := normal_codimensionOne_stalk_isDVR X x hx\n    unfold schemeRationalOrder\n    simpa [CartierAtlas.inverse] using\n      dvr_rationalOrder_zpow (X.presheaf.stalk x) X.functionField (A.equation i) (-1)\n  · simp [CartierAtlas.coefficient, hx]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_cartier_intersection_inverse": {
+      "path": "Negativity/CartierInverse.lean",
+      "line": 53,
+      "code": "theorem complete_integral_curve_cartier_intersection_inverse\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X] [IsLocallyNoetherian X]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) :\n    normalizedCartierCurveIntersection hd k c f A.inverse =\n      -normalizedCartierCurveIntersection hd k c f A := by\n  have hi := complete_integral_curve_real_cartier_presentation_independent\n    hnX hd k c f (fun _ : Unit => A.inverse) (fun _ : Unit => A)\n    (fun _ => (1 : ℝ)) (fun _ => (-1 : ℝ)) (by\n      intro x\n      simp [cartierAtlas_inverse_coefficient])\n  have he : (normalizedCartierCurveIntersection hd k c f A.inverse : ℝ) =\n      -(normalizedCartierCurveIntersection hd k c f A : ℝ) := by\n    simpa [normalizedRealCartierCurveIntersection] using hi\n  exact_mod_cast he\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_positive_of_affine_section_cover": {
+      "path": "Negativity/CartierAffineSections.lean",
+      "line": 37,
+      "code": "theorem complete_integral_curve_positive_of_affine_section_cover\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (j : C ⟶ X) [IsClosedImmersion j] {ι σ : Type*}\n    (A : CartierAtlas X ι) (S : CartierAffineSectionCover A σ) :\n    0 < normalizedCartierCurveIntersection hd k c j A := by\n  classical\n  obtain ⟨s, hs⟩ := S.covers (j (genericPoint C))\n  let E := A.rationalTwist (S.multiplier s)\n  let U : X.Opens := ⟨E.vanishingSupportᶜ,\n    (cartierAtlas_vanishingSupport_isClosed X E).isOpen_compl⟩\n  obtain ⟨x, hx⟩ := complete_integral_curve_meets_complement_affine_open\n    hd k c j U (S.affine s)\n  have hm : (j ⁻¹' E.vanishingSupport).Nonempty := by\n    refine ⟨x, ?_⟩\n    change j x ∈ E.vanishingSupport\n    exact not_not.mp hx\n  have hp := (complete_integral_curve_effective_cartier_intersection_signs\n    hd k c j E (S.effective s) hs).2 hm\n  rw [complete_integral_curve_ambient_cartier_principal_invariance hd k c j A\n    (S.multiplier s)] at hp\n  exact hp\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_effective_cartier_intersection_signs": {
+      "path": "Negativity/NormalizedCartierSigns.lean",
+      "line": 17,
+      "code": "theorem complete_integral_curve_effective_cartier_intersection_signs\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) (hA : A.Effective)\n    (hη : f (genericPoint C) ∉ A.vanishingSupport) :\n    0 ≤ normalizedCartierCurveIntersection hd k c f A ∧\n      ((f ⁻¹' A.vanishingSupport).Nonempty →\n        0 < normalizedCartierCurveIntersection hd k c f A) := by\n  let n := C.fromSpecStalk (genericPoint C)\n  have h := complete_integral_curve_normalization_properties C hd k c\n  have : IsLocallyNoetherian n.normalization := h.2.2.2.2.2.1\n  have : IsProper (n.fromNormalization ≫ c) := h.2.2.2.2.2.2\n  let : CompactSpace n.normalization :=\n    QuasiCompact.compactSpace_of_compactSpace (n.fromNormalization ≫ c)\n  have : IsDominant n.fromNormalization := birationalMorphism_dominant n.fromNormalization h.2.1\n  have hηN : (n.fromNormalization ≫ f) (genericPoint n.normalization) ∉ A.vanishingSupport := by\n    simpa only [Scheme.Hom.comp_apply, dominant_genericPoint_eq n.fromNormalization] using hη\n  have hp := complete_normal_curve_effective_cartier_intersection_signs\n    (generic_normalization_stalks_normal C) h.2.2.2.2.1 k\n    (n.fromNormalization ≫ c) (n.fromNormalization ≫ f) A hA hηN\n  refine ⟨hp.1, ?_⟩\n  rintro ⟨x, hx⟩\n  obtain ⟨z, hz⟩ := h.2.2.1.surj x\n  change n.fromNormalization z = x at hz\n  apply hp.2\n  refine ⟨z, ?_⟩\n  change f (n.fromNormalization z) ∈ A.vanishingSupport\n  rw [hz]\n  exact hx\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_not_affine": {
+      "path": "Negativity/CompleteCurveAffineAvoidance.lean",
+      "line": 16,
+      "code": "theorem complete_integral_curve_not_affine\n    (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n    (k : Type u) [Field k] (c : C ⟶ Spec (.of k)) [IsProper c] : ¬ IsAffine C := by\n  intro ha\n  have := ha\n  have hfield := isField_of_universallyClosed k c\n  obtain ⟨x, hx⟩ := curve_exists_coheight_one C hd\n  let p := C.isoSpec.hom x\n  have hle := Ideal.height_le_ringKrullDim_of_ne_top p.isPrime.ne_top\n  rw [ringKrullDim_eq_zero_of_isField hfield] at hle\n  change (↑(C.isoSpec.hom x).asIdeal.height : WithBot ℕ∞) ≤ 0 at hle\n  rw [idealHeight_eq_coheight, coheight_eq_of_isOpenImmersion, hx] at hle\n  norm_num at hle",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_meets_complement_affine_open": {
+      "path": "Negativity/CompleteCurveAffineAvoidance.lean",
+      "line": 34,
+      "code": "theorem complete_integral_curve_meets_complement_affine_open\n    {C X : Scheme.{u}} [IsIntegral C] (hd : Order.krullDim C = 1)\n    (k : Type u) [Field k] (c : C ⟶ Spec (.of k)) [IsProper c]\n    (j : C ⟶ X) [IsClosedImmersion j]\n    (U : X.Opens) (hU : IsAffineOpen U) : ∃ x : C, j x ∉ U := by\n  classical\n  by_contra! hall\n  have hrange : Set.range j ⊆ Set.range U.ι := by\n    rw [Scheme.Opens.range_ι]\n    rintro _ ⟨x, rfl⟩\n    exact hall x\n  let l : C ⟶ U.toScheme := IsOpenImmersion.lift U.ι j hrange\n  have hl : l ≫ U.ι = j := IsOpenImmersion.lift_fac _ _ hrange\n  have : IsClosedImmersion (l ≫ U.ι) := by rw [hl]; infer_instance\n  have : IsClosedImmersion l := IsClosedImmersion.of_comp l U.ι\n  have : IsAffine U.toScheme := hU\n  have : IsAffine C := isAffine_of_isAffineHom l\n  exact complete_integral_curve_not_affine C hd k c inferInstance\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_negativity_of_strictly_negative_cartier": {
+      "path": "Negativity/ActualNegativityConstruction.lean",
+      "line": 22,
+      "code": "theorem actual_negativity_of_strictly_negative_cartier\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsLocallyNoetherian Y] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hpush : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (A t).weightedWeilCycle hnX (d t))))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t))\n    (A₀ : CartierAtlas X ι)\n    (hanti : ∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n      (j : C ⟶ X) [IsProper (j ≫ f ≫ b)], IsClosedImmersion j →\n      (∀ c : C, f (j c) = f (j (genericPoint C))) →\n      normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j A₀ < 0) :\n    ∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ) := by\n  classical\n  obtain ⟨s, hE, hcover⟩ := exists_effective_exceptional_covering_cartier_twist\n    k b f hf hnX hnY A₀ hanti\n  let E := A₀.rationalTwist s\n  let AA : Sum τ Unit → CartierAtlas X ι := Sum.elim A (fun _ => E)\n  let dd : Sum τ Unit → ℝ := Sum.elim d (fun _ => 0)\n  let ee : Sum τ Unit → ℝ := Sum.elim (fun _ => 0) (fun _ => 1)\n  have hcyc : (∑ t, (AA t).weightedWeilCycle hnX (dd t)) =\n      ∑ t, (A t).weightedWeilCycle hnX (d t) := by\n    rw [Fintype.sum_sum_type]\n    have hz : E.weightedWeilCycle hnX 0 = 0 := by\n      ext x\n      simp [CartierAtlas.weightedWeilCycle]\n    simpa [AA, dd] using (show\n      (∑ t, (A t).weightedWeilCycle hnX (d t)) + E.weightedWeilCycle hnX 0 =\n        ∑ t, (A t).weightedWeilCycle hnX (d t) by rw [hz, add_zero])\n  have hpush' : CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n      (∑ t, (AA t).weightedWeilCycle hnX (dd t))) := by\n    rwa [hcyc]\n  have hnef' : ActualRelativeNef k (f ≫ b) f AA (fun t => -dd t) := by\n    intro C _ hd j _ hc\n    simpa [normalizedRealCartierCurveIntersection, AA, dd, Fintype.sum_sum_type]\n      using hnef C hd j hc\n  have heff : ∀ x : X, 0 ≤ ∑ t, ee t * ((AA t).coefficient hnX x : ℝ) := by\n    intro x\n    have hn : 0 ≤ E.coefficient hnX x :=\n      effective_cartierAtlas_weil_nonneg X hnX E hE x\n    simpa [AA, ee, Fintype.sum_sum_type] using\n      (show (0 : ℝ) ≤ (E.coefficient hnX x : ℝ) by exact_mod_cast hn)\n  have hecover : ∀ x : X, Order.coheight x = 1 →\n      (∀ U : Y.Opens, f x ∈ U → ¬ IsIso (f ∣_ U)) →\n      0 < ∑ t, ee t * ((AA t).coefficient hnX x : ℝ) := by\n    intro x hx hc\n    simpa [AA, ee, Fintype.sum_sum_type] using\n      (show (0 : ℝ) < (E.coefficient hnX x : ℝ) by exact_mod_cast hcover x hx hc)\n  have hEanti : ∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n      (j : C ⟶ X) [IsProper (j ≫ f ≫ b)], IsClosedImmersion j →\n      (∀ c : C, f (j c) = f (j (genericPoint C))) →\n      normalizedRealCartierCurveIntersection hd k (j ≫ f ≫ b) j AA ee < 0 := by\n    intro C _ hd j _ hj hc\n    have hi := complete_integral_curve_ambient_cartier_principal_invariance\n      hd k (j ≫ f ≫ b) j A₀ s\n    have he : normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j E < 0 := by\n      rw [hi]\n      exact hanti C hd j hj hc\n    simpa [normalizedRealCartierCurveIntersection, AA, ee, Fintype.sum_sum_type]\n      using (show (normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j E : ℝ) < 0 by\n        exact_mod_cast he)\n  have hall := actual_negativity_of_antiample_witness k b f hf hnX hnY\n    AA dd ee hpush' hnef' heff hecover hEanti\n  intro x\n  simpa [AA, dd, Fintype.sum_sum_type] using hall x\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_exceptional_covering_cartier_twist": {
+      "path": "Negativity/EffectiveExceptionalWitness.lean",
+      "line": 22,
+      "code": "theorem exists_effective_exceptional_covering_cartier_twist\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsLocallyNoetherian X] [IsAffine Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι : Type*} (A : CartierAtlas X ι)\n    (hanti : ∀ (C : Scheme.{u}) [IsIntegral C] (hd : Order.krullDim C = 1)\n      (j : C ⟶ X) [IsProper (j ≫ f ≫ b)], IsClosedImmersion j →\n      (∀ c : C, f (j c) = f (j (genericPoint C))) →\n      normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j A < 0) :\n    ∃ a : X.functionFieldˣ, (A.rationalTwist a).Effective ∧\n      ∀ η : X, Order.coheight η = 1 →\n        (∀ U : Y.Opens, f η ∈ U → ¬ IsIso (f ∣_ U)) →\n        0 < (A.rationalTwist a).coefficient hnX η := by\n  classical\n  obtain ⟨a, ha⟩ := exists_effective_cartier_rational_twist f hf A\n  let E := A.rationalTwist a\n  have hnonneg : ∀ x : X, 0 ≤ E.coefficient hnX x :=\n    effective_cartierAtlas_weil_nonneg X hnX E ha\n  refine ⟨a, ha, ?_⟩\n  intro η hη hc\n  by_contra hnot\n  have hz : E.coefficient hnX η = 0 :=\n    le_antisymm (le_of_not_gt hnot) (hnonneg η)\n  let es : Unit → CartierAtlas X ι := fun _ => E\n  let r : Unit → ℝ := fun _ => 1\n  have he : ∀ x : X, 0 ≤ ∑ t, r t * ((es t).coefficient hnX x : ℝ) := by\n    intro x\n    simpa [r, es] using (show (0 : ℝ) ≤ (E.coefficient hnX x : ℝ) by\n      exact_mod_cast hnonneg x)\n  have hez : (∑ t, r t * ((es t).coefficient hnX η : ℝ)) = 0 := by\n    simp [r, es, hz]\n  obtain ⟨C, j, hC, hd, hp, hj, hconst, _, hI⟩ :=\n    zero_exceptional_prime_actual_curve_nonnegative_intersection k b f hf hnX hnY\n      η hη hc es r he hez\n  have := hC\n  have := hp\n  have hI' : 0 ≤ normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j E := by\n    have hreal : (0 : ℝ) ≤\n        (normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j E : ℝ) := by\n      simpa [normalizedRealCartierCurveIntersection, es, r] using hI\n    exact_mod_cast hreal\n  have hi := complete_integral_curve_ambient_cartier_principal_invariance\n    hd k (j ≫ f ≫ b) j A a\n  change normalizedCartierCurveIntersection hd k (j ≫ f ≫ b) j E = _ at hi\n  rw [hi] at hI'\n  exact (not_lt_of_ge hI') (hanti C hd j hj hconst)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "complete_integral_curve_ambient_cartier_principal_invariance": {
+      "path": "Negativity/NormalizedPrincipalInvariance.lean",
+      "line": 18,
+      "code": "theorem complete_integral_curve_ambient_cartier_principal_invariance\n    {C X : Scheme.{u}} [IsIntegral C] [IsIntegral X]\n    (hd : Order.krullDim C = 1) (k : Type u) [Field k] [IsAlgClosed k]\n    (c : C ⟶ Spec (.of k)) [IsProper c]\n    (f : C ⟶ X) {ι : Type*} (A : CartierAtlas X ι) (a : X.functionFieldˣ) :\n    normalizedCartierCurveIntersection hd k c f (A.rationalTwist a) =\n      normalizedCartierCurveIntersection hd k c f A := by\n  let n := C.fromSpecStalk (genericPoint C)\n  have h := complete_integral_curve_normalization_properties C hd k c\n  have : IsLocallyNoetherian n.normalization := h.2.2.2.2.2.1\n  have : IsProper (n.fromNormalization ≫ c) := h.2.2.2.2.2.2\n  let : CompactSpace n.normalization :=\n    QuasiCompact.compactSpace_of_compactSpace (n.fromNormalization ≫ c)\n  exact complete_normal_curve_ambient_cartier_principal_invariance\n    (generic_normalization_stalks_normal C) h.2.2.2.2.1 k\n    (n.fromNormalization ≫ c) (n.fromNormalization ≫ f) A a\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "exists_effective_cartier_rational_twist": {
+      "path": "Negativity/CartierEffectiveTwist.lean",
+      "line": 21,
+      "code": "theorem exists_effective_cartier_rational_twist\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y] [CompactSpace X]\n    [IsAffine Y] (f : X ⟶ Y) (hf : BirationalMorphism f)\n    {ι : Type*} (A : CartierAtlas X ι) :\n    ∃ a : X.functionFieldˣ, (A.rationalTwist a).Effective := by\n  classical\n  have := birationalMorphism_dominant f hf\n  have := birationalMorphism_generic_stalk_isIso f hf\n  have : Nonempty (⊤ : Y.Opens) := ⟨genericPoint Y, trivial⟩\n  let R := Γ(Y, ⊤)\n  have : IsFractionRing R Y.functionField :=\n    functionField_isFractionRing_of_isAffineOpen Y ⊤ (isAffineOpen_top Y)\n  let g : Y.functionField ⟶ X.functionField :=\n    (Y.presheaf.stalkCongr (.of_eq (dominant_genericPoint_eq f))).inv ≫\n      f.stalkMap (genericPoint X)\n  let e : Y.functionField ≃+* X.functionField :=\n    RingEquiv.ofBijective g.hom (ConcreteCategory.bijective_of_isIso g)\n  have hc : (Set.univ : Set X) ⊆ ⋃ i, (A.chart i : Set X) := by\n    intro x _\n    obtain ⟨i, hi⟩ := A.covers x\n    exact Set.mem_iUnion.mpr ⟨i, hi⟩\n  obtain ⟨t, ht⟩ := isCompact_univ.elim_finite_subcover\n    (fun i => (A.chart i : Set X)) (fun i => (A.chart i).isOpen) hc\n  obtain ⟨s, hs⟩ := IsLocalization.exist_integer_multiples\n    (nonZeroDivisors R) t (fun i => e.symm (A.equation i : X.functionField))\n  have hs0 : (s : R) ≠ 0 := nonZeroDivisors.ne_zero s.2\n  have hsK : algebraMap R Y.functionField (s : R) ≠ 0 := by\n    intro hz\n    exact hs0 (IsFractionRing.injective R Y.functionField\n      (hz.trans (map_zero _).symm))\n  let a : X.functionFieldˣ := Units.mk0 (e (algebraMap R Y.functionField (s : R)))\n    (fun hz => hsK (e.injective (hz.trans e.map_zero.symm)))\n  have hreg : ∀ i ∈ t, ∀ x : X, ∃ r : X.presheaf.stalk x,\n      algebraMap (X.presheaf.stalk x) X.functionField r =\n        ((A.rationalTwist a).equation i : X.functionField) := by\n    intro i hi x\n    obtain ⟨r, hr⟩ := hs i hi\n    have heq : e (Y.germToFunctionField ⊤ r) =\n        (a : X.functionField) * (A.equation i : X.functionField) := by\n      change e (algebraMap R Y.functionField r) = _\n      rw [hr, Algebra.smul_def, map_mul, RingEquiv.apply_symm_apply]\n      rfl\n    refine ⟨(f.stalkMap x).hom (Y.presheaf.germ ⊤ (f x) trivial r), ?_⟩\n    rw [← dominantFunctionFieldMap_stalk f x,\n      Scheme.algebraMap_germ_eq_germToFunctionField Y\n        (U := ⊤) (x := f x) trivial r]\n    exact heq\n  refine ⟨a, ?_⟩\n  intro j x hxj\n  obtain ⟨i, hi, hxi⟩ := Set.mem_iUnion₂.mp (ht (Set.mem_univ x))\n  obtain ⟨r, hr⟩ := hreg i hi x\n  obtain ⟨v, hv⟩ := (A.rationalTwist a).transition i j x hxi hxj\n  refine ⟨(v : X.presheaf.stalk x) * r, ?_⟩\n  rw [map_mul, hr]\n  exact congrArg Units.val hv\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_connected_contracted_scheme_support_dichotomy": {
       "path": "Negativity/ActualConnectedSupport.lean",
       "line": 21,
