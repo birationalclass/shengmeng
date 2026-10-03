@@ -367,3 +367,27 @@ public import Negativity.ActualProperAffineNegativity
 public import Negativity.ActualProperNegativity
 
 public import Negativity.ActualProperNegativityIff
+
+public import Negativity.RelativeFormalFunctionsMap
+
+public import Negativity.RelativeInfinitesimalIdempotents
+
+public import Negativity.ClosedPointFiberThickenings
+
+public import Negativity.ClosedFiberInfinitesimalIdempotent
+
+public import Negativity.RelativeFormalConnectedness
+
+public import Negativity.ConstructibleClosedPoint
+
+public import Negativity.ClosedFiberSupportDetection
+
+public import Negativity.ClosedFiberCompleteness
+
+public import Negativity.ActualProperSupportDichotomy
+
+public import Negativity.AffineNeighborhoodFiber
+
+public import Negativity.GlobalClosedFiberConnectedness
+
+public import Negativity.ActualProperNegativityFull

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-03T13:58:25+08:00",
+  "checkedAt": "2026-10-03T15:38:44+08:00",
   "lean": "leanprover/lean4:v4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "files": [
     {
       "path": "Negativity.lean",
-      "sha256": "168be42e9f562840e6b4212ea4354c480ad8d212949ce380199151b6bcf9bd5f"
+      "sha256": "26c5fb67f4b6909c6abe1e911e85b0ef30be2f955e2288b4f0ad0f277b45be0f"
     },
     {
       "path": "CheckAxioms.lean",
-      "sha256": "8746317b1ff1614602f085f70ffe42a7a287988c388900636c4b01ad2efad04a"
+      "sha256": "0807e72e33c3230af8513ad3da15c277f2164efbb0b097489cb1fe8b58117850"
     },
     {
       "path": "lakefile.toml",
@@ -31,6 +31,54 @@
     {
       "path": "Negativity/Basic.lean",
       "sha256": "84ed41903004282e2154210604df63963b0825741cbde1c7470a2e508eb1093a"
+    },
+    {
+      "path": "Negativity/ActualProperNegativityFull.lean",
+      "sha256": "d09dd4baf8ba2fd8556c12d5bb8233a13cb91630eac4694f321e5a97f461da14"
+    },
+    {
+      "path": "Negativity/GlobalClosedFiberConnectedness.lean",
+      "sha256": "60b664a4cc4cb1490a3c1866955b1599cca3c31e9049866592b68765038b3173"
+    },
+    {
+      "path": "Negativity/AffineNeighborhoodFiber.lean",
+      "sha256": "de934dab78d5c04cab35680c6fb4760ee62f121d45c1b673a412397f98455d19"
+    },
+    {
+      "path": "Negativity/ActualProperSupportDichotomy.lean",
+      "sha256": "5a2c9241d4b9813277274790e70d7b0b19f5f6657f6f292a5995e562da6ce001"
+    },
+    {
+      "path": "Negativity/ClosedFiberCompleteness.lean",
+      "sha256": "868087ecef8c4fd1b43a3cd80bcb2d3e2f48a1a198da8cf5ca0200cc7791ccf6"
+    },
+    {
+      "path": "Negativity/ClosedFiberSupportDetection.lean",
+      "sha256": "453745eb7a34b05859884a216d996c587f2928fce0c33f498d2940c38e43b0b9"
+    },
+    {
+      "path": "Negativity/ConstructibleClosedPoint.lean",
+      "sha256": "80a44fcc07cbcb13ba2a92dd7820f30356965d56f6be3a93b10391a06e68cdda"
+    },
+    {
+      "path": "Negativity/RelativeFormalConnectedness.lean",
+      "sha256": "72ec0b6ab4926df3a582e2ebf1309babc7641d9e7081b8885934ba3e3d1546ef"
+    },
+    {
+      "path": "Negativity/ClosedFiberInfinitesimalIdempotent.lean",
+      "sha256": "a1cb25b0a29b7bf54cf840d700e635c5b08eb502d033870dfda102f8031b7776"
+    },
+    {
+      "path": "Negativity/ClosedPointFiberThickenings.lean",
+      "sha256": "51403b5f15d592b373607c392d1eae7866222009898779df72e839bfb026a4dc"
+    },
+    {
+      "path": "Negativity/RelativeInfinitesimalIdempotents.lean",
+      "sha256": "72fa162f8da0d23dd5b303a1f5b5b8113b96192aad49e0a793f56a1a9a9d52cd"
+    },
+    {
+      "path": "Negativity/RelativeFormalFunctionsMap.lean",
+      "sha256": "ddb8949d2468bee0993cd4a5c357509f2e1d4ecaa339de1bac6b11d9cbd4e3f8"
     },
     {
       "path": "Negativity/ActualProperNegativityIff.lean",
@@ -778,6 +826,186 @@
     }
   ],
   "declarations": {
+    "actual_proper_negativity_of_actual_formal_functions": {
+      "path": "Negativity/ActualProperNegativityFull.lean",
+      "line": 22,
+      "code": "theorem actual_proper_negativity_of_actual_formal_functions\n    {X Y : Scheme.{u}} [IsIntegral X] [IsIntegral Y]\n    [IsNoetherian X] [IsNoetherian Y]\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (hf : BirationalMorphism f)\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (hnY : ∀ y : Y, IsIntegrallyClosed (Y.presheaf.stalk y))\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (d : τ → ℝ)\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -d t))\n    (hff : ActualClosedFiberFormalFunctions f) :\n    ((∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ)) ↔\n      CycleEffective (AlgebraicCycle.map f Order.coheight Order.coheight\n        (∑ t, (A t).weightedWeilCycle hnX (d t)))) ∧\n    ((∀ x : X, 0 ≤ ∑ t, d t * ((A t).coefficient hnX x : ℝ)) →\n      ∀ y : Y,\n        (∀ x : X, f x = y →\n          x ∉ closure (∑ t, (A t).weightedWeilCycle hnX (d t)).support) ∨\n        (∀ x : X, f x = y →\n          x ∈ closure (∑ t, (A t).weightedWeilCycle hnX (d t)).support)) := by\n  refine ⟨actual_proper_negativity_effectivity_iff k b f hf hnX hnY A d hnef, ?_⟩\n  intro he\n  have : Surjective f := proper_birational_surjective f hf\n  exact actual_proper_support_dichotomy_of_connected_closed_fibers hnX k b f A d he hnef\n    (actual_closed_fibers_connected_of_affine_formal_functions f hff)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_fibers_connected_of_affine_formal_functions": {
+      "path": "Negativity/GlobalClosedFiberConnectedness.lean",
+      "line": 30,
+      "code": "theorem actual_closed_fibers_connected_of_affine_formal_functions\n    {X Y : Scheme.{u}} [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [Surjective f] (hff : ActualClosedFiberFormalFunctions f) :\n    ∀ y : Y, IsClosed ({y} : Set Y) → ConnectedSpace (f.fiber y) := by\n  intro y hy\n  obtain ⟨U, hU, hyU, _⟩ := exists_isAffineOpen_mem_and_subset\n    (U := ⊤) (x := y) trivial\n  let V : Y.affineOpens := ⟨U, hU⟩\n  let v : U := ⟨y, hyU⟩\n  have : IsAffine U := hU\n  have hv : IsClosed ({v} : Set U) := by\n    have hset : (Subtype.val : U → Y) ⁻¹' {y} = {v} := by\n      ext z\n      simp only [Set.mem_singleton_iff, Set.mem_preimage, Subtype.ext_iff]\n      rfl\n    rw [← hset]\n    exact hy.preimage continuous_subtype_val\n  have : Surjective (f ∣_ U) := ⟨by\n    intro z\n    obtain ⟨x, hx⟩ := f.surjective z.1\n    refine ⟨⟨x, ?_⟩, ?_⟩\n    · change f x ∈ U\n      rw [hx]\n      exact z.2\n    · apply Subtype.ext\n      simpa only [morphismRestrict_base_coe] using hx⟩\n  have hc := actual_closed_fiber_connected_of_relative_formal_functions\n    (f ∣_ U) v hv (hff V v hv)\n  exact (actual_restricted_fiber_connected_iff f U y hyU).mp hc\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_restricted_fiber_connected_iff": {
+      "path": "Negativity/AffineNeighborhoodFiber.lean",
+      "line": 45,
+      "code": "theorem actual_restricted_fiber_connected_iff {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (U : Y.Opens) (y : Y) (hy : y ∈ U) :\n    ConnectedSpace ((f ∣_ U).fiber ⟨y, hy⟩) ↔ ConnectedSpace (f.fiber y) :=\n  (actualRestrictedFiberHomeomorph f U y hy).connectedSpace_iff\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_proper_support_dichotomy_of_connected_closed_fibers": {
+      "path": "Negativity/ActualProperSupportDichotomy.lean",
+      "line": 21,
+      "code": "theorem actual_proper_support_dichotomy_of_connected_closed_fibers\n    {X Y : Scheme.{u}} [IsIntegral X] [IsNoetherian X] [IsNoetherian Y]\n    (hnX : ∀ x : X, IsIntegrallyClosed (X.presheaf.stalk x))\n    (k : Type u) [Field k] [IsAlgClosed k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f]\n    {ι τ : Type*} [Fintype τ] (A : τ → CartierAtlas X ι) (r : τ → ℝ)\n    (he : ∀ x : X, 0 ≤ ∑ t, r t * ((A t).coefficient hnX x : ℝ))\n    (hnef : ActualRelativeNef k (f ≫ b) f A (fun t => -r t))\n    (hconn : ∀ y : Y, IsClosed ({y} : Set Y) → ConnectedSpace (f.fiber y)) :\n    ∀ y : Y,\n      (∀ x : X, f x = y →\n        x ∉ closure (∑ t, (A t).weightedWeilCycle hnX (r t)).support) ∨\n      (∀ x : X, f x = y →\n        x ∈ closure (∑ t, (A t).weightedWeilCycle hnX (r t)).support) := by\n  classical\n  have : JacobsonSpace Y := LocallyOfFiniteType.jacobsonSpace b\n  apply actual_fiber_closed_subset_dichotomy_of_closed_points f _ isClosed_closure\n  intro y hy\n  have := hconn y hy\n  have := actual_closed_fiber_proper_over_ground_field k b f y hy\n  have hcontract : ∀ z w : f.fiber y, f (f.fiberι y z) = f (f.fiberι y w) := by\n    intro z w\n    have hz : f (f.fiberι y z) = y := by\n      simpa only [Set.mem_preimage, Set.mem_singleton_iff, Scheme.Hom.fiberHomeo_apply]\n        using (f.fiberHomeo y z).property\n    have hw : f (f.fiberι y w) = y := by\n      simpa only [Set.mem_preimage, Set.mem_singleton_iff, Scheme.Hom.fiberHomeo_apply]\n        using (f.fiberHomeo y w).property\n    exact hz.trans hw.symm\n  rcases actual_connected_contracted_scheme_support_dichotomy hnX k b f A r he hnef\n    (f.fiber y) (f.fiberι y) hcontract with hn | ha\n  · left\n    intro x hx\n    let z := (f.fiberHomeo y).symm ⟨x, by simpa using hx⟩\n    have hz := hn z\n    simpa only [z, Scheme.Hom.fiberι_fiberHomeo_symm] using hz\n  · right\n    intro x hx\n    let z := (f.fiberHomeo y).symm ⟨x, by simpa using hx⟩\n    have hz := ha z\n    simpa only [z, Scheme.Hom.fiberι_fiberHomeo_symm] using hz\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_fiber_proper_over_ground_field": {
+      "path": "Negativity/ClosedFiberCompleteness.lean",
+      "line": 20,
+      "code": "theorem actual_closed_fiber_proper_over_ground_field\n    {X Y : Scheme.{u}} (k : Type u) [Field k]\n    (b : Y ⟶ Spec (.of k)) [LocallyOfFiniteType b]\n    (f : X ⟶ Y) [IsProper f] (y : Y) (hy : IsClosed ({y} : Set Y)) :\n    IsProper (f.fiberι y ≫ f ≫ b) := by\n  have : IsClosedImmersion (Y.fromSpecResidueField y) :=\n    isClosed_singleton_iff_isClosedImmersion.mp hy\n  have : IsFinite (Y.fromSpecResidueField y ≫ b) :=\n    isFinite_iff_locallyOfFiniteType_of_jacobsonSpace.mpr inferInstance\n  have : IsProper (f.fiberToSpecResidueField y) :=\n    MorphismProperty.pullback_snd _ _ (inferInstance : IsProper f)\n  have h : IsProper (f.fiberToSpecResidueField y ≫ (Y.fromSpecResidueField y ≫ b)) :=\n    inferInstance\n  simpa only [← Category.assoc, Scheme.Hom.fiber_fac] using h\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_fiber_closed_subset_dichotomy_of_closed_points": {
+      "path": "Negativity/ClosedFiberSupportDetection.lean",
+      "line": 20,
+      "code": "theorem actual_fiber_closed_subset_dichotomy_of_closed_points\n    {X Y : Scheme.{u}} [IsNoetherian X] [IsNoetherian Y] [JacobsonSpace Y]\n    (f : X ⟶ Y) [LocallyOfFiniteType f] [QuasiCompact f]\n    (S : Set X) (hS : IsClosed S)\n    (hc : ∀ y : Y, IsClosed ({y} : Set Y) →\n      (∀ x : X, f x = y → x ∉ S) ∨ (∀ x : X, f x = y → x ∈ S)) :\n    ∀ y : Y, (∀ x : X, f x = y → x ∉ S) ∨\n      (∀ x : X, f x = y → x ∈ S) := by\n  classical\n  have hco : IsConstructible Sᶜ :=\n    (NoetherianSpace.isCompact Sᶜ).isConstructible hS.isOpen_compl\n  have hcs : IsConstructible S := by simpa using hco.compl\n  have hbad : IsConstructible (f '' S ∩ f '' Sᶜ) :=\n    (f.isConstructible_image hcs).inter (f.isConstructible_image hco)\n  intro y\n  by_contra hn\n  have hnone := (not_or.mp hn).1\n  have hnall := (not_or.mp hn).2\n  obtain ⟨x, hx, hxS⟩ : ∃ x : X, f x = y ∧ x ∈ S := by\n    simpa only [not_forall, not_imp, not_not, exists_prop] using hnone\n  obtain ⟨w, hw, hwS⟩ : ∃ w : X, f w = y ∧ w ∉ S := by\n    simpa only [not_forall, not_imp, exists_prop] using hnall\n  have hne : (f '' S ∩ f '' Sᶜ).Nonempty :=\n    ⟨y, ⟨x, hxS, hx⟩, ⟨w, hwS, hw⟩⟩\n  obtain ⟨z, hz, hzc⟩ := noetherian_constructible_contains_closed_point _ hbad hne\n  obtain ⟨a, haS, haz⟩ := hz.1\n  obtain ⟨b, hbS, hbz⟩ := hz.2\n  rcases hc z hzc with h | h\n  · exact h a haz haS\n  · exact hbS (h b hbz)\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "noetherian_constructible_contains_closed_point": {
+      "path": "Negativity/ConstructibleClosedPoint.lean",
+      "line": 17,
+      "code": "theorem noetherian_constructible_contains_closed_point\n    {T : Type*} [TopologicalSpace T] [NoetherianSpace T] [JacobsonSpace T]\n    (S : Set T) (hS : IsConstructible S) (hne : S.Nonempty) :\n    ∃ y ∈ S, IsClosed ({y} : Set T) := by\n  classical\n  have hb : IsTopologicalBasis (Set.range (fun U : Opens T => (U : Set T))) := by\n    have he : Set.range (fun U : Opens T => (U : Set T)) = {U | IsOpen U} := by\n      ext U\n      constructor\n      · rintro ⟨V, rfl⟩; exact V.isOpen\n      · intro hU; exact ⟨⟨U, hU⟩, rfl⟩\n    rw [he]\n    exact isTopologicalBasis_opens\n  have h : ∀ (S : Set T) (hS : IsConstructible S),\n      S.Nonempty → (S ∩ closedPoints T).Nonempty := by\n    intro S hS\n    induction S, hS using IsConstructible.induction_of_isTopologicalBasis\n        (fun U : Opens T => (U : Set T)) hb (fun _ => NoetherianSpace.isCompact _) with\n    | sdiff U A hA =>\n      intro hn\n      exact nonempty_inter_closedPoints hn\n        (U.isOpen.isLocallyClosed.inter\n          (isOpen_biUnion (fun V _ => V.isOpen)).isClosed_compl.isLocallyClosed)\n    | union S hs T ht ihS ihT =>\n      intro hn\n      obtain ⟨x, hx⟩ := hn\n      rcases hx with hxS | hxT\n      · obtain ⟨y, hyS, hyC⟩ := ihS ⟨x, hxS⟩\n        exact ⟨y, Or.inl hyS, hyC⟩\n      · obtain ⟨y, hyT, hyC⟩ := ihT ⟨x, hxT⟩\n        exact ⟨y, Or.inr hyT, hyC⟩\n  obtain ⟨y, hyS, hyC⟩ := h S hS hne\n  exact ⟨y, hyS, hyC⟩\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_fiber_connected_of_relative_formal_functions": {
+      "path": "Negativity/RelativeFormalConnectedness.lean",
+      "line": 20,
+      "code": "theorem actual_closed_fiber_connected_of_relative_formal_functions\n    {X Y : Scheme.{u}} [IsAffine Y] [IsLocallyNoetherian Y]\n    (f : X ⟶ Y) [Surjective f] (y : Y) (hy : IsClosed ({y} : Set Y))\n    (hff : Function.Bijective\n      (actualRelativeFormalFunctionsMap f (actualClosedPointIdeal Y y))) :\n    ConnectedSpace (f.fiber y) := by\n  classical\n  let I := actualClosedPointIdeal Y y\n  let R := AdicCompletion (I.ideal ⟨⊤, isAffineOpen_top Y⟩) Γ(Y, ⊤)\n  let p : R →+* actualRelativeInfinitesimalSections f I :=\n    actualRelativeFormalFunctionsMap f I\n  have : IsLocalRing R := actual_closed_point_completion_local Y y hy\n  have : Nonempty (f.fiber y) := by\n    obtain ⟨x, hx⟩ := f.surjective y\n    exact ⟨(f.fiberHomeo y).symm ⟨x, by simpa using hx⟩⟩\n  apply connectedSpace_iff_clopen.mpr\n  refine ⟨inferInstance, ?_⟩\n  intro S hS\n  by_contra hn\n  have hn := not_or.mp hn\n  obtain ⟨a, ha, h0, h1⟩ :=\n    actual_closed_fiber_infinitesimal_nontrivial_idempotent f y hy S hS hn.1 hn.2\n  obtain ⟨r, hr⟩ := hff.2 a\n  have hid : r * r = r := by\n    apply hff.1\n    change p (r * r) = p r\n    rw [map_mul, hr, ha]\n  rcases localRing_idempotent_trivial R r hid with hzero | hone\n  · apply h0\n    rw [← hr, hzero]\n    exact map_zero p\n  · apply h1\n    rw [← hr, hone]\n    exact map_one p\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_fiber_infinitesimal_nontrivial_idempotent": {
+      "path": "Negativity/ClosedFiberInfinitesimalIdempotent.lean",
+      "line": 20,
+      "code": "theorem actual_closed_fiber_infinitesimal_nontrivial_idempotent\n    {X Y : Scheme.{u}} (f : X ⟶ Y) (y : Y) (hy : IsClosed ({y} : Set Y))\n    (S : Set (f.fiber y)) (hS : IsClopen S) (h0 : S ≠ ∅) (h1 : S ≠ Set.univ) :\n    ∃ a : actualRelativeInfinitesimalSections f (actualClosedPointIdeal Y y),\n      a * a = a ∧ a ≠ 0 ∧ a ≠ 1 := by\n  classical\n  let e := actualClosedPointFiberHomeomorph f y hy\n  let T := e ⁻¹' S\n  have hT : IsClopen T := hS.preimage e.continuous\n  have hT0 : T ≠ ∅ := by\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr h0\n    apply Set.nonempty_iff_ne_empty.mp\n    exact ⟨e.symm x, by simpa [T] using hx⟩\n  have hT1 : T ≠ Set.univ := by\n    intro ht\n    apply h1\n    apply Set.eq_univ_of_forall\n    intro x\n    have hx : e.symm x ∈ T := ht ▸ Set.mem_univ _\n    simpa [T] using hx\n  exact actual_relative_infinitesimal_nontrivial_idempotent f\n    (actualClosedPointIdeal Y y) T hT hT0 hT1\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_point_ideal_support": {
+      "path": "Negativity/ClosedPointFiberThickenings.lean",
+      "line": 23,
+      "code": "theorem actual_closed_point_ideal_support (Y : Scheme.{u}) (y : Y)\n    (hy : IsClosed ({y} : Set Y)) :\n    (actualClosedPointIdeal Y y).support = TopologicalSpace.Closeds.mk {y} hy := by\n  have : IsClosedImmersion (Y.fromSpecResidueField y) :=\n    isClosed_singleton_iff_isClosedImmersion.mp hy\n  ext1\n  simp only [actualClosedPointIdeal, Scheme.Hom.support_ker,\n    Scheme.range_fromSpecResidueField, hy.closure_eq, TopologicalSpace.Closeds.coe_mk]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_point_ideal_top": {
+      "path": "Negativity/ClosedPointFiberThickenings.lean",
+      "line": 41,
+      "code": "theorem actual_closed_point_ideal_top (Y : Scheme.{u}) [IsAffine Y] (y : Y) :\n    (actualClosedPointIdeal Y y).ideal ⟨⊤, isAffineOpen_top Y⟩ =\n      RingHom.ker (Y.fromSpecResidueField y).appTop.hom := by\n  rw [actualClosedPointIdeal, Scheme.ker_of_isAffine]\n  simp",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_point_ideal_top_maximal": {
+      "path": "Negativity/ClosedPointFiberThickenings.lean",
+      "line": 47,
+      "code": "theorem actual_closed_point_ideal_top_maximal (Y : Scheme.{u}) [IsAffine Y]\n    (y : Y) (hy : IsClosed ({y} : Set Y)) :\n    ((actualClosedPointIdeal Y y).ideal ⟨⊤, isAffineOpen_top Y⟩).IsMaximal := by\n  have : IsClosedImmersion (Y.fromSpecResidueField y) :=\n    isClosed_singleton_iff_isClosedImmersion.mp hy\n  let e := Scheme.ΓSpecIso (Y.residueField y)\n  have he : Function.Bijective e.hom := ConcreteCategory.bijective_of_isIso e.hom\n  have hf : Function.Surjective (Y.fromSpecResidueField y).appTop := by\n    exact (IsClosedImmersion.isAffine_surjective_of_isAffine\n      (Y.fromSpecResidueField y)).2\n  have hm := RingHom.ker_isMaximal_of_surjective\n    (e.hom.hom.comp (Y.fromSpecResidueField y).appTop.hom)\n    (he.2.comp hf : Function.Surjective (e.hom.hom.comp\n      (Y.fromSpecResidueField y).appTop.hom))\n  rw [actual_closed_point_ideal_top]\n  simpa only [RingHom.ker_comp_of_injective _ he.1] using hm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_closed_point_completion_local": {
+      "path": "Negativity/ClosedPointFiberThickenings.lean",
+      "line": 69,
+      "code": "theorem actual_closed_point_completion_local (Y : Scheme.{u}) [IsAffine Y]\n    [IsLocallyNoetherian Y] (y : Y) (hy : IsClosed ({y} : Set Y)) :\n    IsLocalRing (AdicCompletion\n      ((actualClosedPointIdeal Y y).ideal ⟨⊤, isAffineOpen_top Y⟩) Γ(Y, ⊤)) := by\n  let K := (actualClosedPointIdeal Y y).ideal ⟨⊤, isAffineOpen_top Y⟩\n  have : IsNoetherianRing Γ(Y, ⊤) :=\n    IsLocallyNoetherian.component_noetherian ⟨⊤, isAffineOpen_top Y⟩\n  have : K.IsMaximal := actual_closed_point_ideal_top_maximal Y y hy\n  have hfg : K.FG := Ideal.fg_of_isNoetherianRing K\n  have hm := AdicCompletion.isMaximal_map_of_le K K (le_refl K) hfg\n  have hc := AdicCompletion.isAdicComplete_self K hfg\n  exact isLocalRing_of_isAdicComplete_maximal\n    (K.map (algebraMap Γ(Y, ⊤) (AdicCompletion K Γ(Y, ⊤))))\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_power_inclusion_point": {
+      "path": "Negativity/RelativeInfinitesimalIdempotents.lean",
+      "line": 24,
+      "code": "theorem actual_relative_power_inclusion_point {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (I : Y.IdealSheafData) {m n : ℕ} (h : m ≤ n)\n    (x : actualRelativePowerThickening f I m) :\n    actualRelativePowerHomeomorph f I n (actualRelativePowerInclusion f I h x) =\n      actualRelativePowerHomeomorph f I m x := by\n  apply Subtype.ext\n  exact congrArg (fun g => g x) (IdealSheafData.inclusion_subschemeι\n    (IdealSheafData.comap_mono f (show I ^ (n + 1) ≤ I ^ (m + 1) from by\n      intro U\n      simpa only [IdealSheafData.ideal_pow, Pi.pow_apply] using\n        (Ideal.pow_le_pow_right (I := I.ideal U) (Nat.add_le_add_right h 1)))))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_compatible_clopen_nontrivial_idempotent": {
+      "path": "Negativity/RelativeInfinitesimalIdempotents.lean",
+      "line": 36,
+      "code": "theorem actual_compatible_clopen_nontrivial_idempotent\n    (Z : ℕ → Scheme.{u}) (F : Scheme.{u})\n    (inc : ∀ {m n : ℕ}, m ≤ n → (Z m ⟶ Z n))\n    (e : ∀ n, Z n ≃ₜ F)\n    (he : ∀ m n (h : m ≤ n) (x : Z m), e n (inc h x) = e m x)\n    (S : Set F)\n    (hS : IsClopen S) (h0 : S ≠ ∅) (h1 : S ≠ Set.univ) :\n    ∃ a : actualCompatibleSchemeSections Z inc, a * a = a ∧ a ≠ 0 ∧ a ≠ 1 := by\n  classical\n  let SS (n : ℕ) : Set (Z n) := (e n) ⁻¹' S\n  have hc (n : ℕ) : IsClopen (SS n) := hS.preimage (e n).continuous\n  have hcompat (m n : ℕ) (h : m ≤ n) :\n      (inc h).appTop\n        (actualClopenCharacteristic _ (SS n) (hc n)) =\n          actualClopenCharacteristic _ (SS m) (hc m) := by\n    have hs : (inc h) ⁻¹' SS n = SS m := by\n      ext x\n      change e n (inc h x) ∈ S ↔ e m x ∈ S\n      rw [he]\n    rw [actual_clopen_characteristic_pullback]\n    simp only [hs]\n  let a : actualCompatibleSchemeSections Z inc :=\n    ⟨fun n => actualClopenCharacteristic _ (SS n) (hc n), hcompat⟩\n  refine ⟨a, ?_, ?_, ?_⟩\n  · apply Subtype.ext\n    funext n\n    exact actual_clopen_characteristic_idempotent _ (SS n) (hc n)\n  · intro ha\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr h0\n    let z := (e 0).symm x\n    have hz : z ∈ SS 0 := by simpa [SS, z] using hx\n    have hh := congrArg (fun b : actualCompatibleSchemeSections Z inc =>\n      (Z 0).presheaf.Γgerm z (b.1 0)) ha\n    simp [a, actual_clopen_characteristic_germ, hz] at hh\n  · intro ha\n    obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr\n      (show Sᶜ ≠ ∅ from fun h => h1 (Set.compl_empty_iff.mp h))\n    let z := (e 0).symm x\n    have hz : z ∉ SS 0 := by simpa [SS, z] using hx\n    have hh := congrArg (fun b : actualCompatibleSchemeSections Z inc =>\n      (Z 0).presheaf.Γgerm z (b.1 0)) ha\n    simp [a, actual_clopen_characteristic_germ, hz] at hh",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_infinitesimal_nontrivial_idempotent": {
+      "path": "Negativity/RelativeInfinitesimalIdempotents.lean",
+      "line": 84,
+      "code": "theorem actual_relative_infinitesimal_nontrivial_idempotent {X Y : Scheme.{u}}\n    (f : X ⟶ Y) (I : Y.IdealSheafData) (S : Set (I.comap f).subscheme)\n    (hS : IsClopen S) (h0 : S ≠ ∅) (h1 : S ≠ Set.univ) :\n    ∃ a : actualRelativeInfinitesimalSections f I, a * a = a ∧ a ≠ 0 ∧ a ≠ 1 :=\n  actual_compatible_clopen_nontrivial_idempotent\n    (actualRelativePowerThickening f I) (I.comap f).subscheme\n    (fun h => actualRelativePowerInclusion f I h) (actualRelativePowerHomeomorph f I)\n    (fun _ _ h x => actual_relative_power_inclusion_point f I h x) S hS h0 h1\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_power_projection_square": {
+      "path": "Negativity/RelativeFormalFunctionsMap.lean",
+      "line": 35,
+      "code": "theorem actual_relative_power_projection_square {X Y : Scheme.{u}} (f : X ⟶ Y)\n    (I : Y.IdealSheafData) {m n : ℕ} (h : m ≤ n) :\n    actualRelativePowerInclusion f I h ≫ actualRelativePowerProjection f I n =\n      actualRelativePowerProjection f I m ≫ actualPowerThickeningInclusion I h := by\n  apply (cancel_mono (I ^ (n + 1)).subschemeι).mp\n  simp [actualRelativePowerInclusion, actualRelativePowerProjection,\n    actualPowerThickeningInclusion, Category.assoc]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    "actual_relative_formal_functions_evaluation": {
+      "path": "Negativity/RelativeFormalFunctionsMap.lean",
+      "line": 102,
+      "code": "theorem actual_relative_formal_functions_evaluation {X Y : Scheme.{u}}\n    (f : X ⟶ Y) [IsAffine Y] (I : Y.IdealSheafData) :\n    (∀ (a : AdicCompletion (I.ideal ⟨⊤, isAffineOpen_top Y⟩) Γ(Y, ⊤)) (n : ℕ),\n      (actualRelativeFormalFunctionsMap f I a).1 n =\n        (actualRelativePowerProjection f I n).appTop\n          ((actualAffineThickeningSectionsEquiv Y I n).symm\n            (AdicCompletion.evalₐ _ (n + 1) a))) ∧\n    (∀ (r : Γ(Y, ⊤)) (n : ℕ),\n      (actualRelativeFormalFunctionsMap f I (AdicCompletion.of _ Γ(Y, ⊤) r)).1 n =\n        ((I ^ (n + 1)).comap f).subschemeι.appTop (f.appTop r)) := by\n  constructor\n  · intro a n; rfl\n  · intro r n\n    change (actualRelativePowerProjection f I n).appTop\n      ((actualAffineThickeningSectionsEquiv Y I n).symm\n        (AdicCompletion.evalₐ _ (n + 1) (AdicCompletion.of _ Γ(Y, ⊤) r))) = _\n    rw [AdicCompletion.evalₐ_of]\n    have he : (actualAffineThickeningSectionsEquiv Y I n).symm\n        (Ideal.Quotient.mk _ r) = (I ^ (n + 1)).subschemeι.appTop r := by\n      apply (actualAffineThickeningSectionsEquiv Y I n).injective\n      rw [RingEquiv.apply_symm_apply, actual_affine_thickening_sections_pullback]\n    rw [he]\n    have hs : actualRelativePowerProjection f I n ≫ (I ^ (n + 1)).subschemeι =\n        ((I ^ (n + 1)).comap f).subschemeι ≫ f :=\n      IdealSheafData.subschemeMap_subschemeι ((I ^ (n + 1)).comap f)\n        (I ^ (n + 1)) f ((I ^ (n + 1)).le_map_comap f)\n    exact congrArg (fun g : actualRelativePowerThickening f I n ⟶ Y => g.appTop r) hs\n\nend",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
     "actual_proper_negativity_effectivity_iff": {
       "path": "Negativity/ActualProperNegativityIff.lean",
       "line": 20,

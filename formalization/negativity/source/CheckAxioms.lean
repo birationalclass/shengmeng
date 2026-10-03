@@ -999,3 +999,39 @@ import Negativity
 #print axioms Negativity.actual_proper_negativity_part_one
 
 #print axioms Negativity.actual_proper_negativity_effectivity_iff
+
+#print axioms Negativity.actual_relative_power_projection_square
+
+#print axioms Negativity.actual_relative_formal_functions_evaluation
+
+#print axioms Negativity.actual_relative_power_inclusion_point
+
+#print axioms Negativity.actual_compatible_clopen_nontrivial_idempotent
+
+#print axioms Negativity.actual_relative_infinitesimal_nontrivial_idempotent
+
+#print axioms Negativity.actual_closed_point_ideal_support
+
+#print axioms Negativity.actual_closed_point_ideal_top
+
+#print axioms Negativity.actual_closed_point_ideal_top_maximal
+
+#print axioms Negativity.actual_closed_point_completion_local
+
+#print axioms Negativity.actual_closed_fiber_infinitesimal_nontrivial_idempotent
+
+#print axioms Negativity.actual_closed_fiber_connected_of_relative_formal_functions
+
+#print axioms Negativity.noetherian_constructible_contains_closed_point
+
+#print axioms Negativity.actual_fiber_closed_subset_dichotomy_of_closed_points
+
+#print axioms Negativity.actual_closed_fiber_proper_over_ground_field
+
+#print axioms Negativity.actual_proper_support_dichotomy_of_connected_closed_fibers
+
+#print axioms Negativity.actual_restricted_fiber_connected_iff
+
+#print axioms Negativity.actual_closed_fibers_connected_of_affine_formal_functions
+
+#print axioms Negativity.actual_proper_negativity_of_actual_formal_functions

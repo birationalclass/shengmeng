@@ -4,6 +4,18 @@ import datetime, hashlib, json, os, re, shutil, subprocess, sys, zipfile
 
 project, destination = map(Path, sys.argv[1:3])
 names = {
+    'ActualProperNegativityFull.lean': ['actual_proper_negativity_of_actual_formal_functions'],
+    'GlobalClosedFiberConnectedness.lean': ['actual_closed_fibers_connected_of_affine_formal_functions'],
+    'AffineNeighborhoodFiber.lean': ['actual_restricted_fiber_connected_iff'],
+    'ActualProperSupportDichotomy.lean': ['actual_proper_support_dichotomy_of_connected_closed_fibers'],
+    'ClosedFiberCompleteness.lean': ['actual_closed_fiber_proper_over_ground_field'],
+    'ClosedFiberSupportDetection.lean': ['actual_fiber_closed_subset_dichotomy_of_closed_points'],
+    'ConstructibleClosedPoint.lean': ['noetherian_constructible_contains_closed_point'],
+    'RelativeFormalConnectedness.lean': ['actual_closed_fiber_connected_of_relative_formal_functions'],
+    'ClosedFiberInfinitesimalIdempotent.lean': ['actual_closed_fiber_infinitesimal_nontrivial_idempotent'],
+    'ClosedPointFiberThickenings.lean': ['actual_closed_point_ideal_support', 'actual_closed_point_ideal_top', 'actual_closed_point_ideal_top_maximal', 'actual_closed_point_completion_local'],
+    'RelativeInfinitesimalIdempotents.lean': ['actual_relative_power_inclusion_point', 'actual_compatible_clopen_nontrivial_idempotent', 'actual_relative_infinitesimal_nontrivial_idempotent'],
+    'RelativeFormalFunctionsMap.lean': ['actual_relative_power_projection_square', 'actual_relative_formal_functions_evaluation'],
     'ActualProperNegativityIff.lean': ['actual_proper_negativity_effectivity_iff'],
     'ActualProperNegativity.lean': ['actual_proper_negativity_part_one'],
     'ActualProperAffineNegativity.lean': ['actual_proper_affine_negativity_part_one'],
@@ -372,6 +384,23 @@ The remaining main-target gap is actual proper birational fiber
 connectedness via the proper nonaffine global formal-functions comparison.
 The independent fiber-support conclusion (2) and full two-part theorem
 remain open.
+The canonical relative formal-functions map is now constructed with an
+affine base and an arbitrary nonaffine source, using actual comapped ideal
+powers and actual scheme pullbacks. A disconnected actual closed-point
+fiber constructs a compatible nontrivial idempotent in its actual section
+limit. The base completion is local without requiring the original affine
+base ring to be local. Bijectivity of this precise constructed comparison
+would therefore give actual closed-fiber connectedness. This bijectivity
+is NOT proved and remains an explicit hypothesis.
+Actual closed fibers are proved proper over the ground field. A genuine
+Chevalley/Jacobson constructible-locus argument proves that closed-fiber
+support dichotomy implies the dichotomy on every fiber. Actual affine
+neighborhood fiber homeomorphisms connect the local comparison to the
+global closed-fiber statement. Both actual proper negativity conclusions
+are now composed in a theorem with the single explicit remaining
+ActualClosedFiberFormalFunctions hypothesis. This is a CONDITIONAL
+two-part result, NOT completion of the actual full theorem. Conclusion
+(1) remains independently fully proved without that hypothesis.
 Amber nodes on the website are explicit mathematical hypotheses or missing
 geometric bridges, NOT new Lean axioms. Read the full theorem parameters.
 

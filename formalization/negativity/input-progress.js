@@ -1,5 +1,5 @@
 // Present open geometry separately from verified deductions and theorem conditions.
-const release = '20261003-input-panel-2';
+const release = '20261003-formal-38';
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, ch =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -14,15 +14,17 @@ const gaps = {
       ['Prove that equations on coordinate charts differ by actual local-ring units.',
        'Prove that coordinate sections are effective and their affine nonvanishing loci cover X.']]
   },
-  connected: {
-    zh: ['证明实际纤维连通',
-      '正规底上的 proper 双有理态射 f，其实际纤维 f⁻¹(y) 连通。',
-      ['已完成实际 f_*𝒪_X=𝒪_Y、相容加厚幂等元及仿射源完备化比较。',
-       '待完成 proper 非仿射源的全局比较：R̂≅limₙ Γ(X×Spec(R/mⁿ⁺¹),𝒪)。']],
-    en: ['Prove connectedness of actual fibers',
-      'For proper birational f over a normal base, prove that actual fibers f⁻¹(y) are connected.',
-      ['Actual f_*O_X=O_Y, compatible thickening idempotents and the affine-source completion comparison are proved.',
-       'Prove the proper nonaffine global comparison: R̂≅limₙ Γ(X×Spec(R/mⁿ⁺¹),O).']]
+  properformalfunctions: {
+    zh: ['证明实际 proper 形式函数比较双射',
+      'Γ(U)̂_m → limₙ Γ(X_U×_U Uₙ,𝒪) 是双射；X_U 不要求仿射。',
+      ['实际比较映射、每阶取值、相容非平凡幂等元和局部完备环均已构造。',
+       '闭纤维连通到全部纤维支撑二择一及完整双结论的条件式衔接均已证明。',
+       '待证明这个真正非仿射的比较双射性，去掉显式 hff；完整定理仍未完成。']],
+    en: ['Prove actual proper formal-functions bijectivity',
+      'Γ(U)̂_m → limₙ Γ(X_U×_U Uₙ,O) must be bijective; X_U need not be affine.',
+      ['The actual comparison, evaluations, compatible nontrivial idempotents and local completion are constructed.',
+       'Closed-fiber connectedness to all-fiber support and the conditional two-part deduction are proved.',
+       'Prove this genuinely nonaffine bijectivity to remove explicit hff. The complete theorem remains open.']]
   },
   chow: {
     zh: ['完成 Chow 构造的射影性',
@@ -37,6 +39,10 @@ const gaps = {
 };
 
 const verifiedSteps = [
+  ['actual_relative_formal_functions_evaluation', ['真实非仿射相对比较映射及取值公式已构造。', 'The actual nonaffine relative comparison and evaluations are constructed.']],
+  ['actual_closed_fiber_infinitesimal_nontrivial_idempotent', ['真实闭点纤维的相容非平凡幂等元已构造。', 'Compatible nontrivial idempotents from actual closed-point fibers are constructed.']],
+  ['actual_closed_point_completion_local', ['真实闭点最大理想的完备环为局部环已证明。', 'The actual closed-point maximal-ideal completion is proved local.']],
+  ['actual_fiber_closed_subset_dichotomy_of_closed_points', ['从闭点纤维推广到所有纤维的实际支撑二择一已证明。', 'Actual support dichotomy is proved to pass from closed-point fibers to all fibers.']],
   ['exists_effective_cartier_rational_twist', ['仿射底清分母：从给定 Cartier 数据构造有效 E。', 'Clear denominators over the affine base to construct effective E from supplied Cartier data.']],
   ['complete_integral_curve_ambient_cartier_principal_invariance', ['主除子移动保持实际完整曲线的交数。', 'Principal changes preserve actual complete-curve intersection.']],
   ['exists_effective_exceptional_covering_cartier_twist', ['给定严格负交数的 Cartier 除子时，构造 E 并证明 exceptional 素系数为正。', 'Given a strictly anti-positive Cartier divisor, construct E with positive exceptional-prime coefficients.']],
@@ -56,7 +62,7 @@ export function buildInputProgress({node, openNodes, inputs, declarations = {}, 
   const hasCoordinateGap = openNodes.some(n => n.id === 'projectivesections');
   const relevant = new Set();
   if (hasCoordinateGap) for (const name of verifiedSteps.slice(0,4).map(s => s[0])) relevant.add(name);
-  if (openNodes.some(n => n.id === 'connected')) for (const name of ['connected_complete_scheme_actual_crossing_curve','proper_normal_birational_structure_sheaf_isIso','actual_infinitesimal_nontrivial_idempotent','actual_affine_formal_functions_bijective']) relevant.add(name);
+  if (openNodes.some(n => n.id === 'properformalfunctions')) for (const name of ['actual_relative_formal_functions_evaluation','actual_closed_fiber_infinitesimal_nontrivial_idempotent','actual_closed_point_completion_local','actual_fiber_closed_subset_dichotomy_of_closed_points']) relevant.add(name);
   if (openNodes.some(n => n.id === 'chow')) for (const name of ['finiteType_perfectField_normalization_isFinite','exists_embedded_complete_curve_real_projection_formula','actual_relative_nef_canonical_pullback']) relevant.add(name);
   const proved = verifiedSteps.filter(([name]) => relevant.has(name) && declarations[name]);
   const explicitDone = inputs.filter(s => /^(已完成|已证明|Proved|Verified|Completed)\s*[:：]/i.test(s));
