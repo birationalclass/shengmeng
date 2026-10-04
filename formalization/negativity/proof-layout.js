@@ -11,21 +11,9 @@ export function compactProofLayout(nodes,ids,factor=1,maxRows=4,options={}){
   const byId=new Map(nodes.map(n=>[n.id,n])),ranks=new Map(),layout=new Map();
   function rank(id){if(!ranks.has(id)){const n=byId.get(id);ranks.set(id,n.deps.length?Math.max(0,...n.deps.filter(d=>ids.has(d)).map(rank))+1:0);}return ranks.get(id);}
   [...ids].forEach(rank);
-  const roots=nodes.filter(n=>ids.has(n.id)&&!n.deps.length);
-  const stacked=roots.length>1&&!options.expandedInputs;
-  const active=roots.some(n=>n.id===options.selected)?options.selected:roots.at(-1)?.id;
-  let y=85;
-  roots.forEach((n,i)=>{
-    const compact=stacked&&n.id!==active;
-    const visibleH=(compact?48:150)*factor;
-    layout.set(n.id,{x:65,y,h:150*factor,visibleH,rank:0,column:0,base:true,compact,stackIndex:i});
-    y+=visibleH+(compact?0:18)*factor;
-  });
-  const bottom=roots.length?layout.get(roots.at(-1).id).y+layout.get(roots.at(-1).id).visibleH:85;
-  roots.forEach(n=>{const p=layout.get(n.id);p.h=Math.min(p.h,bottom-p.y);});
-  const inputHeight=bottom-85;
-  let left=roots.length?465*factor:65;
-  const levels=[...new Set([...ranks.values()].filter(r=>r>0))].sort((a,b)=>a-b);
+  // Root status is a graph property; it does not define a reference pack.
+  const inputHeight=0;let left=65;
+  const levels=[...new Set([...ranks.values()])].sort((a,b)=>a-b);
   for(const r of levels){
     const layer=nodes.filter(n=>ids.has(n.id)&&rank(n.id)===r);
     const anchor=n=>{const deps=n.deps.map(id=>layout.get(id)).filter(Boolean);return deps.length?deps.reduce((s,p)=>s+p.y+(p.visibleH||p.h)/2,0)/deps.length:0;};
