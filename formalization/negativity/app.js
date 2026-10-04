@@ -1,4 +1,4 @@
-import {theoremIdentity,statementPanel,packLabel,isReferenceCard} from './theorem-statements.js?v=20261004-statements-45';
+import {theoremIdentity,statementPanel,packLabel,isReferenceCard} from './theorem-statements.js?v=20261004-packs-46';
 import {installLeanLineCounts} from './line-counts.js?v=20261003-lines-1';
 import {installPerformanceHUD} from './performance.js?v=20261003-perf-1';
 import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
@@ -6,7 +6,7 @@ import {installTheoremTarget} from './theorem-target.js?v=20261004-formal-42';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261004-formal-42';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261004-formal-42';
 import {installSettings} from './settings.js?v=20261004-formal-42';
-import {createNodeEditor} from './node-editor.js?v=20261004-statements-45';
+import {createNodeEditor} from './node-editor.js?v=20261004-packs-46';
 import {installWorkspace} from './workspace.js?v=20261004-formal-42';
 import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261004-formal-42';
 import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261004-formal-42';

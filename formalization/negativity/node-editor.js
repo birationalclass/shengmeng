@@ -1,7 +1,7 @@
-import {isReferenceCard,packLabel,escapeHTML} from './theorem-statements.js?v=20261004-statements-45';
+import {isReferenceCard,packLabel,escapeHTML} from './theorem-statements.js?v=20261004-packs-46';
 import {recordAtlasRender,recordAtlasLayout} from './performance.js?v=20261003-perf-1';
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261004-statements-45';
-import {installSourcePacks} from './source-packs.js?v=20261004-statements-45';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261004-packs-46';
+import {installSourcePacks} from './source-packs.js?v=20261004-packs-46';
 import {t,english} from './i18n.js?v=20261004-formal-42';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theoremTarget}) {

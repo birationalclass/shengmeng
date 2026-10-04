@@ -1,5 +1,5 @@
-import {declarationKind,handStatement,isReferenceCard,escapeHTML} from './theorem-statements.js?v=20261004-statements-45';
-import {buildSourcePacks,sourcePackFor} from './source-pack-catalog.js?v=20261004-packs-43';
+import {declarationKind,handStatement,isReferenceCard,escapeHTML} from './theorem-statements.js?v=20261004-packs-46';
+import {buildSourcePacks,sourcePackFor} from './source-pack-catalog.js?v=20261004-packs-46';
 import {english} from './i18n.js?v=20261004-formal-42';
 
 export function installSourcePacks({viewport,nodes,select,selected}){
@@ -55,7 +55,7 @@ export function installSourcePacks({viewport,nodes,select,selected}){
     root.dataset.open=String(!!active);tray.hidden=!active;title.textContent=english?'REFERENCE PACKS':'参考卡包';
     root.setAttribute('aria-label',english?'Reference card packs':'数学参考卡包');
     const currentPack=sourcePackFor(byId.get(selected()));
-    locate.textContent=english?'Current card ↗':'当前卡片 ↗';locate.title=text(packs.find(p=>p.id===currentPack).name);
+    locate.textContent=english?'Current card ↗':'当前卡片 ↗';const selectedPack=packs.find(p=>p.id===currentPack);locate.hidden=!selectedPack;locate.title=selectedPack?text(selectedPack.name):'';
     for(const p of packs){const {b,label}=btns.get(p.id);label.textContent=text(p.name);b.dataset.current=String(p.id===currentPack);b.setAttribute('aria-expanded',String(active===p.id));b.setAttribute('aria-pressed',String(active===p.id));b.title=text(p.description);}
     if(!active)return;
     const p=packs.find(p=>p.id===active),filtered=p.cards.filter(n=>!query||[n.title,n.statement,n.file,n.decl].join(' ').toLocaleLowerCase().includes(query));
@@ -70,12 +70,12 @@ export function installSourcePacks({viewport,nodes,select,selected}){
     note.textContent=english?'Each card names its theorem and exact Lean declaration.':'每张卡片明确标注定理与对应的 Lean 声明';
   }
   close.onclick=()=>{const prior=active;active=null;render();btns.get(prior)?.b.focus();};
-  locate.onclick=()=>{active=sourcePackFor(byId.get(selected()));query='';search.value='';page=Math.floor(packs.find(p=>p.id===active).cards.findIndex(n=>n.id===selected())/pageSize);render();};
+  locate.onclick=()=>openCard(selected());
   previous.onclick=()=>{page--;render();};next.onclick=()=>{page++;render();};search.oninput=()=>{query=search.value.toLocaleLowerCase();page=0;render();};
   root.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape'){e.preventDefault();close.click();}});
   for(const event of ['pointerdown','wheel'])root.addEventListener(event,e=>e.stopPropagation());
   const resize=new ResizeObserver(()=>{const size=viewport.clientWidth<520?3:5;if(size!==pageSize){pageSize=size;page=0;render();}});resize.observe(viewport);
-  function openCard(id){const n=byId.get(id);if(!n)return;active=sourcePackFor(n);query='';search.value='';page=Math.floor(packs.find(p=>p.id===active).cards.findIndex(c=>c.id===id)/pageSize);render();}
+  function openCard(id){const n=byId.get(id);if(!n||!isReferenceCard(n))return;active=sourcePackFor(n);query='';search.value='';page=Math.floor(packs.find(p=>p.id===active).cards.findIndex(c=>c.id===id)/pageSize);render();}
   document.addEventListener('referencecardrequest',e=>openCard(e.detail));
   if(active)page=Math.floor(packs.find(p=>p.id===active).cards.findIndex(n=>n.id===selected())/pageSize);
   render();return {refreshLanguage:render,selectionChanged(){if(isReferenceCard(byId.get(selected())))openCard(selected());else render();},openCard};

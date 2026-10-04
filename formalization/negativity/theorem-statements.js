@@ -1,12 +1,12 @@
 // Human statements are checked against the corresponding audited Lean types.
 // Source attribution never changes the curated dependencies or verification status.
-import {sourcePackFor,sourcePackDefinitions} from './source-pack-catalog.js?v=20261004-packs-43';
+import {sourcePackFor,sourcePackDefinitions} from './source-pack-catalog.js?v=20261004-packs-46';
 export const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const definitions=new Set(['actualCechHOneGlobalModule','actualGradedClosedCechQuotientEquiv','actualNativeUnitCechHOneAddEquiv','actualNativeUnitCechHOneLinearEquiv','actualReesCechOneEquiv','actualReesCechCycleEquivFromNaturality','actualAffineReesPowerSectionsEquiv','actualSpecReesScalarEquiv','finitePiDirectSumLinearEquiv','actualGradedModuleOfSurjective','actualModuleCatHomologyQuotientComparison','actualReesBaseChangeLinearEquiv','actualReesDirectSumAlgEquiv','actualReesRingEquiv']);
 export const declarationKind=n=>definitions.has(n.decl)?'definition':'theorem';
 export const isReferenceCard=n=>sourcePackFor(n)!=='project';
-export function packLabel(n,en){const p=sourcePackDefinitions.find(p=>p.id===sourcePackFor(n));return p.name[en?1:0];}
-export function theoremIdentity(n,en){return `<div class="theorem-identity" data-kind="${declarationKind(n)}" data-declaration="${escapeHTML(n.decl)}"><span>${en?'Lean declaration':'Lean 声明'}</span><code>${escapeHTML(n.decl)}</code><small>${en?'Pack':'卡包'} · ${escapeHTML(packLabel(n,en))}</small></div>`;}
+export function packLabel(n,en){const p=sourcePackDefinitions.find(p=>p.id===sourcePackFor(n));return p?p.name[en?1:0]:(en?'Proof step':'证明步骤');}
+export function theoremIdentity(n,en){return `<div class="theorem-identity" data-kind="${declarationKind(n)}" data-declaration="${escapeHTML(n.decl)}"><span>${en?'Lean declaration':'Lean 声明'}</span><code>${escapeHTML(n.decl)}</code><small>${isReferenceCard(n)?`${en?'Pack':'卡包'} · ${escapeHTML(packLabel(n,en))}`:(en?'Proof step':'证明步骤')}</small></div>`;}
 const m=(s,label,block=false)=>`<math xmlns="http://www.w3.org/1998/Math/MathML" aria-label="${escapeHTML(label)}"${block?' display="block"':''}>${s}</math>`;
 const arrow=m('<mi>f</mi><mo>:</mo><mi>X</mi><mo>→</mo><mi>Y</mi>','f: X → Y');
 const codim=m('<msup><mi>Y</mi><mrow><mo>(</mo><mn>1</mn><mo>)</mo></mrow></msup><mo>⊆</mo><mi>U</mi><mo>,</mo><mspace width="0.5em"/><msup><mi>f</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>(</mo><mi>U</mi><mo>)</mo><mo>≅</mo><mi>U</mi>','Y^(1) ⊆ U, f⁻¹(U) ≅ U',true);
