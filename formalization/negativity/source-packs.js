@@ -1,6 +1,6 @@
-import {declarationKind,handStatement,isReferenceCard,escapeHTML} from './theorem-statements.js?v=20261004-packs-46';
+import {declarationKind,handStatement,isReferenceCard,escapeHTML} from './theorem-statements.js?v=20261004-explain-47';
 import {buildSourcePacks,sourcePackFor} from './source-pack-catalog.js?v=20261004-packs-46';
-import {english} from './i18n.js?v=20261004-formal-42';
+import {english} from './i18n.js?v=20261004-explain-47';
 
 export function installSourcePacks({viewport,nodes,select,selected}){
   const packs=buildSourcePacks(nodes),byId=new Map(nodes.map(n=>[n.id,n]));

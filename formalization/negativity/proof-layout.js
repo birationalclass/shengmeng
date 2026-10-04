@@ -1,4 +1,4 @@
-import {isReferenceCard} from './theorem-statements.js?v=20261004-packs-46';
+import {isReferenceCard} from './theorem-statements.js?v=20261004-explain-47';
 // Semantic roots stay in one input rail. Filtering never turns a derived result into a base input.
 export function visibleProofIds(nodes,current,scope){
   const byId=new Map(nodes.map(n=>[n.id,n])),ids=new Set([current]);
@@ -20,7 +20,7 @@ export function compactProofLayout(nodes,ids,factor=1,maxRows=4,options={}){
     const anchor=n=>{const deps=n.deps.map(id=>layout.get(id)).filter(Boolean);return deps.length?deps.reduce((s,p)=>s+p.y+(p.visibleH||p.h)/2,0)/deps.length:0;};
     layer.sort((a,b)=>anchor(a)-anchor(b));
     const cols=Math.ceil(layer.length/maxRows),groups=Array.from({length:cols},(_,c)=>layer.slice(c*maxRows,(c+1)*maxRows));
-    const height=n=>Math.max(150,104+n.deps.length*22)*factor;
+    const height=n=>Math.max(235,214+n.deps.length*22)*factor;
     const totals=groups.map(g=>g.reduce((s,n)=>s+height(n)+30*factor,0)-30*factor),full=Math.max(inputHeight,...totals);
     groups.forEach((group,c)=>{let cy=85+(full-totals[c])/2;group.forEach(n=>{const h=height(n);layout.set(n.id,{x:left+c*360*factor,y:cy,h,rank:r,column:c});cy+=h+30*factor;});});
     left+=(cols*360+40)*factor;

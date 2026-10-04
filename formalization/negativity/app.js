@@ -1,16 +1,16 @@
-import {theoremIdentity,statementPanel,packLabel,isReferenceCard} from './theorem-statements.js?v=20261004-packs-46';
+import {theoremIdentity,statementPanel,packLabel,isReferenceCard} from './theorem-statements.js?v=20261004-explain-47';
 import {installLeanLineCounts} from './line-counts.js?v=20261003-lines-1';
 import {installPerformanceHUD} from './performance.js?v=20261003-perf-1';
 import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
-import {installTheoremTarget} from './theorem-target.js?v=20261004-formal-42';
+import {installTheoremTarget} from './theorem-target.js?v=20261004-explain-47';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261004-formal-42';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261004-formal-42';
-import {installSettings} from './settings.js?v=20261004-formal-42';
-import {createNodeEditor} from './node-editor.js?v=20261004-packs-46';
-import {installWorkspace} from './workspace.js?v=20261004-formal-42';
-import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261004-formal-42';
+import {installSettings} from './settings.js?v=20261004-explain-47';
+import {createNodeEditor} from './node-editor.js?v=20261004-explain-47';
+import {installWorkspace} from './workspace.js?v=20261004-explain-47';
+import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261004-explain-47';
 import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261004-formal-42';
-const nodes=translateNodes(rawNodes),statusLabels={...(english?englishStatuses:rawLabels)};
+const nodes=translateNodes(rawNodes),statusLabels={...(english?englishStatuses:{...rawLabels,conditional:'✓ Lean 已验证 · 辅助定理'})};
 document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
 function renderHome(){
   const home=document.querySelector('.refuge-back');
@@ -25,7 +25,7 @@ function renderStatusCounts(){
  for(const status of ['done','conditional','assumption','pending']){
   let pill=legend.querySelector('.pill.'+status);if(!pill){pill=document.createElement('span');pill.className='pill '+status;legend.append(pill);}
   const count=nodes.filter(n=>n.status===status).length;
-  const label=(english?{done:'✓ Proved',conditional:'◐ Conditional',assumption:'? Inputs',pending:'○ Goals'}:{done:'✓ 已证',conditional:'◐ 条件',assumption:'? 待补',pending:'○ 目标'})[status];
+  const label=(english?{done:'✓ Proved',conditional:'✓ Auxiliary',assumption:'? Inputs',pending:'○ Goals'}:{done:'✓ 已证',conditional:'✓ 辅助',assumption:'? 待补',pending:'○ 目标'})[status];
   pill.replaceChildren(document.createTextNode(label+' '));const badge=document.createElement('b');badge.className='status-count';badge.dataset.statusCount=status;badge.textContent=count;pill.append(badge);
   pill.title=statusLabels[status];pill.setAttribute('aria-label',statusLabels[status]+' · '+count);
  }
@@ -86,7 +86,7 @@ document.querySelector('[data-view="2d"]').onclick=()=>nodeEditor.show();
 renderDetail();
 installLanguage({onChange(){
  renderHome();atlasDock.refresh(english);
- const translated=translateNodes(rawNodes);nodes.forEach((n,i)=>Object.assign(n,translated[i]));Object.assign(statusLabels,english?englishStatuses:rawLabels);
+ const translated=translateNodes(rawNodes);nodes.forEach((n,i)=>Object.assign(n,translated[i]));Object.assign(statusLabels,english?englishStatuses:{...rawLabels,conditional:'✓ Lean 已验证 · 辅助定理'});
  for(const picker of [editorPicker])for(const option of picker.options)option.textContent=byId.get(option.value).title;
  pickerLabel.firstChild.nodeValue=english?'Locate node ':'定位节点 ';atlasDock.refresh(english);
  for(const n of nodes)graph.querySelector(`[data-node="${n.id}"]`).setAttribute('aria-label',n.title+' · '+statusLabels[n.status]);

@@ -1,4 +1,5 @@
-import {english} from './i18n.js?v=20261004-formal-42';
+import {emblem} from './theorem-statements.js?v=20261004-explain-47';
+import {english} from './i18n.js?v=20261004-explain-47';
 
 // The module's final mathematical target is separate from the proof-step DAG.
 // Its status must not inherit the status of any compiled auxiliary lemma.
@@ -41,7 +42,7 @@ function createTheoremCard(view) {
     goal: 'Proof dependencies →',
     original: 'Original theorem ↗',
     collapse: 'Collapse', expand: 'Expand theorem',
-    hypotheses: `Let ${k} be an algebraically closed field of arbitrary characteristic, and let ${f} be a proper birational morphism of normal ${k}-varieties (integral, separated and of finite type). Let ${D} be an ${rCartier} divisor on ${math('<mi>X</mi>', 'X')} such that ${minusD} is ${fNef}. Then:`,
+    hypotheses: `Let ${k} be an algebraically closed field of arbitrary characteristic, and let ${f} be a proper birational morphism of normal ${k}-varieties (integral, separated and of finite type). Let ${D} be an ${rCartier} divisor on ${math('<mi>X</mi>', 'X')} such that ${minusD} is ${fNef}.`,
     first: 'Effectivity · ✓ Verified by Lean',
     second: 'Fiber support · ✓ Verified by Lean',
     condition: `If ${effective}, then for every ${y},`,
@@ -56,7 +57,7 @@ function createTheoremCard(view) {
     goal: '查看证明依赖 →',
     original: '原稿定理 ↗',
     collapse: '收起', expand: '展开定理',
-    hypotheses: `设 ${k} 为任意特征的代数闭域，${f} 为正规 ${k}-簇（整、分离、有限型）之间的 proper 双有理态射。设 ${D} 为 ${math('<mi>X</mi>', 'X')} 上的 ${rCartier} 除子，且 ${minusD} 为 ${fNef}。则：`,
+    hypotheses: `设 ${k} 为任意特征的代数闭域，${f} 为正规 ${k}-簇（整、分离、有限型）之间的 proper 双有理态射。设 ${D} 为 ${math('<mi>X</mi>', 'X')} 上的 ${rCartier} 除子，且 ${minusD} 为 ${fNef}。`,
     first: '有效性 · ✓ 已通过 Lean',
     second: '纤维与支撑 · ✓ 已通过 Lean',
     condition: `若 ${effective}，则对每个 ${y}，`,
@@ -76,8 +77,8 @@ function createTheoremCard(view) {
       </nav>
     </header>
     <div id="theoremTargetBody-${view}" class="theorem-target-body">
-      <p class="theorem-target-hypotheses">${text.hypotheses}</p>
-      <div class="theorem-target-conclusions">
+      <h3 class="statement-part-label">${emblem('let')}${english?'Let · Conditions':'设 · 条件'}</h3><p class="theorem-target-hypotheses">${text.hypotheses}</p>
+      <h3 class="statement-part-label">${emblem('then')}${english?'Then · Conclusion':'则 · 结论'}</h3><div class="theorem-target-conclusions">
         <div class="theorem-target-conclusion"><h3><span>(1)</span> ${text.first}</h3>${equivalence}</div>
         <div class="theorem-target-conclusion"><h3><span>(2)</span> ${text.second}</h3><p>${text.condition}</p><div class="theorem-target-fiber">${disjoint}<span>${text.or}</span>${contained}<span>.</span></div></div>
       </div>
