@@ -1,3 +1,4 @@
+import {isReferenceCard} from './theorem-statements.js?v=20261004-statements-45';
 // Semantic roots stay in one input rail. Filtering never turns a derived result into a base input.
 export function visibleProofIds(nodes,current,scope){
   const byId=new Map(nodes.map(n=>[n.id,n])),ids=new Set([current]);
@@ -5,7 +6,7 @@ export function visibleProofIds(nodes,current,scope){
   if(scope==='direct')byId.get(current).deps.forEach(id=>ids.add(id));
   else if(scope==='path')byId.get(current).deps.forEach(visit);
   else nodes.forEach(n=>{if(scope==='all'||['assumption','pending'].includes(n.status))ids.add(n.id);});
-  return ids;
+  return new Set([...ids].filter(id=>!isReferenceCard(byId.get(id))));
 }
 export function compactProofLayout(nodes,ids,factor=1,maxRows=4,options={}){
   const byId=new Map(nodes.map(n=>[n.id,n])),ranks=new Map(),layout=new Map();
