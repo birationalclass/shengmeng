@@ -1,5 +1,6 @@
 const translations = {
   zh: {
+    formalHomeJordanText: "引理 1.1：五项辅助结果已通过 Lean 验证，完整引理尚未完成。逐项查看精确声明、适用条件与源码。", formalHomeJordanStatus: "○ 完整引理待完成 · 5 项辅助结果已验证", formalHomeJordanOpen: "打开 Jordan 链卡片 ↗",
     navFormalization: "形式化验证", formalHomeTitle: "看见证明的每一层。", formalHomeLead: "区分已验证结论、显式假设与未完成目标。沿着依赖逐步深入，追溯原始数学论证与 Lean 源码。", formalHomeOpen: "进入形式化验证 →", formalHomeProject: "任意特征代数闭域上的负性引理，两部分均已通过 Lean 验证。可查看完整适用条件、证明与源码。", formalHomeChecked: "✓ 完整定理已验证", formalHomeAssumed: "◐ 含明确条件的辅助结果", formalHomeMap: "打开交互式证明图谱 ↗",
     preprint: "预印本", navCourses: "课程", navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
     heroKicker: "华东师范大学 · 研究员", heroLine1: "结构、动力，", heroLine2: "与智能发现。",

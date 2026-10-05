@@ -1,0 +1,160 @@
+{
+  "title": "Jordan Size",
+  "target": "Lemma 1.1",
+  "targetVerified": false,
+  "lean": "4.35.0-rc3",
+  "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "checkedAt": "2026-10-05T07:59:55.939371+00:00",
+  "allowedAxioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "verification": "All five listed declarations passed the Lean kernel with only the displayed standard axioms. The full Lemma 1.1 has not passed verification.",
+  "totalLines": 287,
+  "nodes": [
+    {
+      "id": "log",
+      "file": "LogarithmicChains.lean",
+      "declaration": "JordanSize.logarithmicChains",
+      "title": [
+        "对数的核与像",
+        "Kernels and images of the logarithm"
+      ],
+      "setup": [
+        "域 K 上的向量空间；幂零算子 D；任意截断参数 m。",
+        "A vector space over a field K; a nilpotent operator D; any truncation parameter m."
+      ],
+      "result": [
+        "D 乘一个交换的可逆因子，保持所有幂的核、像与幂零指数。",
+        "Multiplying D by a commuting unit preserves every power kernel, image and the nilpotency class."
+      ],
+      "scope": [
+        "已验证的是所定义多项式的过滤等式。解释为真正的对数还要求特征零及 D^(m+2)=0。",
+        "The checked claim concerns the defined polynomial. Its identification with the actual logarithm additionally requires characteristic zero and D^(m+2)=0."
+      ],
+      "verified": true,
+      "lines": 108,
+      "sha256": "e34848fa10a8beb7e186c7d188aebaa00aa6143521bb6f899f6a2144c3cb83ea",
+      "formalType": "variable {K V : Type*} [Field K]\n  [AddCommGroup V] [Module K V]\n\ntheorem logarithmicChains (D : Module.End K V) (hD : IsNilpotent D) (m : ℕ) :\n    IsNilpotent (logFinite D m) ∧\n    (∀ j : ℕ,\n      LinearMap.ker ((logFinite D m) ^ j) = LinearMap.ker (D ^ j) ∧\n      LinearMap.range ((logFinite D m) ^ j) = LinearMap.range (D ^ j) ∧\n      ((logFinite D m) ^ j = 0 ↔ D ^ j = 0)) ∧\n    nilpotencyClass (logFinite D m) = nilpotencyClass D"
+    },
+    {
+      "id": "product",
+      "file": "GeneralizedProducts.lean",
+      "declaration": "JordanSize.generalizedProduct",
+      "title": [
+        "广义特征分量的乘积",
+        "Products of generalized eigenvectors"
+      ],
+      "setup": [
+        "域 K 上的三个向量空间、等变双线性映射 B；两个分量分别被移位算子的 p、q 次幂消去。",
+        "Three vector spaces over a field K, an equivariant bilinear map B, and factors killed by shifted powers p and q."
+      ],
+      "result": [
+        "乘积被对应移位算子的 p+q−1 次幂消去。",
+        "The product is killed by the corresponding shifted power p+q−1."
+      ],
+      "scope": [
+        "这是对分量的结论；任意向量的谱分解与幺幂部分的乘法相容性仍待连接。",
+        "This is the componentwise result. The spectral decomposition and multiplicativity of the unipotent part still need to be connected."
+      ],
+      "verified": true,
+      "lines": 56,
+      "sha256": "f3f3b34284fd6ffa53ff9eca1d9a3205c30d02492e45d7494c015119486b1ae3",
+      "formalType": "variable {K V W Z : Type*} [Field K]\n  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]\n  [AddCommGroup Z] [Module K Z]\n\ntheorem generalizedProduct (B : V →ₗ[K] W →ₗ[K] Z)\n    (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z)\n    (h : ∀ x y, R (B x y) = B (T x) (S y)) (a b : K)\n    (p q : ℕ) (x : V) (y : W)\n    (hx : ((T-a • 1)^p) x = 0) (hy : ((S-b • 1)^q) y = 0) :\n    ((R-(a*b) • 1)^(p+q-1)) (B x y) = 0"
+    },
+    {
+      "id": "flow",
+      "file": "NilpotentFlow.lean",
+      "declaration": "JordanSize.nilpotentFlow",
+      "title": [
+        "有限指数流",
+        "Finite exponential flow"
+      ],
+      "setup": [
+        "有理向量空间；幂零算子 D；有理参数 s,t。",
+        "A rational vector space, a nilpotent operator D, and rational parameters s,t."
+      ],
+      "result": [
+        "指数流满足加法、逆元与非负整数次幂公式。",
+        "The finite exponential satisfies addition, inverse and nonnegative integer-power identities."
+      ],
+      "scope": [
+        "直接复用 mathlib 的有限指数。尚未证明这里的 D 等于 log(Tᵤ)。",
+        "Reuses mathlib’s finite exponential. This does not yet identify D with log(Tᵤ)."
+      ],
+      "verified": true,
+      "lines": 49,
+      "sha256": "7a674db389730f628a7d38aaa6b604bf62c02bfb62aa16bb9a73cbff000e4a00",
+      "formalType": "variable {V : Type*} [AddCommGroup V] [Module ℚ V]\n\ntheorem nilpotentFlow (D : Module.End ℚ V) (hD : IsNilpotent D) :\n    flow D 0 = 1 ∧\n    (∀ s t : ℚ, flow D (s+t) = flow D s * flow D t) ∧\n    (∀ t : ℚ, IsUnit (flow D t)) ∧\n    (∀ t : ℚ, flow D t * flow D (-t) = 1 ∧ flow D (-t) * flow D t = 1) ∧\n    (∀ m : ℕ, flow D (m : ℚ) = (flow D 1)^m)"
+    },
+    {
+      "id": "decomposition",
+      "file": "MultiplicativeDecomposition.lean",
+      "declaration": "JordanSize.multiplicativeDecomposition",
+      "title": [
+        "乘法 Jordan 分解",
+        "Multiplicative Jordan decomposition"
+      ],
+      "setup": [
+        "完美域 K 上的有限维向量空间；可逆算子 T。",
+        "A finite-dimensional vector space over a perfect field K and an invertible operator T."
+      ],
+      "result": [
+        "T=SU，S 半单且可逆，U 幺幂且可逆，SU=US；S 是 T 的多项式。",
+        "T=SU with commuting units S,U, S semisimple and U unipotent; S is a polynomial in T."
+      ],
+      "scope": [
+        "由 mathlib 的加法 Jordan–Chevalley 分解推出。标量扩张与多重线性映射相容性尚待接入。",
+        "Derived from mathlib’s additive Jordan–Chevalley decomposition. Scalar extensions and multilinear compatibility remain to be integrated."
+      ],
+      "verified": true,
+      "lines": 51,
+      "sha256": "401255a6b5e137d689859938d7f3470f03eb803fb8f8907cd2634533daa3e2ec",
+      "formalType": "variable {K V : Type*} [Field K] [PerfectField K]\n  [AddCommGroup V] [Module K V] [FiniteDimensional K V]\n\ntheorem multiplicativeDecomposition (T : Module.End K V) (hT : IsUnit T) :\n    ∃ S U : Module.End K V,\n      S ∈ Algebra.adjoin K {T} ∧ S.IsSemisimple ∧ IsUnit S ∧\n      IsNilpotent (U-1) ∧ IsUnit U ∧ Commute S U ∧ T = S*U"
+    },
+    {
+      "id": "series",
+      "file": "SeriesLogExp.lean",
+      "declaration": "JordanSize.seriesLogExp",
+      "title": [
+        "形式对数与指数互逆",
+        "Formal logarithm and exponential"
+      ],
+      "setup": [
+        "有理系数的一元形式幂级数。",
+        "Univariate formal power series with rational coefficients."
+      ],
+      "result": [
+        "exp(log(1+X))=1+X；log(exp(X))=X，均按形式代入理解。",
+        "exp(log(1+X))=1+X and log(exp(X))=X, interpreted by formal substitution."
+      ],
+      "scope": [
+        "复用 mathlib 已证明的互逆定理。求值到幂零算子、识别有限和的桥梁尚未完成。",
+        "Reuses mathlib’s inverse identities. Evaluation at a nilpotent operator and identification with the finite sums remain open."
+      ],
+      "verified": true,
+      "lines": 23,
+      "sha256": "f35618c9c77fe1122f37e87646c8ad3c6b54575e3d7263faed28c75658b6159a",
+      "formalType": "theorem seriesLogExp :\n    (PowerSeries.exp ℚ).subst (PowerSeries.log ℚ) =\n        1 + (PowerSeries.X : PowerSeries ℚ) ∧\n    (PowerSeries.log ℚ).subst (PowerSeries.exp ℚ - 1) =\n        (PowerSeries.X : PowerSeries ℚ)"
+    }
+  ],
+  "remaining": [
+    [
+      "谱分解、标量扩张与所有多重线性映射的相容性。",
+      "Spectral decomposition, scalar extensions and compatibility with all specified multilinear maps."
+    ],
+    [
+      "形式幂级数互逆公式到有限幂零算子的求值连接。",
+      "Evaluation of the formal inverse identities at finite nilpotent operators."
+    ],
+    [
+      "对数的 Leibniz 公式。",
+      "The Leibniz formula for the logarithm."
+    ],
+    [
+      "Jordan 块大小与正整数次幂的结论，以及完整引理的整合。",
+      "Jordan block sizes, positive-integer powers, and integration into the complete lemma."
+    ]
+  ]
+}
