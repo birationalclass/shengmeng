@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-05T16:17+08:00",
+  "checkedAt": "2026-10-05T16:35+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,13 +8,23 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "6d221ced2eb46895d7655ec3c53e912cab1ece8a01f0422e6a853f8ac0919b72",
-      "lineCount": 29
+      "sha256": "3782229783764b65663355b040abda6a1bcd0263de42f2e2e0d0c192bd012650",
+      "lineCount": 52
+    },
+    {
+      "path": "Linear/DoublePoint.lean",
+      "sha256": "a7017ec416d7ac1e16f04e31df7e4f51920677b4d4da88cda1647bbd6813dd7d",
+      "lineCount": 119
     },
     {
       "path": "Linear/Duality.lean",
       "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
       "lineCount": 114
+    },
+    {
+      "path": "Linear/Primitive.lean",
+      "sha256": "020420375e55a6ccb702d732c2bba4eb7bff3c327c2ba74612b4b8e7baff1027",
+      "lineCount": 80
     },
     {
       "path": "Linear/Reduction.lean",
@@ -28,11 +38,84 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "a927e46eea5a459d9c8f2e1912ff583b3bc20c4a1948a37f49aefd827fb726d3",
-      "lineCount": 5
+      "sha256": "6b506783145152679fadeade33f96a9f4e4ef01006615842e7547ee2b99f4088",
+      "lineCount": 7
     }
   ],
   "declarations": {
+    "doublePoint_decomposition": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 25,
+      "code": "theorem doublePoint_decomposition (a : DoublePoint B) :\n    a = a.fst • (1 : DoublePoint B) + a.snd • epsilon B := by\n  ext <;> simp [epsilon, smul_eq_mul]",
+      "axioms": [
+        "propext"
+      ],
+      "verified": true
+    },
+    "doublePoint_nilradical": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 69,
+      "code": "theorem doublePoint_nilradical [IsReduced B] :\n    nilradical (DoublePoint B) = TrivSqZeroExt.kerIdeal B B := by\n  ext a\n  rw [mem_nilradical]\n  change IsNilpotent a ↔ a.fst = 0\n  constructor\n  · intro ha\n    exact (ha.map (TrivSqZeroExt.fstHom B B B).toRingHom).eq_zero\n  · intro ha\n    refine ⟨2, ?_⟩\n    ext <;> simp [pow_two, TrivSqZeroExt.fst_mul, TrivSqZeroExt.snd_mul, ha]\n\ntheorem doublePoint_epsilon_is_dualGenerator :\n    dualGenerator (TrivSqZeroExt.fstHom B B B) (doublePointPerfectPairing B) =\n      epsilon B := by\n  apply (doublePointPerfectPairing B).equiv.injective\n  unfold dualGenerator\n  rw [LinearEquiv.apply_symm_apply]\n  ext a\n  change a.fst = (epsilon B).fst * a.snd + (epsilon B).snd * a.fst\n  simp [epsilon]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_epsilon_is_dualGenerator": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 81,
+      "code": "theorem doublePoint_epsilon_is_dualGenerator :\n    dualGenerator (TrivSqZeroExt.fstHom B B B) (doublePointPerfectPairing B) =\n      epsilon B := by\n  apply (doublePointPerfectPairing B).equiv.injective\n  unfold dualGenerator\n  rw [LinearEquiv.apply_symm_apply]\n  ext a\n  change a.fst = (epsilon B).fst * a.snd + (epsilon B).snd * a.fst\n  simp [epsilon]",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_annihilator_generated": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 92,
+      "code": "theorem doublePoint_annihilator_generated (x : DoublePoint B) :\n    x ∈ (TrivSqZeroExt.kerIdeal B B).annihilator ↔ ∃ b : B, x = b • epsilon B := by\n  rw [← annihilates_iff_mem_annihilator]\n  change Annihilates (RingHom.ker (TrivSqZeroExt.fstHom B B B).toRingHom) x ↔ _\n  rw [annihilator_iff_scalar_multiple _ (doublePointPerfectPairing B),\n    doublePoint_epsilon_is_dualGenerator]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_nilradical_annihilator": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 100,
+      "code": "theorem doublePoint_nilradical_annihilator [IsReduced B] (x : DoublePoint B) :\n    x ∈ (nilradical (DoublePoint B)).annihilator ↔ ∃ b : B, x = b • epsilon B := by\n  rw [doublePoint_nilradical]\n  exact doublePoint_annihilator_generated B x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_quotient_generator_nonzero": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 106,
+      "code": "theorem doublePoint_quotient_generator_nonzero (J : Ideal (DoublePoint B))\n    (m : Ideal B) (hm : m ≠ ⊤)\n    (hJ : ∀ a ∈ J, a.snd ∈ m) :\n    Ideal.Quotient.mk J (epsilon B) ≠ 0 := by\n  rw [← doublePoint_epsilon_is_dualGenerator]\n  exact dualGenerator_quotient_nonzero (TrivSqZeroExt.fstHom B B B)\n    (doublePointPerfectPairing B) J m (by simpa only [Ideal.ne_top_iff_one] using hm) hJ",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_residue_to_evaluation": {
+      "path": "Linear/DoublePoint.lean",
+      "line": 115,
+      "code": "theorem doublePoint_residue_to_evaluation (a : DoublePoint B) :\n    (TrivSqZeroExt.sndHom B B) (epsilon B * a) = a.fst := by\n  simp [epsilon, TrivSqZeroExt.snd_mul, smul_eq_mul]",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
     "dualGenerator_pairing": {
       "path": "Linear/Duality.lean",
       "line": 32,
@@ -99,6 +182,60 @@
       "path": "Linear/Duality.lean",
       "line": 103,
       "code": "theorem dualGenerator_quotient_nonzero (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (J : Ideal A) (m : Ideal B) (hm : (1 : B) ∉ m)\n    (hJ : ∀ a ∈ J, p.functional a ∈ m) :\n    Ideal.Quotient.mk J (dualGenerator q p) ≠ 0 := by\n  rw [quotient_image_nonzero_iff]\n  intro h\n  have h' := hJ _ h\n  rw [dualGenerator_functional] at h'\n  exact hm h'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "annihilates_iff_mem_annihilator": {
+      "path": "Linear/Primitive.lean",
+      "line": 23,
+      "code": "theorem annihilates_iff_mem_annihilator (N : Ideal A) (x : A) :\n    Annihilates N x ↔ x ∈ N.annihilator := by\n  simp only [Annihilates, Submodule.mem_annihilator, smul_eq_mul, mul_comm]",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "nilradical_annihilator_scalar_generation": {
+      "path": "Linear/Primitive.lean",
+      "line": 28,
+      "code": "theorem nilradical_annihilator_scalar_generation\n    (q : A →ₐ[B] B) (hq : RingHom.ker q.toRingHom = nilradical A)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) (x : A) :\n    x ∈ (nilradical A).annihilator ↔ ∃ b : B, x = b • dualGenerator q p := by\n  rw [← annihilates_iff_mem_annihilator, ← hq]\n  exact annihilator_iff_scalar_multiple q p x",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "unit_coefficient_generates_annihilator": {
+      "path": "Linear/Primitive.lean",
+      "line": 37,
+      "code": "theorem unit_coefficient_generates_annihilator\n    (q : A →ₐ[B] B) (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (delta : A) (hd : Annihilates (RingHom.ker q.toRingHom) delta)\n    (hu : IsUnit (p.functional delta)) (x : A) :\n    Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ b : B, x = b • delta := by\n  constructor\n  · intro hx\n    obtain ⟨u, hu⟩ := hu\n    have hd' := annihilator_eq_scalar_generator q p hd\n    refine ⟨p.functional x * (↑(u⁻¹) : B), ?_⟩\n    calc\n      x = p.functional x • dualGenerator q p := annihilator_eq_scalar_generator q p hx\n      _ = (p.functional x * (↑(u⁻¹) : B)) • delta := by\n        rw [hd']\n        simp only [← mul_smul, ← hu, mul_assoc, Units.inv_mul, mul_one]\n  · rintro ⟨b, rfl⟩\n    exact scalar_multiple_annihilates _ hd b",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "primitive_annihilator_coefficient_isUnit": {
+      "path": "Linear/Primitive.lean",
+      "line": 57,
+      "code": "theorem primitive_annihilator_coefficient_isUnit [IsLocalRing B]\n    (q : A →ₐ[B] B) (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (delta : A) (hd : Annihilates (RingHom.ker q.toRingHom) delta)\n    (hprimitive : delta ∉ IsLocalRing.maximalIdeal B • (⊤ : Submodule B A)) :\n    IsUnit (p.functional delta) := by\n  by_contra hu\n  have hm : p.functional delta ∈ IsLocalRing.maximalIdeal B := by\n    simpa only [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff] using hu\n  apply hprimitive\n  rw [annihilator_eq_scalar_generator q p hd]\n  exact Submodule.smul_mem_smul hm (Submodule.mem_top)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "primitive_annihilator_generates": {
+      "path": "Linear/Primitive.lean",
+      "line": 71,
+      "code": "theorem primitive_annihilator_generates [IsLocalRing B]\n    (q : A →ₐ[B] B) (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (delta : A) (hd : Annihilates (RingHom.ker q.toRingHom) delta)\n    (hprimitive : delta ∉ IsLocalRing.maximalIdeal B • (⊤ : Submodule B A))\n    (x : A) :\n    Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ b : B, x = b • delta :=\n  unit_coefficient_generates_annihilator q p delta hd\n    (primitive_annihilator_coefficient_isUnit q p delta hd hprimitive) x",
       "axioms": [
         "propext",
         "Classical.choice",

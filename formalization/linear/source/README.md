@@ -2,14 +2,16 @@
 
 ## Verified scope
 
-Lean checks 11 auxiliary theorems on actual commutative rings, algebra maps,
+Lean checks 23 auxiliary theorems on actual commutative rings, algebra maps,
 ideal quotients, and B-linear multiplication pairings. `Linear.Target` defines
 the full `Lemma31Goal`, including the specified power-series Jacobian and
 arbitrary lifts of parameters. **The full goal is not yet proved.**
 
 The perfect multiplication pairing is an explicit input to `Linear.Duality`.
 The library proves its consequences, not its existence for complete
-intersections. The dual generator η has not yet been identified with Δ.
+intersections. The general primitive-generator coefficient step is now proved in `Linear.Primitive`. The specific Jacobian still has not been shown to satisfy its hypotheses.
+
+`Linear.DoublePoint` constructs the perfect pairing for the actual square-zero extension `A = B ⊕ Bε`, proves its nilradical identity for reduced B, and proves the annihilator conclusion and a quotient-survival implication. This concrete family does not discharge the universal complete-intersection theorem. The power-series presentation is not yet identified in Lean.
 
 Open bridges:
 

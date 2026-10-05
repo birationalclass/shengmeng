@@ -1,8 +1,21 @@
 module
+
 public import Linear
 
--- The full Lemma31Goal is a definition, NOT a proved theorem.
-
+#check LinearStudy.doublePoint_decomposition
+#print axioms LinearStudy.doublePoint_decomposition
+#check LinearStudy.doublePoint_nilradical
+#print axioms LinearStudy.doublePoint_nilradical
+#check LinearStudy.doublePoint_epsilon_is_dualGenerator
+#print axioms LinearStudy.doublePoint_epsilon_is_dualGenerator
+#check LinearStudy.doublePoint_annihilator_generated
+#print axioms LinearStudy.doublePoint_annihilator_generated
+#check LinearStudy.doublePoint_nilradical_annihilator
+#print axioms LinearStudy.doublePoint_nilradical_annihilator
+#check LinearStudy.doublePoint_quotient_generator_nonzero
+#print axioms LinearStudy.doublePoint_quotient_generator_nonzero
+#check LinearStudy.doublePoint_residue_to_evaluation
+#print axioms LinearStudy.doublePoint_residue_to_evaluation
 #check LinearStudy.dualGenerator_pairing
 #print axioms LinearStudy.dualGenerator_pairing
 #check LinearStudy.dualGenerator_functional
@@ -17,6 +30,16 @@ public import Linear
 #print axioms LinearStudy.dualGenerator_scalar_retraction
 #check LinearStudy.dualGenerator_quotient_nonzero
 #print axioms LinearStudy.dualGenerator_quotient_nonzero
+#check LinearStudy.annihilates_iff_mem_annihilator
+#print axioms LinearStudy.annihilates_iff_mem_annihilator
+#check LinearStudy.nilradical_annihilator_scalar_generation
+#print axioms LinearStudy.nilradical_annihilator_scalar_generation
+#check LinearStudy.unit_coefficient_generates_annihilator
+#print axioms LinearStudy.unit_coefficient_generates_annihilator
+#check LinearStudy.primitive_annihilator_coefficient_isUnit
+#print axioms LinearStudy.primitive_annihilator_coefficient_isUnit
+#check LinearStudy.primitive_annihilator_generates
+#print axioms LinearStudy.primitive_annihilator_generates
 #check LinearStudy.multiplication_factors_through_reduction
 #print axioms LinearStudy.multiplication_factors_through_reduction
 #check LinearStudy.scalar_multiple_annihilates
