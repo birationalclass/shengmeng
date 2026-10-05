@@ -1,0 +1,63 @@
+Original manuscript excerpt: Lemma 3.1 and its proof.
+No claim of a completed Lean formalization is made by this excerpt.
+
+\begin{lemma}\label{lem:jacobian}
+Let $B=\mathbb C[[s_1,\ldots,s_r]]$, $R=B[[z_1,\ldots,z_c]]$, and
+\[
+ A=R/(H_1,\ldots,H_c),
+ \qquad
+ \Delta=\det\left(\frac{\partial H_a}{\partial z_b}\right)\in A,
+\]
+where $r,c\geq1$ and the $H_a$ form a regular sequence.
+Assume that $A$ is finite flat over $B$ and that $A_{\mathrm{red}}\simeq B$ as a $B$-algebra.
+If $N$ is the nilradical of $A$, then
+\[
+ \Ann_A(N)=B\Delta.
+\]
+Moreover, if $\tau_1,\ldots,\tau_r\in A$ reduce to a regular system of parameters of $A/N$, then the image of $\Delta$ generates the socle of $A/(\tau_1,\ldots,\tau_r)$ and is nonzero.
+\end{lemma}
+
+\begin{proof}
+Translate each $z_b$ by its image in $A/N=B$.
+Then the kernel of $R\to A/N$ is $(z_1,\ldots,z_c)$, and differentiation in the $z_b$ with the $s_i$ fixed is unchanged.
+Let $K$ be the fraction field of $B$ and put $\mathfrak p=(z_1,\ldots,z_c)\subset R$.
+Since $\sqrt{(H_1,\ldots,H_c)}=\mathfrak p$, the finite local $K$-algebra $A_K=A\otimes_BK$ identifies with $R_{\mathfrak p}/(H_1,\ldots,H_c)$.
+Completing $R_{\mathfrak p}$ gives $K[[z_1,\ldots,z_c]]$ and leaves its Artinian quotient $A_K$ unchanged.
+This presents $A_K$ as a zero-dimensional complete intersection with residue field $K$.
+The Jacobian theorem therefore gives $N_K\Delta=0$.
+Since $A$ is $B$-flat, $A\to A_K$ is injective, and hence $N\Delta=0$ in $A$.
+
+Put $M=\Ann_A(N)$.
+The closed fiber $A/\mathfrak m_BA$ is an Artinian complete intersection and hence Gorenstein.
+Lift a linear functional defining its perfect multiplication pairing to a $B$-linear map $\ell:A\to B$.
+The $A$-linear map
+\[
+ A\longrightarrow\operatorname{Hom}_B(A,B),
+ \qquad a\longmapsto(b\longmapsto\ell(ab)),
+\]
+is an isomorphism modulo $\mathfrak m_B$ and hence an isomorphism between free $B$-modules of the same rank.
+Finite adjunction consequently gives an isomorphism of $B$-modules
+\[
+ M=\operatorname{Hom}_A(B,A)
+ \simeq\operatorname{Hom}_A(B,\operatorname{Hom}_B(A,B))
+ \simeq B.
+\]
+The Jacobian theorem on the closed fiber gives $\Delta\notin\mathfrak m_BA$, and therefore $\Delta\notin\mathfrak m_BM$.
+As $M$ is free of rank one over $B$, it follows that $M=B\Delta$.
+
+Now let $B'=\mathbb C[[T_1,\ldots,T_r]]$ act on $A$ by $T_i\mapsto\tau_i$.
+The induced map $B'\to A/N$ is an isomorphism.
+Each quotient in the finite filtration by powers of $N$ is finite over $A/N$, so $A$ is finite over $B'$.
+The $\tau_i$ form a system of parameters in the Cohen--Macaulay ring $A$; thus $A$ is free over $B'$.
+The closed fiber $A/(\tau_1,\ldots,\tau_r)$ is again a zero-dimensional complete intersection, so $\operatorname{Hom}_{B'}(A,B')$ is free of rank one over $A$ by the same argument.
+
+The quotient $A\to A/N=B'$ splits as a map of $B'$-modules.
+Dualizing gives a split injection $B'\hookrightarrow\mathrm{Hom}_{B'}(A,B')$ whose image consists of the functionals vanishing on $N$.
+Under an $A$-linear identification $\mathrm{Hom}_{B'}(A,B')\simeq A$, this image is precisely $\Ann_A(N)=M$.
+Thus $M\hookrightarrow A$ splits over $B'$.
+The actions of $B$ and $B'$ on $M$ both factor through $A/N$, so $M=B'\Delta$.
+Reduction modulo $(T_1,\ldots,T_r)$ preserves the split injection.
+Hence $\Delta$ remains nonzero in $A/(\tau_1,\ldots,\tau_r)$.
+The maximal ideal of this quotient is the image of $N$ and annihilates $\Delta$.
+Its socle is one-dimensional, proving the assertion.
+\end{proof}

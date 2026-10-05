@@ -1,0 +1,150 @@
+{
+  "checkedAt": "2026-10-05T16:17+08:00",
+  "lean": "4.35.0-rc3",
+  "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
+  "mainTheoremVerified": false,
+  "targetDefinition": "LinearStudy.Lemma31Goal",
+  "scope": "The algebraic helper theorems are verified; complete-intersection pairing existence, Jacobian identification, and arbitrary parameter-lift compatibility remain open.",
+  "files": [
+    {
+      "path": "CheckAxioms.lean",
+      "sha256": "6d221ced2eb46895d7655ec3c53e912cab1ece8a01f0422e6a853f8ac0919b72",
+      "lineCount": 29
+    },
+    {
+      "path": "Linear/Duality.lean",
+      "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
+      "lineCount": 114
+    },
+    {
+      "path": "Linear/Reduction.lean",
+      "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
+      "lineCount": 57
+    },
+    {
+      "path": "Linear/Target.lean",
+      "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
+      "lineCount": 62
+    },
+    {
+      "path": "Linear.lean",
+      "sha256": "a927e46eea5a459d9c8f2e1912ff583b3bc20c4a1948a37f49aefd827fb726d3",
+      "lineCount": 5
+    }
+  ],
+  "declarations": {
+    "dualGenerator_pairing": {
+      "path": "Linear/Duality.lean",
+      "line": 32,
+      "code": "@[simp] theorem dualGenerator_pairing (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) (a : A) :\n    p.functional (dualGenerator q p * a) = q a := by\n  rw [← p.equiv_apply]\n  change p.equiv (p.equiv.symm q.toLinearMap) a = q a\n  rw [p.equiv.apply_symm_apply]\n  rfl\n\n@[simp] theorem dualGenerator_functional (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) :\n    p.functional (dualGenerator q p) = 1 := by\n  simpa using dualGenerator_pairing q p (1 : A)",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "dualGenerator_functional": {
+      "path": "Linear/Duality.lean",
+      "line": 40,
+      "code": "@[simp] theorem dualGenerator_functional (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) :\n    p.functional (dualGenerator q p) = 1 := by\n  simpa using dualGenerator_pairing q p (1 : A)",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "dualGenerator_annihilates": {
+      "path": "Linear/Duality.lean",
+      "line": 46,
+      "code": "theorem dualGenerator_annihilates (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) :\n    Annihilates (RingHom.ker q.toRingHom) (dualGenerator q p) := by\n  intro n hn\n  apply p.equiv.injective\n  rw [map_zero]\n  ext a\n  change p.equiv (n * dualGenerator q p) a = 0\n  rw [p.equiv_apply]\n  have hn' : q n = 0 := hn\n  calc\n    p.functional (n * dualGenerator q p * a)\n        = p.functional (dualGenerator q p * (n * a)) := by congr 1; ring\n    _ = q (n * a) := dualGenerator_pairing q p _\n    _ = 0 := by rw [map_mul, hn', zero_mul]",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "annihilator_eq_scalar_generator": {
+      "path": "Linear/Duality.lean",
+      "line": 63,
+      "code": "theorem annihilator_eq_scalar_generator (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A))\n    {x : A} (hx : Annihilates (RingHom.ker q.toRingHom) x) :\n    x = p.functional x • dualGenerator q p := by\n  apply p.equiv.injective\n  ext a\n  have hn : a - algebraMap B A (q a) ∈ RingHom.ker q.toRingHom := by\n    change q (a - algebraMap B A (q a)) = 0\n    simp\n  have hmul : a * x = algebraMap B A (q a) * x := by\n    have h := hx _ hn\n    simpa only [sub_mul, sub_eq_zero] using h\n  calc\n    p.equiv x a = p.functional (x * a) := p.equiv_apply _ _\n    _ = p.functional (q a • x) := by rw [mul_comm, hmul, Algebra.smul_def]\n    _ = q a * p.functional x := by rw [map_smul, smul_eq_mul]\n    _ = p.functional x * q a := mul_comm _ _\n    _ = p.equiv (p.functional x • dualGenerator q p) a := by\n      rw [p.equiv.map_smul]\n      change p.functional x * q a = p.functional x * p.equiv (dualGenerator q p) a\n      rw [p.equiv_apply, dualGenerator_pairing]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "annihilator_iff_scalar_multiple": {
+      "path": "Linear/Duality.lean",
+      "line": 86,
+      "code": "theorem annihilator_iff_scalar_multiple (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) (x : A) :\n    Annihilates (RingHom.ker q.toRingHom) x ↔\n      ∃ b : B, x = b • dualGenerator q p := by\n  constructor\n  · intro hx\n    exact ⟨p.functional x, annihilator_eq_scalar_generator q p hx⟩\n  · rintro ⟨b, rfl⟩\n    exact scalar_multiple_annihilates _ (dualGenerator_annihilates q p) b",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "dualGenerator_scalar_retraction": {
+      "path": "Linear/Duality.lean",
+      "line": 97,
+      "code": "theorem dualGenerator_scalar_retraction (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A)) (b : B) :\n    p.functional (b • dualGenerator q p) = b := by\n  rw [map_smul, dualGenerator_functional, smul_eq_mul, mul_one]",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "dualGenerator_quotient_nonzero": {
+      "path": "Linear/Duality.lean",
+      "line": 103,
+      "code": "theorem dualGenerator_quotient_nonzero (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (J : Ideal A) (m : Ideal B) (hm : (1 : B) ∉ m)\n    (hJ : ∀ a ∈ J, p.functional a ∈ m) :\n    Ideal.Quotient.mk J (dualGenerator q p) ≠ 0 := by\n  rw [quotient_image_nonzero_iff]\n  intro h\n  have h' := hJ _ h\n  rw [dualGenerator_functional] at h'\n  exact hm h'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "multiplication_factors_through_reduction": {
+      "path": "Linear/Reduction.lean",
+      "line": 24,
+      "code": "theorem multiplication_factors_through_reduction\n    (q : A →ₐ[B] B) (hq : ∀ a, q a = 0 ↔ a ∈ nilradical A)\n    {x : A} (hx : Annihilates (nilradical A) x) (a : A) :\n    a * x = algebraMap B A (q a) * x := by\n  have hn : a - algebraMap B A (q a) ∈ nilradical A := by\n    apply (hq _).mp\n    simp\n  have h := hx _ hn\n  simpa only [sub_mul, sub_eq_zero] using h",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "scalar_multiple_annihilates": {
+      "path": "Linear/Reduction.lean",
+      "line": 36,
+      "code": "theorem scalar_multiple_annihilates\n    (N : Ideal A) {x : A} (hx : Annihilates N x) (b : B) :\n    Annihilates N (b • x) := by\n  intro n hn\n  rw [Algebra.smul_def, ← mul_assoc, mul_comm n (algebraMap B A b), mul_assoc,\n    hx n hn, mul_zero]",
+      "axioms": [],
+      "verified": true
+    },
+    "annihilator_action_eq": {
+      "path": "Linear/Reduction.lean",
+      "line": 44,
+      "code": "theorem annihilator_action_eq\n    (q : A →ₐ[B] B) (hq : ∀ a, q a = 0 ↔ a ∈ nilradical A)\n    {x : A} (hx : Annihilates (nilradical A) x) {a a' : A}\n    (h : q a = q a') : a * x = a' * x := by\n  rw [multiplication_factors_through_reduction q hq hx a,\n    multiplication_factors_through_reduction q hq hx a', h]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "quotient_image_nonzero_iff": {
+      "path": "Linear/Reduction.lean",
+      "line": 53,
+      "code": "theorem quotient_image_nonzero_iff (J : Ideal A) (delta : A) :\n    Ideal.Quotient.mk J delta ≠ 0 ↔ delta ∉ J := by\n  exact not_congr (Ideal.Quotient.eq_zero_iff_mem)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    }
+  }
+}

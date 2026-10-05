@@ -1,0 +1,29 @@
+module
+public import Linear
+
+-- The full Lemma31Goal is a definition, NOT a proved theorem.
+
+#check LinearStudy.dualGenerator_pairing
+#print axioms LinearStudy.dualGenerator_pairing
+#check LinearStudy.dualGenerator_functional
+#print axioms LinearStudy.dualGenerator_functional
+#check LinearStudy.dualGenerator_annihilates
+#print axioms LinearStudy.dualGenerator_annihilates
+#check LinearStudy.annihilator_eq_scalar_generator
+#print axioms LinearStudy.annihilator_eq_scalar_generator
+#check LinearStudy.annihilator_iff_scalar_multiple
+#print axioms LinearStudy.annihilator_iff_scalar_multiple
+#check LinearStudy.dualGenerator_scalar_retraction
+#print axioms LinearStudy.dualGenerator_scalar_retraction
+#check LinearStudy.dualGenerator_quotient_nonzero
+#print axioms LinearStudy.dualGenerator_quotient_nonzero
+#check LinearStudy.multiplication_factors_through_reduction
+#print axioms LinearStudy.multiplication_factors_through_reduction
+#check LinearStudy.scalar_multiple_annihilates
+#print axioms LinearStudy.scalar_multiple_annihilates
+#check LinearStudy.annihilator_action_eq
+#print axioms LinearStudy.annihilator_action_eq
+#check LinearStudy.quotient_image_nonzero_iff
+#print axioms LinearStudy.quotient_image_nonzero_iff
+
+#check LinearStudy.Lemma31Goal

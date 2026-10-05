@@ -1,0 +1,30 @@
+name: Check Linear Lean helpers
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'formalization/linear/source/**'
+      - '.github/workflows/linear-lean.yml'
+  pull_request:
+    paths:
+      - 'formalization/linear/source/**'
+      - '.github/workflows/linear-lean.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: formalization/linear/source
+          auto-config: false
+          build: true
+          use-mathlib-cache: true
+          axiom-audit: true
+          axiom-audit-root: LinearStudy
+      - name: Print exact checked types and axiom dependencies
+        working-directory: formalization/linear/source
+        run: lake env lean CheckAxioms.lean

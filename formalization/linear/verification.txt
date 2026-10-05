@@ -1,0 +1,51 @@
+LINEAR FORMALIZATION: LOCAL BUILD AND AXIOM AUDIT
+Full Lemma 3.1 is NOT yet proved. Lemma31Goal is a Prop definition.
+
+$ lake build
+✔ [1934/1936] Built Linear.Target (2.8s)
+✔ [1935/1936] Built Linear (1.1s)
+Build completed successfully (1936 jobs).
+
+$ lake env lean CheckAxioms.lean
+LinearStudy.dualGenerator_pairing.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (a : A) :
+  p.functional (LinearStudy.dualGenerator q p * a) = q a
+'LinearStudy.dualGenerator_pairing' depends on axioms: [propext, Quot.sound]
+LinearStudy.dualGenerator_functional.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) : p.functional (LinearStudy.dualGenerator q p) = 1
+'LinearStudy.dualGenerator_functional' depends on axioms: [propext, Quot.sound]
+LinearStudy.dualGenerator_annihilates.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.Annihilates (RingHom.ker q.toRingHom) (LinearStudy.dualGenerator q p)
+'LinearStudy.dualGenerator_annihilates' depends on axioms: [propext, Quot.sound]
+LinearStudy.annihilator_eq_scalar_generator.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) {x : A}
+  (hx : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x) : x = p.functional x • LinearStudy.dualGenerator q p
+'LinearStudy.annihilator_eq_scalar_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.annihilator_iff_scalar_multiple.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (x : A) :
+  LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ b, x = b • LinearStudy.dualGenerator q p
+'LinearStudy.annihilator_iff_scalar_multiple' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.dualGenerator_scalar_retraction.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (b : B) :
+  p.functional (b • LinearStudy.dualGenerator q p) = b
+'LinearStudy.dualGenerator_scalar_retraction' depends on axioms: [propext, Quot.sound]
+LinearStudy.dualGenerator_quotient_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (J : Ideal A) (m : Ideal B) (hm : 1 ∉ m)
+  (hJ : ∀ a ∈ J, p.functional a ∈ m) : (Ideal.Quotient.mk J) (LinearStudy.dualGenerator q p) ≠ 0
+'LinearStudy.dualGenerator_quotient_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.multiplication_factors_through_reduction.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (q : A →ₐ[B] B) (hq : ∀ (a : A), q a = 0 ↔ a ∈ nilradical A) {x : A}
+  (hx : LinearStudy.Annihilates (nilradical A) x) (a : A) : a * x = (algebraMap B A) (q a) * x
+'LinearStudy.multiplication_factors_through_reduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.scalar_multiple_annihilates.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (N : Ideal A) {x : A} (hx : LinearStudy.Annihilates N x) (b : B) : LinearStudy.Annihilates N (b • x)
+'LinearStudy.scalar_multiple_annihilates' does not depend on any axioms
+LinearStudy.annihilator_action_eq.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (q : A →ₐ[B] B) (hq : ∀ (a : A), q a = 0 ↔ a ∈ nilradical A) {x : A} (hx : LinearStudy.Annihilates (nilradical A) x)
+  {a a' : A} (h : q a = q a') : a * x = a' * x
+'LinearStudy.annihilator_action_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :
+  (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J
+'LinearStudy.quotient_image_nonzero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.Lemma31Goal (r c : ℕ) : Prop
