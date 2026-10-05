@@ -1,20 +1,20 @@
 import {isReferenceCard,packLabel,escapeHTML,graphStatement} from './theorem-statements.js?v=20261004-explain-47';
 import {recordAtlasRender,recordAtlasLayout} from './performance.js?v=20261003-perf-1';
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261004-explain-47';
-import {installSourcePacks} from './source-packs.js?v=20261004-explain-47';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261004-worlds-62';
+
 import {t,english} from './i18n.js?v=20261004-explain-47';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theoremTarget}) {
-  const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,entries=[],revision=0;
+  const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,entries=[],revision=0,worldContext=null;
   const cards=new Map([...graph.querySelectorAll('.node')].map(b=>[b.dataset.node,b])),scopePicker=document.querySelector('#scope');
   let diagramSelection=isReferenceCard(byId.get(selected()))?'proper':selected();
   const referenceNotice=document.createElement('div');referenceNotice.className='reference-view-note';referenceNotice.hidden=true;viewport.append(referenceNotice);
-  const focusId=()=>isReferenceCard(byId.get(selected()))?diagramSelection:selected();
+  const focusId=()=>worldContext?.reference?selected():isReferenceCard(byId.get(selected()))?diagramSelection:selected();
   let viewWidth=viewport.clientWidth,viewHeight=viewport.clientHeight,renderFrame=0,detail='full';
   const theoremCard=theoremTarget.createCard('2d');graph.append(theoremCard.element);let theoremBox;
   function buildLayout(){
     const start=performance.now();factor=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--node-base-font'))/16||1.125;
-    const scope=scopePicker.value,ids=visibleProofIds(nodes,focusId(),scope);layout=compactProofLayout(nodes,ids,factor,scope==='direct'?3:5,{selected:focusId()});revision++;
+    const scope=scopePicker.value;let ids=visibleProofIds(nodes,focusId(),scope,!!worldContext?.reference);if(worldContext?.allowed)ids=new Set([...ids].filter(id=>worldContext.allowed.has(id)));ids.add(focusId());layout=compactProofLayout(nodes,ids,factor,scope==='direct'?3:5,{selected:focusId()});revision++;
     entries=[...layout].map(([id,p])=>({id,p,b:cards.get(id)}));
     for(const [id,b] of cards)b.hidden=!ids.has(id);
     for(const {p,b} of entries){b.classList.toggle('base-card',!!p.base);b.classList.toggle('compact-input',!!p.compact);b.dataset.baseInput=String(!!p.base);b.style.zIndex='2';}
@@ -25,8 +25,8 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   nodes.forEach(n=>{const p=layout.get(n.id)||{x:0,y:0,h:150*factor},b=cards.get(n.id);b.style.left=p.x+'px';b.style.top=p.y+'px';b.style.height=p.h+'px';b.style.setProperty('--node-x',p.x+'px');b.style.setProperty('--node-y',p.y+'px');b.innerHTML='';const heading=document.createElement('b');heading.className='node-heading';heading.textContent=n.title;heading.title=n.title;b.append(heading);const proposition=document.createElement('div');proposition.className='node-proposition';proposition.dataset.statementCard=n.id;proposition.innerHTML=graphStatement(n,english);b.append(proposition);const sockets=document.createElement('div');sockets.className='node-sockets';
     if(!n.deps.length){const row=document.createElement('span');row.className='node-input empty-input';row.textContent='';sockets.append(row);}n.deps.forEach(id=>{const row=document.createElement('span');row.className='node-input';row.dataset.premise=id;const dependency=byId.get(id);row.title=dependency.title;if(isReferenceCard(dependency)){row.classList.add('reference-input');row.setAttribute('role','link');row.tabIndex=0;row.innerHTML=`<span class="reference-pack-tag">${escapeHTML(packLabel(dependency,english))}</span>${escapeHTML(dependency.title)}`;row.onclick=e=>{e.stopPropagation();select(id);sourcePacks.openCard(id);};row.onkeydown=e=>{if(['Enter',' '].includes(e.key)){e.preventDefault();e.stopPropagation();row.click();}};}else row.textContent=dependency.title;sockets.append(row);});b.append(sockets);const output=document.createElement('span');output.className='node-output';output.textContent=t('结论');b.append(output);const status=document.createElement('small');status.className=n.status;status.textContent=t(({done:'✓ Lean 已验证',conditional:'✓ Lean 已验证 · 辅助定理',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);b.append(status);const rel=document.createElement('span');rel.className='relation-tag';b.append(rel);const summary=document.createElement('span');summary.className='node-summary';summary.textContent=n.deps.length?(english?n.deps.length+(n.deps.length===1?' premise':' premises'):n.deps.length+' 个前提'):(english?'Source card':'来源卡片');b.append(summary);});
   // Half-round ports sit outside the card; wires meet the outer arc, not the text.
-  nodes.forEach(n=>{const b=cards.get(n.id);n.deps.forEach((id,i)=>{const inputPort=document.createElement('span');inputPort.className='node-input-socket'+(isReferenceCard(byId.get(id))?' reference-port':'');inputPort.setAttribute('aria-hidden','true');if(i===0)inputPort.dataset.first='';inputPort.style.setProperty('--socket-y',(168+22*i)+'px');b.append(inputPort);});const outputPort=document.createElement('span');outputPort.className='node-output-socket';outputPort.setAttribute('aria-hidden','true');b.append(outputPort);});
-  const sourcePacks=installSourcePacks({viewport,nodes,select,selected});
+  nodes.forEach(n=>{const b=cards.get(n.id);n.deps.forEach((id,i)=>{const inputPort=document.createElement('span');inputPort.className='node-input-socket'+(isReferenceCard(byId.get(id))?' reference-port':'');inputPort.setAttribute('aria-hidden','true');inputPort.dataset.premise=id;if(i===0)inputPort.dataset.first='';inputPort.style.setProperty('--socket-y',(168+22*i)+'px');b.append(inputPort);});const outputPort=document.createElement('span');outputPort.className='node-output-socket';outputPort.setAttribute('aria-hidden','true');b.append(outputPort);});
+  const sourcePacks={selectionChanged(){},refreshLanguage(){},openCard(id){document.dispatchEvent(new CustomEvent('referencecardrequest',{detail:id}));}};
   const ns='http://www.w3.org/2000/svg',wires=document.createElementNS(ns,'g'),links=[];
   const metalDefs=document.createElementNS(ns,'defs');
   metalDefs.innerHTML='<linearGradient id="atlas-wire-metal" gradientUnits="userSpaceOnUse" x2="480" spreadMethod="reflect"><stop stop-color="#6b879d"/><stop offset=".24" stop-color="#d3e6f1"/><stop offset=".49" stop-color="#738ea4"/><stop offset=".74" stop-color="#bedbea"/><stop offset="1" stop-color="#5f7d96"/></linearGradient><linearGradient id="atlas-wire-active-metal" gradientUnits="userSpaceOnUse" x2="480" spreadMethod="reflect"><stop stop-color="#487ca7"/><stop offset=".23" stop-color="#d1efff"/><stop offset=".48" stop-color="#609fcd"/><stop offset=".74" stop-color="#a7dbf2"/><stop offset="1" stop-color="#477fa9"/></linearGradient>';
@@ -36,6 +36,10 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   function portCenter(p,i=0){return p.compact?24*factor:detail==='full'?(174+22*i)*factor:displayHeight(p)/2;}
   function updateLinks(){
     const enabled=scopePicker.value!=='open';
+    for(const {id,b} of entries){
+      for(const port of b.querySelectorAll('.node-input-socket'))port.hidden=!enabled||!layout.has(port.dataset.premise)||isReferenceCard(byId.get(port.dataset.premise));
+      const outputPort=b.querySelector('.node-output-socket');if(outputPort)outputPort.hidden=!enabled||!nodes.some(n=>layout.has(n.id)&&n.deps.includes(id));
+    }
     for(const link of links){const {edge,group,shadow,shine}=link,a=layout.get(edge.dataset.from),b=layout.get(edge.dataset.to);link.bounds=null;
       group.classList.toggle('active',edge.classList.contains('active'));group.classList.toggle('assumed',edge.classList.contains('assumed'));
       if(!enabled||!a||!b)continue;
@@ -104,7 +108,7 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   window.addEventListener('typographychange',()=>{stopMotion();const prior=layout.get(focusId()),cx=(prior.x+150*factor)*zoom+x,cy=(prior.y+prior.h/2)*zoom+y;buildLayout();updateLinks();const next=layout.get(focusId());x=cx-(next.x+150*factor)*zoom;y=cy-(next.y+next.h/2)*zoom;paint();});
   theoremCard.element.addEventListener('theoremcardchange',()=>{stopMotion();buildLayout();updateLinks();paint();});
   function selectionChanged(){
-    sourcePacks.selectionChanged();referenceNotice.hidden=!isReferenceCard(byId.get(selected()));referenceNotice.textContent=english?'Reference card opened in its pack · proof view retained':'已在卡包中打开引用卡片 · 主证明视图保留';if(isReferenceCard(byId.get(selected()))){paint();return;}diagramSelection=selected();stopMotion();const id=selected(),prior=layout.get(id),anchor=prior?{x:prior.x*zoom+x,y:prior.y*zoom+y}:null;
+    sourcePacks.selectionChanged();referenceNotice.hidden=!isReferenceCard(byId.get(selected()));referenceNotice.textContent=english?'Reference card opened in its pack · proof view retained':'已在卡包中打开引用卡片 · 主证明视图保留';if(isReferenceCard(byId.get(selected()))&&!worldContext?.reference){paint();return;}diagramSelection=selected();stopMotion();const id=selected(),prior=layout.get(id),anchor=prior?{x:prior.x*zoom+x,y:prior.y*zoom+y}:null;
     const changed=id!==viewSelection;viewSelection=id;buildLayout();updateLinks();
     if(!initialized){initialized=true;requestAnimationFrame(()=>frame());return;}
     const next=layout.get(id);
@@ -114,5 +118,5 @@ export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theor
   function refreshLanguage(){sourcePacks.refreshLanguage();nodes.forEach(n=>{const b=cards.get(n.id);b.querySelector('.node-heading').textContent=n.title;b.querySelector('.node-heading').title=n.title;b.querySelector('.node-proposition').innerHTML=graphStatement(n,english);n.deps.forEach((id,i)=>{const row=b.querySelectorAll('.node-input')[i];const d=byId.get(id);if(isReferenceCard(d))row.innerHTML=`<span class="reference-pack-tag">${escapeHTML(packLabel(d,english))}</span>${escapeHTML(d.title)}`;else row.textContent=d.title;row.title=d.title;});b.querySelector('.node-summary').textContent=n.deps.length?(english?n.deps.length+(n.deps.length===1?' premise':' premises'):n.deps.length+' 个前提'):(english?'Source card':'来源卡片');b.querySelector('.node-output').textContent=t('结论');b.querySelector('small').textContent=t(({done:'✓ Lean 已验证',conditional:'✓ Lean 已验证 · 辅助定理',assumption:'? 暂作假设',pending:'○ 待完成目标'})[n.status]);});paint();}
   graph.dataset.detail=detail;
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMotion();else paint();});
-  return {show(){requestAnimationFrame(()=>{if(!initialized){initialized=true;frame();}else paint();});},selectionChanged,frame,refreshLanguage};
+  return {getCamera(){return {zoom,x,y,lastFrame};},restoreCamera(camera){if(camera){stopMotion();({zoom,x,y,lastFrame}=camera);paint();}},setWorldContext(context){worldContext=context;theoremCard.setTarget(context.target);buildLayout();updateLinks();paint();},show(){requestAnimationFrame(()=>{if(!initialized){initialized=true;frame();}else paint();});},selectionChanged,frame,refreshLanguage};
 }

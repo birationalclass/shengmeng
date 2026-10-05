@@ -1,4 +1,4 @@
-import {emblem} from './theorem-statements.js?v=20261004-explain-47';
+import {statementPanel,escapeHTML,declarationKind,emblem,graphStatement} from './theorem-statements.js?v=20261004-explain-47';
 import {english} from './i18n.js?v=20261004-explain-47';
 
 // The module's final mathematical target is separate from the proof-step DAG.
@@ -24,6 +24,7 @@ const contained = math(`${fiber}<mo>⊆</mo>${support}`,
   'f⁻¹(y) ⊆ Supp D');
 
 function createTheoremCard(view) {
+  let targetNode=null;
   const card = document.createElement('section');
   card.id = `theoremTarget-${view}`;
   card.className = 'theorem-target-card';
@@ -32,9 +33,26 @@ function createTheoremCard(view) {
   card.dataset.conclusionTwo = 'done';
   card.style.setProperty('--theorem-unit', '1');
   card.setAttribute('aria-labelledby', `theoremTargetTitle-${view}`);
+  function finishCompactCard(expanded){
+    card.dataset.expanded=String(expanded);
+    const summary=document.createElement('div');summary.className='theorem-target-summary node-proposition';summary.hidden=expanded;
+    summary.innerHTML=graphStatement(targetNode||{id:'proper'},english);
+    if(!targetNode||targetNode.id==='proper')summary.querySelector('.graph-conclusion span').innerHTML=equivalence+'<br>'+ (english?'If D is effective, each fiber avoids Supp D or lies in it.':'D 有效时，每个纤维与 Supp D 不交或包含于 Supp D。');
+    card.querySelector('.theorem-target-body').before(summary);
+    for(const side of ['top','bottom','left','right']){const port=document.createElement('span');port.className='theorem-port';port.dataset.side=side;port.setAttribute('aria-hidden','true');card.append(port);}
+    card.querySelector('.theorem-target-toggle').addEventListener('click',()=>{const open=card.querySelector('.theorem-target-toggle').getAttribute('aria-expanded')==='true';summary.hidden=open;card.dataset.expanded=String(open);});
+  }
   function renderLanguage(){
-  const expanded=card.querySelector('.theorem-target-toggle')?.getAttribute('aria-expanded')!=='false';
+  const expanded=card.querySelector('.theorem-target-toggle')?.getAttribute('aria-expanded')==='true';
   const conventionsOpen=card.querySelector('.theorem-target-conventions')?.open||false;
+  if(targetNode&&targetNode.id!=='proper'){
+    const verified=['done','conditional'].includes(targetNode.status),status=verified?(english?'✓ Lean verified':'✓ Lean 已验证'):(english?'Open proof':'待补证明');
+    card.dataset.targetNode=targetNode.id;card.dataset.targetStatus=targetNode.status;
+    card.innerHTML=`<header class="theorem-target-heading"><div class="theorem-target-title"><span class="theorem-target-label">${english?'MAIN TARGET OF THIS WORLD':'当前世界的主目标'}</span><h2 id="theoremTargetTitle-${view}">${escapeHTML(targetNode.title)}</h2></div><span class="theorem-target-status">${status}${declarationKind(targetNode)==='definition'?' · '+(english?'Construction':'定义 / 构造'):''}</span><nav class="theorem-target-actions"><button type="button" class="button small" data-select="${targetNode.id}">${english?'Lean & proof':'Lean 与证明'}</button><button type="button" class="button small theorem-target-toggle" aria-expanded="${expanded}">${expanded?(english?'Collapse':'收起'):(english?'Expand':'展开')}</button></nav></header><div class="theorem-target-body" ${expanded?'':'hidden'}>${statementPanel(targetNode,english)}</div>`;
+    const body=card.querySelector('.theorem-target-body'),toggle=card.querySelector('.theorem-target-toggle');toggle.onclick=()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?(english?'Collapse':'收起'):(english?'Expand':'展开');body.hidden=!open;card.dispatchEvent(new Event('theoremcardchange'));};
+    finishCompactCard(expanded);return;
+  }
+  card.dataset.targetNode='proper';card.dataset.targetStatus='done';
   const text = english ? {
     label: 'FINAL THEOREM · THEOREM 1.4',
     title: 'Negativity lemma',
@@ -97,19 +115,22 @@ function createTheoremCard(view) {
     changed();
   });
   card.querySelector('details').addEventListener('toggle', changed);
+  finishCompactCard(expanded);
   }
   renderLanguage();
   window.addEventListener('languagechange',()=>{renderLanguage();card.dispatchEvent(new Event('theoremcardchange'));});
   return {
     element: card,
+    setTarget(node){if(targetNode?.id!==node?.id)card.querySelector('.theorem-target-toggle')?.setAttribute('aria-expanded','false');targetNode=node;renderLanguage();card.dispatchEvent(new Event('theoremcardchange'));},
     layout(proofLayout, factor = 1, nodeFactor = factor) {
       const points = [...proofLayout.values()];
       const left = Math.min(...points.map(p => p.x));
       const right = Math.max(...points.map(p => p.x + 300 * nodeFactor));
       const top = Math.min(...points.map(p => p.y));
       const unit = parseFloat(card.style.getPropertyValue('--theorem-unit')) || 1;
-      const w = 920 * factor, h = card.offsetHeight / unit * factor;
-      return {x:(left + right - w) / 2, y:top - h - 70 * factor, w, h};
+      const w = 420 * factor, h = card.offsetHeight / unit * factor;
+      const bottom=Math.max(...points.map(p=>p.y+(p.visibleH||p.h)));
+      return {x:right+70*factor, y:(top+bottom-h)/2, w, h};
     },
     place(x, y, unit, z = 3) {
       card.style.setProperty('--theorem-unit', String(unit));

@@ -1,12 +1,13 @@
+import {installProofWorlds} from './proof-worlds.js?v=20261005-worlds-77';
 import {theoremIdentity,statementPanel,packLabel,isReferenceCard} from './theorem-statements.js?v=20261004-explain-47';
-import {installLeanLineCounts} from './line-counts.js?v=20261003-lines-1';
+import {installLeanLineCounts} from './line-counts.js?v=20261004-worlds-76';
 import {installPerformanceHUD} from './performance.js?v=20261003-perf-1';
 import {installAtlasDock} from './atlas-dock.js?v=20261002-dock-1';
-import {installTheoremTarget} from './theorem-target.js?v=20261004-explain-47';
+import {installTheoremTarget} from './theorem-target.js?v=20261004-worlds-62';
 import {divisorCyclePanel} from './divisor-cycle.js?v=20261004-formal-42';
 import {curveDiagramPanel} from './curve-diagram.js?v=20261004-formal-42';
 import {installSettings} from './settings.js?v=20261004-explain-47';
-import {createNodeEditor} from './node-editor.js?v=20261004-explain-47';
+import {createNodeEditor} from './node-editor.js?v=20261004-worlds-62';
 import {installWorkspace} from './workspace.js?v=20261004-explain-47';
 import {english,englishStatuses,translateNodes,installLanguage} from './i18n.js?v=20261004-explain-47';
 import {nodes as rawNodes,statusLabels as rawLabels} from './graph-data.js?v=20261004-formal-42';
@@ -14,7 +15,7 @@ const nodes=translateNodes(rawNodes),statusLabels={...(english?englishStatuses:{
 document.querySelector('.relation-legend').innerHTML=english?'<b>Selection</b><span>◎ Selected result</span><span>Brighter cards · direct premises</span><span>Standard cards · indirect premises</span><span>Dimmed · unrelated</span>':'<b>选中关系</b><span>◎ 当前结论</span><span>明亮卡片：直接前提</span><span>普通卡片：间接前提</span><span>淡化：非当前依赖</span>';
 function renderHome(){
   const home=document.querySelector('.refuge-back');
-  home.querySelector('span').textContent=english?'Home':'主页';
+  home.querySelector('span')?.remove();
   home.setAttribute('aria-label',english?'Go to homepage':'返回主页');
   document.querySelector('.atlas-statusbar').setAttribute('aria-label',english?'Verification status':'验证状态');
 }
@@ -32,7 +33,7 @@ function renderStatusCounts(){
  let total=legend.querySelector('.legend-total');if(!total){total=document.createElement('span');total.className='legend-total';legend.append(total);}total.textContent=nodes.length+(english?' nodes':' 节点');
 }
 function disableSpatialView(){
- localStorage.setItem('formalization-view','2d');document.querySelector('#spatialGraph').hidden=true;document.querySelector('.graph-scroll').hidden=false;
+ localStorage.setItem('formalization-view','2d');document.querySelector('#spatialGraph').hidden=true;document.querySelector('.graph-scroll').hidden=document.body.classList.contains('proof-world-mode');
  const button=document.querySelector('[data-view="3d"]');button.disabled=true;button.setAttribute('aria-pressed','false');
  button.title=english?'3D is temporarily disabled to improve performance.':'3D 暂停使用，优先优化 2D 性能。';button.querySelector('.dock-caption,span:not(.dock-orb)').textContent=english?'3D paused':'3D 暂停';
  document.querySelector('[data-view="2d"]').setAttribute('aria-pressed','true');
@@ -82,7 +83,8 @@ nodeEditor=createNodeEditor({viewport:document.querySelector('.graph-scroll'),gr
 
 atlasDock=installAtlasDock({english});
 disableSpatialView();
-document.querySelector('[data-view="2d"]').onclick=()=>nodeEditor.show();
+const proofWorlds=installProofWorlds({nodes,select,selected:()=>selected,nodeEditor,theoremTarget});
+document.querySelector('[data-view="2d"]').onclick=()=>proofWorlds.openGraph();
 renderDetail();
 installLanguage({onChange(){
  renderHome();atlasDock.refresh(english);
