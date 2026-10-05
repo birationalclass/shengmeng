@@ -1,0 +1,342 @@
+Checking AuditComplete
+BEGIN JordanSize.logarithmicChains
+JordanSize.logarithmicChains.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  (D : Module.End K V) (hD : IsNilpotent D) (m : ℕ) :
+  IsNilpotent (JordanSize.logFinite D m) ∧
+    (∀ (j : ℕ),
+        LinearMap.ker (JordanSize.logFinite D m ^ j) = LinearMap.ker (D ^ j) ∧
+          LinearMap.range (JordanSize.logFinite D m ^ j) = LinearMap.range (D ^ j) ∧
+            (JordanSize.logFinite D m ^ j = 0 ↔ D ^ j = 0)) ∧
+      nilpotencyClass (JordanSize.logFinite D m) = nilpotencyClass D
+'JordanSize.logarithmicChains' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.logarithmicChains
+BEGIN JordanSize.generalizedProduct
+JordanSize.generalizedProduct.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]
+  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] (B : V →ₗ[K] W →ₗ[K] Z)
+  (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z) (h : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y))
+  (a b : K) (p q : ℕ) (x : V) (y : W) (hx : ((T - a • 1) ^ p) x = 0) (hy : ((S - b • 1) ^ q) y = 0) :
+  ((R - (a * b) • 1) ^ (p + q - 1)) ((B x) y) = 0
+'JordanSize.generalizedProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.generalizedProduct
+BEGIN JordanSize.nilpotentFlow
+JordanSize.nilpotentFlow.{u_1} {V : Type u_1} [AddCommGroup V] [Module ℚ V] (D : Module.End ℚ V) (hD : IsNilpotent D) :
+  JordanSize.flow D 0 = 1 ∧
+    (∀ (s t : ℚ), JordanSize.flow D (s + t) = JordanSize.flow D s * JordanSize.flow D t) ∧
+      (∀ (t : ℚ), IsUnit (JordanSize.flow D t)) ∧
+        (∀ (t : ℚ),
+            JordanSize.flow D t * JordanSize.flow D (-t) = 1 ∧ JordanSize.flow D (-t) * JordanSize.flow D t = 1) ∧
+          ∀ (m : ℕ), JordanSize.flow D ↑m = JordanSize.flow D 1 ^ m
+'JordanSize.nilpotentFlow' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.nilpotentFlow
+BEGIN JordanSize.multiplicativeDecomposition
+JordanSize.multiplicativeDecomposition.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [PerfectField K]
+  [AddCommGroup V] [Module K V] [FiniteDimensional K V] (T : Module.End K V) (hT : IsUnit T) :
+  ∃ S U, S ∈ K[T] ∧ S.IsSemisimple ∧ IsUnit S ∧ IsNilpotent (U - 1) ∧ IsUnit U ∧ Commute S U ∧ T = S * U
+'JordanSize.multiplicativeDecomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.multiplicativeDecomposition
+BEGIN JordanSize.seriesLogExp
+JordanSize.seriesLogExp :
+  PowerSeries.subst (PowerSeries.log ℚ) (PowerSeries.exp ℚ) = 1 + PowerSeries.X ∧
+    PowerSeries.subst (PowerSeries.exp ℚ - 1) (PowerSeries.log ℚ) = PowerSeries.X
+'JordanSize.seriesLogExp' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.seriesLogExp
+BEGIN JordanSize.evaluatedInverse
+JordanSize.evaluatedInverse.{u_1} {A : Type u_1} [CommRing A] [Algebra ℚ A] [UniformSpace ℚ] [DiscreteUniformity ℚ]
+  [UniformSpace A] [IsUniformAddGroup A] [T2Space A] [CompleteSpace A] [IsTopologicalRing A] [IsLinearTopology A A]
+  (a : A) (ha : IsNilpotent a) (hmap : Continuous ⇑(algebraMap ℚ A)) :
+  PowerSeries.eval₂ (algebraMap ℚ A) (PowerSeries.eval₂ (algebraMap ℚ A) a (PowerSeries.log ℚ)) (PowerSeries.exp ℚ) =
+      1 + a ∧
+    PowerSeries.eval₂ (algebraMap ℚ A) (PowerSeries.eval₂ (algebraMap ℚ A) a (PowerSeries.exp ℚ) - 1)
+        (PowerSeries.log ℚ) =
+      a
+'JordanSize.evaluatedInverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.evaluatedInverse
+BEGIN JordanSize.finiteExpLog
+JordanSize.finiteExpLog.{u_1} {A : Type u_1} [CommRing A] [Algebra ℚ A] [UniformSpace ℚ] [DiscreteUniformity ℚ]
+  [UniformSpace A] [IsUniformAddGroup A] [T2Space A] [CompleteSpace A] [IsTopologicalRing A] [IsLinearTopology A A]
+  (a : A) (k : ℕ) (hk : a ^ k = 0) (hmap : Continuous ⇑(algebraMap ℚ A)) :
+  IsNilpotent.exp (JordanSize.finiteLog a k) = 1 + a
+'JordanSize.finiteExpLog' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.finiteExpLog
+BEGIN JordanSize.nilpotent_exp_injective
+JordanSize.nilpotent_exp_injective.{u_1} {A : Type u_1} [Ring A] [Algebra ℚ A] {D E : A} (hD : IsNilpotent D)
+  (hE : IsNilpotent E) (h : IsNilpotent.exp D = IsNilpotent.exp E) : D = E
+'JordanSize.nilpotent_exp_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.nilpotent_exp_injective
+BEGIN JordanSize.unipotent_bilinear
+JordanSize.unipotent_bilinear.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  {W : Type u_3} {Z : Type u_4} [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] [IsAlgClosed K]
+  [FiniteDimensional K V] [FiniteDimensional K W] [FiniteDimensional K Z] (B : V →ₗ[K] W →ₗ[K] Z) (T : Module.End K V)
+  (S : Module.End K W) (R : Module.End K Z) (FT : JordanSize.Factors T) (FS : JordanSize.Factors S)
+  (FR : JordanSize.Factors R) (hB : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y)) (x : V) (y : W) :
+  FR.u ((B x) y) = (B (FT.u x)) (FS.u y)
+'JordanSize.unipotent_bilinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.unipotent_bilinear
+BEGIN JordanSize.unipotent_multilinear
+JordanSize.unipotent_multilinear.{u, u_1} {K : Type u_1} [Field K] [IsAlgClosed K] (n : ℕ) {M : Fin n → Type u}
+  {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)]
+  [∀ (i : Fin n), FiniteDimensional K (M i)] [AddCommGroup Z] [Module K Z] [FiniteDimensional K Z]
+  (B : MultilinearMap K M Z) (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z)
+  (FT : (i : Fin n) → JordanSize.Factors (T i)) (FR : JordanSize.Factors R)
+  (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i)) (x : (i : Fin n) → M i) :
+  FR.u (B x) = B fun i => (FT i).u (x i)
+'JordanSize.unipotent_multilinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.unipotent_multilinear
+BEGIN JordanSize.flowLeibniz
+JordanSize.flowLeibniz.{u_1, u_2, u_3} {V : Type u_1} {W : Type u_2} {Z : Type u_3} [AddCommGroup V] [Module ℚ V]
+  [AddCommGroup W] [Module ℚ W] [AddCommGroup Z] [Module ℚ Z] (B : V →ₗ[ℚ] W →ₗ[ℚ] Z) (D : Module.End ℚ V)
+  (E : Module.End ℚ W) (F : Module.End ℚ Z) (hD : IsNilpotent D) (hE : IsNilpotent E) (hF : IsNilpotent F)
+  (hB : ∀ (x : V) (y : W), (JordanSize.flow F 1) ((B x) y) = (B ((JordanSize.flow D 1) x)) ((JordanSize.flow E 1) y))
+  (x : V) (y : W) : F ((B x) y) = (B (D x)) y + (B x) (E y)
+'JordanSize.flowLeibniz' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.flowLeibniz
+BEGIN JordanSize.exponentialChains
+JordanSize.exponentialChains.{u_2, u_3} {K : Type u_2} {V : Type u_3} [Field K] [Algebra ℚ K] [AddCommGroup V]
+  [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] (D : Module.End K V) (hD : IsNilpotent D) (j : ℕ) :
+  ((IsNilpotent.exp D - 1) ^ j).ker = LinearMap.ker (D ^ j) ∧
+    ((IsNilpotent.exp D - 1) ^ j).range = LinearMap.range (D ^ j) ∧ ((IsNilpotent.exp D - 1) ^ j = 0 ↔ D ^ j = 0)
+'JordanSize.exponentialChains' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.exponentialChains
+BEGIN JordanSize.logarithm_bilinear
+JordanSize.logarithm_bilinear.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} [Field K] [Algebra ℚ K]
+  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] {W : Type u_3} {Z : Type u_4} [AddCommGroup W]
+  [Module K W] [Module ℚ W] [IsScalarTower ℚ K W] [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z]
+  [IsAlgClosed K] [FiniteDimensional K V] [FiniteDimensional K W] [FiniteDimensional K Z] (B : V →ₗ[K] W →ₗ[K] Z)
+  (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z) (FT : JordanSize.Factors T) (FS : JordanSize.Factors S)
+  (FR : JordanSize.Factors R) (hB : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y)) (x : V) (y : W) :
+  FR.log ((B x) y) = (B (FT.log x)) y + (B x) (FS.log y)
+'JordanSize.logarithm_bilinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.logarithm_bilinear
+BEGIN JordanSize.logarithm_multilinear
+JordanSize.logarithm_multilinear.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] (n : ℕ)
+  {M : Fin n → Type u} {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)]
+  [(i : Fin n) → Module ℚ (M i)] [∀ (i : Fin n), IsScalarTower ℚ K (M i)] [∀ (i : Fin n), FiniteDimensional K (M i)]
+  [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z] [FiniteDimensional K Z] (B : MultilinearMap K M Z)
+  (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z) (FT : (i : Fin n) → JordanSize.Factors (T i))
+  (FR : JordanSize.Factors R) (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i))
+  (x : (i : Fin n) → M i) : FR.log (B x) = ∑ i, B (Function.update x i ((FT i).log (x i)))
+'JordanSize.logarithm_multilinear' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.logarithm_multilinear
+BEGIN JordanSize.Factors.log_power
+JordanSize.Factors.log_power.{u_2, u_3} {K : Type u_2} {V : Type u_3} [Field K] [PerfectField K] [Algebra ℚ K]
+  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V] {T : Module.End K V}
+  (F : JordanSize.Factors T) (a : ℕ) : (F.power a).log = ↑a • F.log
+'JordanSize.Factors.log_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.Factors.log_power
+BEGIN JordanSize.exp_integer
+JordanSize.exp_integer.{u_1} {A : Type u_1} [Ring A] [Algebra ℚ A] (D : A) (hD : IsNilpotent D) (U : Aˣ)
+  (hU : ↑U = IsNilpotent.exp D) (m : ℤ) : ↑(U ^ m) = IsNilpotent.exp (↑m • D)
+'JordanSize.exp_integer' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.exp_integer
+BEGIN JordanSize.jordanBound_log_iff
+JordanSize.jordanBound_log_iff.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [Algebra ℚ K] [IsAlgClosed K]
+  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V] {T : Module.End K V}
+  (F : JordanSize.Factors T) (j : ℕ) : JordanSize.JordanBound T j ↔ F.log ^ j = 0
+'JordanSize.jordanBound_log_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.jordanBound_log_iff
+BEGIN JordanSize.largestJordanBlock_characterization
+JordanSize.largestJordanBlock_characterization.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [Algebra ℚ K]
+  [IsAlgClosed K] [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V]
+  {T : Module.End K V} [Nontrivial V] (F : JordanSize.Factors T) :
+  JordanSize.largestJordanBlock T = 1 + (nilpotencyClass F.log - 1) ∧
+    F.log ^ (JordanSize.largestJordanBlock T - 1) ≠ 0 ∧
+      F.log ^ JordanSize.largestJordanBlock T = 0 ∧ ∀ (j : ℕ), JordanSize.largestJordanBlock T ≤ j → F.log ^ j = 0
+'JordanSize.largestJordanBlock_characterization' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.largestJordanBlock_characterization
+BEGIN JordanSize.log_baseChange
+JordanSize.log_baseChange.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {L : Type u_3} [Field K] [PerfectField K]
+  [Field L] [Algebra K L] [AddCommGroup V] [Module K V] [FiniteDimensional K V] {T : Module.End K V} [Algebra ℚ K]
+  [Algebra ℚ L] [IsScalarTower ℚ K L] [Module ℚ V] [IsScalarTower ℚ K V] (F : JordanSize.Factors T) :
+  F.baseChange.log = (Module.End.baseChangeHom K L V) F.log
+'JordanSize.log_baseChange' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.log_baseChange
+BEGIN JordanSize.lemma_1_1_linear
+JordanSize.lemma_1_1_linear.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] {V : Type u}
+  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V] [Nontrivial V]
+  {T : Module.End K V} (F : JordanSize.Factors T) : JordanSize.LogarithmicChainStatement F
+'JordanSize.lemma_1_1_linear' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.lemma_1_1_linear
+BEGIN JordanSize.lemma_1_1
+JordanSize.lemma_1_1.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] (n : ℕ) {M : Fin n → Type u}
+  {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)] [(i : Fin n) → Module ℚ (M i)]
+  [∀ (i : Fin n), IsScalarTower ℚ K (M i)] [∀ (i : Fin n), FiniteDimensional K (M i)] [∀ (i : Fin n), Nontrivial (M i)]
+  [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z] [FiniteDimensional K Z] [Nontrivial Z]
+  (B : MultilinearMap K M Z) (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z)
+  (hT : ∀ (i : Fin n), IsUnit (T i)) (hR : IsUnit R)
+  (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i)) :
+  (∀ (i : Fin n), JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors (T i) ⋯)) ∧
+    JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors R hR) ∧
+      (∀ (x : (i : Fin n) → M i),
+          (JordanSize.jordanFactors R hR).u (B x) = B fun i => (JordanSize.jordanFactors (T i) ⋯).u (x i)) ∧
+        ∀ (x : (i : Fin n) → M i),
+          (JordanSize.jordanFactors R hR).log (B x) =
+            ∑ i, B (Function.update x i ((JordanSize.jordanFactors (T i) ⋯).log (x i)))
+'JordanSize.lemma_1_1' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.lemma_1_1
+BEGIN JordanSize.Factors.baseChange
+JordanSize.Factors.baseChange.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {L : Type u_3} [Field K] [PerfectField K]
+  [Field L] [Algebra K L] [AddCommGroup V] [Module K V] [FiniteDimensional K V] {T : Module.End K V}
+  (F : JordanSize.Factors T) : JordanSize.Factors ((Module.End.baseChangeHom K L V) T)
+'JordanSize.Factors.baseChange' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.Factors.baseChange
+BEGIN JordanSize.orbit_independent
+JordanSize.orbit_independent.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  (D : Module.End K V) (r : ℕ) (x : V) (hzero : (D ^ r) x = 0) (htop : (D ^ (r - 1)) x ≠ 0) :
+  LinearIndependent K fun i => (D ^ ↑i) x
+'JordanSize.orbit_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.orbit_independent
+BEGIN JordanSize.chainRelations_independent
+JordanSize.chainRelations_independent.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  {r : ℕ} (T : Module.End K V) (a : K) (v : Fin (r + 1) → V) (hne : v 0 ≠ 0)
+  (hrel : ∀ (i : Fin (r + 1)), (T - a • 1) (v i) = if h : ↑i = 0 then 0 else v ⟨↑i - 1, ⋯⟩) : LinearIndependent K v
+'JordanSize.chainRelations_independent' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.chainRelations_independent
+BEGIN JordanSize.product_top
+JordanSize.product_top.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]
+  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] (B : V →ₗ[K] W →ₗ[K] Z)
+  (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z) (h : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y))
+  (a b : K) (p q : ℕ) (x : V) (y : W) (hx : ((T - a • 1) ^ (p + 1)) x = 0) (hy : ((S - b • 1) ^ (q + 1)) y = 0) :
+  ((R - (a * b) • 1) ^ (p + q)) ((B x) y) =
+    (↑((p + q).choose p) * b ^ p * a ^ q) • (B (((T - a • 1) ^ p) x)) (((S - b • 1) ^ q) y)
+'JordanSize.product_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.product_top
+BEGIN JordanSize.weighted_product
+JordanSize.weighted_product.{u_1, u_2, u_3, u_4, u_5} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4}
+  {Z : Type u_5} [Field K] [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W]
+  [Module K W] [AddCommGroup Z] [Module K Z] (B : A →ₗ[K] V →ₗ[K] W →ₗ[K] Z) (P : Module.End K A) (T : Module.End K V)
+  (S : Module.End K W) (R : Module.End K Z) (h : ∀ (w : A) (x : V) (y : W), R (((B w) x) y) = ((B (P w)) (T x)) (S y))
+  (c a b : K) (hc : c ≠ 0) (ha : a ≠ 0) (hb : b ≠ 0) (p q : ℕ) (w : A) (x : V) (y : W) (hw : P w = c • w)
+  (hx : ((T - a • 1) ^ (p + 1)) x = 0) (hy : ((S - b • 1) ^ (q + 1)) y = 0) :
+  ((R - (c * a * b) • 1) ^ (p + q)) (((B w) x) y) =
+      (↑((p + q).choose p) * c ^ (p + q) * b ^ p * a ^ q) • ((B w) (((T - a • 1) ^ p) x)) (((S - b • 1) ^ q) y) ∧
+    ((R - (c * a * b) • 1) ^ (p + q + 1)) (((B w) x) y) = 0 ∧
+      (((B w) (((T - a • 1) ^ p) x)) (((S - b • 1) ^ q) y) ≠ 0 →
+        Nonempty (JordanSize.JordanChain R (c * a * b) (p + q + 1)))
+'JordanSize.weighted_product' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.weighted_product
+BEGIN JordanSize.lemma_1_2
+JordanSize.lemma_1_2.{u_1, u_2, u_3, u_4, u_5} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4}
+  {Z : Type u_5} [Field K] [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W]
+  [Module K W] [AddCommGroup Z] [Module K Z] (B : A →ₗ[K] V →ₗ[K] W →ₗ[K] Z) (P : A ≃ₗ[K] A) (T : V ≃ₗ[K] V)
+  (S : W ≃ₗ[K] W) (R : Module.End K Z) (h : ∀ (w : A) (x : V) (y : W), R (((B w) x) y) = ((B (P w)) (T x)) (S y))
+  (c a b : K) (p q : ℕ) (w : A) (hw0 : w ≠ 0) (hw : P w = c • w) (C : JordanSize.JordanChain (↑T) a (p + 1))
+  (D : JordanSize.JordanChain (↑S) b (q + 1)) :
+  ((R - (c * a * b) • 1) ^ (p + q)) (((B w) (C.vectors (Fin.last p))) (D.vectors (Fin.last q))) =
+      (↑((p + q).choose p) * c ^ (p + q) * b ^ p * a ^ q) • ((B w) (C.vectors 0)) (D.vectors 0) ∧
+    ((R - (c * a * b) • 1) ^ (p + q + 1)) (((B w) (C.vectors (Fin.last p))) (D.vectors (Fin.last q))) = 0 ∧
+      (((B w) (C.vectors 0)) (D.vectors 0) ≠ 0 → Nonempty (JordanSize.JordanChain R (c * a * b) (p + q + 1)))
+'JordanSize.lemma_1_2' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.lemma_1_2
+BEGIN JordanSize.pairing_operator
+JordanSize.pairing_operator.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K] [AddCommGroup V]
+  [Module K V] [AddCommGroup W] [Module K W] (T : V ≃ₗ[K] V) (S : Module.End K W) (e : W ≃ₗ[K] Module.Dual K V) (d : K)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) : ↑e ∘ₗ S = (d • (↑T.symm).dualMap) ∘ₗ ↑e
+'JordanSize.pairing_operator' depends on axioms: [propext, Quot.sound]
+END JordanSize.pairing_operator
+BEGIN JordanSize.pairing_kernel_profile
+JordanSize.pairing_kernel_profile.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K]
+  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [FiniteDimensional K V] [FiniteDimensional K W]
+  (T : V ≃ₗ[K] V) (S : Module.End K W) (e : W ≃ₗ[K] Module.Dual K V) (d a : K) (hd : d ≠ 0) (ha : a ≠ 0)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (j : ℕ) :
+  Module.finrank K ↥((S - (d / a) • 1) ^ j).ker = Module.finrank K ↥((↑T - a • 1) ^ j).ker
+'JordanSize.pairing_kernel_profile' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.pairing_kernel_profile
+BEGIN JordanSize.transportChain
+JordanSize.transportChain.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {Z : Type u_3} [Field K] [AddCommGroup V]
+  [Module K V] [AddCommGroup Z] [Module K Z] (T : Module.End K V) (R : Module.End K Z) (L : V →ₗ[K] Z) (c a : K)
+  (hc : c ≠ 0) (h : ∀ (x : V), R (L x) = c • L (T x)) {r : ℕ} (C : JordanSize.JordanChain T a (r + 1))
+  (hend : L (C.vectors 0) ≠ 0) : JordanSize.JordanChain R (c * a) (r + 1)
+'JordanSize.transportChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.transportChain
+BEGIN JordanSize.jordanBound_stability
+JordanSize.jordanBound_stability.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  [FiniteDimensional K V] (T : Module.End K V) (j : ℕ) :
+  JordanSize.JordanBound T j ↔
+    ∀ (a : K), Module.finrank K ↥((T - a • 1) ^ (j + 1)).ker = Module.finrank K ↥((T - a • 1) ^ j).ker
+'JordanSize.jordanBound_stability' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.jordanBound_stability
+BEGIN JordanSize.largestJordanBlock_bound
+JordanSize.largestJordanBlock_bound.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  [FiniteDimensional K V] (T : Module.End K V) : JordanSize.JordanBound T (JordanSize.largestJordanBlock T)
+'JordanSize.largestJordanBlock_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.largestJordanBlock_bound
+BEGIN JordanSize.pairing_bounds
+JordanSize.pairing_bounds.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K] [AddCommGroup V]
+  [Module K V] [AddCommGroup W] [Module K W] [FiniteDimensional K V] [FiniteDimensional K W] (T : V ≃ₗ[K] V)
+  (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (j : ℕ) :
+  JordanSize.JordanBound (↑T) j ↔ JordanSize.JordanBound (↑S) j
+'JordanSize.pairing_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.pairing_bounds
+BEGIN JordanSize.pairing_largest
+JordanSize.pairing_largest.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K] [AddCommGroup V]
+  [Module K V] [AddCommGroup W] [Module K W] [FiniteDimensional K V] [FiniteDimensional K W] (T : V ≃ₗ[K] V)
+  (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) :
+  JordanSize.largestJordanBlock ↑T = JordanSize.largestJordanBlock ↑S
+'JordanSize.pairing_largest' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.pairing_largest
+BEGIN JordanSize.chain_profile_jump
+JordanSize.chain_profile_jump.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  [FiniteDimensional K V] (T : Module.End K V) (a : K) {r : ℕ} (C : JordanSize.JordanChain T a (r + 1)) :
+  Module.finrank K ↥((T - a • 1) ^ r).ker < Module.finrank K ↥((T - a • 1) ^ (r + 1)).ker
+'JordanSize.chain_profile_jump' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.chain_profile_jump
+BEGIN JordanSize.chain_from_profile
+JordanSize.chain_from_profile.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]
+  [FiniteDimensional K V] (T : Module.End K V) (a : K) (r : ℕ)
+  (h : Module.finrank K ↥((T - a • 1) ^ r).ker < Module.finrank K ↥((T - a • 1) ^ (r + 1)).ker) :
+  Nonempty (JordanSize.JordanChain T a (r + 1))
+'JordanSize.chain_from_profile' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.chain_from_profile
+BEGIN JordanSize.pairing_transfer_chain
+JordanSize.pairing_transfer_chain.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K]
+  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [FiniteDimensional K V] [FiniteDimensional K W]
+  (T : V ≃ₗ[K] V) (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (b : K) {r : ℕ} (C : JordanSize.JordanChain (↑S) b (r + 1)) :
+  Nonempty (JordanSize.JordanChain (↑T) (d / b) (r + 1))
+'JordanSize.pairing_transfer_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.pairing_transfer_chain
+BEGIN JordanSize.lemma_1_3
+JordanSize.lemma_1_3.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]
+  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] [FiniteDimensional K V]
+  [FiniteDimensional K W] (T : V ≃ₗ[K] V) (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)
+  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (R : Module.End K Z) (L : V →ₗ[K] Z) (c a : K) (hc : c ≠ 0)
+  (hL : ∀ (x : V), R (L x) = c • L (T x)) {r : ℕ} (C : JordanSize.JordanChain (↑T) a (r + 1))
+  (hend : L (C.vectors 0) ≠ 0) :
+  ↑e ∘ₗ ↑S = (d • (↑T.symm).dualMap) ∘ₗ ↑e ∧
+    (∀ (b : K),
+        b ≠ 0 → ∀ (j : ℕ), Module.finrank K ↥((↑S - (d / b) • 1) ^ j).ker = Module.finrank K ↥((↑T - b • 1) ^ j).ker) ∧
+      JordanSize.largestJordanBlock ↑T = JordanSize.largestJordanBlock ↑S ∧
+        (∃ D, ∀ (i : Fin (r + 1)), D.vectors i = c⁻¹ ^ ↑i • L (C.vectors i)) ∧
+          ∀ (b : K) (D : JordanSize.JordanChain (↑S) b (r + 1)), Nonempty (JordanSize.JordanChain (↑T) (d / b) (r + 1))
+'JordanSize.lemma_1_3' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.lemma_1_3
+BEGIN JordanSize.conjugateChain
+JordanSize.conjugateChain.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V] (σ : K ≃+* K)
+  (J : JordanSize.SemilinearSymmetry σ) (T : Module.End K V) (a : K) (r : ℕ) (h : ∀ (x : V), J (T x) = T (J x))
+  (C : JordanSize.JordanChain T a r) : JordanSize.JordanChain T (σ a) r
+'JordanSize.conjugateChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.conjugateChain
+BEGIN JordanSize.product_endpoint_vanish
+JordanSize.product_endpoint_vanish.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4}
+  [Field K] [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+  [FiniteDimensional K V] [FiniteDimensional K W] (B : A →ₗ[K] V →ₗ[K] V →ₗ[K] W) (P : A ≃ₗ[K] A) (T : V ≃ₗ[K] V)
+  (S : W ≃ₗ[K] W) (hB : ∀ (w : A) (x y : V), S (((B w) x) y) = ((B (P w)) (T x)) (T y)) (r : ℕ) (hr : 1 ≤ r)
+  (hb : JordanSize.JordanBound (↑S) (r + 1)) (a b c : K) (ha : a ≠ 0) (hb' : b ≠ 0)
+  (C : JordanSize.JordanChain (↑T) a (r + 1)) (D : JordanSize.JordanChain (↑T) b (r + 1)) (w : A) (hw : P w = c • w) :
+  ((B w) (C.vectors 0)) (D.vectors 0) = 0
+'JordanSize.product_endpoint_vanish' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.product_endpoint_vanish
+BEGIN JordanSize.lemma_1_4
+JordanSize.lemma_1_4.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4} [Field K]
+  [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]
+  [FiniteDimensional K V] [FiniteDimensional K W] (B : A →ₗ[K] V →ₗ[K] V →ₗ[K] W) (P : A ≃ₗ[K] A) (T : V ≃ₗ[K] V)
+  (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)
+  (hpair : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x)
+  (hB : ∀ (w : A) (x y : V), S (((B w) x) y) = ((B (P w)) (T x)) (T y)) (σ : K ≃+* K)
+  (J : JordanSize.SemilinearSymmetry σ) (hJ : ∀ (x : V), J (T x) = T (J x)) (r : ℕ) (hr : 1 ≤ r) (a : K)
+  (C : JordanSize.JordanChain (↑T) a (r + 1)) (hmax : r + 1 = JordanSize.largestJordanBlock ↑T) (w : A) (c : K)
+  (hw : P w = c • w) : ((B w) (C.vectors 0)) (C.vectors 0) = 0 ∧ ((B w) (C.vectors 0)) (J (C.vectors 0)) = 0
+'JordanSize.lemma_1_4' depends on axioms: [propext, Classical.choice, Quot.sound]
+END JordanSize.lemma_1_4

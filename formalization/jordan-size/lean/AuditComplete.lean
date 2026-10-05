@@ -1,6 +1,7 @@
 import SeriesLogExp
 import Lemma11
 import ScalarExtension
+import Lemma14
 set_option format.width 100
 #eval IO.println "BEGIN JordanSize.logarithmicChains"
 #check JordanSize.logarithmicChains
@@ -90,3 +91,79 @@ set_option format.width 100
 #check JordanSize.Factors.baseChange
 #print axioms JordanSize.Factors.baseChange
 #eval IO.println "END JordanSize.Factors.baseChange"
+#eval IO.println "BEGIN JordanSize.orbit_independent"
+#check JordanSize.orbit_independent
+#print axioms JordanSize.orbit_independent
+#eval IO.println "END JordanSize.orbit_independent"
+#eval IO.println "BEGIN JordanSize.chainRelations_independent"
+#check JordanSize.chainRelations_independent
+#print axioms JordanSize.chainRelations_independent
+#eval IO.println "END JordanSize.chainRelations_independent"
+#eval IO.println "BEGIN JordanSize.product_top"
+#check JordanSize.product_top
+#print axioms JordanSize.product_top
+#eval IO.println "END JordanSize.product_top"
+#eval IO.println "BEGIN JordanSize.weighted_product"
+#check JordanSize.weighted_product
+#print axioms JordanSize.weighted_product
+#eval IO.println "END JordanSize.weighted_product"
+#eval IO.println "BEGIN JordanSize.lemma_1_2"
+#check JordanSize.lemma_1_2
+#print axioms JordanSize.lemma_1_2
+#eval IO.println "END JordanSize.lemma_1_2"
+#eval IO.println "BEGIN JordanSize.pairing_operator"
+#check JordanSize.pairing_operator
+#print axioms JordanSize.pairing_operator
+#eval IO.println "END JordanSize.pairing_operator"
+#eval IO.println "BEGIN JordanSize.pairing_kernel_profile"
+#check JordanSize.pairing_kernel_profile
+#print axioms JordanSize.pairing_kernel_profile
+#eval IO.println "END JordanSize.pairing_kernel_profile"
+#eval IO.println "BEGIN JordanSize.transportChain"
+#check JordanSize.transportChain
+#print axioms JordanSize.transportChain
+#eval IO.println "END JordanSize.transportChain"
+#eval IO.println "BEGIN JordanSize.jordanBound_stability"
+#check JordanSize.jordanBound_stability
+#print axioms JordanSize.jordanBound_stability
+#eval IO.println "END JordanSize.jordanBound_stability"
+#eval IO.println "BEGIN JordanSize.largestJordanBlock_bound"
+#check JordanSize.largestJordanBlock_bound
+#print axioms JordanSize.largestJordanBlock_bound
+#eval IO.println "END JordanSize.largestJordanBlock_bound"
+#eval IO.println "BEGIN JordanSize.pairing_bounds"
+#check JordanSize.pairing_bounds
+#print axioms JordanSize.pairing_bounds
+#eval IO.println "END JordanSize.pairing_bounds"
+#eval IO.println "BEGIN JordanSize.pairing_largest"
+#check JordanSize.pairing_largest
+#print axioms JordanSize.pairing_largest
+#eval IO.println "END JordanSize.pairing_largest"
+#eval IO.println "BEGIN JordanSize.chain_profile_jump"
+#check JordanSize.chain_profile_jump
+#print axioms JordanSize.chain_profile_jump
+#eval IO.println "END JordanSize.chain_profile_jump"
+#eval IO.println "BEGIN JordanSize.chain_from_profile"
+#check JordanSize.chain_from_profile
+#print axioms JordanSize.chain_from_profile
+#eval IO.println "END JordanSize.chain_from_profile"
+#eval IO.println "BEGIN JordanSize.pairing_transfer_chain"
+#check JordanSize.pairing_transfer_chain
+#print axioms JordanSize.pairing_transfer_chain
+#eval IO.println "END JordanSize.pairing_transfer_chain"
+#eval IO.println "BEGIN JordanSize.lemma_1_3"
+#check JordanSize.lemma_1_3
+#print axioms JordanSize.lemma_1_3
+#eval IO.println "END JordanSize.lemma_1_3"
+#eval IO.println "BEGIN JordanSize.conjugateChain"
+#check JordanSize.conjugateChain
+#print axioms JordanSize.conjugateChain
+#eval IO.println "END JordanSize.conjugateChain"
+#eval IO.println "BEGIN JordanSize.product_endpoint_vanish"
+#check JordanSize.product_endpoint_vanish
+#print axioms JordanSize.product_endpoint_vanish
+#eval IO.println "END JordanSize.product_endpoint_vanish"
+#eval IO.println "BEGIN JordanSize.lemma_1_4"
+#check JordanSize.lemma_1_4
+#print axioms JordanSize.lemma_1_4
+#eval IO.println "END JordanSize.lemma_1_4"

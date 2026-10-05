@@ -1,6 +1,6 @@
-import {english} from './i18n.js?v=20261005-jordan-complete-2';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261005-jordan-complete-2';
-import {createProofPackages} from './proof-package-model.js?v=20261005-jordan-complete-2';
+import {english} from './i18n.js?v=20261005-jordan-chains-4';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261005-jordan-chains-4';
+import {createProofPackages} from './proof-package-model.js?v=20261005-jordan-chains-4';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
@@ -183,7 +183,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
   }
   function updatePath(){
     back.disabled=!state.trail.length&&state.mode==='world';back.textContent=text('← 返回','← Back');home.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>';home.setAttribute('aria-label',text('返回主证明','Return to the main proof'));home.title=home.getAttribute('aria-label');toggle.textContent=state.mode==='graph'?text('卡片模块','Proof modules'):text('连接图','Connections');
-    const labels=[text('原稿 Lemma 1.1','Manuscript · Lemma 1.1'),...state.trail.filter(s=>s.target!=='lemma'||s.pack).map(s=>s.pack?model.packFor(s.pack)?.name[english?1:0]:originalById.get(s.target)?.title),state.target==='lemma'?null:originalById.get(state.target)?.title,state.pack?model.packFor(state.pack)?.name[english?1:0]:null].filter(Boolean);
+    const labels=[text('原稿 Corollary 1.4','Manuscript · Corollary 1.4'),...state.trail.filter(s=>s.target!=='lemma'||s.pack).map(s=>s.pack?model.packFor(s.pack)?.name[english?1:0]:originalById.get(s.target)?.title),state.target==='lemma'?null:originalById.get(state.target)?.title,state.pack?model.packFor(state.pack)?.name[english?1:0]:null].filter(Boolean);
     path.textContent=labels.join(' / ');path.title=path.textContent;
     document.body.classList.toggle('proof-world-mode',state.mode==='world');document.body.classList.toggle('proof-graph-mode',state.mode==='graph');root.hidden=state.mode!=='world';viewport.hidden=state.mode==='world';
     if(state.mode==='world'){const zoom=document.querySelector('.editor-navigation output');if(zoom)zoom.textContent=`${Math.round(cameraPose().scale*100)}%`;}
@@ -206,7 +206,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
     [...deck.children].forEach((card,i)=>{card.dataset.worldSlot=slots[i];card.style.setProperty('--fan-order',i);});layoutDeck();queueWires();
     if(!items.length){const note=document.createElement('div');note.className='world-leaf';note.innerHTML=`<p>${text('这个声明没有其他项目卡片作为前提。','This declaration has no other project-card prerequisites.')}</p>`;const evidence=document.createElement('button');evidence.type='button';evidence.className='button';evidence.textContent=text('查看 Lean 声明与源码','Read the Lean declaration and source');evidence.onclick=()=>openGraph(state.target);note.append(evidence);deck.append(note);}
-    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('引理 1.1 · 已验证的证明','Lemma 1.1 · verified proof'):text('当前目标的证明步骤','Proof steps for the current goal');
+    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('推论 1.4 · 已验证的证明','Corollary 1.4 · verified proof'):text('当前目标的证明步骤','Proof steps for the current goal');
     root.dataset.worldTarget=state.target;root.dataset.referenceWorld=state.pack||'';root.dataset.catalog=String(state.catalog);
     previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label',text('上一组卡片','Previous cards'));next.setAttribute('aria-label',text('下一组卡片','Next cards'));previous.disabled=state.page===0;next.disabled=state.page===pages-1;previous.hidden=next.hidden=pages===1;
     count.textContent=items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';

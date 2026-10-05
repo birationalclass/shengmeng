@@ -1,17 +1,17 @@
 {
   "title": "Jordan Size",
-  "target": "Lemma 1.1",
+  "target": "Corollary 1.4",
   "targetVerified": true,
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
-  "checkedAt": "2026-10-05T11:44:20.325109+00:00",
+  "checkedAt": "2026-10-05T12:32:44.933355+00:00",
   "allowedAxioms": [
     "propext",
     "Classical.choice",
     "Quot.sound"
   ],
-  "verification": "The integrated declaration JordanSize.lemma_1_1 and scalar-extension bridge passed the Lean kernel. Jordan sizes are stated through generalized-eigenspace annihilation and the full kernel-growth profile; no explicit Jordan basis is constructed.",
-  "totalLines": 1516,
+  "verification": "Lemmas 1.1–1.3 and Corollary 1.4 are kernel-checked. Chains are explicit independent vector families; block profiles use all shifted-power kernel dimensions. No geometric positivity statement is asserted.",
+  "totalLines": 2343,
   "files": [
     {
       "path": "lean/LogarithmicChains.lean",
@@ -114,19 +114,62 @@
       "sha256": "867f69921e2353a3ec308b63b25a753fd436b5323cea1b936d77fb7e43bdf717"
     },
     {
+      "path": "lean/ChainProducts.lean",
+      "lineCount": 70,
+      "sha256": "b0c601e94d9163fe8325597f1b0d4da6a88b2f60657d39d66e0deacfc7a895f2"
+    },
+    {
+      "path": "lean/JordanChains.lean",
+      "lineCount": 139,
+      "sha256": "8d5b18e09a31eec3bdb51a49a35d847a1234c90d3272c132190b59ca5989b048"
+    },
+    {
+      "path": "lean/PerfectPairing.lean",
+      "lineCount": 111,
+      "sha256": "b2c01908fba23f844e1b8d4366652bd8742a95c23c83db5d33a399733ffdba34"
+    },
+    {
+      "path": "lean/Lemma12.lean",
+      "lineCount": 89,
+      "sha256": "143ff79471c19cef4762faf5d9460e4b08311eee822a32ebe4961b06c4be65da"
+    },
+    {
+      "path": "lean/ChainTransport.lean",
+      "lineCount": 37,
+      "sha256": "71b063246938af657b634feddb9452b1831af23f29620a96bb0f97cf4cfa7ca3"
+    },
+    {
+      "path": "lean/KernelStability.lean",
+      "lineCount": 61,
+      "sha256": "28557a85e4ea4bd32f07aa097c7caa18bb8b9b861565d9b6331d8ed0b70f3dfe"
+    },
+    {
+      "path": "lean/Lemma13.lean",
+      "lineCount": 136,
+      "sha256": "b693d549cc1ddeb8a7939de2635c791b47fd05b7192521b675f4c3483edc614f"
+    },
+    {
+      "path": "lean/ConjugateChains.lean",
+      "lineCount": 30,
+      "sha256": "4fa0250a786faf30427f22897c269cedd4f6d8f92e234e5edca12c780acb5c3b"
+    },
+    {
+      "path": "lean/Lemma14.lean",
+      "lineCount": 77,
+      "sha256": "a7d126fba6ce467c6aded6009c3b1a703e7334ac80ac8b551e0caa64c7141992"
+    },
+    {
       "path": "lean/AuditComplete.lean",
-      "lineCount": 92,
-      "sha256": "3cbb2b4766a475bf49b65bc960ac509e7d9b3e9cefa34f63c4528fbb2135a3b6"
+      "lineCount": 169,
+      "sha256": "5c718d9a3d089942bebc8c96448fe8a9c794282c3d7ce30f25cd5c7cff473cc4"
     }
   ],
   "main": {
-    "path": "lean/Lemma11.lean",
-    "lineCount": 94,
-    "sha256": "72d96cd617828eaa4bd45c132222c30cd9b36a404ff9fd4a559be2c850181b9c",
-    "file": "Lemma11.lean",
-    "declaration": "JordanSize.lemma_1_1",
-    "lines": 94,
-    "formalType": "JordanSize.lemma_1_1.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] (n : ℕ) {M : Fin n → Type u}\n  {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)] [(i : Fin n) → Module ℚ (M i)]\n  [∀ (i : Fin n), IsScalarTower ℚ K (M i)] [∀ (i : Fin n), FiniteDimensional K (M i)] [∀ (i : Fin n), Nontrivial (M i)]\n  [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z] [FiniteDimensional K Z] [Nontrivial Z]\n  (B : MultilinearMap K M Z) (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z)\n  (hT : ∀ (i : Fin n), IsUnit (T i)) (hR : IsUnit R)\n  (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i)) :\n  (∀ (i : Fin n), JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors (T i) ⋯)) ∧\n    JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors R hR) ∧\n      (∀ (x : (i : Fin n) → M i),\n          (JordanSize.jordanFactors R hR).u (B x) = B fun i => (JordanSize.jordanFactors (T i) ⋯).u (x i)) ∧\n        ∀ (x : (i : Fin n) → M i),\n          (JordanSize.jordanFactors R hR).log (B x) =\n            ∑ i, B (Function.update x i ((JordanSize.jordanFactors (T i) ⋯).log (x i)))"
+    "file": "Lemma14.lean",
+    "declaration": "JordanSize.lemma_1_4",
+    "lines": 77,
+    "sha256": "a7d126fba6ce467c6aded6009c3b1a703e7334ac80ac8b551e0caa64c7141992",
+    "formalType": "JordanSize.lemma_1_4.{u_1, u_2, u_3, u_4} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4} [Field K]\n  [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W]\n  [FiniteDimensional K V] [FiniteDimensional K W] (B : A →ₗ[K] V →ₗ[K] V →ₗ[K] W) (P : A ≃ₗ[K] A) (T : V ≃ₗ[K] V)\n  (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)\n  (hpair : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x)\n  (hB : ∀ (w : A) (x y : V), S (((B w) x) y) = ((B (P w)) (T x)) (T y)) (σ : K ≃+* K)\n  (J : JordanSize.SemilinearSymmetry σ) (hJ : ∀ (x : V), J (T x) = T (J x)) (r : ℕ) (hr : 1 ≤ r) (a : K)\n  (C : JordanSize.JordanChain (↑T) a (r + 1)) (hmax : r + 1 = JordanSize.largestJordanBlock ↑T) (w : A) (c : K)\n  (hw : P w = c • w) : ((B w) (C.vectors 0)) (C.vectors 0) = 0 ∧ ((B w) (C.vectors 0)) (J (C.vectors 0)) = 0"
   },
   "nodes": [
     {
@@ -138,8 +181,8 @@
         "Kernels and images"
       ],
       "setup": [
-        "域上向量空间、幂零算子 D。",
-        "A vector space over a field and a nilpotent D."
+        "域上向量空间、幂零算子 𝒟。",
+        "A vector space over a field and a nilpotent 𝒟."
       ],
       "result": [
         "乘交换可逆因子，所有幂的核与像不变。",
@@ -153,7 +196,8 @@
       "lines": 108,
       "sha256": "e34848fa10a8beb7e186c7d188aebaa00aa6143521bb6f899f6a2144c3cb83ea",
       "formalType": "JordanSize.logarithmicChains.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]\n  (D : Module.End K V) (hD : IsNilpotent D) (m : ℕ) :\n  IsNilpotent (JordanSize.logFinite D m) ∧\n    (∀ (j : ℕ),\n        LinearMap.ker (JordanSize.logFinite D m ^ j) = LinearMap.ker (D ^ j) ∧\n          LinearMap.range (JordanSize.logFinite D m ^ j) = LinearMap.range (D ^ j) ∧\n            (JordanSize.logFinite D m ^ j = 0 ↔ D ^ j = 0)) ∧\n      nilpotencyClass (JordanSize.logFinite D m) = nilpotencyClass D",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "product",
@@ -179,7 +223,8 @@
       "lines": 56,
       "sha256": "f3f3b34284fd6ffa53ff9eca1d9a3205c30d02492e45d7494c015119486b1ae3",
       "formalType": "JordanSize.generalizedProduct.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]\n  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] (B : V →ₗ[K] W →ₗ[K] Z)\n  (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z) (h : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y))\n  (a b : K) (p q : ℕ) (x : V) (y : W) (hx : ((T - a • 1) ^ p) x = 0) (hy : ((S - b • 1) ^ q) y = 0) :\n  ((R - (a * b) • 1) ^ (p + q - 1)) ((B x) y) = 0",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "flow",
@@ -190,8 +235,8 @@
         "Finite exponential flow"
       ],
       "setup": [
-        "有理空间上的幂零算子 D。",
-        "A nilpotent D on a rational space."
+        "有理空间上的幂零算子 𝒟。",
+        "A nilpotent 𝒟 on a rational space."
       ],
       "result": [
         "参数相加对应相乘，负参数给出逆元。",
@@ -205,7 +250,8 @@
       "lines": 49,
       "sha256": "7a674db389730f628a7d38aaa6b604bf62c02bfb62aa16bb9a73cbff000e4a00",
       "formalType": "JordanSize.nilpotentFlow.{u_1} {V : Type u_1} [AddCommGroup V] [Module ℚ V] (D : Module.End ℚ V) (hD : IsNilpotent D) :\n  JordanSize.flow D 0 = 1 ∧\n    (∀ (s t : ℚ), JordanSize.flow D (s + t) = JordanSize.flow D s * JordanSize.flow D t) ∧\n      (∀ (t : ℚ), IsUnit (JordanSize.flow D t)) ∧\n        (∀ (t : ℚ),\n            JordanSize.flow D t * JordanSize.flow D (-t) = 1 ∧ JordanSize.flow D (-t) * JordanSize.flow D t = 1) ∧\n          ∀ (m : ℕ), JordanSize.flow D ↑m = JordanSize.flow D 1 ^ m",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "decomposition",
@@ -216,12 +262,12 @@
         "Multiplicative decomposition"
       ],
       "setup": [
-        "完美域上的有限维空间、可逆 T。",
-        "A finite-dimensional space over a perfect field and an invertible T."
+        "完美域上的有限维空间、可逆 𝒯。",
+        "A finite-dimensional space over a perfect field and an invertible 𝒯."
       ],
       "result": [
-        "T=SU，S 半单、U 幺幂且两者交换。",
-        "T=SU with commuting semisimple S and unipotent U."
+        "𝒯=SU，𝒮 半单、U 幺幂且两者交换。",
+        "𝒯=SU with commuting semisimple 𝒮 and unipotent U."
       ],
       "scope": [
         "不需要配对或正性。",
@@ -231,7 +277,8 @@
       "lines": 51,
       "sha256": "401255a6b5e137d689859938d7f3470f03eb803fb8f8907cd2634533daa3e2ec",
       "formalType": "JordanSize.multiplicativeDecomposition.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [PerfectField K]\n  [AddCommGroup V] [Module K V] [FiniteDimensional K V] (T : Module.End K V) (hT : IsUnit T) :\n  ∃ S U, S ∈ K[T] ∧ S.IsSemisimple ∧ IsUnit S ∧ IsNilpotent (U - 1) ∧ IsUnit U ∧ Commute S U ∧ T = S * U",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "series",
@@ -257,7 +304,8 @@
       "lines": 23,
       "sha256": "f35618c9c77fe1122f37e87646c8ad3c6b54575e3d7263faed28c75658b6159a",
       "formalType": "JordanSize.seriesLogExp :\n  PowerSeries.subst (PowerSeries.log ℚ) (PowerSeries.exp ℚ) = 1 + PowerSeries.X ∧\n    PowerSeries.subst (PowerSeries.exp ℚ - 1) (PowerSeries.log ℚ) = PowerSeries.X",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "evaluation",
@@ -283,7 +331,8 @@
       "lines": 75,
       "sha256": "1e9b7f1c1ba3196a318bb8bb784d2d190a944ba3cedbcb1057fe27264ac87583",
       "formalType": "JordanSize.evaluatedInverse.{u_1} {A : Type u_1} [CommRing A] [Algebra ℚ A] [UniformSpace ℚ] [DiscreteUniformity ℚ]\n  [UniformSpace A] [IsUniformAddGroup A] [T2Space A] [CompleteSpace A] [IsTopologicalRing A] [IsLinearTopology A A]\n  (a : A) (ha : IsNilpotent a) (hmap : Continuous ⇑(algebraMap ℚ A)) :\n  PowerSeries.eval₂ (algebraMap ℚ A) (PowerSeries.eval₂ (algebraMap ℚ A) a (PowerSeries.log ℚ)) (PowerSeries.exp ℚ) =\n      1 + a ∧\n    PowerSeries.eval₂ (algebraMap ℚ A) (PowerSeries.eval₂ (algebraMap ℚ A) a (PowerSeries.exp ℚ) - 1)\n        (PowerSeries.log ℚ) =\n      a",
-      "deps": []
+      "deps": [],
+      "kind": "theorem"
     },
     {
       "id": "finite",
@@ -294,12 +343,12 @@
         "Finite evaluation bridge"
       ],
       "setup": [
-        "交换有理代数、D^k=0，声明中的求值接口。",
-        "A commutative rational algebra, D^k=0 and the stated evaluation interfaces."
+        "交换有理代数、𝒟^k=0，声明中的求值接口。",
+        "A commutative rational algebra, 𝒟^k=0 and the stated evaluation interfaces."
       ],
       "result": [
-        "有限对数的指数等于 1+D。",
-        "The exponential of the finite logarithm equals 1+D."
+        "有限对数的指数等于 1+𝒟。",
+        "The exponential of the finite logarithm equals 1+𝒟."
       ],
       "scope": [
         "截断范围与幂零界明确对应。",
@@ -311,7 +360,8 @@
       "formalType": "JordanSize.finiteExpLog.{u_1} {A : Type u_1} [CommRing A] [Algebra ℚ A] [UniformSpace ℚ] [DiscreteUniformity ℚ]\n  [UniformSpace A] [IsUniformAddGroup A] [T2Space A] [CompleteSpace A] [IsTopologicalRing A] [IsLinearTopology A A]\n  (a : A) (k : ℕ) (hk : a ^ k = 0) (hmap : Continuous ⇑(algebraMap ℚ A)) :\n  IsNilpotent.exp (JordanSize.finiteLog a k) = 1 + a",
       "deps": [
         "evaluation"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "operator-log",
@@ -339,7 +389,8 @@
       "formalType": "JordanSize.nilpotent_exp_injective.{u_1} {A : Type u_1} [Ring A] [Algebra ℚ A] {D E : A} (hD : IsNilpotent D)\n  (hE : IsNilpotent E) (h : IsNilpotent.exp D = IsNilpotent.exp E) : D = E",
       "deps": [
         "finite"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "factors",
@@ -368,7 +419,8 @@
       "deps": [
         "decomposition",
         "product"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "multilinear",
@@ -396,7 +448,8 @@
       "formalType": "JordanSize.unipotent_multilinear.{u, u_1} {K : Type u_1} [Field K] [IsAlgClosed K] (n : ℕ) {M : Fin n → Type u}\n  {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)]\n  [∀ (i : Fin n), FiniteDimensional K (M i)] [AddCommGroup Z] [Module K Z] [FiniteDimensional K Z]\n  (B : MultilinearMap K M Z) (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z)\n  (FT : (i : Fin n) → JordanSize.Factors (T i)) (FR : JordanSize.Factors R)\n  (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i)) (x : (i : Fin n) → M i) :\n  FR.u (B x) = B fun i => (FT i).u (x i)",
       "deps": [
         "factors"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "coefficients",
@@ -424,7 +477,8 @@
       "formalType": "JordanSize.flowLeibniz.{u_1, u_2, u_3} {V : Type u_1} {W : Type u_2} {Z : Type u_3} [AddCommGroup V] [Module ℚ V]\n  [AddCommGroup W] [Module ℚ W] [AddCommGroup Z] [Module ℚ Z] (B : V →ₗ[ℚ] W →ₗ[ℚ] Z) (D : Module.End ℚ V)\n  (E : Module.End ℚ W) (F : Module.End ℚ Z) (hD : IsNilpotent D) (hE : IsNilpotent E) (hF : IsNilpotent F)\n  (hB : ∀ (x : V) (y : W), (JordanSize.flow F 1) ((B x) y) = (B ((JordanSize.flow D 1) x)) ((JordanSize.flow E 1) y))\n  (x : V) (y : W) : F ((B x) y) = (B (D x)) y + (B x) (E y)",
       "deps": [
         "flow"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "exponential-chains",
@@ -435,12 +489,12 @@
         "Exponential chain filtrations"
       ],
       "setup": [
-        "特征零系数域、幂零 D。",
-        "A characteristic-zero coefficient field and a nilpotent D."
+        "特征零系数域、幂零 𝒟。",
+        "A characteristic-zero coefficient field and a nilpotent 𝒟."
       ],
       "result": [
-        "exp(D)−I 与 D 的所有幂具有相同的核、像和零幂条件。",
-        "exp(D)−I and D have identical power kernels, images and vanishing conditions."
+        "exp(𝒟)−I 与 𝒟 的所有幂具有相同的核、像和零幂条件。",
+        "exp(𝒟)−I and 𝒟 have identical power kernels, images and vanishing conditions."
       ],
       "scope": [
         "可逆因子 Q 的有限展开及可逆性均已证明。",
@@ -453,7 +507,8 @@
       "deps": [
         "operator-log",
         "log"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "bilinear-log",
@@ -483,7 +538,8 @@
         "multilinear",
         "coefficients",
         "exponential-chains"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "multilinear-log",
@@ -506,12 +562,13 @@
         "Includes arity zero; the proof recursively separates the last slot."
       ],
       "verified": true,
-      "lines": 86,
-      "sha256": "b7906e0ee037aa3d70b790fdab337d4d563e8d038d650fb25abca438cd9acc86",
+      "lines": 81,
+      "sha256": "d61bdb5bb3c7cb0ad31bdbe66e0be7c6488054266fbd2559db31c07b386877ee",
       "formalType": "JordanSize.logarithm_multilinear.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] (n : ℕ)\n  {M : Fin n → Type u} {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)]\n  [(i : Fin n) → Module ℚ (M i)] [∀ (i : Fin n), IsScalarTower ℚ K (M i)] [∀ (i : Fin n), FiniteDimensional K (M i)]\n  [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z] [FiniteDimensional K Z] (B : MultilinearMap K M Z)\n  (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z) (FT : (i : Fin n) → JordanSize.Factors (T i))\n  (FR : JordanSize.Factors R) (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i))\n  (x : (i : Fin n) → M i) : FR.log (B x) = ∑ i, B (Function.update x i ((FT i).log (x i)))",
       "deps": [
         "bilinear-log"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "powers",
@@ -534,12 +591,13 @@
         "Uniqueness of the Jordan factors is checked separately."
       ],
       "verified": true,
-      "lines": 59,
-      "sha256": "eae3ea186d228b15268f184434bb237181949de309329c664c088e715a051880",
+      "lines": 58,
+      "sha256": "63b1556cd51731d32a67c931bc9c7b0277cee9d01df7785c007392ce58997081",
       "formalType": "JordanSize.Factors.log_power.{u_2, u_3} {K : Type u_2} {V : Type u_3} [Field K] [PerfectField K] [Algebra ℚ K]\n  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V] {T : Module.End K V}\n  (F : JordanSize.Factors T) (a : ℕ) : (F.power a).log = ↑a • F.log",
       "deps": [
         "bilinear-log"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "integer",
@@ -550,8 +608,8 @@
         "All integer exponents"
       ],
       "setup": [
-        "有理代数、幂零 D、U=exp(D)，ℓ∈ℤ。",
-        "A rational algebra, nilpotent D, U=exp(D), and ℓ∈ℤ."
+        "有理代数、幂零 𝒟、U=exp(𝒟)，ℓ∈ℤ。",
+        "A rational algebra, nilpotent 𝒟, U=exp(𝒟), and ℓ∈ℤ."
       ],
       "result": [
         "U^ℓ=exp(ℓD)，包括负整数。",
@@ -562,12 +620,13 @@
         "Negative powers are defined in the unit group."
       ],
       "verified": true,
-      "lines": 28,
-      "sha256": "56ccaf813f8fb0a942c27752fced3576efe5c6d7630892cf50d975995d90e5ea",
+      "lines": 26,
+      "sha256": "fbabdfa9b86abadc660e14607522297d6229632e6479db91a9718a0ddb73f52d",
       "formalType": "JordanSize.exp_integer.{u_1} {A : Type u_1} [Ring A] [Algebra ℚ A] (D : A) (hD : IsNilpotent D) (U : Aˣ)\n  (hU : ↑U = IsNilpotent.exp D) (m : ℤ) : ↑(U ^ m) = IsNilpotent.exp (↑m • D)",
       "deps": [
         "powers"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "bounds",
@@ -590,12 +649,13 @@
         "Explicitly proves the scaling formula for shifted powers."
       ],
       "verified": true,
-      "lines": 71,
-      "sha256": "e67b1bc2b293de4cc11605db4cd163a3c737fdd7ace4c595f465c6d06f8869d4",
+      "lines": 66,
+      "sha256": "3c4dd2d61aade796657db0df805b61444c5359acd088d7a8355831f1bd1e4105",
       "formalType": "JordanSize.jordanBound_log_iff.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [Algebra ℚ K] [IsAlgClosed K]\n  [AddCommGroup V] [Module K V] [Module ℚ V] [IsScalarTower ℚ K V] [FiniteDimensional K V] {T : Module.End K V}\n  (F : JordanSize.Factors T) (j : ℕ) : JordanSize.JordanBound T j ↔ F.log ^ j = 0",
       "deps": [
         "bilinear-log"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "profile",
@@ -624,7 +684,8 @@
       "deps": [
         "bounds",
         "powers"
-      ]
+      ],
+      "kind": "theorem"
     },
     {
       "id": "scalar",
@@ -635,8 +696,8 @@
         "Scalar extension"
       ],
       "setup": [
-        "完美域 K 的域扩张 L，有限维空间；对数用有理系数。",
-        "A field extension L/K with K perfect and finite dimensions; rational coefficients for the logarithm."
+        "完美域 K 的域扩张 𝓛，有限维空间；对数用有理系数。",
+        "A field extension 𝓛/K with K perfect and finite dimensions; rational coefficients for the logarithm."
       ],
       "result": [
         "Jordan 分解及有限对数与标量扩张相容。",
@@ -647,30 +708,408 @@
         "Applies to extending rational spaces to the reals or complexes."
       ],
       "verified": true,
-      "lines": 50,
-      "sha256": "420c5685d2f26facb19a59d8b3548abba3e079d24ebbd7b4f359097b1139003f",
+      "lines": 46,
+      "sha256": "907b39d4f7b308fe99795aabcc6004fdf9ee74a49ff1fb3e4f170c9b0ee81f65",
       "formalType": "JordanSize.log_baseChange.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {L : Type u_3} [Field K] [PerfectField K]\n  [Field L] [Algebra K L] [AddCommGroup V] [Module K V] [FiniteDimensional K V] {T : Module.End K V} [Algebra ℚ K]\n  [Algebra ℚ L] [IsScalarTower ℚ K L] [Module ℚ V] [IsScalarTower ℚ K V] (F : JordanSize.Factors T) :\n  F.baseChange.log = (Module.End.baseChangeHom K L V) F.log",
       "deps": [
         "powers"
+      ],
+      "kind": "theorem"
+    },
+    {
+      "path": "lean/Lemma11.lean",
+      "lineCount": 94,
+      "sha256": "867f69921e2353a3ec308b63b25a753fd436b5323cea1b936d77fb7e43bdf717",
+      "file": "Lemma11.lean",
+      "declaration": "JordanSize.lemma_1_1",
+      "lines": 93,
+      "formalType": "JordanSize.lemma_1_1.{u, u_1} {K : Type u_1} [Field K] [Algebra ℚ K] [IsAlgClosed K] (n : ℕ) {M : Fin n → Type u}\n  {Z : Type u} [(i : Fin n) → AddCommGroup (M i)] [(i : Fin n) → Module K (M i)] [(i : Fin n) → Module ℚ (M i)]\n  [∀ (i : Fin n), IsScalarTower ℚ K (M i)] [∀ (i : Fin n), FiniteDimensional K (M i)] [∀ (i : Fin n), Nontrivial (M i)]\n  [AddCommGroup Z] [Module K Z] [Module ℚ Z] [IsScalarTower ℚ K Z] [FiniteDimensional K Z] [Nontrivial Z]\n  (B : MultilinearMap K M Z) (T : (i : Fin n) → Module.End K (M i)) (R : Module.End K Z)\n  (hT : ∀ (i : Fin n), IsUnit (T i)) (hR : IsUnit R)\n  (hB : ∀ (x : (i : Fin n) → M i), R (B x) = B fun i => (T i) (x i)) :\n  (∀ (i : Fin n), JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors (T i) ⋯)) ∧\n    JordanSize.LogarithmicChainStatement (JordanSize.jordanFactors R hR) ∧\n      (∀ (x : (i : Fin n) → M i),\n          (JordanSize.jordanFactors R hR).u (B x) = B fun i => (JordanSize.jordanFactors (T i) ⋯).u (x i)) ∧\n        ∀ (x : (i : Fin n) → M i),\n          (JordanSize.jordanFactors R hR).log (B x) =\n            ∑ i, B (Function.update x i ((JordanSize.jordanFactors (T i) ⋯).log (x i)))",
+      "id": "lemma11",
+      "title": [
+        "Lemma 1.1 · 对数与 Jordan 链",
+        "Lemma 1.1 · Logarithms and Jordan chains"
+      ],
+      "setup": [
+        "有限维空间、可逆算子、等变多重线性映射，特征零系数。",
+        "Finite-dimensional spaces, invertible operators and equivariant multilinear maps, with characteristic-zero coefficients."
+      ],
+      "result": [
+        "有限对数、Leibniz 公式、核与像和 Jordan 块信息。",
+        "Finite logarithms, Leibniz identities, kernels, images and Jordan block profiles."
+      ],
+      "scope": [
+        "上一版完整验证的引理；不依赖正性。",
+        "The previously verified complete lemma; no positivity is required."
+      ],
+      "deps": [
+        "operator-log",
+        "multilinear",
+        "multilinear-log",
+        "integer",
+        "powers",
+        "profile",
+        "scalar"
+      ],
+      "verified": true,
+      "kind": "theorem",
+      "richStatement": true
+    },
+    {
+      "id": "chains",
+      "file": "JordanChains.lean",
+      "declaration": "JordanSize.orbit_independent",
+      "title": [
+        "Jordan 链与线性无关性",
+        "Jordan chains and independence"
+      ],
+      "setup": [
+        "域上的向量空间，Dʳx=0，Dʳ⁻¹x≠0。",
+        "A vector space over a field, with Dʳx=0 and Dʳ⁻¹x≠0."
+      ],
+      "result": [
+        "x,Dx,…,Dʳ⁻¹x 线性无关；反向排列构造 Jordan 链。",
+        "The vectors x,Dx,…,Dʳ⁻¹x are independent; reversing them constructs a Jordan chain."
+      ],
+      "scope": [
+        "普通向量空间；精确假设见声明。",
+        "Ordinary vector spaces; inspect the exact declaration for its hypotheses."
+      ],
+      "deps": [],
+      "verified": true,
+      "lines": 139,
+      "sha256": "8d5b18e09a31eec3bdb51a49a35d847a1234c90d3272c132190b59ca5989b048",
+      "formalType": "JordanSize.orbit_independent.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]\n  (D : Module.End K V) (r : ℕ) (x : V) (hzero : (D ^ r) x = 0) (htop : (D ^ (r - 1)) x ≠ 0) :\n  LinearIndependent K fun i => (D ^ ↑i) x",
+      "kind": "theorem",
+      "compactSetup": [
+        "𝒟ʳx=0；𝒟ʳ⁻¹x≠0。",
+        "𝒟ʳx=0; 𝒟ʳ⁻¹x≠0."
+      ],
+      "compactResult": [
+        "x 的轨道线性无关。",
+        "The orbit of x is independent."
+      ]
+    },
+    {
+      "id": "top-product",
+      "file": "ChainProducts.lean",
+      "declaration": "JordanSize.product_top",
+      "title": [
+        "最高项的系数",
+        "Coefficient of the highest term"
+      ],
+      "setup": [
+        "等变双线性 B；两因子的移位幂 p+1、q+1 为零。",
+        "Equivariant bilinear B; the shifted powers p+1 and q+1 vanish on the two factors."
+      ],
+      "result": [
+        "第 p+q 项为 binom(p+q,p)bᵖaᑫ 乘两个端点的积。",
+        "The (p+q)-th term is binom(p+q,p)bᵖaᑫ times the product of endpoints."
+      ],
+      "scope": [
+        "普通向量空间；精确假设见声明。",
+        "Ordinary vector spaces; inspect the exact declaration for its hypotheses."
+      ],
+      "deps": [
+        "product"
+      ],
+      "verified": true,
+      "lines": 70,
+      "sha256": "b0c601e94d9163fe8325597f1b0d4da6a88b2f60657d39d66e0deacfc7a895f2",
+      "formalType": "JordanSize.product_top.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]\n  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] (B : V →ₗ[K] W →ₗ[K] Z)\n  (T : Module.End K V) (S : Module.End K W) (R : Module.End K Z) (h : ∀ (x : V) (y : W), R ((B x) y) = (B (T x)) (S y))\n  (a b : K) (p q : ℕ) (x : V) (y : W) (hx : ((T - a • 1) ^ (p + 1)) x = 0) (hy : ((S - b • 1) ^ (q + 1)) y = 0) :\n  ((R - (a * b) • 1) ^ (p + q)) ((B x) y) =\n    (↑((p + q).choose p) * b ^ p * a ^ q) • (B (((T - a • 1) ^ p) x)) (((S - b • 1) ^ q) y)",
+      "kind": "theorem",
+      "compactSetup": [
+        "等变 B；两个截断轨道。",
+        "Equivariant B; two truncated orbits."
+      ],
+      "compactResult": [
+        "最高项的二项式系数明确。",
+        "Exact binomial leading coefficient."
+      ]
+    },
+    {
+      "id": "lemma12",
+      "file": "Lemma12.lean",
+      "declaration": "JordanSize.lemma_1_2",
+      "title": [
+        "Lemma 1.2 · 三条链的乘积",
+        "Lemma 1.2 · Product of three chains"
+      ],
+      "setup": [
+        "特征零系数域，等变三线性映射 B 和可逆输入算子。w≠0 是 χ 特征向量；u₁,…,uᵣ 和 v₁,…,vₛ 是 μ、λ 的 Jordan 链。令 𝒜=𝓡−χμλ𝓘。",
+        "A characteristic-zero coefficient field, equivariant trilinear B and invertible input operators. Let w≠0 be a χ-eigenvector, and u₁,…,uᵣ and v₁,…,vₛ be Jordan chains of eigenvalues μ,λ. Put 𝒜=𝓡−χμλ𝓘."
+      ],
+      "result": [
+        "最高项系数如下；再作用一次为零。端点积非零产生长 r+s−1 的线性无关 Jordan 链。",
+        "The highest term is given below; one further application is zero. A nonzero endpoint product gives an independent Jordan chain of length r+s−1."
+      ],
+      "scope": [
+        "源码从零编号，r=p+1、s=q+1；χ=c、μ=a、λ=b。w 是长度一的第三条链。",
+        "The source uses zero-based indices: r=p+1, s=q+1, χ=c, μ=a, λ=b. The weight w is the third chain of length one."
+      ],
+      "deps": [
+        "top-product",
+        "chains"
+      ],
+      "verified": true,
+      "lines": 89,
+      "sha256": "143ff79471c19cef4762faf5d9460e4b08311eee822a32ebe4961b06c4be65da",
+      "formalType": "JordanSize.lemma_1_2.{u_1, u_2, u_3, u_4, u_5} {K : Type u_1} {A : Type u_2} {V : Type u_3} {W : Type u_4}\n  {Z : Type u_5} [Field K] [CharZero K] [AddCommGroup A] [Module K A] [AddCommGroup V] [Module K V] [AddCommGroup W]\n  [Module K W] [AddCommGroup Z] [Module K Z] (B : A →ₗ[K] V →ₗ[K] W →ₗ[K] Z) (P : A ≃ₗ[K] A) (T : V ≃ₗ[K] V)\n  (S : W ≃ₗ[K] W) (R : Module.End K Z) (h : ∀ (w : A) (x : V) (y : W), R (((B w) x) y) = ((B (P w)) (T x)) (S y))\n  (c a b : K) (p q : ℕ) (w : A) (hw0 : w ≠ 0) (hw : P w = c • w) (C : JordanSize.JordanChain (↑T) a (p + 1))\n  (D : JordanSize.JordanChain (↑S) b (q + 1)) :\n  ((R - (c * a * b) • 1) ^ (p + q)) (((B w) (C.vectors (Fin.last p))) (D.vectors (Fin.last q))) =\n      (↑((p + q).choose p) * c ^ (p + q) * b ^ p * a ^ q) • ((B w) (C.vectors 0)) (D.vectors 0) ∧\n    ((R - (c * a * b) • 1) ^ (p + q + 1)) (((B w) (C.vectors (Fin.last p))) (D.vectors (Fin.last q))) = 0 ∧\n      (((B w) (C.vectors 0)) (D.vectors 0) ≠ 0 → Nonempty (JordanSize.JordanChain R (c * a * b) (p + q + 1)))",
+      "kind": "theorem",
+      "compactSetup": [
+        "等变乘积与三条链。",
+        "Equivariant product and three chains."
+      ],
+      "compactResult": [
+        "端点积非零，链长 r+s−1。",
+        "Nonzero endpoints give length r+s−1."
+      ]
+    },
+    {
+      "id": "pairing",
+      "file": "PerfectPairing.lean",
+      "declaration": "JordanSize.pairing_kernel_profile",
+      "title": [
+        "完美配对的核维数",
+        "Kernel dimensions under perfect pairing"
+      ],
+      "setup": [
+        "有限维空间、完美配对、可逆 𝒯，配对缩放 d≠0；a≠0。",
+        "Finite dimensions, a perfect pairing, invertible 𝒯, pairing scale d≠0 and a≠0."
+      ],
+      "result": [
+        "对每个 j，𝒮−(d/a)I 与 𝒯−aI 的 j 次幂核维数相同。",
+        "For every j, the j-th powers of 𝒮−(d/a)I and 𝒯−aI have equal kernel dimensions."
+      ],
+      "scope": [
+        "配对相容性给出 𝒮=d(𝒯⁻¹)∨，没有把核维数相同当作假设。",
+        "Pairing compatibility proves 𝒮=d(𝒯⁻¹)∨; equality of kernel dimensions is not assumed."
+      ],
+      "deps": [
+        "log"
+      ],
+      "verified": true,
+      "lines": 111,
+      "sha256": "b2c01908fba23f844e1b8d4366652bd8742a95c23c83db5d33a399733ffdba34",
+      "formalType": "JordanSize.pairing_kernel_profile.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {W : Type u_3} [Field K]\n  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [FiniteDimensional K V] [FiniteDimensional K W]\n  (T : V ≃ₗ[K] V) (S : Module.End K W) (e : W ≃ₗ[K] Module.Dual K V) (d a : K) (hd : d ≠ 0) (ha : a ≠ 0)\n  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (j : ℕ) :\n  Module.finrank K ↥((S - (d / a) • 1) ^ j).ker = Module.finrank K ↥((↑T - a • 1) ^ j).ker",
+      "kind": "theorem",
+      "compactSetup": [
+        "完美配对，缩放 d≠0。",
+        "Perfect pairing with scale d≠0."
+      ],
+      "compactResult": [
+        "所有移位幂核维数相同。",
+        "All shifted-power kernel sizes match."
+      ]
+    },
+    {
+      "id": "transport",
+      "file": "ChainTransport.lean",
+      "declaration": "JordanSize.transportChain",
+      "title": [
+        "链的归一化传递",
+        "Normalized chain transport"
+      ],
+      "setup": [
+        "RL=cLT，c≠0；Jordan 链的端点经 𝓛 后非零。",
+        "RL=cLT, c≠0; the Jordan-chain endpoint has nonzero image under 𝓛."
+      ],
+      "result": [
+        "zᵢ=c⁻ⁱLvᵢ 是相同长度、特征值 ca 的独立 Jordan 链（从零编号）。",
+        "zᵢ=c⁻ⁱLvᵢ is an independent Jordan chain of the same length and eigenvalue ca (indices start at zero)."
+      ],
+      "scope": [
+        "不要求 𝓛 在整个空间上单射；只要求端点不消失。",
+        "𝓛 need not be injective on the whole space; only the endpoint must survive."
+      ],
+      "deps": [
+        "chains"
+      ],
+      "verified": true,
+      "lines": 37,
+      "sha256": "71b063246938af657b634feddb9452b1831af23f29620a96bb0f97cf4cfa7ca3",
+      "formalType": "JordanSize.transportChain.{u_1, u_2, u_3} {K : Type u_1} {V : Type u_2} {Z : Type u_3} [Field K] [AddCommGroup V]\n  [Module K V] [AddCommGroup Z] [Module K Z] (T : Module.End K V) (R : Module.End K Z) (L : V →ₗ[K] Z) (c a : K)\n  (hc : c ≠ 0) (h : ∀ (x : V), R (L x) = c • L (T x)) {r : ℕ} (C : JordanSize.JordanChain T a (r + 1))\n  (hend : L (C.vectors 0) ≠ 0) : JordanSize.JordanChain R (c * a) (r + 1)",
+      "kind": "definition",
+      "compactSetup": [
+        "𝓡𝓛=c𝓛𝒯；端点不消失。",
+        "𝓡𝓛=c𝓛𝒯; surviving endpoint."
+      ],
+      "compactResult": [
+        "zᵢ=c⁻ⁱ𝓛vᵢ 是 Jordan 链。",
+        "zᵢ=c⁻ⁱ𝓛vᵢ forms a Jordan chain."
+      ]
+    },
+    {
+      "id": "stability",
+      "file": "KernelStability.lean",
+      "declaration": "JordanSize.jordanBound_stability",
+      "title": [
+        "核稳定与最长链界",
+        "Kernel stability and chain bounds"
+      ],
+      "setup": [
+        "有限维空间和线性算子 𝒯；整数 j≥0。",
+        "A finite-dimensional space, an operator 𝒯 and j≥0."
+      ],
+      "result": [
+        "全体广义特征空间的 j 阶消去，等价于每个特征值的核在 j 到 j+1 稳定。",
+        "Uniform annihilation at order j is equivalent to kernel stabilization from j to j+1 at every eigenvalue."
+      ],
+      "scope": [
+        "普通向量空间；精确假设见声明。",
+        "Ordinary vector spaces; inspect the exact declaration for its hypotheses."
+      ],
+      "deps": [],
+      "verified": true,
+      "lines": 61,
+      "sha256": "28557a85e4ea4bd32f07aa097c7caa18bb8b9b861565d9b6331d8ed0b70f3dfe",
+      "formalType": "JordanSize.jordanBound_stability.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V]\n  [FiniteDimensional K V] (T : Module.End K V) (j : ℕ) :\n  JordanSize.JordanBound T j ↔\n    ∀ (a : K), Module.finrank K ↥((T - a • 1) ^ (j + 1)).ker = Module.finrank K ↥((T - a • 1) ^ j).ker",
+      "kind": "theorem",
+      "compactSetup": [
+        "有限维空间及算子 𝒯。",
+        "Finite dimensions; an operator 𝒯."
+      ],
+      "compactResult": [
+        "核稳定 ⇔ 链长界。",
+        "Kernel stability ⇔ chain bound."
+      ]
+    },
+    {
+      "id": "lemma13",
+      "file": "Lemma13.lean",
+      "declaration": "JordanSize.lemma_1_3",
+      "title": [
+        "Lemma 1.3 · 传递与完美配对",
+        "Lemma 1.3 · Transport and perfect pairing"
+      ],
+      "setup": [
+        "有限维 V、W，可逆 𝒯ᵥ、𝒯𝓌，相容完美配对缩放 d≠0。另有线性 𝓛:V→Z、算子 𝓡，满足 𝓡𝓛=θ𝓛𝒯ᵥ、θ≠0。v₁,…,vᵣ 是 λ 的 Jordan 链，𝓛v₁≠0。",
+        "Finite-dimensional V,W, invertible operators 𝒯ᵥ,𝒯𝓌 and a compatible perfect pairing scaled by d≠0. Also let 𝓛:V→Z and 𝓡 satisfy 𝓡𝓛=θ𝓛𝒯ᵥ, θ≠0. Let v₁,…,vᵣ be a λ-Jordan chain with 𝓛v₁≠0."
+      ],
+      "result": [
+        "对偶算子恒等式、逐特征值全部核维数、最大块相同、归一化传递及对偶链构造。",
+        "Contragredient identity, full eigenvalue kernel profiles, equal largest blocks, normalized transport and construction of dual chains."
+      ],
+      "scope": [
+        "归一化像为 θλ 的同长度独立链；若 Z=W，传回 V 后特征值为 d/(θλ)。若原链最长，配对两侧最大块相同，传回链也最长。源码以 i=j−1 编号。",
+        "The normalized images form an independent chain of the same length and eigenvalue θλ. If Z=W, transfer back gives eigenvalue d/(θλ). When the original chain is maximal, equal largest blocks make the transferred chain maximal. Source indices use i=j−1."
+      ],
+      "deps": [
+        "pairing",
+        "transport",
+        "stability"
+      ],
+      "verified": true,
+      "lines": 136,
+      "sha256": "b693d549cc1ddeb8a7939de2635c791b47fd05b7192521b675f4c3483edc614f",
+      "formalType": "JordanSize.lemma_1_3.{u_1, u_2, u_3, u_4} {K : Type u_1} {V : Type u_2} {W : Type u_3} {Z : Type u_4} [Field K]\n  [AddCommGroup V] [Module K V] [AddCommGroup W] [Module K W] [AddCommGroup Z] [Module K Z] [FiniteDimensional K V]\n  [FiniteDimensional K W] (T : V ≃ₗ[K] V) (S : W ≃ₗ[K] W) (e : W ≃ₗ[K] Module.Dual K V) (d : K) (hd : d ≠ 0)\n  (h : ∀ (x : V) (y : W), (e (S y)) (T x) = d * (e y) x) (R : Module.End K Z) (L : V →ₗ[K] Z) (c a : K) (hc : c ≠ 0)\n  (hL : ∀ (x : V), R (L x) = c • L (T x)) {r : ℕ} (C : JordanSize.JordanChain (↑T) a (r + 1))\n  (hend : L (C.vectors 0) ≠ 0) :\n  ↑e ∘ₗ ↑S = (d • (↑T.symm).dualMap) ∘ₗ ↑e ∧\n    (∀ (b : K),\n        b ≠ 0 → ∀ (j : ℕ), Module.finrank K ↥((↑S - (d / b) • 1) ^ j).ker = Module.finrank K ↥((↑T - b • 1) ^ j).ker) ∧\n      JordanSize.largestJordanBlock ↑T = JordanSize.largestJordanBlock ↑S ∧\n        (∃ D, ∀ (i : Fin (r + 1)), D.vectors i = c⁻¹ ^ ↑i • L (C.vectors i)) ∧\n          ∀ (b : K) (D : JordanSize.JordanChain (↑S) b (r + 1)), Nonempty (JordanSize.JordanChain (↑T) (d / b) (r + 1))",
+      "kind": "theorem",
+      "compactSetup": [
+        "完美配对；端点不消失。",
+        "Perfect pairing; endpoint survives."
+      ],
+      "compactResult": [
+        "块大小相同；链可传递。",
+        "Block sizes match; chains transport."
+      ]
+    },
+    {
+      "id": "conjugate",
+      "file": "ConjugateChains.lean",
+      "declaration": "JordanSize.conjugateChain",
+      "title": [
+        "共轭整条链",
+        "Conjugating the entire chain"
+      ],
+      "setup": [
+        "系数域自同构 σ、半线性同构 J，与 𝒯 交换；给定 Jordan 链。",
+        "A field automorphism σ, a semilinear equivalence J commuting with 𝒯, and a Jordan chain."
+      ],
+      "result": [
+        "Jvᵢ 构成相同长度、特征值 σ(a) 的独立链。",
+        "The vectors Jvᵢ form an independent chain of the same length with eigenvalue σ(a)."
+      ],
+      "scope": [
+        "在复数上取自然复共轭；不假定端点本身为实数。",
+        "Over the complexes take natural conjugation; the endpoint itself is not assumed real."
+      ],
+      "deps": [
+        "chains"
+      ],
+      "verified": true,
+      "lines": 30,
+      "sha256": "4fa0250a786faf30427f22897c269cedd4f6d8f92e234e5edca12c780acb5c3b",
+      "formalType": "JordanSize.conjugateChain.{u_1, u_2} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [Module K V] (σ : K ≃+* K)\n  (J : JordanSize.SemilinearSymmetry σ) (T : Module.End K V) (a : K) (r : ℕ) (h : ∀ (x : V), J (T x) = T (J x))\n  (C : JordanSize.JordanChain T a r) : JordanSize.JordanChain T (σ a) r",
+      "kind": "definition",
+      "compactSetup": [
+        "半线性 J，J𝒯=𝒯J。",
+        "Semilinear J, with J𝒯=𝒯J."
+      ],
+      "compactResult": [
+        "共轭整条链，长度相同。",
+        "Conjugated chain, same length."
       ]
     }
   ],
   "remaining": [],
   "rootSteps": [
-    "operator-log",
-    "multilinear",
-    "multilinear-log",
-    "integer",
-    "powers",
-    "profile",
-    "scalar"
+    "lemma12",
+    "lemma13",
+    "conjugate"
   ],
   "kernelAudit": {
-    "checkedDeclarations": 22,
-    "logSHA256": "2e65ce0f1f95a2960bed1ab90e73ba06578cc936458df89822c62151792fb0da",
-    "rebuildSHA256": "a1dbf9d61409d7af6eca76bf94f9647d1c0403bb4392eb00545515b77ede6dcb",
+    "checkedDeclarations": 41,
     "usesSorryAx": false,
     "buildExitCode": 0,
-    "typeAuditExitCode": 0
+    "typeAuditExitCode": 0,
+    "logSHA256": "3a4ab4137734a10afbe7a7e95e04522f236ccfd7a02a4d64445cf206e394559b",
+    "rebuildSHA256": "62a28c97cc63178b8b095ce5e4547b80ff1840a6401971364016de59a42f9ab6"
+  },
+  "targets": [
+    {
+      "label": "1.1",
+      "declaration": "JordanSize.lemma_1_1",
+      "verified": true
+    },
+    {
+      "label": "1.2",
+      "declaration": "JordanSize.lemma_1_2",
+      "verified": true
+    },
+    {
+      "label": "1.3",
+      "declaration": "JordanSize.lemma_1_3",
+      "verified": true
+    },
+    {
+      "label": "1.4",
+      "declaration": "JordanSize.lemma_1_4",
+      "verified": true
+    }
+  ],
+  "rootPresentation": {
+    "titles": [
+      "Corollary 1.4 · 最长链端点消失",
+      "Corollary 1.4 · Vanishing at a maximal endpoint"
+    ],
+    "compactSetup": [
+      "相容完美配对、等变三线性乘积，最长链长 s≥2。",
+      "Compatible perfect pairing, equivariant trilinear product, longest chain of length s≥2."
+    ],
+    "compactResult": [
+      "每个特征权重 w 均有 wv₁²=wv₁v̄₁=0。",
+      "Every eigenweight w satisfies wv₁²=wv₁v̄₁=0."
+    ],
+    "setup": [
+      "<p>设 A、V、W 为复向量空间，V、W 有限维。算子 𝒫、𝒯、𝒮 可逆，B:A×V×V→W 三线性且满足 𝒮 B(w,x,y)=B(Pw,Tx,Ty)。</p><p>完美配对给出 e:W≃V∨，且 e(Sy)(Tx)=d·e(y)(x)，d≠0。复共轭 J 与 𝒯 交换。</p><p>v₁,…,vₛ 是 𝒯 的最长 Jordan 链，s≥2；w∈A 满足 Pw=cw，允许 w=0。在原稿中 A=Nⁿ⁻³，V=N¹，W=Nⁿ⁻¹。</p>",
+      "<p>Let A,V,W be complex vector spaces, with V,W finite-dimensional, invertible 𝒫,𝒯,𝒮 and a trilinear B:A×V×V→W satisfying 𝒮 B(w,x,y)=B(Pw,Tx,Ty).</p><p>A perfect pairing identifies e:W≃V∨ and satisfies e(Sy)(Tx)=d·e(y)(x), d≠0. Conjugation J commutes with 𝒯.</p><p>Let v₁,…,vₛ be a longest Jordan chain of 𝒯, s≥2, and Pw=cw (w may be zero). In the manuscript A=Nⁿ⁻³, V=N¹ and W=Nⁿ⁻¹.</p>"
+    ],
+    "result": [
+      "<p>B(w,v₁,v₁)=0，B(w,v₁,Jv₁)=0。</p><p>若任一乘积非零，Lemma 1.2 给出长 2s−1 的链；Lemma 1.3 给出 W 的最长链长为 s，而 2s−1&gt;s，矛盾。</p>",
+      "<p>B(w,v₁,v₁)=0 and B(w,v₁,Jv₁)=0.</p><p>A nonzero product would give a chain of length 2s−1 by Lemma 1.2. Lemma 1.3 bounds chains in W by s, while 2s−1&gt;s: a contradiction.</p>"
+    ],
+    "scope": [
+      "完整验证普通向量空间上的结论；不要求 Hodge 正性。源码允许任意特征零系数域及半线性对称。",
+      "The ordinary vector-space statement is fully verified; no Hodge positivity is assumed. The source allows any characteristic-zero coefficient field and semilinear symmetry."
+    ]
   }
 }
