@@ -1,12 +1,12 @@
 // Counts describe the exported source snapshot, never verification status.
-import {buildSourcePacks} from './source-pack-catalog.js?v=20261005-jordan-spatial-1';
+import {buildSourcePacks} from './source-pack-catalog.js?v=20261005-jordan-complete-2';
 let dispose = () => {};
 export function installLeanLineCounts({snapshot, nodes}) {
   dispose();
   if (!document.querySelector('link[data-lean-line-styles]')) {
     const css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = new URL('line-counts.css?v=20261005-jordan-spatial-1', import.meta.url).href;
+    css.href = new URL('line-counts.css?v=20261005-jordan-complete-2', import.meta.url).href;
     css.dataset.leanLineStyles = '';
     document.head.append(css);
   }

@@ -1,6 +1,6 @@
-import {english} from './i18n.js?v=20261005-jordan-spatial-1';
-import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261005-jordan-spatial-1';
-import {createProofPackages} from './proof-package-model.js?v=20261005-jordan-spatial-1';
+import {english} from './i18n.js?v=20261005-jordan-complete-2';
+import {graphStatement,statementPanel,escapeHTML,declarationKind,isReferenceCard} from './theorem-statements.js?v=20261005-jordan-complete-2';
+import {createProofPackages} from './proof-package-model.js?v=20261005-jordan-complete-2';
 
 export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarget}){
   const model=createProofPackages(nodes),panel=document.querySelector('.graph-panel'),viewport=document.querySelector('.graph-scroll');
@@ -206,7 +206,7 @@ export function installProofWorlds({nodes,select,selected,nodeEditor,theoremTarg
     target.element.querySelectorAll('.theorem-port').forEach(port=>port.hidden=!!state.pack||!items.length||port.dataset.side!=='left');
     [...deck.children].forEach((card,i)=>{card.dataset.worldSlot=slots[i];card.style.setProperty('--fan-order',i);});layoutDeck();queueWires();
     if(!items.length){const note=document.createElement('div');note.className='world-leaf';note.innerHTML=`<p>${text('这个声明没有其他项目卡片作为前提。','This declaration has no other project-card prerequisites.')}</p>`;const evidence=document.createElement('button');evidence.type='button';evidence.className='button';evidence.textContent=text('查看 Lean 声明与源码','Read the Lean declaration and source');evidence.onclick=()=>openGraph(state.target);note.append(evidence);deck.append(note);}
-    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('引理 1.1 · 辅助结果与待完成目标','Lemma 1.1 · prerequisites and unfinished target'):text('当前目标的证明步骤','Proof steps for the current goal');
+    reading.textContent=state.pack?model.packFor(state.pack).name[english?1:0]+text(' · 纵向卡牌',' · Vertical cards'):isRoot?text('引理 1.1 · 已验证的证明','Lemma 1.1 · verified proof'):text('当前目标的证明步骤','Proof steps for the current goal');
     root.dataset.worldTarget=state.target;root.dataset.referenceWorld=state.pack||'';root.dataset.catalog=String(state.catalog);
     previous.textContent='←';next.textContent='→';previous.setAttribute('aria-label',text('上一组卡片','Previous cards'));next.setAttribute('aria-label',text('下一组卡片','Next cards'));previous.disabled=state.page===0;next.disabled=state.page===pages-1;previous.hidden=next.hidden=pages===1;
     count.textContent=items.length?`${state.page*pageSize+1}–${Math.min(items.length,(state.page+1)*pageSize)} / ${items.length}`:'';
