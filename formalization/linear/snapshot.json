@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-05T16:35+08:00",
+  "checkedAt": "2026-10-05T16:48+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "3782229783764b65663355b040abda6a1bcd0263de42f2e2e0d0c192bd012650",
-      "lineCount": 52
+      "sha256": "167f2a6bdcfdcab51b3ffed8666369e3847c90dda8774edbe0635c087bf06f22",
+      "lineCount": 78
     },
     {
       "path": "Linear/DoublePoint.lean",
@@ -20,6 +20,21 @@
       "path": "Linear/Duality.lean",
       "sha256": "00105abf68fc434f67069718ef64e3b8e06d4dc1b5ea23be2854f36890e1327a",
       "lineCount": 114
+    },
+    {
+      "path": "Linear/FirstJet.lean",
+      "sha256": "699167928d2f69bd07dc55c7ce6c1b204dc30ed01f3b8f84921b5aab0fabba28",
+      "lineCount": 158
+    },
+    {
+      "path": "Linear/GenericFiber.lean",
+      "sha256": "dcf4bf173165f44a26e04c9d22306fd3efa6aa366d0ff4d54d21f59226d075f7",
+      "lineCount": 43
+    },
+    {
+      "path": "Linear/PairingMatrix.lean",
+      "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
+      "lineCount": 70
     },
     {
       "path": "Linear/Primitive.lean",
@@ -38,8 +53,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "6b506783145152679fadeade33f96a9f4e4ef01006615842e7547ee2b99f4088",
-      "lineCount": 7
+      "sha256": "aea3ec7725d29f9bb1dbca1a7c08c1ced136f586fc7d746a5c8fe6adf33eba38",
+      "lineCount": 10
     }
   ],
   "declarations": {
@@ -182,6 +197,149 @@
       "path": "Linear/Duality.lean",
       "line": 103,
       "code": "theorem dualGenerator_quotient_nonzero (q : A →ₐ[B] B)\n    (p : PerfectMultiplicationPairing (B := B) (A := A))\n    (J : Ideal A) (m : Ideal B) (hm : (1 : B) ∉ m)\n    (hJ : ∀ a ∈ J, p.functional a ∈ m) :\n    Ideal.Quotient.mk J (dualGenerator q p) ≠ 0 := by\n  rw [quotient_image_nonzero_iff]\n  intro h\n  have h' := hJ _ h\n  rw [dualGenerator_functional] at h'\n  exact hm h'",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "firstJet_fst": {
+      "path": "Linear/FirstJet.lean",
+      "line": 50,
+      "code": "@[simp] theorem firstJet_fst (f : PowerSeries B) :\n    (firstJet B f).fst = PowerSeries.coeff 0 f := rfl\n\n@[simp] theorem firstJet_snd (f : PowerSeries B) :\n    (firstJet B f).snd = PowerSeries.coeff 1 f := rfl\n\ntheorem firstJet_surjective : Function.Surjective (firstJet B) := by\n  intro a\n  refine ⟨PowerSeries.C a.fst + PowerSeries.C a.snd * PowerSeries.X, ?_⟩\n  ext <;> simp\n\ntheorem firstJet_kernel :\n    RingHom.ker (firstJet B) =\n      Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2} := by\n  ext f\n  rw [Ideal.mem_span_singleton, PowerSeries.X_pow_dvd_iff]\n  change firstJet B f = 0 ↔ _\n  rw [TrivSqZeroExt.ext_iff]\n  simp only [firstJet_fst, firstJet_snd, TrivSqZeroExt.fst_zero, TrivSqZeroExt.snd_zero]\n  constructor\n  · rintro ⟨h0, h1⟩ n hn\n    interval_cases n <;> assumption\n  · intro h\n    exact ⟨h 0 (by decide), h 1 (by decide)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "firstJet_snd": {
+      "path": "Linear/FirstJet.lean",
+      "line": 53,
+      "code": "@[simp] theorem firstJet_snd (f : PowerSeries B) :\n    (firstJet B f).snd = PowerSeries.coeff 1 f := rfl\n\ntheorem firstJet_surjective : Function.Surjective (firstJet B) := by\n  intro a\n  refine ⟨PowerSeries.C a.fst + PowerSeries.C a.snd * PowerSeries.X, ?_⟩\n  ext <;> simp\n\ntheorem firstJet_kernel :\n    RingHom.ker (firstJet B) =\n      Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2} := by\n  ext f\n  rw [Ideal.mem_span_singleton, PowerSeries.X_pow_dvd_iff]\n  change firstJet B f = 0 ↔ _\n  rw [TrivSqZeroExt.ext_iff]\n  simp only [firstJet_fst, firstJet_snd, TrivSqZeroExt.fst_zero, TrivSqZeroExt.snd_zero]\n  constructor\n  · rintro ⟨h0, h1⟩ n hn\n    interval_cases n <;> assumption\n  · intro h\n    exact ⟨h 0 (by decide), h 1 (by decide)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "firstJet_surjective": {
+      "path": "Linear/FirstJet.lean",
+      "line": 56,
+      "code": "theorem firstJet_surjective : Function.Surjective (firstJet B) := by\n  intro a\n  refine ⟨PowerSeries.C a.fst + PowerSeries.C a.snd * PowerSeries.X, ?_⟩\n  ext <;> simp\n\ntheorem firstJet_kernel :\n    RingHom.ker (firstJet B) =\n      Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2} := by\n  ext f\n  rw [Ideal.mem_span_singleton, PowerSeries.X_pow_dvd_iff]\n  change firstJet B f = 0 ↔ _\n  rw [TrivSqZeroExt.ext_iff]\n  simp only [firstJet_fst, firstJet_snd, TrivSqZeroExt.fst_zero, TrivSqZeroExt.snd_zero]\n  constructor\n  · rintro ⟨h0, h1⟩ n hn\n    interval_cases n <;> assumption\n  · intro h\n    exact ⟨h 0 (by decide), h 1 (by decide)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "firstJet_kernel": {
+      "path": "Linear/FirstJet.lean",
+      "line": 61,
+      "code": "theorem firstJet_kernel :\n    RingHom.ker (firstJet B) =\n      Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2} := by\n  ext f\n  rw [Ideal.mem_span_singleton, PowerSeries.X_pow_dvd_iff]\n  change firstJet B f = 0 ↔ _\n  rw [TrivSqZeroExt.ext_iff]\n  simp only [firstJet_fst, firstJet_snd, TrivSqZeroExt.fst_zero, TrivSqZeroExt.snd_zero]\n  constructor\n  · rintro ⟨h0, h1⟩ n hn\n    interval_cases n <;> assumption\n  · intro h\n    exact ⟨h 0 (by decide), h 1 (by decide)⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePointPowerSeriesEquiv_mk": {
+      "path": "Linear/FirstJet.lean",
+      "line": 82,
+      "code": "theorem doublePointPowerSeriesEquiv_mk (f : PowerSeries B) :\n    doublePointPowerSeriesEquiv B (Ideal.Quotient.mk _ f) = firstJet B f := by\n  change (Ideal.quotientKerAlgEquivOfSurjective (firstJet_surjective B))\n    ((Ideal.quotientEquivAlgOfEq B (firstJet_kernel B).symm)\n      (Ideal.Quotient.mk _ f)) = firstJet B f\n  rw [Ideal.quotientEquivAlgOfEq_mk, Ideal.quotientKerAlgEquivOfSurjective_mk]",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_actual_jacobian": {
+      "path": "Linear/FirstJet.lean",
+      "line": 91,
+      "code": "theorem doublePoint_actual_jacobian :\n    firstJet B (PowerSeries.derivative ((PowerSeries.X : PowerSeries B) ^ 2)) =\n      (2 : B) • epsilon B := by\n  rw [PowerSeries.derivative_pow]\n  ext\n  · simp [epsilon, smul_eq_mul]\n  · simp [epsilon, smul_eq_mul]\n    exact map_ofNat (PowerSeries.constantCoeff (R := B)) 2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "doublePoint_actual_jacobian_generates": {
+      "path": "Linear/FirstJet.lean",
+      "line": 102,
+      "code": "theorem doublePoint_actual_jacobian_generates [IsReduced B]\n    (h2 : IsUnit (2 : B)) (x : DoublePoint B) :\n    Annihilates (nilradical (DoublePoint B)) x ↔\n      ∃ b : B, x = b • firstJet B\n        (PowerSeries.derivative ((PowerSeries.X : PowerSeries B) ^ 2)) := by\n  rw [doublePoint_nilradical]\n  have hd : Annihilates (RingHom.ker (TrivSqZeroExt.fstHom B B B).toRingHom)\n      (firstJet B (PowerSeries.derivative ((PowerSeries.X : PowerSeries B) ^ 2))) := by\n    rw [doublePoint_actual_jacobian]\n    have he := dualGenerator_annihilates (TrivSqZeroExt.fstHom B B B)\n      (doublePointPerfectPairing B)\n    rw [doublePoint_epsilon_is_dualGenerator] at he\n    exact scalar_multiple_annihilates _ he 2\n  apply unit_coefficient_generates_annihilator\n    (TrivSqZeroExt.fstHom B B B) (doublePointPerfectPairing B) _ hd\n  change IsUnit ((TrivSqZeroExt.sndHom B B)\n    (firstJet B (PowerSeries.derivative ((PowerSeries.X : PowerSeries B) ^ 2))))\n  rw [doublePoint_actual_jacobian]\n  simpa [epsilon] using h2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "annihilates_nilradical_algEquiv": {
+      "path": "Linear/FirstJet.lean",
+      "line": 123,
+      "code": "theorem annihilates_nilradical_algEquiv\n    {A C : Type*} [CommRing A] [CommRing C] [Algebra B A] [Algebra B C]\n    (e : A ≃ₐ[B] C) (x : A) :\n    Annihilates (nilradical A) x ↔ Annihilates (nilradical C) (e x) := by\n  constructor\n  · intro hx n hn\n    have hn' : e.symm n ∈ nilradical A :=\n      mem_nilradical.mpr ((mem_nilradical.mp hn).map e.symm)\n    have h := congrArg e (hx (e.symm n) hn')\n    simpa only [map_mul, map_zero, AlgEquiv.apply_symm_apply] using h\n  · intro hx n hn\n    apply e.injective\n    rw [map_mul, map_zero]\n    exact hx (e n) (mem_nilradical.mpr ((mem_nilradical.mp hn).map e))",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "quadratic_powerSeries_jacobian_annihilator": {
+      "path": "Linear/FirstJet.lean",
+      "line": 141,
+      "code": "theorem quadratic_powerSeries_jacobian_annihilator [IsReduced B]\n    (h2 : IsUnit (2 : B))\n    (x : PowerSeries B ⧸ Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2}) :\n    Annihilates (nilradical\n      (PowerSeries B ⧸ Ideal.span {(PowerSeries.X : PowerSeries B) ^ 2})) x ↔\n      ∃ b : B, x = b • Ideal.Quotient.mk _\n        (PowerSeries.derivative ((PowerSeries.X : PowerSeries B) ^ 2)) := by\n  rw [annihilates_nilradical_algEquiv B (doublePointPowerSeriesEquiv B),\n    doublePoint_actual_jacobian_generates B h2]\n  constructor\n  · rintro ⟨b, hb⟩\n    refine ⟨b, (doublePointPowerSeriesEquiv B).injective ?_⟩\n    rw [map_smul, doublePointPowerSeriesEquiv_mk]\n    exact hb\n  · rintro ⟨b, rfl⟩\n    exact ⟨b, by rw [map_smul, doublePointPowerSeriesEquiv_mk]⟩",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "flat_genericFiber_injective": {
+      "path": "Linear/GenericFiber.lean",
+      "line": 23,
+      "code": "theorem flat_genericFiber_injective (f : A →ₐ[B] C)\n    [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] :\n    Function.Injective f := by\n  apply (IsLocalizedModule.injective_iff_isRegular\n    (nonZeroDivisors B) f.toLinearMap).mpr\n  intro c\n  exact Module.Flat.isSMulRegular_of_nonZeroDivisors c.property",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "flat_genericFiber_descend_annihilation": {
+      "path": "Linear/GenericFiber.lean",
+      "line": 33,
+      "code": "theorem flat_genericFiber_descend_annihilation (f : A →ₐ[B] C)\n    [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap]\n    (N : Ideal A) (delta : A)\n    (hgeneric : Annihilates (N.map f.toRingHom) (f delta)) :\n    Annihilates N delta := by\n  intro n hn\n  apply flat_genericFiber_injective f\n  rw [map_mul, map_zero]\n  exact hgeneric (f n) (Ideal.mem_map_of_mem f.toRingHom hn)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "multiplicationToDual_matrix": {
+      "path": "Linear/PairingMatrix.lean",
+      "line": 38,
+      "code": "theorem multiplicationToDual_matrix (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :\n    LinearMap.toMatrix b b.dualBasis (multiplicationToDual ell) =\n      multiplicationGram b ell := by\n  ext i j\n  rw [LinearMap.toMatrix_apply, Module.Basis.dualBasis_repr]\n  rfl",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true
+    },
+    "exists_perfectPairing_of_residueDet_ne_zero": {
+      "path": "Linear/PairingMatrix.lean",
+      "line": 58,
+      "code": "theorem exists_perfectPairing_of_residueDet_ne_zero [IsLocalRing B]\n    (b : Module.Basis ι B A) (ell : A →ₗ[B] B)\n    (hres : Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)\n      (multiplicationGram b ell).det ≠ 0) :\n    ∃ p : PerfectMultiplicationPairing (B := B) (A := A), p.functional = ell := by\n  have hu : IsUnit (multiplicationGram b ell).det := by\n    have hm : (multiplicationGram b ell).det ∉ IsLocalRing.maximalIdeal B := by\n      intro hm\n      exact hres (Ideal.Quotient.eq_zero_iff_mem.mpr hm)\n    simpa only [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, not_not] using hm\n  exact ⟨perfectPairingOfUnitDet b ell hu, rfl⟩",
       "axioms": [
         "propext",
         "Classical.choice",

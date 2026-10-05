@@ -30,6 +30,32 @@ public import Linear
 #print axioms LinearStudy.dualGenerator_scalar_retraction
 #check LinearStudy.dualGenerator_quotient_nonzero
 #print axioms LinearStudy.dualGenerator_quotient_nonzero
+#check LinearStudy.firstJet_fst
+#print axioms LinearStudy.firstJet_fst
+#check LinearStudy.firstJet_snd
+#print axioms LinearStudy.firstJet_snd
+#check LinearStudy.firstJet_surjective
+#print axioms LinearStudy.firstJet_surjective
+#check LinearStudy.firstJet_kernel
+#print axioms LinearStudy.firstJet_kernel
+#check LinearStudy.doublePointPowerSeriesEquiv_mk
+#print axioms LinearStudy.doublePointPowerSeriesEquiv_mk
+#check LinearStudy.doublePoint_actual_jacobian
+#print axioms LinearStudy.doublePoint_actual_jacobian
+#check LinearStudy.doublePoint_actual_jacobian_generates
+#print axioms LinearStudy.doublePoint_actual_jacobian_generates
+#check LinearStudy.annihilates_nilradical_algEquiv
+#print axioms LinearStudy.annihilates_nilradical_algEquiv
+#check LinearStudy.quadratic_powerSeries_jacobian_annihilator
+#print axioms LinearStudy.quadratic_powerSeries_jacobian_annihilator
+#check LinearStudy.flat_genericFiber_injective
+#print axioms LinearStudy.flat_genericFiber_injective
+#check LinearStudy.flat_genericFiber_descend_annihilation
+#print axioms LinearStudy.flat_genericFiber_descend_annihilation
+#check LinearStudy.multiplicationToDual_matrix
+#print axioms LinearStudy.multiplicationToDual_matrix
+#check LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
+#print axioms LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation

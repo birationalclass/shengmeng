@@ -2,9 +2,9 @@ LINEAR FORMALIZATION: LOCAL BUILD AND AXIOM AUDIT
 Full Lemma 3.1 is NOT yet proved. Lemma31Goal is a Prop definition.
 
 $ lake build
-✔ [1938/1940] Built Linear.DoublePoint (4.5s)
-✔ [1939/1940] Built Linear (1.6s)
-Build completed successfully (1940 jobs).
+✔ [2549/2551] Built Linear.PairingMatrix (1.4s)
+✔ [2550/2551] Built Linear (2.0s)
+Build completed successfully (2551 jobs).
 
 $ lake env lean CheckAxioms.lean
 LinearStudy.doublePoint_decomposition.{u_1} (B : Type u_1) [CommRing B] (a : LinearStudy.DoublePoint B) :
@@ -58,6 +58,57 @@ LinearStudy.dualGenerator_quotient_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u
   [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (J : Ideal A) (m : Ideal B) (hm : 1 ∉ m)
   (hJ : ∀ a ∈ J, p.functional a ∈ m) : (Ideal.Quotient.mk J) (LinearStudy.dualGenerator q p) ≠ 0
 'LinearStudy.dualGenerator_quotient_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.firstJet_fst.{u_1} (B : Type u_1) [CommRing B] (f : PowerSeries B) :
+  TrivSqZeroExt.fst ((LinearStudy.firstJet B) f) = (PowerSeries.coeff 0) f
+'LinearStudy.firstJet_fst' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.firstJet_snd.{u_1} (B : Type u_1) [CommRing B] (f : PowerSeries B) :
+  TrivSqZeroExt.snd ((LinearStudy.firstJet B) f) = (PowerSeries.coeff 1) f
+'LinearStudy.firstJet_snd' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.firstJet_surjective.{u_1} (B : Type u_1) [CommRing B] : Function.Surjective ⇑(LinearStudy.firstJet B)
+'LinearStudy.firstJet_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.firstJet_kernel.{u_1} (B : Type u_1) [CommRing B] :
+  RingHom.ker (LinearStudy.firstJet B) = Ideal.span {PowerSeries.X ^ 2}
+'LinearStudy.firstJet_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.doublePointPowerSeriesEquiv_mk.{u_1} (B : Type u_1) [CommRing B] (f : PowerSeries B) :
+  (LinearStudy.doublePointPowerSeriesEquiv B) ((Ideal.Quotient.mk (Ideal.span {PowerSeries.X ^ 2})) f) =
+    (LinearStudy.firstJet B) f
+'LinearStudy.doublePointPowerSeriesEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.doublePoint_actual_jacobian.{u_1} (B : Type u_1) [CommRing B] :
+  (LinearStudy.firstJet B) (PowerSeries.derivative (PowerSeries.X ^ 2)) = 2 • LinearStudy.epsilon B
+'LinearStudy.doublePoint_actual_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.doublePoint_actual_jacobian_generates.{u_1} (B : Type u_1) [CommRing B] [IsReduced B] (h2 : IsUnit 2)
+  (x : LinearStudy.DoublePoint B) :
+  LinearStudy.Annihilates (nilradical (LinearStudy.DoublePoint B)) x ↔
+    ∃ b, x = b • (LinearStudy.firstJet B) (PowerSeries.derivative (PowerSeries.X ^ 2))
+'LinearStudy.doublePoint_actual_jacobian_generates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.annihilates_nilradical_algEquiv.{u_1, u_2, u_3} (B : Type u_1) [CommRing B] {A : Type u_2} {C : Type u_3}
+  [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] (e : A ≃ₐ[B] C) (x : A) :
+  LinearStudy.Annihilates (nilradical A) x ↔ LinearStudy.Annihilates (nilradical C) (e x)
+'LinearStudy.annihilates_nilradical_algEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quadratic_powerSeries_jacobian_annihilator.{u_1} (B : Type u_1) [CommRing B] [IsReduced B] (h2 : IsUnit 2)
+  (x : PowerSeries B ⧸ Ideal.span {PowerSeries.X ^ 2}) :
+  LinearStudy.Annihilates (nilradical (PowerSeries B ⧸ Ideal.span {PowerSeries.X ^ 2})) x ↔
+    ∃ b, x = b • (Ideal.Quotient.mk (Ideal.span {PowerSeries.X ^ 2})) (PowerSeries.derivative (PowerSeries.X ^ 2))
+'LinearStudy.quadratic_powerSeries_jacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.flat_genericFiber_injective.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {C : Type u_3} [CommRing B]
+  [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] [Module.Flat B A] (f : A →ₐ[B] C)
+  [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] : Function.Injective ⇑f
+'LinearStudy.flat_genericFiber_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.flat_genericFiber_descend_annihilation.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {C : Type u_3}
+  [CommRing B] [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] [Module.Flat B A] (f : A →ₐ[B] C)
+  [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] (N : Ideal A) (delta : A)
+  (hgeneric : LinearStudy.Annihilates (Ideal.map f.toRingHom N) (f delta)) : LinearStudy.Annihilates N delta
+'LinearStudy.flat_genericFiber_descend_annihilation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.multiplicationToDual_matrix.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :
+  (LinearMap.toMatrix b b.dualBasis) (LinearStudy.multiplicationToDual ell) = LinearStudy.multiplicationGram b ell
+'LinearStudy.multiplicationToDual_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_perfectPairing_of_residueDet_ne_zero.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]
+  [CommRing A] [Algebra B A] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [IsLocalRing B] (b : Module.Basis ι B A)
+  (ell : A →ₗ[B] B)
+  (hres : (Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) (LinearStudy.multiplicationGram b ell).det ≠ 0) :
+  ∃ p, p.functional = ell
+'LinearStudy.exists_perfectPairing_of_residueDet_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]
@@ -98,4 +149,4 @@ LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Id
 LinearStudy.Lemma31Goal (r c : ℕ) : Prop
 
 $ lake env axiom-audit --root Linear --json
-{"allowed":["propext","Classical.choice","Quot.sound"],"audited":80,"axiomsUsed":["propext","Classical.choice","Quot.sound"],"ok":true,"root":"Linear","violations":[]}
+{"allowed":["propext","Classical.choice","Quot.sound"],"audited":119,"axiomsUsed":["propext","Classical.choice","Quot.sound"],"ok":true,"root":"Linear","violations":[]}
