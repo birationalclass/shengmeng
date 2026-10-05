@@ -1,0 +1,7 @@
+export const formulas = {
+ log: '<math><mrow><mi>ker</mi><mo>(</mo><msup><mi>L</mi><mi>j</mi></msup><mo>)</mo><mo>=</mo><mi>ker</mi><mo>(</mo><msup><mi>D</mi><mi>j</mi></msup><mo>)</mo><mo>,</mo><mspace width=".5em"/><mi>im</mi><mo>(</mo><msup><mi>L</mi><mi>j</mi></msup><mo>)</mo><mo>=</mo><mi>im</mi><mo>(</mo><msup><mi>D</mi><mi>j</mi></msup><mo>)</mo></mrow></math>',
+ product: '<math><mrow><msup><mrow><mo>(</mo><mi>R</mi><mo>−</mo><mi>a</mi><mi>b</mi><mi>I</mi><mo>)</mo></mrow><mrow><mi>p</mi><mo>+</mo><mi>q</mi><mo>−</mo><mn>1</mn></mrow></msup><mi>B</mi><mo>(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>)</mo><mo>=</mo><mn>0</mn></mrow></math>',
+ flow: '<math><mrow><mi>U</mi><mo>(</mo><mi>s</mi><mo>+</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>U</mi><mo>(</mo><mi>s</mi><mo>)</mo><mi>U</mi><mo>(</mo><mi>t</mi><mo>)</mo><mo>,</mo><mspace width=".5em"/><mi>U</mi><mo>(</mo><mi>t</mi><mo>)</mo><mi>U</mi><mo>(</mo><mo>−</mo><mi>t</mi><mo>)</mo><mo>=</mo><mi>I</mi></mrow></math>',
+ decomposition: '<math><mrow><mi>T</mi><mo>=</mo><mi>S</mi><mi>U</mi><mo>=</mo><mi>U</mi><mi>S</mi><mo>,</mo><mspace width=".5em"/><msup><mrow><mo>(</mo><mi>U</mi><mo>−</mo><mi>I</mi><mo>)</mo></mrow><mi>r</mi></msup><mo>=</mo><mn>0</mn></mrow></math>',
+ series: '<math><mrow><mi>exp</mi><mo>(</mo><mi>log</mi><mo>(</mo><mn>1</mn><mo>+</mo><mi>X</mi><mo>)</mo><mo>)</mo><mo>=</mo><mn>1</mn><mo>+</mo><mi>X</mi></mrow></math>'
+};
