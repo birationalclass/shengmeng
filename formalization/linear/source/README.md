@@ -83,6 +83,17 @@ any field. With explicit finite-dimensionality it constructs a perfect
 multiplication pairing. These results do not identify the coefficient
 determinant with the derivative Jacobian; that comparison remains open.
 
+`PowerSeriesAugmentation.lean` constructs the actual quotient augmentation,
+identifies its kernel with the nilradical in the Artinian case, and proves
+that the normalized trace element is rank times the coefficient determinant.
+`PowerSeriesSpecialization.lean` constructs the actual parameter quotient
+isomorphism and proves compatibility of partial derivatives and Jacobians.
+`RegularSpecialization.lean` derives regularity of the specialized equations
+from the original regular sequence and flatness of its quotient over the
+parameter ring. No closed-fiber regularity hypothesis is added. Finite
+closed-fiber module comparisons and the derivative-Jacobian trace identity
+still remain to be established.
+
 The three modules under `Linear/Vendor` are attributed Apache-2.0 adaptations
 from mathlib PR #34913 at the commit recorded in `vendor-provenance.json`.
 The PR is not part of the pinned mathlib release. Every public declaration

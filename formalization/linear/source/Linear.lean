@@ -29,3 +29,6 @@ public import Linear.KoszulSocleMap
 public import Linear.KoszulFunctionResolution
 public import Linear.KoszulSocleDeterminant
 public import Linear.PowerSeriesSocle
+public import Linear.PowerSeriesAugmentation
+public import Linear.PowerSeriesSpecialization
+public import Linear.RegularSpecialization

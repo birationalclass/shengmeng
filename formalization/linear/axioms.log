@@ -418,6 +418,80 @@ LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin
   IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧
     (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal
 'LinearStudy.completeIntersection_parameterQuotient_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesConstantCoeffAlgHom.{u_1} {K : Type u_1} [Field K] {n : ℕ} :
+  MvPowerSeries (Fin (n + 1)) K →ₐ[K] K
+'LinearStudy.powerSeriesConstantCoeffAlgHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationIdeal_le_constantCoeff_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :
+  Ideal.span (Set.range H) ≤ RingHom.ker MvPowerSeries.constantCoeff
+'LinearStudy.equationIdeal_le_constantCoeff_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotientAugmentation.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :
+  MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H) →ₐ[K] K
+'LinearStudy.powerSeriesQuotientAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotientAugmentation_mk.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  (r : MvPowerSeries (Fin (n + 1)) K) :
+  (LinearStudy.powerSeriesQuotientAugmentation H hzero) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) r) =
+    MvPowerSeries.constantCoeff r
+'LinearStudy.powerSeriesQuotientAugmentation_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotientAugmentation_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :
+  RingHom.ker (LinearStudy.powerSeriesQuotientAugmentation H hzero).toRingHom =
+    Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))
+'LinearStudy.powerSeriesQuotientAugmentation_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotientAugmentation_surjective.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :
+  Function.Surjective ⇑(LinearStudy.powerSeriesQuotientAugmentation H hzero)
+'LinearStudy.powerSeriesQuotientAugmentation_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  RingHom.ker (LinearStudy.powerSeriesQuotientAugmentation H hzero).toRingHom =
+    nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))
+'LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.powerSeries_socle_generator_dualGenerator.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  (delta : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))
+  (hd :
+    delta ∈
+      Submodule.annihilator
+        (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))))
+  (p : LinearStudy.PerfectMultiplicationPairing) (hp : p.functional delta = 1) :
+  LinearStudy.dualGenerator (LinearStudy.powerSeriesQuotientAugmentation H hzero) p = delta
+'LinearStudy.powerSeries_socle_generator_dualGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_traceElement_eq_rank_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  (delta : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))
+  (hd :
+    delta ∈
+      Submodule.annihilator
+        (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))))
+  (p : LinearStudy.PerfectMultiplicationPairing) (hp : p.functional delta = 1) :
+  LinearStudy.traceElement p = Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) • delta
+'LinearStudy.powerSeries_traceElement_eq_rank_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_completeIntersection_traceElement.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  ∃ M,
+    M.mulVec MvPowerSeries.X = H ∧
+      ∃ p,
+        p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1 ∧
+          LinearStudy.traceElement p =
+            Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) •
+              (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det
+'LinearStudy.powerSeries_completeIntersection_traceElement' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_zeroConstant_variable_expansion.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}
   [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : MvPowerSeries ι R) (hH : MvPowerSeries.constantCoeff H = 0) :
   ∃ a, H = ∑ i, a i * MvPowerSeries.X i
@@ -502,6 +576,72 @@ LinearStudy.powerSeries_completeIntersection_perfectPairing.{u_1} {K : Type u_1}
   [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
   ∃ M, M.mulVec MvPowerSeries.X = H ∧ ∃ p, p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1
 'LinearStudy.powerSeries_completeIntersection_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSpecialization.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) →+* MvPowerSeries (Fin c) K
+'LinearStudy.parameterSpecialization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSpecialization_surjective.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :
+  Function.Surjective ⇑LinearStudy.parameterSpecialization
+'LinearStudy.parameterSpecialization_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSpecialization_kernel.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :
+  RingHom.ker LinearStudy.parameterSpecialization = Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))
+'LinearStudy.parameterSpecialization_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSpecializationQuotientEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸
+      Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)) ≃+*
+    MvPowerSeries (Fin c) K
+'LinearStudy.parameterSpecializationQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientSpecialization.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S] (f : R →+* S)
+  (I : Ideal R) : R ⧸ I →+* S ⧸ Ideal.map f I
+'LinearStudy.quotientSpecialization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientSpecialization_kernel.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]
+  (f : R →+* S) (hf : Function.Surjective ⇑f) (I : Ideal R) :
+  RingHom.ker (LinearStudy.quotientSpecialization f I) = Ideal.map (Ideal.Quotient.mk I) (RingHom.ker f)
+'LinearStudy.quotientSpecialization_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientSpecialization_surjective.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]
+  (f : R →+* S) (hf : Function.Surjective ⇑f) (I : Ideal R) :
+  Function.Surjective ⇑(LinearStudy.quotientSpecialization f I)
+'LinearStudy.quotientSpecialization_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.quotientSpecializationEquiv.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S] (f : R →+* S)
+  (hf : Function.Surjective ⇑f) (I : Ideal R) :
+  (R ⧸ I) ⧸ Ideal.map (Ideal.Quotient.mk I) (RingHom.ker f) ≃+* S ⧸ Ideal.map f I
+'LinearStudy.quotientSpecializationEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesClosedQuotientEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :
+  (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) ⧸
+      Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))
+        (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))) ≃+*
+    MvPowerSeries (Fin c) K ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))
+'LinearStudy.powerSeriesClosedQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesClosedQuotientEquiv_mk.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))
+  (z : MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :
+  (LinearStudy.powerSeriesClosedQuotientEquiv H)
+      ((Ideal.Quotient.mk
+          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))
+            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))
+        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) z)) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))
+      (LinearStudy.parameterSpecialization z)
+'LinearStudy.powerSeriesClosedQuotientEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_map_pderiv.{u_2, u_3, u_4} {R : Type u_2} {S : Type u_3} {σ : Type u_4} [CommRing R]
+  [CommRing S] (f : R →+* S) (i : σ) (H : MvPowerSeries σ R) :
+  (MvPowerSeries.map f) ((MvPowerSeries.pderiv i) H) = (MvPowerSeries.pderiv i) ((MvPowerSeries.map f) H)
+'LinearStudy.powerSeries_map_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSpecialization_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :
+  LinearStudy.parameterSpecialization (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =
+    Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i))
+'LinearStudy.parameterSpecialization_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesClosedQuotientEquiv_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :
+  (LinearStudy.powerSeriesClosedQuotientEquiv H)
+      ((Ideal.Quotient.mk
+          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))
+            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))
+        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)))) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))
+      (Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i)))
+'LinearStudy.powerSeriesClosedQuotientEquiv_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]
@@ -606,6 +746,41 @@ LinearStudy.annihilator_action_eq.{u_1, u_2} {B : Type u_1} {A : Type u_2} [Comm
 LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :
   (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J
 'LinearStudy.quotient_image_nonzero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ofList_smul_top.{u_1} {R : Type u_1} [CommRing R] (H : List R) : Ideal.ofList H • ⊤ = Ideal.ofList H
+'LinearStudy.ofList_smul_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.weaklyRegular_quotient_iff.{u_1} {R : Type u_1} [CommRing R] (H P : List R) :
+  RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList H))) P) ↔
+    RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H • ⊤) P
+'LinearStudy.weaklyRegular_quotient_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.weaklyRegular_exchange.{u_1} {R : Type u_1} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (H P : List R)
+  (hH : RingTheory.Sequence.IsRegular R H) (hPm : ∀ p ∈ P, p ∈ IsLocalRing.maximalIdeal R)
+  (hP : RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList H))) P)) :
+  RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList P) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList P))) H)
+'LinearStudy.weaklyRegular_exchange' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.weaklyRegular_transport_ringEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {S : Type u_2} [CommRing S]
+  (e : R ≃+* S) (rs : List R) :
+  RingTheory.Sequence.IsWeaklyRegular R rs ↔ RingTheory.Sequence.IsWeaklyRegular S (List.map (⇑e) rs)
+'LinearStudy.weaklyRegular_transport_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_specialized_equations_weaklyRegular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
+  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)
+      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :
+  RingTheory.Sequence.IsWeaklyRegular (MvPowerSeries (Fin c) K)
+    (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))
+'LinearStudy.powerSeries_specialized_equations_weaklyRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_specialized_equations_zeroConstant.{u_2} {K : Type u_2} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
+  (i : Fin c) : MvPowerSeries.constantCoeff (LinearStudy.parameterSpecialization (H i)) = 0
+'LinearStudy.powerSeries_specialized_equations_zeroConstant' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
+  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)
+      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :
+  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))
+'LinearStudy.powerSeries_specialized_equations_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.exists_residue_functional_lift.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
   [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)
   (ellbar : Module.Dual (B ⧸ IsLocalRing.maximalIdeal B) (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)) :

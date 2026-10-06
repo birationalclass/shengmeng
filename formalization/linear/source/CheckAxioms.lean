@@ -215,6 +215,26 @@ set_option pp.proofs false
 #print axioms LinearStudy.arbitraryParameterLifts_artinian
 #check LinearStudy.completeIntersection_parameterQuotient_artinian
 #print axioms LinearStudy.completeIntersection_parameterQuotient_artinian
+#check LinearStudy.powerSeriesConstantCoeffAlgHom
+#print axioms LinearStudy.powerSeriesConstantCoeffAlgHom
+#check LinearStudy.equationIdeal_le_constantCoeff_kernel
+#print axioms LinearStudy.equationIdeal_le_constantCoeff_kernel
+#check LinearStudy.powerSeriesQuotientAugmentation
+#print axioms LinearStudy.powerSeriesQuotientAugmentation
+#check LinearStudy.powerSeriesQuotientAugmentation_mk
+#print axioms LinearStudy.powerSeriesQuotientAugmentation_mk
+#check LinearStudy.powerSeriesQuotientAugmentation_kernel
+#print axioms LinearStudy.powerSeriesQuotientAugmentation_kernel
+#check LinearStudy.powerSeriesQuotientAugmentation_surjective
+#print axioms LinearStudy.powerSeriesQuotientAugmentation_surjective
+#check LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical
+#print axioms LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical
+#check LinearStudy.powerSeries_socle_generator_dualGenerator
+#print axioms LinearStudy.powerSeries_socle_generator_dualGenerator
+#check LinearStudy.powerSeries_traceElement_eq_rank_socle
+#print axioms LinearStudy.powerSeries_traceElement_eq_rank_socle
+#check LinearStudy.powerSeries_completeIntersection_traceElement
+#print axioms LinearStudy.powerSeries_completeIntersection_traceElement
 #check LinearStudy.powerSeries_zeroConstant_variable_expansion
 #print axioms LinearStudy.powerSeries_zeroConstant_variable_expansion
 #check LinearStudy.powerSeries_equation_coefficient_matrix
@@ -241,6 +261,32 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_coefficientDeterminant_scalar_socle
 #check LinearStudy.powerSeries_completeIntersection_perfectPairing
 #print axioms LinearStudy.powerSeries_completeIntersection_perfectPairing
+#check LinearStudy.parameterSpecialization
+#print axioms LinearStudy.parameterSpecialization
+#check LinearStudy.parameterSpecialization_surjective
+#print axioms LinearStudy.parameterSpecialization_surjective
+#check LinearStudy.parameterSpecialization_kernel
+#print axioms LinearStudy.parameterSpecialization_kernel
+#check LinearStudy.parameterSpecializationQuotientEquiv
+#print axioms LinearStudy.parameterSpecializationQuotientEquiv
+#check LinearStudy.quotientSpecialization
+#print axioms LinearStudy.quotientSpecialization
+#check LinearStudy.quotientSpecialization_kernel
+#print axioms LinearStudy.quotientSpecialization_kernel
+#check LinearStudy.quotientSpecialization_surjective
+#print axioms LinearStudy.quotientSpecialization_surjective
+#check LinearStudy.quotientSpecializationEquiv
+#print axioms LinearStudy.quotientSpecializationEquiv
+#check LinearStudy.powerSeriesClosedQuotientEquiv
+#print axioms LinearStudy.powerSeriesClosedQuotientEquiv
+#check LinearStudy.powerSeriesClosedQuotientEquiv_mk
+#print axioms LinearStudy.powerSeriesClosedQuotientEquiv_mk
+#check LinearStudy.powerSeries_map_pderiv
+#print axioms LinearStudy.powerSeries_map_pderiv
+#check LinearStudy.parameterSpecialization_jacobian
+#print axioms LinearStudy.parameterSpecialization_jacobian
+#check LinearStudy.powerSeriesClosedQuotientEquiv_jacobian
+#print axioms LinearStudy.powerSeriesClosedQuotientEquiv_jacobian
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation
@@ -301,6 +347,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.annihilator_action_eq
 #check LinearStudy.quotient_image_nonzero_iff
 #print axioms LinearStudy.quotient_image_nonzero_iff
+#check LinearStudy.ofList_smul_top
+#print axioms LinearStudy.ofList_smul_top
+#check LinearStudy.weaklyRegular_quotient_iff
+#print axioms LinearStudy.weaklyRegular_quotient_iff
+#check LinearStudy.weaklyRegular_exchange
+#print axioms LinearStudy.weaklyRegular_exchange
+#check LinearStudy.weaklyRegular_transport_ringEquiv
+#print axioms LinearStudy.weaklyRegular_transport_ringEquiv
+#check LinearStudy.powerSeries_specialized_equations_weaklyRegular
+#print axioms LinearStudy.powerSeries_specialized_equations_weaklyRegular
+#check LinearStudy.powerSeries_specialized_equations_zeroConstant
+#print axioms LinearStudy.powerSeries_specialized_equations_zeroConstant
+#check LinearStudy.powerSeries_specialized_equations_regular
+#print axioms LinearStudy.powerSeries_specialized_equations_regular
 #check LinearStudy.exists_residue_functional_lift
 #print axioms LinearStudy.exists_residue_functional_lift
 #check LinearStudy.residue_multiplicationGram

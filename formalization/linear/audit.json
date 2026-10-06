@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T14:51:06+08:00",
+  "checkedAt": "2026-10-06T15:41:34+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "eb730d7f026be2cbb310f34b55f78b06ca44ae1055101a9c58c4f9dad6ce5f6e",
-      "lineCount": 594
+      "sha256": "b2e863c05212917e4147e794cb643212da64109191ec385b0f7266543d053ef2",
+      "lineCount": 654
     },
     {
       "path": "Linear/Degree.lean",
@@ -107,6 +107,11 @@
       "lineCount": 114
     },
     {
+      "path": "Linear/PowerSeriesAugmentation.lean",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lineCount": 142
+    },
+    {
       "path": "Linear/PowerSeriesCoefficients.lean",
       "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
       "lineCount": 145
@@ -122,6 +127,11 @@
       "lineCount": 141
     },
     {
+      "path": "Linear/PowerSeriesSpecialization.lean",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lineCount": 145
+    },
+    {
       "path": "Linear/Primitive.lean",
       "sha256": "020420375e55a6ccb702d732c2bba4eb7bff3c327c2ba74612b4b8e7baff1027",
       "lineCount": 80
@@ -135,6 +145,11 @@
       "path": "Linear/Reduction.lean",
       "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
       "lineCount": 57
+    },
+    {
+      "path": "Linear/RegularSpecialization.lean",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lineCount": 168
     },
     {
       "path": "Linear/ResiduePairing.lean",
@@ -178,8 +193,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "21a2aeb7dde9541d074c9de467939cd8e4e8a01db9868db39bdb027ba553a7b3",
-      "lineCount": 31
+      "sha256": "c54a3312bd7b89c74bcfe97c60fb3c1dea3c64ea3d25b41ff35ed6ec83bae2fd",
+      "lineCount": 34
     }
   ],
   "declarations": {
@@ -1858,6 +1873,166 @@
       "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
       "lines": 114
     },
+    "LinearStudy.powerSeriesConstantCoeffAlgHom": {
+      "declaration": "LinearStudy.powerSeriesConstantCoeffAlgHom",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesConstantCoeffAlgHom.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  MvPowerSeries (Fin (n + 1)) K →ₐ[K] K",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.equationIdeal_le_constantCoeff_kernel": {
+      "declaration": "LinearStudy.equationIdeal_le_constantCoeff_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationIdeal_le_constantCoeff_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :\n  Ideal.span (Set.range H) ≤ RingHom.ker MvPowerSeries.constantCoeff",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeriesQuotientAugmentation": {
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :\n  MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H) →ₐ[K] K",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeriesQuotientAugmentation_mk": {
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation_mk.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  (r : MvPowerSeries (Fin (n + 1)) K) :\n  (LinearStudy.powerSeriesQuotientAugmentation H hzero) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) r) =\n    MvPowerSeries.constantCoeff r",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeriesQuotientAugmentation_kernel": {
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation_kernel.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :\n  RingHom.ker (LinearStudy.powerSeriesQuotientAugmentation H hzero).toRingHom =\n    Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeriesQuotientAugmentation_surjective": {
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation_surjective.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0) :\n  Function.Surjective ⇑(LinearStudy.powerSeriesQuotientAugmentation H hzero)",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical": {
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  RingHom.ker (LinearStudy.powerSeriesQuotientAugmentation H hzero).toRingHom =\n    nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeries_socle_generator_dualGenerator": {
+      "declaration": "LinearStudy.powerSeries_socle_generator_dualGenerator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_socle_generator_dualGenerator.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  (delta : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))\n  (hd :\n    delta ∈\n      Submodule.annihilator\n        (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))))\n  (p : LinearStudy.PerfectMultiplicationPairing) (hp : p.functional delta = 1) :\n  LinearStudy.dualGenerator (LinearStudy.powerSeriesQuotientAugmentation H hzero) p = delta",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeries_traceElement_eq_rank_socle": {
+      "declaration": "LinearStudy.powerSeries_traceElement_eq_rank_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 104,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_traceElement_eq_rank_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (delta : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))\n  (hd :\n    delta ∈\n      Submodule.annihilator\n        (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))))\n  (p : LinearStudy.PerfectMultiplicationPairing) (hp : p.functional delta = 1) :\n  LinearStudy.traceElement p = Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) • delta",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
+    "LinearStudy.powerSeries_completeIntersection_traceElement": {
+      "declaration": "LinearStudy.powerSeries_completeIntersection_traceElement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "line": 122,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_completeIntersection_traceElement.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M,\n    M.mulVec MvPowerSeries.X = H ∧\n      ∃ p,\n        p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1 ∧\n          LinearStudy.traceElement p =\n            Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) •\n              (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142
+    },
     "LinearStudy.powerSeries_zeroConstant_variable_expansion": {
       "declaration": "LinearStudy.powerSeries_zeroConstant_variable_expansion",
       "kind": "theorem",
@@ -2065,6 +2240,214 @@
       "formalType": "LinearStudy.powerSeries_completeIntersection_perfectPairing.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M, M.mulVec MvPowerSeries.X = H ∧ ∃ p, p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1",
       "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
       "lines": 141
+    },
+    "LinearStudy.parameterSpecialization": {
+      "declaration": "LinearStudy.parameterSpecialization",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.parameterSpecialization.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) →+* MvPowerSeries (Fin c) K",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.parameterSpecialization_surjective": {
+      "declaration": "LinearStudy.parameterSpecialization_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterSpecialization_surjective.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :\n  Function.Surjective ⇑LinearStudy.parameterSpecialization",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.parameterSpecialization_kernel": {
+      "declaration": "LinearStudy.parameterSpecialization_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterSpecialization_kernel.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :\n  RingHom.ker LinearStudy.parameterSpecialization = Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.parameterSpecializationQuotientEquiv": {
+      "declaration": "LinearStudy.parameterSpecializationQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.parameterSpecializationQuotientEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸\n      Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)) ≃+*\n    MvPowerSeries (Fin c) K",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.quotientSpecialization": {
+      "declaration": "LinearStudy.quotientSpecialization",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.quotientSpecialization.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S] (f : R →+* S)\n  (I : Ideal R) : R ⧸ I →+* S ⧸ Ideal.map f I",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.quotientSpecialization_kernel": {
+      "declaration": "LinearStudy.quotientSpecialization_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotientSpecialization_kernel.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]\n  (f : R →+* S) (hf : Function.Surjective ⇑f) (I : Ideal R) :\n  RingHom.ker (LinearStudy.quotientSpecialization f I) = Ideal.map (Ideal.Quotient.mk I) (RingHom.ker f)",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.quotientSpecialization_surjective": {
+      "declaration": "LinearStudy.quotientSpecialization_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotientSpecialization_surjective.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]\n  (f : R →+* S) (hf : Function.Surjective ⇑f) (I : Ideal R) :\n  Function.Surjective ⇑(LinearStudy.quotientSpecialization f I)",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.quotientSpecializationEquiv": {
+      "declaration": "LinearStudy.quotientSpecializationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 82,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.quotientSpecializationEquiv.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S] (f : R →+* S)\n  (hf : Function.Surjective ⇑f) (I : Ideal R) :\n  (R ⧸ I) ⧸ Ideal.map (Ideal.Quotient.mk I) (RingHom.ker f) ≃+* S ⧸ Ideal.map f I",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.powerSeriesClosedQuotientEquiv": {
+      "declaration": "LinearStudy.powerSeriesClosedQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 90,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesClosedQuotientEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) ⧸\n      Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n        (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))) ≃+*\n    MvPowerSeries (Fin c) K ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.powerSeriesClosedQuotientEquiv_mk": {
+      "declaration": "LinearStudy.powerSeriesClosedQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 111,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesClosedQuotientEquiv_mk.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (z : MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesClosedQuotientEquiv H)\n      ((Ideal.Quotient.mk\n          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))\n        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) z)) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (LinearStudy.parameterSpecialization z)",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.powerSeries_map_pderiv": {
+      "declaration": "LinearStudy.powerSeries_map_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 119,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_map_pderiv.{u_2, u_3, u_4} {R : Type u_2} {S : Type u_3} {σ : Type u_4} [CommRing R]\n  [CommRing S] (f : R →+* S) (i : σ) (H : MvPowerSeries σ R) :\n  (MvPowerSeries.map f) ((MvPowerSeries.pderiv i) H) = (MvPowerSeries.pderiv i) ((MvPowerSeries.map f) H)",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.parameterSpecialization_jacobian": {
+      "declaration": "LinearStudy.parameterSpecialization_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 126,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterSpecialization_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  LinearStudy.parameterSpecialization (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =\n    Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
+    },
+    "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian": {
+      "declaration": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "line": 136,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesClosedQuotientEquiv H)\n      ((Ideal.Quotient.mk\n          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))\n        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)))) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i)))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145
     },
     "LinearStudy.annihilates_iff_mem_annihilator": {
       "declaration": "LinearStudy.annihilates_iff_mem_annihilator",
@@ -2536,6 +2919,118 @@
       "formalType": "LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :\n  (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J",
       "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
       "lines": 57
+    },
+    "LinearStudy.ofList_smul_top": {
+      "declaration": "LinearStudy.ofList_smul_top",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ofList_smul_top.{u_1} {R : Type u_1} [CommRing R] (H : List R) : Ideal.ofList H • ⊤ = Ideal.ofList H",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.weaklyRegular_quotient_iff": {
+      "declaration": "LinearStudy.weaklyRegular_quotient_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.weaklyRegular_quotient_iff.{u_1} {R : Type u_1} [CommRing R] (H P : List R) :\n  RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList H))) P) ↔\n    RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H • ⊤) P",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.weaklyRegular_exchange": {
+      "declaration": "LinearStudy.weaklyRegular_exchange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.weaklyRegular_exchange.{u_1} {R : Type u_1} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (H P : List R)\n  (hH : RingTheory.Sequence.IsRegular R H) (hPm : ∀ p ∈ P, p ∈ IsLocalRing.maximalIdeal R)\n  (hP : RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList H))) P)) :\n  RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList P) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList P))) H)",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.weaklyRegular_transport_ringEquiv": {
+      "declaration": "LinearStudy.weaklyRegular_transport_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.weaklyRegular_transport_ringEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {S : Type u_2} [CommRing S]\n  (e : R ≃+* S) (rs : List R) :\n  RingTheory.Sequence.IsWeaklyRegular R rs ↔ RingTheory.Sequence.IsWeaklyRegular S (List.map (⇑e) rs)",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.powerSeries_specialized_equations_weaklyRegular": {
+      "declaration": "LinearStudy.powerSeries_specialized_equations_weaklyRegular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 69,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_specialized_equations_weaklyRegular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  RingTheory.Sequence.IsWeaklyRegular (MvPowerSeries (Fin c) K)\n    (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.powerSeries_specialized_equations_zeroConstant": {
+      "declaration": "LinearStudy.powerSeries_specialized_equations_zeroConstant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 131,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_specialized_equations_zeroConstant.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  (i : Fin c) : MvPowerSeries.constantCoeff (LinearStudy.parameterSpecialization (H i)) = 0",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
+    },
+    "LinearStudy.powerSeries_specialized_equations_regular": {
+      "declaration": "LinearStudy.powerSeries_specialized_equations_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularSpecialization.lean",
+      "line": 150,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168
     },
     "LinearStudy.exists_residue_functional_lift": {
       "declaration": "LinearStudy.exists_residue_functional_lift",
@@ -4936,12 +5431,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 159,
-  "definitionCount": 45,
+  "verifiedTheoremCount": 182,
+  "definitionCount": 52,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Previous relative pairing lifts, trace-element identities, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. Actual derivative Jacobian comparison, Jacobian survival under arbitrary lifts and global geometry remain unproved.",
+  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. Actual derivative Jacobian comparison, Jacobian survival under arbitrary lifts and global geometry remain unproved.",
   "targetVerified": false,
   "main": {
     "id": "lemma",
@@ -5760,7 +6255,9 @@
         "trace-element",
         "parameter-quotient",
         "coefficient-socle",
-        "power-pairing"
+        "power-pairing",
+        "ci-trace",
+        "regular-specialization"
       ],
       "setup": [
         "<p>B=ℂ[[s₁,…,sᵣ]]；A=B[[z₁,…,z꜀]]/(H)，H 为正则序列，A 有限平坦且 A 的约化 B-代数同构于 B。</p>",
@@ -7115,6 +7612,256 @@
       "formalType": "LinearStudy.powerSeries_completeIntersection_perfectPairing.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M, M.mulVec MvPowerSeries.X = H ∧ ∃ p, p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1",
       "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
       "lines": 141,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "ci-trace",
+      "titles": [
+        "实际完全交的迹元素公式",
+        "Trace element of the actual complete intersection"
+      ],
+      "title": "实际完全交的迹元素公式",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "decl": "LinearStudy.powerSeries_completeIntersection_traceElement",
+      "declaration": "LinearStudy.powerSeries_completeIntersection_traceElement",
+      "deps": [
+        "power-pairing",
+        "ci-reduction",
+        "trace-element"
+      ],
+      "setup": [
+        "<p>任意域上的正则零常数项方程组 H；实际商 A Artinian 且有限维。</p>",
+        "<p>Regular zero-constant equations H over any field; the actual quotient A is Artinian and finite-dimensional.</p>"
+      ],
+      "result": [
+        "<p>构造 H=Mx 和规范化完美配对，实际迹元素等于 dimᴷ(A)·[det M]。实际导数 Jacobian 与该迹元素的比较仍待证明。</p>",
+        "<p>Construct H=Mx and a normalized perfect pairing; its actual trace element equals dimᴷ(A)·[det M]. Comparison with the actual derivative Jacobian remains unproved.</p>"
+      ],
+      "compactSetup": [
+        "任意域上的正则零常数项方程组 H；实际商 A Artinian 且有限维。",
+        "Regular zero-constant equations H over any field; the actual quotient A is Artinian and finite-dimensional."
+      ],
+      "compactResult": [
+        "构造 H=Mx 和规范化完美配对，实际迹元素等于 dimᴷ(A)·[det M]。实际导数 Jacobian 与该迹元素的比较仍待证明。",
+        "Construct H=Mx and a normalized perfect pairing; its actual trace element equals dimᴷ(A)·[det M]. Comparison with the actual derivative Jacobian remains unproved."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.powerSeries_completeIntersection_traceElement.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M,\n    M.mulVec MvPowerSeries.X = H ∧\n      ∃ p,\n        p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1 ∧\n          LinearStudy.traceElement p =\n            Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) •\n              (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "ci-reduction",
+      "titles": [
+        "实际常数项约化映射",
+        "Actual constant-coefficient reduction"
+      ],
+      "title": "实际常数项约化映射",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PowerSeriesAugmentation.lean",
+      "decl": "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical",
+      "declaration": "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical",
+      "deps": [],
+      "setup": [
+        "<p>K 为域；H 的常数项为零；实际商 A=K[[x]]/(H) Artinian。</p>",
+        "<p>K is a field, H has zero constant terms, and the actual quotient A=K[[x]]/(H) is Artinian.</p>"
+      ],
+      "result": [
+        "<p>构造满射 K-代数映射 A→K，并证明其核等于坐标极大理想和零根。</p>",
+        "<p>Construct a surjective K-algebra map A→K, with kernel equal to the coordinate maximal ideal and nilradical.</p>"
+      ],
+      "compactSetup": [
+        "K 为域；H 的常数项为零；实际商 A=K[[x]]/(H) Artinian。",
+        "K is a field, H has zero constant terms, and the actual quotient A=K[[x]]/(H) is Artinian."
+      ],
+      "compactResult": [
+        "构造满射 K-代数映射 A→K，并证明其核等于坐标极大理想和零根。",
+        "Construct a surjective K-algebra map A→K, with kernel equal to the coordinate maximal ideal and nilradical."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.powerSeriesQuotientAugmentation_kernel_nilradical.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  RingHom.ker (LinearStudy.powerSeriesQuotientAugmentation H hzero).toRingHom =\n    nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))",
+      "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
+      "lines": 142,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "closed-specialization",
+      "titles": [
+        "闭纤维商环与 Jacobian 特化",
+        "Closed-quotient comparison and Jacobian specialization"
+      ],
+      "title": "闭纤维商环与 Jacobian 特化",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "decl": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian",
+      "declaration": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian",
+      "deps": [
+        "parameter-kernel"
+      ],
+      "setup": [
+        "<p>B=K[[s₀,…,sᵣ]]；A=B[[z]]/(H)。按常数项特化 B 的系数，得到 H̄。</p>",
+        "<p>B=K[[s₀,…,sᵣ]], A=B[[z]]/(H); specializing parameter coefficients gives H̄.</p>"
+      ],
+      "result": [
+        "<p>构造 A/(s)≃K[[z]]/(H̄) 的实际环同构，并证明它将 Jacobian 的像送到 H̄ 的真实偏导行列式。此处不证明 Jacobian 非零。</p>",
+        "<p>Construct the actual ring isomorphism A/(s)≃K[[z]]/(H̄), and prove that it sends the Jacobian image to the actual partial-derivative determinant of H̄. Jacobian nonvanishing is not proved here.</p>"
+      ],
+      "compactSetup": [
+        "B=K[[s₀,…,sᵣ]]；A=B[[z]]/(H)。按常数项特化 B 的系数，得到 H̄。",
+        "B=K[[s₀,…,sᵣ]], A=B[[z]]/(H); specializing parameter coefficients gives H̄."
+      ],
+      "compactResult": [
+        "构造 A/(s)≃K[[z]]/(H̄) 的实际环同构，并证明它将 Jacobian 的像送到 H̄ 的真实偏导行列式。此处不证明 Jacobian 非零。",
+        "Construct the actual ring isomorphism A/(s)≃K[[z]]/(H̄), and prove that it sends the Jacobian image to the actual partial-derivative determinant of H̄. Jacobian nonvanishing is not proved here."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesClosedQuotientEquiv H)\n      ((Ideal.Quotient.mk\n          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))\n        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)))) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i)))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "parameter-kernel",
+      "titles": [
+        "系数特化的准确核",
+        "Exact kernel of coefficient specialization"
+      ],
+      "title": "系数特化的准确核",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PowerSeriesSpecialization.lean",
+      "decl": "LinearStudy.parameterSpecialization_kernel",
+      "declaration": "LinearStudy.parameterSpecialization_kernel",
+      "deps": [],
+      "setup": [
+        "<p>有限参数变量；任意有限 z 变量；系数常数项映射。</p>",
+        "<p>Finitely many parameter variables and finitely many z variables; the constant-coefficient map.</p>"
+      ],
+      "result": [
+        "<p>特化映射满射，核恰为参数变量生成的扩张理想；复用 mathlib 的有限生成核定理。</p>",
+        "<p>Specialization is surjective, with kernel exactly the extended parameter ideal, reusing mathlib’s finitely generated-kernel theorem.</p>"
+      ],
+      "compactSetup": [
+        "有限参数变量；任意有限 z 变量；系数常数项映射。",
+        "Finitely many parameter variables and finitely many z variables; the constant-coefficient map."
+      ],
+      "compactResult": [
+        "特化映射满射，核恰为参数变量生成的扩张理想；复用 mathlib 的有限生成核定理。",
+        "Specialization is surjective, with kernel exactly the extended parameter ideal, reusing mathlib’s finitely generated-kernel theorem."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.parameterSpecialization_kernel.{u_1} {K : Type u_1} [Field K] {r c : ℕ} :\n  RingHom.ker LinearStudy.parameterSpecialization = Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))",
+      "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "regular-specialization",
+      "titles": [
+        "由平坦性推出闭纤维正则",
+        "Closed-fiber regularity from flatness"
+      ],
+      "title": "由平坦性推出闭纤维正则",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/RegularSpecialization.lean",
+      "decl": "LinearStudy.powerSeries_specialized_equations_regular",
+      "declaration": "LinearStudy.powerSeries_specialized_equations_regular",
+      "deps": [
+        "closed-specialization",
+        "regular-exchange",
+        "variables-regular"
+      ],
+      "setup": [
+        "<p>H 为 B[[z]] 中正则方程组，B=K[[s₀,…,sᵣ]]；实际商 B[[z]]/(H) 在 B 上平坦。</p>",
+        "<p>H is regular in B[[z]], B=K[[s₀,…,sᵣ]]; the actual quotient B[[z]]/(H) is flat over B.</p>"
+      ],
+      "result": [
+        "<p>特化方程 H̄ 在 K[[z]] 中仍正则；其零常数项也从原正则性推出。没有另行假定闭纤维正则。</p>",
+        "<p>The specialized H̄ remains regular in K[[z]]; zero constant terms follow from original regularity. Closed-fiber regularity is not supplied as an extra hypothesis.</p>"
+      ],
+      "compactSetup": [
+        "H 为 B[[z]] 中正则方程组，B=K[[s₀,…,sᵣ]]；实际商 B[[z]]/(H) 在 B 上平坦。",
+        "H is regular in B[[z]], B=K[[s₀,…,sᵣ]]; the actual quotient B[[z]]/(H) is flat over B."
+      ],
+      "compactResult": [
+        "特化方程 H̄ 在 K[[z]] 中仍正则；其零常数项也从原正则性推出。没有另行假定闭纤维正则。",
+        "The specialized H̄ remains regular in K[[z]]; zero constant terms follow from original regularity. Closed-fiber regularity is not supplied as an extra hypothesis."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "regular-exchange",
+      "titles": [
+        "局部环中正则序列交换",
+        "Exchange of regular sequences in a local ring"
+      ],
+      "title": "局部环中正则序列交换",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/RegularSpecialization.lean",
+      "decl": "LinearStudy.weaklyRegular_exchange",
+      "declaration": "LinearStudy.weaklyRegular_exchange",
+      "deps": [],
+      "setup": [
+        "<p>Noetherian 局部环 R；H 正则；P⊆𝔪 在 R/(H) 上弱正则。</p>",
+        "<p>Noetherian local R; H is regular; P⊆𝔪 is weakly regular on R/(H).</p>"
+      ],
+      "result": [
+        "<p>H 在 R/(P) 上弱正则，证明通过串接序列及正则序列的可置换性。</p>",
+        "<p>H is weakly regular on R/(P), by concatenation and permutability of regular sequences.</p>"
+      ],
+      "compactSetup": [
+        "Noetherian 局部环 R；H 正则；P⊆𝔪 在 R/(H) 上弱正则。",
+        "Noetherian local R; H is regular; P⊆𝔪 is weakly regular on R/(H)."
+      ],
+      "compactResult": [
+        "H 在 R/(P) 上弱正则，证明通过串接序列及正则序列的可置换性。",
+        "H is weakly regular on R/(P), by concatenation and permutability of regular sequences."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.weaklyRegular_exchange.{u_1} {R : Type u_1} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (H P : List R)\n  (hH : RingTheory.Sequence.IsRegular R H) (hPm : ∀ p ∈ P, p ∈ IsLocalRing.maximalIdeal R)\n  (hP : RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList H) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList H))) P)) :\n  RingTheory.Sequence.IsWeaklyRegular (R ⧸ Ideal.ofList P) (List.map (⇑(Ideal.Quotient.mk (Ideal.ofList P))) H)",
+      "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
+      "lines": 168,
       "richStatement": true,
       "x": 30,
       "y": 60
