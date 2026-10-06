@@ -61,3 +61,5 @@ public import Linear.PowerSeriesFlatten
 public import Linear.PowerSeriesTranslation
 public import Linear.RelativeJacobian
 public import Linear.ParameterLinearPart
+public import Linear.ParameterSubstitution
+public import Linear.NilpotentRegular

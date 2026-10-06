@@ -688,6 +688,20 @@ LinearStudy.powerSeries_nilpotent_ringHom_ext.{u_1, u_2, u_3} {R : Type u_1} {S 
   (hX : ∀ (i : ι), g₁ (MvPowerSeries.X i) = g₂ (MvPowerSeries.X i))
   (hnil : ∀ (i : ι), IsNilpotent (g₁ (MvPowerSeries.X i))) : g₁ = g₂
 'LinearStudy.powerSeries_nilpotent_ringHom_ext' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.smulRegular_add_nilpotent.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]
+  [Module R M] (a n : R) (ha : IsSMulRegular M a) (hn : IsNilpotent n) : IsSMulRegular M (a + n)
+'LinearStudy.smulRegular_add_nilpotent' depends on axioms: [propext]
+LinearStudy.regular_cons_replace_nilpotent.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [IsLocalRing R]
+  [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] (a b : R) (rs : List R)
+  (h : RingTheory.Sequence.IsRegular M (a :: rs)) (hmem : ∀ x ∈ rs, x ∈ IsLocalRing.maximalIdeal R)
+  (hb : b ∈ IsLocalRing.maximalIdeal R) (hab : IsNilpotent (b - a)) : RingTheory.Sequence.IsRegular M (b :: rs)
+'LinearStudy.regular_cons_replace_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.regular_nilpotent_perturbation.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [IsLocalRing R]
+  [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] (rs ts : List R)
+  (h : RingTheory.Sequence.IsRegular M rs) (hmem : ∀ x ∈ rs, x ∈ IsLocalRing.maximalIdeal R)
+  (hmem' : ∀ x ∈ ts, x ∈ IsLocalRing.maximalIdeal R) (hdiff : List.Forall₂ (fun a b => IsNilpotent (b - a)) rs ts) :
+  RingTheory.Sequence.IsRegular M ts
+'LinearStudy.regular_nilpotent_perturbation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.oneVariable_unit_factorization.{u_1} {K : Type u_1} [Field K] (H : PowerSeries K) (hH : H ≠ 0)
   (h0 : PowerSeries.constantCoeff H = 0) : ∃ s u, IsUnit u ∧ H = u * PowerSeries.X ^ (s + 1)
 'LinearStudy.oneVariable_unit_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -789,6 +803,46 @@ LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin
   IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧
     (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal
 'LinearStudy.completeIntersection_parameterQuotient_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.noetherian_ringEnd_injective_of_surjective.{u_1} {R : Type u_1} [CommRing R] [IsNoetherianRing R]
+  (f : R →+* R) (hf : Function.Surjective ⇑f) : Function.Injective ⇑f
+'LinearStudy.noetherian_ringEnd_injective_of_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] : Ideal.span (Set.range MvPowerSeries.X) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)
+'LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameter_substitution_hasSubst.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) : MvPowerSeries.HasSubst T
+'LinearStudy.parameter_substitution_hasSubst' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameter_substitution_surjective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :
+  Function.Surjective ⇑(MvPowerSeries.substAlgHom ⋯)
+'LinearStudy.parameter_substitution_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameter_substitution_bijective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :
+  Function.Bijective ⇑(MvPowerSeries.substAlgHom ⋯)
+'LinearStudy.parameter_substitution_bijective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSubstitutionEquiv.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] [DecidableEq ι]
+  [Nonempty ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :
+  MvPowerSeries ι K ≃ₐ[K] MvPowerSeries ι K
+'LinearStudy.parameterSubstitutionEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSubstitutionEquiv_X.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] [DecidableEq ι]
+  [Nonempty ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) (i : ι) :
+  (LinearStudy.parameterSubstitutionEquiv T hT) (MvPowerSeries.X i) = T i
+'LinearStudy.parameterSubstitutionEquiv_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterSubstitutionEquiv_symm_T.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) (i : ι) :
+  (LinearStudy.parameterSubstitutionEquiv T hT).symm (T i) = MvPowerSeries.X i
+'LinearStudy.parameterSubstitutionEquiv_symm_T' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_parameter_generators_regular.{u_1} {K : Type u_1} [Field K] {r : ℕ} (hr : 0 < r)
+  (T : Fin r → MvPowerSeries (Fin r) K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin r) K) (List.ofFn T)
+'LinearStudy.powerSeries_parameter_generators_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_polynomial_equations_unit_change.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]
   [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : ι → MvPowerSeries ι R) (b : ι → ℕ)
   (hb : ∀ (i : ι), MvPowerSeries.X i ^ b i ∈ Ideal.span (Set.range H)) :

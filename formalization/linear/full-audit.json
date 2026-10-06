@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 463,
-  "verifiedTheorems": 299,
-  "definitions": 74,
+  "audited": 475,
+  "verifiedTheorems": 310,
+  "definitions": 75,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -3621,6 +3621,71 @@
       ]
     },
     {
+      "declaration": "LinearStudy.smulRegular_add_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentRegular.lean",
+      "line": 8,
+      "axioms": [
+        "propext"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smulRegular_add_nilpotent.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [AddCommGroup M]\n  [Module R M] (a n : R) (ha : IsSMulRegular M a) (hn : IsNilpotent n) : IsSMulRegular M (a + n)",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "lines": 22,
+      "moduleLineCount": 77,
+      "startLine": 8,
+      "endLine": 29,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.regular_cons_replace_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentRegular.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regular_cons_replace_nilpotent.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [IsLocalRing R]\n  [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] (a b : R) (rs : List R)\n  (h : RingTheory.Sequence.IsRegular M (a :: rs)) (hmem : ∀ x ∈ rs, x ∈ IsLocalRing.maximalIdeal R)\n  (hb : b ∈ IsLocalRing.maximalIdeal R) (hab : IsNilpotent (b - a)) : RingTheory.Sequence.IsRegular M (b :: rs)",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "lines": 26,
+      "moduleLineCount": 77,
+      "startLine": 32,
+      "endLine": 57,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.smulRegular_add_nilpotent"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.regular_nilpotent_perturbation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentRegular.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regular_nilpotent_perturbation.{u_1, u_2} {R : Type u_1} {M : Type u_2} [CommRing R] [IsLocalRing R]\n  [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] (rs ts : List R)\n  (h : RingTheory.Sequence.IsRegular M rs) (hmem : ∀ x ∈ rs, x ∈ IsLocalRing.maximalIdeal R)\n  (hmem' : ∀ x ∈ ts, x ∈ IsLocalRing.maximalIdeal R) (hdiff : List.Forall₂ (fun a b => IsNilpotent (b - a)) rs ts) :\n  RingTheory.Sequence.IsRegular M ts",
+      "sha256": "f15652633da27496fc641422562ceefcdadda0dd70a36c79b6776357033018c9",
+      "lines": 17,
+      "moduleLineCount": 77,
+      "startLine": 59,
+      "endLine": 75,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.regular_cons_replace_nilpotent"
+      ]
+    },
+    {
       "declaration": "LinearStudy.oneVariable_unit_factorization",
       "kind": "theorem",
       "origin": "project",
@@ -4050,6 +4115,221 @@
         "LinearStudy.ParameterRing",
         "LinearStudy.arbitraryParameterLifts_artinian",
         "LinearStudy.equationIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.noetherian_ringEnd_injective_of_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.noetherian_ringEnd_injective_of_surjective.{u_1} {R : Type u_1} [CommRing R] [IsNoetherianRing R]\n  (f : R →+* R) (hf : Function.Surjective ⇑f) : Function.Injective ⇑f",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 23,
+      "moduleLineCount": 124,
+      "startLine": 15,
+      "endLine": 37,
+      "lineCount": 23,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] [Nonempty ι] : Ideal.span (Set.range MvPowerSeries.X) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 8,
+      "moduleLineCount": 124,
+      "startLine": 41,
+      "endLine": 48,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameter_substitution_hasSubst",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameter_substitution_hasSubst.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) : MvPowerSeries.HasSubst T",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 6,
+      "moduleLineCount": 124,
+      "startLine": 51,
+      "endLine": 56,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.parameter_generator_constantCoeff_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameter_substitution_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameter_substitution_surjective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :\n  Function.Surjective ⇑(MvPowerSeries.substAlgHom ⋯)",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 26,
+      "moduleLineCount": 124,
+      "startLine": 58,
+      "endLine": 83,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.parameter_substitution_hasSubst",
+        "LinearStudy.powerSeries_constantCoeff_kernel",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameter_substitution_bijective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameter_substitution_bijective.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :\n  Function.Bijective ⇑(MvPowerSeries.substAlgHom ⋯)",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 6,
+      "moduleLineCount": 124,
+      "startLine": 85,
+      "endLine": 90,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.noetherian_ringEnd_injective_of_surjective",
+        "LinearStudy.parameter_substitution_hasSubst",
+        "LinearStudy.parameter_substitution_surjective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameterSubstitutionEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 92,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.parameterSubstitutionEquiv.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] [DecidableEq ι]\n  [Nonempty ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :\n  MvPowerSeries ι K ≃ₐ[K] MvPowerSeries ι K",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 6,
+      "moduleLineCount": 124,
+      "startLine": 92,
+      "endLine": 97,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.parameter_substitution_bijective",
+        "LinearStudy.parameter_substitution_hasSubst"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameterSubstitutionEquiv_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 99,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterSubstitutionEquiv_X.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] [DecidableEq ι]\n  [Nonempty ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) (i : ι) :\n  (LinearStudy.parameterSubstitutionEquiv T hT) (MvPowerSeries.X i) = T i",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 5,
+      "moduleLineCount": 124,
+      "startLine": 99,
+      "endLine": 103,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameter_substitution_hasSubst"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.parameterSubstitutionEquiv_symm_T",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 105,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterSubstitutionEquiv_symm_T.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] [Nonempty ι] (T : ι → MvPowerSeries ι K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) (i : ι) :\n  (LinearStudy.parameterSubstitutionEquiv T hT).symm (T i) = MvPowerSeries.X i",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 5,
+      "moduleLineCount": 124,
+      "startLine": 105,
+      "endLine": 109,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_parameter_generators_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterSubstitution.lean",
+      "line": 111,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_parameter_generators_regular.{u_1} {K : Type u_1} [Field K] {r : ℕ} (hr : 0 < r)\n  (T : Fin r → MvPowerSeries (Fin r) K)\n  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin r) K) (List.ofFn T)",
+      "sha256": "c253665adb7aabd4f639d1ec12446ee9f70af874dfdcae6186ef62e74fe8ec6e",
+      "lines": 12,
+      "moduleLineCount": 124,
+      "startLine": 111,
+      "endLine": 122,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeries_variables_regular",
+        "LinearStudy.regular_transport_ringEquiv"
       ]
     },
     {

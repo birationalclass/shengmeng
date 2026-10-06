@@ -1,10 +1,10 @@
-import {buildSourcePacks} from './source-pack-catalog.js?v=20261006-linear-13';
-import {createLineCountModel} from './source-line-model.js?v=20261006-linear-13';
+import {buildSourcePacks} from './source-pack-catalog.js?v=20261007-linear-14';
+import {createLineCountModel} from './source-line-model.js?v=20261007-linear-14';
 let dispose=()=>{};
 export function installLeanLineCounts({snapshot,nodes}){
   dispose();
   if(!document.querySelector('link[data-lean-line-styles]')){
-    const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('line-counts.css?v=20261006-linear-13',import.meta.url).href;css.dataset.leanLineStyles='';document.head.append(css);
+    const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('line-counts.css?v=20261007-linear-14',import.meta.url).href;css.dataset.leanLineStyles='';document.head.append(css);
   }
   const model=createLineCountModel(snapshot,nodes),byId=new Map(nodes.map(n=>[n.id,n]));
   const packs=new Map(buildSourcePacks(nodes).map(p=>[p.id,model.pack(p.cards)]));

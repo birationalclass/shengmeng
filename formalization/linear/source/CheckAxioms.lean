@@ -293,6 +293,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent
 #check LinearStudy.powerSeries_nilpotent_ringHom_ext
 #print axioms LinearStudy.powerSeries_nilpotent_ringHom_ext
+#check LinearStudy.smulRegular_add_nilpotent
+#print axioms LinearStudy.smulRegular_add_nilpotent
+#check LinearStudy.regular_cons_replace_nilpotent
+#print axioms LinearStudy.regular_cons_replace_nilpotent
+#check LinearStudy.regular_nilpotent_perturbation
+#print axioms LinearStudy.regular_nilpotent_perturbation
 #check LinearStudy.oneVariable_unit_factorization
 #print axioms LinearStudy.oneVariable_unit_factorization
 #check LinearStudy.oneVariable_closedFiber_jacobian
@@ -329,6 +335,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.arbitraryParameterLifts_artinian
 #check LinearStudy.completeIntersection_parameterQuotient_artinian
 #print axioms LinearStudy.completeIntersection_parameterQuotient_artinian
+#check LinearStudy.noetherian_ringEnd_injective_of_surjective
+#print axioms LinearStudy.noetherian_ringEnd_injective_of_surjective
+#check LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal
+#print axioms LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal
+#check LinearStudy.parameter_substitution_hasSubst
+#print axioms LinearStudy.parameter_substitution_hasSubst
+#check LinearStudy.parameter_substitution_surjective
+#print axioms LinearStudy.parameter_substitution_surjective
+#check LinearStudy.parameter_substitution_bijective
+#print axioms LinearStudy.parameter_substitution_bijective
+#check LinearStudy.parameterSubstitutionEquiv
+#print axioms LinearStudy.parameterSubstitutionEquiv
+#check LinearStudy.parameterSubstitutionEquiv_X
+#print axioms LinearStudy.parameterSubstitutionEquiv_X
+#check LinearStudy.parameterSubstitutionEquiv_symm_T
+#print axioms LinearStudy.parameterSubstitutionEquiv_symm_T
+#check LinearStudy.powerSeries_parameter_generators_regular
+#print axioms LinearStudy.powerSeries_parameter_generators_regular
 #check LinearStudy.powerSeries_polynomial_equations_unit_change
 #print axioms LinearStudy.powerSeries_polynomial_equations_unit_change
 #check LinearStudy.polynomial_diagonal_difference
