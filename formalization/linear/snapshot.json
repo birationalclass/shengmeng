@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T17:27:34+08:00",
+  "checkedAt": "2026-10-06T18:38:05+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "1f0577430a767aa73940a4f30dcf19e576b0a4fded0b0f21966bd2a6bde196ee",
-      "lineCount": 718
+      "sha256": "e78d5e7b64985b0ec3a8b3fd21a95279a61ad6b1122ed6a6aac70f44a891ce72",
+      "lineCount": 792
     },
     {
       "path": "Linear/ArtinianDiagonal.lean",
@@ -25,6 +25,16 @@
       "path": "Linear/DeterminantAnnihilator.lean",
       "sha256": "8a7ebfa5bd2b642ca93d1e463a2031c1b36eb037baf35a4d11f29d9632703c0f",
       "lineCount": 77
+    },
+    {
+      "path": "Linear/DiagonalNonzero.lean",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "lineCount": 46
+    },
+    {
+      "path": "Linear/DiagonalTrace.lean",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lineCount": 177
     },
     {
       "path": "Linear/DoublePoint.lean",
@@ -60,6 +70,16 @@
       "path": "Linear/Iteration.lean",
       "sha256": "26a45a0a1e4750003bc6f5dc66968f4888d1cf7e100e8fb0de31ed63120ab0fb",
       "lineCount": 44
+    },
+    {
+      "path": "Linear/JacobianNonzero.lean",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "lineCount": 180
+    },
+    {
+      "path": "Linear/JacobianTrace.lean",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "lineCount": 66
     },
     {
       "path": "Linear/KoszulComparison.lean",
@@ -127,9 +147,19 @@
       "lineCount": 114
     },
     {
+      "path": "Linear/PolynomialApproximation.lean",
+      "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
+      "lineCount": 82
+    },
+    {
       "path": "Linear/PolynomialDiagonal.lean",
       "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
       "lineCount": 69
+    },
+    {
+      "path": "Linear/PolynomialSocle.lean",
+      "sha256": "e92e113f68dcdd4ad84f9d09d24714624d02c496b2517585816b3d235209c5b5",
+      "lineCount": 53
     },
     {
       "path": "Linear/PowerSeriesAugmentation.lean",
@@ -202,6 +232,11 @@
       "lineCount": 62
     },
     {
+      "path": "Linear/TensorDifference.lean",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lineCount": 93
+    },
+    {
       "path": "Linear/TensorSpecialization.lean",
       "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
       "lineCount": 194
@@ -215,6 +250,11 @@
       "path": "Linear/TraceElement.lean",
       "sha256": "b9cf6e1f101c59eaa1ea8599410efcf618a9450b966841cfe816972f74c8ed3b",
       "lineCount": 120
+    },
+    {
+      "path": "Linear/UniversalDifference.lean",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lineCount": 89
     },
     {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
@@ -233,8 +273,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "8eeebea7a6c80e2003c96c4f9c1f02de5ffe63aca0b38c38f6232d70f83681a0",
-      "lineCount": 42
+      "sha256": "6da73150c4e101b463993bcc2ed98a9e7d44a094c97b632dfb377de5b6185df2",
+      "lineCount": 53
     }
   ],
   "declarations": {
@@ -395,6 +435,276 @@
       "formalType": "LinearStudy.coefficientDeterminant_annihilates_quotient.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}\n  [Fintype ι] [DecidableEq ι] (H x : ι → R) (M : Matrix ι ι R) (hH : M.mulVec x = H) :\n  have J := Ideal.span (Set.range H);\n  LinearStudy.Annihilates (Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (x i))) ((Ideal.Quotient.mk J) M.det)",
       "sha256": "8a7ebfa5bd2b642ca93d1e463a2031c1b36eb037baf35a4d11f29d9632703c0f",
       "lines": 77
+    },
+    "LinearStudy.diagonal_annihilator_coefficient_isUnit": {
+      "declaration": "LinearStudy.diagonal_annihilator_coefficient_isUnit",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNonzero.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_annihilator_coefficient_isUnit.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [FiniteDimensional K A] [IsLocalRing A] (q : A →ₐ[K] K)\n  (hq : RingHom.ker q.toRingHom = IsLocalRing.maximalIdeal A) (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct K A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : (LinearStudy.pairingRightReduction q) d ≠ 0) : IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "lines": 46
+    },
+    "LinearStudy.diagonal_annihilator_multiplication_nonzero": {
+      "declaration": "LinearStudy.diagonal_annihilator_multiplication_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNonzero.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_annihilator_multiplication_nonzero.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [FiniteDimensional K A] [IsLocalRing A] [CharZero K] (q : A →ₐ[K] K)\n  (hq : RingHom.ker q.toRingHom = IsLocalRing.maximalIdeal A) (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct K A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : (LinearStudy.pairingRightReduction q) d ≠ 0) : (Algebra.TensorProduct.lmul' K) d ≠ 0",
+      "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
+      "lines": 46
+    },
+    "LinearStudy.pairingTensorEndEquiv": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.pairingTensorEndEquiv.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :\n  TensorProduct R A A ≃ₗ[R] Module.End R A",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingTensorEndEquiv_tmul": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_tmul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_tmul.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (x y a : A) :\n  ((LinearStudy.pairingTensorEndEquiv p) (x ⊗ₜ[R] y)) a = p.functional (x * a) • y",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingTensorEndEquiv_left": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_left.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A)\n  (x a : A) :\n  ((LinearStudy.pairingTensorEndEquiv p) (x ⊗ₜ[R] 1 * d)) a = ((LinearStudy.pairingTensorEndEquiv p) d) (x * a)",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingTensorEndEquiv_right": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_right",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_right.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A)\n  (x a : A) :\n  ((LinearStudy.pairingTensorEndEquiv p) (1 ⊗ₜ[R] x * d)) a = x * ((LinearStudy.pairingTensorEndEquiv p) d) a",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingDiagonal": {
+      "declaration": "LinearStudy.pairingDiagonal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.pairingDiagonal.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) : TensorProduct R A A",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingDiagonal_annihilates": {
+      "declaration": "LinearStudy.pairingDiagonal_annihilates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingDiagonal_annihilates.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :\n  LinearStudy.Annihilates (KaehlerDifferential.ideal R A) (LinearStudy.pairingDiagonal p)",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingTensorEndEquiv_trace": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_trace",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_trace.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A) :\n  (LinearMap.trace R A) ((LinearStudy.pairingTensorEndEquiv p) d) = p.functional ((Algebra.TensorProduct.lmul' R) d)",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingDiagonal_multiplication_eq_traceElement": {
+      "declaration": "LinearStudy.pairingDiagonal_multiplication_eq_traceElement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingDiagonal_multiplication_eq_traceElement.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :\n  (Algebra.TensorProduct.lmul' R) (LinearStudy.pairingDiagonal p) = LinearStudy.traceElement p",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 111,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :\n  (LinearStudy.pairingTensorEndEquiv p) d = (Algebra.lmul R A) (((LinearStudy.pairingTensorEndEquiv p) d) 1)",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingDiagonal_generates_annihilator": {
+      "declaration": "LinearStudy.pairingDiagonal_generates_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 125,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingDiagonal_generates_annihilator.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :\n  d = ((LinearStudy.pairingTensorEndEquiv p) d) 1 ⊗ₜ[R] 1 * LinearStudy.pairingDiagonal p",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple": {
+      "declaration": "LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 136,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :\n  (Algebra.TensorProduct.lmul' R) d = ((LinearStudy.pairingTensorEndEquiv p) d) 1 * LinearStudy.traceElement p",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingRightReduction": {
+      "declaration": "LinearStudy.pairingRightReduction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 146,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.pairingRightReduction.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  (q : A →ₐ[R] R) : TensorProduct R A A →ₐ[R] A",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingRightReduction_tmul": {
+      "declaration": "LinearStudy.pairingRightReduction_tmul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 151,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingRightReduction_tmul.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  (q : A →ₐ[R] R) (x y : A) : (LinearStudy.pairingRightReduction q) (x ⊗ₜ[R] y) = q y • x",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingRightReduction_pairing": {
+      "declaration": "LinearStudy.pairingRightReduction_pairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 155,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingRightReduction_pairing.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (q : A →ₐ[R] R) (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (a : A) :\n  p.functional (a * (LinearStudy.pairingRightReduction q) d) = q (((LinearStudy.pairingTensorEndEquiv p) d) a)",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
+    },
+    "LinearStudy.pairingRightReduction_diagonal": {
+      "declaration": "LinearStudy.pairingRightReduction_diagonal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalTrace.lean",
+      "line": 168,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingRightReduction_diagonal.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (q : A →ₐ[R] R) (p : LinearStudy.PerfectMultiplicationPairing) :\n  (LinearStudy.pairingRightReduction q) (LinearStudy.pairingDiagonal p) = LinearStudy.dualGenerator q p",
+      "sha256": "b38672e1a2a9f2b2d8f8c2d34c2ac02f7356feb8b6da1582a148bf608e1f9882",
+      "lines": 177
     },
     "LinearStudy.epsilon": {
       "declaration": "LinearStudy.epsilon",
@@ -1194,6 +1504,118 @@
       "formalType": "LinearStudy.invariant_restriction_surjective.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (hf : Function.Surjective f)\n  (h : f ⁻¹' V = V) : Function.Surjective (LinearStudy.restrictInvariant f V h)",
       "sha256": "26a45a0a1e4750003bc6f5dc66968f4888d1cf7e100e8fb0de31ed63120ab0fb",
       "lines": 44
+    },
+    "LinearStudy.powerSeriesQuotient_polynomial_diagonal": {
+      "declaration": "LinearStudy.powerSeriesQuotient_polynomial_diagonal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianNonzero.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_polynomial_diagonal.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) (hpzero : ∀ (i : Fin (n + 1)), MvPolynomial.constantCoeff (P i) = 0)\n  (hp : ∀ (i : Fin (n + 1)), (Ideal.Quotient.mk (Ideal.span (Set.range H))) ↑(P i) = 0) :\n  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));\n  ∃ N,\n    (N.mulVec MvPowerSeries.X = fun i => ↑(P i)) ∧\n      ∃ M,\n        LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧\n          ((Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ↑((MvPolynomial.pderiv j) (P i))) ∧\n            (LinearStudy.pairingRightReduction (LinearStudy.powerSeriesQuotientAugmentation H hzero)) M.det = q N.det",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "lines": 180
+    },
+    "LinearStudy.powerSeriesQuotient_jacobian_nonzero": {
+      "declaration": "LinearStudy.powerSeriesQuotient_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianNonzero.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_jacobian_nonzero.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  LinearStudy.powerSeriesJacobianClass H ≠ 0",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "lines": 180
+    },
+    "LinearStudy.powerSeriesQuotient_jacobian_scalar_socle": {
+      "declaration": "LinearStudy.powerSeriesQuotient_jacobian_scalar_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianNonzero.lean",
+      "line": 138,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_jacobian_scalar_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (x : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) :\n  LinearStudy.Annihilates (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))) x ↔\n    ∃ b, x = b • LinearStudy.powerSeriesJacobianClass H",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "lines": 180
+    },
+    "LinearStudy.powerSeriesQuotient_jacobian_socle": {
+      "declaration": "LinearStudy.powerSeriesQuotient_jacobian_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianNonzero.lean",
+      "line": 161,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_jacobian_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  Submodule.annihilator (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))) =\n    Ideal.span {LinearStudy.powerSeriesJacobianClass H}",
+      "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
+      "lines": 180
+    },
+    "LinearStudy.powerSeriesJacobianClass": {
+      "declaration": "LinearStudy.powerSeriesJacobianClass",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/JacobianTrace.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesJacobianClass.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "lines": 66
+    },
+    "LinearStudy.powerSeriesQuotient_jacobian_trace_multiple": {
+      "declaration": "LinearStudy.powerSeriesQuotient_jacobian_trace_multiple",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianTrace.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_jacobian_trace_multiple.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (p : LinearStudy.PerfectMultiplicationPairing) :\n  ∃ c, LinearStudy.powerSeriesJacobianClass H = c * LinearStudy.traceElement p",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "lines": 66
+    },
+    "LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical": {
+      "declaration": "LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianTrace.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  LinearStudy.Annihilates (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)))\n    (LinearStudy.powerSeriesJacobianClass H)",
+      "sha256": "82069953a58ad8596eb1ee01b72e6975761b590b433a22ff54447c3fab00feca",
+      "lines": 66
     },
     "LinearStudy.coefficientMatrix_koszul_compatibility": {
       "declaration": "LinearStudy.coefficientMatrix_koszul_compatibility",
@@ -2185,6 +2607,22 @@
       "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
       "lines": 114
     },
+    "LinearStudy.powerSeries_polynomial_equations_unit_change": {
+      "declaration": "LinearStudy.powerSeries_polynomial_equations_unit_change",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialApproximation.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_polynomial_equations_unit_change.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]\n  [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : ι → MvPowerSeries ι R) (b : ι → ℕ)\n  (hb : ∀ (i : ι), MvPowerSeries.X i ^ b i ∈ Ideal.span (Set.range H)) :\n  ∃ P,\n    (∀ (i : ι), P i = (MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm fun j => b j + 1)) (H i)) ∧\n      ∃ U, IsUnit U ∧ (U.mulVec H = fun i => ↑(P i)) ∧ U.map ⇑MvPowerSeries.constantCoeff = 1",
+      "sha256": "113efcfc5c5beaf7150cff35b3fda3d1853fa9c19897a1e128b9158d1887a187",
+      "lines": 82
+    },
     "LinearStudy.polynomial_diagonal_difference": {
       "declaration": "LinearStudy.polynomial_diagonal_difference",
       "kind": "theorem",
@@ -2200,6 +2638,22 @@
       "formalType": "LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}\n  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] (u v : MvPolynomial ι R →+* A)\n  (π : A →+* B) (hC : ∀ (c : R), u (MvPolynomial.C c) = v (MvPolynomial.C c))\n  (hX : ∀ (i : ι), π (u (MvPolynomial.X i)) = π (v (MvPolynomial.X i))) (p : MvPolynomial ι R) :\n  ∃ a,\n    u p - v p = ∑ i, a i * (u (MvPolynomial.X i) - v (MvPolynomial.X i)) ∧\n      ∀ (i : ι), π (a i) = π (u ((MvPolynomial.pderiv i) p))",
       "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
       "lines": 69
+    },
+    "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero": {
+      "declaration": "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialSocle.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (U N : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPowerSeries (Fin (n + 1)) K)) (hU : IsUnit U)\n  (he : U.mulVec H = N.mulVec MvPowerSeries.X) : (Ideal.Quotient.mk (Ideal.span (Set.range H))) N.det ≠ 0",
+      "sha256": "e92e113f68dcdd4ad84f9d09d24714624d02c496b2517585816b3d235209c5b5",
+      "lines": 53
     },
     "LinearStudy.powerSeriesConstantCoeffAlgHom": {
       "declaration": "LinearStudy.powerSeriesConstantCoeffAlgHom",
@@ -3677,6 +4131,86 @@
       "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
       "lines": 62
     },
+    "LinearStudy.polynomialDoubleTensor": {
+      "declaration": "LinearStudy.polynomialDoubleTensor",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TensorDifference.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialDoubleTensor.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) : MvPolynomial (ι ⊕ ι) K →ₐ[K] TensorProduct K A A",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lines": 93
+    },
+    "LinearStudy.polynomialDoubleTensor_left": {
+      "declaration": "LinearStudy.polynomialDoubleTensor_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorDifference.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensor_left.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial ι K) :\n  (LinearStudy.polynomialDoubleTensor q) ((MvPolynomial.rename Sum.inl) P) = q ↑P ⊗ₜ[K] 1",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lines": 93
+    },
+    "LinearStudy.polynomialDoubleTensor_right": {
+      "declaration": "LinearStudy.polynomialDoubleTensor_right",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorDifference.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensor_right.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial ι K) :\n  (LinearStudy.polynomialDoubleTensor q) ((MvPolynomial.rename Sum.inr) P) = 1 ⊗ₜ[K] q ↑P",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lines": 93
+    },
+    "LinearStudy.polynomialDoubleTensor_multiplication": {
+      "declaration": "LinearStudy.polynomialDoubleTensor_multiplication",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorDifference.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensor_multiplication.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}\n  [CommRing K] [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial (ι ⊕ ι) K) :\n  (Algebra.TensorProduct.lmul' K) ((LinearStudy.polynomialDoubleTensor q) P) =\n    q ↑(LinearStudy.polynomialDoubleDiagonal P)",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lines": 93
+    },
+    "LinearStudy.polynomialDoubleTensor_rightReduction": {
+      "declaration": "LinearStudy.polynomialDoubleTensor_rightReduction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorDifference.lean",
+      "line": 73,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensor_rightReduction.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}\n  [CommRing K] [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (a : A →ₐ[K] K)\n  (ha : ∀ (i : ι), a (q (MvPowerSeries.X i)) = 0) (P : MvPolynomial (ι ⊕ ι) K) :\n  (LinearStudy.pairingRightReduction a) ((LinearStudy.polynomialDoubleTensor q) P) =\n    q (LinearStudy.polynomialDoubleRightZero P)",
+      "sha256": "0973518273c958d80299be1f4d0ac3324f953334583dd5f1cd638f958be72206",
+      "lines": 93
+    },
     "LinearStudy.powerSeries_maximalIdeal_eq_coordinates": {
       "declaration": "LinearStudy.powerSeries_maximalIdeal_eq_coordinates",
       "kind": "theorem",
@@ -4444,6 +4978,102 @@
       "formalType": "LinearStudy.eq_traceElement_of_residue_trace.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)\n  (htrace : ∀ (a : A), p.functional (delta * a) = (Algebra.trace B A) a) : delta = LinearStudy.traceElement p",
       "sha256": "b9cf6e1f101c59eaa1ea8599410efcf618a9450b966841cfe816972f74c8ed3b",
       "lines": 120
+    },
+    "LinearStudy.polynomialDoubleDiagonal": {
+      "declaration": "LinearStudy.polynomialDoubleDiagonal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialDoubleDiagonal.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] :\n  MvPolynomial (ι ⊕ ι) R →+* MvPolynomial ι R",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
+    },
+    "LinearStudy.polynomialDoubleRightZero": {
+      "declaration": "LinearStudy.polynomialDoubleRightZero",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialDoubleRightZero.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] :\n  MvPolynomial (ι ⊕ ι) R →+* MvPowerSeries ι R",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
+    },
+    "LinearStudy.polynomialDoubleDiagonal_left": {
+      "declaration": "LinearStudy.polynomialDoubleDiagonal_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleDiagonal_left.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] (P : MvPolynomial ι R) :\n  LinearStudy.polynomialDoubleDiagonal ((MvPolynomial.rename Sum.inl) P) = P",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
+    },
+    "LinearStudy.polynomialDoubleRightZero_left": {
+      "declaration": "LinearStudy.polynomialDoubleRightZero_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleRightZero_left.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]\n  (P : MvPolynomial ι R) : LinearStudy.polynomialDoubleRightZero ((MvPolynomial.rename Sum.inl) P) = ↑P",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
+    },
+    "LinearStudy.polynomialDoubleRightZero_right": {
+      "declaration": "LinearStudy.polynomialDoubleRightZero_right",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleRightZero_right.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]\n  (P : MvPolynomial ι R) :\n  LinearStudy.polynomialDoubleRightZero ((MvPolynomial.rename Sum.inr) P) =\n    MvPowerSeries.C (MvPolynomial.constantCoeff P)",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
+    },
+    "LinearStudy.polynomial_universal_difference_matrix": {
+      "declaration": "LinearStudy.polynomial_universal_difference_matrix",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/UniversalDifference.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_universal_difference_matrix.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] [Fintype ι]\n  [DecidableEq ι] (P : ι → MvPolynomial ι R) (hzero : ∀ (i : ι), MvPolynomial.constantCoeff (P i) = 0) :\n  ∃ D,\n    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>\n        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧\n      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧\n        (D.map ⇑LinearStudy.polynomialDoubleRightZero).mulVec MvPowerSeries.X = fun i => ↑(P i)",
+      "sha256": "0475614d273bcc3cd4870e90280454633b4996b0e2b5cb4e7ccac0474ec92766",
+      "lines": 89
     },
     "ExteriorAlgebra.baseChangeι": {
       "declaration": "ExteriorAlgebra.baseChangeι",
@@ -5980,10 +6610,10 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 210,
-  "definitionCount": 56,
+  "verifiedTheoremCount": 240,
+  "definitionCount": 63,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. Actual derivative Jacobian comparison, Jacobian survival under arbitrary lifts and global geometry remain unproved."
+  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. The relative Jacobian theorem, arbitrary parameter lifts and global geometry remain unproved."
 }

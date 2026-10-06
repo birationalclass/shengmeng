@@ -40,3 +40,14 @@ public import Linear.NilpotentEvaluationUnique
 public import Linear.PolynomialDiagonal
 public import Linear.PowerSeriesDiagonal
 public import Linear.ArtinianDiagonal
+public import Linear.DiagonalTrace
+public import Linear.JacobianTrace
+
+public import Linear.PolynomialApproximation
+public import Linear.UniversalDifference
+public import Linear.PolynomialSocle
+public import Linear.DiagonalNonzero
+
+public import Linear.TensorDifference
+
+public import Linear.JacobianNonzero

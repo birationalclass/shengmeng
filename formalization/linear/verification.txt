@@ -44,7 +44,20 @@ Linear.NilpotentEvaluation: cached compiled module (source and project dependenc
 Linear.NilpotentEvaluationUnique: cached compiled module (source and project dependencies unchanged)
 Linear.PolynomialDiagonal: cached compiled module (source and project dependencies unchanged)
 Linear.PowerSeriesDiagonal: cached compiled module (source and project dependencies unchanged)
-Linear.ArtinianDiagonal: exit 0
+Linear.ArtinianDiagonal: cached compiled module (source and project dependencies unchanged)
+Linear.DiagonalTrace: cached compiled module (source and project dependencies unchanged)
+Linear.JacobianTrace: cached compiled module (source and project dependencies unchanged)
+Linear.PolynomialApproximation: exit 0
+
+Linear.UniversalDifference: exit 0
+
+Linear.PolynomialSocle: exit 0
+
+Linear.DiagonalNonzero: exit 0
+
+Linear.TensorDifference: exit 0
+
+Linear.JacobianNonzero: exit 0
 
 Linear: exit 0
 
@@ -91,6 +104,83 @@ LinearStudy.coefficientDeterminant_annihilates_quotient.{u_1, u_2} {R : Type u_1
   have J := Ideal.span (Set.range H);
   LinearStudy.Annihilates (Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (x i))) ((Ideal.Quotient.mk J) M.det)
 'LinearStudy.coefficientDeterminant_annihilates_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.diagonal_annihilator_coefficient_isUnit.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] [FiniteDimensional K A] [IsLocalRing A] (q : A →ₐ[K] K)
+  (hq : RingHom.ker q.toRingHom = IsLocalRing.maximalIdeal A) (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct K A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)
+  (hred : (LinearStudy.pairingRightReduction q) d ≠ 0) : IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)
+'LinearStudy.diagonal_annihilator_coefficient_isUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.diagonal_annihilator_multiplication_nonzero.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] [FiniteDimensional K A] [IsLocalRing A] [CharZero K] (q : A →ₐ[K] K)
+  (hq : RingHom.ker q.toRingHom = IsLocalRing.maximalIdeal A) (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct K A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)
+  (hred : (LinearStudy.pairingRightReduction q) d ≠ 0) : (Algebra.TensorProduct.lmul' K) d ≠ 0
+'LinearStudy.diagonal_annihilator_multiplication_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :
+  TensorProduct R A A ≃ₗ[R] Module.End R A
+'LinearStudy.pairingTensorEndEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv_tmul.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (x y a : A) :
+  ((LinearStudy.pairingTensorEndEquiv p) (x ⊗ₜ[R] y)) a = p.functional (x * a) • y
+'LinearStudy.pairingTensorEndEquiv_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv_left.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A)
+  (x a : A) :
+  ((LinearStudy.pairingTensorEndEquiv p) (x ⊗ₜ[R] 1 * d)) a = ((LinearStudy.pairingTensorEndEquiv p) d) (x * a)
+'LinearStudy.pairingTensorEndEquiv_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv_right.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A)
+  (x a : A) :
+  ((LinearStudy.pairingTensorEndEquiv p) (1 ⊗ₜ[R] x * d)) a = x * ((LinearStudy.pairingTensorEndEquiv p) d) a
+'LinearStudy.pairingTensorEndEquiv_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingDiagonal.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) : TensorProduct R A A
+'LinearStudy.pairingDiagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingDiagonal_annihilates.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.Annihilates (KaehlerDifferential.ideal R A) (LinearStudy.pairingDiagonal p)
+'LinearStudy.pairingDiagonal_annihilates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv_trace.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct R A A) :
+  (LinearMap.trace R A) ((LinearStudy.pairingTensorEndEquiv p) d) = p.functional ((Algebra.TensorProduct.lmul' R) d)
+'LinearStudy.pairingTensorEndEquiv_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingDiagonal_multiplication_eq_traceElement.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]
+  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) :
+  (Algebra.TensorProduct.lmul' R) (LinearStudy.pairingDiagonal p) = LinearStudy.traceElement p
+'LinearStudy.pairingDiagonal_multiplication_eq_traceElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]
+  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :
+  (LinearStudy.pairingTensorEndEquiv p) d = (Algebra.lmul R A) (((LinearStudy.pairingTensorEndEquiv p) d) 1)
+'LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingDiagonal_generates_annihilator.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
+  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :
+  d = ((LinearStudy.pairingTensorEndEquiv p) d) 1 ⊗ₜ[R] 1 * LinearStudy.pairingDiagonal p
+'LinearStudy.pairingDiagonal_generates_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]
+  [CommRing A] [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d) :
+  (Algebra.TensorProduct.lmul' R) d = ((LinearStudy.pairingTensorEndEquiv p) d) 1 * LinearStudy.traceElement p
+'LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.pairingRightReduction.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  (q : A →ₐ[R] R) : TensorProduct R A A →ₐ[R] A
+'LinearStudy.pairingRightReduction' depends on axioms: [propext, Quot.sound]
+LinearStudy.pairingRightReduction_tmul.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]
+  (q : A →ₐ[R] R) (x y : A) : (LinearStudy.pairingRightReduction q) (x ⊗ₜ[R] y) = q y • x
+'LinearStudy.pairingRightReduction_tmul' depends on axioms: [propext, Quot.sound]
+LinearStudy.pairingRightReduction_pairing.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
+  [Algebra R A] [Module.Free R A] [Module.Finite R A] (q : A →ₐ[R] R) (p : LinearStudy.PerfectMultiplicationPairing)
+  (d : TensorProduct R A A) (a : A) :
+  p.functional (a * (LinearStudy.pairingRightReduction q) d) = q (((LinearStudy.pairingTensorEndEquiv p) d) a)
+'LinearStudy.pairingRightReduction_pairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.pairingRightReduction_diagonal.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]
+  [Algebra R A] [Module.Free R A] [Module.Finite R A] (q : A →ₐ[R] R) (p : LinearStudy.PerfectMultiplicationPairing) :
+  (LinearStudy.pairingRightReduction q) (LinearStudy.pairingDiagonal p) = LinearStudy.dualGenerator q p
+'LinearStudy.pairingRightReduction_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.epsilon.{u_1} (B : Type u_1) [CommRing B] : LinearStudy.DoublePoint B
 'LinearStudy.epsilon' does not depend on any axioms
 LinearStudy.doublePoint_decomposition.{u_1} (B : Type u_1) [CommRing B] (a : LinearStudy.DoublePoint B) :
@@ -295,6 +385,68 @@ LinearStudy.restrictInvariant.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (h 
 LinearStudy.invariant_restriction_surjective.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (hf : Function.Surjective f)
   (h : f ⁻¹' V = V) : Function.Surjective (LinearStudy.restrictInvariant f V h)
 'LinearStudy.invariant_restriction_surjective' does not depend on any axioms
+LinearStudy.powerSeriesQuotient_polynomial_diagonal.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) (hpzero : ∀ (i : Fin (n + 1)), MvPolynomial.constantCoeff (P i) = 0)
+  (hp : ∀ (i : Fin (n + 1)), (Ideal.Quotient.mk (Ideal.span (Set.range H))) ↑(P i) = 0) :
+  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);
+  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));
+  ∃ N,
+    (N.mulVec MvPowerSeries.X = fun i => ↑(P i)) ∧
+      ∃ M,
+        LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧
+          ((Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ↑((MvPolynomial.pderiv j) (P i))) ∧
+            (LinearStudy.pairingRightReduction (LinearStudy.powerSeriesQuotientAugmentation H hzero)) M.det = q N.det
+'LinearStudy.powerSeriesQuotient_polynomial_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_jacobian_nonzero.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  LinearStudy.powerSeriesJacobianClass H ≠ 0
+'LinearStudy.powerSeriesQuotient_jacobian_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_jacobian_scalar_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  (x : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) :
+  LinearStudy.Annihilates (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))) x ↔
+    ∃ b, x = b • LinearStudy.powerSeriesJacobianClass H
+'LinearStudy.powerSeriesQuotient_jacobian_scalar_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_jacobian_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ} [CharZero K]
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  Submodule.annihilator (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))) =
+    Ideal.span {LinearStudy.powerSeriesJacobianClass H}
+'LinearStudy.powerSeriesQuotient_jacobian_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesJacobianClass.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)
+'LinearStudy.powerSeriesJacobianClass' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_jacobian_trace_multiple.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  (p : LinearStudy.PerfectMultiplicationPairing) :
+  ∃ c, LinearStudy.powerSeriesJacobianClass H = c * LinearStudy.traceElement p
+'LinearStudy.powerSeriesQuotient_jacobian_trace_multiple' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  LinearStudy.Annihilates (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)))
+    (LinearStudy.powerSeriesJacobianClass H)
+'LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.coefficientMatrix_koszul_compatibility.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
   (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) :
   Fintype.linearCombination R x ∘ₗ Matrix.toLin' M.transpose = Fintype.linearCombination R H
@@ -571,6 +723,13 @@ LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin
   IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧
     (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal
 'LinearStudy.completeIntersection_parameterQuotient_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_polynomial_equations_unit_change.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]
+  [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : ι → MvPowerSeries ι R) (b : ι → ℕ)
+  (hb : ∀ (i : ι), MvPowerSeries.X i ^ b i ∈ Ideal.span (Set.range H)) :
+  ∃ P,
+    (∀ (i : ι), P i = (MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm fun j => b j + 1)) (H i)) ∧
+      ∃ U, IsUnit U ∧ (U.mulVec H = fun i => ↑(P i)) ∧ U.map ⇑MvPowerSeries.constantCoeff = 1
+'LinearStudy.powerSeries_polynomial_equations_unit_change' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}
   {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] (u v : MvPolynomial ι R →+* A)
   (π : A →+* B) (hC : ∀ (c : R), u (MvPolynomial.C c) = v (MvPolynomial.C c))
@@ -579,6 +738,16 @@ LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {
     u p - v p = ∑ i, a i * (u (MvPolynomial.X i) - v (MvPolynomial.X i)) ∧
       ∀ (i : ι), π (a i) = π (u ((MvPolynomial.pderiv i) p))
 'LinearStudy.polynomial_diagonal_difference' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  (U N : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPowerSeries (Fin (n + 1)) K)) (hU : IsUnit U)
+  (he : U.mulVec H = N.mulVec MvPowerSeries.X) : (Ideal.Quotient.mk (Ideal.span (Set.range H))) N.det ≠ 0
+'LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.powerSeriesConstantCoeffAlgHom.{u_1} {K : Type u_1} [Field K] {n : ℕ} :
   MvPowerSeries (Fin (n + 1)) K →ₐ[K] K
 'LinearStudy.powerSeriesConstantCoeffAlgHom' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1049,6 +1218,28 @@ LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing 
 'LinearStudy.relativeJacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.Lemma31Goal (r c : ℕ) : Prop
 'LinearStudy.Lemma31Goal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensor.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) : MvPolynomial (ι ⊕ ι) K →ₐ[K] TensorProduct K A A
+'LinearStudy.polynomialDoubleTensor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensor_left.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial ι K) :
+  (LinearStudy.polynomialDoubleTensor q) ((MvPolynomial.rename Sum.inl) P) = q ↑P ⊗ₜ[K] 1
+'LinearStudy.polynomialDoubleTensor_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensor_right.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial ι K) :
+  (LinearStudy.polynomialDoubleTensor q) ((MvPolynomial.rename Sum.inr) P) = 1 ⊗ₜ[K] q ↑P
+'LinearStudy.polynomialDoubleTensor_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensor_multiplication.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}
+  [CommRing K] [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (P : MvPolynomial (ι ⊕ ι) K) :
+  (Algebra.TensorProduct.lmul' K) ((LinearStudy.polynomialDoubleTensor q) P) =
+    q ↑(LinearStudy.polynomialDoubleDiagonal P)
+'LinearStudy.polynomialDoubleTensor_multiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensor_rightReduction.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}
+  [CommRing K] [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) (a : A →ₐ[K] K)
+  (ha : ∀ (i : ι), a (q (MvPowerSeries.X i)) = 0) (P : MvPolynomial (ι ⊕ ι) K) :
+  (LinearStudy.pairingRightReduction a) ((LinearStudy.polynomialDoubleTensor q) P) =
+    q (LinearStudy.polynomialDoubleRightZero P)
+'LinearStudy.polynomialDoubleTensor_rightReduction' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_maximalIdeal_eq_coordinates.{u_1} {K : Type u_1} [Field K] {r : ℕ} :
   IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K) = Ideal.span (Set.range MvPowerSeries.X)
 'LinearStudy.powerSeries_maximalIdeal_eq_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1240,6 +1431,31 @@ LinearStudy.eq_traceElement_of_residue_trace.{u_1, u_2} {B : Type u_1} {A : Type
   [Algebra B A] (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)
   (htrace : ∀ (a : A), p.functional (delta * a) = (Algebra.trace B A) a) : delta = LinearStudy.traceElement p
 'LinearStudy.eq_traceElement_of_residue_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleDiagonal.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] :
+  MvPolynomial (ι ⊕ ι) R →+* MvPolynomial ι R
+'LinearStudy.polynomialDoubleDiagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleRightZero.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] :
+  MvPolynomial (ι ⊕ ι) R →+* MvPowerSeries ι R
+'LinearStudy.polynomialDoubleRightZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleDiagonal_left.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] (P : MvPolynomial ι R) :
+  LinearStudy.polynomialDoubleDiagonal ((MvPolynomial.rename Sum.inl) P) = P
+'LinearStudy.polynomialDoubleDiagonal_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleRightZero_left.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]
+  (P : MvPolynomial ι R) : LinearStudy.polynomialDoubleRightZero ((MvPolynomial.rename Sum.inl) P) = ↑P
+'LinearStudy.polynomialDoubleRightZero_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleRightZero_right.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R]
+  (P : MvPolynomial ι R) :
+  LinearStudy.polynomialDoubleRightZero ((MvPolynomial.rename Sum.inr) P) =
+    MvPowerSeries.C (MvPolynomial.constantCoeff P)
+'LinearStudy.polynomialDoubleRightZero_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_universal_difference_matrix.{u_1, u_2} {R : Type u_1} {ι : Type u_2} [CommRing R] [Fintype ι]
+  [DecidableEq ι] (P : ι → MvPolynomial ι R) (hzero : ∀ (i : ι), MvPolynomial.constantCoeff (P i) = 0) :
+  ∃ D,
+    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>
+        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧
+      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧
+        (D.map ⇑LinearStudy.polynomialDoubleRightZero).mulVec MvPowerSeries.X = fun i => ↑(P i)
+'LinearStudy.polynomial_universal_difference_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
 ExteriorAlgebra.baseChangeι.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M] [Module R M]
   (S : Type u_3) [CommRing S] [Algebra R S] : TensorProduct R S M →ₗ[S] TensorProduct R S (ExteriorAlgebra R M)
 'ExteriorAlgebra.baseChangeι' depends on axioms: [propext, Quot.sound]

@@ -139,3 +139,23 @@ The spatial proof atlas reuses the Negativity interface through its independent
 Jordan Size adaptation. Its gold card identifies the current target, not a
 completed proof. The full manuscript draft and private audit report are not
 published; only its target, proof route and file hash are included.
+
+## Milestone 10: actual multivariable derivative Jacobian
+
+`JacobianNonzero.lean` proves nonvanishing and scalar socle generation of
+the actual derivative Jacobian for zero-constant regular equations over
+a characteristic-zero field whose actual power-series quotient is Artinian
+and finite-dimensional. The pairing, equation unit change and difference
+matrix are constructed. No Jacobian nonvanishing or socle identity is an input.
+
+`DiagonalTrace.lean` constructs the actual pairing diagonal and connects its
+tensor multiplication to algebraic trace. `PolynomialApproximation.lean`
+constructs finite polynomial equations P=UH with U(0)=I. The universal
+difference matrix has both actual derivative and coefficient specializations.
+Its right augmentation is proved nonzero using the original regular equations,
+forcing its trace coefficient to be a unit. This closes the field/closed-fiber
+Jacobian obligation left open in the historical descriptions above.
+
+The general relative base-ring theorem, arbitrary lifted parameters and
+global geometric proof remain unproved. This milestone does not complete
+`Lemma31Goal` or `LinearityTheoremGoal`.

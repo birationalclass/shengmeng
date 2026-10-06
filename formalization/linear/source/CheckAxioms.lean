@@ -21,6 +21,40 @@ set_option pp.proofs false
 #print axioms LinearStudy.determinant_annihilates_coordinate_ideal
 #check LinearStudy.coefficientDeterminant_annihilates_quotient
 #print axioms LinearStudy.coefficientDeterminant_annihilates_quotient
+#check LinearStudy.diagonal_annihilator_coefficient_isUnit
+#print axioms LinearStudy.diagonal_annihilator_coefficient_isUnit
+#check LinearStudy.diagonal_annihilator_multiplication_nonzero
+#print axioms LinearStudy.diagonal_annihilator_multiplication_nonzero
+#check LinearStudy.pairingTensorEndEquiv
+#print axioms LinearStudy.pairingTensorEndEquiv
+#check LinearStudy.pairingTensorEndEquiv_tmul
+#print axioms LinearStudy.pairingTensorEndEquiv_tmul
+#check LinearStudy.pairingTensorEndEquiv_left
+#print axioms LinearStudy.pairingTensorEndEquiv_left
+#check LinearStudy.pairingTensorEndEquiv_right
+#print axioms LinearStudy.pairingTensorEndEquiv_right
+#check LinearStudy.pairingDiagonal
+#print axioms LinearStudy.pairingDiagonal
+#check LinearStudy.pairingDiagonal_annihilates
+#print axioms LinearStudy.pairingDiagonal_annihilates
+#check LinearStudy.pairingTensorEndEquiv_trace
+#print axioms LinearStudy.pairingTensorEndEquiv_trace
+#check LinearStudy.pairingDiagonal_multiplication_eq_traceElement
+#print axioms LinearStudy.pairingDiagonal_multiplication_eq_traceElement
+#check LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator
+#print axioms LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator
+#check LinearStudy.pairingDiagonal_generates_annihilator
+#print axioms LinearStudy.pairingDiagonal_generates_annihilator
+#check LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple
+#print axioms LinearStudy.diagonal_annihilator_multiplication_eq_trace_multiple
+#check LinearStudy.pairingRightReduction
+#print axioms LinearStudy.pairingRightReduction
+#check LinearStudy.pairingRightReduction_tmul
+#print axioms LinearStudy.pairingRightReduction_tmul
+#check LinearStudy.pairingRightReduction_pairing
+#print axioms LinearStudy.pairingRightReduction_pairing
+#check LinearStudy.pairingRightReduction_diagonal
+#print axioms LinearStudy.pairingRightReduction_diagonal
 #check LinearStudy.epsilon
 #print axioms LinearStudy.epsilon
 #check LinearStudy.doublePoint_decomposition
@@ -125,6 +159,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.restrictInvariant
 #check LinearStudy.invariant_restriction_surjective
 #print axioms LinearStudy.invariant_restriction_surjective
+#check LinearStudy.powerSeriesQuotient_polynomial_diagonal
+#print axioms LinearStudy.powerSeriesQuotient_polynomial_diagonal
+#check LinearStudy.powerSeriesQuotient_jacobian_nonzero
+#print axioms LinearStudy.powerSeriesQuotient_jacobian_nonzero
+#check LinearStudy.powerSeriesQuotient_jacobian_scalar_socle
+#print axioms LinearStudy.powerSeriesQuotient_jacobian_scalar_socle
+#check LinearStudy.powerSeriesQuotient_jacobian_socle
+#print axioms LinearStudy.powerSeriesQuotient_jacobian_socle
+#check LinearStudy.powerSeriesJacobianClass
+#print axioms LinearStudy.powerSeriesJacobianClass
+#check LinearStudy.powerSeriesQuotient_jacobian_trace_multiple
+#print axioms LinearStudy.powerSeriesQuotient_jacobian_trace_multiple
+#check LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical
+#print axioms LinearStudy.powerSeriesQuotient_jacobian_annihilates_nilradical
 #check LinearStudy.coefficientMatrix_koszul_compatibility
 #print axioms LinearStudy.coefficientMatrix_koszul_compatibility
 #check LinearStudy.coefficientKoszulComparison
@@ -249,8 +297,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.arbitraryParameterLifts_artinian
 #check LinearStudy.completeIntersection_parameterQuotient_artinian
 #print axioms LinearStudy.completeIntersection_parameterQuotient_artinian
+#check LinearStudy.powerSeries_polynomial_equations_unit_change
+#print axioms LinearStudy.powerSeries_polynomial_equations_unit_change
 #check LinearStudy.polynomial_diagonal_difference
 #print axioms LinearStudy.polynomial_diagonal_difference
+#check LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero
+#print axioms LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero
 #check LinearStudy.powerSeriesConstantCoeffAlgHom
 #print axioms LinearStudy.powerSeriesConstantCoeffAlgHom
 #check LinearStudy.equationIdeal_le_constantCoeff_kernel
@@ -437,6 +489,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.relativeJacobian
 #check LinearStudy.Lemma31Goal
 #print axioms LinearStudy.Lemma31Goal
+#check LinearStudy.polynomialDoubleTensor
+#print axioms LinearStudy.polynomialDoubleTensor
+#check LinearStudy.polynomialDoubleTensor_left
+#print axioms LinearStudy.polynomialDoubleTensor_left
+#check LinearStudy.polynomialDoubleTensor_right
+#print axioms LinearStudy.polynomialDoubleTensor_right
+#check LinearStudy.polynomialDoubleTensor_multiplication
+#print axioms LinearStudy.polynomialDoubleTensor_multiplication
+#check LinearStudy.polynomialDoubleTensor_rightReduction
+#print axioms LinearStudy.polynomialDoubleTensor_rightReduction
 #check LinearStudy.powerSeries_maximalIdeal_eq_coordinates
 #print axioms LinearStudy.powerSeries_maximalIdeal_eq_coordinates
 #check LinearStudy.parameterIdeal_map_eq_residueIdeal
@@ -533,6 +595,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.traceElement_generates_annihilator
 #check LinearStudy.eq_traceElement_of_residue_trace
 #print axioms LinearStudy.eq_traceElement_of_residue_trace
+#check LinearStudy.polynomialDoubleDiagonal
+#print axioms LinearStudy.polynomialDoubleDiagonal
+#check LinearStudy.polynomialDoubleRightZero
+#print axioms LinearStudy.polynomialDoubleRightZero
+#check LinearStudy.polynomialDoubleDiagonal_left
+#print axioms LinearStudy.polynomialDoubleDiagonal_left
+#check LinearStudy.polynomialDoubleRightZero_left
+#print axioms LinearStudy.polynomialDoubleRightZero_left
+#check LinearStudy.polynomialDoubleRightZero_right
+#print axioms LinearStudy.polynomialDoubleRightZero_right
+#check LinearStudy.polynomial_universal_difference_matrix
+#print axioms LinearStudy.polynomial_universal_difference_matrix
 #check ExteriorAlgebra.baseChangeι
 #print axioms ExteriorAlgebra.baseChangeι
 #check ExteriorAlgebra.baseChangeι_mul_add_swap
