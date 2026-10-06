@@ -16,6 +16,9 @@ Linear.Evaluation: cached compiled module (source and project dependencies uncha
 Linear.LinearSubspace: cached compiled module (source and project dependencies unchanged)
 Linear.Thickening: cached compiled module (source and project dependencies unchanged)
 Linear.OneVariable: cached compiled module (source and project dependencies unchanged)
+Linear.SoclePairing: cached compiled module (source and project dependencies unchanged)
+Linear.ResiduePairing: exit 0
+
 Linear: exit 0
 
 Local audit: python audit.py
@@ -345,6 +348,72 @@ LinearStudy.annihilator_action_eq.{u_1, u_2} {B : Type u_1} {A : Type u_2} [Comm
 LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :
   (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J
 'LinearStudy.quotient_image_nonzero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_residue_functional_lift.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)
+  (ellbar : Module.Dual (B ⧸ IsLocalRing.maximalIdeal B) (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)) :
+  ∃ ell, (Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell = ellbar
+'LinearStudy.exists_residue_functional_lift' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.residue_multiplicationGram.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] {ι : Type u_3} (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :
+  (LinearStudy.multiplicationGram b ell).map ⇑(Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) =
+    LinearStudy.multiplicationGram (Module.Basis.baseChange (B ⧸ IsLocalRing.maximalIdeal B) b)
+      ((Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell)
+'LinearStudy.residue_multiplicationGram' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_relative_perfectPairing_of_residue_socle.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]
+  [CommRing A] [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)
+  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]
+  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)
+  (hsoc :
+    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),
+      ∃ u, x = u • delta) :
+  Nonempty LinearStudy.PerfectMultiplicationPairing
+'LinearStudy.exists_relative_perfectPairing_of_residue_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_finiteFlat_pairing_of_residue_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B]
+  [CommRing A] [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]
+  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]
+  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)
+  (hsoc :
+    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),
+      ∃ u, x = u • delta) :
+  Nonempty LinearStudy.PerfectMultiplicationPairing
+'LinearStudy.exists_finiteFlat_pairing_of_residue_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.primitive_of_residue_tensor_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] (delta : A) (hdelta : 1 ⊗ₜ[B] delta ≠ 0) : delta ∉ IsLocalRing.maximalIdeal B • ⊤
+'LinearStudy.primitive_of_residue_tensor_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFlat_annihilator_from_closed_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]
+  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)] (q : A →ₐ[B] B) (delta : A)
+  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hdelta : 1 ⊗ₜ[B] delta ≠ 0)
+  (hsoc :
+    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),
+      ∃ u, x = u • 1 ⊗ₜ[B] delta)
+  (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • delta
+'LinearStudy.finiteFlat_annihilator_from_closed_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nonzero_ideal_meets_nilpotent_annihilator.{u_1} {A : Type u_1} [CommRing A] (N I : Ideal A)
+  (hN : IsNilpotent N) (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator N
+'LinearStudy.nonzero_ideal_meets_nilpotent_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nonzero_ideal_meets_socle.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A] [IsLocalRing A] (I : Ideal A)
+  (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)
+'LinearStudy.nonzero_ideal_meets_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socle_functional_detects_nonzero.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]
+  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)
+  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)
+  (hell : ell delta ≠ 0) {x : A} (hx : x ≠ 0) : ∃ a, ell (x * a) ≠ 0
+'LinearStudy.socle_functional_detects_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socle_multiplicationToDual_injective.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]
+  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)
+  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)
+  (hell : ell delta ≠ 0) : Function.Injective ⇑(LinearStudy.multiplicationToDual ell)
+'LinearStudy.socle_multiplicationToDual_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.perfectPairingOfSocle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K] [Algebra K A]
+  [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A)
+  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)
+  (hell : ell delta ≠ 0) : LinearStudy.PerfectMultiplicationPairing
+'LinearStudy.perfectPairingOfSocle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_perfectPairing_of_scalar_socle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]
+  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A) (hdelta : delta ≠ 0)
+  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) : ∃ p, p.functional delta = 1
+'LinearStudy.exists_perfectPairing_of_scalar_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.equationIdeal {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : Ideal (LinearStudy.AmbientRing r c)
 'LinearStudy.equationIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) : LinearStudy.CompleteIntersection H

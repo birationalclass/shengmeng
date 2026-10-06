@@ -1,5 +1,5 @@
-import {english} from './i18n.js?v=20261006-linear-2';
-import {statementPanel,graphStatement,escapeHTML} from './theorem-statements.js?v=20261006-linear-2';
+import {english} from './i18n.js?v=20261006-linear-3';
+import {statementPanel,graphStatement,escapeHTML} from './theorem-statements.js?v=20261006-linear-3';
 export function installTheoremTarget(defaultNode){return {createCard(view){
  let node=defaultNode,expanded=false;
  const card=document.createElement('section');card.id='theoremTarget-'+view;card.className='theorem-target-card';card.dataset.theoremCard=view;card.style.setProperty('--theorem-unit','1');

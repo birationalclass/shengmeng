@@ -14,3 +14,5 @@ public import Linear.Projective
 public import Linear.Evaluation
 public import Linear.LinearSubspace
 public import Linear.OneVariable
+public import Linear.SoclePairing
+public import Linear.ResiduePairing

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T11:33:59+08:00",
+  "checkedAt": "2026-10-06T12:38:28+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "c98d204fb02d5d279480f8ad55fe3053d5286e6f789bee8fa330f0f943126d1e",
-      "lineCount": 258
+      "sha256": "74b50d711c079f8e7e64e8e41a012f328f7c0f3153a4849a9a1af85a3fe54c8d",
+      "lineCount": 282
     },
     {
       "path": "Linear/Degree.lean",
@@ -77,6 +77,16 @@
       "lineCount": 57
     },
     {
+      "path": "Linear/ResiduePairing.lean",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lineCount": 145
+    },
+    {
+      "path": "Linear/SoclePairing.lean",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lineCount": 125
+    },
+    {
       "path": "Linear/Target.lean",
       "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
       "lineCount": 62
@@ -88,8 +98,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "e019412117e774fc45573db7345485e10d5b2346b9d2c47270a9eb66a20573cf",
-      "lineCount": 16
+      "sha256": "380262ee761cf224612d53584eeee28a9b02f661b7e8c5b4105e3f2c822bcaa4",
+      "lineCount": 18
     }
   ],
   "declarations": {
@@ -1443,6 +1453,186 @@
       "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
       "lines": 57
     },
+    "LinearStudy.exists_residue_functional_lift": {
+      "declaration": "LinearStudy.exists_residue_functional_lift",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_residue_functional_lift.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)\n  (ellbar : Module.Dual (B ⧸ IsLocalRing.maximalIdeal B) (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)) :\n  ∃ ell, (Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell = ellbar",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.residue_multiplicationGram": {
+      "declaration": "LinearStudy.residue_multiplicationGram",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.residue_multiplicationGram.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :\n  (LinearStudy.multiplicationGram b ell).map ⇑(Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) =\n    LinearStudy.multiplicationGram (Module.Basis.baseChange (B ⧸ IsLocalRing.maximalIdeal B) b)\n      ((Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell)",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.exists_relative_perfectPairing_of_residue_socle": {
+      "declaration": "LinearStudy.exists_relative_perfectPairing_of_residue_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_relative_perfectPairing_of_residue_socle.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]\n  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • delta) :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.exists_finiteFlat_pairing_of_residue_socle": {
+      "declaration": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]\n  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • delta) :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.primitive_of_residue_tensor_nonzero": {
+      "declaration": "LinearStudy.primitive_of_residue_tensor_nonzero",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 115,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.primitive_of_residue_tensor_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] (delta : A) (hdelta : 1 ⊗ₜ[B] delta ≠ 0) : delta ∉ IsLocalRing.maximalIdeal B • ⊤",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.finiteFlat_annihilator_from_closed_socle": {
+      "declaration": "LinearStudy.finiteFlat_annihilator_from_closed_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 129,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_annihilator_from_closed_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)] (q : A →ₐ[B] B) (delta : A)\n  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hdelta : 1 ⊗ₜ[B] delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • 1 ⊗ₜ[B] delta)\n  (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • delta",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator": {
+      "declaration": "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator.{u_1} {A : Type u_1} [CommRing A] (N I : Ideal A)\n  (hN : IsNilpotent N) (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator N",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    "LinearStudy.nonzero_ideal_meets_socle": {
+      "declaration": "LinearStudy.nonzero_ideal_meets_socle",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_ideal_meets_socle.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A] [IsLocalRing A] (I : Ideal A)\n  (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    "LinearStudy.socle_functional_detects_nonzero": {
+      "declaration": "LinearStudy.socle_functional_detects_nonzero",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_functional_detects_nonzero.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) {x : A} (hx : x ≠ 0) : ∃ a, ell (x * a) ≠ 0",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    "LinearStudy.socle_multiplicationToDual_injective": {
+      "declaration": "LinearStudy.socle_multiplicationToDual_injective",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_multiplicationToDual_injective.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) : Function.Injective ⇑(LinearStudy.multiplicationToDual ell)",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    "LinearStudy.perfectPairingOfSocle": {
+      "declaration": "LinearStudy.perfectPairingOfSocle",
+      "kind": "def",
+      "file": "Linear/SoclePairing.lean",
+      "line": 102,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.perfectPairingOfSocle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K] [Algebra K A]\n  [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) : LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    "LinearStudy.exists_perfectPairing_of_scalar_socle": {
+      "declaration": "LinearStudy.exists_perfectPairing_of_scalar_socle",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 116,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_perfectPairing_of_scalar_socle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A) (hdelta : delta ≠ 0)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) : ∃ p, p.functional delta = 1",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
     "LinearStudy.equationIdeal": {
       "declaration": "LinearStudy.equationIdeal",
       "kind": "def",
@@ -1948,10 +2138,10 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 95,
-  "definitionCount": 31,
+  "verifiedTheoremCount": 106,
+  "definitionCount": 32,
   "auditExitCode": 0,
-  "scope": "Complex projective-point target defined; geometric Linearity Theorem NOT yet proved. Checked the arbitrary one-variable closed-fiber Jacobian theorem, reduced-base monomial thickenings, coordinate constructions, iteration, finite-point linear algebra and arithmetic. The general multivariable relative theorem remains unproved.",
+  "scope": "Complex projective-point target defined; geometric Linearity Theorem NOT yet proved. Checked the arbitrary one-variable closed-fiber Jacobian theorem and the general finite-flat closed-socle-to-relative-pairing construction on actual residue-field tensor products. Multivariable Jacobian socle identification, arbitrary parameter lifts and global geometry remain unproved.",
   "targetVerified": false,
   "main": {
     "id": "lemma",
@@ -2382,7 +2572,9 @@
       "file": "Linear/PairingMatrix.lean",
       "decl": null,
       "declaration": null,
-      "deps": [],
+      "deps": [
+        "relative-pairing"
+      ],
       "setup": [
         "<p>对有限平坦完全交，构造有限 B-基及 B-线性泛函 ℓ，使乘法 Gram 矩阵模 m_B 后非退化。尚待形式化的输入是 Artin 完全交纤维的 Gorenstein 性质及其泛函的提升。</p>",
         "<p>For the finite flat complete intersection, construct a finite B-basis and a B-linear functional ℓ whose multiplication Gram matrix is nondegenerate modulo m_B. The remaining geometric-algebraic input is the Gorenstein property of the Artinian complete-intersection fiber and lifting its functional.</p>"
@@ -2763,19 +2955,20 @@
         "local-primitive",
         "local-parameters",
         "local-quotient",
-        "one-variable"
+        "one-variable",
+        "relative-ann"
       ],
       "setup": [
-        "<p>设 B=ℂ[[s₁,…,sᵣ]]，R=B[[z₁,…,z꜀]]，A=R/(H₁,…,H꜀)，其中 r,c≥1，H 为正则序列。假设 A 在 B 上有限平坦，且 A_red≅B 为 B-代数同构。记 N=√0，Δ=det(∂Hᵢ/∂zⱼ)∈A。</p>",
-        "<p>Let B=ℂ[[s₁,…,sᵣ]], R=B[[z₁,…,z꜀]], and A=R/(H₁,…,H꜀), with r,c≥1 and H a regular sequence. Assume A is finite flat over B and A_red≅B as a B-algebra. Put N=√0 and Δ=det(∂Hᵢ/∂zⱼ) in A.</p>"
+        "<p>B=ℂ[[s₁,…,sᵣ]]；A=B[[z₁,…,z꜀]]/(H)，H 为正则序列，A 有限平坦且 A 的约化 B-代数同构于 B。</p>",
+        "<p>B=ℂ[[s₁,…,sᵣ]]; A=B[[z₁,…,z꜀]]/(H), with H regular, A finite flat, and its reduced B-algebra isomorphic to B.</p>"
       ],
       "result": [
         "<p>完整引理 2.1；其形式化证明尚未完成。</p>",
         "<p>Full Lemma 2.1. Its formal proof remains open.</p>"
       ],
       "compactSetup": [
-        "局部环、完全交与所列配对输入。",
-        "Local rings, complete intersections and displayed pairing inputs."
+        "有限平坦完全交；约化 A 与 B 同构。",
+        "Finite flat complete intersection; reduced A is B."
       ],
       "compactResult": [
         "完整引理 2.1；其形式化证明尚未完成。",
@@ -3117,6 +3310,295 @@
       "formalType": "LinearStudy.thickeningJacobian_unit_twist.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (u : PowerSeries B) :\n  (LinearStudy.thickeningMk B s) (PowerSeries.derivative (u * PowerSeries.X ^ (s + 1))) =\n    (LinearStudy.thickeningMk B s) u * LinearStudy.thickeningJacobian B s",
       "sha256": "d00b71dfffcb56e4d80e98b4c2fbec415ff502bd220f0a5077eb9f9421b183e3",
       "lines": 238,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "relative-ann",
+      "titles": [
+        "闭纤维 socle 到相对湮灭子",
+        "Closed socle to relative annihilator"
+      ],
+      "title": "闭纤维 socle 到相对湮灭子",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "decl": "LinearStudy.finiteFlat_annihilator_from_closed_socle",
+      "declaration": "LinearStudy.finiteFlat_annihilator_from_closed_socle",
+      "deps": [
+        "relative-pairing",
+        "residue-primitive"
+      ],
+      "setup": [
+        "<p>B 为交换局部环，A 为有限平坦交换 B-代数，q:A→B 为 B-代数映射。δ 湮灭 ker q，其实际闭纤维像非零并标量生成该局部闭纤维的 socle。</p>",
+        "<p>B is commutative local, A is finite flat and commutative over B, and q:A→B is a B-algebra map. δ annihilates ker q, and its actual closed-fiber image is nonzero and scalar-generates the local closed-fiber socle.</p>"
+      ],
+      "result": [
+        "<p>Ann(ker q)=Bδ。配对在证明中构造，无须假设完美配对或 Gram 行列式可逆。真实多元 Jacobian 满足所列条件仍待证明。</p>",
+        "<p>Ann(ker q)=Bδ. The proof constructs the pairing; no perfect-pairing or unit-determinant input is assumed. These hypotheses still must be proved for the actual multivariable Jacobian.</p>"
+      ],
+      "compactSetup": [
+        "有限平坦；δ 的湮灭与闭 socle 条件。",
+        "Finite flat; annihilation and closed-socle inputs for δ."
+      ],
+      "compactResult": [
+        "构造配对并得到 Ann(ker q)=Bδ。",
+        "Construct pairing; obtain Ann(ker q)=Bδ."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.finiteFlat_annihilator_from_closed_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)] (q : A →ₐ[B] B) (delta : A)\n  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hdelta : 1 ⊗ₜ[B] delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • 1 ⊗ₜ[B] delta)\n  (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • delta",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "relative-pairing",
+      "titles": [
+        "有限平坦代数的配对提升",
+        "Pairing lift for a finite flat algebra"
+      ],
+      "title": "有限平坦代数的配对提升",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "decl": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle",
+      "declaration": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle",
+      "deps": [
+        "closed-pairing",
+        "functional-lift",
+        "gram-basechange"
+      ],
+      "setup": [
+        "<p>A 为交换局部基环 B 上的有限平坦代数；C=(B/𝔪)⊗ᴮA 是局部环，其 socle 由非零 δ 作为剩余域向量空间生成。</p>",
+        "<p>A is finite flat over commutative local B; C=(B/𝔪)⊗ᴮA is local and its socle is scalar-generated by nonzero δ over the residue field.</p>"
+      ],
+      "result": [
+        "<p>存在 A≃Homᴮ(A,B) 的完美乘法配对。有限平坦自动提供基；闭纤维 Gram 行列式非零提升为基环上的单位。</p>",
+        "<p>There is a perfect multiplication pairing A≃Homᴮ(A,B). Finite flatness supplies a basis, and the nonzero closed-fiber Gram determinant lifts to a unit over B.</p>"
+      ],
+      "compactSetup": [
+        "有限平坦；实际闭纤维的 socle 是一维。",
+        "Finite flat; actual closed-fiber socle is one-dimensional."
+      ],
+      "compactResult": [
+        "构造基环上的完美乘法配对。",
+        "Construct perfect multiplication pairing over the base."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]\n  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • delta) :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "closed-pairing",
+      "titles": [
+        "由 socle 构造闭纤维配对",
+        "Constructing the closed-fiber pairing from its socle"
+      ],
+      "title": "由 socle 构造闭纤维配对",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "decl": "LinearStudy.exists_perfectPairing_of_scalar_socle",
+      "declaration": "LinearStudy.exists_perfectPairing_of_scalar_socle",
+      "deps": [
+        "socle-meeting"
+      ],
+      "setup": [
+        "<p>A 为域 K 上有限维交换局部 Artinian 代数；非零 δ 标量生成 socle。</p>",
+        "<p>A is a finite-dimensional commutative local Artinian K-algebra; nonzero δ scalar-generates the socle.</p>"
+      ],
+      "result": [
+        "<p>选择 ℓ(δ)=1，证明 (x,a)↦ℓ(xa) 非退化，并构造 A≃Homᴷ(A,K)。一般完全交的 socle 条件未在此证明。</p>",
+        "<p>Choose ℓ(δ)=1, prove (x,a)↦ℓ(xa) nondegenerate, and construct A≃Homᴷ(A,K). The socle condition for a general complete intersection is not proved here.</p>"
+      ],
+      "compactSetup": [
+        "有限维局部 Artinian 代数；socle=Kδ。",
+        "Finite-dimensional local Artinian algebra; socle=Kδ."
+      ],
+      "compactResult": [
+        "构造 ℓ(δ)=1 的完美乘法配对。",
+        "Construct perfect multiplication pairing with ℓ(δ)=1."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.exists_perfectPairing_of_scalar_socle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A) (hdelta : delta ≠ 0)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) : ∃ p, p.functional delta = 1",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "socle-meeting",
+      "titles": [
+        "非零理想与 socle 相交",
+        "Nonzero ideals meet the socle"
+      ],
+      "title": "非零理想与 socle 相交",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "decl": "LinearStudy.nonzero_ideal_meets_socle",
+      "declaration": "LinearStudy.nonzero_ideal_meets_socle",
+      "deps": [],
+      "setup": [
+        "<p>A 为交换局部 Artinian 环；I 为非零理想。</p>",
+        "<p>A is commutative local Artinian and I is a nonzero ideal.</p>"
+      ],
+      "result": [
+        "<p>存在非零 x∈I∩Ann(𝔪)。证明用杀死 I 的最小幂，不假定 socle 一维。</p>",
+        "<p>There exists nonzero x∈I∩Ann(𝔪), using the least power annihilating I; no one-dimensional socle is assumed.</p>"
+      ],
+      "compactSetup": [
+        "交换局部 Artinian 环；I≠0。",
+        "Commutative local Artinian ring; I≠0."
+      ],
+      "compactResult": [
+        "I 与 Ann(𝔪) 非平凡相交。",
+        "I meets Ann(𝔪) nontrivially."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.nonzero_ideal_meets_socle.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A] [IsLocalRing A] (I : Ideal A)\n  (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "functional-lift",
+      "titles": [
+        "实际闭纤维泛函的提升",
+        "Lifting a functional on the actual closed fiber"
+      ],
+      "title": "实际闭纤维泛函的提升",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "decl": "LinearStudy.exists_residue_functional_lift",
+      "declaration": "LinearStudy.exists_residue_functional_lift",
+      "deps": [],
+      "setup": [
+        "<p>A 有有限 B-基；ℓ̄ 是 (B/𝔪)⊗ᴮA 上的剩余域线性泛函。</p>",
+        "<p>A has a finite B-basis and ℓ̄ is a residue-field linear functional on (B/𝔪)⊗ᴮA.</p>"
+      ],
+      "result": [
+        "<p>存在 B-线性 ℓ:A→B，使其真实张量基变换等于 ℓ̄。</p>",
+        "<p>There exists B-linear ℓ:A→B whose actual tensor base change equals ℓ̄.</p>"
+      ],
+      "compactSetup": [
+        "有限 B-基；实际张量闭纤维上的 ℓ̄。",
+        "Finite B-basis; ℓ̄ on the actual tensor closed fiber."
+      ],
+      "compactResult": [
+        "构造 ℓ，使其基变换等于 ℓ̄。",
+        "Construct ℓ with base change equal to ℓ̄."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.exists_residue_functional_lift.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)\n  (ellbar : Module.Dual (B ⧸ IsLocalRing.maximalIdeal B) (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)) :\n  ∃ ell, (Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell = ellbar",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "gram-basechange",
+      "titles": [
+        "Gram 矩阵与基变换",
+        "Gram matrix and base change"
+      ],
+      "title": "Gram 矩阵与基变换",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "decl": "LinearStudy.residue_multiplicationGram",
+      "declaration": "LinearStudy.residue_multiplicationGram",
+      "deps": [],
+      "setup": [
+        "<p>有限基 b 与 B-线性 ℓ；使用实际张量基 b̄。</p>",
+        "<p>Finite basis b and B-linear ℓ; use the actual tensor basis b̄.</p>"
+      ],
+      "result": [
+        "<p>Gram(b,ℓ) 模 𝔪 的矩阵等于 Gram(b̄,ℓ̄)；行列式因此相容。</p>",
+        "<p>Gram(b,ℓ) reduced modulo 𝔪 equals Gram(b̄,ℓ̄); determinants are consequently compatible.</p>"
+      ],
+      "compactSetup": [
+        "有限基与实际张量基变换。",
+        "Finite basis and actual tensor base change."
+      ],
+      "compactResult": [
+        "乘法 Gram 矩阵相容。",
+        "Multiplication Gram matrices are compatible."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.residue_multiplicationGram.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :\n  (LinearStudy.multiplicationGram b ell).map ⇑(Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) =\n    LinearStudy.multiplicationGram (Module.Basis.baseChange (B ⧸ IsLocalRing.maximalIdeal B) b)\n      ((Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell)",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "residue-primitive",
+      "titles": [
+        "闭纤维非零性与本原性",
+        "Closed-fiber nonvanishing and primitivity"
+      ],
+      "title": "闭纤维非零性与本原性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "decl": "LinearStudy.primitive_of_residue_tensor_nonzero",
+      "declaration": "LinearStudy.primitive_of_residue_tensor_nonzero",
+      "deps": [],
+      "setup": [
+        "<p>δ∈A；其在 (B/𝔪)⊗ᴮA 中的像非零。</p>",
+        "<p>δ∈A has nonzero image in (B/𝔪)⊗ᴮA.</p>"
+      ],
+      "result": [
+        "<p>δ∉𝔪A。使用 mathlib 的商模与张量积同构。</p>",
+        "<p>δ∉𝔪A, using the mathlib quotient/tensor-product equivalence.</p>"
+      ],
+      "compactSetup": [
+        "实际张量闭纤维中的 δ̄≠0。",
+        "δ̄≠0 in the actual tensor closed fiber."
+      ],
+      "compactResult": [
+        "δ∉𝔪A。",
+        "δ∉𝔪A."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.primitive_of_residue_tensor_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] (delta : A) (hdelta : 1 ⊗ₜ[B] delta ≠ 0) : delta ∉ IsLocalRing.maximalIdeal B • ⊤",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145,
       "richStatement": true,
       "x": 30,
       "y": 60

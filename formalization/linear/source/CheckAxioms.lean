@@ -187,6 +187,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.annihilator_action_eq
 #check LinearStudy.quotient_image_nonzero_iff
 #print axioms LinearStudy.quotient_image_nonzero_iff
+#check LinearStudy.exists_residue_functional_lift
+#print axioms LinearStudy.exists_residue_functional_lift
+#check LinearStudy.residue_multiplicationGram
+#print axioms LinearStudy.residue_multiplicationGram
+#check LinearStudy.exists_relative_perfectPairing_of_residue_socle
+#print axioms LinearStudy.exists_relative_perfectPairing_of_residue_socle
+#check LinearStudy.exists_finiteFlat_pairing_of_residue_socle
+#print axioms LinearStudy.exists_finiteFlat_pairing_of_residue_socle
+#check LinearStudy.primitive_of_residue_tensor_nonzero
+#print axioms LinearStudy.primitive_of_residue_tensor_nonzero
+#check LinearStudy.finiteFlat_annihilator_from_closed_socle
+#print axioms LinearStudy.finiteFlat_annihilator_from_closed_socle
+#check LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
+#print axioms LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
+#check LinearStudy.nonzero_ideal_meets_socle
+#print axioms LinearStudy.nonzero_ideal_meets_socle
+#check LinearStudy.socle_functional_detects_nonzero
+#print axioms LinearStudy.socle_functional_detects_nonzero
+#check LinearStudy.socle_multiplicationToDual_injective
+#print axioms LinearStudy.socle_multiplicationToDual_injective
+#check LinearStudy.perfectPairingOfSocle
+#print axioms LinearStudy.perfectPairingOfSocle
+#check LinearStudy.exists_perfectPairing_of_scalar_socle
+#print axioms LinearStudy.exists_perfectPairing_of_scalar_socle
 #check LinearStudy.equationIdeal
 #print axioms LinearStudy.equationIdeal
 #check LinearStudy.relativeJacobian

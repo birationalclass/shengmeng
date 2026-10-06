@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 126,
-  "verifiedTheorems": 95,
-  "definitions": 31,
+  "audited": 138,
+  "verifiedTheorems": 106,
+  "definitions": 32,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -1356,6 +1356,186 @@
       "formalType": "LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :\n  (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J",
       "sha256": "d427deebc1b6b2a831c6c05a257c3520f65cd06eac89ee061a23019e68c0f9e9",
       "lines": 57
+    },
+    {
+      "declaration": "LinearStudy.exists_residue_functional_lift",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_residue_functional_lift.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)\n  (ellbar : Module.Dual (B ⧸ IsLocalRing.maximalIdeal B) (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)) :\n  ∃ ell, (Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell = ellbar",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.residue_multiplicationGram",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.residue_multiplicationGram.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] {ι : Type u_3} (b : Module.Basis ι B A) (ell : A →ₗ[B] B) :\n  (LinearStudy.multiplicationGram b ell).map ⇑(Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) =\n    LinearStudy.multiplicationGram (Module.Basis.baseChange (B ⧸ IsLocalRing.maximalIdeal B) b)\n      ((Module.Dual.baseChange (B ⧸ IsLocalRing.maximalIdeal B)) ell)",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.exists_relative_perfectPairing_of_residue_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_relative_perfectPairing_of_residue_socle.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] [IsLocalRing B] {ι : Type u_3} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι B A)\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]\n  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • delta) :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_finiteFlat_pairing_of_residue_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)]\n  (delta : TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A) (hdelta : delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • delta) :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.primitive_of_residue_tensor_nonzero",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 115,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.primitive_of_residue_tensor_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] (delta : A) (hdelta : 1 ⊗ₜ[B] delta ≠ 0) : delta ∉ IsLocalRing.maximalIdeal B • ⊤",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.finiteFlat_annihilator_from_closed_socle",
+      "kind": "theorem",
+      "file": "Linear/ResiduePairing.lean",
+      "line": 129,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_annihilator_from_closed_socle.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] [Module.Finite B A] [Module.Flat B A]\n  [IsLocalRing (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)] (q : A →ₐ[B] B) (delta : A)\n  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hdelta : 1 ⊗ₜ[B] delta ≠ 0)\n  (hsoc :\n    ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (TensorProduct B (B ⧸ IsLocalRing.maximalIdeal B) A)),\n      ∃ u, x = u • 1 ⊗ₜ[B] delta)\n  (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • delta",
+      "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
+      "lines": 145
+    },
+    {
+      "declaration": "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator.{u_1} {A : Type u_1} [CommRing A] (N I : Ideal A)\n  (hN : IsNilpotent N) (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator N",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    {
+      "declaration": "LinearStudy.nonzero_ideal_meets_socle",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_ideal_meets_socle.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A] [IsLocalRing A] (I : Ideal A)\n  (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    {
+      "declaration": "LinearStudy.socle_functional_detects_nonzero",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_functional_detects_nonzero.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) {x : A} (hx : x ≠ 0) : ∃ a, ell (x * a) ≠ 0",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    {
+      "declaration": "LinearStudy.socle_multiplicationToDual_injective",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_multiplicationToDual_injective.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) : Function.Injective ⇑(LinearStudy.multiplicationToDual ell)",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    {
+      "declaration": "LinearStudy.perfectPairingOfSocle",
+      "kind": "def",
+      "file": "Linear/SoclePairing.lean",
+      "line": 102,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.perfectPairingOfSocle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K] [Algebra K A]\n  [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) (ell : A →ₗ[K] K)\n  (hell : ell delta ≠ 0) : LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
+    },
+    {
+      "declaration": "LinearStudy.exists_perfectPairing_of_scalar_socle",
+      "kind": "theorem",
+      "file": "Linear/SoclePairing.lean",
+      "line": 116,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_perfectPairing_of_scalar_socle.{u_1, u_2} {A : Type u_1} [CommRing A] {K : Type u_2} [Field K]\n  [Algebra K A] [IsArtinianRing A] [IsLocalRing A] [FiniteDimensional K A] (delta : A) (hdelta : delta ≠ 0)\n  (hsoc : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • delta) : ∃ p, p.functional delta = 1",
+      "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
+      "lines": 125
     },
     {
       "declaration": "LinearStudy.equationIdeal",
