@@ -44,8 +44,22 @@ the result: over a characteristic-zero field, `K[[X]]/(H)` is Artinian local
 and the actual derivative class is a nonzero socle generator.
 
 This proves the one-variable **closed-fiber** result for every such equation.
-It does not prove the general multivariable relative complete-intersection theorem,
-the arbitrary-lift-of-parameters assertion, or a global residue relation.
+It does not prove the general multivariable relative complete-intersection theorem
+or a global residue relation.
+
+`SoclePairing.lean` and `ResiduePairing.lean` construct the relative perfect
+pairing from explicit closed-fiber socle inputs on the actual tensor product.
+`TraceElement.lean` constructs the algebraic trace element and computes it as
+rank times the dual reduction generator. The Jacobian/trace identity is still
+unproved, not an implicit consequence of choosing a perfect pairing.
+
+`ParameterQuotient.lean` proves the Artinian and maximal-ideal conclusions
+for every arbitrary parameter lift in the exact multivariable target. The
+Jacobian's nonzero quotient image and socle generation remain unproved.
+`PowerSeriesCoefficients.lean` constructs coefficient matrices for arbitrary
+zero-constant-coefficient multivariable equations. Combined with the adjugate
+identity it gives determinant annihilation in the actual quotient; nonzero
+generation and comparison with the derivative Jacobian are not asserted.
 
 Unproved geometric bridges: the integral projective Scheme comparison and
 dimension/degree APIs; Bertini and étale fiber counts; the complete-intersection

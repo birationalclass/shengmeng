@@ -17,10 +17,12 @@ Linear.LinearSubspace: cached compiled module (source and project dependencies u
 Linear.Thickening: cached compiled module (source and project dependencies unchanged)
 Linear.OneVariable: cached compiled module (source and project dependencies unchanged)
 Linear.SoclePairing: cached compiled module (source and project dependencies unchanged)
-Linear.ResiduePairing: exit 0
-
-Linear: exit 0
-
+Linear.ResiduePairing: cached compiled module (source and project dependencies unchanged)
+Linear.TraceElement: cached compiled module (source and project dependencies unchanged)
+Linear.ParameterQuotient: cached compiled module (source and project dependencies unchanged)
+Linear.DeterminantAnnihilator: cached compiled module (source and project dependencies unchanged)
+Linear.PowerSeriesCoefficients: cached compiled module (source and project dependencies unchanged)
+Linear: cached compiled module (source and project dependencies unchanged)
 Local audit: python audit.py
 LinearStudy.iterate_degree_exceeds (q B : ℕ) (hq : 1 < q) : ∃ k, 0 < k ∧ B < q ^ k
 'LinearStudy.iterate_degree_exceeds' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -32,6 +34,18 @@ LinearStudy.degree_contradiction (q r d m : ℕ) (hr : 1 ≤ r) (hlarge : d * m 
 LinearStudy.uniform_degree_estimate_impossible (q r d : ℕ) (hq : 1 < q) (hr : 1 ≤ r)
   (h : ∃ m, ∀ (k : ℕ), 0 < k → d * m < q ^ k → (q ^ k) ^ r ≤ (q ^ k) ^ (r - 1) * d * m) : False
 'LinearStudy.uniform_degree_estimate_impossible' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.determinant_mul_coordinate_of_relation.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} [Fintype ι]
+  [DecidableEq ι] (M : Matrix ι ι R) (x : ι → R) (hx : M.mulVec x = 0) (i : ι) : M.det * x i = 0
+'LinearStudy.determinant_mul_coordinate_of_relation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.determinant_annihilates_coordinate_ideal.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} [Fintype ι]
+  [DecidableEq ι] (M : Matrix ι ι R) (x : ι → R) (hx : M.mulVec x = 0) :
+  LinearStudy.Annihilates (Ideal.span (Set.range x)) M.det
+'LinearStudy.determinant_annihilates_coordinate_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coefficientDeterminant_annihilates_quotient.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}
+  [Fintype ι] [DecidableEq ι] (H x : ι → R) (M : Matrix ι ι R) (hH : M.mulVec x = H) :
+  have J := Ideal.span (Set.range H);
+  LinearStudy.Annihilates (Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (x i))) ((Ideal.Quotient.mk J) M.det)
+'LinearStudy.coefficientDeterminant_annihilates_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.epsilon.{u_1} (B : Type u_1) [CommRing B] : LinearStudy.DoublePoint B
 'LinearStudy.epsilon' does not depend on any axioms
 LinearStudy.doublePoint_decomposition.{u_1} (B : Type u_1) [CommRing B] (a : LinearStudy.DoublePoint B) :
@@ -244,6 +258,76 @@ LinearStudy.exists_perfectPairing_of_residueDet_ne_zero.{u_1, u_2, u_3} {B : Typ
   (hres : (Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) (LinearStudy.multiplicationGram b ell).det ≠ 0) :
   ∃ p, p.functional = ell
 'LinearStudy.exists_perfectPairing_of_residueDet_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedIdeal_sup_kernel.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  [IsLocalRing B] (q : A →ₐ[B] B) (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal B) :
+  J ⊔ RingHom.ker q.toRingHom = Ideal.comap q.toRingHom (IsLocalRing.maximalIdeal B)
+'LinearStudy.liftedIdeal_sup_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotient_nilradical_image_isMaximal.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B]
+  [CommRing A] [Algebra B A] [IsLocalRing B] (q : A →ₐ[B] B) (hq : RingHom.ker q.toRingHom = nilradical A) (J : Ideal A)
+  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal B) :
+  (Ideal.map (Ideal.Quotient.mk J) (nilradical A)).IsMaximal
+'LinearStudy.parameterQuotient_nilradical_image_isMaximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotient_nilradical_eq.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] (q : A →ₐ[B] B) (hq : RingHom.ker q.toRingHom = nilradical A) (J : Ideal A)
+  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal B) :
+  nilradical (A ⧸ J) = Ideal.map (Ideal.Quotient.mk J) (nilradical A)
+'LinearStudy.parameterQuotient_nilradical_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotient_local_artinian.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] [IsNoetherianRing A] (q : A →ₐ[B] B) (hq : RingHom.ker q.toRingHom = nilradical A)
+  (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal B) :
+  IsArtinianRing (A ⧸ J) ∧ IsLocalRing (A ⧸ J)
+'LinearStudy.parameterQuotient_local_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.arbitraryParameterLifts_artinian.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsLocalRing B] [IsNoetherianRing A] {ι : Type u_3} (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (tau : ι → A)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal B) :
+  have J := Ideal.span (Set.range tau);
+  IsArtinianRing (A ⧸ J) ∧ (Ideal.map (Ideal.Quotient.mk J) (nilradical A)).IsMaximal
+'LinearStudy.arbitraryParameterLifts_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  have J := Ideal.span (Set.range tau);
+  IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧
+    (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal
+'LinearStudy.completeIntersection_parameterQuotient_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_zeroConstant_variable_expansion.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}
+  [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : MvPowerSeries ι R) (hH : MvPowerSeries.constantCoeff H = 0) :
+  ∃ a, H = ∑ i, a i * MvPowerSeries.X i
+'LinearStudy.powerSeries_zeroConstant_variable_expansion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_equation_coefficient_matrix.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] (H : ι → MvPowerSeries ι R) (hH : ∀ (i : ι), MvPowerSeries.constantCoeff (H i) = 0) :
+  ∃ M, M.mulVec MvPowerSeries.X = H
+'LinearStudy.powerSeries_equation_coefficient_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_constantCoeff_kernel.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] : RingHom.ker MvPowerSeries.constantCoeff = Ideal.span (Set.range MvPowerSeries.X)
+'LinearStudy.powerSeries_constantCoeff_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_coefficientDeterminant_annihilator.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}
+  [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : ι → MvPowerSeries ι R)
+  (hH : ∀ (i : ι), MvPowerSeries.constantCoeff (H i) = 0) :
+  have J := Ideal.span (Set.range H);
+  ∃ M,
+    M.mulVec MvPowerSeries.X = H ∧
+      LinearStudy.Annihilates (Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (MvPowerSeries.X i)))
+        ((Ideal.Quotient.mk J) M.det)
+'LinearStudy.powerSeries_coefficientDeterminant_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal.{u_2, u_3} {ι : Type u_2} [Fintype ι] [DecidableEq ι]
+  [Nonempty ι] {K : Type u_3} [Field K] (H : ι → MvPowerSeries ι K)
+  (hH : ∀ (i : ι), MvPowerSeries.constantCoeff (H i) = 0) :
+  have J := Ideal.span (Set.range H);
+  (Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (MvPowerSeries.X i))).IsMaximal
+'LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator.{u_2, u_3} {ι : Type u_2} [Fintype ι] [DecidableEq ι]
+  [Nonempty ι] {K : Type u_3} [Field K] (H : ι → MvPowerSeries ι K)
+  (hH : ∀ (i : ι), MvPowerSeries.constantCoeff (H i) = 0) :
+  have J := Ideal.span (Set.range H);
+  have m := Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (MvPowerSeries.X i));
+  m.IsMaximal ∧ ∃ M, M.mulVec MvPowerSeries.X = H ∧ (Ideal.Quotient.mk J) M.det ∈ Submodule.annihilator m
+'LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]
@@ -511,6 +595,45 @@ LinearStudy.thickening_closedFiber_jacobian.{u_2} {K : Type u_2} [Field K] [Char
           Ideal.span {LinearStudy.thickeningJacobian K s} ∧
         LinearStudy.thickeningJacobian K s ≠ 0
 'LinearStudy.thickening_closedFiber_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (p : LinearStudy.PerfectMultiplicationPairing) : A
+'LinearStudy.traceElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_pairing.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  (p : LinearStudy.PerfectMultiplicationPairing) (a : A) :
+  p.functional (LinearStudy.traceElement p * a) = (Algebra.trace B A) a
+'LinearStudy.traceElement_pairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.trace_eq_rank_smul_reduction.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsReduced B] [StrongRankCondition B] [Module.Free B A] (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (a : A) : (Algebra.trace B A) a = Module.finrank B A • q a
+'LinearStudy.trace_eq_rank_smul_reduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_eq_rank_dualGenerator.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsReduced B] [StrongRankCondition B] [Module.Free B A] (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.traceElement p = Module.finrank B A • LinearStudy.dualGenerator q p
+'LinearStudy.traceElement_eq_rank_dualGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_annihilates_kernel.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsReduced B] [StrongRankCondition B] [Module.Free B A] (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.Annihilates (RingHom.ker q.toRingHom) (LinearStudy.traceElement p)
+'LinearStudy.traceElement_annihilates_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_functional.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
+  [StrongRankCondition B] [Module.Free B A] (p : LinearStudy.PerfectMultiplicationPairing) :
+  p.functional (LinearStudy.traceElement p) = ↑(Module.finrank B A)
+'LinearStudy.traceElement_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_nonzero_over_field.{u_2, u_3} {A : Type u_2} [CommRing A] {K : Type u_3} [Field K] [CharZero K]
+  [Algebra K A] [FiniteDimensional K A] [Nontrivial A] (p : LinearStudy.PerfectMultiplicationPairing) :
+  LinearStudy.traceElement p ≠ 0
+'LinearStudy.traceElement_nonzero_over_field' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.traceElement_generates_annihilator.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] [IsReduced B] [StrongRankCondition B] [Module.Free B A] (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (p : LinearStudy.PerfectMultiplicationPairing)
+  (hrank : IsUnit ↑(Module.finrank B A)) (x : A) :
+  LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ u, x = u • LinearStudy.traceElement p
+'LinearStudy.traceElement_generates_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.eq_traceElement_of_residue_trace.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]
+  [Algebra B A] (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)
+  (htrace : ∀ (a : A), p.functional (delta * a) = (Algebra.trace B A) a) : delta = LinearStudy.traceElement p
+'LinearStudy.eq_traceElement_of_residue_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
 def LinearStudy.LinearityTheoremGoal : Prop :=
 ∀ (n : ℕ) (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
   1 < f.degree → Function.Surjective f.onPoints → f.onPoints ⁻¹' V.zeroSet = V.zeroSet → ∃ W, ↑W = V.zeroSet

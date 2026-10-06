@@ -16,3 +16,7 @@ public import Linear.LinearSubspace
 public import Linear.OneVariable
 public import Linear.SoclePairing
 public import Linear.ResiduePairing
+public import Linear.TraceElement
+public import Linear.ParameterQuotient
+public import Linear.DeterminantAnnihilator
+public import Linear.PowerSeriesCoefficients

@@ -9,6 +9,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.degree_contradiction
 #check LinearStudy.uniform_degree_estimate_impossible
 #print axioms LinearStudy.uniform_degree_estimate_impossible
+#check LinearStudy.determinant_mul_coordinate_of_relation
+#print axioms LinearStudy.determinant_mul_coordinate_of_relation
+#check LinearStudy.determinant_annihilates_coordinate_ideal
+#print axioms LinearStudy.determinant_annihilates_coordinate_ideal
+#check LinearStudy.coefficientDeterminant_annihilates_quotient
+#print axioms LinearStudy.coefficientDeterminant_annihilates_quotient
 #check LinearStudy.epsilon
 #print axioms LinearStudy.epsilon
 #check LinearStudy.doublePoint_decomposition
@@ -127,6 +133,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.perfectPairingOfUnitDet
 #check LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #print axioms LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
+#check LinearStudy.liftedIdeal_sup_kernel
+#print axioms LinearStudy.liftedIdeal_sup_kernel
+#check LinearStudy.parameterQuotient_nilradical_image_isMaximal
+#print axioms LinearStudy.parameterQuotient_nilradical_image_isMaximal
+#check LinearStudy.parameterQuotient_nilradical_eq
+#print axioms LinearStudy.parameterQuotient_nilradical_eq
+#check LinearStudy.parameterQuotient_local_artinian
+#print axioms LinearStudy.parameterQuotient_local_artinian
+#check LinearStudy.arbitraryParameterLifts_artinian
+#print axioms LinearStudy.arbitraryParameterLifts_artinian
+#check LinearStudy.completeIntersection_parameterQuotient_artinian
+#print axioms LinearStudy.completeIntersection_parameterQuotient_artinian
+#check LinearStudy.powerSeries_zeroConstant_variable_expansion
+#print axioms LinearStudy.powerSeries_zeroConstant_variable_expansion
+#check LinearStudy.powerSeries_equation_coefficient_matrix
+#print axioms LinearStudy.powerSeries_equation_coefficient_matrix
+#check LinearStudy.powerSeries_constantCoeff_kernel
+#print axioms LinearStudy.powerSeries_constantCoeff_kernel
+#check LinearStudy.powerSeries_coefficientDeterminant_annihilator
+#print axioms LinearStudy.powerSeries_coefficientDeterminant_annihilator
+#check LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal
+#print axioms LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal
+#check LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
+#print axioms LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation
@@ -277,6 +307,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.thickening_closedFiber_artinian
 #check LinearStudy.thickening_closedFiber_jacobian
 #print axioms LinearStudy.thickening_closedFiber_jacobian
+#check LinearStudy.traceElement
+#print axioms LinearStudy.traceElement
+#check LinearStudy.traceElement_pairing
+#print axioms LinearStudy.traceElement_pairing
+#check LinearStudy.trace_eq_rank_smul_reduction
+#print axioms LinearStudy.trace_eq_rank_smul_reduction
+#check LinearStudy.traceElement_eq_rank_dualGenerator
+#print axioms LinearStudy.traceElement_eq_rank_dualGenerator
+#check LinearStudy.traceElement_annihilates_kernel
+#print axioms LinearStudy.traceElement_annihilates_kernel
+#check LinearStudy.traceElement_functional
+#print axioms LinearStudy.traceElement_functional
+#check LinearStudy.traceElement_nonzero_over_field
+#print axioms LinearStudy.traceElement_nonzero_over_field
+#check LinearStudy.traceElement_generates_annihilator
+#print axioms LinearStudy.traceElement_generates_annihilator
+#check LinearStudy.eq_traceElement_of_residue_trace
+#print axioms LinearStudy.eq_traceElement_of_residue_trace
 #print LinearStudy.LinearityTheoremGoal
 #print LinearStudy.HomogeneousEndomorphism
 #print LinearStudy.IntegralProjectiveEquations
