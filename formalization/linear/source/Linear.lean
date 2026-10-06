@@ -51,3 +51,8 @@ public import Linear.DiagonalNonzero
 public import Linear.TensorDifference
 
 public import Linear.JacobianNonzero
+
+public import Linear.JacobianSpecialization
+public import Linear.RelativeJacobianTrace
+public import Linear.CenteredRelativeJacobian
+public import Linear.ParameterPairingChange

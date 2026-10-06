@@ -36,6 +36,7 @@ theorem powerSeriesQuotient_variable_nilpotent
   simp
 
 theorem powerSeries_tensor_diagonal_eq_coordinate_ideal
+    {K : Type*} [CommRing K]
     {A ι : Type*} [CommRing A] [Algebra K A]
     [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (q : MvPowerSeries ι K →ₐ[K] A) (hq : Function.Surjective q)

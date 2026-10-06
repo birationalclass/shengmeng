@@ -7,6 +7,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal
 #check LinearStudy.powerSeriesQuotient_diagonal_jacobian
 #print axioms LinearStudy.powerSeriesQuotient_diagonal_jacobian
+#check LinearStudy.finiteFlat_centered_jacobian_annihilator
+#print axioms LinearStudy.finiteFlat_centered_jacobian_annihilator
 #check LinearStudy.iterate_degree_exceeds
 #print axioms LinearStudy.iterate_degree_exceeds
 #check LinearStudy.intersection_degree_lt
@@ -167,6 +169,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeriesQuotient_jacobian_scalar_socle
 #check LinearStudy.powerSeriesQuotient_jacobian_socle
 #print axioms LinearStudy.powerSeriesQuotient_jacobian_socle
+#check LinearStudy.finiteFlat_closedFiber_jacobian_nonzero
+#print axioms LinearStudy.finiteFlat_closedFiber_jacobian_nonzero
+#check LinearStudy.finiteFlat_residueTensor_jacobian_nonzero
+#print axioms LinearStudy.finiteFlat_residueTensor_jacobian_nonzero
+#check LinearStudy.finiteFlat_jacobian_primitive
+#print axioms LinearStudy.finiteFlat_jacobian_primitive
+#check LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle
+#print axioms LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle
 #check LinearStudy.powerSeriesJacobianClass
 #print axioms LinearStudy.powerSeriesJacobianClass
 #check LinearStudy.powerSeriesQuotient_jacobian_trace_multiple
@@ -285,6 +295,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.perfectPairingOfUnitDet
 #check LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #print axioms LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
+#check LinearStudy.annihilator_scalar_action_baseChange
+#print axioms LinearStudy.annihilator_scalar_action_baseChange
+#check LinearStudy.annihilator_generator_coefficient_unit_after_baseChange
+#print axioms LinearStudy.annihilator_generator_coefficient_unit_after_baseChange
+#check LinearStudy.annihilator_generator_survives_new_parameterIdeal
+#print axioms LinearStudy.annihilator_generator_survives_new_parameterIdeal
 #check LinearStudy.liftedIdeal_sup_kernel
 #print axioms LinearStudy.liftedIdeal_sup_kernel
 #check LinearStudy.parameterQuotient_nilradical_image_isMaximal
@@ -453,6 +469,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_specialized_equations_zeroConstant
 #check LinearStudy.powerSeries_specialized_equations_regular
 #print axioms LinearStudy.powerSeries_specialized_equations_regular
+#check LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian
+#print axioms LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian
+#check LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple
+#print axioms LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple
+#check LinearStudy.relativePowerSeriesQuotient_jacobian_annihilates_nilradical
+#print axioms LinearStudy.relativePowerSeriesQuotient_jacobian_annihilates_nilradical
 #check LinearStudy.exists_residue_functional_lift
 #print axioms LinearStudy.exists_residue_functional_lift
 #check LinearStudy.residue_multiplicationGram

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T18:38:05+08:00",
+  "checkedAt": "2026-10-06T19:20:18+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,13 +8,18 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "e78d5e7b64985b0ec3a8b3fd21a95279a61ad6b1122ed6a6aac70f44a891ce72",
-      "lineCount": 792
+      "sha256": "5abbc28c130bff39ce674a9b5c2df2c7440a25f40852e755525c748052251fe8",
+      "lineCount": 814
     },
     {
       "path": "Linear/ArtinianDiagonal.lean",
-      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
-      "lineCount": 131
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "lineCount": 132
+    },
+    {
+      "path": "Linear/CenteredRelativeJacobian.lean",
+      "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
+      "lineCount": 59
     },
     {
       "path": "Linear/Degree.lean",
@@ -75,6 +80,11 @@
       "path": "Linear/JacobianNonzero.lean",
       "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
       "lineCount": 180
+    },
+    {
+      "path": "Linear/JacobianSpecialization.lean",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "lineCount": 119
     },
     {
       "path": "Linear/JacobianTrace.lean",
@@ -140,6 +150,11 @@
       "path": "Linear/PairingMatrix.lean",
       "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
       "lineCount": 70
+    },
+    {
+      "path": "Linear/ParameterPairingChange.lean",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "lineCount": 88
     },
     {
       "path": "Linear/ParameterQuotient.lean",
@@ -212,6 +227,11 @@
       "lineCount": 168
     },
     {
+      "path": "Linear/RelativeJacobianTrace.lean",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "lineCount": 112
+    },
+    {
       "path": "Linear/ResiduePairing.lean",
       "sha256": "844a367f774ef6c7090d50e2263c897f62ef7e7d6ab6c45ae07b6267aa5626a0",
       "lineCount": 145
@@ -273,8 +293,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "6da73150c4e101b463993bcc2ed98a9e7d44a094c97b632dfb377de5b6185df2",
-      "lineCount": 53
+      "sha256": "2df7353aac267b00a52cda7876979e59491737dda2f21692408523306001138f",
+      "lineCount": 58
     }
   ],
   "declarations": {
@@ -291,8 +311,8 @@
       ],
       "verified": true,
       "formalType": "LinearStudy.powerSeriesQuotient_variable_nilpotent.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] (i : Fin (n + 1)) :\n  IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))",
-      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
-      "lines": 131
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "lines": 132
     },
     "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal": {
       "declaration": "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal",
@@ -306,16 +326,16 @@
         "Quot.sound"
       ],
       "verified": true,
-      "formalType": "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} [Field K] {A : Type u_2}\n  {ι : Type u_3} [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] [Nonempty ι] (q : MvPowerSeries ι K →ₐ[K] A)\n  (hq : Function.Surjective ⇑q) (hnil : ∀ (i : ι), IsNilpotent (q (MvPowerSeries.X i))) :\n  Ideal.span (Set.range fun i => q (MvPowerSeries.X i) ⊗ₜ[K] 1 - 1 ⊗ₜ[K] q (MvPowerSeries.X i)) =\n    KaehlerDifferential.ideal K A",
-      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
-      "lines": 131
+      "formalType": "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal.{u_2, u_3, u_4} {K : Type u_2} [CommRing K] {A : Type u_3}\n  {ι : Type u_4} [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] [Nonempty ι] (q : MvPowerSeries ι K →ₐ[K] A)\n  (hq : Function.Surjective ⇑q) (hnil : ∀ (i : ι), IsNilpotent (q (MvPowerSeries.X i))) :\n  Ideal.span (Set.range fun i => q (MvPowerSeries.X i) ⊗ₜ[K] 1 - 1 ⊗ₜ[K] q (MvPowerSeries.X i)) =\n    KaehlerDifferential.ideal K A",
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "lines": 132
     },
     "LinearStudy.powerSeriesQuotient_diagonal_jacobian": {
       "declaration": "LinearStudy.powerSeriesQuotient_diagonal_jacobian",
       "kind": "theorem",
       "origin": "project",
       "file": "Linear/ArtinianDiagonal.lean",
-      "line": 85,
+      "line": 86,
       "axioms": [
         "propext",
         "Classical.choice",
@@ -323,8 +343,24 @@
       ],
       "verified": true,
       "formalType": "LinearStudy.powerSeriesQuotient_diagonal_jacobian.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));\n  ∃ M,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧\n      (Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ((MvPowerSeries.pderiv j) (H i))",
-      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
-      "lines": 131
+      "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
+      "lines": 132
+    },
+    "LinearStudy.finiteFlat_centered_jacobian_annihilator": {
+      "declaration": "LinearStudy.finiteFlat_centered_jacobian_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CenteredRelativeJacobian.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  (a :\n    MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸\n        Ideal.span (Set.range H) →ₐ[MvPowerSeries (Fin (r + 1)) K]\n      MvPowerSeries (Fin (r + 1)) K)\n  (ha :\n    RingHom.ker a.toRingHom =\n      nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)))\n  (hz : ∀ (i : Fin (n + 1)), a ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i)) = 0)\n  (x : MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) :\n  LinearStudy.Annihilates\n      (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔\n    ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))",
+      "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
+      "lines": 59
     },
     "LinearStudy.iterate_degree_exceeds": {
       "declaration": "LinearStudy.iterate_degree_exceeds",
@@ -1569,6 +1605,70 @@
       "sha256": "20ed4e44d0b9fa4287a5c50209d30429dbd9b5ca8ce293957c78e1c4405e52ff",
       "lines": 180
     },
+    "LinearStudy.finiteFlat_closedFiber_jacobian_nonzero": {
+      "declaration": "LinearStudy.finiteFlat_closedFiber_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianSpecialization.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_closedFiber_jacobian_nonzero.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  (LinearStudy.powerSeriesJacobianClass fun i => LinearStudy.parameterSpecialization (H i)) ≠ 0",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "lines": 119
+    },
+    "LinearStudy.finiteFlat_residueTensor_jacobian_nonzero": {
+      "declaration": "LinearStudy.finiteFlat_residueTensor_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianSpecialization.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_residueTensor_jacobian_nonzero.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  1 ⊗ₜ[MvPowerSeries (Fin (r + 1)) K]\n      (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) ≠\n    0",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "lines": 119
+    },
+    "LinearStudy.finiteFlat_jacobian_primitive": {
+      "declaration": "LinearStudy.finiteFlat_jacobian_primitive",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianSpecialization.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_jacobian_primitive.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) ∉\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K) • ⊤",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "lines": 119
+    },
+    "LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle": {
+      "declaration": "LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/JacobianSpecialization.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  let B := MvPowerSeries (Fin (r + 1)) K;\n  let A := MvPowerSeries (Fin (n + 1)) B ⧸ Ideal.span (Set.range H);\n  let k := B ⧸ IsLocalRing.maximalIdeal B;\n  let C := TensorProduct B k A;\n  ∀ (x : C),\n    LinearStudy.Annihilates (nilradical C) x →\n      ∃ u,\n        x =\n          u •\n            1 ⊗ₜ[B]\n              (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))",
+      "sha256": "c9c03f9379d2459aa6656047cd06177ff663a0082dd724b1c00e8b33ecd5f028",
+      "lines": 119
+    },
     "LinearStudy.powerSeriesJacobianClass": {
       "declaration": "LinearStudy.powerSeriesJacobianClass",
       "kind": "def",
@@ -2510,6 +2610,54 @@
       "formalType": "LinearStudy.exists_perfectPairing_of_residueDet_ne_zero.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [IsLocalRing B] (b : Module.Basis ι B A)\n  (ell : A →ₗ[B] B)\n  (hres : (Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) (LinearStudy.multiplicationGram b ell).det ≠ 0) :\n  ∃ p, p.functional = ell",
       "sha256": "aa15aafe057d5bdf3881e401f8a27e479f3ffb77c68dfbe93cf06d08ff16ecde",
       "lines": 70
+    },
+    "LinearStudy.annihilator_scalar_action_baseChange": {
+      "declaration": "LinearStudy.annihilator_scalar_action_baseChange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterPairingChange.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilator_scalar_action_baseChange.{u_1, u_2, u_3} {B : Type u_1} {C : Type u_2} {A : Type u_3}\n  [CommRing B] [CommRing C] [CommRing A] [Algebra B A] [Algebra C A] (q : A →ₐ[B] B) (q' : A →ₐ[C] C) (e : B ≃+* C)\n  (hq' : RingHom.ker q'.toRingHom = nilradical A) (he : ∀ (a : A), q' a = e (q a)) {delta : A}\n  (hd : LinearStudy.Annihilates (nilradical A) delta) (b : B) : b • delta = e b • delta",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "lines": 88
+    },
+    "LinearStudy.annihilator_generator_coefficient_unit_after_baseChange": {
+      "declaration": "LinearStudy.annihilator_generator_coefficient_unit_after_baseChange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterPairingChange.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilator_generator_coefficient_unit_after_baseChange.{u_1, u_2, u_3} {B : Type u_1} {C : Type u_2}\n  {A : Type u_3} [CommRing B] [CommRing C] [CommRing A] [Algebra B A] [Algebra C A] (q : A →ₐ[B] B) (q' : A →ₐ[C] C)\n  (e : B ≃+* C) (hq' : RingHom.ker q'.toRingHom = nilradical A) (he : ∀ (a : A), q' a = e (q a)) (delta : A)\n  (hd : LinearStudy.Annihilates (nilradical A) delta)\n  (hgen : ∀ (x : A), LinearStudy.Annihilates (nilradical A) x → ∃ b, x = b • delta)\n  (p' : LinearStudy.PerfectMultiplicationPairing) : IsUnit (p'.functional delta)",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "lines": 88
+    },
+    "LinearStudy.annihilator_generator_survives_new_parameterIdeal": {
+      "declaration": "LinearStudy.annihilator_generator_survives_new_parameterIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ParameterPairingChange.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilator_generator_survives_new_parameterIdeal.{u_1, u_2, u_3, u_4} {B : Type u_1} {C : Type u_2}\n  {A : Type u_3} [CommRing B] [CommRing C] [CommRing A] [Algebra B A] [Algebra C A] (q : A →ₐ[B] B) (q' : A →ₐ[C] C)\n  (e : B ≃+* C) (hq' : RingHom.ker q'.toRingHom = nilradical A) (he : ∀ (a : A), q' a = e (q a)) (delta : A)\n  (hd : LinearStudy.Annihilates (nilradical A) delta)\n  (hgen : ∀ (x : A), LinearStudy.Annihilates (nilradical A) x → ∃ b, x = b • delta)\n  (p' : LinearStudy.PerfectMultiplicationPairing) {ι : Type u_4} (T : ι → C) (m : Ideal C) (hm : m ≠ ⊤)\n  (hT : ∀ (i : ι), T i ∈ m) : (Ideal.Quotient.mk (Ideal.span (Set.range fun i => (algebraMap C A) (T i)))) delta ≠ 0",
+      "sha256": "9aa8bc7a50113102c944d46a1e5f8e2496d131c39efee02ad31d20dba7691f08",
+      "lines": 88
     },
     "LinearStudy.liftedIdeal_sup_kernel": {
       "declaration": "LinearStudy.liftedIdeal_sup_kernel",
@@ -3845,6 +3993,54 @@
       "formalType": "LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))",
       "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
       "lines": 168
+    },
+    "LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian": {
+      "declaration": "LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RelativeJacobianTrace.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian.{u_1} {K : Type u_1} [CommRing K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hnil : ∀ (i : Fin (n + 1)), IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))) :\n  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));\n  ∃ M,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧\n      (Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ((MvPowerSeries.pderiv j) (H i))",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "lines": 112
+    },
+    "LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple": {
+      "declaration": "LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RelativeJacobianTrace.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple.{u_1} {K : Type u_1} [CommRing K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hnil : ∀ (i : Fin (n + 1)), IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i)))\n  [Module.Free K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [Module.Finite K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (p : LinearStudy.PerfectMultiplicationPairing) :\n  ∃ c,\n    (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =\n      c * LinearStudy.traceElement p",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "lines": 112
+    },
+    "LinearStudy.relativePowerSeriesQuotient_jacobian_annihilates_nilradical": {
+      "declaration": "LinearStudy.relativePowerSeriesQuotient_jacobian_annihilates_nilradical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RelativeJacobianTrace.lean",
+      "line": 89,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.relativePowerSeriesQuotient_jacobian_annihilates_nilradical.{u_1} {K : Type u_1} [CommRing K] {n : ℕ}\n  [IsReduced K] [StrongRankCondition K] (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hnil : ∀ (i : Fin (n + 1)), IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i)))\n  [Module.Free K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [Module.Finite K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  (a : MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H) →ₐ[K] K)\n  (ha : RingHom.ker a.toRingHom = nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)))\n  (p : LinearStudy.PerfectMultiplicationPairing) :\n  LinearStudy.Annihilates (nilradical (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)))\n    ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)))",
+      "sha256": "ae8347033ae5324f5fdfcd88ee2d92530f01b2b0efd6eea4a4d4ab8a14b34760",
+      "lines": 112
     },
     "LinearStudy.exists_residue_functional_lift": {
       "declaration": "LinearStudy.exists_residue_functional_lift",
@@ -6610,10 +6806,10 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 240,
+  "verifiedTheoremCount": 251,
   "definitionCount": 63,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. The relative Jacobian theorem, arbitrary parameter lifts and global geometry remain unproved."
+  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Relative Jacobian annihilator generation is proved under the explicit centering condition a([z_i])=0; its pairing is constructed. Survival under changed parameter actions is proved with an explicit new-base pairing input. Coordinate translation, construction of the new parameter action and pairing from arbitrary lifts, and global geometry remain unproved."
 }
