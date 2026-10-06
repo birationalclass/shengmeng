@@ -35,3 +35,8 @@ public import Linear.RegularSpecialization
 public import Linear.FiniteSpecialization
 public import Linear.SocleTransport
 public import Linear.TensorSpecialization
+public import Linear.NilpotentEvaluation
+public import Linear.NilpotentEvaluationUnique
+public import Linear.PolynomialDiagonal
+public import Linear.PowerSeriesDiagonal
+public import Linear.ArtinianDiagonal

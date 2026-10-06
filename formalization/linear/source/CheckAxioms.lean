@@ -1,6 +1,12 @@
 import Linear
 set_option pp.universes false
 set_option pp.proofs false
+#check LinearStudy.powerSeriesQuotient_variable_nilpotent
+#print axioms LinearStudy.powerSeriesQuotient_variable_nilpotent
+#check LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal
+#print axioms LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal
+#check LinearStudy.powerSeriesQuotient_diagonal_jacobian
+#print axioms LinearStudy.powerSeriesQuotient_diagonal_jacobian
 #check LinearStudy.iterate_degree_exceeds
 #print axioms LinearStudy.iterate_degree_exceeds
 #check LinearStudy.intersection_degree_lt
@@ -197,6 +203,26 @@ set_option pp.proofs false
 #print axioms LinearStudy.mem_linearEquationSubmodule
 #check LinearStudy.mem_linearEquationSubspace
 #print axioms LinearStudy.mem_linearEquationSubspace
+#check LinearStudy.powerSeries_hasEval_of_nilpotent
+#print axioms LinearStudy.powerSeries_hasEval_of_nilpotent
+#check LinearStudy.nilpotentPowerSeriesEval
+#print axioms LinearStudy.nilpotentPowerSeriesEval
+#check LinearStudy.nilpotentPowerSeriesEval_C
+#print axioms LinearStudy.nilpotentPowerSeriesEval_C
+#check LinearStudy.nilpotentPowerSeriesEval_X
+#print axioms LinearStudy.nilpotentPowerSeriesEval_X
+#check LinearStudy.nilpotentPowerSeriesEval_comp
+#print axioms LinearStudy.nilpotentPowerSeriesEval_comp
+#check LinearStudy.nilpotentPowerSeriesAlgEval
+#print axioms LinearStudy.nilpotentPowerSeriesAlgEval
+#check LinearStudy.powerSeries_boxZero_expansion
+#print axioms LinearStudy.powerSeries_boxZero_expansion
+#check LinearStudy.powerSeries_map_eq_trunc_of_nilpotent
+#print axioms LinearStudy.powerSeries_map_eq_trunc_of_nilpotent
+#check LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent
+#print axioms LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent
+#check LinearStudy.powerSeries_nilpotent_ringHom_ext
+#print axioms LinearStudy.powerSeries_nilpotent_ringHom_ext
 #check LinearStudy.oneVariable_unit_factorization
 #print axioms LinearStudy.oneVariable_unit_factorization
 #check LinearStudy.oneVariable_closedFiber_jacobian
@@ -223,6 +249,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.arbitraryParameterLifts_artinian
 #check LinearStudy.completeIntersection_parameterQuotient_artinian
 #print axioms LinearStudy.completeIntersection_parameterQuotient_artinian
+#check LinearStudy.polynomial_diagonal_difference
+#print axioms LinearStudy.polynomial_diagonal_difference
 #check LinearStudy.powerSeriesConstantCoeffAlgHom
 #print axioms LinearStudy.powerSeriesConstantCoeffAlgHom
 #check LinearStudy.equationIdeal_le_constantCoeff_kernel
@@ -255,6 +283,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal
 #check LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
 #print axioms LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
+#check LinearStudy.powerSeries_diagonal_difference
+#print axioms LinearStudy.powerSeries_diagonal_difference
+#check LinearStudy.powerSeries_diagonal_jacobian_matrix
+#print axioms LinearStudy.powerSeries_diagonal_jacobian_matrix
 #check LinearStudy.regular_transport_ringEquiv
 #print axioms LinearStudy.regular_transport_ringEquiv
 #check LinearStudy.powerSeries_cons_X_regular

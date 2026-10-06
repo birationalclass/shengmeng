@@ -1,14 +1,14 @@
-import {installProofWorlds} from './proof-worlds.js?v=20261006-linear-8';
-import {installTheoremTarget} from './theorem-target.js?v=20261006-linear-8';
-import {createNodeEditor} from './node-editor.js?v=20261006-linear-8';
-import {installWorkspace} from './workspace.js?v=20261006-linear-8';
-import {installAtlasDock} from './atlas-dock.js?v=20261006-linear-8';
-import {installLeanLineCounts} from './line-counts.js?v=20261006-linear-8';
-import {english,installLanguage} from './i18n.js?v=20261006-linear-8';
-import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261006-linear-8';
+import {installProofWorlds} from './proof-worlds.js?v=20261006-linear-9';
+import {installTheoremTarget} from './theorem-target.js?v=20261006-linear-9';
+import {createNodeEditor} from './node-editor.js?v=20261006-linear-9';
+import {installWorkspace} from './workspace.js?v=20261006-linear-9';
+import {installAtlasDock} from './atlas-dock.js?v=20261006-linear-9';
+import {installLeanLineCounts} from './line-counts.js?v=20261006-linear-9';
+import {english,installLanguage} from './i18n.js?v=20261006-linear-9';
+import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261006-linear-9';
 
 
-const audit=await fetch('audit.json?v=20261006-linear-8').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
+const audit=await fetch('audit.json?v=20261006-linear-9').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
 const text=(zh,en)=>english?en:zh;
 if(audit.mainTheoremVerified!==false||audit.targetVerified!==false)throw Error('Unexpected target status');
 const raw=[audit.main,...audit.nodes];

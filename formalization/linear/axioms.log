@@ -1,3 +1,23 @@
+LinearStudy.powerSeriesQuotient_variable_nilpotent.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] (i : Fin (n + 1)) :
+  IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))
+'LinearStudy.powerSeriesQuotient_variable_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} [Field K] {A : Type u_2}
+  {ι : Type u_3} [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] [Nonempty ι] (q : MvPowerSeries ι K →ₐ[K] A)
+  (hq : Function.Surjective ⇑q) (hnil : ∀ (i : ι), IsNilpotent (q (MvPowerSeries.X i))) :
+  Ideal.span (Set.range fun i => q (MvPowerSeries.X i) ⊗ₜ[K] 1 - 1 ⊗ₜ[K] q (MvPowerSeries.X i)) =
+    KaehlerDifferential.ideal K A
+'LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesQuotient_diagonal_jacobian.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);
+  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));
+  ∃ M,
+    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧
+      (Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ((MvPowerSeries.pderiv j) (H i))
+'LinearStudy.powerSeriesQuotient_diagonal_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.iterate_degree_exceeds (q B : ℕ) (hq : 1 < q) : ∃ k, 0 < k ∧ B < q ^ k
 'LinearStudy.iterate_degree_exceeds' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.intersection_degree_lt (q r d m : ℕ) (hr : 1 ≤ r) (h : d * m < q) : q ^ (r - 1) * d * m < q ^ r
@@ -390,6 +410,51 @@ LinearStudy.mem_linearEquationSubspace.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :
   Projectivization.mk ℂ v hv ∈ LinearStudy.linearEquationSubspace equations ↔ ∀ (i : ι), (equations i) v = 0
 'LinearStudy.mem_linearEquationSubspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
+  (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
+'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilpotentPowerSeriesEval.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}
+  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries (Fin n) R →+* S
+'LinearStudy.nilpotentPowerSeriesEval' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilpotentPowerSeriesEval_C.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}
+  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) (b : R) :
+  (LinearStudy.nilpotentPowerSeriesEval f a ha) (MvPowerSeries.C b) = f b
+'LinearStudy.nilpotentPowerSeriesEval_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilpotentPowerSeriesEval_X.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}
+  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) (i : Fin n) :
+  (LinearStudy.nilpotentPowerSeriesEval f a ha) (MvPowerSeries.X i) = a i
+'LinearStudy.nilpotentPowerSeriesEval_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilpotentPowerSeriesEval_comp.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]
+  {n : ℕ} {T : Type u_3} [CommRing T] (f : R →+* S) (g : S →+* T) (a : Fin n → S)
+  (ha : ∀ (i : Fin n), IsNilpotent (a i)) :
+  g.comp (LinearStudy.nilpotentPowerSeriesEval f a ha) =
+    LinearStudy.nilpotentPowerSeriesEval (g.comp f) (fun i => g (a i)) ⋯
+'LinearStudy.nilpotentPowerSeriesEval_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilpotentPowerSeriesAlgEval.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}
+  [Algebra R S] (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries (Fin n) R →ₐ[R] S
+'LinearStudy.nilpotentPowerSeriesAlgEval' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_boxZero_expansion.{u_1, u_3} {R : Type u_1} [CommRing R] {ι : Type u_3} [Fintype ι]
+  [DecidableEq ι] [Nonempty ι] (H : MvPowerSeries ι R) (b : ι → ℕ)
+  (hH : ∀ (m : ι →₀ ℕ), (∀ (i : ι), m i < b i) → (MvPowerSeries.coeff m) H = 0) :
+  ∃ a, H = ∑ i, a i * MvPowerSeries.X i ^ b i
+'LinearStudy.powerSeries_boxZero_expansion' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_map_eq_trunc_of_nilpotent.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R]
+  [CommRing S] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g : MvPowerSeries ι R →+* S) (b : ι → ℕ)
+  (hb : ∀ (i : ι), g (MvPowerSeries.X i) ^ b i = 0) (H : MvPowerSeries ι R) :
+  g H = g ↑((MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm b)) H)
+'LinearStudy.powerSeries_map_eq_trunc_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R]
+  [CommRing S] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g : MvPowerSeries ι R →+* S) (b : ι → ℕ)
+  (hb : ∀ (i : ι), g (MvPowerSeries.X i) ^ b i = 0) (H : MvPowerSeries ι R) (i : ι) :
+  g ((MvPowerSeries.pderiv i) H) =
+    g ↑((MvPolynomial.pderiv i) ((MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm fun j => b j + 1)) H))
+'LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_nilpotent_ringHom_ext.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]
+  {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g₁ g₂ : MvPowerSeries ι R →+* S)
+  (hC : ∀ (r : R), g₁ (MvPowerSeries.C r) = g₂ (MvPowerSeries.C r))
+  (hX : ∀ (i : ι), g₁ (MvPowerSeries.X i) = g₂ (MvPowerSeries.X i))
+  (hnil : ∀ (i : ι), IsNilpotent (g₁ (MvPowerSeries.X i))) : g₁ = g₂
+'LinearStudy.powerSeries_nilpotent_ringHom_ext' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.oneVariable_unit_factorization.{u_1} {K : Type u_1} [Field K] (H : PowerSeries K) (hH : H ≠ 0)
   (h0 : PowerSeries.constantCoeff H = 0) : ∃ s u, IsUnit u ∧ H = u * PowerSeries.X ^ (s + 1)
 'LinearStudy.oneVariable_unit_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -455,6 +520,14 @@ LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin
   IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧
     (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal
 'LinearStudy.completeIntersection_parameterQuotient_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}
+  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] (u v : MvPolynomial ι R →+* A)
+  (π : A →+* B) (hC : ∀ (c : R), u (MvPolynomial.C c) = v (MvPolynomial.C c))
+  (hX : ∀ (i : ι), π (u (MvPolynomial.X i)) = π (v (MvPolynomial.X i))) (p : MvPolynomial ι R) :
+  ∃ a,
+    u p - v p = ∑ i, a i * (u (MvPolynomial.X i) - v (MvPolynomial.X i)) ∧
+      ∀ (i : ι), π (a i) = π (u ((MvPolynomial.pderiv i) p))
+'LinearStudy.polynomial_diagonal_difference' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeriesConstantCoeffAlgHom.{u_1} {K : Type u_1} [Field K] {n : ℕ} :
   MvPowerSeries (Fin (n + 1)) K →ₐ[K] K
 'LinearStudy.powerSeriesConstantCoeffAlgHom' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -564,6 +637,27 @@ LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator.{u_2, u_3} {�
 'LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.powerSeries_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}
+  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]
+  (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))
+  (hX : ∀ (i : ι), π (u (MvPowerSeries.X i)) = π (v (MvPowerSeries.X i)))
+  (hu : ∀ (i : ι), IsNilpotent (u (MvPowerSeries.X i))) (hv : ∀ (i : ι), IsNilpotent (v (MvPowerSeries.X i)))
+  (H : MvPowerSeries ι R) :
+  ∃ a,
+    u H - v H = ∑ i, a i * (u (MvPowerSeries.X i) - v (MvPowerSeries.X i)) ∧
+      ∀ (i : ι), π (a i) = π (u ((MvPowerSeries.pderiv i) H))
+'LinearStudy.powerSeries_diagonal_difference' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_diagonal_jacobian_matrix.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}
+  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]
+  (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))
+  (hX : ∀ (i : ι), π (u (MvPowerSeries.X i)) = π (v (MvPowerSeries.X i)))
+  (hu : ∀ (i : ι), IsNilpotent (u (MvPowerSeries.X i))) (hv : ∀ (i : ι), IsNilpotent (v (MvPowerSeries.X i)))
+  (H : ι → MvPowerSeries ι R) (hH : ∀ (i : ι), u (H i) = v (H i)) :
+  ∃ M,
+    LinearStudy.Annihilates (Ideal.span (Set.range fun i => u (MvPowerSeries.X i) - v (MvPowerSeries.X i))) M.det ∧
+      (M.map ⇑π = fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))) ∧
+        π M.det = Matrix.det fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))
+'LinearStudy.powerSeries_diagonal_jacobian_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.regular_transport_ringEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {S : Type u_2} [CommRing S] (e : R ≃+* S)
   (rs : List R) : RingTheory.Sequence.IsRegular R rs ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) rs)
 'LinearStudy.regular_transport_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]

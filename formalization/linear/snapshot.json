@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T16:42:26+08:00",
+  "checkedAt": "2026-10-06T17:27:34+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,13 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "913e184ecb7ef30c267058d65ce7fa679604508036b0b01644ea500ce50ce860",
-      "lineCount": 686
+      "sha256": "1f0577430a767aa73940a4f30dcf19e576b0a4fded0b0f21966bd2a6bde196ee",
+      "lineCount": 718
+    },
+    {
+      "path": "Linear/ArtinianDiagonal.lean",
+      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
+      "lineCount": 131
     },
     {
       "path": "Linear/Degree.lean",
@@ -97,6 +102,16 @@
       "lineCount": 36
     },
     {
+      "path": "Linear/NilpotentEvaluation.lean",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lineCount": 74
+    },
+    {
+      "path": "Linear/NilpotentEvaluationUnique.lean",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "lineCount": 149
+    },
+    {
       "path": "Linear/OneVariable.lean",
       "sha256": "82a63f4d5366c2f8e8555999dff653876a414967845ba13dfaeb8c7c5a133dcc",
       "lineCount": 70
@@ -112,6 +127,11 @@
       "lineCount": 114
     },
     {
+      "path": "Linear/PolynomialDiagonal.lean",
+      "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
+      "lineCount": 69
+    },
+    {
       "path": "Linear/PowerSeriesAugmentation.lean",
       "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
       "lineCount": 142
@@ -120,6 +140,11 @@
       "path": "Linear/PowerSeriesCoefficients.lean",
       "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
       "lineCount": 145
+    },
+    {
+      "path": "Linear/PowerSeriesDiagonal.lean",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "lineCount": 90
     },
     {
       "path": "Linear/PowerSeriesRegular.lean",
@@ -208,11 +233,59 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "c7b2ef1fae06f6d8af63efe21b85278daf3218e652f9c9a0520b684e6b6ff2c6",
-      "lineCount": 37
+      "sha256": "8eeebea7a6c80e2003c96c4f9c1f02de5ffe63aca0b38c38f6232d70f83681a0",
+      "lineCount": 42
     }
   ],
   "declarations": {
+    "LinearStudy.powerSeriesQuotient_variable_nilpotent": {
+      "declaration": "LinearStudy.powerSeriesQuotient_variable_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianDiagonal.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_variable_nilpotent.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] (i : Fin (n + 1)) :\n  IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))",
+      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
+      "lines": 131
+    },
+    "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal": {
+      "declaration": "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianDiagonal.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} [Field K] {A : Type u_2}\n  {ι : Type u_3} [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] [Nonempty ι] (q : MvPowerSeries ι K →ₐ[K] A)\n  (hq : Function.Surjective ⇑q) (hnil : ∀ (i : ι), IsNilpotent (q (MvPowerSeries.X i))) :\n  Ideal.span (Set.range fun i => q (MvPowerSeries.X i) ⊗ₜ[K] 1 - 1 ⊗ₜ[K] q (MvPowerSeries.X i)) =\n    KaehlerDifferential.ideal K A",
+      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
+      "lines": 131
+    },
+    "LinearStudy.powerSeriesQuotient_diagonal_jacobian": {
+      "declaration": "LinearStudy.powerSeriesQuotient_diagonal_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianDiagonal.lean",
+      "line": 85,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesQuotient_diagonal_jacobian.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  let Q := MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range H));\n  ∃ M,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) M.det ∧\n      (Algebra.TensorProduct.lmul' K) M.det = Matrix.det fun i j => q ((MvPowerSeries.pderiv j) (H i))",
+      "sha256": "72d99c1b82fba430a6b0a81694f69ba27f96e531ed1ceb872bdc8b32b826cb8b",
+      "lines": 131
+    },
     "LinearStudy.iterate_degree_exceeds": {
       "declaration": "LinearStudy.iterate_degree_exceeds",
       "kind": "theorem",
@@ -1745,6 +1818,166 @@
       "sha256": "850b5caa24241f0fc87e1558a01d887ec564ee6d19bd23b9885668dea9ff2a37",
       "lines": 36
     },
+    "LinearStudy.powerSeries_hasEval_of_nilpotent": {
+      "declaration": "LinearStudy.powerSeries_hasEval_of_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]\n  (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.nilpotentPowerSeriesEval": {
+      "declaration": "LinearStudy.nilpotentPowerSeriesEval",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nilpotentPowerSeriesEval.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}\n  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries (Fin n) R →+* S",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.nilpotentPowerSeriesEval_C": {
+      "declaration": "LinearStudy.nilpotentPowerSeriesEval_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nilpotentPowerSeriesEval_C.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}\n  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) (b : R) :\n  (LinearStudy.nilpotentPowerSeriesEval f a ha) (MvPowerSeries.C b) = f b",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.nilpotentPowerSeriesEval_X": {
+      "declaration": "LinearStudy.nilpotentPowerSeriesEval_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nilpotentPowerSeriesEval_X.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}\n  (f : R →+* S) (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) (i : Fin n) :\n  (LinearStudy.nilpotentPowerSeriesEval f a ha) (MvPowerSeries.X i) = a i",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.nilpotentPowerSeriesEval_comp": {
+      "declaration": "LinearStudy.nilpotentPowerSeriesEval_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nilpotentPowerSeriesEval_comp.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]\n  {n : ℕ} {T : Type u_3} [CommRing T] (f : R →+* S) (g : S →+* T) (a : Fin n → S)\n  (ha : ∀ (i : Fin n), IsNilpotent (a i)) :\n  g.comp (LinearStudy.nilpotentPowerSeriesEval f a ha) =\n    LinearStudy.nilpotentPowerSeriesEval (g.comp f) (fun i => g (a i)) ⋯",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.nilpotentPowerSeriesAlgEval": {
+      "declaration": "LinearStudy.nilpotentPowerSeriesAlgEval",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluation.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nilpotentPowerSeriesAlgEval.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] {n : ℕ}\n  [Algebra R S] (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries (Fin n) R →ₐ[R] S",
+      "sha256": "ba548ae54a09805d18c0a67616600842020082a08df4c8092ae67b4c42bdc871",
+      "lines": 74
+    },
+    "LinearStudy.powerSeries_boxZero_expansion": {
+      "declaration": "LinearStudy.powerSeries_boxZero_expansion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluationUnique.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_boxZero_expansion.{u_1, u_3} {R : Type u_1} [CommRing R] {ι : Type u_3} [Fintype ι]\n  [DecidableEq ι] [Nonempty ι] (H : MvPowerSeries ι R) (b : ι → ℕ)\n  (hH : ∀ (m : ι →₀ ℕ), (∀ (i : ι), m i < b i) → (MvPowerSeries.coeff m) H = 0) :\n  ∃ a, H = ∑ i, a i * MvPowerSeries.X i ^ b i",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "lines": 149
+    },
+    "LinearStudy.powerSeries_map_eq_trunc_of_nilpotent": {
+      "declaration": "LinearStudy.powerSeries_map_eq_trunc_of_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluationUnique.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_map_eq_trunc_of_nilpotent.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R]\n  [CommRing S] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g : MvPowerSeries ι R →+* S) (b : ι → ℕ)\n  (hb : ∀ (i : ι), g (MvPowerSeries.X i) ^ b i = 0) (H : MvPowerSeries ι R) :\n  g H = g ↑((MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm b)) H)",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "lines": 149
+    },
+    "LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent": {
+      "declaration": "LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluationUnique.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_map_pderiv_eq_trunc_of_nilpotent.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R]\n  [CommRing S] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g : MvPowerSeries ι R →+* S) (b : ι → ℕ)\n  (hb : ∀ (i : ι), g (MvPowerSeries.X i) ^ b i = 0) (H : MvPowerSeries ι R) (i : ι) :\n  g ((MvPowerSeries.pderiv i) H) =\n    g ↑((MvPolynomial.pderiv i) ((MvPowerSeries.trunc' R (Finsupp.equivFunOnFinite.symm fun j => b j + 1)) H))",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "lines": 149
+    },
+    "LinearStudy.powerSeries_nilpotent_ringHom_ext": {
+      "declaration": "LinearStudy.powerSeries_nilpotent_ringHom_ext",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/NilpotentEvaluationUnique.lean",
+      "line": 114,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_nilpotent_ringHom_ext.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]\n  {ι : Type u_3} [Fintype ι] [DecidableEq ι] [Nonempty ι] (g₁ g₂ : MvPowerSeries ι R →+* S)\n  (hC : ∀ (r : R), g₁ (MvPowerSeries.C r) = g₂ (MvPowerSeries.C r))\n  (hX : ∀ (i : ι), g₁ (MvPowerSeries.X i) = g₂ (MvPowerSeries.X i))\n  (hnil : ∀ (i : ι), IsNilpotent (g₁ (MvPowerSeries.X i))) : g₁ = g₂",
+      "sha256": "c9ba1a17ade996700f2b2e0ced2d6e9a7428c9c4867388809828d9651fe1e431",
+      "lines": 149
+    },
     "LinearStudy.oneVariable_unit_factorization": {
       "declaration": "LinearStudy.oneVariable_unit_factorization",
       "kind": "theorem",
@@ -1951,6 +2184,22 @@
       "formalType": "LinearStudy.completeIntersection_parameterQuotient_artinian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  IsArtinianRing (LinearStudy.CompleteIntersection H ⧸ J) ∧\n    (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))).IsMaximal",
       "sha256": "ecedb6ff69cfb3bb3a9fa97eeefb40335a86ffe31fb49f8cd00398fc525e9b53",
       "lines": 114
+    },
+    "LinearStudy.polynomial_diagonal_difference": {
+      "declaration": "LinearStudy.polynomial_diagonal_difference",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDiagonal.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}\n  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] (u v : MvPolynomial ι R →+* A)\n  (π : A →+* B) (hC : ∀ (c : R), u (MvPolynomial.C c) = v (MvPolynomial.C c))\n  (hX : ∀ (i : ι), π (u (MvPolynomial.X i)) = π (v (MvPolynomial.X i))) (p : MvPolynomial ι R) :\n  ∃ a,\n    u p - v p = ∑ i, a i * (u (MvPolynomial.X i) - v (MvPolynomial.X i)) ∧\n      ∀ (i : ι), π (a i) = π (u ((MvPolynomial.pderiv i) p))",
+      "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
+      "lines": 69
     },
     "LinearStudy.powerSeriesConstantCoeffAlgHom": {
       "declaration": "LinearStudy.powerSeriesConstantCoeffAlgHom",
@@ -2207,6 +2456,38 @@
       "formalType": "LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator.{u_2, u_3} {ι : Type u_2} [Fintype ι] [DecidableEq ι]\n  [Nonempty ι] {K : Type u_3} [Field K] (H : ι → MvPowerSeries ι K)\n  (hH : ∀ (i : ι), MvPowerSeries.constantCoeff (H i) = 0) :\n  have J := Ideal.span (Set.range H);\n  have m := Ideal.span (Set.range fun i => (Ideal.Quotient.mk J) (MvPowerSeries.X i));\n  m.IsMaximal ∧ ∃ M, M.mulVec MvPowerSeries.X = H ∧ (Ideal.Quotient.mk J) M.det ∈ Submodule.annihilator m",
       "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
       "lines": 145
+    },
+    "LinearStudy.powerSeries_diagonal_difference": {
+      "declaration": "LinearStudy.powerSeries_diagonal_difference",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDiagonal.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}\n  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]\n  (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))\n  (hX : ∀ (i : ι), π (u (MvPowerSeries.X i)) = π (v (MvPowerSeries.X i)))\n  (hu : ∀ (i : ι), IsNilpotent (u (MvPowerSeries.X i))) (hv : ∀ (i : ι), IsNilpotent (v (MvPowerSeries.X i)))\n  (H : MvPowerSeries ι R) :\n  ∃ a,\n    u H - v H = ∑ i, a i * (u (MvPowerSeries.X i) - v (MvPowerSeries.X i)) ∧\n      ∀ (i : ι), π (a i) = π (u ((MvPowerSeries.pderiv i) H))",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "lines": 90
+    },
+    "LinearStudy.powerSeries_diagonal_jacobian_matrix": {
+      "declaration": "LinearStudy.powerSeries_diagonal_jacobian_matrix",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDiagonal.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_diagonal_jacobian_matrix.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}\n  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]\n  (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))\n  (hX : ∀ (i : ι), π (u (MvPowerSeries.X i)) = π (v (MvPowerSeries.X i)))\n  (hu : ∀ (i : ι), IsNilpotent (u (MvPowerSeries.X i))) (hv : ∀ (i : ι), IsNilpotent (v (MvPowerSeries.X i)))\n  (H : ι → MvPowerSeries ι R) (hH : ∀ (i : ι), u (H i) = v (H i)) :\n  ∃ M,\n    LinearStudy.Annihilates (Ideal.span (Set.range fun i => u (MvPowerSeries.X i) - v (MvPowerSeries.X i))) M.det ∧\n      (M.map ⇑π = fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))) ∧\n        π M.det = Matrix.det fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))",
+      "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
+      "lines": 90
     },
     "LinearStudy.regular_transport_ringEquiv": {
       "declaration": "LinearStudy.regular_transport_ringEquiv",
@@ -5699,8 +5980,8 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 196,
-  "definitionCount": 54,
+  "verifiedTheoremCount": 210,
+  "definitionCount": 56,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
