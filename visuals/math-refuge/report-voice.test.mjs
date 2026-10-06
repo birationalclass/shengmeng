@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createReportVoice,narrationFrame,syncNarrationClock} from './report-voice.js';
+import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress} from './report-voice.js';
 import {LectureClock,boardSlot} from './lecture-state.js';
 class FakeAudio extends EventTarget{
  currentTime=0;paused=true;
@@ -44,4 +44,20 @@ test('pausing while a board loads prevents both automatic resume and a stale loa
   if(fails)reject(Error('late failure'));else resolve();await waiting;
   assert.equal(h.voice.state.phase,'paused');assert(h.audios[0].paused);h.voice.dispose();
  }
+});
+
+
+test('per-line audio uses measured ink costs, holds for explanation, and seeks without future ink',()=>{
+ const plan={total:100,segments:[{start:0,end:10,mainLine:0},{start:10,end:20,mainLine:1},{start:20,end:70,mainLine:1},{start:70,end:100,mainLine:2}]};
+ const cues=[{row:0,writeStart:0,writeEnd:2},{row:1,writeStart:4,writeEnd:10},{row:2,writeStart:15,writeEnd:20}];
+ assert.equal(rowNarrationProgress(cues,3,plan),.1,'explanation holds the heading');
+ assert.equal(rowNarrationProgress(cues,7,plan),.4,'half of the long line is half its own stroke cost');
+ assert.equal(rowNarrationProgress(cues,14,plan),.7,'next line stays blank');
+ assert.equal(rowNarrationProgress(cues,17.5,plan),.85);
+ assert.equal(rowNarrationProgress(cues,4,plan),.1,'seek backwards reconstructs exact row boundary');
+ const m={duration:25,boards:[{page:0,start:0,eraseStart:0,writeStart:0,writeEnd:20,end:25,lineCues:cues}]};
+ const f=narrationFrame(m,14,plan),clock=new LectureClock(1);syncNarrationClock(clock,f,boardSlot);
+ assert.equal(clock.progress,.7);assert.equal(clock.slots[0].progress,.7);assert.equal(f.writing,false);assert.equal(narrationFrame(m,7,plan).writing,true);
+ assert.equal(narrationFrame(m,21,plan).phase,'hold');
+ assert.throws(()=>rowNarrationProgress([{row:3,writeStart:0,writeEnd:1}],0,plan),/no visible ink/);
 });

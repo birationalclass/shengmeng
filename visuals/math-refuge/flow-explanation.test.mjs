@@ -24,6 +24,7 @@ test('physical flow boards include complete spoken explanations and preserve eve
       }
       if(page.formulaAlign==='center')for(const item of items.filter(i=>i.source))assert(Math.abs(item.rect[0]+item.rect[2]/2-768)<.01,'Every displayed formula is centered');
       const rows=composeChalkPage(ctx,page,0,language,{});
+      if(page.boardLines){assert.deepEqual([...new Set(rows.filter(r=>!r.annotation).map(r=>r.mainLine))],[0,...page.boardLines.map((_,i)=>i+1)],page.title+': every semantic line keeps its narration ID');}
       const inkRows=rows.filter(r=>!r.annotation);
       for(const [i,a] of inkRows.entries()){
         assert(a[0]>=0&&a[1]>=0&&a[0]+a[2]<=1536&&a[1]+a[3]<=640,page.title);

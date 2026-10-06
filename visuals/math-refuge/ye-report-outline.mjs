@@ -117,7 +117,7 @@ const briefNotes=[
  ['离散：d^m；连续：d^(2m)','只比较高维首项','Discrete d^m / continuous d^(2m)','Leading asymptotics only'],
  ['固定 m；d→∞','首项系数：2^m','Fix m; let d grow','Leading coefficient: 2^m'],
  ['格点 → 环面','差分符号：4ω','Lattice to torus','Difference symbol: 4ω'],
- ['先设 g=u/|n|^(2m)','g(0)=0 ⇒ Ψ 零均值','First set g=u/|n|^(2m)','g(0)=0 gives mean-zero Ψ'],
+ ['先设 a=u/|n|^(2m)','a(0)=0 ⇒ Ψ 零均值','First set a=u/|n|^(2m)','a(0)=0 gives mean-zero Ψ'],
  ['每阶差分产生因子 4','分子、分母同时核对','A factor 4 at each order','Check both numerator and denominator'],
  ['固定整数 k>ℓ≥0','1≤k−ℓ≤γ','Fix integers k>ℓ≥0','1≤k−ℓ≤γ'],
  ['同权比较 + 逐阶降权','每降一阶：d/2','Same weight / lower the weight','Cost per order: d/2'],

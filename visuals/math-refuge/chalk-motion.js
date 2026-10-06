@@ -52,6 +52,7 @@ export function writingPlan(rows,guides){
     }
     previous=point(columns.at(-1));
   });
+  for(const s of segments)s.mainLine=rows[s.row].mainLine;
   const result=plan(segments,230);cache.set(key,result);return result;
 }
 export const writingPose=(rows,progress,guides)=>sample(writingPlan(rows,guides),progress);
