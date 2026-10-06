@@ -56,3 +56,7 @@ public import Linear.JacobianSpecialization
 public import Linear.RelativeJacobianTrace
 public import Linear.CenteredRelativeJacobian
 public import Linear.ParameterPairingChange
+
+public import Linear.PowerSeriesFlatten
+public import Linear.PowerSeriesTranslation
+public import Linear.RelativeJacobian

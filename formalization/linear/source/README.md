@@ -163,3 +163,7 @@ global geometric proof remain unproved. This milestone does not complete
 ## Milestone 11
 
 Actual residue-tensor Jacobian nonvanishing and primitivity, centered relative annihilator generation, and survival under an explicitly supplied changed-base pairing are now checked. Coordinate translation and construction of that pairing from arbitrary parameter lifts remain open. See MILESTONE_11.md.
+
+## Milestone 12: original relative Jacobian annihilator
+
+Actual nested-power-series coordinate equivalences, parameter-algebra centering and normal derivative compatibility are constructed. The original finite-flat regular equation quotient now satisfies Ann(N)=B Delta without an extra centering or pairing input. lemma31_annihilator_conclusion proves the first conjunct of the existing target. The full target, arbitrary parameter-lift socle result and global Linearity Theorem remain unproved. See MILESTONE_12.md.

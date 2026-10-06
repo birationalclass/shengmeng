@@ -9,6 +9,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeriesQuotient_diagonal_jacobian
 #check LinearStudy.finiteFlat_centered_jacobian_annihilator
 #print axioms LinearStudy.finiteFlat_centered_jacobian_annihilator
+#check LinearStudy.equationChangeQuotientEquiv
+#print axioms LinearStudy.equationChangeQuotientEquiv
+#check LinearStudy.equationChangeQuotientEquiv_mk
+#print axioms LinearStudy.equationChangeQuotientEquiv_mk
+#check LinearStudy.regularSequence_change_equations
+#print axioms LinearStudy.regularSequence_change_equations
+#check LinearStudy.equationChangeQuotient_finite
+#print axioms LinearStudy.equationChangeQuotient_finite
+#check LinearStudy.equationChangeQuotient_flat
+#print axioms LinearStudy.equationChangeQuotient_flat
+#check LinearStudy.nilradical_kernel_transport
+#print axioms LinearStudy.nilradical_kernel_transport
 #check LinearStudy.iterate_degree_exceeds
 #print axioms LinearStudy.iterate_degree_exceeds
 #check LinearStudy.intersection_degree_lt
@@ -339,6 +351,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_traceElement_eq_rank_socle
 #check LinearStudy.powerSeries_completeIntersection_traceElement
 #print axioms LinearStudy.powerSeries_completeIntersection_traceElement
+#check LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero
+#print axioms LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero
+#check LinearStudy.powerSeriesCentering
+#print axioms LinearStudy.powerSeriesCentering
+#check LinearStudy.powerSeriesCentering_coordinate_reduction_zero
+#print axioms LinearStudy.powerSeriesCentering_coordinate_reduction_zero
+#check LinearStudy.powerSeriesCentering_pderiv
+#print axioms LinearStudy.powerSeriesCentering_pderiv
+#check LinearStudy.powerSeriesCentering_symm_pderiv
+#print axioms LinearStudy.powerSeriesCentering_symm_pderiv
+#check LinearStudy.powerSeriesCentering_symm_jacobian
+#print axioms LinearStudy.powerSeriesCentering_symm_jacobian
 #check LinearStudy.powerSeries_zeroConstant_variable_expansion
 #print axioms LinearStudy.powerSeries_zeroConstant_variable_expansion
 #check LinearStudy.powerSeries_equation_coefficient_matrix
@@ -351,10 +375,78 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal
 #check LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
 #print axioms LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
+#check LinearStudy.totalVariableSplit
+#print axioms LinearStudy.totalVariableSplit
+#check LinearStudy.totalVariableSplit_normal
+#print axioms LinearStudy.totalVariableSplit_normal
+#check LinearStudy.totalVariableSplit_parameter
+#print axioms LinearStudy.totalVariableSplit_parameter
+#check LinearStudy.powerSeriesCoordinateChart
+#print axioms LinearStudy.powerSeriesCoordinateChart
+#check LinearStudy.powerSeriesCoordinateChart_X
+#print axioms LinearStudy.powerSeriesCoordinateChart_X
+#check LinearStudy.powerSeriesCoordinateChart_C
+#print axioms LinearStudy.powerSeriesCoordinateChart_C
+#check LinearStudy.powerSeriesCoordinateChart_pderiv
+#print axioms LinearStudy.powerSeriesCoordinateChart_pderiv
+#check LinearStudy.nestedPowerSeriesTranslationRingEquiv
+#print axioms LinearStudy.nestedPowerSeriesTranslationRingEquiv
+#check LinearStudy.nestedPowerSeriesTranslationRingEquiv_C
+#print axioms LinearStudy.nestedPowerSeriesTranslationRingEquiv_C
+#check LinearStudy.nestedPowerSeriesTranslation
+#print axioms LinearStudy.nestedPowerSeriesTranslation
+#check LinearStudy.nestedPowerSeriesTranslation_X
+#print axioms LinearStudy.nestedPowerSeriesTranslation_X
+#check LinearStudy.coordinateChart_nestedPowerSeriesTranslation
+#print axioms LinearStudy.coordinateChart_nestedPowerSeriesTranslation
+#check LinearStudy.nestedPowerSeriesTranslation_pderiv
+#print axioms LinearStudy.nestedPowerSeriesTranslation_pderiv
+#check LinearStudy.nestedPowerSeriesTranslation_jacobian
+#print axioms LinearStudy.nestedPowerSeriesTranslation_jacobian
+#check LinearStudy.continuous_powerSeries_pderiv
+#print axioms LinearStudy.continuous_powerSeries_pderiv
+#check LinearStudy.powerSeries_pderiv_commutes_of_variables
+#print axioms LinearStudy.powerSeries_pderiv_commutes_of_variables
+#check LinearStudy.powerSeries_pderiv_rename_off_image
+#print axioms LinearStudy.powerSeries_pderiv_rename_off_image
+#check LinearStudy.powerSeries_pderiv_rename_equiv
+#print axioms LinearStudy.powerSeries_pderiv_rename_equiv
 #check LinearStudy.powerSeries_diagonal_difference
 #print axioms LinearStudy.powerSeries_diagonal_difference
 #check LinearStudy.powerSeries_diagonal_jacobian_matrix
 #print axioms LinearStudy.powerSeries_diagonal_jacobian_matrix
+#check LinearStudy.powerSeriesMapEquiv
+#print axioms LinearStudy.powerSeriesMapEquiv
+#check LinearStudy.powerSeriesMapEquiv_X
+#print axioms LinearStudy.powerSeriesMapEquiv_X
+#check LinearStudy.powerSeriesMapEquiv_C
+#print axioms LinearStudy.powerSeriesMapEquiv_C
+#check LinearStudy.powerSeriesMapEquiv_univariate_X
+#print axioms LinearStudy.powerSeriesMapEquiv_univariate_X
+#check LinearStudy.powerSeriesMapEquiv_univariate_C
+#print axioms LinearStudy.powerSeriesMapEquiv_univariate_C
+#check LinearStudy.nestedPowerSeriesEquiv
+#print axioms LinearStudy.nestedPowerSeriesEquiv
+#check LinearStudy.finSucc_constantCoeff
+#print axioms LinearStudy.finSucc_constantCoeff
+#check LinearStudy.nestedPowerSeriesEquiv_constantCoeff
+#print axioms LinearStudy.nestedPowerSeriesEquiv_constantCoeff
+#check LinearStudy.normalVariableIndex
+#print axioms LinearStudy.normalVariableIndex
+#check LinearStudy.nestedPowerSeriesEquiv_X
+#print axioms LinearStudy.nestedPowerSeriesEquiv_X
+#check LinearStudy.finSuccEquiv_rename_succ
+#print axioms LinearStudy.finSuccEquiv_rename_succ
+#check LinearStudy.nestedPowerSeriesEquiv_C
+#print axioms LinearStudy.nestedPowerSeriesEquiv_C
+#check LinearStudy.finSuccEquiv_pderiv_zero_coeff
+#print axioms LinearStudy.finSuccEquiv_pderiv_zero_coeff
+#check LinearStudy.finSuccEquiv_pderiv_succ_coeff
+#print axioms LinearStudy.finSuccEquiv_pderiv_succ_coeff
+#check LinearStudy.powerSeriesMapEquiv_univariate_coeff
+#print axioms LinearStudy.powerSeriesMapEquiv_univariate_coeff
+#check LinearStudy.nestedPowerSeriesEquiv_pderiv
+#print axioms LinearStudy.nestedPowerSeriesEquiv_pderiv
 #check LinearStudy.regular_transport_ringEquiv
 #print axioms LinearStudy.regular_transport_ringEquiv
 #check LinearStudy.powerSeries_cons_X_regular
@@ -395,6 +487,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.parameterSpecialization_jacobian
 #check LinearStudy.powerSeriesClosedQuotientEquiv_jacobian
 #print axioms LinearStudy.powerSeriesClosedQuotientEquiv_jacobian
+#check LinearStudy.translationImages
+#print axioms LinearStudy.translationImages
+#check LinearStudy.translationImages_hasSubst
+#print axioms LinearStudy.translationImages_hasSubst
+#check LinearStudy.translation_fixes_parameters
+#print axioms LinearStudy.translation_fixes_parameters
+#check LinearStudy.translation_inverse
+#print axioms LinearStudy.translation_inverse
+#check LinearStudy.powerSeriesTranslationEquiv
+#print axioms LinearStudy.powerSeriesTranslationEquiv
+#check LinearStudy.powerSeriesTranslationEquiv_parameter
+#print axioms LinearStudy.powerSeriesTranslationEquiv_parameter
+#check LinearStudy.powerSeriesTranslationEquiv_normal
+#print axioms LinearStudy.powerSeriesTranslationEquiv_normal
+#check LinearStudy.powerSeriesTranslationEquiv_pderiv_normal
+#print axioms LinearStudy.powerSeriesTranslationEquiv_pderiv_normal
+#check LinearStudy.powerSeriesTranslationEquiv_jacobian
+#print axioms LinearStudy.powerSeriesTranslationEquiv_jacobian
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation
@@ -469,6 +579,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_specialized_equations_zeroConstant
 #check LinearStudy.powerSeries_specialized_equations_regular
 #print axioms LinearStudy.powerSeries_specialized_equations_regular
+#check LinearStudy.finiteFlat_jacobian_annihilator
+#print axioms LinearStudy.finiteFlat_jacobian_annihilator
+#check LinearStudy.lemma31_annihilator_conclusion
+#print axioms LinearStudy.lemma31_annihilator_conclusion
 #check LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian
 #print axioms LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian
 #check LinearStudy.relativePowerSeriesQuotient_jacobian_trace_multiple

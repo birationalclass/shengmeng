@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T19:20:18+08:00",
+  "checkedAt": "2026-10-06T21:44:09+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "5abbc28c130bff39ce674a9b5c2df2c7440a25f40852e755525c748052251fe8",
-      "lineCount": 814
+      "sha256": "3071668d86043d9320c451db7bb698663039b3927c4df3ef0668e1521acc177e",
+      "lineCount": 928
     },
     {
       "path": "Linear/ArtinianDiagonal.lean",
@@ -20,6 +20,11 @@
       "path": "Linear/CenteredRelativeJacobian.lean",
       "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
       "lineCount": 59
+    },
+    {
+      "path": "Linear/CompleteIntersectionChange.lean",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lineCount": 66
     },
     {
       "path": "Linear/Degree.lean",
@@ -182,14 +187,39 @@
       "lineCount": 142
     },
     {
+      "path": "Linear/PowerSeriesCentering.lean",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lineCount": 77
+    },
+    {
       "path": "Linear/PowerSeriesCoefficients.lean",
       "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
       "lineCount": 145
     },
     {
+      "path": "Linear/PowerSeriesCoordinateChart.lean",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lineCount": 131
+    },
+    {
+      "path": "Linear/PowerSeriesDerivative.lean",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "lineCount": 83
+    },
+    {
       "path": "Linear/PowerSeriesDiagonal.lean",
       "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
       "lineCount": 90
+    },
+    {
+      "path": "Linear/PowerSeriesFlatten.lean",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lineCount": 161
+    },
+    {
+      "path": "Linear/PowerSeriesFlattenDerivative.lean",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "lineCount": 96
     },
     {
       "path": "Linear/PowerSeriesRegular.lean",
@@ -205,6 +235,11 @@
       "path": "Linear/PowerSeriesSpecialization.lean",
       "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
       "lineCount": 145
+    },
+    {
+      "path": "Linear/PowerSeriesTranslation.lean",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lineCount": 134
     },
     {
       "path": "Linear/Primitive.lean",
@@ -225,6 +260,11 @@
       "path": "Linear/RegularSpecialization.lean",
       "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
       "lineCount": 168
+    },
+    {
+      "path": "Linear/RelativeJacobian.lean",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "lineCount": 106
     },
     {
       "path": "Linear/RelativeJacobianTrace.lean",
@@ -293,8 +333,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "2df7353aac267b00a52cda7876979e59491737dda2f21692408523306001138f",
-      "lineCount": 58
+      "sha256": "74f7d97e0868efabdd667ee5c67a5c665d92d11ed50c9a2da33a2dcbf8d0dd3a",
+      "lineCount": 62
     }
   ],
   "declarations": {
@@ -361,6 +401,102 @@
       "formalType": "LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  (a :\n    MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸\n        Ideal.span (Set.range H) →ₐ[MvPowerSeries (Fin (r + 1)) K]\n      MvPowerSeries (Fin (r + 1)) K)\n  (ha :\n    RingHom.ker a.toRingHom =\n      nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)))\n  (hz : ∀ (i : Fin (n + 1)), a ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i)) = 0)\n  (x : MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) :\n  LinearStudy.Annihilates\n      (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔\n    ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))",
       "sha256": "e148aa48c54d723e24919baf7620cc0bf93af46047df930de0349be26a48b4d6",
       "lines": 59
+    },
+    "LinearStudy.equationChangeQuotientEquiv": {
+      "declaration": "LinearStudy.equationChangeQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.equationChangeQuotientEquiv.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]\n  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) :\n  (R ⧸ Ideal.span (Set.range H)) ≃ₐ[B] R ⧸ Ideal.span (Set.range fun i => e (H i))",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
+    },
+    "LinearStudy.equationChangeQuotientEquiv_mk": {
+      "declaration": "LinearStudy.equationChangeQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationChangeQuotientEquiv_mk.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]\n  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) (x : R) :\n  (LinearStudy.equationChangeQuotientEquiv e H) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) x) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => e (H i)))) (e x)",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
+    },
+    "LinearStudy.regularSequence_change_equations": {
+      "declaration": "LinearStudy.regularSequence_change_equations",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regularSequence_change_equations.{u_1, u_2} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]\n  [Algebra B R] (e : R ≃ₐ[B] R) (H : List R) :\n  RingTheory.Sequence.IsRegular R H ↔ RingTheory.Sequence.IsRegular R (List.map (⇑e) H)",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
+    },
+    "LinearStudy.equationChangeQuotient_finite": {
+      "declaration": "LinearStudy.equationChangeQuotient_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationChangeQuotient_finite.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]\n  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) [Module.Finite B (R ⧸ Ideal.span (Set.range H))] :\n  Module.Finite B (R ⧸ Ideal.span (Set.range fun i => e (H i)))",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
+    },
+    "LinearStudy.equationChangeQuotient_flat": {
+      "declaration": "LinearStudy.equationChangeQuotient_flat",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationChangeQuotient_flat.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]\n  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) [Module.Flat B (R ⧸ Ideal.span (Set.range H))] :\n  Module.Flat B (R ⧸ Ideal.span (Set.range fun i => e (H i)))",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
+    },
+    "LinearStudy.nilradical_kernel_transport": {
+      "declaration": "LinearStudy.nilradical_kernel_transport",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CompleteIntersectionChange.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nilradical_kernel_transport.{u_1, u_3, u_4} {B : Type u_1} [CommRing B] {A : Type u_3} {C : Type u_4}\n  [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] (e : C ≃ₐ[B] A) (q : A →ₐ[B] B)\n  (hq : RingHom.ker q.toRingHom = nilradical A) : RingHom.ker (q.comp ↑e).toRingHom = nilradical C",
+      "sha256": "baf17fddcfc62d1f354f5bc15ec423dfe5903b26067b7b252646ca868a490df9",
+      "lines": 66
     },
     "LinearStudy.iterate_degree_exceeds": {
       "declaration": "LinearStudy.iterate_degree_exceeds",
@@ -2963,6 +3099,102 @@
       "sha256": "18195c053778c8afb3b72223591a5baf6b98320fc1d0d87e7d37777b3e63f11e",
       "lines": 142
     },
+    "LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero": {
+      "declaration": "LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (i : Fin c) : MvPowerSeries.constantCoeff (a (MvPowerSeries.X i)) = 0",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
+    "LinearStudy.powerSeriesCentering": {
+      "declaration": "LinearStudy.powerSeriesCentering",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesCentering.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃ₐ[MvPowerSeries (Fin r) K]\n    MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
+    "LinearStudy.powerSeriesCentering_coordinate_reduction_zero": {
+      "declaration": "LinearStudy.powerSeriesCentering_coordinate_reduction_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCentering_coordinate_reduction_zero.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (i : Fin c) : a ((LinearStudy.powerSeriesCentering a) (MvPowerSeries.X i)) = 0",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
+    "LinearStudy.powerSeriesCentering_pderiv": {
+      "declaration": "LinearStudy.powerSeriesCentering_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCentering_pderiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) (j : Fin c)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.powerSeriesCentering a) ((MvPowerSeries.pderiv j) f) =\n    (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a) f)",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
+    "LinearStudy.powerSeriesCentering_symm_pderiv": {
+      "declaration": "LinearStudy.powerSeriesCentering_symm_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCentering_symm_pderiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) (j : Fin c)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.powerSeriesCentering a).symm ((MvPowerSeries.pderiv j) f) =\n    (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a).symm f)",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
+    "LinearStudy.powerSeriesCentering_symm_jacobian": {
+      "declaration": "LinearStudy.powerSeriesCentering_symm_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCentering.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCentering_symm_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.powerSeriesCentering a).symm (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =\n    Matrix.det fun i j => (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a).symm (H i))",
+      "sha256": "5dcb5c506616c29da2c93ec573fbcee0c9e29fccb0cac8602dde00bc7237669c",
+      "lines": 77
+    },
     "LinearStudy.powerSeries_zeroConstant_variable_expansion": {
       "declaration": "LinearStudy.powerSeries_zeroConstant_variable_expansion",
       "kind": "theorem",
@@ -3059,6 +3291,291 @@
       "sha256": "4916a65bd995b9bc121f7a8b3d0eae0efa38013d1446bc3f451bcc14e9213e38",
       "lines": 145
     },
+    "LinearStudy.totalVariableSplit": {
+      "declaration": "LinearStudy.totalVariableSplit",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.totalVariableSplit (r c : ℕ) : Fin (r + c) ≃ Fin r ⊕ Fin c",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.totalVariableSplit_normal": {
+      "declaration": "LinearStudy.totalVariableSplit_normal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.totalVariableSplit_normal (r c : ℕ) (i : Fin c) :\n  (LinearStudy.totalVariableSplit r c) (LinearStudy.normalVariableIndex r c i) = Sum.inr i",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.totalVariableSplit_parameter": {
+      "declaration": "LinearStudy.totalVariableSplit_parameter",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.totalVariableSplit_parameter (r c : ℕ) (i : Fin r) :\n  (LinearStudy.totalVariableSplit r c) (i.addNat c) = Sum.inl i",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.powerSeriesCoordinateChart": {
+      "declaration": "LinearStudy.powerSeriesCoordinateChart",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesCoordinateChart.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin r ⊕ Fin c) K",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.powerSeriesCoordinateChart_X": {
+      "declaration": "LinearStudy.powerSeriesCoordinateChart_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCoordinateChart_X.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (i : Fin c) :\n  (LinearStudy.powerSeriesCoordinateChart K r c) (MvPowerSeries.X i) = MvPowerSeries.X (Sum.inr i)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.powerSeriesCoordinateChart_C": {
+      "declaration": "LinearStudy.powerSeriesCoordinateChart_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCoordinateChart_C.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (f : MvPowerSeries (Fin r) K) :\n  (LinearStudy.powerSeriesCoordinateChart K r c) (MvPowerSeries.C f) = (MvPowerSeries.rename Sum.inl) f",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.powerSeriesCoordinateChart_pderiv": {
+      "declaration": "LinearStudy.powerSeriesCoordinateChart_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesCoordinateChart_pderiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (j : Fin c)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.powerSeriesCoordinateChart K r c) ((MvPowerSeries.pderiv j) f) =\n    (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesCoordinateChart K r c) f)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslationRingEquiv": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslationRingEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslationRingEquiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslationRingEquiv_C": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslationRingEquiv_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 68,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslationRingEquiv_C.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)\n  (b : MvPowerSeries (Fin r) K) :\n  (LinearStudy.nestedPowerSeriesTranslationRingEquiv K r c h hh) (MvPowerSeries.C b) = MvPowerSeries.C b",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslation": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslation.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃ₐ[MvPowerSeries (Fin r) K]\n    MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslation_X": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslation_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslation_X.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) (j : Fin c) :\n  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) (MvPowerSeries.X j) = MvPowerSeries.X j + MvPowerSeries.C (h j)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.coordinateChart_nestedPowerSeriesTranslation": {
+      "declaration": "LinearStudy.coordinateChart_nestedPowerSeriesTranslation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 100,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateChart_nestedPowerSeriesTranslation.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.powerSeriesCoordinateChart K r c) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) f) =\n    (LinearStudy.powerSeriesTranslationEquiv h hh) ((LinearStudy.powerSeriesCoordinateChart K r c) f)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslation_pderiv": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslation_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 110,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslation_pderiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) (j : Fin c)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) ((MvPowerSeries.pderiv j) f) =\n    (MvPowerSeries.pderiv j) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) f)",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.nestedPowerSeriesTranslation_jacobian": {
+      "declaration": "LinearStudy.nestedPowerSeriesTranslation_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesCoordinateChart.lean",
+      "line": 120,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesTranslation_jacobian.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)\n  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =\n    Matrix.det fun i j => (MvPowerSeries.pderiv j) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) (H i))",
+      "sha256": "f2e00e32be2b06449c19e6092a82fbdba92f27a38614b8c56a6e5a9dbf99aa30",
+      "lines": 131
+    },
+    "LinearStudy.continuous_powerSeries_pderiv": {
+      "declaration": "LinearStudy.continuous_powerSeries_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDerivative.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.continuous_powerSeries_pderiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [TopologicalSpace K]\n  [IsTopologicalRing K] (i : σ) : Continuous ⇑(MvPowerSeries.pderiv i)",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "lines": 83
+    },
+    "LinearStudy.powerSeries_pderiv_commutes_of_variables": {
+      "declaration": "LinearStudy.powerSeries_pderiv_commutes_of_variables",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDerivative.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_pderiv_commutes_of_variables.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K]\n  [TopologicalSpace K] [IsTopologicalRing K] [T2Space K] (e : MvPowerSeries σ K →ₐ[K] MvPowerSeries σ K)\n  (he : Continuous ⇑e) (i : σ)\n  (hi : ∀ (j : σ), (MvPowerSeries.pderiv i) (e (MvPowerSeries.X j)) = e ((MvPowerSeries.pderiv i) (MvPowerSeries.X j)))\n  (f : MvPowerSeries σ K) : (MvPowerSeries.pderiv i) (e f) = e ((MvPowerSeries.pderiv i) f)",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "lines": 83
+    },
+    "LinearStudy.powerSeries_pderiv_rename_off_image": {
+      "declaration": "LinearStudy.powerSeries_pderiv_rename_off_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDerivative.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_pderiv_rename_off_image.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [CommRing K]\n  {τ : Type u_3} (u : σ → τ) [Filter.TendstoCofinite u] (j : τ) (hj : j ∉ Set.range u) (f : MvPowerSeries σ K) :\n  (MvPowerSeries.pderiv j) ((MvPowerSeries.rename u) f) = 0",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "lines": 83
+    },
+    "LinearStudy.powerSeries_pderiv_rename_equiv": {
+      "declaration": "LinearStudy.powerSeries_pderiv_rename_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesDerivative.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_pderiv_rename_equiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [CommRing K] {τ : Type u_3}\n  (e : σ ≃ τ) (i : σ) (f : MvPowerSeries σ K) :\n  (MvPowerSeries.pderiv (e i)) ((MvPowerSeries.rename ⇑e) f) = (MvPowerSeries.rename ⇑e) ((MvPowerSeries.pderiv i) f)",
+      "sha256": "21a450c5ef7b483d8e916e87bd72368fce15f5f177b5840a849a353829531e45",
+      "lines": 83
+    },
     "LinearStudy.powerSeries_diagonal_difference": {
       "declaration": "LinearStudy.powerSeries_diagonal_difference",
       "kind": "theorem",
@@ -3090,6 +3607,258 @@
       "formalType": "LinearStudy.powerSeries_diagonal_jacobian_matrix.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}\n  {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]\n  (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))\n  (hX : ∀ (i : ι), π (u (MvPowerSeries.X i)) = π (v (MvPowerSeries.X i)))\n  (hu : ∀ (i : ι), IsNilpotent (u (MvPowerSeries.X i))) (hv : ∀ (i : ι), IsNilpotent (v (MvPowerSeries.X i)))\n  (H : ι → MvPowerSeries ι R) (hH : ∀ (i : ι), u (H i) = v (H i)) :\n  ∃ M,\n    LinearStudy.Annihilates (Ideal.span (Set.range fun i => u (MvPowerSeries.X i) - v (MvPowerSeries.X i))) M.det ∧\n      (M.map ⇑π = fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))) ∧\n        π M.det = Matrix.det fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))",
       "sha256": "9059d808ee26c0dbdd829d1b4d9f0e59bd3c05f472ea91030f8ac98ae7cc1f77",
       "lines": 90
+    },
+    "LinearStudy.powerSeriesMapEquiv": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesMapEquiv.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]\n  (e : R ≃+* S) : MvPowerSeries ι R ≃+* MvPowerSeries ι S",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.powerSeriesMapEquiv_X": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesMapEquiv_X.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]\n  (e : R ≃+* S) (i : ι) : (LinearStudy.powerSeriesMapEquiv e) (MvPowerSeries.X i) = MvPowerSeries.X i",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.powerSeriesMapEquiv_C": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesMapEquiv_C.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]\n  (e : R ≃+* S) (a : R) : (LinearStudy.powerSeriesMapEquiv e) (MvPowerSeries.C a) = MvPowerSeries.C (e a)",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.powerSeriesMapEquiv_univariate_X": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv_univariate_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesMapEquiv_univariate_X.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]\n  (e : R ≃+* S) : (LinearStudy.powerSeriesMapEquiv e) PowerSeries.X = PowerSeries.X",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.powerSeriesMapEquiv_univariate_C": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv_univariate_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesMapEquiv_univariate_C.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]\n  (e : R ≃+* S) (a : R) : (LinearStudy.powerSeriesMapEquiv e) (PowerSeries.C a) = PowerSeries.C (e a)",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.nestedPowerSeriesEquiv": {
+      "declaration": "LinearStudy.nestedPowerSeriesEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.nestedPowerSeriesEquiv.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin (r + c)) K",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.finSucc_constantCoeff": {
+      "declaration": "LinearStudy.finSucc_constantCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finSucc_constantCoeff.{u_4} (K : Type u_4) [CommRing K] (n : ℕ) (f : MvPowerSeries (Fin (n + 1)) K) :\n  MvPowerSeries.constantCoeff (PowerSeries.constantCoeff ((MvPowerSeries.finSuccEquiv K n) f)) =\n    MvPowerSeries.constantCoeff f",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.nestedPowerSeriesEquiv_constantCoeff": {
+      "declaration": "LinearStudy.nestedPowerSeriesEquiv_constantCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesEquiv_constantCoeff.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  MvPowerSeries.constantCoeff ((LinearStudy.nestedPowerSeriesEquiv K r c) f) =\n    MvPowerSeries.constantCoeff (MvPowerSeries.constantCoeff f)",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.normalVariableIndex": {
+      "declaration": "LinearStudy.normalVariableIndex",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 84,
+      "axioms": [],
+      "verified": false,
+      "formalType": "LinearStudy.normalVariableIndex (r c : ℕ) (i : Fin c) : Fin (r + c)",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.nestedPowerSeriesEquiv_X": {
+      "declaration": "LinearStudy.nestedPowerSeriesEquiv_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesEquiv_X.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) (i : Fin c) :\n  (LinearStudy.nestedPowerSeriesEquiv K r c) (MvPowerSeries.X i) =\n    MvPowerSeries.X (LinearStudy.normalVariableIndex r c i)",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.finSuccEquiv_rename_succ": {
+      "declaration": "LinearStudy.finSuccEquiv_rename_succ",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 113,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finSuccEquiv_rename_succ.{u_4} (K : Type u_4) [CommRing K] (n : ℕ) (f : MvPowerSeries (Fin n) K) :\n  (MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.rename Fin.succ) f) = PowerSeries.C f",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.nestedPowerSeriesEquiv_C": {
+      "declaration": "LinearStudy.nestedPowerSeriesEquiv_C",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlatten.lean",
+      "line": 139,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesEquiv_C.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) (f : MvPowerSeries (Fin r) K) :\n  (LinearStudy.nestedPowerSeriesEquiv K r c) (MvPowerSeries.C f) = (MvPowerSeries.rename fun i => i.addNat c) f",
+      "sha256": "d0f43795efbe5c8712de7349bda9a9121c559407071bcbc669b6b9fb6e403b42",
+      "lines": 161
+    },
+    "LinearStudy.finSuccEquiv_pderiv_zero_coeff": {
+      "declaration": "LinearStudy.finSuccEquiv_pderiv_zero_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlattenDerivative.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finSuccEquiv_pderiv_zero_coeff.{u_1} {K : Type u_1} [CommRing K] (n k : ℕ)\n  (f : MvPowerSeries (Fin (n + 1)) K) :\n  (PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.pderiv 0) f)) =\n    (k + 1) • (PowerSeries.coeff (k + 1)) ((MvPowerSeries.finSuccEquiv K n) f)",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "lines": 96
+    },
+    "LinearStudy.finSuccEquiv_pderiv_succ_coeff": {
+      "declaration": "LinearStudy.finSuccEquiv_pderiv_succ_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlattenDerivative.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finSuccEquiv_pderiv_succ_coeff.{u_1} {K : Type u_1} [CommRing K] (n k : ℕ) (j : Fin n)\n  (f : MvPowerSeries (Fin (n + 1)) K) :\n  (PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.pderiv j.succ) f)) =\n    (MvPowerSeries.pderiv j) ((PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) f))",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "lines": 96
+    },
+    "LinearStudy.powerSeriesMapEquiv_univariate_coeff": {
+      "declaration": "LinearStudy.powerSeriesMapEquiv_univariate_coeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlattenDerivative.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesMapEquiv_univariate_coeff.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]\n  (e : R ≃+* S) (f : PowerSeries R) (k : ℕ) :\n  (PowerSeries.coeff k) ((LinearStudy.powerSeriesMapEquiv e) f) = e ((PowerSeries.coeff k) f)",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "lines": 96
+    },
+    "LinearStudy.nestedPowerSeriesEquiv_pderiv": {
+      "declaration": "LinearStudy.nestedPowerSeriesEquiv_pderiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesFlattenDerivative.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nestedPowerSeriesEquiv_pderiv.{u_1} {K : Type u_1} [CommRing K] (r c : ℕ) (j : Fin c)\n  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :\n  (LinearStudy.nestedPowerSeriesEquiv K r c) ((MvPowerSeries.pderiv j) f) =\n    (MvPowerSeries.pderiv (LinearStudy.normalVariableIndex r c j)) ((LinearStudy.nestedPowerSeriesEquiv K r c) f)",
+      "sha256": "02a513347606616034771f40c5184a002620d6088e4db07d1ecf2847a06a72cd",
+      "lines": 96
     },
     "LinearStudy.regular_transport_ringEquiv": {
       "declaration": "LinearStudy.regular_transport_ringEquiv",
@@ -3410,6 +4179,150 @@
       "formalType": "LinearStudy.powerSeriesClosedQuotientEquiv_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesClosedQuotientEquiv H)\n      ((Ideal.Quotient.mk\n          (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n            (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i)))))\n        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)))) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i)))",
       "sha256": "924302b53d541f3184483b1e7df963eb5572c39015dc035e625e45269001f144",
       "lines": 145
+    },
+    "LinearStudy.translationImages": {
+      "declaration": "LinearStudy.translationImages",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.translationImages.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K] [Fintype σ]\n  (h : τ → MvPowerSeries σ K) : σ ⊕ τ → MvPowerSeries (σ ⊕ τ) K",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.translationImages_hasSubst": {
+      "declaration": "LinearStudy.translationImages_hasSubst",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.translationImages_hasSubst.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]\n  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) :\n  MvPowerSeries.HasSubst (LinearStudy.translationImages h)",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.translation_fixes_parameters": {
+      "declaration": "LinearStudy.translation_fixes_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.translation_fixes_parameters.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]\n  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0)\n  (f : MvPowerSeries σ K) :\n  (MvPowerSeries.substAlgHom ⋯) ((MvPowerSeries.rename Sum.inl) f) = (MvPowerSeries.rename Sum.inl) f",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.translation_inverse": {
+      "declaration": "LinearStudy.translation_inverse",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.translation_inverse.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K] [Fintype σ]\n  [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0)\n  (f : MvPowerSeries (σ ⊕ τ) K) : (MvPowerSeries.substAlgHom ⋯) ((MvPowerSeries.substAlgHom ⋯) f) = f",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.powerSeriesTranslationEquiv": {
+      "declaration": "LinearStudy.powerSeriesTranslationEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 70,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesTranslationEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]\n  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) :\n  MvPowerSeries (σ ⊕ τ) K ≃ₐ[K] MvPowerSeries (σ ⊕ τ) K",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.powerSeriesTranslationEquiv_parameter": {
+      "declaration": "LinearStudy.powerSeriesTranslationEquiv_parameter",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesTranslationEquiv_parameter.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [CommRing K] [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K)\n  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (f : MvPowerSeries σ K) :\n  (LinearStudy.powerSeriesTranslationEquiv h hh) ((MvPowerSeries.rename Sum.inl) f) = (MvPowerSeries.rename Sum.inl) f",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.powerSeriesTranslationEquiv_normal": {
+      "declaration": "LinearStudy.powerSeriesTranslationEquiv_normal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesTranslationEquiv_normal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]\n  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (j : τ) :\n  (LinearStudy.powerSeriesTranslationEquiv h hh) (MvPowerSeries.X (Sum.inr j)) =\n    MvPowerSeries.X (Sum.inr j) + (MvPowerSeries.rename Sum.inl) (h j)",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal": {
+      "declaration": "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 92,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [CommRing K] [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K)\n  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (j : τ) (f : MvPowerSeries (σ ⊕ τ) K) :\n  (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesTranslationEquiv h hh) f) =\n    (LinearStudy.powerSeriesTranslationEquiv h hh) ((MvPowerSeries.pderiv (Sum.inr j)) f)",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
+    },
+    "LinearStudy.powerSeriesTranslationEquiv_jacobian": {
+      "declaration": "LinearStudy.powerSeriesTranslationEquiv_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesTranslation.lean",
+      "line": 122,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesTranslationEquiv_jacobian.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [CommRing K] [Fintype σ] [Fintype τ] [DecidableEq τ] (h : τ → MvPowerSeries σ K)\n  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (H : τ → MvPowerSeries (σ ⊕ τ) K) :\n  (Matrix.det fun i j => (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesTranslationEquiv h hh) (H i))) =\n    (LinearStudy.powerSeriesTranslationEquiv h hh) (Matrix.det fun i j => (MvPowerSeries.pderiv (Sum.inr j)) (H i))",
+      "sha256": "4f98908bb3d212d326a019ec4f8dc30b89140138c0831cd8bf425cd824ce5c58",
+      "lines": 134
     },
     "LinearStudy.annihilates_iff_mem_annihilator": {
       "declaration": "LinearStudy.annihilates_iff_mem_annihilator",
@@ -3993,6 +4906,38 @@
       "formalType": "LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))",
       "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
       "lines": 168
+    },
+    "LinearStudy.finiteFlat_jacobian_annihilator": {
+      "declaration": "LinearStudy.finiteFlat_jacobian_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RelativeJacobian.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  (a :\n    MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸\n        Ideal.span (Set.range H) →ₐ[MvPowerSeries (Fin (r + 1)) K]\n      MvPowerSeries (Fin (r + 1)) K)\n  (ha :\n    RingHom.ker a.toRingHom =\n      nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)))\n  (x : MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) :\n  LinearStudy.Annihilates\n      (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔\n    ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "lines": 106
+    },
+    "LinearStudy.lemma31_annihilator_conclusion": {
+      "declaration": "LinearStudy.lemma31_annihilator_conclusion",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RelativeJacobian.lean",
+      "line": 88,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_annihilator_conclusion {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r) (hc : 0 < c)\n  (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (x : LinearStudy.CompleteIntersection H) :\n  LinearStudy.Annihilates (nilradical (LinearStudy.CompleteIntersection H)) x ↔\n    ∃ b, x = b • LinearStudy.relativeJacobian H",
+      "sha256": "a542fad749ca0a74c1f94851fe3a45c8598e95f4c17f48450f4aaa9b41aea7fe",
+      "lines": 106
     },
     "LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian": {
       "declaration": "LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian",
@@ -6806,10 +7751,10 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 251,
-  "definitionCount": 63,
+  "verifiedTheoremCount": 297,
+  "definitionCount": 74,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Relative Jacobian annihilator generation is proved under the explicit centering condition a([z_i])=0; its pairing is constructed. Survival under changed parameter actions is proved with an explicit new-base pairing input. Coordinate translation, construction of the new parameter action and pairing from arbitrary lifts, and global geometry remain unproved."
+  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Actual coordinate centering and derivative compatibility are constructed, and relative Jacobian annihilator generation is proved from the original finite flat regular equations without an extra centering or pairing hypothesis. The first conjunct of Lemma31Goal is proved in its original notation. Survival under changed parameter actions is proved with an explicit new-base pairing input. Construction of the new parameter action and pairing from arbitrary lifts, nonzero socle generation in those parameter quotients, and global geometry remain unproved."
 }

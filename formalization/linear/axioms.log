@@ -38,6 +38,31 @@ LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field
       (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔
     ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))
 'LinearStudy.finiteFlat_centered_jacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationChangeQuotientEquiv.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]
+  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) :
+  (R ⧸ Ideal.span (Set.range H)) ≃ₐ[B] R ⧸ Ideal.span (Set.range fun i => e (H i))
+'LinearStudy.equationChangeQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationChangeQuotientEquiv_mk.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]
+  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) (x : R) :
+  (LinearStudy.equationChangeQuotientEquiv e H) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) x) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => e (H i)))) (e x)
+'LinearStudy.equationChangeQuotientEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.regularSequence_change_equations.{u_1, u_2} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]
+  [Algebra B R] (e : R ≃ₐ[B] R) (H : List R) :
+  RingTheory.Sequence.IsRegular R H ↔ RingTheory.Sequence.IsRegular R (List.map (⇑e) H)
+'LinearStudy.regularSequence_change_equations' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationChangeQuotient_finite.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]
+  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) [Module.Finite B (R ⧸ Ideal.span (Set.range H))] :
+  Module.Finite B (R ⧸ Ideal.span (Set.range fun i => e (H i)))
+'LinearStudy.equationChangeQuotient_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationChangeQuotient_flat.{u_1, u_2, u_3} {B : Type u_1} {R : Type u_2} [CommRing B] [CommRing R]
+  [Algebra B R] {ι : Type u_3} (e : R ≃ₐ[B] R) (H : ι → R) [Module.Flat B (R ⧸ Ideal.span (Set.range H))] :
+  Module.Flat B (R ⧸ Ideal.span (Set.range fun i => e (H i)))
+'LinearStudy.equationChangeQuotient_flat' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nilradical_kernel_transport.{u_1, u_3, u_4} {B : Type u_1} [CommRing B] {A : Type u_3} {C : Type u_4}
+  [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] (e : C ≃ₐ[B] A) (q : A →ₐ[B] B)
+  (hq : RingHom.ker q.toRingHom = nilradical A) : RingHom.ker (q.comp ↑e).toRingHom = nilradical C
+'LinearStudy.nilradical_kernel_transport' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.iterate_degree_exceeds (q B : ℕ) (hq : 1 < q) : ∃ k, 0 < k ∧ B < q ^ k
 'LinearStudy.iterate_degree_exceeds' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.intersection_degree_lt (q r d m : ℕ) (hr : 1 ≤ r) (h : d * m < q) : q ^ (r - 1) * d * m < q ^ r
@@ -851,6 +876,39 @@ LinearStudy.powerSeries_completeIntersection_traceElement.{u_1} {K : Type u_1} [
             Module.finrank K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H)) •
               (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det
 'LinearStudy.powerSeries_completeIntersection_traceElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
+  (i : Fin c) : MvPowerSeries.constantCoeff (a (MvPowerSeries.X i)) = 0
+'LinearStudy.powerSeries_retraction_coordinate_constantCoeff_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.powerSeriesCentering.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃ₐ[MvPowerSeries (Fin r) K]
+    MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)
+'LinearStudy.powerSeriesCentering' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCentering_coordinate_reduction_zero.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
+  (i : Fin c) : a ((LinearStudy.powerSeriesCentering a) (MvPowerSeries.X i)) = 0
+'LinearStudy.powerSeriesCentering_coordinate_reduction_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCentering_pderiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) (j : Fin c)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.powerSeriesCentering a) ((MvPowerSeries.pderiv j) f) =
+    (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a) f)
+'LinearStudy.powerSeriesCentering_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCentering_symm_pderiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K) (j : Fin c)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.powerSeriesCentering a).symm ((MvPowerSeries.pderiv j) f) =
+    (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a).symm f)
+'LinearStudy.powerSeriesCentering_symm_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCentering_symm_jacobian.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (a : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.powerSeriesCentering a).symm (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =
+    Matrix.det fun i j => (MvPowerSeries.pderiv j) ((LinearStudy.powerSeriesCentering a).symm (H i))
+'LinearStudy.powerSeriesCentering_symm_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_zeroConstant_variable_expansion.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2}
   [Fintype ι] [DecidableEq ι] [Nonempty ι] (H : MvPowerSeries ι R) (hH : MvPowerSeries.constantCoeff H = 0) :
   ∃ a, H = ∑ i, a i * MvPowerSeries.X i
@@ -886,6 +944,81 @@ LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator.{u_2, u_3} {�
 'LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.totalVariableSplit (r c : ℕ) : Fin (r + c) ≃ Fin r ⊕ Fin c
+'LinearStudy.totalVariableSplit' depends on axioms: [propext, Quot.sound]
+LinearStudy.totalVariableSplit_normal (r c : ℕ) (i : Fin c) :
+  (LinearStudy.totalVariableSplit r c) (LinearStudy.normalVariableIndex r c i) = Sum.inr i
+'LinearStudy.totalVariableSplit_normal' depends on axioms: [propext, Quot.sound]
+LinearStudy.totalVariableSplit_parameter (r c : ℕ) (i : Fin r) :
+  (LinearStudy.totalVariableSplit r c) (i.addNat c) = Sum.inl i
+'LinearStudy.totalVariableSplit_parameter' depends on axioms: [propext, Quot.sound]
+LinearStudy.powerSeriesCoordinateChart.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin r ⊕ Fin c) K
+'LinearStudy.powerSeriesCoordinateChart' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCoordinateChart_X.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (i : Fin c) :
+  (LinearStudy.powerSeriesCoordinateChart K r c) (MvPowerSeries.X i) = MvPowerSeries.X (Sum.inr i)
+'LinearStudy.powerSeriesCoordinateChart_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCoordinateChart_C.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (f : MvPowerSeries (Fin r) K) :
+  (LinearStudy.powerSeriesCoordinateChart K r c) (MvPowerSeries.C f) = (MvPowerSeries.rename Sum.inl) f
+'LinearStudy.powerSeriesCoordinateChart_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesCoordinateChart_pderiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ) (j : Fin c)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.powerSeriesCoordinateChart K r c) ((MvPowerSeries.pderiv j) f) =
+    (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesCoordinateChart K r c) f)
+'LinearStudy.powerSeriesCoordinateChart_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslationRingEquiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)
+'LinearStudy.nestedPowerSeriesTranslationRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslationRingEquiv_C.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)
+  (b : MvPowerSeries (Fin r) K) :
+  (LinearStudy.nestedPowerSeriesTranslationRingEquiv K r c h hh) (MvPowerSeries.C b) = MvPowerSeries.C b
+'LinearStudy.nestedPowerSeriesTranslationRingEquiv_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslation.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃ₐ[MvPowerSeries (Fin r) K]
+    MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)
+'LinearStudy.nestedPowerSeriesTranslation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslation_X.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) (j : Fin c) :
+  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) (MvPowerSeries.X j) = MvPowerSeries.X j + MvPowerSeries.C (h j)
+'LinearStudy.nestedPowerSeriesTranslation_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coordinateChart_nestedPowerSeriesTranslation.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.powerSeriesCoordinateChart K r c) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) f) =
+    (LinearStudy.powerSeriesTranslationEquiv h hh) ((LinearStudy.powerSeriesCoordinateChart K r c) f)
+'LinearStudy.coordinateChart_nestedPowerSeriesTranslation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslation_pderiv.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0) (j : Fin c)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) ((MvPowerSeries.pderiv j) f) =
+    (MvPowerSeries.pderiv j) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) f)
+'LinearStudy.nestedPowerSeriesTranslation_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesTranslation_jacobian.{u_1} (K : Type u_1) [CommRing K] (r c : ℕ)
+  (h : Fin c → MvPowerSeries (Fin r) K) (hh : ∀ (j : Fin c), MvPowerSeries.constantCoeff (h j) = 0)
+  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.nestedPowerSeriesTranslation K r c h hh) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i)) =
+    Matrix.det fun i j => (MvPowerSeries.pderiv j) ((LinearStudy.nestedPowerSeriesTranslation K r c h hh) (H i))
+'LinearStudy.nestedPowerSeriesTranslation_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.continuous_powerSeries_pderiv.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [TopologicalSpace K]
+  [IsTopologicalRing K] (i : σ) : Continuous ⇑(MvPowerSeries.pderiv i)
+'LinearStudy.continuous_powerSeries_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_pderiv_commutes_of_variables.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K]
+  [TopologicalSpace K] [IsTopologicalRing K] [T2Space K] (e : MvPowerSeries σ K →ₐ[K] MvPowerSeries σ K)
+  (he : Continuous ⇑e) (i : σ)
+  (hi : ∀ (j : σ), (MvPowerSeries.pderiv i) (e (MvPowerSeries.X j)) = e ((MvPowerSeries.pderiv i) (MvPowerSeries.X j)))
+  (f : MvPowerSeries σ K) : (MvPowerSeries.pderiv i) (e f) = e ((MvPowerSeries.pderiv i) f)
+'LinearStudy.powerSeries_pderiv_commutes_of_variables' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_pderiv_rename_off_image.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [CommRing K]
+  {τ : Type u_3} (u : σ → τ) [Filter.TendstoCofinite u] (j : τ) (hj : j ∉ Set.range u) (f : MvPowerSeries σ K) :
+  (MvPowerSeries.pderiv j) ((MvPowerSeries.rename u) f) = 0
+'LinearStudy.powerSeries_pderiv_rename_off_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_pderiv_rename_equiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [CommRing K] {τ : Type u_3}
+  (e : σ ≃ τ) (i : σ) (f : MvPowerSeries σ K) :
+  (MvPowerSeries.pderiv (e i)) ((MvPowerSeries.rename ⇑e) f) = (MvPowerSeries.rename ⇑e) ((MvPowerSeries.pderiv i) f)
+'LinearStudy.powerSeries_pderiv_rename_equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {A : Type u_2} {B : Type u_3}
   {ι : Type u_4} [CommRing R] [CommRing A] [CommRing B] [Fintype ι] [DecidableEq ι] [Nonempty ι]
   (u v : MvPowerSeries ι R →+* A) (π : A →+* B) (hC : ∀ (c : R), u (MvPowerSeries.C c) = v (MvPowerSeries.C c))
@@ -907,6 +1040,64 @@ LinearStudy.powerSeries_diagonal_jacobian_matrix.{u_1, u_2, u_3, u_4} {R : Type 
       (M.map ⇑π = fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))) ∧
         π M.det = Matrix.det fun i j => π (u ((MvPowerSeries.pderiv j) (H i)))
 'LinearStudy.powerSeries_diagonal_jacobian_matrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]
+  (e : R ≃+* S) : MvPowerSeries ι R ≃+* MvPowerSeries ι S
+'LinearStudy.powerSeriesMapEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv_X.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]
+  (e : R ≃+* S) (i : ι) : (LinearStudy.powerSeriesMapEquiv e) (MvPowerSeries.X i) = MvPowerSeries.X i
+'LinearStudy.powerSeriesMapEquiv_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv_C.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R] [CommRing S]
+  (e : R ≃+* S) (a : R) : (LinearStudy.powerSeriesMapEquiv e) (MvPowerSeries.C a) = MvPowerSeries.C (e a)
+'LinearStudy.powerSeriesMapEquiv_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv_univariate_X.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]
+  (e : R ≃+* S) : (LinearStudy.powerSeriesMapEquiv e) PowerSeries.X = PowerSeries.X
+'LinearStudy.powerSeriesMapEquiv_univariate_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv_univariate_C.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S]
+  (e : R ≃+* S) (a : R) : (LinearStudy.powerSeriesMapEquiv e) (PowerSeries.C a) = PowerSeries.C (e a)
+'LinearStudy.powerSeriesMapEquiv_univariate_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesEquiv.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin (r + c)) K
+'LinearStudy.nestedPowerSeriesEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finSucc_constantCoeff.{u_4} (K : Type u_4) [CommRing K] (n : ℕ) (f : MvPowerSeries (Fin (n + 1)) K) :
+  MvPowerSeries.constantCoeff (PowerSeries.constantCoeff ((MvPowerSeries.finSuccEquiv K n) f)) =
+    MvPowerSeries.constantCoeff f
+'LinearStudy.finSucc_constantCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesEquiv_constantCoeff.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  MvPowerSeries.constantCoeff ((LinearStudy.nestedPowerSeriesEquiv K r c) f) =
+    MvPowerSeries.constantCoeff (MvPowerSeries.constantCoeff f)
+'LinearStudy.nestedPowerSeriesEquiv_constantCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.normalVariableIndex (r c : ℕ) (i : Fin c) : Fin (r + c)
+'LinearStudy.normalVariableIndex' does not depend on any axioms
+LinearStudy.nestedPowerSeriesEquiv_X.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) (i : Fin c) :
+  (LinearStudy.nestedPowerSeriesEquiv K r c) (MvPowerSeries.X i) =
+    MvPowerSeries.X (LinearStudy.normalVariableIndex r c i)
+'LinearStudy.nestedPowerSeriesEquiv_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finSuccEquiv_rename_succ.{u_4} (K : Type u_4) [CommRing K] (n : ℕ) (f : MvPowerSeries (Fin n) K) :
+  (MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.rename Fin.succ) f) = PowerSeries.C f
+'LinearStudy.finSuccEquiv_rename_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesEquiv_C.{u_4} (K : Type u_4) [CommRing K] (r c : ℕ) (f : MvPowerSeries (Fin r) K) :
+  (LinearStudy.nestedPowerSeriesEquiv K r c) (MvPowerSeries.C f) = (MvPowerSeries.rename fun i => i.addNat c) f
+'LinearStudy.nestedPowerSeriesEquiv_C' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finSuccEquiv_pderiv_zero_coeff.{u_1} {K : Type u_1} [CommRing K] (n k : ℕ)
+  (f : MvPowerSeries (Fin (n + 1)) K) :
+  (PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.pderiv 0) f)) =
+    (k + 1) • (PowerSeries.coeff (k + 1)) ((MvPowerSeries.finSuccEquiv K n) f)
+'LinearStudy.finSuccEquiv_pderiv_zero_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finSuccEquiv_pderiv_succ_coeff.{u_1} {K : Type u_1} [CommRing K] (n k : ℕ) (j : Fin n)
+  (f : MvPowerSeries (Fin (n + 1)) K) :
+  (PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) ((MvPowerSeries.pderiv j.succ) f)) =
+    (MvPowerSeries.pderiv j) ((PowerSeries.coeff k) ((MvPowerSeries.finSuccEquiv K n) f))
+'LinearStudy.finSuccEquiv_pderiv_succ_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesMapEquiv_univariate_coeff.{u_2, u_3} {R : Type u_2} {S : Type u_3} [CommRing R] [CommRing S]
+  (e : R ≃+* S) (f : PowerSeries R) (k : ℕ) :
+  (PowerSeries.coeff k) ((LinearStudy.powerSeriesMapEquiv e) f) = e ((PowerSeries.coeff k) f)
+'LinearStudy.powerSeriesMapEquiv_univariate_coeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nestedPowerSeriesEquiv_pderiv.{u_1} {K : Type u_1} [CommRing K] (r c : ℕ) (j : Fin c)
+  (f : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) :
+  (LinearStudy.nestedPowerSeriesEquiv K r c) ((MvPowerSeries.pderiv j) f) =
+    (MvPowerSeries.pderiv (LinearStudy.normalVariableIndex r c j)) ((LinearStudy.nestedPowerSeriesEquiv K r c) f)
+'LinearStudy.nestedPowerSeriesEquiv_pderiv' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.regular_transport_ringEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {S : Type u_2} [CommRing S] (e : R ≃+* S)
   (rs : List R) : RingTheory.Sequence.IsRegular R rs ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) rs)
 'LinearStudy.regular_transport_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1022,6 +1213,48 @@ LinearStudy.powerSeriesClosedQuotientEquiv_jacobian.{u_1} {K : Type u_1} [Field 
     (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))
       (Matrix.det fun i j => (MvPowerSeries.pderiv j) (LinearStudy.parameterSpecialization (H i)))
 'LinearStudy.powerSeriesClosedQuotientEquiv_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.translationImages.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K] [Fintype σ]
+  (h : τ → MvPowerSeries σ K) : σ ⊕ τ → MvPowerSeries (σ ⊕ τ) K
+'LinearStudy.translationImages' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.translationImages_hasSubst.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]
+  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) :
+  MvPowerSeries.HasSubst (LinearStudy.translationImages h)
+'LinearStudy.translationImages_hasSubst' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.translation_fixes_parameters.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]
+  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0)
+  (f : MvPowerSeries σ K) :
+  (MvPowerSeries.substAlgHom ⋯) ((MvPowerSeries.rename Sum.inl) f) = (MvPowerSeries.rename Sum.inl) f
+'LinearStudy.translation_fixes_parameters' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.translation_inverse.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K] [Fintype σ]
+  [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0)
+  (f : MvPowerSeries (σ ⊕ τ) K) : (MvPowerSeries.substAlgHom ⋯) ((MvPowerSeries.substAlgHom ⋯) f) = f
+'LinearStudy.translation_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesTranslationEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]
+  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) :
+  MvPowerSeries (σ ⊕ τ) K ≃ₐ[K] MvPowerSeries (σ ⊕ τ) K
+'LinearStudy.powerSeriesTranslationEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesTranslationEquiv_parameter.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [CommRing K] [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K)
+  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (f : MvPowerSeries σ K) :
+  (LinearStudy.powerSeriesTranslationEquiv h hh) ((MvPowerSeries.rename Sum.inl) f) = (MvPowerSeries.rename Sum.inl) f
+'LinearStudy.powerSeriesTranslationEquiv_parameter' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesTranslationEquiv_normal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommRing K]
+  [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K) (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (j : τ) :
+  (LinearStudy.powerSeriesTranslationEquiv h hh) (MvPowerSeries.X (Sum.inr j)) =
+    MvPowerSeries.X (Sum.inr j) + (MvPowerSeries.rename Sum.inl) (h j)
+'LinearStudy.powerSeriesTranslationEquiv_normal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesTranslationEquiv_pderiv_normal.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [CommRing K] [Fintype σ] [Fintype τ] (h : τ → MvPowerSeries σ K)
+  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (j : τ) (f : MvPowerSeries (σ ⊕ τ) K) :
+  (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesTranslationEquiv h hh) f) =
+    (LinearStudy.powerSeriesTranslationEquiv h hh) ((MvPowerSeries.pderiv (Sum.inr j)) f)
+'LinearStudy.powerSeriesTranslationEquiv_pderiv_normal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeriesTranslationEquiv_jacobian.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [CommRing K] [Fintype σ] [Fintype τ] [DecidableEq τ] (h : τ → MvPowerSeries σ K)
+  (hh : ∀ (j : τ), MvPowerSeries.constantCoeff (h j) = 0) (H : τ → MvPowerSeries (σ ⊕ τ) K) :
+  (Matrix.det fun i j => (MvPowerSeries.pderiv (Sum.inr j)) ((LinearStudy.powerSeriesTranslationEquiv h hh) (H i))) =
+    (LinearStudy.powerSeriesTranslationEquiv h hh) (Matrix.det fun i j => (MvPowerSeries.pderiv (Sum.inr j)) (H i))
+'LinearStudy.powerSeriesTranslationEquiv_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]
@@ -1161,6 +1394,35 @@ LinearStudy.powerSeries_specialized_equations_regular.{u_2} {K : Type u_2} [Fiel
       (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :
   RingTheory.Sequence.IsRegular (MvPowerSeries (Fin c) K) (List.ofFn fun i => LinearStudy.parameterSpecialization (H i))
 'LinearStudy.powerSeries_specialized_equations_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFlat_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
+  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)
+      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]
+  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)
+      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]
+  (a :
+    MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸
+        Ideal.span (Set.range H) →ₐ[MvPowerSeries (Fin (r + 1)) K]
+      MvPowerSeries (Fin (r + 1)) K)
+  (ha :
+    RingHom.ker a.toRingHom =
+      nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)))
+  (x : MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) :
+  LinearStudy.Annihilates
+      (nilradical (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) x ↔
+    ∃ u, x = u • (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Matrix.det fun i j => (MvPowerSeries.pderiv j) (H i))
+'LinearStudy.finiteFlat_jacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_annihilator_conclusion {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r) (hc : 0 < c)
+  (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (x : LinearStudy.CompleteIntersection H) :
+  LinearStudy.Annihilates (nilradical (LinearStudy.CompleteIntersection H)) x ↔
+    ∃ b, x = b • LinearStudy.relativeJacobian H
+'LinearStudy.lemma31_annihilator_conclusion' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.relativePowerSeriesQuotient_diagonal_jacobian.{u_1} {K : Type u_1} [CommRing K] {n : ℕ}
   (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
   (hnil : ∀ (i : Fin (n + 1)), IsNilpotent ((Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))) :
