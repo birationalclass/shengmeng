@@ -265,6 +265,28 @@ set_option pp.proofs false
 #print axioms LinearStudy.topKoszulCoordinate_map_generator
 #check LinearStudy.topKoszul_map
 #print axioms LinearStudy.topKoszul_map
+#check LinearStudy.nested_lifted_parameter_ideal
+#print axioms LinearStudy.nested_lifted_parameter_ideal
+#check LinearStudy.liftedCoordinateImages
+#print axioms LinearStudy.liftedCoordinateImages
+#check LinearStudy.liftedCoordinateImages_span
+#print axioms LinearStudy.liftedCoordinateImages_span
+#check LinearStudy.liftedParameterCoordinateEquiv
+#print axioms LinearStudy.liftedParameterCoordinateEquiv
+#check LinearStudy.liftedParameterCoordinateEquiv_parameter
+#print axioms LinearStudy.liftedParameterCoordinateEquiv_parameter
+#check LinearStudy.liftedParameterCoordinateEquiv_normal
+#print axioms LinearStudy.liftedParameterCoordinateEquiv_normal
+#check LinearStudy.liftedParameterMap
+#print axioms LinearStudy.liftedParameterMap
+#check LinearStudy.liftedParameterAlgebra
+#print axioms LinearStudy.liftedParameterAlgebra
+#check LinearStudy.liftedParameterMap_X
+#print axioms LinearStudy.liftedParameterMap_X
+#check LinearStudy.arbitrary_parameter_lifts_regular
+#print axioms LinearStudy.arbitrary_parameter_lifts_regular
+#check LinearStudy.completeIntersection_parameter_lifts_regular
+#print axioms LinearStudy.completeIntersection_parameter_lifts_regular
 #check LinearStudy.linearEquationSubmodule
 #print axioms LinearStudy.linearEquationSubmodule
 #check LinearStudy.linearEquationSubspace
@@ -593,6 +615,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.annihilator_action_eq
 #check LinearStudy.quotient_image_nonzero_iff
 #print axioms LinearStudy.quotient_image_nonzero_iff
+#check LinearStudy.free_of_regular_maximal_generators
+#print axioms LinearStudy.free_of_regular_maximal_generators
+#check LinearStudy.free_of_regular_maximal_algebraMap
+#print axioms LinearStudy.free_of_regular_maximal_algebraMap
 #check LinearStudy.ofList_smul_top
 #print axioms LinearStudy.ofList_smul_top
 #check LinearStudy.weaklyRegular_quotient_iff

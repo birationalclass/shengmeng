@@ -628,6 +628,86 @@ LinearStudy.topKoszulCoordinate_map_generator.{u_1} {R : Type u_1} [CommRing R] 
 LinearStudy.topKoszul_map.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (f : (Fin n → R) →ₗ[R] Fin n → R)
   (x : ↥(⋀[R]^n (Fin n → R))) : (exteriorPower.map n f) x = LinearMap.det f • x
 'LinearStudy.topKoszul_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nested_lifted_parameter_ideal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  Ideal.span (Set.range P ∪ Set.range MvPowerSeries.X) =
+    IsLocalRing.maximalIdeal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+'LinearStudy.nested_lifted_parameter_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedCoordinateImages.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) : Fin r ⊕ Fin c → MvPowerSeries (Fin r ⊕ Fin c) K
+'LinearStudy.liftedCoordinateImages' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedCoordinateImages_span.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  Ideal.span (Set.range (LinearStudy.liftedCoordinateImages P)) =
+    IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K)
+'LinearStudy.liftedCoordinateImages_span' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterCoordinateEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)
+'LinearStudy.liftedParameterCoordinateEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterCoordinateEquiv_parameter.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
+  (i : Fin r) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.X i)) = P i
+'LinearStudy.liftedParameterCoordinateEquiv_parameter' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterCoordinateEquiv_normal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
+  (i : Fin c) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.X i) = MvPowerSeries.X i
+'LinearStudy.liftedParameterCoordinateEquiv_normal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  MvPowerSeries (Fin r) K →+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I
+'LinearStudy.liftedParameterMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterAlgebra.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  Algebra (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)
+'LinearStudy.liftedParameterAlgebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterMap_X.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
+  (i : Fin r) : (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.X i) = (Ideal.Quotient.mk I) (P i)
+'LinearStudy.liftedParameterMap_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.arbitrary_parameter_lifts_regular.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [IsLocalRing A] [IsNoetherianRing A] {r : ℕ} (hr : 0 < r) [Algebra (MvPowerSeries (Fin r) K) A]
+  [Module.Flat (MvPowerSeries (Fin r) K) A] (q : A →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
+  (hq : RingHom.ker q.toRingHom = nilradical A) (tau : Fin r → A)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  RingTheory.Sequence.IsRegular A (List.ofFn tau)
+'LinearStudy.arbitrary_parameter_lifts_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.completeIntersection_parameter_lifts_regular {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hr : 0 < r) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  RingTheory.Sequence.IsRegular (LinearStudy.CompleteIntersection H) (List.ofFn tau)
+'LinearStudy.completeIntersection_parameter_lifts_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.linearEquationSubmodule.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) : Submodule ℂ (LinearStudy.CoordinateVector n)
 'LinearStudy.linearEquationSubmodule' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1425,6 +1505,15 @@ LinearStudy.annihilator_action_eq.{u_1, u_2} {B : Type u_1} {A : Type u_2} [Comm
 LinearStudy.quotient_image_nonzero_iff.{u_2} {A : Type u_2} [CommRing A] (J : Ideal A) (delta : A) :
   (Ideal.Quotient.mk J) delta ≠ 0 ↔ delta ∉ J
 'LinearStudy.quotient_image_nonzero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.free_of_regular_maximal_generators.{u, v} {R : Type u} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
+  {M : Type v} [AddCommGroup M] [Module R M] [Module.Finite R M] (rs : List R)
+  (h : RingTheory.Sequence.IsWeaklyRegular M rs) (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R M
+'LinearStudy.free_of_regular_maximal_generators' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.free_of_regular_maximal_algebraMap.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [IsLocalRing R]
+  [IsNoetherianRing R] [CommRing A] [Algebra R A] [Module.Finite R A] (rs : List R)
+  (h : RingTheory.Sequence.IsWeaklyRegular A (List.map (⇑(algebraMap R A)) rs))
+  (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R A
+'LinearStudy.free_of_regular_maximal_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.ofList_smul_top.{u_1} {R : Type u_1} [CommRing R] (H : List R) : Ideal.ofList H • ⊤ = Ideal.ofList H
 'LinearStudy.ofList_smul_top' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.weaklyRegular_quotient_iff.{u_1} {R : Type u_1} [CommRing R] (H P : List R) :

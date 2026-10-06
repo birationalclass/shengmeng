@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T00:19:41+08:00",
+  "checkedAt": "2026-10-07T01:05:38+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "55540d78bc5925fd95db4492ce3f36efa4d3b6927a13ffe487af428e58a0f8cf",
-      "lineCount": 956
+      "sha256": "1e2f08fdceb9624936035f4bff8e07d647245ad8ed96cdeaea2f4e2ec6039268",
+      "lineCount": 982
     },
     {
       "path": "Linear/ArtinianDiagonal.lean",
@@ -130,6 +130,16 @@
       "path": "Linear/KoszulTop.lean",
       "sha256": "fcc60344a344fe3dd497f1f262099d8f6351e03c3b7c4b257432b8e8ce3ce7c7",
       "lineCount": 79
+    },
+    {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lineCount": 157
+    },
+    {
+      "path": "Linear/LiftedParametersRegular.lean",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "lineCount": 85
     },
     {
       "path": "Linear/LinearSubspace.lean",
@@ -272,6 +282,11 @@
       "lineCount": 57
     },
     {
+      "path": "Linear/RegularGeneratorsFree.lean",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "lineCount": 62
+    },
+    {
       "path": "Linear/RegularSpecialization.lean",
       "sha256": "670f718e73fce016b161910c51bb2cf68a6a95b90274976aab224d60a4e14e70",
       "lineCount": 168
@@ -348,8 +363,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "21ccb1fcec91860df27b18e1d9e24c16ebc1117040e506e0855d731b5a1ce61d",
-      "lineCount": 65
+      "sha256": "1db04edaf1134b38f79ee4966224146f08fed7bf74af8c96319d9ba80b9f99db",
+      "lineCount": 68
     }
   ],
   "declarations": {
@@ -3642,6 +3657,284 @@
         "LinearStudy.topKoszulCoordinate_map_generator",
         "LinearStudy.topKoszulCoordinate_reconstruct",
         "LinearStudy.topKoszulGenerator"
+      ]
+    },
+    "LinearStudy.nested_lifted_parameter_ideal": {
+      "declaration": "LinearStudy.nested_lifted_parameter_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nested_lifted_parameter_ideal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Ideal.span (Set.range P ∪ Set.range MvPowerSeries.X) =\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 43,
+      "moduleLineCount": 157,
+      "startLine": 11,
+      "endLine": 53,
+      "lineCount": 43,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    "LinearStudy.liftedCoordinateImages": {
+      "declaration": "LinearStudy.liftedCoordinateImages",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedCoordinateImages.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) : Fin r ⊕ Fin c → MvPowerSeries (Fin r ⊕ Fin c) K",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 5,
+      "moduleLineCount": 157,
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    "LinearStudy.liftedCoordinateImages_span": {
+      "declaration": "LinearStudy.liftedCoordinateImages_span",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedCoordinateImages_span.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Ideal.span (Set.range (LinearStudy.liftedCoordinateImages P)) =\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 23,
+      "moduleLineCount": 157,
+      "startLine": 61,
+      "endLine": 83,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.nested_lifted_parameter_ideal",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv": {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 12,
+      "moduleLineCount": 157,
+      "startLine": 84,
+      "endLine": 95,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv_parameter": {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_parameter.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin r) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.X i)) = P i",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 16,
+      "moduleLineCount": 157,
+      "startLine": 97,
+      "endLine": 112,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv_normal": {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_normal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 114,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_normal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin c) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.X i) = MvPowerSeries.X i",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 15,
+      "moduleLineCount": 157,
+      "startLine": 114,
+      "endLine": 128,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
+    "LinearStudy.liftedParameterMap": {
+      "declaration": "LinearStudy.liftedParameterMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 129,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  MvPowerSeries (Fin r) K →+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 9,
+      "moduleLineCount": 157,
+      "startLine": 129,
+      "endLine": 137,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv"
+      ]
+    },
+    "LinearStudy.liftedParameterAlgebra": {
+      "declaration": "LinearStudy.liftedParameterAlgebra",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 139,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterAlgebra.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Algebra (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 8,
+      "moduleLineCount": 157,
+      "startLine": 139,
+      "endLine": 146,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    "LinearStudy.liftedParameterMap_X": {
+      "declaration": "LinearStudy.liftedParameterMap_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 148,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterMap_X.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin r) : (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.X i) = (Ideal.Quotient.mk I) (P i)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 9,
+      "moduleLineCount": 157,
+      "startLine": 148,
+      "endLine": 156,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    "LinearStudy.arbitrary_parameter_lifts_regular": {
+      "declaration": "LinearStudy.arbitrary_parameter_lifts_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParametersRegular.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.arbitrary_parameter_lifts_regular.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [IsLocalRing A] [IsNoetherianRing A] {r : ℕ} (hr : 0 < r) [Algebra (MvPowerSeries (Fin r) K) A]\n  [Module.Flat (MvPowerSeries (Fin r) K) A] (q : A →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (hq : RingHom.ker q.toRingHom = nilradical A) (tau : Fin r → A)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  RingTheory.Sequence.IsRegular A (List.ofFn tau)",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "lines": 50,
+      "moduleLineCount": 85,
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.powerSeries_parameter_generators_regular",
+        "LinearStudy.regular_nilpotent_perturbation"
+      ]
+    },
+    "LinearStudy.completeIntersection_parameter_lifts_regular": {
+      "declaration": "LinearStudy.completeIntersection_parameter_lifts_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParametersRegular.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_parameter_lifts_regular {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  RingTheory.Sequence.IsRegular (LinearStudy.CompleteIntersection H) (List.ofFn tau)",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "lines": 22,
+      "moduleLineCount": 85,
+      "startLine": 63,
+      "endLine": 84,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.arbitrary_parameter_lifts_regular",
+        "LinearStudy.equationIdeal"
       ]
     },
     "LinearStudy.linearEquationSubmodule": {
@@ -7592,6 +7885,50 @@
       "endLine": 55,
       "lineCount": 5,
       "dependencies": []
+    },
+    "LinearStudy.free_of_regular_maximal_generators": {
+      "declaration": "LinearStudy.free_of_regular_maximal_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularGeneratorsFree.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.free_of_regular_maximal_generators.{u, v} {R : Type u} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]\n  {M : Type v} [AddCommGroup M] [Module R M] [Module.Finite R M] (rs : List R)\n  (h : RingTheory.Sequence.IsWeaklyRegular M rs) (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R M",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "lines": 41,
+      "moduleLineCount": 62,
+      "startLine": 13,
+      "endLine": 53,
+      "lineCount": 41,
+      "dependencies": []
+    },
+    "LinearStudy.free_of_regular_maximal_algebraMap": {
+      "declaration": "LinearStudy.free_of_regular_maximal_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularGeneratorsFree.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.free_of_regular_maximal_algebraMap.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [IsLocalRing R]\n  [IsNoetherianRing R] [CommRing A] [Algebra R A] [Module.Finite R A] (rs : List R)\n  (h : RingTheory.Sequence.IsWeaklyRegular A (List.map (⇑(algebraMap R A)) rs))\n  (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R A",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "lines": 8,
+      "moduleLineCount": 62,
+      "startLine": 54,
+      "endLine": 61,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.free_of_regular_maximal_generators"
+      ]
     },
     "LinearStudy.ofList_smul_top": {
       "declaration": "LinearStudy.ofList_smul_top",
@@ -12149,12 +12486,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 310,
-  "definitionCount": 75,
+  "verifiedTheoremCount": 319,
+  "definitionCount": 79,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Actual coordinate centering and derivative compatibility are constructed, and relative Jacobian annihilator generation is proved from the original finite flat regular equations without an extra centering or pairing hypothesis. The first conjunct of Lemma31Goal is proved in its original notation. Survival under changed parameter actions is proved with an explicit new-base pairing input. Construction of the new parameter action and pairing from arbitrary lifts, nonzero socle generation in those parameter quotients, and global geometry remain unproved. Actual substitution automorphisms are constructed from maximal-ideal generators in a finite nonempty power-series variable set over a field; the parameter generators are regular. Nilpotent perturbation preserves regular sequences on finite modules over local Noetherian rings, with maximal-ideal membership explicit. These prerequisites do not yet construct the lifted parameter action or its finite freeness.",
+  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Actual coordinate centering and derivative compatibility are constructed, and relative Jacobian annihilator generation is proved from the original finite flat regular equations without an extra centering or pairing hypothesis. The first conjunct of Lemma31Goal is proved in its original notation. Survival under changed parameter actions is proved with an explicit new-base pairing input. Construction of the new parameter action and pairing from arbitrary lifts, nonzero socle generation in those parameter quotients, and global geometry remain unproved. Actual substitution automorphisms are constructed from maximal-ideal generators in a finite nonempty power-series variable set over a field; the parameter generators are regular. Nilpotent perturbation preserves regular sequences on finite modules over local Noetherian rings, with maximal-ideal membership explicit. These prerequisites do not yet construct the lifted parameter action or its finite freeness. Further proved finite-module freeness from weakly regular maximal-ideal generators; regularity of arbitrary parameter lifts under the original flat equation quotient; an actual ambient coordinate automorphism from representatives whose normal constant coefficients generate the parameter maximal ideal; and the resulting quotient parameter map and Algebra structure. Compatibility with the original reduction, finite freeness of this new action, and nonzero socle comparison are still unproved.",
   "sourceRanges": {
     "LinearStudy.invariant_restriction_surjective": {
       "path": "Linear/Iteration.lean",
@@ -12272,6 +12609,15 @@
       "dependencies": [
         "LinearStudy.Thickening",
         "LinearStudy.thickeningIdeal"
+      ]
+    },
+    "LinearStudy.free_of_regular_maximal_algebraMap": {
+      "path": "Linear/RegularGeneratorsFree.lean",
+      "startLine": 54,
+      "endLine": 61,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.free_of_regular_maximal_generators"
       ]
     },
     "exteriorPower.degreeProjection_apply_ιMulti": {
@@ -12457,6 +12803,16 @@
         "LinearStudy.dualGenerator_pairing"
       ]
     },
+    "LinearStudy.arbitrary_parameter_lifts_regular": {
+      "path": "Linear/LiftedParametersRegular.lean",
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.powerSeries_parameter_generators_regular",
+        "LinearStudy.regular_nilpotent_perturbation"
+      ]
+    },
     "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal": {
       "path": "Linear/ParameterSubstitution.lean",
       "startLine": 41,
@@ -12589,6 +12945,21 @@
         "LinearStudy.powerSeries_socle_generator_dualGenerator",
         "LinearStudy.traceElement",
         "LinearStudy.traceElement_eq_rank_dualGenerator"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv_parameter": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 97,
+      "endLine": 112,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
       ]
     },
     "LinearStudy.equationIdeal_le_constantCoeff_kernel": {
@@ -13792,6 +14163,18 @@
         "LinearStudy.thickening_closedFiber_jacobian"
       ]
     },
+    "LinearStudy.liftedCoordinateImages_span": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 61,
+      "endLine": 83,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.nested_lifted_parameter_ideal",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
     "LinearStudy.smulRegular_add_nilpotent": {
       "path": "Linear/NilpotentRegular.lean",
       "startLine": 8,
@@ -13960,6 +14343,13 @@
         "LinearStudy.powerSeriesMapEquiv_univariate_C",
         "LinearStudy.powerSeriesMapEquiv_univariate_X"
       ]
+    },
+    "LinearStudy.free_of_regular_maximal_generators": {
+      "path": "Linear/RegularGeneratorsFree.lean",
+      "startLine": 13,
+      "endLine": 53,
+      "lineCount": 41,
+      "dependencies": []
     },
     "LinearStudy.HomogeneousEndomorphism.casesOn": {
       "path": "Linear/Projective.lean",
@@ -14204,6 +14594,17 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.nilpotentPowerSeriesEval"
+      ]
+    },
+    "LinearStudy.liftedParameterMap_X": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 148,
+      "endLine": 156,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.liftedParameterMap"
       ]
     },
     "ExteriorAlgebra.prodEquivProd_apply": {
@@ -14850,6 +15251,15 @@
         "LinearStudy.translationImages"
       ]
     },
+    "LinearStudy.liftedCoordinateImages": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
     "LinearStudy.PerfectMultiplicationPairing.equiv_apply": {
       "path": "Linear/Duality.lean",
       "startLine": 25,
@@ -15093,6 +15503,21 @@
         "LinearStudy.thickening_nilradical_maximal"
       ]
     },
+    "LinearStudy.liftedParameterCoordinateEquiv_normal": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 114,
+      "endLine": 128,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
     "LinearStudy.socleQuotientMap": {
       "path": "Linear/KoszulSocleMap.lean",
       "startLine": 23,
@@ -15100,6 +15525,19 @@
       "lineCount": 4,
       "dependencies": [
         "LinearStudy.socleScalarMap_kernel"
+      ]
+    },
+    "LinearStudy.completeIntersection_parameter_lifts_regular": {
+      "path": "Linear/LiftedParametersRegular.lean",
+      "startLine": 63,
+      "endLine": 84,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.arbitrary_parameter_lifts_regular",
+        "LinearStudy.equationIdeal"
       ]
     },
     "LinearStudy.finiteFlat_annihilator_from_closed_socle": {
@@ -15621,6 +16059,15 @@
         "LinearStudy.firstJet"
       ]
     },
+    "LinearStudy.liftedParameterMap": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 129,
+      "endLine": 137,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv"
+      ]
+    },
     "LinearStudy.eq_traceElement_of_residue_trace": {
       "path": "Linear/TraceElement.lean",
       "startLine": 110,
@@ -15811,6 +16258,15 @@
       "endLine": 27,
       "lineCount": 2,
       "dependencies": []
+    },
+    "LinearStudy.liftedParameterAlgebra": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 139,
+      "endLine": 146,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.liftedParameterMap"
+      ]
     },
     "LinearStudy.nestedPowerSeriesTranslation": {
       "path": "Linear/PowerSeriesCoordinateChart.lean",
@@ -16532,6 +16988,15 @@
         "LinearStudy.powerSeriesClosedQuotientEquiv"
       ]
     },
+    "LinearStudy.nested_lifted_parameter_ideal": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 11,
+      "endLine": 53,
+      "lineCount": 43,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
     "LinearStudy.powerSeries_variables_regular": {
       "path": "Linear/PowerSeriesRegular.lean",
       "startLine": 50,
@@ -17141,6 +17606,18 @@
       "dependencies": [
         "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant",
         "LinearStudy.nonzero_ideal_meets_socle"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv": {
+      "path": "Linear/LiftedParameterCoordinates.lean",
+      "startLine": 84,
+      "endLine": 95,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart"
       ]
     },
     "LinearStudy.residue_multiplicationGram": {

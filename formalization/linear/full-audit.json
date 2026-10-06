@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 475,
-  "verifiedTheorems": 310,
-  "definitions": 75,
+  "audited": 488,
+  "verifiedTheorems": 319,
+  "definitions": 79,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -3296,6 +3296,284 @@
         "LinearStudy.topKoszulCoordinate_map_generator",
         "LinearStudy.topKoszulCoordinate_reconstruct",
         "LinearStudy.topKoszulGenerator"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nested_lifted_parameter_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nested_lifted_parameter_ideal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Ideal.span (Set.range P ∪ Set.range MvPowerSeries.X) =\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 43,
+      "moduleLineCount": 157,
+      "startLine": 11,
+      "endLine": 53,
+      "lineCount": 43,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedCoordinateImages",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 55,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedCoordinateImages.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)) : Fin r ⊕ Fin c → MvPowerSeries (Fin r ⊕ Fin c) K",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 5,
+      "moduleLineCount": 157,
+      "startLine": 55,
+      "endLine": 59,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedCoordinateImages_span",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedCoordinateImages_span.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Ideal.span (Set.range (LinearStudy.liftedCoordinateImages P)) =\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 23,
+      "moduleLineCount": 157,
+      "startLine": 61,
+      "endLine": 83,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.nested_lifted_parameter_ideal",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ≃+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 12,
+      "moduleLineCount": 157,
+      "startLine": 84,
+      "endLine": 95,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_parameter.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin r) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.X i)) = P i",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 16,
+      "moduleLineCount": 157,
+      "startLine": 97,
+      "endLine": 112,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_normal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 114,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_normal.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin c) : (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.X i) = MvPowerSeries.X i",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 15,
+      "moduleLineCount": 157,
+      "startLine": 114,
+      "endLine": 128,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.parameterSubstitutionEquiv_X",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_X"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 129,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  MvPowerSeries (Fin r) K →+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 9,
+      "moduleLineCount": 157,
+      "startLine": 129,
+      "endLine": 137,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterAlgebra",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 139,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.liftedParameterAlgebra.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  Algebra (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 8,
+      "moduleLineCount": 157,
+      "startLine": 139,
+      "endLine": 146,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterMap_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterCoordinates.lean",
+      "line": 148,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterMap_X.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin r) : (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.X i) = (Ideal.Quotient.mk I) (P i)",
+      "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
+      "lines": 9,
+      "moduleLineCount": 157,
+      "startLine": 148,
+      "endLine": 156,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.arbitrary_parameter_lifts_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParametersRegular.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.arbitrary_parameter_lifts_regular.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [IsLocalRing A] [IsNoetherianRing A] {r : ℕ} (hr : 0 < r) [Algebra (MvPowerSeries (Fin r) K) A]\n  [Module.Flat (MvPowerSeries (Fin r) K) A] (q : A →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (hq : RingHom.ker q.toRingHom = nilradical A) (tau : Fin r → A)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  RingTheory.Sequence.IsRegular A (List.ofFn tau)",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "lines": 50,
+      "moduleLineCount": 85,
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.powerSeries_parameter_generators_regular",
+        "LinearStudy.regular_nilpotent_perturbation"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_parameter_lifts_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParametersRegular.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_parameter_lifts_regular {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  RingTheory.Sequence.IsRegular (LinearStudy.CompleteIntersection H) (List.ofFn tau)",
+      "sha256": "76e7a5d5b67de8f986aca4a87f40879f2442ee4d01487437cd922450d0bcd873",
+      "lines": 22,
+      "moduleLineCount": 85,
+      "startLine": 63,
+      "endLine": 84,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.arbitrary_parameter_lifts_regular",
+        "LinearStudy.equationIdeal"
       ]
     },
     {
@@ -7246,6 +7524,50 @@
       "endLine": 55,
       "lineCount": 5,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.free_of_regular_maximal_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularGeneratorsFree.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.free_of_regular_maximal_generators.{u, v} {R : Type u} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]\n  {M : Type v} [AddCommGroup M] [Module R M] [Module.Finite R M] (rs : List R)\n  (h : RingTheory.Sequence.IsWeaklyRegular M rs) (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R M",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "lines": 41,
+      "moduleLineCount": 62,
+      "startLine": 13,
+      "endLine": 53,
+      "lineCount": 41,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.free_of_regular_maximal_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RegularGeneratorsFree.lean",
+      "line": 54,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.free_of_regular_maximal_algebraMap.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [IsLocalRing R]\n  [IsNoetherianRing R] [CommRing A] [Algebra R A] [Module.Finite R A] (rs : List R)\n  (h : RingTheory.Sequence.IsWeaklyRegular A (List.map (⇑(algebraMap R A)) rs))\n  (hgen : Ideal.ofList rs = IsLocalRing.maximalIdeal R) : Module.Free R A",
+      "sha256": "cf14c5753928d0ff01b7d49e8a5c4a99d4a4dce0658ef9d3c9c72941f9c68b03",
+      "lines": 8,
+      "moduleLineCount": 62,
+      "startLine": 54,
+      "endLine": 61,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.free_of_regular_maximal_generators"
+      ]
     },
     {
       "declaration": "LinearStudy.ofList_smul_top",

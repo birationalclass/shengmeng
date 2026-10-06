@@ -63,3 +63,6 @@ public import Linear.RelativeJacobian
 public import Linear.ParameterLinearPart
 public import Linear.ParameterSubstitution
 public import Linear.NilpotentRegular
+public import Linear.RegularGeneratorsFree
+public import Linear.LiftedParametersRegular
+public import Linear.LiftedParameterCoordinates
