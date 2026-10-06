@@ -22,7 +22,18 @@ Linear.TraceElement: cached compiled module (source and project dependencies unc
 Linear.ParameterQuotient: cached compiled module (source and project dependencies unchanged)
 Linear.DeterminantAnnihilator: cached compiled module (source and project dependencies unchanged)
 Linear.PowerSeriesCoefficients: cached compiled module (source and project dependencies unchanged)
-Linear: cached compiled module (source and project dependencies unchanged)
+Linear.PowerSeriesRegular: cached compiled module (source and project dependencies unchanged)
+Linear.Vendor.ExteriorBaseChange: cached compiled module (source and project dependencies unchanged)
+Linear.Vendor.ExteriorProduct: cached compiled module (source and project dependencies unchanged)
+Linear.Vendor.KoszulComplex: cached compiled module (source and project dependencies unchanged)
+Linear.KoszulResolution: cached compiled module (source and project dependencies unchanged)
+Linear.KoszulTop: cached compiled module (source and project dependencies unchanged)
+Linear.KoszulComparison: exit 0
+
+Linear.KoszulHomotopyTop: exit 0
+
+Linear: exit 0
+
 Local audit: python audit.py
 LinearStudy.iterate_degree_exceeds (q B : ℕ) (hq : 1 < q) : ∃ k, 0 < k ∧ B < q ^ k
 'LinearStudy.iterate_degree_exceeds' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -213,6 +224,70 @@ LinearStudy.restrictInvariant.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (h 
 LinearStudy.invariant_restriction_surjective.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (hf : Function.Surjective f)
   (h : f ⁻¹' V = V) : Function.Surjective (LinearStudy.restrictInvariant f V h)
 'LinearStudy.invariant_restriction_surjective' does not depend on any axioms
+LinearStudy.coefficientMatrix_koszul_compatibility.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) :
+  Fintype.linearCombination R x ∘ₗ Matrix.toLin' M.transpose = Fintype.linearCombination R H
+'LinearStudy.coefficientMatrix_koszul_compatibility' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coefficientKoszulComparison.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) :
+  koszulComplex (Fintype.linearCombination R H) ⟶ koszulComplex (Fintype.linearCombination R x)
+'LinearStudy.coefficientKoszulComparison' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coefficientKoszulComparison_top.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) (v : ↥(⋀[R]^n (Fin n → R))) :
+  (ModuleCat.Hom.hom ((LinearStudy.coefficientKoszulComparison H x M h).f n)) v = M.det • v
+'LinearStudy.coefficientKoszulComparison_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszul_top_differential_functional_mem.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (L : ↥(⋀[R]^n (Fin (n + 1) → R)) →ₗ[R] R) :
+  L ((koszulComplex.d (Fintype.linearCombination R H) n) (LinearStudy.topKoszulGenerator (n + 1))) ∈
+    Ideal.span (Set.range H)
+'LinearStudy.koszul_top_differential_functional_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homotopic_koszul_top_coordinates_congr.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
+  (f g : koszulComplex (Fintype.linearCombination R H) ⟶ koszulComplex (Fintype.linearCombination R H))
+  (ht : Homotopy f g) :
+  (LinearStudy.topKoszulCoordinate (n + 1))
+        ((ModuleCat.Hom.hom (f.f (n + 1))) (LinearStudy.topKoszulGenerator (n + 1))) -
+      (LinearStudy.topKoszulCoordinate (n + 1))
+        ((ModuleCat.Hom.hom (g.f (n + 1))) (LinearStudy.topKoszulGenerator (n + 1))) ∈
+    Ideal.span (Set.range H)
+'LinearStudy.homotopic_koszul_top_coordinates_congr' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulAugmentation.{u_1} {R : Type u_1} [CommRing R] (rs : List R) :
+  ↥(⋀[R]^0 (Fin rs.length → R)) →ₗ[R] R ⧸ Ideal.ofList rs
+'LinearStudy.koszulAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulAugmentation_comp_d.{u_1} {R : Type u_1} [CommRing R] (rs : List R) :
+  LinearStudy.koszulAugmentation rs ∘ₗ koszulComplex.d (Fintype.linearCombination R rs.get) 0 = 0
+'LinearStudy.koszulAugmentation_comp_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulAugmentationMap.{u_1} {R : Type u_1} [CommRing R] (rs : List R) :
+  koszulComplex.ofList rs ⟶ (ChainComplex.single₀ (ModuleCat R)).obj ↧(R ⧸ Ideal.ofList rs)
+'LinearStudy.koszulAugmentationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.koszulAugmentation_exact.{u_1} {R : Type u_1} [CommRing R] (rs : List R) :
+  { X₁ := (koszulComplex.ofList rs).X 1, X₂ := (koszulComplex.ofList rs).X 0, X₃ := ↧(R ⧸ Ideal.ofList rs),
+      f := (koszulComplex.ofList rs).d 1 0, g := ModuleCat.ofHom (LinearStudy.koszulAugmentation rs), zero := ⋯ }.Exact
+'LinearStudy.koszulAugmentation_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.regularKoszulResolution.{u_1} {R : Type u_1} [CommRing R] (rs : List R)
+  (hreg : RingTheory.Sequence.IsRegular R rs) : CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.ofList rs)
+'LinearStudy.regularKoszulResolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulGenerator.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) : ↥(⋀[R]^n (Fin n → R))
+'LinearStudy.topKoszulGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topExterior_alternating_map.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) :
+  exteriorPower.ιMulti R n = (Pi.basisFun R (Fin n)).det.smulRight (LinearStudy.topKoszulGenerator n)
+'LinearStudy.topExterior_alternating_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulCoordinate.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) : ↥(⋀[R]^n (Fin n → R)) →ₗ[R] R
+'LinearStudy.topKoszulCoordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulCoordinate_generator.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) :
+  (LinearStudy.topKoszulCoordinate n) (LinearStudy.topKoszulGenerator n) = 1
+'LinearStudy.topKoszulCoordinate_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulCoordinate_reconstruct.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (x : ↥(⋀[R]^n (Fin n → R))) :
+  (LinearStudy.topKoszulCoordinate n) x • LinearStudy.topKoszulGenerator n = x
+'LinearStudy.topKoszulCoordinate_reconstruct' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulEquiv.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) : ↥(⋀[R]^n (Fin n → R)) ≃ₗ[R] R
+'LinearStudy.topKoszulEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszulCoordinate_map_generator.{u_1} {R : Type u_1} [CommRing R] (n : ℕ)
+  (f : (Fin n → R) →ₗ[R] Fin n → R) :
+  (LinearStudy.topKoszulCoordinate n) ((exteriorPower.map n f) (LinearStudy.topKoszulGenerator n)) = LinearMap.det f
+'LinearStudy.topKoszulCoordinate_map_generator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.topKoszul_map.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (f : (Fin n → R) →ₗ[R] Fin n → R)
+  (x : ↥(⋀[R]^n (Fin n → R))) : (exteriorPower.map n f) x = LinearMap.det f • x
+'LinearStudy.topKoszul_map' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.linearEquationSubmodule.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) : Submodule ℂ (LinearStudy.CoordinateVector n)
 'LinearStudy.linearEquationSubmodule' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -328,6 +403,16 @@ LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator.{u_2, u_3} {�
 'LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.regular_transport_ringEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {S : Type u_2} [CommRing S] (e : R ≃+* S)
+  (rs : List R) : RingTheory.Sequence.IsRegular R rs ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) rs)
+'LinearStudy.regular_transport_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_cons_X_regular.{u_1} {R : Type u_1} [CommRing R] (rs : List R)
+  (hr : RingTheory.Sequence.IsRegular R rs) :
+  RingTheory.Sequence.IsRegular (PowerSeries R) (PowerSeries.X :: List.map (⇑PowerSeries.C) rs)
+'LinearStudy.powerSeries_cons_X_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ) :
+  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin n) R) (List.ofFn MvPowerSeries.X)
+'LinearStudy.powerSeries_variables_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]
@@ -634,6 +719,377 @@ LinearStudy.eq_traceElement_of_residue_trace.{u_1, u_2} {B : Type u_1} {A : Type
   [Algebra B A] (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)
   (htrace : ∀ (a : A), p.functional (delta * a) = (Algebra.trace B A) a) : delta = LinearStudy.traceElement p
 'LinearStudy.eq_traceElement_of_residue_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.baseChangeι.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M] [Module R M]
+  (S : Type u_3) [CommRing S] [Algebra R S] : TensorProduct R S M →ₗ[S] TensorProduct R S (ExteriorAlgebra R M)
+'ExteriorAlgebra.baseChangeι' depends on axioms: [propext, Quot.sound]
+ExteriorAlgebra.baseChangeι_mul_add_swap.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (x y : TensorProduct R S M) :
+  (ExteriorAlgebra.baseChangeι R M S) x * (ExteriorAlgebra.baseChangeι R M S) y +
+      (ExteriorAlgebra.baseChangeι R M S) y * (ExteriorAlgebra.baseChangeι R M S) x =
+    0
+'ExteriorAlgebra.baseChangeι_mul_add_swap' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.baseChangeι_sq_zero.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (x : TensorProduct R S M) :
+  (ExteriorAlgebra.baseChangeι R M S) x * (ExteriorAlgebra.baseChangeι R M S) x = 0
+'ExteriorAlgebra.baseChangeι_sq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.baseChangeExteriorAlgebraToTensor.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] :
+  ExteriorAlgebra S (TensorProduct R S M) →ₐ[S] TensorProduct R S (ExteriorAlgebra R M)
+'ExteriorAlgebra.baseChangeExteriorAlgebraToTensor' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeGenerator_map_update_add.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) [DecidableEq (Fin i)] (m : Fin i → M)
+  (j : Fin i) (x y : M) :
+  (ExteriorAlgebra.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ Function.update m j (x + y)) =
+    (ExteriorAlgebra.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ Function.update m j x) +
+      (ExteriorAlgebra.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ Function.update m j y)
+'exteriorPower.baseChangeGenerator_map_update_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeGenerator_map_update_smul.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) [DecidableEq (Fin i)] (m : Fin i → M)
+  (j : Fin i) (r : R) (x : M) :
+  (ExteriorAlgebra.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ Function.update m j (r • x)) =
+    r • (ExteriorAlgebra.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ Function.update m j x)
+'exteriorPower.baseChangeGenerator_map_update_smul' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeGenerator.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  M [⋀^Fin i]→ₗ[R] ExteriorAlgebra S (TensorProduct R S M)
+'exteriorPower.baseChangeGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoForwardAux.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) : M [⋀^Fin i]→ₗ[R] ↥(⋀[S]^i (TensorProduct R S M))
+'exteriorPower.baseChangeIsoForwardAux' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoForward.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  TensorProduct R S ↥(⋀[R]^i M) →ₗ[S] ↥(⋀[S]^i (TensorProduct R S M))
+'exteriorPower.baseChangeIsoForward' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoForward_apply_one_tmul_ιMulti.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) (m : Fin i → M) :
+  (exteriorPower.baseChangeIsoForward R M S i) (1 ⊗ₜ[R] (exteriorPower.ιMulti R i) m) =
+    (exteriorPower.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ m)
+'exteriorPower.baseChangeIsoForward_apply_one_tmul_ιMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.degreeProjection.{u_1, u_2} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M] [Module R M]
+  (i : ℕ) : ExteriorAlgebra R M →ₗ[R] ↥(⋀[R]^i M)
+'exteriorPower.degreeProjection' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.degreeProjection_apply_ιMulti.{u_1, u_2} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (i : ℕ) (m : Fin i → M) :
+  (exteriorPower.degreeProjection R M i) ((ExteriorAlgebra.ιMulti R i) m) = (exteriorPower.ιMulti R i) m
+'exteriorPower.degreeProjection_apply_ιMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeInverseAlternating.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  TensorProduct R S M [⋀^Fin i]→ₗ[S] TensorProduct R S ↥(⋀[R]^i M)
+'exteriorPower.baseChangeInverseAlternating' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeInverseAlternating_apply_tmul.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) (s : Fin i → S) (m : Fin i → M) :
+  ((exteriorPower.baseChangeInverseAlternating R M S i) fun j => s j ⊗ₜ[R] m j) =
+    (∏ j, s j) ⊗ₜ[R] (exteriorPower.ιMulti R i) m
+'exteriorPower.baseChangeInverseAlternating_apply_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoInverse.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  ↥(⋀[S]^i (TensorProduct R S M)) →ₗ[S] TensorProduct R S ↥(⋀[R]^i M)
+'exteriorPower.baseChangeIsoInverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoInverse_apply_tmul.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) (s : Fin i → S) (m : Fin i → M) :
+  (exteriorPower.baseChangeIsoInverse R M S i) ((exteriorPower.ιMulti S i) fun j => s j ⊗ₜ[R] m j) =
+    (∏ j, s j) ⊗ₜ[R] (exteriorPower.ιMulti R i) m
+'exteriorPower.baseChangeIsoInverse_apply_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChange_left_inverse.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  exteriorPower.baseChangeIsoInverse R M S i ∘ₗ exteriorPower.baseChangeIsoForward R M S i = LinearMap.id
+'exteriorPower.baseChange_left_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIsoForward_surjective.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2)
+  [AddCommGroup M] [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  Function.Surjective ⇑(exteriorPower.baseChangeIsoForward R M S i)
+'exteriorPower.baseChangeIsoForward_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChange_right_inverse.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  exteriorPower.baseChangeIsoForward R M S i ∘ₗ exteriorPower.baseChangeIsoInverse R M S i = LinearMap.id
+'exteriorPower.baseChange_right_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIso.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M] [Module R M]
+  (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) :
+  TensorProduct R S ↥(⋀[R]^i M) ≃ₗ[S] ↥(⋀[S]^i (TensorProduct R S M))
+'exteriorPower.baseChangeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIso_apply_tmul.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) (m : Fin i → M) :
+  (exteriorPower.baseChangeIso R M S i) (1 ⊗ₜ[R] (exteriorPower.ιMulti R i) m) =
+    (exteriorPower.ιMulti S i) (⇑((TensorProduct.mk R S M) 1) ∘ m)
+'exteriorPower.baseChangeIso_apply_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPower.baseChangeIso_symm_apply_tmul.{u_1, u_2, u_3} (R : Type u_1) [CommRing R] (M : Type u_2) [AddCommGroup M]
+  [Module R M] (S : Type u_3) [CommRing S] [Algebra R S] (i : ℕ) (s : Fin i → S) (m : Fin i → M) :
+  (exteriorPower.baseChangeIso R M S i).symm ((exteriorPower.ιMulti S i) fun j => s j ⊗ₜ[R] m j) =
+    (∏ j, s j) ⊗ₜ[R] (exteriorPower.ιMulti R i) m
+'exteriorPower.baseChangeIso_symm_apply_tmul' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.algebraMapInv_ι.{u, u_1} (R : Type u) [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M]
+  (x : M) : ExteriorAlgebra.algebraMapInv ((ExteriorAlgebra.ι R) x) = 0
+'ExteriorAlgebra.algebraMapInv_ι' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.algebraMapInv_algebraMap.{u, u_1} (R : Type u) [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M]
+  (r : R) : ExteriorAlgebra.algebraMapInv ((algebraMap R (ExteriorAlgebra R M)) r) = r
+'ExteriorAlgebra.algebraMapInv_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.ιInv_ι.{u, u_1} (R : Type u) [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M] (x : M) :
+  ExteriorAlgebra.ιInv ((ExteriorAlgebra.ι R) x) = x
+'ExteriorAlgebra.ιInv_ι' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.ιInv_one.{u, u_1} (R : Type u) [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M] :
+  ExteriorAlgebra.ιInv 1 = 0
+'ExteriorAlgebra.ιInv_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.ιInv_algebraMap.{u, u_1} (R : Type u) [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M]
+  (r : R) : ExteriorAlgebra.ιInv ((algebraMap R (ExteriorAlgebra R M)) r) = 0
+'ExteriorAlgebra.ιInv_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.ι_mul_ι_ring.{u} (R : Type u) [CommRing R] (a b : R) :
+  (ExteriorAlgebra.ι R) a * (ExteriorAlgebra.ι R) b = 0
+'ExteriorAlgebra.ι_mul_ι_ring' depends on axioms: [propext, Quot.sound]
+ExteriorAlgebra.eq_algebraMap_add_ι.{u} (R : Type u) [CommRing R] (t : ExteriorAlgebra R R) :
+  t =
+    (algebraMap R (ExteriorAlgebra R R)) (ExteriorAlgebra.algebraMapInv t) +
+      (ExteriorAlgebra.ι R) (ExteriorAlgebra.ιInv t)
+'ExteriorAlgebra.eq_algebraMap_add_ι' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodRingEquiv.{u} {R : Type u} [CommRing R] : (R × R) ≃ₗ[R] ExteriorAlgebra R R
+'ExteriorAlgebra.prodRingEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodRingEquiv_apply.{u} {R : Type u} [CommRing R] (c : R × R) :
+  ExteriorAlgebra.prodRingEquiv c = (algebraMap R (ExteriorAlgebra R R)) c.1 + (ExteriorAlgebra.ι R) c.2
+'ExteriorAlgebra.prodRingEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodEquivProd.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M] :
+  (ExteriorAlgebra R M × ExteriorAlgebra R M) ≃ₗ[R] ExteriorAlgebra R (M × R)
+'ExteriorAlgebra.prodEquivProd' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodEquivProd_apply.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M]
+  (x y : ExteriorAlgebra R M) :
+  (ExteriorAlgebra.prodEquivProd R M) (x, y) =
+    (ExteriorAlgebra.map (LinearMap.inl R M R)) x +
+      (ExteriorAlgebra.map (LinearMap.inl R M R)) y * (ExteriorAlgebra.ι R) (0, 1)
+'ExteriorAlgebra.prodEquivProd_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodEquivProd_comp_inl.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M] :
+  ↑(ExteriorAlgebra.prodEquivProd R M) ∘ₗ LinearMap.inl R (ExteriorAlgebra R M) (ExteriorAlgebra R M) =
+    ↑(ExteriorAlgebra.map (LinearMap.inl R M R))
+'ExteriorAlgebra.prodEquivProd_comp_inl' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodEquivProd_apply_snd.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M]
+  (a : ExteriorAlgebra R M) :
+  (ExteriorAlgebra.prodEquivProd R M) (0, a) =
+    (ExteriorAlgebra.map (LinearMap.inl R M R)) a * (ExteriorAlgebra.ι R) (0, 1)
+'ExteriorAlgebra.prodEquivProd_apply_snd' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.map_mem_exteriorPower.{u, u_1, u_2} {R : Type u} [CommRing R] {M : Type u_1} {N : Type u_2}
+  [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N] (f : M →ₗ[R] N) {k : ℕ} {w : ExteriorAlgebra R M}
+  (hw : w ∈ ⋀[R]^k M) : (ExteriorAlgebra.map f) w ∈ ⋀[R]^k N
+'ExteriorAlgebra.map_mem_exteriorPower' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm.{u, u_1} {R : Type u} [CommRing R] {M : Type u_1} [AddCommGroup M]
+  [Module R M] {k : ℕ} {w : ExteriorAlgebra R M} (hw : w ∈ ⋀[R]^k M) (z : M) :
+  (ExteriorAlgebra.ι R) z * w = (-1) ^ k • (w * (ExteriorAlgebra.ι R) z)
+'ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.exists_decomp.{u, u_1} {R : Type u} [CommRing R] {M : Type u_1} [AddCommGroup M] [Module R M] (i : ℕ)
+  (z : ExteriorAlgebra R (M × R)) :
+  z ∈ ⋀[R]^(i + 1) (M × R) →
+    ∃ x ∈ ⋀[R]^(i + 1) M,
+      ∃ y ∈ ⋀[R]^i M,
+        z =
+          (ExteriorAlgebra.map (LinearMap.inl R M R)) x +
+            (ExteriorAlgebra.map (LinearMap.inl R M R)) y * (ExteriorAlgebra.ι R) (0, 1)
+'ExteriorAlgebra.exists_decomp' depends on axioms: [propext, Classical.choice, Quot.sound]
+ExteriorAlgebra.prodEquivProd_mem_exteriorPower.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M]
+  [Module R M] (i : ℕ) (x y : ExteriorAlgebra R M) :
+  (ExteriorAlgebra.prodEquivProd R M) (x, y) ∈ ⋀[R]^(i + 1) (M × R) ↔ x ∈ ⋀[R]^(i + 1) M ∧ y ∈ ⋀[R]^i M
+'ExteriorAlgebra.prodEquivProd_mem_exteriorPower' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPowerProdEquivProd.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M] (i : ℕ) :
+  (↥(⋀[R]^(i + 1) M) × ↥(⋀[R]^i M)) ≃ₗ[R] ↥(⋀[R]^(i + 1) (M × R))
+'exteriorPowerProdEquivProd' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPowerProdEquivProd_apply_coe.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M]
+  (i : ℕ) (x : ↥(⋀[R]^(i + 1) M)) (y : ↥(⋀[R]^i M)) :
+  ↑((exteriorPowerProdEquivProd R M i) (x, y)) = (ExteriorAlgebra.prodEquivProd R M) (↑x, ↑y)
+'exteriorPowerProdEquivProd_apply_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPowerProdEquivProd_apply_inl_ιMulti.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M]
+  [Module R M] (i : ℕ) (m : Fin (i + 1) → M) :
+  (exteriorPowerProdEquivProd R M i) ((exteriorPower.ιMulti R (i + 1)) m, 0) =
+    (exteriorPower.ιMulti R (i + 1)) (⇑(LinearMap.inl R M R) ∘ m)
+'exteriorPowerProdEquivProd_apply_inl_ιMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPowerProdEquivProd_comp_inl.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M] [Module R M]
+  (i : ℕ) :
+  ↑(exteriorPowerProdEquivProd R M i) ∘ₗ LinearMap.inl R ↥(⋀[R]^(i + 1) M) ↥(⋀[R]^i M) =
+    exteriorPower.map (i + 1) (LinearMap.inl R M R)
+'exteriorPowerProdEquivProd_comp_inl' depends on axioms: [propext, Classical.choice, Quot.sound]
+exteriorPowerProdEquivProd_apply_inr_ιMulti.{u, u_1} (R : Type u) [CommRing R] (M : Type u_1) [AddCommGroup M]
+  [Module R M] (i : ℕ) (m : Fin i → M) :
+  ↑((exteriorPowerProdEquivProd R M i) (0, (exteriorPower.ιMulti R i) m)) =
+    (ExteriorAlgebra.ιMulti R i) (⇑(LinearMap.inl R M R) ∘ m) * (ExteriorAlgebra.ι R) (0, 1)
+'exteriorPowerProdEquivProd_apply_inr_ιMulti' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.dAlternating.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (n : ℕ) : M [⋀^Fin (n + 1)]→ₗ[R] ↥(⋀[R]^n M)
+'koszulComplex.dAlternating' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.dAlternating_apply.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (n : ℕ) (x : Fin (n + 1) → M) :
+  (koszulComplex.dAlternating φ n) x = ∑ i, ((-1) ^ ↑i * φ (x i)) • (exteriorPower.ιMulti R n) (i.removeNth x)
+'koszulComplex.dAlternating_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.d.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R) (n : ℕ) :
+  ↥(⋀[R]^(n + 1) M) →ₗ[R] ↥(⋀[R]^n M)
+'koszulComplex.d' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.d_comp_eq_zero.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (n : ℕ) : koszulComplex.d φ n ∘ₗ koszulComplex.d φ (n + 1) = 0
+'koszulComplex.d_comp_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R) :
+  ChainComplex (ModuleCat R) ℕ
+'koszulComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.X_eq_exteriorPower.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (i : ℕ) : (koszulComplex φ).X i = ↧↥(⋀[R]^i M)
+'koszulComplex.X_eq_exteriorPower' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.d_eq_d.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (i : ℕ) : (koszulComplex φ).d (i + 1) i = ModuleCat.ofHom (koszulComplex.d φ i)
+'koszulComplex.d_eq_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.ofList.{u} {R : Type u} [CommRing R] (l : List R) : ChainComplex (ModuleCat R) ℕ
+'koszulComplex.ofList' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.map_dAlternating_apply.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) {N : Type v} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N) (φ' : N →ₗ[R] R) (h : φ' ∘ₗ f = φ) (i : ℕ)
+  (v : Fin (i + 1) → M) :
+  (koszulComplex.dAlternating φ' i) (⇑f ∘ v) = (exteriorPower.map i f) ((koszulComplex.dAlternating φ i) v)
+'koszulComplex.map_dAlternating_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.map_d_comm.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  {N : Type v} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N) (φ' : N →ₗ[R] R) (h : φ' ∘ₗ f = φ) (i : ℕ) :
+  CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (exteriorPower.map (i + 1) f))
+      (ModuleCat.ofHom (koszulComplex.d φ' i)) =
+    CategoryTheory.CategoryStruct.comp (ModuleCat.ofHom (koszulComplex.d φ i)) (ModuleCat.ofHom (exteriorPower.map i f))
+'koszulComplex.map_d_comm' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.map.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  {N : Type v} [AddCommGroup N] [Module R N] (f : M →ₗ[R] N) (φ' : N →ₗ[R] R) (h : φ' ∘ₗ f = φ) :
+  koszulComplex φ ⟶ koszulComplex φ'
+'koszulComplex.map' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.map_comp.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  {N : Type v} [AddCommGroup N] [Module R N] {L : Type v} [AddCommGroup L] [Module R L] (f : M →ₗ[R] N) (φ' : N →ₗ[R] R)
+  (g : N →ₗ[R] L) (φ'' : L →ₗ[R] R) (h : φ' ∘ₗ f = φ) (h' : φ'' ∘ₗ g = φ') (h'' : φ'' ∘ₗ g ∘ₗ f = φ) :
+  CategoryTheory.CategoryStruct.comp (koszulComplex.map φ f φ' h) (koszulComplex.map φ' g φ'' h') =
+    koszulComplex.map φ (g ∘ₗ f) φ'' h''
+'koszulComplex.map_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.isoOfEquiv.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  {N : Type v} [AddCommGroup N] [Module R N] (f : M ≃ₗ[R] N) (φ' : N →ₗ[R] R) (h : φ' ∘ₗ ↑f = φ) :
+  koszulComplex φ ≅ koszulComplex φ'
+'koszulComplex.isoOfEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.isZero_X_of_card_generators_lt.{u, v, u_1} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M]
+  [Module R M] (φ : M →ₗ[R] R) {ι : Type u_1} [Finite ι] [LinearOrder ι] (g : ι → M)
+  (hg : Submodule.span R (Set.range g) = ⊤) (i : ℕ) (hi : Nat.card ι < i) :
+  CategoryTheory.Limits.IsZero ((koszulComplex φ).X i)
+'koszulComplex.isZero_X_of_card_generators_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.isZero_X_ofList_of_length_lt.{u} {R : Type u} [CommRing R] (l : List R) (i : ℕ) (hi : l.length < i) :
+  CategoryTheory.Limits.IsZero ((koszulComplex.ofList l).X i)
+'koszulComplex.isZero_X_ofList_of_length_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.exteriorPower.baseChangeIso_comm_aux.{u, v, w} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M]
+  [Module R M] (S : Type w) [CommRing S] [Algebra R S] (φ : M →ₗ[R] R) (i : ℕ) :
+  ↑(exteriorPower.baseChangeIso R M S i) ∘ₗ LinearMap.baseChange S (koszulComplex.d φ i) =
+    koszulComplex.d (↑(TensorProduct.AlgebraTensorModule.rid R S S) ∘ₗ LinearMap.baseChange S φ) i ∘ₗ
+      ↑(exteriorPower.baseChangeIso R M S (i + 1))
+'koszulComplex.exteriorPower.baseChangeIso_comm_aux' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.baseChangeIso.{u, v} {R : Type u} [CommRing R] {S : Type (max u v)} [CommRing S] (f : R →+* S)
+  {M : Type u} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R) :
+  ((ModuleCat.extendScalars (algebraMap R S)).mapHomologicalComplex (ComplexShape.down ℕ)).obj (koszulComplex φ) ≅
+    koszulComplex (↑(TensorProduct.AlgebraTensorModule.rid R S S) ∘ₗ LinearMap.baseChange S φ)
+'koszulComplex.baseChangeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.ofListBaseChangeIso.{u, v} {R : Type u} [CommRing R] {S : Type (max u v)} [CommRing S] (f : R →+* S)
+  (l : List R) (l' : List S) (eqmap : List.map (⇑f) l = l') :
+  ((ModuleCat.extendScalars f).mapHomologicalComplex (ComplexShape.down ℕ)).obj (koszulComplex.ofList l) ≅
+    koszulComplex.ofList l'
+'koszulComplex.ofListBaseChangeIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.appendMap.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (a : R) : M × R →ₗ[R] R
+'koszulComplex.appendMap' depends on axioms: [propext, Quot.sound]
+koszulComplex.XZeroEquiv.{u, v} (R : Type u) [CommRing R] (M : Type v) [AddCommGroup M] [Module R M] :
+  ↥(⋀[R]^0 M) ≃ₗ[R] ↥(⋀[R]^0 (M × R))
+'koszulComplex.XZeroEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.appendMap_d_eq_zero.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) :
+  koszulComplex.d (koszulComplex.appendMap φ a) 0 ∘ₗ ↑(exteriorPowerProdEquivProd R M 0) =
+    ↑(koszulComplex.XZeroEquiv R M) ∘ₗ
+      (koszulComplex.d φ 0 ∘ₗ LinearMap.fst R ↥(⋀[R]^(0 + 1) M) ↥(⋀[R]^0 M) +
+        a • LinearMap.snd R ↥(⋀[R]^(0 + 1) M) ↥(⋀[R]^0 M))
+'koszulComplex.appendMap_d_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.exteriorPowerProdEquivProd_apply_inr_eq_snoc.{u, v} {R : Type u} [CommRing R] {M : Type v}
+  [AddCommGroup M] [Module R M] (k : ℕ) (v : Fin k → M) :
+  (exteriorPowerProdEquivProd R M k) (0, (exteriorPower.ιMulti R k) v) =
+    (exteriorPower.ιMulti R (k + 1)) (Fin.snoc (⇑(LinearMap.inl R M R) ∘ v) (0, 1))
+'koszulComplex.exteriorPowerProdEquivProd_apply_inr_eq_snoc' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.appendMap_d_eq_pos.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) (n : ℕ) :
+  koszulComplex.d (koszulComplex.appendMap φ a) (n + 1) ∘ₗ ↑(exteriorPowerProdEquivProd R M (n + 1)) =
+    ↑(exteriorPowerProdEquivProd R M n) ∘ₗ
+      (LinearMap.inl R ↥(⋀[R]^(n + 1) M) ↥(⋀[R]^n M) ∘ₗ
+            koszulComplex.d φ (n + 1) ∘ₗ LinearMap.fst R ↥(⋀[R]^(n + 1 + 1) M) ↥(⋀[R]^(n + 1) M) +
+          LinearMap.inr R ↥(⋀[R]^(n + 1) M) ↥(⋀[R]^n M) ∘ₗ
+            koszulComplex.d φ n ∘ₗ LinearMap.snd R ↥(⋀[R]^(n + 1 + 1) M) ↥(⋀[R]^(n + 1) M) +
+        (-1) ^ (n + 1) •
+          a • LinearMap.inl R ↥(⋀[R]^(n + 1) M) ↥(⋀[R]^n M) ∘ₗ LinearMap.snd R ↥(⋀[R]^(n + 1 + 1) M) ↥(⋀[R]^(n + 1) M))
+'koszulComplex.appendMap_d_eq_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.fromOfListHomZero.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) : (koszulComplex φ).X 0 ⟶ (koszulComplex (koszulComplex.appendMap φ a)).X 0
+'koszulComplex.fromOfListHomZero' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.fromOfListHomSucc.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) (i : ℕ) :
+  (koszulComplex φ).X (i + 1) ⟶ (koszulComplex (koszulComplex.appendMap φ a)).X (i + 1)
+'koszulComplex.fromOfListHomSucc' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.from_ofList_hom_comm_zero.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) :
+  CategoryTheory.CategoryStruct.comp (koszulComplex.fromOfListHomSucc φ a 0)
+      ((koszulComplex (koszulComplex.appendMap φ a)).d (0 + 1) 0) =
+    CategoryTheory.CategoryStruct.comp ((koszulComplex φ).d (0 + 1) 0) (koszulComplex.fromOfListHomZero φ a)
+'koszulComplex.from_ofList_hom_comm_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.from_ofList_hom_comm_pos.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) (i : ℕ) :
+  CategoryTheory.CategoryStruct.comp (koszulComplex.fromOfListHomSucc φ a (i + 1))
+      ((koszulComplex (koszulComplex.appendMap φ a)).d (i + 1 + 1) (i + 1)) =
+    CategoryTheory.CategoryStruct.comp ((koszulComplex φ).d (i + 1 + 1) (i + 1)) (koszulComplex.fromOfListHomSucc φ a i)
+'koszulComplex.from_ofList_hom_comm_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.toAppendMap.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (a : R) : koszulComplex φ ⟶ koszulComplex (koszulComplex.appendMap φ a)
+'koszulComplex.toAppendMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.upOne.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R) :
+  ChainComplex (ModuleCat R) ℕ
+'koszulComplex.upOne' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.upOneHomologyIso.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (i : ℕ) :
+  HomologicalComplex.homology (koszulComplex.upOne φ) (i + 1) ≅ HomologicalComplex.homology (koszulComplex φ) i
+'koszulComplex.upOneHomologyIso' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.toUpOneHom.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (a : R) (i : ℕ) : (koszulComplex (koszulComplex.appendMap φ a)).X (i + 1) ⟶ (koszulComplex.upOne φ).X (i + 1)
+'koszulComplex.toUpOneHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.to_self_hom_comm.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) (i : ℕ) :
+  CategoryTheory.CategoryStruct.comp (koszulComplex.toUpOneHom φ a (i + 1)) ((koszulComplex φ).d (i + 1) i) =
+    CategoryTheory.CategoryStruct.comp ((koszulComplex (koszulComplex.appendMap φ a)).d (i + 1 + 1) (i + 1))
+      (koszulComplex.toUpOneHom φ a i)
+'koszulComplex.to_self_hom_comm' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.toUpOne.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R)
+  (a : R) : koszulComplex (koszulComplex.appendMap φ a) ⟶ koszulComplex.upOne φ
+'koszulComplex.toUpOne' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.toAppendMap_comp_toUpOne_eq_zero.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M]
+  [Module R M] (φ : M →ₗ[R] R) (a : R) :
+  CategoryTheory.CategoryStruct.comp (koszulComplex.toAppendMap φ a) (koszulComplex.toUpOne φ a) = 0
+'koszulComplex.toAppendMap_comp_toUpOne_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.shortComplexProd.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) : CategoryTheory.ShortComplex (ChainComplex (ModuleCat R) ℕ)
+'koszulComplex.shortComplexProd' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.shortComplexProd_shortExact.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) : (koszulComplex.shortComplexProd φ a).ShortExact
+'koszulComplex.shortComplexProd_shortExact' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.shortComplexProd_δ_eq.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) (a : R) (i : ℕ) : ⋯.δ (i + 1) i ⋯ = ((-1) ^ i * a) • (koszulComplex.upOneHomologyIso φ i).hom
+'koszulComplex.shortComplexProd_δ_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.zeroHomologyLinearEquivAux.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) : ↑(HomologicalComplex.homology (koszulComplex φ) 0) ≃ₗ[R] ↥(⋀[R]^0 M) ⧸ (koszulComplex.d φ 0).range
+'koszulComplex.zeroHomologyLinearEquivAux' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.equiv_comp_koszulComplex.d_zero_eq.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M]
+  [Module R M] (φ : M →ₗ[R] R) :
+  ↑(exteriorPower.zeroEquiv R M) ∘ₗ koszulComplex.d φ 0 = φ ∘ₗ ↑(exteriorPower.oneEquiv R M)
+'koszulComplex.equiv_comp_koszulComplex.d_zero_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.d_zero_range_map.{u, v} {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M]
+  (φ : M →ₗ[R] R) : Submodule.map (↑(exteriorPower.zeroEquiv R M)) (koszulComplex.d φ 0).range = φ.range
+'koszulComplex.d_zero_range_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.zeroHomologyOfListLinearEquiv.{u} {R : Type u} [CommRing R] (l : List R) :
+  ↑(HomologicalComplex.homology (koszulComplex.ofList l) 0) ≃ₗ[R] R ⧸ Ideal.ofList l
+'koszulComplex.zeroHomologyOfListLinearEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.snocLinearEquiv.{u} (R : Type u) [CommRing R] (n : ℕ) : (Fin (n + 1) → R) ≃ₗ[R] (Fin n → R) × R
+'koszulComplex.snocLinearEquiv' depends on axioms: [propext, Quot.sound]
+koszulComplex.ofListIsoOfEqAux.{u} {R : Type u} [CommRing R] {rs' rs : List R} {a : R} (eq : rs = rs' ++ [a]) :
+  (Fin rs.length → R) ≃ₗ[R] (Fin rs'.length → R) × R
+'koszulComplex.ofListIsoOfEqAux' depends on axioms: [propext, Quot.sound]
+koszulComplex.ofListIsoOfEqAux_comp.{u} {R : Type u} [CommRing R] {rs' rs : List R} {a : R} (eq : rs = rs' ++ [a]) :
+  koszulComplex.appendMap (Fintype.linearCombination R rs'.get) a ∘ₗ ↑(koszulComplex.ofListIsoOfEqAux eq) =
+    Fintype.linearCombination R rs.get
+'koszulComplex.ofListIsoOfEqAux_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.ofListIsoOfEq.{u} {R : Type u} [CommRing R] {rs' rs : List R} {a : R} (eq : rs = rs' ++ [a]) :
+  koszulComplex.ofList rs ≅ koszulComplex (koszulComplex.appendMap (Fintype.linearCombination R rs'.get) a)
+'koszulComplex.ofListIsoOfEq' depends on axioms: [propext, Classical.choice, Quot.sound]
+koszulComplex.exactAt_of_isRegular.{u} {R : Type u} [CommRing R] (rs : List R)
+  (reg : RingTheory.Sequence.IsRegular R rs) (i : ℕ) (ne : i ≠ 0) :
+  HomologicalComplex.ExactAt (koszulComplex.ofList rs) i
+'koszulComplex.exactAt_of_isRegular' depends on axioms: [propext, Classical.choice, Quot.sound]
 def LinearStudy.LinearityTheoremGoal : Prop :=
 ∀ (n : ℕ) (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
   1 < f.degree → Function.Surjective f.onPoints → f.onPoints ⁻¹' V.zeroSet = V.zeroSet → ∃ W, ↑W = V.zeroSet

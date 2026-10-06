@@ -20,3 +20,8 @@ public import Linear.TraceElement
 public import Linear.ParameterQuotient
 public import Linear.DeterminantAnnihilator
 public import Linear.PowerSeriesCoefficients
+public import Linear.PowerSeriesRegular
+public import Linear.KoszulResolution
+public import Linear.KoszulTop
+public import Linear.KoszulComparison
+public import Linear.KoszulHomotopyTop

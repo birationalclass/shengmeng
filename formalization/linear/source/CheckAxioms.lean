@@ -111,6 +111,42 @@ set_option pp.proofs false
 #print axioms LinearStudy.restrictInvariant
 #check LinearStudy.invariant_restriction_surjective
 #print axioms LinearStudy.invariant_restriction_surjective
+#check LinearStudy.coefficientMatrix_koszul_compatibility
+#print axioms LinearStudy.coefficientMatrix_koszul_compatibility
+#check LinearStudy.coefficientKoszulComparison
+#print axioms LinearStudy.coefficientKoszulComparison
+#check LinearStudy.coefficientKoszulComparison_top
+#print axioms LinearStudy.coefficientKoszulComparison_top
+#check LinearStudy.koszul_top_differential_functional_mem
+#print axioms LinearStudy.koszul_top_differential_functional_mem
+#check LinearStudy.homotopic_koszul_top_coordinates_congr
+#print axioms LinearStudy.homotopic_koszul_top_coordinates_congr
+#check LinearStudy.koszulAugmentation
+#print axioms LinearStudy.koszulAugmentation
+#check LinearStudy.koszulAugmentation_comp_d
+#print axioms LinearStudy.koszulAugmentation_comp_d
+#check LinearStudy.koszulAugmentationMap
+#print axioms LinearStudy.koszulAugmentationMap
+#check LinearStudy.koszulAugmentation_exact
+#print axioms LinearStudy.koszulAugmentation_exact
+#check LinearStudy.regularKoszulResolution
+#print axioms LinearStudy.regularKoszulResolution
+#check LinearStudy.topKoszulGenerator
+#print axioms LinearStudy.topKoszulGenerator
+#check LinearStudy.topExterior_alternating_map
+#print axioms LinearStudy.topExterior_alternating_map
+#check LinearStudy.topKoszulCoordinate
+#print axioms LinearStudy.topKoszulCoordinate
+#check LinearStudy.topKoszulCoordinate_generator
+#print axioms LinearStudy.topKoszulCoordinate_generator
+#check LinearStudy.topKoszulCoordinate_reconstruct
+#print axioms LinearStudy.topKoszulCoordinate_reconstruct
+#check LinearStudy.topKoszulEquiv
+#print axioms LinearStudy.topKoszulEquiv
+#check LinearStudy.topKoszulCoordinate_map_generator
+#print axioms LinearStudy.topKoszulCoordinate_map_generator
+#check LinearStudy.topKoszul_map
+#print axioms LinearStudy.topKoszul_map
 #check LinearStudy.linearEquationSubmodule
 #print axioms LinearStudy.linearEquationSubmodule
 #check LinearStudy.linearEquationSubspace
@@ -157,6 +193,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal
 #check LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
 #print axioms LinearStudy.powerSeries_coefficientDeterminant_maximal_annihilator
+#check LinearStudy.regular_transport_ringEquiv
+#print axioms LinearStudy.regular_transport_ringEquiv
+#check LinearStudy.powerSeries_cons_X_regular
+#print axioms LinearStudy.powerSeries_cons_X_regular
+#check LinearStudy.powerSeries_variables_regular
+#print axioms LinearStudy.powerSeries_variables_regular
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation
@@ -325,6 +367,186 @@ set_option pp.proofs false
 #print axioms LinearStudy.traceElement_generates_annihilator
 #check LinearStudy.eq_traceElement_of_residue_trace
 #print axioms LinearStudy.eq_traceElement_of_residue_trace
+#check ExteriorAlgebra.baseChangeι
+#print axioms ExteriorAlgebra.baseChangeι
+#check ExteriorAlgebra.baseChangeι_mul_add_swap
+#print axioms ExteriorAlgebra.baseChangeι_mul_add_swap
+#check ExteriorAlgebra.baseChangeι_sq_zero
+#print axioms ExteriorAlgebra.baseChangeι_sq_zero
+#check ExteriorAlgebra.baseChangeExteriorAlgebraToTensor
+#print axioms ExteriorAlgebra.baseChangeExteriorAlgebraToTensor
+#check exteriorPower.baseChangeGenerator_map_update_add
+#print axioms exteriorPower.baseChangeGenerator_map_update_add
+#check exteriorPower.baseChangeGenerator_map_update_smul
+#print axioms exteriorPower.baseChangeGenerator_map_update_smul
+#check exteriorPower.baseChangeGenerator
+#print axioms exteriorPower.baseChangeGenerator
+#check exteriorPower.baseChangeIsoForwardAux
+#print axioms exteriorPower.baseChangeIsoForwardAux
+#check exteriorPower.baseChangeIsoForward
+#print axioms exteriorPower.baseChangeIsoForward
+#check exteriorPower.baseChangeIsoForward_apply_one_tmul_ιMulti
+#print axioms exteriorPower.baseChangeIsoForward_apply_one_tmul_ιMulti
+#check exteriorPower.degreeProjection
+#print axioms exteriorPower.degreeProjection
+#check exteriorPower.degreeProjection_apply_ιMulti
+#print axioms exteriorPower.degreeProjection_apply_ιMulti
+#check exteriorPower.baseChangeInverseAlternating
+#print axioms exteriorPower.baseChangeInverseAlternating
+#check exteriorPower.baseChangeInverseAlternating_apply_tmul
+#print axioms exteriorPower.baseChangeInverseAlternating_apply_tmul
+#check exteriorPower.baseChangeIsoInverse
+#print axioms exteriorPower.baseChangeIsoInverse
+#check exteriorPower.baseChangeIsoInverse_apply_tmul
+#print axioms exteriorPower.baseChangeIsoInverse_apply_tmul
+#check exteriorPower.baseChange_left_inverse
+#print axioms exteriorPower.baseChange_left_inverse
+#check exteriorPower.baseChangeIsoForward_surjective
+#print axioms exteriorPower.baseChangeIsoForward_surjective
+#check exteriorPower.baseChange_right_inverse
+#print axioms exteriorPower.baseChange_right_inverse
+#check exteriorPower.baseChangeIso
+#print axioms exteriorPower.baseChangeIso
+#check exteriorPower.baseChangeIso_apply_tmul
+#print axioms exteriorPower.baseChangeIso_apply_tmul
+#check exteriorPower.baseChangeIso_symm_apply_tmul
+#print axioms exteriorPower.baseChangeIso_symm_apply_tmul
+#check ExteriorAlgebra.algebraMapInv_ι
+#print axioms ExteriorAlgebra.algebraMapInv_ι
+#check ExteriorAlgebra.algebraMapInv_algebraMap
+#print axioms ExteriorAlgebra.algebraMapInv_algebraMap
+#check ExteriorAlgebra.ιInv_ι
+#print axioms ExteriorAlgebra.ιInv_ι
+#check ExteriorAlgebra.ιInv_one
+#print axioms ExteriorAlgebra.ιInv_one
+#check ExteriorAlgebra.ιInv_algebraMap
+#print axioms ExteriorAlgebra.ιInv_algebraMap
+#check ExteriorAlgebra.ι_mul_ι_ring
+#print axioms ExteriorAlgebra.ι_mul_ι_ring
+#check ExteriorAlgebra.eq_algebraMap_add_ι
+#print axioms ExteriorAlgebra.eq_algebraMap_add_ι
+#check ExteriorAlgebra.prodRingEquiv
+#print axioms ExteriorAlgebra.prodRingEquiv
+#check ExteriorAlgebra.prodRingEquiv_apply
+#print axioms ExteriorAlgebra.prodRingEquiv_apply
+#check ExteriorAlgebra.prodEquivProd
+#print axioms ExteriorAlgebra.prodEquivProd
+#check ExteriorAlgebra.prodEquivProd_apply
+#print axioms ExteriorAlgebra.prodEquivProd_apply
+#check ExteriorAlgebra.prodEquivProd_comp_inl
+#print axioms ExteriorAlgebra.prodEquivProd_comp_inl
+#check ExteriorAlgebra.prodEquivProd_apply_snd
+#print axioms ExteriorAlgebra.prodEquivProd_apply_snd
+#check ExteriorAlgebra.map_mem_exteriorPower
+#print axioms ExteriorAlgebra.map_mem_exteriorPower
+#check ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm
+#print axioms ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm
+#check ExteriorAlgebra.exists_decomp
+#print axioms ExteriorAlgebra.exists_decomp
+#check ExteriorAlgebra.prodEquivProd_mem_exteriorPower
+#print axioms ExteriorAlgebra.prodEquivProd_mem_exteriorPower
+#check exteriorPowerProdEquivProd
+#print axioms exteriorPowerProdEquivProd
+#check exteriorPowerProdEquivProd_apply_coe
+#print axioms exteriorPowerProdEquivProd_apply_coe
+#check exteriorPowerProdEquivProd_apply_inl_ιMulti
+#print axioms exteriorPowerProdEquivProd_apply_inl_ιMulti
+#check exteriorPowerProdEquivProd_comp_inl
+#print axioms exteriorPowerProdEquivProd_comp_inl
+#check exteriorPowerProdEquivProd_apply_inr_ιMulti
+#print axioms exteriorPowerProdEquivProd_apply_inr_ιMulti
+#check koszulComplex.dAlternating
+#print axioms koszulComplex.dAlternating
+#check koszulComplex.dAlternating_apply
+#print axioms koszulComplex.dAlternating_apply
+#check koszulComplex.d
+#print axioms koszulComplex.d
+#check koszulComplex.d_comp_eq_zero
+#print axioms koszulComplex.d_comp_eq_zero
+#check koszulComplex
+#print axioms koszulComplex
+#check koszulComplex.X_eq_exteriorPower
+#print axioms koszulComplex.X_eq_exteriorPower
+#check koszulComplex.d_eq_d
+#print axioms koszulComplex.d_eq_d
+#check koszulComplex.ofList
+#print axioms koszulComplex.ofList
+#check koszulComplex.map_dAlternating_apply
+#print axioms koszulComplex.map_dAlternating_apply
+#check koszulComplex.map_d_comm
+#print axioms koszulComplex.map_d_comm
+#check koszulComplex.map
+#print axioms koszulComplex.map
+#check koszulComplex.map_comp
+#print axioms koszulComplex.map_comp
+#check koszulComplex.isoOfEquiv
+#print axioms koszulComplex.isoOfEquiv
+#check koszulComplex.isZero_X_of_card_generators_lt
+#print axioms koszulComplex.isZero_X_of_card_generators_lt
+#check koszulComplex.isZero_X_ofList_of_length_lt
+#print axioms koszulComplex.isZero_X_ofList_of_length_lt
+#check koszulComplex.exteriorPower.baseChangeIso_comm_aux
+#print axioms koszulComplex.exteriorPower.baseChangeIso_comm_aux
+#check koszulComplex.baseChangeIso
+#print axioms koszulComplex.baseChangeIso
+#check koszulComplex.ofListBaseChangeIso
+#print axioms koszulComplex.ofListBaseChangeIso
+#check koszulComplex.appendMap
+#print axioms koszulComplex.appendMap
+#check koszulComplex.XZeroEquiv
+#print axioms koszulComplex.XZeroEquiv
+#check koszulComplex.appendMap_d_eq_zero
+#print axioms koszulComplex.appendMap_d_eq_zero
+#check koszulComplex.exteriorPowerProdEquivProd_apply_inr_eq_snoc
+#print axioms koszulComplex.exteriorPowerProdEquivProd_apply_inr_eq_snoc
+#check koszulComplex.appendMap_d_eq_pos
+#print axioms koszulComplex.appendMap_d_eq_pos
+#check koszulComplex.fromOfListHomZero
+#print axioms koszulComplex.fromOfListHomZero
+#check koszulComplex.fromOfListHomSucc
+#print axioms koszulComplex.fromOfListHomSucc
+#check koszulComplex.from_ofList_hom_comm_zero
+#print axioms koszulComplex.from_ofList_hom_comm_zero
+#check koszulComplex.from_ofList_hom_comm_pos
+#print axioms koszulComplex.from_ofList_hom_comm_pos
+#check koszulComplex.toAppendMap
+#print axioms koszulComplex.toAppendMap
+#check koszulComplex.upOne
+#print axioms koszulComplex.upOne
+#check koszulComplex.upOneHomologyIso
+#print axioms koszulComplex.upOneHomologyIso
+#check koszulComplex.toUpOneHom
+#print axioms koszulComplex.toUpOneHom
+#check koszulComplex.to_self_hom_comm
+#print axioms koszulComplex.to_self_hom_comm
+#check koszulComplex.toUpOne
+#print axioms koszulComplex.toUpOne
+#check koszulComplex.toAppendMap_comp_toUpOne_eq_zero
+#print axioms koszulComplex.toAppendMap_comp_toUpOne_eq_zero
+#check koszulComplex.shortComplexProd
+#print axioms koszulComplex.shortComplexProd
+#check koszulComplex.shortComplexProd_shortExact
+#print axioms koszulComplex.shortComplexProd_shortExact
+#check koszulComplex.shortComplexProd_δ_eq
+#print axioms koszulComplex.shortComplexProd_δ_eq
+#check koszulComplex.zeroHomologyLinearEquivAux
+#print axioms koszulComplex.zeroHomologyLinearEquivAux
+#check koszulComplex.equiv_comp_koszulComplex.d_zero_eq
+#print axioms koszulComplex.equiv_comp_koszulComplex.d_zero_eq
+#check koszulComplex.d_zero_range_map
+#print axioms koszulComplex.d_zero_range_map
+#check koszulComplex.zeroHomologyOfListLinearEquiv
+#print axioms koszulComplex.zeroHomologyOfListLinearEquiv
+#check koszulComplex.snocLinearEquiv
+#print axioms koszulComplex.snocLinearEquiv
+#check koszulComplex.ofListIsoOfEqAux
+#print axioms koszulComplex.ofListIsoOfEqAux
+#check koszulComplex.ofListIsoOfEqAux_comp
+#print axioms koszulComplex.ofListIsoOfEqAux_comp
+#check koszulComplex.ofListIsoOfEq
+#print axioms koszulComplex.ofListIsoOfEq
+#check koszulComplex.exactAt_of_isRegular
+#print axioms koszulComplex.exactAt_of_isRegular
 #print LinearStudy.LinearityTheoremGoal
 #print LinearStudy.HomogeneousEndomorphism
 #print LinearStudy.IntegralProjectiveEquations

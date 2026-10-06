@@ -61,6 +61,22 @@ zero-constant-coefficient multivariable equations. Combined with the adjugate
 identity it gives determinant annihilation in the actual quotient; nonzero
 generation and comparison with the derivative Jacobian are not asserted.
 
+`PowerSeriesRegular.lean` proves regularity of the full list of variables in
+any finite-variable power-series ring over a nontrivial commutative ring.
+`KoszulResolution.lean` constructs the actual projective resolution of a
+regular-sequence quotient, with its augmentation and quasi-isomorphism.
+`KoszulTop.lean` identifies the top exterior power with the coefficient ring.
+`KoszulComparison.lean` constructs the coefficient-matrix comparison and
+proves that its top map is multiplication by the determinant.
+`KoszulHomotopyTop.lean` proves equality of homotopic top coordinates modulo
+the equation ideal. Socle generation itself is still unproved.
+
+The three modules under `Linear/Vendor` are attributed Apache-2.0 adaptations
+from mathlib PR #34913 at the commit recorded in `vendor-provenance.json`.
+The PR is not part of the pinned mathlib release. Every public declaration
+in the adapted modules is included in the local axiom audit. Reused proofs
+are counted separately from project-owned proofs.
+
 Unproved geometric bridges: the integral projective Scheme comparison and
 dimension/degree APIs; Bertini and étale fiber counts; the complete-intersection
 Jacobian/socle theorem and Euler–Jacobi relation; geometric Koszul exactness,
