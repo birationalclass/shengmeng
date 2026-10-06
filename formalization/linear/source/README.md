@@ -104,3 +104,7 @@ Actual nested-power-series coordinate equivalences, parameter-algebra centering 
 ## Milestone 13: precise code counts and parameter linear part
 
 Cards now count their own compiler-recorded declaration ranges; packs count all member code and actual project-code dependencies with overlapping intervals deduplicated. The header retains a separate whole-project total. The actual derivative matrix at zero of a maximal-ideal parameter generating set is proved invertible. Formal parameter inversion, new-base finite flatness, arbitrary-lift socle generation and the global theorem remain unproved. See MILESTONE_13.md.
+
+## Milestone 19: actual global diagonal and degree control
+
+Nondegeneracy is proved for the actual finite regular polynomial quotient, not supplied as an input. The chosen diagonal gives a unique normalized functional and an actual Jacobian trace formula. Difference determinants satisfy the proved sum-of-degrees bound. The actual origin zero-locus condition implies quotient finiteness by mathlib Nullstellensatz. Low-degree Euler-Jacobi vanishing and the geometric comparison are still open. These checked bridges do not prove the full Linearity Theorem. See MILESTONE_19.md.

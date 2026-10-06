@@ -78,3 +78,6 @@ public import Linear.PolynomialRegular
 public import Linear.DiagonalNormalization
 public import Linear.PolynomialGlobalResidue
 public import Linear.GlobalDiagonalNormalization
+public import Linear.PolynomialDoubleFiber
+public import Linear.PolynomialDifferenceDegree
+public import Linear.PolynomialOriginFinite

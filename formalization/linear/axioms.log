@@ -1343,6 +1343,138 @@ LinearStudy.polynomial_diagonal_difference.{u_1, u_2, u_3, u_4} {R : Type u_1} {
     u p - v p = ∑ i, a i * (u (MvPolynomial.X i) - v (MvPolynomial.X i)) ∧
       ∀ (i : ι), π (a i) = π (u ((MvPolynomial.pderiv i) p))
 'LinearStudy.polynomial_diagonal_difference' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_diagonal_difference_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] (p : MvPolynomial ι K) :
+  ∃ a,
+    (MvPolynomial.rename Sum.inl) p - (MvPolynomial.rename Sum.inr) p =
+        ∑ i, a i * (MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) ∧
+      (∀ (i : ι), LinearStudy.polynomialDoubleDiagonal (a i) = (MvPolynomial.pderiv i) p) ∧
+        (∀ (i : ι), (a i).totalDegree ≤ p.totalDegree - 1) ∧ (p.totalDegree = 0 → ∀ (i : ι), a i = 0)
+'LinearStudy.polynomial_diagonal_difference_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_universal_difference_matrix_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] (P : ι → MvPolynomial ι K) :
+  ∃ D,
+    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>
+        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧
+      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧
+        ∀ (i j : ι), (D i j).totalDegree ≤ (P i).totalDegree - 1
+'LinearStudy.polynomial_universal_difference_matrix_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_matrix_det_degree.{u_1, u_2, u_3} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] {σ : Type u_3} (M : Matrix ι ι (MvPolynomial σ K)) (d : ι → ℕ)
+  (h : ∀ (i j : ι), (M i j).totalDegree ≤ d i) : M.det.totalDegree ≤ ∑ i, d i
+'LinearStudy.polynomial_matrix_det_degree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_universal_difference_determinant_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
+  [Fintype ι] [DecidableEq ι] (P : ι → MvPolynomial ι K) :
+  ∃ D,
+    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>
+        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧
+      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧
+        D.det.totalDegree ≤ ∑ i, ((P i).totalDegree - 1)
+'LinearStudy.polynomial_universal_difference_determinant_degree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomialDoubleRightPoint.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K) :
+  MvPolynomial (ι ⊕ ι) K →ₐ[K] MvPolynomial ι K
+'LinearStudy.polynomialDoubleRightPoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleRightPoint_left.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K)
+  (P : MvPolynomial ι K) : (LinearStudy.polynomialDoubleRightPoint a) ((MvPolynomial.rename Sum.inl) P) = P
+'LinearStudy.polynomialDoubleRightPoint_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleRightPoint_right.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K)
+  (P : MvPolynomial ι K) :
+  (LinearStudy.polynomialDoubleRightPoint a) ((MvPolynomial.rename Sum.inr) P) =
+    MvPolynomial.C ((MvPolynomial.eval a) P)
+'LinearStudy.polynomialDoubleRightPoint_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_universal_difference_matrix_general.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]
+  [Fintype ι] [DecidableEq ι] (P : ι → MvPolynomial ι K) :
+  ∃ D,
+    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>
+        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧
+      ∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)
+'LinearStudy.polynomial_universal_difference_matrix_general' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensorMap.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (P : ι → MvPolynomial ι K) :
+  MvPolynomial (ι ⊕ ι) K →ₐ[K]
+    TensorProduct K (MvPolynomial ι K ⧸ Ideal.span (Set.range P)) (MvPolynomial ι K ⧸ Ideal.span (Set.range P))
+'LinearStudy.polynomialDoubleTensorMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensorMap_multiplication.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]
+  (P : ι → MvPolynomial ι K) (b : MvPolynomial (ι ⊕ ι) K) :
+  (Algebra.TensorProduct.lmul' K) ((LinearStudy.polynomialDoubleTensorMap P) b) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range P))) (LinearStudy.polynomialDoubleDiagonal b)
+'LinearStudy.polynomialDoubleTensorMap_multiplication' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensorMap_rightReduction.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]
+  (P : ι → MvPolynomial ι K) (q : MvPolynomial ι K ⧸ Ideal.span (Set.range P) →ₐ[K] K) (b : MvPolynomial (ι ⊕ ι) K) :
+  (LinearStudy.pairingRightReduction q) ((LinearStudy.polynomialDoubleTensorMap P) b) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range P)))
+      ((LinearStudy.polynomialDoubleRightPoint fun i =>
+          q ((Ideal.Quotient.mk (Ideal.span (Set.range P))) (MvPolynomial.X i)))
+        b)
+'LinearStudy.polynomialDoubleTensorMap_rightReduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensorMap_left.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]
+  (P : ι → MvPolynomial ι K) (b : MvPolynomial ι K) :
+  (LinearStudy.polynomialDoubleTensorMap P) ((MvPolynomial.rename Sum.inl) b) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range P))) b ⊗ₜ[K] 1
+'LinearStudy.polynomialDoubleTensorMap_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialDoubleTensorMap_right.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]
+  (P : ι → MvPolynomial ι K) (b : MvPolynomial ι K) :
+  (LinearStudy.polynomialDoubleTensorMap P) ((MvPolynomial.rename Sum.inr) b) =
+    1 ⊗ₜ[K] (Ideal.Quotient.mk (Ideal.span (Set.range P))) b
+'LinearStudy.polynomialDoubleTensorMap_right' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point.{u_3} {F : Type u_3} [Field F] {n : ℕ}
+  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)
+  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))
+  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))]
+  (q : MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P) →ₐ[F] F)
+  (N : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial (Fin (n + 1)) F))
+  (hN :
+    (N.mulVec fun i =>
+        MvPolynomial.X i - MvPolynomial.C (q ((Ideal.Quotient.mk (Ideal.span (Set.range P))) (MvPolynomial.X i)))) =
+      P) :
+  (Ideal.Quotient.mk (Ideal.span (Set.range P))) N.det ≠ 0
+'LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero.{u_3} {F : Type u_3} [Field F] {n : ℕ}
+  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)
+  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))
+  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))]
+  (D : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial (Fin (n + 1) ⊕ Fin (n + 1)) F))
+  (hD :
+    (D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>
+      (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i))
+  (q : MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P) →ₐ[F] F) :
+  (LinearStudy.pairingRightReduction q) ((LinearStudy.polynomialDoubleTensorMap P) D.det) ≠ 0
+'LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomialQuotient_nondegenerate_diagonal.{u_3} {F : Type u_3} [Field F] {n : ℕ}
+  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)
+  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))
+  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :
+  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);
+  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));
+  ∃ d,
+    LinearStudy.Annihilates (KaehlerDifferential.ideal F Q) d ∧
+      ((Algebra.TensorProduct.lmul' F) d = Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) ∧
+        ∀ (q : Q →ₐ[F] F), (LinearStudy.pairingRightReduction q) d ≠ 0
+'LinearStudy.polynomialQuotient_nondegenerate_diagonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialQuotient_normalized_trace.{u_3} {F : Type u_3} [Field F] [IsAlgClosed F] [Infinite F] {n : ℕ}
+  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)
+  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))
+  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :
+  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);
+  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));
+  ∃ p, ∀ (a : Q), p.functional (a * Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) = (Algebra.trace F Q) a
+'LinearStudy.polynomialQuotient_normalized_trace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialQuotient_diagonal_unique_functional.{u_3} {F : Type u_3} [Field F] [IsAlgClosed F] [Infinite F]
+  {n : ℕ} (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)
+  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))
+  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :
+  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);
+  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));
+  ∃ d,
+    LinearStudy.Annihilates (KaehlerDifferential.ideal F Q) d ∧
+      ((Algebra.TensorProduct.lmul' F) d = Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) ∧
+        ∃! ell, (LinearStudy.tensorFunctionalContraction ell) d = 1
+'LinearStudy.polynomialQuotient_diagonal_unique_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}
   [CommRing K] [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] (q : MvPolynomial ι K →ₐ[K] A)
   (hq : Function.Surjective ⇑q) :
@@ -1385,6 +1517,14 @@ LinearStudy.polynomialQuotient_perfectPairing.{u_1} {K : Type u_1} [Field K] [Is
   [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))] :
   Nonempty LinearStudy.PerfectMultiplicationPairing
 'LinearStudy.polynomialQuotient_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_origin_radical.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [IsAlgClosed K] [Finite ι]
+  (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :
+  I.radical = RingHom.ker (MvPolynomial.aeval 0).toRingHom
+'LinearStudy.polynomial_origin_radical' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
+  [IsAlgClosed K] [Finite ι] (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :
+  Module.Finite K (MvPolynomial ι K ⧸ I)
+'LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_cons_X_regular.{u_1} {R : Type u_1} [CommRing R] (rs : List R)
   (hr : RingTheory.Sequence.IsRegular R rs) :
   RingTheory.Sequence.IsRegular (Polynomial R) (Polynomial.X :: List.map (⇑Polynomial.C) rs)

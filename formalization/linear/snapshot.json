@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T03:30:35+08:00",
+  "checkedAt": "2026-10-07T04:08:48+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "a6081844003e168bc71f009c5bd68da1861b4185e6e693d3adabcb54573cab1e",
-      "lineCount": 1132
+      "sha256": "785eabf20e243b18fec1b414ce9319e80986bb960f15ec418660fd6fdee9b659",
+      "lineCount": 1172
     },
     {
       "path": "Linear/ArbitraryParameterJacobian.lean",
@@ -247,6 +247,16 @@
       "lineCount": 69
     },
     {
+      "path": "Linear/PolynomialDifferenceDegree.lean",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "lineCount": 134
+    },
+    {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lineCount": 276
+    },
+    {
       "path": "Linear/PolynomialFiberDiagonal.lean",
       "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
       "lineCount": 110
@@ -255,6 +265,11 @@
       "path": "Linear/PolynomialGlobalResidue.lean",
       "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
       "lineCount": 157
+    },
+    {
+      "path": "Linear/PolynomialOriginFinite.lean",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "lineCount": 43
     },
     {
       "path": "Linear/PolynomialRegular.lean",
@@ -423,8 +438,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "c9189531f65acafa882fa73ba2cbc92cfcdc6faafc117beb76da872cbcb68991",
-      "lineCount": 80
+      "sha256": "c66a6c32439f807b44ec8a3d68f5947cf2e1003dd897c0aedc228e2494f4b1b7",
+      "lineCount": 83
     }
   ],
   "declarations": {
@@ -6707,6 +6722,457 @@
       "lineCount": 46,
       "dependencies": []
     },
+    "LinearStudy.polynomial_diagonal_difference_degree": {
+      "declaration": "LinearStudy.polynomial_diagonal_difference_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDifferenceDegree.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_diagonal_difference_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] (p : MvPolynomial ι K) :\n  ∃ a,\n    (MvPolynomial.rename Sum.inl) p - (MvPolynomial.rename Sum.inr) p =\n        ∑ i, a i * (MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) ∧\n      (∀ (i : ι), LinearStudy.polynomialDoubleDiagonal (a i) = (MvPolynomial.pderiv i) p) ∧\n        (∀ (i : ι), (a i).totalDegree ≤ p.totalDegree - 1) ∧ (p.totalDegree = 0 → ∀ (i : ι), a i = 0)",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "lines": 80,
+      "moduleLineCount": 134,
+      "startLine": 13,
+      "endLine": 92,
+      "lineCount": 80,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleDiagonal_left"
+      ]
+    },
+    "LinearStudy.polynomial_universal_difference_matrix_degree": {
+      "declaration": "LinearStudy.polynomial_universal_difference_matrix_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDifferenceDegree.lean",
+      "line": 94,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_universal_difference_matrix_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] (P : ι → MvPolynomial ι K) :\n  ∃ D,\n    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>\n        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧\n      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧\n        ∀ (i j : ι), (D i j).totalDegree ≤ (P i).totalDegree - 1",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "lines": 11,
+      "moduleLineCount": 134,
+      "startLine": 94,
+      "endLine": 104,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomial_diagonal_difference_degree"
+      ]
+    },
+    "LinearStudy.polynomial_matrix_det_degree": {
+      "declaration": "LinearStudy.polynomial_matrix_det_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDifferenceDegree.lean",
+      "line": 106,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_matrix_det_degree.{u_1, u_2, u_3} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  [DecidableEq ι] {σ : Type u_3} (M : Matrix ι ι (MvPolynomial σ K)) (d : ι → ℕ)\n  (h : ∀ (i j : ι), (M i j).totalDegree ≤ d i) : M.det.totalDegree ≤ ∑ i, d i",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "lines": 18,
+      "moduleLineCount": 134,
+      "startLine": 106,
+      "endLine": 123,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_universal_difference_determinant_degree": {
+      "declaration": "LinearStudy.polynomial_universal_difference_determinant_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDifferenceDegree.lean",
+      "line": 125,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_universal_difference_determinant_degree.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  [Fintype ι] [DecidableEq ι] (P : ι → MvPolynomial ι K) :\n  ∃ D,\n    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>\n        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧\n      (∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)) ∧\n        D.det.totalDegree ≤ ∑ i, ((P i).totalDegree - 1)",
+      "sha256": "c609f683d1d1fb50a718c5cbac5d79e3364b5fd4c589ca15d88667bec597d16d",
+      "lines": 8,
+      "moduleLineCount": 134,
+      "startLine": 125,
+      "endLine": 132,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomial_matrix_det_degree",
+        "LinearStudy.polynomial_universal_difference_matrix_degree"
+      ]
+    },
+    "LinearStudy.polynomialDoubleRightPoint": {
+      "declaration": "LinearStudy.polynomialDoubleRightPoint",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialDoubleRightPoint.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K) :\n  MvPolynomial (ι ⊕ ι) K →ₐ[K] MvPolynomial ι K",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 3,
+      "moduleLineCount": 276,
+      "startLine": 16,
+      "endLine": 18,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialDoubleRightPoint_left": {
+      "declaration": "LinearStudy.polynomialDoubleRightPoint_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleRightPoint_left.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K)\n  (P : MvPolynomial ι K) : (LinearStudy.polynomialDoubleRightPoint a) ((MvPolynomial.rename Sum.inl) P) = P",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 7,
+      "moduleLineCount": 276,
+      "startLine": 21,
+      "endLine": 27,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleRightPoint"
+      ]
+    },
+    "LinearStudy.polynomialDoubleRightPoint_right": {
+      "declaration": "LinearStudy.polynomialDoubleRightPoint_right",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleRightPoint_right.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (a : ι → K)\n  (P : MvPolynomial ι K) :\n  (LinearStudy.polynomialDoubleRightPoint a) ((MvPolynomial.rename Sum.inr) P) =\n    MvPolynomial.C ((MvPolynomial.eval a) P)",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 8,
+      "moduleLineCount": 276,
+      "startLine": 30,
+      "endLine": 37,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleRightPoint"
+      ]
+    },
+    "LinearStudy.polynomial_universal_difference_matrix_general": {
+      "declaration": "LinearStudy.polynomial_universal_difference_matrix_general",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_universal_difference_matrix_general.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]\n  [Fintype ι] [DecidableEq ι] (P : ι → MvPolynomial ι K) :\n  ∃ D,\n    ((D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>\n        (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i)) ∧\n      ∀ (i j : ι), LinearStudy.polynomialDoubleDiagonal (D i j) = (MvPolynomial.pderiv j) (P i)",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 22,
+      "moduleLineCount": 276,
+      "startLine": 39,
+      "endLine": 60,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleDiagonal_left",
+        "LinearStudy.polynomial_diagonal_difference"
+      ]
+    },
+    "LinearStudy.polynomialDoubleTensorMap": {
+      "declaration": "LinearStudy.polynomialDoubleTensorMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialDoubleTensorMap.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K] (P : ι → MvPolynomial ι K) :\n  MvPolynomial (ι ⊕ ι) K →ₐ[K]\n    TensorProduct K (MvPolynomial ι K ⧸ Ideal.span (Set.range P)) (MvPolynomial ι K ⧸ Ideal.span (Set.range P))",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 7,
+      "moduleLineCount": 276,
+      "startLine": 62,
+      "endLine": 68,
+      "lineCount": 7,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialDoubleTensorMap_multiplication": {
+      "declaration": "LinearStudy.polynomialDoubleTensorMap_multiplication",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensorMap_multiplication.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]\n  (P : ι → MvPolynomial ι K) (b : MvPolynomial (ι ⊕ ι) K) :\n  (Algebra.TensorProduct.lmul' K) ((LinearStudy.polynomialDoubleTensorMap P) b) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range P))) (LinearStudy.polynomialDoubleDiagonal b)",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 13,
+      "moduleLineCount": 276,
+      "startLine": 71,
+      "endLine": 83,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
+    "LinearStudy.polynomialDoubleTensorMap_rightReduction": {
+      "declaration": "LinearStudy.polynomialDoubleTensorMap_rightReduction",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensorMap_rightReduction.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]\n  (P : ι → MvPolynomial ι K) (q : MvPolynomial ι K ⧸ Ideal.span (Set.range P) →ₐ[K] K) (b : MvPolynomial (ι ⊕ ι) K) :\n  (LinearStudy.pairingRightReduction q) ((LinearStudy.polynomialDoubleTensorMap P) b) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range P)))\n      ((LinearStudy.polynomialDoubleRightPoint fun i =>\n          q ((Ideal.Quotient.mk (Ideal.span (Set.range P))) (MvPolynomial.X i)))\n        b)",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 20,
+      "moduleLineCount": 276,
+      "startLine": 86,
+      "endLine": 105,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingRightReduction_tmul",
+        "LinearStudy.polynomialDoubleRightPoint",
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
+    "LinearStudy.polynomialDoubleTensorMap_left": {
+      "declaration": "LinearStudy.polynomialDoubleTensorMap_left",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 111,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensorMap_left.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]\n  (P : ι → MvPolynomial ι K) (b : MvPolynomial ι K) :\n  (LinearStudy.polynomialDoubleTensorMap P) ((MvPolynomial.rename Sum.inl) b) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range P))) b ⊗ₜ[K] 1",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 8,
+      "moduleLineCount": 276,
+      "startLine": 111,
+      "endLine": 118,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
+    "LinearStudy.polynomialDoubleTensorMap_right": {
+      "declaration": "LinearStudy.polynomialDoubleTensorMap_right",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 121,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialDoubleTensorMap_right.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [CommRing K]\n  (P : ι → MvPolynomial ι K) (b : MvPolynomial ι K) :\n  (LinearStudy.polynomialDoubleTensorMap P) ((MvPolynomial.rename Sum.inr) b) =\n    1 ⊗ₜ[K] (Ideal.Quotient.mk (Ideal.span (Set.range P))) b",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 8,
+      "moduleLineCount": 276,
+      "startLine": 121,
+      "endLine": 128,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
+    "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point": {
+      "declaration": "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 130,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point.{u_3} {F : Type u_3} [Field F] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))\n  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))]\n  (q : MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P) →ₐ[F] F)\n  (N : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial (Fin (n + 1)) F))\n  (hN :\n    (N.mulVec fun i =>\n        MvPolynomial.X i - MvPolynomial.C (q ((Ideal.Quotient.mk (Ideal.span (Set.range P))) (MvPolynomial.X i)))) =\n      P) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range P))) N.det ≠ 0",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 23,
+      "moduleLineCount": 276,
+      "startLine": 130,
+      "endLine": 152,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal",
+        "LinearStudy.polynomial_centered_variables_regular",
+        "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel"
+      ]
+    },
+    "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero": {
+      "declaration": "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 154,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero.{u_3} {F : Type u_3} [Field F] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))\n  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))]\n  (D : Matrix (Fin (n + 1)) (Fin (n + 1)) (MvPolynomial (Fin (n + 1) ⊕ Fin (n + 1)) F))\n  (hD :\n    (D.mulVec fun i => MvPolynomial.X (Sum.inl i) - MvPolynomial.X (Sum.inr i)) = fun i =>\n      (MvPolynomial.rename Sum.inl) (P i) - (MvPolynomial.rename Sum.inr) (P i))\n  (q : MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P) →ₐ[F] F) :\n  (LinearStudy.pairingRightReduction q) ((LinearStudy.polynomialDoubleTensorMap P) D.det) ≠ 0",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 34,
+      "moduleLineCount": 276,
+      "startLine": 154,
+      "endLine": 187,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialDoubleRightPoint",
+        "LinearStudy.polynomialDoubleRightPoint_left",
+        "LinearStudy.polynomialDoubleRightPoint_right",
+        "LinearStudy.polynomialDoubleTensorMap",
+        "LinearStudy.polynomialDoubleTensorMap_rightReduction",
+        "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_nondegenerate_diagonal": {
+      "declaration": "LinearStudy.polynomialQuotient_nondegenerate_diagonal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 189,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_nondegenerate_diagonal.{u_3} {F : Type u_3} [Field F] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))\n  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :\n  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);\n  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  ∃ d,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal F Q) d ∧\n      ((Algebra.TensorProduct.lmul' F) d = Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) ∧\n        ∀ (q : Q →ₐ[F] F), (LinearStudy.pairingRightReduction q) d ≠ 0",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 51,
+      "moduleLineCount": 276,
+      "startLine": 189,
+      "endLine": 239,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.determinant_annihilates_coordinate_ideal",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleTensorMap",
+        "LinearStudy.polynomialDoubleTensorMap_left",
+        "LinearStudy.polynomialDoubleTensorMap_multiplication",
+        "LinearStudy.polynomialDoubleTensorMap_right",
+        "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal",
+        "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero",
+        "LinearStudy.polynomial_universal_difference_matrix_general"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_normalized_trace": {
+      "declaration": "LinearStudy.polynomialQuotient_normalized_trace",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 241,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_normalized_trace.{u_3} {F : Type u_3} [Field F] [IsAlgClosed F] [Infinite F] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))\n  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :\n  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);\n  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  ∃ p, ∀ (a : Q), p.functional (a * Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) = (Algebra.trace F Q) a",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 18,
+      "moduleLineCount": 276,
+      "startLine": 241,
+      "endLine": 258,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.global_diagonal_normalized_trace",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialQuotient_nondegenerate_diagonal",
+        "LinearStudy.polynomialQuotient_perfectPairing"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_diagonal_unique_functional": {
+      "declaration": "LinearStudy.polynomialQuotient_diagonal_unique_functional",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialDoubleFiber.lean",
+      "line": 260,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_diagonal_unique_functional.{u_3} {F : Type u_3} [Field F] [IsAlgClosed F] [Infinite F]\n  {n : ℕ} (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) F)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) F) (List.ofFn P))\n  [Module.Finite F (MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P))] :\n  let Q := MvPolynomial (Fin (n + 1)) F ⧸ Ideal.span (Set.range P);\n  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  ∃ d,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal F Q) d ∧\n      ((Algebra.TensorProduct.lmul' F) d = Matrix.det fun i j => pi ((MvPolynomial.pderiv j) (P i))) ∧\n        ∃! ell, (LinearStudy.tensorFunctionalContraction ell) d = 1",
+      "sha256": "6797b2ac47b5fd54f76966daa3b82fe9dc093c37cb989e957510f8bbf4307b18",
+      "lines": 14,
+      "moduleLineCount": 276,
+      "startLine": 260,
+      "endLine": 273,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.global_diagonal_unique_functional",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialQuotient_nondegenerate_diagonal",
+        "LinearStudy.polynomialQuotient_perfectPairing",
+        "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
     "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal": {
       "declaration": "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal",
       "kind": "theorem",
@@ -6876,6 +7342,50 @@
         "LinearStudy.exists_perfectPairing_of_global_scalar_socles",
         "LinearStudy.kernel_socle_scalar_generation",
         "LinearStudy.polynomial_quotient_kernel_socle"
+      ]
+    },
+    "LinearStudy.polynomial_origin_radical": {
+      "declaration": "LinearStudy.polynomial_origin_radical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialOriginFinite.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_origin_radical.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [IsAlgClosed K] [Finite ι]\n  (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :\n  I.radical = RingHom.ker (MvPolynomial.aeval 0).toRingHom",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "lines": 6,
+      "moduleLineCount": 43,
+      "startLine": 13,
+      "endLine": 18,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus": {
+      "declaration": "LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialOriginFinite.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  [IsAlgClosed K] [Finite ι] (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :\n  Module.Finite K (MvPolynomial ι K ⧸ I)",
+      "sha256": "bb1e9cdb388c3b98e5527f5aa6c8d0d6876ca272a84c2d4af6cb441fd03dad1a",
+      "lines": 23,
+      "moduleLineCount": 43,
+      "startLine": 20,
+      "endLine": 42,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.polynomial_origin_radical"
       ]
     },
     "LinearStudy.polynomial_cons_X_regular": {
@@ -14464,12 +14974,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 385,
-  "definitionCount": 87,
+  "verifiedTheoremCount": 403,
+  "definitionCount": 89,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED. The actual arbitrary-parameter quotient reduction to complex numbers, finite-dimensionality, local evaluation formula and normalized perfect multiplication pairing are constructed from the original hypotheses. Actual derivations and first-order congruences give the fiber determinant unit factor and transfer of nonvanishing and annihilation. These local functionals are not claimed to be the globally compatible Grothendieck residues; geometric charts supplying the first-order data and global Euler-Jacobi vanishing remain open. Further proved a perfect multiplication pairing for an actual finite-dimensional polynomial complete-intersection quotient over an infinite algebraically closed field, without a local-ring or supplied-pairing hypothesis. Centered polynomial variables are regular; actual maximal residue maps, nonzero maximal socles and a simultaneous functional are constructed. Polynomial quotient diagonal tensors have the actual derivative Jacobian as their multiplication image. A diagonal tensor with explicitly nonzero reduction at every maximal ideal uniquely normalizes a functional and gives the actual trace identity. Nonzero reductions for that specific polynomial difference tensor, its degree bounds, global Euler-Jacobi vanishing and geometric comparison are not yet established.",
+  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED. The actual arbitrary-parameter quotient reduction to complex numbers, finite-dimensionality, local evaluation formula and normalized perfect multiplication pairing are constructed from the original hypotheses. Actual derivations and first-order congruences give the fiber determinant unit factor and transfer of nonvanishing and annihilation. These local functionals are not claimed to be the globally compatible Grothendieck residues; geometric charts supplying the first-order data and global Euler-Jacobi vanishing remain open. Further proved a perfect multiplication pairing for an actual finite-dimensional polynomial complete-intersection quotient over an infinite algebraically closed field, without a local-ring or supplied-pairing hypothesis. Centered polynomial variables are regular; actual maximal residue maps, nonzero maximal socles and a simultaneous functional are constructed. A single universal polynomial difference matrix now yields an actual diagonal tensor whose reduction is proved nonzero at every maximal residue map. Its multiplication image is the actual derivative Jacobian; a normalized pairing with the Jacobian trace formula and a unique functional for the chosen tensor are constructed without a supplied pairing or nonzero-reduction assumption. Difference coefficients have row degree at most each polynomial degree minus one, and their determinant has the sum bound. A quotient with zero locus exactly the origin is proved finite-dimensional by the actual mathlib Nullstellensatz and nilpotent-kernel finiteness theorem. Choice independence of different difference tensors, general no-infinity filtered comparisons, low-degree Euler-Jacobi vanishing and geometric comparison remain UNPROVED.",
   "sourceRanges": {
     "LinearStudy.invariant_restriction_surjective": {
       "path": "Linear/Iteration.lean",
@@ -14565,6 +15075,23 @@
         "exteriorPower.baseChangeIsoForward_surjective",
         "exteriorPower.baseChangeIsoInverse",
         "exteriorPower.baseChange_left_inverse"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_normalized_trace": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 241,
+      "endLine": 258,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.global_diagonal_normalized_trace",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialQuotient_nondegenerate_diagonal",
+        "LinearStudy.polynomialQuotient_perfectPairing"
       ]
     },
     "LinearStudy.pairingDiagonal_generates_annihilator": {
@@ -14672,6 +15199,17 @@
         "LinearStudy.traceElement"
       ]
     },
+    "LinearStudy.polynomial_universal_difference_determinant_degree": {
+      "path": "Linear/PolynomialDifferenceDegree.lean",
+      "startLine": 125,
+      "endLine": 132,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomial_matrix_det_degree",
+        "LinearStudy.polynomial_universal_difference_matrix_degree"
+      ]
+    },
     "LinearStudy.topKoszulCoordinate_map_generator": {
       "path": "Linear/KoszulTop.lean",
       "startLine": 56,
@@ -14691,6 +15229,17 @@
         "LinearStudy.parameter_substitution_hasSubst",
         "LinearStudy.powerSeries_constantCoeff_kernel",
         "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
+      ]
+    },
+    "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 130,
+      "endLine": 152,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal",
+        "LinearStudy.polynomial_centered_variables_regular",
+        "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel"
       ]
     },
     "LinearStudy.regular_transport_ringEquiv": {
@@ -15040,6 +15589,17 @@
       "lineCount": 26,
       "dependencies": [
         "LinearStudy.smulRegular_add_nilpotent"
+      ]
+    },
+    "LinearStudy.polynomial_universal_difference_matrix_general": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 39,
+      "endLine": 60,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleDiagonal_left",
+        "LinearStudy.polynomial_diagonal_difference"
       ]
     },
     "koszulComplex.map": {
@@ -15514,6 +16074,15 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.multiplicationGram",
         "LinearStudy.perfectPairingOfUnitDet"
+      ]
+    },
+    "LinearStudy.polynomialDoubleRightPoint_right": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 30,
+      "endLine": 37,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleRightPoint"
       ]
     },
     "LinearStudy.completeIntersection_lifted_parameter_map_compatible": {
@@ -16060,6 +16629,15 @@
         "koszulComplex.snocLinearEquiv"
       ]
     },
+    "LinearStudy.polynomialDoubleTensorMap_right": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 121,
+      "endLine": 128,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
     "ExteriorAlgebra.eq_algebraMap_add_ι": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
       "startLine": 64,
@@ -16392,6 +16970,13 @@
         "LinearStudy.rescaled_evaluation_relation"
       ]
     },
+    "LinearStudy.polynomial_origin_radical": {
+      "path": "Linear/PolynomialOriginFinite.lean",
+      "startLine": 13,
+      "endLine": 18,
+      "lineCount": 6,
+      "dependencies": []
+    },
     "LinearStudy.oneVariable_closedFiber_jacobian": {
       "path": "Linear/OneVariable.lean",
       "startLine": 33,
@@ -16426,6 +17011,16 @@
         "LinearStudy.liftedParameterMap",
         "LinearStudy.liftedParameterMap_X",
         "LinearStudy.liftedParameterMap_constant"
+      ]
+    },
+    "LinearStudy.polynomial_universal_difference_matrix_degree": {
+      "path": "Linear/PolynomialDifferenceDegree.lean",
+      "startLine": 94,
+      "endLine": 104,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomial_diagonal_difference_degree"
       ]
     },
     "LinearStudy.liftedCoordinateImages_span": {
@@ -16821,6 +17416,16 @@
         "exteriorPower.baseChangeIsoInverse"
       ]
     },
+    "LinearStudy.polynomial_diagonal_difference_degree": {
+      "path": "Linear/PolynomialDifferenceDegree.lean",
+      "startLine": 13,
+      "endLine": 92,
+      "lineCount": 80,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleDiagonal_left"
+      ]
+    },
     "LinearStudy.homogeneous_ideal_vanish_unit_smul_iff": {
       "path": "Linear/Projective.lean",
       "startLine": 173,
@@ -16936,6 +17541,25 @@
         "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel"
       ]
     },
+    "LinearStudy.polynomialQuotient_nondegenerate_diagonal": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 189,
+      "endLine": 239,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.determinant_annihilates_coordinate_ideal",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleTensorMap",
+        "LinearStudy.polynomialDoubleTensorMap_left",
+        "LinearStudy.polynomialDoubleTensorMap_multiplication",
+        "LinearStudy.polynomialDoubleTensorMap_right",
+        "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal",
+        "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero",
+        "LinearStudy.polynomial_universal_difference_matrix_general"
+      ]
+    },
     "LinearStudy.exists_perfectPairing_of_global_scalar_socles": {
       "path": "Linear/ArtinianGlobalPairing.lean",
       "startLine": 125,
@@ -16955,6 +17579,16 @@
       "dependencies": [
         "ExteriorAlgebra.prodEquivProd",
         "ExteriorAlgebra.prodRingEquiv"
+      ]
+    },
+    "LinearStudy.polynomialDoubleTensorMap_multiplication": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 71,
+      "endLine": 83,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleDiagonal",
+        "LinearStudy.polynomialDoubleTensorMap"
       ]
     },
     "LinearStudy.liftedParameterMap_constant": {
@@ -17140,6 +17774,13 @@
         "exteriorPowerProdEquivProd_apply_inr_ιMulti"
       ]
     },
+    "LinearStudy.polynomial_matrix_det_degree": {
+      "path": "Linear/PolynomialDifferenceDegree.lean",
+      "startLine": 106,
+      "endLine": 123,
+      "lineCount": 18,
+      "dependencies": []
+    },
     "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal": {
       "path": "Linear/ArtinianGlobalPairing.lean",
       "startLine": 62,
@@ -17225,6 +17866,22 @@
       "endLine": 16,
       "lineCount": 4,
       "dependencies": []
+    },
+    "LinearStudy.polynomialQuotient_diagonal_unique_functional": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 260,
+      "endLine": 273,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.global_diagonal_unique_functional",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialQuotient_nondegenerate_diagonal",
+        "LinearStudy.polynomialQuotient_perfectPairing",
+        "LinearStudy.tensorFunctionalContraction"
+      ]
     },
     "LinearStudy.polynomialDoubleTensor_multiplication": {
       "path": "Linear/TensorDifference.lean",
@@ -18120,6 +18777,15 @@
         "LinearStudy.regular_transport_ringEquiv"
       ]
     },
+    "LinearStudy.polynomialDoubleTensorMap_left": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 111,
+      "endLine": 118,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
     "LinearStudy.equationIdeal": {
       "path": "Linear/Target.lean",
       "startLine": 27,
@@ -18400,6 +19066,13 @@
         "LinearStudy.firstJet"
       ]
     },
+    "LinearStudy.polynomialDoubleTensorMap": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 62,
+      "endLine": 68,
+      "lineCount": 7,
+      "dependencies": []
+    },
     "LinearStudy.thickeningTop_mul_mk": {
       "path": "Linear/Thickening.lean",
       "startLine": 171,
@@ -18419,6 +19092,15 @@
       "endLine": 19,
       "lineCount": 4,
       "dependencies": []
+    },
+    "LinearStudy.polynomialDoubleRightPoint_left": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 21,
+      "endLine": 27,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.polynomialDoubleRightPoint"
+      ]
     },
     "LinearStudy.thickeningMk_eq_zero_iff": {
       "path": "Linear/Thickening.lean",
@@ -18678,6 +19360,13 @@
         "LinearStudy.powerSeries_diagonal_jacobian_matrix",
         "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal"
       ]
+    },
+    "LinearStudy.polynomialDoubleRightPoint": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 16,
+      "endLine": 18,
+      "lineCount": 3,
+      "dependencies": []
     },
     "LinearStudy.polynomialDoubleTensor_rightReduction": {
       "path": "Linear/TensorDifference.lean",
@@ -19438,6 +20127,18 @@
         "LinearStudy.polynomialDoubleRightZero"
       ]
     },
+    "LinearStudy.polynomialDoubleTensorMap_rightReduction": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 86,
+      "endLine": 105,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingRightReduction_tmul",
+        "LinearStudy.polynomialDoubleRightPoint",
+        "LinearStudy.polynomialDoubleTensorMap"
+      ]
+    },
     "koszulComplex.zeroHomologyLinearEquivAux": {
       "path": "Linear/Vendor/KoszulComplex.lean",
       "startLine": 589,
@@ -19606,6 +20307,15 @@
         "LinearStudy.ParameterRing",
         "LinearStudy.arbitraryParameterLifts_artinian",
         "LinearStudy.equationIdeal"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus": {
+      "path": "Linear/PolynomialOriginFinite.lean",
+      "startLine": 20,
+      "endLine": 42,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.polynomial_origin_radical"
       ]
     },
     "LinearStudy.lemma31_complete": {
@@ -20105,6 +20815,21 @@
       "dependencies": [
         "LinearStudy.finiteFlat_residueTensor_jacobian_nonzero",
         "LinearStudy.primitive_of_residue_tensor_nonzero"
+      ]
+    },
+    "LinearStudy.polynomial_universal_determinant_rightReduction_ne_zero": {
+      "path": "Linear/PolynomialDoubleFiber.lean",
+      "startLine": 154,
+      "endLine": 187,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.polynomialDoubleRightPoint",
+        "LinearStudy.polynomialDoubleRightPoint_left",
+        "LinearStudy.polynomialDoubleRightPoint_right",
+        "LinearStudy.polynomialDoubleTensorMap",
+        "LinearStudy.polynomialDoubleTensorMap_rightReduction",
+        "LinearStudy.polynomial_coefficientDeterminant_ne_zero_at_point"
       ]
     },
     "ExteriorAlgebra.exists_decomp": {
