@@ -190,6 +190,16 @@ LinearStudy.mem_linearEquationSubspace.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :
   Projectivization.mk ℂ v hv ∈ LinearStudy.linearEquationSubspace equations ↔ ∀ (i : ι), (equations i) v = 0
 'LinearStudy.mem_linearEquationSubspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.oneVariable_unit_factorization.{u_1} {K : Type u_1} [Field K] (H : PowerSeries K) (hH : H ≠ 0)
+  (h0 : PowerSeries.constantCoeff H = 0) : ∃ s u, IsUnit u ∧ H = u * PowerSeries.X ^ (s + 1)
+'LinearStudy.oneVariable_unit_factorization' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.oneVariable_closedFiber_jacobian.{u_1} {K : Type u_1} [Field K] [CharZero K] (H : PowerSeries K)
+  (hH : H ≠ 0) (h0 : PowerSeries.constantCoeff H = 0) :
+  have I := Ideal.span {H};
+  let A := PowerSeries K ⧸ I;
+  have delta := (Ideal.Quotient.mk I) (PowerSeries.derivative H);
+  IsArtinianRing A ∧ (nilradical A).IsMaximal ∧ Submodule.annihilator (nilradical A) = Ideal.span {delta} ∧ delta ≠ 0
+'LinearStudy.oneVariable_closedFiber_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.multiplicationToDual.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A] [Algebra B A]
   (ell : A →ₗ[B] B) : A →ₗ[B] A →ₗ[B] B
 'LinearStudy.multiplicationToDual' depends on axioms: [propext, Quot.sound]
@@ -320,6 +330,97 @@ LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing 
 'LinearStudy.relativeJacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.Lemma31Goal (r c : ℕ) : Prop
 'LinearStudy.Lemma31Goal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningIdeal.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : Ideal (PowerSeries B)
+'LinearStudy.thickeningIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningMk.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : PowerSeries B →+* LinearStudy.Thickening B s
+'LinearStudy.thickeningMk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningX.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : LinearStudy.Thickening B s
+'LinearStudy.thickeningX' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningTop.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : LinearStudy.Thickening B s
+'LinearStudy.thickeningTop' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningMk_surjective.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  Function.Surjective ⇑(LinearStudy.thickeningMk B s)
+'LinearStudy.thickeningMk_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningMk_eq_zero_iff.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (P : PowerSeries B) :
+  (LinearStudy.thickeningMk B s) P = 0 ↔ PowerSeries.X ^ (s + 1) ∣ P
+'LinearStudy.thickeningMk_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningX_pow.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : LinearStudy.thickeningX B s ^ (s + 1) = 0
+'LinearStudy.thickeningX_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningX_nilpotent.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : IsNilpotent (LinearStudy.thickeningX B s)
+'LinearStudy.thickeningX_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_X_annihilation_iff.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (P : PowerSeries B) :
+  LinearStudy.thickeningX B s * (LinearStudy.thickeningMk B s) P = 0 ↔ PowerSeries.X ^ s ∣ P
+'LinearStudy.thickening_X_annihilation_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_X_annihilator.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  Submodule.annihilator (Ideal.span {LinearStudy.thickeningX B s}) = Ideal.span {LinearStudy.thickeningTop B s}
+'LinearStudy.thickening_X_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningTop_nonzero.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [Nontrivial B] :
+  LinearStudy.thickeningTop B s ≠ 0
+'LinearStudy.thickeningTop_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningReduction.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : LinearStudy.Thickening B s →+* B
+'LinearStudy.thickeningReduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningReduction_mk.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (P : PowerSeries B) :
+  (LinearStudy.thickeningReduction B s) ((LinearStudy.thickeningMk B s) P) = PowerSeries.constantCoeff P
+'LinearStudy.thickeningReduction_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningReduction_surjective.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  Function.Surjective ⇑(LinearStudy.thickeningReduction B s)
+'LinearStudy.thickeningReduction_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningReduction_kernel.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  RingHom.ker (LinearStudy.thickeningReduction B s) = Ideal.span {LinearStudy.thickeningX B s}
+'LinearStudy.thickeningReduction_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_nilradical.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [IsReduced B] :
+  nilradical (LinearStudy.Thickening B s) = Ideal.span {LinearStudy.thickeningX B s}
+'LinearStudy.thickening_nilradical' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_nilradical_annihilator.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [IsReduced B] :
+  Submodule.annihilator (nilradical (LinearStudy.Thickening B s)) = Ideal.span {LinearStudy.thickeningTop B s}
+'LinearStudy.thickening_nilradical_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) : LinearStudy.Thickening B s
+'LinearStudy.thickeningJacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian_eq.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  LinearStudy.thickeningJacobian B s = ↑(s + 1) * LinearStudy.thickeningTop B s
+'LinearStudy.thickeningJacobian_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian_unit_twist.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (u : PowerSeries B) :
+  (LinearStudy.thickeningMk B s) (PowerSeries.derivative (u * PowerSeries.X ^ (s + 1))) =
+    (LinearStudy.thickeningMk B s) u * LinearStudy.thickeningJacobian B s
+'LinearStudy.thickeningJacobian_unit_twist' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian_span.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (hunit : IsUnit ↑(s + 1)) :
+  Ideal.span {LinearStudy.thickeningJacobian B s} = Ideal.span {LinearStudy.thickeningTop B s}
+'LinearStudy.thickeningJacobian_span' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian_annihilator.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [IsReduced B]
+  (hunit : IsUnit ↑(s + 1)) :
+  Submodule.annihilator (nilradical (LinearStudy.Thickening B s)) = Ideal.span {LinearStudy.thickeningJacobian B s}
+'LinearStudy.thickeningJacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningJacobian_nonzero.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [Nontrivial B]
+  (hunit : IsUnit ↑(s + 1)) : LinearStudy.thickeningJacobian B s ≠ 0
+'LinearStudy.thickeningJacobian_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningTop_mul_mk.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (P : PowerSeries B) :
+  LinearStudy.thickeningTop B s * (LinearStudy.thickeningMk B s) P =
+    (LinearStudy.thickeningMk B s) (PowerSeries.C (PowerSeries.constantCoeff P)) * LinearStudy.thickeningTop B s
+'LinearStudy.thickeningTop_mul_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_nilradical_scalar_generation.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) [IsReduced B]
+  (a : LinearStudy.Thickening B s) :
+  a ∈ Submodule.annihilator (nilradical (LinearStudy.Thickening B s)) ↔
+    ∃ b, a = (LinearStudy.thickeningMk B s) (PowerSeries.C b) * LinearStudy.thickeningTop B s
+'LinearStudy.thickening_nilradical_scalar_generation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningTop_scalar_eq_zero_iff.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) (b : B) :
+  (LinearStudy.thickeningMk B s) (PowerSeries.C b) * LinearStudy.thickeningTop B s = 0 ↔ b = 0
+'LinearStudy.thickeningTop_scalar_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickeningTop_scalars_injective.{u_1} (B : Type u_1) [CommRing B] (s : ℕ) :
+  Function.Injective fun b => (LinearStudy.thickeningMk B s) (PowerSeries.C b) * LinearStudy.thickeningTop B s
+'LinearStudy.thickeningTop_scalars_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_nilradical_maximal.{u_2} {K : Type u_2} [Field K] (s : ℕ) :
+  (nilradical (LinearStudy.Thickening K s)).IsMaximal
+'LinearStudy.thickening_nilradical_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_closedFiber_artinian.{u_2} {K : Type u_2} [Field K] (s : ℕ) :
+  IsArtinianRing (LinearStudy.Thickening K s)
+'LinearStudy.thickening_closedFiber_artinian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.thickening_closedFiber_jacobian.{u_2} {K : Type u_2} [Field K] [CharZero K] (s : ℕ) :
+  IsArtinianRing (LinearStudy.Thickening K s) ∧
+    (nilradical (LinearStudy.Thickening K s)).IsMaximal ∧
+      Submodule.annihilator (nilradical (LinearStudy.Thickening K s)) =
+          Ideal.span {LinearStudy.thickeningJacobian K s} ∧
+        LinearStudy.thickeningJacobian K s ≠ 0
+'LinearStudy.thickening_closedFiber_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 def LinearStudy.LinearityTheoremGoal : Prop :=
 ∀ (n : ℕ) (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),
   1 < f.degree → Function.Surjective f.onPoints → f.onPoints ⁻¹' V.zeroSet = V.zeroSet → ∃ W, ↑W = V.zeroSet

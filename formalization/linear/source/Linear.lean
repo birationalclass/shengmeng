@@ -13,3 +13,4 @@ public import Linear.Iteration
 public import Linear.Projective
 public import Linear.Evaluation
 public import Linear.LinearSubspace
+public import Linear.OneVariable

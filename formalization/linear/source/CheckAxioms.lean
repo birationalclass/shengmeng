@@ -113,6 +113,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.mem_linearEquationSubmodule
 #check LinearStudy.mem_linearEquationSubspace
 #print axioms LinearStudy.mem_linearEquationSubspace
+#check LinearStudy.oneVariable_unit_factorization
+#print axioms LinearStudy.oneVariable_unit_factorization
+#check LinearStudy.oneVariable_closedFiber_jacobian
+#print axioms LinearStudy.oneVariable_closedFiber_jacobian
 #check LinearStudy.multiplicationToDual
 #print axioms LinearStudy.multiplicationToDual
 #check LinearStudy.multiplicationGram
@@ -189,6 +193,66 @@ set_option pp.proofs false
 #print axioms LinearStudy.relativeJacobian
 #check LinearStudy.Lemma31Goal
 #print axioms LinearStudy.Lemma31Goal
+#check LinearStudy.thickeningIdeal
+#print axioms LinearStudy.thickeningIdeal
+#check LinearStudy.thickeningMk
+#print axioms LinearStudy.thickeningMk
+#check LinearStudy.thickeningX
+#print axioms LinearStudy.thickeningX
+#check LinearStudy.thickeningTop
+#print axioms LinearStudy.thickeningTop
+#check LinearStudy.thickeningMk_surjective
+#print axioms LinearStudy.thickeningMk_surjective
+#check LinearStudy.thickeningMk_eq_zero_iff
+#print axioms LinearStudy.thickeningMk_eq_zero_iff
+#check LinearStudy.thickeningX_pow
+#print axioms LinearStudy.thickeningX_pow
+#check LinearStudy.thickeningX_nilpotent
+#print axioms LinearStudy.thickeningX_nilpotent
+#check LinearStudy.thickening_X_annihilation_iff
+#print axioms LinearStudy.thickening_X_annihilation_iff
+#check LinearStudy.thickening_X_annihilator
+#print axioms LinearStudy.thickening_X_annihilator
+#check LinearStudy.thickeningTop_nonzero
+#print axioms LinearStudy.thickeningTop_nonzero
+#check LinearStudy.thickeningReduction
+#print axioms LinearStudy.thickeningReduction
+#check LinearStudy.thickeningReduction_mk
+#print axioms LinearStudy.thickeningReduction_mk
+#check LinearStudy.thickeningReduction_surjective
+#print axioms LinearStudy.thickeningReduction_surjective
+#check LinearStudy.thickeningReduction_kernel
+#print axioms LinearStudy.thickeningReduction_kernel
+#check LinearStudy.thickening_nilradical
+#print axioms LinearStudy.thickening_nilradical
+#check LinearStudy.thickening_nilradical_annihilator
+#print axioms LinearStudy.thickening_nilradical_annihilator
+#check LinearStudy.thickeningJacobian
+#print axioms LinearStudy.thickeningJacobian
+#check LinearStudy.thickeningJacobian_eq
+#print axioms LinearStudy.thickeningJacobian_eq
+#check LinearStudy.thickeningJacobian_unit_twist
+#print axioms LinearStudy.thickeningJacobian_unit_twist
+#check LinearStudy.thickeningJacobian_span
+#print axioms LinearStudy.thickeningJacobian_span
+#check LinearStudy.thickeningJacobian_annihilator
+#print axioms LinearStudy.thickeningJacobian_annihilator
+#check LinearStudy.thickeningJacobian_nonzero
+#print axioms LinearStudy.thickeningJacobian_nonzero
+#check LinearStudy.thickeningTop_mul_mk
+#print axioms LinearStudy.thickeningTop_mul_mk
+#check LinearStudy.thickening_nilradical_scalar_generation
+#print axioms LinearStudy.thickening_nilradical_scalar_generation
+#check LinearStudy.thickeningTop_scalar_eq_zero_iff
+#print axioms LinearStudy.thickeningTop_scalar_eq_zero_iff
+#check LinearStudy.thickeningTop_scalars_injective
+#print axioms LinearStudy.thickeningTop_scalars_injective
+#check LinearStudy.thickening_nilradical_maximal
+#print axioms LinearStudy.thickening_nilradical_maximal
+#check LinearStudy.thickening_closedFiber_artinian
+#print axioms LinearStudy.thickening_closedFiber_artinian
+#check LinearStudy.thickening_closedFiber_jacobian
+#print axioms LinearStudy.thickening_closedFiber_jacobian
 #print LinearStudy.LinearityTheoremGoal
 #print LinearStudy.HomogeneousEndomorphism
 #print LinearStudy.IntegralProjectiveEquations
