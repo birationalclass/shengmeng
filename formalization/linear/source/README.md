@@ -53,6 +53,14 @@ pairing from explicit closed-fiber socle inputs on the actual tensor product.
 rank times the dual reduction generator. The Jacobian/trace identity is still
 unproved, not an implicit consequence of choosing a perfect pairing.
 
+`FiniteSpecialization.lean`, `SocleTransport.lean` and
+`TensorSpecialization.lean` now discharge those socle inputs for the actual
+finite flat power-series complete intersection. The closed-fiber finite
+dimension and regularity are derived, its residue-field tensor comparison
+and scalar formulas are constructed, and its scalar socle lifts to a
+B-valued perfect multiplication pairing. The general derivative-Jacobian
+identity remains a separate unproved obligation.
+
 `ParameterQuotient.lean` proves the Artinian and maximal-ideal conclusions
 for every arbitrary parameter lift in the exact multivariable target. The
 Jacobian's nonzero quotient image and socle generation remain unproved.

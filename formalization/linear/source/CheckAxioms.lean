@@ -75,6 +75,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.rescaled_evaluation_relation
 #check LinearStudy.rescaled_evaluation_relation_zero
 #print axioms LinearStudy.rescaled_evaluation_relation_zero
+#check LinearStudy.quotientSpecialization_finite
+#print axioms LinearStudy.quotientSpecialization_finite
+#check LinearStudy.powerSeries_specialized_quotient_finite
+#print axioms LinearStudy.powerSeries_specialized_quotient_finite
+#check LinearStudy.powerSeries_specialized_quotient_artinian
+#print axioms LinearStudy.powerSeries_specialized_quotient_artinian
+#check LinearStudy.finiteFlat_closedFiber_traceElement
+#print axioms LinearStudy.finiteFlat_closedFiber_traceElement
 #check LinearStudy.firstJet
 #print axioms LinearStudy.firstJet
 #check LinearStudy.firstJet_fst
@@ -385,12 +393,36 @@ set_option pp.proofs false
 #print axioms LinearStudy.perfectPairingOfSocle
 #check LinearStudy.exists_perfectPairing_of_scalar_socle
 #print axioms LinearStudy.exists_perfectPairing_of_scalar_socle
+#check LinearStudy.ringEquiv_socle_forward
+#print axioms LinearStudy.ringEquiv_socle_forward
+#check LinearStudy.ringEquiv_socle_iff
+#print axioms LinearStudy.ringEquiv_socle_iff
+#check LinearStudy.scalar_socle_transport
+#print axioms LinearStudy.scalar_socle_transport
 #check LinearStudy.equationIdeal
 #print axioms LinearStudy.equationIdeal
 #check LinearStudy.relativeJacobian
 #print axioms LinearStudy.relativeJacobian
 #check LinearStudy.Lemma31Goal
 #print axioms LinearStudy.Lemma31Goal
+#check LinearStudy.powerSeries_maximalIdeal_eq_coordinates
+#print axioms LinearStudy.powerSeries_maximalIdeal_eq_coordinates
+#check LinearStudy.parameterIdeal_map_eq_residueIdeal
+#print axioms LinearStudy.parameterIdeal_map_eq_residueIdeal
+#check LinearStudy.powerSeriesResidueTensorEquiv
+#print axioms LinearStudy.powerSeriesResidueTensorEquiv
+#check LinearStudy.powerSeriesResidueTensorEquiv_one_tmul
+#print axioms LinearStudy.powerSeriesResidueTensorEquiv_one_tmul
+#check LinearStudy.powerSeriesResidueFieldEquiv
+#print axioms LinearStudy.powerSeriesResidueFieldEquiv
+#check LinearStudy.powerSeriesResidueFieldEquiv_mk
+#print axioms LinearStudy.powerSeriesResidueFieldEquiv_mk
+#check LinearStudy.powerSeriesResidueTensorEquiv_algebraMap
+#print axioms LinearStudy.powerSeriesResidueTensorEquiv_algebraMap
+#check LinearStudy.powerSeriesResidueTensorEquiv_smul
+#print axioms LinearStudy.powerSeriesResidueTensorEquiv_smul
+#check LinearStudy.finiteFlat_powerSeries_relative_perfectPairing
+#print axioms LinearStudy.finiteFlat_powerSeries_relative_perfectPairing
 #check LinearStudy.thickeningIdeal
 #print axioms LinearStudy.thickeningIdeal
 #check LinearStudy.thickeningMk

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-06T15:41:34+08:00",
+  "checkedAt": "2026-10-06T16:42:26+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "b2e863c05212917e4147e794cb643212da64109191ec385b0f7266543d053ef2",
-      "lineCount": 654
+      "sha256": "913e184ecb7ef30c267058d65ce7fa679604508036b0b01644ea500ce50ce860",
+      "lineCount": 686
     },
     {
       "path": "Linear/Degree.lean",
@@ -35,6 +35,11 @@
       "path": "Linear/Evaluation.lean",
       "sha256": "041fb9e463c16289f805981609ad92cf2d6ca52b5a64edb2f31f1116e39ef8eb",
       "lineCount": 122
+    },
+    {
+      "path": "Linear/FiniteSpecialization.lean",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "lineCount": 97
     },
     {
       "path": "Linear/FirstJet.lean",
@@ -162,9 +167,19 @@
       "lineCount": 125
     },
     {
+      "path": "Linear/SocleTransport.lean",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "lineCount": 45
+    },
+    {
       "path": "Linear/Target.lean",
       "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
       "lineCount": 62
+    },
+    {
+      "path": "Linear/TensorSpecialization.lean",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lineCount": 194
     },
     {
       "path": "Linear/Thickening.lean",
@@ -193,8 +208,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "c54a3312bd7b89c74bcfe97c60fb3c1dea3c64ea3d25b41ff35ed6ec83bae2fd",
-      "lineCount": 34
+      "sha256": "c7b2ef1fae06f6d8af63efe21b85278daf3218e652f9c9a0520b684e6b6ff2c6",
+      "lineCount": 37
     }
   ],
   "declarations": {
@@ -771,6 +786,70 @@
       "formalType": "LinearStudy.rescaled_evaluation_relation_zero.{u_1, u_2, u_5} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  {σ : Type u_5} {P : MvPolynomial σ K} {t : ℕ} (hP : P.IsHomogeneous t) (points : ι → σ → K) (scalars : ι → Kˣ)\n  (weights : ι → K) (h : ∑ i, weights i * (MvPolynomial.eval (points i)) P = 0) :\n  ∑ i, weights i / ↑(scalars i) ^ t * (MvPolynomial.eval (↑(scalars i) • points i)) P = 0",
       "sha256": "041fb9e463c16289f805981609ad92cf2d6ca52b5a64edb2f31f1116e39ef8eb",
       "lines": 122
+    },
+    "LinearStudy.quotientSpecialization_finite": {
+      "declaration": "LinearStudy.quotientSpecialization_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteSpecialization.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotientSpecialization_finite.{u_1, u_2, u_3, u_4} {B : Type u_1} {K : Type u_2} {R : Type u_3}\n  {S : Type u_4} [CommRing B] [CommRing K] [CommRing R] [CommRing S] [Algebra B R] [Algebra K S] (cc : B →+* K)\n  (f : R →+* S) (hf : Function.Surjective ⇑f) (hcoeff : ∀ (b : B), f ((algebraMap B R) b) = (algebraMap K S) (cc b))\n  (I : Ideal R) [Module.Finite B (R ⧸ I)] : Module.Finite K (S ⧸ Ideal.map f I)",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "lines": 97
+    },
+    "LinearStudy.powerSeries_specialized_quotient_finite": {
+      "declaration": "LinearStudy.powerSeries_specialized_quotient_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteSpecialization.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_specialized_quotient_finite.{u_5} {F : Type u_5} [Field F] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) F))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) F)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) F) ⧸ Ideal.span (Set.range H))] :\n  FiniteDimensional F\n    (MvPowerSeries (Fin c) F ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i)))",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "lines": 97
+    },
+    "LinearStudy.powerSeries_specialized_quotient_artinian": {
+      "declaration": "LinearStudy.powerSeries_specialized_quotient_artinian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteSpecialization.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_specialized_quotient_artinian.{u_5} {F : Type u_5} [Field F] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) F))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) F)\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) F) ⧸ Ideal.span (Set.range H))] :\n  IsArtinianRing (MvPowerSeries (Fin c) F ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i)))",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "lines": 97
+    },
+    "LinearStudy.finiteFlat_closedFiber_traceElement": {
+      "declaration": "LinearStudy.finiteFlat_closedFiber_traceElement",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteSpecialization.lean",
+      "line": 72,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_closedFiber_traceElement.{u_5} {F : Type u_5} [Field F] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) F))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) F)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) F)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) F) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) F)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) F) ⧸ Ideal.span (Set.range H))] :\n  ∃ M,\n    (M.mulVec MvPowerSeries.X = fun i => LinearStudy.parameterSpecialization (H i)) ∧\n      ∃ p,\n        p.functional\n              ((Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i)))) M.det) =\n            1 ∧\n          LinearStudy.traceElement p =\n            Module.finrank F\n                (MvPowerSeries (Fin (n + 1)) F ⧸\n                  Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))) •\n              (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i)))) M.det",
+      "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
+      "lines": 97
     },
     "LinearStudy.firstJet": {
       "declaration": "LinearStudy.firstJet",
@@ -3224,6 +3303,51 @@
       "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
       "lines": 125
     },
+    "LinearStudy.ringEquiv_socle_forward": {
+      "declaration": "LinearStudy.ringEquiv_socle_forward",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SocleTransport.lean",
+      "line": 9,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringEquiv_socle_forward.{u_1, u_2} {C : Type u_1} {D : Type u_2} [CommRing C] [CommRing D] [IsLocalRing C]\n  [IsLocalRing D] (e : C ≃+* D) (a : C) (ha : a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal C)) :\n  e a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal D)",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "lines": 45
+    },
+    "LinearStudy.ringEquiv_socle_iff": {
+      "declaration": "LinearStudy.ringEquiv_socle_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SocleTransport.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringEquiv_socle_iff.{u_1, u_2} {C : Type u_1} {D : Type u_2} [CommRing C] [CommRing D] [IsLocalRing C]\n  [IsLocalRing D] (e : C ≃+* D) (a : C) :\n  a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal C) ↔ e a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal D)",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "lines": 45
+    },
+    "LinearStudy.scalar_socle_transport": {
+      "declaration": "LinearStudy.scalar_socle_transport",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SocleTransport.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.scalar_socle_transport.{u_1, u_2, u_3, u_4} {C : Type u_1} {D : Type u_2} [CommRing C] [CommRing D]\n  [IsLocalRing C] [IsLocalRing D] {k : Type u_3} {K : Type u_4} [Field k] [Field K] [Algebra k C] [Algebra K D]\n  (e : C ≃+* D) (ef : k ≃+* K) (hscalar : ∀ (u : k) (a : C), e (u • a) = ef u • e a) (delta : D)\n  (hsoc : ∀ a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal D), ∃ u, a = u • delta) (a : C) :\n  a ∈ Submodule.annihilator (IsLocalRing.maximalIdeal C) → ∃ u, a = u • e.symm delta",
+      "sha256": "b35c088a3aaa192b97975fd7ef6cd1d239bee98653cfd8ee1a6c62ca9af7dab7",
+      "lines": 45
+    },
     "LinearStudy.equationIdeal": {
       "declaration": "LinearStudy.equationIdeal",
       "kind": "def",
@@ -3271,6 +3395,150 @@
       "formalType": "LinearStudy.Lemma31Goal (r c : ℕ) : Prop",
       "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
       "lines": 62
+    },
+    "LinearStudy.powerSeries_maximalIdeal_eq_coordinates": {
+      "declaration": "LinearStudy.powerSeries_maximalIdeal_eq_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_maximalIdeal_eq_coordinates.{u_1} {K : Type u_1} [Field K] {r : ℕ} :\n  IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K) = Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.parameterIdeal_map_eq_residueIdeal": {
+      "declaration": "LinearStudy.parameterIdeal_map_eq_residueIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterIdeal_map_eq_residueIdeal.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H)))\n      (Ideal.span (Set.range fun i => MvPowerSeries.C (MvPowerSeries.X i))) =\n    Ideal.map\n      (algebraMap (MvPowerSeries (Fin (r + 1)) K)\n        (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)))\n      (IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K))",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueTensorEquiv": {
+      "declaration": "LinearStudy.powerSeriesResidueTensorEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 46,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesResidueTensorEquiv.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  TensorProduct (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (r + 1)) K ⧸ IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K))\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H)) ≃+*\n    MvPowerSeries (Fin c) K ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueTensorEquiv_one_tmul": {
+      "declaration": "LinearStudy.powerSeriesResidueTensorEquiv_one_tmul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 59,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesResidueTensorEquiv_one_tmul.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (z : MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesResidueTensorEquiv H)\n      (1 ⊗ₜ[MvPowerSeries (Fin (r + 1)) K] (Ideal.Quotient.mk (Ideal.span (Set.range H))) z) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (LinearStudy.parameterSpecialization z)",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueFieldEquiv": {
+      "declaration": "LinearStudy.powerSeriesResidueFieldEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.powerSeriesResidueFieldEquiv.{u_1} {K : Type u_1} [Field K] {r : ℕ} :\n  MvPowerSeries (Fin (r + 1)) K ⧸ IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K) ≃+* K",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueFieldEquiv_mk": {
+      "declaration": "LinearStudy.powerSeriesResidueFieldEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 92,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesResidueFieldEquiv_mk.{u_1} {K : Type u_1} [Field K] {r : ℕ} (b : MvPowerSeries (Fin (r + 1)) K) :\n  LinearStudy.powerSeriesResidueFieldEquiv\n      ((Ideal.Quotient.mk (IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K))) b) =\n    MvPowerSeries.constantCoeff b",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueTensorEquiv_algebraMap": {
+      "declaration": "LinearStudy.powerSeriesResidueTensorEquiv_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 95,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesResidueTensorEquiv_algebraMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (u : MvPowerSeries (Fin (r + 1)) K ⧸ IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K)) :\n  (LinearStudy.powerSeriesResidueTensorEquiv H) (u ⊗ₜ[MvPowerSeries (Fin (r + 1)) K] 1) =\n    (algebraMap K (MvPowerSeries (Fin c) K ⧸ Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))))\n      (LinearStudy.powerSeriesResidueFieldEquiv u)",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.powerSeriesResidueTensorEquiv_smul": {
+      "declaration": "LinearStudy.powerSeriesResidueTensorEquiv_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 120,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeriesResidueTensorEquiv_smul.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (H : Fin c → MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K))\n  (u : MvPowerSeries (Fin (r + 1)) K ⧸ IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K))\n  (a :\n    TensorProduct (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (r + 1)) K ⧸ IsLocalRing.maximalIdeal (MvPowerSeries (Fin (r + 1)) K))\n      (MvPowerSeries (Fin c) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))) :\n  (LinearStudy.powerSeriesResidueTensorEquiv H) (u • a) =\n    LinearStudy.powerSeriesResidueFieldEquiv u • (LinearStudy.powerSeriesResidueTensorEquiv H) a",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
+    },
+    "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing": {
+      "declaration": "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TensorSpecialization.lean",
+      "line": 144,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing.{u_2} {K : Type u_2} [Field K] {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) K)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K) ⧸ Ideal.span (Set.range H))] :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "8d363daab496b9e930b3866c44f4fb9d83def1eee99d0df83b093c4f23d54b8f",
+      "lines": 194
     },
     "LinearStudy.thickeningIdeal": {
       "declaration": "LinearStudy.thickeningIdeal",
@@ -5431,8 +5699,8 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 182,
-  "definitionCount": 52,
+  "verifiedTheoremCount": 196,
+  "definitionCount": 54,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,

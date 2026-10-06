@@ -32,3 +32,6 @@ public import Linear.PowerSeriesSocle
 public import Linear.PowerSeriesAugmentation
 public import Linear.PowerSeriesSpecialization
 public import Linear.RegularSpecialization
+public import Linear.FiniteSpecialization
+public import Linear.SocleTransport
+public import Linear.TensorSpecialization
