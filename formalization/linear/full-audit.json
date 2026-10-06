@@ -1,12 +1,270 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 488,
-  "verifiedTheorems": 319,
-  "definitions": 79,
+  "audited": 509,
+  "verifiedTheorems": 339,
+  "definitions": 80,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
+    {
+      "declaration": "LinearStudy.annihilates_nilradical_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilates_nilradical_ringEquiv.{u_1, u_2} {A : Type u_1} {D : Type u_2} [CommRing A] [CommRing D]\n  (e : D ≃+* A) (x : D) : LinearStudy.Annihilates (nilradical D) x ↔ LinearStudy.Annihilates (nilradical A) (e x)",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 14,
+      "moduleLineCount": 115,
+      "startLine": 12,
+      "endLine": 25,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.annihilator_scalar_generation_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilator_scalar_generation_ringEquiv.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {D : Type u_3}\n  [CommRing B] [CommRing A] [CommRing D] [Algebra B A] [Algebra B D] (e : D ≃+* A) (q' : D →ₐ[B] B)\n  (hq' : RingHom.ker q'.toRingHom = nilradical D) (delta : A) (hd : LinearStudy.Annihilates (nilradical A) delta)\n  (hgen : ∀ (x : A), LinearStudy.Annihilates (nilradical A) x → ∃ b, x = b • delta) (x : D)\n  (hx : LinearStudy.Annihilates (nilradical D) x) : ∃ b, x = b • e.symm delta",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 24,
+      "moduleLineCount": 115,
+      "startLine": 27,
+      "endLine": 50,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.multiplication_factors_through_reduction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_parameter_pairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_parameter_pairing {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r)\n  (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)] :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 13,
+      "moduleLineCount": 115,
+      "startLine": 52,
+      "endLine": 64,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range tau))) (LinearStudy.relativeJacobian H) ≠ 0",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 49,
+      "moduleLineCount": 115,
+      "startLine": 66,
+      "endLine": 114,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.annihilator_generator_survives_new_parameterIdeal",
+        "LinearStudy.annihilator_scalar_generation_ringEquiv",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.completeIntersection_parameter_pairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.nonzero_socle_element_generates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_socle_element_generates.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [IsLocalRing A] (epsilon : A)\n  (hgen : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • epsilon) (delta : A)\n  (hd : delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)) (hne : delta ≠ 0) :\n  Submodule.annihilator (IsLocalRing.maximalIdeal A) = Ideal.span {delta}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 18,
+      "moduleLineCount": 197,
+      "startLine": 10,
+      "endLine": 27,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.finiteFlat_standard_closed_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_standard_closed_socle {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) ℂ)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) ℂ)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))] :\n  let A := MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H);\n  have J := Ideal.span (Set.range fun i => (algebraMap (MvPowerSeries (Fin (r + 1)) ℂ) A) (MvPowerSeries.X i));\n  ∀ (delta : A ⧸ J) [inst : IsLocalRing (A ⧸ J)],\n    delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) →\n      delta ≠ 0 → Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) = Ideal.span {delta}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 57,
+      "moduleLineCount": 197,
+      "startLine": 29,
+      "endLine": 85,
+      "lineCount": 57,
+      "dependencies": [
+        "LinearStudy.ideal_ofFn",
+        "LinearStudy.nonzero_socle_element_generates",
+        "LinearStudy.parameterSpecialization",
+        "LinearStudy.powerSeriesClosedQuotientEquiv",
+        "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle",
+        "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal",
+        "LinearStudy.powerSeries_specialized_equations_regular",
+        "LinearStudy.powerSeries_specialized_equations_zeroConstant",
+        "LinearStudy.powerSeries_specialized_quotient_artinian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.annihilates_quotient_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilates_quotient_image.{u_1} {A : Type u_1} [CommRing A] (I J : Ideal A) (delta : A)\n  (hd : LinearStudy.Annihilates I delta) :\n  (Ideal.Quotient.mk J) delta ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) I)",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 9,
+      "moduleLineCount": 197,
+      "startLine": 87,
+      "endLine": 95,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_socle_generation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))) =\n    Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 90,
+      "moduleLineCount": 197,
+      "startLine": 97,
+      "endLine": 186,
+      "lineCount": 90,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.annihilates_quotient_image",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_standard_closed_socle",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.parameterQuotient_local_artinian",
+        "LinearStudy.parameterQuotient_nilradical_image_isMaximal",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.lemma31_complete",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 188,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 9,
+      "moduleLineCount": 197,
+      "startLine": 188,
+      "endLine": 196,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.Lemma31Goal",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_parameterQuotient_artinian",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
     {
       "declaration": "LinearStudy.powerSeriesQuotient_variable_nilpotent",
       "kind": "theorem",
@@ -3523,6 +3781,325 @@
         "LinearStudy.liftedParameterCoordinateEquiv",
         "LinearStudy.liftedParameterCoordinateEquiv_parameter",
         "LinearStudy.liftedParameterMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  [Fintype ι] [DecidableEq ι] [Nonempty ι] (f : MvPowerSeries ι K →+* MvPowerSeries ι K)\n  (hX : Ideal.span (Set.range fun i => f (MvPowerSeries.X i)) = IsLocalRing.maximalIdeal (MvPowerSeries ι K))\n  (hC : ∀ (k : K), f (MvPowerSeries.C k) = MvPowerSeries.C k) : Function.Bijective ⇑f",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 25,
+      "moduleLineCount": 253,
+      "startLine": 14,
+      "endLine": 38,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.noetherian_ringEnd_injective_of_surjective",
+        "LinearStudy.powerSeries_constantCoeff_kernel",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_constant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (k : K) :\n  (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.C k)) =\n    MvPowerSeries.C (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 17,
+      "moduleLineCount": 253,
+      "startLine": 40,
+      "endLine": 56,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.liftedParameterMap_constant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterMap_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (k : K) :\n  (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.C k) =\n    (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)) (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 13,
+      "moduleLineCount": 253,
+      "startLine": 58,
+      "endLine": 70,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 72,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff.{u_1, u_2} {B : Type u_1} {ι : Type u_2} [CommRing B]\n  [Fintype ι] [DecidableEq ι] [Nonempty ι] (a : MvPowerSeries ι B →ₐ[B] B) (ha : ∀ (i : ι), a (MvPowerSeries.X i) = 0)\n  (f : MvPowerSeries ι B) : a f = MvPowerSeries.constantCoeff f",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 19,
+      "moduleLineCount": 253,
+      "startLine": 72,
+      "endLine": 90,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.centered_lifts_parameter_map_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.centered_lifts_parameter_map_exists.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))\n  (q : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (hq : ∀ (j : Fin c), q ((Ideal.Quotient.mk I) (MvPowerSeries.X j)) = 0)\n  (tau : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  ∃ phi,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      ∀ (k : K),\n        phi (MvPowerSeries.C k) =\n          (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I))\n            (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 33,
+      "moduleLineCount": 253,
+      "startLine": 91,
+      "endLine": 123,
+      "lineCount": 33,
+      "dependencies": [
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.liftedParameterMap",
+        "LinearStudy.liftedParameterMap_X",
+        "LinearStudy.liftedParameterMap_constant"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_map_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 124,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_map_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ phi,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      ∀ (k : ℂ),\n        phi (MvPowerSeries.C k) =\n          (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 47,
+      "moduleLineCount": 253,
+      "startLine": 124,
+      "endLine": 170,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_lifts_parameter_map_exists",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_map_compatible",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 171,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_map_compatible {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c)\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ phi alpha,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      (∀ (k : ℂ),\n          phi (MvPowerSeries.C k) =\n            (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)) ∧\n        ∀ (b : LinearStudy.ParameterRing r), q (phi b) = alpha b",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 30,
+      "moduleLineCount": 253,
+      "startLine": 171,
+      "endLine": 200,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_parameter_map_exists",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 202,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ e,\n    (∀ (i : Fin r),\n        (Ideal.Quotient.mk (LinearStudy.equationIdeal H)) (e (MvPowerSeries.C (MvPowerSeries.X i))) = tau i) ∧\n      ∀ (k : ℂ), e (MvPowerSeries.C (MvPowerSeries.C k)) = MvPowerSeries.C (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 51,
+      "moduleLineCount": 253,
+      "startLine": 202,
+      "endLine": 252,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.ringEquationChangeQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ringEquationChangeQuotientEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)\n  (H : ι → R) : R ⧸ Ideal.span (Set.range H) ≃+* R ⧸ Ideal.span (Set.range fun i => e (H i))",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 14,
+      "moduleLineCount": 137,
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.ringEquationChangeQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringEquationChangeQuotientEquiv_mk.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)\n  (H : ι → R) (x : R) :\n  (LinearStudy.ringEquationChangeQuotientEquiv e H) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) x) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => e (H i)))) (e x)",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 4,
+      "moduleLineCount": 137,
+      "startLine": 28,
+      "endLine": 31,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.ringEquationChangeQuotientEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.regularSequence_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regularSequence_ringEquiv.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] (e : R ≃+* S)\n  (H : List R) : RingTheory.Sequence.IsRegular R H ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) H)",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 8,
+      "moduleLineCount": 137,
+      "startLine": 33,
+      "endLine": 40,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_presentation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_presentation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ H' E q',\n    (∀ (i : Fin r),\n        E ((algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H')) (MvPowerSeries.X i)) =\n          tau i) ∧\n      RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H') ∧\n        Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n          Module.Free (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n            RingHom.ker q'.toRingHom = nilradical (LinearStudy.CompleteIntersection H')",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 95,
+      "moduleLineCount": 137,
+      "startLine": 42,
+      "endLine": 136,
+      "lineCount": 95,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists",
+        "LinearStudy.completeIntersection_parameter_lifts_regular",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.free_of_regular_maximal_algebraMap",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images",
+        "LinearStudy.regularSequence_ringEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv_mk"
       ]
     },
     {

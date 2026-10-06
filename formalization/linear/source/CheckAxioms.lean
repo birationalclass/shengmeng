@@ -1,6 +1,24 @@
 import Linear
 set_option pp.universes false
 set_option pp.proofs false
+#check LinearStudy.annihilates_nilradical_ringEquiv
+#print axioms LinearStudy.annihilates_nilradical_ringEquiv
+#check LinearStudy.annihilator_scalar_generation_ringEquiv
+#print axioms LinearStudy.annihilator_scalar_generation_ringEquiv
+#check LinearStudy.completeIntersection_parameter_pairing
+#print axioms LinearStudy.completeIntersection_parameter_pairing
+#check LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero
+#print axioms LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero
+#check LinearStudy.nonzero_socle_element_generates
+#print axioms LinearStudy.nonzero_socle_element_generates
+#check LinearStudy.finiteFlat_standard_closed_socle
+#print axioms LinearStudy.finiteFlat_standard_closed_socle
+#check LinearStudy.annihilates_quotient_image
+#print axioms LinearStudy.annihilates_quotient_image
+#check LinearStudy.lemma31_arbitrary_parameter_socle_generation
+#print axioms LinearStudy.lemma31_arbitrary_parameter_socle_generation
+#check LinearStudy.lemma31_complete
+#print axioms LinearStudy.lemma31_complete
 #check LinearStudy.powerSeriesQuotient_variable_nilpotent
 #print axioms LinearStudy.powerSeriesQuotient_variable_nilpotent
 #check LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal
@@ -283,6 +301,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.liftedParameterAlgebra
 #check LinearStudy.liftedParameterMap_X
 #print axioms LinearStudy.liftedParameterMap_X
+#check LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images
+#print axioms LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images
+#check LinearStudy.liftedParameterCoordinateEquiv_constant
+#print axioms LinearStudy.liftedParameterCoordinateEquiv_constant
+#check LinearStudy.liftedParameterMap_constant
+#print axioms LinearStudy.liftedParameterMap_constant
+#check LinearStudy.centered_powerSeries_retraction_eq_constantCoeff
+#print axioms LinearStudy.centered_powerSeries_retraction_eq_constantCoeff
+#check LinearStudy.centered_lifts_parameter_map_exists
+#print axioms LinearStudy.centered_lifts_parameter_map_exists
+#check LinearStudy.completeIntersection_lifted_parameter_map_exists
+#print axioms LinearStudy.completeIntersection_lifted_parameter_map_exists
+#check LinearStudy.completeIntersection_lifted_parameter_map_compatible
+#print axioms LinearStudy.completeIntersection_lifted_parameter_map_compatible
+#check LinearStudy.completeIntersection_lifted_coordinate_equiv_exists
+#print axioms LinearStudy.completeIntersection_lifted_coordinate_equiv_exists
+#check LinearStudy.ringEquationChangeQuotientEquiv
+#print axioms LinearStudy.ringEquationChangeQuotientEquiv
+#check LinearStudy.ringEquationChangeQuotientEquiv_mk
+#print axioms LinearStudy.ringEquationChangeQuotientEquiv_mk
+#check LinearStudy.regularSequence_ringEquiv
+#print axioms LinearStudy.regularSequence_ringEquiv
+#check LinearStudy.completeIntersection_lifted_parameter_presentation
+#print axioms LinearStudy.completeIntersection_lifted_parameter_presentation
 #check LinearStudy.arbitrary_parameter_lifts_regular
 #print axioms LinearStudy.arbitrary_parameter_lifts_regular
 #check LinearStudy.completeIntersection_parameter_lifts_regular
@@ -980,3 +1022,5 @@ set_option pp.proofs false
 #print LinearStudy.LinearityTheoremGoal
 #print LinearStudy.HomogeneousEndomorphism
 #print LinearStudy.IntegralProjectiveEquations
+#print LinearStudy.Lemma31Goal
+#print LinearStudy.lemma31_complete

@@ -69,13 +69,81 @@ Linear.ParameterLinearPart: cached compiled module (source and project dependenc
 Linear.ParameterSubstitution: cached compiled module (source and project dependencies unchanged)
 Linear.NilpotentRegular: cached compiled module (source and project dependencies unchanged)
 Linear.RegularGeneratorsFree: cached compiled module (source and project dependencies unchanged)
-Linear.LiftedParametersRegular: exit 0
+Linear.LiftedParametersRegular: cached compiled module (source and project dependencies unchanged)
+Linear.LiftedParameterCoordinates: cached compiled module (source and project dependencies unchanged)
+Linear.LiftedParameterMaps: exit 0
 
-Linear.LiftedParameterCoordinates: exit 0
+Linear.LiftedParameterPresentation: exit 0
+
+Linear.ArbitraryParameterJacobian: exit 0
+
+Linear.ArbitraryParameterSocle: exit 0
 
 Linear: exit 0
 
 Local audit: python audit.py
+LinearStudy.annihilates_nilradical_ringEquiv.{u_1, u_2} {A : Type u_1} {D : Type u_2} [CommRing A] [CommRing D]
+  (e : D ≃+* A) (x : D) : LinearStudy.Annihilates (nilradical D) x ↔ LinearStudy.Annihilates (nilradical A) (e x)
+'LinearStudy.annihilates_nilradical_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.annihilator_scalar_generation_ringEquiv.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {D : Type u_3}
+  [CommRing B] [CommRing A] [CommRing D] [Algebra B A] [Algebra B D] (e : D ≃+* A) (q' : D →ₐ[B] B)
+  (hq' : RingHom.ker q'.toRingHom = nilradical D) (delta : A) (hd : LinearStudy.Annihilates (nilradical A) delta)
+  (hgen : ∀ (x : A), LinearStudy.Annihilates (nilradical A) x → ∃ b, x = b • delta) (x : D)
+  (hx : LinearStudy.Annihilates (nilradical D) x) : ∃ b, x = b • e.symm delta
+'LinearStudy.annihilator_scalar_generation_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.completeIntersection_parameter_pairing {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r)
+  (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)] :
+  Nonempty LinearStudy.PerfectMultiplicationPairing
+'LinearStudy.completeIntersection_parameter_pairing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  (Ideal.Quotient.mk (Ideal.span (Set.range tau))) (LinearStudy.relativeJacobian H) ≠ 0
+'LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.nonzero_socle_element_generates.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] [IsLocalRing A] (epsilon : A)
+  (hgen : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • epsilon) (delta : A)
+  (hd : delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)) (hne : delta ≠ 0) :
+  Submodule.annihilator (IsLocalRing.maximalIdeal A) = Ideal.span {delta}
+'LinearStudy.nonzero_socle_element_generates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.finiteFlat_standard_closed_socle {r n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ))
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ)) (List.ofFn H))
+  [Module.Finite (MvPowerSeries (Fin (r + 1)) ℂ)
+      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))]
+  [Module.Flat (MvPowerSeries (Fin (r + 1)) ℂ)
+      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))] :
+  let A := MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H);
+  have J := Ideal.span (Set.range fun i => (algebraMap (MvPowerSeries (Fin (r + 1)) ℂ) A) (MvPowerSeries.X i));
+  ∀ (delta : A ⧸ J) [inst : IsLocalRing (A ⧸ J)],
+    delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) →
+      delta ≠ 0 → Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) = Ideal.span {delta}
+'LinearStudy.finiteFlat_standard_closed_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.annihilates_quotient_image.{u_1} {A : Type u_1} [CommRing A] (I J : Ideal A) (delta : A)
+  (hd : LinearStudy.Annihilates I delta) :
+  (Ideal.Quotient.mk J) delta ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) I)
+'LinearStudy.annihilates_quotient_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_arbitrary_parameter_socle_generation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  have J := Ideal.span (Set.range tau);
+  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))) =
+    Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)}
+'LinearStudy.lemma31_arbitrary_parameter_socle_generation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c
+'LinearStudy.lemma31_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeriesQuotient_variable_nilpotent.{u_1} {K : Type u_1} [Field K] {n : ℕ}
   (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K) (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
   [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] (i : Fin (n + 1)) :
@@ -770,6 +838,117 @@ LinearStudy.liftedParameterMap_X.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
       IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
   (i : Fin r) : (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.X i) = (Ideal.Quotient.mk I) (P i)
 'LinearStudy.liftedParameterMap_X' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
+  [Fintype ι] [DecidableEq ι] [Nonempty ι] (f : MvPowerSeries ι K →+* MvPowerSeries ι K)
+  (hX : Ideal.span (Set.range fun i => f (MvPowerSeries.X i)) = IsLocalRing.maximalIdeal (MvPowerSeries ι K))
+  (hC : ∀ (k : K), f (MvPowerSeries.C k) = MvPowerSeries.C k) : Function.Bijective ⇑f
+'LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.liftedParameterCoordinateEquiv_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
+  (k : K) :
+  (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.C k)) =
+    MvPowerSeries.C (MvPowerSeries.C k)
+'LinearStudy.liftedParameterCoordinateEquiv_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.liftedParameterMap_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))
+  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))
+  (hP :
+    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =
+      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))
+  (k : K) :
+  (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.C k) =
+    (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)) (MvPowerSeries.C k)
+'LinearStudy.liftedParameterMap_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.centered_powerSeries_retraction_eq_constantCoeff.{u_1, u_2} {B : Type u_1} {ι : Type u_2} [CommRing B]
+  [Fintype ι] [DecidableEq ι] [Nonempty ι] (a : MvPowerSeries ι B →ₐ[B] B) (ha : ∀ (i : ι), a (MvPowerSeries.X i) = 0)
+  (f : MvPowerSeries ι B) : a f = MvPowerSeries.constantCoeff f
+'LinearStudy.centered_powerSeries_retraction_eq_constantCoeff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.centered_lifts_parameter_map_exists.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)
+  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))
+  (q : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
+  (hq : ∀ (j : Fin c), q ((Ideal.Quotient.mk I) (MvPowerSeries.X j)) = 0)
+  (tau : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :
+  ∃ phi,
+    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧
+      ∀ (k : K),
+        phi (MvPowerSeries.C k) =
+          (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I))
+            (MvPowerSeries.C k)
+'LinearStudy.centered_lifts_parameter_map_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.completeIntersection_lifted_parameter_map_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  ∃ phi,
+    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧
+      ∀ (k : ℂ),
+        phi (MvPowerSeries.C k) =
+          (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)
+'LinearStudy.completeIntersection_lifted_parameter_map_exists' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.completeIntersection_lifted_parameter_map_compatible {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hr : 0 < r) (hc : 0 < c)
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  ∃ phi alpha,
+    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧
+      (∀ (k : ℂ),
+          phi (MvPowerSeries.C k) =
+            (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)) ∧
+        ∀ (b : LinearStudy.ParameterRing r), q (phi b) = alpha b
+'LinearStudy.completeIntersection_lifted_parameter_map_compatible' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.completeIntersection_lifted_coordinate_equiv_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  ∃ e,
+    (∀ (i : Fin r),
+        (Ideal.Quotient.mk (LinearStudy.equationIdeal H)) (e (MvPowerSeries.C (MvPowerSeries.X i))) = tau i) ∧
+      ∀ (k : ℂ), e (MvPowerSeries.C (MvPowerSeries.C k)) = MvPowerSeries.C (MvPowerSeries.C k)
+'LinearStudy.completeIntersection_lifted_coordinate_equiv_exists' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.ringEquationChangeQuotientEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)
+  (H : ι → R) : R ⧸ Ideal.span (Set.range H) ≃+* R ⧸ Ideal.span (Set.range fun i => e (H i))
+'LinearStudy.ringEquationChangeQuotientEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ringEquationChangeQuotientEquiv_mk.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)
+  (H : ι → R) (x : R) :
+  (LinearStudy.ringEquationChangeQuotientEquiv e H) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) x) =
+    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => e (H i)))) (e x)
+'LinearStudy.ringEquationChangeQuotientEquiv_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.regularSequence_ringEquiv.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] (e : R ≃+* S)
+  (H : List R) : RingTheory.Sequence.IsRegular R H ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) H)
+'LinearStudy.regularSequence_ringEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.completeIntersection_lifted_parameter_presentation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)
+  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  ∃ H' E q',
+    (∀ (i : Fin r),
+        E ((algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H')) (MvPowerSeries.X i)) =
+          tau i) ∧
+      RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H') ∧
+        Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧
+          Module.Free (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧
+            RingHom.ker q'.toRingHom = nilradical (LinearStudy.CompleteIntersection H')
+'LinearStudy.completeIntersection_lifted_parameter_presentation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.arbitrary_parameter_lifts_regular.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
   [IsLocalRing A] [IsNoetherianRing A] {r : ℕ} (hr : 0 < r) [Algebra (MvPowerSeries (Fin r) K) A]
   [Module.Flat (MvPowerSeries (Fin r) K) A] (q : A →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)
@@ -2413,3 +2592,28 @@ constructor:
     (ideal : HomogeneousIdeal (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) ℂ)) (prime : ideal.toIdeal.IsPrime)
     (nonempty : ∃ v, v ≠ 0 ∧ ∀ P ∈ ideal.toIdeal, (MvPolynomial.eval v) P = 0) :
     LinearStudy.IntegralProjectiveEquations n
+def LinearStudy.Lemma31Goal : ℕ → ℕ → Prop :=
+fun r c =>
+  ∀ (H : Fin c → LinearStudy.AmbientRing r c),
+    0 < r →
+      0 < c →
+        RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H) →
+          Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H) →
+            Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H) →
+              ∀ (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r),
+                RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H) →
+                  (∀ (x : LinearStudy.CompleteIntersection H),
+                      LinearStudy.Annihilates (nilradical (LinearStudy.CompleteIntersection H)) x ↔
+                        ∃ b, x = b • LinearStudy.relativeJacobian H) ∧
+                    ∀ (τ : Fin r → LinearStudy.CompleteIntersection H),
+                      Ideal.span (Set.range fun i => q (τ i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r) →
+                        let J := Ideal.span (Set.range τ);
+                        let Q := LinearStudy.CompleteIntersection H ⧸ J;
+                        have m := Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H));
+                        IsArtinianRing Q ∧
+                          m.IsMaximal ∧
+                            Submodule.annihilator m =
+                                Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)} ∧
+                              (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H) ≠ 0
+theorem LinearStudy.lemma31_complete : ∀ (r c : ℕ), LinearStudy.Lemma31Goal r c :=
+⋯

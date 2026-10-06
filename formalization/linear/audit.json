@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T01:05:38+08:00",
+  "checkedAt": "2026-10-07T02:06:44+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,18 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "1e2f08fdceb9624936035f4bff8e07d647245ad8ed96cdeaea2f4e2ec6039268",
-      "lineCount": 982
+      "sha256": "b3e885392360568c6cdb28f877a16cb081faee8fb9d7231a10c84ce9ec818761",
+      "lineCount": 1026
+    },
+    {
+      "path": "Linear/ArbitraryParameterJacobian.lean",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lineCount": 115
+    },
+    {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lineCount": 197
     },
     {
       "path": "Linear/ArtinianDiagonal.lean",
@@ -135,6 +145,16 @@
       "path": "Linear/LiftedParameterCoordinates.lean",
       "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
       "lineCount": 157
+    },
+    {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lineCount": 253
+    },
+    {
+      "path": "Linear/LiftedParameterPresentation.lean",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lineCount": 137
     },
     {
       "path": "Linear/LiftedParametersRegular.lean",
@@ -363,11 +383,269 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "1db04edaf1134b38f79ee4966224146f08fed7bf74af8c96319d9ba80b9f99db",
-      "lineCount": 68
+      "sha256": "193f71c7bdcb7e8aa64b62371593db0995e1e909626a060d55d774f8d0803e53",
+      "lineCount": 72
     }
   ],
   "declarations": {
+    "LinearStudy.annihilates_nilradical_ringEquiv": {
+      "declaration": "LinearStudy.annihilates_nilradical_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilates_nilradical_ringEquiv.{u_1, u_2} {A : Type u_1} {D : Type u_2} [CommRing A] [CommRing D]\n  (e : D ≃+* A) (x : D) : LinearStudy.Annihilates (nilradical D) x ↔ LinearStudy.Annihilates (nilradical A) (e x)",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 14,
+      "moduleLineCount": 115,
+      "startLine": 12,
+      "endLine": 25,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.annihilator_scalar_generation_ringEquiv": {
+      "declaration": "LinearStudy.annihilator_scalar_generation_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilator_scalar_generation_ringEquiv.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {D : Type u_3}\n  [CommRing B] [CommRing A] [CommRing D] [Algebra B A] [Algebra B D] (e : D ≃+* A) (q' : D →ₐ[B] B)\n  (hq' : RingHom.ker q'.toRingHom = nilradical D) (delta : A) (hd : LinearStudy.Annihilates (nilradical A) delta)\n  (hgen : ∀ (x : A), LinearStudy.Annihilates (nilradical A) x → ∃ b, x = b • delta) (x : D)\n  (hx : LinearStudy.Annihilates (nilradical D) x) : ∃ b, x = b • e.symm delta",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 24,
+      "moduleLineCount": 115,
+      "startLine": 27,
+      "endLine": 50,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.multiplication_factors_through_reduction"
+      ]
+    },
+    "LinearStudy.completeIntersection_parameter_pairing": {
+      "declaration": "LinearStudy.completeIntersection_parameter_pairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_parameter_pairing {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r)\n  (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)] :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 13,
+      "moduleLineCount": 115,
+      "startLine": 52,
+      "endLine": 64,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing"
+      ]
+    },
+    "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero": {
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range tau))) (LinearStudy.relativeJacobian H) ≠ 0",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 49,
+      "moduleLineCount": 115,
+      "startLine": 66,
+      "endLine": 114,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.annihilator_generator_survives_new_parameterIdeal",
+        "LinearStudy.annihilator_scalar_generation_ringEquiv",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.completeIntersection_parameter_pairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
+    "LinearStudy.nonzero_socle_element_generates": {
+      "declaration": "LinearStudy.nonzero_socle_element_generates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_socle_element_generates.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [IsLocalRing A] (epsilon : A)\n  (hgen : ∀ x ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A), ∃ b, x = b • epsilon) (delta : A)\n  (hd : delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal A)) (hne : delta ≠ 0) :\n  Submodule.annihilator (IsLocalRing.maximalIdeal A) = Ideal.span {delta}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 18,
+      "moduleLineCount": 197,
+      "startLine": 10,
+      "endLine": 27,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    "LinearStudy.finiteFlat_standard_closed_socle": {
+      "declaration": "LinearStudy.finiteFlat_standard_closed_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteFlat_standard_closed_socle {r n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ))\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ)) (List.ofFn H))\n  [Module.Finite (MvPowerSeries (Fin (r + 1)) ℂ)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))]\n  [Module.Flat (MvPowerSeries (Fin (r + 1)) ℂ)\n      (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H))] :\n  let A := MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) ℂ) ⧸ Ideal.span (Set.range H);\n  have J := Ideal.span (Set.range fun i => (algebraMap (MvPowerSeries (Fin (r + 1)) ℂ) A) (MvPowerSeries.X i));\n  ∀ (delta : A ⧸ J) [inst : IsLocalRing (A ⧸ J)],\n    delta ∈ Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) →\n      delta ≠ 0 → Submodule.annihilator (IsLocalRing.maximalIdeal (A ⧸ J)) = Ideal.span {delta}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 57,
+      "moduleLineCount": 197,
+      "startLine": 29,
+      "endLine": 85,
+      "lineCount": 57,
+      "dependencies": [
+        "LinearStudy.ideal_ofFn",
+        "LinearStudy.nonzero_socle_element_generates",
+        "LinearStudy.parameterSpecialization",
+        "LinearStudy.powerSeriesClosedQuotientEquiv",
+        "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle",
+        "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal",
+        "LinearStudy.powerSeries_specialized_equations_regular",
+        "LinearStudy.powerSeries_specialized_equations_zeroConstant",
+        "LinearStudy.powerSeries_specialized_quotient_artinian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
+    },
+    "LinearStudy.annihilates_quotient_image": {
+      "declaration": "LinearStudy.annihilates_quotient_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 87,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.annihilates_quotient_image.{u_1} {A : Type u_1} [CommRing A] (I J : Ideal A) (delta : A)\n  (hd : LinearStudy.Annihilates I delta) :\n  (Ideal.Quotient.mk J) delta ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) I)",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 9,
+      "moduleLineCount": 197,
+      "startLine": 87,
+      "endLine": 95,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.lemma31_arbitrary_parameter_socle_generation": {
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_socle_generation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))) =\n    Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 90,
+      "moduleLineCount": 197,
+      "startLine": 97,
+      "endLine": 186,
+      "lineCount": 90,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.annihilates_quotient_image",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_standard_closed_socle",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.parameterQuotient_local_artinian",
+        "LinearStudy.parameterQuotient_nilradical_image_isMaximal",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
+    },
+    "LinearStudy.lemma31_complete": {
+      "declaration": "LinearStudy.lemma31_complete",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "line": 188,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 9,
+      "moduleLineCount": 197,
+      "startLine": 188,
+      "endLine": 196,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.Lemma31Goal",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_parameterQuotient_artinian",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
     "LinearStudy.powerSeriesQuotient_variable_nilpotent": {
       "declaration": "LinearStudy.powerSeriesQuotient_variable_nilpotent",
       "kind": "theorem",
@@ -3884,6 +4162,325 @@
         "LinearStudy.liftedParameterCoordinateEquiv",
         "LinearStudy.liftedParameterCoordinateEquiv_parameter",
         "LinearStudy.liftedParameterMap"
+      ]
+    },
+    "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images": {
+      "declaration": "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]\n  [Fintype ι] [DecidableEq ι] [Nonempty ι] (f : MvPowerSeries ι K →+* MvPowerSeries ι K)\n  (hX : Ideal.span (Set.range fun i => f (MvPowerSeries.X i)) = IsLocalRing.maximalIdeal (MvPowerSeries ι K))\n  (hC : ∀ (k : K), f (MvPowerSeries.C k) = MvPowerSeries.C k) : Function.Bijective ⇑f",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 25,
+      "moduleLineCount": 253,
+      "startLine": 14,
+      "endLine": 38,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.noetherian_ringEnd_injective_of_surjective",
+        "LinearStudy.powerSeries_constantCoeff_kernel",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv_constant": {
+      "declaration": "LinearStudy.liftedParameterCoordinateEquiv_constant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterCoordinateEquiv_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (k : K) :\n  (LinearStudy.liftedParameterCoordinateEquiv hc P hP) (MvPowerSeries.C (MvPowerSeries.C k)) =\n    MvPowerSeries.C (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 17,
+      "moduleLineCount": 253,
+      "startLine": 40,
+      "endLine": 56,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
+      ]
+    },
+    "LinearStudy.liftedParameterMap_constant": {
+      "declaration": "LinearStudy.liftedParameterMap_constant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.liftedParameterMap_constant.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (k : K) :\n  (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.C k) =\n    (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)) (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 13,
+      "moduleLineCount": 253,
+      "startLine": 58,
+      "endLine": 70,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterMap"
+      ]
+    },
+    "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff": {
+      "declaration": "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 72,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff.{u_1, u_2} {B : Type u_1} {ι : Type u_2} [CommRing B]\n  [Fintype ι] [DecidableEq ι] [Nonempty ι] (a : MvPowerSeries ι B →ₐ[B] B) (ha : ∀ (i : ι), a (MvPowerSeries.X i) = 0)\n  (f : MvPowerSeries ι B) : a f = MvPowerSeries.constantCoeff f",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 19,
+      "moduleLineCount": 253,
+      "startLine": 72,
+      "endLine": 90,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    "LinearStudy.centered_lifts_parameter_map_exists": {
+      "declaration": "LinearStudy.centered_lifts_parameter_map_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 91,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.centered_lifts_parameter_map_exists.{u_1} {K : Type u_1} [Field K] {r c : ℕ} (hc : 0 < c)\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)))\n  (q : MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I →ₐ[MvPowerSeries (Fin r) K] MvPowerSeries (Fin r) K)\n  (hq : ∀ (j : Fin c), q ((Ideal.Quotient.mk I) (MvPowerSeries.X j)) = 0)\n  (tau : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)) :\n  ∃ phi,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      ∀ (k : K),\n        phi (MvPowerSeries.C k) =\n          (algebraMap (MvPowerSeries (Fin r) K) (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K) ⧸ I))\n            (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 33,
+      "moduleLineCount": 253,
+      "startLine": 91,
+      "endLine": 123,
+      "lineCount": 33,
+      "dependencies": [
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.liftedParameterMap",
+        "LinearStudy.liftedParameterMap_X",
+        "LinearStudy.liftedParameterMap_constant"
+      ]
+    },
+    "LinearStudy.completeIntersection_lifted_parameter_map_exists": {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_map_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 124,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_map_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ phi,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      ∀ (k : ℂ),\n        phi (MvPowerSeries.C k) =\n          (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 47,
+      "moduleLineCount": 253,
+      "startLine": 124,
+      "endLine": 170,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_lifts_parameter_map_exists",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
+    "LinearStudy.completeIntersection_lifted_parameter_map_compatible": {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_map_compatible",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 171,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_map_compatible {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c)\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ phi alpha,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      (∀ (k : ℂ),\n          phi (MvPowerSeries.C k) =\n            (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)) ∧\n        ∀ (b : LinearStudy.ParameterRing r), q (phi b) = alpha b",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 30,
+      "moduleLineCount": 253,
+      "startLine": 171,
+      "endLine": 200,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_parameter_map_exists",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images"
+      ]
+    },
+    "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists": {
+      "declaration": "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "line": 202,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hc : 0 < c) (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ e,\n    (∀ (i : Fin r),\n        (Ideal.Quotient.mk (LinearStudy.equationIdeal H)) (e (MvPowerSeries.C (MvPowerSeries.X i))) = tau i) ∧\n      ∀ (k : ℂ), e (MvPowerSeries.C (MvPowerSeries.C k)) = MvPowerSeries.C (MvPowerSeries.C k)",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 51,
+      "moduleLineCount": 253,
+      "startLine": 202,
+      "endLine": 252,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
+    "LinearStudy.ringEquationChangeQuotientEquiv": {
+      "declaration": "LinearStudy.ringEquationChangeQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ringEquationChangeQuotientEquiv.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)\n  (H : ι → R) : R ⧸ Ideal.span (Set.range H) ≃+* R ⧸ Ideal.span (Set.range fun i => e (H i))",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 14,
+      "moduleLineCount": 137,
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": []
+    },
+    "LinearStudy.ringEquationChangeQuotientEquiv_mk": {
+      "declaration": "LinearStudy.ringEquationChangeQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringEquationChangeQuotientEquiv_mk.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (e : R ≃+* R)\n  (H : ι → R) (x : R) :\n  (LinearStudy.ringEquationChangeQuotientEquiv e H) ((Ideal.Quotient.mk (Ideal.span (Set.range H))) x) =\n    (Ideal.Quotient.mk (Ideal.span (Set.range fun i => e (H i)))) (e x)",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 4,
+      "moduleLineCount": 137,
+      "startLine": 28,
+      "endLine": 31,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.ringEquationChangeQuotientEquiv"
+      ]
+    },
+    "LinearStudy.regularSequence_ringEquiv": {
+      "declaration": "LinearStudy.regularSequence_ringEquiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.regularSequence_ringEquiv.{u_1, u_2} {R : Type u_1} {S : Type u_2} [CommRing R] [CommRing S] (e : R ≃+* S)\n  (H : List R) : RingTheory.Sequence.IsRegular R H ↔ RingTheory.Sequence.IsRegular S (List.map (⇑e) H)",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 8,
+      "moduleLineCount": 137,
+      "startLine": 33,
+      "endLine": 40,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    "LinearStudy.completeIntersection_lifted_parameter_presentation": {
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_presentation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_presentation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ H' E q',\n    (∀ (i : Fin r),\n        E ((algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H')) (MvPowerSeries.X i)) =\n          tau i) ∧\n      RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H') ∧\n        Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n          Module.Free (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n            RingHom.ker q'.toRingHom = nilradical (LinearStudy.CompleteIntersection H')",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 95,
+      "moduleLineCount": 137,
+      "startLine": 42,
+      "endLine": 136,
+      "lineCount": 95,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists",
+        "LinearStudy.completeIntersection_parameter_lifts_regular",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.free_of_regular_maximal_algebraMap",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images",
+        "LinearStudy.regularSequence_ringEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv_mk"
       ]
     },
     "LinearStudy.arbitrary_parameter_lifts_regular": {
@@ -12486,12 +13083,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 319,
-  "definitionCount": 79,
+  "verifiedTheoremCount": 339,
+  "definitionCount": 80,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "Geometric Linearity Theorem NOT proved. Checked regular-sequence determinant annihilator generation by lifted Koszul comparisons; nonzero scalar socle generation for actual Artinian multivariable power-series complete intersections; and a perfect-pairing corollary with explicit finite-dimensionality. Also checked the actual constant-coefficient augmentation and trace-element formula, parameter-specialization quotient isomorphism with Jacobian compatibility, and regularity of specialized equations derived from flatness. Previous relative pairing lifts, arbitrary-parameter quotient Artinian/maximal-ideal conclusions and coordinate helpers are retained. The actual multivariable derivative Jacobian is proved nonzero and scalar-generates the socle of regular finite-dimensional Artinian power-series quotients over characteristic-zero fields. Actual pairing diagonals, trace comparison, finite polynomial unit changes and nonzero right augmentation are constructed. Actual closed-fiber Jacobian nonvanishing and primitivity are derived from original finite flat regular equations. Actual coordinate centering and derivative compatibility are constructed, and relative Jacobian annihilator generation is proved from the original finite flat regular equations without an extra centering or pairing hypothesis. The first conjunct of Lemma31Goal is proved in its original notation. Survival under changed parameter actions is proved with an explicit new-base pairing input. Construction of the new parameter action and pairing from arbitrary lifts, nonzero socle generation in those parameter quotients, and global geometry remain unproved. Actual substitution automorphisms are constructed from maximal-ideal generators in a finite nonempty power-series variable set over a field; the parameter generators are regular. Nilpotent perturbation preserves regular sequences on finite modules over local Noetherian rings, with maximal-ideal membership explicit. These prerequisites do not yet construct the lifted parameter action or its finite freeness. Further proved finite-module freeness from weakly regular maximal-ideal generators; regularity of arbitrary parameter lifts under the original flat equation quotient; an actual ambient coordinate automorphism from representatives whose normal constant coefficients generate the parameter maximal ideal; and the resulting quotient parameter map and Algebra structure. Compatibility with the original reduction, finite freeness of this new action, and nonzero socle comparison are still unproved.",
+  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED.",
   "sourceRanges": {
     "LinearStudy.invariant_restriction_surjective": {
       "path": "Linear/Iteration.lean",
@@ -12890,6 +13487,15 @@
         "LinearStudy.doublePointPerfectPairing",
         "LinearStudy.dualGenerator",
         "LinearStudy.epsilon"
+      ]
+    },
+    "LinearStudy.annihilates_quotient_image": {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "startLine": 87,
+      "endLine": 95,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.Annihilates"
       ]
     },
     "LinearStudy.linearEquationSubspace": {
@@ -13439,6 +14045,20 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.multiplicationGram",
         "LinearStudy.perfectPairingOfUnitDet"
+      ]
+    },
+    "LinearStudy.completeIntersection_lifted_parameter_map_compatible": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 171,
+      "endLine": 200,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_parameter_map_exists",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images"
       ]
     },
     "LinearStudy.quotientSpecialization_surjective": {
@@ -14046,6 +14666,26 @@
         "LinearStudy.powerSeries_diagonal_difference"
       ]
     },
+    "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 202,
+      "endLine": 252,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterCoordinateEquiv_parameter",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
     "LinearStudy.annihilator_generator_survives_new_parameterIdeal": {
       "path": "Linear/ParameterPairingChange.lean",
       "startLine": 53,
@@ -14161,6 +14801,18 @@
         "LinearStudy.thickeningJacobian_unit_twist",
         "LinearStudy.thickeningMk",
         "LinearStudy.thickening_closedFiber_jacobian"
+      ]
+    },
+    "LinearStudy.centered_lifts_parameter_map_exists": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 91,
+      "endLine": 123,
+      "lineCount": 33,
+      "dependencies": [
+        "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff",
+        "LinearStudy.liftedParameterMap",
+        "LinearStudy.liftedParameterMap_X",
+        "LinearStudy.liftedParameterMap_constant"
       ]
     },
     "LinearStudy.liftedCoordinateImages_span": {
@@ -14403,6 +15055,13 @@
       "lineCount": 44,
       "dependencies": []
     },
+    "LinearStudy.nonzero_socle_element_generates": {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "startLine": 10,
+      "endLine": 27,
+      "lineCount": 18,
+      "dependencies": []
+    },
     "exteriorPower.baseChangeInverseAlternating": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 152,
@@ -14615,6 +15274,17 @@
       "dependencies": [
         "ExteriorAlgebra.prodEquivProd",
         "ExteriorAlgebra.prodRingEquiv"
+      ]
+    },
+    "LinearStudy.liftedParameterMap_constant": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 58,
+      "endLine": 70,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.liftedParameterCoordinateEquiv_constant",
+        "LinearStudy.liftedParameterMap"
       ]
     },
     "LinearStudy.thickeningTop_scalar_eq_zero_iff": {
@@ -15448,6 +16118,29 @@
         "koszulComplex.equiv_comp_koszulComplex.d_zero_eq"
       ]
     },
+    "LinearStudy.lemma31_arbitrary_parameter_socle_generation": {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "startLine": 97,
+      "endLine": 186,
+      "lineCount": 90,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.annihilates_quotient_image",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_standard_closed_socle",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.parameterQuotient_local_artinian",
+        "LinearStudy.parameterQuotient_nilradical_image_isMaximal",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
+    },
     "LinearStudy.traceElement_nonzero_over_field": {
       "path": "Linear/TraceElement.lean",
       "startLine": 85,
@@ -15604,6 +16297,13 @@
         "LinearStudy.powerSeriesQuotient_variable_nilpotent",
         "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal"
       ]
+    },
+    "LinearStudy.ringEquationChangeQuotientEquiv": {
+      "path": "Linear/LiftedParameterPresentation.lean",
+      "startLine": 13,
+      "endLine": 26,
+      "lineCount": 14,
+      "dependencies": []
     },
     "LinearStudy.PerfectMultiplicationPairing": {
       "path": "Linear/Duality.lean",
@@ -15778,6 +16478,23 @@
         "LinearStudy.thickeningTop_scalar_eq_zero_iff"
       ]
     },
+    "LinearStudy.completeIntersection_lifted_parameter_map_exists": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 124,
+      "endLine": 170,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.centered_lifts_parameter_map_exists",
+        "LinearStudy.equationChangeQuotientEquiv",
+        "LinearStudy.equationChangeQuotientEquiv_mk",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.powerSeriesCentering",
+        "LinearStudy.powerSeriesCentering_coordinate_reduction_zero"
+      ]
+    },
     "LinearStudy.IntegralProjectiveEquations.recOn": {
       "path": "Linear/Projective.lean",
       "startLine": 154,
@@ -15844,6 +16561,28 @@
         "LinearStudy.CoordinateVector",
         "LinearStudy.HomogeneousEndomorphism",
         "LinearStudy.HomogeneousEndomorphism.mk"
+      ]
+    },
+    "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero": {
+      "path": "Linear/ArbitraryParameterJacobian.lean",
+      "startLine": 66,
+      "endLine": 114,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.annihilator_generator_survives_new_parameterIdeal",
+        "LinearStudy.annihilator_scalar_generation_ringEquiv",
+        "LinearStudy.completeIntersection_lifted_parameter_presentation",
+        "LinearStudy.completeIntersection_parameter_pairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.relativeJacobian"
       ]
     },
     "LinearStudy.functionKoszulAugmentation_exact": {
@@ -15915,6 +16654,15 @@
         "LinearStudy.CoordinateVector",
         "LinearStudy.IntegralProjectiveEquations",
         "LinearStudy.IntegralProjectiveEquations.casesOn"
+      ]
+    },
+    "LinearStudy.annihilates_nilradical_ringEquiv": {
+      "path": "Linear/ArbitraryParameterJacobian.lean",
+      "startLine": 12,
+      "endLine": 25,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.Annihilates"
       ]
     },
     "LinearStudy.parameter_generator_constantCoeff_zero": {
@@ -16130,6 +16878,17 @@
         "koszulComplex.dAlternating_apply"
       ]
     },
+    "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 14,
+      "endLine": 38,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.noetherian_ringEnd_injective_of_surjective",
+        "LinearStudy.powerSeries_constantCoeff_kernel",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
+      ]
+    },
     "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal": {
       "path": "Linear/PowerSeriesTranslation.lean",
       "startLine": 92,
@@ -16206,6 +16965,15 @@
       "endLine": 55,
       "lineCount": 11,
       "dependencies": []
+    },
+    "LinearStudy.centered_powerSeries_retraction_eq_constantCoeff": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 72,
+      "endLine": 90,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
     },
     "LinearStudy.Lemma31Goal": {
       "path": "Linear/Target.lean",
@@ -16411,6 +17179,26 @@
       "endLine": 29,
       "lineCount": 8,
       "dependencies": []
+    },
+    "LinearStudy.completeIntersection_lifted_parameter_presentation": {
+      "path": "Linear/LiftedParameterPresentation.lean",
+      "startLine": 42,
+      "endLine": 136,
+      "lineCount": 95,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_lifted_coordinate_equiv_exists",
+        "LinearStudy.completeIntersection_parameter_lifts_regular",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.free_of_regular_maximal_algebraMap",
+        "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal",
+        "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images",
+        "LinearStudy.regularSequence_ringEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv",
+        "LinearStudy.ringEquationChangeQuotientEquiv_mk"
+      ]
     },
     "exteriorPowerProdEquivProd": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
@@ -16912,6 +17700,25 @@
         "LinearStudy.equationIdeal"
       ]
     },
+    "LinearStudy.lemma31_complete": {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "startLine": 188,
+      "endLine": 196,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.Lemma31Goal",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.completeIntersection_parameterQuotient_artinian",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
     "LinearStudy.duality_zero_iff": {
       "path": "Linear/Evaluation.lean",
       "startLine": 74,
@@ -17046,6 +17853,17 @@
         "LinearStudy.socle_functional_detects_nonzero"
       ]
     },
+    "LinearStudy.annihilator_scalar_generation_ringEquiv": {
+      "path": "Linear/ArbitraryParameterJacobian.lean",
+      "startLine": 27,
+      "endLine": 50,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.annihilates_nilradical_ringEquiv",
+        "LinearStudy.multiplication_factors_through_reduction"
+      ]
+    },
     "LinearStudy.scalar_socle_transport": {
       "path": "Linear/SocleTransport.lean",
       "startLine": 32,
@@ -17131,6 +17949,20 @@
         "LinearStudy.powerSeriesMapEquiv"
       ]
     },
+    "LinearStudy.completeIntersection_parameter_pairing": {
+      "path": "Linear/ArbitraryParameterJacobian.lean",
+      "startLine": 52,
+      "endLine": 64,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.finiteFlat_powerSeries_relative_perfectPairing"
+      ]
+    },
     "LinearStudy.powerSeriesMapEquiv_univariate_C": {
       "path": "Linear/PowerSeriesFlatten.lean",
       "startLine": 40,
@@ -17184,6 +18016,15 @@
       "lineCount": 1,
       "dependencies": [
         "LinearStudy.HomogeneousEndomorphism"
+      ]
+    },
+    "LinearStudy.ringEquationChangeQuotientEquiv_mk": {
+      "path": "Linear/LiftedParameterPresentation.lean",
+      "startLine": 28,
+      "endLine": 31,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.ringEquationChangeQuotientEquiv"
       ]
     },
     "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk": {
@@ -17265,6 +18106,20 @@
       "dependencies": [
         "LinearStudy.PerfectMultiplicationPairing",
         "LinearStudy.PerfectMultiplicationPairing.mk"
+      ]
+    },
+    "LinearStudy.liftedParameterCoordinateEquiv_constant": {
+      "path": "Linear/LiftedParameterMaps.lean",
+      "startLine": 40,
+      "endLine": 56,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.liftedCoordinateImages",
+        "LinearStudy.liftedCoordinateImages_span",
+        "LinearStudy.liftedParameterCoordinateEquiv",
+        "LinearStudy.parameterSubstitutionEquiv",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeriesCoordinateChart_C"
       ]
     },
     "koszulComplex.ofListBaseChangeIso": {
@@ -17478,6 +18333,13 @@
         "LinearStudy.parameterQuotient_nilradical_image_isMaximal"
       ]
     },
+    "LinearStudy.regularSequence_ringEquiv": {
+      "path": "Linear/LiftedParameterPresentation.lean",
+      "startLine": 33,
+      "endLine": 40,
+      "lineCount": 8,
+      "dependencies": []
+    },
     "koszulComplex.d_zero_range_map": {
       "path": "Linear/Vendor/KoszulComplex.lean",
       "startLine": 602,
@@ -17560,6 +18422,24 @@
       "endLine": 62,
       "lineCount": 4,
       "dependencies": []
+    },
+    "LinearStudy.finiteFlat_standard_closed_socle": {
+      "path": "Linear/ArbitraryParameterSocle.lean",
+      "startLine": 29,
+      "endLine": 85,
+      "lineCount": 57,
+      "dependencies": [
+        "LinearStudy.ideal_ofFn",
+        "LinearStudy.nonzero_socle_element_generates",
+        "LinearStudy.parameterSpecialization",
+        "LinearStudy.powerSeriesClosedQuotientEquiv",
+        "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle",
+        "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal",
+        "LinearStudy.powerSeries_specialized_equations_regular",
+        "LinearStudy.powerSeries_specialized_equations_zeroConstant",
+        "LinearStudy.powerSeries_specialized_quotient_artinian",
+        "LinearStudy.ringEquiv_socle_forward"
+      ]
     },
     "LinearStudy.powerSeries_socle_generator_dualGenerator": {
       "path": "Linear/PowerSeriesAugmentation.lean",
@@ -18175,6 +19055,7 @@
     ],
     "rangeSource": "Lean.findDeclarationRanges? and ConstantInfo.getUsedConstantsAsSet"
   },
+  "lemma31Verified": true,
   "targetVerified": false,
   "main": {
     "id": "lemma",
@@ -18979,57 +19860,41 @@
         "Relative Jacobian · manuscript Lemma 2.1"
       ],
       "title": "相对 Jacobian · 原稿引理 2.1",
-      "status": "pending",
+      "status": "done",
       "kind": "theorem",
-      "file": "Linear/Target.lean",
-      "decl": "LinearStudy.Lemma31Goal",
-      "declaration": "LinearStudy.Lemma31Goal",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "decl": "LinearStudy.lemma31_complete",
+      "declaration": "LinearStudy.lemma31_complete",
       "deps": [
-        "local-primitive",
-        "local-parameters",
-        "local-quotient",
-        "one-variable",
-        "relative-ann",
-        "trace-element",
-        "parameter-quotient",
-        "coefficient-socle",
-        "power-pairing",
-        "ci-trace",
-        "regular-specialization",
-        "actual-relative-pairing",
-        "actual-diagonal-jac",
-        "actual-jac-socle",
-        "centered-relative-jac",
         "general-relative-jac",
-        "parameter-regular",
-        "nilpotent-regular",
-        "regular-generators-free",
-        "lifted-parameters-regular",
-        "lifted-parameter-action"
+        "lifted-action-compatible",
+        "lifted-presentation",
+        "arbitrary-jacobian-nonzero",
+        "arbitrary-socle-generation"
       ],
       "setup": [
-        "<p>B=ℂ[[s₁,…,sᵣ]]；A=B[[z₁,…,z꜀]]/(H)，H 为正则序列，A 有限平坦且 A 的约化 B-代数同构于 B。</p>",
-        "<p>B=ℂ[[s₁,…,sᵣ]]; A=B[[z₁,…,z꜀]]/(H), with H regular, A finite flat, and its reduced B-algebra isomorphic to B.</p>"
+        "<p>r,c&gt;0；B=ℂ[[s]]，A=B[[z]]/(H)；H 为正则序列，A 有限平坦于 B；B-代数约化 q 的核为 nilrad(A)。</p>",
+        "<p>r,c&gt;0; B=ℂ[[s]], A=B[[z]]/(H); H is regular, A finite flat over B; a B-algebra reduction q has kernel nilrad(A).</p>"
       ],
       "result": [
-        "<p>完整引理 2.1；其形式化证明尚未完成。</p>",
-        "<p>Full Lemma 2.1. Its formal proof remains open.</p>"
+        "<p>δ=det(∂Hᵢ/∂zⱼ) 的真实商类满足 Ann(nilrad A)=Bδ。对每个 q(τᵢ) 生成基环极大理想的 τ，A/(τ) 为 Artinian，零根的像 m 极大，Ann(m)=([δ])，且 [δ]≠0。完整原局部目标已证明。</p>",
+        "<p>The actual quotient class δ=det(∂Hᵢ/∂zⱼ) satisfies Ann(nilrad A)=Bδ. For every τ whose reductions generate the base maximal ideal, A/(τ) is Artinian, the nilradical image m is maximal, Ann(m)=([δ]), and [δ]≠0. The complete original local target is proved.</p>"
       ],
       "compactSetup": [
-        "有限平坦完全交；约化 A 与 B 同构。",
-        "Finite flat complete intersection; reduced A is B."
+        "原有限平坦正则完全交；r,c>0；ker q=nilrad A。",
+        "Original finite flat regular complete intersection; r,c>0; ker q=nilrad A."
       ],
       "compactResult": [
-        "完整引理 2.1；其形式化证明尚未完成。",
-        "Full Lemma 2.1. Its formal proof remains open."
+        "Ann(nilrad A)=Bδ；任意允许的参数商有非零 Jacobian socle。",
+        "Ann(nilrad A)=Bδ; every allowed parameter quotient has nonzero Jacobian socle."
       ],
       "scope": [
-        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
-        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+        "完整 Lemma31Goal 已证明；无额外中心化、新参数作用或配对输入。全局线性定理仍未证明。",
+        "The entire Lemma31Goal is proved without extra centering, new-action or pairing inputs. The global Linearity Theorem remains unproved."
       ],
-      "formalType": "LinearStudy.Lemma31Goal (r c : ℕ) : Prop",
-      "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
-      "lines": 23,
+      "formalType": "LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 9,
       "richStatement": true,
       "x": 30,
       "y": 60
@@ -19068,8 +19933,8 @@
         "A Artinian local; socle=(H′), H′≠0."
       ],
       "scope": [
-        "已证明全部一元闭纤维情形；一般多元相对引理、任意参数提升和全局留数仍待证明。",
-        "All one-variable closed fibers are proved; the general multivariable relative lemma, arbitrary parameter lifts and global residues remain unproved."
+        "已证明全部一元闭纤维情形；后续已证明完整多元相对引理及任意参数提升；全局留数仍待证明。",
+        "All one-variable closed fibers are proved; the complete multivariable relative lemma and arbitrary parameter lifts are now proved in subsequent nodes; global residues remain unproved."
       ],
       "formalType": "LinearStudy.oneVariable_closedFiber_jacobian.{u_1} {K : Type u_1} [Field K] [CharZero K] (H : PowerSeries K)\n  (hH : H ≠ 0) (h0 : PowerSeries.constantCoeff H = 0) :\n  have I := Ideal.span {H};\n  let A := PowerSeries K ⧸ I;\n  have delta := (Ideal.Quotient.mk I) (PowerSeries.derivative H);\n  IsArtinianRing A ∧ (nilradical A).IsMaximal ∧ Submodule.annihilator (nilradical A) = Ideal.span {delta} ∧ delta ≠ 0",
       "sha256": "82a63f4d5366c2f8e8555999dff653876a414967845ba13dfaeb8c7c5a133dcc",
@@ -22067,16 +22932,16 @@
         "<p>A characteristic-zero field K, zero-constant regular equations H, and the actual finite-dimensional Artinian quotient Q=K[[X₀,…,Xₙ]]/(H); Δ is its actual derivative Jacobian.</p>"
       ],
       "result": [
-        "<p>Ann(nilrad Q)=KΔ；Δ≠0。只证明此域上闭纤维结论，相对基环和任意参数提升仍待证明。</p>",
-        "<p>Ann(nilrad Q)=KΔ and Δ≠0. This proves the field/closed-fiber assertion only; the relative base and arbitrary parameter lifts remain unproved.</p>"
+        "<p>Ann(nilrad Q)=KΔ；Δ≠0。只证明此域上闭纤维结论，后续节点已证明相对基环及任意参数提升。</p>",
+        "<p>Ann(nilrad Q)=KΔ and Δ≠0. This proves the field/closed-fiber assertion only; subsequent nodes now prove the relative base and arbitrary parameter lifts.</p>"
       ],
       "compactSetup": [
         "特征零域 K；H 为零常数正则方程组；实际商 Q=K[[X₀,…,Xₙ]]/(H) 是有限维 Artinian 环；Δ 为实际导数 Jacobian。",
         "A characteristic-zero field K, zero-constant regular equations H, and the actual finite-dimensional Artinian quotient Q=K[[X₀,…,Xₙ]]/(H); Δ is its actual derivative Jacobian."
       ],
       "compactResult": [
-        "Ann(nilrad Q)=KΔ；Δ≠0。只证明此域上闭纤维结论，相对基环和任意参数提升仍待证明。",
-        "Ann(nilrad Q)=KΔ and Δ≠0. This proves the field/closed-fiber assertion only; the relative base and arbitrary parameter lifts remain unproved."
+        "Ann(nilrad Q)=KΔ；Δ≠0。只证明此域上闭纤维结论，后续节点已证明相对基环及任意参数提升。",
+        "Ann(nilrad Q)=KΔ and Δ≠0. This proves the field/closed-fiber assertion only; subsequent nodes now prove the relative base and arbitrary parameter lifts."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22285,16 +23150,16 @@
         "<p>Characteristic zero, the original finite flat regular equation quotient, ker(a)=nilrad(A), and the additional centering condition a([zᵢ])=0 for every normal coordinate.</p>"
       ],
       "result": [
-        "<p>Ann(N)=BΔ；配对、本原性与湮灭关系均已构造。后续的一般结果已构造中心化同构，去掉本辅助结果的中心化输入；任意参数提升仍待完成。</p>",
-        "<p>Ann(N)=BΔ, with pairing, primitivity and annihilation derived. The subsequent general result constructs centering and removes this helper’s centering input; arbitrary parameter lifts remain unfinished.</p>"
+        "<p>Ann(N)=BΔ；配对、本原性与湮灭关系均已构造。后续的一般结果已构造中心化同构，去掉本辅助结果的中心化输入；后续节点已证明任意参数提升。</p>",
+        "<p>Ann(N)=BΔ, with pairing, primitivity and annihilation derived. The subsequent general result constructs centering and removes this helper’s centering input; subsequent nodes now prove arbitrary parameter lifts.</p>"
       ],
       "compactSetup": [
         "特征零；原始有限平坦正则方程商；ker(a)=nilrad(A)；额外要求约化映射把每个法向坐标 zᵢ 送到零。",
         "Characteristic zero, the original finite flat regular equation quotient, ker(a)=nilrad(A), and the additional centering condition a([zᵢ])=0 for every normal coordinate."
       ],
       "compactResult": [
-        "Ann(N)=BΔ；配对、本原性与湮灭关系均已构造。后续的一般结果已构造中心化同构，去掉本辅助结果的中心化输入；任意参数提升仍待完成。",
-        "Ann(N)=BΔ, with pairing, primitivity and annihilation derived. The subsequent general result constructs centering and removes this helper’s centering input; arbitrary parameter lifts remain unfinished."
+        "Ann(N)=BΔ；配对、本原性与湮灭关系均已构造。后续的一般结果已构造中心化同构，去掉本辅助结果的中心化输入；后续节点已证明任意参数提升。",
+        "Ann(N)=BΔ, with pairing, primitivity and annihilation derived. The subsequent general result constructs centering and removes this helper’s centering input; subsequent nodes now prove arbitrary parameter lifts."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22328,16 +23193,16 @@
         "<p>Actual B- and C-algebra actions on A, compatible reductions and B≃C, scalar generation of the old annihilator by Δ, and an explicit perfect pairing p′ over the new base C.</p>"
       ],
       "result": [
-        "<p>Δ 在任何由新基环真理想中参数生成的商中非零。从任意提升构造新基环作用、有限平坦性和 p′ 尚未完成。</p>",
-        "<p>Δ survives a quotient by parameters from any proper ideal in the new base. Construction of that action, finite flatness and p′ from arbitrary lifts remains unfinished.</p>"
+        "<p>Δ 在任何由新基环真理想中参数生成的商中非零。后续节点从任意提升构造了新作用、有限自由性和 p′。</p>",
+        "<p>Δ survives a quotient by parameters from any proper ideal in the new base. Subsequent nodes now construct that action, finite freeness and p′ from arbitrary lifts.</p>"
       ],
       "compactSetup": [
         "A 上的 B、C 两种实际代数作用；兼容约化映射及 B≃C；Δ 标量生成旧湮灭子；新基环 C 上的完美配对 p′ 为显式输入。",
         "Actual B- and C-algebra actions on A, compatible reductions and B≃C, scalar generation of the old annihilator by Δ, and an explicit perfect pairing p′ over the new base C."
       ],
       "compactResult": [
-        "Δ 在任何由新基环真理想中参数生成的商中非零。从任意提升构造新基环作用、有限平坦性和 p′ 尚未完成。",
-        "Δ survives a quotient by parameters from any proper ideal in the new base. Construction of that action, finite flatness and p′ from arbitrary lifts remains unfinished."
+        "Δ 在任何由新基环真理想中参数生成的商中非零。后续节点从任意提升构造了新作用、有限自由性和 p′。",
+        "Δ survives a quotient by parameters from any proper ideal in the new base. Subsequent nodes now construct that action, finite freeness and p′ from arbitrary lifts."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22495,16 +23360,16 @@
         "<p>A characteristic-zero field K; positive parameter and normal dimensions; the actual regular equation quotient A finite flat over B=K[[s]]; a B-algebra reduction a with kernel nilrad(A). No extra centering or pairing input.</p>"
       ],
       "result": [
-        "<p>Ann(nilrad A)=BΔ，其中 Δ 是实际 det(∂H/∂z) 的类。已证明目标的第一个合取项；任意参数提升后的非零 socle 及全局定理仍待完成。</p>",
-        "<p>Ann(nilrad A)=BΔ for the class of the actual det(∂H/∂z). The target’s first conjunct is proved; nonzero socle after arbitrary parameter lifts and the global theorem remain unfinished.</p>"
+        "<p>Ann(nilrad A)=BΔ，其中 Δ 是实际 det(∂H/∂z) 的类。本声明证明第一个合取项；后续完整局部目标已证明，全局定理仍待完成。</p>",
+        "<p>Ann(nilrad A)=BΔ for the class of the actual det(∂H/∂z). This declaration proves the first conjunct; the complete local target is now proved downstream, while the global theorem remains unfinished.</p>"
       ],
       "compactSetup": [
         "特征零域 K；至少一个参数和一个法向变量；正则方程组 H 的实际商 A 有限平坦于 B=K[[s]]；B-代数约化映射 a 的核为 nilrad(A)。没有额外中心化或配对输入。",
         "A characteristic-zero field K; positive parameter and normal dimensions; the actual regular equation quotient A finite flat over B=K[[s]]; a B-algebra reduction a with kernel nilrad(A). No extra centering or pairing input."
       ],
       "compactResult": [
-        "Ann(nilrad A)=BΔ，其中 Δ 是实际 det(∂H/∂z) 的类。已证明目标的第一个合取项；任意参数提升后的非零 socle 及全局定理仍待完成。",
-        "Ann(nilrad A)=BΔ for the class of the actual det(∂H/∂z). The target’s first conjunct is proved; nonzero socle after arbitrary parameter lifts and the global theorem remain unfinished."
+        "Ann(nilrad A)=BΔ，其中 Δ 是实际 det(∂H/∂z) 的类。本声明证明第一个合取项；后续完整局部目标已证明，全局定理仍待完成。",
+        "Ann(nilrad A)=BΔ for the class of the actual det(∂H/∂z). This declaration proves the first conjunct; the complete local target is now proved downstream, while the global theorem remains unfinished."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22535,16 +23400,16 @@
         "<p>A field K; actual power series Tᵢ, as many as the variables, generating the maximal ideal of K[[s]].</p>"
       ],
       "result": [
-        "<p>实际偏导矩阵在原点的行列式为单位。后续节点已构造实际参数代换同构；任意提升的新基环作用与有限平坦性仍待完成。</p>",
-        "<p>The actual derivative matrix at zero has unit determinant. A subsequent node constructs the actual substitution automorphism; the new action and finite flatness for arbitrary lifts remain unfinished.</p>"
+        "<p>实际偏导矩阵在原点的行列式为单位。后续节点已构造实际参数代换同构；后续节点已构造任意提升的新作用并证明有限自由性。</p>",
+        "<p>The actual derivative matrix at zero has unit determinant. A subsequent node constructs the actual substitution automorphism; subsequent nodes construct the new action and prove finite freeness for arbitrary lifts.</p>"
       ],
       "compactSetup": [
         "K 为域；与变量数相同个数的真实幂级数 Tᵢ 生成 K[[s]] 的极大理想。",
         "A field K; actual power series Tᵢ, as many as the variables, generating the maximal ideal of K[[s]]."
       ],
       "compactResult": [
-        "实际偏导矩阵在原点的行列式为单位。后续节点已构造实际参数代换同构；任意提升的新基环作用与有限平坦性仍待完成。",
-        "The actual derivative matrix at zero has unit determinant. A subsequent node constructs the actual substitution automorphism; the new action and finite flatness for arbitrary lifts remain unfinished."
+        "实际偏导矩阵在原点的行列式为单位。后续节点已构造实际参数代换同构；后续节点已构造任意提升的新作用并证明有限自由性。",
+        "The actual derivative matrix at zero has unit determinant. A subsequent node constructs the actual substitution automorphism; subsequent nodes construct the new action and prove finite freeness for arbitrary lifts."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22825,16 +23690,16 @@
         "<p>The same constant-coefficient generation condition for Pᵢ; any equation ideal I⊂K[[s]][[z]].</p>"
       ],
       "result": [
-        "<p>构造 B→A=K[[s]][[z]]/I 的实际环映射及 Algebra 结构，sᵢ↦[Pᵢ]。仍需把任意 τ 的代表与约化映射、新作用的有限自由性和 socle 比较连接起来。</p>",
-        "<p>Construct an actual ring map B→A=K[[s]][[z]]/I and Algebra structure, sending sᵢ to [Pᵢ]. Connecting arbitrary τ representatives to the reduction, finite freeness and socle comparison remains unfinished.</p>"
+        "<p>构造 B→A=K[[s]][[z]]/I 的实际环映射及 Algebra 结构，sᵢ↦[Pᵢ]。后续节点将任意 τ 的代表与约化映射连接，并证明有限自由性及 socle 比较。</p>",
+        "<p>Construct an actual ring map B→A=K[[s]][[z]]/I and Algebra structure, sending sᵢ to [Pᵢ]. Subsequent nodes connect arbitrary τ representatives to the reduction and prove finite freeness and the socle comparison.</p>"
       ],
       "compactSetup": [
         "同一 Pᵢ 的常数项生成条件；任意方程理想 I⊂K[[s]][[z]]。",
         "The same constant-coefficient generation condition for Pᵢ; any equation ideal I⊂K[[s]][[z]]."
       ],
       "compactResult": [
-        "构造 B→A=K[[s]][[z]]/I 的实际环映射及 Algebra 结构，sᵢ↦[Pᵢ]。仍需把任意 τ 的代表与约化映射、新作用的有限自由性和 socle 比较连接起来。",
-        "Construct an actual ring map B→A=K[[s]][[z]]/I and Algebra structure, sending sᵢ to [Pᵢ]. Connecting arbitrary τ representatives to the reduction, finite freeness and socle comparison remains unfinished."
+        "构造 B→A=K[[s]][[z]]/I 的实际环映射及 Algebra 结构，sᵢ↦[Pᵢ]。后续节点将任意 τ 的代表与约化映射连接，并证明有限自由性及 socle 比较。",
+        "Construct an actual ring map B→A=K[[s]][[z]]/I and Algebra structure, sending sᵢ to [Pᵢ]. Subsequent nodes connect arbitrary τ representatives to the reduction and prove finite freeness and the socle comparison."
       ],
       "scope": [
         "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
@@ -22843,6 +23708,182 @@
       "formalType": "LinearStudy.liftedParameterMap_X.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  (I : Ideal (MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))) (hc : 0 < c)\n  (P : Fin r → MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K))\n  (hP :\n    Ideal.span (Set.range fun i => MvPowerSeries.constantCoeff (P i)) =\n      IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K))\n  (i : Fin r) : (LinearStudy.liftedParameterMap I hc P hP) (MvPowerSeries.X i) = (Ideal.Quotient.mk I) (P i)",
       "sha256": "7f5cd78e6a1de8fa67b19674a5a697485dc907e57e388e5d432e0a96b0381282",
       "lines": 9,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "lifted-action-compatible",
+      "titles": [
+        "任意提升参数的实际作用与相容性",
+        "Actual compatible action for arbitrary parameter lifts"
+      ],
+      "title": "任意提升参数的实际作用与相容性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/LiftedParameterMaps.lean",
+      "decl": "LinearStudy.completeIntersection_lifted_parameter_map_compatible",
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_map_compatible",
+      "deps": [
+        "lifted-parameter-action",
+        "equation-coordinate-change",
+        "parameter-substitution"
+      ],
+      "setup": [
+        "<p>B=ℂ[[s]]，r,c&gt;0；A=ℂ[[s]][[z]]/(H)；B-代数映射 q:A→B；q(τᵢ) 生成 B 的极大理想。</p>",
+        "<p>B=ℂ[[s]], r,c&gt;0; A=ℂ[[s]][[z]]/(H); a B-algebra map q:A→B; q(τᵢ) generate the maximal ideal of B.</p>"
+      ],
+      "result": [
+        "<p>构造实际环映射 φ:B→A 与基环自同构 α，满足 φ(sᵢ)=τᵢ、φ 保持 ℂ 系数，且 q∘φ=α。未把新作用或其逆当作输入。</p>",
+        "<p>Construct an actual ring map φ:B→A and base automorphism α with φ(sᵢ)=τᵢ, φ preserving ℂ coefficients, and q∘φ=α. Neither the action nor its inverse is supplied as input.</p>"
+      ],
+      "compactSetup": [
+        "B=ℂ[[s]]，r,c>0；A=ℂ[[s]][[z]]/(H)；B-代数映射 q:A→B；q(τᵢ) 生成 B 的极大理想。",
+        "B=ℂ[[s]], r,c>0; A=ℂ[[s]][[z]]/(H); a B-algebra map q:A→B; q(τᵢ) generate the maximal ideal of B."
+      ],
+      "compactResult": [
+        "构造实际环映射 φ:B→A 与基环自同构 α，满足 φ(sᵢ)=τᵢ、φ 保持 ℂ 系数，且 q∘φ=α。未把新作用或其逆当作输入。",
+        "Construct an actual ring map φ:B→A and base automorphism α with φ(sᵢ)=τᵢ, φ preserving ℂ coefficients, and q∘φ=α. Neither the action nor its inverse is supplied as input."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_map_compatible {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c)\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ phi alpha,\n    (∀ (i : Fin r), phi (MvPowerSeries.X i) = tau i) ∧\n      (∀ (k : ℂ),\n          phi (MvPowerSeries.C k) =\n            (algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)) (MvPowerSeries.C k)) ∧\n        ∀ (b : LinearStudy.ParameterRing r), q (phi b) = alpha b",
+      "sha256": "14fab369f014d6c7e9a0c458f5e20debf355557a5766bbf6c3aa1ca9142e569f",
+      "lines": 30,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "lifted-presentation",
+      "titles": [
+        "新参数下的完全交与有限自由性",
+        "Complete-intersection presentation and finite freeness for new parameters"
+      ],
+      "title": "新参数下的完全交与有限自由性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/LiftedParameterPresentation.lean",
+      "decl": "LinearStudy.completeIntersection_lifted_parameter_presentation",
+      "declaration": "LinearStudy.completeIntersection_lifted_parameter_presentation",
+      "deps": [
+        "lifted-action-compatible",
+        "lifted-parameters-regular",
+        "regular-generators-free"
+      ],
+      "setup": [
+        "<p>原正则方程商 A 平坦于 B；r,c&gt;0；约化 q 的核为 nilrad(A)；q(τᵢ) 生成基环极大理想。</p>",
+        "<p>The original regular equation quotient A is flat over B; r,c&gt;0; ker q=nilrad(A); q(τᵢ) generate the base maximal ideal.</p>"
+      ],
+      "result": [
+        "<p>构造正则方程 H′、实际环同构 E:A′≃A 和 B-代数约化 q′；E(sᵢ)=τᵢ。证明 A′ 是有限自由 B-模，且 ker q′=nilrad(A′)。</p>",
+        "<p>Construct regular equations H′, an actual ring equivalence E:A′≃A and B-algebra reduction q′, with E(sᵢ)=τᵢ. Prove A′ finite free over B and ker q′=nilrad(A′).</p>"
+      ],
+      "compactSetup": [
+        "原正则方程商 A 平坦于 B；r,c>0；约化 q 的核为 nilrad(A)；q(τᵢ) 生成基环极大理想。",
+        "The original regular equation quotient A is flat over B; r,c>0; ker q=nilrad(A); q(τᵢ) generate the base maximal ideal."
+      ],
+      "compactResult": [
+        "构造正则方程 H′、实际环同构 E:A′≃A 和 B-代数约化 q′；E(sᵢ)=τᵢ。证明 A′ 是有限自由 B-模，且 ker q′=nilrad(A′)。",
+        "Construct regular equations H′, an actual ring equivalence E:A′≃A and B-algebra reduction q′, with E(sᵢ)=τᵢ. Prove A′ finite free over B and ker q′=nilrad(A′)."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.completeIntersection_lifted_parameter_presentation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  ∃ H' E q',\n    (∀ (i : Fin r),\n        E ((algebraMap (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H')) (MvPowerSeries.X i)) =\n          tau i) ∧\n      RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H') ∧\n        Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n          Module.Free (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H') ∧\n            RingHom.ker q'.toRingHom = nilradical (LinearStudy.CompleteIntersection H')",
+      "sha256": "bb04745cc0c598fb488580c1cb5a0dfc880dfa093f8a537ed6d196f1f3e03d0e",
+      "lines": 95,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "arbitrary-jacobian-nonzero",
+      "titles": [
+        "任意参数商中的 Jacobian 非零性",
+        "Jacobian nonvanishing in every allowed parameter quotient"
+      ],
+      "title": "任意参数商中的 Jacobian 非零性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ArbitraryParameterJacobian.lean",
+      "decl": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+      "deps": [
+        "lifted-presentation",
+        "general-relative-jac",
+        "actual-relative-pairing"
+      ],
+      "setup": [
+        "<p>原有限平坦正则完全交设定；q 的核为零根；τ 为任意允许的参数提升。</p>",
+        "<p>The original finite flat regular complete intersection; ker q is the nilradical; τ is any permitted parameter lift.</p>"
+      ],
+      "result": [
+        "<p>真实相对导数 Jacobian δ 在 A/(τ) 中非零。新配对由已构造的有限自由完全交得到，不额外假设配对或本原性。</p>",
+        "<p>The actual relative derivative Jacobian δ is nonzero in A/(τ). The new pairing follows from the constructed finite free complete intersection; no pairing or primitivity is assumed.</p>"
+      ],
+      "compactSetup": [
+        "原有限平坦正则完全交设定；q 的核为零根；τ 为任意允许的参数提升。",
+        "The original finite flat regular complete intersection; ker q is the nilradical; τ is any permitted parameter lift."
+      ],
+      "compactResult": [
+        "真实相对导数 Jacobian δ 在 A/(τ) 中非零。新配对由已构造的有限自由完全交得到，不额外假设配对或本原性。",
+        "The actual relative derivative Jacobian δ is nonzero in A/(τ). The new pairing follows from the constructed finite free complete intersection; no pairing or primitivity is assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range tau))) (LinearStudy.relativeJacobian H) ≠ 0",
+      "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
+      "lines": 49,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "arbitrary-socle-generation",
+      "titles": [
+        "任意参数商的 socle 由 Jacobian 生成",
+        "Jacobian generation of the socle for arbitrary parameter quotients"
+      ],
+      "title": "任意参数商的 socle 由 Jacobian 生成",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ArbitraryParameterSocle.lean",
+      "decl": "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+      "declaration": "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+      "deps": [
+        "arbitrary-jacobian-nonzero",
+        "lifted-presentation",
+        "actual-jac-socle"
+      ],
+      "setup": [
+        "<p>同一原有限平坦正则设定；J=(τᵢ)，m 是 nilrad(A) 在 A/J 中的像。</p>",
+        "<p>The same original finite flat regular setting; J=(τᵢ), and m is the image of nilrad(A) in A/J.</p>"
+      ],
+      "result": [
+        "<p>证明 Ann(m)=([δ])，对每个允许的 τ 都成立。实际闭完全交 socle 的循环性与前述非零性给出这一理想等式。</p>",
+        "<p>Prove Ann(m)=([δ]) for every permitted τ. Cyclicity of the actual closed complete-intersection socle and the proved nonvanishing give this ideal equality.</p>"
+      ],
+      "compactSetup": [
+        "同一原有限平坦正则设定；J=(τᵢ)，m 是 nilrad(A) 在 A/J 中的像。",
+        "The same original finite flat regular setting; J=(τᵢ), and m is the image of nilrad(A) in A/J."
+      ],
+      "compactResult": [
+        "证明 Ann(m)=([δ])，对每个允许的 τ 都成立。实际闭完全交 socle 的循环性与前述非零性给出这一理想等式。",
+        "Prove Ann(m)=([δ]) for every permitted τ. Cyclicity of the actual closed complete-intersection socle and the proved nonvanishing give this ideal equality."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.lemma31_arbitrary_parameter_socle_generation {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c)\n  (hr : 0 < r) (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk J) (nilradical (LinearStudy.CompleteIntersection H))) =\n    Ideal.span {(Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H)}",
+      "sha256": "99a1021060d26683ca7e1087e9ce0ce50f3a859c1387314409fe940c67de07bd",
+      "lines": 90,
       "richStatement": true,
       "x": 30,
       "y": 60
@@ -22866,8 +23907,8 @@
       "Actual Bertini construction, generic étale fibers, and qʳ distinct smooth points."
     ],
     [
-      "任意参数提升后的实际 socle 非零性与生成性；全局 Euler–Jacobi 纤维关系。相对湮灭子结论已证明。",
-      "Actual nonzero socle generation after arbitrary parameter lifts, and global Euler–Jacobi fiber relations. Relative annihilator generation is proved."
+      "全局 Euler–Jacobi 纤维关系：完整局部 Jacobian 引理已证明，仍须建立局部到实际射影纤维的比较。",
+      "Global Euler–Jacobi fiber relation: the complete local Jacobian lemma is proved, but comparison with actual projective fibers is still required."
     ],
     [
       "Koszul 正合列、proper duality、Serre 消失与固定次数齐次多项式提升。",

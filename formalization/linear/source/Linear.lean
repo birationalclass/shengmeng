@@ -66,3 +66,7 @@ public import Linear.NilpotentRegular
 public import Linear.RegularGeneratorsFree
 public import Linear.LiftedParametersRegular
 public import Linear.LiftedParameterCoordinates
+public import Linear.LiftedParameterMaps
+public import Linear.LiftedParameterPresentation
+public import Linear.ArbitraryParameterJacobian
+public import Linear.ArbitraryParameterSocle
