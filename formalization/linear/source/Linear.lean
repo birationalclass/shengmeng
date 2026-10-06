@@ -60,3 +60,4 @@ public import Linear.ParameterPairingChange
 public import Linear.PowerSeriesFlatten
 public import Linear.PowerSeriesTranslation
 public import Linear.RelativeJacobian
+public import Linear.ParameterLinearPart

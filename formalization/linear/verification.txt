@@ -64,8 +64,8 @@ Linear.PowerSeriesFlattenDerivative: cached compiled module (source and project 
 Linear.PowerSeriesCoordinateChart: cached compiled module (source and project dependencies unchanged)
 Linear.PowerSeriesCentering: cached compiled module (source and project dependencies unchanged)
 Linear.CompleteIntersectionChange: cached compiled module (source and project dependencies unchanged)
-Linear.RelativeJacobian: exit 0
-
+Linear.RelativeJacobian: cached compiled module (source and project dependencies unchanged)
+Linear.ParameterLinearPart: cached compiled module (source and project dependencies unchanged)
 Linear: exit 0
 
 Local audit: python audit.py
@@ -789,6 +789,18 @@ LinearStudy.exists_perfectPairing_of_residueDet_ne_zero.{u_1, u_2, u_3} {B : Typ
   (hres : (Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) (LinearStudy.multiplicationGram b ell).det ≠ 0) :
   ∃ p, p.functional = ell
 'LinearStudy.exists_perfectPairing_of_residueDet_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameter_generator_constantCoeff_zero.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]
+  [DecidableEq ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) (i : ι) :
+  MvPowerSeries.constantCoeff (T i) = 0
+'LinearStudy.parameter_generator_constantCoeff_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameter_generators_jacobian_constantCoeff_unit.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
+  [Fintype ι] [DecidableEq ι] (T : ι → MvPowerSeries ι K)
+  (hT : Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries ι K)) :
+  IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (T i)))
+'LinearStudy.parameter_generators_jacobian_constantCoeff_unit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.annihilator_scalar_action_baseChange.{u_1, u_2, u_3} {B : Type u_1} {C : Type u_2} {A : Type u_3}
   [CommRing B] [CommRing C] [CommRing A] [Algebra B A] [Algebra C A] (q : A →ₐ[B] B) (q' : A →ₐ[C] C) (e : B ≃+* C)
   (hq' : RingHom.ker q'.toRingHom = nilradical A) (he : ∀ (a : A), q' a = e (q a)) {delta : A}

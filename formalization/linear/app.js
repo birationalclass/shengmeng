@@ -1,14 +1,14 @@
-import {installProofWorlds} from './proof-worlds.js?v=20261006-linear-12';
-import {installTheoremTarget} from './theorem-target.js?v=20261006-linear-12';
-import {createNodeEditor} from './node-editor.js?v=20261006-linear-12';
-import {installWorkspace} from './workspace.js?v=20261006-linear-12';
-import {installAtlasDock} from './atlas-dock.js?v=20261006-linear-12';
-import {installLeanLineCounts} from './line-counts.js?v=20261006-linear-12';
-import {english,installLanguage} from './i18n.js?v=20261006-linear-12';
-import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261006-linear-12';
+import {installProofWorlds} from './proof-worlds.js?v=20261006-linear-13';
+import {installTheoremTarget} from './theorem-target.js?v=20261006-linear-13';
+import {createNodeEditor} from './node-editor.js?v=20261006-linear-13';
+import {installWorkspace} from './workspace.js?v=20261006-linear-13';
+import {installAtlasDock} from './atlas-dock.js?v=20261006-linear-13';
+import {installLeanLineCounts} from './line-counts.js?v=20261006-linear-13';
+import {english,installLanguage} from './i18n.js?v=20261006-linear-13';
+import {statementPanel,escapeHTML} from './theorem-statements.js?v=20261006-linear-13';
 
 
-const audit=await fetch('audit.json?v=20261006-linear-12').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
+const audit=await fetch('audit.json?v=20261006-linear-13').then(r=>{if(!r.ok)throw Error('Audit unavailable');return r.json();});
 const text=(zh,en)=>english?en:zh;
 if(audit.mainTheoremVerified!==false||audit.targetVerified!==false)throw Error('Unexpected target status');
 const raw=[audit.main,...audit.nodes];
@@ -41,7 +41,7 @@ uiLabels();window.addEventListener('languagechange',uiLabels);
 installWorkspace();atlasDock=installAtlasDock({english});
 const target=installTheoremTarget(root);nodeEditor=createNodeEditor({viewport:document.querySelector('.graph-scroll'),graph,svg,nodes,select,selected:()=>current,theoremTarget:target});
 worlds=installProofWorlds({nodes,select,selected:()=>current,nodeEditor,theoremTarget:target});
-const snapshot={files:audit.files,declarations:Object.fromEntries(nodes.filter(n=>n.decl).map(n=>[n.decl,{path:n.file}]))};
+const snapshot={files:audit.files,declarations:audit.declarations,sourceRanges:audit.sourceRanges};
 installLeanLineCounts({snapshot,nodes});
 function renderEvidence(){document.querySelector('#evidenceContent').innerHTML=`<p class="notice">${text('完整线性定理尚未证明。坐标目标已定义；已验证的辅助结果不能替代尚未构造的几何输入。','The full Linearity Theorem is not proved. The coordinate target is defined; checked helpers do not discharge the open geometric inputs.')}</p><p>${audit.verifiedTheoremCount} ${text('条定理证明；','theorem proofs; ')}${audit.definitionCount} ${text('个定义（不计作证明）。','definitions (not proofs).')}</p><p>Lean ${audit.lean} · mathlib <code>${audit.mathlib}</code><br>${audit.checkedAt}</p><p>${text('已核验声明的公理范围：','Axioms used by audited declarations: ')}${audit.allowedAxioms.join(' · ')}. ${text('无 sorryAx 或自定义公理。','No sorryAx or custom axioms.')}</p><p>${text('对应原稿指纹：','Manuscript SHA-256: ')}<code>${audit.manuscript.sha256}</code></p><div class="actions"><a class="button" href="verification.txt">${text('完整日志','Build and audit log')} ↗</a><a class="button" href="full-audit.json">${text('全声明审计','All-declaration audit')} ↗</a><a class="button" href="linear-lean.zip" download>${text('可复现 Lean 工程','Reproducible Lean project')} ↓</a></div><h3>${text('仍待完成','Remaining obligations')}</h3><ul>${audit.remaining.map(r=>`<li>${escapeHTML(r[english?1:0])}</li>`).join('')}</ul>`;}
 renderEvidence();detail();

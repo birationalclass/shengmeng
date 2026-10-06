@@ -167,3 +167,7 @@ Actual residue-tensor Jacobian nonvanishing and primitivity, centered relative a
 ## Milestone 12: original relative Jacobian annihilator
 
 Actual nested-power-series coordinate equivalences, parameter-algebra centering and normal derivative compatibility are constructed. The original finite-flat regular equation quotient now satisfies Ann(N)=B Delta without an extra centering or pairing input. lemma31_annihilator_conclusion proves the first conjunct of the existing target. The full target, arbitrary parameter-lift socle result and global Linearity Theorem remain unproved. See MILESTONE_12.md.
+
+## Milestone 13: precise code counts and parameter linear part
+
+Cards now count their own compiler-recorded declaration ranges; packs count all member code and actual project-code dependencies with overlapping intervals deduplicated. The header retains a separate whole-project total. The actual derivative matrix at zero of a maximal-ideal parameter generating set is proved invertible. Formal parameter inversion, new-base finite flatness, arbitrary-lift socle generation and the global theorem remain unproved. See MILESTONE_13.md.

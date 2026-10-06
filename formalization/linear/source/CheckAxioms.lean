@@ -307,6 +307,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.perfectPairingOfUnitDet
 #check LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #print axioms LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
+#check LinearStudy.parameter_generator_constantCoeff_zero
+#print axioms LinearStudy.parameter_generator_constantCoeff_zero
+#check LinearStudy.parameter_generators_jacobian_constantCoeff_unit
+#print axioms LinearStudy.parameter_generators_jacobian_constantCoeff_unit
 #check LinearStudy.annihilator_scalar_action_baseChange
 #print axioms LinearStudy.annihilator_scalar_action_baseChange
 #check LinearStudy.annihilator_generator_coefficient_unit_after_baseChange
