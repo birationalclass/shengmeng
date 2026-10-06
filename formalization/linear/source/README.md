@@ -12,6 +12,8 @@ LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c
 
 See `MILESTONE_16.md` for the complete local proof chain and `MILESTONE_17.md` for the subsequent local evaluation, perfect-pairing construction and fiber-Jacobian determinant comparison. Earlier `MILESTONE_*.md` files record historical partial stages; their then-open local obligations are closed by later milestones.
 
+`MILESTONE_18.md` proves a perfect multiplication pairing for an actual finite-dimensional polynomial complete intersection over an infinite algebraically closed field, without supplying a pairing or assuming locality. Actual translated regular coordinates, maximal residue maps and socles are constructed. The polynomial diagonal tensor has the true derivative Jacobian as its multiplication image; unique normalization and the trace identity are proved with nonzero maximal right reductions explicitly required. Those reductions for the actual polynomial tensor, degree bounds and Euler–Jacobi vanishing remain open.
+
 ## Reproduce and inspect
 
 Lean 4.35.0-rc3; pinned mathlib commit `2a885768dae569d938bb9ff3474da6a8753bb90a`. The source archive contains the lake manifest and toolchain. The local `build.py` reuses a matching read-only dependency cache; `audit.py` records every declaration, exact type, allowed axiom, compiler source interval and actual project-code dependencies.

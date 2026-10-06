@@ -72,3 +72,9 @@ public import Linear.ArbitraryParameterJacobian
 public import Linear.ArbitraryParameterSocle
 public import Linear.LocalResidueEvaluation
 public import Linear.LocalFiberJacobian
+public import Linear.ArtinianGlobalPairing
+public import Linear.PolynomialFiberDiagonal
+public import Linear.PolynomialRegular
+public import Linear.DiagonalNormalization
+public import Linear.PolynomialGlobalResidue
+public import Linear.GlobalDiagonalNormalization

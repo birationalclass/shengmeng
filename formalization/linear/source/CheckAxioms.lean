@@ -25,6 +25,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal
 #check LinearStudy.powerSeriesQuotient_diagonal_jacobian
 #print axioms LinearStudy.powerSeriesQuotient_diagonal_jacobian
+#check LinearStudy.artinian_maximal_annihilator_nonzero
+#print axioms LinearStudy.artinian_maximal_annihilator_nonzero
+#check LinearStudy.nonzero_ideal_meets_maximal_annihilator
+#print axioms LinearStudy.nonzero_ideal_meets_maximal_annihilator
+#check LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal
+#print axioms LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal
+#check LinearStudy.global_socle_functional_detects_nonzero
+#print axioms LinearStudy.global_socle_functional_detects_nonzero
+#check LinearStudy.global_socle_multiplicationToDual_injective
+#print axioms LinearStudy.global_socle_multiplicationToDual_injective
+#check LinearStudy.perfectPairingOfGlobalSocles
+#print axioms LinearStudy.perfectPairingOfGlobalSocles
+#check LinearStudy.exists_perfectPairing_of_global_scalar_socles
+#print axioms LinearStudy.exists_perfectPairing_of_global_scalar_socles
 #check LinearStudy.finiteFlat_centered_jacobian_annihilator
 #print axioms LinearStudy.finiteFlat_centered_jacobian_annihilator
 #check LinearStudy.equationChangeQuotientEquiv
@@ -57,6 +71,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.diagonal_annihilator_coefficient_isUnit
 #check LinearStudy.diagonal_annihilator_multiplication_nonzero
 #print axioms LinearStudy.diagonal_annihilator_multiplication_nonzero
+#check LinearStudy.tensorFunctionalContraction
+#print axioms LinearStudy.tensorFunctionalContraction
+#check LinearStudy.tensorFunctionalContraction_tmul
+#print axioms LinearStudy.tensorFunctionalContraction_tmul
+#check LinearStudy.tensorFunctionalContraction_pairing
+#print axioms LinearStudy.tensorFunctionalContraction_pairing
+#check LinearStudy.unitTwistedPairing
+#print axioms LinearStudy.unitTwistedPairing
+#check LinearStudy.unitTwistedPairing_functional
+#print axioms LinearStudy.unitTwistedPairing_functional
+#check LinearStudy.pairingTensorEndEquiv_unitTwisted
+#print axioms LinearStudy.pairingTensorEndEquiv_unitTwisted
+#check LinearStudy.diagonal_tensor_normalized_pairing
+#print axioms LinearStudy.diagonal_tensor_normalized_pairing
+#check LinearStudy.diagonal_tensor_unique_functional
+#print axioms LinearStudy.diagonal_tensor_unique_functional
+#check LinearStudy.normalized_diagonal_residue_trace
+#print axioms LinearStudy.normalized_diagonal_residue_trace
 #check LinearStudy.pairingTensorEndEquiv
 #print axioms LinearStudy.pairingTensorEndEquiv
 #check LinearStudy.pairingTensorEndEquiv_tmul
@@ -181,6 +213,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.flat_genericFiber_injective
 #check LinearStudy.flat_genericFiber_descend_annihilation
 #print axioms LinearStudy.flat_genericFiber_descend_annihilation
+#check LinearStudy.diagonal_coefficient_notMem_kernel
+#print axioms LinearStudy.diagonal_coefficient_notMem_kernel
+#check LinearStudy.global_diagonal_coefficient_isUnit
+#print axioms LinearStudy.global_diagonal_coefficient_isUnit
+#check LinearStudy.global_diagonal_unique_functional
+#print axioms LinearStudy.global_diagonal_unique_functional
+#check LinearStudy.global_diagonal_normalized_trace
+#print axioms LinearStudy.global_diagonal_normalized_trace
 #check LinearStudy.total_invariance_membership
 #print axioms LinearStudy.total_invariance_membership
 #check LinearStudy.total_invariance_iterate
@@ -463,6 +503,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_polynomial_equations_unit_change
 #check LinearStudy.polynomial_diagonal_difference
 #print axioms LinearStudy.polynomial_diagonal_difference
+#check LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal
+#print axioms LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal
+#check LinearStudy.polynomialQuotient_diagonal_jacobian
+#print axioms LinearStudy.polynomialQuotient_diagonal_jacobian
+#check LinearStudy.exists_maximalResidueMap
+#print axioms LinearStudy.exists_maximalResidueMap
+#check LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel
+#print axioms LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel
+#check LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel
+#print axioms LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel
+#check LinearStudy.polynomial_quotient_kernel_socle
+#print axioms LinearStudy.polynomial_quotient_kernel_socle
+#check LinearStudy.polynomialQuotient_perfectPairing
+#print axioms LinearStudy.polynomialQuotient_perfectPairing
+#check LinearStudy.polynomial_cons_X_regular
+#print axioms LinearStudy.polynomial_cons_X_regular
+#check LinearStudy.polynomial_variables_regular
+#print axioms LinearStudy.polynomial_variables_regular
+#check LinearStudy.polynomialTranslation
+#print axioms LinearStudy.polynomialTranslation
+#check LinearStudy.polynomialTranslation_X
+#print axioms LinearStudy.polynomialTranslation_X
+#check LinearStudy.polynomial_centered_variables_regular
+#print axioms LinearStudy.polynomial_centered_variables_regular
 #check LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero
 #print axioms LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero
 #check LinearStudy.powerSeriesConstantCoeffAlgHom

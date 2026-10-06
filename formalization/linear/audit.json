@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T02:45:58+08:00",
+  "checkedAt": "2026-10-07T03:30:35+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "907e9e68339d4f1ccc3c4e492db7dffa9b59b12670b5e54f8bcdd54d3f4c651b",
-      "lineCount": 1068
+      "sha256": "a6081844003e168bc71f009c5bd68da1861b4185e6e693d3adabcb54573cab1e",
+      "lineCount": 1132
     },
     {
       "path": "Linear/ArbitraryParameterJacobian.lean",
@@ -25,6 +25,11 @@
       "path": "Linear/ArtinianDiagonal.lean",
       "sha256": "8db1dc43dde887efb38a60ea3eb90c69bdd2d418819875fd87bc70863bd81c6a",
       "lineCount": 132
+    },
+    {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lineCount": 133
     },
     {
       "path": "Linear/CenteredRelativeJacobian.lean",
@@ -50,6 +55,11 @@
       "path": "Linear/DiagonalNonzero.lean",
       "sha256": "48a9c1a36db8b5f60ea30f901d81940a071160919182f2d9c39a461c1c16655c",
       "lineCount": 46
+    },
+    {
+      "path": "Linear/DiagonalNormalization.lean",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lineCount": 113
     },
     {
       "path": "Linear/DiagonalTrace.lean",
@@ -85,6 +95,11 @@
       "path": "Linear/GenericFiber.lean",
       "sha256": "dcf4bf173165f44a26e04c9d22306fd3efa6aa366d0ff4d54d21f59226d075f7",
       "lineCount": 43
+    },
+    {
+      "path": "Linear/GlobalDiagonalNormalization.lean",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lineCount": 64
     },
     {
       "path": "Linear/Iteration.lean",
@@ -230,6 +245,21 @@
       "path": "Linear/PolynomialDiagonal.lean",
       "sha256": "769caeb6e040f1c016a4070b56b73bdda07e6dc5be294cc4dbe8b06d42e5feeb",
       "lineCount": 69
+    },
+    {
+      "path": "Linear/PolynomialFiberDiagonal.lean",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "lineCount": 110
+    },
+    {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lineCount": 157
+    },
+    {
+      "path": "Linear/PolynomialRegular.lean",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lineCount": 91
     },
     {
       "path": "Linear/PolynomialSocle.lean",
@@ -393,8 +423,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "20390155a67e8e22f17107e36e1ecaa944ddc24d5076c5e96f6d01e9354dc7bb",
-      "lineCount": 74
+      "sha256": "c9189531f65acafa882fa73ba2cbc92cfcdc6faafc117beb76da872cbcb68991",
+      "lineCount": 80
     }
   ],
   "declarations": {
@@ -727,6 +757,170 @@
         "LinearStudy.powerSeriesQuotient_variable_nilpotent",
         "LinearStudy.powerSeries_diagonal_jacobian_matrix",
         "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal"
+      ]
+    },
+    "LinearStudy.artinian_maximal_annihilator_nonzero": {
+      "declaration": "LinearStudy.artinian_maximal_annihilator_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.artinian_maximal_annihilator_nonzero.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] (I : Ideal A) (hI : I.IsMaximal) : Submodule.annihilator I ≠ ⊥",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 22,
+      "moduleLineCount": 133,
+      "startLine": 16,
+      "endLine": 37,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    "LinearStudy.nonzero_ideal_meets_maximal_annihilator": {
+      "declaration": "LinearStudy.nonzero_ideal_meets_maximal_annihilator",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.nonzero_ideal_meets_maximal_annihilator.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] (I : Ideal A) (hI : I ≠ ⊥) : ∃ p, ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator p.asIdeal",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 22,
+      "moduleLineCount": 133,
+      "startLine": 39,
+      "endLine": 60,
+      "lineCount": 22,
+      "dependencies": []
+    },
+    "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal": {
+      "declaration": "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal.{u_2} {R : Type u_2} [CommRing R] {k : ℕ}\n  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))\n  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H)\n  [IsArtinianRing (R ⧸ Ideal.span (Set.range H))] [IsNoetherianRing (R ⧸ Ideal.span (Set.range H))]\n  (hm : (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x))).IsMaximal) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 15,
+      "moduleLineCount": 133,
+      "startLine": 62,
+      "endLine": 76,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.artinian_maximal_annihilator_nonzero",
+        "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant"
+      ]
+    },
+    "LinearStudy.global_socle_functional_detects_nonzero": {
+      "declaration": "LinearStudy.global_socle_functional_detects_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.global_socle_functional_detects_nonzero.{u_1, u_2} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] {K : Type u_2} [Field K] [Algebra K A] (delta : MaximalSpectrum A → A)\n  (hsoc : ∀ (p : MaximalSpectrum A), ∀ x ∈ Submodule.annihilator p.asIdeal, ∃ b, x = b • delta p) (ell : A →ₗ[K] K)\n  (hell : ∀ (p : MaximalSpectrum A), ell (delta p) ≠ 0) {x : A} (hx : x ≠ 0) : ∃ a, ell (x * a) ≠ 0",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 21,
+      "moduleLineCount": 133,
+      "startLine": 80,
+      "endLine": 100,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.nonzero_ideal_meets_maximal_annihilator"
+      ]
+    },
+    "LinearStudy.global_socle_multiplicationToDual_injective": {
+      "declaration": "LinearStudy.global_socle_multiplicationToDual_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 102,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.global_socle_multiplicationToDual_injective.{u_1, u_2} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] {K : Type u_2} [Field K] [Algebra K A] (delta : MaximalSpectrum A → A)\n  (hsoc : ∀ (p : MaximalSpectrum A), ∀ x ∈ Submodule.annihilator p.asIdeal, ∃ b, x = b • delta p) (ell : A →ₗ[K] K)\n  (hell : ∀ (p : MaximalSpectrum A), ell (delta p) ≠ 0) : Function.Injective ⇑(LinearStudy.multiplicationToDual ell)",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 11,
+      "moduleLineCount": 133,
+      "startLine": 102,
+      "endLine": 112,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.global_socle_functional_detects_nonzero",
+        "LinearStudy.multiplicationToDual"
+      ]
+    },
+    "LinearStudy.perfectPairingOfGlobalSocles": {
+      "declaration": "LinearStudy.perfectPairingOfGlobalSocles",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 114,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.perfectPairingOfGlobalSocles.{u_1, u_2} {A : Type u_1} [CommRing A] [IsArtinianRing A] [IsNoetherianRing A]\n  {K : Type u_2} [Field K] [Algebra K A] [FiniteDimensional K A] (delta : MaximalSpectrum A → A)\n  (hsoc : ∀ (p : MaximalSpectrum A), ∀ x ∈ Submodule.annihilator p.asIdeal, ∃ b, x = b • delta p) (ell : A →ₗ[K] K)\n  (hell : ∀ (p : MaximalSpectrum A), ell (delta p) ≠ 0) : LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 10,
+      "moduleLineCount": 133,
+      "startLine": 114,
+      "endLine": 123,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.mk",
+        "LinearStudy.global_socle_multiplicationToDual_injective",
+        "LinearStudy.multiplicationToDual"
+      ]
+    },
+    "LinearStudy.exists_perfectPairing_of_global_scalar_socles": {
+      "declaration": "LinearStudy.exists_perfectPairing_of_global_scalar_socles",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "line": 125,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_perfectPairing_of_global_scalar_socles.{u_1, u_2} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] {K : Type u_2} [Field K] [Algebra K A] [Infinite K] [FiniteDimensional K A]\n  (delta : MaximalSpectrum A → A) (hdelta : ∀ (p : MaximalSpectrum A), delta p ≠ 0)\n  (hsoc : ∀ (p : MaximalSpectrum A), ∀ x ∈ Submodule.annihilator p.asIdeal, ∃ b, x = b • delta p) :\n  ∃ p, ∀ (j : MaximalSpectrum A), p.functional (delta j) ≠ 0",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 7,
+      "moduleLineCount": 133,
+      "startLine": 125,
+      "endLine": 131,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.perfectPairingOfGlobalSocles"
       ]
     },
     "LinearStudy.finiteFlat_centered_jacobian_annihilator": {
@@ -1106,6 +1300,252 @@
         "LinearStudy.pairingTensorEndEquiv",
         "LinearStudy.traceElement",
         "LinearStudy.traceElement_nonzero_over_field"
+      ]
+    },
+    "LinearStudy.tensorFunctionalContraction": {
+      "declaration": "LinearStudy.tensorFunctionalContraction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.tensorFunctionalContraction.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  (ell : A →ₗ[R] R) : TensorProduct R A A →ₗ[R] A",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 2,
+      "moduleLineCount": 113,
+      "startLine": 15,
+      "endLine": 16,
+      "lineCount": 2,
+      "dependencies": []
+    },
+    "LinearStudy.tensorFunctionalContraction_tmul": {
+      "declaration": "LinearStudy.tensorFunctionalContraction_tmul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tensorFunctionalContraction_tmul.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] (ell : A →ₗ[R] R) (x y : A) : (LinearStudy.tensorFunctionalContraction ell) (x ⊗ₜ[R] y) = ell x • y",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 3,
+      "moduleLineCount": 113,
+      "startLine": 18,
+      "endLine": 20,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
+    "LinearStudy.tensorFunctionalContraction_pairing": {
+      "declaration": "LinearStudy.tensorFunctionalContraction_pairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.tensorFunctionalContraction_pairing.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (a : A) :\n  (LinearStudy.tensorFunctionalContraction (p.equiv a)) d = ((LinearStudy.pairingTensorEndEquiv p) d) a",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 6,
+      "moduleLineCount": 113,
+      "startLine": 24,
+      "endLine": 29,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_tmul",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_tmul"
+      ]
+    },
+    "LinearStudy.unitTwistedPairing": {
+      "declaration": "LinearStudy.unitTwistedPairing",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.unitTwistedPairing.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A] [Algebra R A]\n  (p : LinearStudy.PerfectMultiplicationPairing) (u : Aˣ) : LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 7,
+      "moduleLineCount": 113,
+      "startLine": 31,
+      "endLine": 37,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.PerfectMultiplicationPairing.mk"
+      ]
+    },
+    "LinearStudy.unitTwistedPairing_functional": {
+      "declaration": "LinearStudy.unitTwistedPairing_functional",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.unitTwistedPairing_functional.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] (p : LinearStudy.PerfectMultiplicationPairing) (u : Aˣ) (a : A) :\n  (LinearStudy.unitTwistedPairing p u).functional a = p.functional (↑u * a)",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 3,
+      "moduleLineCount": 113,
+      "startLine": 40,
+      "endLine": 42,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
+    "LinearStudy.pairingTensorEndEquiv_unitTwisted": {
+      "declaration": "LinearStudy.pairingTensorEndEquiv_unitTwisted",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.pairingTensorEndEquiv_unitTwisted.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing) (u : Aˣ)\n  (d : TensorProduct R A A) (a : A) :\n  ((LinearStudy.pairingTensorEndEquiv (LinearStudy.unitTwistedPairing p u)) d) a =\n    ((LinearStudy.pairingTensorEndEquiv p) d) (↑u * a)",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 11,
+      "moduleLineCount": 113,
+      "startLine": 44,
+      "endLine": 54,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_tmul",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
+    "LinearStudy.diagonal_tensor_normalized_pairing": {
+      "declaration": "LinearStudy.diagonal_tensor_normalized_pairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_tensor_normalized_pairing.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d)\n  (hc : IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)) :\n  ∃ p', LinearStudy.pairingDiagonal p' = d ∧ (LinearStudy.tensorFunctionalContraction p'.functional) d = 1",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 26,
+      "moduleLineCount": 113,
+      "startLine": 56,
+      "endLine": 81,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator",
+        "LinearStudy.pairingTensorEndEquiv_unitTwisted",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_pairing",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
+    "LinearStudy.diagonal_tensor_unique_functional": {
+      "declaration": "LinearStudy.diagonal_tensor_unique_functional",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_tensor_unique_functional.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d)\n  (hc : IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)) :\n  ∃! ell, (LinearStudy.tensorFunctionalContraction ell) d = 1",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 16,
+      "moduleLineCount": 113,
+      "startLine": 83,
+      "endLine": 98,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.diagonal_tensor_normalized_pairing",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_pairing"
+      ]
+    },
+    "LinearStudy.normalized_diagonal_residue_trace": {
+      "declaration": "LinearStudy.normalized_diagonal_residue_trace",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/DiagonalNormalization.lean",
+      "line": 100,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalized_diagonal_residue_trace.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  [Algebra R A] [Module.Free R A] [Module.Finite R A] (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct R A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal R A) d)\n  (hc : IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)) :\n  ∃ p',\n    LinearStudy.pairingDiagonal p' = d ∧\n      ∀ (a : A), p'.functional (a * (Algebra.TensorProduct.lmul' R) d) = (Algebra.trace R A) a",
+      "sha256": "c7a0654027f228703b23a9d692f5d7ac8f87c1e2b10a3534fdaefd92194091ba",
+      "lines": 12,
+      "moduleLineCount": 113,
+      "startLine": 100,
+      "endLine": 111,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.diagonal_tensor_normalized_pairing",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingDiagonal_multiplication_eq_traceElement",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.traceElement",
+        "LinearStudy.traceElement_pairing"
       ]
     },
     "LinearStudy.pairingTensorEndEquiv": {
@@ -2670,6 +3110,122 @@
       "dependencies": [
         "LinearStudy.Annihilates",
         "LinearStudy.flat_genericFiber_injective"
+      ]
+    },
+    "LinearStudy.diagonal_coefficient_notMem_kernel": {
+      "declaration": "LinearStudy.diagonal_coefficient_notMem_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GlobalDiagonalNormalization.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.diagonal_coefficient_notMem_kernel.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (q : A →ₐ[K] K) (p : LinearStudy.PerfectMultiplicationPairing)\n  (d : TensorProduct K A A) (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : (LinearStudy.pairingRightReduction q) d ≠ 0) :\n  ((LinearStudy.pairingTensorEndEquiv p) d) 1 ∉ RingHom.ker q.toRingHom",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lines": 11,
+      "moduleLineCount": 64,
+      "startLine": 15,
+      "endLine": 25,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.dualGenerator",
+        "LinearStudy.dualGenerator_annihilates",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingDiagonal_generates_annihilator",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingRightReduction_diagonal",
+        "LinearStudy.pairingRightReduction_tmul",
+        "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
+    "LinearStudy.global_diagonal_coefficient_isUnit": {
+      "declaration": "LinearStudy.global_diagonal_coefficient_isUnit",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GlobalDiagonalNormalization.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.global_diagonal_coefficient_isUnit.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (q : MaximalSpectrum A → A →ₐ[K] K)\n  (hq : ∀ (j : MaximalSpectrum A), RingHom.ker (q j).toRingHom = j.asIdeal)\n  (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct K A A)\n  (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : ∀ (j : MaximalSpectrum A), (LinearStudy.pairingRightReduction (q j)) d ≠ 0) :\n  IsUnit (((LinearStudy.pairingTensorEndEquiv p) d) 1)",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lines": 16,
+      "moduleLineCount": 64,
+      "startLine": 27,
+      "endLine": 42,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.diagonal_coefficient_notMem_kernel",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
+    "LinearStudy.global_diagonal_unique_functional": {
+      "declaration": "LinearStudy.global_diagonal_unique_functional",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GlobalDiagonalNormalization.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.global_diagonal_unique_functional.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (q : MaximalSpectrum A → A →ₐ[K] K)\n  (hq : ∀ (j : MaximalSpectrum A), RingHom.ker (q j).toRingHom = j.asIdeal)\n  (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct K A A)\n  (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : ∀ (j : MaximalSpectrum A), (LinearStudy.pairingRightReduction (q j)) d ≠ 0) :\n  ∃! ell, (LinearStudy.tensorFunctionalContraction ell) d = 1",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lines": 8,
+      "moduleLineCount": 64,
+      "startLine": 44,
+      "endLine": 51,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.diagonal_tensor_unique_functional",
+        "LinearStudy.global_diagonal_coefficient_isUnit",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
+    "LinearStudy.global_diagonal_normalized_trace": {
+      "declaration": "LinearStudy.global_diagonal_normalized_trace",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GlobalDiagonalNormalization.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.global_diagonal_normalized_trace.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (q : MaximalSpectrum A → A →ₐ[K] K)\n  (hq : ∀ (j : MaximalSpectrum A), RingHom.ker (q j).toRingHom = j.asIdeal)\n  (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct K A A)\n  (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : ∀ (j : MaximalSpectrum A), (LinearStudy.pairingRightReduction (q j)) d ≠ 0) :\n  ∃ p',\n    LinearStudy.pairingDiagonal p' = d ∧\n      ∀ (a : A), p'.functional (a * (Algebra.TensorProduct.lmul' K) d) = (Algebra.trace K A) a",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lines": 10,
+      "moduleLineCount": 64,
+      "startLine": 53,
+      "endLine": 62,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.global_diagonal_coefficient_isUnit",
+        "LinearStudy.normalized_diagonal_residue_trace",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingRightReduction"
       ]
     },
     "LinearStudy.total_invariance_membership": {
@@ -6150,6 +6706,292 @@
       "endLine": 67,
       "lineCount": 46,
       "dependencies": []
+    },
+    "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal": {
+      "declaration": "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFiberDiagonal.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3}\n  [CommRing K] [CommRing A] [Algebra K A] [Fintype ι] [DecidableEq ι] (q : MvPolynomial ι K →ₐ[K] A)\n  (hq : Function.Surjective ⇑q) :\n  Ideal.span (Set.range fun i => q (MvPolynomial.X i) ⊗ₜ[K] 1 - 1 ⊗ₜ[K] q (MvPolynomial.X i)) =\n    KaehlerDifferential.ideal K A",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "lines": 41,
+      "moduleLineCount": 110,
+      "startLine": 19,
+      "endLine": 59,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.polynomial_diagonal_difference"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_diagonal_jacobian": {
+      "declaration": "LinearStudy.polynomialQuotient_diagonal_jacobian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFiberDiagonal.lean",
+      "line": 61,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_diagonal_jacobian.{u_1, u_3} {K : Type u_1} {ι : Type u_3} [CommRing K] [Fintype ι]\n  [DecidableEq ι] (P : ι → MvPolynomial ι K) :\n  let Q := MvPolynomial ι K ⧸ Ideal.span (Set.range P);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  ∃ D,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) D.det ∧\n      (Algebra.TensorProduct.lmul' K) D.det = Matrix.det fun i j => q ((MvPolynomial.pderiv j) (P i))",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "lines": 48,
+      "moduleLineCount": 110,
+      "startLine": 61,
+      "endLine": 108,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.determinant_annihilates_coordinate_ideal",
+        "LinearStudy.polynomial_diagonal_difference",
+        "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal"
+      ]
+    },
+    "LinearStudy.exists_maximalResidueMap": {
+      "declaration": "LinearStudy.exists_maximalResidueMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_maximalResidueMap.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  [IsAlgClosed K] [Module.Finite K A] (p : MaximalSpectrum A) : ∃ q, RingHom.ker q.toRingHom = p.asIdeal",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 12,
+      "moduleLineCount": 157,
+      "startLine": 18,
+      "endLine": 29,
+      "lineCount": 12,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel": {
+      "declaration": "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel.{u_1, u_3} {K : Type u_1} [Field K] {ι : Type u_3}\n  [Fintype ι] [DecidableEq ι] (a : ι → K) :\n  Ideal.span (Set.range fun i => MvPolynomial.X i - MvPolynomial.C (a i)) = RingHom.ker (MvPolynomial.aeval a).toRingHom",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 24,
+      "moduleLineCount": 157,
+      "startLine": 33,
+      "endLine": 56,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.polynomial_diagonal_difference"
+      ]
+    },
+    "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel": {
+      "declaration": "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel.{u_1, u_3} {K : Type u_1} [Field K] {ι : Type u_3} [Fintype ι]\n  [DecidableEq ι] (P : ι → MvPolynomial ι K) (q : MvPolynomial ι K ⧸ Ideal.span (Set.range P) →ₐ[K] K) :\n  have pi := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  have a := fun i => q (pi (MvPolynomial.X i));\n  Ideal.map pi (Ideal.span (Set.range fun i => MvPolynomial.X i - MvPolynomial.C (a i))) = RingHom.ker q.toRingHom",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 22,
+      "moduleLineCount": 157,
+      "startLine": 58,
+      "endLine": 79,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel"
+      ]
+    },
+    "LinearStudy.polynomial_quotient_kernel_socle": {
+      "declaration": "LinearStudy.polynomial_quotient_kernel_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_quotient_kernel_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) K) (List.ofFn P))\n  [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))]\n  (q : MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P) →ₐ[K] K) :\n  ∃ delta, delta ≠ 0 ∧ Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 57,
+      "moduleLineCount": 157,
+      "startLine": 81,
+      "endLine": 137,
+      "lineCount": 57,
+      "dependencies": [
+        "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal",
+        "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant",
+        "LinearStudy.polynomial_centered_variables_regular",
+        "LinearStudy.polynomial_diagonal_difference",
+        "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_perfectPairing": {
+      "declaration": "LinearStudy.polynomialQuotient_perfectPairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "line": 139,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialQuotient_perfectPairing.{u_1} {K : Type u_1} [Field K] [IsAlgClosed K] [Infinite K] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) K) (List.ofFn P))\n  [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))] :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 17,
+      "moduleLineCount": 157,
+      "startLine": 139,
+      "endLine": 155,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.exists_perfectPairing_of_global_scalar_socles",
+        "LinearStudy.kernel_socle_scalar_generation",
+        "LinearStudy.polynomial_quotient_kernel_socle"
+      ]
+    },
+    "LinearStudy.polynomial_cons_X_regular": {
+      "declaration": "LinearStudy.polynomial_cons_X_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRegular.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_cons_X_regular.{u_1} {R : Type u_1} [CommRing R] (rs : List R)\n  (hr : RingTheory.Sequence.IsRegular R rs) :\n  RingTheory.Sequence.IsRegular (Polynomial R) (Polynomial.X :: List.map (⇑Polynomial.C) rs)",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 25,
+      "moduleLineCount": 91,
+      "startLine": 19,
+      "endLine": 43,
+      "lineCount": 25,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_variables_regular": {
+      "declaration": "LinearStudy.polynomial_variables_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRegular.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ) :\n  RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) R) (List.ofFn MvPolynomial.X)",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 10,
+      "moduleLineCount": 91,
+      "startLine": 45,
+      "endLine": 54,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomial_cons_X_regular",
+        "LinearStudy.regular_transport_ringEquiv"
+      ]
+    },
+    "LinearStudy.polynomialTranslation": {
+      "declaration": "LinearStudy.polynomialTranslation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialRegular.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialTranslation.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (a : ι → R) :\n  MvPolynomial ι R ≃ₐ[R] MvPolynomial ι R",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 23,
+      "moduleLineCount": 91,
+      "startLine": 56,
+      "endLine": 78,
+      "lineCount": 23,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialTranslation_X": {
+      "declaration": "LinearStudy.polynomialTranslation_X",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRegular.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialTranslation_X.{u_1, u_2} {R : Type u_1} [CommRing R] {ι : Type u_2} (a : ι → R) (i : ι) :\n  (LinearStudy.polynomialTranslation a) (MvPolynomial.X i) = MvPolynomial.X i + MvPolynomial.C (a i)",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 3,
+      "moduleLineCount": 91,
+      "startLine": 80,
+      "endLine": 82,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation"
+      ]
+    },
+    "LinearStudy.polynomial_centered_variables_regular": {
+      "declaration": "LinearStudy.polynomial_centered_variables_regular",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialRegular.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_centered_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ)\n  (a : Fin n → R) :\n  RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) R) (List.ofFn fun i => MvPolynomial.X i - MvPolynomial.C (a i))",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 6,
+      "moduleLineCount": 91,
+      "startLine": 84,
+      "endLine": 89,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_X",
+        "LinearStudy.polynomial_variables_regular",
+        "LinearStudy.regular_transport_ringEquiv"
+      ]
     },
     "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero": {
       "declaration": "LinearStudy.powerSeries_unit_changed_coefficientDeterminant_ne_zero",
@@ -13622,12 +14464,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 357,
-  "definitionCount": 83,
+  "verifiedTheoremCount": 385,
+  "definitionCount": 87,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED. The actual arbitrary-parameter quotient reduction to complex numbers, finite-dimensionality, local evaluation formula and normalized perfect multiplication pairing are constructed from the original hypotheses. Actual derivations and first-order congruences give the fiber determinant unit factor and transfer of nonvanishing and annihilation. These local functionals are not claimed to be the globally compatible Grothendieck residues; geometric charts supplying the first-order data and global Euler-Jacobi vanishing remain open.",
+  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED. The actual arbitrary-parameter quotient reduction to complex numbers, finite-dimensionality, local evaluation formula and normalized perfect multiplication pairing are constructed from the original hypotheses. Actual derivations and first-order congruences give the fiber determinant unit factor and transfer of nonvanishing and annihilation. These local functionals are not claimed to be the globally compatible Grothendieck residues; geometric charts supplying the first-order data and global Euler-Jacobi vanishing remain open. Further proved a perfect multiplication pairing for an actual finite-dimensional polynomial complete-intersection quotient over an infinite algebraically closed field, without a local-ring or supplied-pairing hypothesis. Centered polynomial variables are regular; actual maximal residue maps, nonzero maximal socles and a simultaneous functional are constructed. Polynomial quotient diagonal tensors have the actual derivative Jacobian as their multiplication image. A diagonal tensor with explicitly nonzero reduction at every maximal ideal uniquely normalizes a functional and gives the actual trace identity. Nonzero reductions for that specific polynomial difference tensor, its degree bounds, global Euler-Jacobi vanishing and geometric comparison are not yet established.",
   "sourceRanges": {
     "LinearStudy.invariant_restriction_surjective": {
       "path": "Linear/Iteration.lean",
@@ -13637,6 +14479,15 @@
       "dependencies": [
         "LinearStudy.restrictInvariant",
         "LinearStudy.total_invariance_membership"
+      ]
+    },
+    "LinearStudy.global_socle_functional_detects_nonzero": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 80,
+      "endLine": 100,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.nonzero_ideal_meets_maximal_annihilator"
       ]
     },
     "LinearStudy.topKoszulCoordinate": {
@@ -13792,6 +14643,19 @@
       "lineCount": 16,
       "dependencies": []
     },
+    "LinearStudy.global_diagonal_coefficient_isUnit": {
+      "path": "Linear/GlobalDiagonalNormalization.lean",
+      "startLine": 27,
+      "endLine": 42,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.diagonal_coefficient_notMem_kernel",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
     "LinearStudy.powerSeries_completeIntersection_traceElement": {
       "path": "Linear/PowerSeriesAugmentation.lean",
       "startLine": 122,
@@ -13922,6 +14786,15 @@
       "lineCount": 1,
       "dependencies": [
         "LinearStudy.DoublePoint"
+      ]
+    },
+    "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel": {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "startLine": 33,
+      "endLine": 56,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.polynomial_diagonal_difference"
       ]
     },
     "LinearStudy.annihilator_eq_scalar_generator": {
@@ -14532,6 +15405,15 @@
         "LinearStudy.PerfectMultiplicationPairing"
       ]
     },
+    "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal": {
+      "path": "Linear/PolynomialFiberDiagonal.lean",
+      "startLine": 19,
+      "endLine": 59,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.polynomial_diagonal_difference"
+      ]
+    },
     "LinearStudy.powerSeriesResidueTensorEquiv_smul": {
       "path": "Linear/TensorSpecialization.lean",
       "startLine": 120,
@@ -14679,6 +15561,20 @@
         "LinearStudy.unit_coefficient_generates_annihilator"
       ]
     },
+    "LinearStudy.global_diagonal_unique_functional": {
+      "path": "Linear/GlobalDiagonalNormalization.lean",
+      "startLine": 44,
+      "endLine": 51,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.diagonal_tensor_unique_functional",
+        "LinearStudy.global_diagonal_coefficient_isUnit",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
     "koszulComplex.ofList": {
       "path": "Linear/Vendor/KoszulComplex.lean",
       "startLine": 129,
@@ -14716,6 +15612,18 @@
       "endLine": 26,
       "lineCount": 17,
       "dependencies": []
+    },
+    "LinearStudy.polynomialQuotient_diagonal_jacobian": {
+      "path": "Linear/PolynomialFiberDiagonal.lean",
+      "startLine": 61,
+      "endLine": 108,
+      "lineCount": 48,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.determinant_annihilates_coordinate_ideal",
+        "LinearStudy.polynomial_diagonal_difference",
+        "LinearStudy.polynomial_tensor_diagonal_eq_coordinate_ideal"
+      ]
     },
     "ExteriorAlgebra.ι_mul_mem_exteriorPower_anticomm": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
@@ -14757,6 +15665,22 @@
         "LinearStudy.parameterSpecialization_jacobian",
         "LinearStudy.powerSeriesResidueTensorEquiv",
         "LinearStudy.powerSeriesResidueTensorEquiv_one_tmul"
+      ]
+    },
+    "LinearStudy.tensorFunctionalContraction_pairing": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 24,
+      "endLine": 29,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_tmul",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_tmul"
       ]
     },
     "LinearStudy.functionKoszulAugmentationMap": {
@@ -15376,6 +16300,26 @@
         "LinearStudy.powerSeries_hasEval_of_nilpotent"
       ]
     },
+    "LinearStudy.diagonal_tensor_normalized_pairing": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 56,
+      "endLine": 81,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_of_diagonal_annihilator",
+        "LinearStudy.pairingTensorEndEquiv_unitTwisted",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_pairing",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
     "LinearStudy.IntegralProjectiveEquations.zeroSet": {
       "path": "Linear/Projective.lean",
       "startLine": 185,
@@ -15524,6 +16468,18 @@
         "LinearStudy.CoordinateVector",
         "LinearStudy.IntegralProjectiveEquations",
         "LinearStudy.IntegralProjectiveEquations.ideal"
+      ]
+    },
+    "LinearStudy.unitTwistedPairing": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 31,
+      "endLine": 37,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.PerfectMultiplicationPairing.mk"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance": {
@@ -15832,6 +16788,19 @@
         "LinearStudy.powerSeriesTranslationEquiv"
       ]
     },
+    "LinearStudy.pairingTensorEndEquiv_unitTwisted": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 44,
+      "endLine": 54,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.pairingTensorEndEquiv_tmul",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
     "LinearStudy.parameterSpecialization_jacobian": {
       "path": "Linear/PowerSeriesSpecialization.lean",
       "startLine": 126,
@@ -15905,6 +16874,29 @@
         "LinearStudy.weightedEvaluation_apply"
       ]
     },
+    "LinearStudy.unitTwistedPairing_functional": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 40,
+      "endLine": 42,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.unitTwistedPairing"
+      ]
+    },
+    "LinearStudy.perfectPairingOfGlobalSocles": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 114,
+      "endLine": 123,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.mk",
+        "LinearStudy.global_socle_multiplicationToDual_injective",
+        "LinearStudy.multiplicationToDual"
+      ]
+    },
     "LinearStudy.PerfectMultiplicationPairing.noConfusion": {
       "path": "Linear/Duality.lean",
       "startLine": 21,
@@ -15933,6 +16925,26 @@
         "LinearStudy.liftedParameterCoordinateEquiv",
         "LinearStudy.liftedParameterCoordinateEquiv_parameter",
         "LinearStudy.liftedParameterMap"
+      ]
+    },
+    "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel": {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "startLine": 58,
+      "endLine": 79,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.polynomial_centered_coordinateIdeal_eq_eval_kernel"
+      ]
+    },
+    "LinearStudy.exists_perfectPairing_of_global_scalar_socles": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 125,
+      "endLine": 131,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.perfectPairingOfGlobalSocles"
       ]
     },
     "ExteriorAlgebra.prodEquivProd_apply": {
@@ -16068,6 +17080,24 @@
         "LinearStudy.thickeningMk"
       ]
     },
+    "LinearStudy.diagonal_coefficient_notMem_kernel": {
+      "path": "Linear/GlobalDiagonalNormalization.lean",
+      "startLine": 15,
+      "endLine": 25,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.dualGenerator",
+        "LinearStudy.dualGenerator_annihilates",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingDiagonal_generates_annihilator",
+        "LinearStudy.pairingRightReduction",
+        "LinearStudy.pairingRightReduction_diagonal",
+        "LinearStudy.pairingRightReduction_tmul",
+        "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
     "LinearStudy.nestedPowerSeriesTranslation_pderiv": {
       "path": "Linear/PowerSeriesCoordinateChart.lean",
       "startLine": 110,
@@ -16108,6 +17138,16 @@
       "dependencies": [
         "exteriorPowerProdEquivProd",
         "exteriorPowerProdEquivProd_apply_inr_ιMulti"
+      ]
+    },
+    "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 62,
+      "endLine": 76,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.artinian_maximal_annihilator_nonzero",
+        "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant"
       ]
     },
     "LinearStudy.equationChangeQuotient_finite": {
@@ -16264,6 +17304,15 @@
         "LinearStudy.thickeningIdeal"
       ]
     },
+    "LinearStudy.tensorFunctionalContraction_tmul": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 18,
+      "endLine": 20,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
     "LinearStudy.parameterSubstitutionEquiv_X": {
       "path": "Linear/ParameterSubstitution.lean",
       "startLine": 99,
@@ -16273,6 +17322,13 @@
         "LinearStudy.parameterSubstitutionEquiv",
         "LinearStudy.parameter_substitution_hasSubst"
       ]
+    },
+    "LinearStudy.artinian_maximal_annihilator_nonzero": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 16,
+      "endLine": 37,
+      "lineCount": 22,
+      "dependencies": []
     },
     "LinearStudy.ProjectivePoint": {
       "path": "Linear/Projective.lean",
@@ -16369,6 +17425,20 @@
         "LinearStudy.ideal_ofFn",
         "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle",
         "LinearStudy.powerSeries_quotient_coordinateIdeal_isMaximal"
+      ]
+    },
+    "LinearStudy.polynomialQuotient_perfectPairing": {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "startLine": 139,
+      "endLine": 155,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.exists_maximalResidueMap",
+        "LinearStudy.exists_perfectPairing_of_global_scalar_socles",
+        "LinearStudy.kernel_socle_scalar_generation",
+        "LinearStudy.polynomial_quotient_kernel_socle"
       ]
     },
     "LinearStudy.parameter_substitution_bijective": {
@@ -16683,6 +17753,21 @@
       "dependencies": [
         "koszulComplex.appendMap",
         "koszulComplex.ofListIsoOfEqAux"
+      ]
+    },
+    "LinearStudy.global_diagonal_normalized_trace": {
+      "path": "Linear/GlobalDiagonalNormalization.lean",
+      "startLine": 53,
+      "endLine": 62,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.global_diagonal_coefficient_isUnit",
+        "LinearStudy.normalized_diagonal_residue_trace",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingRightReduction"
       ]
     },
     "LinearStudy.thickeningMk_surjective": {
@@ -17116,6 +18201,16 @@
         "exteriorPower.instIsScalarTowerExteriorAlgebraTensorProduct_linear"
       ]
     },
+    "LinearStudy.polynomial_variables_regular": {
+      "path": "Linear/PolynomialRegular.lean",
+      "startLine": 45,
+      "endLine": 54,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomial_cons_X_regular",
+        "LinearStudy.regular_transport_ringEquiv"
+      ]
+    },
     "LinearStudy.CoordinateVector": {
       "path": "Linear/Projective.lean",
       "startLine": 22,
@@ -17380,6 +18475,13 @@
         "exteriorPower.instIsScalarTowerExteriorAlgebraTensorProduct_linear"
       ]
     },
+    "LinearStudy.nonzero_ideal_meets_maximal_annihilator": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 39,
+      "endLine": 60,
+      "lineCount": 22,
+      "dependencies": []
+    },
     "LinearStudy.thickeningX_nilpotent": {
       "path": "Linear/Thickening.lean",
       "startLine": 48,
@@ -17392,6 +18494,25 @@
         "LinearStudy.thickeningX_pow"
       ]
     },
+    "LinearStudy.polynomial_cons_X_regular": {
+      "path": "Linear/PolynomialRegular.lean",
+      "startLine": 19,
+      "endLine": 43,
+      "lineCount": 25,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_centered_variables_regular": {
+      "path": "Linear/PolynomialRegular.lean",
+      "startLine": 84,
+      "endLine": 89,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_X",
+        "LinearStudy.polynomial_variables_regular",
+        "LinearStudy.regular_transport_ringEquiv"
+      ]
+    },
     "LinearStudy.powerSeries_maximalIdeal_eq_coordinates": {
       "path": "Linear/TensorSpecialization.lean",
       "startLine": 26,
@@ -17399,6 +18520,24 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    "LinearStudy.normalized_diagonal_residue_trace": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 100,
+      "endLine": 111,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.diagonal_tensor_normalized_pairing",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingDiagonal_multiplication_eq_traceElement",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.traceElement",
+        "LinearStudy.traceElement_pairing"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism": {
@@ -17949,6 +19088,15 @@
         "LinearStudy.HomogeneousEndomorphism.forms"
       ]
     },
+    "LinearStudy.polynomialTranslation_X": {
+      "path": "Linear/PolynomialRegular.lean",
+      "startLine": 80,
+      "endLine": 82,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation"
+      ]
+    },
     "LinearStudy.invariant_restriction": {
       "path": "Linear/Iteration.lean",
       "startLine": 31,
@@ -18066,6 +19214,13 @@
         "LinearStudy.linearEquationSubmodule"
       ]
     },
+    "LinearStudy.polynomialTranslation": {
+      "path": "Linear/PolynomialRegular.lean",
+      "startLine": 56,
+      "endLine": 78,
+      "lineCount": 23,
+      "dependencies": []
+    },
     "LinearStudy.finiteFlat_jacobian_annihilator": {
       "path": "Linear/RelativeJacobian.lean",
       "startLine": 23,
@@ -18113,6 +19268,13 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.pairingTensorEndEquiv"
       ]
+    },
+    "LinearStudy.tensorFunctionalContraction": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 15,
+      "endLine": 16,
+      "lineCount": 2,
+      "dependencies": []
     },
     "LinearStudy.multiplication_factors_through_reduction": {
       "path": "Linear/Reduction.lean",
@@ -18495,6 +19657,19 @@
         "LinearStudy.parameter_generator_constantCoeff_zero"
       ]
     },
+    "LinearStudy.polynomial_quotient_kernel_socle": {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "startLine": 81,
+      "endLine": 137,
+      "lineCount": 57,
+      "dependencies": [
+        "LinearStudy.coefficientDeterminant_ne_zero_of_artinian_maximal",
+        "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant",
+        "LinearStudy.polynomial_centered_variables_regular",
+        "LinearStudy.polynomial_diagonal_difference",
+        "LinearStudy.polynomial_quotient_coordinateIdeal_eq_kernel"
+      ]
+    },
     "LinearStudy.equationMap_socleMap_comp": {
       "path": "Linear/KoszulSocleDeterminant.lean",
       "startLine": 57,
@@ -18548,6 +19723,24 @@
       "lineCount": 43,
       "dependencies": [
         "LinearStudy.powerSeries_constantCoeff_kernel"
+      ]
+    },
+    "LinearStudy.diagonal_tensor_unique_functional": {
+      "path": "Linear/DiagonalNormalization.lean",
+      "startLine": 83,
+      "endLine": 98,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.equiv",
+        "LinearStudy.PerfectMultiplicationPairing.equiv_apply",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.diagonal_tensor_normalized_pairing",
+        "LinearStudy.pairingDiagonal",
+        "LinearStudy.pairingTensorEndEquiv",
+        "LinearStudy.tensorFunctionalContraction",
+        "LinearStudy.tensorFunctionalContraction_pairing"
       ]
     },
     "LinearStudy.powerSeries_variables_regular": {
@@ -19752,6 +20945,16 @@
         "LinearStudy.powerSeries_zeroConstant_variable_expansion"
       ]
     },
+    "LinearStudy.global_socle_multiplicationToDual_injective": {
+      "path": "Linear/ArtinianGlobalPairing.lean",
+      "startLine": 102,
+      "endLine": 112,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.global_socle_functional_detects_nonzero",
+        "LinearStudy.multiplicationToDual"
+      ]
+    },
     "koszulComplex.isZero_X_of_card_generators_lt": {
       "path": "Linear/Vendor/KoszulComplex.lean",
       "startLine": 192,
@@ -19810,6 +21013,13 @@
         "exteriorPower.baseChangeIso",
         "exteriorPower.baseChangeIsoInverse_apply_tmul"
       ]
+    },
+    "LinearStudy.exists_maximalResidueMap": {
+      "path": "Linear/PolynomialGlobalResidue.lean",
+      "startLine": 18,
+      "endLine": 29,
+      "lineCount": 12,
+      "dependencies": []
     },
     "LinearStudy.annihilator_scalar_action_baseChange": {
       "path": "Linear/ParameterPairingChange.lean",
@@ -22736,7 +23946,10 @@
         "jacobian",
         "weights",
         "local-residue-pairing",
-        "fiber-jacobian-annihilator"
+        "fiber-jacobian-annihilator",
+        "polynomial-global-pairing",
+        "polynomial-fiber-diagonal",
+        "global-diagonal-normalization"
       ],
       "setup": [
         "<p>原稿 Setup 1.4；t=r(q−1)−1，第一纤维 S₁。</p>",
@@ -24828,6 +26041,256 @@
       "formalType": "LinearStudy.fiber_jacobian_annihilates.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)\n  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2) (N : Ideal (R ⧸ I))\n  (hd : LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)))) :\n  LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i)))",
       "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
       "lines": 10,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "polynomial-coordinate-regular",
+      "titles": [
+        "平移多项式坐标的正则性",
+        "Regularity of translated polynomial coordinates"
+      ],
+      "title": "平移多项式坐标的正则性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PolynomialRegular.lean",
+      "decl": "LinearStudy.polynomial_centered_variables_regular",
+      "declaration": "LinearStudy.polynomial_centered_variables_regular",
+      "deps": [],
+      "setup": [
+        "<p>R 为非零交换环，a∈Rⁿ；xᵢ=Xᵢ−aᵢ。</p>",
+        "<p>R is a nontrivial commutative ring, a∈Rⁿ, and xᵢ=Xᵢ−aᵢ.</p>"
+      ],
+      "result": [
+        "<p>x₁,…,xₙ 是实际多项式环中的正则序列；平移代换及其逆均已构造。</p>",
+        "<p>x₁,…,xₙ form a regular sequence in the actual polynomial ring; translation and its inverse are constructed.</p>"
+      ],
+      "compactSetup": [
+        "R 为非零交换环，a∈Rⁿ；xᵢ=Xᵢ−aᵢ。",
+        "R is a nontrivial commutative ring, a∈Rⁿ, and xᵢ=Xᵢ−aᵢ."
+      ],
+      "compactResult": [
+        "x₁,…,xₙ 是实际多项式环中的正则序列；平移代换及其逆均已构造。",
+        "x₁,…,xₙ form a regular sequence in the actual polynomial ring; translation and its inverse are constructed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.polynomial_centered_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ)\n  (a : Fin n → R) :\n  RingTheory.Sequence.IsRegular (MvPolynomial (Fin n) R) (List.ofFn fun i => MvPolynomial.X i - MvPolynomial.C (a i))",
+      "sha256": "789096a78f53b3d00a04ee811c67437f0f0c25c86bb7425375248bf74ea9e5ac",
+      "lines": 6,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "global-artinian-socle",
+      "titles": [
+        "非零理想与极大 socle 的交",
+        "Every nonzero ideal meets a maximal socle"
+      ],
+      "title": "非零理想与极大 socle 的交",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/ArtinianGlobalPairing.lean",
+      "decl": "LinearStudy.nonzero_ideal_meets_maximal_annihilator",
+      "declaration": "LinearStudy.nonzero_ideal_meets_maximal_annihilator",
+      "deps": [],
+      "setup": [
+        "<p>A 为交换 Noetherian Artinian 环；I 是非零理想。没有局部环假设。</p>",
+        "<p>A is a commutative Noetherian Artinian ring and I a nonzero ideal. A need not be local.</p>"
+      ],
+      "result": [
+        "<p>存在极大理想 p 及非零 x∈I∩Ann(p)。从实际伴随素理想结果推出。</p>",
+        "<p>There exist a maximal ideal p and nonzero x∈I∩Ann(p), derived from actual associated-prime results.</p>"
+      ],
+      "compactSetup": [
+        "A 为交换 Noetherian Artinian 环；I 是非零理想。没有局部环假设。",
+        "A is a commutative Noetherian Artinian ring and I a nonzero ideal. A need not be local."
+      ],
+      "compactResult": [
+        "存在极大理想 p 及非零 x∈I∩Ann(p)。从实际伴随素理想结果推出。",
+        "There exist a maximal ideal p and nonzero x∈I∩Ann(p), derived from actual associated-prime results."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.nonzero_ideal_meets_maximal_annihilator.{u_1} {A : Type u_1} [CommRing A] [IsArtinianRing A]\n  [IsNoetherianRing A] (I : Ideal A) (hI : I ≠ ⊥) : ∃ p, ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator p.asIdeal",
+      "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
+      "lines": 22,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "polynomial-maximal-socle",
+      "titles": [
+        "多项式完全交的非零极大 socle",
+        "Nonzero maximal socles in a polynomial complete intersection"
+      ],
+      "title": "多项式完全交的非零极大 socle",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "decl": "LinearStudy.polynomial_quotient_kernel_socle",
+      "declaration": "LinearStudy.polynomial_quotient_kernel_socle",
+      "deps": [
+        "polynomial-coordinate-regular",
+        "global-artinian-socle",
+        "coefficient-socle"
+      ],
+      "setup": [
+        "<p>K 为域；n+1 个正则多项式 Pᵢ；实际 Q=K[X]/(P) 有限维；q:Q→K 为 K-代数映射。</p>",
+        "<p>K is a field, P consists of n+1 regular polynomials, the actual Q=K[X]/(P) is finite-dimensional, and q:Q→K is a K-algebra map.</p>"
+      ],
+      "result": [
+        "<p>构造非零 δ，使 Ann(ker q)=(δ)。核理想和坐标平移均由 q 构造，没有局部环或给定 socle 输入。</p>",
+        "<p>Construct nonzero δ with Ann(ker q)=(δ). Kernel coordinates are constructed from q; neither locality nor a supplied socle is assumed.</p>"
+      ],
+      "compactSetup": [
+        "K 为域；n+1 个正则多项式 Pᵢ；实际 Q=K[X]/(P) 有限维；q:Q→K 为 K-代数映射。",
+        "K is a field, P consists of n+1 regular polynomials, the actual Q=K[X]/(P) is finite-dimensional, and q:Q→K is a K-algebra map."
+      ],
+      "compactResult": [
+        "构造非零 δ，使 Ann(ker q)=(δ)。核理想和坐标平移均由 q 构造，没有局部环或给定 socle 输入。",
+        "Construct nonzero δ with Ann(ker q)=(δ). Kernel coordinates are constructed from q; neither locality nor a supplied socle is assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.polynomial_quotient_kernel_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) K) (List.ofFn P))\n  [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))]\n  (q : MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P) →ₐ[K] K) :\n  ∃ delta, delta ≠ 0 ∧ Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 57,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "polynomial-global-pairing",
+      "titles": [
+        "从有限多项式完全交构造全局配对",
+        "Global pairing constructed for a finite polynomial complete intersection"
+      ],
+      "title": "从有限多项式完全交构造全局配对",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PolynomialGlobalResidue.lean",
+      "decl": "LinearStudy.polynomialQuotient_perfectPairing",
+      "declaration": "LinearStudy.polynomialQuotient_perfectPairing",
+      "deps": [
+        "polynomial-maximal-socle",
+        "global-artinian-socle"
+      ],
+      "setup": [
+        "<p>K 为无限代数闭域；n+1 个正则多项式；实际 Q=K[X]/(P) 有限维。</p>",
+        "<p>K is an infinite algebraically closed field; n+1 regular polynomials; the actual Q=K[X]/(P) is finite-dimensional.</p>"
+      ],
+      "result": [
+        "<p>构造 Q 上的完美乘法配对。极大剩余域映射、各非零 socle 与同时非零的泛函均已证明；不附加配对或局部性输入。</p>",
+        "<p>Construct a perfect multiplication pairing on Q. Maximal residue maps, nonzero socles and a simultaneously nonzero functional are proved; no pairing or locality input is added.</p>"
+      ],
+      "compactSetup": [
+        "K 为无限代数闭域；n+1 个正则多项式；实际 Q=K[X]/(P) 有限维。",
+        "K is an infinite algebraically closed field; n+1 regular polynomials; the actual Q=K[X]/(P) is finite-dimensional."
+      ],
+      "compactResult": [
+        "构造 Q 上的完美乘法配对。极大剩余域映射、各非零 socle 与同时非零的泛函均已证明；不附加配对或局部性输入。",
+        "Construct a perfect multiplication pairing on Q. Maximal residue maps, nonzero socles and a simultaneously nonzero functional are proved; no pairing or locality input is added."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.polynomialQuotient_perfectPairing.{u_1} {K : Type u_1} [Field K] [IsAlgClosed K] [Infinite K] {n : ℕ}\n  (P : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K)\n  (hP : RingTheory.Sequence.IsRegular (MvPolynomial (Fin (n + 1)) K) (List.ofFn P))\n  [Module.Finite K (MvPolynomial (Fin (n + 1)) K ⧸ Ideal.span (Set.range P))] :\n  Nonempty LinearStudy.PerfectMultiplicationPairing",
+      "sha256": "e83282756eaff7e570e912c38dc0508a23376d44b587142f595ac56db142ac7e",
+      "lines": 17,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "polynomial-fiber-diagonal",
+      "titles": [
+        "整个多项式商环的对角 Jacobian",
+        "Diagonal Jacobian for the entire polynomial quotient"
+      ],
+      "title": "整个多项式商环的对角 Jacobian",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/PolynomialFiberDiagonal.lean",
+      "decl": "LinearStudy.polynomialQuotient_diagonal_jacobian",
+      "declaration": "LinearStudy.polynomialQuotient_diagonal_jacobian",
+      "deps": [],
+      "setup": [
+        "<p>任意交换系数环 K；有限多个 Pᵢ；Q=K[X]/(P)。无需局部环、正则性或有限维输入。</p>",
+        "<p>Any commutative coefficient ring K, finitely many Pᵢ, and Q=K[X]/(P). No locality, regularity or finite-dimensionality is required.</p>"
+      ],
+      "result": [
+        "<p>构造实际差商矩阵 D，使 det D 湮灭对角理想，乘法映射把 det D 送到真实导数 Jacobian。其各极大约化非零性仍待补齐。</p>",
+        "<p>Construct an actual difference matrix D whose determinant annihilates the diagonal ideal and multiplies to the actual derivative Jacobian. Nonzero reduction at every maximal ideal still needs to be established.</p>"
+      ],
+      "compactSetup": [
+        "任意交换系数环 K；有限多个 Pᵢ；Q=K[X]/(P)。无需局部环、正则性或有限维输入。",
+        "Any commutative coefficient ring K, finitely many Pᵢ, and Q=K[X]/(P). No locality, regularity or finite-dimensionality is required."
+      ],
+      "compactResult": [
+        "构造实际差商矩阵 D，使 det D 湮灭对角理想，乘法映射把 det D 送到真实导数 Jacobian。其各极大约化非零性仍待补齐。",
+        "Construct an actual difference matrix D whose determinant annihilates the diagonal ideal and multiplies to the actual derivative Jacobian. Nonzero reduction at every maximal ideal still needs to be established."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.polynomialQuotient_diagonal_jacobian.{u_1, u_3} {K : Type u_1} {ι : Type u_3} [CommRing K] [Fintype ι]\n  [DecidableEq ι] (P : ι → MvPolynomial ι K) :\n  let Q := MvPolynomial ι K ⧸ Ideal.span (Set.range P);\n  have q := Ideal.Quotient.mk (Ideal.span (Set.range P));\n  ∃ D,\n    LinearStudy.Annihilates (KaehlerDifferential.ideal K Q) D.det ∧\n      (Algebra.TensorProduct.lmul' K) D.det = Matrix.det fun i j => q ((MvPolynomial.pderiv j) (P i))",
+      "sha256": "349ca2d5c9a4255e6c283beb8cfb55cdbf1613137febf41a8c6b228ae51ae4d3",
+      "lines": 48,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "global-diagonal-normalization",
+      "titles": [
+        "对角张量确定唯一归一化泛函",
+        "Unique normalization determined by a diagonal tensor"
+      ],
+      "title": "对角张量确定唯一归一化泛函",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GlobalDiagonalNormalization.lean",
+      "decl": "LinearStudy.global_diagonal_unique_functional",
+      "declaration": "LinearStudy.global_diagonal_unique_functional",
+      "deps": [
+        "polynomial-global-pairing",
+        "polynomial-fiber-diagonal"
+      ],
+      "setup": [
+        "<p>有限维 K-代数 A，实际完美配对；d 湮灭对角理想；每个极大理想对应 qⱼ:A→K，并明确要求 d 的各右约化非零。</p>",
+        "<p>A finite-dimensional K-algebra A, an actual perfect pairing, and d annihilating the diagonal ideal. Maps qⱼ:A→K have the maximal ideals as kernels; all right reductions of d are explicitly assumed nonzero.</p>"
+      ],
+      "result": [
+        "<p>存在唯一泛函 ρ，使 (ρ⊗id)(d)=1；另一个核验声明给出归一化迹公式。实际多项式差商张量的非退化性及低次数 Euler–Jacobi 消失仍待证明。</p>",
+        "<p>There is a unique ρ with (ρ⊗id)(d)=1. A separate checked declaration gives the normalized trace formula. Nondegeneracy of the actual polynomial difference tensor and low-degree Euler–Jacobi vanishing remain unproved.</p>"
+      ],
+      "compactSetup": [
+        "有限维 K-代数 A，实际完美配对；d 湮灭对角理想；每个极大理想对应 qⱼ:A→K，并明确要求 d 的各右约化非零。",
+        "A finite-dimensional K-algebra A, an actual perfect pairing, and d annihilating the diagonal ideal. Maps qⱼ:A→K have the maximal ideals as kernels; all right reductions of d are explicitly assumed nonzero."
+      ],
+      "compactResult": [
+        "存在唯一泛函 ρ，使 (ρ⊗id)(d)=1；另一个核验声明给出归一化迹公式。实际多项式差商张量的非退化性及低次数 Euler–Jacobi 消失仍待证明。",
+        "There is a unique ρ with (ρ⊗id)(d)=1. A separate checked declaration gives the normalized trace formula. Nondegeneracy of the actual polynomial difference tensor and low-degree Euler–Jacobi vanishing remain unproved."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.global_diagonal_unique_functional.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [Module.Finite K A] (q : MaximalSpectrum A → A →ₐ[K] K)\n  (hq : ∀ (j : MaximalSpectrum A), RingHom.ker (q j).toRingHom = j.asIdeal)\n  (p : LinearStudy.PerfectMultiplicationPairing) (d : TensorProduct K A A)\n  (hd : LinearStudy.Annihilates (KaehlerDifferential.ideal K A) d)\n  (hred : ∀ (j : MaximalSpectrum A), (LinearStudy.pairingRightReduction (q j)) d ≠ 0) :\n  ∃! ell, (LinearStudy.tensorFunctionalContraction ell) d = 1",
+      "sha256": "deb4c5debe04dce44c3925d5b473eb7459bf8747aff5c4710fdfa60e75e23f69",
+      "lines": 8,
       "richStatement": true,
       "x": 30,
       "y": 60
