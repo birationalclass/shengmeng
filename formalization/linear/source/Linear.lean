@@ -25,3 +25,7 @@ public import Linear.KoszulResolution
 public import Linear.KoszulTop
 public import Linear.KoszulComparison
 public import Linear.KoszulHomotopyTop
+public import Linear.KoszulSocleMap
+public import Linear.KoszulFunctionResolution
+public import Linear.KoszulSocleDeterminant
+public import Linear.PowerSeriesSocle

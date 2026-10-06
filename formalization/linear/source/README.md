@@ -59,7 +59,8 @@ Jacobian's nonzero quotient image and socle generation remain unproved.
 `PowerSeriesCoefficients.lean` constructs coefficient matrices for arbitrary
 zero-constant-coefficient multivariable equations. Combined with the adjugate
 identity it gives determinant annihilation in the actual quotient; nonzero
-generation and comparison with the derivative Jacobian are not asserted.
+generation is established later under regularity and Artinian hypotheses;
+comparison with the derivative Jacobian remains unproved.
 
 `PowerSeriesRegular.lean` proves regularity of the full list of variables in
 any finite-variable power-series ring over a nontrivial commutative ring.
@@ -69,7 +70,18 @@ regular-sequence quotient, with its augmentation and quasi-isomorphism.
 `KoszulComparison.lean` constructs the coefficient-matrix comparison and
 proves that its top map is multiplication by the determinant.
 `KoszulHomotopyTop.lean` proves equality of homotopic top coordinates modulo
-the equation ideal. Socle generation itself is still unproved.
+the equation ideal.
+
+`KoszulFunctionResolution.lean`, `KoszulSocleMap.lean` and
+`KoszulSocleDeterminant.lean` now prove determinant annihilator generation
+for two regular sequences related by `H=Mx`. The proof lifts maps between
+actual projective resolutions and compares their top components by homotopy.
+`PowerSeriesSocle.lean` applies this to the actual Artinian quotient
+`K[[x_0,...,x_n]]/(H)` of regular zero-constant equations. It constructs
+`H=Mx`, proves `[det M]` nonzero and proves scalar socle generation over
+any field. With explicit finite-dimensionality it constructs a perfect
+multiplication pairing. These results do not identify the coefficient
+determinant with the derivative Jacobian; that comparison remains open.
 
 The three modules under `Linear/Vendor` are attributed Apache-2.0 adaptations
 from mathlib PR #34913 at the commit recorded in `vendor-provenance.json`.

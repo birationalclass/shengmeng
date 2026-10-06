@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 273,
-  "verifiedTheorems": 143,
-  "definitions": 40,
+  "audited": 294,
+  "verifiedTheorems": 159,
+  "definitions": 45,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -901,6 +901,117 @@
       "lines": 43
     },
     {
+      "declaration": "LinearStudy.ideal_ofFn",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ideal_ofFn.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  Ideal.ofList (List.ofFn H) = Ideal.span (Set.range H)",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.koszul_ofFn",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.koszul_ofFn.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  koszulComplex.ofList (List.ofFn H) = koszulComplex (Fintype.linearCombination R H)",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulAugmentation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.functionKoszulAugmentation.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  ↥(⋀[R]^0 (Fin n → R)) →ₗ[R] R ⧸ Ideal.span (Set.range H)",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulAugmentation_comp_d",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionKoszulAugmentation_comp_d.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  LinearStudy.functionKoszulAugmentation H ∘ₗ koszulComplex.d (Fintype.linearCombination R H) 0 = 0",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulAugmentationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.functionKoszulAugmentationMap.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  koszulComplex (Fintype.linearCombination R H) ⟶\n    (ChainComplex.single₀ (ModuleCat R)).obj ↧(R ⧸ Ideal.span (Set.range H))",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulAugmentation_exact",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.functionKoszulAugmentation_exact.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :\n  { X₁ := (koszulComplex (Fintype.linearCombination R H)).X 1,\n      X₂ := (koszulComplex (Fintype.linearCombination R H)).X 0, X₃ := ↧(R ⧸ Ideal.span (Set.range H)),\n      f := (koszulComplex (Fintype.linearCombination R H)).d 1 0,\n      g := ModuleCat.ofHom (LinearStudy.functionKoszulAugmentation H), zero := ⋯ }.Exact",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
+      "declaration": "LinearStudy.functionKoszulResolution",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/KoszulFunctionResolution.lean",
+      "line": 79,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.functionKoszulResolution.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R)\n  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) :\n  CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.span (Set.range H))",
+      "sha256": "1704b393bc83f91ed6e7fe36f2977231a4e8d4fada95d60ffdb1cdfbee65090a",
+      "lines": 107
+    },
+    {
       "declaration": "LinearStudy.koszul_top_differential_functional_mem",
       "kind": "theorem",
       "origin": "project",
@@ -1011,6 +1122,166 @@
       "formalType": "LinearStudy.regularKoszulResolution.{u_1} {R : Type u_1} [CommRing R] (rs : List R)\n  (hreg : RingTheory.Sequence.IsRegular R rs) : CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.ofList rs)",
       "sha256": "ce9ac141b89a8081c15fe06317a4c55b0a04d922d0286b9c9948d2419814268d",
       "lines": 95
+    },
+    {
+      "declaration": "LinearStudy.equationIdeal_le_coordinateIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationIdeal_le_coordinateIdeal.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)\n  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) : Ideal.span (Set.range H) ≤ Ideal.span (Set.range x)",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.equationQuotientMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.equationQuotientMap.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)\n  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) : R ⧸ Ideal.span (Set.range H) →ₗ[R] R ⧸ Ideal.span (Set.range x)",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.coefficientComparison_augmentation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coefficientComparison_augmentation.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)\n  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) :\n  CategoryTheory.CategoryStruct.comp (LinearStudy.coefficientKoszulComparison H x M h)\n      (LinearStudy.functionKoszulAugmentationMap x) =\n    CategoryTheory.CategoryStruct.comp (LinearStudy.functionKoszulAugmentationMap H)\n      ((ChainComplex.single₀ (ModuleCat R)).map (ModuleCat.ofHom (LinearStudy.equationQuotientMap H x M h)))",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.equationMap_socleMap_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.equationMap_socleMap_comp.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)\n  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) (a : R)\n  (ha :\n    (Ideal.Quotient.mk (Ideal.span (Set.range H))) a ∈\n      Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)))) :\n  LinearStudy.socleQuotientMap (Ideal.span (Set.range H)) (Ideal.span (Set.range x))\n        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) a) ha ∘ₗ\n      LinearStudy.equationQuotientMap H x M h =\n    a • LinearMap.id",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.socle_element_coefficientDeterminant_multiple",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 71,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_element_coefficientDeterminant_multiple.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}\n  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))\n  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H)\n  (a : R)\n  (ha :\n    (Ideal.Quotient.mk (Ideal.span (Set.range H))) a ∈\n      Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)))) :\n  ∃ b, (Ideal.Quotient.mk (Ideal.span (Set.range H))) a = (Ideal.Quotient.mk (Ideal.span (Set.range H))) (M.det * b)",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 130,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinate_annihilator_eq_coefficientDeterminant.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}\n  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))\n  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H) :\n  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x))) =\n    Ideal.span {(Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det}",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleDeterminant.lean",
+      "line": 153,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}\n  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))\n  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H)\n  [IsArtinianRing (R ⧸ Ideal.span (Set.range H))] [IsLocalRing (R ⧸ Ideal.span (Set.range H))]\n  (hm :\n    Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)) =\n      IsLocalRing.maximalIdeal (R ⧸ Ideal.span (Set.range H))) :\n  (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0",
+      "sha256": "06945275d214ac136ee4df4624ef6792ddab57d7b3d8df7b46b40c091cdb7612",
+      "lines": 171
+    },
+    {
+      "declaration": "LinearStudy.socleScalarMap_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleMap.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socleScalarMap_kernel.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)\n  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) : J ≤ (LinearMap.id.smulRight a).ker",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "lines": 32
+    },
+    {
+      "declaration": "LinearStudy.socleQuotientMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/KoszulSocleMap.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.socleQuotientMap.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)\n  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) : R ⧸ J →ₗ[R] R ⧸ I",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "lines": 32
+    },
+    {
+      "declaration": "LinearStudy.socleQuotientMap_apply_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/KoszulSocleMap.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socleQuotientMap_apply_mk.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)\n  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) (r : R) :\n  (LinearStudy.socleQuotientMap I J a ha) ((Ideal.Quotient.mk J) r) = r • a",
+      "sha256": "a9f334337f7503bf2efe0b6bc4980c54c5a1ac66eb948798f57ef9bf623e42d2",
+      "lines": 32
     },
     {
       "declaration": "LinearStudy.topKoszulGenerator",
@@ -1554,6 +1825,70 @@
       "formalType": "LinearStudy.powerSeries_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ) :\n  RingTheory.Sequence.IsRegular (MvPowerSeries (Fin n) R) (List.ofFn MvPowerSeries.X)",
       "sha256": "62267496ce860a5ded36ceea1c8e2cc74543873cc661e5e49aa8f97de17db065",
       "lines": 60
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_socle_mul_constant",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSocle.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_socle_mul_constant.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPowerSeries (Fin (n + 1)) K)) (delta : MvPowerSeries (Fin (n + 1)) K ⧸ I)\n  (hd : delta ∈ Submodule.annihilator (Ideal.span (Set.range fun i => (Ideal.Quotient.mk I) (MvPowerSeries.X i))))\n  (r : MvPowerSeries (Fin (n + 1)) K) : (Ideal.Quotient.mk I) r * delta = MvPowerSeries.constantCoeff r • delta",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "lines": 141
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_coefficientDeterminant_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSocle.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_coefficientDeterminant_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M,\n    M.mulVec MvPowerSeries.X = H ∧\n      (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0 ∧\n        Submodule.annihilator\n            (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))) =\n          Ideal.span {(Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det}",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "lines": 141
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSocle.lean",
+      "line": 84,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_coefficientDeterminant_scalar_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M,\n    M.mulVec MvPowerSeries.X = H ∧\n      (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0 ∧\n        ∀\n          a ∈\n            Submodule.annihilator\n              (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))),\n          ∃ b, a = b • (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "lines": 141
+    },
+    {
+      "declaration": "LinearStudy.powerSeries_completeIntersection_perfectPairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PowerSeriesSocle.lean",
+      "line": 111,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_completeIntersection_perfectPairing.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)\n  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))\n  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)\n  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]\n  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :\n  ∃ M, M.mulVec MvPowerSeries.X = H ∧ ∃ p, p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1",
+      "sha256": "30a412a1f2f54182789566179aa0194d06f3a742232c64016f6b7899dfecb8bb",
+      "lines": 141
     },
     {
       "declaration": "LinearStudy.annihilates_iff_mem_annihilator",

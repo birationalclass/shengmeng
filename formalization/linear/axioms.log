@@ -199,6 +199,32 @@ LinearStudy.coefficientKoszulComparison_top.{u_1} {R : Type u_1} [CommRing R] {n
   (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) (v : ↥(⋀[R]^n (Fin n → R))) :
   (ModuleCat.Hom.hom ((LinearStudy.coefficientKoszulComparison H x M h).f n)) v = M.det • v
 'LinearStudy.coefficientKoszulComparison_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ideal_ofFn.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  Ideal.ofList (List.ofFn H) = Ideal.span (Set.range H)
+'LinearStudy.ideal_ofFn' depends on axioms: [propext, Quot.sound]
+LinearStudy.koszul_ofFn.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  koszulComplex.ofList (List.ofFn H) = koszulComplex (Fintype.linearCombination R H)
+'LinearStudy.koszul_ofFn' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentation.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  ↥(⋀[R]^0 (Fin n → R)) →ₗ[R] R ⧸ Ideal.span (Set.range H)
+'LinearStudy.functionKoszulAugmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentation_comp_d.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  LinearStudy.functionKoszulAugmentation H ∘ₗ koszulComplex.d (Fintype.linearCombination R H) 0 = 0
+'LinearStudy.functionKoszulAugmentation_comp_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentationMap.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  koszulComplex (Fintype.linearCombination R H) ⟶
+    (ChainComplex.single₀ (ModuleCat R)).obj ↧(R ⧸ Ideal.span (Set.range H))
+'LinearStudy.functionKoszulAugmentationMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulAugmentation_exact.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R) :
+  { X₁ := (koszulComplex (Fintype.linearCombination R H)).X 1,
+      X₂ := (koszulComplex (Fintype.linearCombination R H)).X 0, X₃ := ↧(R ⧸ Ideal.span (Set.range H)),
+      f := (koszulComplex (Fintype.linearCombination R H)).d 1 0,
+      g := ModuleCat.ofHom (LinearStudy.functionKoszulAugmentation H), zero := ⋯ }.Exact
+'LinearStudy.functionKoszulAugmentation_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.functionKoszulResolution.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R)
+  (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) :
+  CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.span (Set.range H))
+'LinearStudy.functionKoszulResolution' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.koszul_top_differential_functional_mem.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) (H : Fin (n + 1) → R)
   (L : ↥(⋀[R]^n (Fin (n + 1) → R)) →ₗ[R] R) :
   L ((koszulComplex.d (Fintype.linearCombination R H) n) (LinearStudy.topKoszulGenerator (n + 1))) ∈
@@ -229,6 +255,67 @@ LinearStudy.koszulAugmentation_exact.{u_1} {R : Type u_1} [CommRing R] (rs : Lis
 LinearStudy.regularKoszulResolution.{u_1} {R : Type u_1} [CommRing R] (rs : List R)
   (hreg : RingTheory.Sequence.IsRegular R rs) : CategoryTheory.ProjectiveResolution ↧(R ⧸ Ideal.ofList rs)
 'LinearStudy.regularKoszulResolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationIdeal_le_coordinateIdeal.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) : Ideal.span (Set.range H) ≤ Ideal.span (Set.range x)
+'LinearStudy.equationIdeal_le_coordinateIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationQuotientMap.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) : R ⧸ Ideal.span (Set.range H) →ₗ[R] R ⧸ Ideal.span (Set.range x)
+'LinearStudy.equationQuotientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coefficientComparison_augmentation.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) :
+  CategoryTheory.CategoryStruct.comp (LinearStudy.coefficientKoszulComparison H x M h)
+      (LinearStudy.functionKoszulAugmentationMap x) =
+    CategoryTheory.CategoryStruct.comp (LinearStudy.functionKoszulAugmentationMap H)
+      ((ChainComplex.single₀ (ModuleCat R)).map (ModuleCat.ofHom (LinearStudy.equationQuotientMap H x M h)))
+'LinearStudy.coefficientComparison_augmentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.equationMap_socleMap_comp.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H x : Fin n → R)
+  (M : Matrix (Fin n) (Fin n) R) (h : M.mulVec x = H) (a : R)
+  (ha :
+    (Ideal.Quotient.mk (Ideal.span (Set.range H))) a ∈
+      Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)))) :
+  LinearStudy.socleQuotientMap (Ideal.span (Set.range H)) (Ideal.span (Set.range x))
+        ((Ideal.Quotient.mk (Ideal.span (Set.range H))) a) ha ∘ₗ
+      LinearStudy.equationQuotientMap H x M h =
+    a • LinearMap.id
+'LinearStudy.equationMap_socleMap_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socle_element_coefficientDeterminant_multiple.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}
+  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))
+  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H)
+  (a : R)
+  (ha :
+    (Ideal.Quotient.mk (Ideal.span (Set.range H))) a ∈
+      Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)))) :
+  ∃ b, (Ideal.Quotient.mk (Ideal.span (Set.range H))) a = (Ideal.Quotient.mk (Ideal.span (Set.range H))) (M.det * b)
+'LinearStudy.socle_element_coefficientDeterminant_multiple' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.coordinate_annihilator_eq_coefficientDeterminant.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}
+  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))
+  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H) :
+  Submodule.annihilator (Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x))) =
+    Ideal.span {(Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det}
+'LinearStudy.coordinate_annihilator_eq_coefficientDeterminant' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian.{u_1} {R : Type u_1} [CommRing R] {k : ℕ}
+  (H x : Fin (k + 1) → R) (hH : RingTheory.Sequence.IsRegular R (List.ofFn H))
+  (hx : RingTheory.Sequence.IsRegular R (List.ofFn x)) (M : Matrix (Fin (k + 1)) (Fin (k + 1)) R) (h : M.mulVec x = H)
+  [IsArtinianRing (R ⧸ Ideal.span (Set.range H))] [IsLocalRing (R ⧸ Ideal.span (Set.range H))]
+  (hm :
+    Ideal.map (Ideal.Quotient.mk (Ideal.span (Set.range H))) (Ideal.span (Set.range x)) =
+      IsLocalRing.maximalIdeal (R ⧸ Ideal.span (Set.range H))) :
+  (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0
+'LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.socleScalarMap_kernel.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)
+  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) : J ≤ (LinearMap.id.smulRight a).ker
+'LinearStudy.socleScalarMap_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socleQuotientMap.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)
+  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) : R ⧸ J →ₗ[R] R ⧸ I
+'LinearStudy.socleQuotientMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socleQuotientMap_apply_mk.{u_1} {R : Type u_1} [CommRing R] (I J : Ideal R) (a : R ⧸ I)
+  (ha : a ∈ Submodule.annihilator (Ideal.map (Ideal.Quotient.mk I) J)) (r : R) :
+  (LinearStudy.socleQuotientMap I J a ha) ((Ideal.Quotient.mk J) r) = r • a
+'LinearStudy.socleQuotientMap_apply_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.topKoszulGenerator.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) : ↥(⋀[R]^n (Fin n → R))
 'LinearStudy.topKoszulGenerator' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.topExterior_alternating_map.{u_1} {R : Type u_1} [CommRing R] (n : ℕ) :
@@ -376,6 +463,45 @@ LinearStudy.powerSeries_cons_X_regular.{u_1} {R : Type u_1} [CommRing R] (rs : L
 LinearStudy.powerSeries_variables_regular.{u_1} {R : Type u_1} [CommRing R] [Nontrivial R] (n : ℕ) :
   RingTheory.Sequence.IsRegular (MvPowerSeries (Fin n) R) (List.ofFn MvPowerSeries.X)
 'LinearStudy.powerSeries_variables_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_socle_mul_constant.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (I : Ideal (MvPowerSeries (Fin (n + 1)) K)) (delta : MvPowerSeries (Fin (n + 1)) K ⧸ I)
+  (hd : delta ∈ Submodule.annihilator (Ideal.span (Set.range fun i => (Ideal.Quotient.mk I) (MvPowerSeries.X i))))
+  (r : MvPowerSeries (Fin (n + 1)) K) : (Ideal.Quotient.mk I) r * delta = MvPowerSeries.constantCoeff r • delta
+'LinearStudy.powerSeries_socle_mul_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_coefficientDeterminant_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  ∃ M,
+    M.mulVec MvPowerSeries.X = H ∧
+      (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0 ∧
+        Submodule.annihilator
+            (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))) =
+          Ideal.span {(Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det}
+'LinearStudy.powerSeries_coefficientDeterminant_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_coefficientDeterminant_scalar_socle.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  ∃ M,
+    M.mulVec MvPowerSeries.X = H ∧
+      (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det ≠ 0 ∧
+        ∀
+          a ∈
+            Submodule.annihilator
+              (Ideal.span (Set.range fun i => (Ideal.Quotient.mk (Ideal.span (Set.range H))) (MvPowerSeries.X i))),
+          ∃ b, a = b • (Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det
+'LinearStudy.powerSeries_coefficientDeterminant_scalar_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_completeIntersection_perfectPairing.{u_1} {K : Type u_1} [Field K] {n : ℕ}
+  (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) K)
+  (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) K) (List.ofFn H))
+  (hzero : ∀ (i : Fin (n + 1)), MvPowerSeries.constantCoeff (H i) = 0)
+  [IsArtinianRing (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))]
+  [FiniteDimensional K (MvPowerSeries (Fin (n + 1)) K ⧸ Ideal.span (Set.range H))] :
+  ∃ M, M.mulVec MvPowerSeries.X = H ∧ ∃ p, p.functional ((Ideal.Quotient.mk (Ideal.span (Set.range H))) M.det) = 1
+'LinearStudy.powerSeries_completeIntersection_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.annihilates_iff_mem_annihilator.{u_2} {A : Type u_2} [CommRing A] (N : Ideal A) (x : A) :
   LinearStudy.Annihilates N x ↔ x ∈ Submodule.annihilator N
 'LinearStudy.annihilates_iff_mem_annihilator' depends on axioms: [propext, Quot.sound]

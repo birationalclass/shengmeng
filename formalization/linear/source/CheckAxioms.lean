@@ -117,6 +117,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.coefficientKoszulComparison
 #check LinearStudy.coefficientKoszulComparison_top
 #print axioms LinearStudy.coefficientKoszulComparison_top
+#check LinearStudy.ideal_ofFn
+#print axioms LinearStudy.ideal_ofFn
+#check LinearStudy.koszul_ofFn
+#print axioms LinearStudy.koszul_ofFn
+#check LinearStudy.functionKoszulAugmentation
+#print axioms LinearStudy.functionKoszulAugmentation
+#check LinearStudy.functionKoszulAugmentation_comp_d
+#print axioms LinearStudy.functionKoszulAugmentation_comp_d
+#check LinearStudy.functionKoszulAugmentationMap
+#print axioms LinearStudy.functionKoszulAugmentationMap
+#check LinearStudy.functionKoszulAugmentation_exact
+#print axioms LinearStudy.functionKoszulAugmentation_exact
+#check LinearStudy.functionKoszulResolution
+#print axioms LinearStudy.functionKoszulResolution
 #check LinearStudy.koszul_top_differential_functional_mem
 #print axioms LinearStudy.koszul_top_differential_functional_mem
 #check LinearStudy.homotopic_koszul_top_coordinates_congr
@@ -131,6 +145,26 @@ set_option pp.proofs false
 #print axioms LinearStudy.koszulAugmentation_exact
 #check LinearStudy.regularKoszulResolution
 #print axioms LinearStudy.regularKoszulResolution
+#check LinearStudy.equationIdeal_le_coordinateIdeal
+#print axioms LinearStudy.equationIdeal_le_coordinateIdeal
+#check LinearStudy.equationQuotientMap
+#print axioms LinearStudy.equationQuotientMap
+#check LinearStudy.coefficientComparison_augmentation
+#print axioms LinearStudy.coefficientComparison_augmentation
+#check LinearStudy.equationMap_socleMap_comp
+#print axioms LinearStudy.equationMap_socleMap_comp
+#check LinearStudy.socle_element_coefficientDeterminant_multiple
+#print axioms LinearStudy.socle_element_coefficientDeterminant_multiple
+#check LinearStudy.coordinate_annihilator_eq_coefficientDeterminant
+#print axioms LinearStudy.coordinate_annihilator_eq_coefficientDeterminant
+#check LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian
+#print axioms LinearStudy.coefficientDeterminant_ne_zero_of_local_artinian
+#check LinearStudy.socleScalarMap_kernel
+#print axioms LinearStudy.socleScalarMap_kernel
+#check LinearStudy.socleQuotientMap
+#print axioms LinearStudy.socleQuotientMap
+#check LinearStudy.socleQuotientMap_apply_mk
+#print axioms LinearStudy.socleQuotientMap_apply_mk
 #check LinearStudy.topKoszulGenerator
 #print axioms LinearStudy.topKoszulGenerator
 #check LinearStudy.topExterior_alternating_map
@@ -199,6 +233,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.powerSeries_cons_X_regular
 #check LinearStudy.powerSeries_variables_regular
 #print axioms LinearStudy.powerSeries_variables_regular
+#check LinearStudy.powerSeries_socle_mul_constant
+#print axioms LinearStudy.powerSeries_socle_mul_constant
+#check LinearStudy.powerSeries_coefficientDeterminant_socle
+#print axioms LinearStudy.powerSeries_coefficientDeterminant_socle
+#check LinearStudy.powerSeries_coefficientDeterminant_scalar_socle
+#print axioms LinearStudy.powerSeries_coefficientDeterminant_scalar_socle
+#check LinearStudy.powerSeries_completeIntersection_perfectPairing
+#print axioms LinearStudy.powerSeries_completeIntersection_perfectPairing
 #check LinearStudy.annihilates_iff_mem_annihilator
 #print axioms LinearStudy.annihilates_iff_mem_annihilator
 #check LinearStudy.nilradical_annihilator_scalar_generation
