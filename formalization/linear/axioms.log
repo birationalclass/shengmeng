@@ -896,6 +896,126 @@ LinearStudy.mem_linearEquationSubspace.{u_1} {n : ℕ} {ι : Type u_1}
   (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :
   Projectivization.mk ℂ v hv ∈ LinearStudy.linearEquationSubspace equations ↔ ∀ (i : ι), (equations i) v = 0
 'LinearStudy.mem_linearEquationSubspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.derivation_ideal_square.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R] [Algebra K R]
+  (D : Derivation K R R) (I : Ideal R) {h : R} (hh : h ∈ I ^ 2) : D h ∈ I
+'LinearStudy.derivation_ideal_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.first_order_derivative_quotient.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R]
+  [Algebra K R] (D : Derivation K R R) (I : Ideal R) {h v : R} (hh : h - v ∈ I ^ 2) :
+  (Ideal.Quotient.mk I) (D h) = (Ideal.Quotient.mk I) (D v)
+'LinearStudy.first_order_derivative_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.unit_divided_derivative_quotient.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R]
+  [Algebra K R] (D : Derivation K R R) (I : Ideal R) (u : Rˣ) (p : R) (hp : p ∈ I) :
+  (Ideal.Quotient.mk I) (D (↑u⁻¹ * p)) = (Ideal.Quotient.mk I) ↑u⁻¹ * (Ideal.Quotient.mk I) (D p)
+'LinearStudy.unit_divided_derivative_quotient' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fiber_jacobian_unit_factor.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)
+  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2) :
+  (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)) =
+    (Ideal.Quotient.mk I) ↑u⁻¹ ^ Fintype.card ι * (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i))
+'LinearStudy.fiber_jacobian_unit_factor' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fiber_jacobian_nonzero.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)
+  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2)
+  (hne : (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)) ≠ 0) :
+  (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i)) ≠ 0
+'LinearStudy.fiber_jacobian_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.unit_mul_annihilates_iff.{u_1} {R : Type u_1} [CommRing R] (N : Ideal R) (u : Rˣ) (delta : R) :
+  LinearStudy.Annihilates N (↑u * delta) ↔ LinearStudy.Annihilates N delta
+'LinearStudy.unit_mul_annihilates_iff' depends on axioms: [propext]
+LinearStudy.fiber_jacobian_annihilates.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]
+  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)
+  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2) (N : Ideal (R ⧸ I))
+  (hd : LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)))) :
+  LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i)))
+'LinearStudy.fiber_jacobian_annihilates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socle_linear_evaluation.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (q : A →ₐ[K] K) (delta : A) (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (rho : A →ₗ[K] K) (h : A) :
+  rho (h * delta) = q h * rho delta
+'LinearStudy.socle_linear_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.socle_linear_evaluation_exists.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (q : A →ₐ[K] K) (delta : A) (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hne : delta ≠ 0) :
+  ∃ rho, rho delta = 1 ∧ ∀ (h : A), rho (h * delta) = q h
+'LinearStudy.socle_linear_evaluation_exists' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.formalParameterConstantCoeff {r : ℕ} : LinearStudy.ParameterRing r →ₐ[ℂ] ℂ
+'LinearStudy.formalParameterConstantCoeff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterReductionToField.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) : A →ₐ[ℂ] ℂ
+'LinearStudy.parameterReductionToField' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterReductionToField_kernel.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) :
+  RingHom.ker (LinearStudy.parameterReductionToField q).toRingHom =
+    Ideal.comap q.toRingHom (IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r))
+'LinearStudy.parameterReductionToField_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotientResidueMap.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (J : Ideal A)
+  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) : A ⧸ J →ₐ[ℂ] ℂ
+'LinearStudy.parameterQuotientResidueMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotientResidueMap_mk.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (J : Ideal A)
+  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) (a : A) :
+  (LinearStudy.parameterQuotientResidueMap q J hJ) ((Ideal.Quotient.mk J) a) = MvPowerSeries.constantCoeff (q a)
+'LinearStudy.parameterQuotientResidueMap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotientResidueMap_kernel.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (hq : RingHom.ker q.toRingHom = nilradical A)
+  (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  RingHom.ker (LinearStudy.parameterQuotientResidueMap q J hJ).toRingHom =
+    Ideal.map (Ideal.Quotient.mk J) (nilradical A)
+'LinearStudy.parameterQuotientResidueMap_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_local_evaluation_formula {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r)
+  (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  have J := Ideal.span (Set.range tau);
+  have delta := (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H);
+  ∃ rho,
+    rho delta = 1 ∧
+      ∀ (h : LinearStudy.CompleteIntersection H),
+        rho ((Ideal.Quotient.mk J) h * delta) = MvPowerSeries.constantCoeff (q h)
+'LinearStudy.lemma31_local_evaluation_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.parameterQuotient_finiteOverComplex.{u_1} {r : ℕ} {A : Type u_1} [CommRing A] [IsNoetherianRing A]
+  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]
+  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (hq : RingHom.ker q.toRingHom = nilradical A)
+  (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  Module.Finite ℂ (A ⧸ J)
+'LinearStudy.parameterQuotient_finiteOverComplex' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.perfect_socle_functional_nonzero.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] (q : A →ₐ[K] K) (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)
+  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hne : delta ≠ 0) : p.functional delta ≠ 0
+'LinearStudy.perfect_socle_functional_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.kernel_socle_scalar_generation.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]
+  (q : A →ₐ[K] K) (delta : A) (hgen : Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}) (x : A) :
+  x ∈ Submodule.annihilator (RingHom.ker q.toRingHom) → ∃ b, x = b • delta
+'LinearStudy.kernel_socle_scalar_generation' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.exists_perfectPairing_of_kernel_socle.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]
+  [Algebra K A] [IsNoetherianRing A] [IsArtinianRing A] [IsLocalRing A] (q : A →ₐ[K] K) (delta : A)
+  (hk : RingHom.ker q.toRingHom = nilradical A)
+  (hgen : Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}) (hne : delta ≠ 0) :
+  ∃ p, p.functional delta = 1 ∧ ∀ (h : A), p.functional (h * delta) = q h
+'LinearStudy.exists_perfectPairing_of_kernel_socle' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.lemma31_local_perfectPairing {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r) (hc : 0 < c)
+  (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))
+  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]
+  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)
+  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))
+  (tau : Fin r → LinearStudy.CompleteIntersection H)
+  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :
+  have J := Ideal.span (Set.range tau);
+  have delta := (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H);
+  ∃ p,
+    p.functional delta = 1 ∧
+      ∀ (h : LinearStudy.CompleteIntersection H),
+        p.functional ((Ideal.Quotient.mk J) h * delta) = MvPowerSeries.constantCoeff (q h)
+'LinearStudy.lemma31_local_perfectPairing' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.powerSeries_hasEval_of_nilpotent.{u_2} {S : Type u_2} [CommRing S] {n : ℕ} [TopologicalSpace S]
   (a : Fin n → S) (ha : ∀ (i : Fin n), IsNilpotent (a i)) : MvPowerSeries.HasEval a
 'LinearStudy.powerSeries_hasEval_of_nilpotent' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -10,7 +10,7 @@ LinearStudy.lemma31_complete (r c : ℕ) : LinearStudy.Lemma31Goal r c
 
 `Lemma31Goal` keeps its historical Lean name; the current manuscript labels this statement Lemma 2.1. The proof includes relative Jacobian annihilator generation and, for every allowed arbitrary parameter lift, the Artinian quotient, maximal ideal, nonzero Jacobian and socle generation. It assumes only the original regular equations, finite flatness, positive dimensions and the stated reduction/parameter generation; it constructs the new parameter action, coordinate change, finite freeness and perfect pairing.
 
-See `MILESTONE_16.md` for the new proof chain and library provenance. Earlier `MILESTONE_*.md` files record historical partial stages; their then-open local obligations are closed by this milestone.
+See `MILESTONE_16.md` for the complete local proof chain and `MILESTONE_17.md` for the subsequent local evaluation, perfect-pairing construction and fiber-Jacobian determinant comparison. Earlier `MILESTONE_*.md` files record historical partial stages; their then-open local obligations are closed by later milestones.
 
 ## Reproduce and inspect
 
@@ -20,6 +20,8 @@ Lean 4.35.0-rc3; pinned mathlib commit `2a885768dae569d938bb9ff3474da6a8753bb90a
 - `Linear/LiftedParameterPresentation.lean`: regular equation presentation and proved finite free action.
 - `Linear/ArbitraryParameterJacobian.lean`: constructed pairing and arbitrary-parameter Jacobian nonvanishing.
 - `Linear/ArbitraryParameterSocle.lean`: socle ideal equality and full `lemma31_complete`.
+- `Linear/LocalResidueEvaluation.lean`: actual quotient reduction to complex numbers, finite-dimensionality and a constructed normalized perfect multiplication pairing. Global residue compatibility is not asserted.
+- `Linear/LocalFiberJacobian.lean`: actual first-order derivative congruences, determinant unit factor, nonvanishing and annihilation transfer. Geometric coordinates supplying the congruences remain open.
 - `Linear/Target.lean`: unchanged complete local statement.
 - `Linear/Projective.lean`: precise global coordinate target, still unproved.
 
@@ -39,7 +41,7 @@ are counted separately from project-owned proofs.
 
 Unproved geometric bridges: the integral projective Scheme comparison and
 dimension/degree APIs; Bertini and étale fiber counts; the complete-intersection
-Jacobian/socle theorem and Euler–Jacobi relation; geometric Koszul exactness,
+to-fiber comparison and Euler–Jacobi relation; geometric Koszul exactness,
 proper duality, Serre bounds and uniform polynomial lifting; actual Cartier
 intersection and Bézout degree.
 

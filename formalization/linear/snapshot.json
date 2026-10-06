@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T02:06:44+08:00",
+  "checkedAt": "2026-10-07T02:45:58+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "b3e885392360568c6cdb28f877a16cb081faee8fb9d7231a10c84ce9ec818761",
-      "lineCount": 1026
+      "sha256": "907e9e68339d4f1ccc3c4e492db7dffa9b59b12670b5e54f8bcdd54d3f4c651b",
+      "lineCount": 1068
     },
     {
       "path": "Linear/ArbitraryParameterJacobian.lean",
@@ -165,6 +165,16 @@
       "path": "Linear/LinearSubspace.lean",
       "sha256": "850b5caa24241f0fc87e1558a01d887ec564ee6d19bd23b9885668dea9ff2a37",
       "lineCount": 36
+    },
+    {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lineCount": 97
+    },
+    {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lineCount": 233
     },
     {
       "path": "Linear/NilpotentEvaluation.lean",
@@ -383,8 +393,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "193f71c7bdcb7e8aa64b62371593db0995e1e909626a060d55d774f8d0803e53",
-      "lineCount": 72
+      "sha256": "20390155a67e8e22f17107e36e1ecaa944ddc24d5076c5e96f6d01e9354dc7bb",
+      "lineCount": 74
     }
   ],
   "declarations": {
@@ -4629,6 +4639,535 @@
         "LinearStudy.linearEquationSubmodule",
         "LinearStudy.linearEquationSubspace",
         "LinearStudy.mem_linearEquationSubmodule"
+      ]
+    },
+    "LinearStudy.derivation_ideal_square": {
+      "declaration": "LinearStudy.derivation_ideal_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.derivation_ideal_square.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R] [Algebra K R]\n  (D : Derivation K R R) (I : Ideal R) {h : R} (hh : h ∈ I ^ 2) : D h ∈ I",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 11,
+      "moduleLineCount": 97,
+      "startLine": 13,
+      "endLine": 23,
+      "lineCount": 11,
+      "dependencies": []
+    },
+    "LinearStudy.first_order_derivative_quotient": {
+      "declaration": "LinearStudy.first_order_derivative_quotient",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.first_order_derivative_quotient.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R]\n  [Algebra K R] (D : Derivation K R R) (I : Ideal R) {h v : R} (hh : h - v ∈ I ^ 2) :\n  (Ideal.Quotient.mk I) (D h) = (Ideal.Quotient.mk I) (D v)",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 9,
+      "moduleLineCount": 97,
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.derivation_ideal_square"
+      ]
+    },
+    "LinearStudy.unit_divided_derivative_quotient": {
+      "declaration": "LinearStudy.unit_divided_derivative_quotient",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.unit_divided_derivative_quotient.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R]\n  [Algebra K R] (D : Derivation K R R) (I : Ideal R) (u : Rˣ) (p : R) (hp : p ∈ I) :\n  (Ideal.Quotient.mk I) (D (↑u⁻¹ * p)) = (Ideal.Quotient.mk I) ↑u⁻¹ * (Ideal.Quotient.mk I) (D p)",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 8,
+      "moduleLineCount": 97,
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": []
+    },
+    "LinearStudy.fiber_jacobian_unit_factor": {
+      "declaration": "LinearStudy.fiber_jacobian_unit_factor",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fiber_jacobian_unit_factor.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)\n  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2) :\n  (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)) =\n    (Ideal.Quotient.mk I) ↑u⁻¹ ^ Fintype.card ι * (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i))",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 20,
+      "moduleLineCount": 97,
+      "startLine": 44,
+      "endLine": 63,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.first_order_derivative_quotient",
+        "LinearStudy.unit_divided_derivative_quotient"
+      ]
+    },
+    "LinearStudy.fiber_jacobian_nonzero": {
+      "declaration": "LinearStudy.fiber_jacobian_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fiber_jacobian_nonzero.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)\n  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2)\n  (hne : (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)) ≠ 0) :\n  (Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i)) ≠ 0",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 9,
+      "moduleLineCount": 97,
+      "startLine": 65,
+      "endLine": 73,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.fiber_jacobian_unit_factor"
+      ]
+    },
+    "LinearStudy.unit_mul_annihilates_iff": {
+      "declaration": "LinearStudy.unit_mul_annihilates_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 75,
+      "axioms": [
+        "propext"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.unit_mul_annihilates_iff.{u_1} {R : Type u_1} [CommRing R] (N : Ideal R) (u : Rˣ) (delta : R) :\n  LinearStudy.Annihilates N (↑u * delta) ↔ LinearStudy.Annihilates N delta",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 10,
+      "moduleLineCount": 97,
+      "startLine": 75,
+      "endLine": 84,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.fiber_jacobian_annihilates": {
+      "declaration": "LinearStudy.fiber_jacobian_annihilates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalFiberJacobian.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fiber_jacobian_annihilates.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {ι : Type u_3} [CommRing K]\n  [CommRing R] [Algebra K R] [Fintype ι] [DecidableEq ι] (D : ι → Derivation K R R) (I : Ideal R) (u : Rˣ) (H p : ι → R)\n  (hp : ∀ (i : ι), p i ∈ I) (hH : ∀ (i : ι), H i - ↑u⁻¹ * p i ∈ I ^ 2) (N : Ideal (R ⧸ I))\n  (hd : LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (H i)))) :\n  LinearStudy.Annihilates N ((Ideal.Quotient.mk I) (Matrix.det fun i j => (D j) (p i)))",
+      "sha256": "da1148a93c46e9b46cec507c3a16385fa95923b316e6a5b3d3995c54761a478c",
+      "lines": 10,
+      "moduleLineCount": 97,
+      "startLine": 86,
+      "endLine": 95,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.fiber_jacobian_unit_factor",
+        "LinearStudy.unit_mul_annihilates_iff"
+      ]
+    },
+    "LinearStudy.socle_linear_evaluation": {
+      "declaration": "LinearStudy.socle_linear_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_linear_evaluation.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (q : A →ₐ[K] K) (delta : A) (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (rho : A →ₗ[K] K) (h : A) :\n  rho (h * delta) = q h * rho delta",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 10,
+      "moduleLineCount": 233,
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.socle_linear_evaluation_exists": {
+      "declaration": "LinearStudy.socle_linear_evaluation_exists",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.socle_linear_evaluation_exists.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (q : A →ₐ[K] K) (delta : A) (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hne : delta ≠ 0) :\n  ∃ rho, rho delta = 1 ∧ ∀ (h : A), rho (h * delta) = q h",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 8,
+      "moduleLineCount": 233,
+      "startLine": 25,
+      "endLine": 32,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.socle_linear_evaluation"
+      ]
+    },
+    "LinearStudy.formalParameterConstantCoeff": {
+      "declaration": "LinearStudy.formalParameterConstantCoeff",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.formalParameterConstantCoeff {r : ℕ} : LinearStudy.ParameterRing r →ₐ[ℂ] ℂ",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 3,
+      "moduleLineCount": 233,
+      "startLine": 34,
+      "endLine": 36,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.ParameterRing"
+      ]
+    },
+    "LinearStudy.parameterReductionToField": {
+      "declaration": "LinearStudy.parameterReductionToField",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.parameterReductionToField.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) : A →ₐ[ℂ] ℂ",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 5,
+      "moduleLineCount": 233,
+      "startLine": 38,
+      "endLine": 42,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.formalParameterConstantCoeff"
+      ]
+    },
+    "LinearStudy.parameterReductionToField_kernel": {
+      "declaration": "LinearStudy.parameterReductionToField_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterReductionToField_kernel.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) :\n  RingHom.ker (LinearStudy.parameterReductionToField q).toRingHom =\n    Ideal.comap q.toRingHom (IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r))",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 11,
+      "moduleLineCount": 233,
+      "startLine": 44,
+      "endLine": 54,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterReductionToField"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap": {
+      "declaration": "LinearStudy.parameterQuotientResidueMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 56,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.parameterQuotientResidueMap.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (J : Ideal A)\n  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) : A ⧸ J →ₐ[ℂ] ℂ",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 10,
+      "moduleLineCount": 233,
+      "startLine": 56,
+      "endLine": 65,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterReductionToField"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap_mk": {
+      "declaration": "LinearStudy.parameterQuotientResidueMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterQuotientResidueMap_mk.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (J : Ideal A)\n  (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) (a : A) :\n  (LinearStudy.parameterQuotientResidueMap q J hJ) ((Ideal.Quotient.mk J) a) = MvPowerSeries.constantCoeff (q a)",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 7,
+      "moduleLineCount": 233,
+      "startLine": 67,
+      "endLine": 73,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterQuotientResidueMap"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap_kernel": {
+      "declaration": "LinearStudy.parameterQuotientResidueMap_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 75,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterQuotientResidueMap_kernel.{u_1} {r : ℕ} {A : Type u_1} [CommRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (hq : RingHom.ker q.toRingHom = nilradical A)\n  (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  RingHom.ker (LinearStudy.parameterQuotientResidueMap q J hJ).toRingHom =\n    Ideal.map (Ideal.Quotient.mk J) (nilradical A)",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 12,
+      "moduleLineCount": 233,
+      "startLine": 75,
+      "endLine": 86,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.liftedIdeal_sup_kernel",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterReductionToField",
+        "LinearStudy.parameterReductionToField_kernel"
+      ]
+    },
+    "LinearStudy.lemma31_local_evaluation_formula": {
+      "declaration": "LinearStudy.lemma31_local_evaluation_formula",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 88,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_local_evaluation_formula {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r)\n  (hc : 0 < c) (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  have delta := (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H);\n  ∃ rho,\n    rho delta = 1 ∧\n      ∀ (h : LinearStudy.CompleteIntersection H),\n        rho ((Ideal.Quotient.mk J) h * delta) = MvPowerSeries.constantCoeff (q h)",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 34,
+      "moduleLineCount": 233,
+      "startLine": 88,
+      "endLine": 121,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.annihilates_iff_mem_annihilator",
+        "LinearStudy.annihilates_quotient_image",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.relativeJacobian",
+        "LinearStudy.socle_linear_evaluation_exists"
+      ]
+    },
+    "LinearStudy.parameterQuotient_finiteOverComplex": {
+      "declaration": "LinearStudy.parameterQuotient_finiteOverComplex",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 123,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.parameterQuotient_finiteOverComplex.{u_1} {r : ℕ} {A : Type u_1} [CommRing A] [IsNoetherianRing A]\n  [Algebra (LinearStudy.ParameterRing r) A] [Algebra ℂ A] [IsScalarTower ℂ (LinearStudy.ParameterRing r) A]\n  (q : A →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r) (hq : RingHom.ker q.toRingHom = nilradical A)\n  (J : Ideal A) (hJ : Ideal.map q.toRingHom J = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  Module.Finite ℂ (A ⧸ J)",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 17,
+      "moduleLineCount": 233,
+      "startLine": 123,
+      "endLine": 139,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.parameterQuotient_nilradical_eq"
+      ]
+    },
+    "LinearStudy.perfect_socle_functional_nonzero": {
+      "declaration": "LinearStudy.perfect_socle_functional_nonzero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 141,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.perfect_socle_functional_nonzero.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] (q : A →ₐ[K] K) (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)\n  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hne : delta ≠ 0) : p.functional delta ≠ 0",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 8,
+      "moduleLineCount": 233,
+      "startLine": 141,
+      "endLine": 148,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.annihilator_eq_scalar_generator",
+        "LinearStudy.dualGenerator"
+      ]
+    },
+    "LinearStudy.kernel_socle_scalar_generation": {
+      "declaration": "LinearStudy.kernel_socle_scalar_generation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 150,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.kernel_socle_scalar_generation.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (q : A →ₐ[K] K) (delta : A) (hgen : Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}) (x : A) :\n  x ∈ Submodule.annihilator (RingHom.ker q.toRingHom) → ∃ b, x = b • delta",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 16,
+      "moduleLineCount": 233,
+      "startLine": 150,
+      "endLine": 165,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.annihilates_iff_mem_annihilator"
+      ]
+    },
+    "LinearStudy.exists_perfectPairing_of_kernel_socle": {
+      "declaration": "LinearStudy.exists_perfectPairing_of_kernel_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 167,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.exists_perfectPairing_of_kernel_socle.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A]\n  [Algebra K A] [IsNoetherianRing A] [IsArtinianRing A] [IsLocalRing A] (q : A →ₐ[K] K) (delta : A)\n  (hk : RingHom.ker q.toRingHom = nilradical A)\n  (hgen : Submodule.annihilator (RingHom.ker q.toRingHom) = Ideal.span {delta}) (hne : delta ≠ 0) :\n  ∃ p, p.functional delta = 1 ∧ ∀ (h : A), p.functional (h * delta) = q h",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 23,
+      "moduleLineCount": 233,
+      "startLine": 167,
+      "endLine": 189,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.annihilates_iff_mem_annihilator",
+        "LinearStudy.exists_perfectPairing_of_scalar_socle",
+        "LinearStudy.kernel_socle_scalar_generation",
+        "LinearStudy.socle_linear_evaluation"
+      ]
+    },
+    "LinearStudy.lemma31_local_perfectPairing": {
+      "declaration": "LinearStudy.lemma31_local_perfectPairing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalResidueEvaluation.lean",
+      "line": 191,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.lemma31_local_perfectPairing {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing r c) (hr : 0 < r) (hc : 0 < c)\n  (hH : RingTheory.Sequence.IsRegular (LinearStudy.AmbientRing r c) (List.ofFn H))\n  [Module.Finite (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  [Module.Flat (LinearStudy.ParameterRing r) (LinearStudy.CompleteIntersection H)]\n  (q : LinearStudy.CompleteIntersection H →ₐ[LinearStudy.ParameterRing r] LinearStudy.ParameterRing r)\n  (hq : RingHom.ker q.toRingHom = nilradical (LinearStudy.CompleteIntersection H))\n  (tau : Fin r → LinearStudy.CompleteIntersection H)\n  (htau : Ideal.span (Set.range fun i => q (tau i)) = IsLocalRing.maximalIdeal (LinearStudy.ParameterRing r)) :\n  have J := Ideal.span (Set.range tau);\n  have delta := (Ideal.Quotient.mk J) (LinearStudy.relativeJacobian H);\n  ∃ p,\n    p.functional delta = 1 ∧\n      ∀ (h : LinearStudy.CompleteIntersection H),\n        p.functional ((Ideal.Quotient.mk J) h * delta) = MvPowerSeries.constantCoeff (q h)",
+      "sha256": "1eda1a5ab3723de2f5d3201e081dd2fdcb564ca679d768b524345bb203a3511f",
+      "lines": 41,
+      "moduleLineCount": 233,
+      "startLine": 191,
+      "endLine": 231,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.exists_perfectPairing_of_kernel_socle",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.parameterQuotient_finiteOverComplex",
+        "LinearStudy.parameterQuotient_local_artinian",
+        "LinearStudy.parameterQuotient_nilradical_eq",
+        "LinearStudy.relativeJacobian"
       ]
     },
     "LinearStudy.powerSeries_hasEval_of_nilpotent": {
@@ -13083,12 +13622,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 339,
-  "definitionCount": 80,
+  "verifiedTheoremCount": 357,
+  "definitionCount": 83,
   "reusedTheoremCount": 55,
   "reusedDefinitionCount": 35,
   "auditExitCode": 0,
-  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED.",
+  "scope": "The exact local Lemma31Goal over complex finite-variable power series is PROVED by lemma31_complete, including original relative Jacobian annihilator generation and the Artinian, maximal-ideal, nonzero and socle-generation conclusions for every permitted arbitrary parameter lift. A new equation presentation, base automorphism, finite free action and perfect pairing are constructed, not assumed. All earlier audited helpers retain their exact parameter scopes. The global Linearity Theorem, its Scheme-to-coordinate comparison, Bertini/generic fiber geometry, global Euler-Jacobi relation, uniform Serre/duality lifting and geometric Bezout estimate remain UNPROVED. The actual arbitrary-parameter quotient reduction to complex numbers, finite-dimensionality, local evaluation formula and normalized perfect multiplication pairing are constructed from the original hypotheses. Actual derivations and first-order congruences give the fiber determinant unit factor and transfer of nonvanishing and annihilation. These local functionals are not claimed to be the globally compatible Grothendieck residues; geometric charts supplying the first-order data and global Euler-Jacobi vanishing remain open.",
   "sourceRanges": {
     "LinearStudy.invariant_restriction_surjective": {
       "path": "Linear/Iteration.lean",
@@ -13467,6 +14006,29 @@
         "koszulComplex.zeroHomologyOfListLinearEquiv"
       ]
     },
+    "LinearStudy.lemma31_local_perfectPairing": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 191,
+      "endLine": 231,
+      "lineCount": 41,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.exists_perfectPairing_of_kernel_socle",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.lemma31_arbitrary_parameter_socle_generation",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.parameterQuotient_finiteOverComplex",
+        "LinearStudy.parameterQuotient_local_artinian",
+        "LinearStudy.parameterQuotient_nilradical_eq",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
     "LinearStudy.nilpotentPowerSeriesEval_X": {
       "path": "Linear/NilpotentEvaluation.lean",
       "startLine": 42,
@@ -13496,6 +14058,16 @@
       "lineCount": 9,
       "dependencies": [
         "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 56,
+      "endLine": 65,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterReductionToField"
       ]
     },
     "LinearStudy.linearEquationSubspace": {
@@ -13791,6 +14363,21 @@
         "koszulComplex.map"
       ]
     },
+    "LinearStudy.exists_perfectPairing_of_kernel_socle": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 167,
+      "endLine": 189,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.annihilates_iff_mem_annihilator",
+        "LinearStudy.exists_perfectPairing_of_scalar_socle",
+        "LinearStudy.kernel_socle_scalar_generation",
+        "LinearStudy.socle_linear_evaluation"
+      ]
+    },
     "LinearStudy.parameterSubstitutionEquiv": {
       "path": "Linear/ParameterSubstitution.lean",
       "startLine": 92,
@@ -14061,6 +14648,16 @@
         "LinearStudy.powerSeries_ringEnd_bijective_of_parameter_images"
       ]
     },
+    "LinearStudy.parameterReductionToField": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 38,
+      "endLine": 42,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.formalParameterConstantCoeff"
+      ]
+    },
     "LinearStudy.quotientSpecialization_surjective": {
       "path": "Linear/PowerSeriesSpecialization.lean",
       "startLine": 75,
@@ -14089,6 +14686,16 @@
       "lineCount": 3,
       "dependencies": [
         "koszulComplex"
+      ]
+    },
+    "LinearStudy.kernel_socle_scalar_generation": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 150,
+      "endLine": 165,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.annihilates_iff_mem_annihilator"
       ]
     },
     "koszulComplex.zeroHomologyOfListLinearEquiv": {
@@ -14162,6 +14769,19 @@
         "koszulComplex"
       ]
     },
+    "LinearStudy.perfect_socle_functional_nonzero": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 141,
+      "endLine": 148,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.PerfectMultiplicationPairing",
+        "LinearStudy.PerfectMultiplicationPairing.functional",
+        "LinearStudy.annihilator_eq_scalar_generator",
+        "LinearStudy.dualGenerator"
+      ]
+    },
     "LinearStudy.iterate_degree_exceeds": {
       "path": "Linear/Degree.lean",
       "startLine": 15,
@@ -14198,6 +14818,16 @@
       "endLine": 40,
       "lineCount": 3,
       "dependencies": []
+    },
+    "LinearStudy.parameterReductionToField_kernel": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 44,
+      "endLine": 54,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterReductionToField"
+      ]
     },
     "LinearStudy.pairingTensorEndEquiv_trace": {
       "path": "Linear/DiagonalTrace.lean",
@@ -14294,6 +14924,15 @@
         "LinearStudy.powerSeries_pderiv_rename_equiv",
         "LinearStudy.totalVariableSplit",
         "LinearStudy.totalVariableSplit_normal"
+      ]
+    },
+    "LinearStudy.socle_linear_evaluation": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates"
       ]
     },
     "LinearStudy.perfectPairingOfSocle": {
@@ -14749,6 +15388,27 @@
         "LinearStudy.ProjectivePoint"
       ]
     },
+    "LinearStudy.lemma31_local_evaluation_formula": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 88,
+      "endLine": 121,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.annihilates_iff_mem_annihilator",
+        "LinearStudy.annihilates_quotient_image",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.lemma31_annihilator_conclusion",
+        "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.relativeJacobian",
+        "LinearStudy.socle_linear_evaluation_exists"
+      ]
+    },
     "ExteriorAlgebra.baseChangeι_mul_add_swap": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 37,
@@ -14801,6 +15461,15 @@
         "LinearStudy.thickeningJacobian_unit_twist",
         "LinearStudy.thickeningMk",
         "LinearStudy.thickening_closedFiber_jacobian"
+      ]
+    },
+    "LinearStudy.fiber_jacobian_nonzero": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 65,
+      "endLine": 73,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.fiber_jacobian_unit_factor"
       ]
     },
     "LinearStudy.centered_lifts_parameter_map_exists": {
@@ -15543,6 +16212,15 @@
       "lineCount": 12,
       "dependencies": []
     },
+    "LinearStudy.formalParameterConstantCoeff": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 34,
+      "endLine": 36,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.ParameterRing"
+      ]
+    },
     "LinearStudy.koszulAugmentationMap": {
       "path": "Linear/KoszulResolution.lean",
       "startLine": 35,
@@ -16211,6 +16889,17 @@
         "LinearStudy.powerSeriesCoordinateChart_X"
       ]
     },
+    "LinearStudy.fiber_jacobian_annihilates": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 86,
+      "endLine": 95,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.fiber_jacobian_unit_factor",
+        "LinearStudy.unit_mul_annihilates_iff"
+      ]
+    },
     "LinearStudy.socleQuotientMap": {
       "path": "Linear/KoszulSocleMap.lean",
       "startLine": 23,
@@ -16244,6 +16933,15 @@
         "LinearStudy.exists_finiteFlat_pairing_of_residue_socle",
         "LinearStudy.primitive_annihilator_generates",
         "LinearStudy.primitive_of_residue_tensor_nonzero"
+      ]
+    },
+    "LinearStudy.unit_mul_annihilates_iff": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 75,
+      "endLine": 84,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.Annihilates"
       ]
     },
     "LinearStudy.totalVariableSplit_parameter": {
@@ -16889,6 +17587,15 @@
         "LinearStudy.powerSeries_coordinateIdeal_eq_maximalIdeal"
       ]
     },
+    "LinearStudy.first_order_derivative_quotient": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.derivation_ideal_square"
+      ]
+    },
     "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal": {
       "path": "Linear/PowerSeriesTranslation.lean",
       "startLine": 92,
@@ -16996,6 +17703,19 @@
       "lineCount": 8,
       "dependencies": [
         "LinearStudy.quotientSpecialization"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap_kernel": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 75,
+      "endLine": 86,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.liftedIdeal_sup_kernel",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterReductionToField",
+        "LinearStudy.parameterReductionToField_kernel"
       ]
     },
     "LinearStudy.coefficientComparison_augmentation": {
@@ -17156,6 +17876,13 @@
         "LinearStudy.quotientSpecializationEquiv"
       ]
     },
+    "LinearStudy.unit_divided_derivative_quotient": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": []
+    },
     "LinearStudy.exists_relative_perfectPairing_of_residue_socle": {
       "path": "Linear/ResiduePairing.lean",
       "startLine": 57,
@@ -17311,6 +18038,13 @@
         "LinearStudy.dualGenerator",
         "LinearStudy.dualGenerator_functional"
       ]
+    },
+    "LinearStudy.derivation_ideal_square": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 13,
+      "endLine": 23,
+      "lineCount": 11,
+      "dependencies": []
     },
     "LinearStudy.homogeneous_ideal_vanish_smul": {
       "path": "Linear/Projective.lean",
@@ -17477,6 +18211,18 @@
       "lineCount": 13,
       "dependencies": [
         "LinearStudy.topKoszulGenerator"
+      ]
+    },
+    "LinearStudy.parameterQuotient_finiteOverComplex": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 123,
+      "endLine": 139,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterQuotientResidueMap",
+        "LinearStudy.parameterQuotientResidueMap_kernel",
+        "LinearStudy.parameterQuotient_nilradical_eq"
       ]
     },
     "LinearStudy.powerSeriesConstantCoeffAlgHom": {
@@ -18567,6 +19313,16 @@
         "koszulComplex.map"
       ]
     },
+    "LinearStudy.socle_linear_evaluation_exists": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 25,
+      "endLine": 32,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.Annihilates",
+        "LinearStudy.socle_linear_evaluation"
+      ]
+    },
     "LinearStudy.firstJet_snd": {
       "path": "Linear/FirstJet.lean",
       "startLine": 53,
@@ -18709,6 +19465,26 @@
       "lineCount": 8,
       "dependencies": [
         "LinearStudy.Annihilates"
+      ]
+    },
+    "LinearStudy.parameterQuotientResidueMap_mk": {
+      "path": "Linear/LocalResidueEvaluation.lean",
+      "startLine": 67,
+      "endLine": 73,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.ParameterRing",
+        "LinearStudy.parameterQuotientResidueMap"
+      ]
+    },
+    "LinearStudy.fiber_jacobian_unit_factor": {
+      "path": "Linear/LocalFiberJacobian.lean",
+      "startLine": 44,
+      "endLine": 63,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.first_order_derivative_quotient",
+        "LinearStudy.unit_divided_derivative_quotient"
       ]
     },
     "LinearStudy.PerfectMultiplicationPairing.recOn": {

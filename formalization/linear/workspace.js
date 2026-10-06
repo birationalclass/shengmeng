@@ -1,4 +1,4 @@
-import {t} from './i18n.js?v=20261007-linear-16';
+import {t} from './i18n.js?v=20261007-linear-17';
 export function installWorkspace() {
   const dialog=document.createElement('dialog');dialog.className='reading-dialog';dialog.setAttribute('aria-labelledby','readingTitle');dialog.innerHTML=`<div class="reading-heading"><h2 id="readingTitle"></h2><button class="button small" id="closeReading">${t('关闭')} · Esc</button></div>`;
   const original=document.querySelector('#original'),evidence=document.querySelector('#evidence');dialog.append(original,evidence);document.body.append(dialog);

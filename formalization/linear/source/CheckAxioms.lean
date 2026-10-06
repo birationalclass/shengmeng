@@ -337,6 +337,48 @@ set_option pp.proofs false
 #print axioms LinearStudy.mem_linearEquationSubmodule
 #check LinearStudy.mem_linearEquationSubspace
 #print axioms LinearStudy.mem_linearEquationSubspace
+#check LinearStudy.derivation_ideal_square
+#print axioms LinearStudy.derivation_ideal_square
+#check LinearStudy.first_order_derivative_quotient
+#print axioms LinearStudy.first_order_derivative_quotient
+#check LinearStudy.unit_divided_derivative_quotient
+#print axioms LinearStudy.unit_divided_derivative_quotient
+#check LinearStudy.fiber_jacobian_unit_factor
+#print axioms LinearStudy.fiber_jacobian_unit_factor
+#check LinearStudy.fiber_jacobian_nonzero
+#print axioms LinearStudy.fiber_jacobian_nonzero
+#check LinearStudy.unit_mul_annihilates_iff
+#print axioms LinearStudy.unit_mul_annihilates_iff
+#check LinearStudy.fiber_jacobian_annihilates
+#print axioms LinearStudy.fiber_jacobian_annihilates
+#check LinearStudy.socle_linear_evaluation
+#print axioms LinearStudy.socle_linear_evaluation
+#check LinearStudy.socle_linear_evaluation_exists
+#print axioms LinearStudy.socle_linear_evaluation_exists
+#check LinearStudy.formalParameterConstantCoeff
+#print axioms LinearStudy.formalParameterConstantCoeff
+#check LinearStudy.parameterReductionToField
+#print axioms LinearStudy.parameterReductionToField
+#check LinearStudy.parameterReductionToField_kernel
+#print axioms LinearStudy.parameterReductionToField_kernel
+#check LinearStudy.parameterQuotientResidueMap
+#print axioms LinearStudy.parameterQuotientResidueMap
+#check LinearStudy.parameterQuotientResidueMap_mk
+#print axioms LinearStudy.parameterQuotientResidueMap_mk
+#check LinearStudy.parameterQuotientResidueMap_kernel
+#print axioms LinearStudy.parameterQuotientResidueMap_kernel
+#check LinearStudy.lemma31_local_evaluation_formula
+#print axioms LinearStudy.lemma31_local_evaluation_formula
+#check LinearStudy.parameterQuotient_finiteOverComplex
+#print axioms LinearStudy.parameterQuotient_finiteOverComplex
+#check LinearStudy.perfect_socle_functional_nonzero
+#print axioms LinearStudy.perfect_socle_functional_nonzero
+#check LinearStudy.kernel_socle_scalar_generation
+#print axioms LinearStudy.kernel_socle_scalar_generation
+#check LinearStudy.exists_perfectPairing_of_kernel_socle
+#print axioms LinearStudy.exists_perfectPairing_of_kernel_socle
+#check LinearStudy.lemma31_local_perfectPairing
+#print axioms LinearStudy.lemma31_local_perfectPairing
 #check LinearStudy.powerSeries_hasEval_of_nilpotent
 #print axioms LinearStudy.powerSeries_hasEval_of_nilpotent
 #check LinearStudy.nilpotentPowerSeriesEval

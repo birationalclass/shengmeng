@@ -70,3 +70,5 @@ public import Linear.LiftedParameterMaps
 public import Linear.LiftedParameterPresentation
 public import Linear.ArbitraryParameterJacobian
 public import Linear.ArbitraryParameterSocle
+public import Linear.LocalResidueEvaluation
+public import Linear.LocalFiberJacobian
