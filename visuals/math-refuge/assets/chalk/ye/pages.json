@@ -13,7 +13,7 @@
       "title": "格点上的渐近最优 Hardy–Rellich 不等式",
       "author": "叶东",
       "tex": "",
-      "text": "与 Xia Huang 合作\narXiv:2607.23057",
+      "text": "与黄侠合作\narXiv:2607.23057",
       "en": {
         "source": "SEMINAR",
         "title": "Asymptotically sharp Hardy–Rellich inequalities on lattices",
@@ -21,6 +21,8 @@
         "text": "Joint work with Xia Huang\narXiv:2607.23057"
       },
       "editorialIndex": 0,
+      "voiceSection": 0,
+      "voiceParagraphStart": 0,
       "asset": "./assets/chalk/ye/page-001.svg",
       "formulaAsset": "./assets/chalk/ye/formula-001.svg",
       "formulaEm": 1,
@@ -61,21 +63,49 @@
     {
       "source": "§ 1",
       "title": "从一维 Hardy 不等式出发",
-      "tex": "\\sum_{n\\geq1}|u_n-u_{n-1}|^2\\geq\\frac14\\sum_{n\\geq1}\\frac{|u_n|^2}{n^2}",
-      "text": "先看有限支撑序列，并令 u_0=0。差分能量控制带奇异权的函数大小；高阶版本称为 Rellich 型不等式。",
+      "tex": "\\begin{gathered}E(u)=\\sum_{n\\ge1}|u_n-u_{n-1}|^2,\\quad M(u)=\\sum_{n\\ge1}|u_n|^2/n^2\\\\E(u)\\ge\\frac14M(u)\\\\\\inf_{u\\ne0}\\frac{E(u)}{M(u)}=\\frac14\\end{gathered}",
+      "text": "有限支撑；原点边界 u_0=0\n差分能量控制奇异加权量",
       "en": {
         "source": "§ 1",
         "title": "The one-dimensional starting point",
-        "text": "Take finitely supported sequences with u_0=0. Difference energy controls a singularly weighted norm; higher-order versions are of Rellich type."
+        "text": "Finite support; boundary u_0=0\nDifference energy controls the weighted norm",
+        "readingText": "Take finitely supported sequences with u_0=0. Difference energy controls a singularly weighted norm; higher-order versions are of Rellich type."
       },
       "editorialIndex": 1,
+      "voiceSection": 1,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\sum_{n\\geq1}|u_n-u_{n-1}|^2\\geq\\frac14\\sum_{n\\geq1}\\frac{|u_n|^2}{n^2}",
+      "readingText": "先看有限支撑序列，并令 u_0=0。差分能量控制带奇异权的函数大小；高阶版本称为 Rellich 型不等式。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "text": "有限支撑；原点边界 u_0=0",
+          "enText": "Finite support; boundary u_0=0"
+        },
+        {
+          "tex": "E(u)=\\sum_{n\\ge1}|u_n-u_{n-1}|^2,\\quad M(u)=\\sum_{n\\ge1}|u_n|^2/n^2"
+        },
+        {
+          "text": "差分能量控制奇异加权量",
+          "enText": "Difference energy controls the weighted norm"
+        },
+        {
+          "tex": "E(u)\\ge\\frac14M(u)"
+        },
+        {
+          "tex": "\\inf_{u\\ne0}\\frac{E(u)}{M(u)}=\\frac14"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "从一维 Hardy 不等式出发",
           "enText": "The one-dimensional starting point",
-          "tex": "\\sum_{n\\geq1}|u_n-u_{n-1}|^2\\geq\\frac14\\sum_{n\\geq1}\\frac{|u_n|^2}{n^2}"
+          "tex": "\\begin{gathered}E(u)=\\sum_{n\\ge1}|u_n-u_{n-1}|^2,\\quad M(u)=\\sum_{n\\ge1}|u_n|^2/n^2\\\\E(u)\\ge\\frac14M(u)\\\\\\inf_{u\\ne0}\\frac{E(u)}{M(u)}=\\frac14\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -89,10 +119,22 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          351.32599999999996,
           150,
-          542.024,
-          117.156
+          833.3480000000001,
+          93.42
+        ],
+        [
+          630.228,
+          253.42000000000002,
+          275.54400000000004,
+          85.12
+        ],
+        [
+          633.5840000000001,
+          348.54,
+          268.832,
+          100.8
         ]
       ],
       "flowLabels": [
@@ -128,88 +170,160 @@
     {
       "source": "§ 1",
       "title": "高维格点与容许函数",
-      "tex": "\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}",
-      "text": "研究有限支撑实函数，原点处取零。右侧奇异权不在原点求和；阶数固定，而维数将趋于无穷。",
+      "tex": "\\begin{gathered}\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}\\\\|n|^2=n_1^2+\\cdots+n_d^2\\\\E_m(u)=\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2\\\\M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}\\end{gathered}",
+      "text": "固定 m，令 d→∞",
       "en": {
         "source": "§ 1",
         "title": "Admissible lattice functions",
-        "text": "Use finitely supported real functions vanishing at the origin. The singular weighted sum omits the origin. Keep the order fixed as dimension tends to infinity."
+        "text": "Fix m; let d grow",
+        "readingText": "Use finitely supported real functions vanishing at the origin. The singular weighted sum omits the origin. Keep the order fixed as dimension tends to infinity."
       },
       "editorialIndex": 2,
-      "annotation": {
-        "mark": "c",
-        "row": 0,
-        "term": "\\mathcal E(\\mathbb Z^d)",
-        "focus": [
-          0.005847,
-          0.04714,
-          0.151688,
-          0.905753
-        ]
-      },
-      "asset": "./assets/chalk/ye/page-003.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-003.svg",
-      "formulaEm": 15.2715,
+      "voiceSection": 2,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}",
+      "readingText": "研究有限支撑实函数，原点处取零。右侧奇异权不在原点求和；阶数固定，而维数将趋于无穷。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}"
+        },
+        {
+          "tex": "|n|^2=n_1^2+\\cdots+n_d^2"
+        },
+        {
+          "text": "固定 m，令 d→∞",
+          "enText": "Fix m; let d grow"
+        },
+        {
+          "tex": "E_m(u)=\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2"
+        },
+        {
+          "tex": "M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}"
+        }
+      ],
       "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "高维格点与容许函数",
+          "enText": "Admissible lattice functions",
+          "tex": "\\begin{gathered}\\mathcal E(\\mathbb Z^d)=\\{u\\in C_c(\\mathbb Z^d;\\mathbb R):u(0)=0\\}\\\\|n|^2=n_1^2+\\cdots+n_d^2\\\\E_m(u)=\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2\\\\M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 1",
+          "title": "高维格点与容许函数"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-003.svg",
+      "asset": "./assets/chalk/ye/page-003.svg",
+      "formulaEm": 38.4,
       "formulaRows": [
         [
-          89,
-          250.6575,
-          769.575,
-          63.685
+          460.57,
+          150,
+          614.86,
+          50.148
+        ],
+        [
+          593.396,
+          210.148,
+          349.208,
+          49.948
+        ],
+        [
+          558.086,
+          270.096,
+          419.82800000000003,
+          93.864
+        ],
+        [
+          533.52,
+          373.96000000000004,
+          468.96000000000004,
+          97.01200000000001
         ]
+      ],
+      "flowLabels": [
+        {
+          "text": "高维格点与容许函数",
+          "enText": "Admissible lattice functions",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
       ],
       "rows": [
         [
-          80,
-          22,
-          1380,
-          66
-        ],
-        [
-          80,
-          95,
+          0,
+          0,
           0,
           0
         ],
         [
-          84,
-          245.6575,
-          779.575,
-          73.685
+          0,
+          0,
+          0,
+          0
         ],
         [
-          80,
-          448,
-          1380,
-          56
-        ],
-        [
-          80,
-          504,
-          1380,
-          56
+          0,
+          0,
+          1536,
+          640
         ]
       ]
     },
     {
       "source": "§ 1",
       "title": "离散梯度与 Laplace 算子",
-      "tex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\end{gathered}",
-      "text": "这里的 e_j 是坐标单位向量，离散 Laplace 算子采用非负符号约定。邻点差分代替连续导数。",
+      "tex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\\\|\\nabla u|^2=\\sum_{j=1}^d|\\nabla_j u|^2\\\\\\sum_n u(n)\\Delta u(n)=\\sum_n|\\nabla u(n)|^2\\ge0\\end{gathered}",
+      "text": "e_j：坐标单位向量",
       "en": {
         "source": "§ 1",
         "title": "Discrete gradient and Laplacian",
-        "text": "The vectors e_j are coordinate unit vectors. The discrete Laplacian uses the nonnegative sign convention; neighbour differences replace derivatives."
+        "text": "e_j: coordinate unit vectors",
+        "readingText": "The vectors e_j are coordinate unit vectors. The discrete Laplacian uses the nonnegative sign convention; neighbour differences replace derivatives."
       },
       "editorialIndex": 3,
+      "voiceSection": 3,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\end{gathered}",
+      "readingText": "这里的 e_j 是坐标单位向量，离散 Laplace 算子采用非负符号约定。邻点差分代替连续导数。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\nabla_j u(n)=u(n)-u(n-e_j)"
+        },
+        {
+          "tex": "\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]"
+        },
+        {
+          "text": "e_j：坐标单位向量",
+          "enText": "e_j: coordinate unit vectors"
+        },
+        {
+          "tex": "|\\nabla u|^2=\\sum_{j=1}^d|\\nabla_j u|^2"
+        },
+        {
+          "tex": "\\sum_n u(n)\\Delta u(n)=\\sum_n|\\nabla u(n)|^2\\ge0"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "离散梯度与 Laplace 算子",
           "enText": "Discrete gradient and Laplacian",
-          "tex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\end{gathered}"
+          "tex": "\\begin{gathered}\\nabla_j u(n)=u(n)-u(n-e_j)\\\\\\Delta u(n)=\\sum_{j=1}^d[2u(n)-u(n-e_j)-u(n+e_j)]\\\\|\\nabla u|^2=\\sum_{j=1}^d|\\nabla_j u|^2\\\\\\sum_n u(n)\\Delta u(n)=\\sum_n|\\nabla u(n)|^2\\ge0\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -223,16 +337,28 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          532.478,
           150,
           471.04400000000004,
           45.768
         ],
         [
-          110,
+          385.26,
           205.768,
           765.48,
           126.91600000000001
+        ],
+        [
+          603.726,
+          342.68399999999997,
+          328.548,
+          126.91600000000001
+        ],
+        [
+          468.06,
+          479.59999999999997,
+          599.88,
+          88.31200000000001
         ]
       ],
       "flowLabels": [
@@ -268,21 +394,45 @@
     {
       "source": "§ 1 · (1.4)",
       "title": "统一的高阶算子",
-      "tex": "\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}",
-      "text": "偶数阶迭代 Laplace 算子；奇数阶再施加一次梯度。这样一阶 Hardy 与二阶 Rellich 可以纳入同一框架。",
+      "tex": "\\begin{gathered}\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}\\\\\\mathcal D^1u=\\nabla u,\\quad\\mathcal D^2u=\\Delta u,\\quad\\mathcal D^3u=\\nabla\\Delta u\\\\|\\mathcal D^{2r+1}u|^2=\\sum_{j=1}^d|\\nabla_j\\Delta^r u|^2\\end{gathered}",
+      "text": "按奇偶定义 D^m",
       "en": {
         "source": "§ 1 · (1.4)",
         "title": "A common higher-order operator",
-        "text": "Even orders iterate the Laplacian; odd orders add one gradient. This places first-order Hardy and second-order Rellich inequalities in one framework."
+        "text": "Define D^m by parity",
+        "readingText": "Even orders iterate the Laplacian; odd orders add one gradient. This places first-order Hardy and second-order Rellich inequalities in one framework."
       },
       "editorialIndex": 4,
+      "voiceSection": 4,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}",
+      "readingText": "偶数阶迭代 Laplace 算子；奇数阶再施加一次梯度。这样一阶 Hardy 与二阶 Rellich 可以纳入同一框架。",
+      "strictLineCount": true,
+      "extraMathLines": 1,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}"
+        },
+        {
+          "text": "按奇偶定义 D^m",
+          "enText": "Define D^m by parity"
+        },
+        {
+          "tex": "\\mathcal D^1u=\\nabla u,\\quad\\mathcal D^2u=\\Delta u,\\quad\\mathcal D^3u=\\nabla\\Delta u"
+        },
+        {
+          "tex": "|\\mathcal D^{2r+1}u|^2=\\sum_{j=1}^d|\\nabla_j\\Delta^r u|^2"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "统一的高阶算子",
           "enText": "A common higher-order operator",
-          "tex": "\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}"
+          "tex": "\\begin{gathered}\\mathcal D^m u=\\begin{cases}\\Delta^{m/2}u,&m\\ \\text{even},\\\\\\nabla\\Delta^{(m-1)/2}u,&m\\ \\text{odd}.\\end{cases}\\\\\\mathcal D^1u=\\nabla u,\\quad\\mathcal D^2u=\\Delta u,\\quad\\mathcal D^3u=\\nabla\\Delta u\\\\|\\mathcal D^{2r+1}u|^2=\\sum_{j=1}^d|\\nabla_j\\Delta^r u|^2\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -296,10 +446,22 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          488.21599999999995,
           150,
           559.5680000000001,
           103.46799999999999
+        ],
+        [
+          420.46599999999995,
+          263.46799999999996,
+          695.0680000000001,
+          47.11600000000001
+        ],
+        [
+          547.086,
+          320.58399999999995,
+          441.82800000000003,
+          126.91600000000001
         ]
       ],
       "flowLabels": [
@@ -335,88 +497,160 @@
     {
       "source": "§ 1 · (1.4)",
       "title": "最佳常数的变分问题",
-      "tex": "\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}",
-      "text": "最佳常数是所有容许函数的能量比下确界。下界必须对全部函数成立；上界只需构造合适的试验函数。",
+      "tex": "\\begin{gathered}E_m(u)=\\|\\mathcal D^m u\\|_{\\ell^2}^2,\\quad M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}\\\\\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}\\\\E_m(u)\\ge aM_m(u)\\ (\\forall u)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\ge a\\\\0\\ne v\\in\\mathcal E(\\mathbb Z^d)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\le E_m(v)/M_m(v)\\end{gathered}",
+      "text": "对全部容许函数取下确界",
       "en": {
         "source": "§ 1 · (1.4)",
         "title": "The optimal constant as an infimum",
-        "text": "The optimal constant is the infimum of an energy quotient. Lower bounds must hold for every admissible function; upper bounds require a suitable test function."
+        "text": "Infimum over admissible functions",
+        "readingText": "The optimal constant is the infimum of an energy quotient. Lower bounds must hold for every admissible function; upper bounds require a suitable test function."
       },
       "editorialIndex": 5,
-      "annotation": {
-        "mark": "c",
-        "row": 0,
-        "term": "\\mathcal C_{m,d}",
-        "focus": [
-          0.004597,
-          0.333668,
-          0.110768,
-          0.343936
-        ]
-      },
-      "asset": "./assets/chalk/ye/page-006.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-006.svg",
-      "formulaEm": 15.543899999999999,
+      "voiceSection": 5,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}",
+      "readingText": "最佳常数是所有容许函数的能量比下确界。下界必须对全部函数成立；上界只需构造合适的试验函数。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "E_m(u)=\\|\\mathcal D^m u\\|_{\\ell^2}^2,\\quad M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}"
+        },
+        {
+          "tex": "\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}"
+        },
+        {
+          "text": "对全部容许函数取下确界",
+          "enText": "Infimum over admissible functions"
+        },
+        {
+          "tex": "E_m(u)\\ge aM_m(u)\\ (\\forall u)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\ge a"
+        },
+        {
+          "tex": "0\\ne v\\in\\mathcal E(\\mathbb Z^d)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\le E_m(v)/M_m(v)"
+        }
+      ],
       "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "最佳常数的变分问题",
+          "enText": "The optimal constant as an infimum",
+          "tex": "\\begin{gathered}E_m(u)=\\|\\mathcal D^m u\\|_{\\ell^2}^2,\\quad M_m(u)=\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}\\\\\\mathcal C_{m,d}=\\inf_{0\\ne u\\in\\mathcal E(\\mathbb Z^d)}\\frac{\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2}{\\sum_{n\\ne0}|u(n)|^2/|n|^{2m}}\\\\E_m(u)\\ge aM_m(u)\\ (\\forall u)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\ge a\\\\0\\ne v\\in\\mathcal E(\\mathbb Z^d)\\ \\Longrightarrow\\ \\mathcal C_{m,d}\\le E_m(v)/M_m(v)\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 1 · (1.4)",
+          "title": "最佳常数的变分问题"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-006.svg",
+      "asset": "./assets/chalk/ye/page-006.svg",
+      "formulaEm": 38.4,
       "formulaRows": [
         [
-          89,
-          210.3775,
-          783.195,
-          144.245
+          347.45,
+          150,
+          841.1,
+          97.01200000000001
+        ],
+        [
+          455.122,
+          257.012,
+          625.756,
+          114.596
+        ],
+        [
+          442.29,
+          381.608,
+          651.42,
+          45.488
+        ],
+        [
+          406.70599999999996,
+          437.096,
+          722.5880000000001,
+          51.636
         ]
+      ],
+      "flowLabels": [
+        {
+          "text": "最佳常数的变分问题",
+          "enText": "The optimal constant as an infimum",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
       ],
       "rows": [
         [
-          80,
-          22,
-          1380,
-          66
-        ],
-        [
-          80,
-          95,
+          0,
+          0,
           0,
           0
         ],
         [
-          84,
-          205.3775,
-          793.195,
-          154.245
+          0,
+          0,
+          0,
+          0
         ],
         [
-          80,
-          448,
-          1380,
-          56
-        ],
-        [
-          80,
-          504,
-          1380,
-          56
+          0,
+          0,
+          1536,
+          640
         ]
       ]
     },
     {
       "source": "§ 1",
       "title": "离散与连续的维数尺度",
-      "tex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\end{gathered}",
-      "text": "Gupta (2023) 确定了离散常数的增长阶，但没有确定首项系数。格点情形与连续情形的高维尺度本身就不同。",
+      "tex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\\\m=1:\\quad v=\\delta_{e_1}-\\delta_{-e_1}\\\\M_1(v)=2,\\quad E_1(v)=4d,\\quad E_1(v)/M_1(v)=2d\\end{gathered}",
+      "text": "离散：d^m；连续：d^(2m)",
       "en": {
         "source": "§ 1",
         "title": "Discrete and continuous dimension scales",
-        "text": "Gupta (2023) identified the lattice growth order but not its leading coefficient. The high-dimensional scale itself differs from the continuous setting."
+        "text": "Discrete d^m / continuous d^(2m)",
+        "readingText": "Gupta (2023) identified the lattice growth order but not its leading coefficient. The high-dimensional scale itself differs from the continuous setting."
       },
       "editorialIndex": 6,
+      "voiceSection": 6,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\end{gathered}",
+      "readingText": "Gupta (2023) 确定了离散常数的增长阶，但没有确定首项系数。格点情形与连续情形的高维尺度本身就不同。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d"
+        },
+        {
+          "tex": "\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d"
+        },
+        {
+          "text": "离散：d^m；连续：d^(2m)",
+          "enText": "Discrete d^m / continuous d^(2m)"
+        },
+        {
+          "tex": "m=1:\\quad v=\\delta_{e_1}-\\delta_{-e_1}"
+        },
+        {
+          "tex": "M_1(v)=2,\\quad E_1(v)=4d,\\quad E_1(v)/M_1(v)=2d"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "离散与连续的维数尺度",
           "enText": "Discrete and continuous dimension scales",
-          "tex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\end{gathered}"
+          "tex": "\\begin{gathered}\\mathcal C_{m,d}\\asymp d^m\\quad\\text{on }\\mathbb Z^d\\\\\\text{continuous sharp constants}\\asymp d^{2m}\\quad\\text{on }\\mathbb R^d\\\\m=1:\\quad v=\\delta_{e_1}-\\delta_{-e_1}\\\\M_1(v)=2,\\quad E_1(v)=4d,\\quad E_1(v)/M_1(v)=2d\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -430,16 +664,28 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          610.476,
           150,
           315.048,
           51.636
         ],
         [
-          110,
+          403.228,
           211.636,
           729.544,
           47.908
+        ],
+        [
+          556.668,
+          269.544,
+          422.66400000000004,
+          42.924
+        ],
+        [
+          363.116,
+          322.46799999999996,
+          809.768,
+          44
         ]
       ],
       "flowLabels": [
@@ -475,21 +721,49 @@
     {
       "source": "定理 1.1",
       "title": "渐近首项的精确答案",
-      "tex": "\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})",
-      "text": "始终先固定正整数阶数 m。证明需要给出相同首项的上下界，而不仅仅是与维数幂次同阶。",
+      "tex": "\\begin{gathered}\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})\\\\\\liminf_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\ge2^m\\\\\\limsup_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\le2^m\\end{gathered}",
+      "text": "固定 m；d→∞\n首项系数：2^m",
       "en": {
         "source": "Theorem 1.1",
         "title": "The precise leading coefficient",
-        "text": "Fix the positive integer order m throughout. Matching upper and lower coefficients are required, beyond merely identifying the power of dimension."
+        "text": "Fix m; let d grow\nLeading coefficient: 2^m",
+        "readingText": "Fix the positive integer order m throughout. Matching upper and lower coefficients are required, beyond merely identifying the power of dimension."
       },
       "editorialIndex": 7,
+      "voiceSection": 7,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})",
+      "readingText": "始终先固定正整数阶数 m。证明需要给出相同首项的上下界，而不仅仅是与维数幂次同阶。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})"
+        },
+        {
+          "text": "固定 m；d→∞",
+          "enText": "Fix m; let d grow"
+        },
+        {
+          "tex": "\\liminf_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\ge2^m"
+        },
+        {
+          "tex": "\\limsup_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\le2^m"
+        },
+        {
+          "text": "首项系数：2^m",
+          "enText": "Leading coefficient: 2^m"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "渐近首项的精确答案",
           "enText": "The precise leading coefficient",
-          "tex": "\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})"
+          "tex": "\\begin{gathered}\\lim_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}=2^m\\qquad(m\\geq1\\ \\text{fixed})\\\\\\liminf_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\ge2^m\\\\\\limsup_{d\\to\\infty}\\mathcal C_{m,d}/d^m\\le2^m\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -503,10 +777,22 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          474.548,
           150,
           586.904,
           92.708
+        ],
+        [
+          586.3,
+          252.708,
+          363.40000000000003,
+          64.62
+        ],
+        [
+          580.3,
+          327.328,
+          375.40000000000003,
+          72.38
         ]
       ],
       "flowLabels": [
@@ -542,94 +828,160 @@
     {
       "source": "§ 1",
       "title": "Fourier 变换的目标空间",
-      "tex": "\\begin{gathered}\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\end{gathered}",
-      "text": "格点 Fourier 分析把问题放到周期环面上。零均值去掉常数模态，而离散差分的频率符号产生权函数 ω。",
+      "tex": "\\begin{gathered}\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\\\|1-e^{ix_j}|^2=4\\sin^2(x_j/2)\\\\\\sum_{j=1}^d|1-e^{ix_j}|^2=4\\omega(x)\\end{gathered}",
+      "text": "格点 → 环面",
       "en": {
         "source": "§ 1",
         "title": "The Fourier target space",
-        "text": "Lattice Fourier analysis moves the problem to a periodic torus. Zero mean removes the constant mode, and the difference symbol produces the weight ω."
+        "text": "Lattice to torus",
+        "readingText": "Lattice Fourier analysis moves the problem to a periodic torus. Zero mean removes the constant mode, and the difference symbol produces the weight ω."
       },
       "editorialIndex": 8,
-      "annotation": {
-        "mark": "c",
-        "row": 1,
-        "term": "\\omega(x)",
-        "focus": [
-          0.008035,
-          0.329153,
-          0.197527,
-          0.31305
-        ]
-      },
-      "asset": "./assets/chalk/ye/page-009.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-009.svg",
-      "formulaEm": 13.7318,
+      "voiceSection": 8,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\end{gathered}",
+      "readingText": "格点 Fourier 分析把问题放到周期环面上。零均值去掉常数模态，而离散差分的频率符号产生权函数 ω。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0"
+        },
+        {
+          "tex": "\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)"
+        },
+        {
+          "text": "格点 → 环面",
+          "enText": "Lattice to torus"
+        },
+        {
+          "tex": "|1-e^{ix_j}|^2=4\\sin^2(x_j/2)"
+        },
+        {
+          "tex": "\\sum_{j=1}^d|1-e^{ix_j}|^2=4\\omega(x)"
+        }
+      ],
       "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "Fourier 变换的目标空间",
+          "enText": "The Fourier target space",
+          "tex": "\\begin{gathered}\\mathbb T^d=[-\\pi,\\pi]^d,\\qquad\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\omega(x)=\\sum_{j=1}^d\\sin^2(x_j/2)\\\\|1-e^{ix_j}|^2=4\\sin^2(x_j/2)\\\\\\sum_{j=1}^d|1-e^{ix_j}|^2=4\\omega(x)\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 1",
+          "title": "Fourier 变换的目标空间"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-009.svg",
+      "asset": "./assets/chalk/ye/page-009.svg",
+      "formulaEm": 38.4,
       "formulaRows": [
         [
-          89,
-          137,
-          684.225222258808,
-          117.49489627922293
+          491.36400000000003,
+          150,
+          553.2719999999999,
+          94.296
         ],
         [
-          89,
-          270.226868620349,
-          465.58676325321045,
-          157.77313137965098
+          579.898,
+          254.296,
+          376.204,
+          126.91600000000001
+        ],
+        [
+          554.6759999999999,
+          391.212,
+          426.648,
+          51.128
+        ],
+        [
+          574.134,
+          452.34,
+          387.73199999999997,
+          126.91600000000001
         ]
+      ],
+      "flowLabels": [
+        {
+          "text": "Fourier 变换的目标空间",
+          "enText": "The Fourier target space",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
       ],
       "rows": [
         [
-          80,
-          22,
-          1380,
-          66
-        ],
-        [
-          80,
-          95,
+          0,
+          0,
           0,
           0
         ],
         [
-          84,
-          132,
-          694.225222258808,
-          301
+          0,
+          0,
+          0,
+          0
         ],
         [
-          80,
-          448,
-          1380,
-          56
-        ],
-        [
-          80,
-          504,
-          1380,
-          56
+          0,
+          0,
+          1536,
+          640
         ]
       ]
     },
     {
       "source": "引理 1.2",
       "title": "加权范数的精确对应",
-      "tex": "\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx",
-      "text": "对每个容许函数存在零均值光滑周期函数 Ψ。这里 D 表示连续高阶微分，须与前面离散算子区分。",
+      "tex": "\\begin{gathered}a(0)=0,\\quad a(n)=u(n)/|n|^{2m}\\ (n\\ne0)\\\\\\Psi=(-i)^m\\mathcal Fa,\\quad\\mathcal Fa=(2\\pi)^{-d/2}\\sum_n a(n)e^{-in\\cdot x}\\\\\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx\\end{gathered}",
+      "text": "先设 g=u/|n|^(2m)",
       "en": {
         "source": "Lemma 1.2",
         "title": "Correspondence of the weighted norm",
-        "text": "For each admissible lattice function there is a smooth zero-mean periodic Ψ. Here D denotes the continuous higher-order operator, distinct from its discrete counterpart."
+        "text": "First set g=u/|n|^(2m)",
+        "readingText": "For each admissible lattice function there is a smooth zero-mean periodic Ψ. Here D denotes the continuous higher-order operator, distinct from its discrete counterpart."
       },
       "editorialIndex": 9,
+      "voiceSection": 9,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx",
+      "readingText": "对每个容许函数存在零均值光滑周期函数 Ψ。这里 D 表示连续高阶微分，须与前面离散算子区分。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "a(0)=0,\\quad a(n)=u(n)/|n|^{2m}\\ (n\\ne0)"
+        },
+        {
+          "tex": "\\Psi=(-i)^m\\mathcal Fa,\\quad\\mathcal Fa=(2\\pi)^{-d/2}\\sum_n a(n)e^{-in\\cdot x}"
+        },
+        {
+          "text": "先设 g=u/|n|^(2m)",
+          "enText": "First set g=u/|n|^(2m)"
+        },
+        {
+          "tex": "\\int_{\\mathbb T^d}\\Psi\\,dx=0"
+        },
+        {
+          "tex": "\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "加权范数的精确对应",
           "enText": "Correspondence of the weighted norm",
-          "tex": "\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx"
+          "tex": "\\begin{gathered}a(0)=0,\\quad a(n)=u(n)/|n|^{2m}\\ (n\\ne0)\\\\\\Psi=(-i)^m\\mathcal Fa,\\quad\\mathcal Fa=(2\\pi)^{-d/2}\\sum_n a(n)e^{-in\\cdot x}\\\\\\int_{\\mathbb T^d}\\Psi\\,dx=0\\\\\\sum_{n\\ne0}\\frac{|u(n)|^2}{|n|^{2m}}=\\int_{\\mathbb T^d}|D^m\\Psi|^2\\,dx\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -643,8 +995,26 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          436.986,
           150,
+          662.028,
+          49.356
+        ],
+        [
+          369.61400000000003,
+          209.356,
+          796.7719999999999,
+          88.31200000000001
+        ],
+        [
+          656.668,
+          307.668,
+          222.66400000000002,
+          94.296
+        ],
+        [
+          516.316,
+          411.964,
           503.36800000000005,
           120.768
         ]
@@ -682,21 +1052,49 @@
     {
       "source": "引理 1.2",
       "title": "差分能量的精确对应",
-      "tex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx",
-      "text": "与上一板结合，格点上的下界化为环面上的加权微分估计。系数 4^m 会在最后换算回格点常数。",
+      "tex": "\\begin{gathered}\\sum_j|1-e^{ix_j}|^2=4\\omega\\\\\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx\\\\\\frac{E_m(u)}{M_m(u)}=4^m\\frac{\\int|D^{2m}\\Psi|^2\\omega^m}{\\int|D^m\\Psi|^2}\\end{gathered}",
+      "text": "每阶差分产生因子 4\n分子、分母同时核对",
       "en": {
         "source": "Lemma 1.2",
         "title": "Correspondence of difference energy",
-        "text": "Together with the previous identity this reduces lattice lower bounds to weighted torus estimates. The factor 4^m returns in the final conversion."
+        "text": "A factor 4 at each order\nCheck both numerator and denominator",
+        "readingText": "Together with the previous identity this reduces lattice lower bounds to weighted torus estimates. The factor 4^m returns in the final conversion."
       },
       "editorialIndex": 10,
+      "voiceSection": 10,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx",
+      "readingText": "与上一板结合，格点上的下界化为环面上的加权微分估计。系数 4^m 会在最后换算回格点常数。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\sum_j|1-e^{ix_j}|^2=4\\omega"
+        },
+        {
+          "text": "每阶差分产生因子 4",
+          "enText": "A factor 4 at each order"
+        },
+        {
+          "tex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx"
+        },
+        {
+          "tex": "\\frac{E_m(u)}{M_m(u)}=4^m\\frac{\\int|D^{2m}\\Psi|^2\\omega^m}{\\int|D^m\\Psi|^2}"
+        },
+        {
+          "text": "分子、分母同时核对",
+          "enText": "Check both numerator and denominator"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "差分能量的精确对应",
           "enText": "Correspondence of difference energy",
-          "tex": "\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx"
+          "tex": "\\begin{gathered}\\sum_j|1-e^{ix_j}|^2=4\\omega\\\\\\sum_{n\\in\\mathbb Z^d}|\\mathcal D^m u(n)|^2=4^m\\int_{\\mathbb T^d}|D^{2m}\\Psi|^2\\omega^m\\,dx\\\\\\frac{E_m(u)}{M_m(u)}=4^m\\frac{\\int|D^{2m}\\Psi|^2\\omega^m}{\\int|D^m\\Psi|^2}\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -710,10 +1108,22 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          601.134,
           150,
+          333.73199999999997,
+          95.14399999999999
+        ],
+        [
+          429.778,
+          255.144,
           676.444,
           110.304
+        ],
+        [
+          522.006,
+          375.448,
+          491.98800000000006,
+          110.816
         ]
       ],
       "flowLabels": [
@@ -749,21 +1159,49 @@
     {
       "source": "定理 1.3",
       "title": "更一般的环面问题",
-      "tex": "\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}",
-      "text": "积分均在环面上。固定非负整数 k、ℓ 和正整数 γ，满足 0<k−ℓ≤γ；测试函数为零均值周期函数。",
+      "tex": "\\begin{gathered}\\int_{\\mathbb T^d}\\phi\\,dx=0,\\quad k>\\ell\\ge0,\\quad1\\le k-\\ell\\le\\gamma\\\\\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}\\\\C_{d,k,\\ell,\\gamma}=\\inf_{\\phi\\ne0,\\ \\int\\phi=0}\\frac{\\int|D^k\\phi|^2\\omega^\\gamma}{\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}}\\end{gathered}",
+      "text": "固定整数 k>ℓ≥0\n1≤k−ℓ≤γ",
       "en": {
         "source": "Theorem 1.3",
         "title": "A more general torus problem",
-        "text": "All integrals are over the torus. Fix nonnegative k, ℓ and positive integer γ with 0<k−ℓ≤γ; test functions are periodic and have zero mean."
+        "text": "Fix integers k>ℓ≥0\n1≤k−ℓ≤γ",
+        "readingText": "All integrals are over the torus. Fix nonnegative k, ℓ and positive integer γ with 0<k−ℓ≤γ; test functions are periodic and have zero mean."
       },
       "editorialIndex": 11,
+      "voiceSection": 11,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}",
+      "readingText": "积分均在环面上。固定非负整数 k、ℓ 和正整数 γ，满足 0<k−ℓ≤γ；测试函数为零均值周期函数。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\int_{\\mathbb T^d}\\phi\\,dx=0,\\quad k>\\ell\\ge0,\\quad1\\le k-\\ell\\le\\gamma"
+        },
+        {
+          "text": "固定整数 k>ℓ≥0",
+          "enText": "Fix integers k>ℓ≥0"
+        },
+        {
+          "tex": "\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}"
+        },
+        {
+          "tex": "C_{d,k,\\ell,\\gamma}=\\inf_{\\phi\\ne0,\\ \\int\\phi=0}\\frac{\\int|D^k\\phi|^2\\omega^\\gamma}{\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}}"
+        },
+        {
+          "text": "1≤k−ℓ≤γ",
+          "enText": "1≤k−ℓ≤γ"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "更一般的环面问题",
           "enText": "A more general torus problem",
-          "tex": "\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}"
+          "tex": "\\begin{gathered}\\int_{\\mathbb T^d}\\phi\\,dx=0,\\quad k>\\ell\\ge0,\\quad1\\le k-\\ell\\le\\gamma\\\\\\int|D^k\\phi|^2\\omega^\\gamma\\geq C_{d,k,\\ell,\\gamma}\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}\\\\C_{d,k,\\ell,\\gamma}=\\inf_{\\phi\\ne0,\\ \\int\\phi=0}\\frac{\\int|D^k\\phi|^2\\omega^\\gamma}{\\int|D^\\ell\\phi|^2\\omega^{\\gamma-k+\\ell}}\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -777,10 +1215,22 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          403.00800000000004,
           150,
+          729.9839999999999,
+          94.296
+        ],
+        [
+          443.44,
+          254.296,
           649.12,
           92.88
+        ],
+        [
+          468.858,
+          357.176,
+          598.284,
+          111.60799999999999
         ]
       ],
       "flowLabels": [
@@ -816,21 +1266,48 @@
     {
       "source": "定理 1.3",
       "title": "每增加一阶的代价",
-      "tex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}",
-      "text": "阶数差固定时，每增加一阶在首项上贡献 d/2。关键是先证明一阶跨越，再逐级迭代，并找到匹配的上界。",
+      "tex": "\\begin{gathered}q=k-\\ell\\ \\text{fixed}\\\\\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}\\\\C_{d,j+1,j,\\eta}\\ge(d/2)(1-o_d(1)),\\quad\\eta\\ge1\\\\\\prod_{r=1}^{q}\\frac d2(1-\\varepsilon_{r,d})=\\left(\\frac d2\\right)^q(1-o_d(1))\\end{gathered}",
+      "text": "同权比较 + 逐阶降权",
       "en": {
         "source": "Theorem 1.3",
         "title": "The cost of one additional order",
-        "text": "For fixed order gap, each step contributes d/2 at leading order. Prove one-step estimates, iterate them, then match the resulting lower bound."
+        "text": "Same weight / lower the weight",
+        "readingText": "For fixed order gap, each step contributes d/2 at leading order. Prove one-step estimates, iterate them, then match the resulting lower bound."
       },
       "editorialIndex": 12,
+      "voiceSection": 12,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}",
+      "readingText": "阶数差固定时，每增加一阶在首项上贡献 d/2。关键是先证明一阶跨越，再逐级迭代，并找到匹配的上界。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "q=k-\\ell\\ \\text{fixed}"
+        },
+        {
+          "tex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}"
+        },
+        {
+          "text": "同权比较 + 逐阶降权",
+          "enText": "Same weight / lower the weight"
+        },
+        {
+          "tex": "C_{d,j+1,j,\\eta}\\ge(d/2)(1-o_d(1)),\\quad\\eta\\ge1"
+        },
+        {
+          "tex": "\\prod_{r=1}^{q}\\frac d2(1-\\varepsilon_{r,d})=\\left(\\frac d2\\right)^q(1-o_d(1))"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "每增加一阶的代价",
           "enText": "The cost of one additional order",
-          "tex": "\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}"
+          "tex": "\\begin{gathered}q=k-\\ell\\ \\text{fixed}\\\\\\lim_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}=2^{\\ell-k}\\\\C_{d,j+1,j,\\eta}\\ge(d/2)(1-o_d(1)),\\quad\\eta\\ge1\\\\\\prod_{r=1}^{q}\\frac d2(1-\\varepsilon_{r,d})=\\left(\\frac d2\\right)^q(1-o_d(1))\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -844,10 +1321,28 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          639.68,
           150,
+          256.64,
+          39.96
+        ],
+        [
+          599.576,
+          199.96,
           336.848,
           93.32799999999999
+        ],
+        [
+          451.71799999999996,
+          303.288,
+          632.5640000000001,
+          46.108000000000004
+        ],
+        [
+          461.494,
+          359.396,
+          613.012,
+          118.264
         ]
       ],
       "flowLabels": [
@@ -884,13 +1379,38 @@
       "source": "引理 2.1 · (2.1)",
       "title": "一阶加权恒等式",
       "tex": "\\begin{gathered}\\int V|\\nabla\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2]\\varphi^2\\\\{}+\\int V|\\nabla\\varphi+\\varphi F|^2\\end{gathered}",
-      "text": "V 为光滑权，F 为光滑向量场。展开平方并在环面上分部积分；周期性使边界项抵消。取非负权时可舍去平方项得到下界。",
+      "text": "V≥0；周期分部积分\n舍去完整平方",
       "en": {
         "source": "Lemma 2.1 · (2.1)",
         "title": "A first-order weighted identity",
-        "text": "Let V and F be smooth. Expand the square and integrate by parts; periodicity cancels boundary terms. With nonnegative weight, dropping the square yields a lower bound."
+        "text": "V nonnegative; periodic integration\nDrop the complete square",
+        "readingText": "Let V and F be smooth. Expand the square and integrate by parts; periodicity cancels boundary terms. With nonnegative weight, dropping the square yields a lower bound."
       },
       "editorialIndex": 13,
+      "voiceSection": 13,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\int V|\\nabla\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2]\\varphi^2\\\\{}+\\int V|\\nabla\\varphi+\\varphi F|^2\\end{gathered}",
+      "readingText": "V 为光滑权，F 为光滑向量场。展开平方并在环面上分部积分；周期性使边界项抵消。取非负权时可舍去平方项得到下界。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 5,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\int V|\\nabla\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2]\\varphi^2"
+        },
+        {
+          "text": "V≥0；周期分部积分",
+          "enText": "V nonnegative; periodic integration"
+        },
+        {
+          "tex": "{}+\\int V|\\nabla\\varphi+\\varphi F|^2"
+        },
+        {
+          "text": "舍去完整平方",
+          "enText": "Drop the complete square"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
@@ -911,13 +1431,13 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          452.514,
           150,
           630.972,
           92.88
         ],
         [
-          110,
+          601.858,
           252.88,
           332.28400000000005,
           92.88
@@ -957,13 +1477,38 @@
       "source": "引理 2.1 · (2.2)",
       "title": "二阶恒等式与 Hessian",
       "tex": "\\begin{gathered}\\int V|\\Delta\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2-\\Delta V]|\\nabla\\varphi|^2\\\\{}+\\int\\langle\\nabla^2V\\nabla\\varphi,\\nabla\\varphi\\rangle+\\int V|\\nabla^2\\varphi+F\\otimes\\nabla\\varphi|^2\\end{gathered}",
-      "text": "二阶情形额外出现权函数 Hessian 与梯度的耦合。这个项必须估计，不能像常系数情形那样直接忽略。",
+      "text": "Hessian 耦合必须控制\n不能直接舍去",
       "en": {
         "source": "Lemma 2.1 · (2.2)",
         "title": "The Hessian in the second-order identity",
-        "text": "A Hessian term couples the weight to the gradient. It needs an estimate and cannot be discarded as if the weight were constant."
+        "text": "Control the Hessian coupling\nIt cannot simply be discarded",
+        "readingText": "A Hessian term couples the weight to the gradient. It needs an estimate and cannot be discarded as if the weight were constant."
       },
       "editorialIndex": 14,
+      "voiceSection": 14,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\int V|\\Delta\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2-\\Delta V]|\\nabla\\varphi|^2\\\\{}+\\int\\langle\\nabla^2V\\nabla\\varphi,\\nabla\\varphi\\rangle+\\int V|\\nabla^2\\varphi+F\\otimes\\nabla\\varphi|^2\\end{gathered}",
+      "readingText": "二阶情形额外出现权函数 Hessian 与梯度的耦合。这个项必须估计，不能像常系数情形那样直接忽略。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 5,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\int V|\\Delta\\varphi|^2=\\int[\\operatorname{div}(VF)-V|F|^2-\\Delta V]|\\nabla\\varphi|^2"
+        },
+        {
+          "text": "Hessian 耦合必须控制",
+          "enText": "Control the Hessian coupling"
+        },
+        {
+          "tex": "{}+\\int\\langle\\nabla^2V\\nabla\\varphi,\\nabla\\varphi\\rangle+\\int V|\\nabla^2\\varphi+F\\otimes\\nabla\\varphi|^2"
+        },
+        {
+          "text": "不能直接舍去",
+          "enText": "It cannot simply be discarded"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
@@ -984,13 +1529,13 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          368.244,
           150,
           799.512,
           92.88
         ],
         [
-          110,
+          383.984,
           252.88,
           768.032,
           92.88
@@ -1029,94 +1574,160 @@
     {
       "source": "§ 3 · (3.1)–(3.2)",
       "title": "归一化权函数",
-      "tex": "\\begin{gathered}\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2\\\\|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho\\end{gathered}",
-      "text": "这些直接微分计算把权函数的变化量写成带维数衰减的项。连续 Laplace 算子在这里采用通常的二阶导数之和。",
+      "tex": "\\begin{gathered}\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2\\\\|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho\\\\\\partial_j\\rho=\\sin x_j/d\\\\\\mathbb E_\\mu\\rho=1,\\quad\\operatorname{Var}_\\mu(\\rho)=1/(2d)\\end{gathered}",
+      "text": "ρ 的均值：1",
       "en": {
         "source": "§ 3 · (3.1)–(3.2)",
         "title": "The normalized weight",
-        "text": "Direct differentiation expresses weight fluctuations with dimension decay. Here the continuous Laplacian is the usual sum of second derivatives."
+        "text": "Mean of ρ: one",
+        "readingText": "Direct differentiation expresses weight fluctuations with dimension decay. Here the continuous Laplacian is the usual sum of second derivatives."
       },
       "editorialIndex": 15,
-      "annotation": {
-        "mark": "c",
-        "row": 0,
-        "term": "\\rho=2\\omega/d",
-        "focus": [
-          0.004479,
-          0.329074,
-          0.214361,
-          0.313195
-        ]
-      },
-      "asset": "./assets/chalk/ye/page-016.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-016.svg",
-      "formulaEm": 18.4123,
+      "voiceSection": 15,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2\\\\|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho\\end{gathered}",
+      "readingText": "这些直接微分计算把权函数的变化量写成带维数衰减的项。连续 Laplace 算子在这里采用通常的二阶导数之和。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2"
+        },
+        {
+          "tex": "|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho"
+        },
+        {
+          "text": "ρ 的均值：1",
+          "enText": "Mean of ρ: one"
+        },
+        {
+          "tex": "\\partial_j\\rho=\\sin x_j/d"
+        },
+        {
+          "tex": "\\mathbb E_\\mu\\rho=1,\\quad\\operatorname{Var}_\\mu(\\rho)=1/(2d)"
+        }
+      ],
       "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "归一化权函数",
+          "enText": "The normalized weight",
+          "tex": "\\begin{gathered}\\rho=2\\omega/d=1-d^{-1}\\sum_{j=1}^d\\cos x_j,\\quad0\\leq\\rho\\leq2\\\\|\\nabla\\rho|^2\\leq(2\\rho-\\rho^2)/d,\\qquad\\Delta\\rho=1-\\rho\\\\\\partial_j\\rho=\\sin x_j/d\\\\\\mathbb E_\\mu\\rho=1,\\quad\\operatorname{Var}_\\mu(\\rho)=1/(2d)\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 3 · (3.1)–(3.2)",
+          "title": "归一化权函数"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-016.svg",
+      "asset": "./assets/chalk/ye/page-016.svg",
+      "formulaEm": 38.4,
       "formulaRows": [
         [
-          89,
-          163.32999999999998,
-          926.615,
-          159.645
+          397.754,
+          150,
+          740.492,
+          126.91600000000001
         ],
         [
-          89,
-          338.975,
-          807.74,
-          62.69500000000001
+          445.30400000000003,
+          286.916,
+          645.3919999999999,
+          49.356
+        ],
+        [
+          643.662,
+          346.272,
+          248.676,
+          45.768
+        ],
+        [
+          515.01,
+          402.03999999999996,
+          505.98,
+          46.108000000000004
         ]
+      ],
+      "flowLabels": [
+        {
+          "text": "归一化权函数",
+          "enText": "The normalized weight",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
       ],
       "rows": [
         [
-          80,
-          22,
-          1380,
-          66
-        ],
-        [
-          80,
-          95,
+          0,
+          0,
           0,
           0
         ],
         [
-          84,
-          158.32999999999998,
-          936.615,
-          248.34000000000003
+          0,
+          0,
+          0,
+          0
         ],
         [
-          80,
-          448,
-          1380,
-          56
-        ],
-        [
-          80,
-          504,
-          1380,
-          56
+          0,
+          0,
+          1536,
+          640
         ]
       ]
     },
     {
       "source": "引理 2.3",
       "title": "Hoeffding (1963) 集中估计",
-      "tex": "\\begin{gathered}d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}",
-      "text": "均匀概率测度下，各坐标独立。ρ 是有界随机变量的平均值，因此偏离 1 的区域概率随维数指数衰减。",
+      "tex": "\\begin{gathered}X_j\\stackrel{\\rm iid}{\\sim}\\operatorname{Unif}[-\\pi,\\pi],\\quad Y_j=\\cos X_j\\\\Y_j\\in[-1,1],\\quad\\mathbb EY_j=0,\\quad\\rho=1-d^{-1}\\sum_jY_j\\\\d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}",
+      "text": "各坐标独立",
       "en": {
         "source": "Lemma 2.3",
         "title": "Hoeffding (1963) concentration",
-        "text": "Coordinates are independent under uniform probability measure. The weight is an average of bounded variables, so deviations from one have exponentially small probability."
+        "text": "Independent coordinates",
+        "readingText": "Coordinates are independent under uniform probability measure. The weight is an average of bounded variables, so deviations from one have exponentially small probability."
       },
       "editorialIndex": 16,
+      "voiceSection": 16,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}",
+      "readingText": "均匀概率测度下，各坐标独立。ρ 是有界随机变量的平均值，因此偏离 1 的区域概率随维数指数衰减。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "X_j\\stackrel{\\rm iid}{\\sim}\\operatorname{Unif}[-\\pi,\\pi],\\quad Y_j=\\cos X_j"
+        },
+        {
+          "tex": "Y_j\\in[-1,1],\\quad\\mathbb EY_j=0,\\quad\\rho=1-d^{-1}\\sum_jY_j"
+        },
+        {
+          "text": "各坐标独立",
+          "enText": "Independent coordinates"
+        },
+        {
+          "tex": "d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1"
+        },
+        {
+          "tex": "\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "Hoeffding (1963) 集中估计",
           "enText": "Hoeffding (1963) concentration",
-          "tex": "\\begin{gathered}d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}"
+          "tex": "\\begin{gathered}X_j\\stackrel{\\rm iid}{\\sim}\\operatorname{Unif}[-\\pi,\\pi],\\quad Y_j=\\cos X_j\\\\Y_j\\in[-1,1],\\quad\\mathbb EY_j=0,\\quad\\rho=1-d^{-1}\\sum_jY_j\\\\d\\mu=(2\\pi)^{-d}dx,\\qquad\\mathbb E_\\mu\\rho=1\\\\\\mu(|\\rho-1|\\geq t)\\leq2e^{-dt^2/2}\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1130,14 +1741,26 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          488.812,
           150,
+          558.376,
+          62.08
+        ],
+        [
+          383.718,
+          222.07999999999998,
+          768.564,
+          95.14399999999999
+        ],
+        [
+          518.62,
+          327.224,
           498.76,
           52.26
         ],
         [
-          110,
-          212.26,
+          557.152,
+          389.484,
           421.69599999999997,
           54.108000000000004
         ]
@@ -1175,21 +1798,48 @@
     {
       "source": "引理 2.4 · (2.7)",
       "title": "熵把坏区域转成能量",
-      "tex": "\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)",
-      "text": "取非负连续函数 W_0 和 s>0。单有小概率还不足以控制任意测试函数；熵不等式将函数集中在坏区域的代价显式记录下来。",
+      "tex": "\\begin{gathered}W_0\\ge0,\\quad s>0,\\quad B=\\mathbb E_\\mu(f^2)>0\\\\g=f^2/B,\\quad h=e^{sW_0}/\\mathbb E_\\mu e^{sW_0}\\\\\\mathbb E_\\mu g=\\mathbb E_\\mu h=1,\\quad\\int g\\log(g/h)d\\mu\\ge0\\\\\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)\\end{gathered}",
+      "text": "小概率 ≠ 任意函数的小贡献",
       "en": {
         "source": "Lemma 2.4 · (2.7)",
         "title": "Entropy converts concentration into energy",
-        "text": "Take nonnegative continuous W_0 and s>0. Small probability alone cannot control arbitrary test functions; entropy records the cost of concentrating on a bad region."
+        "text": "Small measure is not small energy",
+        "readingText": "Take nonnegative continuous W_0 and s>0. Small probability alone cannot control arbitrary test functions; entropy records the cost of concentrating on a bad region."
       },
       "editorialIndex": 17,
+      "voiceSection": 17,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)",
+      "readingText": "取非负连续函数 W_0 和 s>0。单有小概率还不足以控制任意测试函数；熵不等式将函数集中在坏区域的代价显式记录下来。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "W_0\\ge0,\\quad s>0,\\quad B=\\mathbb E_\\mu(f^2)>0"
+        },
+        {
+          "tex": "g=f^2/B,\\quad h=e^{sW_0}/\\mathbb E_\\mu e^{sW_0}"
+        },
+        {
+          "text": "小概率 ≠ 任意函数的小贡献",
+          "enText": "Small measure is not small energy"
+        },
+        {
+          "tex": "\\mathbb E_\\mu g=\\mathbb E_\\mu h=1,\\quad\\int g\\log(g/h)d\\mu\\ge0"
+        },
+        {
+          "tex": "\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "熵把坏区域转成能量",
           "enText": "Entropy converts concentration into energy",
-          "tex": "\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)"
+          "tex": "\\begin{gathered}W_0\\ge0,\\quad s>0,\\quad B=\\mathbb E_\\mu(f^2)>0\\\\g=f^2/B,\\quad h=e^{sW_0}/\\mathbb E_\\mu e^{sW_0}\\\\\\mathbb E_\\mu g=\\mathbb E_\\mu h=1,\\quad\\int g\\log(g/h)d\\mu\\ge0\\\\\\mathbb E_\\mu(W_0f^2)\\leq\\frac{\\operatorname{Ent}_\\mu(f^2)}{s}+\\frac{\\log\\mathbb E_\\mu(e^{sW_0})}{s}\\mathbb E_\\mu(f^2)\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1203,8 +1853,26 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          459.48,
           150,
+          617.04,
+          51.468
+        ],
+        [
+          508.932,
+          211.46800000000002,
+          518.136,
+          51.948
+        ],
+        [
+          439.252,
+          273.416,
+          657.496,
+          92.88
+        ],
+        [
+          365.734,
+          376.296,
           804.532,
           96.18799999999999
         ]
@@ -1242,94 +1910,160 @@
     {
       "source": "§ 2 · (2.8)",
       "title": "与维数无关的对数 Sobolev 估计",
-      "tex": "\\begin{gathered}\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu\\\\\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu\\end{gathered}",
-      "text": "关键是常数不随维数增长。与前一板和指数矩估计结合，坏区域贡献能够吸收到主能量项中。",
+      "tex": "\\begin{gathered}\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu\\\\\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu\\\\\\mu=\\mu_1^{\\otimes d},\\quad\\operatorname{Ent}_\\mu(f^2)\\le\\sum_{j=1}^d\\mathbb E_{\\widehat x_j}\\operatorname{Ent}_{\\mu_1}(f^2)\\\\\\sum_{j=1}^d\\int|\\partial_j f|^2d\\mu=\\int|\\nabla f|^2d\\mu\\end{gathered}",
+      "text": "C_LS 与维数无关",
       "en": {
         "source": "§ 2 · (2.8)",
         "title": "A dimension-independent logarithmic Sobolev bound",
-        "text": "The key is that the constant does not grow with dimension. Combined with the previous estimate and exponential moments, this absorbs bad-region contributions into energy."
+        "text": "C_LS independent of dimension",
+        "readingText": "The key is that the constant does not grow with dimension. Combined with the previous estimate and exponential moments, this absorbs bad-region contributions into energy."
       },
       "editorialIndex": 18,
-      "annotation": {
-        "mark": "c",
-        "row": 0,
-        "term": "\\operatorname{Ent}_\\mu(f^2)",
-        "focus": [
-          0.006119,
-          0.258629,
-          0.275907,
-          0.447325
-        ]
-      },
-      "asset": "./assets/chalk/ye/page-019.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-019.svg",
-      "formulaEm": 13.772,
+      "voiceSection": 18,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu\\\\\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu\\end{gathered}",
+      "readingText": "关键是常数不随维数增长。与前一板和指数矩估计结合，坏区域贡献能够吸收到主能量项中。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu"
+        },
+        {
+          "tex": "\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu"
+        },
+        {
+          "text": "C_LS 与维数无关",
+          "enText": "C_LS independent of dimension"
+        },
+        {
+          "tex": "\\mu=\\mu_1^{\\otimes d},\\quad\\operatorname{Ent}_\\mu(f^2)\\le\\sum_{j=1}^d\\mathbb E_{\\widehat x_j}\\operatorname{Ent}_{\\mu_1}(f^2)"
+        },
+        {
+          "tex": "\\sum_{j=1}^d\\int|\\partial_j f|^2d\\mu=\\int|\\nabla f|^2d\\mu"
+        }
+      ],
       "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "与维数无关的对数 Sobolev 估计",
+          "enText": "A dimension-independent logarithmic Sobolev bound",
+          "tex": "\\begin{gathered}\\operatorname{Ent}_\\mu(f^2)=\\int f^2\\log\\frac{f^2}{\\mathbb E_\\mu(f^2)}\\,d\\mu\\\\\\operatorname{Ent}_\\mu(f^2)\\leq C_{LS}\\int|\\nabla f|^2d\\mu\\\\\\mu=\\mu_1^{\\otimes d},\\quad\\operatorname{Ent}_\\mu(f^2)\\le\\sum_{j=1}^d\\mathbb E_{\\widehat x_j}\\operatorname{Ent}_{\\mu_1}(f^2)\\\\\\sum_{j=1}^d\\int|\\partial_j f|^2d\\mu=\\int|\\nabla f|^2d\\mu\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 2 · (2.8)",
+          "title": "与维数无关的对数 Sobolev 估计"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-019.svg",
+      "asset": "./assets/chalk/ye/page-019.svg",
+      "formulaEm": 38.4,
       "formulaRows": [
         [
-          89,
-          149.635,
-          694.6,
-          132.63
+          518.104,
+          150,
+          499.792,
+          95.1736
         ],
         [
-          89,
-          298.265,
-          595.9,
-          117.10000000000001
+          553.636,
+          255.17359999999996,
+          428.72799999999995,
+          83.99199999999999
+        ],
+        [
+          446.8654,
+          349.1655999999999,
+          642.2692,
+          114.6244
+        ],
+        [
+          545.77,
+          473.7899999999999,
+          444.46,
+          114.6244
         ]
+      ],
+      "flowLabels": [
+        {
+          "text": "与维数无关的对数 Sobolev 估计",
+          "enText": "A dimension-independent logarithmic Sobolev bound",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
       ],
       "rows": [
         [
-          80,
-          22,
-          1380,
-          66
-        ],
-        [
-          80,
-          95,
+          0,
+          0,
           0,
           0
         ],
         [
-          84,
-          144.635,
-          704.6,
-          275.73
+          0,
+          0,
+          0,
+          0
         ],
         [
-          80,
-          448,
-          1380,
-          56
-        ],
-        [
-          80,
-          504,
-          1380,
-          56
+          0,
+          0,
+          1536,
+          640
         ]
       ]
     },
     {
       "source": "§ 3.1 · (3.3)–(3.5)",
       "title": "消去权后的均值误差",
-      "tex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\qquad\\int\\varphi\\,d\\mu=0\\\\|\\mathbb E_\\mu v|^2\\leq\\delta_d\\int v^2d\\mu,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\end{gathered}",
-      "text": "乘以权函数后，零均值一般不会保留。证明先估计新均值，再结合集中估计控制权退化附近的负幂项。",
+      "tex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\quad\\int\\varphi d\\mu=0,\\quad B=\\int v^2d\\mu\\\\|\\mathbb E_\\mu v|^2\\le\\delta_dB,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\\\\\mu(\\rho\\le r)\\le(C_0r)^{d/2},\\qquad d>2\\gamma\\\\\\int|\\nabla v|^2d\\mu\\ge B-|\\mathbb E_\\mu v|^2\\ge(1-\\delta_d)B\\end{gathered}",
+      "text": "新均值误差：δ_d→0",
       "en": {
         "source": "§ 3.1 · (3.3)–(3.5)",
         "title": "The mean error after removing the weight",
-        "text": "Multiplication by the weight need not preserve zero mean. Estimate the new mean, then use concentration to control negative powers near the degenerate region."
+        "text": "Mean error: δ_d→0",
+        "readingText": "Concentration controls the typical region; small-ball volume handles negative powers near the origin. The new mean is a vanishing fraction, recovering a spectral gap close to one."
       },
       "editorialIndex": 19,
+      "voiceSection": 19,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\quad\\int\\varphi d\\mu=0,\\quad B=\\int v^2d\\mu\\\\|\\mathbb E_\\mu v|^2\\le\\delta_dB,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\\\\\mu(\\rho\\le r)\\le(C_0r)^{d/2},\\qquad d>2\\gamma\\\\\\int|\\nabla v|^2d\\mu\\ge B-|\\mathbb E_\\mu v|^2\\ge(1-\\delta_d)B\\end{gathered}",
+      "readingText": "集中估计处理典型区域，小球体积控制原点附近的负幂。新均值只占趋零的比例，因而恢复接近 1 的谱隙。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "v=\\rho^{\\gamma/2}\\varphi,\\quad\\int\\varphi d\\mu=0,\\quad B=\\int v^2d\\mu"
+        },
+        {
+          "tex": "|\\mathbb E_\\mu v|^2\\le\\delta_dB,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0"
+        },
+        {
+          "text": "新均值误差：δ_d→0",
+          "enText": "Mean error: δ_d→0"
+        },
+        {
+          "tex": "\\mu(\\rho\\le r)\\le(C_0r)^{d/2},\\qquad d>2\\gamma"
+        },
+        {
+          "tex": "\\int|\\nabla v|^2d\\mu\\ge B-|\\mathbb E_\\mu v|^2\\ge(1-\\delta_d)B"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "消去权后的均值误差",
           "enText": "The mean error after removing the weight",
-          "tex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\qquad\\int\\varphi\\,d\\mu=0\\\\|\\mathbb E_\\mu v|^2\\leq\\delta_d\\int v^2d\\mu,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\end{gathered}"
+          "tex": "\\begin{gathered}v=\\rho^{\\gamma/2}\\varphi,\\quad\\int\\varphi d\\mu=0,\\quad B=\\int v^2d\\mu\\\\|\\mathbb E_\\mu v|^2\\le\\delta_dB,\\qquad\\delta_d=\\int(1-\\rho^{-\\gamma/2})^2d\\mu\\to0\\\\\\mu(\\rho\\le r)\\le(C_0r)^{d/2},\\qquad d>2\\gamma\\\\\\int|\\nabla v|^2d\\mu\\ge B-|\\mathbb E_\\mu v|^2\\ge(1-\\delta_d)B\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1343,15 +2077,27 @@
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          425.56,
           150,
-          463.86,
+          684.88,
           92.88
         ],
         [
-          110,
+          373.70199999999994,
           252.88,
-          891.1080000000001,
+          788.5960000000001,
+          92.88
+        ],
+        [
+          488.08599999999996,
+          355.76,
+          559.8280000000001,
+          51.732
+        ],
+        [
+          445.982,
+          417.49199999999996,
+          644.036,
           92.88
         ]
       ],
@@ -1386,23 +2132,274 @@
       ]
     },
     {
+      "source": "§ 3.1 · (3.6)–(3.9)",
+      "title": "消去权与坏势的吸收",
+      "tex": "\\begin{gathered}h=\\rho^{\\gamma/2},\\quad v=h\\varphi,\\quad A=\\int|\\nabla v|^2d\\mu,\\quad B=\\int v^2d\\mu\\\\E=\\int\\rho^\\gamma|\\nabla\\varphi|^2d\\mu=A+\\int\\frac{\\Delta h}{h}v^2d\\mu\\\\\\int Wv^2d\\mu\\le\\frac{C_\\gamma}{\\sqrt d}(A+B),\\quad A\\ge(1-\\delta_d)B\\\\E\\ge(1-\\varepsilon_d)A-\\varepsilon_dB\\ge(1-o_d(1))B\\end{gathered}",
+      "text": "坏势 W=max{-Δh/h,0}：熵控制",
+      "en": {
+        "source": "§ 3.1 · (3.6)–(3.9)",
+        "title": "Removing the weight and absorbing the bad potential",
+        "text": "Bad potential W=max{-Δh/h,0}: entropy",
+        "readingText": "Fix a positive integer γ and take dimension sufficiently large. Concentration, entropy and log-Sobolev control the bad potential; the mean estimate supplies the spectral gap."
+      },
+      "editorialIndex": 1200,
+      "voiceSection": 20,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}h=\\rho^{\\gamma/2},\\quad v=h\\varphi,\\quad A=\\int|\\nabla v|^2d\\mu,\\quad B=\\int v^2d\\mu\\\\E=\\int\\rho^\\gamma|\\nabla\\varphi|^2d\\mu=A+\\int\\frac{\\Delta h}{h}v^2d\\mu\\\\W=\\max\\{-\\Delta h/h,0\\}\\le C_\\gamma[(\\rho-1)_++d^{-1}]\\\\\\int Wv^2d\\mu\\le\\frac{C_\\gamma}{\\sqrt d}(A+B),\\quad A\\ge(1-\\delta_d)B\\\\E\\ge(1-\\varepsilon_d)A-\\varepsilon_dB\\ge(1-o_d(1))B\\end{gathered}",
+      "readingText": "固定正整数 γ，维数充分大。集中、熵与对数 Sobolev 控制坏势；均值误差提供吸收所需的谱隙。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "h=\\rho^{\\gamma/2},\\quad v=h\\varphi,\\quad A=\\int|\\nabla v|^2d\\mu,\\quad B=\\int v^2d\\mu"
+        },
+        {
+          "tex": "E=\\int\\rho^\\gamma|\\nabla\\varphi|^2d\\mu=A+\\int\\frac{\\Delta h}{h}v^2d\\mu"
+        },
+        {
+          "text": "坏势 W=max{-Δh/h,0}：熵控制",
+          "enText": "Bad potential W=max{-Δh/h,0}: entropy"
+        },
+        {
+          "tex": "\\int Wv^2d\\mu\\le\\frac{C_\\gamma}{\\sqrt d}(A+B),\\quad A\\ge(1-\\delta_d)B"
+        },
+        {
+          "tex": "E\\ge(1-\\varepsilon_d)A-\\varepsilon_dB\\ge(1-o_d(1))B"
+        }
+      ],
+      "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "消去权与坏势的吸收",
+          "enText": "Removing the weight and absorbing the bad potential",
+          "tex": "\\begin{gathered}h=\\rho^{\\gamma/2},\\quad v=h\\varphi,\\quad A=\\int|\\nabla v|^2d\\mu,\\quad B=\\int v^2d\\mu\\\\E=\\int\\rho^\\gamma|\\nabla\\varphi|^2d\\mu=A+\\int\\frac{\\Delta h}{h}v^2d\\mu\\\\\\int Wv^2d\\mu\\le\\frac{C_\\gamma}{\\sqrt d}(A+B),\\quad A\\ge(1-\\delta_d)B\\\\E\\ge(1-\\varepsilon_d)A-\\varepsilon_dB\\ge(1-o_d(1))B\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 3.1 · (3.6)–(3.9)",
+          "title": "消去权与坏势的吸收"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-021.svg",
+      "asset": "./assets/chalk/ye/page-021.svg",
+      "formulaEm": 38.4,
+      "formulaRows": [
+        [
+          308.82599999999996,
+          150,
+          918.3480000000001,
+          92.88
+        ],
+        [
+          443.9,
+          252.88,
+          648.2,
+          94.12
+        ],
+        [
+          395.168,
+          357,
+          745.664,
+          103.508
+        ],
+        [
+          446.61,
+          470.508,
+          642.78,
+          44
+        ]
+      ],
+      "flowLabels": [
+        {
+          "text": "消去权与坏势的吸收",
+          "enText": "Removing the weight and absorbing the bad potential",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
+      ],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1536,
+          640
+        ]
+      ]
+    },
+    {
+      "source": "§ 3.2 · (1.7)",
+      "title": "降权系数与参数的选择",
+      "tex": "\\begin{gathered}V=\\omega^\\gamma,\\quad f=\\omega^\\alpha,\\quad F=-\\nabla f/f\\\\E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2dx,\\quad B_{\\gamma-1}=\\int\\omega^{\\gamma-1}\\varphi^2dx\\\\E_\\gamma\\ge-\\alpha(\\alpha+\\gamma-1+d/2)B_{\\gamma-1}\\\\\\alpha=-\\sqrt d:\\quad\\frac{-\\alpha(\\alpha+\\gamma-1+d/2)}{1-\\alpha(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}",
+      "text": "α=−√d；参数条件在大维数成立",
+      "en": {
+        "source": "§ 3.2 · (1.7)",
+        "title": "The weight-lowering coefficient and parameter choice",
+        "text": "α=−√d; conditions hold for large d",
+        "readingText": "Require α≤0, α(α+γ−1)≥0 and d≥2(γ−1−α). For fixed γ, α=−√d satisfies these conditions in sufficiently large dimension."
+      },
+      "editorialIndex": 1201,
+      "voiceSection": 20,
+      "voiceParagraphStart": 6,
+      "readingTex": "\\begin{gathered}V=\\omega^\\gamma,\\quad f=\\omega^\\alpha,\\quad F=-\\nabla f/f\\\\E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2dx,\\quad B_{\\gamma-1}=\\int\\omega^{\\gamma-1}\\varphi^2dx\\\\[1-\\alpha(1+o_d(1))]E_\\gamma\\ge-\\alpha(\\alpha+\\gamma-1+d/2)B_{\\gamma-1}\\\\\\alpha=-\\sqrt d:\\quad\\frac{-\\alpha(\\alpha+\\gamma-1+d/2)}{1-\\alpha(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}",
+      "readingText": "α≤0，α(α+γ−1)≥0，d≥2(γ−1−α)。固定 γ 时，α=−√d 在充分大的维数满足这些条件。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "V=\\omega^\\gamma,\\quad f=\\omega^\\alpha,\\quad F=-\\nabla f/f"
+        },
+        {
+          "tex": "E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2dx,\\quad B_{\\gamma-1}=\\int\\omega^{\\gamma-1}\\varphi^2dx"
+        },
+        {
+          "text": "α=−√d；参数条件在大维数成立",
+          "enText": "α=−√d; conditions hold for large d"
+        },
+        {
+          "tex": "E_\\gamma\\ge-\\alpha(\\alpha+\\gamma-1+d/2)B_{\\gamma-1}"
+        },
+        {
+          "tex": "\\alpha=-\\sqrt d:\\quad\\frac{-\\alpha(\\alpha+\\gamma-1+d/2)}{1-\\alpha(1+o_d(1))}=\\frac d2(1+o_d(1))"
+        }
+      ],
+      "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "降权系数与参数的选择",
+          "enText": "The weight-lowering coefficient and parameter choice",
+          "tex": "\\begin{gathered}V=\\omega^\\gamma,\\quad f=\\omega^\\alpha,\\quad F=-\\nabla f/f\\\\E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2dx,\\quad B_{\\gamma-1}=\\int\\omega^{\\gamma-1}\\varphi^2dx\\\\E_\\gamma\\ge-\\alpha(\\alpha+\\gamma-1+d/2)B_{\\gamma-1}\\\\\\alpha=-\\sqrt d:\\quad\\frac{-\\alpha(\\alpha+\\gamma-1+d/2)}{1-\\alpha(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 3.2 · (1.7)",
+          "title": "降权系数与参数的选择"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-022.svg",
+      "asset": "./assets/chalk/ye/page-022.svg",
+      "formulaEm": 38.4,
+      "formulaRows": [
+        [
+          477.69,
+          150,
+          580.62,
+          44
+        ],
+        [
+          395.93199999999996,
+          204,
+          744.1360000000001,
+          92.88
+        ],
+        [
+          491.31,
+          306.88,
+          553.38,
+          46.108000000000004
+        ],
+        [
+          316.558,
+          362.988,
+          902.884,
+          100.8
+        ]
+      ],
+      "flowLabels": [
+        {
+          "text": "降权系数与参数的选择",
+          "enText": "The weight-lowering coefficient and parameter choice",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
+      ],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1536,
+          640
+        ]
+      ]
+    },
+    {
       "source": "命题 1.4 · (1.6)–(1.7)",
       "title": "一阶的两个基础估计",
-      "tex": "\\begin{gathered}\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\end{gathered}",
-      "text": "第一式保留权的次数，第二式降低一次权并获得维数因子。误差只依赖固定阶数参数，与测试函数无关。",
+      "tex": "\\begin{gathered}E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2,\\quad B_\\eta=\\int\\omega^\\eta\\varphi^2\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\\\\\varepsilon_d\\to0\\quad\\text{uniformly over }\\varphi\\end{gathered}",
+      "text": "同权：1；降权：d/2",
       "en": {
         "source": "Proposition 1.4 · (1.6)–(1.7)",
         "title": "Two first-order estimates",
-        "text": "The first keeps the weight power; the second lowers it by one and gains a dimension factor. Errors depend on fixed order parameters, not on the test function."
+        "text": "Same weight: one / lower: d/2",
+        "readingText": "The first keeps the weight power; the second lowers it by one and gains a dimension factor. Errors depend on fixed order parameters, not on the test function."
       },
       "editorialIndex": 20,
+      "voiceSection": 20,
+      "voiceParagraphStart": 10,
+      "readingTex": "\\begin{gathered}\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\end{gathered}",
+      "readingText": "第一式保留权的次数，第二式降低一次权并获得维数因子。误差只依赖固定阶数参数，与测试函数无关。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2,\\quad B_\\eta=\\int\\omega^\\eta\\varphi^2"
+        },
+        {
+          "tex": "\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma"
+        },
+        {
+          "text": "同权：1；降权：d/2",
+          "enText": "Same weight: one / lower: d/2"
+        },
+        {
+          "tex": "\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}"
+        },
+        {
+          "tex": "\\varepsilon_d\\to0\\quad\\text{uniformly over }\\varphi"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "一阶的两个基础估计",
           "enText": "Two first-order estimates",
-          "tex": "\\begin{gathered}\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\end{gathered}"
+          "tex": "\\begin{gathered}E_\\gamma=\\int\\omega^\\gamma|\\nabla\\varphi|^2,\\quad B_\\eta=\\int\\omega^\\eta\\varphi^2\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int\\varphi^2\\omega^\\gamma\\\\\\int|\\nabla\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int\\varphi^2\\omega^{\\gamma-1}\\\\\\varepsilon_d\\to0\\quad\\text{uniformly over }\\varphi\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1411,21 +2408,33 @@
           "title": "一阶的两个基础估计"
         }
       ],
-      "formulaAsset": "./assets/chalk/ye/formula-021.svg",
-      "asset": "./assets/chalk/ye/page-021.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-023.svg",
+      "asset": "./assets/chalk/ye/page-023.svg",
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          477.06,
           150,
+          581.88,
+          92.88
+        ],
+        [
+          482.32599999999996,
+          252.88,
           571.3480000000001,
           92.88
         ],
         [
-          110,
-          252.88,
+          445.052,
+          355.76,
           645.896,
           93.24
+        ],
+        [
+          541.654,
+          459,
+          452.692,
+          40.92
         ]
       ],
       "flowLabels": [
@@ -1461,21 +2470,48 @@
     {
       "source": "命题 1.4 · (1.8)–(1.9)",
       "title": "二阶到一阶的基础估计",
-      "tex": "\\begin{gathered}\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\end{gathered}",
-      "text": "二阶加权恒等式控制 Hessian 误差，得到相同的降权代价。这一对估计使奇数阶与偶数阶都能进入迭代。",
+      "tex": "\\begin{gathered}Q_\\gamma=\\int\\omega^\\gamma|\\Delta\\varphi|^2,\\quad E_\\eta=\\int\\omega^\\eta|\\nabla\\varphi|^2\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\\\\\gamma\\ \\text{fixed};\\quad\\varepsilon_d\\ \\text{independent of }\\varphi\\end{gathered}",
+      "text": "先同权，再降权",
       "en": {
         "source": "Proposition 1.4 · (1.8)–(1.9)",
         "title": "Second-order to first-order estimates",
-        "text": "The second-order identity controls the Hessian error and gives the same weight-lowering cost. This pair lets both parity cases enter the iteration."
+        "text": "Same weight, then lower it",
+        "readingText": "The second-order identity controls the Hessian error and gives the same weight-lowering cost. This pair lets both parity cases enter the iteration."
       },
       "editorialIndex": 21,
+      "voiceSection": 21,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\end{gathered}",
+      "readingText": "二阶加权恒等式控制 Hessian 误差，得到相同的降权代价。这一对估计使奇数阶与偶数阶都能进入迭代。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "Q_\\gamma=\\int\\omega^\\gamma|\\Delta\\varphi|^2,\\quad E_\\eta=\\int\\omega^\\eta|\\nabla\\varphi|^2"
+        },
+        {
+          "tex": "\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma"
+        },
+        {
+          "text": "先同权，再降权",
+          "enText": "Same weight, then lower it"
+        },
+        {
+          "tex": "\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}"
+        },
+        {
+          "tex": "\\gamma\\ \\text{fixed};\\quad\\varepsilon_d\\ \\text{independent of }\\varphi"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "二阶到一阶的基础估计",
           "enText": "Second-order to first-order estimates",
-          "tex": "\\begin{gathered}\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\end{gathered}"
+          "tex": "\\begin{gathered}Q_\\gamma=\\int\\omega^\\gamma|\\Delta\\varphi|^2,\\quad E_\\eta=\\int\\omega^\\eta|\\nabla\\varphi|^2\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^\\gamma\\\\\\int|\\Delta\\varphi|^2\\omega^\\gamma\\geq\\frac d2(1-o_d(1))\\int|\\nabla\\varphi|^2\\omega^{\\gamma-1}\\\\\\gamma\\ \\text{fixed};\\quad\\varepsilon_d\\ \\text{independent of }\\varphi\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1484,21 +2520,33 @@
           "title": "二阶到一阶的基础估计"
         }
       ],
-      "formulaAsset": "./assets/chalk/ye/formula-022.svg",
-      "asset": "./assets/chalk/ye/page-022.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-024.svg",
+      "asset": "./assets/chalk/ye/page-024.svg",
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          448.64,
           150,
+          638.72,
+          92.88
+        ],
+        [
+          454.546,
+          252.88,
           626.908,
           92.88
         ],
         [
-          110,
-          252.88,
+          417.272,
+          355.76,
           701.456,
           93.24
+        ],
+        [
+          509.772,
+          459,
+          516.456,
+          40.92
         ]
       ],
       "flowLabels": [
@@ -1532,23 +2580,265 @@
       ]
     },
     {
+      "source": "§ 3.4 · Hessian 估计",
+      "title": "Hessian 耦合的统一控制",
+      "tex": "\\begin{gathered}\\nabla^2(\\omega^\\gamma)=\\gamma(\\gamma-1)\\omega^{\\gamma-2}\\nabla\\omega\\otimes\\nabla\\omega+\\gamma\\omega^{\\gamma-1}\\nabla^2\\omega\\\\|\\nabla\\omega|^2\\le\\omega,\\qquad\\|\\nabla^2\\omega\\|_{\\rm op}\\le\\frac12\\\\\\left|\\int\\langle\\nabla^2(\\omega^\\gamma)\\nabla\\varphi,\\nabla\\varphi\\rangle dx\\right|\\le\\frac{2\\gamma^2-\\gamma}{2}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\end{gathered}",
+      "text": "固定整数 γ≥1；控制绝对值",
+      "en": {
+        "source": "§ 3.4 · Hessian 估计",
+        "title": "Uniform control of the Hessian coupling",
+        "text": "Fix an integer γ≥1; bound the modulus",
+        "readingText": "Fix an integer γ≥1. Bound the rank-one and diagonal terms separately. The diagonal term may be negative, so estimate the absolute value of the coupling."
+      },
+      "editorialIndex": 1210,
+      "voiceSection": 21,
+      "voiceParagraphStart": 3,
+      "readingTex": "\\begin{gathered}\\nabla^2(\\omega^\\gamma)=\\gamma(\\gamma-1)\\omega^{\\gamma-2}\\nabla\\omega\\otimes\\nabla\\omega+\\gamma\\omega^{\\gamma-1}\\nabla^2\\omega\\\\|\\nabla\\omega|^2\\le\\omega,\\qquad\\|\\nabla^2\\omega\\|_{\\rm op}\\le\\frac12\\\\\\left|\\int\\langle\\nabla^2(\\omega^\\gamma)\\nabla\\varphi,\\nabla\\varphi\\rangle dx\\right|\\le\\frac{2\\gamma^2-\\gamma}{2}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\end{gathered}",
+      "readingText": "固定整数 γ≥1。秩一项与对角项分别控制；对角项可以为负，所以估计整个耦合项的绝对值。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 5,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\nabla^2(\\omega^\\gamma)=\\gamma(\\gamma-1)\\omega^{\\gamma-2}\\nabla\\omega\\otimes\\nabla\\omega+\\gamma\\omega^{\\gamma-1}\\nabla^2\\omega"
+        },
+        {
+          "text": "固定整数 γ≥1；控制绝对值",
+          "enText": "Fix an integer γ≥1; bound the modulus"
+        },
+        {
+          "tex": "|\\nabla\\omega|^2\\le\\omega,\\qquad\\|\\nabla^2\\omega\\|_{\\rm op}\\le\\frac12"
+        },
+        {
+          "tex": "\\left|\\int\\langle\\nabla^2(\\omega^\\gamma)\\nabla\\varphi,\\nabla\\varphi\\rangle dx\\right|\\le\\frac{2\\gamma^2-\\gamma}{2}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx"
+        }
+      ],
+      "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "Hessian 耦合的统一控制",
+          "enText": "Uniform control of the Hessian coupling",
+          "tex": "\\begin{gathered}\\nabla^2(\\omega^\\gamma)=\\gamma(\\gamma-1)\\omega^{\\gamma-2}\\nabla\\omega\\otimes\\nabla\\omega+\\gamma\\omega^{\\gamma-1}\\nabla^2\\omega\\\\|\\nabla\\omega|^2\\le\\omega,\\qquad\\|\\nabla^2\\omega\\|_{\\rm op}\\le\\frac12\\\\\\left|\\int\\langle\\nabla^2(\\omega^\\gamma)\\nabla\\varphi,\\nabla\\varphi\\rangle dx\\right|\\le\\frac{2\\gamma^2-\\gamma}{2}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 3.4 · Hessian 估计",
+          "title": "Hessian 耦合的统一控制"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-025.svg",
+      "asset": "./assets/chalk/ye/page-025.svg",
+      "formulaEm": 38.4,
+      "formulaRows": [
+        [
+          369.376,
+          150,
+          797.248,
+          49.356
+        ],
+        [
+          509.14799999999997,
+          209.356,
+          517.7040000000001,
+          85.12
+        ],
+        [
+          327.07,
+          304.476,
+          881.86,
+          98.836
+        ]
+      ],
+      "flowLabels": [
+        {
+          "text": "Hessian 耦合的统一控制",
+          "enText": "Uniform control of the Hessian coupling",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
+      ],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1536,
+          640
+        ]
+      ]
+    },
+    {
+      "source": "§ 3.4 · (1.9)",
+      "title": "二阶降权的主项",
+      "tex": "\\begin{gathered}G(t)=t^2+(t+\\gamma)(\\gamma-1+d/2)+(2\\gamma^2-\\gamma)/2\\\\\\int\\omega^\\gamma|\\Delta\\varphi|^2dx\\ge\\frac{-G(\\alpha)}{1-(\\alpha+\\gamma)(1+o_d(1))}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\\\\\alpha=-\\sqrt d,\\quad G(-\\sqrt d)=-\\frac12d^{3/2}(1+o_d(1))\\\\\\frac{-G(-\\sqrt d)}{1-(\\gamma-\\sqrt d)(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}",
+      "text": "先二阶同权，再吸收不降权项",
+      "en": {
+        "source": "§ 3.4 · (1.9)",
+        "title": "The leading second-order weight-lowering term",
+        "text": "Same weight first; then absorb",
+        "readingText": "First-order weight lowering gives the second-order same-weight estimate. Then absorb the same-weight term. The denominator is positive for fixed γ and sufficiently large dimension."
+      },
+      "editorialIndex": 1211,
+      "voiceSection": 21,
+      "voiceParagraphStart": 5,
+      "readingTex": "\\begin{gathered}G(t)=t^2+(t+\\gamma)(\\gamma-1+d/2)+(2\\gamma^2-\\gamma)/2\\\\\\int\\omega^\\gamma|\\Delta\\varphi|^2dx\\ge\\frac{-G(\\alpha)}{1-(\\alpha+\\gamma)(1+o_d(1))}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\\\\\alpha=-\\sqrt d,\\quad G(-\\sqrt d)=-\\frac12d^{3/2}(1+o_d(1))\\\\\\frac{-G(-\\sqrt d)}{1-(\\gamma-\\sqrt d)(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}",
+      "readingText": "先用一阶降权建立二阶同权，再吸收不降权项。固定 γ、维数充分大时分母为正。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "G(t)=t^2+(t+\\gamma)(\\gamma-1+d/2)+(2\\gamma^2-\\gamma)/2"
+        },
+        {
+          "tex": "\\int\\omega^\\gamma|\\Delta\\varphi|^2dx\\ge\\frac{-G(\\alpha)}{1-(\\alpha+\\gamma)(1+o_d(1))}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx"
+        },
+        {
+          "text": "先二阶同权，再吸收不降权项",
+          "enText": "Same weight first; then absorb"
+        },
+        {
+          "tex": "\\alpha=-\\sqrt d,\\quad G(-\\sqrt d)=-\\frac12d^{3/2}(1+o_d(1))"
+        },
+        {
+          "tex": "\\frac{-G(-\\sqrt d)}{1-(\\gamma-\\sqrt d)(1+o_d(1))}=\\frac d2(1+o_d(1))"
+        }
+      ],
+      "diagram": null,
+      "layout": "flow",
+      "blocks": [
+        {
+          "text": "二阶降权的主项",
+          "enText": "The leading second-order weight-lowering term",
+          "tex": "\\begin{gathered}G(t)=t^2+(t+\\gamma)(\\gamma-1+d/2)+(2\\gamma^2-\\gamma)/2\\\\\\int\\omega^\\gamma|\\Delta\\varphi|^2dx\\ge\\frac{-G(\\alpha)}{1-(\\alpha+\\gamma)(1+o_d(1))}\\int\\omega^{\\gamma-1}|\\nabla\\varphi|^2dx\\\\\\alpha=-\\sqrt d,\\quad G(-\\sqrt d)=-\\frac12d^{3/2}(1+o_d(1))\\\\\\frac{-G(-\\sqrt d)}{1-(\\gamma-\\sqrt d)(1+o_d(1))}=\\frac d2(1+o_d(1))\\end{gathered}"
+        }
+      ],
+      "sourcePages": [
+        {
+          "source": "§ 3.4 · (1.9)",
+          "title": "二阶降权的主项"
+        }
+      ],
+      "formulaAsset": "./assets/chalk/ye/formula-026.svg",
+      "asset": "./assets/chalk/ye/page-026.svg",
+      "formulaEm": 38.4,
+      "formulaRows": [
+        [
+          360.68800000000005,
+          150,
+          814.6239999999999,
+          49.356
+        ],
+        [
+          285.874,
+          209.356,
+          964.252,
+          100.8
+        ],
+        [
+          391.728,
+          320.156,
+          752.544,
+          85.12
+        ],
+        [
+          409.986,
+          415.276,
+          716.028,
+          118.36
+        ]
+      ],
+      "flowLabels": [
+        {
+          "text": "二阶降权的主项",
+          "enText": "The leading second-order weight-lowering term",
+          "x": 88,
+          "y": 129,
+          "size": 28
+        }
+      ],
+      "rows": [
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1536,
+          640
+        ]
+      ]
+    },
+    {
       "source": "§ 4.1 · (4.1)–(4.2)",
       "title": "迭代得到环面下界",
-      "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}",
-      "text": "根据当前阶数的奇偶，分别使用一阶或二阶基础估计。每次降低一阶和一次权；固定次数的乘积保持误差趋于零。",
+      "tex": "\\begin{gathered}q=k-\\ell,\\quad\\eta_j=\\gamma-k+j+1\\ge1\\quad(\\ell\\le j<k)\\\\C_{d,k,\\ell,\\gamma}\\ge\\prod_{j=\\ell}^{k-1}C_{d,j+1,j,\\eta_j}\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}",
+      "text": "固定次数迭代",
       "en": {
         "source": "§ 4.1 · (4.1)–(4.2)",
         "title": "Iterating the torus lower bound",
-        "text": "Choose the first- or second-order estimate according to parity. Each step lowers derivative order and weight power by one; finitely many errors still vanish."
+        "text": "Finitely many steps",
+        "readingText": "Choose the first- or second-order estimate according to parity. Each step lowers derivative order and weight power by one; finitely many errors still vanish."
       },
       "editorialIndex": 22,
+      "voiceSection": 22,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}",
+      "readingText": "根据当前阶数的奇偶，分别使用一阶或二阶基础估计。每次降低一阶和一次权；固定次数的乘积保持误差趋于零。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "q=k-\\ell,\\quad\\eta_j=\\gamma-k+j+1\\ge1\\quad(\\ell\\le j<k)"
+        },
+        {
+          "tex": "C_{d,k,\\ell,\\gamma}\\ge\\prod_{j=\\ell}^{k-1}C_{d,j+1,j,\\eta_j}"
+        },
+        {
+          "text": "固定次数迭代",
+          "enText": "Finitely many steps"
+        },
+        {
+          "tex": "\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)"
+        },
+        {
+          "tex": "\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "迭代得到环面下界",
           "enText": "Iterating the torus lower bound",
-          "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}"
+          "tex": "\\begin{gathered}q=k-\\ell,\\quad\\eta_j=\\gamma-k+j+1\\ge1\\quad(\\ell\\le j<k)\\\\C_{d,k,\\ell,\\gamma}\\ge\\prod_{j=\\ell}^{k-1}C_{d,j+1,j,\\eta_j}\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,j+1,j,\\eta}}d\\geq\\frac12\\quad(\\eta\\geq1)\\\\\\liminf_{d\\to\\infty}\\frac{C_{d,k,\\ell,\\gamma}}{d^{k-\\ell}}\\geq2^{\\ell-k}\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1557,19 +2847,31 @@
           "title": "迭代得到环面下界"
         }
       ],
-      "formulaAsset": "./assets/chalk/ye/formula-023.svg",
-      "asset": "./assets/chalk/ye/page-023.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-027.svg",
+      "asset": "./assets/chalk/ye/page-027.svg",
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          348.488,
           150,
+          839.024,
+          45.768
+        ],
+        [
+          577.224,
+          205.768,
+          381.55199999999996,
+          128.01999999999998
+        ],
+        [
+          499.12,
+          343.788,
           537.76,
           93.32799999999999
         ],
         [
-          110,
-          253.32799999999997,
+          579.974,
+          447.116,
           376.05199999999996,
           93.32799999999999
         ]
@@ -1607,21 +2909,48 @@
     {
       "source": "§ 4.1 · (4.3)–(4.4)",
       "title": "单一 Fourier 模态给出上界",
-      "tex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\end{gathered}",
-      "text": "将这个零均值测试函数代入变分比。奇偶导数只在正弦与余弦之间交换，权积分的共同首项给出匹配的上界。",
+      "tex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\\\|D^{2r}\\phi_1|^2=\\sin^2x_1,\\quad|D^{2r+1}\\phi_1|^2=\\cos^2x_1\\\\\\int\\sin^2x_1dx=\\int\\cos^2x_1dx=(2\\pi)^d/2\\end{gathered}",
+      "text": "零均值试验函数：sin x_1",
       "en": {
         "source": "§ 4.1 · (4.3)–(4.4)",
         "title": "A single Fourier mode matches the upper bound",
-        "text": "Insert this zero-mean test function into the quotient. Derivatives alternate between sine and cosine; the common leading weighted integral matches the lower bound."
+        "text": "Test function: sin x_1",
+        "readingText": "Insert this zero-mean test function into the quotient. Derivatives alternate between sine and cosine; the common leading weighted integral matches the lower bound."
       },
       "editorialIndex": 23,
+      "voiceSection": 23,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\end{gathered}",
+      "readingText": "将这个零均值测试函数代入变分比。奇偶导数只在正弦与余弦之间交换，权积分的共同首项给出匹配的上界。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\phi_1(x)=\\sin x_1"
+        },
+        {
+          "tex": "\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]"
+        },
+        {
+          "text": "零均值试验函数：sin x_1",
+          "enText": "Test function: sin x_1"
+        },
+        {
+          "tex": "|D^{2r}\\phi_1|^2=\\sin^2x_1,\\quad|D^{2r+1}\\phi_1|^2=\\cos^2x_1"
+        },
+        {
+          "tex": "\\int\\sin^2x_1dx=\\int\\cos^2x_1dx=(2\\pi)^d/2"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "单一 Fourier 模态给出上界",
           "enText": "A single Fourier mode matches the upper bound",
-          "tex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\end{gathered}"
+          "tex": "\\begin{gathered}\\phi_1(x)=\\sin x_1\\\\\\int|D^j\\phi_1|^2\\omega^\\gamma dx=\\Big(\\frac d2\\Big)^\\gamma\\frac{(2\\pi)^d}{2}\\,[1+O(d^{-1})]\\\\|D^{2r}\\phi_1|^2=\\sin^2x_1,\\quad|D^{2r+1}\\phi_1|^2=\\cos^2x_1\\\\\\int\\sin^2x_1dx=\\int\\cos^2x_1dx=(2\\pi)^d/2\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1630,21 +2959,33 @@
           "title": "单一 Fourier 模态给出上界"
         }
       ],
-      "formulaAsset": "./assets/chalk/ye/formula-024.svg",
-      "asset": "./assets/chalk/ye/page-024.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-028.svg",
+      "asset": "./assets/chalk/ye/page-028.svg",
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          643.614,
           150,
           248.77200000000002,
           44
         ],
         [
-          110,
+          391.89199999999994,
           204,
           752.2160000000001,
           100.988
+        ],
+        [
+          405.55800000000005,
+          314.988,
+          724.8839999999999,
+          49.336000000000006
+        ],
+        [
+          442.786,
+          374.324,
+          650.428,
+          92.88
         ]
       ],
       "flowLabels": [
@@ -1680,21 +3021,48 @@
     {
       "source": "§ 4.2",
       "title": "回到格点并完成夹逼",
-      "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\end{gathered}",
-      "text": "下界来自 Fourier 对应。上界还需检查所选环面函数确实来自容许格点函数：支撑在两个相反单位格点的试验函数完成这一步。",
+      "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\\\\\operatorname{supp}u_1=\\{e_1,-e_1\\},\\quad u_1(0)=0\\\\|e_1|=|-e_1|=1\\ \\Longrightarrow\\ |n|^{-2m}=1\\ \\text{on the support}\\end{gathered}",
+      "text": "下界：Fourier 对应",
       "en": {
         "source": "§ 4.2",
         "title": "Returning to the lattice",
-        "text": "Fourier correspondence gives the lower bound. For the upper bound, verify an admissible lattice preimage: a test function supported at two opposite unit sites completes the argument."
+        "text": "Lower bound: Fourier transfer",
+        "readingText": "Fourier correspondence gives the lower bound. For the upper bound, verify an admissible lattice preimage: a test function supported at two opposite unit sites completes the argument."
       },
       "editorialIndex": 24,
+      "voiceSection": 24,
+      "voiceParagraphStart": 0,
+      "readingTex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\end{gathered}",
+      "readingText": "下界来自 Fourier 对应。上界还需检查所选环面函数确实来自容许格点函数：支撑在两个相反单位格点的试验函数完成这一步。",
+      "strictLineCount": true,
+      "extraMathLines": 0,
+      "mainLineCount": 6,
+      "formulaAlign": "center",
+      "boardLines": [
+        {
+          "tex": "\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m"
+        },
+        {
+          "tex": "u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m"
+        },
+        {
+          "text": "下界：Fourier 对应",
+          "enText": "Lower bound: Fourier transfer"
+        },
+        {
+          "tex": "\\operatorname{supp}u_1=\\{e_1,-e_1\\},\\quad u_1(0)=0"
+        },
+        {
+          "tex": "|e_1|=|-e_1|=1\\ \\Longrightarrow\\ |n|^{-2m}=1\\ \\text{on the support}"
+        }
+      ],
       "diagram": null,
       "layout": "flow",
       "blocks": [
         {
           "text": "回到格点并完成夹逼",
           "enText": "Returning to the lattice",
-          "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\end{gathered}"
+          "tex": "\\begin{gathered}\\liminf_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\geq4^m2^{-m}=2^m\\\\u_1(n)=\\frac{(2\\pi)^{d/2}}2(\\delta_{e_1}-\\delta_{-e_1})\\quad\\Longrightarrow\\quad\\limsup_{d\\to\\infty}\\frac{\\mathcal C_{m,d}}{d^m}\\leq2^m\\\\\\operatorname{supp}u_1=\\{e_1,-e_1\\},\\quad u_1(0)=0\\\\|e_1|=|-e_1|=1\\ \\Longrightarrow\\ |n|^{-2m}=1\\ \\text{on the support}\\end{gathered}"
         }
       ],
       "sourcePages": [
@@ -1703,21 +3071,33 @@
           "title": "回到格点并完成夹逼"
         }
       ],
-      "formulaAsset": "./assets/chalk/ye/formula-025.svg",
-      "asset": "./assets/chalk/ye/page-025.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-029.svg",
+      "asset": "./assets/chalk/ye/page-029.svg",
       "formulaEm": 38.4,
       "formulaRows": [
         [
-          110,
+          526.15,
           150,
           483.7,
           92.708
         ],
         [
-          110,
+          281.168,
           252.708,
           973.664,
           106.51200000000001
+        ],
+        [
+          482.734,
+          369.22,
+          570.532,
+          44
+        ],
+        [
+          343.294,
+          423.22,
+          849.412,
+          49.336000000000006
         ]
       ],
       "flowLabels": [
@@ -1763,9 +3143,9 @@
         "author": "",
         "text": ""
       },
-      "editorialIndex": 25,
-      "asset": "./assets/chalk/ye/page-026.svg",
-      "formulaAsset": "./assets/chalk/ye/formula-026.svg",
+      "editorialIndex": 29,
+      "asset": "./assets/chalk/ye/page-030.svg",
+      "formulaAsset": "./assets/chalk/ye/formula-030.svg",
       "formulaEm": 1,
       "formulaRows": [],
       "rows": [

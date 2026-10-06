@@ -6,7 +6,7 @@ import {drawChalkAnnotation} from './chalk-annotations.js';
 import {writingPlan,writingPose,inkReveal,strokeReveal,erasingPlan} from './chalk-motion.js';
 
 function context(){
-  return {strokes:0,tints:0,clearRect(){},save(){},restore(){},fillRect(){this.tints++;},drawImage(){},beginPath(){},stroke(){this.strokes++;},moveTo(){},lineTo(){},fillText(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
+  return {strokes:0,tints:0,chalkStroke(){},clearRect(){},save(){},restore(){},fillRect(){this.tints++;},drawImage(){},beginPath(){},stroke(){this.strokes++;},moveTo(){},lineTo(){},fillText(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
 }
 test('definition marks follow their own line, precede later content, and preserve white formula ink',async()=>{
   for(const folder of ['','hu/','ye/','duan/']){
@@ -16,6 +16,7 @@ test('definition marks follow their own line, precede later content, and preserv
       assert.equal(ctx.strokes,0,'No annotation strokes can leak into a formula scan');
       assert.equal(ctx.tints,0,'Framing a definition must not recolor its mathematical ink');
       if(!page.annotation)continue;
+      if(!page.annotation.label?.[lang]?.trim()){assert(!rows.some(r=>r.annotation),'Orphan frame must be suppressed');continue;}
       const first=rows.findIndex(r=>r.annotation),plan=writingPlan(rows);
       const next=rows.findIndex((r,i)=>i>first&&!r.annotation);
       assert(first>0&&next>first,'There is still more page content after the local annotation');
@@ -75,4 +76,11 @@ test('eraser wipes deferred annotation paths even outside the base ink pixels',(
   assert(plan.segments.some(s=>s.contact),'Deferred frames are part of the wipe plan');
   // v83 adds six pixels of wrist travel at either end of the occupied cell run.
   assert(plan.segments.filter(s=>s.contact).every(s=>s.a[0]>=42&&s.a[0]<=118&&s.a[1]<=70));
+});
+
+test('a frame is omitted without an explanation and arrow, including whitespace labels',()=>{
+ for(const annotation of [{row:0,focus:[0,0,.3,1]},{row:0,label:{en:'   '}}]){
+  const ctx=context();assert.deepEqual(drawChalkAnnotation(ctx,[[100,120,300,70]],annotation,'en'),[]);
+  assert.equal(ctx.strokes,0);
+ }
 });

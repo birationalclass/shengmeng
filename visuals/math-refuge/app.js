@@ -45,10 +45,10 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
-import {createLecture} from './lecture.js?v=photo-release-151';
+import {createLecture} from './lecture.js?v=report-seminar-5';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
-import {createChalkReader} from './chalk-reader.js?v62-chalk-ink';
+import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v=mouse-soft-110';
 import {bindCameraIntent} from './camera-intent.js?v=8-manual';
@@ -799,6 +799,7 @@ function installPhysicalControls(){
     else if(action.startsWith('page:seek:'))seekLecture(Number(action.split(':')[2]));
     else if(action.startsWith('seminar:section:'))selectSeminarPart(lecture.navigation.sections.find(s=>s.id===action.split(':')[2]));
     else if(action.startsWith('seminar:'))lecture.screenAction(action);
+    else if(action==='voice:toggle')void lecture.toggleVoice();
     else if(action==='language')switchChalkLanguage();
     else if(action.startsWith('report:'))switchReport(action.slice(7));
   });
@@ -843,7 +844,7 @@ function updateLectureUI(){
   const status=reportProgress||reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
   $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
   for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;
-  controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?'暂停板书':'继续板书');$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?(lecture.report.narration?'暂停报告':'暂停板书'):(lecture.report.narration?'聆听报告':'继续板书'));$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
   $('lectureProgressValue').textContent=lecture.hasSelection?`${lecture.progress.page+1} / ${lecture.progress.total}`:'—';
   if(document.activeElement!==$('lectureProgress'))$('lectureProgress').value=String(lecture.progress.page+1);
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);

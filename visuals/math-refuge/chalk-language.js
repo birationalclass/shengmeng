@@ -1,9 +1,10 @@
-import {chalkInlineRuns,mathFont} from './chalk-typography.js?v62-chalk-ink';
-import {drawChalkAnnotation} from './chalk-annotations.js?v51-local-definitions';
-import {explainedFlow} from './flow-explanation.js?v62-chalk-ink';
+import {inlineInk,drawInlineInk} from './chalk-inline-math.js?v=inline-root-1';
+import {chalkInlineRuns,mathFont} from './chalk-typography.js?v=inline-root-1';
+import {drawChalkAnnotation} from './chalk-annotations.js?v=report-seminar-5';
+import {explainedFlow} from './flow-explanation.js?v=report-seminar-5';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
-export function chalkCopy(page,language='zh'){
-  return language==='en'?page.en:{title:page.title,text:page.text,source:page.source,author:page.author};
+export function chalkCopy(page,language='zh',{board=false}={}){
+  return language==='en'?{...page.en,text:!board&&page.en.readingText||page.en.text}:{title:page.title,text:!board&&page.readingText||page.text,source:page.source,author:page.author};
 }
 
 export function wrapChalkText(ctx,text,width){
@@ -11,7 +12,7 @@ export function wrapChalkText(ctx,text,width){
 }
 
 export function composeChalkPage(ctx,page,index,language,formula,options={}){
-  const copy=chalkCopy(page,language),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
+  const copy=chalkCopy(page,language,{board:true}),font=language==='en'?'RefugeLatin, cursive':'RefugeChinese, RefugeLatin, Kaiti SC, cursive',rows=[];
   ctx.clearRect(0,0,1536,640);ctx.fillStyle='#eee9d5';ctx.textBaseline='alphabetic';
   const runFont=(run,heading=false)=>run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?mathFont:/[\u3400-\u9fff]/.test(run.text)?font:'RefugeLatin, cursive';
   const measurements=new Map();
@@ -20,7 +21,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     let advance=0,left=0,right=0,ascent=0,descent=0;
     for(const run of chalkInlineRuns(text)){
       const px=size*(run.script?.7:1),dy=run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0;
-      ctx.font=`${px}px ${runFont(run,heading)}`;const ink=ctx.measureText(run.text);
+      ctx.font=`${px}px ${runFont(run,heading)}`;const ink=inlineInk(ctx,run,px);
       left=Math.min(left,advance-(ink.actualBoundingBoxLeft??0));right=Math.max(right,advance+(ink.actualBoundingBoxRight??ink.width));
       ascent=Math.max(ascent,(ink.actualBoundingBoxAscent??px*.8)-dy);descent=Math.max(descent,(ink.actualBoundingBoxDescent??px*.3)+dy);advance+=ink.width;
     }
@@ -31,7 +32,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
   function textRow(text,x,y,size,color,heading=false){
     while(measure(text,size,heading)>1368&&size>24)size--;
     ctx.fillStyle=color;let cursor=x;const chineseSpans=[];
-    for(const run of chalkInlineRuns(text)){ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;ctx.fillText(run.text,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0));const width=ctx.measureText(run.text).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
+    for(const run of chalkInlineRuns(text)){ctx.font=`${size*(run.script ? .7 : 1)}px ${runFont(run,heading)}`;drawInlineInk(ctx,run,cursor,y+(run.script==='sub'?size*.22:run.script==='sup'?-size*.4:0),size*(run.script?.7:1));const width=inlineInk(ctx,run,size*(run.script?.7:1)).width;if(/[\u3400-\u9fff]/.test(run.text))chineseSpans.push([cursor,cursor+width]);cursor+=width;}
     const ink=bounds(text,size,heading);
     rows.push(Object.assign([x+ink.left-4,y-ink.ascent-4,ink.right-ink.left+8,ink.ascent+ink.descent+8],{chineseSpans,chalkColor:color}));
   }
@@ -50,7 +51,7 @@ export function composeChalkPage(ctx,page,index,language,formula,options={}){
     return rows;
   }
   if(!page.hideHeading&&!options.hideHeading)textRow(copy.source+'  '+copy.title,84,76,44,'#e4cf9c',true);
-  if(!page.diagram&&!page.annotation){
+  if(!page.diagram&&(page.layout==='flow'||!page.annotation)){
     const items=explainedFlow(page,language,measure,options.hideHeading);
     const formulaRects=items.filter(i=>i.source).map(i=>Object.assign([...i.rect],{formulaRow:i.index}));
     const cues=drawChalkAnnotation(ctx,formulaRects,page.annotation,language,options);

@@ -1,4 +1,4 @@
-import {chalkHTML} from './chalk-typography.js?v62-chalk-ink';
+import {chalkHTML} from './chalk-typography.js?v=inline-root-1';
 import {controlLabel} from './control-label.js?v=22-handwritten-cover';
 import {readingFormulaWidth} from './display-profile.js?v=8-cover';
 

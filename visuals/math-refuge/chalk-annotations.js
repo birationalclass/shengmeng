@@ -2,8 +2,10 @@ export const CHALK_COLORS={c:'#a8d6df',u:'#e7ce91',b:'#e0aba0'};
 
 // Fixed, slightly uneven strokes: no frame-to-frame random noise or shimmer.
 export function drawChalkAnnotation(ctx,rows,annotation,language,{deferStrokes=false}={}){
-  if(!annotation||!rows.length)return [];
-  const equationRows=rows.filter(r=>r[0]<700);
+  const label=annotation?.label?.[language]?.trim();
+  if(!annotation||!rows.length||!label)return [];
+  const tagged=rows.filter(r=>r.formulaRow!==undefined);
+  const equationRows=tagged.length?tagged:rows;
   const target=equationRows[annotation.row<0?equationRows.length-1:annotation.row]||rows[0];
   const [left,top,width,height]=annotation.focus||[0,0,1,1];
   const [tx,ty,tw,th]=target;
@@ -39,8 +41,6 @@ export function drawChalkAnnotation(ctx,rows,annotation,language,{deferStrokes=f
       }
     });
   }
-  const label=annotation.label?.[language];
-  if(!label)return strokes;
   // A short leader joins the frame, rather than floating in a fixed margin.
   const tipX=x+w+pad*.5+7,centerY=y+h/2,noteX=tipX+44,cueY=centerY+10;
   ctx.fillStyle=color;ctx.font=`29px ${language==='zh'?'RefugeChinese':'RefugeLatin'}, cursive`;

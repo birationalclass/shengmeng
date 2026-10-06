@@ -1,8 +1,10 @@
+import {equationLines} from './chalk-layout.mjs';
+import {formulaRowsForYe} from './ye-board-enrichment.mjs';
 // Exposition of Huang–Ye, arXiv:2607.23057v1 (CC BY 4.0), in paper order.
 const R=String.raw;
 const page=(source,title,tex,text,titleEn,textEn)=>({source,title,tex,text,en:{source,title:titleEn,text:textEn}});
-export const yeReport=[
- {kind:'cover',source:'报告',title:'格点上的渐近最优 Hardy–Rellich 不等式',author:'叶东',tex:'',text:'与 Xia Huang 合作\narXiv:2607.23057',en:{source:'SEMINAR',title:'Asymptotically sharp Hardy–Rellich inequalities on lattices',author:'Dong Ye',text:'Joint work with Xia Huang\narXiv:2607.23057'}},
+const originalYeReport=[
+ {kind:'cover',source:'报告',title:'格点上的渐近最优 Hardy–Rellich 不等式',author:'叶东',tex:'',text:'与黄侠合作\narXiv:2607.23057',en:{source:'SEMINAR',title:'Asymptotically sharp Hardy–Rellich inequalities on lattices',author:'Dong Ye',text:'Joint work with Xia Huang\narXiv:2607.23057'}},
  page('§ 1','从一维 Hardy 不等式出发',R`\sum_{n\geq1}|u_n-u_{n-1}|^2\geq\frac14\sum_{n\geq1}\frac{|u_n|^2}{n^2}`,
  '先看有限支撑序列，并令 u_0=0。差分能量控制带奇异权的函数大小；高阶版本称为 Rellich 型不等式。',
  'The one-dimensional starting point','Take finitely supported sequences with u_0=0. Difference energy controls a singularly weighted norm; higher-order versions are of Rellich type.'),
@@ -76,3 +78,81 @@ export const yeReport=[
  '下界来自 Fourier 对应。上界还需检查所选环面函数确实来自容许格点函数：支撑在两个相反单位格点的试验函数完成这一步。',
  'Returning to the lattice','Fourier correspondence gives the lower bound. For the upper bound, verify an admissible lattice preimage: a test function supported at two opposite unit sites completes the argument.')
 ];
+
+// Four proof boards support the spoken derivation instead of showing only
+// Proposition 1.4. Original indices remain stable for authored definition cues.
+const proofBoards={
+ 20:[
+  page('§ 3.1 · (3.6)–(3.9)','消去权与坏势的吸收',R`\begin{gathered}h=\rho^{\gamma/2},\quad v=h\varphi,\quad A=\int|\nabla v|^2d\mu,\quad B=\int v^2d\mu\\E=\int\rho^\gamma|\nabla\varphi|^2d\mu=A+\int\frac{\Delta h}{h}v^2d\mu\\W=\max\{-\Delta h/h,0\}\le C_\gamma[(\rho-1)_++d^{-1}]\\\int Wv^2d\mu\le\frac{C_\gamma}{\sqrt d}(A+B),\quad A\ge(1-\delta_d)B\\E\ge(1-\varepsilon_d)A-\varepsilon_dB\ge(1-o_d(1))B\end{gathered}`,
+   '固定正整数 γ，维数充分大。集中、熵与对数 Sobolev 控制坏势；均值误差提供吸收所需的谱隙。',
+   'Removing the weight and absorbing the bad potential','Fix a positive integer γ and take dimension sufficiently large. Concentration, entropy and log-Sobolev control the bad potential; the mean estimate supplies the spectral gap.'),
+  page('§ 3.2 · (1.7)','降权系数与参数的选择',R`\begin{gathered}V=\omega^\gamma,\quad f=\omega^\alpha,\quad F=-\nabla f/f\\E_\gamma=\int\omega^\gamma|\nabla\varphi|^2dx,\quad B_{\gamma-1}=\int\omega^{\gamma-1}\varphi^2dx\\[1-\alpha(1+o_d(1))]E_\gamma\ge-\alpha(\alpha+\gamma-1+d/2)B_{\gamma-1}\\\alpha=-\sqrt d:\quad\frac{-\alpha(\alpha+\gamma-1+d/2)}{1-\alpha(1+o_d(1))}=\frac d2(1+o_d(1))\end{gathered}`,
+   'α≤0，α(α+γ−1)≥0，d≥2(γ−1−α)。固定 γ 时，α=−√d 在充分大的维数满足这些条件。',
+   'The weight-lowering coefficient and parameter choice','Require α≤0, α(α+γ−1)≥0 and d≥2(γ−1−α). For fixed γ, α=−√d satisfies these conditions in sufficiently large dimension.')
+ ],
+ 21:[
+  page('§ 3.4 · Hessian 估计','Hessian 耦合的统一控制',R`\begin{gathered}\nabla^2(\omega^\gamma)=\gamma(\gamma-1)\omega^{\gamma-2}\nabla\omega\otimes\nabla\omega+\gamma\omega^{\gamma-1}\nabla^2\omega\\|\nabla\omega|^2\le\omega,\qquad\|\nabla^2\omega\|_{\rm op}\le\frac12\\\left|\int\langle\nabla^2(\omega^\gamma)\nabla\varphi,\nabla\varphi\rangle dx\right|\le\frac{2\gamma^2-\gamma}{2}\int\omega^{\gamma-1}|\nabla\varphi|^2dx\end{gathered}`,
+   '固定整数 γ≥1。秩一项与对角项分别控制；对角项可以为负，所以估计整个耦合项的绝对值。',
+   'Uniform control of the Hessian coupling','Fix an integer γ≥1. Bound the rank-one and diagonal terms separately. The diagonal term may be negative, so estimate the absolute value of the coupling.'),
+  page('§ 3.4 · (1.9)','二阶降权的主项',R`\begin{gathered}G(t)=t^2+(t+\gamma)(\gamma-1+d/2)+(2\gamma^2-\gamma)/2\\\int\omega^\gamma|\Delta\varphi|^2dx\ge\frac{-G(\alpha)}{1-(\alpha+\gamma)(1+o_d(1))}\int\omega^{\gamma-1}|\nabla\varphi|^2dx\\\alpha=-\sqrt d,\quad G(-\sqrt d)=-\frac12d^{3/2}(1+o_d(1))\\\frac{-G(-\sqrt d)}{1-(\gamma-\sqrt d)(1+o_d(1))}=\frac d2(1+o_d(1))\end{gathered}`,
+   '先用一阶降权建立二阶同权，再吸收不降权项。固定 γ、维数充分大时分母为正。',
+   'The leading second-order weight-lowering term','First-order weight lowering gives the second-order same-weight estimate. Then absorb the same-weight term. The denominator is positive for fixed γ and sufficiently large dimension.')
+ ]
+};
+originalYeReport[19]={...originalYeReport[19],tex:R`\begin{gathered}v=\rho^{\gamma/2}\varphi,\quad\int\varphi d\mu=0,\quad B=\int v^2d\mu\\|\mathbb E_\mu v|^2\le\delta_dB,\qquad\delta_d=\int(1-\rho^{-\gamma/2})^2d\mu\to0\\\mu(\rho\le r)\le(C_0r)^{d/2},\qquad d>2\gamma\\\int|\nabla v|^2d\mu\ge B-|\mathbb E_\mu v|^2\ge(1-\delta_d)B\end{gathered}`,
+ text:'集中估计处理典型区域，小球体积控制原点附近的负幂。新均值只占趋零的比例，因而恢复接近 1 的谱隙。',
+ en:{...originalYeReport[19].en,text:'Concentration controls the typical region; small-ball volume handles negative powers near the origin. The new mean is a vanishing fraction, recovering a spectral gap close to one.'}};
+const spokenYeBoards=originalYeReport.flatMap((p,i)=>{
+ const base={...p,editorialIndex:i,voiceSection:i,voiceParagraphStart:0};
+ const extra=proofBoards[i]?.map((q,j)=>({...q,editorialIndex:1000+i*10+j,voiceSection:i,voiceParagraphStart:i===20?(j===0?0:6):(j===0?3:5)}))||[];
+ return i===20?[...extra,{...base,voiceParagraphStart:10}]:i===21?[base,...extra]:[base];
+});
+
+const briefNotes=[
+ ['有限支撑；原点边界 u_0=0','差分能量控制奇异加权量','Finite support; boundary u_0=0','Difference energy controls the weighted norm'],
+ ['固定 m，令 d→∞','奇异权求和排除原点','Fix m; let d grow','Omit the origin in the weighted sum'],
+ ['e_j：坐标单位向量','相邻差分给出能量','e_j: coordinate unit vectors','Energy from neighbour differences'],
+ ['按奇偶定义 D^m','各阶能量统一记号','Define D^m by parity','One notation for all orders'],
+ ['对全部容许函数取下确界','上界：选函数；下界：统一估计','Infimum over admissible functions','Test functions / uniform estimates'],
+ ['离散：d^m；连续：d^(2m)','只比较高维首项','Discrete d^m / continuous d^(2m)','Leading asymptotics only'],
+ ['固定 m；d→∞','首项系数：2^m','Fix m; let d grow','Leading coefficient: 2^m'],
+ ['格点 → 环面','差分符号：4ω','Lattice to torus','Difference symbol: 4ω'],
+ ['先设 g=u/|n|^(2m)','g(0)=0 ⇒ Ψ 零均值','First set g=u/|n|^(2m)','g(0)=0 gives mean-zero Ψ'],
+ ['每阶差分产生因子 4','分子、分母同时核对','A factor 4 at each order','Check both numerator and denominator'],
+ ['固定整数 k>ℓ≥0','1≤k−ℓ≤γ','Fix integers k>ℓ≥0','1≤k−ℓ≤γ'],
+ ['同权比较 + 逐阶降权','每降一阶：d/2','Same weight / lower the weight','Cost per order: d/2'],
+ ['V≥0；周期分部积分','舍去完整平方','V nonnegative; periodic integration','Drop the complete square'],
+ ['Hessian 耦合必须控制','不能直接舍去','Control the Hessian coupling','It cannot simply be discarded'],
+ ['ρ 的均值：1','微分项带有 1/d','Mean of ρ: one','Derivative terms carry 1/d'],
+ ['各坐标独立','坏区域概率指数衰减','Independent coordinates','Exponential concentration'],
+ ['小概率 ≠ 任意函数的小贡献','熵记录集中代价','Small measure is not small energy','Entropy measures concentration cost'],
+ ['C_LS 与维数无关','坏区域贡献可吸收','C_LS independent of dimension','Absorb the bad-region contribution'],
+ ['新均值误差：δ_d→0','','Mean error: δ_d→0',''],
+ ['同权：1；降权：d/2','误差对测试函数一致','Same weight: one / lower: d/2','Uniform error over test functions'],
+ ['先同权，再降权','奇偶阶使用同一代价','Same weight, then lower it','The same cost for both parities'],
+ ['固定次数迭代','每步降低一阶与一次权','Finitely many steps','Lower order and weight together'],
+ ['零均值试验函数：sin x_1','正弦、余弦只交换奇偶','Test function: sin x_1','Parity swaps sine and cosine'],
+ ['下界：Fourier 对应','上界：两点支撑函数','Lower bound: Fourier transfer','Upper bound: two-point support']
+];
+export const yeReport=spokenYeBoards.map(p=>{
+ if(p.kind)return p;
+ const n=briefNotes[p.editorialIndex-1];
+ const special={
+  '消去权与坏势的吸收':['坏势 W=max{-Δh/h,0}：熵控制','Bad potential W=max{-Δh/h,0}: entropy'],
+  '降权系数与参数的选择':['α=−√d；参数条件在大维数成立','α=−√d; conditions hold for large d'],
+  'Hessian 耦合的统一控制':['固定整数 γ≥1；控制绝对值','Fix an integer γ≥1; bound the modulus'],
+  '二阶降权的主项':['先二阶同权，再吸收不降权项','Same weight first; then absorb']
+ }[p.title];
+ const zh=special?[special[0]]:(n?[n[0],n[1]].filter(Boolean):[]);
+ const en=special?[special[1]]:(n?[n[2],n[3]].filter(Boolean):[]);
+ const formulas=formulaRowsForYe(p);
+ const mathLines=formulas.reduce((n,tex)=>n+(tex.includes(R`\begin{cases}`)?2:1),0);
+ const noteBudget=Math.max(0,5-mathLines);zh.splice(noteBudget);en.splice(noteBudget);
+ const mainLineCount=1+mathLines+zh.length;
+ if(mainLineCount<5||mainLineCount>6)throw new Error('Split or complete the board: '+p.title+' / '+mainLineCount);
+ const notes=zh.map((text,i)=>({text,enText:en[i]}));
+ const boardLines=[];
+ if(p.editorialIndex===1){boardLines.push(notes[0],{tex:formulas[0]},notes[1],...formulas.slice(1).map(tex=>({tex})));}
+ else {const cut=formulas.length>=4?2:1;formulas.forEach((tex,i)=>{boardLines.push({tex});if(i===cut-1&&notes.length)boardLines.push(notes.shift());});boardLines.push(...notes);}
+ return {...p,readingTex:p.tex,tex:R`\begin{gathered}`+formulas.join(R`\\`)+R`\end{gathered}`,readingText:p.text,strictLineCount:true,extraMathLines:mathLines-formulas.length,mainLineCount,formulaAlign:'center',boardLines,text:zh.join('\n'),en:{...p.en,readingText:p.en.text,text:en.join('\n')}};
+});

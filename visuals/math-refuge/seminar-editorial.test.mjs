@@ -30,5 +30,5 @@ test('all consolidated bilingual boards have complete prose and deterministic, b
       }
     }
   }
-  assert.equal(count,122);assert.equal(marked,15);assert.equal(notes,1);
+  assert.equal(count,126);assert.equal(marked,notes,'Every frame must carry a meaningful bilingual explanation');assert(notes>0,'Useful explained definition marks are retained');
 });

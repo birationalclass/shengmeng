@@ -3,7 +3,7 @@
 // MathJax is a build-only dependency; the deployed scene loads no math CDN.
 import fs from 'node:fs/promises';
 import {refineSeminarPage} from './seminar-editorial.js';
-import {organizeBoards} from './board-flow.mjs';
+import {organizeBoards,flowBoard} from './board-flow.mjs';
 import {equationLines} from './chalk-layout.mjs';
 import {chalkSVG} from './chalk-typography.js';
 import {boardDiagrams,diagramSVG} from './chalk-diagrams.mjs';
@@ -31,9 +31,10 @@ const report=km?(await import('./seminar-catalog.js')).KM_REPORT:reportId&&repor
 if(reportId&&reportId!=='meng'&&!report)throw new Error('Unknown report');
 const content=km?km.kmOutline:report?(await import('./report-outlines.mjs')).reportOutlines[reportId]:(await import('./chalk-outline.mjs')).outline;
 delete globalThis.document;
-const rawSections=km?content:[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
+let rawSections=km?content:[...content,{kind:'closing',source:'报告结束',title:'谢谢！',author:'',tex:'',text:'',en:{source:'END',title:'Thank you!',author:'',text:''}}].map((p,i)=>refineSeminarPage(p,reportId||'meng',i));
+if(reportId==='ye')rawSections=rawSections.map(p=>p.kind?p:{...flowBoard([p]),annotation:p.annotation});
 let diagramIndex=0;
-const sections=km?rawSections:organizeBoards(rawSections.map(p=>report||p.kind?p:{...p,diagram:boardDiagrams.get(diagramIndex++)}));
+const sections=km?rawSections:organizeBoards(rawSections.map(p=>report||p.kind?p:{...p,diagram:boardDiagrams.get(diagramIndex++)}),{minimum:reportId==='ye'?content.filter(p=>!p.kind).length:24});
 if(content.filter(p=>!p.kind).length<24)throw new Error('A one-hour report needs at least 24 substantive boards, excluding cover and closing.');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const chunks=(text,n)=>Array.from({length:Math.ceil([...text].length/n)},(_,i)=>[...text].slice(i*n,(i+1)*n).join(''));
@@ -69,7 +70,7 @@ for(const section of sections){
     for(const b of blocks){
       flowLabels.push({text:b.text,enText:b.enText,x:88,y:y+25,size:28});y+=48;
       for(const p of b.parts){
-        const w=p.box[2]*scale,h=p.box[3]*scale,x=112;
+        const w=p.box[2]*scale,h=p.box[3]*scale,x=section.formulaAlign==='center'?(1536-w)/2:112;
         ink.push(p.svg.replace(/<svg[^>]*>/,`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${p.box.join(' ')}">`));
         formulaRows.push([x-2,y-2,w+4,h+4]);y+=h+14;
       }
