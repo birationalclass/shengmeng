@@ -1,6 +1,6 @@
 import {conciseEnglish} from './board-explanations.js?v62-chalk-ink';
 import {wrapBoardText} from './chalk-wrap.js?v62-chalk-ink';
-// Aim for six to eight measured lines, using the full writable height.
+// Choose meaningful semantic lines; do not stretch sparse boards to fill the height.
 export function explainedFlow(page,language,measure,hideHeading=false){
   const paragraphs=(language==='en'&&conciseEnglish.get(page.title))||(language==='en'?page.en.text:page.text).split(/\n\s*\n/);
   const labels=page.flowLabels||[{y:-1,text:page.title,enText:page.en.title}];
@@ -35,17 +35,18 @@ export function explainedFlow(page,language,measure,hideHeading=false){
       }
       const ink=items.reduce((sum,i)=>sum+i.height,0),count=items.length;
       if(ink+Math.max(0,count-1)*(page.annotation?16:6)>available)continue;
-      const totalLines=count+(page.hideHeading||hideHeading?0:1);
-      const linePenalty=totalLines<6?(6-totalLines)*150:totalLines>8?(totalLines-8)*100:0;
+      const totalLines=count+(page.hideHeading||hideHeading?0:1)+(page.extraMathLines||0);
+      if(page.strictLineCount&&(totalLines<5||totalLines>6))continue;
+      const linePenalty=totalLines<5?(5-totalLines)*150:totalLines>6?(totalLines-6)*100:0;
       const shortTails=items.filter(i=>i.text&&i.role==='explanation'&&measure(i.text,size)<size*5).length;
       const score=linePenalty+shortTails*240+Math.abs(size-40)*2+(1328-width)/65+Math.abs(requestedScale-1.15)*12;
       if(!best||score<best.score)best={items,ink,score};
     }
   }
   if(!best)throw new Error('Board needs another page: '+page.title+' ('+language+')');
-  const gap=best.items.length>1?(available-best.ink)/(best.items.length-1):0;let y=start;
+  const gap=best.items.length>1?Math.min(26,(available-best.ink)/(best.items.length-1)):0;let y=start;
   return best.items.map(item=>{
-    const result=item.source?{...item,rect:[112,y,item.width,item.height]}:{...item,x:88,y:y+item.ascent+4};
+    const result=item.source?{...item,rect:[page.formulaAlign==='center'?(1536-item.width)/2:112,y,item.width,item.height]}:{...item,x:88,y:y+item.ascent+4};
     y+=item.height+gap;return result;
   });
 }

@@ -6,9 +6,9 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 from fontTools import subset
 root = Path(__file__).resolve().parent
-pages = [p for path in [root / 'assets/chalk/pages.json', *sorted((root / 'assets/chalk').glob('*/pages.json'))] for p in json.loads(path.read_text())['pages']]
+pages = [p for path in [root / 'assets/chalk/pages.json', *sorted((root / 'assets/chalk').glob('*/pages.json'))] for p in json.loads(path.read_text(encoding='utf8'))['pages']]
 text = ''.join(p['source'] + p['title'] + p.get('author', '') + p['text'] for p in pages) + ' …，。；：（）！？、'
-text += (root / 'seminar-screen.js').read_text()
+text += (root / 'seminar-screen.js').read_text(encoding='utf8')
 text += ''.join(b.get('text', '') for p in pages for b in p.get('blocks', []))
 chars = set(text)
 source = TTFont(sys.argv[1])
@@ -30,5 +30,5 @@ assert all(ord(c) in font.getBestCmap() for c in chars if '\u3400' <= c <= '\u9f
     'source': 'https://github.com/google/fonts/tree/main/ofl/mashanzheng',
     'characters': ''.join(sorted(chars)),
     'sha256': hashlib.sha256(target.read_bytes()).hexdigest()
-}, ensure_ascii=False, indent=2) + '\n')
+}, ensure_ascii=False, indent=2) + '\n', encoding='utf8')
 print('Verified Chinese glyph coverage; font bytes:', target.stat().st_size)

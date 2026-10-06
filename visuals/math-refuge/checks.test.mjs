@@ -52,7 +52,7 @@ test('chalk skips blank trailing columns and lifts across inter-word gaps',()=>{
 
 test('all consolidated handwritten captions switch languages without changing formulas',async()=>{
   const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/pages.json',import.meta.url),'utf8'));
-  const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*25};}};
+  const ctx={clearRect(){},fillText(){},drawImage(){},chalkStroke(){},measureText(t){return {width:[...t].length*25};}};
   for(const [i,p] of pages.entries())for(const lang of ['zh','en']){
     const copy=chalkCopy(p,lang);assert(copy.title&&(copy.text||p.kind==='closing'));
     if(lang==='en')assert(!/[\u3400-\u9fff]/.test(copy.title+copy.text+copy.source));
@@ -1170,7 +1170,7 @@ test('the final thanks board remains complete without automatically restarting',
 
 
 test('all report reveal rectangles isolate later lines, including inline scripts',async()=>{
-  const ctx={clearRect(){},fillText(){},drawImage(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
+  const ctx={clearRect(){},fillText(){},drawImage(){},chalkStroke(){},measureText(t){return {width:[...t].length*parseFloat(this.font)*.65};}};
   for(const file of ['pages.json','hu/pages.json','ye/pages.json','duan/pages.json']){
     const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/'+file,import.meta.url),'utf8'));
     for(const page of pages)for(const lang of ['zh','en']){

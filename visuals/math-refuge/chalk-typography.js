@@ -13,24 +13,26 @@ function printedTest(text){
   return /[A-Za-z].*[()[\]{}]|[()[\]{}].*[A-Za-z]/.test(core);
 }
 const escape=text=>text.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-// Parse simple TeX scripts in prose once for canvas, HTML and SVG output.
+// Parse scripts and simple Unicode radicals once for canvas, HTML and SVG.
+// Complex or nested expressions belong in the MathJax formula layer.
 // Keep prose classification separate so ordinary English stays handwritten.
 export function chalkInlineRuns(text){
   return chalkRuns(text).flatMap(run=>{
     if(!run.math)return [run];
     const parts=[];let at=0;
-    for(const match of run.text.matchAll(/([_^])(?:\{([^{}]+)\}|([A-Za-z0-9]))/g)){
+    for(const match of run.text.matchAll(/([_^])(?:\{([^{}]+)\}|([A-Za-z0-9]))|√(?:\{([^{}]+)\}|\(([^()]+)\)|([\p{L}\p{N}]))/gu)){
       if(match.index>at)parts.push({text:run.text.slice(at,match.index),math:true});
-      parts.push({text:match[2]||match[3],math:true,script:match[1]==='_'?'sub':'sup'});at=match.index+match[0].length;
+      parts.push(match[1]?{text:match[2]||match[3],math:true,script:match[1]==='_'?'sub':'sup'}:{text:match[4]||match[5]||match[6],math:true,radical:true});at=match.index+match[0].length;
     }
     if(at<run.text.length)parts.push({text:run.text.slice(at),math:true});return parts;
   });
 }
 export function chalkHTML(text){return chalkInlineRuns(text).map(run=>{
-  const content=escape(run.text),body=run.script?`<${run.script}>${content}</${run.script}>`:content;
+  const content=escape(run.text);if(run.radical)return '<span class="chalk-math chalk-root">√<span style="border-top:.065em solid currentColor;padding:.02em .06em 0 .02em;display:inline-block">'+content+'</span></span>';const body=run.script?`<${run.script}>${content}</${run.script}>`:content;
   return run.math?`<span class="chalk-math">${body}</span>`:body;
 }).join('');}
 export function chalkSVG(text,{heading=false}={}){return chalkInlineRuns(text).map(run=>{
+  if(run.radical)return '<tspan font-family="Times New Roman, serif">√<tspan text-decoration="overline">'+escape(run.text)+'</tspan></tspan>';
   const attrs=run.script?` font-size="70%" baseline-shift="${run.script}"`:'';
   return run.math&&!(heading&&/^\d+(?:\.\d+)*[.)]?$/.test(run.text))?`<tspan font-family="Times New Roman, serif"${attrs}>${escape(run.text)}</tspan>`:escape(run.text);
 }).join('');}

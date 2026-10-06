@@ -62,7 +62,7 @@ export function refineSeminarPage(page,report,index){
   const result={...page,editorialIndex:page.editorialIndex??index,text:clean(page.text),en:{...page.en,text:clean(page.en?.text)}};
   delete result.annotation;
   const cue=!page.kind&&cues[report]?.[result.editorialIndex];
-  if(cue){
+  if(cue?.label?.zh?.trim()&&cue?.label?.en?.trim()){
     if(!page.tex.includes(cue.term))throw new Error(`Recheck definition focus: ${report}/${index}`);
     result.annotation={mark:'c',...cue};
   }
