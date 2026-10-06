@@ -1,0 +1,24 @@
+/* Identical shared materials and spatial layout; only project-specific status. */
+.atlas-statusbar .completion-status{color:var(--gray)}
+.proof-world-target[data-target-status=pending] .theorem-target-status{color:var(--gray)}
+.proof-world-mode .proof-world-target[data-target-status=pending] .theorem-target-status::before{display:none}
+.proof-editor .proof-world-path{max-width:none}
+.source-code code{overflow-wrap:anywhere}
+.evidence code{overflow-wrap:anywhere}
+.atlas-statusbar [data-view="3d"]{display:none!important}
+
+.proof-editor .completion-status{color:#27734d}
+.proof-editor .completion-status::before{content:"✓";color:#27734d}
+
+.proof-editor .atlas-statusbar .completion-status{color:#27734d;background:#27734d10}
+.proof-editor .atlas-statusbar .completion-status::before{content:"✓"}
+
+.proof-editor .completion-status{color:#27734d}
+.proof-editor .completion-status::before{content:"✓";color:#27734d}
+
+/* Keep the independent proof inspector readable on narrow viewports. */
+@media(max-width:760px){
+ .proof-editor main,.proof-editor .workspace,.proof-editor .proof-world-bar{min-width:0!important;width:100%!important;max-width:100vw;box-sizing:border-box}
+ .proof-editor .proof-world-path{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .proof-world-mode.world-inspector-open .detail{inset:42px 6px 12px!important;width:auto!important;max-width:none!important;padding:16px}
+}

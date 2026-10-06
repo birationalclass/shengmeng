@@ -1,0 +1,12 @@
+import {english} from './i18n.js?v=20261006-linear-1';
+import {statementPanel,graphStatement,escapeHTML} from './theorem-statements.js?v=20261006-linear-1';
+export function installTheoremTarget(defaultNode){return {createCard(view){
+ let node=defaultNode,expanded=false;
+ const card=document.createElement('section');card.id='theoremTarget-'+view;card.className='theorem-target-card';card.dataset.theoremCard=view;card.style.setProperty('--theorem-unit','1');
+ function render(){if(!node)return;const checked=['done','conditional'].includes(node.status);card.dataset.targetNode=node.id;card.dataset.targetStatus=node.status;card.dataset.expanded=String(expanded);
+ card.innerHTML=`<header class="theorem-target-heading"><div class="theorem-target-title"><span class="theorem-target-label">${english?'MAIN TARGET OF THIS WORLD':'当前世界的主目标'}</span><h2>${escapeHTML(node.title)}</h2></div><span class="theorem-target-status">${checked?'✓':'○'} ${checked?(english?'Lean verified':'Lean 已验证'):(english?'Unfinished':'尚未完成')}</span><nav class="theorem-target-actions"><button class="button small" data-select="${node.id}">${english?'Lean & proof':'Lean 与证明'}</button><button class="button small theorem-target-toggle" aria-expanded="${expanded}">${expanded?(english?'Collapse':'收起'):(english?'Expand':'展开')}</button></nav></header><div class="theorem-target-summary node-proposition" ${expanded?'hidden':''}>${graphStatement(node,english)}</div><div class="theorem-target-body" ${expanded?'':'hidden'}>${statementPanel(node,english)}</div><span class="theorem-port" data-side="left" aria-hidden="true"></span>`;
+ card.querySelector('.theorem-target-toggle').onclick=()=>{expanded=!expanded;render();card.dispatchEvent(new Event('theoremcardchange'));};
+ }
+ render();window.addEventListener('languagechange',()=>{render();card.dispatchEvent(new Event('theoremcardchange'));});
+ return {element:card,setTarget(n){if(n?.id!==node?.id)expanded=false;node=n;render();card.dispatchEvent(new Event('theoremcardchange'));},layout(layout,factor=1){const p=[...layout.values()];const right=Math.max(0,...p.map(p=>p.x+300*factor)),top=Math.min(0,...p.map(p=>p.y)),bottom=Math.max(300,...p.map(p=>p.y+p.h)),h=card.offsetHeight/(parseFloat(card.style.getPropertyValue('--theorem-unit'))||1)*factor;return {x:right+70*factor,y:(top+bottom-h)/2,w:420*factor,h};},place(x,y,unit,z=3){card.style.setProperty('--theorem-unit',String(unit));card.style.left=Math.round(x)+'px';card.style.top=Math.round(y)+'px';card.style.zIndex=String(z);}};
+ }};}

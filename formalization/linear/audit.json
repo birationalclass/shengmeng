@@ -1461,5 +1461,1456 @@
   "verifiedTheoremCount": 69,
   "definitionCount": 25,
   "auditExitCode": 0,
-  "scope": "Complex projective-point target defined; geometric Linearity Theorem NOT yet proved. Checked coordinate constructions, iteration, finite-point linear algebra, final arithmetic, and previous Jacobian helpers."
+  "scope": "Complex projective-point target defined; geometric Linearity Theorem NOT yet proved. Checked coordinate constructions, iteration, finite-point linear algebra, final arithmetic, and previous Jacobian helpers.",
+  "targetVerified": false,
+  "main": {
+    "id": "lemma",
+    "titles": [
+      "Linearity Theorem",
+      "Linearity Theorem"
+    ],
+    "title": "Linearity Theorem",
+    "status": "pending",
+    "kind": "goal",
+    "file": "Linear/Projective.lean",
+    "decl": "LinearStudy.LinearityTheoremGoal",
+    "declaration": "LinearStudy.LinearityTheoremGoal",
+    "deps": [
+      "coordinates",
+      "iteration",
+      "jacobian",
+      "relation",
+      "lifting",
+      "intersection"
+    ],
+    "setup": [
+      "<p>设 f:ℙⁿ→ℙⁿ 为满射自态射，代数次数 q&gt;1；V⊆ℙⁿ 为整闭子簇，且 f⁻¹(V)=V（集合意义）。当前 Lean 目标用复数域上的齐次素理想、无基点齐次坐标组及真实 projective points 表述。</p>",
+      "<p>Let f:ℙⁿ→ℙⁿ be a surjective endomorphism of algebraic degree q&gt;1. Let V⊆ℙⁿ be an integral closed subvariety with f⁻¹(V)=V set-theoretically. The current Lean target uses homogeneous prime ideals over ℂ, base-point-free coordinate forms and actual projective points.</p>"
+    ],
+    "result": [
+      "<p>则 V 是线性子空间。<strong>完整定理尚未证明。</strong>坐标目标与概形原文的完整比较、任意特征零代数闭域的推广也尚未验证。</p>",
+      "<p>Then V is a linear subspace. <strong>The full theorem remains unproved.</strong> Full comparison with the Scheme statement and extension to arbitrary algebraically closed characteristic-zero fields are also unverified.</p>"
+    ],
+    "compactSetup": [
+      "满射 f，q>1；整闭 V，f⁻¹(V)=V。",
+      "Surjective f, q>1; integral closed V, f⁻¹(V)=V."
+    ],
+    "compactResult": [
+      "V 是线性子空间 · 目标待证。",
+      "V is a linear subspace · target unproved."
+    ],
+    "scope": [
+      "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+      "This geometric step is not yet formalized; compiling a target definition is not a proof."
+    ],
+    "formalType": "def LinearStudy.LinearityTheoremGoal : Prop :=\n∀ (n : ℕ) (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n),\n  1 < f.degree → Function.Surjective f.onPoints → f.onPoints ⁻¹' V.zeroSet = V.zeroSet → ∃ W, ↑W = V.zeroSet",
+    "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+    "lines": 216,
+    "richStatement": true,
+    "x": 30,
+    "y": 60
+  },
+  "nodes": [
+    {
+      "id": "coordinates",
+      "titles": [
+        "射影坐标与齐次零点集",
+        "Projective coordinates and zero sets"
+      ],
+      "title": "射影坐标与齐次零点集",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+      "declaration": "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+      "deps": [
+        "scaling",
+        "composition",
+        "zeros",
+        "linear-equations"
+      ],
+      "setup": [
+        "<p>齐次素理想 I；v∈ℂⁿ⁺¹，v≠0；V(I) 为所定义的射影零点集。</p>",
+        "<p>A homogeneous prime ideal I and a nonzero v∈ℂⁿ⁺¹; V(I) is its projective zero set.</p>"
+      ],
+      "result": [
+        "<p>[v]∈V(I) 当且仅当每个 P∈I 都满足 P(v)=0。代表选择不改变零点集；使用 mathlib 的射影点。</p>",
+        "<p>[v]∈V(I) iff P(v)=0 for every P∈I. The zero set is independent of representatives and uses mathlib projective points.</p>"
+      ],
+      "compactSetup": [
+        "齐次素理想与非零坐标代表。",
+        "Homogeneous prime ideal and nonzero representative."
+      ],
+      "compactResult": [
+        "零点集与代表无关。",
+        "The zero set is representative-independent."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :\n  Projectivization.mk ℂ v hv ∈ V.zeroSet ↔ ∀ P ∈ V.ideal.toIdeal, (MvPolynomial.eval v) P = 0",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "scaling",
+      "titles": [
+        "齐次求值的缩放公式",
+        "Homogeneous evaluation scaling"
+      ],
+      "title": "齐次求值的缩放公式",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.homogeneous_eval_smul",
+      "declaration": "LinearStudy.homogeneous_eval_smul",
+      "deps": [],
+      "setup": [
+        "<p>P 为 m 次齐次多项式，a 为标量，v 为坐标向量；任意交换半环。</p>",
+        "<p>P is homogeneous of degree m, a is a scalar, and v a coordinate vector over a commutative semiring.</p>"
+      ],
+      "result": [
+        "<p>P(av)=aᵐP(v)。证明按齐次单项式展开。</p>",
+        "<p>P(av)=aᵐP(v), proved by homogeneous monomial expansion.</p>"
+      ],
+      "compactSetup": [
+        "P 为 m 次齐次多项式，a 为标量，v 为坐标向量；任意交换半环。",
+        "P is homogeneous of degree m, a is a scalar, and v a coordinate vector over a commutative semiring."
+      ],
+      "compactResult": [
+        "P(av)=aᵐP(v)。证明按齐次单项式展开。",
+        "P(av)=aᵐP(v), proved by homogeneous monomial expansion."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneous_eval_smul.{u_1, u_2} {σ : Type u_1} {K : Type u_2} [CommSemiring K] {P : MvPolynomial σ K}\n  {m : ℕ} (hP : P.IsHomogeneous m) (a : K) (v : σ → K) : (MvPolynomial.eval (a • v)) P = a ^ m * (MvPolynomial.eval v) P",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "composition",
+      "titles": [
+        "齐次坐标映射的复合",
+        "Composition of homogeneous maps"
+      ],
+      "title": "齐次坐标映射的复合",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.HomogeneousEndomorphism.comp_onPoints",
+      "declaration": "LinearStudy.HomogeneousEndomorphism.comp_onPoints",
+      "deps": [],
+      "setup": [
+        "<p>无基点齐次坐标组 f 与 g，次数分别为 q₁、q₂。</p>",
+        "<p>Base-point-free homogeneous coordinate tuples f and g of degrees q₁ and q₂.</p>"
+      ],
+      "result": [
+        "<p>替换多项式得到 f∘g，次数 q₂q₁；其射影点映射确为 f 与 g 的复合。这里不声称已证明几何纤维次数。</p>",
+        "<p>Polynomial substitution constructs f∘g of degree q₂q₁; its projective-point map is the composition. Geometric fiber degree is not asserted.</p>"
+      ],
+      "compactSetup": [
+        "无基点齐次坐标组 f 与 g，次数分别为 q₁、q₂。",
+        "Base-point-free homogeneous coordinate tuples f and g of degrees q₁ and q₂."
+      ],
+      "compactResult": [
+        "替换多项式得到 f∘g，次数 q₂q₁；其射影点映射确为 f 与 g 的复合。这里不声称已证明几何纤维次数。",
+        "Polynomial substitution constructs f∘g of degree q₂q₁; its projective-point map is the composition. Geometric fiber degree is not asserted."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.HomogeneousEndomorphism.comp_onPoints {n : ℕ} (f g : LinearStudy.HomogeneousEndomorphism n) :\n  (f.comp g).onPoints = f.onPoints ∘ g.onPoints",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "zeros",
+      "titles": [
+        "齐次理想的缩放不变性",
+        "Scaling invariance of homogeneous ideals"
+      ],
+      "title": "齐次理想的缩放不变性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.homogeneous_ideal_vanish_unit_smul_iff",
+      "declaration": "LinearStudy.homogeneous_ideal_vanish_unit_smul_iff",
+      "deps": [],
+      "setup": [
+        "<p>I 为齐次理想，a∈ℂ×，v 为坐标向量。</p>",
+        "<p>I is a homogeneous ideal, a∈ℂ×, and v a coordinate vector.</p>"
+      ],
+      "result": [
+        "<p>I 在 av 处消失 ⇔ I 在 v 处消失；使用全部齐次分量。</p>",
+        "<p>I vanishes at av iff it vanishes at v, using the complete homogeneous decomposition.</p>"
+      ],
+      "compactSetup": [
+        "I 为齐次理想，a∈ℂ×，v 为坐标向量。",
+        "I is a homogeneous ideal, a∈ℂ×, and v a coordinate vector."
+      ],
+      "compactResult": [
+        "I 在 av 处消失 ⇔ I 在 v 处消失；使用全部齐次分量。",
+        "I vanishes at av iff it vanishes at v, using the complete homogeneous decomposition."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.homogeneous_ideal_vanish_unit_smul_iff {n : ℕ}\n  (I : HomogeneousIdeal (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) ℂ)) (v : LinearStudy.CoordinateVector n)\n  (a : ℂˣ) : (∀ P ∈ I.toIdeal, (MvPolynomial.eval (a • v)) P = 0) ↔ ∀ P ∈ I.toIdeal, (MvPolynomial.eval v) P = 0",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "iteration",
+      "titles": [
+        "迭代与全不变性",
+        "Iteration and total invariance"
+      ],
+      "title": "迭代与全不变性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+      "declaration": "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance",
+      "deps": [
+        "iterate-degree",
+        "set-iterate",
+        "restriction"
+      ],
+      "setup": [
+        "<p>f 为无基点齐次坐标映射，V 为射影点集，f⁻¹(V)=V。</p>",
+        "<p>f is a base-point-free homogeneous map and V a projective point set with f⁻¹(V)=V.</p>"
+      ],
+      "result": [
+        "<p>所有 k 次迭代仍满足 (fᵏ)⁻¹(V)=V。迭代坐标组的次数为 qᵏ；每次迭代的辅助点集须重新选择。</p>",
+        "<p>Every iterate satisfies (fᵏ)⁻¹(V)=V. Its coordinate degree is qᵏ; auxiliary point sets must be chosen again for each iterate.</p>"
+      ],
+      "compactSetup": [
+        "f⁻¹(V)=V；k 为任意非负整数。",
+        "f⁻¹(V)=V; any nonnegative k."
+      ],
+      "compactResult": [
+        "迭代保持全不变性。",
+        "Total invariance survives iteration."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : Set (LinearStudy.ProjectivePoint n)) (hV : f.onPoints ⁻¹' V = V) (k : ℕ) : (f.iterate k).onPoints ⁻¹' V = V",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "iterate-degree",
+      "titles": [
+        "迭代的坐标次数",
+        "Coordinate degree of iterates"
+      ],
+      "title": "迭代的坐标次数",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Projective.lean",
+      "decl": "LinearStudy.HomogeneousEndomorphism.iterate_degree",
+      "declaration": "LinearStudy.HomogeneousEndomorphism.iterate_degree",
+      "deps": [],
+      "setup": [
+        "<p>f 的齐次坐标次数为 q，k≥0。</p>",
+        "<p>f has homogeneous coordinate degree q, and k≥0.</p>"
+      ],
+      "result": [
+        "<p>fᵏ 的坐标次数等于 qᵏ。</p>",
+        "<p>The coordinate degree of fᵏ is qᵏ.</p>"
+      ],
+      "compactSetup": [
+        "f 的齐次坐标次数为 q，k≥0。",
+        "f has homogeneous coordinate degree q, and k≥0."
+      ],
+      "compactResult": [
+        "fᵏ 的坐标次数等于 qᵏ。",
+        "The coordinate degree of fᵏ is qᵏ."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.HomogeneousEndomorphism.iterate_degree {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n) (k : ℕ) :\n  (f.iterate k).degree = f.degree ^ k",
+      "sha256": "5cbf99f5d4b2c88bf2aa70adb8c376d59a3779b5eba94386dcf273c45ec52057",
+      "lines": 216,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "set-iterate",
+      "titles": [
+        "集合层的迭代不变性",
+        "Set-theoretic iterate invariance"
+      ],
+      "title": "集合层的迭代不变性",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Iteration.lean",
+      "decl": "LinearStudy.total_invariance_iterate",
+      "declaration": "LinearStudy.total_invariance_iterate",
+      "deps": [],
+      "setup": [
+        "<p>任意函数 f:X→X、集合 V⊆X，f⁻¹(V)=V。</p>",
+        "<p>Any function f:X→X and subset V⊆X with f⁻¹(V)=V.</p>"
+      ],
+      "result": [
+        "<p>(fᵏ)⁻¹(V)=V；无需几何假设。</p>",
+        "<p>(fᵏ)⁻¹(V)=V; no geometric hypotheses are needed.</p>"
+      ],
+      "compactSetup": [
+        "任意函数 f:X→X、集合 V⊆X，f⁻¹(V)=V。",
+        "Any function f:X→X and subset V⊆X with f⁻¹(V)=V."
+      ],
+      "compactResult": [
+        "(fᵏ)⁻¹(V)=V；无需几何假设。",
+        "(fᵏ)⁻¹(V)=V; no geometric hypotheses are needed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.total_invariance_iterate.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (h : f ⁻¹' V = V) (k : ℕ) :\n  f^[k] ⁻¹' V = V",
+      "sha256": "26a45a0a1e4750003bc6f5dc66968f4888d1cf7e100e8fb0de31ed63120ab0fb",
+      "lines": 44,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "restriction",
+      "titles": [
+        "不变子集上限制映射满射",
+        "Surjectivity on the invariant subset"
+      ],
+      "title": "不变子集上限制映射满射",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Iteration.lean",
+      "decl": "LinearStudy.invariant_restriction_surjective",
+      "declaration": "LinearStudy.invariant_restriction_surjective",
+      "deps": [],
+      "setup": [
+        "<p>f 满射且 f⁻¹(V)=V。</p>",
+        "<p>f is surjective and f⁻¹(V)=V.</p>"
+      ],
+      "result": [
+        "<p>构造 f|V:V→V，并证明它满射。</p>",
+        "<p>Construct f|V:V→V and prove it is surjective.</p>"
+      ],
+      "compactSetup": [
+        "f 满射且 f⁻¹(V)=V。",
+        "f is surjective and f⁻¹(V)=V."
+      ],
+      "compactResult": [
+        "构造 f|V:V→V，并证明它满射。",
+        "Construct f|V:V→V and prove it is surjective."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.invariant_restriction_surjective.{u_1} {X : Type u_1} (f : X → X) (V : Set X) (hf : Function.Surjective f)\n  (h : f ⁻¹' V = V) : Function.Surjective (LinearStudy.restrictInvariant f V h)",
+      "sha256": "26a45a0a1e4750003bc6f5dc66968f4888d1cf7e100e8fb0de31ed63120ab0fb",
+      "lines": 44,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-reduction",
+      "titles": [
+        "约化控制乘法作用",
+        "Reduction controls multiplication"
+      ],
+      "title": "约化控制乘法作用",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Reduction.lean",
+      "decl": "LinearStudy.multiplication_factors_through_reduction",
+      "declaration": "LinearStudy.multiplication_factors_through_reduction",
+      "deps": [],
+      "setup": [
+        "<p>设 B、A 为交换环，A 为 B-代数，q:A→B 为 B-代数同态且 ker(q)=N。若 Nx=0，则 a∈A 对 x 的乘法作用只依赖 q(a)。</p>",
+        "<p>Let B and A be commutative rings, and A a B-algebra. Let q:A→B be a B-algebra map whose kernel is the nilradical N. If Nx=0, then multiplication by a∈A on x only depends on q(a).</p>"
+      ],
+      "result": [
+        "<p>Ann(N) 上的作用经 A/N 因子化。</p>",
+        "<p>The action on Ann(N) factors through A/N.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "Ann(N) 上的作用经 A/N 因子化。",
+        "The action on Ann(N) factors through A/N."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.multiplication_factors_through_reduction.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] (q : A →ₐ[B] B) (hq : ∀ (a : A), q a = 0 ↔ a ∈ nilradical A) {x : A}\n  (hx : LinearStudy.Annihilates (nilradical A) x) (a : A) : a * x = (algebraMap B A) (q a) * x",
+      "sha256": "e807e698c32362248356bf217d239c5ee378b622e6f7a933ab89dbdaac538716",
+      "lines": 57,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-pairing",
+      "titles": [
+        "闭纤维 Gorenstein 输入",
+        "Closed-fiber Gorenstein input"
+      ],
+      "title": "闭纤维 Gorenstein 输入",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/PairingMatrix.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [],
+      "setup": [
+        "<p>对有限平坦完全交，构造有限 B-基及 B-线性泛函 ℓ，使乘法 Gram 矩阵模 m_B 后非退化。尚待形式化的输入是 Artin 完全交纤维的 Gorenstein 性质及其泛函的提升。</p>",
+        "<p>For the finite flat complete intersection, construct a finite B-basis and a B-linear functional ℓ whose multiplication Gram matrix is nondegenerate modulo m_B. The remaining geometric-algebraic input is the Gorenstein property of the Artinian complete-intersection fiber and lifting its functional.</p>"
+      ],
+      "result": [
+        "<p>构造约化 Gram 矩阵非退化的泛函。</p>",
+        "<p>Produce a functional with a nondegenerate reduced Gram matrix.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "构造约化 Gram 矩阵非退化的泛函。",
+        "Produce a functional with a nondegenerate reduced Gram matrix."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "9959afacc12cbe9aeb36e5eb448f03591f03ed571db5578d6777785f2c916dd4",
+      "lines": 70,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-jacobian",
+      "titles": [
+        "识别 Jacobian",
+        "Identify the Jacobian"
+      ],
+      "title": "识别 Jacobian",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Target.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [],
+      "setup": [
+        "<p>Δ 是 H 的形式偏导矩阵的实际行列式，并非从 Ann(N) 任意选取的元素。泛纤维 Scheja–Storch 定理及此行列式的非零性尚未完成；一般的本原生成元蕴含已在独立卡片中验证。</p>",
+        "<p>Δ is the actual determinant of the formal partial derivatives of H. It is not an arbitrary element chosen from Ann(N). The generic-fiber Scheja–Storch theorem and nonvanishing of this determinant remain open. The general primitive-generator implication is checked in a separate card.</p>"
+      ],
+      "result": [
+        "<p>证明指定行列式湮灭 N，且是本原生成元。</p>",
+        "<p>Prove that the specified determinant annihilates N and is a primitive generator.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "证明指定行列式湮灭 N，且是本原生成元。",
+        "Prove that the specified determinant annihilates N and is a primitive generator."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "783f47d2fe122fecf183b2d737b5e5a90b536ebd1803feed4bee0fe249a7d278",
+      "lines": 62,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-duality",
+      "titles": [
+        "Ann(N) 的标量生成元",
+        "A scalar generator of Ann(N)"
+      ],
+      "title": "Ann(N) 的标量生成元",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Duality.lean",
+      "decl": "LinearStudy.annihilator_iff_scalar_multiple",
+      "declaration": "LinearStudy.annihilator_iff_scalar_multiple",
+      "deps": [
+        "local-reduction",
+        "local-matrix"
+      ],
+      "setup": [
+        "<p>给定 q:A→B 及显式完美乘法配对 Ψ，定义 η=Ψ⁻¹(q)。则 ker(q)η=0，且湮灭 ker(q) 的每个元素均为 η 的 B-标量倍。要得到原稿定理，仍须配对存在性及 Jacobian 识别。</p>",
+        "<p>Given q:A→B and an explicit perfect multiplication pairing Ψ, define η=Ψ⁻¹(q). Then ker(q)η=0 and every element annihilating ker(q) is a B-scalar multiple of η. The pairing-existence and Jacobian-identification steps are still required for the manuscript theorem.</p>"
+      ],
+      "result": [
+        "<p>给定完美乘法配对后验证的蕴含。</p>",
+        "<p>Verified implication once a perfect multiplication pairing is supplied.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "给定完美乘法配对后验证的蕴含。",
+        "Verified implication once a perfect multiplication pairing is supplied."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.annihilator_iff_scalar_multiple.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (x : A) :\n  LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ b, x = b • LinearStudy.dualGenerator q p",
+      "sha256": "df43565fd13e966c3decd2c5052f4aef4a18be9e319a61006257a3e100256cd3",
+      "lines": 114,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-parameters",
+      "titles": [
+        "改变参数提升",
+        "Change the parameter lifts"
+      ],
+      "title": "改变参数提升",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Target.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [
+        "local-matrix",
+        "local-jacobian",
+        "local-primitive"
+      ],
+      "setup": [
+        "<p>对于约化后形成参数系的任意 τᵢ，构造 Tᵢ↦τᵢ 的 B′-代数结构，证明 B′ 上有限自由，再得到 B′Δ↪A 的分裂单射。这些桥接尚待 Lean 证明。</p>",
+        "<p>For arbitrary τᵢ whose reduced images form parameters, construct the B′-algebra structure Tᵢ↦τᵢ, prove finite freeness over B′, and obtain a split inclusion B′Δ↪A. These bridges are not yet proved in Lean.</p>"
+      ],
+      "result": [
+        "<p>在新的参数环 B′ 上构造同一对偶性。</p>",
+        "<p>Construct the same duality over the new parameter ring B′.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "在新的参数环 B′ 上构造同一对偶性。",
+        "Construct the same duality over the new parameter ring B′."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "783f47d2fe122fecf183b2d737b5e5a90b536ebd1803feed4bee0fe249a7d278",
+      "lines": 62,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-quotient",
+      "titles": [
+        "取商后仍非零",
+        "Nonzero after quotienting"
+      ],
+      "title": "取商后仍非零",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Duality.lean",
+      "decl": "LinearStudy.dualGenerator_quotient_nonzero",
+      "declaration": "LinearStudy.dualGenerator_quotient_nonzero",
+      "deps": [
+        "local-duality"
+      ],
+      "setup": [
+        "<p>给定配对、J⊂A 及真理想 m⊂B，若 ℓ(J)⊂m，则 η 在 A/J 的像非零。这是一般条件式定理；应用于任意参数提升及指定 Δ 仍需前述未完成桥接。</p>",
+        "<p>Given the pairing, an ideal J⊂A and a proper ideal m⊂B such that ℓ(J)⊂m, the image of η in A/J is nonzero. This is a general conditional theorem. Applying it to arbitrary parameter lifts and the specified Δ requires the preceding open bridges.</p>"
+      ],
+      "result": [
+        "<p>线性左逆保证对偶生成元在满足条件的商中仍非零。</p>",
+        "<p>A linear retraction proves that the dual generator survives an admissible quotient.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "线性左逆保证对偶生成元在满足条件的商中仍非零。",
+        "A linear retraction proves that the dual generator survives an admissible quotient."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.dualGenerator_quotient_nonzero.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (J : Ideal A) (m : Ideal B) (hm : 1 ∉ m)\n  (hJ : ∀ a ∈ J, p.functional a ∈ m) : (Ideal.Quotient.mk J) (LinearStudy.dualGenerator q p) ≠ 0",
+      "sha256": "df43565fd13e966c3decd2c5052f4aef4a18be9e319a61006257a3e100256cd3",
+      "lines": 114,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-primitive",
+      "titles": [
+        "本原元素生成湮灭子",
+        "A primitive element generates"
+      ],
+      "title": "本原元素生成湮灭子",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Primitive.lean",
+      "decl": "LinearStudy.primitive_annihilator_generates",
+      "declaration": "LinearStudy.primitive_annihilator_generates",
+      "deps": [
+        "local-duality",
+        "local-jacobian",
+        "local-generic"
+      ],
+      "setup": [
+        "<p>给定局部底环 B 上的完美配对，假设 δ 湮灭 ker(q)，且 δ 不属于 m_B A。则湮灭 ker(q) 的每个元素都是 δ 的 B-标量倍。这验证了系数步骤；δ 的两个性质仍作为显式假设。</p>",
+        "<p>Given the perfect pairing over a local base B, suppose δ annihilates ker(q) and does not belong to m_B A. Then every element annihilating ker(q) is a B-scalar multiple of δ. This proves the coefficient step, with the two properties of δ supplied explicitly.</p>"
+      ],
+      "result": [
+        "<p>局部环系数论证已验证；Jacobian 的本原性待证。</p>",
+        "<p>The local-ring coefficient argument is checked; Jacobian primitivity remains open.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "局部环系数论证已验证；Jacobian 的本原性待证。",
+        "The local-ring coefficient argument is checked; Jacobian primitivity remains open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.primitive_annihilator_generates.{u_1, u_2} {B : Type u_1} {A : Type u_2} [CommRing B] [CommRing A]\n  [Algebra B A] [IsLocalRing B] (q : A →ₐ[B] B) (p : LinearStudy.PerfectMultiplicationPairing) (delta : A)\n  (hd : LinearStudy.Annihilates (RingHom.ker q.toRingHom) delta) (hprimitive : delta ∉ IsLocalRing.maximalIdeal B • ⊤)\n  (x : A) : LinearStudy.Annihilates (RingHom.ker q.toRingHom) x ↔ ∃ b, x = b • delta",
+      "sha256": "bebde5d16dcb645d3da2de027b731cc67e49e61f898a5d47e4297e94bfedefa9",
+      "lines": 80,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-doublepoint",
+      "titles": [
+        "真正的二次 Jacobian",
+        "The actual quadratic Jacobian"
+      ],
+      "title": "真正的二次 Jacobian",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/FirstJet.lean",
+      "decl": "LinearStudy.quadratic_powerSeries_jacobian_annihilator",
+      "declaration": "LinearStudy.quadratic_powerSeries_jacobian_annihilator",
+      "deps": [],
+      "setup": [
+        "<p>设 B 为约化交换环，且 2 可逆。对真正的形式幂级数商环 A=B[[z]]/(z²)，Lean 证明 Ann_A(√0)=BΔ；Δ 是定义方程 z² 的形式导数的类。第一阶 jet 代数同构及显式完美配对均已证明，而非假设。此具体族未证明一般引理或任意参数提升的结论。</p>",
+        "<p>Let B be a reduced commutative ring in which 2 is a unit. For the actual power-series quotient A=B[[z]]/(z²), Lean proves Ann_A(√0)=BΔ, where Δ is the class of the formal derivative of the defining equation z². The first-jet algebra isomorphism and explicit perfect pairing are proved, not assumed. This concrete family does not prove the universal lemma or its arbitrary-parameter-lift conclusion.</p>"
+      ],
+      "result": [
+        "<p>已证明的族：B[[z]]/(z²)，Δ=2z，2 可逆。</p>",
+        "<p>A proved family: B[[z]]/(z²), with Δ=2z and 2 invertible.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "已证明的族：B[[z]]/(z²)，Δ=2z，2 可逆。",
+        "A proved family: B[[z]]/(z²), with Δ=2z and 2 invertible."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.quadratic_powerSeries_jacobian_annihilator.{u_1} (B : Type u_1) [CommRing B] [IsReduced B] (h2 : IsUnit 2)\n  (x : PowerSeries B ⧸ Ideal.span {PowerSeries.X ^ 2}) :\n  LinearStudy.Annihilates (nilradical (PowerSeries B ⧸ Ideal.span {PowerSeries.X ^ 2})) x ↔\n    ∃ b, x = b • (Ideal.Quotient.mk (Ideal.span {PowerSeries.X ^ 2})) (PowerSeries.derivative (PowerSeries.X ^ 2))",
+      "sha256": "8f2818b240bb00dd54c377440a3cdaa88a5ca0abd9f321c32dac7694f481841a",
+      "lines": 158,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-matrix",
+      "titles": [
+        "提升完美配对",
+        "Lift the perfect pairing"
+      ],
+      "title": "提升完美配对",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/PairingMatrix.lean",
+      "decl": "LinearStudy.exists_perfectPairing_of_residueDet_ne_zero",
+      "declaration": "LinearStudy.exists_perfectPairing_of_residueDet_ne_zero",
+      "deps": [
+        "local-pairing"
+      ],
+      "setup": [
+        "<p>在局部底环 B 上，给定 A 的有限 B-基及 B-线性泛函 ℓ，若 Gram 行列式在 B/m_B 中非零，Lean 构造以 ℓ 为泛函的完美乘法配对。从完全交假设得到相应基与泛函的步骤仍待证明。</p>",
+        "<p>Over a local base B, given a finite B-basis of A and a B-linear functional ℓ, if the Gram determinant is nonzero in B/m_B, Lean constructs the perfect multiplication pairing with functional ℓ. Existence of the basis and suitable functional from the complete-intersection hypotheses remains to prove.</p>"
+      ],
+      "result": [
+        "<p>由有限基及非零约化行列式构造配对。</p>",
+        "<p>Construct the pairing from a finite basis and a nonzero reduced Gram determinant.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "由有限基及非零约化行列式构造配对。",
+        "Construct the pairing from a finite basis and a nonzero reduced Gram determinant."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.exists_perfectPairing_of_residueDet_ne_zero.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} [CommRing B]\n  [CommRing A] [Algebra B A] {ι : Type u_3} [Fintype ι] [DecidableEq ι] [IsLocalRing B] (b : Module.Basis ι B A)\n  (ell : A →ₗ[B] B)\n  (hres : (Ideal.Quotient.mk (IsLocalRing.maximalIdeal B)) (LinearStudy.multiplicationGram b ell).det ≠ 0) :\n  ∃ p, p.functional = ell",
+      "sha256": "9959afacc12cbe9aeb36e5eb448f03591f03ed571db5578d6777785f2c916dd4",
+      "lines": 70,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "local-generic",
+      "titles": [
+        "从泛纤维下降",
+        "Descend from the generic fiber"
+      ],
+      "title": "从泛纤维下降",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/GenericFiber.lean",
+      "decl": "LinearStudy.flat_genericFiber_descend_annihilation",
+      "declaration": "LinearStudy.flat_genericFiber_descend_annihilation",
+      "deps": [
+        "local-jacobian"
+      ],
+      "setup": [
+        "<p>设 A 为平坦 B-代数，f:A→C 为沿 B 的非零因子的局部化。Lean 证明 f 单射；若 N 的像理想湮灭 f(δ)，则 N 在 A 中湮灭 δ。局部化后的 SS 恒等式仍是显式输入。</p>",
+        "<p>Let A be a flat B-algebra and f:A→C a localization at the nonzerodivisors of B. Lean proves f is injective. If the image ideal of N annihilates f(δ), then N annihilates δ in A. The localized SS identity is still an explicit input.</p>"
+      ],
+      "result": [
+        "<p>平坦性保证沿底环非零因子局部化的单射性。</p>",
+        "<p>Flatness proves injectivity at the base nonzerodivisors.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "平坦性保证沿底环非零因子局部化的单射性。",
+        "Flatness proves injectivity at the base nonzerodivisors."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.flat_genericFiber_descend_annihilation.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {C : Type u_3}\n  [CommRing B] [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] [Module.Flat B A] (f : A →ₐ[B] C)\n  [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] (N : Ideal A) (delta : A)\n  (hgeneric : LinearStudy.Annihilates (Ideal.map f.toRingHom N) (f delta)) : LinearStudy.Annihilates N delta",
+      "sha256": "3c6d28c6b08f055126ca412b1e024ec8358122b72a3bd78a54e8ddb435d9dafa",
+      "lines": 43,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "jacobian",
+      "titles": [
+        "相对 Jacobian · 原稿引理 2.1",
+        "Relative Jacobian · manuscript Lemma 2.1"
+      ],
+      "title": "相对 Jacobian · 原稿引理 2.1",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Target.lean",
+      "decl": "LinearStudy.Lemma31Goal",
+      "declaration": "LinearStudy.Lemma31Goal",
+      "deps": [
+        "local-primitive",
+        "local-parameters",
+        "local-quotient"
+      ],
+      "setup": [
+        "<p>设 B=ℂ[[s₁,…,sᵣ]]，R=B[[z₁,…,z꜀]]，A=R/(H₁,…,H꜀)，其中 r,c≥1，H 为正则序列。假设 A 在 B 上有限平坦，且 A_red≅B 为 B-代数同构。记 N=√0，Δ=det(∂Hᵢ/∂zⱼ)∈A。</p>",
+        "<p>Let B=ℂ[[s₁,…,sᵣ]], R=B[[z₁,…,z꜀]], and A=R/(H₁,…,H꜀), with r,c≥1 and H a regular sequence. Assume A is finite flat over B and A_red≅B as a B-algebra. Put N=√0 and Δ=det(∂Hᵢ/∂zⱼ) in A.</p>"
+      ],
+      "result": [
+        "<p>完整引理 2.1；其形式化证明尚未完成。</p>",
+        "<p>Full Lemma 2.1. Its formal proof remains open.</p>"
+      ],
+      "compactSetup": [
+        "局部环、完全交与所列配对输入。",
+        "Local rings, complete intersections and displayed pairing inputs."
+      ],
+      "compactResult": [
+        "完整引理 2.1；其形式化证明尚未完成。",
+        "Full Lemma 2.1. Its formal proof remains open."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "LinearStudy.Lemma31Goal (r c : ℕ) : Prop",
+      "sha256": "783f47d2fe122fecf183b2d737b5e5a90b536ebd1803feed4bee0fe249a7d278",
+      "lines": 62,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "relation",
+      "titles": [
+        "纤维上的齐次多项式关系",
+        "Homogeneous-polynomial fiber relation"
+      ],
+      "title": "纤维上的齐次多项式关系",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [
+        "jacobian",
+        "weights"
+      ],
+      "setup": [
+        "<p>原稿 Setup 1.4；t=r(q−1)−1，第一纤维 S₁。</p>",
+        "<p>Manuscript Setup 1.4; t=r(q−1)−1 and the first fiber S₁.</p>"
+      ],
+      "result": [
+        "<p>构造非零 λ，使 Σₓ∈S₁λₓP(vₓ)=0 对所有 t 次齐次 P 成立。相对 Jacobian、Euler–Jacobi 留数到该关系的桥接待完成。</p>",
+        "<p>Construct nonzero λ with Σₓ∈S₁λₓP(vₓ)=0 for every homogeneous P of degree t. The relative-Jacobian and Euler–Jacobi residue bridge remains unproved.</p>"
+      ],
+      "compactSetup": [
+        "Setup 1.4；第一纤维与 t 次多项式。",
+        "Setup 1.4; first fiber and degree-t forms."
+      ],
+      "compactResult": [
+        "构造非零求值关系 · 待证。",
+        "Construct a nonzero evaluation relation · open."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "weights",
+      "titles": [
+        "有限点集上的关系泛函",
+        "Relation functional on finite point sets"
+      ],
+      "title": "有限点集上的关系泛函",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.weightedEvaluation_nonzero",
+      "declaration": "LinearStudy.weightedEvaluation_nonzero",
+      "deps": [
+        "zero-extension",
+        "rescale-relation"
+      ],
+      "setup": [
+        "<p>有限点集 ι，域 K，λ:ι→K 不恒为零。</p>",
+        "<p>A finite set ι, field K, and a nonzero coefficient function λ:ι→K.</p>"
+      ],
+      "result": [
+        "<p>v↦Σᵢλᵢvᵢ 是非零线性泛函；不假设 λ 已由留数产生。</p>",
+        "<p>v↦Σᵢλᵢvᵢ is a nonzero linear functional; existence of residue weights is not proved here.</p>"
+      ],
+      "compactSetup": [
+        "有限点集 ι，域 K，λ:ι→K 不恒为零。",
+        "A finite set ι, field K, and a nonzero coefficient function λ:ι→K."
+      ],
+      "compactResult": [
+        "v↦Σᵢλᵢvᵢ 是非零线性泛函；不假设 λ 已由留数产生。",
+        "v↦Σᵢλᵢvᵢ is a nonzero linear functional; existence of residue weights is not proved here."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.weightedEvaluation_nonzero.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] [DecidableEq ι]\n  (lam : ι → K) (hlam : lam ≠ 0) : LinearStudy.weightedEvaluation lam ≠ 0",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "zero-extension",
+      "titles": [
+        "将关系在支撑外补零",
+        "Extend the relation by zero"
+      ],
+      "title": "将关系在支撑外补零",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.extend_relation_by_zero",
+      "declaration": "LinearStudy.extend_relation_by_zero",
+      "deps": [],
+      "setup": [
+        "<p>λ 在 S₁ 外为零。</p>",
+        "<p>λ is zero outside S₁.</p>"
+      ],
+      "result": [
+        "<p>在总点集求和等于只在 S₁ 求和。</p>",
+        "<p>The sum over the whole point set equals the sum over S₁.</p>"
+      ],
+      "compactSetup": [
+        "λ 在 S₁ 外为零。",
+        "λ is zero outside S₁."
+      ],
+      "compactResult": [
+        "在总点集求和等于只在 S₁ 求和。",
+        "The sum over the whole point set equals the sum over S₁."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.extend_relation_by_zero.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι] (lam : ι → K)\n  (S₁ : Finset ι) (hlam : ∀ i ∉ S₁, lam i = 0) (v : ι → K) :\n  (LinearStudy.weightedEvaluation lam) v = ∑ i ∈ S₁, lam i * v i",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "lifting",
+      "titles": [
+        "统一次数的多项式提升",
+        "Polynomial lifting of uniform degree"
+      ],
+      "title": "统一次数的多项式提升",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [
+        "relation",
+        "exact-factor",
+        "point-dual"
+      ],
+      "setup": [
+        "<p>固定嵌入 V⊆ℙⁿ；原稿引理 4.2 的次数条件 q&gt;md。</p>",
+        "<p>A fixed embedding V⊆ℙⁿ and the degree condition q&gt;md of manuscript Lemma 4.2.</p>"
+      ],
+      "result": [
+        "<p>构造只依赖 V 的 m 与 m 次齐次 Q，使 Q|V≠0 且 Q|S∖S₁=0。Koszul 正合列、proper duality、典范层固定嵌入和 Serre 界的几何构造仍待完成。</p>",
+        "<p>Construct m depending only on V and a degree-m form Q with Q|V≠0 and Q|S∖S₁=0. Geometric Koszul exactness, proper duality, the fixed canonical-sheaf injection and Serre bounds remain unproved.</p>"
+      ],
+      "compactSetup": [
+        "固定 V；q>md；非零纤维关系。",
+        "Fixed V; q>md; nonzero fiber relation."
+      ],
+      "compactResult": [
+        "Q 可随迭代变，次数 m 固定 · 待证。",
+        "Q may vary with the iterate; degree m fixed · open."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "exact-factor",
+      "titles": [
+        "正合列上的泛函因子化",
+        "Functional factorization through exactness"
+      ],
+      "title": "正合列上的泛函因子化",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.relation_factors_through_exact_sequence",
+      "declaration": "LinearStudy.relation_factors_through_exact_sequence",
+      "deps": [
+        "weights",
+        "nonzero-lift"
+      ],
+      "setup": [
+        "<p>E:U→Kⁱ，D:Kⁱ→M 为线性映射；D 满射，ker D=range E；λ 泛函湮灭 range E。</p>",
+        "<p>Linear maps E:U→Kⁱ and D:Kⁱ→M; D is surjective, ker D=range E, and the λ functional annihilates range E.</p>"
+      ],
+      "result": [
+        "<p>存在 a:M→K，使 a∘D=λ 泛函。正合性的几何来源仍为显式条件。</p>",
+        "<p>There exists a:M→K with a∘D equal to the λ functional. Geometric exactness remains an explicit input.</p>"
+      ],
+      "compactSetup": [
+        "E:U→Kⁱ，D:Kⁱ→M 为线性映射；D 满射，ker D=range E；λ 泛函湮灭 range E。",
+        "Linear maps E:U→Kⁱ and D:Kⁱ→M; D is surjective, ker D=range E, and the λ functional annihilates range E."
+      ],
+      "compactResult": [
+        "存在 a:M→K，使 a∘D=λ 泛函。正合性的几何来源仍为显式条件。",
+        "There exists a:M→K with a∘D equal to the λ functional. Geometric exactness remains an explicit input."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.relation_factors_through_exact_sequence.{u_1, u_2, u_3, u_4} {K : Type u_1} {ι : Type u_2} {U : Type u_3}\n  {M : Type u_4} [Field K] [Fintype ι] [DecidableEq ι] [AddCommGroup U] [Module K U] [AddCommGroup M] [Module K M]\n  (E : U →ₗ[K] ι → K) (D : (ι → K) →ₗ[K] M) (hD : Function.Surjective ⇑D) (hexact : D.ker = E.range) (lam : ι → K)\n  (hrelation : ∀ (u : U), (LinearStudy.weightedEvaluation lam) (E u) = 0) :\n  ∃ a, a ∘ₗ D = LinearStudy.weightedEvaluation lam",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "nonzero-lift",
+      "titles": [
+        "提升后泛函仍非零",
+        "The lifted functional remains nonzero"
+      ],
+      "title": "提升后泛函仍非零",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.factored_relation_nonzero",
+      "declaration": "LinearStudy.factored_relation_nonzero",
+      "deps": [],
+      "setup": [
+        "<p>λ 不恒为零且 a∘D=λ 泛函。</p>",
+        "<p>λ is nonzero and a∘D is the λ functional.</p>"
+      ],
+      "result": [
+        "<p>a≠0；这不是典范层截面的存在定理。</p>",
+        "<p>a≠0; this is not a canonical-sheaf section-existence theorem.</p>"
+      ],
+      "compactSetup": [
+        "λ 不恒为零且 a∘D=λ 泛函。",
+        "λ is nonzero and a∘D is the λ functional."
+      ],
+      "compactResult": [
+        "a≠0；这不是典范层截面的存在定理。",
+        "a≠0; this is not a canonical-sheaf section-existence theorem."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.factored_relation_nonzero.{u_1, u_2, u_4} {K : Type u_1} {ι : Type u_2} {M : Type u_4} [Field K] [Fintype ι]\n  [DecidableEq ι] [AddCommGroup M] [Module K M] (lam : ι → K) (hlam : lam ≠ 0) (D : (ι → K) →ₗ[K] M) (a : M →ₗ[K] K)\n  (ha : a ∘ₗ D = LinearStudy.weightedEvaluation lam) : a ≠ 0",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "point-dual",
+      "titles": [
+        "逐点对偶下的消失对应",
+        "Vanishing under a pointwise duality"
+      ],
+      "title": "逐点对偶下的消失对应",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.duality_zero_iff",
+      "declaration": "LinearStudy.duality_zero_iff",
+      "deps": [],
+      "setup": [
+        "<p>给定线性同构 β:W≃K 及 β(a)=λ。</p>",
+        "<p>A given linear equivalence β:W≃K with β(a)=λ.</p>"
+      ],
+      "result": [
+        "<p>a=0 ⇔ λ=0。几何对偶同构 β 的构造不包含于此结果。</p>",
+        "<p>a=0 iff λ=0. This result does not construct the geometric duality equivalence β.</p>"
+      ],
+      "compactSetup": [
+        "给定线性同构 β:W≃K 及 β(a)=λ。",
+        "A given linear equivalence β:W≃K with β(a)=λ."
+      ],
+      "compactResult": [
+        "a=0 ⇔ λ=0。几何对偶同构 β 的构造不包含于此结果。",
+        "a=0 iff λ=0. This result does not construct the geometric duality equivalence β."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.duality_zero_iff.{u_1, u_5} {K : Type u_1} [Field K] (W : Type u_5) [AddCommGroup W] [Module K W]\n  (β : W ≃ₗ[K] K) (a : W) (lam : K) (h : β a = lam) : a = 0 ↔ lam = 0",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "intersection",
+      "titles": [
+        "主证明的交叉数矛盾",
+        "Intersection contradiction in the main proof"
+      ],
+      "title": "主证明的交叉数矛盾",
+      "status": "pending",
+      "kind": "theorem",
+      "file": "Linear/Degree.lean",
+      "decl": null,
+      "declaration": null,
+      "deps": [
+        "lifting",
+        "degree",
+        "large"
+      ],
+      "setup": [
+        "<p>Q|V 非零且在 S₂ 消失；r≥1；S₂ 有 qʳ 个互异光滑点。</p>",
+        "<p>Q|V is nonzero and vanishes on S₂; r≥1; S₂ has qʳ distinct smooth points.</p>"
+      ],
+      "result": [
+        "<p>构造有效 Cartier 零除子及适当相交，证明 qʳ≤qʳ⁻¹dm。几何交叉数公式和每点重数≥1 尚未在 Lean 中构造；随后数值矛盾已验证。</p>",
+        "<p>Construct the effective Cartier zero divisor and proper intersection, then prove qʳ≤qʳ⁻¹dm. Geometric intersection degree and local multiplicity≥1 remain unproved; the ensuing arithmetic contradiction is checked.</p>"
+      ],
+      "compactSetup": [
+        "零除子、适当相交、qʳ 个光滑点。",
+        "Zero divisor, proper intersection, qʳ smooth points."
+      ],
+      "compactResult": [
+        "交叉数下界 · 几何桥接待证。",
+        "Intersection lower bound · geometric bridge open."
+      ],
+      "scope": [
+        "此几何步骤尚未形式化完成；目标定义的编译不是证明。",
+        "This geometric step is not yet formalized; compiling a target definition is not a proof."
+      ],
+      "formalType": "No completed Lean declaration for this geometric obligation.",
+      "sha256": "768e643f48b5baa902ce951df39e78e4813240acc28c243d80a19bcc60c41bad",
+      "lines": 46,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "degree",
+      "titles": [
+        "最终次数矛盾",
+        "Final degree contradiction"
+      ],
+      "title": "最终次数矛盾",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Degree.lean",
+      "decl": "LinearStudy.degree_contradiction",
+      "declaration": "LinearStudy.degree_contradiction",
+      "deps": [
+        "degree-lt"
+      ],
+      "setup": [
+        "<p>自然数 q,r,d,m；r≥1，dm&lt;q；显式交叉数下界 qʳ≤qʳ⁻¹dm。</p>",
+        "<p>Natural q,r,d,m; r≥1, dm&lt;q, and the explicit intersection lower bound qʳ≤qʳ⁻¹dm.</p>"
+      ],
+      "result": [
+        "<p>推出 False。这是已验证的数值推导，不是完整几何主定理。</p>",
+        "<p>Derive False. This is a verified numerical argument, not the complete geometric theorem.</p>"
+      ],
+      "compactSetup": [
+        "r≥1，dm<q，qʳ≤qʳ⁻¹dm。",
+        "r≥1, dm<q, qʳ≤qʳ⁻¹dm."
+      ],
+      "compactResult": [
+        "qʳ≤qʳ⁻¹dm<qʳ，矛盾。",
+        "qʳ≤qʳ⁻¹dm<qʳ, a contradiction."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.degree_contradiction (q r d m : ℕ) (hr : 1 ≤ r) (hlarge : d * m < q)\n  (hintersection : q ^ r ≤ q ^ (r - 1) * d * m) : False",
+      "sha256": "768e643f48b5baa902ce951df39e78e4813240acc28c243d80a19bcc60c41bad",
+      "lines": 46,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "degree-lt",
+      "titles": [
+        "控制自然数幂的不等式",
+        "Power inequality over natural numbers"
+      ],
+      "title": "控制自然数幂的不等式",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Degree.lean",
+      "decl": "LinearStudy.intersection_degree_lt",
+      "declaration": "LinearStudy.intersection_degree_lt",
+      "deps": [],
+      "setup": [
+        "<p>r≥1，dm&lt;q。</p>",
+        "<p>r≥1 and dm&lt;q.</p>"
+      ],
+      "result": [
+        "<p>qʳ⁻¹dm&lt;qʳ；正确处理 r−1 的自然数减法。</p>",
+        "<p>qʳ⁻¹dm&lt;qʳ, with natural subtraction r−1 handled explicitly.</p>"
+      ],
+      "compactSetup": [
+        "r≥1，dm<q。",
+        "r≥1 and dm<q."
+      ],
+      "compactResult": [
+        "qʳ⁻¹dm<qʳ；正确处理 r−1 的自然数减法。",
+        "qʳ⁻¹dm<qʳ, with natural subtraction r−1 handled explicitly."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.intersection_degree_lt (q r d m : ℕ) (hr : 1 ≤ r) (h : d * m < q) : q ^ (r - 1) * d * m < q ^ r",
+      "sha256": "768e643f48b5baa902ce951df39e78e4813240acc28c243d80a19bcc60c41bad",
+      "lines": 46,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "large",
+      "titles": [
+        "统一界与充分大的迭代",
+        "Uniform bound and a large iterate"
+      ],
+      "title": "统一界与充分大的迭代",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/Degree.lean",
+      "decl": "LinearStudy.uniform_degree_estimate_impossible",
+      "declaration": "LinearStudy.uniform_degree_estimate_impossible",
+      "deps": [
+        "power-growth"
+      ],
+      "setup": [
+        "<p>q&gt;1，r≥1；存在一个 m，对所有正迭代 k，在 dm&lt;qᵏ 时都有所列数值交叉数下界。</p>",
+        "<p>q&gt;1, r≥1; one m works for every positive iterate k, supplying the displayed numerical bound whenever dm&lt;qᵏ.</p>"
+      ],
+      "result": [
+        "<p>上述统一估计不可能成立。严格保留“先 m，后 k”的量词次序；几何估计作为显式输入。</p>",
+        "<p>Such a uniform estimate is impossible. The quantifier order—m before k—is preserved; the geometric estimate is an explicit input.</p>"
+      ],
+      "compactSetup": [
+        "q>1，r≥1；存在一个 m，对所有正迭代 k，在 dm<qᵏ 时都有所列数值交叉数下界。",
+        "q>1, r≥1; one m works for every positive iterate k, supplying the displayed numerical bound whenever dm<qᵏ."
+      ],
+      "compactResult": [
+        "上述统一估计不可能成立。严格保留“先 m，后 k”的量词次序；几何估计作为显式输入。",
+        "Such a uniform estimate is impossible. The quantifier order—m before k—is preserved; the geometric estimate is an explicit input."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.uniform_degree_estimate_impossible (q r d : ℕ) (hq : 1 < q) (hr : 1 ≤ r)\n  (h : ∃ m, ∀ (k : ℕ), 0 < k → d * m < q ^ k → (q ^ k) ^ r ≤ (q ^ k) ^ (r - 1) * d * m) : False",
+      "sha256": "768e643f48b5baa902ce951df39e78e4813240acc28c243d80a19bcc60c41bad",
+      "lines": 46,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "power-growth",
+      "titles": [
+        "选取足够大的幂",
+        "Choose a sufficiently large power"
+      ],
+      "title": "选取足够大的幂",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Degree.lean",
+      "decl": "LinearStudy.iterate_degree_exceeds",
+      "declaration": "LinearStudy.iterate_degree_exceeds",
+      "deps": [],
+      "setup": [
+        "<p>自然数 q&gt;1，任意界 B。</p>",
+        "<p>A natural q&gt;1 and any bound B.</p>"
+      ],
+      "result": [
+        "<p>存在 k&gt;0，使 B&lt;qᵏ。</p>",
+        "<p>There exists k&gt;0 with B&lt;qᵏ.</p>"
+      ],
+      "compactSetup": [
+        "自然数 q>1，任意界 B。",
+        "A natural q>1 and any bound B."
+      ],
+      "compactResult": [
+        "存在 k>0，使 B<qᵏ。",
+        "There exists k>0 with B<qᵏ."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.iterate_degree_exceeds (q B : ℕ) (hq : 1 < q) : ∃ k, 0 < k ∧ B < q ^ k",
+      "sha256": "768e643f48b5baa902ce951df39e78e4813240acc28c243d80a19bcc60c41bad",
+      "lines": 46,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "linear-equations",
+      "titles": [
+        "线性方程定义射影子空间",
+        "Linear equations define a projective subspace"
+      ],
+      "title": "线性方程定义射影子空间",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/LinearSubspace.lean",
+      "decl": "LinearStudy.mem_linearEquationSubspace",
+      "declaration": "LinearStudy.mem_linearEquationSubspace",
+      "deps": [],
+      "setup": [
+        "<p>一组实际线性泛函 ℓᵢ:ℂⁿ⁺¹→ℂ；v≠0。</p>",
+        "<p>A family of actual linear functionals ℓᵢ:ℂⁿ⁺¹→ℂ and v≠0.</p>"
+      ],
+      "result": [
+        "<p>[v] 属于它们定义的射影线性子空间 ⇔ 所有 ℓᵢ(v)=0。此处不声称已证明“次数一⇒线性方程”。</p>",
+        "<p>[v] belongs to the resulting projective linear subspace iff every ℓᵢ(v)=0. The geometric degree-one-to-linear-equations bridge is not proved here.</p>"
+      ],
+      "compactSetup": [
+        "一组实际线性泛函 ℓᵢ:ℂⁿ⁺¹→ℂ；v≠0。",
+        "A family of actual linear functionals ℓᵢ:ℂⁿ⁺¹→ℂ and v≠0."
+      ],
+      "compactResult": [
+        "[v] 属于它们定义的射影线性子空间 ⇔ 所有 ℓᵢ(v)=0。此处不声称已证明“次数一⇒线性方程”。",
+        "[v] belongs to the resulting projective linear subspace iff every ℓᵢ(v)=0. The geometric degree-one-to-linear-equations bridge is not proved here."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.mem_linearEquationSubspace.{u_1} {n : ℕ} {ι : Type u_1}\n  (equations : ι → LinearStudy.CoordinateVector n →ₗ[ℂ] ℂ) (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0) :\n  Projectivization.mk ℂ v hv ∈ LinearStudy.linearEquationSubspace equations ↔ ∀ (i : ι), (equations i) v = 0",
+      "sha256": "850b5caa24241f0fc87e1558a01d887ec564ee6d19bd23b9885668dea9ff2a37",
+      "lines": 36,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "rescale-relation",
+      "titles": [
+        "坐标更换与关系的归一化",
+        "Coordinate rescaling and relation normalization"
+      ],
+      "title": "坐标更换与关系的归一化",
+      "status": "done",
+      "kind": "theorem",
+      "file": "Linear/Evaluation.lean",
+      "decl": "LinearStudy.rescaled_evaluation_relation_zero",
+      "declaration": "LinearStudy.rescaled_evaluation_relation_zero",
+      "deps": [],
+      "setup": [
+        "<p>t 次齐次 P；非零标量 aₓ；已给定 ΣλₓP(vₓ)=0。</p>",
+        "<p>A degree-t homogeneous P, nonzero scalars aₓ, and a given relation ΣλₓP(vₓ)=0.</p>"
+      ],
+      "result": [
+        "<p>更换 vₓ 为 aₓvₓ 时，将 λₓ 改为 λₓ/aₓᵗ，关系仍成立。</p>",
+        "<p>Replace vₓ by aₓvₓ and λₓ by λₓ/aₓᵗ; the relation is preserved.</p>"
+      ],
+      "compactSetup": [
+        "t 次齐次 P；非零标量 aₓ；已给定 ΣλₓP(vₓ)=0。",
+        "A degree-t homogeneous P, nonzero scalars aₓ, and a given relation ΣλₓP(vₓ)=0."
+      ],
+      "compactResult": [
+        "更换 vₓ 为 aₓvₓ 时，将 λₓ 改为 λₓ/aₓᵗ，关系仍成立。",
+        "Replace vₓ by aₓvₓ and λₓ by λₓ/aₓᵗ; the relation is preserved."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.rescaled_evaluation_relation_zero.{u_1, u_2, u_5} {K : Type u_1} {ι : Type u_2} [Field K] [Fintype ι]\n  {σ : Type u_5} {P : MvPolynomial σ K} {t : ℕ} (hP : P.IsHomogeneous t) (points : ι → σ → K) (scalars : ι → Kˣ)\n  (weights : ι → K) (h : ∑ i, weights i * (MvPolynomial.eval (points i)) P = 0) :\n  ∑ i, weights i / ↑(scalars i) ^ t * (MvPolynomial.eval (↑(scalars i) • points i)) P = 0",
+      "sha256": "7006d1589a3019e4df2f909e0e07bb1ecdb5b9d5327ef21a31acdc6985e3e367",
+      "lines": 122,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    }
+  ],
+  "rootSteps": [
+    "coordinates",
+    "iteration",
+    "jacobian",
+    "relation",
+    "lifting",
+    "intersection"
+  ],
+  "remaining": [
+    [
+      "原文整射影子簇与齐次素理想坐标目标的概形比较、维数和次数接口。",
+      "Scheme comparison of integral projective varieties and the homogeneous-prime-ideal target; dimension and degree interfaces."
+    ],
+    [
+      "Bertini、一般 étale 纤维及 qʳ 个互异光滑点的实际构造。",
+      "Actual Bertini construction, generic étale fibers, and qʳ distinct smooth points."
+    ],
+    [
+      "相对 Jacobian/SS 定理、任意参数提升及 Euler–Jacobi 纤维关系。",
+      "Relative Jacobian/SS theorem, arbitrary parameter lifts, and Euler–Jacobi fiber relations."
+    ],
+    [
+      "Koszul 正合列、proper duality、Serre 消失与固定次数齐次多项式提升。",
+      "Geometric Koszul exactness, proper duality, Serre vanishing and homogeneous lifting of fixed degree."
+    ],
+    [
+      "实际 Cartier 除子、局部交重数与射影 Bézout 次数公式。",
+      "Actual Cartier divisors, local intersection multiplicities and projective Bézout degree."
+    ]
+  ]
 }

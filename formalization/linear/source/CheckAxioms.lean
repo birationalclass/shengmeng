@@ -1,9 +1,22 @@
-module
-
-public import Linear
-
+import Linear
+set_option pp.universes false
+set_option pp.proofs false
+#check LinearStudy.iterate_degree_exceeds
+#print axioms LinearStudy.iterate_degree_exceeds
+#check LinearStudy.intersection_degree_lt
+#print axioms LinearStudy.intersection_degree_lt
+#check LinearStudy.degree_contradiction
+#print axioms LinearStudy.degree_contradiction
+#check LinearStudy.uniform_degree_estimate_impossible
+#print axioms LinearStudy.uniform_degree_estimate_impossible
+#check LinearStudy.epsilon
+#print axioms LinearStudy.epsilon
 #check LinearStudy.doublePoint_decomposition
 #print axioms LinearStudy.doublePoint_decomposition
+#check LinearStudy.doublePointPairingMap
+#print axioms LinearStudy.doublePointPairingMap
+#check LinearStudy.doublePointPerfectPairing
+#print axioms LinearStudy.doublePointPerfectPairing
 #check LinearStudy.doublePoint_nilradical
 #print axioms LinearStudy.doublePoint_nilradical
 #check LinearStudy.doublePoint_epsilon_is_dualGenerator
@@ -16,6 +29,8 @@ public import Linear
 #print axioms LinearStudy.doublePoint_quotient_generator_nonzero
 #check LinearStudy.doublePoint_residue_to_evaluation
 #print axioms LinearStudy.doublePoint_residue_to_evaluation
+#check LinearStudy.dualGenerator
+#print axioms LinearStudy.dualGenerator
 #check LinearStudy.dualGenerator_pairing
 #print axioms LinearStudy.dualGenerator_pairing
 #check LinearStudy.dualGenerator_functional
@@ -30,6 +45,32 @@ public import Linear
 #print axioms LinearStudy.dualGenerator_scalar_retraction
 #check LinearStudy.dualGenerator_quotient_nonzero
 #print axioms LinearStudy.dualGenerator_quotient_nonzero
+#check LinearStudy.weightedEvaluation
+#print axioms LinearStudy.weightedEvaluation
+#check LinearStudy.weightedEvaluation_apply
+#print axioms LinearStudy.weightedEvaluation_apply
+#check LinearStudy.weightedEvaluation_single
+#print axioms LinearStudy.weightedEvaluation_single
+#check LinearStudy.weightedEvaluation_nonzero
+#print axioms LinearStudy.weightedEvaluation_nonzero
+#check LinearStudy.extend_relation_by_zero
+#print axioms LinearStudy.extend_relation_by_zero
+#check LinearStudy.relation_factors_through_exact_sequence
+#print axioms LinearStudy.relation_factors_through_exact_sequence
+#check LinearStudy.factored_relation_nonzero
+#print axioms LinearStudy.factored_relation_nonzero
+#check LinearStudy.duality_zero_iff
+#print axioms LinearStudy.duality_zero_iff
+#check LinearStudy.homogeneousPointEvaluation
+#print axioms LinearStudy.homogeneousPointEvaluation
+#check LinearStudy.homogeneousPointEvaluation_apply
+#print axioms LinearStudy.homogeneousPointEvaluation_apply
+#check LinearStudy.rescaled_evaluation_relation
+#print axioms LinearStudy.rescaled_evaluation_relation
+#check LinearStudy.rescaled_evaluation_relation_zero
+#print axioms LinearStudy.rescaled_evaluation_relation_zero
+#check LinearStudy.firstJet
+#print axioms LinearStudy.firstJet
 #check LinearStudy.firstJet_fst
 #print axioms LinearStudy.firstJet_fst
 #check LinearStudy.firstJet_snd
@@ -38,6 +79,8 @@ public import Linear
 #print axioms LinearStudy.firstJet_surjective
 #check LinearStudy.firstJet_kernel
 #print axioms LinearStudy.firstJet_kernel
+#check LinearStudy.doublePointPowerSeriesEquiv
+#print axioms LinearStudy.doublePointPowerSeriesEquiv
 #check LinearStudy.doublePointPowerSeriesEquiv_mk
 #print axioms LinearStudy.doublePointPowerSeriesEquiv_mk
 #check LinearStudy.doublePoint_actual_jacobian
@@ -52,8 +95,32 @@ public import Linear
 #print axioms LinearStudy.flat_genericFiber_injective
 #check LinearStudy.flat_genericFiber_descend_annihilation
 #print axioms LinearStudy.flat_genericFiber_descend_annihilation
+#check LinearStudy.total_invariance_membership
+#print axioms LinearStudy.total_invariance_membership
+#check LinearStudy.total_invariance_iterate
+#print axioms LinearStudy.total_invariance_iterate
+#check LinearStudy.invariant_restriction
+#print axioms LinearStudy.invariant_restriction
+#check LinearStudy.restrictInvariant
+#print axioms LinearStudy.restrictInvariant
+#check LinearStudy.invariant_restriction_surjective
+#print axioms LinearStudy.invariant_restriction_surjective
+#check LinearStudy.linearEquationSubmodule
+#print axioms LinearStudy.linearEquationSubmodule
+#check LinearStudy.linearEquationSubspace
+#print axioms LinearStudy.linearEquationSubspace
+#check LinearStudy.mem_linearEquationSubmodule
+#print axioms LinearStudy.mem_linearEquationSubmodule
+#check LinearStudy.mem_linearEquationSubspace
+#print axioms LinearStudy.mem_linearEquationSubspace
+#check LinearStudy.multiplicationToDual
+#print axioms LinearStudy.multiplicationToDual
+#check LinearStudy.multiplicationGram
+#print axioms LinearStudy.multiplicationGram
 #check LinearStudy.multiplicationToDual_matrix
 #print axioms LinearStudy.multiplicationToDual_matrix
+#check LinearStudy.perfectPairingOfUnitDet
+#print axioms LinearStudy.perfectPairingOfUnitDet
 #check LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #print axioms LinearStudy.exists_perfectPairing_of_residueDet_ne_zero
 #check LinearStudy.annihilates_iff_mem_annihilator
@@ -66,6 +133,48 @@ public import Linear
 #print axioms LinearStudy.primitive_annihilator_coefficient_isUnit
 #check LinearStudy.primitive_annihilator_generates
 #print axioms LinearStudy.primitive_annihilator_generates
+#check LinearStudy.homogeneous_eval_smul
+#print axioms LinearStudy.homogeneous_eval_smul
+#check LinearStudy.HomogeneousEndomorphism.evalVector
+#print axioms LinearStudy.HomogeneousEndomorphism.evalVector
+#check LinearStudy.HomogeneousEndomorphism.evalVector_smul
+#print axioms LinearStudy.HomogeneousEndomorphism.evalVector_smul
+#check LinearStudy.HomogeneousEndomorphism.onPoints
+#print axioms LinearStudy.HomogeneousEndomorphism.onPoints
+#check LinearStudy.HomogeneousEndomorphism.onPoints_mk
+#print axioms LinearStudy.HomogeneousEndomorphism.onPoints_mk
+#check LinearStudy.HomogeneousEndomorphism.comp
+#print axioms LinearStudy.HomogeneousEndomorphism.comp
+#check LinearStudy.HomogeneousEndomorphism.comp_evalVector
+#print axioms LinearStudy.HomogeneousEndomorphism.comp_evalVector
+#check LinearStudy.HomogeneousEndomorphism.comp_onPoints
+#print axioms LinearStudy.HomogeneousEndomorphism.comp_onPoints
+#check LinearStudy.HomogeneousEndomorphism.identity
+#print axioms LinearStudy.HomogeneousEndomorphism.identity
+#check LinearStudy.HomogeneousEndomorphism.iterate
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate
+#check LinearStudy.HomogeneousEndomorphism.iterate_degree
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate_degree
+#check LinearStudy.HomogeneousEndomorphism.identity_onPoints
+#print axioms LinearStudy.HomogeneousEndomorphism.identity_onPoints
+#check LinearStudy.HomogeneousEndomorphism.iterate_onPoints
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate_onPoints
+#check LinearStudy.HomogeneousEndomorphism.iterate_total_invariance
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate_total_invariance
+#check LinearStudy.homogeneous_ideal_vanish_smul
+#print axioms LinearStudy.homogeneous_ideal_vanish_smul
+#check LinearStudy.homogeneous_ideal_vanish_unit_smul_iff
+#print axioms LinearStudy.homogeneous_ideal_vanish_unit_smul_iff
+#check LinearStudy.IntegralProjectiveEquations.zeroSet
+#print axioms LinearStudy.IntegralProjectiveEquations.zeroSet
+#check LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk
+#print axioms LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk
+#check LinearStudy.IntegralProjectiveEquations.zeroSet_nonempty
+#print axioms LinearStudy.IntegralProjectiveEquations.zeroSet_nonempty
+#check LinearStudy.LinearityTheoremGoal
+#print axioms LinearStudy.LinearityTheoremGoal
+#check LinearStudy.Annihilates
+#print axioms LinearStudy.Annihilates
 #check LinearStudy.multiplication_factors_through_reduction
 #print axioms LinearStudy.multiplication_factors_through_reduction
 #check LinearStudy.scalar_multiple_annihilates
@@ -74,5 +183,12 @@ public import Linear
 #print axioms LinearStudy.annihilator_action_eq
 #check LinearStudy.quotient_image_nonzero_iff
 #print axioms LinearStudy.quotient_image_nonzero_iff
-
+#check LinearStudy.equationIdeal
+#print axioms LinearStudy.equationIdeal
+#check LinearStudy.relativeJacobian
+#print axioms LinearStudy.relativeJacobian
 #check LinearStudy.Lemma31Goal
+#print axioms LinearStudy.Lemma31Goal
+#print LinearStudy.LinearityTheoremGoal
+#print LinearStudy.HomogeneousEndomorphism
+#print LinearStudy.IntegralProjectiveEquations

@@ -8,3 +8,8 @@ public import Linear.DoublePoint
 public import Linear.FirstJet
 public import Linear.GenericFiber
 public import Linear.PairingMatrix
+public import Linear.Degree
+public import Linear.Iteration
+public import Linear.Projective
+public import Linear.Evaluation
+public import Linear.LinearSubspace
