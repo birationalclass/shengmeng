@@ -39,3 +39,15 @@ for(const voice of ['ye','ye-young']) test(voice+': all visible Ye main lines ha
 for(const voice of ['ye','ye-young']) test(voice+': greeting starts immediately, title writing is natural and its narration waits',async()=>{
  const m=JSON.parse(await fs.readFile(new URL(`./assets/audio/reports/${voice}/narration.json`,import.meta.url))),cover=m.boards[0],intro=m.paragraphs.filter(p=>p.page===0);assert.equal(intro[0].start,0);assert.match(intro[0].text,/我是叶东/);assert.match(intro[0].text,/和黄侠合作/);assert.equal(intro[1].role,'title');assert(intro[1].start>cover.writeEnd);assert(cover.writeEnd>=12&&cover.writeEnd<=18);assert(m.pace.maxSpeechGapSeconds<=3.2);
 });
+
+for(const voice of ['ye','ye-young'])test(voice+': every blackboard has one complete audio file with unchanged absolute cues',async()=>{
+ const base=new URL(`./assets/audio/reports/${voice}/`,import.meta.url),m=JSON.parse(await fs.readFile(new URL('narration.json',base)));
+ assert.equal(m.segmentation,'one-board-per-file');assert.equal(m.chapters.length,m.boards.length);assert.equal(m.cachePolicy,'current-and-next-board');
+ let end=0;
+ for(let i=0;i<m.boards.length;i++){
+  const b=m.boards[i],c=m.chapters[i];assert.equal(c.board,b.page);assert.deepEqual(c.pages,[b.page]);assert(Math.abs(c.start-b.start)<.002);assert(Math.abs(end-c.start)<.002);end=c.start+c.duration;assert(end>=b.end-.002);
+  const bytes=await fs.readFile(new URL(c.src,base));assert.equal(bytes.length,c.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),c.sha256);
+  for(const p of m.paragraphs.filter(p=>p.page===b.page)){assert(p.start>=c.start-.002);assert(p.end<=end+.002);}
+ }
+ assert(Math.abs(end-m.duration)<.002);
+});

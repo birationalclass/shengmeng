@@ -4,7 +4,7 @@ import {fadeToward} from './effect-fade.js?v=arrival-light-74';
 import {relocateArchitecture} from './campus-layout.js';
 import {subtractRect} from './board-storage.js?v124';
 import {BOARD_SHAFT_PLAN} from './site-layout.js?v124';
-import {deferredTexture} from './deferred-textures.js?v=startup-flow-145';
+import {deferredTexture} from './deferred-textures.js?v=hall-first-12';
 import {geographicDirectionToCampus} from './elliptic-site.js?v=true-north-coast-1';
 import {createCampusOcean} from './ocean-study.js?v=cloud-sun-143';
 import {apparentSunDirection} from './solar-optics.js?v88-solar-water';
@@ -20,11 +20,11 @@ import {createOpenBook} from './book-sculpture.js?v=36-board-detail';
 import {createRoomFill} from './room-fill.js?v=flush-sill-81';
 import {createPathLighting} from './path-lighting.js?v=terrace-b-50';
 import {RoundedBoxGeometry} from './vendor/geometries/RoundedBoxGeometry.js';
-import {createWeatherSky} from './weather-sky.js?v=cloud-layout-149';
+import {createWeatherSky} from './weather-sky.js?v=hall-first-12';
 import {solarState,solarEvents,shanghaiHour,smooth} from './solar-state.js?v88-solar-water';
 import {seaDepthGLSL,seaDepthAt} from './sea-depth.js?v=true-north-coast-1';
 import {createDetailMaps} from './surface-materials.js?v=5-mobile';
-import {createLandscape} from './landscape.js?v106-44-hall-clearance';
+import {createLandscape} from './landscape.js?v=hall-first-12';
 import {BUILDING_SCALE,DECK_Y,HALL} from './site-layout.js?v44-hall-clearance';
 import {createDistantIslands} from './distant-islands.js?v44-hall-clearance';
 import {createCampus} from './campus.js?v=spiral-20260926';
@@ -32,7 +32,7 @@ import {daylightAt,wrapHour,localHour} from './retreat-time.js?v=20-slower-tour'
 import {platformUnion} from './platform-union.js?v=20-slower-tour';
 
 export async function createArrivalEnvironment(renderer,scene,report,device,initialTime){
-  const seaLevel=2.55,waterNormal=deferredTexture('./assets/waternormals.jpg');
+  const seaLevel=2.55,waterNormal=deferredTexture('./assets/waternormals.jpg',{critical:true});
   waterNormal.wrapS=waterNormal.wrapT=THREE.RepeatWrapping;
   const landscape={shoreMap:null};
   // Only the ocean remains: there is no pool mesh or planar reflection pass.
@@ -276,7 +276,7 @@ export async function createRetreat(renderer,scene,report,device={},initialTime=
   const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   const loader=new THREE.TextureLoader();
   async function texture(name,repeat=1,srgb=false){
-    const map=deferredTexture('./assets/'+name);map.wrapS=map.wrapT=THREE.RepeatWrapping;
+    const map=deferredTexture('./assets/'+name,{critical:true});map.wrapS=map.wrapT=THREE.RepeatWrapping;
     map.repeat.set(repeat,repeat);map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     if(srgb)map.colorSpace=THREE.SRGBColorSpace;return map;
   }

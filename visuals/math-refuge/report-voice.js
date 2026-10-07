@@ -16,7 +16,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
    if(mine!==epoch)return null;return new Blob(parts,{type:'audio/mpeg'});
   }finally{controllers.delete(controller);}
  }
- function trim(){for(const [key,url] of cache)if(Math.abs(key-index)>1){revokeURL(url);cache.delete(key);}}
+ function trim(){for(const [key,url] of cache)if(key<index||key>index+1){revokeURL(url);cache.delete(key);}}
  async function load(i,show=true){
   if(cache.has(i))return cache.get(i);if(jobs.has(i))return jobs.get(i);
   const mine=epoch,c=manifest.chapters[i];
@@ -27,7 +27,7 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   const mine=epoch,attachment=++attachToken;index=i;offset=at;audio?.pause();audio=null;
   state.chapter=i;state.time=manifest.chapters[i].start+at;
   if(!cache.has(i)){state.phase='loading';state.progress=null;emit();}
-  const url=await load(i);if(!url||mine!==epoch||attachment!==attachToken)return false;
+  const url=await load(i);if(!url||mine!==epoch||attachment!==attachToken)return false;trim();
   const target=makeAudio();audio=target;target.preload='auto';target.src=url;
   const valid=()=>mine===epoch&&audio===target;
   const position=()=>{if(valid()&&at){target.currentTime=at;}};

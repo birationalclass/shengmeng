@@ -27,3 +27,22 @@ test('deferred assets wait for completion, recover from a failure and report fin
  assert.deepEqual(events,['failed','last','first']);assert.equal(progress.at(-1),1);
  assert(progress.every((p,i)=>!i||p>=progress[i-1]));
 });
+
+async function textureQueue(){
+ const source=(await readFile(new URL('./deferred-textures.js',import.meta.url),'utf8')).replace("import * as THREE from 'three';",'const THREE={};');
+ return import('data:text/javascript;base64,'+Buffer.from(source+'\n// '+Math.random()).toString('base64'));
+}
+test('hall readiness never starts or waits for unrelated landscape images',async()=>{
+ const q=await textureQueue(),events=[];let finish;
+ q.deferAsset(async()=>events.push('landscape'));
+ q.deferAsset(()=>new Promise(r=>{finish=()=>{events.push('hall');r();};}),{critical:true});
+ const hall=q.startDeferredTextures(()=>{},{criticalOnly:true});await Promise.resolve();assert.deepEqual(events,[]);finish();await hall;
+ assert.deepEqual(events,['hall']);await q.startDeferredTextures(()=>{},{concurrency:1});assert.deepEqual(events,['hall','landscape']);
+});
+test('optional assets download one at a time and recover without blocking hall entry',async()=>{
+ const q=await textureQueue();let running=0,peak=0;
+ q.deferAsset(async()=>{throw Error('missing hall image');},{critical:true});
+ for(let i=0;i<4;i++)q.deferAsset(async()=>{running++;peak=Math.max(peak,running);await new Promise(r=>setTimeout(r,2));running--;});
+ await q.startDeferredTextures(()=>{},{criticalOnly:true});assert.equal(peak,0);
+ await q.startDeferredTextures(()=>{},{concurrency:1});assert.equal(peak,1);
+});
