@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T17:07:53+08:00",
+  "checkedAt": "2026-10-07T17:54:56+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "040835ebca49d373319317363811f1b647eb6c656e830e56deab61e8f35773bc",
-      "lineCount": 2186
+      "sha256": "57602cbbf4417f46af6a89b91c3dca3a443350e618225528db9255d47f2d04f5",
+      "lineCount": 2252
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -20,6 +20,11 @@
       "path": "Linear/ActualUnramifiedPullback.lean",
       "sha256": "62d430a67276d6e00769f89471ce03193b79b038476e6d86ff6e87c704520ef9",
       "lineCount": 96
+    },
+    {
+      "path": "Linear/AffineChartComparison.lean",
+      "sha256": "dafc0caad22f1a0db3319e4337163a809d23a671e8143c88b58f8985584f6729",
+      "lineCount": 20
     },
     {
       "path": "Linear/AffineDiagonal.lean",
@@ -217,6 +222,11 @@
       "lineCount": 102
     },
     {
+      "path": "Linear/GeneralLocalQuotientPullback.lean",
+      "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
+      "lineCount": 52
+    },
+    {
       "path": "Linear/GenericFiber.lean",
       "sha256": "dcf4bf173165f44a26e04c9d22306fd3efa6aa366d0ff4d54d21f59226d075f7",
       "lineCount": 43
@@ -235,6 +245,16 @@
       "path": "Linear/HomogeneousQuotient.lean",
       "sha256": "815b79ba26f16335119f3544ec59cad7b6c25e4f190a9cb41911f22ceffad9b2",
       "lineCount": 234
+    },
+    {
+      "path": "Linear/HomogeneousRationalIdeal.lean",
+      "sha256": "542b5dd4b0dafbb1f427b299aca588aa56947cdacdd31408c886e7d9b63f7148",
+      "lineCount": 76
+    },
+    {
+      "path": "Linear/HomogeneousRationalPullback.lean",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "lineCount": 67
     },
     {
       "path": "Linear/Iteration.lean",
@@ -345,6 +365,11 @@
       "path": "Linear/LocalizedDifferentialRank.lean",
       "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
       "lineCount": 155
+    },
+    {
+      "path": "Linear/LocalizedPointQuotientEquiv.lean",
+      "sha256": "e9eabf98aaa3ba8cf65abac1e9edfa652f48de9b1db46c06f21b23c5675598d9",
+      "lineCount": 63
     },
     {
       "path": "Linear/LocalPullbackGenerators.lean",
@@ -672,9 +697,29 @@
       "lineCount": 111
     },
     {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lineCount": 58
+    },
+    {
+      "path": "Linear/ProjectiveRationalFormalIdeal.lean",
+      "sha256": "24859563a8e83de8f0b757e0665b776fb1635f5cfc3572e9f884953ea35f6972",
+      "lineCount": 71
+    },
+    {
+      "path": "Linear/ProjectiveRationalInvariance.lean",
+      "sha256": "5fc43125d010dec18d10fd86c31efa7191a84d5b9cb01a0648e11bc14f17a30c",
+      "lineCount": 59
+    },
+    {
       "path": "Linear/ProjectiveSmoothLocal.lean",
       "sha256": "092b72cfaf0cd6395aca943cf6813b60369f7d9680e37b151703dddf15a1243e",
       "lineCount": 82
+    },
+    {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lineCount": 109
     },
     {
       "path": "Linear/RectangularMinor.lean",
@@ -928,8 +973,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "342c55add50e928c08dc6d9768714affd1f38a95eaded88acbb918c3032c787f",
-      "lineCount": 221
+      "sha256": "2a440a544d15b372e4e1efcff4d07644e42f9d622707bef09406210659cd0a12",
+      "lineCount": 239
     }
   ],
   "declarations": {
@@ -1017,6 +1062,30 @@
         "LinearStudy.polynomialSmoothPointLocalReduction_maximalIdeal",
         "LinearStudy.polynomialSmoothReducedMap",
         "LinearStudy.smooth_local_quotient_pullback_reduction"
+      ]
+    },
+    "LinearStudy.affineChartPolynomialMap_eq_dehomogenize": {
+      "declaration": "LinearStudy.affineChartPolynomialMap_eq_dehomogenize",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineChartComparison.lean",
+      "line": 8,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_eq_dehomogenize.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : MvPolynomial (Fin (n + 1)) K) : LinearStudy.affineChartPolynomialMap H = LinearStudy.affineDehomogenize H",
+      "sha256": "dafc0caad22f1a0db3319e4337163a809d23a671e8143c88b58f8985584f6729",
+      "lines": 12,
+      "moduleLineCount": 20,
+      "startLine": 8,
+      "endLine": 19,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineDehomogenize"
       ]
     },
     "LinearStudy.polynomial_difference_matrix_right_zero": {
@@ -6392,6 +6461,99 @@
         "LinearStudy.formal_pullback_firstOrder_unit_division"
       ]
     },
+    "LinearStudy.general_local_pullback_ideal_le": {
+      "declaration": "LinearStudy.general_local_pullback_ideal_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GeneralLocalQuotientPullback.lean",
+      "line": 8,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.general_local_pullback_ideal_le.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime] (φ : R →+* A) (hQP : Q = Ideal.comap φ P)\n  (hφ : Ideal.map φ I ≤ J) :\n  Ideal.map (algebraMap R (Localization.AtPrime Q)) I ≤\n    Ideal.comap (Localization.localRingHom Q P φ hQP) (Ideal.map (algebraMap A (Localization.AtPrime P)) J)",
+      "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
+      "lines": 16,
+      "moduleLineCount": 52,
+      "startLine": 8,
+      "endLine": 23,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    "LinearStudy.generalPointLocalQuotientPullback": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/GeneralLocalQuotientPullback.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime] (φ : R →+* A) (hQP : Q = Ideal.comap φ P)\n  (hφ : Ideal.map φ I ≤ J) :\n  Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I →+*\n    Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J",
+      "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
+      "lines": 9,
+      "moduleLineCount": 52,
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.general_local_pullback_ideal_le"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback_mk": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GeneralLocalQuotientPullback.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_mk.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime] (φ : R →+* A) (hQP : Q = Ideal.comap φ P)\n  (hφ : Ideal.map φ I ≤ J) (a : R) :\n  (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ)\n      ((Ideal.Quotient.mk (Ideal.map (algebraMap R (Localization.AtPrime Q)) I))\n        ((algebraMap R (Localization.AtPrime Q)) a)) =\n    (Ideal.Quotient.mk (Ideal.map (algebraMap A (Localization.AtPrime P)) J))\n      ((algebraMap A (Localization.AtPrime P)) (φ a))",
+      "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
+      "lines": 8,
+      "moduleLineCount": 52,
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.general_local_pullback_ideal_le"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback_isLocalHom": {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_isLocalHom",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GeneralLocalQuotientPullback.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_isLocalHom.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime]\n  [Nontrivial (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)] (φ : R →+* A)\n  (hQP : Q = Ideal.comap φ P) (hφ : Ideal.map φ I ≤ J) :\n  IsLocalHom (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ)",
+      "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
+      "lines": 7,
+      "moduleLineCount": 52,
+      "startLine": 44,
+      "endLine": 50,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.general_local_pullback_ideal_le",
+        "LinearStudy.local_quotient_map_isLocalHom"
+      ]
+    },
     "LinearStudy.flat_genericFiber_injective": {
       "declaration": "LinearStudy.flat_genericFiber_injective",
       "kind": "theorem",
@@ -6959,6 +7121,144 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.homogeneous_perfect_pairing_high_degree_mem",
         "LinearStudy.homogeneous_polynomial_low_degree_pairing"
+      ]
+    },
+    "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling": {
+      "declaration": "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalIdeal.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {S : Type u_3}\n  [Field K] [CommRing S] (I : Ideal (MvPolynomial σ K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule σ K) I) (φ ψ : MvPolynomial σ K →+* S)\n  (hscale : ∀ (H : MvPolynomial σ K) (m : ℕ), H.IsHomogeneous m → ∃ u, φ H = ↑u * ψ H) : Ideal.map φ I = Ideal.map ψ I",
+      "sha256": "542b5dd4b0dafbb1f427b299aca588aa56947cdacdd31408c886e7d9b63f7148",
+      "lines": 32,
+      "moduleLineCount": 76,
+      "startLine": 10,
+      "endLine": 41,
+      "lineCount": 32,
+      "dependencies": []
+    },
+    "LinearStudy.homogeneous_projective_chart_pullback_ideal": {
+      "declaration": "LinearStudy.homogeneous_projective_chart_pullback_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalIdeal.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_projective_chart_pullback_ideal.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I)\n  (F : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) :\n  have D := LinearStudy.affineChartPolynomialMap;\n  have p0 := D (F 0);\n  have p := fun i => D (F i.succ);\n  Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom (Ideal.map D.toRingHom I) =\n    Ideal.map ((algebraMap (MvPolynomial (Fin n) K) (Localization.Away p0)).comp D.toRingHom)\n      (Ideal.map (MvPolynomial.aeval F).toRingHom I)",
+      "sha256": "542b5dd4b0dafbb1f427b299aca588aa56947cdacdd31408c886e7d9b63f7148",
+      "lines": 32,
+      "moduleLineCount": 76,
+      "startLine": 43,
+      "endLine": 74,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling",
+        "LinearStudy.homogeneous_rational_chart_pullback",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.homogeneous_aeval_smul": {
+      "declaration": "LinearStudy.homogeneous_aeval_smul",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalPullback.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_aeval_smul.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [Field K] {S : Type u_3} [CommRing S]\n  [Algebra K S] {P : MvPolynomial σ K} {m : ℕ} (hP : P.IsHomogeneous m) (a : S) (v : σ → S) :\n  (MvPolynomial.aeval fun i => a * v i) P = a ^ m * (MvPolynomial.aeval v) P",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "lines": 15,
+      "moduleLineCount": 67,
+      "startLine": 11,
+      "endLine": 25,
+      "lineCount": 15,
+      "dependencies": []
+    },
+    "LinearStudy.affineChartPolynomialMap": {
+      "declaration": "LinearStudy.affineChartPolynomialMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalPullback.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.affineChartPolynomialMap.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  MvPolynomial (Fin (n + 1)) K →ₐ[K] MvPolynomial (Fin n) K",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "lines": 3,
+      "moduleLineCount": 67,
+      "startLine": 27,
+      "endLine": 29,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    "LinearStudy.affineChartPolynomialMap_comp_aeval": {
+      "declaration": "LinearStudy.affineChartPolynomialMap_comp_aeval",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalPullback.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_comp_aeval.{u_1, u_3} {K : Type u_1} [Field K] {n : ℕ} {S : Type u_3} [CommRing S]\n  [Algebra K S] (v : Fin n → S) :\n  (MvPolynomial.aeval v).comp LinearStudy.affineChartPolynomialMap = MvPolynomial.aeval fun i => Fin.cases 1 v i",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "lines": 7,
+      "moduleLineCount": 67,
+      "startLine": 31,
+      "endLine": 37,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    "LinearStudy.homogeneous_rational_chart_pullback": {
+      "declaration": "LinearStudy.homogeneous_rational_chart_pullback",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRationalPullback.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_rational_chart_pullback.{u_1} {K : Type u_1} [Field K] {n : ℕ} (p0 : MvPolynomial (Fin n) K)\n  (p : Fin n → MvPolynomial (Fin n) K) (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ} (hH : H.IsHomogeneous m) :\n  (LinearStudy.rationalPolynomialChartMap p0 p) (LinearStudy.affineChartPolynomialMap H) =\n    IsLocalization.Away.invSelf p0 ^ m *\n      (MvPolynomial.aeval fun i =>\n          Fin.cases ((algebraMap (MvPolynomial (Fin n) K) (Localization.Away p0)) p0)\n            (fun i => (algebraMap (MvPolynomial (Fin n) K) (Localization.Away p0)) (p i)) i)\n        H",
+      "sha256": "3b32e212be427b9d788776621333f9a64539c6cbe75e2ab7d87327c95f35cc65",
+      "lines": 27,
+      "moduleLineCount": 67,
+      "startLine": 39,
+      "endLine": 65,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_aeval_smul",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.total_invariance_membership": {
@@ -9629,6 +9929,74 @@
         "LinearStudy.smooth_points_have_common_formal_normal_coordinates",
         "LinearStudy.smooth_polynomial_conormal_finrank",
         "LinearStudy.smooth_prime_polynomial_conormal_rank_positive"
+      ]
+    },
+    "LinearStudy.localizedPointQuotientEquiv": {
+      "declaration": "LinearStudy.localizedPointQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalizedPointQuotientEquiv.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.localizedPointQuotientEquiv.{u_1} {R : Type u_1} [CommRing R] (M : Submonoid R) (I : Ideal R)\n  (P : Ideal (Localization M)) [P.IsPrime] :\n  Localization.AtPrime (Ideal.comap (algebraMap R (Localization M)) P) ⧸\n      Ideal.map (algebraMap R (Localization.AtPrime (Ideal.comap (algebraMap R (Localization M)) P))) I ≃+*\n    Localization.AtPrime P ⧸\n      Ideal.map (algebraMap (Localization M) (Localization.AtPrime P)) (Ideal.map (algebraMap R (Localization M)) I)",
+      "sha256": "e9eabf98aaa3ba8cf65abac1e9edfa652f48de9b1db46c06f21b23c5675598d9",
+      "lines": 26,
+      "moduleLineCount": 63,
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": []
+    },
+    "LinearStudy.localizedPointQuotientEquiv_mk": {
+      "declaration": "LinearStudy.localizedPointQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedPointQuotientEquiv.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedPointQuotientEquiv_mk.{u_1} {R : Type u_1} [CommRing R] (M : Submonoid R) (I : Ideal R)\n  (P : Ideal (Localization M)) [P.IsPrime] (a : R) :\n  (LinearStudy.localizedPointQuotientEquiv M I P)\n      ((Ideal.Quotient.mk\n          (Ideal.map (algebraMap R (Localization.AtPrime (Ideal.comap (algebraMap R (Localization M)) P))) I))\n        ((algebraMap R (Localization.AtPrime (Ideal.comap (algebraMap R (Localization M)) P))) a)) =\n    (Ideal.Quotient.mk\n        (Ideal.map (algebraMap (Localization M) (Localization.AtPrime P))\n          (Ideal.map (algebraMap R (Localization M)) I)))\n      ((algebraMap (Localization M) (Localization.AtPrime P)) ((algebraMap R (Localization M)) a))",
+      "sha256": "e9eabf98aaa3ba8cf65abac1e9edfa652f48de9b1db46c06f21b23c5675598d9",
+      "lines": 12,
+      "moduleLineCount": 63,
+      "startLine": 39,
+      "endLine": 50,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.localizedPointQuotientEquiv"
+      ]
+    },
+    "LinearStudy.polynomialAwayPointEvaluation_point_comap": {
+      "declaration": "LinearStudy.polynomialAwayPointEvaluation_point_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedPointQuotientEquiv.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayPointEvaluation_point_comap.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :\n  Ideal.comap (algebraMap (MvPolynomial σ K) (Localization.Away p0))\n      (RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom) =\n    RingHom.ker (MvPolynomial.aeval x).toRingHom",
+      "sha256": "e9eabf98aaa3ba8cf65abac1e9edfa652f48de9b1db46c06f21b23c5675598d9",
+      "lines": 10,
+      "moduleLineCount": 63,
+      "startLine": 52,
+      "endLine": 61,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
       ]
     },
     "LinearStudy.local_ideal_generators_image": {
@@ -18347,6 +18715,286 @@
         "LinearStudy.projective_total_invariance_ideal_power_sandwich"
       ]
     },
+    "LinearStudy.rationalPolynomialChartMap": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.rationalPolynomialChartMap.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (p0 : MvPolynomial σ K)\n  (p : σ → MvPolynomial σ K) : MvPolynomial σ K →ₐ[K] Localization.Away p0",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 5,
+      "moduleLineCount": 58,
+      "startLine": 11,
+      "endLine": 15,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialAwayPointEvaluation": {
+      "declaration": "LinearStudy.polynomialAwayPointEvaluation",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialAwayPointEvaluation.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) : Localization.Away p0 →ₐ[K] K",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 4,
+      "moduleLineCount": 58,
+      "startLine": 17,
+      "endLine": 20,
+      "lineCount": 4,
+      "dependencies": []
+    },
+    "LinearStudy.polynomialAwayPointEvaluation_algebraMap": {
+      "declaration": "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayPointEvaluation_algebraMap.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (a : MvPolynomial σ K) :\n  (LinearStudy.polynomialAwayPointEvaluation x p0 hp0) ((algebraMap (MvPolynomial σ K) (Localization.Away p0)) a) =\n    (MvPolynomial.eval x) a",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 5,
+      "moduleLineCount": 58,
+      "startLine": 22,
+      "endLine": 26,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation"
+      ]
+    },
+    "LinearStudy.polynomialAwayPointEvaluation_invSelf": {
+      "declaration": "LinearStudy.polynomialAwayPointEvaluation_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayPointEvaluation_invSelf.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :\n  (LinearStudy.polynomialAwayPointEvaluation x p0 hp0) (IsLocalization.Away.invSelf p0) = ((MvPolynomial.eval x) p0)⁻¹",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 9,
+      "moduleLineCount": 58,
+      "startLine": 28,
+      "endLine": 36,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_point_evaluation": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_point_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_point_evaluation.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : σ → MvPolynomial σ K) :\n  (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).comp (LinearStudy.rationalPolynomialChartMap p0 p) =\n    MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 9,
+      "moduleLineCount": 58,
+      "startLine": 38,
+      "endLine": 46,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.polynomialAwayPointEvaluation_invSelf",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_point_kernel": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_point_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalChart.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_point_kernel.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : σ → MvPolynomial σ K) :\n  RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom =\n    Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom\n      (RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)",
+      "sha256": "a0f3979f378ff6f5a9d4a7f84ee9355c8feb1877875bc2df83f1d15da7d603e9",
+      "lines": 10,
+      "moduleLineCount": 58,
+      "startLine": 48,
+      "endLine": 57,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_evaluation"
+      ]
+    },
+    "LinearStudy.projective_total_invariance_actual_formal_ratio_radical": {
+      "declaration": "LinearStudy.projective_total_invariance_actual_formal_ratio_radical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalFormalIdeal.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_total_invariance_actual_formal_ratio_radical {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (x : Fin n → ℂ) (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0) :\n  let D := LinearStudy.affineChartPolynomialMap;\n  let p0 := D (f.forms 0);\n  have p := fun i => D (f.forms i.succ);\n  have I := Ideal.map D.toRingHom V.ideal.toIdeal;\n  (Ideal.map (LinearStudy.polynomialAwayFormalMap x p0 hp0).toRingHom\n        (Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)).radical =\n    (Ideal.map (LinearStudy.formalPolynomialAtPoint x) I).radical",
+      "sha256": "24859563a8e83de8f0b757e0665b776fb1635f5cfc3572e9f884953ea35f6972",
+      "lines": 29,
+      "moduleLineCount": 71,
+      "startLine": 11,
+      "endLine": 39,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.projective_total_invariance_rational_chart_radical",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.projective_target_equations_actual_formal_radical": {
+      "declaration": "LinearStudy.projective_target_equations_actual_formal_radical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalFormalIdeal.lean",
+      "line": 43,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_target_equations_actual_formal_radical.{u_1} {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (x : Fin n → ℂ) (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0)\n  (Q : Ideal (MvPolynomial (Fin n) ℂ)) [Q.IsPrime]\n  (hQ :\n    Q =\n      RingHom.ker\n        (MvPolynomial.aeval fun i =>\n            (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms i.succ)) /\n              (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0))).toRingHom)\n  {ι : Type u_1} (H : ι → MvPolynomial (Fin n) ℂ)\n  (hlocal :\n    Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.AtPrime Q))\n        (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom V.ideal.toIdeal) =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.AtPrime Q)) (H i))) :\n  let D := LinearStudy.affineChartPolynomialMap;\n  let p0 := D (f.forms 0);\n  have p := fun i => D (f.forms i.succ);\n  have I := Ideal.map D.toRingHom V.ideal.toIdeal;\n  (Ideal.span\n        (Set.range fun i =>\n          (LinearStudy.polynomialAwayFormalMap x p0 hp0)\n            ((LinearStudy.rationalPolynomialChartMap p0 p) (H i)))).radical =\n    (Ideal.map (LinearStudy.formalPolynomialAtPoint x) I).radical",
+      "sha256": "24859563a8e83de8f0b757e0665b776fb1635f5cfc3572e9f884953ea35f6972",
+      "lines": 29,
+      "moduleLineCount": 71,
+      "startLine": 41,
+      "endLine": 69,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.projective_total_invariance_actual_formal_ratio_radical",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_target_local_generators"
+      ]
+    },
+    "LinearStudy.projective_total_invariance_rational_chart_sandwich": {
+      "declaration": "LinearStudy.projective_total_invariance_rational_chart_sandwich",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalInvariance.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_total_invariance_rational_chart_sandwich {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  let D := LinearStudy.affineChartPolynomialMap;\n  let p0 := D (f.forms 0);\n  have p := fun i => D (f.forms i.succ);\n  have I := Ideal.map D.toRingHom V.ideal.toIdeal;\n  have A := algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0);\n  ∃ e,\n    0 < e ∧\n      Ideal.map A I ^ e ≤ Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ∧\n        Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤ Ideal.map A I",
+      "sha256": "5fc43125d010dec18d10fd86c31efa7191a84d5b9cb01a0648e11bc14f17a30c",
+      "lines": 28,
+      "moduleLineCount": 59,
+      "startLine": 10,
+      "endLine": 37,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneous_projective_chart_pullback_ideal",
+        "LinearStudy.projective_total_invariance_formal_sandwich",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.projective_total_invariance_rational_chart_radical": {
+      "declaration": "LinearStudy.projective_total_invariance_rational_chart_radical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRationalInvariance.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_total_invariance_rational_chart_radical.{u_1} {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  {S : Type u_1} [CommRing S] (χ : Localization.Away (LinearStudy.affineChartPolynomialMap (f.forms 0)) →+* S) :\n  let D := LinearStudy.affineChartPolynomialMap;\n  let p0 := D (f.forms 0);\n  have p := fun i => D (f.forms i.succ);\n  have I := Ideal.map D.toRingHom V.ideal.toIdeal;\n  (Ideal.map χ (Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)).radical =\n    (Ideal.map χ (Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) I)).radical",
+      "sha256": "5fc43125d010dec18d10fd86c31efa7191a84d5b9cb01a0648e11bc14f17a30c",
+      "lines": 19,
+      "moduleLineCount": 59,
+      "startLine": 39,
+      "endLine": 57,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projective_total_invariance_rational_chart_sandwich",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.projective_smooth_local_pullback_structure": {
       "declaration": "LinearStudy.projective_smooth_local_pullback_structure",
       "kind": "theorem",
@@ -18423,6 +19071,241 @@
         "LinearStudy.relativeJacobian",
         "LinearStudy.smoothPullbackEquations",
         "LinearStudy.smooth_invariant_local_pullback_radical"
+      ]
+    },
+    "LinearStudy.formalPolynomialAtPointAlg": {
+      "declaration": "LinearStudy.formalPolynomialAtPointAlg",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.formalPolynomialAtPointAlg.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K) :\n  MvPolynomial σ K →ₐ[K] MvPowerSeries σ K",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 4,
+      "moduleLineCount": 109,
+      "startLine": 11,
+      "endLine": 14,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_C"
+      ]
+    },
+    "LinearStudy.polynomialAwayFormalMap": {
+      "declaration": "LinearStudy.polynomialAwayFormalMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialAwayFormalMap.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) : Localization.Away p0 →ₐ[K] MvPowerSeries σ K",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 7,
+      "moduleLineCount": 109,
+      "startLine": 16,
+      "endLine": 22,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPointAlg"
+      ]
+    },
+    "LinearStudy.polynomialAwayFormalMap_algebraMap": {
+      "declaration": "LinearStudy.polynomialAwayFormalMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayFormalMap_algebraMap.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (a : MvPolynomial σ K) :\n  (LinearStudy.polynomialAwayFormalMap x p0 hp0) ((algebraMap (MvPolynomial σ K) (Localization.Away p0)) a) =\n    (LinearStudy.formalPolynomialAtPoint x) a",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 5,
+      "moduleLineCount": 109,
+      "startLine": 24,
+      "endLine": 28,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointAlg",
+        "LinearStudy.formalPolynomialAtPoint_C",
+        "LinearStudy.polynomialAwayFormalMap"
+      ]
+    },
+    "LinearStudy.polynomialAwayFormalMap_invSelf": {
+      "declaration": "LinearStudy.polynomialAwayFormalMap_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayFormalMap_invSelf.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :\n  (LinearStudy.polynomialAwayFormalMap x p0 hp0) (IsLocalization.Away.invSelf p0) =\n    ↑(LinearStudy.formalPolynomialAtPointUnit x p0 hp0)⁻¹",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 9,
+      "moduleLineCount": 109,
+      "startLine": 30,
+      "endLine": 38,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointUnit",
+        "LinearStudy.formalPolynomialAtPointUnit_coe",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_formal_comparison": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_formal_comparison",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_formal_comparison {r c : ℕ} (x : Fin r ⊕ Fin c → ℂ)\n  (p0 : MvPolynomial (Fin r ⊕ Fin c) ℂ) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) :\n  (LinearStudy.polynomialAwayFormalMap x p0 hp0).comp (LinearStudy.rationalPolynomialChartMap p0 p) =\n    MvPolynomial.aeval (LinearStudy.projectiveFormalCoordinateRatios x p0 hp0 p)",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 10,
+      "moduleLineCount": 109,
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointUnit",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialAwayFormalMap_invSelf",
+        "LinearStudy.projectiveFormalCoordinateRatios",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    "LinearStudy.polynomialAwayFormalMap_constantCoeff": {
+      "declaration": "LinearStudy.polynomialAwayFormalMap_constantCoeff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayFormalMap_constantCoeff.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :\n  MvPowerSeries.constantCoeff.comp (LinearStudy.polynomialAwayFormalMap x p0 hp0).toRingHom =\n    (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 12,
+      "moduleLineCount": 109,
+      "startLine": 51,
+      "endLine": 62,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_constantCoeff",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
+      ]
+    },
+    "LinearStudy.polynomialAwayFormalMap_isUnit_iff": {
+      "declaration": "LinearStudy.polynomialAwayFormalMap_isUnit_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwayFormalMap_isUnit_iff.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (a : Localization.Away p0) :\n  IsUnit ((LinearStudy.polynomialAwayFormalMap x p0 hp0) a) ↔ (LinearStudy.polynomialAwayPointEvaluation x p0 hp0) a ≠ 0",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 9,
+      "moduleLineCount": 109,
+      "startLine": 64,
+      "endLine": 72,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_constantCoeff",
+        "LinearStudy.polynomialAwayPointEvaluation"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 74,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] (x : σ → K)\n  (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : σ → MvPolynomial σ K) (H : MvPolynomial σ K) :\n  IsUnit ((LinearStudy.polynomialAwayFormalMap x p0 hp0) ((LinearStudy.rationalPolynomialChartMap p0 p) H)) ↔\n    (MvPolynomial.eval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0) H ≠ 0",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 11,
+      "moduleLineCount": 109,
+      "startLine": 74,
+      "endLine": 84,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_isUnit_iff",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_evaluation"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_target_local_generators": {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_target_local_generators",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalChartFormalComparison.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_target_local_generators.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} [Field K]\n  (x : σ → K) (p0 : MvPolynomial σ K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : σ → MvPolynomial σ K)\n  (I Q : Ideal (MvPolynomial σ K)) [Q.IsPrime]\n  (hQ : Q = RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)\n  {ι : Type u_3} (H : ι → MvPolynomial σ K)\n  (hlocal :\n    Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime Q)) I =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial σ K) (Localization.AtPrime Q)) (H i))) :\n  Ideal.map (LinearStudy.polynomialAwayFormalMap x p0 hp0).toRingHom\n      (Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I) =\n    Ideal.span\n      (Set.range fun i =>\n        (LinearStudy.polynomialAwayFormalMap x p0 hp0) ((LinearStudy.rationalPolynomialChartMap p0 p) (H i)))",
+      "sha256": "e23644f6cf8546a8ef83c75bc51bc81cb2ac71663303dcf26b4084069dcf69f2",
+      "lines": 22,
+      "moduleLineCount": 109,
+      "startLine": 86,
+      "endLine": 107,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.local_ideal_generators_image",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff"
       ]
     },
     "LinearStudy.exists_nonzero_coordinate_minor": {
@@ -28175,8 +29058,8 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 745,
-  "definitionCount": 148,
+  "verifiedTheoremCount": 771,
+  "definitionCount": 155,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
@@ -28539,6 +29422,27 @@
       "lineCount": 8,
       "dependencies": [
         "LinearStudy.free_of_regular_maximal_generators"
+      ]
+    },
+    "LinearStudy.projective_total_invariance_rational_chart_sandwich": {
+      "path": "Linear/ProjectiveRationalInvariance.lean",
+      "startLine": 10,
+      "endLine": 37,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneous_projective_chart_pullback_ideal",
+        "LinearStudy.projective_total_invariance_formal_sandwich",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "exteriorPower.degreeProjection_apply_ιMulti": {
@@ -29044,6 +29948,15 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.dualGenerator",
         "LinearStudy.dualGenerator_pairing"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback": {
+      "path": "Linear/GeneralLocalQuotientPullback.lean",
+      "startLine": 25,
+      "endLine": 33,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.general_local_pullback_ideal_le"
       ]
     },
     "LinearStudy.arbitrary_parameter_lifts_regular": {
@@ -29683,6 +30596,18 @@
         "exteriorPower.degreeProjection_apply_ιMulti"
       ]
     },
+    "LinearStudy.polynomialAwayFormalMap_algebraMap": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 24,
+      "endLine": 28,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointAlg",
+        "LinearStudy.formalPolynomialAtPoint_C",
+        "LinearStudy.polynomialAwayFormalMap"
+      ]
+    },
     "LinearStudy.trace_eq_rank_smul_reduction": {
       "path": "Linear/TraceElement.lean",
       "startLine": 33,
@@ -29818,6 +30743,13 @@
         "LinearStudy.smooth_polynomial_jacobian_nonzero_minor"
       ]
     },
+    "LinearStudy.affineChartPolynomialMap": {
+      "path": "Linear/HomogeneousRationalPullback.lean",
+      "startLine": 27,
+      "endLine": 29,
+      "lineCount": 3,
+      "dependencies": []
+    },
     "LinearStudy.tensorFunctionalContraction_left": {
       "path": "Linear/ContractionPairing.lean",
       "startLine": 14,
@@ -29827,6 +30759,18 @@
         "LinearStudy.multiplicationToDual",
         "LinearStudy.tensorFunctionalContraction",
         "LinearStudy.tensorFunctionalContraction_tmul"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_point_evaluation": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 38,
+      "endLine": 46,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap",
+        "LinearStudy.polynomialAwayPointEvaluation_invSelf",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "Ideal.depth_eq_of_iso": {
@@ -30889,6 +31833,15 @@
         "LinearStudy.ideal_generators_of_conormal_span"
       ]
     },
+    "LinearStudy.polynomialAwayPointEvaluation_algebraMap": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 22,
+      "endLine": 26,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation"
+      ]
+    },
     "LinearStudy.thickening_nilradical_scalar_generation": {
       "path": "Linear/Thickening.lean",
       "startLine": 187,
@@ -30980,6 +31933,15 @@
       "lineCount": 10,
       "dependencies": [
         "LinearStudy.genericNormalBlock"
+      ]
+    },
+    "LinearStudy.localizedPointQuotientEquiv_mk": {
+      "path": "Linear/LocalizedPointQuotientEquiv.lean",
+      "startLine": 39,
+      "endLine": 50,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.localizedPointQuotientEquiv"
       ]
     },
     "LinearStudy.socle_linear_evaluation": {
@@ -31180,6 +32142,17 @@
         "LinearStudy.epsilon"
       ]
     },
+    "LinearStudy.polynomialAwayFormalMap_isUnit_iff": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 64,
+      "endLine": 72,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_constantCoeff",
+        "LinearStudy.polynomialAwayPointEvaluation"
+      ]
+    },
     "ExteriorAlgebra.ιInv_one": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
       "startLine": 48,
@@ -31192,6 +32165,13 @@
       "startLine": 18,
       "endLine": 19,
       "lineCount": 2,
+      "dependencies": []
+    },
+    "LinearStudy.general_local_pullback_ideal_le": {
+      "path": "Linear/GeneralLocalQuotientPullback.lean",
+      "startLine": 8,
+      "endLine": 23,
+      "lineCount": 16,
       "dependencies": []
     },
     "LinearStudy.polynomialSmoothFormalMap_target_local_generators": {
@@ -31823,6 +32803,19 @@
         "koszulComplex.fromOfListHomZero"
       ]
     },
+    "LinearStudy.polynomialAwayFormalMap_invSelf": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 30,
+      "endLine": 38,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointUnit",
+        "LinearStudy.formalPolynomialAtPointUnit_coe",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap"
+      ]
+    },
     "LinearStudy.nilpotentPowerSeriesEval_comp": {
       "path": "Linear/NilpotentEvaluation.lean",
       "startLine": 50,
@@ -31994,6 +32987,21 @@
       "dependencies": [
         "ModuleCat.depth",
         "ModuleCat.depth_eq_sSup_lt_top"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_formal_comparison": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPointUnit",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialAwayFormalMap_invSelf",
+        "LinearStudy.projectiveFormalCoordinateRatios",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.reindexed_formal_ideal_of_local_generators": {
@@ -32477,6 +33485,13 @@
         "LinearStudy.smooth_polynomial_jacobian_nonzero_minor"
       ]
     },
+    "LinearStudy.polynomialAwayPointEvaluation": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 17,
+      "endLine": 20,
+      "lineCount": 4,
+      "dependencies": []
+    },
     "LinearStudy.doublePointPowerSeriesEquiv": {
       "path": "Linear/FirstJet.lean",
       "startLine": 75,
@@ -32578,6 +33593,20 @@
         "LinearStudy.unitTwistedPairing"
       ]
     },
+    "LinearStudy.polynomialAwayFormalMap_constantCoeff": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 51,
+      "endLine": 62,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_constantCoeff",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
+      ]
+    },
     "LinearStudy.formalPolynomialAtPointUnit_coe": {
       "path": "Linear/SmoothProjectiveFormalSocle.lean",
       "startLine": 21,
@@ -32644,6 +33673,28 @@
       "lineCount": 15,
       "dependencies": [
         "LinearStudy.powerSeries_firstJet_equal_iff_square"
+      ]
+    },
+    "LinearStudy.projective_target_equations_actual_formal_radical": {
+      "path": "Linear/ProjectiveRationalFormalIdeal.lean",
+      "startLine": 41,
+      "endLine": 69,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.projective_total_invariance_actual_formal_ratio_radical",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_target_local_generators"
       ]
     },
     "LinearStudy.parameterSpecialization_jacobian": {
@@ -33393,6 +34444,18 @@
         "LinearStudy.dualGenerator_pairing"
       ]
     },
+    "LinearStudy.homogeneous_rational_chart_pullback": {
+      "path": "Linear/HomogeneousRationalPullback.lean",
+      "startLine": 39,
+      "endLine": 65,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_aeval_smul",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.smoothProjectivePullbackEquations": {
       "path": "Linear/SmoothProjectiveFormalSocle.lean",
       "startLine": 43,
@@ -33437,6 +34500,13 @@
       "startLine": 44,
       "endLine": 49,
       "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.rationalPolynomialChartMap": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 11,
+      "endLine": 15,
+      "lineCount": 5,
       "dependencies": []
     },
     "LinearStudy.polynomialSmoothFormalMap_normal_chain": {
@@ -33760,6 +34830,16 @@
         "LinearStudy.homogeneousComponent_mul_top"
       ]
     },
+    "LinearStudy.generalPointLocalQuotientPullback_mk": {
+      "path": "Linear/GeneralLocalQuotientPullback.lean",
+      "startLine": 35,
+      "endLine": 42,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.general_local_pullback_ideal_le"
+      ]
+    },
     "Polynomial.isCM_of_isCM": {
       "path": "Linear/Vendor/CM/CohenMacaulayPolynomial.lean",
       "startLine": 114,
@@ -33992,6 +35072,28 @@
         "LinearStudy.polynomialSmoothCoordinateEquiv",
         "LinearStudy.polynomialSmoothFormalMap",
         "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    "LinearStudy.projective_total_invariance_actual_formal_ratio_radical": {
+      "path": "Linear/ProjectiveRationalFormalIdeal.lean",
+      "startLine": 11,
+      "endLine": 39,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.projective_total_invariance_rational_chart_radical",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     "LinearStudy.polynomialDoubleTensor": {
@@ -34300,6 +35402,18 @@
         "LinearStudy.powerSeriesCoordinateChart"
       ]
     },
+    "LinearStudy.homogeneous_projective_chart_pullback_ideal": {
+      "path": "Linear/HomogeneousRationalIdeal.lean",
+      "startLine": 43,
+      "endLine": 74,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling",
+        "LinearStudy.homogeneous_rational_chart_pullback",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.PerfectMultiplicationPairing.equiv_apply": {
       "path": "Linear/Duality.lean",
       "startLine": 25,
@@ -34416,6 +35530,13 @@
       "startLine": 20,
       "endLine": 25,
       "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.homogeneous_aeval_smul": {
+      "path": "Linear/HomogeneousRationalPullback.lean",
+      "startLine": 11,
+      "endLine": 25,
+      "lineCount": 15,
       "dependencies": []
     },
     "koszulComplex.ofListIsoOfEqAux_comp": {
@@ -34945,6 +36066,16 @@
         "IsLocalRing.depth",
         "ModuleCat.IsCohenMacaulay",
         "ModuleCat.IsCohenMacaulay.mk"
+      ]
+    },
+    "LinearStudy.polynomialAwayPointEvaluation_invSelf": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 28,
+      "endLine": 36,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
       ]
     },
     "LinearStudy.powerSeries_thickening_structure_from_radical": {
@@ -35548,6 +36679,16 @@
         "IsCohenMacaulayRing.mk"
       ]
     },
+    "LinearStudy.affineChartPolynomialMap_eq_dehomogenize": {
+      "path": "Linear/AffineChartComparison.lean",
+      "startLine": 8,
+      "endLine": 19,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineDehomogenize"
+      ]
+    },
     "LinearStudy.completionLocalizationBackward_compatible": {
       "path": "Linear/CompletionLocalization.lean",
       "startLine": 62,
@@ -35557,6 +36698,13 @@
         "LinearStudy.completion_eval_naturality",
         "LinearStudy.primePowerQuotientEquiv_symm_naturality"
       ]
+    },
+    "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling": {
+      "path": "Linear/HomogeneousRationalIdeal.lean",
+      "startLine": 10,
+      "endLine": 41,
+      "lineCount": 32,
+      "dependencies": []
     },
     "LinearStudy.traceElement_pairing": {
       "path": "Linear/TraceElement.lean",
@@ -35902,6 +37050,18 @@
       "dependencies": [
         "exteriorPower.baseChangeIsoForwardAux",
         "exteriorPower.instIsScalarTowerExteriorAlgebraTensorProduct_linear"
+      ]
+    },
+    "LinearStudy.rationalPolynomialChartMap_target_local_generators": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 86,
+      "endLine": 107,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.local_ideal_generators_image",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff"
       ]
     },
     "LinearStudy.homogeneous_affine_chart_degree": {
@@ -36322,6 +37482,16 @@
         "LinearStudy.powerSeriesCoordinateChart",
         "LinearStudy.powerSeriesCoordinateChart_X",
         "LinearStudy.smoothFormalCoordinateEquiv_normal"
+      ]
+    },
+    "LinearStudy.polynomialAwayPointEvaluation_point_comap": {
+      "path": "Linear/LocalizedPointQuotientEquiv.lean",
+      "startLine": 52,
+      "endLine": 61,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
       ]
     },
     "LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form": {
@@ -37182,6 +38352,15 @@
         "LinearStudy.completionLocalizationForward_eval"
       ]
     },
+    "LinearStudy.polynomialAwayFormalMap": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 16,
+      "endLine": 22,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPointAlg"
+      ]
+    },
     "LinearStudy.projectiveFiber_actual_highest_regular": {
       "path": "Linear/AffineOriginRelation.lean",
       "startLine": 63,
@@ -37288,6 +38467,17 @@
       "endLine": 21,
       "lineCount": 2,
       "dependencies": []
+    },
+    "LinearStudy.rationalPolynomialChartMap_point_kernel": {
+      "path": "Linear/ProjectiveRationalChart.lean",
+      "startLine": 48,
+      "endLine": 57,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_evaluation"
+      ]
     },
     "LinearStudy.polynomialSmoothPointLocalReduction_polynomial": {
       "path": "Linear/PolynomialSmoothReduction.lean",
@@ -38732,6 +39922,25 @@
         "LinearStudy.dualGenerator"
       ]
     },
+    "LinearStudy.projective_total_invariance_rational_chart_radical": {
+      "path": "Linear/ProjectiveRationalInvariance.lean",
+      "startLine": 39,
+      "endLine": 57,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projective_total_invariance_rational_chart_sandwich",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
     "LinearStudy.localizationQuotientEquiv": {
       "path": "Linear/LocalFiber.lean",
       "startLine": 13,
@@ -38939,6 +40148,16 @@
         "LinearStudy.parameterSubstitutionEquiv",
         "LinearStudy.powerSeriesCoordinateChart",
         "LinearStudy.powerSeriesCoordinateChart_C"
+      ]
+    },
+    "LinearStudy.formalPolynomialAtPointAlg": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 11,
+      "endLine": 14,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_C"
       ]
     },
     "LinearStudy.affineDehomogenize_eval": {
@@ -39391,6 +40610,17 @@
       "dependencies": [
         "koszulComplex.d",
         "koszulComplex.equiv_comp_koszulComplex.d_zero_eq"
+      ]
+    },
+    "LinearStudy.generalPointLocalQuotientPullback_isLocalHom": {
+      "path": "Linear/GeneralLocalQuotientPullback.lean",
+      "startLine": 44,
+      "endLine": 50,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.general_local_pullback_ideal_le",
+        "LinearStudy.local_quotient_map_isLocalHom"
       ]
     },
     "LinearStudy.koszul_ofFn": {
@@ -40153,6 +41383,15 @@
         "LinearStudy.powerSeries_boxZero_expansion"
       ]
     },
+    "LinearStudy.affineChartPolynomialMap_comp_aeval": {
+      "path": "Linear/HomogeneousRationalPullback.lean",
+      "startLine": 31,
+      "endLine": 37,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
     "LinearMapOfSemiLinearMapAlgebraMap": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 171,
@@ -40323,6 +41562,19 @@
         "LinearStudy.Annihilates"
       ]
     },
+    "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff": {
+      "path": "Linear/RationalChartFormalComparison.lean",
+      "startLine": 74,
+      "endLine": 84,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_isUnit_iff",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_evaluation"
+      ]
+    },
     "LinearStudy.primePowerQuotientEquiv_symm_naturality": {
       "path": "Linear/CompletionLocalization.lean",
       "startLine": 20,
@@ -40360,6 +41612,13 @@
       "dependencies": [
         "LinearStudy.affine_ideal_top_component_mem"
       ]
+    },
+    "LinearStudy.localizedPointQuotientEquiv": {
+      "path": "Linear/LocalizedPointQuotientEquiv.lean",
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": []
     },
     "LinearStudy.weightedEvaluation_apply": {
       "path": "Linear/Evaluation.lean",

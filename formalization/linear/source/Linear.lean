@@ -219,3 +219,21 @@ public import Linear.PointLocalCoordinateEquiv
 public import Linear.SmoothTargetParameters
 
 public import Linear.SmoothUnramifiedParameters
+
+public import Linear.ProjectiveRationalChart
+
+public import Linear.GeneralLocalQuotientPullback
+
+public import Linear.RationalChartFormalComparison
+
+public import Linear.HomogeneousRationalPullback
+
+public import Linear.HomogeneousRationalIdeal
+
+public import Linear.ProjectiveRationalInvariance
+
+public import Linear.LocalizedPointQuotientEquiv
+
+public import Linear.ProjectiveRationalFormalIdeal
+
+public import Linear.AffineChartComparison
