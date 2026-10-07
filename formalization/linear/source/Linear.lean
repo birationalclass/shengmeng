@@ -251,3 +251,31 @@ public import Linear.RationalSmoothTargetParameters
 public import Linear.RationalSmoothRadical
 
 public import Linear.RationalSmoothJacobianSocle
+
+public import Linear.ProjectiveAffinePrime
+
+public import Linear.ProjectiveAffinePoint
+
+public import Linear.ProjectiveAffineVariety
+
+public import Linear.ProjectiveAffinePointData
+
+public import Linear.LocalPullbackEssentialFiniteType
+
+public import Linear.RationalLocalEssentialFiniteType
+
+public import Linear.RationalFiniteTypeSocle
+
+public import Linear.GenericSmoothOpen
+
+public import Linear.FiniteTypeRationalPoint
+
+public import Linear.SmoothRationalPoint
+
+public import Linear.ProjectiveAffineSmoothLocus
+
+public import Linear.ProjectiveAffineSmoothPoint
+
+public import Linear.SmoothPointPrincipalOpen
+
+public import Linear.ProjectiveSmoothOpenPoint

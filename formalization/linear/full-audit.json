@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1136,
-  "verifiedTheorems": 782,
-  "definitions": 158,
+  "audited": 1176,
+  "verifiedTheorems": 815,
+  "definitions": 165,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -4278,6 +4278,27 @@
       ]
     },
     {
+      "declaration": "LinearStudy.finiteType_exists_rational_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeRationalPoint.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteType_exists_rational_point.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [IsAlgClosed K]\n  [CommRing A] [Nontrivial A] [Algebra K A] [Algebra.FiniteType K A] : Nonempty (A →ₐ[K] K)",
+      "sha256": "9fba85957f0995d8978eac5c7e362776aad4dbf72cc7a9c625accead8b0206e0",
+      "lines": 11,
+      "moduleLineCount": 20,
+      "startLine": 8,
+      "endLine": 18,
+      "lineCount": 11,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.firstJet",
       "kind": "def",
       "origin": "project",
@@ -5652,6 +5673,27 @@
         "LinearStudy.Annihilates",
         "LinearStudy.flat_genericFiber_injective"
       ]
+    },
+    {
+      "declaration": "LinearStudy.domain_exists_nonzero_smooth_basic_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GenericSmoothOpen.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.domain_exists_nonzero_smooth_basic_open.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [PerfectField K]\n  [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] :\n  ∃ a, a ≠ 0 ∧ Algebra.Smooth K (Localization.Away a)",
+      "sha256": "68ad2ec2700f10b0e8fb962c349a05aec0c7cb02dc5ef34c9a6e56538e3f196d",
+      "lines": 17,
+      "moduleLineCount": 28,
+      "startLine": 10,
+      "endLine": 26,
+      "lineCount": 17,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.diagonal_coefficient_notMem_kernel",
@@ -9160,6 +9202,54 @@
         "LinearStudy.polynomialSmoothPointLocalReduction",
         "LinearStudy.polynomialSmoothPointLocalReduction_ideal_kernel",
         "LinearStudy.polynomialSmoothPointLocalReduction_maximalIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_scalar_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalPullbackEssentialFiniteType.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_scalar_comp.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3}\n  [CommRing K] [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] (I : Ideal R) (J P : Ideal A) (Q : Ideal R)\n  [P.IsPrime] [Q.IsPrime] (φ : R →ₐ[K] A) (hQP : Q = Ideal.comap φ.toRingHom P) (hφ : Ideal.map φ.toRingHom I ≤ J) :\n  (LinearStudy.generalPointLocalQuotientPullback I J P Q φ.toRingHom hQP hφ).comp\n      (algebraMap K (Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)) =\n    algebraMap K (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)",
+      "sha256": "aac7dfa3eb519a9241bacab738cbd046377e100c9cd46b9649bf9b2c35e9b50d",
+      "lines": 14,
+      "moduleLineCount": 46,
+      "startLine": 12,
+      "endLine": 25,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.generalPointLocalQuotientPullback_essFiniteType",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalPullbackEssentialFiniteType.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.generalPointLocalQuotientPullback_essFiniteType.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3}\n  [CommRing K] [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] [Algebra.EssFiniteType K A] (I : Ideal R)\n  (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime] (φ : R →ₐ[K] A) (hQP : Q = Ideal.comap φ.toRingHom P)\n  (hφ : Ideal.map φ.toRingHom I ≤ J) :\n  (LinearStudy.generalPointLocalQuotientPullback I J P Q φ.toRingHom hQP hφ).EssFiniteType",
+      "sha256": "aac7dfa3eb519a9241bacab738cbd046377e100c9cd46b9649bf9b2c35e9b50d",
+      "lines": 18,
+      "moduleLineCount": 46,
+      "startLine": 27,
+      "endLine": 44,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_scalar_comp"
       ]
     },
     {
@@ -17265,6 +17355,837 @@
       ]
     },
     {
+      "declaration": "LinearStudy.affineChartPolynomialMap_pointKernel_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePoint.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_pointKernel_comap.{u_1} {K : Type u_1} [Field K] {n : ℕ} (x : Fin n → K) :\n  Ideal.comap LinearStudy.affineChartPolynomialMap.toRingHom (RingHom.ker (MvPolynomial.aeval x).toRingHom) =\n    RingHom.ker (MvPolynomial.aeval fun i => Fin.cases 1 x i).toRingHom",
+      "sha256": "859c578e31bbb2205d8a7b1155954614e877100df0698c53eb1e54959d57febb",
+      "lines": 7,
+      "moduleLineCount": 57,
+      "startLine": 12,
+      "endLine": 18,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePoint.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (x : Fin n → K)\n  (hx : (fun i => Fin.cases 1 x i) ∈ MvPolynomial.zeroLocus K I) :\n  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ≤ RingHom.ker (MvPolynomial.aeval x).toRingHom",
+      "sha256": "859c578e31bbb2205d8a7b1155954614e877100df0698c53eb1e54959d57febb",
+      "lines": 8,
+      "moduleLineCount": 57,
+      "startLine": 20,
+      "endLine": 27,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_pointKernel_comap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_ideal_isPrime_of_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePoint.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_ideal_isPrime_of_point.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (x : Fin n → K)\n  (hx : (fun i => Fin.cases 1 x i) ∈ MvPolynomial.zeroLocus K I) :\n  (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I).IsPrime",
+      "sha256": "859c578e31bbb2205d8a7b1155954614e877100df0698c53eb1e54959d57febb",
+      "lines": 9,
+      "moduleLineCount": 57,
+      "startLine": 29,
+      "endLine": 37,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_ideal_isPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_point_quotient_prime",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePoint.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_point_quotient_prime.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) (x : Fin n → K)\n  (hx : (fun i => Fin.cases 1 x i) ∈ MvPolynomial.zeroLocus K I) :\n  have J := Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I;\n  have Q := RingHom.ker (MvPolynomial.aeval x).toRingHom;\n  (Ideal.map (Ideal.Quotient.mk J) Q).IsPrime ∧\n    Ideal.comap (Ideal.Quotient.mk J) (Ideal.map (Ideal.Quotient.mk J) Q) = Q",
+      "sha256": "859c578e31bbb2205d8a7b1155954614e877100df0698c53eb1e54959d57febb",
+      "lines": 17,
+      "moduleLineCount": 57,
+      "startLine": 39,
+      "endLine": 55,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePointData.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) : Ideal (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)",
+      "sha256": "6d65b0f124cf206f3da61e7f0888e9ecb799a9bcf885feafb3cd0243a95f9550",
+      "lines": 5,
+      "moduleLineCount": 58,
+      "startLine": 11,
+      "endLine": 15,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_isPrime",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePointData.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_isPrime {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) : (V.affinePointIdeal x).IsPrime",
+      "sha256": "6d65b0f124cf206f3da61e7f0888e9ecb799a9bcf885feafb3cd0243a95f9550",
+      "lines": 6,
+      "moduleLineCount": 58,
+      "startLine": 17,
+      "endLine": 22,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_point_quotient_prime",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePointData.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Ideal.comap (Ideal.Quotient.mk V.affineIdeal) (V.affinePointIdeal x) = RingHom.ker (MvPolynomial.aeval x).toRingHom",
+      "sha256": "6d65b0f124cf206f3da61e7f0888e9ecb799a9bcf885feafb3cd0243a95f9550",
+      "lines": 7,
+      "moduleLineCount": 58,
+      "startLine": 24,
+      "endLine": 30,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_point_quotient_prime",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_total_invariance_actual_affine_point_data",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePointData.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_total_invariance_actual_affine_point_data {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : f.degree ≠ 0) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  have p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  have y := fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0;\n  have P := RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom;\n  (V.affinePointIdeal y).IsPrime ∧\n    Ideal.comap (Ideal.Quotient.mk V.affineIdeal) (V.affinePointIdeal y) =\n        Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P ∧\n      ∃ e,\n        0 < e ∧\n          Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal ^ e ≤\n              Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom V.affineIdeal ∧\n            Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom V.affineIdeal ≤\n              Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal",
+      "sha256": "6d65b0f124cf206f3da61e7f0888e9ecb799a9bcf885feafb3cd0243a95f9550",
+      "lines": 25,
+      "moduleLineCount": 58,
+      "startLine": 32,
+      "endLine": 56,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_isPrime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.projective_total_invariance_affine_image_mem",
+        "LinearStudy.projective_total_invariance_rational_chart_sandwich",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_point_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartLocalizationMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartLocalizationMap.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  MvPolynomial (Fin n) K →ₐ[K] Localization.Away (MvPolynomial.X 0)",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 3,
+      "moduleLineCount": 142,
+      "startLine": 13,
+      "endLine": 15,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartSpecialization",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartSpecialization.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  Localization.Away (MvPolynomial.X 0) →ₐ[K] MvPolynomial (Fin n) K",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 3,
+      "moduleLineCount": 142,
+      "startLine": 17,
+      "endLine": 19,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartSpecialization_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartSpecialization_algebraMap.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : MvPolynomial (Fin (n + 1)) K) :\n  LinearStudy.projectiveChartSpecialization\n      ((algebraMap (MvPolynomial (Fin (n + 1)) K) (Localization.Away (MvPolynomial.X 0))) H) =\n    LinearStudy.affineChartPolynomialMap H",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 4,
+      "moduleLineCount": 142,
+      "startLine": 21,
+      "endLine": 24,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartSpecialization"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartSpecialization_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartSpecialization_invSelf.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  LinearStudy.projectiveChartSpecialization (IsLocalization.Away.invSelf (MvPolynomial.X 0)) = 1",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 6,
+      "moduleLineCount": 142,
+      "startLine": 26,
+      "endLine": 31,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartSpecialization",
+        "LinearStudy.projectiveChartSpecialization_algebraMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartSpecialization_leftInverse",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartSpecialization_leftInverse.{u_1} {K : Type u_1} [Field K] {n : ℕ} :\n  LinearStudy.projectiveChartSpecialization.comp LinearStudy.projectiveChartLocalizationMap =\n    AlgHom.id K (MvPolynomial (Fin n) K)",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 7,
+      "moduleLineCount": 142,
+      "startLine": 33,
+      "endLine": 39,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartSpecialization",
+        "LinearStudy.projectiveChartSpecialization_algebraMap",
+        "LinearStudy.projectiveChartSpecialization_invSelf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartLocalizationMap_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartLocalizationMap_homogeneous.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ} (hH : H.IsHomogeneous m) :\n  LinearStudy.projectiveChartLocalizationMap (LinearStudy.affineChartPolynomialMap H) =\n    IsLocalization.Away.invSelf (MvPolynomial.X 0) ^ m *\n      (algebraMap (MvPolynomial (Fin (n + 1)) K) (Localization.Away (MvPolynomial.X 0))) H",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 32,
+      "moduleLineCount": 142,
+      "startLine": 41,
+      "endLine": 72,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_aeval_smul",
+        "LinearStudy.projectiveChartLocalizationMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartLocalizationMap_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 74,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartLocalizationMap_ideal.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) :\n  Ideal.map LinearStudy.projectiveChartLocalizationMap.toRingHom\n      (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I) =\n    Ideal.map (algebraMap (MvPolynomial (Fin (n + 1)) K) (Localization.Away (MvPolynomial.X 0))) I",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 14,
+      "moduleLineCount": 142,
+      "startLine": 74,
+      "endLine": 87,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartLocalizationMap_comap_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 89,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartLocalizationMap_comap_ideal.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) :\n  Ideal.comap LinearStudy.projectiveChartLocalizationMap.toRingHom\n      (Ideal.map (algebraMap (MvPolynomial (Fin (n + 1)) K) (Localization.Away (MvPolynomial.X 0))) I) =\n    Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 27,
+      "moduleLineCount": 142,
+      "startLine": 89,
+      "endLine": 115,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_ideal",
+        "LinearStudy.projectiveChartSpecialization",
+        "LinearStudy.projectiveChartSpecialization_algebraMap",
+        "LinearStudy.projectiveChartSpecialization_leftInverse"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_ideal_isPrime",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 117,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_ideal_isPrime.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hx : MvPolynomial.X 0 ∉ I) :\n  (Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I).IsPrime",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 9,
+      "moduleLineCount": 142,
+      "startLine": 117,
+      "endLine": 125,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_comap_ideal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_ideal_ne_bot",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffinePrime.lean",
+      "line": 130,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_ideal_ne_bot.{u_1} {K : Type u_1} [Field K] {n : ℕ}\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K))\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hI0 : I ≠ ⊥) :\n  Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ≠ ⊥",
+      "sha256": "46bc9595be810cff4ed1fc93bf35e55f98ee814199dba0fe51256b9cc78869ab",
+      "lines": 13,
+      "moduleLineCount": 142,
+      "startLine": 128,
+      "endLine": 140,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_ideal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affinePoint",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineSmoothLocus.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affinePoint {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  PrimeSpectrum (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)",
+      "sha256": "4d567894471604f863d66575d9b2321c1763033eac134b726ac95a59a5bf22fb",
+      "lines": 5,
+      "moduleLineCount": 55,
+      "startLine": 14,
+      "endLine": 18,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_isPrime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_affine_smooth_points_have_common_formal_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineSmoothLocus.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_affine_smooth_points_have_common_formal_coordinates.{u_1} {n : ℕ} {ι : Type u_1} [Fintype ι]\n  [Nonempty ι] (V : LinearStudy.IntegralProjectiveEquations n) (hV : V.ideal.toIdeal ≠ ⊥) (x : ι → Fin n → ℂ)\n  (hx : ∀ (a : ι), LinearStudy.normalizedProjectivePoint (x a) ∈ V.zeroSet)\n  [∀ (a : ι), Algebra.IsSmoothAt ℂ (V.affinePoint (x a) ⋯).asIdeal] :\n  ∃ r c,\n    ∃ (hc : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ G,\n            have C := LinearStudy.polynomialLinearChangeEquiv M hM;\n            have y := fun a => M⁻¹.mulVec (x a) ∘ ⇑e;\n            have H := fun a i => (MvPolynomial.rename ⇑e.symm) (C (G a i));\n            ∃ (hH : ∀ (a : ι) (i : Fin c), (MvPolynomial.eval (y a)) (H a i) = 0) (hJ :\n              ∀ (a : ι),\n                IsUnit (Matrix.det fun i j => (MvPolynomial.eval (y a)) ((MvPolynomial.pderiv (Sum.inr j)) (H a i)))),\n              ∀ (a : ι),\n                Ideal.map\n                    (((LinearStudy.polynomialSmoothFormalMap (y a) (H a) ⋯ ⋯).comp\n                          (MvPolynomial.rename ⇑e.symm).toRingHom).comp\n                      C.toRingEquiv.toRingHom)\n                    V.affineIdeal =\n                  Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "4d567894471604f863d66575d9b2321c1763033eac134b726ac95a59a5bf22fb",
+      "lines": 34,
+      "moduleLineCount": 55,
+      "startLine": 20,
+      "endLine": 53,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineSmoothPoint.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (ρ : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] ℂ) :\n  ∃ x, ∃ (_ : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet), V.affinePointIdeal x = RingHom.ker ρ.toRingHom",
+      "sha256": "f622d7b80973b4177ccca0303feeb363c7133c793be9c1e7d1c85e822627b019",
+      "lines": 28,
+      "moduleLineCount": 60,
+      "startLine": 13,
+      "endLine": 40,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_pointKernel_comap",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineSmoothPoint.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ x, ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet), Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal",
+      "sha256": "f622d7b80973b4177ccca0303feeb363c7133c793be9c1e7d1c85e822627b019",
+      "lines": 17,
+      "moduleLineCount": 60,
+      "startLine": 42,
+      "endLine": 58,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.domain_exists_smooth_rational_point",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.normalizedCoordinateVector_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizedCoordinateVector_ne_zero {n : ℕ} (x : Fin n → ℂ) : (fun i => Fin.cases 1 x i) ≠ 0",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 5,
+      "moduleLineCount": 85,
+      "startLine": 12,
+      "endLine": 16,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.normalizedProjectivePoint",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.normalizedProjectivePoint {n : ℕ} (x : Fin n → ℂ) : LinearStudy.ProjectivePoint n",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 2,
+      "moduleLineCount": 85,
+      "startLine": 18,
+      "endLine": 19,
+      "lineCount": 2,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineIdeal {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  Ideal (MvPolynomial (Fin n) ℂ)",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 3,
+      "moduleLineCount": 85,
+      "startLine": 21,
+      "endLine": 23,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) :\n  LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet ↔\n    (fun i => Fin.cases 1 x i) ∈ MvPolynomial.zeroLocus ℂ V.ideal.toIdeal",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 5,
+      "moduleLineCount": 85,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) : V.affineIdeal.IsPrime",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 6,
+      "moduleLineCount": 85,
+      "startLine": 31,
+      "endLine": 36,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap_ideal_isPrime_of_point",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 38,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineIdeal_le_pointKernel {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  V.affineIdeal ≤ RingHom.ker (MvPolynomial.aeval x).toRingHom",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 6,
+      "moduleLineCount": 85,
+      "startLine": 38,
+      "endLine": 43,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 45,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (hV : V.ideal.toIdeal ≠ ⊥) : V.affineIdeal ≠ ⊥",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 4,
+      "moduleLineCount": 85,
+      "startLine": 45,
+      "endLine": 48,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.affineChartPolynomialMap_ideal_ne_bot"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_total_invariance_affine_image_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAffineVariety.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_total_invariance_affine_image_mem {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (hp0 : (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0) :\n  (LinearStudy.normalizedProjectivePoint fun i =>\n      (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms i.succ)) /\n        (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0))) ∈\n    V.zeroSet",
+      "sha256": "d12b1270e9ecbe4972172824d06729edda7009af51dfa05528b8075bbcbe1fe9",
+      "lines": 34,
+      "moduleLineCount": 85,
+      "startLine": 50,
+      "endLine": 83,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.homogeneous_ideal_vanish_smul",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
       "declaration": "LinearStudy.affineDehomogenize",
       "kind": "def",
       "origin": "project",
@@ -18237,6 +19158,40 @@
       ]
     },
     {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveSmoothOpenPoint.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) (H : MvPolynomial (Fin n) ℂ) (hH : H ∉ V.affineIdeal) :\n  ∃ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n      (MvPolynomial.eval x) H ≠ 0 ∧ Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal",
+      "sha256": "5ec8b2fc19d0d42deead9805b645d070e0f7c268d458be29bfaa8321ba1ed4a0",
+      "lines": 31,
+      "moduleLineCount": 44,
+      "startLine": 12,
+      "endLine": 42,
+      "lineCount": 31,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.domain_exists_smooth_rational_point_avoiding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
       "declaration": "LinearStudy.formalPolynomialAtPointAlg",
       "kind": "def",
       "origin": "project",
@@ -18469,6 +19424,64 @@
         "LinearStudy.polynomialAwayFormalMap",
         "LinearStudy.rationalPolynomialChartMap",
         "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rational_smooth_unramified_socle_without_finite_type_input",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalFiniteTypeSocle.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_smooth_unramified_socle_without_finite_type_input {r c : ℕ} [Nonempty (Fin r)] [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → ℂ) (p0 : MvPolynomial (Fin r ⊕ Fin c) ℂ) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ)) [I.IsPrime]\n  (hI : I ≠ ⊥) (P : Ideal (Localization.Away p0)) [P.IsPrime] (p' : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I))\n  [p'.IsPrime] [Algebra.IsSmoothAt ℂ p']\n  (hp :\n    Ideal.comap (Ideal.Quotient.mk I) p' =\n      RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)\n  (hr : r = Module.finrank (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I) Ω[MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I⁄ℂ])\n  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)\n  (hQP : Ideal.comap (Ideal.Quotient.mk I) p' = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)\n  (hφ :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))\n        J =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))\n            (G i)))\n  (hunram :\n    Algebra.FormallyUnramified\n      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸\n        Ideal.map\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)))\n  (H : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ)\n  (htarget :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p')))\n            (H i)))\n  (e : ℕ) (he : 0 < e)\n  (hlo :\n    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J ^ e ≤\n      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)\n  (hhi :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J) :\n  have HF := fun i =>\n    (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ) ((LinearStudy.rationalPolynomialChartMap p0 p) (H i));\n  ∃ a,\n    have τ := fun i =>\n      (Ideal.Quotient.mk (LinearStudy.equationIdeal HF))\n        ((LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)\n          ((LinearStudy.rationalPolynomialChartMap p0 p) (a i)));\n    have L := Ideal.span (Set.range τ);\n    let C := LinearStudy.CompleteIntersection HF ⧸ L;\n    have m := Ideal.map (Ideal.Quotient.mk L) (nilradical (LinearStudy.CompleteIntersection HF));\n    IsArtinianRing C ∧\n      m.IsMaximal ∧\n        Submodule.annihilator m = Ideal.span {(Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF)} ∧\n          (Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF) ≠ 0",
+      "sha256": "c31989c6ac4b192e50893dfc9b13f37bc00bcc9b21ad2932f6e637f792fa77fb",
+      "lines": 47,
+      "moduleLineCount": 61,
+      "startLine": 13,
+      "endLine": 59,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwaySmoothFormalMap",
+        "LinearStudy.rationalPointLocalQuotientPullback_essFiniteType",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rational_smooth_unramified_constructs_jacobian_socle",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPointLocalQuotientPullback_essFiniteType",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalLocalEssentialFiniteType.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPointLocalQuotientPullback_essFiniteType.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Finite σ] (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) (I J : Ideal (MvPolynomial σ K))\n  (P : Ideal (Localization.Away p0)) (Q : Ideal (MvPolynomial σ K)) [P.IsPrime] [Q.IsPrime]\n  (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)\n  (hφ :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J) :\n  Algebra.EssFiniteType (Localization.AtPrime Q ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime Q)) I)\n    (Localization.AtPrime P ⧸\n      Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n        (Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) J))",
+      "sha256": "1a053ca0dcbedbfaeb907baa4725b796384050e8ec1e702bf6ec0b9f130a88ca",
+      "lines": 24,
+      "moduleLineCount": 35,
+      "startLine": 10,
+      "endLine": 33,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_essFiniteType",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     {
@@ -20508,6 +21521,30 @@
       ]
     },
     {
+      "declaration": "LinearStudy.domain_exists_smooth_rational_point_avoiding",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothPointPrincipalOpen.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.domain_exists_smooth_rational_point_avoiding.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K]\n  [IsAlgClosed K] [PerfectField K] [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] (h : A)\n  (hh : h ≠ 0) : ∃ ρ, ρ h ≠ 0 ∧ LinearStudy.rationalPointPrime ρ ∈ Algebra.smoothLocus K A",
+      "sha256": "4d0b455dc862995ff870096b722399764e45c222e907ff532c2c6e851d92a63e",
+      "lines": 29,
+      "moduleLineCount": 39,
+      "startLine": 9,
+      "endLine": 37,
+      "lineCount": 29,
+      "dependencies": [
+        "LinearStudy.domain_exists_smooth_rational_point",
+        "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomialSmoothAmbientEquiv",
       "kind": "def",
       "origin": "project",
@@ -20996,6 +22033,52 @@
         "LinearStudy.smoothProjectivePullbackEquations",
         "LinearStudy.smooth_polynomial_formal_socle_generator_descends",
         "LinearStudy.smooth_projective_common_theta_formal_socle"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPointPrime",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/SmoothRationalPoint.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.rationalPointPrime.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [CommRing A] [Algebra K A]\n  (ρ : A →ₐ[K] K) : PrimeSpectrum A",
+      "sha256": "dcce0481e7052120e19f241e0071cb9ce612d8b86857d5833e55ebdaccc5eec1",
+      "lines": 3,
+      "moduleLineCount": 48,
+      "startLine": 11,
+      "endLine": 13,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.domain_exists_smooth_rational_point",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothRationalPoint.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.domain_exists_smooth_rational_point.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [IsAlgClosed K]\n  [PerfectField K] [CommRing A] [IsDomain A] [Algebra K A] [Algebra.FinitePresentation K A] :\n  ∃ a ρ, a ≠ 0 ∧ ρ a ≠ 0 ∧ LinearStudy.rationalPointPrime ρ ∈ Algebra.smoothLocus K A",
+      "sha256": "dcce0481e7052120e19f241e0071cb9ce612d8b86857d5833e55ebdaccc5eec1",
+      "lines": 32,
+      "moduleLineCount": 48,
+      "startLine": 15,
+      "endLine": 46,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.domain_exists_nonzero_smooth_basic_open",
+        "LinearStudy.finiteType_exists_rational_point",
+        "LinearStudy.rationalPointPrime"
       ]
     },
     {
