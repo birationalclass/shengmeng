@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1176,
-  "verifiedTheorems": 815,
-  "definitions": 165,
+  "audited": 1197,
+  "verifiedTheorems": 834,
+  "definitions": 167,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -4032,6 +4032,52 @@
       ]
     },
     {
+      "declaration": "LinearStudy.fieldEndomorphism_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FieldEndomorphismMap.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]\n  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : φ.Finite",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "lines": 14,
+      "moduleLineCount": 43,
+      "startLine": 10,
+      "endLine": 23,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.fieldEndomorphism_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FieldEndomorphismMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : φ.FormallyUnramified",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "lines": 17,
+      "moduleLineCount": 43,
+      "startLine": 25,
+      "endLine": 41,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomial_zero_or_degree_lt_of_top_zero",
       "kind": "theorem",
       "origin": "project",
@@ -4275,6 +4321,73 @@
         "LinearStudy.powerSeries_specialized_quotient_artinian",
         "LinearStudy.powerSeries_specialized_quotient_finite",
         "LinearStudy.traceElement"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.fieldEndomorphism_range_isAlgebraic",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_isAlgebraic.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.IsAlgebraic (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 13,
+      "moduleLineCount": 41,
+      "startLine": 10,
+      "endLine": 22,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.fieldEndomorphism_range_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]\n  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : Module.Finite (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 8,
+      "moduleLineCount": 41,
+      "startLine": 24,
+      "endLine": 31,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.fieldEndomorphism_range_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.FormallyUnramified (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 7,
+      "moduleLineCount": 41,
+      "startLine": 33,
+      "endLine": 39,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
       ]
     },
     {
@@ -18533,6 +18646,536 @@
         "LinearStudy.affine_actual_highest_zeroLocus_of_no_infinity",
         "LinearStudy.projectiveFiber_no_infinity",
         "LinearStudy.standardProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff.{u_1} {n : ℕ} {K : Type u_1} [Field K]\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hX : MvPolynomial.X 0 ∉ I)\n  (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ} (hH : H.IsHomogeneous m) :\n  LinearStudy.affineChartPolynomialMap H ∈ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ↔ H ∈ I",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 26,
+      "moduleLineCount": 90,
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_homogeneous",
+        "LinearStudy.projectiveChartLocalizationMap_ideal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_invariant_first_form_not_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_first_form_not_mem {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) : f.forms 0 ∉ V.ideal.toIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 24,
+      "moduleLineCount": 90,
+      "startLine": 39,
+      "endLine": 62,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  LinearStudy.affineChartPolynomialMap (f.forms 0) ∉ V.affineIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 13,
+      "moduleLineCount": 90,
+      "startLine": 64,
+      "endLine": 76,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_first_form_not_mem"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n      (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0 ∧\n        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 11,
+      "moduleLineCount": 90,
+      "startLine": 78,
+      "endLine": 88,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.HomogeneousEndomorphism.evalVector_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.HomogeneousEndomorphism.evalVector_surjective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) : Function.Surjective f.evalVector",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 18,
+      "moduleLineCount": 74,
+      "startLine": 12,
+      "endLine": 29,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_smul",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_zero",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_invariant_cone_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_cone_image {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  f.evalVector '' MvPolynomial.zeroLocus ℂ V.ideal.toIdeal = MvPolynomial.zeroLocus ℂ V.ideal.toIdeal",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 18,
+      "moduleLineCount": 74,
+      "startLine": 31,
+      "endLine": 48,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_surjective",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_total_invariance_cone"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_surjective_invariant_pullback_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_pullback_comap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Ideal.comap (MvPolynomial.aeval f.forms).toRingHom V.ideal.toIdeal = V.ideal.toIdeal",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 23,
+      "moduleLineCount": 74,
+      "startLine": 50,
+      "endLine": 72,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_cone_image",
+        "LinearStudy.projective_total_invariance_ideal_power_sandwich"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal →ₐ[ℂ] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 15,
+      "moduleLineCount": 47,
+      "startLine": 12,
+      "endLine": 26,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (H : LinearStudy.CoordinateRing n) :\n  (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) ((Ideal.Quotient.mk V.ideal.toIdeal) H) =\n    (Ideal.Quotient.mk V.ideal.toIdeal) ((MvPolynomial.aeval f.forms) H)",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 8,
+      "moduleLineCount": 47,
+      "startLine": 28,
+      "endLine": 35,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_injective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Function.Injective ⇑(LinearStudy.projectiveCoordinateDomainMap f V hq hf hV)",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 9,
+      "moduleLineCount": 47,
+      "startLine": 37,
+      "endLine": 45,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →ₐ[ℂ]\n    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 16,
+      "moduleLineCount": 77,
+      "startLine": 13,
+      "endLine": 28,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_algebraMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) :\n  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV)\n      ((algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n          (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))\n        a) =\n    (algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n        (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))\n      ((LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) a)",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 17,
+      "moduleLineCount": 77,
+      "startLine": 30,
+      "endLine": 46,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateDomainMap_injective",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_range_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_range_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Module.Finite (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)\n    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 13,
+      "moduleLineCount": 77,
+      "startLine": 48,
+      "endLine": 60,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Algebra.FormallyUnramified (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)\n    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 14,
+      "moduleLineCount": 77,
+      "startLine": 62,
+      "endLine": 75,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) : (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).Finite",
+      "sha256": "769ce23335891c097de7c5a6322a144bf01540ed11f7da890b1ebd4e9770c745",
+      "lines": 13,
+      "moduleLineCount": 41,
+      "startLine": 11,
+      "endLine": 23,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).FormallyUnramified",
+      "sha256": "769ce23335891c097de7c5a6322a144bf01540ed11f7da890b1ebd4e9770c745",
+      "lines": 15,
+      "moduleLineCount": 41,
+      "startLine": 25,
+      "endLine": 39,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
       ]
     },
     {

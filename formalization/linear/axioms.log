@@ -999,6 +999,12 @@ LinearStudy.rescaled_evaluation_relation_zero.{u_1, u_2, u_5} {K : Type u_1} {ι
   (weights : ι → K) (h : ∑ i, weights i * (MvPolynomial.eval (points i)) P = 0) :
   ∑ i, weights i / ↑(scalars i) ^ t * (MvPolynomial.eval (↑(scalars i) • points i)) P = 0
 'LinearStudy.rescaled_evaluation_relation_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldEndomorphism_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]
+  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : φ.Finite
+'LinearStudy.fieldEndomorphism_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldEndomorphism_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]
+  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : φ.FormallyUnramified
+'LinearStudy.fieldEndomorphism_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_zero_or_degree_lt_of_top_zero.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K]
   (p : MvPolynomial ι K) (n : ℕ) (hp : p.totalDegree ≤ n) (hz : (MvPolynomial.homogeneousComponent n) p = 0) :
   p = 0 ∨ p.totalDegree < n
@@ -1075,6 +1081,15 @@ LinearStudy.finiteFlat_closedFiber_traceElement.{u_5} {F : Type u_5} [Field F] {
                   Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i))) •
               (Ideal.Quotient.mk (Ideal.span (Set.range fun i => LinearStudy.parameterSpecialization (H i)))) M.det
 'LinearStudy.finiteFlat_closedFiber_traceElement' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldEndomorphism_range_isAlgebraic.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]
+  [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.IsAlgebraic (↥φ.fieldRange) L
+'LinearStudy.fieldEndomorphism_range_isAlgebraic' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldEndomorphism_range_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]
+  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : Module.Finite (↥φ.fieldRange) L
+'LinearStudy.fieldEndomorphism_range_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.fieldEndomorphism_range_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]
+  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.FormallyUnramified (↥φ.fieldRange) L
+'LinearStudy.fieldEndomorphism_range_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finiteType_exists_rational_point.{u_1, u_2} {K : Type u_1} {A : Type u_2} [Field K] [IsAlgClosed K]
   [CommRing A] [Nontrivial A] [Algebra K A] [Algebra.FiniteType K A] : Nonempty (A →ₐ[K] K)
 'LinearStudy.finiteType_exists_rational_point' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -4666,6 +4681,109 @@ LinearStudy.projectiveFiber_actual_highest_zeroLocus {n : ℕ} (f : LinearStudy.
             (LinearStudy.affineDehomogenize (f.forms i.succ)))) =
     {0}
 'LinearStudy.projectiveFiber_actual_highest_zeroLocus' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff.{u_1} {n : ℕ} {K : Type u_1} [Field K]
+  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]
+  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hX : MvPolynomial.X 0 ∉ I)
+  (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ} (hH : H.IsHomogeneous m) :
+  LinearStudy.affineChartPolynomialMap H ∈ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ↔ H ∈ I
+'LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_surjective_invariant_first_form_not_mem {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) : f.forms 0 ∉ V.ideal.toIdeal
+'LinearStudy.projective_surjective_invariant_first_form_not_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_surjective_invariant_affine_denominator_not_mem {n : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  LinearStudy.affineChartPolynomialMap (f.forms 0) ∉ V.affineIdeal
+'LinearStudy.projective_surjective_invariant_affine_denominator_not_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_surjective_invariant_exists_smooth_common_chart {n : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)
+  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ x,
+    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),
+      (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0 ∧
+        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal
+'LinearStudy.projective_surjective_invariant_exists_smooth_common_chart' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.HomogeneousEndomorphism.evalVector_surjective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) : Function.Surjective f.evalVector
+'LinearStudy.HomogeneousEndomorphism.evalVector_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_surjective_invariant_cone_image {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  f.evalVector '' MvPolynomial.zeroLocus ℂ V.ideal.toIdeal = MvPolynomial.zeroLocus ℂ V.ideal.toIdeal
+'LinearStudy.projective_surjective_invariant_cone_image' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_surjective_invariant_pullback_comap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  Ideal.comap (MvPolynomial.aeval f.forms).toRingHom V.ideal.toIdeal = V.ideal.toIdeal
+'LinearStudy.projective_surjective_invariant_pullback_comap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal →ₐ[ℂ] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal
+'LinearStudy.projectiveCoordinateDomainMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (H : LinearStudy.CoordinateRing n) :
+  (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) ((Ideal.Quotient.mk V.ideal.toIdeal) H) =
+    (Ideal.Quotient.mk V.ideal.toIdeal) ((MvPolynomial.aeval f.forms) H)
+'LinearStudy.projectiveCoordinateDomainMap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateDomainMap_injective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  Function.Injective ⇑(LinearStudy.projectiveCoordinateDomainMap f V hq hf hV)
+'LinearStudy.projectiveCoordinateDomainMap_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →ₐ[ℂ]
+    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+'LinearStudy.projectiveCoordinateFractionMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap_algebraMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) :
+  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV)
+      ((algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+          (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))
+        a) =
+    (algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)
+        (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))
+      ((LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) a)
+'LinearStudy.projectiveCoordinateFractionMap_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap_range_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  Module.Finite (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)
+    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))
+'LinearStudy.projectiveCoordinateFractionMap_range_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  Algebra.FormallyUnramified (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)
+    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))
+'LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) : (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).Finite
+'LinearStudy.projectiveCoordinateFractionMap_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveCoordinateFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :
+  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).FormallyUnramified
+'LinearStudy.projectiveCoordinateFractionMap_formallyUnramified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.polynomial_relabel_pullback.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [CommSemiring K]
   (e : σ ≃ τ) (F : σ → MvPolynomial σ K) :
   (↑(MvPolynomial.renameEquiv K e)).comp (MvPolynomial.aeval F) =

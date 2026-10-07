@@ -1,8 +1,8 @@
-import {isReferenceCard,packLabel,escapeHTML,graphStatement} from './theorem-statements.js?v=20261007-linear-26';
-import {recordAtlasRender,recordAtlasLayout} from './performance.js?v=20261007-linear-26';
-import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261007-linear-26';
+import {isReferenceCard,packLabel,escapeHTML,graphStatement} from './theorem-statements.js?v=20261007-linear-27';
+import {recordAtlasRender,recordAtlasLayout} from './performance.js?v=20261007-linear-27';
+import {visibleProofIds,compactProofLayout} from './proof-layout.js?v=20261007-linear-27';
 
-import {t,english} from './i18n.js?v=20261007-linear-26';
+import {t,english} from './i18n.js?v=20261007-linear-27';
 // Viewer-only node editor: sockets and links always use the curated proof DAG.
 export function createNodeEditor({viewport,graph,svg,nodes,select,selected,theoremTarget}) {
   const byId=new Map(nodes.map(n=>[n.id,n]));let layout=new Map(),factor=1,entries=[],revision=0,worldContext=null;

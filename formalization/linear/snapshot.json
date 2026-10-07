@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T19:43:16+08:00",
+  "checkedAt": "2026-10-07T20:57:19+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "39041395b8cb6a03bf3334c579389ce04df5b52088b0eb6aa2323fde2a87b24c",
-      "lineCount": 2360
+      "sha256": "05732cc71db55810d4d5207ec06dbe5ed4482f1b62e29c6c4c37f78a2f6ef356",
+      "lineCount": 2402
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -167,6 +167,11 @@
       "lineCount": 122
     },
     {
+      "path": "Linear/FieldEndomorphismMap.lean",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "lineCount": 43
+    },
+    {
       "path": "Linear/FilteredIdeal.lean",
       "sha256": "cff1df34f8085e8ba8b540f65d407506dc9fbf8d454c225a8966b8640f598312",
       "lineCount": 221
@@ -175,6 +180,11 @@
       "path": "Linear/FiniteSpecialization.lean",
       "sha256": "5966c5143536cb2e72fb00e09defff6d0c8ddb1beff10ad6727ea39d0c312162",
       "lineCount": 97
+    },
+    {
+      "path": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lineCount": 41
     },
     {
       "path": "Linear/FiniteTypeRationalPoint.lean",
@@ -742,6 +752,31 @@
       "lineCount": 203
     },
     {
+      "path": "Linear/ProjectiveCommonChart.lean",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lineCount": 90
+    },
+    {
+      "path": "Linear/ProjectiveConeSurjectivity.lean",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lineCount": 74
+    },
+    {
+      "path": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lineCount": 47
+    },
+    {
+      "path": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lineCount": 77
+    },
+    {
+      "path": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "sha256": "769ce23335891c097de7c5a6322a144bf01540ed11f7da890b1ebd4e9770c745",
+      "lineCount": 41
+    },
+    {
       "path": "Linear/ProjectiveCoordinateRelabel.lean",
       "sha256": "3fb861a41026a296a62cba7e80831f66f6fe279e3472498474e23c225216d8f3",
       "lineCount": 45
@@ -1078,8 +1113,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "ca77b5b23d4813261676522a97c29d6eede298bd442f176a3d4ee964b2bbeb74",
-      "lineCount": 281
+      "sha256": "1dc95c5c1a0d81f407f4e5ae2f56ffe116fd6fbb810b3978db999b541b69e8b7",
+      "lineCount": 295
     }
   ],
   "declarations": {
@@ -5107,6 +5142,52 @@
         "LinearStudy.rescaled_evaluation_relation"
       ]
     },
+    "LinearStudy.fieldEndomorphism_finite": {
+      "declaration": "LinearStudy.fieldEndomorphism_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FieldEndomorphismMap.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]\n  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : φ.Finite",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "lines": 14,
+      "moduleLineCount": 43,
+      "startLine": 10,
+      "endLine": 23,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_finite"
+      ]
+    },
+    "LinearStudy.fieldEndomorphism_formallyUnramified": {
+      "declaration": "LinearStudy.fieldEndomorphism_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FieldEndomorphismMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : φ.FormallyUnramified",
+      "sha256": "f8aefb1c9461a233d398b3562b4403708217397255b3ba0bc0c19f6dc00ebee6",
+      "lines": 17,
+      "moduleLineCount": 43,
+      "startLine": 25,
+      "endLine": 41,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified"
+      ]
+    },
     "LinearStudy.polynomial_zero_or_degree_lt_of_top_zero": {
       "declaration": "LinearStudy.polynomial_zero_or_degree_lt_of_top_zero",
       "kind": "theorem",
@@ -5351,6 +5432,73 @@
         "LinearStudy.powerSeries_specialized_quotient_artinian",
         "LinearStudy.powerSeries_specialized_quotient_finite",
         "LinearStudy.traceElement"
+      ]
+    },
+    "LinearStudy.fieldEndomorphism_range_isAlgebraic": {
+      "declaration": "LinearStudy.fieldEndomorphism_range_isAlgebraic",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_isAlgebraic.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.IsAlgebraic (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 13,
+      "moduleLineCount": 41,
+      "startLine": 10,
+      "endLine": 22,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    "LinearStudy.fieldEndomorphism_range_finite": {
+      "declaration": "LinearStudy.fieldEndomorphism_range_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_finite.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L] [Algebra K L]\n  [Algebra.EssFiniteType K L] (φ : L →ₐ[K] L) : Module.Finite (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 8,
+      "moduleLineCount": 41,
+      "startLine": 24,
+      "endLine": 31,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
+      ]
+    },
+    "LinearStudy.fieldEndomorphism_range_formallyUnramified": {
+      "declaration": "LinearStudy.fieldEndomorphism_range_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "line": 35,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.fieldEndomorphism_range_formallyUnramified.{u_1, u_2} {K : Type u_1} {L : Type u_2} [Field K] [Field L]\n  [CharZero L] [Algebra K L] [FinTrdeg K L] (φ : L →ₐ[K] L) : Algebra.FormallyUnramified (↥φ.fieldRange) L",
+      "sha256": "c9d798e472144f6d34e7773bcb159fdf5d54a8562362fdac265f784044ae1f7e",
+      "lines": 7,
+      "moduleLineCount": 41,
+      "startLine": 33,
+      "endLine": 39,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
       ]
     },
     "LinearStudy.finiteType_exists_rational_point": {
@@ -19611,6 +19759,536 @@
         "LinearStudy.standardProjectivePoint"
       ]
     },
+    "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff": {
+      "declaration": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff.{u_1} {n : ℕ} {K : Type u_1} [Field K]\n  (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]\n  (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hX : MvPolynomial.X 0 ∉ I)\n  (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ} (hH : H.IsHomogeneous m) :\n  LinearStudy.affineChartPolynomialMap H ∈ Ideal.map LinearStudy.affineChartPolynomialMap.toRingHom I ↔ H ∈ I",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 26,
+      "moduleLineCount": 90,
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_homogeneous",
+        "LinearStudy.projectiveChartLocalizationMap_ideal"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_first_form_not_mem": {
+      "declaration": "LinearStudy.projective_surjective_invariant_first_form_not_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_first_form_not_mem {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) : f.forms 0 ∉ V.ideal.toIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 24,
+      "moduleLineCount": 90,
+      "startLine": 39,
+      "endLine": 62,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem": {
+      "declaration": "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  LinearStudy.affineChartPolynomialMap (f.forms 0) ∉ V.affineIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 13,
+      "moduleLineCount": 90,
+      "startLine": 64,
+      "endLine": 76,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_first_form_not_mem"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart": {
+      "declaration": "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCommonChart.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n      (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0 ∧\n        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal",
+      "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
+      "lines": 11,
+      "moduleLineCount": 90,
+      "startLine": 78,
+      "endLine": 88,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem"
+      ]
+    },
+    "LinearStudy.HomogeneousEndomorphism.evalVector_surjective": {
+      "declaration": "LinearStudy.HomogeneousEndomorphism.evalVector_surjective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.HomogeneousEndomorphism.evalVector_surjective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints) : Function.Surjective f.evalVector",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 18,
+      "moduleLineCount": 74,
+      "startLine": 12,
+      "endLine": 29,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_smul",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_zero",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_cone_image": {
+      "declaration": "LinearStudy.projective_surjective_invariant_cone_image",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_cone_image {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  f.evalVector '' MvPolynomial.zeroLocus ℂ V.ideal.toIdeal = MvPolynomial.zeroLocus ℂ V.ideal.toIdeal",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 18,
+      "moduleLineCount": 74,
+      "startLine": 31,
+      "endLine": 48,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_surjective",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_total_invariance_cone"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_pullback_comap": {
+      "declaration": "LinearStudy.projective_surjective_invariant_pullback_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeSurjectivity.lean",
+      "line": 52,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_surjective_invariant_pullback_comap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Ideal.comap (MvPolynomial.aeval f.forms).toRingHom V.ideal.toIdeal = V.ideal.toIdeal",
+      "sha256": "0be405fe0c3aba2e9f98a56b0feefa31f148d9212f3b8e4544b948825a649c3b",
+      "lines": 23,
+      "moduleLineCount": 74,
+      "startLine": 50,
+      "endLine": 72,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_cone_image",
+        "LinearStudy.projective_total_invariance_ideal_power_sandwich"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateDomainMap": {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal →ₐ[ℂ] LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 15,
+      "moduleLineCount": 47,
+      "startLine": 12,
+      "endLine": 26,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateDomainMap_mk": {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (H : LinearStudy.CoordinateRing n) :\n  (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) ((Ideal.Quotient.mk V.ideal.toIdeal) H) =\n    (Ideal.Quotient.mk V.ideal.toIdeal) ((MvPolynomial.aeval f.forms) H)",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 8,
+      "moduleLineCount": 47,
+      "startLine": 28,
+      "endLine": 35,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateDomainMap_injective": {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_injective {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Function.Injective ⇑(LinearStudy.projectiveCoordinateDomainMap f V hq hf hV)",
+      "sha256": "983169b1be86648f543652eb6840e653f14b789ac365a92f41a80f7dd761dc81",
+      "lines": 9,
+      "moduleLineCount": 47,
+      "startLine": 37,
+      "endLine": 45,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) →ₐ[ℂ]\n    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 16,
+      "moduleLineCount": 77,
+      "startLine": 13,
+      "endLine": 28,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_algebraMap": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_algebraMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (a : LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) :\n  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV)\n      ((algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n          (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))\n        a) =\n    (algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n        (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))\n      ((LinearStudy.projectiveCoordinateDomainMap f V hq hf hV) a)",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 17,
+      "moduleLineCount": 77,
+      "startLine": 30,
+      "endLine": 46,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateDomainMap_injective",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_range_finite": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_range_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 48,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_range_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Module.Finite (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)\n    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 13,
+      "moduleLineCount": 77,
+      "startLine": 48,
+      "endLine": 60,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  Algebra.FormallyUnramified (↥(LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).fieldRange)\n    (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))",
+      "sha256": "4cc7094ac6329f7ba6aed243e8f4753bed7eb27946f2f3aa056a5eea43d8761b",
+      "lines": 14,
+      "moduleLineCount": 77,
+      "startLine": 62,
+      "endLine": 75,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_finite": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) : (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).Finite",
+      "sha256": "769ce23335891c097de7c5a6322a144bf01540ed11f7da890b1ebd4e9770c745",
+      "lines": 13,
+      "moduleLineCount": 41,
+      "startLine": 11,
+      "endLine": 23,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified": {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV).FormallyUnramified",
+      "sha256": "769ce23335891c097de7c5a6322a144bf01540ed11f7da890b1ebd4e9770c745",
+      "lines": 15,
+      "moduleLineCount": 41,
+      "startLine": 25,
+      "endLine": 39,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
     "LinearStudy.polynomial_relabel_pullback": {
       "declaration": "LinearStudy.polynomial_relabel_pullback",
       "kind": "theorem",
@@ -30649,8 +31327,8 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 815,
-  "definitionCount": 165,
+  "verifiedTheoremCount": 834,
+  "definitionCount": 167,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
@@ -31264,6 +31942,25 @@
       "dependencies": [
         "LinearStudy.tensorFunctionalContraction",
         "LinearStudy.tensorFunctionalContraction_tmul"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_range_formallyUnramified": {
+      "path": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "startLine": 62,
+      "endLine": 75,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
       ]
     },
     "LinearStudy.polynomialTranslation_evaluation": {
@@ -32531,6 +33228,25 @@
         "koszulComplex.d"
       ]
     },
+    "LinearStudy.projectiveCoordinateDomainMap_mk": {
+      "path": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "startLine": 28,
+      "endLine": 35,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
     "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_isPrime": {
       "path": "Linear/ProjectiveAffinePointData.lean",
       "startLine": 17,
@@ -33296,6 +34012,13 @@
         "LinearStudy.annihilates_iff_mem_annihilator"
       ]
     },
+    "LinearStudy.fieldEndomorphism_range_isAlgebraic": {
+      "path": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "startLine": 10,
+      "endLine": 22,
+      "lineCount": 13,
+      "dependencies": []
+    },
     "LinearStudy.smooth_polynomial_conormal_finrank": {
       "path": "Linear/LocalizedDifferentialRank.lean",
       "startLine": 66,
@@ -34014,6 +34737,23 @@
       "lineCount": 13,
       "dependencies": [
         "LinearStudy.localization_map_principal_annihilator"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap": {
+      "path": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "startLine": 13,
+      "endLine": 28,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap"
       ]
     },
     "LinearStudy.polynomial_double_monomial_degree": {
@@ -35012,6 +35752,26 @@
         "LinearStudy.HomogeneousEndomorphism.forms"
       ]
     },
+    "LinearStudy.projective_surjective_invariant_exists_smooth_common_chart": {
+      "path": "Linear/ProjectiveCommonChart.lean",
+      "startLine": 78,
+      "endLine": 88,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem"
+      ]
+    },
     "LinearStudy.perfect_nilradical_socle_weighted_evaluation": {
       "path": "Linear/PointDecomposition.lean",
       "startLine": 62,
@@ -35681,6 +36441,25 @@
         "ModuleCat.depth_eq_supportDim_of_cohenMacaulay"
       ]
     },
+    "LinearStudy.projective_surjective_invariant_cone_image": {
+      "path": "Linear/ProjectiveConeSurjectivity.lean",
+      "startLine": 31,
+      "endLine": 48,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_surjective",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_total_invariance_cone"
+      ]
+    },
     "LinearStudy.perfectPairingOfGlobalSocles": {
       "path": "Linear/ArtinianGlobalPairing.lean",
       "startLine": 114,
@@ -35923,6 +36702,18 @@
         "LinearStudy.exists_smooth_local_generators_of_conormal_rank",
         "LinearStudy.polynomialLinearChangeEquiv",
         "LinearStudy.polynomialLocalQuotientExtension"
+      ]
+    },
+    "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff": {
+      "path": "Linear/ProjectiveCommonChart.lean",
+      "startLine": 12,
+      "endLine": 37,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_homogeneous",
+        "LinearStudy.projectiveChartLocalizationMap_ideal"
       ]
     },
     "IsCohenMacaulayRing.CM_localize": {
@@ -38260,6 +39051,25 @@
         "LinearStudy.polynomial_local_generators_under_linear_change"
       ]
     },
+    "LinearStudy.projectiveCoordinateFractionMap_finite": {
+      "path": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "startLine": 11,
+      "endLine": 23,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
     "LinearStudy.projective_total_invariance_ideal_power_sandwich": {
       "path": "Linear/ProjectiveIdealInvariance.lean",
       "startLine": 80,
@@ -38450,6 +39260,23 @@
       "endLine": 22,
       "lineCount": 1,
       "dependencies": []
+    },
+    "LinearStudy.projectiveCoordinateDomainMap": {
+      "path": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "startLine": 12,
+      "endLine": 26,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint"
+      ]
     },
     "LinearStudy.exists_common_polynomial_normal_coordinates": {
       "path": "Linear/CommonPolynomialCoordinates.lean",
@@ -38998,6 +39825,26 @@
       "lineCount": 10,
       "dependencies": []
     },
+    "LinearStudy.projectiveCoordinateFractionMap_algebraMap": {
+      "path": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "startLine": 30,
+      "endLine": 46,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateDomainMap_injective",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
     "depth_le_supportDim": {
       "path": "Linear/Vendor/CM/DepthIschebeck.lean",
       "startLine": 187,
@@ -39231,6 +40078,29 @@
         "LinearStudy.projective_total_invariance_relabel_radical",
         "LinearStudy.smoothPullbackEquations",
         "LinearStudy.smooth_invariant_local_pullback_structure"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_first_form_not_mem": {
+      "path": "Linear/ProjectiveCommonChart.lean",
+      "startLine": 39,
+      "endLine": 62,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.mem_zeroSet_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint"
       ]
     },
     "LinearStudy.polynomialAwaySmoothReducedMap_algebraMap": {
@@ -40414,6 +41284,15 @@
         "LinearStudy.firstCoordinateVector_ne_zero"
       ]
     },
+    "LinearStudy.fieldEndomorphism_formallyUnramified": {
+      "path": "Linear/FieldEndomorphismMap.lean",
+      "startLine": 25,
+      "endLine": 41,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_formallyUnramified"
+      ]
+    },
     "exteriorPowerProdEquivProd": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
       "startLine": 240,
@@ -40598,6 +41477,25 @@
         "LinearStudy.thickening_nilradical_annihilator"
       ]
     },
+    "LinearStudy.projectiveCoordinateFractionMap_range_finite": {
+      "path": "Linear/ProjectiveCoordinateFractionMap.lean",
+      "startLine": 48,
+      "endLine": 60,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_range_finite",
+        "LinearStudy.projectiveCoordinateFractionMap"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.noConfusion": {
       "path": "Linear/Projective.lean",
       "startLine": 43,
@@ -40643,6 +41541,28 @@
         "LinearStudy.formalPolynomialIdeal_local_generators",
         "LinearStudy.polynomialSmoothFormalMap",
         "LinearStudy.polynomialSmoothFormalMap_ideal"
+      ]
+    },
+    "LinearStudy.projective_surjective_invariant_pullback_comap": {
+      "path": "Linear/ProjectiveConeSurjectivity.lean",
+      "startLine": 50,
+      "endLine": 72,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_cone_image",
+        "LinearStudy.projective_total_invariance_ideal_power_sandwich"
       ]
     },
     "associated_prime_eq_minimalPrimes_isCohenMacaulay": {
@@ -42183,6 +43103,30 @@
         "LinearStudy.polynomialPointLocalEvaluation"
       ]
     },
+    "LinearStudy.projective_surjective_invariant_affine_denominator_not_mem": {
+      "path": "Linear/ProjectiveCommonChart.lean",
+      "startLine": 64,
+      "endLine": 76,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_surjective_invariant_first_form_not_mem"
+      ]
+    },
     "IsLocalRing.depth_quotSMulTop_succ_eq_depth": {
       "path": "Linear/Vendor/CM/DepthBasic.lean",
       "startLine": 487,
@@ -42557,6 +43501,24 @@
         "LinearStudy.polynomialSmoothFormalMap",
         "LinearStudy.polynomialSmoothFormalMap_normal_chain",
         "LinearStudy.smoothNormalCoordinateJacobian"
+      ]
+    },
+    "LinearStudy.HomogeneousEndomorphism.evalVector_surjective": {
+      "path": "Linear/ProjectiveConeSurjectivity.lean",
+      "startLine": 12,
+      "endLine": 29,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.evalVector",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_smul",
+        "LinearStudy.HomogeneousEndomorphism.evalVector_zero",
+        "LinearStudy.HomogeneousEndomorphism.noBasePoint",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.HomogeneousEndomorphism.onPoints_mk",
+        "LinearStudy.ProjectivePoint"
       ]
     },
     "LinearStudy.parameter_substitution_hasSubst": {
@@ -43364,6 +44326,25 @@
         "koszulComplex.fromOfListHomSucc"
       ]
     },
+    "LinearStudy.projectiveCoordinateDomainMap_injective": {
+      "path": "Linear/ProjectiveCoordinateDomainMap.lean",
+      "startLine": 37,
+      "endLine": 45,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projective_surjective_invariant_pullback_comap"
+      ]
+    },
     "LinearStudy.primitive_annihilator_coefficient_isUnit": {
       "path": "Linear/Primitive.lean",
       "startLine": 55,
@@ -43742,6 +44723,15 @@
         "LinearStudy.projectiveChartSpecialization_invSelf"
       ]
     },
+    "LinearStudy.fieldEndomorphism_range_formallyUnramified": {
+      "path": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "startLine": 33,
+      "endLine": 39,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
+      ]
+    },
     "LinearStudy.formal_pullback_firstOrder_unit_division": {
       "path": "Linear/FormalFirstOrder.lean",
       "startLine": 111,
@@ -43776,6 +44766,15 @@
         "LinearStudy.powerSeries_specialized_equations_zeroConstant",
         "LinearStudy.powerSeries_specialized_quotient_artinian",
         "LinearStudy.powerSeries_specialized_quotient_finite"
+      ]
+    },
+    "LinearStudy.fieldEndomorphism_finite": {
+      "path": "Linear/FieldEndomorphismMap.lean",
+      "startLine": 10,
+      "endLine": 23,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_finite"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism.onPoints_mk": {
@@ -43969,6 +44968,25 @@
       "dependencies": [
         "LinearStudy.DoublePoint",
         "LinearStudy.firstJet"
+      ]
+    },
+    "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified": {
+      "path": "Linear/ProjectiveCoordinateGenericMap.lean",
+      "startLine": 25,
+      "endLine": 39,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_formallyUnramified",
+        "LinearStudy.projectiveCoordinateFractionMap"
       ]
     },
     "exteriorPower.baseChangeIsoForward_apply_one_tmul_ιMulti": {
@@ -44206,6 +45224,15 @@
         "LinearStudy.PerfectMultiplicationPairing",
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.perfectPairingOfSocle"
+      ]
+    },
+    "LinearStudy.fieldEndomorphism_range_finite": {
+      "path": "Linear/FiniteTypeFieldEndomorphism.lean",
+      "startLine": 24,
+      "endLine": 31,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.fieldEndomorphism_range_isAlgebraic"
       ]
     },
     "exteriorPower.baseChangeIso_apply_tmul": {

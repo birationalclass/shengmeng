@@ -279,3 +279,17 @@ public import Linear.ProjectiveAffineSmoothPoint
 public import Linear.SmoothPointPrincipalOpen
 
 public import Linear.ProjectiveSmoothOpenPoint
+
+public import Linear.ProjectiveCommonChart
+
+public import Linear.ProjectiveConeSurjectivity
+
+public import Linear.ProjectiveCoordinateDomainMap
+
+public import Linear.FiniteTypeFieldEndomorphism
+
+public import Linear.FieldEndomorphismMap
+
+public import Linear.ProjectiveCoordinateFractionMap
+
+public import Linear.ProjectiveCoordinateGenericMap
