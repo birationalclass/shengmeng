@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1122,
-  "verifiedTheorems": 771,
-  "definitions": 155,
+  "audited": 1136,
+  "verifiedTheorems": 782,
+  "definitions": 158,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -5584,6 +5584,31 @@
       ]
     },
     {
+      "declaration": "LinearStudy.general_point_local_unramified_parameters_generate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GeneralUnramifiedPullback.lean",
+      "line": 9,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.general_point_local_unramified_parameters_generate.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2}\n  {ι : Type u_3} [CommRing R] [CommRing A] (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime]\n  [IsLocalRing (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)] (φ : R →+* A)\n  (hQP : Q = Ideal.comap φ P) (hφ : Ideal.map φ I ≤ J)\n  (hfinite :\n    Algebra.EssFiniteType (Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J))\n  (hunram :\n    Algebra.FormallyUnramified (Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J))\n  (t : ι → Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)\n  (ht :\n    Ideal.span (Set.range t) =\n      Ideal.map (Ideal.Quotient.mk (Ideal.map (algebraMap R (Localization.AtPrime Q)) I))\n        (Ideal.map (algebraMap R (Localization.AtPrime Q)) Q)) :\n  Ideal.span (Set.range fun i => (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ) (t i)) =\n    IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)",
+      "sha256": "0c85599c5a20b600feedff3a07280e969a51637e3a22f519728fc251dc01cb1d",
+      "lines": 33,
+      "moduleLineCount": 43,
+      "startLine": 9,
+      "endLine": 41,
+      "lineCount": 33,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_isLocalHom",
+        "LinearStudy.unramified_local_parameters_generate"
+      ]
+    },
+    {
       "declaration": "LinearStudy.flat_genericFiber_injective",
       "kind": "theorem",
       "origin": "project",
@@ -9026,6 +9051,115 @@
       "dependencies": [
         "LinearStudy.polynomialAwayPointEvaluation",
         "LinearStudy.polynomialAwayPointEvaluation_algebraMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localizedSmoothPointQuotientReduction",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/LocalizedSmoothPointReduction.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.localizedSmoothPointQuotientReduction.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))\n  (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (hP :\n    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =\n      RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i))) :\n  Localization.AtPrime P ⧸\n      Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I) →+*\n    MvPowerSeries (Fin r) K",
+      "sha256": "34e686493df15e81c98e97da5787bc14c3a8ab234d72a267f0422d9cf82ad3a4",
+      "lines": 20,
+      "moduleLineCount": 122,
+      "startLine": 13,
+      "endLine": 32,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.localizedPointQuotientEquiv",
+        "LinearStudy.polynomialSmoothLocalQuotientReduction"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localizedSmoothPointQuotientReduction_polynomial",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedSmoothPointReduction.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedSmoothPointQuotientReduction_polynomial.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))\n  (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (hP :\n    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =\n      RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i)))\n  (a : MvPolynomial (Fin r ⊕ Fin c) K) :\n  (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal)\n      ((Ideal.Quotient.mk\n          (Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n            (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I)))\n        ((algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a))) =\n    (LinearStudy.polynomialSmoothReducedMap x G hG hJ) a",
+      "sha256": "34e686493df15e81c98e97da5787bc14c3a8ab234d72a267f0422d9cf82ad3a4",
+      "lines": 32,
+      "moduleLineCount": 122,
+      "startLine": 34,
+      "endLine": 65,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.localizedPointQuotientEquiv",
+        "LinearStudy.localizedPointQuotientEquiv_mk",
+        "LinearStudy.localizedSmoothPointQuotientReduction",
+        "LinearStudy.polynomialSmoothLocalQuotientReduction",
+        "LinearStudy.polynomialSmoothLocalQuotientReduction_mk",
+        "LinearStudy.polynomialSmoothPointLocalReduction",
+        "LinearStudy.polynomialSmoothPointLocalReduction_polynomial",
+        "LinearStudy.polynomialSmoothReducedMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localizedSmoothPointQuotient_isLocalRing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedSmoothPointReduction.lean",
+      "line": 68,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedSmoothPointQuotient_isLocalRing.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))\n  (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (hP :\n    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =\n      RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i))) :\n  IsLocalRing\n    (Localization.AtPrime P ⧸\n      Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))",
+      "sha256": "34e686493df15e81c98e97da5787bc14c3a8ab234d72a267f0422d9cf82ad3a4",
+      "lines": 20,
+      "moduleLineCount": 122,
+      "startLine": 68,
+      "endLine": 87,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.localizedPointQuotientEquiv",
+        "LinearStudy.polynomialSmoothLocalQuotient_isLocalRing"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedSmoothPointReduction.lean",
+      "line": 89,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  [Nonempty (Fin c)] [Nonempty (Fin r)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)\n  (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (hP :\n    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =\n      RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i))) :\n  Ideal.map (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal)\n      (IsLocalRing.maximalIdeal\n        (Localization.AtPrime P ⧸\n          Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n            (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))) =\n    IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)",
+      "sha256": "34e686493df15e81c98e97da5787bc14c3a8ab234d72a267f0422d9cf82ad3a4",
+      "lines": 32,
+      "moduleLineCount": 122,
+      "startLine": 89,
+      "endLine": 120,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.local_quotient_reduction_maximalIdeal",
+        "LinearStudy.localizedPointQuotientEquiv",
+        "LinearStudy.localizedSmoothPointQuotientReduction",
+        "LinearStudy.localizedSmoothPointQuotient_isLocalRing",
+        "LinearStudy.polynomialSmoothLocalQuotientReduction",
+        "LinearStudy.polynomialSmoothLocalQuotient_isLocalRing",
+        "LinearStudy.polynomialSmoothPointLocalReduction",
+        "LinearStudy.polynomialSmoothPointLocalReduction_ideal_kernel",
+        "LinearStudy.polynomialSmoothPointLocalReduction_maximalIdeal"
       ]
     },
     {
@@ -18335,6 +18469,275 @@
         "LinearStudy.polynomialAwayFormalMap",
         "LinearStudy.rationalPolynomialChartMap",
         "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rational_smooth_unramified_constructs_jacobian_socle",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothJacobianSocle.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_smooth_unramified_constructs_jacobian_socle {r c : ℕ} [Nonempty (Fin r)] [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → ℂ) (p0 : MvPolynomial (Fin r ⊕ Fin c) ℂ) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ)) [I.IsPrime]\n  (hI : I ≠ ⊥) (P : Ideal (Localization.Away p0)) [P.IsPrime] (p' : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I))\n  [p'.IsPrime] [Algebra.IsSmoothAt ℂ p']\n  (hp :\n    Ideal.comap (Ideal.Quotient.mk I) p' =\n      RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)\n  (hr : r = Module.finrank (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I) Ω[MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I⁄ℂ])\n  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)\n  (hQP : Ideal.comap (Ideal.Quotient.mk I) p' = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)\n  (hφ :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))\n        J =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))\n            (G i)))\n  (hfinite :\n    Algebra.EssFiniteType\n      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸\n        Ideal.map\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)))\n  (hunram :\n    Algebra.FormallyUnramified\n      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸\n        Ideal.map\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)))\n  (H : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ)\n  (htarget :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p')))\n            (H i)))\n  (e : ℕ) (he : 0 < e)\n  (hlo :\n    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J ^ e ≤\n      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)\n  (hhi :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J) :\n  have HF := fun i =>\n    (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ) ((LinearStudy.rationalPolynomialChartMap p0 p) (H i));\n  ∃ a,\n    have τ := fun i =>\n      (Ideal.Quotient.mk (LinearStudy.equationIdeal HF))\n        ((LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)\n          ((LinearStudy.rationalPolynomialChartMap p0 p) (a i)));\n    have L := Ideal.span (Set.range τ);\n    let C := LinearStudy.CompleteIntersection HF ⧸ L;\n    have m := Ideal.map (Ideal.Quotient.mk L) (nilradical (LinearStudy.CompleteIntersection HF));\n    IsArtinianRing C ∧\n      m.IsMaximal ∧\n        Submodule.annihilator m = Ideal.span {(Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF)} ∧\n          (Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF) ≠ 0",
+      "sha256": "d003c7ed68fdc76c2671f1b71a696d879c55d423f090746aaa74535bf5e3d4d6",
+      "lines": 79,
+      "moduleLineCount": 94,
+      "startLine": 14,
+      "endLine": 92,
+      "lineCount": 79,
+      "dependencies": [
+        "LinearStudy.AmbientRing",
+        "LinearStudy.Annihilates",
+        "LinearStudy.CompleteIntersection",
+        "LinearStudy.ParameterRing",
+        "LinearStudy.coordinateThickeningReductionFromRadical",
+        "LinearStudy.equationIdeal",
+        "LinearStudy.formalThickening_relativeJacobian_socle",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_point_comap",
+        "LinearStudy.polynomialAwaySmoothFormalMap",
+        "LinearStudy.polynomialAwaySmoothReducedMap",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rational_smooth_actual_normal_radical",
+        "LinearStudy.rational_smooth_target_constructs_actual_formal_parameters",
+        "LinearStudy.relativeJacobian"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rational_smooth_actual_normal_radical",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothRadical.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_smooth_actual_normal_radical.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (I J P Q : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [P.IsPrime]\n  [Q.IsPrime] (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (hQ : Q = RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)\n  (G H : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hsource :\n    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime P)) J =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime P)) (G i)))\n  (htarget :\n    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) (H i)))\n  (e : ℕ) (he : 0 < e)\n  (hlo :\n    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J ^ e ≤\n      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)\n  (hhi :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J) :\n  (Ideal.span\n        (Set.range fun i =>\n          (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)\n            ((LinearStudy.rationalPolynomialChartMap p0 p) (H i)))).radical =\n    Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "9487a1055b2d47b780177ede88920f564d674c11dab2a364cf62bb6fa69900f8",
+      "lines": 54,
+      "moduleLineCount": 68,
+      "startLine": 13,
+      "endLine": 66,
+      "lineCount": 54,
+      "dependencies": [
+        "LinearStudy.local_ideal_generators_image",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwaySmoothFormalMap",
+        "LinearStudy.polynomialAwaySmoothFormalMap_algebraMap",
+        "LinearStudy.polynomialSmoothCoordinateEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.polynomialSmoothFormalMap_local_ideal",
+        "LinearStudy.powerSeriesCoordinateChart",
+        "LinearStudy.powerSeries_thickening_radical",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_formal_isUnit_iff"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialAwaySmoothFormalMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/RationalSmoothReduction.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialAwaySmoothFormalMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :\n  Localization.Away p0 →+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)",
+      "sha256": "eabdea59e0d4a74e29d8050f727c448d2be45f45a205a53a9396a474af6ae14d",
+      "lines": 11,
+      "moduleLineCount": 94,
+      "startLine": 12,
+      "endLine": 22,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialSmoothCoordinateEquiv",
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialAwaySmoothReducedMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/RationalSmoothReduction.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialAwaySmoothReducedMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :\n  Localization.Away p0 →+* MvPowerSeries (Fin r) K",
+      "sha256": "eabdea59e0d4a74e29d8050f727c448d2be45f45a205a53a9396a474af6ae14d",
+      "lines": 9,
+      "moduleLineCount": 94,
+      "startLine": 24,
+      "endLine": 32,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialAwaySmoothFormalMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialAwaySmoothFormalMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothReduction.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwaySmoothFormalMap_algebraMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (a : MvPolynomial (Fin r ⊕ Fin c) K) :\n  (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)\n      ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a) =\n    (LinearStudy.polynomialSmoothFormalMap x G hG hJ) a",
+      "sha256": "eabdea59e0d4a74e29d8050f727c448d2be45f45a205a53a9396a474af6ae14d",
+      "lines": 14,
+      "moduleLineCount": 94,
+      "startLine": 34,
+      "endLine": 47,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialAwaySmoothFormalMap",
+        "LinearStudy.polynomialSmoothCoordinateEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialAwaySmoothReducedMap_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothReduction.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialAwaySmoothReducedMap_algebraMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]\n  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (a : MvPolynomial (Fin r ⊕ Fin c) K) :\n  (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ)\n      ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a) =\n    (LinearStudy.polynomialSmoothReducedMap x G hG hJ) a",
+      "sha256": "eabdea59e0d4a74e29d8050f727c448d2be45f45a205a53a9396a474af6ae14d",
+      "lines": 13,
+      "moduleLineCount": 94,
+      "startLine": 49,
+      "endLine": 61,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.polynomialAwaySmoothFormalMap",
+        "LinearStudy.polynomialAwaySmoothFormalMap_algebraMap",
+        "LinearStudy.polynomialAwaySmoothReducedMap",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.polynomialSmoothReducedMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localizedSmoothPointQuotientReduction_away_comparison",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothReduction.lean",
+      "line": 63,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedSmoothPointQuotientReduction_away_comparison.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)\n  (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (hP :\n    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =\n      RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i)))\n  (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :\n  (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal).comp\n      ((Ideal.Quotient.mk\n            (Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n              (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))).comp\n        (algebraMap (Localization.Away p0) (Localization.AtPrime P))) =\n    (MvPowerSeries.constantCoeff.comp\n          ((LinearStudy.powerSeriesCoordinateChart K r c).symm.toRingHom.comp\n            (LinearStudy.polynomialSmoothCoordinateEquiv x G hG hJ).symm.toRingEquiv.toRingHom)).comp\n      (LinearStudy.polynomialAwayFormalMap x p0 hp0).toRingHom",
+      "sha256": "eabdea59e0d4a74e29d8050f727c448d2be45f45a205a53a9396a474af6ae14d",
+      "lines": 30,
+      "moduleLineCount": 94,
+      "startLine": 63,
+      "endLine": 92,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.localizedSmoothPointQuotientReduction",
+        "LinearStudy.localizedSmoothPointQuotientReduction_polynomial",
+        "LinearStudy.polynomialAwayFormalMap",
+        "LinearStudy.polynomialAwayFormalMap_algebraMap",
+        "LinearStudy.polynomialSmoothCoordinateEquiv",
+        "LinearStudy.polynomialSmoothReducedMap",
+        "LinearStudy.powerSeriesCoordinateChart"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rational_smooth_target_constructs_actual_formal_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalSmoothTargetParameters.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_smooth_target_constructs_actual_formal_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ}\n  [Nonempty (Fin r)] [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)\n  (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K)\n  (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [I.IsPrime] (hI : I ≠ ⊥) (P : Ideal (Localization.Away p0)) [P.IsPrime]\n  (p' : Ideal (MvPolynomial (Fin r ⊕ Fin c) K ⧸ I)) [p'.IsPrime] [Algebra.IsSmoothAt K p']\n  (hp :\n    Ideal.comap (Ideal.Quotient.mk I) p' =\n      RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)\n  (hr : r = Module.finrank (MvPolynomial (Fin r ⊕ Fin c) K ⧸ I) Ω[MvPolynomial (Fin r ⊕ Fin c) K ⧸ I⁄K])\n  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)\n  (hQP : Ideal.comap (Ideal.Quotient.mk I) p' = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)\n  (hφ :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        J =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i)))\n  (hfinite :\n    Algebra.EssFiniteType\n      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸\n        Ideal.map\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))\n  (hunram :\n    Algebra.FormallyUnramified\n      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸\n        Ideal.map\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J))) :\n  ∃ a,\n    have T := fun i =>\n      (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ)\n        ((LinearStudy.rationalPolynomialChartMap p0 p) (a i));\n    Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K) ∧\n      IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (T i)))",
+      "sha256": "6adf4f30bd88dcda01b908284edf479daa6c1969f50b71e3bb71074bb05932ae",
+      "lines": 55,
+      "moduleLineCount": 69,
+      "startLine": 13,
+      "endLine": 67,
+      "lineCount": 55,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.point_local_quotient_maximalIdeal_map",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwaySmoothReducedMap",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rational_unramified_actual_formal_parameters",
+        "LinearStudy.smoothLocus_constructs_original_polynomial_parameters"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rational_unramified_actual_formal_parameters",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalUnramifiedParameters.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rational_unramified_actual_formal_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin r)]\n  [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)\n  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))\n  (P : Ideal (Localization.Away p0)) (Q : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [P.IsPrime] [Q.IsPrime]\n  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)\n  (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)\n  (hφ :\n    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤\n      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)\n  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))\n  (hlocal :\n    Ideal.map\n        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n        J =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)\n              (Localization.AtPrime\n                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))\n            (G i)))\n  (hfinite :\n    Algebra.EssFiniteType\n      (Localization.AtPrime Q ⧸ Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))\n  (hunram :\n    Algebra.FormallyUnramified\n      (Localization.AtPrime Q ⧸ Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I)\n      (Localization.AtPrime P ⧸\n        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))\n          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))\n  (a : Fin r → MvPolynomial (Fin r ⊕ Fin c) K)\n  (ha :\n    Ideal.span\n        (Set.range fun i =>\n          (Ideal.Quotient.mk (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I))\n            ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) (a i))) =\n      Ideal.map (Ideal.Quotient.mk (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I))\n        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) Q)) :\n  have T := fun i =>\n    (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ) ((LinearStudy.rationalPolynomialChartMap p0 p) (a i));\n  Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K) ∧\n    IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (T i)))",
+      "sha256": "aa6fc0a1360905c9a50e66c14d034119e8e53c20f4b1d88a05698b9263b46322",
+      "lines": 59,
+      "moduleLineCount": 72,
+      "startLine": 12,
+      "endLine": 70,
+      "lineCount": 59,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.general_point_local_unramified_parameters_generate",
+        "LinearStudy.localizedSmoothPointQuotientReduction",
+        "LinearStudy.localizedSmoothPointQuotientReduction_away_comparison",
+        "LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal",
+        "LinearStudy.localizedSmoothPointQuotient_isLocalRing",
+        "LinearStudy.parameter_generators_jacobian_constantCoeff_unit",
+        "LinearStudy.polynomialAwayPointEvaluation",
+        "LinearStudy.polynomialAwayPointEvaluation_point_comap",
+        "LinearStudy.polynomialAwaySmoothReducedMap",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     {

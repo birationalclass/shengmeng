@@ -237,3 +237,17 @@ public import Linear.LocalizedPointQuotientEquiv
 public import Linear.ProjectiveRationalFormalIdeal
 
 public import Linear.AffineChartComparison
+
+public import Linear.LocalizedSmoothPointReduction
+
+public import Linear.GeneralUnramifiedPullback
+
+public import Linear.RationalSmoothReduction
+
+public import Linear.RationalUnramifiedParameters
+
+public import Linear.RationalSmoothTargetParameters
+
+public import Linear.RationalSmoothRadical
+
+public import Linear.RationalSmoothJacobianSocle

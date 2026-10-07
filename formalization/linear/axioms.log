@@ -1411,6 +1411,26 @@ LinearStudy.generalPointLocalQuotientPullback_isLocalHom.{u_1, u_2} {R : Type u_
   (hQP : Q = Ideal.comap φ P) (hφ : Ideal.map φ I ≤ J) :
   IsLocalHom (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ)
 'LinearStudy.generalPointLocalQuotientPullback_isLocalHom' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.general_point_local_unramified_parameters_generate.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2}
+  {ι : Type u_3} [CommRing R] [CommRing A] (I : Ideal R) (J P : Ideal A) (Q : Ideal R) [P.IsPrime] [Q.IsPrime]
+  [IsLocalRing (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)] (φ : R →+* A)
+  (hQP : Q = Ideal.comap φ P) (hφ : Ideal.map φ I ≤ J)
+  (hfinite :
+    Algebra.EssFiniteType (Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)
+      (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J))
+  (hunram :
+    Algebra.FormallyUnramified (Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)
+      (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J))
+  (t : ι → Localization.AtPrime Q ⧸ Ideal.map (algebraMap R (Localization.AtPrime Q)) I)
+  (ht :
+    Ideal.span (Set.range t) =
+      Ideal.map (Ideal.Quotient.mk (Ideal.map (algebraMap R (Localization.AtPrime Q)) I))
+        (Ideal.map (algebraMap R (Localization.AtPrime Q)) Q)) :
+  Ideal.span (Set.range fun i => (LinearStudy.generalPointLocalQuotientPullback I J P Q φ hQP hφ) (t i)) =
+    IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ Ideal.map (algebraMap A (Localization.AtPrime P)) J)
+'LinearStudy.general_point_local_unramified_parameters_generate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.flat_genericFiber_injective.{u_1, u_2, u_3} {B : Type u_1} {A : Type u_2} {C : Type u_3} [CommRing B]
   [CommRing A] [CommRing C] [Algebra B A] [Algebra B C] [Module.Flat B A] (f : A →ₐ[B] C)
   [IsLocalizedModule (nonZeroDivisors B) f.toLinearMap] : Function.Injective ⇑f
@@ -2314,6 +2334,112 @@ LinearStudy.polynomialAwayPointEvaluation_point_comap.{u_1, u_2} {K : Type u_1} 
       (RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom) =
     RingHom.ker (MvPolynomial.aeval x).toRingHom
 'LinearStudy.polynomialAwayPointEvaluation_point_comap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.localizedSmoothPointQuotientReduction.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))
+  (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hP :
+    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =
+      RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i))) :
+  Localization.AtPrime P ⧸
+      Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I) →+*
+    MvPowerSeries (Fin r) K
+'LinearStudy.localizedSmoothPointQuotientReduction' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.localizedSmoothPointQuotientReduction_polynomial.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))
+  (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hP :
+    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =
+      RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i)))
+  (a : MvPolynomial (Fin r ⊕ Fin c) K) :
+  (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal)
+      ((Ideal.Quotient.mk
+          (Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+            (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I)))
+        ((algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a))) =
+    (LinearStudy.polynomialSmoothReducedMap x G hG hJ) a
+'LinearStudy.localizedSmoothPointQuotientReduction_polynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.localizedSmoothPointQuotient_isLocalRing.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))
+  (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hP :
+    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =
+      RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i))) :
+  IsLocalRing
+    (Localization.AtPrime P ⧸
+      Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))
+'LinearStudy.localizedSmoothPointQuotient_isLocalRing' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  [Nonempty (Fin c)] [Nonempty (Fin r)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)
+  (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hP :
+    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =
+      RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i))) :
+  Ideal.map (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal)
+      (IsLocalRing.maximalIdeal
+        (Localization.AtPrime P ⧸
+          Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+            (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))) =
+    IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K)
+'LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.local_ideal_generators_image.{u_1, u_2, u_3} {R : Type u_1} {S : Type u_2} {ι : Type u_3} [CommRing R]
   [CommRing S] (I P : Ideal R) [P.IsPrime] (G : ι → R) (ψ : R →+* S) (hunit : ∀ (s : ↥P.primeCompl), IsUnit (ψ ↑s))
   (hlocal :
@@ -4590,6 +4716,268 @@ LinearStudy.rationalPolynomialChartMap_target_local_generators.{u_1, u_2, u_3} {
 'LinearStudy.rationalPolynomialChartMap_target_local_generators' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.rational_smooth_unramified_constructs_jacobian_socle {r c : ℕ} [Nonempty (Fin r)] [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → ℂ) (p0 : MvPolynomial (Fin r ⊕ Fin c) ℂ) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ)) [I.IsPrime]
+  (hI : I ≠ ⊥) (P : Ideal (Localization.Away p0)) [P.IsPrime] (p' : Ideal (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I))
+  [p'.IsPrime] [Algebra.IsSmoothAt ℂ p']
+  (hp :
+    Ideal.comap (Ideal.Quotient.mk I) p' =
+      RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)
+  (hr : r = Module.finrank (MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I) Ω[MvPolynomial (Fin r ⊕ Fin c) ℂ ⧸ I⁄ℂ])
+  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)
+  (hQP : Ideal.comap (Ideal.Quotient.mk I) p' = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))
+        J =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) P)))
+            (G i)))
+  (hfinite :
+    Algebra.EssFiniteType
+      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸
+        Ideal.map
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)))
+  (hunram :
+    Algebra.FormallyUnramified
+      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸
+        Ideal.map
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J)))
+  (H : Fin c → MvPolynomial (Fin r ⊕ Fin c) ℂ)
+  (htarget :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p')))
+            (H i)))
+  (e : ℕ) (he : 0 < e)
+  (hlo :
+    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J ^ e ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) ℂ) (Localization.Away p0)) J) :
+  have HF := fun i =>
+    (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ) ((LinearStudy.rationalPolynomialChartMap p0 p) (H i));
+  ∃ a,
+    have τ := fun i =>
+      (Ideal.Quotient.mk (LinearStudy.equationIdeal HF))
+        ((LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)
+          ((LinearStudy.rationalPolynomialChartMap p0 p) (a i)));
+    have L := Ideal.span (Set.range τ);
+    let C := LinearStudy.CompleteIntersection HF ⧸ L;
+    have m := Ideal.map (Ideal.Quotient.mk L) (nilradical (LinearStudy.CompleteIntersection HF));
+    IsArtinianRing C ∧
+      m.IsMaximal ∧
+        Submodule.annihilator m = Ideal.span {(Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF)} ∧
+          (Ideal.Quotient.mk L) (LinearStudy.relativeJacobian HF) ≠ 0
+'LinearStudy.rational_smooth_unramified_constructs_jacobian_socle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_smooth_actual_normal_radical.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (I J P Q : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [P.IsPrime]
+  [Q.IsPrime] (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (hQ : Q = RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)
+  (G H : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hsource :
+    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime P)) J =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime P)) (G i)))
+  (htarget :
+    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) (H i)))
+  (e : ℕ) (he : 0 < e)
+  (hlo :
+    Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J ^ e ≤
+      Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I)
+  (hhi :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J) :
+  (Ideal.span
+        (Set.range fun i =>
+          (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)
+            ((LinearStudy.rationalPolynomialChartMap p0 p) (H i)))).radical =
+    Ideal.span (Set.range MvPowerSeries.X)
+'LinearStudy.rational_smooth_actual_normal_radical' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialAwaySmoothFormalMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :
+  Localization.Away p0 →+* MvPowerSeries (Fin c) (MvPowerSeries (Fin r) K)
+'LinearStudy.polynomialAwaySmoothFormalMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialAwaySmoothReducedMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :
+  Localization.Away p0 →+* MvPowerSeries (Fin r) K
+'LinearStudy.polynomialAwaySmoothReducedMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialAwaySmoothFormalMap_algebraMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (a : MvPolynomial (Fin r ⊕ Fin c) K) :
+  (LinearStudy.polynomialAwaySmoothFormalMap x p0 hp0 G hG hJ)
+      ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a) =
+    (LinearStudy.polynomialSmoothFormalMap x G hG hJ) a
+'LinearStudy.polynomialAwaySmoothFormalMap_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialAwaySmoothReducedMap_algebraMap.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin c)]
+  (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (a : MvPolynomial (Fin r ⊕ Fin c) K) :
+  (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ)
+      ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) a) =
+    (LinearStudy.polynomialSmoothReducedMap x G hG hJ) a
+'LinearStudy.polynomialAwaySmoothReducedMap_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.localizedSmoothPointQuotientReduction_away_comparison.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)
+  (I : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (hP :
+    Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P =
+      RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i)))
+  (hp0 : (MvPolynomial.eval x) p0 ≠ 0) :
+  (LinearStudy.localizedSmoothPointQuotientReduction x p0 I P hP G hG hJ hlocal).comp
+      ((Ideal.Quotient.mk
+            (Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+              (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) I))).comp
+        (algebraMap (Localization.Away p0) (Localization.AtPrime P))) =
+    (MvPowerSeries.constantCoeff.comp
+          ((LinearStudy.powerSeriesCoordinateChart K r c).symm.toRingHom.comp
+            (LinearStudy.polynomialSmoothCoordinateEquiv x G hG hJ).symm.toRingEquiv.toRingHom)).comp
+      (LinearStudy.polynomialAwayFormalMap x p0 hp0).toRingHom
+'LinearStudy.localizedSmoothPointQuotientReduction_away_comparison' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_smooth_target_constructs_actual_formal_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ}
+  [Nonempty (Fin r)] [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K)
+  (hp0 : (MvPolynomial.eval x) p0 ≠ 0) (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K)
+  (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [I.IsPrime] (hI : I ≠ ⊥) (P : Ideal (Localization.Away p0)) [P.IsPrime]
+  (p' : Ideal (MvPolynomial (Fin r ⊕ Fin c) K ⧸ I)) [p'.IsPrime] [Algebra.IsSmoothAt K p']
+  (hp :
+    Ideal.comap (Ideal.Quotient.mk I) p' =
+      RingHom.ker (MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0).toRingHom)
+  (hr : r = Module.finrank (MvPolynomial (Fin r ⊕ Fin c) K ⧸ I) Ω[MvPolynomial (Fin r ⊕ Fin c) K ⧸ I⁄K])
+  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)
+  (hQP : Ideal.comap (Ideal.Quotient.mk I) p' = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        J =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i)))
+  (hfinite :
+    Algebra.EssFiniteType
+      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸
+        Ideal.map
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))
+  (hunram :
+    Algebra.FormallyUnramified
+      (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p') ⧸
+        Ideal.map
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p'))) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J))) :
+  ∃ a,
+    have T := fun i =>
+      (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ)
+        ((LinearStudy.rationalPolynomialChartMap p0 p) (a i));
+    Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K) ∧
+      IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (T i)))
+'LinearStudy.rational_smooth_target_constructs_actual_formal_parameters' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.rational_unramified_actual_formal_parameters.{u_1} {K : Type u_1} [Field K] {r c : ℕ} [Nonempty (Fin r)]
+  [Nonempty (Fin c)] (x : Fin r ⊕ Fin c → K) (p0 : MvPolynomial (Fin r ⊕ Fin c) K) (hp0 : (MvPolynomial.eval x) p0 ≠ 0)
+  (p : Fin r ⊕ Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (I J : Ideal (MvPolynomial (Fin r ⊕ Fin c) K))
+  (P : Ideal (Localization.Away p0)) (Q : Ideal (MvPolynomial (Fin r ⊕ Fin c) K)) [P.IsPrime] [Q.IsPrime]
+  (hP : P = RingHom.ker (LinearStudy.polynomialAwayPointEvaluation x p0 hp0).toRingHom)
+  (hQP : Q = Ideal.comap (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom P)
+  (hφ :
+    Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom I ≤
+      Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)
+  (G : Fin c → MvPolynomial (Fin r ⊕ Fin c) K) (hG : ∀ (i : Fin c), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))))
+  (hlocal :
+    Ideal.map
+        (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+          (Localization.AtPrime (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+        J =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K)
+              (Localization.AtPrime
+                (Ideal.comap (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) P)))
+            (G i)))
+  (hfinite :
+    Algebra.EssFiniteType
+      (Localization.AtPrime Q ⧸ Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))
+  (hunram :
+    Algebra.FormallyUnramified
+      (Localization.AtPrime Q ⧸ Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I)
+      (Localization.AtPrime P ⧸
+        Ideal.map (algebraMap (Localization.Away p0) (Localization.AtPrime P))
+          (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.Away p0)) J)))
+  (a : Fin r → MvPolynomial (Fin r ⊕ Fin c) K)
+  (ha :
+    Ideal.span
+        (Set.range fun i =>
+          (Ideal.Quotient.mk (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I))
+            ((algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) (a i))) =
+      Ideal.map (Ideal.Quotient.mk (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) I))
+        (Ideal.map (algebraMap (MvPolynomial (Fin r ⊕ Fin c) K) (Localization.AtPrime Q)) Q)) :
+  have T := fun i =>
+    (LinearStudy.polynomialAwaySmoothReducedMap x p0 hp0 G hG hJ) ((LinearStudy.rationalPolynomialChartMap p0 p) (a i));
+  Ideal.span (Set.range T) = IsLocalRing.maximalIdeal (MvPowerSeries (Fin r) K) ∧
+    IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (T i)))
+'LinearStudy.rational_unramified_actual_formal_parameters' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.exists_nonzero_coordinate_minor.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] {n : ℕ}
   (A : Fin n → σ → K) (hA : LinearIndependent K A) : ∃ j, Function.Injective j ∧ (Matrix.det fun i k => A i (j k)) ≠ 0
 'LinearStudy.exists_nonzero_coordinate_minor' depends on axioms: [propext, Classical.choice, Quot.sound]
