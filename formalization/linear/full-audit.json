@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1269,
-  "verifiedTheorems": 891,
-  "definitions": 182,
+  "audited": 1291,
+  "verifiedTheorems": 911,
+  "definitions": 184,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -618,6 +618,58 @@
         "LinearStudy.nilradical_annihilator_generator_of_localizations",
         "LinearStudy.perfect_nilradical_socle_weighted_evaluation",
         "LinearStudy.polynomialQuotient_finite_of_top_zeroLocus"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomial_algHom_eq_of_point_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineRationalPointValues.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_algHom_eq_of_point_kernel.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (ρ : MvPolynomial σ K →ₐ[K] K) (x : σ → K)\n  (h : RingHom.ker ρ.toRingHom = RingHom.ker (MvPolynomial.aeval x).toRingHom) : ρ = MvPolynomial.aeval x",
+      "sha256": "520a8a590b328808ced9fe8f48e7608f685e8eda829c545c50acfc8e55626dc9",
+      "lines": 17,
+      "moduleLineCount": 39,
+      "startLine": 9,
+      "endLine": 25,
+      "lineCount": 17,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AffineRationalPointValues.lean",
+      "line": 27,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation {n : ℕ}\n  (V : LinearStudy.IntegralProjectiveEquations n) (ρ : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] ℂ) :\n  ∃ x,\n    ∃ (_ : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet),\n      V.affinePointIdeal x = RingHom.ker ρ.toRingHom ∧\n        ρ.comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) = MvPolynomial.aeval x",
+      "sha256": "520a8a590b328808ced9fe8f48e7608f685e8eda829c545c50acfc8e55626dc9",
+      "lines": 11,
+      "moduleLineCount": 39,
+      "startLine": 27,
+      "endLine": 37,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomial_algHom_eq_of_point_kernel"
       ]
     },
     {
@@ -1367,6 +1419,124 @@
         "LinearStudy.awayFractionEmbedding",
         "LinearStudy.awayFractionEmbedding_algebraMap",
         "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.awayQuotientEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AwayQuotientComparison.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.awayQuotientEquiv.{u_1} {R : Type u_1} [CommRing R] (I : Ideal R) (a : R) :\n  (Localization.Away a ⧸ Ideal.map (algebraMap R (Localization.Away a)) I) ≃ₐ[R ⧸ I]\n    Localization.Away ((Ideal.Quotient.mk I) a)",
+      "sha256": "ceb2dbf37c490ed1449390b54880cbff2f8137ec9d0b7d54a1346ff4196b8fb4",
+      "lines": 13,
+      "moduleLineCount": 75,
+      "startLine": 11,
+      "endLine": 23,
+      "lineCount": 13,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.awayQuotientEquiv_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayQuotientComparison.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayQuotientEquiv_mk.{u_1} {R : Type u_1} [CommRing R] (I : Ideal R) (a r : R) :\n  (LinearStudy.awayQuotientEquiv I a)\n      ((Ideal.Quotient.mk (Ideal.map (algebraMap R (Localization.Away a)) I))\n        ((algebraMap R (Localization.Away a)) r)) =\n    (algebraMap (R ⧸ I) (Localization.Away ((Ideal.Quotient.mk I) a))) ((Ideal.Quotient.mk I) r)",
+      "sha256": "ceb2dbf37c490ed1449390b54880cbff2f8137ec9d0b7d54a1346ff4196b8fb4",
+      "lines": 5,
+      "moduleLineCount": 75,
+      "startLine": 25,
+      "endLine": 29,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.awayQuotientEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.awayQuotientBaseEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AwayQuotientComparison.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.awayQuotientBaseEquiv.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K] [CommRing R] [Algebra K R]\n  (I : Ideal R) (a : R) :\n  (Localization.Away a ⧸ Ideal.map (algebraMap R (Localization.Away a)) I) ≃ₐ[K]\n    Localization.Away ((Ideal.Quotient.mk I) a)",
+      "sha256": "ceb2dbf37c490ed1449390b54880cbff2f8137ec9d0b7d54a1346ff4196b8fb4",
+      "lines": 12,
+      "moduleLineCount": 75,
+      "startLine": 31,
+      "endLine": 42,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.awayQuotientEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.awayQuotientEquiv_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayQuotientComparison.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayQuotientEquiv_invSelf.{u_1} {R : Type u_1} [CommRing R] (I : Ideal R) (a : R) :\n  (LinearStudy.awayQuotientEquiv I a)\n      ((Ideal.Quotient.mk (Ideal.map (algebraMap R (Localization.Away a)) I)) (IsLocalization.Away.invSelf a)) =\n    IsLocalization.Away.invSelf ((Ideal.Quotient.mk I) a)",
+      "sha256": "ceb2dbf37c490ed1449390b54880cbff2f8137ec9d0b7d54a1346ff4196b8fb4",
+      "lines": 12,
+      "moduleLineCount": 75,
+      "startLine": 44,
+      "endLine": 55,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.awayQuotientEquiv_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPolynomialChartMap_awayQuotient_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayQuotientComparison.lean",
+      "line": 57,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPolynomialChartMap_awayQuotient_comp.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (I : Ideal (MvPolynomial σ K)) (p0 : MvPolynomial σ K) (p : σ → MvPolynomial σ K) :\n  let J := Ideal.map (algebraMap (MvPolynomial σ K) (Localization.Away p0)) I;\n  (↑(LinearStudy.awayQuotientBaseEquiv I p0)).comp\n      ((Ideal.Quotient.mkₐ K J).comp (LinearStudy.rationalPolynomialChartMap p0 p)) =\n    MvPolynomial.aeval fun i =>\n      (algebraMap (MvPolynomial σ K ⧸ I) (Localization.Away ((Ideal.Quotient.mk I) p0))) ((Ideal.Quotient.mk I) (p i)) *\n        IsLocalization.Away.invSelf ((Ideal.Quotient.mk I) p0)",
+      "sha256": "ceb2dbf37c490ed1449390b54880cbff2f8137ec9d0b7d54a1346ff4196b8fb4",
+      "lines": 17,
+      "moduleLineCount": 75,
+      "startLine": 57,
+      "endLine": 73,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.awayQuotientEquiv_invSelf",
+        "LinearStudy.awayQuotientEquiv_mk",
+        "LinearStudy.rationalPolynomialChartMap"
       ]
     },
     {
@@ -9834,6 +10004,50 @@
         "LinearStudy.polynomialSmoothPointLocalReduction",
         "LinearStudy.polynomialSmoothPointLocalReduction_ideal_kernel",
         "LinearStudy.polynomialSmoothPointLocalReduction_maximalIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localRingHom_equiv_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalMapEquivComparison.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localRingHom_equiv_comp.{u_1, u_2, u_3} {R : Type u_1} {C : Type u_2} {A : Type u_3} [CommRing R]\n  [CommRing C] [CommRing A] (φ : R →+* C) (E : C ≃+* A) (P : Ideal A) [P.IsPrime] :\n  let p := Ideal.comap E.toRingHom P;\n  let q := Ideal.comap φ p;\n  (Localization.localRingEquiv p P E ⋯).toRingHom.comp (Localization.localRingHom q p φ ⋯) =\n    Localization.localRingHom q P (E.toRingHom.comp φ) ⋯",
+      "sha256": "7bd68c742d318041263bd118d5cb1beef7fa1c79701f2bc6f10052333e492d00",
+      "lines": 18,
+      "moduleLineCount": 53,
+      "startLine": 10,
+      "endLine": 27,
+      "lineCount": 18,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.localRingHom_formallyUnramified_of_equiv_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalMapEquivComparison.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localRingHom_formallyUnramified_of_equiv_comp.{u_1, u_2, u_3} {R : Type u_1} {C : Type u_2} {A : Type u_3}\n  [CommRing R] [CommRing C] [CommRing A] (φ : R →+* C) (E : C ≃+* A) (P : Ideal A) [P.IsPrime]\n  (h :\n    let p := Ideal.comap E.toRingHom P;\n    let q := Ideal.comap φ p;\n    (Localization.localRingHom q P (E.toRingHom.comp φ) ⋯).FormallyUnramified) :\n  let p := Ideal.comap E.toRingHom P;\n  let q := Ideal.comap φ p;\n  (Localization.localRingHom q p φ ⋯).FormallyUnramified",
+      "sha256": "7bd68c742d318041263bd118d5cb1beef7fa1c79701f2bc6f10052333e492d00",
+      "lines": 23,
+      "moduleLineCount": 53,
+      "startLine": 29,
+      "endLine": 51,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.localRingHom_equiv_comp"
       ]
     },
     {
@@ -18818,6 +19032,162 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientOpenComparison.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  have p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  (LinearStudy.awayQuotientEquiv V.affineIdeal p0).toRingEquiv.toRingHom.comp\n      ((Ideal.Quotient.mk J).comp (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom) =\n    (LinearStudy.projectiveChartOpenPolynomialMap f V).toRingHom",
+      "sha256": "01f275531e7e8eb257cf714988d981219a39d321fbeeab17ae4724640aafc3b0",
+      "lines": 10,
+      "moduleLineCount": 71,
+      "startLine": 12,
+      "endLine": 21,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientBaseEquiv",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.rationalPolynomialChartMap_awayQuotient_comp"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientOpenComparison.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveRationalPolynomialChartMap_ideal {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  have p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  have p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  Ideal.map (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom V.affineIdeal ≤\n    Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal",
+      "sha256": "01f275531e7e8eb257cf714988d981219a39d321fbeeab17ae4724640aafc3b0",
+      "lines": 24,
+      "moduleLineCount": 71,
+      "startLine": 23,
+      "endLine": 46,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp",
+        "LinearStudy.projectiveChartOpenPolynomialMap_ideal",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartOpenMap_ambient_quotient_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientOpenComparison.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_ambient_quotient_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  (LinearStudy.awayQuotientEquiv V.affineIdeal p0).toRingEquiv.toRingHom.comp\n      (Ideal.quotientMap J (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯) =\n    (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom",
+      "sha256": "01f275531e7e8eb257cf714988d981219a39d321fbeeab17ae4724640aafc3b0",
+      "lines": 22,
+      "moduleLineCount": 71,
+      "startLine": 48,
+      "endLine": 69,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.rationalPolynomialChartMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveAmbientUnramifiedPoint.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  let p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  let p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  let J := Ideal.map (algebraMap (MvPolynomial (Fin n) ℂ) (Localization.Away p0)) V.affineIdeal;\n  let E := LinearStudy.awayQuotientEquiv V.affineIdeal p0;\n  have hI := ⋯;\n  let ψ := Ideal.quotientMap J (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯;\n  ∃ ρ,\n    LinearStudy.rationalPointPrime ρ ∈ Algebra.smoothLocus ℂ A ∧\n      LinearStudy.rationalPointPrime (ρ.comp (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx)) ∈\n          Algebra.smoothLocus ℂ B ∧\n        let P := Ideal.comap E.toRingEquiv.toRingHom (LinearStudy.rationalPointPrime ρ).asIdeal;\n        let Q := Ideal.comap ψ P;\n        (LinearStudy.generalPointLocalQuotientPullback V.affineIdeal J (Ideal.comap (Ideal.Quotient.mk J) P)\n            (Ideal.comap (Ideal.Quotient.mk V.affineIdeal) Q) (LinearStudy.rationalPolynomialChartMap p0 p).toRingHom ⋯\n            hI).FormallyUnramified",
+      "sha256": "74710a936a21587e7717af88c5a526a8c0fd276e508bb192bccb6b78eaf36707",
+      "lines": 44,
+      "moduleLineCount": 63,
+      "startLine": 18,
+      "endLine": 61,
+      "lineCount": 44,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayQuotientEquiv",
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.localRingHom_formallyUnramified_of_equiv_comp",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_ambient_quotient_comp",
+        "LinearStudy.projectiveChartOpenMap_exists_good_rational_point",
+        "LinearStudy.projectiveRationalPolynomialChartMap_ideal",
+        "LinearStudy.quotientLocalPullback_formallyUnramified",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPointPrime_comp_formallyUnramified",
+        "LinearStudy.rationalPolynomialChartMap",
+        "LinearStudy.ringHom_pointwiseUnramified_localRingHom"
+      ]
+    },
+    {
       "declaration": "LinearStudy.affineDehomogenize",
       "kind": "def",
       "origin": "project",
@@ -21150,6 +21520,87 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveChartOpenMap_rational_point_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGoodAffineCoordinates.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_rational_point_coordinates {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet)\n  (ρ : Localization.Away (LinearStudy.projectiveChartDenominator f V) →ₐ[ℂ] ℂ) (x : Fin n → ℂ)\n  (hx :\n    (ρ.comp\n            (IsScalarTower.toAlgHom ℂ (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)\n              (Localization.Away (LinearStudy.projectiveChartDenominator f V)))).comp\n        (Ideal.Quotient.mkₐ ℂ V.affineIdeal) =\n      MvPolynomial.aeval x) :\n  have p0 := LinearStudy.affineChartPolynomialMap (f.forms 0);\n  have p := fun i => LinearStudy.affineChartPolynomialMap (f.forms i.succ);\n  (MvPolynomial.eval x) p0 ≠ 0 ∧\n    (ρ.comp (LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0)).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) =\n      MvPolynomial.aeval fun i => (MvPolynomial.eval x) (p i) / (MvPolynomial.eval x) p0",
+      "sha256": "7bd43062c450bde7674a853412a602bcccdea5456046f13172ec221e3bbee377",
+      "lines": 43,
+      "moduleLineCount": 106,
+      "startLine": 14,
+      "endLine": 56,
+      "lineCount": 43,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.rationalPoint_away_denominator_ne_zero",
+        "LinearStudy.rationalPoint_away_invSelf"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGoodAffineCoordinates.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  have ι := IsScalarTower.toAlgHom ℂ B A;\n  ∃ ρ x,\n    ∃ (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (_ :\n      (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0),\n      have y := fun i =>\n        (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms i.succ)) /\n          (MvPolynomial.eval x) (LinearStudy.affineChartPolynomialMap (f.forms 0));\n      ∃ (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n        Algebra.IsSmoothAt ℂ (V.affinePoint x hx).asIdeal ∧\n          Algebra.IsSmoothAt ℂ (V.affinePoint y hy).asIdeal ∧\n            LinearStudy.rationalPointPrime ρ ∈ Algebra.unramifiedLocus B A ∧\n              (ρ.comp ι).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) = MvPolynomial.aeval x ∧\n                (ρ.comp φ).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal) = MvPolynomial.aeval y",
+      "sha256": "7bd43062c450bde7674a853412a602bcccdea5456046f13172ec221e3bbee377",
+      "lines": 47,
+      "moduleLineCount": 106,
+      "startLine": 58,
+      "endLine": 104,
+      "lineCount": 47,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affinePointIdeal_comap",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_good_rational_point",
+        "LinearStudy.projectiveChartOpenMap_rational_point_coordinates",
+        "LinearStudy.projective_total_invariance_affine_image_mem",
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPoint_away_smooth_base"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomial_pullback_zeroLocus",
       "kind": "theorem",
       "origin": "project",
@@ -21810,6 +22261,57 @@
       ]
     },
     {
+      "declaration": "LinearStudy.quotientLocalPullback_comparison",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientLocalPullbackComparison.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotientLocalPullback_comparison.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  (I : Ideal R) (J : Ideal A) (φ : R →+* A) (hφ : Ideal.map φ I ≤ J) (P : Ideal (A ⧸ J)) [P.IsPrime] :\n  let ψ := Ideal.quotientMap J φ ⋯;\n  let Q := Ideal.comap ψ P;\n  let p := Ideal.comap (Ideal.Quotient.mk J) P;\n  let q := Ideal.comap (Ideal.Quotient.mk I) Q;\n  (LinearStudy.localizationQuotientEquiv J P).toRingEquiv.toRingHom.comp\n      (LinearStudy.generalPointLocalQuotientPullback I J p q φ ⋯ hφ) =\n    (Localization.localRingHom Q P ψ ⋯).comp (LinearStudy.localizationQuotientEquiv I Q).toRingEquiv.toRingHom",
+      "sha256": "9e5cc5adad202b2eaf3d36fc633a7e22fc9bd9cc2d1d8f8af4e309701f7e20b1",
+      "lines": 28,
+      "moduleLineCount": 67,
+      "startLine": 11,
+      "endLine": 38,
+      "lineCount": 28,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.generalPointLocalQuotientPullback_mk",
+        "LinearStudy.localizationQuotientEquiv",
+        "LinearStudy.localizationQuotientEquiv_mk"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.quotientLocalPullback_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/QuotientLocalPullbackComparison.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotientLocalPullback_formallyUnramified.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [CommRing A]\n  (I : Ideal R) (J : Ideal A) (φ : R →+* A) (hφ : Ideal.map φ I ≤ J) (P : Ideal (A ⧸ J)) [P.IsPrime]\n  (hP :\n    have ψ := Ideal.quotientMap J φ ⋯;\n    (Localization.localRingHom (Ideal.comap ψ P) P ψ ⋯).FormallyUnramified) :\n  let ψ := Ideal.quotientMap J φ ⋯;\n  let Q := Ideal.comap ψ P;\n  let p := Ideal.comap (Ideal.Quotient.mk J) P;\n  let q := Ideal.comap (Ideal.Quotient.mk I) Q;\n  (LinearStudy.generalPointLocalQuotientPullback I J p q φ ⋯ hφ).FormallyUnramified",
+      "sha256": "9e5cc5adad202b2eaf3d36fc633a7e22fc9bd9cc2d1d8f8af4e309701f7e20b1",
+      "lines": 26,
+      "moduleLineCount": 67,
+      "startLine": 40,
+      "endLine": 65,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.generalPointLocalQuotientPullback",
+        "LinearStudy.localizationQuotientEquiv",
+        "LinearStudy.quotientLocalPullback_comparison"
+      ]
+    },
+    {
       "declaration": "LinearStudy.formalPolynomialAtPointAlg",
       "kind": "def",
       "origin": "project",
@@ -22103,6 +22605,97 @@
       ]
     },
     {
+      "declaration": "LinearStudy.rationalPointPrime_away_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalPointLocalization.lean",
+      "line": 9,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPointPrime_away_comap.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [Algebra K B]\n  (a : B) (ρ : Localization.Away a →ₐ[K] K) :\n  PrimeSpectrum.comap (algebraMap B (Localization.Away a)) (LinearStudy.rationalPointPrime ρ) =\n    LinearStudy.rationalPointPrime (ρ.comp (IsScalarTower.toAlgHom K B (Localization.Away a)))",
+      "sha256": "1d5abf267e17e196a5dd3f5b6e76ccfc5f3e9f6bd1adf6b7da6a2e4cbeac162d",
+      "lines": 9,
+      "moduleLineCount": 51,
+      "startLine": 9,
+      "endLine": 17,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.rationalPointPrime"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPoint_away_smooth_base",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalPointLocalization.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPoint_away_smooth_base.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [Algebra K B]\n  (a : B) (ρ : Localization.Away a →ₐ[K] K)\n  (hρ : LinearStudy.rationalPointPrime ρ ∈ Algebra.smoothLocus K (Localization.Away a)) :\n  LinearStudy.rationalPointPrime (ρ.comp (IsScalarTower.toAlgHom K B (Localization.Away a))) ∈ Algebra.smoothLocus K B",
+      "sha256": "1d5abf267e17e196a5dd3f5b6e76ccfc5f3e9f6bd1adf6b7da6a2e4cbeac162d",
+      "lines": 14,
+      "moduleLineCount": 51,
+      "startLine": 19,
+      "endLine": 32,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.rationalPointPrime",
+        "LinearStudy.rationalPointPrime_away_comap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPoint_away_denominator_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalPointLocalization.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPoint_away_denominator_ne_zero.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [Algebra K B] (a : B) (ρ : Localization.Away a →ₐ[K] K) : ρ ((algebraMap B (Localization.Away a)) a) ≠ 0",
+      "sha256": "1d5abf267e17e196a5dd3f5b6e76ccfc5f3e9f6bd1adf6b7da6a2e4cbeac162d",
+      "lines": 5,
+      "moduleLineCount": 51,
+      "startLine": 34,
+      "endLine": 38,
+      "lineCount": 5,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.rationalPoint_away_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalPointLocalization.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPoint_away_invSelf.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [Algebra K B]\n  (a : B) (ρ : Localization.Away a →ₐ[K] K) :\n  ρ (IsLocalization.Away.invSelf a) = (ρ ((algebraMap B (Localization.Away a)) a))⁻¹",
+      "sha256": "1d5abf267e17e196a5dd3f5b6e76ccfc5f3e9f6bd1adf6b7da6a2e4cbeac162d",
+      "lines": 10,
+      "moduleLineCount": 51,
+      "startLine": 40,
+      "endLine": 49,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.rationalPoint_away_denominator_ne_zero"
+      ]
+    },
+    {
       "declaration": "LinearStudy.rationalPointPrime_comp_comap",
       "kind": "theorem",
       "origin": "project",
@@ -22227,6 +22820,29 @@
         "LinearStudy.rationalPointPrime",
         "LinearStudy.rationalPointPrime_comp_comap",
         "LinearStudy.unramified_local_parameters_generate"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.rationalPointPrime_comp_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/RationalPointUnramifiedComposition.lean",
+      "line": 8,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.rationalPointPrime_comp_formallyUnramified.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {A : Type u_3}\n  [Field K] [CommRing R] [CommRing A] [Algebra K R] [Algebra K A] (φ : R →ₐ[K] A) (ρ : A →ₐ[K] K)\n  (hρ : LinearStudy.rationalPointPrime ρ ∈ Algebra.unramifiedLocus R A) :\n  ((algebraMap A (Localization.AtPrime (LinearStudy.rationalPointPrime ρ).asIdeal)).comp φ.toRingHom).FormallyUnramified",
+      "sha256": "56f1563be5406d5d1e89a014a53b193165c981caf355616dfb006b2e16c2301f",
+      "lines": 10,
+      "moduleLineCount": 19,
+      "startLine": 8,
+      "endLine": 17,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.rationalPointPrime"
       ]
     },
     {

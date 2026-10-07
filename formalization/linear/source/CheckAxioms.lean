@@ -47,6 +47,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveFiber_actual_highest_regular
 #check LinearStudy.affine_polynomial_weighted_point_relation
 #print axioms LinearStudy.affine_polynomial_weighted_point_relation
+#check LinearStudy.polynomial_algHom_eq_of_point_kernel
+#print axioms LinearStudy.polynomial_algHom_eq_of_point_kernel
+#check LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation
+#print axioms LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation
 #check LinearStudy.annihilates_nilradical_ringEquiv
 #print axioms LinearStudy.annihilates_nilradical_ringEquiv
 #check LinearStudy.annihilator_scalar_generation_ringEquiv
@@ -107,6 +111,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open
 #check LinearStudy.awayFractionEmbedding_exists_unramified_open
 #print axioms LinearStudy.awayFractionEmbedding_exists_unramified_open
+#check LinearStudy.awayQuotientEquiv
+#print axioms LinearStudy.awayQuotientEquiv
+#check LinearStudy.awayQuotientEquiv_mk
+#print axioms LinearStudy.awayQuotientEquiv_mk
+#check LinearStudy.awayQuotientBaseEquiv
+#print axioms LinearStudy.awayQuotientBaseEquiv
+#check LinearStudy.awayQuotientEquiv_invSelf
+#print axioms LinearStudy.awayQuotientEquiv_invSelf
+#check LinearStudy.rationalPolynomialChartMap_awayQuotient_comp
+#print axioms LinearStudy.rationalPolynomialChartMap_awayQuotient_comp
 #check LinearStudy.finiteFlat_centered_jacobian_annihilator
 #print axioms LinearStudy.finiteFlat_centered_jacobian_annihilator
 #check LinearStudy.genericNormalBlock
@@ -795,6 +809,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.localizedSmoothPointQuotient_isLocalRing
 #check LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal
 #print axioms LinearStudy.localizedSmoothPointQuotientReduction_maximalIdeal
+#check LinearStudy.localRingHom_equiv_comp
+#print axioms LinearStudy.localRingHom_equiv_comp
+#check LinearStudy.localRingHom_formallyUnramified_of_equiv_comp
+#print axioms LinearStudy.localRingHom_formallyUnramified_of_equiv_comp
 #check LinearStudy.generalPointLocalQuotientPullback_scalar_comp
 #print axioms LinearStudy.generalPointLocalQuotientPullback_scalar_comp
 #check LinearStudy.generalPointLocalQuotientPullback_essFiniteType
@@ -1523,6 +1541,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.IntegralProjectiveEquations.affineIdeal_ne_bot
 #check LinearStudy.projective_total_invariance_affine_image_mem
 #print axioms LinearStudy.projective_total_invariance_affine_image_mem
+#check LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp
+#print axioms LinearStudy.projectiveChartOpenPolynomialMap_ambient_comp
+#check LinearStudy.projectiveRationalPolynomialChartMap_ideal
+#print axioms LinearStudy.projectiveRationalPolynomialChartMap_ideal
+#check LinearStudy.projectiveChartOpenMap_ambient_quotient_comp
+#print axioms LinearStudy.projectiveChartOpenMap_ambient_quotient_comp
+#check LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient
+#print axioms LinearStudy.projectiveAmbientChart_exists_unramified_local_quotient
 #check LinearStudy.affineDehomogenize
 #print axioms LinearStudy.affineDehomogenize
 #check LinearStudy.affineDehomogenize_degree
@@ -1667,6 +1693,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveCoordinateDomainMap_finiteType
 #check LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified
 #print axioms LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified
+#check LinearStudy.projectiveChartOpenMap_rational_point_coordinates
+#print axioms LinearStudy.projectiveChartOpenMap_rational_point_coordinates
+#check LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates
+#print axioms LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates
 #check LinearStudy.polynomial_pullback_zeroLocus
 #print axioms LinearStudy.polynomial_pullback_zeroLocus
 #check LinearStudy.IntegralProjectiveEquations.origin_vanishes
@@ -1711,6 +1741,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_smooth_local_parameter_jacobian_socle
 #check LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding
 #print axioms LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding
+#check LinearStudy.quotientLocalPullback_comparison
+#print axioms LinearStudy.quotientLocalPullback_comparison
+#check LinearStudy.quotientLocalPullback_formallyUnramified
+#print axioms LinearStudy.quotientLocalPullback_formallyUnramified
 #check LinearStudy.formalPolynomialAtPointAlg
 #print axioms LinearStudy.formalPolynomialAtPointAlg
 #check LinearStudy.polynomialAwayFormalMap
@@ -1733,6 +1767,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.rational_smooth_unramified_socle_without_finite_type_input
 #check LinearStudy.rationalPointLocalQuotientPullback_essFiniteType
 #print axioms LinearStudy.rationalPointLocalQuotientPullback_essFiniteType
+#check LinearStudy.rationalPointPrime_away_comap
+#print axioms LinearStudy.rationalPointPrime_away_comap
+#check LinearStudy.rationalPoint_away_smooth_base
+#print axioms LinearStudy.rationalPoint_away_smooth_base
+#check LinearStudy.rationalPoint_away_denominator_ne_zero
+#print axioms LinearStudy.rationalPoint_away_denominator_ne_zero
+#check LinearStudy.rationalPoint_away_invSelf
+#print axioms LinearStudy.rationalPoint_away_invSelf
 #check LinearStudy.rationalPointPrime_comp_comap
 #print axioms LinearStudy.rationalPointPrime_comp_comap
 #check LinearStudy.rationalPointLocalMap
@@ -1743,6 +1785,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.rationalPointLocalMap_formallyUnramified
 #check LinearStudy.rationalPointLocalMap_parameters_generate
 #print axioms LinearStudy.rationalPointLocalMap_parameters_generate
+#check LinearStudy.rationalPointPrime_comp_formallyUnramified
+#print axioms LinearStudy.rationalPointPrime_comp_formallyUnramified
 #check LinearStudy.rational_smooth_unramified_constructs_jacobian_socle
 #print axioms LinearStudy.rational_smooth_unramified_constructs_jacobian_socle
 #check LinearStudy.rational_smooth_actual_normal_radical

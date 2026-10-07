@@ -4,7 +4,7 @@
 
 ## 本地核验
 
-最近内核审计：2026-10-07T23:55:09+08:00。891 条 theorem/lemma 证明、182 个定义；243 个 Lean 源文件。共审核 1269 个含移植的声明，仅使用 propext、Classical.choice、Quot.sound，没有 sorryAx 或项目新公理。
+最近内核审计：2026-10-08T01:23:09+08:00。911 条 theorem/lemma 证明、184 个定义；252 个 Lean 源文件。共审核 1291 个含移植的声明，仅使用 propext、Classical.choice、Quot.sound，没有 sorryAx 或项目新公理。
 
 已证明一般闭 socle 到有限平坦相对配对的提升、实际代数迹元素、任意参数商环的 Artinian 性、变量正则序列、射影 Koszul 分解、最高外幂的行列式作用及同伦坐标同余。精确范围见各 MILESTONE 文件和 snapshot.json 中的完整类型。
 
@@ -28,7 +28,7 @@ Artinian 局部环与实际完备化的规范同构、环境局部环完备化�
 
 ## 已验证发布
 
-冻结发布：20261007-linear-29，提交 7dfee16e9d6f1ba82fda0c09846e5ebcdb0d17b4。线上包含 877 条项目证明、181 个定义和 236 个 Lean 文件；共审计 1254 个声明。云端 Lean 与 Pages 均成功，244 个线上资源与 Git 字节相同；双语、类型、源码和行数已在实际浏览器核验。完整主定理仍未证明。
+冻结发布：20261008-linear-30，提交 16dfc3ec5beba0d32f0cb2935c31c84443591d7e。线上包含 891 条项目证明、182 个定义和 243 个 Lean 文件；共审计 1269 个声明。云端 Lean 与 Pages 均成功；实际双语、类型、源码和行数已核验。线上下载的源码包内全部 243 个 Lean 文件及全声明审计与 Git 字节一致。因 shell 网络请求受限，未逐一比较所有单独静态资源。完整主定理仍未证明。
 
 入口：https://birationalclass.github.io/shengmeng/visuals/linear/
 

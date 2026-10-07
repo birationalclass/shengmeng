@@ -335,3 +335,21 @@ public import Linear.ProjectiveChartGoodPoint
 public import Linear.RationalPointLocalMap
 
 public import Linear.ProjectiveChartLocalParameters
+
+public import Linear.QuotientLocalPullbackComparison
+
+public import Linear.AwayQuotientComparison
+
+public import Linear.ProjectiveAmbientOpenComparison
+
+public import Linear.LocalMapEquivComparison
+
+public import Linear.RationalPointUnramifiedComposition
+
+public import Linear.ProjectiveAmbientUnramifiedPoint
+
+public import Linear.RationalPointLocalization
+
+public import Linear.AffineRationalPointValues
+
+public import Linear.ProjectiveGoodAffineCoordinates
