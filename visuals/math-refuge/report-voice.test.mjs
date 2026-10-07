@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress,reportVoicePresentation,reportVoiceIconPosition} from './report-voice.js';
+import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress,reportVoicePresentation,reportVoiceIconPosition,reportControlLayout,VoiceIconMotion,mapNarrationPosition} from './report-voice.js';
 import {LectureClock,boardSlot} from './lecture-state.js';
 class FakeAudio extends EventTarget{
  currentTime=0;paused=true;
@@ -76,7 +76,7 @@ test('play icon sits below the board beside the language target without overlap'
  for(const column of [0,1,2]){
   const p=reportVoiceIconPosition(column),center=22.4+5.6*column;
   assert(p.y+.48/2<BOARD_LAYOUT.low-BOARD_LAYOUT.height/2);
-  assert(p.x-.48/2>center+2.2/2,'play hit target must not overlap the language hit target');
+  const language=reportControlLayout(column).language;assert(p.x-p.width/2>language.x+language.width/2,'separate real hit targets');const camera=reportControlLayout(column).camera;assert.equal(p.x,center,'playback stays centered');assert.equal((camera.x+language.x)/2,center,'outer controls are symmetric');assert(camera.x-camera.width/2>p.x+p.width/2,'camera target does not overlap playback');
   assert(p.x+.48/2<center+BOARD_LAYOUT.width/2);
   assert(p.z>-11.332,'icon stays on the front face of smart glass');
  }
@@ -101,4 +101,21 @@ test('a chapter finishing its download outside stays suspended until re-entry',a
  await h.voice.select(report);await h.voice.toggle();h.audios[0].dispatchEvent(new Event('ended'));await tick();
  await h.voice.setContextActive(false);complete(new Response(new Uint8Array([1,2,3,4])));await tick();assert.equal(h.voice.state.phase,'away');assert(h.audios.at(-1).paused);
  await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'playing');assert.equal(h.voice.state.chapter,1);h.voice.dispose();
+});
+
+
+test('speaker activation autoplays after readiness and waits for hall entry',async()=>{
+ const h=harness();await h.voice.setContextActive(false);await h.voice.select(report,{autoplay:true});assert.equal(h.voice.state.phase,'away');assert.equal(h.voice.state.started,false);assert(h.audios[0].paused);await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'playing');assert(h.voice.state.started);h.voice.dispose();
+});
+test('manual pause during speaker audio loading cancels the deferred autoplay',async()=>{
+ let complete;const h=harness({fetcher:async src=>src.endsWith('.json')?Response.json(manifest):new Promise(r=>complete=r)});const loading=h.voice.select(report,{autoplay:true});await tick();h.voice.pause();complete(new Response(new Uint8Array([1,2,3,4])));await loading;assert(h.audios[0].paused);assert.equal(h.voice.state.phase,'ready');h.voice.dispose();
+});
+test('loading ring follows bytes and completes before smoothly turning into playback',()=>{
+ const icon=new VoiceIconMotion();let frame=icon.update({phase:'loading',progress:.4,chapter:0},.1);assert.equal(frame.kind,'ring');assert(frame.progress>0&&frame.progress<.4);for(let i=0;i<20;i++)frame=icon.update({phase:'loading',progress:.4,chapter:0},.016);assert(Math.abs(frame.progress-.4)<.003);
+ frame=icon.update({phase:'playing',progress:1,chapter:0},.016);assert.equal(frame.kind,'ring');assert.equal(frame.pause,0);const samples=[];for(let i=0;i<65;i++){frame=icon.update({phase:'playing',progress:1,chapter:0},.016);samples.push(frame);}assert(samples.some(f=>f.kind==='morph'&&f.ring>0&&f.ring<1));assert(samples.some(f=>f.kind==='play'));assert.equal(frame.kind,'pause');assert(frame.pause>.8);
+ icon.reset();frame=icon.update({phase:'loading',progress:null,chapter:1},.1);assert(frame.indeterminate);assert(frame.spin>0);
+});
+
+test('changing voice maps the same mathematical row rather than copying its old seconds',()=>{
+ const previous={duration:100,paragraphs:[{page:1,section:1,paragraph:2,role:'line',row:2,start:20,end:30}]},next={duration:110,paragraphs:[{page:1,section:1,paragraph:3,role:'line',row:2,start:40,end:60}],boards:[{page:1,writeStart:35}]};assert.equal(mapNarrationPosition(previous,next,25),50);assert.equal(mapNarrationPosition(previous,{...next,paragraphs:[]},25),35);assert.equal(mapNarrationPosition(previous,next,150),110);
 });

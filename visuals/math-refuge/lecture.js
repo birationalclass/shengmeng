@@ -1,10 +1,12 @@
+import {narrationHighlights,measuredHighlight,highlightFrame,createBoardHighlight} from './board-highlight.js?v=smart-voice-9';
+import {createBoardCameraControl} from './board-camera-control.js?v=smart-voice-9';
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,narrationFrame,syncNarrationClock} from './report-voice.js?v=report-hall-voice-7';
+import {createReportVoice,createBoardVoicePanel,reportControlLayout,mapNarrationPosition,narrationFrame,syncNarrationClock} from './report-voice.js?v=smart-voice-9';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
-import {createSmartGlassHub} from './smart-glass-hub.js?v109';
+import {createSmartGlassHub} from './smart-glass-hub.js?v=smart-voice-9';
 import {withDeadline,decodeImage} from './mobile-runtime.js?v79-mobile';
-import {authoredContext,authoredFormula} from './authored-chalk.js?v=report-line-sync-6';
+import {authoredContext,authoredFormula} from './authored-chalk.js?v=smart-voice-9';
 import {eraserTransfer} from './eraser-transfer.js?v67-dark-sky';
 import {createSeminarScreen} from './seminar-screen.js?v=report-line-sync-6';
 import * as THREE from 'three';
@@ -14,11 +16,11 @@ import {paintChalkStroke} from './chalk-annotations.js?v=report-line-sync-6';
 
 import {chalkCopy,composeChalkPage} from './chalk-language.js?v=report-line-sync-6';
 
-import {REPORTS} from './report-catalog.js?v=report-line-sync-6';
+import {REPORTS} from './report-catalog.js?v=smart-voice-9';
 import {createReportLoader} from './report-loader.js?v=report-line-sync-6';
 
 import {createBoardHardware,TRAY,BOARD_MOUNT_OFFSET} from './board-hardware.js?v=43-tight-boards';
-import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=36-board-detail';
+import {SCREEN_FONT,silverInk,seminarDate,addTextSheen,updateTextSheen} from './smart-screen.js?v=smart-voice-9';
 
 const W=1536,H=640,BOARD_W=BOARD_LAYOUT.width,BOARD_H=BOARD_LAYOUT.height;
 const phaseNames={lift:'升降换板',erase:'擦除板书',write:'粉笔书写',hold:'停留阅读'};
@@ -30,6 +32,7 @@ export async function createLecture(scene,renderer,options={}){
   let activeReport=reports.find(report=>report.id===(options.defaultReport||'hu'))||reports[0];
   const prepareReport=createReportLoader(),openingReport=disabled?{pages:[{kind:'closing',title:'',source:'',text:'',en:{title:'',source:'',text:''},rows:[]}]}:await prepareReport(activeReport);
   reportProgress(.25);
+  let voiceEnabled=true,voiceTone='original',voiceBookmark=null,highlightEnabled=options.highlight!==false,highlightState=null,highlightManifest=null,highlightSpecs=[];const measuredHighlights=new Map();
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
   let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,present=true,renderActive=true,hydrating=false,renderEpoch=0;
@@ -129,26 +132,28 @@ export async function createLecture(scene,renderer,options={}){
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
     }
   }
-  const voice=createReportVoice(),onVoiceVisibility=()=>{if(document.hidden)voice.pause();};document.addEventListener('visibilitychange',onVoiceVisibility);const voicePanel=createBoardVoicePanel(THREE,scene);
+  function voiceReport(report){const variant=report.narration?.voices?.find(v=>v.id===voiceTone);return variant?{...report,narration:{...report.narration,manifest:variant.manifest}}:report;}
+  const highlighter=createBoardHighlight(THREE,{width:BOARD_W,height:BOARD_H});
+  const voice=createReportVoice(),onVoiceVisibility=()=>{if(document.hidden)voice.pause();};document.addEventListener('visibilitychange',onVoiceVisibility);const voicePanels=Array.from({length:3},(_,column)=>{const panel=createBoardVoicePanel(THREE,scene);panel.setColumn(column);return panel;});
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
-  const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
+  const touchCanvas=document.createElement('canvas');touchCanvas.width=704;touchCanvas.height=384;
   const touchTexture=new THREE.CanvasTexture(touchCanvas);touchTexture.colorSpace=THREE.SRGBColorSpace;consoleTextures.push(touchTexture);
   for(let column=0;column<3;column++){
-    const button=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.65),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
+    const button=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.65),new THREE.MeshBasicMaterial({transparent:true,opacity:0,colorWrite:false,depthWrite:false,toneMapped:false}));
     button.name=`Smart glass language touch surface ${column+1}`;button.position.set(22.4+column*5.6,-.16,-11.34);
     button.userData={action:'language',column,pressed:false,restZ:-11.34,lastLabel:'',smartGlass:true,singleToggle:true,glassPanel:0,canvas:touchCanvas,texture:touchTexture};
-    const label=new THREE.Mesh(new THREE.PlaneGeometry(2.16,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
-    label.position.z=.008;label.userData.screenLabel=true;button.add(label);addTextSheen(THREE,button,touchTexture,2.16,.60);scene.add(button);consoleButtons.push(button);
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.60),new THREE.MeshBasicMaterial({map:touchTexture,transparent:true,opacity:1,depthWrite:false,toneMapped:false}));
+    label.position.z=.008;label.userData.screenLabel=true;button.add(label);addTextSheen(THREE,button,touchTexture,1.1,.60);scene.add(button);consoleButtons.push(button);
   }
   function setConsoleState(){
     if(consoleButtons.every(button=>button.userData.lastLabel===language))return;
     const targetLanguage=language==='zh'?'en':'zh',label=targetLanguage==='zh'?'中':'Eng';
     for(const button of consoleButtons){button.userData.lastLabel=language;button.userData.visibleLabel=label;button.userData.targetLanguage=targetLanguage;}
-    const c=touchCanvas.getContext('2d');c.clearRect(0,0,1024,384);
+    const c=touchCanvas.getContext('2d');c.clearRect(0,0,704,384);
     c.textAlign='center';c.shadowBlur=0;
-    c.font=targetLanguage==='zh'?'400 184px '+SCREEN_FONT:'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
-    c.fillStyle='#f0e4ca';c.fillText(label,512,250);
+    c.font=targetLanguage==='zh'?'400 184px SimSun, "Noto Serif SC", serif':'400 176px Baskerville, "Iowan Old Style", Georgia, serif';
+    c.fillStyle='#f0e4ca';c.fillText(label,352,250);
     touchTexture.needsUpdate=true;
   }
   const reportButtons=[],reportTextures=[];
@@ -188,7 +193,8 @@ export async function createLecture(scene,renderer,options={}){
   }
   const seminarScreen=navigation?.sections?createSeminarScreen(THREE,scene,navigation):null;
   if(seminarScreen){reportHeader.mesh.visible=false;seminarScreen.setLanguage(language);}
-  const touchButtons=[...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
+  let autoCamera=true;const cameraPanels=Array.from({length:3},(_,column)=>createBoardCameraControl(THREE,scene,column));
+  const touchButtons=[...cameraPanels.map(panel=>panel.mesh),...consoleButtons,...reportButtons,...(seminarScreen?.targets||[])];
   setConsoleState();setReportState();
   if(disabled){reportHeader.mesh.visible=false;touchButtons.forEach(b=>b.visible=false);}
   const chalk=new THREE.Mesh(new THREE.CylinderGeometry(.017,.014,.17,8),new THREE.MeshStandardMaterial({color:'#f3edda',roughness:1,metalness:0,emissive:'#e3dcc8',emissiveIntensity:.32,envMapIntensity:.15}));
@@ -320,15 +326,19 @@ export async function createLecture(scene,renderer,options={}){
   }
   function update(dt,reduced=false){
     if(disabled)return;
-    void voice.setContextActive(present&&renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&options.isActive?.()!==false);
-    if(options.isActive?.()===false)return;
+    void voice.setContextActive(present&&renderActive&&!hydrating&&!pendingReport&&!stored&&storageMotion.ready&&storageProgress===0&&options.isActive?.()!==false);
+    if(options.isActive?.()===false){highlighter.hide();highlightState=null;return;}
     voice.update();
     // Move the same small control with the active physical board.
-    const panelParent=boards[clock.active].group;voicePanel.setColumn(Math.floor(clock.active/2));if(voicePanel.loading.parent!==panelParent)panelParent.add(voicePanel.loading);
-    voicePanel.update(voice.state,dt,renderActive&&!hydrating&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
+    const controlState=(pendingReport||activeReport).narration&&voiceEnabled?voice.state:{...voice.state,phase:hasSelection?(playing?'playing':'paused'):'idle',synthetic:false};
+    for(const panel of voicePanels)panel.update(controlState,dt,renderActive&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
     // Only the head of the queue advances: one board completes before the next starts.
     if(reduced||renderActive&&!hydrating)advanceBoardQueue(contentFadeQueue,dt,reduced);
-    screenHub?.update(dt,storageProgress);
+    screenHub?.update(dt,storageProgress,reduced);
+    const withVoice=hasSelection||Boolean(pendingReport);
+    for(const button of consoleButtons){const position=reportControlLayout(button.userData.column,withVoice).language;button.position.set(position.x,position.y,position.z);button.updateMatrix();button.visible=renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');}
+    cameraPanels.forEach(panel=>panel.update(autoCamera,renderActive&&!hydrating&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'),withVoice));
+    voicePanels.forEach(panel=>updateTextSheen(THREE,panel.mesh,dt,reduced));
     if(storageRig){
       storageMotion.update(dt,stored);storageProgress=storageMotion.progress;
       const t=storageProgress*storageProgress*(3-2*storageProgress);
@@ -336,11 +346,11 @@ export async function createLecture(scene,renderer,options={}){
       const u=storageMotion.lid,k=u*u*(3-2*u);
       if(storageCap)storageCap.visible=u===0;
       for(const lid of storageLids){lid.visible=u>0;lid.position.z=lid.userData.closedZ+lid.userData.sign*.55*k;lid.position.y=lid.userData.closedY-.065*Math.min(1,u*5);}
-      consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'&&b.userData.column===0));
-      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready)return;
+      consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
+      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready){highlighter.hide();highlightState=null;return;}
     }
     // Offscreen boards retain their exact state; looking at sunrise must not fast-forward pages.
-    if(!renderActive||hydrating)return;
+    if(!renderActive||hydrating){highlighter.hide();highlightState=null;return;}
     dt=Math.max(0,Math.min(.1,dt));for(const b of touchButtons){updateTextSheen(THREE,b,dt,reduced);}updateTextSheen(THREE,reportHeader.mesh,dt,reduced);
     dateCheck+=dt;if(dateCheck>=1){dateCheck=0;if(seminarDate()!==dateLabel)setReportState();}if(playing&&!reduced)effectTime+=dt;
     const oldPhase=clock.phase,oldActive=clock.active;
@@ -364,7 +374,7 @@ export async function createLecture(scene,renderer,options={}){
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     // Ordinary reports retain their original mechanism. Narration uses Audio.currentTime.
     const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing';
-    if(present&&!narrated&&!activeReport.narration&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
+    if(present&&!narrated&&(!activeReport.narration||!voiceEnabled)&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
       const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
@@ -434,6 +444,11 @@ export async function createLecture(scene,renderer,options={}){
     dustGeometry.attributes.position.needsUpdate=playing&&!reduced;
     accumulator+=dt;
     if(accumulator>=(pixelScale<1?.083:.05)||version){boards.forEach((_,i)=>draw(i));accumulator=0;version=0;}
+    if(highlightManifest!==voice.manifest){highlightManifest=voice.manifest;highlightSpecs=narrationHighlights(voice.manifest);measuredHighlights.clear();}
+    const rows=pageRows.get(clock.page),measured=measuredHighlights.get(clock.page);
+    if(rows&&measured?.rows!==rows){const plan=writingPlan(rows,guides.get(clock.page));measuredHighlights.set(clock.page,{rows,cues:highlightSpecs.filter(c=>c.page===clock.page).map(c=>measuredHighlight(c,rows,plan)).filter(Boolean).sort((a,b)=>a.begin-b.begin)});}
+    highlightState=highlightFrame(measuredHighlights.get(clock.page)?.cues||[],voice.state.time,{page:clock.page,enabled:highlightEnabled&&voiceEnabled&&voice.state.started,visible:present&&renderActive&&!seeking&&['playing','paused','away'].includes(voice.state.phase)&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report')});
+    highlightState=highlighter.update(highlightState,boards[clock.active].group,dt,reduced);
     if(openingDemo?.phase==='writing'&&openingDemo.elapsed>=5-1e-8)finishOpening();
   }
   // Reduced-motion users get complete static pages and explicit page controls.
@@ -470,7 +485,8 @@ export async function createLecture(scene,renderer,options={}){
   const movingNodes=new Set([scene,storageRig,...storageLids,...boards.map(b=>b.group),chalk,eraser]);
   scene.traverse(object=>{if(!movingNodes.has(object)){object.updateMatrix();object.matrixAutoUpdate=false;}});
   return {
-    get followEnabled(){return !disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
+    get autoCamera(){return autoCamera;},set autoCamera(value){autoCamera=Boolean(value);},
+    get followEnabled(){return autoCamera&&!disabled&&hasSelection&&!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report');},
     get storageProgress(){return storageProgress;},get retractable(){return Boolean(storageRig);},get stored(){return stored;},
     async prepareOpening(onProgress=()=>{}){
       if(disabled||!storageRig)return false;
@@ -535,18 +551,27 @@ export async function createLecture(scene,renderer,options={}){
         hydrating=false;loadingError=null;update(0,openingDemo?.phase!=='writing');
       }catch(error){if(epoch===renderEpoch){loadingError=error;hydrating=false;}}
     },
-    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...(voicePanel.mesh.visible?[voicePanel.mesh]:[]),...(screenHub?.targets||[])];},setConsoleState,
-    get voiceState(){return {...voice.state};},async toggleVoice(){return voice.toggle();},
+    get navigation(){return navigation;},get seeking(){return seeking;},reports,viewScale:options.viewScale||.72,get pages(){return pages;},get clock(){return clock;},get report(){return activeReport;},consoleButtons,reportButtons,get hoverTargets(){return disabled?[]:[...touchButtons.filter(b=>!screenHub||!reportButtons.includes(b)||(screenHub.state.power&&screenHub.state.mode==='report')),...voicePanels.filter(panel=>panel.mesh.visible).map(panel=>panel.mesh),...(screenHub?.targets||[])];},setConsoleState,
+    get highlightEnabled(){return highlightEnabled;},setHighlight(value){highlightEnabled=Boolean(value);if(!highlightEnabled){highlighter.hide();highlightState=null;}},get highlightTargets(){return measuredHighlights.get(clock.page)?.cues.map(c=>({id:c.id,row:c.row,side:c.side,begin:c.begin,duration:c.duration,rect:c.rect,visibleAt:c.visibleAt}))||[];},get highlightState(){return highlightState&&{page:highlightState.page,row:highlightState.row,side:highlightState.side,alpha:highlightState.alpha,age:highlightState.age};},
+    get voiceState(){return {...voice.state};},get voiceTone(){return voiceTone;},get voiceEnabled(){return voiceEnabled;},get voiceManifest(){return voice.manifest;},async voiceSeek(time){highlighter.hide();highlightState=null;return voice.seek(time);},async toggleVoice(){if(!activeReport.narration||!voiceEnabled){playing=hasSelection&&!playing;return true;}return voice.toggle();},
+    async setVoiceTone(tone){
+      const variants=activeReport.narration?.voices||[];if(tone!=='off'&&tone!=='original'&&!variants.some(v=>v.id===tone))throw Error('此报告尚无该音色');
+      const bookmark=!voiceEnabled&&voiceBookmark?.report===activeReport.id?voiceBookmark:null,previous=bookmark?.manifest||voice.manifest,time=bookmark?.time??voice.state.time,started=bookmark?.started??voice.state.started,resume=!bookmark&&['playing','away','buffering','preparing'].includes(voice.state.phase);if(tone==='off')voiceBookmark={report:activeReport.id,manifest:previous,time,started,page:clock.page,progress:clock.progress};voiceTone=tone;voiceEnabled=tone!=='off';playing=false;
+      if(!voiceEnabled){await voice.select(null);return true;}
+      if(!await voice.select(voiceReport(activeReport)))return false;
+      if(started&&time>0){let destination=mapNarrationPosition(previous,voice.manifest,time);if(bookmark&&(bookmark.page!==clock.page||Math.abs(bookmark.progress-clock.progress)>.001)){const b=voice.manifest.boards.find(b=>b.page===clock.page);if(b)destination=b.writeStart+(b.writeEnd-b.writeStart)*clock.progress;}await voice.seek(destination);}voiceBookmark=null;
+      if(resume)await voice.toggle();return true;
+    },
     get pendingReport(){return pendingReport;},
     preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
-    async setReport(id){
+    async setReport(id,{autoplay=false}={}){
       if(disabled)return false;
-      openingDemo=null;
-      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');screenHub?.report();
-      void voice.select(null);
+      openingDemo=null;voiceBookmark=null;
+      const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';screenHub?.report();
+      voice.setContextActive(false);
       if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
-      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();
+      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();void voice.select(voiceEnabled?voiceReport(next):null,{autoplay});
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
         // Keep the current talk intact until its replacement cover is available.
@@ -554,11 +579,11 @@ export async function createLecture(scene,renderer,options={}){
         clearPageCache();pending.clear();guides.clear();erasePlans.clear();pageRows.clear();resetWipe();
         boards.forEach(b=>{b.last='';b.wet=null;});targets.fill(0);eraserReturn=null;eraserPickup=null;eraser.visible=false;eraser.userData.state='parked';
         parkedErasers.forEach(e=>e.visible=true);chalk.visible=false;previousTip=null;lastWritePage=-1;wear=0;particles.forEach(p=>p.life=0);particlePositions.fill(-10000);dustGeometry.attributes.position.needsUpdate=true;
-        playing=!next.narration;version++;await load(0,manifest.cover);
+        playing=!next.narration||!voiceEnabled;version++;await load(0,manifest.cover);
         if(request!==reportRequest)return false;
         // A new report starts on a clean board; there is no previous page to lift or erase.
-        clock.startWrite();boards.forEach((_,i)=>draw(i));void voice.select(next);return true;
-      }catch(error){if(request!==reportRequest)return false;throw error;}
+        clock.startWrite();boards.forEach((_,i)=>draw(i));return true;
+      }catch(error){if(request!==reportRequest)return false;void voice.select(null);throw error;}
       finally{if(request===reportRequest){pendingReport=null;setReportState();}}
     },
     setWritingSpeed(value){writingSpeed=Math.max(.25,Math.min(2,Number(value)||1));},
@@ -581,12 +606,12 @@ export async function createLecture(scene,renderer,options={}){
       const c=b?.lineCues?.find(c=>t>=c.audioStart&&t<c.audioEnd);
       return c?{row:c.row,total:b.lineCues.length,text:c.text}:null;
     },
-    get playing(){return present&&hasSelection&&(activeReport.narration?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
+    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
     async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b)await voice.seek(b.writeEnd);else staticPage();return true;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
     heights:()=>[...targets],focus:(single=false)=>scene.localToWorld(new THREE.Vector3(boards[clock.active].group.position.x,single?boards[clock.active].group.position.y:(BOARD_LAYOUT.low+BOARD_LAYOUT.high)/2,-10.4+BOARD_MOUNT_OFFSET)),
-    dispose(){document.removeEventListener('visibilitychange',onVoiceVisibility);voice.dispose();voicePanel.dispose();storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
+    dispose(){document.removeEventListener('visibilitychange',onVoiceVisibility);voice.dispose();highlighter.dispose();voicePanels.forEach(panel=>panel.dispose());cameraPanels.forEach(panel=>panel.dispose());storageWell?.traverse(o=>{if(o.isMesh&&o.material!==options.floorMaterial)o.material.dispose();});renderEpoch++;screenHub?.dispose();seminarScreen?.dispose();hardware.dispose();reportTextures.forEach(t=>t.dispose());[reportHeader.mesh,...reportButtons].forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));trayChalkGeometry.dispose();trayChalkMaterials.forEach(m=>m.dispose());consoleTextures.forEach(t=>t.dispose());consoleButtons.forEach(b=>b.traverse(o=>{o.geometry?.dispose();o.material?.dispose();}));dustGeometry.dispose();dustMaterial.dispose();dotMap.dispose();chalk.geometry.dispose();chalk.material.dispose();eraser.geometry.dispose();felt.geometry.dispose();felt.material.dispose();boards.forEach(board=>{if(board.previousCanvas){board.previousInk.value.dispose();board.previousCanvas.width=1;board.previousCanvas.height=1;}if(board.texture!==blankTexture)board.texture.dispose();board.roughTexture?.dispose();if(board.canvas){board.canvas.width=1;board.canvas.height=1;}board.group.traverse(object=>{object.geometry?.dispose();object.material?.dispose();});});blankTexture.dispose();blankCanvas.width=1;for(const c of [grain,dust,wipeCanvas,...cache.values()])if(c){c.width=1;c.height=1;}cache.clear();guides.clear();}
   };
 }
 import {drawPulley} from './pulley-icon.js?v=1';

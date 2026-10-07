@@ -1,7 +1,7 @@
 // Manual viewing temporarily owns the teaching camera; tour state is separate.
 export class BoardFollow{
-  constructor(delay=20,now=()=>performance.now()/1000){this.now=now;this.delay=delay;this.lastInput=-Infinity;this.interacting=false;}
-  setDelay(seconds){this.delay=Math.max(5,Math.min(60,Number(seconds)||20));}
+  constructor(delay=5,now=()=>performance.now()/1000){this.now=now;this.delay=delay;this.lastInput=-Infinity;this.interacting=false;}
+  setDelay(seconds){this.delay=Math.max(5,Math.min(60,Number(seconds)||5));}
   touch(){this.lastInput=this.now();}
   begin(){this.interacting=true;this.touch();}
   end(){this.interacting=false;this.touch();}

@@ -22,7 +22,7 @@ export function createPerformanceMonitor(doc=document){
  doc.addEventListener('visibilitychange',()=>{reset();lastGPU=null;if(!panel.hidden){write('performanceFPS','—');write('performanceStatus',doc.hidden?'页面在后台 · 监测暂停':'正在采样…');}});
  const ms=value=>Number.isFinite(value)?value.toFixed(1)+' ms':'—';
  return {
-  get visible(){return !panel.hidden;},
+  get visible(){return !panel.hidden;},close(){show(false);},
   setPaused(value){paused=Boolean(value);reset();lastGPU=null;if(!panel.hidden){write('performanceFPS','—');write('performanceStatus',paused?'页面失焦 · 渲染已暂停':'正在采样…');}},
   gpu(value,stamp){if(Number.isFinite(value)){lastGPU=value;gpuAt=stamp;}},
   frame(stamp,frameMs,cpuMs,renderer,{gpuSupported=false,ratio=1,rooms=0,adaptive='自动监测'}={}){

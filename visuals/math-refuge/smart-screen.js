@@ -17,12 +17,25 @@ export function addTextSheen(T,mesh,texture,width,height){
   const sweep=new T.Mesh(new T.PlaneGeometry(width,height),material);sweep.position.z=.012;sweep.name='Text-only hover sheen';mesh.add(sweep);
   mesh.userData.sheen={material,elapsed:2,wasHovered:false};return sweep;
 }
+export function updateGlassFeedback(mesh,dt,reduced=false){
+  if(!mesh.userData.smartGlass)return;
+  const data=mesh.userData,hovered=Boolean(data.hovered&&data.action),pressed=Boolean(data.pressed&&data.action);
+  const state=data.feedback||(data.feedback={scale:1,pulse:0,base:[mesh.scale.x,mesh.scale.y,mesh.scale.z]});
+  state.pulse=Math.max(state.pulse,Number(data.clickPulse)||0);data.clickPulse=0;
+  state.pulse=Math.max(0,state.pulse-Math.max(0,dt)*2.8);
+  const target=pressed?.94:1+(hovered?.025:0)+state.pulse*.035;
+  state.scale=reduced?1:state.scale+(target-state.scale)*(1-Math.exp(-Math.max(0,dt)*22));
+  mesh.scale.set(state.base[0]*state.scale,state.base[1]*state.scale,state.base[2]);mesh.updateMatrix();
+  const label=mesh.children.find(o=>o.userData.screenLabel)||mesh,color=label.material?.color;
+  if(color){const warmth=pressed?1:state.pulse,k=1-Math.exp(-Math.max(0,dt)*16),base=hovered?1:.9;
+    color.r+=(1-color.r)*k;color.g+=(base+(1-base)*warmth-color.g)*k;color.b+=(base-(base-.72)*warmth-color.b)*k;
+  }
+}
 export function updateTextSheen(T,mesh,dt,reduced){
+  updateGlassFeedback(mesh,dt,reduced);
   const state=mesh.userData.sheen;if(!state)return;
-  const hovered=Boolean(mesh.userData.hovered);
+  const hovered=Boolean(mesh.userData.hovered&&mesh.userData.action);
   if(hovered&&!state.wasHovered)state.elapsed=0;state.wasHovered=hovered;state.elapsed+=dt;
   state.material.uniforms.progress.value=Math.min(1,state.elapsed/.85);
   state.material.uniforms.strength.value=hovered&&!reduced&&state.elapsed<.85?.8:0;
-  const label=mesh.children.find(o=>o.userData.screenLabel)||mesh;
-  if(label.material.color)label.material.color.lerp(new T.Color(hovered?'#ffffff':'#d9e5e4'),1-Math.exp(-dt*14));
 }

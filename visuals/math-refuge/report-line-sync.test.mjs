@@ -4,9 +4,9 @@ import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const canonical=o=>JSON.stringify(Object.fromEntries(Object.keys(o).sort().map(k=>[k,o[k]])));
 const hash=o=>createHash('sha256').update(canonical(o)).digest('hex');
-test('all visible Ye main lines have reviewed speech and actual audio intervals',async()=>{
+for(const voice of ['ye','ye-young']) test(voice+': all visible Ye main lines have reviewed speech and actual audio intervals',async()=>{
  const {pages}=JSON.parse(await fs.readFile(new URL('./assets/chalk/ye/pages.json',import.meta.url)));
- const m=JSON.parse(await fs.readFile(new URL('./assets/audio/reports/ye/narration.json',import.meta.url)));
+ const m=JSON.parse(await fs.readFile(new URL(`./assets/audio/reports/${voice}/narration.json`,import.meta.url)));
  assert.equal(m.lineSyncVersion,1);assert.equal(m.boards.length,pages.length);
  let count=0;
  for(const b of m.boards){
@@ -33,4 +33,9 @@ test('all visible Ye main lines have reviewed speech and actual audio intervals'
  assert(m.boards[9].lineCues[1].text.includes('a'));
  assert(m.boards[4].lineCues[1].text.includes('偶数')&&m.boards[4].lineCues[1].text.includes('奇数'),'both cases spoken');
  assert(m.boards[25].lineCues[4].text.includes('二分之三'),'correct d^(3/2)');
+});
+
+
+for(const voice of ['ye','ye-young']) test(voice+': greeting starts immediately, title writing is natural and its narration waits',async()=>{
+ const m=JSON.parse(await fs.readFile(new URL(`./assets/audio/reports/${voice}/narration.json`,import.meta.url))),cover=m.boards[0],intro=m.paragraphs.filter(p=>p.page===0);assert.equal(intro[0].start,0);assert.match(intro[0].text,/我是叶东/);assert.match(intro[0].text,/和黄侠合作/);assert.equal(intro[1].role,'title');assert(intro[1].start>cover.writeEnd);assert(cover.writeEnd>=12&&cover.writeEnd<=18);assert(m.pace.maxSpeechGapSeconds<=3.2);
 });
