@@ -197,6 +197,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.perfectPairingOfNormalizedContraction
 #check LinearStudy.normalized_contraction_pairing_diagonal
 #print axioms LinearStudy.normalized_contraction_pairing_diagonal
+#check LinearStudy.coordinateRatioField
+#print axioms LinearStudy.coordinateRatioField
+#check LinearStudy.coordinateRatioPolynomialMap
+#print axioms LinearStudy.coordinateRatioPolynomialMap
+#check LinearStudy.coordinateRatioField_essFiniteType
+#print axioms LinearStudy.coordinateRatioField_essFiniteType
+#check LinearStudy.coordinateRatioPolynomialMap_mem
+#print axioms LinearStudy.coordinateRatioPolynomialMap_mem
+#check LinearStudy.coordinateRatioPolynomialMap_homogeneous
+#print axioms LinearStudy.coordinateRatioPolynomialMap_homogeneous
 #check LinearStudy.iterate_degree_exceeds
 #print axioms LinearStudy.iterate_degree_exceeds
 #check LinearStudy.intersection_degree_lt
@@ -467,6 +477,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.flat_genericFiber_descend_annihilation
 #check LinearStudy.domain_exists_nonzero_smooth_basic_open
 #print axioms LinearStudy.domain_exists_nonzero_smooth_basic_open
+#check LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open
+#print axioms LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open
+#check LinearStudy.ringHom_fraction_exists_nonzero_unramified_open
+#print axioms LinearStudy.ringHom_fraction_exists_nonzero_unramified_open
 #check LinearStudy.diagonal_coefficient_notMem_kernel
 #print axioms LinearStudy.diagonal_coefficient_notMem_kernel
 #check LinearStudy.global_diagonal_coefficient_isUnit
@@ -509,6 +523,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.homogeneous_perfect_pairing_high_degree_mem
 #check LinearStudy.homogeneous_polynomial_top_degree_bound
 #print axioms LinearStudy.homogeneous_polynomial_top_degree_bound
+#check LinearStudy.homogeneous_ratio_eq_chart_ratio
+#print axioms LinearStudy.homogeneous_ratio_eq_chart_ratio
+#check LinearStudy.homogeneous_ratio_mem_coordinateRatioField
+#print axioms LinearStudy.homogeneous_ratio_mem_coordinateRatioField
+#check LinearStudy.coordinateRatioField_le_comap
+#print axioms LinearStudy.coordinateRatioField_le_comap
+#check LinearStudy.coordinateRatioFieldMap
+#print axioms LinearStudy.coordinateRatioFieldMap
+#check LinearStudy.coordinateRatioFieldMap_finite
+#print axioms LinearStudy.coordinateRatioFieldMap_finite
+#check LinearStudy.coordinateRatioFieldMap_formallyUnramified
+#print axioms LinearStudy.coordinateRatioFieldMap_formallyUnramified
 #check LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling
 #print axioms LinearStudy.homogeneous_ideal_maps_eq_of_unit_scaling
 #check LinearStudy.homogeneous_projective_chart_pullback_ideal
@@ -1507,6 +1533,20 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveFiber_no_infinity
 #check LinearStudy.projectiveFiber_actual_highest_zeroLocus
 #print axioms LinearStudy.projectiveFiber_actual_highest_zeroLocus
+#check LinearStudy.projectiveChartCoordinateEmbedding
+#print axioms LinearStudy.projectiveChartCoordinateEmbedding
+#check LinearStudy.projectiveChartCoordinateEmbedding_mk
+#print axioms LinearStudy.projectiveChartCoordinateEmbedding_mk
+#check LinearStudy.projectiveChartCoordinateEmbedding_injective
+#print axioms LinearStudy.projectiveChartCoordinateEmbedding_injective
+#check LinearStudy.projectiveChartCoordinateEmbedding_range
+#print axioms LinearStudy.projectiveChartCoordinateEmbedding_range
+#check LinearStudy.projectiveChartFractionEmbedding
+#print axioms LinearStudy.projectiveChartFractionEmbedding
+#check LinearStudy.projectiveChartFractionEmbedding_fieldRange
+#print axioms LinearStudy.projectiveChartFractionEmbedding_fieldRange
+#check LinearStudy.projectiveChartFractionRatioEquiv
+#print axioms LinearStudy.projectiveChartFractionRatioEquiv
 #check LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff
 #print axioms LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff
 #check LinearStudy.projective_surjective_invariant_first_form_not_mem
@@ -1521,6 +1561,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_surjective_invariant_cone_image
 #check LinearStudy.projective_surjective_invariant_pullback_comap
 #print axioms LinearStudy.projective_surjective_invariant_pullback_comap
+#check LinearStudy.projectiveCoordinateDomainMap_exists_nonzero_unramified_open
+#print axioms LinearStudy.projectiveCoordinateDomainMap_exists_nonzero_unramified_open
 #check LinearStudy.projectiveCoordinateDomainMap
 #print axioms LinearStudy.projectiveCoordinateDomainMap
 #check LinearStudy.projectiveCoordinateDomainMap_mk
@@ -1539,10 +1581,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveCoordinateFractionMap_finite
 #check LinearStudy.projectiveCoordinateFractionMap_formallyUnramified
 #print axioms LinearStudy.projectiveCoordinateFractionMap_formallyUnramified
+#check LinearStudy.projectiveConeFractionCoordinates
+#print axioms LinearStudy.projectiveConeFractionCoordinates
+#check LinearStudy.projectiveConeFractionCoordinates_aeval
+#print axioms LinearStudy.projectiveConeFractionCoordinates_aeval
+#check LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero
+#print axioms LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero
+#check LinearStudy.projectiveCoordinateFractionMap_coordinate
+#print axioms LinearStudy.projectiveCoordinateFractionMap_coordinate
+#check LinearStudy.projectiveCoordinateRatioField
+#print axioms LinearStudy.projectiveCoordinateRatioField
+#check LinearStudy.projectiveCoordinateRatioMap
+#print axioms LinearStudy.projectiveCoordinateRatioMap
+#check LinearStudy.projectiveCoordinateRatioMap_finite
+#print axioms LinearStudy.projectiveCoordinateRatioMap_finite
+#check LinearStudy.projectiveCoordinateRatioMap_formallyUnramified
+#print axioms LinearStudy.projectiveCoordinateRatioMap_formallyUnramified
 #check LinearStudy.polynomial_relabel_pullback
 #print axioms LinearStudy.polynomial_relabel_pullback
 #check LinearStudy.projective_total_invariance_relabel_radical
 #print axioms LinearStudy.projective_total_invariance_relabel_radical
+#check LinearStudy.projectiveCoordinateDomainMap_finiteType
+#print axioms LinearStudy.projectiveCoordinateDomainMap_finiteType
+#check LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified
+#print axioms LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified
 #check LinearStudy.polynomial_pullback_zeroLocus
 #print axioms LinearStudy.polynomial_pullback_zeroLocus
 #check LinearStudy.IntegralProjectiveEquations.origin_vanishes
@@ -1557,6 +1619,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_total_invariance_ideal_power_sandwich
 #check LinearStudy.projective_total_invariance_formal_sandwich
 #print axioms LinearStudy.projective_total_invariance_formal_sandwich
+#check LinearStudy.localization_lift_kernel
+#print axioms LinearStudy.localization_lift_kernel
+#check LinearStudy.projectiveRatioPolynomialMap_kernel
+#print axioms LinearStudy.projectiveRatioPolynomialMap_kernel
 #check LinearStudy.rationalPolynomialChartMap
 #print axioms LinearStudy.rationalPolynomialChartMap
 #check LinearStudy.polynomialAwayPointEvaluation

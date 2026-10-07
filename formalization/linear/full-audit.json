@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1197,
-  "verifiedTheorems": 834,
-  "definitions": 167,
+  "audited": 1230,
+  "verifiedTheorems": 858,
+  "definitions": 176,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -2432,6 +2432,121 @@
         "LinearStudy.perfectPairingOfNormalizedContraction",
         "LinearStudy.tensorFunctionalContraction",
         "LinearStudy.tensorFunctionalContraction_pairing"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioField",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoordinateRatioField.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coordinateRatioField.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F] {n : ℕ}\n  (x : Fin (n + 1) → F) : IntermediateField K F",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "lines": 3,
+      "moduleLineCount": 52,
+      "startLine": 10,
+      "endLine": 12,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioPolynomialMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/CoordinateRatioField.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coordinateRatioPolynomialMap.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F]\n  {n : ℕ} (x : Fin (n + 1) → F) : MvPolynomial (Fin n) K →ₐ[K] F",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "lines": 3,
+      "moduleLineCount": 52,
+      "startLine": 14,
+      "endLine": 16,
+      "lineCount": 3,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioField_essFiniteType",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoordinateRatioField.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioField_essFiniteType.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F]\n  [Algebra K F] {n : ℕ} (x : Fin (n + 1) → F) : Algebra.EssFiniteType K ↥(LinearStudy.coordinateRatioField x)",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "lines": 4,
+      "moduleLineCount": 52,
+      "startLine": 18,
+      "endLine": 21,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioPolynomialMap_mem",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoordinateRatioField.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioPolynomialMap_mem.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F]\n  {n : ℕ} (x : Fin (n + 1) → F) (P : MvPolynomial (Fin n) K) :\n  (LinearStudy.coordinateRatioPolynomialMap x) P ∈ LinearStudy.coordinateRatioField x",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "lines": 12,
+      "moduleLineCount": 52,
+      "startLine": 23,
+      "endLine": 34,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.coordinateRatioPolynomialMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/CoordinateRatioField.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioPolynomialMap_homogeneous.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F]\n  [Algebra K F] {n : ℕ} (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (H : MvPolynomial (Fin (n + 1)) K) {m : ℕ}\n  (hH : H.IsHomogeneous m) :\n  (LinearStudy.coordinateRatioPolynomialMap x) (LinearStudy.affineChartPolynomialMap H) =\n    (x 0)⁻¹ ^ m * (MvPolynomial.aeval x) H",
+      "sha256": "1a6c5230498ef01f75020d83cf584cdcae28981651e696a6b94ccc2a31504855",
+      "lines": 15,
+      "moduleLineCount": 52,
+      "startLine": 36,
+      "endLine": 50,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineChartPolynomialMap_comp_aeval",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.homogeneous_aeval_smul"
       ]
     },
     {
@@ -5809,6 +5924,50 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GenericUnramifiedOpen.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [IsDomain A] (φ : R →+* A) (hft : φ.EssFiniteType)\n  (hg : ((algebraMap A (Localization.AtPrime ⊥)).comp φ).FormallyUnramified) :\n  ∃ a, a ≠ 0 ∧ ((algebraMap A (Localization.Away a)).comp φ).FormallyUnramified",
+      "sha256": "f8861cca5848db15435201ed1255582ff9e82069d65d169e2a6b7aeaf88c7f44",
+      "lines": 16,
+      "moduleLineCount": 51,
+      "startLine": 10,
+      "endLine": 25,
+      "lineCount": 16,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.ringHom_fraction_exists_nonzero_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GenericUnramifiedOpen.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringHom_fraction_exists_nonzero_unramified_open.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R]\n  [CommRing A] [IsDomain A] (φ : R →+* A) (hft : φ.EssFiniteType)\n  (hg : ((algebraMap A (FractionRing A)).comp φ).FormallyUnramified) :\n  ∃ a, a ≠ 0 ∧ ((algebraMap A (Localization.Away a)).comp φ).FormallyUnramified",
+      "sha256": "f8861cca5848db15435201ed1255582ff9e82069d65d169e2a6b7aeaf88c7f44",
+      "lines": 23,
+      "moduleLineCount": 51,
+      "startLine": 27,
+      "endLine": 49,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open"
+      ]
+    },
+    {
       "declaration": "LinearStudy.diagonal_coefficient_notMem_kernel",
       "kind": "theorem",
       "origin": "project",
@@ -6330,6 +6489,157 @@
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.homogeneous_perfect_pairing_high_degree_mem",
         "LinearStudy.homogeneous_polynomial_low_degree_pairing"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneous_ratio_eq_chart_ratio",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_ratio_eq_chart_ratio.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F]\n  {n : ℕ} (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (H H₀ : MvPolynomial (Fin (n + 1)) K) {q : ℕ} (hH : H.IsHomogeneous q)\n  (hH₀ : H₀.IsHomogeneous q) :\n  (MvPolynomial.aeval x) H / (MvPolynomial.aeval x) H₀ =\n    (LinearStudy.coordinateRatioPolynomialMap x) (LinearStudy.affineChartPolynomialMap H) /\n      (LinearStudy.coordinateRatioPolynomialMap x) (LinearStudy.affineChartPolynomialMap H₀)",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 9,
+      "moduleLineCount": 66,
+      "startLine": 10,
+      "endLine": 18,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneous_ratio_mem_coordinateRatioField",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_ratio_mem_coordinateRatioField.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F]\n  [Algebra K F] {n : ℕ} (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (H H₀ : MvPolynomial (Fin (n + 1)) K) {q : ℕ}\n  (hH : H.IsHomogeneous q) (hH₀ : H₀.IsHomogeneous q) :\n  (MvPolynomial.aeval x) H / (MvPolynomial.aeval x) H₀ ∈ LinearStudy.coordinateRatioField x",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 7,
+      "moduleLineCount": 66,
+      "startLine": 20,
+      "endLine": 26,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_mem",
+        "LinearStudy.homogeneous_ratio_eq_chart_ratio"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioField_le_comap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 29,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioField_le_comap.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F]\n  {n : ℕ} (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (φ : F →ₐ[K] F) (p : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) {q : ℕ}\n  (hp : ∀ (i : Fin (n + 1)), (p i).IsHomogeneous q) (hφ : ∀ (i : Fin (n + 1)), φ (x i) = (MvPolynomial.aeval x) (p i)) :\n  LinearStudy.coordinateRatioField x ≤ IntermediateField.comap φ (LinearStudy.coordinateRatioField x)",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 11,
+      "moduleLineCount": 66,
+      "startLine": 28,
+      "endLine": 38,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.homogeneous_ratio_mem_coordinateRatioField"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioFieldMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.coordinateRatioFieldMap.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F] {n : ℕ}\n  (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (φ : F →ₐ[K] F) (p : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) {q : ℕ}\n  (hp : ∀ (i : Fin (n + 1)), (p i).IsHomogeneous q) (hφ : ∀ (i : Fin (n + 1)), φ (x i) = (MvPolynomial.aeval x) (p i)) :\n  ↥(LinearStudy.coordinateRatioField x) →ₐ[K] ↥(LinearStudy.coordinateRatioField x)",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 9,
+      "moduleLineCount": 66,
+      "startLine": 40,
+      "endLine": 48,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioFieldMap_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 50,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioFieldMap_finite.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F] [Algebra K F]\n  {n : ℕ} (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (φ : F →ₐ[K] F) (p : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) {q : ℕ}\n  (hp : ∀ (i : Fin (n + 1)), (p i).IsHomogeneous q) (hφ : ∀ (i : Fin (n + 1)), φ (x i) = (MvPolynomial.aeval x) (p i)) :\n  (LinearStudy.coordinateRatioFieldMap x hx φ p hp hφ).Finite",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 7,
+      "moduleLineCount": 66,
+      "startLine": 50,
+      "endLine": 56,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.coordinateRatioFieldMap",
+        "LinearStudy.coordinateRatioField_essFiniteType",
+        "LinearStudy.fieldEndomorphism_finite"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.coordinateRatioFieldMap_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/HomogeneousRatioFieldMap.lean",
+      "line": 58,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.coordinateRatioFieldMap_formallyUnramified.{u_1, u_2} {K : Type u_1} {F : Type u_2} [Field K] [Field F]\n  [Algebra K F] {n : ℕ} [CharZero F] (x : Fin (n + 1) → F) (hx : x 0 ≠ 0) (φ : F →ₐ[K] F)\n  (p : Fin (n + 1) → MvPolynomial (Fin (n + 1)) K) {q : ℕ} (hp : ∀ (i : Fin (n + 1)), (p i).IsHomogeneous q)\n  (hφ : ∀ (i : Fin (n + 1)), φ (x i) = (MvPolynomial.aeval x) (p i)) :\n  (LinearStudy.coordinateRatioFieldMap x hx φ p hp hφ).FormallyUnramified",
+      "sha256": "a43dcfe462da7fedc1ca25fe25192d1dec4b71d2a37e85ebb3d4ee27b06e7bb5",
+      "lines": 7,
+      "moduleLineCount": 66,
+      "startLine": 58,
+      "endLine": 64,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.coordinateRatioFieldMap",
+        "LinearStudy.coordinateRatioField_essFiniteType",
+        "LinearStudy.fieldEndomorphism_formallyUnramified"
       ]
     },
     {
@@ -18649,6 +18959,238 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveChartCoordinateEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartCoordinateEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 10,
+      "moduleLineCount": 98,
+      "startLine": 11,
+      "endLine": 20,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 22,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartCoordinateEmbedding_mk {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : MvPolynomial (Fin n) ℂ) :\n  (LinearStudy.projectiveChartCoordinateEmbedding V x hx) ((Ideal.Quotient.mk V.affineIdeal) P) =\n    (LinearStudy.coordinateRatioPolynomialMap (LinearStudy.projectiveConeFractionCoordinates V)) P",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 8,
+      "moduleLineCount": 98,
+      "startLine": 22,
+      "endLine": 29,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartCoordinateEmbedding_injective {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  Function.Injective ⇑(LinearStudy.projectiveChartCoordinateEmbedding V x hx)",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 8,
+      "moduleLineCount": 98,
+      "startLine": 31,
+      "endLine": 38,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveRatioPolynomialMap_kernel"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartCoordinateEmbedding_range",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartCoordinateEmbedding_range {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartCoordinateEmbedding V x hx).range =\n    Algebra.adjoin ℂ\n      (Set.range fun i =>\n        LinearStudy.projectiveConeFractionCoordinates V i.succ / LinearStudy.projectiveConeFractionCoordinates V 0)",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 19,
+      "moduleLineCount": 98,
+      "startLine": 40,
+      "endLine": 58,
+      "lineCount": 19,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartFractionEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartFractionEmbedding {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) →ₐ[ℂ]\n    FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 12,
+      "moduleLineCount": 98,
+      "startLine": 60,
+      "endLine": 71,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartFractionEmbedding_fieldRange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 73,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionEmbedding_fieldRange {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartFractionEmbedding V x hx).fieldRange = LinearStudy.projectiveCoordinateRatioField V",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 11,
+      "moduleLineCount": 98,
+      "startLine": 73,
+      "endLine": 83,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+        "LinearStudy.projectiveChartCoordinateEmbedding_range",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveCoordinateRatioField"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartFractionRatioEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartFractionField.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartFractionRatioEquiv {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) ≃ₐ[ℂ] ↥(LinearStudy.projectiveCoordinateRatioField V)",
+      "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
+      "lines": 12,
+      "moduleLineCount": 98,
+      "startLine": 85,
+      "endLine": 96,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionEmbedding_fieldRange",
+        "LinearStudy.projectiveCoordinateRatioField"
+      ]
+    },
+    {
       "declaration": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
       "kind": "theorem",
       "origin": "project",
@@ -18882,6 +19424,41 @@
         "LinearStudy.ProjectivePoint",
         "LinearStudy.projective_surjective_invariant_cone_image",
         "LinearStudy.projective_total_invariance_ideal_power_sandwich"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_exists_nonzero_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveConeUnramifiedOpen.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_exists_nonzero_unramified_open {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  ∃ a,\n    a ≠ 0 ∧\n      ((algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal) (Localization.Away a)).comp\n          (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV).toRingHom).FormallyUnramified",
+      "sha256": "d30c7eab5b22244a957dbe6e8fc8341198e8a9e3d19975a99108f2169fe13b88",
+      "lines": 16,
+      "moduleLineCount": 28,
+      "startLine": 11,
+      "endLine": 26,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateDomainMap_finiteType",
+        "LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified",
+        "LinearStudy.ringHom_fraction_exists_nonzero_unramified_open"
       ]
     },
     {
@@ -19179,6 +19756,274 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projectiveConeFractionCoordinates",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveConeFractionCoordinates {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  Fin (n + 1) → FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 13,
+      "endLine": 17,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveConeFractionCoordinates_aeval",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 19,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveConeFractionCoordinates_aeval {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (H : LinearStudy.CoordinateRing n) :\n  (MvPolynomial.aeval (LinearStudy.projectiveConeFractionCoordinates V)) H =\n    (algebraMap (MvPolynomial (Fin (n + 1)) ℂ ⧸ V.ideal.toIdeal)\n        (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)))\n      ((Ideal.Quotient.mk V.ideal.toIdeal) H)",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 17,
+      "moduleLineCount": 115,
+      "startLine": 19,
+      "endLine": 35,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  LinearStudy.projectiveConeFractionCoordinates V 0 ≠ 0",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 15,
+      "moduleLineCount": 115,
+      "startLine": 37,
+      "endLine": 51,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.normalizedPoint_mem_iff",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateFractionMap_coordinate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateFractionMap_coordinate {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (i : Fin (n + 1)) :\n  (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV) (LinearStudy.projectiveConeFractionCoordinates V i) =\n    (MvPolynomial.aeval (LinearStudy.projectiveConeFractionCoordinates V)) (f.forms i)",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 11,
+      "moduleLineCount": 115,
+      "startLine": 53,
+      "endLine": 63,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_aeval",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateDomainMap_mk",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_algebraMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateRatioField",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 65,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateRatioField {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) :\n  IntermediateField ℂ (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 5,
+      "moduleLineCount": 115,
+      "startLine": 65,
+      "endLine": 69,
+      "lineCount": 5,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.coordinateRatioField",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateRatioMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 73,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveCoordinateRatioMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ↥(LinearStudy.projectiveCoordinateRatioField V) →ₐ[ℂ] ↥(LinearStudy.projectiveCoordinateRatioField V)",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 14,
+      "moduleLineCount": 115,
+      "startLine": 71,
+      "endLine": 84,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioFieldMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate",
+        "LinearStudy.projectiveCoordinateRatioField"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateRatioMap_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 86,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateRatioMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveCoordinateRatioMap f V hq hf hV x hx).Finite",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 12,
+      "moduleLineCount": 115,
+      "startLine": 86,
+      "endLine": 97,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioFieldMap_finite",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateRatioMap_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveCoordinateRatioMap.lean",
+      "line": 99,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateRatioMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveCoordinateRatioMap f V hq hf hV x hx).FormallyUnramified",
+      "sha256": "f2a5ee6acbf15eb1d901ff03a871f9edc55f83b667ef54daefab0c3cba8ac6e2",
+      "lines": 15,
+      "moduleLineCount": 115,
+      "startLine": 99,
+      "endLine": 113,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioFieldMap_formallyUnramified",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomial_relabel_pullback",
       "kind": "theorem",
       "origin": "project",
@@ -19230,6 +20075,71 @@
         "LinearStudy.ProjectivePoint",
         "LinearStudy.polynomial_relabel_pullback",
         "LinearStudy.projective_total_invariance_pullback_radical"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_finiteType",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericUnramified.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_finiteType {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) : (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV).FiniteType",
+      "sha256": "2bf0cff807fd04162e3097d7e3ebf1305d31c0ae72a5c922f63b4d0000409edb",
+      "lines": 16,
+      "moduleLineCount": 53,
+      "startLine": 11,
+      "endLine": 26,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericUnramified.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) :\n  ((algebraMap (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal)\n          (FractionRing (LinearStudy.CoordinateRing n ⧸ V.ideal.toIdeal))).comp\n      (LinearStudy.projectiveCoordinateDomainMap f V hq hf hV).toRingHom).FormallyUnramified",
+      "sha256": "2bf0cff807fd04162e3097d7e3ebf1305d31c0ae72a5c922f63b4d0000409edb",
+      "lines": 24,
+      "moduleLineCount": 53,
+      "startLine": 28,
+      "endLine": 51,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.projectiveCoordinateDomainMap",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_algebraMap",
+        "LinearStudy.projectiveCoordinateFractionMap_formallyUnramified"
       ]
     },
     {
@@ -19440,6 +20350,64 @@
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint",
         "LinearStudy.projective_total_invariance_ideal_power_sandwich"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.localization_lift_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRatioChartKernel.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localization_lift_kernel.{u_1, u_2, u_3} {R : Type u_1} {B : Type u_2} {F : Type u_3} [CommRing R]\n  [CommRing B] [CommRing F] (M : Submonoid R) [Algebra R B] [IsLocalization M B] (φ : R →+* F)\n  (hu : ∀ (y : ↥M), IsUnit (φ ↑y)) : RingHom.ker (IsLocalization.lift hu) = Ideal.map (algebraMap R B) (RingHom.ker φ)",
+      "sha256": "9fdd453b33623fc4c5ba6c4d5a9aabe01b176194770bf8724917932efe9112db",
+      "lines": 11,
+      "moduleLineCount": 90,
+      "startLine": 12,
+      "endLine": 22,
+      "lineCount": 11,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.projectiveRatioPolynomialMap_kernel",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveRatioChartKernel.lean",
+      "line": 24,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveRatioPolynomialMap_kernel {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  RingHom.ker (LinearStudy.coordinateRatioPolynomialMap (LinearStudy.projectiveConeFractionCoordinates V)).toRingHom =\n    V.affineIdeal",
+      "sha256": "9fdd453b33623fc4c5ba6c4d5a9aabe01b176194770bf8724917932efe9112db",
+      "lines": 65,
+      "moduleLineCount": 90,
+      "startLine": 24,
+      "endLine": 88,
+      "lineCount": 65,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartLocalizationMap",
+        "LinearStudy.projectiveChartLocalizationMap_comap_ideal",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_aeval",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero"
       ]
     },
     {

@@ -293,3 +293,19 @@ public import Linear.FieldEndomorphismMap
 public import Linear.ProjectiveCoordinateFractionMap
 
 public import Linear.ProjectiveCoordinateGenericMap
+
+public import Linear.ProjectiveGenericUnramified
+
+public import Linear.GenericUnramifiedOpen
+
+public import Linear.ProjectiveConeUnramifiedOpen
+
+public import Linear.CoordinateRatioField
+
+public import Linear.HomogeneousRatioFieldMap
+
+public import Linear.ProjectiveCoordinateRatioMap
+
+public import Linear.ProjectiveRatioChartKernel
+
+public import Linear.ProjectiveChartFractionField
