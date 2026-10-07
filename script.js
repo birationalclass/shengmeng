@@ -1,5 +1,6 @@
 const translations = {
   zh: {
+    artLead: "影像、音乐与动态创作。", artOpen: "进入 Art", artAccess: "需要访问密码",
     formalHomeJordanText: "引理 1.1–1.3 与推论 1.4 已通过 Lean 验证：对数、三条链的乘积、完美配对传递与最长链端点消失。查看独立证明模块和源码。", formalHomeJordanStatus: "✓ 引理 1.1–1.3 与推论 1.4 已验证", formalHomeJordanOpen: "打开 Jordan 链卡片 ↗",
     navFormalization: "形式化验证", formalHomeTitle: "看见证明的每一层。", formalHomeLead: "区分已验证结论、显式假设与未完成目标。沿着依赖逐步深入，追溯原始数学论证与 Lean 源码。", formalHomeOpen: "进入形式化验证 →", formalHomeProject: "任意特征代数闭域上的负性引理，两部分均已通过 Lean 验证。可查看完整适用条件、证明与源码。", formalHomeChecked: "✓ 完整定理已验证", formalHomeAssumed: "◐ 含明确条件的辅助结果", formalHomeMap: "打开交互式证明图谱 ↗",
     preprint: "预印本", navCourses: "课程", navResearch: "学术研究", navPubs: "论文", navVisuals: "可视化", navTools: "工具", navContact: "联系",
