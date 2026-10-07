@@ -321,3 +321,17 @@ public import Linear.ProjectiveChartOpenMap
 public import Linear.AwayFractionUnramified
 
 public import Linear.ProjectiveChartUnramifiedOpen
+
+public import Linear.GenericSmoothUnramifiedOpen
+
+public import Linear.ProjectiveChartSmoothUnramified
+
+public import Linear.UnramifiedLocalRingHom
+
+public import Linear.GoodRationalPointForMap
+
+public import Linear.ProjectiveChartGoodPoint
+
+public import Linear.RationalPointLocalMap
+
+public import Linear.ProjectiveChartLocalParameters

@@ -489,6 +489,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.flat_genericFiber_descend_annihilation
 #check LinearStudy.domain_exists_nonzero_smooth_basic_open
 #print axioms LinearStudy.domain_exists_nonzero_smooth_basic_open
+#check LinearStudy.domain_exists_nonzero_smooth_unramified_open
+#print axioms LinearStudy.domain_exists_nonzero_smooth_unramified_open
+#check LinearStudy.ringHom_fractionModel_exists_smooth_unramified_open
+#print axioms LinearStudy.ringHom_fractionModel_exists_smooth_unramified_open
 #check LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open
 #print axioms LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open
 #check LinearStudy.ringHom_fraction_exists_nonzero_unramified_open
@@ -501,6 +505,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.global_diagonal_unique_functional
 #check LinearStudy.global_diagonal_normalized_trace
 #print axioms LinearStudy.global_diagonal_normalized_trace
+#check LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
+#print axioms LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
 #check LinearStudy.ideal_smul_top_self
 #print axioms LinearStudy.ideal_smul_top_self
 #check LinearStudy.homogeneous_ideal_saturated_at_origin
@@ -1569,6 +1575,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveChartFractionMap_finite
 #check LinearStudy.projectiveChartFractionMap_formallyUnramified
 #print axioms LinearStudy.projectiveChartFractionMap_formallyUnramified
+#check LinearStudy.projectiveChartOpenMap_exists_good_rational_point
+#print axioms LinearStudy.projectiveChartOpenMap_exists_good_rational_point
+#check LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
+#print axioms LinearStudy.projectiveChartOpenMap_exists_good_local_parameters
 #check LinearStudy.projectiveChartFractionEmbedding_algebraMap
 #print axioms LinearStudy.projectiveChartFractionEmbedding_algebraMap
 #check LinearStudy.projectiveChartFractionMap_coordinate
@@ -1589,6 +1599,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveChartOpenMap_mk
 #check LinearStudy.projectiveChartOpenMap_fraction_comp
 #print axioms LinearStudy.projectiveChartOpenMap_fraction_comp
+#check LinearStudy.projectiveChartOpenMap_injective
+#print axioms LinearStudy.projectiveChartOpenMap_injective
+#check LinearStudy.projectiveChartOpenMap_exists_smooth_unramified_open
+#print axioms LinearStudy.projectiveChartOpenMap_exists_smooth_unramified_open
 #check LinearStudy.projectiveChartOpenMap_finiteType
 #print axioms LinearStudy.projectiveChartOpenMap_finiteType
 #check LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified
@@ -1719,6 +1733,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.rational_smooth_unramified_socle_without_finite_type_input
 #check LinearStudy.rationalPointLocalQuotientPullback_essFiniteType
 #print axioms LinearStudy.rationalPointLocalQuotientPullback_essFiniteType
+#check LinearStudy.rationalPointPrime_comp_comap
+#print axioms LinearStudy.rationalPointPrime_comp_comap
+#check LinearStudy.rationalPointLocalMap
+#print axioms LinearStudy.rationalPointLocalMap
+#check LinearStudy.rationalPointLocalMap_essFiniteType
+#print axioms LinearStudy.rationalPointLocalMap_essFiniteType
+#check LinearStudy.rationalPointLocalMap_formallyUnramified
+#print axioms LinearStudy.rationalPointLocalMap_formallyUnramified
+#check LinearStudy.rationalPointLocalMap_parameters_generate
+#print axioms LinearStudy.rationalPointLocalMap_parameters_generate
 #check LinearStudy.rational_smooth_unramified_constructs_jacobian_socle
 #print axioms LinearStudy.rational_smooth_unramified_constructs_jacobian_socle
 #check LinearStudy.rational_smooth_actual_normal_radical
@@ -2109,6 +2133,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomialDoubleRightZero_right
 #check LinearStudy.polynomial_universal_difference_matrix
 #print axioms LinearStudy.polynomial_universal_difference_matrix
+#check LinearStudy.ringHom_pointwiseUnramified_localRingHom
+#print axioms LinearStudy.ringHom_pointwiseUnramified_localRingHom
+#check LinearStudy.ringHom_formallyUnramified_localRingHom
+#print axioms LinearStudy.ringHom_formallyUnramified_localRingHom
+#check LinearStudy.ringHom_essFiniteType_localRingHom
+#print axioms LinearStudy.ringHom_essFiniteType_localRingHom
 #check LinearStudy.unramified_local_parameters_generate
 #print axioms LinearStudy.unramified_local_parameters_generate
 #check LinearStudy.unramified_completed_parameters_generate
