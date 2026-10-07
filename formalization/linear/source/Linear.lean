@@ -309,3 +309,15 @@ public import Linear.ProjectiveCoordinateRatioMap
 public import Linear.ProjectiveRatioChartKernel
 
 public import Linear.ProjectiveChartFractionField
+
+public import Linear.ProjectiveChartGenericMap
+
+public import Linear.ProjectiveChartMapCoordinates
+
+public import Linear.AwayFractionEmbedding
+
+public import Linear.ProjectiveChartOpenMap
+
+public import Linear.AwayFractionUnramified
+
+public import Linear.ProjectiveChartUnramifiedOpen

@@ -447,6 +447,32 @@ LinearStudy.exists_perfectPairing_of_global_scalar_socles.{u_1, u_2} {A : Type u
   (hsoc : ∀ (p : MaximalSpectrum A), ∀ x ∈ Submodule.annihilator p.asIdeal, ∃ b, x = b • delta p) :
   ∃ p, ∀ (j : MaximalSpectrum A), p.functional (delta j) ≠ 0
 'LinearStudy.exists_perfectPairing_of_global_scalar_socles' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.awayFractionEmbedding.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]
+  [Algebra K B] (a : B) (ha : a ≠ 0) : Localization.Away a →ₐ[K] FractionRing B
+'LinearStudy.awayFractionEmbedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.awayFractionEmbedding_algebraMap.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]
+  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (b : B) :
+  (LinearStudy.awayFractionEmbedding a ha) ((algebraMap B (Localization.Away a)) b) = (algebraMap B (FractionRing B)) b
+'LinearStudy.awayFractionEmbedding_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.awayFractionEmbedding_injective.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]
+  [Algebra K B] (a : B) (ha : a ≠ 0) : Function.Injective ⇑(LinearStudy.awayFractionEmbedding a ha)
+'LinearStudy.awayFractionEmbedding_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.awayFractionEmbedding_invSelf.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]
+  [Algebra K B] (a : B) (ha : a ≠ 0) :
+  (LinearStudy.awayFractionEmbedding a ha) (IsLocalization.Away.invSelf a) = ((algebraMap B (FractionRing B)) a)⁻¹
+'LinearStudy.awayFractionEmbedding_invSelf' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2}
+  {L : Type u_3} [CommRing R] [CommRing A] [IsDomain A] [Field L] [Algebra A L] [IsFractionRing A L] (φ : R →+* A)
+  (hft : φ.EssFiniteType) (hg : ((algebraMap A L).comp φ).FormallyUnramified) :
+  ∃ a, a ≠ 0 ∧ ((algebraMap A (Localization.Away a)).comp φ).FormallyUnramified
+'LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.awayFractionEmbedding_exists_unramified_open.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {B : Type u_3}
+  [Field K] [CommRing R] [CommRing B] [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (φ : R →+* Localization.Away a)
+  (hft : φ.EssFiniteType) (hg : ((LinearStudy.awayFractionEmbedding a ha).comp φ).FormallyUnramified) :
+  ∃ b, b ≠ 0 ∧ ((algebraMap (Localization.Away a) (Localization.Away b)).comp φ).FormallyUnramified
+'LinearStudy.awayFractionEmbedding_exists_unramified_open' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.finiteFlat_centered_jacobian_annihilator.{u_1} {K : Type u_1} [Field K] [CharZero K] {r n : ℕ}
   (H : Fin (n + 1) → MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K))
   (hH : RingTheory.Sequence.IsRegular (MvPowerSeries (Fin (n + 1)) (MvPowerSeries (Fin (r + 1)) K)) (List.ofFn H))
@@ -4778,6 +4804,133 @@ LinearStudy.projectiveChartFractionRatioEquiv {n : ℕ} (V : LinearStudy.Integra
   (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
   FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) ≃ₐ[ℂ] ↥(LinearStudy.projectiveCoordinateRatioField V)
 'LinearStudy.projectiveChartFractionRatioEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionRatioEquiv_val {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
+  (z : FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) :
+  ↑((LinearStudy.projectiveChartFractionRatioEquiv V x hx) z) = (LinearStudy.projectiveChartFractionEmbedding V x hx) z
+'LinearStudy.projectiveChartFractionRatioEquiv_val' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) →ₐ[ℂ] FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)
+'LinearStudy.projectiveChartFractionMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionMap_commutes {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
+  (z : FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) :
+  (LinearStudy.projectiveChartFractionEmbedding V x hx) ((LinearStudy.projectiveChartFractionMap f V hq hf hV x hx) z) =
+    (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV) ((LinearStudy.projectiveChartFractionEmbedding V x hx) z)
+'LinearStudy.projectiveChartFractionMap_commutes' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).Finite
+'LinearStudy.projectiveChartFractionMap_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).FormallyUnramified
+'LinearStudy.projectiveChartFractionMap_formallyUnramified' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionEmbedding_algebraMap {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)
+  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : MvPolynomial (Fin n) ℂ) :
+  (LinearStudy.projectiveChartFractionEmbedding V x hx)
+      ((algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) (FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)))
+        ((Ideal.Quotient.mk V.affineIdeal) P)) =
+    (LinearStudy.coordinateRatioPolynomialMap (LinearStudy.projectiveConeFractionCoordinates V)) P
+'LinearStudy.projectiveChartFractionEmbedding_algebraMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartFractionMap_coordinate {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
+  (i : Fin n) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let L := FractionRing B;
+  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx)
+      ((algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (MvPolynomial.X i))) =
+    (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms i.succ))) /
+      (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)))
+'LinearStudy.projectiveChartFractionMap_coordinate' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChart_denominator_ne_zero {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0
+'LinearStudy.projectiveChart_denominator_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartDenominator {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal
+'LinearStudy.projectiveChartDenominator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenPolynomialMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) :
+  MvPolynomial (Fin n) ℂ →ₐ[ℂ] Localization.Away (LinearStudy.projectiveChartDenominator f V)
+'LinearStudy.projectiveChartOpenPolynomialMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let L := FractionRing B;
+  (LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp
+      (LinearStudy.projectiveChartOpenPolynomialMap f V) =
+    (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).comp
+      ((IsScalarTower.toAlgHom ℂ B L).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal))
+'LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenPolynomialMap_ideal {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  V.affineIdeal ≤ RingHom.ker (LinearStudy.projectiveChartOpenPolynomialMap f V).toRingHom
+'LinearStudy.projectiveChartOpenPolynomialMap_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] Localization.Away (LinearStudy.projectiveChartDenominator f V)
+'LinearStudy.projectiveChartOpenMap' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)
+  (P : MvPolynomial (Fin n) ℂ) :
+  (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) ((Ideal.Quotient.mk V.affineIdeal) P) =
+    (LinearStudy.projectiveChartOpenPolynomialMap f V) P
+'LinearStudy.projectiveChartOpenMap_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap_fraction_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;
+  let L := FractionRing B;
+  (LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp
+      (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) =
+    (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).comp (IsScalarTower.toAlgHom ℂ B L)
+'LinearStudy.projectiveChartOpenMap_fraction_comp' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap_finiteType {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).FiniteType
+'LinearStudy.projectiveChartOpenMap_finiteType' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ((LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp
+      (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified
+'LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)
+  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :
+  ∃ b,
+    b ≠ 0 ∧
+      ((algebraMap (Localization.Away (LinearStudy.projectiveChartDenominator f V)) (Localization.Away b)).comp
+          (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified
+'LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff.{u_1} {n : ℕ} {K : Type u_1} [Field K]
   (I : Ideal (MvPolynomial (Fin (n + 1)) K)) [I.IsPrime]
   (hI : Ideal.IsHomogeneous (MvPolynomial.homogeneousSubmodule (Fin (n + 1)) K) I) (hX : MvPolynomial.X 0 ∉ I)

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T21:47:38+08:00",
+  "checkedAt": "2026-10-07T22:35:43+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "71f5326ec27636da0f361b090efd1f154e23bfdb98bffec98c7f568053feb739",
-      "lineCount": 2468
+      "sha256": "993698f54f9e18a2780fe9c6871b005905634db62880ab849e5fb6b315d0e063",
+      "lineCount": 2516
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -75,6 +75,16 @@
       "path": "Linear/ArtinianGlobalPairing.lean",
       "sha256": "66b4583b46f53f17ec64082d70cf8a747cf54eff79488a206586c80ee36aa153",
       "lineCount": 133
+    },
+    {
+      "path": "Linear/AwayFractionEmbedding.lean",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "lineCount": 42
+    },
+    {
+      "path": "Linear/AwayFractionUnramified.lean",
+      "sha256": "36da8e3abbc6d2306d6677d37c6380cd4c07d671c55f444c12568ac12796e4f2",
+      "lineCount": 50
     },
     {
       "path": "Linear/CenteredRelativeJacobian.lean",
@@ -772,6 +782,26 @@
       "lineCount": 98
     },
     {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lineCount": 97
+    },
+    {
+      "path": "Linear/ProjectiveChartMapCoordinates.lean",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lineCount": 86
+    },
+    {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lineCount": 122
+    },
+    {
+      "path": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "sha256": "93a08004d9b9ae95dc1e1c7a36beddde35282e20abe434a5de712e24bce382a7",
+      "lineCount": 77
+    },
+    {
       "path": "Linear/ProjectiveCommonChart.lean",
       "sha256": "f3484f0500a37b74eca53ab9511d92236396af82f81a53b31fbf36be987803e5",
       "lineCount": 90
@@ -1153,8 +1183,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "930a1d89ccefb597ea11a8a731281089d3c87bcde0bb993c48d08d149cbeaeb0",
-      "lineCount": 311
+      "sha256": "12ce1658e05f0419ab91d7ac5911a5542e60c8f76a23f2d764bd089145b38348",
+      "lineCount": 323
     }
   ],
   "declarations": {
@@ -2378,6 +2408,146 @@
         "LinearStudy.PerfectMultiplicationPairing",
         "LinearStudy.PerfectMultiplicationPairing.functional",
         "LinearStudy.perfectPairingOfGlobalSocles"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding": {
+      "declaration": "LinearStudy.awayFractionEmbedding",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/AwayFractionEmbedding.lean",
+      "line": 9,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.awayFractionEmbedding.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]\n  [Algebra K B] (a : B) (ha : a ≠ 0) : Localization.Away a →ₐ[K] FractionRing B",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "lines": 6,
+      "moduleLineCount": 42,
+      "startLine": 9,
+      "endLine": 14,
+      "lineCount": 6,
+      "dependencies": []
+    },
+    "LinearStudy.awayFractionEmbedding_algebraMap": {
+      "declaration": "LinearStudy.awayFractionEmbedding_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayFractionEmbedding.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_algebraMap.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (b : B) :\n  (LinearStudy.awayFractionEmbedding a ha) ((algebraMap B (Localization.Away a)) b) = (algebraMap B (FractionRing B)) b",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "lines": 4,
+      "moduleLineCount": 42,
+      "startLine": 16,
+      "endLine": 19,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_injective": {
+      "declaration": "LinearStudy.awayFractionEmbedding_injective",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayFractionEmbedding.lean",
+      "line": 21,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_injective.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]\n  [Algebra K B] (a : B) (ha : a ≠ 0) : Function.Injective ⇑(LinearStudy.awayFractionEmbedding a ha)",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "lines": 9,
+      "moduleLineCount": 42,
+      "startLine": 21,
+      "endLine": 29,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_invSelf": {
+      "declaration": "LinearStudy.awayFractionEmbedding_invSelf",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayFractionEmbedding.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_invSelf.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B] [IsDomain B]\n  [Algebra K B] (a : B) (ha : a ≠ 0) :\n  (LinearStudy.awayFractionEmbedding a ha) (IsLocalization.Away.invSelf a) = ((algebraMap B (FractionRing B)) a)⁻¹",
+      "sha256": "8899855d926ac5c219e2188c11ee3c18172b6426eaab5c14f86522f6e7fc5257",
+      "lines": 10,
+      "moduleLineCount": 42,
+      "startLine": 31,
+      "endLine": 40,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
+      ]
+    },
+    "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open": {
+      "declaration": "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayFractionUnramified.lean",
+      "line": 10,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2}\n  {L : Type u_3} [CommRing R] [CommRing A] [IsDomain A] [Field L] [Algebra A L] [IsFractionRing A L] (φ : R →+* A)\n  (hft : φ.EssFiniteType) (hg : ((algebraMap A L).comp φ).FormallyUnramified) :\n  ∃ a, a ≠ 0 ∧ ((algebraMap A (Localization.Away a)).comp φ).FormallyUnramified",
+      "sha256": "36da8e3abbc6d2306d6677d37c6380cd4c07d671c55f444c12568ac12796e4f2",
+      "lines": 23,
+      "moduleLineCount": 50,
+      "startLine": 9,
+      "endLine": 31,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_exists_unramified_open": {
+      "declaration": "LinearStudy.awayFractionEmbedding_exists_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayFractionUnramified.lean",
+      "line": 34,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_exists_unramified_open.{u_1, u_2, u_3} {K : Type u_1} {R : Type u_2} {B : Type u_3}\n  [Field K] [CommRing R] [CommRing B] [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (φ : R →+* Localization.Away a)\n  (hft : φ.EssFiniteType) (hg : ((LinearStudy.awayFractionEmbedding a ha).comp φ).FormallyUnramified) :\n  ∃ b, b ≠ 0 ∧ ((algebraMap (Localization.Away a) (Localization.Away b)).comp φ).FormallyUnramified",
+      "sha256": "36da8e3abbc6d2306d6677d37c6380cd4c07d671c55f444c12568ac12796e4f2",
+      "lines": 16,
+      "moduleLineCount": 50,
+      "startLine": 33,
+      "endLine": 48,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open"
       ]
     },
     "LinearStudy.finiteFlat_centered_jacobian_annihilator": {
@@ -20341,6 +20511,653 @@
         "LinearStudy.projectiveCoordinateRatioField"
       ]
     },
+    "LinearStudy.projectiveChartFractionRatioEquiv_val": {
+      "declaration": "LinearStudy.projectiveChartFractionRatioEquiv_val",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionRatioEquiv_val {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (z : FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) :\n  ↑((LinearStudy.projectiveChartFractionRatioEquiv V x hx) z) = (LinearStudy.projectiveChartFractionEmbedding V x hx) z",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 13,
+      "moduleLineCount": 97,
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveCoordinateRatioField"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap": {
+      "declaration": "LinearStudy.projectiveChartFractionMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "line": 26,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartFractionMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) →ₐ[ℂ] FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 13,
+      "moduleLineCount": 97,
+      "startLine": 26,
+      "endLine": 38,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap_commutes": {
+      "declaration": "LinearStudy.projectiveChartFractionMap_commutes",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "line": 40,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionMap_commutes {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (z : FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)) :\n  (LinearStudy.projectiveChartFractionEmbedding V x hx) ((LinearStudy.projectiveChartFractionMap f V hq hf hV x hx) z) =\n    (LinearStudy.projectiveCoordinateFractionMap f V hq hf hV) ((LinearStudy.projectiveChartFractionEmbedding V x hx) z)",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 23,
+      "moduleLineCount": 97,
+      "startLine": 40,
+      "endLine": 62,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveChartFractionRatioEquiv_val",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap_finite": {
+      "declaration": "LinearStudy.projectiveChartFractionMap_finite",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "line": 64,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionMap_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).Finite",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 15,
+      "moduleLineCount": 97,
+      "startLine": 64,
+      "endLine": 78,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_finite",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap_formallyUnramified": {
+      "declaration": "LinearStudy.projectiveChartFractionMap_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "line": 80,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).FormallyUnramified",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 16,
+      "moduleLineCount": 97,
+      "startLine": 80,
+      "endLine": 95,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_formallyUnramified",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionMap"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionEmbedding_algebraMap": {
+      "declaration": "LinearStudy.projectiveChartFractionEmbedding_algebraMap",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartMapCoordinates.lean",
+      "line": 11,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionEmbedding_algebraMap {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) (P : MvPolynomial (Fin n) ℂ) :\n  (LinearStudy.projectiveChartFractionEmbedding V x hx)\n      ((algebraMap (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) (FractionRing (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal)))\n        ((Ideal.Quotient.mk V.affineIdeal) P)) =\n    (LinearStudy.coordinateRatioPolynomialMap (LinearStudy.projectiveConeFractionCoordinates V)) P",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lines": 15,
+      "moduleLineCount": 86,
+      "startLine": 11,
+      "endLine": 25,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveConeFractionCoordinates"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap_coordinate": {
+      "declaration": "LinearStudy.projectiveChartFractionMap_coordinate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartMapCoordinates.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartFractionMap_coordinate {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (i : Fin n) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let L := FractionRing B;\n  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx)\n      ((algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (MvPolynomial.X i))) =\n    (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms i.succ))) /\n      (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)))",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lines": 37,
+      "moduleLineCount": 86,
+      "startLine": 27,
+      "endLine": 63,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.homogeneous_ratio_eq_chart_ratio",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionEmbedding_algebraMap",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_commutes",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
+    },
+    "LinearStudy.projectiveChart_denominator_ne_zero": {
+      "declaration": "LinearStudy.projectiveChart_denominator_ne_zero",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartMapCoordinates.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChart_denominator_ne_zero {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lines": 20,
+      "moduleLineCount": 86,
+      "startLine": 65,
+      "endLine": 84,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
+    },
+    "LinearStudy.projectiveChartDenominator": {
+      "declaration": "LinearStudy.projectiveChartDenominator",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartDenominator {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) : MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 3,
+      "moduleLineCount": 122,
+      "startLine": 12,
+      "endLine": 14,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap": {
+      "declaration": "LinearStudy.projectiveChartOpenPolynomialMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartOpenPolynomialMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) :\n  MvPolynomial (Fin n) ℂ →ₐ[ℂ] Localization.Away (LinearStudy.projectiveChartDenominator f V)",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 6,
+      "moduleLineCount": 122,
+      "startLine": 16,
+      "endLine": 21,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartDenominator"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp": {
+      "declaration": "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 23,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let L := FractionRing B;\n  (LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp\n      (LinearStudy.projectiveChartOpenPolynomialMap f V) =\n    (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).comp\n      ((IsScalarTower.toAlgHom ℂ B L).comp (Ideal.Quotient.mkₐ ℂ V.affineIdeal))",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 27,
+      "moduleLineCount": 122,
+      "startLine": 23,
+      "endLine": 49,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.awayFractionEmbedding_invSelf",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_coordinate",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap_ideal": {
+      "declaration": "LinearStudy.projectiveChartOpenPolynomialMap_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 51,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenPolynomialMap_ideal {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  V.affineIdeal ≤ RingHom.ker (LinearStudy.projectiveChartOpenPolynomialMap f V).toRingHom",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 25,
+      "moduleLineCount": 122,
+      "startLine": 51,
+      "endLine": 75,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap": {
+      "declaration": "LinearStudy.projectiveChartOpenMap",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 78,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.projectiveChartOpenMap {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal →ₐ[ℂ] Localization.Away (LinearStudy.projectiveChartDenominator f V)",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 10,
+      "moduleLineCount": 122,
+      "startLine": 77,
+      "endLine": 86,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_mk": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_mk",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 88,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_mk {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (P : MvPolynomial (Fin n) ℂ) :\n  (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) ((Ideal.Quotient.mk V.affineIdeal) P) =\n    (LinearStudy.projectiveChartOpenPolynomialMap f V) P",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 8,
+      "moduleLineCount": 122,
+      "startLine": 88,
+      "endLine": 95,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_fraction_comp": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_fraction_comp",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "line": 97,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_fraction_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let L := FractionRing B;\n  (LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp\n      (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) =\n    (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).comp (IsScalarTower.toAlgHom ℂ B L)",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 24,
+      "moduleLineCount": 122,
+      "startLine": 97,
+      "endLine": 120,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_finiteType": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_finiteType",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_finiteType {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).FiniteType",
+      "sha256": "93a08004d9b9ae95dc1e1c7a36beddde35282e20abe434a5de712e24bce382a7",
+      "lines": 17,
+      "moduleLineCount": 77,
+      "startLine": 13,
+      "endLine": 29,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ((LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp\n      (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified",
+      "sha256": "93a08004d9b9ae95dc1e1c7a36beddde35282e20abe434a5de712e24bce382a7",
+      "lines": 26,
+      "moduleLineCount": 77,
+      "startLine": 31,
+      "endLine": 56,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_formallyUnramified",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ b,\n    b ≠ 0 ∧\n      ((algebraMap (Localization.Away (LinearStudy.projectiveChartDenominator f V)) (Localization.Away b)).comp\n          (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified",
+      "sha256": "93a08004d9b9ae95dc1e1c7a36beddde35282e20abe434a5de712e24bce382a7",
+      "lines": 18,
+      "moduleLineCount": 77,
+      "startLine": 58,
+      "endLine": 75,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding_exists_unramified_open",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finiteType",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
     "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff": {
       "declaration": "LinearStudy.affineChartPolynomialMap_homogeneous_mem_iff",
       "kind": "theorem",
@@ -32335,8 +33152,8 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 858,
-  "definitionCount": 176,
+  "verifiedTheoremCount": 877,
+  "definitionCount": 181,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
@@ -32940,6 +33757,29 @@
         "LinearStudy.polynomialSmoothFormalMap",
         "LinearStudy.polynomialSmoothFormalMap_parameter",
         "LinearStudy.polynomialSmoothReducedMap"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionEmbedding_algebraMap": {
+      "path": "Linear/ProjectiveChartMapCoordinates.lean",
+      "startLine": 11,
+      "endLine": 25,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_injective",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveConeFractionCoordinates"
       ]
     },
     "LinearStudy.tensorFunctionalContraction_right": {
@@ -33719,6 +34559,39 @@
         "LinearStudy.ringEquiv_nilradical_annihilator_generator"
       ]
     },
+    "LinearStudy.projectiveChartFractionMap_coordinate": {
+      "path": "Linear/ProjectiveChartMapCoordinates.lean",
+      "startLine": 27,
+      "endLine": 63,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.homogeneous_ratio_eq_chart_ratio",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionEmbedding_algebraMap",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_commutes",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
+    },
     "LinearStudy.projective_affine_smooth_points_have_common_formal_coordinates": {
       "path": "Linear/ProjectiveAffineSmoothLocus.lean",
       "startLine": 20,
@@ -33972,6 +34845,16 @@
       "dependencies": [
         "LinearStudy.normalVariableIndex",
         "LinearStudy.totalVariableSplit"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_injective": {
+      "path": "Linear/AwayFractionEmbedding.lean",
+      "startLine": 21,
+      "endLine": 29,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
       ]
     },
     "LinearStudy.homogeneousComponent_mul_top": {
@@ -34576,6 +35459,17 @@
         "LinearStudy.pairingRightReduction_diagonal",
         "LinearStudy.pairingRightReduction_tmul",
         "LinearStudy.pairingTensorEndEquiv"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_exists_unramified_open": {
+      "path": "Linear/AwayFractionUnramified.lean",
+      "startLine": 33,
+      "endLine": 48,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open"
       ]
     },
     "LinearStudy.IntegralProjectiveEquations.rec": {
@@ -35229,6 +36123,30 @@
         "LinearStudy.powerSeries_variables_regular"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified": {
+      "path": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "startLine": 31,
+      "endLine": 56,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_formallyUnramified",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
     "LinearStudy.functionKoszulAugmentationMap": {
       "path": "Linear/KoszulFunctionResolution.lean",
       "startLine": 50,
@@ -35306,6 +36224,15 @@
         "isCohenMacaulayLocalRing_def"
       ]
     },
+    "LinearStudy.awayFractionEmbedding_algebraMap": {
+      "path": "Linear/AwayFractionEmbedding.lean",
+      "startLine": 16,
+      "endLine": 19,
+      "lineCount": 4,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding"
+      ]
+    },
     "LinearStudy.polynomialDoubleDiagonal_left": {
       "path": "Linear/UniversalDifference.lean",
       "startLine": 25,
@@ -35359,6 +36286,31 @@
       "lineCount": 8,
       "dependencies": [
         "LinearStudy.ideal_generators_of_conormal_span"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_fraction_comp": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 97,
+      "endLine": 120,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_mk",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
       ]
     },
     "LinearStudy.polynomialAwayPointEvaluation_algebraMap": {
@@ -36003,6 +36955,24 @@
         "isLocalize_at_prime_dim_eq_prime_depth_of_isCohenMacaulay"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_finiteType": {
+      "path": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "startLine": 13,
+      "endLine": 29,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap"
+      ]
+    },
     "LinearStudy.polynomialLocalCotangentSpaceBasis_repr_mk": {
       "path": "Linear/SmoothJacobianMinor.lean",
       "startLine": 21,
@@ -36165,6 +37135,15 @@
         "exteriorPower.instIsScalarTowerExteriorAlgebraTensorProduct_linear"
       ]
     },
+    "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open": {
+      "path": "Linear/AwayFractionUnramified.lean",
+      "startLine": 9,
+      "endLine": 31,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.ringHom_genericPoint_exists_nonzero_unramified_open"
+      ]
+    },
     "LinearStudy.doublePoint_actual_jacobian_generates": {
       "path": "Linear/FirstJet.lean",
       "startLine": 100,
@@ -36252,6 +37231,19 @@
       "endLine": 13,
       "lineCount": 2,
       "dependencies": []
+    },
+    "LinearStudy.projectiveChartDenominator": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 12,
+      "endLine": 14,
+      "lineCount": 3,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap"
+      ]
     },
     "LinearStudy.powerSeriesJacobianClass": {
       "path": "Linear/JacobianTrace.lean",
@@ -36373,6 +37365,25 @@
       "endLine": 48,
       "lineCount": 24,
       "dependencies": []
+    },
+    "LinearStudy.projectiveChartFractionMap_finite": {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "startLine": 64,
+      "endLine": 78,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_finite",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionMap"
+      ]
     },
     "LinearStudy.finiteFlat_residueTensor_jacobian_scalar_socle": {
       "path": "Linear/JacobianSpecialization.lean",
@@ -36615,6 +37626,25 @@
       "endLine": 18,
       "lineCount": 6,
       "dependencies": []
+    },
+    "LinearStudy.projectiveChartFractionRatioEquiv_val": {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "startLine": 12,
+      "endLine": 24,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveCoordinateRatioField"
+      ]
     },
     "LinearStudy.oneVariable_closedFiber_jacobian": {
       "path": "Linear/OneVariable.lean",
@@ -37090,6 +38120,25 @@
       "lineCount": 8,
       "dependencies": []
     },
+    "LinearStudy.projectiveChartOpenMap_mk": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 88,
+      "endLine": 95,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
     "LinearStudy.thickeningX": {
       "path": "Linear/Thickening.lean",
       "startLine": 34,
@@ -37367,6 +38416,27 @@
       "lineCount": 8,
       "dependencies": [
         "LinearStudy.powerSeries_substitution_maps_square"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap": {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "startLine": 26,
+      "endLine": 38,
+      "lineCount": 13,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
       ]
     },
     "LinearStudy.parameterFiberSocle": {
@@ -38357,6 +39427,29 @@
       "endLine": 30,
       "lineCount": 15,
       "dependencies": []
+    },
+    "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open": {
+      "path": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "startLine": 58,
+      "endLine": 75,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding_exists_unramified_open",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finiteType",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp_formallyUnramified",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
     },
     "LinearStudy.affineChartPolynomialMap_ideal_le_pointKernel": {
       "path": "Linear/ProjectiveAffinePoint.lean",
@@ -39958,6 +41051,32 @@
         "LinearStudy.powerSeries_tensor_diagonal_eq_coordinate_ideal"
       ]
     },
+    "LinearStudy.projectiveChartFractionMap_commutes": {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "startLine": 40,
+      "endLine": 62,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionEmbedding",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionRatioEquiv",
+        "LinearStudy.projectiveChartFractionRatioEquiv_val",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateRatioField",
+        "LinearStudy.projectiveCoordinateRatioMap"
+      ]
+    },
     "associated_prime_minimal_of_isCohenMacaulay": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 98,
@@ -40056,6 +41175,20 @@
         "LinearStudy.polynomialLocalQuotientExtension",
         "LinearStudy.polynomial_local_ideal_ne_top",
         "LinearStudy.smooth_polynomial_conormal_finrank"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 16,
+      "endLine": 21,
+      "lineCount": 6,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.projectiveChartDenominator"
       ]
     },
     "IsCohenMacaulayLocalRing.toIsLocalRing": {
@@ -40184,6 +41317,16 @@
         "LinearStudy.affineChartPolynomialMap_comp_aeval",
         "LinearStudy.homogeneous_aeval_smul",
         "LinearStudy.projectiveChartLocalizationMap"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_invSelf": {
+      "path": "Linear/AwayFractionEmbedding.lean",
+      "startLine": 31,
+      "endLine": 40,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
       ]
     },
     "LinearStudy.generalPointLocalQuotientPullback_scalar_comp": {
@@ -42342,6 +43485,24 @@
         "LinearStudy.homogeneous_ratio_eq_chart_ratio"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 77,
+      "endLine": 86,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenPolynomialMap"
+      ]
+    },
     "LinearStudy.powerSeriesMapEquiv": {
       "path": "Linear/PowerSeriesFlatten.lean",
       "startLine": 10,
@@ -42648,6 +43809,33 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.formalPolynomialAtPointAlg"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 23,
+      "endLine": 49,
+      "lineCount": 27,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap",
+        "LinearStudy.awayFractionEmbedding_invSelf",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartFractionMap_coordinate",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
       ]
     },
     "LinearStudy.projectiveFiber_actual_highest_regular": {
@@ -42975,6 +44163,13 @@
         "LinearStudy.powerSeries_ringKrullDim"
       ]
     },
+    "LinearStudy.awayFractionEmbedding": {
+      "path": "Linear/AwayFractionEmbedding.lean",
+      "startLine": 9,
+      "endLine": 14,
+      "lineCount": 6,
+      "dependencies": []
+    },
     "Ideal.ofList_spanFinrank_le_length": {
       "path": "Linear/Vendor/CM/CohenMacaulayCatenary.lean",
       "startLine": 25,
@@ -43236,6 +44431,36 @@
       "endLine": 21,
       "lineCount": 9,
       "dependencies": []
+    },
+    "LinearStudy.projectiveChart_denominator_ne_zero": {
+      "path": "Linear/ProjectiveChartMapCoordinates.lean",
+      "startLine": 65,
+      "endLine": 84,
+      "lineCount": 20,
+      "dependencies": [
+        "LinearStudy.CoordinateRing",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.HomogeneousEndomorphism.homogeneous",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.prime",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap",
+        "LinearStudy.coordinateRatioPolynomialMap_homogeneous",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartCoordinateEmbedding",
+        "LinearStudy.projectiveChartCoordinateEmbedding_mk",
+        "LinearStudy.projectiveConeFractionCoordinates",
+        "LinearStudy.projectiveConeFractionCoordinates_zero_ne_zero",
+        "LinearStudy.projectiveCoordinateFractionMap",
+        "LinearStudy.projectiveCoordinateFractionMap_coordinate"
+      ]
     },
     "LinearStudy.equationIdeal_le_coordinateIdeal": {
       "path": "Linear/KoszulSocleDeterminant.lean",
@@ -44063,6 +45288,25 @@
       "dependencies": [
         "LinearStudy.powerSeries_cons_X_regular",
         "LinearStudy.regular_transport_ringEquiv"
+      ]
+    },
+    "LinearStudy.projectiveChartFractionMap_formallyUnramified": {
+      "path": "Linear/ProjectiveChartGenericMap.lean",
+      "startLine": 80,
+      "endLine": 95,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.fieldEndomorphism_formallyUnramified",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartFractionMap"
       ]
     },
     "LinearStudy.dualGenerator_pairing": {
@@ -46059,6 +47303,30 @@
         "LinearStudy.coefficientKoszulComparison",
         "LinearStudy.topKoszul_map",
         "koszulComplex"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenPolynomialMap_ideal": {
+      "path": "Linear/ProjectiveChartOpenMap.lean",
+      "startLine": 51,
+      "endLine": 75,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_injective",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap",
+        "LinearStudy.projectiveChartOpenPolynomialMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
       ]
     },
     "LinearStudy.DoublePoint": {
@@ -49740,7 +51008,8 @@
         "projective-common-smooth-chart",
         "projective-cone-generic-unramified",
         "projective-ratio-field-unramified",
-        "projective-chart-function-field"
+        "projective-chart-function-field",
+        "projective-chart-unramified-open"
       ],
       "setup": [
         "<p>原稿 Setup 1.4；t=r(q−1)−1，第一纤维 S₁。</p>",
@@ -54449,6 +55718,219 @@
       "formalType": "LinearStudy.projectiveChartFractionEmbedding_fieldRange {n : ℕ} (V : LinearStudy.IntegralProjectiveEquations n)\n  (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartFractionEmbedding V x hx).fieldRange = LinearStudy.projectiveCoordinateRatioField V",
       "sha256": "be51125f86595679455cfb4b8ef8b89dff50abe2486f1e4ccaf94c68cbf24068",
       "lines": 11,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "projective-chart-field-unramified",
+      "titles": [
+        "实际图表函数域拉回非分歧",
+        "The actual chart function-field pullback is unramified"
+      ],
+      "title": "实际图表函数域拉回非分歧",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveChartGenericMap.lean",
+      "decl": "LinearStudy.projectiveChartFractionMap_formallyUnramified",
+      "declaration": "LinearStudy.projectiveChartFractionMap_formallyUnramified",
+      "deps": [
+        "projective-chart-function-field",
+        "projective-ratio-field-unramified"
+      ],
+      "setup": [
+        "<p>原 f 次数为正且射影满射；V 整且全不变；指定标准图表中给定 V 的一个点。</p>",
+        "<p>Original positive-degree projectively surjective f; integral totally invariant V; a given point of V in the specified standard chart.</p>"
+      ],
+      "result": [
+        "<p>由实际图表同构构造的函数域拉回形式非分歧；同一源码还证明其有限性。</p>",
+        "<p>The function-field pullback constructed through the actual chart equivalence is formally unramified. The source also proves finiteness.</p>"
+      ],
+      "compactSetup": [
+        "原 f 次数为正且射影满射；V 整且全不变；指定标准图表中给定 V 的一个点。",
+        "Original positive-degree projectively surjective f; integral totally invariant V; a given point of V in the specified standard chart."
+      ],
+      "compactResult": [
+        "由实际图表同构构造的函数域拉回形式非分歧；同一源码还证明其有限性。",
+        "The function-field pullback constructed through the actual chart equivalence is formally unramified. The source also proves finiteness."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveChartFractionMap_formallyUnramified {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).FormallyUnramified",
+      "sha256": "46335e43eb83768be4fa8c6a1f5684766a89091dc4b050e752dbee63afa2f4d4",
+      "lines": 16,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "projective-chart-coordinate-formula",
+      "titles": [
+        "图表拉回等于实际 fᵢ/f₀",
+        "The chart pullback is the actual f_i/f_0"
+      ],
+      "title": "图表拉回等于实际 fᵢ/f₀",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveChartMapCoordinates.lean",
+      "decl": "LinearStudy.projectiveChartFractionMap_coordinate",
+      "declaration": "LinearStudy.projectiveChartFractionMap_coordinate",
+      "deps": [
+        "projective-chart-field-unramified"
+      ],
+      "setup": [
+        "<p>同一原 f、全不变整 V、非空标准图表及图表坐标 i。</p>",
+        "<p>The same original f, totally invariant integral V, inhabited standard chart and chart coordinate i.</p>"
+      ],
+      "result": [
+        "<p>图表变量在实际函数域拉回下等于去齐次化 fᵢ 除以去齐次化 f₀；不是额外公式假设。</p>",
+        "<p>An actual chart variable pulls back to dehomogenized f_i divided by dehomogenized f_0. The coordinate formula is proved, not assumed.</p>"
+      ],
+      "compactSetup": [
+        "同一原 f、全不变整 V、非空标准图表及图表坐标 i。",
+        "The same original f, totally invariant integral V, inhabited standard chart and chart coordinate i."
+      ],
+      "compactResult": [
+        "图表变量在实际函数域拉回下等于去齐次化 fᵢ 除以去齐次化 f₀；不是额外公式假设。",
+        "An actual chart variable pulls back to dehomogenized f_i divided by dehomogenized f_0. The coordinate formula is proved, not assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveChartFractionMap_coordinate {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ) (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet)\n  (i : Fin n) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let L := FractionRing B;\n  (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx)\n      ((algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (MvPolynomial.X i))) =\n    (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms i.succ))) /\n      (algebraMap B L) ((Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)))",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lines": 37,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "projective-chart-denominator",
+      "titles": [
+        "图表分母在坐标域中非零",
+        "The chart denominator is nonzero in the coordinate domain"
+      ],
+      "title": "图表分母在坐标域中非零",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveChartMapCoordinates.lean",
+      "decl": "LinearStudy.projectiveChart_denominator_ne_zero",
+      "declaration": "LinearStudy.projectiveChart_denominator_ne_zero",
+      "deps": [
+        "projective-chart-coordinate-formula"
+      ],
+      "setup": [
+        "<p>同一原 f、全不变整 V 和非空标准图表。</p>",
+        "<p>The same original f, totally invariant integral V and inhabited standard chart.</p>"
+      ],
+      "result": [
+        "<p>去齐次化 f₀ 在实际图表坐标环中非零，所以该分母开集非空。</p>",
+        "<p>The class of dehomogenized f_0 in the actual chart coordinate ring is nonzero, so the denominator open is nonempty.</p>"
+      ],
+      "compactSetup": [
+        "同一原 f、全不变整 V 和非空标准图表。",
+        "The same original f, totally invariant integral V and inhabited standard chart."
+      ],
+      "compactResult": [
+        "去齐次化 f₀ 在实际图表坐标环中非零，所以该分母开集非空。",
+        "The class of dehomogenized f_0 in the actual chart coordinate ring is nonzero, so the denominator open is nonempty."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveChart_denominator_ne_zero {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  (Ideal.Quotient.mk V.affineIdeal) (LinearStudy.affineChartPolynomialMap (f.forms 0)) ≠ 0",
+      "sha256": "43f768a097a8bb79cbfac223c03c3cca50263eef4612cd3abca6eba7a398a58d",
+      "lines": 20,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "projective-chart-open-pullback",
+      "titles": [
+        "有理图表拉回下降到实际坐标环",
+        "The rational chart pullback descends to the actual coordinate ring"
+      ],
+      "title": "有理图表拉回下降到实际坐标环",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveChartOpenMap.lean",
+      "decl": "LinearStudy.projectiveChartOpenMap_fraction_comp",
+      "declaration": "LinearStudy.projectiveChartOpenMap_fraction_comp",
+      "deps": [
+        "projective-chart-denominator",
+        "projective-chart-coordinate-formula"
+      ],
+      "setup": [
+        "<p>同一原 f、全不变整 V 和非空标准图表。</p>",
+        "<p>The same original f, totally invariant integral V and inhabited standard chart.</p>"
+      ],
+      "result": [
+        "<p>实际有理坐标拉回下降到图表坐标环，取值于分母局部化；嵌入分式域后与实际函数域拉回一致。</p>",
+        "<p>The actual rational coordinate pullback descends to the chart coordinate ring into the denominator localization, and its fraction-field comparison commutes.</p>"
+      ],
+      "compactSetup": [
+        "同一原 f、全不变整 V 和非空标准图表。",
+        "The same original f, totally invariant integral V and inhabited standard chart."
+      ],
+      "compactResult": [
+        "实际有理坐标拉回下降到图表坐标环，取值于分母局部化；嵌入分式域后与实际函数域拉回一致。",
+        "The actual rational coordinate pullback descends to the chart coordinate ring into the denominator localization, and its fraction-field comparison commutes."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveChartOpenMap_fraction_comp {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let L := FractionRing B;\n  (LinearStudy.awayFractionEmbedding (LinearStudy.projectiveChartDenominator f V) ⋯).comp\n      (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx) =\n    (LinearStudy.projectiveChartFractionMap f V hq hf hV x hx).comp (IsScalarTower.toAlgHom ℂ B L)",
+      "sha256": "ae867db6c009fbe76e4a31fb8c77c6e8e41fabbccc9e9a634c43e7ba00982044",
+      "lines": 24,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "projective-chart-unramified-open",
+      "titles": [
+        "实际有理图表的非空非分歧开集",
+        "A nonempty unramified open for the actual rational chart"
+      ],
+      "title": "实际有理图表的非空非分歧开集",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/ProjectiveChartUnramifiedOpen.lean",
+      "decl": "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open",
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open",
+      "deps": [
+        "projective-chart-open-pullback",
+        "projective-chart-field-unramified"
+      ],
+      "setup": [
+        "<p>同一原 f、全不变整 V 和非空标准图表。</p>",
+        "<p>The same original f, totally invariant integral V and inhabited standard chart.</p>"
+      ],
+      "result": [
+        "<p>分母图表中存在非零主开集，使实际坐标环拉回形式非分歧。尚未断言整个一般纤维落在其中，也未计算纤维点数。</p>",
+        "<p>A nonzero principal open in the denominator chart makes the actual coordinate-domain pullback formally unramified. Whole general fibers and their point counts are not yet covered.</p>"
+      ],
+      "compactSetup": [
+        "同一原 f、全不变整 V 和非空标准图表。",
+        "The same original f, totally invariant integral V and inhabited standard chart."
+      ],
+      "compactResult": [
+        "分母图表中存在非零主开集，使实际坐标环拉回形式非分歧。尚未断言整个一般纤维落在其中，也未计算纤维点数。",
+        "A nonzero principal open in the denominator chart makes the actual coordinate-domain pullback formally unramified. Whole general fibers and their point counts are not yet covered."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_nonzero_unramified_open {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x : Fin n → ℂ)\n  (hx : LinearStudy.normalizedProjectivePoint x ∈ V.zeroSet) :\n  ∃ b,\n    b ≠ 0 ∧\n      ((algebraMap (Localization.Away (LinearStudy.projectiveChartDenominator f V)) (Localization.Away b)).comp\n          (LinearStudy.projectiveChartOpenMap f V hq hf hV x hx).toRingHom).FormallyUnramified",
+      "sha256": "93a08004d9b9ae95dc1e1c7a36beddde35282e20abe434a5de712e24bce382a7",
+      "lines": 18,
       "richStatement": true,
       "x": 30,
       "y": 60
