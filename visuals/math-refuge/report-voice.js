@@ -1,10 +1,10 @@
 // On-demand narration: no network or audio allocation until a report is selected.
 export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Audio(),makeURL=b=>URL.createObjectURL(b),revokeURL=u=>URL.revokeObjectURL(u),onChange=()=>{},baseURL=new URL('.',import.meta.url).href}={}){
- let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0;
- const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0};
+ let epoch=0,attachToken=0,playToken=0,report=null,manifest=null,audio=null,desired=false,contextActive=true,controllers=new Set(),cache=new Map(),jobs=new Map(),index=0,offset=0;
+ const state={report:null,phase:'idle',progress:null,time:0,duration:0,error:'',started:false,chapter:0,temporaryPause:false};
  const emit=()=>onChange({...state});
  const sync=()=>{if(audio&&manifest)state.time=Math.min(state.duration,manifest.chapters[index].start+audio.currentTime);return state.time;};
- function pause(){desired=false;playToken++;sync();audio?.pause();if(['playing','buffering','preparing'].includes(state.phase)){state.phase='paused';emit();}}
+ function pause(){desired=false;state.temporaryPause=false;playToken++;sync();audio?.pause();if(['playing','buffering','preparing','away'].includes(state.phase)){state.phase='paused';emit();}}
  function release(){pause();audio=null;controllers.forEach(c=>c.abort());controllers.clear();for(const v of cache.values())revokeURL(v);cache.clear();jobs.clear();}
  async function bytes(src,mine,show,sizeHint=0){
   const controller=new AbortController();controllers.add(controller);
@@ -37,11 +37,12 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   target.addEventListener('playing',()=>{if(valid()&&desired){state.phase='playing';emit();}});
   target.addEventListener('error',()=>{if(valid()){desired=false;state.phase='error';state.error='语音未就绪 · 点击重试';emit();}});
   target.addEventListener('ended',()=>{if(!valid())return;state.time=manifest.chapters[i].start+manifest.chapters[i].duration;if(i+1<manifest.chapters.length){void advance(i+1);}else{desired=false;state.phase='ended';state.time=state.duration;emit();}});
-  state.progress=1;state.phase=state.started?'paused':'ready';state.error='';emit();return true;
+  state.progress=1;state.temporaryPause=desired&&!contextActive;state.phase=state.temporaryPause?'away':state.started?'paused':'ready';state.error='';emit();return true;
  }
  async function play(){
   if(!audio)return false;const mine=epoch,token=++playToken,target=audio;desired=true;state.started=true;
-  try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){target.pause();return false;}state.phase='playing';state.error='';emit();return true;}
+  if(!contextActive){state.temporaryPause=true;state.phase='away';emit();return false;}state.temporaryPause=false;
+  try{await target.play();if(mine!==epoch||token!==playToken||!desired||audio!==target){if(audio!==target||!desired||!contextActive)target.pause();return false;}state.phase='playing';state.error='';emit();return true;}
   catch{if(mine!==epoch||token!==playToken)return false;desired=false;state.phase='paused';state.error='点击黑板播放语音';emit();return false;}
  }
  async function advance(i){const resume=desired,mine=epoch;try{if(await attach(i)&&mine===epoch&&resume&&desired)await play();}catch(error){if(mine===epoch){desired=false;state.phase='error';state.error='语音下载失败 · 点击重试';emit();}}}
@@ -65,20 +66,26 @@ export function createReportVoice({fetcher=globalThis.fetch,makeAudio=()=>new Au
   catch{if(mine===epoch){state.phase='error';state.error='语音定位失败 · 点击重试';emit();}return false;}
  }
  async function toggle(){
-  if(state.phase==='playing'||state.phase==='buffering'||state.phase==='preparing'){pause();return true;}
+  if(['playing','buffering','preparing','away'].includes(state.phase)){pause();return true;}
   if(state.phase==='loading')return false;
   if(state.phase==='error'){if(!manifest)return select(report);try{return await attach(index,offset)&&await play();}catch{return false;}}
   if(state.phase==='ended')await seek(0);
   return play();
  }
- return{state,select,toggle,pause,seek,
+ async function setContextActive(value){
+  const next=Boolean(value);if(next===contextActive)return false;contextActive=next;
+  if(!next){if(desired){playToken++;sync();audio?.pause();state.temporaryPause=true;state.phase='away';emit();}return false;}
+  if(desired&&state.temporaryPause&&audio&&manifest){state.temporaryPause=false;return play();}
+  return false;
+ }
+ return{state,select,toggle,pause,seek,setContextActive,
   async suspendUntil(job){
    if(!desired||state.phase==='preparing')return;
    const mine=epoch,token=++playToken;sync();audio?.pause();state.phase='preparing';state.progress=null;emit();
    try{await job;if(mine===epoch&&token===playToken&&desired)await play();}
    catch{if(mine===epoch&&token===playToken&&desired){pause();state.phase='error';state.error='板书尚未就绪 · 点击重试';emit();}}
   },get manifest(){return manifest;},
-  update(){sync();if(manifest&&desired&&audio&&index+1<manifest.chapters.length&&manifest.chapters[index].duration-audio.currentTime<20){void load(index+1,false).catch(()=>{});}return state;},
+  update(){sync();if(manifest&&desired&&contextActive&&audio&&index+1<manifest.chapters.length&&manifest.chapters[index].duration-audio.currentTime<20){void load(index+1,false).catch(()=>{});}return state;},
   dispose(){++epoch;release();manifest=null;state.phase='idle';emit();}};
 }
 // Use the same measured stroke costs as chalkPosition and inkReveal, so a
@@ -121,21 +128,40 @@ export function syncNarrationClock(clock,frame,slotFor){
  clock.elapsed=frame.progress*frame.duration;
 }
 const formatTime=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
-// Attached to the report hall's actual board. No separate screen or overlay.
+export function reportVoicePresentation(state){
+ const phase=state.phase,busy=phase==='loading';
+ if(phase==='idle')return{message:'',buttonLabel:null,busy:false};
+ const time=formatTime(state.time||0)+' / '+formatTime(state.duration||0);
+ const message=busy?'报告语音加载 · '+(state.progress===null?'…':Math.round(state.progress*100)+'%'):phase==='error'?(state.error||'语音未就绪 · 点击重试'):phase==='ready'?'语音已就绪 · AI 合成 · '+formatTime(state.duration)+' · 点击聆听报告':phase==='away'?'暂离报告厅 · '+time:phase==='preparing'?'准备当前板书 · '+time:phase==='buffering'?'语音缓冲 · '+time:'报告 '+time;
+ const buttonLabel=phase==='error'?'重试报告语音':['playing','buffering','preparing','away'].includes(phase)?'暂停报告':phase==='paused'?'继续报告':phase==='ended'?'重新聆听报告':'聆听报告';
+ return{message,buttonLabel,busy};
+}
+// Fixed on the smart glass below the active board, beside the language control.
+export function reportVoiceIconPosition(column=0){
+ return{x:22.4+5.6*Math.max(0,Math.min(2,column))+1.45,y:-.16,z:-11.302};
+}
 export function createBoardVoicePanel(T,parent){
- const canvas=document.createElement('canvas');canvas.width=768;canvas.height=136;
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
  const ctx=canvas.getContext('2d'),texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;
  const material=new T.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,toneMapped:false});
- const mesh=new T.Mesh(new T.PlaneGeometry(1.55,.274),material);mesh.position.set(1.69,-.817,.025);mesh.name='Existing chalkboard report voice control';mesh.userData={action:'voice:toggle',label:'报告语音 · AI 合成'};parent.add(mesh);mesh.visible=false;
- let last='',fade=1;
- function draw(state){
-  const loading=state.phase==='loading'||state.phase==='buffering'||state.phase==='preparing',label=state.phase==='preparing'?'准备板书':loading?'报告语音加载':state.phase==='error'?'语音未就绪 · 重试':state.phase==='playing'?'Ⅱ  暂停报告':state.phase==='paused'?'▷  继续报告':state.phase==='ended'?'▷  重新聆听':'▷  聆听报告';
-  const key=[label,state.progress,Math.floor(state.time),fade.toFixed(2)].join(':');if(key===last)return;last=key;
-  ctx.clearRect(0,0,768,136);ctx.globalAlpha=fade;ctx.fillStyle='rgba(15,41,32,.9)';ctx.fillRect(0,0,768,136);ctx.fillStyle='#d6dfcd';ctx.font='400 31px "Microsoft YaHei",sans-serif';ctx.textAlign='left';ctx.fillText(label,28,53);
-  ctx.textAlign='right';ctx.fillStyle='#acb8a4';ctx.font='26px Georgia,serif';ctx.fillText(loading?(state.progress===null?'…':Math.round(state.progress*100)+'%'):formatTime(state.time)+' / '+formatTime(state.duration),736,53);
-  ctx.textAlign='left';ctx.font='19px "Microsoft YaHei",sans-serif';ctx.fillStyle='#8e9f8e';ctx.fillText('沈腾参考音色 · AI 合成',28,90);
-  if(loading){ctx.fillStyle='#9ea58a35';ctx.fillRect(28,112,708,2);if(state.progress!==null){ctx.fillStyle='#d2c69a';ctx.fillRect(28,112,708*state.progress,2);}}
-  ctx.globalAlpha=1;texture.needsUpdate=true;
- }
- return{mesh,update(state,dt,visible=true){mesh.visible=visible&&state.phase!=='idle';mesh.position.y=state.phase==='loading'?-.817:-1.19;mesh.updateMatrix();fade=state.phase==='loading'?1:Math.max(.8,fade-dt*.5);draw(state);},dispose(){mesh.parent?.remove(mesh);mesh.geometry.dispose();material.dispose();texture.dispose();}};
+ const mesh=new T.Mesh(new T.PlaneGeometry(.48,.48),material);mesh.name='Smart glass report play icon';mesh.userData={action:'voice:toggle',label:'聆听报告 · AI 合成'};parent.add(mesh);mesh.visible=false;
+ const loadingCanvas=document.createElement('canvas');loadingCanvas.width=512;loadingCanvas.height=88;
+ const loadingCtx=loadingCanvas.getContext('2d'),loadingTexture=new T.CanvasTexture(loadingCanvas);loadingTexture.colorSpace=T.SRGBColorSpace;
+ const loadingMaterial=new T.MeshBasicMaterial({map:loadingTexture,transparent:true,depthWrite:false,toneMapped:false});
+ const loading=new T.Mesh(new T.PlaneGeometry(1.55,.266),loadingMaterial);loading.name='Temporary report voice loading progress';loading.position.set(1.69,-.817,.025);loading.visible=false;
+ let lastIcon='',lastLoad='';
+ function setColumn(column){const p=reportVoiceIconPosition(column);mesh.position.set(p.x,p.y,p.z);mesh.updateMatrix();}
+ setColumn(0);
+ return{mesh,loading,setColumn,update(state,dt,visible=true){
+  mesh.visible=visible&&state.phase!=='idle';
+  const paused=!['playing','buffering','preparing'].includes(state.phase),icon=paused?'play':'pause';
+  mesh.userData.label=(reportVoicePresentation(state).buttonLabel||'聆听报告')+' · AI 合成';
+  if(icon!==lastIcon){lastIcon=icon;ctx.clearRect(0,0,128,128);ctx.strokeStyle='#f0e4ca';ctx.fillStyle='#f0e4ca';ctx.lineWidth=5;ctx.lineJoin='round';
+   if(paused){ctx.beginPath();ctx.moveTo(43,29);ctx.lineTo(94,64);ctx.lineTo(43,99);ctx.closePath();ctx.stroke();}
+   else{ctx.fillRect(40,30,12,68);ctx.fillRect(76,30,12,68);}texture.needsUpdate=true;}
+  const pending=['loading','buffering','preparing'].includes(state.phase);loading.visible=visible&&pending;
+  if(pending){const label=state.phase==='preparing'?'准备板书':'语音加载',percent=state.progress===null?'…':Math.round(state.progress*100)+'%',key=label+percent;
+   if(key!==lastLoad){lastLoad=key;loadingCtx.clearRect(0,0,512,88);loadingCtx.fillStyle='#d6dfcd';loadingCtx.font='28px "Microsoft YaHei",sans-serif';loadingCtx.textAlign='left';loadingCtx.fillText(label,16,40);loadingCtx.textAlign='right';loadingCtx.fillText(percent,496,40);loadingCtx.fillStyle='#9ea58a35';loadingCtx.fillRect(16,66,480,2);if(state.progress!==null){loadingCtx.fillStyle='#d2c69a';loadingCtx.fillRect(16,66,480*state.progress,2);}loadingTexture.needsUpdate=true;}
+  }
+ },dispose(){for(const item of [mesh,loading]){item.parent?.remove(item);item.geometry.dispose();item.material.dispose();}texture.dispose();loadingTexture.dispose();}};
 }

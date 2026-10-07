@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress} from './report-voice.js';
+import {createReportVoice,narrationFrame,syncNarrationClock,rowNarrationProgress,reportVoicePresentation,reportVoiceIconPosition} from './report-voice.js';
 import {LectureClock,boardSlot} from './lecture-state.js';
 class FakeAudio extends EventTarget{
  currentTime=0;paused=true;
@@ -60,4 +60,45 @@ test('per-line audio uses measured ink costs, holds for explanation, and seeks w
  assert.equal(clock.progress,.7);assert.equal(clock.slots[0].progress,.7);assert.equal(f.writing,false);assert.equal(narrationFrame(m,7,plan).writing,true);
  assert.equal(narrationFrame(m,21,plan).phase,'hold');
  assert.throws(()=>rowNarrationProgress([{row:3,writeStart:0,writeEnd:1}],0,plan),/no visible ink/);
+});
+
+
+test('formal hall shows audio readiness, measured loading, pause, and retry',()=>{
+ const state={phase:'loading',progress:.42,time:0,duration:3314.795,error:''};
+ assert.equal(reportVoicePresentation(state).busy,true);assert.match(reportVoicePresentation(state).message,/42%/);
+ assert.equal(reportVoicePresentation({...state,phase:'ready'}).busy,false);assert.match(reportVoicePresentation({...state,phase:'ready'}).message,/55:14/);
+ for(const phase of ['playing','buffering','preparing'])assert.equal(reportVoicePresentation({...state,phase}).buttonLabel,'暂停报告');
+ assert.equal(reportVoicePresentation({...state,phase:'error'}).buttonLabel,'重试报告语音');
+ assert.equal(reportVoicePresentation({...state,phase:'idle'}).message,'');
+});
+test('play icon sits below the board beside the language target without overlap',async()=>{
+ const {BOARD_LAYOUT}=await import('./lecture-state.js');
+ for(const column of [0,1,2]){
+  const p=reportVoiceIconPosition(column),center=22.4+5.6*column;
+  assert(p.y+.48/2<BOARD_LAYOUT.low-BOARD_LAYOUT.height/2);
+  assert(p.x-.48/2>center+2.2/2,'play hit target must not overlap the language hit target');
+  assert(p.x+.48/2<center+BOARD_LAYOUT.width/2);
+  assert(p.z>-11.332,'icon stays on the front face of smart glass');
+ }
+});
+
+
+test('leaving temporarily pauses at the same audio position and returning resumes',async()=>{
+ const h=harness();await h.voice.select(report);await h.voice.toggle();h.audios[0].currentTime=3.25;
+ await h.voice.setContextActive(false);assert(h.audios[0].paused);assert.equal(h.voice.state.phase,'away');assert(h.voice.state.temporaryPause);assert.equal(h.voice.state.time,3.25);
+ await h.voice.setContextActive(false);assert.equal(h.voice.state.time,3.25);
+ await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'playing');assert.equal(h.audios[0].currentTime,3.25);assert(!h.voice.state.temporaryPause);h.voice.dispose();
+});
+test('manual pause, report changes, readiness, and ended reports never resume on entry',async()=>{
+ const h=harness();await h.voice.select(report);await h.voice.setContextActive(false);await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'ready');
+ await h.voice.toggle();h.voice.pause();await h.voice.setContextActive(false);await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'paused');
+ await h.voice.toggle();await h.voice.setContextActive(false);h.voice.pause();await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'paused');
+ await h.voice.toggle();await h.voice.setContextActive(false);await h.voice.select({id:'hu'});await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'idle');
+ await h.voice.select(report);await h.voice.seek(14);await h.voice.toggle();h.audios.at(-1).dispatchEvent(new Event('ended'));await h.voice.setContextActive(false);await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'ended');h.voice.dispose();
+});
+test('a chapter finishing its download outside stays suspended until re-entry',async()=>{
+ let complete;const h=harness({fetcher:async src=>src.endsWith('.json')?Response.json(manifest):src.endsWith('b.mp3')?new Promise(r=>complete=r):new Response(new Uint8Array([1,2,3,4]))});
+ await h.voice.select(report);await h.voice.toggle();h.audios[0].dispatchEvent(new Event('ended'));await tick();
+ await h.voice.setContextActive(false);complete(new Response(new Uint8Array([1,2,3,4])));await tick();assert.equal(h.voice.state.phase,'away');assert(h.audios.at(-1).paused);
+ await h.voice.setContextActive(true);assert.equal(h.voice.state.phase,'playing');assert.equal(h.voice.state.chapter,1);h.voice.dispose();
 });

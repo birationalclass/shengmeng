@@ -1,5 +1,5 @@
 import {boardContentJump,advanceBoardQueue} from './board-transition.js';
-import {createReportVoice,createBoardVoicePanel,narrationFrame,syncNarrationClock} from './report-voice.js?v=report-line-sync-6';
+import {createReportVoice,createBoardVoicePanel,narrationFrame,syncNarrationClock} from './report-voice.js?v=report-hall-voice-7';
 import {BoardStorage} from './board-storage.js?v128';
 import {BOARD_SHAFT,BUILDING_SCALE,DECK_Y,LECTURE_SCALE,LECTURE_LIFT} from './site-layout.js?v124';
 import {createSmartGlassHub} from './smart-glass-hub.js?v109';
@@ -32,7 +32,7 @@ export async function createLecture(scene,renderer,options={}){
   reportProgress(.25);
   let navigation=openingReport.navigation;
   let pages=openingReport.pages,clock=new LectureClock(pages.length),reportRequest=0,pendingReport=null,seekRequest=0,seeking=false;
-  let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,renderActive=true,hydrating=false,renderEpoch=0;
+  let seekPinned=new Set(),hasSelection=!disabled&&!options.requireSelection,present=true,renderActive=true,hydrating=false,renderEpoch=0;
   let screenHub=null,openingDemo=null,openingSurfacesReady=false;
   let storageRig=null,stored=Boolean(options.retractable&&options.startStored),storageProgress=stored?1:0,storageLabel=null,storageLabelText='';
   const storageMotion=new BoardStorage(stored),storageLids=[];let storageWell=null,storageCap=null;
@@ -129,7 +129,7 @@ export async function createLecture(scene,renderer,options={}){
       stick.userData={column:pair,colorIndex:j};scene.add(stick);
     }
   }
-  const voice=createReportVoice(),onVoiceVisibility=()=>{if(document.hidden)voice.pause();};document.addEventListener('visibilitychange',onVoiceVisibility);const voicePanel=createBoardVoicePanel(THREE,boards[0].group);
+  const voice=createReportVoice(),onVoiceVisibility=()=>{if(document.hidden)voice.pause();};document.addEventListener('visibilitychange',onVoiceVisibility);const voicePanel=createBoardVoicePanel(THREE,scene);
   // Three synchronized controls, centered exactly beneath their board columns.
   const consoleButtons=[],consoleTextures=[];
   const touchCanvas=document.createElement('canvas');touchCanvas.width=1024;touchCanvas.height=384;
@@ -319,11 +319,13 @@ export async function createLecture(scene,renderer,options={}){
     if(screenHub?.state.power)screenHub.action('screen:power');
   }
   function update(dt,reduced=false){
-    if(disabled||options.isActive?.()===false){voice.pause();return;}
+    if(disabled)return;
+    void voice.setContextActive(present&&renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0&&options.isActive?.()!==false);
+    if(options.isActive?.()===false)return;
     voice.update();
     // Move the same small control with the active physical board.
-    const panelParent=boards[clock.active].group;if(voicePanel.mesh.parent!==panelParent)panelParent.add(voicePanel.mesh);
-    voicePanel.update(voice.state,dt,renderActive&&!hydrating&&!stored&&storageProgress===0);
+    const panelParent=boards[clock.active].group;voicePanel.setColumn(Math.floor(clock.active/2));if(voicePanel.loading.parent!==panelParent)panelParent.add(voicePanel.loading);
+    voicePanel.update(voice.state,dt,renderActive&&!hydrating&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
     // Only the head of the queue advances: one board completes before the next starts.
     if(reduced||renderActive&&!hydrating)advanceBoardQueue(contentFadeQueue,dt,reduced);
     screenHub?.update(dt,storageProgress);
@@ -335,7 +337,7 @@ export async function createLecture(scene,renderer,options={}){
       if(storageCap)storageCap.visible=u===0;
       for(const lid of storageLids){lid.visible=u>0;lid.position.z=lid.userData.closedZ+lid.userData.sign*.55*k;lid.position.y=lid.userData.closedY-.065*Math.min(1,u*5);}
       consoleButtons.forEach(b=>b.visible=!stored&&storageMotion.ready&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'&&b.userData.column===0));
-      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready){voice.pause();return;}
+      updateStorageLabel(reduced);if(storageProgress>0||stored||!storageMotion.ready)return;
     }
     // Offscreen boards retain their exact state; looking at sunrise must not fast-forward pages.
     if(!renderActive||hydrating)return;
@@ -362,7 +364,7 @@ export async function createLecture(scene,renderer,options={}){
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     // Ordinary reports retain their original mechanism. Narration uses Audio.currentTime.
     const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing';
-    if(!narrated&&!activeReport.narration&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
+    if(present&&!narrated&&!activeReport.narration&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
       const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
@@ -376,7 +378,7 @@ export async function createLecture(scene,renderer,options={}){
       mix[pair]=reduced?targets[pair]:THREE.MathUtils.damp(mix[pair],targets[pair],3,dt);
       boardHeights(mix[pair]).forEach((height,side)=>boards[pair*2+side].group.position.y=height);
     }
-    chalk.visible=playing&&!reduced&&ready&&clock.phase==='write'&&(!narrated||narrationWriting);
+    chalk.visible=present&&playing&&!reduced&&ready&&clock.phase==='write'&&(!narrated||narrationWriting);
     const erasing=!reduced&&ready&&clock.phase==='erase';
     if(['erasing','pickup'].includes(eraser.userData.state)&&(!erasing||eraserColumn!==Math.floor(clock.active/2))){
       eraserReturn={column:eraserColumn,elapsed:0,position:eraser.position.clone(),quaternion:eraser.quaternion.clone()};
@@ -505,13 +507,14 @@ export async function createLecture(scene,renderer,options={}){
     finishOpening,
     toggleStorage(){voice.pause();openingDemo=null;if(storageRig){stored=!stored;if(!stored)screenHub?.report();if(stored)consoleButtons.forEach(b=>b.visible=false);playing=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;updateStorageLabel();setReportState();}return stored;},
     setClarity(value){boardMipBias.value=value==='natural'?0:-.45;},
+    setPresence(value){present=Boolean(value);if(!present)void voice.setContextActive(false);},get present(){return present;},
     update,seek,disabled,root:scene,get renderActive(){return renderActive&&!hydrating&&!stored&&storageMotion.ready&&storageProgress===0;},get hasSelection(){return hasSelection;},
     get progress(){return {page:clock.page-clock.startAt,total:clock.stopAt-clock.startAt+1};},
     screenAction:action=>{voice.pause();openingDemo=null;return screenHub?.action(action)||seminarScreen?.action(action);},
     screenWake:()=>screenHub?.wake(),get screenMode(){return screenHub?.state;},
     async setRenderActive(value){
       if(value===renderActive)return;renderActive=value;const epoch=++renderEpoch;
-      if(!value){voice.pause();hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
+      if(!value){void voice.setContextActive(false);hydrating=false;chalk.visible=false;eraser.visible=false;fallingDust.visible=false;parkedErasers.forEach(e=>e.visible=true);return;}
       // Opening boards are paused and already painted/uploaded. Becoming visible
       // at the entrance must not reset and redraw six unchanged surfaces.
       if(openingDemo?.phase==='waiting'&&openingSurfacesReady&&boards.every(b=>b.canvas)&&clock.slots.every(slot=>slot.page<0||cache.has(slot.page))){hydrating=false;return;}
@@ -578,7 +581,7 @@ export async function createLecture(scene,renderer,options={}){
       const c=b?.lineCues?.find(c=>t>=c.audioStart&&t<c.audioEnd);
       return c?{row:c.row,total:b.lineCues.length,text:c.text}:null;
     },
-    get playing(){return hasSelection&&(activeReport.narration?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
+    get playing(){return present&&hasSelection&&(activeReport.narration?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
     async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b)await voice.seek(b.writeEnd);else staticPage();return true;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},
