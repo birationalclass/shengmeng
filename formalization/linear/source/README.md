@@ -108,3 +108,7 @@ Cards now count their own compiler-recorded declaration ranges; packs count all 
 ## Milestone 19: actual global diagonal and degree control
 
 Nondegeneracy is proved for the actual finite regular polynomial quotient, not supplied as an input. The chosen diagonal gives a unique normalized functional and an actual Jacobian trace formula. Difference determinants satisfy the proved sum-of-degrees bound. The actual origin zero-locus condition implies quotient finiteness by mathlib Nullstellensatz. Low-degree Euler-Jacobi vanishing and the geometric comparison are still open. These checked bridges do not prove the full Linearity Theorem. See MILESTONE_19.md.
+
+## Local milestones 20-21: homogeneous pairing and affine filtered normal forms
+
+The actual origin-supported regular homogeneous quotient has a perfect pairing vanishing in degrees below D=sum(e_i-1); its homogeneous classes of degree above D vanish. The highest homogeneous parts of arbitrary affine polynomials, when their zero locus is exactly the origin, imply finiteness of the actual affine quotient. If these positive-degree highest parts are also regular, every affine class has a representative of degree at most D. This is NOT general affine residue vanishing, and does NOT complete the Linearity Theorem. Exact scopes are in MILESTONE_20.md and MILESTONE_21.md. Publication evidence is separate from the local audit.
