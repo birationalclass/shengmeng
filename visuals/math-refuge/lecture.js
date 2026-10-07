@@ -330,7 +330,7 @@ export async function createLecture(scene,renderer,options={}){
     if(options.isActive?.()===false){highlighter.hide();highlightState=null;return;}
     voice.update();
     // Move the same small control with the active physical board.
-    const controlState=(pendingReport||activeReport).narration&&voiceEnabled?voice.state:{...voice.state,phase:hasSelection?(playing?'playing':'paused'):'idle',synthetic:false};
+    const controlState=(pendingReport||activeReport).narration&&voiceEnabled&&!openingDemo?voice.state:{...voice.state,phase:hasSelection?(playing?'playing':'paused'):'idle',synthetic:false};
     for(const panel of voicePanels)panel.update(controlState,dt,renderActive&&!stored&&storageProgress===0&&(!screenHub||screenHub.state.power&&screenHub.state.mode==='report'));
     // Only the head of the queue advances: one board completes before the next starts.
     if(reduced||renderActive&&!hydrating)advanceBoardQueue(contentFadeQueue,dt,reduced);
@@ -374,7 +374,7 @@ export async function createLecture(scene,renderer,options={}){
     if(!ready&&!loadingError){load(clock.page).catch(error=>{loadingError=error;});load(clock.slots[clock.active].page).catch(error=>{loadingError=error;});}
     // Ordinary reports retain their original mechanism. Narration uses Audio.currentTime.
     const collectingEraser=clock.phase==='erase'&&eraser.userData.state!=='erasing';
-    if(present&&!narrated&&(!activeReport.narration||!voiceEnabled)&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
+    if(present&&!narrated&&(!activeReport.narration||!voiceEnabled||openingDemo?.phase==='writing')&&playing&&hasSelection&&ready&&!seeking&&!loadingError&&!reduced&&!collectingEraser){
       const prior=clock.page;clock.update(dt*(clock.phase==='write'?writingSpeed:1));
       if(prior!==clock.page){targets[Math.floor(clock.active/2)]=clock.active%2;load(clock.page).catch(error=>{loadingError=error;});}
     }
@@ -493,16 +493,23 @@ export async function createLecture(scene,renderer,options={}){
       playing=false;
       const openingDefault=reports.find(report=>report.id===(options.defaultReport||'ye'))||reports[0];
       if(activeReport.id!==openingDefault.id&&!await this.setReport(openingDefault.id,{loadVoice:false}))return false;
-      // The opening is a visual demonstration; speech still loads only on selection.
+      // Prepare ink without requesting audio. Narrated openings start from the cover;
+      // their first audio chapter is requested only after the arrival animation.
       await voice.select(null);
       playing=false;hasSelection=true;clock.startAt=0;clock.stopAt=pages.length-1;
-      // Stage the end of board seven; board eight is already clean in the upper channel.
-      const page=Math.min(7,pages.length-1);
-      const first=Math.max(0,page-6),count=page-first+1;let prepared=0;
-      await Promise.all(Array.from({length:count},(_,i)=>load(first+i).then(()=>onProgress(++prepared/count*.9))));
-      if(!await seek(Math.max(0,page-1)))return false;
-      await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
-      openingDemo={phase:'waiting',page,elapsed:0};
+      const narrated=Boolean(activeReport.narration&&voiceEnabled);
+      const page=narrated?0:Math.min(7,pages.length-1);
+      if(narrated){
+        await load(0);clock.slots=Array.from({length:6},()=>({page:-1,progress:0}));
+        clock.select(0);clock.startWrite();targets.fill(0);mix.fill(0);onProgress(.9);
+      }else{
+        // Reports without audio retain the short writing demonstration.
+        const first=Math.max(0,page-6),count=page-first+1;let prepared=0;
+        await Promise.all(Array.from({length:count},(_,i)=>load(first+i).then(()=>onProgress(++prepared/count*.9))));
+        if(!await seek(Math.max(0,page-1)))return false;
+        await load(page);clock.slots[boardSlot(page)]={page:-1,progress:0};
+      }
+      openingDemo={phase:'waiting',page,narrated,elapsed:0};
       stored=false;storageMotion.reset();storageProgress=0;storageRig.position.y=0;storageRig.visible=true;
       storageLids.forEach(lid=>lid.visible=false);if(storageCap)storageCap.visible=true;
       screenHub?.report();screenHub?.update(0,0);updateStorageLabel();setReportState();
@@ -518,8 +525,10 @@ export async function createLecture(scene,renderer,options={}){
       openingSurfacesReady=renderActive&&!hydrating&&options.isActive?.()!==false;
       playing=false;version++;return true;
     },
+    get openingNarrated(){return openingDemo?.phase==='waiting'&&openingDemo.narrated===true;},
     beginOpening(reduced=false){
       if(openingDemo?.phase!=='waiting')return false;
+      if(openingDemo.narrated)return this.setReport(activeReport.id,{autoplay:true});
       const demo=openingDemo;select(demo.page);openingDemo={...demo,phase:'writing',elapsed:0};
       if(reduced)staticPage();playing=true;return true;
     },
@@ -609,7 +618,7 @@ export async function createLecture(scene,renderer,options={}){
       const c=b?.lineCues?.find(c=>t>=c.audioStart&&t<c.audioEnd);
       return c?{row:c.row,total:b.lineCues.length,text:c.text}:null;
     },
-    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
+    get playing(){return present&&hasSelection&&(activeReport.narration&&voiceEnabled&&!openingDemo?voice.state.phase==='playing':playing)&&!clock.ended;},set playing(value){if(activeReport.narration&&voiceEnabled&&!openingDemo){if(!value)voice.pause();else if(voice.state.phase!=='playing')void voice.toggle();}else playing=hasSelection&&value;},
     async completePage(page=clock.page){if(!await seek(page))return false;const b=voice.manifest?.boards.find(b=>b.page===clock.page);if(b)await voice.seek(b.writeEnd);else staticPage();return true;},
     select,step(delta){const next=Math.max(0,Math.min(pages.length-1,clock.page+delta));if(next!==clock.page)select(next);},rewrite(){select(clock.page);},staticPage,
     lift(pair,value){targets[pair]=THREE.MathUtils.clamp(Number(value),0,1);},

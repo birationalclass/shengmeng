@@ -46,7 +46,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
-import {createLecture} from './lecture.js?v=opening-ye-10';
+import {createLecture} from './lecture.js?v=opening-play-11';
 import {reportVoicePresentation} from './report-voice.js?v=smart-voice-9';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -282,7 +282,7 @@ function applyShot(dt){
     if(blend.openingPath){
       camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
       if(!blend.openingBoardStarted&&camera.position.x>=blend.openingPath.hallEntranceX){
-        blend.openingBoardStarted=true;rooms[0].beginOpening(reduced.matches);
+        blend.openingBoardStarted=true;if(!rooms[0].openingNarrated)rooms[0].beginOpening(reduced.matches);
       }
     }
     else if(blend.route)blend.route.getPointAt(k,camera.position);
@@ -294,12 +294,19 @@ function applyShot(dt){
       const arrival=blend.openingArrival;blend=null;
       if(arrival){
         sunriseIntro.arrive();retreat.fleet.startSunrisePass();
-        const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
-        // A small, interruptible indoor push with zero speed at both ends.
-        blend={elapsed:0,duration:15,position:camera.position.clone(),endPosition:camera.position.clone().addScaledVector(forward,.65),
-          target:controls.target.clone(),rotation:camera.quaternion.clone(),endRotation:camera.quaternion.clone(),
-          fov:camera.fov,distance:camera.position.distanceTo(controls.target),endDistance:camera.position.distanceTo(controls.target),
-          velocity:new THREE.Vector3(),acceleration:new THREE.Vector3(),settling:true};
+        if(rooms[0].openingNarrated){
+          const openingLecture=rooms[0];
+          void Promise.resolve(openingLecture.beginOpening(reduced.matches)).then(started=>{
+            if(started&&lecture===openingLecture){populateReport();reader?.close();selectShot(0);}
+          }).catch(fail);
+        }else{
+          const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
+          // A small, interruptible indoor push with zero speed at both ends.
+          blend={elapsed:0,duration:15,position:camera.position.clone(),endPosition:camera.position.clone().addScaledVector(forward,.65),
+            target:controls.target.clone(),rotation:camera.quaternion.clone(),endRotation:camera.quaternion.clone(),
+            fov:camera.fov,distance:camera.position.distanceTo(controls.target),endDistance:camera.position.distanceTo(controls.target),
+            velocity:new THREE.Vector3(),acceleration:new THREE.Vector3(),settling:true};
+        }
       }
     }
   }else{
