@@ -46,7 +46,7 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
-import {createLecture} from './lecture.js?v=smart-voice-9';
+import {createLecture} from './lecture.js?v=opening-ye-10';
 import {reportVoicePresentation} from './report-voice.js?v=smart-voice-9';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
@@ -594,7 +594,7 @@ try{
   retreat.setWeather(startupWeather,true);setQuality();
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   await withDeadline(lecture.prepareOpening(value=>reportSceneProgress(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);

@@ -840,7 +840,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     storage.screenAction('screen:power');for(let i=0;i<10;i++)storage.update(.1);assert(storage.hoverTargets.some(b=>b.userData.action==='screen:power'));assert(!storage.hoverTargets.some(b=>b.userData.action==='screen:media'));
     await storage.setReport('ye');
     await storage.prepareOpening();
-    assert.equal(storage.report.id,'hu','Opening always demonstrates the first speaker, even after another report');
+    assert.equal(storage.report.id,'ye','Opening defaults to Ye, independently of catalog order');assert.equal(storage.voiceState.phase,'idle','The opening clears narration and never fetches speech');
     assert.equal(storage.clock.page,6);assert.equal(storage.clock.phase,'hold');
     assert.equal(storage.clock.slots[boardSlot(7)].page,-1,'The next board is clean before entry');
     assert(!storage.playing&&!storage.stored&&rig.visible);assert.equal(rig.position.y,0);

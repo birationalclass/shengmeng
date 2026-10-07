@@ -491,7 +491,10 @@ export async function createLecture(scene,renderer,options={}){
     async prepareOpening(onProgress=()=>{}){
       if(disabled||!storageRig)return false;
       playing=false;
-      if(activeReport.id!==reports[0].id&&!await this.setReport(reports[0].id))return false;
+      const openingDefault=reports.find(report=>report.id===(options.defaultReport||'ye'))||reports[0];
+      if(activeReport.id!==openingDefault.id&&!await this.setReport(openingDefault.id,{loadVoice:false}))return false;
+      // The opening is a visual demonstration; speech still loads only on selection.
+      await voice.select(null);
       playing=false;hasSelection=true;clock.startAt=0;clock.stopAt=pages.length-1;
       // Stage the end of board seven; board eight is already clean in the upper channel.
       const page=Math.min(7,pages.length-1);
@@ -565,13 +568,13 @@ export async function createLecture(scene,renderer,options={}){
     get pendingReport(){return pendingReport;},
     preloadReports:()=>disabled?Promise.resolve([]):Promise.allSettled(reports.map(prepareReport)),
     reportFocus:()=>scene.localToWorld(new THREE.Vector3(reportX+1.1,2.45,-11.34)),
-    async setReport(id,{autoplay=false}={}){
+    async setReport(id,{autoplay=false,loadVoice=true}={}){
       if(disabled)return false;
       openingDemo=null;voiceBookmark=null;
       const next=reports.find(r=>r.id===id);if(!next)throw new Error('未知报告');if(voiceTone!=='off'&&voiceTone!=='original'&&!next.narration?.voices?.some(v=>v.id===voiceTone))voiceTone='original';screenHub?.report();
       voice.setContextActive(false);
       if(storageRig){stored=false;storageRig.visible=true;updateStorageLabel();}
-      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();void voice.select(voiceEnabled?voiceReport(next):null,{autoplay});
+      seekRequest++;seeking=false;const request=++reportRequest;pendingReport=next;setReportState();void voice.select(voiceEnabled&&loadVoice?voiceReport(next):null,{autoplay});
       try{
         const manifest=await prepareReport(next);if(request!==reportRequest)return false;
         // Keep the current talk intact until its replacement cover is available.
