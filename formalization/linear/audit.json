@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T14:43:06+08:00",
+  "checkedAt": "2026-10-07T15:23:18+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "eb59456368ae5185edd104661f9bc3aecdc7bbed63a5e7e59242945698549081",
-      "lineCount": 2092
+      "sha256": "082c0f5afea397702c6f6ffe84a3aeb287dbc1b218392b4facf706bd2ce70585",
+      "lineCount": 2110
     },
     {
       "path": "Linear/ActualUnramifiedPullback.lean",
@@ -320,6 +320,11 @@
       "path": "Linear/LocalizedDifferentialBasis.lean",
       "sha256": "da0573a97c1b8c97109313d7e38512ecd3ad02e0ffb3470e4c627ce5299ef713",
       "lineCount": 60
+    },
+    {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lineCount": 155
     },
     {
       "path": "Linear/LocalPullbackGenerators.lean",
@@ -697,6 +702,11 @@
       "lineCount": 100
     },
     {
+      "path": "Linear/SmoothLocusCoordinates.lean",
+      "sha256": "231d99f87da00d8eba87682d5bddbaa7ff979723e19ae4908cac39214cda5707",
+      "lineCount": 69
+    },
+    {
       "path": "Linear/SmoothNormalJacobian.lean",
       "sha256": "0b4f9a564d02ede324e6f35eb2ffe4093958345dcd69fd25b07d3b941f0f66d8",
       "lineCount": 94
@@ -833,8 +843,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "ae226f9ffcadc75ce71b91feaed48ce077d7e61899b2ea451f5ffe5d49c7390f",
-      "lineCount": 183
+      "sha256": "cb5824991814db78e3d694de9fa7db9cd06885474a58f1d5b2e9cf336a65c985",
+      "lineCount": 187
     }
   ],
   "declarations": {
@@ -9169,6 +9179,177 @@
       "dependencies": [
         "LinearStudy.polynomialLocalizedDifferentialBasis",
         "LinearStudy.polynomialLocalizedDifferentialBasis_repr_D"
+      ]
+    },
+    "LinearStudy.localized_differential_finrank": {
+      "declaration": "LinearStudy.localized_differential_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localized_differential_finrank.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {B : Type u_3} [CommRing K]\n  [CommRing A] [CommRing B] [IsDomain A] [Algebra K A] [Algebra K B] [Algebra A B] [IsScalarTower K A B]\n  (M : Submonoid A) [IsLocalization M B] (hM : M ≤ nonZeroDivisors A) :\n  Module.finrank B Ω[B⁄K] = Module.finrank A Ω[A⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 10,
+      "moduleLineCount": 155,
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": []
+    },
+    "LinearStudy.atPrime_differential_finrank": {
+      "declaration": "LinearStudy.atPrime_differential_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 25,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.atPrime_differential_finrank.{u_1, u_2} {K : Type u_1} {A : Type u_2} [CommRing K] [CommRing A] [IsDomain A]\n  [Algebra K A] (P : Ideal A) [P.IsPrime] :\n  Module.finrank (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] = Module.finrank A Ω[A⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 7,
+      "moduleLineCount": 155,
+      "startLine": 25,
+      "endLine": 31,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.localized_differential_finrank"
+      ]
+    },
+    "LinearStudy.atPrime_differential_finrank_eq": {
+      "declaration": "LinearStudy.atPrime_differential_finrank_eq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.atPrime_differential_finrank_eq.{u_1, u_2} {K : Type u_1} {A : Type u_2} [CommRing K] [CommRing A]\n  [IsDomain A] [Algebra K A] (P Q : Ideal A) [P.IsPrime] [Q.IsPrime] :\n  Module.finrank (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] =\n    Module.finrank (Localization.AtPrime Q) Ω[Localization.AtPrime Q⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 8,
+      "moduleLineCount": 155,
+      "startLine": 33,
+      "endLine": 40,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.atPrime_differential_finrank"
+      ]
+    },
+    "LinearStudy.polynomial_local_differential_finrank": {
+      "declaration": "LinearStudy.polynomial_local_differential_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 44,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_local_differential_finrank.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (I P : Ideal (MvPolynomial σ K)) [I.IsPrime] [P.IsPrime] (hIP : I ≤ P) :\n  let Q := Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I;\n  Module.finrank Q Ω[Q⁄K] = Module.finrank (MvPolynomial σ K ⧸ I) Ω[MvPolynomial σ K ⧸ I⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 23,
+      "moduleLineCount": 155,
+      "startLine": 42,
+      "endLine": 64,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.localized_differential_finrank",
+        "LinearStudy.polynomialLocalDifferentialModule"
+      ]
+    },
+    "LinearStudy.smooth_polynomial_conormal_finrank": {
+      "declaration": "LinearStudy.smooth_polynomial_conormal_finrank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 66,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smooth_polynomial_conormal_finrank.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I P : Ideal (MvPolynomial σ K)) [I.IsPrime] [P.IsPrime] (hIP : I ≤ P)\n  [Algebra.FormallySmooth K\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :\n  let Q := Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I;\n  Module.finrank Q (LinearStudy.polynomialLocalQuotientExtension I P).Cotangent =\n    Nat.card σ - Module.finrank (MvPolynomial σ K ⧸ I) Ω[MvPolynomial σ K ⧸ I⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 16,
+      "moduleLineCount": 155,
+      "startLine": 66,
+      "endLine": 81,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomial_local_differential_finrank",
+        "LinearStudy.smooth_polynomial_cotangent_finrank_add"
+      ]
+    },
+    "LinearStudy.smooth_prime_polynomial_conormal_rank_positive": {
+      "declaration": "LinearStudy.smooth_prime_polynomial_conormal_rank_positive",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smooth_prime_polynomial_conormal_rank_positive.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I P : Ideal (MvPolynomial σ K)) [I.IsPrime] [P.IsPrime] (hI : I ≠ ⊥) (hIP : I ≤ P)\n  [Algebra.FormallySmooth K\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :\n  0 < Nat.card σ - Module.finrank (MvPolynomial σ K ⧸ I) Ω[MvPolynomial σ K ⧸ I⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 25,
+      "moduleLineCount": 155,
+      "startLine": 83,
+      "endLine": 107,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.exists_smooth_polynomial_local_generators",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smooth_polynomial_conormal_finrank"
+      ]
+    },
+    "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates": {
+      "declaration": "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "line": 112,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}\n  {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] [Nonempty ι]\n  (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (P : ι → Ideal (MvPolynomial σ K)) [∀ (a : ι), (P a).IsPrime]\n  (x : ι → σ → K) (hIP : ∀ (a : ι), I ≤ P a) (hP : ∀ (a : ι), P a = RingHom.ker (MvPolynomial.aeval (x a)).toRingHom)\n  [∀ (a : ι),\n      Algebra.FormallySmooth K\n        (Localization.AtPrime (P a) ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime (P a))) I)] :\n  ∃ r c,\n    ∃ (hc : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ G,\n            have C := LinearStudy.polynomialLinearChangeEquiv M hM;\n            have y := fun a => M⁻¹.mulVec (x a) ∘ ⇑e;\n            have H := fun a i => (MvPolynomial.rename ⇑e.symm) (C (G a i));\n            ∃ (hH : ∀ (a : ι) (i : Fin c), (MvPolynomial.eval (y a)) (H a i) = 0) (hJ :\n              ∀ (a : ι),\n                IsUnit (Matrix.det fun i j => (MvPolynomial.eval (y a)) ((MvPolynomial.pderiv (Sum.inr j)) (H a i)))),\n              ∀ (a : ι),\n                Ideal.map\n                    (((LinearStudy.polynomialSmoothFormalMap (y a) (H a) ⋯ ⋯).comp\n                          (MvPolynomial.rename ⇑e.symm).toRingHom).comp\n                      C.toRingEquiv.toRingHom)\n                    I =\n                  Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 45,
+      "moduleLineCount": 155,
+      "startLine": 109,
+      "endLine": 153,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.smooth_points_have_common_formal_normal_coordinates",
+        "LinearStudy.smooth_polynomial_conormal_finrank",
+        "LinearStudy.smooth_prime_polynomial_conormal_rank_positive"
       ]
     },
     "LinearStudy.local_ideal_generators_image": {
@@ -18968,6 +19149,55 @@
         "LinearStudy.smooth_polynomial_jacobian_nonzero_minor"
       ]
     },
+    "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal": {
+      "declaration": "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothLocusCoordinates.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal.{u_1, u_2} {K : Type u_1} {R : Type u_2} [CommRing K]\n  [CommRing R] [Algebra K R] (I : Ideal R) (p : Ideal (R ⧸ I)) [p.IsPrime] [Algebra.IsSmoothAt K p] :\n  Algebra.FormallySmooth K\n    (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p) ⧸\n      Ideal.map (algebraMap R (Localization.AtPrime (Ideal.comap (Ideal.Quotient.mk I) p))) I)",
+      "sha256": "231d99f87da00d8eba87682d5bddbaa7ff979723e19ae4908cac39214cda5707",
+      "lines": 18,
+      "moduleLineCount": 69,
+      "startLine": 11,
+      "endLine": 28,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.localizationQuotientEquiv"
+      ]
+    },
+    "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates": {
+      "declaration": "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothLocusCoordinates.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}\n  {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] [Nonempty ι]\n  (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (p : ι → Ideal (MvPolynomial σ K ⧸ I))\n  [∀ (a : ι), (p a).IsPrime] [∀ (a : ι), Algebra.IsSmoothAt K (p a)] (x : ι → σ → K)\n  (hp : ∀ (a : ι), Ideal.comap (Ideal.Quotient.mk I) (p a) = RingHom.ker (MvPolynomial.aeval (x a)).toRingHom) :\n  ∃ r c,\n    ∃ (hc : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ G,\n            have C := LinearStudy.polynomialLinearChangeEquiv M hM;\n            have y := fun a => M⁻¹.mulVec (x a) ∘ ⇑e;\n            have H := fun a i => (MvPolynomial.rename ⇑e.symm) (C (G a i));\n            ∃ (hH : ∀ (a : ι) (i : Fin c), (MvPolynomial.eval (y a)) (H a i) = 0) (hJ :\n              ∀ (a : ι),\n                IsUnit (Matrix.det fun i j => (MvPolynomial.eval (y a)) ((MvPolynomial.pderiv (Sum.inr j)) (H a i)))),\n              ∀ (a : ι),\n                Ideal.map\n                    (((LinearStudy.polynomialSmoothFormalMap (y a) (H a) ⋯ ⋯).comp\n                          (MvPolynomial.rename ⇑e.symm).toRingHom).comp\n                      C.toRingEquiv.toRingHom)\n                    I =\n                  Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "231d99f87da00d8eba87682d5bddbaa7ff979723e19ae4908cac39214cda5707",
+      "lines": 38,
+      "moduleLineCount": 69,
+      "startLine": 30,
+      "endLine": 67,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates"
+      ]
+    },
     "LinearStudy.smoothNormalCoordinateJacobian": {
       "declaration": "LinearStudy.smoothNormalCoordinateJacobian",
       "kind": "def",
@@ -26911,7 +27141,7 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 699,
+  "verifiedTheoremCount": 708,
   "definitionCount": 147,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
@@ -27156,6 +27386,15 @@
       "endLine": 25,
       "lineCount": 16,
       "dependencies": []
+    },
+    "LinearStudy.atPrime_differential_finrank_eq": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 33,
+      "endLine": 40,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.atPrime_differential_finrank"
+      ]
     },
     "LinearStudy.projective_total_invariance_cone": {
       "path": "Linear/ProjectiveIdealInvariance.lean",
@@ -29170,6 +29409,15 @@
         "koszulComplex"
       ]
     },
+    "LinearStudy.atPrime_differential_finrank": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 25,
+      "endLine": 31,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.localized_differential_finrank"
+      ]
+    },
     "LinearStudy.polynomialSmoothFormalMap_tangent_derivative": {
       "path": "Linear/PolynomialDerivationChain.lean",
       "startLine": 45,
@@ -29211,6 +29459,18 @@
       "dependencies": [
         "LinearStudy.Annihilates",
         "LinearStudy.annihilates_iff_mem_annihilator"
+      ]
+    },
+    "LinearStudy.smooth_polynomial_conormal_finrank": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 66,
+      "endLine": 81,
+      "lineCount": 16,
+      "dependencies": [
+        "LinearStudy.polynomialLocalDifferentialModule",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomial_local_differential_finrank",
+        "LinearStudy.smooth_polynomial_cotangent_finrank_add"
       ]
     },
     "LinearStudy.polynomialLocalizedDifferentialBasis_baseChange_repr_D": {
@@ -29988,6 +30248,20 @@
         "LinearStudy.homogeneous_first_syzygy_skew",
         "LinearStudy.polynomial_zero_or_degree_lt_of_top_zero",
         "LinearStudy.skew_polynomial_relation_zero"
+      ]
+    },
+    "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 109,
+      "endLine": 153,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.smooth_points_have_common_formal_normal_coordinates",
+        "LinearStudy.smooth_polynomial_conormal_finrank",
+        "LinearStudy.smooth_prime_polynomial_conormal_rank_positive"
       ]
     },
     "LinearStudy.polynomialDoubleTensor_left": {
@@ -32564,6 +32838,16 @@
         "LinearStudy.epsilon"
       ]
     },
+    "LinearStudy.polynomial_local_differential_finrank": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 42,
+      "endLine": 64,
+      "lineCount": 23,
+      "dependencies": [
+        "LinearStudy.localized_differential_finrank",
+        "LinearStudy.polynomialLocalDifferentialModule"
+      ]
+    },
     "ExteriorAlgebra.prodRingEquiv": {
       "path": "Linear/Vendor/ExteriorProduct.lean",
       "startLine": 86,
@@ -33417,6 +33701,18 @@
         "LinearStudy.PerfectMultiplicationPairing.equiv"
       ]
     },
+    "LinearStudy.smooth_prime_polynomial_conormal_rank_positive": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 83,
+      "endLine": 107,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.exists_smooth_polynomial_local_generators",
+        "LinearStudy.polynomialLocalQuotientExtension",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.smooth_polynomial_conormal_finrank"
+      ]
+    },
     "IsCohenMacaulayLocalRing.toIsLocalRing": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
       "startLine": 386,
@@ -33634,6 +33930,13 @@
       "dependencies": [
         "koszulComplex"
       ]
+    },
+    "LinearStudy.localized_differential_finrank": {
+      "path": "Linear/LocalizedDifferentialRank.lean",
+      "startLine": 14,
+      "endLine": 23,
+      "lineCount": 10,
+      "dependencies": []
     },
     "LinearStudy.IntegralProjectiveEquations.mk": {
       "path": "Linear/Projective.lean",
@@ -36124,6 +36427,15 @@
         "ModuleCat.depth_quotSMulTop_succ_eq_depth"
       ]
     },
+    "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal": {
+      "path": "Linear/SmoothLocusCoordinates.lean",
+      "startLine": 11,
+      "endLine": 28,
+      "lineCount": 18,
+      "dependencies": [
+        "LinearStudy.localizationQuotientEquiv"
+      ]
+    },
     "LinearStudy.powerSeriesConstantCoeffAlgHom": {
       "path": "Linear/PowerSeriesAugmentation.lean",
       "startLine": 23,
@@ -38547,6 +38859,18 @@
         "LinearStudy.HomogeneousEndomorphism.noBasePoint",
         "LinearStudy.HomogeneousEndomorphism.onPoints",
         "LinearStudy.ProjectivePoint"
+      ]
+    },
+    "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates": {
+      "path": "Linear/SmoothLocusCoordinates.lean",
+      "startLine": 30,
+      "endLine": 67,
+      "lineCount": 38,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialSmoothFormalMap",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates"
       ]
     },
     "LinearStudy.annihilates_iff_mem_annihilator": {
@@ -41834,7 +42158,8 @@
         "affine-weighted-relation",
         "projective-highest-regular",
         "common-theta",
-        "common-formal-normal"
+        "common-formal-normal",
+        "smooth-locus-common-normal"
       ],
       "setup": [
         "<p>原稿 Setup 1.4；t=r(q−1)−1，第一纤维 S₁。</p>",
@@ -44855,6 +45180,134 @@
       "richStatement": true,
       "x": 30,
       "y": 60
+    },
+    {
+      "id": "localized-differential-rank",
+      "titles": [
+        "光滑点的共同余法向秩",
+        "Common conormal rank at smooth points"
+      ],
+      "title": "光滑点的共同余法向秩",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "decl": "LinearStudy.smooth_polynomial_conormal_finrank",
+      "declaration": "LinearStudy.smooth_polynomial_conormal_finrank",
+      "deps": [
+        "cotangent-ranks"
+      ],
+      "setup": [
+        "<p>域；有限变量；原理想 I 为素理想，I⊆点处素理想 P；实际局部商形式光滑。</p>",
+        "<p>A field, finitely many variables, a prime original ideal I⊆P, and formal smoothness of the actual localized quotient.</p>"
+      ],
+      "result": [
+        "<p>余法向秩等于变量数减去原整商的微分模秩；该数不依赖点 P，不假定整个簇光滑。</p>",
+        "<p>Conormal rank is the variable count minus the differential rank of the original domain quotient. It is independent of P; global smoothness is not assumed.</p>"
+      ],
+      "compactSetup": [
+        "域；有限变量；原理想 I 为素理想，I⊆点处素理想 P；实际局部商形式光滑。",
+        "A field, finitely many variables, a prime original ideal I⊆P, and formal smoothness of the actual localized quotient."
+      ],
+      "compactResult": [
+        "余法向秩等于变量数减去原整商的微分模秩；该数不依赖点 P，不假定整个簇光滑。",
+        "Conormal rank is the variable count minus the differential rank of the original domain quotient. It is independent of P; global smoothness is not assumed."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.smooth_polynomial_conormal_finrank.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (I P : Ideal (MvPolynomial σ K)) [I.IsPrime] [P.IsPrime] (hIP : I ≤ P)\n  [Algebra.FormallySmooth K\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :\n  let Q := Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I;\n  Module.finrank Q (LinearStudy.polynomialLocalQuotientExtension I P).Cotangent =\n    Nat.card σ - Module.finrank (MvPolynomial σ K ⧸ I) Ω[MvPolynomial σ K ⧸ I⁄K]",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 16,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "prime-common-normal",
+      "titles": [
+        "素理想光滑点的共同形式坐标",
+        "Common formal coordinates at smooth points of a prime ideal"
+      ],
+      "title": "素理想光滑点的共同形式坐标",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/LocalizedDifferentialRank.lean",
+      "decl": "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates",
+      "declaration": "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates",
+      "deps": [
+        "localized-differential-rank",
+        "common-formal-normal"
+      ],
+      "setup": [
+        "<p>无限域；有限变量；非零素理想；非空有限组实际有理光滑点。</p>",
+        "<p>An infinite field, finitely many variables, a nonzero prime ideal and a finite nonempty family of actual rational smooth points.</p>"
+      ],
+      "result": [
+        "<p>构造正法向维数、坐标分拆和同一可逆线性换元；各点原理想的形式像是法向变量理想。共同秩与法向列不再作为输入。</p>",
+        "<p>Construct positive normal dimension, a coordinate split and one invertible linear change. The original ideal has the normal-variable ideal as its formal image at every point. Common rank and normal columns are derived.</p>"
+      ],
+      "compactSetup": [
+        "无限域；有限变量；非零素理想；非空有限组实际有理光滑点。",
+        "An infinite field, finitely many variables, a nonzero prime ideal and a finite nonempty family of actual rational smooth points."
+      ],
+      "compactResult": [
+        "构造正法向维数、坐标分拆和同一可逆线性换元；各点原理想的形式像是法向变量理想。共同秩与法向列不再作为输入。",
+        "Construct positive normal dimension, a coordinate split and one invertible linear change. The original ideal has the normal-variable ideal as its formal image at every point. Common rank and normal columns are derived."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.smooth_prime_points_have_common_formal_normal_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}\n  {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] [Nonempty ι]\n  (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (P : ι → Ideal (MvPolynomial σ K)) [∀ (a : ι), (P a).IsPrime]\n  (x : ι → σ → K) (hIP : ∀ (a : ι), I ≤ P a) (hP : ∀ (a : ι), P a = RingHom.ker (MvPolynomial.aeval (x a)).toRingHom)\n  [∀ (a : ι),\n      Algebra.FormallySmooth K\n        (Localization.AtPrime (P a) ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime (P a))) I)] :\n  ∃ r c,\n    ∃ (hc : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ G,\n            have C := LinearStudy.polynomialLinearChangeEquiv M hM;\n            have y := fun a => M⁻¹.mulVec (x a) ∘ ⇑e;\n            have H := fun a i => (MvPolynomial.rename ⇑e.symm) (C (G a i));\n            ∃ (hH : ∀ (a : ι) (i : Fin c), (MvPolynomial.eval (y a)) (H a i) = 0) (hJ :\n              ∀ (a : ι),\n                IsUnit (Matrix.det fun i j => (MvPolynomial.eval (y a)) ((MvPolynomial.pderiv (Sum.inr j)) (H a i)))),\n              ∀ (a : ι),\n                Ideal.map\n                    (((LinearStudy.polynomialSmoothFormalMap (y a) (H a) ⋯ ⋯).comp\n                          (MvPolynomial.rename ⇑e.symm).toRingHom).comp\n                      C.toRingEquiv.toRingHom)\n                    I =\n                  Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "f9e8bf56107e2493a2583074bda874462a661d590466d6908bf09565094eafd6",
+      "lines": 45,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
+    },
+    {
+      "id": "smooth-locus-common-normal",
+      "titles": [
+        "从实际光滑点构造共同坐标",
+        "Common coordinates constructed from actual smooth points"
+      ],
+      "title": "从实际光滑点构造共同坐标",
+      "status": "conditional",
+      "kind": "theorem",
+      "file": "Linear/SmoothLocusCoordinates.lean",
+      "decl": "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates",
+      "declaration": "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates",
+      "deps": [
+        "prime-common-normal",
+        "point-completion"
+      ],
+      "setup": [
+        "<p>无限域；非零素理想；原商上的非空有限组有理点，满足 mathlib 的 IsSmoothAt。</p>",
+        "<p>An infinite field, a nonzero prime ideal and a finite nonempty family of rational points of the original quotient satisfying mathlib IsSmoothAt.</p>"
+      ],
+      "result": [
+        "<p>通过真实商局部化同构推导局部形式光滑性，并构造共同坐标和原理想的法向表示。一般射影光滑纤维的选取仍未证明。</p>",
+        "<p>Derive localized formal smoothness through the actual quotient-localization equivalence, then construct common coordinates and original-ideal normal presentations. Construction of general smooth projective fibers remains open.</p>"
+      ],
+      "compactSetup": [
+        "无限域；非零素理想；原商上的非空有限组有理点，满足 mathlib 的 IsSmoothAt。",
+        "An infinite field, a nonzero prime ideal and a finite nonempty family of rational points of the original quotient satisfying mathlib IsSmoothAt."
+      ],
+      "compactResult": [
+        "通过真实商局部化同构推导局部形式光滑性，并构造共同坐标和原理想的法向表示。一般射影光滑纤维的选取仍未证明。",
+        "Derive localized formal smoothness through the actual quotient-localization equivalence, then construct common coordinates and original-ideal normal presentations. Construction of general smooth projective fibers remains open."
+      ],
+      "scope": [
+        "核验范围以完整 Lean 类型为准；参数假设仍须满足。",
+        "The exact Lean type controls the verified scope; its parameter hypotheses remain required."
+      ],
+      "formalType": "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2}\n  {ι : Type u_3} [Field K] [Infinite K] [Fintype σ] [DecidableEq σ] [Fintype ι] [Nonempty ι]\n  (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (p : ι → Ideal (MvPolynomial σ K ⧸ I))\n  [∀ (a : ι), (p a).IsPrime] [∀ (a : ι), Algebra.IsSmoothAt K (p a)] (x : ι → σ → K)\n  (hp : ∀ (a : ι), Ideal.comap (Ideal.Quotient.mk I) (p a) = RingHom.ker (MvPolynomial.aeval (x a)).toRingHom) :\n  ∃ r c,\n    ∃ (hc : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ G,\n            have C := LinearStudy.polynomialLinearChangeEquiv M hM;\n            have y := fun a => M⁻¹.mulVec (x a) ∘ ⇑e;\n            have H := fun a i => (MvPolynomial.rename ⇑e.symm) (C (G a i));\n            ∃ (hH : ∀ (a : ι) (i : Fin c), (MvPolynomial.eval (y a)) (H a i) = 0) (hJ :\n              ∀ (a : ι),\n                IsUnit (Matrix.det fun i j => (MvPolynomial.eval (y a)) ((MvPolynomial.pderiv (Sum.inr j)) (H a i)))),\n              ∀ (a : ι),\n                Ideal.map\n                    (((LinearStudy.polynomialSmoothFormalMap (y a) (H a) ⋯ ⋯).comp\n                          (MvPolynomial.rename ⇑e.symm).toRingHom).comp\n                      C.toRingEquiv.toRingHom)\n                    I =\n                  Ideal.span (Set.range MvPowerSeries.X)",
+      "sha256": "231d99f87da00d8eba87682d5bddbaa7ff979723e19ae4908cac39214cda5707",
+      "lines": 38,
+      "richStatement": true,
+      "x": 30,
+      "y": 60
     }
   ],
   "rootSteps": [
@@ -44867,8 +45320,8 @@
   ],
   "remaining": [
     [
-      "原文整射影子簇与齐次素理想坐标目标的概形比较、维数和次数接口；共同余法向秩。",
-      "Scheme comparison of integral projective varieties and the homogeneous-prime-ideal target; dimension, degree and common conormal rank."
+      "原文整射影子簇与齐次素理想坐标目标的概形比较、维数和次数接口。素理想光滑点的共同余法向秩及形式坐标已构造。",
+      "Scheme comparison of integral projective varieties and the homogeneous-prime-ideal target, dimension and degree. Common conormal rank and formal coordinates at smooth points of a prime ideal are constructed."
     ],
     [
       "Bertini、一般 étale 纤维及 qʳ 个互异光滑点的实际构造。",

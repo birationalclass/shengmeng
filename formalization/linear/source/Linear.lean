@@ -181,3 +181,7 @@ public import Linear.SmoothCommonCoordinates
 public import Linear.LocalGeneratorsEquiv
 
 public import Linear.SmoothCommonFormalCoordinates
+
+public import Linear.LocalizedDifferentialRank
+
+public import Linear.SmoothLocusCoordinates
