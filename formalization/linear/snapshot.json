@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-07T15:23:18+08:00",
+  "checkedAt": "2026-10-07T16:28:22+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "082c0f5afea397702c6f6ffe84a3aeb287dbc1b218392b4facf706bd2ce70585",
-      "lineCount": 2110
+      "sha256": "b2bd2ec061d07a7eb54ef4728ed8ce7bfb2215c582493fd2ecb5b191fc3b697b",
+      "lineCount": 2154
     },
     {
       "path": "Linear/ActualUnramifiedPullback.lean",
@@ -165,6 +165,16 @@
       "path": "Linear/FirstJet.lean",
       "sha256": "699167928d2f69bd07dc55c7ce6c1b204dc30ed01f3b8f84921b5aab0fabba28",
       "lineCount": 158
+    },
+    {
+      "path": "Linear/FirstJetNormalForm.lean",
+      "sha256": "89154716f69328c61a5891fd7ee0bf646c2c8759ea10271056422db276422732",
+      "lineCount": 124
+    },
+    {
+      "path": "Linear/FirstOrderLocalParameters.lean",
+      "sha256": "8af405583f4a29fc90cd0c875d7d6aafde7fc2515d6fc21804a038ad904cc878",
+      "lineCount": 77
     },
     {
       "path": "Linear/FirstSyzygy.lean",
@@ -362,6 +372,11 @@
       "lineCount": 70
     },
     {
+      "path": "Linear/OriginalIdealFirstOrder.lean",
+      "sha256": "ae28ce2cfc23eb2ceaa0e2ffc264469fa9865aea2f121f70b96526bff0bb2062",
+      "lineCount": 48
+    },
+    {
       "path": "Linear/OriginRegular.lean",
       "sha256": "84e7545654d891d28fafdf73a72a60da79c6099825b1deb5d5291c074a58e70f",
       "lineCount": 104
@@ -437,6 +452,11 @@
       "lineCount": 131
     },
     {
+      "path": "Linear/PolynomialFirstJet.lean",
+      "sha256": "477d507eb510584d8bea6506774fa8cc9c27c433b9533063a4e18f19306cfd59",
+      "lineCount": 53
+    },
+    {
       "path": "Linear/PolynomialFormalCompletion.lean",
       "sha256": "45eb6c3eb604c0d736054a1c9bd2b0da27dff9a8c4a321dec2d3a3eec556b2db",
       "lineCount": 49
@@ -460,6 +480,16 @@
       "path": "Linear/PolynomialLinearChange.lean",
       "sha256": "1221dfe88b5ac439e384742170b3982bf2f7c013638dc5608a76fce8681d1c93",
       "lineCount": 82
+    },
+    {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lineCount": 63
+    },
+    {
+      "path": "Linear/PolynomialLocalParameters.lean",
+      "sha256": "aec784fc8af927b607cf394be80ce7359458413667c6d21459b5abfa2100396f",
+      "lineCount": 96
     },
     {
       "path": "Linear/PolynomialOriginFinite.lean",
@@ -737,6 +767,11 @@
       "lineCount": 101
     },
     {
+      "path": "Linear/SmoothTargetFirstOrder.lean",
+      "sha256": "0c426a9c0d30dceb67e3ae4b0d10ab7d3f750587641506dfcda3afd59dfd9cae",
+      "lineCount": 92
+    },
+    {
       "path": "Linear/SoclePairing.lean",
       "sha256": "e51bb15a0cc3e85fb7cc6a2118d6e85345d93622c3d31750c5e1ae3249de9555",
       "lineCount": 125
@@ -755,6 +790,11 @@
       "path": "Linear/Target.lean",
       "sha256": "c52f521b90d60866bacee0354da36530c36190ea0d5527d713d4f0127a6ef1ef",
       "lineCount": 62
+    },
+    {
+      "path": "Linear/TargetLinearNormal.lean",
+      "sha256": "4b404f5c634a48588fc9b29140fd9a9e52e48786bac36bd752beb5eb1b4a1d40",
+      "lineCount": 114
     },
     {
       "path": "Linear/TensorDifference.lean",
@@ -843,8 +883,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "cb5824991814db78e3d694de9fa7db9cd06885474a58f1d5b2e9cf336a65c985",
-      "lineCount": 187
+      "sha256": "9db8835858a672a891014ba23ef70686b202218a53ebe44346f28f3fb617d429",
+      "lineCount": 203
     }
   ],
   "declarations": {
@@ -5320,6 +5360,145 @@
         "LinearStudy.doublePointPowerSeriesEquiv_mk",
         "LinearStudy.doublePoint_actual_jacobian_generates",
         "LinearStudy.firstJet"
+      ]
+    },
+    "LinearStudy.powerSeries_zero_firstJet_mem_square": {
+      "declaration": "LinearStudy.powerSeries_zero_firstJet_mem_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstJetNormalForm.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_zero_firstJet_mem_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]\n  [DecidableEq σ] [Nonempty σ] (F : MvPowerSeries σ K) (h0 : MvPowerSeries.constantCoeff F = 0)\n  (hD : ∀ (j : σ), MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) F) = 0) :\n  F ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ K) ^ 2",
+      "sha256": "89154716f69328c61a5891fd7ee0bf646c2c8759ea10271056422db276422732",
+      "lines": 22,
+      "moduleLineCount": 124,
+      "startLine": 10,
+      "endLine": 31,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.powerSeries_maximalIdeal_eq_constantCoeff_kernel",
+        "LinearStudy.powerSeries_zeroConstant_variable_expansion"
+      ]
+    },
+    "LinearStudy.powerSeries_firstJet_equal_iff_square": {
+      "declaration": "LinearStudy.powerSeries_firstJet_equal_iff_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstJetNormalForm.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.powerSeries_firstJet_equal_iff_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]\n  [DecidableEq σ] [Nonempty σ] (F G : MvPowerSeries σ K) :\n  F - G ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ K) ^ 2 ↔\n    MvPowerSeries.constantCoeff F = MvPowerSeries.constantCoeff G ∧\n      ∀ (j : σ),\n        MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) F) =\n          MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) G)",
+      "sha256": "89154716f69328c61a5891fd7ee0bf646c2c8759ea10271056422db276422732",
+      "lines": 15,
+      "moduleLineCount": 124,
+      "startLine": 33,
+      "endLine": 47,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.powerSeries_firstOrder_constantCoeff",
+        "LinearStudy.powerSeries_firstOrder_derivative_constantCoeff",
+        "LinearStudy.powerSeries_zero_firstJet_mem_square"
+      ]
+    },
+    "LinearStudy.normal_firstOrder_of_derivative_coordinates": {
+      "declaration": "LinearStudy.normal_firstOrder_of_derivative_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstJetNormalForm.lean",
+      "line": 49,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normal_firstOrder_of_derivative_coordinates.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}\n  {β : Type u_4} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (H : β → MvPowerSeries (α ⊕ β) K)\n  (h0 : ∀ (i : β), MvPowerSeries.constantCoeff (H i) = 0)\n  (hD :\n    ∀ (i : β) (j : α ⊕ β),\n      MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (H i)) = if j = Sum.inr i then 1 else 0)\n  (i : β) : H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2",
+      "sha256": "89154716f69328c61a5891fd7ee0bf646c2c8759ea10271056422db276422732",
+      "lines": 15,
+      "moduleLineCount": 124,
+      "startLine": 49,
+      "endLine": 63,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.powerSeries_firstJet_equal_iff_square"
+      ]
+    },
+    "LinearStudy.normalize_formal_normal_equations_firstOrder": {
+      "declaration": "LinearStudy.normalize_formal_normal_equations_firstOrder",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstJetNormalForm.lean",
+      "line": 67,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalize_formal_normal_equations_firstOrder.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}\n  {β : Type u_4} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (G : β → MvPowerSeries (α ⊕ β) K)\n  (h0 : ∀ (i : β), MvPowerSeries.constantCoeff (G i) = 0)\n  (hT : ∀ (i : β) (j : α), MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inl j)) (G i)) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inr j)) (G i)))) :\n  have J := fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inr j)) (G i));\n  have H := fun i => ∑ j, J⁻¹ i j • G j;\n  (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧\n    Ideal.span (Set.range H) = Ideal.span (Set.range G)",
+      "sha256": "89154716f69328c61a5891fd7ee0bf646c2c8759ea10271056422db276422732",
+      "lines": 58,
+      "moduleLineCount": 124,
+      "startLine": 65,
+      "endLine": 122,
+      "lineCount": 58,
+      "dependencies": [
+        "LinearStudy.normal_firstOrder_of_derivative_coordinates"
+      ]
+    },
+    "LinearStudy.firstOrder_normal_equations_and_tangents_generate": {
+      "declaration": "LinearStudy.firstOrder_normal_equations_and_tangents_generate",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstOrderLocalParameters.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.firstOrder_normal_equations_and_tangents_generate.{u_1, u_2, u_3} {R : Type u_1} {α : Type u_2}\n  {β : Type u_3} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ≤ IsLocalRing.maximalIdeal R)\n  (v : α ⊕ β → R) (hv : Ideal.span (Set.range v) = IsLocalRing.maximalIdeal R) (G : β → R) (hG : ∀ (i : β), G i ∈ I)\n  (hfirst : ∀ (i : β), G i - v (Sum.inr i) ∈ IsLocalRing.maximalIdeal R ^ 2) :\n  I ⊔ Ideal.span (Set.range fun i => v (Sum.inl i)) = IsLocalRing.maximalIdeal R",
+      "sha256": "8af405583f4a29fc90cd0c875d7d6aafde7fc2515d6fc21804a038ad904cc878",
+      "lines": 39,
+      "moduleLineCount": 77,
+      "startLine": 11,
+      "endLine": 49,
+      "lineCount": 39,
+      "dependencies": []
+    },
+    "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal": {
+      "declaration": "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FirstOrderLocalParameters.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal.{u_1, u_2, u_3} {R : Type u_1} {α : Type u_2}\n  {β : Type u_3} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ≤ IsLocalRing.maximalIdeal R)\n  (v : α ⊕ β → R) (hv : Ideal.span (Set.range v) = IsLocalRing.maximalIdeal R) (G : β → R) (hG : ∀ (i : β), G i ∈ I)\n  (hfirst : ∀ (i : β), G i - v (Sum.inr i) ∈ IsLocalRing.maximalIdeal R ^ 2) :\n  Ideal.span (Set.range fun i => (Ideal.Quotient.mk I) (v (Sum.inl i))) = IsLocalRing.maximalIdeal (R ⧸ I)",
+      "sha256": "8af405583f4a29fc90cd0c875d7d6aafde7fc2515d6fc21804a038ad904cc878",
+      "lines": 26,
+      "moduleLineCount": 77,
+      "startLine": 51,
+      "endLine": 76,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.firstOrder_normal_equations_and_tangents_generate"
       ]
     },
     "LinearStudy.regular_koszul_first_relation": {
@@ -10300,6 +10479,34 @@
         "LinearStudy.thickening_closedFiber_jacobian"
       ]
     },
+    "LinearStudy.original_local_ideal_firstOrder_normal_form": {
+      "declaration": "LinearStudy.original_local_ideal_firstOrder_normal_form",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/OriginalIdealFirstOrder.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.original_local_ideal_firstOrder_normal_form.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3}\n  [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (I : Ideal (MvPolynomial (α ⊕ β) K))\n  (x : α ⊕ β → K) (G : β → MvPolynomial (α ⊕ β) K)\n  (hs :\n    Ideal.map\n        (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime (RingHom.ker (MvPolynomial.aeval x).toRingHom))) I =\n      Ideal.span\n        (Set.range fun i =>\n          (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime (RingHom.ker (MvPolynomial.aeval x).toRingHom)))\n            (G i)))\n  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :\n  ∃ M,\n    ∃ (hM : M.det ≠ 0),\n      ∃ H,\n        (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧\n          Ideal.map\n              ((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec x)).comp\n                (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom)\n              I =\n            Ideal.span (Set.range H)",
+      "sha256": "ae28ce2cfc23eb2ceaa0e2ffc264469fa9865aea2f121f70b96526bff0bb2062",
+      "lines": 35,
+      "moduleLineCount": 48,
+      "startLine": 13,
+      "endLine": 47,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialIdeal_local_generators",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomial_equations_formal_firstOrder_normal_form",
+        "LinearStudy.polynomial_local_generators_under_linear_change"
+      ]
+    },
     "LinearStudy.field_isCohenMacaulay": {
       "declaration": "LinearStudy.field_isCohenMacaulay",
       "kind": "theorem",
@@ -12013,6 +12220,54 @@
         "LinearStudy.polynomial_pullback_normal_jacobian_quotient"
       ]
     },
+    "LinearStudy.polynomial_zero_firstJet_mem_vars_square": {
+      "declaration": "LinearStudy.polynomial_zero_firstJet_mem_vars_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFirstJet.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_zero_firstJet_mem_vars_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  (F : MvPolynomial σ K) (h0 : MvPolynomial.constantCoeff F = 0)\n  (hD : ∀ (j : σ), MvPolynomial.constantCoeff ((MvPolynomial.pderiv j) F) = 0) : F ∈ MvPolynomial.idealOfVars σ K ^ 2",
+      "sha256": "477d507eb510584d8bea6506774fa8cc9c27c433b9533063a4e18f19306cfd59",
+      "lines": 17,
+      "moduleLineCount": 53,
+      "startLine": 11,
+      "endLine": 27,
+      "lineCount": 17,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_zero_firstJet_mem_point_square": {
+      "declaration": "LinearStudy.polynomial_zero_firstJet_mem_point_square",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialFirstJet.lean",
+      "line": 31,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_zero_firstJet_mem_point_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]\n  (x : σ → K) (F : MvPolynomial σ K) (h0 : (MvPolynomial.eval x) F = 0)\n  (hD : ∀ (j : σ), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) F) = 0) :\n  F ∈ RingHom.ker (MvPolynomial.aeval x).toRingHom ^ 2",
+      "sha256": "477d507eb510584d8bea6506774fa8cc9c27c433b9533063a4e18f19306cfd59",
+      "lines": 24,
+      "moduleLineCount": 53,
+      "startLine": 29,
+      "endLine": 52,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_evaluation",
+        "LinearStudy.polynomialTranslation_origin_kernel",
+        "LinearStudy.polynomialTranslation_pderiv",
+        "LinearStudy.polynomial_zero_firstJet_mem_vars_square"
+      ]
+    },
     "LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel": {
       "declaration": "LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel",
       "kind": "theorem",
@@ -12804,6 +13059,201 @@
         "LinearStudy.eval_polynomialLinearChange",
         "LinearStudy.pderiv_polynomialLinearChange",
         "LinearStudy.polynomialLinearChange"
+      ]
+    },
+    "LinearStudy.polynomialLinearChange_isHomogeneous": {
+      "declaration": "LinearStudy.polynomialLinearChange_isHomogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLinearGrading.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearChange_isHomogeneous.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ]\n  (P : Matrix σ σ K) {G : MvPolynomial σ K} {q : ℕ} (hG : G.IsHomogeneous q) :\n  ((LinearStudy.polynomialLinearChange P) G).IsHomogeneous q",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lines": 7,
+      "moduleLineCount": 63,
+      "startLine": 12,
+      "endLine": 18,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange"
+      ]
+    },
+    "LinearStudy.polynomialLinearChangeEquiv_isHomogeneous": {
+      "declaration": "LinearStudy.polynomialLinearChangeEquiv_isHomogeneous",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLinearGrading.lean",
+      "line": 20,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearChangeEquiv_isHomogeneous.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]\n  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) {G : MvPolynomial σ K} {q : ℕ} :\n  ((LinearStudy.polynomialLinearChangeEquiv P hP) G).IsHomogeneous q ↔ G.IsHomogeneous q",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lines": 11,
+      "moduleLineCount": 63,
+      "startLine": 20,
+      "endLine": 30,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
+      ]
+    },
+    "LinearStudy.homogeneous_linear_change_totalDegree": {
+      "declaration": "LinearStudy.homogeneous_linear_change_totalDegree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLinearGrading.lean",
+      "line": 32,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_linear_change_totalDegree.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]\n  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) {G : MvPolynomial σ K} {q : ℕ} (hG : G.IsHomogeneous q)\n  (h0 : G ≠ 0) : ((LinearStudy.polynomialLinearChangeEquiv P hP) G).totalDegree = q",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lines": 9,
+      "moduleLineCount": 63,
+      "startLine": 32,
+      "endLine": 40,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
+      ]
+    },
+    "LinearStudy.polynomialLinearChange_totalDegree_le": {
+      "declaration": "LinearStudy.polynomialLinearChange_totalDegree_le",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLinearGrading.lean",
+      "line": 42,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearChange_totalDegree_le.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ]\n  (P : Matrix σ σ K) (G : MvPolynomial σ K) : ((LinearStudy.polynomialLinearChange P) G).totalDegree ≤ G.totalDegree",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lines": 10,
+      "moduleLineCount": 63,
+      "startLine": 42,
+      "endLine": 51,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
+      ]
+    },
+    "LinearStudy.polynomialLinearChangeEquiv_totalDegree": {
+      "declaration": "LinearStudy.polynomialLinearChangeEquiv_totalDegree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLinearGrading.lean",
+      "line": 53,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialLinearChangeEquiv_totalDegree.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]\n  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) (G : MvPolynomial σ K) :\n  ((LinearStudy.polynomialLinearChangeEquiv P hP) G).totalDegree = G.totalDegree",
+      "sha256": "9f397c470fed1a27c52549aa0022e03fb15cd43acc956f4098ea0662be767d12",
+      "lines": 9,
+      "moduleLineCount": 63,
+      "startLine": 53,
+      "endLine": 61,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_totalDegree_le"
+      ]
+    },
+    "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates": {
+      "declaration": "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLocalParameters.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Finite σ] (x : σ → K) :\n  RingHom.ker (MvPolynomial.aeval x).toRingHom = Ideal.span (Set.range fun i => MvPolynomial.X i - MvPolynomial.C (x i))",
+      "sha256": "aec784fc8af927b607cf394be80ce7359458413667c6d21459b5abfa2100396f",
+      "lines": 17,
+      "moduleLineCount": 96,
+      "startLine": 12,
+      "endLine": 28,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_origin_kernel"
+      ]
+    },
+    "LinearStudy.polynomial_firstOrder_normal_pointIdeal": {
+      "declaration": "LinearStudy.polynomial_firstOrder_normal_pointIdeal",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLocalParameters.lean",
+      "line": 30,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_firstOrder_normal_pointIdeal.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}\n  {β : Type u_4} [Finite α] [Finite β] [DecidableEq α] [DecidableEq β] (x : α ⊕ β → K) (G : β → MvPolynomial (α ⊕ β) K)\n  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)\n  (hD : ∀ (i : β) (j : α ⊕ β), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) (G i)) = if j = Sum.inr i then 1 else 0)\n  (i : β) :\n  G i - (MvPolynomial.X (Sum.inr i) - MvPolynomial.C (x (Sum.inr i))) ∈ RingHom.ker (MvPolynomial.aeval x).toRingHom ^ 2",
+      "sha256": "aec784fc8af927b607cf394be80ce7359458413667c6d21459b5abfa2100396f",
+      "lines": 14,
+      "moduleLineCount": 96,
+      "startLine": 30,
+      "endLine": 43,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.polynomial_zero_firstJet_mem_point_square"
+      ]
+    },
+    "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient": {
+      "declaration": "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialLocalParameters.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient.{u_1, u_3, u_4} {K : Type u_1} [Field K]\n  {α : Type u_3} {β : Type u_4} [Finite α] [Finite β] [DecidableEq α] [DecidableEq β]\n  (I P : Ideal (MvPolynomial (α ⊕ β) K)) [P.IsPrime] (hIP : I ≤ P) (x : α ⊕ β → K)\n  (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom) (G : β → MvPolynomial (α ⊕ β) K)\n  (hlocal :\n    Ideal.map (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) I =\n      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) (G i)))\n  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)\n  (hD : ∀ (i : β) (j : α ⊕ β), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) (G i)) = if j = Sum.inr i then 1 else 0) :\n  let J := Ideal.map (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) I;\n  Ideal.span\n      (Set.range fun i =>\n        (Ideal.Quotient.mk J)\n          ((algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P))\n            (MvPolynomial.X (Sum.inl i) - MvPolynomial.C (x (Sum.inl i))))) =\n    IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ J)",
+      "sha256": "aec784fc8af927b607cf394be80ce7359458413667c6d21459b5abfa2100396f",
+      "lines": 51,
+      "moduleLineCount": 96,
+      "startLine": 45,
+      "endLine": 95,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal",
+        "LinearStudy.polynomial_firstOrder_normal_pointIdeal",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates"
       ]
     },
     "LinearStudy.polynomial_origin_radical": {
@@ -19964,6 +20414,60 @@
         "LinearStudy.smooth_generators_exist_with_normal_coordinate_minor"
       ]
     },
+    "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form": {
+      "declaration": "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothTargetFirstOrder.lean",
+      "line": 17,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Fintype σ] [DecidableEq σ] (I P : Ideal (MvPolynomial σ K)) [P.IsPrime] (hIP : I ≤ P) (x : σ → K)\n  (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)\n  (hI : Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I ≠ ⊥)\n  [Algebra.FormallySmooth K\n      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :\n  ∃ r c,\n    ∃ (_ : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ H,\n            (∀ (i : Fin c),\n                H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K) ^ 2) ∧\n              Ideal.map\n                  (((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec (x ∘ ⇑e))).comp\n                        (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom).comp\n                    (MvPolynomial.rename ⇑e.symm).toRingHom)\n                  I =\n                Ideal.span (Set.range H)",
+      "sha256": "0c426a9c0d30dceb67e3ae4b0d10ab7d3f750587641506dfcda3afd59dfd9cae",
+      "lines": 45,
+      "moduleLineCount": 92,
+      "startLine": 14,
+      "endLine": 58,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.local_ideal_generators_under_ringEquiv",
+        "LinearStudy.original_local_ideal_firstOrder_normal_form",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomial_eval_coordinate_equiv",
+        "LinearStudy.smooth_generators_exist_with_normal_coordinate_minor"
+      ]
+    },
+    "LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form": {
+      "declaration": "LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/SmoothTargetFirstOrder.lean",
+      "line": 62,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]\n  [Fintype σ] [DecidableEq σ] (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (p : Ideal (MvPolynomial σ K ⧸ I))\n  [p.IsPrime] [Algebra.IsSmoothAt K p] (x : σ → K)\n  (hp : Ideal.comap (Ideal.Quotient.mk I) p = RingHom.ker (MvPolynomial.aeval x).toRingHom) :\n  ∃ r c,\n    ∃ (_ : 0 < c),\n      ∃ e M,\n        ∃ (hM : M.det ≠ 0),\n          ∃ H,\n            (∀ (i : Fin c),\n                H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K) ^ 2) ∧\n              Ideal.map\n                  (((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec (x ∘ ⇑e))).comp\n                        (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom).comp\n                    (MvPolynomial.rename ⇑e.symm).toRingHom)\n                  I =\n                Ideal.span (Set.range H)",
+      "sha256": "0c426a9c0d30dceb67e3ae4b0d10ab7d3f750587641506dfcda3afd59dfd9cae",
+      "lines": 32,
+      "moduleLineCount": 92,
+      "startLine": 60,
+      "endLine": 91,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form"
+      ]
+    },
     "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator": {
       "declaration": "LinearStudy.nonzero_ideal_meets_nilpotent_annihilator",
       "kind": "theorem",
@@ -20291,6 +20795,81 @@
         "LinearStudy.ParameterRing",
         "LinearStudy.equationIdeal",
         "LinearStudy.relativeJacobian"
+      ]
+    },
+    "LinearStudy.normal_jacobian_linear_shear": {
+      "declaration": "LinearStudy.normal_jacobian_linear_shear",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TargetLinearNormal.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normal_jacobian_linear_shear.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3} [Field K]\n  [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] (A : Matrix β (α ⊕ β) K)\n  (hJ : IsUnit (A.submatrix id Sum.inr).det) :\n  have B := A.submatrix id Sum.inl;\n  have J := A.submatrix id Sum.inr;\n  have M := Matrix.fromBlocks 1 0 (-(J⁻¹ * B)) 1;\n  M.det = 1 ∧ A * M = Matrix.fromCols 0 J",
+      "sha256": "4b404f5c634a48588fc9b29140fd9a9e52e48786bac36bd752beb5eb1b4a1d40",
+      "lines": 20,
+      "moduleLineCount": 114,
+      "startLine": 14,
+      "endLine": 33,
+      "lineCount": 20,
+      "dependencies": []
+    },
+    "LinearStudy.polynomial_equations_adapted_linear_coordinates": {
+      "declaration": "LinearStudy.polynomial_equations_adapted_linear_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TargetLinearNormal.lean",
+      "line": 37,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_equations_adapted_linear_coordinates.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3}\n  [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] (G : β → MvPolynomial (α ⊕ β) K) (x : α ⊕ β → K)\n  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :\n  ∃ M,\n    M.det ≠ 0 ∧\n      have y := M⁻¹.mulVec x;\n      have H := fun i => (LinearStudy.polynomialLinearChange M) (G i);\n      (∀ (i : β), (MvPolynomial.eval y) (H i) = 0) ∧\n        (∀ (i : β) (j : α), (MvPolynomial.eval y) ((MvPolynomial.pderiv (Sum.inl j)) (H i)) = 0) ∧\n          ∀ (i j : β),\n            (MvPolynomial.eval y) ((MvPolynomial.pderiv (Sum.inr j)) (H i)) =\n              (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))",
+      "sha256": "4b404f5c634a48588fc9b29140fd9a9e52e48786bac36bd752beb5eb1b4a1d40",
+      "lines": 42,
+      "moduleLineCount": 114,
+      "startLine": 35,
+      "endLine": 76,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.eval_pderiv_polynomialLinearChange",
+        "LinearStudy.eval_polynomialLinearChange",
+        "LinearStudy.normal_jacobian_linear_shear",
+        "LinearStudy.polynomialLinearChange"
+      ]
+    },
+    "LinearStudy.polynomial_equations_formal_firstOrder_normal_form": {
+      "declaration": "LinearStudy.polynomial_equations_formal_firstOrder_normal_form",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/TargetLinearNormal.lean",
+      "line": 81,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomial_equations_formal_firstOrder_normal_form.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2}\n  {β : Type u_3} [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β]\n  (G : β → MvPolynomial (α ⊕ β) K) (x : α ⊕ β → K) (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)\n  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :\n  ∃ M,\n    M.det ≠ 0 ∧\n      ∃ H,\n        (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧\n          Ideal.span (Set.range H) =\n            Ideal.span\n              (Set.range fun i =>\n                (LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec x)) ((LinearStudy.polynomialLinearChange M) (G i)))",
+      "sha256": "4b404f5c634a48588fc9b29140fd9a9e52e48786bac36bd752beb5eb1b4a1d40",
+      "lines": 36,
+      "moduleLineCount": 114,
+      "startLine": 78,
+      "endLine": 113,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_constantCoeff",
+        "LinearStudy.formalPolynomialAtPoint_pderiv",
+        "LinearStudy.normalize_formal_normal_equations_firstOrder",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomial_equations_adapted_linear_coordinates"
       ]
     },
     "LinearStudy.polynomialDoubleTensor": {
@@ -27141,7 +27720,7 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 708,
+  "verifiedTheoremCount": 730,
   "definitionCount": 147,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
@@ -27386,6 +27965,18 @@
       "endLine": 25,
       "lineCount": 16,
       "dependencies": []
+    },
+    "LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient": {
+      "path": "Linear/PolynomialLocalParameters.lean",
+      "startLine": 45,
+      "endLine": 95,
+      "lineCount": 51,
+      "dependencies": [
+        "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal",
+        "LinearStudy.polynomial_firstOrder_normal_pointIdeal",
+        "LinearStudy.polynomial_local_ideal_ne_top",
+        "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates"
+      ]
     },
     "LinearStudy.atPrime_differential_finrank_eq": {
       "path": "Linear/LocalizedDifferentialRank.lean",
@@ -28088,6 +28679,16 @@
         "koszulComplex"
       ]
     },
+    "LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates": {
+      "path": "Linear/PolynomialLocalParameters.lean",
+      "startLine": 12,
+      "endLine": 28,
+      "lineCount": 17,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_origin_kernel"
+      ]
+    },
     "LinearStudy.polynomialPointLocalEvaluation": {
       "path": "Linear/PolynomialPointEvaluation.lean",
       "startLine": 11,
@@ -28209,6 +28810,16 @@
       "dependencies": [
         "Ideal.depth",
         "ModuleCat.depth_eq_sSup_length_isRegular"
+      ]
+    },
+    "LinearStudy.polynomialLinearChange_totalDegree_le": {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "startLine": 42,
+      "endLine": 51,
+      "lineCount": 10,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
       ]
     },
     "LinearStudy.formalPolynomialIdeal_local_generators": {
@@ -29066,6 +29677,13 @@
         "LinearStudy.IntegralProjectiveEquations.zeroSet",
         "LinearStudy.ProjectivePoint"
       ]
+    },
+    "LinearStudy.polynomial_zero_firstJet_mem_vars_square": {
+      "path": "Linear/PolynomialFirstJet.lean",
+      "startLine": 11,
+      "endLine": 27,
+      "lineCount": 17,
+      "dependencies": []
     },
     "LinearStudy.PerfectMultiplicationPairing.equiv": {
       "path": "Linear/Duality.lean",
@@ -30307,6 +30925,20 @@
         "LinearStudy.polynomialLocalizedDifferentialBasis_baseChange_repr_D"
       ]
     },
+    "LinearStudy.polynomial_equations_formal_firstOrder_normal_form": {
+      "path": "Linear/TargetLinearNormal.lean",
+      "startLine": 78,
+      "endLine": 113,
+      "lineCount": 36,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialAtPoint_constantCoeff",
+        "LinearStudy.formalPolynomialAtPoint_pderiv",
+        "LinearStudy.normalize_formal_normal_equations_firstOrder",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomial_equations_adapted_linear_coordinates"
+      ]
+    },
     "LinearStudy.smooth_points_have_common_formal_normal_coordinates": {
       "path": "Linear/SmoothCommonFormalCoordinates.lean",
       "startLine": 15,
@@ -30743,6 +31375,17 @@
       "lineCount": 7,
       "dependencies": [
         "LinearStudy.nestedPowerSeriesTranslation"
+      ]
+    },
+    "LinearStudy.polynomialLinearChangeEquiv_totalDegree": {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "startLine": 53,
+      "endLine": 61,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_totalDegree_le"
       ]
     },
     "LinearStudy.rescaled_evaluation_relation_zero": {
@@ -31203,6 +31846,13 @@
       "lineCount": 18,
       "dependencies": []
     },
+    "LinearStudy.normal_jacobian_linear_shear": {
+      "path": "Linear/TargetLinearNormal.lean",
+      "startLine": 14,
+      "endLine": 33,
+      "lineCount": 20,
+      "dependencies": []
+    },
     "exteriorPower.baseChangeInverseAlternating": {
       "path": "Linear/Vendor/ExteriorBaseChange.lean",
       "startLine": 152,
@@ -31211,6 +31861,20 @@
       "dependencies": [
         "ExteriorAlgebra.baseChangeExteriorAlgebraToTensor",
         "exteriorPower.degreeProjection"
+      ]
+    },
+    "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form": {
+      "path": "Linear/SmoothTargetFirstOrder.lean",
+      "startLine": 14,
+      "endLine": 58,
+      "lineCount": 45,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.local_ideal_generators_under_ringEquiv",
+        "LinearStudy.original_local_ideal_firstOrder_normal_form",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomial_eval_coordinate_equiv",
+        "LinearStudy.smooth_generators_exist_with_normal_coordinate_minor"
       ]
     },
     "LinearStudy.ofList_smul_top": {
@@ -31425,6 +32089,15 @@
       "lineCount": 20,
       "dependencies": [
         "LinearStudy.affineDehomogenize"
+      ]
+    },
+    "LinearStudy.normal_firstOrder_of_derivative_coordinates": {
+      "path": "Linear/FirstJetNormalForm.lean",
+      "startLine": 49,
+      "endLine": 63,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.powerSeries_firstJet_equal_iff_square"
       ]
     },
     "LinearStudy.parameterSpecialization_jacobian": {
@@ -31754,6 +32427,26 @@
         "LinearStudy.liftedParameterMap"
       ]
     },
+    "LinearStudy.polynomialLinearChangeEquiv_isHomogeneous": {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "startLine": 20,
+      "endLine": 30,
+      "lineCount": 11,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
+      ]
+    },
+    "LinearStudy.polynomial_firstOrder_normal_pointIdeal": {
+      "path": "Linear/PolynomialLocalParameters.lean",
+      "startLine": 30,
+      "endLine": 43,
+      "lineCount": 14,
+      "dependencies": [
+        "LinearStudy.polynomial_zero_firstJet_mem_point_square"
+      ]
+    },
     "LinearStudy.homogeneous_affine_chart_top_eval": {
       "path": "Linear/ProjectiveChart.lean",
       "startLine": 57,
@@ -32059,6 +32752,17 @@
       "lineCount": 4,
       "dependencies": [
         "LinearStudy.equationChangeQuotientEquiv"
+      ]
+    },
+    "LinearStudy.homogeneous_linear_change_totalDegree": {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "startLine": 32,
+      "endLine": 40,
+      "lineCount": 9,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChange_isHomogeneous"
       ]
     },
     "LinearStudy.parameterSpecialization_surjective": {
@@ -32490,6 +33194,15 @@
       "lineCount": 3,
       "dependencies": [
         "LinearStudy.tensorFunctionalContraction"
+      ]
+    },
+    "LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal": {
+      "path": "Linear/FirstOrderLocalParameters.lean",
+      "startLine": 51,
+      "endLine": 76,
+      "lineCount": 26,
+      "dependencies": [
+        "LinearStudy.firstOrder_normal_equations_and_tangents_generate"
       ]
     },
     "LinearStudy.homogeneousComponent_prod_top": {
@@ -33219,6 +33932,15 @@
         "LinearStudy.Thickening",
         "LinearStudy.thickeningIdeal",
         "LinearStudy.thickeningMk"
+      ]
+    },
+    "LinearStudy.normalize_formal_normal_equations_firstOrder": {
+      "path": "Linear/FirstJetNormalForm.lean",
+      "startLine": 65,
+      "endLine": 122,
+      "lineCount": 58,
+      "dependencies": [
+        "LinearStudy.normal_firstOrder_of_derivative_coordinates"
       ]
     },
     "LinearStudy.thickeningJacobian_unit_twist": {
@@ -34286,6 +35008,17 @@
         "LinearStudy.HomogeneousEndomorphism.mk"
       ]
     },
+    "LinearStudy.powerSeries_firstJet_equal_iff_square": {
+      "path": "Linear/FirstJetNormalForm.lean",
+      "startLine": 33,
+      "endLine": 47,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.powerSeries_firstOrder_constantCoeff",
+        "LinearStudy.powerSeries_firstOrder_derivative_constantCoeff",
+        "LinearStudy.powerSeries_zero_firstJet_mem_square"
+      ]
+    },
     "LinearStudy.lemma31_arbitrary_parameter_jacobian_nonzero": {
       "path": "Linear/ArbitraryParameterJacobian.lean",
       "startLine": 66,
@@ -34552,6 +35285,13 @@
         "LinearStudy.parameterQuotient_nilradical_eq",
         "LinearStudy.relativeJacobian"
       ]
+    },
+    "LinearStudy.firstOrder_normal_equations_and_tangents_generate": {
+      "path": "Linear/FirstOrderLocalParameters.lean",
+      "startLine": 11,
+      "endLine": 49,
+      "lineCount": 39,
+      "dependencies": []
     },
     "ModuleCat.IsCohenMacaulay.depth_eq_dim": {
       "path": "Linear/Vendor/CM/CohenMacaulayBasic.lean",
@@ -34993,6 +35733,18 @@
         "LinearStudy.powerSeriesCoordinateChart",
         "LinearStudy.powerSeriesCoordinateChart_X",
         "LinearStudy.smoothFormalCoordinateEquiv_normal"
+      ]
+    },
+    "LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form": {
+      "path": "Linear/SmoothTargetFirstOrder.lean",
+      "startLine": 60,
+      "endLine": 91,
+      "lineCount": 32,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.quotient_smoothAt_formallySmooth_localized_ideal",
+        "LinearStudy.smooth_point_original_ideal_firstOrder_normal_form"
       ]
     },
     "LinearStudy.eq_traceElement_of_residue_trace": {
@@ -35919,6 +36671,19 @@
         "LinearStudy.powerSeriesTranslationEquiv_pderiv_normal"
       ]
     },
+    "LinearStudy.polynomial_zero_firstJet_mem_point_square": {
+      "path": "Linear/PolynomialFirstJet.lean",
+      "startLine": 29,
+      "endLine": 52,
+      "lineCount": 24,
+      "dependencies": [
+        "LinearStudy.polynomialTranslation",
+        "LinearStudy.polynomialTranslation_evaluation",
+        "LinearStudy.polynomialTranslation_origin_kernel",
+        "LinearStudy.polynomialTranslation_pderiv",
+        "LinearStudy.polynomial_zero_firstJet_mem_vars_square"
+      ]
+    },
     "LinearStudy.weightedEvaluation": {
       "path": "Linear/Evaluation.lean",
       "startLine": 20,
@@ -36185,6 +36950,15 @@
         "LinearStudy.homogeneousComponent_mul_homogeneous",
         "LinearStudy.homogeneous_ideal_bounded_representation",
         "LinearStudy.totalDegree_strip_top"
+      ]
+    },
+    "LinearStudy.polynomialLinearChange_isHomogeneous": {
+      "path": "Linear/PolynomialLinearGrading.lean",
+      "startLine": 12,
+      "endLine": 18,
+      "lineCount": 7,
+      "dependencies": [
+        "LinearStudy.polynomialLinearChange"
       ]
     },
     "isCohenMacaulayLocalRing_def": {
@@ -37876,6 +38650,20 @@
         "LinearStudy.parameterQuotient_nilradical_image_isMaximal"
       ]
     },
+    "LinearStudy.original_local_ideal_firstOrder_normal_form": {
+      "path": "Linear/OriginalIdealFirstOrder.lean",
+      "startLine": 13,
+      "endLine": 47,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.formalPolynomialAtPoint",
+        "LinearStudy.formalPolynomialIdeal_local_generators",
+        "LinearStudy.polynomialLinearChange",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomial_equations_formal_firstOrder_normal_form",
+        "LinearStudy.polynomial_local_generators_under_linear_change"
+      ]
+    },
     "LinearStudy.polynomialSmoothFormalMap": {
       "path": "Linear/PolynomialSmoothCoordinates.lean",
       "startLine": 23,
@@ -38446,6 +39234,16 @@
         "exteriorPowerProdEquivProd"
       ]
     },
+    "LinearStudy.powerSeries_zero_firstJet_mem_square": {
+      "path": "Linear/FirstJetNormalForm.lean",
+      "startLine": 10,
+      "endLine": 31,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.powerSeries_maximalIdeal_eq_constantCoeff_kernel",
+        "LinearStudy.powerSeries_zeroConstant_variable_expansion"
+      ]
+    },
     "LinearStudy.artinian_local_socle_generator_of_completion": {
       "path": "Linear/ArtinianCompletion.lean",
       "startLine": 59,
@@ -38859,6 +39657,18 @@
         "LinearStudy.HomogeneousEndomorphism.noBasePoint",
         "LinearStudy.HomogeneousEndomorphism.onPoints",
         "LinearStudy.ProjectivePoint"
+      ]
+    },
+    "LinearStudy.polynomial_equations_adapted_linear_coordinates": {
+      "path": "Linear/TargetLinearNormal.lean",
+      "startLine": 35,
+      "endLine": 76,
+      "lineCount": 42,
+      "dependencies": [
+        "LinearStudy.eval_pderiv_polynomialLinearChange",
+        "LinearStudy.eval_polynomialLinearChange",
+        "LinearStudy.normal_jacobian_linear_shear",
+        "LinearStudy.polynomialLinearChange"
       ]
     },
     "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates": {

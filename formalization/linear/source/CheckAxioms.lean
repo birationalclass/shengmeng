@@ -359,6 +359,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.annihilates_nilradical_algEquiv
 #check LinearStudy.quadratic_powerSeries_jacobian_annihilator
 #print axioms LinearStudy.quadratic_powerSeries_jacobian_annihilator
+#check LinearStudy.powerSeries_zero_firstJet_mem_square
+#print axioms LinearStudy.powerSeries_zero_firstJet_mem_square
+#check LinearStudy.powerSeries_firstJet_equal_iff_square
+#print axioms LinearStudy.powerSeries_firstJet_equal_iff_square
+#check LinearStudy.normal_firstOrder_of_derivative_coordinates
+#print axioms LinearStudy.normal_firstOrder_of_derivative_coordinates
+#check LinearStudy.normalize_formal_normal_equations_firstOrder
+#print axioms LinearStudy.normalize_formal_normal_equations_firstOrder
+#check LinearStudy.firstOrder_normal_equations_and_tangents_generate
+#print axioms LinearStudy.firstOrder_normal_equations_and_tangents_generate
+#check LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal
+#print axioms LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal
 #check LinearStudy.regular_koszul_first_relation
 #print axioms LinearStudy.regular_koszul_first_relation
 #check LinearStudy.koszul_first_differential_wedge
@@ -761,6 +773,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.oneVariable_unit_factorization
 #check LinearStudy.oneVariable_closedFiber_jacobian
 #print axioms LinearStudy.oneVariable_closedFiber_jacobian
+#check LinearStudy.original_local_ideal_firstOrder_normal_form
+#print axioms LinearStudy.original_local_ideal_firstOrder_normal_form
 #check LinearStudy.field_isCohenMacaulay
 #print axioms LinearStudy.field_isCohenMacaulay
 #check LinearStudy.polynomial_origin_height
@@ -901,6 +915,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomial_pullback_normal_jacobian_quotient_span
 #check LinearStudy.polynomial_pullback_normal_jacobian_image_factor
 #print axioms LinearStudy.polynomial_pullback_normal_jacobian_image_factor
+#check LinearStudy.polynomial_zero_firstJet_mem_vars_square
+#print axioms LinearStudy.polynomial_zero_firstJet_mem_vars_square
+#check LinearStudy.polynomial_zero_firstJet_mem_point_square
+#print axioms LinearStudy.polynomial_zero_firstJet_mem_point_square
 #check LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel
 #print axioms LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel
 #check LinearStudy.polynomial_idealOfVars_isMaximal
@@ -967,6 +985,22 @@ set_option pp.proofs false
 #print axioms LinearStudy.pderiv_polynomialLinearChange
 #check LinearStudy.eval_pderiv_polynomialLinearChange
 #print axioms LinearStudy.eval_pderiv_polynomialLinearChange
+#check LinearStudy.polynomialLinearChange_isHomogeneous
+#print axioms LinearStudy.polynomialLinearChange_isHomogeneous
+#check LinearStudy.polynomialLinearChangeEquiv_isHomogeneous
+#print axioms LinearStudy.polynomialLinearChangeEquiv_isHomogeneous
+#check LinearStudy.homogeneous_linear_change_totalDegree
+#print axioms LinearStudy.homogeneous_linear_change_totalDegree
+#check LinearStudy.polynomialLinearChange_totalDegree_le
+#print axioms LinearStudy.polynomialLinearChange_totalDegree_le
+#check LinearStudy.polynomialLinearChangeEquiv_totalDegree
+#print axioms LinearStudy.polynomialLinearChangeEquiv_totalDegree
+#check LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates
+#print axioms LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates
+#check LinearStudy.polynomial_firstOrder_normal_pointIdeal
+#print axioms LinearStudy.polynomial_firstOrder_normal_pointIdeal
+#check LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient
+#print axioms LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient
 #check LinearStudy.polynomial_origin_radical
 #print axioms LinearStudy.polynomial_origin_radical
 #check LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus
@@ -1541,6 +1575,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.reindexed_smooth_formal_ideal
 #check LinearStudy.smooth_point_has_formal_normal_coordinates
 #print axioms LinearStudy.smooth_point_has_formal_normal_coordinates
+#check LinearStudy.smooth_point_original_ideal_firstOrder_normal_form
+#print axioms LinearStudy.smooth_point_original_ideal_firstOrder_normal_form
+#check LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form
+#print axioms LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form
 #check LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
 #print axioms LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
 #check LinearStudy.nonzero_ideal_meets_socle
@@ -1569,6 +1607,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.relativeJacobian
 #check LinearStudy.Lemma31Goal
 #print axioms LinearStudy.Lemma31Goal
+#check LinearStudy.normal_jacobian_linear_shear
+#print axioms LinearStudy.normal_jacobian_linear_shear
+#check LinearStudy.polynomial_equations_adapted_linear_coordinates
+#print axioms LinearStudy.polynomial_equations_adapted_linear_coordinates
+#check LinearStudy.polynomial_equations_formal_firstOrder_normal_form
+#print axioms LinearStudy.polynomial_equations_formal_firstOrder_normal_form
 #check LinearStudy.polynomialDoubleTensor
 #print axioms LinearStudy.polynomialDoubleTensor
 #check LinearStudy.polynomialDoubleTensor_left

@@ -1050,6 +1050,53 @@ LinearStudy.quadratic_powerSeries_jacobian_annihilator.{u_1} (B : Type u_1) [Com
   LinearStudy.Annihilates (nilradical (PowerSeries B ⧸ Ideal.span {PowerSeries.X ^ 2})) x ↔
     ∃ b, x = b • (Ideal.Quotient.mk (Ideal.span {PowerSeries.X ^ 2})) (PowerSeries.derivative (PowerSeries.X ^ 2))
 'LinearStudy.quadratic_powerSeries_jacobian_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_zero_firstJet_mem_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]
+  [DecidableEq σ] [Nonempty σ] (F : MvPowerSeries σ K) (h0 : MvPowerSeries.constantCoeff F = 0)
+  (hD : ∀ (j : σ), MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) F) = 0) :
+  F ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ K) ^ 2
+'LinearStudy.powerSeries_zero_firstJet_mem_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.powerSeries_firstJet_equal_iff_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]
+  [DecidableEq σ] [Nonempty σ] (F G : MvPowerSeries σ K) :
+  F - G ∈ IsLocalRing.maximalIdeal (MvPowerSeries σ K) ^ 2 ↔
+    MvPowerSeries.constantCoeff F = MvPowerSeries.constantCoeff G ∧
+      ∀ (j : σ),
+        MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) F) =
+          MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) G)
+'LinearStudy.powerSeries_firstJet_equal_iff_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.normal_firstOrder_of_derivative_coordinates.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}
+  {β : Type u_4} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (H : β → MvPowerSeries (α ⊕ β) K)
+  (h0 : ∀ (i : β), MvPowerSeries.constantCoeff (H i) = 0)
+  (hD :
+    ∀ (i : β) (j : α ⊕ β),
+      MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv j) (H i)) = if j = Sum.inr i then 1 else 0)
+  (i : β) : H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2
+'LinearStudy.normal_firstOrder_of_derivative_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.normalize_formal_normal_equations_firstOrder.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}
+  {β : Type u_4} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (G : β → MvPowerSeries (α ⊕ β) K)
+  (h0 : ∀ (i : β), MvPowerSeries.constantCoeff (G i) = 0)
+  (hT : ∀ (i : β) (j : α), MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inl j)) (G i)) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inr j)) (G i)))) :
+  have J := fun i j => MvPowerSeries.constantCoeff ((MvPowerSeries.pderiv (Sum.inr j)) (G i));
+  have H := fun i => ∑ j, J⁻¹ i j • G j;
+  (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧
+    Ideal.span (Set.range H) = Ideal.span (Set.range G)
+'LinearStudy.normalize_formal_normal_equations_firstOrder' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.firstOrder_normal_equations_and_tangents_generate.{u_1, u_2, u_3} {R : Type u_1} {α : Type u_2}
+  {β : Type u_3} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ≤ IsLocalRing.maximalIdeal R)
+  (v : α ⊕ β → R) (hv : Ideal.span (Set.range v) = IsLocalRing.maximalIdeal R) (G : β → R) (hG : ∀ (i : β), G i ∈ I)
+  (hfirst : ∀ (i : β), G i - v (Sum.inr i) ∈ IsLocalRing.maximalIdeal R ^ 2) :
+  I ⊔ Ideal.span (Set.range fun i => v (Sum.inl i)) = IsLocalRing.maximalIdeal R
+'LinearStudy.firstOrder_normal_equations_and_tangents_generate' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal.{u_1, u_2, u_3} {R : Type u_1} {α : Type u_2}
+  {β : Type u_3} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ≤ IsLocalRing.maximalIdeal R)
+  (v : α ⊕ β → R) (hv : Ideal.span (Set.range v) = IsLocalRing.maximalIdeal R) (G : β → R) (hG : ∀ (i : β), G i ∈ I)
+  (hfirst : ∀ (i : β), G i - v (Sum.inr i) ∈ IsLocalRing.maximalIdeal R ^ 2) :
+  Ideal.span (Set.range fun i => (Ideal.Quotient.mk I) (v (Sum.inl i))) = IsLocalRing.maximalIdeal (R ⧸ I)
+'LinearStudy.firstOrder_tangents_generate_quotient_maximalIdeal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.regular_koszul_first_relation.{u_1} {R : Type u_1} [CommRing R] {n : ℕ} (H : Fin n → R)
   (hreg : RingTheory.Sequence.IsRegular R (List.ofFn H)) (a : Fin n → R) (ha : ∑ i, a i * H i = 0) :
   ∃ z, (exteriorPower.oneEquiv R (Fin n → R)) ((koszulComplex.d (Fintype.linearCombination R H) 1) z) = a
@@ -2352,6 +2399,28 @@ LinearStudy.oneVariable_closedFiber_jacobian.{u_1} {K : Type u_1} [Field K] [Cha
   have delta := (Ideal.Quotient.mk I) (PowerSeries.derivative H);
   IsArtinianRing A ∧ (nilradical A).IsMaximal ∧ Submodule.annihilator (nilradical A) = Ideal.span {delta} ∧ delta ≠ 0
 'LinearStudy.oneVariable_closedFiber_jacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.original_local_ideal_firstOrder_normal_form.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3}
+  [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β] (I : Ideal (MvPolynomial (α ⊕ β) K))
+  (x : α ⊕ β → K) (G : β → MvPolynomial (α ⊕ β) K)
+  (hs :
+    Ideal.map
+        (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime (RingHom.ker (MvPolynomial.aeval x).toRingHom))) I =
+      Ideal.span
+        (Set.range fun i =>
+          (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime (RingHom.ker (MvPolynomial.aeval x).toRingHom)))
+            (G i)))
+  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :
+  ∃ M,
+    ∃ (hM : M.det ≠ 0),
+      ∃ H,
+        (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧
+          Ideal.map
+              ((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec x)).comp
+                (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom)
+              I =
+            Ideal.span (Set.range H)
+'LinearStudy.original_local_ideal_firstOrder_normal_form' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.field_isCohenMacaulay.{u_1} {K : Type u_1} [Field K] : IsCohenMacaulayRing K
 'LinearStudy.field_isCohenMacaulay' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_origin_height.{u_1} {K : Type u_1} [Field K] (n : ℕ) :
@@ -2796,6 +2865,15 @@ LinearStudy.polynomial_pullback_normal_jacobian_image_factor.{u_1, u_2} {K : Typ
 'LinearStudy.polynomial_pullback_normal_jacobian_image_factor' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.polynomial_zero_firstJet_mem_vars_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  (F : MvPolynomial σ K) (h0 : MvPolynomial.constantCoeff F = 0)
+  (hD : ∀ (j : σ), MvPolynomial.constantCoeff ((MvPolynomial.pderiv j) F) = 0) : F ∈ MvPolynomial.idealOfVars σ K ^ 2
+'LinearStudy.polynomial_zero_firstJet_mem_vars_square' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_zero_firstJet_mem_point_square.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Finite σ]
+  (x : σ → K) (F : MvPolynomial σ K) (h0 : (MvPolynomial.eval x) F = 0)
+  (hD : ∀ (j : σ), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) F) = 0) :
+  F ∈ RingHom.ker (MvPolynomial.aeval x).toRingHom ^ 2
+'LinearStudy.polynomial_zero_firstJet_mem_point_square' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel.{u_1, u_2} (σ : Type u_1) (K : Type u_2) [Field K] :
   MvPolynomial.idealOfVars σ K = RingHom.ker MvPolynomial.constantCoeff
 'LinearStudy.polynomial_idealOfVars_eq_constantCoeff_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -2966,6 +3044,57 @@ LinearStudy.eval_pderiv_polynomialLinearChange.{u_1, u_2} {K : Type u_1} {σ : T
   (MvPolynomial.eval y) ((MvPolynomial.pderiv j) ((LinearStudy.polynomialLinearChange P) G)) =
     ∑ i, (MvPolynomial.eval (P.mulVec y)) ((MvPolynomial.pderiv i) G) * P i j
 'LinearStudy.eval_pderiv_polynomialLinearChange' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChange_isHomogeneous.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ]
+  (P : Matrix σ σ K) {G : MvPolynomial σ K} {q : ℕ} (hG : G.IsHomogeneous q) :
+  ((LinearStudy.polynomialLinearChange P) G).IsHomogeneous q
+'LinearStudy.polynomialLinearChange_isHomogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChangeEquiv_isHomogeneous.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]
+  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) {G : MvPolynomial σ K} {q : ℕ} :
+  ((LinearStudy.polynomialLinearChangeEquiv P hP) G).IsHomogeneous q ↔ G.IsHomogeneous q
+'LinearStudy.polynomialLinearChangeEquiv_isHomogeneous' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.homogeneous_linear_change_totalDegree.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]
+  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) {G : MvPolynomial σ K} {q : ℕ} (hG : G.IsHomogeneous q)
+  (h0 : G ≠ 0) : ((LinearStudy.polynomialLinearChangeEquiv P hP) G).totalDegree = q
+'LinearStudy.homogeneous_linear_change_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChange_totalDegree_le.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [CommRing K] [Fintype σ]
+  (P : Matrix σ σ K) (G : MvPolynomial σ K) : ((LinearStudy.polynomialLinearChange P) G).totalDegree ≤ G.totalDegree
+'LinearStudy.polynomialLinearChange_totalDegree_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialLinearChangeEquiv_totalDegree.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K] [Fintype σ]
+  [DecidableEq σ] (P : Matrix σ σ K) (hP : P.det ≠ 0) (G : MvPolynomial σ K) :
+  ((LinearStudy.polynomialLinearChangeEquiv P hP) G).totalDegree = G.totalDegree
+'LinearStudy.polynomialLinearChangeEquiv_totalDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  [Finite σ] (x : σ → K) :
+  RingHom.ker (MvPolynomial.aeval x).toRingHom = Ideal.span (Set.range fun i => MvPolynomial.X i - MvPolynomial.C (x i))
+'LinearStudy.polynomial_point_kernel_eq_span_centered_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.polynomial_firstOrder_normal_pointIdeal.{u_1, u_3, u_4} {K : Type u_1} [Field K] {α : Type u_3}
+  {β : Type u_4} [Finite α] [Finite β] [DecidableEq α] [DecidableEq β] (x : α ⊕ β → K) (G : β → MvPolynomial (α ⊕ β) K)
+  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)
+  (hD : ∀ (i : β) (j : α ⊕ β), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) (G i)) = if j = Sum.inr i then 1 else 0)
+  (i : β) :
+  G i - (MvPolynomial.X (Sum.inr i) - MvPolynomial.C (x (Sum.inr i))) ∈ RingHom.ker (MvPolynomial.aeval x).toRingHom ^ 2
+'LinearStudy.polynomial_firstOrder_normal_pointIdeal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient.{u_1, u_3, u_4} {K : Type u_1} [Field K]
+  {α : Type u_3} {β : Type u_4} [Finite α] [Finite β] [DecidableEq α] [DecidableEq β]
+  (I P : Ideal (MvPolynomial (α ⊕ β) K)) [P.IsPrime] (hIP : I ≤ P) (x : α ⊕ β → K)
+  (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom) (G : β → MvPolynomial (α ⊕ β) K)
+  (hlocal :
+    Ideal.map (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) I =
+      Ideal.span (Set.range fun i => (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) (G i)))
+  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)
+  (hD : ∀ (i : β) (j : α ⊕ β), (MvPolynomial.eval x) ((MvPolynomial.pderiv j) (G i)) = if j = Sum.inr i then 1 else 0) :
+  let J := Ideal.map (algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P)) I;
+  Ideal.span
+      (Set.range fun i =>
+        (Ideal.Quotient.mk J)
+          ((algebraMap (MvPolynomial (α ⊕ β) K) (Localization.AtPrime P))
+            (MvPolynomial.X (Sum.inl i) - MvPolynomial.C (x (Sum.inl i))))) =
+    IsLocalRing.maximalIdeal (Localization.AtPrime P ⧸ J)
+'LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.polynomial_origin_radical.{u_1, u_2} {K : Type u_1} {ι : Type u_2} [Field K] [IsAlgClosed K] [Finite ι]
   (I : Ideal (MvPolynomial ι K)) (hI : MvPolynomial.zeroLocus K I = {0}) :
   I.radical = RingHom.ker (MvPolynomial.aeval 0).toRingHom
@@ -4913,6 +5042,48 @@ LinearStudy.smooth_point_has_formal_normal_coordinates.{u_1, u_2} {K : Type u_1}
               I =
             Ideal.span (Set.range MvPowerSeries.X)
 'LinearStudy.smooth_point_has_formal_normal_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.smooth_point_original_ideal_firstOrder_normal_form.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  [Fintype σ] [DecidableEq σ] (I P : Ideal (MvPolynomial σ K)) [P.IsPrime] (hIP : I ≤ P) (x : σ → K)
+  (hP : P = RingHom.ker (MvPolynomial.aeval x).toRingHom)
+  (hI : Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I ≠ ⊥)
+  [Algebra.FormallySmooth K
+      (Localization.AtPrime P ⧸ Ideal.map (algebraMap (MvPolynomial σ K) (Localization.AtPrime P)) I)] :
+  ∃ r c,
+    ∃ (_ : 0 < c),
+      ∃ e M,
+        ∃ (hM : M.det ≠ 0),
+          ∃ H,
+            (∀ (i : Fin c),
+                H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K) ^ 2) ∧
+              Ideal.map
+                  (((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec (x ∘ ⇑e))).comp
+                        (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom).comp
+                    (MvPolynomial.rename ⇑e.symm).toRingHom)
+                  I =
+                Ideal.span (Set.range H)
+'LinearStudy.smooth_point_original_ideal_firstOrder_normal_form' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form.{u_1, u_2} {K : Type u_1} {σ : Type u_2} [Field K]
+  [Fintype σ] [DecidableEq σ] (I : Ideal (MvPolynomial σ K)) [I.IsPrime] (hI : I ≠ ⊥) (p : Ideal (MvPolynomial σ K ⧸ I))
+  [p.IsPrime] [Algebra.IsSmoothAt K p] (x : σ → K)
+  (hp : Ideal.comap (Ideal.Quotient.mk I) p = RingHom.ker (MvPolynomial.aeval x).toRingHom) :
+  ∃ r c,
+    ∃ (_ : 0 < c),
+      ∃ e M,
+        ∃ (hM : M.det ≠ 0),
+          ∃ H,
+            (∀ (i : Fin c),
+                H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (Fin r ⊕ Fin c) K) ^ 2) ∧
+              Ideal.map
+                  (((LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec (x ∘ ⇑e))).comp
+                        (LinearStudy.polynomialLinearChangeEquiv M hM).toRingEquiv.toRingHom).comp
+                    (MvPolynomial.rename ⇑e.symm).toRingHom)
+                  I =
+                Ideal.span (Set.range H)
+'LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.nonzero_ideal_meets_nilpotent_annihilator.{u_1} {A : Type u_1} [CommRing A] (N I : Ideal A)
   (hN : IsNilpotent N) (hI : I ≠ ⊥) : ∃ x ∈ I, x ≠ 0 ∧ x ∈ Submodule.annihilator N
 'LinearStudy.nonzero_ideal_meets_nilpotent_annihilator' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -4972,6 +5143,43 @@ LinearStudy.relativeJacobian {r c : ℕ} (H : Fin c → LinearStudy.AmbientRing 
 'LinearStudy.relativeJacobian' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.Lemma31Goal (r c : ℕ) : Prop
 'LinearStudy.Lemma31Goal' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.normal_jacobian_linear_shear.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3} [Field K]
+  [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] (A : Matrix β (α ⊕ β) K)
+  (hJ : IsUnit (A.submatrix id Sum.inr).det) :
+  have B := A.submatrix id Sum.inl;
+  have J := A.submatrix id Sum.inr;
+  have M := Matrix.fromBlocks 1 0 (-(J⁻¹ * B)) 1;
+  M.det = 1 ∧ A * M = Matrix.fromCols 0 J
+'LinearStudy.normal_jacobian_linear_shear' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_equations_adapted_linear_coordinates.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2} {β : Type u_3}
+  [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] (G : β → MvPolynomial (α ⊕ β) K) (x : α ⊕ β → K)
+  (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :
+  ∃ M,
+    M.det ≠ 0 ∧
+      have y := M⁻¹.mulVec x;
+      have H := fun i => (LinearStudy.polynomialLinearChange M) (G i);
+      (∀ (i : β), (MvPolynomial.eval y) (H i) = 0) ∧
+        (∀ (i : β) (j : α), (MvPolynomial.eval y) ((MvPolynomial.pderiv (Sum.inl j)) (H i)) = 0) ∧
+          ∀ (i j : β),
+            (MvPolynomial.eval y) ((MvPolynomial.pderiv (Sum.inr j)) (H i)) =
+              (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i))
+'LinearStudy.polynomial_equations_adapted_linear_coordinates' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomial_equations_formal_firstOrder_normal_form.{u_1, u_2, u_3} {K : Type u_1} {α : Type u_2}
+  {β : Type u_3} [Field K] [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β] [Nonempty β]
+  (G : β → MvPolynomial (α ⊕ β) K) (x : α ⊕ β → K) (h0 : ∀ (i : β), (MvPolynomial.eval x) (G i) = 0)
+  (hJ : IsUnit (Matrix.det fun i j => (MvPolynomial.eval x) ((MvPolynomial.pderiv (Sum.inr j)) (G i)))) :
+  ∃ M,
+    M.det ≠ 0 ∧
+      ∃ H,
+        (∀ (i : β), H i - MvPowerSeries.X (Sum.inr i) ∈ IsLocalRing.maximalIdeal (MvPowerSeries (α ⊕ β) K) ^ 2) ∧
+          Ideal.span (Set.range H) =
+            Ideal.span
+              (Set.range fun i =>
+                (LinearStudy.formalPolynomialAtPoint (M⁻¹.mulVec x)) ((LinearStudy.polynomialLinearChange M) (G i)))
+'LinearStudy.polynomial_equations_formal_firstOrder_normal_form' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.polynomialDoubleTensor.{u_1, u_2, u_3} {K : Type u_1} {A : Type u_2} {ι : Type u_3} [CommRing K]
   [CommRing A] [Algebra K A] (q : MvPowerSeries ι K →ₐ[K] A) : MvPolynomial (ι ⊕ ι) K →ₐ[K] TensorProduct K A A
 'LinearStudy.polynomialDoubleTensor' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -185,3 +185,19 @@ public import Linear.SmoothCommonFormalCoordinates
 public import Linear.LocalizedDifferentialRank
 
 public import Linear.SmoothLocusCoordinates
+
+public import Linear.FirstJetNormalForm
+
+public import Linear.TargetLinearNormal
+
+public import Linear.PolynomialLinearGrading
+
+public import Linear.OriginalIdealFirstOrder
+
+public import Linear.SmoothTargetFirstOrder
+
+public import Linear.FirstOrderLocalParameters
+
+public import Linear.PolynomialFirstJet
+
+public import Linear.PolynomialLocalParameters
