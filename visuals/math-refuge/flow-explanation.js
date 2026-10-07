@@ -18,14 +18,14 @@ export function explainedFlow(page,language,measure,hideHeading=false){
   for(const size of [46,44,42,40,38,36,34,32,30,28,26])for(const width of page.boardLines?[1328]:[1328,1200,1080,960,840,760])for(const breakClauses of page.boardLines?[false]:[true,false]){
     for(const requestedScale of [1.5,1.3,1.15,1,.85,.7,.65]){
       const items=[];
-      const text=(value,role)=>{for(const line of wrap(value,size,width,breakClauses)){
+      const text=(value,role,mainLine)=>{for(const line of wrap(value,size,width,breakClauses)){
         const ink=measure.bounds?.(line,size)||{ascent:size,descent:12};
-        items.push({text:line,role,size,ascent:ink.ascent,height:Math.max(size+20,ink.ascent+ink.descent+8)});
+        items.push({text:line,role,mainLine,size,ascent:ink.ascent,height:Math.max(size+20,ink.ascent+ink.descent+8)});
       }};
-      const formula=(source,index)=>{const scale=Math.min(requestedScale,1328/source[2]);items.push({source,index,width:source[2]*scale,height:source[3]*scale});};
+      const formula=(source,index,mainLine)=>{const scale=Math.min(requestedScale,1328/source[2]);items.push({source,index,mainLine,width:source[2]*scale,height:source[3]*scale});};
       if(page.boardLines){
         let index=0;
-        for(const line of page.boardLines){if(line.tex){formula(page.formulaRows[index],index);index++;}else text(language==='en'?line.enText:line.text,'explanation');}
+        for(const [lineIndex,line] of page.boardLines.entries()){if(line.tex){formula(page.formulaRows[index],index,lineIndex+1);index++;}else text(language==='en'?line.enText:line.text,'explanation',lineIndex+1);}
       }else for(const b of blocks){
         if(!b.explanation)text(b.cue,'cue');
         for(const {source,index} of b.formulas){

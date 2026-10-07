@@ -9,7 +9,9 @@ export function equationLines(tex){
     if(body.startsWith('\\end{',i)){depth--;i=body.indexOf('}',i+5);continue;}
     if(body[i]==='\\'&&body[i+1]==='\\'&&depth===0&&braces===0){
       rows.push(body.slice(start,i));i++;
-      if(body[i+1]==='[')i=body.indexOf(']',i+2);
+      // A leading mathematical bracket is not a TeX row-spacing argument.
+      const spacing=body.slice(i+1).match(/^\[\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+)\s*(?:pt|pc|in|bp|cm|mm|dd|cc|sp|em|ex|mu)\s*\]/);
+      if(spacing)i+=spacing[0].length;
       start=i+1;continue;
     }
     if(body[i]==='\\'&&/[{}]/.test(body[i+1]||'')){i++;continue;}

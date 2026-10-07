@@ -18,10 +18,19 @@ export function bindPhysicalButtons(canvas,controls,hitTest,activate){
   function up(e){
     if(!press||press.id!==e.pointerId)return;
     const action=Math.hypot(e.clientX-press.x,e.clientY-press.y)<7&&hitTest(e)===press.object?press.object.userData.action:null;
+    if(action&&press.object.userData.smartGlass)press.object.userData.clickPulse=1;
     release();canvas.releasePointerCapture?.(e.pointerId);e.preventDefault();e.stopImmediatePropagation();if(action)activate(action);
   }
   function cancel(){release();highlight(null);}
   const events=[['pointerdown',down],['pointerup',up],['pointermove',move],['pointerleave',leave],['pointercancel',cancel],['lostpointercapture',cancel]];
   for(const [type,fn] of events)canvas.addEventListener(type,fn,true);
   return {dispose(){release();highlight(null);for(const [type,fn] of events)canvas.removeEventListener(type,fn,true);}};
+}
+
+// Only the lectern's explicit scrubber resolves a page from its UV coordinate.
+// Audio download progress is a number, not the identity of a scrubber.
+export function physicalHitAction(hit,{startAt=0,stopAt=0}={}){
+ const action=hit.object.userData.action;
+ if(hit.object.userData.progress===true&&action?.startsWith('page:seek:')&&Number.isFinite(hit.uv?.x))return 'page:seek:'+(startAt+Math.round(Math.max(0,Math.min(1,hit.uv.x))*(stopAt-startAt)));
+ return action;
 }

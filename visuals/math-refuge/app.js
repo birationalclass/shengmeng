@@ -1,3 +1,4 @@
+import {preparePanelShell,bindPanelDismissals} from './panel-shell.js?v=smart-voice-9';
 import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
 import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
@@ -27,7 +28,7 @@ import {TimePresentation} from './time-presentation.js?v91-shore';
 import {hallFloorRoute,curveClearsHall,cameraProbeRadius,HallPassageMask} from './hall-camera-route.js?v=sw-corner-1';
 const hallPassageMask=new HallPassageMask();
 import {GRAPHICS_PRESETS,recommendedGraphics,initialGraphics,resolutionRatio,readingPixelRatio} from './graphics-settings.js?v=smart-default-81';
-import {createPerformanceMonitor} from './performance-monitor.js?v=focus-pause';
+import {createPerformanceMonitor} from './performance-monitor.js?v=smart-voice-9';
 import {mobilePolicy,withDeadline} from './mobile-runtime.js?v81-imac';
 import {createResidenceNotes} from './residence-notes.js?v76-villa';
 import {RenderBudget,createGpuTimer} from './render-budget.js?v84-display';
@@ -45,20 +46,21 @@ import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
 import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
-import {createLecture} from './lecture.js?v=report-seminar-5';
+import {createLecture} from './lecture.js?v=opening-play-11';
+import {reportVoicePresentation} from './report-voice.js?v=smart-voice-9';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
 import {displayProfile,boardFraming} from './display-profile.js?v84-display';
 import {configureCameraInput} from './camera-input.js?v=mouse-soft-110';
-import {bindCameraIntent} from './camera-intent.js?v=8-manual';
+import {bindCameraIntent} from './camera-intent.js?v=smart-voice-9';
 import {SHOTS,smoothProgress,advanceShot,transitionSeconds} from './camera-paths.js?v=concert-53';
-import {BoardFollow} from './board-follow.js?v=22-handwritten-cover';
+import {BoardFollow} from './board-follow.js?v=smart-voice-9';
 import {RetreatTime} from './retreat-time.js?v91-shore';
 import {shanghaiHour,solarEvents,solarState} from './solar-state.js?v91-shore';
 import {createShanghaiWeather} from './shanghai-weather.js?v=reflection-ready-115';
 import {constrainAboveWater} from './camera-bounds.js?v=22-handwritten-cover';
-import {bindPhysicalButtons} from './physical-buttons.js?v=36-board-detail';
+import {bindPhysicalButtons,physicalHitAction} from './physical-buttons.js?v=smart-voice-9';
 import {motionCoordinate} from './camera-motion.js';
 let boardWritingStyle='refined';try{if(localStorage.getItem('refuge-board-writing-style')==='marck')boardWritingStyle='marck';}catch{}
 const sceneTime=new RetreatTime(()=>new Date(),shanghaiHour),boardFollow=new BoardFollow();let visualHour=sceneTime.hour,lastShadowHour=sceneTime.hour,weatherReading=null,weatherStatus="loading";
@@ -67,7 +69,19 @@ const timePresentation=new TimePresentation(sceneTime.hour);
 const sunriseIntro=new SunriseIntro(sceneTime,timePresentation);
 sunriseIntro.prepare(solarEvents(sceneTime.date).sunrise);
 visualHour=lastShadowHour=sceneTime.hour;
+let changingVoice=false,voiceLoadError='';
 const $=id=>document.getElementById(id);
+for(const id of ['lecturePanel','settings','timePanel','performancePanel','chalkReader','seminarPanel'])preparePanelShell($(id));
+bindPanelDismissals(document,[
+ {panel:$('lecturePanel'),triggers:[$('lectureButton')],close:()=>{$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');}},
+ {panel:$('settings'),triggers:[$('settingsButton')],close:()=>showSettings(false)},
+ {panel:$('timePanel'),triggers:[$('timeButton')],close:()=>closeTime()},
+ {panel:$('performancePanel'),triggers:[$('performanceButton')],close:()=>performanceMonitor.close()},
+ {panel:$('chalkReader'),triggers:[$('readerOpen')],close:()=>reader?.close()},
+ {panel:$('seminarPanel'),triggers:[$('chapters')],close:()=>setSeminarPanel(false)}
+]);
+try{if(localStorage.getItem('refuge-board-highlight')==='off')$('boardHighlight').value='off';}catch{}
+
 const performanceMonitor=createPerformanceMonitor();
 const movementHud=createMovementHud($('openingHint'),$('movementHud'));
 $('boardWritingStyle').value=boardWritingStyle;if(boardWritingStyle==='marck')$('boardWritingStyleStatus').textContent='Marck Script（舒展）· 原来的非笔顺显现方式。';
@@ -268,7 +282,7 @@ function applyShot(dt){
     if(blend.openingPath){
       camera.position.fromArray(blend.openingPath.sample(blend.elapsed));
       if(!blend.openingBoardStarted&&camera.position.x>=blend.openingPath.hallEntranceX){
-        blend.openingBoardStarted=true;rooms[0].beginOpening(reduced.matches);
+        blend.openingBoardStarted=true;if(!rooms[0].openingNarrated)rooms[0].beginOpening(reduced.matches);
       }
     }
     else if(blend.route)blend.route.getPointAt(k,camera.position);
@@ -280,12 +294,19 @@ function applyShot(dt){
       const arrival=blend.openingArrival;blend=null;
       if(arrival){
         sunriseIntro.arrive();retreat.fleet.startSunrisePass();
-        const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
-        // A small, interruptible indoor push with zero speed at both ends.
-        blend={elapsed:0,duration:15,position:camera.position.clone(),endPosition:camera.position.clone().addScaledVector(forward,.65),
-          target:controls.target.clone(),rotation:camera.quaternion.clone(),endRotation:camera.quaternion.clone(),
-          fov:camera.fov,distance:camera.position.distanceTo(controls.target),endDistance:camera.position.distanceTo(controls.target),
-          velocity:new THREE.Vector3(),acceleration:new THREE.Vector3(),settling:true};
+        if(rooms[0].openingNarrated){
+          const openingLecture=rooms[0];
+          void Promise.resolve(openingLecture.beginOpening(reduced.matches)).then(started=>{
+            if(started&&lecture===openingLecture){populateReport();reader?.close();selectShot(0);}
+          }).catch(fail);
+        }else{
+          const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
+          // A small, interruptible indoor push with zero speed at both ends.
+          blend={elapsed:0,duration:15,position:camera.position.clone(),endPosition:camera.position.clone().addScaledVector(forward,.65),
+            target:controls.target.clone(),rotation:camera.quaternion.clone(),endRotation:camera.quaternion.clone(),
+            fov:camera.fov,distance:camera.position.distanceTo(controls.target),endDistance:camera.position.distanceTo(controls.target),
+            velocity:new THREE.Vector3(),acceleration:new THREE.Vector3(),settling:true};
+        }
       }
     }
   }else{
@@ -365,7 +386,7 @@ function setQuality(){
   retreat.ocean.material.uniforms.windWaves.value=$('windWaves').value==='on'?1:0;retreat.ocean.material.uniforms.waveStrength.value=Math.max(.5,Number($('waveStrength').value)/100);retreat.ocean.material.uniforms.reflectionDetail.value=$('waterReflection').value==='full'?1:0;retreat.ocean.material.uniforms.sunReflection.value=$('sunReflection').value==='on'?1:0;$('waveStrengthValue').textContent=$('waveStrength').value+'%';
   const anisotropy=Math.min(Number($('textureFiltering').value),renderer.capabilities.getMaxAnisotropy()),seen=new Set();
   scene.traverse(o=>{if(o.userData.boardSurface)return;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m)for(const key of ['map','normalMap','roughnessMap']){const t=m[key];if(t&&!seen.has(t)&&!t.isRenderTargetTexture){seen.add(t);if(t.anisotropy!==anisotropy){t.anisotropy=anisotropy;t.needsUpdate=true;}}}});
-  rooms.forEach(room=>room.setClarity($('boardClarity').value));
+  rooms.forEach(room=>{room.setClarity($('boardClarity').value);room.setHighlight($('boardHighlight').value!=='off');});
 }
 function markManualGraphics(){ $('world').dataset.graphicsMode='manual';$('recommendStatus').textContent='当前使用手动配置 · 下次进入仍自动检测并采用智能推荐。'; }
 function applyGraphics(values){markManualGraphics();startupAutomatic=false;device.startup=false;for(const [id,value] of Object.entries(values)){const el=$(id);if(el&&graphicsKeys.includes(id))el.value=value;}setQuality();saveGraphics();}
@@ -546,12 +567,12 @@ try{
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   camera=new THREE.PerspectiveCamera(49,innerWidth/innerHeight,.2,12000);
   controls=new OrbitControls(camera,$('world'));cameraInput=configureCameraInput(controls,$('world'));
-  cameraIntent=bindCameraIntent(document,$('world'),stopTour);
+  cameraIntent=bindCameraIntent(document,$('world'),()=>{if(!controls.enabled)return;stopTour();if(SHOTS[shot].lecture&&cameraIntent.hasManualPointers())boardFollow.begin();});
   controls.minDistance=.4;controls.maxDistance=14000;controls.maxPolarAngle=Math.PI*.94;controls.enablePan=true;
   controls.addEventListener('change',()=>constrainAboveWater(camera,controls.target,retreat?.ocean.material.uniforms.oceanLevel.value??seaLevel*BUILDING_SCALE));
   controls.autoRotate=false;
-  controls.addEventListener('start',()=>{stopTour();if(SHOTS[shot].lecture)boardFollow.begin();});
-  controls.addEventListener('end',()=>{if(SHOTS[shot].lecture)boardFollow.end();});
+  controls.addEventListener('start',()=>{if(cameraIntent.hasPointers()&&!cameraIntent.hasManualPointers())return;stopTour();if(SHOTS[shot].lecture)boardFollow.begin();});
+  controls.addEventListener('end',()=>{if(SHOTS[shot].lecture&&boardFollow.interacting)boardFollow.end();});
   window.addEventListener('blur',()=>{if(boardFollow.interacting)boardFollow.end();});
   $('world').addEventListener('pointercancel',()=>{if(boardFollow.interacting)boardFollow.end();});
   camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);camera.fov=openingFrameFov(camera.aspect);camera.updateProjectionMatrix();controls.update();
@@ -580,14 +601,14 @@ try{
   retreat.setWeather(startupWeather,true);setQuality();
   await paintStartup(66,'准备报告厅');
   const lectureRoot=new THREE.Group();lectureRoot.name='East-facing compact auditorium blackboards';configureLectureRoot(lectureRoot);scene.add(lectureRoot);
-  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
+  lecture=await withDeadline(createLecture(lectureRoot,renderer,{onProgress:value=>reportSceneProgress(66+value*5,'准备报告厅'),floorMaterial:retreat.campus.carpetMaterial,isActive:()=>renderActivity.foreground,retractable:true,requireSelection:true,defaultReport:'ye',boardScale:device.boardScale,writingStyle:boardWritingStyle}),30000,'报告板书加载');retreat.roomFill.apply(lectureRoot);
   await withDeadline(lecture.prepareOpening(value=>reportSceneProgress(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
   for(let level=0;level<3;level++){
     await paintStartup(74+level*4,'准备讨论教室 '+(level+1));
     const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
+    const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
     room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
   }
   await paintStartup(88,'整理空间');
@@ -689,6 +710,7 @@ $('recommendGraphics').addEventListener('click',()=>{applyGraphics(recommendedGr
 for(const id of graphicsKeys.filter(k=>!['quality','adaptiveQuality'].includes(k)))$(id).addEventListener('change',()=>{if(retreat){markManualGraphics();startupAutomatic=false;device.startup=false;$('quality').value='custom';setQuality();saveGraphics();weatherGpuSamples=[];weatherGpuMs=null;}});
 $('waveStrength').addEventListener('input',()=>{$('waveStrengthValue').textContent=$('waveStrength').value+'%';});
 $('resolutionScale').addEventListener('input',()=>{$('resolutionValue').textContent=$('resolutionScale').value+'%';});
+$('boardHighlight').addEventListener('change',()=>{rooms.forEach(room=>room.setHighlight($('boardHighlight').value!=='off'));try{localStorage.setItem('refuge-board-highlight',$('boardHighlight').value);}catch{}});
 $('boardClarity').addEventListener('change',()=>{rooms.forEach(room=>room.setClarity($('boardClarity').value));try{localStorage.setItem('refuge-board-clarity',$('boardClarity').value);}catch{}});
 try{if(localStorage.getItem('refuge-board-clarity')==='natural')$('boardClarity').value='natural';}catch{}
 $('adaptiveQuality').addEventListener('change',()=>{if(retreat){markManualGraphics();startupAutomatic=false;device.startup=false;frameQuality.reset();renderBudget.reset();updateRenderBudget(performance.now());saveGraphics();}});
@@ -742,22 +764,38 @@ function populateReport(){
     const option=document.createElement('option'),copy=lecture.copy(i);option.value=String(i);option.textContent=`${copy.source} · ${copy.title}`;$('lecturePage').append(option);
   }
   $('reportSelect').replaceChildren(...lecture.reports.map(report=>{const option=document.createElement('option');option.value=report.id;option.textContent=report.speaker+' · '+report.topic;return option;}));
-  $('reportSelect').value=lecture.report.id;
+  $('reportSelect').value=lecture.report.id;populateVoiceOptions();
   $('lectureHeading').textContent=lecture.report.speaker+' · '+lecture.report.topic;
   for(const id of ['lectureSource','readerSource']){$(id).href=lecture.report.url;$(id).textContent=lecture.report.sourceLabel+' ↗';}
   $('world').dataset.report=lecture.report.id;controlLabel($('reportButton'),lecture.navigation?.sections?'选择本次小节':'选择报告人和主题');
   $('lectureProgress').max=String(lecture.progress.total);$('lectureProgress').value=String(lecture.progress.page+1);
 }
+function populateVoiceOptions(){
+ const selector=$('reportVoiceTone'),variants=lecture.report.narration?.voices||[];
+ const choices=lecture.report.narration?[{id:'original',label:'沈腾参考音色 · 完整报告'},...variants.filter(v=>v.id!=='original'),{id:'off',label:'关闭语音 · 仅板书'}]:[{id:'off',label:'此报告暂无语音'}];
+ selector.replaceChildren(...choices.map(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.label;return option;}));selector.value=lecture.report.narration?lecture.voiceTone:'off';selector.disabled=!lecture.report.narration;updateVoicePreferences();
+}
+function updateVoicePreferences(){
+ if(!lecture)return;const enabled=Boolean(lecture.report.narration),state=lecture.voiceState,selected=$('reportVoiceTone').value;
+ $('reportVoiceLoad').disabled=!enabled||changingVoice||state.phase==='loading';$('reportVoiceLoad').textContent=changingVoice?'正在加载…':selected==='off'?'关闭语音':'加载音色';
+ const manifest=lecture.voiceManifest,bytes=manifest?.chapters?.reduce((sum,c)=>sum+(c.bytes||0),0),size=bytes?(bytes/1e6).toFixed(2)+' MB':'';
+ $('reportVoiceInfo').textContent=voiceLoadError||state.phase==='error'?(voiceLoadError||state.error):changingVoice||state.phase==='loading'?'语音加载 · '+(state.progress===null?'…':Math.round(state.progress*100)+'%'):!enabled?'此报告暂无录制语音。':!lecture.voiceEnabled?'语音已关闭；保留当前板书。':manifest?(manifest.voice+' · '+size+' · '+Math.floor(manifest.duration/60)+' 分 '+Math.floor(manifest.duration%60)+' 秒。AI 合成，按章节加载。'):'选择音色后按需加载，网页开场不下载报告音频。';
+}
+$('reportVoiceTone').addEventListener('change',updateVoicePreferences);
+$('reportVoiceLoad').addEventListener('click',async()=>{
+ if(!lecture||changingVoice)return;const target=lecture;changingVoice=true;voiceLoadError='';updateVoicePreferences();
+ try{if(!await target.setVoiceTone($('reportVoiceTone').value))voiceLoadError=target.voiceState.error||'音色加载失败，请重试。';}catch(error){voiceLoadError=error.message;}finally{changingVoice=false;updateVoicePreferences();updateLectureUI();}
+});
 let changingLanguage=false,changingReport=false,reportLoadError='',reportProgress='',reportRequest=0;
-async function switchReport(id){
+async function switchReport(id,{autoplay=false}={}){
   if(!lecture||changingLanguage)return;
-  const request=++reportRequest;changingReport=true;reportLoadError='';
+  const request=++reportRequest;changingReport=true;reportLoadError='';voiceLoadError='';
   $('reportSelect').value=id;
   reportProgress='正在切换至 '+$('reportSelect').selectedOptions[0].textContent+'…';
   $('lectureStatus').textContent=reportProgress;$('mode').textContent=reportProgress;
   $('reportSelect').setAttribute('aria-busy','true');
-  try{const targetLecture=lecture;if(!await targetLecture.setReport(id)||request!==reportRequest||lecture!==targetLecture)return;populateReport();if(reduced.matches){lecture.playing=false;lecture.staticPage();}reader?.close();selectShot(0);}
-  catch(error){if(request!==reportRequest)return;reportLoadError=error.message;$('lectureStatus').textContent=error.message;$('reportSelect').value=lecture.report.id;$('mode').textContent=error.message;}
+  try{const targetLecture=lecture;if(!await targetLecture.setReport(id,{autoplay})||request!==reportRequest||lecture!==targetLecture)return;populateReport();if(reduced.matches){if(!autoplay)lecture.playing=false;lecture.staticPage();}reader?.close();selectShot(0);}
+  catch(error){if(request!==reportRequest)return;reportLoadError=error.message;$('lectureStatus').textContent=error.message;$('reportSelect').value=lecture.report.id;populateVoiceOptions();$('mode').textContent=error.message;}
   finally{if(request===reportRequest){changingReport=false;reportProgress='';$('reportSelect').setAttribute('aria-busy','false');}}
 }
 $('reportButton').addEventListener('click',()=>{if(!lecture||!cameraIntent.canActivate())return;$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');lecture.screenAction('screen:report');selectShot(0,true);reader?.close();});
@@ -773,17 +811,17 @@ function installPhysicalControls(){
   const hit=e=>{
     const rect=$('world').getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
     scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);ray.setFromCamera(pointer,camera);
-    ray.far=15;const candidate=ray.intersectObjects([...retreat.campus.automaticDoors.targets,...retreat.campus.swivelChairs.targets,...(physicalRoom===activeRoom?[...lecture.hoverTargets.filter(t=>t.visible&&lecture.root.visible),...roomLecterns[activeRoom].targets]:[])],false)[0];if(!candidate||candidate.distance>15)return null;
+    ray.far=15;const candidate=ray.intersectObjects([...retreat.campus.automaticDoors.targets,...retreat.campus.swivelChairs.targets,...(physicalRoom===activeRoom?[...lecture.hoverTargets.filter(t=>t.visible&&lecture.root.visible),...roomLecterns[activeRoom].targets]:[])],false)[0];$('world').dataset.physicalHit=candidate?.object.name||'';$('world').dataset.physicalBlock='';if(!candidate||candidate.distance>15)return null;
     // Ignore transparent glazing, but opaque roof/walls must block a press.
     for(const h of (ray.far=candidate.distance,ray.intersectObjects(scene.children.filter(o=>o.visible),true))){
       if(h.distance>=candidate.distance-.015)break;
       let visible=true;for(let p=h.object;p;p=p.parent)if(!p.visible)visible=false;
       if(!visible||h.object.parent===candidate.object||h.object===candidate.object)continue;
       const material=h.object.material;if(material?.transparent&&material.opacity<.5)continue;
-      if(h.object.isMesh)return null;
+      if(h.object.isMesh){$('world').dataset.physicalBlock=h.object.name+' | '+h.object.material?.type;return null;}
     }
     if(retreat.campus.swivelChairs.targets.includes(candidate.object)){candidate.object.userData.action='chair:turn:'+candidate.instanceId;candidate.object.userData.label='旋转座椅';}
-    if(candidate.object.userData.progress)candidate.object.userData.action='page:seek:'+(lecture.clock.startAt+Math.round(candidate.uv.x*(lecture.clock.stopAt-lecture.clock.startAt)));
+    candidate.object.userData.action=physicalHitAction(candidate,lecture.clock);$('world').dataset.physicalAction=candidate.object.userData.action||'';
     return candidate.object;
   };
   $('world').addEventListener('pointermove',()=>lecture?.screenWake?.(),{passive:true});
@@ -799,9 +837,10 @@ function installPhysicalControls(){
     else if(action.startsWith('page:seek:'))seekLecture(Number(action.split(':')[2]));
     else if(action.startsWith('seminar:section:'))selectSeminarPart(lecture.navigation.sections.find(s=>s.id===action.split(':')[2]));
     else if(action.startsWith('seminar:'))lecture.screenAction(action);
-    else if(action==='voice:toggle')void lecture.toggleVoice();
+    else if(action==='voice:toggle')$('lecturePlay').click();
+    else if(action==='camera:toggle'){lecture.autoCamera=!lecture.autoCamera;if(lecture.autoCamera){boardFollow.reset();focusLecture();}else stopTour();updateLectureUI();}
     else if(action==='language')switchChalkLanguage();
-    else if(action.startsWith('report:'))switchReport(action.slice(7));
+    else if(action.startsWith('report:'))switchReport(action.slice(7),{autoplay:true});
   });
 }
 $('fullscreen').addEventListener('click',async()=>{
@@ -841,10 +880,12 @@ $('boardStorage').addEventListener('click',()=>{if(!lecture?.retractable)return;
 let lectureStatus='';
 function updateLectureUI(){
   $('boardStorage').hidden=!lecture.retractable;controlLabel($('boardStorage'),lecture.stored?'升起黑板':'收起黑板');$('boardStorage').setAttribute('aria-pressed',String(lecture.stored));
-  const status=reportProgress||reportLoadError||lecture.status();if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
-  $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
+  const voice=lecture.voiceState,voiceUI=reportVoicePresentation(voice);updateVoicePreferences();
+  const status=reportProgress||reportLoadError||(voiceUI.message?voiceUI.message+' · '+lecture.status():lecture.status());if(status!==lectureStatus){$('lectureStatus').textContent=status;lectureStatus=status;}
+  $('readerOpen').disabled=!lecture.hasSelection;$('lecturePlay').disabled=!lecture.hasSelection||voiceUI.busy||lecture.clock.ended;$('lectureNext').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.stopAt;$('lecturePrevious').disabled=!lecture.hasSelection||lecture.clock.page===lecture.clock.startAt;
   for(const id of ['lectureProgress','lecturePage','lectureRewrite'])$(id).disabled=!lecture.hasSelection;
-  controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':lecture.playing?(lecture.report.narration?'暂停报告':'暂停板书'):(lecture.report.narration?'聆听报告':'继续板书'));$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  controlLabel($('lecturePlay'),lecture.clock.ended?'报告已结束':voiceUI.buttonLabel||(lecture.playing?'暂停板书':'继续板书'));$('lecturePlay').setAttribute('aria-pressed',String(lecture.playing));
+  $('world').dataset.voicePhase=voice.phase;$('world').dataset.voiceTime=voice.time.toFixed(1);$('world').dataset.voiceDuration=voice.duration.toFixed(1);const highlight=lecture.highlightState;$('world').dataset.voiceHighlight=highlight?highlight.page+':'+highlight.row+':'+highlight.side:'';const cue=lecture.narrationCue;$('world').dataset.voiceRow=String(cue?.row??-1);
   $('lectureProgressValue').textContent=lecture.hasSelection?`${lecture.progress.page+1} / ${lecture.progress.total}`:'—';
   if(document.activeElement!==$('lectureProgress'))$('lectureProgress').value=String(lecture.progress.page+1);
   if(document.activeElement!==$('lecturePage'))$('lecturePage').value=String(lecture.clock.page);
@@ -958,6 +999,7 @@ $('seminarClose').addEventListener('click',()=>setSeminarPanel(false));
 
 function syncRoomControls(){
  const room=teachingRoomAt(camera.position);
+ rooms.forEach((target,index)=>target.setPresence(room===index));
  if(room!==physicalRoom){
    physicalRoom=room;$('world').dataset.physicalRoom=String(room);
    if(room<0){$('lecturePanel').hidden=true;$('lectureButton').setAttribute('aria-expanded','false');reader?.close();}

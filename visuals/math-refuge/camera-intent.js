@@ -9,7 +9,8 @@ export function bindCameraIntent(root,canvas,onManual,now=()=>performance.now())
     if(pointers.size===0)blockedUntil=-Infinity; // a new, deliberate gesture
     const camera=Boolean(onCanvas(event.target));
     pointers.set(event.pointerId,{x:event.clientX,y:event.clientY,dragged:false,camera,type:event.pointerType});
-    if(camera)onManual(); // capture phase, before OrbitControls changes the view
+    // A press alone does not move the camera. Modeled controls consume taps.
+    // Claim manual viewing only on an actual drag (or OrbitControls start).
   }
   function move(event){
     const p=pointers.get(event.pointerId);if(!p)return;
@@ -25,15 +26,15 @@ export function bindCameraIntent(root,canvas,onManual,now=()=>performance.now())
     pointers.delete(event.pointerId);
   }
   function cancel(event){
-    const p=pointers.get(event.pointerId);if(p?.camera||p?.dragged)onManual();
+    const p=pointers.get(event.pointerId);if(p?.dragged)onManual();
     pointers.delete(event.pointerId);blockedUntil=now()+600;
   }
   function canActivate(){return pointers.size===0&&now()>=blockedUntil;}
   function click(event){if(relevant(event.target)&&!canActivate()){event.preventDefault();event.stopImmediatePropagation();}}
-  function abandon(){if(pointers.size){onManual();pointers.clear();blockedUntil=now()+600;}}
+  function abandon(){if(pointers.size){if([...pointers.values()].some(p=>p.dragged))onManual();pointers.clear();blockedUntil=now()+600;}}
   const visibility=()=>{if(root.hidden)abandon();};
   const bindings=[['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',cancel],['click',click]];
   for(const [name,fn] of bindings)root.addEventListener(name,fn,true);
   root.defaultView?.addEventListener('blur',abandon);root.addEventListener('visibilitychange',visibility);
-  return {canActivate,hasPointers:()=>pointers.size>0,dispose(){for(const [name,fn] of bindings)root.removeEventListener(name,fn,true);root.defaultView?.removeEventListener('blur',abandon);root.removeEventListener('visibilitychange',visibility);pointers.clear();}};
+  return {canActivate,hasPointers:()=>pointers.size>0,hasManualPointers:()=>[...pointers.values()].some(p=>p.dragged),dispose(){for(const [name,fn] of bindings)root.removeEventListener(name,fn,true);root.defaultView?.removeEventListener('blur',abandon);root.removeEventListener('visibilitychange',visibility);pointers.clear();}};
 }

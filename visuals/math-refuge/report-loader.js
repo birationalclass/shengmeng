@@ -5,9 +5,9 @@ export function createReportLoader(){
   return function prepare(report){
     if(jobs.has(report.id))return jobs.get(report.id);
     const job=(async()=>{
-      const manifest=JSON.parse(await fetchLocal(report.manifest+'?v=report-seminar-5'));
+      const manifest=JSON.parse(await fetchLocal(report.manifest+'?v=report-line-sync-6'));
       if(!manifest.pages?.length)throw new Error('报告内容为空');
-      const cover=await decodeImage(manifest.pages[0].formulaAsset+'?v=report-seminar-5');
+      const cover=await decodeImage(manifest.pages[0].formulaAsset+'?v=report-line-sync-6');
       return {pages:manifest.pages,cover,navigation:{chapters:manifest.chapters,sections:manifest.sections,erratum:manifest.erratum}};
     })();
     jobs.set(report.id,job);

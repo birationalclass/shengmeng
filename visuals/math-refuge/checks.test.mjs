@@ -840,7 +840,7 @@ test('classroom assembles six independent boards and survives writing, erasing a
     storage.screenAction('screen:power');for(let i=0;i<10;i++)storage.update(.1);assert(storage.hoverTargets.some(b=>b.userData.action==='screen:power'));assert(!storage.hoverTargets.some(b=>b.userData.action==='screen:media'));
     await storage.setReport('ye');
     await storage.prepareOpening();
-    assert.equal(storage.report.id,'hu','Opening always demonstrates the first speaker, even after another report');
+    assert.equal(storage.report.id,'ye','Opening defaults to Ye, independently of catalog order');assert.equal(storage.voiceState.phase,'idle','The opening clears narration and never fetches speech');
     assert.equal(storage.clock.page,6);assert.equal(storage.clock.phase,'hold');
     assert.equal(storage.clock.slots[boardSlot(7)].page,-1,'The next board is clean before entry');
     assert(!storage.playing&&!storage.stored&&rig.visible);assert.equal(rig.position.y,0);
@@ -927,7 +927,7 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   const guard=bindCameraIntent(root,canvas,()=>{touring=false;manualCount++;},()=>now);
   function emit(type,extra={}){const event={pointerId:1,pointerType:'mouse',clientX:10,clientY:10,target:canvas,preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;},...extra};handlers.get(type)?.(event);return event;}
   for(const pointerType of ['mouse','touch','pen']){
-    touring=true;emit('pointerdown',{pointerType});assert(!touring);assert(!guard.canActivate());
+    touring=true;emit('pointerdown',{pointerType});assert(touring,'a press without camera movement keeps automatic viewing');assert(!guard.canActivate());
     emit('pointermove',{clientX:100,pointerType});emit('pointerup',{clientX:100,pointerType});
     const click=emit('click',{target:button});assert(click.prevented&&click.stopped);assert(!guard.canActivate());assert(!touring);
     now+=1000;assert(guard.canActivate());assert(!touring,'Idle time must never resume the tour');
@@ -941,6 +941,10 @@ test('drag-release clicks never restart touring; fresh clicks and keyboard remai
   emit('pointerdown',{pointerType:'touch',pointerId:1});emit('pointerdown',{pointerType:'touch',pointerId:2});
   emit('pointerup',{pointerId:1});assert(!guard.canActivate());emit('pointercancel',{pointerId:2});assert(!guard.canActivate());
   now+=1000;emit('pointerdown');windowHandlers.get('blur')();assert(!guard.hasPointers());now+=1000;assert(guard.canActivate());
+  for(const pointerType of ['mouse','touch','pen']){
+    const count=manualCount;emit('pointerdown',{pointerType});assert(!guard.hasManualPointers());emit('pointerup',{pointerType});assert.equal(manualCount,count,'A stationary screen tap preserves following');
+    emit('pointerdown',{pointerType});emit('pointercancel',{pointerType});assert.equal(manualCount,count,'Canceling a stationary press does not claim camera control');
+  }
   guard.dispose();assert.equal(handlers.size,0);assert.equal(windowHandlers.size,0);
   const app=await fs.readFile(new URL('./app.js?v=43-tight-boards',import.meta.url),'utf8');
   assert.equal([...app.matchAll(/resumeTour\(\)/g)].length,2,'Only the definition and explicit tour-button handler may start touring');
@@ -1004,7 +1008,7 @@ test('tour resume blends from current view without a blackout or teleport',async
 
 test('manual board viewing yields after the configured idle time without restarting a tour',async()=>{
   const {BoardFollow}=await import('./board-follow.js');let now=0;
-  const follow=new BoardFollow(20,()=>now);assert(follow.following);
+  assert.equal(new BoardFollow().delay,5,'five seconds is the default');const follow=new BoardFollow(20,()=>now);assert(follow.following);
   follow.begin();now=45;assert(!follow.following,'A held drag never times out');
   follow.end();now=64.99;assert(!follow.following);now=65;assert(follow.following);
   follow.touch();now=70;follow.touch();now=89;assert(!follow.following);now=90;assert(follow.following);
