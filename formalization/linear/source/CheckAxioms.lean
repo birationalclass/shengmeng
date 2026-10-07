@@ -1,6 +1,8 @@
 import Linear
 set_option pp.universes false
 set_option pp.proofs false
+#check LinearStudy.actual_target_normal_equations_unramified_pullback_parameters
+#print axioms LinearStudy.actual_target_normal_equations_unramified_pullback_parameters
 #check LinearStudy.point_local_unramified_parameters_generate
 #print axioms LinearStudy.point_local_unramified_parameters_generate
 #check LinearStudy.smooth_actual_unramified_pullback_parameters
@@ -181,6 +183,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.span_unit_scaled_family
 #check LinearStudy.exists_polynomial_local_generators_of_conormal_basis
 #print axioms LinearStudy.exists_polynomial_local_generators_of_conormal_basis
+#check LinearStudy.constructed_normal_target_tangent_parameters
+#print axioms LinearStudy.constructed_normal_target_tangent_parameters
 #check LinearStudy.tensorFunctionalContraction_left
 #print axioms LinearStudy.tensorFunctionalContraction_left
 #check LinearStudy.tensorFunctionalContraction_right
@@ -701,6 +705,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomialSmoothFormalMap_isUnit_iff
 #check LinearStudy.polynomialSmoothFormalMap_target_local_generators
 #print axioms LinearStudy.polynomialSmoothFormalMap_target_local_generators
+#check LinearStudy.point_local_quotient_maximalIdeal_map
+#print axioms LinearStudy.point_local_quotient_maximalIdeal_map
 #check LinearStudy.local_pullback_ideal_le
 #print axioms LinearStudy.local_pullback_ideal_le
 #check LinearStudy.pointLocalQuotientPullback
@@ -775,6 +781,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.oneVariable_closedFiber_jacobian
 #check LinearStudy.original_local_ideal_firstOrder_normal_form
 #print axioms LinearStudy.original_local_ideal_firstOrder_normal_form
+#check LinearStudy.original_local_ideal_normal_polynomial_generators
+#print axioms LinearStudy.original_local_ideal_normal_polynomial_generators
+#check LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
+#print axioms LinearStudy.smooth_point_original_ideal_normal_polynomial_generators
 #check LinearStudy.field_isCohenMacaulay
 #print axioms LinearStudy.field_isCohenMacaulay
 #check LinearStudy.polynomial_origin_height
@@ -841,6 +851,14 @@ set_option pp.proofs false
 #print axioms LinearStudy.maximalResidueEvaluation_selectors
 #check LinearStudy.perfect_nilradical_socle_weighted_evaluation
 #print axioms LinearStudy.perfect_nilradical_socle_weighted_evaluation
+#check LinearStudy.pointLocalCoordinateEquiv
+#print axioms LinearStudy.pointLocalCoordinateEquiv
+#check LinearStudy.pointLocalCoordinateEquiv_mk
+#print axioms LinearStudy.pointLocalCoordinateEquiv_mk
+#check LinearStudy.pointLocalCoordinateEquiv_symm_mk
+#print axioms LinearStudy.pointLocalCoordinateEquiv_symm_mk
+#check LinearStudy.actual_point_parameters_transport_under_coordinates
+#print axioms LinearStudy.actual_point_parameters_transport_under_coordinates
 #check LinearStudy.powerSeries_polynomial_equations_unit_change
 #print axioms LinearStudy.powerSeries_polynomial_equations_unit_change
 #check LinearStudy.polynomial_double_monomial_split
@@ -1001,6 +1019,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.polynomial_firstOrder_normal_pointIdeal
 #check LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient
 #print axioms LinearStudy.polynomial_firstOrder_tangents_generate_local_quotient
+#check LinearStudy.ideal_span_invertible_scalar_combinations
+#print axioms LinearStudy.ideal_span_invertible_scalar_combinations
+#check LinearStudy.normalize_polynomial_normal_equations_firstOrder
+#print axioms LinearStudy.normalize_polynomial_normal_equations_firstOrder
+#check LinearStudy.polynomial_equations_adapted_normal_generators
+#print axioms LinearStudy.polynomial_equations_adapted_normal_generators
 #check LinearStudy.polynomial_origin_radical
 #print axioms LinearStudy.polynomial_origin_radical
 #check LinearStudy.polynomialQuotient_finite_of_origin_zeroLocus
@@ -1451,6 +1475,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.exists_local_extension_generators_of_cotangent_basis
 #check LinearStudy.exists_local_extension_generators_of_formallySmooth
 #print axioms LinearStudy.exists_local_extension_generators_of_formallySmooth
+#check LinearStudy.smooth_generators_coordinate_split_with_rank
+#print axioms LinearStudy.smooth_generators_coordinate_split_with_rank
 #check LinearStudy.exists_coordinate_split
 #print axioms LinearStudy.exists_coordinate_split
 #check LinearStudy.polynomial_eval_coordinate_equiv
@@ -1579,6 +1605,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.smooth_point_original_ideal_firstOrder_normal_form
 #check LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form
 #print axioms LinearStudy.smoothLocus_point_original_ideal_firstOrder_normal_form
+#check LinearStudy.smooth_point_constructs_original_polynomial_parameters
+#print axioms LinearStudy.smooth_point_constructs_original_polynomial_parameters
+#check LinearStudy.smoothLocus_constructs_original_polynomial_parameters
+#print axioms LinearStudy.smoothLocus_constructs_original_polynomial_parameters
+#check LinearStudy.smooth_target_constructs_unramified_pullback_parameters
+#print axioms LinearStudy.smooth_target_constructs_unramified_pullback_parameters
 #check LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
 #print axioms LinearStudy.nonzero_ideal_meets_nilpotent_annihilator
 #check LinearStudy.nonzero_ideal_meets_socle

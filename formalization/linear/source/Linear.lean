@@ -201,3 +201,21 @@ public import Linear.FirstOrderLocalParameters
 public import Linear.PolynomialFirstJet
 
 public import Linear.PolynomialLocalParameters
+
+public import Linear.PolynomialNormalEquations
+
+public import Linear.SmoothCoordinateRank
+
+public import Linear.OriginalPolynomialNormal
+
+public import Linear.ConstructedTargetParameters
+
+public import Linear.LocalQuotientMaximalIdeal
+
+public import Linear.ActualTargetParameters
+
+public import Linear.PointLocalCoordinateEquiv
+
+public import Linear.SmoothTargetParameters
+
+public import Linear.SmoothUnramifiedParameters
