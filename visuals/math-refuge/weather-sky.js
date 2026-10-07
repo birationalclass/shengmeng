@@ -1,5 +1,5 @@
 import {fadeToward} from './effect-fade.js?v=arrival-light-74';
-import {deferAsset} from './deferred-textures.js?v=startup-flow-145';
+import {deferAsset} from './deferred-textures.js?v=hall-first-12';
 import {solarRefractionGLSL} from './solar-optics.js?v86-environment';
 import * as THREE from 'three';
 import {createVolumetricClouds} from './volumetric-clouds.js?v=cloud-layout-149';

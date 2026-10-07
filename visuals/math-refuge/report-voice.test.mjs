@@ -119,3 +119,9 @@ test('loading ring follows bytes and completes before smoothly turning into play
 test('changing voice maps the same mathematical row rather than copying its old seconds',()=>{
  const previous={duration:100,paragraphs:[{page:1,section:1,paragraph:2,role:'line',row:2,start:20,end:30}]},next={duration:110,paragraphs:[{page:1,section:1,paragraph:3,role:'line',row:2,start:40,end:60}],boards:[{page:1,writeStart:35}]};assert.equal(mapNarrationPosition(previous,next,25),50);assert.equal(mapNarrationPosition(previous,{...next,paragraphs:[]},25),35);assert.equal(mapNarrationPosition(previous,next,150),110);
 });
+
+test('moving to the next blackboard releases the previous audio and keeps only current/next files',async()=>{
+ const h=harness();await h.voice.select(report);await h.voice.toggle();h.voice.update();await tick();assert.equal(h.revoked.length,0);
+ h.audios[0].dispatchEvent(new Event('ended'));await tick();assert.equal(h.voice.state.chapter,1);assert.equal(h.revoked.length,1);
+ await h.voice.seek(2);assert.equal(h.voice.state.chapter,0);assert.equal(h.calls.filter(url=>url.endsWith('/a.mp3')).length,2,'backtracking reloads released audio');h.voice.dispose();
+});

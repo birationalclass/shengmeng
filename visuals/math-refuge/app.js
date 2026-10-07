@@ -3,7 +3,7 @@ import {capturePhoto,downloadPhoto} from './photo.js?v=photo-151';
 import {regionAnchor,distanceLabel} from './region-distance.js';
 import {twilightCloudFactor} from './twilight-clouds.js?v=cloud-rate-142';
 import {hallOrbit} from './hall-orbit.js';
-import {startDeferredTextures} from './deferred-textures.js?v=startup-flow-145';
+import {startDeferredTextures} from './deferred-textures.js?v=hall-first-12';
 import {acceptsStartupQuality} from './startup-probe.js';
 import {RenderChangeGate} from './render-change-gate.js';
 import {renderRoomAction} from './room-actions.js?v=skill-arc-85';
@@ -45,9 +45,9 @@ import {EffectComposer} from './vendor/postprocessing/EffectComposer.js';
 import {RenderPass} from './vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from './vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from './vendor/postprocessing/OutputPass.js';
-import {createRetreat,createArrivalEnvironment} from './scene.js?v=cloud-layout-149';
-import {createLecture} from './lecture.js?v=opening-play-11';
-import {reportVoicePresentation} from './report-voice.js?v=smart-voice-9';
+import {createRetreat,createArrivalEnvironment} from './scene.js?v=hall-first-12';
+import {createLecture} from './lecture.js?v=board-audio-12';
+import {reportVoicePresentation} from './report-voice.js?v=board-audio-12';
 import {configureLectureRoot,lectureViewOffset,BUILDING_SCALE,DECK_Y,HALL,SEAT_ROWS,SEAT_COLUMNS} from './site-layout.js?v44-hall-clearance';
 import {seaLevel} from './landscape-shape.js?v44-hall-clearance';
 import {createChalkReader} from './chalk-reader.js?v=inline-root-1';
@@ -249,6 +249,8 @@ function beginTransition(){
 }
 function selectShot(index,reportView=false,openingArrival=false){
   if(cameraLocked()&&!openingArrival)return;
+  if(pendingRoom!==-1){++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;}
+  if(entered&&!openingArrival)startCampusTextures();
   if(sunriseIntro.waiting&&!openingArrival){sunriseIntro.cancel();sceneTime.setRate(1);sceneTime.sync();$('timeRate').value='1';}
   speakerView=false;
   choosingReport=reportView;opening=null;shot=index;time=SHOTS[index].walk||SHOTS[index].hallOrbit?0:.85;boardFollow.reset();touring=false;
@@ -293,7 +295,7 @@ function applyShot(dt){
     if(k===1){
       const arrival=blend.openingArrival;blend=null;
       if(arrival){
-        sunriseIntro.arrive();retreat.fleet.startSunrisePass();
+        sunriseIntro.arrive();retreat.fleet.startSunrisePass();startCampusTextures();
         if(rooms[0].openingNarrated){
           const openingLecture=rooms[0];
           void Promise.resolve(openingLecture.beginOpening(reduced.matches)).then(started=>{
@@ -605,20 +607,10 @@ try{
   await withDeadline(lecture.prepareOpening(value=>reportSceneProgress(71+value*3,'准备板书')),30000,'开场板书加载');openingPrepared=true;
   rooms.push(lecture);
   roomLecterns.push(retreat.campus.lectern,...retreat.campus.discussion.lecterns);
-  for(let level=0;level<3;level++){
-    await paintStartup(74+level*4,'准备讨论教室 '+(level+1));
-    const root=new THREE.Group();root.name='Discussion classroom blackboards '+(level+1);configureSeminarRoot(root,level);scene.add(root);
-    const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
-    room.playing=false;retreat.roomFill.apply(root);rooms.push(room);
-  }
+  // Teaching-room boards and manifests are created only when their room is entered.
   await paintStartup(88,'整理空间');
   finishCampusLayout(scene,retreat,rooms);
-  rooms.forEach((room,i)=>{
-    room.root.updateWorldMatrix(true,true);
-    const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);
-    roomViews.push({bounds,consoleBounds:new THREE.Box3().setFromObject(roomLecterns[i].group),consoleVisible:false,visible:false,floor:(i?seminarFloor(i-1):DECK_Y)*BUILDING_SCALE,height:i?3.8:4.9});
-    room.setRenderActive(false);roomLecterns[i].setScreenEnabled(false);
-  });
+  rooms.forEach(registerRoomView);
   reader=createChalkReader(new Proxy({}, {get:(_,key)=>lecture[key]}));
   buildSeminarNavigation();
   installPhysicalControls();
@@ -626,7 +618,7 @@ try{
   if(reduced.matches){lecture.playing=false;lecture.staticPage();}
   if(!profile.direct){composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
   bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0,.25,1.6);bloom.enabled=false;composer.addPass(bloom);composer.addPass(new OutputPass());}
-  window.refugeBoot?.stage(70.3,'材质纹理');await startDeferredTextures(value=>window.refugeBoot?.stage(70.3+value*5.7,'材质纹理'));window.refugeBoot?.stage(78,'材质就绪');
+  window.refugeBoot?.stage(70.3,'材质纹理');await startDeferredTextures(value=>window.refugeBoot?.stage(70.3+value*5.7,'报告厅与海面贴图'),{criticalOnly:true});window.refugeBoot?.stage(78,'材质就绪');
   retreat.setWeather(startupWeather,true);setQuality();updateSceneTime();retreat.setTime(sceneTime.hour,false,0,1,sceneTime.date);updateLabels();camera.position.fromArray(OPENING_POSE.position);controls.target.fromArray(OPENING_POSE.target);controls.update();$('transition').style.opacity=0;
   // Hold the already rendered live frame while calibration reallocates GPU buffers.
   renderer.render(scene,camera);
@@ -779,7 +771,7 @@ function updateVoicePreferences(){
  if(!lecture)return;const enabled=Boolean(lecture.report.narration),state=lecture.voiceState,selected=$('reportVoiceTone').value;
  $('reportVoiceLoad').disabled=!enabled||changingVoice||state.phase==='loading';$('reportVoiceLoad').textContent=changingVoice?'正在加载…':selected==='off'?'关闭语音':'加载音色';
  const manifest=lecture.voiceManifest,bytes=manifest?.chapters?.reduce((sum,c)=>sum+(c.bytes||0),0),size=bytes?(bytes/1e6).toFixed(2)+' MB':'';
- $('reportVoiceInfo').textContent=voiceLoadError||state.phase==='error'?(voiceLoadError||state.error):changingVoice||state.phase==='loading'?'语音加载 · '+(state.progress===null?'…':Math.round(state.progress*100)+'%'):!enabled?'此报告暂无录制语音。':!lecture.voiceEnabled?'语音已关闭；保留当前板书。':manifest?(manifest.voice+' · '+size+' · '+Math.floor(manifest.duration/60)+' 分 '+Math.floor(manifest.duration%60)+' 秒。AI 合成，按章节加载。'):'选择音色后按需加载，网页开场不下载报告音频。';
+ $('reportVoiceInfo').textContent=voiceLoadError||state.phase==='error'?(voiceLoadError||state.error):changingVoice||state.phase==='loading'?'语音加载 · '+(state.progress===null?'…':Math.round(state.progress*100)+'%'):!enabled?'此报告暂无录制语音。':!lecture.voiceEnabled?'语音已关闭；保留当前板书。':manifest?(manifest.voice+' · '+size+' · '+Math.floor(manifest.duration/60)+' 分 '+Math.floor(manifest.duration%60)+' 秒。AI 合成，按黑板逐块加载。'):'选择音色后按需加载，网页开场不下载报告音频。';
 }
 $('reportVoiceTone').addEventListener('change',updateVoicePreferences);
 $('reportVoiceLoad').addEventListener('click',async()=>{
@@ -925,17 +917,50 @@ async function seekLecture(page){
 }
 $('lectureProgress').addEventListener('input',event=>seekLecture(lecture.clock.startAt+Number(event.target.value)-1));
 $('lecternButton').addEventListener('click',()=>{if(lecture&&physicalRoom===activeRoom&&!(activeRoom===0&&retreat.campus.lecternLift?.lowered))enterSpeakerView();});
+const roomJobs=new Map();let roomActivation=0,pendingRoom=-1,campusTexturesStarted=false;
+function startCampusTextures(){
+ if(campusTexturesStarted)return;campusTexturesStarted=true;
+ $('world').dataset.campusAssets='loading';
+ void startDeferredTextures(()=>{},{concurrency:1}).then(()=>{$('world').dataset.campusAssets='ready';});
+}
+function registerRoomView(room,i){
+ room.root.updateWorldMatrix(true,true);
+ const bounds=new THREE.Box3(new THREE.Vector3(13.8,-.6,-11.5),new THREE.Vector3(36.6,5.3,-9.6)).applyMatrix4(room.root.matrixWorld);
+ roomViews[i]={bounds,consoleBounds:new THREE.Box3().setFromObject(roomLecterns[i].group),consoleVisible:false,visible:false,floor:(i?seminarFloor(i-1):DECK_Y)*BUILDING_SCALE,height:i?3.8:4.9};
+ room.setRenderActive(false);roomLecterns[i].setScreenEnabled(false);
+}
+async function loadTeachingRoom(index){
+ if(rooms[index])return rooms[index];if(roomJobs.has(index))return roomJobs.get(index);
+ const root=new THREE.Group(),level=index-1;root.name='Discussion classroom blackboards '+index;configureSeminarRoot(root,level);
+ root.position.add(buildingOffset('07'));scene.add(root);
+ const job=(async()=>{
+  try{
+   const room=await createLecture(root,renderer,level===0?{isActive:()=>renderActivity.foreground,boardScale:device.boardScale,writingStyle:boardWritingStyle,highlight:$('boardHighlight').value!=='off',reports:[KM_REPORT],defaultReport:'km',viewScale:.52,requireSelection:true,hideBoardHeadings:true}:{boardScale:device.boardScale,disabled:true,viewScale:.52,hideBoardHeadings:true});
+   room.playing=false;room.setWritingSpeed($('writingSpeed').value);room.setClarity($('boardClarity').value);retreat.roomFill.apply(root);rooms[index]=room;registerRoomView(room,index);
+   if(index===1)buildSeminarNavigation();visibilityAt=-Infinity;return room;
+  }catch(error){scene.remove(root);roomJobs.delete(index);throw error;}
+ })();roomJobs.set(index,job);return job;
+}
 function activateRoom(index,moveCamera=true){
-  if(!rooms[index])return;
+ if(!rooms[index]){
+  if(index<1||index>3)return false;
+  if(pendingRoom===index)return roomJobs.get(index)?.then(()=>rooms[index]===lecture);
+  const request=++roomActivation;pendingRoom=index;$('world').dataset.pendingRoom=String(index);$('mode').textContent='正在准备教学楼 '+index+' 层板书…';
+  startCampusTextures();
+  return loadTeachingRoom(index).then(()=>{
+   if(request!==roomActivation)return false;pendingRoom=-1;delete $('world').dataset.pendingRoom;return activateRoom(index,moveCamera);
+  }).catch(error=>{if(request===roomActivation){pendingRoom=-1;delete $('world').dataset.pendingRoom;$('mode').textContent='教室加载失败，可重新选择：'+error.message;}return false;});
+ }
+ ++roomActivation;pendingRoom=-1;delete $('world').dataset.pendingRoom;
   reportRequest++;changingReport=false;reportProgress='';reportLoadError='';
   activeRoom=index;lecture=rooms[index];lecture.setWritingSpeed($('writingSpeed').value);
   $('world').dataset.room=String(index);$('reportSelect').setAttribute('aria-busy','false');
   reader?.close();populateReport();if(moveCamera)selectShot(0,!lecture.hasSelection&&!lecture.disabled);updateSeminarNavigation();
   teachingShade=index===0?retreat.campus.blind.visible:retreat.campus.discussion.blinds[index-1].visible;
-  $('lectureShade').setAttribute('aria-pressed',String(teachingShade));
+  $('lectureShade').setAttribute('aria-pressed',String(teachingShade));return true;
 }
 function buildSeminarNavigation(){
- const nav=rooms[1].navigation,container=$('seminarChapters');container.replaceChildren();
+ const nav=rooms[1]?.navigation,container=$('seminarChapters');container.replaceChildren();if(!nav)return;
  for(const chapter of nav.chapters){
   const group=document.createElement('details'),summary=document.createElement('summary');summary.textContent=`${chapter.id} · ${chapter.title}`;group.append(summary);group.open=chapter.id===1;
   for(const part of nav.sections.filter(p=>p.chapter===chapter.id)){
@@ -943,12 +968,12 @@ function buildSeminarNavigation(){
    button.addEventListener('click',()=>{selectSeminarPart(part);$('seminarGoal').textContent='前置：'+part.prerequisites+'。目标：'+part.goal;});group.append(button);
   }container.append(group);
  }
- $('seminarErratum').addEventListener('click',()=>selectSeminarPart(nav.sections.find(s=>s.id==='5.2'),nav.erratum.start));
+ $('seminarErratum').onclick=()=>selectSeminarPart(nav.sections.find(s=>s.id==='5.2'),nav.erratum.start);
  updateSeminarNavigation();
 }
 async function selectSeminarPart(part,page=part?.start){
  if(!part)return;
- if(activeRoom!==1)activateRoom(1);
+ if(activeRoom!==1&&!await activateRoom(1))return;
  const target=lecture;target.playing=false;
  try{
   if(!await target.setRange(part.start,part.end))return;
@@ -1007,7 +1032,7 @@ function syncRoomControls(){
  // During a journey the selected destination owns the camera; bind controls on arrival.
  if(room>=0&&room!==activeRoom&&!blend){activateRoom(room,false);speakerView=false;choosingReport=false;}
  reader?.chapter(room>=0&&room===activeRoom&&!speakerView&&Boolean(SHOTS[shot].lecture),$('lecturePanel').hidden);
- $('roomControls').hidden=room<0||room!==activeRoom||lecture.disabled;
+ $('roomControls').hidden=room<0||room!==activeRoom||lecture.disabled||!rooms[room];
  if(room>=0&&lecture.disabled)$('mode').textContent='本层板书暂未开放';
  $('roomControls').setAttribute('aria-label',room===0?'报告厅板书':room>0?'教学楼 '+room+' 层板书':'房间外');
 }
