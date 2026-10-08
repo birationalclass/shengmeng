@@ -367,6 +367,12 @@ set_option pp.proofs false
 #print axioms LinearStudy.rescaled_evaluation_relation
 #check LinearStudy.rescaled_evaluation_relation_zero
 #print axioms LinearStudy.rescaled_evaluation_relation_zero
+#check LinearStudy.fieldEndomorphism_finrank_comp
+#print axioms LinearStudy.fieldEndomorphism_finrank_comp
+#check LinearStudy.fieldEndomorphism_finrank_one
+#print axioms LinearStudy.fieldEndomorphism_finrank_one
+#check LinearStudy.fieldEndomorphism_finrank_pow
+#print axioms LinearStudy.fieldEndomorphism_finrank_pow
 #check LinearStudy.fieldEndomorphism_finite
 #print axioms LinearStudy.fieldEndomorphism_finite
 #check LinearStudy.fieldEndomorphism_formallyUnramified
@@ -555,6 +561,30 @@ set_option pp.proofs false
 #print axioms LinearStudy.global_diagonal_normalized_trace
 #check LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
 #print axioms LinearStudy.injectiveMap_exists_smooth_unramified_rational_point
+#check LinearStudy.homogeneousQuotientPieces_iSupIndep
+#print axioms LinearStudy.homogeneousQuotientPieces_iSupIndep
+#check LinearStudy.homogeneousQuotientPieces_iSup_eq_top
+#print axioms LinearStudy.homogeneousQuotientPieces_iSup_eq_top
+#check LinearStudy.homogeneousQuotientGrading
+#print axioms LinearStudy.homogeneousQuotientGrading
+#check LinearStudy.homogeneousQuotientPiece
+#print axioms LinearStudy.homogeneousQuotientPiece
+#check LinearStudy.homogeneousQuotientPiece_mem_iff
+#print axioms LinearStudy.homogeneousQuotientPiece_mem_iff
+#check LinearStudy.homogeneousQuotientPiece_finite
+#print axioms LinearStudy.homogeneousQuotientPiece_finite
+#check LinearStudy.homogeneousQuotientHilbert
+#print axioms LinearStudy.homogeneousQuotientHilbert
+#check LinearStudy.homogeneousQuotientComponent_mem_piece
+#print axioms LinearStudy.homogeneousQuotientComponent_mem_piece
+#check LinearStudy.homogeneousQuotientComponent_on_piece
+#print axioms LinearStudy.homogeneousQuotientComponent_on_piece
+#check LinearStudy.homogeneousQuotientPiece_disjoint
+#print axioms LinearStudy.homogeneousQuotientPiece_disjoint
+#check LinearStudy.homogeneousQuotientComponent_decomposition
+#print axioms LinearStudy.homogeneousQuotientComponent_decomposition
+#check LinearStudy.homogeneousQuotientPiece_mul_mem
+#print axioms LinearStudy.homogeneousQuotientPiece_mul_mem
 #check LinearStudy.ideal_smul_top_self
 #print axioms LinearStudy.ideal_smul_top_self
 #check LinearStudy.homogeneous_ideal_saturated_at_origin
@@ -1849,6 +1879,16 @@ set_option pp.proofs false
 #print axioms LinearStudy.projectiveChartOpenMap_rational_point_coordinates
 #check LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates
 #print axioms LinearStudy.projectiveChartOpenMap_exists_good_affine_coordinates
+#check LinearStudy.projectiveCoordinateDomainMap_piece_mem
+#print axioms LinearStudy.projectiveCoordinateDomainMap_piece_mem
+#check LinearStudy.projectiveCoordinatePiecePullback
+#print axioms LinearStudy.projectiveCoordinatePiecePullback
+#check LinearStudy.projectiveCoordinatePiecePullback_injective
+#print axioms LinearStudy.projectiveCoordinatePiecePullback_injective
+#check LinearStudy.projectiveCoordinateDomainMap_component
+#print axioms LinearStudy.projectiveCoordinateDomainMap_component
+#check LinearStudy.projectiveCoordinateHilbert_pullback_le
+#print axioms LinearStudy.projectiveCoordinateHilbert_pullback_le
 #check LinearStudy.projectiveConeMap_exists_homogeneous_chart_avoidance_polynomial
 #print axioms LinearStudy.projectiveConeMap_exists_homogeneous_chart_avoidance_polynomial
 #check LinearStudy.polynomial_pullback_zeroLocus
@@ -1865,6 +1905,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.projective_total_invariance_ideal_power_sandwich
 #check LinearStudy.projective_total_invariance_formal_sandwich
 #print axioms LinearStudy.projective_total_invariance_formal_sandwich
+#check LinearStudy.projective_iterates_general_whole_fiber_degree
+#print axioms LinearStudy.projective_iterates_general_whole_fiber_degree
 #check LinearStudy.ProjectiveChartPolynomialParameterConclusion
 #print axioms LinearStudy.ProjectiveChartPolynomialParameterConclusion
 #check LinearStudy.projectiveChart_exists_actual_polynomial_local_parameters
@@ -1873,6 +1915,24 @@ set_option pp.proofs false
 #print axioms LinearStudy.normalizedProjectivePoint_coordinate_ratios
 #check LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem
 #print axioms LinearStudy.IntegralProjectiveEquations.normalizedConePoint_mem
+#check LinearStudy.projectiveCoordinateDomainMap_comp
+#print axioms LinearStudy.projectiveCoordinateDomainMap_comp
+#check LinearStudy.projectiveCoordinateFractionMap_comp
+#print axioms LinearStudy.projectiveCoordinateFractionMap_comp
+#check LinearStudy.projectiveChartFractionMap_comp
+#print axioms LinearStudy.projectiveChartFractionMap_comp
+#check LinearStudy.HomogeneousEndomorphism.iterate_degree_pos
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate_degree_pos
+#check LinearStudy.HomogeneousEndomorphism.iterate_surjective
+#print axioms LinearStudy.HomogeneousEndomorphism.iterate_surjective
+#check LinearStudy.projectiveCoordinateFractionMap_identity
+#print axioms LinearStudy.projectiveCoordinateFractionMap_identity
+#check LinearStudy.projectiveChartFractionMap_identity
+#print axioms LinearStudy.projectiveChartFractionMap_identity
+#check LinearStudy.projectiveChartFractionMap_iterate
+#print axioms LinearStudy.projectiveChartFractionMap_iterate
+#check LinearStudy.projectiveChartFractionMap_iterate_finrank
+#print axioms LinearStudy.projectiveChartFractionMap_iterate_finrank
 #check LinearStudy.localization_lift_kernel
 #print axioms LinearStudy.localization_lift_kernel
 #check LinearStudy.projectiveRatioPolynomialMap_kernel

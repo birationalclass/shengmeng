@@ -455,3 +455,17 @@ public import Linear.ProjectiveGeneralFiberRank
 public import Linear.AwayPullbackFieldDegree
 
 public import Linear.ProjectiveGenericFieldDegree
+
+public import Linear.FieldEndomorphismDegree
+
+public import Linear.ProjectivePullbackComposition
+
+public import Linear.ProjectivePullbackIteration
+
+public import Linear.ProjectiveIteratedWholeFiberDegree
+
+public import Linear.HomogeneousCoordinatePieces
+
+public import Linear.ProjectiveGradedPullback
+
+public import Linear.HomogeneousCoordinateGrading
