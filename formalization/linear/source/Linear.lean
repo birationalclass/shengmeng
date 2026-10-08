@@ -705,3 +705,9 @@ public import Linear.ProjectiveWholeFiberJacobianSystem
 public import Linear.PolynomialReindexResiduePairing
 
 public import Linear.PolynomialZeroLocusResidueRelation
+
+public import Linear.PolynomialCoordinateZeroLocusEquiv
+
+public import Linear.ProjectiveWholeFiberHomogeneousRelation
+
+public import Linear.ProjectiveFiberRepresentativeRelation

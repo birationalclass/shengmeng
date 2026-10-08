@@ -4155,6 +4155,18 @@ LinearStudy.polynomial_coordinate_local_generators.{u_1, u_2, u_3, u_4} {K : Typ
   Ideal.map (algebraMap (MvPolynomial τ K) (Localization.AtPrime Q)) (Ideal.map E.toRingEquiv.toRingHom I) =
     Ideal.span (Set.range fun i => (algebraMap (MvPolynomial τ K) (Localization.AtPrime Q)) (E (G i)))
 'LinearStudy.polynomial_coordinate_local_generators' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.scalarPointPrecompositionEquiv.{u_1, u_4, u_5} {K : Type u_1} [Field K] {A : Type u_4} {B : Type u_5}
+  [CommRing A] [CommRing B] [Algebra K A] [Algebra K B] (e : A ≃ₐ[K] B) : (A →ₐ[K] K) ≃ (B →ₐ[K] K)
+'LinearStudy.scalarPointPrecompositionEquiv' depends on axioms: [propext, Quot.sound]
+LinearStudy.polynomialCoordinateZeroLocusEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]
+  (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K)) (J : Ideal (MvPolynomial τ K))
+  (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) : ↑(MvPolynomial.zeroLocus K I) ≃ ↑(MvPolynomial.zeroLocus K J)
+'LinearStudy.polynomialCoordinateZeroLocusEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.polynomialCoordinateZeroLocusEquiv_evaluation.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}
+  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K)) (J : Ideal (MvPolynomial τ K))
+  (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) (x : ↑(MvPolynomial.zeroLocus K I)) (F : MvPolynomial σ K) :
+  (MvPolynomial.eval ↑((LinearStudy.polynomialCoordinateZeroLocusEquiv E I J hJ) x)) (E F) = (MvPolynomial.eval ↑x) F
+'LinearStudy.polynomialCoordinateZeroLocusEquiv_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
 LinearStudy.polynomial_derivation_chain.{u_1, u_2, u_3, u_4} {K : Type u_1} {R : Type u_2} {B : Type u_3} {σ : Type u_4}
   [CommRing K] [CommRing R] [CommRing B] [Algebra B R] [Fintype σ] (ψ : MvPolynomial σ K →+* R) (D : Derivation B R R)
   (hC : ∀ (a : K), D (ψ (MvPolynomial.C a)) = 0) (P : MvPolynomial σ K) :
@@ -7219,6 +7231,65 @@ LinearStudy.homogeneous_affine_exact_degree_and_highest_regular.{u_1} {K : Type 
 'LinearStudy.homogeneous_affine_exact_degree_and_highest_regular' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
+LinearStudy.normalizedProjectivePoint_representative_coordinates {n : ℕ} (x : Fin n → ℂ)
+  (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0)
+  (hrep : Projectivization.mk ℂ v hv = LinearStudy.normalizedProjectivePoint x) :
+  v 0 ≠ 0 ∧ (fun i => v i.succ / v 0) = x
+'LinearStudy.normalizedProjectivePoint_representative_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.homogeneous_normalized_relation_representatives.{u_1} {n : ℕ} {ι : Type u_1} [Fintype ι] (x : ι → Fin n → ℂ)
+  (lam : ι → ℂ) (hlam : ∀ (i : ι), lam i ≠ 0) (t : ℕ)
+  (hrel :
+    ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),
+      P.IsHomogeneous t → ∑ i, lam i * (MvPolynomial.eval fun i_1 => Fin.cases 1 (x i) i_1) P = 0)
+  (v : ι → LinearStudy.CoordinateVector n) (hv : ∀ (i : ι), v i ≠ 0)
+  (hrep : ∀ (i : ι), Projectivization.mk ℂ (v i) ⋯ = LinearStudy.normalizedProjectivePoint (x i)) :
+  ∃ weights,
+    (∀ (i : ι), weights i ≠ 0) ∧
+      ∀ (P : MvPolynomial (Fin (n + 1)) ℂ), P.IsHomogeneous t → ∑ i, weights i * (MvPolynomial.eval (v i)) P = 0
+'LinearStudy.homogeneous_normalized_relation_representatives' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.projective_whole_fiber_arbitrary_representative_relation {n r : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
+  (hrel : LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion f V y r) :
+  have S := MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y);
+  ∃ (hS : S.Finite),
+    ∀ (v : ↑S → LinearStudy.CoordinateVector n) (hv : ∀ (x : ↑S), v x ≠ 0),
+      (∀ (x : ↑S), Projectivization.mk ℂ (v x) ⋯ = LinearStudy.normalizedProjectivePoint ↑x) →
+        ∃ weights,
+          (∀ (x : ↑S), weights x ≠ 0) ∧
+            ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),
+              P.IsHomogeneous (r * (f.degree - 1) - 1) → ∑ x, weights x * (MvPolynomial.eval (v x)) P = 0
+'LinearStudy.projective_whole_fiber_arbitrary_representative_relation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_representative_relations {n : ℕ}
+  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)
+  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥)
+  (x0 : Fin n → ℂ) (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          ∃ p ∉ V.affineIdeal,
+            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                (MvPolynomial.eval y) p ≠ 0 →
+                  0 < r →
+                    1 < (f.iterate k).degree →
+                      LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧
+                        let S := MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal (f.iterate k) V y);
+                        ∃ (hS : S.Finite),
+                          ∀ (v : ↑S → LinearStudy.CoordinateVector n) (hv : ∀ (x : ↑S), v x ≠ 0),
+                            (∀ (x : ↑S), Projectivization.mk ℂ (v x) ⋯ = LinearStudy.normalizedProjectivePoint ↑x) →
+                              ∃ weights,
+                                (∀ (x : ↑S), weights x ≠ 0) ∧
+                                  ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),
+                                    P.IsHomogeneous (r * ((f.iterate k).degree - 1) - 1) →
+                                      ∑ x, weights x * (MvPolynomial.eval (v x)) P = 0
+'LinearStudy.projective_iterates_whole_fibers_representative_relations' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (hq : 0 < f.degree) (w : LinearStudy.CoordinateVector n) : (f.evalVector ⁻¹' {w}).Finite
 'LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite' depends on axioms: [propext,
@@ -8499,6 +8570,39 @@ LinearStudy.projective_iterates_whole_fiber_hilbert_power {n : ℕ} (f : LinearS
                         Nat.card ↑((f.iterate k).onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =
                           (f.degree ^ k) ^ P.natDegree
 'LinearStudy.projective_iterates_whole_fiber_hilbert_power' depends on axioms: [propext, Classical.choice, Quot.sound]
+LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) (r : ℕ) : Prop
+'LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_actual_whole_fiber_homogeneous_relation {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)
+  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hr : 0 < r) (hq : 1 < f.degree)
+  (hgeom : LinearStudy.ProjectiveWholeAmbientFiberConclusion f V y hy r)
+  (hSystem : LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion f y r) :
+  LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion f V y r
+'LinearStudy.projective_actual_whole_fiber_homogeneous_relation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LinearStudy.projective_iterates_whole_fibers_homogeneous_relations {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
+  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)
+  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)
+  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :
+  ∃ r ≤ n,
+    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧
+      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧
+        ∀ (k : ℕ),
+          ∃ p ∉ V.affineIdeal,
+            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧
+              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),
+                (MvPolynomial.eval y) p ≠ 0 →
+                  0 < r →
+                    1 < (f.iterate k).degree →
+                      LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧
+                        LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion (f.iterate k) V y r
+'LinearStudy.projective_iterates_whole_fibers_homogeneous_relations' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)
   (y : Fin n → ℂ) (r : ℕ) : Prop
 'LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion' depends on axioms: [propext, Classical.choice, Quot.sound]

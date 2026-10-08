@@ -1,9 +1,9 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1728,
-  "verifiedTheorems": 1290,
-  "definitions": 242,
+  "audited": 1738,
+  "verifiedTheorems": 1297,
+  "definitions": 245,
   "mainTheoremVerified": false,
   "violations": [],
   "declarations": [
@@ -16332,6 +16332,74 @@
       ]
     },
     {
+      "declaration": "LinearStudy.scalarPointPrecompositionEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialCoordinateZeroLocusEquiv.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.scalarPointPrecompositionEquiv.{u_1, u_4, u_5} {K : Type u_1} [Field K] {A : Type u_4} {B : Type u_5}\n  [CommRing A] [CommRing B] [Algebra K A] [Algebra K B] (e : A ≃ₐ[K] B) : (A →ₐ[K] K) ≃ (B →ₐ[K] K)",
+      "sha256": "9b5e743e80bc90f0bf166a15c33d6231cf5bacbd85d781f75237abb81167382f",
+      "lines": 15,
+      "moduleLineCount": 59,
+      "startLine": 12,
+      "endLine": 26,
+      "lineCount": 15,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.polynomialCoordinateZeroLocusEquiv",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/PolynomialCoordinateZeroLocusEquiv.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.polynomialCoordinateZeroLocusEquiv.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3} [Field K]\n  (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K)) (J : Ideal (MvPolynomial τ K))\n  (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) : ↑(MvPolynomial.zeroLocus K I) ≃ ↑(MvPolynomial.zeroLocus K J)",
+      "sha256": "9b5e743e80bc90f0bf166a15c33d6231cf5bacbd85d781f75237abb81167382f",
+      "lines": 8,
+      "moduleLineCount": 59,
+      "startLine": 28,
+      "endLine": 35,
+      "lineCount": 8,
+      "dependencies": [
+        "LinearStudy.polynomialZeroLocusPointEquiv",
+        "LinearStudy.scalarPointPrecompositionEquiv"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.polynomialCoordinateZeroLocusEquiv_evaluation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/PolynomialCoordinateZeroLocusEquiv.lean",
+      "line": 39,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.polynomialCoordinateZeroLocusEquiv_evaluation.{u_1, u_2, u_3} {K : Type u_1} {σ : Type u_2} {τ : Type u_3}\n  [Field K] (E : MvPolynomial σ K ≃ₐ[K] MvPolynomial τ K) (I : Ideal (MvPolynomial σ K)) (J : Ideal (MvPolynomial τ K))\n  (hJ : J = Ideal.map E.toRingEquiv.toRingHom I) (x : ↑(MvPolynomial.zeroLocus K I)) (F : MvPolynomial σ K) :\n  (MvPolynomial.eval ↑((LinearStudy.polynomialCoordinateZeroLocusEquiv E I J hJ) x)) (E F) = (MvPolynomial.eval ↑x) F",
+      "sha256": "9b5e743e80bc90f0bf166a15c33d6231cf5bacbd85d781f75237abb81167382f",
+      "lines": 21,
+      "moduleLineCount": 59,
+      "startLine": 37,
+      "endLine": 57,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.polynomialCoordinateZeroLocusEquiv",
+        "LinearStudy.polynomialZeroLocusPointEquiv"
+      ]
+    },
+    {
       "declaration": "LinearStudy.polynomial_derivation_chain",
       "kind": "theorem",
       "origin": "project",
@@ -29206,6 +29274,130 @@
       ]
     },
     {
+      "declaration": "LinearStudy.normalizedProjectivePoint_representative_coordinates",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberRepresentativeRelation.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.normalizedProjectivePoint_representative_coordinates {n : ℕ} (x : Fin n → ℂ)\n  (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0)\n  (hrep : Projectivization.mk ℂ v hv = LinearStudy.normalizedProjectivePoint x) :\n  v 0 ≠ 0 ∧ (fun i => v i.succ / v 0) = x",
+      "sha256": "6323c6b389850c431a30e695c0af611cd0b9e8aa7d8995b8da5062217ba39f97",
+      "lines": 21,
+      "moduleLineCount": 118,
+      "startLine": 12,
+      "endLine": 32,
+      "lineCount": 21,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedCoordinateVector_ne_zero",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_coordinate_ratios",
+        "LinearStudy.normalizedProjectivePoint_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.homogeneous_normalized_relation_representatives",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberRepresentativeRelation.lean",
+      "line": 36,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.homogeneous_normalized_relation_representatives.{u_1} {n : ℕ} {ι : Type u_1} [Fintype ι] (x : ι → Fin n → ℂ)\n  (lam : ι → ℂ) (hlam : ∀ (i : ι), lam i ≠ 0) (t : ℕ)\n  (hrel :\n    ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),\n      P.IsHomogeneous t → ∑ i, lam i * (MvPolynomial.eval fun i_1 => Fin.cases 1 (x i) i_1) P = 0)\n  (v : ι → LinearStudy.CoordinateVector n) (hv : ∀ (i : ι), v i ≠ 0)\n  (hrep : ∀ (i : ι), Projectivization.mk ℂ (v i) ⋯ = LinearStudy.normalizedProjectivePoint (x i)) :\n  ∃ weights,\n    (∀ (i : ι), weights i ≠ 0) ∧\n      ∀ (P : MvPolynomial (Fin (n + 1)) ℂ), P.IsHomogeneous t → ∑ i, weights i * (MvPolynomial.eval (v i)) P = 0",
+      "sha256": "6323c6b389850c431a30e695c0af611cd0b9e8aa7d8995b8da5062217ba39f97",
+      "lines": 22,
+      "moduleLineCount": 118,
+      "startLine": 34,
+      "endLine": 55,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affineDehomogenize_eval",
+        "LinearStudy.homogeneous_affine_chart_eval",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint_representative_coordinates"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_whole_fiber_arbitrary_representative_relation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberRepresentativeRelation.lean",
+      "line": 60,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_whole_fiber_arbitrary_representative_relation {n r : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)\n  (hrel : LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion f V y r) :\n  have S := MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal f V y);\n  ∃ (hS : S.Finite),\n    ∀ (v : ↑S → LinearStudy.CoordinateVector n) (hv : ∀ (x : ↑S), v x ≠ 0),\n      (∀ (x : ↑S), Projectivization.mk ℂ (v x) ⋯ = LinearStudy.normalizedProjectivePoint ↑x) →\n        ∃ weights,\n          (∀ (x : ↑S), weights x ≠ 0) ∧\n            ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),\n              P.IsHomogeneous (r * (f.degree - 1) - 1) → ∑ x, weights x * (MvPolynomial.eval (v x)) P = 0",
+      "sha256": "6323c6b389850c431a30e695c0af611cd0b9e8aa7d8995b8da5062217ba39f97",
+      "lines": 22,
+      "moduleLineCount": 118,
+      "startLine": 57,
+      "endLine": 78,
+      "lineCount": 22,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+        "LinearStudy.homogeneous_normalized_relation_representatives",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_iterates_whole_fibers_representative_relations",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveFiberRepresentativeRelation.lean",
+      "line": 83,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_whole_fibers_representative_relations {n : ℕ}\n  (f : LinearStudy.HomogeneousEndomorphism n) (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree)\n  (hf : Function.Surjective f.onPoints) (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥)\n  (x0 : Fin n → ℂ) (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧\n        ∀ (k : ℕ),\n          ∃ p ∉ V.affineIdeal,\n            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n                (MvPolynomial.eval y) p ≠ 0 →\n                  0 < r →\n                    1 < (f.iterate k).degree →\n                      LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧\n                        let S := MvPolynomial.zeroLocus ℂ (LinearStudy.projectiveAffineFiberIdeal (f.iterate k) V y);\n                        ∃ (hS : S.Finite),\n                          ∀ (v : ↑S → LinearStudy.CoordinateVector n) (hv : ∀ (x : ↑S), v x ≠ 0),\n                            (∀ (x : ↑S), Projectivization.mk ℂ (v x) ⋯ = LinearStudy.normalizedProjectivePoint ↑x) →\n                              ∃ weights,\n                                (∀ (x : ↑S), weights x ≠ 0) ∧\n                                  ∀ (P : MvPolynomial (Fin (n + 1)) ℂ),\n                                    P.IsHomogeneous (r * ((f.iterate k).degree - 1) - 1) →\n                                      ∑ x, weights x * (MvPolynomial.eval (v x)) P = 0",
+      "sha256": "6323c6b389850c431a30e695c0af611cd0b9e8aa7d8995b8da5062217ba39f97",
+      "lines": 37,
+      "moduleLineCount": 118,
+      "startLine": 80,
+      "endLine": 116,
+      "lineCount": 37,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projective_iterates_whole_fibers_homogeneous_relations",
+        "LinearStudy.projective_whole_fiber_arbitrary_representative_relation"
+      ]
+    },
+    {
       "declaration": "LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite",
       "kind": "theorem",
       "origin": "project",
@@ -33094,6 +33286,117 @@
         "LinearStudy.projectiveChartField_exists_hilbert_degree_power",
         "LinearStudy.projectiveChartFractionMap",
         "LinearStudy.projective_iterates_general_whole_fiber_degree"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+      "kind": "def",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberHomogeneousRelation.lean",
+      "line": 18,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": false,
+      "formalType": "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ) (r : ℕ) : Prop",
+      "sha256": "23afe756d0e551d7e218e1590beb6192571ea4b2c8bc57562fd413839c45ef32",
+      "lines": 12,
+      "moduleLineCount": 147,
+      "startLine": 15,
+      "endLine": 26,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.projectiveAffineFiberIdeal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_actual_whole_fiber_homogeneous_relation",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberHomogeneousRelation.lean",
+      "line": 33,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_actual_whole_fiber_homogeneous_relation {n r : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (y : Fin n → ℂ)\n  (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet) (hr : 0 < r) (hq : 1 < f.degree)\n  (hgeom : LinearStudy.ProjectiveWholeAmbientFiberConclusion f V y hy r)\n  (hSystem : LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion f y r) :\n  LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion f V y r",
+      "sha256": "23afe756d0e551d7e218e1590beb6192571ea4b2c8bc57562fd413839c45ef32",
+      "lines": 87,
+      "moduleLineCount": 147,
+      "startLine": 28,
+      "endLine": 114,
+      "lineCount": 87,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.forms",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberCommonCoordinateConclusion",
+        "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+        "LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion",
+        "LinearStudy.affineChartPolynomialMap",
+        "LinearStudy.affineDehomogenize",
+        "LinearStudy.affineDehomogenize_degree",
+        "LinearStudy.affineDehomogenize_eval",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.polynomialCoordinateZeroLocusEquiv",
+        "LinearStudy.polynomialCoordinateZeroLocusEquiv_evaluation",
+        "LinearStudy.polynomialLinearChangeEquiv",
+        "LinearStudy.polynomialLinearChangeEquiv_totalDegree",
+        "LinearStudy.polynomial_zeroLocus_finite_of_module_finite",
+        "LinearStudy.polynomial_zeroLocus_weighted_relation",
+        "LinearStudy.projectiveAffineFiberIdeal",
+        "LinearStudy.projectiveAffineFiberIdeal_zeroLocus_finite",
+        "LinearStudy.projectiveAmbientFiberIdeal",
+        "LinearStudy.projectiveAmbientFiberPolynomials",
+        "LinearStudy.projective_actual_centered_fiber_ideal"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_iterates_whole_fibers_homogeneous_relations",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveWholeFiberHomogeneousRelation.lean",
+      "line": 120,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_iterates_whole_fibers_homogeneous_relations {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (hproper : V.ideal.toIdeal ≠ ⊥) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  ∃ r ≤ n,\n    ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) = ↑r ∧\n      Module.finrank (MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal) Ω[MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal⁄ℂ] = r ∧\n        ∀ (k : ℕ),\n          ∃ p ∉ V.affineIdeal,\n            (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n              ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n                (MvPolynomial.eval y) p ≠ 0 →\n                  0 < r →\n                    1 < (f.iterate k).degree →\n                      LinearStudy.ProjectiveWholeAmbientFiberConclusion (f.iterate k) V y hy r ∧\n                        LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion (f.iterate k) V y r",
+      "sha256": "23afe756d0e551d7e218e1590beb6192571ea4b2c8bc57562fd413839c45ef32",
+      "lines": 30,
+      "moduleLineCount": 147,
+      "startLine": 116,
+      "endLine": 145,
+      "lineCount": 30,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.iterate",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.ideal",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.ProjectiveWholeAmbientFiberConclusion",
+        "LinearStudy.ProjectiveWholeFiberHomogeneousRelationConclusion",
+        "LinearStudy.ProjectiveWholeFiberJacobianSystemConclusion",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projective_actual_whole_fiber_homogeneous_relation",
+        "LinearStudy.projective_iterates_whole_fibers_jacobian_system"
       ]
     },
     {
