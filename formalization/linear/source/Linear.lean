@@ -673,3 +673,13 @@ public import Linear.RationalReindexedCenteredLocalMap
 public import Linear.CenteredCoordinatePointKernel
 
 public import Linear.ProjectiveCenteredFiberLocalMaps
+
+public import Linear.PolynomialEquationCoordinateAlgebra
+
+public import Linear.ProjectiveCenteredFiberAlgebra
+
+public import Linear.ActualCoordinateFiberPoints
+
+public import Linear.ProjectiveOriginalFiberLocalSocle
+
+public import Linear.ProjectiveWholeFiberCommonSocle
