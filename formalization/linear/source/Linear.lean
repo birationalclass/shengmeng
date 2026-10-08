@@ -639,3 +639,13 @@ public import Linear.SmoothLinearTargetParameters
 public import Linear.ProjectiveSmoothLinearParameters
 
 public import Linear.PolynomialAwayCoordinateEquiv
+
+public import Linear.RationalSourceCoordinateUnramified
+
+public import Linear.ProjectiveTargetNormalCoordinates
+
+public import Linear.RationalLinearTargetCoordinates
+
+public import Linear.RationalLinearNormalSocle
+
+public import Linear.RationalLinearNormalLocalSocle
