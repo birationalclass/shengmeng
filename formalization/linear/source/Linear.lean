@@ -439,3 +439,19 @@ public import Linear.GenericFreeAway
 public import Linear.ProjectiveChartFiniteAway
 
 public import Linear.ProjectiveChartFiniteFree
+
+public import Linear.FreeAwayFiberRank
+
+public import Linear.GenericFiberRankOpen
+
+public import Linear.LocalizedAlgebraFiber
+
+public import Linear.AlgebraicGenericFiberRank
+
+public import Linear.ProjectiveGenericFiberRank
+
+public import Linear.ProjectiveGeneralFiberRank
+
+public import Linear.AwayPullbackFieldDegree
+
+public import Linear.ProjectiveGenericFieldDegree

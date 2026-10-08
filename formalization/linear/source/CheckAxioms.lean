@@ -53,6 +53,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.IntegralProjectiveEquations.affineAlgHom_point_evaluation
 #check LinearStudy.algebraic_finiteType_exists_finite_away
 #print axioms LinearStudy.algebraic_finiteType_exists_finite_away
+#check LinearStudy.algebraic_finiteType_exists_generic_rank_fibers
+#print axioms LinearStudy.algebraic_finiteType_exists_generic_rank_fibers
 #check LinearStudy.annihilates_nilradical_ringEquiv
 #print axioms LinearStudy.annihilates_nilradical_ringEquiv
 #check LinearStudy.annihilator_scalar_generation_ringEquiv
@@ -113,6 +115,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open
 #check LinearStudy.awayFractionEmbedding_exists_unramified_open
 #print axioms LinearStudy.awayFractionEmbedding_exists_unramified_open
+#check LinearStudy.awayFractionEmbedding_isFractionRing
+#print axioms LinearStudy.awayFractionEmbedding_isFractionRing
+#check LinearStudy.awayPullback_finrank_eq_fieldRange
+#print axioms LinearStudy.awayPullback_finrank_eq_fieldRange
 #check LinearStudy.awayQuotientEquiv
 #print axioms LinearStudy.awayQuotientEquiv
 #check LinearStudy.awayQuotientEquiv_mk
@@ -509,6 +515,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.ringHom_finite_fraction_model_isAlgebraic
 #check LinearStudy.ringHom_algebraic_target_open_avoids_source_closed
 #print axioms LinearStudy.ringHom_algebraic_target_open_avoids_source_closed
+#check LinearStudy.module_tensor_finrank_eq_of_free_away
+#print axioms LinearStudy.module_tensor_finrank_eq_of_free_away
 #check LinearStudy.general_local_pullback_ideal_le
 #print axioms LinearStudy.general_local_pullback_ideal_le
 #check LinearStudy.generalPointLocalQuotientPullback
@@ -523,6 +531,8 @@ set_option pp.proofs false
 #print axioms LinearStudy.flat_genericFiber_injective
 #check LinearStudy.flat_genericFiber_descend_annihilation
 #print axioms LinearStudy.flat_genericFiber_descend_annihilation
+#check LinearStudy.finiteModule_exists_fiber_rank_open
+#print axioms LinearStudy.finiteModule_exists_fiber_rank_open
 #check LinearStudy.finiteModule_exists_free_away
 #print axioms LinearStudy.finiteModule_exists_free_away
 #check LinearStudy.domain_exists_nonzero_smooth_basic_open
@@ -793,6 +803,10 @@ set_option pp.proofs false
 #print axioms LinearStudy.point_kernel_under_polynomialLinearChange
 #check LinearStudy.polynomial_local_generators_under_linear_change
 #print axioms LinearStudy.polynomial_local_generators_under_linear_change
+#check LinearStudy.localizedAlgebra_fiber_equiv
+#print axioms LinearStudy.localizedAlgebra_fiber_equiv
+#check LinearStudy.localizedAlgebra_finrank_eq
+#print axioms LinearStudy.localizedAlgebra_finrank_eq
 #check LinearStudy.localization_map_principal_annihilator
 #print axioms LinearStudy.localization_map_principal_annihilator
 #check LinearStudy.localization_map_finite_span_annihilator
@@ -1815,10 +1829,18 @@ set_option pp.proofs false
 #print axioms LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite
 #check LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite
 #print axioms LinearStudy.HomogeneousEndomorphism.onPoints_fibers_finite
+#check LinearStudy.projective_exists_general_whole_fiber_generic_rank
+#print axioms LinearStudy.projective_exists_general_whole_fiber_generic_rank
 #check LinearStudy.projective_exists_general_whole_reduced_fibers
 #print axioms LinearStudy.projective_exists_general_whole_reduced_fibers
 #check LinearStudy.projective_exists_general_whole_reduced_tensor_fibers
 #print axioms LinearStudy.projective_exists_general_whole_reduced_tensor_fibers
+#check LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers
+#print axioms LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers
+#check LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange
+#print axioms LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange
+#check LinearStudy.projective_exists_general_whole_fiber_field_degree
+#print axioms LinearStudy.projective_exists_general_whole_fiber_field_degree
 #check LinearStudy.projectiveCoordinateDomainMap_finiteType
 #print axioms LinearStudy.projectiveCoordinateDomainMap_finiteType
 #check LinearStudy.projectiveCoordinateDomainMap_fraction_comp_formallyUnramified

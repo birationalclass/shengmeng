@@ -1,8 +1,8 @@
 {
   "root": "Linear",
   "ok": true,
-  "audited": 1374,
-  "verifiedTheorems": 986,
+  "audited": 1385,
+  "verifiedTheorems": 997,
   "definitions": 192,
   "mainTheoremVerified": false,
   "violations": [],
@@ -692,6 +692,33 @@
       "endLine": 79,
       "lineCount": 65,
       "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AlgebraicGenericFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers.{u, u_1} {R A : Type u} [CommRing R] [IsDomain R]\n  [IsNoetherianRing R] [CommRing A] [Algebra R A] [Algebra.FiniteType R A] [Algebra.IsAlgebraic R A] {K : Type u_1}\n  [Field K] : ∃ p, p ≠ 0 ∧ ∀ (ρ : R →+* K), ρ p ≠ 0 → Module.finrank K (TensorProduct R K A) = Module.finrank R A",
+      "sha256": "d515e3fb22828cc174df76a9c6eaa829404cf2d4c52b9bf56f0e355083661201",
+      "lines": 49,
+      "moduleLineCount": 63,
+      "startLine": 13,
+      "endLine": 61,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.algebraic_finiteType_exists_finite_away",
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.localizedAlgebra_fiber_equiv",
+        "LinearStudy.localizedAlgebra_finrank_eq",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
+      ]
     },
     {
       "declaration": "LinearStudy.annihilates_nilradical_ringEquiv",
@@ -1440,6 +1467,54 @@
         "LinearStudy.awayFractionEmbedding",
         "LinearStudy.awayFractionEmbedding_algebraMap",
         "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.awayFractionEmbedding_isFractionRing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayPullbackFieldDegree.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_isFractionRing.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) : IsFractionRing (Localization.Away a) (FractionRing B)",
+      "sha256": "94d39149ae26ef17fe9b1433a01092ebf190090ec247d02e8fba7558a5b97a14",
+      "lines": 12,
+      "moduleLineCount": 60,
+      "startLine": 12,
+      "endLine": 23,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.awayPullback_finrank_eq_fieldRange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayPullbackFieldDegree.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayPullback_finrank_eq_fieldRange.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (γ : FractionRing B →ₐ[K] FractionRing B)\n  (φ : B →ₐ[K] Localization.Away a)\n  (h : (LinearStudy.awayFractionEmbedding a ha).comp φ = γ.comp (IsScalarTower.toAlgHom K B (FractionRing B))) :\n  Module.finrank B (Localization.Away a) = Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "94d39149ae26ef17fe9b1433a01092ebf190090ec247d02e8fba7558a5b97a14",
+      "lines": 34,
+      "moduleLineCount": 60,
+      "startLine": 25,
+      "endLine": 58,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_isFractionRing"
       ]
     },
     {
@@ -6296,6 +6371,27 @@
       "dependencies": []
     },
     {
+      "declaration": "LinearStudy.module_tensor_finrank_eq_of_free_away",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FreeAwayFiberRank.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.module_tensor_finrank_eq_of_free_away.{u_1, u_2, u_3} {R : Type u_1} {M : Type u_2} {K : Type u_3}\n  [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M] [Field K] [Algebra R K] (r : R) (hr : r ≠ 0)\n  [Module.Free (Localization.Away r) (LocalizedModule.Away r M)] (hrK : (algebraMap R K) r ≠ 0) :\n  Module.finrank K (TensorProduct R K M) = Module.finrank R M",
+      "sha256": "667659c84de9862ae10a2f762ceed1f69c1dc64d73489c858c82c33354a3001b",
+      "lines": 29,
+      "moduleLineCount": 42,
+      "startLine": 12,
+      "endLine": 40,
+      "lineCount": 29,
+      "dependencies": []
+    },
+    {
       "declaration": "LinearStudy.general_local_pullback_ideal_le",
       "kind": "theorem",
       "origin": "project",
@@ -6456,6 +6552,30 @@
       "dependencies": [
         "LinearStudy.Annihilates",
         "LinearStudy.flat_genericFiber_injective"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.finiteModule_exists_fiber_rank_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GenericFiberRankOpen.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteModule_exists_fiber_rank_open.{u_1, u_2, u_3} {R : Type u_1} {M : Type u_2} {K : Type u_3}\n  [CommRing R] [IsDomain R] [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] [Field K] :\n  ∃ r, r ≠ 0 ∧ ∀ (ρ : R →+* K), ρ r ≠ 0 → Module.finrank K (TensorProduct R K M) = Module.finrank R M",
+      "sha256": "4a880a756d37c9594b3e771422a0d0954431309c05ab5bab25a88a31e7d6115d",
+      "lines": 15,
+      "moduleLineCount": 26,
+      "startLine": 10,
+      "endLine": 24,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
       ]
     },
     {
@@ -9791,6 +9911,48 @@
         "LinearStudy.point_kernel_under_polynomialLinearChange",
         "LinearStudy.polynomialLinearChangeEquiv"
       ]
+    },
+    {
+      "declaration": "LinearStudy.localizedAlgebra_fiber_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedAlgebraFiber.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedAlgebra_fiber_equiv.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {K : Type u_3} [CommRing R]\n  [CommRing A] [Algebra R A] [Field K] [Algebra R K] (b : R) (hbK : (algebraMap R K) b ≠ 0) :\n  let Rb := Localization.Away b;\n  let Ab := Localization.Away ((algebraMap R A) b);\n  have ψ := Localization.awayMapₐ (Algebra.ofId R A) b;\n  have τ := IsLocalization.Away.lift b ⋯;\n  Nonempty (TensorProduct Rb K Ab ≃ₗ[K] TensorProduct R K A)",
+      "sha256": "b26e80bd85c6c956a3674c3f205281018e96f6309a0a9823a35754ee55d0a082",
+      "lines": 34,
+      "moduleLineCount": 73,
+      "startLine": 11,
+      "endLine": 44,
+      "lineCount": 34,
+      "dependencies": []
+    },
+    {
+      "declaration": "LinearStudy.localizedAlgebra_finrank_eq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedAlgebraFiber.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedAlgebra_finrank_eq.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [IsDomain R] [CommRing A]\n  [Algebra R A] (b : R) (hb : b ≠ 0) :\n  let Rb := Localization.Away b;\n  let Ab := Localization.Away ((algebraMap R A) b);\n  have ψ := Localization.awayMapₐ (Algebra.ofId R A) b;\n  Module.finrank Rb Ab = Module.finrank R A",
+      "sha256": "b26e80bd85c6c956a3674c3f205281018e96f6309a0a9823a35754ee55d0a082",
+      "lines": 26,
+      "moduleLineCount": 73,
+      "startLine": 46,
+      "endLine": 71,
+      "lineCount": 26,
+      "dependencies": []
     },
     {
       "declaration": "LinearStudy.localization_map_principal_annihilator",
@@ -23287,6 +23449,45 @@
       ]
     },
     {
+      "declaration": "LinearStudy.projective_exists_general_whole_fiber_generic_rank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGeneralFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_general_whole_fiber_generic_rank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n      ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n        (MvPolynomial.eval y) p ≠ 0 →\n          (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n            (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n                f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧\n              have ρ := V.affinePointEvaluation y hy;\n              Module.Finite ℂ (TensorProduct B A ℂ) ∧\n                IsReduced (TensorProduct B A ℂ) ∧\n                  Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) = Module.finrank B A",
+      "sha256": "d96cf3513281c6f6e2f4baebe9f3c287177f67949c0695d84d9522ab64eb835b",
+      "lines": 56,
+      "moduleLineCount": 69,
+      "startLine": 12,
+      "endLine": 67,
+      "lineCount": 56,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers",
+        "LinearStudy.projective_exists_general_whole_reduced_tensor_fibers"
+      ]
+    },
+    {
       "declaration": "LinearStudy.projective_exists_general_whole_reduced_fibers",
       "kind": "theorem",
       "origin": "project",
@@ -23376,6 +23577,119 @@
         "LinearStudy.projectiveChartDenominator",
         "LinearStudy.projectiveChartOpenMap",
         "LinearStudy.projective_exists_general_whole_reduced_fibers"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n      (MvPolynomial.eval y) p ≠ 0 →\n        have ρ := V.affinePointEvaluation y hy;\n        Module.finrank ℂ (TensorProduct B A ℂ) = Module.finrank B A",
+      "sha256": "febe37b70bb52ba553342b625671f54a183f92860bcc19a7c54b9ad6f19699f9",
+      "lines": 50,
+      "moduleLineCount": 64,
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finiteType",
+        "LinearStudy.projectiveChartOpenMap_isAlgebraic"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFieldDegree.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;\n  have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  Module.finrank B A = Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "a98474127fbdb5cbabff2858d4a371c5686d88a0d0b79c81838218fc71b035c6",
+      "lines": 25,
+      "moduleLineCount": 74,
+      "startLine": 12,
+      "endLine": 36,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayPullback_finrank_eq_fieldRange",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    {
+      "declaration": "LinearStudy.projective_exists_general_whole_fiber_field_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFieldDegree.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_general_whole_fiber_field_degree {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n      ∀ (y : Fin n → ℂ),\n        LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet →\n          (MvPolynomial.eval y) p ≠ 0 →\n            (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n              Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =\n                Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "a98474127fbdb5cbabff2858d4a371c5686d88a0d0b79c81838218fc71b035c6",
+      "lines": 35,
+      "moduleLineCount": 74,
+      "startLine": 38,
+      "endLine": 72,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange",
+        "LinearStudy.projective_exists_general_whole_fiber_generic_rank"
       ]
     },
     {

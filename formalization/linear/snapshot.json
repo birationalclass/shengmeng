@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "checkedAt": "2026-10-08T11:46:54+08:00",
+  "checkedAt": "2026-10-08T12:24:34+08:00",
   "lean": "4.35.0-rc3",
   "mathlib": "2a885768dae569d938bb9ff3474da6a8753bb90a",
   "mainTheoremVerified": false,
@@ -8,8 +8,8 @@
   "files": [
     {
       "path": "CheckAxioms.lean",
-      "sha256": "29bde1b017f047564d03641c79c448ffee5a298cdaf852ada337e4f95a23cc21",
-      "lineCount": 2756
+      "sha256": "211791c10a57ca504e0fc33f8fabad99504835d242d0f915bc4f5bf3fce5535e",
+      "lineCount": 2778
     },
     {
       "path": "Linear/ActualTargetParameters.lean",
@@ -62,6 +62,11 @@
       "lineCount": 81
     },
     {
+      "path": "Linear/AlgebraicGenericFiberRank.lean",
+      "sha256": "d515e3fb22828cc174df76a9c6eaa829404cf2d4c52b9bf56f0e355083661201",
+      "lineCount": 63
+    },
+    {
       "path": "Linear/ArbitraryParameterJacobian.lean",
       "sha256": "8292053533accf3ada0ff282a45fa24fab6fc8ed4e9d2f41659c982cb201176a",
       "lineCount": 115
@@ -95,6 +100,11 @@
       "path": "Linear/AwayFractionUnramified.lean",
       "sha256": "36da8e3abbc6d2306d6677d37c6380cd4c07d671c55f444c12568ac12796e4f2",
       "lineCount": 50
+    },
+    {
+      "path": "Linear/AwayPullbackFieldDegree.lean",
+      "sha256": "94d39149ae26ef17fe9b1433a01092ebf190090ec247d02e8fba7558a5b97a14",
+      "lineCount": 60
     },
     {
       "path": "Linear/AwayQuotientComparison.lean",
@@ -282,6 +292,11 @@
       "lineCount": 48
     },
     {
+      "path": "Linear/FreeAwayFiberRank.lean",
+      "sha256": "667659c84de9862ae10a2f762ceed1f69c1dc64d73489c858c82c33354a3001b",
+      "lineCount": 42
+    },
+    {
       "path": "Linear/GeneralLocalQuotientPullback.lean",
       "sha256": "97437f59f1cdafd11af64ffff121444c604814b69b5248cca072c46995250d80",
       "lineCount": 52
@@ -295,6 +310,11 @@
       "path": "Linear/GenericFiber.lean",
       "sha256": "dcf4bf173165f44a26e04c9d22306fd3efa6aa366d0ff4d54d21f59226d075f7",
       "lineCount": 43
+    },
+    {
+      "path": "Linear/GenericFiberRankOpen.lean",
+      "sha256": "4a880a756d37c9594b3e771422a0d0954431309c05ab5bab25a88a31e7d6115d",
+      "lineCount": 26
     },
     {
       "path": "Linear/GenericFreeAway.lean",
@@ -455,6 +475,11 @@
       "path": "Linear/LocalGeneratorsEquiv.lean",
       "sha256": "ef4555760dc069887896c4d2637e937d11eb4faa92c2e1bf33b3f4c7e6d48526",
       "lineCount": 76
+    },
+    {
+      "path": "Linear/LocalizedAlgebraFiber.lean",
+      "sha256": "b26e80bd85c6c956a3674c3f205281018e96f6309a0a9823a35754ee55d0a082",
+      "lineCount": 73
     },
     {
       "path": "Linear/LocalizedAnnihilator.lean",
@@ -1032,6 +1057,11 @@
       "lineCount": 50
     },
     {
+      "path": "Linear/ProjectiveGeneralFiberRank.lean",
+      "sha256": "d96cf3513281c6f6e2f4baebe9f3c287177f67949c0695d84d9522ab64eb835b",
+      "lineCount": 69
+    },
+    {
       "path": "Linear/ProjectiveGeneralReducedFibers.lean",
       "sha256": "04d548d955396c10a351fddc6f8280d82ecc5b8c01109b817f861d367bcff4bc",
       "lineCount": 112
@@ -1040,6 +1070,16 @@
       "path": "Linear/ProjectiveGeneralTensorFibers.lean",
       "sha256": "46ad64d33b628fb98e7ca52dd25a7b9a9b16025af6db50a071e1b09ac1265b32",
       "lineCount": 60
+    },
+    {
+      "path": "Linear/ProjectiveGenericFiberRank.lean",
+      "sha256": "febe37b70bb52ba553342b625671f54a183f92860bcc19a7c54b9ad6f19699f9",
+      "lineCount": 64
+    },
+    {
+      "path": "Linear/ProjectiveGenericFieldDegree.lean",
+      "sha256": "a98474127fbdb5cbabff2858d4a371c5686d88a0d0b79c81838218fc71b035c6",
+      "lineCount": 74
     },
     {
       "path": "Linear/ProjectiveGenericUnramified.lean",
@@ -1478,8 +1518,8 @@
     },
     {
       "path": "Linear.lean",
-      "sha256": "370faa00a1133bb60e4a219fd4baf66f1c5a2704a1860218aa45564f3fc7b26d",
-      "lineCount": 441
+      "sha256": "9357fd6c6c9620e4d0b2161a2fc72296932f36f80d5a9e394494cf07b6ee71db",
+      "lineCount": 457
     }
   ],
   "declarations": {
@@ -2168,6 +2208,33 @@
       "endLine": 79,
       "lineCount": 65,
       "dependencies": []
+    },
+    "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers": {
+      "declaration": "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AlgebraicGenericFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers.{u, u_1} {R A : Type u} [CommRing R] [IsDomain R]\n  [IsNoetherianRing R] [CommRing A] [Algebra R A] [Algebra.FiniteType R A] [Algebra.IsAlgebraic R A] {K : Type u_1}\n  [Field K] : ∃ p, p ≠ 0 ∧ ∀ (ρ : R →+* K), ρ p ≠ 0 → Module.finrank K (TensorProduct R K A) = Module.finrank R A",
+      "sha256": "d515e3fb22828cc174df76a9c6eaa829404cf2d4c52b9bf56f0e355083661201",
+      "lines": 49,
+      "moduleLineCount": 63,
+      "startLine": 13,
+      "endLine": 61,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.algebraic_finiteType_exists_finite_away",
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.localizedAlgebra_fiber_equiv",
+        "LinearStudy.localizedAlgebra_finrank_eq",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
+      ]
     },
     "LinearStudy.annihilates_nilradical_ringEquiv": {
       "declaration": "LinearStudy.annihilates_nilradical_ringEquiv",
@@ -2916,6 +2983,54 @@
         "LinearStudy.awayFractionEmbedding",
         "LinearStudy.awayFractionEmbedding_algebraMap",
         "LinearStudy.ringHom_fractionModel_exists_nonzero_unramified_open"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_isFractionRing": {
+      "declaration": "LinearStudy.awayFractionEmbedding_isFractionRing",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayPullbackFieldDegree.lean",
+      "line": 12,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayFractionEmbedding_isFractionRing.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) : IsFractionRing (Localization.Away a) (FractionRing B)",
+      "sha256": "94d39149ae26ef17fe9b1433a01092ebf190090ec247d02e8fba7558a5b97a14",
+      "lines": 12,
+      "moduleLineCount": 60,
+      "startLine": 12,
+      "endLine": 23,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
+      ]
+    },
+    "LinearStudy.awayPullback_finrank_eq_fieldRange": {
+      "declaration": "LinearStudy.awayPullback_finrank_eq_fieldRange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/AwayPullbackFieldDegree.lean",
+      "line": 28,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.awayPullback_finrank_eq_fieldRange.{u_1, u_2} {K : Type u_1} {B : Type u_2} [Field K] [CommRing B]\n  [IsDomain B] [Algebra K B] (a : B) (ha : a ≠ 0) (γ : FractionRing B →ₐ[K] FractionRing B)\n  (φ : B →ₐ[K] Localization.Away a)\n  (h : (LinearStudy.awayFractionEmbedding a ha).comp φ = γ.comp (IsScalarTower.toAlgHom K B (FractionRing B))) :\n  Module.finrank B (Localization.Away a) = Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "94d39149ae26ef17fe9b1433a01092ebf190090ec247d02e8fba7558a5b97a14",
+      "lines": 34,
+      "moduleLineCount": 60,
+      "startLine": 25,
+      "endLine": 58,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_isFractionRing"
       ]
     },
     "LinearStudy.awayQuotientEquiv": {
@@ -7771,6 +7886,27 @@
       "lineCount": 15,
       "dependencies": []
     },
+    "LinearStudy.module_tensor_finrank_eq_of_free_away": {
+      "declaration": "LinearStudy.module_tensor_finrank_eq_of_free_away",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/FreeAwayFiberRank.lean",
+      "line": 15,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.module_tensor_finrank_eq_of_free_away.{u_1, u_2, u_3} {R : Type u_1} {M : Type u_2} {K : Type u_3}\n  [CommRing R] [IsDomain R] [AddCommGroup M] [Module R M] [Field K] [Algebra R K] (r : R) (hr : r ≠ 0)\n  [Module.Free (Localization.Away r) (LocalizedModule.Away r M)] (hrK : (algebraMap R K) r ≠ 0) :\n  Module.finrank K (TensorProduct R K M) = Module.finrank R M",
+      "sha256": "667659c84de9862ae10a2f762ceed1f69c1dc64d73489c858c82c33354a3001b",
+      "lines": 29,
+      "moduleLineCount": 42,
+      "startLine": 12,
+      "endLine": 40,
+      "lineCount": 29,
+      "dependencies": []
+    },
     "LinearStudy.general_local_pullback_ideal_le": {
       "declaration": "LinearStudy.general_local_pullback_ideal_le",
       "kind": "theorem",
@@ -7932,6 +8068,30 @@
       "dependencies": [
         "LinearStudy.Annihilates",
         "LinearStudy.flat_genericFiber_injective"
+      ]
+    },
+    "LinearStudy.finiteModule_exists_fiber_rank_open": {
+      "declaration": "LinearStudy.finiteModule_exists_fiber_rank_open",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/GenericFiberRankOpen.lean",
+      "line": 13,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.finiteModule_exists_fiber_rank_open.{u_1, u_2, u_3} {R : Type u_1} {M : Type u_2} {K : Type u_3}\n  [CommRing R] [IsDomain R] [IsNoetherianRing R] [AddCommGroup M] [Module R M] [Module.Finite R M] [Field K] :\n  ∃ r, r ≠ 0 ∧ ∀ (ρ : R →+* K), ρ r ≠ 0 → Module.finrank K (TensorProduct R K M) = Module.finrank R M",
+      "sha256": "4a880a756d37c9594b3e771422a0d0954431309c05ab5bab25a88a31e7d6115d",
+      "lines": 15,
+      "moduleLineCount": 26,
+      "startLine": 10,
+      "endLine": 24,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
       ]
     },
     "LinearStudy.finiteModule_exists_free_away": {
@@ -11267,6 +11427,48 @@
         "LinearStudy.point_kernel_under_polynomialLinearChange",
         "LinearStudy.polynomialLinearChangeEquiv"
       ]
+    },
+    "LinearStudy.localizedAlgebra_fiber_equiv": {
+      "declaration": "LinearStudy.localizedAlgebra_fiber_equiv",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedAlgebraFiber.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedAlgebra_fiber_equiv.{u_1, u_2, u_3} {R : Type u_1} {A : Type u_2} {K : Type u_3} [CommRing R]\n  [CommRing A] [Algebra R A] [Field K] [Algebra R K] (b : R) (hbK : (algebraMap R K) b ≠ 0) :\n  let Rb := Localization.Away b;\n  let Ab := Localization.Away ((algebraMap R A) b);\n  have ψ := Localization.awayMapₐ (Algebra.ofId R A) b;\n  have τ := IsLocalization.Away.lift b ⋯;\n  Nonempty (TensorProduct Rb K Ab ≃ₗ[K] TensorProduct R K A)",
+      "sha256": "b26e80bd85c6c956a3674c3f205281018e96f6309a0a9823a35754ee55d0a082",
+      "lines": 34,
+      "moduleLineCount": 73,
+      "startLine": 11,
+      "endLine": 44,
+      "lineCount": 34,
+      "dependencies": []
+    },
+    "LinearStudy.localizedAlgebra_finrank_eq": {
+      "declaration": "LinearStudy.localizedAlgebra_finrank_eq",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/LocalizedAlgebraFiber.lean",
+      "line": 47,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.localizedAlgebra_finrank_eq.{u_1, u_2} {R : Type u_1} {A : Type u_2} [CommRing R] [IsDomain R] [CommRing A]\n  [Algebra R A] (b : R) (hb : b ≠ 0) :\n  let Rb := Localization.Away b;\n  let Ab := Localization.Away ((algebraMap R A) b);\n  have ψ := Localization.awayMapₐ (Algebra.ofId R A) b;\n  Module.finrank Rb Ab = Module.finrank R A",
+      "sha256": "b26e80bd85c6c956a3674c3f205281018e96f6309a0a9823a35754ee55d0a082",
+      "lines": 26,
+      "moduleLineCount": 73,
+      "startLine": 46,
+      "endLine": 71,
+      "lineCount": 26,
+      "dependencies": []
     },
     "LinearStudy.localization_map_principal_annihilator": {
       "declaration": "LinearStudy.localization_map_principal_annihilator",
@@ -24762,6 +24964,45 @@
         "LinearStudy.ProjectivePoint"
       ]
     },
+    "LinearStudy.projective_exists_general_whole_fiber_generic_rank": {
+      "declaration": "LinearStudy.projective_exists_general_whole_fiber_generic_rank",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGeneralFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_general_whole_fiber_generic_rank {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n      ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n        (MvPolynomial.eval y) p ≠ 0 →\n          (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n            (∀ (v : LinearStudy.CoordinateVector n) (hv : v ≠ 0),\n                f.onPoints (Projectivization.mk ℂ v hv) = LinearStudy.normalizedProjectivePoint y → v 0 ≠ 0) ∧\n              have ρ := V.affinePointEvaluation y hy;\n              Module.Finite ℂ (TensorProduct B A ℂ) ∧\n                IsReduced (TensorProduct B A ℂ) ∧\n                  Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) = Module.finrank B A",
+      "sha256": "d96cf3513281c6f6e2f4baebe9f3c287177f67949c0695d84d9522ab64eb835b",
+      "lines": 56,
+      "moduleLineCount": 69,
+      "startLine": 12,
+      "endLine": 67,
+      "lineCount": 56,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers",
+        "LinearStudy.projective_exists_general_whole_reduced_tensor_fibers"
+      ]
+    },
     "LinearStudy.projective_exists_general_whole_reduced_fibers": {
       "declaration": "LinearStudy.projective_exists_general_whole_reduced_fibers",
       "kind": "theorem",
@@ -24852,6 +25093,119 @@
         "LinearStudy.projectiveChartDenominator",
         "LinearStudy.projectiveChartOpenMap",
         "LinearStudy.projective_exists_general_whole_reduced_fibers"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFiberRank.lean",
+      "line": 16,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  let φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    ∀ (y : Fin n → ℂ) (hy : LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet),\n      (MvPolynomial.eval y) p ≠ 0 →\n        have ρ := V.affinePointEvaluation y hy;\n        Module.finrank ℂ (TensorProduct B A ℂ) = Module.finrank B A",
+      "sha256": "febe37b70bb52ba553342b625671f54a183f92860bcc19a7c54b9ad6f19699f9",
+      "lines": 50,
+      "moduleLineCount": 64,
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finiteType",
+        "LinearStudy.projectiveChartOpenMap_isAlgebraic"
+      ]
+    },
+    "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange": {
+      "declaration": "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFieldDegree.lean",
+      "line": 14,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  let A := Localization.Away (LinearStudy.projectiveChartDenominator f V);\n  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;\n  have φ := LinearStudy.projectiveChartOpenMap f V hq hf hV x0 hx0;\n  Module.finrank B A = Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "a98474127fbdb5cbabff2858d4a371c5686d88a0d0b79c81838218fc71b035c6",
+      "lines": 25,
+      "moduleLineCount": 74,
+      "startLine": 12,
+      "endLine": 36,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayPullback_finrank_eq_fieldRange",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
+    "LinearStudy.projective_exists_general_whole_fiber_field_degree": {
+      "declaration": "LinearStudy.projective_exists_general_whole_fiber_field_degree",
+      "kind": "theorem",
+      "origin": "project",
+      "file": "Linear/ProjectiveGenericFieldDegree.lean",
+      "line": 41,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "verified": true,
+      "formalType": "LinearStudy.projective_exists_general_whole_fiber_field_degree {n : ℕ} (f : LinearStudy.HomogeneousEndomorphism n)\n  (V : LinearStudy.IntegralProjectiveEquations n) (hq : 0 < f.degree) (hf : Function.Surjective f.onPoints)\n  (hV : f.onPoints ⁻¹' V.zeroSet = V.zeroSet) (x0 : Fin n → ℂ)\n  (hx0 : LinearStudy.normalizedProjectivePoint x0 ∈ V.zeroSet) :\n  let B := MvPolynomial (Fin n) ℂ ⧸ V.affineIdeal;\n  have γ := LinearStudy.projectiveChartFractionMap f V hq hf hV x0 hx0;\n  ∃ p ∉ V.affineIdeal,\n    (∃ y, LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet ∧ (MvPolynomial.eval y) p ≠ 0) ∧\n      ∀ (y : Fin n → ℂ),\n        LinearStudy.normalizedProjectivePoint y ∈ V.zeroSet →\n          (MvPolynomial.eval y) p ≠ 0 →\n            (f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}).Finite ∧\n              Nat.card ↑(f.onPoints ⁻¹' {LinearStudy.normalizedProjectivePoint y}) =\n                Module.finrank (↥γ.fieldRange) (FractionRing B)",
+      "sha256": "a98474127fbdb5cbabff2858d4a371c5686d88a0d0b79c81838218fc71b035c6",
+      "lines": 35,
+      "moduleLineCount": 74,
+      "startLine": 38,
+      "endLine": 72,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange",
+        "LinearStudy.projective_exists_general_whole_fiber_generic_rank"
       ]
     },
     "LinearStudy.projectiveCoordinateDomainMap_finiteType": {
@@ -37037,12 +37391,12 @@
     "name": "Luo_1005-20261006.tex",
     "sha256": "503864b699ae2b315ff857a57f33fb1d722ab53f331040ae6afafcd2e691ef2a"
   },
-  "verifiedTheoremCount": 986,
+  "verifiedTheoremCount": 997,
   "definitionCount": 192,
   "reusedTheoremCount": 152,
   "reusedDefinitionCount": 44,
   "auditExitCode": 0,
-  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED. The ambient local comparison and original affine coordinates are now combined at one SPECIFIED witness. Smooth target polynomial parameters are CONSTRUCTED and their actual rational pullbacks generate that same source local maximal ideal. Their count is the actual Kaehler differential rank; identifying it with geometric dimension is still open. Algebraicity of the original rational chart map is DERIVED from its actual finite fraction-field model, without replacing its Algebra action. A nonzero target basic open now has EVERY preimage inside the present denominator chart contained in one smooth unramified source open. This does NOT yet cover projective preimages outside the source affine chart, construct full general fibers, or compute their cardinality. Uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. Positive-degree no-base-point original forms now give an origin-only zero locus and an ACTUALLY FINITE polynomial ring substitution by homogeneous degree descent. Finiteness descends to the original invariant homogeneous coordinate-domain map. Actual vector fiber quotient algebras are finite dimensional and their actual rational point sets are finite. Every WHOLE projective point fiber, including points outside the original affine chart, is proved finite by q-th-root normalization. Reducedness and q^r cardinality are not claimed. The chart-level target good open now explicitly controls source smoothness, image smoothness and actual unramification at every prime preimage. Whole generic fiber smoothness, geometric dimension/degree, uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. The ACTUAL finite coordinate-domain map now constructs a nonzero target polynomial whose pullback is divisible by the source coordinate X0. Clearing the actual cone-chart denominator and the pinned Nullstellensatz construct a target vector meeting both this nonvanishing set and the original chart target good open. q-th-root normalization proves that its ENTIRE projective fiber lies in the same source affine chart. The original source-point evaluation, image coordinate ratios and prime kernels are identified: EVERY point of this WHOLE finite fiber has smooth source, smooth image and actual unramification. No whole-good-fiber assumption is inserted. This constructs one good full fiber, not yet a general scheme-fiber open or its reducedness/cardinality. The q^r count, geometric dimension, uniform global lifting, geometric Bezout and exact Linearity target remain UNPROVED. The actual affine polynomial fiber-equation quotient is now proved finite-dimensional. No base point forces the ORIGINAL denominator to be a unit in this quotient, including any prior nilpotents. Its actual localization quotient map is surjective and the original pullback composite is proved exactly equal to target evaluation followed by scalar inclusion. A constructed target unramified open and pinned formally-unramified field theorem prove this original fiber-equation quotient REDUCED. The original f,V construct a target whose ENTIRE projective point fiber avoids the source hyperplane. An explicit whole-fiber/actual-affine-zero-locus bijection and actual maximal residue evaluations prove that this WHOLE fiber cardinality equals the finite-dimensional fiber-equation quotient finrank. Reducedness and point/dimension equality are derived, not input fields. General scheme-fiber opens, a tensor-product/Scheme fiber comparison, the q^r degree identity and geometric dimension, uniform global polynomial lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. NEW: the original polynomial fiber-equation quotient satisfies the actual pullback/target-evaluation universal property. An explicit COMPLEX ALGEBRA isomorphism identifies it with A tensor_B C, where B acts on A by the ORIGINAL chart pullback and on C by evaluation at the SAME target y. Both the SMul and Module actions are explicitly fixed to that pullback, not the source-chart inclusion. From original f,V one complete finite reduced actual TENSOR fiber is constructed and its whole projective point count equals tensor-ring finrank. This closes the affine algebraic tensor-fiber comparison only; Scheme-level gluing, general fibers, q^r dimension formula, geometric dimension, uniform global lifting and Bezout remain unproved. NEW: homogeneous pullback components construct a genuine homogeneous target chart-avoidance polynomial. From ORIGINAL f,V we construct a nonempty actual target principal open whose EVERY whole projective point fiber lies in one source chart. Every corresponding fiber-equation and actual tensor ring is finite-dimensional and reduced, and the ENTIRE point-fiber cardinality equals the tensor finrank. Every prime over that target open in the denominator chart has smooth source, smooth image and actual unramification. No general good-fiber conclusion is an input. This closes general good affine tensor fibers; the q^r dimension identity, Scheme gluing, geometric dimension, Bertini linear sections, uniform global lifting and geometric Bezout remain unproved. NEW: from the ORIGINAL chart pullback, clearing denominators of finitely many algebraic generators constructs a nonzero target element b such that the localized ring map B_b -> A_phi(b) is MODULE-FINITE. A further nonzero localization of that finite module is FREE and its finrank equals the actual generic module rank. Neither finiteness nor freeness is an input. The second object is a module localization. Comparison of these ranks with all rational tensor fibers, their value q^r, Scheme gluing, Bertini and global uniform lifting remain unproved.",
+  "scope": "The exact original local Lemma31Goal is PROVED by lemma31_complete, including arbitrary parameter lifts, actual finite freeness and nonzero Jacobian socle generation. The global LinearityTheoremGoal remains UNPROVED. Actual affine perfect pairings, low-degree vanishing and weighted point relations are proved under their precise polynomial highest-part and local generator hypotheses, with highest-part regularity derived from the origin-only zero locus. Actual polynomial point completions and canonical Artinian fiber/localization comparisons are constructed. Original projective total invariance yields affine-cone radical pullback equality. Actual point-local source generators and a unit Jacobian minor construct smooth formal coordinates; target point-local generators determine the formal pullback ideal. The resulting radical condition derives regularity, finiteness and freeness, without opaque coordinate or structure inputs. Actual local quotient pullback maps are constructed from polynomial substitution, proved local and compatible with every polynomial. Essential finite type and formal unramifiedness of that specific map imply generation by actual pulled-back target parameters. Formal normal and normal polynomial Jacobians differ by a proved unit. Their nonzero socle generation descends through a constructed equivalence to the original Artinian polynomial fiber localization. Geometric local presentations, minors, unramifiedness and target parameter systems remain to be derived from the manuscript geometry. The local pulled-back-generator Jacobian is identified with the single common projective-chart Theta when the explicit target first-order, normal radical and reduced-parameter conditions hold. The full fiber ideal equality is constructed from actual unit-denominator substitution, and the same Theta class descends to the original localized Artinian polynomial fiber. Those conditions still require geometric derivation. Other remaining obligations are Scheme/projective coordinate comparison, Bertini/generic finite fiber geometry and cardinality, uniform global duality/Serre polynomial lifting and actual geometric Bezout. No final conclusion is hidden in a field, assumption, axiom or placeholder. Compiler stdin/setup mode preserves exact source bytes, module names and declaration ranges without changing kernel trust or dependencies. Actual formal smoothness of an embedded polynomial point-local quotient now constructs polynomial local ideal generators whose conormal classes form a basis: cotangent splitting, finite projectivity, local freeness and Nakayama are derived using the pinned library, and denominators are cleared without losing the basis. Actual localized ambient differential coordinates are constructed and identified with polynomial partial derivatives, including quotient base change. A row-independent rectangular matrix yields a nonzero original-coordinate maximal minor. Connecting the smooth conormal splitting to that actual Jacobian minor and geometric codimension is the next bridge; no complete geometric smooth-chart existence theorem or global Linearity proof is claimed. From formal smoothness of the actual localized quotient at a rational polynomial point, actual local polynomial generators, point vanishing and a nonzero original-coordinate Jacobian minor are now CONSTRUCTED. No conormal basis, ideal presentation, residue comparison, full-rank Jacobian or unit minor is an input to exists_smooth_polynomial_jacobian_generators_at_point. The actual rational point evaluation on the localized quotient is constructed. The number of generators still needs geometric codimension identification and the remaining global inputs are not proved by this theorem. The selected normal coordinates are now extended to an actual ambient coordinate permutation, with polynomial evaluation/derivative and point-translation compatibility. From smoothness of the actual rational point-local quotient and a nonzero localized ideal, smooth_point_has_formal_normal_coordinates CONSTRUCTS polynomial equations, a unit normal minor, the coordinate map and the original ideal normal-variable image equality. Geometric dimension/count identification and common coordinates over all points remain to be proved, as do the other global obligations. The actual smooth cotangent sequence now gives a product decomposition and a conormal/differential finite-rank sum for the localized polynomial quotient. A finite family of row-independent derivative matrices admits a single nonsingular ambient matrix with all fixed normal blocks nonsingular over an infinite field. The actual polynomial algebra automorphism, inverse point change and derivative chain rule are constructed. This common polynomial result still assumes original derivative-row independence and a fixed normal count; geometric dimension and common local generation are separate remaining obligations. No global Linearity proof is claimed. From actual formal smoothness at finitely many rational point primes and their common actual conormal rank, smooth_points_have_common_formal_normal_coordinates now CONSTRUCTS local equations, row independence, one common ambient polynomial automorphism and coordinate split, unit normal minors and formal maps taking the ORIGINAL ideal exactly to the normal-variable ideal at every selected point. Local ideal generation is transported through an actual localization ring equivalence and point-kernel compatibility is proved. Constancy of conormal rank, geometric smoothness/fibers and the remaining global inputs are explicit unfinished obligations. Constancy of conormal rank for the nonempty finite family of rational smooth points is now derived from the original nonzero prime ideal. The actual injective projective chart map yields a simultaneous smooth source, smooth image and unramified rational point. Canonical denominator-open quotient and point-local comparisons transport unramification to the actual ambient rational-polynomial local quotient pullback. The rational point is identified with actual affine coordinates on V, and its image with the original ratios f_i/f_0. This is a same-point coordinate bridge, not construction of all points in a general fiber. Combining the ambient comparison with those coordinates at one specified witness, whole generic fiber cardinality/degree, geometric dimension, uniform global duality lifting and geometric Bezout remain open. The exact LinearityTheoremGoal is still UNPROVED. The ambient local comparison and original affine coordinates are now combined at one SPECIFIED witness. Smooth target polynomial parameters are CONSTRUCTED and their actual rational pullbacks generate that same source local maximal ideal. Their count is the actual Kaehler differential rank; identifying it with geometric dimension is still open. Algebraicity of the original rational chart map is DERIVED from its actual finite fraction-field model, without replacing its Algebra action. A nonzero target basic open now has EVERY preimage inside the present denominator chart contained in one smooth unramified source open. This does NOT yet cover projective preimages outside the source affine chart, construct full general fibers, or compute their cardinality. Uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. Positive-degree no-base-point original forms now give an origin-only zero locus and an ACTUALLY FINITE polynomial ring substitution by homogeneous degree descent. Finiteness descends to the original invariant homogeneous coordinate-domain map. Actual vector fiber quotient algebras are finite dimensional and their actual rational point sets are finite. Every WHOLE projective point fiber, including points outside the original affine chart, is proved finite by q-th-root normalization. Reducedness and q^r cardinality are not claimed. The chart-level target good open now explicitly controls source smoothness, image smoothness and actual unramification at every prime preimage. Whole generic fiber smoothness, geometric dimension/degree, uniform global lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. The ACTUAL finite coordinate-domain map now constructs a nonzero target polynomial whose pullback is divisible by the source coordinate X0. Clearing the actual cone-chart denominator and the pinned Nullstellensatz construct a target vector meeting both this nonvanishing set and the original chart target good open. q-th-root normalization proves that its ENTIRE projective fiber lies in the same source affine chart. The original source-point evaluation, image coordinate ratios and prime kernels are identified: EVERY point of this WHOLE finite fiber has smooth source, smooth image and actual unramification. No whole-good-fiber assumption is inserted. This constructs one good full fiber, not yet a general scheme-fiber open or its reducedness/cardinality. The q^r count, geometric dimension, uniform global lifting, geometric Bezout and exact Linearity target remain UNPROVED. The actual affine polynomial fiber-equation quotient is now proved finite-dimensional. No base point forces the ORIGINAL denominator to be a unit in this quotient, including any prior nilpotents. Its actual localization quotient map is surjective and the original pullback composite is proved exactly equal to target evaluation followed by scalar inclusion. A constructed target unramified open and pinned formally-unramified field theorem prove this original fiber-equation quotient REDUCED. The original f,V construct a target whose ENTIRE projective point fiber avoids the source hyperplane. An explicit whole-fiber/actual-affine-zero-locus bijection and actual maximal residue evaluations prove that this WHOLE fiber cardinality equals the finite-dimensional fiber-equation quotient finrank. Reducedness and point/dimension equality are derived, not input fields. General scheme-fiber opens, a tensor-product/Scheme fiber comparison, the q^r degree identity and geometric dimension, uniform global polynomial lifting, geometric Bezout and the exact Linearity theorem remain UNPROVED. NEW: the original polynomial fiber-equation quotient satisfies the actual pullback/target-evaluation universal property. An explicit COMPLEX ALGEBRA isomorphism identifies it with A tensor_B C, where B acts on A by the ORIGINAL chart pullback and on C by evaluation at the SAME target y. Both the SMul and Module actions are explicitly fixed to that pullback, not the source-chart inclusion. From original f,V one complete finite reduced actual TENSOR fiber is constructed and its whole projective point count equals tensor-ring finrank. This closes the affine algebraic tensor-fiber comparison only; Scheme-level gluing, general fibers, q^r dimension formula, geometric dimension, uniform global lifting and Bezout remain unproved. NEW: homogeneous pullback components construct a genuine homogeneous target chart-avoidance polynomial. From ORIGINAL f,V we construct a nonempty actual target principal open whose EVERY whole projective point fiber lies in one source chart. Every corresponding fiber-equation and actual tensor ring is finite-dimensional and reduced, and the ENTIRE point-fiber cardinality equals the tensor finrank. Every prime over that target open in the denominator chart has smooth source, smooth image and actual unramification. No general good-fiber conclusion is an input. This closes general good affine tensor fibers; the q^r dimension identity, Scheme gluing, geometric dimension, Bertini linear sections, uniform global lifting and geometric Bezout remain unproved. NEW: from the ORIGINAL chart pullback, clearing denominators of finitely many algebraic generators constructs a nonzero target element b such that the localized ring map B_b -> A_phi(b) is MODULE-FINITE. A further nonzero localization of that finite module is FREE and its finrank equals the actual generic module rank. Neither finiteness nor freeness is an input. The second object is a module localization. Comparison of these ranks with all rational tensor fibers, their value q^r, Scheme gluing, Bertini and global uniform lifting remain unproved. NEW: on a constructed nonempty ORIGINAL target open, every actual field-valued chart fiber has the original pullback module generic rank. Residue maps need not be injective; only the constructed free localization is used for free base change. Localized algebra/module fiber equivalences retain the ORIGINAL actions. Intersecting with the constructed whole reduced fiber open gives every WHOLE projective point fiber cardinality equal to that actual generic rank. This rank is NOT computed as q^r. Scheme gluing, geometric dimension, Bertini and uniform global lifting remain open. NEW: the ORIGINAL chart pullback generic rank is identified with the actual image-field extension degree of the ORIGINAL function-field pullback. Source and target scalar actions are separated through its actual intermediate-field range. EVERY whole point fiber on a constructed nonempty target open has that degree as its cardinality. No value q^r or Scheme fiber identification is assumed or claimed.",
   "sourceRanges": {
     "LinearStudy.affine_polynomial_weighted_point_relation": {
       "path": "Linear/AffinePointRelation.lean",
@@ -40536,6 +40890,29 @@
         "LinearStudy.projectiveCone_exists_nonvanishing_point"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange": {
+      "path": "Linear/ProjectiveGenericFieldDegree.lean",
+      "startLine": 12,
+      "endLine": 36,
+      "lineCount": 25,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.awayPullback_finrank_eq_fieldRange",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_fraction_comp",
+        "LinearStudy.projectiveChart_denominator_ne_zero"
+      ]
+    },
     "LinearStudy.awayFractionEmbedding_algebraMap": {
       "path": "Linear/AwayFractionEmbedding.lean",
       "startLine": 16,
@@ -42376,6 +42753,31 @@
         "LinearStudy.PerfectMultiplicationPairing.mk"
       ]
     },
+    "LinearStudy.projective_exists_general_whole_fiber_generic_rank": {
+      "path": "Linear/ProjectiveGeneralFiberRank.lean",
+      "startLine": 12,
+      "endLine": 67,
+      "lineCount": 56,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePoint",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.exists_smooth_affine_point_avoiding",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers",
+        "LinearStudy.projective_exists_general_whole_reduced_tensor_fibers"
+      ]
+    },
     "LinearStudy.HomogeneousEndomorphism.iterate_total_invariance": {
       "path": "Linear/Projective.lean",
       "startLine": 147,
@@ -42546,6 +42948,16 @@
       "endLine": 63,
       "lineCount": 17,
       "dependencies": []
+    },
+    "LinearStudy.awayPullback_finrank_eq_fieldRange": {
+      "path": "Linear/AwayPullbackFieldDegree.lean",
+      "startLine": 25,
+      "endLine": 58,
+      "lineCount": 34,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_isFractionRing"
+      ]
     },
     "LinearStudy.determinant_mul_coordinate_of_relation": {
       "path": "Linear/DeterminantAnnihilator.lean",
@@ -42735,6 +43147,13 @@
       "startLine": 14,
       "endLine": 33,
       "lineCount": 20,
+      "dependencies": []
+    },
+    "LinearStudy.localizedAlgebra_finrank_eq": {
+      "path": "Linear/LocalizedAlgebraFiber.lean",
+      "startLine": 46,
+      "endLine": 71,
+      "lineCount": 26,
       "dependencies": []
     },
     "LinearStudy.projective_exists_general_whole_reduced_tensor_fibers": {
@@ -44112,6 +44531,30 @@
         "LinearStudy.flat_genericFiber_injective"
       ]
     },
+    "LinearStudy.projective_exists_general_whole_fiber_field_degree": {
+      "path": "Linear/ProjectiveGenericFieldDegree.lean",
+      "startLine": 38,
+      "endLine": 72,
+      "lineCount": 35,
+      "dependencies": [
+        "LinearStudy.CoordinateVector",
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartFractionMap",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finrank_eq_fieldRange",
+        "LinearStudy.projective_exists_general_whole_fiber_generic_rank"
+      ]
+    },
     "LinearStudy.finite_ringHom_exists_nonzero_target_multiple": {
       "path": "Linear/ProjectiveFiberChartAvoidance.lean",
       "startLine": 14,
@@ -44764,6 +45207,13 @@
         "IsLocalRing.ideal_depth_eq_sSup_length_isRegular"
       ]
     },
+    "LinearStudy.module_tensor_finrank_eq_of_free_away": {
+      "path": "Linear/FreeAwayFiberRank.lean",
+      "startLine": 12,
+      "endLine": 40,
+      "lineCount": 29,
+      "dependencies": []
+    },
     "LinearStudy.projective_total_invariance_pullback_radical": {
       "path": "Linear/ProjectiveIdealInvariance.lean",
       "startLine": 67,
@@ -45323,6 +45773,16 @@
       "dependencies": [
         "LinearStudy.equationIdeal_le_constantCoeff_kernel",
         "LinearStudy.powerSeriesConstantCoeffAlgHom"
+      ]
+    },
+    "LinearStudy.finiteModule_exists_fiber_rank_open": {
+      "path": "Linear/GenericFiberRankOpen.lean",
+      "startLine": 10,
+      "endLine": 24,
+      "lineCount": 15,
+      "dependencies": [
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
       ]
     },
     "LinearStudy.HomogeneousEndomorphism.evalVector_fibers_finite": {
@@ -47864,6 +48324,16 @@
       "lineCount": 17,
       "dependencies": [
         "LinearStudy.maximalResidueEvaluation"
+      ]
+    },
+    "LinearStudy.awayFractionEmbedding_isFractionRing": {
+      "path": "Linear/AwayPullbackFieldDegree.lean",
+      "startLine": 12,
+      "endLine": 23,
+      "lineCount": 12,
+      "dependencies": [
+        "LinearStudy.awayFractionEmbedding",
+        "LinearStudy.awayFractionEmbedding_algebraMap"
       ]
     },
     "LinearStudy.powerSeriesTranslationEquiv_parameter": {
@@ -50462,6 +50932,19 @@
         "LinearStudy.determinant_annihilates_coordinate_ideal"
       ]
     },
+    "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers": {
+      "path": "Linear/AlgebraicGenericFiberRank.lean",
+      "startLine": 13,
+      "endLine": 61,
+      "lineCount": 49,
+      "dependencies": [
+        "LinearStudy.algebraic_finiteType_exists_finite_away",
+        "LinearStudy.finiteModule_exists_free_away",
+        "LinearStudy.localizedAlgebra_fiber_equiv",
+        "LinearStudy.localizedAlgebra_finrank_eq",
+        "LinearStudy.module_tensor_finrank_eq_of_free_away"
+      ]
+    },
     "LinearStudy.regular_nilpotent_perturbation": {
       "path": "Linear/NilpotentRegular.lean",
       "startLine": 59,
@@ -52487,6 +52970,30 @@
         "LinearStudy.projective_total_invariance_formal_sandwich"
       ]
     },
+    "LinearStudy.projectiveChartOpenMap_exists_generic_rank_fibers": {
+      "path": "Linear/ProjectiveGenericFiberRank.lean",
+      "startLine": 13,
+      "endLine": 62,
+      "lineCount": 50,
+      "dependencies": [
+        "LinearStudy.HomogeneousEndomorphism",
+        "LinearStudy.HomogeneousEndomorphism.degree",
+        "LinearStudy.HomogeneousEndomorphism.onPoints",
+        "LinearStudy.IntegralProjectiveEquations",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal",
+        "LinearStudy.IntegralProjectiveEquations.affineIdeal_isPrime_of_point",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation",
+        "LinearStudy.IntegralProjectiveEquations.affinePointEvaluation_mk",
+        "LinearStudy.IntegralProjectiveEquations.zeroSet",
+        "LinearStudy.ProjectivePoint",
+        "LinearStudy.algebraic_finiteType_exists_generic_rank_fibers",
+        "LinearStudy.normalizedProjectivePoint",
+        "LinearStudy.projectiveChartDenominator",
+        "LinearStudy.projectiveChartOpenMap",
+        "LinearStudy.projectiveChartOpenMap_finiteType",
+        "LinearStudy.projectiveChartOpenMap_isAlgebraic"
+      ]
+    },
     "Ideal.ofList_height_le_length": {
       "path": "Linear/Vendor/CM/CohenMacaulayCatenary.lean",
       "startLine": 33,
@@ -53343,6 +53850,13 @@
         "LinearStudy.normal_jacobian_linear_shear",
         "LinearStudy.polynomialLinearChange"
       ]
+    },
+    "LinearStudy.localizedAlgebra_fiber_equiv": {
+      "path": "Linear/LocalizedAlgebraFiber.lean",
+      "startLine": 11,
+      "endLine": 44,
+      "lineCount": 34,
+      "dependencies": []
     },
     "LinearStudy.smoothLocus_prime_points_have_common_formal_normal_coordinates": {
       "path": "Linear/SmoothLocusCoordinates.lean",
